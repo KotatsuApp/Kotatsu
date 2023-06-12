@@ -112,7 +112,7 @@ class FavouriteCategoriesActivity :
 		}
 		val intent = FavouritesActivity.newIntent(this, item)
 		val options = scaleUpActivityOptionsOf(view)
-		startActivity(intent, options.toBundle())
+		startActivity(intent, options)
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory, view: View): Boolean {

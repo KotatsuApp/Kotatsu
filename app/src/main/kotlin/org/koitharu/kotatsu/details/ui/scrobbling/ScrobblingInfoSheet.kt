@@ -110,7 +110,7 @@ class ScrobblingInfoSheet :
 			R.id.imageView_cover -> {
 				val coverUrl = viewModel.scrobblingInfo.value.getOrNull(scrobblerIndex)?.coverUrl ?: return
 				val options = scaleUpActivityOptionsOf(v)
-				startActivity(ImageActivity.newIntent(v.context, coverUrl, null), options.toBundle())
+				startActivity(ImageActivity.newIntent(v.context, coverUrl, null), options)
 			}
 		}
 	}

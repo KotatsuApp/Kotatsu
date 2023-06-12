@@ -17,9 +17,13 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>() {
 	protected val viewModel by activityViewModels<ReaderViewModel>()
 	private var stateToSave: ReaderState? = null
 
+	protected var readerAdapter: BaseReaderAdapter<*>? = null
+		private set
+
 	override fun onViewBindingCreated(binding: B, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		var restoredState = savedInstanceState?.getParcelableCompat<ReaderState>(KEY_STATE)
+		readerAdapter = onCreateAdapter()
 
 		viewModel.content.observe(viewLifecycleOwner) {
 			onPagesChanged(it.pages, restoredState ?: it.state)
@@ -34,6 +38,7 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>() {
 
 	override fun onDestroyView() {
 		stateToSave = getCurrentState()
+		readerAdapter = null
 		super.onDestroyView()
 	}
 
@@ -43,6 +48,10 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>() {
 			stateToSave = it
 		}
 		outState.putParcelable(KEY_STATE, stateToSave)
+	}
+
+	protected fun requireAdapter() = checkNotNull(readerAdapter) {
+		"Adapter was not created or already destroyed"
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
@@ -55,5 +64,7 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>() {
 
 	abstract fun getCurrentState(): ReaderState?
 
-	protected abstract fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?)
+	protected abstract fun onCreateAdapter(): BaseReaderAdapter<*>
+
+	protected abstract suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?)
 }

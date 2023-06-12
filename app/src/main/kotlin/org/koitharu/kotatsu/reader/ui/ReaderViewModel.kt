@@ -312,8 +312,10 @@ class ReaderViewModel @Inject constructor(
 
 	private fun loadImpl() {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			var manga =
-				DoubleManga(dataRepository.resolveIntent(intent) ?: throw NotFoundException("Cannot find manga", ""))
+			var manga = DoubleManga(
+				dataRepository.resolveIntent(intent)
+					?: throw NotFoundException("Cannot find manga", ""),
+			)
 			mangaData.value = manga
 			manga = doubleMangaLoadUseCase(intent)
 			chaptersLoader.init(manga)

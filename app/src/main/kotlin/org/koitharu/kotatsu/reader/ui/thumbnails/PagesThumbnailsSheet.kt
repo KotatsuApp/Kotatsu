@@ -30,7 +30,7 @@ import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import javax.inject.Inject
@@ -101,8 +101,8 @@ class PagesThumbnailsSheet :
 			listener.onPageSelected(item.page)
 		} else {
 			val state = ReaderState(item.page.chapterId, item.page.index, 0)
-			val intent = ReaderActivity.newIntent(view.context, viewModel.manga, state)
-			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+			val intent = IntentBuilder(view.context).manga(viewModel.manga).state(state).build()
+			startActivity(intent, scaleUpActivityOptionsOf(view))
 		}
 		dismiss()
 	}

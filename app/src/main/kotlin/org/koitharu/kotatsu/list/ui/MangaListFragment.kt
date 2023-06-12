@@ -55,7 +55,7 @@ import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import javax.inject.Inject
 
@@ -148,8 +148,8 @@ abstract class MangaListFragment :
 
 	override fun onReadClick(manga: Manga, view: View) {
 		if (selectionController?.onItemClick(manga.id) != true) {
-			val intent = ReaderActivity.newIntent(context ?: return, manga)
-			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+			val intent = IntentBuilder(view.context).manga(manga).build()
+			startActivity(intent, scaleUpActivityOptionsOf(view))
 		}
 	}
 

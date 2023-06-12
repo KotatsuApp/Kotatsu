@@ -398,6 +398,44 @@ class ReaderActivity :
 		}
 	}
 
+	class IntentBuilder(context: Context) {
+
+		private val intent = Intent(context, ReaderActivity::class.java)
+			.setAction(ACTION_MANGA_READ)
+
+		fun manga(manga: Manga) = apply {
+			intent.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
+		}
+
+		fun mangaId(mangaId: Long) = apply {
+			intent.putExtra(MangaIntent.KEY_ID, mangaId)
+		}
+
+		fun incognito(incognito: Boolean) = apply {
+			intent.putExtra(EXTRA_INCOGNITO, incognito)
+		}
+
+		fun branch(branch: String?) = apply {
+			intent.putExtra(EXTRA_BRANCH, branch)
+		}
+
+		fun state(state: ReaderState?) = apply {
+			intent.putExtra(EXTRA_STATE, state)
+		}
+
+		fun bookmark(bookmark: Bookmark) = manga(
+			bookmark.manga,
+		).state(
+			ReaderState(
+				chapterId = bookmark.chapterId,
+				page = bookmark.page,
+				scroll = bookmark.scroll,
+			),
+		)
+
+		fun build() = intent
+	}
+
 	companion object {
 
 		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
@@ -405,38 +443,5 @@ class ReaderActivity :
 		const val EXTRA_BRANCH = "branch"
 		const val EXTRA_INCOGNITO = "incognito"
 		private const val TOAST_DURATION = 1500L
-
-		fun newIntent(context: Context, manga: Manga): Intent {
-			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
-		}
-
-		fun newIntent(context: Context, manga: Manga, branch: String?, isIncognitoMode: Boolean): Intent {
-			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
-				.putExtra(EXTRA_BRANCH, branch)
-				.putExtra(EXTRA_INCOGNITO, isIncognitoMode)
-		}
-
-		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {
-			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
-				.putExtra(EXTRA_STATE, state)
-		}
-
-		fun newIntent(context: Context, bookmark: Bookmark): Intent {
-			val state = ReaderState(
-				chapterId = bookmark.chapterId,
-				page = bookmark.page,
-				scroll = bookmark.scroll,
-			)
-			return newIntent(context, bookmark.manga, state)
-				.putExtra(EXTRA_INCOGNITO, true)
-		}
-
-		fun newIntent(context: Context, mangaId: Long): Intent {
-			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_ID, mangaId)
-		}
 	}
 }

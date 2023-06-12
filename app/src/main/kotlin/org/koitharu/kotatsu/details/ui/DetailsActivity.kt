@@ -53,7 +53,7 @@ import org.koitharu.kotatsu.details.ui.model.MangaBranch
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import java.lang.ref.WeakReference
 import javax.inject.Inject
@@ -301,12 +301,11 @@ class DetailsActivity :
 			snackbar.show()
 		} else {
 			startActivity(
-				ReaderActivity.newIntent(
-					context = this,
-					manga = manga,
-					branch = viewModel.selectedBranchValue,
-					isIncognitoMode = isIncognitoMode,
-				),
+				IntentBuilder(this)
+					.manga(manga)
+					.branch(viewModel.selectedBranchValue)
+					.incognito(isIncognitoMode)
+					.build(),
 			)
 			if (isIncognitoMode) {
 				Toast.makeText(this, R.string.incognito_mode, Toast.LENGTH_SHORT).show()

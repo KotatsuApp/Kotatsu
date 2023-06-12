@@ -96,8 +96,8 @@ class DetailsFragment :
 
 	override fun onItemClick(item: Bookmark, view: View) {
 		startActivity(
-			ReaderActivity.newIntent(view.context, item),
-			scaleUpActivityOptionsOf(view).toBundle(),
+			ReaderActivity.IntentBuilder(view.context).bookmark(item).incognito(true).build(),
+			scaleUpActivityOptionsOf(view),
 		)
 		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
@@ -257,7 +257,7 @@ class DetailsFragment :
 						manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
 						manga.source,
 					),
-					scaleUpActivityOptionsOf(v).toBundle(),
+					scaleUpActivityOptionsOf(v),
 				)
 			}
 		}

@@ -25,7 +25,7 @@ import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import kotlin.math.roundToInt
 
@@ -79,12 +79,11 @@ class ChaptersFragment :
 			return
 		}
 		startActivity(
-			ReaderActivity.newIntent(
-				context = view.context,
-				manga = viewModel.manga.value ?: return,
-				state = ReaderState(item.chapter.id, 0, 0),
-			),
-			scaleUpActivityOptionsOf(view).toBundle(),
+			IntentBuilder(view.context)
+				.manga(viewModel.manga.value ?: return)
+				.state(ReaderState(item.chapter.id, 0, 0))
+				.build(),
+			scaleUpActivityOptionsOf(view),
 		)
 	}
 

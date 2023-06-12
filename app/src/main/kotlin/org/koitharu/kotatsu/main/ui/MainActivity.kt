@@ -60,7 +60,7 @@ import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
@@ -259,9 +259,9 @@ class MainActivity :
 	private fun onOpenReader(manga: Manga) {
 		val fab = viewBinding.fab ?: viewBinding.navRail?.headerView
 		val options = fab?.let {
-			scaleUpActivityOptionsOf(it).toBundle()
+			scaleUpActivityOptionsOf(it)
 		}
-		startActivity(ReaderActivity.newIntent(this, manga), options)
+		startActivity(IntentBuilder(this).manga(manga).build(), options)
 	}
 
 	private fun onCountersChanged(counters: SparseIntArray) {

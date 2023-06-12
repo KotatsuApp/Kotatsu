@@ -16,6 +16,7 @@ import android.database.SQLException
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.view.ViewPropertyAnimator
@@ -43,7 +44,6 @@ import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import kotlin.math.roundToLong
@@ -148,13 +148,17 @@ val Context.ramAvailable: Long
 		return result.availMem
 	}
 
-fun scaleUpActivityOptionsOf(view: View): ActivityOptions = ActivityOptions.makeScaleUpAnimation(
-	view,
-	0,
-	0,
-	view.width,
-	view.height,
-)
+fun scaleUpActivityOptionsOf(view: View): Bundle? = if (view.context.isAnimationsEnabled) {
+	ActivityOptions.makeScaleUpAnimation(
+		view,
+		0,
+		0,
+		view.width,
+		view.height,
+	).toBundle()
+} else {
+	null
+}
 
 fun Resources.getLocalesConfig(): LocaleListCompat {
 	val tagsList = StringJoiner(",")

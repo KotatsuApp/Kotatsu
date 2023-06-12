@@ -95,8 +95,11 @@ class BookmarksFragment :
 
 	override fun onItemClick(item: Bookmark, view: View) {
 		if (selectionController?.onItemClick(item.manga, item.pageId) != true) {
-			val intent = ReaderActivity.newIntent(view.context, item)
-			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+			val intent = ReaderActivity.IntentBuilder(view.context)
+				.bookmark(item)
+				.incognito(true)
+				.build()
+			startActivity(intent, scaleUpActivityOptionsOf(view))
 			Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 		}
 	}

@@ -41,6 +41,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.almostEquals
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.flatten
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.core.util.ext.takeMostFrequent
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
@@ -53,11 +54,10 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.suggestions.domain.TagsBlacklist
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 import kotlin.random.Random
@@ -263,7 +263,7 @@ class SuggestionsWorker @AssistedInject constructor(
 				PendingIntentCompat.getActivity(
 					applicationContext,
 					id + 2,
-					ReaderActivity.newIntent(applicationContext, manga),
+					IntentBuilder(applicationContext).manga(manga).build(),
 					0,
 					false,
 				),

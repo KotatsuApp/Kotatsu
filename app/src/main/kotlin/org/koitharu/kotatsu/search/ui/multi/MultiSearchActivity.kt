@@ -34,7 +34,7 @@ import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
@@ -117,8 +117,8 @@ class MultiSearchActivity :
 
 	override fun onReadClick(manga: Manga, view: View) {
 		if (!selectionController.onItemClick(manga.id)) {
-			val intent = ReaderActivity.newIntent(this, manga)
-			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+			val intent = IntentBuilder(this).manga(manga).build()
+			startActivity(intent, scaleUpActivityOptionsOf(view))
 		}
 	}
 

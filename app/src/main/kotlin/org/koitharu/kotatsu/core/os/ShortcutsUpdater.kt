@@ -26,12 +26,12 @@ import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -142,8 +142,9 @@ class ShortcutsUpdater @Inject constructor(
 			.setLongLabel(manga.title)
 			.setIcon(icon)
 			.setIntent(
-				ReaderActivity.newIntent(context, manga.id)
-					.setAction(ReaderActivity.ACTION_MANGA_READ),
+				ReaderActivity.IntentBuilder(context)
+					.mangaId(manga.id)
+					.build(),
 			)
 	}
 
