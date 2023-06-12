@@ -42,6 +42,7 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.details.domain.DoubleMangaLoadUseCase
 import org.koitharu.kotatsu.details.domain.model.DoubleManga
@@ -56,7 +57,6 @@ import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.util.Date
 import javax.inject.Inject
 
@@ -288,7 +288,7 @@ class ReaderViewModel @Inject constructor(
 				chapterId = state.chapterId,
 				page = state.page,
 				scroll = state.scroll,
-				imageUrl = page.preview.ifNullOrEmpty { pageLoader.getPageUrl(page) },
+				imageUrl = page.preview.ifNullOrEmpty { page.url },
 				createdAt = Date(),
 				percent = computePercent(state.chapterId, state.page),
 			)

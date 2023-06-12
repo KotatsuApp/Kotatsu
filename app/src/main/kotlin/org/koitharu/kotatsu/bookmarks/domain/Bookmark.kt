@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.bookmarks.domain
 
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaPage
 import java.util.Date
 
 class Bookmark(
@@ -13,6 +14,20 @@ class Bookmark(
 	val createdAt: Date,
 	val percent: Float,
 ) {
+
+	val directImageUrl: String?
+		get() = if (isImageUrlDirect()) imageUrl else null
+
+	fun toMangaPage() = MangaPage(
+		id = pageId,
+		url = imageUrl,
+		preview = null,
+		source = manga.source,
+	)
+
+	private fun isImageUrlDirect(): Boolean {
+		return imageUrl.substringAfterLast('.').length in 2..4
+	}
 
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true

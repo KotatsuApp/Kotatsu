@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
-import androidx.activity.ComponentDialog
 import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.view.updateLayoutParams
@@ -36,7 +35,7 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 		get() = behavior?.state == AdaptiveSheetBehavior.STATE_EXPANDED
 
 	val onBackPressedDispatcher: OnBackPressedDispatcher
-		get() = (requireDialog() as ComponentDialog).onBackPressedDispatcher
+		get() = requireComponentDialog().onBackPressedDispatcher
 
 	final override fun onCreateView(
 		inflater: LayoutInflater,

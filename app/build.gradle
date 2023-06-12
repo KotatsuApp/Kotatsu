@@ -16,7 +16,7 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 33
 		versionCode 551
-		versionName '5.2-a2'
+		versionName '5.2-b1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -83,13 +83,13 @@ dependencies {
 		exclude group: 'org.json', module: 'json'
 	}
 
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.21'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
 	implementation 'androidx.core:core-ktx:1.10.1'
 	implementation 'androidx.activity:activity-ktx:1.7.2'
-	implementation 'androidx.fragment:fragment-ktx:1.5.7'
+	implementation 'androidx.fragment:fragment-ktx:1.6.0'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
 	implementation 'androidx.lifecycle:lifecycle-service:2.6.1'
