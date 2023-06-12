@@ -7,12 +7,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPages
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
-import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity.Companion.EXTRA_MANGA
 import javax.inject.Inject
@@ -20,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ColorFilterConfigViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val mangaDataRepository: MangaDataRepository,
 ) : BaseViewModel() {
 
@@ -29,26 +26,15 @@ class ColorFilterConfigViewModel @Inject constructor(
 	private var initialColorFilter: ReaderColorFilter? = null
 	val colorFilter = MutableStateFlow<ReaderColorFilter?>(null)
 	val onDismiss = MutableEventFlow<Unit>()
-	val preview = MutableStateFlow<MangaPage?>(null)
+	val preview = savedStateHandle.require<ParcelableMangaPages>(ColorFilterConfigActivity.EXTRA_PAGES).pages.first()
 
 	val isChanged: Boolean
 		get() = colorFilter.value != initialColorFilter
 
 	init {
-		val page = savedStateHandle.require<ParcelableMangaPages>(ColorFilterConfigActivity.EXTRA_PAGES).pages.first()
 		launchLoadingJob {
 			initialColorFilter = mangaDataRepository.getColorFilter(manga.id)
 			colorFilter.value = initialColorFilter
-		}
-		launchLoadingJob(Dispatchers.Default) {
-			val repository = mangaRepositoryFactory.create(page.source)
-			val url = repository.getPageUrl(page)
-			preview.value = MangaPage(
-				id = page.id,
-				url = url,
-				preview = page.preview,
-				source = page.source,
-			)
 		}
 	}
 

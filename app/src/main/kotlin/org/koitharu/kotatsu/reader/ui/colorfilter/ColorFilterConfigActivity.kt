@@ -68,10 +68,10 @@ class ColorFilterConfigActivity :
 
 		viewModel.colorFilter.observe(this, this::onColorFilterChanged)
 		viewModel.isLoading.observe(this, this::onLoadingChanged)
-		viewModel.preview.observe(this, this::onPreviewChanged)
 		viewModel.onDismiss.observeEvent(this) {
 			finishAfterTransition()
 		}
+		loadPreview(viewModel.preview)
 	}
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
@@ -114,13 +114,13 @@ class ColorFilterConfigActivity :
 		viewBinding.imageViewAfter.colorFilter = readerColorFilter?.toColorFilter()
 	}
 
-	private fun onPreviewChanged(preview: MangaPage?) {
-		if (preview == null) return
+	private fun loadPreview(page: MangaPage) {
+		val data: Any = page.preview?.takeUnless { it.isEmpty() } ?: page
 		ImageRequest.Builder(this@ColorFilterConfigActivity)
-			.data(preview)
+			.data(data)
 			.scale(Scale.FILL)
 			.decodeRegion()
-			.tag(preview.source)
+			.tag(page.source)
 			.indicator(listOf(viewBinding.progressBefore, viewBinding.progressAfter))
 			.error(R.drawable.ic_error_placeholder)
 			.size(ViewSizeResolver(viewBinding.imageViewBefore))
