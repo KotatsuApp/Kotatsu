@@ -15,7 +15,6 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.room.InvalidationTracker
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.size.Precision
 import coil.size.Scale
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +24,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.image.ThumbnailTransformation
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
@@ -36,7 +36,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ShortcutsUpdater @Inject constructor(
+class AppShortcutManager @Inject constructor(
 	@ApplicationContext private val context: Context,
 	private val coil: ImageLoader,
 	private val historyRepository: HistoryRepository,
@@ -128,8 +128,8 @@ class ShortcutsUpdater @Inject constructor(
 					.data(manga.coverUrl)
 					.size(iconSize.width, iconSize.height)
 					.tag(manga.source)
-					.precision(Precision.EXACT)
 					.scale(Scale.FILL)
+					.transformations(ThumbnailTransformation())
 					.build(),
 			).getDrawableOrThrow().toBitmap()
 		}.fold(

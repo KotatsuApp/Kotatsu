@@ -30,7 +30,7 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
-import org.koitharu.kotatsu.core.os.ShortcutsUpdater
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -73,7 +73,7 @@ class ReaderViewModel @Inject constructor(
 	private val pageSaveHelper: PageSaveHelper,
 	private val pageLoader: PageLoader,
 	private val chaptersLoader: ChaptersLoader,
-	private val shortcutsUpdater: ShortcutsUpdater,
+	private val appShortcutManager: AppShortcutManager,
 	private val doubleMangaLoadUseCase: DoubleMangaLoadUseCase,
 	private val historyUpdateUseCase: HistoryUpdateUseCase,
 	private val detectReaderModeUseCase: DetectReaderModeUseCase,
@@ -155,7 +155,7 @@ class ReaderViewModel @Inject constructor(
 			}.launchIn(viewModelScope + Dispatchers.Default)
 		launchJob(Dispatchers.Default) {
 			val mangaId = mangaFlow.filterNotNull().first().id
-			shortcutsUpdater.notifyMangaOpened(mangaId)
+			appShortcutManager.notifyMangaOpened(mangaId)
 		}
 	}
 

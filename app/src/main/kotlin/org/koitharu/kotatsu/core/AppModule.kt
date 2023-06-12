@@ -30,7 +30,7 @@ import org.koitharu.kotatsu.core.cache.StubContentCache
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.network.*
 import org.koitharu.kotatsu.core.os.NetworkState
-import org.koitharu.kotatsu.core.os.ShortcutsUpdater
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.favicon.FaviconFetcher
@@ -125,12 +125,12 @@ interface AppModule {
 		@ElementsIntoSet
 		fun provideDatabaseObservers(
 			widgetUpdater: WidgetUpdater,
-			shortcutsUpdater: ShortcutsUpdater,
+			appShortcutManager: AppShortcutManager,
 			backupObserver: BackupObserver,
 			syncController: SyncController,
 		): Set<@JvmSuppressWildcards InvalidationTracker.Observer> = arraySetOf(
 			widgetUpdater,
-			shortcutsUpdater,
+			appShortcutManager,
 			backupObserver,
 			syncController,
 		)
