@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.getParcelableCompat
+import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
@@ -87,6 +88,6 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(), OnListItemClick
 		) = ChaptersSheet().withArgs(2) {
 			putParcelable(ARG_CHAPTERS, ParcelableMangaChapters(chapters))
 			putLong(ARG_CURRENT_ID, currentId)
-		}.show(fm, TAG)
+		}.showDistinct(fm, TAG)
 	}
 }

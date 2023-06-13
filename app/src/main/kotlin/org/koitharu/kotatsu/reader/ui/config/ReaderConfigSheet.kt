@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ScreenOrientationHelper
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
@@ -192,6 +193,6 @@ class ReaderConfigSheet :
 
 		fun show(fm: FragmentManager, mode: ReaderMode) = ReaderConfigSheet().withArgs(1) {
 			putInt(ARG_MODE, mode.id)
-		}.show(fm, TAG)
+		}.showDistinct(fm, TAG)
 	}
 }

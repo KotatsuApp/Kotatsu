@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
@@ -54,6 +55,6 @@ class FilterSheetFragment :
 
 		private const val TAG = "FilterBottomSheet"
 
-		fun show(fm: FragmentManager) = FilterSheetFragment().show(fm, TAG)
+		fun show(fm: FragmentManager) = FilterSheetFragment().showDistinct(fm, TAG)
 	}
 }
