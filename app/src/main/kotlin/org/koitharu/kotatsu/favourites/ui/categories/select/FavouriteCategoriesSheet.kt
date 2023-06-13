@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetFavoriteCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
@@ -81,6 +82,6 @@ class FavouriteCategoriesSheet :
 						)
 					},
 				)
-			}.show(fm, TAG)
+			}.showDistinct(fm, TAG)
 	}
 }

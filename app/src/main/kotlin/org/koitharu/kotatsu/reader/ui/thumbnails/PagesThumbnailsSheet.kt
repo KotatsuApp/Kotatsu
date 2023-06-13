@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.plus
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
@@ -194,7 +195,7 @@ class PagesThumbnailsSheet :
 				putParcelable(ARG_MANGA, ParcelableManga(manga, true))
 				putLong(ARG_CHAPTER_ID, chapterId)
 				putInt(ARG_CURRENT_PAGE, currentPage)
-			}.show(fm, TAG)
+			}.showDistinct(fm, TAG)
 		}
 	}
 }

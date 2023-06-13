@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class ShortcutsUpdaterTest {
+class AppShortcutManagerTest {
 
 	@get:Rule
 	var hiltRule = HiltAndroidRule(this)
@@ -32,7 +32,7 @@ class ShortcutsUpdaterTest {
 	lateinit var historyRepository: HistoryRepository
 
 	@Inject
-	lateinit var shortcutsUpdater: ShortcutsUpdater
+	lateinit var appShortcutManager: AppShortcutManager
 
 	@Inject
 	lateinit var database: MangaDatabase
@@ -72,6 +72,6 @@ class ShortcutsUpdaterTest {
 	private suspend fun awaitUpdate() {
 		val instrumentation = InstrumentationRegistry.getInstrumentation()
 		instrumentation.awaitForIdle()
-		shortcutsUpdater.await()
+		appShortcutManager.await()
 	}
 }

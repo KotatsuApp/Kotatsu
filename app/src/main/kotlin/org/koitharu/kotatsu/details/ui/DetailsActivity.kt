@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.os.ShortcutsUpdater
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.dialog.RecyclerViewAlertDialog
@@ -68,7 +68,7 @@ class DetailsActivity :
 	PopupMenu.OnMenuItemClickListener {
 
 	@Inject
-	lateinit var shortcutsUpdater: ShortcutsUpdater
+	lateinit var appShortcutManager: AppShortcutManager
 
 	private lateinit var viewBadge: ViewBadge
 	private var buttonTip: WeakReference<ButtonTip>? = null
@@ -147,7 +147,7 @@ class DetailsActivity :
 				activity = this,
 				viewModel = viewModel,
 				snackbarHost = viewBinding.containerChapters,
-				shortcutsUpdater = shortcutsUpdater,
+				appShortcutManager = appShortcutManager,
 			),
 		)
 	}

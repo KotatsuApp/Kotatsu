@@ -29,13 +29,14 @@ import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.cache.StubContentCache
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.network.*
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.os.NetworkState
-import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.favicon.FaviconFetcher
 import org.koitharu.kotatsu.core.ui.image.CoilImageGetter
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
+import org.koitharu.kotatsu.core.util.AcraScreenLogger
 import org.koitharu.kotatsu.core.util.IncognitoModeIndicator
 import org.koitharu.kotatsu.core.util.ext.activityManager
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
@@ -125,12 +126,12 @@ interface AppModule {
 		@ElementsIntoSet
 		fun provideDatabaseObservers(
 			widgetUpdater: WidgetUpdater,
-			shortcutsUpdater: ShortcutsUpdater,
+			appShortcutManager: AppShortcutManager,
 			backupObserver: BackupObserver,
 			syncController: SyncController,
 		): Set<@JvmSuppressWildcards InvalidationTracker.Observer> = arraySetOf(
 			widgetUpdater,
-			shortcutsUpdater,
+			appShortcutManager,
 			backupObserver,
 			syncController,
 		)
@@ -141,10 +142,12 @@ interface AppModule {
 			appProtectHelper: AppProtectHelper,
 			activityRecreationHandle: ActivityRecreationHandle,
 			incognitoModeIndicator: IncognitoModeIndicator,
+			acraScreenLogger: AcraScreenLogger,
 		): Set<@JvmSuppressWildcards Application.ActivityLifecycleCallbacks> = arraySetOf(
 			appProtectHelper,
 			activityRecreationHandle,
 			incognitoModeIndicator,
+			acraScreenLogger,
 		)
 
 		@Provides

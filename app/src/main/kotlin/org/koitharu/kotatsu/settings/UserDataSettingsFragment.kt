@@ -21,7 +21,7 @@ import kotlinx.coroutines.runInterruptible
 import okhttp3.Cache
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
-import org.koitharu.kotatsu.core.os.ShortcutsUpdater
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.FileSize
@@ -59,7 +59,7 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 	lateinit var cache: Cache
 
 	@Inject
-	lateinit var shortcutsUpdater: ShortcutsUpdater
+	lateinit var appShortcutManager: AppShortcutManager
 
 	private val backupSelectCall = registerForActivityResult(
 		ActivityResultContracts.OpenDocument(),
@@ -69,7 +69,7 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_user_data)
 		findPreference<Preference>(AppSettings.KEY_SHORTCUTS)?.isVisible =
-			shortcutsUpdater.isDynamicShortcutsAvailable()
+			appShortcutManager.isDynamicShortcutsAvailable()
 		findPreference<TwoStatePreference>(AppSettings.KEY_PROTECT_APP)
 			?.isChecked = !settings.appPassword.isNullOrEmpty()
 	}

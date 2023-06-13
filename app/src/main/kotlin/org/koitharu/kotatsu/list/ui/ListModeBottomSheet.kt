@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
+import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.progress.IntPercentLabelFormatter
 import org.koitharu.kotatsu.databinding.DialogListModeBinding
 import javax.inject.Inject
@@ -72,6 +73,6 @@ class ListModeBottomSheet :
 
 		private const val TAG = "ListModeSelectDialog"
 
-		fun show(fm: FragmentManager) = ListModeBottomSheet().show(fm, TAG)
+		fun show(fm: FragmentManager) = ListModeBottomSheet().showDistinct(fm, TAG)
 	}
 }

@@ -15,7 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
-import org.koitharu.kotatsu.core.os.ShortcutsUpdater
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
@@ -29,7 +29,7 @@ class DetailsMenuProvider(
 	private val activity: FragmentActivity,
 	private val viewModel: DetailsViewModel,
 	private val snackbarHost: View,
-	private val shortcutsUpdater: ShortcutsUpdater,
+	private val appShortcutManager: AppShortcutManager,
 ) : MenuProvider {
 
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -112,7 +112,7 @@ class DetailsMenuProvider(
 			R.id.action_shortcut -> {
 				viewModel.manga.value?.let {
 					activity.lifecycleScope.launch {
-						if (!shortcutsUpdater.requestPinShortcut(it)) {
+						if (!appShortcutManager.requestPinShortcut(it)) {
 							Snackbar.make(snackbarHost, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
 								.show()
 						}
