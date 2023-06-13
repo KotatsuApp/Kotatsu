@@ -67,6 +67,10 @@ class KotatsuApp : Application(), Configuration.Provider {
 			reportFormat = StringFormat.JSON
 			excludeMatchingSharedPreferencesKeys = listOf(
 				"sources_\\w+",
+				AppSettings.KEY_APP_PASSWORD,
+				AppSettings.KEY_PROXY_LOGIN,
+				AppSettings.KEY_PROXY_ADDRESS,
+				AppSettings.KEY_PROXY_PASSWORD,
 			)
 			httpSender {
 				uri = getString(R.string.url_error_report)
@@ -83,6 +87,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 				ReportField.PHONE_MODEL,
 				ReportField.STACK_TRACE,
 				ReportField.CRASH_CONFIGURATION,
+				ReportField.CUSTOM_DATA,
 				ReportField.SHARED_PREFERENCES,
 			)
 			dialog {
