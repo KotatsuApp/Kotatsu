@@ -9,8 +9,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.core.content.IntentCompat
 import androidx.core.os.BundleCompat
+import androidx.core.os.ParcelCompat
 import androidx.lifecycle.SavedStateHandle
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import java.io.Serializable
 
 // https://issuetracker.google.com/issues/240585930
@@ -36,22 +36,16 @@ inline fun <reified T : Serializable> Bundle.getSerializableCompat(key: String):
 }
 
 inline fun <reified T : Parcelable> Parcel.readParcelableCompat(): T? {
-	return readParcelable(ParcelableMangaTags::class.java.classLoader) as T?
+	return ParcelCompat.readParcelable(this, T::class.java.classLoader, T::class.java)
 }
 
 inline fun <reified T : Serializable> Parcel.readSerializableCompat(): T? {
-	return readSerializable() as T?
+	return ParcelCompat.readSerializable(this, T::class.java.classLoader, T::class.java)
 }
 
 inline fun <reified T : Serializable> Bundle.requireSerializable(key: String): T {
 	return checkNotNull(getSerializableCompat(key)) {
 		"Serializable of type \"${T::class.java.name}\" not found at \"$key\""
-	}
-}
-
-inline fun <reified T : Parcelable> Bundle.requireParcelable(key: String): T {
-	return checkNotNull(getParcelableCompat(key)) {
-		"Parcelable of type \"${T::class.java.name}\" not found at \"$key\""
 	}
 }
 
