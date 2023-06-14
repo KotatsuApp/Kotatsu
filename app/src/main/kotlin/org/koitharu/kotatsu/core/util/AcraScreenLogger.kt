@@ -13,6 +13,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.WeakHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,31 +21,40 @@ import javax.inject.Singleton
 class AcraScreenLogger @Inject constructor() : FragmentLifecycleCallbacks(), DefaultActivityLifecycleCallbacks {
 
 	private val timeFormat = SimpleDateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.ROOT)
+	private val keys = WeakHashMap<Any, String>()
 
 	override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
 		super.onFragmentAttached(fm, f, context)
-		ACRA.errorReporter.putCustomData(f.key(), "${time()}: ${f.arguments}")
+		ACRA.errorReporter.putCustomData(f.key(), f.arguments.contentToString())
 	}
 
 	override fun onFragmentDetached(fm: FragmentManager, f: Fragment) {
 		super.onFragmentDetached(fm, f)
 		ACRA.errorReporter.removeCustomData(f.key())
+		keys.remove(f)
 	}
 
 	override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
 		super.onActivityCreated(activity, savedInstanceState)
-		ACRA.errorReporter.putCustomData(activity.key(), "${time()}: ${activity.intent}")
+		ACRA.errorReporter.putCustomData(activity.key(), activity.intent.extras.contentToString())
 		(activity as? FragmentActivity)?.supportFragmentManager?.registerFragmentLifecycleCallbacks(this, true)
 	}
 
 	override fun onActivityDestroyed(activity: Activity) {
 		super.onActivityDestroyed(activity)
 		ACRA.errorReporter.removeCustomData(activity.key())
+		keys.remove(activity)
 	}
 
-	private fun Activity.key() = "Activity[${javaClass.simpleName}]"
-
-	private fun Fragment.key() = "Fragment[${javaClass.simpleName}]"
+	private fun Any.key() = keys.getOrPut(this) {
+		"${time()}: ${javaClass.simpleName}"
+	}
 
 	private fun time() = timeFormat.format(Date())
+
+	@Suppress("DEPRECATION")
+	private fun Bundle?.contentToString() = this?.keySet()?.joinToString { k ->
+		val v = get(k)
+		"$k=$v"
+	} ?: toString()
 }

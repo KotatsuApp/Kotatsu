@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.settings.newsources
 
+import androidx.annotation.WorkerThread
 import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -15,8 +17,14 @@ class NewSourcesViewModel @Inject constructor(
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 
-	val sources = MutableStateFlow<List<SourceConfigItem>>(buildList())
 	private val initialList = settings.newSources
+	val sources = MutableStateFlow<List<SourceConfigItem>?>(null)
+
+	init {
+		launchJob(Dispatchers.Default) {
+			sources.value = buildList()
+		}
+	}
 
 	fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
 		if (isEnabled) {
@@ -30,6 +38,7 @@ class NewSourcesViewModel @Inject constructor(
 		settings.markKnownSources(initialList)
 	}
 
+	@WorkerThread
 	private fun buildList(): List<SourceConfigItem.SourceItem> {
 		val locales = LocaleListCompat.getDefault().mapToSet { it.language }
 		val pendingHidden = HashSet<String>()

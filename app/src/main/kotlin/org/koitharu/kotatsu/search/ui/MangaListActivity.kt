@@ -83,10 +83,10 @@ class MangaListActivity :
 					RemoteListFragment.newInstance(source)
 				}
 				replace(R.id.container, fragment)
+				runOnCommit { initFilter() }
 				if (!tags.isNullOrEmpty() && fragment is RemoteListFragment) {
 					runOnCommit(ApplyFilterRunnable(fragment, tags))
 				}
-				runOnCommit { initFilter() }
 			}
 		} else {
 			initFilter()

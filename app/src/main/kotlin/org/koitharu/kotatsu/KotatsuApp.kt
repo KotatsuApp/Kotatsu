@@ -12,6 +12,7 @@ import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.acra.ACRA
 import org.acra.ReportField
 import org.acra.config.dialog
 import org.acra.config.httpSender
@@ -19,6 +20,7 @@ import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
 import org.acra.sender.HttpSender
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.os.AppValidator
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.WorkServiceStopHelper
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
@@ -46,8 +48,12 @@ class KotatsuApp : Application(), Configuration.Provider {
 	@Inject
 	lateinit var workerFactory: HiltWorkerFactory
 
+	@Inject
+	lateinit var appValidator: AppValidator
+
 	override fun onCreate() {
 		super.onCreate()
+		ACRA.errorReporter.putCustomData("isOriginalApp", appValidator.isOriginalApp.toString())
 		if (BuildConfig.DEBUG) {
 			enableStrictMode()
 		}
@@ -90,6 +96,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 				ReportField.CUSTOM_DATA,
 				ReportField.SHARED_PREFERENCES,
 			)
+
 			dialog {
 				text = getString(R.string.crash_text)
 				title = getString(R.string.error_occurred)

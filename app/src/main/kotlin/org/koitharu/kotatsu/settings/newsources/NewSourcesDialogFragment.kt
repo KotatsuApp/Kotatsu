@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import coil.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -38,7 +39,8 @@ class NewSourcesDialogFragment :
 		binding.recyclerView.adapter = adapter
 		binding.textViewTitle.setText(R.string.new_sources_text)
 
-		viewModel.sources.observe(viewLifecycleOwner) { adapter.items = it }
+		viewModel.sources.filterNotNull()
+			.observe(viewLifecycleOwner) { adapter.items = it }
 	}
 
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {

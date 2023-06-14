@@ -23,6 +23,10 @@ class ParcelableMangaChapters(
 		return 0
 	}
 
+	override fun toString(): String {
+		return "ParcelableMangaChapters(chapters=$chapters)"
+	}
+
 	companion object CREATOR : Parcelable.Creator<ParcelableMangaChapters> {
 		override fun createFromParcel(parcel: Parcel): ParcelableMangaChapters {
 			return ParcelableMangaChapters(parcel)

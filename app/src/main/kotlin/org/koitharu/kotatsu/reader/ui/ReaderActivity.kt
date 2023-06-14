@@ -24,6 +24,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -127,7 +128,7 @@ class ReaderActivity :
 				},
 			),
 		)
-		viewModel.readerMode.observe(this, this::onInitReader)
+		viewModel.readerMode.observe(this, Lifecycle.State.STARTED, this::onInitReader)
 		viewModel.onPageSaved.observeEvent(this, this::onPageSaved)
 		viewModel.uiState.zipWithPrevious().observe(this, this::onUiStateChanged)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)

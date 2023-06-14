@@ -18,6 +18,14 @@ fun <T> Flow<T>.observe(owner: LifecycleOwner, collector: FlowCollector<T>) {
 	}
 }
 
+fun <T> Flow<T>.observe(owner: LifecycleOwner, minState: Lifecycle.State, collector: FlowCollector<T>) {
+	owner.lifecycleScope.launch {
+		owner.lifecycle.repeatOnLifecycle(minState) {
+			collect(collector)
+		}
+	}
+}
+
 fun <T> Flow<Event<T>?>.observeEvent(owner: LifecycleOwner, collector: FlowCollector<T>) {
 	owner.lifecycleScope.launch {
 		owner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
