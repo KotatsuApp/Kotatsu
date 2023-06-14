@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.local.data
 
 import android.content.Context
+import android.os.StatFs
 import com.tomclaw.cache.DiskLruCache
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,7 @@ import org.koitharu.kotatsu.core.util.ext.takeIfWriteable
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -33,7 +34,8 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 	}
 	private val lruCache = SuspendLazy {
 		val dir = cacheDir.get()
-		val size = FileSize.MEGABYTES.convert(200, FileSize.BYTES)
+		val availableSize = (getAvailableSize() * 0.8).toLong()
+		val size = SIZE_DEFAULT.coerceAtMost(availableSize).coerceAtLeast(SIZE_MIN)
 		runCatchingCancellable {
 			DiskLruCache.create(dir, size)
 		}.recoverCatching { error ->
@@ -54,12 +56,29 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 	suspend fun put(url: String, source: Source): File = withContext(Dispatchers.IO) {
 		val file = File(cacheDir.get().parentFile, url.longHashCode().toString())
 		try {
-			file.sink(append = false).buffer().use {
+			val bytes = file.sink(append = false).buffer().use {
 				it.writeAllCancellable(source)
 			}
+			check(bytes != 0L) { "No data has been written" }
 			lruCache.get().put(url, file)
 		} finally {
 			file.delete()
 		}
+	}
+
+	private suspend fun getAvailableSize(): Long = runCatchingCancellable {
+		val statFs = StatFs(cacheDir.get().absolutePath)
+		statFs.availableBytes
+	}.onFailure {
+		it.printStackTraceDebug()
+	}.getOrDefault(SIZE_DEFAULT)
+
+	private companion object {
+
+		val SIZE_MIN
+			get() = FileSize.MEGABYTES.convert(20, FileSize.BYTES)
+
+		val SIZE_DEFAULT
+			get() = FileSize.MEGABYTES.convert(200, FileSize.BYTES)
 	}
 }

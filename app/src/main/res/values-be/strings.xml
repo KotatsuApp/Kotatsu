@@ -45,7 +45,7 @@
     <string name="theme">Тэма</string>
     <string name="light">Светлая</string>
     <string name="dark">Цёмная</string>
-    <string name="automatic">Аўтаматычна</string>
+    <string name="automatic">Як у сістэме</string>
     <string name="pages">Старонкi</string>
     <string name="clear">Ачысціць</string>
     <string name="text_clear_history_prompt">Вы ўпэўненыя, што жадаеце ачысціць гісторыю\?</string>
@@ -59,7 +59,6 @@
     <string name="operation_not_supported">Аперацыя не падтрымліваецца</string>
     <string name="text_file_not_supported">Файл не падтрымліваецца. Падтрымліваюцца толькі ZIP і CBZ.</string>
     <string name="no_description">Няма апісання</string>
-    <string name="history_and_cache">Гісторыя і кэш</string>
     <string name="clear_pages_cache">Ачысціць кэш старонак</string>
     <string name="text_file_sizes">Б|кБ|МБ|ГБ|ТБ</string>
     <string name="standard">Стандартны</string>
@@ -136,8 +135,8 @@
     <string name="zoom_mode_fit_height">Падагнаць па вышыні</string>
     <string name="zoom_mode_fit_width">Падагнаць па шырыні</string>
     <string name="zoom_mode_keep_start">Зыходны памер</string>
-    <string name="black_dark_theme">Чорная цёмная тэма</string>
-    <string name="black_dark_theme_summary">Карысна для AMOLED экранаў</string>
+    <string name="black_dark_theme">Чорная</string>
+    <string name="black_dark_theme_summary">Спажывае менш энергіі на экранах AMOLED</string>
     <string name="backup_restore">Рэзервовае капіяванне і аднаўленне</string>
     <string name="create_backup">Стварыць рэзервовую копію</string>
     <string name="restore_backup">Аднавіць данныя</string>
@@ -182,7 +181,6 @@
     <string name="text_search_holder_secondary">Паспрабуйце перафармуляваць запыт.</string>
     <string name="text_empty_holder_primary">Тут неяк пуста…</string>
     <string name="chapter_is_missing">Глава адсутнічае</string>
-    <string name="chapter_is_missing_text">Гэтая глава адсутнічае на вашай прыладзе. Спампуйце ціпрачытайце яе онлайн.</string>
     <string name="queued">У чарзе</string>
     <string name="about_app_translation_summary">Дапамагчы з перакладам праграмы</string>
     <string name="about_app_translation">Пераклад</string>
@@ -213,7 +211,6 @@
     <string name="suggestions">Прапанова</string>
     <string name="onboard_text">Выберыце мову, на якой вы хочаце чытаць мангу. Вы зможаце змяніць гэта пазней.</string>
     <string name="reset_filter">Скінуць фільтр</string>
-    <string name="find_genre">Знайсці жанр</string>
     <string name="always">Заўсёды</string>
     <string name="nsfw">18+</string>
     <string name="never">Ніколі</string>
@@ -226,7 +223,6 @@
     <string name="chapters_empty">У гэтай манзе няма глаў</string>
     <string name="hide">Схаваць</string>
     <string name="appearance">Знешні выгляд</string>
-    <string name="content">Змесціва</string>
     <string name="disable_all">Выключыць усё</string>
     <string name="use_fingerprint">Выкарыстоўваць адбітак пальца, калі даступна</string>
     <string name="appwidget_shelf_description">Манга з абраных</string>
@@ -412,4 +408,27 @@
     <string name="downloads_cancelled">Спампоўкі былі адменены</string>
     <string name="translations">Пераклады</string>
     <string name="web_view_unavailable">WebView недаступны: праверце, ці ўсталяваны пастаўшчык WebView</string>
+    <string name="type">Тып</string>
+    <string name="address">Адрас</string>
+    <string name="port">Порт</string>
+    <string name="proxy">Проксі</string>
+    <string name="clear_network_cache">Ачысціць сеткавы кэш</string>
+    <string name="manga_branch_title_template">%1$s (%2$s)</string>
+    <string name="invalid_value_message">Няправільнае значэнне</string>
+    <string name="downloaded">Спампавана</string>
+    <string name="images_proxy_title">Проксі для аптымізацыі малюнкаў</string>
+    <string name="username">Імя карыстальніка</string>
+    <string name="invalid_port_number">Няправільны нумар порта</string>
+    <string name="authorization_optional">Аўтарызацыя (неабавязкова)</string>
+    <string name="images_procy_description">Выкарыстоўвайце службу wsrv.nl, каб паменшыць выкарыстанне трафіку і паскорыць загрузку малюнкаў, калі гэта магчыма</string>
+    <string name="password">Пароль</string>
+    <string name="invert_colors">Інвертаваць колеры</string>
+    <string name="show_pages_numbers_summary">Паказаць нумары старонак у ніжнім куце</string>
+    <string name="network">Сетка</string>
+    <string name="data_and_privacy">Дадзеныя і прыватнасць</string>
+    <string name="webtoon_zoom_summary">Дазволіць жэст для павелічэння ў рэжыме webtoon</string>
+    <string name="details_button_tip">Націсніце і ўтрымлівайце кнопку \"Чытаць\", каб убачыць дадатковыя параметры</string>
+    <string name="restore_summary">Аднавіць раней створаную рэзервовую копію</string>
+    <string name="reader_info_bar_summary">Паказаць бягучы час і ход чытання ў верхняй частцы экрана</string>
+    <string name="pages_animation_summary">Анімацыя перагортвання старонак</string>
 </resources>

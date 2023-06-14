@@ -3,57 +3,42 @@ package org.koitharu.kotatsu.core.ui
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.viewbinding.ViewBinding
-
-@Suppress("DEPRECATION")
-private const val SYSTEM_UI_FLAGS_SHOWN = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-	View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-	View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-
-@Suppress("DEPRECATION")
-private const val SYSTEM_UI_FLAGS_HIDDEN = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-	View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-	View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-	View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-	View.SYSTEM_UI_FLAG_FULLSCREEN or
-	View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+import org.koitharu.kotatsu.R
 
 abstract class BaseFullscreenActivity<B : ViewBinding> :
-	BaseActivity<B>(),
-	View.OnSystemUiVisibilityChangeListener {
+	BaseActivity<B>() {
+
+	private lateinit var insetsControllerCompat: WindowInsetsControllerCompat
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		with(window) {
+			insetsControllerCompat = WindowInsetsControllerCompat(this, decorView)
 			statusBarColor = Color.TRANSPARENT
-			navigationBarColor = Color.TRANSPARENT
+			navigationBarColor = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+				ContextCompat.getColor(this@BaseFullscreenActivity, R.color.dim)
+			} else {
+				Color.TRANSPARENT
+			}
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 				attributes.layoutInDisplayCutoutMode =
 					WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
 			}
-			decorView.setOnSystemUiVisibilityChangeListener(this@BaseFullscreenActivity)
 		}
+		insetsControllerCompat.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 		showSystemUI()
 	}
 
-	@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
-	@Deprecated("Deprecated in Java")
-	final override fun onSystemUiVisibilityChange(visibility: Int) {
-		onSystemUiVisibilityChanged(visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0)
-	}
-
-	// TODO WindowInsetsControllerCompat works incorrect
-	@Suppress("DEPRECATION")
 	protected fun hideSystemUI() {
-		window.decorView.systemUiVisibility = SYSTEM_UI_FLAGS_HIDDEN
+		insetsControllerCompat.hide(WindowInsetsCompat.Type.systemBars())
 	}
 
-	@Suppress("DEPRECATION")
 	protected fun showSystemUI() {
-		window.decorView.systemUiVisibility = SYSTEM_UI_FLAGS_SHOWN
+		insetsControllerCompat.show(WindowInsetsCompat.Type.systemBars())
 	}
-
-	protected open fun onSystemUiVisibilityChanged(isVisible: Boolean) = Unit
 }

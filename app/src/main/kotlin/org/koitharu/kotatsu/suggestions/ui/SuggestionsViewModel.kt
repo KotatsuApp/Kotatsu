@@ -3,15 +3,17 @@ package org.koitharu.kotatsu.suggestions.ui
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.asFlowLiveData
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
@@ -24,13 +26,13 @@ import javax.inject.Inject
 class SuggestionsViewModel @Inject constructor(
 	repository: SuggestionRepository,
 	settings: AppSettings,
-	private val tagHighlighter: MangaTagHighlighter,
+	private val extraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
 	override val content = combine(
 		repository.observeAll(),
-		listModeFlow,
+		listMode,
 	) { list, mode ->
 		when {
 			list.isEmpty() -> listOf(
@@ -42,7 +44,7 @@ class SuggestionsViewModel @Inject constructor(
 				),
 			)
 
-			else -> list.toUi(mode, tagHighlighter)
+			else -> list.toUi(mode, extraProvider)
 		}
 	}.onStart {
 		loadingCounter.increment()
@@ -50,10 +52,7 @@ class SuggestionsViewModel @Inject constructor(
 		loadingCounter.decrement()
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
-	}.asFlowLiveData(
-		viewModelScope.coroutineContext + Dispatchers.Default,
-		listOf(LoadingState),
-	)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	override fun onRefresh() = Unit
 

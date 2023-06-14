@@ -26,7 +26,7 @@ abstract class BaseFragment<B : ViewBinding> :
 	protected val exceptionResolver = ExceptionResolver(this)
 
 	@JvmField
-	protected val insetsDelegate = WindowInsetsDelegate(this)
+	protected val insetsDelegate = WindowInsetsDelegate()
 
 	protected val actionModeDelegate: ActionModeDelegate
 		get() = (requireActivity() as BaseActivity<*>).actionModeDelegate
@@ -44,11 +44,13 @@ abstract class BaseFragment<B : ViewBinding> :
 	final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		insetsDelegate.onViewCreated(view)
+		insetsDelegate.addInsetsListener(this)
 		onViewBindingCreated(requireViewBinding(), savedInstanceState)
 	}
 
 	override fun onDestroyView() {
 		viewBinding = null
+		insetsDelegate.removeInsetsListener(this)
 		insetsDelegate.onDestroyView()
 		super.onDestroyView()
 	}

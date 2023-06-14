@@ -11,8 +11,7 @@ import androidx.core.app.NotificationCompat.VISIBILITY_SECRET
 import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
+import androidx.lifecycle.asFlow
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -35,6 +34,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
@@ -263,11 +264,13 @@ class TrackWorker @AssistedInject constructor(
 			WorkManager.getInstance(context).enqueue(request)
 		}
 
-		fun getIsRunningLiveData(context: Context): LiveData<Boolean> {
+		fun observeIsRunning(context: Context): Flow<Boolean> {
 			val query = WorkQuery.Builder.fromTags(listOf(TAG, TAG_ONESHOT)).build()
-			return WorkManager.getInstance(context).getWorkInfosLiveData(query).map { works ->
-				works.any { x -> x.state == WorkInfo.State.RUNNING }
-			}
+			return WorkManager.getInstance(context).getWorkInfosLiveData(query)
+				.asFlow()
+				.map { works ->
+					works.any { x -> x.state == WorkInfo.State.RUNNING }
+				}
 		}
 	}
 }

@@ -45,6 +45,8 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.core.util.ext.drawableEnd
 import org.koitharu.kotatsu.core.util.ext.hideKeyboard
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.resolve
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
@@ -58,7 +60,7 @@ import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
@@ -124,10 +126,12 @@ class MainActivity :
 		viewBinding.navRail?.headerView?.setOnClickListener(this)
 		viewBinding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
-		navigationDelegate =
-			MainNavigationDelegate(checkNotNull(bottomNav ?: viewBinding.navRail), supportFragmentManager)
+		navigationDelegate = MainNavigationDelegate(
+			navBar = checkNotNull(bottomNav ?: viewBinding.navRail),
+			fragmentManager = supportFragmentManager,
+		)
 		navigationDelegate.addOnFragmentChangedListener(this)
-		navigationDelegate.onCreate(savedInstanceState)
+		navigationDelegate.onCreate()
 
 		onBackPressedDispatcher.addCallback(ExitCallback(this, viewBinding.container))
 		onBackPressedDispatcher.addCallback(navigationDelegate)
@@ -137,8 +141,8 @@ class MainActivity :
 			onFirstStart()
 		}
 
-		viewModel.onOpenReader.observe(this, this::onOpenReader)
-		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.container, null))
+		viewModel.onOpenReader.observeEvent(this, this::onOpenReader)
+		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.container, null))
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.counters.observe(this, ::onCountersChanged)
@@ -154,6 +158,8 @@ class MainActivity :
 	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
 		adjustFabVisibility(topFragment = fragment)
 		if (fromUser) {
+			actionModeDelegate.finishActionMode()
+			closeSearchCallback.handleOnBackPressed()
 			viewBinding.appbar.setExpanded(true)
 		}
 	}
@@ -241,21 +247,21 @@ class MainActivity :
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
 		adjustFabVisibility()
-		showNav(false)
+		bottomNav?.hide()
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		adjustFabVisibility()
-		showNav(true)
+		bottomNav?.show()
 	}
 
 	private fun onOpenReader(manga: Manga) {
 		val fab = viewBinding.fab ?: viewBinding.navRail?.headerView
 		val options = fab?.let {
-			scaleUpActivityOptionsOf(it).toBundle()
+			scaleUpActivityOptionsOf(it)
 		}
-		startActivity(ReaderActivity.newIntent(this, manga), options)
+		startActivity(IntentBuilder(this).manga(manga).build(), options)
 	}
 
 	private fun onCountersChanged(counters: SparseIntArray) {
@@ -299,17 +305,6 @@ class MainActivity :
 		closeSearchCallback.isEnabled = false
 	}
 
-	private fun showNav(visible: Boolean) {
-		bottomNav?.run {
-			if (visible) {
-				show()
-			} else {
-				hide()
-			}
-		}
-		viewBinding.navRail?.isVisible = visible
-	}
-
 	private fun isSearchOpened(): Boolean {
 		return supportFragmentManager.findFragmentByTag(TAG_SEARCH) != null
 	}
@@ -338,7 +333,7 @@ class MainActivity :
 	}
 
 	private fun adjustFabVisibility(
-		isResumeEnabled: Boolean = viewModel.isResumeEnabled.value == true,
+		isResumeEnabled: Boolean = viewModel.isResumeEnabled.value,
 		topFragment: Fragment? = navigationDelegate.primaryFragment,
 		isSearchOpened: Boolean = isSearchOpened(),
 	) {
@@ -381,7 +376,7 @@ class MainActivity :
 		supportActionBar?.setHomeAsUpIndicator(
 			if (isOpened) materialR.drawable.abc_ic_ab_back_material else materialR.drawable.abc_ic_search_api_material,
 		)
-		showNav(!isOpened)
+		bottomNav?.showOrHide(!isOpened)
 	}
 
 	private fun requestNotificationsPermission() {

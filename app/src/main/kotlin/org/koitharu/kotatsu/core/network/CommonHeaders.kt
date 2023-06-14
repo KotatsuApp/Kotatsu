@@ -14,6 +14,7 @@ object CommonHeaders {
 	const val ACCEPT_ENCODING = "Accept-Encoding"
 	const val AUTHORIZATION = "Authorization"
 	const val CACHE_CONTROL = "Cache-Control"
+	const val PROXY_AUTHORIZATION = "Proxy-Authorization"
 
 	val CACHE_CONTROL_NO_STORE: CacheControl
 		get() = CacheControl.Builder().noStore().build()

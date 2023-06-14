@@ -13,7 +13,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.ColorUtils
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.scale
-import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 
 class ReadingProgressDrawable(
 	context: Context,

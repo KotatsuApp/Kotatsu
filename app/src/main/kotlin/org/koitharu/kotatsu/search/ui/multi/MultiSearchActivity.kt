@@ -21,18 +21,20 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
@@ -59,10 +61,8 @@ class MultiSearchActivity :
 		setContentView(ActivitySearchMultiBinding.inflate(layoutInflater))
 		window.statusBarColor = ContextCompat.getColor(this, R.color.dim_statusbar)
 
-		val itemCLickListener = object : OnListItemClickListener<MultiSearchListModel> {
-			override fun onItemClick(item: MultiSearchListModel, view: View) {
-				startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query.value))
-			}
+		val itemCLickListener = OnListItemClickListener<MultiSearchListModel> { item, view ->
+			startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query.value))
 		}
 		val sizeResolver = ItemSizeResolver(resources, settings)
 		val selectionDecoration = MangaSelectionDecoration(this)
@@ -90,8 +90,8 @@ class MultiSearchActivity :
 
 		viewModel.query.observe(this) { title = it }
 		viewModel.list.observe(this) { adapter.items = it }
-		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
-		viewModel.onDownloadStarted.observe(this, DownloadStartedObserver(viewBinding.recyclerView))
+		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
+		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(viewBinding.recyclerView))
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -117,8 +117,8 @@ class MultiSearchActivity :
 
 	override fun onReadClick(manga: Manga, view: View) {
 		if (!selectionController.onItemClick(manga.id)) {
-			val intent = ReaderActivity.newIntent(this, manga)
-			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+			val intent = IntentBuilder(this).manga(manga).build()
+			startActivity(intent, scaleUpActivityOptionsOf(view))
 		}
 	}
 
@@ -130,7 +130,7 @@ class MultiSearchActivity :
 	}
 
 	override fun onRetryClick(error: Throwable) {
-		viewModel.doSearch(viewModel.query.value.orEmpty())
+		viewModel.doSearch(viewModel.query.value)
 	}
 
 	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit
@@ -159,7 +159,7 @@ class MultiSearchActivity :
 			}
 
 			R.id.action_favourite -> {
-				FavouriteCategoriesBottomSheet.show(supportFragmentManager, collectSelectedItems())
+				FavouriteCategoriesSheet.show(supportFragmentManager, collectSelectedItems())
 				mode.finish()
 				true
 			}

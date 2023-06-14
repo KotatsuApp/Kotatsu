@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transformLatest
+import org.koitharu.kotatsu.R
 
 fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
 	var isFirstCall = true
@@ -50,5 +51,14 @@ fun <T> Flow<Collection<T>>.flatten(): Flow<T> = flow {
 		for (item in value) {
 			emit(item)
 		}
+	}
+}
+
+fun <T> Flow<T>.zipWithPrevious(): Flow<Pair<T?, T>> = flow {
+	var previous: T? = null
+	collect { value ->
+		val result = previous to value
+		previous = value
+		emit(result)
 	}
 }

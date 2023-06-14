@@ -59,7 +59,6 @@
     <string name="operation_not_supported">Esta operación no está admitida</string>
     <string name="text_file_not_supported">Elija un archivo ZIP o bien un archivo CBZ.</string>
     <string name="no_description">Sin descripción</string>
-    <string name="history_and_cache">Historial y caché</string>
     <string name="clear_pages_cache">Borrar caché de página</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="standard">Estándar</string>
@@ -187,7 +186,6 @@
     <string name="text_clear_search_history_prompt">¿Realmente quiere eliminar todas las consultas de búsqueda recientes\?</string>
     <string name="state_finished">Terminado</string>
     <string name="state_ongoing">En curso</string>
-    <string name="chapter_is_missing_text">Este capítulo no aparece en su dispositivo. Descárguelo o léalo en línea.</string>
     <string name="auth_complete">Autorizado</string>
     <string name="system_default">Por defecto</string>
     <string name="tracker_warning">Algunos fabricantes pueden cambiar el comportamiento del sistema, lo que podría interrumpir las tareas en segundo plano.</string>
@@ -212,7 +210,6 @@
     <string name="filter_load_error">No se puede cargar la lista de géneros</string>
     <string name="screenshots_block_nsfw">Bloqueo en NSFW</string>
     <string name="logged_in_as">Conectado como %s</string>
-    <string name="find_genre">Encontrar el género</string>
     <string name="onboard_text">Selecciona los idiomas en los que quieres leer mangas. Puedes cambiarlo más tarde en los ajustes.</string>
     <string name="reset_filter">Reiniciar el filtro</string>
     <string name="never">Nunca</string>
@@ -225,7 +222,6 @@
     <string name="chapters_empty">No hay capítulos en este manga</string>
     <string name="percent_string_pattern">%1$s%%</string>
     <string name="appearance">Aspecto</string>
-    <string name="content">Contenido</string>
     <string name="suggestions_updating">Actualización de las sugerencias</string>
     <string name="suggestions_excluded_genres">Excluir géneros</string>
     <string name="suggestions_excluded_genres_summary">Especifica los géneros que no quieres ver en las sugerencias</string>
@@ -412,4 +408,27 @@
     <string name="suggestions_enable_prompt">¿Quieres recibir sugerencias sobre mangas personalizadas\?</string>
     <string name="translations">Traducciones</string>
     <string name="web_view_unavailable">WebView no está disponible: comprueba si el proveedor de WebView está instalado</string>
+    <string name="clear_network_cache">Borrar la caché de la red</string>
+    <string name="type">Tipo</string>
+    <string name="address">Dirección</string>
+    <string name="port">Puerto</string>
+    <string name="proxy">Proxy</string>
+    <string name="invalid_value_message">Valor no válido</string>
+    <string name="manga_branch_title_template">%1$s (%2$s)</string>
+    <string name="images_proxy_title">Optimización de imágenes proxy</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="downloaded">Descargado</string>
+    <string name="authorization_optional">Autorización (opcional)</string>
+    <string name="images_procy_description">Utiliza el servicio wsrv.nl para reducir el uso del tráfico y acelerar la carga de imágenes si es posible</string>
+    <string name="password">Contraseña</string>
+    <string name="invert_colors">Invertir los colores</string>
+    <string name="invalid_port_number">Número de puerto incorrecto</string>
+    <string name="network">Red</string>
+    <string name="data_and_privacy">Datos y privacidad</string>
+    <string name="webtoon_zoom_summary">Permitir el gesto de acercamiento en el modo webtoon</string>
+    <string name="show_pages_numbers_summary">Mostrar el números de la página en la esquina inferior</string>
+    <string name="pages_animation_summary">Animación del cambio de página</string>
+    <string name="details_button_tip">Manten pulsado el botón Leer para ver más opciones</string>
+    <string name="restore_summary">Restaurar una copia de seguridad creada anteriormente</string>
+    <string name="reader_info_bar_summary">Muestra la hora actual y el progreso de la lectura en la parte superior de la pantalla</string>
 </resources>

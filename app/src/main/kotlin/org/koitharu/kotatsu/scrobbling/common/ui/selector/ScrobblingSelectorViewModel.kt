@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.scrobbling.common.ui.selector
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView.NO_ID
@@ -9,14 +7,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
-import org.koitharu.kotatsu.core.util.ext.emitValue
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -26,7 +27,7 @@ import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.model.ScrobblerHint
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +40,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 
 	val availableScrobblers = scrobblers.filter { it.isAvailable }
 
-	val selectedScrobblerIndex = MutableLiveData(0)
+	val selectedScrobblerIndex = MutableStateFlow(0)
 
 	private val scrobblerMangaList = MutableStateFlow<List<ScrobblerManga>>(emptyList())
 	private val hasNextPage = MutableStateFlow(true)
@@ -51,7 +52,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 	private val currentScrobbler: Scrobbler
 		get() = availableScrobblers[selectedScrobblerIndex.requireValue()]
 
-	val content: LiveData<List<ListModel>> = combine(
+	val content: StateFlow<List<ListModel>> = combine(
 		scrobblerMangaList,
 		listError,
 		hasNextPage,
@@ -71,11 +72,11 @@ class ScrobblingSelectorViewModel @Inject constructor(
 				},
 			)
 		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
-	val selectedItemId = MutableLiveData(NO_ID)
-	val searchQuery = MutableLiveData(manga.title)
-	val onClose = SingleLiveEvent<Unit>()
+	val selectedItemId = MutableStateFlow(NO_ID)
+	val searchQuery = MutableStateFlow(manga.title)
+	val onClose = MutableEventFlow<Unit>()
 
 	val isEmpty: Boolean
 		get() = scrobblerMangaList.value.isEmpty()
@@ -130,13 +131,13 @@ class ScrobblingSelectorViewModel @Inject constructor(
 		if (doneJob?.isActive == true) {
 			return
 		}
-		val targetId = selectedItemId.value ?: NO_ID
+		val targetId = selectedItemId.value
 		if (targetId == NO_ID) {
 			onClose.call(Unit)
 		}
 		doneJob = launchJob(Dispatchers.Default) {
 			currentScrobbler.linkManga(manga.id, targetId)
-			onClose.emitCall(Unit)
+			onClose.call(Unit)
 		}
 	}
 
@@ -155,7 +156,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 			try {
 				val info = currentScrobbler.getScrobblingInfoOrNull(manga.id)
 				if (info != null) {
-					selectedItemId.emitValue(info.targetId)
+					selectedItemId.value = info.targetId
 				}
 			} finally {
 				loadList(append = false)

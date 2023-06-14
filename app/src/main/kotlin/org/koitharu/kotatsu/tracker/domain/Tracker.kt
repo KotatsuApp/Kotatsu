@@ -1,16 +1,16 @@
 package org.koitharu.kotatsu.tracker.domain
 
 import androidx.annotation.VisibleForTesting
-import javax.inject.Inject
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import org.koitharu.kotatsu.tracker.work.TrackingItem
+import javax.inject.Inject
 
 class Tracker @Inject constructor(
 	private val settings: AppSettings,
@@ -114,9 +114,11 @@ class Tracker @Inject constructor(
 			newChapters.isEmpty() -> {
 				MangaUpdates(manga, emptyList(), isValid = chapters.lastOrNull()?.id == track.lastChapterId)
 			}
+
 			newChapters.size == chapters.size -> {
 				MangaUpdates(manga, emptyList(), isValid = false)
 			}
+
 			else -> {
 				MangaUpdates(manga, newChapters, isValid = true)
 			}

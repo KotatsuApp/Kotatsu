@@ -1,14 +1,16 @@
 package org.koitharu.kotatsu.settings.tools
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsLiveData
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.LocalStorageManager
@@ -18,21 +20,18 @@ import javax.inject.Inject
 @HiltViewModel
 class ToolsViewModel @Inject constructor(
 	private val storageManager: LocalStorageManager,
-	private val appUpdateRepository: AppUpdateRepository,
 	private val settings: AppSettings,
+	appUpdateRepository: AppUpdateRepository,
 ) : BaseViewModel() {
 
 	val appUpdate = appUpdateRepository.observeAvailableUpdate()
-		.asLiveData(viewModelScope.coroutineContext)
 
-	val storageUsage: LiveData<StorageUsage?> = liveData(
-		context = viewModelScope.coroutineContext + Dispatchers.Default,
-	) {
+	val storageUsage: StateFlow<StorageUsage?> = flow {
 		emit(collectStorageUsage())
-	}
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
-	val isIncognitoModeEnabled = settings.observeAsLiveData(
-		context = viewModelScope.coroutineContext + Dispatchers.Default,
+	val isIncognitoModeEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_INCOGNITO_MODE,
 		valueProducer = { isIncognitoModeEnabled },
 	)

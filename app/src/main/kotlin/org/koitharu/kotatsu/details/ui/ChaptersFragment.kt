@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.details.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -16,6 +17,7 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
@@ -23,7 +25,7 @@ import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import kotlin.math.roundToInt
 
@@ -55,6 +57,9 @@ class ChaptersFragment :
 			checkNotNull(selectionController).attachToRecyclerView(this)
 			setHasFixedSize(true)
 			adapter = chaptersAdapter
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				scrollIndicators = if (resources.getBoolean(R.bool.is_tablet)) 0 else View.SCROLL_INDICATOR_TOP
+			}
 		}
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.chapters.observe(viewLifecycleOwner, this::onChaptersChanged)
@@ -74,12 +79,11 @@ class ChaptersFragment :
 			return
 		}
 		startActivity(
-			ReaderActivity.newIntent(
-				context = view.context,
-				manga = viewModel.manga.value ?: return,
-				state = ReaderState(item.chapter.id, 0, 0),
-			),
-			scaleUpActivityOptionsOf(view).toBundle(),
+			IntentBuilder(view.context)
+				.manga(viewModel.manga.value ?: return)
+				.state(ReaderState(item.chapter.id, 0, 0))
+				.build(),
+			scaleUpActivityOptionsOf(view),
 		)
 	}
 
@@ -160,12 +164,14 @@ class ChaptersFragment :
 		val selectedIds = selectionController?.peekCheckedIds() ?: return false
 		val allItems = chaptersAdapter?.items.orEmpty()
 		val items = allItems.withIndex().filter { (_, x) -> x.chapter.id in selectedIds }
-		menu.findItem(R.id.action_save).isVisible = items.none { (_, x) ->
-			x.chapter.source == MangaSource.LOCAL
+		var canSave = true
+		var canDelete = true
+		items.forEach { (_, x) ->
+			val isLocal = x.isDownloaded || x.chapter.source == MangaSource.LOCAL
+			if (isLocal) canSave = false else canDelete = false
 		}
-		menu.findItem(R.id.action_delete).isVisible = items.all { (_, x) ->
-			x.chapter.source == MangaSource.LOCAL
-		}
+		menu.findItem(R.id.action_save).isVisible = canSave
+		menu.findItem(R.id.action_delete).isVisible = canDelete
 		menu.findItem(R.id.action_select_all).isVisible = items.size < allItems.size
 		menu.findItem(R.id.action_mark_current).isVisible = items.size == 1
 		mode.title = items.size.toString()

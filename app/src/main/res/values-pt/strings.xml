@@ -47,7 +47,6 @@
 	<string name="updated">Atualizado</string>
 	<string name="delete">Deletar</string>
 	<string name="operation_not_supported">Essa operação não é suportada</string>
-	<string name="history_and_cache">Histórico e cache</string>
 	<string name="clear_pages_cache">Limpar cache de página</string>
 	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 	<string name="standard">Padrão</string>
@@ -156,7 +155,6 @@
 	<string name="enabled_sources">Fontes usadas</string>
 	<string name="queued">Enfileirado</string>
 	<string name="about_app_translation_summary">Traduzir esta aplicação</string>
-	<string name="chapter_is_missing_text">Baixe ou leia este capítulo perdido online.</string>
 	<string name="chapter_is_missing">O capítulo está em falta</string>
 	<string name="auth_complete">Autorizado</string>
 	<string name="auth_not_supported_by">O login em %s não é suportado</string>
@@ -213,7 +211,6 @@
 	<string name="filter_load_error">Não foi possível carregar a lista de gêneros</string>
 	<string name="only_using_wifi">Somente em Wi-Fi</string>
 	<string name="onboard_text">Selecione os idiomas que deseja ler mangá. Pode alterá-lo mais tarde nas configurações.</string>
-	<string name="find_genre">Encontrar gênero</string>
 	<string name="always">Sempre</string>
 	<string name="reset_filter">Redefinir filtro</string>
 	<string name="never">Nunca</string>
@@ -224,7 +221,6 @@
 	<string name="suggestions_updating">Atualização das sugestões</string>
 	<string name="appearance">Aparência</string>
 	<string name="search_chapters">Encontrar capítulo</string>
-	<string name="content">Conteúdo</string>
 	<string name="chapters_empty">Não há capítulos nesta manga</string>
 	<string name="percent_string_pattern">%1$s%%</string>
 	<string name="text_shelf_holder_primary">O seu mangá será exibido aqui</string>

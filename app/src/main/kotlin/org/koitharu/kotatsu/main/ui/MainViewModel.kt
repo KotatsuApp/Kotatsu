@@ -5,17 +5,20 @@ import androidx.core.util.set
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
-import org.koitharu.kotatsu.core.prefs.observeAsLiveData
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
-import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import javax.inject.Inject
@@ -24,21 +27,25 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val appUpdateRepository: AppUpdateRepository,
-	private val trackingRepository: TrackingRepository,
-	private val settings: AppSettings,
+	trackingRepository: TrackingRepository,
+	settings: AppSettings,
 ) : BaseViewModel() {
 
-	val onOpenReader = SingleLiveEvent<Manga>()
+	val onOpenReader = MutableEventFlow<Manga>()
 
 	val isResumeEnabled = combine(
 		historyRepository.observeHasItems(),
 		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
 	) { hasItems, incognito ->
 		hasItems && !incognito
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	}.stateIn(
+		scope = viewModelScope + Dispatchers.Default,
+		started = SharingStarted.WhileSubscribed(5000),
+		initialValue = false,
+	)
 
-	val isFeedAvailable = settings.observeAsLiveData(
-		context = viewModelScope.coroutineContext + Dispatchers.Default,
+	val isFeedAvailable = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_TRACKER_ENABLED,
 		valueProducer = { isTrackerEnabled },
 	)
@@ -51,7 +58,11 @@ class MainViewModel @Inject constructor(
 		a[R.id.nav_tools] = if (appUpdate != null) 1 else 0
 		a[R.id.nav_feed] = tracks
 		a
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, SparseIntArray(0))
+	}.stateIn(
+		scope = viewModelScope + Dispatchers.Default,
+		started = SharingStarted.WhileSubscribed(5000),
+		initialValue = SparseIntArray(0),
+	)
 
 	init {
 		launchJob {
@@ -62,7 +73,7 @@ class MainViewModel @Inject constructor(
 	fun openLastReader() {
 		launchLoadingJob(Dispatchers.Default) {
 			val manga = historyRepository.getLastOrNull() ?: throw EmptyHistoryException()
-			onOpenReader.emitCall(manga)
+			onOpenReader.call(manga)
 		}
 	}
 }

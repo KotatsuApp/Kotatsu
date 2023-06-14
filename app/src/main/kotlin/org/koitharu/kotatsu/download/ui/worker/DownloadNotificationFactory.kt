@@ -32,7 +32,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.util.UUID
 import com.google.android.material.R as materialR
 

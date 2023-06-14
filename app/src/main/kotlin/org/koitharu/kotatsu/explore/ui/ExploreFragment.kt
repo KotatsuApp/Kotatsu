@@ -25,6 +25,8 @@ import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.util.SpanSizeResolver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
@@ -74,11 +76,11 @@ class ExploreFragment :
 		viewModel.content.observe(viewLifecycleOwner) {
 			exploreAdapter?.items = it
 		}
-		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
-		viewModel.onOpenManga.observe(viewLifecycleOwner, ::onOpenManga)
-		viewModel.onActionDone.observe(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
+		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
+		viewModel.onOpenManga.observeEvent(viewLifecycleOwner, ::onOpenManga)
+		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 		viewModel.isGrid.observe(viewLifecycleOwner, ::onGridModeChanged)
-		viewModel.onShowSuggestionsTip.observe(viewLifecycleOwner) {
+		viewModel.onShowSuggestionsTip.observeEvent(viewLifecycleOwner) {
 			showSuggestionsTip()
 		}
 	}

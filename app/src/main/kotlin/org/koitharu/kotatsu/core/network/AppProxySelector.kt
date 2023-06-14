@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.core.network
 
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Proxy
@@ -12,6 +12,10 @@ import java.net.URI
 class AppProxySelector(
 	private val settings: AppSettings,
 ) : ProxySelector() {
+
+	init {
+		setDefault(this)
+	}
 
 	private var cachedProxy: Proxy? = null
 

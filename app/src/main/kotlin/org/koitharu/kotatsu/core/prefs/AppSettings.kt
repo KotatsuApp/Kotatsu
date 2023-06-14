@@ -2,7 +2,9 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatDelegate
@@ -23,7 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.shelf.domain.ShelfSection
+import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 import java.io.File
 import java.net.Proxy
 import java.util.Collections
@@ -179,10 +181,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isUnstableUpdatesAllowed: Boolean
 		get() = prefs.getBoolean(KEY_UPDATES_UNSTABLE, false)
 
-	fun isContentPrefetchEnabled(): Boolean {
-		val policy = NetworkPolicy.from(prefs.getString(KEY_PREFETCH_CONTENT, null), NetworkPolicy.NEVER)
-		return policy.isNetworkAllowed(connectivityManager)
-	}
+	val isContentPrefetchEnabled: Boolean
+		get() {
+			if (isBackgroundNetworkRestricted()) {
+				return false
+			}
+			val policy = NetworkPolicy.from(prefs.getString(KEY_PREFETCH_CONTENT, null), NetworkPolicy.NEVER)
+			return policy.isNetworkAllowed(connectivityManager)
+		}
 
 	var sourcesOrder: List<String>
 		get() = prefs.getString(KEY_SOURCES_ORDER, null)
@@ -271,6 +277,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReaderSliderEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_SLIDER, true)
 
+	val isImagesProxyEnabled: Boolean
+		get() = prefs.getBoolean(KEY_IMAGES_PROXY, false)
+
 	val dnsOverHttps: DoHProvider
 		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
 
@@ -289,6 +298,12 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val proxyPort: Int
 		get() = prefs.getString(KEY_PROXY_PORT, null)?.toIntOrNull() ?: 0
 
+	val proxyLogin: String?
+		get() = prefs.getString(KEY_PROXY_LOGIN, null)?.takeUnless { it.isEmpty() }
+
+	val proxyPassword: String?
+		get() = prefs.getString(KEY_PROXY_PASSWORD, null)?.takeUnless { it.isEmpty() }
+
 	var localListOrder: SortOrder
 		get() = prefs.getEnumValue(KEY_LOCAL_LIST_ORDER, SortOrder.NEWEST)
 		set(value) = prefs.edit { putEnumValue(KEY_LOCAL_LIST_ORDER, value) }
@@ -301,10 +316,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getFloat(KEY_READER_AUTOSCROLL_SPEED, 0f)
 		set(@FloatRange(from = 0.0, to = 1.0) value) = prefs.edit { putFloat(KEY_READER_AUTOSCROLL_SPEED, value) }
 
-	fun isPagesPreloadEnabled(): Boolean {
-		val policy = NetworkPolicy.from(prefs.getString(KEY_PAGES_PRELOAD, null), NetworkPolicy.NON_METERED)
-		return policy.isNetworkAllowed(connectivityManager)
-	}
+	val isPagesPreloadEnabled: Boolean
+		get() {
+			if (isBackgroundNetworkRestricted()) {
+				return false
+			}
+			val policy = NetworkPolicy.from(prefs.getString(KEY_PAGES_PRELOAD, null), NetworkPolicy.NON_METERED)
+			return policy.isNetworkAllowed(connectivityManager)
+		}
 
 	fun getMangaSources(includeHidden: Boolean): List<MangaSource> {
 		val list = remoteSources.toMutableList()
@@ -341,6 +360,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	}
 
 	fun observe() = prefs.observe()
+
+	private fun isBackgroundNetworkRestricted(): Boolean {
+		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			connectivityManager.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
+		} else {
+			false
+		}
+	}
 
 	companion object {
 
@@ -430,6 +457,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PROXY_TYPE = "proxy_type"
 		const val KEY_PROXY_ADDRESS = "proxy_address"
 		const val KEY_PROXY_PORT = "proxy_port"
+		const val KEY_PROXY_AUTH = "proxy_auth"
+		const val KEY_PROXY_LOGIN = "proxy_login"
+		const val KEY_PROXY_PASSWORD = "proxy_password"
+		const val KEY_IMAGES_PROXY = "images_proxy"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

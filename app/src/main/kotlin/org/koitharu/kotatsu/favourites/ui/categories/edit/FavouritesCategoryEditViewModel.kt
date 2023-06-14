@@ -1,16 +1,19 @@
 package org.koitharu.kotatsu.favourites.ui.categories.edit
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.ext.emitValue
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity.Companion.EXTRA_ID
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity.Companion.NO_ID
@@ -26,22 +29,20 @@ class FavouritesCategoryEditViewModel @Inject constructor(
 
 	private val categoryId = savedStateHandle[EXTRA_ID] ?: NO_ID
 
-	val onSaved = SingleLiveEvent<Unit>()
-	val category = MutableLiveData<FavouriteCategory?>()
+	val onSaved = MutableEventFlow<Unit>()
+	val category = MutableStateFlow<FavouriteCategory?>(null)
 
-	val isTrackerEnabled = liveData(viewModelScope.coroutineContext + Dispatchers.Default) {
+	val isTrackerEnabled = flow {
 		emit(settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources)
-	}
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
 	init {
 		launchLoadingJob(Dispatchers.Default) {
-			category.emitValue(
-				if (categoryId != NO_ID) {
-					repository.getCategory(categoryId)
-				} else {
-					null
-				},
-			)
+			category.value = if (categoryId != NO_ID) {
+				repository.getCategory(categoryId)
+			} else {
+				null
+			}
 		}
 	}
 
@@ -58,7 +59,7 @@ class FavouritesCategoryEditViewModel @Inject constructor(
 			} else {
 				repository.updateCategory(categoryId, title, sortOrder, isTrackerEnabled, isVisibleOnShelf)
 			}
-			onSaved.emitCall(Unit)
+			onSaved.call(Unit)
 		}
 	}
 }

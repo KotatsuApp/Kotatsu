@@ -24,6 +24,8 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
@@ -71,7 +73,7 @@ class FavouriteCategoriesActivity :
 		onBackPressedDispatcher.addCallback(exitReorderModeCallback)
 
 		viewModel.detalizedCategories.observe(this, ::onCategoriesChanged)
-		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
+		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 		viewModel.isInReorderMode.observe(this, ::onReorderModeChanged)
 	}
 
@@ -110,7 +112,7 @@ class FavouriteCategoriesActivity :
 		}
 		val intent = FavouritesActivity.newIntent(this, item)
 		val options = scaleUpActivityOptionsOf(view)
-		startActivity(intent, options.toBundle())
+		startActivity(intent, options)
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory, view: View): Boolean {

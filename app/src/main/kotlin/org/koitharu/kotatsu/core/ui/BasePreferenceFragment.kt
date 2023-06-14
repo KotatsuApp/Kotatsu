@@ -12,10 +12,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
-import org.koitharu.kotatsu.settings.SettingsHeadersFragment
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.settings.SettingsActivity
 import javax.inject.Inject
 
-@Suppress("LeakingThis")
 @AndroidEntryPoint
 abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	PreferenceFragmentCompat(),
@@ -26,27 +26,28 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	lateinit var settings: AppSettings
 
 	@JvmField
-	protected val insetsDelegate = WindowInsetsDelegate(this)
+	protected val insetsDelegate = WindowInsetsDelegate()
 
 	override val recyclerView: RecyclerView
 		get() = listView
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		view.setBackgroundColor(view.context.getThemeColor(android.R.attr.colorBackground))
 		listView.clipToPadding = false
 		insetsDelegate.onViewCreated(view)
+		insetsDelegate.addInsetsListener(this)
 	}
 
 	override fun onDestroyView() {
+		insetsDelegate.removeInsetsListener(this)
 		insetsDelegate.onDestroyView()
 		super.onDestroyView()
 	}
 
 	override fun onResume() {
 		super.onResume()
-		if (titleId != 0) {
-			setTitle(getString(titleId))
-		}
+		setTitle(if (titleId != 0) getString(titleId) else null)
 	}
 
 	@CallSuper
@@ -56,9 +57,7 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 		)
 	}
 
-	@Suppress("UsePropertyAccessSyntax")
-	protected fun setTitle(title: CharSequence) {
-		(parentFragment as? SettingsHeadersFragment)?.setTitle(title)
-			?: activity?.setTitle(title)
+	protected fun setTitle(title: CharSequence?) {
+		(activity as? SettingsActivity)?.setSectionTitle(title)
 	}
 }

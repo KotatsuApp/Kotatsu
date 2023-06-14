@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+<FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/swipeRefreshLayout"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<FrameLayout
+	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+		android:id="@+id/swipeRefreshLayout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
@@ -22,6 +22,5 @@
 			tools:layoutManager="org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager"
 			tools:listitem="@layout/item_manga_list" />
 
-	</FrameLayout>
-
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</FrameLayout>

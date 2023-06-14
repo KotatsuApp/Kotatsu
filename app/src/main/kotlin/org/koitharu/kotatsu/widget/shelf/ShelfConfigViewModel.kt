@@ -1,13 +1,15 @@
 package org.koitharu.kotatsu.widget.shelf
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.asFlowLiveData
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 import javax.inject.Inject
@@ -19,7 +21,7 @@ class ShelfConfigViewModel @Inject constructor(
 
 	private val selectedCategoryId = MutableStateFlow(0L)
 
-	val content: LiveData<List<CategoryItem>> = combine(
+	val content: StateFlow<List<CategoryItem>> = combine(
 		favouritesRepository.observeCategories(),
 		selectedCategoryId,
 	) { categories, selectedId ->
@@ -29,7 +31,11 @@ class ShelfConfigViewModel @Inject constructor(
 			CategoryItem(it.id, it.title, selectedId == it.id)
 		}
 		list
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
-	var checkedId: Long by selectedCategoryId::value
+	var checkedId: Long
+		get() = selectedCategoryId.value
+		set(value) {
+			selectedCategoryId.value = value
+		}
 }

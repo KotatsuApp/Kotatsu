@@ -13,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.showKeyboard
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource

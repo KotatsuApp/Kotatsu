@@ -18,11 +18,11 @@ import coil.request.ImageRequest
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.countChaptersByBranch
-import org.koitharu.kotatsu.core.parser.MangaTagHighlighter
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -33,7 +33,7 @@ import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.drawableTop
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
-import org.koitharu.kotatsu.core.util.ext.measureHeight
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -42,8 +42,9 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
-import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -66,7 +67,7 @@ class DetailsFragment :
 	lateinit var coil: ImageLoader
 
 	@Inject
-	lateinit var tagHighlighter: MangaTagHighlighter
+	lateinit var tagHighlighter: ListExtraProvider
 
 	private val viewModel by activityViewModels<DetailsViewModel>()
 
@@ -82,7 +83,8 @@ class DetailsFragment :
 		binding.infoLayout.textViewSource.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
-		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
+		TitleScrollCoordinator(binding.textViewTitle).attach(binding.scrollView)
+		viewModel.manga.filterNotNull().observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.historyInfo.observe(viewLifecycleOwner, ::onHistoryChanged)
 		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
@@ -94,8 +96,8 @@ class DetailsFragment :
 
 	override fun onItemClick(item: Bookmark, view: View) {
 		startActivity(
-			ReaderActivity.newIntent(view.context, item),
-			scaleUpActivityOptionsOf(view).toBundle(),
+			ReaderActivity.IntentBuilder(view.context).bookmark(item).incognito(true).build(),
+			scaleUpActivityOptionsOf(view),
 		)
 		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
@@ -255,7 +257,7 @@ class DetailsFragment :
 						manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
 						manga.source,
 					),
-					scaleUpActivityOptionsOf(v).toBundle(),
+					scaleUpActivityOptionsOf(v),
 				)
 			}
 		}
@@ -269,7 +271,7 @@ class DetailsFragment :
 	override fun onWindowInsetsChanged(insets: Insets) {
 		requireViewBinding().root.updatePadding(
 			bottom = (
-				(activity as? NoModalBottomSheetOwner)?.bsHeader?.measureHeight()
+				(activity as? NoModalBottomSheetOwner)?.getBottomSheetCollapsedHeight()
 					?.plus(insets.bottom)?.plus(resources.resolveDp(16))
 				)
 				?: insets.bottom,
@@ -281,7 +283,8 @@ class DetailsFragment :
 			manga.tags.map { tag ->
 				ChipsView.ChipModel(
 					title = tag.title,
-					tint = tagHighlighter.getTint(tag),
+					tint = tagHighlighter.getTagTint(tag),
+					icon = 0,
 					data = tag,
 					isCheckable = false,
 					isChecked = false,

@@ -59,7 +59,6 @@
     <string name="operation_not_supported">Операция не поддерживается</string>
     <string name="text_file_not_supported">Выберите файл в формате CBZ или ZIP.</string>
     <string name="no_description">Описание отсутствует</string>
-    <string name="history_and_cache">История и кэш</string>
     <string name="clear_pages_cache">Очистить кэш страниц</string>
     <string name="text_file_sizes">Б|кБ|МБ|ГБ|ТБ</string>
     <string name="standard">Стандартный</string>
@@ -183,7 +182,6 @@
     <string name="read_more">Подробнее</string>
     <string name="queued">В очереди</string>
     <string name="chapter_is_missing">Глава отсутствует</string>
-    <string name="chapter_is_missing_text">Скачайте или прочитайте эту недостающую главу онлайн.</string>
     <string name="about_app_translation_summary">Помочь с переводом приложения</string>
     <string name="about_app_translation">Перевод</string>
     <string name="auth_complete">Авторизация выполнена</string>
@@ -212,7 +210,6 @@
     <string name="filter_load_error">Не удалось загрузить список жанров</string>
     <string name="computing_">Вычисление…</string>
     <string name="reset_filter">Сбросить фильтр</string>
-    <string name="find_genre">Поиск по жанрам</string>
     <string name="onboard_text">Выберите языки, на которых Вы хотите читать мангу. Это можно будет изменить позже в настройках.</string>
     <string name="never">Никогда</string>
     <string name="only_using_wifi">Только по Wi-Fi</string>
@@ -224,7 +221,6 @@
     <string name="search_chapters">Найти главу</string>
     <string name="chapters_empty">В этой манге нет глав</string>
     <string name="appearance">Оформление</string>
-    <string name="content">Контент</string>
     <string name="suggestions_updating">Обновление рекомендаций</string>
     <string name="suggestions_excluded_genres">Исключить жанры</string>
     <string name="suggestions_excluded_genres_summary">Укажите жанры, которые Вы не хотите видеть в рекомендациях</string>
@@ -412,4 +408,27 @@
     <string name="suggestions_enable_prompt">Хотите ли Вы получать персонализированные рекомендации манги\?</string>
     <string name="translations">Переводы</string>
     <string name="web_view_unavailable">WebView недоступен: проверьте, установлен ли провайдер WebView</string>
+    <string name="clear_network_cache">Очистить сетевой кеш</string>
+    <string name="address">Адрес</string>
+    <string name="type">Тип</string>
+    <string name="proxy">Прокси</string>
+    <string name="port">Порт</string>
+    <string name="manga_branch_title_template">%1$s (%2$s)</string>
+    <string name="invalid_value_message">Неверное значение</string>
+    <string name="invalid_port_number">Неверный номер порта</string>
+    <string name="username">Имя пользователя</string>
+    <string name="password">Пароль</string>
+    <string name="authorization_optional">Авторизация (необязательна)</string>
+    <string name="downloaded">Скачано</string>
+    <string name="images_proxy_title">Прокси для оптимизации изображений</string>
+    <string name="images_procy_description">Используйте службу wsrv.nl, чтобы уменьшить использование трафика и ускорить загрузку изображений, если это возможно</string>
+    <string name="invert_colors">Инвертировать цвета</string>
+    <string name="webtoon_zoom_summary">Включить жест увеличения масштаба в режиме манхвы</string>
+    <string name="network">Сеть</string>
+    <string name="data_and_privacy">Данные и конфиденциальность</string>
+    <string name="restore_summary">Восстановить ранее созданную резервную копию</string>
+    <string name="reader_info_bar_summary">Отображение текущего времени и прогресса чтения в верхней части экрана</string>
+    <string name="show_pages_numbers_summary">Показывать номера страниц в нижнем углу</string>
+    <string name="pages_animation_summary">Анимация перелистывания страниц</string>
+    <string name="details_button_tip">Нажмите и удерживайте кнопку «Читать», чтобы просмотреть дополнительные параметры</string>
 </resources>

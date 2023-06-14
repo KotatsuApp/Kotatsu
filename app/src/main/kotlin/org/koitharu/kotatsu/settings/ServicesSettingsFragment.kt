@@ -3,8 +3,10 @@ package org.koitharu.kotatsu.settings
 import android.accounts.AccountManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,11 +25,12 @@ import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.sync.ui.SyncSettingsIntent
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
+class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
+	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	@Inject
 	lateinit var shikimoriRepository: ShikimoriRepository
@@ -43,6 +46,17 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_services)
+		bindSuggestionsSummary()
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+		settings.subscribe(this)
+	}
+
+	override fun onDestroyView() {
+		settings.unsubscribe(this)
+		super.onDestroyView()
 	}
 
 	override fun onResume() {
@@ -52,6 +66,13 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
 		bindScrobblerSummary(AppSettings.KEY_MAL, malRepository)
 		bindSyncSummary()
 	}
+
+	override fun onSharedPreferenceChanged(prefs: SharedPreferences?, key: String?) {
+		when (key) {
+			AppSettings.KEY_SUGGESTIONS -> bindSuggestionsSummary()
+		}
+	}
+
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
@@ -155,5 +176,11 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services) {
 			}
 			findPreference<Preference>(AppSettings.KEY_SYNC_SETTINGS)?.isEnabled = account != null
 		}
+	}
+
+	private fun bindSuggestionsSummary() {
+		findPreference<Preference>(AppSettings.KEY_SUGGESTIONS)?.setSummary(
+			if (settings.isSuggestionsEnabled) R.string.enabled else R.string.disabled,
+		)
 	}
 }

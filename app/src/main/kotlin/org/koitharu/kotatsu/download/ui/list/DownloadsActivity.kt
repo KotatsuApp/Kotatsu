@@ -11,14 +11,16 @@ import androidx.annotation.Px
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import androidx.lifecycle.Observer
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.PausingReceiver
@@ -61,8 +63,8 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		viewModel.items.observe(this) {
 			downloadsAdapter.items = it
 		}
-		viewModel.onActionDone.observe(this, ReversibleActionObserver(viewBinding.recyclerView))
-		val menuObserver = Observer<Any> { _ -> invalidateOptionsMenu() }
+		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.recyclerView))
+		val menuObserver = FlowCollector<Any> { _ -> invalidateOptionsMenu() }
 		viewModel.hasActiveWorks.observe(this, menuObserver)
 		viewModel.hasPausedWorks.observe(this, menuObserver)
 		viewModel.hasCancellableWorks.observe(this, menuObserver)

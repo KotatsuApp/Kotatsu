@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<plurals name="pages">
-		<item quantity="other">Total %1$d halaman</item>
-	</plurals>
 	<plurals name="items">
 		<item quantity="other">%1$d item</item>
 	</plurals>

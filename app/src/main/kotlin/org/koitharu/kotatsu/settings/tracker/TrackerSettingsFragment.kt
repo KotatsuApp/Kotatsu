@@ -23,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.settings.tracker.categories.TrackerCategoriesConfigSheet
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
@@ -55,14 +56,13 @@ class TrackerSettingsFragment :
 				}
 			}
 		}
+		updateDozePreference()
 		updateCategoriesEnabled()
 	}
 
 	override fun onResume() {
 		super.onResume()
-		findPreference<Preference>(KEY_IGNORE_DOZE)?.run {
-			isVisible = isDozeIgnoreAvailable(context)
-		}
+		updateDozePreference()
 		updateNotificationsSummary()
 	}
 
@@ -81,8 +81,7 @@ class TrackerSettingsFragment :
 		when (key) {
 			AppSettings.KEY_TRACKER_NOTIFICATIONS -> updateNotificationsSummary()
 			AppSettings.KEY_TRACK_SOURCES,
-			AppSettings.KEY_TRACKER_ENABLED,
-			-> updateCategoriesEnabled()
+			AppSettings.KEY_TRACKER_ENABLED -> updateCategoriesEnabled()
 		}
 	}
 
@@ -103,9 +102,7 @@ class TrackerSettingsFragment :
 					true
 				}
 
-				else -> {
-					super.onPreferenceTreeClick(preference)
-				}
+				else -> super.onPreferenceTreeClick(preference)
 			}
 
 			AppSettings.KEY_TRACK_CATEGORIES -> {
@@ -119,6 +116,12 @@ class TrackerSettingsFragment :
 			}
 
 			else -> super.onPreferenceTreeClick(preference)
+		}
+	}
+
+	private fun updateDozePreference() {
+		findPreference<Preference>(KEY_IGNORE_DOZE)?.run {
+			isVisible = isDozeIgnoreAvailable(context)
 		}
 	}
 

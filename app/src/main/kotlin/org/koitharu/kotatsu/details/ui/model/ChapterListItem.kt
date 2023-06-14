@@ -31,6 +31,9 @@ class ChapterListItem(
 	val isDownloaded: Boolean
 		get() = hasFlag(FLAG_DOWNLOADED)
 
+	val isBookmarked: Boolean
+		get() = hasFlag(FLAG_BOOKMARKED)
+
 	val isNew: Boolean
 		get() = hasFlag(FLAG_NEW)
 
@@ -70,6 +73,7 @@ class ChapterListItem(
 		const val FLAG_UNREAD = 2
 		const val FLAG_CURRENT = 4
 		const val FLAG_NEW = 8
+		const val FLAG_BOOKMARKED = 16
 		const val FLAG_DOWNLOADED = 32
 	}
 }

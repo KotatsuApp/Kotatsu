@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.shelf.ui.config
 
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.shelf.domain.ShelfSection
+import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 
 sealed interface ShelfSettingsItemModel : ListModel {
 
@@ -19,9 +19,7 @@ sealed interface ShelfSettingsItemModel : ListModel {
 			other as Section
 
 			if (section != other.section) return false
-			if (isChecked != other.isChecked) return false
-
-			return true
+			return isChecked == other.isChecked
 		}
 
 		override fun hashCode(): Int {
@@ -45,9 +43,7 @@ sealed interface ShelfSettingsItemModel : ListModel {
 
 			if (id != other.id) return false
 			if (title != other.title) return false
-			if (isChecked != other.isChecked) return false
-
-			return true
+			return isChecked == other.isChecked
 		}
 
 		override fun hashCode(): Int {

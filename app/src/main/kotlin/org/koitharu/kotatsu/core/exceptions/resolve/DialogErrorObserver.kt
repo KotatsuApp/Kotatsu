@@ -22,10 +22,7 @@ class DialogErrorObserver(
 		fragment: Fragment?,
 	) : this(host, fragment, null, null)
 
-	override fun onChanged(value: Throwable?) {
-		if (value == null) {
-			return
-		}
+	override suspend fun emit(value: Throwable) {
 		val listener = DialogListener(value)
 		val dialogBuilder = MaterialAlertDialogBuilder(activity ?: host.context)
 			.setMessage(value.getDisplayMessage(host.context.resources))

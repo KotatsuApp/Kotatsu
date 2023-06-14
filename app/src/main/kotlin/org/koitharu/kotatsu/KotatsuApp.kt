@@ -22,8 +22,8 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.WorkServiceStopHelper
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import javax.inject.Inject
@@ -67,6 +67,10 @@ class KotatsuApp : Application(), Configuration.Provider {
 			reportFormat = StringFormat.JSON
 			excludeMatchingSharedPreferencesKeys = listOf(
 				"sources_\\w+",
+				AppSettings.KEY_APP_PASSWORD,
+				AppSettings.KEY_PROXY_LOGIN,
+				AppSettings.KEY_PROXY_ADDRESS,
+				AppSettings.KEY_PROXY_PASSWORD,
 			)
 			httpSender {
 				uri = getString(R.string.url_error_report)
@@ -83,6 +87,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 				ReportField.PHONE_MODEL,
 				ReportField.STACK_TRACE,
 				ReportField.CRASH_CONFIGURATION,
+				ReportField.CUSTOM_DATA,
 				ReportField.SHARED_PREFERENCES,
 			)
 			dialog {

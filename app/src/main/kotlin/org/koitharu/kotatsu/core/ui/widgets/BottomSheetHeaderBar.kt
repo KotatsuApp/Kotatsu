@@ -30,6 +30,7 @@ import com.google.android.material.R as materialR
 
 private const val THROTTLE_DELAY = 200L
 
+@Deprecated("")
 class BottomSheetHeaderBar @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,

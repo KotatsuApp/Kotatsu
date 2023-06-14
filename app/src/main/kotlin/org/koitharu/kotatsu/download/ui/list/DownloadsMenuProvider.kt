@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.settings.SettingsActivity
 
 class DownloadsMenuProvider(
 	private val context: Context,
@@ -23,6 +24,10 @@ class DownloadsMenuProvider(
 			R.id.action_resume -> viewModel.resumeAll()
 			R.id.action_cancel_all -> confirmCancelAll()
 			R.id.action_remove_completed -> confirmRemoveCompleted()
+			R.id.action_settings -> {
+				context.startActivity(SettingsActivity.newDownloadsSettingsIntent(context))
+			}
+
 			else -> return false
 		}
 		return true

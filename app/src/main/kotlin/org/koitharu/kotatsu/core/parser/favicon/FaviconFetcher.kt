@@ -86,7 +86,7 @@ class FaviconFetcher(
 		if (!options.diskCachePolicy.readEnabled) {
 			return null
 		}
-		val snapshot = diskCache.value?.get(diskCacheKey) ?: return null
+		val snapshot = diskCache.value?.openSnapshot(diskCacheKey) ?: return null
 		return SourceResult(
 			source = snapshot.toImageSource(),
 			mimeType = null,
@@ -98,12 +98,12 @@ class FaviconFetcher(
 		if (!options.diskCachePolicy.writeEnabled || body.contentLength() == 0L) {
 			return null
 		}
-		val editor = diskCache.value?.edit(diskCacheKey) ?: return null
+		val editor = diskCache.value?.openEditor(diskCacheKey) ?: return null
 		try {
 			fileSystem.write(editor.data) {
 				body.source().readAll(this)
 			}
-			return editor.commitAndGet()
+			return editor.commitAndOpenSnapshot()
 		} catch (e: Throwable) {
 			try {
 				editor.abort()

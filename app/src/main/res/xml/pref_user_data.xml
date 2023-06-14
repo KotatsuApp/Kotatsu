@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<SwitchPreferenceCompat
+		android:key="protect_app"
+		android:persistent="false"
+		android:summary="@string/protect_application_summary"
+		android:title="@string/protect_application" />
+
+	<SwitchPreferenceCompat
+		android:key="history_exclude_nsfw"
+		android:summary="@string/exclude_nsfw_from_history_summary"
+		android:title="@string/exclude_nsfw_from_history" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="dynamic_shortcuts"
+		android:summary="@string/history_shortcuts_summary"
+		android:title="@string/history_shortcuts" />
+
+	<PreferenceCategory android:title="@string/backup_restore">
+
+		<Preference
+			android:key="backup"
+			android:persistent="false"
+			android:summary="@string/backup_information"
+			android:title="@string/create_backup" />
+
+		<Preference
+			android:key="restore"
+			android:persistent="false"
+			android:summary="@string/restore_summary"
+			android:title="@string/restore_backup" />
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/data_deletion">
+
+		<Preference
+			android:key="search_history_clear"
+			android:persistent="false"
+			android:summary="@string/loading_"
+			android:title="@string/clear_search_history" />
+
+		<Preference
+			android:key="updates_feed_clear"
+			android:persistent="false"
+			android:summary="@string/loading_"
+			android:title="@string/clear_updates_feed" />
+
+		<Preference
+			android:key="thumbs_cache_clear"
+			android:persistent="false"
+			android:summary="@string/computing_"
+			android:title="@string/clear_thumbs_cache" />
+
+		<Preference
+			android:key="pages_cache_clear"
+			android:persistent="false"
+			android:summary="@string/computing_"
+			android:title="@string/clear_pages_cache" />
+
+		<Preference
+			android:key="http_cache_clear"
+			android:persistent="false"
+			android:summary="@string/loading_"
+			android:title="@string/clear_network_cache" />
+
+		<Preference
+			android:key="cookies_clear"
+			android:persistent="false"
+			android:summary="@string/clear_cookies_summary"
+			android:title="@string/clear_cookies" />
+
+	</PreferenceCategory>
+
+</PreferenceScreen>

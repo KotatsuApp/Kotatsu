@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.util.ext.findKeyByValue
+import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblingEntity
@@ -20,7 +21,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.util.EnumMap
 
 abstract class Scrobbler(
@@ -123,7 +124,7 @@ abstract class Scrobbler(
 			rating = rating,
 			title = mangaInfo.name,
 			coverUrl = mangaInfo.cover,
-			description = mangaInfo.descriptionHtml.parseAsHtml(),
+			description = mangaInfo.descriptionHtml.parseAsHtml().sanitize(),
 			externalUrl = mangaInfo.url,
 		)
 	}

@@ -18,6 +18,8 @@ import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -76,11 +78,11 @@ class FeedFragment :
 		)
 
 		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
-		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
-		viewModel.onFeedCleared.observe(viewLifecycleOwner) {
+		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
+		viewModel.onFeedCleared.observeEvent(viewLifecycleOwner) {
 			onFeedCleared()
 		}
-		TrackWorker.getIsRunningLiveData(binding.root.context.applicationContext)
+		TrackWorker.observeIsRunning(binding.root.context.applicationContext)
 			.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
 	}
 

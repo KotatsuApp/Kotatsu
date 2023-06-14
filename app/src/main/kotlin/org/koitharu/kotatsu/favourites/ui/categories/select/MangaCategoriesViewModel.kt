@@ -4,14 +4,20 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.asFlowLiveData
+import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet.Companion.KEY_MANGA_LIST
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet.Companion.KEY_MANGA_LIST
+import org.koitharu.kotatsu.favourites.ui.categories.select.model.CategoriesHeaderItem
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,20 +26,24 @@ class MangaCategoriesViewModel @Inject constructor(
 	private val favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
 
-	private val manga = requireNotNull(savedStateHandle.get<List<ParcelableManga>>(KEY_MANGA_LIST)).map { it.manga }
+	private val manga = savedStateHandle.require<List<ParcelableManga>>(KEY_MANGA_LIST).map { it.manga }
+	private val header = CategoriesHeaderItem()
 
-	val content = combine(
+	val content: StateFlow<List<ListModel>> = combine(
 		favouritesRepository.observeCategories(),
 		observeCategoriesIds(),
 	) { all, checked ->
-		all.map {
-			MangaCategoryItem(
-				id = it.id,
-				name = it.title,
-				isChecked = it.id in checked,
-			)
+		buildList(all.size + 1) {
+			add(header)
+			all.mapTo(this) {
+				MangaCategoryItem(
+					id = it.id,
+					name = it.title,
+					isChecked = it.id in checked,
+				)
+			}
 		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	fun setChecked(categoryId: Long, isChecked: Boolean) {
 		launchJob(Dispatchers.Default) {

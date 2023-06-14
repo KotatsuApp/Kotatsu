@@ -15,21 +15,21 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
-import org.koitharu.kotatsu.core.os.ShortcutsUpdater
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
-import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorBottomSheet
+import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 
 class DetailsMenuProvider(
 	private val activity: FragmentActivity,
 	private val viewModel: DetailsViewModel,
 	private val snackbarHost: View,
-	private val shortcutsUpdater: ShortcutsUpdater,
+	private val appShortcutManager: AppShortcutManager,
 ) : MenuProvider {
 
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -63,7 +63,7 @@ class DetailsMenuProvider(
 
 			R.id.action_favourite -> {
 				viewModel.manga.value?.let {
-					FavouriteCategoriesBottomSheet.show(activity.supportFragmentManager, it)
+					FavouriteCategoriesSheet.show(activity.supportFragmentManager, it)
 				}
 			}
 
@@ -105,14 +105,14 @@ class DetailsMenuProvider(
 
 			R.id.action_scrobbling -> {
 				viewModel.manga.value?.let {
-					ScrobblingSelectorBottomSheet.show(activity.supportFragmentManager, it, null)
+					ScrobblingSelectorSheet.show(activity.supportFragmentManager, it, null)
 				}
 			}
 
 			R.id.action_shortcut -> {
 				viewModel.manga.value?.let {
 					activity.lifecycleScope.launch {
-						if (!shortcutsUpdater.requestPinShortcut(it)) {
+						if (!appShortcutManager.requestPinShortcut(it)) {
 							Snackbar.make(snackbarHost, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
 								.show()
 						}

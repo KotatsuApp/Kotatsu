@@ -47,4 +47,21 @@
 		android:paddingHorizontal="@dimen/grid_spacing"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+	<TextView
+		android:id="@+id/textView_error"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/recyclerView"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentEnd="true"
+		android:layout_marginHorizontal="@dimen/grid_spacing"
+		android:drawablePadding="12dp"
+		android:gravity="center_vertical"
+		android:padding="@dimen/grid_spacing"
+		android:textAppearance="?attr/textAppearanceBodySmall"
+		android:visibility="gone"
+		app:drawableStartCompat="@drawable/ic_error_small"
+		tools:text="@tools:sample/lorem[6]"
+		tools:visibility="visible" />
+
 </RelativeLayout>

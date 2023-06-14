@@ -2,10 +2,9 @@ package org.koitharu.kotatsu.core.util.ext
 
 import androidx.annotation.FloatRange
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import java.util.UUID
 
-inline fun String?.ifNullOrEmpty(defaultValue: () -> String): String {
+inline fun <C : CharSequence> C?.ifNullOrEmpty(defaultValue: () -> C): C {
 	return if (this.isNullOrEmpty()) defaultValue() else this
 }
 
@@ -35,3 +34,9 @@ fun String.almostEquals(other: String, @FloatRange(from = 0.0) threshold: Float)
 	val diff = lowercase().levenshteinDistance(other.lowercase()) / ((length + other.length) / 2f)
 	return diff < threshold
 }
+
+fun CharSequence.sanitize(): CharSequence {
+	return filterNot { c -> c.isReplacement() }
+}
+
+fun Char.isReplacement() = this in '\uFFF0'..'\uFFFF'

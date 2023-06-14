@@ -6,6 +6,7 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
+import org.koitharu.kotatsu.favourites.domain.model.Cover
 import org.koitharu.kotatsu.parsers.model.SortOrder
 
 @Dao
@@ -71,12 +72,12 @@ abstract class FavouritesDao {
 	)
 	abstract suspend fun findAllManga(categoryId: Int): List<MangaEntity>
 
-	suspend fun findCovers(categoryId: Long, order: SortOrder): List<String> {
+	suspend fun findCovers(categoryId: Long, order: SortOrder): List<Cover> {
 		val orderBy = getOrderBy(order)
 
 		@Language("RoomSql")
 		val query = SimpleSQLiteQuery(
-			"SELECT m.cover_url FROM favourites AS f LEFT JOIN manga AS m ON f.manga_id = m.manga_id " +
+			"SELECT m.cover_url AS url, m.source AS source FROM favourites AS f LEFT JOIN manga AS m ON f.manga_id = m.manga_id " +
 				"WHERE f.category_id = ? AND deleted_at = 0 ORDER BY $orderBy",
 			arrayOf<Any>(categoryId),
 		)
@@ -145,7 +146,7 @@ abstract class FavouritesDao {
 	protected abstract fun observeAllImpl(query: SupportSQLiteQuery): Flow<List<FavouriteManga>>
 
 	@RawQuery
-	protected abstract suspend fun findCoversImpl(query: SupportSQLiteQuery): List<String>
+	protected abstract suspend fun findCoversImpl(query: SupportSQLiteQuery): List<Cover>
 
 	@Query("UPDATE favourites SET deleted_at = :deletedAt WHERE manga_id = :mangaId")
 	protected abstract suspend fun setDeletedAt(mangaId: Long, deletedAt: Long)

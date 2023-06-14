@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.domain
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -8,8 +9,10 @@ import androidx.collection.LongSparseArray
 import androidx.collection.set
 import dagger.hilt.android.ActivityRetainedLifecycle
 import dagger.hilt.android.lifecycle.RetainedLifecycle
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,20 +25,24 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.source
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
+import org.koitharu.kotatsu.core.util.ext.ensureSuccess
+import org.koitharu.kotatsu.core.util.ext.isNotEmpty
+import org.koitharu.kotatsu.core.util.ext.ramAvailable
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
 import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
@@ -46,11 +53,13 @@ import kotlin.coroutines.CoroutineContext
 
 @ActivityRetainedScoped
 class PageLoader @Inject constructor(
+	@ApplicationContext private val context: Context,
 	lifecycle: ActivityRetainedLifecycle,
 	@MangaHttpClient private val okHttp: OkHttpClient,
 	private val cache: PagesCache,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	private val imageProxyInterceptor: ImageProxyInterceptor,
 ) : RetainedLifecycle.OnClearedListener {
 
 	init {
@@ -74,7 +83,7 @@ class PageLoader @Inject constructor(
 	}
 
 	fun isPrefetchApplicable(): Boolean {
-		return repository is RemoteMangaRepository && settings.isPagesPreloadEnabled()
+		return repository is RemoteMangaRepository && settings.isPagesPreloadEnabled && !isLowRam()
 	}
 
 	@AnyThread
@@ -96,7 +105,7 @@ class PageLoader @Inject constructor(
 	}
 
 	fun loadPageAsync(page: MangaPage, force: Boolean): ProgressDeferred<File, Float> {
-		var task = tasks[page.id]
+		var task = tasks[page.id]?.takeIf { it.isValid() }
 		if (force) {
 			task?.cancel()
 		} else if (task?.isCancelled == false) {
@@ -115,6 +124,9 @@ class PageLoader @Inject constructor(
 
 	suspend fun convertInPlace(file: File) {
 		convertLock.withLock {
+			if (context.ramAvailable < file.length() * 2) {
+				return@withLock
+			}
 			runInterruptible(Dispatchers.Default) {
 				val image = BitmapFactory.decodeFile(file.absolutePath)
 				try {
@@ -191,10 +203,7 @@ class PageLoader @Inject constructor(
 			}
 		} else {
 			val request = createPageRequest(page, pageUrl)
-			okHttp.newCall(request).await().use { response ->
-				check(response.isSuccessful) {
-					"Invalid response: ${response.code} ${response.message} at $pageUrl"
-				}
+			imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
 				val body = checkNotNull(response.body) {
 					"Null response"
 				}
@@ -202,6 +211,19 @@ class PageLoader @Inject constructor(
 					cache.put(pageUrl, it.source())
 				}
 			}
+		}
+	}
+
+	private fun isLowRam(): Boolean {
+		return context.ramAvailable <= FileSize.MEGABYTES.convert(PREFETCH_MIN_RAM_MB, FileSize.BYTES)
+	}
+
+	private fun Deferred<File>.isValid(): Boolean {
+		return if (isCompleted) {
+			val file = getCompleted()
+			file.exists() && file.isNotEmpty()
+		} else {
+			true
 		}
 	}
 
@@ -217,6 +239,7 @@ class PageLoader @Inject constructor(
 
 		private const val PROGRESS_UNDEFINED = -1f
 		private const val PREFETCH_LIMIT_DEFAULT = 10
+		private const val PREFETCH_MIN_RAM_MB = 80L
 
 		fun createPageRequest(page: MangaPage, pageUrl: String) = Request.Builder()
 			.url(pageUrl)

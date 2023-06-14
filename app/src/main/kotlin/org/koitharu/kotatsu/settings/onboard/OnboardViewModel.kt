@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.settings.onboard
 
 import androidx.core.os.LocaleListCompat
-import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -26,7 +26,7 @@ class OnboardViewModel @Inject constructor(
 
 	private val selectedLocales = locales.keys.toMutableSet()
 
-	val list = MutableLiveData<List<SourceLocale>?>()
+	val list = MutableStateFlow<List<SourceLocale>?>(null)
 
 	init {
 		if (settings.isSourcesSelected) {

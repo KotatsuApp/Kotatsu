@@ -92,6 +92,14 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 		)
 	}
 
+	fun showOrHide(show: Boolean) {
+		if (show) {
+			show()
+		} else {
+			hide()
+		}
+	}
+
 	private fun animateTranslation(targetY: Float, duration: Long, interpolator: TimeInterpolator) {
 		currentAnimator = animate()
 			.translationY(targetY)

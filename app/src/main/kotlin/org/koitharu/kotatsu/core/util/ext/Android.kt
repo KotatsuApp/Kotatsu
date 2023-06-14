@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.util.ext
 
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.ActivityManager.MemoryInfo
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
@@ -15,6 +16,7 @@ import android.database.SQLException
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.view.ViewPropertyAnimator
@@ -42,7 +44,6 @@ import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import kotlin.math.roundToLong
@@ -140,13 +141,24 @@ fun Context.isLowRamDevice(): Boolean {
 	return activityManager?.isLowRamDevice ?: false
 }
 
-fun scaleUpActivityOptionsOf(view: View): ActivityOptions = ActivityOptions.makeScaleUpAnimation(
-	view,
-	0,
-	0,
-	view.width,
-	view.height,
-)
+val Context.ramAvailable: Long
+	get() {
+		val result = MemoryInfo()
+		activityManager?.getMemoryInfo(result)
+		return result.availMem
+	}
+
+fun scaleUpActivityOptionsOf(view: View): Bundle? = if (view.context.isAnimationsEnabled) {
+	ActivityOptions.makeScaleUpAnimation(
+		view,
+		0,
+		0,
+		view.width,
+		view.height,
+	).toBundle()
+} else {
+	null
+}
 
 fun Resources.getLocalesConfig(): LocaleListCompat {
 	val tagsList = StringJoiner(",")

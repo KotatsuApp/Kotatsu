@@ -15,8 +15,8 @@ import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 @Reusable
@@ -52,8 +52,14 @@ class BookmarksRepository @Inject constructor(
 		}
 	}
 
-	suspend fun removeBookmark(mangaId: Long, pageId: Long) {
-		db.bookmarksDao.delete(mangaId, pageId)
+	suspend fun removeBookmark(mangaId: Long, chapterId: Long, page: Int) {
+		check(db.bookmarksDao.delete(mangaId, chapterId, page) != 0) {
+			"Bookmark not found"
+		}
+	}
+
+	suspend fun removeBookmark(bookmark: Bookmark) {
+		removeBookmark(bookmark.manga.id, bookmark.chapterId, bookmark.page)
 	}
 
 	suspend fun removeBookmarks(ids: Map<Manga, Set<Long>>): ReversibleHandle {

@@ -35,15 +35,16 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.clearItemDecorations
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.measureHeight
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesBottomSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter.Companion.ITEM_TYPE_MANGA_GRID
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -54,7 +55,7 @@ import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import javax.inject.Inject
 
@@ -112,8 +113,6 @@ abstract class MangaListFragment :
 			fastScroller.setFastScrollListener(this@MangaListFragment)
 		}
 		with(binding.swipeRefreshLayout) {
-			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
-			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
 			setOnRefreshListener(this@MangaListFragment)
 			isEnabled = isSwipeRefreshEnabled
 		}
@@ -123,9 +122,9 @@ abstract class MangaListFragment :
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
-		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
-		viewModel.onActionDone.observe(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
-		viewModel.onDownloadStarted.observe(viewLifecycleOwner, DownloadStartedObserver(binding.recyclerView))
+		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
+		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
+		viewModel.onDownloadStarted.observeEvent(viewLifecycleOwner, DownloadStartedObserver(binding.recyclerView))
 	}
 
 	override fun onDestroyView() {
@@ -149,8 +148,8 @@ abstract class MangaListFragment :
 
 	override fun onReadClick(manga: Manga, view: View) {
 		if (selectionController?.onItemClick(manga.id) != true) {
-			val intent = ReaderActivity.newIntent(context ?: return, manga)
-			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+			val intent = IntentBuilder(view.context).manga(manga).build()
+			startActivity(intent, scaleUpActivityOptionsOf(view))
 		}
 	}
 
@@ -294,7 +293,7 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_favourite -> {
-				FavouriteCategoriesBottomSheet.show(childFragmentManager, selectedItems)
+				FavouriteCategoriesSheet.show(childFragmentManager, selectedItems)
 				mode.finish()
 				true
 			}

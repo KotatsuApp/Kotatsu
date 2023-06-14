@@ -1,17 +1,17 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.asFlowLiveData
-import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
@@ -27,23 +27,11 @@ class FavouritesCategoriesViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	private var reorderJob: Job? = null
-	private val isReorder = MutableStateFlow(false)
-
-	val isInReorderMode = isReorder.asLiveData(viewModelScope.coroutineContext)
-
-	val allCategories = repository.observeCategories()
-		.mapItems {
-			CategoryListModel(
-				mangaCount = 0,
-				covers = listOf(),
-				category = it,
-				isReorderMode = false,
-			)
-		}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	val isInReorderMode = MutableStateFlow(false)
 
 	val detalizedCategories = combine(
 		repository.observeCategoriesWithCovers(),
-		isReorder,
+		isInReorderMode,
 	) { list, reordering ->
 		list.map { (category, covers) ->
 			CategoryListModel(
@@ -62,7 +50,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 				),
 			)
 		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	fun deleteCategory(id: Long) {
 		launchJob {
@@ -80,12 +68,12 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		settings.isAllFavouritesVisible = isVisible
 	}
 
-	fun isInReorderMode(): Boolean = isReorder.value
+	fun isInReorderMode(): Boolean = isInReorderMode.value
 
-	fun isEmpty(): Boolean = detalizedCategories.value?.none { it is CategoryListModel } ?: true
+	fun isEmpty(): Boolean = detalizedCategories.value.none { it is CategoryListModel }
 
 	fun setReorderMode(isReorderMode: Boolean) {
-		isReorder.value = isReorderMode
+		isInReorderMode.value = isReorderMode
 	}
 
 	fun reorderCategories(oldPos: Int, newPos: Int) {

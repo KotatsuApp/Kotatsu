@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.core.parser
 
 import androidx.annotation.AnyThread
 import org.koitharu.kotatsu.core.cache.ContentCache
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -21,6 +21,8 @@ interface MangaRepository {
 	val source: MangaSource
 
 	val sortOrders: Set<SortOrder>
+
+	var defaultSortOrder: SortOrder
 
 	suspend fun getList(offset: Int, query: String): List<Manga>
 

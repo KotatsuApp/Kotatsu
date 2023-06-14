@@ -56,7 +56,6 @@
 	<string name="delete">Deletar</string>
 	<string name="text_file_not_supported">Escolha um arquivo ZIP ou CBZ.</string>
 	<string name="no_description">Sem descrição</string>
-	<string name="history_and_cache">Histórico e cache</string>
 	<string name="clear_pages_cache">Limpar cache da página</string>
 	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 	<string name="standard">Padrão</string>
@@ -150,7 +149,6 @@
 	<string name="tracker_warning">Alguns dispositivos têm um comportamento de sistema diferente, o que pode interromper as tarefas em segundo plano.</string>
 	<string name="read_more">Consulte mais informação</string>
 	<string name="queued">Na fila</string>
-	<string name="chapter_is_missing_text">Baixe ou leia este capítulo perdido online.</string>
 	<string name="chapter_is_missing">O capítulo está em falta</string>
 	<string name="about_app_translation_summary">Traduzir este aplicativo</string>
 	<string name="about_app_translation">Tradução</string>
@@ -180,7 +178,6 @@
 	<string name="disabled">Desabilitado</string>
 	<string name="filter_load_error">Não foi possível carregar a lista de gêneros</string>
 	<string name="reset_filter">Redefinir filtro</string>
-	<string name="find_genre">Encontrar gênero</string>
 	<string name="onboard_text">Selecione os idiomas que você deseja ler mangá. Você pode alterá-lo mais tarde nas configurações.</string>
 	<string name="never">Nunca</string>
 	<string name="only_using_wifi">Somente em Wi-Fi</string>
@@ -226,7 +223,6 @@
 	<string name="percent_string_pattern">%1$s%%</string>
 	<string name="suggestions_updating">Atualização de sugestões</string>
 	<string name="appearance">Aparência</string>
-	<string name="content">Conteúdo</string>
 	<string name="suggestions_excluded_genres">Excluir gêneros</string>
 	<string name="suggestions_excluded_genres_summary">Especifique os gêneros que você não deseja ver nas sugestões</string>
 	<string name="removal_completed">Remoção concluída</string>

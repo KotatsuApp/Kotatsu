@@ -22,6 +22,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityProtectBinding
 
 @AndroidEntryPoint
@@ -42,9 +44,9 @@ class ProtectActivity :
 		viewBinding.buttonNext.setOnClickListener(this)
 		viewBinding.buttonCancel.setOnClickListener(this)
 
-		viewModel.onError.observe(this, this::onError)
+		viewModel.onError.observeEvent(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
-		viewModel.onUnlockSuccess.observe(this) {
+		viewModel.onUnlockSuccess.observeEvent(this) {
 			val intent = intent.getParcelableExtraCompat<Intent>(EXTRA_INTENT)
 			startActivity(intent)
 			finishAfterTransition()

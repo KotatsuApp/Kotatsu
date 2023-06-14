@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
@@ -24,6 +25,9 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.indicator
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.databinding.ActivityColorFilterBinding
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -37,7 +41,7 @@ import com.google.android.material.R as materialR
 class ColorFilterConfigActivity :
 	BaseActivity<ActivityColorFilterBinding>(),
 	Slider.OnChangeListener,
-	View.OnClickListener {
+	View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -56,6 +60,7 @@ class ColorFilterConfigActivity :
 		val formatter = PercentLabelFormatter(resources)
 		viewBinding.sliderContrast.setLabelFormatter(formatter)
 		viewBinding.sliderBrightness.setLabelFormatter(formatter)
+		viewBinding.switchInvert.setOnCheckedChangeListener(this)
 		viewBinding.buttonDone.setOnClickListener(this)
 		viewBinding.buttonReset.setOnClickListener(this)
 
@@ -63,10 +68,10 @@ class ColorFilterConfigActivity :
 
 		viewModel.colorFilter.observe(this, this::onColorFilterChanged)
 		viewModel.isLoading.observe(this, this::onLoadingChanged)
-		viewModel.preview.observe(this, this::onPreviewChanged)
-		viewModel.onDismiss.observe(this) {
+		viewModel.onDismiss.observeEvent(this) {
 			finishAfterTransition()
 		}
+		loadPreview(viewModel.preview)
 	}
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
@@ -76,6 +81,10 @@ class ColorFilterConfigActivity :
 				R.id.slider_contrast -> viewModel.setContrast(value)
 			}
 		}
+	}
+
+	override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+		viewModel.setInversion(isChecked)
 	}
 
 	override fun onClick(v: View) {
@@ -101,21 +110,22 @@ class ColorFilterConfigActivity :
 	private fun onColorFilterChanged(readerColorFilter: ReaderColorFilter?) {
 		viewBinding.sliderBrightness.setValueRounded(readerColorFilter?.brightness ?: 0f)
 		viewBinding.sliderContrast.setValueRounded(readerColorFilter?.contrast ?: 0f)
+		viewBinding.switchInvert.setChecked(readerColorFilter?.isInverted ?: false, false)
 		viewBinding.imageViewAfter.colorFilter = readerColorFilter?.toColorFilter()
 	}
 
-	private fun onPreviewChanged(preview: MangaPage?) {
-		if (preview == null) return
+	private fun loadPreview(page: MangaPage) {
+		val data: Any = page.preview?.takeUnless { it.isEmpty() } ?: page
 		ImageRequest.Builder(this@ColorFilterConfigActivity)
-			.data(preview.url)
+			.data(data)
 			.scale(Scale.FILL)
 			.decodeRegion()
-			.tag(preview.source)
+			.tag(page.source)
 			.indicator(listOf(viewBinding.progressBefore, viewBinding.progressAfter))
 			.error(R.drawable.ic_error_placeholder)
 			.size(ViewSizeResolver(viewBinding.imageViewBefore))
 			.allowRgb565(false)
-			.target(ShadowViewTarget(viewBinding.imageViewBefore, viewBinding.imageViewAfter))
+			.target(DoubleViewTarget(viewBinding.imageViewBefore, viewBinding.imageViewAfter))
 			.enqueueWith(coil)
 	}
 

@@ -1,13 +1,14 @@
 package org.koitharu.kotatsu.settings.backup
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import java.io.File
 import javax.inject.Inject
 
@@ -17,8 +18,8 @@ class BackupViewModel @Inject constructor(
 	@ApplicationContext context: Context,
 ) : BaseViewModel() {
 
-	val progress = MutableLiveData(-1f)
-	val onBackupDone = SingleLiveEvent<File>()
+	val progress = MutableStateFlow(-1f)
+	val onBackupDone = MutableEventFlow<File>()
 
 	init {
 		launchLoadingJob {

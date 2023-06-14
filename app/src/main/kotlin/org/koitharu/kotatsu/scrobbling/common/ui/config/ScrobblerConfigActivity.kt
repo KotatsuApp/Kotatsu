@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
-import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -19,6 +18,8 @@ import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityScrobblerConfigBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
@@ -27,6 +28,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
 import javax.inject.Inject
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
@@ -64,8 +66,8 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		viewModel.content.observe(this, listAdapter::setItems)
 		viewModel.user.observe(this, this::onUserChanged)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
-		viewModel.onError.observe(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
-		viewModel.onLoggedOut.observe(this) {
+		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
+		viewModel.onLoggedOut.observeEvent(this) {
 			finishAfterTransition()
 		}
 
@@ -113,11 +115,11 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	private fun onUserChanged(user: ScrobblerUser?) {
 		if (user == null) {
 			viewBinding.imageViewAvatar.disposeImageRequest()
-			viewBinding.imageViewAvatar.isVisible = false
+			viewBinding.imageViewAvatar.setImageResource(materialR.drawable.abc_ic_menu_overflow_material)
 			return
 		}
-		viewBinding.imageViewAvatar.isVisible = true
 		viewBinding.imageViewAvatar.newImageRequest(this, user.avatar)
+			?.placeholder(R.drawable.bg_badge_empty)
 			?.enqueueWith(coil)
 	}
 

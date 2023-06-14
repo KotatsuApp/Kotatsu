@@ -11,7 +11,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import org.koitharu.kotatsu.local.domain.LocalMangaRepository
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import java.util.concurrent.TimeUnit
 
 @HiltWorker

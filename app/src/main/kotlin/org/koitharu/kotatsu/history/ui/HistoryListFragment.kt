@@ -9,6 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource

@@ -53,7 +53,6 @@
 	<string name="webtoon">Nettserie</string>
 	<string name="standard">Forvalg</string>
 	<string name="clear_pages_cache">Tøm sidehurtiglager</string>
-	<string name="history_and_cache">Historikk og hurtiglager</string>
 	<string name="text_file_not_supported">Velg en ZIP- eller CBZ-fil.</string>
 	<string name="operation_not_supported">Ustøttet handling</string>
 	<string name="_import">Importer</string>
@@ -181,7 +180,6 @@
 	<string name="history">Historikk</string>
 	<string name="favourites">Favoritter</string>
 	<string name="local_storage">Lokallagring</string>
-	<string name="chapter_is_missing_text">Last ned eller les dette manglende kapittelet på nett.</string>
 	<string name="chapter_is_missing">Kapittelet mangler</string>
 	<string name="queued">I kø</string>
 	<string name="state_finished">Fullført</string>
@@ -214,7 +212,6 @@
 	<string name="always">Alltid</string>
 	<string name="preload_pages">Forhåndsinnlast bilder</string>
 	<string name="reset_filter">Tilbakestill filter</string>
-	<string name="find_genre">Finn sjanger</string>
 	<string name="never">Aldri</string>
 	<string name="only_using_wifi">Kun på Wi-Fi</string>
 	<string name="onboard_text">Velg språkene du ønsker å lese manga. Du kan endre dette senere i innstillingene.</string>
@@ -224,7 +221,6 @@
 	<string name="percent_string_pattern">%1$s%%</string>
 	<string name="various_languages">Forskjellige språk</string>
 	<string name="chapters_empty">Ingen kapitler i denne mangaen</string>
-	<string name="content">Innhold</string>
 	<string name="appearance">Utseende</string>
 	<string name="name">Navn</string>
 	<string name="edit">Rediger</string>

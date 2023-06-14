@@ -59,6 +59,7 @@ interface NetworkModule {
 			writeTimeout(20, TimeUnit.SECONDS)
 			cookieJar(cookieJar)
 			proxySelector(AppProxySelector(settings))
+			proxyAuthenticator(ProxyAuthenticator(settings))
 			dns(DoHManager(cache, settings))
 			if (settings.isSSLBypassEnabled) {
 				bypassSSLErrors()

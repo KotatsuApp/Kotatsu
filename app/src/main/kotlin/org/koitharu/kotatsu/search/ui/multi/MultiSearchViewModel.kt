@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.search.ui.multi
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,27 +10,30 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.plus
+import kotlinx.coroutines.withTimeout
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.exceptions.CompositeException
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
-import org.koitharu.kotatsu.core.util.ext.emitValue
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 private const val MAX_PARALLELISM = 4
@@ -41,6 +42,7 @@ private const val MIN_HAS_MORE_ITEMS = 8
 @HiltViewModel
 class MultiSearchViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
+	private val extraProvider: ListExtraProvider,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val downloadScheduler: DownloadWorker.Scheduler,
@@ -49,20 +51,17 @@ class MultiSearchViewModel @Inject constructor(
 	private var searchJob: Job? = null
 	private val listData = MutableStateFlow<List<MultiSearchListModel>>(emptyList())
 	private val loadingData = MutableStateFlow(false)
-	private var listError = MutableStateFlow<Throwable?>(null)
-	val onDownloadStarted = SingleLiveEvent<Unit>()
+	val onDownloadStarted = MutableEventFlow<Unit>()
 
-	val query = MutableLiveData(savedStateHandle.get<String>(MultiSearchActivity.EXTRA_QUERY).orEmpty())
-	val list: LiveData<List<ListModel>> = combine(
+	val query = MutableStateFlow(savedStateHandle.get<String>(MultiSearchActivity.EXTRA_QUERY).orEmpty())
+	val list: StateFlow<List<ListModel>> = combine(
 		listData,
 		loadingData,
-		listError,
-	) { list, loading, error ->
+	) { list, loading ->
 		when {
 			list.isEmpty() -> listOf(
 				when {
 					loading -> LoadingState
-					error != null -> error.toErrorState(canRetry = true)
 					else -> EmptyState(
 						icon = R.drawable.ic_empty_common,
 						textPrimary = R.string.nothing_found,
@@ -75,10 +74,10 @@ class MultiSearchViewModel @Inject constructor(
 			loading -> list + LoadingFooter()
 			else -> list
 		}
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	init {
-		doSearch(query.value.orEmpty())
+		doSearch(query.value)
 	}
 
 	fun getItems(ids: Set<Long>): Set<Manga> {
@@ -98,15 +97,12 @@ class MultiSearchViewModel @Inject constructor(
 		searchJob = launchJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			try {
-				listError.value = null
 				listData.value = emptyList()
 				loadingData.value = true
-				query.emitValue(q)
+				query.value = q
 				searchImpl(q)
 			} catch (e: CancellationException) {
 				throw e
-			} catch (e: Throwable) {
-				listError.value = e
 			} finally {
 				loadingData.value = false
 			}
@@ -116,7 +112,7 @@ class MultiSearchViewModel @Inject constructor(
 	fun download(items: Set<Manga>) {
 		launchJob(Dispatchers.Default) {
 			downloadScheduler.schedule(items)
-			onDownloadStarted.emitCall(Unit)
+			onDownloadStarted.call(Unit)
 		}
 	}
 
@@ -126,35 +122,28 @@ class MultiSearchViewModel @Inject constructor(
 		val deferredList = sources.map { source ->
 			async(dispatcher) {
 				runCatchingCancellable {
-					val list = mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
-						.toUi(ListMode.GRID, null)
-					if (list.isNotEmpty()) {
-						MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list)
-					} else {
-						null
+					withTimeout(8_000) {
+						mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
+							.toUi(ListMode.GRID, extraProvider)
 					}
-				}.onFailure {
-					it.printStackTraceDebug()
-				}
+				}.fold(
+					onSuccess = { list ->
+						if (list.isEmpty()) {
+							null
+						} else {
+							MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list, null)
+						}
+					},
+					onFailure = { error ->
+						error.printStackTraceDebug()
+						MultiSearchListModel(source, true, emptyList(), error)
+					},
+				)
 			}
 		}
-
-		val errors = ArrayList<Throwable>()
 		for (deferred in deferredList) {
-			deferred.await()
-				.onSuccess { item ->
-					if (item != null) {
-						listData.update { x -> x + item }
-					}
-				}.onFailure {
-					errors.add(it)
-				}
-		}
-		if (listData.value.isEmpty()) {
-			when (errors.size) {
-				0 -> Unit
-				1 -> throw errors[0]
-				else -> throw CompositeException(errors)
+			deferred.await()?.let { item ->
+				listData.update { x -> x + item }
 			}
 		}
 	}

@@ -27,6 +27,7 @@ abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 			.setView(binding.root)
 			.run(::onBuildDialog)
 			.create()
+			.also(::onDialogCreated)
 	}
 
 	final override fun onCreateView(

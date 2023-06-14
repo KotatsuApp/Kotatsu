@@ -16,10 +16,10 @@ import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.util.ext.resolveName
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.local.data.CbzFilter
-import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject

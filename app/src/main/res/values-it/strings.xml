@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-	<string name="history_and_cache">Cronologia e cache</string>
 	<string name="no_description">Nessuna descrizione</string>
 	<string name="text_file_not_supported">File non valido. Sono supportati solo ZIP e CBZ.</string>
 	<string name="operation_not_supported">Questa operazione non è supportata</string>
@@ -182,7 +181,6 @@
 	<string name="zoom_mode_fit_width">Adatta alla larghezza</string>
 	<string name="scale_mode">Modalità scala</string>
 	<string name="chapter_is_missing">Capitolo mancante</string>
-	<string name="chapter_is_missing_text">Questo capitolo manca sul tuo dispositivo. Scaricalo o leggilo in linea.</string>
 	<string name="queued">In coda</string>
 	<string name="about_app_translation">Traduzione</string>
 	<string name="about_app_translation_summary">Traduci questa applicazione</string>
@@ -211,7 +209,6 @@
 	<string name="enabled">Abilitato</string>
 	<string name="disabled">Disabilitato</string>
 	<string name="exclude_nsfw_from_suggestions">Non suggerire manga NSFW</string>
-	<string name="find_genre">Trova il genere</string>
 	<string name="reset_filter">Ripristina il filtro</string>
 	<string name="onboard_text">Seleziona le lingue in cui vuoi leggere i manga. Puoi cambiarla in seguito nelle impostazioni.</string>
 	<string name="never">Mai</string>
@@ -225,7 +222,6 @@
 	<string name="chapters_empty">Nessun capitolo in questo manga</string>
 	<string name="percent_string_pattern">%1$s%%</string>
 	<string name="appearance">Aspetto</string>
-	<string name="content">Contenuto</string>
 	<string name="suggestions_updating">Aggiornamento dei suggerimenti</string>
 	<string name="suggestions_excluded_genres_summary">Specifica i generi che non vuoi vedere nei suggerimenti</string>
 	<string name="suggestions_excluded_genres">Escludi generi</string>

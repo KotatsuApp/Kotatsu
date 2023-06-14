@@ -103,6 +103,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 
 	override fun onDestroy() {
 		super.onDestroy()
+		viewBinding.webView.stopLoading()
 		viewBinding.webView.destroy()
 	}
 

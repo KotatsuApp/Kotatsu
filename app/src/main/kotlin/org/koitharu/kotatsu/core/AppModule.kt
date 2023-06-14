@@ -29,22 +29,22 @@ import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.cache.StubContentCache
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.network.*
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.os.NetworkState
-import org.koitharu.kotatsu.core.os.ShortcutsUpdater
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.favicon.FaviconFetcher
 import org.koitharu.kotatsu.core.ui.image.CoilImageGetter
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
+import org.koitharu.kotatsu.core.util.AcraScreenLogger
 import org.koitharu.kotatsu.core.util.IncognitoModeIndicator
 import org.koitharu.kotatsu.core.util.ext.activityManager
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
-import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
-import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.ui.thumbnails.MangaPageFetcher
@@ -86,7 +86,8 @@ interface AppModule {
 			@ApplicationContext context: Context,
 			@MangaHttpClient okHttpClient: OkHttpClient,
 			mangaRepositoryFactory: MangaRepository.Factory,
-			pagesCache: PagesCache,
+			imageProxyInterceptor: ImageProxyInterceptor,
+			pageFetcherFactory: MangaPageFetcher.Factory,
 		): ImageLoader {
 			val diskCacheFactory = {
 				val rootDir = context.externalCacheDir ?: context.cacheDir
@@ -108,7 +109,8 @@ interface AppModule {
 						.add(SvgDecoder.Factory())
 						.add(CbzFetcher.Factory())
 						.add(FaviconFetcher.Factory(context, okHttpClient, mangaRepositoryFactory))
-						.add(MangaPageFetcher.Factory(context, okHttpClient, pagesCache, mangaRepositoryFactory))
+						.add(pageFetcherFactory)
+						.add(imageProxyInterceptor)
 						.build(),
 				).build()
 		}
@@ -124,12 +126,12 @@ interface AppModule {
 		@ElementsIntoSet
 		fun provideDatabaseObservers(
 			widgetUpdater: WidgetUpdater,
-			shortcutsUpdater: ShortcutsUpdater,
+			appShortcutManager: AppShortcutManager,
 			backupObserver: BackupObserver,
 			syncController: SyncController,
 		): Set<@JvmSuppressWildcards InvalidationTracker.Observer> = arraySetOf(
 			widgetUpdater,
-			shortcutsUpdater,
+			appShortcutManager,
 			backupObserver,
 			syncController,
 		)
@@ -140,10 +142,12 @@ interface AppModule {
 			appProtectHelper: AppProtectHelper,
 			activityRecreationHandle: ActivityRecreationHandle,
 			incognitoModeIndicator: IncognitoModeIndicator,
+			acraScreenLogger: AcraScreenLogger,
 		): Set<@JvmSuppressWildcards Application.ActivityLifecycleCallbacks> = arraySetOf(
 			appProtectHelper,
 			activityRecreationHandle,
 			incognitoModeIndicator,
+			acraScreenLogger,
 		)
 
 		@Provides

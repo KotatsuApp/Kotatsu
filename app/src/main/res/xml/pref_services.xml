@@ -16,6 +16,12 @@
 		android:key="sync_settings"
 		android:title="@string/sync_settings" />
 
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.SuggestionsSettingsFragment"
+		android:key="suggestions"
+		android:title="@string/suggestions"
+		app:allowDividerAbove="true" />
+
 	<PreferenceCategory android:title="@string/tracking">
 
 		<Preference

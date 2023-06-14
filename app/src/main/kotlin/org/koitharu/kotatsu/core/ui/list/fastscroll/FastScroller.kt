@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.*
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.isLayoutReversed
+import org.koitharu.kotatsu.core.util.ext.parents
 import org.koitharu.kotatsu.databinding.FastScrollerBinding
 import kotlin.math.roundToInt
 import com.google.android.material.R as materialR
@@ -56,6 +58,7 @@ class FastScroller @JvmOverloads constructor(
 	private var bubbleHeight = 0
 	private var handleHeight = 0
 	private var viewHeight = 0
+	private var offset = 0
 	private var hideScrollbar = true
 	private var showBubble = true
 	private var showBubbleAlways = false
@@ -114,6 +117,9 @@ class FastScroller @JvmOverloads constructor(
 			return viewHeight * proportion
 		}
 
+	val isScrollbarVisible: Boolean
+		get() = binding.scrollbar.isVisible
+
 	init {
 		clipChildren = false
 		orientation = HORIZONTAL
@@ -137,6 +143,7 @@ class FastScroller @JvmOverloads constructor(
 			bubbleSize = getBubbleSize(R.styleable.FastScroller_bubbleSize, BubbleSize.NORMAL)
 			val textSize = getDimension(R.styleable.FastScroller_bubbleTextSize, bubbleSize.textSize)
 			binding.bubble.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+			offset = getDimensionPixelOffset(R.styleable.FastScroller_scrollerOffset, offset)
 		}
 
 		setTrackColor(trackColor)
@@ -163,7 +170,9 @@ class FastScroller @JvmOverloads constructor(
 
 		when (event.actionMasked) {
 			MotionEvent.ACTION_DOWN -> {
-				if (event.x.toInt() !in binding.scrollbar.left..binding.scrollbar.right) return false
+				if (!isScrollbarVisible || event.x.toInt() !in binding.scrollbar.left..binding.scrollbar.right) {
+					return false
+				}
 
 				requestDisallowInterceptTouchEvent(true)
 				setHandleSelected(true)
@@ -248,7 +257,7 @@ class FastScroller @JvmOverloads constructor(
 
 				layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
 					height = 0
-					setMargins(0, marginTop, 0, marginBottom)
+					setMargins(offset, marginTop, offset, marginBottom)
 				}
 			}
 
@@ -256,13 +265,13 @@ class FastScroller @JvmOverloads constructor(
 				height = LayoutParams.MATCH_PARENT
 				anchorGravity = GravityCompat.END
 				anchorId = recyclerViewId
-				setMargins(0, marginTop, 0, marginBottom)
+				setMargins(offset, marginTop, offset, marginBottom)
 			}
 
 			is FrameLayout -> layoutParams = (layoutParams as FrameLayout.LayoutParams).apply {
 				height = LayoutParams.MATCH_PARENT
 				gravity = GravityCompat.END
-				setMargins(0, marginTop, 0, marginBottom)
+				setMargins(offset, marginTop, offset, marginBottom)
 			}
 
 			is RelativeLayout -> layoutParams = (layoutParams as RelativeLayout.LayoutParams).apply {
@@ -270,7 +279,7 @@ class FastScroller @JvmOverloads constructor(
 				addRule(RelativeLayout.ALIGN_TOP, recyclerViewId)
 				addRule(RelativeLayout.ALIGN_BOTTOM, recyclerViewId)
 				addRule(RelativeLayout.ALIGN_END, recyclerViewId)
-				setMargins(0, marginTop, 0, marginBottom)
+				setMargins(offset, marginTop, offset, marginBottom)
 			}
 
 			else -> throw IllegalArgumentException("Parent ViewGroup must be a ConstraintLayout, CoordinatorLayout, FrameLayout, or RelativeLayout")
@@ -294,10 +303,12 @@ class FastScroller @JvmOverloads constructor(
 
 		if (parent is ViewGroup) {
 			setLayoutParams(parent as ViewGroup)
-		} else if (recyclerView.parent is ViewGroup) {
-			val viewGroup = recyclerView.parent as ViewGroup
-			viewGroup.addView(this)
-			setLayoutParams(viewGroup)
+		} else {
+			val viewGroup = findValidParent(recyclerView)
+			if (viewGroup != null) {
+				viewGroup.addView(this)
+				setLayoutParams(viewGroup)
+			}
 		}
 
 		recyclerView.addOnScrollListener(scrollListener)
@@ -509,6 +520,14 @@ class FastScroller @JvmOverloads constructor(
 	private fun TypedArray.getBubbleSize(@StyleableRes index: Int, defaultValue: BubbleSize): BubbleSize {
 		val ordinal = getInt(index, -1)
 		return BubbleSize.values().getOrNull(ordinal) ?: defaultValue
+	}
+
+	private fun findValidParent(view: View): ViewGroup? = view.parents.firstNotNullOfOrNull { p ->
+		if (p is FrameLayout || p is ConstraintLayout || p is CoordinatorLayout || p is RelativeLayout) {
+			p as ViewGroup
+		} else {
+			null
+		}
 	}
 
 	private val BubbleSize.textSize

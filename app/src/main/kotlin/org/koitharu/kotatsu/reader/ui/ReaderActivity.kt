@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
@@ -21,6 +22,7 @@ import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -42,13 +44,15 @@ import org.koitharu.kotatsu.core.util.IdlingDetector
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.hasGlobalPoint
 import org.koitharu.kotatsu.core.util.ext.isRtl
-import org.koitharu.kotatsu.core.util.ext.observeWithPrevious
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.postDelayed
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
+import org.koitharu.kotatsu.core.util.ext.zipWithPrevious
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.reader.ui.config.ReaderConfigBottomSheet
+import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
@@ -60,10 +64,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ReaderActivity :
 	BaseFullscreenActivity<ActivityReaderBinding>(),
-	ChaptersBottomSheet.OnChapterChangeListener,
+	ChaptersSheet.OnChapterChangeListener,
 	GridTouchHelper.OnGridTouchListener,
 	OnPageSelectListener,
-	ReaderConfigBottomSheet.Callback,
+	ReaderConfigSheet.Callback,
 	ReaderControlDelegate.OnInteractionListener,
 	OnApplyWindowInsetsListener,
 	IdlingDetector.Callback {
@@ -108,7 +112,7 @@ class ReaderActivity :
 		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
 
-		viewModel.onError.observe(
+		viewModel.onError.observeEvent(
 			this,
 			DialogErrorObserver(
 				host = viewBinding.container,
@@ -117,23 +121,23 @@ class ReaderActivity :
 				onResolved = { isResolved ->
 					if (isResolved) {
 						viewModel.reload()
-					} else if (viewModel.content.value?.pages.isNullOrEmpty()) {
+					} else if (viewModel.content.value.pages.isEmpty()) {
 						finishAfterTransition()
 					}
 				},
 			),
 		)
 		viewModel.readerMode.observe(this, this::onInitReader)
-		viewModel.onPageSaved.observe(this, this::onPageSaved)
-		viewModel.uiState.observeWithPrevious(this, this::onUiStateChanged)
+		viewModel.onPageSaved.observeEvent(this, this::onPageSaved)
+		viewModel.uiState.zipWithPrevious().observe(this, this::onUiStateChanged)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.content.observe(this) {
-			onLoadingStateChanged(viewModel.isLoading.value == true)
+			onLoadingStateChanged(viewModel.isLoading.value)
 		}
 		viewModel.isScreenshotsBlockEnabled.observe(this, this::setWindowSecure)
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, this::onBookmarkStateChanged)
-		viewModel.onShowToast.observe(this) { msgId ->
+		viewModel.onShowToast.observeEvent(this) { msgId ->
 			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
 				.setAnchorView(viewBinding.appbarBottom)
 				.show()
@@ -150,7 +154,10 @@ class ReaderActivity :
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 	}
 
-	private fun onInitReader(mode: ReaderMode) {
+	private fun onInitReader(mode: ReaderMode?) {
+		if (mode == null) {
+			return
+		}
 		if (readerManager.currentMode != mode) {
 			readerManager.replace(mode)
 		}
@@ -172,7 +179,7 @@ class ReaderActivity :
 			}
 
 			R.id.action_chapters -> {
-				ChaptersBottomSheet.show(
+				ChaptersSheet.show(
 					supportFragmentManager,
 					viewModel.manga?.chapters.orEmpty(),
 					viewModel.getCurrentState()?.chapterId ?: 0L,
@@ -183,14 +190,14 @@ class ReaderActivity :
 				val state = viewModel.getCurrentState() ?: return false
 				PagesThumbnailsSheet.show(
 					supportFragmentManager,
-					viewModel.manga ?: return false,
+					viewModel.manga?.any ?: return false,
 					state.chapterId,
 					state.page,
 				)
 			}
 
 			R.id.action_bookmark -> {
-				if (viewModel.isBookmarkAdded.value == true) {
+				if (viewModel.isBookmarkAdded.value) {
 					viewModel.removeBookmark()
 				} else {
 					viewModel.addBookmark()
@@ -200,7 +207,7 @@ class ReaderActivity :
 			R.id.action_options -> {
 				viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 				val currentMode = readerManager.currentMode ?: return false
-				ReaderConfigBottomSheet.show(supportFragmentManager, currentMode)
+				ReaderConfigSheet.show(supportFragmentManager, currentMode)
 			}
 
 			else -> return super.onOptionsItemSelected(item)
@@ -209,7 +216,7 @@ class ReaderActivity :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		val hasPages = !viewModel.content.value?.pages.isNullOrEmpty()
+		val hasPages = viewModel.content.value.pages.isNotEmpty()
 		viewBinding.layoutLoading.isVisible = isLoading && !hasPages
 		if (isLoading && hasPages) {
 			viewBinding.toastView.show(R.string.loading_)
@@ -260,7 +267,7 @@ class ReaderActivity :
 
 	override fun onPageSelected(page: ReaderPage) {
 		lifecycleScope.launch(Dispatchers.Default) {
-			val pages = viewModel.content.value?.pages ?: return@launch
+			val pages = viewModel.content.value.pages
 			val index = pages.indexOfFirst { it.chapterId == page.chapterId && it.id == page.id }
 			if (index != -1) {
 				withContext(Dispatchers.Main) {
@@ -311,7 +318,7 @@ class ReaderActivity :
 			TransitionManager.beginDelayedTransition(viewBinding.root, transition)
 			viewBinding.appbarTop.isVisible = isUiVisible
 			viewBinding.appbarBottom?.isVisible = isUiVisible
-			viewBinding.infoBar.isGone = isUiVisible || (viewModel.isInfoBarEnabled.value == false)
+			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
 			if (isUiVisible) {
 				showSystemUI()
 			} else {
@@ -328,11 +335,11 @@ class ReaderActivity :
 			right = systemBars.right,
 			left = systemBars.left,
 		)
-		viewBinding.appbarBottom?.updatePadding(
-			bottom = systemBars.bottom,
-			right = systemBars.right,
-			left = systemBars.left,
-		)
+		viewBinding.appbarBottom?.updateLayoutParams<MarginLayoutParams> {
+			bottomMargin = systemBars.bottom + topMargin
+			rightMargin = systemBars.right + topMargin
+			leftMargin = systemBars.left + topMargin
+		}
 		return WindowInsetsCompat.Builder(insets)
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
 			.build()
@@ -367,19 +374,16 @@ class ReaderActivity :
 		menuItem.setIcon(if (isAdded) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark)
 	}
 
-	private fun onUiStateChanged(uiState: ReaderUiState?, previous: ReaderUiState?) {
-		title = uiState?.chapterName ?: uiState?.mangaName ?: getString(R.string.loading_)
+	private fun onUiStateChanged(pair: Pair<ReaderUiState?, ReaderUiState?>) {
+		val (previous: ReaderUiState?, uiState: ReaderUiState?) = pair
+		title = uiState?.resolveTitle(this) ?: getString(R.string.loading_)
 		viewBinding.infoBar.update(uiState)
 		if (uiState == null) {
 			supportActionBar?.subtitle = null
 			viewBinding.slider.isVisible = false
 			return
 		}
-		supportActionBar?.subtitle = if (uiState.chapterNumber in 1..uiState.chaptersTotal) {
-			getString(R.string.chapter_d_of_d, uiState.chapterNumber, uiState.chaptersTotal)
-		} else {
-			null
-		}
+		supportActionBar?.subtitle = uiState.chapterName
 		if (previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
 			if (!uiState.chapterName.isNullOrEmpty()) {
 				viewBinding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
@@ -394,6 +398,44 @@ class ReaderActivity :
 		}
 	}
 
+	class IntentBuilder(context: Context) {
+
+		private val intent = Intent(context, ReaderActivity::class.java)
+			.setAction(ACTION_MANGA_READ)
+
+		fun manga(manga: Manga) = apply {
+			intent.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
+		}
+
+		fun mangaId(mangaId: Long) = apply {
+			intent.putExtra(MangaIntent.KEY_ID, mangaId)
+		}
+
+		fun incognito(incognito: Boolean) = apply {
+			intent.putExtra(EXTRA_INCOGNITO, incognito)
+		}
+
+		fun branch(branch: String?) = apply {
+			intent.putExtra(EXTRA_BRANCH, branch)
+		}
+
+		fun state(state: ReaderState?) = apply {
+			intent.putExtra(EXTRA_STATE, state)
+		}
+
+		fun bookmark(bookmark: Bookmark) = manga(
+			bookmark.manga,
+		).state(
+			ReaderState(
+				chapterId = bookmark.chapterId,
+				page = bookmark.page,
+				scroll = bookmark.scroll,
+			),
+		)
+
+		fun build() = intent
+	}
+
 	companion object {
 
 		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
@@ -401,38 +443,5 @@ class ReaderActivity :
 		const val EXTRA_BRANCH = "branch"
 		const val EXTRA_INCOGNITO = "incognito"
 		private const val TOAST_DURATION = 1500L
-
-		fun newIntent(context: Context, manga: Manga): Intent {
-			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
-		}
-
-		fun newIntent(context: Context, manga: Manga, branch: String?, isIncognitoMode: Boolean): Intent {
-			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
-				.putExtra(EXTRA_BRANCH, branch)
-				.putExtra(EXTRA_INCOGNITO, isIncognitoMode)
-		}
-
-		fun newIntent(context: Context, manga: Manga, state: ReaderState?): Intent {
-			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
-				.putExtra(EXTRA_STATE, state)
-		}
-
-		fun newIntent(context: Context, bookmark: Bookmark): Intent {
-			val state = ReaderState(
-				chapterId = bookmark.chapterId,
-				page = bookmark.page,
-				scroll = bookmark.scroll,
-			)
-			return newIntent(context, bookmark.manga, state)
-				.putExtra(EXTRA_INCOGNITO, true)
-		}
-
-		fun newIntent(context: Context, mangaId: Long): Intent {
-			return Intent(context, ReaderActivity::class.java)
-				.putExtra(MangaIntent.KEY_ID, mangaId)
-		}
 	}
 }

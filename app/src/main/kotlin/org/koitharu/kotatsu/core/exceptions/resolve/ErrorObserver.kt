@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.util.ext.findActivity
@@ -19,7 +19,7 @@ abstract class ErrorObserver(
 	protected val fragment: Fragment?,
 	private val resolver: ExceptionResolver?,
 	private val onResolved: Consumer<Boolean>?,
-) : Observer<Throwable?> {
+) : FlowCollector<Throwable> {
 
 	protected val activity = host.context.findActivity()
 

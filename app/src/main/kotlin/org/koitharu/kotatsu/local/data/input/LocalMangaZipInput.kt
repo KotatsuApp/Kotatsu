@@ -10,9 +10,9 @@ import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.core.util.ext.readText
 import org.koitharu.kotatsu.core.util.ext.toListSorted
-import org.koitharu.kotatsu.local.data.LocalManga
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage

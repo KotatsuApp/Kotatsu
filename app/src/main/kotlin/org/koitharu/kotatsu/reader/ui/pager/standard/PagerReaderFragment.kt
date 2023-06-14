@@ -4,15 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.children
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.yield
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.resetTransformations
-import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
@@ -31,8 +34,6 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() 
 	@Inject
 	lateinit var pageLoader: PageLoader
 
-	private var pagesAdapter: PagesAdapter? = null
-
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -40,15 +41,8 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() 
 
 	override fun onViewBindingCreated(binding: FragmentReaderStandardBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		pagesAdapter = PagesAdapter(
-			lifecycleOwner = viewLifecycleOwner,
-			loader = pageLoader,
-			settings = viewModel.readerSettings,
-			networkState = networkState,
-			exceptionResolver = exceptionResolver,
-		)
 		with(binding.pager) {
-			adapter = pagesAdapter
+			adapter = readerAdapter
 			offscreenPageLimit = 2
 			doOnPageChanged(::notifyPageChanged)
 		}
@@ -65,30 +59,39 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() 
 	}
 
 	override fun onDestroyView() {
-		pagesAdapter = null
 		requireViewBinding().pager.adapter = null
 		super.onDestroyView()
 	}
 
-	override fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {
-		viewLifecycleScope.launch {
-			val items = async {
-				pagesAdapter?.setItems(pages)
+	override suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) = coroutineScope {
+		val items = async {
+			requireAdapter().setItems(pages)
+			yield()
+		}
+		if (pendingState != null) {
+			val position = pages.indexOfFirst {
+				it.chapterId == pendingState.chapterId && it.index == pendingState.page
 			}
-			if (pendingState != null) {
-				val position = pages.indexOfFirst {
-					it.chapterId == pendingState.chapterId && it.index == pendingState.page
-				}
-				items.await() ?: return@launch
-				if (position != -1) {
-					requireViewBinding().pager.setCurrentItem(position, false)
-					notifyPageChanged(position)
-				}
+			items.await()
+			if (position != -1) {
+				requireViewBinding().pager.setCurrentItem(position, false)
+				notifyPageChanged(position)
 			} else {
-				items.await()
+				Snackbar.make(requireView(), R.string.not_found_404, Snackbar.LENGTH_SHORT)
+					.show()
 			}
+		} else {
+			items.await()
 		}
 	}
+
+	override fun onCreateAdapter() = PagesAdapter(
+		lifecycleOwner = viewLifecycleOwner,
+		loader = pageLoader,
+		settings = viewModel.readerSettings,
+		networkState = networkState,
+		exceptionResolver = exceptionResolver,
+	)
 
 	override fun switchPageBy(delta: Int) {
 		with(requireViewBinding().pager) {

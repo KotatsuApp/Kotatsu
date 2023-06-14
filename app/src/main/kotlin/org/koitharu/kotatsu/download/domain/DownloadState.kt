@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.download.domain
 
 import androidx.work.Data
-import org.koitharu.kotatsu.history.domain.PROGRESS_NONE
-import org.koitharu.kotatsu.local.data.LocalManga
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.util.Date
 

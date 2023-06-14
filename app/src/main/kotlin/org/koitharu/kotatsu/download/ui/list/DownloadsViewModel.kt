@@ -20,8 +20,8 @@ import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
-import org.koitharu.kotatsu.core.util.asFlowLiveData
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
@@ -47,23 +47,23 @@ class DownloadsViewModel @Inject constructor(
 		.mapLatest { it.toDownloadsList() }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
-	val onActionDone = SingleLiveEvent<ReversibleAction>()
+	val onActionDone = MutableEventFlow<ReversibleAction>()
 
 	val items = works.map {
 		it?.toUiList() ?: listOf(LoadingState)
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	val hasPausedWorks = works.map {
 		it?.any { x -> x.canResume } == true
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(5000), false)
 
 	val hasActiveWorks = works.map {
 		it?.any { x -> x.canPause } == true
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(5000), false)
 
 	val hasCancellableWorks = works.map {
 		it?.any { x -> !x.workState.isFinished } == true
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, false)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(5000), false)
 
 	fun cancel(id: UUID) {
 		launchJob(Dispatchers.Default) {
@@ -79,14 +79,14 @@ class DownloadsViewModel @Inject constructor(
 					workScheduler.cancel(work.id)
 				}
 			}
-			onActionDone.emitCall(ReversibleAction(R.string.downloads_cancelled, null))
+			onActionDone.call(ReversibleAction(R.string.downloads_cancelled, null))
 		}
 	}
 
 	fun cancelAll() {
 		launchJob(Dispatchers.Default) {
 			workScheduler.cancelAll()
-			onActionDone.emitCall(ReversibleAction(R.string.downloads_cancelled, null))
+			onActionDone.call(ReversibleAction(R.string.downloads_cancelled, null))
 		}
 	}
 
@@ -146,14 +146,14 @@ class DownloadsViewModel @Inject constructor(
 					workScheduler.delete(work.id)
 				}
 			}
-			onActionDone.emitCall(ReversibleAction(R.string.downloads_removed, null))
+			onActionDone.call(ReversibleAction(R.string.downloads_removed, null))
 		}
 	}
 
 	fun removeCompleted() {
 		launchJob(Dispatchers.Default) {
 			workScheduler.removeCompleted()
-			onActionDone.emitCall(ReversibleAction(R.string.downloads_removed, null))
+			onActionDone.call(ReversibleAction(R.string.downloads_removed, null))
 		}
 	}
 

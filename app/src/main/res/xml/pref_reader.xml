@@ -19,7 +19,14 @@
 		android:entries="@array/zoom_modes"
 		android:key="zoom_mode"
 		android:title="@string/scale_mode"
+		app:allowDividerAbove="true"
 		app:useSimpleSummaryProvider="true" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="webtoon_zoom"
+		android:summary="@string/webtoon_zoom_summary"
+		android:title="@string/webtoon_zoom" />
 
 	<MultiSelectListPreference
 		android:defaultValue="@array/values_reader_switchers_default"
@@ -38,17 +45,15 @@
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="reader_animation"
+		android:summary="@string/pages_animation_summary"
 		android:title="@string/pages_animation" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
-		android:key="webtoon_zoom"
-		android:title="@string/webtoon_zoom" />
-
-	<SwitchPreferenceCompat
-		android:defaultValue="true"
 		android:key="reader_bar"
-		android:title="@string/reader_info_bar" />
+		android:summary="@string/reader_info_bar_summary"
+		android:title="@string/reader_info_bar"
+		app:allowDividerAbove="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
@@ -58,6 +63,7 @@
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="pages_numbers"
+		android:summary="@string/show_pages_numbers_summary"
 		android:title="@string/show_pages_numbers" />
 
 	<ListPreference
@@ -66,6 +72,7 @@
 		android:entryValues="@array/values_screenshots_policy"
 		android:key="screenshots_policy"
 		android:title="@string/screenshots_policy"
+		app:allowDividerAbove="true"
 		app:useSimpleSummaryProvider="true" />
 
 	<ListPreference

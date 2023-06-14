@@ -7,7 +7,7 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
-	<org.koitharu.kotatsu.core.ui.widgets.BottomSheetHeaderBar
+	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
 		android:id="@+id/headerBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -15,7 +15,8 @@
 
 	<androidx.core.widget.NestedScrollView
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:scrollIndicators="top">
 
 		<LinearLayout
 			android:layout_width="match_parent"

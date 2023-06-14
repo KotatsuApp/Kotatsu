@@ -52,3 +52,11 @@ suspend fun Fragment.awaitViewLifecycle(): LifecycleOwner {
 		}
 	}
 }
+
+fun DialogFragment.showDistinct(fm: FragmentManager, tag: String) {
+	val existing = fm.findFragmentByTag(tag) as? DialogFragment?
+	if (existing != null && existing.isVisible && existing.arguments == this.arguments) {
+		return
+	}
+	show(fm, tag)
+}

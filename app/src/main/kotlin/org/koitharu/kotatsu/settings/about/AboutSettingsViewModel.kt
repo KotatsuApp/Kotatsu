@@ -4,7 +4,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,7 +14,7 @@ class AboutSettingsViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	val isUpdateSupported = appUpdateRepository.isUpdateSupported()
-	val onUpdateAvailable = SingleLiveEvent<AppVersion?>()
+	val onUpdateAvailable = MutableEventFlow<AppVersion?>()
 
 	fun checkForUpdates() {
 		launchLoadingJob {

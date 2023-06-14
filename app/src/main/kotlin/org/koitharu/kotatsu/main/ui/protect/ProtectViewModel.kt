@@ -6,7 +6,8 @@ import kotlinx.coroutines.delay
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.SingleLiveEvent
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.parsers.util.md5
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class ProtectViewModel @Inject constructor(
 
 	private var job: Job? = null
 
-	val onUnlockSuccess = SingleLiveEvent<Unit>()
+	val onUnlockSuccess = MutableEventFlow<Unit>()
 
 	val isBiometricEnabled
 		get() = settings.isBiometricProtectionEnabled

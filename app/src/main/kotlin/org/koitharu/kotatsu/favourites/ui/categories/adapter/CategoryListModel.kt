@@ -1,11 +1,12 @@
 package org.koitharu.kotatsu.favourites.ui.categories.adapter
 
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.favourites.domain.model.Cover
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 class CategoryListModel(
 	val mangaCount: Int,
-	val covers: List<String>,
+	val covers: List<Cover>,
 	val category: FavouriteCategory,
 	val isReorderMode: Boolean,
 ) : ListModel {
@@ -21,9 +22,7 @@ class CategoryListModel(
 		if (covers != other.covers) return false
 		if (category.id != other.category.id) return false
 		if (category.title != other.category.title) return false
-		if (category.order != other.category.order) return false
-
-		return true
+		return category.order == other.category.order
 	}
 
 	override fun hashCode(): Int {

@@ -26,7 +26,7 @@ class ReaderSettings(
 		get() = settings.zoomMode
 
 	val colorFilter: ReaderColorFilter?
-		get() = colorFilterFlow.value
+		get() = colorFilterFlow.value?.takeUnless { it.isEmpty }
 
 	val isPagesNumbersEnabled: Boolean
 		get() = settings.isPagesNumbersEnabled

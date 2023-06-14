@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="local_storage">Lokal</string>
+    <string name="local_storage">Penyimpanan lokal</string>
     <string name="favourites">Favorit</string>
     <string name="history">Riwayat</string>
     <string name="error_occurred">Terjadi kesalahan</string>
@@ -56,7 +56,6 @@
     <string name="page_saved">Disimpan</string>
     <string name="share_image">Bagikan gambar</string>
     <string name="_import">Impor</string>
-    <string name="history_and_cache">Riwayat dan cache</string>
     <string name="clear_pages_cache">Bersihkan cache halaman</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="standard">Standar</string>
@@ -131,7 +130,7 @@
     <string name="captcha_solve">Selesaikan</string>
     <string name="clear_cookies">Bersihkan kuki</string>
     <string name="cookies_cleared">Semua kuki telah dihapus</string>
-    <string name="clear_feed">Bersihkan umpan</string>
+    <string name="clear_feed">Bersihkan aliran</string>
     <string name="check_for_new_chapters">Periksa bab baru</string>
     <string name="auth_required">Masuk untuk melihat konten ini</string>
     <string name="next">Selanjutnya</string>
@@ -148,7 +147,7 @@
     <string name="text_clear_cookies_prompt">Anda akan keluar dari semua sumber</string>
     <string name="genres">Genre</string>
     <string name="state_finished">Selesai</string>
-    <string name="state_ongoing">Berlanjut</string>
+    <string name="state_ongoing">Sedang berlangsung</string>
     <string name="system_default">Standar</string>
     <string name="exclude_nsfw_from_history">Kecualikan komik NSFW dari riwayat</string>
     <string name="show_pages_numbers">Nomor halaman</string>
@@ -160,7 +159,7 @@
     <string name="screenshots_block_all">Selalu blokir</string>
     <string name="suggestions">Saran</string>
     <string name="suggestions_enable">Aktifkan saran</string>
-    <string name="suggestions_summary">Sarankan komik berdasarkan preferensi Anda</string>
+    <string name="suggestions_summary">Sarankan manga berdasarkan preferensi Anda</string>
     <string name="suggestions_info">Semua data hanya dianalisis secara lokal pada perangkat ini dan tidak pernah dikirim ke mana pun.</string>
     <string name="text_suggestion_holder">Mulai membaca komik dan Anda akan mendapatkan saran yang dipersonalisasi</string>
     <string name="exclude_nsfw_from_suggestions">Jangan menyarankan komik NSFW</string>
@@ -171,7 +170,6 @@
     <string name="disabled">Dinonaktifkan</string>
     <string name="filter_load_error">Tidak bisa memuat daftar genre</string>
     <string name="reset_filter">Atur ulang filter</string>
-    <string name="find_genre">Cari genre</string>
     <string name="onboard_text">Pilih bahasa komik yang ingin Anda baca. Anda bisa mengubahnya nanti di pengaturan.</string>
     <string name="never">Jangan Pernah</string>
     <string name="only_using_wifi">Hanya di Wi-Fi</string>
@@ -181,13 +179,12 @@
     <string name="chapters_empty">Tidak ada bab di komik ini</string>
     <string name="percent_string_pattern">%1$s%%</string>
     <string name="appearance">Tampilan</string>
-    <string name="content">Konten</string>
     <string name="suggestions_excluded_genres">Kecualikan genre</string>
     <string name="suggestions_excluded_genres_summary">Tentukan genre yang Anda tidak ingin lihat di saran</string>
     <string name="text_delete_local_manga_batch">Hapus yang dipilih dari perangkat secara permanen\?</string>
     <string name="removal_completed">Selesai menghapus</string>
     <string name="download_slowdown">Perlambat unduhan</string>
-    <string name="suggestions_updating">Pembaruan saran</string>
+    <string name="suggestions_updating">Memperbarui saran</string>
     <string name="download_slowdown_summary">Membantu menghidari pemblokiran alamat IP Anda</string>
     <string name="chapters_will_removed_background">Bab akan dihapus di latar belakang</string>
     <string name="hide">Sembunyikan</string>
@@ -215,10 +212,10 @@
     <string name="vibration">Getaran</string>
     <string name="favourites_categories">Kategori favorit</string>
     <string name="remove_category">Hapus</string>
-    <string name="clear_updates_feed">Bersihkan umpan pembaruan</string>
-    <string name="right_to_left">Kanan ke kiri</string>
+    <string name="clear_updates_feed">Bersihkan aliran pembaruan</string>
+    <string name="right_to_left">Kanan-ke-kiri</string>
     <string name="rotate_screen">Putar layar</string>
-    <string name="feed_will_update_soon">Pembaruan umpan akan dimulai</string>
+    <string name="feed_will_update_soon">Pembaruan aliran akan dimulai</string>
     <string name="enter_password">Masukkan kata sandi</string>
     <string name="protect_application_summary">Tanya kata sandi ketika memulai Kotatsu</string>
     <string name="about">Tentang</string>
@@ -240,7 +237,6 @@
     <string name="text_clear_updates_feed_prompt">Bersihkan semua riwayat pembaruan secara permanen\?</string>
     <string name="sign_in">Masuk</string>
     <string name="default_s">Standar: %s</string>
-    <string name="chapter_is_missing_text">Unduh atau baca bab yang hilang ini secara daring.</string>
     <string name="about_app_translation_summary">Terjemahkan aplikasi ini</string>
     <string name="taps_on_edges">Tekan di tepi</string>
     <string name="large_manga_save_confirm">Komik ini memiliki %s. Simpan semuanya\?</string>
@@ -248,8 +244,8 @@
     <string name="zoom_mode_fit_height">Pas tinggi</string>
     <string name="zoom_mode_fit_width">Pas lebar</string>
     <string name="reverse">Balik</string>
-    <string name="queued">Antri</string>
-    <string name="auth_complete">Diotorisasi</string>
+    <string name="queued">Mengantri</string>
+    <string name="auth_complete">Resmi</string>
     <string name="text_local_holder_secondary">Simpan dari sumber daring atau berkas impor.</string>
     <string name="text_shelf_holder_primary">Komik Anda akan ditampilkan di sini</string>
     <string name="text_shelf_holder_secondary">Cari apa untuk dibaca di bagian «Jelajah»</string>
@@ -296,7 +292,7 @@
     <string name="folder_with_images">Folder dengan gambar</string>
     <string name="import_completed_hint">Anda bisa menghapus berkas asli dari penyimpanan untuk menghemat ruang</string>
     <string name="feed">Umpan</string>
-    <string name="manga_error_description_pattern">Detail kesalahan:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Coba &lt;a href=%2$s&gt;buka komik di browser&lt;/a&gt; untuk memastikan komik tersedia di sumbernya&lt;br&gt;2. Pastikan Anda menggunakan &lt;a href=kotatsu://about&gt;Kotatsu versi terbaru&lt;/a&gt;&lt;br&gt;3. Jika tersedia, kirim laporan kesalahan ke pengembang.</string>
+    <string name="manga_error_description_pattern">Rincian error:&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Coba &lt;a href=%2$s&gt;buka manga di peramban web&lt;/a&gt; untuk memastikan manga tersebut tersedia di sumbernya&lt;/a&gt;2. Pastikan Anda menggunakan &lt;a href= &gt;manga versi terbaru&lt;/a&gt;&lt;br&gt;3. Jika tersedia, kirimkan laporan kesalahan ke pengembang. Pastikan Anda menggunakan &lt;a href=kotatsu://about&gt;versi terbaru Kotatsu&lt;/a&gt;&lt;br&gt;3. Jika tersedia, kirimkan laporan kesalahan ke pengembang.</string>
     <string name="brightness">Kecerahan</string>
     <string name="contrast">Kontras</string>
     <string name="reset">Atur Ulang</string>
@@ -354,7 +350,7 @@
     <string name="show_reading_indicators">Tampilkan indikator kemajuan membaca</string>
     <string name="show_reading_indicators_summary">Tampilkan persentase baca dalam riwayat dan favorit</string>
     <string name="language">Bahasa</string>
-    <string name="text_search_holder_secondary">Cobalah untuk merubah kueri.</string>
+    <string name="text_search_holder_secondary">Cobalah untuk memformulasi ulang kueri.</string>
     <string name="zoom_mode_keep_start">Tetap di awal</string>
     <string name="reader_info_pattern">Bab. %1$d/%2$d Hal. %3$d/%4$d</string>
     <string name="enable_logging">Aktifkan pencatatan</string>
@@ -375,12 +371,12 @@
     <string name="webtoon_zoom">Zoom webtoon</string>
     <string name="different_languages">Berbagai bahasa</string>
     <string name="network_unavailable">Jaringan tidak tersedia</string>
-    <string name="got_it">Mengerti</string>
+    <string name="got_it">Oke</string>
     <string name="sources_reorder_tip">Ketuk dan tahan item untuk menyusun ulang</string>
     <string name="comics_archive_import_description">Anda dapat memilih satu atau beberapa file .cbz atau .zip, setiap file akan dikenali sebagai komik terpisah.</string>
     <string name="folder_with_images_import_description">Anda dapat memilih direktori yang berisi arsip atau gambar. Setiap arsip (atau subdirektori) akan dikenali sebagai sebuah bab.</string>
     <string name="speed">Kecepatan</string>
-    <string name="restore_backup_description">Impor cadangan data pengguna yang dibuat sebelumnya</string>
+    <string name="restore_backup_description">Impor cadangan data pengguna yang telah dibuat sebelumnya</string>
     <string name="show_on_shelf">Tampilkan di Rak</string>
     <string name="sync_auth_hint">Anda dapat masuk ke akun yang sudah ada atau membuat akun baru</string>
     <string name="find_similar">Temukan serupa</string>
@@ -401,7 +397,7 @@
     <string name="cancel_all">Batalkan semua</string>
     <string name="downloads_wifi_only_summary">Berhenti mengunduh saat beralih ke jaringan seluler</string>
     <string name="suggestion_manga">Saran: %s</string>
-    <string name="suggestions_notifications_summary">Terkadang menampilkan notifikasi dengan komik yang disarankan</string>
+    <string name="suggestions_notifications_summary">Terkadang menampilkan notifikasi dengan manga yang disarankan</string>
     <string name="more">Lebih</string>
     <string name="cancel_all_downloads_confirm">Semua pengunduhan yang aktif akan dibatalkan, data yang sudah terunduh sebagian akan hilang</string>
     <string name="remove_completed_downloads_confirm">Riwayat unduhan Anda akan dihapus secara permanen</string>
@@ -410,4 +406,29 @@
     <string name="downloads_paused">Unduhan telah dijeda</string>
     <string name="downloads_removed">Unduhan telah dihapus</string>
     <string name="suggestions_enable_prompt">Apakah Anda ingin menerima saran manga yang dipersonalisasi\?</string>
+    <string name="translations">Terjemahan</string>
+    <string name="web_view_unavailable">WebView tidak tersedia: periksa apakah penyedia WebView telah diinstal</string>
+    <string name="clear_network_cache">Hapus cache jaringan</string>
+    <string name="type">Tipe</string>
+    <string name="address">Alamat</string>
+    <string name="port">Port</string>
+    <string name="proxy">Proksi</string>
+    <string name="invalid_value_message">Nilai tidak valid</string>
+    <string name="manga_branch_title_template">%1$s (%2$s)</string>
+    <string name="images_procy_description">Gunakan layanan wsrv.nl untuk mengurangi penggunaan lalu lintas dan mempercepat pemuatan gambar jika memungkinkan</string>
+    <string name="images_proxy_title">Proksi pengoptimalan gambar</string>
+    <string name="username">NamaUser</string>
+    <string name="downloaded">Diunduh</string>
+    <string name="invert_colors">Balikkan warna</string>
+    <string name="password">Kata sandi</string>
+    <string name="authorization_optional">Otorisasi (opsional)</string>
+    <string name="details_button_tip">Tekan dan tahan tombol Baca untuk melihat opsi lainnya</string>
+    <string name="data_and_privacy">Data dan privasi</string>
+    <string name="restore_summary">Pulihkan cadangan yang dibuat sebelumnya</string>
+    <string name="invalid_port_number">Nomor port tidak valid</string>
+    <string name="network">Jaringan</string>
+    <string name="show_pages_numbers_summary">Tampilkan nomor halaman di pojok bawah</string>
+    <string name="webtoon_zoom_summary">Izinkan gerakan zoom in dalam mode webtoon</string>
+    <string name="reader_info_bar_summary">Tampilkan waktu saat ini dan kemajuan pembacaan di bagian atas layar</string>
+    <string name="pages_animation_summary">Animasikan peralihan halaman</string>
 </resources>

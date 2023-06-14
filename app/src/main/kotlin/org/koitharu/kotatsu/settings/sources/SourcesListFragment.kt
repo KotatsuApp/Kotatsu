@@ -21,11 +21,11 @@ import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.getItem
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.settings.SettingsHeadersFragment
-import org.koitharu.kotatsu.settings.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
@@ -64,7 +64,7 @@ class SourcesListFragment :
 		viewModel.items.observe(viewLifecycleOwner) {
 			sourcesAdapter.items = it
 		}
-		viewModel.onActionDone.observe(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
+		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 		addMenuProvider(SourcesMenuProvider())
 	}
 
@@ -88,8 +88,7 @@ class SourcesListFragment :
 
 	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) {
 		val fragment = SourceSettingsFragment.newInstance(item.source)
-		(parentFragment as? SettingsHeadersFragment)?.openFragment(fragment)
-			?: (activity as? SettingsActivity)?.openFragment(fragment)
+		(activity as? SettingsActivity)?.openFragment(fragment, false)
 	}
 
 	override fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {

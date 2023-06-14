@@ -4,15 +4,17 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.asFlowLiveData
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.parsers.util.move
-import org.koitharu.kotatsu.shelf.domain.ShelfSection
+import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,7 +29,7 @@ class ShelfSettingsViewModel @Inject constructor(
 		favouritesRepository.observeCategories(),
 	) { sections, isTrackerEnabled, categories ->
 		buildList(sections, isTrackerEnabled, categories)
-	}.asFlowLiveData(viewModelScope.coroutineContext + Dispatchers.Default, emptyList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	private var updateJob: Job? = null
 
@@ -57,7 +59,7 @@ class ShelfSettingsViewModel @Inject constructor(
 	}
 
 	fun reorderSections(oldPos: Int, newPos: Int): Boolean {
-		val snapshot = content.value?.toMutableList() ?: return false
+		val snapshot = content.value.toMutableList()
 		snapshot.move(oldPos, newPos)
 		settings.shelfSections = snapshot.sections()
 		return true

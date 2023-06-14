@@ -30,6 +30,8 @@ import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.ui.util.reverseAsync
 import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -81,8 +83,8 @@ class BookmarksFragment :
 		binding.recyclerView.addItemDecoration(spacingDecoration)
 
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
-		viewModel.onError.observe(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
-		viewModel.onActionDone.observe(viewLifecycleOwner, ::onActionDone)
+		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
+		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ::onActionDone)
 	}
 
 	override fun onDestroyView() {
@@ -93,8 +95,11 @@ class BookmarksFragment :
 
 	override fun onItemClick(item: Bookmark, view: View) {
 		if (selectionController?.onItemClick(item.manga, item.pageId) != true) {
-			val intent = ReaderActivity.newIntent(view.context, item)
-			startActivity(intent, scaleUpActivityOptionsOf(view).toBundle())
+			val intent = ReaderActivity.IntentBuilder(view.context)
+				.bookmark(item)
+				.incognito(true)
+				.build()
+			startActivity(intent, scaleUpActivityOptionsOf(view))
 			Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 		}
 	}

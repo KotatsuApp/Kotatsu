@@ -20,7 +20,6 @@ import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.util.ext.*
 
 open class PageHolder(
 	owner: LifecycleOwner,

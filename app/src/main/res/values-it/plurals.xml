@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<plurals name="pages">
-		<item quantity="one">%1$d pagina in totale</item>
-		<item quantity="other">%1$d pagine in totale</item>
-	</plurals>
 	<plurals name="new_chapters">
 		<item quantity="one">%1$d nuovo capitolo</item>
 		<item quantity="other">%1$d nuovi capitoli</item>

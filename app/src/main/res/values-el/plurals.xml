@@ -20,10 +20,6 @@
 		<item quantity="one">%1$dκεφάλαιο</item>
 		<item quantity="other">%1$dκεφάλαια</item>
 	</plurals>
-	<plurals name="pages">
-		<item quantity="one">Σύνολο%1$dσελίδα</item>
-		<item quantity="other">Σύνολο%1$dσελίδες</item>
-	</plurals>
 	<plurals name="minutes_ago">
 		<item quantity="one">%1$dλεπτό πριν</item>
 		<item quantity="other">%1$d λεπτά πριν</item>

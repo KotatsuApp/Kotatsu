@@ -4,15 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.children
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.yield
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.resetTransformations
-import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentReaderStandardBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
@@ -32,8 +35,6 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 	@Inject
 	lateinit var pageLoader: PageLoader
 
-	private var pagerAdapter: ReversedPagesAdapter? = null
-
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -41,15 +42,8 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 
 	override fun onViewBindingCreated(binding: FragmentReaderStandardBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		pagerAdapter = ReversedPagesAdapter(
-			lifecycleOwner = viewLifecycleOwner,
-			loader = pageLoader,
-			settings = viewModel.readerSettings,
-			networkState = networkState,
-			exceptionResolver = exceptionResolver,
-		)
 		with(binding.pager) {
-			adapter = pagerAdapter
+			adapter = readerAdapter
 			offscreenPageLimit = 2
 			doOnPageChanged(::notifyPageChanged)
 		}
@@ -66,10 +60,17 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 	}
 
 	override fun onDestroyView() {
-		pagerAdapter = null
 		requireViewBinding().pager.adapter = null
 		super.onDestroyView()
 	}
+
+	override fun onCreateAdapter() = ReversedPagesAdapter(
+		lifecycleOwner = viewLifecycleOwner,
+		loader = pageLoader,
+		settings = viewModel.readerSettings,
+		networkState = networkState,
+		exceptionResolver = exceptionResolver,
+	)
 
 	override fun switchPageBy(delta: Int) {
 		with(requireViewBinding().pager) {
@@ -86,24 +87,26 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 		}
 	}
 
-	override fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) {
+	override suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) = coroutineScope {
 		val reversedPages = pages.asReversed()
-		viewLifecycleScope.launch {
-			val items = async {
-				pagerAdapter?.setItems(reversedPages)
+		val items = async {
+			requireAdapter().setItems(reversedPages)
+			yield()
+		}
+		if (pendingState != null) {
+			val position = reversedPages.indexOfLast {
+				it.chapterId == pendingState.chapterId && it.index == pendingState.page
 			}
-			if (pendingState != null) {
-				val position = reversedPages.indexOfLast {
-					it.chapterId == pendingState.chapterId && it.index == pendingState.page
-				}
-				items.await() ?: return@launch
-				if (position != -1) {
-					requireViewBinding().pager.setCurrentItem(position, false)
-					notifyPageChanged(position)
-				}
+			items.await()
+			if (position != -1) {
+				requireViewBinding().pager.setCurrentItem(position, false)
+				notifyPageChanged(position)
 			} else {
-				items.await()
+				Snackbar.make(requireView(), R.string.not_found_404, Snackbar.LENGTH_SHORT)
+					.show()
 			}
+		} else {
+			items.await()
 		}
 	}
 
@@ -122,6 +125,6 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 	}
 
 	private fun reversed(position: Int): Int {
-		return ((pagerAdapter?.itemCount ?: 0) - position - 1).coerceAtLeast(0)
+		return ((readerAdapter?.itemCount ?: 0) - position - 1).coerceAtLeast(0)
 	}
 }

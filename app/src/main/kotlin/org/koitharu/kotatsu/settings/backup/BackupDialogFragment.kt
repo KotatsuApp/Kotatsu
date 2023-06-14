@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import java.io.File
 import java.io.FileOutputStream
@@ -46,8 +49,8 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 		binding.textViewSubtitle.setText(R.string.processing_)
 
 		viewModel.progress.observe(viewLifecycleOwner, this::onProgressChanged)
-		viewModel.onBackupDone.observe(viewLifecycleOwner, this::onBackupDone)
-		viewModel.onError.observe(viewLifecycleOwner, this::onError)
+		viewModel.onBackupDone.observeEvent(viewLifecycleOwner, this::onBackupDone)
+		viewModel.onError.observeEvent(viewLifecycleOwner, this::onError)
 	}
 
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
@@ -99,6 +102,10 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	companion object {
 
-		const val TAG = "BackupDialogFragment"
+		private const val TAG = "BackupDialogFragment"
+
+		fun show(fm: FragmentManager) {
+			BackupDialogFragment().show(fm, TAG)
+		}
 	}
 }

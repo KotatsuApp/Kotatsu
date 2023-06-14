@@ -19,7 +19,7 @@ fun scrobblingInfoAD(
 	{ layoutInflater, parent -> ItemScrobblingInfoBinding.inflate(layoutInflater, parent, false) },
 ) {
 	binding.root.setOnClickListener {
-		ScrobblingInfoBottomSheet.show(fragmentManager, bindingAdapterPosition)
+		ScrobblingInfoSheet.show(fragmentManager, bindingAdapterPosition)
 	}
 
 	bind {

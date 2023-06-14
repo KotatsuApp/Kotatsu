@@ -4,7 +4,7 @@ import android.content.Intent
 import android.widget.RemoteViewsService
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.history.domain.HistoryRepository
+import org.koitharu.kotatsu.history.data.HistoryRepository
 import javax.inject.Inject
 
 @AndroidEntryPoint

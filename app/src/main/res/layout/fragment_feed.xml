@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+<FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/swipeRefreshLayout"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<FrameLayout
+	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+		android:id="@+id/swipeRefreshLayout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
@@ -22,9 +22,8 @@
 			android:paddingRight="@dimen/list_spacing"
 			android:paddingBottom="@dimen/grid_spacing_outer"
 			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-			app:trackColor="?attr/colorOutline"
 			tools:listitem="@layout/item_feed" />
 
-	</FrameLayout>
+	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</FrameLayout>

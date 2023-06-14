@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -44,9 +45,9 @@ class TrackingRepository @Inject constructor(
 		return db.tracksDao.observeNewChapters().map { list -> list.count { it > 0 } }
 	}
 
-	fun observeUpdatedManga(): Flow<Map<Manga, Int>> {
+	fun observeUpdatedManga(): Flow<List<Manga>> {
 		return db.tracksDao.observeUpdatedManga()
-			.map { x -> x.mapKeys { it.key.toManga() } }
+			.mapItems { it.toManga() }
 			.distinctUntilChanged()
 	}
 

@@ -55,7 +55,6 @@
     <string name="operation_not_supported">Ця операція не підтримується</string>
     <string name="text_file_not_supported">Виберіть файл ZIP або CBZ.</string>
     <string name="no_description">Немає опису</string>
-    <string name="history_and_cache">Історія та кеш</string>
     <string name="clear_pages_cache">Очистити кеш сторінок</string>
     <string name="text_file_sizes">Б|кБ|МБ|ГБ|ТБ</string>
     <string name="standard">Стандартний</string>
@@ -173,7 +172,6 @@
     <string name="enabled">Увімкнено</string>
     <string name="disabled">Вимкнено</string>
     <string name="reset_filter">Скинути фільтр</string>
-    <string name="find_genre">Знайти жанр</string>
     <string name="onboard_text">Виберіть мови, якими ви хочете читати манґу. Це можливо змінити пізніше в налаштуваннях.</string>
     <string name="only_using_wifi">Тільки по Wi-Fi</string>
     <string name="preload_pages">Попереднє завантаження сторінок</string>
@@ -183,7 +181,6 @@
     <string name="search_chapters">Знайти розділ</string>
     <string name="chapters_empty">Немає розділів у цій манзі</string>
     <string name="percent_string_pattern">%1$s%%</string>
-    <string name="content">Зміст</string>
     <string name="suggestions_updating">Оновлення пропозицій</string>
     <string name="text_delete_local_manga_batch">Видалити вибрані елементи з пристрою назавжди\?</string>
     <string name="removal_completed">Видалення завершено</string>
@@ -195,7 +192,6 @@
     <string name="clear">Очистити</string>
     <string name="downloads">Завантаження</string>
     <string name="automatic">Як в системі</string>
-    <string name="chapter_is_missing_text">Завантажте або прочитайте цей відсутній розділ онлайн.</string>
     <string name="chapter_is_missing">Розділ відсутній</string>
     <string name="genres">Жанри</string>
     <string name="system_default">За замовчуванням</string>
@@ -412,4 +408,27 @@
     <string name="suggestions_enable_prompt">Хочете отримувати персоналізовані пропозиції щодо манги\?</string>
     <string name="web_view_unavailable">WebView недоступний: перевірте, чи встановлено провайдер WebView</string>
     <string name="translations">Переклади</string>
+    <string name="clear_network_cache">Очистити мережевий кеш</string>
+    <string name="port">Порт</string>
+    <string name="proxy">Проксі</string>
+    <string name="type">Тип</string>
+    <string name="address">Адреса</string>
+    <string name="manga_branch_title_template">%1$s (%2$s)</string>
+    <string name="invalid_value_message">Недійсне значення</string>
+    <string name="invalid_port_number">Недійсний номер порту</string>
+    <string name="images_procy_description">Використовуйте службу wsrv.nl, щоб зменшити використання трафіку та прискорити завантаження зображень, якщо це можливо</string>
+    <string name="downloaded">Завантажено</string>
+    <string name="images_proxy_title">Проксі для оптимізації зображень</string>
+    <string name="authorization_optional">Авторизація (необов\'язково)</string>
+    <string name="password">Пароль</string>
+    <string name="username">Ім\'я користувача</string>
+    <string name="invert_colors">Інвертувати кольори</string>
+    <string name="network">Мережа</string>
+    <string name="data_and_privacy">Дані та конфіденційність</string>
+    <string name="restore_summary">Відновити раніше створену резервну копію</string>
+    <string name="reader_info_bar_summary">Показувати поточний час і прогрес читання у верхній частині екрана</string>
+    <string name="show_pages_numbers_summary">Показати номери сторінок у нижньому куті</string>
+    <string name="pages_animation_summary">Анімація перегортання сторінок</string>
+    <string name="details_button_tip">Натисніть і утримуйте кнопку «Читати», щоб переглянути додаткові параметри</string>
+    <string name="webtoon_zoom_summary">Дозволити жест збільшення в режимі webtoon</string>
 </resources>
