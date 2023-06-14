@@ -31,7 +31,7 @@ android {
 			applicationIdSuffix = '.debug'
 		}
 		release {
-			multiDexEnabled false
+			multiDexEnabled true
 			minifyEnabled true
 			shrinkResources true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -79,7 +79,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.2'
+	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 
 	//noinspection GradleDependency
 	implementation('com.github.KotatsuApp:kotatsu-parsers:f732582d55') {
