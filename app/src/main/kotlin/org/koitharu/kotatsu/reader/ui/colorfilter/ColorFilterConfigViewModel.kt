@@ -5,7 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPages
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPage
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
@@ -26,7 +26,7 @@ class ColorFilterConfigViewModel @Inject constructor(
 	private var initialColorFilter: ReaderColorFilter? = null
 	val colorFilter = MutableStateFlow<ReaderColorFilter?>(null)
 	val onDismiss = MutableEventFlow<Unit>()
-	val preview = savedStateHandle.require<ParcelableMangaPages>(ColorFilterConfigActivity.EXTRA_PAGES).pages.first()
+	val preview = savedStateHandle.require<ParcelableMangaPage>(ColorFilterConfigActivity.EXTRA_PAGES).page
 
 	val isChanged: Boolean
 		get() = colorFilter.value != initialColorFilter
