@@ -2,39 +2,26 @@ package org.koitharu.kotatsu.core.model.parcelable
 
 import android.os.Parcel
 import android.os.Parcelable
-import org.koitharu.kotatsu.core.util.ext.Set
+import kotlinx.parcelize.Parceler
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.TypeParceler
+import org.koitharu.kotatsu.core.util.ext.readSerializableCompat
 import org.koitharu.kotatsu.parsers.model.MangaTag
 
-class ParcelableMangaTags(
-	val tags: Set<MangaTag>,
-) : Parcelable {
-
-	constructor(parcel: Parcel) : this(
-		Set(parcel.readInt()) { parcel.readMangaTag() },
+object MangaTagParceler : Parceler<MangaTag> {
+	override fun create(parcel: Parcel) = MangaTag(
+		title = parcel.readString()!!,
+		key = parcel.readString()!!,
+		source = parcel.readSerializableCompat()!!,
 	)
 
-	override fun writeToParcel(parcel: Parcel, flags: Int) {
-		parcel.writeInt(tags.size)
-		for (tag in tags) {
-			tag.writeToParcel(parcel)
-		}
-	}
-
-	override fun describeContents(): Int {
-		return 0
-	}
-
-	override fun toString(): String {
-		return "ParcelableMangaTags(tags=$tags)"
-	}
-
-	companion object CREATOR : Parcelable.Creator<ParcelableMangaTags> {
-		override fun createFromParcel(parcel: Parcel): ParcelableMangaTags {
-			return ParcelableMangaTags(parcel)
-		}
-
-		override fun newArray(size: Int): Array<ParcelableMangaTags?> {
-			return arrayOfNulls(size)
-		}
+	override fun MangaTag.write(parcel: Parcel, flags: Int) {
+		parcel.writeString(title)
+		parcel.writeString(key)
+		parcel.writeSerializable(source)
 	}
 }
+
+@Parcelize
+@TypeParceler<MangaTag, MangaTagParceler>
+data class ParcelableMangaTags(val tags: Set<MangaTag>) : Parcelable
