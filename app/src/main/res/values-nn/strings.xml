@@ -359,4 +359,5 @@
     <string name="allow_unstable_updates">Tillat ustøe oppdateringar</string>
     <string name="downloads_wifi_only">Hent berre på WiFi</string>
     <string name="downloads_wifi_only_summary">Stans all henting når du byter til eit mobilnettverk</string>
+    <string name="find_similar">Finn liknande</string>
 </resources>
