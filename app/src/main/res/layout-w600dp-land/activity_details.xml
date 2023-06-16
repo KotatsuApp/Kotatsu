@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".details.ui.DetailsActivity">
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appbar"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:elevation="0dp"
+		android:fitsSystemWindows="true"
+		android:stateListAnimator="@null"
+		app:elevation="0dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:liftOnScroll="false">
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			app:layout_scrollFlags="noScroll"
+			tools:menu="@menu/opt_details">
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/button_read"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="end|center_vertical"
+				android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+				android:enabled="false"
+				android:text="@string/read"
+				android:textAllCaps="false"
+				app:iconGravity="textStart"
+				app:iconPadding="8dp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/appbar"
+				tools:enabled="true"
+				tools:icon="@drawable/ic_read" />
+
+			<ImageView
+				android:id="@+id/button_dropdown"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="end"
+				android:background="?selectableItemBackgroundBorderless"
+				android:contentDescription="@string/translations"
+				android:padding="@dimen/margin_small"
+				android:src="@drawable/ic_expand_more" />
+
+			<LinearLayout
+				android:id="@+id/group_header"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="end"
+				android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+				android:gravity="center_vertical"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/textView_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:singleLine="true"
+					android:textAppearance="?textAppearanceTitleMedium"
+					tools:ignore="InconsistentLayout"
+					tools:text="@string/chapter_d_of_d" />
+
+				<TextView
+					android:id="@+id/textView_subtitle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:singleLine="true"
+					android:textAppearance="?textAppearanceTitleSmall"
+					android:textColor="?android:textColorSecondary"
+					android:visibility="gone"
+					tools:text="English"
+					tools:visibility="visible" />
+
+			</LinearLayout>
+
+		</com.google.android.material.appbar.MaterialToolbar>
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@+id/container_details"
+		android:name="org.koitharu.kotatsu.details.ui.DetailsFragment"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar"
+		app:layout_constraintWidth_percent="0.5"
+		tools:layout="@layout/fragment_details" />
+
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/card_chapters"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_marginStart="@dimen/side_card_offset"
+		android:layout_marginTop="2dp"
+		android:layout_marginEnd="@dimen/side_card_offset"
+		android:layout_marginBottom="@dimen/side_card_offset"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/container_details"
+		app:layout_constraintTop_toBottomOf="@id/appbar">
+
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/container_chapters"
+			android:name="org.koitharu.kotatsu.details.ui.ChaptersFragment"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			tools:layout="@layout/fragment_chapters" />
+
+	</com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

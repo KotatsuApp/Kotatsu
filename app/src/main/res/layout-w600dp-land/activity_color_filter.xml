@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		tools:navigationIcon="@drawable/abc_ic_clear_material"
+		tools:title="@string/color_correction">
+
+		<Button
+			android:id="@+id/button_done"
+			style="@style/Widget.Material3.Button.UnelevatedButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:layout_marginEnd="@dimen/toolbar_button_margin"
+			android:text="@string/done" />
+
+		<Button
+			android:id="@+id/button_reset"
+			style="?materialButtonOutlinedStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+			android:text="@string/reset" />
+
+	</com.google.android.material.appbar.MaterialToolbar>
+
+	<ScrollView
+		android:id="@+id/scrollView"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:clipToPadding="false"
+		android:overScrollMode="ifContentScrolls">
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:padding="@dimen/margin_normal">
+
+			<androidx.constraintlayout.widget.Guideline
+				android:id="@+id/guideline_vertical"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				app:layout_constraintGuide_percent="0.5" />
+
+			<com.google.android.material.imageview.ShapeableImageView
+				android:id="@+id/imageView_before"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:padding="2dp"
+				android:scaleType="centerCrop"
+				app:layout_constraintDimensionRatio="W,14:9"
+				app:layout_constraintEnd_toStartOf="@id/imageView_arrow"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				app:shapeAppearance="?shapeAppearanceCornerLarge"
+				app:strokeColor="?colorOutline"
+				app:strokeWidth="1dp"
+				tools:src="@tools:sample/backgrounds/scenic" />
+
+			<com.google.android.material.progressindicator.CircularProgressIndicator
+				android:id="@+id/progress_before"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:indeterminate="true"
+				app:layout_constraintBottom_toBottomOf="@id/imageView_before"
+				app:layout_constraintEnd_toEndOf="@id/imageView_before"
+				app:layout_constraintStart_toStartOf="@id/imageView_before"
+				app:layout_constraintTop_toTopOf="@id/imageView_before" />
+
+			<ImageView
+				android:id="@+id/imageView_arrow"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:contentDescription="@null"
+				android:padding="@dimen/margin_normal"
+				android:src="@drawable/ic_arrow_forward"
+				app:layout_constraintBottom_toBottomOf="@id/imageView_before"
+				app:layout_constraintEnd_toEndOf="@id/guideline_vertical"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="@id/imageView_before" />
+
+			<com.google.android.material.imageview.ShapeableImageView
+				android:id="@+id/imageView_after"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:padding="2dp"
+				android:scaleType="centerCrop"
+				app:layout_constraintDimensionRatio="W,14:9"
+				app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+				app:layout_constraintStart_toEndOf="@id/imageView_arrow"
+				app:layout_constraintTop_toTopOf="parent"
+				app:shapeAppearance="?shapeAppearanceCornerLarge"
+				app:strokeColor="?colorOutline"
+				app:strokeWidth="1dp"
+				tools:src="@tools:sample/backgrounds/scenic" />
+
+			<com.google.android.material.progressindicator.CircularProgressIndicator
+				android:id="@+id/progress_after"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:indeterminate="true"
+				app:layout_constraintBottom_toBottomOf="@id/imageView_after"
+				app:layout_constraintEnd_toEndOf="@id/imageView_after"
+				app:layout_constraintStart_toStartOf="@id/imageView_after"
+				app:layout_constraintTop_toTopOf="@id/imageView_after" />
+
+			<com.google.android.material.materialswitch.MaterialSwitch
+				android:id="@+id/switch_invert"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/margin_normal"
+				android:text="@string/invert_colors"
+				android:textAppearance="?textAppearanceTitleMedium"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+				app:layout_constraintTop_toTopOf="parent" />
+
+			<TextView
+				android:id="@+id/textView_brightness"
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_marginStart="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:text="@string/brightness"
+				android:textAppearance="?textAppearanceTitleMedium"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+				app:layout_constraintTop_toBottomOf="@id/switch_invert" />
+
+			<com.google.android.material.slider.Slider
+				android:id="@+id/slider_brightness"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_small"
+				android:labelFor="@id/textView_brightness"
+				android:value="0.0"
+				android:valueFrom="-1.0"
+				android:valueTo="1.0"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+				app:layout_constraintTop_toBottomOf="@id/textView_brightness" />
+
+			<TextView
+				android:id="@+id/textView_contrast"
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_marginStart="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_small"
+				android:text="@string/contrast"
+				android:textAppearance="?textAppearanceTitleMedium"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+				app:layout_constraintTop_toBottomOf="@id/slider_brightness" />
+
+			<com.google.android.material.slider.Slider
+				android:id="@+id/slider_contrast"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_small"
+				android:value="0.0"
+				android:valueFrom="-1.0"
+				android:valueTo="1.0"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+				app:layout_constraintTop_toBottomOf="@id/textView_contrast" />
+
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:text="@string/color_correction_hint"
+				android:textAppearance="?textAppearanceBodySmall"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+				app:layout_constraintTop_toBottomOf="@id/slider_contrast" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</ScrollView>
+
+</LinearLayout>
