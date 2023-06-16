@@ -9,6 +9,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import androidx.work.await
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
@@ -33,7 +34,7 @@ class LocalStorageCleanupWorker @AssistedInject constructor(
 
 		private const val TAG = "cleanup"
 
-		fun enqueue(context: Context) {
+		suspend fun enqueue(context: Context) {
 			val constraints = Constraints.Builder()
 				.setRequiresBatteryNotLow(true)
 				.build()
@@ -42,7 +43,7 @@ class LocalStorageCleanupWorker @AssistedInject constructor(
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 1, TimeUnit.MINUTES)
 				.build()
-			WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.KEEP, request)
+			WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.KEEP, request).await()
 		}
 	}
 }

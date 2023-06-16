@@ -26,6 +26,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkQuery
 import androidx.work.WorkerParameters
+import androidx.work.await
 import coil.ImageLoader
 import coil.request.ImageRequest
 import dagger.assisted.Assisted
@@ -42,12 +43,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.WorkManagerHelper
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import org.koitharu.kotatsu.tracker.domain.Tracker
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import java.util.concurrent.TimeUnit
@@ -67,6 +70,7 @@ class TrackWorker @AssistedInject constructor(
 	}
 
 	override suspend fun doWork(): Result {
+		trySetForeground()
 		logger.log("doWork()")
 		try {
 			return doWorkImpl()
@@ -85,7 +89,6 @@ class TrackWorker @AssistedInject constructor(
 		if (!settings.isTrackerEnabled) {
 			return Result.success(workDataOf(0, 0))
 		}
-		trySetForeground()
 		val tracks = tracker.getAllTracks()
 		logger.log("Total ${tracks.size} tracks")
 		if (tracks.isEmpty()) {
@@ -234,7 +237,7 @@ class TrackWorker @AssistedInject constructor(
 			.build()
 	}
 
-	companion object {
+	companion object : PeriodicWorkScheduler {
 
 		private const val WORKER_CHANNEL_ID = "track_worker"
 		private const val WORKER_NOTIFICATION_ID = 35
@@ -244,14 +247,28 @@ class TrackWorker @AssistedInject constructor(
 		private const val DATA_KEY_SUCCESS = "success"
 		private const val DATA_KEY_FAILED = "failed"
 
-		fun setup(context: Context) {
+		override suspend fun schedule(context: Context) {
 			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 			val request = PeriodicWorkRequestBuilder<TrackWorker>(4, TimeUnit.HOURS)
 				.setConstraints(constraints)
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
 				.build()
-			WorkManager.getInstance(context).enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
+			WorkManager.getInstance(context)
+				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
+				.await()
+		}
+
+		override suspend fun unschedule(context: Context) {
+			WorkManager.getInstance(context)
+				.cancelUniqueWork(TAG)
+				.await()
+		}
+
+		override suspend fun isScheduled(context: Context): Boolean {
+			return WorkManagerHelper(WorkManager.getInstance(context))
+				.getUniqueWorkInfoByName(TAG)
+				.any { !it.state.isFinished }
 		}
 
 		fun startNow(context: Context) {

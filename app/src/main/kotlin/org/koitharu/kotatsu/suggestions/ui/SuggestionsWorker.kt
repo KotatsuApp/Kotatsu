@@ -23,6 +23,7 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import androidx.work.await
 import androidx.work.workDataOf
 import coil.ImageLoader
 import coil.request.ImageRequest
@@ -38,6 +39,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.WorkManagerHelper
 import org.koitharu.kotatsu.core.util.ext.almostEquals
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.flatten
@@ -55,6 +57,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
+import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.suggestions.domain.TagsBlacklist
@@ -75,11 +78,11 @@ class SuggestionsWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, params) {
 
 	override suspend fun doWork(): Result {
+		trySetForeground()
 		if (!appSettings.isSuggestionsEnabled) {
 			suggestionRepository.clear()
 			return Result.success()
 		}
-		trySetForeground()
 		val count = doWorkImpl()
 		val outputData = workDataOf(DATA_COUNT to count)
 		return Result.success(outputData)
@@ -303,7 +306,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		return -1
 	}
 
-	companion object {
+	companion object : PeriodicWorkScheduler {
 
 		private const val TAG = "suggestions"
 		private const val TAG_ONESHOT = "suggestions_oneshot"
@@ -324,7 +327,7 @@ class SuggestionsWorker @AssistedInject constructor(
 			SortOrder.RATING,
 		)
 
-		fun setup(context: Context) {
+		override suspend fun schedule(context: Context) {
 			val constraints = Constraints.Builder()
 				.setRequiredNetworkType(NetworkType.UNMETERED)
 				.setRequiresBatteryNotLow(true)
@@ -336,6 +339,19 @@ class SuggestionsWorker @AssistedInject constructor(
 				.build()
 			WorkManager.getInstance(context)
 				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
+				.await()
+		}
+
+		override suspend fun unschedule(context: Context) {
+			WorkManager.getInstance(context)
+				.cancelUniqueWork(TAG)
+				.await()
+		}
+
+		override suspend fun isScheduled(context: Context): Boolean {
+			return WorkManagerHelper(WorkManager.getInstance(context))
+				.getUniqueWorkInfoByName(TAG)
+				.any { !it.state.isFinished }
 		}
 
 		fun startNow(context: Context) {

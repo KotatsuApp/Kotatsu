@@ -69,8 +69,6 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.shelf.ui.ShelfFragment
-import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
-import org.koitharu.kotatsu.tracker.work.TrackWorker
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -321,8 +319,6 @@ class MainActivity :
 				}
 			}
 			withContext(Dispatchers.Default) {
-				TrackWorker.setup(applicationContext)
-				SuggestionsWorker.setup(applicationContext)
 				LocalStorageCleanupWorker.enqueue(applicationContext)
 			}
 			withResumed {

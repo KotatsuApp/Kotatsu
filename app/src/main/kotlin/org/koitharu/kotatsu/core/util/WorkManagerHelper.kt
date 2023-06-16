@@ -61,6 +61,10 @@ class WorkManagerHelper(
 		return workManagerImpl.getWorkInfoById(id).await()
 	}
 
+	suspend fun getUniqueWorkInfoByName(name: String): List<WorkInfo> {
+		return workManagerImpl.getWorkInfosForUniqueWork(name).await().orEmpty()
+	}
+
 	suspend fun updateWork(request: WorkRequest): WorkManager.UpdateResult {
 		return workManagerImpl.updateWork(request).await()
 	}

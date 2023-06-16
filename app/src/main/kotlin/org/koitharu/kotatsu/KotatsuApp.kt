@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.settings.work.WorkScheduleManager
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -51,6 +52,9 @@ class KotatsuApp : Application(), Configuration.Provider {
 	@Inject
 	lateinit var appValidator: AppValidator
 
+	@Inject
+	lateinit var workScheduleManager: WorkScheduleManager
+
 	override fun onCreate() {
 		super.onCreate()
 		ACRA.errorReporter.putCustomData("isOriginalApp", appValidator.isOriginalApp.toString())
@@ -63,6 +67,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 		processLifecycleScope.launch(Dispatchers.Default) {
 			setupDatabaseObservers()
 		}
+		workScheduleManager.init()
 		WorkServiceStopHelper(applicationContext).setup()
 	}
 
