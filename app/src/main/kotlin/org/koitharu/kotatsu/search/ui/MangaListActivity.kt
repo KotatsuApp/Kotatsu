@@ -26,7 +26,6 @@ import org.koitharu.kotatsu.databinding.ActivityMangaListBinding
 import org.koitharu.kotatsu.filter.ui.FilterHeaderFragment
 import org.koitharu.kotatsu.filter.ui.FilterOwner
 import org.koitharu.kotatsu.filter.ui.FilterSheetFragment
-import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -74,7 +73,10 @@ class MangaListActivity :
 
 	private fun initList(source: MangaSource, tags: Set<MangaTag>?) {
 		val fm = supportFragmentManager
-		if (fm.findFragmentById(R.id.container) == null) {
+		val existingFragment = fm.findFragmentById(R.id.container)
+		if (existingFragment is FilterOwner) {
+			initFilter(existingFragment)
+		} else {
 			fm.commit {
 				setReorderingAllowed(true)
 				val fragment = if (source == MangaSource.LOCAL) {
@@ -83,17 +85,15 @@ class MangaListActivity :
 					RemoteListFragment.newInstance(source)
 				}
 				replace(R.id.container, fragment)
-				runOnCommit { initFilter() }
-				if (!tags.isNullOrEmpty() && fragment is RemoteListFragment) {
+				runOnCommit { initFilter(fragment) }
+				if (!tags.isNullOrEmpty()) {
 					runOnCommit(ApplyFilterRunnable(fragment, tags))
 				}
 			}
-		} else {
-			initFilter()
 		}
 	}
 
-	private fun initFilter() {
+	private fun initFilter(filterOwner: FilterOwner) {
 		if (viewBinding.containerFilter != null) {
 			if (supportFragmentManager.findFragmentById(R.id.container_filter) == null) {
 				supportFragmentManager.commit {
@@ -109,7 +109,6 @@ class MangaListActivity :
 				}
 			}
 		}
-		val filterOwner = FilterOwner.from(this)
 		val chipSort = viewBinding.chipSort
 		if (chipSort != null) {
 			filterOwner.header.observe(this) {
@@ -126,14 +125,12 @@ class MangaListActivity :
 	}
 
 	private class ApplyFilterRunnable(
-		private val fragment: MangaListFragment,
+		private val filterOwner: FilterOwner,
 		private val tags: Set<MangaTag>,
 	) : Runnable {
 
 		override fun run() {
-			checkNotNull(FilterOwner.find(fragment)) {
-				"Cannot find FilterOwner"
-			}.applyFilter(tags)
+			filterOwner.applyFilter(tags)
 		}
 	}
 
