@@ -1,13 +1,15 @@
 package org.koitharu.kotatsu.history.domain
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 class HistoryUpdateUseCase @Inject constructor(
@@ -30,7 +32,9 @@ class HistoryUpdateUseCase @Inject constructor(
 		percent: Float
 	) = processLifecycleScope.launch(Dispatchers.Default) {
 		runCatchingCancellable {
-			invoke(manga, readerState, percent)
+			withContext(NonCancellable) {
+				invoke(manga, readerState, percent)
+			}
 		}.onFailure {
 			it.printStackTraceDebug()
 		}

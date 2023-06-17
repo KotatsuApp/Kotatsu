@@ -97,7 +97,7 @@ class MainNavigationDelegate(
 	}
 
 	private fun onNavigationItemSelected(@IdRes itemId: Int): Boolean {
-		setPrimaryFragment(
+		return setPrimaryFragment(
 			when (itemId) {
 				R.id.nav_shelf -> ShelfFragment.newInstance()
 				R.id.nav_explore -> ExploreFragment.newInstance()
@@ -106,7 +106,6 @@ class MainNavigationDelegate(
 				else -> return false
 			},
 		)
-		return true
 	}
 
 	private fun getItemId(fragment: Fragment) = when (fragment) {
@@ -117,13 +116,17 @@ class MainNavigationDelegate(
 		else -> 0
 	}
 
-	private fun setPrimaryFragment(fragment: Fragment) {
+	private fun setPrimaryFragment(fragment: Fragment): Boolean {
+		if (fragmentManager.isStateSaved) {
+			return false
+		}
 		fragmentManager.beginTransaction()
 			.setReorderingAllowed(true)
 			.replace(R.id.container, fragment, TAG_PRIMARY)
 			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 			.commit()
 		onFragmentChanged(fragment, fromUser = true)
+		return true
 	}
 
 	private fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
