@@ -6,6 +6,7 @@ import android.app.ActivityManager.MemoryInfo
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
+import android.content.Context.POWER_SERVICE
 import android.content.ContextWrapper
 import android.content.OperationApplicationException
 import android.content.SharedPreferences
@@ -17,6 +18,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
 import android.view.View
 import android.view.ViewPropertyAnimator
@@ -50,6 +52,9 @@ import kotlin.math.roundToLong
 
 val Context.activityManager: ActivityManager?
 	get() = getSystemService(ACTIVITY_SERVICE) as? ActivityManager
+
+val Context.powerManager: PowerManager?
+	get() = getSystemService(POWER_SERVICE) as? PowerManager
 
 fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
 
@@ -139,6 +144,10 @@ fun Context.getAnimationDuration(@IntegerRes resId: Int): Long {
 
 fun Context.isLowRamDevice(): Boolean {
 	return activityManager?.isLowRamDevice ?: false
+}
+
+fun Context.isPowerSaveMode(): Boolean {
+	return powerManager?.isPowerSaveMode == true
 }
 
 val Context.ramAvailable: Long

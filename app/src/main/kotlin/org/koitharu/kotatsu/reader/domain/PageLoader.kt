@@ -34,6 +34,8 @@ import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.core.util.ext.ensureSuccess
 import org.koitharu.kotatsu.core.util.ext.isNotEmpty
+import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
@@ -42,7 +44,6 @@ import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
 import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
@@ -83,7 +84,10 @@ class PageLoader @Inject constructor(
 	}
 
 	fun isPrefetchApplicable(): Boolean {
-		return repository is RemoteMangaRepository && settings.isPagesPreloadEnabled && !isLowRam()
+		return repository is RemoteMangaRepository
+			&& settings.isPagesPreloadEnabled
+			&& !context.isPowerSaveMode()
+			&& !isLowRam()
 	}
 
 	@AnyThread

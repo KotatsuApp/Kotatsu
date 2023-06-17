@@ -10,12 +10,13 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaChapters
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -113,6 +114,9 @@ class MangaPrefetchService : CoroutineIntentService() {
 
 		private fun isPrefetchAvailable(context: Context, source: MangaSource?): Boolean {
 			if (source == MangaSource.LOCAL) {
+				return false
+			}
+			if (context.isPowerSaveMode()) {
 				return false
 			}
 			val entryPoint = EntryPointAccessors.fromApplication(context, PrefetchCompanionEntryPoint::class.java)
