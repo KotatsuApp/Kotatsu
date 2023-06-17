@@ -43,10 +43,12 @@ class SyncController @Inject constructor(
 	private val defaultGcPeriod = TimeUnit.DAYS.toMillis(2) // gc period if sync disabled
 
 	override fun onInvalidated(tables: Set<String>) {
-		requestSync(
-			favourites = TABLE_FAVOURITES in tables || TABLE_FAVOURITE_CATEGORIES in tables,
-			history = TABLE_HISTORY in tables,
-		)
+		val favourites = (TABLE_FAVOURITES in tables || TABLE_FAVOURITE_CATEGORIES in tables)
+			&& !isSyncActiveOrPending(authorityFavourites)
+		val history = TABLE_HISTORY in tables && !isSyncActiveOrPending(authorityHistory)
+		if (favourites || history) {
+			requestSync(favourites, history)
+		}
 	}
 
 	fun isEnabled(account: Account): Boolean {
@@ -124,6 +126,11 @@ class SyncController @Inject constructor(
 			favouritesDao.gc(deletedAt)
 			favouriteCategoriesDao.gc(deletedAt)
 		}
+	}
+
+	private fun isSyncActiveOrPending(authority: String): Boolean {
+		val account = peekAccount() ?: return false
+		return ContentResolver.isSyncActive(account, authority) || ContentResolver.isSyncPending(account, authority)
 	}
 
 	companion object {
