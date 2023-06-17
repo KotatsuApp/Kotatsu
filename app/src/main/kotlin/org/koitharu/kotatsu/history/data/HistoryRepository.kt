@@ -45,6 +45,13 @@ class HistoryRepository @Inject constructor(
 		return entity.manga.toManga(entity.tags.toMangaTags())
 	}
 
+	fun observeLast(): Flow<Manga?> {
+		return db.historyDao.observeAll(1).map {
+			val first = it.firstOrNull()
+			first?.manga?.toManga(first.tags.toMangaTags())
+		}
+	}
+
 	fun observeAll(): Flow<List<Manga>> {
 		return db.historyDao.observeAll().mapItems {
 			it.manga.toManga(it.tags.toMangaTags())

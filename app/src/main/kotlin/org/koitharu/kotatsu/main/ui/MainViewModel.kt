@@ -13,12 +13,12 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.main.domain.ReadingResumeEnabledUseCase
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import javax.inject.Inject
@@ -29,16 +29,12 @@ class MainViewModel @Inject constructor(
 	private val appUpdateRepository: AppUpdateRepository,
 	trackingRepository: TrackingRepository,
 	settings: AppSettings,
+	readingResumeEnabledUseCase: ReadingResumeEnabledUseCase,
 ) : BaseViewModel() {
 
 	val onOpenReader = MutableEventFlow<Manga>()
 
-	val isResumeEnabled = combine(
-		historyRepository.observeHasItems(),
-		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
-	) { hasItems, incognito ->
-		hasItems && !incognito
-	}.stateIn(
+	val isResumeEnabled = readingResumeEnabledUseCase().stateIn(
 		scope = viewModelScope + Dispatchers.Default,
 		started = SharingStarted.WhileSubscribed(5000),
 		initialValue = false,
