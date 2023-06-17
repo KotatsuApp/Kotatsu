@@ -6,11 +6,12 @@ import android.content.ContentProviderClient
 import android.content.Context
 import android.content.SyncResult
 import android.os.Bundle
+import dagger.hilt.android.EntryPointAccessors
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.onError
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.sync.domain.SyncController
-import org.koitharu.kotatsu.sync.domain.SyncHelper
+import org.koitharu.kotatsu.sync.ui.SyncAdapterEntryPoint
 
 class HistorySyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context, true) {
 
@@ -24,7 +25,8 @@ class HistorySyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context
 		if (!context.resources.getBoolean(R.bool.is_sync_enabled)) {
 			return
 		}
-		val syncHelper = SyncHelper(context, account, provider)
+		val entryPoint = EntryPointAccessors.fromApplication(context, SyncAdapterEntryPoint::class.java)
+		val syncHelper = entryPoint.syncHelperFactory.create(account, provider)
 		runCatchingCancellable {
 			syncHelper.syncHistory(syncResult)
 			SyncController.setLastSync(context, account, authority, System.currentTimeMillis())

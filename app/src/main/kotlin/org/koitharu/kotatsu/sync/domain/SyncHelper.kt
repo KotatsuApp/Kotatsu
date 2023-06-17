@@ -11,6 +11,10 @@ import android.database.Cursor
 import android.net.Uri
 import androidx.annotation.WorkerThread
 import androidx.core.content.contentValuesOf
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -23,9 +27,9 @@ import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.db.TABLE_MANGA
 import org.koitharu.kotatsu.core.db.TABLE_MANGA_TAGS
 import org.koitharu.kotatsu.core.db.TABLE_TAGS
-import org.koitharu.kotatsu.core.logs.LoggersModule
-import org.koitharu.kotatsu.core.network.GZipInterceptor
-import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.logs.FileLogger
+import org.koitharu.kotatsu.core.logs.SyncLogger
+import org.koitharu.kotatsu.core.network.BaseHttpClient
 import org.koitharu.kotatsu.core.util.ext.parseJsonOrNull
 import org.koitharu.kotatsu.core.util.ext.toContentValues
 import org.koitharu.kotatsu.core.util.ext.toJson
@@ -39,23 +43,20 @@ import java.util.concurrent.TimeUnit
 
 private const val FIELD_TIMESTAMP = "timestamp"
 
-/**
- * Warning! This class may be used in another process
- */
-@WorkerThread
-class SyncHelper(
-	context: Context,
-	private val account: Account,
-	private val provider: ContentProviderClient,
+class SyncHelper @AssistedInject constructor(
+	@ApplicationContext context: Context,
+	@BaseHttpClient baseHttpClient: OkHttpClient,
+	@Assisted private val account: Account,
+	@Assisted private val provider: ContentProviderClient,
+	private val settings: SyncSettings,
+	@SyncLogger private val logger: FileLogger,
 ) {
 
 	private val authorityHistory = context.getString(R.string.sync_authority_history)
 	private val authorityFavourites = context.getString(R.string.sync_authority_favourites)
-	private val settings = SyncSettings(context, account)
-	private val httpClient = OkHttpClient.Builder()
+	private val httpClient = baseHttpClient.newBuilder()
 		.authenticator(SyncAuthenticator(context, account, settings, SyncAuthApi(OkHttpClient())))
 		.addInterceptor(SyncInterceptor(context, account))
-		.addInterceptor(GZipInterceptor())
 		.build()
 	private val baseUrl: String by lazy {
 		val host = settings.host
@@ -64,8 +65,8 @@ class SyncHelper(
 	}
 	private val defaultGcPeriod: Long // gc period if sync enabled
 		get() = TimeUnit.DAYS.toMillis(4)
-	private val logger = LoggersModule.provideSyncLogger(context, AppSettings(context))
 
+	@WorkerThread
 	fun syncFavourites(syncResult: SyncResult) {
 		val data = JSONObject()
 		data.put(TABLE_FAVOURITE_CATEGORIES, getFavouriteCategories())
@@ -89,6 +90,7 @@ class SyncHelper(
 		gcFavourites()
 	}
 
+	@WorkerThread
 	fun syncHistory(syncResult: SyncResult) {
 		val data = JSONObject()
 		data.put(TABLE_HISTORY, getHistory())
@@ -320,5 +322,14 @@ class SyncHelper(
 		if (logger.isEnabled) {
 			logger.log("$code ${request.url}")
 		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(
+			account: Account,
+			contentProviderClient: ContentProviderClient,
+		): SyncHelper
 	}
 }

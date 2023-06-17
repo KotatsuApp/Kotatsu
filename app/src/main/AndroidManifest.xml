@@ -188,8 +188,7 @@
 		<service
 			android:name="org.koitharu.kotatsu.sync.ui.favourites.FavouritesSyncService"
 			android:exported="false"
-			android:label="@string/favourites"
-			android:process=":sync">
+			android:label="@string/favourites">
 			<intent-filter>
 				<action android:name="android.content.SyncAdapter" />
 			</intent-filter>
@@ -200,8 +199,7 @@
 		<service
 			android:name="org.koitharu.kotatsu.sync.ui.history.HistorySyncService"
 			android:exported="false"
-			android:label="@string/history"
-			android:process=":sync">
+			android:label="@string/history">
 			<intent-filter>
 				<action android:name="android.content.SyncAdapter" />
 			</intent-filter>
