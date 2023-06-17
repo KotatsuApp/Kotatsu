@@ -21,20 +21,17 @@ class FilterSheetFragment :
 	AdaptiveSheetCallback,
 	AsyncListDiffer.ListListener<ListModel> {
 
-	private val owner by lazy(LazyThreadSafetyMode.NONE) {
-		FilterOwner.from(requireActivity())
-	}
-
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
 		return SheetFilterBinding.inflate(inflater, container, false)
 	}
 
 	override fun onViewBindingCreated(binding: SheetFilterBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
+		val filter = (requireActivity() as FilterOwner).filter
 		addSheetCallback(this)
-		val adapter = FilterAdapter(owner, this)
+		val adapter = FilterAdapter(filter, this)
 		binding.recyclerView.adapter = adapter
-		owner.filterItems.observe(viewLifecycleOwner, adapter::setItems)
+		filter.filterItems.observe(viewLifecycleOwner, adapter::setItems)
 
 		if (dialog == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			binding.recyclerView.scrollIndicators = 0

@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.databinding.ActivityMangaListBinding
 import org.koitharu.kotatsu.filter.ui.FilterHeaderFragment
 import org.koitharu.kotatsu.filter.ui.FilterOwner
 import org.koitharu.kotatsu.filter.ui.FilterSheetFragment
+import org.koitharu.kotatsu.filter.ui.MangaFilter
 import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -35,10 +36,15 @@ import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 @AndroidEntryPoint
 class MangaListActivity :
 	BaseActivity<ActivityMangaListBinding>(),
-	AppBarOwner, View.OnClickListener {
+	AppBarOwner, View.OnClickListener, FilterOwner {
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
+
+	override val filter: MangaFilter
+		get() = checkNotNull(findFilterOwner()) {
+			"Cannot find FilterOwner fragment in ${supportFragmentManager.fragments}"
+		}.filter
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -109,13 +115,14 @@ class MangaListActivity :
 				}
 			}
 		}
+		val filter = filterOwner.filter
 		val chipSort = viewBinding.chipSort
 		if (chipSort != null) {
-			filterOwner.header.observe(this) {
+			filter.header.observe(this) {
 				chipSort.setTextAndVisible(it.sortOrder?.titleRes ?: 0)
 			}
 		} else {
-			filterOwner.header.map {
+			filter.header.map {
 				it.textSummary
 			}.flowOn(Dispatchers.Default)
 				.observe(this) {
@@ -124,13 +131,17 @@ class MangaListActivity :
 		}
 	}
 
+	private fun findFilterOwner(): FilterOwner? {
+		return supportFragmentManager.findFragmentById(R.id.container) as? FilterOwner
+	}
+
 	private class ApplyFilterRunnable(
 		private val filterOwner: FilterOwner,
 		private val tags: Set<MangaTag>,
 	) : Runnable {
 
 		override fun run() {
-			filterOwner.applyFilter(tags)
+			filterOwner.filter.applyFilter(tags)
 		}
 	}
 

@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.lifecycleScope
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.model.FilterItem
@@ -35,7 +36,6 @@ import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.text.Collator
 import java.util.LinkedList
 import java.util.Locale
@@ -49,7 +49,7 @@ class FilterCoordinator @Inject constructor(
 	dataRepository: MangaDataRepository,
 	private val searchRepository: MangaSearchRepository,
 	lifecycle: ViewModelLifecycle,
-) : FilterOwner {
+) : MangaFilter {
 
 	private val coroutineScope = lifecycle.lifecycleScope
 	private val repository = mangaRepositoryFactory.create(savedStateHandle.require(RemoteListFragment.ARG_SOURCE))

@@ -10,7 +10,6 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.StateFlow
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ShareHelper
@@ -20,17 +19,17 @@ import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.filter.ui.FilterOwner
 import org.koitharu.kotatsu.filter.ui.FilterSheetFragment
-import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
-import org.koitharu.kotatsu.filter.ui.model.FilterItem
+import org.koitharu.kotatsu.filter.ui.MangaFilter
 import org.koitharu.kotatsu.list.ui.MangaListFragment
-import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 
 class LocalListFragment : MangaListFragment(), FilterOwner {
 
 	override val viewModel by viewModels<LocalListViewModel>()
+
+	override val filter: MangaFilter
+		get() = viewModel
 
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
@@ -69,24 +68,6 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 
 			else -> super.onActionItemClicked(controller, mode, item)
 		}
-	}
-
-	override val filterItems: StateFlow<List<ListModel>>
-		get() = viewModel.filterItems
-
-	override val header: StateFlow<FilterHeaderModel>
-		get() = viewModel.header
-
-	override fun applyFilter(tags: Set<MangaTag>) {
-		viewModel.applyFilter(tags)
-	}
-
-	override fun onSortItemClick(item: FilterItem.Sort) {
-		viewModel.onSortItemClick(item)
-	}
-
-	override fun onTagItemClick(item: FilterItem.Tag) {
-		viewModel.onTagItemClick(item)
 	}
 
 	private fun showDeletionConfirm(ids: Set<Long>, mode: ActionMode) {

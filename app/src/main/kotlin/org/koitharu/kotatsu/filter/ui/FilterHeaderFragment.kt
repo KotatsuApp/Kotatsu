@@ -19,9 +19,8 @@ import com.google.android.material.R as materialR
 
 class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsView.OnChipClickListener {
 
-	private val owner by lazy(LazyThreadSafetyMode.NONE) {
-		FilterOwner.from(requireActivity())
-	}
+	private val filter: MangaFilter
+		get() = (requireActivity() as FilterOwner).filter
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentFilterHeaderBinding {
 		return FragmentFilterHeaderBinding.inflate(inflater, container, false)
@@ -30,7 +29,7 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 	override fun onViewBindingCreated(binding: FragmentFilterHeaderBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.chipsTags.onChipClickListener = this
-		owner.header.observe(viewLifecycleOwner, ::onDataChanged)
+		filter.header.observe(viewLifecycleOwner, ::onDataChanged)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
@@ -40,7 +39,7 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 		if (tag == null) {
 			FilterSheetFragment.show(parentFragmentManager)
 		} else {
-			owner.onTagItemClick(FilterItem.Tag(tag, !chip.isChecked))
+			filter.onTagItemClick(FilterItem.Tag(tag, !chip.isChecked))
 		}
 	}
 

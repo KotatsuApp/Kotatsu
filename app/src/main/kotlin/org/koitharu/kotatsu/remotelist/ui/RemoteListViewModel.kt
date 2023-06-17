@@ -20,10 +20,11 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
-import org.koitharu.kotatsu.filter.ui.FilterOwner
+import org.koitharu.kotatsu.filter.ui.MangaFilter
 import org.koitharu.kotatsu.filter.ui.model.FilterState
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -36,7 +37,6 @@ import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 private const val FILTER_MIN_INTERVAL = 250L
@@ -49,7 +49,7 @@ open class RemoteListViewModel @Inject constructor(
 	settings: AppSettings,
 	listExtraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
-) : MangaListViewModel(settings, downloadScheduler), FilterOwner by filter {
+) : MangaListViewModel(settings, downloadScheduler), MangaFilter by filter {
 
 	val source = savedStateHandle.require<MangaSource>(RemoteListFragment.ARG_SOURCE)
 	private val repository = mangaRepositoryFactory.create(source)
