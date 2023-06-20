@@ -13,5 +13,8 @@ interface MutableCookieJar : CookieJar {
 	@WorkerThread
 	override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>)
 
+	@WorkerThread
+	fun removeCookies(url: HttpUrl)
+
 	suspend fun clear(): Boolean
 }

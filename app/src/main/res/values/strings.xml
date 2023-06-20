@@ -437,4 +437,5 @@
 	<string name="show_pages_numbers_summary">Show page numbers in bottom corner</string>
 	<string name="pages_animation_summary">Animate page switching</string>
 	<string name="details_button_tip">Press and hold the Read button to see more options</string>
+	<string name="clear_source_cookies_summary">Clear cookies for specified domain only. In most cases will invalidate authorization</string>
 </resources>

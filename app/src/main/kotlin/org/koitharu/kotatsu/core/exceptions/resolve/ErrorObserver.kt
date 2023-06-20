@@ -33,11 +33,21 @@ abstract class ErrorObserver(
 		return resolver != null && ExceptionResolver.canResolve(error)
 	}
 
+	private fun isAlive(): Boolean {
+		return when {
+			fragment != null -> fragment.view != null
+			activity != null -> !activity.isDestroyed
+			else -> true
+		}
+	}
+
 	protected fun resolve(error: Throwable) {
-		lifecycleScope.launch {
-			val isResolved = resolver?.resolve(error) ?: false
-			if (isActive) {
-				onResolved?.accept(isResolved)
+		if (isAlive()) {
+			lifecycleScope.launch {
+				val isResolved = resolver?.resolve(error) ?: false
+				if (isActive) {
+					onResolved?.accept(isResolved)
+				}
 			}
 		}
 	}

@@ -79,7 +79,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:86a82970fc') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:f096ca2ad3') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -115,6 +115,7 @@ dependencies {
 
 	implementation 'androidx.room:room-runtime:2.5.1'
 	implementation 'androidx.room:room-ktx:2.5.1'
+	//noinspection KaptUsageInsteadOfKsp
 	kapt 'androidx.room:room-compiler:2.5.1'
 
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0'

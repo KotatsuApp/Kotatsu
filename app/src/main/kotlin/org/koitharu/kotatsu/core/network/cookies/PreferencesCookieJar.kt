@@ -21,6 +21,7 @@ class PreferencesCookieJar(
 	private var isLoaded = false
 
 	@WorkerThread
+	@Synchronized
 	override fun loadForRequest(url: HttpUrl): List<Cookie> {
 		loadPersistent()
 		val expired = HashSet<String>()
@@ -40,6 +41,7 @@ class PreferencesCookieJar(
 	}
 
 	@WorkerThread
+	@Synchronized
 	override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
 		val wrapped = cookies.map { CookieWrapper(it) }
 		prefs.edit(commit = true) {
@@ -50,6 +52,22 @@ class PreferencesCookieJar(
 					putString(key, cookie.encode())
 				}
 			}
+		}
+	}
+
+	@Synchronized
+	@WorkerThread
+	override fun removeCookies(url: HttpUrl) {
+		loadPersistent()
+		val toRemove = HashSet<String>()
+		for ((key, cookie) in cache) {
+			if (cookie.isExpired() || cookie.cookie.matches(url)) {
+				toRemove += key
+			}
+		}
+		if (toRemove.isNotEmpty()) {
+			cache.removeAll(toRemove)
+			removePersistent(toRemove)
 		}
 	}
 

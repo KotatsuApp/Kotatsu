@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.util.ext
 
+import okhttp3.Cookie
 import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -36,5 +37,25 @@ fun Response.ensureSuccess() = apply {
 		val message = "Invalid response: $code $message at ${request.url}"
 		closeQuietly()
 		throw IllegalStateException(message)
+	}
+}
+
+fun Cookie.newBuilder(): Cookie.Builder = Cookie.Builder().also { c ->
+	c.name(name)
+	c.value(value)
+	if (persistent) {
+		c.expiresAt(expiresAt)
+	}
+	if (hostOnly) {
+		c.hostOnlyDomain(domain)
+	} else {
+		c.domain(domain)
+	}
+	c.path(path)
+	if (secure) {
+		c.secure()
+	}
+	if (httpOnly) {
+		c.httpOnly()
 	}
 }
