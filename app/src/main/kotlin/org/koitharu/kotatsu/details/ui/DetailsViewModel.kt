@@ -31,12 +31,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.getPreferredBranch
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.core.util.ext.sanitize
@@ -72,6 +74,7 @@ class DetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	private val doubleMangaLoadUseCase: DoubleMangaLoadUseCase,
+	networkState: NetworkState,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -176,8 +179,9 @@ class DetailsViewModel @Inject constructor(
 			selectedBranch,
 			newChaptersCount,
 			bookmarks,
-		) { manga, history, branch, news, bookmarks ->
-			mapChapters(manga?.remote, manga?.local, history, news, branch, bookmarks)
+			networkState,
+		) { manga, history, branch, news, bookmarks, isOnline ->
+			mapChapters(manga?.remote?.takeIf { isOnline }, manga?.local, history, news, branch, bookmarks)
 		},
 		isChaptersReversed,
 		chaptersQuery,
