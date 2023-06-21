@@ -59,4 +59,10 @@ class UpdatesViewModel @Inject constructor(
 	override fun onRefresh() = Unit
 
 	override fun onRetry() = Unit
+
+	fun remove(ids: Set<Long>) {
+		launchJob(Dispatchers.Default) {
+			repository.clearUpdates(ids)
+		}
+	}
 }

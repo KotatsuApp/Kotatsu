@@ -43,6 +43,9 @@ abstract class TracksDao {
 	@Query("UPDATE tracks SET chapters_new = 0")
 	abstract suspend fun clearCounters()
 
+	@Query("UPDATE tracks SET chapters_new = 0 WHERE manga_id = :mangaId")
+	abstract suspend fun clearCounter(mangaId: Long)
+
 	@Query("DELETE FROM tracks WHERE manga_id = :mangaId")
 	abstract suspend fun delete(mangaId: Long)
 

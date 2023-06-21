@@ -126,6 +126,18 @@ class TrackingRepository @Inject constructor(
 		}
 	}
 
+	suspend fun clearUpdates(ids: Collection<Long>) {
+		when {
+			ids.isEmpty() -> return
+			ids.size == 1 -> db.tracksDao.clearCounter(ids.single())
+			else -> db.withTransaction {
+				for (id in ids) {
+					db.tracksDao.clearCounter(id)
+				}
+			}
+		}
+	}
+
 	suspend fun syncWithHistory(manga: Manga, chapterId: Long) {
 		val chapters = manga.chapters ?: return
 		val chapterIndex = chapters.indexOfFirst { x -> x.id == chapterId }

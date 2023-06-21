@@ -13,9 +13,9 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 			entity = MangaEntity::class,
 			parentColumns = ["manga_id"],
 			childColumns = ["manga_id"],
-			onDelete = ForeignKey.CASCADE
-		)
-	]
+			onDelete = ForeignKey.CASCADE,
+		),
+	],
 )
 class TrackEntity(
 	@PrimaryKey(autoGenerate = false)
