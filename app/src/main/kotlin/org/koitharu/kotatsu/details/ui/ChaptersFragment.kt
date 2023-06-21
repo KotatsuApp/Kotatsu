@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
@@ -65,6 +66,9 @@ class ChaptersFragment :
 		viewModel.chapters.observe(viewLifecycleOwner, this::onChaptersChanged)
 		viewModel.isChaptersEmpty.observe(viewLifecycleOwner) {
 			binding.textViewHolder.isVisible = it
+		}
+		viewModel.onSelectChapter.observeEvent(viewLifecycleOwner) {
+			selectionController?.onItemLongClick(it)
 		}
 	}
 

@@ -24,6 +24,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.resolveDp
+import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ViewTwoLinesItemBinding
 
 @SuppressLint("RestrictedApi")
@@ -34,6 +35,18 @@ class TwoLinesItemView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
 	private val binding = ViewTwoLinesItemBinding.inflate(LayoutInflater.from(context), this)
+
+	var title: CharSequence?
+		get() = binding.title.text
+		set(value) {
+			binding.title.text = value
+		}
+
+	var subtitle: CharSequence?
+		get() = binding.subtitle.textAndVisible
+		set(value) {
+			binding.subtitle.textAndVisible = value
+		}
 
 	init {
 		var textColors: ColorStateList? = null
@@ -76,8 +89,7 @@ class TwoLinesItemView @JvmOverloads constructor(
 	}
 
 	fun setIconResource(@DrawableRes resId: Int) {
-		val icon = if (resId != 0) ContextCompat.getDrawable(context, resId) else null
-		binding.icon.setImageDrawable(icon)
+		binding.icon.setImageResource(resId)
 	}
 
 	private fun createShapeDrawable(ta: TypedArray): InsetDrawable {

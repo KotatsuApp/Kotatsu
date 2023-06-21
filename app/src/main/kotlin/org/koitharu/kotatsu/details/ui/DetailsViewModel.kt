@@ -84,6 +84,7 @@ class DetailsViewModel @Inject constructor(
 
 	val onShowToast = MutableEventFlow<Int>()
 	val onShowTip = MutableEventFlow<Unit>()
+	val onSelectChapter = MutableEventFlow<Long>()
 	val onDownloadStarted = MutableEventFlow<Unit>()
 
 	val manga = doubleManga.map { it?.any }
@@ -288,6 +289,14 @@ class DetailsViewModel @Inject constructor(
 			)
 			onDownloadStarted.call(Unit)
 		}
+	}
+
+	fun startChaptersSelection() {
+		val chapters = chapters.value
+		val chapter = chapters.find {
+			it.isUnread && !it.isDownloaded
+		} ?: chapters.firstOrNull() ?: return
+		onSelectChapter.call(chapter.chapter.id)
 	}
 
 	fun onButtonTipClosed() {

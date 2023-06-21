@@ -20,7 +20,7 @@
 	<item
 		android:id="@+id/action_save"
 		android:orderInCategory="40"
-		android:title="@string/save"
+		android:title="@string/download"
 		android:visible="false"
 		app:showAsAction="never" />
 

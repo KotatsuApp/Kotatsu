@@ -8,9 +8,13 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
 
+@JvmName("mangaIds")
 fun Collection<Manga>.ids() = mapToSet { it.id }
 
 fun Collection<Manga>.distinctById() = distinctBy { it.id }
+
+@JvmName("chaptersIds")
+fun Collection<MangaChapter>.ids() = mapToSet { it.id }
 
 fun Collection<ChapterListItem>.countChaptersByBranch(): Int {
 	if (size <= 1) {

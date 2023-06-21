@@ -30,6 +30,7 @@ class ChaptersBottomSheetMediator(
 	}
 
 	override fun onActionModeStarted(mode: ActionMode) {
+		behavior.state = BottomSheetBehavior.STATE_EXPANDED
 		lock()
 	}
 

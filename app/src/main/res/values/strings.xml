@@ -438,4 +438,11 @@
 	<string name="pages_animation_summary">Animate page switching</string>
 	<string name="details_button_tip">Press and hold the Read button to see more options</string>
 	<string name="clear_source_cookies_summary">Clear cookies for specified domain only. In most cases will invalidate authorization</string>
+	<string name="download_option_all_chapters">All chapters with translation %s</string>
+	<string name="download_option_whole_manga">The whole manga</string>
+	<string name="download_option_first_n_chapters">First %s</string>
+	<string name="download_option_next_unread_n_chapters">Next unread %s</string>
+	<string name="download_option_all_unread">All unread chapters</string>
+	<string name="download_option_all_unread_b">All unread chapters (%s)</string>
+	<string name="download_option_manual_selection">Select chapters manually</string>
 </resources>

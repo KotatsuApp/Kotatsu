@@ -16,12 +16,11 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.os.AppShortcutManager
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ShareHelper
-import org.koitharu.kotatsu.details.ui.model.MangaBranch
+import org.koitharu.kotatsu.download.ui.dialog.DownloadOption
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 
@@ -30,7 +29,7 @@ class DetailsMenuProvider(
 	private val viewModel: DetailsViewModel,
 	private val snackbarHost: View,
 	private val appShortcutManager: AppShortcutManager,
-) : MenuProvider {
+) : MenuProvider, OnListItemClickListener<DownloadOption> {
 
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 		menuInflater.inflate(R.menu.opt_details, menu)
@@ -44,7 +43,7 @@ class DetailsMenuProvider(
 		menu.findItem(R.id.action_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(activity)
 		menu.findItem(R.id.action_scrobbling).isVisible = viewModel.isScrobblingAvailable
 		menu.findItem(R.id.action_favourite).setIcon(
-			if (viewModel.favouriteCategories.value == true) R.drawable.ic_heart else R.drawable.ic_heart_outline,
+			if (viewModel.favouriteCategories.value) R.drawable.ic_heart else R.drawable.ic_heart_outline,
 		)
 	}
 
@@ -80,15 +79,7 @@ class DetailsMenuProvider(
 			}
 
 			R.id.action_save -> {
-				viewModel.manga.value?.let {
-					val chaptersCount = it.chapters?.size ?: 0
-					val branches = viewModel.branches.value.orEmpty()
-					if (chaptersCount > 5 || branches.size > 1) {
-						showSaveConfirmation(it, chaptersCount, branches)
-					} else {
-						viewModel.download(null)
-					}
-				}
+				DownloadDialogHelper(snackbarHost, viewModel).show(this)
 			}
 
 			R.id.action_browser -> {
@@ -125,35 +116,16 @@ class DetailsMenuProvider(
 		return true
 	}
 
-	private fun showSaveConfirmation(manga: Manga, chaptersCount: Int, branches: List<MangaBranch>) {
-		val dialogBuilder = MaterialAlertDialogBuilder(activity)
-			.setTitle(R.string.save_manga)
-			.setNegativeButton(android.R.string.cancel, null)
-		if (branches.size > 1) {
-			val items = Array(branches.size) { i -> branches[i].name.orEmpty() }
-			val currentBranch = branches.indexOfFirst { it.isSelected }
-			val checkedIndices = BooleanArray(branches.size) { i -> i == currentBranch }
-			dialogBuilder.setMultiChoiceItems(items, checkedIndices) { _, i, checked ->
-				checkedIndices[i] = checked
-			}.setPositiveButton(R.string.save) { _, _ ->
-				val selectedBranches = branches.mapIndexedNotNullTo(HashSet()) { i, b ->
-					if (checkedIndices[i]) b.name else null
-				}
-				val chaptersIds = manga.chapters?.mapNotNullToSet { c ->
-					if (c.branch in selectedBranches) c.id else null
-				}
-				viewModel.download(chaptersIds)
+	override fun onItemClick(item: DownloadOption, view: View) {
+		val chaptersIds: Set<Long>? = when (item) {
+			is DownloadOption.WholeManga -> null
+			is DownloadOption.SelectionHint -> {
+				viewModel.startChaptersSelection()
+				return
 			}
-		} else {
-			dialogBuilder.setMessage(
-				activity.getString(
-					R.string.large_manga_save_confirm,
-					activity.resources.getQuantityString(R.plurals.chapters, chaptersCount, chaptersCount),
-				),
-			).setPositiveButton(R.string.save) { _, _ ->
-				viewModel.download(null)
-			}
+
+			else -> item.chaptersIds
 		}
-		dialogBuilder.show()
+		viewModel.download(chaptersIds)
 	}
 }
