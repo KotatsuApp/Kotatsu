@@ -58,7 +58,7 @@ class ShelfListFactory(
 
 	override fun getViewAt(position: Int): RemoteViews {
 		val views = RemoteViews(context.packageName, R.layout.item_shelf)
-		val item = dataSet[position]
+		val item = dataSet.getOrNull(position) ?: return views
 		views.setTextViewText(R.id.textView_title, item.title)
 		runCatching {
 			coil.executeBlocking(

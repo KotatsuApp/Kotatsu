@@ -48,7 +48,7 @@ class RecentListFactory(
 
 	override fun getViewAt(position: Int): RemoteViews {
 		val views = RemoteViews(context.packageName, R.layout.item_recent)
-		val item = dataSet[position]
+		val item = dataSet.getOrNull(position) ?: return views
 		runCatching {
 			coil.executeBlocking(
 				ImageRequest.Builder(context)

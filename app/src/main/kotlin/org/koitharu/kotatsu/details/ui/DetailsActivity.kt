@@ -43,6 +43,7 @@ import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
+import org.koitharu.kotatsu.core.util.ext.setNavigationIconSafe
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
@@ -211,7 +212,7 @@ class DetailsActivity :
 		}
 		if (isExpanded) {
 			toolbar.addMenuProvider(chaptersMenuProvider)
-			toolbar.setNavigationIcon(materialR.drawable.abc_ic_clear_material)
+			toolbar.setNavigationIconSafe(materialR.drawable.abc_ic_clear_material)
 		} else {
 			toolbar.removeMenuProvider(chaptersMenuProvider)
 			toolbar.navigationIcon = null
