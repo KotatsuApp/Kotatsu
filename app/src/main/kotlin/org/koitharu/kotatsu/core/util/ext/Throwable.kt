@@ -34,6 +34,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
+	is AccessDeniedException -> resources.getString(R.string.no_access_to_file)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
 	is SyncApiException,
 	is ContentUnavailableException,

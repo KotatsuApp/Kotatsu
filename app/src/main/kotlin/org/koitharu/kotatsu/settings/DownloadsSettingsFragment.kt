@@ -11,12 +11,11 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
-import org.koitharu.kotatsu.core.ui.dialog.StorageSelectDialog
-import org.koitharu.kotatsu.core.util.ext.getStorageName
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.local.data.LocalStorageManager
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.settings.storage.MangaDirectorySelectDialog
 import java.io.File
 import javax.inject.Inject
 
@@ -62,12 +61,7 @@ class DownloadsSettingsFragment :
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
 			AppSettings.KEY_LOCAL_STORAGE -> {
-				val ctx = context ?: return false
-				StorageSelectDialog.Builder(ctx, storageManager, this)
-					.setTitle(preference.title ?: "")
-					.setNegativeButton(android.R.string.cancel)
-					.create()
-					.show()
+				MangaDirectorySelectDialog.show(childFragmentManager)
 				true
 			}
 
@@ -82,7 +76,11 @@ class DownloadsSettingsFragment :
 	private fun Preference.bindStorageName() {
 		viewLifecycleScope.launch {
 			val storage = storageManager.getDefaultWriteableDir()
-			summary = storage?.getStorageName(context) ?: getString(R.string.not_available)
+			summary = if (storage != null) {
+				storageManager.getDirectoryDisplayName(storage, isFullPath = true)
+			} else {
+				getString(R.string.not_available)
+			}
 		}
 	}
 

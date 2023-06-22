@@ -113,10 +113,10 @@ dependencies {
 		exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
 	}
 
-	implementation 'androidx.room:room-runtime:2.5.1'
-	implementation 'androidx.room:room-ktx:2.5.1'
+	implementation 'androidx.room:room-runtime:2.5.2'
+	implementation 'androidx.room:room-ktx:2.5.2'
 	//noinspection KaptUsageInsteadOfKsp
-	kapt 'androidx.room:room-compiler:2.5.1'
+	kapt 'androidx.room:room-compiler:2.5.2'
 
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.11.0'

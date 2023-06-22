@@ -21,9 +21,11 @@ import org.koitharu.kotatsu.core.util.ext.filterToSet
 import org.koitharu.kotatsu.core.util.ext.getEnumValue
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
+import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 import java.io.File
@@ -233,6 +235,16 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			val key = prefs.getString(KEY_SCREENSHOTS_POLICY, null)?.uppercase(Locale.ROOT)
 			if (key == null) ScreenshotsPolicy.ALLOW else ScreenshotsPolicy.valueOf(key)
 		}.getOrDefault(ScreenshotsPolicy.ALLOW)
+
+	var userSpecifiedMangaDirectories: Set<File>
+		get() {
+			val set = prefs.getStringSet(KEY_LOCAL_MANGA_DIRS, emptySet()).orEmpty()
+			return set.mapNotNullToSet { File(it).takeIfReadable() }
+		}
+		set(value) {
+			val set = value.mapToSet { it.absolutePath }
+			prefs.edit { putStringSet(KEY_LOCAL_MANGA_DIRS, set) }
+		}
 
 	var mangaStorageDir: File?
 		get() = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
@@ -461,6 +473,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PROXY_LOGIN = "proxy_login"
 		const val KEY_PROXY_PASSWORD = "proxy_password"
 		const val KEY_IMAGES_PROXY = "images_proxy"
+		const val KEY_LOCAL_MANGA_DIRS = "local_manga_dirs"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

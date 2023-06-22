@@ -445,4 +445,7 @@
 	<string name="download_option_all_unread">All unread chapters</string>
 	<string name="download_option_all_unread_b">All unread chapters (%s)</string>
 	<string name="download_option_manual_selection">Select chapters manually</string>
+	<string name="custom_directory">Custom directory</string>
+	<string name="pick_custom_directory">Pick custom directory</string>
+	<string name="no_access_to_file">You have no access to this file or directory</string>
 </resources>

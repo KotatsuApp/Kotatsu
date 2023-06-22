@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.local.data
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.StatFs
 import androidx.annotation.WorkerThread
 import dagger.Reusable
@@ -13,6 +15,7 @@ import okhttp3.Cache
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.getStorageName
+import org.koitharu.kotatsu.core.util.ext.resolveFile
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.io.File
 import javax.inject.Inject
@@ -74,11 +77,33 @@ class LocalStorageManager @Inject constructor(
 		preferredDir ?: getFallbackStorageDir()?.takeIf { it.isWriteable() }
 	}
 
+	suspend fun resolveUri(uri: Uri): File? = runInterruptible(Dispatchers.IO) {
+		uri.resolveFile(context)
+	}
+
+	fun takePermissions(uri: Uri) {
+		val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+		contentResolver.takePersistableUriPermission(uri, flags)
+	}
+
+	@Deprecated("")
 	fun getStorageDisplayName(file: File) = file.getStorageName(context)
+
+	suspend fun getDirectoryDisplayName(dir: File, isFullPath: Boolean): String = runInterruptible(Dispatchers.IO) {
+		val packageName = context.packageName
+		if (dir.absolutePath.contains(packageName)) {
+			dir.getStorageName(context)
+		} else if (isFullPath) {
+			dir.path
+		} else {
+			dir.name
+		}
+	}
 
 	@WorkerThread
 	private fun getConfiguredStorageDirs(): MutableSet<File> {
 		val set = getAvailableStorageDirs()
+		set.addAll(settings.userSpecifiedMangaDirectories)
 		settings.mangaStorageDir?.let {
 			set.add(it)
 		}

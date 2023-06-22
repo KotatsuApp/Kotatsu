@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:background="?selectableItemBackground"
-	android:minHeight="?listPreferredItemHeightLarge"
+	android:gravity="center_vertical"
+	android:minHeight="?listPreferredItemHeight"
+	android:orientation="horizontal"
+	android:paddingVertical="12dp"
 	android:paddingStart="?listPreferredItemPaddingStart"
-	android:paddingTop="16dp"
-	android:paddingEnd="?listPreferredItemPaddingEnd"
-	android:paddingBottom="16dp">
+	android:paddingEnd="?listPreferredItemPaddingEnd">
 
 	<org.koitharu.kotatsu.core.ui.widgets.CheckableImageView
 		android:id="@+id/imageView_indicator"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_alignParentStart="true"
-		android:layout_centerVertical="true"
 		android:src="?android:listChoiceIndicatorSingle"
 		tools:ignore="TouchTargetSizeCheck" />
 
-	<TextView
-		android:id="@+id/textView_title"
-		android:layout_width="0dp"
+	<LinearLayout
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentEnd="true"
 		android:layout_marginStart="?listPreferredItemPaddingStart"
-		android:layout_toEndOf="@id/imageView_indicator"
-		android:ellipsize="end"
-		android:maxLines="1"
-		android:textAppearance="?attr/textAppearanceTitleSmall"
-		tools:text="@tools:sample/lorem[3]" />
+		android:orientation="vertical">
 
-	<TextView
-		android:id="@+id/textView_subtitle"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_below="@id/textView_title"
-		android:layout_alignParentEnd="true"
-		android:layout_marginStart="?listPreferredItemPaddingStart"
-		android:layout_marginTop="6dp"
-		android:layout_toEndOf="@id/imageView_indicator"
-		android:ellipsize="end"
-		android:textAppearance="?attr/textAppearanceBodyMedium"
-		tools:text="@tools:sample/lorem[20]" />
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:singleLine="true"
+			android:textAppearance="?attr/textAppearanceTitleSmall"
+			tools:text="@tools:sample/lorem[3]" />
 
-</RelativeLayout>
+		<TextView
+			android:id="@+id/textView_subtitle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="6dp"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			tools:text="@tools:sample/lorem[20]" />
+
+	</LinearLayout>
+</LinearLayout>
