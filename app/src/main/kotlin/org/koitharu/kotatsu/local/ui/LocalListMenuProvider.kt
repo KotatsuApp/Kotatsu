@@ -1,12 +1,15 @@
 package org.koitharu.kotatsu.local.ui
 
+import android.content.Context
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity
 
 class LocalListMenuProvider(
+	private val context: Context,
 	private val onImportClick: Function0<Unit>,
 ) : MenuProvider {
 
@@ -20,6 +23,12 @@ class LocalListMenuProvider(
 				onImportClick()
 				true
 			}
+
+			R.id.action_settings -> {
+				context.startActivity(MangaDirectoriesActivity.newIntent(context))
+				true
+			}
+
 			else -> false
 		}
 	}

@@ -9,4 +9,10 @@
 		android:title="@string/_import"
 		app:showAsAction="never" />
 
+	<item
+		android:id="@+id/action_settings"
+		android:orderInCategory="100"
+		android:title="@string/settings"
+		app:showAsAction="never" />
+
 </menu>

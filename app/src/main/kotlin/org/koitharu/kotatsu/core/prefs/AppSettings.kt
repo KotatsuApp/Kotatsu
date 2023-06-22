@@ -249,11 +249,15 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	var mangaStorageDir: File?
 		get() = prefs.getString(KEY_LOCAL_STORAGE, null)?.let {
 			File(it)
-		}?.takeIf { it.exists() }
+		}?.takeIf { it.exists() && it in userSpecifiedMangaDirectories }
 		set(value) = prefs.edit {
 			if (value == null) {
 				remove(KEY_LOCAL_STORAGE)
 			} else {
+				val userDirs = userSpecifiedMangaDirectories
+				if (value !in userDirs) {
+					userSpecifiedMangaDirectories = userDirs + value
+				}
 				putString(KEY_LOCAL_STORAGE, value.path)
 			}
 		}

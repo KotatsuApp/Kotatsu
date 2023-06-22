@@ -16,14 +16,13 @@ import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.settings.storage.MangaDirectorySelectDialog
-import java.io.File
+import org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class DownloadsSettingsFragment :
 	BasePreferenceFragment(R.string.downloads),
-	SharedPreferences.OnSharedPreferenceChangeListener,
-	StorageSelectDialog.OnStorageSelectListener {
+	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	@Inject
 	lateinit var storageManager: LocalStorageManager
@@ -38,6 +37,7 @@ class DownloadsSettingsFragment :
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.bindStorageName()
+		findPreference<Preference>(AppSettings.KEY_LOCAL_MANGA_DIRS)?.bindDirectoriesCount()
 		settings.subscribe(this)
 	}
 
@@ -50,6 +50,10 @@ class DownloadsSettingsFragment :
 		when (key) {
 			AppSettings.KEY_LOCAL_STORAGE -> {
 				findPreference<Preference>(key)?.bindStorageName()
+			}
+
+			AppSettings.KEY_LOCAL_MANGA_DIRS -> {
+				findPreference<Preference>(key)?.bindDirectoriesCount()
 			}
 
 			AppSettings.KEY_DOWNLOADS_WIFI -> {
@@ -65,12 +69,13 @@ class DownloadsSettingsFragment :
 				true
 			}
 
+			AppSettings.KEY_LOCAL_MANGA_DIRS -> {
+				startActivity(MangaDirectoriesActivity.newIntent(preference.context))
+				true
+			}
+
 			else -> super.onPreferenceTreeClick(preference)
 		}
-	}
-
-	override fun onStorageSelected(file: File) {
-		settings.mangaStorageDir = file
 	}
 
 	private fun Preference.bindStorageName() {
@@ -81,6 +86,13 @@ class DownloadsSettingsFragment :
 			} else {
 				getString(R.string.not_available)
 			}
+		}
+	}
+
+	private fun Preference.bindDirectoriesCount() {
+		viewLifecycleScope.launch {
+			val dirs = storageManager.getReadableDirs().size
+			summary = resources.getQuantityString(R.plurals.items, dirs, dirs)
 		}
 	}
 

@@ -11,33 +11,13 @@
 		android:layout_height="wrap_content"
 		android:fitsSystemWindows="true">
 
-		<com.google.android.material.appbar.CollapsingToolbarLayout
-			android:id="@+id/collapsingToolbarLayout"
-			style="?attr/collapsingToolbarLayoutMediumStyle"
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@id/toolbar"
 			android:layout_width="match_parent"
-			android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
-			app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-			app:toolbarId="@id/toolbar">
+			android:layout_height="?attr/actionBarSize"
+			app:layout_scrollFlags="noScroll">
 
-			<com.google.android.material.appbar.MaterialToolbar
-				android:id="@id/toolbar"
-				android:layout_width="match_parent"
-				android:layout_height="?attr/actionBarSize"
-				app:layout_collapseMode="pin">
-
-				<Button
-					android:id="@+id/button_done"
-					style="@style/Widget.Material3.Button.UnelevatedButton"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_gravity="end"
-					android:layout_marginHorizontal="@dimen/toolbar_button_margin"
-					android:text="@string/done"
-					android:visibility="gone" />
-
-			</com.google.android.material.appbar.MaterialToolbar>
-
-		</com.google.android.material.appbar.CollapsingToolbarLayout>
+		</com.google.android.material.appbar.MaterialToolbar>
 
 	</com.google.android.material.appbar.AppBarLayout>
 
@@ -47,18 +27,26 @@
 		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:orientation="vertical"
-		android:paddingVertical="@dimen/list_spacing"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+	<com.google.android.material.progressindicator.LinearProgressIndicator
+		android:id="@+id/progressBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:indeterminate="true"
+		android:visibility="gone"
+		app:layout_anchor="@id/appbar"
+		app:layout_anchorGravity="bottom" />
 
 	<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 		android:id="@+id/fab_add"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_margin="16dp"
-		android:contentDescription="@string/add_new_category"
-		android:text="@string/create_category"
+		android:contentDescription="@string/pick_custom_directory"
+		android:text="@string/add"
 		app:fabSize="normal"
 		app:icon="@drawable/ic_add"
 		app:layout_anchor="@id/recyclerView"

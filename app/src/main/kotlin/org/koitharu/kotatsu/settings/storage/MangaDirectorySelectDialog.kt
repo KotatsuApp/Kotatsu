@@ -36,7 +36,10 @@ class MangaDirectorySelectDialog : AlertDialogFragment<DialogDirectorySelectBind
 			ActivityResultContracts.RequestPermission()
 		},
 	) {
-		pickFileTreeLauncher.launch(null)
+		if (it) {
+			viewModel.refresh()
+			pickFileTreeLauncher.launch(null)
+		}
 	}
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): DialogDirectorySelectBinding {

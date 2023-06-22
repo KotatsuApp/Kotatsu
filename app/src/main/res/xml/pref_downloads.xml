@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<Preference
+		android:key="local_manga_dirs"
+		android:persistent="false"
+		android:title="@string/local_manga_directories" />
 
 	<Preference
 		android:key="local_storage"
@@ -11,7 +17,8 @@
 		android:defaultValue="false"
 		android:key="downloads_wifi"
 		android:summary="@string/downloads_wifi_only_summary"
-		android:title="@string/downloads_wifi_only" />
+		android:title="@string/downloads_wifi_only"
+		app:allowDividerAbove="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"

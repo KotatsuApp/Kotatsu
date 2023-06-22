@@ -33,7 +33,7 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		addMenuProvider(LocalListMenuProvider(this::onEmptyActionClick))
+		addMenuProvider(LocalListMenuProvider(binding.root.context, this::onEmptyActionClick))
 		viewModel.onMangaRemoved.observeEvent(viewLifecycleOwner) { onItemRemoved() }
 	}
 
@@ -45,7 +45,7 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 		FilterSheetFragment.show(childFragmentManager)
 	}
 
-	override fun onScrolledToEnd() = Unit
+	override fun onScrolledToEnd() = viewModel.loadNextPage()
 
 	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_local, menu)

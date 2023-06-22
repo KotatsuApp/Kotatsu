@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.local.ui
 
+import android.content.SharedPreferences
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ class LocalListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
 	filter: FilterCoordinator,
-	settings: AppSettings,
+	private val settings: AppSettings,
 	downloadScheduler: DownloadWorker.Scheduler,
 	listExtraProvider: ListExtraProvider,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
@@ -36,7 +37,7 @@ class LocalListViewModel @Inject constructor(
 	settings,
 	listExtraProvider,
 	downloadScheduler,
-) {
+), SharedPreferences.OnSharedPreferenceChangeListener {
 
 	val onMangaRemoved = MutableEventFlow<Unit>()
 
@@ -46,6 +47,18 @@ class LocalListViewModel @Inject constructor(
 				.collect {
 					loadList(filter.snapshot(), append = false).join()
 				}
+		}
+		settings.subscribe(this)
+	}
+
+	override fun onCleared() {
+		settings.unsubscribe(this)
+		super.onCleared()
+	}
+
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+		if (key == AppSettings.KEY_LOCAL_MANGA_DIRS) {
+			onRefresh()
 		}
 	}
 

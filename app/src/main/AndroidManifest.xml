@@ -106,6 +106,9 @@
 			</intent-filter>
 		</activity>
 		<activity
+			android:name="org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity"
+			android:label="@string/local_manga_directories" />
+		<activity
 			android:name="org.koitharu.kotatsu.browser.BrowserActivity"
 			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />

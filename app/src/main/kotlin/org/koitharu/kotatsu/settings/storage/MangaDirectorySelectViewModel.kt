@@ -24,26 +24,7 @@ class MangaDirectorySelectViewModel @Inject constructor(
 	val onPickDirectory = MutableEventFlow<Unit>()
 
 	init {
-		launchJob {
-			val defaultValue = storageManager.getDefaultWriteableDir()
-			val available = storageManager.getWriteableDirs()
-			items.value = buildList(available.size + 1) {
-				available.mapTo(this) { dir ->
-					DirectoryModel(
-						title = storageManager.getDirectoryDisplayName(dir, isFullPath = false),
-						titleRes = 0,
-						file = dir,
-						isChecked = dir == defaultValue,
-					)
-				}
-				this += DirectoryModel(
-					title = null,
-					titleRes = R.string.pick_custom_directory,
-					file = null,
-					isChecked = false,
-				)
-			}
-		}
+		refresh()
 	}
 
 	fun onItemClick(item: DirectoryModel) {
@@ -62,9 +43,36 @@ class MangaDirectorySelectViewModel @Inject constructor(
 			if (!dir.canWrite()) {
 				throw AccessDeniedException(dir)
 			}
-			settings.userSpecifiedMangaDirectories += dir
-			settings.mangaStorageDir = dir
+			if (dir !in storageManager.getApplicationStorageDirs()) {
+				settings.mangaStorageDir = dir
+				storageManager.setDirIsNoMedia(dir)
+			}
 			onDismissDialog.call(Unit)
+		}
+	}
+
+	fun refresh() {
+		launchJob(Dispatchers.Default) {
+			val defaultValue = storageManager.getDefaultWriteableDir()
+			val available = storageManager.getWriteableDirs()
+			items.value = buildList(available.size + 1) {
+				available.mapTo(this) { dir ->
+					DirectoryModel(
+						title = storageManager.getDirectoryDisplayName(dir, isFullPath = false),
+						titleRes = 0,
+						file = dir,
+						isChecked = dir == defaultValue,
+						isAvailable = true,
+					)
+				}
+				this += DirectoryModel(
+					title = null,
+					titleRes = R.string.pick_custom_directory,
+					file = null,
+					isChecked = false,
+					isAvailable = true,
+				)
+			}
 		}
 	}
 }

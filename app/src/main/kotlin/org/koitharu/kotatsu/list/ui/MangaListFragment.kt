@@ -78,9 +78,6 @@ abstract class MangaListFragment :
 	private val spanSizeLookup = SpanSizeLookup()
 	private val listCommitCallback = Runnable {
 		spanSizeLookup.invalidateCache()
-		viewBinding?.let {
-			paginationListener?.onScrolled(it.recyclerView, 0, 0)
-		}
 	}
 	open val isSwipeRefreshEnabled = true
 

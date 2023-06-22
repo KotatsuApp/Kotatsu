@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?selectableItemBackground"
+	android:gravity="center_vertical"
+	android:minHeight="?listPreferredItemHeight"
+	android:orientation="horizontal"
+	android:paddingVertical="12dp"
+	android:paddingStart="?listPreferredItemPaddingStart">
+
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:drawablePadding="6dp"
+			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:singleLine="true"
+			android:textAppearance="?attr/textAppearanceTitleSmall"
+			app:drawableTint="@color/warning"
+			tools:drawableStart="@drawable/ic_alert_outline"
+			tools:text="@tools:sample/lorem[3]" />
+
+		<TextView
+			android:id="@+id/textView_subtitle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="6dp"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			tools:text="@tools:sample/lorem[20]" />
+
+	</LinearLayout>
+
+	<ImageView
+		android:id="@+id/imageView_remove"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/remove"
+		android:padding="?listPreferredItemPaddingEnd"
+		app:srcCompat="@drawable/ic_delete" />
+
+</LinearLayout>

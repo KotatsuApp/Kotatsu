@@ -21,6 +21,7 @@ import java.io.File
 import javax.inject.Inject
 
 private const val DIR_NAME = "manga"
+private const val NOMEDIA = ".nomedia"
 private const val CACHE_DISK_PERCENTAGE = 0.02
 private const val CACHE_SIZE_MIN: Long = 10 * 1024 * 1024 // 10MB
 private const val CACHE_SIZE_MAX: Long = 250 * 1024 * 1024 // 250MB
@@ -77,17 +78,22 @@ class LocalStorageManager @Inject constructor(
 		preferredDir ?: getFallbackStorageDir()?.takeIf { it.isWriteable() }
 	}
 
+	suspend fun getApplicationStorageDirs(): Set<File> = runInterruptible(Dispatchers.IO) {
+		getAvailableStorageDirs()
+	}
+
 	suspend fun resolveUri(uri: Uri): File? = runInterruptible(Dispatchers.IO) {
 		uri.resolveFile(context)
+	}
+
+	suspend fun setDirIsNoMedia(dir: File) = runInterruptible(Dispatchers.IO) {
+		File(dir, NOMEDIA).createNewFile()
 	}
 
 	fun takePermissions(uri: Uri) {
 		val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 		contentResolver.takePersistableUriPermission(uri, flags)
 	}
-
-	@Deprecated("")
-	fun getStorageDisplayName(file: File) = file.getStorageName(context)
 
 	suspend fun getDirectoryDisplayName(dir: File, isFullPath: Boolean): String = runInterruptible(Dispatchers.IO) {
 		val packageName = context.packageName
@@ -104,9 +110,6 @@ class LocalStorageManager @Inject constructor(
 	private fun getConfiguredStorageDirs(): MutableSet<File> {
 		val set = getAvailableStorageDirs()
 		set.addAll(settings.userSpecifiedMangaDirectories)
-		settings.mangaStorageDir?.let {
-			set.add(it)
-		}
 		return set
 	}
 
