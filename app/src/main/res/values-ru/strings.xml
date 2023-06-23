@@ -431,4 +431,12 @@
     <string name="show_pages_numbers_summary">Показывать номера страниц в нижнем углу</string>
     <string name="pages_animation_summary">Анимация перелистывания страниц</string>
     <string name="details_button_tip">Нажмите и удерживайте кнопку «Читать», чтобы просмотреть дополнительные параметры</string>
+    <string name="clear_source_cookies_summary">Очистить куки для указанного домена. В большинстве случаев это аннулирует авторизацию</string>
+    <string name="download_option_next_unread_n_chapters">Первые непрочитанные %s</string>
+    <string name="download_option_all_unread">Все непрочитанные главы</string>
+    <string name="download_option_all_chapters">Все главы с переводом %s</string>
+    <string name="download_option_whole_manga">Мангу целиком</string>
+    <string name="download_option_first_n_chapters">Первые %s</string>
+    <string name="download_option_all_unread_b">Все непрочитанные главы (%s)</string>
+    <string name="download_option_manual_selection">Выбрать главы вручную</string>
 </resources>
