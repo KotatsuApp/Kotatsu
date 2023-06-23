@@ -79,7 +79,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:f096ca2ad3') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:c2b79b55f8') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -142,7 +142,7 @@ dependencies {
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.11'
 
 	testImplementation 'junit:junit:4.13.2'
-	testImplementation 'org.json:json:20230227'
+	testImplementation 'org.json:json:20230618'
 	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
 
 	androidTestImplementation 'androidx.test:runner:1.5.2'

@@ -25,6 +25,16 @@
 		android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
 		tools:ignore="ScopedStorage" />
 
+	<queries>
+		<intent>
+			<action android:name="android.intent.action.PROCESS_TEXT" />
+			<data android:mimeType="text/plain" />
+		</intent>
+		<intent>
+			<action android:name="android.speech.action.RECOGNIZE_SPEECH" />
+		</intent>
+	</queries>
+
 	<application
 		android:name="org.koitharu.kotatsu.KotatsuApp"
 		android:allowBackup="true"
