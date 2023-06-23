@@ -337,4 +337,8 @@
     <string name="color_theme">Bảng màu</string>
     <string name="nothing_here">Không có gì ở đây cả</string>
     <string name="language">Ngôn ngữ</string>
+    <string name="compact">Nhỏ gọn</string>
+    <string name="services">Dịch vụ</string>
+    <string name="allow_unstable_updates">Cho phép cập nhật không ổn định</string>
+    <string name="pages_animation_summary">Trang chuyển hình ảnh động</string>
 </resources>
