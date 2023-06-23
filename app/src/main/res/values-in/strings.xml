@@ -431,4 +431,12 @@
     <string name="webtoon_zoom_summary">Izinkan gerakan zoom in dalam mode webtoon</string>
     <string name="reader_info_bar_summary">Tampilkan waktu saat ini dan kemajuan pembacaan di bagian atas layar</string>
     <string name="pages_animation_summary">Animasikan peralihan halaman</string>
+    <string name="clear_source_cookies_summary">Hapus cookie hanya untuk domain tertentu. Dalam kebanyakan kasus akan membatalkan otorisasi</string>
+    <string name="download_option_whole_manga">Seluruh manga</string>
+    <string name="download_option_first_n_chapters">Pertama %s</string>
+    <string name="download_option_all_unread">Semua bab yang belum dibaca</string>
+    <string name="download_option_all_unread_b">Semua bab yang belum dibaca (%s)</string>
+    <string name="download_option_all_chapters">Semua bab dengan terjemahan %s</string>
+    <string name="download_option_next_unread_n_chapters">Belum dibaca %s</string>
+    <string name="download_option_manual_selection">Pilih bab secara manual</string>
 </resources>
