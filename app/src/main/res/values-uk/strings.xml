@@ -431,4 +431,5 @@
     <string name="pages_animation_summary">Анімація перегортання сторінок</string>
     <string name="details_button_tip">Натисніть і утримуйте кнопку «Читати», щоб переглянути додаткові параметри</string>
     <string name="webtoon_zoom_summary">Дозволити жест збільшення в режимі webtoon</string>
+    <string name="clear_source_cookies_summary">Очистити файли cookie лише для вказаного домену. У більшості випадків авторизація анулюється</string>
 </resources>
