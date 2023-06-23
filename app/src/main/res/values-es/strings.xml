@@ -431,4 +431,12 @@
     <string name="details_button_tip">Manten pulsado el botón Leer para ver más opciones</string>
     <string name="restore_summary">Restaurar una copia de seguridad creada anteriormente</string>
     <string name="reader_info_bar_summary">Muestra la hora actual y el progreso de la lectura en la parte superior de la pantalla</string>
+    <string name="clear_source_cookies_summary">Borrar las cookies solo para el dominio especificado. En la mayoría de los casos invalidará la autorización</string>
+    <string name="download_option_whole_manga">El manga completo</string>
+    <string name="download_option_first_n_chapters">Primero %s</string>
+    <string name="download_option_all_unread">Todos los capítulos sin leer</string>
+    <string name="download_option_all_unread_b">Todos los capítulos sin leer (%s)</string>
+    <string name="download_option_manual_selection">Selección manual de los capítulos</string>
+    <string name="download_option_all_chapters">Todos los capítulos con traducción %s</string>
+    <string name="download_option_next_unread_n_chapters">Siguiente %s sin leer</string>
 </resources>
