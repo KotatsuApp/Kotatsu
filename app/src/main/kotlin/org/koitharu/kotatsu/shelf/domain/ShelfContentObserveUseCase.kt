@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -11,6 +12,8 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.favourites.data.toMangaList
@@ -32,6 +35,7 @@ class ShelfContentObserveUseCase @Inject constructor(
 	private val trackingRepository: TrackingRepository,
 	private val suggestionRepository: SuggestionRepository,
 	private val db: MangaDatabase,
+	private val settings: AppSettings,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 ) {
 
@@ -46,7 +50,10 @@ class ShelfContentObserveUseCase @Inject constructor(
 	}
 
 	private fun observeLocalManga(sortOrder: SortOrder, limit: Int): Flow<List<Manga>> {
-		return localStorageChanges
+		return combine<LocalManga?, String, Any?>(
+			localStorageChanges,
+			settings.observe().filter { it == AppSettings.KEY_LOCAL_MANGA_DIRS }
+		) { _, _ -> Any() }
 			.onStart { emit(null) }
 			.mapLatest {
 				localMangaRepository.getList(0, null, sortOrder).take(limit)

@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
+import java.io.FilenameFilter
 import java.util.EnumSet
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -192,7 +193,7 @@ class LocalMangaRepository @Inject constructor(
 			val dispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)
 			files.map { file ->
 				async(dispatcher) {
-					runCatchingCancellable { LocalMangaInput.of(file).getManga() }.getOrNull()
+					runCatchingCancellable { LocalMangaInput.ofOrNull(file)?.getManga() }.getOrNull()
 				}
 			}.awaitAll()
 		}.filterNotNullTo(ArrayList(files.size))

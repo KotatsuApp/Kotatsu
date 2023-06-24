@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.local.data.input
 
 import android.net.Uri
 import androidx.core.net.toFile
+import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -28,6 +29,12 @@ sealed class LocalMangaInput(
 		fun of(file: File): LocalMangaInput = when {
 			file.isDirectory -> LocalMangaDirInput(file)
 			else -> LocalMangaZipInput(file)
+		}
+
+		fun ofOrNull(file: File): LocalMangaInput? = when {
+			file.isDirectory -> LocalMangaDirInput(file)
+			CbzFilter.isFileSupported(file.name) -> LocalMangaZipInput(file)
+			else -> null
 		}
 
 		@JvmStatic
