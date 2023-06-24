@@ -37,7 +37,7 @@ class RecentListFactory(
 
 	override fun getLoadingView() = null
 
-	override fun getItemId(position: Int) = dataSet[position].id
+	override fun getItemId(position: Int) = dataSet.getOrNull(position)?.id ?: 0L
 
 	override fun onDataSetChanged() {
 		val data = runBlocking { historyRepository.getList(0, 10) }
