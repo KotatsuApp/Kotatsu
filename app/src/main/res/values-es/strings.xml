@@ -439,4 +439,8 @@
     <string name="download_option_manual_selection">Selección manual de los capítulos</string>
     <string name="download_option_all_chapters">Todos los capítulos con traducción %s</string>
     <string name="download_option_next_unread_n_chapters">Siguiente %s sin leer</string>
+    <string name="pick_custom_directory">Elegir un directorio personalizado</string>
+    <string name="no_access_to_file">No tienes acceso a este archivo o directorio</string>
+    <string name="custom_directory">Directorio personalizado</string>
+    <string name="local_manga_directories">Directorios locales del manga</string>
 </resources>
