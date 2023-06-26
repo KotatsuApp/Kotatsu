@@ -431,4 +431,16 @@
     <string name="restore_summary">Аднавіць раней створаную рэзервовую копію</string>
     <string name="reader_info_bar_summary">Паказаць бягучы час і ход чытання ў верхняй частцы экрана</string>
     <string name="pages_animation_summary">Анімацыя перагортвання старонак</string>
+    <string name="clear_source_cookies_summary">Выдаліць файлы cookie толькі для вызначанага дамена. У большасці выпадкаў гэта робіць аўтарызацыю несапраўднай</string>
+    <string name="download_option_whole_manga">Манга цалкам</string>
+    <string name="local_manga_directories">Лакальныя каталогі мангі</string>
+    <string name="download_option_all_chapters">Усе раздзелы з перакладам %s</string>
+    <string name="download_option_first_n_chapters">Першыя %s</string>
+    <string name="download_option_all_unread_b">Усе непрачытаныя раздзелы (%s)</string>
+    <string name="download_option_all_unread">Усе непрачытаныя раздзелы</string>
+    <string name="download_option_manual_selection">Выбірайце раздзелы ўручную</string>
+    <string name="pick_custom_directory">Выберыце карыстальніцкі каталог</string>
+    <string name="download_option_next_unread_n_chapters">Наступная непрачытаная %s</string>
+    <string name="custom_directory">Карыстацкі каталог</string>
+    <string name="no_access_to_file">У вас няма доступу да гэтага файла або каталога</string>
 </resources>

@@ -118,4 +118,12 @@
     <string name="volume_buttons">Дугмад за јачину звука</string>
     <string name="notifications">Обавештења</string>
     <string name="pages_cache">Кеш страница</string>
+    <string name="text_shelf_holder_secondary">Пронађите шта да читате у одељку „Преглед“</string>
+    <string name="manga_shelf">Полица</string>
+    <string name="check_for_updates">Провери ажурирања</string>
+    <string name="feed">Фид</string>
+    <string name="services">Услуге</string>
+    <string name="show_on_shelf">Прикажи на полици</string>
+    <string name="explore">Преглед</string>
+    <string name="options">Опције</string>
 </resources>

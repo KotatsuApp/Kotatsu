@@ -432,4 +432,13 @@
     <string name="details_button_tip">Натисніть і утримуйте кнопку «Читати», щоб переглянути додаткові параметри</string>
     <string name="webtoon_zoom_summary">Дозволити жест збільшення в режимі webtoon</string>
     <string name="clear_source_cookies_summary">Очистити файли cookie лише для вказаного домену. У більшості випадків авторизація анулюється</string>
+    <string name="pick_custom_directory">Вибрати користувальницький каталог</string>
+    <string name="no_access_to_file">Ви не маєте доступу до цього файлу чи каталогу</string>
+    <string name="download_option_all_unread">Усі непрочитані розділи</string>
+    <string name="download_option_all_chapters">Усі розділи з перекладом %s</string>
+    <string name="download_option_whole_manga">Манга цілком</string>
+    <string name="download_option_all_unread_b">Усі непрочитані розділи (%s)</string>
+    <string name="download_option_manual_selection">Виберіть розділи вручну</string>
+    <string name="local_manga_directories">Локальні каталоги манґи</string>
+    <string name="custom_directory">Користувальницький каталог</string>
 </resources>
