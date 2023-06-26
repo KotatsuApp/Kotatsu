@@ -431,4 +431,16 @@
     <string name="show_pages_numbers_summary">下隅にページ番号を表示する</string>
     <string name="reader_info_bar_summary">画面上部に現在時刻と読書の進行状況を表示する</string>
     <string name="details_button_tip">読むボタンを長押しすると、より多くのオプションが表示されます</string>
+    <string name="clear_source_cookies_summary">指定されたドメインのクッキーのみをクリアします。ほとんどの場合、認証は無効になります</string>
+    <string name="download_option_all_chapters">翻訳付きのすべての章%s</string>
+    <string name="download_option_whole_manga">マンガ全体</string>
+    <string name="download_option_first_n_chapters">最初%s</string>
+    <string name="download_option_next_unread_n_chapters">次の未読%s</string>
+    <string name="download_option_all_unread">すべての未読の章</string>
+    <string name="download_option_all_unread_b">すべての未読チャプター (%s)</string>
+    <string name="download_option_manual_selection">手動でチャプターを選択</string>
+    <string name="custom_directory">カスタムディレクトリ</string>
+    <string name="no_access_to_file">このファイルまたはディレクトリにアクセスできません</string>
+    <string name="pick_custom_directory">カスタムディレクトリを選択</string>
+    <string name="local_manga_directories">ローカルマンガディレクトリ</string>
 </resources>
