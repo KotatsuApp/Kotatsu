@@ -431,4 +431,16 @@
     <string name="network">Réseau</string>
     <string name="data_and_privacy">Données et confidentialité</string>
     <string name="show_pages_numbers_summary">Afficher les numéros de page dans le coin inférieur</string>
+    <string name="clear_source_cookies_summary">Effacer les cookies pour le domaine spécifié uniquement. Dans la plupart des cas, l\'autorisation sera invalidée</string>
+    <string name="download_option_first_n_chapters">%s premier(s)</string>
+    <string name="download_option_next_unread_n_chapters">%s prochain(s) non lu(s)</string>
+    <string name="download_option_all_unread_b">Tous les chapitres non lus (%s)</string>
+    <string name="custom_directory">Répertoire personnalisé</string>
+    <string name="download_option_all_chapters">Tous les chapitres avec traduction %s</string>
+    <string name="download_option_all_unread">Tous les chapitres non lus</string>
+    <string name="download_option_whole_manga">Tout le manga</string>
+    <string name="download_option_manual_selection">Sélection manuelle des chapitres</string>
+    <string name="no_access_to_file">Vous n\'avez pas accès à ce fichier ou répertoire</string>
+    <string name="pick_custom_directory">Choisir un répertoire personnalisé</string>
+    <string name="local_manga_directories">Annuaires locaux de mangas</string>
 </resources>
