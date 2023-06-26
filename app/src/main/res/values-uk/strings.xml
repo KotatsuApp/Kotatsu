@@ -441,4 +441,6 @@
     <string name="download_option_manual_selection">Виберіть розділи вручну</string>
     <string name="local_manga_directories">Локальні каталоги манґи</string>
     <string name="custom_directory">Користувальницький каталог</string>
+    <string name="download_option_first_n_chapters">Перші %s</string>
+    <string name="download_option_next_unread_n_chapters">Перші непрочитані %s</string>
 </resources>
