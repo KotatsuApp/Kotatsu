@@ -439,4 +439,8 @@
     <string name="download_option_first_n_chapters">Первые %s</string>
     <string name="download_option_all_unread_b">Все непрочитанные главы (%s)</string>
     <string name="download_option_manual_selection">Выбрать главы вручную</string>
+    <string name="no_access_to_file">У вас нет доступа к этому файлу или каталогу</string>
+    <string name="custom_directory">Пользовательский каталог</string>
+    <string name="local_manga_directories">Локальные каталоги манги</string>
+    <string name="pick_custom_directory">Выбрать пользовательский каталог</string>
 </resources>
