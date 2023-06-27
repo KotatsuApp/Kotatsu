@@ -35,18 +35,6 @@ class LocalMangaUtil(
 		}
 	}
 
-	suspend fun writeIndex(index: MangaIndex) {
-		newOutput().use { output ->
-			when (output) {
-				is LocalMangaDirOutput -> {
-					TODO()
-				}
-
-				is LocalMangaZipOutput -> TODO()
-			}
-		}
-	}
-
 	private suspend fun newOutput(): LocalMangaOutput = runInterruptible(Dispatchers.IO) {
 		val file = manga.url.toUri().toFile()
 		if (file.isDirectory) {

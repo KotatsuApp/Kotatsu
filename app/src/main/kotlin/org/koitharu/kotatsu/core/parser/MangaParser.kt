@@ -9,6 +9,6 @@ fun MangaParser(source: MangaSource, loaderContext: MangaLoaderContext): MangaPa
 	return if (source == MangaSource.DUMMY) {
 		DummyParser(loaderContext)
 	} else {
-		source.newParser(loaderContext)
+		loaderContext.newParserInstance(source)
 	}
 }

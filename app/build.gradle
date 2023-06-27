@@ -15,8 +15,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 556
-		versionName '5.3'
+		versionCode 558
+		versionName '5.3.1'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -79,7 +79,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:c2b79b55f8') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:7ccacf4c27') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -136,8 +136,8 @@ dependencies {
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
 
-	implementation 'ch.acra:acra-http:5.9.7'
-	implementation 'ch.acra:acra-dialog:5.9.7'
+	implementation 'ch.acra:acra-http:5.10.1'
+	implementation 'ch.acra:acra-dialog:5.10.1'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.11'
 
@@ -152,7 +152,7 @@ dependencies {
 
 	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
 
-	androidTestImplementation 'androidx.room:room-testing:2.5.1'
+	androidTestImplementation 'androidx.room:room-testing:2.5.2'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.15.0'
 
 	androidTestImplementation 'com.google.dagger:hilt-android-testing:2.46.1'

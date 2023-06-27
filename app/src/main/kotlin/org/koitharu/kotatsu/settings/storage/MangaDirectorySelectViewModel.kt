@@ -39,7 +39,9 @@ class MangaDirectorySelectViewModel @Inject constructor(
 	fun onCustomDirectoryPicked(uri: Uri) {
 		launchJob(Dispatchers.Default) {
 			storageManager.takePermissions(uri)
-			val dir = storageManager.resolveUri(uri) ?: throw FileNotFoundException()
+			val dir = requireNotNull(storageManager.resolveUri(uri)) {
+				"Cannot resolve file name of \"$uri\""
+			}
 			if (!dir.canWrite()) {
 				throw AccessDeniedException(dir)
 			}

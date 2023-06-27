@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.StatFs
 import androidx.annotation.WorkerThread
+import androidx.core.net.toFile
 import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.getStorageName
 import org.koitharu.kotatsu.core.util.ext.resolveFile
+import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.io.File
 import javax.inject.Inject
@@ -83,7 +85,11 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	suspend fun resolveUri(uri: Uri): File? = runInterruptible(Dispatchers.IO) {
-		uri.resolveFile(context)
+		if (uri.scheme == "file") {
+			uri.toFile()
+		} else {
+			uri.resolveFile(context)
+		}
 	}
 
 	suspend fun setDirIsNoMedia(dir: File) = runInterruptible(Dispatchers.IO) {
