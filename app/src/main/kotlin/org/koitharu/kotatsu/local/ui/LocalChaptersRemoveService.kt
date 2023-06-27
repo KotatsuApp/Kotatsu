@@ -85,7 +85,7 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_notify_sync)
 			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
-			.setOngoing(true)
+			.setOngoing(false)
 			.build()
 		startForeground(NOTIFICATION_ID, notification)
 	}
