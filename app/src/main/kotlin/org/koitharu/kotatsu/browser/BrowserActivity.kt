@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.catchingWebViewUnavailability
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
+import org.koitharu.kotatsu.parsers.network.UserAgents
 import com.google.android.material.R as materialR
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -35,7 +36,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		}
 		with(viewBinding.webView.settings) {
 			javaScriptEnabled = true
-			userAgentString = CommonHeadersInterceptor.userAgentChrome
+			userAgentString = UserAgents.CHROME_MOBILE
 		}
 		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		viewBinding.webView.webViewClient = BrowserClient(this)

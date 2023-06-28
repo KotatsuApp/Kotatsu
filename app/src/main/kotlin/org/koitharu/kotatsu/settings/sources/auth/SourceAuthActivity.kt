@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.network.UserAgents
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -67,7 +68,9 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		}
 		with(viewBinding.webView.settings) {
 			javaScriptEnabled = true
-			userAgentString = CommonHeadersInterceptor.userAgentChrome
+			domStorageEnabled = true
+			databaseEnabled = true
+			userAgentString = UserAgents.CHROME_MOBILE
 		}
 		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		viewBinding.webView.webViewClient = BrowserClient(this)

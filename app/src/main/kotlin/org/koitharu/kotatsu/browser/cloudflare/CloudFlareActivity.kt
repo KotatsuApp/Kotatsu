@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.TaggedActivityResult
 import org.koitharu.kotatsu.core.util.ext.catchingWebViewUnavailability
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
+import org.koitharu.kotatsu.parsers.network.UserAgents
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -49,10 +50,9 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		val url = intent?.dataString.orEmpty()
 		with(viewBinding.webView.settings) {
 			javaScriptEnabled = true
-			cacheMode = WebSettings.LOAD_DEFAULT
 			domStorageEnabled = true
 			databaseEnabled = true
-			userAgentString = intent?.getStringExtra(ARG_UA) ?: CommonHeadersInterceptor.userAgentFallback
+			userAgentString = intent?.getStringExtra(ARG_UA) ?: UserAgents.CHROME_MOBILE
 		}
 		viewBinding.webView.webViewClient = CloudFlareClient(cookieJar, this, url)
 		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView).also {

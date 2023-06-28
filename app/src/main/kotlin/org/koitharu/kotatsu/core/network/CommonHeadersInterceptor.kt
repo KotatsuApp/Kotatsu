@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.network
 
-import android.os.Build
 import android.util.Log
 import dagger.Lazy
 import okhttp3.Headers
@@ -10,11 +9,11 @@ import okhttp3.Response
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
-import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.mergeWith
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.network.UserAgents
+import org.koitharu.kotatsu.parsers.util.mergeWith
 import java.net.IDN
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,7 +38,7 @@ class CommonHeadersInterceptor @Inject constructor(
 			headersBuilder.mergeWith(it, replaceExisting = false)
 		}
 		if (headersBuilder[CommonHeaders.USER_AGENT] == null) {
-			headersBuilder[CommonHeaders.USER_AGENT] = userAgentFallback
+			headersBuilder[CommonHeaders.USER_AGENT] = UserAgents.CHROME_MOBILE
 		}
 		if (headersBuilder[CommonHeaders.REFERER] == null && repository != null) {
 			val idn = IDN.toASCII(repository.domain)
@@ -61,27 +60,5 @@ class CommonHeadersInterceptor @Inject constructor(
 	) : Interceptor.Chain by delegate {
 
 		override fun request(): Request = request
-	}
-
-	companion object {
-
-		val userAgentFallback
-			get() = "Kotatsu/%s (Android %s; %s; %s %s; %s)".format(
-				BuildConfig.VERSION_NAME,
-				Build.VERSION.RELEASE,
-				Build.MODEL,
-				Build.BRAND,
-				Build.DEVICE,
-				Locale.getDefault().language,
-			)
-
-		val userAgentChrome
-			get() = (
-				"Mozilla/5.0 (Linux; Android %s; %s) AppleWebKit/537.36 (KHTML, like Gecko) " +
-					"Chrome/100.0.4896.127 Mobile Safari/537.36"
-				).format(
-					Build.VERSION.RELEASE,
-					Build.MODEL,
-				)
 	}
 }
