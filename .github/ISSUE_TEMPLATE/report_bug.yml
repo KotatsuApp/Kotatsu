@@ -62,3 +62,5 @@ body:
           options:
               - label: I have searched the existing issues and this is a new ticket, **NOT** a duplicate or related to another open issue.
                 required: true
+              - label: If this is an issue with a parser, I should be opening an issue in the [parsers repository](https://github.com/KotatsuApp/kotatsu-parsers/issues/new/choose).
+                required: true
