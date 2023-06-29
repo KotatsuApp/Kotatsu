@@ -1,22 +1,28 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.annotation.SuppressLint
-import android.text.format.DateUtils
+import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @SuppressLint("SimpleDateFormat")
 fun Date.format(pattern: String): String = SimpleDateFormat(pattern).format(this)
 
-fun Date.formatRelative(minResolution: Long): CharSequence = DateUtils.getRelativeTimeSpanString(
-	time, System.currentTimeMillis(), minResolution,
-)
-
-fun Date.daysDiff(other: Long): Int {
-	val thisDay = time / TimeUnit.DAYS.toMillis(1L)
-	val otherDay = other / TimeUnit.DAYS.toMillis(1L)
-	return (thisDay - otherDay).toInt()
+fun calculateTimeAgo(date: Date, showDate: Boolean = true): DateTimeAgo {
+	val localDateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault())
+	val now = LocalDateTime.now()
+	val diffMinutes = localDateTime.until(now, ChronoUnit.MINUTES)
+	val diffDays = localDateTime.until(now, ChronoUnit.DAYS).toInt()
+	return when {
+		diffMinutes < 3 -> DateTimeAgo.JustNow
+		diffDays < 1 -> DateTimeAgo.Today
+		diffDays == 1 -> DateTimeAgo.Yesterday
+		diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays)
+		else -> if (showDate) DateTimeAgo.Absolute(localDateTime.toLocalDate()) else DateTimeAgo.LongAgo
+	}
 }
 
 fun Date.startOfDay(): Long {

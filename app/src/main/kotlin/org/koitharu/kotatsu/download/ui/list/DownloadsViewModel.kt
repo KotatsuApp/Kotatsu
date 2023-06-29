@@ -21,8 +21,8 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -30,9 +30,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import java.util.Date
 import java.util.UUID
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -181,7 +179,7 @@ class DownloadsViewModel @Inject constructor(
 		val destination = ArrayList<ListModel>((size * 1.4).toInt())
 		var prevDate: DateTimeAgo? = null
 		for (item in this) {
-			val date = timeAgo(item.timestamp)
+			val date = calculateTimeAgo(item.timestamp)
 			if (prevDate != date) {
 				destination += date
 			}
@@ -209,19 +207,6 @@ class DownloadsViewModel @Inject constructor(
 			timestamp = DownloadState.getTimestamp(workData),
 			totalChapters = DownloadState.getDownloadedChapters(workData).size,
 		)
-	}
-
-	private fun timeAgo(date: Date): DateTimeAgo {
-		val diff = (System.currentTimeMillis() - date.time).coerceAtLeast(0L)
-		val diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
-		val diffDays = -date.daysDiff(System.currentTimeMillis())
-		return when {
-			diffMinutes < 3 -> DateTimeAgo.JustNow
-			diffDays < 1 -> DateTimeAgo.Today
-			diffDays == 1 -> DateTimeAgo.Yesterday
-			diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays)
-			else -> DateTimeAgo.Absolute(date)
-		}
 	}
 
 	private fun emptyStateList() = listOf(

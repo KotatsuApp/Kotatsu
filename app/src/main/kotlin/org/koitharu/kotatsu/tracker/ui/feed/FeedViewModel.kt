@@ -12,16 +12,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
+import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import org.koitharu.kotatsu.tracker.ui.feed.model.toFeedItem
-import java.util.Date
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -73,7 +71,7 @@ class FeedViewModel @Inject constructor(
 		val destination = ArrayList<ListModel>((size * 1.4).toInt())
 		var prevDate: DateTimeAgo? = null
 		for (item in this) {
-			val date = timeAgo(item.createdAt)
+			val date = calculateTimeAgo(item.createdAt)
 			if (prevDate != date) {
 				destination += date
 			}
@@ -81,18 +79,5 @@ class FeedViewModel @Inject constructor(
 			destination += item.toFeedItem()
 		}
 		return destination
-	}
-
-	private fun timeAgo(date: Date): DateTimeAgo {
-		val diff = (System.currentTimeMillis() - date.time).coerceAtLeast(0L)
-		val diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
-		val diffDays = -date.daysDiff(System.currentTimeMillis())
-		return when {
-			diffMinutes < 3 -> DateTimeAgo.JustNow
-			diffDays < 1 -> DateTimeAgo.Today
-			diffDays == 1 -> DateTimeAgo.Yesterday
-			diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays)
-			else -> DateTimeAgo.Absolute(date)
-		}
 	}
 }

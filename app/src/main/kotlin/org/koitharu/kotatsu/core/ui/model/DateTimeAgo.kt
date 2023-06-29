@@ -2,10 +2,9 @@ package org.koitharu.kotatsu.core.ui.model
 
 import android.content.res.Resources
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.daysDiff
-import org.koitharu.kotatsu.core.util.ext.format
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import java.util.Date
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 sealed class DateTimeAgo : ListModel {
 
@@ -93,28 +92,16 @@ sealed class DateTimeAgo : ListModel {
 		override fun toString() = "days_ago_$days"
 	}
 
-	class Absolute(private val date: Date) : DateTimeAgo() {
-
-		private val day = date.daysDiff(0)
-
+	data class Absolute(private val date: LocalDate) : DateTimeAgo() {
 		override fun format(resources: Resources): String {
-			return date.format("d MMMM")
+			return dateFormatter.format(date)
 		}
 
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
+		override fun toString() = "abs_${date.toEpochDay()}"
 
-			other as Absolute
-
-			return day == other.day
+		companion object {
+			private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM")
 		}
-
-		override fun hashCode(): Int {
-			return day
-		}
-
-		override fun toString() = "abs_$day"
 	}
 
 	object LongAgo : DateTimeAgo() {
