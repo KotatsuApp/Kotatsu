@@ -13,15 +13,16 @@ fun Date.format(pattern: String): String = SimpleDateFormat(pattern).format(this
 
 fun calculateTimeAgo(date: Date, showDate: Boolean = true): DateTimeAgo {
 	val localDateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault())
+	val localDate = localDateTime.toLocalDate()
 	val now = LocalDateTime.now()
 	val diffMinutes = localDateTime.until(now, ChronoUnit.MINUTES)
-	val diffDays = localDateTime.until(now, ChronoUnit.DAYS).toInt()
+	val diffDays = localDate.until(now.toLocalDate(), ChronoUnit.DAYS).toInt()
 	return when {
 		diffMinutes < 3 -> DateTimeAgo.JustNow
 		diffDays < 1 -> DateTimeAgo.Today
 		diffDays == 1 -> DateTimeAgo.Yesterday
 		diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays)
-		else -> if (showDate) DateTimeAgo.Absolute(localDateTime.toLocalDate()) else DateTimeAgo.LongAgo
+		else -> if (showDate) DateTimeAgo.Absolute(localDate) else DateTimeAgo.LongAgo
 	}
 }
 
