@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.ui.util
 
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
@@ -13,7 +14,7 @@ fun interface ReversibleHandle {
 	suspend fun reverse()
 }
 
-fun ReversibleHandle.reverseAsync() = processLifecycleScope.launch(Dispatchers.Default) {
+fun ReversibleHandle.reverseAsync() = processLifecycleScope.launch(Dispatchers.Default, CoroutineStart.ATOMIC) {
 	runCatchingCancellable {
 		withContext(NonCancellable) {
 			reverse()

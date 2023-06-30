@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.history.domain
 
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
@@ -30,7 +31,7 @@ class HistoryUpdateUseCase @Inject constructor(
 		manga: Manga,
 		readerState: ReaderState,
 		percent: Float
-	) = processLifecycleScope.launch(Dispatchers.Default) {
+	) = processLifecycleScope.launch(Dispatchers.Default, CoroutineStart.ATOMIC) {
 		runCatchingCancellable {
 			withContext(NonCancellable) {
 				invoke(manga, readerState, percent)
