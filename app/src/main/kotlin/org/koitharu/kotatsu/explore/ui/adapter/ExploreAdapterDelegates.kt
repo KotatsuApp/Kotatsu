@@ -33,13 +33,13 @@ fun exploreButtonsAD(
 	binding.buttonBookmarks.setOnClickListener(clickListener)
 	binding.buttonHistory.setOnClickListener(clickListener)
 	binding.buttonLocal.setOnClickListener(clickListener)
-	binding.buttonSuggestions.setOnClickListener(clickListener)
+	//binding.buttonSuggestions.setOnClickListener(clickListener)
 	binding.buttonFavourites.setOnClickListener(clickListener)
-	binding.buttonRandom.setOnClickListener(clickListener)
+	//binding.buttonRandom.setOnClickListener(clickListener)
 
-	bind {
-		binding.buttonSuggestions.isVisible = item.isSuggestionsEnabled
-	}
+	//bind {
+	//	binding.buttonSuggestions.isVisible = item.isSuggestionsEnabled
+	//}
 }
 
 fun exploreSourcesHeaderAD(

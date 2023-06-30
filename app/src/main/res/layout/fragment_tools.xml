@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
@@ -15,61 +16,79 @@
 			layout="@layout/layout_app_update"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_margin="@dimen/margin_normal"
+			android:layout_marginHorizontal="@dimen/margin_normal"
+			android:layout_marginTop="@dimen/margin_normal"
 			android:visibility="gone"
 			tools:visibility="visible" />
 
-		<com.google.android.material.divider.MaterialDivider
+		<com.google.android.material.card.MaterialCardView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginVertical="@dimen/margin_small"
-			android:visibility="gone"
-			tools:visibility="visible" />
+			android:layout_marginTop="@dimen/margin_normal"
+			android:layout_marginHorizontal="@dimen/margin_normal"
+			app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+			app:cardCornerRadius="21dp">
 
-		<org.koitharu.kotatsu.settings.tools.views.MemoryUsageView
-			android:id="@+id/memory_usage_view"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+			<org.koitharu.kotatsu.settings.tools.views.MemoryUsageView
+				android:id="@+id/memory_usage_view"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
 
-		<com.google.android.material.divider.MaterialDivider
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginVertical="@dimen/margin_small" />
+			android:layout_marginHorizontal="@dimen/margin_normal"
+			android:layout_marginTop="@dimen/margin_normal"
+			app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+			app:cardCornerRadius="21dp"
+			app:contentPaddingBottom="8dp"
+			app:contentPaddingTop="8dp">
 
-		<com.google.android.material.materialswitch.MaterialSwitch
-			android:id="@+id/switch_incognito"
-			style="?listItemTextViewStyle"
-			android:layout_width="match_parent"
-			android:layout_height="?android:listPreferredItemHeightSmall"
-			android:drawableStart="@drawable/ic_incognito"
-			android:drawablePadding="?android:listPreferredItemPaddingStart"
-			android:paddingStart="?android:listPreferredItemPaddingStart"
-			android:paddingEnd="?android:listPreferredItemPaddingEnd"
-			android:text="@string/incognito_mode"
-			android:textAppearance="?attr/textAppearanceButton"
-			android:textColor="?attr/colorControlNormal" />
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
 
-		<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
-			android:id="@+id/button_downloads"
-			android:layout_width="match_parent"
-			android:layout_height="?android:listPreferredItemHeightSmall"
-			android:drawableStart="@drawable/ic_download"
-			android:drawablePadding="?android:listPreferredItemPaddingStart"
-			android:paddingStart="?android:listPreferredItemPaddingStart"
-			android:paddingEnd="?android:listPreferredItemPaddingEnd"
-			android:text="@string/downloads"
-			android:textAppearance="?attr/textAppearanceButton" />
+				<com.google.android.material.materialswitch.MaterialSwitch
+					android:id="@+id/switch_incognito"
+					style="?listItemTextViewStyle"
+					android:layout_width="match_parent"
+					android:layout_height="?android:listPreferredItemHeightSmall"
+					android:drawableStart="@drawable/ic_incognito"
+					android:drawablePadding="?android:listPreferredItemPaddingStart"
+					android:paddingStart="?android:listPreferredItemPaddingStart"
+					android:paddingEnd="?android:listPreferredItemPaddingEnd"
+					android:text="@string/incognito_mode"
+					android:textAppearance="?attr/textAppearanceButton"
+					android:textColor="?attr/colorControlNormal" />
 
-		<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
-			android:id="@+id/button_settings"
-			android:layout_width="match_parent"
-			android:layout_height="?android:listPreferredItemHeightSmall"
-			android:drawableStart="@drawable/ic_settings"
-			android:drawablePadding="?android:listPreferredItemPaddingStart"
-			android:paddingStart="?android:listPreferredItemPaddingStart"
-			android:paddingEnd="?android:listPreferredItemPaddingEnd"
-			android:text="@string/settings"
-			android:textAppearance="?attr/textAppearanceButton" />
+				<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+					android:id="@+id/button_downloads"
+					android:layout_width="match_parent"
+					android:layout_height="?android:listPreferredItemHeightSmall"
+					android:drawableStart="@drawable/ic_download"
+					android:drawablePadding="?android:listPreferredItemPaddingStart"
+					android:paddingStart="?android:listPreferredItemPaddingStart"
+					android:paddingEnd="?android:listPreferredItemPaddingEnd"
+					android:text="@string/downloads"
+					android:textAppearance="?attr/textAppearanceButton" />
+
+				<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+					android:id="@+id/button_settings"
+					android:layout_width="match_parent"
+					android:layout_height="?android:listPreferredItemHeightSmall"
+					android:drawableStart="@drawable/ic_settings"
+					android:drawablePadding="?android:listPreferredItemPaddingStart"
+					android:paddingStart="?android:listPreferredItemPaddingStart"
+					android:paddingEnd="?android:listPreferredItemPaddingEnd"
+					android:text="@string/settings"
+					android:textAppearance="?attr/textAppearanceButton" />
+
+			</LinearLayout>
+
+		</com.google.android.material.card.MaterialCardView>
 
 	</LinearLayout>
 

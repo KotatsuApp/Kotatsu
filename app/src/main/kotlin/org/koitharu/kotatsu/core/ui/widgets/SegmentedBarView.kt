@@ -28,13 +28,12 @@ class SegmentedBarView @JvmOverloads constructor(
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private val segmentsData = ArrayList<Segment>()
 	private val segmentsSizes = ArrayList<Float>()
-	private val outlineColor = context.getThemeColor(materialR.attr.colorOutline)
 	private var cornerSize = 0f
 	private var scaleFactor = 1f
 	private var scaleAnimator: ValueAnimator? = null
 
 	init {
-		paint.strokeWidth = context.resources.resolveDp(1f)
+		paint.strokeWidth = context.resources.resolveDp(0f)
 		outlineProvider = OutlineProvider()
 		clipToOutline = true
 	}
@@ -57,12 +56,10 @@ class SegmentedBarView @JvmOverloads constructor(
 			paint.style = Paint.Style.FILL
 			val segmentWidth = segmentsSizes[i]
 			canvas.drawRoundRect(0f, 0f, x + cornerSize, height.toFloat(), cornerSize, cornerSize, paint)
-			paint.color = outlineColor
 			paint.style = Paint.Style.STROKE
 			canvas.drawRoundRect(0f, 0f, x + cornerSize, height.toFloat(), cornerSize, cornerSize, paint)
 			x -= segmentWidth
 		}
-		paint.color = outlineColor
 		paint.style = Paint.Style.STROKE
 		canvas.drawRoundRect(0f, 0f, w, height.toFloat(), cornerSize, cornerSize, paint)
 	}

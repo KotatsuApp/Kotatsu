@@ -30,11 +30,12 @@
 				tools:ignore="RtlSymmetry">
 
 				<com.google.android.material.chip.Chip
+					style="@style/Widget.Material3.Chip.Assist"
 					android:id="@+id/chip_sort"
-					style="@style/Widget.Material3.Chip.Assist.Elevated"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:visibility="gone"
+					app:chipBackgroundColor="?attr/colorSurfaceContainerHigh"
 					app:chipIcon="@drawable/ic_sort"
 					app:chipIconEnabled="true"
 					app:closeIcon="@drawable/ic_expand_more"

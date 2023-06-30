@@ -364,7 +364,7 @@ class MainActivity :
 		viewBinding.toolbarCard.background = if (isOpened) {
 			null
 		} else {
-			ContextCompat.getDrawable(this, R.drawable.toolbar_background)
+			ContextCompat.getDrawable(this, R.drawable.search_bar_background)
 		}
 		val padding = if (isOpened) 0 else resources.getDimensionPixelOffset(R.dimen.margin_normal)
 		viewBinding.appbar.updatePadding(left = padding, right = padding)

@@ -24,14 +24,6 @@
 		app:icon="@drawable/ic_heart_outline" />
 
 	<com.google.android.material.button.MaterialButton
-		android:id="@+id/button_suggestions"
-		style="@style/Widget.Kotatsu.ExploreButton"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:text="@string/suggestions"
-		app:icon="@drawable/ic_suggestion" />
-
-	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_local"
 		style="@style/Widget.Kotatsu.ExploreButton"
 		android:layout_width="0dp"
@@ -47,19 +39,11 @@
 		android:text="@string/bookmarks"
 		app:icon="@drawable/ic_bookmark" />
 
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/button_random"
-		style="@style/Widget.Kotatsu.ExploreButton"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:text="@string/random"
-		app:icon="@drawable/ic_dice" />
-
 	<androidx.constraintlayout.helper.widget.Flow
 		android:id="@+id/flow"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		app:constraint_referenced_ids="button_history,button_favourites,button_local,button_bookmarks,button_suggestions,button_random"
+		app:constraint_referenced_ids="button_history,button_favourites,button_local,button_bookmarks"
 		app:flow_horizontalGap="12dp"
 		app:flow_maxElementsWrap="@integer/explore_buttons_columns"
 		app:flow_verticalGap="8dp"
