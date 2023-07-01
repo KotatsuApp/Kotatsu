@@ -11,9 +11,9 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 object MangaPageParceler : Parceler<MangaPage> {
 	override fun create(parcel: Parcel) = MangaPage(
 		id = parcel.readLong(),
-		url = parcel.readString()!!,
+		url = requireNotNull(parcel.readString()),
 		preview = parcel.readString(),
-		source = parcel.readSerializableCompat()!!,
+		source = requireNotNull(parcel.readSerializableCompat()),
 	)
 
 	override fun MangaPage.write(parcel: Parcel, flags: Int) {

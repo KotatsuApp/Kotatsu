@@ -11,13 +11,13 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 object MangaChapterParceler : Parceler<MangaChapter> {
 	override fun create(parcel: Parcel) = MangaChapter(
 		id = parcel.readLong(),
-		name = parcel.readString()!!,
+		name = requireNotNull(parcel.readString()),
 		number = parcel.readInt(),
-		url = parcel.readString()!!,
+		url = requireNotNull(parcel.readString()),
 		scanlator = parcel.readString(),
 		uploadDate = parcel.readLong(),
 		branch = parcel.readString(),
-		source = parcel.readSerializableCompat()!!,
+		source = requireNotNull(parcel.readSerializableCompat()),
 	)
 
 	override fun MangaChapter.write(parcel: Parcel, flags: Int) {

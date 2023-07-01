@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.core.model.parcelable
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.core.os.ParcelCompat
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 import org.koitharu.kotatsu.core.util.ext.readParcelableCompat
@@ -17,7 +16,7 @@ private const val MAX_SAFE_CHAPTERS_COUNT = 24 // this is 100% safe
 @Parcelize
 data class ParcelableManga(
 	val manga: Manga,
-	@IgnoredOnParcel private val withChapters: Boolean = true,
+	private val withChapters: Boolean,
 ) : Parcelable {
 	companion object : Parceler<ParcelableManga> {
 		private fun Manga.writeToParcel(out: Parcel, flags: Int, withChapters: Boolean) {
@@ -64,21 +63,22 @@ data class ParcelableManga(
 		override fun create(parcel: Parcel) = ParcelableManga(
 			Manga(
 				id = parcel.readLong(),
-				title = parcel.readString()!!,
+				title = requireNotNull(parcel.readString()),
 				altTitle = parcel.readString(),
-				url = parcel.readString()!!,
-				publicUrl = parcel.readString()!!,
+				url = requireNotNull(parcel.readString()),
+				publicUrl = requireNotNull(parcel.readString()),
 				rating = parcel.readFloat(),
 				isNsfw = ParcelCompat.readBoolean(parcel),
-				coverUrl = parcel.readString()!!,
+				coverUrl = requireNotNull(parcel.readString()),
 				largeCoverUrl = parcel.readString(),
 				description = parcel.readString(),
-				tags = parcel.readParcelableCompat<ParcelableMangaTags>()!!.tags,
+				tags = requireNotNull(parcel.readParcelableCompat<ParcelableMangaTags>()).tags,
 				state = parcel.readSerializableCompat(),
 				author = parcel.readString(),
 				chapters = parcel.readParcelableCompat<ParcelableMangaChapters>()?.chapters,
-				source = parcel.readSerializableCompat()!!,
+				source = requireNotNull(parcel.readSerializableCompat()),
 			),
+			withChapters = true
 		)
 	}
 }

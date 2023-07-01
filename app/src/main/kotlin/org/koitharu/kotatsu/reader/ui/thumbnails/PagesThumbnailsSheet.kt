@@ -192,7 +192,7 @@ class PagesThumbnailsSheet :
 
 		fun show(fm: FragmentManager, manga: Manga, chapterId: Long, currentPage: Int = -1) {
 			PagesThumbnailsSheet().withArgs(3) {
-				putParcelable(ARG_MANGA, ParcelableManga(manga))
+				putParcelable(ARG_MANGA, ParcelableManga(manga, withChapters = true))
 				putLong(ARG_CHAPTER_ID, chapterId)
 				putInt(ARG_CURRENT_PAGE, currentPage)
 			}.showDistinct(fm, TAG)
