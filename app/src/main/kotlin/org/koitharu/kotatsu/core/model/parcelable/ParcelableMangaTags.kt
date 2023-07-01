@@ -10,9 +10,9 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 
 object MangaTagParceler : Parceler<MangaTag> {
 	override fun create(parcel: Parcel) = MangaTag(
-		title = parcel.readString()!!,
-		key = parcel.readString()!!,
-		source = parcel.readSerializableCompat()!!,
+		title = requireNotNull(parcel.readString()),
+		key = requireNotNull(parcel.readString()),
+		source = requireNotNull(parcel.readSerializableCompat()),
 	)
 
 	override fun MangaTag.write(parcel: Parcel, flags: Int) {
