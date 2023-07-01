@@ -29,8 +29,8 @@ fun scrobblingInfoAD(
 			error(R.drawable.ic_error_placeholder)
 			enqueueWith(coil)
 		}
-		binding.textViewTitle.text = item.title
-		binding.textViewTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, item.scrobbler.iconResId, 0)
+		binding.textViewTitle.setText(item.scrobbler.titleResId)
+		binding.imageViewIcon.setImageResource(item.scrobbler.iconResId)
 		binding.ratingBar.rating = item.rating * binding.ratingBar.numStars
 		binding.textViewStatus.text = item.status?.let {
 			context.resources.getStringArray(R.array.scrobbling_statuses).getOrNull(it.ordinal)

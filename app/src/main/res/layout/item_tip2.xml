@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.koitharu.kotatsu.core.ui.widgets.TipView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	app:cardBackgroundColor="@color/background_mamimi"
+	app:shapeAppearance="?shapeAppearanceCornerExtraLarge"
+	tools:icon="@drawable/ic_notification"
+	tools:primaryButtonText="@string/settings"
+	tools:secondaryButtonText="@string/close"
+	tools:text="Включите их, чтобы ничего не пропускать. Откройте настройки системы и разрешите их отправку."
+	tools:title="Уведомления отключены" />
