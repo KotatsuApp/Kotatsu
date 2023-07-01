@@ -55,4 +55,11 @@
 		<item>HTTP</item>
 		<item>SOCKS</item>
 	</string-array>
+	<string-array name="chart_colors" translatable="false">
+		<item>#E480F4</item>
+		<item>#6CC3F3</item>
+		<item>#7167ED</item>
+		<item>#D9455F</item>
+		<item>#6054EA</item>
+	</string-array>
 </resources>

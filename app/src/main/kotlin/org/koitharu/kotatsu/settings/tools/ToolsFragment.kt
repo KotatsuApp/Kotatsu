@@ -43,6 +43,15 @@ class ToolsFragment :
 		binding.switchIncognito.setOnCheckedChangeListener(this)
 		binding.memoryUsageView.setManageButtonOnClickListener(this)
 
+		binding.chart?.setDataChart(
+			listOf(
+				Pair(5, "Категория 1"),
+				Pair(3, "Категория 2"),
+				Pair(7, "Категория 3"),
+			)
+		)
+		binding.chart?.startAnimation()
+
 		viewModel.isIncognitoModeEnabled.observe(viewLifecycleOwner) {
 			binding.switchIncognito.setChecked(it, false)
 		}

@@ -20,6 +20,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewPropertyAnimator
 import android.view.Window
@@ -208,4 +209,12 @@ inline fun Activity.catchingWebViewUnavailability(block: () -> Unit): Boolean {
 			throw e
 		}
 	}
+}
+
+fun Context.dpToPx(dp: Int): Float {
+	return dp.toFloat() * this.resources.displayMetrics.density
+}
+
+fun Context.spToPx(sp: Int): Float {
+	return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.toFloat(), this.resources.displayMetrics);
 }

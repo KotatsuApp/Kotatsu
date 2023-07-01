@@ -24,8 +24,34 @@
 		<com.google.android.material.card.MaterialCardView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="@dimen/margin_normal"
 			android:layout_marginHorizontal="@dimen/margin_normal"
+			android:layout_marginTop="@dimen/margin_normal"
+			app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+			app:cardCornerRadius="21dp">
+
+			<org.koitharu.kotatsu.core.ui.widgets.PieChart
+				android:id="@+id/chart"
+				android:layout_width="wrap_content"
+				android:layout_height="100dp"
+				android:layout_marginVertical="16dp"
+				android:layout_marginHorizontal="8dp"
+				app:pieChartCircleSectionSpace="6"
+				app:pieChartCircleStrokeWidth="18dp"
+				app:pieChartColors="@array/chart_colors"
+				app:pieChartTextAmount="Всего"
+				app:pieChartTextAmountColor="?attr/colorControlNormal"
+				app:pieChartTextDescriptionColor="?android:attr/textColorHint"
+				app:pieChartTextDescriptionSize="14sp"
+				app:pieChartTextNumberColor="?attr/colorControlNormal"
+				app:pieChartTextNumberSize="16sp" />
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="@dimen/margin_normal"
+			android:layout_marginTop="@dimen/margin_normal"
 			app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
 			app:cardCornerRadius="21dp">
 
