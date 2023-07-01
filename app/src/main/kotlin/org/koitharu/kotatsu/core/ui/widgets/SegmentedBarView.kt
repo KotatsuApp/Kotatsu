@@ -9,15 +9,13 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
-import android.view.animation.DecelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.replaceWith
-import com.google.android.material.R as materialR
 
 class SegmentedBarView @JvmOverloads constructor(
 	context: Context,
@@ -97,7 +95,7 @@ class SegmentedBarView @JvmOverloads constructor(
 		invalidate()
 		val animator = ValueAnimator.ofFloat(0f, 1f)
 		animator.duration = context.getAnimationDuration(android.R.integer.config_longAnimTime)
-		animator.interpolator = DecelerateInterpolator()
+		animator.interpolator = FastOutSlowInInterpolator()
 		animator.addUpdateListener(this@SegmentedBarView)
 		animator.addListener(this@SegmentedBarView)
 		scaleAnimator = animator
