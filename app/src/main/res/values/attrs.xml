@@ -7,12 +7,7 @@
 	<attr name="themeChooserPreferenceStyle" />
 	<attr name="listItemTextViewStyle" />
 	<attr name="fastScrollerStyle" />
-
-	<declare-styleable name="Theme">
-		<attr name="navigationBarDividerColor" format="color" />
-		<attr name="colorControlLight" format="color" />
-		<attr name="colorSurfaceSecondary" format="color" />
-	</declare-styleable>
+	<attr name="tipViewStyle" />
 
 	<!--CoverImageView attrs-->
 	<declare-styleable name="CoverImageView">
@@ -111,5 +106,19 @@
 	<declare-styleable name="AutoCompleteTextViewPreference">
 		<attr name="android:entries" />
 	</declare-styleable>
+
+	<declare-styleable name="TipView">
+		<attr name="icon" />
+		<attr name="title" />
+		<attr name="android:text" />
+		<attr name="primaryButtonText" format="string" />
+		<attr name="secondaryButtonText" format="string" />
+		<attr name="shapeAppearance" />
+		<attr name="shapeAppearanceOverlay" />
+		<attr name="cardBackgroundColor" />
+		<attr name="strokeWidth"/>
+		<attr name="strokeColor" />
+		<attr name="elevation" />
+ 	</declare-styleable>
 
 </resources>
