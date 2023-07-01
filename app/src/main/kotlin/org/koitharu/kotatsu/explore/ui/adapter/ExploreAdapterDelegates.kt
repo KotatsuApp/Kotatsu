@@ -8,7 +8,7 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
-import org.koitharu.kotatsu.core.ui.image.FaviconFallbackDrawable
+import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
@@ -76,7 +76,7 @@ fun exploreSourceListItemAD(
 
 	bind {
 		binding.textViewTitle.text = item.source.title
-		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
+		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)
 			placeholder(fallbackIcon)
@@ -107,7 +107,7 @@ fun exploreSourceGridItemAD(
 
 	bind {
 		binding.textViewTitle.text = item.source.title
-		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
+		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Large, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)
 			placeholder(fallbackIcon)

@@ -287,7 +287,7 @@
 		<item name="android:selectable">false</item>
 	</style>
 
-	<!-- Progress drawable -->
+	<!-- Drawable -->
 
 	<style name="ProgressDrawable">
 		<item name="android:fillAlpha">1</item>
@@ -297,6 +297,21 @@
 		<item name="strokeWidth">4dp</item>
 		<item name="android:textSize">9sp</item>
 		<item name="autoFitTextSize">true</item>
+	</style>
+
+	<style name="FaviconDrawable">
+		<item name="backgroundColor">?colorBackgroundFloating</item>
+		<item name="strokeColor">?colorOutline</item>
+	</style>
+
+	<style name="FaviconDrawable.Small">
+		<item name="strokeWidth">1dp</item>
+		<item name="cornerSize">8dp</item>
+	</style>
+
+	<style name="FaviconDrawable.Large">
+		<item name="strokeWidth">1dp</item>
+		<item name="cornerSize">12dp</item>
 	</style>
 
 </resources>

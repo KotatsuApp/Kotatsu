@@ -3,8 +3,9 @@ package org.koitharu.kotatsu.search.ui.suggestion.adapter
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
-import org.koitharu.kotatsu.core.ui.image.FaviconFallbackDrawable
+import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
@@ -31,7 +32,7 @@ fun searchSuggestionSourceAD(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		binding.switchLocal.isChecked = item.isEnabled
-		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
+		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)
 			placeholder(fallbackIcon)

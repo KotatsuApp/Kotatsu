@@ -18,8 +18,11 @@
 		android:layout_height="72dp"
 		android:background="?colorControlHighlight"
 		android:labelFor="@id/textView_title"
+		android:padding="1dp"
 		android:scaleType="fitCenter"
 		app:shapeAppearance="?shapeAppearanceCornerMedium"
+		app:strokeColor="?colorOutline"
+		app:strokeWidth="1dp"
 		tools:src="@tools:sample/avatars" />
 
 	<TextView

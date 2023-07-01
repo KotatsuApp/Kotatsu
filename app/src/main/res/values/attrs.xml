@@ -116,9 +116,16 @@
 		<attr name="shapeAppearance" />
 		<attr name="shapeAppearanceOverlay" />
 		<attr name="cardBackgroundColor" />
-		<attr name="strokeWidth"/>
+		<attr name="strokeWidth" />
 		<attr name="strokeColor" />
 		<attr name="elevation" />
- 	</declare-styleable>
+	</declare-styleable>
+
+	<declare-styleable name="FaviconFallbackDrawable">
+		<attr name="backgroundColor" />
+		<attr name="strokeColor" />
+		<attr name="strokeWidth" />
+		<attr name="cornerSize" />
+	</declare-styleable>
 
 </resources>
