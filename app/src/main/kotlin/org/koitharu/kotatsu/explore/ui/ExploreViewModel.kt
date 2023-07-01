@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaState
 import javax.inject.Inject
 
 private const val TIP_SUGGESTIONS = "suggestions"
@@ -102,6 +103,26 @@ class ExploreViewModel @Inject constructor(
 		result += ExploreItem.Buttons(
 			isSuggestionsEnabled = settings.isSuggestionsEnabled,
 		)
+		result += ExploreItem.Header(R.string.suggestions, isButtonVisible = false)
+		result += ExploreItem.Recommendation(
+			Manga(
+				0,
+				"Test",
+				"Test",
+				"Test",
+				"Test",
+				0f,
+				false,
+				"http://images.ctfassets.net/yadj1kx9rmg0/wtrHxeu3zEoEce2MokCSi/cf6f68efdcf625fdc060607df0f3baef/quwowooybuqbl6ntboz3.jpg",
+				emptySet(),
+				MangaState.ONGOING,
+				"Test",
+				"http://images.ctfassets.net/yadj1kx9rmg0/wtrHxeu3zEoEce2MokCSi/cf6f68efdcf625fdc060607df0f3baef/quwowooybuqbl6ntboz3.jpg",
+				"Test",
+				emptyList(),
+				MangaSource.DESUME,
+			),
+		) // TODO
 		result += ExploreItem.Header(R.string.remote_sources, sources.isNotEmpty())
 		if (sources.isNotEmpty()) {
 			sources.mapTo(result) { ExploreItem.Source(it, isGrid) }

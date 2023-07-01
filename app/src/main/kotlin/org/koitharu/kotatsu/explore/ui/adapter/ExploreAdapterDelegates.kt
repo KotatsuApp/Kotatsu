@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.databinding.ItemExploreButtonsBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceGridBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceListBinding
 import org.koitharu.kotatsu.databinding.ItemHeaderButtonBinding
+import org.koitharu.kotatsu.databinding.ItemRecommendationBinding
 import org.koitharu.kotatsu.explore.ui.model.ExploreItem
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 
@@ -40,6 +41,37 @@ fun exploreButtonsAD(
 	//bind {
 	//	binding.buttonSuggestions.isVisible = item.isSuggestionsEnabled
 	//}
+}
+
+fun exploreRecommendationHeaderAD() = adapterDelegateViewBinding<ExploreItem.Header, ExploreItem, ItemHeaderButtonBinding>(
+	{ layoutInflater, parent -> ItemHeaderButtonBinding.inflate(layoutInflater, parent, false) }
+) {
+
+	bind {
+		binding.textViewTitle.setText(item.titleResId)
+		binding.buttonMore.isVisible = false
+	}
+}
+
+fun exploreRecommendationItemAD(
+	coil: ImageLoader,
+	lifecycleOwner: LifecycleOwner,
+) = adapterDelegateViewBinding<ExploreItem.Recommendation, ExploreItem, ItemRecommendationBinding>(
+	{ layoutInflater, parent -> ItemRecommendationBinding.inflate(layoutInflater, parent, false) }
+) {
+
+	bind {
+		binding.textViewTitle.text = item.manga.title
+		binding.textViewSubtitle.text = item.manga.title
+		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.run {
+			source(item.manga.source)
+			enqueueWith(coil)
+		}
+	}
+
+	onViewRecycled {
+		binding.imageViewCover.disposeImageRequest()
+	}
 }
 
 fun exploreSourcesHeaderAD(

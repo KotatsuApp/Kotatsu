@@ -49,7 +49,7 @@
 		android:layout_marginTop="@dimen/margin_normal"
 		android:layout_marginEnd="@dimen/screen_padding"
 		android:text="@string/saved_manga"
-		app:drawableStartCompat="@drawable/bg_circle"
+		app:drawableStartCompat="@drawable/bg_rounded_square"
 		tools:drawableTint="?colorPrimary" />
 
 	<TextView
@@ -61,7 +61,7 @@
 		android:layout_marginTop="@dimen/margin_small"
 		android:layout_marginEnd="@dimen/screen_padding"
 		android:text="@string/pages_cache"
-		app:drawableStartCompat="@drawable/bg_circle"
+		app:drawableStartCompat="@drawable/bg_rounded_square"
 		tools:drawableTint="?colorSecondary" />
 
 	<TextView
@@ -73,7 +73,7 @@
 		android:layout_marginTop="@dimen/margin_small"
 		android:layout_marginEnd="@dimen/screen_padding"
 		android:text="@string/other_cache"
-		app:drawableStartCompat="@drawable/bg_circle"
+		app:drawableStartCompat="@drawable/bg_rounded_square"
 		tools:drawableTint="?colorTertiary" />
 
 	<TextView
@@ -86,7 +86,7 @@
 		android:layout_marginEnd="@dimen/screen_padding"
 		android:layout_marginBottom="@dimen/screen_padding"
 		android:text="@string/computing_"
-		app:drawableStartCompat="@drawable/bg_circle"
+		app:drawableStartCompat="@drawable/bg_rounded_square"
 		app:drawableTint="?colorSecondaryContainer" />
 
 </merge>

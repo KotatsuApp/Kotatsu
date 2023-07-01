@@ -41,7 +41,7 @@ class MemoryUsageView @JvmOverloads constructor(
 
 	fun bind(usage: StorageUsage?) {
 		val storageSegment = SegmentedBarView.Segment(usage?.savedManga?.percent ?: 0f, segmentColor(com.google.android.material.R.attr.colorPrimary))
-		val pagesSegment = SegmentedBarView.Segment(usage?.pagesCache?.percent ?: 0f, segmentColor(com.google.android.material.R.attr.colorSecondary))
+		val pagesSegment = SegmentedBarView.Segment(usage?.pagesCache?.percent ?: 0f, segmentColor(com.google.android.material.R.attr.colorOnPrimaryContainer))
 		val otherSegment = SegmentedBarView.Segment(usage?.otherCache?.percent ?: 0f, segmentColor(com.google.android.material.R.attr.colorTertiary))
 
 		with(binding) {

@@ -9,7 +9,7 @@
 	<!--Navigation Views-->
 
 	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
-		<item name="labelVisibilityMode">unlabeled</item>
+		<item name="labelVisibilityMode">labeled</item>
 		<item name="android:background">?attr/colorSurfaceContainerHighest</item>
 		<item name="compatShadowEnabled">false</item>
 	</style>

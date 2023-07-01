@@ -75,7 +75,7 @@ class TipView @JvmOverloads constructor(
 			icon = getDrawableCompat(context, R.styleable.TipView_icon)
 			primaryButtonText = getString(R.styleable.TipView_primaryButtonText)
 			secondaryButtonText = getString(R.styleable.TipView_secondaryButtonText)
-			val shapeAppearanceModel = ShapeAppearanceModel.builder(context, attrs, defStyleAttr, 0).setAllCornerSizes(12f).build()
+			val shapeAppearanceModel = ShapeAppearanceModel.builder(context, attrs, defStyleAttr, 0).build()
 			background = MaterialShapeDrawable(shapeAppearanceModel).also {
 				it.fillColor = getColorStateList(R.styleable.TipView_cardBackgroundColor)
 					?: context.getThemeColorStateList(materialR.attr.colorBackgroundFloating)

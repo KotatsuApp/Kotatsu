@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
 sealed interface ExploreItem : ListModel {
@@ -46,6 +47,25 @@ sealed interface ExploreItem : ListModel {
 			result = 31 * result + isButtonVisible.hashCode()
 			return result
 		}
+	}
+
+	class Recommendation(
+		val manga: Manga
+	) : ExploreItem {
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+
+			other as Recommendation
+
+			return manga == other.manga
+		}
+
+		override fun hashCode(): Int {
+			return 31 * manga.hashCode()
+		}
+
 	}
 
 	class Source(

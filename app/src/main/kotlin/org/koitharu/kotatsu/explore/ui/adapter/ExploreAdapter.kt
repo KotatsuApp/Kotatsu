@@ -16,6 +16,8 @@ class ExploreAdapter(
 	init {
 		delegatesManager
 			.addDelegate(ITEM_TYPE_BUTTONS, exploreButtonsAD(listener))
+			.addDelegate(ITEM_TYPE_RECOMMENDATION_HEADER, exploreRecommendationHeaderAD())
+			.addDelegate(ITEM_TYPE_RECOMMENDATION, exploreRecommendationItemAD(coil, lifecycleOwner))
 			.addDelegate(ITEM_TYPE_HEADER, exploreSourcesHeaderAD(listener))
 			.addDelegate(ITEM_TYPE_SOURCE_LIST, exploreSourceListItemAD(coil, clickListener, lifecycleOwner))
 			.addDelegate(ITEM_TYPE_SOURCE_GRID, exploreSourceGridItemAD(coil, clickListener, lifecycleOwner))
@@ -31,5 +33,7 @@ class ExploreAdapter(
 		const val ITEM_TYPE_SOURCE_GRID = 3
 		const val ITEM_TYPE_HINT = 4
 		const val ITEM_TYPE_LOADING = 5
+		const val ITEM_TYPE_RECOMMENDATION_HEADER = 6
+		const val ITEM_TYPE_RECOMMENDATION = 7
 	}
 }
