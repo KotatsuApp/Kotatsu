@@ -14,9 +14,11 @@ android {
 	defaultConfig {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
+		//TODO: update as soon as sources becomes available
+		//noinspection OldTargetApi
 		targetSdkVersion 33
-		versionCode 559
-		versionName '5.3.2'
+		versionCode 560
+		versionName '5.3.3'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -79,12 +81,12 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:92bfc7e9fa') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:07df5a81cf') {
 		exclude group: 'org.json', module: 'json'
 	}
 
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
 	implementation 'androidx.core:core-ktx:1.10.1'
@@ -107,7 +109,7 @@ dependencies {
 	// TODO https://issuetracker.google.com/issues/254846063
 	implementation 'androidx.work:work-runtime-ktx:2.8.1'
 	//noinspection GradleDependency
-	implementation('com.google.guava:guava:32.0.0-android') {
+	implementation('com.google.guava:guava:32.0.1-android') {
 		exclude group: 'com.google.guava', module: 'failureaccess'
 		exclude group: 'org.checkerframework', module: 'checker-qual'
 		exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
@@ -139,18 +141,18 @@ dependencies {
 	implementation 'ch.acra:acra-http:5.10.1'
 	implementation 'ch.acra:acra-dialog:5.10.1'
 
-	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.11'
+	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20230618'
-	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
+	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
 
 	androidTestImplementation 'androidx.test:runner:1.5.2'
 	androidTestImplementation 'androidx.test:rules:1.5.0'
 	androidTestImplementation 'androidx.test:core-ktx:1.5.0'
 	androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
 
-	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
+	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
 
 	androidTestImplementation 'androidx.room:room-testing:2.5.2'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.15.0'
