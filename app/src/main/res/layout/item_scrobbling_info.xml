@@ -3,65 +3,80 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	style="@style/Widget.Material3.CardView.Filled"
+	style="@style/Widget.Material3.CardView.Outlined"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	app:contentPadding="8dp">
+	android:layout_height="wrap_content">
 
-	<RelativeLayout
+	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:paddingBottom="2dp">
+		android:layout_height="wrap_content">
 
 		<com.google.android.material.imageview.ShapeableImageView
-			android:id="@+id/imageView_cover"
-			android:layout_width="46dp"
-			android:layout_height="46dp"
-			android:layout_alignParentStart="true"
-			android:layout_alignParentTop="true"
-			android:contentDescription="@null"
-			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
-			tools:src="@tools:sample/backgrounds/scenic[7]" />
+			android:id="@+id/imageView_icon"
+			android:layout_width="40dp"
+			android:layout_height="40dp"
+			android:layout_marginVertical="20dp"
+			android:layout_marginStart="16dp"
+			android:background="?colorPrimary"
+			android:scaleType="center"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Circle"
+			app:tint="?colorOnPrimary"
+			tools:src="@drawable/ic_shikimori" />
 
 		<TextView
 			android:id="@+id/textView_title"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_alignParentTop="true"
-			android:layout_alignParentEnd="true"
-			android:layout_marginStart="8dp"
+			android:layout_marginHorizontal="16dp"
 			android:layout_toEndOf="@id/imageView_cover"
-			android:drawablePadding="8dp"
-			android:gravity="center_vertical"
+			android:singleLine="true"
 			android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
-			app:drawableTint="?colorControlNormal"
-			tools:drawableEndCompat="@drawable/ic_shikimori"
-			tools:text="@tools:sample/lorem" />
+			app:layout_constraintBottom_toTopOf="@id/textView_status"
+			app:layout_constraintEnd_toStartOf="@id/imageView_cover"
+			app:layout_constraintStart_toEndOf="@id/imageView_icon"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintVertical_chainStyle="packed"
+			tools:text="@string/shikimori" />
 
 		<RatingBar
 			android:id="@+id/ratingBar"
 			style="?ratingBarStyleSmall"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_below="@id/textView_title"
-			android:layout_marginStart="8dp"
-			android:layout_marginTop="4dp"
-			android:layout_toEndOf="@id/imageView_cover"
 			android:isIndicator="true"
 			android:max="1"
-			android:numStars="5" />
+			android:layout_marginStart="6dp"
+			android:numStars="5"
+			app:layout_constraintBottom_toBottomOf="@id/textView_status"
+			app:layout_constraintStart_toEndOf="@id/textView_status"
+			app:layout_constraintTop_toTopOf="@id/textView_status" />
 
 		<TextView
 			android:id="@+id/textView_status"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignBottom="@id/ratingBar"
-			android:layout_marginStart="4dp"
-			android:layout_marginBottom="-2dp"
-			android:layout_toEndOf="@id/ratingBar"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="4dp"
 			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toEndOf="@id/imageView_icon"
+			app:layout_constraintTop_toBottomOf="@id/textView_title"
 			tools:text="Reading" />
 
-	</RelativeLayout>
+		<ImageView
+			android:id="@+id/imageView_cover"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:scaleType="centerCrop"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintDimensionRatio="1:1"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:src="@tools:sample/backgrounds/scenic[7]" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

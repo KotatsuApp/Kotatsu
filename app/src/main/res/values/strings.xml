@@ -449,4 +449,5 @@
 	<string name="pick_custom_directory">Pick custom directory</string>
 	<string name="no_access_to_file">You have no access to this file or directory</string>
 	<string name="local_manga_directories">Local manga directories</string>
+	<string name="description">Description</string>
 </resources>

@@ -52,6 +52,7 @@ import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
+import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import javax.inject.Inject
@@ -80,6 +81,9 @@ class DetailsFragment :
 		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.textViewAuthor.setOnClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
+		binding.buttonDescriptionMore.setOnClickListener(this)
+		binding.buttonBookmarksMore.setOnClickListener(this)
+		binding.buttonScrobblingMore.setOnClickListener(this)
 		binding.infoLayout.textViewSource.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
@@ -217,7 +221,7 @@ class DetailsFragment :
 
 	private fun onScrobblingInfoChanged(scrobblings: List<ScrobblingInfo>) {
 		var adapter = requireViewBinding().recyclerViewScrobbling.adapter as? ScrollingInfoAdapter
-		requireViewBinding().recyclerViewScrobbling.isGone = scrobblings.isEmpty()
+		requireViewBinding().groupScrobbling.isGone = scrobblings.isEmpty()
 		if (adapter != null) {
 			adapter.items = scrobblings
 		} else {
@@ -259,6 +263,10 @@ class DetailsFragment :
 					),
 					scaleUpActivityOptionsOf(v),
 				)
+			}
+
+			R.id.button_scrobbling_more -> {
+				ScrobblingSelectorSheet.show(parentFragmentManager, manga, null)
 			}
 		}
 	}
