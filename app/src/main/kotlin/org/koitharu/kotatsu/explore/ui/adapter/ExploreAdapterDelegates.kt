@@ -55,10 +55,13 @@ fun exploreRecommendationHeaderAD() = adapterDelegateViewBinding<ExploreItem.Hea
 
 fun exploreRecommendationItemAD(
 	coil: ImageLoader,
+	clickListener: View.OnClickListener,
 	lifecycleOwner: LifecycleOwner,
 ) = adapterDelegateViewBinding<ExploreItem.Recommendation, ExploreItem, ItemRecommendationBinding>(
 	{ layoutInflater, parent -> ItemRecommendationBinding.inflate(layoutInflater, parent, false) }
 ) {
+
+	binding.buttonMore.setOnClickListener(clickListener)
 
 	bind {
 		binding.textViewTitle.text = item.manga.title

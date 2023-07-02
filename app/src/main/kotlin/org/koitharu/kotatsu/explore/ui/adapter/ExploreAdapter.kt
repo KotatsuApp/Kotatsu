@@ -17,7 +17,7 @@ class ExploreAdapter(
 		delegatesManager
 			.addDelegate(ITEM_TYPE_BUTTONS, exploreButtonsAD(listener))
 			.addDelegate(ITEM_TYPE_RECOMMENDATION_HEADER, exploreRecommendationHeaderAD())
-			.addDelegate(ITEM_TYPE_RECOMMENDATION, exploreRecommendationItemAD(coil, lifecycleOwner))
+			.addDelegate(ITEM_TYPE_RECOMMENDATION, exploreRecommendationItemAD(coil, listener, lifecycleOwner))
 			.addDelegate(ITEM_TYPE_HEADER, exploreSourcesHeaderAD(listener))
 			.addDelegate(ITEM_TYPE_SOURCE_LIST, exploreSourceListItemAD(coil, clickListener, lifecycleOwner))
 			.addDelegate(ITEM_TYPE_SOURCE_GRID, exploreSourceGridItemAD(coil, clickListener, lifecycleOwner))

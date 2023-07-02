@@ -105,7 +105,7 @@ class ExploreFragment :
 			R.id.button_history -> HistoryActivity.newIntent(v.context)
 			R.id.button_local -> MangaListActivity.newIntent(v.context, MangaSource.LOCAL)
 			R.id.button_bookmarks -> BookmarksActivity.newIntent(v.context)
-			//R.id.button_suggestions -> SuggestionsActivity.newIntent(v.context)
+			R.id.button_more -> SuggestionsActivity.newIntent(v.context)
 			R.id.button_favourites -> FavouriteCategoriesActivity.newIntent(v.context)
 			//R.id.button_random -> {
 			//	viewModel.openRandom()
