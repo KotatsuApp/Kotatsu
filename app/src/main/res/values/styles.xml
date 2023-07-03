@@ -11,7 +11,8 @@
 	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
 		<item name="labelVisibilityMode">labeled</item>
 		<item name="android:background">?attr/colorSurfaceContainerHighest</item>
-		<item name="compatShadowEnabled">false</item>
+		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
+		<item name="itemIconTint">@color/bottom_menu_active_item</item>
 	</style>
 
 	<style name="Widget.Kotatsu.BottomNavigationView.ColoredIndicators">
@@ -73,6 +74,7 @@
 	</style>
 
 	<style name="Widget.Kotatsu.Tabs" parent="@style/Widget.Material3.TabLayout">
+		<item name="tabBackground">@drawable/tabs_background</item>
 		<item name="tabGravity">center</item>
 		<item name="tabInlineLabel">true</item>
 		<item name="tabMinWidth">75dp</item>
@@ -84,7 +86,7 @@
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
 		<item name="queryBackground">@null</item>
-		<item name="android:textColorHint">?attr/colorControlNormal</item>
+		<item name="android:textAppearance">@style/TextAppearance.Kotatsu.SearchView</item>
 		<item name="android:textSize">18sp</item>
 	</style>
 
@@ -192,7 +194,7 @@
 		<item name="android:insetBottom">2dp</item>
 		<item name="android:gravity">start|center_vertical</item>
 		<item name="android:textAppearance">?textAppearanceButton</item>
-		<item name="backgroundTint">@color/colored_button</item>
+		<item name="backgroundTint">?attr/colorSurfaceContainerLow</item>
 	</style>
 
 	<style name="Widget.Kotatsu.TextView.Indicator" parent="Widget.MaterialComponents.TextView">
@@ -211,6 +213,10 @@
 	</style>
 
 	<!-- TextAppearance -->
+
+	<style name="TextAppearance.Kotatsu.SearchView" parent="TextAppearance.Material3.SearchBar">
+		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+	</style>
 
 	<style name="TextAppearance.Widget.Menu" parent="TextAppearance.AppCompat.Menu">
 		<item name="android:textColor">?attr/colorOnBackground</item>

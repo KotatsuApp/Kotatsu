@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:color="@color/kotatsu_onPrimaryContainer" android:state_checked="true" />
-	<item android:color="?attr/colorControlNormal" android:state_checked="false" />
+	<item android:color="@color/kotatsu_onSecondaryContainer" android:state_checked="true" />
+	<item android:color="@color/kotatsu_onSurfaceVariant" android:state_checked="false" />
 </selector>

@@ -10,7 +10,7 @@
 	<color name="divider_default">#1FFFFFFF</color>
 	<color name="status_bar_incognito">#66311B92</color>
 	<color name="warning">#FB8C00</color>
-	<color name="launcher_background">#000000</color>
+	<color name="launcher_background">#222222</color>
 	<color name="splash_primary">#0C4091</color>
 
 	<!-- Color schemes colors -->
