@@ -50,7 +50,8 @@
 		app:layout_constraintTop_toBottomOf="@+id/textView_title"
 		tools:text="@tools:sample/lorem/random" />
 
-	<com.google.android.material.button.MaterialButton
+	<Button
+		android:id="@+id/button_more"
 		style="@style/Widget.Kotatsu.ExploreButton"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

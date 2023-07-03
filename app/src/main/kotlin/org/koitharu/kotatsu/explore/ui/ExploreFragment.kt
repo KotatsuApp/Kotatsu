@@ -31,9 +31,10 @@ import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
-import org.koitharu.kotatsu.explore.ui.model.ExploreItem
+import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.history.ui.HistoryActivity
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
@@ -46,7 +47,7 @@ class ExploreFragment :
 	BaseFragment<FragmentExploreBinding>(),
 	RecyclerViewOwner,
 	ExploreListEventListener,
-	OnListItemClickListener<ExploreItem.Source> {
+	OnListItemClickListener<MangaSourceItem> {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -96,7 +97,7 @@ class ExploreFragment :
 		)
 	}
 
-	override fun onManageClick(view: View) {
+	override fun onListHeaderClick(item: ListHeader, view: View) {
 		startActivity(SettingsActivity.newManageSourcesIntent(view.context))
 	}
 
@@ -117,12 +118,12 @@ class ExploreFragment :
 		startActivity(intent)
 	}
 
-	override fun onItemClick(item: ExploreItem.Source, view: View) {
+	override fun onItemClick(item: MangaSourceItem, view: View) {
 		val intent = MangaListActivity.newIntent(view.context, item.source)
 		startActivity(intent)
 	}
 
-	override fun onItemLongClick(item: ExploreItem.Source, view: View): Boolean {
+	override fun onItemLongClick(item: MangaSourceItem, view: View): Boolean {
 		val menu = PopupMenu(view.context, view)
 		menu.inflate(R.menu.popup_source)
 		menu.setOnMenuItemClickListener(SourceMenuListener(item))
@@ -132,7 +133,9 @@ class ExploreFragment :
 
 	override fun onRetryClick(error: Throwable) = Unit
 
-	override fun onEmptyActionClick() = onManageClick(requireView())
+	override fun onEmptyActionClick()  {
+		startActivity(SettingsActivity.newManageSourcesIntent(context ?: return))
+	}
 
 	private fun onOpenManga(manga: Manga) {
 		val intent = DetailsActivity.newIntent(context ?: return, manga)
@@ -164,7 +167,7 @@ class ExploreFragment :
 	}
 
 	private inner class SourceMenuListener(
-		private val sourceItem: ExploreItem.Source,
+		private val sourceItem: MangaSourceItem,
 	) : PopupMenu.OnMenuItemClickListener {
 
 		override fun onMenuItemClick(item: MenuItem): Boolean {

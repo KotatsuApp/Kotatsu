@@ -16,4 +16,8 @@ class LoadingFooter @JvmOverloads constructor(
 	override fun hashCode(): Int {
 		return key
 	}
+
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is LoadingFooter && key == other.key
+	}
 }

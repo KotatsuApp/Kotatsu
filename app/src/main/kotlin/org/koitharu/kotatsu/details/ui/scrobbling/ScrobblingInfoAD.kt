@@ -9,13 +9,14 @@ import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.databinding.ItemScrobblingInfoBinding
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 
 fun scrobblingInfoAD(
 	lifecycleOwner: LifecycleOwner,
 	coil: ImageLoader,
 	fragmentManager: FragmentManager,
-) = adapterDelegateViewBinding<ScrobblingInfo, ScrobblingInfo, ItemScrobblingInfoBinding>(
+) = adapterDelegateViewBinding<ScrobblingInfo, ListModel, ItemScrobblingInfoBinding>(
 	{ layoutInflater, parent -> ItemScrobblingInfoBinding.inflate(layoutInflater, parent, false) },
 ) {
 	binding.root.setOnClickListener {

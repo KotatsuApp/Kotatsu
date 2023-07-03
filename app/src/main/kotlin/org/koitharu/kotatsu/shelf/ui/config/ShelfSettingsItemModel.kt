@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.shelf.ui.config
 
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 
@@ -11,6 +12,18 @@ sealed interface ShelfSettingsItemModel : ListModel {
 		val section: ShelfSection,
 		override val isChecked: Boolean,
 	) : ShelfSettingsItemModel {
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is Section && section == other.section
+		}
+
+		override fun getChangePayload(previousState: ListModel): Any? {
+			return if (previousState is Section && previousState.isChecked != isChecked) {
+				ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED
+			} else {
+				super.getChangePayload(previousState)
+			}
+		}
 
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true
@@ -34,6 +47,10 @@ sealed interface ShelfSettingsItemModel : ListModel {
 		val title: String,
 		override val isChecked: Boolean,
 	) : ShelfSettingsItemModel {
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is FavouriteCategory && other.id == id
+		}
 
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true

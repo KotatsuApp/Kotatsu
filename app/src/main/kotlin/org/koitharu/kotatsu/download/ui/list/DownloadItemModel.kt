@@ -47,6 +47,24 @@ class DownloadItemModel(
 		return timestamp.compareTo(other.timestamp)
 	}
 
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is DownloadItemModel && other.id == id
+	}
+
+	override fun getChangePayload(previousState: ListModel): Any? {
+		return when (previousState) {
+			is DownloadItemModel -> {
+				if (workState == previousState.workState) {
+					Unit
+				} else {
+					null
+				}
+			}
+
+			else -> super.getChangePayload(previousState)
+		}
+	}
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false

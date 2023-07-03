@@ -5,9 +5,9 @@ import androidx.annotation.StringRes
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 
 class ListHeader private constructor(
-	val text: CharSequence?,
-	@StringRes val textRes: Int,
-	val dateTimeAgo: DateTimeAgo?,
+	private val text: CharSequence?,
+	@StringRes private val textRes: Int,
+	private val dateTimeAgo: DateTimeAgo?,
 	@StringRes val buttonTextRes: Int,
 	val payload: Any?,
 ) : ListModel {
@@ -34,6 +34,10 @@ class ListHeader private constructor(
 		text != null -> text
 		textRes != 0 -> context.getString(textRes)
 		else -> dateTimeAgo?.format(context.resources)
+	}
+
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is ListHeader && text == other.text && dateTimeAgo == other.dateTimeAgo && textRes == other.textRes
 	}
 
 	override fun equals(other: Any?): Boolean {

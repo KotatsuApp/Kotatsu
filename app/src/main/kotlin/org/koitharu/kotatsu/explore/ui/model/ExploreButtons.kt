@@ -1,11 +1,11 @@
-package org.koitharu.kotatsu.favourites.ui.categories.select.model
+package org.koitharu.kotatsu.explore.ui.model
 
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
-class CategoriesHeaderItem : ListModel {
+class ExploreButtons : ListModel {
 
 	override fun areItemsTheSame(other: ListModel): Boolean {
-		return other is CategoriesHeaderItem
+		return other is ExploreButtons
 	}
 
 	override fun equals(other: Any?): Boolean {

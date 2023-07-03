@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.core.ui.list.NestedScrollStateHandle
 import org.koitharu.kotatsu.core.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.list.ui.ItemSizeResolver
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.adapter.emptyHintAD
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
@@ -27,12 +28,11 @@ class ShelfAdapter(
 	sizeResolver: ItemSizeResolver,
 	selectionController: SectionedSelectionController<ShelfSectionModel>,
 	nestedScrollStateHandle: NestedScrollStateHandle,
-) : AsyncListDifferDelegationAdapter<ListModel>(DiffCallback()), FastScroller.SectionIndexer {
+) : AsyncListDifferDelegationAdapter<ListModel>(ListModelDiffCallback), FastScroller.SectionIndexer {
 
 	init {
 		val pool = RecyclerView.RecycledViewPool()
-		delegatesManager
-			.addDelegate(
+		delegatesManager.addDelegate(
 				shelfGroupAD(
 					sharedPool = pool,
 					lifecycleOwner = lifecycleOwner,
@@ -42,44 +42,13 @@ class ShelfAdapter(
 					listener = listener,
 					nestedScrollStateHandle = nestedScrollStateHandle,
 				),
-			)
-			.addDelegate(loadingStateAD())
-			.addDelegate(loadingFooterAD())
+			).addDelegate(loadingStateAD()).addDelegate(loadingFooterAD())
 			.addDelegate(emptyHintAD(coil, lifecycleOwner, listener))
-			.addDelegate(emptyStateListAD(coil, lifecycleOwner, listener))
-			.addDelegate(errorStateListAD(listener))
+			.addDelegate(emptyStateListAD(coil, lifecycleOwner, listener)).addDelegate(errorStateListAD(listener))
 	}
 
 	override fun getSectionText(context: Context, position: Int): CharSequence? {
 		val item = items.getOrNull(position) as? ShelfSectionModel ?: return null
 		return item.getTitle(context.resources)
-	}
-
-	private class DiffCallback : DiffUtil.ItemCallback<ListModel>() {
-
-		override fun areItemsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
-			return when {
-				oldItem is ShelfSectionModel && newItem is ShelfSectionModel -> {
-					oldItem.key == newItem.key
-				}
-
-				oldItem is LoadingFooter && newItem is LoadingFooter -> {
-					oldItem.key == newItem.key
-				}
-
-				else -> oldItem.javaClass == newItem.javaClass
-			}
-		}
-
-		override fun areContentsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
-			return Intrinsics.areEqual(oldItem, newItem)
-		}
-
-		override fun getChangePayload(oldItem: ListModel, newItem: ListModel): Any? {
-			return when {
-				oldItem is ShelfSectionModel && newItem is ShelfSectionModel -> Unit
-				else -> super.getChangePayload(oldItem, newItem)
-			}
-		}
 	}
 }

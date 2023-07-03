@@ -19,6 +19,18 @@ sealed interface ShelfSectionModel : ListModel {
 
 	override fun toString(): String
 
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is ShelfSectionModel && key == other.key
+	}
+
+	override fun getChangePayload(previousState: ListModel): Any? {
+		return if (previousState is ShelfSectionModel) {
+			Unit
+		} else {
+			null
+		}
+	}
+
 	class History(
 		override val items: List<MangaItemModel>,
 		override val showAllButtonText: Int,

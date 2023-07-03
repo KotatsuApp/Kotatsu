@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -183,7 +184,7 @@ class DownloadsViewModel @Inject constructor(
 		for (item in this) {
 			val date = timeAgo(item.timestamp)
 			if (prevDate != date) {
-				destination += date
+				destination += ListHeader(date, 0, null)
 			}
 			prevDate = date
 			destination += item

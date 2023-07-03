@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.search.ui.multi
 
+import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -10,6 +12,18 @@ class MultiSearchListModel(
 	val list: List<MangaItemModel>,
 	val error: Throwable?,
 ) : ListModel {
+
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is MultiSearchListModel && source == other.source
+	}
+
+	override fun getChangePayload(previousState: ListModel): Any? {
+		return if (previousState is MultiSearchListModel && previousState.list != list) {
+			ListModelDiffCallback.PAYLOAD_NESTED_LIST_CHANGED
+		} else {
+			super.getChangePayload(previousState)
+		}
+	}
 
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true

@@ -10,13 +10,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.databinding.ItemCategoryCheckableMultipleBinding
 import org.koitharu.kotatsu.databinding.ItemShelfSectionDraggableBinding
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 
 @SuppressLint("ClickableViewAccessibility")
 fun shelfSectionAD(
 	listener: ShelfSettingsListener,
 ) =
-	adapterDelegateViewBinding<ShelfSettingsItemModel.Section, ShelfSettingsItemModel, ItemShelfSectionDraggableBinding>(
+	adapterDelegateViewBinding<ShelfSettingsItemModel.Section, ListModel, ItemShelfSectionDraggableBinding>(
 		{ layoutInflater, parent -> ItemShelfSectionDraggableBinding.inflate(layoutInflater, parent, false) },
 	) {
 
@@ -50,7 +51,7 @@ fun shelfSectionAD(
 fun shelfCategoryAD(
 	listener: ShelfSettingsListener,
 ) =
-	adapterDelegateViewBinding<ShelfSettingsItemModel.FavouriteCategory, ShelfSettingsItemModel, ItemCategoryCheckableMultipleBinding>(
+	adapterDelegateViewBinding<ShelfSettingsItemModel.FavouriteCategory, ListModel, ItemCategoryCheckableMultipleBinding>(
 		{ layoutInflater, parent -> ItemCategoryCheckableMultipleBinding.inflate(layoutInflater, parent, false) },
 	) {
 		itemView.setOnClickListener {

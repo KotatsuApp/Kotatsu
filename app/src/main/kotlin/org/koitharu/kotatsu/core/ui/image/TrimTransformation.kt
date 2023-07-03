@@ -15,7 +15,7 @@ class TrimTransformation(
 	private val tolerance: Int = 20,
 ) : Transformation {
 
-	override val cacheKey: String = javaClass.name
+	override val cacheKey: String = "${javaClass.name}-$tolerance"
 
 	override suspend fun transform(input: Bitmap, size: Size): Bitmap {
 		var left = 0
@@ -98,14 +98,23 @@ class TrimTransformation(
 		}
 	}
 
-	override fun equals(other: Any?) = other is TrimTransformation
-
-	override fun hashCode() = javaClass.hashCode()
-
 	private fun isColorTheSame(@ColorInt a: Int, @ColorInt b: Int): Boolean {
 		return abs(a.red - b.red) <= tolerance &&
 			abs(a.green - b.green) <= tolerance &&
 			abs(a.blue - b.blue) <= tolerance &&
 			abs(a.alpha - b.alpha) <= tolerance
+	}
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as TrimTransformation
+
+		return tolerance == other.tolerance
+	}
+
+	override fun hashCode(): Int {
+		return tolerance
 	}
 }

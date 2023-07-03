@@ -11,6 +11,10 @@ class CategoryListModel(
 	val isReorderMode: Boolean,
 ) : ListModel {
 
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is CategoryListModel && other.category.id == category.id
+	}
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false

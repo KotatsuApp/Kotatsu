@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.list.ui.model
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
-open class EmptyState(
+class EmptyState(
 	@DrawableRes val icon: Int,
 	@StringRes val textPrimary: Int,
 	@StringRes val textSecondary: Int,
@@ -19,9 +19,7 @@ open class EmptyState(
 		if (icon != other.icon) return false
 		if (textPrimary != other.textPrimary) return false
 		if (textSecondary != other.textSecondary) return false
-		if (actionStringRes != other.actionStringRes) return false
-
-		return true
+		return actionStringRes == other.actionStringRes
 	}
 
 	override fun hashCode(): Int {
@@ -30,5 +28,9 @@ open class EmptyState(
 		result = 31 * result + textSecondary
 		result = 31 * result + actionStringRes
 		return result
+	}
+
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is EmptyState
 	}
 }

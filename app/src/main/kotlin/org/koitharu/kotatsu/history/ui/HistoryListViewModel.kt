@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
@@ -108,7 +109,7 @@ class HistoryListViewModel @Inject constructor(
 			if (grouped) {
 				val date = timeAgo(history.updatedAt)
 				if (prevDate != date) {
-					result += date
+					result += ListHeader(date, 0, null)
 				}
 				prevDate = date
 			}

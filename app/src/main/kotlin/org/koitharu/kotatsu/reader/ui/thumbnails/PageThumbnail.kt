@@ -13,6 +13,10 @@ class PageThumbnail(
 	val number
 		get() = page.index + 1
 
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is PageThumbnail && page == other.page
+	}
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false

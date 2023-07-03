@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.core.util.ext.format
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import java.util.Date
 
-sealed class DateTimeAgo : ListModel {
+sealed class DateTimeAgo {
 
 	abstract fun format(resources: Resources): String
 

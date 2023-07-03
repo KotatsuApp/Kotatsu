@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.AsyncListDiffer.ListListener
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.filter.ui.model.FilterItem
-import org.koitharu.kotatsu.list.ui.adapter.listSimpleHeaderAD
+import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -16,12 +16,8 @@ class FilterAdapter(
 ) : AsyncListDifferDelegationAdapter<ListModel>(FilterDiffCallback()), FastScroller.SectionIndexer {
 
 	init {
-		delegatesManager
-			.addDelegate(filterSortDelegate(listener))
-			.addDelegate(filterTagDelegate(listener))
-			.addDelegate(listSimpleHeaderAD())
-			.addDelegate(loadingStateAD())
-			.addDelegate(loadingFooterAD())
+		delegatesManager.addDelegate(filterSortDelegate(listener)).addDelegate(filterTagDelegate(listener))
+			.addDelegate(listHeaderAD(null)).addDelegate(loadingStateAD()).addDelegate(loadingFooterAD())
 			.addDelegate(filterErrorDelegate())
 		differ.addListListener(listListener)
 	}
@@ -35,12 +31,5 @@ class FilterAdapter(
 			}
 		}
 		return null
-	}
-
-	companion object {
-
-		const val ITEM_TYPE_HEADER = 0
-		const val ITEM_TYPE_SORT = 1
-		const val ITEM_TYPE_TAG = 2
 	}
 }

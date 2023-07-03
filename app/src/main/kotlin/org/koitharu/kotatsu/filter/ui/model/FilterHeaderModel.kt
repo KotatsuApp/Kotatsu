@@ -8,7 +8,7 @@ class FilterHeaderModel(
 	val chips: Collection<ChipsView.ChipModel>,
 	val sortOrder: SortOrder?,
 	val hasSelectedTags: Boolean,
-) : ListModel {
+) {
 
 	val textSummary: String
 		get() = chips.mapNotNull { if (it.isChecked) it.title else null }.joinToString()

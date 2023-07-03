@@ -12,6 +12,10 @@ class ScrobblerHint(
 	@StringRes val actionStringRes: Int,
 ) : ListModel {
 
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is ScrobblerHint && other.textPrimary == textPrimary
+	}
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false
@@ -22,9 +26,7 @@ class ScrobblerHint(
 		if (textPrimary != other.textPrimary) return false
 		if (textSecondary != other.textSecondary) return false
 		if (error != other.error) return false
-		if (actionStringRes != other.actionStringRes) return false
-
-		return true
+		return actionStringRes == other.actionStringRes
 	}
 
 	override fun hashCode(): Int {

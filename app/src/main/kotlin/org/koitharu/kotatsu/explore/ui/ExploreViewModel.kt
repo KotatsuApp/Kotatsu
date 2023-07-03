@@ -22,7 +22,13 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
-import org.koitharu.kotatsu.explore.ui.model.ExploreItem
+import org.koitharu.kotatsu.explore.ui.model.ExploreButtons
+import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
+import org.koitharu.kotatsu.explore.ui.model.RecommendationsItem
+import org.koitharu.kotatsu.list.ui.model.EmptyHint
+import org.koitharu.kotatsu.list.ui.model.ListHeader
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaState
@@ -46,13 +52,13 @@ class ExploreViewModel @Inject constructor(
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val onShowSuggestionsTip = MutableEventFlow<Unit>()
 
-	val content: StateFlow<List<ExploreItem>> = isLoading.flatMapLatest { loading ->
+	val content: StateFlow<List<ListModel>> = isLoading.flatMapLatest { loading ->
 		if (loading) {
-			flowOf(listOf(ExploreItem.Loading))
+			flowOf(getLoadingStateList())
 		} else {
 			createContentFlow()
 		}
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(ExploreItem.Loading))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, getLoadingStateList())
 
 	init {
 		launchJob(Dispatchers.Default) {
@@ -98,13 +104,11 @@ class ExploreViewModel @Inject constructor(
 		.map { settings.getMangaSources(includeHidden = false) }
 		.combine(isGrid) { content, grid -> buildList(content, grid) }
 
-	private fun buildList(sources: List<MangaSource>, isGrid: Boolean): List<ExploreItem> {
-		val result = ArrayList<ExploreItem>(sources.size + 3)
-		result += ExploreItem.Buttons(
-			isSuggestionsEnabled = settings.isSuggestionsEnabled,
-		)
-		result += ExploreItem.Header(R.string.suggestions, isButtonVisible = false)
-		result += ExploreItem.Recommendation(
+	private fun buildList(sources: List<MangaSource>, isGrid: Boolean): List<ListModel> {
+		val result = ArrayList<ListModel>(sources.size + 4)
+		result += ExploreButtons()
+		result += ListHeader(R.string.suggestions, 0, null)
+		result += RecommendationsItem(
 			Manga(
 				0,
 				"Test",
@@ -123,11 +127,11 @@ class ExploreViewModel @Inject constructor(
 				MangaSource.DESUME,
 			),
 		) // TODO
-		result += ExploreItem.Header(R.string.remote_sources, sources.isNotEmpty())
 		if (sources.isNotEmpty()) {
-			sources.mapTo(result) { ExploreItem.Source(it, isGrid) }
+			result += ListHeader(R.string.remote_sources, R.string.manage, null)
+			sources.mapTo(result) { MangaSourceItem(it, isGrid) }
 		} else {
-			result += ExploreItem.EmptyHint(
+			result += EmptyHint(
 				icon = R.drawable.ic_empty_common,
 				textPrimary = R.string.no_manga_sources,
 				textSecondary = R.string.no_manga_sources_text,
@@ -136,4 +140,9 @@ class ExploreViewModel @Inject constructor(
 		}
 		return result
 	}
+
+	private fun getLoadingStateList() = listOf(
+		ExploreButtons(),
+		LoadingState,
+	)
 }
