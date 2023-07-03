@@ -140,9 +140,4 @@ class FeedFragment :
 	override fun onReadClick(manga: Manga, view: View) = Unit
 
 	override fun onTagClick(manga: Manga, tag: MangaTag, view: View) = Unit
-
-	companion object {
-
-		fun newInstance() = FeedFragment()
-	}
 }

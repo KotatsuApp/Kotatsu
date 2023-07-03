@@ -78,9 +78,16 @@ class HistoryListViewModel @Inject constructor(
 
 	override fun onRetry() = Unit
 
-	fun clearHistory() {
-		launchLoadingJob(Dispatchers.Default) {
-			repository.clear()
+	fun clearHistory(minDate: Long) {
+		launchJob(Dispatchers.Default) {
+			val stringRes = if (minDate <= 0) {
+				repository.clear()
+				R.string.history_cleared
+			} else {
+				repository.deleteAfter(minDate)
+				R.string.removed_from_history
+			}
+			onActionDone.call(ReversibleAction(stringRes, null))
 		}
 	}
 
@@ -131,6 +138,7 @@ class HistoryListViewModel @Inject constructor(
 			diffDays < 1 -> DateTimeAgo.Today
 			diffDays == 1 -> DateTimeAgo.Yesterday
 			diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays)
+			diffDays < 200 -> DateTimeAgo.MonthsAgo(diffDays / 30)
 			else -> DateTimeAgo.LongAgo
 		}
 	}

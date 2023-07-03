@@ -133,7 +133,7 @@ class ExploreFragment :
 
 	override fun onRetryClick(error: Throwable) = Unit
 
-	override fun onEmptyActionClick()  {
+	override fun onEmptyActionClick() {
 		startActivity(SettingsActivity.newManageSourcesIntent(context ?: return))
 	}
 
@@ -184,10 +184,5 @@ class ExploreFragment :
 			}
 			return true
 		}
-	}
-
-	companion object {
-
-		fun newInstance() = ExploreFragment()
 	}
 }

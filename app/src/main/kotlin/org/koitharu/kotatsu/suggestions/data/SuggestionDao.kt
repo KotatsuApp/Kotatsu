@@ -19,6 +19,10 @@ abstract class SuggestionDao {
 	@Query("SELECT * FROM suggestions ORDER BY relevance DESC LIMIT :limit")
 	abstract fun observeAll(limit: Int): Flow<List<SuggestionWithManga>>
 
+	@Transaction
+	@Query("SELECT * FROM suggestions ORDER BY RANDOM() LIMIT 1")
+	abstract suspend fun getRandom(): SuggestionWithManga?
+
 	@Query("SELECT COUNT(*) FROM suggestions")
 	abstract suspend fun count(): Int
 

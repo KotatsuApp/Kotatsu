@@ -29,7 +29,7 @@ class HistoryActivity :
 		if (fm.findFragmentById(R.id.container) == null) {
 			fm.commit {
 				setReorderingAllowed(true)
-				val fragment = HistoryListFragment.newInstance()
+				val fragment = HistoryListFragment()
 				replace(R.id.container, fragment)
 			}
 		}

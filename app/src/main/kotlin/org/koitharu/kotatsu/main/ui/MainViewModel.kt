@@ -28,7 +28,7 @@ class MainViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val appUpdateRepository: AppUpdateRepository,
 	trackingRepository: TrackingRepository,
-	settings: AppSettings,
+	private val settings: AppSettings,
 	readingResumeEnabledUseCase: ReadingResumeEnabledUseCase,
 ) : BaseViewModel() {
 
@@ -51,7 +51,7 @@ class MainViewModel @Inject constructor(
 		trackingRepository.observeUpdatedMangaCount(),
 	) { appUpdate, tracks ->
 		val a = SparseIntArray(2)
-		a[R.id.nav_tools] = if (appUpdate != null) 1 else 0
+		// a[R.id.nav_tools] = if (appUpdate != null) 1 else 0
 		a[R.id.nav_feed] = tracks
 		a
 	}.stateIn(
@@ -71,5 +71,9 @@ class MainViewModel @Inject constructor(
 			val manga = historyRepository.getLastOrNull() ?: throw EmptyHistoryException()
 			onOpenReader.call(manga)
 		}
+	}
+
+	fun setIncognitoMode(isEnabled: Boolean) {
+		settings.isIncognitoModeEnabled = isEnabled
 	}
 }

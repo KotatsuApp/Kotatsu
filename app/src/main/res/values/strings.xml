@@ -450,4 +450,6 @@
 	<string name="no_access_to_file">You have no access to this file or directory</string>
 	<string name="local_manga_directories">Local manga directories</string>
 	<string name="description">Description</string>
+	<string name="this_month">This month</string>
+	<string name="voice_search">Voice search</string>
 </resources>

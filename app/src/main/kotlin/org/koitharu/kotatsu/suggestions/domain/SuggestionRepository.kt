@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
+import org.koitharu.kotatsu.suggestions.data.SuggestionWithManga
 import javax.inject.Inject
 
 class SuggestionRepository @Inject constructor(
@@ -26,6 +27,10 @@ class SuggestionRepository @Inject constructor(
 		return db.suggestionDao.observeAll(limit).mapItems {
 			it.manga.toManga(it.tags.toMangaTags())
 		}
+	}
+
+	suspend fun getRandom(): SuggestionWithManga? {
+		return db.suggestionDao.getRandom()
 	}
 
 	suspend fun clear() {

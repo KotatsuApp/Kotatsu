@@ -4,17 +4,16 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/action_history_grouping"
+		android:id="@+id/action_incognito"
 		android:checkable="true"
-		android:checked="true"
-		android:orderInCategory="25"
-		android:title="@string/group"
+		android:orderInCategory="90"
+		android:title="@string/incognito_mode"
 		app:showAsAction="never" />
 
 	<item
-		android:id="@+id/action_clear_history"
-		android:orderInCategory="10"
-		android:title="@string/clear_history"
+		android:id="@+id/action_settings"
+		android:orderInCategory="90"
+		android:title="@string/settings"
 		app:showAsAction="never" />
 
 </menu>

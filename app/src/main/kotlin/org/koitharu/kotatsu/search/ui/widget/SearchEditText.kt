@@ -15,7 +15,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.drawableEnd
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
@@ -31,18 +30,11 @@ class SearchEditText @JvmOverloads constructor(
 
 	var searchSuggestionListener: SearchSuggestionListener? = null
 	private val clearIcon = ContextCompat.getDrawable(context, materialR.drawable.abc_ic_clear_material)
-	private val voiceIcon = ContextCompat.getDrawable(context, R.drawable.ic_voice_input)
 	private var isEmpty = text.isNullOrEmpty()
 
 	init {
 		wrapHint()
 	}
-
-	var isVoiceSearchEnabled: Boolean = false
-		set(value) {
-			field = value
-			updateActionIcon()
-		}
 
 	var query: String
 		get() = text?.trim()?.toString().orEmpty()
@@ -117,14 +109,12 @@ class SearchEditText @JvmOverloads constructor(
 	private fun onActionIconClick() {
 		when {
 			!text.isNullOrEmpty() -> text?.clear()
-			isVoiceSearchEnabled -> searchSuggestionListener?.onVoiceSearchClick()
 		}
 	}
 
 	private fun updateActionIcon() {
 		val icon = when {
 			!text.isNullOrEmpty() -> clearIcon
-			isVoiceSearchEnabled -> voiceIcon
 			else -> null
 		}
 		if (icon !== drawableEnd) {

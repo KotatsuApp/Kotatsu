@@ -4,6 +4,13 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
+		android:id="@+id/action_voice_search"
+		android:icon="@drawable/ic_voice_input"
+		android:orderInCategory="0"
+		android:title="@string/voice_search"
+		app:showAsAction="ifRoom" />
+
+	<item
 		android:id="@+id/action_clear"
 		android:title="@string/clear_search_history"
 		app:showAsAction="never" />

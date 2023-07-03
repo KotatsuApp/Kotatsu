@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
-import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
@@ -14,6 +13,7 @@ import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 class FeedAdapter(
@@ -36,8 +36,8 @@ class FeedAdapter(
 		val list = items
 		for (i in (0..position).reversed()) {
 			val item = list.getOrNull(i) ?: continue
-			if (item is DateTimeAgo) {
-				return item.format(context.resources)
+			if (item is ListHeader) {
+				return item.getText(context)
 			}
 		}
 		return null

@@ -55,9 +55,4 @@ class HistoryListFragment : MangaListFragment() {
 	}
 
 	override fun onCreateAdapter() = HistoryListAdapter(coil, viewLifecycleOwner, this)
-
-	companion object {
-
-		fun newInstance() = HistoryListFragment()
-	}
 }

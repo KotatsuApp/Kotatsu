@@ -2,15 +2,13 @@ package org.koitharu.kotatsu.list.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
-import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
 
 open class MangaListAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
-) : AsyncListDifferDelegationAdapter<ListModel>(ListModelDiffCallback) {
+) : BaseListAdapter() {
 
 	init {
 		delegatesManager
