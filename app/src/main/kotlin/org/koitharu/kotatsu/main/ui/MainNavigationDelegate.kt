@@ -6,8 +6,8 @@ import androidx.annotation.IdRes
 import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.transition.MaterialFadeThrough
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
@@ -120,10 +120,10 @@ class MainNavigationDelegate(
 		if (fragmentManager.isStateSaved) {
 			return false
 		}
+		fragment.enterTransition = MaterialFadeThrough()
 		fragmentManager.beginTransaction()
 			.setReorderingAllowed(true)
 			.replace(R.id.container, fragment, TAG_PRIMARY)
-			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 			.commit()
 		onFragmentChanged(fragment, fromUser = true)
 		return true
