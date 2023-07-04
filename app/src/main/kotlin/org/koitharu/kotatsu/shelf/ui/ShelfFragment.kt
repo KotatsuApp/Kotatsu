@@ -28,8 +28,8 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
 import org.koitharu.kotatsu.history.ui.HistoryActivity
-import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
@@ -67,7 +67,7 @@ class ShelfFragment :
 	override fun onViewBindingCreated(binding: FragmentShelfBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		nestedScrollStateHandle = NestedScrollStateHandle(savedInstanceState, KEY_NESTED_SCROLL)
-		val sizeResolver = ItemSizeResolver(resources, settings)
+		val sizeResolver = DynamicItemSizeResolver(resources, settings)
 		selectionController = SectionedSelectionController(
 			activity = requireActivity(),
 			owner = this,

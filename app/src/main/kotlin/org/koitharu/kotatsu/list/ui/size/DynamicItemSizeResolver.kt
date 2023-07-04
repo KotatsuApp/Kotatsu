@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.list.ui
+package org.koitharu.kotatsu.list.ui.size
 
 import android.content.SharedPreferences
 import android.content.res.Resources
@@ -9,21 +9,27 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import kotlin.math.roundToInt
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+import kotlin.math.roundToInt
 
-class ItemSizeResolver(resources: Resources, private val settings: AppSettings) {
+class DynamicItemSizeResolver(resources: Resources, private val settings: AppSettings) : ItemSizeResolver {
 
 	private val gridWidth = resources.getDimension(R.dimen.preferred_grid_width)
 	private val scaleFactor: Float
 		get() = settings.gridSize / 100f
 
-	val cellWidth: Int
+	override val cellWidth: Int
 		get() = (gridWidth * scaleFactor).roundToInt()
 
-	fun attachToView(lifecycleOwner: LifecycleOwner, view: View, textView: TextView?) {
-		val observer = SizeObserver(view, textView)
+	override fun attachToView(
+		lifecycleOwner: LifecycleOwner,
+		view: View,
+		textView: TextView?,
+		progressView: ReadingProgressView?
+	) {
+		val observer = SizeObserver(view, textView, progressView)
 		view.addOnAttachStateChangeListener(observer)
 		lifecycleOwner.lifecycle.addObserver(observer)
 		if (view.isAttachedToWindow) {
@@ -34,6 +40,7 @@ class ItemSizeResolver(resources: Resources, private val settings: AppSettings) 
 	private inner class SizeObserver(
 		private val view: View,
 		private val textView: TextView?,
+		private val progressView: ReadingProgressView?,
 	) : DefaultLifecycleObserver, SharedPreferences.OnSharedPreferenceChangeListener, View.OnAttachStateChangeListener {
 
 		private val widthThreshold = view.resources.getDimensionPixelSize(R.dimen.small_grid_width)
@@ -67,6 +74,23 @@ class ItemSizeResolver(resources: Resources, private val settings: AppSettings) 
 			textView?.adjustTextAppearance(newWidth)
 			view.updateLayoutParams {
 				width = newWidth
+			}
+			progressView?.adjustSize(newWidth)
+		}
+
+		private fun ReadingProgressView.adjustSize(width: Int) {
+			val lp = layoutParams
+			val size = resources.getDimensionPixelSize(
+				if (width < widthThreshold) {
+					R.dimen.card_indicator_size_small
+				} else {
+					R.dimen.card_indicator_size
+				},
+			)
+			if (lp.width != size || lp.height != size) {
+				lp.width = size
+				lp.height = size
+				layoutParams = lp
 			}
 		}
 

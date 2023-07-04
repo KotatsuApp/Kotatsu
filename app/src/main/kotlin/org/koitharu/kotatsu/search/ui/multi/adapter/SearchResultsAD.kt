@@ -14,10 +14,10 @@ import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemListGroupBinding
-import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchListModel
 
@@ -35,7 +35,7 @@ fun searchResultsAD(
 
 	binding.recyclerView.setRecycledViewPool(sharedPool)
 	val adapter = ListDelegationAdapter(
-		mangaGridItemAD(coil, lifecycleOwner, listener, sizeResolver),
+		mangaGridItemAD(coil, lifecycleOwner, sizeResolver, listener),
 	)
 	binding.recyclerView.addItemDecoration(selectionDecoration)
 	binding.recyclerView.adapter = adapter

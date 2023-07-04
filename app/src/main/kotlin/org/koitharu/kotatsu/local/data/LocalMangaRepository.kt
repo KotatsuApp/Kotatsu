@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.CompositeMutex
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
@@ -27,9 +28,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
-import java.io.FilenameFilter
 import java.util.EnumSet
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -152,6 +151,8 @@ class LocalMangaRepository @Inject constructor(
 	override suspend fun getPageUrl(page: MangaPage) = page.url
 
 	override suspend fun getTags() = emptySet<MangaTag>()
+
+	override suspend fun getRelated(seed: Manga): List<Manga> = emptyList()
 
 	suspend fun getOutputDir(manga: Manga): File? {
 		val defaultDir = storageManager.getDefaultWriteableDir()

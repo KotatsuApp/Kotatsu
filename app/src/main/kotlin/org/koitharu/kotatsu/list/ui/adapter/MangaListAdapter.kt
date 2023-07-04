@@ -14,7 +14,7 @@ open class MangaListAdapter(
 		delegatesManager
 			.addDelegate(ITEM_TYPE_MANGA_LIST, mangaListItemAD(coil, lifecycleOwner, listener))
 			.addDelegate(ITEM_TYPE_MANGA_LIST_DETAILED, mangaListDetailedItemAD(coil, lifecycleOwner, listener))
-			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, listener, null))
+			.addDelegate(ITEM_TYPE_MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, null, listener))
 			.addDelegate(ITEM_TYPE_LOADING_FOOTER, loadingFooterAD())
 			.addDelegate(ITEM_TYPE_LOADING_STATE, loadingStateAD())
 			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(listener))

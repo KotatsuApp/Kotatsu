@@ -14,16 +14,16 @@ import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemMangaGridBinding
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
-import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
+import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 
 fun mangaGridItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-	clickListener: OnListItemClickListener<Manga>,
 	sizeResolver: ItemSizeResolver?,
+	clickListener: OnListItemClickListener<Manga>,
 ) = adapterDelegateViewBinding<MangaGridModel, ListModel, ItemMangaGridBinding>(
 	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) },
 ) {
@@ -35,7 +35,7 @@ fun mangaGridItemAD(
 	itemView.setOnLongClickListener {
 		clickListener.onItemLongClick(item.manga, it)
 	}
-	sizeResolver?.attachToView(lifecycleOwner, itemView, binding.textViewTitle)
+	sizeResolver?.attachToView(lifecycleOwner, itemView, binding.textViewTitle, binding.progressView)
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title

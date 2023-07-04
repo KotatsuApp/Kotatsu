@@ -28,10 +28,10 @@ import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
-import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListHeader
+import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
@@ -64,7 +64,7 @@ class MultiSearchActivity :
 		val itemCLickListener = OnListItemClickListener<MultiSearchListModel> { item, view ->
 			startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query.value))
 		}
-		val sizeResolver = ItemSizeResolver(resources, settings)
+		val sizeResolver = DynamicItemSizeResolver(resources, settings)
 		val selectionDecoration = MangaSelectionDecoration(this)
 		selectionController = ListSelectionController(
 			activity = this,

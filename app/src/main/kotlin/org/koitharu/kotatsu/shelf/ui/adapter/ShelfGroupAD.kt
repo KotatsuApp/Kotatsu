@@ -15,10 +15,10 @@ import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.util.ext.removeItemDecoration
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ItemListGroupBinding
-import org.koitharu.kotatsu.list.ui.ItemSizeResolver
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.shelf.ui.model.ShelfSectionModel
 
@@ -49,7 +49,7 @@ fun shelfGroupAD(
 
 	val adapter = AsyncListDifferDelegationAdapter(
 		ListModelDiffCallback,
-		mangaGridItemAD(coil, lifecycleOwner, listenerAdapter, sizeResolver),
+		mangaGridItemAD(coil, lifecycleOwner, sizeResolver, listenerAdapter),
 	)
 	adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 	adapter.registerAdapterDataObserver(ScrollKeepObserver(binding.recyclerView))

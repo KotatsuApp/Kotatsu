@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.model.countChaptersByBranch
 import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
@@ -45,6 +46,9 @@ import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
+import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -87,6 +91,9 @@ class DetailsFragment :
 		binding.infoLayout.textViewSource.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
+		binding.recyclerViewRelated.addItemDecoration(
+			SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)),
+		)
 		TitleScrollCoordinator(binding.textViewTitle).attach(binding.scrollView)
 		viewModel.manga.filterNotNull().observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
@@ -96,6 +103,7 @@ class DetailsFragment :
 		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
 		viewModel.chapters.observe(viewLifecycleOwner, ::onChaptersChanged)
 		viewModel.localSize.observe(viewLifecycleOwner, ::onLocalSizeChanged)
+		viewModel.relatedManga.observe(viewLifecycleOwner, ::onRelatedMangaChanged)
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
@@ -191,6 +199,24 @@ class DetailsFragment :
 			textView.text = FileSize.BYTES.format(textView.context, size)
 			textView.isVisible = true
 		}
+	}
+
+	private fun onRelatedMangaChanged(related: List<MangaItemModel>) {
+		if (related.isEmpty()) {
+			requireViewBinding().groupRelated.isVisible = false
+			return
+		}
+		val rv = viewBinding?.recyclerViewRelated ?: return
+		val adapter = (rv.adapter as? BaseListAdapter) ?: BaseListAdapter(
+			mangaGridItemAD(
+				coil, viewLifecycleOwner,
+				StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),
+			) { item, view ->
+				startActivity(DetailsActivity.newIntent(view.context, item), scaleUpActivityOptionsOf(view))
+			},
+		).also { rv.adapter = it }
+		adapter.items = related
+		requireViewBinding().groupRelated.isVisible = true
 	}
 
 	private fun onHistoryChanged(history: HistoryInfo) {
