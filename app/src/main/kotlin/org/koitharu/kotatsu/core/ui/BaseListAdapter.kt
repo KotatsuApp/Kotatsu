@@ -1,8 +1,11 @@
 package org.koitharu.kotatsu.core.ui
 
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.AsyncListDiffer.ListListener
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.core.util.ContinuationResumeRunnable
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
@@ -11,8 +14,12 @@ import kotlin.coroutines.suspendCoroutine
 
 open class BaseListAdapter(
 	vararg delegates: AdapterDelegate<List<ListModel>>,
-) : AsyncListDifferDelegationAdapter<ListModel>(ListModelDiffCallback, *delegates),
-	FlowCollector<List<ListModel>> {
+) : AsyncListDifferDelegationAdapter<ListModel>(
+	AsyncDifferConfig.Builder(ListModelDiffCallback)
+		.setBackgroundThreadExecutor(Dispatchers.Default.limitedParallelism(2).asExecutor())
+		.build(),
+	*delegates,
+), FlowCollector<List<ListModel>> {
 
 	override suspend fun emit(value: List<ListModel>) = suspendCoroutine { cont ->
 		setItems(value, ContinuationResumeRunnable(cont))

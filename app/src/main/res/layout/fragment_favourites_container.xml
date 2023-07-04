@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:orientation="vertical">
 
-	<com.google.android.material.appbar.AppBarLayout
-		android:id="@+id/appbar"
+	<com.google.android.material.tabs.TabLayout
+		android:id="@+id/tabs"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:elevation="0dp"
-		app:elevation="0dp"
-		app:liftOnScroll="false">
-
-		<com.google.android.material.tabs.TabLayout
-			android:id="@+id/tabs"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			app:tabGravity="start"
-			app:tabMode="scrollable" />
-
-	</com.google.android.material.appbar.AppBarLayout>
+		app:tabGravity="start"
+		app:tabMode="scrollable" />
 
 	<androidx.viewpager2.widget.ViewPager2
 		android:id="@+id/pager"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+		android:layout_height="match_parent" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

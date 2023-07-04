@@ -76,9 +76,6 @@ abstract class MangaListFragment :
 	private var selectionController: ListSelectionController? = null
 	private var spanResolver: MangaListSpanResolver? = null
 	private val spanSizeLookup = SpanSizeLookup()
-	private val listCommitCallback = Runnable {
-		spanSizeLookup.invalidateCache()
-	}
 	open val isSwipeRefreshEnabled = true
 
 	protected abstract val viewModel: MangaListViewModel
@@ -166,8 +163,9 @@ abstract class MangaListFragment :
 		viewModel.onRefresh()
 	}
 
-	private fun onListChanged(list: List<ListModel>) {
-		listAdapter?.setItems(list, listCommitCallback)
+	private suspend fun onListChanged(list: List<ListModel>) {
+		listAdapter?.emit(list)
+		spanSizeLookup.invalidateCache()
 	}
 
 	private fun resolveException(e: Throwable) {
@@ -341,8 +339,7 @@ abstract class MangaListFragment :
 		}
 
 		override fun getSpanSize(position: Int): Int {
-			val total =
-				(requireViewBinding().recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
+			val total = (viewBinding?.recyclerView?.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
 			return when (listAdapter?.getItemViewType(position)) {
 				ITEM_TYPE_MANGA_GRID -> 1
 				else -> total
