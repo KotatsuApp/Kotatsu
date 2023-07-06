@@ -2,10 +2,9 @@ package org.koitharu.kotatsu.explore.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
-import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.adapter.emptyHintAD
 import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
@@ -16,7 +15,7 @@ class ExploreAdapter(
 	lifecycleOwner: LifecycleOwner,
 	listener: ExploreListEventListener,
 	clickListener: OnListItemClickListener<MangaSourceItem>,
-) : AsyncListDifferDelegationAdapter<ListModel>(ListModelDiffCallback) {
+) : BaseListAdapter<ListModel>() {
 
 	init {
 		delegatesManager

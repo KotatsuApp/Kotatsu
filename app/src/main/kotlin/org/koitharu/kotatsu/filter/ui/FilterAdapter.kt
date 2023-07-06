@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.filter.ui
 
 import android.content.Context
 import androidx.recyclerview.widget.AsyncListDiffer.ListListener
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.filter.ui.model.FilterItem
 import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 class FilterAdapter(
 	listener: OnFilterChangedListener,
 	listListener: ListListener<ListModel>,
-) : AsyncListDifferDelegationAdapter<ListModel>(FilterDiffCallback()), FastScroller.SectionIndexer {
+) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
 		delegatesManager.addDelegate(filterSortDelegate(listener)).addDelegate(filterTagDelegate(listener))

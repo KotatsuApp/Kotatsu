@@ -74,6 +74,7 @@
 	</style>
 
 	<style name="Widget.Kotatsu.Tabs" parent="@style/Widget.Material3.TabLayout">
+		<item name="android:background">?colorOutline</item>
 		<item name="tabBackground">@drawable/tabs_background</item>
 		<item name="tabGravity">center</item>
 		<item name="tabInlineLabel">true</item>

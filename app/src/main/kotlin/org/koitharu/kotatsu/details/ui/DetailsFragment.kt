@@ -47,6 +47,7 @@ import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
@@ -207,7 +208,9 @@ class DetailsFragment :
 			return
 		}
 		val rv = viewBinding?.recyclerViewRelated ?: return
-		val adapter = (rv.adapter as? BaseListAdapter) ?: BaseListAdapter(
+
+		@Suppress("UNCHECKED_CAST")
+		val adapter = (rv.adapter as? BaseListAdapter<ListModel>) ?: BaseListAdapter(
 			mangaGridItemAD(
 				coil, viewLifecycleOwner,
 				StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),

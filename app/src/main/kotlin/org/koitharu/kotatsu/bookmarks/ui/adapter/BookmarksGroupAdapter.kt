@@ -3,12 +3,11 @@ package org.koitharu.kotatsu.bookmarks.ui.adapter
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.SectionedSelectionController
-import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
@@ -24,7 +23,7 @@ class BookmarksGroupAdapter(
 	listener: ListStateHolderListener,
 	bookmarkClickListener: OnListItemClickListener<Bookmark>,
 	groupClickListener: OnListItemClickListener<BookmarksGroup>,
-) : AsyncListDifferDelegationAdapter<ListModel>(ListModelDiffCallback) {
+) : BaseListAdapter<ListModel>() {
 
 	init {
 		val pool = RecyclerView.RecycledViewPool()

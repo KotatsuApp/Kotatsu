@@ -3,9 +3,8 @@ package org.koitharu.kotatsu.tracker.ui.feed.adapter
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
-import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.errorFooterAD
@@ -20,7 +19,7 @@ class FeedAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
-) : AsyncListDifferDelegationAdapter<ListModel>(ListModelDiffCallback), FastScroller.SectionIndexer {
+) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
 		delegatesManager.addDelegate(ITEM_TYPE_FEED, feedItemAD(coil, lifecycleOwner, listener))
@@ -52,6 +51,5 @@ class FeedAdapter(
 		const val ITEM_TYPE_ERROR_FOOTER = 4
 		const val ITEM_TYPE_EMPTY = 5
 		const val ITEM_TYPE_HEADER = 6
-		const val ITEM_TYPE_DATE_HEADER = 7
 	}
 }

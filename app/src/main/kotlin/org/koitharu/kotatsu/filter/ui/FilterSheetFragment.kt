@@ -31,7 +31,7 @@ class FilterSheetFragment :
 		addSheetCallback(this)
 		val adapter = FilterAdapter(filter, this)
 		binding.recyclerView.adapter = adapter
-		filter.filterItems.observe(viewLifecycleOwner, adapter::setItems)
+		filter.filterItems.observe(viewLifecycleOwner, adapter)
 
 		if (dialog == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			binding.recyclerView.scrollIndicators = 0

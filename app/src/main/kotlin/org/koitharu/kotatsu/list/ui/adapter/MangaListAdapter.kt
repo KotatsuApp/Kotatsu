@@ -3,12 +3,13 @@ package org.koitharu.kotatsu.list.ui.adapter
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
+import org.koitharu.kotatsu.list.ui.model.ListModel
 
 open class MangaListAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
-) : BaseListAdapter() {
+) : BaseListAdapter<ListModel>() {
 
 	init {
 		delegatesManager

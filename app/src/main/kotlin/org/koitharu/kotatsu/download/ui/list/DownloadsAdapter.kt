@@ -2,8 +2,7 @@ package org.koitharu.kotatsu.download.ui.list
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
@@ -13,7 +12,7 @@ class DownloadsAdapter(
 	lifecycleOwner: LifecycleOwner,
 	coil: ImageLoader,
 	listener: DownloadItemListener,
-) : AsyncListDifferDelegationAdapter<ListModel>(ListModelDiffCallback) {
+) : BaseListAdapter<ListModel>() {
 
 	init {
 		delegatesManager.addDelegate(ITEM_TYPE_DOWNLOAD, downloadItemAD(lifecycleOwner, coil, listener))

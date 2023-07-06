@@ -3,20 +3,24 @@ package org.koitharu.kotatsu.list.ui
 import androidx.recyclerview.widget.DiffUtil
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
-object ListModelDiffCallback : DiffUtil.ItemCallback<ListModel>() {
+open class ListModelDiffCallback<T : ListModel> : DiffUtil.ItemCallback<T>() {
 
-	val PAYLOAD_CHECKED_CHANGED = Any()
-	val PAYLOAD_NESTED_LIST_CHANGED = Any()
-
-	override fun areItemsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
+	override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
 		return oldItem.areItemsTheSame(newItem)
 	}
 
-	override fun areContentsTheSame(oldItem: ListModel, newItem: ListModel): Boolean {
+	override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
 		return oldItem == newItem
 	}
 
-	override fun getChangePayload(oldItem: ListModel, newItem: ListModel): Any? {
+	override fun getChangePayload(oldItem: T, newItem: T): Any? {
 		return newItem.getChangePayload(oldItem)
+	}
+
+	companion object : ListModelDiffCallback<ListModel>() {
+
+		val PAYLOAD_CHECKED_CHANGED = Any()
+		val PAYLOAD_NESTED_LIST_CHANGED = Any()
+		val PAYLOAD_ANYTHING_CHANGED = Any()
 	}
 }

@@ -4,11 +4,10 @@ import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.NestedScrollStateHandle
 import org.koitharu.kotatsu.core.ui.list.SectionedSelectionController
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
-import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.adapter.emptyHintAD
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
@@ -25,7 +24,7 @@ class ShelfAdapter(
 	sizeResolver: ItemSizeResolver,
 	selectionController: SectionedSelectionController<ShelfSectionModel>,
 	nestedScrollStateHandle: NestedScrollStateHandle,
-) : AsyncListDifferDelegationAdapter<ListModel>(ListModelDiffCallback), FastScroller.SectionIndexer {
+) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
 		val pool = RecyclerView.RecycledViewPool()

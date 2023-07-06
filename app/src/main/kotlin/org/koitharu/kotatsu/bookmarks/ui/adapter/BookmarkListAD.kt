@@ -28,8 +28,7 @@ fun bookmarkListAD(
 	binding.root.setOnLongClickListener(listener)
 
 	bind {
-		val data: Any = item.directImageUrl ?: item.toMangaPage()
-		binding.imageViewThumb.newImageRequest(lifecycleOwner, data)?.run {
+		binding.imageViewThumb.newImageRequest(lifecycleOwner, item.imageLoadData)?.run {
 			size(CoverSizeResolver(binding.imageViewThumb))
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)

@@ -2,8 +2,10 @@ package org.koitharu.kotatsu.favourites.ui.categories.select.adapter
 
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.databinding.ItemCheckableNewBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 fun mangaCategoryAD(
@@ -16,10 +18,10 @@ fun mangaCategoryAD(
 		clickListener.onItemClick(item, itemView)
 	}
 
-	bind {
+	bind { payloads ->
 		with(binding.root) {
 			text = item.name
-			isChecked = item.isChecked
+			setChecked(item.isChecked, ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED in payloads)
 		}
 	}
 }

@@ -2,13 +2,19 @@ package org.koitharu.kotatsu.settings.sources.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
-sealed interface SourceConfigItem {
+sealed interface SourceConfigItem : ListModel {
 
 	class Header(
 		@StringRes val titleResId: Int,
 	) : SourceConfigItem {
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is Header && other.titleResId == titleResId
+		}
 
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true
@@ -25,6 +31,18 @@ sealed interface SourceConfigItem {
 		val title: String?,
 		val isExpanded: Boolean,
 	) : SourceConfigItem {
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is LocaleGroup && other.localeId == localeId
+		}
+
+		override fun getChangePayload(previousState: ListModel): Any? {
+			return if (previousState is LocaleGroup && previousState.isExpanded != isExpanded) {
+				ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED
+			} else {
+				super.getChangePayload(previousState)
+			}
+		}
 
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true
@@ -53,6 +71,18 @@ sealed interface SourceConfigItem {
 		val summary: String?,
 		val isDraggable: Boolean,
 	) : SourceConfigItem {
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is SourceItem && other.source == source
+		}
+
+		override fun getChangePayload(previousState: ListModel): Any? {
+			return if (previousState is SourceItem && previousState.isEnabled != isEnabled) {
+				ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED
+			} else {
+				super.getChangePayload(previousState)
+			}
+		}
 
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true
@@ -83,6 +113,10 @@ sealed interface SourceConfigItem {
 		@StringRes val textResId: Int,
 	) : SourceConfigItem {
 
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is Tip && other.key == key
+		}
+
 		override fun equals(other: Any?): Boolean {
 			if (this === other) return true
 			if (javaClass != other?.javaClass) return false
@@ -104,5 +138,14 @@ sealed interface SourceConfigItem {
 		}
 	}
 
-	object EmptySearchResult : SourceConfigItem
+	object EmptySearchResult : SourceConfigItem {
+
+		override fun equals(other: Any?): Boolean {
+			return other === EmptySearchResult
+		}
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is EmptySearchResult
+		}
+	}
 }

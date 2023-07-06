@@ -1,13 +1,14 @@
 package org.koitharu.kotatsu.details.ui.model
 
 import android.text.format.DateUtils
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 
 class ChapterListItem(
 	val chapter: MangaChapter,
 	val flags: Int,
 	private val uploadDateMs: Long,
-) {
+) : ListModel {
 
 	var uploadDate: CharSequence? = null
 		private set
@@ -48,6 +49,21 @@ class ChapterListItem(
 
 	private fun hasFlag(flag: Int): Boolean {
 		return (flags and flag) == flag
+	}
+
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is ChapterListItem && chapter.id == other.chapter.id
+	}
+
+	override fun getChangePayload(previousState: ListModel): Any? {
+		if (previousState !is ChapterListItem) {
+			return super.getChangePayload(previousState)
+		}
+		return if (chapter == previousState.chapter && flags != previousState.flags) {
+			flags
+		} else {
+			super.getChangePayload(previousState)
+		}
 	}
 
 	override fun equals(other: Any?): Boolean {

@@ -12,24 +12,24 @@ import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import kotlin.coroutines.suspendCoroutine
 
-open class BaseListAdapter(
-	vararg delegates: AdapterDelegate<List<ListModel>>,
-) : AsyncListDifferDelegationAdapter<ListModel>(
-	AsyncDifferConfig.Builder(ListModelDiffCallback)
+open class BaseListAdapter<T : ListModel>(
+	vararg delegates: AdapterDelegate<List<T>>,
+) : AsyncListDifferDelegationAdapter<T>(
+	AsyncDifferConfig.Builder(ListModelDiffCallback<T>())
 		.setBackgroundThreadExecutor(Dispatchers.Default.limitedParallelism(2).asExecutor())
 		.build(),
 	*delegates,
-), FlowCollector<List<ListModel>> {
+), FlowCollector<List<T>> {
 
-	override suspend fun emit(value: List<ListModel>) = suspendCoroutine { cont ->
+	override suspend fun emit(value: List<T>) = suspendCoroutine { cont ->
 		setItems(value, ContinuationResumeRunnable(cont))
 	}
 
-	fun addListListener(listListener: ListListener<ListModel>) {
+	fun addListListener(listListener: ListListener<T>) {
 		differ.addListListener(listListener)
 	}
 
-	fun removeListListener(listListener: ListListener<ListModel>) {
+	fun removeListListener(listListener: ListListener<T>) {
 		differ.removeListListener(listListener)
 	}
 }

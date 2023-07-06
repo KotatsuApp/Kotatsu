@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
@@ -13,6 +12,7 @@ import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.core.util.ContinuationResumeRunnable
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import kotlin.coroutines.suspendCoroutine
 
 class FavouritesContainerAdapter(fragment: Fragment) :
@@ -22,7 +22,7 @@ class FavouritesContainerAdapter(fragment: Fragment) :
 
 	private val differ = AsyncListDiffer(
 		AdapterListUpdateCallback(this),
-		AsyncDifferConfig.Builder(DiffCallback())
+		AsyncDifferConfig.Builder(ListModelDiffCallback<FavouriteTabModel>())
 			.setBackgroundThreadExecutor(Dispatchers.Default.limitedParallelism(2).asExecutor())
 			.build(),
 	)
@@ -50,16 +50,5 @@ class FavouritesContainerAdapter(fragment: Fragment) :
 
 	override suspend fun emit(value: List<FavouriteTabModel>) = suspendCoroutine { cont ->
 		differ.submitList(value, ContinuationResumeRunnable(cont))
-	}
-
-	private class DiffCallback : DiffUtil.ItemCallback<FavouriteTabModel>() {
-
-		override fun areItemsTheSame(oldItem: FavouriteTabModel, newItem: FavouriteTabModel): Boolean {
-			return oldItem.id == newItem.id
-		}
-
-		override fun areContentsTheSame(oldItem: FavouriteTabModel, newItem: FavouriteTabModel): Boolean {
-			return oldItem == newItem
-		}
 	}
 }

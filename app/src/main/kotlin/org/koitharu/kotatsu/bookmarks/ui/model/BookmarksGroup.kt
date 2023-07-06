@@ -4,7 +4,6 @@ import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.util.areItemsEquals
 
 class BookmarksGroup(
 	val manga: Manga,
@@ -31,14 +30,12 @@ class BookmarksGroup(
 
 		if (manga != other.manga) return false
 
-		return bookmarks.areItemsEquals(other.bookmarks) { a, b ->
-			a.imageUrl == b.imageUrl
-		}
+		return bookmarks == other.bookmarks
 	}
 
 	override fun hashCode(): Int {
 		var result = manga.hashCode()
-		result = 31 * result + bookmarks.sumOf { it.imageUrl.hashCode() }
+		result = 31 * result + bookmarks.hashCode()
 		return result
 	}
 }
