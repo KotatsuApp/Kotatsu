@@ -439,4 +439,8 @@
     <string name="download_option_all_chapters">Semua bab dengan terjemahan %s</string>
     <string name="download_option_next_unread_n_chapters">Belum dibaca %s</string>
     <string name="download_option_manual_selection">Pilih bab secara manual</string>
+    <string name="custom_directory">Direktori khusus</string>
+    <string name="pick_custom_directory">Pilih direktori khusus</string>
+    <string name="no_access_to_file">Anda tidak memiliki akses ke file atau direktori ini</string>
+    <string name="local_manga_directories">Direktori manga</string>
 </resources>
