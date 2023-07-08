@@ -400,4 +400,10 @@
     <string name="more">Thêm nữa</string>
     <string name="no_thanks">Không, cảm ơn</string>
     <string name="download_option_all_chapters">Số chương đã được dịch: %s</string>
+    <string name="auth_not_supported_by">Đăng nhập trên %s không được hỗ trợ</string>
+    <string name="logged_in_as">Đăng nhập với tư cách %s</string>
+    <string name="removal_completed">Xoá hoàn thành</string>
+    <string name="download_slowdown">Làm chậm tải xuống</string>
+    <string name="local_manga_processing">Xử lý các truyện được lưu</string>
+    <string name="text_delete_local_manga_batch">Xoá vĩnh viễn những thứ được chọn khỏi thiết bị\?</string>
 </resources>
