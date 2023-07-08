@@ -108,7 +108,6 @@
     <string name="search_history_cleared">已清除</string>
     <string name="gestures_only">僅限手勢</string>
     <string name="notifications">通知</string>
-    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate"></string>
     <string name="download">下載</string>
     <string name="notifications_settings">通知設定</string>
     <string name="notification_sound">通知聲音</string>
@@ -229,7 +228,6 @@
     <string name="invalid_port_number">無效的連接埠編號</string>
     <string name="share_logs">分享日誌</string>
     <string name="clear_source_cookies_summary">僅清除指定網域的 cookie，大多數情況下會使授權會失效</string>
-    <string name="reader_info_pattern"></string>
     <string name="share">分享</string>
     <string name="create_shortcut">建立捷徑…</string>
     <string name="search_manga">搜尋漫畫</string>
@@ -383,7 +381,6 @@
     <string name="options">選項</string>
     <string name="removed_from_favourites">從最愛中移除</string>
     <string name="not_found_404">找不到內容或已刪除</string>
-    <string name="memory_usage_pattern"></string>
     <string name="incognito_mode">隱身模式</string>
     <string name="no_chapters">無章節</string>
     <string name="automatic_scroll">自動捲動</string>
