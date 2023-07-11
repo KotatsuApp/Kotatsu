@@ -17,8 +17,8 @@ android {
 		//TODO: update as soon as sources becomes available
 		//noinspection OldTargetApi
 		targetSdkVersion 33
-		versionCode 560
-		versionName '5.3.3'
+		versionCode 561
+		versionName '5.3.4'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -81,7 +81,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:07df5a81cf') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:06a043d290') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -122,7 +122,7 @@ dependencies {
 
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.11.0'
-	implementation 'com.squareup.okio:okio:3.3.0'
+	implementation 'com.squareup.okio:okio:3.4.0'
 
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2'
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
@@ -134,7 +134,7 @@ dependencies {
 
 	implementation 'io.coil-kt:coil-base:2.4.0'
 	implementation 'io.coil-kt:coil-svg:2.4.0'
-	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:1b19231b2f'
+	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:9b1d20be67'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
 
