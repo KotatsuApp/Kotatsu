@@ -440,4 +440,7 @@
     <string name="web_view_unavailable">WebView não disponível: verifique se o provedor WebView está instalado</string>
     <string name="port">Porta</string>
     <string name="address">Endereço</string>
+    <string name="pick_custom_directory">Escolha um diretório personalizado</string>
+    <string name="no_access_to_file">Você não tem acesso a esse arquivo ou diretório</string>
+    <string name="local_manga_directories">Diretórios locais de mangá</string>
 </resources>
