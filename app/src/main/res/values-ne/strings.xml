@@ -181,7 +181,7 @@
     <string name="about_app_translation">अनुवादन</string>
     <string name="auth_complete">अधिकृत</string>
     <string name="auth_not_supported_by">%s मा लग इन गर्न समर्थित छैन</string>
-    <string name="text_clear_cookies_prompt">%s मा लग इन गर्न समर्थित छैन</string>
+    <string name="text_clear_cookies_prompt">मा लग इन गर्न समर्थित छैन</string>
     <string name="state_finished">समाप्त भयो</string>
     <string name="state_ongoing">जारी छ</string>
     <string name="system_default">पूर्वनिर्धारित</string>
