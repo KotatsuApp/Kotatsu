@@ -15,6 +15,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import coil.ImageLoader
 import coil.request.ImageRequest
+import coil.request.SuccessResult
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -296,7 +297,7 @@ class DetailsFragment :
 	private fun loadCover(manga: Manga) {
 		val imageUrl = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }
 		val lastResult = CoilUtils.result(requireViewBinding().imageViewCover)
-		if (lastResult?.request?.data == imageUrl) {
+		if (lastResult is SuccessResult && lastResult.request.data == imageUrl) {
 			return
 		}
 		val request = ImageRequest.Builder(context ?: return)
