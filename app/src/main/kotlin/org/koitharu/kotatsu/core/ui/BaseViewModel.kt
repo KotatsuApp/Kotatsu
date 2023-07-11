@@ -34,7 +34,7 @@ abstract class BaseViewModel : ViewModel() {
 
 	val isLoading: StateFlow<Boolean>
 		get() = loadingCounter.map { it > 0 }
-			.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+			.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), loadingCounter.value > 0)
 
 	protected fun launchJob(
 		context: CoroutineContext = EmptyCoroutineContext,
