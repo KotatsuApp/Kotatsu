@@ -4,6 +4,14 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
+		android:id="@+id/action_app_update"
+		android:icon="@drawable/ic_app_update"
+		android:orderInCategory="1"
+		android:title="@string/update"
+		android:visible="false"
+		app:showAsAction="ifRoom" />
+
+	<item
 		android:id="@+id/action_incognito"
 		android:checkable="true"
 		android:orderInCategory="90"

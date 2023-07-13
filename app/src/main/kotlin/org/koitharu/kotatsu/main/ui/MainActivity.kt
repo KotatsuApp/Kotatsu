@@ -40,6 +40,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.OptionsMenuBadgeHelper
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.core.util.ext.hideKeyboard
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -63,6 +64,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.about.AppUpdateDialog
 import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import javax.inject.Inject
@@ -81,6 +83,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	private val searchSuggestionViewModel by viewModels<SearchSuggestionViewModel>()
 	private val closeSearchCallback = CloseSearchCallback()
 	private lateinit var navigationDelegate: MainNavigationDelegate
+	private lateinit var appUpdateBadge: OptionsMenuBadgeHelper
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
@@ -119,6 +122,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		navigationDelegate.addOnFragmentChangedListener(this)
 		navigationDelegate.onCreate()
 
+		appUpdateBadge = OptionsMenuBadgeHelper(viewBinding.toolbar, R.id.action_app_update)
+
 		onBackPressedDispatcher.addCallback(ExitCallback(this, viewBinding.container))
 		onBackPressedDispatcher.addCallback(navigationDelegate)
 		onBackPressedDispatcher.addCallback(closeSearchCallback)
@@ -132,6 +137,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.counters.observe(this, ::onCountersChanged)
+		viewModel.appUpdate.observe(this) { invalidateMenu() }
 		viewModel.isFeedAvailable.observe(this, ::onFeedAvailabilityChanged)
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 	}
@@ -158,6 +164,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 	override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
 		menu?.findItem(R.id.action_incognito)?.isChecked = searchSuggestionViewModel.isIncognitoModeEnabled.value
+		val hasAppUpdate = viewModel.appUpdate.value != null
+		menu?.findItem(R.id.action_app_update)?.isVisible = hasAppUpdate
+		appUpdateBadge.setBadgeVisible(hasAppUpdate)
 		return super.onPrepareOptionsMenu(menu)
 	}
 
@@ -177,6 +186,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		R.id.action_incognito -> {
 			viewModel.setIncognitoMode(!item.isChecked)
 			true
+		}
+
+		R.id.action_app_update -> {
+			viewModel.appUpdate.value?.also {
+				AppUpdateDialog(this)
+					.show(it)
+			} != null
 		}
 
 		else -> super.onOptionsItemSelected(item)

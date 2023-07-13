@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
@@ -46,12 +47,14 @@ class MainViewModel @Inject constructor(
 		valueProducer = { isTrackerEnabled },
 	)
 
+	val appUpdate = appUpdateRepository.observeAvailableUpdate()
+
 	val counters = combine(
-		appUpdateRepository.observeAvailableUpdate(),
 		trackingRepository.observeUpdatedMangaCount(),
-	) { appUpdate, tracks ->
+		flow { emit(settings.newSources) },
+	) { tracks, newSources ->
 		val a = SparseIntArray(2)
-		// a[R.id.nav_tools] = if (appUpdate != null) 1 else 0
+		a[R.id.nav_explore] = newSources.size
 		a[R.id.nav_feed] = tracks
 		a
 	}.stateIn(
