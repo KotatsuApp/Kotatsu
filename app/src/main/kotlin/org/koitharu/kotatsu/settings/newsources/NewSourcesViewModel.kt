@@ -4,6 +4,9 @@ import androidx.annotation.WorkerThread
 import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -19,18 +22,26 @@ class NewSourcesViewModel @Inject constructor(
 
 	private val initialList = settings.newSources
 	val sources = MutableStateFlow<List<SourceConfigItem>?>(null)
+	private var listUpdateJob: Job? = null
 
 	init {
-		launchJob(Dispatchers.Default) {
+		listUpdateJob = launchJob(Dispatchers.Default) {
 			sources.value = buildList()
 		}
 	}
 
 	fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
-		if (isEnabled) {
-			settings.hiddenSources -= item.source.name
-		} else {
-			settings.hiddenSources += item.source.name
+		val prevJob = listUpdateJob
+		listUpdateJob = launchJob(Dispatchers.Default) {
+			if (isEnabled) {
+				settings.hiddenSources -= item.source.name
+			} else {
+				settings.hiddenSources += item.source.name
+			}
+			prevJob?.cancelAndJoin()
+			val list = buildList()
+			ensureActive()
+			sources.value = list
 		}
 	}
 
@@ -61,3 +72,4 @@ class NewSourcesViewModel @Inject constructor(
 		}
 	}
 }
+
