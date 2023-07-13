@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:animateLayoutChanges="true"
+	android:orientation="vertical">
+
+	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
+		android:id="@+id/headerBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:title="@string/description" />
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
+			android:id="@+id/textView_description"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/margin_normal"
+			android:layout_marginEnd="@dimen/margin_normal"
+			android:lineSpacingMultiplier="1.2"
+			android:paddingBottom="@dimen/margin_normal"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			android:textIsSelectable="true"
+			tools:text="@tools:sample/lorem/random" />
+
+	</androidx.core.widget.NestedScrollView>
+</LinearLayout>

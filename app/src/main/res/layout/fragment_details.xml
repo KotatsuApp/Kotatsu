@@ -324,6 +324,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="8dp"
 			android:text="@string/show_all"
+			android:visibility="gone"
 			app:layout_constraintBaseline_toBaselineOf="@id/textView_related_title"
 			app:layout_constraintEnd_toEndOf="parent" />
 

@@ -191,6 +191,7 @@ class DetailsFragment :
 		} else {
 			requireViewBinding().textViewDescription.text = description
 		}
+		requireViewBinding().buttonDescriptionMore.isGone = description.isNullOrBlank()
 	}
 
 	private fun onLocalSizeChanged(size: Long) {
@@ -293,6 +294,10 @@ class DetailsFragment :
 					),
 					scaleUpActivityOptionsOf(v),
 				)
+			}
+
+			R.id.button_description_more -> {
+				DescriptionSheet.show(parentFragmentManager, viewModel.description.value ?: return)
 			}
 
 			R.id.button_scrobbling_more -> {
