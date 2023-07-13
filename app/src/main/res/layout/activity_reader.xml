@@ -93,8 +93,7 @@
 			android:id="@+id/progressBar"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:indeterminate="true"
-			app:trackCornerRadius="@dimen/mtrl_progress_indicator_full_rounded_corner_radius" />
+			android:indeterminate="true" />
 
 		<TextView
 			android:id="@+id/textView_loading"

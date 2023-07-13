@@ -45,6 +45,7 @@ import org.koitharu.kotatsu.core.util.WorkManagerHelper
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.core.util.progress.TimeLeftEstimator
 import org.koitharu.kotatsu.download.domain.DownloadState
@@ -60,7 +61,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -322,9 +322,9 @@ class DownloadWorker @AssistedInject constructor(
 		manga: Manga,
 		includedIds: LongArray?,
 	): List<MangaChapter> {
-		val chapters = checkNotNull(manga.chapters?.toMutableList()) {
+		val chapters = checkNotNull(manga.chapters) {
 			"Chapters list must not be null"
-		}
+		}.toMutableList()
 		if (includedIds != null) {
 			val chaptersIdsSet = includedIds.toMutableSet()
 			chapters.retainAll { x -> chaptersIdsSet.remove(x.id) }
@@ -399,6 +399,13 @@ class DownloadWorker @AssistedInject constructor(
 			WorkManagerHelper(workManager).deleteWork(id)
 		}
 
+		suspend fun delete(ids: Collection<UUID>) {
+			val wm = workManager
+			val helper = WorkManagerHelper(wm)
+			ids.forEach { id -> wm.cancelWorkById(id).await() }
+			helper.deleteWorks(ids)
+		}
+
 		suspend fun removeCompleted() {
 			val helper = WorkManagerHelper(workManager)
 			val finishedWorks = helper.getFinishedWorkInfosByTag(TAG)
@@ -406,10 +413,7 @@ class DownloadWorker @AssistedInject constructor(
 		}
 
 		suspend fun updateConstraints() {
-			val constraints = Constraints.Builder()
-				.setRequiresStorageNotLow(true)
-				.setRequiredNetworkType(if (settings.isDownloadsWiFiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
-				.build()
+			val constraints = createConstraints()
 			val helper = WorkManagerHelper(workManager)
 			val works = helper.getWorkInfosByTag(TAG)
 			for (work in works) {
@@ -418,6 +422,7 @@ class DownloadWorker @AssistedInject constructor(
 				}
 				val request = OneTimeWorkRequestBuilder<DownloadWorker>()
 					.setConstraints(constraints)
+					.addTag(TAG)
 					.setId(work.id)
 					.build()
 				helper.updateWork(request)
@@ -425,15 +430,15 @@ class DownloadWorker @AssistedInject constructor(
 		}
 
 		private suspend fun scheduleImpl(data: Collection<Data>) {
-			val constraints = Constraints.Builder()
-				.setRequiresStorageNotLow(true)
-				.setRequiredNetworkType(if (settings.isDownloadsWiFiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
-				.build()
+			if (data.isEmpty()) {
+				return
+			}
+			val constraints = createConstraints()
 			val requests = data.map { inputData ->
 				OneTimeWorkRequestBuilder<DownloadWorker>()
 					.setConstraints(constraints)
 					.addTag(TAG)
-					.keepResultsForAtLeast(7, TimeUnit.DAYS)
+					.keepResultsForAtLeast(30, TimeUnit.DAYS)
 					.setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
 					.setInputData(inputData)
 					.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
@@ -441,6 +446,10 @@ class DownloadWorker @AssistedInject constructor(
 			}
 			workManager.enqueue(requests).await()
 		}
+
+		private fun createConstraints() = Constraints.Builder()
+			.setRequiredNetworkType(if (settings.isDownloadsWiFiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
+			.build()
 	}
 
 	private companion object {

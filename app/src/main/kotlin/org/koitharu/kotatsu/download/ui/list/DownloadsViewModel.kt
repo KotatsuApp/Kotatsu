@@ -142,11 +142,13 @@ class DownloadsViewModel @Inject constructor(
 	fun remove(ids: Set<Long>) {
 		launchJob(Dispatchers.Default) {
 			val snapshot = works.value ?: return@launchJob
+			val uuids = HashSet<UUID>(ids.size)
 			for (work in snapshot) {
 				if (work.id.mostSignificantBits in ids) {
-					workScheduler.delete(work.id)
+					uuids.add(work.id)
 				}
 			}
+			workScheduler.delete(uuids)
 			onActionDone.call(ReversibleAction(R.string.downloads_removed, null))
 		}
 	}

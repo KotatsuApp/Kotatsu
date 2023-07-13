@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="items">
+        <item quantity="one">%1$d předmět</item>
+        <item quantity="few">%1$d předměty</item>
+        <item quantity="other">%1$d předměty</item>
+    </plurals>
+    <plurals name="new_chapters">
+        <item quantity="one">%1$d nová kapitola</item>
+        <item quantity="few">%1$d nové kapitoly</item>
+        <item quantity="other">%1$d nové kapitoly</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="one">%1$d kapitola</item>
+        <item quantity="few">%1$d kapitoly</item>
+        <item quantity="other">%1$d kapitoly</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="one">%1$d před minutou</item>
+        <item quantity="few">%1$d před pár minutami</item>
+        <item quantity="other">%1$d před několika minutami</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="one">%1$d před hodinou</item>
+        <item quantity="few">%1$d před pár hodinamy</item>
+        <item quantity="other">%1$d před několika hodinamy</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">%1$d před dnem</item>
+        <item quantity="few">%1$d před pár dny</item>
+        <item quantity="other">%1$d před několika dny</item>
+    </plurals>
+</resources>
