@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.explore.ui.adapter
 
+import android.graphics.Color
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
@@ -11,7 +13,9 @@ import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemExploreButtonsBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceGridBinding
@@ -21,6 +25,8 @@ import org.koitharu.kotatsu.explore.ui.model.ExploreButtons
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
 import org.koitharu.kotatsu.explore.ui.model.RecommendationsItem
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.model.Manga
+import com.google.android.material.R as materialR
 
 fun exploreButtonsAD(
 	clickListener: View.OnClickListener,
@@ -29,26 +35,37 @@ fun exploreButtonsAD(
 ) {
 
 	binding.buttonBookmarks.setOnClickListener(clickListener)
-	binding.buttonHistory.setOnClickListener(clickListener)
+	binding.buttonDownloads.setOnClickListener(clickListener)
 	binding.buttonLocal.setOnClickListener(clickListener)
-	//binding.buttonSuggestions.setOnClickListener(clickListener)
-	binding.buttonFavourites.setOnClickListener(clickListener)
-	//binding.buttonRandom.setOnClickListener(clickListener)
+	binding.buttonRandom.setOnClickListener(clickListener)
 
-	//bind {
-	//	binding.buttonSuggestions.isVisible = item.isSuggestionsEnabled
-	//}
+	bind {
+		if (item.isRandomLoading) {
+			val icon = CircularProgressDrawable(context)
+			icon.strokeWidth = context.resources.resolveDp(2f)
+			icon.setColorSchemeColors(context.getThemeColor(materialR.attr.colorPrimary, Color.DKGRAY))
+			binding.buttonRandom.icon = icon
+			icon.start()
+		} else {
+			binding.buttonRandom.setIconResource(R.drawable.ic_dice)
+		}
+		binding.buttonRandom.isClickable = !item.isRandomLoading
+	}
 }
 
 fun exploreRecommendationItemAD(
 	coil: ImageLoader,
 	clickListener: View.OnClickListener,
+	itemClickListener: OnListItemClickListener<Manga>,
 	lifecycleOwner: LifecycleOwner,
 ) = adapterDelegateViewBinding<RecommendationsItem, ListModel, ItemRecommendationBinding>(
-	{ layoutInflater, parent -> ItemRecommendationBinding.inflate(layoutInflater, parent, false) }
+	{ layoutInflater, parent -> ItemRecommendationBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	binding.buttonMore.setOnClickListener(clickListener)
+	binding.root.setOnClickListener { v ->
+		itemClickListener.onItemClick(item.manga, v)
+	}
 
 	bind {
 		binding.textViewTitle.text = item.manga.title

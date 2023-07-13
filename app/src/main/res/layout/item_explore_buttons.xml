@@ -8,22 +8,6 @@
 	android:paddingVertical="4dp">
 
 	<com.google.android.material.button.MaterialButton
-		android:id="@+id/button_history"
-		style="@style/Widget.Kotatsu.ExploreButton"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:text="@string/history"
-		app:icon="@drawable/ic_history" />
-
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/button_favourites"
-		style="@style/Widget.Kotatsu.ExploreButton"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:text="@string/favourites"
-		app:icon="@drawable/ic_heart_outline" />
-
-	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_local"
 		style="@style/Widget.Kotatsu.ExploreButton"
 		android:layout_width="0dp"
@@ -39,11 +23,27 @@
 		android:text="@string/bookmarks"
 		app:icon="@drawable/ic_bookmark" />
 
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/button_random"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/random"
+		app:icon="@drawable/ic_dice" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/button_downloads"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/downloads"
+		app:icon="@drawable/ic_download" />
+
 	<androidx.constraintlayout.helper.widget.Flow
 		android:id="@+id/flow"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		app:constraint_referenced_ids="button_history,button_favourites,button_local,button_bookmarks"
+		app:constraint_referenced_ids="button_local,button_bookmarks,button_random,button_downloads"
 		app:flow_horizontalGap="12dp"
 		app:flow_maxElementsWrap="@integer/explore_buttons_columns"
 		app:flow_verticalGap="8dp"

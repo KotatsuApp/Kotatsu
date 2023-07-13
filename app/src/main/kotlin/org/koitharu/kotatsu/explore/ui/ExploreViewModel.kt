@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.explore.ui
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -31,7 +33,8 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.model.MangaState
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import javax.inject.Inject
 
 private const val TIP_SUGGESTIONS = "suggestions"
@@ -39,6 +42,7 @@ private const val TIP_SUGGESTIONS = "suggestions"
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
 	private val settings: AppSettings,
+	private val suggestionRepository: SuggestionRepository,
 	private val exploreRepository: ExploreRepository,
 ) : BaseViewModel() {
 
@@ -51,6 +55,12 @@ class ExploreViewModel @Inject constructor(
 	val onOpenManga = MutableEventFlow<Manga>()
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val onShowSuggestionsTip = MutableEventFlow<Unit>()
+	private val isRandomLoading = MutableStateFlow(false)
+	private val recommendationDeferred = viewModelScope.async(Dispatchers.Default) {
+		runCatchingCancellable {
+			suggestionRepository.getRandom()
+		}.getOrNull()
+	}
 
 	val content: StateFlow<List<ListModel>> = isLoading.flatMapLatest { loading ->
 		if (loading) {
@@ -69,9 +79,17 @@ class ExploreViewModel @Inject constructor(
 	}
 
 	fun openRandom() {
-		launchLoadingJob(Dispatchers.Default) {
-			val manga = exploreRepository.findRandomManga(tagsLimit = 8)
-			onOpenManga.call(manga)
+		if (isRandomLoading.value) {
+			return
+		}
+		launchJob(Dispatchers.Default) {
+			isRandomLoading.value = true
+			try {
+				val manga = exploreRepository.findRandomManga(tagsLimit = 8)
+				onOpenManga.call(manga)
+			} finally {
+				isRandomLoading.value = false
+			}
 		}
 	}
 
@@ -94,39 +112,27 @@ class ExploreViewModel @Inject constructor(
 		settings.closeTip(TIP_SUGGESTIONS)
 	}
 
-	private fun createContentFlow() = settings.observe()
-		.filter {
-			it == AppSettings.KEY_SOURCES_HIDDEN ||
-				it == AppSettings.KEY_SOURCES_ORDER ||
-				it == AppSettings.KEY_SUGGESTIONS
-		}
-		.onStart { emit("") }
-		.map { settings.getMangaSources(includeHidden = false) }
-		.combine(isGrid) { content, grid -> buildList(content, grid) }
+	private fun createContentFlow() = combine(
+		observeSources(),
+		isGrid,
+		isRandomLoading,
+	) { content, grid, randomLoading ->
+		val recommendation = recommendationDeferred.await()
+		buildList(content, recommendation, grid, randomLoading)
+	}
 
-	private fun buildList(sources: List<MangaSource>, isGrid: Boolean): List<ListModel> {
+	private fun buildList(
+		sources: List<MangaSource>,
+		recommendation: Manga?,
+		isGrid: Boolean,
+		randomLoading: Boolean,
+	): List<ListModel> {
 		val result = ArrayList<ListModel>(sources.size + 4)
-		result += ExploreButtons()
-		result += ListHeader(R.string.suggestions, 0, null)
-		result += RecommendationsItem(
-			Manga(
-				0,
-				"Test",
-				"Test",
-				"Test",
-				"Test",
-				0f,
-				false,
-				"http://images.ctfassets.net/yadj1kx9rmg0/wtrHxeu3zEoEce2MokCSi/cf6f68efdcf625fdc060607df0f3baef/quwowooybuqbl6ntboz3.jpg",
-				emptySet(),
-				MangaState.ONGOING,
-				"Test",
-				"http://images.ctfassets.net/yadj1kx9rmg0/wtrHxeu3zEoEce2MokCSi/cf6f68efdcf625fdc060607df0f3baef/quwowooybuqbl6ntboz3.jpg",
-				"Test",
-				emptyList(),
-				MangaSource.DESUME,
-			),
-		) // TODO
+		result += ExploreButtons(randomLoading)
+		if (recommendation != null) {
+			result += ListHeader(R.string.suggestions, 0, null)
+			result += RecommendationsItem(recommendation)
+		}
 		if (sources.isNotEmpty()) {
 			result += ListHeader(R.string.remote_sources, R.string.manage, null)
 			sources.mapTo(result) { MangaSourceItem(it, isGrid) }
@@ -141,8 +147,17 @@ class ExploreViewModel @Inject constructor(
 		return result
 	}
 
+	private fun observeSources() = settings.observe()
+		.filter {
+			it == AppSettings.KEY_SOURCES_HIDDEN ||
+				it == AppSettings.KEY_SOURCES_ORDER ||
+				it == AppSettings.KEY_SUGGESTIONS
+		}
+		.onStart { emit("") }
+		.map { settings.getMangaSources(includeHidden = false) }
+
 	private fun getLoadingStateList() = listOf(
-		ExploreButtons(),
+		ExploreButtons(isRandomLoading.value),
 		LoadingState,
 	)
 }

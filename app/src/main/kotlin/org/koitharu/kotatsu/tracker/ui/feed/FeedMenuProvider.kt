@@ -8,12 +8,10 @@ import android.view.View
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.dialog.CheckBoxAlertDialog
-import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 
 class FeedMenuProvider(
 	private val snackbarHost: View,
-	private val anchorView: View?,
 	private val viewModel: FeedViewModel,
 ) : MenuProvider {
 
@@ -40,12 +38,6 @@ class FeedMenuProvider(
 				.setPositiveButton(R.string.clear) { _, isChecked ->
 					viewModel.clearFeed(isChecked)
 				}.create().show()
-			true
-		}
-
-		R.id.action_settings -> {
-			val intent = SettingsActivity.newTrackerSettingsIntent(context)
-			context.startActivity(intent)
 			true
 		}
 

@@ -72,7 +72,6 @@ class FeedFragment :
 		addMenuProvider(
 			FeedMenuProvider(
 				binding.recyclerView,
-				(activity as? BottomNavOwner)?.bottomNav,
 				viewModel,
 			),
 		)

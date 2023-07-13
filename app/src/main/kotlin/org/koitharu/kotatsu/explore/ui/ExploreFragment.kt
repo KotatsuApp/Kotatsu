@@ -27,13 +27,13 @@ import org.koitharu.kotatsu.core.ui.util.SpanSizeResolver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
-import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
-import org.koitharu.kotatsu.history.ui.HistoryActivity
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -65,7 +65,9 @@ class ExploreFragment :
 
 	override fun onViewBindingCreated(binding: FragmentExploreBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this)
+		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this) { manga, view ->
+			startActivity(DetailsActivity.newIntent(view.context, manga), scaleUpActivityOptionsOf(view))
+		}
 		with(binding.recyclerView) {
 			adapter = exploreAdapter
 			setHasFixedSize(true)
@@ -103,15 +105,14 @@ class ExploreFragment :
 
 	override fun onClick(v: View) {
 		val intent = when (v.id) {
-			R.id.button_history -> HistoryActivity.newIntent(v.context)
 			R.id.button_local -> MangaListActivity.newIntent(v.context, MangaSource.LOCAL)
 			R.id.button_bookmarks -> BookmarksActivity.newIntent(v.context)
 			R.id.button_more -> SuggestionsActivity.newIntent(v.context)
-			R.id.button_favourites -> FavouriteCategoriesActivity.newIntent(v.context)
-			//R.id.button_random -> {
-			//	viewModel.openRandom()
-			//	return
-			//}
+			R.id.button_downloads -> DownloadsActivity.newIntent(v.context)
+			R.id.button_random -> {
+				viewModel.openRandom()
+				return
+			}
 
 			else -> return
 		}

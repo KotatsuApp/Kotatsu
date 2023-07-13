@@ -9,18 +9,23 @@ import org.koitharu.kotatsu.list.ui.adapter.emptyHintAD
 import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.model.Manga
 
 class ExploreAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: ExploreListEventListener,
 	clickListener: OnListItemClickListener<MangaSourceItem>,
+	mangaClickListener: OnListItemClickListener<Manga>,
 ) : BaseListAdapter<ListModel>() {
 
 	init {
 		delegatesManager
 			.addDelegate(ITEM_TYPE_BUTTONS, exploreButtonsAD(listener))
-			.addDelegate(ITEM_TYPE_RECOMMENDATION, exploreRecommendationItemAD(coil, listener, lifecycleOwner))
+			.addDelegate(
+				ITEM_TYPE_RECOMMENDATION,
+				exploreRecommendationItemAD(coil, listener, mangaClickListener, lifecycleOwner),
+			)
 			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD(listener))
 			.addDelegate(ITEM_TYPE_SOURCE_LIST, exploreSourceListItemAD(coil, clickListener, lifecycleOwner))
 			.addDelegate(ITEM_TYPE_SOURCE_GRID, exploreSourceGridItemAD(coil, clickListener, lifecycleOwner))
