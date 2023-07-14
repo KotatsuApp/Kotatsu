@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ReaderBackground
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
@@ -24,23 +25,18 @@ class ReaderSettingsFragment :
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_reader)
 		findPreference<ListPreference>(AppSettings.KEY_READER_MODE)?.run {
-			entryValues = arrayOf(
-				ReaderMode.STANDARD,
-				ReaderMode.REVERSED,
-				ReaderMode.WEBTOON,
-			).names()
+			entryValues = ReaderMode.values().names()
 			setDefaultValueCompat(ReaderMode.STANDARD.name)
+		}
+		findPreference<ListPreference>(AppSettings.KEY_READER_BACKGROUND)?.run {
+			entryValues = ReaderBackground.values().names()
+			setDefaultValueCompat(ReaderBackground.DEFAULT.name)
 		}
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_SWITCHERS)?.run {
 			summaryProvider = MultiSummaryProvider(R.string.gestures_only)
 		}
 		findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.run {
-			entryValues = arrayOf(
-				ZoomMode.FIT_CENTER,
-				ZoomMode.FIT_HEIGHT,
-				ZoomMode.FIT_WIDTH,
-				ZoomMode.KEEP_START,
-			).names()
+			entryValues = ZoomMode.values().names()
 			setDefaultValueCompat(ZoomMode.FIT_CENTER.name)
 		}
 		updateReaderModeDependency()

@@ -18,10 +18,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
 import java.io.IOException
 
@@ -38,6 +38,10 @@ class PageHolderDelegate(
 	private var job: Job? = null
 	private var file: File? = null
 	private var error: Throwable? = null
+
+	init {
+		callback.onConfigChanged()
+	}
 
 	fun onBind(page: MangaPage) {
 		val prevJob = job
@@ -107,6 +111,7 @@ class PageHolderDelegate(
 		if (state == State.SHOWN) {
 			callback.onImageShowing(readerSettings)
 		}
+		callback.onConfigChanged()
 	}
 
 	private fun tryConvert(file: File, e: Exception) {
@@ -178,5 +183,7 @@ class PageHolderDelegate(
 		fun onImageShown()
 
 		fun onProgressChanged(progress: Int)
+
+		fun onConfigChanged()
 	}
 }

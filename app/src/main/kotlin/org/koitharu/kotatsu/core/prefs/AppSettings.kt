@@ -130,6 +130,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val readerAnimation: Boolean
 		get() = prefs.getBoolean(KEY_READER_ANIMATION, false)
 
+	val readerBackground: ReaderBackground
+		get() = prefs.getEnumValue(KEY_READER_BACKGROUND, ReaderBackground.DEFAULT)
+
 	val defaultReaderMode: ReaderMode
 		get() = prefs.getEnumValue(KEY_READER_MODE, ReaderMode.STANDARD)
 
@@ -454,6 +457,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SYNC_SETTINGS = "sync_settings"
 		const val KEY_READER_BAR = "reader_bar"
 		const val KEY_READER_SLIDER = "reader_slider"
+		const val KEY_READER_BACKGROUND = "reader_background"
 		const val KEY_SHORTCUTS = "dynamic_shortcuts"
 		const val KEY_READER_TAPS_LTR = "reader_taps_ltr"
 		const val KEY_LOCAL_LIST_ORDER = "local_order"

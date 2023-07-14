@@ -453,4 +453,9 @@
 	<string name="this_month">This month</string>
 	<string name="voice_search">Voice search</string>
 	<string name="related_manga">Related manga</string>
+	<string name="color_light">Light</string>
+	<string name="color_dark">Dark</string>
+	<string name="color_white">White</string>
+	<string name="color_black">Black</string>
+	<string name="background">Background</string>
 </resources>

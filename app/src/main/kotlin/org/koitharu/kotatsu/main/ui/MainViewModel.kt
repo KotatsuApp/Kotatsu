@@ -51,10 +51,10 @@ class MainViewModel @Inject constructor(
 
 	val counters = combine(
 		trackingRepository.observeUpdatedMangaCount(),
-		flow { emit(settings.newSources) },
+		flow { emit(settings.newSources.size) },
 	) { tracks, newSources ->
 		val a = SparseIntArray(2)
-		a[R.id.nav_explore] = newSources.size
+		a[R.id.nav_explore] = newSources
 		a[R.id.nav_feed] = tracks
 		a
 	}.stateIn(
