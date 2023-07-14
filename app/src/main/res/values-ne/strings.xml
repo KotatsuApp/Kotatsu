@@ -225,4 +225,8 @@
     <string name="various_languages">विभिन्न भाषाहरू</string>
     <string name="search_chapters">अध्याय खोज्नुहोस्</string>
     <string name="appearance">उपस्थिति</string>
+    <string name="history_shortcuts">हालैको मंगा सर्टकट देखाउनुहोस्</string>
+    <string name="reader_control_ltr_summary">दायाँ किनारामा ट्याप गर्नुहोस् वा दायाँ कुञ्जी थिच्दा सधैं अर्को पृष्ठमा स्विच हुन्छ</string>
+    <string name="reader_control_ltr">Ergonomic पाठक नियन्त्रण</string>
+    <string name="manga_error_description_pattern">त्रुटि विवरण:&lt;br&gt; &lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt; 1. &lt;a href=%2$s&gt;वेब ब्राउजरमा मंगा खोल्ने&lt;/a&gt; प्रयास गर्नुहोस् कि यो यसको स्रोतमा उपलब्ध छ&lt;br&gt; 2. निश्चित गर्नुहोस् कि तपाइँ &lt;a href=kotatsu://about&gt;Kotatsu को नवीनतम संस्करण&lt;/a&gt; प्रयोग गर्दै हुनुहुन्छ&lt;br&gt; 3. यदि यो उपलब्ध छ भने, विकासकर्ताहरूलाई त्रुटि रिपोर्ट पठाउनुहोस्।</string>
 </resources>
