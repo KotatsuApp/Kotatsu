@@ -389,7 +389,7 @@
     <string name="address">Địa chỉ</string>
     <string name="invert_colors">Đảo màu</string>
     <string name="invalid_port_number">Cổng không hợp lệ</string>
-    <string name="download_option_manual_selection">Chọn các chương bằng tay</string>
+    <string name="download_option_manual_selection">Chọn thủ công các chương</string>
     <string name="download_option_all_unread">Tất cả các chương chưa đọc</string>
     <string name="resume">Tiếp tục</string>
     <string name="clear_new_chapters_counters">Xoá thông tin về chương mới</string>
