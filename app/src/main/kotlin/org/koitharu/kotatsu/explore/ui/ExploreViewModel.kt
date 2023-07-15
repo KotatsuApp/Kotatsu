@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -31,13 +32,12 @@ import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import javax.inject.Inject
-
-private const val TIP_SUGGESTIONS = "suggestions"
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
@@ -116,9 +116,10 @@ class ExploreViewModel @Inject constructor(
 		observeSources(),
 		isGrid,
 		isRandomLoading,
-	) { content, grid, randomLoading ->
+		observeNewSources(),
+	) { content, grid, randomLoading, newSources ->
 		val recommendation = recommendationDeferred.await()
-		buildList(content, recommendation, grid, randomLoading)
+		buildList(content, recommendation, grid, randomLoading, newSources)
 	}
 
 	private fun buildList(
@@ -126,6 +127,7 @@ class ExploreViewModel @Inject constructor(
 		recommendation: Manga?,
 		isGrid: Boolean,
 		randomLoading: Boolean,
+		newSources: Set<MangaSource>,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(sources.size + 4)
 		result += ExploreButtons(randomLoading)
@@ -135,6 +137,16 @@ class ExploreViewModel @Inject constructor(
 		}
 		if (sources.isNotEmpty()) {
 			result += ListHeader(R.string.remote_sources, R.string.manage, null)
+			if (newSources.isNotEmpty()) {
+				result += TipModel(
+					key = TIP_NEW_SOURCES,
+					title = R.string.new_sources_text,
+					text = R.string.new_sources_text,
+					icon = R.drawable.ic_explore_normal,
+					primaryButtonText = R.string.manage,
+					secondaryButtonText = R.string.discard,
+				)
+			}
 			sources.mapTo(result) { MangaSourceItem(it, isGrid) }
 		} else {
 			result += EmptyHint(
@@ -160,4 +172,16 @@ class ExploreViewModel @Inject constructor(
 		ExploreButtons(isRandomLoading.value),
 		LoadingState,
 	)
+
+	private fun observeNewSources() = settings.observe()
+		.filter { it == AppSettings.KEY_SOURCES_ORDER || it == AppSettings.KEY_SOURCES_HIDDEN }
+		.onStart { emit("") }
+		.map { settings.newSources }
+		.distinctUntilChanged()
+
+	companion object {
+
+		private const val TIP_SUGGESTIONS = "suggestions"
+		const val TIP_NEW_SOURCES = "new_sources"
+	}
 }

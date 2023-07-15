@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.util.SpanSizeResolver
+import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -35,10 +36,12 @@ import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
 import org.koitharu.kotatsu.list.ui.model.ListHeader
+import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 import javax.inject.Inject
 
@@ -47,7 +50,7 @@ class ExploreFragment :
 	BaseFragment<FragmentExploreBinding>(),
 	RecyclerViewOwner,
 	ExploreListEventListener,
-	OnListItemClickListener<MangaSourceItem> {
+	OnListItemClickListener<MangaSourceItem>, TipView.OnButtonClickListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -65,7 +68,7 @@ class ExploreFragment :
 
 	override fun onViewBindingCreated(binding: FragmentExploreBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this) { manga, view ->
+		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this, this) { manga, view ->
 			startActivity(DetailsActivity.newIntent(view.context, manga), scaleUpActivityOptionsOf(view))
 		}
 		with(binding.recyclerView) {
@@ -101,6 +104,18 @@ class ExploreFragment :
 
 	override fun onListHeaderClick(item: ListHeader, view: View) {
 		startActivity(SettingsActivity.newManageSourcesIntent(view.context))
+	}
+
+	override fun onPrimaryButtonClick(tipView: TipView) {
+		when ((tipView.tag as? TipModel)?.key) {
+			ExploreViewModel.TIP_NEW_SOURCES -> NewSourcesDialogFragment.show(childFragmentManager)
+		}
+	}
+
+	override fun onSecondaryButtonClick(tipView: TipView) {
+		when ((tipView.tag as? TipModel)?.key) {
+			ExploreViewModel.TIP_NEW_SOURCES -> TODO()
+		}
 	}
 
 	override fun onClick(v: View) {

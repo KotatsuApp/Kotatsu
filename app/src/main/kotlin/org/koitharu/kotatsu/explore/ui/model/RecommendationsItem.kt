@@ -7,6 +7,8 @@ class RecommendationsItem(
 	val manga: Manga
 ) : ListModel {
 
+	val summary: String = manga.tags.joinToString { it.title }
+
 	override fun areItemsTheSame(other: ListModel): Boolean {
 		return other is RecommendationsItem
 	}

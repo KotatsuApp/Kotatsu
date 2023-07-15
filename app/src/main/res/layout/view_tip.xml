@@ -35,14 +35,15 @@
 		android:layout_height="wrap_content"
 		android:layout_marginTop="8dp"
 		android:layout_weight="2"
-		android:orientation="horizontal">
+		android:divider="@drawable/divider_transparent"
+		android:orientation="horizontal"
+		android:showDividers="middle">
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_primary"
 			style="@style/Widget.Material3.Button.UnelevatedButton"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginEnd="4dp"
 			android:layout_weight="1"
 			android:paddingHorizontal="8dp"
 			android:singleLine="true"
@@ -53,7 +54,6 @@
 			style="@style/Widget.Material3.Button.TonalButton"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="4dp"
 			android:layout_weight="1"
 			android:paddingHorizontal="8dp"
 			android:singleLine="true"
