@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import java.io.*
 
 class AppBackupAgent : BackupAgent() {
@@ -31,7 +32,8 @@ class AppBackupAgent : BackupAgent() {
 
 	override fun onFullBackup(data: FullBackupDataOutput) {
 		super.onFullBackup(data)
-		val file = createBackupFile(this, BackupRepository(MangaDatabase(applicationContext)))
+		val file =
+			createBackupFile(this, BackupRepository(MangaDatabase(applicationContext), AppSettings(applicationContext)))
 		try {
 			fullBackupFile(file, data)
 		} finally {
@@ -48,7 +50,7 @@ class AppBackupAgent : BackupAgent() {
 		mtime: Long
 	) {
 		if (destination?.name?.endsWith(".bk.zip") == true) {
-			restoreBackupFile(data.fileDescriptor, size, BackupRepository(MangaDatabase(applicationContext)))
+			restoreBackupFile(data.fileDescriptor, size, BackupRepository(MangaDatabase(applicationContext), AppSettings(applicationContext)))
 			destination.delete()
 		} else {
 			super.onRestoreFile(data, size, destination, type, mode, mtime)
@@ -62,6 +64,7 @@ class AppBackupAgent : BackupAgent() {
 			backup.put(repository.dumpHistory())
 			backup.put(repository.dumpCategories())
 			backup.put(repository.dumpFavourites())
+			backup.put(repository.dumpSettings())
 			backup.finish()
 			backup.file
 		}
@@ -81,6 +84,7 @@ class AppBackupAgent : BackupAgent() {
 				repository.restoreHistory(backup.getEntry(BackupEntry.HISTORY))
 				repository.restoreCategories(backup.getEntry(BackupEntry.CATEGORIES))
 				repository.restoreFavourites(backup.getEntry(BackupEntry.FAVOURITES))
+				repository.restoreSettings(backup.getEntry(BackupEntry.SETTINGS))
 			}
 		} finally {
 			backup.close()

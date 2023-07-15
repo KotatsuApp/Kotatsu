@@ -72,14 +72,17 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.GRID)
 		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE, value) }
 
-	val theme: Int
+	var theme: Int
 		get() = prefs.getString(KEY_THEME, null)?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+		set(value) = prefs.edit { putString(KEY_THEME, value.toString()) }
 
-	val colorScheme: ColorScheme
+	var colorScheme: ColorScheme
 		get() = prefs.getEnumValue(KEY_COLOR_THEME, ColorScheme.default)
+		set(value) = prefs.edit { putEnumValue(KEY_COLOR_THEME, value) }
 
-	val isAmoledTheme: Boolean
+	var isAmoledTheme: Boolean
 		get() = prefs.getBoolean(KEY_THEME_AMOLED, false)
+		set(value) = prefs.edit { putBoolean(KEY_THEME_AMOLED, value) }
 
 	var gridSize: Int
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
@@ -96,11 +99,12 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			}
 		}
 
-	val readerPageSwitch: Set<String>
+	var readerPageSwitch: Set<String>
 		get() = prefs.getStringSet(KEY_READER_SWITCHERS, null) ?: setOf(PAGE_SWITCH_TAPS)
-
-	val isReaderTapsAdaptive: Boolean
+		set(value) = prefs.edit { putStringSet(KEY_READER_SWITCHERS, value) }
+	var isReaderTapsAdaptive: Boolean
 		get() = !prefs.getBoolean(KEY_READER_TAPS_LTR, false)
+		set(value) = prefs.edit { putBoolean(KEY_READER_TAPS_LTR, value) }
 
 	var isTrafficWarningEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRAFFIC_WARNING, true)
@@ -110,41 +114,50 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_ALL_FAVOURITES_VISIBLE, true)
 		set(value) = prefs.edit { putBoolean(KEY_ALL_FAVOURITES_VISIBLE, value) }
 
-	val isTrackerEnabled: Boolean
+	var isTrackerEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRACKER_ENABLED, true)
+		set(value) = prefs.edit { putBoolean(KEY_TRACKER_ENABLED, value) }
 
-	val isTrackerNotificationsEnabled: Boolean
+	var isTrackerNotificationsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRACKER_NOTIFICATIONS, true)
+		set(value) = prefs.edit { putBoolean(KEY_TRACKER_NOTIFICATIONS, value) }
 
 	var notificationSound: Uri
 		get() = prefs.getString(KEY_NOTIFICATIONS_SOUND, null)?.toUriOrNull()
 			?: Settings.System.DEFAULT_NOTIFICATION_URI
 		set(value) = prefs.edit { putString(KEY_NOTIFICATIONS_SOUND, value.toString()) }
 
-	val notificationVibrate: Boolean
+	var notificationVibrate: Boolean
 		get() = prefs.getBoolean(KEY_NOTIFICATIONS_VIBRATE, false)
+		set(value) = prefs.edit { putBoolean(KEY_NOTIFICATIONS_VIBRATE, value) }
 
-	val notificationLight: Boolean
+	var notificationLight: Boolean
 		get() = prefs.getBoolean(KEY_NOTIFICATIONS_LIGHT, true)
+		set(value) = prefs.edit { putBoolean(KEY_NOTIFICATIONS_LIGHT, value) }
 
-	val readerAnimation: Boolean
+	var readerAnimation: Boolean
 		get() = prefs.getBoolean(KEY_READER_ANIMATION, false)
+		set(value) = prefs.edit { putBoolean(KEY_READER_ANIMATION, value) }
 
-	val defaultReaderMode: ReaderMode
+	var defaultReaderMode: ReaderMode
 		get() = prefs.getEnumValue(KEY_READER_MODE, ReaderMode.STANDARD)
+		set(value) = prefs.edit { putEnumValue(KEY_READER_MODE, value) }
 
-	val isReaderModeDetectionEnabled: Boolean
+	var isReaderModeDetectionEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_MODE_DETECT, true)
+		set(value) = prefs.edit { putBoolean(KEY_READER_MODE_DETECT, value) }
 
 	var isHistoryGroupingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_GROUPING, true)
 		set(value) = prefs.edit { putBoolean(KEY_HISTORY_GROUPING, value) }
 
-	val isReadingIndicatorsEnabled: Boolean
+	var isReadingIndicatorsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READING_INDICATORS, true)
+		set(value) = prefs.edit { putBoolean(KEY_READING_INDICATORS, value) }
 
-	val isHistoryExcludeNsfw: Boolean
+	var isHistoryExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_EXCLUDE_NSFW, false)
+		set(value) = prefs.edit { putBoolean(KEY_HISTORY_EXCLUDE_NSFW, value) }
 
 	var isIncognitoModeEnabled: Boolean
 		get() = prefs.getBoolean(KEY_INCOGNITO_MODE, false)
@@ -154,34 +167,41 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_REVERSE_CHAPTERS, false)
 		set(value) = prefs.edit { putBoolean(KEY_REVERSE_CHAPTERS, value) }
 
-	val zoomMode: ZoomMode
+	var zoomMode: ZoomMode
 		get() = prefs.getEnumValue(KEY_ZOOM_MODE, ZoomMode.FIT_CENTER)
+		set(value) = prefs.edit { putEnumValue(KEY_ZOOM_MODE, value) }
 
-	val trackSources: Set<String>
+	var trackSources: Set<String>
 		get() = prefs.getStringSet(KEY_TRACK_SOURCES, null) ?: arraySetOf(TRACK_FAVOURITES, TRACK_HISTORY)
+		set(value) = prefs.edit { putStringSet(KEY_TRACK_SOURCES, value) }
 
 	var appPassword: String?
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
 		set(value) = prefs.edit { if (value != null) putString(KEY_APP_PASSWORD, value) else remove(KEY_APP_PASSWORD) }
 
-	val isLoggingEnabled: Boolean
+	var isLoggingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_LOGGING_ENABLED, false)
+		set(value) = prefs.edit { putBoolean(KEY_LOGGING_ENABLED, value) }
 
 	var isBiometricProtectionEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PROTECT_APP_BIOMETRIC, true)
 		set(value) = prefs.edit { putBoolean(KEY_PROTECT_APP_BIOMETRIC, value) }
 
-	val isMirrorSwitchingAvailable: Boolean
+	var isMirrorSwitchingAvailable: Boolean
 		get() = prefs.getBoolean(KEY_MIRROR_SWITCHING, true)
+		set(value) = prefs.edit { putBoolean(KEY_MIRROR_SWITCHING, value) }
 
-	val isExitConfirmationEnabled: Boolean
+	var isExitConfirmationEnabled: Boolean
 		get() = prefs.getBoolean(KEY_EXIT_CONFIRM, false)
+		set(value) = prefs.edit { putBoolean(KEY_EXIT_CONFIRM, value) }
 
-	val isDynamicShortcutsEnabled: Boolean
+	var isDynamicShortcutsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SHORTCUTS, true)
+		set(value) = prefs.edit { putBoolean(KEY_SHORTCUTS, value) }
 
-	val isUnstableUpdatesAllowed: Boolean
+	var isUnstableUpdatesAllowed: Boolean
 		get() = prefs.getBoolean(KEY_UPDATES_UNSTABLE, false)
+		set(value) = prefs.edit { putBoolean(KEY_UPDATES_UNSTABLE, value) }
 
 	val isContentPrefetchEnabled: Boolean
 		get() {
@@ -262,23 +282,27 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			}
 		}
 
-	val isDownloadsSlowdownEnabled: Boolean
+	var isDownloadsSlowdownEnabled: Boolean
 		get() = prefs.getBoolean(KEY_DOWNLOADS_SLOWDOWN, false)
+		set(value) = prefs.edit { putBoolean(KEY_DOWNLOADS_SLOWDOWN, value) }
 
-	val isDownloadsWiFiOnly: Boolean
+	var isDownloadsWiFiOnly: Boolean
 		get() = prefs.getBoolean(KEY_DOWNLOADS_WIFI, false)
+		set(value) = prefs.edit { putBoolean(KEY_DOWNLOADS_WIFI, value) }
 
 	var isSuggestionsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS, false)
 		set(value) = prefs.edit { putBoolean(KEY_SUGGESTIONS, value) }
 
-	val isSuggestionsExcludeNsfw: Boolean
+	var isSuggestionsExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
+		set(value) = prefs.edit { putBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, value) }
 
-	val isSuggestionsNotificationAvailable: Boolean
+	var isSuggestionsNotificationAvailable: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_NOTIFICATIONS, true)
+		set(value) = prefs.edit { putBoolean(KEY_SUGGESTIONS_NOTIFICATIONS, value) }
 
-	val suggestionsTagsBlacklist: Set<String>
+	var suggestionsTagsBlacklist: Set<String>
 		get() {
 			val string = prefs.getString(KEY_SUGGESTIONS_EXCLUDE_TAGS, null)?.trimEnd(' ', ',')
 			if (string.isNullOrEmpty()) {
@@ -286,21 +310,27 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			}
 			return string.split(',').mapToSet { it.trim() }
 		}
+		set(value) = prefs.edit { putStringSet(KEY_SUGGESTIONS_EXCLUDE_TAGS, value) }
 
-	val isReaderBarEnabled: Boolean
+	var isReaderBarEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_BAR, true)
+		set(value) = prefs.edit { putBoolean(KEY_READER_BAR, value) }
 
-	val isReaderSliderEnabled: Boolean
+	var isReaderSliderEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_SLIDER, true)
+		set(value) = prefs.edit { putBoolean(KEY_READER_SLIDER, value) }
 
-	val isImagesProxyEnabled: Boolean
+	var isImagesProxyEnabled: Boolean
 		get() = prefs.getBoolean(KEY_IMAGES_PROXY, false)
+		set(value) = prefs.edit { putBoolean(KEY_IMAGES_PROXY, value) }
 
-	val dnsOverHttps: DoHProvider
+	var dnsOverHttps: DoHProvider
 		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
+		set(value) = prefs.edit { putEnumValue(KEY_DOH, value) }
 
-	val isSSLBypassEnabled: Boolean
+	var isSSLBypassEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SSL_BYPASS, false)
+		set(value) = prefs.edit { putBoolean(KEY_SSL_BYPASS, value) }
 
 	val proxyType: Proxy.Type
 		get() {
@@ -324,8 +354,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getEnumValue(KEY_LOCAL_LIST_ORDER, SortOrder.NEWEST)
 		set(value) = prefs.edit { putEnumValue(KEY_LOCAL_LIST_ORDER, value) }
 
-	val isWebtoonZoomEnable: Boolean
+	var isWebtoonZoomEnable: Boolean
 		get() = prefs.getBoolean(KEY_WEBTOON_ZOOM, true)
+		set(value) = prefs.edit { putBoolean(KEY_WEBTOON_ZOOM, value) }
+
 
 	@get:FloatRange(from = 0.0, to = 1.0)
 	var readerAutoscrollSpeed: Float

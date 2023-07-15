@@ -50,11 +50,14 @@ class RestoreViewModel @Inject constructor(
 				progress.value = 0f
 				result += repository.restoreHistory(backup.getEntry(BackupEntry.HISTORY))
 
-				progress.value = 0.3f
+				progress.value = 0.25f
 				result += repository.restoreCategories(backup.getEntry(BackupEntry.CATEGORIES))
 
-				progress.value = 0.6f
+				progress.value = 0.5f
 				result += repository.restoreFavourites(backup.getEntry(BackupEntry.FAVOURITES))
+
+				progress.value = 0.75f
+				result += repository.restoreSettings(backup.getEntry(BackupEntry.SETTINGS))
 
 				progress.value = 1f
 				onRestoreDone.call(result)

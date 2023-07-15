@@ -34,14 +34,14 @@ class JsonDeserializer(private val json: JSONObject) {
 		largeCoverUrl = json.getStringOrNull("large_cover_url"),
 		state = json.getStringOrNull("state"),
 		author = json.getStringOrNull("author"),
-		source = json.getString("source")
+		source = json.getString("source"),
 	)
 
 	fun toTagEntity() = TagEntity(
 		id = json.getLong("id"),
 		title = json.getString("title"),
 		key = json.getString("key"),
-		source = json.getString("source")
+		source = json.getString("source"),
 	)
 
 	fun toHistoryEntity() = HistoryEntity(
