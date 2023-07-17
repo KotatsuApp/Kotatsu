@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.postDelayed
 import androidx.lifecycle.Lifecycle
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
@@ -24,6 +26,7 @@ import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.awaitStateAtLeast
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
@@ -60,6 +63,9 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 
 	@Inject
 	lateinit var appShortcutManager: AppShortcutManager
+
+	@Inject
+	lateinit var activityRecreationHandle: ActivityRecreationHandle
 
 	private val backupSelectCall = registerForActivityResult(
 		ActivityResultContracts.OpenDocument(),
@@ -180,6 +186,19 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 				findPreference<TwoStatePreference>(AppSettings.KEY_PROTECT_APP)
 					?.isChecked = !settings.appPassword.isNullOrEmpty()
 			}
+
+			AppSettings.KEY_THEME -> {
+				AppCompatDelegate.setDefaultNightMode(settings.theme)
+			}
+
+			AppSettings.KEY_COLOR_THEME,
+			AppSettings.KEY_THEME_AMOLED -> {
+				postRestart()
+			}
+
+			AppSettings.KEY_APP_LOCALE -> {
+				AppCompatDelegate.setApplicationLocales(settings.appLocales)
+			}
 		}
 	}
 
@@ -273,4 +292,11 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 				}
 			}.show()
 	}
+
+	private fun postRestart() {
+		view?.postDelayed(400) {
+			activityRecreationHandle.recreateAll()
+		}
+	}
+
 }

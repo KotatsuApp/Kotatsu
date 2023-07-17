@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.core.view.postDelayed
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -13,20 +12,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
-import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
-	@Inject
-	lateinit var activityRecreationHandle: ActivityRecreationHandle
 
 	private val viewModel: RestoreViewModel by viewModels()
 
@@ -76,7 +71,6 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 			result.isAllSuccess -> {
 				builder.setTitle(R.string.data_restored)
 					.setMessage(R.string.data_restored_success)
-				postRestart()
 			}
 
 			result.isAllFailed -> builder.setTitle(R.string.error)
@@ -94,11 +88,6 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 		dismiss()
 	}
 
-	private fun postRestart() {
-		view?.postDelayed(400) {
-			activityRecreationHandle.recreateAll()
-		}
-	}
 
 	companion object {
 

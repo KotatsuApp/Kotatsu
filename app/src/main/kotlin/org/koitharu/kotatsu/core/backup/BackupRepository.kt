@@ -1,28 +1,14 @@
 package org.koitharu.kotatsu.core.backup
 
-import android.provider.Settings
 import androidx.room.withTransaction
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.model.ZoomMode
-import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.ColorScheme
-import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.core.util.ext.getEnumValue
-import org.koitharu.kotatsu.core.util.ext.takeIfReadable
-import org.koitharu.kotatsu.core.util.ext.toUriOrNull
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.json.JSONIterator
-import org.koitharu.kotatsu.parsers.util.json.getFloatOrDefault
-import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
-import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import java.io.File
 import javax.inject.Inject
 
 private const val PAGE_SIZE = 10
@@ -85,9 +71,9 @@ class BackupRepository @Inject constructor(
 		return entry
 	}
 
-	suspend fun dumpSettings(): BackupEntry {
+	fun dumpSettings(): BackupEntry {
 		val entry = BackupEntry(BackupEntry.SETTINGS, JSONArray())
-		val json = JsonSerializer(settings).toJson()
+		val json = JsonSerializer(settings.getAllValues()).toJson()
 		entry.data.put(json)
 		return entry
 	}
@@ -157,60 +143,7 @@ class BackupRepository @Inject constructor(
 		val result = CompositeResult()
 		for (item in entry.data.JSONIterator()) {
 			result += runCatchingCancellable {
-				settings.listMode = item.getString("list_mode").getEnumValue(ListMode.GRID)
-				settings.theme = item.getInt("theme")
-				settings.colorScheme = item.getString("color_scheme").getEnumValue(ColorScheme.default)
-				settings.isAmoledTheme = item.getBoolean("is_amoled_theme")
-				settings.gridSize = item.getInt("grid_size")
-				settings.readerPageSwitch =
-					item.getJSONArray("reader_page_switch").mapJSONToSet<String, String> { it }
-				settings.isReaderTapsAdaptive = item.getBoolean("is_reader_taps_adaptive")
-				settings.isTrafficWarningEnabled = item.getBoolean("is_traffic_waring_enabled")
-				settings.isAllFavouritesVisible = item.getBoolean("is_all_favourites_visible")
-				settings.isTrackerEnabled = item.getBoolean("is_tracker_enabled")
-				settings.isTrackerNotificationsEnabled = item.getBoolean("is_tracker_notifications_enabled")
-				settings.notificationSound =
-					item.getString("notification_sound").toUriOrNull() ?: Settings.System.DEFAULT_NOTIFICATION_URI
-				settings.notificationVibrate = item.getBoolean("notification_vibrate")
-				settings.notificationLight = item.getBoolean("notification_light")
-				settings.readerAnimation = item.getBoolean("reader_animation")
-				settings.defaultReaderMode = item.getString("default_reader_node").getEnumValue(ReaderMode.STANDARD)
-				settings.isReaderModeDetectionEnabled = item.getBoolean("is_reader_mode_detection_enabled")
-				settings.isHistoryGroupingEnabled = item.getBoolean("is_history_grouping_enabled")
-				settings.isReadingIndicatorsEnabled = item.getBoolean("is_reading_indicators_enabled")
-				settings.isHistoryExcludeNsfw = item.getBoolean("is_history_exclude_nsfw")
-				settings.isIncognitoModeEnabled = item.getBoolean("is_incognito_mode_enabled")
-				settings.chaptersReverse = item.getBoolean("chapters_reverse")
-				settings.zoomMode = item.getString("zoom_mode").getEnumValue(ZoomMode.FIT_CENTER)
-				settings.trackSources = item.getJSONArray("track_sources").mapJSONToSet<String, String> { it }
-				settings.isLoggingEnabled = item.getBoolean("is_logging_enabled")
-				settings.isMirrorSwitchingAvailable = item.getBoolean("is_mirror_switching_available")
-				settings.isExitConfirmationEnabled = item.getBoolean("is_exit_confirmation_enabled")
-				settings.isDynamicShortcutsEnabled = item.getBoolean("is_dynamic_shortcuts_enabled")
-				settings.isUnstableUpdatesAllowed = item.getBoolean("is_unstable_updates_allowed")
-				settings.sourcesOrder = item.getJSONArray("sources_order").mapJSONToArray<String, String> { it }
-				settings.hiddenSources = item.getJSONArray("hidden_sources").mapJSONToSet<String, String> { it }
-				settings.isSourcesGridMode = item.getBoolean("is_sources_grid_mode")
-				settings.userSpecifiedMangaDirectories = item.getJSONArray("user_specified_manga_directions")
-					.mapJSONToSet<String, String> { it }.mapNotNullToSet { File(it).takeIfReadable() }
-				File(item.getStringOrNull("manga_storage_dir") ?: "").takeIfReadable()?.let {
-					settings.mangaStorageDir = it
-				}
-				settings.isDownloadsSlowdownEnabled = item.getBoolean("is_downloads_slowdown_enabled")
-				settings.isDownloadsWiFiOnly = item.getBoolean("is_downloads_wifi_only")
-				settings.isSuggestionsEnabled = item.getBoolean("is_suggestions_enabled")
-				settings.isSuggestionsExcludeNsfw = item.getBoolean("is_suggestions_exclude_nsfw")
-				settings.isSuggestionsNotificationAvailable = item.getBoolean("is_suggestions_notification_available")
-				settings.suggestionsTagsBlacklist =
-					item.getJSONArray("suggestions_tags_blacklist").mapJSONToSet<String, String> { it }
-				settings.isReaderBarEnabled = item.getBoolean("is_reader_bar_enabled")
-				settings.isReaderSliderEnabled = item.getBoolean("is_reader_slider_enabled")
-				settings.isImagesProxyEnabled = item.getBoolean("is_images_proxy_enabled")
-				settings.dnsOverHttps = item.getString("dns_over_https").getEnumValue(DoHProvider.NONE)
-				settings.isSSLBypassEnabled = item.getBoolean("is_ssl_bypass_enabled")
-				settings.localListOrder = item.getString("local_list_order").getEnumValue(SortOrder.NEWEST)
-				settings.isWebtoonZoomEnable = item.getBoolean("is_webtoon_zoom_enabled")
-				settings.readerAutoscrollSpeed = item.getFloatOrDefault("reader_autoscroll_speed", 0f)
+				settings.restoreValuesFromMap(JsonDeserializer(item).toMap())
 			}
 		}
 		return result

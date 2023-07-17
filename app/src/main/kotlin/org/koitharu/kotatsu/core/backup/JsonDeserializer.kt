@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.backup
 
+import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
@@ -65,4 +66,29 @@ class JsonDeserializer(private val json: JSONObject) {
 		isVisibleInLibrary = json.getBooleanOrDefault("show_in_lib", true),
 		deletedAt = 0L,
 	)
+
+	fun toMap(): Map<String, Any?> {
+		val map = mutableMapOf<String, Any?>()
+		val keys = json.keys()
+
+		while (keys.hasNext()) {
+			val key = keys.next()
+			val value = json.get(key)
+			map[key] = value
+		}
+
+		return map
+	}
 }
+
+
+fun <K, T> JSONArray.mapJSONToSet(block: (K) -> T): Set<T> {
+	val len = length()
+	val result = androidx.collection.ArraySet<T>(len)
+	for (i in 0 until len) {
+		val jo = get(i) as K
+		result.add(block(jo))
+	}
+	return result
+}
+
