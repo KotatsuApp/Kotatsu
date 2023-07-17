@@ -13,7 +13,7 @@ enum class ScoreFormat {
 
 		POINT_5 -> score / 5f
 		POINT_3 -> score / 3f
-	}
+	}.coerceIn(0f, 1f)
 
 	companion object {
 
