@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.favourites.data.toMangaList
@@ -52,8 +51,8 @@ class ShelfContentObserveUseCase @Inject constructor(
 	private fun observeLocalManga(sortOrder: SortOrder, limit: Int): Flow<List<Manga>> {
 		return combine<LocalManga?, String, Any?>(
 			localStorageChanges,
-			settings.observe().filter { it == AppSettings.KEY_LOCAL_MANGA_DIRS }
-		) { _, _ -> Any() }
+			settings.observe().filter { it == AppSettings.KEY_LOCAL_MANGA_DIRS }.onStart { emit("") }
+		) { a, b -> a to b }
 			.onStart { emit(null) }
 			.mapLatest {
 				localMangaRepository.getList(0, null, sortOrder).take(limit)
