@@ -16,8 +16,29 @@ interface ContentCache {
 
 	fun putPages(source: MangaSource, url: String, pages: SafeDeferred<List<MangaPage>>)
 
-	data class Key(
+	suspend fun getRelatedManga(source: MangaSource, url: String): List<Manga>?
+
+	fun putRelatedManga(source: MangaSource, url: String, related: SafeDeferred<List<Manga>>)
+
+	class Key(
 		val source: MangaSource,
 		val url: String,
-	)
+	) {
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+
+			other as Key
+
+			if (source != other.source) return false
+			return url == other.url
+		}
+
+		override fun hashCode(): Int {
+			var result = source.hashCode()
+			result = 31 * result + url.hashCode()
+			return result
+		}
+	}
 }

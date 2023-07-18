@@ -95,7 +95,12 @@ class RemoteMangaRepository(
 	suspend fun getFavicons(): Favicons = parser.getFavicons()
 
 	override suspend fun getRelated(seed: Manga): List<Manga> {
-		return parser.getRelatedManga(seed).filterNot { it.id == seed.id }
+		cache.getRelatedManga(source, seed.url)?.let { return it }
+		val related = asyncSafe {
+			parser.getRelatedManga(seed).filterNot { it.id == seed.id }
+		}
+		cache.putRelatedManga(source, seed.url, related)
+		return related.await()
 	}
 
 	fun getAuthProvider(): MangaParserAuthProvider? = parser as? MangaParserAuthProvider

@@ -16,6 +16,7 @@ class MemoryContentCache(application: Application) : ContentCache, ComponentCall
 
 	private val detailsCache = ExpiringLruCache<SafeDeferred<Manga>>(4, 5, TimeUnit.MINUTES)
 	private val pagesCache = ExpiringLruCache<SafeDeferred<List<MangaPage>>>(4, 10, TimeUnit.MINUTES)
+	private val relatedMangaCache = ExpiringLruCache<SafeDeferred<List<Manga>>>(4, 10, TimeUnit.MINUTES)
 
 	override val isCachingEnabled: Boolean = true
 
@@ -35,6 +36,14 @@ class MemoryContentCache(application: Application) : ContentCache, ComponentCall
 		pagesCache[ContentCache.Key(source, url)] = pages
 	}
 
+	override suspend fun getRelatedManga(source: MangaSource, url: String): List<Manga>? {
+		return relatedMangaCache[ContentCache.Key(source, url)]?.awaitOrNull()
+	}
+
+	override fun putRelatedManga(source: MangaSource, url: String, related: SafeDeferred<List<Manga>>) {
+		relatedMangaCache[ContentCache.Key(source, url)] = related
+	}
+
 	override fun onConfigurationChanged(newConfig: Configuration) = Unit
 
 	override fun onLowMemory() = Unit
@@ -42,6 +51,7 @@ class MemoryContentCache(application: Application) : ContentCache, ComponentCall
 	override fun onTrimMemory(level: Int) {
 		trimCache(detailsCache, level)
 		trimCache(pagesCache, level)
+		trimCache(relatedMangaCache, level)
 	}
 
 	private fun trimCache(cache: ExpiringLruCache<*>, level: Int) {
