@@ -13,7 +13,9 @@ import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.json.JSONArray
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.backup.mapJSONToSet
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
@@ -379,6 +381,23 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	}
 
 	fun observe() = prefs.observe()
+
+	fun getAllValues(): Map<String, *> = prefs.all
+
+	fun restoreValuesFromMap(m: Map<String, *>) {
+		prefs.edit {
+			m.forEach { e ->
+				when (e.value) {
+					is Boolean -> putBoolean(e.key, e.value as Boolean)
+					is Int -> putInt(e.key, e.value as Int)
+					is Long -> putLong(e.key, e.value as Long)
+					is Float -> putFloat(e.key, e.value as Float)
+					is String -> putString(e.key, e.value as String)
+					is JSONArray -> putStringSet(e.key, (e.value as JSONArray).mapJSONToSet<String, String> { it })
+				}
+			}
+		}
+	}
 
 	private fun isBackgroundNetworkRestricted(): Boolean {
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

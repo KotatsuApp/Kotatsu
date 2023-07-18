@@ -22,6 +22,7 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
+
 	private val viewModel: RestoreViewModel by viewModels()
 
 	override fun onCreateViewBinding(
@@ -67,8 +68,10 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 	private fun onRestoreDone(result: CompositeResult) {
 		val builder = MaterialAlertDialogBuilder(context ?: return)
 		when {
-			result.isAllSuccess -> builder.setTitle(R.string.data_restored)
-				.setMessage(R.string.data_restored_success)
+			result.isAllSuccess -> {
+				builder.setTitle(R.string.data_restored)
+					.setMessage(R.string.data_restored_success)
+			}
 
 			result.isAllFailed -> builder.setTitle(R.string.error)
 				.setMessage(
@@ -84,6 +87,7 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 			.show()
 		dismiss()
 	}
+
 
 	companion object {
 

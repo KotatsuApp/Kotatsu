@@ -5,6 +5,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.json.JSONIterator
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -12,7 +13,10 @@ import javax.inject.Inject
 
 private const val PAGE_SIZE = 10
 
-class BackupRepository @Inject constructor(private val db: MangaDatabase) {
+class BackupRepository @Inject constructor(
+	private val db: MangaDatabase,
+	private val settings: AppSettings,
+) {
 
 	suspend fun dumpHistory(): BackupEntry {
 		var offset = 0
@@ -64,6 +68,13 @@ class BackupRepository @Inject constructor(private val db: MangaDatabase) {
 				entry.data.put(json)
 			}
 		}
+		return entry
+	}
+
+	fun dumpSettings(): BackupEntry {
+		val entry = BackupEntry(BackupEntry.SETTINGS, JSONArray())
+		val json = JsonSerializer(settings.getAllValues()).toJson()
+		entry.data.put(json)
 		return entry
 	}
 
@@ -123,6 +134,16 @@ class BackupRepository @Inject constructor(private val db: MangaDatabase) {
 					db.mangaDao.upsert(manga, tags)
 					db.favouritesDao.upsert(favourite)
 				}
+			}
+		}
+		return result
+	}
+
+	fun restoreSettings(entry: BackupEntry): CompositeResult {
+		val result = CompositeResult()
+		for (item in entry.data.JSONIterator()) {
+			result += runCatchingCancellable {
+				settings.restoreValuesFromMap(JsonDeserializer(item).toMap())
 			}
 		}
 		return result

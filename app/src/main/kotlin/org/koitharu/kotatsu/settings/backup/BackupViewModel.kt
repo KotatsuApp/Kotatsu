@@ -29,13 +29,15 @@ class BackupViewModel @Inject constructor(
 				progress.value = 0f
 				backup.put(repository.dumpHistory())
 
-				progress.value = 0.3f
+				progress.value = 0.25f
 				backup.put(repository.dumpCategories())
 
-				progress.value = 0.6f
+				progress.value = 0.5f
 				backup.put(repository.dumpFavourites())
 
-				progress.value = 0.9f
+				progress.value = 0.75f
+				backup.put(repository.dumpSettings())
+
 				backup.finish()
 				progress.value = 1f
 				backup.close()

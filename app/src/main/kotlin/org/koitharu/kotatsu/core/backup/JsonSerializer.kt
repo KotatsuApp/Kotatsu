@@ -15,7 +15,7 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("category_id", e.categoryId)
 			put("sort_key", e.sortKey)
 			put("created_at", e.createdAt)
-		}
+		},
 	)
 
 	constructor(e: FavouriteCategoryEntity) : this(
@@ -27,7 +27,7 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("order", e.order)
 			put("track", e.track)
 			put("show_in_lib", e.isVisibleInLibrary)
-		}
+		},
 	)
 
 	constructor(e: HistoryEntity) : this(
@@ -39,7 +39,7 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("page", e.page)
 			put("scroll", e.scroll)
 			put("percent", e.percent)
-		}
+		},
 	)
 
 	constructor(e: TagEntity) : this(
@@ -48,7 +48,7 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("title", e.title)
 			put("key", e.key)
 			put("source", e.source)
-		}
+		},
 	)
 
 	constructor(e: MangaEntity) : this(
@@ -65,7 +65,11 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("state", e.state)
 			put("author", e.author)
 			put("source", e.source)
-		}
+		},
+	)
+
+	constructor(m: Map<String, *>) : this(
+		JSONObject(m),
 	)
 
 	fun toJson(): JSONObject = json
