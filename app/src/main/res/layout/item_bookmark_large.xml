@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	style="@style/Widget.Kotatsu.CardView.Outlined"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
+	tools:layout_width="140dp">
+
+	<org.koitharu.kotatsu.core.ui.widgets.CoverImageView
+		android:id="@+id/imageView_thumb"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:scaleType="centerCrop"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+		tools:ignore="ContentDescription"
+		tools:src="@tools:sample/backgrounds/scenic[5]" />
+
+	<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+		android:id="@+id/progressView"
+		android:layout_width="@dimen/card_indicator_size"
+		android:layout_height="@dimen/card_indicator_size"
+		android:layout_gravity="bottom|end"
+		android:layout_margin="@dimen/card_indicator_offset" />
+
+</com.google.android.material.card.MaterialCardView>

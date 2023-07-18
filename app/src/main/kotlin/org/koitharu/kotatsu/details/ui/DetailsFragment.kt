@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
+import org.koitharu.kotatsu.bookmarks.ui.sheet.BookmarksSheet
 import org.koitharu.kotatsu.core.model.countChaptersByBranch
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
@@ -302,6 +303,10 @@ class DetailsFragment :
 
 			R.id.button_scrobbling_more -> {
 				ScrobblingSelectorSheet.show(parentFragmentManager, manga, null)
+			}
+
+			R.id.button_bookmarks_more -> {
+				BookmarksSheet.show(parentFragmentManager, manga)
 			}
 		}
 	}

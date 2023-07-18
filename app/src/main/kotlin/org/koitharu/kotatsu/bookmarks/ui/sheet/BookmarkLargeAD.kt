@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.bookmarks.ui.adapter
+package org.koitharu.kotatsu.bookmarks.ui.sheet
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
@@ -13,14 +13,15 @@ import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
-import org.koitharu.kotatsu.databinding.ItemBookmarkBinding
+import org.koitharu.kotatsu.databinding.ItemBookmarkLargeBinding
+import org.koitharu.kotatsu.list.ui.model.ListModel
 
-fun bookmarkListAD(
+fun bookmarkLargeAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: OnListItemClickListener<Bookmark>,
-) = adapterDelegateViewBinding<Bookmark, Bookmark, ItemBookmarkBinding>(
-	{ inflater, parent -> ItemBookmarkBinding.inflate(inflater, parent, false) },
+) = adapterDelegateViewBinding<Bookmark, ListModel, ItemBookmarkLargeBinding>(
+	{ inflater, parent -> ItemBookmarkLargeBinding.inflate(inflater, parent, false) },
 ) {
 	val listener = AdapterDelegateClickListenerAdapter(this, clickListener)
 
@@ -38,6 +39,7 @@ fun bookmarkListAD(
 			source(item.manga.source)
 			enqueueWith(coil)
 		}
+		binding.progressView.percent = item.percent
 	}
 
 	onViewRecycled {
