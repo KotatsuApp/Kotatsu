@@ -14,7 +14,11 @@ import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import java.io.*
+import java.io.File
+import java.io.FileDescriptor
+import java.io.FileInputStream
+import java.io.InputStream
+import java.io.OutputStream
 
 class AppBackupAgent : BackupAgent() {
 
@@ -81,10 +85,10 @@ class AppBackupAgent : BackupAgent() {
 		val backup = BackupZipInput(tempFile)
 		try {
 			runBlocking {
-				repository.restoreHistory(backup.getEntry(BackupEntry.HISTORY))
-				repository.restoreCategories(backup.getEntry(BackupEntry.CATEGORIES))
-				repository.restoreFavourites(backup.getEntry(BackupEntry.FAVOURITES))
-				repository.restoreSettings(backup.getEntry(BackupEntry.SETTINGS))
+				backup.getEntry(BackupEntry.HISTORY)?.let { repository.restoreHistory(it) }
+				backup.getEntry(BackupEntry.CATEGORIES)?.let { repository.restoreCategories(it) }
+				backup.getEntry(BackupEntry.FAVOURITES)?.let { repository.restoreFavourites(it) }
+				backup.getEntry(BackupEntry.SETTINGS)?.let { repository.restoreSettings(it) }
 			}
 		} finally {
 			backup.close()

@@ -73,7 +73,12 @@ class BackupRepository @Inject constructor(
 
 	fun dumpSettings(): BackupEntry {
 		val entry = BackupEntry(BackupEntry.SETTINGS, JSONArray())
-		val json = JsonSerializer(settings.getAllValues()).toJson()
+		val settingsDump = settings.getAllValues().toMutableMap()
+		settingsDump.remove(AppSettings.KEY_APP_PASSWORD)
+		settingsDump.remove(AppSettings.KEY_PROXY_PASSWORD)
+		settingsDump.remove(AppSettings.KEY_PROXY_LOGIN)
+		settingsDump.remove(AppSettings.KEY_INCOGNITO_MODE)
+		val json = JsonSerializer(settingsDump).toJson()
 		entry.data.put(json)
 		return entry
 	}
@@ -143,7 +148,7 @@ class BackupRepository @Inject constructor(
 		val result = CompositeResult()
 		for (item in entry.data.JSONIterator()) {
 			result += runCatchingCancellable {
-				settings.restoreValuesFromMap(JsonDeserializer(item).toMap())
+				settings.upsertAll(JsonDeserializer(item).toMap())
 			}
 		}
 		return result

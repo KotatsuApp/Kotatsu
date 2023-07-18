@@ -384,7 +384,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	fun getAllValues(): Map<String, *> = prefs.all
 
-	fun restoreValuesFromMap(m: Map<String, *>) {
+	fun upsertAll(m: Map<String, *>) {
 		prefs.edit {
 			m.forEach { e ->
 				when (e.value) {

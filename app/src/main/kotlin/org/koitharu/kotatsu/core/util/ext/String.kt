@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.util.ext
 
-import android.content.SharedPreferences
 import androidx.annotation.FloatRange
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import java.util.UUID
@@ -41,9 +40,3 @@ fun CharSequence.sanitize(): CharSequence {
 }
 
 fun Char.isReplacement() = this in '\uFFF0'..'\uFFFF'
-
-fun <E : Enum<E>> String.getEnumValue(defaultValue: E): E {
-	return defaultValue.javaClass.enumConstants?.find {
-		it.name == this
-	} ?: defaultValue
-}
