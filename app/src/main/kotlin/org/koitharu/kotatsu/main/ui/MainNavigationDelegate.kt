@@ -66,6 +66,11 @@ class MainNavigationDelegate(
 		} ?: onNavigationItemSelected(navBar.selectedItemId)
 	}
 
+	fun setCounterAt(position: Int, counter: Int) {
+		val id = navBar.menu.getItem(position).itemId
+		setCounter(id, counter)
+	}
+
 	fun setCounter(@IdRes id: Int, counter: Int) {
 		if (counter == 0) {
 			navBar.getBadge(id)?.isVisible = false

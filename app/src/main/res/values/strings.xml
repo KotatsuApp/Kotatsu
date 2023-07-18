@@ -101,7 +101,7 @@
 	<string name="text_empty_holder_primary">It\'s kind of empty here…</string>
 	<string name="text_search_holder_secondary">Try to reformulate the query.</string>
 	<string name="text_history_holder_primary">What you read will be displayed here</string>
-	<string name="text_history_holder_secondary">Find what to read in side menu.</string>
+	<string name="text_history_holder_secondary">Find what to read in the «Explore» section</string>
 	<string name="text_shelf_holder_primary">Your manga will be displayed here</string>
 	<string name="text_shelf_holder_secondary">Find what to read in the «Explore» section</string>
 	<string name="text_local_holder_primary">Save something first</string>
@@ -460,4 +460,5 @@
 	<string name="background">Background</string>
 	<string name="data_not_restored">Data was not restored</string>
 	<string name="data_not_restored_text">Make sure you have selected the correct backup file</string>
+	<string name="manage_favourites">Manage favourites</string>
 </resources>

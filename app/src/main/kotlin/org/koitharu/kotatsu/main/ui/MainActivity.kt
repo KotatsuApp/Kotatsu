@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
-import android.util.SparseIntArray
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -14,7 +13,6 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.util.size
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.inputmethod.EditorInfoCompat
@@ -276,11 +274,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		startActivity(IntentBuilder(this).manga(manga).build(), options)
 	}
 
-	private fun onCountersChanged(counters: SparseIntArray) {
+	private fun onCountersChanged(counters: IntArray) {
 		repeat(counters.size) { i ->
-			val id = counters.keyAt(i)
-			val counter = counters.valueAt(i)
-			navigationDelegate.setCounter(id, counter)
+			val counter = counters[i]
+			navigationDelegate.setCounterAt(i, counter)
 		}
 	}
 

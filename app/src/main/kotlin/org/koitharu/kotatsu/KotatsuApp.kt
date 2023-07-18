@@ -152,7 +152,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 		FragmentStrictMode.defaultPolicy = FragmentStrictMode.Policy.Builder()
 			.penaltyDeath()
 			.detectFragmentReuse()
-			.detectWrongFragmentContainer()
+			// .detectWrongFragmentContainer() FIXME: migrate to ViewPager2
 			.detectRetainInstanceUsage()
 			.detectSetUserVisibleHint()
 			.detectFragmentTagUsage()

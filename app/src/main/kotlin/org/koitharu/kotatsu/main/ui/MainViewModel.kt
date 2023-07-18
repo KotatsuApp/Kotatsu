@@ -1,16 +1,16 @@
 package org.koitharu.kotatsu.main.ui
 
-import android.util.SparseIntArray
-import androidx.core.util.set
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -51,16 +51,13 @@ class MainViewModel @Inject constructor(
 
 	val counters = combine(
 		trackingRepository.observeUpdatedMangaCount(),
-		flow { emit(settings.newSources.size) },
+		observeNewSourcesCount(),
 	) { tracks, newSources ->
-		val a = SparseIntArray(2)
-		a[R.id.nav_explore] = newSources
-		a[R.id.nav_feed] = tracks
-		a
+		intArrayOf(0, 0, newSources, tracks)
 	}.stateIn(
 		scope = viewModelScope + Dispatchers.Default,
 		started = SharingStarted.WhileSubscribed(5000),
-		initialValue = SparseIntArray(0),
+		initialValue = IntArray(4),
 	)
 
 	init {
@@ -79,4 +76,11 @@ class MainViewModel @Inject constructor(
 	fun setIncognitoMode(isEnabled: Boolean) {
 		settings.isIncognitoModeEnabled = isEnabled
 	}
+
+	private fun observeNewSourcesCount() = settings.observe()
+		.filter { it == AppSettings.KEY_SOURCES_ORDER || it == AppSettings.KEY_SOURCES_HIDDEN }
+		.onStart { emit("") }
+		.map { settings.newSources.size }
+		.distinctUntilChanged()
+
 }
