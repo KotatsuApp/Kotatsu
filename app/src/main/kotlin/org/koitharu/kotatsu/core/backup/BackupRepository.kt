@@ -71,6 +71,24 @@ class BackupRepository @Inject constructor(
 		return entry
 	}
 
+	suspend fun dumpBookmarks(): BackupEntry {
+		val entry = BackupEntry(BackupEntry.BOOKMARKS, JSONArray())
+		val all = db.bookmarksDao.findAll()
+		for ((m, b) in all) {
+			val json = JSONObject()
+			val manga = JsonSerializer(m.manga).toJson()
+			json.put("manga", manga)
+			val tags = JSONArray()
+			m.tags.forEach { tags.put(JsonSerializer(it).toJson()) }
+			json.put("tags", tags)
+			val bookmarks = JSONArray()
+			b.forEach { bookmarks.put(JsonSerializer(it).toJson()) }
+			json.put("bookmarks", bookmarks)
+			entry.data.put(json)
+		}
+		return entry
+	}
+
 	fun dumpSettings(): BackupEntry {
 		val entry = BackupEntry(BackupEntry.SETTINGS, JSONArray())
 		val settingsDump = settings.getAllValues().toMutableMap()
@@ -138,6 +156,28 @@ class BackupRepository @Inject constructor(
 					db.tagsDao.upsert(tags)
 					db.mangaDao.upsert(manga, tags)
 					db.favouritesDao.upsert(favourite)
+				}
+			}
+		}
+		return result
+	}
+
+	suspend fun restoreBookmarks(entry: BackupEntry): CompositeResult {
+		val result = CompositeResult()
+		for (item in entry.data.JSONIterator()) {
+			val mangaJson = item.getJSONObject("manga")
+			val manga = JsonDeserializer(mangaJson).toMangaEntity()
+			val tags = item.getJSONArray("tags").mapJSON {
+				JsonDeserializer(it).toTagEntity()
+			}
+			val bookmarks = item.getJSONArray("bookmarks").mapJSON {
+				JsonDeserializer(it).toBookmarkEntity()
+			}
+			result += runCatchingCancellable {
+				db.withTransaction {
+					db.tagsDao.upsert(tags)
+					db.mangaDao.upsert(manga, tags)
+					db.bookmarksDao.upsert(bookmarks)
 				}
 			}
 		}

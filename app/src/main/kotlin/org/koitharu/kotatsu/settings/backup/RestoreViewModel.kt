@@ -52,17 +52,22 @@ class RestoreViewModel @Inject constructor(
 					result += repository.restoreHistory(it)
 				}
 
-				progress.value = 0.25f
+				progress.value = 0.2f
 				backup.getEntry(BackupEntry.CATEGORIES)?.let {
 					result += repository.restoreCategories(it)
 				}
 
-				progress.value = 0.5f
+				progress.value = 0.4f
 				backup.getEntry(BackupEntry.FAVOURITES)?.let {
 					result += repository.restoreFavourites(it)
 				}
 
-				progress.value = 0.75f
+				progress.value = 0.6f
+				backup.getEntry(BackupEntry.BOOKMARKS)?.let {
+					result += repository.restoreBookmarks(it)
+				}
+
+				progress.value = 0.8f
 				backup.getEntry(BackupEntry.SETTINGS)?.let {
 					result += repository.restoreSettings(it)
 				}

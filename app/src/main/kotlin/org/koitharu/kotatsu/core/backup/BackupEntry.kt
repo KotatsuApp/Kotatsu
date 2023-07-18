@@ -14,5 +14,6 @@ class BackupEntry(
 		const val CATEGORIES = "categories"
 		const val FAVOURITES = "favourites"
 		const val SETTINGS = "settings"
+		const val BOOKMARKS = "bookmarks"
 	}
 }

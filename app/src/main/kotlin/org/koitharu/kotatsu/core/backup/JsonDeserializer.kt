@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.backup
 
 import org.json.JSONArray
 import org.json.JSONObject
+import org.koitharu.kotatsu.bookmarks.data.BookmarkEntity
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
@@ -65,6 +66,17 @@ class JsonDeserializer(private val json: JSONObject) {
 		track = json.getBooleanOrDefault("track", true),
 		isVisibleInLibrary = json.getBooleanOrDefault("show_in_lib", true),
 		deletedAt = 0L,
+	)
+
+	fun toBookmarkEntity() = BookmarkEntity(
+		mangaId = json.getLong("manga_id"),
+		pageId = json.getLong("page_id"),
+		chapterId = json.getLong("chapter_id"),
+		page = json.getInt("page"),
+		scroll = json.getInt("scroll"),
+		imageUrl = json.getString("image_url"),
+		createdAt = json.getLong("created_at"),
+		percent = json.getDouble("percent").toFloat(),
 	)
 
 	fun toMap(): Map<String, Any?> {

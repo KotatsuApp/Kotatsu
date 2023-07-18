@@ -22,7 +22,6 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
-
 	private val viewModel: RestoreViewModel by viewModels()
 
 	override fun onCreateViewBinding(

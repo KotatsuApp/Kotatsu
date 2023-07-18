@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.backup
 
 import org.json.JSONObject
+import org.koitharu.kotatsu.bookmarks.data.BookmarkEntity
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
@@ -65,6 +66,19 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("state", e.state)
 			put("author", e.author)
 			put("source", e.source)
+		},
+	)
+
+	constructor(e: BookmarkEntity) : this(
+		JSONObject().apply {
+			put("manga_id", e.mangaId)
+			put("page_id", e.pageId)
+			put("chapter_id", e.chapterId)
+			put("page", e.page)
+			put("scroll", e.scroll)
+			put("image_url", e.imageUrl)
+			put("created_at", e.createdAt)
+			put("percent", e.percent)
 		},
 	)
 

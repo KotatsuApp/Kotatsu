@@ -68,6 +68,7 @@ class AppBackupAgent : BackupAgent() {
 			backup.put(repository.dumpHistory())
 			backup.put(repository.dumpCategories())
 			backup.put(repository.dumpFavourites())
+			backup.put(repository.dumpBookmarks())
 			backup.put(repository.dumpSettings())
 			backup.finish()
 			backup.file
@@ -88,6 +89,7 @@ class AppBackupAgent : BackupAgent() {
 				backup.getEntry(BackupEntry.HISTORY)?.let { repository.restoreHistory(it) }
 				backup.getEntry(BackupEntry.CATEGORIES)?.let { repository.restoreCategories(it) }
 				backup.getEntry(BackupEntry.FAVOURITES)?.let { repository.restoreFavourites(it) }
+				backup.getEntry(BackupEntry.BOOKMARKS)?.let { repository.restoreBookmarks(it) }
 				backup.getEntry(BackupEntry.SETTINGS)?.let { repository.restoreSettings(it) }
 			}
 		} finally {
