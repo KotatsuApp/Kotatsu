@@ -23,7 +23,7 @@ class ImageFileFilter : FilenameFilter, FileFilter {
 		return isExtensionValid(ext)
 	}
 
-	private fun isExtensionValid(ext: String): Boolean {
+	fun isExtensionValid(ext: String): Boolean {
 		return ext == "png" || ext == "jpg" || ext == "jpeg" || ext == "webp"
 	}
 }

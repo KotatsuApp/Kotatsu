@@ -190,7 +190,7 @@ class ShikimoriRepository @Inject constructor(
 			status = json.getString("status"),
 			chapter = json.getInt("chapters"),
 			comment = json.getString("text"),
-			rating = json.getDouble("score").toFloat() / 10f,
+			rating = (json.getDouble("score").toFloat() / 10f).coerceIn(0f, 1f),
 		)
 		db.scrobblingDao.upsert(entity)
 	}

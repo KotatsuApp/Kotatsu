@@ -173,7 +173,7 @@ class MALRepository @Inject constructor(
 			status = json.getString("status"),
 			chapter = json.getInt("num_chapters_read"),
 			comment = json.getString("comments"),
-			rating = json.getDouble("score").toFloat() / 10f,
+			rating = (json.getDouble("score").toFloat() / 10f).coerceIn(0f, 1f),
 		)
 		db.scrobblingDao.upsert(entity)
 	}
