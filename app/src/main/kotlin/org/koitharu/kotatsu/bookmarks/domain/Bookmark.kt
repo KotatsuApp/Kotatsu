@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.bookmarks.domain
 
+import org.koitharu.kotatsu.local.data.ImageFileFilter
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import java.util.Date
@@ -26,7 +27,8 @@ class Bookmark(
 	)
 
 	private fun isImageUrlDirect(): Boolean {
-		return imageUrl.substringAfterLast('.').length in 2..4
+		val extension = imageUrl.substringAfterLast('.')
+		return extension.isNotEmpty() && ImageFileFilter().isExtensionValid(extension)
 	}
 
 	override fun equals(other: Any?): Boolean {

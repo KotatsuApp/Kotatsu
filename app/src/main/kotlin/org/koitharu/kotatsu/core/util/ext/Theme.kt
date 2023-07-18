@@ -60,3 +60,10 @@ fun Context.getThemeColorStateList(
 ) = obtainStyledAttributes(intArrayOf(resId)).use {
 	it.getColorStateList(0)
 }
+
+fun Context.getThemeResId(
+	@AttrRes resId: Int,
+	fallback: Int
+): Int = obtainStyledAttributes(intArrayOf(resId)).use {
+	it.getResourceId(0, fallback)
+}
