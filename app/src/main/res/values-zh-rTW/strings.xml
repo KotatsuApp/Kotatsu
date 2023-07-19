@@ -26,7 +26,7 @@
     <string name="text_delete_local_manga_batch">從裝置中永久地刪除選取項目\?</string>
     <string name="filter_load_error">無法載入流派列表</string>
     <string name="chapters_will_removed_background">章節將在背景被刪除</string>
-    <string name="check_new_chapters_title">檢查新的章節並解通知關於它資訊</string>
+    <string name="check_new_chapters_title">檢查新的章節並通知關於它資訊</string>
     <string name="download_slowdown_summary">有助于避免阻断您的IP地址</string>
     <string name="email_enter_hint">輸入您的 email 以繼續</string>
     <string name="new_sources_text">有新的漫畫來源可用</string>
@@ -44,7 +44,7 @@
     <string name="settings">設定</string>
     <string name="nothing_found">沒有發現</string>
     <string name="onboard_text">選擇您想閱讀的漫畫的語言。您可以之後在設定中變更。</string>
-    <string name="clear_cookies_summary">可以在出现一些问题时提供帮助。所有授权将被视为无效</string>
+    <string name="clear_cookies_summary">可以在出現一些問題時提供幫助。 所有授權將被視為無效</string>
     <string name="history">歷史紀錄</string>
     <string name="error_occurred">發生錯誤</string>
     <string name="network_error">網路錯誤</string>
