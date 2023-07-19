@@ -13,7 +13,8 @@ class MultiSummaryProvider(@StringRes private val emptySummaryId: Int) :
 			return preference.context.getString(emptySummaryId)
 		} else {
 			values.joinToString(", ") {
-				preference.entries[preference.findIndexOfValue(it)]
+				preference.entries.getOrNull(preference.findIndexOfValue(it))
+					?: preference.context.getString(androidx.preference.R.string.not_set)
 			}
 		}
 	}

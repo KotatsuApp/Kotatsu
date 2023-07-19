@@ -17,8 +17,8 @@ android {
 		//TODO: update as soon as sources becomes available
 		//noinspection OldTargetApi
 		targetSdkVersion 33
-		versionCode 564
-		versionName '5.3.7'
+		versionCode 565
+		versionName '5.3.8'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
