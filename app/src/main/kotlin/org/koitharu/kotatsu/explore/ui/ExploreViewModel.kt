@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.explore.ui
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,11 +12,13 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
@@ -52,15 +53,15 @@ class ExploreViewModel @Inject constructor(
 		valueProducer = { isSourcesGridMode },
 	)
 
+	val isSuggestionsEnabled = settings.observeAsFlow(
+		key = AppSettings.KEY_SUGGESTIONS,
+		valueProducer = { isSuggestionsEnabled },
+	)
+
 	val onOpenManga = MutableEventFlow<Manga>()
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val onShowSuggestionsTip = MutableEventFlow<Unit>()
 	private val isRandomLoading = MutableStateFlow(false)
-	private val recommendationDeferred = viewModelScope.async(Dispatchers.Default) {
-		runCatchingCancellable {
-			suggestionRepository.getRandom()
-		}.getOrNull()
-	}
 
 	val content: StateFlow<List<ListModel>> = isLoading.flatMapLatest { loading ->
 		if (loading) {
@@ -114,12 +115,12 @@ class ExploreViewModel @Inject constructor(
 
 	private fun createContentFlow() = combine(
 		observeSources(),
+		getSuggestionFlow(),
 		isGrid,
 		isRandomLoading,
 		observeNewSources(),
-	) { content, grid, randomLoading, newSources ->
-		val recommendation = recommendationDeferred.await()
-		buildList(content, recommendation, grid, randomLoading, newSources)
+	) { content, suggestions, grid, randomLoading, newSources ->
+		buildList(content, suggestions, grid, randomLoading, newSources)
 	}
 
 	private fun buildList(
@@ -172,6 +173,16 @@ class ExploreViewModel @Inject constructor(
 		ExploreButtons(isRandomLoading.value),
 		LoadingState,
 	)
+
+	private fun getSuggestionFlow() = isSuggestionsEnabled.mapLatest { isEnabled ->
+		if (isEnabled) {
+			runCatchingCancellable {
+				suggestionRepository.getRandom()
+			}.getOrNull()
+		} else {
+			null
+		}
+	}
 
 	private fun observeNewSources() = settings.observe()
 		.filter { it == AppSettings.KEY_SOURCES_ORDER || it == AppSettings.KEY_SOURCES_HIDDEN }

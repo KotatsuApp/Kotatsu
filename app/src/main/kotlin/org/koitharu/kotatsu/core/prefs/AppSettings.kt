@@ -277,11 +277,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_SUGGESTIONS, false)
 		set(value) = prefs.edit { putBoolean(KEY_SUGGESTIONS, value) }
 
+	val isSuggestionsWiFiOnly: Boolean
+		get() = prefs.getBoolean(KEY_SUGGESTIONS_WIFI_ONLY, false)
+
 	val isSuggestionsExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
 
 	val isSuggestionsNotificationAvailable: Boolean
-		get() = prefs.getBoolean(KEY_SUGGESTIONS_NOTIFICATIONS, true)
+		get() = prefs.getBoolean(KEY_SUGGESTIONS_NOTIFICATIONS, false)
 
 	val suggestionsTagsBlacklist: Set<String>
 		get() {
@@ -460,6 +463,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SCREENSHOTS_POLICY = "screenshots_policy"
 		const val KEY_PAGES_PRELOAD = "pages_preload"
 		const val KEY_SUGGESTIONS = "suggestions"
+		const val KEY_SUGGESTIONS_WIFI_ONLY = "suggestions_wifi"
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
 		const val KEY_SUGGESTIONS_NOTIFICATIONS = "suggestions_notifications"
