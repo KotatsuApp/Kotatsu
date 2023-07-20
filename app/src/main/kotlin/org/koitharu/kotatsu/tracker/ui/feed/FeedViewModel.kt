@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import org.koitharu.kotatsu.tracker.ui.feed.model.toFeedItem
+import org.koitharu.kotatsu.tracker.work.TrackWorker
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -31,10 +32,14 @@ private const val PAGE_SIZE = 20
 @HiltViewModel
 class FeedViewModel @Inject constructor(
 	private val repository: TrackingRepository,
+	private val scheduler: TrackWorker.Scheduler,
 ) : BaseViewModel() {
 
 	private val limit = MutableStateFlow(PAGE_SIZE)
 	private val isReady = AtomicBoolean(false)
+
+	val isRunning = scheduler.observeIsRunning()
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
 
 	val onFeedCleared = MutableEventFlow<Unit>()
 	val content = repository.observeTrackingLog(limit)
@@ -68,6 +73,10 @@ class FeedViewModel @Inject constructor(
 		if (isReady.compareAndSet(true, false)) {
 			limit.value += PAGE_SIZE
 		}
+	}
+
+	fun update() {
+		scheduler.startNow()
 	}
 
 	private fun List<TrackingLogItem>.mapList(): List<ListModel> {

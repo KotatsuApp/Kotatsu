@@ -9,6 +9,13 @@
 		android:layout="@layout/preference_toggle_header"
 		android:title="@string/check_new_chapters_title" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:dependency="tracker_enabled"
+		android:key="tracker_wifi"
+		android:summary="@string/tracker_wifi_only_summary"
+		android:title="@string/only_using_wifi" />
+
 	<MultiSelectListPreference
 		android:defaultValue="@array/values_track_sources_default"
 		android:dependency="tracker_enabled"

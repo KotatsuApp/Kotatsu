@@ -17,7 +17,6 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
@@ -29,7 +28,6 @@ import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
-import org.koitharu.kotatsu.tracker.work.TrackWorker
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -64,11 +62,7 @@ class FeedFragment :
 			)
 			addItemDecoration(decoration)
 		}
-		with(binding.swipeRefreshLayout) {
-			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
-			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
-			setOnRefreshListener(this@FeedFragment)
-		}
+		binding.swipeRefreshLayout.setOnRefreshListener(this)
 		addMenuProvider(
 			FeedMenuProvider(
 				binding.recyclerView,
@@ -81,8 +75,7 @@ class FeedFragment :
 		viewModel.onFeedCleared.observeEvent(viewLifecycleOwner) {
 			onFeedCleared()
 		}
-		TrackWorker.observeIsRunning(binding.root.context.applicationContext)
-			.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
+		viewModel.isRunning.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
 	}
 
 	override fun onDestroyView() {
@@ -97,7 +90,7 @@ class FeedFragment :
 	}
 
 	override fun onRefresh() {
-		TrackWorker.startNow(context ?: return)
+		viewModel.update()
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit

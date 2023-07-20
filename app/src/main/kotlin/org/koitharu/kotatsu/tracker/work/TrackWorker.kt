@@ -29,6 +29,7 @@ import androidx.work.WorkerParameters
 import androidx.work.await
 import coil.ImageLoader
 import coil.request.ImageRequest
+import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +44,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.WorkManagerHelper
+import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -54,6 +55,7 @@ import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import org.koitharu.kotatsu.tracker.domain.Tracker
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @HiltWorker
 class TrackWorker @AssistedInject constructor(
@@ -237,57 +239,68 @@ class TrackWorker @AssistedInject constructor(
 			.build()
 	}
 
-	companion object : PeriodicWorkScheduler {
+	@Reusable
+	class Scheduler @Inject constructor(
+		private val workManager: WorkManager,
+		private val settings: AppSettings,
+	) : PeriodicWorkScheduler {
 
-		private const val WORKER_CHANNEL_ID = "track_worker"
-		private const val WORKER_NOTIFICATION_ID = 35
-		private const val TAG = "tracking"
-		private const val TAG_ONESHOT = "tracking_oneshot"
-		private const val MAX_PARALLELISM = 4
-		private const val DATA_KEY_SUCCESS = "success"
-		private const val DATA_KEY_FAILED = "failed"
-
-		override suspend fun schedule(context: Context) {
-			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+		override suspend fun schedule() {
+			val constraints = createConstraints()
 			val request = PeriodicWorkRequestBuilder<TrackWorker>(4, TimeUnit.HOURS)
 				.setConstraints(constraints)
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
 				.build()
-			WorkManager.getInstance(context)
+			workManager
 				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
 				.await()
 		}
 
-		override suspend fun unschedule(context: Context) {
-			WorkManager.getInstance(context)
+		override suspend fun unschedule() {
+			workManager
 				.cancelUniqueWork(TAG)
 				.await()
 		}
 
-		override suspend fun isScheduled(context: Context): Boolean {
-			return WorkManagerHelper(WorkManager.getInstance(context))
-				.getUniqueWorkInfoByName(TAG)
+		override suspend fun isScheduled(): Boolean {
+			return workManager
+				.awaitUniqueWorkInfoByName(TAG)
 				.any { !it.state.isFinished }
 		}
 
-		fun startNow(context: Context) {
+		fun startNow() {
 			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 			val request = OneTimeWorkRequestBuilder<TrackWorker>()
 				.setConstraints(constraints)
 				.addTag(TAG_ONESHOT)
 				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 				.build()
-			WorkManager.getInstance(context).enqueue(request)
+			workManager.enqueue(request)
 		}
 
-		fun observeIsRunning(context: Context): Flow<Boolean> {
+		fun observeIsRunning(): Flow<Boolean> {
 			val query = WorkQuery.Builder.fromTags(listOf(TAG, TAG_ONESHOT)).build()
-			return WorkManager.getInstance(context).getWorkInfosLiveData(query)
+			return workManager.getWorkInfosLiveData(query)
 				.asFlow()
 				.map { works ->
 					works.any { x -> x.state == WorkInfo.State.RUNNING }
 				}
 		}
+
+		private fun createConstraints() = Constraints.Builder()
+			.setRequiredNetworkType(if (settings.isTrackerWifiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
+			.build()
+	}
+
+	private companion object {
+
+		const val WORKER_CHANNEL_ID = "track_worker"
+		const val WORKER_NOTIFICATION_ID = 35
+		const val TAG = "tracking"
+		const val TAG_ONESHOT = "tracking_oneshot"
+		const val MAX_PARALLELISM = 4
+		const val DATA_KEY_SUCCESS = "success"
+		const val DATA_KEY_FAILED = "failed"
 	}
 }

@@ -11,10 +11,10 @@
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
+		android:dependency="suggestions"
 		android:key="suggestions_wifi"
 		android:summary="@string/suggestions_wifi_only_summary"
-		android:title="@string/only_using_wifi"
-		app:allowDividerAbove="true" />
+		android:title="@string/only_using_wifi" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"

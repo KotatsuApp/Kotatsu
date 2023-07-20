@@ -27,6 +27,7 @@ import androidx.work.await
 import androidx.work.workDataOf
 import coil.ImageLoader
 import coil.request.ImageRequest
+import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
@@ -39,9 +40,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.WorkManagerHelper
 import org.koitharu.kotatsu.core.util.ext.almostEquals
 import org.koitharu.kotatsu.core.util.ext.asArrayList
+import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.flatten
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitize
@@ -62,6 +63,7 @@ import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.suggestions.domain.TagsBlacklist
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.random.Random
 
@@ -306,55 +308,36 @@ class SuggestionsWorker @AssistedInject constructor(
 		return -1
 	}
 
-	companion object : PeriodicWorkScheduler {
+	@Reusable
+	class Scheduler @Inject constructor(
+		private val workManager: WorkManager,
+		private val settings: AppSettings,
+	) : PeriodicWorkScheduler {
 
-		private const val TAG = "suggestions"
-		private const val TAG_ONESHOT = "suggestions_oneshot"
-		private const val DATA_COUNT = "count"
-		private const val WORKER_CHANNEL_ID = "suggestion_worker"
-		private const val MANGA_CHANNEL_ID = "suggestions"
-		private const val WORKER_NOTIFICATION_ID = 36
-		private const val MAX_RESULTS = 80
-		private const val MAX_SOURCE_RESULTS = 14
-		private const val MAX_RAW_RESULTS = 200
-		private const val TAG_EQ_THRESHOLD = 0.4f
-		private const val RATING_MIN = 0.5f
-
-		private val preferredSortOrders = listOf(
-			SortOrder.UPDATED,
-			SortOrder.NEWEST,
-			SortOrder.POPULARITY,
-			SortOrder.RATING,
-		)
-
-		override suspend fun schedule(context: Context) {
-			val constraints = Constraints.Builder()
-				.setRequiredNetworkType(NetworkType.UNMETERED)
-				.setRequiresBatteryNotLow(true)
-				.build()
+		override suspend fun schedule() {
 			val request = PeriodicWorkRequestBuilder<SuggestionsWorker>(6, TimeUnit.HOURS)
-				.setConstraints(constraints)
+				.setConstraints(createConstraints())
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
 				.build()
-			WorkManager.getInstance(context)
-				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
+			workManager
+				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)
 				.await()
 		}
 
-		override suspend fun unschedule(context: Context) {
-			WorkManager.getInstance(context)
+		override suspend fun unschedule() {
+			workManager
 				.cancelUniqueWork(TAG)
 				.await()
 		}
 
-		override suspend fun isScheduled(context: Context): Boolean {
-			return WorkManagerHelper(WorkManager.getInstance(context))
-				.getUniqueWorkInfoByName(TAG)
+		override suspend fun isScheduled(): Boolean {
+			return workManager
+				.awaitUniqueWorkInfoByName(TAG)
 				.any { !it.state.isFinished }
 		}
 
-		fun startNow(context: Context) {
+		fun startNow() {
 			val constraints = Constraints.Builder()
 				.setRequiredNetworkType(NetworkType.CONNECTED)
 				.build()
@@ -363,8 +346,34 @@ class SuggestionsWorker @AssistedInject constructor(
 				.addTag(TAG_ONESHOT)
 				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 				.build()
-			WorkManager.getInstance(context)
-				.enqueue(request)
+			workManager.enqueue(request)
 		}
+
+		private fun createConstraints() = Constraints.Builder()
+			.setRequiredNetworkType(if (settings.isSuggestionsWiFiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
+			.setRequiresBatteryNotLow(true)
+			.build()
+	}
+
+	private companion object {
+
+		const val TAG = "suggestions"
+		const val TAG_ONESHOT = "suggestions_oneshot"
+		const val DATA_COUNT = "count"
+		const val WORKER_CHANNEL_ID = "suggestion_worker"
+		const val MANGA_CHANNEL_ID = "suggestions"
+		const val WORKER_NOTIFICATION_ID = 36
+		const val MAX_RESULTS = 80
+		const val MAX_SOURCE_RESULTS = 14
+		const val MAX_RAW_RESULTS = 200
+		const val TAG_EQ_THRESHOLD = 0.4f
+		const val RATING_MIN = 0.5f
+
+		val preferredSortOrders = listOf(
+			SortOrder.UPDATED,
+			SortOrder.NEWEST,
+			SortOrder.POPULARITY,
+			SortOrder.RATING,
+		)
 	}
 }

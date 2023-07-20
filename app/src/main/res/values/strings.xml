@@ -462,4 +462,5 @@
 	<string name="data_not_restored_text">Make sure you have selected the correct backup file</string>
 	<string name="manage_favourites">Manage favourites</string>
 	<string name="suggestions_wifi_only_summary">Do not update suggestions using metered network connections</string>
+	<string name="tracker_wifi_only_summary">Do not check for new chapters using metered network connections</string>
 </resources>

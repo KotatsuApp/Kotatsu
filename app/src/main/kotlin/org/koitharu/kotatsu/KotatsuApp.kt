@@ -9,6 +9,7 @@ import androidx.fragment.app.strictmode.FragmentStrictMode
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.room.InvalidationTracker
 import androidx.work.Configuration
+import androidx.work.WorkManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,6 +31,7 @@ import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.settings.work.WorkScheduleManager
 import javax.inject.Inject
+import javax.inject.Provider
 
 @HiltAndroidApp
 class KotatsuApp : Application(), Configuration.Provider {
@@ -55,6 +57,9 @@ class KotatsuApp : Application(), Configuration.Provider {
 	@Inject
 	lateinit var workScheduleManager: WorkScheduleManager
 
+	@Inject
+	lateinit var workManagerProvider: Provider<WorkManager>
+
 	override fun onCreate() {
 		super.onCreate()
 		ACRA.errorReporter.putCustomData("isOriginalApp", appValidator.isOriginalApp.toString())
@@ -68,7 +73,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 			setupDatabaseObservers()
 		}
 		workScheduleManager.init()
-		WorkServiceStopHelper(applicationContext).setup()
+		WorkServiceStopHelper(workManagerProvider).setup()
 	}
 
 	override fun attachBaseContext(base: Context?) {

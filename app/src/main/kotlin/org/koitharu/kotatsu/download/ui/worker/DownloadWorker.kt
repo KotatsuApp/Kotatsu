@@ -41,8 +41,13 @@ import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.Throttler
-import org.koitharu.kotatsu.core.util.WorkManagerHelper
+import org.koitharu.kotatsu.core.util.ext.awaitFinishedWorkInfosByTag
+import org.koitharu.kotatsu.core.util.ext.awaitUpdateWork
+import org.koitharu.kotatsu.core.util.ext.awaitWorkInfoById
+import org.koitharu.kotatsu.core.util.ext.awaitWorkInfosByTag
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
+import org.koitharu.kotatsu.core.util.ext.deleteWork
+import org.koitharu.kotatsu.core.util.ext.deleteWorks
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -313,7 +318,7 @@ class DownloadWorker @AssistedInject constructor(
 	}
 
 	private suspend fun getDoneChapters(): LongArray {
-		val work = WorkManagerHelper(WorkManager.getInstance(applicationContext)).getWorkInfoById(id)
+		val work = WorkManager.getInstance(applicationContext).awaitWorkInfoById(id)
 			?: return LongArray(0)
 		return DownloadState.getDownloadedChapters(work.progress)
 	}
@@ -346,12 +351,10 @@ class DownloadWorker @AssistedInject constructor(
 	@Reusable
 	class Scheduler @Inject constructor(
 		@ApplicationContext private val context: Context,
+		private val workManager: WorkManager,
 		private val dataRepository: MangaDataRepository,
 		private val settings: AppSettings,
 	) {
-
-		private val workManager: WorkManager
-			inline get() = WorkManager.getInstance(context)
 
 		suspend fun schedule(manga: Manga, chaptersIds: Collection<Long>?) {
 			dataRepository.storeManga(manga)
@@ -396,26 +399,23 @@ class DownloadWorker @AssistedInject constructor(
 		}
 
 		suspend fun delete(id: UUID) {
-			WorkManagerHelper(workManager).deleteWork(id)
+			workManager.deleteWork(id)
 		}
 
 		suspend fun delete(ids: Collection<UUID>) {
 			val wm = workManager
-			val helper = WorkManagerHelper(wm)
 			ids.forEach { id -> wm.cancelWorkById(id).await() }
-			helper.deleteWorks(ids)
+			workManager.deleteWorks(ids)
 		}
 
 		suspend fun removeCompleted() {
-			val helper = WorkManagerHelper(workManager)
-			val finishedWorks = helper.getFinishedWorkInfosByTag(TAG)
-			helper.deleteWorks(finishedWorks.mapToSet { it.id })
+			val finishedWorks = workManager.awaitFinishedWorkInfosByTag(TAG)
+			workManager.deleteWorks(finishedWorks.mapToSet { it.id })
 		}
 
 		suspend fun updateConstraints() {
 			val constraints = createConstraints()
-			val helper = WorkManagerHelper(workManager)
-			val works = helper.getWorkInfosByTag(TAG)
+			val works = workManager.awaitWorkInfosByTag(TAG)
 			for (work in works) {
 				if (work.state.isFinished) {
 					continue
@@ -425,7 +425,7 @@ class DownloadWorker @AssistedInject constructor(
 					.addTag(TAG)
 					.setId(work.id)
 					.build()
-				helper.updateWork(request)
+				workManager.awaitUpdateWork(request)
 			}
 		}
 

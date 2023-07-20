@@ -6,6 +6,7 @@ import android.provider.SearchRecentSuggestions
 import android.text.Html
 import androidx.collection.arraySetOf
 import androidx.room.InvalidationTracker
+import androidx.work.WorkManager
 import coil.ComponentRegistry
 import coil.ImageLoader
 import coil.decode.SvgDecoder
@@ -172,5 +173,10 @@ interface AppModule {
 		fun provideLocalStorageChangesFlow(
 			@LocalStorageChanges flow: MutableSharedFlow<LocalManga?>,
 		): SharedFlow<LocalManga?> = flow.asSharedFlow()
+
+		@Provides
+		fun provideWorkManager(
+			@ApplicationContext context: Context,
+		): WorkManager = WorkManager.getInstance(context)
 	}
 }

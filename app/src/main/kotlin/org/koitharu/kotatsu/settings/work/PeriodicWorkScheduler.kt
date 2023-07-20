@@ -1,12 +1,10 @@
 package org.koitharu.kotatsu.settings.work
 
-import android.content.Context
-
 interface PeriodicWorkScheduler {
 
-	suspend fun schedule(context: Context)
+	suspend fun schedule()
 
-	suspend fun unschedule(context: Context)
+	suspend fun unschedule()
 
-	suspend fun isScheduled(context: Context): Boolean
+	suspend fun isScheduled(): Boolean
 }

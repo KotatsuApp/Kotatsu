@@ -115,6 +115,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isTrackerEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRACKER_ENABLED, true)
 
+	val isTrackerWifiOnly: Boolean
+		get() = prefs.getBoolean(KEY_TRACKER_WIFI_ONLY, false)
+
 	val isTrackerNotificationsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRACKER_NOTIFICATIONS, true)
 
@@ -436,6 +439,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LOCAL_STORAGE = "local_storage"
 		const val KEY_READER_SWITCHERS = "reader_switchers"
 		const val KEY_TRACKER_ENABLED = "tracker_enabled"
+		const val KEY_TRACKER_WIFI_ONLY = "tracker_wifi"
 		const val KEY_TRACK_SOURCES = "track_sources"
 		const val KEY_TRACK_CATEGORIES = "track_categories"
 		const val KEY_TRACK_WARNING = "track_warning"
