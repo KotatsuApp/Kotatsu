@@ -43,6 +43,7 @@ import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
+import org.koitharu.kotatsu.details.ui.related.RelatedMangaActivity
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
@@ -91,6 +92,7 @@ class DetailsFragment :
 		binding.buttonDescriptionMore.setOnClickListener(this)
 		binding.buttonBookmarksMore.setOnClickListener(this)
 		binding.buttonScrobblingMore.setOnClickListener(this)
+		binding.buttonRelatedMore.setOnClickListener(this)
 		binding.infoLayout.textViewSource.setOnClickListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
@@ -307,6 +309,10 @@ class DetailsFragment :
 
 			R.id.button_bookmarks_more -> {
 				BookmarksSheet.show(parentFragmentManager, manga)
+			}
+
+			R.id.button_related_more -> {
+				startActivity(RelatedMangaActivity.newIntent(v.context, manga))
 			}
 		}
 	}
