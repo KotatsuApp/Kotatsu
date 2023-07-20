@@ -1,6 +1,5 @@
-package org.koitharu.kotatsu.settings
+package org.koitharu.kotatsu.settings.userdata
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -28,7 +27,7 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.settings.backup.BackupDialogFragment
 import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
@@ -75,6 +74,9 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 			viewModel.feedItemsCount.observe(viewLifecycleOwner) {
 				pref.summary = pref.context.resources.getQuantityString(R.plurals.items, it, it)
 			}
+		}
+		findPreference<StorageUsagePreference>("storage_usage")?.let { pref ->
+			viewModel.storageUsage.observe(viewLifecycleOwner, pref)
 		}
 		viewModel.loadingKeys.observe(viewLifecycleOwner) { keys ->
 			preferenceScreen.forEach { pref ->
@@ -129,10 +131,7 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 			}
 
 			AppSettings.KEY_RESTORE -> {
-				try {
-					backupSelectCall.launch(arrayOf("*/*"))
-				} catch (e: ActivityNotFoundException) {
-					e.printStackTraceDebug()
+				if (!backupSelectCall.tryLaunch(arrayOf("*/*"))) {
 					Snackbar.make(
 						listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
 					).show()

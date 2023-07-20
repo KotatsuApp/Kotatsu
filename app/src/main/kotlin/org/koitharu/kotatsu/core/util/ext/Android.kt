@@ -69,11 +69,14 @@ fun <I> ActivityResultLauncher<I>.resolve(context: Context, input: I): ResolveIn
 	return pm.resolveActivity(intent, 0)
 }
 
-fun <I> ActivityResultLauncher<I>.tryLaunch(input: I, options: ActivityOptionsCompat? = null): Boolean {
-	return runCatching {
-		launch(input, options)
-	}.isSuccess
-}
+fun <I> ActivityResultLauncher<I>.tryLaunch(
+	input: I,
+	options: ActivityOptionsCompat? = null,
+): Boolean = runCatching {
+	launch(input, options)
+}.onFailure { e ->
+	e.printStackTraceDebug()
+}.isSuccess
 
 fun SharedPreferences.observe() = callbackFlow<String> {
 	val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->

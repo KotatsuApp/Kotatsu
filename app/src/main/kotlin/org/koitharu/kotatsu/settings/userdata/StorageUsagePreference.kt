@@ -1,48 +1,53 @@
-package org.koitharu.kotatsu.settings.tools.views
+package org.koitharu.kotatsu.settings.userdata
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.widget.TextViewCompat
+import androidx.preference.Preference
+import androidx.preference.PreferenceViewHolder
 import com.google.android.material.color.MaterialColors
-import okio.ByteString.Companion.decodeHex
+import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.widgets.SegmentedBarView
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
-import org.koitharu.kotatsu.databinding.LayoutMemoryUsageBinding
-import org.koitharu.kotatsu.settings.tools.model.StorageUsage
+import org.koitharu.kotatsu.databinding.PreferenceMemoryUsageBinding
+import com.google.android.material.R as materialR
 
-
-class MemoryUsageView @JvmOverloads constructor(
+class StorageUsagePreference @JvmOverloads constructor(
 	context: Context,
-	attrs: AttributeSet? = null
-) : LinearLayout(context, attrs) {
+	attrs: AttributeSet? = null,
+) : Preference(context, attrs), FlowCollector<StorageUsage?> {
 
-	private val binding = LayoutMemoryUsageBinding.inflate(LayoutInflater.from(context), this)
 	private val labelPattern = context.getString(R.string.memory_usage_pattern)
+	private var usage: StorageUsage? = null
 
 	init {
-		orientation = VERTICAL
-		bind(null)
+		layoutResource = R.layout.preference_memory_usage
+		isSelectable = false
+		isPersistent = false
 	}
 
-	fun setManageButtonOnClickListener(listener: OnClickListener?) {
-		binding.buttonManage.setOnClickListener(listener)
-	}
-
-	fun bind(usage: StorageUsage?) {
-		val storageSegment = SegmentedBarView.Segment(usage?.savedManga?.percent ?: 0f, segmentColor(com.google.android.material.R.attr.colorPrimary))
-		val pagesSegment = SegmentedBarView.Segment(usage?.pagesCache?.percent ?: 0f, segmentColor(com.google.android.material.R.attr.colorOnPrimaryContainer))
-		val otherSegment = SegmentedBarView.Segment(usage?.otherCache?.percent ?: 0f, segmentColor(com.google.android.material.R.attr.colorTertiary))
+	override fun onBindViewHolder(holder: PreferenceViewHolder) {
+		super.onBindViewHolder(holder)
+		val binding = PreferenceMemoryUsageBinding.bind(holder.itemView)
+		val storageSegment = SegmentedBarView.Segment(
+			usage?.savedManga?.percent ?: 0f,
+			segmentColor(materialR.attr.colorPrimary),
+		)
+		val pagesSegment = SegmentedBarView.Segment(
+			usage?.pagesCache?.percent ?: 0f,
+			segmentColor(materialR.attr.colorSecondary),
+		)
+		val otherSegment = SegmentedBarView.Segment(
+			usage?.otherCache?.percent ?: 0f,
+			segmentColor(materialR.attr.colorTertiary),
+		)
 
 		with(binding) {
 			bar.animateSegments(listOf(storageSegment, pagesSegment, otherSegment).filter { it.percent > 0f })
@@ -55,6 +60,11 @@ class MemoryUsageView @JvmOverloads constructor(
 			TextViewCompat.setCompoundDrawableTintList(labelPagesCache, ColorStateList.valueOf(pagesSegment.color))
 			TextViewCompat.setCompoundDrawableTintList(labelOtherCache, ColorStateList.valueOf(otherSegment.color))
 		}
+	}
+
+	override suspend fun emit(value: StorageUsage?) {
+		usage = value
+		notifyChanged()
 	}
 
 	private fun formatLabel(
@@ -91,7 +101,7 @@ class MemoryUsageView @JvmOverloads constructor(
 		val colorHex = String.format("%06x", context.getThemeColor(resId))
 		val hue = getHue(colorHex)
 		val color = ColorUtils.HSLToColor(floatArrayOf(hue, 0.5f, 0.5f))
-		val backgroundColor = context.getThemeColor(com.google.android.material.R.attr.colorSurfaceContainerHigh)
+		val backgroundColor = context.getThemeColor(materialR.attr.colorSurfaceContainerHigh)
 		return MaterialColors.harmonize(color, backgroundColor)
 	}
 }

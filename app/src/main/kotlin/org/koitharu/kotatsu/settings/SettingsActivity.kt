@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesListFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
+import org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment
 
 @AndroidEntryPoint
 class SettingsActivity :

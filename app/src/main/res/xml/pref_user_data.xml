@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<SwitchPreferenceCompat
 		android:key="protect_app"
@@ -35,13 +36,16 @@
 
 	</PreferenceCategory>
 
-	<PreferenceCategory android:title="@string/data_deletion">
+	<PreferenceCategory android:title="@string/storage_usage">
+
+		<org.koitharu.kotatsu.settings.userdata.StorageUsagePreference android:key="storage_usage" />
 
 		<Preference
 			android:key="search_history_clear"
 			android:persistent="false"
 			android:summary="@string/loading_"
-			android:title="@string/clear_search_history" />
+			android:title="@string/clear_search_history"
+			app:allowDividerAbove="true" />
 
 		<Preference
 			android:key="updates_feed_clear"

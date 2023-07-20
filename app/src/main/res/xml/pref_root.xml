@@ -27,7 +27,7 @@
 		android:title="@string/network" />
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.UserDataSettingsFragment"
+		android:fragment="org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment"
 		android:icon="@drawable/ic_data_privacy"
 		android:key="userdata"
 		android:title="@string/data_and_privacy" />

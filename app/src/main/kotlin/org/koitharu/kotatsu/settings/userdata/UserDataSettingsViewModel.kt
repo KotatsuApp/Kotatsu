@@ -1,7 +1,9 @@
-package org.koitharu.kotatsu.settings
+package org.koitharu.kotatsu.settings.userdata
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runInterruptible
@@ -36,6 +38,9 @@ class UserDataSettingsViewModel @Inject constructor(
 	val feedItemsCount = MutableStateFlow(-1)
 	val httpCacheSize = MutableStateFlow(-1L)
 	val cacheSizes = EnumMap<CacheDir, MutableStateFlow<Long>>(CacheDir::class.java)
+	val storageUsage = MutableStateFlow<StorageUsage?>(null)
+
+	private var storageUsageJob: Job? = null
 
 	init {
 		CacheDir.values().forEach {
@@ -55,6 +60,7 @@ class UserDataSettingsViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			httpCacheSize.value = runInterruptible { httpCache.size() }
 		}
+		loadStorageUsage()
 	}
 
 	fun clearCache(key: String, cache: CacheDir) {
@@ -63,6 +69,7 @@ class UserDataSettingsViewModel @Inject constructor(
 				loadingKeys.update { it + key }
 				storageManager.clearCache(cache)
 				checkNotNull(cacheSizes[cache]).value = storageManager.computeCacheSize(cache)
+				loadStorageUsage()
 			} finally {
 				loadingKeys.update { it - key }
 			}
@@ -78,6 +85,7 @@ class UserDataSettingsViewModel @Inject constructor(
 					httpCache.size()
 				}
 				httpCacheSize.value = size
+				loadStorageUsage()
 			} finally {
 				loadingKeys.update { it - AppSettings.KEY_HTTP_CACHE_CLEAR }
 			}
@@ -104,6 +112,36 @@ class UserDataSettingsViewModel @Inject constructor(
 			trackingRepository.clearLogs()
 			feedItemsCount.value = trackingRepository.getLogsCount()
 			onActionDone.call(ReversibleAction(R.string.updates_feed_cleared, null))
+		}
+	}
+
+	private fun loadStorageUsage() {
+		val prevJob = storageUsageJob
+		storageUsageJob = launchJob(Dispatchers.Default) {
+			prevJob?.cancelAndJoin()
+			val pagesCacheSize = storageManager.computeCacheSize(CacheDir.PAGES)
+			val otherCacheSize = storageManager.computeCacheSize() - pagesCacheSize
+			val storageSize = storageManager.computeStorageSize()
+			val availableSpace = storageManager.computeAvailableSize()
+			val totalBytes = pagesCacheSize + otherCacheSize + storageSize + availableSpace
+			storageUsage.value = StorageUsage(
+				savedManga = StorageUsage.Item(
+					bytes = storageSize,
+					percent = (storageSize.toDouble() / totalBytes).toFloat(),
+				),
+				pagesCache = StorageUsage.Item(
+					bytes = pagesCacheSize,
+					percent = (pagesCacheSize.toDouble() / totalBytes).toFloat(),
+				),
+				otherCache = StorageUsage.Item(
+					bytes = otherCacheSize,
+					percent = (otherCacheSize.toDouble() / totalBytes).toFloat(),
+				),
+				available = StorageUsage.Item(
+					bytes = availableSpace,
+					percent = (availableSpace.toDouble() / totalBytes).toFloat(),
+				),
+			)
 		}
 	}
 }
