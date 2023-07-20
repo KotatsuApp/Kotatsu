@@ -24,9 +24,7 @@ class ScrobblerManga(
 		if (name != other.name) return false
 		if (altName != other.altName) return false
 		if (cover != other.cover) return false
-		if (url != other.url) return false
-
-		return true
+		return url == other.url
 	}
 
 	override fun hashCode(): Int {

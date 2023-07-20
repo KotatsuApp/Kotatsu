@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.backup
 
-import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.bookmarks.data.BookmarkEntity
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
@@ -92,15 +91,3 @@ class JsonDeserializer(private val json: JSONObject) {
 		return map
 	}
 }
-
-
-fun <K, T> JSONArray.mapJSONToSet(block: (K) -> T): Set<T> {
-	val len = length()
-	val result = androidx.collection.ArraySet<T>(len)
-	for (i in 0 until len) {
-		val jo = get(i) as K
-		result.add(block(jo))
-	}
-	return result
-}
-

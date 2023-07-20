@@ -40,9 +40,7 @@ class VersionId(
 		if (minor != other.minor) return false
 		if (build != other.build) return false
 		if (variantType != other.variantType) return false
-		if (variantNumber != other.variantNumber) return false
-
-		return true
+		return variantNumber == other.variantNumber
 	}
 
 	override fun hashCode(): Int {

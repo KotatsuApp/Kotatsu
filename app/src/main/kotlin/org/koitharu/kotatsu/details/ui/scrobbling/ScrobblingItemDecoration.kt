@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
 
-class ScrobblingItemDecoration() : RecyclerView.ItemDecoration() {
+class ScrobblingItemDecoration : RecyclerView.ItemDecoration() {
 
 	private var spacing: Int = -1
 

@@ -52,9 +52,7 @@ sealed interface SourceConfigItem : ListModel {
 
 			if (localeId != other.localeId) return false
 			if (title != other.title) return false
-			if (isExpanded != other.isExpanded) return false
-
-			return true
+			return isExpanded == other.isExpanded
 		}
 
 		override fun hashCode(): Int {
@@ -93,9 +91,7 @@ sealed interface SourceConfigItem : ListModel {
 			if (source != other.source) return false
 			if (summary != other.summary) return false
 			if (isEnabled != other.isEnabled) return false
-			if (isDraggable != other.isDraggable) return false
-
-			return true
+			return isDraggable == other.isDraggable
 		}
 
 		override fun hashCode(): Int {
@@ -125,9 +121,7 @@ sealed interface SourceConfigItem : ListModel {
 
 			if (key != other.key) return false
 			if (iconResId != other.iconResId) return false
-			if (textResId != other.textResId) return false
-
-			return true
+			return textResId == other.textResId
 		}
 
 		override fun hashCode(): Int {

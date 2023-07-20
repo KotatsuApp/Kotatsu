@@ -21,9 +21,7 @@ class MangaTracking(
 
 		if (manga != other.manga) return false
 		if (lastChapterId != other.lastChapterId) return false
-		if (lastCheck != other.lastCheck) return false
-
-		return true
+		return lastCheck == other.lastCheck
 	}
 
 	override fun hashCode(): Int {

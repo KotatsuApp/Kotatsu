@@ -18,9 +18,7 @@ class TrackingItem(
 		other as TrackingItem
 
 		if (tracking != other.tracking) return false
-		if (channelId != other.channelId) return false
-
-		return true
+		return channelId == other.channelId
 	}
 
 	override fun hashCode(): Int {

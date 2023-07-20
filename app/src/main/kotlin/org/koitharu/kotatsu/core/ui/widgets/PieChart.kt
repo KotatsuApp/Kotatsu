@@ -21,10 +21,10 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.dpToPx
 import org.koitharu.kotatsu.core.util.ext.draw
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
-import org.koitharu.kotatsu.core.util.ext.spToPx
+import org.koitharu.kotatsu.core.util.ext.resolveDp
+import org.koitharu.kotatsu.core.util.ext.resolveSp
 
 class PieChart @JvmOverloads constructor(
 	context: Context,
@@ -33,11 +33,10 @@ class PieChart @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr), PieChartInterface {
 
 	companion object {
-		private const val DEFAULT_MARGIN_TEXT_1 = 2
-		private const val DEFAULT_MARGIN_TEXT_2 = 10
-		private const val DEFAULT_MARGIN_TEXT_3 = 2
-		private const val DEFAULT_MARGIN_SMALL_CIRCLE = 12
-		private const val ANALYTICAL_PIE_CHART_KEY = "PieChartArrayData"
+		private const val DEFAULT_MARGIN_TEXT_1 = 2f
+		private const val DEFAULT_MARGIN_TEXT_2 = 10f
+		private const val DEFAULT_MARGIN_TEXT_3 = 2f
+		private const val DEFAULT_MARGIN_SMALL_CIRCLE = 12f
 
 		private const val TEXT_WIDTH_PERCENT = 0.40
 		private const val CIRCLE_WIDTH_PERCENT = 0.50
@@ -46,31 +45,31 @@ class PieChart @JvmOverloads constructor(
 		const val DEFAULT_VIEW_SIZE_WIDTH = 250
 	}
 
-	private var marginTextFirst: Float = context.dpToPx(DEFAULT_MARGIN_TEXT_1)
-	private var marginTextSecond: Float = context.dpToPx(DEFAULT_MARGIN_TEXT_2)
-	private var marginTextThird: Float = context.dpToPx(DEFAULT_MARGIN_TEXT_3)
-	private var marginSmallCircle: Float = context.dpToPx(DEFAULT_MARGIN_SMALL_CIRCLE)
+	private var marginTextFirst: Float = context.resources.resolveDp(DEFAULT_MARGIN_TEXT_1)
+	private var marginTextSecond: Float = context.resources.resolveDp(DEFAULT_MARGIN_TEXT_2)
+	private var marginTextThird: Float = context.resources.resolveDp(DEFAULT_MARGIN_TEXT_3)
+	private var marginSmallCircle: Float = context.resources.resolveDp(DEFAULT_MARGIN_SMALL_CIRCLE)
 	private val marginText: Float = marginTextFirst + marginTextSecond
 	private val circleRect = RectF()
-	private var circleStrokeWidth: Float = context.dpToPx(6)
-	private var circleRadius: Float = 0F
-	private var circlePadding: Float = context.dpToPx(8)
+	private var circleStrokeWidth: Float = context.resources.resolveDp(6f)
+	private var circleRadius: Float = 0f
+	private var circlePadding: Float = context.resources.resolveDp(8f)
 	private var circlePaintRoundSize: Boolean = true
-	private var circleSectionSpace: Float = 3F
-	private var circleCenterX: Float = 0F
-	private var circleCenterY: Float = 0F
+	private var circleSectionSpace: Float = 3f
+	private var circleCenterX: Float = 0f
+	private var circleCenterY: Float = 0f
 	private var numberTextPaint: TextPaint = TextPaint()
 	private var descriptionTextPain: TextPaint = TextPaint()
 	private var amountTextPaint: TextPaint = TextPaint()
-	private var textStartX: Float = 0F
-	private var textStartY: Float = 0F
+	private var textStartX: Float = 0f
+	private var textStartY: Float = 0f
 	private var textHeight: Int = 0
-	private var textCircleRadius: Float = context.dpToPx(4)
+	private var textCircleRadius: Float = context.resources.resolveDp(4f)
 	private var textAmountStr: String = ""
-	private var textAmountY: Float = 0F
-	private var textAmountXNumber: Float = 0F
-	private var textAmountXDescription: Float = 0F
-	private var textAmountYDescription: Float = 0F
+	private var textAmountY: Float = 0f
+	private var textAmountXNumber: Float = 0f
+	private var textAmountXDescription: Float = 0f
+	private var textAmountYDescription: Float = 0f
 	private var totalAmount: Int = 0
 	private var pieChartColors: List<String> = listOf()
 	private var percentageCircleList: List<PieChartModel> = listOf()
@@ -79,9 +78,9 @@ class PieChart @JvmOverloads constructor(
 	private var animationSweepAngle: Int = 0
 
 	init {
-		var textAmountSize: Float = context.spToPx(22)
-		var textNumberSize: Float = context.spToPx(20)
-		var textDescriptionSize: Float = context.spToPx(14)
+		var textAmountSize: Float = context.resources.resolveSp(22f)
+		var textNumberSize: Float = context.resources.resolveSp(20f)
+		var textDescriptionSize: Float = context.resources.resolveSp(14f)
 		var textAmountColor: Int = Color.WHITE
 		var textNumberColor: Int = Color.WHITE
 		var textDescriptionColor: Int = Color.GRAY
@@ -95,20 +94,25 @@ class PieChart @JvmOverloads constructor(
 			marginTextFirst = typeArray.getDimension(R.styleable.PieChart_pieChartMarginTextFirst, marginTextFirst)
 			marginTextSecond = typeArray.getDimension(R.styleable.PieChart_pieChartMarginTextSecond, marginTextSecond)
 			marginTextThird = typeArray.getDimension(R.styleable.PieChart_pieChartMarginTextThird, marginTextThird)
-			marginSmallCircle = typeArray.getDimension(R.styleable.PieChart_pieChartMarginSmallCircle, marginSmallCircle)
+			marginSmallCircle =
+				typeArray.getDimension(R.styleable.PieChart_pieChartMarginSmallCircle, marginSmallCircle)
 
-			circleStrokeWidth = typeArray.getDimension(R.styleable.PieChart_pieChartCircleStrokeWidth, circleStrokeWidth)
+			circleStrokeWidth =
+				typeArray.getDimension(R.styleable.PieChart_pieChartCircleStrokeWidth, circleStrokeWidth)
 			circlePadding = typeArray.getDimension(R.styleable.PieChart_pieChartCirclePadding, circlePadding)
-			circlePaintRoundSize = typeArray.getBoolean(R.styleable.PieChart_pieChartCirclePaintRoundSize, circlePaintRoundSize)
+			circlePaintRoundSize =
+				typeArray.getBoolean(R.styleable.PieChart_pieChartCirclePaintRoundSize, circlePaintRoundSize)
 			circleSectionSpace = typeArray.getFloat(R.styleable.PieChart_pieChartCircleSectionSpace, circleSectionSpace)
 
 			textCircleRadius = typeArray.getDimension(R.styleable.PieChart_pieChartTextCircleRadius, textCircleRadius)
 			textAmountSize = typeArray.getDimension(R.styleable.PieChart_pieChartTextAmountSize, textAmountSize)
 			textNumberSize = typeArray.getDimension(R.styleable.PieChart_pieChartTextNumberSize, textNumberSize)
-			textDescriptionSize = typeArray.getDimension(R.styleable.PieChart_pieChartTextDescriptionSize, textDescriptionSize)
+			textDescriptionSize =
+				typeArray.getDimension(R.styleable.PieChart_pieChartTextDescriptionSize, textDescriptionSize)
 			textAmountColor = typeArray.getColor(R.styleable.PieChart_pieChartTextAmountColor, textAmountColor)
 			textNumberColor = typeArray.getColor(R.styleable.PieChart_pieChartTextNumberColor, textNumberColor)
-			textDescriptionColor = typeArray.getColor(R.styleable.PieChart_pieChartTextDescriptionColor, textDescriptionColor)
+			textDescriptionColor =
+				typeArray.getColor(R.styleable.PieChart_pieChartTextDescriptionColor, textDescriptionColor)
 			textAmountStr = typeArray.getString(R.styleable.PieChart_pieChartTextAmount) ?: ""
 
 			typeArray.recycle()
@@ -176,11 +180,17 @@ class PieChart @JvmOverloads constructor(
 	}
 
 	private fun drawCircle(canvas: Canvas) {
-		for(percent in percentageCircleList) {
-			if (animationSweepAngle > percent.percentToStartAt + percent.percentOfCircle){
+		for (percent in percentageCircleList) {
+			if (animationSweepAngle > percent.percentToStartAt + percent.percentOfCircle) {
 				canvas.drawArc(circleRect, percent.percentToStartAt, percent.percentOfCircle, false, percent.paint)
 			} else if (animationSweepAngle > percent.percentToStartAt) {
-				canvas.drawArc(circleRect, percent.percentToStartAt, animationSweepAngle - percent.percentToStartAt, false, percent.paint)
+				canvas.drawArc(
+					circleRect,
+					percent.percentToStartAt,
+					animationSweepAngle - percent.percentToStartAt,
+					false,
+					percent.paint,
+				)
 			}
 		}
 	}
@@ -194,7 +204,7 @@ class PieChart @JvmOverloads constructor(
 					textStartX + marginSmallCircle / 2,
 					textBuffY + staticLayout.height / 2 + textCircleRadius / 2,
 					textCircleRadius,
-					Paint().apply { color = Color.parseColor(pieChartColors[(index / 2) % pieChartColors.size]) }
+					Paint().apply { color = Color.parseColor(pieChartColors[(index / 2) % pieChartColors.size]) },
 				)
 				textBuffY += staticLayout.height + marginTextFirst
 			} else {
@@ -216,8 +226,8 @@ class PieChart @JvmOverloads constructor(
 	}
 
 	private fun resolveDefaultSize(spec: Int, defValue: Int): Int {
-		return when(MeasureSpec.getMode(spec)) {
-			MeasureSpec.UNSPECIFIED -> context.dpToPx(defValue).toInt()
+		return when (MeasureSpec.getMode(spec)) {
+			MeasureSpec.UNSPECIFIED -> resources.resolveDp(defValue)
 			else -> MeasureSpec.getSize(spec)
 		}
 	}
@@ -253,10 +263,10 @@ class PieChart @JvmOverloads constructor(
 
 		val sizeTextAmountNumber = getWidthOfAmountText(
 			totalAmount.toString(),
-			amountTextPaint
+			amountTextPaint,
 		)
 
-		textAmountXNumber = circleCenterX -  sizeTextAmountNumber.width() / 2
+		textAmountXNumber = circleCenterX - sizeTextAmountNumber.width() / 2
 		textAmountXDescription = circleCenterX - getWidthOfAmountText(textAmountStr, descriptionTextPain).width() / 2
 		textAmountYDescription = circleCenterY + sizeTextAmountNumber.height() + marginTextThird
 	}
@@ -268,12 +278,12 @@ class PieChart @JvmOverloads constructor(
 			val textLayoutNumber = getMultilineText(
 				text = it.first.toString(),
 				textPaint = numberTextPaint,
-				width = maxWidth
+				width = maxWidth,
 			)
 			val textLayoutDescription = getMultilineText(
 				text = it.second,
 				textPaint = descriptionTextPain,
-				width = maxWidth
+				width = maxWidth,
 			)
 			textRowList.apply {
 				add(textLayoutNumber)
@@ -286,21 +296,21 @@ class PieChart @JvmOverloads constructor(
 	}
 
 	private fun calculatePercentageOfData() {
-		totalAmount = dataList.fold(0) { res, value -> res + value.first}
+		totalAmount = dataList.fold(0) { res, value -> res + value.first }
 
 		var startAt = circleSectionSpace
 		percentageCircleList = dataList.mapIndexed { index, pair ->
 			var percent = pair.first * 100 / totalAmount.toFloat() - circleSectionSpace
-			percent = if (percent < 0F) 0F else percent
+			percent = if (percent < 0f) 0f else percent
 
 			val resultModel = PieChartModel(
 				percentOfCircle = percent,
 				percentToStartAt = startAt,
 				colorOfLine = Color.parseColor(pieChartColors[index % pieChartColors.size]),
 				stroke = circleStrokeWidth,
-				paintRound = circlePaintRoundSize
+				paintRound = circlePaintRoundSize,
 			)
-			if (percent != 0F) startAt += percent + circleSectionSpace
+			if (percent != 0f) startAt += percent + circleSectionSpace
 			resultModel
 		}
 	}
@@ -321,7 +331,8 @@ class PieChart @JvmOverloads constructor(
 		alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL,
 		textDir: TextDirectionHeuristic = TextDirectionHeuristics.LTR,
 		spacingMult: Float = 1f,
-		spacingAdd: Float = 0f) : StaticLayout {
+		spacingAdd: Float = 0f
+	): StaticLayout {
 
 		return StaticLayout.Builder
 			.obtain(text, start, end, textPaint, width)
@@ -340,23 +351,23 @@ interface PieChartInterface {
 }
 
 data class PieChartModel(
-	var percentOfCircle: Float = 0F,
-	var percentToStartAt: Float = 0F,
+	var percentOfCircle: Float = 0f,
+	var percentToStartAt: Float = 0f,
 	var colorOfLine: Int = 0,
-	var stroke: Float = 0F,
+	var stroke: Float = 0f,
 	var paint: Paint = Paint(),
 	var paintRound: Boolean = true
 ) {
 
 	init {
 		if (percentOfCircle < 0 || percentOfCircle > 100) {
-			percentOfCircle = 100F
+			percentOfCircle = 100f
 		}
 
 		percentOfCircle = 360 * percentOfCircle / 100
 
 		if (percentToStartAt < 0 || percentToStartAt > 100) {
-			percentToStartAt = 0F
+			percentToStartAt = 0f
 		}
 
 		percentToStartAt = 360 * percentToStartAt / 100
@@ -370,18 +381,17 @@ data class PieChartModel(
 		paint.isAntiAlias = true
 		paint.style = Paint.Style.STROKE
 		paint.strokeWidth = stroke
-		paint.isDither = true;
+		paint.isDither = true
 
-		if (paintRound){
-			paint.strokeJoin = Paint.Join.ROUND;
-			paint.strokeCap = Paint.Cap.ROUND;
-			paint.pathEffect = CornerPathEffect(8F);
+		if (paintRound) {
+			paint.strokeJoin = Paint.Join.ROUND
+			paint.strokeCap = Paint.Cap.ROUND
+			paint.pathEffect = CornerPathEffect(8f)
 		}
 	}
 }
 
 class PieChartState(
-	private val superSavedState: Parcelable?,
+	superSavedState: Parcelable?,
 	val dataList: List<Pair<Int, String>>
-) : View.BaseSavedState(superSavedState), Parcelable {
-}
+) : View.BaseSavedState(superSavedState), Parcelable

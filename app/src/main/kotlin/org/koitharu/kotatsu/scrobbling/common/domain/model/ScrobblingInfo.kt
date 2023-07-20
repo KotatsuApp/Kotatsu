@@ -36,9 +36,7 @@ class ScrobblingInfo(
 		if (title != other.title) return false
 		if (coverUrl != other.coverUrl) return false
 		if (description != other.description) return false
-		if (externalUrl != other.externalUrl) return false
-
-		return true
+		return externalUrl == other.externalUrl
 	}
 
 	override fun hashCode(): Int {
