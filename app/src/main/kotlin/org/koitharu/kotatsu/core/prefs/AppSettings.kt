@@ -29,7 +29,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 import java.io.File
 import java.net.Proxy
 import java.util.Collections
@@ -53,22 +52,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	val remoteMangaSources: Set<MangaSource>
 		get() = Collections.unmodifiableSet(remoteSources)
-
-	var shelfSections: List<ShelfSection>
-		get() {
-			val raw = prefs.getString(KEY_SHELF_SECTIONS, null)
-			val values = enumValues<ShelfSection>()
-			if (raw.isNullOrEmpty()) {
-				return values.toList()
-			}
-			return raw.split('|')
-				.mapNotNull { values.getOrNull(it.toIntOrNull() ?: -1) }
-				.distinct()
-		}
-		set(value) {
-			val raw = value.joinToString("|") { it.ordinal.toString() }
-			prefs.edit { putString(KEY_SHELF_SECTIONS, raw) }
-		}
 
 	var listMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.GRID)
@@ -498,7 +481,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READER_TAPS_LTR = "reader_taps_ltr"
 		const val KEY_LOCAL_LIST_ORDER = "local_order"
 		const val KEY_WEBTOON_ZOOM = "webtoon_zoom"
-		const val KEY_SHELF_SECTIONS = "shelf_sections_2"
 		const val KEY_PREFETCH_CONTENT = "prefetch_content"
 		const val KEY_APP_LOCALE = "app_locale"
 		const val KEY_LOGGING_ENABLED = "logging"

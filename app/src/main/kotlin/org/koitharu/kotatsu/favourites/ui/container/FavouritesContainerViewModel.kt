@@ -14,10 +14,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavouritesContainerViewModel @Inject constructor(
-	private val favouritesRepository: FavouritesRepository,
+	favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
 
-	val categories = favouritesRepository.observeCategories()
+	val categories = favouritesRepository.observeCategoriesForLibrary()
 		.mapItems { FavouriteTabModel(it.id, it.title) }
 		.distinctUntilChanged()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())

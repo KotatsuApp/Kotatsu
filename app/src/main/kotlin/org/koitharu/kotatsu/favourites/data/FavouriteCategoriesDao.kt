@@ -1,6 +1,10 @@
 package org.koitharu.kotatsu.favourites.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,6 +18,9 @@ abstract class FavouriteCategoriesDao {
 
 	@Query("SELECT * FROM favourite_categories WHERE deleted_at = 0 ORDER BY sort_key")
 	abstract fun observeAll(): Flow<List<FavouriteCategoryEntity>>
+
+	@Query("SELECT * FROM favourite_categories WHERE deleted_at = 0 AND show_in_lib = 1 ORDER BY sort_key")
+	abstract fun observeAllForLibrary(): Flow<List<FavouriteCategoryEntity>>
 
 	@Query("SELECT * FROM favourite_categories WHERE category_id = :id AND deleted_at = 0")
 	abstract fun observe(id: Long): Flow<FavouriteCategoryEntity?>

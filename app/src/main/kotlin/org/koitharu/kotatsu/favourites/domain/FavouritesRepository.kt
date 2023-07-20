@@ -67,6 +67,12 @@ class FavouritesRepository @Inject constructor(
 		}.distinctUntilChanged()
 	}
 
+	fun observeCategoriesForLibrary(): Flow<List<FavouriteCategory>> {
+		return db.favouriteCategoriesDao.observeAllForLibrary().mapItems {
+			it.toFavouriteCategory()
+		}.distinctUntilChanged()
+	}
+
 	fun observeCategoriesWithCovers(): Flow<Map<FavouriteCategory, List<Cover>>> {
 		return db.favouriteCategoriesDao.observeAll()
 			.map {
