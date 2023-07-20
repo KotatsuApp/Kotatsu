@@ -164,7 +164,7 @@
 			app:layout_constraintBaseline_toBaselineOf="@id/textView_description_title"
 			app:layout_constraintEnd_toEndOf="parent" />
 
-		<TextView
+		<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
 			android:id="@+id/textView_description"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
@@ -173,9 +173,10 @@
 			android:layout_marginEnd="@dimen/margin_normal"
 			android:ellipsize="end"
 			android:lineSpacingMultiplier="1.2"
-			android:maxLines="5"
+			android:maxLines="@integer/details_description_lines"
 			android:paddingBottom="@dimen/margin_normal"
 			android:textAppearance="?attr/textAppearanceBodyMedium"
+			android:textIsSelectable="true"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/textView_description_title"

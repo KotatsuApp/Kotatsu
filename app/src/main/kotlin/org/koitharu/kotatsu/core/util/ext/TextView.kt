@@ -11,6 +11,7 @@ import androidx.core.content.res.use
 import androidx.core.view.isGone
 import androidx.core.widget.TextViewCompat
 
+
 var TextView.textAndVisible: CharSequence?
 	get() = text?.takeIf { visibility == View.VISIBLE }
 	set(value) {
@@ -70,3 +71,13 @@ fun TextView.setThemeTextAppearance(@AttrRes resId: Int, @StyleRes fallback: Int
 		TextViewCompat.setTextAppearance(this, it.getResourceId(0, fallback))
 	}
 }
+
+val TextView.isTextTruncated: Boolean
+	get() {
+		val l = layout ?: return false
+		if (maxLines in 0 until l.lineCount) {
+			return true
+		}
+		val layoutLines = l.lineCount
+		return layoutLines > 0 && l.getEllipsisCount(layoutLines - 1) > 0
+	}

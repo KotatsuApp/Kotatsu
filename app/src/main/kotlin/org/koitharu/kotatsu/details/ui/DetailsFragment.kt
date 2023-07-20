@@ -2,9 +2,11 @@ package org.koitharu.kotatsu.details.ui
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -36,7 +38,9 @@ import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.drawableTop
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.isTextTruncated
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -70,7 +74,7 @@ class DetailsFragment :
 	BaseFragment<FragmentDetailsBinding>(),
 	View.OnClickListener,
 	ChipsView.OnChipClickListener,
-	OnListItemClickListener<Bookmark> {
+	OnListItemClickListener<Bookmark>, ViewTreeObserver.OnDrawListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -94,6 +98,7 @@ class DetailsFragment :
 		binding.buttonScrobblingMore.setOnClickListener(this)
 		binding.buttonRelatedMore.setOnClickListener(this)
 		binding.infoLayout.textViewSource.setOnClickListener(this)
+		binding.textViewDescription.viewTreeObserver.addOnDrawListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
 		binding.recyclerViewRelated.addItemDecoration(
@@ -130,6 +135,13 @@ class DetailsFragment :
 		}
 		menu.show()
 		return true
+	}
+
+	override fun onDraw() {
+		viewBinding?.run {
+			buttonDescriptionMore.isVisible = textViewDescription.maxLines == Int.MAX_VALUE ||
+				textViewDescription.isTextTruncated
+		}
 	}
 
 	private fun onMangaUpdated(manga: Manga) {
@@ -189,12 +201,13 @@ class DetailsFragment :
 	}
 
 	private fun onDescriptionChanged(description: CharSequence?) {
+		val tv = requireViewBinding().textViewDescription
 		if (description.isNullOrBlank()) {
-			requireViewBinding().textViewDescription.setText(R.string.no_description)
+			tv.setText(R.string.no_description)
 		} else {
-			requireViewBinding().textViewDescription.text = description
+			tv.text = description
 		}
-		requireViewBinding().buttonDescriptionMore.isGone = description.isNullOrBlank()
+		requireViewBinding().buttonDescriptionMore.isVisible = tv.isTextTruncated
 	}
 
 	private fun onLocalSizeChanged(size: Long) {
@@ -300,7 +313,13 @@ class DetailsFragment :
 			}
 
 			R.id.button_description_more -> {
-				DescriptionSheet.show(parentFragmentManager, viewModel.description.value ?: return)
+				val tv = requireViewBinding().textViewDescription
+				TransitionManager.beginDelayedTransition(tv.parentView)
+				if (tv.maxLines in 1 until Integer.MAX_VALUE) {
+					tv.maxLines = Integer.MAX_VALUE
+				} else {
+					tv.maxLines = resources.getInteger(R.integer.details_description_lines)
+				}
 			}
 
 			R.id.button_scrobbling_more -> {
