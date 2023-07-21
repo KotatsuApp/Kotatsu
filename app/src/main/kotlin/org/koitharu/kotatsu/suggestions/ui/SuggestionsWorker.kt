@@ -158,6 +158,9 @@ class SuggestionsWorker @AssistedInject constructor(
 					val manga = suggestions[Random.nextInt(0, suggestions.size / 3)]
 					val details = mangaRepositoryFactory.create(manga.manga.source)
 						.getDetails(manga.manga)
+					if (details.chapters.isNullOrEmpty()) {
+						continue
+					}
 					if (details.rating > 0 && details.rating < RATING_MIN) {
 						continue
 					}
@@ -241,6 +244,15 @@ class SuggestionsWorker @AssistedInject constructor(
 						append(tagsText)
 						appendLine()
 						append(description)
+						val chaptersCount = manga.chapters?.size ?: 0
+						appendLine()
+						append(
+							applicationContext.resources.getQuantityString(
+								R.plurals.chapters,
+								chaptersCount,
+								chaptersCount,
+							),
+						)
 					},
 				)
 				style.setBigContentTitle(title)
