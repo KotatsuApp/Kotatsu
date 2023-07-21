@@ -26,7 +26,7 @@ data class FavouriteCategory(
 		if (previousState !is FavouriteCategory) {
 			return null
 		}
-		return if (isTrackingEnabled != previousState.isTrackingEnabled || isVisibleInLibrary != isVisibleInLibrary) {
+		return if (isTrackingEnabled != previousState.isTrackingEnabled || isVisibleInLibrary != previousState.isVisibleInLibrary) {
 			ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED
 		} else {
 			null

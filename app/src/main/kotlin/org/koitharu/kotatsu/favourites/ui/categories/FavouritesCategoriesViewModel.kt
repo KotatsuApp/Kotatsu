@@ -4,9 +4,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
@@ -27,30 +26,26 @@ class FavouritesCategoriesViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	private var reorderJob: Job? = null
-	val isInReorderMode = MutableStateFlow(false)
 
-	val detalizedCategories = combine(
-		repository.observeCategoriesWithCovers(),
-		isInReorderMode,
-	) { list, reordering ->
-		list.map { (category, covers) ->
-			CategoryListModel(
-				mangaCount = covers.size,
-				covers = covers.take(3),
-				category = category,
-				isReorderMode = reordering,
-			)
-		}.ifEmpty {
-			listOf(
-				EmptyState(
-					icon = R.drawable.ic_empty_favourites,
-					textPrimary = R.string.text_empty_holder_primary,
-					textSecondary = R.string.empty_favourite_categories,
-					actionStringRes = 0,
-				),
-			)
-		}
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
+	val detalizedCategories = repository.observeCategoriesWithCovers()
+		.map { list ->
+			list.map { (category, covers) ->
+				CategoryListModel(
+					mangaCount = covers.size,
+					covers = covers.take(3),
+					category = category,
+				)
+			}.ifEmpty {
+				listOf(
+					EmptyState(
+						icon = R.drawable.ic_empty_favourites,
+						textPrimary = R.string.text_empty_holder_primary,
+						textSecondary = R.string.empty_favourite_categories,
+						actionStringRes = 0,
+					),
+				)
+			}
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	fun deleteCategory(id: Long) {
 		launchJob {
@@ -68,13 +63,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		settings.isAllFavouritesVisible = isVisible
 	}
 
-	fun isInReorderMode(): Boolean = isInReorderMode.value
-
 	fun isEmpty(): Boolean = detalizedCategories.value.none { it is CategoryListModel }
-
-	fun setReorderMode(isReorderMode: Boolean) {
-		isInReorderMode.value = isReorderMode
-	}
 
 	fun reorderCategories(oldPos: Int, newPos: Int) {
 		val prevJob = reorderJob

@@ -84,15 +84,41 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/margin_normal"
 		android:layout_marginTop="4dp"
-		android:layout_marginEnd="?listPreferredItemPaddingEnd"
+		android:layout_marginEnd="8dp"
 		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceBodySmall"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/imageView_handle"
+		app:layout_constraintEnd_toStartOf="@id/imageView_tracker"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintHorizontal_chainStyle="packed"
 		app:layout_constraintStart_toEndOf="@id/imageView_cover3"
 		app:layout_constraintTop_toBottomOf="@id/textView_title"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_default="wrap"
 		tools:text="@tools:sample/lorem[1]" />
+
+	<ImageView
+		android:id="@+id/imageView_tracker"
+		android:layout_width="16dp"
+		android:layout_height="16dp"
+		android:layout_marginEnd="4dp"
+		android:contentDescription="@string/check_for_new_chapters"
+		app:layout_constraintBottom_toBottomOf="@id/textView_subtitle"
+		app:layout_constraintEnd_toStartOf="@id/imageView_visible"
+		app:layout_constraintStart_toEndOf="@id/textView_subtitle"
+		app:layout_constraintTop_toTopOf="@id/textView_subtitle"
+		app:srcCompat="@drawable/ic_notification" />
+
+	<ImageView
+		android:id="@+id/imageView_visible"
+		android:layout_width="16dp"
+		android:layout_height="16dp"
+		android:contentDescription="@string/show_on_shelf"
+		app:layout_constraintBottom_toBottomOf="@id/textView_subtitle"
+		app:layout_constraintEnd_toEndOf="@id/textView_title"
+		app:layout_constraintStart_toEndOf="@id/imageView_tracker"
+		app:layout_constraintTop_toTopOf="@id/textView_subtitle"
+		app:srcCompat="@drawable/ic_eye" />
 
 	<ImageView
 		android:id="@+id/imageView_handle"
@@ -102,10 +128,8 @@
 		android:contentDescription="@string/reorder"
 		android:padding="@dimen/margin_normal"
 		android:src="@drawable/ic_reorder_handle"
-		android:visibility="gone"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		tools:visibility="visible" />
+		app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
