@@ -463,4 +463,5 @@
 	<string name="manage_favourites">Manage favourites</string>
 	<string name="suggestions_wifi_only_summary">Do not update suggestions using metered network connections</string>
 	<string name="tracker_wifi_only_summary">Do not check for new chapters using metered network connections</string>
+	<string name="search_hint">Enter manga title, genre or source name</string>
 </resources>

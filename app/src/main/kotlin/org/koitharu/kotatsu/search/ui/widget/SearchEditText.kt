@@ -13,8 +13,11 @@ import android.view.SoundEffectConstants
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.AttrRes
+import androidx.annotation.CheckResult
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.drawableEnd
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
@@ -33,7 +36,7 @@ class SearchEditText @JvmOverloads constructor(
 	private var isEmpty = text.isNullOrEmpty()
 
 	init {
-		wrapHint()
+		hint = wrapHint()
 	}
 
 	var query: String
@@ -106,6 +109,10 @@ class SearchEditText @JvmOverloads constructor(
 		text?.clear()
 	}
 
+	fun setHintCompat(@StringRes resId: Int) {
+		hint = wrapHint(context.getString(resId))
+	}
+
 	private fun onActionIconClick() {
 		when {
 			!text.isNullOrEmpty() -> text?.clear()
@@ -122,15 +129,16 @@ class SearchEditText @JvmOverloads constructor(
 		}
 	}
 
-	private fun wrapHint() {
-		val rawHint = hint?.toString() ?: return
+	@CheckResult
+	private fun wrapHint(raw: CharSequence? = hint): SpannableString? {
+		val rawHint = raw?.toString() ?: return null
 		val formatted = SpannableString(rawHint)
 		formatted.setSpan(
-			TextAppearanceSpan(context, materialR.style.TextAppearance_Material3_SearchView),
+			TextAppearanceSpan(context, R.style.TextAppearance_Kotatsu_SearchView),
 			0,
 			formatted.length,
 			Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
 		)
-		hint = formatted
+		return formatted
 	}
 }

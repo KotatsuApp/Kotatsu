@@ -161,9 +161,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-		menu?.findItem(R.id.action_incognito)?.isChecked = searchSuggestionViewModel.isIncognitoModeEnabled.value
+		if (menu == null) {
+			return false
+		}
+		menu.findItem(R.id.action_incognito)?.isChecked = searchSuggestionViewModel.isIncognitoModeEnabled.value
 		val hasAppUpdate = viewModel.appUpdate.value != null
-		menu?.findItem(R.id.action_app_update)?.isVisible = hasAppUpdate
+		menu.findItem(R.id.action_app_update)?.isVisible = hasAppUpdate
 		appUpdateBadge.setBadgeVisible(hasAppUpdate)
 		return super.onPrepareOptionsMenu(menu)
 	}
@@ -378,6 +381,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		adjustFabVisibility(isSearchOpened = isOpened)
 		supportActionBar?.setHomeAsUpIndicator(
 			if (isOpened) materialR.drawable.abc_ic_ab_back_material else materialR.drawable.abc_ic_search_api_material,
+		)
+		viewBinding.searchView.setHintCompat(
+			if (isOpened) R.string.search_hint else R.string.search_manga,
 		)
 		bottomNav?.showOrHide(!isOpened)
 	}

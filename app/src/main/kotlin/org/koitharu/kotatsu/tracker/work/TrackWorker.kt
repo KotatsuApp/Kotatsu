@@ -74,11 +74,11 @@ class TrackWorker @AssistedInject constructor(
 	override suspend fun doWork(): Result {
 		trySetForeground()
 		logger.log("doWork()")
-		try {
-			return doWorkImpl()
+		return try {
+			doWorkImpl()
 		} catch (e: Throwable) {
 			logger.log("fatal", e)
-			throw e
+			Result.failure()
 		} finally {
 			withContext(NonCancellable) {
 				logger.flush()
@@ -253,7 +253,7 @@ class TrackWorker @AssistedInject constructor(
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
 				.build()
 			workManager
-				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
+				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)
 				.await()
 		}
 
