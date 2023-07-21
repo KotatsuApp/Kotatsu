@@ -32,13 +32,14 @@ import coil.request.ImageRequest
 import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.logs.FileLogger
@@ -119,23 +120,25 @@ class TrackWorker @AssistedInject constructor(
 	}
 
 	private suspend fun checkUpdatesAsync(tracks: List<TrackingItem>): List<MangaUpdates?> {
-		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
+		val semaphore = Semaphore(MAX_PARALLELISM)
 		return supervisorScope {
 			tracks.map { (track, channelId) ->
-				async(dispatcher) {
-					runCatchingCancellable {
-						tracker.fetchUpdates(track, commit = true)
-					}.onFailure {
-						logger.log("checkUpdatesAsync", it)
-					}.onSuccess { updates ->
-						if (updates.isValid && updates.isNotEmpty()) {
-							showNotification(
-								manga = updates.manga,
-								channelId = channelId,
-								newChapters = updates.newChapters,
-							)
-						}
-					}.getOrNull()
+				async {
+					semaphore.withPermit {
+						runCatchingCancellable {
+							tracker.fetchUpdates(track, commit = true)
+						}.onFailure {
+							logger.log("checkUpdatesAsync", it)
+						}.onSuccess { updates ->
+							if (updates.isValid && updates.isNotEmpty()) {
+								showNotification(
+									manga = updates.manga,
+									channelId = channelId,
+									newChapters = updates.newChapters,
+								)
+							}
+						}.getOrNull()
+					}
 				}
 			}.awaitAll()
 		}
@@ -299,7 +302,7 @@ class TrackWorker @AssistedInject constructor(
 		const val WORKER_NOTIFICATION_ID = 35
 		const val TAG = "tracking"
 		const val TAG_ONESHOT = "tracking_oneshot"
-		const val MAX_PARALLELISM = 4
+		const val MAX_PARALLELISM = 3
 		const val DATA_KEY_SUCCESS = "success"
 		const val DATA_KEY_FAILED = "failed"
 	}

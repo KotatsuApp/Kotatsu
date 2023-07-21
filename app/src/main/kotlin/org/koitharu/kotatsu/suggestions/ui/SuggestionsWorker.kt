@@ -36,6 +36,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -133,10 +135,13 @@ class SuggestionsWorker @AssistedInject constructor(
 		val tagsBlacklist = TagsBlacklist(appSettings.suggestionsTagsBlacklist, TAG_EQ_THRESHOLD)
 		val tags = seed.flatMap { it.tags.map { x -> x.title } }.takeMostFrequent(10)
 
+		val semaphore = Semaphore(MAX_PARALLELISM)
 		val producer = channelFlow {
 			for (it in sources.shuffled()) {
 				launch {
-					send(getList(it, tags, tagsBlacklist))
+					semaphore.withPermit {
+						send(getList(it, tags, tagsBlacklist))
+					}
 				}
 			}
 		}
@@ -376,6 +381,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		const val MANGA_CHANNEL_ID = "suggestions"
 		const val WORKER_NOTIFICATION_ID = 36
 		const val MAX_RESULTS = 80
+		const val MAX_PARALLELISM = 3
 		const val MAX_SOURCE_RESULTS = 14
 		const val MAX_RAW_RESULTS = 200
 		const val TAG_EQ_THRESHOLD = 0.4f
