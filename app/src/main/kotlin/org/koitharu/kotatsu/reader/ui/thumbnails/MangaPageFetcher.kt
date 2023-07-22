@@ -19,8 +19,8 @@ import okio.source
 import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.local.data.hasCbzExtension
 import org.koitharu.kotatsu.local.data.util.withExtraCloseable
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.mimeType
@@ -56,7 +56,7 @@ class MangaPageFetcher(
 
 	private suspend fun loadPage(pageUrl: String): SourceResult {
 		val uri = pageUrl.toUri()
-		return if (CbzFilter.isUriSupported(uri)) {
+		return if (hasCbzExtension(uri)) {
 			val zip = runInterruptible(Dispatchers.IO) { ZipFile(uri.schemeSpecificPart) }
 			val entry = runInterruptible(Dispatchers.IO) { zip.getEntry(uri.fragment) }
 			return SourceResult(

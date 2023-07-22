@@ -2,13 +2,16 @@ package org.koitharu.kotatsu.local.data.input
 
 import android.net.Uri
 import androidx.core.net.toFile
-import org.koitharu.kotatsu.local.data.CbzFilter
+import org.koitharu.kotatsu.local.data.isCbzExtension
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.extension
+import kotlin.io.path.isDirectory
 
 sealed class LocalMangaInput(
 	protected val root: File,
@@ -31,9 +34,9 @@ sealed class LocalMangaInput(
 			else -> LocalMangaZipInput(file)
 		}
 
-		fun ofOrNull(file: File): LocalMangaInput? = when {
-			file.isDirectory -> LocalMangaDirInput(file)
-			CbzFilter.isFileSupported(file.name) -> LocalMangaZipInput(file)
+		fun ofOrNull(path: Path): LocalMangaInput? = when {
+			path.isDirectory() -> LocalMangaDirInput(path.toFile())
+			isCbzExtension(path.extension) -> LocalMangaZipInput(path.toFile())
 			else -> null
 		}
 

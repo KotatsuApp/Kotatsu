@@ -44,7 +44,7 @@ import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.core.util.ext.sanitize
-import org.koitharu.kotatsu.core.util.ext.toFileOrNull
+import org.koitharu.kotatsu.core.util.ext.toPathOrNull
 import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
 import org.koitharu.kotatsu.details.domain.DoubleMangaLoadUseCase
@@ -135,13 +135,7 @@ class DetailsViewModel @Inject constructor(
 
 	val localSize = doubleManga
 		.map {
-			val local = it?.local
-			if (local != null) {
-				val file = local.url.toUri().toFileOrNull()
-				file?.computeSize() ?: 0L
-			} else {
-				0L
-			}
+			it?.local?.url?.toUri()?.toPathOrNull()?.computeSize() ?: 0L
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(), 0)
 
 	val description = manga

@@ -17,10 +17,11 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.getStorageName
 import org.koitharu.kotatsu.core.util.ext.resolveFile
-import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.io.File
+import java.nio.file.Path
 import javax.inject.Inject
+import kotlin.io.path.isReadable
 
 private const val DIR_NAME = "manga"
 private const val NOMEDIA = ".nomedia"
@@ -46,15 +47,15 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	suspend fun computeCacheSize(cache: CacheDir) = withContext(Dispatchers.IO) {
-		getCacheDirs(cache.dir).sumOf { it.computeSize() }
+		getCacheDirs(cache.dir).sumOf { it.toPath().computeSize() }
 	}
 
 	suspend fun computeCacheSize() = withContext(Dispatchers.IO) {
-		getCacheDirs().sumOf { it.computeSize() }
+		getCacheDirs().sumOf { it.toPath().computeSize() }
 	}
 
 	suspend fun computeStorageSize() = withContext(Dispatchers.IO) {
-		getAvailableStorageDirs().sumOf { it.computeSize() }
+		getAvailableStorageDirs().sumOf { it.toPath().computeSize() }
 	}
 
 	suspend fun computeAvailableSize() = runInterruptible(Dispatchers.IO) {
@@ -65,19 +66,20 @@ class LocalStorageManager @Inject constructor(
 		getCacheDirs(cache.dir).forEach { it.deleteRecursively() }
 	}
 
-	suspend fun getReadableDirs(): List<File> = runInterruptible(Dispatchers.IO) {
+	suspend fun getReadableDirs(): List<Path> = runInterruptible(Dispatchers.IO) {
 		getConfiguredStorageDirs()
+			.map { it.toPath() }
 			.filter { it.isReadable() }
 	}
 
 	suspend fun getWriteableDirs(): List<File> = runInterruptible(Dispatchers.IO) {
 		getConfiguredStorageDirs()
-			.filter { it.isWriteable() }
+			.filter { it.isWritable() }
 	}
 
 	suspend fun getDefaultWriteableDir(): File? = runInterruptible(Dispatchers.IO) {
-		val preferredDir = settings.mangaStorageDir?.takeIf { it.isWriteable() }
-		preferredDir ?: getFallbackStorageDir()?.takeIf { it.isWriteable() }
+		val preferredDir = settings.mangaStorageDir?.takeIf { it.isWritable() }
+		preferredDir ?: getFallbackStorageDir()?.takeIf { it.isWritable() }
 	}
 
 	suspend fun getApplicationStorageDirs(): Set<File> = runInterruptible(Dispatchers.IO) {
@@ -146,7 +148,7 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	@WorkerThread
-	private fun getCacheDirs(): MutableSet<File> {
+	private fun getCacheDirs(): Set<File> {
 		val result = LinkedHashSet<File>()
 		result += context.cacheDir
 		context.externalCacheDirs.filterNotNullTo(result)
@@ -163,11 +165,7 @@ class LocalStorageManager @Inject constructor(
 		}
 	}
 
-	private fun File.isReadable() = runCatching {
-		canRead()
-	}.getOrDefault(false)
-
-	private fun File.isWriteable() = runCatching {
+	private fun File.isWritable() = runCatching {
 		canWrite()
 	}.getOrDefault(false)
 }

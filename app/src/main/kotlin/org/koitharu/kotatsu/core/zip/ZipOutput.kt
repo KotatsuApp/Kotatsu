@@ -4,11 +4,15 @@ import androidx.annotation.WorkerThread
 import androidx.collection.ArraySet
 import okio.Closeable
 import java.io.File
-import java.io.FileInputStream
+import java.nio.file.Path
 import java.util.zip.Deflater
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
+import kotlin.io.path.forEachDirectoryEntry
+import kotlin.io.path.inputStream
+import kotlin.io.path.isDirectory
+import kotlin.io.path.name
 
 class ZipOutput(
 	val file: File,
@@ -23,7 +27,7 @@ class ZipOutput(
 
 	@WorkerThread
 	fun put(name: String, file: File): Boolean {
-		return output.appendFile(file, name)
+		return output.appendFile(file.toPath(), name)
 	}
 
 	@WorkerThread
@@ -78,8 +82,8 @@ class ZipOutput(
 	}
 
 	@WorkerThread
-	private fun ZipOutputStream.appendFile(fileToZip: File, name: String): Boolean {
-		if (fileToZip.isDirectory) {
+	private fun ZipOutputStream.appendFile(fileToZip: Path, name: String): Boolean {
+		if (fileToZip.isDirectory()) {
 			val entry = if (name.endsWith("/")) {
 				ZipEntry(name)
 			} else {
@@ -90,11 +94,11 @@ class ZipOutput(
 			}
 			putNextEntry(entry)
 			closeEntry()
-			fileToZip.listFiles()?.forEach { childFile ->
-				appendFile(childFile, "$name/${childFile.name}")
+			fileToZip.forEachDirectoryEntry {
+				appendFile(it, "$name/${it.name}")
 			}
 		} else {
-			FileInputStream(fileToZip).use { fis ->
+			fileToZip.inputStream().use { fis ->
 				if (!entryNames.add(name)) {
 					return false
 				}

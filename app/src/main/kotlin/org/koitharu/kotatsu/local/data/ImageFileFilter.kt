@@ -1,29 +1,16 @@
 package org.koitharu.kotatsu.local.data
 
-import java.io.File
-import java.io.FileFilter
-import java.io.FilenameFilter
-import java.util.Locale
 import java.util.zip.ZipEntry
 
-class ImageFileFilter : FilenameFilter, FileFilter {
+fun isImageExtension(string: String): Boolean {
+	return string.equals("png", ignoreCase = true) || string.equals("jpg", ignoreCase = true)
+		|| string.equals("jpeg", ignoreCase = true) || string.equals("webp", ignoreCase = true)
+}
 
-	override fun accept(dir: File, name: String): Boolean {
-		val ext = name.substringAfterLast('.', "").lowercase(Locale.ROOT)
-		return isExtensionValid(ext)
-	}
+fun hasImageExtension(name: String): Boolean {
+	return isImageExtension(name.substringAfterLast('.', ""))
+}
 
-	override fun accept(pathname: File?): Boolean {
-		val ext = pathname?.extension?.lowercase(Locale.ROOT) ?: return false
-		return isExtensionValid(ext)
-	}
-
-	fun accept(entry: ZipEntry): Boolean {
-		val ext = entry.name.substringAfterLast('.', "").lowercase(Locale.ROOT)
-		return isExtensionValid(ext)
-	}
-
-	fun isExtensionValid(ext: String): Boolean {
-		return ext == "png" || ext == "jpg" || ext == "jpeg" || ext == "webp"
-	}
+fun hasImageExtension(entry: ZipEntry): Boolean {
+	return hasImageExtension(entry.name)
 }

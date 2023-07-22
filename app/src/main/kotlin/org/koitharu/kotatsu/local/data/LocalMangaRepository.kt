@@ -14,6 +14,7 @@ import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.CompositeMutex
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -32,6 +33,9 @@ import java.io.File
 import java.util.EnumSet
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.io.path.deleteExisting
+import kotlin.io.path.forEachDirectoryEntry
+import kotlin.io.path.useDirectoryEntries
 
 private const val MAX_PARALLELISM = 4
 
@@ -57,10 +61,7 @@ class LocalMangaRepository @Inject constructor(
 		if (offset > 0) {
 			return emptyList()
 		}
-		val list = getRawList()
-		if (query.isNotEmpty()) {
-			list.retainAll { x -> x.isMatchesQuery(query) }
-		}
+		val list = getRawList().filter { query.isEmpty() || it.isMatchesQuery(query) }
 		return list.unwrap()
 	}
 
@@ -69,18 +70,17 @@ class LocalMangaRepository @Inject constructor(
 			return emptyList()
 		}
 		val list = getRawList()
-		if (!tags.isNullOrEmpty()) {
-			list.retainAll { x -> x.containsTags(tags) }
-		}
-		when (sortOrder) {
-			SortOrder.ALPHABETICAL -> list.sortWith(compareBy(org.koitharu.kotatsu.core.util.AlphanumComparator()) { x -> x.manga.title })
-			SortOrder.RATING -> list.sortByDescending { it.manga.rating }
-			SortOrder.NEWEST,
-			SortOrder.UPDATED,
-			-> list.sortByDescending { it.createdAt }
+			.filter { tags.isNullOrEmpty() || it.containsTags(tags) }
+			.apply {
+				when (sortOrder) {
+					SortOrder.ALPHABETICAL -> sortedWith(compareBy(AlphanumComparator()) { x -> x.manga.title })
+					SortOrder.RATING -> sortedByDescending { it.manga.rating }
+					SortOrder.NEWEST, SortOrder.UPDATED -> sortedByDescending { it.createdAt }
+					else -> {
+					}
+				}
+			}
 
-			else -> Unit
-		}
 		return list.unwrap()
 	}
 
@@ -127,21 +127,19 @@ class LocalMangaRepository @Inject constructor(
 	}
 
 	suspend fun findSavedManga(remoteManga: Manga): LocalManga? {
-		val files = getAllFiles()
-		if (files.isEmpty()) {
-			return null
-		}
 		return channelFlow {
-			for (file in files) {
-				launch {
-					val mangaInput = LocalMangaInput.of(file)
-					runCatchingCancellable {
-						val mangaInfo = mangaInput.getMangaInfo()
-						if (mangaInfo != null && mangaInfo.id == remoteManga.id) {
-							send(mangaInput)
+			storageManager.getReadableDirs().forEach { dir ->
+				dir.forEachDirectoryEntry { entry ->
+					launch {
+						val mangaInput = LocalMangaInput.of(entry.toFile())
+						runCatchingCancellable {
+							val mangaInfo = mangaInput.getMangaInfo()
+							if (mangaInfo != null && mangaInfo.id == remoteManga.id) {
+								send(mangaInput)
+							}
+						}.onFailure {
+							it.printStackTraceDebug()
 						}
-					}.onFailure {
-						it.printStackTraceDebug()
 					}
 				}
 			}
@@ -171,10 +169,10 @@ class LocalMangaRepository @Inject constructor(
 		}
 		val dirs = storageManager.getWriteableDirs()
 		runInterruptible(Dispatchers.IO) {
-			dirs.flatMap { dir ->
-				dir.listFiles(TempFileFilter())?.toList().orEmpty()
-			}.forEach { file ->
-				file.deleteRecursively()
+			dirs.forEach { dir ->
+				dir.toPath().forEachDirectoryEntry("*.tmp") {
+					it.deleteExisting()
+				}
 			}
 		}
 		return true
@@ -188,20 +186,21 @@ class LocalMangaRepository @Inject constructor(
 		locks.unlock(id)
 	}
 
-	private suspend fun getRawList(): ArrayList<LocalManga> {
-		val files = getAllFiles()
+	private suspend fun getRawList(): List<LocalManga> {
 		return coroutineScope {
 			val dispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)
-			files.map { file ->
-				async(dispatcher) {
-					runCatchingCancellable { LocalMangaInput.ofOrNull(file)?.getManga() }.getOrNull()
+			storageManager.getReadableDirs().flatMap { dir ->
+				dir.useDirectoryEntries { entries ->
+					entries.map {
+						async(dispatcher) {
+							runCatchingCancellable { LocalMangaInput.ofOrNull(it)?.getManga() }.getOrNull()
+						}
+					}.toList() // Using toList() allows the directory stream to be closed.
 				}
-			}.awaitAll()
-		}.filterNotNullTo(ArrayList(files.size))
-	}
-
-	private suspend fun getAllFiles() = storageManager.getReadableDirs().flatMap { dir ->
-		dir.listFiles()?.toList().orEmpty()
+			}
+				.awaitAll()
+				.filterNotNull()
+		}
 	}
 
 	private fun Collection<LocalManga>.unwrap(): List<Manga> = map { it.manga }

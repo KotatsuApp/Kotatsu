@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -126,8 +127,7 @@ class MangaIndex(source: String?) {
 			item.put("id", id)
 			list.add(item)
 		}
-		val comparator = org.koitharu.kotatsu.core.util.AlphanumComparator()
-		list.sortWith(compareBy(comparator) { it.getString("name") })
+		list.sortWith(compareBy(AlphanumComparator()) { it.getString("name") })
 		val newJo = JSONObject()
 		list.forEachIndexed { i, obj ->
 			obj.put("number", i + 1)

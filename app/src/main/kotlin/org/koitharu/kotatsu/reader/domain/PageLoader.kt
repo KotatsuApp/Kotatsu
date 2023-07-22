@@ -41,8 +41,8 @@ import org.koitharu.kotatsu.core.util.ext.ramAvailable
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
 import org.koitharu.kotatsu.core.zip.ZipPool
-import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.local.data.hasCbzExtension
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
@@ -198,7 +198,7 @@ class PageLoader @Inject constructor(
 		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
 		val uri = Uri.parse(pageUrl)
-		return if (CbzFilter.isUriSupported(uri)) {
+		return if (hasCbzExtension(uri)) {
 			runInterruptible(Dispatchers.IO) {
 				zipPool[uri]
 			}.use {
