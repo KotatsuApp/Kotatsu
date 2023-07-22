@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.core.util
 
-class AlphanumComparator : Comparator<String> {
-
+object AlphanumComparator : Comparator<String> {
 	override fun compare(s1: String?, s2: String?): Int {
 		if (s1 == null || s2 == null) {
 			return 0

@@ -6,8 +6,7 @@ import java.io.FilenameFilter
 import java.util.Locale
 import java.util.zip.ZipEntry
 
-class ImageFileFilter : FilenameFilter, FileFilter {
-
+object ImageFileFilter : FilenameFilter, FileFilter {
 	override fun accept(dir: File, name: String): Boolean {
 		val ext = name.substringAfterLast('.', "").lowercase(Locale.ROOT)
 		return isExtensionValid(ext)

@@ -28,7 +28,7 @@ class Bookmark(
 
 	private fun isImageUrlDirect(): Boolean {
 		val extension = imageUrl.substringAfterLast('.')
-		return extension.isNotEmpty() && ImageFileFilter().isExtensionValid(extension)
+		return extension.isNotEmpty() && ImageFileFilter.isExtensionValid(extension)
 	}
 
 	override fun equals(other: Any?): Boolean {

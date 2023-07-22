@@ -14,6 +14,7 @@ import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.CompositeMutex
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
@@ -29,7 +30,6 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
-import java.io.FilenameFilter
 import java.util.EnumSet
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -74,12 +74,9 @@ class LocalMangaRepository @Inject constructor(
 			list.retainAll { x -> x.containsTags(tags) }
 		}
 		when (sortOrder) {
-			SortOrder.ALPHABETICAL -> list.sortWith(compareBy(org.koitharu.kotatsu.core.util.AlphanumComparator()) { x -> x.manga.title })
+			SortOrder.ALPHABETICAL -> list.sortWith(compareBy(AlphanumComparator) { x -> x.manga.title })
 			SortOrder.RATING -> list.sortByDescending { it.manga.rating }
-			SortOrder.NEWEST,
-			SortOrder.UPDATED,
-			-> list.sortByDescending { it.createdAt }
-
+			SortOrder.NEWEST, SortOrder.UPDATED -> list.sortByDescending { it.createdAt }
 			else -> Unit
 		}
 		return list.unwrap()
