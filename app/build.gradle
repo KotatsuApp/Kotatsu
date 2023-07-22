@@ -17,8 +17,8 @@ android {
 		//TODO: update as soon as sources becomes available
 		//noinspection OldTargetApi
 		targetSdkVersion 33
-		versionCode 565
-		versionName '5.3.8'
+		versionCode 566
+		versionName '5.3.9'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -81,7 +81,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:69e0a531df') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:42cc0430f8') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -138,8 +138,8 @@ dependencies {
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
 
-	implementation 'ch.acra:acra-http:5.10.1'
-	implementation 'ch.acra:acra-dialog:5.10.1'
+	implementation 'ch.acra:acra-http:5.11.0'
+	implementation 'ch.acra:acra-dialog:5.11.0'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 
