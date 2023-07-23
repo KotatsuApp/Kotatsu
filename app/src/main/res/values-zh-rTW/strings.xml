@@ -64,7 +64,7 @@
     <string name="text_file_not_supported">選擇 ZIP 或 CBZ 檔案。</string>
     <string name="no_bookmarks_summary">您可以在閱讀漫畫時建立書籤</string>
     <string name="show_notification_new_chapters_on">您將會收到您正在閱讀的漫畫的更新通知</string>
-    <string name="tracker_warning">一些设备有不同的系统行为，这可能会破坏后台任务。</string>
+    <string name="tracker_warning">一些裝置有不同的系統行為，這可能會破壞背景任務。</string>
     <string name="protect_application_subtitle">輸入密碼以啟動應用程式</string>
     <string name="protect_application_summary">在啟動 Kotatsu 時要求密碼</string>
     <string name="chapters_empty">此漫畫沒有章節</string>
@@ -75,7 +75,7 @@
     <string name="password_length_hint">密碼必須是 4 個字元以上</string>
     <string name="auth_not_supported_by">不支援在 %s 上登錄</string>
     <string name="_s_deleted_from_local_storage">\"%s\" 已從本機儲存區中刪除</string>
-    <string name="exit_confirmation_summary">典籍兩次返回鍵以退出應用程式</string>
+    <string name="exit_confirmation_summary">點擊兩次返回鍵以退出應用程式</string>
     <string name="no_manga_sources_text">啟用漫畫來源以閱讀線上漫畫</string>
     <string name="text_clear_history_prompt">永久清除所有閱讀歷史紀錄\?</string>
     <string name="text_delete_local_manga">從裝置中永久刪除 \"%s\"\?</string>
