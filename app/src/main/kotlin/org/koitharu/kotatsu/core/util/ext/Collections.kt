@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.util.ext
 import androidx.collection.ArrayMap
 import androidx.collection.ArraySet
 import java.util.Collections
+import java.util.EnumSet
 
 @Deprecated("TODO: remove")
 fun <T> MutableList<T>.move(sourceIndex: Int, targetIndex: Int) {
@@ -60,4 +61,10 @@ fun <T> List<T>.takeMostFrequent(limit: Int): List<T> {
 			add(entries[i].key)
 		}
 	}
+}
+
+inline fun <reified E : Enum<E>> Collection<E>.toEnumSet(): EnumSet<E> = if (isEmpty()) {
+	EnumSet.noneOf(E::class.java)
+} else {
+	EnumSet.copyOf(this)
 }

@@ -19,12 +19,12 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.ext.toEnumSet
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
-import java.util.EnumSet
 import javax.inject.Inject
 
 private const val DEBOUNCE_TIMEOUT = 500L
@@ -91,7 +91,7 @@ class SearchSuggestionViewModel @Inject constructor(
 		suggestionJob?.cancel()
 		suggestionJob = combine(
 			query.debounce(DEBOUNCE_TIMEOUT),
-			sourcesRepository.observeEnabledSources().map { EnumSet.copyOf(it) },
+			sourcesRepository.observeEnabledSources().map { it.toEnumSet() },
 			::Pair,
 		).mapLatest { (searchQuery, enabledSources) ->
 			buildSearchSuggestion(searchQuery, enabledSources)

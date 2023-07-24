@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.map
+import org.koitharu.kotatsu.core.util.ext.toEnumSet
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
@@ -122,7 +123,7 @@ class SourcesListViewModel @Inject constructor(
 	private suspend fun buildList() = withContext(Dispatchers.Default) {
 		val allSources = repository.allMangaSources
 		val enabledSources = repository.getEnabledSources()
-		val enabledSet = EnumSet.copyOf(enabledSources)
+		val enabledSet = enabledSources.toEnumSet()
 		val query = searchQuery
 		if (!query.isNullOrEmpty()) {
 			items.value = allSources.mapNotNull {
