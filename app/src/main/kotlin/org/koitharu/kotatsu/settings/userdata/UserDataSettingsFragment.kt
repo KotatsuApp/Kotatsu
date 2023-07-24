@@ -67,12 +67,20 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 		findPreference<Preference>(AppSettings.KEY_HTTP_CACHE_CLEAR)?.bindBytesSizeSummary(viewModel.httpCacheSize)
 		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { pref ->
 			viewModel.searchHistoryCount.observe(viewLifecycleOwner) {
-				pref.summary = pref.context.resources.getQuantityString(R.plurals.items, it, it)
+				pref.summary = if (it < 0) {
+					view.context.getString(R.string.loading_)
+				} else {
+					pref.context.resources.getQuantityString(R.plurals.items, it, it)
+				}
 			}
 		}
 		findPreference<Preference>(AppSettings.KEY_UPDATES_FEED_CLEAR)?.let { pref ->
 			viewModel.feedItemsCount.observe(viewLifecycleOwner) {
-				pref.summary = pref.context.resources.getQuantityString(R.plurals.items, it, it)
+				pref.summary = if (it < 0) {
+					view.context.getString(R.string.loading_)
+				} else {
+					pref.context.resources.getQuantityString(R.plurals.items, it, it)
+				}
 			}
 		}
 		findPreference<StorageUsagePreference>("storage_usage")?.let { pref ->

@@ -180,7 +180,7 @@
     <string name="grid_size">Wielkość siatki</string>
     <string name="search_on_s">Szukaj na %s</string>
     <string name="delete_manga">Usuń mangę</string>
-    <string name="_continue">Dalej</string>
+    <string name="_continue">Kontynuuj</string>
     <string name="error">Błąd</string>
     <string name="search_history_cleared">Wyczyszczone</string>
     <string name="internal_storage">Pamięć wewnętrzna</string>
@@ -431,4 +431,16 @@
     <string name="reader_info_bar_summary">Pokaż aktualny czas i postęp czytania u góry ekranu</string>
     <string name="details_button_tip">Naciśnij i przytrzymaj przycisk Czytaj, aby zobaczyć więcej opcji</string>
     <string name="manga_branch_title_template">%1$s (%2$s)</string>
+    <string name="clear_source_cookies_summary">Wyczyść pliki cookie tylko dla określonej domeny. W większości przypadków unieważni autoryzację</string>
+    <string name="download_option_all_chapters">Wszystkie rozdziały z tłumaczeniem %s</string>
+    <string name="download_option_first_n_chapters">Pierwszy %s</string>
+    <string name="download_option_all_unread">Wszystkie nieprzeczytane rozdziały</string>
+    <string name="download_option_all_unread_b">Wszystkie nieprzeczytane rozdziały (%s)</string>
+    <string name="download_option_whole_manga">Cała manga</string>
+    <string name="download_option_next_unread_n_chapters">Następna nieprzeczytana %s</string>
+    <string name="download_option_manual_selection">Wybierz rozdziały ręcznie</string>
+    <string name="custom_directory">Katalog niestandardowy</string>
+    <string name="pick_custom_directory">Wybierz katalog niestandardowy</string>
+    <string name="no_access_to_file">Nie masz dostępu do tego pliku lub katalogu</string>
+    <string name="local_manga_directories">Lokalne katalogi mangi</string>
 </resources>
