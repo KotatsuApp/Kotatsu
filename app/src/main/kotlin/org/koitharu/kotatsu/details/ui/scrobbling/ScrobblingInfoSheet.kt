@@ -121,13 +121,14 @@ class ScrobblingInfoSheet :
 			dismissAllowingStateLoss()
 			return
 		}
-		requireViewBinding().textViewTitle.text = scrobbling.title
-		requireViewBinding().ratingBar.rating = scrobbling.rating * requireViewBinding().ratingBar.numStars
-		requireViewBinding().textViewDescription.text = scrobbling.description?.sanitize()
-		requireViewBinding().spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
-		requireViewBinding().imageViewLogo.contentDescription = getString(scrobbling.scrobbler.titleResId)
-		requireViewBinding().imageViewLogo.setImageResource(scrobbling.scrobbler.iconResId)
-		requireViewBinding().imageViewCover.newImageRequest(viewLifecycleOwner, scrobbling.coverUrl)?.apply {
+		val binding = viewBinding ?: return
+		binding.textViewTitle.text = scrobbling.title
+		binding.ratingBar.rating = scrobbling.rating * binding.ratingBar.numStars
+		binding.textViewDescription.text = scrobbling.description?.sanitize()
+		binding.spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
+		binding.imageViewLogo.contentDescription = getString(scrobbling.scrobbler.titleResId)
+		binding.imageViewLogo.setImageResource(scrobbling.scrobbler.iconResId)
+		binding.imageViewCover.newImageRequest(viewLifecycleOwner, scrobbling.coverUrl)?.apply {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
