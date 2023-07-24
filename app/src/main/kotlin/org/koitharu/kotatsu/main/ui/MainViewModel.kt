@@ -6,9 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
@@ -18,6 +16,7 @@ import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.main.domain.ReadingResumeEnabledUseCase
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -31,9 +30,11 @@ class MainViewModel @Inject constructor(
 	trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
 	readingResumeEnabledUseCase: ReadingResumeEnabledUseCase,
+	private val sourcesRepository: MangaSourcesRepository,
 ) : BaseViewModel() {
 
 	val onOpenReader = MutableEventFlow<Manga>()
+	val onFirstStart = MutableEventFlow<Unit>()
 
 	val isResumeEnabled = readingResumeEnabledUseCase().stateIn(
 		scope = viewModelScope + Dispatchers.Default,
@@ -64,6 +65,11 @@ class MainViewModel @Inject constructor(
 		launchJob {
 			appUpdateRepository.fetchUpdate()
 		}
+		launchJob(Dispatchers.Default) {
+			if (sourcesRepository.isSetupRequired()) {
+				onFirstStart.call(Unit)
+			}
+		}
 	}
 
 	fun openLastReader() {
@@ -77,10 +83,7 @@ class MainViewModel @Inject constructor(
 		settings.isIncognitoModeEnabled = isEnabled
 	}
 
-	private fun observeNewSourcesCount() = settings.observe()
-		.filter { it == AppSettings.KEY_SOURCES_ORDER || it == AppSettings.KEY_SOURCES_HIDDEN }
-		.onStart { emit("") }
-		.map { settings.newSources.size }
+	private fun observeNewSourcesCount() = sourcesRepository.observeNewSources()
+		.map { it.size }
 		.distinctUntilChanged()
-
 }

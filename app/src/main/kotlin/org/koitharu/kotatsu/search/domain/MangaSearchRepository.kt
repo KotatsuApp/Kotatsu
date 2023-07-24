@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTag
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -26,27 +26,28 @@ import javax.inject.Inject
 
 @Reusable
 class MangaSearchRepository @Inject constructor(
-	private val settings: AppSettings,
 	private val db: MangaDatabase,
+	private val sourcesRepository: MangaSourcesRepository,
 	@ApplicationContext private val context: Context,
 	private val recentSuggestions: SearchRecentSuggestions,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 
 	fun globalSearch(query: String, concurrency: Int = DEFAULT_CONCURRENCY): Flow<Manga> =
-		settings.getMangaSources(includeHidden = false).asFlow()
-			.flatMapMerge(concurrency) { source ->
-				runCatchingCancellable {
-					mangaRepositoryFactory.create(source).getList(
-						offset = 0,
-						query = query,
-					)
-				}.getOrElse {
-					emptyList()
-				}.asFlow()
-			}.filter {
-				match(it, query)
-			}
+		flow {
+			emitAll(sourcesRepository.getEnabledSources().asFlow())
+		}.flatMapMerge(concurrency) { source ->
+			runCatchingCancellable {
+				mangaRepositoryFactory.create(source).getList(
+					offset = 0,
+					query = query,
+				)
+			}.getOrElse {
+				emptyList()
+			}.asFlow()
+		}.filter {
+			match(it, query)
+		}
 
 	suspend fun getMangaSuggestion(query: String, limit: Int, source: MangaSource?): List<Manga> {
 		if (query.isEmpty()) {
@@ -101,7 +102,7 @@ class MangaSearchRepository @Inject constructor(
 		if (query.length < 3) {
 			return emptyList()
 		}
-		val sources = settings.remoteMangaSources
+		val sources = sourcesRepository.allMangaSources
 			.filter { x -> x.title.contains(query, ignoreCase = true) }
 		return if (limit == 0) {
 			sources

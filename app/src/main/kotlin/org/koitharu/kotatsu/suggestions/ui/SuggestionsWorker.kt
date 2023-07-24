@@ -52,6 +52,7 @@ import org.koitharu.kotatsu.core.util.ext.takeMostFrequent
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -79,6 +80,7 @@ class SuggestionsWorker @AssistedInject constructor(
 	private val favouritesRepository: FavouritesRepository,
 	private val appSettings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	private val sourcesRepository: MangaSourcesRepository,
 ) : CoroutineWorker(appContext, params) {
 
 	override suspend fun doWork(): Result {
@@ -128,7 +130,7 @@ class SuggestionsWorker @AssistedInject constructor(
 			historyRepository.getList(0, 20) +
 				favouritesRepository.getLastManga(20)
 			).distinctById()
-		val sources = appSettings.getMangaSources(includeHidden = false)
+		val sources = sourcesRepository.getEnabledSources()
 		if (seed.isEmpty() || sources.isEmpty()) {
 			return 0
 		}

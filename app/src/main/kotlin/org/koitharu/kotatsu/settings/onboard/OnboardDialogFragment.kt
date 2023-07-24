@@ -66,9 +66,9 @@ class OnboardDialogFragment :
 		viewModel.setItemChecked(item.key, isChecked)
 	}
 
-	override fun onClick(dialog: DialogInterface?, which: Int) {
+	override fun onClick(dialog: DialogInterface, which: Int) {
 		when (which) {
-			DialogInterface.BUTTON_POSITIVE -> viewModel.apply()
+			DialogInterface.BUTTON_POSITIVE -> dialog.dismiss()
 		}
 	}
 

@@ -4,16 +4,18 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.almostEquals
 import org.koitharu.kotatsu.core.util.ext.asArrayList
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.suggestions.domain.TagsBlacklist
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 class ExploreRepository @Inject constructor(
 	private val settings: AppSettings,
+	private val sourcesRepository: MangaSourcesRepository,
 	private val historyRepository: HistoryRepository,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
@@ -23,7 +25,7 @@ class ExploreRepository @Inject constructor(
 		val tags = historyRepository.getPopularTags(tagsLimit).mapNotNull {
 			if (it in blacklistTagRegex) null else it.title
 		}
-		val sources = settings.getMangaSources(includeHidden = false)
+		val sources = sourcesRepository.getEnabledSources()
 		check(sources.isNotEmpty()) { "No sources available" }
 		for (i in 0..4) {
 			val list = getList(sources.random(), tags, blacklistTagRegex)

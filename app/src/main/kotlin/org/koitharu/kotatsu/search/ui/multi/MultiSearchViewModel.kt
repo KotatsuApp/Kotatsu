@@ -19,12 +19,13 @@ import kotlinx.coroutines.plus
 import kotlinx.coroutines.withTimeout
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -33,7 +34,6 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 private const val MAX_PARALLELISM = 4
@@ -43,9 +43,9 @@ private const val MIN_HAS_MORE_ITEMS = 8
 class MultiSearchViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val extraProvider: ListExtraProvider,
-	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val downloadScheduler: DownloadWorker.Scheduler,
+	private val sourcesRepository: MangaSourcesRepository,
 ) : BaseViewModel() {
 
 	private var searchJob: Job? = null
@@ -117,7 +117,7 @@ class MultiSearchViewModel @Inject constructor(
 	}
 
 	private suspend fun searchImpl(q: String) = coroutineScope {
-		val sources = settings.getMangaSources(includeHidden = false)
+		val sources = sourcesRepository.getEnabledSources()
 		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
 		val deferredList = sources.map { source ->
 			async(dispatcher) {

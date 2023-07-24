@@ -63,7 +63,6 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.about.AppUpdateDialog
-import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -136,6 +135,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.counters.observe(this, ::onCountersChanged)
 		viewModel.appUpdate.observe(this) { invalidateMenu() }
+		viewModel.onFirstStart.observeEvent(this) { OnboardDialogFragment.showWelcome(supportFragmentManager) }
 		viewModel.isFeedAvailable.observe(this, ::onFeedAvailabilityChanged)
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 	}
@@ -324,15 +324,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 	private fun onFirstStart() {
 		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
-			when {
-				!settings.isSourcesSelected -> withResumed {
-					OnboardDialogFragment.showWelcome(supportFragmentManager)
-				}
-
-				settings.newSources.isNotEmpty() -> withResumed {
-					NewSourcesDialogFragment.show(supportFragmentManager)
-				}
-			}
 			withContext(Dispatchers.Default) {
 				LocalStorageCleanupWorker.enqueue(applicationContext)
 			}

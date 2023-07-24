@@ -15,24 +15,19 @@ import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONArray
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
-import org.koitharu.kotatsu.core.util.ext.filterToSet
 import org.koitharu.kotatsu.core.util.ext.getEnumValue
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.io.File
 import java.net.Proxy
-import java.util.Collections
-import java.util.EnumSet
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -42,16 +37,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 	private val connectivityManager = context.connectivityManager
-
-	private val remoteSources = EnumSet.allOf(MangaSource::class.java).apply {
-		remove(MangaSource.LOCAL)
-		if (!BuildConfig.DEBUG) {
-			remove(MangaSource.DUMMY)
-		}
-	}
-
-	val remoteMangaSources: Set<MangaSource>
-		get() = Collections.unmodifiableSet(remoteSources)
 
 	var listMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.GRID)
@@ -183,37 +168,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			return policy.isNetworkAllowed(connectivityManager)
 		}
 
-	var sourcesOrder: List<String>
-		get() = prefs.getString(KEY_SOURCES_ORDER, null)
-			?.split('|')
-			.orEmpty()
-		set(value) = prefs.edit {
-			putString(KEY_SOURCES_ORDER, value.joinToString("|"))
-		}
-
-	var hiddenSources: Set<String>
-		get() = prefs.getStringSet(KEY_SOURCES_HIDDEN, null)?.filterToSet { name ->
-			remoteSources.any { it.name == name }
-		}.orEmpty()
-		set(value) = prefs.edit { putStringSet(KEY_SOURCES_HIDDEN, value) }
-
-	val isSourcesSelected: Boolean
-		get() = KEY_SOURCES_HIDDEN in prefs
-
-	val newSources: Set<MangaSource>
-		get() {
-			val known = sourcesOrder.toSet()
-			val hidden = hiddenSources
-			return remoteMangaSources
-				.filterNotTo(EnumSet.noneOf(MangaSource::class.java)) { x ->
-					x.name in known || x.name in hidden
-				}
-		}
-
-	fun markKnownSources(sources: Collection<MangaSource>) {
-		sourcesOrder = (sourcesOrder + sources.map { it.name }).distinct()
-	}
-
 	var isSourcesGridMode: Boolean
 		get() = prefs.getBoolean(KEY_SOURCES_GRID, false)
 		set(value) = prefs.edit { putBoolean(KEY_SOURCES_GRID, value) }
@@ -335,20 +289,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			return policy.isNetworkAllowed(connectivityManager)
 		}
 
-	fun getMangaSources(includeHidden: Boolean): List<MangaSource> {
-		val list = remoteSources.toMutableList()
-		val order = sourcesOrder
-		list.sortBy { x ->
-			val e = order.indexOf(x.name)
-			if (e == -1) order.size + x.ordinal else e
-		}
-		if (!includeHidden) {
-			val hidden = hiddenSources
-			list.removeAll { x -> x.name in hidden }
-		}
-		return list
-	}
-
 	fun isTipEnabled(tip: String): Boolean {
 		return prefs.getStringSet(KEY_TIPS_CLOSED, emptySet())?.contains(tip) != true
 	}
@@ -417,8 +357,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_THEME = "theme"
 		const val KEY_COLOR_THEME = "color_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
-		const val KEY_SOURCES_ORDER = "sources_order_2"
-		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"
 		const val KEY_PAGES_CACHE_CLEAR = "pages_cache_clear"
 		const val KEY_HTTP_CACHE_CLEAR = "http_cache_clear"

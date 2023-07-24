@@ -11,18 +11,20 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
+import java.util.EnumSet
 import javax.inject.Inject
 
 private const val DEBOUNCE_TIMEOUT = 500L
@@ -35,6 +37,7 @@ private const val MAX_SOURCES_ITEMS = 6
 class SearchSuggestionViewModel @Inject constructor(
 	private val repository: MangaSearchRepository,
 	private val settings: AppSettings,
+	private val sourcesRepository: MangaSourcesRepository,
 ) : BaseViewModel() {
 
 	private val query = MutableStateFlow("")
@@ -72,10 +75,8 @@ class SearchSuggestionViewModel @Inject constructor(
 	}
 
 	fun onSourceToggle(source: MangaSource, isEnabled: Boolean) {
-		settings.hiddenSources = if (isEnabled) {
-			settings.hiddenSources - source.name
-		} else {
-			settings.hiddenSources + source.name
+		launchJob(Dispatchers.Default) {
+			sourcesRepository.setSourceEnabled(source, isEnabled)
 		}
 	}
 
@@ -90,10 +91,10 @@ class SearchSuggestionViewModel @Inject constructor(
 		suggestionJob?.cancel()
 		suggestionJob = combine(
 			query.debounce(DEBOUNCE_TIMEOUT),
-			settings.observeAsFlow(AppSettings.KEY_SOURCES_HIDDEN) { hiddenSources },
+			sourcesRepository.observeEnabledSources().map { EnumSet.copyOf(it) },
 			::Pair,
-		).mapLatest { (searchQuery, hiddenSources) ->
-			buildSearchSuggestion(searchQuery, hiddenSources)
+		).mapLatest { (searchQuery, enabledSources) ->
+			buildSearchSuggestion(searchQuery, enabledSources)
 		}.distinctUntilChanged()
 			.onEach {
 				suggestion.value = it
@@ -102,7 +103,7 @@ class SearchSuggestionViewModel @Inject constructor(
 
 	private suspend fun buildSearchSuggestion(
 		searchQuery: String,
-		hiddenSources: Set<String>,
+		enabledSources: Set<MangaSource>,
 	): List<SearchSuggestionItem> = coroutineScope {
 		val queriesDeferred = async {
 			repository.getQuerySuggestion(searchQuery, MAX_QUERY_ITEMS)
@@ -127,7 +128,7 @@ class SearchSuggestionViewModel @Inject constructor(
 				add(SearchSuggestionItem.MangaList(mangaList))
 			}
 			queries.mapTo(this) { SearchSuggestionItem.RecentQuery(it) }
-			sources.mapTo(this) { SearchSuggestionItem.Source(it, it.name !in hiddenSources) }
+			sources.mapTo(this) { SearchSuggestionItem.Source(it, it in enabledSources) }
 		}
 	}
 

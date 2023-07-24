@@ -1,15 +1,16 @@
 package org.koitharu.kotatsu.settings.onboard
 
+import androidx.annotation.WorkerThread
 import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.map
 import org.koitharu.kotatsu.core.util.ext.mapToSet
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
-import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
 import java.util.Locale
@@ -17,31 +18,34 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnboardViewModel @Inject constructor(
-	private val settings: AppSettings,
+	private val repository: MangaSourcesRepository,
 ) : BaseViewModel() {
 
-	private val allSources = settings.remoteMangaSources
-
+	private val allSources = repository.allMangaSources
 	private val locales = allSources.groupBy { it.locale }
-
-	private val selectedLocales = locales.keys.toMutableSet()
-
+	private val selectedLocales = HashSet<String?>()
 	val list = MutableStateFlow<List<SourceLocale>?>(null)
+	private var updateJob: Job
 
 	init {
-		if (settings.isSourcesSelected) {
-			selectedLocales.removeAll(settings.hiddenSources.mapNotNullToSet { x -> MangaSource(x).locale })
-		} else {
-			val deviceLocales = LocaleListCompat.getDefault().mapToSet { x ->
-				x.language
+		updateJob = launchJob(Dispatchers.Default) {
+			if (repository.isSetupRequired()) {
+				val deviceLocales = LocaleListCompat.getDefault().mapToSet { x ->
+					x.language
+				}
+				selectedLocales.addAll(deviceLocales)
+				if (selectedLocales.isEmpty()) {
+					selectedLocales += "en"
+				}
+				selectedLocales += null
+			} else {
+				selectedLocales.addAll(
+					repository.getEnabledSources().mapNotNullToSet { x -> x.locale },
+				)
 			}
-			selectedLocales.retainAll(deviceLocales)
-			if (selectedLocales.isEmpty()) {
-				selectedLocales += "en"
-			}
-			selectedLocales += null
+			rebuildList()
+			repository.assimilateNewSources()
 		}
-		rebuildList()
 	}
 
 	fun setItemChecked(key: String?, isChecked: Boolean) {
@@ -51,17 +55,17 @@ class OnboardViewModel @Inject constructor(
 			selectedLocales.remove(key)
 		}
 		if (isModified) {
-			rebuildList()
+			val prevJob = updateJob
+			updateJob = launchJob(Dispatchers.Default) {
+				prevJob.join()
+				val sources = allSources.filter { x -> x.locale == key }
+				repository.setSourcesEnabled(sources, isChecked)
+				rebuildList()
+			}
 		}
 	}
 
-	fun apply() {
-		settings.hiddenSources = allSources.filterNot { x ->
-			x.locale in selectedLocales
-		}.mapToSet { x -> x.name }
-		settings.markKnownSources(settings.newSources)
-	}
-
+	@WorkerThread
 	private fun rebuildList() {
 		list.value = locales.map { (key, srcs) ->
 			val locale = if (key != null) {

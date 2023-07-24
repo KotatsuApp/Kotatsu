@@ -7,13 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
@@ -22,9 +18,9 @@ import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.explore.ui.model.ExploreButtons
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
@@ -45,6 +41,7 @@ class ExploreViewModel @Inject constructor(
 	private val settings: AppSettings,
 	private val suggestionRepository: SuggestionRepository,
 	private val exploreRepository: ExploreRepository,
+	private val sourcesRepository: MangaSourcesRepository,
 ) : BaseViewModel() {
 
 	val isGrid = settings.observeAsStateFlow(
@@ -96,10 +93,7 @@ class ExploreViewModel @Inject constructor(
 
 	fun hideSource(source: MangaSource) {
 		launchJob(Dispatchers.Default) {
-			settings.hiddenSources += source.name
-			val rollback = ReversibleHandle {
-				settings.hiddenSources -= source.name
-			}
+			val rollback = sourcesRepository.setSourceEnabled(source, isEnabled = false)
 			onActionDone.call(ReversibleAction(R.string.source_disabled, rollback))
 		}
 	}
@@ -114,11 +108,11 @@ class ExploreViewModel @Inject constructor(
 	}
 
 	private fun createContentFlow() = combine(
-		observeSources(),
+		sourcesRepository.observeEnabledSources(),
 		getSuggestionFlow(),
 		isGrid,
 		isRandomLoading,
-		observeNewSources(),
+		sourcesRepository.observeNewSources(),
 	) { content, suggestions, grid, randomLoading, newSources ->
 		buildList(content, suggestions, grid, randomLoading, newSources)
 	}
@@ -160,15 +154,6 @@ class ExploreViewModel @Inject constructor(
 		return result
 	}
 
-	private fun observeSources() = settings.observe()
-		.filter {
-			it == AppSettings.KEY_SOURCES_HIDDEN ||
-				it == AppSettings.KEY_SOURCES_ORDER ||
-				it == AppSettings.KEY_SUGGESTIONS
-		}
-		.onStart { emit("") }
-		.map { settings.getMangaSources(includeHidden = false) }
-
 	private fun getLoadingStateList() = listOf(
 		ExploreButtons(isRandomLoading.value),
 		LoadingState,
@@ -183,12 +168,6 @@ class ExploreViewModel @Inject constructor(
 			null
 		}
 	}
-
-	private fun observeNewSources() = settings.observe()
-		.filter { it == AppSettings.KEY_SOURCES_ORDER || it == AppSettings.KEY_SOURCES_HIDDEN }
-		.onStart { emit("") }
-		.map { settings.newSources }
-		.distinctUntilChanged()
 
 	companion object {
 
