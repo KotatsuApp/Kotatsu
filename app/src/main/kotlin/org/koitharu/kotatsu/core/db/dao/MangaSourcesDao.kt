@@ -24,7 +24,7 @@ abstract class MangaSourcesDao {
 	@Query("SELECT * FROM sources ORDER BY sort_key")
 	abstract fun observeAll(): Flow<List<MangaSourceEntity>>
 
-	@Query("SELECT MAX(sort_key) FROM sources")
+	@Query("SELECT IFNULL(MAX(sort_key),0) FROM sources")
 	abstract suspend fun getMaxSortKey(): Int
 
 	@Query("UPDATE sources SET enabled = 0")
@@ -35,7 +35,7 @@ abstract class MangaSourcesDao {
 
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	@Transaction
-	abstract suspend fun insertIfAbsent(entries: Iterable<MangaSourceEntity>)
+	abstract suspend fun insertIfAbsent(entries: Collection<MangaSourceEntity>)
 
 	@Upsert
 	abstract suspend fun upsert(entry: MangaSourceEntity)

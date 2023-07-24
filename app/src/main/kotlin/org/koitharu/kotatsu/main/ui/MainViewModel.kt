@@ -84,6 +84,6 @@ class MainViewModel @Inject constructor(
 	}
 
 	private fun observeNewSourcesCount() = sourcesRepository.observeNewSources()
-		.map { it.size }
+		.map { if (sourcesRepository.isSetupRequired()) 0 else it.size }
 		.distinctUntilChanged()
 }
