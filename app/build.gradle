@@ -17,8 +17,8 @@ android {
 		//TODO: update as soon as sources becomes available
 		//noinspection OldTargetApi
 		targetSdkVersion 33
-		versionCode 566
-		versionName '5.3.9'
+		versionCode 567
+		versionName '5.3.10'
 		generatedDensities = []
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -81,7 +81,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:42cc0430f8') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:8e452f4271') {
 		exclude group: 'org.json', module: 'json'
 	}
 
