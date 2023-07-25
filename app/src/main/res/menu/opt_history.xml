@@ -4,6 +4,19 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
+		android:id="@+id/action_order"
+		android:orderInCategory="25"
+		android:title="@string/sort_order">
+
+		<menu>
+
+			<group android:id="@+id/group_order" />
+
+		</menu>
+
+	</item>
+
+	<item
 		android:id="@+id/action_history_grouping"
 		android:checkable="true"
 		android:checked="true"

@@ -4,14 +4,17 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
@@ -20,6 +23,7 @@ import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.domain.model.HistoryOrder
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -43,14 +47,25 @@ class HistoryListViewModel @Inject constructor(
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
-	val isGroupingEnabled = settings.observeAsStateFlow(
-		scope = viewModelScope + Dispatchers.Default,
+	val sortOrder: StateFlow<HistoryOrder> = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.IO,
+		key = AppSettings.KEY_HISTORY_ORDER,
+		valueProducer = { historySortOrder },
+	)
+
+	val isGroupingEnabled = settings.observeAsFlow(
 		key = AppSettings.KEY_HISTORY_GROUPING,
 		valueProducer = { isHistoryGroupingEnabled },
+	).combine(sortOrder) { g, s ->
+		g && s.isGroupingSupported()
+	}.stateIn(
+		scope = viewModelScope + Dispatchers.Default,
+		started = SharingStarted.Eagerly,
+		initialValue = settings.isHistoryGroupingEnabled && sortOrder.value.isGroupingSupported(),
 	)
 
 	override val content = combine(
-		repository.observeAllWithHistory(),
+		sortOrder.flatMapLatest { repository.observeAllWithHistory(it) },
 		isGroupingEnabled,
 		listMode,
 	) { list, grouped, mode ->
@@ -77,6 +92,10 @@ class HistoryListViewModel @Inject constructor(
 	override fun onRefresh() = Unit
 
 	override fun onRetry() = Unit
+
+	fun setSortOrder(order: HistoryOrder) {
+		settings.historySortOrder = order
+	}
 
 	fun clearHistory(minDate: Long) {
 		launchJob(Dispatchers.Default) {

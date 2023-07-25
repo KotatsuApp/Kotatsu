@@ -4,10 +4,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Transaction
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
+import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
+import org.koitharu.kotatsu.history.domain.model.HistoryOrder
 
 @Dao
 abstract class HistoryDao {
@@ -27,6 +32,22 @@ abstract class HistoryDao {
 	@Transaction
 	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC LIMIT :limit")
 	abstract fun observeAll(limit: Int): Flow<List<HistoryWithManga>>
+
+	fun observeAll(order: HistoryOrder): Flow<List<HistoryWithManga>> {
+		val orderBy = when (order) {
+			HistoryOrder.UPDATED -> "history.updated_at DESC"
+			HistoryOrder.CREATED -> "history.created_at DESC"
+			HistoryOrder.PROGRESS -> "history.percent DESC"
+			HistoryOrder.ALPHABETIC -> "manga.title"
+		}
+
+		@Language("RoomSql")
+		val query = SimpleSQLiteQuery(
+			"SELECT * FROM history LEFT JOIN manga ON history.manga_id = manga.manga_id " +
+				"WHERE history.deleted_at = 0 GROUP BY history.manga_id ORDER BY $orderBy",
+		)
+		return observeAllImpl(query)
+	}
 
 	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM history WHERE deleted_at = 0)")
 	abstract suspend fun findAllManga(): List<MangaEntity>
@@ -111,4 +132,8 @@ abstract class HistoryDao {
 
 	@Query("UPDATE history SET deleted_at = :deletedAt WHERE created_at >= :minDate AND deleted_at = 0")
 	protected abstract suspend fun setDeletedAtAfter(minDate: Long, deletedAt: Long)
+
+	@Transaction
+	@RawQuery(observedEntities = [HistoryEntity::class])
+	protected abstract fun observeAllImpl(query: SupportSQLiteQuery): Flow<List<HistoryWithManga>>
 }

@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
+import org.koitharu.kotatsu.history.domain.model.HistoryOrder
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -64,8 +65,8 @@ class HistoryRepository @Inject constructor(
 		}
 	}
 
-	fun observeAllWithHistory(): Flow<List<MangaWithHistory>> {
-		return db.historyDao.observeAll().mapItems {
+	fun observeAllWithHistory(order: HistoryOrder): Flow<List<MangaWithHistory>> {
+		return db.historyDao.observeAll(order).mapItems {
 			MangaWithHistory(
 				it.manga.toManga(it.tags.toMangaTags()),
 				it.history.toMangaHistory(),
