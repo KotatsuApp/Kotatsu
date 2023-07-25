@@ -17,7 +17,7 @@ class MangaDatabaseTest {
 		MangaDatabase::class.java,
 	)
 
-	private val migrations = getDatabaseMigrations()
+	private val migrations = getDatabaseMigrations(InstrumentationRegistry.getInstrumentation().targetContext)
 
 	@Test
 	fun versions() {
