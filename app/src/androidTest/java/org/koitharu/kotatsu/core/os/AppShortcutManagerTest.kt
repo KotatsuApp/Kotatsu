@@ -48,6 +48,7 @@ class AppShortcutManagerTest {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
 			return@runTest
 		}
+		database.invalidationTracker.addObserver(appShortcutManager)
 		awaitUpdate()
 		assertTrue(getShortcuts().isEmpty())
 		historyRepository.addOrUpdate(

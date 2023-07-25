@@ -20,7 +20,7 @@ android {
 		versionCode 567
 		versionName '5.3.10'
 		generatedDensities = []
-		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+		testInstrumentationRunner "org.koitharu.kotatsu.HiltTestRunner"
 
 		kapt {
 			arguments {
