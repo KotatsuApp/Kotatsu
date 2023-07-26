@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.download.ui.list
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
@@ -15,13 +16,9 @@ class DownloadsAdapter(
 ) : BaseListAdapter<ListModel>() {
 
 	init {
-		delegatesManager.addDelegate(ITEM_TYPE_DOWNLOAD, downloadItemAD(lifecycleOwner, coil, listener))
-			.addDelegate(loadingStateAD())
-			.addDelegate(emptyStateListAD(coil, lifecycleOwner, null))
-			.addDelegate(listHeaderAD(null))
-	}
-
-	companion object {
-		const val ITEM_TYPE_DOWNLOAD = 0
+		addDelegate(ListItemType.DOWNLOAD, downloadItemAD(lifecycleOwner, coil, listener))
+		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
+		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, null))
+		addDelegate(ListItemType.HEADER, listHeaderAD(null))
 	}
 }

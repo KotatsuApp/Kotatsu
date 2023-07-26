@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.AsyncListDiffer.ListListener
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.filter.ui.model.FilterItem
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
@@ -16,13 +17,12 @@ class FilterAdapter(
 ) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
-		delegatesManager
-			.addDelegate(ITEM_TYPE_SORT, filterSortDelegate(listener))
-			.addDelegate(ITEM_TYPE_TAG, filterTagDelegate(listener))
-			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD(listener))
-			.addDelegate(loadingStateAD())
-			.addDelegate(loadingFooterAD())
-			.addDelegate(filterErrorDelegate())
+		addDelegate(ListItemType.FILTER_SORT, filterSortDelegate(listener))
+		addDelegate(ListItemType.FILTER_TAG, filterTagDelegate(listener))
+		addDelegate(ListItemType.HEADER, listHeaderAD(listener))
+		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
+		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
+		addDelegate(ListItemType.FOOTER_ERROR, filterErrorDelegate())
 		differ.addListListener(listListener)
 	}
 
@@ -35,12 +35,5 @@ class FilterAdapter(
 			}
 		}
 		return null
-	}
-
-	companion object {
-
-		const val ITEM_TYPE_SORT = 0
-		const val ITEM_TYPE_TAG = 1
-		const val ITEM_TYPE_HEADER = 2
 	}
 }

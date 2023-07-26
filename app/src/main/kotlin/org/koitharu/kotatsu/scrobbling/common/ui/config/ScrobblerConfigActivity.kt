@@ -14,7 +14,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
@@ -22,11 +21,11 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityScrobblerConfigBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
-import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -55,10 +54,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 			paddingHorizontal = spacing
 			paddingVertical = resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
-			val decoration = TypedSpacingItemDecoration(
-				FeedAdapter.ITEM_TYPE_FEED to 0,
-				fallbackSpacing = spacing,
-			)
+			val decoration = TypedListSpacingDecoration(context)
 			addItemDecoration(decoration)
 		}
 		viewBinding.imageViewAvatar.setOnClickListener(this)

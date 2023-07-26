@@ -9,6 +9,7 @@ import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.core.util.ContinuationResumeRunnable
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import kotlin.coroutines.suspendCoroutine
 
@@ -23,6 +24,10 @@ open class BaseListAdapter<T : ListModel>(
 
 	override suspend fun emit(value: List<T>) = suspendCoroutine { cont ->
 		setItems(value, ContinuationResumeRunnable(cont))
+	}
+
+	fun addDelegate(type: ListItemType, delegate: AdapterDelegate<List<T>>) {
+		delegatesManager.addDelegate(type.ordinal, delegate)
 	}
 
 	fun addListListener(listListener: ListListener<T>) {

@@ -21,6 +21,7 @@ open class ListModelDiffCallback<T : ListModel> : DiffUtil.ItemCallback<T>() {
 
 		val PAYLOAD_CHECKED_CHANGED = Any()
 		val PAYLOAD_NESTED_LIST_CHANGED = Any()
+		val PAYLOAD_PROGRESS_CHANGED = Any()
 		val PAYLOAD_ANYTHING_CHANGED = Any()
 	}
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.errorFooterAD
@@ -22,13 +23,13 @@ class FeedAdapter(
 ) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
-		delegatesManager.addDelegate(ITEM_TYPE_FEED, feedItemAD(coil, lifecycleOwner, listener))
-			.addDelegate(ITEM_TYPE_LOADING_FOOTER, loadingFooterAD())
-			.addDelegate(ITEM_TYPE_LOADING_STATE, loadingStateAD())
-			.addDelegate(ITEM_TYPE_ERROR_FOOTER, errorFooterAD(listener))
-			.addDelegate(ITEM_TYPE_ERROR_STATE, errorStateListAD(listener))
-			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD(listener))
-			.addDelegate(ITEM_TYPE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listener))
+		addDelegate(ListItemType.FEED, feedItemAD(coil, lifecycleOwner, listener))
+		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
+		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
+		addDelegate(ListItemType.FOOTER_ERROR, errorFooterAD(listener))
+		addDelegate(ListItemType.STATE_ERROR, errorStateListAD(listener))
+		addDelegate(ListItemType.HEADER, listHeaderAD(listener))
+		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listener))
 	}
 
 	override fun getSectionText(context: Context, position: Int): CharSequence? {
@@ -40,16 +41,5 @@ class FeedAdapter(
 			}
 		}
 		return null
-	}
-
-	companion object {
-
-		const val ITEM_TYPE_FEED = 0
-		const val ITEM_TYPE_LOADING_FOOTER = 1
-		const val ITEM_TYPE_LOADING_STATE = 2
-		const val ITEM_TYPE_ERROR_STATE = 3
-		const val ITEM_TYPE_ERROR_FOOTER = 4
-		const val ITEM_TYPE_EMPTY = 5
-		const val ITEM_TYPE_HEADER = 6
 	}
 }

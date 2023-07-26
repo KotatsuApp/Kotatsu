@@ -15,13 +15,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
@@ -55,12 +55,7 @@ class FeedFragment :
 			adapter = feedAdapter
 			setHasFixedSize(true)
 			addOnScrollListener(PaginationScrollListener(4, this@FeedFragment))
-			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
-			val decoration = TypedSpacingItemDecoration(
-				FeedAdapter.ITEM_TYPE_FEED to 0,
-				fallbackSpacing = spacing,
-			)
-			addItemDecoration(decoration)
+			addItemDecoration(TypedListSpacingDecoration(context))
 		}
 		binding.swipeRefreshLayout.setOnRefreshListener(this)
 		addMenuProvider(
