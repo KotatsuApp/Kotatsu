@@ -1,13 +1,11 @@
 package org.koitharu.kotatsu.download.ui.worker
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.text.format.DateUtils
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
@@ -247,20 +245,14 @@ class DownloadNotificationFactory @AssistedInject constructor(
 	}
 
 	private fun createChannel() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val manager = NotificationManagerCompat.from(context)
-			if (manager.getNotificationChannel(CHANNEL_ID) == null) {
-				val channel = NotificationChannel(
-					CHANNEL_ID,
-					context.getString(R.string.downloads),
-					NotificationManager.IMPORTANCE_LOW,
-				)
-				channel.enableVibration(false)
-				channel.enableLights(false)
-				channel.setSound(null, null)
-				manager.createNotificationChannel(channel)
-			}
-		}
+		val manager = NotificationManagerCompat.from(context)
+		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+			.setName(context.getString(R.string.downloads))
+			.setVibrationEnabled(false)
+			.setLightsEnabled(false)
+			.setSound(null, null)
+			.build()
+		manager.createNotificationChannel(channel)
 	}
 
 	@AssistedFactory
