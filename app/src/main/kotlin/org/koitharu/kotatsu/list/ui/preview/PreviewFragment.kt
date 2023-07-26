@@ -5,6 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -120,11 +121,11 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 	}
 
 	private fun onDescriptionChanged(description: CharSequence?) {
-		val tv = requireViewBinding().textViewDescription
-		if (description.isNullOrBlank()) {
-			tv.setText(R.string.no_description)
-		} else {
-			tv.text = description
+		val tv = viewBinding?.textViewDescription ?: return
+		when {
+			description == null -> tv.setText(R.string.loading_)
+			description.isBlank() -> tv.setText(R.string.no_description)
+			else -> tv.setText(description, TextView.BufferType.NORMAL)
 		}
 	}
 

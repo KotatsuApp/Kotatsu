@@ -1,22 +1,38 @@
 package org.koitharu.kotatsu.favourites.ui.container
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
+import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
+import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.FragmentFavouritesContainerBinding
+import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
+import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBinding>(), ActionModeListener {
+class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBinding>(), ActionModeListener,
+	ViewStub.OnInflateListener, View.OnClickListener {
+
+	@Inject
+	lateinit var coil: ImageLoader
 
 	private val viewModel: FavouritesContainerViewModel by viewModels()
 
@@ -31,8 +47,10 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 		binding.pager.adapter = adapter
 		binding.tabs.setupWithViewPager(binding.pager)
 		binding.pager.offscreenPageLimit = 1
+		binding.stubEmpty.setOnInflateListener(this)
 		actionModeDelegate.addListener(this)
 		viewModel.categories.observe(viewLifecycleOwner, adapter)
+		viewModel.isEmpty.observe(viewLifecycleOwner, ::onEmptyStateChanged)
 		addMenuProvider(FavouritesContainerMenuProvider(binding.root.context))
 	}
 
@@ -48,19 +66,42 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 		)
 	}
 
-	@SuppressLint("ClickableViewAccessibility")
 	override fun onActionModeStarted(mode: ActionMode) {
 		viewBinding?.run {
 			pager.isUserInputEnabled = false
-			tabs.isEnabled = false
+			tabs.setTabsEnabled(false)
 		}
 	}
 
-	@SuppressLint("ClickableViewAccessibility")
 	override fun onActionModeFinished(mode: ActionMode) {
 		viewBinding?.run {
 			pager.isUserInputEnabled = true
-			tabs.isEnabled = true
+			tabs.setTabsEnabled(true)
+		}
+	}
+
+	override fun onInflate(stub: ViewStub?, inflated: View) {
+		val stubBinding = ItemEmptyStateBinding.bind(inflated)
+		stubBinding.icon.newImageRequest(viewLifecycleOwner, R.drawable.ic_empty_favourites)?.enqueueWith(coil)
+		stubBinding.textPrimary.setText(R.string.text_empty_holder_primary)
+		stubBinding.textSecondary.setTextAndVisible(R.string.empty_favourite_categories)
+		stubBinding.buttonRetry.setTextAndVisible(R.string.manage)
+		stubBinding.buttonRetry.setOnClickListener(this)
+	}
+
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.button_retry -> startActivity(
+				FavouriteCategoriesActivity.newIntent(v.context),
+			)
+		}
+	}
+
+	private fun onEmptyStateChanged(isEmpty: Boolean) {
+		viewBinding?.run {
+			pager.isGone = isEmpty
+			tabs.isGone = isEmpty
+			stubEmpty.isVisible = isEmpty
 		}
 	}
 }

@@ -29,19 +29,14 @@
 				app:layout_collapseMode="parallax"
 				tools:ignore="RtlSymmetry">
 
-				<com.google.android.material.chip.Chip
-					style="@style/Widget.Material3.Chip.Assist"
-					android:id="@+id/chip_sort"
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_order"
+					style="@style/Widget.Kotatsu.Button.More"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:visibility="gone"
-					app:chipBackgroundColor="?attr/colorSurfaceContainerHigh"
-					app:chipIcon="@drawable/ic_sort"
-					app:chipIconEnabled="true"
-					app:closeIcon="@drawable/ic_expand_more"
-					app:closeIconEnabled="true"
-					app:layout_collapseMode="pin"
-					tools:text="@string/popular"
+					android:visibility="invisible"
+					app:icon="@drawable/ic_reorder"
+					tools:text="@string/manage"
 					tools:visibility="visible" />
 
 			</LinearLayout>

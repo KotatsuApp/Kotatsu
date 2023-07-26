@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.filter.ui
 
+import android.view.View
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.ViewModelLifecycle
@@ -93,6 +94,10 @@ class FilterCoordinator @Inject constructor(
 			}
 			FilterState(oldValue.sortOrder, newTags)
 		}
+	}
+
+	override fun onListHeaderClick(item: ListHeader, view: View) {
+		reset()
 	}
 
 	fun observeAvailableTags(): Flow<Set<MangaTag>?> = flow {
@@ -208,7 +213,7 @@ class FilterCoordinator @Inject constructor(
 				}
 			}
 			if (allTags.isLoading || allTags.isError || tags.isNotEmpty()) {
-				list.add(ListHeader(R.string.genres, 0, null))
+				list.add(ListHeader(R.string.genres, if (state.tags.isEmpty()) 0 else R.string.reset, null))
 				tags.mapTo(list) {
 					FilterItem.Tag(it, isChecked = it in state.tags)
 				}

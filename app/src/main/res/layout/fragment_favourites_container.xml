@@ -2,6 +2,7 @@
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical">
@@ -16,6 +17,14 @@
 	<org.koitharu.kotatsu.core.ui.widgets.EnhancedViewPager
 		android:id="@+id/pager"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+		android:layout_height="match_parent"
+		tools:visibility="gone" />
+
+	<ViewStub
+		android:id="@+id/stub_empty"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout="@layout/item_empty_state"
+		tools:visibility="visible" />
 
 </LinearLayout>

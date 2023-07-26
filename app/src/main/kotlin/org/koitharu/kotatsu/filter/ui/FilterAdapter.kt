@@ -16,8 +16,12 @@ class FilterAdapter(
 ) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
-		delegatesManager.addDelegate(filterSortDelegate(listener)).addDelegate(filterTagDelegate(listener))
-			.addDelegate(listHeaderAD(null)).addDelegate(loadingStateAD()).addDelegate(loadingFooterAD())
+		delegatesManager
+			.addDelegate(ITEM_TYPE_SORT, filterSortDelegate(listener))
+			.addDelegate(ITEM_TYPE_TAG, filterTagDelegate(listener))
+			.addDelegate(ITEM_TYPE_HEADER, listHeaderAD(listener))
+			.addDelegate(loadingStateAD())
+			.addDelegate(loadingFooterAD())
 			.addDelegate(filterErrorDelegate())
 		differ.addListListener(listListener)
 	}
@@ -31,5 +35,12 @@ class FilterAdapter(
 			}
 		}
 		return null
+	}
+
+	companion object {
+
+		const val ITEM_TYPE_SORT = 0
+		const val ITEM_TYPE_TAG = 1
+		const val ITEM_TYPE_HEADER = 2
 	}
 }

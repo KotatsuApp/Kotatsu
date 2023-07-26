@@ -460,10 +460,12 @@
 	<string name="background">Background</string>
 	<string name="data_not_restored">Data was not restored</string>
 	<string name="data_not_restored_text">Make sure you have selected the correct backup file</string>
-	<string name="manage_favourites">Manage favourites</string>
+	<string name="manage_categories">Manage categories</string>
 	<string name="suggestions_wifi_only_summary">Do not update suggestions using metered network connections</string>
 	<string name="tracker_wifi_only_summary">Do not check for new chapters using metered network connections</string>
 	<string name="search_hint">Enter manga title, genre or source name</string>
 	<string name="progress">Progress</string>
 	<string name="order_added">Added</string>
+	<string name="view_list">View list</string>
+	<string name="show">Show</string>
 </resources>

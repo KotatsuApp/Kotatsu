@@ -124,7 +124,6 @@
 		android:id="@+id/imageView_handle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="?selectableItemBackgroundBorderless"
 		android:contentDescription="@string/reorder"
 		android:padding="@dimen/margin_normal"
 		android:src="@drawable/ic_reorder_handle"

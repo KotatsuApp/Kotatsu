@@ -35,8 +35,8 @@ fun categoryAD(
 	{ inflater, parent -> ItemCategoryBinding.inflate(inflater, parent, false) },
 ) {
 	val eventListener = object : OnClickListener, OnLongClickListener, OnTouchListener {
-		override fun onClick(v: View) = clickListener.onItemClick(item.category, binding.imageViewCover1)
-		override fun onLongClick(v: View) = clickListener.onItemLongClick(item.category, binding.imageViewCover1)
+		override fun onClick(v: View) = clickListener.onItemClick(item.category, itemView)
+		override fun onLongClick(v: View) = clickListener.onItemLongClick(item.category, itemView)
 		override fun onTouch(v: View?, event: MotionEvent): Boolean = event.actionMasked == MotionEvent.ACTION_DOWN &&
 			clickListener.onDragHandleTouch(this@adapterDelegateViewBinding)
 	}

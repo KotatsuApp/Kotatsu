@@ -20,9 +20,7 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
-import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -66,7 +64,7 @@ class FavouriteCategoriesActivity :
 			attachToRecyclerView(viewBinding.recyclerView)
 		}
 
-		viewModel.detalizedCategories.observe(this, ::onCategoriesChanged)
+		viewModel.categories.observe(this, ::onCategoriesChanged)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 	}
 
@@ -80,9 +78,8 @@ class FavouriteCategoriesActivity :
 		if (selectionController.onItemClick(item.id)) {
 			return
 		}
-		val intent = FavouritesActivity.newIntent(this, item)
-		val options = scaleUpActivityOptionsOf(view)
-		startActivity(intent, options)
+		val intent = FavouritesCategoryEditActivity.newIntent(view.context, item.id)
+		startActivity(intent)
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory, view: View): Boolean {

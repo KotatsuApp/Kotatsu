@@ -143,14 +143,6 @@ class FavouritesRepository @Inject constructor(
 		db.favouriteCategoriesDao.updateTracking(id, isTrackingEnabled)
 	}
 
-	suspend fun removeCategory(id: Long) {
-		db.withTransaction {
-			db.favouriteCategoriesDao.delete(id)
-			db.favouritesDao.deleteAll(id)
-		}
-		channels.deleteChannel(id)
-	}
-
 	suspend fun removeCategories(ids: Collection<Long>) {
 		db.withTransaction {
 			for (id in ids) {

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.requireValue
@@ -27,7 +28,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 
 	private var reorderJob: Job? = null
 
-	val detalizedCategories = repository.observeCategoriesWithCovers()
+	val categories = repository.observeCategoriesWithCovers()
 		.map { list ->
 			list.map { (category, covers) ->
 				CategoryListModel(
@@ -47,14 +48,8 @@ class FavouritesCategoriesViewModel @Inject constructor(
 			}
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
-	fun deleteCategory(id: Long) {
-		launchJob {
-			repository.removeCategory(id)
-		}
-	}
-
 	fun deleteCategories(ids: Set<Long>) {
-		launchJob {
+		launchJob(Dispatchers.Default) {
 			repository.removeCategories(ids)
 		}
 	}
@@ -63,19 +58,34 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		settings.isAllFavouritesVisible = isVisible
 	}
 
-	fun isEmpty(): Boolean = detalizedCategories.value.none { it is CategoryListModel }
+	fun isEmpty(): Boolean = categories.value.none { it is CategoryListModel }
 
 	fun reorderCategories(oldPos: Int, newPos: Int) {
 		val prevJob = reorderJob
 		reorderJob = launchJob(Dispatchers.Default) {
 			prevJob?.join()
-			val items = detalizedCategories.requireValue()
+			val items = categories.requireValue()
 			val ids = items.mapNotNullTo(ArrayList(items.size)) {
 				(it as? CategoryListModel)?.category?.id
 			}
 			Collections.swap(ids, oldPos, newPos)
 			ids.remove(0L)
 			repository.reorderCategories(ids)
+		}
+	}
+
+	fun setIsVisible(ids: Set<Long>, isVisible: Boolean) {
+		launchJob(Dispatchers.Default) {
+			for (id in ids) {
+				repository.updateCategory(id, isVisible)
+			}
+		}
+	}
+
+	fun getCategories(ids: Set<Long>): ArrayList<FavouriteCategory> {
+		val items = categories.requireValue()
+		return items.mapNotNullTo(ArrayList(ids.size)) { item ->
+			(item as? CategoryListModel)?.category?.takeIf { it.id in ids }
 		}
 	}
 }

@@ -309,7 +309,7 @@ abstract class MangaListFragment :
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
-		requireViewBinding().recyclerView.invalidateItemDecorations()
+		viewBinding?.recyclerView?.invalidateItemDecorations()
 	}
 
 	override fun onFastScrollStart(fastScroller: FastScroller) {

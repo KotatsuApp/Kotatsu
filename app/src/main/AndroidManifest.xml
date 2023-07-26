@@ -135,8 +135,7 @@
 			android:windowSoftInputMode="adjustResize" />
 		<activity
 			android:name="org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity"
-			android:label="@string/favourites"
-			android:windowSoftInputMode="stateAlwaysHidden" />
+			android:label="@string/manage_categories" />
 		<activity
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfConfigActivity"
 			android:exported="true"

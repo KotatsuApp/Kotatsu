@@ -1,7 +1,8 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ItemHeaderButtonBinding
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -19,6 +20,12 @@ fun listHeaderAD(
 
 	bind {
 		binding.textViewTitle.text = item.getText(context)
-		binding.buttonMore.setTextAndVisible(item.buttonTextRes)
+		if (item.buttonTextRes == 0) {
+			binding.buttonMore.isInvisible = true
+			binding.buttonMore.text = null
+		} else {
+			binding.buttonMore.setText(item.buttonTextRes)
+			binding.buttonMore.isVisible = true
+		}
 	}
 }

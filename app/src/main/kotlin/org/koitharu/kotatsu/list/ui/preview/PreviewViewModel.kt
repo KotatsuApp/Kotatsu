@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -49,6 +50,8 @@ class PreviewViewModel @Inject constructor(
 				emit(description.parseAsHtml().filterSpans().sanitize())
 				emit(description.parseAsHtml(imageGetter = imageGetter).filterSpans())
 			}
+		}.combine(isLoading) { desc, loading ->
+			if (loading) null else desc ?: ""
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(5000), null)
 
 	val tagsChips = manga.map {

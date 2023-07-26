@@ -62,7 +62,7 @@ class MangaListActivity :
 			finishAfterTransition()
 			return
 		}
-		viewBinding.chipSort?.setOnClickListener(this)
+		viewBinding.buttonOrder?.setOnClickListener(this)
 		title = if (source == MangaSource.LOCAL) getString(R.string.local_storage) else source.title
 		initList(source, tags)
 	}
@@ -80,7 +80,7 @@ class MangaListActivity :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.chip_sort -> FilterSheetFragment.show(supportFragmentManager)
+			R.id.button_order -> FilterSheetFragment.show(supportFragmentManager)
 		}
 	}
 
@@ -127,7 +127,7 @@ class MangaListActivity :
 			}
 		}
 		val filter = filterOwner.filter
-		val chipSort = viewBinding.chipSort
+		val chipSort = viewBinding.buttonOrder
 		if (chipSort != null) {
 			filter.header.observe(this) {
 				chipSort.setTextAndVisible(it.sortOrder?.titleRes ?: 0)
