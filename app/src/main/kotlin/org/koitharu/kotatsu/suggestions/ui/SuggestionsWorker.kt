@@ -1,12 +1,11 @@
 package org.koitharu.kotatsu.suggestions.ui
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.os.Build
 import androidx.annotation.FloatRange
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.buildSpannedString
@@ -77,6 +76,8 @@ class SuggestionsWorker @AssistedInject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : CoroutineWorker(appContext, params) {
 
+	private val notificationManager by lazy { NotificationManagerCompat.from(appContext) }
+
 	override suspend fun doWork(): Result {
 		trySetForeground()
 		if (!appSettings.isSuggestionsEnabled) {
@@ -89,20 +90,15 @@ class SuggestionsWorker @AssistedInject constructor(
 	}
 
 	override suspend fun getForegroundInfo(): ForegroundInfo {
-		val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 		val title = applicationContext.getString(R.string.suggestions_updating)
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val channel = NotificationChannel(
-				WORKER_CHANNEL_ID,
-				title,
-				NotificationManager.IMPORTANCE_LOW,
-			)
-			channel.setShowBadge(false)
-			channel.enableVibration(false)
-			channel.setSound(null, null)
-			channel.enableLights(false)
-			manager.createNotificationChannel(channel)
-		}
+		val channel = NotificationChannelCompat.Builder(WORKER_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+			.setName(title)
+			.setShowBadge(true)
+			.setVibrationEnabled(false)
+			.setSound(null, null)
+			.setLightsEnabled(true)
+			.build()
+		notificationManager.createNotificationChannel(channel)
 
 		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
 			.setContentTitle(title)
@@ -203,18 +199,14 @@ class SuggestionsWorker @AssistedInject constructor(
 	}.getOrDefault(emptyList())
 
 	private suspend fun showNotification(manga: Manga) {
-		val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val channel = NotificationChannel(
-				MANGA_CHANNEL_ID,
-				applicationContext.getString(R.string.suggestions),
-				NotificationManager.IMPORTANCE_DEFAULT,
-			)
-			channel.description = applicationContext.getString(R.string.suggestions_summary)
-			channel.enableLights(true)
-			channel.setShowBadge(true)
-			manager.createNotificationChannel(channel)
-		}
+		val channel = NotificationChannelCompat.Builder(MANGA_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
+			.setName(applicationContext.getString(R.string.suggestions))
+			.setDescription(applicationContext.getString(R.string.suggestions_summary))
+			.setLightsEnabled(true)
+			.setShowBadge(true)
+			.build()
+		notificationManager.createNotificationChannel(channel)
+
 		val id = manga.url.hashCode()
 		val title = applicationContext.getString(R.string.suggestion_manga, manga.title)
 		val builder = NotificationCompat.Builder(applicationContext, MANGA_CHANNEL_ID)
@@ -284,7 +276,7 @@ class SuggestionsWorker @AssistedInject constructor(
 				),
 			)
 		}
-		manager.notify(TAG, id, builder.build())
+		notificationManager.notify(TAG, id, builder.build())
 	}
 
 	@FloatRange(from = 0.0, to = 1.0)

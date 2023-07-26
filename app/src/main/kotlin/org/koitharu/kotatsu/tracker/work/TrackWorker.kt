@@ -1,13 +1,13 @@
 package org.koitharu.kotatsu.tracker.work
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.core.app.NotificationCompat.VISIBILITY_SECRET
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
@@ -64,10 +64,7 @@ class TrackWorker @AssistedInject constructor(
 	private val tracker: Tracker,
 	@TrackerLogger private val logger: FileLogger,
 ) : CoroutineWorker(context, workerParams) {
-
-	private val notificationManager by lazy {
-		applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-	}
+	private val notificationManager by lazy { NotificationManagerCompat.from(applicationContext) }
 
 	override suspend fun doWork(): Result {
 		trySetForeground()
@@ -204,18 +201,15 @@ class TrackWorker @AssistedInject constructor(
 
 	override suspend fun getForegroundInfo(): ForegroundInfo {
 		val title = applicationContext.getString(R.string.check_for_new_chapters)
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val channel = NotificationChannel(
-				WORKER_CHANNEL_ID,
-				title,
-				NotificationManager.IMPORTANCE_LOW,
-			)
-			channel.setShowBadge(false)
-			channel.enableVibration(false)
-			channel.setSound(null, null)
-			channel.enableLights(false)
-			notificationManager.createNotificationChannel(channel)
-		}
+		val channel = NotificationChannelCompat.Builder(WORKER_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+			.setName(title)
+			.setShowBadge(false)
+			.setVibrationEnabled(false)
+			.setSound(null, null)
+			.setLightsEnabled(false)
+			.build()
+		notificationManager.createNotificationChannel(channel)
+
 		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
 			.setContentTitle(title)
 			.setPriority(NotificationCompat.PRIORITY_MIN)

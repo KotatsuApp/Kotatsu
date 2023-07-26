@@ -1,11 +1,10 @@
 package org.koitharu.kotatsu.tracker.work
 
-import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationChannelCompat
+import androidx.core.app.NotificationChannelGroupCompat
 import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -24,9 +23,6 @@ class TrackerNotificationChannels @Inject constructor(
 		get() = !manager.areNotificationsEnabled()
 
 	fun updateChannels(categories: Collection<FavouriteCategory>) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-			return
-		}
 		manager.deleteNotificationChannel(OLD_CHANNEL_ID)
 		val group = createGroup()
 		val existingChannels = group.channels.associateByTo(HashMap()) { it.id }
@@ -35,8 +31,10 @@ class TrackerNotificationChannels @Inject constructor(
 			if (existingChannels.remove(id)?.name == category.title) {
 				continue
 			}
-			val channel = NotificationChannel(id, category.title, NotificationManager.IMPORTANCE_DEFAULT)
-			channel.group = GROUP_ID
+			val channel = NotificationChannelCompat.Builder(id, NotificationManagerCompat.IMPORTANCE_DEFAULT)
+				.setName(category.title)
+				.setGroup(GROUP_ID)
+				.build()
 			manager.createNotificationChannel(channel)
 		}
 		existingChannels.remove(CHANNEL_ID_HISTORY)
@@ -47,23 +45,15 @@ class TrackerNotificationChannels @Inject constructor(
 	}
 
 	fun createChannel(category: FavouriteCategory) {
-		renameChannel(category.id, category.title)
-	}
-
-	fun renameChannel(categoryId: Long, name: String) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-			return
-		}
-		val id = getFavouritesChannelId(categoryId)
-		val channel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_DEFAULT)
-		channel.group = createGroup().id
+		val id = getFavouritesChannelId(category.id)
+		val channel = NotificationChannelCompat.Builder(id, NotificationManagerCompat.IMPORTANCE_DEFAULT)
+			.setName(category.title)
+			.setGroup(createGroup().id)
+			.build()
 		manager.createNotificationChannel(channel)
 	}
 
 	fun deleteChannel(categoryId: Long) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-			return
-		}
 		manager.deleteNotificationChannel(getFavouritesChannelId(categoryId))
 	}
 
@@ -97,11 +87,8 @@ class TrackerNotificationChannels @Inject constructor(
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 			return settings.isTrackerNotificationsEnabled
 		}
-		val group = manager.getNotificationChannelGroup(GROUP_ID) ?: return true
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && group.isBlocked) {
-			return false
-		}
-		return group.channels.any { it.importance != NotificationManagerCompat.IMPORTANCE_NONE }
+		val group = manager.getNotificationChannelGroupCompat(GROUP_ID) ?: return true
+		return !group.isBlocked && group.channels.any { it.importance != NotificationManagerCompat.IMPORTANCE_NONE }
 	}
 
 	fun getFavouritesChannelId(categoryId: Long): String {
@@ -112,26 +99,21 @@ class TrackerNotificationChannels @Inject constructor(
 		return CHANNEL_ID_HISTORY
 	}
 
-	@RequiresApi(Build.VERSION_CODES.O)
-	private fun createGroup(): NotificationChannelGroup {
-		manager.getNotificationChannelGroup(GROUP_ID)?.let {
-			return it
+	private fun createGroup(): NotificationChannelGroupCompat {
+		return manager.getNotificationChannelGroupCompat(GROUP_ID) ?: run {
+			val group = NotificationChannelGroupCompat.Builder(GROUP_ID)
+				.setName(context.getString(R.string.new_chapters))
+				.build()
+			manager.createNotificationChannelGroup(group)
+			group
 		}
-		val group = NotificationChannelGroup(GROUP_ID, context.getString(R.string.new_chapters))
-		manager.createNotificationChannelGroup(group)
-		return group
 	}
 
 	private fun createHistoryChannel() {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-			return
-		}
-		val channel = NotificationChannel(
-			CHANNEL_ID_HISTORY,
-			context.getString(R.string.history),
-			NotificationManager.IMPORTANCE_DEFAULT,
-		)
-		channel.group = GROUP_ID
+		val channel = NotificationChannelCompat.Builder(CHANNEL_ID_HISTORY, NotificationManagerCompat.IMPORTANCE_DEFAULT)
+			.setName(context.getString(R.string.history))
+			.setGroup(GROUP_ID)
+			.build()
 		manager.createNotificationChannel(channel)
 	}
 

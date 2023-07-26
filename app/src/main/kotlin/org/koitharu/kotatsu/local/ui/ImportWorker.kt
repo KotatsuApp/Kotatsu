@@ -1,13 +1,12 @@
 package org.koitharu.kotatsu.local.ui
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.net.Uri
-import android.os.Build
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
@@ -39,9 +38,7 @@ class ImportWorker @AssistedInject constructor(
 	private val coil: ImageLoader
 ) : CoroutineWorker(appContext, params) {
 
-	private val notificationManager by lazy {
-		applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-	}
+	private val notificationManager by lazy { NotificationManagerCompat.from(appContext) }
 
 	override suspend fun doWork(): Result {
 		val uri = inputData.getString(DATA_URI)?.toUriOrNull() ?: return Result.failure()
@@ -56,14 +53,14 @@ class ImportWorker @AssistedInject constructor(
 
 	override suspend fun getForegroundInfo(): ForegroundInfo {
 		val title = applicationContext.getString(R.string.importing_manga)
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val channel = NotificationChannel(CHANNEL_ID, title, NotificationManager.IMPORTANCE_LOW)
-			channel.setShowBadge(false)
-			channel.enableVibration(false)
-			channel.setSound(null, null)
-			channel.enableLights(false)
-			notificationManager.createNotificationChannel(channel)
-		}
+		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+			.setName(title)
+			.setShowBadge(false)
+			.setVibrationEnabled(false)
+			.setSound(null, null)
+			.setLightsEnabled(false)
+			.build()
+		notificationManager.createNotificationChannel(channel)
 
 		val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
 			.setContentTitle(title)

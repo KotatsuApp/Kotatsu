@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.local.ui
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,15 +67,15 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 
 	private fun startForeground() {
 		val title = getString(R.string.local_manga_processing)
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-			val channel = NotificationChannel(CHANNEL_ID, title, NotificationManager.IMPORTANCE_LOW)
-			channel.setShowBadge(false)
-			channel.enableVibration(false)
-			channel.setSound(null, null)
-			channel.enableLights(false)
-			manager.createNotificationChannel(channel)
-		}
+		val manager = NotificationManagerCompat.from(this)
+		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+			.setName(title)
+			.setShowBadge(false)
+			.setVibrationEnabled(false)
+			.setSound(null, null)
+			.setLightsEnabled(false)
+			.build()
+		manager.createNotificationChannel(channel)
 
 		val notification = NotificationCompat.Builder(this, CHANNEL_ID)
 			.setContentTitle(title)
