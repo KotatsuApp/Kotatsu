@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.imageview.ShapeableImageView
+			android:id="@+id/imageView_cover"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="16dp"
+			android:background="?colorSecondaryContainer"
+			android:foreground="?selectableItemBackground"
+			android:scaleType="centerCrop"
+			app:layout_constraintDimensionRatio="H,13:18"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintWidth_percent="0.3"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+			tools:background="@tools:sample/backgrounds/scenic[5]"
+			tools:ignore="ContentDescription,UnusedAttribute" />
+
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="16dp"
+			android:ellipsize="end"
+			android:maxLines="5"
+			android:textAppearance="?attr/textAppearanceHeadlineSmall"
+			app:layout_constraintEnd_toStartOf="@id/button_open"
+			app:layout_constraintStart_toEndOf="@id/imageView_cover"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_goneMarginEnd="16dp"
+			tools:text="@tools:sample/lorem" />
+
+		<ImageButton
+			android:id="@+id/button_open"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="4dp"
+			android:background="?selectableItemBackgroundBorderless"
+			android:contentDescription="@string/details"
+			android:padding="12dp"
+			app:layout_constraintEnd_toStartOf="@id/button_close"
+			app:layout_constraintTop_toTopOf="parent"
+			app:srcCompat="@drawable/ic_expand" />
+
+		<ImageButton
+			android:id="@+id/button_close"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="4dp"
+			android:layout_marginEnd="4dp"
+			android:background="?selectableItemBackgroundBorderless"
+			android:contentDescription="@string/close"
+			android:padding="12dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:srcCompat="?actionModeCloseDrawable"
+			app:tint="?colorControlNormal" />
+
+		<TextView
+			android:id="@+id/textView_subtitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="4dp"
+			android:layout_marginEnd="16dp"
+			android:ellipsize="end"
+			android:maxLines="3"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@id/textView_title"
+			tools:text="@tools:sample/lorem[12]" />
+
+		<TextView
+			android:id="@+id/textView_author"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="4dp"
+			android:layout_marginEnd="16dp"
+			android:background="@drawable/list_selector"
+			android:padding="2dp"
+			android:singleLine="true"
+			android:textColor="?attr/colorTertiary"
+			android:textStyle="bold"
+			app:layout_constrainedWidth="true"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0"
+			app:layout_constraintStart_toEndOf="@id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
+			tools:text="@tools:sample/full_names" />
+
+		<RatingBar
+			android:id="@+id/rating_bar"
+			style="?ratingBarStyleSmall"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="4dp"
+			android:layout_marginEnd="16dp"
+			android:isIndicator="true"
+			android:max="1"
+			android:numStars="5"
+			android:stepSize="0.5"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.0"
+			app:layout_constraintStart_toEndOf="@id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@id/textView_author"
+			tools:rating="4" />
+
+		<androidx.constraintlayout.widget.Barrier
+			android:id="@+id/barrier_header"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			app:barrierDirection="bottom"
+			app:barrierMargin="8dp"
+			app:constraint_referenced_ids="imageView_cover,rating_bar" />
+
+		<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+			android:id="@+id/chips_tags"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:paddingStart="16dp"
+			android:paddingEnd="16dp"
+			app:chipSpacingHorizontal="6dp"
+			app:chipSpacingVertical="6dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/barrier_header" />
+
+		<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
+			android:id="@+id/textView_description"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/margin_normal"
+			android:layout_marginTop="@dimen/margin_small"
+			android:layout_marginEnd="@dimen/margin_normal"
+			android:lineSpacingMultiplier="1.2"
+			android:paddingBottom="@dimen/margin_normal"
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			android:textIsSelectable="true"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/chips_tags"
+			tools:ignore="UnusedAttribute"
+			tools:text="@tools:sample/lorem/random" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -135,7 +135,9 @@ abstract class MangaListFragment :
 
 	override fun onItemClick(item: Manga, view: View) {
 		if (selectionController?.onItemClick(item.id) != true) {
-			startActivity(DetailsActivity.newIntent(context ?: return, item))
+			if ((activity as? MangaListActivity)?.showPreview(item) != true) {
+				startActivity(DetailsActivity.newIntent(context ?: return, item))
+			}
 		}
 	}
 
