@@ -2,8 +2,6 @@ package org.koitharu.kotatsu.core.ui.widgets
 
 import android.content.Context
 import android.graphics.Outline
-import android.graphics.Rect
-import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -85,6 +83,8 @@ class TipView @JvmOverloads constructor(
 			}
 			outlineProvider = OutlineProvider(shapeAppearanceModel)
 		}
+		binding.buttonPrimary.setOnClickListener(this)
+		binding.buttonSecondary.setOnClickListener(this)
 	}
 
 	override fun onClick(v: View) {

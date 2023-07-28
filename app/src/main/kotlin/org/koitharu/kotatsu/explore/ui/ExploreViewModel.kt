@@ -98,6 +98,12 @@ class ExploreViewModel @Inject constructor(
 		}
 	}
 
+	fun discardNewSources() {
+		launchJob(Dispatchers.Default) {
+			sourcesRepository.assimilateNewSources()
+		}
+	}
+
 	fun setGridMode(value: Boolean) {
 		settings.isSourcesGridMode = value
 	}

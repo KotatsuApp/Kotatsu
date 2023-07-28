@@ -114,7 +114,7 @@ class ExploreFragment :
 
 	override fun onSecondaryButtonClick(tipView: TipView) {
 		when ((tipView.tag as? TipModel)?.key) {
-			ExploreViewModel.TIP_NEW_SOURCES -> TODO()
+			ExploreViewModel.TIP_NEW_SOURCES -> viewModel.discardNewSources()
 		}
 	}
 
