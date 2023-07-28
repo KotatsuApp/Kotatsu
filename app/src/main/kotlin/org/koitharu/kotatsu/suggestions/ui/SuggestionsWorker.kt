@@ -38,6 +38,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -80,6 +82,7 @@ class SuggestionsWorker @AssistedInject constructor(
 	private val appSettings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val sourcesRepository: MangaSourcesRepository,
+	private val captchaNotifier: CaptchaNotifier,
 ) : CoroutineWorker(appContext, params) {
 
 	private val notificationManager by lazy { NotificationManagerCompat.from(appContext) }
@@ -206,11 +209,17 @@ class SuggestionsWorker @AssistedInject constructor(
 		}
 		list.shuffle()
 		list.take(MAX_SOURCE_RESULTS)
-	}.onFailure {
-		it.printStackTraceDebug()
+	}.onFailure { e ->
+		if (e is CloudFlareProtectedException) {
+			captchaNotifier.notify(e)
+		}
+		e.printStackTraceDebug()
 	}.getOrDefault(emptyList())
 
 	private suspend fun showNotification(manga: Manga) {
+		if (!notificationManager.areNotificationsEnabled()) {
+			return
+		}
 		val channel = NotificationChannelCompat.Builder(MANGA_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
 			.setName(applicationContext.getString(R.string.suggestions))
 			.setDescription(applicationContext.getString(R.string.suggestions_summary))

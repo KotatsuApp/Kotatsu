@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.tracker.work
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
@@ -42,6 +43,8 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -66,6 +69,7 @@ class TrackWorker @AssistedInject constructor(
 	private val settings: AppSettings,
 	private val tracker: Tracker,
 	@TrackerLogger private val logger: FileLogger,
+	private val captchaNotifier: CaptchaNotifier,
 ) : CoroutineWorker(context, workerParams) {
 	private val notificationManager by lazy { NotificationManagerCompat.from(applicationContext) }
 
@@ -124,8 +128,11 @@ class TrackWorker @AssistedInject constructor(
 					semaphore.withPermit {
 						runCatchingCancellable {
 							tracker.fetchUpdates(track, commit = true)
-						}.onFailure {
-							logger.log("checkUpdatesAsync", it)
+						}.onFailure { e ->
+							if (e is CloudFlareProtectedException) {
+								captchaNotifier.notify(e)
+							}
+							logger.log("checkUpdatesAsync", e)
 						}.onSuccess { updates ->
 							if (updates.isValid && updates.isNotEmpty()) {
 								showNotification(
@@ -141,8 +148,9 @@ class TrackWorker @AssistedInject constructor(
 		}
 	}
 
+	@SuppressLint("MissingPermission")
 	private suspend fun showNotification(manga: Manga, channelId: String?, newChapters: List<MangaChapter>) {
-		if (newChapters.isEmpty() || channelId == null) {
+		if (newChapters.isEmpty() || channelId == null || !notificationManager.areNotificationsEnabled()) {
 			return
 		}
 		val id = manga.url.hashCode()
