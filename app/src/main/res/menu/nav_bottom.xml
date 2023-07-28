@@ -4,12 +4,12 @@
 
 	<item
 		android:id="@+id/nav_history"
-		android:icon="@drawable/ic_history"
+		android:icon="@drawable/ic_history_selector"
 		android:title="@string/history" />
 
 	<item
 		android:id="@+id/nav_favourites"
-		android:icon="@drawable/ic_heart_outline"
+		android:icon="@drawable/ic_favourites_selector"
 		android:title="@string/favourites" />
 
 	<item
