@@ -32,19 +32,6 @@ class PieChart @JvmOverloads constructor(
 	defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr), PieChartInterface {
 
-	companion object {
-		private const val DEFAULT_MARGIN_TEXT_1 = 2f
-		private const val DEFAULT_MARGIN_TEXT_2 = 10f
-		private const val DEFAULT_MARGIN_TEXT_3 = 2f
-		private const val DEFAULT_MARGIN_SMALL_CIRCLE = 12f
-
-		private const val TEXT_WIDTH_PERCENT = 0.40
-		private const val CIRCLE_WIDTH_PERCENT = 0.50
-
-		const val DEFAULT_VIEW_SIZE_HEIGHT = 150
-		const val DEFAULT_VIEW_SIZE_WIDTH = 250
-	}
-
 	private var marginTextFirst: Float = context.resources.resolveDp(DEFAULT_MARGIN_TEXT_1)
 	private var marginTextSecond: Float = context.resources.resolveDp(DEFAULT_MARGIN_TEXT_2)
 	private var marginTextThird: Float = context.resources.resolveDp(DEFAULT_MARGIN_TEXT_3)
@@ -340,6 +327,19 @@ class PieChart @JvmOverloads constructor(
 			.setTextDirection(textDir)
 			.setLineSpacing(spacingAdd, spacingMult)
 			.build()
+	}
+
+	companion object {
+		private const val DEFAULT_MARGIN_TEXT_1 = 2f
+		private const val DEFAULT_MARGIN_TEXT_2 = 10f
+		private const val DEFAULT_MARGIN_TEXT_3 = 2f
+		private const val DEFAULT_MARGIN_SMALL_CIRCLE = 12f
+
+		private const val TEXT_WIDTH_PERCENT = 0.40
+		private const val CIRCLE_WIDTH_PERCENT = 0.50
+
+		const val DEFAULT_VIEW_SIZE_HEIGHT = 150
+		const val DEFAULT_VIEW_SIZE_WIDTH = 250
 	}
 }
 

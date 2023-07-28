@@ -1,13 +1,13 @@
 package org.koitharu.kotatsu.core.ui.util
 
-import androidx.fragment.app.Fragment
+import androidx.core.view.MenuHost
 import kotlinx.coroutines.flow.FlowCollector
 
 class MenuInvalidator(
-	private val fragment: Fragment,
-) : FlowCollector<Any> {
+	private val host: MenuHost,
+) : FlowCollector<Any?> {
 
-	override suspend fun emit(value: Any) {
-		fragment.activity?.invalidateMenu()
+	override suspend fun emit(value: Any?) {
+		host.invalidateMenu()
 	}
 }

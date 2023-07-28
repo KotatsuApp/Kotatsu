@@ -24,7 +24,7 @@ class HistoryListFragment : MangaListFragment() {
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		addMenuProvider(HistoryListMenuProvider(binding.root.context, viewModel))
-		val menuInvalidator = MenuInvalidator(this)
+		val menuInvalidator = MenuInvalidator(requireActivity())
 		viewModel.isGroupingEnabled.observe(viewLifecycleOwner, menuInvalidator)
 		viewModel.sortOrder.observe(viewLifecycleOwner, menuInvalidator)
 	}

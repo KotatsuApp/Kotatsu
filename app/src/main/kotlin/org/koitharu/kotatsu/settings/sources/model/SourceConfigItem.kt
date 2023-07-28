@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
 sealed interface SourceConfigItem : ListModel {
@@ -69,6 +70,9 @@ sealed interface SourceConfigItem : ListModel {
 		val summary: String?,
 		val isDraggable: Boolean,
 	) : SourceConfigItem {
+
+		val isNsfw: Boolean
+			get() = source.contentType == ContentType.HENTAI
 
 		override fun areItemsTheSame(other: ListModel): Boolean {
 			return other is SourceItem && other.source == source

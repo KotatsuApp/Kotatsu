@@ -13,10 +13,10 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -64,10 +64,10 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 			downloadsAdapter.items = it
 		}
 		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.recyclerView))
-		val menuObserver = FlowCollector<Any> { _ -> invalidateOptionsMenu() }
-		viewModel.hasActiveWorks.observe(this, menuObserver)
-		viewModel.hasPausedWorks.observe(this, menuObserver)
-		viewModel.hasCancellableWorks.observe(this, menuObserver)
+		val menuInvalidator = MenuInvalidator(this)
+		viewModel.hasActiveWorks.observe(this, menuInvalidator)
+		viewModel.hasPausedWorks.observe(this, menuInvalidator)
+		viewModel.hasCancellableWorks.observe(this, menuInvalidator)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

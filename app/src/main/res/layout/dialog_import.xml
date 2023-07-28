@@ -32,21 +32,4 @@
 		app:subtitle="@string/folder_with_images_import_description"
 		app:title="@string/folder_with_images" />
 
-	<com.google.android.material.divider.MaterialDivider
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginVertical="4dp" />
-
-	<org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
-		android:id="@+id/button_backup"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:drawablePadding="?android:listPreferredItemPaddingStart"
-		android:minHeight="?android:listPreferredItemHeightSmall"
-		android:paddingStart="?android:listPreferredItemPaddingStart"
-		android:paddingEnd="?android:listPreferredItemPaddingEnd"
-		app:icon="@drawable/ic_backup_restore"
-		app:subtitle="@string/restore_backup_description"
-		app:title="@string/restore_backup" />
-
 </LinearLayout>

@@ -35,6 +35,7 @@ import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.dialog.RecyclerViewAlertDialog
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.doOnExpansionsChanged
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
@@ -131,12 +132,8 @@ class DetailsActivity :
 			viewBinding.toolbarChapters?.subtitle = it
 			viewBinding.textViewSubtitle?.textAndVisible = it
 		}
-		viewModel.isChaptersReversed.observe(this) {
-			viewBinding.toolbarChapters?.invalidateMenu() ?: invalidateOptionsMenu()
-		}
-		viewModel.favouriteCategories.observe(this) {
-			invalidateOptionsMenu()
-		}
+		viewModel.isChaptersReversed.observe(this, MenuInvalidator(viewBinding.toolbarChapters ?: this))
+		viewModel.favouriteCategories.observe(this, MenuInvalidator(this))
 		viewModel.branches.observe(this) {
 			viewBinding.buttonDropdown.isVisible = it.size > 1
 		}
