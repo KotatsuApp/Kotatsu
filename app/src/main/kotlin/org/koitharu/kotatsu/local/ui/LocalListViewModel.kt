@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -29,6 +30,7 @@ class LocalListViewModel @Inject constructor(
 	downloadScheduler: DownloadWorker.Scheduler,
 	listExtraProvider: ListExtraProvider,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
+	exploreRepository: ExploreRepository,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 ) : RemoteListViewModel(
 	savedStateHandle,
@@ -37,6 +39,7 @@ class LocalListViewModel @Inject constructor(
 	settings,
 	listExtraProvider,
 	downloadScheduler,
+	exploreRepository,
 ), SharedPreferences.OnSharedPreferenceChangeListener {
 
 	val onMangaRemoved = MutableEventFlow<Unit>()
