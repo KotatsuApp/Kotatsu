@@ -69,7 +69,6 @@ class TrackWorker @AssistedInject constructor(
 	private val settings: AppSettings,
 	private val tracker: Tracker,
 	@TrackerLogger private val logger: FileLogger,
-	private val captchaNotifier: CaptchaNotifier,
 ) : CoroutineWorker(context, workerParams) {
 	private val notificationManager by lazy { NotificationManagerCompat.from(applicationContext) }
 
@@ -130,7 +129,7 @@ class TrackWorker @AssistedInject constructor(
 							tracker.fetchUpdates(track, commit = true)
 						}.onFailure { e ->
 							if (e is CloudFlareProtectedException) {
-								captchaNotifier.notify(e)
+								CaptchaNotifier(applicationContext).notify(e)
 							}
 							logger.log("checkUpdatesAsync", e)
 						}.onSuccess { updates ->

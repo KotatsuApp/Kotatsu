@@ -82,7 +82,6 @@ class SuggestionsWorker @AssistedInject constructor(
 	private val appSettings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val sourcesRepository: MangaSourcesRepository,
-	private val captchaNotifier: CaptchaNotifier,
 ) : CoroutineWorker(appContext, params) {
 
 	private val notificationManager by lazy { NotificationManagerCompat.from(appContext) }
@@ -211,7 +210,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		list.take(MAX_SOURCE_RESULTS)
 	}.onFailure { e ->
 		if (e is CloudFlareProtectedException) {
-			captchaNotifier.notify(e)
+			CaptchaNotifier(applicationContext).notify(e)
 		}
 		e.printStackTraceDebug()
 	}.getOrDefault(emptyList())

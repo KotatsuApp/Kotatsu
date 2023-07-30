@@ -7,27 +7,21 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.net.toUri
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import coil.request.ErrorResult
+import coil.request.ImageRequest
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.parsers.model.ContentType
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class CaptchaNotifier @Inject constructor(
-	@ApplicationContext private val context: Context,
-) {
-
-	private val mutex = Mutex()
+class CaptchaNotifier(
+	private val context: Context,
+) : ImageRequest.Listener {
 
 	@SuppressLint("MissingPermission")
-	suspend fun notify(exception: CloudFlareProtectedException) = mutex.withLock {
+	fun notify(exception: CloudFlareProtectedException) {
 		val manager = NotificationManagerCompat.from(context)
 		if (!manager.areNotificationsEnabled()) {
-			return@withLock
+			return
 		}
 		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
 			.setName(context.getString(R.string.captcha_required))
@@ -61,6 +55,14 @@ class CaptchaNotifier @Inject constructor(
 			.setContentIntent(PendingIntentCompat.getActivity(context, 0, intent, 0, false))
 			.build()
 		manager.notify(TAG, exception.source.hashCode(), notification)
+	}
+
+	override fun onError(request: ImageRequest, result: ErrorResult) {
+		super.onError(request, result)
+		val e = result.throwable
+		if (e is CloudFlareProtectedException) {
+			notify(e)
+		}
 	}
 
 	private companion object {
