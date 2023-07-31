@@ -257,10 +257,7 @@ class FilterCoordinator @Inject constructor(
 	}
 
 	private fun mergeTags(primary: Set<MangaTag>, secondary: Set<MangaTag>): Set<MangaTag> {
-		val result = TreeSet(TagTitleComparator(repository.source.locale))
-		result.addAll(secondary)
-		result.addAll(primary)
-		return result
+		return (primary + secondary).toSortedSet(TagTitleComparator(repository.source.locale))
 	}
 
 	private class TagsWrapper(

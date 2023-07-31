@@ -17,8 +17,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.getStorageName
 import org.koitharu.kotatsu.core.util.ext.resolveFile
-import org.koitharu.kotatsu.core.util.ext.toFileOrNull
-import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.io.File
 import javax.inject.Inject
 
@@ -58,7 +56,7 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	suspend fun computeAvailableSize() = runInterruptible(Dispatchers.IO) {
-		getAvailableStorageDirs().mapToSet { it.freeSpace }.sum()
+		getAvailableStorageDirs().sumOf { it.freeSpace }
 	}
 
 	suspend fun clearCache(cache: CacheDir) = runInterruptible(Dispatchers.IO) {
@@ -113,19 +111,16 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	@WorkerThread
-	private fun getConfiguredStorageDirs(): MutableSet<File> {
-		val set = getAvailableStorageDirs()
-		set.addAll(settings.userSpecifiedMangaDirectories)
-		return set
+	private fun getConfiguredStorageDirs(): Set<File> {
+		return getAvailableStorageDirs() + settings.userSpecifiedMangaDirectories
 	}
 
 	@WorkerThread
-	private fun getAvailableStorageDirs(): MutableSet<File> {
-		val result = LinkedHashSet<File>()
-		result += File(context.filesDir, DIR_NAME)
-		context.getExternalFilesDirs(DIR_NAME).filterNotNullTo(result)
-		result.retainAll { it.exists() || it.mkdirs() }
-		return result
+	private fun getAvailableStorageDirs(): Set<File> {
+		return (sequenceOf(File(context.filesDir, DIR_NAME)) + context.getExternalFilesDirs(DIR_NAME))
+			.filterNotNull()
+			.filter { it.exists() || it.mkdirs() }
+			.toSet()
 	}
 
 	@WorkerThread
@@ -136,21 +131,11 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	@WorkerThread
-	private fun getCacheDirs(subDir: String): MutableSet<File> {
-		val result = LinkedHashSet<File>()
-		result += File(context.cacheDir, subDir)
-		context.externalCacheDirs.mapNotNullTo(result) {
-			File(it ?: return@mapNotNullTo null, subDir)
-		}
-		return result
-	}
-
-	@WorkerThread
-	private fun getCacheDirs(): MutableSet<File> {
-		val result = LinkedHashSet<File>()
-		result += context.cacheDir
-		context.externalCacheDirs.filterNotNullTo(result)
-		return result
+	private fun getCacheDirs(subDir: String = ""): Set<File> {
+		return (sequenceOf(context.cacheDir) + context.externalCacheDirs)
+			.filterNotNull()
+			.map { File(it, subDir) }
+			.toSet()
 	}
 
 	private fun calculateDiskCacheSize(cacheDirectory: File): Long {
