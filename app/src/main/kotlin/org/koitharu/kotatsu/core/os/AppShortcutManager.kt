@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Build
+import android.util.Size
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.util.component1
+import androidx.core.util.component2
 import androidx.room.InvalidationTracker
 import coil.ImageLoader
 import coil.request.ImageRequest
@@ -42,7 +45,7 @@ class AppShortcutManager @Inject constructor(
 ) : InvalidationTracker.Observer(TABLE_HISTORY), SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private val iconWidthAndHeight by lazy {
-		ShortcutManagerCompat.getIconMaxWidth(context) to ShortcutManagerCompat.getIconMaxHeight(context)
+		Size(ShortcutManagerCompat.getIconMaxWidth(context), ShortcutManagerCompat.getIconMaxHeight(context))
 	}
 	private var shortcutsUpdateJob: Job? = null
 
