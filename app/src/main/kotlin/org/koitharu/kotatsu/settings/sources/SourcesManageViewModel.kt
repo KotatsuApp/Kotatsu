@@ -1,17 +1,24 @@
 package org.koitharu.kotatsu.settings.sources
 
+import androidx.annotation.CheckResult
 import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.AlphanumComparator
@@ -23,7 +30,6 @@ import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
-import java.util.EnumSet
 import java.util.Locale
 import java.util.TreeMap
 import javax.inject.Inject
@@ -34,26 +40,28 @@ private const val KEY_ENABLED = "!"
 private const val TIP_REORDER = "src_reorder"
 
 @HiltViewModel
-class SourcesListViewModel @Inject constructor(
+class SourcesManageViewModel @Inject constructor(
 	private val settings: AppSettings,
 	private val repository: MangaSourcesRepository,
 ) : BaseViewModel() {
 
-	val items = MutableStateFlow<List<SourceConfigItem>>(emptyList())
-	val onActionDone = MutableEventFlow<ReversibleAction>()
+	private val expandedGroups = MutableStateFlow(emptySet<String?>())
+	private var searchQuery = MutableStateFlow<String?>(null)
 	private val mutex = Mutex()
 
-	private val expandedGroups = HashSet<String?>()
-	private var searchQuery: String? = null
+	val content = combine(
+		repository.observeEnabledSources(),
+		expandedGroups,
+		searchQuery,
+		observeTip(),
+	) { sources, groups, query, tip ->
+		buildList(sources, groups, query, tip)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
-	init {
-		launchAtomicJob(Dispatchers.Default) {
-			buildList()
-		}
-	}
+	val onActionDone = MutableEventFlow<ReversibleAction>()
 
 	fun reorderSources(oldPos: Int, newPos: Int): Boolean {
-		val snapshot = items.value.toMutableList()
+		val snapshot = content.value
 		val item = (snapshot[oldPos] as? SourceConfigItem.SourceItem) ?: return false
 		if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) return false
 		launchAtomicJob(Dispatchers.Default) {
@@ -67,13 +75,12 @@ class SourcesListViewModel @Inject constructor(
 				}
 			}
 			repository.setPosition(item.source, targetPosition)
-			buildList()
 		}
 		return true
 	}
 
 	fun canReorder(oldPos: Int, newPos: Int): Boolean {
-		val snapshot = items.value.toMutableList()
+		val snapshot = content.value
 		if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isEnabled != true) return false
 		return (snapshot[newPos] as? SourceConfigItem.SourceItem)?.isEnabled == true
 	}
@@ -84,49 +91,45 @@ class SourcesListViewModel @Inject constructor(
 			if (!isEnabled) {
 				onActionDone.call(ReversibleAction(R.string.source_disabled, rollback))
 			}
-			buildList()
 		}
 	}
 
 	fun disableAll() {
 		launchAtomicJob(Dispatchers.Default) {
 			repository.disableAllSources()
-			buildList()
 		}
 	}
 
 	fun expandOrCollapse(headerId: String?) {
-		launchAtomicJob {
-			if (headerId in expandedGroups) {
-				expandedGroups.remove(headerId)
-			} else {
-				expandedGroups.add(headerId)
-			}
-			buildList()
+		val expanded = expandedGroups.value
+		expandedGroups.value = if (headerId in expanded) {
+			expanded - headerId
+		} else {
+			expanded + headerId
 		}
 	}
 
 	fun performSearch(query: String?) {
-		launchAtomicJob {
-			searchQuery = query?.trim()
-			buildList()
-		}
+		searchQuery.value = query?.trim()
 	}
 
 	fun onTipClosed(item: SourceConfigItem.Tip) {
 		launchAtomicJob(Dispatchers.Default) {
 			settings.closeTip(item.key)
-			buildList()
 		}
 	}
 
-	private suspend fun buildList() = withContext(Dispatchers.Default) {
+	@CheckResult
+	private fun buildList(
+		enabledSources: List<MangaSource>,
+		expanded: Set<String?>,
+		query: String?,
+		withTip: Boolean,
+	): List<SourceConfigItem> {
 		val allSources = repository.allMangaSources
-		val enabledSources = repository.getEnabledSources()
 		val enabledSet = enabledSources.toEnumSet()
-		val query = searchQuery
 		if (!query.isNullOrEmpty()) {
-			items.value = allSources.mapNotNull {
+			return allSources.mapNotNull {
 				if (!it.title.contains(query, ignoreCase = true)) {
 					return@mapNotNull null
 				}
@@ -139,7 +142,6 @@ class SourcesListViewModel @Inject constructor(
 			}.ifEmpty {
 				listOf(SourceConfigItem.EmptySearchResult)
 			}
-			return@withContext
 		}
 		val map = allSources.groupByTo(TreeMap(LocaleKeyComparator())) {
 			if (it in enabledSet) {
@@ -152,7 +154,7 @@ class SourcesListViewModel @Inject constructor(
 		val result = ArrayList<SourceConfigItem>(allSources.size + map.size + 2)
 		if (enabledSources.isNotEmpty()) {
 			result += SourceConfigItem.Header(R.string.enabled_sources)
-			if (settings.isTipEnabled(TIP_REORDER)) {
+			if (withTip) {
 				result += SourceConfigItem.Tip(TIP_REORDER, R.drawable.ic_tap_reorder, R.string.sources_reorder_tip)
 			}
 			enabledSources.mapTo(result) {
@@ -169,7 +171,7 @@ class SourcesListViewModel @Inject constructor(
 			val comparator = compareBy<MangaSource, String>(AlphanumComparator()) { it.name }
 			for ((key, list) in map) {
 				list.sortWith(comparator)
-				val isExpanded = key in expandedGroups
+				val isExpanded = key in expanded
 				result += SourceConfigItem.LocaleGroup(
 					localeId = key,
 					title = getLocaleTitle(key),
@@ -187,7 +189,7 @@ class SourcesListViewModel @Inject constructor(
 				}
 			}
 		}
-		items.value = result
+		return result
 	}
 
 	private fun getLocaleTitle(localeKey: String?): String? {
@@ -202,6 +204,10 @@ class SourcesListViewModel @Inject constructor(
 		mutex.withLock {
 			withContext(context, block)
 		}
+	}
+
+	private fun observeTip() = settings.observeAsFlow(AppSettings.KEY_TIPS_CLOSED) {
+		isTipEnabled(TIP_REORDER)
 	}
 
 	private class LocaleKeyComparator : Comparator<String?> {

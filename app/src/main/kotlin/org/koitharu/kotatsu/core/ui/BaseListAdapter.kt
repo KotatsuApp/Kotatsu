@@ -20,10 +20,10 @@ open class BaseListAdapter<T : ListModel>(
 		.setBackgroundThreadExecutor(Dispatchers.Default.limitedParallelism(2).asExecutor())
 		.build(),
 	*delegates,
-), FlowCollector<List<T>> {
+), FlowCollector<List<T>?> {
 
-	override suspend fun emit(value: List<T>) = suspendCoroutine { cont ->
-		setItems(value, ContinuationResumeRunnable(cont))
+	override suspend fun emit(value: List<T>?) = suspendCoroutine { cont ->
+		setItems(value.orEmpty(), ContinuationResumeRunnable(cont))
 	}
 
 	fun addDelegate(type: ListItemType, delegate: AdapterDelegate<List<T>>): BaseListAdapter<T> {

@@ -39,6 +39,7 @@ class CaptchaNotifier(
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 			.setDefaults(NotificationCompat.DEFAULT_SOUND)
 			.setSmallIcon(android.R.drawable.stat_notify_error)
+			.setAutoCancel(true)
 			.setVisibility(
 				if (exception.source?.contentType == ContentType.HENTAI) {
 					NotificationCompat.VISIBILITY_SECRET

@@ -26,13 +26,14 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SourcesListFragment :
+class SourcesManageFragment :
 	BaseFragment<FragmentSettingsSourcesBinding>(),
 	SourceConfigListener,
 	RecyclerViewOwner {
@@ -41,7 +42,7 @@ class SourcesListFragment :
 	lateinit var coil: ImageLoader
 
 	private var reorderHelper: ItemTouchHelper? = null
-	private val viewModel by viewModels<SourcesListViewModel>()
+	private val viewModel by viewModels<SourcesManageViewModel>()
 
 	override val recyclerView: RecyclerView
 		get() = requireViewBinding().recyclerView
@@ -61,9 +62,7 @@ class SourcesListFragment :
 				it.attachToRecyclerView(this)
 			}
 		}
-		viewModel.items.observe(viewLifecycleOwner) {
-			sourcesAdapter.items = it
-		}
+		viewModel.content.observe(viewLifecycleOwner, sourcesAdapter)
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 		addMenuProvider(SourcesMenuProvider())
 	}
@@ -121,6 +120,11 @@ class SourcesListFragment :
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 			R.id.action_disable_all -> {
 				viewModel.disableAll()
+				true
+			}
+
+			R.id.action_locales -> {
+				OnboardDialogFragment.show(childFragmentManager)
 				true
 			}
 

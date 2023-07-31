@@ -469,4 +469,5 @@
 	<string name="view_list">View list</string>
 	<string name="show">Show</string>
 	<string name="captcha_required_summary">%s requires a captcha to be resolved to work properly</string>
+	<string name="languages">Languages</string>
 </resources>
