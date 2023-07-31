@@ -10,13 +10,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
-import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
@@ -41,17 +42,26 @@ class BookmarksViewModel @Inject constructor(
 						actionStringRes = 0,
 					),
 				)
-			} else list.map { (manga, bookmarks) ->
-				BookmarksGroup(manga, bookmarks)
+			} else {
+				mapList(list)
 			}
 		}
 		.catch { e -> emit(listOf(e.toErrorState(canRetry = false))) }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
-	fun removeBookmarks(ids: Map<Manga, Set<Long>>) {
+	fun removeBookmarks(ids: Set<Long>) {
 		launchJob(Dispatchers.Default) {
 			val handle = repository.removeBookmarks(ids)
 			onActionDone.call(ReversibleAction(R.string.bookmarks_removed, handle))
 		}
+	}
+
+	private fun mapList(data: Map<Manga, List<Bookmark>>): List<ListModel> {
+		val result = ArrayList<ListModel>(data.values.sumOf { it.size + 1 })
+		for ((manga, bookmarks) in data) {
+			result.add(ListHeader(manga.title, R.string.more, manga))
+			result.addAll(bookmarks)
+		}
+		return result
 	}
 }

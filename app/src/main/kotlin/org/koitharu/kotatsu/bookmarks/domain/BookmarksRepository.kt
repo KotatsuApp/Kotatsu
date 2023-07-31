@@ -62,18 +62,16 @@ class BookmarksRepository @Inject constructor(
 		removeBookmark(bookmark.manga.id, bookmark.chapterId, bookmark.page)
 	}
 
-	suspend fun removeBookmarks(ids: Map<Manga, Set<Long>>): ReversibleHandle {
+	suspend fun removeBookmarks(ids: Set<Long>): ReversibleHandle {
 		val entities = ArrayList<BookmarkEntity>(ids.size)
 		db.withTransaction {
 			val dao = db.bookmarksDao
-			for ((manga, idSet) in ids) {
-				for (pageId in idSet) {
-					val e = dao.find(manga.id, pageId)
-					if (e != null) {
-						entities.add(e)
-					}
-					dao.delete(manga.id, pageId)
+			for (pageId in ids) {
+				val e = dao.find(pageId)
+				if (e != null) {
+					entities.add(e)
 				}
+				dao.delete(pageId)
 			}
 		}
 		return BookmarksRestorer(entities)

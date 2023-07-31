@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.details.ui.model
 
-import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 

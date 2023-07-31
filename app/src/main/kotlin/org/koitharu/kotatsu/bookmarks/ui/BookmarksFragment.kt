@@ -12,31 +12,32 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.bookmarks.data.ids
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
-import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksGroupAdapter
-import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
+import org.koitharu.kotatsu.bookmarks.ui.sheet.BookmarksAdapter
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.ui.list.SectionedSelectionController
-import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
-import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.ui.util.reverseAsync
-import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
+import org.koitharu.kotatsu.list.ui.adapter.ListHeaderClickListener
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
-import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.SnackbarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -48,15 +49,18 @@ class BookmarksFragment :
 	BaseFragment<FragmentListSimpleBinding>(),
 	ListStateHolderListener,
 	OnListItemClickListener<Bookmark>,
-	SectionedSelectionController.Callback<Manga>,
-	FastScroller.FastScrollListener {
+	ListSelectionController.Callback2,
+	FastScroller.FastScrollListener, ListHeaderClickListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
 
+	@Inject
+	lateinit var settings: AppSettings
+
 	private val viewModel by viewModels<BookmarksViewModel>()
-	private var adapter: BookmarksGroupAdapter? = null
-	private var selectionController: SectionedSelectionController<Manga>? = null
+	private var bookmarksAdapter: BookmarksAdapter? = null
+	private var selectionController: ListSelectionController? = null
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentListSimpleBinding {
 		return FragmentListSimpleBinding.inflate(inflater, container, false)
@@ -64,37 +68,46 @@ class BookmarksFragment :
 
 	override fun onViewBindingCreated(binding: FragmentListSimpleBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		selectionController = SectionedSelectionController(
+		selectionController = ListSelectionController(
 			activity = requireActivity(),
-			owner = this,
+			decoration = BookmarksSelectionDecoration(binding.root.context),
+			registryOwner = this,
 			callback = this,
 		)
-		adapter = BookmarksGroupAdapter(
+		bookmarksAdapter = BookmarksAdapter(
 			lifecycleOwner = viewLifecycleOwner,
 			coil = coil,
-			listener = this,
-			selectionController = checkNotNull(selectionController),
-			bookmarkClickListener = this,
-			groupClickListener = OnGroupClickListener(),
+			clickListener = this,
+			headerClickListener = this,
 		)
-		binding.recyclerView.adapter = adapter
-		binding.recyclerView.setHasFixedSize(true)
-		val spacingDecoration = SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing))
-		binding.recyclerView.addItemDecoration(spacingDecoration)
-
-		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
+		val spanSizeLookup = SpanSizeLookup()
+		with(binding.recyclerView) {
+			setHasFixedSize(true)
+			val spanResolver = MangaListSpanResolver(resources)
+			addItemDecoration(TypedListSpacingDecoration(context))
+			adapter = bookmarksAdapter
+			addOnLayoutChangeListener(spanResolver)
+			spanResolver.setGridSize(settings.gridSize / 100f, this)
+			val lm = GridLayoutManager(context, spanResolver.spanCount)
+			lm.spanSizeLookup = spanSizeLookup
+			layoutManager = lm
+			selectionController?.attachToRecyclerView(this)
+		}
+		viewModel.content.observe(viewLifecycleOwner) {
+			bookmarksAdapter?.setItems(it, spanSizeLookup)
+		}
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ::onActionDone)
 	}
 
 	override fun onDestroyView() {
 		super.onDestroyView()
-		adapter = null
+		bookmarksAdapter = null
 		selectionController = null
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
-		if (selectionController?.onItemClick(item.manga, item.pageId) != true) {
+		if (selectionController?.onItemClick(item.pageId) != true) {
 			val intent = ReaderActivity.IntentBuilder(view.context)
 				.bookmark(item)
 				.incognito(true)
@@ -104,8 +117,13 @@ class BookmarksFragment :
 		}
 	}
 
+	override fun onListHeaderClick(item: ListHeader, view: View) {
+		val manga = item.payload as? Manga ?: return
+		startActivity(DetailsActivity.newIntent(view.context, manga))
+	}
+
 	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
-		return selectionController?.onItemLongClick(item.manga, item.pageId) ?: false
+		return selectionController?.onItemLongClick(item.pageId) ?: false
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit
@@ -118,24 +136,16 @@ class BookmarksFragment :
 
 	override fun onFastScrollStop(fastScroller: FastScroller) = Unit
 
-	override fun onSelectionChanged(controller: SectionedSelectionController<Manga>, count: Int) {
-		requireViewBinding().recyclerView.invalidateNestedItemDecorations()
+	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
+		requireViewBinding().recyclerView.invalidateItemDecorations()
 	}
 
-	override fun onCreateActionMode(
-		controller: SectionedSelectionController<Manga>,
-		mode: ActionMode,
-		menu: Menu,
-	): Boolean {
+	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_bookmarks, menu)
 		return true
 	}
 
-	override fun onActionItemClicked(
-		controller: SectionedSelectionController<Manga>,
-		mode: ActionMode,
-		item: MenuItem,
-	): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_remove -> {
 				val ids = selectionController?.snapshot() ?: return false
@@ -148,11 +158,6 @@ class BookmarksFragment :
 		}
 	}
 
-	override fun onCreateItemDecoration(
-		controller: SectionedSelectionController<Manga>,
-		section: Manga,
-	): AbstractSelectionItemDecoration = BookmarksSelectionDecoration(requireContext())
-
 	override fun onWindowInsetsChanged(insets: Insets) {
 		requireViewBinding().recyclerView.updatePadding(
 			bottom = insets.bottom,
@@ -160,10 +165,6 @@ class BookmarksFragment :
 		requireViewBinding().recyclerView.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			bottomMargin = insets.bottom
 		}
-	}
-
-	private fun onListChanged(list: List<ListModel>) {
-		adapter?.items = list
 	}
 
 	private fun onActionDone(action: ReversibleAction) {
@@ -176,24 +177,24 @@ class BookmarksFragment :
 		snackbar.show()
 	}
 
-	private inner class OnGroupClickListener : OnListItemClickListener<BookmarksGroup> {
+	private inner class SpanSizeLookup : GridLayoutManager.SpanSizeLookup(), Runnable {
 
-		override fun onItemClick(item: BookmarksGroup, view: View) {
-			val controller = selectionController
-			if (controller != null && controller.count > 0) {
-				if (controller.getSectionCount(item.manga) == item.bookmarks.size) {
-					controller.clearSelection(item.manga)
-				} else {
-					controller.addToSelection(item.manga, item.bookmarks.ids())
-				}
-				return
-			}
-			val intent = DetailsActivity.newIntent(view.context, item.manga)
-			startActivity(intent)
+		init {
+			isSpanIndexCacheEnabled = true
+			isSpanGroupIndexCacheEnabled = true
 		}
 
-		override fun onItemLongClick(item: BookmarksGroup, view: View): Boolean {
-			return selectionController?.addToSelection(item.manga, item.bookmarks.ids()) ?: false
+		override fun getSpanSize(position: Int): Int {
+			val total = (viewBinding?.recyclerView?.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
+			return when (bookmarksAdapter?.getItemViewType(position)) {
+				ListItemType.PAGE_THUMB.ordinal -> 1
+				else -> total
+			}
+		}
+
+		override fun run() {
+			invalidateSpanGroupIndexCache()
+			invalidateSpanIndexCache()
 		}
 	}
 

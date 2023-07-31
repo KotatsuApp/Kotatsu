@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.search.ui.multi
 
-import org.koitharu.kotatsu.bookmarks.ui.model.BookmarksGroup
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel

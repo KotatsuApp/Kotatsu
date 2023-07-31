@@ -26,8 +26,9 @@ open class BaseListAdapter<T : ListModel>(
 		setItems(value, ContinuationResumeRunnable(cont))
 	}
 
-	fun addDelegate(type: ListItemType, delegate: AdapterDelegate<List<T>>) {
+	fun addDelegate(type: ListItemType, delegate: AdapterDelegate<List<T>>): BaseListAdapter<T> {
 		delegatesManager.addDelegate(type.ordinal, delegate)
+		return this
 	}
 
 	fun addListListener(listListener: ListListener<T>) {

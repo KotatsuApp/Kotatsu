@@ -12,8 +12,11 @@ import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 @Dao
 abstract class BookmarksDao {
 
-	@Query("SELECT * FROM bookmarks WHERE manga_id = :mangaId AND page_id = :pageId ORDER BY percent")
+	@Query("SELECT * FROM bookmarks WHERE manga_id = :mangaId AND page_id = :pageId")
 	abstract suspend fun find(mangaId: Long, pageId: Long): BookmarkEntity?
+
+	@Query("SELECT * FROM bookmarks WHERE page_id = :pageId")
+	abstract suspend fun find(pageId: Long): BookmarkEntity?
 
 	@Transaction
 	@Query(
@@ -41,6 +44,9 @@ abstract class BookmarksDao {
 
 	@Query("DELETE FROM bookmarks WHERE manga_id = :mangaId AND page_id = :pageId")
 	abstract suspend fun delete(mangaId: Long, pageId: Long): Int
+
+	@Query("DELETE FROM bookmarks WHERE page_id = :pageId")
+	abstract suspend fun delete(pageId: Long): Int
 
 	@Query("DELETE FROM bookmarks WHERE manga_id = :mangaId AND chapter_id = :chapterId AND page = :page")
 	abstract suspend fun delete(mangaId: Long, chapterId: Long, page: Int): Int

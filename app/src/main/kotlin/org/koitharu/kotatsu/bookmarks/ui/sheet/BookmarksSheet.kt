@@ -72,6 +72,7 @@ class BookmarksSheet :
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,
 			clickListener = this@BookmarksSheet,
+			headerClickListener = null,
 		)
 		viewBinding?.headerBar?.setTitle(R.string.bookmarks)
 		with(binding.recyclerView) {
