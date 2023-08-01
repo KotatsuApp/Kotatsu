@@ -95,7 +95,7 @@ class PagesThumbnailsViewModel @Inject constructor(
 			for (page in snapshot) {
 				if (page.chapterId != previousChapterId) {
 					chaptersLoader.peekChapter(page.chapterId)?.let {
-						add(ListHeader(it.name, 0, null))
+						add(ListHeader(it.name))
 					}
 					previousChapterId = page.chapterId
 				}

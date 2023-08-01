@@ -5,30 +5,25 @@ import androidx.annotation.StringRes
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 
 data class ListHeader private constructor(
-	private val text: CharSequence?,
-	@StringRes private val textRes: Int,
-	private val dateTimeAgo: DateTimeAgo?,
-	@StringRes val buttonTextRes: Int,
-	val payload: Any?,
+	private val text: CharSequence? = null,
+	@StringRes private val textRes: Int = 0,
+	private val dateTimeAgo: DateTimeAgo? = null,
+	@StringRes val buttonTextRes: Int = 0,
+	val payload: Any? = null,
 ) : ListModel {
 
 	constructor(
 		text: CharSequence,
-		@StringRes buttonTextRes: Int,
-		payload: Any?,
+		@StringRes buttonTextRes: Int = 0,
+		payload: Any? = null,
 	) : this(text, 0, null, buttonTextRes, payload)
 
 	constructor(
 		@StringRes textRes: Int,
-		@StringRes buttonTextRes: Int,
-		payload: Any?,
-	) : this(null, textRes, null, buttonTextRes, payload)
+		@StringRes buttonTextRes: Int = 0
+	) : this(null, textRes, null, buttonTextRes)
 
-	constructor(
-		dateTimeAgo: DateTimeAgo,
-		@StringRes buttonTextRes: Int,
-		payload: Any?,
-	) : this(null, 0, dateTimeAgo, buttonTextRes, payload)
+	constructor(dateTimeAgo: DateTimeAgo) : this(null, dateTimeAgo = dateTimeAgo)
 
 	fun getText(context: Context): CharSequence? = when {
 		text != null -> text

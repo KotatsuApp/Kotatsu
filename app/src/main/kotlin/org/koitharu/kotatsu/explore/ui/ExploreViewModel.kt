@@ -133,11 +133,11 @@ class ExploreViewModel @Inject constructor(
 		val result = ArrayList<ListModel>(sources.size + 4)
 		result += ExploreButtons(randomLoading)
 		if (recommendation != null) {
-			result += ListHeader(R.string.suggestions, 0, null)
+			result += ListHeader(R.string.suggestions)
 			result += RecommendationsItem(recommendation)
 		}
 		if (sources.isNotEmpty()) {
-			result += ListHeader(R.string.remote_sources, R.string.manage, null)
+			result += ListHeader(R.string.remote_sources, R.string.manage)
 			if (newSources.isNotEmpty()) {
 				result += TipModel(
 					key = TIP_NEW_SOURCES,

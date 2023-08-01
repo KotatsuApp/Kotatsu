@@ -135,7 +135,7 @@ class HistoryListViewModel @Inject constructor(
 			if (grouped) {
 				val date = timeAgo(history.updatedAt)
 				if (prevDate != date) {
-					result += ListHeader(date, 0, null)
+					result += ListHeader(date)
 				}
 				prevDate = date
 			}

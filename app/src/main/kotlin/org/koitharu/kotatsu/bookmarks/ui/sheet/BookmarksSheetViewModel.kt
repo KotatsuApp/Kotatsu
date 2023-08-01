@@ -46,7 +46,7 @@ class BookmarksSheetViewModel @Inject constructor(
 			if (b.isNullOrEmpty()) {
 				continue
 			}
-			result += ListHeader(chapter.name, 0, null)
+			result += ListHeader(chapter.name)
 			result.addAll(b)
 		}
 		return result
