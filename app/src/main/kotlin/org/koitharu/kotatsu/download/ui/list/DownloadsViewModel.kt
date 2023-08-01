@@ -186,7 +186,7 @@ class DownloadsViewModel @Inject constructor(
 		for (item in this) {
 			val date = timeAgo(item.timestamp)
 			if (prevDate != date) {
-				destination += ListHeader(date, 0, null)
+				destination += ListHeader(date)
 			}
 			prevDate = date
 			destination += item

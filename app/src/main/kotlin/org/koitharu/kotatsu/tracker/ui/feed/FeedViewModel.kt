@@ -85,7 +85,7 @@ class FeedViewModel @Inject constructor(
 		for (item in this) {
 			val date = timeAgo(item.createdAt)
 			if (prevDate != date) {
-				destination += ListHeader(date, 0, null)
+				destination += ListHeader(date)
 			}
 			prevDate = date
 			destination += item.toFeedItem()
