@@ -98,21 +98,13 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 			.enqueueWith(coil)
 	}
 
-	private class SsivTarget(
+	private data class SsivTarget(
 		override val view: SubsamplingScaleImageView,
 	) : ViewTarget<SubsamplingScaleImageView> {
 
 		override fun onError(error: Drawable?) = setDrawable(error)
 
 		override fun onSuccess(result: Drawable) = setDrawable(result)
-
-		override fun equals(other: Any?): Boolean {
-			return (this === other) || (other is SsivTarget && view == other.view)
-		}
-
-		override fun hashCode() = view.hashCode()
-
-		override fun toString() = "SsivTarget(view=$view)"
 
 		private fun setDrawable(drawable: Drawable?) {
 			if (drawable != null) {

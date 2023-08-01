@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
-class MangaWithTags(
+data class MangaWithTags(
 	@Embedded val manga: MangaEntity,
 	@Relation(
 		parentColumn = "manga_id",
@@ -12,21 +12,4 @@ class MangaWithTags(
 		associateBy = Junction(MangaTagsEntity::class)
 	)
 	val tags: List<TagEntity>,
-) {
-
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as MangaWithTags
-
-		if (manga != other.manga) return false
-		return tags == other.tags
-	}
-
-	override fun hashCode(): Int {
-		var result = manga.hashCode()
-		result = 31 * result + tags.hashCode()
-		return result
-	}
-}
+)

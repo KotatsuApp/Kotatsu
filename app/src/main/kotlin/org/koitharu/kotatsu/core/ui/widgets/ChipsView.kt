@@ -139,39 +139,14 @@ class ChipsView @JvmOverloads constructor(
 		}
 	}
 
-	class ChipModel(
+	data class ChipModel(
 		@ColorRes val tint: Int,
 		val title: CharSequence,
 		@DrawableRes val icon: Int,
 		val isCheckable: Boolean,
 		val isChecked: Boolean,
 		val data: Any? = null,
-	) {
-
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as ChipModel
-
-			if (tint != other.tint) return false
-			if (title != other.title) return false
-			if (icon != other.icon) return false
-			if (isCheckable != other.isCheckable) return false
-			if (isChecked != other.isChecked) return false
-			return data == other.data
-		}
-
-		override fun hashCode(): Int {
-			var result = tint.hashCode()
-			result = 31 * result + title.hashCode()
-			result = 31 * result + icon.hashCode()
-			result = 31 * result + isCheckable.hashCode()
-			result = 31 * result + isChecked.hashCode()
-			result = 31 * result + (data?.hashCode() ?: 0)
-			return result
-		}
-	}
+	)
 
 	fun interface OnChipClickListener {
 

@@ -118,27 +118,10 @@ class SegmentedBarView @JvmOverloads constructor(
 		segmentsSizes.add(w)
 	}
 
-	class Segment(
+	data class Segment(
 		@FloatRange(from = 0.0, to = 1.0) val percent: Float,
 		@ColorInt val color: Int,
-	) {
-
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as Segment
-
-			if (percent != other.percent) return false
-			return color == other.color
-		}
-
-		override fun hashCode(): Int {
-			var result = percent.hashCode()
-			result = 31 * result + color
-			return result
-		}
-	}
+	)
 
 	private class OutlineProvider : ViewOutlineProvider() {
 		override fun getOutline(view: View, outline: Outline) {

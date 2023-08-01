@@ -4,7 +4,7 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 
-class PageThumbnail(
+data class PageThumbnail(
 	val isCurrent: Boolean,
 	val repository: MangaRepository,
 	val page: ReaderPage,
@@ -16,23 +16,4 @@ class PageThumbnail(
 	override fun areItemsTheSame(other: ListModel): Boolean {
 		return other is PageThumbnail && page == other.page
 	}
-
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as PageThumbnail
-
-		if (isCurrent != other.isCurrent) return false
-		if (repository != other.repository) return false
-		return page == other.page
-	}
-
-	override fun hashCode(): Int {
-		var result = isCurrent.hashCode()
-		result = 31 * result + repository.hashCode()
-		result = 31 * result + page.hashCode()
-		return result
-	}
-
 }

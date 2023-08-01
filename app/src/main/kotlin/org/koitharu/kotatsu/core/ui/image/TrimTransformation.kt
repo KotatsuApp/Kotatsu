@@ -11,7 +11,7 @@ import coil.size.Size
 import coil.transform.Transformation
 import kotlin.math.abs
 
-class TrimTransformation(
+data class TrimTransformation(
 	private val tolerance: Int = 20,
 ) : Transformation {
 
@@ -103,18 +103,5 @@ class TrimTransformation(
 			abs(a.green - b.green) <= tolerance &&
 			abs(a.blue - b.blue) <= tolerance &&
 			abs(a.alpha - b.alpha) <= tolerance
-	}
-
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as TrimTransformation
-
-		return tolerance == other.tolerance
-	}
-
-	override fun hashCode(): Int {
-		return tolerance
 	}
 }
