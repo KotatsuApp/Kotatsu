@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.scrobbling.common.data
 
 import android.content.Context
 import androidx.core.content.edit
-import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 
@@ -40,12 +39,8 @@ class ScrobblerStorage(context: Context, service: ScrobblerService) {
 				remove(KEY_USER)
 				return@edit
 			}
-			val str = StringJoiner("\n")
-				.add(value.id)
-				.add(value.nickname)
-				.add(value.avatar)
-				.add(value.service.name)
-				.complete()
+			val str = listOf(value.id, value.nickname, value.avatar, value.service.name)
+				.joinToString("\n")
 			putString(KEY_USER, str)
 		}
 

@@ -42,7 +42,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import okio.IOException
 import org.json.JSONException
-import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -173,14 +172,12 @@ fun scaleUpActivityOptionsOf(view: View): Bundle? = if (view.context.isAnimation
 }
 
 fun Resources.getLocalesConfig(): LocaleListCompat {
-	val tagsList = StringJoiner(",")
+	val tagsList = mutableListOf<String>()
 	try {
-		val xpp: XmlPullParser = getXml(R.xml.locales)
+		val xpp = getXml(R.xml.locales)
 		while (xpp.eventType != XmlPullParser.END_DOCUMENT) {
-			if (xpp.eventType == XmlPullParser.START_TAG) {
-				if (xpp.name == "locale") {
-					tagsList.add(xpp.getAttributeValue(0))
-				}
+			if (xpp.eventType == XmlPullParser.START_TAG && xpp.name == "locale") {
+				tagsList.add(xpp.getAttributeValue(0))
 			}
 			xpp.next()
 		}
@@ -189,7 +186,7 @@ fun Resources.getLocalesConfig(): LocaleListCompat {
 	} catch (e: IOException) {
 		e.printStackTraceDebug()
 	}
-	return LocaleListCompat.forLanguageTags(tagsList.complete())
+	return LocaleListCompat.forLanguageTags(tagsList.joinToString(","))
 }
 
 fun Context.findActivity(): Activity? = when (this) {
