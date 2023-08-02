@@ -471,4 +471,5 @@
 	<string name="captcha_required_summary">%s requires a captcha to be resolved to work properly</string>
 	<string name="languages">Languages</string>
 	<string name="unknown">Unknown</string>
+	<string name="in_progress">In progress</string>
 </resources>
