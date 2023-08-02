@@ -20,7 +20,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.sync.withPermit
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koitharu.kotatsu.core.network.CommonHeaders
@@ -69,6 +71,7 @@ class PageLoader @Inject constructor(
 	val loaderScope = RetainedLifecycleCoroutineScope(lifecycle) + InternalErrorHandler() + Dispatchers.Default
 
 	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
+	private val semaphore = Semaphore(3)
 	private val convertLock = Mutex()
 	private val prefetchLock = Mutex()
 	private var repository: MangaRepository? = null
@@ -191,7 +194,7 @@ class PageLoader @Inject constructor(
 		}
 	}
 
-	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): File {
+	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): File = semaphore.withPermit {
 		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
 		val uri = Uri.parse(pageUrl)
