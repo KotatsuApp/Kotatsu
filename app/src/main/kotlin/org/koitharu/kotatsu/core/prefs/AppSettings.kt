@@ -2,14 +2,15 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.ArraySet
 import androidx.collection.arraySetOf
 import androidx.core.content.edit
-import androidx.core.net.ConnectivityManagerCompat
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -333,8 +334,11 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	}
 
 	private fun isBackgroundNetworkRestricted(): Boolean {
-		return ConnectivityManagerCompat.getRestrictBackgroundStatus(connectivityManager) ==
-			ConnectivityManagerCompat.RESTRICT_BACKGROUND_STATUS_ENABLED
+		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			connectivityManager.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
+		} else {
+			false
+		}
 	}
 
 	private fun JSONArray.toStringSet(): Set<String> {
