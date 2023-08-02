@@ -18,9 +18,9 @@
 		android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
 		tools:text="@tools:sample/lorem[2]" />
 
-	<Button
+	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_more"
-		style="@style/Widget.Kotatsu.Button.More"
+		style="@style/Widget.Kotatsu.Button.More.Small"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:visibility="invisible"

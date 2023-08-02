@@ -1,13 +1,16 @@
 package org.koitharu.kotatsu.details.ui
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import android.transition.AutoTransition
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.Gravity
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +20,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
+import androidx.core.text.buildSpannedString
+import androidx.core.text.inSpans
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -33,12 +38,11 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.ui.dialog.RecyclerViewAlertDialog
-import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.doOnExpansionsChanged
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -48,10 +52,8 @@ import org.koitharu.kotatsu.core.util.ext.setNavigationIconSafe
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
-import org.koitharu.kotatsu.details.ui.adapter.branchAD
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
-import org.koitharu.kotatsu.details.ui.model.MangaBranch
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -157,7 +159,7 @@ class DetailsActivity :
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_read -> openReader(isIncognitoMode = false)
-			R.id.button_dropdown -> showBranchPopupMenu()
+			R.id.button_dropdown -> showBranchPopupMenu(v)
 		}
 	}
 
@@ -275,20 +277,28 @@ class DetailsActivity :
 		viewBadge.counter = newChapters
 	}
 
-	private fun showBranchPopupMenu() {
-		var dialog: DialogInterface? = null
-		val listener = OnListItemClickListener<MangaBranch> { item, _ ->
-			viewModel.setSelectedBranch(item.name)
-			dialog?.dismiss()
+	private fun showBranchPopupMenu(v: View) {
+		val menu = PopupMenu(v.context, v)
+		val branches = viewModel.branches.value
+		for ((i, branch) in branches.withIndex()) {
+			val title = buildSpannedString {
+				append(branch.name ?: getString(R.string.system_default))
+				append(' ')
+				append(' ')
+				inSpans(
+					ForegroundColorSpan(v.context.getThemeColor(android.R.attr.textColorSecondary, Color.LTGRAY)),
+					RelativeSizeSpan(0.74f),
+				) {
+					append(branch.count.toString())
+				}
+			}
+			menu.menu.add(Menu.NONE, Menu.NONE, i, title)
 		}
-		dialog = RecyclerViewAlertDialog.Builder<MangaBranch>(this)
-			.addAdapterDelegate(branchAD(listener))
-			.setCancelable(true)
-			.setNegativeButton(android.R.string.cancel, null)
-			.setTitle(R.string.translations)
-			.setItems(viewModel.branches.value)
-			.create()
-			.also { it.show() }
+		menu.setOnMenuItemClickListener {
+			viewModel.setSelectedBranch(branches.getOrNull(it.order)?.name)
+			true
+		}
+		menu.show()
 	}
 
 	private fun openReader(isIncognitoMode: Boolean) {

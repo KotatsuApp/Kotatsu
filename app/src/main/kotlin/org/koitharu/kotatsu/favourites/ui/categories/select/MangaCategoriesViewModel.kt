@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet.Companion.KEY_MANGA_LIST
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteSheet.Companion.KEY_MANGA_LIST
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.CategoriesHeaderItem
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -37,8 +37,7 @@ class MangaCategoriesViewModel @Inject constructor(
 			add(header)
 			all.mapTo(this) {
 				MangaCategoryItem(
-					id = it.id,
-					name = it.title,
+					category = it,
 					isChecked = it.id in checked,
 				)
 			}

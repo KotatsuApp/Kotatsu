@@ -41,7 +41,7 @@ import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteSheet
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -283,7 +283,7 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_favourite -> {
-				FavouriteCategoriesSheet.show(childFragmentManager, selectedItems)
+				FavouriteSheet.show(childFragmentManager, selectedItems)
 				mode.finish()
 				true
 			}

@@ -23,7 +23,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 
 @AndroidEntryPoint
-class FavouriteCategoriesSheet :
+class FavouriteSheet :
 	BaseAdaptiveSheet<SheetFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem> {
 
@@ -53,7 +53,7 @@ class FavouriteCategoriesSheet :
 	}
 
 	override fun onItemClick(item: MangaCategoryItem, view: View) {
-		viewModel.setChecked(item.id, !item.isChecked)
+		viewModel.setChecked(item.category.id, !item.isChecked)
 	}
 
 	private fun onContentChanged(categories: List<ListModel>) {
@@ -72,7 +72,7 @@ class FavouriteCategoriesSheet :
 		fun show(fm: FragmentManager, manga: Manga) = Companion.show(fm, listOf(manga))
 
 		fun show(fm: FragmentManager, manga: Collection<Manga>) =
-			FavouriteCategoriesSheet().withArgs(1) {
+			FavouriteSheet().withArgs(1) {
 				putParcelableArrayList(
 					KEY_MANGA_LIST,
 					manga.mapTo(ArrayList(manga.size)) {

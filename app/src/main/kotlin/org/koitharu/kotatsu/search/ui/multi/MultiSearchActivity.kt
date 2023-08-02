@@ -27,7 +27,7 @@ import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteSheet
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListHeader
@@ -159,7 +159,7 @@ class MultiSearchActivity :
 			}
 
 			R.id.action_favourite -> {
-				FavouriteCategoriesSheet.show(supportFragmentManager, collectSelectedItems())
+				FavouriteSheet.show(supportFragmentManager, collectSelectedItems())
 				mode.finish()
 				true
 			}
