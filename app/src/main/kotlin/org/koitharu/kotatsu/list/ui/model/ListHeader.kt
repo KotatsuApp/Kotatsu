@@ -4,12 +4,13 @@ import android.content.Context
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 
+@Suppress("DataClassPrivateConstructor")
 data class ListHeader private constructor(
-	private val text: CharSequence? = null,
-	@StringRes private val textRes: Int = 0,
-	private val dateTimeAgo: DateTimeAgo? = null,
-	@StringRes val buttonTextRes: Int = 0,
-	val payload: Any? = null,
+	private val text: CharSequence?,
+	@StringRes private val textRes: Int,
+	private val dateTimeAgo: DateTimeAgo?,
+	@StringRes val buttonTextRes: Int,
+	val payload: Any?,
 ) : ListModel {
 
 	constructor(
@@ -20,10 +21,15 @@ data class ListHeader private constructor(
 
 	constructor(
 		@StringRes textRes: Int,
-		@StringRes buttonTextRes: Int = 0
-	) : this(null, textRes, null, buttonTextRes)
+		@StringRes buttonTextRes: Int = 0,
+		payload: Any? = null,
+	) : this(null, textRes, null, buttonTextRes, payload)
 
-	constructor(dateTimeAgo: DateTimeAgo) : this(null, dateTimeAgo = dateTimeAgo)
+	constructor(
+		dateTimeAgo: DateTimeAgo,
+		@StringRes buttonTextRes: Int = 0,
+		payload: Any? = null,
+	) : this(null, 0, dateTimeAgo, buttonTextRes, payload)
 
 	fun getText(context: Context): CharSequence? = when {
 		text != null -> text
