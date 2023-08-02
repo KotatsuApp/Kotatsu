@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -130,14 +131,17 @@ class HistoryListViewModel @Inject constructor(
 		mode: ListMode,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 1)
-		var prevDate: DateTimeAgo? = null
+		val order = sortOrder.value
+		var prevHeader: ListHeader? = null
 		for ((manga, history) in list) {
 			if (grouped) {
-				val date = timeAgo(history.updatedAt)
-				if (prevDate != date) {
-					result += ListHeader(date)
+				val header = history.header(order)
+				if (header != prevHeader) {
+					if (header != null) {
+						result += header
+					}
+					prevHeader = header
 				}
-				prevDate = date
 			}
 			result += when (mode) {
 				ListMode.LIST -> manga.toListModel(extraProvider)
@@ -146,6 +150,21 @@ class HistoryListViewModel @Inject constructor(
 			}
 		}
 		return result
+	}
+
+	private fun MangaHistory.header(order: HistoryOrder): ListHeader? = when (order) {
+		HistoryOrder.UPDATED -> ListHeader(timeAgo(updatedAt))
+		HistoryOrder.CREATED -> ListHeader(timeAgo(createdAt))
+		HistoryOrder.PROGRESS -> ListHeader(
+			when (percent) {
+				1f -> R.string.status_completed
+				in 0f..0.01f -> R.string.status_planned
+				in 0f..1f -> R.string.status_reading
+				else -> R.string.unknown
+			},
+		)
+
+		HistoryOrder.ALPHABETIC -> null
 	}
 
 	private fun timeAgo(date: Date): DateTimeAgo {

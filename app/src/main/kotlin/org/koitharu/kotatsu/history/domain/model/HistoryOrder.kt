@@ -12,5 +12,5 @@ enum class HistoryOrder(
 	PROGRESS(R.string.progress),
 	ALPHABETIC(R.string.by_name);
 
-	fun isGroupingSupported() = this == UPDATED || this == CREATED
+	fun isGroupingSupported() = this == UPDATED || this == CREATED || this == PROGRESS
 }
