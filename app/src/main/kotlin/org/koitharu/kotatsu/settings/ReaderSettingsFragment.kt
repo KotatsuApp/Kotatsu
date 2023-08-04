@@ -25,18 +25,18 @@ class ReaderSettingsFragment :
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_reader)
 		findPreference<ListPreference>(AppSettings.KEY_READER_MODE)?.run {
-			entryValues = ReaderMode.values().names()
+			entryValues = ReaderMode.entries.names()
 			setDefaultValueCompat(ReaderMode.STANDARD.name)
 		}
 		findPreference<ListPreference>(AppSettings.KEY_READER_BACKGROUND)?.run {
-			entryValues = ReaderBackground.values().names()
+			entryValues = ReaderBackground.entries.names()
 			setDefaultValueCompat(ReaderBackground.DEFAULT.name)
 		}
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_SWITCHERS)?.run {
 			summaryProvider = MultiSummaryProvider(R.string.gestures_only)
 		}
 		findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.run {
-			entryValues = ZoomMode.values().names()
+			entryValues = ZoomMode.entries.names()
 			setDefaultValueCompat(ZoomMode.FIT_CENTER.name)
 		}
 		updateReaderModeDependency()

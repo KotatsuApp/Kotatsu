@@ -519,7 +519,7 @@ class FastScroller @JvmOverloads constructor(
 
 	private fun TypedArray.getBubbleSize(@StyleableRes index: Int, defaultValue: BubbleSize): BubbleSize {
 		val ordinal = getInt(index, -1)
-		return BubbleSize.values().getOrNull(ordinal) ?: defaultValue
+		return BubbleSize.entries.getOrNull(ordinal) ?: defaultValue
 	}
 
 	private fun findValidParent(view: View): ViewGroup? = view.parents.firstNotNullOfOrNull { p ->

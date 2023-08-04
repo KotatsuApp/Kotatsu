@@ -23,7 +23,7 @@ class HistoryListMenuProvider(
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 		menuInflater.inflate(R.menu.opt_history, menu)
 		val subMenu = menu.findItem(R.id.action_order)?.subMenu ?: return
-		for (order in HistoryOrder.values()) {
+		for (order in HistoryOrder.entries) {
 			subMenu.add(R.id.group_order, Menu.NONE, order.ordinal, order.titleResId)
 		}
 		subMenu.setGroupCheckable(R.id.group_order, true, true)
@@ -31,7 +31,7 @@ class HistoryListMenuProvider(
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		if (menuItem.groupId == R.id.group_order) {
-			val order = enumValues<HistoryOrder>()[menuItem.order]
+			val order = HistoryOrder.entries[menuItem.order]
 			viewModel.setSortOrder(order)
 			return true
 		}
@@ -51,7 +51,7 @@ class HistoryListMenuProvider(
 	}
 
 	override fun onPrepareMenu(menu: Menu) {
-		val order = viewModel.sortOrder.value ?: return
+		val order = viewModel.sortOrder.value
 		menu.findItem(R.id.action_order)?.subMenu?.forEach { item ->
 			if (item.order == order.ordinal) {
 				item.isChecked = true

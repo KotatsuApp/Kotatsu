@@ -84,7 +84,7 @@ class ScrobblerConfigViewModel @Inject constructor(
 			)
 		}
 		val grouped = list.groupBy { it.status }
-		val statuses = enumValues<ScrobblingStatus>()
+		val statuses = ScrobblingStatus.entries
 		val result = ArrayList<ListModel>(list.size + statuses.size)
 		for (st in statuses) {
 			val subList = grouped[st]
@@ -102,7 +102,7 @@ class ScrobblerConfigViewModel @Inject constructor(
 	): ScrobblerService {
 		val serviceId = savedStateHandle.get<Int>(ScrobblerConfigActivity.EXTRA_SERVICE_ID) ?: 0
 		if (serviceId != 0) {
-			return enumValues<ScrobblerService>().first { it.id == serviceId }
+			return ScrobblerService.entries.first { it.id == serviceId }
 		}
 		val uri = savedStateHandle.require<Uri>(BaseActivity.EXTRA_DATA)
 		return when (uri.host) {

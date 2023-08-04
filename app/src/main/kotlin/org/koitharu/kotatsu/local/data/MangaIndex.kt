@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.find
 import org.koitharu.kotatsu.parsers.util.json.getBooleanOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
@@ -67,7 +68,7 @@ class MangaIndex(source: String?) {
 			isNsfw = json.getBooleanOrDefault("nsfw", false),
 			coverUrl = json.getString("cover"),
 			state = json.getStringOrNull("state")?.let { stateString ->
-				MangaState.values().find { it.name == stateString }
+				MangaState.entries.find(stateString)
 			},
 			description = json.getStringOrNull("description"),
 			tags = json.getJSONArray("tags").mapJSONToSet { x ->

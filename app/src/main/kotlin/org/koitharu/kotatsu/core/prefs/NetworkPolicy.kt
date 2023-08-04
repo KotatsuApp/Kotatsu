@@ -20,7 +20,7 @@ enum class NetworkPolicy(
 
 		fun from(key: String?, default: NetworkPolicy): NetworkPolicy {
 			val intKey = key?.toIntOrNull() ?: return default
-			return enumValues<NetworkPolicy>().find { it.key == intKey } ?: default
+			return NetworkPolicy.entries.find { it.key == intKey } ?: default
 		}
 	}
 }

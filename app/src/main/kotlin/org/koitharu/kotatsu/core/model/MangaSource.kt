@@ -10,7 +10,7 @@ fun MangaSource.getLocaleTitle(): String? {
 }
 
 fun MangaSource(name: String): MangaSource {
-	MangaSource.values().forEach {
+	MangaSource.entries.forEach {
 		if (it.name == name) return it
 	}
 	return MangaSource.DUMMY

@@ -15,7 +15,7 @@ class Migration16To17(context: Context) : Migration(16, 17) {
 		database.execSQL("CREATE INDEX `index_sources_sort_key` ON `sources` (`sort_key`)")
 		val hiddenSources = prefs.getStringSet("sources_hidden", null).orEmpty()
 		val order = prefs.getString("sources_order_2", null)?.split('|').orEmpty()
-		val sources = MangaSource.values()
+		val sources = MangaSource.entries
 		for (source in sources) {
 			if (source == MangaSource.LOCAL) {
 				continue

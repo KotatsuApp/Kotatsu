@@ -4,9 +4,10 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:8.0.2'
-		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22'
+		classpath 'com.android.tools.build:gradle:8.2.0-alpha15'
+		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0'
 		classpath 'com.google.dagger:hilt-android-gradle-plugin:2.47'
+		classpath 'com.google.devtools.ksp:symbol-processing-gradle-plugin:1.9.0-1.0.13'
 	}
 }
 

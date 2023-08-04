@@ -38,7 +38,7 @@ class FavouritesListMenuProvider(
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		if (menuItem.groupId == R.id.group_order) {
-			val order = enumValues<SortOrder>()[menuItem.order]
+			val order = SortOrder.entries[menuItem.order]
 			viewModel.setSortOrder(order)
 			return true
 		}

@@ -43,7 +43,7 @@ class UserDataSettingsViewModel @Inject constructor(
 	private var storageUsageJob: Job? = null
 
 	init {
-		CacheDir.values().forEach {
+		CacheDir.entries.forEach {
 			cacheSizes[it] = MutableStateFlow(-1L)
 		}
 		launchJob(Dispatchers.Default) {
@@ -52,7 +52,7 @@ class UserDataSettingsViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			feedItemsCount.value = trackingRepository.getLogsCount()
 		}
-		CacheDir.values().forEach { cache ->
+		CacheDir.entries.forEach { cache ->
 			launchJob(Dispatchers.Default) {
 				checkNotNull(cacheSizes[cache]).value = storageManager.computeCacheSize(cache)
 			}

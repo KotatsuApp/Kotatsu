@@ -2,13 +2,15 @@ plugins {
 	id 'com.android.application'
 	id 'kotlin-android'
 	id 'kotlin-kapt'
+	id 'com.google.devtools.ksp'
 	id 'kotlin-parcelize'
 	id 'dagger.hilt.android.plugin'
 }
 
 android {
 	compileSdk = 33
-	buildToolsVersion = '33.0.2'
+	compileSdkExtension = 4
+	buildToolsVersion = '34.0.0'
 	namespace = 'org.koitharu.kotatsu'
 
 	defaultConfig {
@@ -22,10 +24,8 @@ android {
 		generatedDensities = []
 		testInstrumentationRunner "org.koitharu.kotatsu.HiltTestRunner"
 
-		kapt {
-			arguments {
-				arg 'room.schemaLocation', "$projectDir/schemas".toString()
-			}
+		ksp {
+			arg("room.schemaLocation", "$projectDir/schemas")
 		}
 	}
 	buildTypes {
@@ -41,6 +41,7 @@ android {
 	}
 	buildFeatures {
 		viewBinding true
+		buildConfig true
 	}
 	sourceSets {
 		androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
@@ -81,11 +82,11 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:03b4fc9f00') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:08eb9552d6') {
 		exclude group: 'org.json', module: 'json'
 	}
 
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -103,8 +104,7 @@ dependencies {
 	implementation 'androidx.preference:preference-ktx:1.2.0'
 	implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha05'
 	implementation 'com.google.android.material:material:1.9.0'
-	//noinspection LifecycleAnnotationProcessorWithJava8
-	kapt 'androidx.lifecycle:lifecycle-compiler:2.6.1'
+	implementation 'androidx.lifecycle:lifecycle-common-java8:2.6.1'
 
 	// TODO https://issuetracker.google.com/issues/254846063
 	implementation 'androidx.work:work-runtime-ktx:2.8.1'
@@ -117,8 +117,7 @@ dependencies {
 
 	implementation 'androidx.room:room-runtime:2.5.2'
 	implementation 'androidx.room:room-ktx:2.5.2'
-	//noinspection KaptUsageInsteadOfKsp
-	kapt 'androidx.room:room-compiler:2.5.2'
+	ksp 'androidx.room:room-compiler:2.5.2'
 
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.11.0'

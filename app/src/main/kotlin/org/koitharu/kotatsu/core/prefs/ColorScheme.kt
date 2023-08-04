@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import com.google.android.material.color.DynamicColors
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.parsers.util.find
 
 enum class ColorScheme(
 	@StyleRes val styleResId: Int,
@@ -31,7 +32,7 @@ enum class ColorScheme(
 			}
 
 		fun getAvailableList(): List<ColorScheme> {
-			val list = enumValues<ColorScheme>().toMutableList()
+			val list = ColorScheme.entries.toMutableList()
 			if (!DynamicColors.isDynamicColorAvailable()) {
 				list.remove(MONET)
 			}
@@ -39,7 +40,7 @@ enum class ColorScheme(
 		}
 
 		fun safeValueOf(name: String): ColorScheme? {
-			return enumValues<ColorScheme>().find { it.name == name }
+			return ColorScheme.entries.find(name)
 		}
 	}
 }

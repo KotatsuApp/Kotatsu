@@ -49,7 +49,7 @@ class AppearanceSettingsFragment :
 			}
 		}
 		findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
-			entryValues = ListMode.values().names()
+			entryValues = ListMode.entries.names()
 			setDefaultValueCompat(ListMode.GRID.name)
 		}
 		findPreference<ActivityListPreference>(AppSettings.KEY_APP_LOCALE)?.run {

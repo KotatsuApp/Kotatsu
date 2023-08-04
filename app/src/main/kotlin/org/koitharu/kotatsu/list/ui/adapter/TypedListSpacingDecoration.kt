@@ -21,7 +21,7 @@ class TypedListSpacingDecoration(
 		state: RecyclerView.State
 	) {
 		val itemType = parent.getChildViewHolder(view)?.itemViewType?.let {
-			ListItemType.values().getOrNull(it)
+			ListItemType.entries.getOrNull(it)
 		}
 		when (itemType) {
 			ListItemType.FILTER_SORT,
