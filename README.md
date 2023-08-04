@@ -39,6 +39,10 @@ Kotatsu is a free and open source manga reader for Android.
 Kotatsu is localized in a number of different languages, if you would like to help improve these or add new languages,
 please head over to the [Weblate project page](https://hosted.weblate.org/engage/kotatsu/)
 
+### Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the guidelines.
+
 ### License
 
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)
