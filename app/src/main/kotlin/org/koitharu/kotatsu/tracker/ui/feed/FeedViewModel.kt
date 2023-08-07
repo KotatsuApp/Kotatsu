@@ -59,6 +59,12 @@ class FeedViewModel @Inject constructor(
 			}
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
+	init {
+		launchJob(Dispatchers.Default) {
+			repository.gc()
+		}
+	}
+
 	fun clearFeed(clearCounters: Boolean) {
 		launchLoadingJob(Dispatchers.Default) {
 			repository.clearLogs()

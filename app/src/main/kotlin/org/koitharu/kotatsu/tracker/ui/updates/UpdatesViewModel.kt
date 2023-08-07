@@ -56,6 +56,12 @@ class UpdatesViewModel @Inject constructor(
 		emit(listOf(it.toErrorState(canRetry = false)))
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
+	init {
+		launchJob(Dispatchers.Default) {
+			repository.gc()
+		}
+	}
+
 	override fun onRefresh() = Unit
 
 	override fun onRetry() = Unit
