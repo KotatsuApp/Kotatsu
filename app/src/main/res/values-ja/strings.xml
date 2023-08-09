@@ -464,4 +464,6 @@
     <string name="manage_categories">カテゴリーの管理</string>
     <string name="captcha_required_summary">%sを正しく動作させるには、キャプチャを解決する必要があります</string>
     <string name="languages">言語</string>
+    <string name="unknown">不明</string>
+    <string name="in_progress">進行状況</string>
 </resources>
