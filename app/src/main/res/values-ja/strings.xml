@@ -445,4 +445,22 @@
     <string name="local_manga_directories">ローカルマンガディレクトリ</string>
     <string name="this_month">今月</string>
     <string name="description">説明</string>
+    <string name="voice_search">音声検索</string>
+    <string name="background">バックグラウンド</string>
+    <string name="data_not_restored_text">正しいバックアップファイルを選択しているか確認してください</string>
+    <string name="data_not_restored">データを復元することが出来ませんでした</string>
+    <string name="suggestions_wifi_only_summary">従量制課金ネットワーク接続を使用して提案を更新しないでください</string>
+    <string name="search_hint">漫画のタイトル、ジャンル、またはソース名を入力してください</string>
+    <string name="progress">進捗状況</string>
+    <string name="order_added">追加</string>
+    <string name="view_list">一覧を表示</string>
+    <string name="show">見せる</string>
+    <string name="related_manga">関連漫画</string>
+    <string name="color_light">ライト</string>
+    <string name="color_dark">ダーク</string>
+    <string name="color_white">ホワイト</string>
+    <string name="color_black">ブラック</string>
+    <string name="tracker_wifi_only_summary">従量制ネットワーク接続を使用して新しいチャプターをチェックしないでください</string>
+    <string name="manage_categories">カテゴリーの管理</string>
+    <string name="captcha_required_summary">%sを正しく動作させるには、キャプチャを解決する必要があります</string>
 </resources>
