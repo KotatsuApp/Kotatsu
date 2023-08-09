@@ -9,8 +9,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.annotation.Px
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.content.res.TypedArrayUtils
 import androidx.core.content.res.use
 import androidx.core.graphics.ColorUtils
 

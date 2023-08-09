@@ -97,7 +97,6 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = if (item.itemId == android.R.id.home) {
-		@Suppress("DEPRECATION")
 		onBackPressed()
 		true
 	} else super.onOptionsItemSelected(item)

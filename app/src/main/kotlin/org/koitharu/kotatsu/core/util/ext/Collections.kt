@@ -5,15 +5,6 @@ import androidx.collection.ArraySet
 import java.util.Collections
 import java.util.EnumSet
 
-@Deprecated("TODO: remove")
-fun <T> MutableList<T>.move(sourceIndex: Int, targetIndex: Int) {
-	if (sourceIndex <= targetIndex) {
-		Collections.rotate(subList(sourceIndex, targetIndex + 1), -1)
-	} else {
-		Collections.rotate(subList(targetIndex, sourceIndex + 1), 1)
-	}
-}
-
 inline fun <T> MutableSet(size: Int, init: (index: Int) -> T): MutableSet<T> {
 	val set = ArraySet<T>(size)
 	repeat(size) { index -> set.add(init(index)) }
@@ -39,10 +30,6 @@ fun <K, V> Map<K, V>.findKeyByValue(value: V): K? {
 		}
 	}
 	return null
-}
-
-inline fun <T> Collection<T>.filterToSet(predicate: (T) -> Boolean): Set<T> {
-	return filterTo(ArraySet(size), predicate)
 }
 
 fun <T> Sequence<T>.toListSorted(comparator: Comparator<T>): List<T> {

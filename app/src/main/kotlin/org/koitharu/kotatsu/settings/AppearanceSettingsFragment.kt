@@ -102,7 +102,7 @@ class AppearanceSettingsFragment :
 	}
 
 	private fun initLocalePicker(preference: ListPreference) {
-		val locales = resources.getLocalesConfig()
+		val locales = preference.context.getLocalesConfig()
 			.toList()
 			.sortedWith(LocaleComparator(preference.context))
 		preference.entries = Array(locales.size + 1) { i ->

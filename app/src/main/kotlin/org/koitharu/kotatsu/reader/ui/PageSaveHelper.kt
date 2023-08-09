@@ -44,7 +44,7 @@ class PageSaveHelper @Inject constructor(
 		val pageFile = pageLoader.loadPage(page, force = false)
 		val proposedName = getProposedFileName(pageUrl, pageFile)
 		val destination = withContext(Dispatchers.Main) {
-			suspendCancellableCoroutine<Uri> { cont ->
+			suspendCancellableCoroutine { cont ->
 				continuation = cont
 				saveLauncher.launch(proposedName)
 			}.also {

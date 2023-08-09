@@ -1,9 +1,11 @@
 package org.koitharu.kotatsu.core.util.ext
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.ActivityManager.MemoryInfo
 import android.app.ActivityOptions
+import android.app.LocaleConfig
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.POWER_SERVICE
@@ -12,7 +14,6 @@ import android.content.OperationApplicationException
 import android.content.SharedPreferences
 import android.content.SyncResult
 import android.content.pm.ResolveInfo
-import android.content.res.Resources
 import android.database.SQLException
 import android.graphics.Color
 import android.net.Uri
@@ -172,10 +173,17 @@ fun scaleUpActivityOptionsOf(view: View): Bundle? = if (view.context.isAnimation
 	null
 }
 
-fun Resources.getLocalesConfig(): LocaleListCompat {
+@SuppressLint("DiscouragedApi")
+fun Context.getLocalesConfig(): LocaleListCompat {
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+		LocaleConfig(this).supportedLocales?.let {
+			return LocaleListCompat.wrap(it)
+		}
+	}
 	val tagsList = StringJoiner(",")
 	try {
-		val xpp: XmlPullParser = getXml(R.xml.locales)
+		val resId = resources.getIdentifier("_generated_res_locale_config", "xml", packageName)
+		val xpp: XmlPullParser = resources.getXml(resId)
 		while (xpp.eventType != XmlPullParser.END_DOCUMENT) {
 			if (xpp.eventType == XmlPullParser.START_TAG) {
 				if (xpp.name == "locale") {

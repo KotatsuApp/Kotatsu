@@ -46,8 +46,10 @@ class ImportWorker @AssistedInject constructor(
 		val result = runCatchingCancellable {
 			importer.import(uri).manga
 		}
-		val notification = buildNotification(result)
-		notificationManager.notify(uri.hashCode(), notification)
+		if (notificationManager.areNotificationsEnabled()) {
+			val notification = buildNotification(result)
+			notificationManager.notify(uri.hashCode(), notification)
+		}
 		return Result.success()
 	}
 

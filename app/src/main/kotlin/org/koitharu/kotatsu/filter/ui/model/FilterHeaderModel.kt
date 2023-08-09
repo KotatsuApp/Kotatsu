@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.filter.ui.model
 
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
-import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.SortOrder
 
 class FilterHeaderModel(
