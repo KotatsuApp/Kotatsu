@@ -119,7 +119,7 @@
     <string name="manga_shelf">Scaffale da manga</string>
     <string name="text_local_holder_secondary">Puoi salvarlo da fonti in linea o importarlo da un file.</string>
     <string name="text_local_holder_primary">Non hai ancora salvato nessun manga</string>
-    <string name="text_history_holder_secondary">Puoi trovare cosa leggere nel menù laterale.</string>
+    <string name="text_history_holder_secondary">Trova cosa leggere nella sezione «Esplora»</string>
     <string name="text_history_holder_primary">I manga che stai leggendo saranno visualizzati qui</string>
     <string name="text_search_holder_secondary">Prova a riformulare la domanda.</string>
     <string name="text_empty_holder_primary">È un po\' vuoto qui…</string>

@@ -114,7 +114,7 @@
     <string name="manga_shelf">Regal</string>
     <string name="text_local_holder_secondary">Speicher Manga aus Online-Quellen oder importiere Dateien.</string>
     <string name="text_local_holder_primary">Speichere erst etwas</string>
-    <string name="text_history_holder_secondary">Was du lesen kannst, findest du im Seitenmenü.</string>
+    <string name="text_history_holder_secondary">Finde etwas zu lesen in der Rubrik „Erkunden“</string>
     <string name="text_search_holder_secondary">Versuche, die Anfrage umzuformulieren.</string>
     <string name="favourites_categories">Favoriten-Kategorien</string>
     <string name="vibration">Vibration</string>
@@ -464,4 +464,5 @@
     <string name="unknown">Unbekannt</string>
     <string name="in_progress">In Arbeit</string>
     <string name="related_manga">Verwandte Manga</string>
+    <string name="clear_source_cookies_summary">Cookies nur für bestimmte Domain löschen. In den meisten Fällen wird die Genehmigung ungültig</string>
 </resources>
