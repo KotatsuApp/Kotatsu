@@ -19,7 +19,7 @@
     <string name="vibration">진동</string>
     <string name="remove_category">지우기</string>
     <string name="text_search_holder_secondary">쿼리를 재구성하십시오.</string>
-    <string name="text_history_holder_secondary">사이드 메뉴에서 만화를 탐색해보세요.</string>
+    <string name="text_history_holder_secondary">«탐색» 섹션에서 읽을 내용 찾기</string>
     <string name="text_shelf_holder_primary">만화가 여기에 표시됩니다</string>
     <string name="text_shelf_holder_secondary">«탐색» 섹션에서 만화를 탐색해보세요</string>
     <string name="pages_animation">페이지 전환 효과</string>
