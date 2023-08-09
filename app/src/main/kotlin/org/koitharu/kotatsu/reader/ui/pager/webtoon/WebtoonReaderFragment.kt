@@ -13,7 +13,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
-import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -111,7 +110,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 
 	override fun switchPageBy(delta: Int) {
 		with(requireViewBinding().recyclerView) {
-			if (context.isAnimationsEnabled) {
+			if (isAnimationEnabled()) {
 				smoothScrollBy(0, (height * 0.9).toInt() * delta, scrollInterpolator)
 			} else {
 				nestedScrollBy(0, (height * 0.9).toInt() * delta)

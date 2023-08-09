@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ReaderAnimation
 import org.koitharu.kotatsu.core.prefs.ReaderBackground
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
@@ -31,6 +32,10 @@ class ReaderSettingsFragment :
 		findPreference<ListPreference>(AppSettings.KEY_READER_BACKGROUND)?.run {
 			entryValues = ReaderBackground.entries.names()
 			setDefaultValueCompat(ReaderBackground.DEFAULT.name)
+		}
+		findPreference<ListPreference>(AppSettings.KEY_READER_ANIMATION)?.run {
+			entryValues = ReaderAnimation.entries.names()
+			setDefaultValueCompat(ReaderAnimation.DEFAULT.name)
 		}
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_SWITCHERS)?.run {
 			summaryProvider = MultiSummaryProvider(R.string.gestures_only)

@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.core.graphics.Insets
 import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
+import org.koitharu.kotatsu.core.prefs.ReaderAnimation
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.util.ext.getParcelableCompat
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
@@ -52,6 +54,10 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>() {
 
 	protected fun requireAdapter() = checkNotNull(readerAdapter) {
 		"Adapter was not created or already destroyed"
+	}
+
+	protected fun isAnimationEnabled(): Boolean {
+		return context?.isAnimationsEnabled == true && viewModel.pageAnimation.value != ReaderAnimation.NONE
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit

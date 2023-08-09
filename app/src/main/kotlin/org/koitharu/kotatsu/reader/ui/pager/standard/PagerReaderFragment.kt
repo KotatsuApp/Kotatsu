@@ -11,8 +11,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
+import org.koitharu.kotatsu.core.prefs.ReaderAnimation
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
-import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.resetTransformations
@@ -47,8 +47,12 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() 
 			doOnPageChanged(::notifyPageChanged)
 		}
 
-		viewModel.readerAnimation.observe(viewLifecycleOwner) {
-			val transformer = if (it) PageAnimTransformer() else null
+		viewModel.pageAnimation.observe(viewLifecycleOwner) {
+			val transformer = when (it) {
+				ReaderAnimation.NONE -> NoAnimPageTransformer()
+				ReaderAnimation.DEFAULT -> null
+				ReaderAnimation.ADVANCED -> PageAnimTransformer()
+			}
 			binding.pager.setPageTransformer(transformer)
 			if (transformer == null) {
 				binding.pager.recyclerView?.children?.forEach { view ->
@@ -95,7 +99,7 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() 
 
 	override fun switchPageBy(delta: Int) {
 		with(requireViewBinding().pager) {
-			setCurrentItem(currentItem + delta, context.isAnimationsEnabled)
+			setCurrentItem(currentItem + delta, isAnimationEnabled())
 		}
 	}
 
@@ -103,7 +107,7 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() 
 		with(requireViewBinding().pager) {
 			setCurrentItem(
 				position,
-				smooth && context.isAnimationsEnabled && (currentItem - position).absoluteValue < SMOOTH_SCROLL_LIMIT,
+				smooth && isAnimationEnabled() && (currentItem - position).absoluteValue < SMOOTH_SCROLL_LIMIT,
 			)
 		}
 	}

@@ -11,8 +11,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
+import org.koitharu.kotatsu.core.prefs.ReaderAnimation
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
-import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.resetTransformations
@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import org.koitharu.kotatsu.reader.ui.pager.standard.NoAnimPageTransformer
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import javax.inject.Inject
 import kotlin.math.absoluteValue
@@ -48,8 +49,12 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 			doOnPageChanged(::notifyPageChanged)
 		}
 
-		viewModel.readerAnimation.observe(viewLifecycleOwner) {
-			val transformer = if (it) ReversedPageAnimTransformer() else null
+		viewModel.pageAnimation.observe(viewLifecycleOwner) {
+			val transformer = when (it) {
+				ReaderAnimation.NONE -> NoAnimPageTransformer()
+				ReaderAnimation.DEFAULT -> null
+				ReaderAnimation.ADVANCED -> ReversedPageAnimTransformer()
+			}
 			binding.pager.setPageTransformer(transformer)
 			if (transformer == null) {
 				binding.pager.recyclerView?.children?.forEach { v ->
@@ -74,7 +79,7 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 
 	override fun switchPageBy(delta: Int) {
 		with(requireViewBinding().pager) {
-			setCurrentItem(currentItem - delta, context.isAnimationsEnabled)
+			setCurrentItem(currentItem - delta, isAnimationEnabled())
 		}
 	}
 
@@ -82,7 +87,7 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 		with(requireViewBinding().pager) {
 			setCurrentItem(
 				reversed(position),
-				smooth && context.isAnimationsEnabled && (currentItem - position).absoluteValue < PagerReaderFragment.SMOOTH_SCROLL_LIMIT,
+				smooth && isAnimationEnabled() && (currentItem - position).absoluteValue < PagerReaderFragment.SMOOTH_SCROLL_LIMIT,
 			)
 		}
 	}

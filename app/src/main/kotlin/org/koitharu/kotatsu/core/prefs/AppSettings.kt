@@ -101,8 +101,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val notificationLight: Boolean
 		get() = prefs.getBoolean(KEY_NOTIFICATIONS_LIGHT, true)
 
-	val readerAnimation: Boolean
-		get() = prefs.getBoolean(KEY_READER_ANIMATION, false)
+	val readerAnimation: ReaderAnimation
+		get() = prefs.getEnumValue(KEY_READER_ANIMATION, ReaderAnimation.DEFAULT)
 
 	val readerBackground: ReaderBackground
 		get() = prefs.getEnumValue(KEY_READER_BACKGROUND, ReaderBackground.DEFAULT)
@@ -384,7 +384,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_NOTIFICATIONS_VIBRATE = "notifications_vibrate"
 		const val KEY_NOTIFICATIONS_LIGHT = "notifications_light"
 		const val KEY_NOTIFICATIONS_INFO = "tracker_notifications_info"
-		const val KEY_READER_ANIMATION = "reader_animation"
+		const val KEY_READER_ANIMATION = "reader_animation2"
 		const val KEY_READER_MODE = "reader_mode"
 		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
 		const val KEY_APP_PASSWORD = "app_password"

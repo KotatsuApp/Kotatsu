@@ -65,4 +65,10 @@
 		<item>@string/color_white</item>
 		<item>@string/color_black</item>
 	</string-array>
+	<string-array name="reader_animation">
+		<item>@string/disabled</item>
+		<item>@string/system_default</item>
+		<item>@string/advanced</item>
+	</string-array>
+	<string name="advanced">Advanced</string>
 </resources>
