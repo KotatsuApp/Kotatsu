@@ -4,6 +4,7 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.ext.listFilesRecursive
 import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.core.util.ext.toListSorted
@@ -88,7 +89,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 		val file = chapter.url.toUri().toFile()
 		if (file.isDirectory) {
 			file.listFilesRecursive(ImageFileFilter())
-				.toListSorted(compareBy(org.koitharu.kotatsu.core.util.AlphanumComparator()) { x -> x.name })
+				.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
 				.map {
 					val pageUri = it.toUri().toString()
 					MangaPage(
@@ -104,7 +105,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 					.asSequence()
 					.filter { x -> !x.isDirectory }
 					.map { it.name }
-					.toListSorted(org.koitharu.kotatsu.core.util.AlphanumComparator())
+					.toListSorted(AlphanumComparator())
 					.map {
 						val pageUri = zipUri(file, it)
 						MangaPage(
@@ -121,7 +122,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 	private fun String.toHumanReadable() = replace("_", " ").toCamelCase()
 
 	private fun getChaptersFiles(): List<File> = root.listFilesRecursive(CbzFilter())
-		.toListSorted(compareBy(org.koitharu.kotatsu.core.util.AlphanumComparator()) { x -> x.name })
+		.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
 
 	private fun findFirstImageEntry(): String? {
 		val filter = ImageFileFilter()
