@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
@@ -33,6 +34,8 @@ class TrackingRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
 
+	private var isGcCalled = false
+
 	suspend fun getNewChaptersCount(mangaId: Long): Int {
 		return db.tracksDao.findNewChapters(mangaId) ?: 0
 	}
@@ -43,12 +46,14 @@ class TrackingRepository @Inject constructor(
 
 	fun observeUpdatedMangaCount(): Flow<Int> {
 		return db.tracksDao.observeNewChapters().map { list -> list.count { it > 0 } }
+			.onStart { gcIfNotCalled() }
 	}
 
 	fun observeUpdatedManga(): Flow<List<Manga>> {
 		return db.tracksDao.observeUpdatedManga()
 			.mapItems { it.toManga() }
 			.distinctUntilChanged()
+			.onStart { gcIfNotCalled() }
 	}
 
 	suspend fun getTracks(mangaList: Collection<Manga>): List<MangaTracking> {
@@ -94,6 +99,8 @@ class TrackingRepository @Inject constructor(
 				val countersMap = counters.toMutableMap()
 				entities.map { x -> x.toTrackingLogItem(countersMap) }
 			}
+		}.onStart {
+			gcIfNotCalled()
 		}
 	}
 
@@ -214,6 +221,13 @@ class TrackingRepository @Inject constructor(
 			lastCheck = System.currentTimeMillis(),
 			lastNotifiedChapterId = NO_ID,
 		)
+	}
+
+	private suspend fun gcIfNotCalled() {
+		if (!isGcCalled) {
+			gc()
+			isGcCalled = true
+		}
 	}
 
 	private fun Collection<MangaEntity>.toMangaList() = map { it.toManga(emptySet()) }

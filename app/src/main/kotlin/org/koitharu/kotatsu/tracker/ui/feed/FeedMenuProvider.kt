@@ -8,6 +8,7 @@ import android.view.View
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.dialog.CheckBoxAlertDialog
+import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 
 class FeedMenuProvider(
 	private val snackbarHost: View,
@@ -37,6 +38,11 @@ class FeedMenuProvider(
 				.setPositiveButton(R.string.clear) { _, isChecked ->
 					viewModel.clearFeed(isChecked)
 				}.create().show()
+			true
+		}
+
+		R.id.action_updated -> {
+			context.startActivity(UpdatesActivity.newIntent(context))
 			true
 		}
 
