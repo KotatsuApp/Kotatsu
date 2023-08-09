@@ -5,6 +5,7 @@ import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.util.AlphanumComparator
+import org.koitharu.kotatsu.core.util.ext.creationTime
 import org.koitharu.kotatsu.core.util.ext.listFilesRecursive
 import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.core.util.ext.toListSorted
@@ -62,7 +63,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 					name = f.nameWithoutExtension.toHumanReadable(),
 					number = i + 1,
 					source = MangaSource.LOCAL,
-					uploadDate = f.lastModified(),
+					uploadDate = f.creationTime,
 					url = f.toUri().toString(),
 					scanlator = null,
 					branch = null,

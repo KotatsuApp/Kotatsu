@@ -16,8 +16,10 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.fs.FileSequence
 import java.io.File
 import java.io.FileFilter
+import java.nio.file.attribute.BasicFileAttributes
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
+import kotlin.io.path.readAttributes
 
 fun File.subdir(name: String) = File(this, name).also {
 	if (!it.exists()) it.mkdirs()
@@ -99,3 +101,10 @@ private suspend fun SequenceScope<File>.listFilesRecursiveImpl(root: File, filte
 fun File.children() = FileSequence(this)
 
 fun Sequence<File>.filterWith(filter: FileFilter): Sequence<File> = filter { f -> filter.accept(f) }
+
+val File.creationTime
+	get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+		toPath().readAttributes<BasicFileAttributes>().creationTime().toMillis()
+	} else {
+		lastModified()
+	}

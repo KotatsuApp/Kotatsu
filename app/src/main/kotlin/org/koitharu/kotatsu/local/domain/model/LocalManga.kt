@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.local.domain.model
 
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import org.koitharu.kotatsu.core.util.ext.creationTime
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import java.io.File
@@ -13,14 +14,7 @@ class LocalManga(
 
 	constructor(manga: Manga) : this(manga.url.toUri().toFile(), manga)
 
-	var createdAt: Long = -1L
-		private set
-		get() {
-			if (field == -1L) {
-				field = file.lastModified()
-			}
-			return field
-		}
+	val createdAt by lazy { file.creationTime }
 
 	fun isMatchesQuery(query: String): Boolean {
 		return manga.title.contains(query, ignoreCase = true) ||
