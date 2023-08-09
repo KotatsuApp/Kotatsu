@@ -463,4 +463,7 @@
     <string name="tracker_wifi_only_summary">Не проверять наличие новых глав при использовании лимитного интернет-соединения</string>
     <string name="progress">Прогресс</string>
     <string name="captcha_required_summary">Для правильной работы %s требуется проверка captcha</string>
+    <string name="languages">Языки</string>
+    <string name="unknown">Неизвестный</string>
+    <string name="in_progress">В процессе</string>
 </resources>

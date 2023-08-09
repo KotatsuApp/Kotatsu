@@ -463,4 +463,7 @@
     <string name="color_white">Білий</string>
     <string name="manage_categories">Кіровання категоріями</string>
     <string name="captcha_required_summary">Для належної роботи %s потрібна перевірка captcha</string>
+    <string name="languages">Мови</string>
+    <string name="unknown">Невідомий</string>
+    <string name="in_progress">В процесі</string>
 </resources>
