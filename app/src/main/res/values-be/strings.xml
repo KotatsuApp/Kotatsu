@@ -176,7 +176,7 @@
     <string name="welcome">Вітаю</string>
     <string name="text_local_holder_secondary">Вы можаце захаваць мангу з анлайн-крыніц або імпартаваць з файла.</string>
     <string name="text_local_holder_primary">У вас яшчэ няма ніводнай захаванай мангі</string>
-    <string name="text_history_holder_secondary">Вы можаце знайсці, што пачытаць, у бакавым меню.</string>
+    <string name="text_history_holder_secondary">Знайдзіце, што пачытаць, у раздзеле «Агляд»</string>
     <string name="text_history_holder_primary">Тут будзе паказана манга, якую вы чытаеце</string>
     <string name="text_search_holder_secondary">Паспрабуйце перафармуляваць запыт.</string>
     <string name="text_empty_holder_primary">Неяк тут пуста…</string>
@@ -443,4 +443,25 @@
     <string name="download_option_next_unread_n_chapters">Наступная непрачытаная %s</string>
     <string name="custom_directory">Карыстацкі каталог</string>
     <string name="no_access_to_file">У вас няма доступу да гэтага файла або каталога</string>
+    <string name="description">Апісанне</string>
+    <string name="this_month">Гэты месяц</string>
+    <string name="voice_search">Галасавы пошук</string>
+    <string name="related_manga">Падобная манга</string>
+    <string name="color_light">Светлы</string>
+    <string name="color_dark">Цёмны</string>
+    <string name="color_white">Белы</string>
+    <string name="data_not_restored">Дадзеныя не былі адноўлены</string>
+    <string name="suggestions_wifi_only_summary">Не абнаўляць рэкамендацыі пры выкарыстанні лімітнага інтэрнэт-злучэння</string>
+    <string name="tracker_wifi_only_summary">Не правяраць наяўнасць новых раздзелаў пры выкарыстанні лімітнага інтэрнэт-злучэння</string>
+    <string name="color_black">Чорны</string>
+    <string name="background">Фон</string>
+    <string name="data_not_restored_text">Пераканайцеся, што вы выбралі правільны файл рэзервовай копіі</string>
+    <string name="search_hint">Увядзіце назву мангі, жанр або назву крыніцы</string>
+    <string name="progress">Прагрэс</string>
+    <string name="manage_categories">Упраўленне катэгорыямі</string>
+    <string name="order_added">Дададзена</string>
+    <string name="view_list">Прагляд спісу</string>
+    <string name="show">Паказаць</string>
+    <string name="captcha_required_summary">Для правільнай працы %s патрабуецца праверка captcha</string>
+    <string name="languages">Мовы</string>
 </resources>

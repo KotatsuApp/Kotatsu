@@ -98,7 +98,7 @@
     <string name="text_empty_holder_primary">Как-то здесь пусто…</string>
     <string name="text_search_holder_secondary">Попробуйте переформулировать запрос.</string>
     <string name="text_history_holder_primary">То, что вы прочитаете, будет отображено здесь</string>
-    <string name="text_history_holder_secondary">Найдите, что почитать, в боковом меню.</string>
+    <string name="text_history_holder_secondary">Найдите, что почитать в разделе «Обзор»</string>
     <string name="text_local_holder_primary">Сохраните что-нибудь</string>
     <string name="text_local_holder_secondary">Сохраните что-нибудь из онлайн-каталога или импортируйте из файла.</string>
     <string name="manga_shelf">Полка</string>
@@ -443,4 +443,24 @@
     <string name="custom_directory">Пользовательский каталог</string>
     <string name="local_manga_directories">Локальные каталоги манги</string>
     <string name="pick_custom_directory">Выбрать пользовательский каталог</string>
+    <string name="this_month">Этот месяц</string>
+    <string name="voice_search">Голосовой поиск</string>
+    <string name="related_manga">Похожая манга</string>
+    <string name="color_light">Светлый</string>
+    <string name="color_dark">Тёмный</string>
+    <string name="color_white">Белый</string>
+    <string name="color_black">Чёрный</string>
+    <string name="background">Фон</string>
+    <string name="data_not_restored">Данные не были восстановлены</string>
+    <string name="suggestions_wifi_only_summary">Не обновлять рекомендации при использовании лимитного интернет-соединения</string>
+    <string name="order_added">Добавлено</string>
+    <string name="view_list">Посмотреть список</string>
+    <string name="data_not_restored_text">Убедитесь, что вы выбрали правильный файл резервной копии</string>
+    <string name="description">Описание</string>
+    <string name="manage_categories">Управление категориями</string>
+    <string name="search_hint">Введите название манги, жанр или название источника</string>
+    <string name="show">Показать</string>
+    <string name="tracker_wifi_only_summary">Не проверять наличие новых глав при использовании лимитного интернет-соединения</string>
+    <string name="progress">Прогресс</string>
+    <string name="captcha_required_summary">Для правильной работы %s требуется проверка captcha</string>
 </resources>

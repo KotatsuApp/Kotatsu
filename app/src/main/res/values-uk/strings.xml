@@ -88,7 +88,7 @@
     <string name="text_empty_holder_primary">Тут якось пусто…</string>
     <string name="text_search_holder_secondary">Спробуйте переформулювати запит.</string>
     <string name="text_history_holder_primary">Те, що ви читаєте, буде показано тут</string>
-    <string name="text_history_holder_secondary">Знайдіть, що читати, у бічному меню.</string>
+    <string name="text_history_holder_secondary">Знайдіть, що почитати, у розділі «Огляд»</string>
     <string name="text_local_holder_primary">Спочатку збережіть щось</string>
     <string name="text_local_holder_secondary">Збережіть його з онлайн-джерела або імпортуйте файли.</string>
     <string name="manga_shelf">Полиця</string>
@@ -135,7 +135,7 @@
     <string name="backup_information">Ви можете створити резервну копію своєї історії та уподобань і відновити їх</string>
     <string name="just_now">Тільки що</string>
     <string name="tap_to_try_again">Торкніться, щоб спробувати ще раз</string>
-    <string name="reader_mode_hint">Обраний режим буде запам\'ятован для цієї манги</string>
+    <string name="reader_mode_hint">Обраний режим буде запам\'ятован для цієї манґи</string>
     <string name="captcha_required">Потрібна CAPTCHA</string>
     <string name="captcha_solve">Пройти</string>
     <string name="clear_cookies">Очистити кукі</string>
@@ -258,8 +258,8 @@
     <string name="send">Надіслати</string>
     <string name="disable_all">Вимкнути все</string>
     <string name="use_fingerprint">Використовувати відбиток пальця, якщо доступно</string>
-    <string name="appwidget_shelf_description">Манга з Вашого улюбленого</string>
-    <string name="appwidget_recent_description">Манга, яку Ви нещодавно читали</string>
+    <string name="appwidget_shelf_description">Манґа з Ваших обраних</string>
+    <string name="appwidget_recent_description">Манґа, яку Ви нещодавно читали</string>
     <string name="invalid_domain_message">Недійсний домен</string>
     <string name="report">Звіт</string>
     <string name="tracking">Відстеження</string>
@@ -278,7 +278,7 @@
     <string name="show_all">Показати всі</string>
     <string name="select_range">Виберіть діапазон</string>
     <string name="not_found_404">Вміст не знайдено або видалено</string>
-    <string name="text_shelf_holder_primary">Ваша манга буде відображатися тут</string>
+    <string name="text_shelf_holder_primary">Ваша манґа буде відображатися тут</string>
     <string name="text_shelf_holder_secondary">Знайдіть, що почитати у розділі «Огляд»</string>
     <string name="back">Назад</string>
     <string name="email_enter_hint">Введіть свою електронну пошту, щоб продовжити</string>
@@ -324,7 +324,7 @@
     <string name="removed_from_favourites">Видалено з уподобань</string>
     <string name="other_cache">Інший кеш</string>
     <string name="memory_usage_pattern">%s - %s</string>
-    <string name="manga_error_description_pattern">Деталі помилки:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Спробуйте &lt;a href=%2$s&gt;відкрити мангу у веб-браузері&lt;/a&gt;, щоб переконатися, що вона доступна в джерелі&lt;br&gt;2. Переконайтеся, що ви використовуєте &lt;a href=kotatsu://about&gt;останню версію Kotatsu&lt;/a&gt;&lt;br&gt;3. Якщо він доступний, надішліть звіт про помилку розробникам.</string>
+    <string name="manga_error_description_pattern">Деталі помилки:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Спробуйте &lt;a href=%2$s&gt;відкрити манґу у веб-браузері&lt;/a&gt;, щоб переконатися, що вона доступна в джерелі&lt;br&gt;2. Переконайтеся, що ви використовуєте &lt;a href=kotatsu://about&gt;останню версію Kotatsu&lt;/a&gt;&lt;br&gt;3. Якщо він доступний, надішліть звіт про помилку розробникам.</string>
     <string name="history_shortcuts">Показувати ярлики останньої прочитаної манґи</string>
     <string name="history_shortcuts_summary">Зробити нещодавно прочитану манґу доступною за довгим натисканням на іконку застосунку</string>
     <string name="reader_control_ltr_summary">Натискання на правий край або натискання правої клавіші завжди переходить на наступну сторінку</string>
@@ -352,7 +352,7 @@
     <string name="theme_name_kanade">Канаде</string>
     <string name="services">Служби</string>
     <string name="nothing_here">Тут нічого нема</string>
-    <string name="scrobbling_empty_hint">Щоб відстежувати прогрес читання, виберіть Меню → Відстежити на екрані деталей манги.</string>
+    <string name="scrobbling_empty_hint">Щоб відстежувати прогрес читання, виберіть Меню → Відстежити на екрані деталей манґи.</string>
     <string name="theme_name_miku">Міку</string>
     <string name="theme_name_asuka">Аска</string>
     <string name="theme_name_mion">Міон</string>
@@ -372,7 +372,7 @@
     <string name="user_agent">Заголовок UserAgent</string>
     <string name="settings_apply_restart_required">Перезапустіть програму, щоб застосувати зміни</string>
     <string name="got_it">Зрозумів</string>
-    <string name="comics_archive_import_description">Ви можете вибрати один або кілька файлів .cbz або .zip, кожен файл буде розпізнано як окрема манга.</string>
+    <string name="comics_archive_import_description">Ви можете вибрати один або кілька файлів .cbz або .zip, кожен файл буде розпізнано як окрема манґа.</string>
     <string name="folder_with_images_import_description">Ви можете вибрати каталог з архівами або зображеннями. Кожен архів (або підкаталог) буде розпізнано як розділ.</string>
     <string name="speed">Швидкість</string>
     <string name="restore_backup_description">Імпортуйте раніше створену резервну копію даних користувача</string>
@@ -396,7 +396,7 @@
     <string name="enable">Увімкнути</string>
     <string name="no_thanks">Ні, дякую</string>
     <string name="suggestion_manga">Пропозиція: %s</string>
-    <string name="suggestions_notifications_summary">Іноді показувати сповіщення з запропонованою мангою</string>
+    <string name="suggestions_notifications_summary">Іноді показувати сповіщення з запропонованою манґою</string>
     <string name="more">Більше</string>
     <string name="cancel_all_downloads_confirm">Усі активні завантаження буде скасовано, частково завантажені дані буде втрачено</string>
     <string name="remove_completed_downloads_confirm">Ваша історія завантажень буде остаточно видалена</string>
@@ -405,7 +405,7 @@
     <string name="downloads_paused">Завантаження призупинено</string>
     <string name="downloads_removed">Завантаження видалено</string>
     <string name="downloads_cancelled">Завантаження скасовано</string>
-    <string name="suggestions_enable_prompt">Хочете отримувати персоналізовані пропозиції щодо манги\?</string>
+    <string name="suggestions_enable_prompt">Хочете отримувати персоналізовані пропозиції щодо манґи\?</string>
     <string name="web_view_unavailable">WebView недоступний: перевірте, чи встановлено провайдер WebView</string>
     <string name="translations">Переклади</string>
     <string name="clear_network_cache">Очистити мережевий кеш</string>
@@ -436,11 +436,31 @@
     <string name="no_access_to_file">Ви не маєте доступу до цього файлу чи каталогу</string>
     <string name="download_option_all_unread">Усі непрочитані розділи</string>
     <string name="download_option_all_chapters">Усі розділи з перекладом %s</string>
-    <string name="download_option_whole_manga">Манга цілком</string>
+    <string name="download_option_whole_manga">Манґа цілком</string>
     <string name="download_option_all_unread_b">Усі непрочитані розділи (%s)</string>
     <string name="download_option_manual_selection">Виберіть розділи вручну</string>
     <string name="local_manga_directories">Локальні каталоги манґи</string>
     <string name="custom_directory">Користувальницький каталог</string>
     <string name="download_option_first_n_chapters">Перші %s</string>
     <string name="download_option_next_unread_n_chapters">Перші непрочитані %s</string>
+    <string name="description">Опис</string>
+    <string name="this_month">Цього місяця</string>
+    <string name="color_dark">Темний</string>
+    <string name="color_black">Чорний</string>
+    <string name="background">Фон</string>
+    <string name="data_not_restored">Дані не відновлено</string>
+    <string name="data_not_restored_text">Переконайтеся, що ви вибрали правильний файл резервної копії</string>
+    <string name="suggestions_wifi_only_summary">Не оновлювати пропозиції під час використання лімітного інтернет-з\'єднання</string>
+    <string name="tracker_wifi_only_summary">Не перевіряти наявність нових розділів під час використання лімітного інтернет-з\'єднання</string>
+    <string name="search_hint">Введіть назву манґи, жанр або назву джерела</string>
+    <string name="progress">Прогрес</string>
+    <string name="order_added">Додано</string>
+    <string name="view_list">Переглянути список</string>
+    <string name="show">Показати</string>
+    <string name="voice_search">Голосовий пошук</string>
+    <string name="related_manga">Схожа манґа</string>
+    <string name="color_light">Світлий</string>
+    <string name="color_white">Білий</string>
+    <string name="manage_categories">Кіровання категоріями</string>
+    <string name="captcha_required_summary">Для належної роботи %s потрібна перевірка captcha</string>
 </resources>
