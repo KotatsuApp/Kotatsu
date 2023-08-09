@@ -126,7 +126,7 @@
     <string name="text_empty_holder_primary">这里有点空…</string>
     <string name="text_search_holder_secondary">尝试重新表述查询。</string>
     <string name="text_history_holder_primary">你所读的内容将在这里显示</string>
-    <string name="text_history_holder_secondary">在侧面菜单中找到要读的内容.</string>
+    <string name="text_history_holder_secondary">在 «探索»部分找到要读的内容</string>
     <string name="text_local_holder_primary">先保存内容</string>
     <string name="text_local_holder_secondary">从在线来源保存或导入文件.</string>
     <string name="manga_shelf">书架</string>
@@ -401,7 +401,7 @@
     <string name="downloads_paused">暂停下载</string>
     <string name="downloads_removed">下载已被移除</string>
     <string name="downloads_cancelled">下载被取消</string>
-    <string name="suggestions_enable_prompt">你想要接收个人漫画推荐吗？</string>
+    <string name="suggestions_enable_prompt">你想要接收个性化的漫画推荐吗？</string>
     <string name="suggestion_manga">推荐：%s</string>
     <string name="suggestions_notifications_summary">偶尔显示建议漫画通知</string>
     <string name="more">更多</string>
