@@ -463,4 +463,5 @@
     <string name="tracker_wifi_only_summary">従量制ネットワーク接続を使用して新しいチャプターをチェックしないでください</string>
     <string name="manage_categories">カテゴリーの管理</string>
     <string name="captcha_required_summary">%sを正しく動作させるには、キャプチャを解決する必要があります</string>
+    <string name="languages">言語</string>
 </resources>

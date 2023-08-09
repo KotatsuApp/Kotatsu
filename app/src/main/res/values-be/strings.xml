@@ -464,4 +464,6 @@
     <string name="show">Паказаць</string>
     <string name="captcha_required_summary">Для правільнай працы %s патрабуецца праверка captcha</string>
     <string name="languages">Мовы</string>
+    <string name="unknown">Невядомы</string>
+    <string name="in_progress">У працэсе</string>
 </resources>
