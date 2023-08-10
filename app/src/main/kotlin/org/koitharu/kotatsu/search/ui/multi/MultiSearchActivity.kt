@@ -60,9 +60,10 @@ class MultiSearchActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySearchMultiBinding.inflate(layoutInflater))
 		window.statusBarColor = ContextCompat.getColor(this, R.color.dim_statusbar)
+		title = viewModel.query
 
 		val itemCLickListener = OnListItemClickListener<MultiSearchListModel> { item, view ->
-			startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query.value))
+			startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query))
 		}
 		val sizeResolver = DynamicItemSizeResolver(resources, settings)
 		val selectionDecoration = MangaSelectionDecoration(this)
@@ -88,7 +89,6 @@ class MultiSearchActivity :
 			setSubtitle(R.string.search_results)
 		}
 
-		viewModel.query.observe(this) { title = it }
 		viewModel.list.observe(this) { adapter.items = it }
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(viewBinding.recyclerView))
@@ -130,7 +130,7 @@ class MultiSearchActivity :
 	}
 
 	override fun onRetryClick(error: Throwable) {
-		viewModel.doSearch(viewModel.query.value)
+		viewModel.retry()
 	}
 
 	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit

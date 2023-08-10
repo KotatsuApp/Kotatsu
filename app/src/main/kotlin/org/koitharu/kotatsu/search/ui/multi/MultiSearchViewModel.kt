@@ -1,22 +1,24 @@
 package org.koitharu.kotatsu.search.ui.multi
 
+import androidx.annotation.CheckResult
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -48,15 +50,17 @@ class MultiSearchViewModel @Inject constructor(
 	private val sourcesRepository: MangaSourcesRepository,
 ) : BaseViewModel() {
 
-	private var searchJob: Job? = null
-	private val listData = MutableStateFlow<List<MultiSearchListModel>>(emptyList())
-	private val loadingData = MutableStateFlow(false)
 	val onDownloadStarted = MutableEventFlow<Unit>()
+	val query = savedStateHandle.get<String>(MultiSearchActivity.EXTRA_QUERY).orEmpty()
 
-	val query = MutableStateFlow(savedStateHandle.get<String>(MultiSearchActivity.EXTRA_QUERY).orEmpty())
+	private val retryCounter = MutableStateFlow(0)
+	private val listData = retryCounter.flatMapLatest {
+		searchImpl(query).withLoading().withErrorHandling()
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
+
 	val list: StateFlow<List<ListModel>> = combine(
-		listData,
-		loadingData,
+		listData.filterNotNull(),
+		isLoading,
 	) { list, loading ->
 		when {
 			list.isEmpty() -> listOf(
@@ -76,13 +80,10 @@ class MultiSearchViewModel @Inject constructor(
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
-	init {
-		doSearch(query.value)
-	}
-
 	fun getItems(ids: Set<Long>): Set<Manga> {
+		val snapshot = listData.value ?: return emptySet()
 		val result = HashSet<Manga>(ids.size)
-		listData.value.forEach { x ->
+		snapshot.forEach { x ->
 			for (item in x.list) {
 				if (item.id in ids) {
 					result.add(item.manga)
@@ -92,21 +93,8 @@ class MultiSearchViewModel @Inject constructor(
 		return result
 	}
 
-	fun doSearch(q: String) {
-		val prevJob = searchJob
-		searchJob = launchJob(Dispatchers.Default) {
-			prevJob?.cancelAndJoin()
-			try {
-				listData.value = emptyList()
-				loadingData.value = true
-				query.value = q
-				searchImpl(q)
-			} catch (e: CancellationException) {
-				throw e
-			} finally {
-				loadingData.value = false
-			}
-		}
+	fun retry() {
+		retryCounter.value = retryCounter.value + 1
 	}
 
 	fun download(items: Set<Manga>) {
@@ -116,13 +104,14 @@ class MultiSearchViewModel @Inject constructor(
 		}
 	}
 
-	private suspend fun searchImpl(q: String) = coroutineScope {
+	@CheckResult
+	private fun searchImpl(q: String): Flow<List<MultiSearchListModel>> = channelFlow {
 		val sources = sourcesRepository.getEnabledSources()
-		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
-		val deferredList = sources.map { source ->
-			async(dispatcher) {
-				runCatchingCancellable {
-					withTimeout(8_000) {
+		val semaphore = Semaphore(MAX_PARALLELISM)
+		for (source in sources) {
+			launch {
+				val item = runCatchingCancellable {
+					semaphore.withPermit {
 						mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
 							.toUi(ListMode.GRID, extraProvider)
 					}
@@ -139,12 +128,11 @@ class MultiSearchViewModel @Inject constructor(
 						MultiSearchListModel(source, true, emptyList(), error)
 					},
 				)
+				if (item != null) {
+					send(item)
+				}
 			}
 		}
-		for (deferred in deferredList) {
-			deferred.await()?.let { item ->
-				listData.update { x -> x + item }
-			}
-		}
-	}
+	}.runningFold<MultiSearchListModel, List<MultiSearchListModel>?>(null) { list, item -> list.orEmpty() + item }
+		.filterNotNull()
 }
