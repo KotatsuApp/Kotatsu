@@ -47,8 +47,8 @@ fun searchResultsAD(
 	bind {
 		binding.textViewTitle.text = item.source.title
 		binding.buttonMore.isVisible = item.hasMore
-		adapter.notifyDataSetChanged()
 		adapter.items = item.list
+		adapter.notifyDataSetChanged()
 		binding.recyclerView.isGone = item.list.isEmpty()
 		binding.textViewError.textAndVisible = item.error?.getDisplayMessage(context.resources)
 	}

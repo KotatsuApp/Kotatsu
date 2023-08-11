@@ -15,15 +15,27 @@ import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 
 class FeedAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
+	sizeResolver: ItemSizeResolver,
 ) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
 		addDelegate(ListItemType.FEED, feedItemAD(coil, lifecycleOwner, listener))
+		addDelegate(
+			ListItemType.MANGA_NESTED_GROUP,
+			updatedMangaAD(
+				lifecycleOwner = lifecycleOwner,
+				coil = coil,
+				sizeResolver = sizeResolver,
+				listener = listener,
+				headerClickListener = listener,
+			),
+		)
 		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
 		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
 		addDelegate(ListItemType.FOOTER_ERROR, errorFooterAD(listener))

@@ -44,11 +44,12 @@ class TypedListSpacingDecoration(
 			ListItemType.EXPLORE_SOURCE_GRID,
 			ListItemType.EXPLORE_SOURCE_LIST,
 			ListItemType.EXPLORE_SUGGESTION,
+			ListItemType.MANGA_NESTED_GROUP,
 			null -> outRect.set(0)
 
 			ListItemType.TIP -> outRect.set(0) // TODO
 			ListItemType.HINT_EMPTY -> outRect.set(0) // TODO
-			ListItemType.FEED -> outRect.set(0) // TODO
+			ListItemType.FEED -> outRect.set(spacingList, 0, spacingList, 0)
 		}
 	}
 

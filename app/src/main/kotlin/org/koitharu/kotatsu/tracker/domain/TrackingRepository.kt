@@ -49,9 +49,12 @@ class TrackingRepository @Inject constructor(
 			.onStart { gcIfNotCalled() }
 	}
 
-	fun observeUpdatedManga(): Flow<List<Manga>> {
-		return db.tracksDao.observeUpdatedManga()
-			.mapItems { it.toManga() }
+	fun observeUpdatedManga(limit: Int = 0): Flow<List<Manga>> {
+		return if (limit == 0) {
+			db.tracksDao.observeUpdatedManga()
+		} else {
+			db.tracksDao.observeUpdatedManga(limit)
+		}.mapItems { it.toManga() }
 			.distinctUntilChanged()
 			.onStart { gcIfNotCalled() }
 	}

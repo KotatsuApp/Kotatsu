@@ -24,10 +24,12 @@ import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
+import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,7 +52,8 @@ class FeedFragment :
 
 	override fun onViewBindingCreated(binding: FragmentFeedBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this)
+		val sizeResolver = StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width))
+		feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this, sizeResolver)
 		with(binding.recyclerView) {
 			adapter = feedAdapter
 			setHasFixedSize(true)
@@ -96,7 +99,10 @@ class FeedFragment :
 
 	override fun onEmptyActionClick() = Unit
 
-	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
+	override fun onListHeaderClick(item: ListHeader, view: View) {
+		val context = view.context
+		context.startActivity(UpdatesActivity.newIntent(context))
+	}
 
 	private fun onListChanged(list: List<ListModel>) {
 		feedAdapter?.items = list
