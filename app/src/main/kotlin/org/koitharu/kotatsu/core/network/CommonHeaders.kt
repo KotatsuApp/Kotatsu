@@ -15,6 +15,7 @@ object CommonHeaders {
 	const val AUTHORIZATION = "Authorization"
 	const val CACHE_CONTROL = "Cache-Control"
 	const val PROXY_AUTHORIZATION = "Proxy-Authorization"
+	const val RETRY_AFTER = "Retry-After"
 
 	val CACHE_CONTROL_NO_STORE: CacheControl
 		get() = CacheControl.Builder().noStore().build()
