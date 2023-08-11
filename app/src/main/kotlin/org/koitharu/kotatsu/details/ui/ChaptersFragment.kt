@@ -87,7 +87,6 @@ class ChaptersFragment :
 				.manga(viewModel.manga.value ?: return)
 				.state(ReaderState(item.chapter.id, 0, 0))
 				.build(),
-			scaleUpActivityOptionsOf(view),
 		)
 	}
 

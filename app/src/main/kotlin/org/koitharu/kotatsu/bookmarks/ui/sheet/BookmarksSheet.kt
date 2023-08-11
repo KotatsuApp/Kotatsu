@@ -22,7 +22,6 @@ import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.plus
-import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
@@ -103,7 +102,7 @@ class BookmarksSheet :
 				.bookmark(item)
 				.incognito(true)
 				.build()
-			startActivity(intent, scaleUpActivityOptionsOf(view))
+			startActivity(intent)
 		}
 		dismiss()
 	}

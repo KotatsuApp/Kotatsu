@@ -69,7 +69,7 @@ class ExploreFragment :
 	override fun onViewBindingCreated(binding: FragmentExploreBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this, this) { manga, view ->
-			startActivity(DetailsActivity.newIntent(view.context, manga), scaleUpActivityOptionsOf(view))
+			startActivity(DetailsActivity.newIntent(view.context, manga))
 		}
 		with(binding.recyclerView) {
 			adapter = exploreAdapter

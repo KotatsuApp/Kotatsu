@@ -152,7 +152,7 @@ abstract class MangaListFragment :
 	override fun onReadClick(manga: Manga, view: View) {
 		if (selectionController?.onItemClick(manga.id) != true) {
 			val intent = IntentBuilder(view.context).manga(manga).build()
-			startActivity(intent, scaleUpActivityOptionsOf(view))
+			startActivity(intent)
 		}
 	}
 

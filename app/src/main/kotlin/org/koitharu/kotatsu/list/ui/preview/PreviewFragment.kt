@@ -69,7 +69,6 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			R.id.button_close -> closeSelf()
 			R.id.button_open -> startActivity(
 				DetailsActivity.newIntent(v.context, manga),
-				scaleUpActivityOptionsOf(requireView()),
 			)
 
 			R.id.textView_author -> startActivity(

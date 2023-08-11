@@ -118,7 +118,7 @@ class MultiSearchActivity :
 	override fun onReadClick(manga: Manga, view: View) {
 		if (!selectionController.onItemClick(manga.id)) {
 			val intent = IntentBuilder(this).manga(manga).build()
-			startActivity(intent, scaleUpActivityOptionsOf(view))
+			startActivity(intent)
 		}
 	}
 

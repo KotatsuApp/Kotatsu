@@ -119,7 +119,6 @@ class DetailsFragment :
 	override fun onItemClick(item: Bookmark, view: View) {
 		startActivity(
 			ReaderActivity.IntentBuilder(view.context).bookmark(item).incognito(true).build(),
-			scaleUpActivityOptionsOf(view),
 		)
 		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
@@ -233,7 +232,7 @@ class DetailsFragment :
 				coil, viewLifecycleOwner,
 				StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),
 			) { item, view ->
-				startActivity(DetailsActivity.newIntent(view.context, item), scaleUpActivityOptionsOf(view))
+				startActivity(DetailsActivity.newIntent(view.context, item))
 			},
 		).also { rv.adapter = it }
 		adapter.items = related

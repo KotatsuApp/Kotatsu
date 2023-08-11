@@ -112,7 +112,7 @@ class BookmarksFragment :
 				.bookmark(item)
 				.incognito(true)
 				.build()
-			startActivity(intent, scaleUpActivityOptionsOf(view))
+			startActivity(intent)
 			Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 		}
 	}

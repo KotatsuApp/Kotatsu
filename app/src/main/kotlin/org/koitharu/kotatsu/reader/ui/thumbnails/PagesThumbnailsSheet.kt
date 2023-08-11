@@ -102,7 +102,7 @@ class PagesThumbnailsSheet :
 		} else {
 			val state = ReaderState(item.page.chapterId, item.page.index, 0)
 			val intent = IntentBuilder(view.context).manga(viewModel.manga).state(state).build()
-			startActivity(intent, scaleUpActivityOptionsOf(view))
+			startActivity(intent)
 		}
 		dismiss()
 	}
