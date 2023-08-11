@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
@@ -40,6 +41,9 @@ class SourcesManageFragment :
 
 	@Inject
 	lateinit var coil: ImageLoader
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private var reorderHelper: ItemTouchHelper? = null
 	private val viewModel by viewModels<SourcesManageViewModel>()
@@ -128,7 +132,17 @@ class SourcesManageFragment :
 				true
 			}
 
+			R.id.action_no_nsfw -> {
+				settings.isNsfwContentDisabled = !menuItem.isChecked
+				true
+			}
+
 			else -> false
+		}
+
+		override fun onPrepareMenu(menu: Menu) {
+			super.onPrepareMenu(menu)
+			menu.findItem(R.id.action_no_nsfw).isChecked = settings.isNsfwContentDisabled
 		}
 
 		override fun onMenuItemActionExpand(item: MenuItem): Boolean {

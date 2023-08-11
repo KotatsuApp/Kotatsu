@@ -4,13 +4,17 @@ import androidx.room.withTransaction
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.dao.MangaSourcesDao
 import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
+import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.move
 import java.util.Collections
@@ -20,6 +24,7 @@ import javax.inject.Inject
 @Reusable
 class MangaSourcesRepository @Inject constructor(
 	private val db: MangaDatabase,
+	private val settings: AppSettings,
 ) {
 
 	private val dao: MangaSourcesDao
@@ -36,11 +41,13 @@ class MangaSourcesRepository @Inject constructor(
 		get() = Collections.unmodifiableSet(remoteSources)
 
 	suspend fun getEnabledSources(): List<MangaSource> {
-		return dao.findAllEnabled().toSources()
+		return dao.findAllEnabled().toSources(settings.isNsfwContentDisabled)
 	}
 
-	fun observeEnabledSources(): Flow<List<MangaSource>> = dao.observeEnabled().map {
-		it.toSources()
+	fun observeEnabledSources(): Flow<List<MangaSource>> = observeIsNsfwDisabled().flatMapLatest { skipNsfw ->
+		dao.observeEnabled().map {
+			it.toSources(skipNsfw)
+		}
 	}
 
 	fun observeAll(): Flow<List<Pair<MangaSource, Boolean>>> = dao.observeAll().map { entities ->
@@ -137,14 +144,21 @@ class MangaSourcesRepository @Inject constructor(
 		return dao.findAll().isEmpty()
 	}
 
-	private fun List<MangaSourceEntity>.toSources(): List<MangaSource> {
+	private fun List<MangaSourceEntity>.toSources(skipNsfwSources: Boolean): List<MangaSource> {
 		val result = ArrayList<MangaSource>(size)
 		for (entity in this) {
 			val source = MangaSource(entity.source)
+			if (skipNsfwSources && source.contentType == ContentType.HENTAI) {
+				continue
+			}
 			if (source in remoteSources) {
 				result.add(source)
 			}
 		}
 		return result
+	}
+
+	private fun observeIsNsfwDisabled() = settings.observeAsFlow(AppSettings.KEY_DISABLE_NSFW) {
+		isNsfwContentDisabled
 	}
 }

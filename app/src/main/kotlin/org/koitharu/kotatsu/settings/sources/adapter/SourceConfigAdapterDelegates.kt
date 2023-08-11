@@ -72,8 +72,17 @@ fun sourceConfigItemCheckableDelegate(
 	}
 
 	bind {
-		binding.textViewTitle.text = item.source.title
+		binding.textViewTitle.text = if (item.isNsfw) {
+			buildSpannedString {
+				append(item.source.title)
+				append(' ')
+				appendNsfwLabel(context)
+			}
+		} else {
+			item.source.title
+		}
 		binding.switchToggle.isChecked = item.isEnabled
+		binding.switchToggle.isEnabled = item.isAvailable
 		binding.textViewDescription.textAndVisible = item.summary
 		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
@@ -120,7 +129,7 @@ fun sourceConfigItemDelegate2(
 		} else {
 			item.source.title
 		}
-		binding.imageViewAdd.isGone = item.isEnabled
+		binding.imageViewAdd.isGone = item.isEnabled || !item.isAvailable
 		binding.imageViewRemove.isVisible = item.isEnabled
 		binding.imageViewConfig.isVisible = item.isEnabled
 		binding.textViewDescription.textAndVisible = item.summary

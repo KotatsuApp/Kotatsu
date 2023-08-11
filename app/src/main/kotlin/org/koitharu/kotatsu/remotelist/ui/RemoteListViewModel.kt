@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
@@ -66,7 +67,7 @@ open class RemoteListViewModel @Inject constructor(
 	private var randomJob: Job? = null
 
 	override val content = combine(
-		mangaList,
+		mangaList.map { it?.skipNsfwIfNeeded() },
 		listMode,
 		listError,
 		hasNextPage,

@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.map
 import org.koitharu.kotatsu.core.util.ext.toEnumSet
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
+import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
@@ -54,8 +55,9 @@ class SourcesManageViewModel @Inject constructor(
 		expandedGroups,
 		searchQuery,
 		observeTip(),
-	) { sources, groups, query, tip ->
-		buildList(sources, groups, query, tip)
+		settings.observeAsFlow(AppSettings.KEY_DISABLE_NSFW) { isNsfwContentDisabled },
+	) { sources, groups, query, tip, noNsfw ->
+		buildList(sources, groups, query, tip, noNsfw)
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
@@ -125,6 +127,7 @@ class SourcesManageViewModel @Inject constructor(
 		expanded: Set<String?>,
 		query: String?,
 		withTip: Boolean,
+		isNsfwDisabled: Boolean,
 	): List<SourceConfigItem> {
 		val allSources = repository.allMangaSources
 		val enabledSet = enabledSources.toEnumSet()
@@ -138,6 +141,7 @@ class SourcesManageViewModel @Inject constructor(
 					summary = it.getLocaleTitle(),
 					isEnabled = it in enabledSet,
 					isDraggable = false,
+					isAvailable = !isNsfwDisabled || !it.isNsfw(),
 				)
 			}.ifEmpty {
 				listOf(SourceConfigItem.EmptySearchResult)
@@ -163,6 +167,7 @@ class SourcesManageViewModel @Inject constructor(
 					summary = it.getLocaleTitle(),
 					isEnabled = true,
 					isDraggable = true,
+					isAvailable = false,
 				)
 			}
 		}
@@ -184,6 +189,7 @@ class SourcesManageViewModel @Inject constructor(
 							summary = null,
 							isEnabled = false,
 							isDraggable = false,
+							isAvailable = !isNsfwDisabled || !it.isNsfw(),
 						)
 					}
 				}
@@ -209,6 +215,8 @@ class SourcesManageViewModel @Inject constructor(
 	private fun observeTip() = settings.observeAsFlow(AppSettings.KEY_TIPS_CLOSED) {
 		isTipEnabled(TIP_REORDER)
 	}
+
+	private fun MangaSource.isNsfw() = contentType == ContentType.HENTAI
 
 	private class LocaleKeyComparator : Comparator<String?> {
 

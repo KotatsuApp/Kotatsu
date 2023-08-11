@@ -9,7 +9,6 @@ import android.provider.Settings
 import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.ArraySet
-import androidx.collection.arraySetOf
 import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
@@ -55,6 +54,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	var gridSize: Int
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
 		set(value) = prefs.edit { putInt(KEY_GRID_SIZE, value) }
+
+	var isNsfwContentDisabled: Boolean
+		get() = prefs.getBoolean(KEY_DISABLE_NSFW, false)
+		set(value) = prefs.edit { putBoolean(KEY_DISABLE_NSFW, value) }
 
 	var appLocales: LocaleListCompat
 		get() {
@@ -444,6 +447,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PROXY_PASSWORD = "proxy_password"
 		const val KEY_IMAGES_PROXY = "images_proxy"
 		const val KEY_LOCAL_MANGA_DIRS = "local_manga_dirs"
+		const val KEY_DISABLE_NSFW = "no_nsfw"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
