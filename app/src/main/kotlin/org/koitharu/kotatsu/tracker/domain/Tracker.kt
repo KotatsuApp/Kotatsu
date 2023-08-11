@@ -25,7 +25,7 @@ class Tracker @Inject constructor(
 		if (sources.isEmpty()) {
 			return emptyList()
 		}
-		val knownIds = HashSet<Manga>()
+		val knownManga = HashSet<Long>()
 		val result = ArrayList<TrackingItem>()
 		// Favourites
 		if (AppSettings.TRACK_FAVOURITES in sources) {
@@ -42,7 +42,7 @@ class Tracker @Inject constructor(
 					null
 				}
 				for (track in categoryTracks) {
-					if (knownIds.add(track.manga)) {
+					if (knownManga.add(track.manga.id)) {
 						result.add(TrackingItem(track, channelId))
 					}
 				}
@@ -58,7 +58,7 @@ class Tracker @Inject constructor(
 				null
 			}
 			for (track in historyTracks) {
-				if (knownIds.add(track.manga)) {
+				if (knownManga.add(track.manga.id)) {
 					result.add(TrackingItem(track, channelId))
 				}
 			}

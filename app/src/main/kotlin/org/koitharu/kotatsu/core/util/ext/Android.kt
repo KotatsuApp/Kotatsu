@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.util.ext
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
@@ -13,6 +14,7 @@ import android.content.ContextWrapper
 import android.content.OperationApplicationException
 import android.content.SharedPreferences
 import android.content.SyncResult
+import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.database.SQLException
 import android.graphics.Color
@@ -28,6 +30,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.IntegerRes
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
@@ -219,4 +223,10 @@ inline fun Activity.catchingWebViewUnavailability(block: () -> Unit): Boolean {
 			throw e
 		}
 	}
+}
+
+fun Context.checkNotificationPermission(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+	ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+} else {
+	NotificationManagerCompat.from(this).areNotificationsEnabled()
 }

@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.tracker.work
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
@@ -34,11 +33,11 @@ import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
@@ -49,6 +48,7 @@ import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
+import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -70,6 +70,7 @@ class TrackWorker @AssistedInject constructor(
 	private val tracker: Tracker,
 	@TrackerLogger private val logger: FileLogger,
 ) : CoroutineWorker(context, workerParams) {
+
 	private val notificationManager by lazy { NotificationManagerCompat.from(applicationContext) }
 
 	override suspend fun doWork(): Result {
@@ -121,35 +122,36 @@ class TrackWorker @AssistedInject constructor(
 
 	private suspend fun checkUpdatesAsync(tracks: List<TrackingItem>): List<MangaUpdates?> {
 		val semaphore = Semaphore(MAX_PARALLELISM)
-		return supervisorScope {
-			tracks.map { (track, channelId) ->
-				async {
+		return channelFlow {
+			for ((track, channelId) in tracks) {
+				launch {
 					semaphore.withPermit {
-						runCatchingCancellable {
-							tracker.fetchUpdates(track, commit = true)
-						}.onFailure { e ->
-							if (e is CloudFlareProtectedException) {
-								CaptchaNotifier(applicationContext).notify(e)
-							}
-							logger.log("checkUpdatesAsync", e)
-						}.onSuccess { updates ->
-							if (updates.isValid && updates.isNotEmpty()) {
-								showNotification(
-									manga = updates.manga,
-									channelId = channelId,
-									newChapters = updates.newChapters,
-								)
-							}
-						}.getOrNull()
+						send(
+							runCatchingCancellable {
+								tracker.fetchUpdates(track, commit = true)
+							}.onFailure { e ->
+								if (e is CloudFlareProtectedException) {
+									CaptchaNotifier(applicationContext).notify(e)
+								}
+								logger.log("checkUpdatesAsync", e)
+							}.onSuccess { updates ->
+								if (updates.isValid && updates.isNotEmpty()) {
+									showNotification(
+										manga = updates.manga,
+										channelId = channelId,
+										newChapters = updates.newChapters,
+									)
+								}
+							}.getOrNull(),
+						)
 					}
 				}
-			}.awaitAll()
-		}
+			}
+		}.toList(ArrayList(tracks.size))
 	}
 
-	@SuppressLint("MissingPermission")
 	private suspend fun showNotification(manga: Manga, channelId: String?, newChapters: List<MangaChapter>) {
-		if (newChapters.isEmpty() || channelId == null || !notificationManager.areNotificationsEnabled()) {
+		if (newChapters.isEmpty() || channelId == null || !applicationContext.checkNotificationPermission()) {
 			return
 		}
 		val id = manga.url.hashCode()

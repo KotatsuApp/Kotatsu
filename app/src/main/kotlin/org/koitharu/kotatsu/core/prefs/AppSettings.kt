@@ -135,7 +135,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getEnumValue(KEY_ZOOM_MODE, ZoomMode.FIT_CENTER)
 
 	val trackSources: Set<String>
-		get() = prefs.getStringSet(KEY_TRACK_SOURCES, null) ?: arraySetOf(TRACK_FAVOURITES, TRACK_HISTORY)
+		get() = prefs.getStringSet(KEY_TRACK_SOURCES, null) ?: setOf(TRACK_FAVOURITES)
 
 	var appPassword: String?
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
