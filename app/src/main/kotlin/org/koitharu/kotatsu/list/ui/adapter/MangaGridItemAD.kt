@@ -23,7 +23,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 fun mangaGridItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-	sizeResolver: ItemSizeResolver?,
+	sizeResolver: ItemSizeResolver,
 	clickListener: OnListItemClickListener<Manga>,
 ) = adapterDelegateViewBinding<MangaGridModel, ListModel, ItemMangaGridBinding>(
 	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) },
@@ -36,7 +36,7 @@ fun mangaGridItemAD(
 	itemView.setOnLongClickListener {
 		clickListener.onItemLongClick(item.manga, it)
 	}
-	sizeResolver?.attachToView(lifecycleOwner, itemView, binding.textViewTitle, binding.progressView)
+	sizeResolver.attachToView(lifecycleOwner, itemView, binding.textViewTitle, binding.progressView)
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title

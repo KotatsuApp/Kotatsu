@@ -65,7 +65,7 @@ class MultiSearchActivity :
 		val itemCLickListener = OnListItemClickListener<MultiSearchListModel> { item, view ->
 			startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query))
 		}
-		val sizeResolver = DynamicItemSizeResolver(resources, settings)
+		val sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = true)
 		val selectionDecoration = MangaSelectionDecoration(this)
 		selectionController = ListSelectionController(
 			activity = this,

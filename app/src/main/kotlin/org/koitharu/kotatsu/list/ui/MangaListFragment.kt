@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.FitHeightGridLayoutManager
@@ -49,6 +50,7 @@ import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -68,6 +70,9 @@ abstract class MangaListFragment :
 
 	@Inject
 	lateinit var coil: ImageLoader
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private var listAdapter: MangaListAdapter? = null
 	private var paginationListener: PaginationScrollListener? = null
@@ -195,6 +200,7 @@ abstract class MangaListFragment :
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,
 			listener = this,
+			sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = false)
 		)
 	}
 

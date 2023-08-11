@@ -4,17 +4,19 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 
 open class MangaListAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
+	sizeResolver: ItemSizeResolver,
 ) : BaseListAdapter<ListModel>() {
 
 	init {
 		addDelegate(ListItemType.MANGA_LIST, mangaListItemAD(coil, lifecycleOwner, listener))
 		addDelegate(ListItemType.MANGA_LIST_DETAILED, mangaListDetailedItemAD(coil, lifecycleOwner, listener))
-		addDelegate(ListItemType.MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, null, listener))
+		addDelegate(ListItemType.MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, sizeResolver, listener))
 		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
 		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
 		addDelegate(ListItemType.STATE_ERROR, errorStateListAD(listener))

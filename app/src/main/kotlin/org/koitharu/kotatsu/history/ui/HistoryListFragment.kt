@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.ui.MangaListFragment
+import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
 @AndroidEntryPoint
@@ -55,5 +56,10 @@ class HistoryListFragment : MangaListFragment() {
 		}
 	}
 
-	override fun onCreateAdapter() = HistoryListAdapter(coil, viewLifecycleOwner, this)
+	override fun onCreateAdapter() = HistoryListAdapter(
+		coil,
+		viewLifecycleOwner,
+		this,
+		DynamicItemSizeResolver(resources, settings, adjustWidth = false),
+	)
 }

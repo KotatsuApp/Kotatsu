@@ -5,7 +5,6 @@ import android.content.res.Resources
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.StyleRes
-import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -14,7 +13,11 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 import kotlin.math.roundToInt
 
-class DynamicItemSizeResolver(resources: Resources, private val settings: AppSettings) : ItemSizeResolver {
+class DynamicItemSizeResolver(
+	resources: Resources,
+	private val settings: AppSettings,
+	private val adjustWidth: Boolean,
+) : ItemSizeResolver {
 
 	private val gridWidth = resources.getDimension(R.dimen.preferred_grid_width)
 	private val scaleFactor: Float
@@ -72,8 +75,12 @@ class DynamicItemSizeResolver(resources: Resources, private val settings: AppSet
 		fun update() {
 			val newWidth = cellWidth
 			textView?.adjustTextAppearance(newWidth)
-			view.updateLayoutParams {
-				width = newWidth
+			if (adjustWidth) {
+				val lp = view.layoutParams
+				if (lp.width != newWidth) {
+					lp.width = newWidth
+					view.layoutParams = lp
+				}
 			}
 			progressView?.adjustSize(newWidth)
 		}
