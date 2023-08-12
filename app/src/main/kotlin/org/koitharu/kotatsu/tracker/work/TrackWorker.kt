@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat.VISIBILITY_SECRET
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.hilt.work.HiltWorker
 import androidx.lifecycle.asFlow
 import androidx.work.BackoffPolicy
@@ -32,12 +33,14 @@ import coil.request.ImageRequest
 import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
@@ -54,6 +57,7 @@ import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import org.koitharu.kotatsu.tracker.domain.Tracker
@@ -75,7 +79,7 @@ class TrackWorker @AssistedInject constructor(
 
 	override suspend fun doWork(): Result {
 		trySetForeground()
-		logger.log("doWork()")
+		logger.log("doWork(): attempt $runAttemptCount")
 		return try {
 			doWorkImpl()
 		} catch (e: Throwable) {
@@ -93,7 +97,12 @@ class TrackWorker @AssistedInject constructor(
 		if (!settings.isTrackerEnabled) {
 			return Result.success(workDataOf(0, 0))
 		}
-		val tracks = tracker.getAllTracks()
+		val retryIds = getRetryIds()
+		val tracks = if (retryIds.isNotEmpty()) {
+			tracker.getTracks(retryIds)
+		} else {
+			tracker.getAllTracks()
+		}
 		logger.log("Total ${tracks.size} tracks")
 		if (tracks.isEmpty()) {
 			return Result.success(workDataOf(0, 0))
@@ -104,23 +113,32 @@ class TrackWorker @AssistedInject constructor(
 
 		var success = 0
 		var failed = 0
+		val retry = HashSet<Long>()
 		results.forEach { x ->
-			if (x == null) {
-				failed++
-			} else {
-				success++
+			when (x) {
+				is MangaUpdates.Success -> success++
+				is MangaUpdates.Failure -> {
+					failed++
+					if (x.shouldRetry()) {
+						retry += x.manga.id
+					}
+				}
 			}
 		}
-		logger.log("Result: success: $success, failed: $failed")
+		if (runAttemptCount > MAX_ATTEMPTS) {
+			retry.clear()
+		}
+		setRetryIds(retry)
+		logger.log("Result: success: $success, failed: $failed, retry: ${retry.size}")
 		val resultData = workDataOf(success, failed)
-		return if (success == 0 && failed != 0) {
-			Result.failure(resultData)
-		} else {
-			Result.success(resultData)
+		return when {
+			retry.isNotEmpty() -> Result.retry()
+			success == 0 && failed != 0 -> Result.failure(resultData)
+			else -> Result.success(resultData)
 		}
 	}
 
-	private suspend fun checkUpdatesAsync(tracks: List<TrackingItem>): List<MangaUpdates?> {
+	private suspend fun checkUpdatesAsync(tracks: List<TrackingItem>): List<MangaUpdates> {
 		val semaphore = Semaphore(MAX_PARALLELISM)
 		return channelFlow {
 			for ((track, channelId) in tracks) {
@@ -142,7 +160,12 @@ class TrackWorker @AssistedInject constructor(
 										newChapters = updates.newChapters,
 									)
 								}
-							}.getOrNull(),
+							}.getOrElse { error ->
+								MangaUpdates.Failure(
+									manga = track.manga,
+									error = error,
+								)
+							},
 						)
 					}
 				}
@@ -238,6 +261,22 @@ class TrackWorker @AssistedInject constructor(
 		return ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
 	}
 
+	private suspend fun setRetryIds(ids: Set<Long>) = runInterruptible(Dispatchers.IO) {
+		val prefs = applicationContext.getSharedPreferences(TAG, Context.MODE_PRIVATE)
+		prefs.edit(commit = true) {
+			if (ids.isEmpty()) {
+				remove(KEY_RETRY_IDS)
+			} else {
+				putStringSet(KEY_RETRY_IDS, ids.mapToSet { it.toString() })
+			}
+		}
+	}
+
+	private fun getRetryIds(): Set<Long> {
+		val prefs = applicationContext.getSharedPreferences(TAG, Context.MODE_PRIVATE)
+		return prefs.getStringSet(KEY_RETRY_IDS, null)?.mapToSet { it.toLong() }.orEmpty()
+	}
+
 	private fun workDataOf(success: Int, failed: Int): Data {
 		return Data.Builder()
 			.putInt(DATA_KEY_SUCCESS, success)
@@ -256,7 +295,7 @@ class TrackWorker @AssistedInject constructor(
 			val request = PeriodicWorkRequestBuilder<TrackWorker>(4, TimeUnit.HOURS)
 				.setConstraints(constraints)
 				.addTag(TAG)
-				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
+				.setBackoffCriteria(BackoffPolicy.LINEAR, 5, TimeUnit.MINUTES)
 				.build()
 			workManager
 				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)
@@ -306,7 +345,9 @@ class TrackWorker @AssistedInject constructor(
 		const val TAG = "tracking"
 		const val TAG_ONESHOT = "tracking_oneshot"
 		const val MAX_PARALLELISM = 3
+		const val MAX_ATTEMPTS = 4
 		const val DATA_KEY_SUCCESS = "success"
 		const val DATA_KEY_FAILED = "failed"
+		const val KEY_RETRY_IDS = "retry"
 	}
 }

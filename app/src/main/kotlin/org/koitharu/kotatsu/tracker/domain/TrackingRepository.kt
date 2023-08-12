@@ -118,7 +118,7 @@ class TrackingRepository @Inject constructor(
 		db.trackLogsDao.gc()
 	}
 
-	suspend fun saveUpdates(updates: MangaUpdates) {
+	suspend fun saveUpdates(updates: MangaUpdates.Success) {
 		db.withTransaction {
 			val track = getOrCreateTrack(updates.manga.id).mergeWith(updates)
 			db.tracksDao.upsert(track)
@@ -199,7 +199,7 @@ class TrackingRepository @Inject constructor(
 		)
 	}
 
-	private suspend fun updatePercent(updates: MangaUpdates) {
+	private suspend fun updatePercent(updates: MangaUpdates.Success) {
 		val history = db.historyDao.find(updates.manga.id) ?: return
 		val chapters = updates.manga.chapters
 		if (chapters.isNullOrEmpty()) {
@@ -214,7 +214,7 @@ class TrackingRepository @Inject constructor(
 		db.historyDao.update(history.copy(percent = newPercent))
 	}
 
-	private fun TrackEntity.mergeWith(updates: MangaUpdates): TrackEntity {
+	private fun TrackEntity.mergeWith(updates: MangaUpdates.Success): TrackEntity {
 		val chapters = updates.manga.chapters.orEmpty()
 		return TrackEntity(
 			mangaId = mangaId,
