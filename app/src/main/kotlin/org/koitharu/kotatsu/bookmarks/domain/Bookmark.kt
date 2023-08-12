@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.bookmarks.domain
 
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.local.data.ImageFileFilter
+import org.koitharu.kotatsu.local.data.hasImageExtension
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import java.util.Date
@@ -38,7 +38,6 @@ data class Bookmark(
 	)
 
 	private fun isImageUrlDirect(): Boolean {
-		val extension = imageUrl.substringAfterLast('.')
-		return extension.isNotEmpty() && ImageFileFilter().isExtensionValid(extension)
+		return hasImageExtension(imageUrl)
 	}
 }

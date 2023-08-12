@@ -2,30 +2,16 @@ package org.koitharu.kotatsu.local.data
 
 import android.net.Uri
 import java.io.File
-import java.io.FileFilter
-import java.io.FilenameFilter
-import java.util.Locale
 
-class CbzFilter : FileFilter, FilenameFilter {
-
-	override fun accept(dir: File, name: String): Boolean {
-		return isFileSupported(name)
-	}
-
-	override fun accept(pathname: File?): Boolean {
-		return isFileSupported(pathname?.name ?: return false)
-	}
-
-	companion object {
-
-		fun isFileSupported(name: String): Boolean {
-			val ext = name.substringAfterLast('.', "").lowercase(Locale.ROOT)
-			return ext == "cbz" || ext == "zip"
-		}
-
-		fun isUriSupported(uri: Uri): Boolean {
-			val scheme = uri.scheme?.lowercase(Locale.ROOT)
-			return scheme != null && scheme == "cbz" || scheme == "zip"
-		}
-	}
+private fun isCbzExtension(ext: String?): Boolean {
+	return ext.equals("cbz", ignoreCase = true) || ext.equals("zip", ignoreCase = true)
 }
+
+fun hasCbzExtension(string: String): Boolean {
+	val ext = string.substringAfterLast('.', "")
+	return isCbzExtension(ext)
+}
+
+fun hasCbzExtension(file: File) = isCbzExtension(file.name)
+
+fun isCbzUri(uri: Uri) = isCbzExtension(uri.scheme)
