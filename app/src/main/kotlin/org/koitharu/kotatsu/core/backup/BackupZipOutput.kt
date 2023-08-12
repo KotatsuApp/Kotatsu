@@ -5,10 +5,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okio.Closeable
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.format
 import org.koitharu.kotatsu.core.zip.ZipOutput
 import java.io.File
-import java.util.Date
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.zip.Deflater
 
@@ -39,7 +39,7 @@ suspend fun BackupZipOutput(context: Context): BackupZipOutput = runInterruptibl
 	val filename = buildString {
 		append(context.getString(R.string.app_name).replace(' ', '_').lowercase(Locale.ROOT))
 		append('_')
-		append(Date().format("ddMMyyyy"))
+		append(LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMyyyy")))
 		append(".bk.zip")
 	}
 	BackupZipOutput(File(dir, filename))

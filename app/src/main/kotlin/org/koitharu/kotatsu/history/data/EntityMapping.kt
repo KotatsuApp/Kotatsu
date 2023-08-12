@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.history.data
 
 import org.koitharu.kotatsu.core.model.MangaHistory
-import java.util.*
+import java.time.Instant
 
 fun HistoryEntity.toMangaHistory() = MangaHistory(
-	createdAt = Date(createdAt),
-	updatedAt = Date(updatedAt),
+	createdAt = Instant.ofEpochMilli(createdAt),
+	updatedAt = Instant.ofEpochMilli(updatedAt),
 	chapterId = chapterId,
 	page = page,
 	scroll = scroll.toInt(),

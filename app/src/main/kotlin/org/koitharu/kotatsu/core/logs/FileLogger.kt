@@ -20,8 +20,9 @@ import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
 import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Locale
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -41,11 +42,7 @@ class FileLogger(
 	}
 	val isEnabled: Boolean
 		get() = settings.isLoggingEnabled
-	private val dateFormat = SimpleDateFormat.getDateTimeInstance(
-		SimpleDateFormat.SHORT,
-		SimpleDateFormat.SHORT,
-		Locale.ROOT,
-	)
+	private val dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withLocale(Locale.ROOT)
 	private val buffer = ConcurrentLinkedQueue<String>()
 	private val mutex = Mutex()
 	private var flushJob: Job? = null
@@ -55,7 +52,7 @@ class FileLogger(
 			return
 		}
 		val text = buildString {
-			append(dateFormat.format(Date()))
+			append(dateTimeFormatter.format(LocalDateTime.now()))
 			append(": ")
 			if (e != null) {
 				append("E!")

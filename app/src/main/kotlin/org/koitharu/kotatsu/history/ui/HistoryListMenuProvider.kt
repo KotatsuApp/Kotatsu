@@ -8,9 +8,10 @@ import androidx.core.view.MenuProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.dialog.RememberSelectionDialogListener
-import org.koitharu.kotatsu.core.util.ext.startOfDay
-import java.util.Date
-import java.util.concurrent.TimeUnit
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import com.google.android.material.R as materialR
 
 class HistoryListMenuProvider(
@@ -50,9 +51,9 @@ class HistoryListMenuProvider(
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(R.string.clear) { _, _ ->
 				val minDate = when (selectionListener.selection) {
-					0 -> System.currentTimeMillis() - TimeUnit.HOURS.toMillis(2)
-					1 -> Date().startOfDay()
-					2 -> 0L
+					0 -> Instant.now().minus(2, ChronoUnit.HOURS)
+					1 -> LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
+					2 -> Instant.EPOCH
 					else -> return@setPositiveButton
 				}
 				viewModel.clearHistory(minDate)

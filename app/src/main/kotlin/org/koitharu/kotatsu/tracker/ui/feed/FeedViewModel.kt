@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.daysDiff
+import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
@@ -27,8 +27,6 @@ import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import org.koitharu.kotatsu.tracker.ui.feed.model.UpdatedMangaHeader
 import org.koitharu.kotatsu.tracker.ui.feed.model.toFeedItem
 import org.koitharu.kotatsu.tracker.work.TrackWorker
-import java.util.Date
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -99,7 +97,7 @@ class FeedViewModel @Inject constructor(
 	private fun List<TrackingLogItem>.mapListTo(destination: MutableList<ListModel>) {
 		var prevDate: DateTimeAgo? = null
 		for (item in this) {
-			val date = timeAgo(item.createdAt)
+			val date = calculateTimeAgo(item.createdAt)
 			if (prevDate != date) {
 				destination += ListHeader(date)
 			}
@@ -113,19 +111,6 @@ class FeedViewModel @Inject constructor(
 			null
 		} else {
 			UpdatedMangaHeader(mangaList.toUi(ListMode.GRID, listExtraProvider))
-		}
-	}
-
-	private fun timeAgo(date: Date): DateTimeAgo {
-		val diff = (System.currentTimeMillis() - date.time).coerceAtLeast(0L)
-		val diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
-		val diffDays = -date.daysDiff(System.currentTimeMillis())
-		return when {
-			diffMinutes < 3 -> DateTimeAgo.JustNow
-			diffDays < 1 -> DateTimeAgo.Today
-			diffDays == 1 -> DateTimeAgo.Yesterday
-			diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays)
-			else -> DateTimeAgo.Absolute(date)
 		}
 	}
 }

@@ -4,7 +4,7 @@ import androidx.work.Data
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
-import java.util.Date
+import java.time.Instant
 
 data class DownloadState(
 	val manga: Manga,
@@ -72,7 +72,7 @@ data class DownloadState(
 
 		fun getEta(data: Data): Long = data.getLong(DATA_ETA, -1L)
 
-		fun getTimestamp(data: Data): Date = Date(data.getLong(DATA_TIMESTAMP, 0L))
+		fun getTimestamp(data: Data): Instant = Instant.ofEpochMilli(data.getLong(DATA_TIMESTAMP, 0L))
 
 		fun getDownloadedChapters(data: Data): Int = data.getInt(DATA_CHAPTERS, 0)
 	}

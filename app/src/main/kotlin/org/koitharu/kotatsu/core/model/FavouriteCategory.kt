@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import java.util.Date
+import java.time.Instant
 
 @Parcelize
 data class FavouriteCategory(
@@ -13,7 +13,7 @@ data class FavouriteCategory(
 	val title: String,
 	val sortKey: Int,
 	val order: ListSortOrder,
-	val createdAt: Date,
+	val createdAt: Instant,
 	val isTrackingEnabled: Boolean,
 	val isVisibleInLibrary: Boolean,
 ) : Parcelable, ListModel {

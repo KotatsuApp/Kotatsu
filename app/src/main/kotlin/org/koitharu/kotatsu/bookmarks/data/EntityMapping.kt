@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.bookmarks.data
 
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.parsers.model.Manga
-import java.util.Date
+import java.time.Instant
 
 fun BookmarkEntity.toBookmark(manga: Manga) = Bookmark(
 	manga = manga,
@@ -11,7 +11,7 @@ fun BookmarkEntity.toBookmark(manga: Manga) = Bookmark(
 	page = page,
 	scroll = scroll,
 	imageUrl = imageUrl,
-	createdAt = Date(createdAt),
+	createdAt = Instant.ofEpochMilli(createdAt),
 	percent = percent,
 )
 
@@ -22,7 +22,7 @@ fun Bookmark.toEntity() = BookmarkEntity(
 	page = page,
 	scroll = scroll,
 	imageUrl = imageUrl,
-	createdAt = createdAt.time,
+	createdAt = createdAt.toEpochMilli(),
 	percent = percent,
 )
 
