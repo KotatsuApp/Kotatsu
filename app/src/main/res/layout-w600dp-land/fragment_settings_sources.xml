@@ -10,5 +10,6 @@
 	android:clipToPadding="false"
 	android:orientation="vertical"
 	android:scrollbars="vertical"
+	android:theme="@style/ThemeOverlay.Kotatsu.CardContainer"
 	app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 	tools:listitem="@layout/item_source_config" />

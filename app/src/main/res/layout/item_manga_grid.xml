@@ -4,10 +4,10 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	style="@style/Widget.Kotatsu.CardView.Outlined"
-	app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:clipChildren="false"
+	app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
 	app:cardCornerRadius="12dp"
 	tools:layout_width="140dp">
 
@@ -24,6 +24,7 @@
 				android:id="@+id/imageView_cover"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:background="?colorSurfaceContainer"
 				android:orientation="horizontal"
 				android:scaleType="centerCrop"
 				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
