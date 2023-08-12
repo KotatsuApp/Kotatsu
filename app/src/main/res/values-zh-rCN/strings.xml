@@ -425,4 +425,5 @@
     <string name="no_access_to_file">您无法访问该文件或目录</string>
     <string name="local_manga_directories">本地漫画目录</string>
     <string name="port">端口</string>
+    <string name="manga_branch_title_template">%1$s (%2$s)</string>
 </resources>
