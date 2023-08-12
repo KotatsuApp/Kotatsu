@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="new_chapters">
+        <item quantity="one">%1$d új fejezet</item>
+        <item quantity="other">%1$d új fejezetek</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="one">%1$d fejezet</item>
+        <item quantity="other">%1$d fejezetek</item>
+    </plurals>
+</resources>
