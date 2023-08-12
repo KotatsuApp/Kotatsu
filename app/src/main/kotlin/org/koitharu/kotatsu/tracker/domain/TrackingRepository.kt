@@ -25,7 +25,7 @@ import org.koitharu.kotatsu.tracker.data.toTrackingLogItem
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
-import java.util.Date
+import java.time.Instant
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import javax.inject.Provider
@@ -81,7 +81,7 @@ class TrackingRepository @Inject constructor(
 			result += MangaTracking(
 				manga = manga,
 				lastChapterId = track?.lastChapterId ?: NO_ID,
-				lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date),
+				lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(Instant::ofEpochMilli),
 			)
 		}
 		return result
@@ -93,7 +93,7 @@ class TrackingRepository @Inject constructor(
 		return MangaTracking(
 			manga = manga,
 			lastChapterId = track?.lastChapterId ?: NO_ID,
-			lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date),
+			lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(Instant::ofEpochMilli),
 		)
 	}
 

@@ -24,8 +24,9 @@ import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import com.google.android.material.R as materialR
 
 class ReaderInfoBarView @JvmOverloads constructor(
@@ -36,7 +37,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private val textBounds = Rect()
-	private val timeFormat = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT)
+	private val timeFormat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
 	private val timeReceiver = TimeReceiver()
 	private var insetLeft: Int = 0
 	private var insetRight: Int = 0
@@ -52,7 +53,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		200,
 	)
 
-	private var timeText = timeFormat.format(Date())
+	private var timeText = timeFormat.format(LocalTime.now())
 	private var text: String = ""
 
 	private val innerHeight
@@ -181,7 +182,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	private inner class TimeReceiver : BroadcastReceiver() {
 
 		override fun onReceive(context: Context?, intent: Intent?) {
-			timeText = timeFormat.format(Date())
+			timeText = timeFormat.format(LocalTime.now())
 			invalidate()
 		}
 	}

@@ -1,30 +1,30 @@
 package org.koitharu.kotatsu.core.util.ext
 
-import android.annotation.SuppressLint
-import android.text.format.DateUtils
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.TimeUnit
+import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 
-@SuppressLint("SimpleDateFormat")
-fun Date.format(pattern: String): String = SimpleDateFormat(pattern).format(this)
+fun calculateTimeAgo(instant: Instant, showMonths: Boolean = false): DateTimeAgo {
+	val localDate = LocalDate.ofInstant(instant, ZoneId.systemDefault())
+	val now = LocalDate.now()
+	val diffDays = localDate.until(now, ChronoUnit.DAYS)
 
-fun Date.formatRelative(minResolution: Long): CharSequence = DateUtils.getRelativeTimeSpanString(
-	time, System.currentTimeMillis(), minResolution,
-)
-
-fun Date.daysDiff(other: Long): Int {
-	val thisDay = time / TimeUnit.DAYS.toMillis(1L)
-	val otherDay = other / TimeUnit.DAYS.toMillis(1L)
-	return (thisDay - otherDay).toInt()
-}
-
-fun Date.startOfDay(): Long {
-	val calendar = Calendar.getInstance()
-	calendar.time = this
-	calendar[Calendar.HOUR_OF_DAY] = 0
-	calendar[Calendar.MINUTE] = 0
-	calendar[Calendar.SECOND] = 0
-	calendar[Calendar.MILLISECOND] = 0
-	return calendar.timeInMillis
+	return when {
+		diffDays == 0L -> {
+			if (instant.until(Instant.now(), ChronoUnit.MINUTES) < 3) DateTimeAgo.JustNow
+			else DateTimeAgo.Today
+		}
+		diffDays == 1L -> DateTimeAgo.Yesterday
+		diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays.toInt())
+		else -> {
+			val diffMonths = localDate.until(now, ChronoUnit.MONTHS)
+			if (showMonths && diffMonths <= 6) {
+				DateTimeAgo.MonthsAgo(diffMonths.toInt())
+			} else {
+				DateTimeAgo.Absolute(localDate)
+			}
+		}
+	}
 }

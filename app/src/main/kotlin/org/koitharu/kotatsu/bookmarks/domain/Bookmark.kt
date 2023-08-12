@@ -4,7 +4,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.local.data.hasImageExtension
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import java.util.Date
+import java.time.Instant
 
 data class Bookmark(
 	val manga: Manga,
@@ -13,7 +13,7 @@ data class Bookmark(
 	val page: Int,
 	val scroll: Int,
 	val imageUrl: String,
-	val createdAt: Date,
+	val createdAt: Instant,
 	val percent: Float,
 ) : ListModel {
 

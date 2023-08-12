@@ -19,10 +19,9 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
-import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
+import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -40,8 +39,7 @@ import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
 import org.koitharu.kotatsu.list.ui.model.toListModel
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
-import java.util.Date
-import java.util.concurrent.TimeUnit
+import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
@@ -100,13 +98,13 @@ class HistoryListViewModel @Inject constructor(
 
 	override fun onRetry() = Unit
 
-	fun clearHistory(minDate: Long) {
+	fun clearHistory(minDate: Instant) {
 		launchJob(Dispatchers.Default) {
-			val stringRes = if (minDate <= 0) {
+			val stringRes = if (minDate <= Instant.EPOCH) {
 				repository.clear()
 				R.string.history_cleared
 			} else {
-				repository.deleteAfter(minDate)
+				repository.deleteAfter(minDate.toEpochMilli())
 				R.string.removed_from_history
 			}
 			onActionDone.call(ReversibleAction(stringRes, null))
@@ -165,8 +163,8 @@ class HistoryListViewModel @Inject constructor(
 	}
 
 	private fun MangaHistory.header(order: ListSortOrder): ListHeader? = when (order) {
-		ListSortOrder.UPDATED -> ListHeader(timeAgo(updatedAt))
-		ListSortOrder.NEWEST -> ListHeader(timeAgo(createdAt))
+		ListSortOrder.UPDATED -> ListHeader(calculateTimeAgo(updatedAt))
+		ListSortOrder.NEWEST -> ListHeader(calculateTimeAgo(createdAt))
 		ListSortOrder.PROGRESS -> ListHeader(
 			when (percent) {
 				1f -> R.string.status_completed
@@ -180,19 +178,5 @@ class HistoryListViewModel @Inject constructor(
 		ListSortOrder.RELEVANCE,
 		ListSortOrder.NEW_CHAPTERS,
 		ListSortOrder.RATING -> null
-	}
-
-	private fun timeAgo(date: Date): DateTimeAgo {
-		val diff = (System.currentTimeMillis() - date.time).coerceAtLeast(0L)
-		val diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
-		val diffDays = -date.daysDiff(System.currentTimeMillis())
-		return when {
-			diffMinutes < 3 -> DateTimeAgo.JustNow
-			diffDays < 1 -> DateTimeAgo.Today
-			diffDays == 1 -> DateTimeAgo.Yesterday
-			diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays)
-			diffDays < 200 -> DateTimeAgo.MonthsAgo(diffDays / 30)
-			else -> DateTimeAgo.LongAgo
-		}
 	}
 }

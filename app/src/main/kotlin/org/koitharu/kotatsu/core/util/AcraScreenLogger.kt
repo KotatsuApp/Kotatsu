@@ -9,10 +9,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import org.acra.ACRA
 import org.koitharu.kotatsu.core.ui.DefaultActivityLifecycleCallbacks
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 import java.util.WeakHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,7 +18,6 @@ import javax.inject.Singleton
 @Singleton
 class AcraScreenLogger @Inject constructor() : FragmentLifecycleCallbacks(), DefaultActivityLifecycleCallbacks {
 
-	private val timeFormat = SimpleDateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.ROOT)
 	private val keys = WeakHashMap<Any, String>()
 
 	override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
@@ -47,10 +44,9 @@ class AcraScreenLogger @Inject constructor() : FragmentLifecycleCallbacks(), Def
 	}
 
 	private fun Any.key() = keys.getOrPut(this) {
-		"${time()}: ${javaClass.simpleName}"
+		val time = LocalTime.now().truncatedTo(ChronoUnit.SECONDS)
+		"$time: ${javaClass.simpleName}"
 	}
-
-	private fun time() = timeFormat.format(Date())
 
 	@Suppress("DEPRECATION")
 	private fun Bundle?.contentToString() = this?.keySet()?.joinToString { k ->

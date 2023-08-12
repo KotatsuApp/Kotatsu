@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import java.util.Date
+import java.time.Instant
 import java.util.UUID
 
 data class DownloadItemModel(
@@ -21,7 +21,7 @@ data class DownloadItemModel(
 	val max: Int,
 	val progress: Int,
 	val eta: Long,
-	val timestamp: Date,
+	val timestamp: Instant,
 	val chaptersDownloaded: Int,
 	val isExpanded: Boolean,
 	val chapters: StateFlow<List<DownloadChapter>?>,

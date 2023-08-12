@@ -1,13 +1,13 @@
 package org.koitharu.kotatsu.core.exceptions
 
 import okio.IOException
-import java.util.Date
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 class TooManyRequestExceptions(
 	val url: String,
-	val retryAt: Date?,
+	val retryAt: Instant?,
 ) : IOException() {
-
 	val retryAfter: Long
-		get() = if (retryAt == null) 0 else (retryAt.time - System.currentTimeMillis()).coerceAtLeast(0)
+		get() = retryAt?.until(Instant.now(), ChronoUnit.MILLIS) ?: 0
 }

@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.tracker.data
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
-import java.util.Date
+import java.time.Instant
 
 fun TrackLogWithManga.toTrackingLogItem(counters: MutableMap<Long, Int>): TrackingLogItem {
 	val chaptersList = trackLog.chapters.split('\n').filterNot { x -> x.isEmpty() }
@@ -11,7 +11,7 @@ fun TrackLogWithManga.toTrackingLogItem(counters: MutableMap<Long, Int>): Tracki
 		id = trackLog.id,
 		chapters = chaptersList,
 		manga = manga.toManga(tags.toMangaTags()),
-		createdAt = Date(trackLog.createdAt),
+		createdAt = Instant.ofEpochMilli(trackLog.createdAt),
 		isNew = counters.decrement(trackLog.mangaId, chaptersList.size),
 	)
 }

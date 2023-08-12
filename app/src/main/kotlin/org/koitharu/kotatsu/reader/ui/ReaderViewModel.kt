@@ -56,7 +56,7 @@ import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
-import java.util.Date
+import java.time.Instant
 import javax.inject.Inject
 
 private const val BOUNDS_PAGE_OFFSET = 2
@@ -302,7 +302,7 @@ class ReaderViewModel @Inject constructor(
 				page = state.page,
 				scroll = state.scroll,
 				imageUrl = page.preview.ifNullOrEmpty { page.url },
-				createdAt = Date(),
+				createdAt = Instant.now(),
 				percent = computePercent(state.chapterId, state.page),
 			)
 			bookmarksRepository.addBookmark(bookmark)
