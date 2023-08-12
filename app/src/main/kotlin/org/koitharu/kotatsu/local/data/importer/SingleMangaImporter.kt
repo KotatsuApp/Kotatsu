@@ -15,9 +15,9 @@ import okio.source
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.util.ext.resolveName
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
-import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
+import org.koitharu.kotatsu.local.data.hasCbzExtension
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import java.io.File
@@ -46,7 +46,7 @@ class SingleMangaImporter @Inject constructor(
 	private suspend fun importFile(uri: Uri): LocalManga = withContext(Dispatchers.IO) {
 		val contentResolver = storageManager.contentResolver
 		val name = contentResolver.resolveName(uri) ?: throw IOException("Cannot fetch name from uri: $uri")
-		if (!CbzFilter.isFileSupported(name)) {
+		if (!hasCbzExtension(name)) {
 			throw UnsupportedFileException("Unsupported file on $uri")
 		}
 		val dest = File(getOutputDir(), name)

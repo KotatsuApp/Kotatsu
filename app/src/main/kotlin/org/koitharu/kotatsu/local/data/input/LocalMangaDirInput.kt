@@ -6,12 +6,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.ext.creationTime
-import org.koitharu.kotatsu.core.util.ext.listFilesRecursive
 import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.core.util.ext.toListSorted
-import org.koitharu.kotatsu.local.data.CbzFilter
-import org.koitharu.kotatsu.local.data.ImageFileFilter
+import org.koitharu.kotatsu.core.util.ext.walkCompat
 import org.koitharu.kotatsu.local.data.MangaIndex
+import org.koitharu.kotatsu.local.data.hasCbzExtension
+import org.koitharu.kotatsu.local.data.hasImageExtension
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -91,16 +91,12 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> = runInterruptible(Dispatchers.IO) {
 		val file = chapter.url.toUri().toFile()
 		if (file.isDirectory) {
-			file.listFilesRecursive(ImageFileFilter())
+			file.walkCompat()
+				.filter { hasImageExtension(it) }
 				.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
 				.map {
 					val pageUri = it.toUri().toString()
-					MangaPage(
-						id = pageUri.longHashCode(),
-						url = pageUri,
-						preview = null,
-						source = MangaSource.LOCAL,
-					)
+					MangaPage(pageUri.longHashCode(), pageUri, null, MangaSource.LOCAL)
 				}
 		} else {
 			ZipFile(file).use { zip ->
@@ -124,20 +120,20 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 
 	private fun String.toHumanReadable() = replace("_", " ").toCamelCase()
 
-	private fun getChaptersFiles(): List<File> = root.listFilesRecursive(CbzFilter())
-		.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
+	private fun getChaptersFiles(): List<File> = root.walkCompat()
+		.filter { hasCbzExtension(it) }
+		.toListSorted(compareBy(AlphanumComparator()) { it.name })
 
 	private fun findFirstImageEntry(): String? {
-		val filter = ImageFileFilter()
-		root.listFilesRecursive(filter).firstOrNull()?.let {
-			return it.toUri().toString()
-		}
-		val cbz = root.listFilesRecursive(CbzFilter()).firstOrNull() ?: return null
-		return ZipFile(cbz).use { zip ->
-			zip.entries().asSequence()
-				.firstOrNull { x -> !x.isDirectory && filter.accept(x) }
-				?.let { entry -> zipUri(cbz, entry.name) }
-		}
+		return root.walkCompat().firstOrNull { hasImageExtension(it) }?.toUri()?.toString()
+			?: run {
+				val cbz = root.walkCompat().firstOrNull { hasCbzExtension(it) } ?: return null
+				ZipFile(cbz).use { zip ->
+					zip.entries().asSequence()
+						.firstOrNull { !it.isDirectory && hasImageExtension(it.name) }
+						?.let { zipUri(cbz, it.name) }
+				}
+			}
 	}
 
 	private fun fileUri(base: File, name: String): String {

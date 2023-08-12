@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
 import android.provider.OpenableColumns
-import androidx.annotation.WorkerThread
 import androidx.core.database.getStringOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
@@ -19,6 +18,8 @@ import java.io.FileFilter
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.walk
 import kotlin.io.path.readAttributes
 
 fun File.subdir(name: String) = File(this, name).also {
@@ -71,31 +72,7 @@ fun ContentResolver.resolveName(uri: Uri): String? {
 }
 
 suspend fun File.computeSize(): Long = runInterruptible(Dispatchers.IO) {
-	computeSizeInternal(this)
-}
-
-@WorkerThread
-private fun computeSizeInternal(file: File): Long {
-	return if (file.isDirectory) {
-		file.children().sumOf { computeSizeInternal(it) }
-	} else {
-		file.length()
-	}
-}
-
-fun File.listFilesRecursive(filter: FileFilter? = null): Sequence<File> = sequence {
-	listFilesRecursiveImpl(this@listFilesRecursive, filter)
-}
-
-private suspend fun SequenceScope<File>.listFilesRecursiveImpl(root: File, filter: FileFilter?) {
-	val ss = root.children()
-	for (f in ss) {
-		if (f.isDirectory) {
-			listFilesRecursiveImpl(f, filter)
-		} else if (filter == null || filter.accept(f)) {
-			yield(f)
-		}
-	}
+	walkCompat().sumOf { it.length() }
 }
 
 fun File.children() = FileSequence(this)
@@ -108,3 +85,12 @@ val File.creationTime
 	} else {
 		lastModified()
 	}
+
+@OptIn(ExperimentalPathApi::class)
+fun File.walkCompat() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+	// Use lazy loading on Android 8.0 and later
+	toPath().walk().map { it.toFile() }
+} else {
+	// Directories are excluded by default in Path.walk(), so do it here as well
+	walk().filter { it.isFile }
+}

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import org.koitharu.kotatsu.local.data.CbzFilter
+import org.koitharu.kotatsu.local.data.hasCbzExtension
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -39,7 +39,7 @@ sealed class LocalMangaInput(
 
 		fun ofOrNull(file: File): LocalMangaInput? = when {
 			file.isDirectory -> LocalMangaDirInput(file)
-			CbzFilter.isFileSupported(file.name) -> LocalMangaZipInput(file)
+			hasCbzExtension(file.name) -> LocalMangaZipInput(file)
 			else -> null
 		}
 
