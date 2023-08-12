@@ -384,7 +384,7 @@
     <string name="server_address">Dirección del servidor</string>
     <string name="ignore_ssl_errors">Ignorar los errores SSL</string>
     <string name="mirror_switching">Elige un espejo automáticamente</string>
-    <string name="mirror_switching_summary">Cambio automático de dominios para las fuentes remotas en caso de error si hay réplicas disponibles</string>
+    <string name="mirror_switching_summary">Cambio automático de los dominios para las fuentes del manga en caso de error si hay réplicas disponibles</string>
     <string name="pause">Pausar</string>
     <string name="resume">Reanudar</string>
     <string name="remove_completed">Eliminación completa</string>
@@ -466,4 +466,5 @@
     <string name="suggestions_wifi_only_summary">No actualices las sugerencias utilizando conexiones de red medidas</string>
     <string name="unknown">Desconocido</string>
     <string name="in_progress">En proceso</string>
+    <string name="disable_nsfw">Desactivar NSFW</string>
 </resources>
