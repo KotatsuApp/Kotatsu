@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<animated-selector
-	xmlns:android="http://schemas.android.com/apk/res/android">
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<item
 		android:id="@+id/normal"
@@ -9,7 +8,17 @@
 
 	<item
 		android:id="@+id/checked"
-		android:drawable="@drawable/ic_heart"
+		android:drawable="@drawable/ic_heart_outline"
 		android:state_checked="true" />
+
+	<transition
+		android:drawable="@drawable/avd_favourites_enter"
+		android:fromId="@id/normal"
+		android:toId="@id/checked" />
+
+	<transition
+		android:drawable="@drawable/avd_favourites_leave"
+		android:fromId="@id/checked"
+		android:toId="@id/normal" />
 
 </animated-selector>
