@@ -5,6 +5,7 @@ import coil.ImageLoader
 import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
@@ -40,6 +41,7 @@ fun mangaListItemAD(
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
+			transformations(TrimTransformation())
 			source(item.source)
 			enqueueWith(coil)
 		}

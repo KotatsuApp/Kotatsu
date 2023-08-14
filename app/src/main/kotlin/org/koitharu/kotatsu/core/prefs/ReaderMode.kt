@@ -8,6 +8,6 @@ enum class ReaderMode(val id: Int) {
 
 	companion object {
 
-		fun valueOf(id: Int) = values().firstOrNull { it.id == id }
+		fun valueOf(id: Int) = entries.firstOrNull { it.id == id }
 	}
 }

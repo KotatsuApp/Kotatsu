@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
@@ -33,6 +34,8 @@ class TrackingRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
 
+	private var isGcCalled = false
+
 	suspend fun getNewChaptersCount(mangaId: Long): Int {
 		return db.tracksDao.findNewChapters(mangaId) ?: 0
 	}
@@ -43,12 +46,17 @@ class TrackingRepository @Inject constructor(
 
 	fun observeUpdatedMangaCount(): Flow<Int> {
 		return db.tracksDao.observeNewChapters().map { list -> list.count { it > 0 } }
+			.onStart { gcIfNotCalled() }
 	}
 
-	fun observeUpdatedManga(): Flow<List<Manga>> {
-		return db.tracksDao.observeUpdatedManga()
-			.mapItems { it.toManga() }
+	fun observeUpdatedManga(limit: Int = 0): Flow<List<Manga>> {
+		return if (limit == 0) {
+			db.tracksDao.observeUpdatedManga()
+		} else {
+			db.tracksDao.observeUpdatedManga(limit)
+		}.mapItems { it.toManga() }
 			.distinctUntilChanged()
+			.onStart { gcIfNotCalled() }
 	}
 
 	suspend fun getTracks(mangaList: Collection<Manga>): List<MangaTracking> {
@@ -94,6 +102,8 @@ class TrackingRepository @Inject constructor(
 				val countersMap = counters.toMutableMap()
 				entities.map { x -> x.toTrackingLogItem(countersMap) }
 			}
+		}.onStart {
+			gcIfNotCalled()
 		}
 	}
 
@@ -104,13 +114,11 @@ class TrackingRepository @Inject constructor(
 	suspend fun clearCounters() = db.tracksDao.clearCounters()
 
 	suspend fun gc() {
-		db.withTransaction {
-			db.tracksDao.gc()
-			db.trackLogsDao.gc()
-		}
+		db.tracksDao.gc()
+		db.trackLogsDao.gc()
 	}
 
-	suspend fun saveUpdates(updates: MangaUpdates) {
+	suspend fun saveUpdates(updates: MangaUpdates.Success) {
 		db.withTransaction {
 			val track = getOrCreateTrack(updates.manga.id).mergeWith(updates)
 			db.tracksDao.upsert(track)
@@ -191,7 +199,7 @@ class TrackingRepository @Inject constructor(
 		)
 	}
 
-	private suspend fun updatePercent(updates: MangaUpdates) {
+	private suspend fun updatePercent(updates: MangaUpdates.Success) {
 		val history = db.historyDao.find(updates.manga.id) ?: return
 		val chapters = updates.manga.chapters
 		if (chapters.isNullOrEmpty()) {
@@ -206,7 +214,7 @@ class TrackingRepository @Inject constructor(
 		db.historyDao.update(history.copy(percent = newPercent))
 	}
 
-	private fun TrackEntity.mergeWith(updates: MangaUpdates): TrackEntity {
+	private fun TrackEntity.mergeWith(updates: MangaUpdates.Success): TrackEntity {
 		val chapters = updates.manga.chapters.orEmpty()
 		return TrackEntity(
 			mangaId = mangaId,
@@ -216,6 +224,13 @@ class TrackingRepository @Inject constructor(
 			lastCheck = System.currentTimeMillis(),
 			lastNotifiedChapterId = NO_ID,
 		)
+	}
+
+	private suspend fun gcIfNotCalled() {
+		if (!isGcCalled) {
+			gc()
+			isGcCalled = true
+		}
 	}
 
 	private fun Collection<MangaEntity>.toMangaList() = map { it.toManga(emptySet()) }

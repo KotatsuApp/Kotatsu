@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.graphics.Insets
+import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,7 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
+import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
@@ -27,8 +31,10 @@ import org.koitharu.kotatsu.filter.ui.FilterHeaderFragment
 import org.koitharu.kotatsu.filter.ui.FilterOwner
 import org.koitharu.kotatsu.filter.ui.FilterSheetFragment
 import org.koitharu.kotatsu.filter.ui.MangaFilter
+import org.koitharu.kotatsu.list.ui.preview.PreviewFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
@@ -56,7 +62,7 @@ class MangaListActivity :
 			finishAfterTransition()
 			return
 		}
-		viewBinding.chipSort?.setOnClickListener(this)
+		viewBinding.buttonOrder?.setOnClickListener(this)
 		title = if (source == MangaSource.LOCAL) getString(R.string.local_storage) else source.title
 		initList(source, tags)
 	}
@@ -66,16 +72,24 @@ class MangaListActivity :
 			left = insets.left,
 			right = insets.right,
 		)
-		viewBinding.cardFilter?.updateLayoutParams<MarginLayoutParams> {
+		viewBinding.cardSide?.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = marginStart + insets.bottom
+			topMargin = marginStart + insets.top
 		}
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.chip_sort -> FilterSheetFragment.show(supportFragmentManager)
+			R.id.button_order -> FilterSheetFragment.show(supportFragmentManager)
 		}
 	}
+
+	fun showPreview(manga: Manga): Boolean = setSideFragment(
+		PreviewFragment::class.java,
+		bundleOf(MangaIntent.KEY_MANGA to ParcelableManga(manga, true)),
+	)
+
+	fun hidePreview() = setSideFragment(FilterSheetFragment::class.java, null)
 
 	private fun initList(source: MangaSource, tags: Set<MangaTag>?) {
 		val fm = supportFragmentManager
@@ -100,12 +114,9 @@ class MangaListActivity :
 	}
 
 	private fun initFilter(filterOwner: FilterOwner) {
-		if (viewBinding.containerFilter != null) {
-			if (supportFragmentManager.findFragmentById(R.id.container_filter) == null) {
-				supportFragmentManager.commit {
-					setReorderingAllowed(true)
-					replace(R.id.container_filter, FilterSheetFragment::class.java, null)
-				}
+		if (viewBinding.containerSide != null) {
+			if (supportFragmentManager.findFragmentById(R.id.container_side) == null) {
+				setSideFragment(FilterSheetFragment::class.java, null)
 			}
 		} else if (viewBinding.containerFilterHeader != null) {
 			if (supportFragmentManager.findFragmentById(R.id.container_filter_header) == null) {
@@ -116,7 +127,7 @@ class MangaListActivity :
 			}
 		}
 		val filter = filterOwner.filter
-		val chipSort = viewBinding.chipSort
+		val chipSort = viewBinding.buttonOrder
 		if (chipSort != null) {
 			filter.header.observe(this) {
 				chipSort.setTextAndVisible(it.sortOrder?.titleRes ?: 0)
@@ -133,6 +144,16 @@ class MangaListActivity :
 
 	private fun findFilterOwner(): FilterOwner? {
 		return supportFragmentManager.findFragmentById(R.id.container) as? FilterOwner
+	}
+
+	private fun setSideFragment(cls: Class<out Fragment>, args: Bundle?) = if (viewBinding.containerSide != null) {
+		supportFragmentManager.commit {
+			setReorderingAllowed(true)
+			replace(R.id.container_side, cls, args)
+		}
+		true
+	} else {
+		false
 	}
 
 	private class ApplyFilterRunnable(

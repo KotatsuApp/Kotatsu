@@ -24,20 +24,24 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.util.SpanSizeResolver
+import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
-import org.koitharu.kotatsu.explore.ui.model.ExploreItem
-import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
-import org.koitharu.kotatsu.history.ui.HistoryActivity
+import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
+import org.koitharu.kotatsu.list.ui.model.ListHeader
+import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 import javax.inject.Inject
 
@@ -46,7 +50,7 @@ class ExploreFragment :
 	BaseFragment<FragmentExploreBinding>(),
 	RecyclerViewOwner,
 	ExploreListEventListener,
-	OnListItemClickListener<ExploreItem.Source> {
+	OnListItemClickListener<MangaSourceItem>, TipView.OnButtonClickListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -64,7 +68,9 @@ class ExploreFragment :
 
 	override fun onViewBindingCreated(binding: FragmentExploreBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this)
+		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this, this) { manga, view ->
+			startActivity(DetailsActivity.newIntent(view.context, manga))
+		}
 		with(binding.recyclerView) {
 			adapter = exploreAdapter
 			setHasFixedSize(true)
@@ -96,17 +102,28 @@ class ExploreFragment :
 		)
 	}
 
-	override fun onManageClick(view: View) {
+	override fun onListHeaderClick(item: ListHeader, view: View) {
 		startActivity(SettingsActivity.newManageSourcesIntent(view.context))
+	}
+
+	override fun onPrimaryButtonClick(tipView: TipView) {
+		when ((tipView.tag as? TipModel)?.key) {
+			ExploreViewModel.TIP_NEW_SOURCES -> NewSourcesDialogFragment.show(childFragmentManager)
+		}
+	}
+
+	override fun onSecondaryButtonClick(tipView: TipView) {
+		when ((tipView.tag as? TipModel)?.key) {
+			ExploreViewModel.TIP_NEW_SOURCES -> viewModel.discardNewSources()
+		}
 	}
 
 	override fun onClick(v: View) {
 		val intent = when (v.id) {
-			R.id.button_history -> HistoryActivity.newIntent(v.context)
 			R.id.button_local -> MangaListActivity.newIntent(v.context, MangaSource.LOCAL)
 			R.id.button_bookmarks -> BookmarksActivity.newIntent(v.context)
-			R.id.button_suggestions -> SuggestionsActivity.newIntent(v.context)
-			R.id.button_favourites -> FavouriteCategoriesActivity.newIntent(v.context)
+			R.id.button_more -> SuggestionsActivity.newIntent(v.context)
+			R.id.button_downloads -> DownloadsActivity.newIntent(v.context)
 			R.id.button_random -> {
 				viewModel.openRandom()
 				return
@@ -117,12 +134,12 @@ class ExploreFragment :
 		startActivity(intent)
 	}
 
-	override fun onItemClick(item: ExploreItem.Source, view: View) {
+	override fun onItemClick(item: MangaSourceItem, view: View) {
 		val intent = MangaListActivity.newIntent(view.context, item.source)
 		startActivity(intent)
 	}
 
-	override fun onItemLongClick(item: ExploreItem.Source, view: View): Boolean {
+	override fun onItemLongClick(item: MangaSourceItem, view: View): Boolean {
 		val menu = PopupMenu(view.context, view)
 		menu.inflate(R.menu.popup_source)
 		menu.setOnMenuItemClickListener(SourceMenuListener(item))
@@ -132,7 +149,9 @@ class ExploreFragment :
 
 	override fun onRetryClick(error: Throwable) = Unit
 
-	override fun onEmptyActionClick() = onManageClick(requireView())
+	override fun onEmptyActionClick() {
+		startActivity(SettingsActivity.newManageSourcesIntent(context ?: return))
+	}
 
 	private fun onOpenManga(manga: Manga) {
 		val intent = DetailsActivity.newIntent(context ?: return, manga)
@@ -164,7 +183,7 @@ class ExploreFragment :
 	}
 
 	private inner class SourceMenuListener(
-		private val sourceItem: ExploreItem.Source,
+		private val sourceItem: MangaSourceItem,
 	) : PopupMenu.OnMenuItemClickListener {
 
 		override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -181,10 +200,5 @@ class ExploreFragment :
 			}
 			return true
 		}
-	}
-
-	companion object {
-
-		fun newInstance() = ExploreFragment()
 	}
 }

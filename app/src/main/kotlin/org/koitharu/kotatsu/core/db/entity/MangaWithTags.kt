@@ -21,9 +21,7 @@ class MangaWithTags(
 		other as MangaWithTags
 
 		if (manga != other.manga) return false
-		if (tags != other.tags) return false
-
-		return true
+		return tags == other.tags
 	}
 
 	override fun hashCode(): Int {

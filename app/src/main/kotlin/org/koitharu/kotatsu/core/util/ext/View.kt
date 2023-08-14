@@ -12,6 +12,7 @@ import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.slider.Slider
+import com.google.android.material.tabs.TabLayout
 import kotlin.math.roundToInt
 
 fun View.hideKeyboard() {
@@ -147,3 +148,9 @@ var View.isRtl: Boolean
 	set(value) {
 		layoutDirection = if (value) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
 	}
+
+fun TabLayout.setTabsEnabled(enabled: Boolean) {
+	for (i in 0 until tabCount) {
+		getTabAt(i)?.view?.isEnabled = enabled
+	}
+}

@@ -15,21 +15,21 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
-import org.koitharu.kotatsu.tracker.work.TrackWorker
+import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,27 +52,18 @@ class FeedFragment :
 
 	override fun onViewBindingCreated(binding: FragmentFeedBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this)
+		val sizeResolver = StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width))
+		feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this, sizeResolver)
 		with(binding.recyclerView) {
 			adapter = feedAdapter
 			setHasFixedSize(true)
 			addOnScrollListener(PaginationScrollListener(4, this@FeedFragment))
-			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
-			val decoration = TypedSpacingItemDecoration(
-				FeedAdapter.ITEM_TYPE_FEED to 0,
-				fallbackSpacing = spacing,
-			)
-			addItemDecoration(decoration)
+			addItemDecoration(TypedListSpacingDecoration(context))
 		}
-		with(binding.swipeRefreshLayout) {
-			setProgressBackgroundColorSchemeColor(context.getThemeColor(com.google.android.material.R.attr.colorPrimary))
-			setColorSchemeColors(context.getThemeColor(com.google.android.material.R.attr.colorOnPrimary))
-			setOnRefreshListener(this@FeedFragment)
-		}
+		binding.swipeRefreshLayout.setOnRefreshListener(this)
 		addMenuProvider(
 			FeedMenuProvider(
 				binding.recyclerView,
-				(activity as? BottomNavOwner)?.bottomNav,
 				viewModel,
 			),
 		)
@@ -82,8 +73,7 @@ class FeedFragment :
 		viewModel.onFeedCleared.observeEvent(viewLifecycleOwner) {
 			onFeedCleared()
 		}
-		TrackWorker.observeIsRunning(binding.root.context.applicationContext)
-			.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
+		viewModel.isRunning.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
 	}
 
 	override fun onDestroyView() {
@@ -98,7 +88,7 @@ class FeedFragment :
 	}
 
 	override fun onRefresh() {
-		TrackWorker.startNow(context ?: return)
+		viewModel.update()
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit
@@ -109,7 +99,10 @@ class FeedFragment :
 
 	override fun onEmptyActionClick() = Unit
 
-	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
+	override fun onListHeaderClick(item: ListHeader, view: View) {
+		val context = view.context
+		context.startActivity(UpdatesActivity.newIntent(context))
+	}
 
 	private fun onListChanged(list: List<ListModel>) {
 		feedAdapter?.items = list
@@ -140,9 +133,4 @@ class FeedFragment :
 	override fun onReadClick(manga: Manga, view: View) = Unit
 
 	override fun onTagClick(manga: Manga, tag: MangaTag, view: View) = Unit
-
-	companion object {
-
-		fun newInstance() = FeedFragment()
-	}
 }

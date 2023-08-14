@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.settings.work
 
-import android.content.Context
 import android.content.SharedPreferences
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -12,37 +10,49 @@ import org.koitharu.kotatsu.tracker.work.TrackWorker
 import javax.inject.Inject
 
 class WorkScheduleManager @Inject constructor(
-	@ApplicationContext private val context: Context,
 	private val settings: AppSettings,
+	private val suggestionScheduler: SuggestionsWorker.Scheduler,
+	private val trackerScheduler: TrackWorker.Scheduler,
 ) : SharedPreferences.OnSharedPreferenceChangeListener {
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 		when (key) {
-			AppSettings.KEY_TRACKER_ENABLED -> updateWorker(TrackWorker, settings.isTrackerEnabled)
-			AppSettings.KEY_SUGGESTIONS -> updateWorker(SuggestionsWorker, settings.isSuggestionsEnabled)
+			AppSettings.KEY_TRACKER_ENABLED,
+			AppSettings.KEY_TRACKER_WIFI_ONLY -> updateWorker(
+				scheduler = trackerScheduler,
+				isEnabled = settings.isTrackerEnabled,
+				force = key != AppSettings.KEY_TRACKER_ENABLED,
+			)
+
+			AppSettings.KEY_SUGGESTIONS,
+			AppSettings.KEY_SUGGESTIONS_WIFI_ONLY -> updateWorker(
+				scheduler = suggestionScheduler,
+				isEnabled = settings.isSuggestionsEnabled,
+				force = key != AppSettings.KEY_SUGGESTIONS,
+			)
 		}
 	}
 
 	fun init() {
 		settings.subscribe(this)
 		processLifecycleScope.launch(Dispatchers.Default) {
-			updateWorkerImpl(TrackWorker, settings.isTrackerEnabled)
-			updateWorkerImpl(SuggestionsWorker, settings.isSuggestionsEnabled)
+			updateWorkerImpl(trackerScheduler, settings.isTrackerEnabled, false)
+			updateWorkerImpl(suggestionScheduler, settings.isSuggestionsEnabled, false)
 		}
 	}
 
-	private fun updateWorker(scheduler: PeriodicWorkScheduler, isEnabled: Boolean) {
+	private fun updateWorker(scheduler: PeriodicWorkScheduler, isEnabled: Boolean, force: Boolean) {
 		processLifecycleScope.launch(Dispatchers.Default) {
-			updateWorkerImpl(scheduler, isEnabled)
+			updateWorkerImpl(scheduler, isEnabled, force)
 		}
 	}
 
-	private suspend fun updateWorkerImpl(scheduler: PeriodicWorkScheduler, isEnabled: Boolean) {
-		if (scheduler.isScheduled(context) != isEnabled) {
+	private suspend fun updateWorkerImpl(scheduler: PeriodicWorkScheduler, isEnabled: Boolean, force: Boolean) {
+		if (force || scheduler.isScheduled() != isEnabled) {
 			if (isEnabled) {
-				scheduler.schedule(context)
+				scheduler.schedule()
 			} else {
-				scheduler.unschedule(context)
+				scheduler.unschedule()
 			}
 		}
 	}

@@ -15,6 +15,7 @@
 			android:id="@+id/imageView_cover"
 			android:layout_width="98dp"
 			android:layout_height="0dp"
+			android:background="?colorSurfaceContainer"
 			android:scaleType="centerCrop"
 			app:layout_constraintDimensionRatio="13:18"
 			app:layout_constraintStart_toStartOf="parent"

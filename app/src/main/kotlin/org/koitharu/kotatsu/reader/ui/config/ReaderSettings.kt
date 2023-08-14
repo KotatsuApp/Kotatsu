@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.ui.config
 
 import android.content.SharedPreferences
+import android.view.View
 import androidx.lifecycle.MediatorLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,11 @@ class ReaderSettings(
 
 	val isPagesNumbersEnabled: Boolean
 		get() = settings.isPagesNumbersEnabled
+
+	fun applyBackground(view: View) {
+		val bg = settings.readerBackground
+		view.background = bg.resolve(view.context)
+	}
 
 	override fun onInactive() {
 		super.onInactive()
@@ -64,7 +70,12 @@ class ReaderSettings(
 		}
 
 		override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-			if (key == AppSettings.KEY_ZOOM_MODE || key == AppSettings.KEY_PAGES_NUMBERS || key == AppSettings.KEY_WEBTOON_ZOOM) {
+			if (
+				key == AppSettings.KEY_ZOOM_MODE ||
+				key == AppSettings.KEY_PAGES_NUMBERS ||
+				key == AppSettings.KEY_WEBTOON_ZOOM ||
+				key == AppSettings.KEY_READER_BACKGROUND
+			) {
 				notifyChanged()
 			}
 		}

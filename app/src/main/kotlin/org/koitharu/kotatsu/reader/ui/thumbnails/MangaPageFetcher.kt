@@ -57,17 +57,19 @@ class MangaPageFetcher(
 	private suspend fun loadPage(pageUrl: String): SourceResult {
 		val uri = pageUrl.toUri()
 		return if (CbzFilter.isUriSupported(uri)) {
-			val zip = runInterruptible(Dispatchers.IO) { ZipFile(uri.schemeSpecificPart) }
-			val entry = runInterruptible(Dispatchers.IO) { zip.getEntry(uri.fragment) }
-			return SourceResult(
-				source = ImageSource(
-					source = zip.getInputStream(entry).source().withExtraCloseable(zip).buffer(),
-					context = context,
-					metadata = MangaPageMetadata(page),
-				),
-				mimeType = null,
-				dataSource = DataSource.DISK,
-			)
+			runInterruptible(Dispatchers.IO) {
+				val zip = ZipFile(uri.schemeSpecificPart)
+				val entry = zip.getEntry(uri.fragment)
+				SourceResult(
+					source = ImageSource(
+						source = zip.getInputStream(entry).source().withExtraCloseable(zip).buffer(),
+						context = context,
+						metadata = MangaPageMetadata(page),
+					),
+					mimeType = null,
+					dataSource = DataSource.DISK,
+				)
+			}
 		} else {
 			val request = PageLoader.createPageRequest(page, pageUrl)
 			imageProxyInterceptor.interceptPageRequest(request, okHttpClient).use { response ->

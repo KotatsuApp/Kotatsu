@@ -21,7 +21,7 @@
 			android:id="@id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize"
-			android:background="@drawable/m3_tabs_background"
+			android:background="@drawable/toolbar_background"
 			android:theme="?attr/actionBarTheme"
 			app:layout_scrollFlags="noScroll"
 			tools:ignore="PrivateResource" />

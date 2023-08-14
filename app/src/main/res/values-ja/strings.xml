@@ -94,7 +94,7 @@
     <string name="remove_category">削除</string>
     <string name="text_search_holder_secondary">クエリを再定式化してみてください。</string>
     <string name="text_history_holder_primary">読んだ内容がここに表示されます</string>
-    <string name="text_history_holder_secondary">サイドメニューで何を読むかを見つけてください。</string>
+    <string name="text_history_holder_secondary">«探検» セクションで読みたいものを見つけてください</string>
     <string name="text_local_holder_primary">最初に何かを保存する</string>
     <string name="manga_shelf">本棚</string>
     <string name="recent_manga">最近</string>
@@ -290,7 +290,7 @@
     <string name="automatic_scroll">自動スクロール</string>
     <string name="importing_manga">マンガのインポート</string>
     <string name="email_enter_hint">続行するにはメールアドレスを入力してください</string>
-    <string name="text_shelf_holder_secondary">«探索»セクションで読むべきものを見つける</string>
+    <string name="text_shelf_holder_secondary">«探検»セクションで読むべきものを見つける</string>
     <string name="import_completed">インポートが完了しました</string>
     <string name="text_shelf_holder_primary">あなたのマンガはここに表示されます</string>
     <string name="canceled">キャンセル</string>
@@ -443,4 +443,27 @@
     <string name="no_access_to_file">このファイルまたはディレクトリにアクセスできません</string>
     <string name="pick_custom_directory">カスタムディレクトリを選択</string>
     <string name="local_manga_directories">ローカルマンガディレクトリ</string>
+    <string name="this_month">今月</string>
+    <string name="description">説明</string>
+    <string name="voice_search">音声検索</string>
+    <string name="background">バックグラウンド</string>
+    <string name="data_not_restored_text">正しいバックアップファイルを選択しているか確認してください</string>
+    <string name="data_not_restored">データを復元することが出来ませんでした</string>
+    <string name="suggestions_wifi_only_summary">従量制課金ネットワーク接続を使用して提案を更新しないでください</string>
+    <string name="search_hint">漫画のタイトル、ジャンル、またはソース名を入力してください</string>
+    <string name="progress">進捗状況</string>
+    <string name="order_added">追加</string>
+    <string name="view_list">一覧を表示</string>
+    <string name="show">見せる</string>
+    <string name="related_manga">関連漫画</string>
+    <string name="color_light">ライト</string>
+    <string name="color_dark">ダーク</string>
+    <string name="color_white">ホワイト</string>
+    <string name="color_black">ブラック</string>
+    <string name="tracker_wifi_only_summary">従量制ネットワーク接続を使用して新しいチャプターをチェックしないでください</string>
+    <string name="manage_categories">カテゴリーの管理</string>
+    <string name="captcha_required_summary">%sを正しく動作させるには、キャプチャを解決する必要があります</string>
+    <string name="languages">言語</string>
+    <string name="unknown">不明</string>
+    <string name="in_progress">進行状況</string>
 </resources>

@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.exceptions.CaughtException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.SyncApiException
+import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
@@ -32,6 +33,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is UnsupportedOperationException,
 	-> resources.getString(R.string.operation_not_supported)
 
+	is TooManyRequestExceptions -> resources.getString(R.string.too_many_requests_message)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
 	is AccessDeniedException -> resources.getString(R.string.no_access_to_file)

@@ -25,7 +25,7 @@ class Tracker @Inject constructor(
 		if (sources.isEmpty()) {
 			return emptyList()
 		}
-		val knownIds = HashSet<Manga>()
+		val knownManga = HashSet<Long>()
 		val result = ArrayList<TrackingItem>()
 		// Favourites
 		if (AppSettings.TRACK_FAVOURITES in sources) {
@@ -42,7 +42,7 @@ class Tracker @Inject constructor(
 					null
 				}
 				for (track in categoryTracks) {
-					if (knownIds.add(track.manga)) {
+					if (knownManga.add(track.manga.id)) {
 						result.add(TrackingItem(track, channelId))
 					}
 				}
@@ -58,7 +58,7 @@ class Tracker @Inject constructor(
 				null
 			}
 			for (track in historyTracks) {
-				if (knownIds.add(track.manga)) {
+				if (knownManga.add(track.manga.id)) {
 					result.add(TrackingItem(track, channelId))
 				}
 			}
@@ -67,11 +67,15 @@ class Tracker @Inject constructor(
 		return result
 	}
 
+	suspend fun getTracks(ids: Set<Long>): List<TrackingItem> {
+		return getAllTracks().filterTo(ArrayList(ids.size)) { x -> x.tracking.manga.id in ids }
+	}
+
 	suspend fun gc() {
 		repository.gc()
 	}
 
-	suspend fun fetchUpdates(track: MangaTracking, commit: Boolean): MangaUpdates {
+	suspend fun fetchUpdates(track: MangaTracking, commit: Boolean): MangaUpdates.Success {
 		val manga = mangaRepositoryFactory.create(track.manga.source).getDetails(track.manga)
 		val updates = compare(track, manga, getBranch(manga))
 		if (commit) {
@@ -103,24 +107,24 @@ class Tracker @Inject constructor(
 	/**
 	 * The main functionality of tracker: check new chapters in [manga] comparing to the [track]
 	 */
-	private fun compare(track: MangaTracking, manga: Manga, branch: String?): MangaUpdates {
+	private fun compare(track: MangaTracking, manga: Manga, branch: String?): MangaUpdates.Success {
 		if (track.isEmpty()) {
 			// first check or manga was empty on last check
-			return MangaUpdates(manga, emptyList(), isValid = false)
+			return MangaUpdates.Success(manga, emptyList(), isValid = false)
 		}
 		val chapters = requireNotNull(manga.getChapters(branch))
 		val newChapters = chapters.takeLastWhile { x -> x.id != track.lastChapterId }
 		return when {
 			newChapters.isEmpty() -> {
-				MangaUpdates(manga, emptyList(), isValid = chapters.lastOrNull()?.id == track.lastChapterId)
+				MangaUpdates.Success(manga, emptyList(), isValid = chapters.lastOrNull()?.id == track.lastChapterId)
 			}
 
 			newChapters.size == chapters.size -> {
-				MangaUpdates(manga, emptyList(), isValid = false)
+				MangaUpdates.Success(manga, emptyList(), isValid = false)
 			}
 
 			else -> {
-				MangaUpdates(manga, newChapters, isValid = true)
+				MangaUpdates.Success(manga, newChapters, isValid = true)
 			}
 		}
 	}

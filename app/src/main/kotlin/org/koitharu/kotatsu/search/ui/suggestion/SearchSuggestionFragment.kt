@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.os.VoiceInputContract
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -26,6 +27,11 @@ class SearchSuggestionFragment :
 	lateinit var coil: ImageLoader
 
 	private val viewModel by activityViewModels<SearchSuggestionViewModel>()
+	private val voiceInputLauncher = registerForActivityResult(VoiceInputContract()) { result ->
+		if (result != null) {
+			viewModel.onQueryChanged(result)
+		}
+	}
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -39,7 +45,7 @@ class SearchSuggestionFragment :
 			lifecycleOwner = viewLifecycleOwner,
 			listener = requireActivity() as SearchSuggestionListener,
 		)
-		addMenuProvider(SearchSuggestionMenuProvider(binding.root.context, viewModel))
+		addMenuProvider(SearchSuggestionMenuProvider(binding.root.context, voiceInputLauncher, viewModel))
 		binding.root.adapter = adapter
 		binding.root.setHasFixedSize(true)
 		viewModel.suggestion.observe(viewLifecycleOwner) {

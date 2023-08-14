@@ -13,7 +13,12 @@ import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import java.io.*
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import java.io.File
+import java.io.FileDescriptor
+import java.io.FileInputStream
+import java.io.InputStream
+import java.io.OutputStream
 
 class AppBackupAgent : BackupAgent() {
 
@@ -31,7 +36,8 @@ class AppBackupAgent : BackupAgent() {
 
 	override fun onFullBackup(data: FullBackupDataOutput) {
 		super.onFullBackup(data)
-		val file = createBackupFile(this, BackupRepository(MangaDatabase(applicationContext)))
+		val file =
+			createBackupFile(this, BackupRepository(MangaDatabase(applicationContext), AppSettings(applicationContext)))
 		try {
 			fullBackupFile(file, data)
 		} finally {
@@ -48,7 +54,7 @@ class AppBackupAgent : BackupAgent() {
 		mtime: Long
 	) {
 		if (destination?.name?.endsWith(".bk.zip") == true) {
-			restoreBackupFile(data.fileDescriptor, size, BackupRepository(MangaDatabase(applicationContext)))
+			restoreBackupFile(data.fileDescriptor, size, BackupRepository(MangaDatabase(applicationContext), AppSettings(applicationContext)))
 			destination.delete()
 		} else {
 			super.onRestoreFile(data, size, destination, type, mode, mtime)
@@ -62,6 +68,8 @@ class AppBackupAgent : BackupAgent() {
 			backup.put(repository.dumpHistory())
 			backup.put(repository.dumpCategories())
 			backup.put(repository.dumpFavourites())
+			backup.put(repository.dumpBookmarks())
+			backup.put(repository.dumpSettings())
 			backup.finish()
 			backup.file
 		}
@@ -78,9 +86,11 @@ class AppBackupAgent : BackupAgent() {
 		val backup = BackupZipInput(tempFile)
 		try {
 			runBlocking {
-				repository.restoreHistory(backup.getEntry(BackupEntry.HISTORY))
-				repository.restoreCategories(backup.getEntry(BackupEntry.CATEGORIES))
-				repository.restoreFavourites(backup.getEntry(BackupEntry.FAVOURITES))
+				backup.getEntry(BackupEntry.HISTORY)?.let { repository.restoreHistory(it) }
+				backup.getEntry(BackupEntry.CATEGORIES)?.let { repository.restoreCategories(it) }
+				backup.getEntry(BackupEntry.FAVOURITES)?.let { repository.restoreFavourites(it) }
+				backup.getEntry(BackupEntry.BOOKMARKS)?.let { repository.restoreBookmarks(it) }
+				backup.getEntry(BackupEntry.SETTINGS)?.let { repository.restoreSettings(it) }
 			}
 		} finally {
 			backup.close()

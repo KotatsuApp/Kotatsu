@@ -101,7 +101,7 @@ class ReaderViewModel @Inject constructor(
 	val manga: DoubleManga?
 		get() = mangaData.value
 
-	val readerAnimation = settings.observeAsStateFlow(
+	val pageAnimation = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_READER_ANIMATION,
 		valueProducer = { readerAnimation },

@@ -40,7 +40,7 @@ class SuggestionsFragment : MangaListFragment() {
 
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 			R.id.action_update -> {
-				SuggestionsWorker.startNow(requireContext())
+				viewModel.updateSuggestions()
 				Snackbar.make(
 					requireViewBinding().recyclerView,
 					R.string.feed_will_update_soon,

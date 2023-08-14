@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 class FilterSheetFragment :
@@ -31,7 +32,8 @@ class FilterSheetFragment :
 		addSheetCallback(this)
 		val adapter = FilterAdapter(filter, this)
 		binding.recyclerView.adapter = adapter
-		filter.filterItems.observe(viewLifecycleOwner, adapter::setItems)
+		filter.filterItems.observe(viewLifecycleOwner, adapter)
+		binding.recyclerView.addItemDecoration(TypedListSpacingDecoration(binding.root.context))
 
 		if (dialog == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			binding.recyclerView.scrollIndicators = 0

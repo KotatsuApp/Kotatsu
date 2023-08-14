@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.core.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Upsert
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 
 @Dao
@@ -12,6 +14,7 @@ abstract class TagsDao {
 	@Query(
 		"""SELECT tags.* FROM tags
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id
+		WHERE manga_tags.manga_id IN (SELECT manga_id FROM history UNION SELECT manga_id FROM favourites)
 		GROUP BY tags.title 
 		ORDER BY COUNT(manga_id) DESC 
 		LIMIT :limit""",
@@ -21,7 +24,7 @@ abstract class TagsDao {
 	@Query(
 		"""SELECT tags.* FROM tags
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id 
-		WHERE tags.source = :source 
+		WHERE tags.source = :source  
 		GROUP BY tags.title
 		ORDER BY COUNT(manga_id) DESC 
 		LIMIT :limit""",
@@ -31,7 +34,7 @@ abstract class TagsDao {
 	@Query(
 		"""SELECT tags.* FROM tags
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id 
-		WHERE tags.source = :source AND title LIKE :query
+		WHERE tags.source = :source AND title LIKE :query 
 		GROUP BY tags.title
 		ORDER BY COUNT(manga_id) DESC 
 		LIMIT :limit""",
@@ -41,7 +44,7 @@ abstract class TagsDao {
 	@Query(
 		"""SELECT tags.* FROM tags
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id 
-		WHERE title LIKE :query
+		WHERE title LIKE :query AND manga_tags.manga_id IN (SELECT manga_id FROM history UNION SELECT manga_id FROM favourites)
 		GROUP BY tags.title
 		ORDER BY COUNT(manga_id) DESC 
 		LIMIT :limit""",

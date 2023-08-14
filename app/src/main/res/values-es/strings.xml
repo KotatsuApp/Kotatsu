@@ -171,7 +171,7 @@
     <string name="password_length_hint">La contraseña debe tener al menos 4 caracteres</string>
     <string name="text_local_holder_secondary">Puedes guardarlo desde fuentes in línea o importarlo desde un archivo.</string>
     <string name="text_local_holder_primary">Todavía no tienes ningún manga guardado</string>
-    <string name="text_history_holder_secondary">Encuentra qué leer en el menú lateral.</string>
+    <string name="text_history_holder_secondary">Encuentra qué leer en la sección «Explorar»</string>
     <string name="text_history_holder_primary">Lo que leas se mostrará aquí</string>
     <string name="text_empty_holder_primary">Está un poco vacío aquí…</string>
     <string name="chapter_is_missing">Falta un capítulo</string>
@@ -384,7 +384,7 @@
     <string name="server_address">Dirección del servidor</string>
     <string name="ignore_ssl_errors">Ignorar los errores SSL</string>
     <string name="mirror_switching">Elige un espejo automáticamente</string>
-    <string name="mirror_switching_summary">Cambio automático de dominios para las fuentes remotas en caso de error si hay réplicas disponibles</string>
+    <string name="mirror_switching_summary">Cambio automático de los dominios para las fuentes del manga en caso de error si hay réplicas disponibles</string>
     <string name="pause">Pausar</string>
     <string name="resume">Reanudar</string>
     <string name="remove_completed">Eliminación completa</string>
@@ -443,4 +443,28 @@
     <string name="no_access_to_file">No tienes acceso a este archivo o directorio</string>
     <string name="custom_directory">Directorio personalizado</string>
     <string name="local_manga_directories">Directorios locales del manga</string>
+    <string name="description">Descripción</string>
+    <string name="this_month">Este mes</string>
+    <string name="voice_search">Buscar por voz</string>
+    <string name="related_manga">Manga relacionado</string>
+    <string name="color_light">Claro</string>
+    <string name="color_dark">Oscuro</string>
+    <string name="color_white">Blanco</string>
+    <string name="color_black">Negro</string>
+    <string name="data_not_restored">Los datos no se han restaurado</string>
+    <string name="data_not_restored_text">Asegúrate de haber seleccionado el archivo de la copia de seguridad correcto</string>
+    <string name="background">Fondo</string>
+    <string name="tracker_wifi_only_summary">No compruebe si hay nuevos capítulos utilizando conexiones de red medidas</string>
+    <string name="search_hint">Introduce el título del manga, el género o el nombre de la fuente</string>
+    <string name="progress">Progresos</string>
+    <string name="order_added">Añadido</string>
+    <string name="manage_categories">Gestionar las categorías</string>
+    <string name="view_list">Ver la lista</string>
+    <string name="show">Mostrar</string>
+    <string name="captcha_required_summary">%s requiere un captcha para funcionar correctamente</string>
+    <string name="languages">Idiomas</string>
+    <string name="suggestions_wifi_only_summary">No actualices las sugerencias utilizando conexiones de red medidas</string>
+    <string name="unknown">Desconocido</string>
+    <string name="in_progress">En proceso</string>
+    <string name="disable_nsfw">Desactivar NSFW</string>
 </resources>

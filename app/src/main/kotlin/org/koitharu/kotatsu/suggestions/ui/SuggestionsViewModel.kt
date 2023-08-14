@@ -28,6 +28,7 @@ class SuggestionsViewModel @Inject constructor(
 	settings: AppSettings,
 	private val extraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
+	private val suggestionsScheduler: SuggestionsWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
 	override val content = combine(
@@ -57,4 +58,8 @@ class SuggestionsViewModel @Inject constructor(
 	override fun onRefresh() = Unit
 
 	override fun onRetry() = Unit
+
+	fun updateSuggestions() {
+		suggestionsScheduler.startNow()
+	}
 }

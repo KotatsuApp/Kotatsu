@@ -61,7 +61,11 @@ suspend fun Manga.toGridModel(
 suspend fun List<Manga>.toUi(
 	mode: ListMode,
 	extraProvider: ListExtraProvider,
-): List<MangaItemModel> = toUi(ArrayList(size), mode, extraProvider)
+): List<MangaItemModel> = if (isEmpty()) {
+	emptyList()
+} else {
+	toUi(ArrayList(size), mode, extraProvider)
+}
 
 suspend fun <C : MutableCollection<in MangaItemModel>> List<Manga>.toUi(
 	destination: C,

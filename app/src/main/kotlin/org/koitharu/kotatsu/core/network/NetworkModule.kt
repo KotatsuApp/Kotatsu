@@ -67,6 +67,7 @@ interface NetworkModule {
 			cache(cache)
 			addInterceptor(GZipInterceptor())
 			addInterceptor(CloudFlareInterceptor())
+			addInterceptor(RateLimitInterceptor())
 			if (BuildConfig.DEBUG) {
 				addInterceptor(CurlLoggingInterceptor())
 			}

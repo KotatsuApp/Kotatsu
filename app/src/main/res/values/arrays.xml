@@ -58,4 +58,17 @@
 		<item>HTTP</item>
 		<item>SOCKS (v4/v5)</item>
 	</string-array>
+	<string-array name="reader_backgrounds">
+		<item>@string/system_default</item>
+		<item>@string/color_light</item>
+		<item>@string/color_dark</item>
+		<item>@string/color_white</item>
+		<item>@string/color_black</item>
+	</string-array>
+	<string-array name="reader_animation">
+		<item>@string/disabled</item>
+		<item>@string/system_default</item>
+		<item>@string/advanced</item>
+	</string-array>
+	<string name="advanced">Advanced</string>
 </resources>

@@ -13,16 +13,19 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.MangaFilter
 import org.koitharu.kotatsu.filter.ui.model.FilterState
@@ -49,17 +52,22 @@ open class RemoteListViewModel @Inject constructor(
 	settings: AppSettings,
 	listExtraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
+	private val exploreRepository: ExploreRepository,
 ) : MangaListViewModel(settings, downloadScheduler), MangaFilter by filter {
 
 	val source = savedStateHandle.require<MangaSource>(RemoteListFragment.ARG_SOURCE)
+	val isRandomLoading = MutableStateFlow(false)
+	val onOpenManga = MutableEventFlow<Manga>()
+
 	private val repository = mangaRepositoryFactory.create(source)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
 	private val listError = MutableStateFlow<Throwable?>(null)
 	private var loadingJob: Job? = null
+	private var randomJob: Job? = null
 
 	override val content = combine(
-		mangaList,
+		mangaList.map { it?.skipNsfwIfNeeded() },
 		listMode,
 		listError,
 		hasNextPage,
@@ -149,4 +157,16 @@ open class RemoteListViewModel @Inject constructor(
 		textSecondary = 0,
 		actionStringRes = if (canResetFilter) R.string.reset_filter else 0,
 	)
+
+	fun openRandom() {
+		if (randomJob?.isActive == true) {
+			return
+		}
+		randomJob = launchLoadingJob(Dispatchers.Default) {
+			isRandomLoading.value = true
+			val manga = exploreRepository.findRandomManga(source, 16)
+			onOpenManga.call(manga)
+			isRandomLoading.value = false
+		}
+	}
 }

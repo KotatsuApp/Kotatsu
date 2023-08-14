@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
@@ -34,6 +35,7 @@ import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
@@ -46,12 +48,16 @@ import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
 import org.koitharu.kotatsu.details.domain.DoubleMangaLoadUseCase
+import org.koitharu.kotatsu.details.domain.RelatedMangaUseCase
 import org.koitharu.kotatsu.details.domain.model.DoubleManga
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
@@ -74,6 +80,8 @@ class DetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	private val doubleMangaLoadUseCase: DoubleMangaLoadUseCase,
+	private val relatedMangaUseCase: RelatedMangaUseCase,
+	private val extraProvider: ListExtraProvider,
 	networkState: NetworkState,
 ) : BaseViewModel() {
 
@@ -154,6 +162,18 @@ class DetailsViewModel @Inject constructor(
 
 	val scrobblingInfo: StateFlow<List<ScrobblingInfo>> = interactor.observeScrobblingInfo(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
+
+	val relatedManga: StateFlow<List<MangaItemModel>> = doubleManga.map {
+		it?.remote
+	}.distinctUntilChangedBy { it?.id }
+		.mapLatest {
+			if (it != null) {
+				relatedMangaUseCase.invoke(it)?.toUi(ListMode.GRID, extraProvider).orEmpty()
+			} else {
+				emptyList()
+			}
+		}
+		.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
 	val branches: StateFlow<List<MangaBranch>> = combine(
 		doubleManga,

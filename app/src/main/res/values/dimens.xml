@@ -19,6 +19,7 @@
 	<dimen name="chapter_list_item_height">48dp</dimen>
 	<dimen name="preferred_grid_width">120dp</dimen>
 	<dimen name="small_grid_width">92dp</dimen>
+	<dimen name="smaller_grid_width">102dp</dimen>
 	<dimen name="header_height">48dp</dimen>
 	<dimen name="list_footer_height_inner">36dp</dimen>
 	<dimen name="list_footer_height_outer">48dp</dimen>
@@ -45,6 +46,7 @@
 	<dimen name="dialog_radius">8dp</dimen>
 
 	<dimen name="card_indicator_size">32dp</dimen>
+	<dimen name="card_indicator_size_small">24dp</dimen>
 	<dimen name="card_indicator_offset">8dp</dimen>
 
 	<dimen name="appwidget_corner_radius_inner">8dp</dimen>

@@ -26,11 +26,13 @@ import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.util.Date
+import java.util.LinkedList
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -180,16 +182,34 @@ class DownloadsViewModel @Inject constructor(
 		if (isEmpty()) {
 			return emptyStateList()
 		}
-		val destination = ArrayList<ListModel>((size * 1.4).toInt())
+		val queued = LinkedList<ListModel>()
+		val running = LinkedList<ListModel>()
+		val destination = ArrayDeque<ListModel>((size * 1.4).toInt())
 		var prevDate: DateTimeAgo? = null
 		for (item in this) {
-			val date = timeAgo(item.timestamp)
-			if (prevDate != date) {
-				destination += date
+			when (item.workState) {
+				WorkInfo.State.RUNNING -> running += item
+				WorkInfo.State.BLOCKED,
+				WorkInfo.State.ENQUEUED -> queued += item
+
+				else -> {
+					val date = timeAgo(item.timestamp)
+					if (prevDate != date) {
+						destination += ListHeader(date)
+					}
+					prevDate = date
+					destination += item
+				}
 			}
-			prevDate = date
-			destination += item
 		}
+		if (running.isNotEmpty()) {
+			running.addFirst(ListHeader(R.string.in_progress))
+		}
+		destination.addAll(0, running)
+		if (queued.isNotEmpty()) {
+			queued.addFirst(ListHeader(R.string.queued))
+		}
+		destination.addAll(0, queued)
 		return destination
 	}
 

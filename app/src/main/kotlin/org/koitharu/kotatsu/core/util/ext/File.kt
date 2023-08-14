@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.fs.FileSequence
 import java.io.File
 import java.io.FileFilter
 import java.util.zip.ZipEntry
@@ -73,11 +74,10 @@ suspend fun File.computeSize(): Long = runInterruptible(Dispatchers.IO) {
 
 @WorkerThread
 private fun computeSizeInternal(file: File): Long {
-	if (file.isDirectory) {
-		val files = file.listFiles() ?: return 0L
-		return files.sumOf { computeSizeInternal(it) }
+	return if (file.isDirectory) {
+		file.children().sumOf { computeSizeInternal(it) }
 	} else {
-		return file.length()
+		file.length()
 	}
 }
 
@@ -86,9 +86,8 @@ fun File.listFilesRecursive(filter: FileFilter? = null): Sequence<File> = sequen
 }
 
 private suspend fun SequenceScope<File>.listFilesRecursiveImpl(root: File, filter: FileFilter?) {
-	val ss = root.list() ?: return
-	for (s in ss) {
-		val f = File(root, s)
+	val ss = root.children()
+	for (f in ss) {
 		if (f.isDirectory) {
 			listFilesRecursiveImpl(f, filter)
 		} else if (filter == null || filter.accept(f)) {
@@ -96,3 +95,7 @@ private suspend fun SequenceScope<File>.listFilesRecursiveImpl(root: File, filte
 		}
 	}
 }
+
+fun File.children() = FileSequence(this)
+
+fun Sequence<File>.filterWith(filter: FileFilter): Sequence<File> = filter { f -> filter.accept(f) }

@@ -9,15 +9,13 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
-import android.view.animation.DecelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.replaceWith
-import com.google.android.material.R as materialR
 
 class SegmentedBarView @JvmOverloads constructor(
 	context: Context,
@@ -28,13 +26,12 @@ class SegmentedBarView @JvmOverloads constructor(
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private val segmentsData = ArrayList<Segment>()
 	private val segmentsSizes = ArrayList<Float>()
-	private val outlineColor = context.getThemeColor(materialR.attr.colorOutline)
 	private var cornerSize = 0f
 	private var scaleFactor = 1f
 	private var scaleAnimator: ValueAnimator? = null
 
 	init {
-		paint.strokeWidth = context.resources.resolveDp(1f)
+		paint.strokeWidth = context.resources.resolveDp(0f)
 		outlineProvider = OutlineProvider()
 		clipToOutline = true
 	}
@@ -57,12 +54,10 @@ class SegmentedBarView @JvmOverloads constructor(
 			paint.style = Paint.Style.FILL
 			val segmentWidth = segmentsSizes[i]
 			canvas.drawRoundRect(0f, 0f, x + cornerSize, height.toFloat(), cornerSize, cornerSize, paint)
-			paint.color = outlineColor
 			paint.style = Paint.Style.STROKE
 			canvas.drawRoundRect(0f, 0f, x + cornerSize, height.toFloat(), cornerSize, cornerSize, paint)
 			x -= segmentWidth
 		}
-		paint.color = outlineColor
 		paint.style = Paint.Style.STROKE
 		canvas.drawRoundRect(0f, 0f, w, height.toFloat(), cornerSize, cornerSize, paint)
 	}
@@ -100,7 +95,7 @@ class SegmentedBarView @JvmOverloads constructor(
 		invalidate()
 		val animator = ValueAnimator.ofFloat(0f, 1f)
 		animator.duration = context.getAnimationDuration(android.R.integer.config_longAnimTime)
-		animator.interpolator = DecelerateInterpolator()
+		animator.interpolator = FastOutSlowInInterpolator()
 		animator.addUpdateListener(this@SegmentedBarView)
 		animator.addListener(this@SegmentedBarView)
 		scaleAnimator = animator

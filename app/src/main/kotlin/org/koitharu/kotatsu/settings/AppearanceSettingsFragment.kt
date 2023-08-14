@@ -49,7 +49,7 @@ class AppearanceSettingsFragment :
 			}
 		}
 		findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
-			entryValues = ListMode.values().names()
+			entryValues = ListMode.entries.names()
 			setDefaultValueCompat(ListMode.GRID.name)
 		}
 		findPreference<ActivityListPreference>(AppSettings.KEY_APP_LOCALE)?.run {
@@ -102,7 +102,7 @@ class AppearanceSettingsFragment :
 	}
 
 	private fun initLocalePicker(preference: ListPreference) {
-		val locales = resources.getLocalesConfig()
+		val locales = preference.context.getLocalesConfig()
 			.toList()
 			.sortedWith(LocaleComparator(preference.context))
 		preference.entries = Array(locales.size + 1) { i ->

@@ -19,7 +19,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 
 abstract class MangaListViewModel(
-	settings: AppSettings,
+	private val settings: AppSettings,
 	private val downloadScheduler: DownloadWorker.Scheduler,
 ) : BaseViewModel() {
 
@@ -45,5 +45,11 @@ abstract class MangaListViewModel(
 			downloadScheduler.schedule(items)
 			onDownloadStarted.call(Unit)
 		}
+	}
+
+	fun List<Manga>.skipNsfwIfNeeded() = if (settings.isNsfwContentDisabled) {
+		filterNot { it.isNsfw }
+	} else {
+		this
 	}
 }

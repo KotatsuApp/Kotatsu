@@ -22,19 +22,17 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.FitHeightGridLayoutManager
 import org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
-import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
-import org.koitharu.kotatsu.core.ui.list.decor.TypedSpacingItemDecoration
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
-import org.koitharu.kotatsu.core.util.ext.clearItemDecorations
 import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -44,13 +42,15 @@ import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteSheet
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
-import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter.Companion.ITEM_TYPE_MANGA_GRID
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -71,14 +71,14 @@ abstract class MangaListFragment :
 	@Inject
 	lateinit var coil: ImageLoader
 
+	@Inject
+	lateinit var settings: AppSettings
+
 	private var listAdapter: MangaListAdapter? = null
 	private var paginationListener: PaginationScrollListener? = null
 	private var selectionController: ListSelectionController? = null
 	private var spanResolver: MangaListSpanResolver? = null
 	private val spanSizeLookup = SpanSizeLookup()
-	private val listCommitCallback = Runnable {
-		spanSizeLookup.invalidateCache()
-	}
 	open val isSwipeRefreshEnabled = true
 
 	protected abstract val viewModel: MangaListViewModel
@@ -109,6 +109,7 @@ abstract class MangaListFragment :
 			setHasFixedSize(true)
 			adapter = listAdapter
 			checkNotNull(selectionController).attachToRecyclerView(binding.recyclerView)
+			addItemDecoration(TypedListSpacingDecoration(context))
 			addOnScrollListener(paginationListener!!)
 			fastScroller.setFastScrollListener(this@MangaListFragment)
 		}
@@ -138,7 +139,9 @@ abstract class MangaListFragment :
 
 	override fun onItemClick(item: Manga, view: View) {
 		if (selectionController?.onItemClick(item.id) != true) {
-			startActivity(DetailsActivity.newIntent(context ?: return, item))
+			if ((activity as? MangaListActivity)?.showPreview(item) != true) {
+				startActivity(DetailsActivity.newIntent(context ?: return, item))
+			}
 		}
 	}
 
@@ -149,7 +152,7 @@ abstract class MangaListFragment :
 	override fun onReadClick(manga: Manga, view: View) {
 		if (selectionController?.onItemClick(manga.id) != true) {
 			val intent = IntentBuilder(view.context).manga(manga).build()
-			startActivity(intent, scaleUpActivityOptionsOf(view))
+			startActivity(intent)
 		}
 	}
 
@@ -166,8 +169,9 @@ abstract class MangaListFragment :
 		viewModel.onRefresh()
 	}
 
-	private fun onListChanged(list: List<ListModel>) {
-		listAdapter?.setItems(list, listCommitCallback)
+	private suspend fun onListChanged(list: List<ListModel>) {
+		listAdapter?.emit(list)
+		spanSizeLookup.invalidateCache()
 	}
 
 	private fun resolveException(e: Throwable) {
@@ -196,6 +200,7 @@ abstract class MangaListFragment :
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,
 			listener = this,
+			sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = false)
 		)
 	}
 
@@ -238,24 +243,17 @@ abstract class MangaListFragment :
 	private fun onListModeChanged(mode: ListMode) {
 		spanSizeLookup.invalidateCache()
 		with(requireViewBinding().recyclerView) {
-			clearItemDecorations()
 			removeOnLayoutChangeListener(spanResolver)
 			when (mode) {
 				ListMode.LIST -> {
 					layoutManager = FitHeightLinearLayoutManager(context)
-					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
-					val decoration = TypedSpacingItemDecoration(
-						MangaListAdapter.ITEM_TYPE_MANGA_LIST to 0,
-						fallbackSpacing = spacing,
-					)
-					addItemDecoration(decoration)
+					updatePadding(left = 0, right = 0)
 				}
 
 				ListMode.DETAILED_LIST -> {
 					layoutManager = FitHeightLinearLayoutManager(context)
 					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 					updatePadding(left = spacing, right = spacing)
-					addItemDecoration(SpacingItemDecoration(spacing))
 				}
 
 				ListMode.GRID -> {
@@ -263,12 +261,10 @@ abstract class MangaListFragment :
 						it.spanSizeLookup = spanSizeLookup
 					}
 					val spacing = resources.getDimensionPixelOffset(R.dimen.grid_spacing)
-					addItemDecoration(SpacingItemDecoration(spacing))
 					updatePadding(left = spacing, right = spacing)
 					addOnLayoutChangeListener(spanResolver)
 				}
 			}
-			selectionController?.attachToRecyclerView(requireViewBinding().recyclerView)
 		}
 	}
 
@@ -293,7 +289,7 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_favourite -> {
-				FavouriteCategoriesSheet.show(childFragmentManager, selectedItems)
+				FavouriteSheet.show(childFragmentManager, selectedItems)
 				mode.finish()
 				true
 			}
@@ -309,7 +305,7 @@ abstract class MangaListFragment :
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
-		requireViewBinding().recyclerView.invalidateItemDecorations()
+		viewBinding?.recyclerView?.invalidateItemDecorations()
 	}
 
 	override fun onFastScrollStart(fastScroller: FastScroller) {
@@ -341,10 +337,9 @@ abstract class MangaListFragment :
 		}
 
 		override fun getSpanSize(position: Int): Int {
-			val total =
-				(requireViewBinding().recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
+			val total = (viewBinding?.recyclerView?.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
 			return when (listAdapter?.getItemViewType(position)) {
-				ITEM_TYPE_MANGA_GRID -> 1
+				ListItemType.MANGA_GRID.ordinal -> 1
 				else -> total
 			}
 		}

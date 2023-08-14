@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:id="@+id/action_app_update"
+		android:icon="@drawable/ic_app_update"
+		android:orderInCategory="1"
+		android:title="@string/update"
+		android:visible="false"
+		app:showAsAction="ifRoom" />
+
+	<item
+		android:id="@+id/action_incognito"
+		android:checkable="true"
+		android:orderInCategory="90"
+		android:title="@string/incognito_mode"
+		app:showAsAction="never" />
+
+	<item
+		android:id="@+id/action_settings"
+		android:orderInCategory="90"
+		android:title="@string/settings"
+		app:showAsAction="never" />
+
+</menu>

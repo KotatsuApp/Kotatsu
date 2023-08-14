@@ -4,18 +4,15 @@ import android.Manifest
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
-import android.util.SparseIntArray
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.util.size
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.inputmethod.EditorInfoCompat
@@ -39,21 +36,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
-import org.koitharu.kotatsu.core.os.VoiceInputContract
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
+import org.koitharu.kotatsu.core.ui.util.OptionsMenuBadgeHelper
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
-import org.koitharu.kotatsu.core.util.ext.drawableEnd
 import org.koitharu.kotatsu.core.util.ext.hideKeyboard
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.resolve
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
-import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalStorageCleanupWorker
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
@@ -66,32 +62,26 @@ import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
-import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
+import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.about.AppUpdateDialog
 import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
-import org.koitharu.kotatsu.shelf.ui.ShelfFragment
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
 private const val TAG_SEARCH = "search"
 
 @AndroidEntryPoint
-class MainActivity :
-	BaseActivity<ActivityMainBinding>(),
-	AppBarOwner,
-	BottomNavOwner,
-	View.OnClickListener,
-	View.OnFocusChangeListener,
-	SearchSuggestionListener,
-	MainNavigationDelegate.OnFragmentChangedListener {
+class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNavOwner, View.OnClickListener,
+	View.OnFocusChangeListener, SearchSuggestionListener, MainNavigationDelegate.OnFragmentChangedListener {
 
 	@Inject
 	lateinit var settings: AppSettings
 
 	private val viewModel by viewModels<MainViewModel>()
 	private val searchSuggestionViewModel by viewModels<SearchSuggestionViewModel>()
-	private val voiceInputLauncher = registerForActivityResult(VoiceInputContract(), VoiceInputCallback())
 	private val closeSearchCallback = CloseSearchCallback()
 	private lateinit var navigationDelegate: MainNavigationDelegate
+	private lateinit var appUpdateBadge: OptionsMenuBadgeHelper
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
@@ -122,7 +112,6 @@ class MainActivity :
 
 		viewBinding.fab?.setOnClickListener(this)
 		viewBinding.navRail?.headerView?.setOnClickListener(this)
-		viewBinding.searchView.isVoiceSearchEnabled = voiceInputLauncher.resolve(this, null) != null
 
 		navigationDelegate = MainNavigationDelegate(
 			navBar = checkNotNull(bottomNav ?: viewBinding.navRail),
@@ -130,6 +119,8 @@ class MainActivity :
 		)
 		navigationDelegate.addOnFragmentChangedListener(this)
 		navigationDelegate.onCreate()
+
+		appUpdateBadge = OptionsMenuBadgeHelper(viewBinding.toolbar, R.id.action_app_update)
 
 		onBackPressedDispatcher.addCallback(ExitCallback(this, viewBinding.container))
 		onBackPressedDispatcher.addCallback(navigationDelegate)
@@ -144,6 +135,8 @@ class MainActivity :
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.counters.observe(this, ::onCountersChanged)
+		viewModel.appUpdate.observe(this, MenuInvalidator(this))
+		viewModel.onFirstStart.observeEvent(this) { OnboardDialogFragment.showWelcome(supportFragmentManager) }
 		viewModel.isFeedAvailable.observe(this, ::onFeedAvailabilityChanged)
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 	}
@@ -162,18 +155,54 @@ class MainActivity :
 		}
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		if (item.itemId == android.R.id.home && !isSearchOpened()) {
-			viewBinding.searchView.requestFocus()
-			return true
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		super.onCreateOptionsMenu(menu)
+		menuInflater.inflate(R.menu.opt_main, menu)
+		return true
+	}
+
+	override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+		if (menu == null) {
+			return false
 		}
-		return super.onOptionsItemSelected(item)
+		menu.findItem(R.id.action_incognito)?.isChecked = searchSuggestionViewModel.isIncognitoModeEnabled.value
+		val hasAppUpdate = viewModel.appUpdate.value != null
+		menu.findItem(R.id.action_app_update)?.isVisible = hasAppUpdate
+		appUpdateBadge.setBadgeVisible(hasAppUpdate)
+		return super.onPrepareOptionsMenu(menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+		android.R.id.home -> if (isSearchOpened()) {
+			super.onOptionsItemSelected(item)
+		} else {
+			viewBinding.searchView.requestFocus()
+			true
+		}
+
+		R.id.action_settings -> {
+			startActivity(SettingsActivity.newIntent(this))
+			true
+		}
+
+		R.id.action_incognito -> {
+			viewModel.setIncognitoMode(!item.isChecked)
+			true
+		}
+
+		R.id.action_app_update -> {
+			viewModel.appUpdate.value?.also {
+				AppUpdateDialog(this)
+					.show(it)
+			} != null
+		}
+
+		else -> super.onOptionsItemSelected(item)
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.fab -> viewModel.openLastReader()
-			R.id.railFab -> viewModel.openLastReader()
+			R.id.fab, R.id.railFab -> viewModel.openLastReader()
 		}
 	}
 
@@ -220,19 +249,6 @@ class MainActivity :
 		searchSuggestionViewModel.onQueryChanged(query)
 	}
 
-	override fun onVoiceSearchClick() {
-		val options = viewBinding.searchView.drawableEnd?.bounds?.let { bounds ->
-			ActivityOptionsCompat.makeScaleUpAnimation(
-				viewBinding.searchView,
-				bounds.centerX(),
-				bounds.centerY(),
-				bounds.width(),
-				bounds.height(),
-			)
-		}
-		voiceInputLauncher.tryLaunch(viewBinding.searchView.hint?.toString(), options)
-	}
-
 	override fun onSourceToggle(source: MangaSource, isEnabled: Boolean) {
 		searchSuggestionViewModel.onSourceToggle(source, isEnabled)
 	}
@@ -262,11 +278,10 @@ class MainActivity :
 		startActivity(IntentBuilder(this).manga(manga).build(), options)
 	}
 
-	private fun onCountersChanged(counters: SparseIntArray) {
+	private fun onCountersChanged(counters: IntArray) {
 		repeat(counters.size) { i ->
-			val id = counters.keyAt(i)
-			val counter = counters.valueAt(i)
-			navigationDelegate.setCounter(id, counter)
+			val counter = counters[i]
+			navigationDelegate.setCounterAt(i, counter)
 		}
 	}
 
@@ -282,6 +297,7 @@ class MainActivity :
 			options and EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING.inv()
 		}
 		viewBinding.searchView.imeOptions = options
+		invalidateMenu()
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -309,15 +325,6 @@ class MainActivity :
 
 	private fun onFirstStart() {
 		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
-			when {
-				!settings.isSourcesSelected -> withResumed {
-					OnboardDialogFragment.showWelcome(supportFragmentManager)
-				}
-
-				settings.newSources.isNotEmpty() -> withResumed {
-					NewSourcesDialogFragment.show(supportFragmentManager)
-				}
-			}
 			withContext(Dispatchers.Default) {
 				LocalStorageCleanupWorker.enqueue(applicationContext)
 			}
@@ -334,12 +341,7 @@ class MainActivity :
 		isSearchOpened: Boolean = isSearchOpened(),
 	) {
 		val fab = viewBinding.fab ?: return
-		if (
-			isResumeEnabled &&
-			!actionModeDelegate.isActionModeStarted &&
-			!isSearchOpened &&
-			topFragment is ShelfFragment
-		) {
+		if (isResumeEnabled && !actionModeDelegate.isActionModeStarted && !isSearchOpened && topFragment is HistoryListFragment) {
 			if (!fab.isVisible) {
 				fab.show()
 			}
@@ -364,7 +366,7 @@ class MainActivity :
 		viewBinding.toolbarCard.background = if (isOpened) {
 			null
 		} else {
-			ContextCompat.getDrawable(this, R.drawable.toolbar_background)
+			ContextCompat.getDrawable(this, R.drawable.search_bar_background)
 		}
 		val padding = if (isOpened) 0 else resources.getDimensionPixelOffset(R.dimen.margin_normal)
 		viewBinding.appbar.updatePadding(left = padding, right = padding)
@@ -372,24 +374,19 @@ class MainActivity :
 		supportActionBar?.setHomeAsUpIndicator(
 			if (isOpened) materialR.drawable.abc_ic_ab_back_material else materialR.drawable.abc_ic_search_api_material,
 		)
+		viewBinding.searchView.setHintCompat(
+			if (isOpened) R.string.search_hint else R.string.search_manga,
+		)
 		bottomNav?.showOrHide(!isOpened)
 	}
 
 	private fun requestNotificationsPermission() {
-		if (
-			Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-			ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+				this,
+				Manifest.permission.POST_NOTIFICATIONS,
+			) != PERMISSION_GRANTED
 		) {
 			ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
-		}
-	}
-
-	private inner class VoiceInputCallback : ActivityResultCallback<String?> {
-
-		override fun onActivityResult(result: String?) {
-			if (result != null) {
-				viewBinding.searchView.query = result
-			}
 		}
 	}
 

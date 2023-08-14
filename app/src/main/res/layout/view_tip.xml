@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:padding="@dimen/margin_normal"
+	tools:background="@drawable/bg_appwidget_card"
+	tools:backgroundTint="?colorBackgroundFloating"
+	tools:layout_height="wrap_content"
+	tools:layout_margin="16dp"
+	tools:layout_width="match_parent"
+	tools:orientation="vertical"
+	tools:parentTag="android.widget.LinearLayout">
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:drawablePadding="10dp"
+		android:gravity="center_vertical"
+		android:textAppearance="?textAppearanceTitleMedium"
+		tools:drawableStartCompat="@drawable/ic_app_update"
+		tools:text="Уведомления отключены" />
+
+	<TextView
+		android:id="@+id/textView_body"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:textAppearance="?textAppearanceBodyMedium"
+		tools:text="Включите их, чтобы ничего не пропускать. Откройте настройки системы и разрешите их отправку." />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:layout_weight="2"
+		android:divider="@drawable/divider_transparent"
+		android:orientation="horizontal"
+		android:showDividers="middle">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_primary"
+			style="@style/Widget.Material3.Button.UnelevatedButton"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:paddingHorizontal="8dp"
+			android:singleLine="true"
+			tools:text="Открыть настройки" />
+
+		<Button
+			android:id="@+id/button_secondary"
+			style="@style/Widget.Material3.Button.TonalButton"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:paddingHorizontal="8dp"
+			android:singleLine="true"
+			tools:text="Отмена" />
+
+	</LinearLayout>
+
+</merge>

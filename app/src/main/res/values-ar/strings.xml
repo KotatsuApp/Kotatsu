@@ -74,4 +74,5 @@
     <string name="_continue">يكمل</string>
     <string name="error">خطاء</string>
     <string name="clear_search_history">مسح تاريخ البحث</string>
+    <string name="disable_nsfw">تعطيل NSFW</string>
 </resources>

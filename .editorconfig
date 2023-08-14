@@ -13,6 +13,7 @@ disabled_rules = no-wildcard-imports, no-unused-imports
 
 [{*.ant,*.fxml,*.jhm,*.jnlp,*.jrxml,*.rng,*.tld,*.wsdl,*.xml,*.xsd,*.xsl,*.xslt,*.xul}]
 ij_continuation_indent_size = 4
+ij_xml_attribute_wrap = on_every_item
 
 [{*.kt,*.kts}]
 ij_kotlin_allow_trailing_comma_on_call_site = true

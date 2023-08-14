@@ -30,9 +30,7 @@ data class FavouriteCategoryEntity(
 		if (title != other.title) return false
 		if (order != other.order) return false
 		if (track != other.track) return false
-		if (isVisibleInLibrary != other.isVisibleInLibrary) return false
-
-		return true
+		return isVisibleInLibrary == other.isVisibleInLibrary
 	}
 
 	override fun hashCode(): Int {

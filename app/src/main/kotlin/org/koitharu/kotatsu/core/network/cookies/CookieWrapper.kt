@@ -73,9 +73,7 @@ class CookieWrapper(
 
 		other as CookieWrapper
 
-		if (cookie != other.cookie) return false
-
-		return true
+		return cookie == other.cookie
 	}
 
 	override fun hashCode(): Int {

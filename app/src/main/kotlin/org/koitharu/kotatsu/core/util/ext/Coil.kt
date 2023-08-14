@@ -12,6 +12,7 @@ import coil.request.SuccessResult
 import coil.util.CoilUtils
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.ui.image.RegionBitmapDecoder
 import org.koitharu.kotatsu.core.util.progress.ImageRequestIndicatorListener
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -28,6 +29,7 @@ fun ImageView.newImageRequest(lifecycleOwner: LifecycleOwner, data: Any?): Image
 		.data(data)
 		.lifecycle(lifecycleOwner)
 		.crossfade(context)
+		.listener(CaptchaNotifier(context.applicationContext))
 		.target(this)
 }
 

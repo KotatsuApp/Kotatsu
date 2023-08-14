@@ -8,8 +8,11 @@ class CategoryListModel(
 	val mangaCount: Int,
 	val covers: List<Cover>,
 	val category: FavouriteCategory,
-	val isReorderMode: Boolean,
 ) : ListModel {
+
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is CategoryListModel && other.category.id == category.id
+	}
 
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
@@ -18,20 +21,26 @@ class CategoryListModel(
 		other as CategoryListModel
 
 		if (mangaCount != other.mangaCount) return false
-		if (isReorderMode != other.isReorderMode) return false
 		if (covers != other.covers) return false
 		if (category.id != other.category.id) return false
 		if (category.title != other.category.title) return false
-		return category.order == other.category.order
+		// ignore the category.sortKey field
+		if (category.order != other.category.order) return false
+		if (category.createdAt != other.category.createdAt) return false
+		if (category.isTrackingEnabled != other.category.isTrackingEnabled) return false
+		return category.isVisibleInLibrary == other.category.isVisibleInLibrary
 	}
 
 	override fun hashCode(): Int {
 		var result = mangaCount
-		result = 31 * result + isReorderMode.hashCode()
 		result = 31 * result + covers.hashCode()
 		result = 31 * result + category.id.hashCode()
 		result = 31 * result + category.title.hashCode()
+		// ignore the category.sortKey field
 		result = 31 * result + category.order.hashCode()
+		result = 31 * result + category.createdAt.hashCode()
+		result = 31 * result + category.isTrackingEnabled.hashCode()
+		result = 31 * result + category.isVisibleInLibrary.hashCode()
 		return result
 	}
 }

@@ -8,4 +8,7 @@ data class ErrorState(
 	@DrawableRes val icon: Int,
 	val canRetry: Boolean,
 	@StringRes val buttonText: Int
-) : ListModel
+) : ListModel {
+
+	override fun areItemsTheSame(other: ListModel) = other is ErrorState
+}

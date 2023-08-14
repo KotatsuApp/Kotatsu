@@ -7,10 +7,14 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,9 +36,8 @@ abstract class BaseViewModel : ViewModel() {
 	val onError: EventFlow<Throwable>
 		get() = errorEvent
 
-	val isLoading: StateFlow<Boolean>
-		get() = loadingCounter.map { it > 0 }
-			.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), loadingCounter.value > 0)
+	val isLoading: StateFlow<Boolean> = loadingCounter.map { it > 0 }
+		.stateIn(viewModelScope, SharingStarted.Lazily, loadingCounter.value > 0)
 
 	protected fun launchJob(
 		context: CoroutineContext = EmptyCoroutineContext,
@@ -55,14 +58,24 @@ abstract class BaseViewModel : ViewModel() {
 		}
 	}
 
+	protected fun <T> Flow<T>.withLoading() = onStart {
+		loadingCounter.increment()
+	}.onCompletion {
+		loadingCounter.decrement()
+	}
+
+	protected fun <T> Flow<T>.withErrorHandling() = catch { error ->
+		errorEvent.call(error)
+	}
+
+	protected fun MutableStateFlow<Int>.increment() = update { it + 1 }
+
+	protected fun MutableStateFlow<Int>.decrement() = update { it - 1 }
+
 	private fun createErrorHandler() = CoroutineExceptionHandler { _, throwable ->
 		throwable.printStackTraceDebug()
 		if (throwable !is CancellationException) {
 			errorEvent.call(throwable)
 		}
 	}
-
-	protected fun MutableStateFlow<Int>.increment() = update { it + 1 }
-
-	protected fun MutableStateFlow<Int>.decrement() = update { it - 1 }
 }

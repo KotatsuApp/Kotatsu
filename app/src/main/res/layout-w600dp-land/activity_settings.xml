@@ -39,13 +39,13 @@
 
 	<com.google.android.material.card.MaterialCardView
 		android:id="@+id/card_details"
+		style="@style/Widget.Kotatsu.CardView.Light"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:layout_marginStart="@dimen/side_card_offset"
 		android:layout_marginTop="2dp"
 		android:layout_marginEnd="@dimen/side_card_offset"
 		android:layout_marginBottom="@dimen/side_card_offset"
-		app:cardBackgroundColor="?colorBackgroundFloating"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/container_master"
@@ -71,7 +71,8 @@
 			<androidx.fragment.app.FragmentContainerView
 				android:id="@+id/container"
 				android:layout_width="match_parent"
-				android:layout_height="match_parent" />
+				android:layout_height="match_parent"
+				android:theme="@style/ThemeOverlay.Kotatsu.CardContainer" />
 
 		</LinearLayout>
 

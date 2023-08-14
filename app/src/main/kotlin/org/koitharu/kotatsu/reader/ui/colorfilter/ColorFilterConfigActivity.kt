@@ -20,7 +20,7 @@ import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPages
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPage
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
@@ -152,7 +152,7 @@ class ColorFilterConfigActivity :
 
 		fun newIntent(context: Context, manga: Manga, page: MangaPage) =
 			Intent(context, ColorFilterConfigActivity::class.java)
-				.putExtra(EXTRA_MANGA, ParcelableManga(manga, false))
-				.putExtra(EXTRA_PAGES, ParcelableMangaPages(listOf(page)))
+				.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false))
+				.putExtra(EXTRA_PAGES, ParcelableMangaPage(page))
 	}
 }

@@ -13,17 +13,17 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
-import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
+import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.PausingReceiver
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -46,7 +46,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		listSpacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val downloadsAdapter = DownloadsAdapter(this, coil, this)
-		val decoration = SpacingItemDecoration(listSpacing)
+		val decoration = TypedListSpacingDecoration(this)
 		selectionController = ListSelectionController(
 			activity = this,
 			decoration = DownloadsSelectionDecoration(this),
@@ -64,10 +64,10 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 			downloadsAdapter.items = it
 		}
 		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.recyclerView))
-		val menuObserver = FlowCollector<Any> { _ -> invalidateOptionsMenu() }
-		viewModel.hasActiveWorks.observe(this, menuObserver)
-		viewModel.hasPausedWorks.observe(this, menuObserver)
-		viewModel.hasCancellableWorks.observe(this, menuObserver)
+		val menuInvalidator = MenuInvalidator(this)
+		viewModel.hasActiveWorks.observe(this, menuInvalidator)
+		viewModel.hasPausedWorks.observe(this, menuInvalidator)
+		viewModel.hasCancellableWorks.observe(this, menuInvalidator)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

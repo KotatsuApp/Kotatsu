@@ -11,6 +11,9 @@ class CompositeResult {
 	val failures: List<Throwable>
 		get() = errors.filterNotNull()
 
+	val isEmpty: Boolean
+		get() = errors.isEmpty() && successCount == 0
+
 	val isAllSuccess: Boolean
 		get() = errors.none { it != null }
 

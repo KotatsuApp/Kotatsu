@@ -1,6 +1,14 @@
 package org.koitharu.kotatsu.settings.sources.adapter
 
+import android.content.Context
+import android.graphics.Color
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.SuperscriptSpan
 import android.view.View
+import androidx.core.text.buildSpannedString
+import androidx.core.text.inSpans
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
@@ -9,11 +17,12 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
-import org.koitharu.kotatsu.core.ui.image.FaviconFallbackDrawable
+import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.list.OnTipCloseListener
 import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -63,10 +72,19 @@ fun sourceConfigItemCheckableDelegate(
 	}
 
 	bind {
-		binding.textViewTitle.text = item.source.title
+		binding.textViewTitle.text = if (item.isNsfw) {
+			buildSpannedString {
+				append(item.source.title)
+				append(' ')
+				appendNsfwLabel(context)
+			}
+		} else {
+			item.source.title
+		}
 		binding.switchToggle.isChecked = item.isEnabled
+		binding.switchToggle.isEnabled = item.isAvailable
 		binding.textViewDescription.textAndVisible = item.summary
-		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
+		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			crossfade(context)
 			error(fallbackIcon)
@@ -102,12 +120,20 @@ fun sourceConfigItemDelegate2(
 	binding.imageViewConfig.setOnClickListener(eventListener)
 
 	bind {
-		binding.textViewTitle.text = item.source.title
-		binding.imageViewAdd.isGone = item.isEnabled
+		binding.textViewTitle.text = if (item.isNsfw) {
+			buildSpannedString {
+				append(item.source.title)
+				append(' ')
+				appendNsfwLabel(context)
+			}
+		} else {
+			item.source.title
+		}
+		binding.imageViewAdd.isGone = item.isEnabled || !item.isAvailable
 		binding.imageViewRemove.isVisible = item.isEnabled
 		binding.imageViewConfig.isVisible = item.isEnabled
 		binding.textViewDescription.textAndVisible = item.summary
-		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
+		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			crossfade(context)
 			error(fallbackIcon)
@@ -142,3 +168,11 @@ fun sourceConfigTipDelegate(
 fun sourceConfigEmptySearchDelegate() = adapterDelegate<SourceConfigItem.EmptySearchResult, SourceConfigItem>(
 	R.layout.item_sources_empty,
 ) { }
+
+fun SpannableStringBuilder.appendNsfwLabel(context: Context) = inSpans(
+	ForegroundColorSpan(context.getThemeColor(com.google.android.material.R.attr.colorError, Color.RED)),
+	RelativeSizeSpan(0.74f),
+	SuperscriptSpan(),
+) {
+	append(context.getString(R.string.nsfw))
+}

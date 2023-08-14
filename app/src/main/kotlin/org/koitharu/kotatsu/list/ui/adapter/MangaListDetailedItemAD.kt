@@ -9,6 +9,7 @@ import com.google.android.material.chip.Chip
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
+import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemMangaListDetailsBinding
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -51,12 +53,13 @@ fun mangaListDetailedItemAD(
 	bind { payloads ->
 		binding.textViewTitle.text = item.title
 		binding.textViewSubtitle.textAndVisible = item.subtitle
-		binding.progressView.setPercent(item.progress, MangaListAdapter.PAYLOAD_PROGRESS in payloads)
+		binding.progressView.setPercent(item.progress, ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads)
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			size(CoverSizeResolver(binding.imageViewCover))
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
+			transformations(TrimTransformation())
 			allowRgb565(true)
 			source(item.source)
 			enqueueWith(coil)

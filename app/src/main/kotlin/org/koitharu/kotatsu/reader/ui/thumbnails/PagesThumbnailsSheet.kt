@@ -16,7 +16,6 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.list.BoundsScrollListener
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
@@ -29,6 +28,8 @@ import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
@@ -74,9 +75,7 @@ class PagesThumbnailsSheet :
 			clickListener = this@PagesThumbnailsSheet,
 		)
 		with(binding.recyclerView) {
-			addItemDecoration(
-				SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)),
-			)
+			addItemDecoration(TypedListSpacingDecoration(context))
 			adapter = thumbnailsAdapter
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver?.setGridSize(settings.gridSize / 100f, this)
@@ -103,7 +102,7 @@ class PagesThumbnailsSheet :
 		} else {
 			val state = ReaderState(item.page.chapterId, item.page.index, 0)
 			val intent = IntentBuilder(view.context).manga(viewModel.manga).state(state).build()
-			startActivity(intent, scaleUpActivityOptionsOf(view))
+			startActivity(intent)
 		}
 		dismiss()
 	}
@@ -171,7 +170,7 @@ class PagesThumbnailsSheet :
 		override fun getSpanSize(position: Int): Int {
 			val total = (viewBinding?.recyclerView?.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
 			return when (thumbnailsAdapter?.getItemViewType(position)) {
-				PageThumbnailAdapter.ITEM_TYPE_THUMBNAIL -> 1
+				ListItemType.PAGE_THUMB.ordinal -> 1
 				else -> total
 			}
 		}
@@ -192,7 +191,7 @@ class PagesThumbnailsSheet :
 
 		fun show(fm: FragmentManager, manga: Manga, chapterId: Long, currentPage: Int = -1) {
 			PagesThumbnailsSheet().withArgs(3) {
-				putParcelable(ARG_MANGA, ParcelableManga(manga, true))
+				putParcelable(ARG_MANGA, ParcelableManga(manga, withChapters = true))
 				putLong(ARG_CHAPTER_ID, chapterId)
 				putInt(ARG_CURRENT_PAGE, currentPage)
 			}.showDistinct(fm, TAG)

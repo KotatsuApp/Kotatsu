@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui.categories.adapter
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -25,6 +26,7 @@ import org.koitharu.kotatsu.databinding.ItemCategoryBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
+@SuppressLint("ClickableViewAccessibility")
 fun categoryAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
@@ -33,10 +35,9 @@ fun categoryAD(
 	{ inflater, parent -> ItemCategoryBinding.inflate(inflater, parent, false) },
 ) {
 	val eventListener = object : OnClickListener, OnLongClickListener, OnTouchListener {
-		override fun onClick(v: View) = clickListener.onItemClick(item.category, binding.imageViewCover1)
-		override fun onLongClick(v: View) = clickListener.onItemLongClick(item.category, binding.imageViewCover1)
-		override fun onTouch(v: View?, event: MotionEvent): Boolean = item.isReorderMode &&
-			event.actionMasked == MotionEvent.ACTION_DOWN &&
+		override fun onClick(v: View) = clickListener.onItemClick(item.category, itemView)
+		override fun onLongClick(v: View) = clickListener.onItemLongClick(item.category, itemView)
+		override fun onTouch(v: View?, event: MotionEvent): Boolean = event.actionMasked == MotionEvent.ACTION_DOWN &&
 			clickListener.onDragHandleTouch(this@adapterDelegateViewBinding)
 	}
 	val backgroundColor = context.getThemeColor(android.R.attr.colorBackground)
@@ -57,10 +58,9 @@ fun categoryAD(
 	val crossFadeDuration = context.getAnimationDuration(R.integer.config_defaultAnimTime).toInt()
 	itemView.setOnClickListener(eventListener)
 	itemView.setOnLongClickListener(eventListener)
-	itemView.setOnTouchListener(eventListener)
+	binding.imageViewHandle.setOnTouchListener(eventListener)
 
 	bind { payloads ->
-		binding.imageViewHandle.isVisible = item.isReorderMode
 		if (payloads.isNotEmpty()) {
 			return@bind
 		}
@@ -74,6 +74,8 @@ fun categoryAD(
 				item.mangaCount,
 			)
 		}
+		binding.imageViewTracker.isVisible = item.category.isTrackingEnabled
+		binding.imageViewVisible.isVisible = item.category.isVisibleInLibrary
 		repeat(coverViews.size) { i ->
 			val cover = item.covers.getOrNull(i)
 			coverViews[i].newImageRequest(lifecycleOwner, cover?.url)?.run {

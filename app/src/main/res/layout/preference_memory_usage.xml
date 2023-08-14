@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:paddingBottom="4dp"
+	tools:ignore="RtlSymmetry">
+
+	<org.koitharu.kotatsu.core.ui.widgets.SegmentedBarView
+		android:id="@+id/bar"
+		android:layout_width="match_parent"
+		android:layout_height="18dp"
+		android:layout_marginStart="@dimen/screen_padding"
+		android:layout_marginTop="@dimen/screen_padding"
+		android:layout_marginEnd="@dimen/screen_padding"
+		android:background="?colorSecondaryContainer" />
+
+	<TextView
+		android:id="@+id/label_storage"
+		style="@style/Widget.Kotatsu.TextView.Indicator"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/screen_padding"
+		android:layout_marginTop="@dimen/margin_normal"
+		android:layout_marginEnd="@dimen/screen_padding"
+		android:text="@string/saved_manga"
+		app:drawableStartCompat="@drawable/bg_rounded_square"
+		tools:drawableTint="?colorPrimary" />
+
+	<TextView
+		android:id="@+id/label_pages_cache"
+		style="@style/Widget.Kotatsu.TextView.Indicator"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/screen_padding"
+		android:layout_marginTop="@dimen/margin_small"
+		android:layout_marginEnd="@dimen/screen_padding"
+		android:text="@string/pages_cache"
+		app:drawableStartCompat="@drawable/bg_rounded_square"
+		tools:drawableTint="?colorSecondary" />
+
+	<TextView
+		android:id="@+id/label_other_cache"
+		style="@style/Widget.Kotatsu.TextView.Indicator"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/screen_padding"
+		android:layout_marginTop="@dimen/margin_small"
+		android:layout_marginEnd="@dimen/screen_padding"
+		android:text="@string/other_cache"
+		app:drawableStartCompat="@drawable/bg_rounded_square"
+		tools:drawableTint="?colorTertiary" />
+
+	<TextView
+		android:id="@+id/label_available"
+		style="@style/Widget.Kotatsu.TextView.Indicator"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/screen_padding"
+		android:layout_marginTop="@dimen/margin_small"
+		android:layout_marginEnd="@dimen/screen_padding"
+		android:layout_marginBottom="@dimen/screen_padding"
+		android:text="@string/computing_"
+		app:drawableStartCompat="@drawable/bg_rounded_square"
+		app:drawableTint="?colorSecondaryContainer" />
+
+</LinearLayout>

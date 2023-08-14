@@ -11,8 +11,8 @@ class BackupZipInput(val file: File) : Closeable {
 
 	private val zipFile = ZipFile(file)
 
-	suspend fun getEntry(name: String): BackupEntry = runInterruptible(Dispatchers.IO) {
-		val entry = zipFile.getEntry(name)
+	suspend fun getEntry(name: String): BackupEntry? = runInterruptible(Dispatchers.IO) {
+		val entry = zipFile.getEntry(name) ?: return@runInterruptible null
 		val json = zipFile.getInputStream(entry).use {
 			JSONArray(it.bufferedReader().readText())
 		}

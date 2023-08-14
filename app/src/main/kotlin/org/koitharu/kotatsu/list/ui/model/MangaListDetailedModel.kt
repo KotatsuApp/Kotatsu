@@ -12,4 +12,4 @@ data class MangaListDetailedModel(
 	override val counter: Int,
 	override val progress: Float,
 	val tags: List<ChipsView.ChipModel>,
-) : MangaItemModel
+) : MangaItemModel()

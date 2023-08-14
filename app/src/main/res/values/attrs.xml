@@ -7,12 +7,7 @@
 	<attr name="themeChooserPreferenceStyle" />
 	<attr name="listItemTextViewStyle" />
 	<attr name="fastScrollerStyle" />
-
-	<declare-styleable name="Theme">
-		<attr name="navigationBarDividerColor" format="color" />
-		<attr name="colorControlLight" format="color" />
-		<attr name="colorSurfaceSecondary" format="color" />
-	</declare-styleable>
+	<attr name="tipViewStyle" />
 
 	<!--CoverImageView attrs-->
 	<declare-styleable name="CoverImageView">
@@ -110,6 +105,52 @@
 
 	<declare-styleable name="AutoCompleteTextViewPreference">
 		<attr name="android:entries" />
+	</declare-styleable>
+
+	<declare-styleable name="TipView">
+		<attr name="icon" />
+		<attr name="title" />
+		<attr name="android:text" />
+		<attr name="primaryButtonText" format="string" />
+		<attr name="secondaryButtonText" format="string" />
+		<attr name="shapeAppearance" />
+		<attr name="shapeAppearanceOverlay" />
+		<attr name="cardBackgroundColor" />
+		<attr name="strokeWidth" />
+		<attr name="strokeColor" />
+		<attr name="elevation" />
+	</declare-styleable>
+
+	<declare-styleable name="FaviconFallbackDrawable">
+		<attr name="backgroundColor" />
+		<attr name="strokeColor" />
+		<attr name="strokeWidth" />
+		<attr name="cornerSize" />
+	</declare-styleable>
+
+	<declare-styleable name="PieChart">
+		<attr name="pieChartColors" format="reference"/>
+
+		<attr name="pieChartMarginTextFirst" format="dimension"/>
+		<attr name="pieChartMarginTextSecond" format="dimension"/>
+		<attr name="pieChartMarginTextThird" format="dimension"/>
+		<attr name="pieChartMarginSmallCircle" format="dimension"/>
+
+		<attr name="pieChartCircleStrokeWidth" format="dimension"/>
+		<attr name="pieChartCirclePadding" format="dimension"/>
+		<attr name="pieChartCirclePaintRoundSize" format="boolean"/>
+		<attr name="pieChartCircleSectionSpace" format="float"/>
+
+		<attr name="pieChartTextCircleRadius" format="dimension"/>
+		<attr name="pieChartTextAmountSize" format="dimension"/>
+		<attr name="pieChartTextNumberSize" format="dimension"/>
+		<attr name="pieChartTextDescriptionSize" format="dimension"/>
+
+		<attr name="pieChartTextAmountColor" format="color"/>
+		<attr name="pieChartTextNumberColor" format="color"/>
+		<attr name="pieChartTextDescriptionColor" format="color"/>
+
+		<attr name="pieChartTextAmount" format="string"/>
 	</declare-styleable>
 
 </resources>

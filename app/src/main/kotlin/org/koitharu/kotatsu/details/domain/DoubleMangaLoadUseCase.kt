@@ -8,9 +8,11 @@ import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.details.domain.model.DoubleManga
+import org.koitharu.kotatsu.explore.domain.RecoverMangaUseCase
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.recoverNotNull
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
 
@@ -18,6 +20,7 @@ class DoubleMangaLoadUseCase @Inject constructor(
 	private val mangaDataRepository: MangaDataRepository,
 	private val localMangaRepository: LocalMangaRepository,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	private val recoverUseCase: RecoverMangaUseCase,
 ) {
 
 	suspend operator fun invoke(manga: Manga): DoubleManga = coroutineScope {
@@ -58,6 +61,12 @@ class DoubleMangaLoadUseCase @Inject constructor(
 			} ?: return null
 			val repository = mangaRepositoryFactory.create(seed.source)
 			repository.getDetails(seed)
+		}.recoverNotNull { e ->
+			if (e is NotFoundException) {
+				recoverUseCase(manga)
+			} else {
+				null
+			}
 		}
 	}
 

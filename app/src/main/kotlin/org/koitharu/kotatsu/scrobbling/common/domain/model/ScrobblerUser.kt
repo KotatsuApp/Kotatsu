@@ -16,9 +16,7 @@ class ScrobblerUser(
 		if (id != other.id) return false
 		if (nickname != other.nickname) return false
 		if (avatar != other.avatar) return false
-		if (service != other.service) return false
-
-		return true
+		return service == other.service
 	}
 
 	override fun hashCode(): Int {

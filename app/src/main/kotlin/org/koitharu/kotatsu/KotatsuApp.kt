@@ -9,6 +9,7 @@ import androidx.fragment.app.strictmode.FragmentStrictMode
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.room.InvalidationTracker
 import androidx.work.Configuration
+import androidx.work.WorkManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +23,6 @@ import org.acra.sender.HttpSender
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.os.AppValidator
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.WorkServiceStopHelper
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.settings.work.WorkScheduleManager
 import javax.inject.Inject
+import javax.inject.Provider
 
 @HiltAndroidApp
 class KotatsuApp : Application(), Configuration.Provider {
@@ -55,6 +56,9 @@ class KotatsuApp : Application(), Configuration.Provider {
 	@Inject
 	lateinit var workScheduleManager: WorkScheduleManager
 
+	@Inject
+	lateinit var workManagerProvider: Provider<WorkManager>
+
 	override fun onCreate() {
 		super.onCreate()
 		ACRA.errorReporter.putCustomData("isOriginalApp", appValidator.isOriginalApp.toString())
@@ -68,7 +72,6 @@ class KotatsuApp : Application(), Configuration.Provider {
 			setupDatabaseObservers()
 		}
 		workScheduleManager.init()
-		WorkServiceStopHelper(applicationContext).setup()
 	}
 
 	override fun attachBaseContext(base: Context?) {
@@ -152,7 +155,7 @@ class KotatsuApp : Application(), Configuration.Provider {
 		FragmentStrictMode.defaultPolicy = FragmentStrictMode.Policy.Builder()
 			.penaltyDeath()
 			.detectFragmentReuse()
-			.detectWrongFragmentContainer()
+			// .detectWrongFragmentContainer() FIXME: migrate to ViewPager2
 			.detectRetainInstanceUsage()
 			.detectSetUserVisibleHint()
 			.detectFragmentTagUsage()

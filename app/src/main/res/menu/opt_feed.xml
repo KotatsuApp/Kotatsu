@@ -4,6 +4,12 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
+		android:id="@+id/action_updated"
+		android:orderInCategory="50"
+		android:title="@string/updated"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_update"
 		android:orderInCategory="50"
 		android:title="@string/update"
@@ -13,12 +19,6 @@
 		android:id="@+id/action_clear_feed"
 		android:orderInCategory="50"
 		android:title="@string/clear_feed"
-		app:showAsAction="never" />
-
-	<item
-		android:id="@+id/action_settings"
-		android:orderInCategory="50"
-		android:title="@string/settings"
 		app:showAsAction="never" />
 
 </menu>

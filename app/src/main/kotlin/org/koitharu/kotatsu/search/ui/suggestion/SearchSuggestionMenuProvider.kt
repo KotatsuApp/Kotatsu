@@ -4,13 +4,17 @@ import android.content.Context
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.MenuProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.resolve
+import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import com.google.android.material.R as materialR
 
 class SearchSuggestionMenuProvider(
 	private val context: Context,
+	private val voiceInputLauncher: ActivityResultLauncher<String?>,
 	private val viewModel: SearchSuggestionViewModel,
 ) : MenuProvider {
 
@@ -24,8 +28,18 @@ class SearchSuggestionMenuProvider(
 				clearSearchHistory()
 				true
 			}
+
+			R.id.action_voice_search -> {
+				voiceInputLauncher.tryLaunch(context.getString(R.string.search_manga), null)
+			}
+
 			else -> false
 		}
+	}
+
+	override fun onPrepareMenu(menu: Menu) {
+		super.onPrepareMenu(menu)
+		menu.findItem(R.id.action_voice_search)?.isVisible = voiceInputLauncher.resolve(context, null) != null
 	}
 
 	private fun clearSearchHistory() {

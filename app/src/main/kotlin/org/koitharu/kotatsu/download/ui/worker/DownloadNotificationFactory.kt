@@ -1,13 +1,11 @@
 package org.koitharu.kotatsu.download.ui.worker
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.text.format.DateUtils
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
@@ -24,6 +22,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
@@ -32,7 +31,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.util.UUID
 import com.google.android.material.R as materialR
 
@@ -41,6 +39,7 @@ private const val GROUP_ID = "downloads"
 
 class DownloadNotificationFactory @AssistedInject constructor(
 	@ApplicationContext private val context: Context,
+	private val workManager: WorkManager,
 	private val coil: ImageLoader,
 	@Assisted private val uuid: UUID,
 ) {
@@ -67,7 +66,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		NotificationCompat.Action(
 			materialR.drawable.material_ic_clear_black_24dp,
 			context.getString(android.R.string.cancel),
-			WorkManager.getInstance(context).createCancelPendingIntent(uuid),
+			workManager.createCancelPendingIntent(uuid),
 		)
 	}
 
@@ -246,20 +245,14 @@ class DownloadNotificationFactory @AssistedInject constructor(
 	}
 
 	private fun createChannel() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val manager = NotificationManagerCompat.from(context)
-			if (manager.getNotificationChannel(CHANNEL_ID) == null) {
-				val channel = NotificationChannel(
-					CHANNEL_ID,
-					context.getString(R.string.downloads),
-					NotificationManager.IMPORTANCE_LOW,
-				)
-				channel.enableVibration(false)
-				channel.enableLights(false)
-				channel.setSound(null, null)
-				manager.createNotificationChannel(channel)
-			}
-		}
+		val manager = NotificationManagerCompat.from(context)
+		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+			.setName(context.getString(R.string.downloads))
+			.setVibrationEnabled(false)
+			.setLightsEnabled(false)
+			.setSound(null, null)
+			.build()
+		manager.createNotificationChannel(channel)
 	}
 
 	@AssistedFactory

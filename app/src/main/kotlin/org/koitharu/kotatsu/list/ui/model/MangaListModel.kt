@@ -10,4 +10,4 @@ data class MangaListModel(
 	override val manga: Manga,
 	override val counter: Int,
 	override val progress: Float,
-) : MangaItemModel
+) : MangaItemModel()

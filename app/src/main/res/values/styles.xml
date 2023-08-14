@@ -2,10 +2,17 @@
 
 	<!--Toolbars-->
 
+	<style name="Widget.Kotatsu.AppBarLayout" parent="@style/Widget.Material3.AppBarLayout">
+		<item name="android:background">?attr/colorSurfaceContainerHigh</item>
+	</style>
+
 	<!--Navigation Views-->
 
 	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
 		<item name="labelVisibilityMode">labeled</item>
+		<item name="android:background">?attr/colorSurfaceContainerHighest</item>
+		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
+		<item name="itemIconTint">@color/bottom_menu_active_item</item>
 	</style>
 
 	<style name="Widget.Kotatsu.BottomNavigationView.ColoredIndicators">
@@ -61,19 +68,28 @@
 
 	<!-- Widget styles -->
 
+	<style name="Widget.Kotatsu.CardView.Outlined" parent="@style/Widget.Material3.CardView.Outlined">
+		<item name="strokeColor">?attr/colorSecondary</item>
+		<item name="cardBackgroundColor">?attr/colorSurfaceContainerLow</item>
+	</style>
+
+	<style name="Widget.Kotatsu.CardView.Light" parent="Widget.Material3.CardView.Filled">
+		<item name="cardBackgroundColor">?colorBackgroundFloating</item>
+	</style>
+
 	<style name="Widget.Kotatsu.Tabs" parent="@style/Widget.Material3.TabLayout">
+		<item name="android:background">@drawable/tabs_background</item>
 		<item name="tabGravity">center</item>
 		<item name="tabInlineLabel">true</item>
 		<item name="tabMinWidth">75dp</item>
 		<item name="tabMode">scrollable</item>
-		<item name="tabRippleColor">@color/ripple_toolbar</item>
 	</style>
 
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">
 		<item name="iconifiedByDefault">false</item>
 		<item name="searchIcon">@null</item>
 		<item name="queryBackground">@null</item>
-		<item name="android:textColorHint">?attr/colorControlNormal</item>
+		<item name="android:textAppearance">@style/TextAppearance.Kotatsu.SearchView</item>
 		<item name="android:textSize">18sp</item>
 	</style>
 
@@ -86,7 +102,7 @@
 	</style>
 
 	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
-		<item name="chipSurfaceColor">?attr/colorSurface</item>
+		<item name="chipBackgroundColor">?attr/colorSurfaceContainerHigh</item>
 		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
 		<item name="chipStrokeColor">?attr/colorOutline</item>
 		<item name="chipIconTint">?attr/colorControlNormal</item>
@@ -101,6 +117,16 @@
 
 		<!-- Collapse horizontal margin -->
 		<item name="chipMinTouchTargetSize">28dp</item>
+	</style>
+
+	<style name="Widget.Kotatsu.Button.More" parent="Widget.Material3.Button.TextButton">
+		<item name="android:minWidth">48dp</item>
+	</style>
+
+	<style name="Widget.Kotatsu.Button.More.Small">
+		<item name="android:insetTop">0dp</item>
+		<item name="android:insetBottom">0dp</item>
+		<item name="android:minHeight">42dp</item>
 	</style>
 
 	<style name="Widget.Kotatsu.ToggleButton" parent="Widget.Material3.Button.OutlinedButton">
@@ -163,19 +189,21 @@
 	</style>
 
 	<style name="Widget.Kotatsu.ExploreButton" parent="Widget.Material3.Button.TonalButton.Icon">
-		<item name="android:minHeight">58dp</item>
-		<item name="android:textColor">?attr/colorOnSurface</item>
+		<item name="android:minHeight">54dp</item>
 		<item name="android:singleLine">true</item>
-		<item name="shapeAppearance">?shapeAppearanceCornerLarge</item>
+		<item name="shapeAppearance">?shapeAppearanceCornerExtraLarge</item>
+		<item name="android:ellipsize">marquee</item>
+		<item name="android:marqueeRepeatLimit">marquee_forever</item>
 		<item name="iconSize">22dp</item>
 		<item name="iconPadding">16dp</item>
 		<item name="iconGravity">start</item>
+		<item name="iconTint">?attr/colorPrimary</item>
+		<item name="android:textColor">?attr/colorPrimary</item>
 		<item name="android:insetTop">2dp</item>
 		<item name="android:insetBottom">2dp</item>
-		<item name="iconTint">?attr/colorPrimaryDark</item>
 		<item name="android:gravity">start|center_vertical</item>
 		<item name="android:textAppearance">?textAppearanceButton</item>
-		<item name="backgroundTint">@color/colored_button</item>
+		<item name="backgroundTint">?attr/colorSurfaceContainerLow</item>
 	</style>
 
 	<style name="Widget.Kotatsu.TextView.Indicator" parent="Widget.MaterialComponents.TextView">
@@ -188,12 +216,20 @@
 		<item name="colorControlHighlight">@color/selector_overlay</item>
 	</style>
 
+	<style name="ThemeOverlay.Kotatsu.CardContainer" parent="">
+		<item name="android:colorBackground">?colorBackgroundFloating</item>
+	</style>
+
 	<style name="ThemeOverlay.Kotatsu.ActionMode" parent="">
 		<item name="colorOnSurface">?colorPrimary</item>
 		<item name="colorControlNormal">?colorPrimary</item>
 	</style>
 
 	<!-- TextAppearance -->
+
+	<style name="TextAppearance.Kotatsu.SearchView" parent="TextAppearance.Material3.SearchBar">
+		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+	</style>
 
 	<style name="TextAppearance.Widget.Menu" parent="TextAppearance.AppCompat.Menu">
 		<item name="android:textColor">?attr/colorOnBackground</item>
@@ -234,7 +270,7 @@
 	</style>
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Small" parent="">
-		<item name="cornerSize">6dp</item>
+		<item name="cornerSize">8dp</item>
 	</style>
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Circle" parent="">
@@ -270,7 +306,7 @@
 		<item name="android:selectable">false</item>
 	</style>
 
-	<!-- Progress drawable -->
+	<!-- Drawable -->
 
 	<style name="ProgressDrawable">
 		<item name="android:fillAlpha">1</item>
@@ -280,6 +316,21 @@
 		<item name="strokeWidth">4dp</item>
 		<item name="android:textSize">9sp</item>
 		<item name="autoFitTextSize">true</item>
+	</style>
+
+	<style name="FaviconDrawable">
+		<item name="backgroundColor">?colorBackgroundFloating</item>
+		<item name="strokeColor">?colorOutline</item>
+	</style>
+
+	<style name="FaviconDrawable.Small">
+		<item name="strokeWidth">1dp</item>
+		<item name="cornerSize">8dp</item>
+	</style>
+
+	<style name="FaviconDrawable.Large">
+		<item name="strokeWidth">1dp</item>
+		<item name="cornerSize">12dp</item>
 	</style>
 
 </resources>

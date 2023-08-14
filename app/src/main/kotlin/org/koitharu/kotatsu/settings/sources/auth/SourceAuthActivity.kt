@@ -18,7 +18,6 @@ import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.browser.ProgressChromeClient
 import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
-import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity

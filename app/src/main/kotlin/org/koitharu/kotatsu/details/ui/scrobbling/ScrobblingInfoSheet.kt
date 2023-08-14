@@ -88,7 +88,7 @@ class ScrobblingInfoSheet :
 		viewModel.updateScrobbling(
 			index = scrobblerIndex,
 			rating = requireViewBinding().ratingBar.rating / requireViewBinding().ratingBar.numStars,
-			status = enumValues<ScrobblingStatus>().getOrNull(position),
+			status = ScrobblingStatus.entries.getOrNull(position),
 		)
 	}
 
@@ -99,7 +99,7 @@ class ScrobblingInfoSheet :
 			viewModel.updateScrobbling(
 				index = scrobblerIndex,
 				rating = rating / ratingBar.numStars,
-				status = enumValues<ScrobblingStatus>().getOrNull(requireViewBinding().spinnerStatus.selectedItemPosition),
+				status = ScrobblingStatus.entries.getOrNull(requireViewBinding().spinnerStatus.selectedItemPosition),
 			)
 		}
 	}

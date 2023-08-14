@@ -4,10 +4,9 @@ import android.content.res.Resources
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.core.util.ext.format
-import org.koitharu.kotatsu.list.ui.model.ListModel
 import java.util.Date
 
-sealed class DateTimeAgo : ListModel {
+sealed class DateTimeAgo {
 
 	abstract fun format(resources: Resources): String
 
@@ -77,6 +76,7 @@ sealed class DateTimeAgo : ListModel {
 	}
 
 	class DaysAgo(val days: Int) : DateTimeAgo() {
+
 		override fun format(resources: Resources): String {
 			return resources.getQuantityString(R.plurals.days_ago, days, days)
 		}
@@ -91,6 +91,30 @@ sealed class DateTimeAgo : ListModel {
 		override fun hashCode(): Int = days
 
 		override fun toString() = "days_ago_$days"
+	}
+
+	class MonthsAgo(val months: Int) : DateTimeAgo() {
+
+		override fun format(resources: Resources): String {
+			return if (months == 0) {
+				resources.getString(R.string.this_month)
+			} else {
+				resources.getQuantityString(R.plurals.months_ago, months, months)
+			}
+		}
+
+		override fun equals(other: Any?): Boolean {
+			if (this === other) return true
+			if (javaClass != other?.javaClass) return false
+
+			other as MonthsAgo
+
+			return months == other.months
+		}
+
+		override fun hashCode(): Int {
+			return months
+		}
 	}
 
 	class Absolute(private val date: Date) : DateTimeAgo() {

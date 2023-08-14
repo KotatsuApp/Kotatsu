@@ -20,7 +20,9 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.internal.closeQuietly
 import okio.Closeable
+import okio.IOException
 import okio.buffer
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -49,22 +51,32 @@ class FaviconFetcher(
 	override suspend fun fetch(): FetchResult {
 		getCached(options)?.let { return it }
 		val repo = mangaRepositoryFactory.create(mangaSource) as RemoteMangaRepository
-		val favicons = repo.getFavicons()
 		val sizePx = maxOf(
 			options.size.width.pxOrElse { FALLBACK_SIZE },
 			options.size.height.pxOrElse { FALLBACK_SIZE },
 		)
-		val icon = checkNotNull(favicons.find(sizePx)) { "No favicons found" }
-		val response = loadIcon(icon.url, mangaSource)
-		val responseBody = response.requireBody()
-		val source = writeToDiskCache(responseBody)?.toImageSource()?.also {
-			response.closeQuietly()
-		} ?: responseBody.toImageSource(response)
-		return SourceResult(
-			source = source,
-			mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(icon.type),
-			dataSource = response.toDataSource(),
-		)
+		var favicons = repo.getFavicons()
+		while (favicons.isNotEmpty()) {
+			val icon = favicons.find(sizePx) ?: throwNSEE()
+			val response = try {
+				loadIcon(icon.url, mangaSource)
+			} catch (e: CloudFlareProtectedException) {
+				throw e
+			} catch (e: IOException) {
+				favicons -= icon
+				continue
+			}
+			val responseBody = response.requireBody()
+			val source = writeToDiskCache(responseBody)?.toImageSource()?.also {
+				response.closeQuietly()
+			} ?: responseBody.toImageSource(response)
+			return SourceResult(
+				source = source,
+				mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(icon.type),
+				dataSource = response.toDataSource(),
+			)
+		}
+		throwNSEE()
 	}
 
 	private suspend fun loadIcon(url: String, source: MangaSource): Response {
@@ -142,6 +154,8 @@ class FaviconFetcher(
 		append('x')
 		append(height.toString())
 	}
+
+	private fun throwNSEE(): Nothing = throw NoSuchElementException("No favicons found")
 
 	class Factory(
 		context: Context,

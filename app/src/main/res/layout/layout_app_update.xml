@@ -3,7 +3,8 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/card_update"
-	style="@style/Widget.Material3.CardView.Filled"
+	app:cardCornerRadius="21dp"
+	app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	app:contentPadding="@dimen/margin_normal">

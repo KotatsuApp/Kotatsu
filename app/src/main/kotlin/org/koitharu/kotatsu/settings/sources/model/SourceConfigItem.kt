@@ -2,107 +2,84 @@ package org.koitharu.kotatsu.settings.sources.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
-sealed interface SourceConfigItem {
+sealed interface SourceConfigItem : ListModel {
 
-	class Header(
+	data class Header(
 		@StringRes val titleResId: Int,
 	) : SourceConfigItem {
 
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-			other as Header
-			return titleResId == other.titleResId
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is Header && other.titleResId == titleResId
 		}
-
-		override fun hashCode(): Int = titleResId
 	}
 
-	class LocaleGroup(
+	data class LocaleGroup(
 		val localeId: String?,
 		val title: String?,
 		val isExpanded: Boolean,
 	) : SourceConfigItem {
 
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as LocaleGroup
-
-			if (localeId != other.localeId) return false
-			if (title != other.title) return false
-			if (isExpanded != other.isExpanded) return false
-
-			return true
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is LocaleGroup && other.localeId == localeId
 		}
 
-		override fun hashCode(): Int {
-			var result = localeId?.hashCode() ?: 0
-			result = 31 * result + (title?.hashCode() ?: 0)
-			result = 31 * result + isExpanded.hashCode()
-			return result
+		override fun getChangePayload(previousState: ListModel): Any? {
+			return if (previousState is LocaleGroup && previousState.isExpanded != isExpanded) {
+				ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED
+			} else {
+				super.getChangePayload(previousState)
+			}
 		}
 	}
 
-	class SourceItem(
+	data class SourceItem(
 		val source: MangaSource,
 		val isEnabled: Boolean,
 		val summary: String?,
 		val isDraggable: Boolean,
+		val isAvailable: Boolean,
 	) : SourceConfigItem {
 
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
+		val isNsfw: Boolean
+			get() = source.contentType == ContentType.HENTAI
 
-			other as SourceItem
-
-			if (source != other.source) return false
-			if (summary != other.summary) return false
-			if (isEnabled != other.isEnabled) return false
-			if (isDraggable != other.isDraggable) return false
-
-			return true
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is SourceItem && other.source == source
 		}
 
-		override fun hashCode(): Int {
-			var result = source.hashCode()
-			result = 31 * result + summary.hashCode()
-			result = 31 * result + isEnabled.hashCode()
-			result = 31 * result + isDraggable.hashCode()
-			return result
+		override fun getChangePayload(previousState: ListModel): Any? {
+			return if (previousState is SourceItem && previousState.isEnabled != isEnabled) {
+				ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED
+			} else {
+				super.getChangePayload(previousState)
+			}
 		}
 	}
 
-	class Tip(
+	data class Tip(
 		val key: String,
 		@DrawableRes val iconResId: Int,
 		@StringRes val textResId: Int,
 	) : SourceConfigItem {
 
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as Tip
-
-			if (key != other.key) return false
-			if (iconResId != other.iconResId) return false
-			if (textResId != other.textResId) return false
-
-			return true
-		}
-
-		override fun hashCode(): Int {
-			var result = key.hashCode()
-			result = 31 * result + iconResId
-			result = 31 * result + textResId
-			return result
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is Tip && other.key == key
 		}
 	}
 
-	object EmptySearchResult : SourceConfigItem
+	object EmptySearchResult : SourceConfigItem {
+
+		override fun equals(other: Any?): Boolean {
+			return other === EmptySearchResult
+		}
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is EmptySearchResult
+		}
+	}
 }

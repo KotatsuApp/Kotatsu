@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -45,9 +46,7 @@ class OnboardDialogFragment :
 		if (isWelcome) {
 			builder.setTitle(R.string.welcome)
 		} else {
-			builder
-				.setTitle(R.string.remote_sources)
-				.setNegativeButton(android.R.string.cancel, this)
+			builder.setTitle(R.string.remote_sources)
 		}
 		return builder
 	}
@@ -56,19 +55,21 @@ class OnboardDialogFragment :
 		super.onViewBindingCreated(binding, savedInstanceState)
 		val adapter = SourceLocalesAdapter(this)
 		binding.recyclerView.adapter = adapter
-		binding.textViewTitle.setText(R.string.onboard_text)
-		viewModel.list.observe(viewLifecycleOwner) {
-			adapter.items = it.orEmpty()
+		if (isWelcome) {
+			binding.textViewTitle.setText(R.string.onboard_text)
+		} else {
+			binding.textViewTitle.isVisible = false
 		}
+		viewModel.list.observe(viewLifecycleOwner, adapter)
 	}
 
 	override fun onItemCheckedChanged(item: SourceLocale, isChecked: Boolean) {
 		viewModel.setItemChecked(item.key, isChecked)
 	}
 
-	override fun onClick(dialog: DialogInterface?, which: Int) {
+	override fun onClick(dialog: DialogInterface, which: Int) {
 		when (which) {
-			DialogInterface.BUTTON_POSITIVE -> viewModel.apply()
+			DialogInterface.BUTTON_POSITIVE -> dialog.dismiss()
 		}
 	}
 

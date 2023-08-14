@@ -29,12 +29,7 @@ class NetworkSettingsFragment :
 		addPreferencesFromResource(R.xml.pref_network)
 		findPreference<Preference>(AppSettings.KEY_PREFETCH_CONTENT)?.isVisible = contentCache.isCachingEnabled
 		findPreference<ListPreference>(AppSettings.KEY_DOH)?.run {
-			entryValues = arrayOf(
-				DoHProvider.NONE,
-				DoHProvider.GOOGLE,
-				DoHProvider.CLOUDFLARE,
-				DoHProvider.ADGUARD,
-			).names()
+			entryValues = DoHProvider.entries.names()
 			setDefaultValueCompat(DoHProvider.NONE.name)
 		}
 		bindProxySummary()

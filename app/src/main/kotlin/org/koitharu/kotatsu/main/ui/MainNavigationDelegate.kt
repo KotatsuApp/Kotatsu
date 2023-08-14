@@ -6,15 +6,15 @@ import androidx.annotation.IdRes
 import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.transition.MaterialFadeThrough
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.explore.ui.ExploreFragment
-import org.koitharu.kotatsu.settings.tools.ToolsFragment
-import org.koitharu.kotatsu.shelf.ui.ShelfFragment
+import org.koitharu.kotatsu.favourites.ui.container.FavouritesContainerFragment
+import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.tracker.ui.feed.FeedFragment
 import java.util.LinkedList
 
@@ -53,7 +53,7 @@ class MainNavigationDelegate(
 	}
 
 	override fun handleOnBackPressed() {
-		navBar.selectedItemId = R.id.nav_shelf
+		navBar.selectedItemId = R.id.nav_history
 	}
 
 	fun onCreate() {
@@ -64,6 +64,11 @@ class MainNavigationDelegate(
 				navBar.selectedItemId = itemId
 			}
 		} ?: onNavigationItemSelected(navBar.selectedItemId)
+	}
+
+	fun setCounterAt(position: Int, counter: Int) {
+		val id = navBar.menu.getItem(position).itemId
+		setCounter(id, counter)
 	}
 
 	fun setCounter(@IdRes id: Int, counter: Int) {
@@ -99,20 +104,20 @@ class MainNavigationDelegate(
 	private fun onNavigationItemSelected(@IdRes itemId: Int): Boolean {
 		return setPrimaryFragment(
 			when (itemId) {
-				R.id.nav_shelf -> ShelfFragment.newInstance()
-				R.id.nav_explore -> ExploreFragment.newInstance()
-				R.id.nav_feed -> FeedFragment.newInstance()
-				R.id.nav_tools -> ToolsFragment.newInstance()
+				R.id.nav_history -> HistoryListFragment()
+				R.id.nav_favourites -> FavouritesContainerFragment()
+				R.id.nav_explore -> ExploreFragment()
+				R.id.nav_feed -> FeedFragment()
 				else -> return false
 			},
 		)
 	}
 
 	private fun getItemId(fragment: Fragment) = when (fragment) {
-		is ShelfFragment -> R.id.nav_shelf
+		is HistoryListFragment -> R.id.nav_history
+		is FavouritesContainerFragment -> R.id.nav_favourites
 		is ExploreFragment -> R.id.nav_explore
 		is FeedFragment -> R.id.nav_feed
-		is ToolsFragment -> R.id.nav_tools
 		else -> 0
 	}
 
@@ -120,17 +125,17 @@ class MainNavigationDelegate(
 		if (fragmentManager.isStateSaved) {
 			return false
 		}
+		fragment.enterTransition = MaterialFadeThrough()
 		fragmentManager.beginTransaction()
 			.setReorderingAllowed(true)
 			.replace(R.id.container, fragment, TAG_PRIMARY)
-			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 			.commit()
 		onFragmentChanged(fragment, fromUser = true)
 		return true
 	}
 
 	private fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
-		isEnabled = fragment !is ShelfFragment
+		isEnabled = fragment !is HistoryListFragment
 		listeners.forEach { it.onFragmentChanged(fragment, fromUser) }
 	}
 

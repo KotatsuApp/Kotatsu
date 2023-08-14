@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 abstract class BasePageHolder<B : ViewBinding>(
 	protected val binding: B,
 	loader: PageLoader,
-	settings: ReaderSettings,
+	private val settings: ReaderSettings,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
 ) : RecyclerView.ViewHolder(binding.root), PageHolderDelegate.Callback {
@@ -27,6 +27,10 @@ abstract class BasePageHolder<B : ViewBinding>(
 
 	var boundData: ReaderPage? = null
 		private set
+
+	override fun onConfigChanged() {
+		settings.applyBackground(itemView)
+	}
 
 	fun requireData(): ReaderPage {
 		return checkNotNull(boundData) { "Calling requireData() before bind()" }

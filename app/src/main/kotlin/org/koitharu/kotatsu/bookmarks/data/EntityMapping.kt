@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.bookmarks.data
 
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.parsers.model.Manga
-import java.util.*
+import java.util.Date
 
 fun BookmarkEntity.toBookmark(manga: Manga) = Bookmark(
 	manga = manga,
@@ -30,4 +30,5 @@ fun Collection<BookmarkEntity>.toBookmarks(manga: Manga) = map {
 	it.toBookmark(manga)
 }
 
+@JvmName("bookmarksIds")
 fun Collection<Bookmark>.ids() = map { it.pageId }

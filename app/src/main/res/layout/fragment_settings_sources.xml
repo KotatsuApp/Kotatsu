@@ -11,4 +11,4 @@
 	android:orientation="vertical"
 	android:scrollbars="vertical"
 	app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-	tools:listitem="@layout/item_source_config_checkable" />
+	tools:listitem="@layout/item_source_config" />

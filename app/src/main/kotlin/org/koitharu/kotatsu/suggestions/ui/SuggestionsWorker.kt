@@ -1,12 +1,11 @@
 package org.koitharu.kotatsu.suggestions.ui
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.os.Build
 import androidx.annotation.FloatRange
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.buildSpannedString
@@ -27,6 +26,7 @@ import androidx.work.await
 import androidx.work.workDataOf
 import coil.ImageLoader
 import coil.request.ImageRequest
+import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
@@ -35,13 +35,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.WorkManagerHelper
 import org.koitharu.kotatsu.core.util.ext.almostEquals
 import org.koitharu.kotatsu.core.util.ext.asArrayList
+import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.flatten
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitize
@@ -49,6 +53,7 @@ import org.koitharu.kotatsu.core.util.ext.takeMostFrequent
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -62,6 +67,7 @@ import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.suggestions.domain.TagsBlacklist
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.random.Random
 
@@ -75,7 +81,10 @@ class SuggestionsWorker @AssistedInject constructor(
 	private val favouritesRepository: FavouritesRepository,
 	private val appSettings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	private val sourcesRepository: MangaSourcesRepository,
 ) : CoroutineWorker(appContext, params) {
+
+	private val notificationManager by lazy { NotificationManagerCompat.from(appContext) }
 
 	override suspend fun doWork(): Result {
 		trySetForeground()
@@ -89,20 +98,15 @@ class SuggestionsWorker @AssistedInject constructor(
 	}
 
 	override suspend fun getForegroundInfo(): ForegroundInfo {
-		val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 		val title = applicationContext.getString(R.string.suggestions_updating)
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val channel = NotificationChannel(
-				WORKER_CHANNEL_ID,
-				title,
-				NotificationManager.IMPORTANCE_LOW,
-			)
-			channel.setShowBadge(false)
-			channel.enableVibration(false)
-			channel.setSound(null, null)
-			channel.enableLights(false)
-			manager.createNotificationChannel(channel)
-		}
+		val channel = NotificationChannelCompat.Builder(WORKER_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+			.setName(title)
+			.setShowBadge(true)
+			.setVibrationEnabled(false)
+			.setSound(null, null)
+			.setLightsEnabled(true)
+			.build()
+		notificationManager.createNotificationChannel(channel)
 
 		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
 			.setContentTitle(title)
@@ -124,17 +128,20 @@ class SuggestionsWorker @AssistedInject constructor(
 			historyRepository.getList(0, 20) +
 				favouritesRepository.getLastManga(20)
 			).distinctById()
-		val sources = appSettings.getMangaSources(includeHidden = false)
+		val sources = sourcesRepository.getEnabledSources()
 		if (seed.isEmpty() || sources.isEmpty()) {
 			return 0
 		}
 		val tagsBlacklist = TagsBlacklist(appSettings.suggestionsTagsBlacklist, TAG_EQ_THRESHOLD)
 		val tags = seed.flatMap { it.tags.map { x -> x.title } }.takeMostFrequent(10)
 
+		val semaphore = Semaphore(MAX_PARALLELISM)
 		val producer = channelFlow {
 			for (it in sources.shuffled()) {
 				launch {
-					send(getList(it, tags, tagsBlacklist))
+					semaphore.withPermit {
+						send(getList(it, tags, tagsBlacklist))
+					}
 				}
 			}
 		}
@@ -156,6 +163,9 @@ class SuggestionsWorker @AssistedInject constructor(
 					val manga = suggestions[Random.nextInt(0, suggestions.size / 3)]
 					val details = mangaRepositoryFactory.create(manga.manga.source)
 						.getDetails(manga.manga)
+					if (details.chapters.isNullOrEmpty()) {
+						continue
+					}
 					if (details.rating > 0 && details.rating < RATING_MIN) {
 						continue
 					}
@@ -198,23 +208,25 @@ class SuggestionsWorker @AssistedInject constructor(
 		}
 		list.shuffle()
 		list.take(MAX_SOURCE_RESULTS)
-	}.onFailure {
-		it.printStackTraceDebug()
+	}.onFailure { e ->
+		if (e is CloudFlareProtectedException) {
+			CaptchaNotifier(applicationContext).notify(e)
+		}
+		e.printStackTraceDebug()
 	}.getOrDefault(emptyList())
 
 	private suspend fun showNotification(manga: Manga) {
-		val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val channel = NotificationChannel(
-				MANGA_CHANNEL_ID,
-				applicationContext.getString(R.string.suggestions),
-				NotificationManager.IMPORTANCE_DEFAULT,
-			)
-			channel.description = applicationContext.getString(R.string.suggestions_summary)
-			channel.enableLights(true)
-			channel.setShowBadge(true)
-			manager.createNotificationChannel(channel)
+		if (!notificationManager.areNotificationsEnabled()) {
+			return
 		}
+		val channel = NotificationChannelCompat.Builder(MANGA_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
+			.setName(applicationContext.getString(R.string.suggestions))
+			.setDescription(applicationContext.getString(R.string.suggestions_summary))
+			.setLightsEnabled(true)
+			.setShowBadge(true)
+			.build()
+		notificationManager.createNotificationChannel(channel)
+
 		val id = manga.url.hashCode()
 		val title = applicationContext.getString(R.string.suggestion_manga, manga.title)
 		val builder = NotificationCompat.Builder(applicationContext, MANGA_CHANNEL_ID)
@@ -239,6 +251,15 @@ class SuggestionsWorker @AssistedInject constructor(
 						append(tagsText)
 						appendLine()
 						append(description)
+						val chaptersCount = manga.chapters?.size ?: 0
+						appendLine()
+						append(
+							applicationContext.resources.getQuantityString(
+								R.plurals.chapters,
+								chaptersCount,
+								chaptersCount,
+							),
+						)
 					},
 				)
 				style.setBigContentTitle(title)
@@ -284,7 +305,7 @@ class SuggestionsWorker @AssistedInject constructor(
 				),
 			)
 		}
-		manager.notify(TAG, id, builder.build())
+		notificationManager.notify(TAG, id, builder.build())
 	}
 
 	@FloatRange(from = 0.0, to = 1.0)
@@ -306,55 +327,36 @@ class SuggestionsWorker @AssistedInject constructor(
 		return -1
 	}
 
-	companion object : PeriodicWorkScheduler {
+	@Reusable
+	class Scheduler @Inject constructor(
+		private val workManager: WorkManager,
+		private val settings: AppSettings,
+	) : PeriodicWorkScheduler {
 
-		private const val TAG = "suggestions"
-		private const val TAG_ONESHOT = "suggestions_oneshot"
-		private const val DATA_COUNT = "count"
-		private const val WORKER_CHANNEL_ID = "suggestion_worker"
-		private const val MANGA_CHANNEL_ID = "suggestions"
-		private const val WORKER_NOTIFICATION_ID = 36
-		private const val MAX_RESULTS = 80
-		private const val MAX_SOURCE_RESULTS = 14
-		private const val MAX_RAW_RESULTS = 200
-		private const val TAG_EQ_THRESHOLD = 0.4f
-		private const val RATING_MIN = 0.5f
-
-		private val preferredSortOrders = listOf(
-			SortOrder.UPDATED,
-			SortOrder.NEWEST,
-			SortOrder.POPULARITY,
-			SortOrder.RATING,
-		)
-
-		override suspend fun schedule(context: Context) {
-			val constraints = Constraints.Builder()
-				.setRequiredNetworkType(NetworkType.UNMETERED)
-				.setRequiresBatteryNotLow(true)
-				.build()
+		override suspend fun schedule() {
 			val request = PeriodicWorkRequestBuilder<SuggestionsWorker>(6, TimeUnit.HOURS)
-				.setConstraints(constraints)
+				.setConstraints(createConstraints())
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
 				.build()
-			WorkManager.getInstance(context)
-				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
+			workManager
+				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)
 				.await()
 		}
 
-		override suspend fun unschedule(context: Context) {
-			WorkManager.getInstance(context)
+		override suspend fun unschedule() {
+			workManager
 				.cancelUniqueWork(TAG)
 				.await()
 		}
 
-		override suspend fun isScheduled(context: Context): Boolean {
-			return WorkManagerHelper(WorkManager.getInstance(context))
-				.getUniqueWorkInfoByName(TAG)
+		override suspend fun isScheduled(): Boolean {
+			return workManager
+				.awaitUniqueWorkInfoByName(TAG)
 				.any { !it.state.isFinished }
 		}
 
-		fun startNow(context: Context) {
+		fun startNow() {
 			val constraints = Constraints.Builder()
 				.setRequiredNetworkType(NetworkType.CONNECTED)
 				.build()
@@ -363,8 +365,35 @@ class SuggestionsWorker @AssistedInject constructor(
 				.addTag(TAG_ONESHOT)
 				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 				.build()
-			WorkManager.getInstance(context)
-				.enqueue(request)
+			workManager.enqueue(request)
 		}
+
+		private fun createConstraints() = Constraints.Builder()
+			.setRequiredNetworkType(if (settings.isSuggestionsWiFiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
+			.setRequiresBatteryNotLow(true)
+			.build()
+	}
+
+	private companion object {
+
+		const val TAG = "suggestions"
+		const val TAG_ONESHOT = "suggestions_oneshot"
+		const val DATA_COUNT = "count"
+		const val WORKER_CHANNEL_ID = "suggestion_worker"
+		const val MANGA_CHANNEL_ID = "suggestions"
+		const val WORKER_NOTIFICATION_ID = 36
+		const val MAX_RESULTS = 80
+		const val MAX_PARALLELISM = 3
+		const val MAX_SOURCE_RESULTS = 14
+		const val MAX_RAW_RESULTS = 200
+		const val TAG_EQ_THRESHOLD = 0.4f
+		const val RATING_MIN = 0.5f
+
+		val preferredSortOrders = listOf(
+			SortOrder.UPDATED,
+			SortOrder.NEWEST,
+			SortOrder.POPULARITY,
+			SortOrder.RATING,
+		)
 	}
 }

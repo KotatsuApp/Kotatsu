@@ -52,7 +52,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="56dp"
 				android:layout_marginVertical="8dp"
-				android:background="@drawable/toolbar_background"
+				android:background="@drawable/search_bar_background"
 				android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"
 				app:layout_scrollFlags="scroll|enterAlways|snap">
 

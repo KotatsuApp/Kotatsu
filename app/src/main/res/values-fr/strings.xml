@@ -81,7 +81,7 @@
     <string name="manga_shelf">Étagère</string>
     <string name="text_local_holder_secondary">Enregistrez-le à partir de sources en ligne ou importez des fichiers.</string>
     <string name="text_local_holder_primary">Sauvegardez d\'abord quelque chose</string>
-    <string name="text_history_holder_secondary">Trouvez ce que vous voulez lire dans le menu latéral.</string>
+    <string name="text_history_holder_secondary">Trouver quoi lire dans la section « Explorer »</string>
     <string name="text_history_holder_primary">Ce que vous lisez sera affiché ici</string>
     <string name="text_search_holder_secondary">Essayez de reformuler la requête.</string>
     <string name="text_empty_holder_primary">C\'est un peu vide ici…</string>
@@ -443,4 +443,27 @@
     <string name="no_access_to_file">Vous n\'avez pas accès à ce fichier ou répertoire</string>
     <string name="pick_custom_directory">Choisir un répertoire personnalisé</string>
     <string name="local_manga_directories">Annuaires locaux de mangas</string>
+    <string name="progress">Progression</string>
+    <string name="order_added">Ajouté</string>
+    <string name="tracker_wifi_only_summary">Ne pas vérifier les nouveaux chapitres en utilisant des connexions réseau tarifées</string>
+    <string name="search_hint">Entrez le titre du manga, le genre ou le nom de la source</string>
+    <string name="description">Description</string>
+    <string name="this_month">Ce mois-ci</string>
+    <string name="voice_search">Recherche vocale</string>
+    <string name="related_manga">Mangas connexes</string>
+    <string name="color_light">Clair</string>
+    <string name="color_dark">Sombre</string>
+    <string name="color_white">Blanc</string>
+    <string name="color_black">Noir</string>
+    <string name="background">Arrière-plan</string>
+    <string name="data_not_restored">Les données n\'ont pas été restaurées</string>
+    <string name="data_not_restored_text">Assurez-vous que vous avez sélectionné le bon fichier de sauvegarde</string>
+    <string name="suggestions_wifi_only_summary">Ne pas mettre à jour les suggestions en utilisant des connexions réseau</string>
+    <string name="manage_categories">Gérer les catégories</string>
+    <string name="view_list">Voir la liste</string>
+    <string name="show">Afficher</string>
+    <string name="captcha_required_summary">%s exige qu\'un Captcha soit résolu pour fonctionner correctement</string>
+    <string name="languages">Langues</string>
+    <string name="unknown">Inconnu</string>
+    <string name="in_progress">En cours</string>
 </resources>

@@ -9,34 +9,41 @@
 
 		<!-- Theme Colors -->
 		<item name="colorPrimary">@color/kotatsu_primary</item>
-		<item name="colorOnPrimary">@color/kotatsu_onPrimary</item>
 		<item name="colorPrimaryContainer">@color/kotatsu_primaryContainer</item>
+		<item name="colorOnPrimary">@color/kotatsu_onPrimary</item>
 		<item name="colorOnPrimaryContainer">@color/kotatsu_onPrimaryContainer</item>
+		<item name="colorPrimaryInverse">@color/kotatsu_inversePrimary</item>
 		<item name="colorSecondary">@color/kotatsu_secondary</item>
-		<item name="colorOnSecondary">@color/kotatsu_onSecondary</item>
 		<item name="colorSecondaryContainer">@color/kotatsu_secondaryContainer</item>
+		<item name="colorOnSecondary">@color/kotatsu_onSecondary</item>
 		<item name="colorOnSecondaryContainer">@color/kotatsu_onSecondaryContainer</item>
 		<item name="colorTertiary">@color/kotatsu_tertiary</item>
-		<item name="colorOnTertiary">@color/kotatsu_onTertiary</item>
 		<item name="colorTertiaryContainer">@color/kotatsu_tertiaryContainer</item>
+		<item name="colorOnTertiary">@color/kotatsu_onTertiary</item>
 		<item name="colorOnTertiaryContainer">@color/kotatsu_onTertiaryContainer</item>
-		<item name="android:colorBackground">@color/kotatsu_background</item>
-		<item name="colorOnBackground">@color/kotatsu_onBackground</item>
 		<item name="colorSurface">@color/kotatsu_surface</item>
-		<item name="colorOnSurface">@color/kotatsu_onSurface</item>
+		<item name="colorSurfaceDim">@color/kotatsu_surfaceDim</item>
+		<item name="colorSurfaceBright">@color/kotatsu_surfaceBright</item>
+		<item name="colorSurfaceContainerLowest">@color/kotatsu_surfaceContainerLowest</item>
+		<item name="colorSurfaceContainerLow">@color/kotatsu_surfaceContainerLow</item>
+		<item name="colorSurfaceContainer">@color/kotatsu_surfaceContainer</item>
+		<item name="colorSurfaceContainerHigh">@color/kotatsu_surfaceContainerHigh</item>
+		<item name="colorSurfaceContainerHighest">@color/kotatsu_surfaceContainerHighest</item>
 		<item name="colorSurfaceVariant">@color/kotatsu_surfaceVariant</item>
+		<item name="colorOnSurface">@color/kotatsu_onSurface</item>
 		<item name="colorOnSurfaceVariant">@color/kotatsu_onSurfaceVariant</item>
-		<item name="colorOutline">@color/kotatsu_outline</item>
-		<item name="colorOnSurfaceInverse">@color/kotatsu_inverseOnSurface</item>
 		<item name="colorSurfaceInverse">@color/kotatsu_inverseSurface</item>
-		<item name="colorPrimaryInverse">@color/kotatsu_inversePrimary</item>
+		<item name="colorOnSurfaceInverse">@color/kotatsu_inverseOnSurface</item>
+		<item name="android:colorBackground">@color/kotatsu_surfaceContainerHigh</item>
+		<item name="colorOnBackground">@color/kotatsu_onSurface</item>
 		<item name="colorError">@color/error</item>
-		<item name="colorOnError">@color/onError</item>
 		<item name="colorErrorContainer">@color/errorContainer</item>
-		<item name="colorControlHighlight">?attr/colorSurfaceVariant</item>
+		<item name="colorOnError">@color/onError</item>
 		<item name="colorOnErrorContainer">@color/onErrorContainer</item>
+		<item name="colorOutline">@color/kotatsu_outline</item>
+		<item name="colorOutlineVariant">@color/kotatsu_outline</item>
 
-		<item name="android:divider">@color/divider_default</item>
+		<item name="android:divider">@color/kotatsu_outline</item>
 
 		<!-- Handles RTL text -->
 		<item name="android:textAlignment">gravity</item>
@@ -64,7 +71,7 @@
 		<item name="chipStyle">@style/Widget.Kotatsu.Chip</item>
 		<item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
 		<item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>
-		<item name="appBarLayoutStyle">@style/Widget.Material3.AppBarLayout</item>
+		<item name="appBarLayoutStyle">@style/Widget.Kotatsu.AppBarLayout</item>
 		<item name="bottomNavigationStyle">@style/Widget.Kotatsu.BottomNavigationView.ColoredIndicators</item>
 		<item name="tabStyle">@style/Widget.Kotatsu.Tabs</item>
 		<item name="materialCardViewStyle">@style/Widget.Material3.CardView.Filled</item>

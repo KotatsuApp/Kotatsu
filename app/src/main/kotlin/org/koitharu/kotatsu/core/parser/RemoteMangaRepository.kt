@@ -51,7 +51,7 @@ class RemoteMangaRepository(
 			getConfig()[parser.configKeyDomain] = value
 		}
 
-	val headers: Headers?
+	val headers: Headers
 		get() = parser.headers
 
 	override fun intercept(chain: Interceptor.Chain): Response {
@@ -93,6 +93,15 @@ class RemoteMangaRepository(
 	override suspend fun getTags(): Set<MangaTag> = parser.getTags()
 
 	suspend fun getFavicons(): Favicons = parser.getFavicons()
+
+	override suspend fun getRelated(seed: Manga): List<Manga> {
+		cache.getRelatedManga(source, seed.url)?.let { return it }
+		val related = asyncSafe {
+			parser.getRelatedManga(seed).filterNot { it.id == seed.id }
+		}
+		cache.putRelatedManga(source, seed.url, related)
+		return related.await()
+	}
 
 	fun getAuthProvider(): MangaParserAuthProvider? = parser as? MangaParserAuthProvider
 

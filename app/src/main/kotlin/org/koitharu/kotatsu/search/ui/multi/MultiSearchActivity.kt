@@ -27,11 +27,11 @@ import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteCategoriesSheet
-import org.koitharu.kotatsu.list.ui.ItemSizeResolver
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteSheet
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.model.ListHeader
+import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
@@ -60,11 +60,12 @@ class MultiSearchActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySearchMultiBinding.inflate(layoutInflater))
 		window.statusBarColor = ContextCompat.getColor(this, R.color.dim_statusbar)
+		title = viewModel.query
 
 		val itemCLickListener = OnListItemClickListener<MultiSearchListModel> { item, view ->
-			startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query.value))
+			startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query))
 		}
-		val sizeResolver = ItemSizeResolver(resources, settings)
+		val sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = true)
 		val selectionDecoration = MangaSelectionDecoration(this)
 		selectionController = ListSelectionController(
 			activity = this,
@@ -88,7 +89,6 @@ class MultiSearchActivity :
 			setSubtitle(R.string.search_results)
 		}
 
-		viewModel.query.observe(this) { title = it }
 		viewModel.list.observe(this) { adapter.items = it }
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(viewBinding.recyclerView))
@@ -118,7 +118,7 @@ class MultiSearchActivity :
 	override fun onReadClick(manga: Manga, view: View) {
 		if (!selectionController.onItemClick(manga.id)) {
 			val intent = IntentBuilder(this).manga(manga).build()
-			startActivity(intent, scaleUpActivityOptionsOf(view))
+			startActivity(intent)
 		}
 	}
 
@@ -130,7 +130,7 @@ class MultiSearchActivity :
 	}
 
 	override fun onRetryClick(error: Throwable) {
-		viewModel.doSearch(viewModel.query.value)
+		viewModel.retry()
 	}
 
 	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit
@@ -159,7 +159,7 @@ class MultiSearchActivity :
 			}
 
 			R.id.action_favourite -> {
-				FavouriteCategoriesSheet.show(supportFragmentManager, collectSelectedItems())
+				FavouriteSheet.show(supportFragmentManager, collectSelectedItems())
 				mode.finish()
 				true
 			}

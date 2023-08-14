@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
+import org.koitharu.kotatsu.history.domain.model.HistoryOrder
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -64,8 +65,8 @@ class HistoryRepository @Inject constructor(
 		}
 	}
 
-	fun observeAllWithHistory(): Flow<List<MangaWithHistory>> {
-		return db.historyDao.observeAll().mapItems {
+	fun observeAllWithHistory(order: HistoryOrder): Flow<List<MangaWithHistory>> {
+		return db.historyDao.observeAll(order).mapItems {
 			MangaWithHistory(
 				it.manga.toManga(it.tags.toMangaTags()),
 				it.history.toMangaHistory(),
@@ -114,7 +115,7 @@ class HistoryRepository @Inject constructor(
 	}
 
 	suspend fun getOne(manga: Manga): MangaHistory? {
-		return db.historyDao.find(manga.id)?.toMangaHistory()
+		return db.historyDao.find(manga.id)?.recoverIfNeeded(manga)?.toMangaHistory()
 	}
 
 	suspend fun getProgress(mangaId: Long): Float {
@@ -176,5 +177,18 @@ class HistoryRepository @Inject constructor(
 				db.historyDao.recover(id)
 			}
 		}
+	}
+
+	private suspend fun HistoryEntity.recoverIfNeeded(manga: Manga): HistoryEntity {
+		val chapters = manga.chapters
+		if (chapters.isNullOrEmpty() || chapters.any { it.id == chapterId }) {
+			return this
+		}
+		val newChapterId = chapters.getOrNull(
+			(chapters.size * percent).toInt(),
+		)?.id ?: return this
+		val newEntity = copy(chapterId = newChapterId)
+		db.historyDao.update(newEntity)
+		return newEntity
 	}
 }

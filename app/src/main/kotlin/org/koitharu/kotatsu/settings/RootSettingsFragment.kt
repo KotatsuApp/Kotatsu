@@ -1,16 +1,21 @@
 package org.koitharu.kotatsu.settings
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.fragment.app.viewModels
 import androidx.preference.Preference
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.util.ext.observe
 
-class RootSettingsFragment : BasePreferenceFragment(0), SharedPreferences.OnSharedPreferenceChangeListener {
+@AndroidEntryPoint
+class RootSettingsFragment : BasePreferenceFragment(0) {
+
+	private val viewModel: RootSettingsViewModel by viewModels()
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_root)
@@ -22,35 +27,23 @@ class RootSettingsFragment : BasePreferenceFragment(0), SharedPreferences.OnShar
 		bindPreferenceSummary("tracker", R.string.track_sources, R.string.notifications_settings)
 		bindPreferenceSummary("services", R.string.suggestions, R.string.sync, R.string.tracking)
 		findPreference<Preference>("about")?.summary = getString(R.string.app_version, BuildConfig.VERSION_NAME)
-		bindRemoteSourcesSummary()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		settings.subscribe(this)
-	}
-
-	override fun onDestroyView() {
-		settings.unsubscribe(this)
-		super.onDestroyView()
-	}
-
-	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-		when (key) {
-			AppSettings.KEY_SOURCES_HIDDEN -> {
-				bindRemoteSourcesSummary()
+		findPreference<Preference>(AppSettings.KEY_REMOTE_SOURCES)?.let { pref ->
+			val total = viewModel.totalSourcesCount
+			viewModel.enabledSourcesCount.observe(viewLifecycleOwner) {
+				pref.summary = if (it >= 0) {
+					getString(R.string.enabled_d_of_d, it, total)
+				} else {
+					resources.getQuantityString(R.plurals.items, total, total)
+				}
 			}
 		}
 	}
 
 	private fun bindPreferenceSummary(key: String, @StringRes vararg items: Int) {
 		findPreference<Preference>(key)?.summary = items.joinToString { getString(it) }
-	}
-
-	private fun bindRemoteSourcesSummary() {
-		findPreference<Preference>(AppSettings.KEY_REMOTE_SOURCES)?.run {
-			val total = settings.remoteMangaSources.size
-			summary = getString(R.string.enabled_d_of_d, total - settings.hiddenSources.size, total)
-		}
 	}
 }

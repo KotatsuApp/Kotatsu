@@ -10,6 +10,10 @@ class ScrobblerManga(
 	val url: String,
 ) : ListModel {
 
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is ScrobblerManga && other.id == id
+	}
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false
@@ -20,9 +24,7 @@ class ScrobblerManga(
 		if (name != other.name) return false
 		if (altName != other.altName) return false
 		if (cover != other.cover) return false
-		if (url != other.url) return false
-
-		return true
+		return url == other.url
 	}
 
 	override fun hashCode(): Int {

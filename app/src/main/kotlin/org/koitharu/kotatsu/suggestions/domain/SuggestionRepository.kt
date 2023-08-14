@@ -28,6 +28,12 @@ class SuggestionRepository @Inject constructor(
 		}
 	}
 
+	suspend fun getRandom(): Manga? {
+		return db.suggestionDao.getRandom()?.let {
+			it.manga.toManga(it.tags.toMangaTags())
+		}
+	}
+
 	suspend fun clear() {
 		db.suggestionDao.deleteAll()
 	}

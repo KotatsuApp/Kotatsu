@@ -42,6 +42,12 @@
 		android:summary="@string/reader_control_ltr_summary"
 		android:title="@string/reader_control_ltr" />
 
+	<ListPreference
+		android:entries="@array/reader_animation"
+		android:key="reader_animation2"
+		android:title="@string/pages_animation"
+		app:useSimpleSummaryProvider="true" />
+
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="reader_animation"
@@ -59,6 +65,12 @@
 		android:defaultValue="true"
 		android:key="reader_slider"
 		android:title="@string/reader_slider" />
+
+	<ListPreference
+		android:entries="@array/reader_backgrounds"
+		android:key="reader_background"
+		android:title="@string/background"
+		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"

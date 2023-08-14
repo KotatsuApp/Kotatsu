@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.zip
 import androidx.annotation.WorkerThread
 import androidx.collection.ArraySet
 import okio.Closeable
+import org.koitharu.kotatsu.core.util.ext.children
 import java.io.File
 import java.io.FileInputStream
 import java.util.zip.Deflater
@@ -90,7 +91,7 @@ class ZipOutput(
 			}
 			putNextEntry(entry)
 			closeEntry()
-			fileToZip.listFiles()?.forEach { childFile ->
+			fileToZip.children().forEach { childFile ->
 				appendFile(childFile, "$name/${childFile.name}")
 			}
 		} else {

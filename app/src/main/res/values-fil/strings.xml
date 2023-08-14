@@ -120,7 +120,7 @@
     <string name="nothing_found">Walang nahanap</string>
     <string name="remove">Tanggalin</string>
     <string name="add_new_category">Bagong Kategorya</string>
-    <string name="read">Nabasa</string>
+    <string name="read">Magbasa</string>
     <string name="you_have_not_favourites_yet">Wala pang paborito</string>
     <string name="add_to_favourites">I-paborito ito</string>
     <string name="add">Idagdag</string>
@@ -442,4 +442,28 @@
     <string name="no_access_to_file">Wala kang access sa file o direktoryo na ito</string>
     <string name="local_manga_directories">Mga lokal na direktoryo ng manga</string>
     <string name="password">Password</string>
+    <string name="details_button_tip">Pindutin nang matagal ang Magbasa na button upang makita ang iba pang opsyon</string>
+    <string name="description">Paglalarawan</string>
+    <string name="this_month">Sa buwang ito</string>
+    <string name="color_light">Maliwanag</string>
+    <string name="color_dark">Madilim</string>
+    <string name="color_white">Puti</string>
+    <string name="color_black">Itim</string>
+    <string name="background">Background</string>
+    <string name="data_not_restored">Hindi na-restore ang data</string>
+    <string name="data_not_restored_text">Tiyaking napili mo ang tamang backup file</string>
+    <string name="tracker_wifi_only_summary">Huwag suriin ang mga bagong kabanata gamit ang mga naka-metrong network na koneksyon</string>
+    <string name="search_hint">Ilagay ang pamagat ng manga, genre o pangalan ng source</string>
+    <string name="progress">Pag-unlad</string>
+    <string name="order_added">Idinagdag na</string>
+    <string name="view_list">Tingnan ang listahan</string>
+    <string name="languages">Mga wika</string>
+    <string name="voice_search">Paghahanap gamit ang boses</string>
+    <string name="related_manga">Kaugnay na manga</string>
+    <string name="captcha_required_summary">Ang %s ay nangangailangan ng isang captcha upang malutas upang gumana nang maayos</string>
+    <string name="manage_categories">Ayusin ang mga kategorya</string>
+    <string name="suggestions_wifi_only_summary">Huwag i-update ang mga mungkahi gamit ang mga naka-metrong network na koneksyon</string>
+    <string name="show">Ipakita</string>
+    <string name="unknown">Di-alam</string>
+    <string name="in_progress">Isinasagawa</string>
 </resources>

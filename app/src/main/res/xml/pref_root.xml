@@ -9,7 +9,7 @@
 		android:title="@string/appearance" />
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesListFragment"
+		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesManageFragment"
 		android:icon="@drawable/ic_manga_source"
 		android:key="remote_sources"
 		android:title="@string/remote_sources" />
@@ -27,7 +27,7 @@
 		android:title="@string/network" />
 
 	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.UserDataSettingsFragment"
+		android:fragment="org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment"
 		android:icon="@drawable/ic_data_privacy"
 		android:key="userdata"
 		android:title="@string/data_and_privacy" />

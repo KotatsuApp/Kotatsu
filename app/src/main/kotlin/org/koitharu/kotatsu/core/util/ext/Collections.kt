@@ -3,15 +3,7 @@ package org.koitharu.kotatsu.core.util.ext
 import androidx.collection.ArrayMap
 import androidx.collection.ArraySet
 import java.util.Collections
-
-@Deprecated("TODO: remove")
-fun <T> MutableList<T>.move(sourceIndex: Int, targetIndex: Int) {
-	if (sourceIndex <= targetIndex) {
-		Collections.rotate(subList(sourceIndex, targetIndex + 1), -1)
-	} else {
-		Collections.rotate(subList(targetIndex, sourceIndex + 1), 1)
-	}
-}
+import java.util.EnumSet
 
 inline fun <T> MutableSet(size: Int, init: (index: Int) -> T): MutableSet<T> {
 	val set = ArraySet<T>(size)
@@ -40,10 +32,6 @@ fun <K, V> Map<K, V>.findKeyByValue(value: V): K? {
 	return null
 }
 
-inline fun <T> Collection<T>.filterToSet(predicate: (T) -> Boolean): Set<T> {
-	return filterTo(ArraySet(size), predicate)
-}
-
 fun <T> Sequence<T>.toListSorted(comparator: Comparator<T>): List<T> {
 	return toMutableList().apply { sortWith(comparator) }
 }
@@ -60,4 +48,10 @@ fun <T> List<T>.takeMostFrequent(limit: Int): List<T> {
 			add(entries[i].key)
 		}
 	}
+}
+
+inline fun <reified E : Enum<E>> Collection<E>.toEnumSet(): EnumSet<E> = if (isEmpty()) {
+	EnumSet.noneOf(E::class.java)
+} else {
+	EnumSet.copyOf(this)
 }

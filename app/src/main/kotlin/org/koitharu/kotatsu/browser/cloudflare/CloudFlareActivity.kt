@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.webkit.CookieManager
-import android.webkit.WebSettings
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.graphics.Insets
 import androidx.core.net.toUri
@@ -18,7 +17,6 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
 import org.koitharu.kotatsu.core.network.CommonHeaders
-import org.koitharu.kotatsu.core.network.CommonHeadersInterceptor
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.TaggedActivityResult

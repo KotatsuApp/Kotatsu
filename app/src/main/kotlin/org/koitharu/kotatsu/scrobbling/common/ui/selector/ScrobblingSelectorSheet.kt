@@ -84,7 +84,6 @@ class ScrobblingSelectorSheet :
 				tab.select()
 			}
 		}
-		viewModel.searchQuery.observe(viewLifecycleOwner, ::onSearchQueryChanged)
 	}
 
 	override fun onDestroyView() {
@@ -155,10 +154,6 @@ class ScrobblingSelectorSheet :
 	private fun openSearch() {
 		val menuItem = requireViewBinding().toolbar.menu.findItem(R.id.action_search) ?: return
 		menuItem.expandActionView()
-	}
-
-	private fun onSearchQueryChanged(query: String?) {
-
 	}
 
 	private fun onError(e: Throwable) {

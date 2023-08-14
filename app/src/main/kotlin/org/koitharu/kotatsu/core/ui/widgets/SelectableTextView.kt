@@ -26,4 +26,8 @@ class SelectableTextView @JvmOverloads constructor(
 			Selection.setSelection(spannableText, text.length)
 		}
 	}
+
+	override fun scrollTo(x: Int, y: Int) {
+		super.scrollTo(0, 0)
+	}
 }

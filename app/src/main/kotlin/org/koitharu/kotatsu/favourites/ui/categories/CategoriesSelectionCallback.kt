@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
-import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import com.google.android.material.R as materialR
 
 class CategoriesSelectionCallback(
@@ -25,19 +24,42 @@ class CategoriesSelectionCallback(
 	}
 
 	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		val isOneItem = controller.count == 1
-		menu.findItem(R.id.action_edit)?.isVisible = isOneItem
+		val categories = viewModel.getCategories(controller.peekCheckedIds())
+		var canShow = categories.isNotEmpty()
+		var canHide = canShow
+		for (cat in categories) {
+			if (cat.isVisibleInLibrary) {
+				canShow = false
+			} else {
+				canHide = false
+			}
+		}
+		menu.findItem(R.id.action_show)?.isVisible = canShow
+		menu.findItem(R.id.action_hide)?.isVisible = canHide
 		mode.title = controller.count.toString()
 		return true
 	}
 
 	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
 		return when (item.itemId) {
-			R.id.action_edit -> {
+			/*R.id.action_view -> {
 				val id = controller.peekCheckedIds().singleOrNull() ?: return false
 				val context = recyclerView.context
-				val intent = FavouritesCategoryEditActivity.newIntent(context, id)
+				val category = viewModel.getCategory(id) ?: return false
+				val intent = FavouritesActivity.newIntent(context, category)
 				context.startActivity(intent)
+				mode.finish()
+				true
+			}*/
+
+			R.id.action_show -> {
+				viewModel.setIsVisible(controller.snapshot(), true)
+				mode.finish()
+				true
+			}
+
+			R.id.action_hide -> {
+				viewModel.setIsVisible(controller.snapshot(), false)
 				mode.finish()
 				true
 			}

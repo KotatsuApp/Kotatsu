@@ -4,14 +4,18 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
@@ -20,10 +24,12 @@ import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.domain.model.HistoryOrder
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
@@ -42,14 +48,25 @@ class HistoryListViewModel @Inject constructor(
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
-	val isGroupingEnabled = settings.observeAsStateFlow(
-		scope = viewModelScope + Dispatchers.Default,
+	val sortOrder: StateFlow<HistoryOrder> = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.IO,
+		key = AppSettings.KEY_HISTORY_ORDER,
+		valueProducer = { historySortOrder },
+	)
+
+	val isGroupingEnabled = settings.observeAsFlow(
 		key = AppSettings.KEY_HISTORY_GROUPING,
 		valueProducer = { isHistoryGroupingEnabled },
+	).combine(sortOrder) { g, s ->
+		g && s.isGroupingSupported()
+	}.stateIn(
+		scope = viewModelScope + Dispatchers.Default,
+		started = SharingStarted.Eagerly,
+		initialValue = settings.isHistoryGroupingEnabled && sortOrder.value.isGroupingSupported(),
 	)
 
 	override val content = combine(
-		repository.observeAllWithHistory(),
+		sortOrder.flatMapLatest { repository.observeAllWithHistory(it) },
 		isGroupingEnabled,
 		listMode,
 	) { list, grouped, mode ->
@@ -77,9 +94,20 @@ class HistoryListViewModel @Inject constructor(
 
 	override fun onRetry() = Unit
 
-	fun clearHistory() {
-		launchLoadingJob(Dispatchers.Default) {
-			repository.clear()
+	fun setSortOrder(order: HistoryOrder) {
+		settings.historySortOrder = order
+	}
+
+	fun clearHistory(minDate: Long) {
+		launchJob(Dispatchers.Default) {
+			val stringRes = if (minDate <= 0) {
+				repository.clear()
+				R.string.history_cleared
+			} else {
+				repository.deleteAfter(minDate)
+				R.string.removed_from_history
+			}
+			onActionDone.call(ReversibleAction(stringRes, null))
 		}
 	}
 
@@ -103,14 +131,17 @@ class HistoryListViewModel @Inject constructor(
 		mode: ListMode,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 1)
-		var prevDate: DateTimeAgo? = null
+		val order = sortOrder.value
+		var prevHeader: ListHeader? = null
 		for ((manga, history) in list) {
 			if (grouped) {
-				val date = timeAgo(history.updatedAt)
-				if (prevDate != date) {
-					result += date
+				val header = history.header(order)
+				if (header != prevHeader) {
+					if (header != null) {
+						result += header
+					}
+					prevHeader = header
 				}
-				prevDate = date
 			}
 			result += when (mode) {
 				ListMode.LIST -> manga.toListModel(extraProvider)
@@ -119,6 +150,21 @@ class HistoryListViewModel @Inject constructor(
 			}
 		}
 		return result
+	}
+
+	private fun MangaHistory.header(order: HistoryOrder): ListHeader? = when (order) {
+		HistoryOrder.UPDATED -> ListHeader(timeAgo(updatedAt))
+		HistoryOrder.CREATED -> ListHeader(timeAgo(createdAt))
+		HistoryOrder.PROGRESS -> ListHeader(
+			when (percent) {
+				1f -> R.string.status_completed
+				in 0f..0.01f -> R.string.status_planned
+				in 0f..1f -> R.string.status_reading
+				else -> R.string.unknown
+			},
+		)
+
+		HistoryOrder.ALPHABETIC -> null
 	}
 
 	private fun timeAgo(date: Date): DateTimeAgo {
@@ -130,6 +176,7 @@ class HistoryListViewModel @Inject constructor(
 			diffDays < 1 -> DateTimeAgo.Today
 			diffDays == 1 -> DateTimeAgo.Yesterday
 			diffDays < 6 -> DateTimeAgo.DaysAgo(diffDays)
+			diffDays < 200 -> DateTimeAgo.MonthsAgo(diffDays / 30)
 			else -> DateTimeAgo.LongAgo
 		}
 	}

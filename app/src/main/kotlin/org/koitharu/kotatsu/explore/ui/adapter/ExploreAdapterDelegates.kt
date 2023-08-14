@@ -1,72 +1,100 @@
 package org.koitharu.kotatsu.explore.ui.adapter
 
+import android.graphics.Color
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import coil.ImageLoader
-import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
-import org.koitharu.kotatsu.core.ui.image.FaviconFallbackDrawable
+import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
+import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
-import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
+import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.source
-import org.koitharu.kotatsu.databinding.ItemEmptyCardBinding
+import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemExploreButtonsBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceGridBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceListBinding
-import org.koitharu.kotatsu.databinding.ItemHeaderButtonBinding
-import org.koitharu.kotatsu.explore.ui.model.ExploreItem
-import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
+import org.koitharu.kotatsu.databinding.ItemRecommendationBinding
+import org.koitharu.kotatsu.explore.ui.model.ExploreButtons
+import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
+import org.koitharu.kotatsu.explore.ui.model.RecommendationsItem
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.model.Manga
+import com.google.android.material.R as materialR
 
 fun exploreButtonsAD(
 	clickListener: View.OnClickListener,
-) = adapterDelegateViewBinding<ExploreItem.Buttons, ExploreItem, ItemExploreButtonsBinding>(
+) = adapterDelegateViewBinding<ExploreButtons, ListModel, ItemExploreButtonsBinding>(
 	{ layoutInflater, parent -> ItemExploreButtonsBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	binding.buttonBookmarks.setOnClickListener(clickListener)
-	binding.buttonHistory.setOnClickListener(clickListener)
+	binding.buttonDownloads.setOnClickListener(clickListener)
 	binding.buttonLocal.setOnClickListener(clickListener)
-	binding.buttonSuggestions.setOnClickListener(clickListener)
-	binding.buttonFavourites.setOnClickListener(clickListener)
 	binding.buttonRandom.setOnClickListener(clickListener)
 
 	bind {
-		binding.buttonSuggestions.isVisible = item.isSuggestionsEnabled
+		if (item.isRandomLoading) {
+			val icon = CircularProgressDrawable(context)
+			icon.strokeWidth = context.resources.resolveDp(2f)
+			icon.setColorSchemeColors(context.getThemeColor(materialR.attr.colorPrimary, Color.DKGRAY))
+			binding.buttonRandom.icon = icon
+			icon.start()
+		} else {
+			binding.buttonRandom.setIconResource(R.drawable.ic_dice)
+		}
+		binding.buttonRandom.isClickable = !item.isRandomLoading
 	}
 }
 
-fun exploreSourcesHeaderAD(
-	listener: ExploreListEventListener,
-) = adapterDelegateViewBinding<ExploreItem.Header, ExploreItem, ItemHeaderButtonBinding>(
-	{ layoutInflater, parent -> ItemHeaderButtonBinding.inflate(layoutInflater, parent, false) },
+fun exploreRecommendationItemAD(
+	coil: ImageLoader,
+	clickListener: View.OnClickListener,
+	itemClickListener: OnListItemClickListener<Manga>,
+	lifecycleOwner: LifecycleOwner,
+) = adapterDelegateViewBinding<RecommendationsItem, ListModel, ItemRecommendationBinding>(
+	{ layoutInflater, parent -> ItemRecommendationBinding.inflate(layoutInflater, parent, false) },
 ) {
 
-	val listenerAdapter = View.OnClickListener {
-		listener.onManageClick(itemView)
+	binding.buttonMore.setOnClickListener(clickListener)
+	binding.root.setOnClickListener { v ->
+		itemClickListener.onItemClick(item.manga, v)
 	}
 
-	binding.buttonMore.setOnClickListener(listenerAdapter)
-
 	bind {
-		binding.textViewTitle.setText(item.titleResId)
-		binding.buttonMore.isVisible = item.isButtonVisible
+		binding.textViewTitle.text = item.manga.title
+		binding.textViewSubtitle.textAndVisible = item.summary
+		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.run {
+			placeholder(R.drawable.ic_placeholder)
+			fallback(R.drawable.ic_placeholder)
+			error(R.drawable.ic_error_placeholder)
+			allowRgb565(true)
+			transformations(TrimTransformation())
+			source(item.manga.source)
+			enqueueWith(coil)
+		}
+	}
+
+	onViewRecycled {
+		binding.imageViewCover.disposeImageRequest()
 	}
 }
 
 fun exploreSourceListItemAD(
 	coil: ImageLoader,
-	listener: OnListItemClickListener<ExploreItem.Source>,
+	listener: OnListItemClickListener<MangaSourceItem>,
 	lifecycleOwner: LifecycleOwner,
-) = adapterDelegateViewBinding<ExploreItem.Source, ExploreItem, ItemExploreSourceListBinding>(
+) = adapterDelegateViewBinding<MangaSourceItem, ListModel, ItemExploreSourceListBinding>(
 	{ layoutInflater, parent -> ItemExploreSourceListBinding.inflate(layoutInflater, parent, false) },
-	on = { item, _, _ -> item is ExploreItem.Source && !item.isGrid },
+	on = { item, _, _ -> item is MangaSourceItem && !item.isGrid },
 ) {
 
 	val eventListener = AdapterDelegateClickListenerAdapter(this, listener)
@@ -76,7 +104,7 @@ fun exploreSourceListItemAD(
 
 	bind {
 		binding.textViewTitle.text = item.source.title
-		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
+		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)
 			placeholder(fallbackIcon)
@@ -93,11 +121,11 @@ fun exploreSourceListItemAD(
 
 fun exploreSourceGridItemAD(
 	coil: ImageLoader,
-	listener: OnListItemClickListener<ExploreItem.Source>,
+	listener: OnListItemClickListener<MangaSourceItem>,
 	lifecycleOwner: LifecycleOwner,
-) = adapterDelegateViewBinding<ExploreItem.Source, ExploreItem, ItemExploreSourceGridBinding>(
+) = adapterDelegateViewBinding<MangaSourceItem, ListModel, ItemExploreSourceGridBinding>(
 	{ layoutInflater, parent -> ItemExploreSourceGridBinding.inflate(layoutInflater, parent, false) },
-	on = { item, _, _ -> item is ExploreItem.Source && item.isGrid },
+	on = { item, _, _ -> item is MangaSourceItem && item.isGrid },
 ) {
 
 	val eventListener = AdapterDelegateClickListenerAdapter(this, listener)
@@ -107,7 +135,7 @@ fun exploreSourceGridItemAD(
 
 	bind {
 		binding.textViewTitle.text = item.source.title
-		val fallbackIcon = FaviconFallbackDrawable(context, item.source.name)
+		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Large, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)
 			placeholder(fallbackIcon)
@@ -121,21 +149,3 @@ fun exploreSourceGridItemAD(
 		binding.imageViewIcon.disposeImageRequest()
 	}
 }
-
-fun exploreEmptyHintListAD(
-	listener: ListStateHolderListener,
-) = adapterDelegateViewBinding<ExploreItem.EmptyHint, ExploreItem, ItemEmptyCardBinding>(
-	{ inflater, parent -> ItemEmptyCardBinding.inflate(inflater, parent, false) },
-) {
-
-	binding.buttonRetry.setOnClickListener { listener.onEmptyActionClick() }
-
-	bind {
-		binding.icon.setImageResource(item.icon)
-		binding.textPrimary.setText(item.textPrimary)
-		binding.textSecondary.setTextAndVisible(item.textSecondary)
-		binding.buttonRetry.setTextAndVisible(item.actionStringRes)
-	}
-}
-
-fun exploreLoadingAD() = adapterDelegate<ExploreItem.Loading, ExploreItem>(R.layout.item_loading_state) {}

@@ -22,9 +22,7 @@ class HistoryInfo(
 		if (totalChapters != other.totalChapters) return false
 		if (currentChapter != other.currentChapter) return false
 		if (history != other.history) return false
-		if (isIncognitoMode != other.isIncognitoMode) return false
-
-		return true
+		return isIncognitoMode == other.isIncognitoMode
 	}
 
 	override fun hashCode(): Int {

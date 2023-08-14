@@ -36,6 +36,8 @@ interface MangaRepository {
 
 	suspend fun getTags(): Set<MangaTag>
 
+	suspend fun getRelated(seed: Manga): List<Manga>
+
 	@Singleton
 	class Factory @Inject constructor(
 		private val localMangaRepository: LocalMangaRepository,

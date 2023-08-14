@@ -8,12 +8,10 @@ import android.view.View
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.dialog.CheckBoxAlertDialog
-import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.tracker.work.TrackWorker
+import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 
 class FeedMenuProvider(
 	private val snackbarHost: View,
-	private val anchorView: View?,
 	private val viewModel: FeedViewModel,
 ) : MenuProvider {
 
@@ -26,7 +24,7 @@ class FeedMenuProvider(
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 		R.id.action_update -> {
-			TrackWorker.startNow(context)
+			viewModel.update()
 			true
 		}
 
@@ -43,9 +41,8 @@ class FeedMenuProvider(
 			true
 		}
 
-		R.id.action_settings -> {
-			val intent = SettingsActivity.newTrackerSettingsIntent(context)
-			context.startActivity(intent)
+		R.id.action_updated -> {
+			context.startActivity(UpdatesActivity.newIntent(context))
 			true
 		}
 

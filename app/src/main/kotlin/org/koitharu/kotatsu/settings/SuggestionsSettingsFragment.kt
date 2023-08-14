@@ -25,6 +25,9 @@ class SuggestionsSettingsFragment :
 	@Inject
 	lateinit var tagsCompletionProvider: TagsAutoCompleteProvider
 
+	@Inject
+	lateinit var suggestionsScheduler: SuggestionsWorker.Scheduler
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		settings.subscribe(this)
@@ -53,7 +56,7 @@ class SuggestionsSettingsFragment :
 	private fun onSuggestionsEnabled() {
 		lifecycleScope.launch {
 			if (repository.isEmpty()) {
-				SuggestionsWorker.startNow(context ?: return@launch)
+				suggestionsScheduler.startNow()
 			}
 		}
 	}

@@ -37,6 +37,10 @@ abstract class TracksDao {
 	@Query("SELECT manga.* FROM tracks LEFT JOIN manga ON manga.manga_id = tracks.manga_id WHERE chapters_new > 0 ORDER BY chapters_new DESC")
 	abstract fun observeUpdatedManga(): Flow<List<MangaWithTags>>
 
+	@Transaction
+	@Query("SELECT manga.* FROM tracks LEFT JOIN manga ON manga.manga_id = tracks.manga_id WHERE chapters_new > 0 ORDER BY chapters_new DESC LIMIT :limit")
+	abstract fun observeUpdatedManga(limit: Int): Flow<List<MangaWithTags>>
+
 	@Query("DELETE FROM tracks")
 	abstract suspend fun clear()
 
@@ -49,7 +53,7 @@ abstract class TracksDao {
 	@Query("DELETE FROM tracks WHERE manga_id = :mangaId")
 	abstract suspend fun delete(mangaId: Long)
 
-	@Query("DELETE FROM tracks WHERE manga_id NOT IN (SELECT manga_id FROM history UNION SELECT manga_id FROM favourites)")
+	@Query("DELETE FROM tracks WHERE manga_id NOT IN (SELECT manga_id FROM history UNION SELECT manga_id FROM favourites WHERE category_id IN (SELECT category_id FROM favourite_categories WHERE track = 1))")
 	abstract suspend fun gc()
 
 	@Upsert

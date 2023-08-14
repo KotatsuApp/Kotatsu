@@ -67,8 +67,15 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 	private fun onRestoreDone(result: CompositeResult) {
 		val builder = MaterialAlertDialogBuilder(context ?: return)
 		when {
-			result.isAllSuccess -> builder.setTitle(R.string.data_restored)
-				.setMessage(R.string.data_restored_success)
+			result.isEmpty -> {
+				builder.setTitle(R.string.data_not_restored)
+					.setMessage(R.string.data_not_restored_text)
+			}
+
+			result.isAllSuccess -> {
+				builder.setTitle(R.string.data_restored)
+					.setMessage(R.string.data_restored_success)
+			}
 
 			result.isAllFailed -> builder.setTitle(R.string.error)
 				.setMessage(
@@ -84,6 +91,7 @@ class RestoreDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 			.show()
 		dismiss()
 	}
+
 
 	companion object {
 

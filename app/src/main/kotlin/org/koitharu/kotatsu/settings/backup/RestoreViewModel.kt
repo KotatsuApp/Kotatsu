@@ -48,13 +48,29 @@ class RestoreViewModel @Inject constructor(
 				val result = CompositeResult()
 
 				progress.value = 0f
-				result += repository.restoreHistory(backup.getEntry(BackupEntry.HISTORY))
+				backup.getEntry(BackupEntry.HISTORY)?.let {
+					result += repository.restoreHistory(it)
+				}
 
-				progress.value = 0.3f
-				result += repository.restoreCategories(backup.getEntry(BackupEntry.CATEGORIES))
+				progress.value = 0.2f
+				backup.getEntry(BackupEntry.CATEGORIES)?.let {
+					result += repository.restoreCategories(it)
+				}
+
+				progress.value = 0.4f
+				backup.getEntry(BackupEntry.FAVOURITES)?.let {
+					result += repository.restoreFavourites(it)
+				}
 
 				progress.value = 0.6f
-				result += repository.restoreFavourites(backup.getEntry(BackupEntry.FAVOURITES))
+				backup.getEntry(BackupEntry.BOOKMARKS)?.let {
+					result += repository.restoreBookmarks(it)
+				}
+
+				progress.value = 0.8f
+				backup.getEntry(BackupEntry.SETTINGS)?.let {
+					result += repository.restoreSettings(it)
+				}
 
 				progress.value = 1f
 				onRestoreDone.call(result)

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@drawable/list_selector"
+	android:clipChildren="false">
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/imageView_cover"
+		android:layout_width="40dp"
+		android:layout_height="40dp"
+		android:layout_marginStart="8dp"
+		android:layout_marginTop="16dp"
+		android:scaleType="centerCrop"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		tools:src="@tools:sample/backgrounds/scenic" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginEnd="8dp"
+		android:ellipsize="end"
+		android:maxLines="1"
+		android:textAppearance="?attr/textAppearanceBodyLarge"
+		app:layout_constraintBottom_toTopOf="@+id/textView_subtitle"
+		app:layout_constraintEnd_toStartOf="@id/button_more"
+		app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+		app:layout_constraintTop_toTopOf="@+id/imageView_cover"
+		tools:text="@tools:sample/lorem" />
+
+	<TextView
+		android:id="@+id/textView_subtitle"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginEnd="8dp"
+		android:ellipsize="end"
+		android:maxLines="1"
+		android:textAppearance="?attr/textAppearanceBodyMedium"
+		app:layout_constraintBottom_toBottomOf="@+id/imageView_cover"
+		app:layout_constraintEnd_toStartOf="@id/button_more"
+		app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+		app:layout_constraintTop_toBottomOf="@+id/textView_title"
+		tools:text="@tools:sample/lorem/random" />
+
+	<Button
+		android:id="@+id/button_more"
+		style="@style/Widget.Kotatsu.ExploreButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="8dp"
+		android:gravity="center"
+		android:minWidth="120dp"
+		android:text="@string/more"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

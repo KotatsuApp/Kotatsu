@@ -3,9 +3,14 @@
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<item
-		android:id="@+id/nav_shelf"
-		android:icon="@drawable/ic_bookshelf_selector"
-		android:title="@string/manga_shelf" />
+		android:id="@+id/nav_history"
+		android:icon="@drawable/ic_history_selector"
+		android:title="@string/history" />
+
+	<item
+		android:id="@+id/nav_favourites"
+		android:icon="@drawable/ic_favourites_selector"
+		android:title="@string/favourites" />
 
 	<item
 		android:id="@+id/nav_explore"
@@ -16,10 +21,5 @@
 		android:id="@+id/nav_feed"
 		android:icon="@drawable/ic_feed_selector"
 		android:title="@string/feed" />
-
-	<item
-		android:id="@+id/nav_tools"
-		android:icon="@drawable/ic_tools_selector"
-		android:title="@string/options" />
 
 </menu>

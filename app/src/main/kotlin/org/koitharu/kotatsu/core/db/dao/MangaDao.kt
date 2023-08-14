@@ -1,6 +1,12 @@
 package org.koitharu.kotatsu.core.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
+import androidx.room.Upsert
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.MangaTagsEntity
 import org.koitharu.kotatsu.core.db.entity.MangaWithTags
@@ -21,8 +27,8 @@ abstract class MangaDao {
 	@Query("SELECT * FROM manga WHERE (title LIKE :query OR alt_title LIKE :query) AND source = :source AND manga_id IN (SELECT manga_id FROM favourites UNION SELECT manga_id FROM history) LIMIT :limit")
 	abstract suspend fun searchByTitle(query: String, source: String, limit: Int): List<MangaWithTags>
 
-	@Insert(onConflict = OnConflictStrategy.IGNORE)
-	abstract suspend fun insert(manga: MangaEntity): Long
+	@Upsert
+	abstract suspend fun upsert(manga: MangaEntity)
 
 	@Update(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun update(manga: MangaEntity): Int
@@ -35,15 +41,13 @@ abstract class MangaDao {
 
 	@Transaction
 	open suspend fun upsert(manga: MangaEntity, tags: Iterable<TagEntity>? = null) {
-		if (update(manga) <= 0) {
-			insert(manga)
-			if (tags != null) {
-				clearTagRelation(manga.id)
-				tags.map {
-					MangaTagsEntity(manga.id, it.id)
-				}.forEach {
-					insertTagRelation(it)
-				}
+		upsert(manga)
+		if (tags != null) {
+			clearTagRelation(manga.id)
+			tags.map {
+				MangaTagsEntity(manga.id, it.id)
+			}.forEach {
+				insertTagRelation(it)
 			}
 		}
 	}

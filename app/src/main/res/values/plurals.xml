@@ -24,4 +24,8 @@
 		<item quantity="one">%1$d day ago</item>
 		<item quantity="other">%1$d days ago</item>
 	</plurals>
+	<plurals name="months_ago">
+		<item quantity="one">%1$d month ago</item>
+		<item quantity="other">%1$d months ago</item>
+	</plurals>
 </resources>

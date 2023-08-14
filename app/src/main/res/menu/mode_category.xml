@@ -4,9 +4,15 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/action_edit"
-		android:icon="@drawable/ic_edit"
-		android:title="@string/edit"
+		android:id="@+id/action_show"
+		android:icon="@drawable/ic_eye"
+		android:title="@string/show"
+		app:showAsAction="ifRoom" />
+
+	<item
+		android:id="@+id/action_hide"
+		android:icon="@drawable/ic_eye_off"
+		android:title="@string/hide"
 		app:showAsAction="ifRoom" />
 
 	<item

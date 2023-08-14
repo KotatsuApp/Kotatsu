@@ -67,6 +67,12 @@ class FavouritesRepository @Inject constructor(
 		}.distinctUntilChanged()
 	}
 
+	fun observeCategoriesForLibrary(): Flow<List<FavouriteCategory>> {
+		return db.favouriteCategoriesDao.observeAllForLibrary().mapItems {
+			it.toFavouriteCategory()
+		}.distinctUntilChanged()
+	}
+
 	fun observeCategoriesWithCovers(): Flow<Map<FavouriteCategory, List<Cover>>> {
 		return db.favouriteCategoriesDao.observeAll()
 			.map {
@@ -135,14 +141,6 @@ class FavouritesRepository @Inject constructor(
 
 	suspend fun updateCategoryTracking(id: Long, isTrackingEnabled: Boolean) {
 		db.favouriteCategoriesDao.updateTracking(id, isTrackingEnabled)
-	}
-
-	suspend fun removeCategory(id: Long) {
-		db.withTransaction {
-			db.favouriteCategoriesDao.delete(id)
-			db.favouritesDao.deleteAll(id)
-		}
-		channels.deleteChannel(id)
 	}
 
 	suspend fun removeCategories(ids: Collection<Long>) {

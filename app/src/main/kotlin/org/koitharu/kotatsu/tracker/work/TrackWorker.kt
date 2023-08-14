@@ -1,15 +1,16 @@
 package org.koitharu.kotatsu.tracker.work
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.core.app.NotificationCompat.VISIBILITY_SECRET
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.hilt.work.HiltWorker
 import androidx.lifecycle.asFlow
 import androidx.work.BackoffPolicy
@@ -29,31 +30,40 @@ import androidx.work.WorkerParameters
 import androidx.work.await
 import coil.ImageLoader
 import coil.request.ImageRequest
+import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.WorkManagerHelper
+import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
+import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import org.koitharu.kotatsu.tracker.domain.Tracker
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @HiltWorker
 class TrackWorker @AssistedInject constructor(
@@ -65,18 +75,16 @@ class TrackWorker @AssistedInject constructor(
 	@TrackerLogger private val logger: FileLogger,
 ) : CoroutineWorker(context, workerParams) {
 
-	private val notificationManager by lazy {
-		applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-	}
+	private val notificationManager by lazy { NotificationManagerCompat.from(applicationContext) }
 
 	override suspend fun doWork(): Result {
 		trySetForeground()
-		logger.log("doWork()")
-		try {
-			return doWorkImpl()
+		logger.log("doWork(): attempt $runAttemptCount")
+		return try {
+			doWorkImpl()
 		} catch (e: Throwable) {
 			logger.log("fatal", e)
-			throw e
+			Result.failure()
 		} finally {
 			withContext(NonCancellable) {
 				logger.flush()
@@ -89,7 +97,12 @@ class TrackWorker @AssistedInject constructor(
 		if (!settings.isTrackerEnabled) {
 			return Result.success(workDataOf(0, 0))
 		}
-		val tracks = tracker.getAllTracks()
+		val retryIds = getRetryIds()
+		val tracks = if (retryIds.isNotEmpty()) {
+			tracker.getTracks(retryIds)
+		} else {
+			tracker.getAllTracks()
+		}
 		logger.log("Total ${tracks.size} tracks")
 		if (tracks.isEmpty()) {
 			return Result.success(workDataOf(0, 0))
@@ -100,47 +113,68 @@ class TrackWorker @AssistedInject constructor(
 
 		var success = 0
 		var failed = 0
+		val retry = HashSet<Long>()
 		results.forEach { x ->
-			if (x == null) {
-				failed++
-			} else {
-				success++
+			when (x) {
+				is MangaUpdates.Success -> success++
+				is MangaUpdates.Failure -> {
+					failed++
+					if (x.shouldRetry()) {
+						retry += x.manga.id
+					}
+				}
 			}
 		}
-		logger.log("Result: success: $success, failed: $failed")
+		if (runAttemptCount > MAX_ATTEMPTS) {
+			retry.clear()
+		}
+		setRetryIds(retry)
+		logger.log("Result: success: $success, failed: $failed, retry: ${retry.size}")
 		val resultData = workDataOf(success, failed)
-		return if (success == 0 && failed != 0) {
-			Result.failure(resultData)
-		} else {
-			Result.success(resultData)
+		return when {
+			retry.isNotEmpty() -> Result.retry()
+			success == 0 && failed != 0 -> Result.failure(resultData)
+			else -> Result.success(resultData)
 		}
 	}
 
-	private suspend fun checkUpdatesAsync(tracks: List<TrackingItem>): List<MangaUpdates?> {
-		val dispatcher = Dispatchers.Default.limitedParallelism(MAX_PARALLELISM)
-		return supervisorScope {
-			tracks.map { (track, channelId) ->
-				async(dispatcher) {
-					runCatchingCancellable {
-						tracker.fetchUpdates(track, commit = true)
-					}.onFailure {
-						logger.log("checkUpdatesAsync", it)
-					}.onSuccess { updates ->
-						if (updates.isValid && updates.isNotEmpty()) {
-							showNotification(
-								manga = updates.manga,
-								channelId = channelId,
-								newChapters = updates.newChapters,
-							)
-						}
-					}.getOrNull()
+	private suspend fun checkUpdatesAsync(tracks: List<TrackingItem>): List<MangaUpdates> {
+		val semaphore = Semaphore(MAX_PARALLELISM)
+		return channelFlow {
+			for ((track, channelId) in tracks) {
+				launch {
+					semaphore.withPermit {
+						send(
+							runCatchingCancellable {
+								tracker.fetchUpdates(track, commit = true)
+							}.onFailure { e ->
+								if (e is CloudFlareProtectedException) {
+									CaptchaNotifier(applicationContext).notify(e)
+								}
+								logger.log("checkUpdatesAsync", e)
+							}.onSuccess { updates ->
+								if (updates.isValid && updates.isNotEmpty()) {
+									showNotification(
+										manga = updates.manga,
+										channelId = channelId,
+										newChapters = updates.newChapters,
+									)
+								}
+							}.getOrElse { error ->
+								MangaUpdates.Failure(
+									manga = track.manga,
+									error = error,
+								)
+							},
+						)
+					}
 				}
-			}.awaitAll()
-		}
+			}
+		}.toList(ArrayList(tracks.size))
 	}
 
 	private suspend fun showNotification(manga: Manga, channelId: String?, newChapters: List<MangaChapter>) {
-		if (newChapters.isEmpty() || channelId == null) {
+		if (newChapters.isEmpty() || channelId == null || !applicationContext.checkNotificationPermission()) {
 			return
 		}
 		val id = manga.url.hashCode()
@@ -204,18 +238,15 @@ class TrackWorker @AssistedInject constructor(
 
 	override suspend fun getForegroundInfo(): ForegroundInfo {
 		val title = applicationContext.getString(R.string.check_for_new_chapters)
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val channel = NotificationChannel(
-				WORKER_CHANNEL_ID,
-				title,
-				NotificationManager.IMPORTANCE_LOW,
-			)
-			channel.setShowBadge(false)
-			channel.enableVibration(false)
-			channel.setSound(null, null)
-			channel.enableLights(false)
-			notificationManager.createNotificationChannel(channel)
-		}
+		val channel = NotificationChannelCompat.Builder(WORKER_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+			.setName(title)
+			.setShowBadge(false)
+			.setVibrationEnabled(false)
+			.setSound(null, null)
+			.setLightsEnabled(false)
+			.build()
+		notificationManager.createNotificationChannel(channel)
+
 		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
 			.setContentTitle(title)
 			.setPriority(NotificationCompat.PRIORITY_MIN)
@@ -230,6 +261,22 @@ class TrackWorker @AssistedInject constructor(
 		return ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
 	}
 
+	private suspend fun setRetryIds(ids: Set<Long>) = runInterruptible(Dispatchers.IO) {
+		val prefs = applicationContext.getSharedPreferences(TAG, Context.MODE_PRIVATE)
+		prefs.edit(commit = true) {
+			if (ids.isEmpty()) {
+				remove(KEY_RETRY_IDS)
+			} else {
+				putStringSet(KEY_RETRY_IDS, ids.mapToSet { it.toString() })
+			}
+		}
+	}
+
+	private fun getRetryIds(): Set<Long> {
+		val prefs = applicationContext.getSharedPreferences(TAG, Context.MODE_PRIVATE)
+		return prefs.getStringSet(KEY_RETRY_IDS, null)?.mapToSet { it.toLong() }.orEmpty()
+	}
+
 	private fun workDataOf(success: Int, failed: Int): Data {
 		return Data.Builder()
 			.putInt(DATA_KEY_SUCCESS, success)
@@ -237,57 +284,70 @@ class TrackWorker @AssistedInject constructor(
 			.build()
 	}
 
-	companion object : PeriodicWorkScheduler {
+	@Reusable
+	class Scheduler @Inject constructor(
+		private val workManager: WorkManager,
+		private val settings: AppSettings,
+	) : PeriodicWorkScheduler {
 
-		private const val WORKER_CHANNEL_ID = "track_worker"
-		private const val WORKER_NOTIFICATION_ID = 35
-		private const val TAG = "tracking"
-		private const val TAG_ONESHOT = "tracking_oneshot"
-		private const val MAX_PARALLELISM = 4
-		private const val DATA_KEY_SUCCESS = "success"
-		private const val DATA_KEY_FAILED = "failed"
-
-		override suspend fun schedule(context: Context) {
-			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+		override suspend fun schedule() {
+			val constraints = createConstraints()
 			val request = PeriodicWorkRequestBuilder<TrackWorker>(4, TimeUnit.HOURS)
 				.setConstraints(constraints)
 				.addTag(TAG)
-				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
+				.setBackoffCriteria(BackoffPolicy.LINEAR, 5, TimeUnit.MINUTES)
 				.build()
-			WorkManager.getInstance(context)
-				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, request)
+			workManager
+				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)
 				.await()
 		}
 
-		override suspend fun unschedule(context: Context) {
-			WorkManager.getInstance(context)
+		override suspend fun unschedule() {
+			workManager
 				.cancelUniqueWork(TAG)
 				.await()
 		}
 
-		override suspend fun isScheduled(context: Context): Boolean {
-			return WorkManagerHelper(WorkManager.getInstance(context))
-				.getUniqueWorkInfoByName(TAG)
+		override suspend fun isScheduled(): Boolean {
+			return workManager
+				.awaitUniqueWorkInfoByName(TAG)
 				.any { !it.state.isFinished }
 		}
 
-		fun startNow(context: Context) {
+		fun startNow() {
 			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 			val request = OneTimeWorkRequestBuilder<TrackWorker>()
 				.setConstraints(constraints)
 				.addTag(TAG_ONESHOT)
 				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 				.build()
-			WorkManager.getInstance(context).enqueue(request)
+			workManager.enqueue(request)
 		}
 
-		fun observeIsRunning(context: Context): Flow<Boolean> {
+		fun observeIsRunning(): Flow<Boolean> {
 			val query = WorkQuery.Builder.fromTags(listOf(TAG, TAG_ONESHOT)).build()
-			return WorkManager.getInstance(context).getWorkInfosLiveData(query)
+			return workManager.getWorkInfosLiveData(query)
 				.asFlow()
 				.map { works ->
 					works.any { x -> x.state == WorkInfo.State.RUNNING }
 				}
 		}
+
+		private fun createConstraints() = Constraints.Builder()
+			.setRequiredNetworkType(if (settings.isTrackerWifiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
+			.build()
+	}
+
+	private companion object {
+
+		const val WORKER_CHANNEL_ID = "track_worker"
+		const val WORKER_NOTIFICATION_ID = 35
+		const val TAG = "tracking"
+		const val TAG_ONESHOT = "tracking_oneshot"
+		const val MAX_PARALLELISM = 3
+		const val MAX_ATTEMPTS = 4
+		const val DATA_KEY_SUCCESS = "success"
+		const val DATA_KEY_FAILED = "failed"
+		const val KEY_RETRY_IDS = "retry"
 	}
 }

@@ -16,6 +16,10 @@ class ScrobblingInfo(
 	val externalUrl: String,
 ) : ListModel {
 
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is ScrobblingInfo && other.scrobbler == scrobbler
+	}
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false
@@ -32,9 +36,7 @@ class ScrobblingInfo(
 		if (title != other.title) return false
 		if (coverUrl != other.coverUrl) return false
 		if (description != other.description) return false
-		if (externalUrl != other.externalUrl) return false
-
-		return true
+		return externalUrl == other.externalUrl
 	}
 
 	override fun hashCode(): Int {

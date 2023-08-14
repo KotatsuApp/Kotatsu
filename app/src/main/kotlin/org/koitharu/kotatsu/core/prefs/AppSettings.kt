@@ -8,30 +8,26 @@ import android.os.Build
 import android.provider.Settings
 import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.collection.arraySetOf
+import androidx.collection.ArraySet
 import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.koitharu.kotatsu.BuildConfig
+import org.json.JSONArray
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
-import org.koitharu.kotatsu.core.util.ext.filterToSet
 import org.koitharu.kotatsu.core.util.ext.getEnumValue
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
-import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.history.domain.model.HistoryOrder
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.shelf.domain.model.ShelfSection
 import java.io.File
 import java.net.Proxy
-import java.util.Collections
-import java.util.EnumSet
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -41,32 +37,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 	private val connectivityManager = context.connectivityManager
-
-	private val remoteSources = EnumSet.allOf(MangaSource::class.java).apply {
-		remove(MangaSource.LOCAL)
-		if (!BuildConfig.DEBUG) {
-			remove(MangaSource.DUMMY)
-		}
-	}
-
-	val remoteMangaSources: Set<MangaSource>
-		get() = Collections.unmodifiableSet(remoteSources)
-
-	var shelfSections: List<ShelfSection>
-		get() {
-			val raw = prefs.getString(KEY_SHELF_SECTIONS, null)
-			val values = enumValues<ShelfSection>()
-			if (raw.isNullOrEmpty()) {
-				return values.toList()
-			}
-			return raw.split('|')
-				.mapNotNull { values.getOrNull(it.toIntOrNull() ?: -1) }
-				.distinct()
-		}
-		set(value) {
-			val raw = value.joinToString("|") { it.ordinal.toString() }
-			prefs.edit { putString(KEY_SHELF_SECTIONS, raw) }
-		}
 
 	var listMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.GRID)
@@ -84,6 +54,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	var gridSize: Int
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
 		set(value) = prefs.edit { putInt(KEY_GRID_SIZE, value) }
+
+	var isNsfwContentDisabled: Boolean
+		get() = prefs.getBoolean(KEY_DISABLE_NSFW, false)
+		set(value) = prefs.edit { putBoolean(KEY_DISABLE_NSFW, value) }
 
 	var appLocales: LocaleListCompat
 		get() {
@@ -113,6 +87,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isTrackerEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRACKER_ENABLED, true)
 
+	val isTrackerWifiOnly: Boolean
+		get() = prefs.getBoolean(KEY_TRACKER_WIFI_ONLY, false)
+
 	val isTrackerNotificationsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRACKER_NOTIFICATIONS, true)
 
@@ -127,8 +104,11 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val notificationLight: Boolean
 		get() = prefs.getBoolean(KEY_NOTIFICATIONS_LIGHT, true)
 
-	val readerAnimation: Boolean
-		get() = prefs.getBoolean(KEY_READER_ANIMATION, false)
+	val readerAnimation: ReaderAnimation
+		get() = prefs.getEnumValue(KEY_READER_ANIMATION, ReaderAnimation.DEFAULT)
+
+	val readerBackground: ReaderBackground
+		get() = prefs.getEnumValue(KEY_READER_BACKGROUND, ReaderBackground.DEFAULT)
 
 	val defaultReaderMode: ReaderMode
 		get() = prefs.getEnumValue(KEY_READER_MODE, ReaderMode.STANDARD)
@@ -158,7 +138,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getEnumValue(KEY_ZOOM_MODE, ZoomMode.FIT_CENTER)
 
 	val trackSources: Set<String>
-		get() = prefs.getStringSet(KEY_TRACK_SOURCES, null) ?: arraySetOf(TRACK_FAVOURITES, TRACK_HISTORY)
+		get() = prefs.getStringSet(KEY_TRACK_SOURCES, null) ?: setOf(TRACK_FAVOURITES)
 
 	var appPassword: String?
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
@@ -191,37 +171,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			val policy = NetworkPolicy.from(prefs.getString(KEY_PREFETCH_CONTENT, null), NetworkPolicy.NEVER)
 			return policy.isNetworkAllowed(connectivityManager)
 		}
-
-	var sourcesOrder: List<String>
-		get() = prefs.getString(KEY_SOURCES_ORDER, null)
-			?.split('|')
-			.orEmpty()
-		set(value) = prefs.edit {
-			putString(KEY_SOURCES_ORDER, value.joinToString("|"))
-		}
-
-	var hiddenSources: Set<String>
-		get() = prefs.getStringSet(KEY_SOURCES_HIDDEN, null)?.filterToSet { name ->
-			remoteSources.any { it.name == name }
-		}.orEmpty()
-		set(value) = prefs.edit { putStringSet(KEY_SOURCES_HIDDEN, value) }
-
-	val isSourcesSelected: Boolean
-		get() = KEY_SOURCES_HIDDEN in prefs
-
-	val newSources: Set<MangaSource>
-		get() {
-			val known = sourcesOrder.toSet()
-			val hidden = hiddenSources
-			return remoteMangaSources
-				.filterNotTo(EnumSet.noneOf(MangaSource::class.java)) { x ->
-					x.name in known || x.name in hidden
-				}
-		}
-
-	fun markKnownSources(sources: Collection<MangaSource>) {
-		sourcesOrder = (sourcesOrder + sources.map { it.name }).distinct()
-	}
 
 	var isSourcesGridMode: Boolean
 		get() = prefs.getBoolean(KEY_SOURCES_GRID, false)
@@ -272,11 +221,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_SUGGESTIONS, false)
 		set(value) = prefs.edit { putBoolean(KEY_SUGGESTIONS, value) }
 
+	val isSuggestionsWiFiOnly: Boolean
+		get() = prefs.getBoolean(KEY_SUGGESTIONS_WIFI_ONLY, false)
+
 	val isSuggestionsExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS_EXCLUDE_NSFW, false)
 
 	val isSuggestionsNotificationAvailable: Boolean
-		get() = prefs.getBoolean(KEY_SUGGESTIONS_NOTIFICATIONS, true)
+		get() = prefs.getBoolean(KEY_SUGGESTIONS_NOTIFICATIONS, false)
 
 	val suggestionsTagsBlacklist: Set<String>
 		get() {
@@ -324,6 +276,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getEnumValue(KEY_LOCAL_LIST_ORDER, SortOrder.NEWEST)
 		set(value) = prefs.edit { putEnumValue(KEY_LOCAL_LIST_ORDER, value) }
 
+	var historySortOrder: HistoryOrder
+		get() = prefs.getEnumValue(KEY_HISTORY_ORDER, HistoryOrder.UPDATED)
+		set(value) = prefs.edit { putEnumValue(KEY_HISTORY_ORDER, value) }
+
 	val isWebtoonZoomEnable: Boolean
 		get() = prefs.getBoolean(KEY_WEBTOON_ZOOM, true)
 
@@ -340,20 +296,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			val policy = NetworkPolicy.from(prefs.getString(KEY_PAGES_PRELOAD, null), NetworkPolicy.NON_METERED)
 			return policy.isNetworkAllowed(connectivityManager)
 		}
-
-	fun getMangaSources(includeHidden: Boolean): List<MangaSource> {
-		val list = remoteSources.toMutableList()
-		val order = sourcesOrder
-		list.sortBy { x ->
-			val e = order.indexOf(x.name)
-			if (e == -1) order.size + x.ordinal else e
-		}
-		if (!includeHidden) {
-			val hidden = hiddenSources
-			list.removeAll { x -> x.name in hidden }
-		}
-		return list
-	}
 
 	fun isTipEnabled(tip: String): Boolean {
 		return prefs.getStringSet(KEY_TIPS_CLOSED, emptySet())?.contains(tip) != true
@@ -377,12 +319,38 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	fun observe() = prefs.observe()
 
+	fun getAllValues(): Map<String, *> = prefs.all
+
+	fun upsertAll(m: Map<String, *>) {
+		prefs.edit {
+			m.forEach { e ->
+				when (val v = e.value) {
+					is Boolean -> putBoolean(e.key, v)
+					is Int -> putInt(e.key, v)
+					is Long -> putLong(e.key, v)
+					is Float -> putFloat(e.key, v)
+					is String -> putString(e.key, v)
+					is JSONArray -> putStringSet(e.key, v.toStringSet())
+				}
+			}
+		}
+	}
+
 	private fun isBackgroundNetworkRestricted(): Boolean {
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 			connectivityManager.restrictBackgroundStatus == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
 		} else {
 			false
 		}
+	}
+
+	private fun JSONArray.toStringSet(): Set<String> {
+		val len = length()
+		val result = ArraySet<String>(len)
+		for (i in 0 until len) {
+			result.add(getString(i))
+		}
+		return result
 	}
 
 	companion object {
@@ -397,8 +365,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_THEME = "theme"
 		const val KEY_COLOR_THEME = "color_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
-		const val KEY_SOURCES_ORDER = "sources_order_2"
-		const val KEY_SOURCES_HIDDEN = "sources_hidden"
 		const val KEY_TRAFFIC_WARNING = "traffic_warning"
 		const val KEY_PAGES_CACHE_CLEAR = "pages_cache_clear"
 		const val KEY_HTTP_CACHE_CLEAR = "http_cache_clear"
@@ -411,6 +377,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LOCAL_STORAGE = "local_storage"
 		const val KEY_READER_SWITCHERS = "reader_switchers"
 		const val KEY_TRACKER_ENABLED = "tracker_enabled"
+		const val KEY_TRACKER_WIFI_ONLY = "tracker_wifi"
 		const val KEY_TRACK_SOURCES = "track_sources"
 		const val KEY_TRACK_CATEGORIES = "track_categories"
 		const val KEY_TRACK_WARNING = "track_warning"
@@ -420,7 +387,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_NOTIFICATIONS_VIBRATE = "notifications_vibrate"
 		const val KEY_NOTIFICATIONS_LIGHT = "notifications_light"
 		const val KEY_NOTIFICATIONS_INFO = "tracker_notifications_info"
-		const val KEY_READER_ANIMATION = "reader_animation"
+		const val KEY_READER_ANIMATION = "reader_animation2"
 		const val KEY_READER_MODE = "reader_mode"
 		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
 		const val KEY_APP_PASSWORD = "app_password"
@@ -438,6 +405,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SCREENSHOTS_POLICY = "screenshots_policy"
 		const val KEY_PAGES_PRELOAD = "pages_preload"
 		const val KEY_SUGGESTIONS = "suggestions"
+		const val KEY_SUGGESTIONS_WIFI_ONLY = "suggestions_wifi"
 		const val KEY_SUGGESTIONS_EXCLUDE_NSFW = "suggestions_exclude_nsfw"
 		const val KEY_SUGGESTIONS_EXCLUDE_TAGS = "suggestions_exclude_tags"
 		const val KEY_SUGGESTIONS_NOTIFICATIONS = "suggestions_notifications"
@@ -454,11 +422,12 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SYNC_SETTINGS = "sync_settings"
 		const val KEY_READER_BAR = "reader_bar"
 		const val KEY_READER_SLIDER = "reader_slider"
+		const val KEY_READER_BACKGROUND = "reader_background"
 		const val KEY_SHORTCUTS = "dynamic_shortcuts"
 		const val KEY_READER_TAPS_LTR = "reader_taps_ltr"
 		const val KEY_LOCAL_LIST_ORDER = "local_order"
+		const val KEY_HISTORY_ORDER = "history_order"
 		const val KEY_WEBTOON_ZOOM = "webtoon_zoom"
-		const val KEY_SHELF_SECTIONS = "shelf_sections_2"
 		const val KEY_PREFETCH_CONTENT = "prefetch_content"
 		const val KEY_APP_LOCALE = "app_locale"
 		const val KEY_LOGGING_ENABLED = "logging"
@@ -478,6 +447,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PROXY_PASSWORD = "proxy_password"
 		const val KEY_IMAGES_PROXY = "images_proxy"
 		const val KEY_LOCAL_MANGA_DIRS = "local_manga_dirs"
+		const val KEY_DISABLE_NSFW = "no_nsfw"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

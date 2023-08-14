@@ -20,10 +20,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.sync.withPermit
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okio.source
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
@@ -39,6 +40,7 @@ import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
+import org.koitharu.kotatsu.core.zip.ZipPool
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
@@ -47,7 +49,6 @@ import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import java.io.File
 import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.zip.ZipFile
 import javax.inject.Inject
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
@@ -70,10 +71,12 @@ class PageLoader @Inject constructor(
 	val loaderScope = RetainedLifecycleCoroutineScope(lifecycle) + InternalErrorHandler() + Dispatchers.Default
 
 	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
+	private val semaphore = Semaphore(3)
 	private val convertLock = Mutex()
 	private val prefetchLock = Mutex()
 	private var repository: MangaRepository? = null
 	private val prefetchQueue = LinkedList<MangaPage>()
+	private val zipPool = ZipPool(2)
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
 
@@ -81,6 +84,7 @@ class PageLoader @Inject constructor(
 		synchronized(tasks) {
 			tasks.clear()
 		}
+		zipPool.evictAll()
 	}
 
 	fun isPrefetchApplicable(): Boolean {
@@ -190,20 +194,15 @@ class PageLoader @Inject constructor(
 		}
 	}
 
-	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): File {
+	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): File = semaphore.withPermit {
 		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
 		val uri = Uri.parse(pageUrl)
 		return if (CbzFilter.isUriSupported(uri)) {
 			runInterruptible(Dispatchers.IO) {
-				ZipFile(uri.schemeSpecificPart)
-			}.use { zip ->
-				runInterruptible(Dispatchers.IO) {
-					val entry = zip.getEntry(uri.fragment)
-					zip.getInputStream(entry)
-				}.use {
-					cache.put(pageUrl, it.source())
-				}
+				zipPool[uri]
+			}.use {
+				cache.put(pageUrl, it)
 			}
 		} else {
 			val request = createPageRequest(page, pageUrl)

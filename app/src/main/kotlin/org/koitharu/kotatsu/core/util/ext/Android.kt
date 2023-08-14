@@ -1,9 +1,12 @@
 package org.koitharu.kotatsu.core.util.ext
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.ActivityManager.MemoryInfo
 import android.app.ActivityOptions
+import android.app.LocaleConfig
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.POWER_SERVICE
@@ -11,8 +14,8 @@ import android.content.ContextWrapper
 import android.content.OperationApplicationException
 import android.content.SharedPreferences
 import android.content.SyncResult
+import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
-import android.content.res.Resources
 import android.database.SQLException
 import android.graphics.Color
 import android.net.Uri
@@ -27,6 +30,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.IntegerRes
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
@@ -69,11 +74,14 @@ fun <I> ActivityResultLauncher<I>.resolve(context: Context, input: I): ResolveIn
 	return pm.resolveActivity(intent, 0)
 }
 
-fun <I> ActivityResultLauncher<I>.tryLaunch(input: I, options: ActivityOptionsCompat? = null): Boolean {
-	return runCatching {
-		launch(input, options)
-	}.isSuccess
-}
+fun <I> ActivityResultLauncher<I>.tryLaunch(
+	input: I,
+	options: ActivityOptionsCompat? = null,
+): Boolean = runCatching {
+	launch(input, options)
+}.onFailure { e ->
+	e.printStackTraceDebug()
+}.isSuccess
 
 fun SharedPreferences.observe() = callbackFlow<String> {
 	val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
@@ -169,10 +177,17 @@ fun scaleUpActivityOptionsOf(view: View): Bundle? = if (view.context.isAnimation
 	null
 }
 
-fun Resources.getLocalesConfig(): LocaleListCompat {
+@SuppressLint("DiscouragedApi")
+fun Context.getLocalesConfig(): LocaleListCompat {
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+		LocaleConfig(this).supportedLocales?.let {
+			return LocaleListCompat.wrap(it)
+		}
+	}
 	val tagsList = StringJoiner(",")
 	try {
-		val xpp: XmlPullParser = getXml(R.xml.locales)
+		val resId = resources.getIdentifier("_generated_res_locale_config", "xml", packageName)
+		val xpp: XmlPullParser = resources.getXml(resId)
 		while (xpp.eventType != XmlPullParser.END_DOCUMENT) {
 			if (xpp.eventType == XmlPullParser.START_TAG) {
 				if (xpp.name == "locale") {
@@ -208,4 +223,10 @@ inline fun Activity.catchingWebViewUnavailability(block: () -> Unit): Boolean {
 			throw e
 		}
 	}
+}
+
+fun Context.checkNotificationPermission(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+	ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+} else {
+	NotificationManagerCompat.from(this).areNotificationsEnabled()
 }

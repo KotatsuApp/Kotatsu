@@ -2,9 +2,11 @@ package org.koitharu.kotatsu.details.ui
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -23,8 +25,10 @@ import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
+import org.koitharu.kotatsu.bookmarks.ui.sheet.BookmarksSheet
 import org.koitharu.kotatsu.core.model.countChaptersByBranch
 import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
@@ -34,18 +38,25 @@ import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.drawableTop
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.isTextTruncated
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
+import org.koitharu.kotatsu.details.ui.related.RelatedMangaActivity
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -53,6 +64,7 @@ import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
+import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import javax.inject.Inject
@@ -62,7 +74,7 @@ class DetailsFragment :
 	BaseFragment<FragmentDetailsBinding>(),
 	View.OnClickListener,
 	ChipsView.OnChipClickListener,
-	OnListItemClickListener<Bookmark> {
+	OnListItemClickListener<Bookmark>, ViewTreeObserver.OnDrawListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -81,9 +93,17 @@ class DetailsFragment :
 		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.textViewAuthor.setOnClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
+		binding.buttonDescriptionMore.setOnClickListener(this)
+		binding.buttonBookmarksMore.setOnClickListener(this)
+		binding.buttonScrobblingMore.setOnClickListener(this)
+		binding.buttonRelatedMore.setOnClickListener(this)
 		binding.infoLayout.textViewSource.setOnClickListener(this)
+		binding.textViewDescription.viewTreeObserver.addOnDrawListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
+		binding.recyclerViewRelated.addItemDecoration(
+			SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)),
+		)
 		TitleScrollCoordinator(binding.textViewTitle).attach(binding.scrollView)
 		viewModel.manga.filterNotNull().observe(viewLifecycleOwner, ::onMangaUpdated)
 		viewModel.isLoading.observe(viewLifecycleOwner, ::onLoadingStateChanged)
@@ -93,12 +113,12 @@ class DetailsFragment :
 		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
 		viewModel.chapters.observe(viewLifecycleOwner, ::onChaptersChanged)
 		viewModel.localSize.observe(viewLifecycleOwner, ::onLocalSizeChanged)
+		viewModel.relatedManga.observe(viewLifecycleOwner, ::onRelatedMangaChanged)
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
 		startActivity(
 			ReaderActivity.IntentBuilder(view.context).bookmark(item).incognito(true).build(),
-			scaleUpActivityOptionsOf(view),
 		)
 		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
@@ -114,6 +134,13 @@ class DetailsFragment :
 		}
 		menu.show()
 		return true
+	}
+
+	override fun onDraw() {
+		viewBinding?.run {
+			buttonDescriptionMore.isVisible = textViewDescription.maxLines == Int.MAX_VALUE ||
+				textViewDescription.isTextTruncated
+		}
 	}
 
 	private fun onMangaUpdated(manga: Manga) {
@@ -173,11 +200,13 @@ class DetailsFragment :
 	}
 
 	private fun onDescriptionChanged(description: CharSequence?) {
+		val tv = requireViewBinding().textViewDescription
 		if (description.isNullOrBlank()) {
-			requireViewBinding().textViewDescription.setText(R.string.no_description)
+			tv.setText(R.string.no_description)
 		} else {
-			requireViewBinding().textViewDescription.text = description
+			tv.text = description
 		}
+		requireViewBinding().buttonDescriptionMore.isVisible = tv.isTextTruncated
 	}
 
 	private fun onLocalSizeChanged(size: Long) {
@@ -188,6 +217,26 @@ class DetailsFragment :
 			textView.text = FileSize.BYTES.format(textView.context, size)
 			textView.isVisible = true
 		}
+	}
+
+	private fun onRelatedMangaChanged(related: List<MangaItemModel>) {
+		if (related.isEmpty()) {
+			requireViewBinding().groupRelated.isVisible = false
+			return
+		}
+		val rv = viewBinding?.recyclerViewRelated ?: return
+
+		@Suppress("UNCHECKED_CAST")
+		val adapter = (rv.adapter as? BaseListAdapter<ListModel>) ?: BaseListAdapter(
+			mangaGridItemAD(
+				coil, viewLifecycleOwner,
+				StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),
+			) { item, view ->
+				startActivity(DetailsActivity.newIntent(view.context, item))
+			},
+		).also { rv.adapter = it }
+		adapter.items = related
+		requireViewBinding().groupRelated.isVisible = true
 	}
 
 	private fun onHistoryChanged(history: HistoryInfo) {
@@ -218,7 +267,7 @@ class DetailsFragment :
 
 	private fun onScrobblingInfoChanged(scrobblings: List<ScrobblingInfo>) {
 		var adapter = requireViewBinding().recyclerViewScrobbling.adapter as? ScrollingInfoAdapter
-		requireViewBinding().recyclerViewScrobbling.isGone = scrobblings.isEmpty()
+		requireViewBinding().groupScrobbling.isGone = scrobblings.isEmpty()
 		if (adapter != null) {
 			adapter.items = scrobblings
 		} else {
@@ -260,6 +309,28 @@ class DetailsFragment :
 					),
 					scaleUpActivityOptionsOf(v),
 				)
+			}
+
+			R.id.button_description_more -> {
+				val tv = requireViewBinding().textViewDescription
+				TransitionManager.beginDelayedTransition(tv.parentView)
+				if (tv.maxLines in 1 until Integer.MAX_VALUE) {
+					tv.maxLines = Integer.MAX_VALUE
+				} else {
+					tv.maxLines = resources.getInteger(R.integer.details_description_lines)
+				}
+			}
+
+			R.id.button_scrobbling_more -> {
+				ScrobblingSelectorSheet.show(parentFragmentManager, manga, null)
+			}
+
+			R.id.button_bookmarks_more -> {
+				BookmarksSheet.show(parentFragmentManager, manga)
+			}
+
+			R.id.button_related_more -> {
+				startActivity(RelatedMangaActivity.newIntent(v.context, manga))
 			}
 		}
 	}

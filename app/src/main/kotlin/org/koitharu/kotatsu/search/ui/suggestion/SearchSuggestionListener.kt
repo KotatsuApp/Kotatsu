@@ -17,6 +17,4 @@ interface SearchSuggestionListener {
 	fun onSourceClick(source: MangaSource)
 
 	fun onTagClick(tag: MangaTag)
-
-	fun onVoiceSearchClick()
 }
