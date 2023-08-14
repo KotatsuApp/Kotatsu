@@ -19,7 +19,13 @@
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.SuggestionsSettingsFragment"
 		android:key="suggestions"
-		android:title="@string/suggestions"
+		android:title="@string/suggestions" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="related_manga"
+		android:summary="@string/related_manga_summary"
+		android:title="@string/related_manga"
 		app:allowDividerAbove="true" />
 
 	<PreferenceCategory android:title="@string/tracking">

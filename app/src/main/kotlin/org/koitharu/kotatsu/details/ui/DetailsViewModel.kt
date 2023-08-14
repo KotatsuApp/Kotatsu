@@ -167,7 +167,7 @@ class DetailsViewModel @Inject constructor(
 		it?.remote
 	}.distinctUntilChangedBy { it?.id }
 		.mapLatest {
-			if (it != null) {
+			if (it != null && settings.isRelatedMangaEnabled) {
 				relatedMangaUseCase.invoke(it)?.toUi(ListMode.GRID, extraProvider).orEmpty()
 			} else {
 				emptyList()

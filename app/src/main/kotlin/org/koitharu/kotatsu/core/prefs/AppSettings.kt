@@ -280,6 +280,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getEnumValue(KEY_HISTORY_ORDER, HistoryOrder.UPDATED)
 		set(value) = prefs.edit { putEnumValue(KEY_HISTORY_ORDER, value) }
 
+	val isRelatedMangaEnabled: Boolean
+		get() = prefs.getBoolean(KEY_RELATED_MANGA, true)
+
 	val isWebtoonZoomEnable: Boolean
 		get() = prefs.getBoolean(KEY_WEBTOON_ZOOM, true)
 
@@ -448,6 +451,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_IMAGES_PROXY = "images_proxy"
 		const val KEY_LOCAL_MANGA_DIRS = "local_manga_dirs"
 		const val KEY_DISABLE_NSFW = "no_nsfw"
+		const val KEY_RELATED_MANGA = "related_manga"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
