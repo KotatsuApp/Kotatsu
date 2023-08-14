@@ -23,7 +23,6 @@ import org.acra.sender.HttpSender
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.os.AppValidator
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.WorkServiceStopHelper
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
@@ -73,7 +72,6 @@ class KotatsuApp : Application(), Configuration.Provider {
 			setupDatabaseObservers()
 		}
 		workScheduleManager.init()
-		WorkServiceStopHelper(workManagerProvider).setup()
 	}
 
 	override fun attachBaseContext(base: Context?) {
