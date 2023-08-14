@@ -49,12 +49,6 @@
 		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="reader_animation"
-		android:summary="@string/pages_animation_summary"
-		android:title="@string/pages_animation" />
-
-	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="reader_bar"
 		android:summary="@string/reader_info_bar_summary"
