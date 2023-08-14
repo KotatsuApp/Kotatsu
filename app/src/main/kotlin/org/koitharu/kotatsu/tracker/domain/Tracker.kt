@@ -85,7 +85,7 @@ class Tracker @Inject constructor(
 	}
 
 	@VisibleForTesting
-	suspend fun checkUpdates(manga: Manga, commit: Boolean): MangaUpdates {
+	suspend fun checkUpdates(manga: Manga, commit: Boolean): MangaUpdates.Success {
 		val track = repository.getTrack(manga)
 		val updates = compare(track, manga, getBranch(manga))
 		if (commit) {
