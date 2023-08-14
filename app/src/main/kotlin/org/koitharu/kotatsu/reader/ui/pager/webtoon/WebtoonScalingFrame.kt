@@ -165,7 +165,8 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 
 
 	private inner class GestureListener : GestureDetector.SimpleOnGestureListener(), Runnable {
-		override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+
+		override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
 			if (scale <= 1f) return false
 			transformMatrix.postTranslate(-distanceX, -distanceY)
 			invalidateTarget()
@@ -185,7 +186,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			return true
 		}
 
-		override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+		override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
 			if (scale <= 1) return false
 
 			overScroller.fling(

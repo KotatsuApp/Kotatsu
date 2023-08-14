@@ -98,11 +98,11 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	}
 
 	override fun onPauseClick(item: DownloadItemModel) {
-		sendBroadcast(PausingReceiver.getPauseIntent(item.id))
+		sendBroadcast(PausingReceiver.getPauseIntent(this, item.id))
 	}
 
 	override fun onResumeClick(item: DownloadItemModel) {
-		sendBroadcast(PausingReceiver.getResumeIntent(item.id))
+		sendBroadcast(PausingReceiver.getResumeIntent(this, item.id))
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {

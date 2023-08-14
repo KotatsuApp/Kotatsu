@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.local.ui
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
+import android.content.pm.ServiceInfo
 import android.net.Uri
+import android.os.Build
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -22,6 +24,7 @@ import coil.request.ImageRequest
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
@@ -46,7 +49,7 @@ class ImportWorker @AssistedInject constructor(
 		val result = runCatchingCancellable {
 			importer.import(uri).manga
 		}
-		if (notificationManager.areNotificationsEnabled()) {
+		if (applicationContext.checkNotificationPermission()) {
 			val notification = buildNotification(result)
 			notificationManager.notify(uri.hashCode(), notification)
 		}
@@ -76,7 +79,11 @@ class ImportWorker @AssistedInject constructor(
 			.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 			.build()
 
-		return ForegroundInfo(FOREGROUND_NOTIFICATION_ID, notification)
+		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			ForegroundInfo(FOREGROUND_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+		} else {
+			ForegroundInfo(FOREGROUND_NOTIFICATION_ID, notification)
+		}
 	}
 
 	private suspend fun buildNotification(result: kotlin.Result<Manga>): Notification {

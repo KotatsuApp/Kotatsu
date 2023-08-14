@@ -83,7 +83,7 @@ fun <I> ActivityResultLauncher<I>.tryLaunch(
 	e.printStackTraceDebug()
 }.isSuccess
 
-fun SharedPreferences.observe() = callbackFlow<String> {
+fun SharedPreferences.observe() = callbackFlow<String?> {
 	val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
 		trySendBlocking(key)
 	}

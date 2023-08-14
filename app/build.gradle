@@ -8,15 +8,14 @@ plugins {
 }
 
 android {
-	compileSdk = 33
-//	compileSdkExtension = 4
+	compileSdk = 34
 	buildToolsVersion = '34.0.0'
 	namespace = 'org.koitharu.kotatsu'
 
 	defaultConfig {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
-		targetSdkVersion 33
+		targetSdkVersion 34
 		versionCode 570
 		versionName '6.0-a1'
 		generatedDensities = []

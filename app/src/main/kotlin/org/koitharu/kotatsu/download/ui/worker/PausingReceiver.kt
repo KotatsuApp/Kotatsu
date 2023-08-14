@@ -40,18 +40,20 @@ class PausingReceiver(
 			addDataPath(id.toString(), PatternMatcher.PATTERN_SIMPLE_GLOB)
 		}
 
-		fun getPauseIntent(id: UUID) = Intent(ACTION_PAUSE)
+		fun getPauseIntent(context: Context, id: UUID) = Intent(ACTION_PAUSE)
 			.setData(Uri.parse("$SCHEME://$id"))
+			.setPackage(context.packageName)
 			.putExtra(EXTRA_UUID, id.toString())
 
-		fun getResumeIntent(id: UUID) = Intent(ACTION_RESUME)
+		fun getResumeIntent(context: Context, id: UUID) = Intent(ACTION_RESUME)
 			.setData(Uri.parse("$SCHEME://$id"))
+			.setPackage(context.packageName)
 			.putExtra(EXTRA_UUID, id.toString())
 
 		fun createPausePendingIntent(context: Context, id: UUID) = PendingIntentCompat.getBroadcast(
 			context,
 			0,
-			getPauseIntent(id),
+			getPauseIntent(context, id),
 			0,
 			false,
 		)
@@ -59,7 +61,7 @@ class PausingReceiver(
 		fun createResumePendingIntent(context: Context, id: UUID) = PendingIntentCompat.getBroadcast(
 			context,
 			0,
-			getResumeIntent(id),
+			getResumeIntent(context, id),
 			0,
 			false,
 		)

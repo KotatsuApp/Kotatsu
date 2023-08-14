@@ -13,16 +13,17 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.AttrRes
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.measureDimension
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.text.SimpleDateFormat
 import java.util.Date
 import com.google.android.material.R as materialR
@@ -111,7 +112,12 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	override fun onAttachedToWindow() {
 		super.onAttachedToWindow()
-		context.registerReceiver(timeReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
+		ContextCompat.registerReceiver(
+			context,
+			timeReceiver,
+			IntentFilter(Intent.ACTION_TIME_TICK),
+			ContextCompat.RECEIVER_EXPORTED,
+		)
 		updateCutoutInsets(ViewCompat.getRootWindowInsets(this))
 	}
 

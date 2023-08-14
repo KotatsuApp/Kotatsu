@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.download.ui.worker
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.webkit.MimeTypeMap
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
@@ -130,10 +132,18 @@ class DownloadWorker @AssistedInject constructor(
 		}
 	}
 
-	override suspend fun getForegroundInfo() = ForegroundInfo(
-		id.hashCode(),
-		notificationFactory.create(lastPublishedState),
-	)
+	override suspend fun getForegroundInfo() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+		ForegroundInfo(
+			id.hashCode(),
+			notificationFactory.create(lastPublishedState),
+			ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,
+		)
+	} else {
+		ForegroundInfo(
+			id.hashCode(),
+			notificationFactory.create(lastPublishedState),
+		)
+	}
 
 	private suspend fun downloadMangaImpl(
 		includedIds: LongArray?,
@@ -389,12 +399,12 @@ class DownloadWorker @AssistedInject constructor(
 		}
 
 		fun pause(id: UUID) {
-			val intent = PausingReceiver.getPauseIntent(id)
+			val intent = PausingReceiver.getPauseIntent(context, id)
 			context.sendBroadcast(intent)
 		}
 
 		fun resume(id: UUID) {
-			val intent = PausingReceiver.getResumeIntent(id)
+			val intent = PausingReceiver.getResumeIntent(context, id)
 			context.sendBroadcast(intent)
 		}
 
