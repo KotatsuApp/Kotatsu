@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdkVersion 21
 		targetSdkVersion 34
-		versionCode 570
-		versionName '6.0-a1'
+		versionCode 571
+		versionName '6.0-a2'
 		generatedDensities = []
 		testInstrumentationRunner "org.koitharu.kotatsu.HiltTestRunner"
 		ksp {
@@ -120,7 +120,7 @@ dependencies {
 
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.11.0'
-	implementation 'com.squareup.okio:okio:3.4.0'
+	implementation 'com.squareup.okio:okio:3.5.0'
 
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2'
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
@@ -136,8 +136,8 @@ dependencies {
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
 
-	implementation 'ch.acra:acra-http:5.11.0'
-	implementation 'ch.acra:acra-dialog:5.11.0'
+	implementation 'ch.acra:acra-http:5.11.1'
+	implementation 'ch.acra:acra-dialog:5.11.1'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 
