@@ -17,10 +17,12 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import javax.inject.Inject
+import javax.inject.Provider
 
 @Reusable
 class MangaDataRepository @Inject constructor(
 	private val db: MangaDatabase,
+	private val resolverProvider: Provider<MangaLinkResolver>,
 ) {
 
 	suspend fun saveReaderMode(manga: Manga, mode: ReaderMode) {
@@ -63,10 +65,15 @@ class MangaDataRepository @Inject constructor(
 		return db.mangaDao.find(mangaId)?.toManga()
 	}
 
+	suspend fun findMangaByPublicUrl(publicUrl: String): Manga? {
+		return db.mangaDao.findByPublicUrl(publicUrl)?.toManga()
+	}
+
 	suspend fun resolveIntent(intent: MangaIntent): Manga? = when {
 		intent.manga != null -> intent.manga
 		intent.mangaId != 0L -> findMangaById(intent.mangaId)
-		else -> null // TODO resolve uri
+		intent.uri != null -> resolverProvider.get().resolve(intent.uri)
+		else -> null
 	}
 
 	suspend fun storeManga(manga: Manga) {

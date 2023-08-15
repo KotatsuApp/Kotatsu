@@ -51,6 +51,9 @@ class RemoteMangaRepository(
 			getConfig()[parser.configKeyDomain] = value
 		}
 
+	val domains: Array<out String>
+		get() = parser.configKeyDomain.presetValues
+
 	val headers: Headers
 		get() = parser.headers
 
@@ -70,14 +73,7 @@ class RemoteMangaRepository(
 		return parser.getList(offset, tags, sortOrder)
 	}
 
-	override suspend fun getDetails(manga: Manga): Manga {
-		cache.getDetails(source, manga.url)?.let { return it }
-		val details = asyncSafe {
-			parser.getDetails(manga)
-		}
-		cache.putDetails(source, manga.url, details)
-		return details.await()
-	}
+	override suspend fun getDetails(manga: Manga): Manga = getDetails(manga, withCache = true)
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		cache.getPages(source, chapter.url)?.let { return it }
@@ -101,6 +97,18 @@ class RemoteMangaRepository(
 		}
 		cache.putRelatedManga(source, seed.url, related)
 		return related.await()
+	}
+
+	suspend fun getDetails(manga: Manga, withCache: Boolean): Manga {
+		if (!withCache) {
+			return parser.getDetails(manga)
+		}
+		cache.getDetails(source, manga.url)?.let { return it }
+		val details = asyncSafe {
+			parser.getDetails(manga)
+		}
+		cache.putDetails(source, manga.url, details)
+		return details.await()
 	}
 
 	fun getAuthProvider(): MangaParserAuthProvider? = parser as? MangaParserAuthProvider

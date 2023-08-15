@@ -4,7 +4,7 @@ import androidx.annotation.FloatRange
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import java.util.UUID
 
-inline fun <C : CharSequence> C?.ifNullOrEmpty(defaultValue: () -> C): C {
+inline fun <C : CharSequence?> C?.ifNullOrEmpty(defaultValue: () -> C): C {
 	return if (this.isNullOrEmpty()) defaultValue() else this
 }
 

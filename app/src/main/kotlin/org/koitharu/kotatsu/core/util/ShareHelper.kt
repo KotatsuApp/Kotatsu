@@ -8,6 +8,7 @@ import androidx.core.content.FileProvider
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.logs.FileLogger
+import org.koitharu.kotatsu.core.model.appUrl
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.io.File
 
@@ -22,6 +23,8 @@ class ShareHelper(private val context: Context) {
 			append(manga.title)
 			append("\n \n")
 			append(manga.publicUrl)
+			append("\n \n")
+			append(manga.appUrl)
 		}
 		ShareCompat.IntentBuilder(context)
 			.setText(text)

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.model
 
+import android.net.Uri
 import androidx.core.os.LocaleListCompat
 import org.koitharu.kotatsu.core.util.ext.iterator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
@@ -66,3 +67,10 @@ fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 
 val Manga.isLocal: Boolean
 	get() = source == MangaSource.LOCAL
+
+val Manga.appUrl: Uri
+	get() = Uri.parse("https://kotatsu.app/manga").buildUpon()
+		.appendQueryParameter("source", source.name)
+		.appendQueryParameter("name", title)
+		.appendQueryParameter("url", url)
+		.build()

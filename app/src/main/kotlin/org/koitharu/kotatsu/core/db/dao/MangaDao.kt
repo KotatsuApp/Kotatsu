@@ -20,6 +20,10 @@ abstract class MangaDao {
 	abstract suspend fun find(id: Long): MangaWithTags?
 
 	@Transaction
+	@Query("SELECT * FROM manga WHERE public_url = :publicUrl")
+	abstract suspend fun findByPublicUrl(publicUrl: String): MangaWithTags?
+
+	@Transaction
 	@Query("SELECT * FROM manga WHERE (title LIKE :query OR alt_title LIKE :query) AND manga_id IN (SELECT manga_id FROM favourites UNION SELECT manga_id FROM history) LIMIT :limit")
 	abstract suspend fun searchByTitle(query: String, limit: Int): List<MangaWithTags>
 
