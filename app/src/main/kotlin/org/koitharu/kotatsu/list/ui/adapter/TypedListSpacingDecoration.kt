@@ -48,7 +48,7 @@ class TypedListSpacingDecoration(
 			null -> outRect.set(0)
 
 			ListItemType.TIP -> outRect.set(0) // TODO
-			ListItemType.HINT_EMPTY -> outRect.set(0) // TODO
+			ListItemType.HINT_EMPTY -> outRect.set(spacingList)
 			ListItemType.FEED -> outRect.set(spacingList, 0, spacingList, 0)
 		}
 	}

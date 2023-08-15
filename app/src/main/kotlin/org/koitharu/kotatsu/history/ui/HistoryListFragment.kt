@@ -7,6 +7,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.os.NetworkManageIntent
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
@@ -31,6 +32,10 @@ class HistoryListFragment : MangaListFragment() {
 	}
 
 	override fun onScrolledToEnd() = Unit
+
+	override fun onEmptyActionClick() {
+		startActivity(NetworkManageIntent())
+	}
 
 	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_history, menu)

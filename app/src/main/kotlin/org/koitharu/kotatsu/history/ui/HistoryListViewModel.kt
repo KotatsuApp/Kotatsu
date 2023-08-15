@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -28,6 +30,7 @@ import org.koitharu.kotatsu.history.domain.model.HistoryOrder
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
+import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -36,6 +39,7 @@ import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
 import org.koitharu.kotatsu.list.ui.model.toListModel
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -45,6 +49,8 @@ class HistoryListViewModel @Inject constructor(
 	private val repository: HistoryRepository,
 	private val settings: AppSettings,
 	private val extraProvider: ListExtraProvider,
+	private val localMangaRepository: LocalMangaRepository,
+	networkState: NetworkState,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
@@ -69,7 +75,8 @@ class HistoryListViewModel @Inject constructor(
 		sortOrder.flatMapLatest { repository.observeAllWithHistory(it) },
 		isGroupingEnabled,
 		listMode,
-	) { list, grouped, mode ->
+		networkState,
+	) { list, grouped, mode, online ->
 		when {
 			list.isEmpty() -> listOf(
 				EmptyState(
@@ -80,7 +87,7 @@ class HistoryListViewModel @Inject constructor(
 				),
 			)
 
-			else -> mapList(list, grouped, mode)
+			else -> mapList(list, grouped, mode, online)
 		}
 	}.onStart {
 		loadingCounter.increment()
@@ -129,11 +136,25 @@ class HistoryListViewModel @Inject constructor(
 		list: List<MangaWithHistory>,
 		grouped: Boolean,
 		mode: ListMode,
+		isOnline: Boolean,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 1)
 		val order = sortOrder.value
 		var prevHeader: ListHeader? = null
-		for ((manga, history) in list) {
+		if (!isOnline) {
+			result += EmptyHint(
+				icon = R.drawable.ic_empty_common,
+				textPrimary = R.string.network_unavailable,
+				textSecondary = R.string.network_unavailable_hint,
+				actionStringRes = R.string.manage,
+			)
+		}
+		for ((m, history) in list) {
+			val manga = if (!isOnline && !m.isLocal) {
+				localMangaRepository.findSavedManga(m)?.manga ?: continue
+			} else {
+				m
+			}
 			if (grouped) {
 				val header = history.header(order)
 				if (header != prevHeader) {

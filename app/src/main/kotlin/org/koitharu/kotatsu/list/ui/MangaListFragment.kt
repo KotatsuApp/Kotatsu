@@ -37,7 +37,6 @@ import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.resolveDp
-import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -200,7 +199,7 @@ abstract class MangaListFragment :
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,
 			listener = this,
-			sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = false)
+			sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = false),
 		)
 	}
 

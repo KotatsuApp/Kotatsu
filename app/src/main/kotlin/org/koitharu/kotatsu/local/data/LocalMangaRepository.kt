@@ -129,6 +129,7 @@ class LocalMangaRepository @Inject constructor(
 	}
 
 	suspend fun findSavedManga(remoteManga: Manga): LocalManga? {
+		// TODO fast path by name
 		val files = getAllFiles()
 		return channelFlow {
 			for (file in files) {

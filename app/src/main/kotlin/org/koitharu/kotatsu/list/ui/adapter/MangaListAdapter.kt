@@ -22,6 +22,7 @@ open class MangaListAdapter(
 		addDelegate(ListItemType.STATE_ERROR, errorStateListAD(listener))
 		addDelegate(ListItemType.FOOTER_ERROR, errorFooterAD(listener))
 		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listener))
+		addDelegate(ListItemType.HINT_EMPTY, emptyHintAD(coil, lifecycleOwner, listener))
 		addDelegate(ListItemType.HEADER, listHeaderAD(listener))
 	}
 }

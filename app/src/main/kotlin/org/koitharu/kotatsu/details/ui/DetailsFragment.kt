@@ -53,6 +53,7 @@ import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
@@ -227,14 +228,16 @@ class DetailsFragment :
 		val rv = viewBinding?.recyclerViewRelated ?: return
 
 		@Suppress("UNCHECKED_CAST")
-		val adapter = (rv.adapter as? BaseListAdapter<ListModel>) ?: BaseListAdapter(
-			mangaGridItemAD(
-				coil, viewLifecycleOwner,
-				StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),
-			) { item, view ->
-				startActivity(DetailsActivity.newIntent(view.context, item))
-			},
-		).also { rv.adapter = it }
+		val adapter = (rv.adapter as? BaseListAdapter<ListModel>) ?: BaseListAdapter<ListModel>()
+			.addDelegate(
+				ListItemType.MANGA_GRID,
+				mangaGridItemAD(
+					coil, viewLifecycleOwner,
+					StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),
+				) { item, view ->
+					startActivity(DetailsActivity.newIntent(view.context, item))
+				},
+			).also { rv.adapter = it }
 		adapter.items = related
 		requireViewBinding().groupRelated.isVisible = true
 	}

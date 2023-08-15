@@ -6,6 +6,9 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 
 class TrackerCategoriesConfigAdapter(
 	listener: OnListItemClickListener<FavouriteCategory>,
-) : BaseListAdapter<FavouriteCategory>(
-	trackerCategoryAD(listener),
-)
+) : BaseListAdapter<FavouriteCategory>() {
+
+	init {
+		delegatesManager.addDelegate(trackerCategoryAD(listener))
+	}
+}

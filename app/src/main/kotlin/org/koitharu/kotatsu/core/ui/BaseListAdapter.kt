@@ -13,13 +13,10 @@ import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import kotlin.coroutines.suspendCoroutine
 
-open class BaseListAdapter<T : ListModel>(
-	vararg delegates: AdapterDelegate<List<T>>,
-) : AsyncListDifferDelegationAdapter<T>(
+open class BaseListAdapter<T : ListModel> : AsyncListDifferDelegationAdapter<T>(
 	AsyncDifferConfig.Builder(ListModelDiffCallback<T>())
 		.setBackgroundThreadExecutor(Dispatchers.Default.limitedParallelism(2).asExecutor())
 		.build(),
-	*delegates,
 ), FlowCollector<List<T>?> {
 
 	override suspend fun emit(value: List<T>?) = suspendCoroutine { cont ->

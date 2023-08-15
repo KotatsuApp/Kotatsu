@@ -3,11 +3,9 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	style="@style/Widget.Material3.CardView.Filled"
+	style="@style/Widget.Kotatsu.CardView.Light"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:layout_marginVertical="8dp"
-	android:layout_marginHorizontal="16dp"
 	app:contentPadding="@dimen/margin_normal">
 
 	<androidx.constraintlayout.widget.ConstraintLayout

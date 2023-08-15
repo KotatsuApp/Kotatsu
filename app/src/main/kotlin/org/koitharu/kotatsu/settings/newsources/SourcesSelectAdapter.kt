@@ -11,6 +11,9 @@ class SourcesSelectAdapter(
 	listener: SourceConfigListener,
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-) : BaseListAdapter<SourceConfigItem>(
-	sourceConfigItemCheckableDelegate(listener, coil, lifecycleOwner),
-)
+) : BaseListAdapter<SourceConfigItem>() {
+
+	init {
+		delegatesManager.addDelegate(sourceConfigItemCheckableDelegate(listener, coil, lifecycleOwner))
+	}
+}

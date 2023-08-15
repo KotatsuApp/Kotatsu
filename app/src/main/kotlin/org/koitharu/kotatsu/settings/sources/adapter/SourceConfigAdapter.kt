@@ -9,10 +9,15 @@ class SourceConfigAdapter(
 	listener: SourceConfigListener,
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-) : BaseListAdapter<SourceConfigItem>(
-	sourceConfigHeaderDelegate(),
-	sourceConfigGroupDelegate(listener),
-	sourceConfigItemDelegate2(listener, coil, lifecycleOwner),
-	sourceConfigEmptySearchDelegate(),
-	sourceConfigTipDelegate(listener),
-)
+) : BaseListAdapter<SourceConfigItem>() {
+
+	init {
+		with(delegatesManager) {
+			addDelegate(sourceConfigHeaderDelegate())
+			addDelegate(sourceConfigGroupDelegate(listener))
+			addDelegate(sourceConfigItemDelegate2(listener, coil, lifecycleOwner))
+			addDelegate(sourceConfigEmptySearchDelegate())
+			addDelegate(sourceConfigTipDelegate(listener))
+		}
+	}
+}
