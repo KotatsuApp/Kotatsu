@@ -8,6 +8,7 @@ class CategoryListModel(
 	val mangaCount: Int,
 	val covers: List<Cover>,
 	val category: FavouriteCategory,
+	val isTrackerEnabled: Boolean,
 ) : ListModel {
 
 	override fun areItemsTheSame(other: ListModel): Boolean {
@@ -21,6 +22,7 @@ class CategoryListModel(
 		other as CategoryListModel
 
 		if (mangaCount != other.mangaCount) return false
+		if (isTrackerEnabled != other.isTrackerEnabled) return false
 		if (covers != other.covers) return false
 		if (category.id != other.category.id) return false
 		if (category.title != other.category.title) return false
@@ -33,6 +35,7 @@ class CategoryListModel(
 
 	override fun hashCode(): Int {
 		var result = mangaCount
+		result = 31 * result + isTrackerEnabled.hashCode()
 		result = 31 * result + covers.hashCode()
 		result = 31 * result + category.id.hashCode()
 		result = 31 * result + category.title.hashCode()
