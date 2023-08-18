@@ -4,10 +4,10 @@
         <item quantity="other">%1$d เดือนที่ผ่านมา</item>
     </plurals>
     <plurals name="chapters">
-        <item quantity="other">%1$d ตอน</item>
+        <item quantity="other">%1$d บท</item>
     </plurals>
     <plurals name="new_chapters">
-        <item quantity="other">%1$d ตอนใหม่</item>
+        <item quantity="other">%1$d บทใหม่</item>
     </plurals>
     <plurals name="items">
         <item quantity="other">%1$d รายการ</item>
