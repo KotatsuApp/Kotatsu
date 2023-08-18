@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<plurals name="items">
-		<item quantity="other">%1$d item</item>
-	</plurals>
-	<plurals name="new_chapters">
-		<item quantity="other">%1$d bab baru</item>
-	</plurals>
-	<plurals name="chapters">
-		<item quantity="other">%1$d bab</item>
-	</plurals>
-	<plurals name="minutes_ago">
-		<item quantity="other">%1$d menit yang lalu</item>
-	</plurals>
-	<plurals name="hours_ago">
-		<item quantity="other">%1$d jam yang lalu</item>
-	</plurals>
-	<plurals name="days_ago">
-		<item quantity="other">%1$d hari yang lalu</item>
-	</plurals>
+    <plurals name="items">
+        <item quantity="other">%1$d item</item>
+    </plurals>
+    <plurals name="new_chapters">
+        <item quantity="other">%1$d bab baru</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="other">%1$d bab</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="other">%1$d menit yang lalu</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="other">%1$d jam yang lalu</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="other">%1$d hari yang lalu</item>
+    </plurals>
+    <plurals name="months_ago">
+        <item quantity="other">%1$d bulan lalu</item>
+    </plurals>
 </resources>
