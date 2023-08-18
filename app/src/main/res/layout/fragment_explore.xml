@@ -7,9 +7,6 @@
 	android:layout_height="match_parent"
 	android:clipToPadding="false"
 	android:orientation="vertical"
-	android:paddingLeft="@dimen/list_spacing"
-	android:paddingTop="@dimen/grid_spacing_outer"
-	android:paddingRight="@dimen/list_spacing"
-	android:paddingBottom="@dimen/grid_spacing_outer"
+	android:padding="@dimen/list_spacing"
 	android:scrollbars="vertical"
 	tools:listitem="@layout/item_explore_source_list" />

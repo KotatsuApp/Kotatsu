@@ -107,6 +107,9 @@ class MultiSearchViewModel @Inject constructor(
 	@CheckResult
 	private fun searchImpl(q: String): Flow<List<MultiSearchListModel>> = channelFlow {
 		val sources = sourcesRepository.getEnabledSources()
+		if (sources.isEmpty()) {
+			return@channelFlow
+		}
 		val semaphore = Semaphore(MAX_PARALLELISM)
 		for (source in sources) {
 			launch {

@@ -29,7 +29,10 @@ class TypedListSpacingDecoration(
 			ListItemType.FILTER_TAG -> outRect.set(0)
 
 			ListItemType.HEADER -> outRect.set(spacingList, 0, spacingList, 0)
-			ListItemType.MANGA_LIST -> outRect.set(spacingList)
+
+			ListItemType.EXPLORE_SOURCE_LIST,
+			ListItemType.MANGA_LIST -> outRect.set(spacingList, 0, spacingList, 0)
+
 			ListItemType.DOWNLOAD,
 			ListItemType.MANGA_LIST_DETAILED -> outRect.set(spacingList)
 
@@ -43,7 +46,6 @@ class TypedListSpacingDecoration(
 			ListItemType.STATE_EMPTY,
 			ListItemType.EXPLORE_BUTTONS,
 			ListItemType.EXPLORE_SOURCE_GRID,
-			ListItemType.EXPLORE_SOURCE_LIST,
 			ListItemType.EXPLORE_SUGGESTION,
 			ListItemType.MANGA_NESTED_GROUP,
 			null -> outRect.set(0)

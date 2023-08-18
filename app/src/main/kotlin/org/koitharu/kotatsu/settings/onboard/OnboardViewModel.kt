@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.settings.onboard
 
-import androidx.annotation.WorkerThread
 import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -10,9 +9,11 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.map
 import org.koitharu.kotatsu.core.util.ext.mapToSet
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.onboard.model.SourceLocale
+import java.util.EnumSet
 import java.util.Locale
 import javax.inject.Inject
 
@@ -43,8 +44,7 @@ class OnboardViewModel @Inject constructor(
 					repository.getEnabledSources().mapNotNullToSet { x -> x.locale },
 				)
 			}
-			rebuildList()
-			repository.assimilateNewSources()
+			commit()
 		}
 	}
 
@@ -58,15 +58,16 @@ class OnboardViewModel @Inject constructor(
 			val prevJob = updateJob
 			updateJob = launchJob(Dispatchers.Default) {
 				prevJob.join()
-				val sources = allSources.filter { x -> x.locale == key }
-				repository.setSourcesEnabled(sources, isChecked)
-				rebuildList()
+				commit()
 			}
 		}
 	}
 
-	@WorkerThread
-	private fun rebuildList() {
+	private suspend fun commit() {
+		val enabledSources = allSources.filterTo(EnumSet.noneOf(MangaSource::class.java)) { x ->
+			x.locale in selectedLocales
+		}
+		repository.setSourcesEnabledExclusive(enabledSources)
 		list.value = locales.map { (key, srcs) ->
 			val locale = if (key != null) {
 				Locale(key)

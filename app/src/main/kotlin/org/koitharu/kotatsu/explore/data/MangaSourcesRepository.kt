@@ -68,6 +68,14 @@ class MangaSourcesRepository @Inject constructor(
 		}
 	}
 
+	suspend fun setSourcesEnabledExclusive(sources: Set<MangaSource>) {
+		db.withTransaction {
+			for (s in remoteSources) {
+				dao.setEnabled(s.name, s in sources)
+			}
+		}
+	}
+
 	suspend fun setSourcesEnabled(sources: Iterable<MangaSource>, isEnabled: Boolean) {
 		db.withTransaction {
 			for (s in sources) {

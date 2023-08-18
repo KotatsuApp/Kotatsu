@@ -28,13 +28,13 @@ import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -57,7 +57,6 @@ class ExploreFragment :
 
 	private val viewModel by viewModels<ExploreViewModel>()
 	private var exploreAdapter: ExploreAdapter? = null
-	private var paddingHorizontal = 0
 
 	override val recyclerView: RecyclerView
 		get() = requireViewBinding().recyclerView
@@ -75,8 +74,7 @@ class ExploreFragment :
 			adapter = exploreAdapter
 			setHasFixedSize(true)
 			SpanSizeResolver(this, resources.getDimensionPixelSize(R.dimen.explore_grid_width)).attach()
-			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
-			paddingHorizontal = spacing
+			addItemDecoration(TypedListSpacingDecoration(context))
 		}
 		addMenuProvider(ExploreMenuProvider(binding.root.context, viewModel))
 		viewModel.content.observe(viewLifecycleOwner) {
@@ -97,8 +95,9 @@ class ExploreFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		requireViewBinding().recyclerView.updatePadding(
-			bottom = insets.bottom,
+		val rv = requireViewBinding().recyclerView
+		rv.updatePadding(
+			bottom = insets.bottom + rv.paddingTop,
 		)
 	}
 

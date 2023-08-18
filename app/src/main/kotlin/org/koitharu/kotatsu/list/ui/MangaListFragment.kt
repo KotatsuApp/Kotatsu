@@ -204,10 +204,11 @@ abstract class MangaListFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		requireViewBinding().recyclerView.updatePadding(
-			bottom = insets.bottom,
+		val rv = requireViewBinding().recyclerView
+		rv.updatePadding(
+			bottom = insets.bottom + rv.paddingTop,
 		)
-		requireViewBinding().recyclerView.fastScroller.updateLayoutParams<MarginLayoutParams> {
+		rv.fastScroller.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = insets.bottom
 		}
 		if (activity is MainActivity) {

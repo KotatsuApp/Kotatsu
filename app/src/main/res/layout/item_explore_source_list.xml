@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="?attr/listPreferredItemHeightSmall"
+	android:layout_height="wrap_content"
 	android:background="@drawable/list_selector"
-	android:clipChildren="false"
-	android:gravity="center_vertical"
-	android:orientation="horizontal"
-	android:padding="@dimen/list_spacing">
+	android:clipChildren="false">
 
 	<com.google.android.material.imageview.ShapeableImageView
 		android:id="@+id/imageView_icon"
-		android:layout_width="32dp"
-		android:layout_height="32dp"
-		android:background="?colorControlHighlight"
-		android:labelFor="@id/textView_title"
-		android:scaleType="fitCenter"
-		app:shapeAppearance="?shapeAppearanceCornerSmall"
+		android:layout_width="40dp"
+		android:layout_height="40dp"
+		android:layout_marginStart="8dp"
+		android:layout_marginTop="8dp"
+		android:layout_marginBottom="8dp"
+		android:background="?colorSurfaceContainer"
+		android:scaleType="centerCrop"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
 		tools:src="@tools:sample/backgrounds/scenic" />
 
 	<TextView
 		android:id="@+id/textView_title"
-		android:layout_width="match_parent"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="16dp"
+		android:layout_marginEnd="8dp"
 		android:ellipsize="end"
 		android:singleLine="true"
-		android:textAppearance="?attr/textAppearanceBodyMedium"
-		tools:text="@tools:sample/lorem[2]" />
+		android:textAppearance="?attr/textAppearanceBodyLarge"
+		app:layout_constraintBottom_toBottomOf="@id/imageView_icon"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@+id/imageView_icon"
+		app:layout_constraintTop_toTopOf="@+id/imageView_icon"
+		tools:text="@tools:sample/lorem" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

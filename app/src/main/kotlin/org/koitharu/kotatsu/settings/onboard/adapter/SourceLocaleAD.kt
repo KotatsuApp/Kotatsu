@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.onboard.adapter
 
+import android.widget.CompoundButton
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.setChecked
@@ -13,13 +14,16 @@ fun sourceLocaleAD(
 	{ inflater, parent -> ItemSourceLocaleBinding.inflate(inflater, parent, false) },
 ) {
 
-	binding.switchToggle.setOnCheckedChangeListener { _, isChecked ->
+	val checkedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
 		listener.onItemCheckedChanged(item, isChecked)
 	}
+	binding.switchToggle.setOnCheckedChangeListener(checkedChangeListener)
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title ?: getString(R.string.different_languages)
 		binding.textViewDescription.textAndVisible = item.summary
+		binding.switchToggle.setOnCheckedChangeListener(null)
 		binding.switchToggle.setChecked(item.isChecked, payloads.isNotEmpty())
+		binding.switchToggle.setOnCheckedChangeListener(checkedChangeListener)
 	}
 }
