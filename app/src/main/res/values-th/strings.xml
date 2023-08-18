@@ -53,7 +53,7 @@
     <string name="text_shelf_holder_primary">มังงะของคุณจะแสดงที่นี่</string>
     <string name="cannot_find_available_storage">ไม่มีพื้นที่ว่างในอุปกรณ์</string>
     <string name="done">สำเร็จ</string>
-    <string name="text_feed_holder">ตอนใหม่ของเรื่องที่คุณกำลังอ่านจะแสดงอยู่ที่นี่</string>
+    <string name="text_feed_holder">บทใหม่ของเรื่องที่คุณกำลังอ่านจะแสดงอยู่ที่นี่</string>
     <string name="passwords_mismatch">รหัสผ่านไม่ตรงกัน</string>
     <string name="text_empty_holder_primary">ที่นี่มันว่างเปล่า…</string>
     <string name="filter">กรอง</string>
@@ -64,7 +64,7 @@
     <string name="external_storage">ที่จัดเก็บภายนอก</string>
     <string name="open_in_browser">เปิดในเบราว์เซอร์</string>
     <string name="large_manga_save_confirm">มังงะเรื่องนี้มี %s บันทึกทั้งหมดหรือไม่\?</string>
-    <string name="new_chapters">ตอนใหม่</string>
+    <string name="new_chapters">บทใหม่</string>
     <string name="favourites_categories">หมวดหมู่รายการโปรด</string>
     <string name="text_history_holder_primary">สิ่งที่คุณอ่านจะแสดงที่นี่</string>
     <string name="text_local_holder_primary">บันทึกบางอย่างก่อน</string>
@@ -120,4 +120,11 @@
     <string name="downloaded">ดาวน์โหลดแล้ว</string>
     <string name="invert_colors">กลับสี</string>
     <string name="pages_animation_summary">อนิเมชั่นการเปลี่ยนหน้า</string>
+    <string name="check_new_chapters_title">ค้นหาบทใหม่และแจ้งเตือน</string>
+    <string name="check_for_new_chapters">ค้นหาบทใหม่</string>
+    <string name="chapter_is_missing">บทที่หายไป</string>
+    <string name="search_chapters">ค้นหาบท</string>
+    <string name="chapters_empty">ไม่มีบทในมังงะนี้</string>
+    <string name="chapters">บท</string>
+    <string name="chapter_d_of_d">บทที่ %1$d จาก %2$d</string>
 </resources>
