@@ -35,6 +35,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 					mangaCount = covers.size,
 					covers = covers.take(3),
 					category = category,
+					isTrackerEnabled = settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources,
 				)
 			}.ifEmpty {
 				listOf(

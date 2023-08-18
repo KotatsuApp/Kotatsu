@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class MangaCategoriesViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val favouritesRepository: FavouritesRepository,
+	settings: AppSettings,
 ) : BaseViewModel() {
 
 	private val manga = savedStateHandle.require<List<ParcelableManga>>(KEY_MANGA_LIST).map { it.manga }
@@ -39,6 +41,7 @@ class MangaCategoriesViewModel @Inject constructor(
 				MangaCategoryItem(
 					category = it,
 					isChecked = it.id in checked,
+					isTrackerEnabled = settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources,
 				)
 			}
 		}

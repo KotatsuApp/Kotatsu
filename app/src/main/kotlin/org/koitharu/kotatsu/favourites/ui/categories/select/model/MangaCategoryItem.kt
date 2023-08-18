@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 data class MangaCategoryItem(
 	val category: FavouriteCategory,
 	val isChecked: Boolean,
+	val isTrackerEnabled: Boolean,
 ) : ListModel {
 
 	override fun areItemsTheSame(other: ListModel): Boolean {
