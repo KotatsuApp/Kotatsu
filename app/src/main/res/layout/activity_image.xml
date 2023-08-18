@@ -23,4 +23,10 @@
 		android:layout_gravity="center"
 		android:indeterminate="true" />
 
+	<ViewStub
+		android:id="@+id/stub_error"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout="@layout/item_error_state" />
+
 </FrameLayout>

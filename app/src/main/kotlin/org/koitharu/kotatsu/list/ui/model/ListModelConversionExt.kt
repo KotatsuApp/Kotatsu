@@ -1,17 +1,14 @@
 package org.koitharu.kotatsu.list.ui.model
 
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.ext.getDisplayIcon
 import org.koitharu.kotatsu.core.util.ext.ifZero
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
-import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.model.Manga
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 
 suspend fun Manga.toListModel(
 	extraProvider: ListExtraProvider?
@@ -79,7 +76,7 @@ suspend fun <C : MutableCollection<in MangaItemModel>> List<Manga>.toUi(
 
 fun Throwable.toErrorState(canRetry: Boolean = true) = ErrorState(
 	exception = this,
-	icon = getErrorIcon(this),
+	icon = getDisplayIcon(),
 	canRetry = canRetry,
 	buttonText = ExceptionResolver.getResolveStringId(this).ifZero { R.string.try_again },
 )
@@ -88,13 +85,3 @@ fun Throwable.toErrorFooter() = ErrorFooter(
 	exception = this,
 	icon = R.drawable.ic_alert_outline,
 )
-
-private fun getErrorIcon(error: Throwable) = when (error) {
-	is AuthRequiredException -> R.drawable.ic_auth_key_large
-	is CloudFlareProtectedException -> R.drawable.ic_bot_large
-	is UnknownHostException,
-	is SocketTimeoutException,
-	-> R.drawable.ic_plug_large
-
-	else -> R.drawable.ic_error_large
-}

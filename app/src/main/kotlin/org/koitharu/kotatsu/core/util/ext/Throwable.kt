@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.core.util.ext
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
 import android.util.AndroidRuntimeException
+import androidx.annotation.DrawableRes
 import androidx.collection.arraySetOf
+import coil.network.HttpException
 import okio.FileNotFoundException
 import okio.IOException
 import org.acra.ktx.sendWithAcra
@@ -50,15 +52,30 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	is NotFoundException -> resources.getString(R.string.not_found_404)
 
-	is HttpStatusException -> when (statusCode) {
-		in 500..599 -> resources.getString(R.string.server_error, statusCode)
-		else -> localizedMessage
-	}
+	is HttpException -> getHttpDisplayMessage(response.code, resources)
+	is HttpStatusException -> getHttpDisplayMessage(statusCode, resources)
 
 	is IOException -> getDisplayMessage(message, resources) ?: localizedMessage
 	else -> localizedMessage
 }.ifNullOrEmpty {
 	resources.getString(R.string.error_occurred)
+}
+
+@DrawableRes
+fun Throwable.getDisplayIcon() = when (this) {
+	is AuthRequiredException -> R.drawable.ic_auth_key_large
+	is CloudFlareProtectedException -> R.drawable.ic_bot_large
+	is UnknownHostException,
+	is SocketTimeoutException,
+	-> R.drawable.ic_plug_large
+
+	else -> R.drawable.ic_error_large
+}
+
+private fun getHttpDisplayMessage(statusCode: Int, resources: Resources): String? = when (statusCode) {
+	404 -> resources.getString(R.string.not_found_404)
+	in 500..599 -> resources.getString(R.string.server_error, statusCode)
+	else -> null
 }
 
 private fun getDisplayMessage(msg: String?, resources: Resources): String? = when {
