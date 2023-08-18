@@ -20,7 +20,6 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.internal.closeQuietly
 import okio.Closeable
-import okio.IOException
 import okio.buffer
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -62,7 +61,7 @@ class FaviconFetcher(
 				loadIcon(icon.url, mangaSource)
 			} catch (e: CloudFlareProtectedException) {
 				throw e
-			} catch (e: IOException) {
+			} catch (e: HttpException) {
 				favicons -= icon
 				continue
 			}
