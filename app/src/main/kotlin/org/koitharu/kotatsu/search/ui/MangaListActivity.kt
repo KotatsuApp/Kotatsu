@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.graphics.Insets
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -40,12 +40,13 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
-import kotlin.math.abs
+import kotlin.math.absoluteValue
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class MangaListActivity :
 	BaseActivity<ActivityMangaListBinding>(),
-	AppBarOwner, View.OnClickListener, FilterOwner {
+	AppBarOwner, View.OnClickListener, FilterOwner, AppBarLayout.OnOffsetChangedListener {
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
@@ -60,12 +61,8 @@ class MangaListActivity :
 		setContentView(ActivityMangaListBinding.inflate(layoutInflater))
 		val tags = intent.getParcelableExtraCompat<ParcelableMangaTags>(EXTRA_TAGS)?.tags
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		appBar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-			if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
-				viewBinding.containerFilterHeader?.setBackgroundColor(com.google.android.material.R.attr.backgroundColor)
-			} else {
-				viewBinding.containerFilterHeader?.setBackgroundColor(R.attr.m3ColorBackground)
-			}
+		if (viewBinding.containerFilterHeader != null) {
+			viewBinding.appbar.addOnOffsetChangedListener(this)
 		}
 		val source = intent.getSerializableExtraCompat(EXTRA_SOURCE) ?: tags?.firstOrNull()?.source
 		if (source == null) {
@@ -85,6 +82,15 @@ class MangaListActivity :
 		viewBinding.cardSide?.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = marginStart + insets.bottom
 			topMargin = marginStart + insets.top
+		}
+	}
+
+	override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+		val container = viewBinding.containerFilterHeader ?: return
+		container.background = if (verticalOffset.absoluteValue < appBarLayout.totalScrollRange) {
+			container.context.getThemeColor(materialR.attr.backgroundColor).toDrawable()
+		} else {
+			viewBinding.collapsingToolbarLayout?.contentScrim
 		}
 	}
 
