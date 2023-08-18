@@ -266,7 +266,7 @@
     <string name="status_dropped">Заброшено</string>
     <string name="status_completed">Завершено</string>
     <string name="show_reading_indicators_summary">Показать процент прочитанного в истории и избранном</string>
-    <string name="exclude_nsfw_from_history_summary">Манга, помеченная как NSFW, никогда не будет добавлена в историю и ваш прогресс чтения не будет сохранен</string>
+    <string name="exclude_nsfw_from_history_summary">Манга, помеченная как NSFW, не будет добавлена в историю и ваш прогресс чтения не будет сохранен</string>
     <string name="percent_string_pattern">%1$s%%</string>
     <string name="report">Отчёт</string>
     <string name="logout">Выйти</string>
@@ -351,7 +351,7 @@
     <string name="language">Язык</string>
     <string name="share_logs">Поделиться логами</string>
     <string name="enable_logging">Включить логирование</string>
-    <string name="enable_logging_summary">Записывать некоторые действия для отладки</string>
+    <string name="enable_logging_summary">Записывать некоторые действия для отладки. Включайте только если знаете, что делаете</string>
     <string name="show_suspicious_content">Отображать сомнительный контент</string>
     <string name="theme_name_dynamic">Динамическая</string>
     <string name="color_theme">Цветовая схема</string>
@@ -368,7 +368,7 @@
     <string name="nothing_here">Здесь ничего нет</string>
     <string name="download_started">Загрузка началась</string>
     <string name="allow_unstable_updates">Разрешить нестабильные обновления</string>
-    <string name="allow_unstable_updates_summary">Предлагать обновления до бета-версий приложения</string>
+    <string name="allow_unstable_updates_summary">Получать уведомления о нестабильных сборках</string>
     <string name="settings_apply_restart_required">Пожалуйста, перезапустите приложение, чтобы применить эти изменения</string>
     <string name="user_agent">Заголовок UserAgent</string>
     <string name="got_it">Понятно</string>
@@ -382,7 +382,7 @@
     <string name="sync_auth_hint">Вы можете войти в уже существующий аккаунт или же создать новый</string>
     <string name="ignore_ssl_errors">Игнорировать ошибки SSL</string>
     <string name="mirror_switching">Выбрать зеркало автоматически</string>
-    <string name="mirror_switching_summary">Автоматически переключать домены для удалённых источников при ошибках, если доступны зеркала</string>
+    <string name="mirror_switching_summary">Автоматически переключать домены для источников манги при ошибках, если доступны зеркала</string>
     <string name="pause">Пауза</string>
     <string name="resume">Возобновить</string>
     <string name="remove_completed">Удалить завершённые</string>
@@ -466,4 +466,7 @@
     <string name="languages">Языки</string>
     <string name="unknown">Неизвестный</string>
     <string name="in_progress">В процессе</string>
+    <string name="disable_nsfw">Отключить NSFW</string>
+    <string name="too_many_requests_message">Слишком много запросов. Попробуйте повторить позже</string>
+    <string name="related_manga_summary">Показывать список связанной манги. В некоторых случаях список может быть нерелевантным или отсутствовать вовсе</string>
 </resources>
