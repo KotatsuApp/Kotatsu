@@ -467,4 +467,6 @@
     <string name="unknown">Desconocido</string>
     <string name="in_progress">En proceso</string>
     <string name="disable_nsfw">Desactivar NSFW</string>
+    <string name="too_many_requests_message">Demasiadas solicitudes. Vuelve a intentarlo más tarde</string>
+    <string name="related_manga_summary">Muestra una lista de mangas relacionados. En algunos casos puede ser inexacta o faltar</string>
 </resources>
