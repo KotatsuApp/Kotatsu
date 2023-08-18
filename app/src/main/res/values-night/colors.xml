@@ -14,11 +14,11 @@
 	<color name="splash_primary">#0C4091</color>
 
 	<!-- Color schemes colors -->
-	<color name="background_miku">#191C1C</color>
-	<color name="background_asuka">#201A1A</color>
-	<color name="background_mion">#1A1C19</color>
-	<color name="background_rikka">#28202B</color>
-	<color name="background_sakura">#201C1D</color>
-	<color name="background_mamimi">#232B33</color>
-	<color name="background_kanade">#272727</color>
+	<color name="background_miku">#272B2A</color>
+	<color name="background_asuka">#2F2828</color>
+	<color name="background_mion">#272B28</color>
+	<color name="background_rikka">#2F2828</color>
+	<color name="background_sakura">#272A2C</color>
+	<color name="background_mamimi">#2F2828</color>
+	<color name="background_kanade">#2B2B2B</color>
 </resources>

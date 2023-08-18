@@ -28,7 +28,7 @@
 		<item name="colorOnSurfaceVariant">#3F4947</item>
 		<item name="colorSurfaceInverse">#2D3130</item>
 		<item name="colorOnSurfaceInverse">#EFF1F0</item>
-		<item name="android:colorBackground">#E6E9E7</item>
+		<item name="android:colorBackground">@color/background_miku</item>
 		<item name="colorOnBackground">#191C1C</item>
 		<item name="colorError">#B81F1E</item>
 		<item name="colorErrorContainer">#FFDAD6</item>
@@ -65,7 +65,7 @@
 		<item name="colorOnSurfaceVariant">#534342</item>
 		<item name="colorSurfaceInverse">#362F2E</item>
 		<item name="colorOnSurfaceInverse">#FBEEEC</item>
-		<item name="android:colorBackground">#F2E5E4</item>
+		<item name="android:colorBackground">@color/background_asuka</item>
 		<item name="colorOnBackground">#201A1A</item>
 		<item name="colorError">#BA1A1A</item>
 		<item name="colorErrorContainer">#FFDAD6</item>
@@ -102,7 +102,7 @@
 		<item name="colorOnSurfaceVariant">#404943</item>
 		<item name="colorSurfaceInverse">#2E312F</item>
 		<item name="colorOnSurfaceInverse">#EFF1ED</item>
-		<item name="android:colorBackground">#E7E9E5</item>
+		<item name="android:colorBackground">@color/background_mion</item>
 		<item name="colorOnBackground">#191C1A</item>
 		<item name="colorError">#BA1A1A</item>
 		<item name="colorErrorContainer">#FFDAD6</item>
@@ -139,7 +139,7 @@
 		<item name="colorOnSurfaceVariant">#47464F</item>
 		<item name="colorSurfaceInverse">#313034</item>
 		<item name="colorOnSurfaceInverse">#F4EFF4</item>
-		<item name="android:colorBackground">#EBE7EC</item>
+		<item name="android:colorBackground">@color/background_rikka</item>
 		<item name="colorOnBackground">#1C1B1F</item>
 		<item name="colorError">#BA1A1A</item>
 		<item name="colorErrorContainer">#FFDAD6</item>
@@ -176,7 +176,7 @@
 		<item name="colorOnSurfaceVariant">#514347</item>
 		<item name="colorSurfaceInverse">#352F30</item>
 		<item name="colorOnSurfaceInverse">#FAEEEF</item>
-		<item name="android:colorBackground">#F1E5E7</item>
+		<item name="android:colorBackground">@color/background_sakura</item>
 		<item name="colorOnBackground">#201A1B</item>
 		<item name="colorError">#BA1A1A</item>
 		<item name="colorErrorContainer">#FFDAD6</item>
@@ -213,7 +213,7 @@
 		<item name="colorOnSurfaceVariant">#524344</item>
 		<item name="colorSurfaceInverse">#362F2F</item>
 		<item name="colorOnSurfaceInverse">#FBEEED</item>
-		<item name="android:colorBackground">#F2E5E5</item>
+		<item name="android:colorBackground">@color/background_mamimi</item>
 		<item name="colorOnBackground">#201A1A</item>
 		<item name="colorError">#BA1A1A</item>
 		<item name="colorErrorContainer">#FFDAD6</item>
@@ -250,7 +250,7 @@
 		<item name="colorOnSurfaceVariant">#505050</item>
 		<item name="colorSurfaceInverse">#373737</item>
 		<item name="colorOnSurfaceInverse">#F1F1F1</item>
-		<item name="android:colorBackground">#E6E6E6</item>
+		<item name="android:colorBackground">@color/background_kanade</item>
 		<item name="colorOnBackground">#202020</item>
 		<item name="colorError">#BA1A1A</item>
 		<item name="colorErrorContainer">#FFDAD6</item>
