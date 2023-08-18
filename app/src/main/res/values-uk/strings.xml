@@ -389,7 +389,7 @@
     <string name="remove_completed">Видалити завершені</string>
     <string name="downloads_wifi_only">Завантажувати тільки через Wi-Fi</string>
     <string name="cancel_all">Скасувати все</string>
-    <string name="mirror_switching_summary">Автоматично перемикайте домени для віддалених джерел у разі помилок, якщо дзеркала доступні</string>
+    <string name="mirror_switching_summary">Автоматично перемикайте домени для джерел у разі помилок, якщо дзеркала доступні</string>
     <string name="resume">Відновити</string>
     <string name="pause">Пауза</string>
     <string name="downloads_wifi_only_summary">Зупинити завантаження при переході на мобільну мережу</string>
@@ -461,9 +461,12 @@
     <string name="related_manga">Схожа манґа</string>
     <string name="color_light">Світлий</string>
     <string name="color_white">Білий</string>
-    <string name="manage_categories">Кіровання категоріями</string>
+    <string name="manage_categories">Керування категоріями</string>
     <string name="captcha_required_summary">Для належної роботи %s потрібна перевірка captcha</string>
     <string name="languages">Мови</string>
     <string name="unknown">Невідомий</string>
     <string name="in_progress">В процесі</string>
+    <string name="disable_nsfw">Вимкнути NSFW</string>
+    <string name="related_manga_summary">Показати список пов\'язаної манґи. У деяких випадках він може бути неточним або відсутнім</string>
+    <string name="too_many_requests_message">Занадто багато запитів. Спробуйте пізніше</string>
 </resources>
