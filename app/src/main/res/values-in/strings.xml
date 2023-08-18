@@ -88,7 +88,7 @@
     <string name="notification_sound">Suara pemberitahuan</string>
     <string name="text_empty_holder_primary">Sepi juga di sini…</string>
     <string name="text_history_holder_primary">Apa yang Anda baca akan ditampilkan di sini</string>
-    <string name="text_history_holder_secondary">Cari apa untuk di baca di bilah samping.</string>
+    <string name="text_history_holder_secondary">Cari sesuatu untuk dibaca via «Eksplor»</string>
     <string name="text_local_holder_primary">Simpan sesuatu dulu</string>
     <string name="manga_shelf">Rak</string>
     <string name="recent_manga">Baru-baru ini</string>
@@ -130,7 +130,7 @@
     <string name="captcha_solve">Selesaikan</string>
     <string name="clear_cookies">Bersihkan kuki</string>
     <string name="cookies_cleared">Semua kuki telah dihapus</string>
-    <string name="clear_feed">Bersihkan aliran</string>
+    <string name="clear_feed">Bersihkan umpan</string>
     <string name="check_for_new_chapters">Periksa bab baru</string>
     <string name="auth_required">Masuk untuk melihat konten ini</string>
     <string name="next">Selanjutnya</string>
@@ -308,7 +308,7 @@
     <string name="disable_battery_optimization_summary">Membantu pemeriksaan pembaruan di latar belakang</string>
     <string name="crash_text">Ada sesuatu yang salah. Mohon untuk mengirim laporan kutu (bug) ke pengembang untuk membantu kami memperbaikinya.</string>
     <string name="report">Lapor</string>
-    <string name="exclude_nsfw_from_history_summary">Komik yang ditandai sebagai NSFW tidak akan ditambahkan ke riwayat dan pencapaian Anda tidak akan disimpan</string>
+    <string name="exclude_nsfw_from_history_summary">Komik yang ditandai sebagai NSFW tidak akan ditambahkan ke riwayat dan progres Anda tidak akan disimpan</string>
     <string name="clear_cookies_summary">Bisa membantu dalam beberapa masalah. Seluruh otorisasi akan menjadi tidak valid</string>
     <string name="manage">Kelola</string>
     <string name="no_manga_sources_text">Aktifkan sumber komik untuk membaca komik daring</string>
@@ -389,7 +389,7 @@
     <string name="sync_host_description">Anda dapat menggunakan server sinkronisasi yang dihosting sendiri atau server default. Jangan ubah ini jika Anda tidak yakin dengan apa yang Anda lakukan.</string>
     <string name="ignore_ssl_errors">Abaikan kesalahan SSL</string>
     <string name="mirror_switching">Pilih cermin secara otomatis</string>
-    <string name="mirror_switching_summary">Secara otomatis mengalihkan domain untuk sumber jarak jauh saat terjadi kesalahan jika mirror tersedia</string>
+    <string name="mirror_switching_summary">Alihkan domain secara otomatis ke sumber lain saat terjadi kesalahan (jika alternatif tersedia)</string>
     <string name="pause">Jeda</string>
     <string name="resume">Lanjut</string>
     <string name="paused">Dijeda</string>
@@ -443,4 +443,30 @@
     <string name="pick_custom_directory">Pilih direktori khusus</string>
     <string name="no_access_to_file">Anda tidak memiliki akses ke file atau direktori ini</string>
     <string name="local_manga_directories">Direktori manga</string>
+    <string name="disable_nsfw">Matikan NSFW</string>
+    <string name="description">Deskripsi</string>
+    <string name="manage_categories">Atur kategori</string>
+    <string name="view_list">Lihat daftar</string>
+    <string name="show">Tampilkan</string>
+    <string name="related_manga_summary">Tampilkan daftar komik terkait. Bisa jadi tidak akurat atau hilang</string>
+    <string name="suggestions_wifi_only_summary">Jangan perbarui saran dengan koneksi jaringan internet terbatas</string>
+    <string name="tracker_wifi_only_summary">Jangan perbarui bab baru dengan koneksi jaringan internet terbatas</string>
+    <string name="search_hint">Masukkan judul, genre, atau nama sumber komik</string>
+    <string name="progress">Progres</string>
+    <string name="order_added">Ditambahkan</string>
+    <string name="too_many_requests_message">Terlalu banyak permintaan. Coba lain kali</string>
+    <string name="related_manga">Komik terkait</string>
+    <string name="this_month">Bulan ini</string>
+    <string name="voice_search">Pencarian suara</string>
+    <string name="color_dark">Gelap</string>
+    <string name="color_light">Terang</string>
+    <string name="color_white">Putih</string>
+    <string name="color_black">Hitam</string>
+    <string name="background">Latar belakang</string>
+    <string name="data_not_restored">Data tidak dikembalikan</string>
+    <string name="data_not_restored_text">Pastikan kamu memilih berkas pencadangan yang tepat</string>
+    <string name="captcha_required_summary">%s memerlukan penyelesaian Chaptcha agar dapat diakses</string>
+    <string name="languages">Bahasa</string>
+    <string name="unknown">Tidak diketahui</string>
+    <string name="in_progress">Dalam progres</string>
 </resources>
