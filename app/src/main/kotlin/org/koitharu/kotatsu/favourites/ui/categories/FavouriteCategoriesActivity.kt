@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import javax.inject.Inject
@@ -58,6 +59,7 @@ class FavouriteCategoriesActivity :
 		selectionController.attachToRecyclerView(viewBinding.recyclerView)
 		viewBinding.recyclerView.setHasFixedSize(true)
 		viewBinding.recyclerView.adapter = adapter
+		viewBinding.recyclerView.addItemDecoration(TypedListSpacingDecoration(this, false))
 		viewBinding.fabAdd.setOnClickListener(this)
 
 		reorderHelper = ItemTouchHelper(ReorderHelperCallback()).apply {
@@ -106,7 +108,7 @@ class FavouriteCategoriesActivity :
 			right = insets.right,
 		)
 		viewBinding.recyclerView.updatePadding(
-			bottom = insets.bottom,
+			bottom = insets.bottom + viewBinding.recyclerView.paddingTop,
 		)
 	}
 

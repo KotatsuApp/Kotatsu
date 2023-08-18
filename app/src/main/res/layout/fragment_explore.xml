@@ -6,7 +6,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:clipToPadding="false"
+	android:padding="@dimen/list_spacing_normal"
 	android:orientation="vertical"
-	android:padding="@dimen/list_spacing"
 	android:scrollbars="vertical"
 	tools:listitem="@layout/item_explore_source_list" />

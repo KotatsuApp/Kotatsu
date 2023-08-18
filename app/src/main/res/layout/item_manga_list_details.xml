@@ -67,9 +67,7 @@
 			android:id="@+id/scrollView_tags"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="12dp"
 			android:layout_marginTop="8dp"
-			android:layout_marginEnd="12dp"
 			android:layout_marginBottom="8dp"
 			android:scrollIndicators="start|end"
 			android:scrollbars="none"
@@ -83,6 +81,7 @@
 				android:id="@+id/chips_tags"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:paddingHorizontal="12dp"
 				app:chipSpacingHorizontal="6dp"
 				app:chipSpacingVertical="6dp"
 				app:singleLine="true" />

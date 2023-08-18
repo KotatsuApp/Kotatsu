@@ -9,11 +9,12 @@ import org.koitharu.kotatsu.R
 
 class TypedListSpacingDecoration(
 	context: Context,
+	private val addHorizontalPadding: Boolean,
 ) : ItemDecoration() {
 
-	private val spacingList = context.resources.getDimensionPixelOffset(R.dimen.list_spacing)
-	private val spacingGrid = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing)
-	private val spacingGridTop = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing_top)
+	private val spacingSmall = context.resources.getDimensionPixelOffset(R.dimen.list_spacing_small)
+	private val spacingNormal = context.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
+	private val spacingLarge = context.resources.getDimensionPixelOffset(R.dimen.list_spacing_large)
 
 	override fun getItemOffsets(
 		outRect: Rect,
@@ -28,33 +29,45 @@ class TypedListSpacingDecoration(
 			ListItemType.FILTER_SORT,
 			ListItemType.FILTER_TAG -> outRect.set(0)
 
-			ListItemType.HEADER -> outRect.set(spacingList, 0, spacingList, 0)
-
+			ListItemType.HEADER,
+			ListItemType.FEED,
 			ListItemType.EXPLORE_SOURCE_LIST,
-			ListItemType.MANGA_LIST -> outRect.set(spacingList, 0, spacingList, 0)
+			ListItemType.MANGA_SCROBBLING,
+			ListItemType.MANGA_LIST -> outRect.set(0)
 
 			ListItemType.DOWNLOAD,
-			ListItemType.MANGA_LIST_DETAILED -> outRect.set(spacingList)
+			ListItemType.HINT_EMPTY,
+			ListItemType.MANGA_LIST_DETAILED -> outRect.set(spacingNormal)
 
 			ListItemType.PAGE_THUMB,
-			ListItemType.MANGA_GRID -> outRect.set(spacingGrid)
+			ListItemType.MANGA_GRID -> outRect.set(spacingNormal)
+
+			ListItemType.EXPLORE_BUTTONS -> outRect.set(spacingNormal)
 
 			ListItemType.FOOTER_LOADING,
 			ListItemType.FOOTER_ERROR,
 			ListItemType.STATE_LOADING,
 			ListItemType.STATE_ERROR,
 			ListItemType.STATE_EMPTY,
-			ListItemType.EXPLORE_BUTTONS,
 			ListItemType.EXPLORE_SOURCE_GRID,
 			ListItemType.EXPLORE_SUGGESTION,
 			ListItemType.MANGA_NESTED_GROUP,
+			ListItemType.CATEGORY_LARGE,
 			null -> outRect.set(0)
 
 			ListItemType.TIP -> outRect.set(0) // TODO
-			ListItemType.HINT_EMPTY,
-			ListItemType.FEED -> outRect.set(spacingList, 0, spacingList, 0)
+		}
+		if (addHorizontalPadding && !itemType.isEdgeToEdge()) {
+			outRect.set(
+				outRect.left + spacingNormal,
+				outRect.top,
+				outRect.right + spacingNormal,
+				outRect.bottom,
+			)
 		}
 	}
 
 	private fun Rect.set(spacing: Int) = set(spacing, spacing, spacing, spacing)
+
+	private fun ListItemType?.isEdgeToEdge() = this == ListItemType.MANGA_NESTED_GROUP
 }

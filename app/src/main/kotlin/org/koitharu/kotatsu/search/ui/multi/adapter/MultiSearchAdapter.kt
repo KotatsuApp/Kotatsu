@@ -6,6 +6,7 @@ import coil.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
@@ -26,21 +27,21 @@ class MultiSearchAdapter(
 
 	init {
 		val pool = RecycledViewPool()
-		delegatesManager
-			.addDelegate(
-				searchResultsAD(
-					sharedPool = pool,
-					lifecycleOwner = lifecycleOwner,
-					coil = coil,
-					sizeResolver = sizeResolver,
-					selectionDecoration = selectionDecoration,
-					listener = listener,
-					itemClickListener = itemClickListener,
-				),
-			)
-			.addDelegate(loadingStateAD())
-			.addDelegate(loadingFooterAD())
-			.addDelegate(emptyStateListAD(coil, lifecycleOwner, listener))
-			.addDelegate(errorStateListAD(listener))
+		addDelegate(
+			ListItemType.MANGA_NESTED_GROUP,
+			searchResultsAD(
+				sharedPool = pool,
+				lifecycleOwner = lifecycleOwner,
+				coil = coil,
+				sizeResolver = sizeResolver,
+				selectionDecoration = selectionDecoration,
+				listener = listener,
+				itemClickListener = itemClickListener,
+			),
+		)
+		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
+		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
+		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listener))
+		addDelegate(ListItemType.STATE_ERROR, errorStateListAD(listener))
 	}
 }

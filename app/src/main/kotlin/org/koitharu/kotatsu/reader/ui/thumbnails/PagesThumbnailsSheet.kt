@@ -23,7 +23,6 @@ import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.plus
-import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
@@ -75,7 +74,7 @@ class PagesThumbnailsSheet :
 			clickListener = this@PagesThumbnailsSheet,
 		)
 		with(binding.recyclerView) {
-			addItemDecoration(TypedListSpacingDecoration(context))
+			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = thumbnailsAdapter
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver?.setGridSize(settings.gridSize / 100f, this)

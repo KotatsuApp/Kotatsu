@@ -75,7 +75,7 @@ class BookmarksSheet :
 		)
 		viewBinding?.headerBar?.setTitle(R.string.bookmarks)
 		with(binding.recyclerView) {
-			addItemDecoration(TypedListSpacingDecoration(context))
+			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = bookmarksAdapter
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver?.setGridSize(settings.gridSize / 100f, this)

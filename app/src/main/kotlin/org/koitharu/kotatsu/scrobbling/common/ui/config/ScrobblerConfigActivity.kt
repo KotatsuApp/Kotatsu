@@ -38,9 +38,6 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 
 	private val viewModel: ScrobblerConfigViewModel by viewModels()
 
-	private var paddingVertical = 0
-	private var paddingHorizontal = 0
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityScrobblerConfigBinding.inflate(layoutInflater))
@@ -51,10 +48,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		with(viewBinding.recyclerView) {
 			adapter = listAdapter
 			setHasFixedSize(true)
-			val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
-			paddingHorizontal = spacing
-			paddingVertical = resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
-			val decoration = TypedListSpacingDecoration(context)
+			val decoration = TypedListSpacingDecoration(context, false)
 			addItemDecoration(decoration)
 		}
 		viewBinding.imageViewAvatar.setOnClickListener(this)
@@ -79,10 +73,11 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.recyclerView.updatePadding(
-			left = insets.left + paddingHorizontal,
-			right = insets.right + paddingHorizontal,
-			bottom = insets.bottom + paddingVertical,
+		val rv = viewBinding.recyclerView
+		rv.updatePadding(
+			left = insets.left + rv.paddingTop,
+			right = insets.right + rv.paddingTop,
+			bottom = insets.bottom + rv.paddingTop,
 		)
 	}
 

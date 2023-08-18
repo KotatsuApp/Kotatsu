@@ -23,4 +23,6 @@ enum class ListItemType {
 	PAGE_THUMB,
 	FEED,
 	DOWNLOAD,
+	CATEGORY_LARGE,
+	MANGA_SCROBBLING,
 }

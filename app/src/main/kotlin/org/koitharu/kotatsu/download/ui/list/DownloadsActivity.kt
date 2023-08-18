@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
-import androidx.annotation.Px
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
@@ -37,16 +36,12 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	private val viewModel by viewModels<DownloadsViewModel>()
 	private lateinit var selectionController: ListSelectionController
 
-	@Px
-	private var listSpacing = 0
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
-		listSpacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val downloadsAdapter = DownloadsAdapter(this, coil, this)
-		val decoration = TypedListSpacingDecoration(this)
+		val decoration = TypedListSpacingDecoration(this, false)
 		selectionController = ListSelectionController(
 			activity = this,
 			decoration = DownloadsSelectionDecoration(this),
@@ -71,9 +66,10 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.recyclerView.updatePadding(
-			left = insets.left + listSpacing,
-			right = insets.right + listSpacing,
+		val rv = viewBinding.recyclerView
+		rv.updatePadding(
+			left = insets.left + rv.paddingTop,
+			right = insets.right + rv.paddingTop,
 			bottom = insets.bottom,
 		)
 		viewBinding.toolbar.updatePadding(

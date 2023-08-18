@@ -4,6 +4,10 @@
 	<!-- Common dimensions -->
 	<dimen name="margin_normal">16dp</dimen>
 	<dimen name="margin_small">8dp</dimen>
+	<!-- List spacing -->
+	<dimen name="list_spacing_small">6dp</dimen>
+	<dimen name="list_spacing_normal">8dp</dimen>
+	<dimen name="list_spacing_large">12dp</dimen>
 	<!-- Navigation -->
 	<dimen name="nav_header_logo_size">36dp</dimen>
 

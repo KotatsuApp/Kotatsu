@@ -13,7 +13,7 @@
 		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:orientation="vertical"
-		android:paddingHorizontal="@dimen/list_spacing"
+		android:padding="@dimen/list_spacing_normal"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_feed" />
 

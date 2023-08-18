@@ -29,7 +29,6 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.ui.util.reverseAsync
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
@@ -84,7 +83,7 @@ class BookmarksFragment :
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			val spanResolver = MangaListSpanResolver(resources)
-			addItemDecoration(TypedListSpacingDecoration(context))
+			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = bookmarksAdapter
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver.setGridSize(settings.gridSize / 100f, this)
@@ -159,10 +158,11 @@ class BookmarksFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		requireViewBinding().recyclerView.updatePadding(
-			bottom = insets.bottom,
+		val rv = requireViewBinding().recyclerView
+		rv.updatePadding(
+			bottom = insets.bottom + rv.paddingTop,
 		)
-		requireViewBinding().recyclerView.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+		rv.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			bottomMargin = insets.bottom
 		}
 	}

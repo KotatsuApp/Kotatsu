@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
@@ -17,8 +18,8 @@ class CategoriesAdapter(
 ) : BaseListAdapter<ListModel>() {
 
 	init {
-		delegatesManager.addDelegate(categoryAD(coil, lifecycleOwner, onItemClickListener))
-			.addDelegate(emptyStateListAD(coil, lifecycleOwner, listListener))
-			.addDelegate(loadingStateAD())
+		addDelegate(ListItemType.CATEGORY_LARGE ,categoryAD(coil, lifecycleOwner, onItemClickListener))
+		addDelegate(ListItemType.STATE_EMPTY ,emptyStateListAD(coil, lifecycleOwner, listListener))
+		addDelegate(ListItemType.STATE_LOADING ,loadingStateAD())
 	}
 }

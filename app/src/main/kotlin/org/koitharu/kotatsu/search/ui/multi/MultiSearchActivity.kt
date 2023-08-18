@@ -23,13 +23,13 @@ import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteSheet
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -83,6 +83,7 @@ class MultiSearchActivity :
 		)
 		viewBinding.recyclerView.adapter = adapter
 		viewBinding.recyclerView.setHasFixedSize(true)
+		viewBinding.recyclerView.addItemDecoration(TypedListSpacingDecoration(this, true))
 
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
@@ -100,7 +101,7 @@ class MultiSearchActivity :
 			right = insets.right,
 		)
 		viewBinding.recyclerView.updatePadding(
-			bottom = insets.bottom,
+			bottom = insets.bottom + viewBinding.recyclerView.paddingTop,
 		)
 	}
 

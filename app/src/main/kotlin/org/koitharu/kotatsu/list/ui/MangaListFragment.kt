@@ -108,7 +108,7 @@ abstract class MangaListFragment :
 			setHasFixedSize(true)
 			adapter = listAdapter
 			checkNotNull(selectionController).attachToRecyclerView(binding.recyclerView)
-			addItemDecoration(TypedListSpacingDecoration(context))
+			addItemDecoration(TypedListSpacingDecoration(context, false))
 			addOnScrollListener(paginationListener!!)
 			fastScroller.setFastScrollListener(this@MangaListFragment)
 		}
@@ -247,21 +247,16 @@ abstract class MangaListFragment :
 			when (mode) {
 				ListMode.LIST -> {
 					layoutManager = FitHeightLinearLayoutManager(context)
-					updatePadding(left = 0, right = 0)
 				}
 
 				ListMode.DETAILED_LIST -> {
 					layoutManager = FitHeightLinearLayoutManager(context)
-					val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing)
-					updatePadding(left = spacing, right = spacing)
 				}
 
 				ListMode.GRID -> {
 					layoutManager = FitHeightGridLayoutManager(context, checkNotNull(spanResolver).spanCount).also {
 						it.spanSizeLookup = spanSizeLookup
 					}
-					val spacing = resources.getDimensionPixelOffset(R.dimen.grid_spacing)
-					updatePadding(left = spacing, right = spacing)
 					addOnLayoutChangeListener(spanResolver)
 				}
 			}

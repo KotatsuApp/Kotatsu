@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetScrobblingSelectorBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
@@ -63,6 +64,7 @@ class ScrobblingSelectorSheet :
 		with(binding.recyclerView) {
 			adapter = listAdapter
 			addItemDecoration(decoration)
+			addItemDecoration(TypedListSpacingDecoration(context, false))
 			addOnScrollListener(PaginationScrollListener(4, this@ScrobblingSelectorSheet))
 		}
 		binding.buttonDone.setOnClickListener(this)

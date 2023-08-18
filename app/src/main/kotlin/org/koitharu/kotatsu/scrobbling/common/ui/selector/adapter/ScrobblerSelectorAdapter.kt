@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
@@ -18,9 +19,9 @@ class ScrobblerSelectorAdapter(
 ) : BaseListAdapter<ListModel>() {
 
 	init {
-		delegatesManager.addDelegate(loadingStateAD())
-			.addDelegate(scrobblingMangaAD(lifecycleOwner, coil, clickListener))
-			.addDelegate(loadingFooterAD())
-			.addDelegate(scrobblerHintAD(stateHolderListener))
+		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
+		addDelegate(ListItemType.MANGA_SCROBBLING, scrobblingMangaAD(lifecycleOwner, coil, clickListener))
+		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
+		addDelegate(ListItemType.HINT_EMPTY, scrobblerHintAD(stateHolderListener))
 	}
 }

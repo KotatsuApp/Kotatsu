@@ -74,7 +74,7 @@ class ExploreFragment :
 			adapter = exploreAdapter
 			setHasFixedSize(true)
 			SpanSizeResolver(this, resources.getDimensionPixelSize(R.dimen.explore_grid_width)).attach()
-			addItemDecoration(TypedListSpacingDecoration(context))
+			addItemDecoration(TypedListSpacingDecoration(context, false))
 		}
 		addMenuProvider(ExploreMenuProvider(binding.root.context, viewModel))
 		viewModel.content.observe(viewLifecycleOwner) {

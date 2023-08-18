@@ -1,16 +1,20 @@
 package org.koitharu.kotatsu.scrobbling.common.ui.config.adapter
 
-import android.widget.TextView
-import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
+import androidx.core.view.isInvisible
+import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.databinding.ItemHeaderButtonBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
 
-fun scrobblingHeaderAD() = adapterDelegate<ScrobblingStatus, ListModel>(R.layout.item_header) {
+fun scrobblingHeaderAD() = adapterDelegateViewBinding<ScrobblingStatus, ListModel, ItemHeaderButtonBinding>(
+	{ inflater, parent -> ItemHeaderButtonBinding.inflate(inflater, parent, false) },
+) {
+
+	binding.buttonMore.isInvisible = true
+	val strings = context.resources.getStringArray(R.array.scrobbling_statuses)
 
 	bind {
-		(itemView as TextView).text = context.resources
-			.getStringArray(R.array.scrobbling_statuses)
-			.getOrNull(item.ordinal)
+		binding.textViewTitle.text = strings.getOrNull(item.ordinal)
 	}
 }

@@ -33,7 +33,7 @@ class FilterSheetFragment :
 		val adapter = FilterAdapter(filter, this)
 		binding.recyclerView.adapter = adapter
 		filter.filterItems.observe(viewLifecycleOwner, adapter)
-		binding.recyclerView.addItemDecoration(TypedListSpacingDecoration(binding.root.context))
+		binding.recyclerView.addItemDecoration(TypedListSpacingDecoration(binding.root.context, false))
 
 		if (dialog == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			binding.recyclerView.scrollIndicators = 0

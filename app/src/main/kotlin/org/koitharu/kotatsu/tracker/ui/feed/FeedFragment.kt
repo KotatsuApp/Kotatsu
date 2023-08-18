@@ -58,7 +58,7 @@ class FeedFragment :
 			adapter = feedAdapter
 			setHasFixedSize(true)
 			addOnScrollListener(PaginationScrollListener(4, this@FeedFragment))
-			addItemDecoration(TypedListSpacingDecoration(context))
+			addItemDecoration(TypedListSpacingDecoration(context, true))
 		}
 		binding.swipeRefreshLayout.setOnRefreshListener(this)
 		addMenuProvider(
@@ -82,8 +82,9 @@ class FeedFragment :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		requireViewBinding().recyclerView.updatePadding(
-			bottom = insets.bottom,
+		val rv = requireViewBinding().recyclerView
+		rv.updatePadding(
+			bottom = insets.bottom + rv.paddingTop,
 		)
 	}
 

@@ -35,7 +35,7 @@
 		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:orientation="vertical"
-		android:paddingHorizontal="@dimen/list_spacing"
+		android:padding="@dimen/list_spacing_normal"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
