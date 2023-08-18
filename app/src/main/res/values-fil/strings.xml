@@ -466,4 +466,5 @@
     <string name="show">Ipakita</string>
     <string name="unknown">Di-alam</string>
     <string name="in_progress">Isinasagawa</string>
+    <string name="disable_nsfw">I-disable ang NSFW</string>
 </resources>
