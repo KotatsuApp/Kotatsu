@@ -2,7 +2,7 @@
 <resources>
     <string name="detailed_list">تفاصيل القائمة</string>
     <string name="error_occurred">حدث خطأ</string>
-    <string name="details">تفاصيل</string>
+    <string name="details">التفاصيل</string>
     <string name="grid">شبكة</string>
     <string name="list_mode">وضع القائمة</string>
     <string name="settings">إعدادات</string>
@@ -16,7 +16,7 @@
     <string name="try_again">حاول مجدداً</string>
     <string name="computing_">جاري الحوسبة …</string>
     <string name="local_storage">التخزين المحلي</string>
-    <string name="history">سجل</string>
+    <string name="history">السجل</string>
     <string name="list">قائمة</string>
     <string name="clear_history">محو سجل</string>
     <string name="add_to_favourites">ضع هذا في المفضلة</string>
