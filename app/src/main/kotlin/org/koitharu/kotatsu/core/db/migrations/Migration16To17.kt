@@ -21,15 +21,18 @@ class Migration16To17(context: Context) : Migration(16, 17) {
 				continue
 			}
 			val name = source.name
-			var isEnabled = name !in hiddenSources
+			val isHidden = name in hiddenSources
 			var sortKey = order.indexOf(name)
 			if (sortKey == -1) {
-				sortKey = order.size + source.ordinal
-				isEnabled = false
+				if (isHidden) {
+					sortKey = order.size + source.ordinal
+				} else {
+					continue
+				}
 			}
 			database.execSQL(
 				"INSERT INTO `sources` (`source`, `enabled`, `sort_key`) VALUES (?, ?, ?)",
-				arrayOf(name, isEnabled.toInt(), sortKey),
+				arrayOf(name, (!isHidden).toInt(), sortKey),
 			)
 		}
 	}
