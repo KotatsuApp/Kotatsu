@@ -29,7 +29,7 @@ fun ImageView.newImageRequest(lifecycleOwner: LifecycleOwner, data: Any?): Image
 		.data(data)
 		.lifecycle(lifecycleOwner)
 		.crossfade(context)
-		.listener(CaptchaNotifier(context.applicationContext))
+		.addListener(CaptchaNotifier(context.applicationContext))
 		.target(this)
 }
 
@@ -65,11 +65,11 @@ fun ImageResult.toBitmapOrNull() = when (this) {
 }
 
 fun ImageRequest.Builder.indicator(indicator: BaseProgressIndicator<*>): ImageRequest.Builder {
-	return listener(ImageRequestIndicatorListener(listOf(indicator)))
+	return addListener(ImageRequestIndicatorListener(listOf(indicator)))
 }
 
 fun ImageRequest.Builder.indicator(indicators: List<BaseProgressIndicator<*>>): ImageRequest.Builder {
-	return listener(ImageRequestIndicatorListener(indicators))
+	return addListener(ImageRequestIndicatorListener(indicators))
 }
 
 fun ImageRequest.Builder.decodeRegion(
@@ -85,4 +85,31 @@ fun ImageRequest.Builder.crossfade(context: Context): ImageRequest.Builder {
 
 fun ImageRequest.Builder.source(source: MangaSource?): ImageRequest.Builder {
 	return tag(MangaSource::class.java, source)
+}
+
+fun ImageRequest.Builder.addListener(listener: ImageRequest.Listener): ImageRequest.Builder {
+	val existing = build().listener
+	return listener(
+		when (existing) {
+			null -> listener
+			is CompositeImageRequestListener -> existing + listener
+			else -> CompositeImageRequestListener(arrayOf(existing, listener))
+		},
+	)
+}
+
+private class CompositeImageRequestListener(
+	private val delegates: Array<ImageRequest.Listener>,
+) : ImageRequest.Listener {
+
+	override fun onCancel(request: ImageRequest) = delegates.forEach { it.onCancel(request) }
+
+	override fun onError(request: ImageRequest, result: ErrorResult) = delegates.forEach { it.onError(request, result) }
+
+	override fun onStart(request: ImageRequest) = delegates.forEach { it.onStart(request) }
+
+	override fun onSuccess(request: ImageRequest, result: SuccessResult) =
+		delegates.forEach { it.onSuccess(request, result) }
+
+	operator fun plus(other: ImageRequest.Listener) = CompositeImageRequestListener(delegates + other)
 }

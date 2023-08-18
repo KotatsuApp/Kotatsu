@@ -35,6 +35,7 @@ fun bookmarkLargeAD(
 			fallback(R.drawable.ic_placeholder)
 			error(R.drawable.ic_error_placeholder)
 			allowRgb565(true)
+			tag(item)
 			decodeRegion(item.scroll)
 			source(item.manga.source)
 			enqueueWith(coil)

@@ -13,6 +13,7 @@ import coil.decode.SvgDecoder
 import coil.disk.DiskCache
 import coil.util.DebugLogger
 import dagger.Binds
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,6 +47,7 @@ import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.model.LocalManga
+import org.koitharu.kotatsu.main.domain.CoverRestorer
 import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.ui.thumbnails.MangaPageFetcher
@@ -89,6 +91,7 @@ interface AppModule {
 			mangaRepositoryFactory: MangaRepository.Factory,
 			imageProxyInterceptor: ImageProxyInterceptor,
 			pageFetcherFactory: MangaPageFetcher.Factory,
+			coverRestorerProvider: Lazy<CoverRestorer>,
 		): ImageLoader {
 			val diskCacheFactory = {
 				val rootDir = context.externalCacheDir ?: context.cacheDir
@@ -105,6 +108,7 @@ interface AppModule {
 				.diskCache(diskCacheFactory)
 				.logger(if (BuildConfig.DEBUG) DebugLogger() else null)
 				.allowRgb565(context.isLowRamDevice())
+				.eventListenerFactory { coverRestorerProvider.get() }
 				.components(
 					ComponentRegistry.Builder()
 						.add(SvgDecoder.Factory())

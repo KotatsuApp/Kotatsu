@@ -111,6 +111,11 @@ class RemoteMangaRepository(
 		return details.await()
 	}
 
+	suspend fun find(manga: Manga): Manga? {
+		val list = getList(0, manga.title)
+		return list.find { x -> x.id == manga.id }
+	}
+
 	fun getAuthProvider(): MangaParserAuthProvider? = parser as? MangaParserAuthProvider
 
 	fun getConfigKeys(): List<ConfigKey<*>> = ArrayList<ConfigKey<*>>().also {

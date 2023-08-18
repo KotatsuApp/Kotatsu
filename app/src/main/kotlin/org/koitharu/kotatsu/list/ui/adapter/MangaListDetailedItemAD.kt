@@ -61,6 +61,7 @@ fun mangaListDetailedItemAD(
 			error(R.drawable.ic_error_placeholder)
 			transformations(TrimTransformation())
 			allowRgb565(true)
+			tag(item.manga)
 			source(item.source)
 			enqueueWith(coil)
 		}

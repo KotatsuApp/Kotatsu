@@ -52,6 +52,13 @@ class BookmarksRepository @Inject constructor(
 		}
 	}
 
+	suspend fun updateBookmark(bookmark: Bookmark, imageUrl: String) {
+		val entity = bookmark.toEntity().copy(
+			imageUrl = imageUrl,
+		)
+		db.bookmarksDao.upsert(listOf(entity))
+	}
+
 	suspend fun removeBookmark(mangaId: Long, chapterId: Long, page: Int) {
 		check(db.bookmarksDao.delete(mangaId, chapterId, page) != 0) {
 			"Bookmark not found"
