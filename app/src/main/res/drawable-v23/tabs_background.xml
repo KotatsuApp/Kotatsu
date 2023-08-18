@@ -12,7 +12,7 @@
 		android:bottom="1dp">
 		<shape
 			android:shape="rectangle">
-			<solid android:color="?attr/colorSurfaceContainerHigh"/>
+			<solid android:color="?attr/m3ColorBackground"/>
 		</shape>
 	</item>
 </layer-list>

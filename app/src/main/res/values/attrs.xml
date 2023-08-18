@@ -8,6 +8,9 @@
 	<attr name="listItemTextViewStyle" />
 	<attr name="fastScrollerStyle" />
 	<attr name="tipViewStyle" />
+	<attr name="m3ColorBackground" />
+	<attr name="m3ColorExploreButton" />
+	<attr name="m3ColorBottomMenuBackground" />
 
 	<!--CoverImageView attrs-->
 	<declare-styleable name="CoverImageView">

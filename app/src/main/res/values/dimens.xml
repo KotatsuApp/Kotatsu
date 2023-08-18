@@ -9,6 +9,7 @@
 
 	<dimen name="toolbar_height_expanded">172dp</dimen>
 	<dimen name="grid_spacing">8dp</dimen>
+	<dimen name="grid_spacing_top">12dp</dimen>
 	<dimen name="list_spacing">8dp</dimen>
 	<dimen name="grid_spacing_outer">2dp</dimen>
 	<dimen name="grid_spacing_outer_double">4dp</dimen>

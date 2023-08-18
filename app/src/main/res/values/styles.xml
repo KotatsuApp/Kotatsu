@@ -2,15 +2,19 @@
 
 	<!--Toolbars-->
 
+	<style name="Widget.Kotatsu.CollapsingToolbar" parent="@style/Widget.Material3.CollapsingToolbar.Medium">
+		<item name="contentScrim">?attr/m3ColorBottomMenuBackground</item>
+	</style>
+
 	<style name="Widget.Kotatsu.AppBarLayout" parent="@style/Widget.Material3.AppBarLayout">
-		<item name="android:background">?attr/colorSurfaceContainerHigh</item>
+		<item name="android:background">?attr/m3ColorBackground</item>
 	</style>
 
 	<!--Navigation Views-->
 
 	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
 		<item name="labelVisibilityMode">labeled</item>
-		<item name="android:background">?attr/colorSurfaceContainerHighest</item>
+		<item name="android:background">?attr/m3ColorBottomMenuBackground</item>
 		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
 		<item name="itemIconTint">@color/bottom_menu_active_item</item>
 	</style>
@@ -73,8 +77,9 @@
 		<item name="cardBackgroundColor">?attr/colorSurfaceContainerLow</item>
 	</style>
 
-	<style name="Widget.Kotatsu.CardView.Light" parent="Widget.Material3.CardView.Filled">
-		<item name="cardBackgroundColor">?colorBackgroundFloating</item>
+	<style name="Widget.Kotatsu.MaterialCardView.Filled" parent="Widget.Material3.CardView.Filled">
+		<item name="cardBackgroundColor">?attr/m3ColorExploreButton</item>
+		<item name="shapeAppearance">?attr/shapeAppearanceCornerExtraLarge</item>
 	</style>
 
 	<style name="Widget.Kotatsu.Tabs" parent="@style/Widget.Material3.TabLayout">
@@ -102,7 +107,7 @@
 	</style>
 
 	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
-		<item name="chipBackgroundColor">?attr/colorSurfaceContainerHigh</item>
+		<item name="chipBackgroundColor">?attr/m3ColorBackground</item>
 		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
 		<item name="chipStrokeColor">?attr/colorOutline</item>
 		<item name="chipIconTint">?attr/colorControlNormal</item>
@@ -188,7 +193,7 @@
 		<item name="subtitleTextAppearance">?attr/textAppearanceBodySmall</item>
 	</style>
 
-	<style name="Widget.Kotatsu.ExploreButton" parent="Widget.Material3.Button.TonalButton.Icon">
+	<style name="Widget.Kotatsu.ExploreButton" parent="Widget.Material3.Button.ElevatedButton.Icon">
 		<item name="android:minHeight">54dp</item>
 		<item name="android:singleLine">true</item>
 		<item name="shapeAppearance">?shapeAppearanceCornerExtraLarge</item>
@@ -203,7 +208,10 @@
 		<item name="android:insetBottom">2dp</item>
 		<item name="android:gravity">start|center_vertical</item>
 		<item name="android:textAppearance">?textAppearanceButton</item>
-		<item name="backgroundTint">?attr/colorSurfaceContainerLow</item>
+		<item name="backgroundTint">?attr/m3ColorExploreButton</item>
+		<!-- Hack. Removing shadow. For AMOLED -->
+		<item name="android:outlineProvider">none</item>
+		<item name="elevation">3dp</item>
 	</style>
 
 	<style name="Widget.Kotatsu.TextView.Indicator" parent="Widget.MaterialComponents.TextView">

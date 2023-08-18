@@ -45,7 +45,11 @@
 		<item name="colorOnErrorContainer">@color/m3_sys_color_light_on_error_container</item>
 		<item name="colorOutline">@color/m3_sys_color_dynamic_light_outline</item>
 		<item name="colorOutlineVariant">@color/m3_sys_color_dynamic_light_outline_variant</item>
-		<item name="android:colorBackground">@color/m3_sys_color_dynamic_light_surface_container_high</item>
+		<item name="android:colorBackground">@android:color/system_neutral2_50</item>
+		<item name="m3ColorBackground">@android:color/system_neutral2_50</item>
+		<item name="m3ColorExploreButton">@android:color/white</item>
+		<item name="m3ColorBottomMenuBackground">@android:color/system_neutral2_100</item>
+		<item name="liftOnScrollColor">@android:color/system_neutral2_100</item>
 		<!-- Default Framework Text Colors. -->
 		<item name="android:textColorPrimary">@color/m3_dynamic_default_color_primary_text</item>
 		<item name="android:textColorPrimaryInverse">@color/m3_dynamic_dark_default_color_primary_text</item>

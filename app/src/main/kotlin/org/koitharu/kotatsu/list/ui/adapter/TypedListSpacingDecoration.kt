@@ -13,6 +13,7 @@ class TypedListSpacingDecoration(
 
 	private val spacingList = context.resources.getDimensionPixelOffset(R.dimen.list_spacing)
 	private val spacingGrid = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+	private val spacingGridTop = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing_top)
 
 	override fun getItemOffsets(
 		outRect: Rect,
@@ -28,7 +29,7 @@ class TypedListSpacingDecoration(
 			ListItemType.FILTER_TAG -> outRect.set(0)
 
 			ListItemType.HEADER -> outRect.set(spacingList, 0, spacingList, 0)
-			ListItemType.MANGA_LIST -> outRect.set(0)
+			ListItemType.MANGA_LIST -> outRect.set(spacingList)
 			ListItemType.DOWNLOAD,
 			ListItemType.MANGA_LIST_DETAILED -> outRect.set(spacingList)
 
@@ -48,7 +49,7 @@ class TypedListSpacingDecoration(
 			null -> outRect.set(0)
 
 			ListItemType.TIP -> outRect.set(0) // TODO
-			ListItemType.HINT_EMPTY -> outRect.set(spacingList)
+			ListItemType.HINT_EMPTY,
 			ListItemType.FEED -> outRect.set(spacingList, 0, spacingList, 0)
 		}
 	}

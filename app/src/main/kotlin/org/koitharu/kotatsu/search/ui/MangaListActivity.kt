@@ -12,6 +12,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -24,6 +25,7 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ActivityMangaListBinding
@@ -38,6 +40,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class MangaListActivity :
@@ -57,6 +60,13 @@ class MangaListActivity :
 		setContentView(ActivityMangaListBinding.inflate(layoutInflater))
 		val tags = intent.getParcelableExtraCompat<ParcelableMangaTags>(EXTRA_TAGS)?.tags
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		appBar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+			if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+				viewBinding.containerFilterHeader?.setBackgroundColor(com.google.android.material.R.attr.backgroundColor)
+			} else {
+				viewBinding.containerFilterHeader?.setBackgroundColor(R.attr.m3ColorBackground)
+			}
+		}
 		val source = intent.getSerializableExtraCompat(EXTRA_SOURCE) ?: tags?.firstOrNull()?.source
 		if (source == null) {
 			finishAfterTransition()

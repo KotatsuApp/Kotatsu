@@ -17,10 +17,11 @@
 			android:layout_height="match_parent"
 			android:clipToPadding="false"
 			android:orientation="vertical"
-			android:paddingHorizontal="@dimen/list_spacing"
+			android:paddingVertical="@dimen/list_spacing"
 			app:bubbleSize="small"
 			tools:layoutManager="org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager"
 			tools:listitem="@layout/item_manga_list" />
 
 	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </FrameLayout>
