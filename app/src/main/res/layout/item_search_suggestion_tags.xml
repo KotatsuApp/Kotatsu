@@ -4,8 +4,9 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:paddingVertical="4dp"
 	android:paddingStart="?listPreferredItemPaddingStart"
+	android:paddingTop="4dp"
 	android:paddingEnd="?listPreferredItemPaddingEnd"
+	android:paddingBottom="6dp"
 	app:chipSpacingHorizontal="6dp"
 	app:chipSpacingVertical="6dp" />

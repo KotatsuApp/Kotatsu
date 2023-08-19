@@ -30,6 +30,7 @@ import javax.inject.Inject
 private const val DEBOUNCE_TIMEOUT = 500L
 private const val MAX_MANGA_ITEMS = 6
 private const val MAX_QUERY_ITEMS = 16
+private const val MAX_HINTS_ITEMS = 3
 private const val MAX_TAGS_ITEMS = 8
 private const val MAX_SOURCES_ITEMS = 6
 
@@ -42,6 +43,7 @@ class SearchSuggestionViewModel @Inject constructor(
 
 	private val query = MutableStateFlow("")
 	private var suggestionJob: Job? = null
+	private var invalidateOnResume = false
 
 	val isIncognitoModeEnabled = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
@@ -60,11 +62,10 @@ class SearchSuggestionViewModel @Inject constructor(
 	}
 
 	fun saveQuery(query: String) {
-		launchJob(Dispatchers.Default) {
-			if (!settings.isIncognitoModeEnabled) {
-				repository.saveSearchQuery(query)
-			}
+		if (!settings.isIncognitoModeEnabled) {
+			repository.saveSearchQuery(query)
 		}
+		invalidateOnResume = true
 	}
 
 	fun clearSearchHistory() {
@@ -77,6 +78,13 @@ class SearchSuggestionViewModel @Inject constructor(
 	fun onSourceToggle(source: MangaSource, isEnabled: Boolean) {
 		launchJob(Dispatchers.Default) {
 			sourcesRepository.setSourceEnabled(source, isEnabled)
+		}
+	}
+
+	fun onResume() {
+		if (invalidateOnResume) {
+			invalidateOnResume = false
+			setupSuggestion()
 		}
 	}
 
@@ -108,6 +116,9 @@ class SearchSuggestionViewModel @Inject constructor(
 		val queriesDeferred = async {
 			repository.getQuerySuggestion(searchQuery, MAX_QUERY_ITEMS)
 		}
+		val hintsDeferred = async {
+			repository.getQueryHintSuggestion(searchQuery, MAX_HINTS_ITEMS)
+		}
 		val tagsDeferred = async {
 			repository.getTagsSuggestion(searchQuery, MAX_TAGS_ITEMS, null)
 		}
@@ -119,16 +130,18 @@ class SearchSuggestionViewModel @Inject constructor(
 		val tags = tagsDeferred.await()
 		val mangaList = mangaDeferred.await()
 		val queries = queriesDeferred.await()
+		val hints = hintsDeferred.await()
 
-		buildList(queries.size + sources.size + 2) {
+		buildList(queries.size + sources.size + hints.size + 2) {
 			if (tags.isNotEmpty()) {
 				add(SearchSuggestionItem.Tags(mapTags(tags)))
 			}
 			if (mangaList.isNotEmpty()) {
 				add(SearchSuggestionItem.MangaList(mangaList))
 			}
-			queries.mapTo(this) { SearchSuggestionItem.RecentQuery(it) }
 			sources.mapTo(this) { SearchSuggestionItem.Source(it, it in enabledSources) }
+			queries.mapTo(this) { SearchSuggestionItem.RecentQuery(it) }
+			hints.mapTo(this) { SearchSuggestionItem.Hint(it) }
 		}
 	}
 

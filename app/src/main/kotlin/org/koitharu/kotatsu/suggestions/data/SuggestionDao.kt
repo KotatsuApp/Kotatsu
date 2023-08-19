@@ -26,6 +26,9 @@ abstract class SuggestionDao {
 	@Query("SELECT COUNT(*) FROM suggestions")
 	abstract suspend fun count(): Int
 
+	@Query("SELECT manga.title FROM suggestions LEFT JOIN manga ON suggestions.manga_id = manga.manga_id WHERE manga.title LIKE :query")
+	abstract suspend fun getTitles(query: String): List<String>
+
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(entity: SuggestionEntity): Long
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?selectableItemBackground"
+	android:drawablePadding="12dp"
+	android:ellipsize="end"
+	android:gravity="center_vertical"
+	android:minHeight="?listPreferredItemHeightSmall"
+	android:orientation="horizontal"
+	android:paddingStart="?listPreferredItemPaddingStart"
+	android:paddingEnd="?listPreferredItemPaddingEnd"
+	android:singleLine="true"
+	android:textAppearance="?attr/textAppearanceBodyLarge"
+	app:drawableStartCompat="@drawable/ic_suggestion"
+	tools:text="@tools:sample/lorem[6]" />

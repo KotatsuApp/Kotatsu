@@ -20,5 +20,6 @@ class SearchSuggestionAdapter(
 			.addDelegate(searchSuggestionSourceAD(coil, lifecycleOwner, listener))
 			.addDelegate(searchSuggestionTagsAD(listener))
 			.addDelegate(searchSuggestionMangaListAD(coil, lifecycleOwner, listener))
+			.addDelegate(searchSuggestionQueryHintAD(listener))
 	}
 }

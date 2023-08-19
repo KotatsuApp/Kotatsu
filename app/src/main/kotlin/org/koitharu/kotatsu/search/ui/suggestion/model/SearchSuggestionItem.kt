@@ -27,6 +27,15 @@ sealed interface SearchSuggestionItem : ListModel {
 		}
 	}
 
+	data class Hint(
+		val query: String,
+	) : SearchSuggestionItem {
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is Hint && query == other.query
+		}
+	}
+
 	data class Source(
 		val source: MangaSource,
 		val isEnabled: Boolean,

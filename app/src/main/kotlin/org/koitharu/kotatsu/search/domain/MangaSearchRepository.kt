@@ -73,6 +73,20 @@ class MangaSearchRepository @Inject constructor(
 		}.orEmpty()
 	}
 
+	suspend fun getQueryHintSuggestion(
+		query: String,
+		limit: Int,
+	): List<String> {
+		if (query.isEmpty()) {
+			return emptyList()
+		}
+		val titles = db.suggestionDao.getTitles("$query%")
+		if (titles.isEmpty()) {
+			return emptyList()
+		}
+		return titles.shuffled().take(limit)
+	}
+
 	suspend fun getTagsSuggestion(query: String, limit: Int, source: MangaSource?): List<MangaTag> {
 		return when {
 			query.isNotEmpty() && source != null -> db.tagsDao.findTags(source.name, "%$query%", limit)

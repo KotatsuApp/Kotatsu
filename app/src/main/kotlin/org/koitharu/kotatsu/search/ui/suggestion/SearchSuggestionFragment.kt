@@ -69,6 +69,11 @@ class SearchSuggestionFragment :
 		viewModel.deleteQuery(query)
 	}
 
+	override fun onResume() {
+		super.onResume()
+		viewModel.onResume()
+	}
+
 	companion object {
 
 		fun newInstance() = SearchSuggestionFragment()
