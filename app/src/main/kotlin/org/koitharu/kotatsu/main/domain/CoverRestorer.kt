@@ -7,6 +7,7 @@ import coil.network.HttpException
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
+import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
@@ -14,6 +15,7 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
@@ -28,7 +30,7 @@ class CoverRestorer @Inject constructor(
 
 	override fun onError(request: ImageRequest, result: ErrorResult) {
 		super.onError(request, result)
-		if (result.throwable !is HttpException) {
+		if (!result.throwable.shouldRestore()) {
 			return
 		}
 		request.tags.tag<Manga>()?.let {
@@ -86,5 +88,9 @@ class CoverRestorer @Inject constructor(
 		} else {
 			false
 		}
+	}
+
+	private fun Throwable.shouldRestore(): Boolean {
+		return this is HttpException || this is HttpStatusException || this is ParseException
 	}
 }
