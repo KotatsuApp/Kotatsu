@@ -3,10 +3,10 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	style="@style/Widget.Material3.CardView.Outlined"
+	style="?materialCardViewOutlinedStyle"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	app:cardBackgroundColor="?scrimBackground">
+	app:cardBackgroundColor="?colorBackgroundFloating">
 
 	<org.koitharu.kotatsu.core.ui.widgets.CoverImageView
 		android:id="@+id/imageView_thumb"

@@ -34,6 +34,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.core.util.ext.ensureSuccess
+import org.koitharu.kotatsu.core.util.ext.getCompletionResultOrNull
 import org.koitharu.kotatsu.core.util.ext.isNotEmpty
 import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -222,12 +223,9 @@ class PageLoader @Inject constructor(
 	}
 
 	private fun Deferred<File>.isValid(): Boolean {
-		return if (isCompleted) {
-			val file = getCompleted()
+		return getCompletionResultOrNull()?.map { file ->
 			file.exists() && file.isNotEmpty()
-		} else {
-			true
-		}
+		}?.getOrDefault(false) ?: true
 	}
 
 	private class InternalErrorHandler : AbstractCoroutineContextElement(CoroutineExceptionHandler),

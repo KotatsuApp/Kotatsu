@@ -10,6 +10,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.lifecycle.RetainedLifecycle
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
@@ -69,4 +70,12 @@ private fun Lifecycle.removeObserverFromAnyThread(observer: LifecycleObserver) {
 	} else {
 		removeObserver(observer)
 	}
+}
+
+fun <T> Deferred<T>.getCompletionResultOrNull(): Result<T>? = if (isCompleted) {
+	getCompletionExceptionOrNull()?.let { error ->
+		Result.failure(error)
+	} ?: Result.success(getCompleted())
+} else {
+	null
 }

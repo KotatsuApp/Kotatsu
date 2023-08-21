@@ -116,7 +116,7 @@ open class PageHolder(
 		bindingInfo.progressBar.hide()
 	}
 
-	override fun onClick(v: View) {
+	final override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return)
 			R.id.button_error_details -> delegate.showErrorDetails(boundData?.url)
