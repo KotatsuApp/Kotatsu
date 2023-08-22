@@ -15,7 +15,8 @@
 		style="?materialCardViewFilledStyle"
 		android:layout_width="@dimen/widget_cover_width"
 		android:layout_height="@dimen/widget_cover_height"
-		android:focusableInTouchMode="false">
+		android:focusableInTouchMode="false"
+		app:strokeColor="?colorOutline">
 
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"

@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.HorizontalScrollView
-import android.widget.LinearLayout
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.isVisible
 import androidx.customview.view.AbsSavedState
@@ -19,7 +18,9 @@ import androidx.preference.PreferenceViewHolder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.ColorScheme
 import org.koitharu.kotatsu.databinding.ItemColorSchemeBinding
+import org.koitharu.kotatsu.databinding.PreferenceThemeBinding
 import java.lang.ref.WeakReference
+import com.google.android.material.R as materialR
 
 class ThemeChooserPreference @JvmOverloads constructor(
 	context: Context,
@@ -43,38 +44,44 @@ class ThemeChooserPreference @JvmOverloads constructor(
 
 	override fun onBindViewHolder(holder: PreferenceViewHolder) {
 		super.onBindViewHolder(holder)
-		val layout = holder.findViewById(R.id.linear) as? LinearLayout ?: return
-		val scrollView = holder.findViewById(R.id.scrollView) as? HorizontalScrollView ?: return
+		val binding = PreferenceThemeBinding.bind(holder.itemView)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			scrollView.suppressLayout(true)
-			layout.suppressLayout(true)
+			binding.scrollView.suppressLayout(true)
+			binding.linear.suppressLayout(true)
 		}
-		layout.removeAllViews()
+		binding.linear.removeAllViews()
 		for (theme in entries) {
 			val context = ContextThemeWrapper(context, theme.styleResId)
-			val item = ItemColorSchemeBinding.inflate(LayoutInflater.from(context), layout, false)
-			item.card.isChecked = theme == currentValue
+			val item = ItemColorSchemeBinding.inflate(LayoutInflater.from(context), binding.linear, false)
+			val isSelected = theme == currentValue
+			item.card.isChecked = isSelected
+			item.card.strokeWidth = if (isSelected) context.resources.getDimensionPixelSize(
+				materialR.dimen.m3_comp_outlined_card_outline_width,
+			) else 0
 			item.textViewTitle.setText(theme.titleResId)
 			item.root.tag = theme
 			item.card.tag = theme
 			item.imageViewCheck.isVisible = theme == currentValue
 			item.root.setOnClickListener(itemClickListener)
 			item.card.setOnClickListener(itemClickListener)
-			layout.addView(item.root)
+			binding.linear.addView(item.root)
+			if (isSelected) {
+				item.root.requestFocus()
+			}
 		}
 		if (lastScrollPosition[0] >= 0) {
-			val scroller = Scroller(scrollView, lastScrollPosition[0])
+			val scroller = Scroller(binding.scrollView, lastScrollPosition[0])
 			scroller.run()
-			scrollView.post(scroller)
+			binding.scrollView.post(scroller)
 		}
-		scrollView.viewTreeObserver.run {
+		binding.scrollView.viewTreeObserver.run {
 			scrollPersistListener?.let { removeOnScrollChangedListener(it) }
-			scrollPersistListener = ScrollPersistListener(WeakReference(scrollView), lastScrollPosition)
+			scrollPersistListener = ScrollPersistListener(WeakReference(binding.scrollView), lastScrollPosition)
 			addOnScrollChangedListener(scrollPersistListener)
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			layout.suppressLayout(false)
-			scrollView.suppressLayout(false)
+			binding.linear.suppressLayout(false)
+			binding.scrollView.suppressLayout(false)
 		}
 	}
 
