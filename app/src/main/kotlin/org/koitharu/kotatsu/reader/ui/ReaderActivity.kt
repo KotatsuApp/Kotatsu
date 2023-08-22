@@ -163,7 +163,7 @@ class ReaderActivity :
 			readerManager.replace(mode)
 		}
 		if (viewBinding.appbarTop.isVisible) {
-			lifecycle.postDelayed(hideUiRunnable, TimeUnit.SECONDS.toMillis(1))
+			lifecycle.postDelayed(TimeUnit.SECONDS.toMillis(1), hideUiRunnable)
 		}
 		viewBinding.slider.isRtl = mode == ReaderMode.REVERSED
 	}

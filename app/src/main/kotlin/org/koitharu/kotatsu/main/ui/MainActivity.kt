@@ -116,9 +116,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		navigationDelegate = MainNavigationDelegate(
 			navBar = checkNotNull(bottomNav ?: viewBinding.navRail),
 			fragmentManager = supportFragmentManager,
+			settings = settings,
 		)
 		navigationDelegate.addOnFragmentChangedListener(this)
-		navigationDelegate.onCreate()
+		navigationDelegate.onCreate(savedInstanceState)
 
 		appUpdateBadge = OptionsMenuBadgeHelper(viewBinding.toolbar, R.id.action_app_update)
 

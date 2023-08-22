@@ -55,10 +55,18 @@
 
 	</PreferenceCategory>
 
+	<ListPreference
+		android:defaultValue="0"
+		android:entries="@array/first_nav_item"
+		android:entryValues="@array/values_first_nav_item"
+		android:key="nav_first"
+		android:title="Default section"
+		app:allowDividerAbove="true"
+		app:useSimpleSummaryProvider="true" />
+
 	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
 		android:key="app_locale"
-		android:title="@string/language"
-		app:allowDividerAbove="true" />
+		android:title="@string/language" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"

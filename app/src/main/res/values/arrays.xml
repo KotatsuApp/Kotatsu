@@ -70,5 +70,8 @@
 		<item>@string/system_default</item>
 		<item>@string/advanced</item>
 	</string-array>
-	<string name="advanced">Advanced</string>
+	<string-array name="first_nav_item">
+		<item>@string/history</item>
+		<item>@string/favourites</item>
+	</string-array>
 </resources>

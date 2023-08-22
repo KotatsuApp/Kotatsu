@@ -51,6 +51,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isAmoledTheme: Boolean
 		get() = prefs.getBoolean(KEY_THEME_AMOLED, false)
 
+	val isFavoritesNavItemFirst: Boolean
+		get() = (prefs.getString(KEY_FIRST_NAV_ITEM, null)?.toIntOrNull() ?: 0) == 1
+
 	var gridSize: Int
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
 		set(value) = prefs.edit { putInt(KEY_GRID_SIZE, value) }
@@ -452,6 +455,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LOCAL_MANGA_DIRS = "local_manga_dirs"
 		const val KEY_DISABLE_NSFW = "no_nsfw"
 		const val KEY_RELATED_MANGA = "related_manga"
+		const val KEY_FIRST_NAV_ITEM = "nav_first"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

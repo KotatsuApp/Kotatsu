@@ -10,7 +10,6 @@ import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.LocaleManagerCompat
-import androidx.core.view.postDelayed
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,8 +20,10 @@ import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.util.ext.getLocalesConfig
 import org.koitharu.kotatsu.core.util.ext.map
+import org.koitharu.kotatsu.core.util.ext.postDelayed
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.core.util.ext.toList
+import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.utils.ActivityListPreference
@@ -92,11 +93,15 @@ class AppearanceSettingsFragment :
 			AppSettings.KEY_APP_LOCALE -> {
 				AppCompatDelegate.setApplicationLocales(settings.appLocales)
 			}
+
+			AppSettings.KEY_FIRST_NAV_ITEM -> {
+				activityRecreationHandle.recreate(MainActivity::class.java)
+			}
 		}
 	}
 
 	private fun postRestart() {
-		view?.postDelayed(400) {
+		viewLifecycleOwner.lifecycle.postDelayed(400) {
 			activityRecreationHandle.recreateAll()
 		}
 	}

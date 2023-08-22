@@ -102,7 +102,7 @@ fun <T> SharedPreferences.observe(key: String, valueProducer: suspend () -> T): 
 	}
 }.distinctUntilChanged()
 
-fun Lifecycle.postDelayed(runnable: Runnable, delay: Long) {
+fun Lifecycle.postDelayed(delay: Long, runnable: Runnable) {
 	coroutineScope.launch {
 		delay(delay)
 		runnable.run()

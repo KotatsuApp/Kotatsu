@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+		android:id="@+id/nav_favourites"
+		android:icon="@drawable/ic_favourites_selector"
+		android:title="@string/favourites" />
+
+	<item
+		android:id="@+id/nav_history"
+		android:icon="@drawable/ic_history_selector"
+		android:title="@string/history" />
+
+	<item
+		android:id="@+id/nav_explore"
+		android:icon="@drawable/ic_explore_selector"
+		android:title="@string/explore" />
+
+	<item
+		android:id="@+id/nav_feed"
+		android:icon="@drawable/ic_feed_selector"
+		android:title="@string/feed" />
+
+</menu>

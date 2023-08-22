@@ -25,4 +25,9 @@ class ActivityRecreationHandle @Inject constructor() : DefaultActivityLifecycleC
 		val snapshot = activities.keys.toList()
 		snapshot.forEach { ActivityCompat.recreate(it) }
 	}
+
+	fun recreate(cls: Class<out Activity>) {
+		val activity = activities.keys.find { x -> x.javaClass == cls } ?: return
+		ActivityCompat.recreate(activity)
+	}
 }

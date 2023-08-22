@@ -60,4 +60,8 @@
 		<item>#21005E</item>
 		<item>#7D5260</item>
 	</string-array>
+	<string-array name="values_first_nav_item" translatable="false">
+		<item>0</item>
+		<item>1</item>
+	</string-array>
 </resources>
