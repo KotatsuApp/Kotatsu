@@ -60,7 +60,7 @@
 		android:entries="@array/first_nav_item"
 		android:entryValues="@array/values_first_nav_item"
 		android:key="nav_first"
-		android:title="Default section"
+		android:title="@string/default_section"
 		app:allowDividerAbove="true"
 		app:useSimpleSummaryProvider="true" />
 

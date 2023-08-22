@@ -10,7 +10,8 @@
 	<androidx.fragment.app.FragmentContainerView
 		android:id="@+id/container"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+		android:layout_height="match_parent"
+		tools:background="@color/grey" />
 
 	<org.koitharu.kotatsu.reader.ui.ReaderInfoBarView
 		android:id="@+id/infoBar"
@@ -25,6 +26,7 @@
 		android:id="@+id/appbar_top"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:background="?colorBackgroundFloating"
 		android:elevation="@dimen/m3_card_elevated_elevation"
 		app:elevation="@dimen/m3_card_elevated_elevation"
 		app:liftOnScroll="false">
@@ -46,6 +48,7 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
 		android:layout_margin="8dp"
+		app:cardBackgroundColor="?colorBackgroundFloating"
 		app:layout_insetEdge="bottom">
 
 		<com.google.android.material.appbar.MaterialToolbar

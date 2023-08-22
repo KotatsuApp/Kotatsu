@@ -476,4 +476,5 @@
 	<string name="too_many_requests_message">Too many requests. Try again later</string>
 	<string name="related_manga_summary">Show a list of related manga. In some cases it may be inaccurate or missing</string>
 	<string name="advanced">Advanced</string>
+	<string name="default_section">Default section</string>
 </resources>
