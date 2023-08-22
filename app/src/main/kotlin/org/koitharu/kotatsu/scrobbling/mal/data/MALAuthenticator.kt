@@ -7,6 +7,7 @@ import okhttp3.Response
 import okhttp3.Route
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerType
@@ -49,9 +50,7 @@ class MALAuthenticator @Inject constructor(
 		runBlocking { repository.authorize(null) }
 		return storage.accessToken
 	}.onFailure {
-		if (BuildConfig.DEBUG) {
-			it.printStackTrace()
-		}
+		it.printStackTraceDebug()
 	}.getOrNull()
 
 }

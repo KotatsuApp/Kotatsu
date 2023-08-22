@@ -1,11 +1,9 @@
-package org.koitharu.kotatsu
+package org.koitharu.kotatsu.core
 
 import android.app.Application
 import android.content.Context
-import android.os.StrictMode
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.strictmode.FragmentStrictMode
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.room.InvalidationTracker
 import androidx.work.Configuration
@@ -20,21 +18,19 @@ import org.acra.config.httpSender
 import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
 import org.acra.sender.HttpSender
+import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.os.AppValidator
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.WorkServiceStopHelper
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
-import org.koitharu.kotatsu.local.data.LocalMangaRepository
-import org.koitharu.kotatsu.local.data.PagesCache
-import org.koitharu.kotatsu.parsers.MangaLoaderContext
-import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.settings.work.WorkScheduleManager
 import javax.inject.Inject
 import javax.inject.Provider
 
 @HiltAndroidApp
-class KotatsuApp : Application(), Configuration.Provider {
+open class BaseApp : Application(), Configuration.Provider {
 
 	@Inject
 	lateinit var databaseObservers: Set<@JvmSuppressWildcards InvalidationTracker.Observer>
@@ -63,9 +59,6 @@ class KotatsuApp : Application(), Configuration.Provider {
 	override fun onCreate() {
 		super.onCreate()
 		ACRA.errorReporter.putCustomData("isOriginalApp", appValidator.isOriginalApp.toString())
-		if (BuildConfig.DEBUG) {
-			enableStrictMode()
-		}
 		AppCompatDelegate.setDefaultNightMode(settings.theme)
 		AppCompatDelegate.setApplicationLocales(settings.appLocales)
 		setupActivityLifecycleCallbacks()
@@ -135,32 +128,5 @@ class KotatsuApp : Application(), Configuration.Provider {
 		activityLifecycleCallbacks.forEach {
 			registerActivityLifecycleCallbacks(it)
 		}
-	}
-
-	private fun enableStrictMode() {
-		StrictMode.setThreadPolicy(
-			StrictMode.ThreadPolicy.Builder()
-				.detectAll()
-				.penaltyLog()
-				.build(),
-		)
-		StrictMode.setVmPolicy(
-			StrictMode.VmPolicy.Builder()
-				.detectAll()
-				.setClassInstanceLimit(LocalMangaRepository::class.java, 1)
-				.setClassInstanceLimit(PagesCache::class.java, 1)
-				.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
-				.setClassInstanceLimit(PageLoader::class.java, 1)
-				.penaltyLog()
-				.build(),
-		)
-		FragmentStrictMode.defaultPolicy = FragmentStrictMode.Policy.Builder()
-			.penaltyDeath()
-			.detectFragmentReuse()
-			// .detectWrongFragmentContainer() FIXME: migrate to ViewPager2
-			.detectRetainInstanceUsage()
-			.detectSetUserVisibleHint()
-			.detectFragmentTagUsage()
-			.build()
 	}
 }
