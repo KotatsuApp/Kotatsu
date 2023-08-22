@@ -53,7 +53,6 @@ import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
-import org.koitharu.kotatsu.core.util.ext.powerManager
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -141,7 +140,7 @@ class TrackWorker @AssistedInject constructor(
 	}
 
 	private suspend fun checkUpdatesAsync(tracks: List<TrackingItem>): List<MangaUpdates> {
-		val semaphore = Semaphore(if (isDeviceInUse()) 1 else MAX_PARALLELISM)
+		val semaphore = Semaphore(MAX_PARALLELISM)
 		return channelFlow {
 			for ((track, channelId) in tracks) {
 				launch {
@@ -288,15 +287,6 @@ class TrackWorker @AssistedInject constructor(
 			.putInt(DATA_KEY_SUCCESS, success)
 			.putInt(DATA_KEY_FAILED, failed)
 			.build()
-	}
-
-
-	private fun isDeviceInUse(): Boolean {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-			return false
-		}
-		val powerManager = applicationContext.powerManager ?: return false
-		return !powerManager.isDeviceIdleMode
 	}
 
 	@Reusable
