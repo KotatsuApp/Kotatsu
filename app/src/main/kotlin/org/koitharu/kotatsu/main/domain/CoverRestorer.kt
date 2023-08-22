@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.main.domain
 
+import androidx.collection.ArraySet
 import androidx.lifecycle.coroutineScope
 import coil.EventListener
 import coil.ImageLoader
@@ -28,6 +29,8 @@ class CoverRestorer @Inject constructor(
 	private val coilProvider: Provider<ImageLoader>,
 ) : EventListener {
 
+	private val blacklist = ArraySet<String>()
+
 	override fun onError(request: ImageRequest, result: ErrorResult) {
 		super.onError(request, result)
 		if (!result.throwable.shouldRestore()) {
@@ -42,12 +45,18 @@ class CoverRestorer @Inject constructor(
 	}
 
 	private fun restoreManga(manga: Manga, request: ImageRequest) {
+		val key = manga.publicUrl
+		if (key in blacklist) {
+			return
+		}
 		request.lifecycle.coroutineScope.launch {
 			val restored = runCatchingCancellable {
 				restoreMangaImpl(manga)
 			}.getOrDefault(false)
 			if (restored) {
 				request.newBuilder().enqueueWith(coilProvider.get())
+			} else {
+				blacklist.add(key)
 			}
 		}
 	}
@@ -67,12 +76,18 @@ class CoverRestorer @Inject constructor(
 	}
 
 	private fun restoreBookmark(bookmark: Bookmark, request: ImageRequest) {
+		val key = bookmark.imageUrl
+		if (key in blacklist) {
+			return
+		}
 		request.lifecycle.coroutineScope.launch {
 			val restored = runCatchingCancellable {
 				restoreBookmarkImpl(bookmark)
 			}.getOrDefault(false)
 			if (restored) {
 				request.newBuilder().enqueueWith(coilProvider.get())
+			} else {
+				blacklist.add(key)
 			}
 		}
 	}
