@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.core.view.forEach
 import androidx.recyclerview.widget.RecyclerView
@@ -13,12 +14,16 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
 	private var onPageScrollListeners: MutableList<OnPageScrollListener>? = null
+	private val detachedViews = ArrayList<View>()
 
-	override fun onMeasure(widthSpec: Int, heightSpec: Int) {
-		super.onMeasure(widthSpec, heightSpec)
-		forEach { child ->
-			(child as WebtoonFrameLayout).target.requestLayout()
-		}
+	override fun onChildDetachedFromWindow(child: View) {
+		super.onChildDetachedFromWindow(child)
+		detachedViews.add(child)
+	}
+
+	override fun onChildAttachedToWindow(child: View) {
+		super.onChildAttachedToWindow(child)
+		detachedViews.remove(child)
 	}
 
 	override fun startNestedScroll(axes: Int) = startNestedScroll(axes, TYPE_TOUCH)
@@ -104,6 +109,15 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		}
 		val centerPosition = findCenterViewPosition()
 		listeners.forEach { it.dispatchScroll(this, dy, centerPosition) }
+	}
+
+	fun relayoutChildren() {
+		forEach { child ->
+			(child as WebtoonFrameLayout).target.requestLayout()
+		}
+		detachedViews.forEach {child ->
+			(child as WebtoonFrameLayout).target.requestLayout()
+		}
 	}
 
 	abstract class OnPageScrollListener {

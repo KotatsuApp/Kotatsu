@@ -23,7 +23,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	defStyles: Int = 0,
 ) : FrameLayout(context, attrs, defStyles), ScaleGestureDetector.OnScaleGestureListener {
 
-	private val targetChild by lazy(LazyThreadSafetyMode.NONE) { getChildAt(0) }
+	private val targetChild by lazy(LazyThreadSafetyMode.NONE) { getChildAt(0) as WebtoonRecyclerView }
 
 	private val scaleDetector = ScaleGestureDetector(context, this)
 	private val gestureDetector = GestureDetectorCompat(context, GestureListener())
@@ -96,6 +96,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 		if (newHeight != targetChild.height) {
 			targetChild.layoutParams.height = newHeight
 			targetChild.requestLayout()
+			targetChild.relayoutChildren()
 		}
 
 		if (scale < 1) {
