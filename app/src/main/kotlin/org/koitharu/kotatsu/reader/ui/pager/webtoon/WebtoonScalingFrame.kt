@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
-import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Matrix
 import android.graphics.Rect
@@ -15,7 +15,7 @@ import android.widget.OverScroller
 import androidx.core.view.GestureDetectorCompat
 
 private const val MAX_SCALE = 2.5f
-private const val MIN_SCALE = 1f // under-scaling disabled due to buggy nested scroll
+private const val MIN_SCALE = 0.5f
 
 class WebtoonScalingFrame @JvmOverloads constructor(
 	context: Context,
@@ -40,7 +40,6 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	private var halfHeight = 0f
 	private val translateBounds = RectF()
 	private val targetHitRect = Rect()
-	private var pendingScroll = 0
 
 	var isZoomEnable = true
 		set(value) {
@@ -101,8 +100,6 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 
 		if (scale < 1) {
 			targetChild.getHitRect(targetHitRect)
-			targetChild.scrollBy(0, pendingScroll)
-			pendingScroll = 0
 		}
 	}
 
@@ -124,7 +121,6 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			else -> 0f
 		}
 
-		pendingScroll = dy.toInt()
 		transformMatrix.postTranslate(dx, dy)
 		syncMatrixValues()
 	}
@@ -159,9 +155,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 
 	override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
 
-	override fun onScaleEnd(p0: ScaleGestureDetector) {
-		pendingScroll = 0
-	}
+	override fun onScaleEnd(p0: ScaleGestureDetector) = Unit
 
 
 	private inner class GestureListener : GestureDetector.SimpleOnGestureListener(), Runnable {
@@ -175,7 +169,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 
 		override fun onDoubleTap(e: MotionEvent): Boolean {
 			val newScale = if (scale != 1f) 1f else MAX_SCALE * 0.8f
-			ObjectAnimator.ofFloat(scale, newScale).run {
+			ValueAnimator.ofFloat(scale, newScale).run {
 				interpolator = AccelerateDecelerateInterpolator()
 				duration = 300
 				addUpdateListener {

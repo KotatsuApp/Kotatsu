@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 import android.content.Context
 import android.util.AttributeSet
 import androidx.core.view.ViewCompat.TYPE_TOUCH
+import androidx.core.view.forEach
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import java.util.LinkedList
@@ -12,6 +13,13 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
 	private var onPageScrollListeners: MutableList<OnPageScrollListener>? = null
+
+	override fun onMeasure(widthSpec: Int, heightSpec: Int) {
+		super.onMeasure(widthSpec, heightSpec)
+		forEach { child ->
+			(child as WebtoonFrameLayout).target.requestLayout()
+		}
+	}
 
 	override fun startNestedScroll(axes: Int) = startNestedScroll(axes, TYPE_TOUCH)
 

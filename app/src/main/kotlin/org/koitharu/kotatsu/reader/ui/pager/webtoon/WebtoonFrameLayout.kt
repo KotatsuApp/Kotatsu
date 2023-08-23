@@ -12,7 +12,7 @@ class WebtoonFrameLayout @JvmOverloads constructor(
 	@AttrRes defStyleAttr: Int = 0,
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-	private val target by lazy(LazyThreadSafetyMode.NONE) {
+	val target by lazy(LazyThreadSafetyMode.NONE) {
 		findViewById<WebtoonImageView>(R.id.ssiv)
 	}
 
