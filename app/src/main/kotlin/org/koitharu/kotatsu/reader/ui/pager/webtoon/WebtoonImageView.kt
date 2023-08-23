@@ -88,6 +88,18 @@ class WebtoonImageView @JvmOverloads constructor(
 		setMeasuredDimension(width, height)
 	}
 
+	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+		super.onSizeChanged(w, h, oldw, oldh)
+		if (oldh == h || oldw == 0 || oldh == 0 || scrollRange == SCROLL_UNKNOWN) return
+
+		computeScrollRange()
+		val container = parents.firstNotNullOfOrNull { it as? WebtoonFrameLayout } ?: return
+		val parentHeight = parentHeight()
+		if (scrollPos != 0 && container.bottom < parentHeight) {
+			scrollTo(scrollRange)
+		}
+	}
+
 	private fun scrollToInternal(pos: Int) {
 		scrollPos = pos
 		ct.set(sWidth / 2f, (height / 2f + pos.toFloat()) / minScale)
