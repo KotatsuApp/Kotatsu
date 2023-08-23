@@ -38,7 +38,6 @@
 		<item name="m3ColorBackground">@color/kotatsu_m3_background</item>
 		<item name="m3ColorExploreButton">@color/kotatsu_m3_exploreButton</item>
 		<item name="m3ColorBottomMenuBackground">@color/kotatsu_m3_bottom_menu</item>
-		<item name="liftOnScrollColor">@color/kotatsu_m3_content_scrim</item>
 		<item name="colorOnBackground">@color/kotatsu_onSurface</item>
 		<item name="colorError">@color/error</item>
 		<item name="colorErrorContainer">@color/errorContainer</item>

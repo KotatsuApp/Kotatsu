@@ -36,6 +36,9 @@
 		<item name="colorOnErrorContainer">#410002</item>
 		<item name="colorOutline">#6F7977</item>
 		<item name="colorOutlineVariant">#BEC9C6</item>
+		<item name="m3ColorBackground">@color/background_miku</item>
+		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorBottomMenuBackground">#C4FFF7</item>
 	</style>
 
 	<style name="Theme.Kotatsu.Asuka">
@@ -73,6 +76,9 @@
 		<item name="colorOnErrorContainer">#410002</item>
 		<item name="colorOutline">#857372</item>
 		<item name="colorOutlineVariant">#D8C1C0</item>
+		<item name="m3ColorBackground">@color/background_asuka</item>
+		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorBottomMenuBackground">#FFDAD7</item>
 	</style>
 
 	<style name="Theme.Kotatsu.Mion">
@@ -110,6 +116,9 @@
 		<item name="colorOnErrorContainer">#410002</item>
 		<item name="colorOutline">#707973</item>
 		<item name="colorOutlineVariant">#C0C9C1</item>
+		<item name="m3ColorBackground">@color/background_mion</item>
+		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorBottomMenuBackground">#CDFFE1</item>
 	</style>
 
 	<style name="Theme.Kotatsu.Rikka">
@@ -147,6 +156,9 @@
 		<item name="colorOnErrorContainer">#410002</item>
 		<item name="colorOutline">#787680</item>
 		<item name="colorOutlineVariant">#C8C5D0</item>
+		<item name="m3ColorBackground">@color/background_rikka</item>
+		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorBottomMenuBackground">#F0EBFF</item>
 	</style>
 
 	<style name="Theme.Kotatsu.Sakura">
@@ -184,6 +196,9 @@
 		<item name="colorOnErrorContainer">#410002</item>
 		<item name="colorOutline">#837377</item>
 		<item name="colorOutlineVariant">#D5C2C6</item>
+		<item name="m3ColorBackground">@color/background_sakura</item>
+		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorBottomMenuBackground">#FFE8ED</item>
 	</style>
 
 	<style name="Theme.Kotatsu.Mamimi">
@@ -221,10 +236,13 @@
 		<item name="colorOnErrorContainer">#410002</item>
 		<item name="colorOutline">#857373</item>
 		<item name="colorOutlineVariant">#D7C1C2</item>
+		<item name="m3ColorBackground">@color/background_mamimi</item>
+		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorBottomMenuBackground">#FFE1E2</item>
 	</style>
 
 	<style name="Theme.Kotatsu.Kanade">
-		<item name="colorPrimary">#A1A1A1</item>
+		<item name="colorPrimary">#606060</item>
 		<item name="colorPrimaryContainer">#D3D3D3</item>
 		<item name="colorOnPrimary">#FFFFFF</item>
 		<item name="colorOnPrimaryContainer">#404040</item>
@@ -258,5 +276,8 @@
 		<item name="colorOnErrorContainer">#410002</item>
 		<item name="colorOutline">#808080</item>
 		<item name="colorOutlineVariant">#D5D5D5</item>
+		<item name="m3ColorBackground">@color/background_kanade</item>
+		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorBottomMenuBackground">#DCDCDC</item>
 	</style>
 </resources>

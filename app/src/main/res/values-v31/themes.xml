@@ -49,7 +49,6 @@
 		<item name="m3ColorBackground">@android:color/system_neutral2_50</item>
 		<item name="m3ColorExploreButton">@android:color/white</item>
 		<item name="m3ColorBottomMenuBackground">@android:color/system_neutral2_100</item>
-		<item name="liftOnScrollColor">@android:color/system_neutral2_100</item>
 		<!-- Default Framework Text Colors. -->
 		<item name="android:textColorPrimary">@color/m3_dynamic_default_color_primary_text</item>
 		<item name="android:textColorPrimaryInverse">@color/m3_dynamic_dark_default_color_primary_text</item>

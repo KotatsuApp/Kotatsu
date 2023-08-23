@@ -22,7 +22,7 @@
 		android:summary="@string/black_dark_theme_summary"
 		android:title="@string/black_dark_theme" />
 
-	<PreferenceCategory android:title="Manga list">
+	<PreferenceCategory android:title="@string/manga_list">
 
 		<ListPreference
 			android:entries="@array/list_modes"

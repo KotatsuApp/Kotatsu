@@ -50,6 +50,7 @@
 
 	<style name="Widget.Kotatsu.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
 		<item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Kotatsu.BottomSheet</item>
+		<item name="backgroundTint">?attr/m3ColorBottomMenuBackground</item>
 	</style>
 
 	<style name="Widget.Kotatsu.BottomSheet.DragHandle" parent="Widget.Material3.BottomSheet.DragHandle">
@@ -211,7 +212,7 @@
 		<item name="backgroundTint">?attr/m3ColorExploreButton</item>
 		<!-- Hack. Removing shadow. For AMOLED -->
 		<item name="android:outlineProvider">none</item>
-		<item name="elevation">3dp</item>
+		<item name="elevation">24dp</item>
 	</style>
 
 	<style name="Widget.Kotatsu.TextView.Indicator" parent="Widget.MaterialComponents.TextView">
