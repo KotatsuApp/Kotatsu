@@ -172,10 +172,20 @@ class SourcesManageFragment :
 			recyclerView: RecyclerView,
 			viewHolder: RecyclerView.ViewHolder,
 			target: RecyclerView.ViewHolder,
-		): Boolean = viewHolder.itemViewType == target.itemViewType && viewModel.reorderSources(
-			viewHolder.bindingAdapterPosition,
-			target.bindingAdapterPosition,
-		)
+		): Boolean = viewHolder.itemViewType == target.itemViewType
+
+		override fun onMoved(
+			recyclerView: RecyclerView,
+			viewHolder: RecyclerView.ViewHolder,
+			fromPos: Int,
+			target: RecyclerView.ViewHolder,
+			toPos: Int,
+			x: Int,
+			y: Int
+		) {
+			super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
+			viewModel.reorderSources(fromPos, toPos)
+		}
 
 		override fun canDropOver(
 			recyclerView: RecyclerView,

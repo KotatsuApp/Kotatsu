@@ -4,17 +4,15 @@ import androidx.annotation.CheckResult
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -29,13 +27,12 @@ import org.koitharu.kotatsu.core.util.ext.toEnumSet
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.move
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import java.util.Locale
 import java.util.TreeMap
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 private const val KEY_ENABLED = "!"
 private const val TIP_REORDER = "src_reorder"
@@ -48,7 +45,7 @@ class SourcesManageViewModel @Inject constructor(
 
 	private val expandedGroups = MutableStateFlow(emptySet<String?>())
 	private var searchQuery = MutableStateFlow<String?>(null)
-	private val mutex = Mutex()
+	private var reorderJob: Job? = null
 
 	val content = combine(
 		repository.observeEnabledSources(),
@@ -62,23 +59,28 @@ class SourcesManageViewModel @Inject constructor(
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 
-	fun reorderSources(oldPos: Int, newPos: Int): Boolean {
-		val snapshot = content.value
-		val item = (snapshot[oldPos] as? SourceConfigItem.SourceItem) ?: return false
-		if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) return false
-		launchAtomicJob(Dispatchers.Default) {
-			var targetPosition = 0
-			for ((i, x) in snapshot.withIndex()) {
-				if (i == newPos) {
-					break
-				}
-				if (x is SourceConfigItem.SourceItem) {
-					targetPosition++
+	fun reorderSources(oldPos: Int, newPos: Int) {
+		val snapshot = content.value.toMutableList()
+		val prevJob = reorderJob
+		reorderJob = launchJob(Dispatchers.Default) {
+			prevJob?.cancelAndJoin()
+			if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
+				return@launchJob
+			}
+			if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
+				return@launchJob
+			}
+			delay(100)
+			snapshot.move(oldPos, newPos)
+			val newSourcesList = snapshot.mapNotNull { x ->
+				if (x is SourceConfigItem.SourceItem && x.isDraggable) {
+					x.source
+				} else {
+					null
 				}
 			}
-			repository.setPosition(item.source, targetPosition)
+			repository.setPositions(newSourcesList)
 		}
-		return true
 	}
 
 	fun canReorder(oldPos: Int, newPos: Int): Boolean {
@@ -88,7 +90,7 @@ class SourcesManageViewModel @Inject constructor(
 	}
 
 	fun setEnabled(source: MangaSource, isEnabled: Boolean) {
-		launchAtomicJob(Dispatchers.Default) {
+		launchJob(Dispatchers.Default) {
 			val rollback = repository.setSourceEnabled(source, isEnabled)
 			if (!isEnabled) {
 				onActionDone.call(ReversibleAction(R.string.source_disabled, rollback))
@@ -97,7 +99,7 @@ class SourcesManageViewModel @Inject constructor(
 	}
 
 	fun disableAll() {
-		launchAtomicJob(Dispatchers.Default) {
+		launchJob(Dispatchers.Default) {
 			repository.disableAllSources()
 		}
 	}
@@ -116,7 +118,7 @@ class SourcesManageViewModel @Inject constructor(
 	}
 
 	fun onTipClosed(item: SourceConfigItem.Tip) {
-		launchAtomicJob(Dispatchers.Default) {
+		launchJob(Dispatchers.Default) {
 			settings.closeTip(item.key)
 		}
 	}
@@ -201,15 +203,6 @@ class SourcesManageViewModel @Inject constructor(
 	private fun getLocaleTitle(localeKey: String?): String? {
 		val locale = Locale(localeKey ?: return null)
 		return locale.getDisplayLanguage(locale).toTitleCase(locale)
-	}
-
-	private fun launchAtomicJob(
-		context: CoroutineContext = EmptyCoroutineContext,
-		block: suspend CoroutineScope.() -> Unit
-	) = launchJob(start = CoroutineStart.ATOMIC) {
-		mutex.withLock {
-			withContext(context, block)
-		}
 	}
 
 	private fun observeTip() = settings.observeAsFlow(AppSettings.KEY_TIPS_CLOSED) {

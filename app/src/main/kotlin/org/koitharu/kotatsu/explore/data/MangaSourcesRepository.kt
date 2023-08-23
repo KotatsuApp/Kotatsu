@@ -91,6 +91,14 @@ class MangaSourcesRepository @Inject constructor(
 		}
 	}
 
+	suspend fun setPositions(sources: List<MangaSource>) {
+		db.withTransaction {
+			for ((index, item) in sources.withIndex()) {
+				dao.setSortKey(item.name, index)
+			}
+		}
+	}
+
 	suspend fun setPosition(source: MangaSource, index: Int) {
 		db.withTransaction {
 			val all = dao.findAll().toMutableList()
