@@ -273,7 +273,7 @@
     <string name="show_reading_indicators_summary">Паказваць працэнт прачытанага ў гісторыі і абраных</string>
     <string name="data_deletion">Выдаленне даных</string>
     <string name="show_all">Паказаць усе</string>
-    <string name="exclude_nsfw_from_history_summary">Манга, пазначаная як NSFW, ніколі не будзе дададзеная ў гісторыю і ваш прагрэс не будзе захаваны</string>
+    <string name="exclude_nsfw_from_history_summary">Манга, пазначаная як NSFW, не будзе дададзеная ў гісторыю і ваш прагрэс не будзе захаваны</string>
     <string name="clear_cookies_summary">Можа дапамагчы з некаторымі праблемам. Усе аўтарызацыі будуць ануляваныя</string>
     <string name="not_found_404">Змесціва не знойдзена ці выдалена</string>
     <string name="status_re_reading">Перачытваю</string>
@@ -324,7 +324,7 @@
     <string name="discard">Адмяніць</string>
     <string name="enable_logging">Уключыць запіс</string>
     <string name="share_logs">Падзяліцца логамі</string>
-    <string name="enable_logging_summary">Запішыце некаторыя дзеянні для адладкі</string>
+    <string name="enable_logging_summary">Запішыце некаторыя дзеянні для адладкі. Уключайце толькі калі ведаеце, што робіце</string>
     <string name="show_suspicious_content">Паказаць падазроны кантэнт</string>
     <string name="text_shelf_holder_primary">Ваша манга будзе адлюстроўвацца тут</string>
     <string name="text_shelf_holder_secondary">Знайдзіце, што пачытаць, у раздзеле «Агляд»</string>
@@ -368,7 +368,7 @@
     <string name="options">Параметры</string>
     <string name="user_agent">Загаловак UserAgent</string>
     <string name="allow_unstable_updates">Дазволіць нестабільныя абнаўленні</string>
-    <string name="allow_unstable_updates_summary">Прапануйце абнаўленні да бэта-версій праграмы</string>
+    <string name="allow_unstable_updates_summary">Атрымліваць апавяшчэнні аб нестабільных зборках</string>
     <string name="download_started">Спампоўка пачалася</string>
     <string name="settings_apply_restart_required">Калі ласка, перазапусціце праграму каб прымяніць змены</string>
     <string name="got_it">Зразумеў</string>
@@ -383,7 +383,7 @@
     <string name="sync_settings">Налады сінхранізацыі</string>
     <string name="server_address">Адрас сервера</string>
     <string name="mirror_switching">Выберыце люстэрка аўтаматычна</string>
-    <string name="mirror_switching_summary">Аўтаматычна пераключаць дамены для аддаленых крыніц у выпадку памылак, калі даступныя люстэркі</string>
+    <string name="mirror_switching_summary">Аўтаматычна пераключаць дамены для крыніц мангі ў выпадку памылак, калі даступныя люстэркі</string>
     <string name="ignore_ssl_errors">Ігнараваць памылкі SSL</string>
     <string name="resume">Аднавіць</string>
     <string name="paused">Прыпынена</string>
@@ -466,4 +466,9 @@
     <string name="languages">Мовы</string>
     <string name="unknown">Невядомы</string>
     <string name="in_progress">У працэсе</string>
+    <string name="disable_nsfw">Адключыць NSFW</string>
+    <string name="too_many_requests_message">Занадта шмат запытаў. Паўтарыце спробу пазней</string>
+    <string name="related_manga_summary">Паказаць спіс звязанай мангі. У некаторых выпадках ён можа быць недакладным або адсутнічаць</string>
+    <string name="advanced">Пашыраныя</string>
+    <string name="default_section">Раздзел па змаўчанні</string>
 </resources>
