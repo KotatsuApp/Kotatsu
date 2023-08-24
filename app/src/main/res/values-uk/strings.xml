@@ -360,14 +360,14 @@
     <string name="theme_name_sakura">Сакура</string>
     <string name="share_logs">Поділиться логами</string>
     <string name="enable_logging">Увімкнути логування</string>
-    <string name="enable_logging_summary">Записувати деякі дії з метою подальшого налагодження</string>
+    <string name="enable_logging_summary">Записувати деякі дії з метою подальшого налагодження. Включайте лише якщо знаєте, що робите</string>
     <string name="theme_name_mamimi">Мамімі</string>
     <string name="show_suspicious_content">Показувати сумнівний контент</string>
     <string name="theme_name_dynamic">Динамічний</string>
     <string name="color_theme">Колірний акцент</string>
     <string name="show_in_grid_view">Показати у вигляді сітки</string>
     <string name="allow_unstable_updates">Дозволити нестабільні оновлення</string>
-    <string name="allow_unstable_updates_summary">Пропонувати оновлення до бета-версій додатку</string>
+    <string name="allow_unstable_updates_summary">Отримувати сповіщення про нестабільні збірки</string>
     <string name="download_started">Завантаження розпочато</string>
     <string name="user_agent">Заголовок UserAgent</string>
     <string name="settings_apply_restart_required">Перезапустіть програму, щоб застосувати зміни</string>
@@ -469,4 +469,6 @@
     <string name="disable_nsfw">Вимкнути NSFW</string>
     <string name="related_manga_summary">Показати список пов\'язаної манґи. У деяких випадках він може бути неточним або відсутнім</string>
     <string name="too_many_requests_message">Занадто багато запитів. Спробуйте пізніше</string>
+    <string name="advanced">Розширені</string>
+    <string name="default_section">Розділ за замовчуванням</string>
 </resources>
