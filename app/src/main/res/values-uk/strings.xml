@@ -471,4 +471,5 @@
     <string name="too_many_requests_message">Занадто багато запитів. Спробуйте пізніше</string>
     <string name="advanced">Розширені</string>
     <string name="default_section">Розділ за замовчуванням</string>
+    <string name="manga_list">Список манґи</string>
 </resources>
