@@ -345,7 +345,7 @@
     <string name="share_logs">Bagikan log</string>
     <string name="error_no_space_left">Tidak ada ruang tersisa di perangkat</string>
     <string name="allow_unstable_updates">Izinkan pembaruan yang tidak stabil</string>
-    <string name="allow_unstable_updates_summary">Usulkan pembaruan ke versi beta</string>
+    <string name="allow_unstable_updates_summary">Terima pemberitahuan tentang build yang tidak stabil</string>
     <string name="download_started">Unduh dimulai</string>
     <string name="show_reading_indicators">Tampilkan indikator kemajuan membaca</string>
     <string name="show_reading_indicators_summary">Tampilkan persentase baca dalam riwayat dan favorit</string>
@@ -354,7 +354,7 @@
     <string name="zoom_mode_keep_start">Tetap di awal</string>
     <string name="reader_info_pattern">Bab. %1$d/%2$d Hal. %3$d/%4$d</string>
     <string name="enable_logging">Aktifkan pencatatan</string>
-    <string name="enable_logging_summary">Rekam beberapa tindakan untuk tujuan debug</string>
+    <string name="enable_logging_summary">Rekam beberapa tindakan untuk tujuan debug. Jangan nyalakan jika Anda tidak yakin dengan apa yang Anda lakukan</string>
     <string name="theme_name_dynamic">Dinamis</string>
     <string name="color_theme">Skema warna</string>
     <string name="show_in_grid_view">Perlihatkan dalam tampilan kisi</string>
@@ -469,4 +469,7 @@
     <string name="languages">Bahasa</string>
     <string name="unknown">Tidak diketahui</string>
     <string name="in_progress">Dalam progres</string>
+    <string name="advanced">Lanjutan</string>
+    <string name="default_section">Bagian default</string>
+    <string name="manga_list">Daftar manga</string>
 </resources>
