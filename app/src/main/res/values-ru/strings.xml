@@ -471,4 +471,5 @@
     <string name="related_manga_summary">Показывать список связанной манги. В некоторых случаях список может быть нерелевантным или отсутствовать вовсе</string>
     <string name="advanced">Расширенные</string>
     <string name="default_section">Раздел по умолчанию</string>
+    <string name="manga_list">Список манги</string>
 </resources>
