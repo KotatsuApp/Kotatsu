@@ -8,7 +8,7 @@
 
 	<!-- AMOLED Theme -->
 	<color name="view_amoled">#0C0C0C</color>
-	<color name="surface_amoled">#000001</color>
+	<color name="surface_amoled">#080808</color>
 	<color name="background_amoled">#000000</color>
 
 	<!-- Other Colors -->

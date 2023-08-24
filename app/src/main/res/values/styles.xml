@@ -226,7 +226,7 @@
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu.CardContainer" parent="">
-		<item name="android:colorBackground">?colorBackgroundFloating</item>
+		<item name="android:colorBackground">?m3ColorExploreButton</item>
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu.ActionMode" parent="">
