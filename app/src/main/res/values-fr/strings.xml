@@ -350,7 +350,7 @@
     <string name="mark_as_current">Marquer comme actuel</string>
     <string name="share_logs">Partager les journaux</string>
     <string name="enable_logging">Activer la journalisation</string>
-    <string name="enable_logging_summary">Enregistrer certaines actions à des fins de débogage</string>
+    <string name="enable_logging_summary">Enregistrer quelques actions à des fins de débogage. Ne l\'activez pas si vous ne savez pas ce que vous faites</string>
     <string name="language">Langue</string>
     <string name="show_suspicious_content">Afficher le contenu suspect</string>
     <string name="theme_name_dynamic">Dynamique</string>
@@ -368,7 +368,7 @@
     <string name="allow_unstable_updates">Autoriser les mises à jour instables</string>
     <string name="download_started">Téléchargement commencé</string>
     <string name="theme_name_kanade">Kanade</string>
-    <string name="allow_unstable_updates_summary">Proposer des mises à jour des versions bêta de l\'application</string>
+    <string name="allow_unstable_updates_summary">Recevoir des notifications sur les moutures instables</string>
     <string name="user_agent">En-tête UserAgent</string>
     <string name="settings_apply_restart_required">Veuillez redémarrer l\'application pour appliquer ces changements</string>
     <string name="got_it">Compris</string>
@@ -389,7 +389,7 @@
     <string name="sync_settings">Paramètres de synchronisation</string>
     <string name="ignore_ssl_errors">Ignorer les erreurs SSL</string>
     <string name="mirror_switching">Choisir le miroir automatiquement</string>
-    <string name="mirror_switching_summary">Changement automatique de domaine pour les sources distantes en cas d\'erreur si des miroirs sont disponibles</string>
+    <string name="mirror_switching_summary">Changement automatique de domaine pour les sources de mangas en cas d\'erreur si des miroirs sont disponibles</string>
     <string name="pause">Mettre en pause</string>
     <string name="resume">Reprendre</string>
     <string name="paused">En pause</string>
@@ -466,4 +466,7 @@
     <string name="languages">Langues</string>
     <string name="unknown">Inconnu</string>
     <string name="in_progress">En cours</string>
+    <string name="disable_nsfw">Désactiver NSFW</string>
+    <string name="too_many_requests_message">Trop de requêtes. Réessayez plus tard</string>
+    <string name="related_manga_summary">Afficher une liste de mangas connexes. Dans certains cas, elle peut être inexacte ou manquante</string>
 </resources>
