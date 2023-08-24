@@ -8,17 +8,18 @@ import androidx.core.view.forEach
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import java.util.LinkedList
+import java.util.WeakHashMap
 
 class WebtoonRecyclerView @JvmOverloads constructor(
 	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
 	private var onPageScrollListeners: MutableList<OnPageScrollListener>? = null
-	private val detachedViews = ArrayList<View>()
+	private val detachedViews = WeakHashMap<View, Unit>()
 
 	override fun onChildDetachedFromWindow(child: View) {
 		super.onChildDetachedFromWindow(child)
-		detachedViews.add(child)
+		detachedViews[child] = Unit
 	}
 
 	override fun onChildAttachedToWindow(child: View) {
@@ -115,7 +116,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		forEach { child ->
 			(child as WebtoonFrameLayout).target.requestLayout()
 		}
-		detachedViews.forEach {child ->
+		detachedViews.keys.forEach { child ->
 			(child as WebtoonFrameLayout).target.requestLayout()
 		}
 	}
