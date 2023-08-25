@@ -3,8 +3,8 @@ package org.koitharu.kotatsu.core.prefs
 enum class ReaderMode(val id: Int) {
 
 	STANDARD(1),
-	WEBTOON(2),
-	REVERSED(3);
+	REVERSED(3),
+	WEBTOON(2);
 
 	companion object {
 
