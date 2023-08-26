@@ -5,7 +5,8 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:padding="4dp"
-	android:theme="@style/Theme.Kotatsu.AppWidgetContainer">
+	android:theme="@style/Theme.Kotatsu.AppWidgetContainer"
+	tools:layout_width="116dp">
 
 	<LinearLayout
 		android:id="@+id/rootLayout"
@@ -13,14 +14,15 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_horizontal"
 		android:background="@drawable/bg_appwidget_card"
+		android:clipToOutline="true"
 		android:foreground="?android:selectableItemBackground"
 		android:orientation="vertical"
-		android:padding="4dp"
+		android:outlineProvider="background"
 		tools:ignore="UnusedAttribute,UselessParent">
 
 		<ImageView
 			android:id="@+id/imageView_cover"
-			android:layout_width="@dimen/widget_cover_width"
+			android:layout_width="match_parent"
 			android:layout_height="@dimen/widget_cover_height"
 			android:scaleType="centerCrop"
 			tools:ignore="ContentDescription"
@@ -33,8 +35,11 @@
 			android:elegantTextHeight="false"
 			android:ellipsize="end"
 			android:lines="2"
-			android:padding="2dp"
+			android:paddingHorizontal="6dp"
+			android:paddingTop="2dp"
+			android:paddingBottom="4dp"
 			android:textColor="?android:attr/textColorPrimary"
+			android:textSize="12sp"
 			tools:text="@tools:sample/lorem" />
 
 	</LinearLayout>

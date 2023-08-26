@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="?android:attr/colorBackground"
+	android:clipToOutline="true"
+	android:outlineProvider="background"
 	android:padding="4dp"
-	android:theme="@style/Theme.Kotatsu.AppWidgetContainer">
+	android:theme="@style/Theme.Kotatsu.AppWidgetContainer"
+	tools:background="@drawable/bg_appwidget_root">
 
 	<StackView
-		xmlns:tools="http://schemas.android.com/tools"
 		android:id="@+id/stackView"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

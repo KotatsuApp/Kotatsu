@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,14 +18,14 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
+import org.koitharu.kotatsu.databinding.ActivityAppwidgetShelfBinding
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
-class ShelfConfigActivity :
-	BaseActivity<ActivityCategoriesBinding>(),
+class ShelfWidgetConfigActivity :
+	BaseActivity<ActivityAppwidgetShelfBinding>(),
 	OnListItemClickListener<CategoryItem>,
 	View.OnClickListener {
 
@@ -37,16 +36,14 @@ class ShelfConfigActivity :
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
+		setContentView(ActivityAppwidgetShelfBinding.inflate(layoutInflater))
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		adapter = CategorySelectAdapter(this)
 		viewBinding.recyclerView.adapter = adapter
-		viewBinding.buttonDone.isVisible = true
 		viewBinding.buttonDone.setOnClickListener(this)
-		viewBinding.fabAdd.hide()
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
 			AppWidgetManager.INVALID_APPWIDGET_ID,
@@ -55,8 +52,9 @@ class ShelfConfigActivity :
 			finishAfterTransition()
 			return
 		}
-		config = AppWidgetConfig(this, appWidgetId)
+		config = AppWidgetConfig(this, ShelfWidgetProvider::class.java, appWidgetId)
 		viewModel.checkedId = config.categoryId
+		viewBinding.switchBackground.isChecked = config.hasBackground
 
 		viewModel.content.observe(this, this::onContentChanged)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
@@ -66,6 +64,7 @@ class ShelfConfigActivity :
 		when (v.id) {
 			R.id.button_done -> {
 				config.categoryId = viewModel.checkedId
+				config.hasBackground = viewBinding.switchBackground.isChecked
 				updateWidget()
 				setResult(
 					Activity.RESULT_OK,
@@ -81,11 +80,6 @@ class ShelfConfigActivity :
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			rightMargin = topMargin + insets.right
-			leftMargin = topMargin + insets.left
-			bottomMargin = topMargin + insets.bottom
-		}
 		viewBinding.recyclerView.updatePadding(
 			left = insets.left,
 			right = insets.right,

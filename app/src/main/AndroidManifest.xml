@@ -148,9 +148,17 @@
 			android:name="org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity"
 			android:label="@string/manage_categories" />
 		<activity
-			android:name="org.koitharu.kotatsu.widget.shelf.ShelfConfigActivity"
+			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetConfigActivity"
 			android:exported="true"
 			android:label="@string/manga_shelf">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+			</intent-filter>
+		</activity>
+		<activity
+			android:name="org.koitharu.kotatsu.widget.recent.RecentWidgetConfigActivity"
+			android:exported="true"
+			android:label="@string/recent_manga">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
 			</intent-filter>

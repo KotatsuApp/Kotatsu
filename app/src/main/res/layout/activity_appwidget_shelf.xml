@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:fitsSystemWindows="true">
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			app:layout_collapseMode="pin"
+			tools:title="@string/manga_shelf">
+
+			<Button
+				android:id="@+id/button_done"
+				style="@style/Widget.Material3.Button.UnelevatedButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="end"
+				android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+				android:text="@string/done" />
+
+		</com.google.android.material.appbar.MaterialToolbar>
+
+		<com.google.android.material.materialswitch.MaterialSwitch
+			android:id="@+id/switch_background"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="12dp"
+			android:checked="true"
+			android:paddingStart="?listPreferredItemPaddingStart"
+			android:paddingEnd="?listPreferredItemPaddingEnd"
+			android:text="@string/background"
+			android:textAppearance="?textAppearanceBodyMedium"
+			app:layout_scrollFlags="scroll" />
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical|start"
+			android:paddingStart="?listPreferredItemPaddingStart"
+			android:paddingTop="6dp"
+			android:paddingEnd="?listPreferredItemPaddingEnd"
+			android:singleLine="true"
+			android:text="@string/favourites_categories"
+			android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader" />
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recyclerView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:clipToPadding="false"
+		android:orientation="vertical"
+		android:paddingVertical="@dimen/list_spacing_normal"
+		android:scrollbars="vertical"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+		tools:listitem="@layout/item_checkable_single" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

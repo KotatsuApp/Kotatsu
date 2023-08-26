@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		app:layout_collapseMode="pin"
+		tools:title="@string/recent_manga">
+
+		<Button
+			android:id="@+id/button_done"
+			style="@style/Widget.Material3.Button.UnelevatedButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+			android:text="@string/done" />
+
+	</com.google.android.material.appbar.MaterialToolbar>
+
+	<com.google.android.material.materialswitch.MaterialSwitch
+		android:id="@+id/switch_background"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="12dp"
+		android:paddingStart="?listPreferredItemPaddingStart"
+		android:paddingEnd="?listPreferredItemPaddingEnd"
+		android:text="@string/background"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_scrollFlags="scroll" />
+
+</LinearLayout>

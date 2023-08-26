@@ -54,7 +54,8 @@
 	<dimen name="card_indicator_size_small">24dp</dimen>
 	<dimen name="card_indicator_offset">8dp</dimen>
 
-	<dimen name="appwidget_corner_radius_inner">8dp</dimen>
+	<dimen name="appwidget_corner_radius_inner">20dp</dimen>
+	<dimen name="appwidget_corner_radius_background">28dp</dimen>
 
 	<!-- FastScroller -->
 	<dimen name="fastscroll_bubble_radius">44dp</dimen>

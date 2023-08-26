@@ -55,6 +55,7 @@ class RecentListFactory(
 					.data(item.coverUrl)
 					.size(coverSize)
 					.tag(item.source)
+					.tag(item)
 					.transformations(transformation)
 					.build(),
 			).getDrawableOrThrow().toBitmap()

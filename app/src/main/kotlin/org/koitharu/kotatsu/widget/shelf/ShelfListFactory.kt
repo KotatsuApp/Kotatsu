@@ -14,6 +14,7 @@ import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
+import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -27,7 +28,7 @@ class ShelfListFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
-	private val config = AppWidgetConfig(context, widgetId)
+	private val config = AppWidgetConfig(context, ShelfWidgetProvider::class.java, widgetId)
 	private val transformation = RoundedCornersTransformation(
 		context.resources.getDimension(R.dimen.appwidget_corner_radius_inner),
 	)
@@ -66,7 +67,8 @@ class ShelfListFactory(
 					.data(item.coverUrl)
 					.size(coverSize)
 					.tag(item.source)
-					.transformations(transformation)
+					.tag(item)
+					.transformations(transformation, TrimTransformation())
 					.build(),
 			).getDrawableOrThrow().toBitmap()
 		}.onSuccess { cover ->
