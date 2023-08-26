@@ -13,7 +13,6 @@ import coil.decode.SvgDecoder
 import coil.disk.DiskCache
 import coil.util.DebugLogger
 import dagger.Binds
-import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +25,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.cache.StubContentCache
@@ -47,7 +47,7 @@ import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.model.LocalManga
-import org.koitharu.kotatsu.main.domain.CoverRestorer
+import org.koitharu.kotatsu.main.domain.CoverRestoreInterceptor
 import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.ui.thumbnails.MangaPageFetcher
@@ -91,7 +91,7 @@ interface AppModule {
 			mangaRepositoryFactory: MangaRepository.Factory,
 			imageProxyInterceptor: ImageProxyInterceptor,
 			pageFetcherFactory: MangaPageFetcher.Factory,
-			coverRestorerProvider: Lazy<CoverRestorer>,
+			coverRestoreInterceptor: CoverRestoreInterceptor,
 		): ImageLoader {
 			val diskCacheFactory = {
 				val rootDir = context.externalCacheDir ?: context.cacheDir
@@ -108,7 +108,7 @@ interface AppModule {
 				.diskCache(diskCacheFactory)
 				.logger(if (BuildConfig.DEBUG) DebugLogger() else null)
 				.allowRgb565(context.isLowRamDevice())
-				.eventListenerFactory { coverRestorerProvider.get() }
+				.eventListener(CaptchaNotifier(context))
 				.components(
 					ComponentRegistry.Builder()
 						.add(SvgDecoder.Factory())
@@ -116,6 +116,7 @@ interface AppModule {
 						.add(FaviconFetcher.Factory(context, okHttpClient, mangaRepositoryFactory))
 						.add(pageFetcherFactory)
 						.add(imageProxyInterceptor)
+						.add(coverRestoreInterceptor)
 						.build(),
 				).build()
 		}

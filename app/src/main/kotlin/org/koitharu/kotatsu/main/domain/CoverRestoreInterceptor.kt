@@ -1,64 +1,65 @@
 package org.koitharu.kotatsu.main.domain
 
 import androidx.collection.ArraySet
-import androidx.lifecycle.coroutineScope
-import coil.EventListener
-import coil.ImageLoader
+import coil.intercept.Interceptor
 import coil.network.HttpException
 import coil.request.ErrorResult
-import coil.request.ImageRequest
-import kotlinx.coroutines.launch
+import coil.request.ImageResult
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import java.util.Collections
 import javax.inject.Inject
-import javax.inject.Provider
 
-class CoverRestorer @Inject constructor(
+class CoverRestoreInterceptor @Inject constructor(
 	private val dataRepository: MangaDataRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	private val repositoryFactory: MangaRepository.Factory,
-	private val coilProvider: Provider<ImageLoader>,
-) : EventListener {
+) : Interceptor {
 
-	private val blacklist = ArraySet<String>()
+	private val blacklist = Collections.synchronizedSet(ArraySet<String>())
 
-	override fun onError(request: ImageRequest, result: ErrorResult) {
-		super.onError(request, result)
-		if (!result.throwable.shouldRestore()) {
-			return
-		}
-		request.tags.tag<Manga>()?.let {
-			restoreManga(it, request)
-		}
-		request.tags.tag<Bookmark>()?.let {
-			restoreBookmark(it, request)
-		}
-	}
-
-	private fun restoreManga(manga: Manga, request: ImageRequest) {
-		val key = manga.publicUrl
-		if (key in blacklist) {
-			return
-		}
-		request.lifecycle.coroutineScope.launch {
-			val restored = runCatchingCancellable {
-				restoreMangaImpl(manga)
-			}.getOrDefault(false)
-			if (restored) {
-				request.newBuilder().enqueueWith(coilProvider.get())
-			} else {
-				blacklist.add(key)
+	override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
+		val request = chain.request
+		val result = chain.proceed(request)
+		if (result is ErrorResult && result.throwable.shouldRestore()) {
+			request.tags.tag<Manga>()?.let {
+				if (restoreManga(it)) {
+					return chain.proceed(request.newBuilder().build())
+				} else {
+					return result
+				}
+			}
+			request.tags.tag<Bookmark>()?.let {
+				if (restoreBookmark(it)) {
+					return chain.proceed(request.newBuilder().build())
+				} else {
+					return result
+				}
 			}
 		}
+		return result
+	}
+
+	private suspend fun restoreManga(manga: Manga): Boolean {
+		val key = manga.publicUrl
+		if (!blacklist.add(key)) {
+			return false
+		}
+		val restored = runCatchingCancellable {
+			restoreMangaImpl(manga)
+		}.getOrDefault(false)
+		if (restored) {
+			blacklist.remove(key)
+		}
+		return restored
 	}
 
 	private suspend fun restoreMangaImpl(manga: Manga): Boolean {
@@ -75,21 +76,18 @@ class CoverRestorer @Inject constructor(
 		}
 	}
 
-	private fun restoreBookmark(bookmark: Bookmark, request: ImageRequest) {
+	private suspend fun restoreBookmark(bookmark: Bookmark): Boolean {
 		val key = bookmark.imageUrl
-		if (key in blacklist) {
-			return
+		if (!blacklist.add(key)) {
+			return false
 		}
-		request.lifecycle.coroutineScope.launch {
-			val restored = runCatchingCancellable {
-				restoreBookmarkImpl(bookmark)
-			}.getOrDefault(false)
-			if (restored) {
-				request.newBuilder().enqueueWith(coilProvider.get())
-			} else {
-				blacklist.add(key)
-			}
+		val restored = runCatchingCancellable {
+			restoreBookmarkImpl(bookmark)
+		}.getOrDefault(false)
+		if (restored) {
+			blacklist.remove(key)
 		}
+		return restored
 	}
 
 	private suspend fun restoreBookmarkImpl(bookmark: Bookmark): Boolean {

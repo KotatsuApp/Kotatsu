@@ -1,28 +1,28 @@
 package org.koitharu.kotatsu.browser.cloudflare
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.net.toUri
+import coil.EventListener
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.parsers.model.ContentType
 
 class CaptchaNotifier(
 	private val context: Context,
-) : ImageRequest.Listener {
+) : EventListener {
 
-	@SuppressLint("MissingPermission")
 	fun notify(exception: CloudFlareProtectedException) {
-		val manager = NotificationManagerCompat.from(context)
-		if (!manager.areNotificationsEnabled()) {
+		if (!context.checkNotificationPermission()) {
 			return
 		}
+		val manager = NotificationManagerCompat.from(context)
 		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
 			.setName(context.getString(R.string.captcha_required))
 			.setShowBadge(true)
