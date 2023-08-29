@@ -469,4 +469,7 @@
     <string name="disable_nsfw">Desactivar NSFW</string>
     <string name="too_many_requests_message">Demasiadas solicitudes. Vuelve a intentarlo más tarde</string>
     <string name="related_manga_summary">Muestra una lista de mangas relacionados. En algunos casos puede ser inexacta o faltar</string>
+    <string name="advanced">Avanzado</string>
+    <string name="default_section">Sección predeterminada</string>
+    <string name="manga_list">Lista de mangas</string>
 </resources>
