@@ -9,7 +9,6 @@ import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
@@ -39,9 +38,5 @@ fun bookmarkListAD(
 			source(item.manga.source)
 			enqueueWith(coil)
 		}
-	}
-
-	onViewRecycled {
-		binding.imageViewThumb.disposeImageRequest()
 	}
 }

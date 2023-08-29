@@ -12,7 +12,6 @@ import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
@@ -82,10 +81,6 @@ fun exploreRecommendationItemAD(
 			enqueueWith(coil)
 		}
 	}
-
-	onViewRecycled {
-		binding.imageViewCover.disposeImageRequest()
-	}
 }
 
 fun exploreSourceListItemAD(
@@ -113,10 +108,6 @@ fun exploreSourceListItemAD(
 			enqueueWith(coil)
 		}
 	}
-
-	onViewRecycled {
-		binding.imageViewIcon.disposeImageRequest()
-	}
 }
 
 fun exploreSourceGridItemAD(
@@ -143,9 +134,5 @@ fun exploreSourceGridItemAD(
 			source(item.source)
 			enqueueWith(coil)
 		}
-	}
-
-	onViewRecycled {
-		binding.imageViewIcon.disposeImageRequest()
 	}
 }

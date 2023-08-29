@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.list.ui.adapter
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
@@ -30,9 +29,5 @@ fun emptyStateListAD(
 		if (listener != null) {
 			binding.buttonRetry.setTextAndVisible(item.actionStringRes)
 		}
-	}
-
-	onViewRecycled {
-		binding.icon.disposeImageRequest()
 	}
 }

@@ -11,13 +11,11 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemMangaListDetailsBinding
-import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
@@ -72,12 +70,5 @@ fun mangaListDetailedItemAD(
 		binding.ratingBar.isVisible = item.manga.hasRating
 		binding.ratingBar.rating = binding.ratingBar.numStars * item.manga.rating
 		badge = itemView.bindBadge(badge, item.counter)
-	}
-
-	onViewRecycled {
-		itemView.clearBadge(badge)
-		binding.progressView.percent = PROGRESS_NONE
-		badge = null
-		binding.imageViewCover.disposeImageRequest()
 	}
 }

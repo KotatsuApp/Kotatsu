@@ -5,7 +5,6 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -34,9 +33,5 @@ fun scrobblingMangaAD(
 			allowRgb565(true)
 			enqueueWith(coil)
 		}
-	}
-
-	onViewRecycled {
-		binding.imageViewCover.disposeImageRequest()
 	}
 }

@@ -11,7 +11,6 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
@@ -65,10 +64,6 @@ private fun searchSuggestionMangaGridAD(
 			enqueueWith(coil)
 		}
 		binding.textViewTitle.text = item.title
-	}
-
-	onViewRecycled {
-		binding.imageViewCover.disposeImageRequest()
 	}
 }
 

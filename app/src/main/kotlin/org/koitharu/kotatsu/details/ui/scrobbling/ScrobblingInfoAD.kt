@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.databinding.ItemScrobblingInfoBinding
@@ -36,9 +35,5 @@ fun scrobblingInfoAD(
 		binding.textViewStatus.text = item.status?.let {
 			context.resources.getStringArray(R.array.scrobbling_statuses).getOrNull(it.ordinal)
 		}
-	}
-
-	onViewRecycled {
-		binding.imageViewCover.disposeImageRequest()
 	}
 }

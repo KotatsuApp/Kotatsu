@@ -7,7 +7,6 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
@@ -50,9 +49,5 @@ fun searchSuggestionSourceAD(
 			source(item.source)
 			enqueueWith(coil)
 		}
-	}
-
-	onViewRecycled {
-		binding.imageViewCover.disposeImageRequest()
 	}
 }

@@ -6,7 +6,6 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.databinding.ItemScrobblingMangaBinding
@@ -33,9 +32,5 @@ fun scrobblingMangaAD(
 		}
 		binding.textViewTitle.text = item.title
 		binding.ratingBar.rating = item.rating * binding.ratingBar.numStars
-	}
-
-	onViewRecycled {
-		binding.imageViewCover.disposeImageRequest()
 	}
 }

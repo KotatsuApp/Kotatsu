@@ -20,7 +20,6 @@ import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.list.OnTipCloseListener
 import org.koitharu.kotatsu.core.util.ext.crossfade
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
@@ -94,10 +93,6 @@ fun sourceConfigItemCheckableDelegate(
 			enqueueWith(coil)
 		}
 	}
-
-	onViewRecycled {
-		binding.imageViewIcon.disposeImageRequest()
-	}
 }
 
 fun sourceConfigItemDelegate2(
@@ -142,10 +137,6 @@ fun sourceConfigItemDelegate2(
 			source(item.source)
 			enqueueWith(coil)
 		}
-	}
-
-	onViewRecycled {
-		binding.imageViewIcon.disposeImageRequest()
 	}
 }
 
