@@ -443,4 +443,17 @@
     <string name="pick_custom_directory">Wybierz katalog niestandardowy</string>
     <string name="no_access_to_file">Nie masz dostępu do tego pliku lub katalogu</string>
     <string name="local_manga_directories">Lokalne katalogi mangi</string>
+    <string name="advanced">Zaawansowane</string>
+    <string name="this_month">Ten miesiąc</string>
+    <string name="voice_search">Wyszukiwanie głosowe</string>
+    <string name="color_light">Jasny</string>
+    <string name="color_dark">Ciemny</string>
+    <string name="color_white">Biały</string>
+    <string name="color_black">Czarny</string>
+    <string name="background">Tło</string>
+    <string name="progress">Postęp</string>
+    <string name="order_added">Dodano</string>
+    <string name="description">Opis</string>
+    <string name="languages">Języki</string>
+    <string name="unknown">Nieznane</string>
 </resources>
