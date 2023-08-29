@@ -37,6 +37,7 @@ import okio.IOException
 import okio.buffer
 import okio.sink
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
@@ -277,7 +278,12 @@ class DownloadWorker @AssistedInject constructor(
 					publishState(currentState.copy(isPaused = false, error = null))
 				} else {
 					countDown--
-					delay(DOWNLOAD_ERROR_DELAY)
+					val retryDelay = if (e is TooManyRequestExceptions) {
+						e.retryAfter + DOWNLOAD_ERROR_DELAY
+					} else {
+						DOWNLOAD_ERROR_DELAY
+					}
+					delay(retryDelay)
 				}
 			}
 		}

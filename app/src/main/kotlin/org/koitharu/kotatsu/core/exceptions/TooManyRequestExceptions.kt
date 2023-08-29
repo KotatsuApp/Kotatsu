@@ -6,4 +6,8 @@ import java.util.Date
 class TooManyRequestExceptions(
 	val url: String,
 	val retryAt: Date?,
-) : IOException()
+) : IOException() {
+
+	val retryAfter: Long
+		get() = if (retryAt == null) 0 else (retryAt.time - System.currentTimeMillis()).coerceAtLeast(0)
+}
