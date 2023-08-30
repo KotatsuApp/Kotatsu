@@ -14,6 +14,7 @@ import coil.network.HttpException
 import coil.request.Options
 import coil.size.Size
 import coil.size.pxOrElse
+import kotlinx.coroutines.ensureActive
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -25,11 +26,13 @@ import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.util.withExtraCloseable
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import java.net.HttpURLConnection
+import kotlin.coroutines.coroutineContext
 
 private const val FALLBACK_SIZE = 9999 // largest icon
 
@@ -55,13 +58,16 @@ class FaviconFetcher(
 			options.size.height.pxOrElse { FALLBACK_SIZE },
 		)
 		var favicons = repo.getFavicons()
+		var lastError: Exception? = null
 		while (favicons.isNotEmpty()) {
-			val icon = favicons.find(sizePx) ?: throwNSEE()
+			coroutineContext.ensureActive()
+			val icon = favicons.find(sizePx) ?: throwNSEE(lastError)
 			val response = try {
 				loadIcon(icon.url, mangaSource)
 			} catch (e: CloudFlareProtectedException) {
 				throw e
 			} catch (e: HttpException) {
+				lastError = e
 				favicons -= icon
 				continue
 			}
@@ -75,7 +81,7 @@ class FaviconFetcher(
 				dataSource = response.toDataSource(),
 			)
 		}
-		throwNSEE()
+		throwNSEE(lastError)
 	}
 
 	private suspend fun loadIcon(url: String, source: MangaSource): Response {
@@ -105,14 +111,14 @@ class FaviconFetcher(
 		)
 	}
 
-	private fun writeToDiskCache(body: ResponseBody): DiskCache.Snapshot? {
+	private suspend fun writeToDiskCache(body: ResponseBody): DiskCache.Snapshot? {
 		if (!options.diskCachePolicy.writeEnabled || body.contentLength() == 0L) {
 			return null
 		}
 		val editor = diskCache.value?.openEditor(diskCacheKey) ?: return null
 		try {
 			fileSystem.write(editor.data) {
-				body.source().readAll(this)
+				writeAllCancellable(body.source())
 			}
 			return editor.commitAndOpenSnapshot()
 		} catch (e: Throwable) {
@@ -154,7 +160,13 @@ class FaviconFetcher(
 		append(height.toString())
 	}
 
-	private fun throwNSEE(): Nothing = throw NoSuchElementException("No favicons found")
+	private fun throwNSEE(lastError: Exception?): Nothing {
+		if (lastError != null) {
+			throw lastError
+		} else {
+			throw NoSuchElementException("No favicons found")
+		}
+	}
 
 	class Factory(
 		context: Context,
