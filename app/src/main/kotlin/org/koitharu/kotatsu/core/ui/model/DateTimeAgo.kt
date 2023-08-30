@@ -20,6 +20,22 @@ sealed class DateTimeAgo {
 		override fun equals(other: Any?): Boolean = other === JustNow
 	}
 
+	data class MinutesAgo(val minutes: Int) : DateTimeAgo() {
+		override fun format(resources: Resources): String {
+			return resources.getQuantityString(R.plurals.minutes_ago, minutes, minutes)
+		}
+
+		override fun toString() = "minutes_ago_$minutes"
+	}
+
+	data class HoursAgo(val hours: Int) : DateTimeAgo() {
+		override fun format(resources: Resources): String {
+			return resources.getQuantityString(R.plurals.hours_ago, hours, hours)
+		}
+
+		override fun toString() = "hours_ago_$hours"
+	}
+
 	object Today : DateTimeAgo() {
 		override fun format(resources: Resources): String {
 			return resources.getString(R.string.today)
@@ -41,7 +57,6 @@ sealed class DateTimeAgo {
 	}
 
 	data class DaysAgo(val days: Int) : DateTimeAgo() {
-
 		override fun format(resources: Resources): String {
 			return resources.getQuantityString(R.plurals.days_ago, days, days)
 		}
@@ -50,7 +65,6 @@ sealed class DateTimeAgo {
 	}
 
 	data class MonthsAgo(val months: Int) : DateTimeAgo() {
-
 		override fun format(resources: Resources): String {
 			return if (months == 0) {
 				resources.getString(R.string.this_month)
