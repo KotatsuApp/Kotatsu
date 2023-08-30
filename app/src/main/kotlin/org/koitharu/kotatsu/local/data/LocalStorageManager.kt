@@ -53,11 +53,11 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	suspend fun computeStorageSize() = withContext(Dispatchers.IO) {
-		getAvailableStorageDirs().sumOf { it.computeSize() }
+		getConfiguredStorageDirs().sumOf { it.computeSize() }
 	}
 
 	suspend fun computeAvailableSize() = runInterruptible(Dispatchers.IO) {
-		getAvailableStorageDirs().mapToSet { it.freeSpace }.sum()
+		getConfiguredStorageDirs().mapToSet { it.freeSpace }.sum()
 	}
 
 	suspend fun clearCache(cache: CacheDir) = runInterruptible(Dispatchers.IO) {
