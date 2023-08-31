@@ -18,8 +18,8 @@ class CategoriesAdapter(
 ) : BaseListAdapter<ListModel>() {
 
 	init {
-		addDelegate(ListItemType.CATEGORY_LARGE ,categoryAD(coil, lifecycleOwner, onItemClickListener))
-		addDelegate(ListItemType.STATE_EMPTY ,emptyStateListAD(coil, lifecycleOwner, listListener))
-		addDelegate(ListItemType.STATE_LOADING ,loadingStateAD())
+		addDelegate(ListItemType.CATEGORY_LARGE, categoryAD(coil, lifecycleOwner, onItemClickListener))
+		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listListener))
+		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
 	}
 }

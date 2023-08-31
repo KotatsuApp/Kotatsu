@@ -34,8 +34,13 @@ fun categoryAD(
 	{ inflater, parent -> ItemCategoryBinding.inflate(inflater, parent, false) },
 ) {
 	val eventListener = object : OnClickListener, OnLongClickListener, OnTouchListener {
-		override fun onClick(v: View) = clickListener.onItemClick(item.category, itemView)
-		override fun onLongClick(v: View) = clickListener.onItemLongClick(item.category, itemView)
+		override fun onClick(v: View) = if (v.id == R.id.imageView_edit) {
+			clickListener.onEditClick(item.category, v)
+		} else {
+			clickListener.onItemClick(item.category, v)
+		}
+
+		override fun onLongClick(v: View) = clickListener.onItemLongClick(item.category, v)
 		override fun onTouch(v: View?, event: MotionEvent): Boolean = event.actionMasked == MotionEvent.ACTION_DOWN &&
 			clickListener.onDragHandleTouch(this@adapterDelegateViewBinding)
 	}
@@ -57,6 +62,7 @@ fun categoryAD(
 	val crossFadeDuration = context.getAnimationDuration(R.integer.config_defaultAnimTime).toInt()
 	itemView.setOnClickListener(eventListener)
 	itemView.setOnLongClickListener(eventListener)
+	binding.imageViewEdit.setOnClickListener(eventListener)
 	binding.imageViewHandle.setOnTouchListener(eventListener)
 
 	bind { payloads ->

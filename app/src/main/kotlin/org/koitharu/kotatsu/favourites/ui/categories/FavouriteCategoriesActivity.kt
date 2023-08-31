@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
+import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -80,6 +81,14 @@ class FavouriteCategoriesActivity :
 		if (selectionController.onItemClick(item.id)) {
 			return
 		}
+		val intent = FavouritesActivity.newIntent(view.context, item)
+		startActivity(intent)
+	}
+
+	override fun onEditClick(item: FavouriteCategory, view: View) {
+		if (selectionController.onItemClick(item.id)) {
+			return
+		}
 		val intent = FavouritesCategoryEditActivity.newIntent(view.context, item.id)
 		startActivity(intent)
 	}
@@ -112,8 +121,8 @@ class FavouriteCategoriesActivity :
 		)
 	}
 
-	private fun onCategoriesChanged(categories: List<ListModel>) {
-		adapter.items = categories
+	private suspend fun onCategoriesChanged(categories: List<ListModel>) {
+		adapter.emit(categories)
 		invalidateOptionsMenu()
 	}
 
@@ -128,7 +137,14 @@ class FavouriteCategoriesActivity :
 			recyclerView: RecyclerView,
 			viewHolder: RecyclerView.ViewHolder,
 			target: RecyclerView.ViewHolder,
-		): Boolean = viewHolder.itemViewType == target.itemViewType
+		): Boolean {
+			if (viewHolder.itemViewType != target.itemViewType) {
+				return false
+			}
+			val fromPos = viewHolder.bindingAdapterPosition
+			val toPos = target.bindingAdapterPosition
+			return fromPos != toPos && fromPos != RecyclerView.NO_POSITION && toPos != RecyclerView.NO_POSITION
+		}
 
 		override fun canDropOver(
 			recyclerView: RecyclerView,
@@ -153,7 +169,8 @@ class FavouriteCategoriesActivity :
 
 		override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
 			super.onSelectedChanged(viewHolder, actionState)
-			viewBinding.recyclerView.isNestedScrollingEnabled = actionState == ItemTouchHelper.ACTION_STATE_IDLE
+			viewBinding.recyclerView.isNestedScrollingEnabled =
+				actionState == ItemTouchHelper.ACTION_STATE_IDLE
 		}
 	}
 

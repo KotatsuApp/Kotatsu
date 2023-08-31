@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import java.util.Collections
+import org.koitharu.kotatsu.parsers.util.move
 import javax.inject.Inject
 
 @HiltViewModel
@@ -65,12 +65,11 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		val prevJob = reorderJob
 		reorderJob = launchJob(Dispatchers.Default) {
 			prevJob?.join()
-			val items = categories.requireValue()
-			val ids = items.mapNotNullTo(ArrayList(items.size)) {
+			val snapshot = categories.requireValue().toMutableList()
+			snapshot.move(oldPos, newPos)
+			val ids = snapshot.mapNotNullTo(ArrayList(snapshot.size)) {
 				(it as? CategoryListModel)?.category?.id
 			}
-			Collections.swap(ids, oldPos, newPos)
-			ids.remove(0L)
 			repository.reorderCategories(ids)
 		}
 	}

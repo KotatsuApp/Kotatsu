@@ -72,7 +72,7 @@
 		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceBodyLarge"
 		app:layout_constraintBottom_toTopOf="@id/textView_subtitle"
-		app:layout_constraintEnd_toStartOf="@id/imageView_handle"
+		app:layout_constraintEnd_toStartOf="@id/imageView_edit"
 		app:layout_constraintStart_toEndOf="@id/imageView_cover3"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintVertical_chainStyle="packed"
@@ -121,9 +121,22 @@
 		app:srcCompat="@drawable/ic_eye" />
 
 	<ImageView
+		android:id="@+id/imageView_edit"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/edit"
+		android:padding="@dimen/margin_normal"
+		android:src="@drawable/ic_edit"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/imageView_handle"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<ImageView
 		android:id="@+id/imageView_handle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
 		android:contentDescription="@string/reorder"
 		android:padding="@dimen/margin_normal"
 		android:src="@drawable/ic_reorder_handle"

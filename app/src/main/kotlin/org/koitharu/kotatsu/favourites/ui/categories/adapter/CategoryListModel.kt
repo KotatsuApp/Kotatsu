@@ -46,4 +46,8 @@ class CategoryListModel(
 		result = 31 * result + category.isVisibleInLibrary.hashCode()
 		return result
 	}
+
+	override fun toString(): String {
+		return "CategoryListModel(categoryId=${category.id})"
+	}
 }
