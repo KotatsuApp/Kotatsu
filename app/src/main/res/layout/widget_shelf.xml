@@ -20,6 +20,7 @@
 		android:numColumns="auto_fit"
 		android:orientation="horizontal"
 		android:padding="4dp"
+		android:scrollbarStyle="insideOverlay"
 		tools:listitem="@layout/item_shelf" />
 
 	<TextView

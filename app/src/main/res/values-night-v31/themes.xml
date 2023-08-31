@@ -7,29 +7,46 @@
 		<item name="colorPrimary">@color/m3_sys_color_dynamic_dark_primary</item>
 		<item name="colorPrimaryContainer">@color/m3_sys_color_dynamic_dark_primary_container</item>
 		<item name="colorOnPrimary">@color/m3_sys_color_dynamic_dark_on_primary</item>
-		<item name="colorOnPrimaryContainer">@color/m3_sys_color_dynamic_dark_on_primary_container</item>
+		<item name="colorOnPrimaryContainer">@color/m3_sys_color_dynamic_dark_on_primary_container
+		</item>
 		<item name="colorPrimaryInverse">@color/m3_sys_color_dynamic_dark_inverse_primary</item>
 		<item name="colorSecondary">@color/m3_sys_color_dynamic_dark_secondary</item>
-		<item name="colorSecondaryContainer">@color/m3_sys_color_dynamic_dark_secondary_container</item>
+		<item name="colorSecondaryContainer">@color/m3_sys_color_dynamic_dark_secondary_container
+		</item>
 		<item name="colorOnSecondary">@color/m3_sys_color_dynamic_dark_on_secondary</item>
-		<item name="colorOnSecondaryContainer">@color/m3_sys_color_dynamic_dark_on_secondary_container</item>
+		<item name="colorOnSecondaryContainer">
+			@color/m3_sys_color_dynamic_dark_on_secondary_container
+		</item>
 		<item name="colorTertiary">@color/m3_sys_color_dynamic_dark_tertiary</item>
-		<item name="colorTertiaryContainer">@color/m3_sys_color_dynamic_dark_tertiary_container</item>
+		<item name="colorTertiaryContainer">@color/m3_sys_color_dynamic_dark_tertiary_container
+		</item>
 		<item name="colorOnTertiary">@color/m3_sys_color_dynamic_dark_on_tertiary</item>
-		<item name="colorOnTertiaryContainer">@color/m3_sys_color_dynamic_dark_on_tertiary_container</item>
+		<item name="colorOnTertiaryContainer">
+			@color/m3_sys_color_dynamic_dark_on_tertiary_container
+		</item>
 		<item name="colorSurface">@color/m3_sys_color_dynamic_dark_surface</item>
 		<item name="colorSurfaceDim">@color/m3_sys_color_dynamic_dark_surface_dim</item>
 		<item name="colorSurfaceBright">@color/m3_sys_color_dynamic_dark_surface_bright</item>
-		<item name="colorSurfaceContainerLowest">@color/m3_sys_color_dynamic_dark_surface_container_lowest</item>
-		<item name="colorSurfaceContainerLow">@color/m3_sys_color_dynamic_dark_surface_container_low</item>
+		<item name="colorSurfaceContainerLowest">
+			@color/m3_sys_color_dynamic_dark_surface_container_lowest
+		</item>
+		<item name="colorSurfaceContainerLow">
+			@color/m3_sys_color_dynamic_dark_surface_container_low
+		</item>
 		<item name="colorSurfaceContainer">@color/m3_sys_color_dynamic_dark_surface_container</item>
-		<item name="colorSurfaceContainerHigh">@color/m3_sys_color_dynamic_dark_surface_container_high</item>
-		<item name="colorSurfaceContainerHighest">@color/m3_sys_color_dynamic_dark_surface_container_highest</item>
+		<item name="colorSurfaceContainerHigh">
+			@color/m3_sys_color_dynamic_dark_surface_container_high
+		</item>
+		<item name="colorSurfaceContainerHighest">
+			@color/m3_sys_color_dynamic_dark_surface_container_highest
+		</item>
 		<item name="colorSurfaceVariant">@color/m3_sys_color_dynamic_dark_surface_variant</item>
 		<item name="colorOnSurface">@color/m3_sys_color_dynamic_dark_on_surface</item>
-		<item name="colorOnSurfaceVariant">@color/m3_sys_color_dynamic_dark_on_surface_variant</item>
+		<item name="colorOnSurfaceVariant">@color/m3_sys_color_dynamic_dark_on_surface_variant
+		</item>
 		<item name="colorSurfaceInverse">@color/m3_sys_color_dynamic_dark_inverse_surface</item>
-		<item name="colorOnSurfaceInverse">@color/m3_sys_color_dynamic_dark_inverse_on_surface</item>
+		<item name="colorOnSurfaceInverse">@color/m3_sys_color_dynamic_dark_inverse_on_surface
+		</item>
 		<item name="colorOnBackground">@color/m3_sys_color_dynamic_dark_on_background</item>
 		<item name="colorError">@color/m3_sys_color_dark_error</item>
 		<item name="colorErrorContainer">@color/m3_sys_color_dark_error_container</item>
@@ -42,26 +59,42 @@
 		<item name="m3ColorExploreButton">@android:color/system_neutral2_800</item>
 		<item name="m3ColorBottomMenuBackground">@android:color/system_neutral2_800</item>
 		<!-- Default Framework Text Colors. -->
-		<item name="android:textColorPrimary">@color/m3_dynamic_dark_default_color_primary_text</item>
-		<item name="android:textColorPrimaryInverse">@color/m3_dynamic_default_color_primary_text</item>
-		<item name="android:textColorSecondary">@color/m3_dynamic_dark_default_color_secondary_text</item>
-		<item name="android:textColorSecondaryInverse">@color/m3_dynamic_default_color_secondary_text</item>
-		<item name="android:textColorTertiary">@color/m3_dynamic_dark_default_color_secondary_text</item>
-		<item name="android:textColorTertiaryInverse">@color/m3_dynamic_default_color_secondary_text</item>
-		<item name="android:textColorPrimaryDisableOnly">@color/m3_dynamic_dark_primary_text_disable_only</item>
-		<item name="android:textColorPrimaryInverseDisableOnly">@color/m3_dynamic_primary_text_disable_only</item>
+		<item name="android:textColorPrimary">@color/m3_dynamic_dark_default_color_primary_text
+		</item>
+		<item name="android:textColorPrimaryInverse">@color/m3_dynamic_default_color_primary_text
+		</item>
+		<item name="android:textColorSecondary">
+			@color/m3_dynamic_dark_default_color_secondary_text
+		</item>
+		<item name="android:textColorSecondaryInverse">
+			@color/m3_dynamic_default_color_secondary_text
+		</item>
+		<item name="android:textColorTertiary">@color/m3_dynamic_dark_default_color_secondary_text
+		</item>
+		<item name="android:textColorTertiaryInverse">
+			@color/m3_dynamic_default_color_secondary_text
+		</item>
+		<item name="android:textColorPrimaryDisableOnly">
+			@color/m3_dynamic_dark_primary_text_disable_only
+		</item>
+		<item name="android:textColorPrimaryInverseDisableOnly">
+			@color/m3_dynamic_primary_text_disable_only
+		</item>
 		<item name="android:textColorHint">@color/m3_dynamic_dark_hint_foreground</item>
 		<item name="android:textColorHintInverse">@color/m3_dynamic_hint_foreground</item>
 		<item name="android:textColorHighlight">@color/m3_dynamic_dark_highlighted_text</item>
 		<item name="android:textColorHighlightInverse">@color/m3_dynamic_highlighted_text</item>
-		<item name="android:textColorAlertDialogListItem">@color/m3_dynamic_dark_default_color_primary_text</item>
+		<item name="android:textColorAlertDialogListItem">
+			@color/m3_dynamic_dark_default_color_primary_text
+		</item>
 		<!-- Fixes -->
 		<item name="bottomNavigationStyle">@style/Widget.Kotatsu.BottomNavigationView</item>
 	</style>
 
 	<style name="Theme.Kotatsu.AppWidgetContainer" parent="@android:style/Theme.DeviceDefault.DayNight">
-		<item name="android:colorBackground">@color/m3_sys_color_dynamic_dark_secondary_container</item>
-		<item name="android:panelColorBackground">@color/m3_sys_color_dynamic_dark_inverse_primary</item>
+		<item name="android:colorBackground">@color/m3_ref_palette_dynamic_secondary20</item>
+		<item name="android:panelColorBackground">@color/m3_ref_palette_dynamic_secondary40</item>
+		<item name="colorTertiary">@color/m3_ref_palette_dynamic_secondary40</item>
 	</style>
 
 </resources>

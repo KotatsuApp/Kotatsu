@@ -3,5 +3,5 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:shape="rectangle">
 	<corners android:radius="@dimen/appwidget_corner_radius_background" />
-	<solid android:color="@color/kotatsu_background" />
+	<solid android:color="?android:colorBackground" />
 </shape>
