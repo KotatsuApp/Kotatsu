@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver
 import android.widget.HorizontalScrollView
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.isVisible
+import androidx.core.view.updatePaddingRelative
 import androidx.customview.view.AbsSavedState
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
@@ -52,7 +53,11 @@ class ThemeChooserPreference @JvmOverloads constructor(
 		binding.linear.removeAllViews()
 		for (theme in entries) {
 			val context = ContextThemeWrapper(context, theme.styleResId)
-			val item = ItemColorSchemeBinding.inflate(LayoutInflater.from(context), binding.linear, false)
+			val item =
+				ItemColorSchemeBinding.inflate(LayoutInflater.from(context), binding.linear, false)
+			if (binding.linear.childCount == 0) {
+				item.root.updatePaddingRelative(start = 0)
+			}
 			val isSelected = theme == currentValue
 			item.card.isChecked = isSelected
 			item.card.strokeWidth = if (isSelected) context.resources.getDimensionPixelSize(
@@ -76,7 +81,8 @@ class ThemeChooserPreference @JvmOverloads constructor(
 		}
 		binding.scrollView.viewTreeObserver.run {
 			scrollPersistListener?.let { removeOnScrollChangedListener(it) }
-			scrollPersistListener = ScrollPersistListener(WeakReference(binding.scrollView), lastScrollPosition)
+			scrollPersistListener =
+				ScrollPersistListener(WeakReference(binding.scrollView), lastScrollPosition)
 			addOnScrollChangedListener(scrollPersistListener)
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -133,7 +139,7 @@ class ThemeChooserPreference @JvmOverloads constructor(
 
 		constructor(
 			superState: Parcelable,
-			scrollPosition: Int
+			scrollPosition: Int,
 		) : super(superState) {
 			this.scrollPosition = scrollPosition
 		}
@@ -151,7 +157,8 @@ class ThemeChooserPreference @JvmOverloads constructor(
 			@Suppress("unused")
 			@JvmField
 			val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
-				override fun createFromParcel(`in`: Parcel) = SavedState(`in`, SavedState::class.java.classLoader)
+				override fun createFromParcel(`in`: Parcel) =
+					SavedState(`in`, SavedState::class.java.classLoader)
 
 				override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
 			}
