@@ -20,37 +20,18 @@ sealed class DateTimeAgo {
 		override fun equals(other: Any?): Boolean = other === JustNow
 	}
 
-	class MinutesAgo(val minutes: Int) : DateTimeAgo() {
-
+	data class MinutesAgo(val minutes: Int) : DateTimeAgo() {
 		override fun format(resources: Resources): String {
 			return resources.getQuantityString(R.plurals.minutes_ago, minutes, minutes)
 		}
 
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-			other as MinutesAgo
-			return minutes == other.minutes
-		}
-
-		override fun hashCode(): Int = minutes
-
 		override fun toString() = "minutes_ago_$minutes"
 	}
 
-	class HoursAgo(val hours: Int) : DateTimeAgo() {
+	data class HoursAgo(val hours: Int) : DateTimeAgo() {
 		override fun format(resources: Resources): String {
 			return resources.getQuantityString(R.plurals.hours_ago, hours, hours)
 		}
-
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-			other as HoursAgo
-			return hours == other.hours
-		}
-
-		override fun hashCode(): Int = hours
 
 		override fun toString() = "hours_ago_$hours"
 	}
@@ -75,45 +56,21 @@ sealed class DateTimeAgo {
 		override fun equals(other: Any?): Boolean = other === Yesterday
 	}
 
-	class DaysAgo(val days: Int) : DateTimeAgo() {
-
+	data class DaysAgo(val days: Int) : DateTimeAgo() {
 		override fun format(resources: Resources): String {
 			return resources.getQuantityString(R.plurals.days_ago, days, days)
 		}
 
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-			other as DaysAgo
-			return days == other.days
-		}
-
-		override fun hashCode(): Int = days
-
 		override fun toString() = "days_ago_$days"
 	}
 
-	class MonthsAgo(val months: Int) : DateTimeAgo() {
-
+	data class MonthsAgo(val months: Int) : DateTimeAgo() {
 		override fun format(resources: Resources): String {
 			return if (months == 0) {
 				resources.getString(R.string.this_month)
 			} else {
 				resources.getQuantityString(R.plurals.months_ago, months, months)
 			}
-		}
-
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as MonthsAgo
-
-			return months == other.months
-		}
-
-		override fun hashCode(): Int {
-			return months
 		}
 	}
 

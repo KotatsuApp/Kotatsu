@@ -106,12 +106,7 @@ class TrimTransformation(
 	}
 
 	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as TrimTransformation
-
-		return tolerance == other.tolerance
+		return this === other || (other is TrimTransformation && other.tolerance == tolerance)
 	}
 
 	override fun hashCode(): Int {

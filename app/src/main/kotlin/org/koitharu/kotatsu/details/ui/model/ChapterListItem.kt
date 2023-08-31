@@ -4,7 +4,7 @@ import android.text.format.DateUtils
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 
-class ChapterListItem(
+data class ChapterListItem(
 	val chapter: MangaChapter,
 	val flags: Int,
 	private val uploadDateMs: Long,
@@ -64,24 +64,6 @@ class ChapterListItem(
 		} else {
 			super.getChangePayload(previousState)
 		}
-	}
-
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as ChapterListItem
-
-		if (chapter != other.chapter) return false
-		if (flags != other.flags) return false
-		return uploadDateMs == other.uploadDateMs
-	}
-
-	override fun hashCode(): Int {
-		var result = chapter.hashCode()
-		result = 31 * result + flags
-		result = 31 * result + uploadDateMs.hashCode()
-		return result
 	}
 
 	companion object {

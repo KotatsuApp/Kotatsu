@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.reader.domain
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 
-class ReaderColorFilter(
+data class ReaderColorFilter(
 	val brightness: Float,
 	val contrast: Float,
 	val isInverted: Boolean,
@@ -50,23 +50,5 @@ class ReaderColorFilter(
 			0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 		)
 		set(matrix)
-	}
-
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as ReaderColorFilter
-
-		if (brightness != other.brightness) return false
-		if (contrast != other.contrast) return false
-		return isInverted == other.isInverted
-	}
-
-	override fun hashCode(): Int {
-		var result = brightness.hashCode()
-		result = 31 * result + contrast.hashCode()
-		result = 31 * result + isInverted.hashCode()
-		return result
 	}
 }

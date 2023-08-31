@@ -77,7 +77,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 			largeCoverUrl = null,
 			description = null,
 		)
-		LocalManga(root, manga)
+		LocalManga(manga, root)
 	}
 
 	override suspend fun getMangaInfo(): Manga? = runInterruptible(Dispatchers.IO) {

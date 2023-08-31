@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.core.github
 
 import java.util.*
 
-class VersionId(
+data class VersionId(
 	val major: Int,
 	val minor: Int,
 	val build: Int,
@@ -28,28 +28,6 @@ class VersionId(
 			return diff
 		}
 		return variantNumber.compareTo(other.variantNumber)
-	}
-
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as VersionId
-
-		if (major != other.major) return false
-		if (minor != other.minor) return false
-		if (build != other.build) return false
-		if (variantType != other.variantType) return false
-		return variantNumber == other.variantNumber
-	}
-
-	override fun hashCode(): Int {
-		var result = major
-		result = 31 * result + minor
-		result = 31 * result + build
-		result = 31 * result + variantType.hashCode()
-		result = 31 * result + variantNumber
-		return result
 	}
 
 	private fun variantWeight(variantType: String) = when (variantType.lowercase(Locale.ROOT)) {

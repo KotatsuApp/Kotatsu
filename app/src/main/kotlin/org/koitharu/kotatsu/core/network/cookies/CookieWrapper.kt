@@ -8,7 +8,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
 
-class CookieWrapper(
+data class CookieWrapper(
 	val cookie: Cookie,
 ) {
 
@@ -65,18 +65,5 @@ class CookieWrapper(
 
 	fun key(): String {
 		return (if (cookie.secure) "https" else "http") + "://" + cookie.domain + cookie.path + "|" + cookie.name
-	}
-
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as CookieWrapper
-
-		return cookie == other.cookie
-	}
-
-	override fun hashCode(): Int {
-		return cookie.hashCode()
 	}
 }

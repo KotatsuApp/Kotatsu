@@ -94,7 +94,7 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 				)
 			}
 		}
-		return LocalManga(root, manga)
+		return LocalManga(manga, root)
 	}
 
 	override suspend fun getMangaInfo(): Manga? = runInterruptible(Dispatchers.IO) {

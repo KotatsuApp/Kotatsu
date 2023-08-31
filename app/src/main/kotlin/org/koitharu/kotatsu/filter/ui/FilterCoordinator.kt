@@ -263,30 +263,11 @@ class FilterCoordinator @Inject constructor(
 		return result
 	}
 
-	private class TagsWrapper(
+	private data class TagsWrapper(
 		val tags: Set<MangaTag>,
 		val isLoading: Boolean,
 		val isError: Boolean,
-	) {
-
-		override fun equals(other: Any?): Boolean {
-			if (this === other) return true
-			if (javaClass != other?.javaClass) return false
-
-			other as TagsWrapper
-
-			if (tags != other.tags) return false
-			if (isLoading != other.isLoading) return false
-			return isError == other.isError
-		}
-
-		override fun hashCode(): Int {
-			var result = tags.hashCode()
-			result = 31 * result + isLoading.hashCode()
-			result = 31 * result + isError.hashCode()
-			return result
-		}
-	}
+	)
 
 	private class TagTitleComparator(lc: String?) : Comparator<MangaTag> {
 

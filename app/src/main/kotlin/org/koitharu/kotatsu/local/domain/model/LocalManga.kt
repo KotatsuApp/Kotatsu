@@ -6,12 +6,10 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import java.io.File
 
-class LocalManga(
-	val file: File,
+data class LocalManga(
 	val manga: Manga,
+	val file: File = manga.url.toUri().toFile(),
 ) {
-
-	constructor(manga: Manga) : this(manga.url.toUri().toFile(), manga)
 
 	var createdAt: Long = -1L
 		private set
@@ -29,22 +27,6 @@ class LocalManga(
 
 	fun containsTags(tags: Set<MangaTag>): Boolean {
 		return manga.tags.containsAll(tags)
-	}
-
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as LocalManga
-
-		if (manga != other.manga) return false
-		return file == other.file
-	}
-
-	override fun hashCode(): Int {
-		var result = manga.hashCode()
-		result = 31 * result + file.hashCode()
-		return result
 	}
 
 	override fun toString(): String {
