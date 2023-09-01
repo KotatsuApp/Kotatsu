@@ -24,11 +24,15 @@ inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String)
 }
 
 inline fun <reified T : Serializable> Intent.getSerializableExtraCompat(key: String): T? {
-	return getSerializableExtra(key) as T?
+	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+		getSerializableExtra(key, T::class.java)
+	} else {
+		getSerializableExtra(key) as T?
+	}
 }
 
 inline fun <reified T : Serializable> Bundle.getSerializableCompat(key: String): T? {
-	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
 		getSerializable(key, T::class.java)
 	} else {
 		getSerializable(key) as T?

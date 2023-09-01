@@ -46,7 +46,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		if (!catchingWebViewUnavailability { setContentView(ActivityBrowserBinding.inflate(layoutInflater)) }) {
 			return
 		}
-		val source = intent?.getSerializableExtraCompat(EXTRA_SOURCE) as? MangaSource
+		val source = intent?.getSerializableExtraCompat<MangaSource>(EXTRA_SOURCE)
 		if (source == null) {
 			finishAfterTransition()
 			return

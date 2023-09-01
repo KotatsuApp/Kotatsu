@@ -157,7 +157,7 @@ class SettingsActivity :
 			ACTION_SOURCES -> SourcesSettingsFragment()
 			ACTION_MANAGE_DOWNLOADS -> DownloadsSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
-				intent.getSerializableExtraCompat(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,
+				intent.getSerializableExtraCompat(EXTRA_SOURCE) ?: MangaSource.LOCAL,
 			)
 
 			ACTION_MANAGE_SOURCES -> SourcesManageFragment()
