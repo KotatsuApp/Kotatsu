@@ -48,10 +48,10 @@ fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 	if (groups.size == 1) {
 		return groups.keys.first()
 	}
-	val candidates = HashMap<String?, List<MangaChapter>>(groups.size)
 	for (locale in LocaleListCompat.getAdjustedDefault()) {
 		val displayLanguage = locale.getDisplayLanguage(locale)
 		val displayName = locale.getDisplayName(locale)
+		val candidates = HashMap<String?, List<MangaChapter>>(3)
 		for (branch in groups.keys) {
 			if (branch != null && (
 					branch.contains(displayLanguage, ignoreCase = true) ||
@@ -61,8 +61,11 @@ fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 				candidates[branch] = groups[branch] ?: continue
 			}
 		}
+		if (candidates.isNotEmpty()) {
+			return candidates.maxBy { it.value.size }.key
+		}
 	}
-	return candidates.ifEmpty { groups }.maxByOrNull { it.value.size }?.key
+	return groups.maxByOrNull { it.value.size }?.key
 }
 
 val Manga.isLocal: Boolean
