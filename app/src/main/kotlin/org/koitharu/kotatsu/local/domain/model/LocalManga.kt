@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.local.domain.model
 
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import org.koitharu.kotatsu.core.util.ext.creationTime
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import java.io.File
@@ -15,7 +16,7 @@ data class LocalManga(
 		private set
 		get() {
 			if (field == -1L) {
-				field = file.lastModified()
+				field = file.creationTime
 			}
 			return field
 		}
