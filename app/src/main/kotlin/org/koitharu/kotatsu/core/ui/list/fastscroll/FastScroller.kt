@@ -19,13 +19,13 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.GravityCompat
+import androidx.core.view.ancestors
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.isLayoutReversed
-import org.koitharu.kotatsu.core.util.ext.parents
 import org.koitharu.kotatsu.databinding.FastScrollerBinding
 import kotlin.math.roundToInt
 import com.google.android.material.R as materialR
@@ -522,7 +522,7 @@ class FastScroller @JvmOverloads constructor(
 		return BubbleSize.entries.getOrNull(ordinal) ?: defaultValue
 	}
 
-	private fun findValidParent(view: View): ViewGroup? = view.parents.firstNotNullOfOrNull { p ->
+	private fun findValidParent(view: View): ViewGroup? = view.ancestors.firstNotNullOfOrNull { p ->
 		if (p is FrameLayout || p is ConstraintLayout || p is CoordinatorLayout || p is RelativeLayout) {
 			p as ViewGroup
 		} else {

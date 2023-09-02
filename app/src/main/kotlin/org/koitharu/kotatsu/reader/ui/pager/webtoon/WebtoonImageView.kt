@@ -3,9 +3,9 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 import android.content.Context
 import android.graphics.PointF
 import android.util.AttributeSet
+import androidx.core.view.ancestors
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import org.koitharu.kotatsu.core.util.ext.parents
 import org.koitharu.kotatsu.parsers.util.toIntUp
 
 private const val SCROLL_UNKNOWN = -1
@@ -93,7 +93,7 @@ class WebtoonImageView @JvmOverloads constructor(
 		if (oldh == h || oldw == 0 || oldh == 0 || scrollRange == SCROLL_UNKNOWN) return
 
 		computeScrollRange()
-		val container = parents.firstNotNullOfOrNull { it as? WebtoonFrameLayout } ?: return
+		val container = ancestors.firstNotNullOfOrNull { it as? WebtoonFrameLayout } ?: return
 		val parentHeight = parentHeight()
 		if (scrollPos != 0 && container.bottom < parentHeight) {
 			scrollTo(scrollRange)
@@ -115,6 +115,6 @@ class WebtoonImageView @JvmOverloads constructor(
 	}
 
 	private fun parentHeight(): Int {
-		return parents.firstNotNullOfOrNull { it as? RecyclerView }?.height ?: 0
+		return ancestors.firstNotNullOfOrNull { it as? RecyclerView }?.height ?: 0
 	}
 }
