@@ -9,10 +9,10 @@ import androidx.annotation.AttrRes
 import androidx.annotation.StringRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.ancestors
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.parents
 import org.koitharu.kotatsu.databinding.LayoutSheetHeaderAdaptiveBinding
 
 class AdaptiveSheetHeaderBar @JvmOverloads constructor(
@@ -81,14 +81,9 @@ class AdaptiveSheetHeaderBar @JvmOverloads constructor(
 	}
 
 	private fun findParentSheetBehavior(): AdaptiveSheetBehavior? {
-		for (p in parents) {
-			val layoutParams = (p as? View)?.layoutParams
-			if (layoutParams is CoordinatorLayout.LayoutParams) {
-				AdaptiveSheetBehavior.from(layoutParams)?.let {
-					return it
-				}
-			}
+		return ancestors.firstNotNullOfOrNull {
+			((it as? View)?.layoutParams as? CoordinatorLayout.LayoutParams)
+				?.let { params -> AdaptiveSheetBehavior.from(params) }
 		}
-		return null
 	}
 }

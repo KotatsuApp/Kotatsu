@@ -5,10 +5,10 @@ import android.graphics.Rect
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
-import android.view.ViewParent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Checkable
 import androidx.core.view.children
+import androidx.core.view.descendants
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -89,38 +89,14 @@ fun Slider.setValueRounded(newValue: Float) {
 	value = roundedValue.coerceIn(valueFrom, valueTo)
 }
 
-fun <T : View> ViewGroup.findViewsByType(clazz: Class<T>): Sequence<T> {
-	if (childCount == 0) {
-		return emptySequence()
-	}
-	return sequence {
-		for (view in children) {
-			if (clazz.isInstance(view)) {
-				yield(clazz.cast(view)!!)
-			} else if (view is ViewGroup && view.childCount != 0) {
-				yieldAll(view.findViewsByType(clazz))
-			}
-		}
-	}
-}
-
 fun RecyclerView.invalidateNestedItemDecorations() {
-	findViewsByType(RecyclerView::class.java).forEach {
+	descendants.filterIsInstance<RecyclerView>().forEach {
 		it.invalidateItemDecorations()
 	}
 }
 
 val View.parentView: ViewGroup?
 	get() = parent as? ViewGroup
-
-val View.parents: Sequence<ViewParent>
-	get() = sequence {
-		var p: ViewParent? = parent
-		while (p != null) {
-			yield(p)
-			p = p.parent
-		}
-	}
 
 fun View.measureDimension(desiredSize: Int, measureSpec: Int): Int {
 	var result: Int
