@@ -44,6 +44,7 @@ import org.koitharu.kotatsu.core.util.GridTouchHelper
 import org.koitharu.kotatsu.core.util.IdlingDetector
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.hasGlobalPoint
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.isRtl
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -309,22 +310,20 @@ class ReaderActivity :
 
 	private fun setUiIsVisible(isUiVisible: Boolean) {
 		if (viewBinding.appbarTop.isVisible != isUiVisible) {
-			val transition = TransitionSet()
-				.setOrdering(TransitionSet.ORDERING_TOGETHER)
-				.addTransition(Slide(Gravity.TOP).addTarget(viewBinding.appbarTop))
-				.addTransition(Fade().addTarget(viewBinding.infoBar))
-			viewBinding.appbarBottom?.let { bottomBar ->
-				transition.addTransition(Slide(Gravity.BOTTOM).addTarget(bottomBar))
+			if (isAnimationsEnabled) {
+				val transition = TransitionSet()
+					.setOrdering(TransitionSet.ORDERING_TOGETHER)
+					.addTransition(Slide(Gravity.TOP).addTarget(viewBinding.appbarTop))
+					.addTransition(Fade().addTarget(viewBinding.infoBar))
+				viewBinding.appbarBottom?.let { bottomBar ->
+					transition.addTransition(Slide(Gravity.BOTTOM).addTarget(bottomBar))
+				}
+				TransitionManager.beginDelayedTransition(viewBinding.root, transition)
 			}
-			TransitionManager.beginDelayedTransition(viewBinding.root, transition)
 			viewBinding.appbarTop.isVisible = isUiVisible
 			viewBinding.appbarBottom?.isVisible = isUiVisible
 			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
-			if (isUiVisible) {
-				showSystemUI()
-			} else {
-				hideSystemUI()
-			}
+			systemUiController.setSystemUiVisible(isUiVisible)
 		}
 	}
 
