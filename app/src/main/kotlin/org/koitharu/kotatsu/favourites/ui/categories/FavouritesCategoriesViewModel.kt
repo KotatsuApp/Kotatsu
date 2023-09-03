@@ -1,21 +1,20 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.plus
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
+import org.koitharu.kotatsu.favourites.domain.model.Cover
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.util.move
 import javax.inject.Inject
@@ -28,26 +27,17 @@ class FavouritesCategoriesViewModel @Inject constructor(
 
 	private var reorderJob: Job? = null
 
-	val categories = repository.observeCategoriesWithCovers()
-		.map { list ->
-			list.map { (category, covers) ->
-				CategoryListModel(
-					mangaCount = covers.size,
-					covers = covers.take(3),
-					category = category,
-					isTrackerEnabled = settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources,
-				)
-			}.ifEmpty {
-				listOf(
-					EmptyState(
-						icon = R.drawable.ic_empty_favourites,
-						textPrimary = R.string.text_empty_holder_primary,
-						textSecondary = R.string.empty_favourite_categories,
-						actionStringRes = 0,
-					),
-				)
-			}
-		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
+	val content = MutableStateFlow<List<ListModel>>(listOf(LoadingState))
+
+	init {
+		launchJob(Dispatchers.Default) {
+			repository.observeCategoriesWithCovers()
+				.collectLatest {
+					reorderJob?.join()
+					updateContent(it)
+				}
+		}
+	}
 
 	fun deleteCategories(ids: Set<Long>) {
 		launchJob(Dispatchers.Default) {
@@ -59,14 +49,15 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		settings.isAllFavouritesVisible = isVisible
 	}
 
-	fun isEmpty(): Boolean = categories.value.none { it is CategoryListModel }
+	fun isEmpty(): Boolean = content.value.none { it is CategoryListModel }
 
 	fun reorderCategories(oldPos: Int, newPos: Int) {
 		val prevJob = reorderJob
 		reorderJob = launchJob(Dispatchers.Default) {
 			prevJob?.join()
-			val snapshot = categories.requireValue().toMutableList()
+			val snapshot = content.requireValue().toMutableList()
 			snapshot.move(oldPos, newPos)
+			content.value = snapshot
 			val ids = snapshot.mapNotNullTo(ArrayList(snapshot.size)) {
 				(it as? CategoryListModel)?.category?.id
 			}
@@ -83,9 +74,29 @@ class FavouritesCategoriesViewModel @Inject constructor(
 	}
 
 	fun getCategories(ids: Set<Long>): ArrayList<FavouriteCategory> {
-		val items = categories.requireValue()
+		val items = content.requireValue()
 		return items.mapNotNullTo(ArrayList(ids.size)) { item ->
 			(item as? CategoryListModel)?.category?.takeIf { it.id in ids }
+		}
+	}
+
+	private fun updateContent(categories: Map<FavouriteCategory, List<Cover>>) {
+		content.value = categories.map { (category, covers) ->
+			CategoryListModel(
+				mangaCount = covers.size,
+				covers = covers.take(3),
+				category = category,
+				isTrackerEnabled = settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources,
+			)
+		}.ifEmpty {
+			listOf(
+				EmptyState(
+					icon = R.drawable.ic_empty_favourites,
+					textPrimary = R.string.text_empty_holder_primary,
+					textSecondary = R.string.empty_favourite_categories,
+					actionStringRes = 0,
+				),
+			)
 		}
 	}
 }

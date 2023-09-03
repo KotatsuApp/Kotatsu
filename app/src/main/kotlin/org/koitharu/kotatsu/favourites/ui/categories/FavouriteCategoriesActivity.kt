@@ -67,7 +67,7 @@ class FavouriteCategoriesActivity :
 			attachToRecyclerView(viewBinding.recyclerView)
 		}
 
-		viewModel.categories.observe(this, ::onCategoriesChanged)
+		viewModel.content.observe(this, ::onCategoriesChanged)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 	}
 

@@ -2,17 +2,12 @@ package org.koitharu.kotatsu.settings.sources
 
 import androidx.annotation.CheckResult
 import androidx.core.os.LocaleListCompat
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -46,32 +41,39 @@ class SourcesManageViewModel @Inject constructor(
 	private val expandedGroups = MutableStateFlow(emptySet<String?>())
 	private var searchQuery = MutableStateFlow<String?>(null)
 	private var reorderJob: Job? = null
-
-	val content = combine(
-		repository.observeEnabledSources(),
-		expandedGroups,
-		searchQuery,
-		observeTip(),
-		settings.observeAsFlow(AppSettings.KEY_DISABLE_NSFW) { isNsfwContentDisabled },
-	) { sources, groups, query, tip, noNsfw ->
-		buildList(sources, groups, query, tip, noNsfw)
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
-
+	val content = MutableStateFlow<List<SourceConfigItem>>(emptyList())
 	val onActionDone = MutableEventFlow<ReversibleAction>()
+
+	init {
+		launchJob(Dispatchers.Default) {
+			combine(
+				repository.observeEnabledSources(),
+				expandedGroups,
+				searchQuery,
+				observeTip(),
+				settings.observeAsFlow(AppSettings.KEY_DISABLE_NSFW) { isNsfwContentDisabled },
+			) { sources, groups, query, tip, noNsfw ->
+				buildList(sources, groups, query, tip, noNsfw)
+			}.collectLatest {
+				reorderJob?.join()
+				content.value = it
+			}
+		}
+	}
 
 	fun reorderSources(oldPos: Int, newPos: Int) {
 		val snapshot = content.value.toMutableList()
 		val prevJob = reorderJob
 		reorderJob = launchJob(Dispatchers.Default) {
-			prevJob?.cancelAndJoin()
 			if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
 				return@launchJob
 			}
 			if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
 				return@launchJob
 			}
-			delay(100)
 			snapshot.move(oldPos, newPos)
+			content.value = snapshot
+			prevJob?.join()
 			val newSourcesList = snapshot.mapNotNull { x ->
 				if (x is SourceConfigItem.SourceItem && x.isDraggable) {
 					x.source
