@@ -330,7 +330,7 @@
     <string name="reader_control_ltr_summary">Нажатие на правый край или нажатие правой клавиши всегда переключает на следующую страницу</string>
     <string name="reader_control_ltr">Эргономичное управление режимом чтения</string>
     <string name="reset">Сбросить</string>
-    <string name="discard">Отменить</string>
+    <string name="discard">Отклонить</string>
     <string name="text_unsaved_changes_prompt">Сохранить или отменить несохранённые изменения\?</string>
     <string name="contrast">Контрастность</string>
     <string name="brightness">Яркость</string>
