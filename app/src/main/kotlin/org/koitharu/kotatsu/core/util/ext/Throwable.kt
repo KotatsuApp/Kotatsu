@@ -27,6 +27,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 private const val MSG_NO_SPACE_LEFT = "No space left on device"
+private const val IMAGE_FORMAT_NO_SUPPORTED = "Image format not supported"
 
 fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
@@ -81,6 +82,7 @@ private fun getHttpDisplayMessage(statusCode: Int, resources: Resources): String
 private fun getDisplayMessage(msg: String?, resources: Resources): String? = when {
 	msg.isNullOrEmpty() -> null
 	msg.contains(MSG_NO_SPACE_LEFT) -> resources.getString(R.string.error_no_space_left)
+	msg.contains(IMAGE_FORMAT_NO_SUPPORTED) -> resources.getString(R.string.error_corrupted_file)
 	else -> null
 }
 

@@ -478,4 +478,5 @@
 	<string name="advanced">Advanced</string>
 	<string name="default_section">Default section</string>
 	<string name="manga_list">Manga list</string>
+	<string name="error_corrupted_file">Invalid data is returned or file is corrupted</string>
 </resources>
