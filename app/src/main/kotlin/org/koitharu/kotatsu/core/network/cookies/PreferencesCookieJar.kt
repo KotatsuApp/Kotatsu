@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.WorkerThread
 import androidx.collection.ArrayMap
 import androidx.core.content.edit
+import androidx.core.util.Predicate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Cookie
@@ -57,12 +58,14 @@ class PreferencesCookieJar(
 
 	@Synchronized
 	@WorkerThread
-	override fun removeCookies(url: HttpUrl) {
+	override fun removeCookies(url: HttpUrl, predicate: Predicate<Cookie>?) {
 		loadPersistent()
 		val toRemove = HashSet<String>()
 		for ((key, cookie) in cache) {
 			if (cookie.isExpired() || cookie.cookie.matches(url)) {
-				toRemove += key
+				if (predicate == null || predicate.test(cookie.cookie)) {
+					toRemove += key
+				}
 			}
 		}
 		if (toRemove.isNotEmpty()) {

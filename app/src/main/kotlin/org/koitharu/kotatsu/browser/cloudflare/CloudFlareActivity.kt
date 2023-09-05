@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.browser.cloudflare
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.webkit.CookieManager
 import androidx.activity.result.contract.ActivityResultContract
@@ -13,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.Headers
+import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
@@ -38,7 +40,13 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		if (!catchingWebViewUnavailability { setContentView(ActivityBrowserBinding.inflate(layoutInflater)) }) {
+		if (!catchingWebViewUnavailability {
+				setContentView(
+					ActivityBrowserBinding.inflate(
+						layoutInflater
+					)
+				)
+			}) {
 			return
 		}
 		supportActionBar?.run {
@@ -86,6 +94,11 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		viewBinding.webView.restoreState(savedInstanceState)
 	}
 
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		menuInflater.inflate(R.menu.opt_captcha, menu)
+		return super.onCreateOptionsMenu(menu)
+	}
+
 	override fun onWindowInsetsChanged(insets: Insets) {
 		viewBinding.appbar.updatePadding(
 			top = insets.top,
@@ -101,6 +114,16 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		android.R.id.home -> {
 			viewBinding.webView.stopLoading()
 			finishAfterTransition()
+			true
+		}
+
+		R.id.action_retry -> {
+			viewBinding.webView.stopLoading()
+			val targetUrl = intent?.dataString?.toHttpUrlOrNull()
+			if (targetUrl != null) {
+				clearCfCookies(targetUrl)
+				viewBinding.webView.loadUrl(targetUrl.toString())
+			}
 			true
 		}
 
@@ -141,7 +164,15 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 
 	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {
 		setTitle(title)
-		supportActionBar?.subtitle = subtitle?.toString()?.toHttpUrlOrNull()?.topPrivateDomain() ?: subtitle
+		supportActionBar?.subtitle =
+			subtitle?.toString()?.toHttpUrlOrNull()?.topPrivateDomain() ?: subtitle
+	}
+
+	private fun clearCfCookies(url: HttpUrl) {
+		cookieJar.removeCookies(url) { cookie ->
+			val name = cookie.name
+			name.startsWith("cf_") || name.startsWith("_cf") || name.startsWith("__cf")
+		}
 	}
 
 	class Contract : ActivityResultContract<Pair<String, Headers?>, TaggedActivityResult>() {

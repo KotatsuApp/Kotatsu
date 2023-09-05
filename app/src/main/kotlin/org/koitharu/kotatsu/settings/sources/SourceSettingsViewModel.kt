@@ -49,7 +49,7 @@ class SourceSettingsViewModel @Inject constructor(
 				.scheme("https")
 				.host(repository.domain)
 				.build()
-			cookieJar.removeCookies(url)
+			cookieJar.removeCookies(url, null)
 			onActionDone.call(ReversibleAction(R.string.cookies_cleared, null))
 			loadUsername()
 		}

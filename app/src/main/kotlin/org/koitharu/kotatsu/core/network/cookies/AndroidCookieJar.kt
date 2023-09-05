@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.network.cookies
 
 import android.webkit.CookieManager
 import androidx.annotation.WorkerThread
+import androidx.core.util.Predicate
 import okhttp3.Cookie
 import okhttp3.HttpUrl
 import org.koitharu.kotatsu.core.util.ext.newBuilder
@@ -31,13 +32,16 @@ class AndroidCookieJar : MutableCookieJar {
 		}
 	}
 
-	override fun removeCookies(url: HttpUrl) {
+	override fun removeCookies(url: HttpUrl, predicate: Predicate<Cookie>?) {
 		val cookies = loadForRequest(url)
 		if (cookies.isEmpty()) {
 			return
 		}
 		val urlString = url.toString()
 		for (c in cookies) {
+			if (predicate != null && !predicate.test(c)) {
+				continue
+			}
 			val nc = c.newBuilder()
 				.expiresAt(System.currentTimeMillis() - 100000)
 				.build()
