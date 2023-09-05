@@ -39,6 +39,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
@@ -148,19 +149,9 @@ class TrackWorker @AssistedInject constructor(
 						send(
 							runCatchingCancellable {
 								tracker.fetchUpdates(track, commit = true)
+									.copy(channelId = channelId)
 							}.onFailure { e ->
-								if (e is CloudFlareProtectedException) {
-									CaptchaNotifier(applicationContext).notify(e)
-								}
 								logger.log("checkUpdatesAsync", e)
-							}.onSuccess { updates ->
-								if (updates.isValid && updates.isNotEmpty()) {
-									showNotification(
-										manga = updates.manga,
-										channelId = channelId,
-										newChapters = updates.newChapters,
-									)
-								}
 							}.getOrElse { error ->
 								MangaUpdates.Failure(
 									manga = track.manga,
@@ -171,10 +162,33 @@ class TrackWorker @AssistedInject constructor(
 					}
 				}
 			}
+		}.onEach {
+			when (it) {
+				is MangaUpdates.Failure -> {
+					val e = it.error
+					if (e is CloudFlareProtectedException) {
+						CaptchaNotifier(applicationContext).notify(e)
+					}
+				}
+
+				is MangaUpdates.Success -> {
+					if (it.isValid && it.isNotEmpty()) {
+						showNotification(
+							manga = it.manga,
+							channelId = it.channelId,
+							newChapters = it.newChapters,
+						)
+					}
+				}
+			}
 		}.toList(ArrayList(tracks.size))
 	}
 
-	private suspend fun showNotification(manga: Manga, channelId: String?, newChapters: List<MangaChapter>) {
+	private suspend fun showNotification(
+		manga: Manga,
+		channelId: String?,
+		newChapters: List<MangaChapter>,
+	) {
 		if (newChapters.isEmpty() || channelId == null || !applicationContext.checkNotificationPermission()) {
 			return
 		}
@@ -239,7 +253,10 @@ class TrackWorker @AssistedInject constructor(
 
 	override suspend fun getForegroundInfo(): ForegroundInfo {
 		val title = applicationContext.getString(R.string.check_for_new_chapters)
-		val channel = NotificationChannelCompat.Builder(WORKER_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+		val channel = NotificationChannelCompat.Builder(
+			WORKER_CHANNEL_ID,
+			NotificationManagerCompat.IMPORTANCE_LOW
+		)
 			.setName(title)
 			.setShowBadge(false)
 			.setVibrationEnabled(false)
@@ -260,7 +277,11 @@ class TrackWorker @AssistedInject constructor(
 			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
 			.build()
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			ForegroundInfo(WORKER_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+			ForegroundInfo(
+				WORKER_NOTIFICATION_ID,
+				notification,
+				ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+			)
 		} else {
 			ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
 		}
@@ -320,7 +341,8 @@ class TrackWorker @AssistedInject constructor(
 		}
 
 		fun startNow() {
-			val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+			val constraints =
+				Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 			val request = OneTimeWorkRequestBuilder<TrackWorker>()
 				.setConstraints(constraints)
 				.addTag(TAG_ONESHOT)

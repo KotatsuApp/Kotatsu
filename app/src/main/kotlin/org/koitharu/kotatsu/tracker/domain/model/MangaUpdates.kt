@@ -8,16 +8,17 @@ sealed interface MangaUpdates {
 
 	val manga: Manga
 
-	class Success(
+	data class Success(
 		override val manga: Manga,
 		val newChapters: List<MangaChapter>,
 		val isValid: Boolean,
+		val channelId: String?,
 	) : MangaUpdates {
 
 		fun isNotEmpty() = newChapters.isNotEmpty()
 	}
 
-	class Failure(
+	data class Failure(
 		override val manga: Manga,
 		val error: Throwable?,
 	) : MangaUpdates {

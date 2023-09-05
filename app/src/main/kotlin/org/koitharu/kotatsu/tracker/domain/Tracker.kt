@@ -110,21 +110,26 @@ class Tracker @Inject constructor(
 	private fun compare(track: MangaTracking, manga: Manga, branch: String?): MangaUpdates.Success {
 		if (track.isEmpty()) {
 			// first check or manga was empty on last check
-			return MangaUpdates.Success(manga, emptyList(), isValid = false)
+			return MangaUpdates.Success(manga, emptyList(), isValid = false, channelId = null)
 		}
 		val chapters = requireNotNull(manga.getChapters(branch))
 		val newChapters = chapters.takeLastWhile { x -> x.id != track.lastChapterId }
 		return when {
 			newChapters.isEmpty() -> {
-				MangaUpdates.Success(manga, emptyList(), isValid = chapters.lastOrNull()?.id == track.lastChapterId)
+				MangaUpdates.Success(
+					manga = manga,
+					newChapters = emptyList(),
+					isValid = chapters.lastOrNull()?.id == track.lastChapterId,
+					channelId = null
+				)
 			}
 
 			newChapters.size == chapters.size -> {
-				MangaUpdates.Success(manga, emptyList(), isValid = false)
+				MangaUpdates.Success(manga, emptyList(), isValid = false, channelId = null)
 			}
 
 			else -> {
-				MangaUpdates.Success(manga, newChapters, isValid = true)
+				MangaUpdates.Success(manga, newChapters, isValid = true, channelId = null)
 			}
 		}
 	}
