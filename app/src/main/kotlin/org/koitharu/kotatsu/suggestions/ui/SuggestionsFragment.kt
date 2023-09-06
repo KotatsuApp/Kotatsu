@@ -27,7 +27,11 @@ class SuggestionsFragment : MangaListFragment() {
 
 	override fun onScrolledToEnd() = Unit
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		mode: ActionMode,
+		menu: Menu,
+	): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_remote, menu)
 		return super.onCreateActionMode(controller, mode, menu)
 	}
@@ -36,6 +40,12 @@ class SuggestionsFragment : MangaListFragment() {
 
 		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 			menuInflater.inflate(R.menu.opt_suggestions, menu)
+		}
+
+		override fun onPrepareMenu(menu: Menu) {
+			super.onPrepareMenu(menu)
+			menu.findItem(R.id.action_settings_suggestions)?.isVisible =
+				menu.findItem(R.id.action_settings) == null
 		}
 
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
@@ -49,7 +59,7 @@ class SuggestionsFragment : MangaListFragment() {
 				true
 			}
 
-			R.id.action_settings -> {
+			R.id.action_settings_suggestions -> {
 				startActivity(SettingsActivity.newSuggestionsSettingsIntent(requireContext()))
 				true
 			}
@@ -60,6 +70,12 @@ class SuggestionsFragment : MangaListFragment() {
 
 	companion object {
 
+		@Deprecated(
+			"", ReplaceWith(
+				"SuggestionsFragment()",
+				"org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment"
+			)
+		)
 		fun newInstance() = SuggestionsFragment()
 	}
 }

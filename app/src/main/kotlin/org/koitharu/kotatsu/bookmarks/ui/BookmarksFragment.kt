@@ -61,11 +61,17 @@ class BookmarksFragment :
 	private var bookmarksAdapter: BookmarksAdapter? = null
 	private var selectionController: ListSelectionController? = null
 
-	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentListSimpleBinding {
+	override fun onCreateViewBinding(
+		inflater: LayoutInflater,
+		container: ViewGroup?,
+	): FragmentListSimpleBinding {
 		return FragmentListSimpleBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewBindingCreated(binding: FragmentListSimpleBinding, savedInstanceState: Bundle?) {
+	override fun onViewBindingCreated(
+		binding: FragmentListSimpleBinding,
+		savedInstanceState: Bundle?,
+	) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		selectionController = ListSelectionController(
 			activity = requireActivity(),
@@ -95,7 +101,10 @@ class BookmarksFragment :
 		viewModel.content.observe(viewLifecycleOwner) {
 			bookmarksAdapter?.setItems(it, spanSizeLookup)
 		}
-		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
+		viewModel.onError.observeEvent(
+			viewLifecycleOwner,
+			SnackbarErrorObserver(binding.recyclerView, this)
+		)
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ::onActionDone)
 	}
 
@@ -139,12 +148,20 @@ class BookmarksFragment :
 		requireViewBinding().recyclerView.invalidateItemDecorations()
 	}
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		mode: ActionMode,
+		menu: Menu,
+	): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_bookmarks, menu)
 		return true
 	}
 
-	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(
+		controller: ListSelectionController,
+		mode: ActionMode,
+		item: MenuItem,
+	): Boolean {
 		return when (item.itemId) {
 			R.id.action_remove -> {
 				val ids = selectionController?.snapshot() ?: return false
@@ -170,7 +187,8 @@ class BookmarksFragment :
 	private fun onActionDone(action: ReversibleAction) {
 		val handle = action.handle
 		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
-		val snackbar = Snackbar.make((activity as SnackbarOwner).snackbarHost, action.stringResId, length)
+		val snackbar =
+			Snackbar.make((activity as SnackbarOwner).snackbarHost, action.stringResId, length)
 		if (handle != null) {
 			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
 		}
@@ -185,7 +203,8 @@ class BookmarksFragment :
 		}
 
 		override fun getSpanSize(position: Int): Int {
-			val total = (viewBinding?.recyclerView?.layoutManager as? GridLayoutManager)?.spanCount ?: return 1
+			val total = (viewBinding?.recyclerView?.layoutManager as? GridLayoutManager)?.spanCount
+				?: return 1
 			return when (bookmarksAdapter?.getItemViewType(position)) {
 				ListItemType.PAGE_THUMB.ordinal -> 1
 				else -> total
@@ -200,6 +219,12 @@ class BookmarksFragment :
 
 	companion object {
 
+		@Deprecated(
+			"", ReplaceWith(
+				"BookmarksFragment()",
+				"org.koitharu.kotatsu.bookmarks.ui.BookmarksFragment"
+			)
+		)
 		fun newInstance() = BookmarksFragment()
 	}
 }

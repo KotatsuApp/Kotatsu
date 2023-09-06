@@ -55,14 +55,11 @@
 
 	</PreferenceCategory>
 
-	<ListPreference
-		android:defaultValue="0"
-		android:entries="@array/first_nav_item"
-		android:entryValues="@array/values_first_nav_item"
-		android:key="nav_first"
-		android:title="@string/default_section"
-		app:allowDividerAbove="true"
-		app:useSimpleSummaryProvider="true" />
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.nav.NavConfigFragment"
+		android:key="nav_main"
+		android:title="@string/main_screen_sections"
+		app:allowDividerAbove="true" />
 
 	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
 		android:key="app_locale"

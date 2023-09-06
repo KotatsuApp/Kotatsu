@@ -47,12 +47,20 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 
 	override fun onScrolledToEnd() = viewModel.loadNextPage()
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		mode: ActionMode,
+		menu: Menu,
+	): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_local, menu)
 		return super.onCreateActionMode(controller, mode, menu)
 	}
 
-	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(
+		controller: ListSelectionController,
+		mode: ActionMode,
+		item: MenuItem,
+	): Boolean {
 		return when (item.itemId) {
 			R.id.action_remove -> {
 				showDeletionConfirm(selectedItemsIds, mode)
@@ -83,13 +91,20 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 	}
 
 	private fun onItemRemoved() {
-		Snackbar.make(requireViewBinding().recyclerView, R.string.removal_completed, Snackbar.LENGTH_SHORT).show()
+		Snackbar.make(
+			requireViewBinding().recyclerView,
+			R.string.removal_completed,
+			Snackbar.LENGTH_SHORT
+		).show()
 	}
 
 	companion object {
 
 		fun newInstance() = LocalListFragment().withArgs(1) {
-			putSerializable(RemoteListFragment.ARG_SOURCE, MangaSource.LOCAL) // required by FilterCoordinator
+			putSerializable(
+				RemoteListFragment.ARG_SOURCE,
+				MangaSource.LOCAL
+			) // required by FilterCoordinator
 		}
 	}
 }

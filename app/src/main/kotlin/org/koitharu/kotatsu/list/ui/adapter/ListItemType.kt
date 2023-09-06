@@ -25,4 +25,5 @@ enum class ListItemType {
 	DOWNLOAD,
 	CATEGORY_LARGE,
 	MANGA_SCROBBLING,
+	NAV_ITEM,
 }

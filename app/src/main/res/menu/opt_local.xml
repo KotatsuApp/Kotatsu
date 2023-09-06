@@ -10,9 +10,9 @@
 		app:showAsAction="never" />
 
 	<item
-		android:id="@+id/action_settings"
-		android:orderInCategory="100"
-		android:title="@string/settings"
+		android:id="@+id/action_directories"
+		android:orderInCategory="96"
+		android:title="@string/directories"
 		app:showAsAction="never" />
 
 </menu>

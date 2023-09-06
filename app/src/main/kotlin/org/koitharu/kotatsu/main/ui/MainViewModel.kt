@@ -12,7 +12,7 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
+import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.main.domain.ReadingResumeEnabledUseCase
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+import java.util.EnumMap
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,23 +43,20 @@ class MainViewModel @Inject constructor(
 		initialValue = false,
 	)
 
-	val isFeedAvailable = settings.observeAsStateFlow(
-		scope = viewModelScope + Dispatchers.Default,
-		key = AppSettings.KEY_TRACKER_ENABLED,
-		valueProducer = { isTrackerEnabled },
-	)
-
 	val appUpdate = appUpdateRepository.observeAvailableUpdate()
 
 	val counters = combine(
 		trackingRepository.observeUpdatedMangaCount(),
 		observeNewSourcesCount(),
 	) { tracks, newSources ->
-		intArrayOf(0, 0, newSources, tracks)
+		val em = EnumMap<NavItem, Int>(NavItem::class.java)
+		em[NavItem.EXPLORE] = newSources
+		em[NavItem.FEED] = tracks
+		em
 	}.stateIn(
 		scope = viewModelScope + Dispatchers.Default,
 		started = SharingStarted.WhileSubscribed(5000),
-		initialValue = IntArray(4),
+		initialValue = emptyMap<NavItem, Int>(),
 	)
 
 	init {

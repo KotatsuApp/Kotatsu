@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.history.domain.model.HistoryOrder
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.find
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.io.File
@@ -43,7 +44,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE, value) }
 
 	val theme: Int
-		get() = prefs.getString(KEY_THEME, null)?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+		get() = prefs.getString(KEY_THEME, null)?.toIntOrNull()
+			?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
 	val colorScheme: ColorScheme
 		get() = prefs.getEnumValue(KEY_COLOR_THEME, ColorScheme.default)
@@ -51,8 +53,20 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isAmoledTheme: Boolean
 		get() = prefs.getBoolean(KEY_THEME_AMOLED, false)
 
-	val isFavoritesNavItemFirst: Boolean
-		get() = (prefs.getString(KEY_FIRST_NAV_ITEM, null)?.toIntOrNull() ?: 0) == 1
+	var mainNavItems: List<NavItem>
+		get() {
+			val raw = prefs.getString(KEY_NAV_MAIN, null)?.split(',')
+			return if (raw.isNullOrEmpty()) {
+				listOf(NavItem.HISTORY, NavItem.FAVORITES, NavItem.EXPLORE, NavItem.FEED)
+			} else {
+				raw.mapNotNull { x -> NavItem.entries.find(x) }.ifEmpty { listOf(NavItem.EXPLORE) }
+			}
+		}
+		set(value) {
+			prefs.edit {
+				putString(KEY_NAV_MAIN, value.joinToString(",") { it.name })
+			}
+		}
 
 	var gridSize: Int
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
@@ -145,7 +159,11 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	var appPassword: String?
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
-		set(value) = prefs.edit { if (value != null) putString(KEY_APP_PASSWORD, value) else remove(KEY_APP_PASSWORD) }
+		set(value) = prefs.edit {
+			if (value != null) putString(KEY_APP_PASSWORD, value) else remove(
+				KEY_APP_PASSWORD
+			)
+		}
 
 	val isLoggingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_LOGGING_ENABLED, false)
@@ -171,7 +189,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			if (isBackgroundNetworkRestricted()) {
 				return false
 			}
-			val policy = NetworkPolicy.from(prefs.getString(KEY_PREFETCH_CONTENT, null), NetworkPolicy.NEVER)
+			val policy =
+				NetworkPolicy.from(prefs.getString(KEY_PREFETCH_CONTENT, null), NetworkPolicy.NEVER)
 			return policy.isNetworkAllowed(connectivityManager)
 		}
 
@@ -292,14 +311,22 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	@get:FloatRange(from = 0.0, to = 1.0)
 	var readerAutoscrollSpeed: Float
 		get() = prefs.getFloat(KEY_READER_AUTOSCROLL_SPEED, 0f)
-		set(@FloatRange(from = 0.0, to = 1.0) value) = prefs.edit { putFloat(KEY_READER_AUTOSCROLL_SPEED, value) }
+		set(@FloatRange(from = 0.0, to = 1.0) value) = prefs.edit {
+			putFloat(
+				KEY_READER_AUTOSCROLL_SPEED,
+				value
+			)
+		}
 
 	val isPagesPreloadEnabled: Boolean
 		get() {
 			if (isBackgroundNetworkRestricted()) {
 				return false
 			}
-			val policy = NetworkPolicy.from(prefs.getString(KEY_PAGES_PRELOAD, null), NetworkPolicy.NON_METERED)
+			val policy = NetworkPolicy.from(
+				prefs.getString(KEY_PAGES_PRELOAD, null),
+				NetworkPolicy.NON_METERED
+			)
 			return policy.isNetworkAllowed(connectivityManager)
 		}
 
@@ -455,7 +482,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LOCAL_MANGA_DIRS = "local_manga_dirs"
 		const val KEY_DISABLE_NSFW = "no_nsfw"
 		const val KEY_RELATED_MANGA = "related_manga"
-		const val KEY_FIRST_NAV_ITEM = "nav_first"
+		const val KEY_NAV_MAIN = "nav_main"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

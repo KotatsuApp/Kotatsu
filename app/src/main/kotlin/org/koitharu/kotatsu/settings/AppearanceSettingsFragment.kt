@@ -23,7 +23,6 @@ import org.koitharu.kotatsu.core.util.ext.map
 import org.koitharu.kotatsu.core.util.ext.postDelayed
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.core.util.ext.toList
-import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.utils.ActivityListPreference
@@ -67,6 +66,7 @@ class AppearanceSettingsFragment :
 			}
 			setDefaultValueCompat("")
 		}
+		bindNavSummary()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,7 +86,8 @@ class AppearanceSettingsFragment :
 			}
 
 			AppSettings.KEY_COLOR_THEME,
-			AppSettings.KEY_THEME_AMOLED -> {
+			AppSettings.KEY_THEME_AMOLED,
+			-> {
 				postRestart()
 			}
 
@@ -94,8 +95,8 @@ class AppearanceSettingsFragment :
 				AppCompatDelegate.setApplicationLocales(settings.appLocales)
 			}
 
-			AppSettings.KEY_FIRST_NAV_ITEM -> {
-				activityRecreationHandle.recreate(MainActivity::class.java)
+			AppSettings.KEY_NAV_MAIN -> {
+				bindNavSummary()
 			}
 		}
 	}
@@ -124,6 +125,13 @@ class AppearanceSettingsFragment :
 			} else {
 				locales[i - 1].toLanguageTag()
 			}
+		}
+	}
+
+	private fun bindNavSummary() {
+		val pref = findPreference<Preference>(AppSettings.KEY_NAV_MAIN) ?: return
+		pref.summary = settings.mainNavItems.joinToString {
+			getString(it.title)
 		}
 	}
 

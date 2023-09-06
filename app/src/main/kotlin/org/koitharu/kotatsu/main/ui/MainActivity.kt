@@ -37,6 +37,7 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.OptionsMenuBadgeHelper
@@ -71,8 +72,10 @@ import com.google.android.material.R as materialR
 private const val TAG_SEARCH = "search"
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNavOwner, View.OnClickListener,
-	View.OnFocusChangeListener, SearchSuggestionListener, MainNavigationDelegate.OnFragmentChangedListener {
+class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNavOwner,
+	View.OnClickListener,
+	View.OnFocusChangeListener, SearchSuggestionListener,
+	MainNavigationDelegate.OnFragmentChangedListener {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -119,7 +122,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			settings = settings,
 		)
 		navigationDelegate.addOnFragmentChangedListener(this)
-		navigationDelegate.onCreate(savedInstanceState)
+		navigationDelegate.onCreate(this, savedInstanceState)
 
 		appUpdateBadge = OptionsMenuBadgeHelper(viewBinding.toolbar, R.id.action_app_update)
 
@@ -137,8 +140,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.counters.observe(this, ::onCountersChanged)
 		viewModel.appUpdate.observe(this, MenuInvalidator(this))
-		viewModel.onFirstStart.observeEvent(this) { OnboardDialogFragment.showWelcome(supportFragmentManager) }
-		viewModel.isFeedAvailable.observe(this, ::onFeedAvailabilityChanged)
+		viewModel.onFirstStart.observeEvent(this) {
+			OnboardDialogFragment.showWelcome(
+				supportFragmentManager
+			)
+		}
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 	}
 
@@ -166,7 +172,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		if (menu == null) {
 			return false
 		}
-		menu.findItem(R.id.action_incognito)?.isChecked = searchSuggestionViewModel.isIncognitoModeEnabled.value
+		menu.findItem(R.id.action_incognito)?.isChecked =
+			searchSuggestionViewModel.isIncognitoModeEnabled.value
 		val hasAppUpdate = viewModel.appUpdate.value != null
 		menu.findItem(R.id.action_app_update)?.isVisible = hasAppUpdate
 		appUpdateBadge.setBadgeVisible(hasAppUpdate)
@@ -279,15 +286,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		startActivity(IntentBuilder(this).manga(manga).build(), options)
 	}
 
-	private fun onCountersChanged(counters: IntArray) {
-		repeat(counters.size) { i ->
-			val counter = counters[i]
-			navigationDelegate.setCounterAt(i, counter)
+	private fun onCountersChanged(counters: Map<NavItem, Int>) {
+		counters.forEach { (navItem, counter) ->
+			navigationDelegate.setCounter(navItem, counter)
 		}
-	}
-
-	private fun onFeedAvailabilityChanged(isFeedAvailable: Boolean) {
-		navigationDelegate.setItemVisibility(R.id.nav_feed, isFeedAvailable)
 	}
 
 	private fun onIncognitoModeChanged(isIncognito: Boolean) {
@@ -362,8 +364,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		} else {
 			SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
 		}
-		viewBinding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> { scrollFlags = appBarScrollFlags }
-		viewBinding.insetsHolder.updateLayoutParams<AppBarLayout.LayoutParams> { scrollFlags = appBarScrollFlags }
+		viewBinding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
+			scrollFlags = appBarScrollFlags
+		}
+		viewBinding.insetsHolder.updateLayoutParams<AppBarLayout.LayoutParams> {
+			scrollFlags = appBarScrollFlags
+		}
 		viewBinding.toolbarCard.background = if (isOpened) {
 			null
 		} else {
@@ -387,7 +393,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				Manifest.permission.POST_NOTIFICATIONS,
 			) != PERMISSION_GRANTED
 		) {
-			ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
+			ActivityCompat.requestPermissions(
+				this,
+				arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+				1
+			)
 		}
 	}
 

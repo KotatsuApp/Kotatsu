@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?android:windowBackground"
+	android:baselineAligned="false"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
+	android:paddingVertical="@dimen/margin_small"
+	android:paddingStart="?listPreferredItemPaddingStart"
+	android:paddingEnd="?listPreferredItemPaddingEnd">
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:drawablePadding="?listPreferredItemPaddingStart"
+		android:ellipsize="end"
+		android:singleLine="true"
+		android:textAppearance="?attr/textAppearanceBodyLarge"
+		tools:drawableStart="@drawable/ic_explore_selector"
+		tools:text="@string/explore" />
+
+	<ImageView
+		android:id="@+id/imageView_remove"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/remove"
+		android:padding="@dimen/margin_small"
+		android:scaleType="center"
+		android:src="@drawable/ic_delete" />
+
+	<ImageView
+		android:id="@+id/imageView_reorder"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/reorder"
+		android:padding="@dimen/margin_small"
+		android:scaleType="center"
+		android:src="@drawable/ic_reorder_handle" />
+
+</LinearLayout>
