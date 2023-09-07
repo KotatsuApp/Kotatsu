@@ -47,7 +47,6 @@ class AndroidCookieJar : MutableCookieJar {
 				.build()
 			cookieManager.setCookie(urlString, nc.toString())
 		}
-		check(loadForRequest(url).isEmpty())
 	}
 
 	override suspend fun clear() = suspendCoroutine<Boolean> { continuation ->

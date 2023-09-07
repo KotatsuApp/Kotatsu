@@ -12,7 +12,12 @@ import androidx.core.net.toUri
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.yield
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -118,11 +123,14 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		}
 
 		R.id.action_retry -> {
-			viewBinding.webView.stopLoading()
-			val targetUrl = intent?.dataString?.toHttpUrlOrNull()
-			if (targetUrl != null) {
-				clearCfCookies(targetUrl)
-				viewBinding.webView.loadUrl(targetUrl.toString())
+			lifecycleScope.launch {
+				viewBinding.webView.stopLoading()
+				yield()
+				val targetUrl = intent?.dataString?.toHttpUrlOrNull()
+				if (targetUrl != null) {
+					clearCfCookies(targetUrl)
+					viewBinding.webView.loadUrl(targetUrl.toString())
+				}
 			}
 			true
 		}
@@ -168,7 +176,7 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 			subtitle?.toString()?.toHttpUrlOrNull()?.topPrivateDomain() ?: subtitle
 	}
 
-	private fun clearCfCookies(url: HttpUrl) {
+	private suspend fun clearCfCookies(url: HttpUrl) = runInterruptible(Dispatchers.Default) {
 		cookieJar.removeCookies(url) { cookie ->
 			val name = cookie.name
 			name.startsWith("cf_") || name.startsWith("_cf") || name.startsWith("__cf")

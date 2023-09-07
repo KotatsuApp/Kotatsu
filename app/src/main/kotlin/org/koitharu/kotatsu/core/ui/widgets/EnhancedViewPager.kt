@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.viewpager.widget.ViewPager
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 
 @SuppressLint("ClickableViewAccessibility")
 class EnhancedViewPager @JvmOverloads constructor(
@@ -25,6 +26,11 @@ class EnhancedViewPager @JvmOverloads constructor(
 	}
 
 	override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-		return isUserInputEnabled && super.onInterceptTouchEvent(event)
+		return try {
+			isUserInputEnabled && super.onInterceptTouchEvent(event)
+		} catch (e: IllegalArgumentException) {
+			e.printStackTraceDebug()
+			false
+		}
 	}
 }
