@@ -45,6 +45,6 @@ class RelatedMangaActivity : BaseActivity<ActivityContainerBinding>(), AppBarOwn
 	companion object {
 
 		fun newIntent(context: Context, seed: Manga) = Intent(context, RelatedMangaActivity::class.java)
-			.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(seed, withChapters = false))
+			.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(seed))
 	}
 }

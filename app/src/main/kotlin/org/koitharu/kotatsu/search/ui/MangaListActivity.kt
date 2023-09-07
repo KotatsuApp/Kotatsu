@@ -102,7 +102,7 @@ class MangaListActivity :
 
 	fun showPreview(manga: Manga): Boolean = setSideFragment(
 		PreviewFragment::class.java,
-		bundleOf(MangaIntent.KEY_MANGA to ParcelableManga(manga, true)),
+		bundleOf(MangaIntent.KEY_MANGA to ParcelableManga(manga)),
 	)
 
 	fun hidePreview() = setSideFragment(FilterSheetFragment::class.java, null)

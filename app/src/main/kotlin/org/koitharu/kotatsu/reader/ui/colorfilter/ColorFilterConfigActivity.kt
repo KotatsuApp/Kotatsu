@@ -152,7 +152,7 @@ class ColorFilterConfigActivity :
 
 		fun newIntent(context: Context, manga: Manga, page: MangaPage) =
 			Intent(context, ColorFilterConfigActivity::class.java)
-				.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false))
+				.putExtra(EXTRA_MANGA, ParcelableManga(manga))
 				.putExtra(EXTRA_PAGES, ParcelableMangaPage(page))
 	}
 }

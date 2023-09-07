@@ -106,7 +106,7 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 				return
 			}
 			val intent = Intent(context, LocalChaptersRemoveService::class.java)
-			intent.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false))
+			intent.putExtra(EXTRA_MANGA, ParcelableManga(manga))
 			intent.putExtra(EXTRA_CHAPTERS_IDS, chaptersIds.toLongArray())
 			ContextCompat.startForegroundService(context, intent)
 		}

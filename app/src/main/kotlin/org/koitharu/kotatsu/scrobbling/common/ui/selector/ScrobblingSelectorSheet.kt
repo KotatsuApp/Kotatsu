@@ -204,7 +204,7 @@ class ScrobblingSelectorSheet :
 
 		fun show(fm: FragmentManager, manga: Manga, scrobblerService: ScrobblerService?) =
 			ScrobblingSelectorSheet().withArgs(2) {
-				putParcelable(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = false))
+				putParcelable(MangaIntent.KEY_MANGA, ParcelableManga(manga))
 				if (scrobblerService != null) {
 					putInt(ARG_SCROBBLER, scrobblerService.id)
 				}

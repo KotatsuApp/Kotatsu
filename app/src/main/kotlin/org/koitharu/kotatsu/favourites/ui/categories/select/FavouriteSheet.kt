@@ -76,10 +76,7 @@ class FavouriteSheet :
 				putParcelableArrayList(
 					KEY_MANGA_LIST,
 					manga.mapTo(ArrayList(manga.size)) {
-						ParcelableManga(
-							it,
-							withChapters = false,
-						)
+						ParcelableManga(it)
 					},
 				)
 			}.showDistinct(fm, TAG)

@@ -30,7 +30,8 @@ import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.cache.StubContentCache
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.network.*
+import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
+import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
@@ -40,7 +41,6 @@ import org.koitharu.kotatsu.core.ui.image.CoilImageGetter
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.util.AcraScreenLogger
 import org.koitharu.kotatsu.core.util.IncognitoModeIndicator
-import org.koitharu.kotatsu.core.util.ext.activityManager
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.local.data.CacheDir
@@ -161,7 +161,7 @@ interface AppModule {
 		fun provideContentCache(
 			application: Application,
 		): ContentCache {
-			return if (application.activityManager?.isLowRamDevice == true) {
+			return if (application.isLowRamDevice()) {
 				StubContentCache()
 			} else {
 				MemoryContentCache(application)

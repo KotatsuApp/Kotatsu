@@ -162,7 +162,7 @@ class BookmarksSheet :
 
 		fun show(fm: FragmentManager, manga: Manga) {
 			BookmarksSheet().withArgs(1) {
-				putParcelable(ARG_MANGA, ParcelableManga(manga, withChapters = true))
+				putParcelable(ARG_MANGA, ParcelableManga(manga))
 			}.showDistinct(fm, TAG)
 		}
 	}

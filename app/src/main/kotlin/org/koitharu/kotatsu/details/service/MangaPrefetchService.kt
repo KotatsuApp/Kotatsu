@@ -5,8 +5,8 @@ import android.content.Intent
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableChapter
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaChapters
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
@@ -34,12 +34,13 @@ class MangaPrefetchService : CoroutineIntentService() {
 	override suspend fun processIntent(startId: Int, intent: Intent) {
 		when (intent.action) {
 			ACTION_PREFETCH_DETAILS -> prefetchDetails(
-				manga = intent.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga ?: return,
+				manga = intent.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga
+					?: return,
 			)
 
 			ACTION_PREFETCH_PAGES -> prefetchPages(
-				chapter = intent.getParcelableExtraCompat<ParcelableMangaChapters>(EXTRA_CHAPTER)
-					?.chapters?.singleOrNull() ?: return,
+				chapter = intent.getParcelableExtraCompat<ParcelableChapter>(EXTRA_CHAPTER)?.chapter
+					?: return,
 			)
 
 			ACTION_PREFETCH_LAST -> prefetchLast()
@@ -88,7 +89,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 			if (!isPrefetchAvailable(context, manga.source)) return
 			val intent = Intent(context, MangaPrefetchService::class.java)
 			intent.action = ACTION_PREFETCH_DETAILS
-			intent.putExtra(EXTRA_MANGA, ParcelableManga(manga, withChapters = false))
+			intent.putExtra(EXTRA_MANGA, ParcelableManga(manga))
 			context.startService(intent)
 		}
 
@@ -96,7 +97,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 			if (!isPrefetchAvailable(context, chapter.source)) return
 			val intent = Intent(context, MangaPrefetchService::class.java)
 			intent.action = ACTION_PREFETCH_PAGES
-			intent.putExtra(EXTRA_CHAPTER, ParcelableMangaChapters(listOf(chapter)))
+			intent.putExtra(EXTRA_CHAPTER, ParcelableChapter(chapter))
 			try {
 				context.startService(intent)
 			} catch (e: IllegalStateException) {
@@ -119,7 +120,10 @@ class MangaPrefetchService : CoroutineIntentService() {
 			if (context.isPowerSaveMode()) {
 				return false
 			}
-			val entryPoint = EntryPointAccessors.fromApplication(context, PrefetchCompanionEntryPoint::class.java)
+			val entryPoint = EntryPointAccessors.fromApplication(
+				context,
+				PrefetchCompanionEntryPoint::class.java
+			)
 			return entryPoint.contentCache.isCachingEnabled && entryPoint.settings.isContentPrefetchEnabled
 		}
 	}

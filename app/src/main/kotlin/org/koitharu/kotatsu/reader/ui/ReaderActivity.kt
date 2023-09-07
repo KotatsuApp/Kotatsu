@@ -181,11 +181,7 @@ class ReaderActivity :
 			}
 
 			R.id.action_chapters -> {
-				ChaptersSheet.show(
-					supportFragmentManager,
-					viewModel.manga?.chapters.orEmpty(),
-					viewModel.getCurrentState()?.chapterId ?: 0L,
-				)
+				ChaptersSheet.show(supportFragmentManager)
 			}
 
 			R.id.action_pages_thumbs -> {
@@ -404,7 +400,7 @@ class ReaderActivity :
 			.setAction(ACTION_MANGA_READ)
 
 		fun manga(manga: Manga) = apply {
-			intent.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga, withChapters = true))
+			intent.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
 		}
 
 		fun mangaId(mangaId: Long) = apply {
