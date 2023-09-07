@@ -3,8 +3,11 @@ package org.koitharu.kotatsu.favourites.ui.categories
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -25,7 +28,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 
-	private var reorderJob: Job? = null
+	private var commitJob: Job? = null
 
 	val content = MutableStateFlow<List<ListModel>>(listOf(LoadingState))
 
@@ -33,7 +36,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			repository.observeCategoriesWithCovers()
 				.collectLatest {
-					reorderJob?.join()
+					commitJob?.join()
 					updateContent(it)
 				}
 		}
@@ -52,17 +55,10 @@ class FavouritesCategoriesViewModel @Inject constructor(
 	fun isEmpty(): Boolean = content.value.none { it is CategoryListModel }
 
 	fun reorderCategories(oldPos: Int, newPos: Int) {
-		val prevJob = reorderJob
-		reorderJob = launchJob(Dispatchers.Default) {
-			prevJob?.join()
-			val snapshot = content.requireValue().toMutableList()
-			snapshot.move(oldPos, newPos)
-			content.value = snapshot
-			val ids = snapshot.mapNotNullTo(ArrayList(snapshot.size)) {
-				(it as? CategoryListModel)?.category?.id
-			}
-			repository.reorderCategories(ids)
-		}
+		val snapshot = content.requireValue().toMutableList()
+		snapshot.move(oldPos, newPos)
+		content.value = snapshot
+		commit(snapshot)
 	}
 
 	fun setIsVisible(ids: Set<Long>, isVisible: Boolean) {
@@ -77,6 +73,19 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		val items = content.requireValue()
 		return items.mapNotNullTo(ArrayList(ids.size)) { item ->
 			(item as? CategoryListModel)?.category?.takeIf { it.id in ids }
+		}
+	}
+
+	private fun commit(snapshot: List<ListModel>) {
+		val prevJob = commitJob
+		commitJob = launchJob {
+			prevJob?.cancelAndJoin()
+			delay(500)
+			val ids = snapshot.mapNotNullTo(ArrayList(snapshot.size)) {
+				(it as? CategoryListModel)?.category?.id
+			}
+			repository.reorderCategories(ids)
+			yield()
 		}
 	}
 

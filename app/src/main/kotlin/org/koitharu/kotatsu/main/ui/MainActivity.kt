@@ -141,9 +141,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		viewModel.counters.observe(this, ::onCountersChanged)
 		viewModel.appUpdate.observe(this, MenuInvalidator(this))
 		viewModel.onFirstStart.observeEvent(this) {
-			OnboardDialogFragment.showWelcome(
-				supportFragmentManager
-			)
+			OnboardDialogFragment.show(supportFragmentManager)
 		}
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 	}
