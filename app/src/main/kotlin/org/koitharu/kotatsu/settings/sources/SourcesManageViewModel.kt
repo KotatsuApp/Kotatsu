@@ -1,88 +1,59 @@
 package org.koitharu.kotatsu.settings.sources
 
-import androidx.annotation.CheckResult
-import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.getLocaleTitle
+import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.db.removeObserverAsync
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.map
-import org.koitharu.kotatsu.core.util.ext.toEnumSet
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
-import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.move
-import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
-import java.util.Locale
-import java.util.TreeMap
 import javax.inject.Inject
-
-private const val KEY_ENABLED = "!"
-private const val TIP_REORDER = "src_reorder"
 
 @HiltViewModel
 class SourcesManageViewModel @Inject constructor(
+	private val database: MangaDatabase,
 	private val settings: AppSettings,
 	private val repository: MangaSourcesRepository,
+	private val listProducer: SourcesListProducer,
 ) : BaseViewModel() {
 
-	private val expandedGroups = MutableStateFlow(emptySet<String?>())
-	private var searchQuery = MutableStateFlow<String?>(null)
-	private var reorderJob: Job? = null
-	val content = MutableStateFlow<List<SourceConfigItem>>(emptyList())
+	val content = listProducer.list
 	val onActionDone = MutableEventFlow<ReversibleAction>()
+	private var commitJob: Job? = null
 
 	init {
 		launchJob(Dispatchers.Default) {
-			combine(
-				repository.observeEnabledSources(),
-				expandedGroups,
-				searchQuery,
-				observeTip(),
-				settings.observeAsFlow(AppSettings.KEY_DISABLE_NSFW) { isNsfwContentDisabled },
-			) { sources, groups, query, tip, noNsfw ->
-				buildList(sources, groups, query, tip, noNsfw)
-			}.collectLatest {
-				reorderJob?.join()
-				content.value = it
-			}
+			database.invalidationTracker.addObserver(listProducer)
 		}
+	}
+
+	override fun onCleared() {
+		super.onCleared()
+		database.invalidationTracker.removeObserverAsync(listProducer)
 	}
 
 	fun reorderSources(oldPos: Int, newPos: Int) {
 		val snapshot = content.value.toMutableList()
-		val prevJob = reorderJob
-		reorderJob = launchJob(Dispatchers.Default) {
-			if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
-				return@launchJob
-			}
-			if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
-				return@launchJob
-			}
-			snapshot.move(oldPos, newPos)
-			content.value = snapshot
-			prevJob?.join()
-			val newSourcesList = snapshot.mapNotNull { x ->
-				if (x is SourceConfigItem.SourceItem && x.isDraggable) {
-					x.source
-				} else {
-					null
-				}
-			}
-			repository.setPositions(newSourcesList)
+		if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
+			return
 		}
+		if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
+			return
+		}
+		snapshot.move(oldPos, newPos)
+		content.value = snapshot
+		commit(snapshot)
 	}
 
 	fun canReorder(oldPos: Int, newPos: Int): Boolean {
@@ -100,6 +71,32 @@ class SourcesManageViewModel @Inject constructor(
 		}
 	}
 
+	fun bringToTop(source: MangaSource) {
+		var oldPos = -1
+		var newPos = -1
+		val snapshot = content.value
+		for ((i, x) in snapshot.withIndex()) {
+			if (x !is SourceConfigItem.SourceItem) {
+				continue
+			}
+			if (newPos == -1) {
+				newPos = i
+			}
+			if (x.source == source) {
+				oldPos = i
+				break
+			}
+		}
+		@Suppress("KotlinConstantConditions")
+		if (oldPos != -1 && newPos != -1) {
+			reorderSources(oldPos, newPos)
+			val revert = ReversibleAction(R.string.moved_to_top) {
+				reorderSources(newPos, oldPos)
+			}
+			onActionDone.call(revert)
+		}
+	}
+
 	fun disableAll() {
 		launchJob(Dispatchers.Default) {
 			repository.disableAllSources()
@@ -107,16 +104,11 @@ class SourcesManageViewModel @Inject constructor(
 	}
 
 	fun expandOrCollapse(headerId: String?) {
-		val expanded = expandedGroups.value
-		expandedGroups.value = if (headerId in expanded) {
-			expanded - headerId
-		} else {
-			expanded + headerId
-		}
+		listProducer.expandCollapse(headerId)
 	}
 
 	fun performSearch(query: String?) {
-		searchQuery.value = query?.trim()
+		listProducer.setQuery(query?.trim().orEmpty())
 	}
 
 	fun onTipClosed(item: SourceConfigItem.Tip) {
@@ -125,113 +117,20 @@ class SourcesManageViewModel @Inject constructor(
 		}
 	}
 
-	@CheckResult
-	private fun buildList(
-		enabledSources: List<MangaSource>,
-		expanded: Set<String?>,
-		query: String?,
-		withTip: Boolean,
-		isNsfwDisabled: Boolean,
-	): List<SourceConfigItem> {
-		val allSources = repository.allMangaSources
-		val enabledSet = enabledSources.toEnumSet()
-		if (!query.isNullOrEmpty()) {
-			return allSources.mapNotNull {
-				if (!it.title.contains(query, ignoreCase = true)) {
-					return@mapNotNull null
-				}
-				SourceConfigItem.SourceItem(
-					source = it,
-					summary = it.getLocaleTitle(),
-					isEnabled = it in enabledSet,
-					isDraggable = false,
-					isAvailable = !isNsfwDisabled || !it.isNsfw(),
-				)
-			}.ifEmpty {
-				listOf(SourceConfigItem.EmptySearchResult)
-			}
-		}
-		val map = allSources.groupByTo(TreeMap(LocaleKeyComparator())) {
-			if (it in enabledSet) {
-				KEY_ENABLED
-			} else {
-				it.locale
-			}
-		}
-		map.remove(KEY_ENABLED)
-		val result = ArrayList<SourceConfigItem>(allSources.size + map.size + 2)
-		if (enabledSources.isNotEmpty()) {
-			result += SourceConfigItem.Header(R.string.enabled_sources)
-			if (withTip) {
-				result += SourceConfigItem.Tip(TIP_REORDER, R.drawable.ic_tap_reorder, R.string.sources_reorder_tip)
-			}
-			enabledSources.mapTo(result) {
-				SourceConfigItem.SourceItem(
-					source = it,
-					summary = it.getLocaleTitle(),
-					isEnabled = true,
-					isDraggable = true,
-					isAvailable = false,
-				)
-			}
-		}
-		if (enabledSources.size != allSources.size) {
-			result += SourceConfigItem.Header(R.string.available_sources)
-			val comparator = compareBy<MangaSource, String>(AlphanumComparator()) { it.name }
-			for ((key, list) in map) {
-				list.sortWith(comparator)
-				val isExpanded = key in expanded
-				result += SourceConfigItem.LocaleGroup(
-					localeId = key,
-					title = getLocaleTitle(key),
-					isExpanded = isExpanded,
-				)
-				if (isExpanded) {
-					list.mapTo(result) {
-						SourceConfigItem.SourceItem(
-							source = it,
-							summary = null,
-							isEnabled = false,
-							isDraggable = false,
-							isAvailable = !isNsfwDisabled || !it.isNsfw(),
-						)
-					}
+	private fun commit(snapshot: List<SourceConfigItem>) {
+		val prevJob = commitJob
+		commitJob = launchJob {
+			prevJob?.cancelAndJoin()
+			delay(500)
+			val newSourcesList = snapshot.mapNotNull { x ->
+				if (x is SourceConfigItem.SourceItem && x.isDraggable) {
+					x.source
+				} else {
+					null
 				}
 			}
-		}
-		return result
-	}
-
-	private fun getLocaleTitle(localeKey: String?): String? {
-		val locale = Locale(localeKey ?: return null)
-		return locale.getDisplayLanguage(locale).toTitleCase(locale)
-	}
-
-	private fun observeTip() = settings.observeAsFlow(AppSettings.KEY_TIPS_CLOSED) {
-		isTipEnabled(TIP_REORDER)
-	}
-
-	private fun MangaSource.isNsfw() = contentType == ContentType.HENTAI
-
-	private class LocaleKeyComparator : Comparator<String?> {
-
-		private val deviceLocales = LocaleListCompat.getAdjustedDefault()
-			.map { it.language }
-
-		override fun compare(a: String?, b: String?): Int {
-			when {
-				a == b -> return 0
-				a == null -> return 1
-				b == null -> return -1
-			}
-			val ai = deviceLocales.indexOf(a!!)
-			val bi = deviceLocales.indexOf(b!!)
-			return when {
-				ai < 0 && bi < 0 -> a.compareTo(b)
-				ai < 0 -> 1
-				bi < 0 -> -1
-				else -> ai.compareTo(bi)
-			}
+			repository.setPositions(newSourcesList)
+			yield()
 		}
 	}
 }

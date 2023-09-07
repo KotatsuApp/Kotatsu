@@ -72,11 +72,7 @@ sealed interface SourceConfigItem : ListModel {
 		}
 	}
 
-	object EmptySearchResult : SourceConfigItem {
-
-		override fun equals(other: Any?): Boolean {
-			return other === EmptySearchResult
-		}
+	data object EmptySearchResult : SourceConfigItem {
 
 		override fun areItemsTheSame(other: ListModel): Boolean {
 			return other is EmptySearchResult

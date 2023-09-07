@@ -6,6 +6,7 @@ import androidx.room.InvalidationTracker
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -118,7 +119,7 @@ fun MangaDatabase(context: Context): MangaDatabase = Room
 fun InvalidationTracker.removeObserverAsync(observer: InvalidationTracker.Observer) {
 	val scope = processLifecycleScope
 	if (scope.isActive) {
-		processLifecycleScope.launch(Dispatchers.Default) {
+		processLifecycleScope.launch(Dispatchers.Default, CoroutineStart.ATOMIC) {
 			removeObserver(observer)
 		}
 	}

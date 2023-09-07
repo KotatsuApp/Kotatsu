@@ -28,7 +28,10 @@ class NewSourcesDialogFragment :
 
 	private val viewModel by viewModels<NewSourcesViewModel>()
 
-	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): DialogOnboardBinding {
+	override fun onCreateViewBinding(
+		inflater: LayoutInflater,
+		container: ViewGroup?,
+	): DialogOnboardBinding {
 		return DialogOnboardBinding.inflate(inflater, container, false)
 	}
 
@@ -53,6 +56,8 @@ class NewSourcesDialogFragment :
 	}
 
 	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) = Unit
+
+	override fun onItemLiftClick(item: SourceConfigItem.SourceItem) = Unit
 
 	override fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
 		viewModel.onItemEnabledChanged(item, isEnabled)

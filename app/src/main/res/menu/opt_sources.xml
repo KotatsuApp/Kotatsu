@@ -17,11 +17,6 @@
 		app:showAsAction="never" />
 
 	<item
-		android:id="@+id/action_locales"
-		android:title="@string/languages"
-		app:showAsAction="never" />
-
-	<item
 		android:id="@+id/action_disable_all"
 		android:title="@string/disable_all"
 		app:showAsAction="never" />

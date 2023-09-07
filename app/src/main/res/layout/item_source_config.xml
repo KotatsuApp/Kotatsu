@@ -52,14 +52,15 @@
 	</LinearLayout>
 
 	<ImageView
-		android:id="@+id/imageView_config"
+		android:id="@+id/imageView_menu"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:background="?selectableItemBackgroundBorderless"
-		android:contentDescription="@string/settings"
+		android:contentDescription="@string/more"
 		android:padding="@dimen/margin_small"
 		android:scaleType="center"
-		android:src="@drawable/ic_settings" />
+		android:src="@drawable/abc_ic_menu_overflow_material"
+		app:tint="?colorControlNormal" />
 
 	<ImageView
 		android:id="@+id/imageView_add"

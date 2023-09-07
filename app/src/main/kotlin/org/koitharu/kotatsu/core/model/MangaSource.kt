@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.model
 
+import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.util.Locale
@@ -15,3 +16,5 @@ fun MangaSource(name: String): MangaSource {
 	}
 	return MangaSource.DUMMY
 }
+
+fun MangaSource.isNsfw() = contentType == ContentType.HENTAI

@@ -27,7 +27,6 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.settings.onboard.OnboardDialogFragment
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
@@ -56,7 +55,10 @@ class SourcesManageFragment :
 		container: ViewGroup?,
 	) = FragmentSettingsSourcesBinding.inflate(inflater, container, false)
 
-	override fun onViewBindingCreated(binding: FragmentSettingsSourcesBinding, savedInstanceState: Bundle?) {
+	override fun onViewBindingCreated(
+		binding: FragmentSettingsSourcesBinding,
+		savedInstanceState: Bundle?,
+	) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		val sourcesAdapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
 		with(binding.recyclerView) {
@@ -67,7 +69,10 @@ class SourcesManageFragment :
 			}
 		}
 		viewModel.content.observe(viewLifecycleOwner, sourcesAdapter)
-		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
+		viewModel.onActionDone.observeEvent(
+			viewLifecycleOwner,
+			ReversibleActionObserver(binding.recyclerView)
+		)
 		addMenuProvider(SourcesMenuProvider())
 	}
 
@@ -92,6 +97,10 @@ class SourcesManageFragment :
 	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) {
 		val fragment = SourceSettingsFragment.newInstance(item.source)
 		(activity as? SettingsActivity)?.openFragment(fragment, false)
+	}
+
+	override fun onItemLiftClick(item: SourceConfigItem.SourceItem) {
+		viewModel.bringToTop(item.source)
 	}
 
 	override fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
@@ -124,11 +133,6 @@ class SourcesManageFragment :
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 			R.id.action_disable_all -> {
 				viewModel.disableAll()
-				true
-			}
-
-			R.id.action_locales -> {
-				OnboardDialogFragment.show(childFragmentManager)
 				true
 			}
 
@@ -181,7 +185,7 @@ class SourcesManageFragment :
 			target: RecyclerView.ViewHolder,
 			toPos: Int,
 			x: Int,
-			y: Int
+			y: Int,
 		) {
 			super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
 			viewModel.reorderSources(fromPos, toPos)
@@ -196,7 +200,10 @@ class SourcesManageFragment :
 			target.bindingAdapterPosition,
 		)
 
-		override fun getDragDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+		override fun getDragDirs(
+			recyclerView: RecyclerView,
+			viewHolder: RecyclerView.ViewHolder,
+		): Int {
 			val item = viewHolder.getItem(SourceConfigItem.SourceItem::class.java)
 			return if (item != null && item.isDraggable) {
 				super.getDragDirs(recyclerView, viewHolder)
@@ -205,7 +212,10 @@ class SourcesManageFragment :
 			}
 		}
 
-		override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+		override fun getSwipeDirs(
+			recyclerView: RecyclerView,
+			viewHolder: RecyclerView.ViewHolder,
+		): Int {
 			val item = viewHolder.getItem(SourceConfigItem.Tip::class.java)
 			return if (item != null) {
 				super.getSwipeDirs(recyclerView, viewHolder)
