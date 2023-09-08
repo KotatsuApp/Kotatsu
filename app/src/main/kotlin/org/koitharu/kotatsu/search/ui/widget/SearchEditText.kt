@@ -32,7 +32,8 @@ class SearchEditText @JvmOverloads constructor(
 ) : AppCompatEditText(context, attrs, defStyleAttr) {
 
 	var searchSuggestionListener: SearchSuggestionListener? = null
-	private val clearIcon = ContextCompat.getDrawable(context, materialR.drawable.abc_ic_clear_material)
+	private val clearIcon =
+		ContextCompat.getDrawable(context, materialR.drawable.abc_ic_clear_material)
 	private var isEmpty = text.isNullOrEmpty()
 
 	init {
@@ -52,10 +53,19 @@ class SearchEditText @JvmOverloads constructor(
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
 			if (hasFocus()) {
 				clearFocus()
-				// return true
 			}
 		}
 		return super.onKeyPreIme(keyCode, event)
+	}
+
+	override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+		if (keyCode == KeyEvent.KEYCODE_ENTER && event.hasNoModifiers() && query.isNotEmpty()) {
+			cancelLongPress()
+			searchSuggestionListener?.onQueryClick(query, submit = true)
+			clearFocus()
+			return true
+		}
+		return super.onKeyUp(keyCode, event)
 	}
 
 	override fun onEditorAction(actionCode: Int) {
@@ -88,7 +98,8 @@ class SearchEditText @JvmOverloads constructor(
 	@SuppressLint("ClickableViewAccessibility")
 	override fun onTouchEvent(event: MotionEvent): Boolean {
 		if (event.action == MotionEvent.ACTION_UP) {
-			val drawable = compoundDrawablesRelative[DRAWABLE_END] ?: return super.onTouchEvent(event)
+			val drawable =
+				compoundDrawablesRelative[DRAWABLE_END] ?: return super.onTouchEvent(event)
 			val isOnDrawable = drawable.isVisible && if (layoutDirection == LAYOUT_DIRECTION_RTL) {
 				event.x.toInt() in paddingLeft..(drawable.bounds.width() + paddingLeft)
 			} else {
