@@ -5,6 +5,7 @@ import android.content.Intent
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableChapter
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -72,7 +73,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 		val chapter = if (history == null) {
 			chapters.firstOrNull()
 		} else {
-			chapters.find { x -> x.id == history.chapterId } ?: chapters.firstOrNull()
+			chapters.findById(history.chapterId) ?: chapters.firstOrNull()
 		} ?: return
 		runCatchingCancellable { repo.getPages(chapter) }
 	}
@@ -122,7 +123,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 			}
 			val entryPoint = EntryPointAccessors.fromApplication(
 				context,
-				PrefetchCompanionEntryPoint::class.java
+				PrefetchCompanionEntryPoint::class.java,
 			)
 			return entryPoint.contentCache.isCachingEnabled && entryPoint.settings.isContentPrefetchEnabled
 		}

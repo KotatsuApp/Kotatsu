@@ -42,6 +42,7 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.core.util.ext.computeSize
+import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
@@ -87,7 +88,8 @@ class DetailsViewModel @Inject constructor(
 
 	private val intent = MangaIntent(savedStateHandle)
 	private val mangaId = intent.mangaId
-	private val doubleManga: MutableStateFlow<DoubleManga?> = MutableStateFlow(intent.manga?.let { DoubleManga(it) })
+	private val doubleManga: MutableStateFlow<DoubleManga?> =
+		MutableStateFlow(intent.manga?.let { DoubleManga(it) })
 	private var loadingJob: Job
 
 	val onShowToast = MutableEventFlow<Int>()
@@ -202,7 +204,14 @@ class DetailsViewModel @Inject constructor(
 			bookmarks,
 			networkState,
 		) { manga, history, branch, news, bookmarks, isOnline ->
-			mapChapters(manga?.remote?.takeIf { isOnline }, manga?.local, history, news, branch, bookmarks)
+			mapChapters(
+				manga?.remote?.takeIf { isOnline },
+				manga?.local,
+				history,
+				news,
+				branch,
+				bookmarks,
+			)
 		},
 		isChaptersReversed,
 		chaptersQuery,
@@ -324,12 +333,15 @@ class DetailsViewModel @Inject constructor(
 	}
 
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
-		val result = doubleMangaLoadUseCase(intent)
-		val manga = result.requireAny()
-		// find default branch
-		val hist = historyRepository.getOne(manga)
-		selectedBranch.value = manga.getPreferredBranch(hist)
-		doubleManga.value = result
+		doubleMangaLoadUseCase.invoke(intent)
+			.onFirst {
+				val manga = it.requireAny()
+				// find default branch
+				val hist = historyRepository.getOne(manga)
+				selectedBranch.value = manga.getPreferredBranch(hist)
+			}.collect {
+				doubleManga.value = it
+			}
 	}
 
 	private fun List<ChapterListItem>.filterSearch(query: String): List<ChapterListItem> {

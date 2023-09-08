@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTag
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
@@ -107,7 +108,7 @@ class HistoryRepository @Inject constructor(
 				),
 			)
 			trackingRepository.syncWithHistory(manga, chapterId)
-			val chapter = manga.chapters?.find { x -> x.id == chapterId }
+			val chapter = manga.chapters?.findById(chapterId)
 			if (chapter != null) {
 				scrobblers.forEach { it.tryScrobble(manga.id, chapter) }
 			}
@@ -181,7 +182,7 @@ class HistoryRepository @Inject constructor(
 
 	private suspend fun HistoryEntity.recoverIfNeeded(manga: Manga): HistoryEntity {
 		val chapters = manga.chapters
-		if (chapters.isNullOrEmpty() || chapters.any { it.id == chapterId }) {
+		if (chapters.isNullOrEmpty() || chapters.findById(chapterId) != null) {
 			return this
 		}
 		val newChapterId = chapters.getOrNull(

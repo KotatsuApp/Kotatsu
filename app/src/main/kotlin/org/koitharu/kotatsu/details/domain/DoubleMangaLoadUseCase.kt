@@ -1,8 +1,11 @@
 package org.koitharu.kotatsu.details.domain
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
@@ -23,24 +26,28 @@ class DoubleMangaLoadUseCase @Inject constructor(
 	private val recoverUseCase: RecoverMangaUseCase,
 ) {
 
-	suspend operator fun invoke(manga: Manga): DoubleManga = coroutineScope {
-		val remoteDeferred = async(Dispatchers.Default) { loadRemote(manga) }
-		val localDeferred = async(Dispatchers.Default) { loadLocal(manga) }
-		DoubleManga(
-			remoteManga = remoteDeferred.await(),
-			localManga = localDeferred.await(),
-		)
-	}
+	operator fun invoke(manga: Manga): Flow<DoubleManga> = flow<DoubleManga> {
+		var lastValue: DoubleManga? = null
+		var emitted = false
+		invokeImpl(manga).collect {
+			lastValue = it
+			if (it.any != null) {
+				emitted = true
+				emit(it)
+			}
+		}
+		if (!emitted) {
+			lastValue?.requireAny()
+		}
+	}.flowOn(Dispatchers.Default)
 
-	suspend operator fun invoke(mangaId: Long): DoubleManga {
-		val manga = mangaDataRepository.findMangaById(mangaId) ?: throwNFE()
-		return invoke(manga)
-	}
+	operator fun invoke(mangaId: Long): Flow<DoubleManga> = flow {
+		emit(mangaDataRepository.findMangaById(mangaId) ?: throwNFE())
+	}.flatMapLatest { invoke(it) }
 
-	suspend operator fun invoke(intent: MangaIntent): DoubleManga {
-		val manga = mangaDataRepository.resolveIntent(intent) ?: throwNFE()
-		return invoke(manga)
-	}
+	operator fun invoke(intent: MangaIntent): Flow<DoubleManga> = flow {
+		emit(mangaDataRepository.resolveIntent(intent) ?: throwNFE())
+	}.flatMapLatest { invoke(it) }
 
 	private suspend fun loadLocal(manga: Manga): Result<Manga>? {
 		return runCatchingCancellable {
@@ -68,6 +75,16 @@ class DoubleMangaLoadUseCase @Inject constructor(
 				null
 			}
 		}
+	}
+
+	private fun invokeImpl(manga: Manga): Flow<DoubleManga> = combine(
+		flow { emit(null); emit(loadRemote(manga)) },
+		flow { emit(null); emit(loadLocal(manga)) },
+	) { remote, local ->
+		DoubleManga(
+			remoteManga = remote,
+			localManga = local,
+		)
 	}
 
 	private fun throwNFE(): Nothing = throw NotFoundException("Cannot find manga", "")

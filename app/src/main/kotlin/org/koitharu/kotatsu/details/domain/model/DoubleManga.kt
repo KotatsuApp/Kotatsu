@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.details.domain.model
 
+import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -32,6 +33,10 @@ data class DoubleManga(
 
 	val chapters: List<MangaChapter>? by lazy(LazyThreadSafetyMode.PUBLICATION) {
 		mergeChapters()
+	}
+
+	fun hasChapter(id: Long): Boolean {
+		return local?.chapters?.findById(id) != null || remote?.chapters?.findById(id) != null
 	}
 
 	fun requireAny(): Manga {

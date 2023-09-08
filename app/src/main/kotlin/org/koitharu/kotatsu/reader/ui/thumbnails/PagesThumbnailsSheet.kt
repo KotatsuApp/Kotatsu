@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.plus
 import org.koitharu.kotatsu.core.util.ext.showDistinct
+import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
 import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
@@ -84,6 +85,7 @@ class PagesThumbnailsSheet :
 		viewModel.thumbnails.observe(viewLifecycleOwner, ::onThumbnailsChanged)
 		viewModel.branch.observe(viewLifecycleOwner, ::updateTitle)
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
+		viewModel.isLoading.observe(viewLifecycleOwner) { binding.progressBar.showOrHide(it) }
 	}
 
 	override fun onDestroyView() {

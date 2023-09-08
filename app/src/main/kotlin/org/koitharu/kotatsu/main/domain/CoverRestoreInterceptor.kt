@@ -8,6 +8,7 @@ import coil.request.ImageResult
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
+import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -92,7 +93,7 @@ class CoverRestoreInterceptor @Inject constructor(
 
 	private suspend fun restoreBookmarkImpl(bookmark: Bookmark): Boolean {
 		val repo = repositoryFactory.create(bookmark.manga.source) as? RemoteMangaRepository ?: return false
-		val chapter = repo.getDetails(bookmark.manga).chapters?.find { it.id == bookmark.chapterId } ?: return false
+		val chapter = repo.getDetails(bookmark.manga).chapters?.findById(bookmark.chapterId) ?: return false
 		val page = repo.getPages(chapter)[bookmark.page]
 		val imageUrl = page.preview.ifNullOrEmpty { page.url }
 		return if (imageUrl != bookmark.imageUrl) {

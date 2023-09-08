@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.local.data.output
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.zip.ZipOutput
@@ -87,7 +88,7 @@ class LocalMangaDirOutput(
 	suspend fun deleteChapter(chapterId: Long) {
 		val chapter = checkNotNull(index.getMangaInfo()?.chapters) {
 			"No chapters found"
-		}.first { it.id == chapterId }
+		}.findById(chapterId) ?: error("Chapter not found")
 		val chapterDir = File(rootFile, chapterFileName(chapter))
 		chapterDir.deleteAwait()
 		index.removeChapter(chapterId)

@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import android.view.ViewParent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Checkable
-import android.widget.CompoundButton
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.slider.Slider
 import com.google.android.material.tabs.TabLayout
 import kotlin.math.roundToInt
@@ -153,5 +154,13 @@ var View.isRtl: Boolean
 fun TabLayout.setTabsEnabled(enabled: Boolean) {
 	for (i in 0 until tabCount) {
 		getTabAt(i)?.view?.isEnabled = enabled
+	}
+}
+
+fun BaseProgressIndicator<*>.showOrHide(value: Boolean) {
+	if (value) {
+		if (!isVisible) show()
+	} else {
+		if (isVisible) hide()
 	}
 }

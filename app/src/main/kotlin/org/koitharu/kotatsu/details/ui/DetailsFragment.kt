@@ -43,6 +43,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
@@ -247,11 +248,7 @@ class DetailsFragment :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		if (isLoading) {
-			requireViewBinding().progressBar.show()
-		} else {
-			requireViewBinding().progressBar.hide()
-		}
+		requireViewBinding().progressBar.showOrHide(isLoading)
 	}
 
 	private fun onBookmarksChanged(bookmarks: List<Bookmark>) {

@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.ActivityScrobblerConfigBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
@@ -115,13 +116,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		viewBinding.progressBar.run {
-			if (isLoading) {
-				show()
-			} else {
-				hide()
-			}
-		}
+		viewBinding.progressBar.showOrHide(isLoading)
 	}
 
 	private fun showUserDialog() {

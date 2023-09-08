@@ -17,6 +17,8 @@ fun Collection<Manga>.distinctById() = distinctBy { it.id }
 @JvmName("chaptersIds")
 fun Collection<MangaChapter>.ids() = mapToSet { it.id }
 
+fun Collection<MangaChapter>.findById(id: Long) = find { x -> x.id == id }
+
 fun Collection<ChapterListItem>.countChaptersByBranch(): Int {
 	if (size <= 1) {
 		return size
@@ -30,7 +32,7 @@ fun Collection<ChapterListItem>.countChaptersByBranch(): Int {
 }
 
 fun Manga.findChapter(id: Long): MangaChapter? {
-	return chapters?.find { it.id == id }
+	return chapters?.findById(id)
 }
 
 fun Manga.getPreferredBranch(history: MangaHistory?): String? {
@@ -39,7 +41,7 @@ fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 		return null
 	}
 	if (history != null) {
-		val currentChapter = ch.find { it.id == history.chapterId }
+		val currentChapter = ch.findById(history.chapterId)
 		if (currentChapter != null) {
 			return currentChapter.branch
 		}

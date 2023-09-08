@@ -87,7 +87,8 @@ class ReaderViewModel @Inject constructor(
 	private var pageSaveJob: Job? = null
 	private var bookmarkJob: Job? = null
 	private var stateChangeJob: Job? = null
-	private val currentState = MutableStateFlow<ReaderState?>(savedStateHandle[ReaderActivity.EXTRA_STATE])
+	private val currentState =
+		MutableStateFlow<ReaderState?>(savedStateHandle[ReaderActivity.EXTRA_STATE])
 	private val mangaData = MutableStateFlow(intent.manga?.let { DoubleManga(it) })
 	private val mangaFlow: Flow<Manga?>
 		get() = mangaData.map { it?.any }
@@ -317,8 +318,9 @@ class ReaderViewModel @Inject constructor(
 					?: throw NotFoundException("Cannot find manga", ""),
 			)
 			mangaData.value = manga
-			manga = doubleMangaLoadUseCase(intent)
-			chaptersLoader.init(manga)
+			val mangaFlow = doubleMangaLoadUseCase(intent)
+			manga = mangaFlow.first { x -> x.any != null }
+			chaptersLoader.init(viewModelScope, mangaFlow)
 			// determine mode
 			val singleManga = manga.requireAny()
 			// obtain state
@@ -328,7 +330,7 @@ class ReaderViewModel @Inject constructor(
 				} ?: ReaderState(singleManga, preselectedBranch)
 			}
 			val mode = detectReaderModeUseCase.invoke(singleManga, currentState.value)
-			val branch = chaptersLoader.peekChapter(currentState.value?.chapterId ?: 0L)?.branch
+			val branch = chaptersLoader.awaitChapter(currentState.value?.chapterId ?: 0L)?.branch
 			mangaData.value = manga.filterChapters(branch)
 			readerMode.value = mode
 
