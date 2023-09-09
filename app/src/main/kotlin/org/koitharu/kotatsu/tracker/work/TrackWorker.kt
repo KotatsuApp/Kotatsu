@@ -34,6 +34,7 @@ import coil.request.ImageRequest
 import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
@@ -84,6 +85,8 @@ class TrackWorker @AssistedInject constructor(
 		logger.log("doWork(): attempt $runAttemptCount")
 		return try {
 			doWorkImpl()
+		} catch (e: CancellationException) {
+			throw e
 		} catch (e: Throwable) {
 			logger.log("fatal", e)
 			Result.failure()
