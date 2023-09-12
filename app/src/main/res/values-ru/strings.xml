@@ -472,4 +472,11 @@
     <string name="advanced">Расширенные</string>
     <string name="default_section">Раздел по умолчанию</string>
     <string name="manga_list">Список манги</string>
+    <string name="error_corrupted_file">Возвращаются неверные данные или файл поврежден</string>
+    <string name="on_device">На устройстве</string>
+    <string name="moved_to_top">Перемещено наверх</string>
+    <string name="items_limit_exceeded">Больше нельзя добавлять элементы</string>
+    <string name="directories">Каталоги</string>
+    <string name="main_screen_sections">Разделы главного экрана</string>
+    <string name="to_top">Наверх</string>
 </resources>
