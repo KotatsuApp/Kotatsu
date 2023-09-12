@@ -472,4 +472,11 @@
     <string name="advanced">Розширені</string>
     <string name="default_section">Розділ за замовчуванням</string>
     <string name="manga_list">Список манґи</string>
+    <string name="error_corrupted_file">Повертаються неправильні дані або файл пошкоджено</string>
+    <string name="on_device">На пристрої</string>
+    <string name="moved_to_top">Перенесено вгору</string>
+    <string name="items_limit_exceeded">Більше не можна додавати елементи</string>
+    <string name="directories">Каталоги</string>
+    <string name="main_screen_sections">Розділи головного екрана</string>
+    <string name="to_top">Вгору</string>
 </resources>
