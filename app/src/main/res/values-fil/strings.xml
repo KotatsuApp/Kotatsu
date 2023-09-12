@@ -467,4 +467,10 @@
     <string name="unknown">Di-alam</string>
     <string name="in_progress">Isinasagawa</string>
     <string name="disable_nsfw">I-disable ang NSFW</string>
+    <string name="error_corrupted_file">Ang hindi wastong data ay ibinalik nito o ang file ay nasira</string>
+    <string name="related_manga_summary">Magpakita ng listahan ng mga kaugnay na manga. Sa ilang mga kaso, ito ay maaaring may mali o nawawala</string>
+    <string name="advanced">Advanced</string>
+    <string name="too_many_requests_message">Masyadong maraming request. Subukang ulit mamaya</string>
+    <string name="default_section">Default na seksyon</string>
+    <string name="manga_list">Listahan ng Manga</string>
 </resources>
