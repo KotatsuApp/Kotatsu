@@ -14,7 +14,6 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.ImageLoader
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
@@ -25,8 +24,7 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
-import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.ui.util.reverseAsync
+import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
@@ -38,7 +36,6 @@ import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
-import org.koitharu.kotatsu.main.ui.owners.SnackbarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import javax.inject.Inject
@@ -105,7 +102,7 @@ class BookmarksFragment :
 			viewLifecycleOwner,
 			SnackbarErrorObserver(binding.recyclerView, this)
 		)
-		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ::onActionDone)
+		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 	}
 
 	override fun onDestroyView() {
@@ -182,17 +179,6 @@ class BookmarksFragment :
 		rv.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 			bottomMargin = insets.bottom
 		}
-	}
-
-	private fun onActionDone(action: ReversibleAction) {
-		val handle = action.handle
-		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
-		val snackbar =
-			Snackbar.make((activity as SnackbarOwner).snackbarHost, action.stringResId, length)
-		if (handle != null) {
-			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
-		}
-		snackbar.show()
 	}
 
 	private inner class SpanSizeLookup : GridLayoutManager.SpanSizeLookup(), Runnable {
