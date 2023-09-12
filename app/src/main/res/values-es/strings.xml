@@ -472,4 +472,11 @@
     <string name="advanced">Avanzado</string>
     <string name="default_section">Sección predeterminada</string>
     <string name="manga_list">Lista de mangas</string>
+    <string name="error_corrupted_file">Los datos que devuelve el archivo no son válidos o el archivo está dañado</string>
+    <string name="on_device">En el dispositivo</string>
+    <string name="moved_to_top">Movido hacia arriba</string>
+    <string name="items_limit_exceeded">No se pueden añadir más elementos</string>
+    <string name="directories">Directorios</string>
+    <string name="main_screen_sections">Secciones de la pantalla principal</string>
+    <string name="to_top">Hasta arriba</string>
 </resources>
