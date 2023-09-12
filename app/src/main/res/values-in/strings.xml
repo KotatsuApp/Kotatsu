@@ -472,4 +472,9 @@
     <string name="advanced">Lanjutan</string>
     <string name="default_section">Bagian default</string>
     <string name="manga_list">Daftar manga</string>
+    <string name="error_corrupted_file">Data yang dikembalikan tidak valid atau file rusak</string>
+    <string name="on_device">Dari perangkat</string>
+    <string name="items_limit_exceeded">Tidak ada lagi item yang bisa ditambahkan</string>
+    <string name="directories">Direktori</string>
+    <string name="main_screen_sections">Bagian layar utama</string>
 </resources>
