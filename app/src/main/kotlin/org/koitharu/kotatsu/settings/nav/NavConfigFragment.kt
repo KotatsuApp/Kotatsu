@@ -114,7 +114,7 @@ class NavConfigFragment : BaseFragment<FragmentSettingsSourcesBinding>(), Recycl
 			recyclerView: RecyclerView,
 			viewHolder: RecyclerView.ViewHolder,
 			target: RecyclerView.ViewHolder,
-		): Boolean = true
+		): Boolean = target.itemViewType == ListItemType.NAV_ITEM.ordinal
 
 		override fun onMoved(
 			recyclerView: RecyclerView,

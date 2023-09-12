@@ -63,9 +63,13 @@ class NavConfigViewModel @Inject constructor(
 	}
 
 	fun removeItem(item: NavItem) {
-		items.value = items.value.minus(item).also {
-			commit(it)
+		val newList = items.value.toMutableList()
+		newList.remove(item)
+		if (newList.isEmpty()) {
+			newList.add(NavItem.EXPLORE)
 		}
+		items.value = newList
+		commit(newList)
 	}
 
 	private fun commit(value: List<NavItem>) {
