@@ -152,13 +152,6 @@ class PagesThumbnailsSheet :
 		override fun onScrolledToEnd(recyclerView: RecyclerView) {
 			viewModel.loadNextChapter()
 		}
-
-		override fun onPostScrolled(recyclerView: RecyclerView, firstVisibleItemPosition: Int, visibleItemCount: Int) {
-			super.onPostScrolled(recyclerView, firstVisibleItemPosition, visibleItemCount)
-			if (firstVisibleItemPosition > offsetTop) {
-				viewModel.allowLoadAbove()
-			}
-		}
 	}
 
 	private inner class SpanSizeLookup : GridLayoutManager.SpanSizeLookup() {
