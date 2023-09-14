@@ -1,7 +1,11 @@
 package org.koitharu.kotatsu.reader.ui.pager.reversed
 
 import android.os.Bundle
+import android.view.InputDevice
+import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import com.google.android.material.snackbar.Snackbar
@@ -26,9 +30,11 @@ import org.koitharu.kotatsu.reader.ui.pager.standard.NoAnimPageTransformer
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import javax.inject.Inject
 import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 @AndroidEntryPoint
-class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() {
+class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>(),
+	View.OnGenericMotionListener {
 
 	@Inject
 	lateinit var networkState: NetworkState
@@ -47,6 +53,7 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 			adapter = readerAdapter
 			offscreenPageLimit = 2
 			doOnPageChanged(::notifyPageChanged)
+			setOnGenericMotionListener(this@ReversedReaderFragment)
 		}
 
 		viewModel.pageAnimation.observe(viewLifecycleOwner) {
@@ -67,6 +74,20 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 	override fun onDestroyView() {
 		requireViewBinding().pager.adapter = null
 		super.onDestroyView()
+	}
+
+	override fun onGenericMotion(v: View?, event: MotionEvent): Boolean {
+		if (event.source and InputDevice.SOURCE_CLASS_POINTER != 0) {
+			if (event.actionMasked == MotionEvent.ACTION_SCROLL) {
+				val axisValue = event.getAxisValue(MotionEvent.AXIS_VSCROLL)
+				val withCtrl = event.metaState and KeyEvent.META_CTRL_MASK != 0
+				if (!withCtrl) {
+					switchPageBy(-axisValue.sign.toInt())
+					return true
+				}
+			}
+		}
+		return false
 	}
 
 	override fun onCreateAdapter() = ReversedPagesAdapter(

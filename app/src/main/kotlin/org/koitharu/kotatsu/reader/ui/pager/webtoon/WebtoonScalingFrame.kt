@@ -7,6 +7,8 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.GestureDetector
+import android.view.InputDevice
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -16,6 +18,7 @@ import androidx.core.view.GestureDetectorCompat
 
 private const val MAX_SCALE = 2.5f
 private const val MIN_SCALE = 0.5f
+private const val WHEEL_SCALE_FACTOR = 0.2f
 
 class WebtoonScalingFrame @JvmOverloads constructor(
 	context: Context,
@@ -77,10 +80,26 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 		return super.dispatchTouchEvent(ev)
 	}
 
-	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-		halfWidth = measuredWidth / 2f
-		halfHeight = measuredHeight / 2f
+	override fun onGenericMotionEvent(event: MotionEvent): Boolean {
+		if (event.source and InputDevice.SOURCE_CLASS_POINTER != 0) {
+			if (event.actionMasked == MotionEvent.ACTION_SCROLL) {
+				val withCtrl = event.metaState and KeyEvent.META_CTRL_MASK != 0
+				if (withCtrl) {
+					val axisValue = event.getAxisValue(MotionEvent.AXIS_VSCROLL)
+					val newScale =
+						(scale + axisValue * WHEEL_SCALE_FACTOR).coerceIn(MIN_SCALE, MAX_SCALE)
+					scaleChild(newScale, event.x, event.y)
+					return true
+				}
+			}
+		}
+		return super.onGenericMotionEvent(event)
+	}
+
+	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+		super.onSizeChanged(w, h, oldw, oldh)
+		halfWidth = w / 2f
+		halfHeight = h / 2f
 	}
 
 	private fun invalidateTarget() {
@@ -161,7 +180,12 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 
 	private inner class GestureListener : GestureDetector.SimpleOnGestureListener(), Runnable {
 
-		override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+		override fun onScroll(
+			e1: MotionEvent?,
+			e2: MotionEvent,
+			distanceX: Float,
+			distanceY: Float,
+		): Boolean {
 			if (scale <= 1f) return false
 			transformMatrix.postTranslate(-distanceX, -distanceY)
 			invalidateTarget()
@@ -181,7 +205,12 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			return true
 		}
 
-		override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+		override fun onFling(
+			e1: MotionEvent?,
+			e2: MotionEvent,
+			velocityX: Float,
+			velocityY: Float,
+		): Boolean {
 			if (scale <= 1) return false
 
 			overScroller.fling(
@@ -200,7 +229,10 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 
 		override fun run() {
 			if (overScroller.computeScrollOffset()) {
-				transformMatrix.postTranslate(overScroller.currX - transX, overScroller.currY - transY)
+				transformMatrix.postTranslate(
+					overScroller.currX - transX,
+					overScroller.currY - transY
+				)
 				invalidateTarget()
 				postOnAnimation(this)
 			}

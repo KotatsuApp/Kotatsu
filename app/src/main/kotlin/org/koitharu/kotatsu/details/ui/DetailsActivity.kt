@@ -49,6 +49,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.core.util.ext.setNavigationIconSafe
+import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
@@ -89,6 +90,7 @@ class DetailsActivity :
 		}
 		viewBinding.buttonRead.setOnClickListener(this)
 		viewBinding.buttonRead.setOnLongClickListener(this)
+		viewBinding.buttonRead.setOnContextClickListenerCompat(this)
 		viewBinding.buttonDropdown.setOnClickListener(this)
 		viewBadge = ViewBadge(viewBinding.buttonRead, this)
 
@@ -103,6 +105,7 @@ class DetailsActivity :
 			viewBinding.toolbarChapters?.setNavigationOnClickListener {
 				behavior.state = BottomSheetBehavior.STATE_COLLAPSED
 			}
+			viewBinding.toolbarChapters?.setOnGenericMotionListener(bsMediator)
 		} else {
 			chaptersMenuProvider = ChaptersMenuProvider(viewModel, null)
 			addMenuProvider(chaptersMenuProvider)
@@ -134,13 +137,19 @@ class DetailsActivity :
 			viewBinding.toolbarChapters?.subtitle = it
 			viewBinding.textViewSubtitle?.textAndVisible = it
 		}
-		viewModel.isChaptersReversed.observe(this, MenuInvalidator(viewBinding.toolbarChapters ?: this))
+		viewModel.isChaptersReversed.observe(
+			this,
+			MenuInvalidator(viewBinding.toolbarChapters ?: this)
+		)
 		viewModel.favouriteCategories.observe(this, MenuInvalidator(this))
 		viewModel.branches.observe(this) {
 			viewBinding.buttonDropdown.isVisible = it.size > 1
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
-		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(viewBinding.containerDetails))
+		viewModel.onDownloadStarted.observeEvent(
+			this,
+			DownloadStartedObserver(viewBinding.containerDetails)
+		)
 
 		addMenuProvider(
 			DetailsMenuProvider(
@@ -243,7 +252,11 @@ class DetailsActivity :
 			right = insets.right,
 		)
 		if (insets.bottom > 0) {
-			window.setNavigationBarTransparentCompat(this, viewBinding.layoutBottom?.elevation ?: 0f, 0.9f)
+			window.setNavigationBarTransparentCompat(
+				this,
+				viewBinding.layoutBottom?.elevation ?: 0f,
+				0.9f
+			)
 		}
 		viewBinding.cardChapters?.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = insets.bottom + marginEnd
@@ -265,9 +278,18 @@ class DetailsActivity :
 		}
 		val text = when {
 			!info.isValid -> getString(R.string.loading_)
-			info.currentChapter >= 0 -> getString(R.string.chapter_d_of_d, info.currentChapter + 1, info.totalChapters)
+			info.currentChapter >= 0 -> getString(
+				R.string.chapter_d_of_d,
+				info.currentChapter + 1,
+				info.totalChapters
+			)
+
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
-			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
+			else -> resources.getQuantityString(
+				R.plurals.chapters,
+				info.totalChapters,
+				info.totalChapters
+			)
 		}
 		viewBinding.toolbarChapters?.title = text
 		viewBinding.textViewTitle?.text = text
@@ -286,7 +308,12 @@ class DetailsActivity :
 				append(' ')
 				append(' ')
 				inSpans(
-					ForegroundColorSpan(v.context.getThemeColor(android.R.attr.textColorSecondary, Color.LTGRAY)),
+					ForegroundColorSpan(
+						v.context.getThemeColor(
+							android.R.attr.textColorSecondary,
+							Color.LTGRAY
+						)
+					),
 					RelativeSizeSpan(0.74f),
 				) {
 					append(branch.count.toString())
@@ -305,7 +332,8 @@ class DetailsActivity :
 		val manga = viewModel.manga.value ?: return
 		val chapterId = viewModel.historyInfo.value.history?.chapterId
 		if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
-			val snackbar = makeSnackbar(getString(R.string.chapter_is_missing), Snackbar.LENGTH_SHORT)
+			val snackbar =
+				makeSnackbar(getString(R.string.chapter_is_missing), Snackbar.LENGTH_SHORT)
 			snackbar.show()
 		} else {
 			startActivity(
@@ -331,7 +359,10 @@ class DetailsActivity :
 		view.isVisible = isVisible
 	}
 
-	private fun makeSnackbar(text: CharSequence, @BaseTransientBottomBar.Duration duration: Int): Snackbar {
+	private fun makeSnackbar(
+		text: CharSequence,
+		@BaseTransientBottomBar.Duration duration: Int,
+	): Snackbar {
 		val sb = Snackbar.make(viewBinding.containerDetails, text, duration)
 		if (viewBinding.layoutBottom?.isVisible == true) {
 			sb.anchorView = viewBinding.toolbarChapters

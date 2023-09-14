@@ -35,6 +35,7 @@ open class PageHolder(
 		binding.ssiv.bindToLifecycle(owner)
 		binding.ssiv.isEagerLoadingEnabled = !context.isLowRamDevice()
 		binding.ssiv.addOnImageEventListener(delegate)
+		binding.ssiv.setOnGenericMotionListener(SsivZoomListener())
 		@Suppress("LeakingThis")
 		bindingInfo.buttonRetry.setOnClickListener(this)
 		@Suppress("LeakingThis")

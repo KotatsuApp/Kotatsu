@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemMangaListDetailsBinding
@@ -45,6 +46,7 @@ fun mangaListDetailedItemAD(
 	}
 	itemView.setOnClickListener(listenerAdapter)
 	itemView.setOnLongClickListener(listenerAdapter)
+	itemView.setOnContextClickListenerCompat(listenerAdapter)
 	binding.buttonRead.setOnClickListener(listenerAdapter)
 	binding.chipsTags.onChipClickListener = listenerAdapter
 

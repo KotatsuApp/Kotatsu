@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
+import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.google.android.material.badge.BadgeDrawable
@@ -10,6 +11,7 @@ import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemMangaGridBinding
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
@@ -28,12 +30,13 @@ fun mangaGridItemAD(
 ) {
 	var badge: BadgeDrawable? = null
 
-	itemView.setOnClickListener {
-		clickListener.onItemClick(item.manga, it)
+	val eventListener = object : View.OnClickListener, View.OnLongClickListener {
+		override fun onClick(v: View) = clickListener.onItemClick(item.manga, v)
+		override fun onLongClick(v: View): Boolean = clickListener.onItemLongClick(item.manga, v)
 	}
-	itemView.setOnLongClickListener {
-		clickListener.onItemLongClick(item.manga, it)
-	}
+	itemView.setOnClickListener(eventListener)
+	itemView.setOnLongClickListener(eventListener)
+	itemView.setOnContextClickListenerCompat(eventListener)
 	sizeResolver.attachToView(lifecycleOwner, itemView, binding.textViewTitle, binding.progressView)
 
 	bind { payloads ->

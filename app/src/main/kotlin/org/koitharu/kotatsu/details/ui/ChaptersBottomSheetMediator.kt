@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.details.ui
 
+import android.view.InputDevice
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLayoutChangeListener
 import androidx.activity.OnBackPressedCallback
@@ -12,7 +14,7 @@ class ChaptersBottomSheetMediator(
 	private val behavior: BottomSheetBehavior<*>,
 ) : OnBackPressedCallback(false),
 	ActionModeListener,
-	OnLayoutChangeListener {
+	OnLayoutChangeListener, View.OnGenericMotionListener {
 
 	private var lockCounter = 0
 
@@ -53,6 +55,20 @@ class ChaptersBottomSheetMediator(
 		if (height != behavior.peekHeight) {
 			behavior.peekHeight = height
 		}
+	}
+
+	override fun onGenericMotion(v: View?, event: MotionEvent): Boolean {
+		if (event.source and InputDevice.SOURCE_CLASS_POINTER != 0) {
+			if (event.actionMasked == MotionEvent.ACTION_SCROLL) {
+				if (event.getAxisValue(MotionEvent.AXIS_VSCROLL) < 0f) {
+					behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+				} else {
+					behavior.state = BottomSheetBehavior.STATE_EXPANDED
+				}
+				return true
+			}
+		}
+		return false
 	}
 
 	fun lock() {

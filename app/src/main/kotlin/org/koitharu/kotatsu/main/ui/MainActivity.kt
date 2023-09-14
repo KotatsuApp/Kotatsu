@@ -376,9 +376,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		val padding = if (isOpened) 0 else resources.getDimensionPixelOffset(R.dimen.margin_normal)
 		viewBinding.appbar.updatePadding(left = padding, right = padding)
 		adjustFabVisibility(isSearchOpened = isOpened)
-		supportActionBar?.setHomeAsUpIndicator(
-			if (isOpened) materialR.drawable.abc_ic_ab_back_material else materialR.drawable.abc_ic_search_api_material,
-		)
+		supportActionBar?.apply {
+			setHomeAsUpIndicator(
+				if (isOpened) materialR.drawable.abc_ic_ab_back_material else materialR.drawable.abc_ic_search_api_material,
+			)
+			setHomeActionContentDescription(
+				if (isOpened) R.string.back else R.string.search,
+			)
+		}
 		viewBinding.searchView.setHintCompat(
 			if (isOpened) R.string.search_hint else R.string.search_manga,
 		)
@@ -394,7 +399,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			ActivityCompat.requestPermissions(
 				this,
 				arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-				1
+				1,
 			)
 		}
 	}

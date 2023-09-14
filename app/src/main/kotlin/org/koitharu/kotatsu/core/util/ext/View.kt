@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.util.ext
 
 import android.app.Activity
 import android.graphics.Rect
+import android.os.Build
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
@@ -138,5 +139,11 @@ fun BaseProgressIndicator<*>.showOrHide(value: Boolean) {
 		if (!isVisible) show()
 	} else {
 		if (isVisible) hide()
+	}
+}
+
+fun View.setOnContextClickListenerCompat(listener: View.OnLongClickListener) {
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+		setOnContextClickListener(listener::onLongClick)
 	}
 }

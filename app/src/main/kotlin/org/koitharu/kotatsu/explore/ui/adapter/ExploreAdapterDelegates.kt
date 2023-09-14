@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.resolveDp
+import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemExploreButtonsBinding
@@ -44,7 +45,12 @@ fun exploreButtonsAD(
 		if (item.isRandomLoading) {
 			val icon = CircularProgressDrawable(context)
 			icon.strokeWidth = context.resources.resolveDp(2f)
-			icon.setColorSchemeColors(context.getThemeColor(materialR.attr.colorPrimary, Color.DKGRAY))
+			icon.setColorSchemeColors(
+				context.getThemeColor(
+					materialR.attr.colorPrimary,
+					Color.DKGRAY
+				)
+			)
 			binding.buttonRandom.icon = icon
 			icon.start()
 		} else {
@@ -88,7 +94,13 @@ fun exploreSourceListItemAD(
 	listener: OnListItemClickListener<MangaSourceItem>,
 	lifecycleOwner: LifecycleOwner,
 ) = adapterDelegateViewBinding<MangaSourceItem, ListModel, ItemExploreSourceListBinding>(
-	{ layoutInflater, parent -> ItemExploreSourceListBinding.inflate(layoutInflater, parent, false) },
+	{ layoutInflater, parent ->
+		ItemExploreSourceListBinding.inflate(
+			layoutInflater,
+			parent,
+			false
+		)
+	},
 	on = { item, _, _ -> item is MangaSourceItem && !item.isGrid },
 ) {
 
@@ -96,6 +108,7 @@ fun exploreSourceListItemAD(
 
 	binding.root.setOnClickListener(eventListener)
 	binding.root.setOnLongClickListener(eventListener)
+	binding.root.setOnContextClickListenerCompat(eventListener)
 
 	bind {
 		binding.textViewTitle.text = item.source.title
@@ -115,7 +128,13 @@ fun exploreSourceGridItemAD(
 	listener: OnListItemClickListener<MangaSourceItem>,
 	lifecycleOwner: LifecycleOwner,
 ) = adapterDelegateViewBinding<MangaSourceItem, ListModel, ItemExploreSourceGridBinding>(
-	{ layoutInflater, parent -> ItemExploreSourceGridBinding.inflate(layoutInflater, parent, false) },
+	{ layoutInflater, parent ->
+		ItemExploreSourceGridBinding.inflate(
+			layoutInflater,
+			parent,
+			false
+		)
+	},
 	on = { item, _, _ -> item is MangaSourceItem && item.isGrid },
 ) {
 
@@ -123,6 +142,7 @@ fun exploreSourceGridItemAD(
 
 	binding.root.setOnClickListener(eventListener)
 	binding.root.setOnLongClickListener(eventListener)
+	binding.root.setOnContextClickListenerCompat(eventListener)
 
 	bind {
 		binding.textViewTitle.text = item.source.title

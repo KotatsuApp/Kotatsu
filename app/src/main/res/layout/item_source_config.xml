@@ -60,6 +60,7 @@
 		android:padding="@dimen/margin_small"
 		android:scaleType="center"
 		android:src="@drawable/abc_ic_menu_overflow_material"
+		android:tooltipText="@string/more"
 		app:tint="?colorControlNormal" />
 
 	<ImageView
@@ -70,7 +71,8 @@
 		android:contentDescription="@string/add"
 		android:padding="@dimen/margin_small"
 		android:scaleType="center"
-		android:src="@drawable/ic_add" />
+		android:src="@drawable/ic_add"
+		android:tooltipText="@string/add" />
 
 	<ImageView
 		android:id="@+id/imageView_remove"
@@ -80,6 +82,7 @@
 		android:contentDescription="@string/remove"
 		android:padding="@dimen/margin_small"
 		android:scaleType="center"
-		android:src="@drawable/ic_delete" />
+		android:src="@drawable/ic_delete"
+		android:tooltipText="@string/remove" />
 
 </LinearLayout>

@@ -64,6 +64,7 @@
 					android:focusable="true"
 					android:focusableInTouchMode="true"
 					app:contentInsetStartWithNavigation="0dp"
+					app:navigationContentDescription="@string/search"
 					app:navigationIcon="?attr/actionModeWebSearchDrawable">
 
 					<org.koitharu.kotatsu.search.ui.widget.SearchEditText

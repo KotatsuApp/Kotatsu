@@ -2,7 +2,9 @@ package org.koitharu.kotatsu.core.ui.sheet
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.InputDevice
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.AttrRes
@@ -21,7 +23,8 @@ class AdaptiveSheetHeaderBar @JvmOverloads constructor(
 	@AttrRes defStyleAttr: Int = 0,
 ) : LinearLayout(context, attrs, defStyleAttr), AdaptiveSheetCallback {
 
-	private val binding = LayoutSheetHeaderAdaptiveBinding.inflate(LayoutInflater.from(context), this)
+	private val binding =
+		LayoutSheetHeaderAdaptiveBinding.inflate(LayoutInflater.from(context), this)
 	private var sheetBehavior: AdaptiveSheetBehavior? = null
 
 	var title: CharSequence?
@@ -58,6 +61,28 @@ class AdaptiveSheetHeaderBar @JvmOverloads constructor(
 	override fun onDetachedFromWindow() {
 		setBottomSheetBehavior(null)
 		super.onDetachedFromWindow()
+	}
+
+	override fun onGenericMotionEvent(event: MotionEvent): Boolean {
+		val behavior = sheetBehavior ?: return super.onGenericMotionEvent(event)
+		if (event.source and InputDevice.SOURCE_CLASS_POINTER != 0) {
+			if (event.actionMasked == MotionEvent.ACTION_SCROLL) {
+				if (event.getAxisValue(MotionEvent.AXIS_VSCROLL) < 0f) {
+					behavior.state = if (
+						behavior is AdaptiveSheetBehavior.Bottom
+						&& behavior.state == AdaptiveSheetBehavior.STATE_EXPANDED
+					) {
+						AdaptiveSheetBehavior.STATE_COLLAPSED
+					} else {
+						AdaptiveSheetBehavior.STATE_HIDDEN
+					}
+				} else {
+					behavior.state = AdaptiveSheetBehavior.STATE_EXPANDED
+				}
+				return true
+			}
+		}
+		return super.onGenericMotionEvent(event)
 	}
 
 	override fun onStateChanged(sheet: View, newState: Int) {

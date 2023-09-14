@@ -1,7 +1,11 @@
 package org.koitharu.kotatsu.reader.ui.pager.standard
 
 import android.os.Bundle
+import android.view.InputDevice
+import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import com.google.android.material.snackbar.Snackbar
@@ -24,9 +28,11 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import javax.inject.Inject
 import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 @AndroidEntryPoint
-class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() {
+class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>(),
+	View.OnGenericMotionListener {
 
 	@Inject
 	lateinit var networkState: NetworkState
@@ -39,12 +45,16 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() 
 		container: ViewGroup?,
 	) = FragmentReaderStandardBinding.inflate(inflater, container, false)
 
-	override fun onViewBindingCreated(binding: FragmentReaderStandardBinding, savedInstanceState: Bundle?) {
+	override fun onViewBindingCreated(
+		binding: FragmentReaderStandardBinding,
+		savedInstanceState: Bundle?,
+	) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		with(binding.pager) {
 			adapter = readerAdapter
 			offscreenPageLimit = 2
 			doOnPageChanged(::notifyPageChanged)
+			setOnGenericMotionListener(this@PagerReaderFragment)
 		}
 
 		viewModel.pageAnimation.observe(viewLifecycleOwner) {
@@ -67,27 +77,42 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>() 
 		super.onDestroyView()
 	}
 
-	override suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) = coroutineScope {
-		val items = async {
-			requireAdapter().setItems(pages)
-			yield()
-		}
-		if (pendingState != null) {
-			val position = pages.indexOfFirst {
-				it.chapterId == pendingState.chapterId && it.index == pendingState.page
+	override fun onGenericMotion(v: View?, event: MotionEvent): Boolean {
+		if (event.source and InputDevice.SOURCE_CLASS_POINTER != 0) {
+			if (event.actionMasked == MotionEvent.ACTION_SCROLL) {
+				val axisValue = event.getAxisValue(MotionEvent.AXIS_VSCROLL)
+				val withCtrl = event.metaState and KeyEvent.META_CTRL_MASK != 0
+				if (!withCtrl) {
+					switchPageBy(-axisValue.sign.toInt())
+					return true
+				}
 			}
-			items.await()
-			if (position != -1) {
-				requireViewBinding().pager.setCurrentItem(position, false)
-				notifyPageChanged(position)
-			} else {
-				Snackbar.make(requireView(), R.string.not_found_404, Snackbar.LENGTH_SHORT)
-					.show()
-			}
-		} else {
-			items.await()
 		}
+		return false
 	}
+
+	override suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) =
+		coroutineScope {
+			val items = async {
+				requireAdapter().setItems(pages)
+				yield()
+			}
+			if (pendingState != null) {
+				val position = pages.indexOfFirst {
+					it.chapterId == pendingState.chapterId && it.index == pendingState.page
+				}
+				items.await()
+				if (position != -1) {
+					requireViewBinding().pager.setCurrentItem(position, false)
+					notifyPageChanged(position)
+				} else {
+					Snackbar.make(requireView(), R.string.not_found_404, Snackbar.LENGTH_SHORT)
+						.show()
+				}
+			} else {
+				items.await()
+			}
+		}
 
 	override fun onCreateAdapter() = PagesAdapter(
 		lifecycleOwner = viewLifecycleOwner,

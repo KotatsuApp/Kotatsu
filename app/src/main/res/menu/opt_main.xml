@@ -7,7 +7,8 @@
 		android:id="@+id/action_app_update"
 		android:icon="@drawable/ic_app_update"
 		android:orderInCategory="1"
-		android:title="@string/update"
+		android:title="@string/app_update_available"
+		android:titleCondensed="@string/update"
 		android:visible="false"
 		app:showAsAction="ifRoom" />
 

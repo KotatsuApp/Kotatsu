@@ -104,6 +104,7 @@ sealed class AdaptiveSheetBehavior {
 	companion object {
 
 		const val STATE_EXPANDED = SideSheetBehavior.STATE_EXPANDED
+		const val STATE_COLLAPSED = BottomSheetBehavior.STATE_COLLAPSED
 		const val STATE_SETTLING = SideSheetBehavior.STATE_SETTLING
 		const val STATE_DRAGGING = SideSheetBehavior.STATE_DRAGGING
 		const val STATE_HIDDEN = SideSheetBehavior.STATE_HIDDEN
@@ -114,10 +115,11 @@ sealed class AdaptiveSheetBehavior {
 			else -> null
 		}
 
-		fun from(lp: CoordinatorLayout.LayoutParams): AdaptiveSheetBehavior? = when (val behavior = lp.behavior) {
-			is BottomSheetBehavior<*> -> Bottom(behavior)
-			is SideSheetBehavior<*> -> Side(behavior)
-			else -> null
-		}
+		fun from(lp: CoordinatorLayout.LayoutParams): AdaptiveSheetBehavior? =
+			when (val behavior = lp.behavior) {
+				is BottomSheetBehavior<*> -> Bottom(behavior)
+				is SideSheetBehavior<*> -> Side(behavior)
+				else -> null
+			}
 	}
 }
