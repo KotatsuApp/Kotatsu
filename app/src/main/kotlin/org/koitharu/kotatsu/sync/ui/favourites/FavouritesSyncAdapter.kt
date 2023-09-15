@@ -28,7 +28,7 @@ class FavouritesSyncAdapter(context: Context) : AbstractThreadedSyncAdapter(cont
 		val entryPoint = EntryPointAccessors.fromApplication(context, SyncAdapterEntryPoint::class.java)
 		val syncHelper = entryPoint.syncHelperFactory.create(account, provider)
 		runCatchingCancellable {
-			syncHelper.syncFavourites(syncResult)
+			syncHelper.syncFavourites(syncResult.stats)
 			SyncController.setLastSync(context, account, authority, System.currentTimeMillis())
 		}.onFailure { e ->
 			syncResult.onError(e)

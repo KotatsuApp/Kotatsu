@@ -28,7 +28,7 @@ class HistorySyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context
 		val entryPoint = EntryPointAccessors.fromApplication(context, SyncAdapterEntryPoint::class.java)
 		val syncHelper = entryPoint.syncHelperFactory.create(account, provider)
 		runCatchingCancellable {
-			syncHelper.syncHistory(syncResult)
+			syncHelper.syncHistory(syncResult.stats)
 			SyncController.setLastSync(context, account, authority, System.currentTimeMillis())
 		}.onFailure { e ->
 			syncResult.onError(e)

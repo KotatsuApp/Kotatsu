@@ -30,7 +30,7 @@ class SyncSettingsFragment : BasePreferenceFragment(R.string.sync_settings), Fra
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
 			SyncSettings.KEY_HOST -> {
-				SyncHostDialogFragment.show(childFragmentManager)
+				SyncHostDialogFragment.show(childFragmentManager, null)
 				true
 			}
 

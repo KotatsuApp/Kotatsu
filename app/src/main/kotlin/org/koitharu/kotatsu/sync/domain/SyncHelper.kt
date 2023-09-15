@@ -7,6 +7,7 @@ import android.content.ContentProviderResult
 import android.content.Context
 import android.content.OperationApplicationException
 import android.content.SyncResult
+import android.content.SyncStats
 import android.database.Cursor
 import android.net.Uri
 import androidx.annotation.WorkerThread
@@ -67,7 +68,7 @@ class SyncHelper @AssistedInject constructor(
 		get() = TimeUnit.DAYS.toMillis(4)
 
 	@WorkerThread
-	fun syncFavourites(syncResult: SyncResult) {
+	fun syncFavourites(stats: SyncStats) {
 		val data = JSONObject()
 		data.put(TABLE_FAVOURITE_CATEGORIES, getFavouriteCategories())
 		data.put(TABLE_FAVOURITES, getFavourites())
@@ -81,17 +82,18 @@ class SyncHelper @AssistedInject constructor(
 			val timestamp = response.getLong(FIELD_TIMESTAMP)
 			val categoriesResult =
 				upsertFavouriteCategories(response.getJSONArray(TABLE_FAVOURITE_CATEGORIES), timestamp)
-			syncResult.stats.numDeletes += categoriesResult.first().count?.toLong() ?: 0L
-			syncResult.stats.numInserts += categoriesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
+			stats.numDeletes += categoriesResult.first().count?.toLong() ?: 0L
+			stats.numInserts += categoriesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
 			val favouritesResult = upsertFavourites(response.getJSONArray(TABLE_FAVOURITES), timestamp)
-			syncResult.stats.numDeletes += favouritesResult.first().count?.toLong() ?: 0L
-			syncResult.stats.numInserts += favouritesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
+			stats.numDeletes += favouritesResult.first().count?.toLong() ?: 0L
+			stats.numInserts += favouritesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
+			stats.numEntries += stats.numInserts + stats.numDeletes
 		}
 		gcFavourites()
 	}
 
 	@WorkerThread
-	fun syncHistory(syncResult: SyncResult) {
+	fun syncHistory(stats: SyncStats) {
 		val data = JSONObject()
 		data.put(TABLE_HISTORY, getHistory())
 		data.put(FIELD_TIMESTAMP, System.currentTimeMillis())
@@ -105,8 +107,9 @@ class SyncHelper @AssistedInject constructor(
 				json = response.getJSONArray(TABLE_HISTORY),
 				timestamp = response.getLong(FIELD_TIMESTAMP),
 			)
-			syncResult.stats.numDeletes += result.first().count?.toLong() ?: 0L
-			syncResult.stats.numInserts += result.drop(1).sumOf { it.count?.toLong() ?: 0L }
+			stats.numDeletes += result.first().count?.toLong() ?: 0L
+			stats.numInserts += result.drop(1).sumOf { it.count?.toLong() ?: 0L }
+			stats.numEntries += stats.numInserts + stats.numDeletes
 		}
 		gcHistory()
 	}

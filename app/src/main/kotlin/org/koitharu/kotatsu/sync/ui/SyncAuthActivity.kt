@@ -104,7 +104,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 			}
 
 			R.id.button_settings -> {
-				SyncHostDialogFragment.show(supportFragmentManager)
+				SyncHostDialogFragment.show(supportFragmentManager, viewModel.host.value)
 			}
 		}
 	}

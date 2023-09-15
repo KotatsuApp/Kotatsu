@@ -13,6 +13,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.PreferenceDialogAutocompletetextviewBinding
 import org.koitharu.kotatsu.settings.utils.validation.DomainValidator
 import org.koitharu.kotatsu.sync.data.SyncSettings
@@ -50,7 +52,7 @@ class SyncHostDialogFragment : AlertDialogFragment<PreferenceDialogAutocompletet
 		binding.message.setText(R.string.sync_host_description)
 		val entries = binding.root.resources.getStringArray(R.array.sync_host_list)
 		val editText = binding.edit
-		editText.setText(syncSettings.host)
+		editText.setText(arguments?.getString(KEY_HOST).ifNullOrEmpty { syncSettings.host })
 		editText.threshold = 0
 		editText.setAdapter(ArrayAdapter(binding.root.context, android.R.layout.simple_spinner_dropdown_item, entries))
 		binding.dropdown.setOnClickListener {
@@ -76,6 +78,8 @@ class SyncHostDialogFragment : AlertDialogFragment<PreferenceDialogAutocompletet
 		const val REQUEST_KEY = "sync_host"
 		const val KEY_HOST = "host"
 
-		fun show(fm: FragmentManager) = SyncHostDialogFragment().show(fm, TAG)
+		fun show(fm: FragmentManager, host: String?) = SyncHostDialogFragment().withArgs(1) {
+			putString(KEY_HOST, host)
+		}.show(fm, TAG)
 	}
 }

@@ -10,7 +10,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.sync.domain.SyncAuthResult
 import javax.inject.Inject
@@ -23,9 +22,7 @@ class SyncAuthViewModel @Inject constructor(
 
 	val onAccountAlreadyExists = MutableEventFlow<Unit>()
 	val onTokenObtained = MutableEventFlow<SyncAuthResult>()
-	val host = MutableStateFlow("")
-
-	private val defaultHost = context.getString(R.string.sync_host_default)
+	val host = MutableStateFlow(context.getString(R.string.sync_host_default))
 
 	init {
 		launchJob(Dispatchers.Default) {
@@ -38,7 +35,7 @@ class SyncAuthViewModel @Inject constructor(
 	}
 
 	fun obtainToken(email: String, password: String) {
-		val hostValue = host.value.ifNullOrEmpty { defaultHost }
+		val hostValue = host.value
 		launchLoadingJob(Dispatchers.Default) {
 			val token = api.authenticate(hostValue, email, password)
 			val result = SyncAuthResult(host.value, email, password, token)
