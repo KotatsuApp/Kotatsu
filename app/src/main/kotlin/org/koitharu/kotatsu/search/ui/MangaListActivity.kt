@@ -17,14 +17,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
-import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
@@ -64,7 +65,7 @@ class MangaListActivity :
 		if (viewBinding.containerFilterHeader != null) {
 			viewBinding.appbar.addOnOffsetChangedListener(this)
 		}
-		val source = intent.getSerializableExtraCompat(EXTRA_SOURCE) ?: tags?.firstOrNull()?.source
+		val source = intent.getStringExtra(EXTRA_SOURCE)?.let(::MangaSource) ?: tags?.firstOrNull()?.source
 		if (source == null) {
 			finishAfterTransition()
 			return
@@ -186,11 +187,14 @@ class MangaListActivity :
 
 		private const val EXTRA_TAGS = "tags"
 		private const val EXTRA_SOURCE = "source"
+		const val ACTION_MANGA_EXPLORE = "${BuildConfig.APPLICATION_ID}.action.EXPLORE_MANGA"
 
 		fun newIntent(context: Context, tags: Set<MangaTag>) = Intent(context, MangaListActivity::class.java)
+			.setAction(ACTION_MANGA_EXPLORE)
 			.putExtra(EXTRA_TAGS, ParcelableMangaTags(tags))
 
 		fun newIntent(context: Context, source: MangaSource) = Intent(context, MangaListActivity::class.java)
-			.putExtra(EXTRA_SOURCE, source)
+			.setAction(ACTION_MANGA_EXPLORE)
+			.putExtra(EXTRA_SOURCE, source.name)
 	}
 }

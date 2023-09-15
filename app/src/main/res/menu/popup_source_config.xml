@@ -7,6 +7,10 @@
 		android:title="@string/to_top" />
 
 	<item
+		android:id="@+id/action_shortcut"
+		android:title="@string/create_shortcut" />
+
+	<item
 		android:id="@+id/action_settings"
 		android:title="@string/settings" />
 

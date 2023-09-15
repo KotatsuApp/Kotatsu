@@ -59,6 +59,8 @@ class NewSourcesDialogFragment :
 
 	override fun onItemLiftClick(item: SourceConfigItem.SourceItem) = Unit
 
+	override fun onItemShortcutClick(item: SourceConfigItem.SourceItem) = Unit
+
 	override fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
 		viewModel.onItemEnabledChanged(item, isEnabled)
 	}

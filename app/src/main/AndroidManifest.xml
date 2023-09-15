@@ -95,7 +95,12 @@
 			android:label="@string/search" />
 		<activity
 			android:name="org.koitharu.kotatsu.search.ui.MangaListActivity"
-			android:label="@string/search_manga" />
+			android:exported="true"
+			android:label="@string/manga_list">
+			<intent-filter>
+				<action android:name="${applicationId}.action.EXPLORE_MANGA" />
+			</intent-filter>
+		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.history.ui.HistoryActivity"
 			android:label="@string/history" />
@@ -138,8 +143,8 @@
 			android:windowSoftInputMode="adjustResize" />
 		<activity
 			android:name="org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity"
-			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:autoRemoveFromRecents="true"
+			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
 		<activity
 			android:name="org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity"

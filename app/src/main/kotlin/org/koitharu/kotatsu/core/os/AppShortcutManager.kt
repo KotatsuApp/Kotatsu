@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
+import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.image.ThumbnailTransformation
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
@@ -29,8 +30,10 @@ import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -77,6 +80,10 @@ class AppShortcutManager @Inject constructor(
 		return ShortcutManagerCompat.requestPinShortcut(context, buildShortcutInfo(manga), null)
 	}
 
+	suspend fun requestPinShortcut(source: MangaSource): Boolean {
+		return ShortcutManagerCompat.requestPinShortcut(context, buildShortcutInfo(source), null)
+	}
+
 	@VisibleForTesting
 	suspend fun await(): Boolean {
 		return shortcutsUpdateJob?.join() != null
@@ -84,6 +91,11 @@ class AppShortcutManager @Inject constructor(
 
 	fun notifyMangaOpened(mangaId: Long) {
 		ShortcutManagerCompat.reportShortcutUsed(context, mangaId.toString())
+	}
+
+	fun isDynamicShortcutsAvailable(): Boolean {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 &&
+			context.getSystemService(ShortcutManager::class.java).maxShortcutCountPerActivity > 0
 	}
 
 	private suspend fun updateShortcutsImpl() = runCatchingCancellable {
@@ -132,8 +144,25 @@ class AppShortcutManager @Inject constructor(
 			.build()
 	}
 
-	fun isDynamicShortcutsAvailable(): Boolean {
-		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 &&
-			context.getSystemService(ShortcutManager::class.java).maxShortcutCountPerActivity > 0
+	private suspend fun buildShortcutInfo(source: MangaSource): ShortcutInfoCompat {
+		val icon = runCatchingCancellable {
+			coil.execute(
+				ImageRequest.Builder(context)
+					.data(source.faviconUri())
+					.size(iconSize)
+					.scale(Scale.FIT)
+					.build(),
+			).getDrawableOrThrow().toBitmap()
+		}.fold(
+			onSuccess = { IconCompat.createWithAdaptiveBitmap(it) },
+			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) },
+		)
+		return ShortcutInfoCompat.Builder(context, source.name)
+			.setShortLabel(source.title)
+			.setLongLabel(source.title)
+			.setIcon(icon)
+			.setLongLived(true)
+			.setIntent(MangaListActivity.newIntent(context, source))
+			.build()
 	}
 }

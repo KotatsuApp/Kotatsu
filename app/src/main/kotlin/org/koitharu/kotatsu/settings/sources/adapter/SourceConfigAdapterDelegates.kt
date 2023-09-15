@@ -8,6 +8,7 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.SuperscriptSpan
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.core.view.isGone
@@ -39,7 +40,7 @@ fun sourceConfigHeaderDelegate() =
 			ItemFilterHeaderBinding.inflate(
 				layoutInflater,
 				parent,
-				false
+				false,
 			)
 		},
 	) {
@@ -76,7 +77,7 @@ fun sourceConfigItemCheckableDelegate(
 			ItemSourceConfigCheckableBinding.inflate(
 				layoutInflater,
 				parent,
-				false
+				false,
 			)
 		},
 	) {
@@ -121,7 +122,7 @@ fun sourceConfigItemDelegate2(
 			ItemSourceConfigBinding.inflate(
 				layoutInflater,
 				parent,
-				false
+				false,
 			)
 		},
 	) {
@@ -189,8 +190,8 @@ fun SpannableStringBuilder.appendNsfwLabel(context: Context) = inSpans(
 	ForegroundColorSpan(
 		context.getThemeColor(
 			com.google.android.material.R.attr.colorError,
-			Color.RED
-		)
+			Color.RED,
+		),
 	),
 	RelativeSizeSpan(0.74f),
 	SuperscriptSpan(),
@@ -205,10 +206,13 @@ private fun showSourceMenu(
 ) {
 	val menu = PopupMenu(anchor.context, anchor)
 	menu.inflate(R.menu.popup_source_config)
+	menu.menu.findItem(R.id.action_shortcut)
+		?.isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(anchor.context)
 	menu.setOnMenuItemClickListener {
 		when (it.itemId) {
 			R.id.action_settings -> listener.onItemSettingsClick(item)
 			R.id.action_lift -> listener.onItemLiftClick(item)
+			R.id.action_shortcut -> listener.onItemShortcutClick(item)
 		}
 		true
 	}

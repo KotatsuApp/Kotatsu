@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
@@ -15,9 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.dialog.TwoButtonsAlertDialog
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -28,6 +31,7 @@ import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
@@ -54,6 +58,9 @@ class ExploreFragment :
 
 	@Inject
 	lateinit var coil: ImageLoader
+
+	@Inject
+	lateinit var shortcutManager: AppShortcutManager
 
 	private val viewModel by viewModels<ExploreViewModel>()
 	private var exploreAdapter: ExploreAdapter? = null
@@ -141,6 +148,8 @@ class ExploreFragment :
 	override fun onItemLongClick(item: MangaSourceItem, view: View): Boolean {
 		val menu = PopupMenu(view.context, view)
 		menu.inflate(R.menu.popup_source)
+		menu.menu.findItem(R.id.action_shortcut)
+			?.isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(view.context)
 		menu.setOnMenuItemClickListener(SourceMenuListener(item))
 		menu.show()
 		return true
@@ -193,6 +202,12 @@ class ExploreFragment :
 
 				R.id.action_hide -> {
 					viewModel.hideSource(sourceItem.source)
+				}
+
+				R.id.action_shortcut -> {
+					viewLifecycleScope.launch {
+						shortcutManager.requestPinShortcut(sourceItem.source)
+					}
 				}
 
 				else -> return false

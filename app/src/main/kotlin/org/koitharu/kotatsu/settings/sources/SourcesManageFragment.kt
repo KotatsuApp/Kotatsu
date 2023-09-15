@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
@@ -24,6 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -43,6 +46,9 @@ class SourcesManageFragment :
 
 	@Inject
 	lateinit var settings: AppSettings
+
+	@Inject
+	lateinit var shortcutManager: AppShortcutManager
 
 	private var reorderHelper: ItemTouchHelper? = null
 	private val viewModel by viewModels<SourcesManageViewModel>()
@@ -101,6 +107,12 @@ class SourcesManageFragment :
 
 	override fun onItemLiftClick(item: SourceConfigItem.SourceItem) {
 		viewModel.bringToTop(item.source)
+	}
+
+	override fun onItemShortcutClick(item: SourceConfigItem.SourceItem) {
+		viewLifecycleScope.launch {
+			shortcutManager.requestPinShortcut(item.source)
+		}
 	}
 
 	override fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
