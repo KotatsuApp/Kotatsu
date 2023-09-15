@@ -1,7 +1,10 @@
 package org.koitharu.kotatsu.settings.about
 
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.os.Environment
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -29,13 +32,26 @@ class AppUpdateDialog(private val context: Context) {
 			.setTitle(R.string.app_update_available)
 			.setMessage(message)
 			.setIcon(R.drawable.ic_app_update)
-			.setPositiveButton(R.string.download) { _, _ ->
-				val intent = Intent(Intent.ACTION_VIEW, version.apkUrl.toUri())
+			.setNeutralButton(R.string.open_in_browser) { _, _ ->
+				val intent = Intent(Intent.ACTION_VIEW, version.url.toUri())
 				context.startActivity(Intent.createChooser(intent, context.getString(R.string.open_in_browser)))
-			}
-			.setNegativeButton(R.string.close, null)
+			}.setPositiveButton(R.string.update) { _, _ ->
+				downloadUpdate(version)
+			}.setNegativeButton(android.R.string.cancel, null)
 			.setCancelable(false)
 			.create()
 			.show()
+	}
+
+	private fun downloadUpdate(version: AppVersion) {
+		val url = version.apkUrl.toUri()
+		val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+		val request = DownloadManager.Request(url)
+			.setTitle("${context.getString(R.string.app_name)} v${version.name}")
+			.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, url.lastPathSegment)
+			.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+			.setMimeType("application/vnd.android.package-archive")
+		dm.enqueue(request)
+		Toast.makeText(context, R.string.download_started, Toast.LENGTH_SHORT).show()
 	}
 }
