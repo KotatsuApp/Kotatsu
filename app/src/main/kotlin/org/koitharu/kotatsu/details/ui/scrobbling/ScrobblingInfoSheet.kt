@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.details.ui.scrobbling
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -12,6 +11,7 @@ import android.widget.RatingBar
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toUri
+import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import coil.ImageLoader
@@ -71,7 +71,7 @@ class ScrobblingInfoSheet :
 		binding.ratingBar.onRatingBarChangeListener = this
 		binding.buttonMenu.setOnClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
-		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
+		binding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
 
 		menu = PopupMenu(binding.root.context, binding.buttonMenu).apply {
 			inflate(R.menu.opt_scrobbling)

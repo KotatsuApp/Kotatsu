@@ -1,12 +1,12 @@
 package org.koitharu.kotatsu.list.ui.preview
 
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.graphics.Insets
+import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import coil.ImageLoader
@@ -52,7 +52,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.buttonClose.isVisible = activity is MangaListActivity
 		binding.buttonClose.setOnClickListener(this)
-		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
+		binding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
 		binding.chipsTags.onChipClickListener = this
 		binding.textViewAuthor.setOnClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
