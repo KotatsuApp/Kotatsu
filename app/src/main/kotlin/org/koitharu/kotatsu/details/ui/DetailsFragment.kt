@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.details.ui
 
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.text.buildSpannedString
 import androidx.core.text.color
+import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -107,7 +107,7 @@ class DetailsFragment :
 		binding.infoLayout.textViewSource.setOnClickListener(this)
 		binding.textViewDescription.addOnLayoutChangeListener(this)
 		binding.textViewDescription.viewTreeObserver.addOnDrawListener(this)
-		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
+		binding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
 		binding.chipsTags.onChipClickListener = this
 		binding.recyclerViewRelated.addItemDecoration(
 			SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)),

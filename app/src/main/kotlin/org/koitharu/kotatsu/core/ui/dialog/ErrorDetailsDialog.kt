@@ -4,11 +4,11 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
+import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.text.parseAsHtml
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -37,7 +37,7 @@ class ErrorDetailsDialog : AlertDialogFragment<DialogErrorDetailsBinding>() {
 	override fun onViewBindingCreated(binding: DialogErrorDetailsBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		with(binding.textViewMessage) {
-			movementMethod = LinkMovementMethod.getInstance()
+			movementMethod = LinkMovementMethodCompat.getInstance()
 			text = context.getString(
 				R.string.manga_error_description_pattern,
 				exception.message?.htmlEncode().orEmpty(),
