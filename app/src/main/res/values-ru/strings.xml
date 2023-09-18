@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="local_storage">На устройстве</string>
+    <string name="local_storage">Локальное хранилище</string>
     <string name="favourites">Избранное</string>
     <string name="history">История</string>
     <string name="error_occurred">Произошла ошибка</string>
