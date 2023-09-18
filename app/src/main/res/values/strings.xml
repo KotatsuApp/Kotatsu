@@ -485,4 +485,8 @@
 	<string name="items_limit_exceeded">No more items can be added</string>
 	<string name="to_top">To top</string>
 	<string name="moved_to_top">Moved to top</string>
+	<string name="zoom_out">Zoom out</string>
+	<string name="zoom_in">Zoom in</string>
+	<string name="reader_zoom_buttons">Show zoom buttons</string>
+	<string name="reader_zoom_buttons_summary">Whether to show zoom control buttons in the bottom right corner</string>
 </resources>

@@ -27,4 +27,14 @@
 
 	<include layout="@layout/layout_page_info" />
 
+	<org.koitharu.kotatsu.core.ui.widgets.ZoomControl
+		android:id="@+id/zoomControl"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|end"
+		android:layout_margin="16dp"
+		android:orientation="vertical"
+		android:visibility="gone"
+		tools:visibility="visible" />
+
 </FrameLayout>

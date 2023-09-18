@@ -18,6 +18,7 @@ import android.widget.FrameLayout
 import android.widget.OverScroller
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewConfigurationCompat
+import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 
 private const val MAX_SCALE = 2.5f
@@ -27,7 +28,9 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	defStyles: Int = 0,
-) : FrameLayout(context, attrs, defStyles), ScaleGestureDetector.OnScaleGestureListener {
+) : FrameLayout(context, attrs, defStyles),
+	ScaleGestureDetector.OnScaleGestureListener,
+	ZoomControl.ZoomControlListener {
 
 	private val targetChild by lazy(LazyThreadSafetyMode.NONE) { getChildAt(0) as WebtoonRecyclerView }
 
@@ -110,14 +113,14 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			KeyEvent.KEYCODE_ZOOM_IN,
 			KeyEvent.KEYCODE_NUMPAD_ADD,
 			KeyEvent.KEYCODE_PLUS -> {
-				smoothScaleTo(scale * 1.1f)
+				onZoomIn()
 				true
 			}
 
 			KeyEvent.KEYCODE_ZOOM_OUT,
 			KeyEvent.KEYCODE_NUMPAD_SUBTRACT,
 			KeyEvent.KEYCODE_MINUS -> {
-				smoothScaleTo(scale * 0.9f)
+				onZoomOut()
 				true
 			}
 
@@ -149,6 +152,14 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 		super.onSizeChanged(w, h, oldw, oldh)
 		halfWidth = w / 2f
 		halfHeight = h / 2f
+	}
+
+	override fun onZoomIn() {
+		smoothScaleTo(scale * 1.1f)
+	}
+
+	override fun onZoomOut() {
+		smoothScaleTo(scale * 0.9f)
 	}
 
 	private fun invalidateTarget() {

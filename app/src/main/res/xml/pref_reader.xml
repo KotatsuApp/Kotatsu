@@ -49,6 +49,12 @@
 		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="reader_zoom_buttons"
+		android:summary="@string/reader_zoom_buttons_summary"
+		android:title="@string/reader_zoom_buttons" />
+
+	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="reader_bar"
 		android:summary="@string/reader_info_bar_summary"

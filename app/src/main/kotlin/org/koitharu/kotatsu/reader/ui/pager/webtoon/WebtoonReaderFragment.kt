@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
@@ -45,9 +46,13 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 			adapter = readerAdapter
 			addOnPageScrollListener(PageScrollListener())
 		}
+		binding.zoomControl.listener = binding.frame
 
 		viewModel.isWebtoonZoomEnabled.observe(viewLifecycleOwner) {
 			binding.frame.isZoomEnable = it
+		}
+		viewModel.isZoomControlEnabled.observe(viewLifecycleOwner) {
+			binding.zoomControl.isVisible = it
 		}
 	}
 

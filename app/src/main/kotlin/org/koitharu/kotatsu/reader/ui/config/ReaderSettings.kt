@@ -32,6 +32,9 @@ class ReaderSettings(
 	val isPagesNumbersEnabled: Boolean
 		get() = settings.isPagesNumbersEnabled
 
+	val isZoomControlsEnabled: Boolean
+		get() = settings.isReaderZoomButtonsEnabled
+
 	fun applyBackground(view: View) {
 		val bg = settings.readerBackground
 		view.background = bg.resolve(view.context)
@@ -74,6 +77,7 @@ class ReaderSettings(
 				key == AppSettings.KEY_ZOOM_MODE ||
 				key == AppSettings.KEY_PAGES_NUMBERS ||
 				key == AppSettings.KEY_WEBTOON_ZOOM ||
+				key == AppSettings.KEY_READER_ZOOM_BUTTONS ||
 				key == AppSettings.KEY_READER_BACKGROUND
 			) {
 				notifyChanged()

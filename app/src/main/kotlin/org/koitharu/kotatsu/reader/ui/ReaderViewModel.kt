@@ -120,6 +120,12 @@ class ReaderViewModel @Inject constructor(
 		valueProducer = { isWebtoonZoomEnable },
 	)
 
+	val isZoomControlEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_READER_ZOOM_BUTTONS,
+		valueProducer = { isReaderZoomButtonsEnabled },
+	)
+
 	val readerSettings = ReaderSettings(
 		parentScope = viewModelScope,
 		settings = settings,

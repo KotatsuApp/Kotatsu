@@ -90,6 +90,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val readerPageSwitch: Set<String>
 		get() = prefs.getStringSet(KEY_READER_SWITCHERS, null) ?: setOf(PAGE_SWITCH_TAPS)
 
+	val isReaderZoomButtonsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READER_ZOOM_BUTTONS, false)
+
 	val isReaderTapsAdaptive: Boolean
 		get() = !prefs.getBoolean(KEY_READER_TAPS_LTR, false)
 
@@ -161,7 +164,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
 		set(value) = prefs.edit {
 			if (value != null) putString(KEY_APP_PASSWORD, value) else remove(
-				KEY_APP_PASSWORD
+				KEY_APP_PASSWORD,
 			)
 		}
 
@@ -314,7 +317,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		set(@FloatRange(from = 0.0, to = 1.0) value) = prefs.edit {
 			putFloat(
 				KEY_READER_AUTOSCROLL_SPEED,
-				value
+				value,
 			)
 		}
 
@@ -325,7 +328,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			}
 			val policy = NetworkPolicy.from(
 				prefs.getString(KEY_PAGES_PRELOAD, null),
-				NetworkPolicy.NON_METERED
+				NetworkPolicy.NON_METERED,
 			)
 			return policy.isNetworkAllowed(connectivityManager)
 		}
@@ -409,6 +412,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_REMOTE_SOURCES = "remote_sources"
 		const val KEY_LOCAL_STORAGE = "local_storage"
 		const val KEY_READER_SWITCHERS = "reader_switchers"
+		const val KEY_READER_ZOOM_BUTTONS = "reader_zoom_buttons"
 		const val KEY_TRACKER_ENABLED = "tracker_enabled"
 		const val KEY_TRACKER_WIFI_ONLY = "tracker_wifi"
 		const val KEY_TRACK_SOURCES = "track_sources"

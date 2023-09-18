@@ -40,6 +40,12 @@ open class PageHolder(
 		@Suppress("LeakingThis")
 		bindingInfo.buttonErrorDetails.setOnClickListener(this)
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
+		binding.zoomControl.listener = SsivZoomListener(binding.ssiv)
+	}
+
+	override fun onConfigChanged() {
+		super.onConfigChanged()
+		binding.zoomControl.isVisible = settings.isZoomControlsEnabled
 	}
 
 	@SuppressLint("SetTextI18n")

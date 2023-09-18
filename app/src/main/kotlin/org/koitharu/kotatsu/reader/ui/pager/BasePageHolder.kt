@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 abstract class BasePageHolder<B : ViewBinding>(
 	protected val binding: B,
 	loader: PageLoader,
-	private val settings: ReaderSettings,
+	protected val settings: ReaderSettings,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
 ) : RecyclerView.ViewHolder(binding.root), PageHolderDelegate.Callback {
