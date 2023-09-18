@@ -239,10 +239,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 	override fun onQueryClick(query: String, submit: Boolean) {
 		viewBinding.searchView.query = query
-		if (submit) {
-			if (query.isNotEmpty()) {
-				startActivity(MultiSearchActivity.newIntent(this, query))
-				searchSuggestionViewModel.saveQuery(query)
+		if (submit && query.isNotEmpty()) {
+			startActivity(MultiSearchActivity.newIntent(this, query))
+			searchSuggestionViewModel.saveQuery(query)
+			viewBinding.searchView.post {
+				closeSearchCallback.handleOnBackPressed()
 			}
 		}
 	}

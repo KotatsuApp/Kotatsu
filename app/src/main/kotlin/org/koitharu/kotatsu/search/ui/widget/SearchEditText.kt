@@ -7,6 +7,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.util.AttributeSet
+import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.SoundEffectConstants
@@ -59,7 +60,11 @@ class SearchEditText @JvmOverloads constructor(
 	}
 
 	override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-		if (keyCode == KeyEvent.KEYCODE_ENTER && event.hasNoModifiers() && query.isNotEmpty()) {
+		if (event.isFromSource(InputDevice.SOURCE_KEYBOARD)
+			&& (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
+			&& event.hasNoModifiers()
+			&& query.isNotEmpty()
+		) {
 			cancelLongPress()
 			searchSuggestionListener?.onQueryClick(query, submit = true)
 			clearFocus()
