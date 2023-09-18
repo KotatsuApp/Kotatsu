@@ -10,6 +10,8 @@
 		android:id="@+id/ssiv"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:defaultFocusHighlightEnabled="false"
+		android:focusable="true"
 		app:restoreStrategy="deferred" />
 
 	<TextView

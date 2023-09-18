@@ -107,7 +107,7 @@ class ReaderActivity :
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
 		scrollTimer = scrollTimerFactory.create(this, this)
-		controlDelegate = ReaderControlDelegate(settings, this, this)
+		controlDelegate = ReaderControlDelegate(resources, settings, this, this)
 		viewBinding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 		viewBinding.slider.setLabelFormatter(PageLabelFormatter())
 		ReaderSliderListener(this, viewModel).attachToSlider(viewBinding.slider)
@@ -347,8 +347,8 @@ class ReaderActivity :
 		readerManager.currentReader?.switchPageBy(delta)
 	}
 
-	override fun scrollBy(delta: Int): Boolean {
-		return readerManager.currentReader?.scrollBy(delta) ?: false
+	override fun scrollBy(delta: Int, smooth: Boolean): Boolean {
+		return readerManager.currentReader?.scrollBy(delta, smooth) ?: false
 	}
 
 	override fun toggleUiVisibility() {

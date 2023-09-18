@@ -12,8 +12,8 @@ class WebtoonFrameLayout @JvmOverloads constructor(
 	@AttrRes defStyleAttr: Int = 0,
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-	val target by lazy(LazyThreadSafetyMode.NONE) {
-		findViewById<WebtoonImageView>(R.id.ssiv)
+	val target: WebtoonImageView by lazy(LazyThreadSafetyMode.NONE) {
+		findViewById(R.id.ssiv)
 	}
 
 	fun dispatchVerticalScroll(dy: Int): Int {

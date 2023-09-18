@@ -1,16 +1,19 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.view.KeyEvent
 import android.view.SoundEffectConstants
 import android.view.View
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.util.GridTouchHelper
 
 class ReaderControlDelegate(
+	resources: Resources,
 	private val settings: AppSettings,
 	private val listener: OnInteractionListener,
 	owner: LifecycleOwner,
@@ -19,6 +22,7 @@ class ReaderControlDelegate(
 	private var isTapSwitchEnabled: Boolean = true
 	private var isVolumeKeysSwitchEnabled: Boolean = false
 	private var isReaderTapsAdaptive: Boolean = true
+	private var minScrollDelta = resources.getDimensionPixelSize(R.dimen.reader_scroll_delta_min)
 
 	init {
 		owner.lifecycle.addObserver(this)
@@ -82,8 +86,6 @@ class ReaderControlDelegate(
 
 		KeyEvent.KEYCODE_SPACE,
 		KeyEvent.KEYCODE_PAGE_DOWN,
-		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN,
-		KeyEvent.KEYCODE_DPAD_DOWN,
 		-> {
 			listener.switchPageBy(1)
 			true
@@ -95,8 +97,6 @@ class ReaderControlDelegate(
 		}
 
 		KeyEvent.KEYCODE_PAGE_UP,
-		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_UP,
-		KeyEvent.KEYCODE_DPAD_UP,
 		-> {
 			listener.switchPageBy(-1)
 			true
@@ -109,6 +109,22 @@ class ReaderControlDelegate(
 
 		KeyEvent.KEYCODE_DPAD_CENTER -> {
 			listener.toggleUiVisibility()
+			true
+		}
+
+		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_UP,
+		KeyEvent.KEYCODE_DPAD_UP -> {
+			if (!listener.scrollBy(-minScrollDelta, smooth = true)) {
+				listener.switchPageBy(-1)
+			}
+			true
+		}
+
+		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN,
+		KeyEvent.KEYCODE_DPAD_DOWN -> {
+			if (!listener.scrollBy(minScrollDelta, smooth = true)) {
+				listener.switchPageBy(1)
+			}
 			true
 		}
 
@@ -139,7 +155,7 @@ class ReaderControlDelegate(
 
 		fun switchPageBy(delta: Int)
 
-		fun scrollBy(delta: Int): Boolean
+		fun scrollBy(delta: Int, smooth: Boolean): Boolean
 
 		fun toggleUiVisibility()
 

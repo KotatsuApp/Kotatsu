@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.pager.reversed
 
+import android.os.Build
 import android.os.Bundle
 import android.view.InputDevice
 import android.view.KeyEvent
@@ -27,6 +28,7 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.standard.NoAnimPageTransformer
+import org.koitharu.kotatsu.reader.ui.pager.standard.PagerEventSupplier
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import javax.inject.Inject
 import kotlin.math.absoluteValue
@@ -54,6 +56,10 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 			offscreenPageLimit = 2
 			doOnPageChanged(::notifyPageChanged)
 			setOnGenericMotionListener(this@ReversedReaderFragment)
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				recyclerView?.defaultFocusHighlightEnabled = false
+			}
+			PagerEventSupplier(this).attach()
 		}
 
 		viewModel.pageAnimation.observe(viewLifecycleOwner) {

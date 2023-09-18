@@ -96,7 +96,7 @@ class ScrollTimer @AssistedInject constructor(
 				if (!listener.isReaderResumed()) {
 					continue
 				}
-				if (!listener.scrollBy(1)) {
+				if (!listener.scrollBy(1, false)) {
 					accumulator += delayMs
 				}
 				if (accumulator >= pageSwitchDelay) {

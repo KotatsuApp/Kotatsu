@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
@@ -31,7 +31,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 	@Inject
 	lateinit var pageLoader: PageLoader
 
-	private val scrollInterpolator = AccelerateDecelerateInterpolator()
+	private val scrollInterpolator = DecelerateInterpolator()
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -122,8 +122,12 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		requireViewBinding().recyclerView.firstVisibleItemPosition = position
 	}
 
-	override fun scrollBy(delta: Int): Boolean {
-		requireViewBinding().recyclerView.nestedScrollBy(0, delta)
+	override fun scrollBy(delta: Int, smooth: Boolean): Boolean {
+		if (smooth && isAnimationEnabled()) {
+			requireViewBinding().recyclerView.smoothScrollBy(0, delta, scrollInterpolator)
+		} else {
+			requireViewBinding().recyclerView.nestedScrollBy(0, delta)
+		}
 		return true
 	}
 

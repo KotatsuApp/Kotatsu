@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.pager.standard
 
+import android.os.Build
 import android.os.Bundle
 import android.view.InputDevice
 import android.view.KeyEvent
@@ -55,6 +56,10 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>(),
 			offscreenPageLimit = 2
 			doOnPageChanged(::notifyPageChanged)
 			setOnGenericMotionListener(this@PagerReaderFragment)
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				recyclerView?.defaultFocusHighlightEnabled = false
+			}
+			PagerEventSupplier(this).attach()
 		}
 
 		viewModel.pageAnimation.observe(viewLifecycleOwner) {

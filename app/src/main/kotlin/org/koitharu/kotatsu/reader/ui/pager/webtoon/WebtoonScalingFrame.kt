@@ -11,14 +11,17 @@ import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
+import android.view.ViewConfiguration
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.OverScroller
 import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.ViewConfigurationCompat
+import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 
 private const val MAX_SCALE = 2.5f
 private const val MIN_SCALE = 0.5f
-private const val WHEEL_SCALE_FACTOR = 0.2f
 
 class WebtoonScalingFrame @JvmOverloads constructor(
 	context: Context,
@@ -43,6 +46,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	private var halfHeight = 0f
 	private val translateBounds = RectF()
 	private val targetHitRect = Rect()
+	private var animator: ValueAnimator? = null
 
 	var isZoomEnable = true
 		set(value) {
@@ -81,19 +85,64 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	}
 
 	override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-		if (event.source and InputDevice.SOURCE_CLASS_POINTER != 0) {
+		if (isZoomEnable && event.source and InputDevice.SOURCE_CLASS_POINTER != 0) {
 			if (event.actionMasked == MotionEvent.ACTION_SCROLL) {
 				val withCtrl = event.metaState and KeyEvent.META_CTRL_MASK != 0
 				if (withCtrl) {
-					val axisValue = event.getAxisValue(MotionEvent.AXIS_VSCROLL)
-					val newScale =
-						(scale + axisValue * WHEEL_SCALE_FACTOR).coerceIn(MIN_SCALE, MAX_SCALE)
+					val axisValue =
+						event.getAxisValue(MotionEvent.AXIS_VSCROLL) * ViewConfigurationCompat.getScaledVerticalScrollFactor(
+							ViewConfiguration.get(context), context,
+						)
+					val newScale = (scale + axisValue).coerceIn(MIN_SCALE, MAX_SCALE)
 					scaleChild(newScale, event.x, event.y)
 					return true
 				}
 			}
 		}
 		return super.onGenericMotionEvent(event)
+	}
+
+	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+		if (!isZoomEnable) {
+			return super.onKeyDown(keyCode, event)
+		}
+		return when (keyCode) {
+			KeyEvent.KEYCODE_ZOOM_IN,
+			KeyEvent.KEYCODE_NUMPAD_ADD,
+			KeyEvent.KEYCODE_PLUS -> {
+				smoothScaleTo(scale * 1.1f)
+				true
+			}
+
+			KeyEvent.KEYCODE_ZOOM_OUT,
+			KeyEvent.KEYCODE_NUMPAD_SUBTRACT,
+			KeyEvent.KEYCODE_MINUS -> {
+				smoothScaleTo(scale * 0.9f)
+				true
+			}
+
+			KeyEvent.KEYCODE_ESCAPE -> {
+				smoothScaleTo(1f)
+				true
+			}
+
+			else -> super.onKeyDown(keyCode, event)
+		}
+	}
+
+	override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+		return if (isZoomEnable) {
+			keyCode == KeyEvent.KEYCODE_NUMPAD_ADD
+				|| keyCode == KeyEvent.KEYCODE_PLUS
+				|| keyCode == KeyEvent.KEYCODE_NUMPAD_SUBTRACT
+				|| keyCode == KeyEvent.KEYCODE_MINUS
+				|| keyCode == KeyEvent.KEYCODE_ZOOM_IN
+				|| keyCode == KeyEvent.KEYCODE_ZOOM_OUT
+				|| keyCode == KeyEvent.KEYCODE_ESCAPE
+				|| super.onKeyUp(keyCode, event)
+		} else {
+			super.onKeyUp(keyCode, event)
+		}
 	}
 
 	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -173,10 +222,24 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 		return true
 	}
 
-	override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
+	override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+		animator?.cancel()
+		animator = null
+		return true
+	}
 
 	override fun onScaleEnd(p0: ScaleGestureDetector) = Unit
 
+	private fun smoothScaleTo(target: Float) {
+		val newScale = target.coerceIn(MIN_SCALE, MAX_SCALE)
+		animator?.cancel()
+		animator = ValueAnimator.ofFloat(scale, newScale).apply {
+			setDuration(context.getAnimationDuration(android.R.integer.config_shortAnimTime))
+			interpolator = DecelerateInterpolator()
+			addUpdateListener { scaleChild(it.animatedValue as Float, halfWidth, halfHeight) }
+			start()
+		}
+	}
 
 	private inner class GestureListener : GestureDetector.SimpleOnGestureListener(), Runnable {
 
@@ -231,7 +294,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			if (overScroller.computeScrollOffset()) {
 				transformMatrix.postTranslate(
 					overScroller.currX - transX,
-					overScroller.currY - transY
+					overScroller.currY - transY,
 				)
 				invalidateTarget()
 				postOnAnimation(this)
