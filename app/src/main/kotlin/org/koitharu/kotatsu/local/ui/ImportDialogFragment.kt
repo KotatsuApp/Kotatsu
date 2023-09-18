@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.DialogImportBinding
 
 class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.OnClickListener {
@@ -40,9 +41,13 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 	}
 
 	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_file -> importFileCall.launch(arrayOf("*/*"))
-			R.id.button_dir -> importDirCall.launch(null)
+		val res = when (v.id) {
+			R.id.button_file -> importFileCall.tryLaunch(arrayOf("*/*"))
+			R.id.button_dir -> importDirCall.tryLaunch(null)
+			else -> true
+		}
+		if (!res) {
+			Toast.makeText(v.context, R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
 		}
 	}
 
