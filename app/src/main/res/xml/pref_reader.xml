@@ -28,6 +28,12 @@
 		android:summary="@string/webtoon_zoom_summary"
 		android:title="@string/webtoon_zoom" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="reader_zoom_buttons"
+		android:summary="@string/reader_zoom_buttons_summary"
+		android:title="@string/reader_zoom_buttons" />
+
 	<MultiSelectListPreference
 		android:defaultValue="@array/values_reader_switchers_default"
 		android:entries="@array/reader_switchers"
@@ -47,12 +53,6 @@
 		android:key="reader_animation2"
 		android:title="@string/pages_animation"
 		app:useSimpleSummaryProvider="true" />
-
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="reader_zoom_buttons"
-		android:summary="@string/reader_zoom_buttons_summary"
-		android:title="@string/reader_zoom_buttons" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
