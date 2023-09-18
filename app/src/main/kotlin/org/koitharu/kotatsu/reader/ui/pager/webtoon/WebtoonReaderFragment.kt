@@ -9,6 +9,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -51,9 +52,10 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		viewModel.isWebtoonZoomEnabled.observe(viewLifecycleOwner) {
 			binding.frame.isZoomEnable = it
 		}
-		viewModel.isZoomControlEnabled.observe(viewLifecycleOwner) {
-			binding.zoomControl.isVisible = it
-		}
+		combine(viewModel.isWebtoonZoomEnabled, viewModel.isZoomControlEnabled, Boolean::and)
+			.observe(viewLifecycleOwner) {
+				binding.zoomControl.isVisible = it
+			}
 	}
 
 	override fun onDestroyView() {
