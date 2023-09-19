@@ -469,4 +469,18 @@
     <string name="disable_nsfw">Désactiver NSFW</string>
     <string name="too_many_requests_message">Trop de requêtes. Réessayez plus tard</string>
     <string name="related_manga_summary">Afficher une liste de mangas connexes. Dans certains cas, elle peut être inexacte ou manquante</string>
+    <string name="zoom_in">Agrandir</string>
+    <string name="error_corrupted_file">Les données invalides sont retournées ou le fichier est corrompu</string>
+    <string name="reader_zoom_buttons_summary">Pour afficher ou pas les boutons de commande de zoom dans le coin inférieur droit</string>
+    <string name="on_device">Sur l\'appareil</string>
+    <string name="moved_to_top">Déplacé vers le haut</string>
+    <string name="items_limit_exceeded">Plus d\'éléments peuvent être ajoutés</string>
+    <string name="directories">Répertoires</string>
+    <string name="reader_zoom_buttons">Afficher les boutons de zoom</string>
+    <string name="main_screen_sections">Principales sections de l\'écran</string>
+    <string name="advanced">Avancé</string>
+    <string name="default_section">Section par défaut</string>
+    <string name="zoom_out">Réduire</string>
+    <string name="manga_list">Liste des mangas</string>
+    <string name="to_top">En haut</string>
 </resources>
