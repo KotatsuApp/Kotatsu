@@ -479,4 +479,8 @@
     <string name="directories">Directorios</string>
     <string name="main_screen_sections">Secciones de la pantalla principal</string>
     <string name="to_top">Hasta arriba</string>
+    <string name="zoom_in">Acercar</string>
+    <string name="reader_zoom_buttons_summary">Mostrar o no los botones de control del zoom en la esquina inferior derecha</string>
+    <string name="reader_zoom_buttons">Mostrar los botones del zoom</string>
+    <string name="zoom_out">Alejar</string>
 </resources>
