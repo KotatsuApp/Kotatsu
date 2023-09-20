@@ -35,6 +35,7 @@ class BookmarksSheetViewModel @Inject constructor(
 
 	val content: StateFlow<List<ListModel>> = bookmarksRepository.observeBookmarks(manga)
 		.map { mapList(it) }
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, listOf(LoadingFooter()))
 
 	private suspend fun mapList(bookmarks: List<Bookmark>): List<ListModel> {

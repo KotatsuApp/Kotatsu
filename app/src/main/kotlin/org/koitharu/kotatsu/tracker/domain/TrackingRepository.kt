@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import java.util.Date
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 private const val NO_ID = 0L
@@ -34,7 +35,7 @@ class TrackingRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
 
-	private var isGcCalled = false
+	private var isGcCalled = AtomicBoolean(false)
 
 	suspend fun getNewChaptersCount(mangaId: Long): Int {
 		return db.tracksDao.findNewChapters(mangaId) ?: 0
@@ -227,9 +228,8 @@ class TrackingRepository @Inject constructor(
 	}
 
 	private suspend fun gcIfNotCalled() {
-		if (!isGcCalled) {
+		if (isGcCalled.compareAndSet(false, true)) {
 			gc()
-			isGcCalled = true
 		}
 	}
 

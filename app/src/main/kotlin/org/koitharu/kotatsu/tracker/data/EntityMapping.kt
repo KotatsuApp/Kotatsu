@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.tracker.data
 
-import java.util.*
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
+import java.util.Date
 
 fun TrackLogWithManga.toTrackingLogItem(counters: MutableMap<Long, Int>): TrackingLogItem {
 	val chaptersList = trackLog.chapters.split('\n').filterNot { x -> x.isEmpty() }
@@ -16,7 +16,7 @@ fun TrackLogWithManga.toTrackingLogItem(counters: MutableMap<Long, Int>): Tracki
 	)
 }
 
-private fun MutableMap<Long, Int>.decrement(key: Long, count: Int): Boolean {
+private fun MutableMap<Long, Int>.decrement(key: Long, count: Int): Boolean = synchronized(this) {
 	val counter = get(key)
 	if (counter == null || counter <= 0) {
 		return false

@@ -87,8 +87,7 @@ class ReaderViewModel @Inject constructor(
 	private var pageSaveJob: Job? = null
 	private var bookmarkJob: Job? = null
 	private var stateChangeJob: Job? = null
-	private val currentState =
-		MutableStateFlow<ReaderState?>(savedStateHandle[ReaderActivity.EXTRA_STATE])
+	private val currentState = MutableStateFlow<ReaderState?>(savedStateHandle[ReaderActivity.EXTRA_STATE])
 	private val mangaData = MutableStateFlow(intent.manga?.let { DoubleManga(it) })
 	private val mangaFlow: Flow<Manga?>
 		get() = mangaData.map { it?.any }
@@ -326,7 +325,7 @@ class ReaderViewModel @Inject constructor(
 			mangaData.value = manga
 			val mangaFlow = doubleMangaLoadUseCase(intent)
 			manga = mangaFlow.first { x -> x.any != null }
-			chaptersLoader.init(viewModelScope, mangaFlow)
+			chaptersLoader.init(viewModelScope, mangaFlow.withErrorHandling())
 			// determine mode
 			val singleManga = manga.requireAny()
 			// obtain state

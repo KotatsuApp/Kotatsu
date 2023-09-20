@@ -26,7 +26,7 @@ class DoubleMangaLoadUseCase @Inject constructor(
 	private val recoverUseCase: RecoverMangaUseCase,
 ) {
 
-	operator fun invoke(manga: Manga): Flow<DoubleManga> = flow<DoubleManga> {
+	operator fun invoke(manga: Manga): Flow<DoubleManga> = flow {
 		var lastValue: DoubleManga? = null
 		var emitted = false
 		invokeImpl(manga).collect {
