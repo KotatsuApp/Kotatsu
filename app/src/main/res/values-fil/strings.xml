@@ -473,4 +473,14 @@
     <string name="too_many_requests_message">Masyadong maraming request. Subukang ulit mamaya</string>
     <string name="default_section">Default na seksyon</string>
     <string name="manga_list">Listahan ng Manga</string>
+    <string name="zoom_in">Mag-zoom paloob</string>
+    <string name="reader_zoom_buttons_summary">Kung magpapakita ng mga button ng kontrol ng zoom sa kanang sulok sa ibaba</string>
+    <string name="on_device">Sa device</string>
+    <string name="moved_to_top">Nailipat sa itaas</string>
+    <string name="items_limit_exceeded">Wala nang mga aytem na pwedeng idagdag</string>
+    <string name="directories">Mga Directory</string>
+    <string name="reader_zoom_buttons">Ipakita ang mga button ng pag-zoom</string>
+    <string name="main_screen_sections">Mga pangunahing seksyon ng screen</string>
+    <string name="zoom_out">Mag-zoom palabas</string>
+    <string name="to_top">Sa taas</string>
 </resources>
