@@ -479,4 +479,8 @@
     <string name="main_screen_sections">メイン画面のセクション</string>
     <string name="moved_to_top">上部に移動しました</string>
     <string name="to_top">最上部へ移動</string>
+    <string name="zoom_in">ズームイン</string>
+    <string name="reader_zoom_buttons_summary">右下にズームコントロールボタンを表示するかどうか</string>
+    <string name="reader_zoom_buttons">ズームボタンを表示</string>
+    <string name="zoom_out">ズームアウト</string>
 </resources>
