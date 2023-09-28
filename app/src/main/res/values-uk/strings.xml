@@ -479,4 +479,8 @@
     <string name="directories">Каталоги</string>
     <string name="main_screen_sections">Розділи головного екрана</string>
     <string name="to_top">Вгору</string>
+    <string name="zoom_in">Збільшити</string>
+    <string name="reader_zoom_buttons_summary">Чи показувати елементи керування масштабуванням у нижньому правому куті</string>
+    <string name="reader_zoom_buttons">Показати кнопки масштабування</string>
+    <string name="zoom_out">Зменшити</string>
 </resources>
