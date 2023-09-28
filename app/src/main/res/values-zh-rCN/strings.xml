@@ -477,4 +477,8 @@
     <string name="to_top">置顶</string>
     <string name="show">显示</string>
     <string name="color_black">黑色</string>
+    <string name="zoom_in">放大</string>
+    <string name="reader_zoom_buttons_summary">是否在右下角显示缩放按钮</string>
+    <string name="reader_zoom_buttons">显示缩放按钮</string>
+    <string name="zoom_out">缩小</string>
 </resources>
