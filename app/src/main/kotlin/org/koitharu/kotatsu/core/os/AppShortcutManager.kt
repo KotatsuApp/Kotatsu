@@ -76,12 +76,18 @@ class AppShortcutManager @Inject constructor(
 		}
 	}
 
-	suspend fun requestPinShortcut(manga: Manga): Boolean {
-		return ShortcutManagerCompat.requestPinShortcut(context, buildShortcutInfo(manga), null)
+	suspend fun requestPinShortcut(manga: Manga): Boolean = try {
+		ShortcutManagerCompat.requestPinShortcut(context, buildShortcutInfo(manga), null)
+	} catch (e: IllegalStateException) {
+		e.printStackTraceDebug()
+		false
 	}
 
-	suspend fun requestPinShortcut(source: MangaSource): Boolean {
-		return ShortcutManagerCompat.requestPinShortcut(context, buildShortcutInfo(source), null)
+	suspend fun requestPinShortcut(source: MangaSource): Boolean = try {
+		ShortcutManagerCompat.requestPinShortcut(context, buildShortcutInfo(source), null)
+	} catch (e: IllegalStateException) {
+		e.printStackTraceDebug()
+		false
 	}
 
 	@VisibleForTesting
