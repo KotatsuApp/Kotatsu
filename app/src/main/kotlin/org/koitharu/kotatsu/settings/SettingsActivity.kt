@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
+import org.koitharu.kotatsu.settings.about.AppUpdateDialog
 import org.koitharu.kotatsu.settings.sources.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesManageFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
@@ -40,6 +41,8 @@ class SettingsActivity :
 	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
 	AppBarOwner,
 	FragmentManager.OnBackStackChangedListener {
+
+	val appUpdateDialog = AppUpdateDialog(this)
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar

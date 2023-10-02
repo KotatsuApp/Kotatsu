@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.settings.SettingsActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -76,7 +77,7 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 			Snackbar.make(listView, R.string.no_update_available, Snackbar.LENGTH_SHORT).show()
 			return
 		}
-		AppUpdateDialog(context ?: return).show(version)
+		(activity as SettingsActivity).appUpdateDialog.show(version)
 	}
 
 	private fun openLink(url: String, title: CharSequence?) {

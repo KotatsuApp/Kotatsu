@@ -83,6 +83,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	private val viewModel by viewModels<MainViewModel>()
 	private val searchSuggestionViewModel by viewModels<SearchSuggestionViewModel>()
 	private val closeSearchCallback = CloseSearchCallback()
+	private val appUpdateDialog = AppUpdateDialog(this)
 	private lateinit var navigationDelegate: MainNavigationDelegate
 	private lateinit var appUpdateBadge: OptionsMenuBadgeHelper
 
@@ -198,8 +199,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 		R.id.action_app_update -> {
 			viewModel.appUpdate.value?.also {
-				AppUpdateDialog(this)
-					.show(it)
+				appUpdateDialog.show(it)
 			} != null
 		}
 
