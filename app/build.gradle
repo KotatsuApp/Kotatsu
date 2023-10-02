@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 34
-		versionCode = 582
-		versionName = '6.1.4'
+		versionCode = 583
+		versionName = '6.1.5'
 		generatedDensities = []
 		testInstrumentationRunner "org.koitharu.kotatsu.HiltTestRunner"
 		ksp {
@@ -81,7 +81,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:1611dc3429') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:931f126119') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -120,7 +120,7 @@ dependencies {
 
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.11.0'
-	implementation 'com.squareup.okio:okio:3.5.0'
+	implementation 'com.squareup.okio:okio:3.6.0'
 
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2'
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
