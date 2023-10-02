@@ -78,13 +78,19 @@
 		android:summary="@string/show_pages_numbers_summary"
 		android:title="@string/show_pages_numbers" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="reader_screen_on"
+		android:summary="@string/keep_screen_on_summary"
+		android:title="@string/keep_screen_on"
+		app:allowDividerAbove="true" />
+
 	<ListPreference
 		android:defaultValue="allow"
 		android:entries="@array/screenshots_policy"
 		android:entryValues="@array/values_screenshots_policy"
 		android:key="screenshots_policy"
 		android:title="@string/screenshots_policy"
-		app:allowDividerAbove="true"
 		app:useSimpleSummaryProvider="true" />
 
 	<ListPreference

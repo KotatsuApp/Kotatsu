@@ -270,6 +270,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReaderSliderEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_SLIDER, true)
 
+	val isReaderKeepScreenOn: Boolean
+		get() = prefs.getBoolean(KEY_READER_SCREEN_ON, true)
+
 	val isImagesProxyEnabled: Boolean
 		get() = prefs.getBoolean(KEY_IMAGES_PROXY, false)
 
@@ -460,6 +463,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READER_BAR = "reader_bar"
 		const val KEY_READER_SLIDER = "reader_slider"
 		const val KEY_READER_BACKGROUND = "reader_background"
+		const val KEY_READER_SCREEN_ON = "reader_screen_on"
 		const val KEY_SHORTCUTS = "dynamic_shortcuts"
 		const val KEY_READER_TAPS_LTR = "reader_taps_ltr"
 		const val KEY_LOCAL_LIST_ORDER = "local_order"

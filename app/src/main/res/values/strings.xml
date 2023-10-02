@@ -489,4 +489,6 @@
 	<string name="zoom_in">Zoom in</string>
 	<string name="reader_zoom_buttons">Show zoom buttons</string>
 	<string name="reader_zoom_buttons_summary">Whether to show zoom control buttons in the bottom right corner</string>
+	<string name="keep_screen_on">Keep screen on</string>
+	<string name="keep_screen_on_summary">Do not turn the screen off while you\'re reading manga</string>
 </resources>

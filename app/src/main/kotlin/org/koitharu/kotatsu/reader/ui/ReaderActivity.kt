@@ -137,6 +137,7 @@ class ReaderActivity :
 			onLoadingStateChanged(viewModel.isLoading.value)
 		}
 		viewModel.isScreenshotsBlockEnabled.observe(this, this::setWindowSecure)
+		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, this::onBookmarkStateChanged)
 		viewModel.onShowToast.observeEvent(this) { msgId ->
@@ -301,6 +302,14 @@ class ReaderActivity :
 			window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 		} else {
 			window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+		}
+	}
+
+	private fun setKeepScreenOn(isKeep: Boolean) {
+		if (isKeep) {
+			window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+		} else {
+			window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 		}
 	}
 

@@ -113,6 +113,12 @@ class ReaderViewModel @Inject constructor(
 		valueProducer = { isReaderBarEnabled },
 	)
 
+	val isKeepScreenOnEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_READER_SCREEN_ON,
+		valueProducer = { isReaderKeepScreenOn },
+	)
+
 	val isWebtoonZoomEnabled = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_WEBTOON_ZOOM,
