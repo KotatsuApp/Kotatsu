@@ -13,10 +13,11 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.tracker.data.TrackEntity
 import org.koitharu.kotatsu.tracker.data.TrackLogEntity
@@ -27,12 +28,14 @@ import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import java.util.Date
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+import javax.inject.Provider
 
 private const val NO_ID = 0L
 
 @Reusable
 class TrackingRepository @Inject constructor(
 	private val db: MangaDatabase,
+	private val localMangaRepositoryProvider: Provider<LocalMangaRepository>,
 ) {
 
 	private var isGcCalled = AtomicBoolean(false)
@@ -66,12 +69,17 @@ class TrackingRepository @Inject constructor(
 		val idSet = HashSet<Long>()
 		val result = ArrayList<MangaTracking>(mangaList.size)
 		for (item in mangaList) {
-			if (item.source == MangaSource.LOCAL || !idSet.add(item.id)) {
+			val manga = if (item.isLocal) {
+				localMangaRepositoryProvider.get().getRemoteManga(item) ?: continue
+			} else {
+				item
+			}
+			if (!idSet.add(manga.id)) {
 				continue
 			}
-			val track = tracks[item.id]?.lastOrNull()
+			val track = tracks[manga.id]?.lastOrNull()
 			result += MangaTracking(
-				manga = item,
+				manga = manga,
 				lastChapterId = track?.lastChapterId ?: NO_ID,
 				lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(::Date),
 			)
