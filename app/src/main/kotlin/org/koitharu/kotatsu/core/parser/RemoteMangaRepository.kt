@@ -13,11 +13,13 @@ import okhttp3.Response
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.cache.SafeDeferred
+import org.koitharu.kotatsu.core.network.MirrorSwitchInterceptor
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.config.ConfigKey
+import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Favicons
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -31,6 +33,7 @@ import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 class RemoteMangaRepository(
 	private val parser: MangaParser,
 	private val cache: ContentCache,
+	private val mirrorSwitchInterceptor: MirrorSwitchInterceptor,
 ) : MangaRepository, Interceptor {
 
 	override val source: MangaSource
@@ -66,11 +69,15 @@ class RemoteMangaRepository(
 	}
 
 	override suspend fun getList(offset: Int, query: String): List<Manga> {
-		return parser.getList(offset, query)
+		return mirrorSwitchInterceptor.withMirrorSwitching {
+			parser.getList(offset, query)
+		}
 	}
 
 	override suspend fun getList(offset: Int, tags: Set<MangaTag>?, sortOrder: SortOrder?): List<Manga> {
-		return parser.getList(offset, tags, sortOrder)
+		return mirrorSwitchInterceptor.withMirrorSwitching {
+			parser.getList(offset, tags, sortOrder)
+		}
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga = getDetails(manga, withCache = true)
@@ -78,17 +85,25 @@ class RemoteMangaRepository(
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		cache.getPages(source, chapter.url)?.let { return it }
 		val pages = asyncSafe {
-			parser.getPages(chapter).distinctById()
+			mirrorSwitchInterceptor.withMirrorSwitching {
+				parser.getPages(chapter).distinctById()
+			}
 		}
 		cache.putPages(source, chapter.url, pages)
 		return pages.await()
 	}
 
-	override suspend fun getPageUrl(page: MangaPage): String = parser.getPageUrl(page)
+	override suspend fun getPageUrl(page: MangaPage): String = mirrorSwitchInterceptor.withMirrorSwitching {
+		parser.getPageUrl(page)
+	}
 
-	override suspend fun getTags(): Set<MangaTag> = parser.getTags()
+	override suspend fun getTags(): Set<MangaTag> = mirrorSwitchInterceptor.withMirrorSwitching {
+		parser.getTags()
+	}
 
-	suspend fun getFavicons(): Favicons = parser.getFavicons()
+	suspend fun getFavicons(): Favicons = mirrorSwitchInterceptor.withMirrorSwitching {
+		parser.getFavicons()
+	}
 
 	override suspend fun getRelated(seed: Manga): List<Manga> {
 		cache.getRelatedManga(source, seed.url)?.let { return it }
@@ -105,7 +120,9 @@ class RemoteMangaRepository(
 		}
 		cache.getDetails(source, manga.url)?.let { return it }
 		val details = asyncSafe {
-			parser.getDetails(manga)
+			mirrorSwitchInterceptor.withMirrorSwitching {
+				parser.getDetails(manga)
+			}
 		}
 		cache.putDetails(source, manga.url, details)
 		return details.await()
@@ -155,4 +172,33 @@ class RemoteMangaRepository(
 		}
 		return result
 	}
+
+	private suspend fun <R> MirrorSwitchInterceptor.withMirrorSwitching(block: suspend () -> R): R {
+		if (!isEnabled) {
+			return block()
+		}
+		val initialMirror = domain
+		val result = runCatchingCancellable {
+			block()
+		}
+		if (result.isValidResult()) {
+			return result.getOrThrow()
+		}
+		return if (trySwitchMirror(this@RemoteMangaRepository)) {
+			val newResult = runCatchingCancellable {
+				block()
+			}
+			if (newResult.isValidResult()) {
+				return newResult.getOrThrow()
+			} else {
+				rollback(this@RemoteMangaRepository, initialMirror)
+				return result.getOrThrow()
+			}
+		} else {
+			result.getOrThrow()
+		}
+	}
+
+	private fun Result<*>.isValidResult() = exceptionOrNull() !is ParseException
+		&& (getOrNull() as? Collection<*>)?.isEmpty() != true
 }

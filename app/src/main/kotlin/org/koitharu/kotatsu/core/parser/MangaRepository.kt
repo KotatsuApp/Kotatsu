@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.parser
 
 import androidx.annotation.AnyThread
 import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.core.network.MirrorSwitchInterceptor
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -43,6 +44,7 @@ interface MangaRepository {
 		private val localMangaRepository: LocalMangaRepository,
 		private val loaderContext: MangaLoaderContext,
 		private val contentCache: ContentCache,
+		private val mirrorSwitchInterceptor: MirrorSwitchInterceptor,
 	) {
 
 		private val cache = EnumMap<MangaSource, WeakReference<RemoteMangaRepository>>(MangaSource::class.java)
@@ -55,7 +57,11 @@ interface MangaRepository {
 			cache[source]?.get()?.let { return it }
 			return synchronized(cache) {
 				cache[source]?.get()?.let { return it }
-				val repository = RemoteMangaRepository(MangaParser(source, loaderContext), contentCache)
+				val repository = RemoteMangaRepository(
+					parser = MangaParser(source, loaderContext),
+					cache = contentCache,
+					mirrorSwitchInterceptor = mirrorSwitchInterceptor,
+				)
 				cache[source] = WeakReference(repository)
 				repository
 			}
