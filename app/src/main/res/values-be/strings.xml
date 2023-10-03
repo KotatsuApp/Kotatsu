@@ -483,4 +483,6 @@
     <string name="reader_zoom_buttons_summary">Ці паказваць кнопкі кіравання маштабаваннем у правым ніжнім куце</string>
     <string name="reader_zoom_buttons">Паказаць кнопкі маштабавання</string>
     <string name="zoom_out">Зменшыць</string>
+    <string name="keep_screen_on">Трымаць экран уключаным</string>
+    <string name="keep_screen_on_summary">Ня выключаць экран падчас чытання мангі</string>
 </resources>
