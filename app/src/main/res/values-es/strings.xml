@@ -483,4 +483,6 @@
     <string name="reader_zoom_buttons_summary">Mostrar o no los botones de control del zoom en la esquina inferior derecha</string>
     <string name="reader_zoom_buttons">Mostrar los botones del zoom</string>
     <string name="zoom_out">Alejar</string>
+    <string name="keep_screen_on">Mantener pantalla encendida</string>
+    <string name="keep_screen_on_summary">No apagues la pantalla mientras lees manga</string>
 </resources>
