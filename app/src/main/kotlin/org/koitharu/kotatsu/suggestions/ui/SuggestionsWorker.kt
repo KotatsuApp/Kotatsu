@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.suggestions.ui
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.pm.ServiceInfo
@@ -10,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.text.HtmlCompat
+import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.parseAsHtml
 import androidx.hilt.work.HiltWorker
@@ -48,6 +50,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.almostEquals
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
+import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.flatten
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitize
@@ -163,7 +166,7 @@ class SuggestionsWorker @AssistedInject constructor(
 			.sortedBy { it.relevance }
 			.take(MAX_RESULTS)
 		suggestionRepository.replace(suggestions)
-		if (appSettings.isSuggestionsNotificationAvailable) {
+		if (appSettings.isSuggestionsNotificationAvailable && applicationContext.checkNotificationPermission()) {
 			for (i in 0..3) {
 				try {
 					val manga = suggestions[Random.nextInt(0, suggestions.size / 3)]
@@ -221,10 +224,8 @@ class SuggestionsWorker @AssistedInject constructor(
 		e.printStackTraceDebug()
 	}.getOrDefault(emptyList())
 
+	@SuppressLint("MissingPermission")
 	private suspend fun showNotification(manga: Manga) {
-		if (!notificationManager.areNotificationsEnabled()) {
-			return
-		}
 		val channel = NotificationChannelCompat.Builder(MANGA_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
 			.setName(applicationContext.getString(R.string.suggestions))
 			.setDescription(applicationContext.getString(R.string.suggestions_summary))
@@ -255,17 +256,19 @@ class SuggestionsWorker @AssistedInject constructor(
 				style.bigText(
 					buildSpannedString {
 						append(tagsText)
-						appendLine()
-						append(description)
 						val chaptersCount = manga.chapters?.size ?: 0
 						appendLine()
-						append(
-							applicationContext.resources.getQuantityString(
-								R.plurals.chapters,
-								chaptersCount,
-								chaptersCount,
-							),
-						)
+						bold {
+							append(
+								applicationContext.resources.getQuantityString(
+									R.plurals.chapters,
+									chaptersCount,
+									chaptersCount,
+								),
+							)
+						}
+						appendLine()
+						append(description)
 					},
 				)
 				style.setBigContentTitle(title)
