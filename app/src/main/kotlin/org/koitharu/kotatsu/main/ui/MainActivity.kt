@@ -144,6 +144,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		viewModel.onFirstStart.observeEvent(this) {
 			OnboardDialogFragment.show(supportFragmentManager)
 		}
+		viewModel.isIncognitoMode.observe(this) {
+			adjustSearchUI(isSearchOpened(), false)
+		}
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 	}
 
@@ -312,13 +315,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 	private fun onSearchOpened() {
 		adjustSearchUI(isOpened = true, animate = true)
-		closeSearchCallback.isEnabled = true
 	}
 
 	private fun onSearchClosed() {
 		viewBinding.searchView.hideKeyboard()
 		adjustSearchUI(isOpened = false, animate = true)
-		closeSearchCallback.isEnabled = false
 	}
 
 	private fun isSearchOpened(): Boolean {
@@ -379,7 +380,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		adjustFabVisibility(isSearchOpened = isOpened)
 		supportActionBar?.apply {
 			setHomeAsUpIndicator(
-				if (isOpened) materialR.drawable.abc_ic_ab_back_material else materialR.drawable.abc_ic_search_api_material,
+				when {
+					isOpened -> materialR.drawable.abc_ic_ab_back_material
+					viewModel.isIncognitoMode.value -> R.drawable.ic_incognito
+					else -> materialR.drawable.abc_ic_search_api_material
+				},
 			)
 			setHomeActionContentDescription(
 				if (isOpened) R.string.back else R.string.search,
@@ -389,6 +394,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			if (isOpened) R.string.search_hint else R.string.search_manga,
 		)
 		bottomNav?.showOrHide(!isOpened)
+		closeSearchCallback.isEnabled = isOpened
 	}
 
 	private fun requestNotificationsPermission() {

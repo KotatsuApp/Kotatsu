@@ -65,6 +65,9 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 	}
 
 	fun show() {
+		if (currentState == STATE_UP) {
+			return
+		}
 		currentAnimator?.cancel()
 		clearAnimation()
 
@@ -77,6 +80,9 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 	}
 
 	fun hide() {
+		if (currentState == STATE_DOWN) {
+			return
+		}
 		currentAnimator?.cancel()
 		clearAnimation()
 
@@ -117,6 +123,7 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 	}
 
 	internal class SavedState : AbsSavedState {
+
 		var currentState = STATE_UP
 		var translationY = 0F
 
