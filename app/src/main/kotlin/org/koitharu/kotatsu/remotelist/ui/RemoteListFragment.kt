@@ -8,6 +8,7 @@ import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
+import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -118,6 +119,13 @@ class RemoteListFragment : MangaListFragment(), FilterOwner {
 
 		override fun onMenuItemActionExpand(item: MenuItem): Boolean {
 			(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
+			(item.actionView as? SearchView)?.run {
+				imeOptions = if (viewModel.isIncognitoModeEnabled) {
+					imeOptions or EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING
+				} else {
+					imeOptions and EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING.inv()
+				}
+			}
 			return true
 		}
 
