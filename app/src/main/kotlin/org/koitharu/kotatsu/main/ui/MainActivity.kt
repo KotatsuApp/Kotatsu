@@ -112,7 +112,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			onFocusChangeListener = this@MainActivity
 			searchSuggestionListener = this@MainActivity
 		}
-		window.statusBarColor = ContextCompat.getColor(this, R.color.dim_statusbar)
 
 		viewBinding.fab?.setOnClickListener(this)
 		viewBinding.navRail?.headerView?.setOnClickListener(this)

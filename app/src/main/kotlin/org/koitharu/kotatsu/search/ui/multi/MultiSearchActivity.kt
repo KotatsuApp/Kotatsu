@@ -59,7 +59,6 @@ class MultiSearchActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySearchMultiBinding.inflate(layoutInflater))
-		window.statusBarColor = ContextCompat.getColor(this, R.color.dim_statusbar)
 		title = viewModel.query
 
 		val itemCLickListener = OnListItemClickListener<MultiSearchListModel> { item, view ->
