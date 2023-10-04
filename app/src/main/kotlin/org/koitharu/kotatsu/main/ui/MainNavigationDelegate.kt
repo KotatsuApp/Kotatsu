@@ -72,7 +72,7 @@ class MainNavigationDelegate(
 	}
 
 	override fun handleOnBackPressed() {
-		navBar.selectedItemId = R.id.nav_history
+		navBar.selectedItemId = firstItem()?.itemId ?: return
 	}
 
 	fun onCreate(lifecycleOwner: LifecycleOwner, savedInstanceState: Bundle?) {
@@ -171,7 +171,7 @@ class MainNavigationDelegate(
 	}
 
 	private fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
-		isEnabled = fragment !is HistoryListFragment
+		isEnabled = getItemId(fragment) != firstItem()?.itemId
 		listeners.forEach { it.onFragmentChanged(fragment, fromUser) }
 	}
 
