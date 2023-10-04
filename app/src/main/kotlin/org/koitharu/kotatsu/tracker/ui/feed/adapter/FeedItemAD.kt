@@ -25,7 +25,7 @@ fun feedItemAD(
 	}
 
 	bind {
-		val alpha = if (item.isNew) 1f else 0.4f
+		val alpha = if (item.isNew) 1f else 0.5f
 		binding.textViewTitle.alpha = alpha
 		binding.textViewSummary.alpha = alpha
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.imageUrl)?.run {
