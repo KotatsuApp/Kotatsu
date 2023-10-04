@@ -10,8 +10,10 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTag
+import org.koitharu.kotatsu.core.db.entity.toMangaTagsList
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.ContentType
@@ -19,6 +21,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 import javax.inject.Inject
 
@@ -93,8 +96,17 @@ class MangaSearchRepository @Inject constructor(
 			query.isNotEmpty() -> db.tagsDao.findTags("%$query%", limit)
 			source != null -> db.tagsDao.findPopularTags(source.name, limit)
 			else -> db.tagsDao.findPopularTags(limit)
-		}.map {
-			it.toMangaTag()
+		}.toMangaTagsList()
+	}
+
+	suspend fun getTagsSuggestion(tags: Set<MangaTag>): List<MangaTag> {
+		val ids = tags.mapToSet { it.toEntity().id }
+		return if (ids.size == 1) {
+			db.tagsDao.findRelatedTags(ids.first())
+		} else {
+			db.tagsDao.findRelatedTags(ids)
+		}.mapNotNull { x ->
+			if (x.id in ids) null else x.toMangaTag()
 		}
 	}
 

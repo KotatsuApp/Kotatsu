@@ -19,6 +19,8 @@ fun TagEntity.toMangaTag() = MangaTag(
 
 fun Collection<TagEntity>.toMangaTags() = mapToSet(TagEntity::toMangaTag)
 
+fun Collection<TagEntity>.toMangaTagsList() = map(TagEntity::toMangaTag)
+
 fun MangaEntity.toManga(tags: Set<MangaTag>) = Manga(
 	id = this.id,
 	title = this.title,

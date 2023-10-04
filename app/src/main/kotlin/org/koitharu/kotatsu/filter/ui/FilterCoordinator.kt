@@ -131,7 +131,7 @@ class FilterCoordinator @Inject constructor(
 		observeState(),
 		observeAvailableTags(),
 	) { state, available ->
-		val chips = createChipsList(state, available.orEmpty())
+		val chips = createChipsList(state, available.orEmpty(), 8)
 		FilterHeaderModel(chips, state.sortOrder, state.tags.isNotEmpty())
 	}
 
@@ -157,11 +157,16 @@ class FilterCoordinator @Inject constructor(
 	private suspend fun createChipsList(
 		filterState: FilterState,
 		availableTags: Set<MangaTag>,
+		limit: Int,
 	): List<ChipsView.ChipModel> {
 		val selectedTags = filterState.tags.toMutableSet()
-		var tags = searchRepository.getTagsSuggestion("", 6, repository.source)
-		if (tags.isEmpty()) {
-			tags = availableTags.take(6)
+		var tags = if (selectedTags.isEmpty()) {
+			searchRepository.getTagsSuggestion("", limit, repository.source)
+		} else {
+			searchRepository.getTagsSuggestion(selectedTags).take(limit)
+		}
+		if (tags.size < limit) {
+			tags = tags + availableTags.take(limit - tags.size)
 		}
 		if (tags.isEmpty() && selectedTags.isEmpty()) {
 			return emptyList()
