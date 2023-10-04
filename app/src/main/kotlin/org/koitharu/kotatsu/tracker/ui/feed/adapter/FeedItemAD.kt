@@ -6,7 +6,6 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.isBold
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemFeedBinding
@@ -26,8 +25,9 @@ fun feedItemAD(
 	}
 
 	bind {
-		binding.textViewTitle.isBold = item.isNew
-		binding.textViewSummary.isBold = item.isNew
+		val alpha = if (item.isNew) 1f else 0.4f
+		binding.textViewTitle.alpha = alpha
+		binding.textViewSummary.alpha = alpha
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.imageUrl)?.run {
 			placeholder(R.drawable.ic_placeholder)
 			fallback(R.drawable.ic_placeholder)
