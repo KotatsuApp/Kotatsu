@@ -160,21 +160,22 @@ class DetailsFragment :
 			}
 
 			when (manga.state) {
-				MangaState.FINISHED -> {
-					infoLayout.textViewState.apply {
-						textAndVisible = resources.getString(R.string.state_finished)
-						drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_finished)
-					}
+				MangaState.FINISHED -> infoLayout.textViewState.apply {
+					textAndVisible = resources.getString(R.string.state_finished)
+					drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_finished)
 				}
 
-				MangaState.ONGOING -> {
-					infoLayout.textViewState.apply {
-						textAndVisible = resources.getString(R.string.state_ongoing)
-						drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_ongoing)
-					}
+				MangaState.ONGOING -> infoLayout.textViewState.apply {
+					textAndVisible = resources.getString(R.string.state_ongoing)
+					drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_ongoing)
 				}
 
-				else -> infoLayout.textViewState.isVisible = false
+				MangaState.ABANDONED -> infoLayout.textViewState.apply {
+					textAndVisible = resources.getString(R.string.state_abandoned)
+					drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_abandoned)
+				}
+
+				null -> infoLayout.textViewState.isVisible = false
 			}
 			if (manga.source == MangaSource.LOCAL) {
 				infoLayout.textViewSource.isVisible = false
