@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -50,7 +50,7 @@ class MangaLoaderContextImpl @Inject constructor(
 	}
 
 	override fun encodeBase64(data: ByteArray): String {
-		return Base64.encodeToString(data, Base64.NO_PADDING)
+		return Base64.encodeToString(data, Base64.NO_WRAP)
 	}
 
 	override fun decodeBase64(data: String): ByteArray {
