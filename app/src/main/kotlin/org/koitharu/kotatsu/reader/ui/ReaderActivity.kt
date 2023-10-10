@@ -105,7 +105,7 @@ class ReaderActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderBinding.inflate(layoutInflater))
-		readerManager = ReaderManager(supportFragmentManager, R.id.container)
+		readerManager = ReaderManager(supportFragmentManager, viewBinding.container)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = GridTouchHelper(this, this)
 		scrollTimer = scrollTimerFactory.create(this, this)
