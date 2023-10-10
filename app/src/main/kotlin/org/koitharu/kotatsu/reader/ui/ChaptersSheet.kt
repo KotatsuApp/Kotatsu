@@ -33,13 +33,11 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
-	): SheetChaptersBinding {
-		return SheetChaptersBinding.inflate(inflater, container, false)
-	}
+	) = SheetChaptersBinding.inflate(inflater, container, false)
 
 	override fun onViewBindingCreated(binding: SheetChaptersBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		val chapters = viewModel.manga?.chapters
+		val chapters = viewModel.manga?.allChapters
 		if (chapters.isNullOrEmpty()) {
 			dismissAllowingStateLoss()
 			return
@@ -61,7 +59,7 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 				val offset =
 					(resources.getDimensionPixelSize(R.dimen.chapter_list_item_height) * 0.6).roundToInt()
 				adapter.setItems(
-					items, RecyclerViewScrollCallback(binding.recyclerView, targetPosition, offset)
+					items, RecyclerViewScrollCallback(binding.recyclerView, targetPosition, offset),
 				)
 			} else {
 				adapter.items = items

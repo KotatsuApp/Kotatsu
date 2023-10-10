@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
-import org.koitharu.kotatsu.details.domain.model.DoubleManga
+import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
@@ -20,7 +20,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import javax.inject.Inject
 
-@Deprecated("")
+/* TODO: remove */
 class DetailsInteractor @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
@@ -66,13 +66,22 @@ class DetailsInteractor @Inject constructor(
 			}
 	}
 
-	suspend fun updateLocal(subject: DoubleManga?, localManga: LocalManga): DoubleManga? {
-		return if (subject?.any?.id == localManga.manga.id) {
-			subject.copy(
-				localManga = runCatchingCancellable {
-					localMangaRepository.getDetails(localManga.manga)
-				},
-			)
+	suspend fun updateLocal(subject: MangaDetails?, localManga: LocalManga): MangaDetails? {
+		subject ?: return null
+		return if (subject.id == localManga.manga.id) {
+			if (subject.isLocal) {
+				subject.copy(
+					manga = localManga.manga,
+				)
+			} else {
+				subject.copy(
+					localManga = runCatchingCancellable {
+						localManga.copy(
+							manga = localMangaRepository.getDetails(localManga.manga),
+						)
+					}.getOrNull() ?: subject.local,
+				)
+			}
 		} else {
 			subject
 		}

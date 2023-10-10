@@ -1,12 +1,5 @@
 package org.koitharu.kotatsu.details.ui
 
-import android.text.Html
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import androidx.core.net.toUri
-import androidx.core.text.getSpans
-import androidx.core.text.parseAsHtml
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +10,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -25,7 +18,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
@@ -40,17 +32,14 @@ import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.core.util.ext.requireValue
-import org.koitharu.kotatsu.core.util.ext.sanitize
-import org.koitharu.kotatsu.core.util.ext.toFileOrNull
+import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
-import org.koitharu.kotatsu.details.domain.DoubleMangaLoadUseCase
+import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
 import org.koitharu.kotatsu.details.domain.RelatedMangaUseCase
-import org.koitharu.kotatsu.details.domain.model.DoubleManga
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
@@ -74,22 +63,19 @@ class DetailsViewModel @Inject constructor(
 	private val bookmarksRepository: BookmarksRepository,
 	private val settings: AppSettings,
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
-	private val imageGetter: Html.ImageGetter,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 	private val downloadScheduler: DownloadWorker.Scheduler,
 	private val interactor: DetailsInteractor,
 	savedStateHandle: SavedStateHandle,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
-	private val doubleMangaLoadUseCase: DoubleMangaLoadUseCase,
 	private val relatedMangaUseCase: RelatedMangaUseCase,
 	private val extraProvider: ListExtraProvider,
+	private val detailsLoadUseCase: DetailsLoadUseCase,
 	networkState: NetworkState,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
 	private val mangaId = intent.mangaId
-	private val doubleManga: MutableStateFlow<DoubleManga?> =
-		MutableStateFlow(intent.manga?.let { DoubleManga(it) })
 	private var loadingJob: Job
 
 	val onShowToast = MutableEventFlow<Int>()
@@ -97,8 +83,9 @@ class DetailsViewModel @Inject constructor(
 	val onSelectChapter = MutableEventFlow<Long>()
 	val onDownloadStarted = MutableEventFlow<Unit>()
 
-	val manga = doubleManga.map { it?.any }
-		.stateIn(viewModelScope, SharingStarted.Eagerly, doubleManga.value?.any)
+	val details = MutableStateFlow(intent.manga?.let { MangaDetails(it, null, null, false) })
+	val manga = details.map { x -> x?.toManga() }
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	val history = historyRepository.observeOne(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
@@ -135,28 +122,17 @@ class DetailsViewModel @Inject constructor(
 		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, emptyList())
 
-	val localSize = doubleManga
-		.map {
-			val local = it?.local
-			if (local != null) {
-				val file = local.url.toUri().toFileOrNull()
-				file?.computeSize() ?: 0L
-			} else {
-				0L
-			}
+	val localSize = details
+		.map { it?.local }
+		.distinctUntilChanged()
+		.map { local ->
+			local?.file?.computeSize() ?: 0L
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(), 0)
 
-	val description = manga
-		.distinctUntilChangedBy { it?.description.orEmpty() }
-		.transformLatest {
-			val description = it?.description
-			if (description.isNullOrEmpty()) {
-				emit(null)
-			} else {
-				emit(description.parseAsHtml().filterSpans().sanitize())
-				emit(description.parseAsHtml(imageGetter = imageGetter).filterSpans())
-			}
-		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(5000), null)
+	@Deprecated("")
+	val description = details
+		.map { it?.description }
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, null)
 
 	val onMangaRemoved = MutableEventFlow<Manga>()
 	val isScrobblingAvailable: Boolean
@@ -165,9 +141,7 @@ class DetailsViewModel @Inject constructor(
 	val scrobblingInfo: StateFlow<List<ScrobblingInfo>> = interactor.observeScrobblingInfo(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
-	val relatedManga: StateFlow<List<MangaItemModel>> = doubleManga.map {
-		it?.remote
-	}.distinctUntilChangedBy { it?.id }
+	val relatedManga: StateFlow<List<MangaItemModel>> = manga
 		.mapLatest {
 			if (it != null && settings.isRelatedMangaEnabled) {
 				relatedMangaUseCase.invoke(it)?.toUi(ListMode.GRID, extraProvider).orEmpty()
@@ -178,40 +152,32 @@ class DetailsViewModel @Inject constructor(
 		.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
 	val branches: StateFlow<List<MangaBranch>> = combine(
-		doubleManga,
+		details,
 		selectedBranch,
 	) { m, b ->
-		val chapters = m?.chapters
-		if (chapters.isNullOrEmpty()) return@combine emptyList()
-		chapters.groupBy { x -> x.branch }
+		(m?.chapters ?: return@combine emptyList())
 			.map { x -> MangaBranch(x.key, x.value.size, x.key == b) }
 			.sortedWith(BranchComparator())
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
-	val isChaptersEmpty: StateFlow<Boolean> = combine(
-		doubleManga,
-		isLoading,
-	) { manga, loading ->
-		manga?.any != null && manga.chapters.isNullOrEmpty() && !loading
+	val isChaptersEmpty: StateFlow<Boolean> = details.map {
+		it != null && it.isLoaded && it.allChapters.isEmpty()
 	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
 	val chapters = combine(
 		combine(
-			doubleManga,
+			details,
 			history,
 			selectedBranch,
 			newChaptersCount,
 			bookmarks,
-			networkState,
-		) { manga, history, branch, news, bookmarks, isOnline ->
-			mapChapters(
-				manga?.remote?.takeIf { isOnline },
-				manga?.local,
+		) { manga, history, branch, news, bookmarks ->
+			manga?.mapChapters(
 				history,
 				news,
 				branch,
 				bookmarks,
-			)
+			).orEmpty()
 		},
 		isChaptersReversed,
 		chaptersQuery,
@@ -242,7 +208,7 @@ class DetailsViewModel @Inject constructor(
 	}
 
 	fun deleteLocal() {
-		val m = doubleManga.value?.local
+		val m = details.value?.local?.manga
 		if (m == null) {
 			onShowToast.call(R.string.file_not_found)
 			return
@@ -295,13 +261,13 @@ class DetailsViewModel @Inject constructor(
 
 	fun markChapterAsCurrent(chapterId: Long) {
 		launchJob(Dispatchers.Default) {
-			val manga = checkNotNull(doubleManga.value)
-			val chapters = checkNotNull(manga.filterChapters(selectedBranchValue).chapters)
+			val manga = checkNotNull(details.value)
+			val chapters = checkNotNull(manga.chapters[selectedBranchValue])
 			val chapterIndex = chapters.indexOfFirst { it.id == chapterId }
 			check(chapterIndex in chapters.indices) { "Chapter not found" }
 			val percent = chapterIndex / chapters.size.toFloat()
 			historyRepository.addOrUpdate(
-				manga = manga.requireAny(),
+				manga = manga.toManga(),
 				chapterId = chapterId,
 				page = 0,
 				scroll = 0,
@@ -313,7 +279,7 @@ class DetailsViewModel @Inject constructor(
 	fun download(chaptersIds: Set<Long>?) {
 		launchJob(Dispatchers.Default) {
 			downloadScheduler.schedule(
-				doubleManga.requireValue().requireAny(),
+				details.requireValue().toManga(),
 				chaptersIds,
 			)
 			onDownloadStarted.call(Unit)
@@ -333,14 +299,14 @@ class DetailsViewModel @Inject constructor(
 	}
 
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
-		doubleMangaLoadUseCase.invoke(intent)
+		detailsLoadUseCase.invoke(intent)
 			.onFirst {
-				val manga = it.requireAny()
+				val manga = it.toManga()
 				// find default branch
 				val hist = historyRepository.getOne(manga)
 				selectedBranch.value = manga.getPreferredBranch(hist)
 			}.collect {
-				doubleManga.value = it
+				details.value = it
 			}
 	}
 
@@ -356,19 +322,10 @@ class DetailsViewModel @Inject constructor(
 	private suspend fun onDownloadComplete(downloadedManga: LocalManga?) {
 		downloadedManga ?: return
 		launchJob {
-			doubleManga.update {
+			details.update {
 				interactor.updateLocal(it, downloadedManga)
 			}
 		}
-	}
-
-	private fun Spanned.filterSpans(): CharSequence {
-		val spannable = SpannableString.valueOf(this)
-		val spans = spannable.getSpans<ForegroundColorSpan>()
-		for (span in spans) {
-			spannable.removeSpan(span)
-		}
-		return spannable.trim()
 	}
 
 	private fun getScrobbler(index: Int): Scrobbler? {

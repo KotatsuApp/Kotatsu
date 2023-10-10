@@ -118,7 +118,7 @@ class ReaderConfigSheet :
 
 			R.id.button_color_filter -> {
 				val page = viewModel.getCurrentPage() ?: return
-				val manga = viewModel.manga?.any ?: return
+				val manga = viewModel.manga?.toManga() ?: return
 				startActivity(ColorFilterConfigActivity.newIntent(v.context, manga, page))
 			}
 		}

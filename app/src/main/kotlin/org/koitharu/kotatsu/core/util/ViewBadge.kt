@@ -15,6 +15,7 @@ class ViewBadge(
 ) : View.OnLayoutChangeListener, DefaultLifecycleObserver {
 
 	private var badgeDrawable: BadgeDrawable? = null
+	private var maxCharacterCount: Int = -1
 
 	var counter: Int
 		get() = badgeDrawable?.number ?: 0
@@ -48,8 +49,16 @@ class ViewBadge(
 		clearBadge()
 	}
 
+	fun setMaxCharacterCount(value: Int) {
+		maxCharacterCount = value
+		badgeDrawable?.maxCharacterCount = value
+	}
+
 	private fun initBadge(): BadgeDrawable {
 		val badge = BadgeDrawable.create(anchor.context)
+		if (maxCharacterCount > 0) {
+			badge.maxCharacterCount = maxCharacterCount
+		}
 		anchor.addOnLayoutChangeListener(this)
 		BadgeUtils.attachBadgeDrawable(badge, anchor)
 		badgeDrawable = badge

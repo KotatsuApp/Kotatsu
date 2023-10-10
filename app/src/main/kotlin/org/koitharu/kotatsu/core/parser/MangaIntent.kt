@@ -43,5 +43,7 @@ class MangaIntent private constructor(
 
 		const val KEY_MANGA = "manga"
 		const val KEY_ID = "id"
+
+		fun of(manga: Manga) = MangaIntent(manga, manga.id, null)
 	}
 }

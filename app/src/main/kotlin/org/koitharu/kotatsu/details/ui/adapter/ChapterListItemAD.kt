@@ -6,7 +6,7 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.drawableStart
+import org.koitharu.kotatsu.core.util.ext.drawableEnd
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemChapterBinding
@@ -47,8 +47,7 @@ fun chapterListItemAD(
 		}
 		binding.imageViewBookmarked.isVisible = item.isBookmarked
 		binding.imageViewDownloaded.isVisible = item.isDownloaded
-		// binding.imageViewNew.isVisible = item.isNew
-		binding.textViewTitle.drawableStart = if (item.isNew) {
+		binding.textViewTitle.drawableEnd = if (item.isNew) {
 			ContextCompat.getDrawable(context, R.drawable.ic_new)
 		} else {
 			null

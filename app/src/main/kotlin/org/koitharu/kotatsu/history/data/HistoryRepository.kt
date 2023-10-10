@@ -93,8 +93,11 @@ class HistoryRepository @Inject constructor(
 		}
 		val tags = manga.tags.toEntities()
 		db.withTransaction {
-			db.tagsDao.upsert(tags)
-			db.mangaDao.upsert(manga.toEntity(), tags)
+			val existing = db.mangaDao.find(manga.id)?.manga
+			if (existing == null || existing.source == manga.source.name) {
+				db.tagsDao.upsert(tags)
+				db.mangaDao.upsert(manga.toEntity(), tags)
+			}
 			db.historyDao.upsert(
 				HistoryEntity(
 					mangaId = manga.id,

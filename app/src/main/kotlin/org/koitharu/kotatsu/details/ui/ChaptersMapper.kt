@@ -2,21 +2,19 @@ package org.koitharu.kotatsu.details.ui
 
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.mapToSet
 
-fun mapChapters(
-	remoteManga: Manga?,
-	localManga: Manga?,
+fun MangaDetails.mapChapters(
 	history: MangaHistory?,
 	newCount: Int,
 	branch: String?,
 	bookmarks: List<Bookmark>,
 ): List<ChapterListItem> {
-	val remoteChapters = remoteManga?.getChapters(branch).orEmpty()
-	val localChapters = localManga?.getChapters(branch).orEmpty()
+	val remoteChapters = chapters[branch].orEmpty()
+	val localChapters = local?.manga?.getChapters(branch).orEmpty()
 	if (remoteChapters.isEmpty() && localChapters.isEmpty()) {
 		return emptyList()
 	}
@@ -57,7 +55,7 @@ fun mapChapters(
 				isCurrent = chapter.id == currentId,
 				isUnread = isUnread,
 				isNew = false,
-				isDownloaded = remoteManga != null,
+				isDownloaded = !isLocal,
 				isBookmarked = chapter.id in bookmarked,
 			)
 		}

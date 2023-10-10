@@ -7,17 +7,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.firstNotNull
 import org.koitharu.kotatsu.core.util.ext.require
-import org.koitharu.kotatsu.details.domain.DoubleMangaLoadUseCase
+import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
@@ -28,7 +28,7 @@ class PagesThumbnailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
 	private val chaptersLoader: ChaptersLoader,
-	doubleMangaLoadUseCase: DoubleMangaLoadUseCase,
+	detailsLoadUseCase: DetailsLoadUseCase,
 ) : BaseViewModel() {
 
 	private val currentPageIndex: Int =
@@ -37,7 +37,7 @@ class PagesThumbnailsViewModel @Inject constructor(
 	val manga = savedStateHandle.require<ParcelableManga>(PagesThumbnailsSheet.ARG_MANGA).manga
 
 	private val repository = mangaRepositoryFactory.create(manga.source)
-	private val mangaDetails = doubleMangaLoadUseCase(manga).map {
+	private val mangaDetails = detailsLoadUseCase(MangaIntent.of(manga)).map {
 		val b = manga.chapters?.findById(initialChapterId)?.branch
 		branch.value = b
 		it.filterChapters(b)
@@ -52,8 +52,7 @@ class PagesThumbnailsViewModel @Inject constructor(
 
 	init {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			chaptersLoader.init(viewModelScope, mangaDetails.filterNotNull())
-			mangaDetails.first { x -> x?.hasChapter(initialChapterId) == true }
+			chaptersLoader.init(checkNotNull(mangaDetails.last()))
 			chaptersLoader.loadSingleChapter(initialChapterId)
 			updateList()
 		}
@@ -79,13 +78,13 @@ class PagesThumbnailsViewModel @Inject constructor(
 		updateList()
 	}
 
-	private suspend fun updateList() {
+	private fun updateList() {
 		val snapshot = chaptersLoader.snapshot()
 		val pages = buildList(snapshot.size + chaptersLoader.size + 2) {
 			var previousChapterId = 0L
 			for (page in snapshot) {
 				if (page.chapterId != previousChapterId) {
-					chaptersLoader.awaitChapter(page.chapterId)?.let {
+					chaptersLoader.peekChapter(page.chapterId)?.let {
 						add(ListHeader(it.name))
 					}
 					previousChapterId = page.chapterId

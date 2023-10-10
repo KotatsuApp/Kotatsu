@@ -2,16 +2,10 @@ package org.koitharu.kotatsu.reader.domain
 
 import android.util.LongSparseArray
 import dagger.hilt.android.scopes.ViewModelScoped
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.details.domain.model.DoubleManga
+import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import javax.inject.Inject
@@ -23,32 +17,24 @@ class ChaptersLoader @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 
-	private val chapters = MutableStateFlow(LongSparseArray<MangaChapter>(0))
+	private val chapters = LongSparseArray<MangaChapter>()
 	private val chapterPages = ChapterPages()
 	private val mutex = Mutex()
 
-	val size: Int // TODO flow
-		get() = chapters.value.size()
+	val size: Int
+		get() = chapters.size()
 
-	fun init(scope: CoroutineScope, manga: Flow<DoubleManga>) = scope.launch {
-		manga.collect {
-			val ch = it.chapters.orEmpty()
-			val longSparseArray = LongSparseArray<MangaChapter>(ch.size)
-			ch.forEach { x -> longSparseArray.put(x.id, x) }
-			mutex.withLock {
-				chapters.value = longSparseArray
-			}
+	suspend fun init(manga: MangaDetails) = mutex.withLock {
+		chapters.clear()
+		manga.allChapters.forEach {
+			chapters.put(it.id, it)
 		}
 	}
 
-	suspend fun loadPrevNextChapter(manga: DoubleManga, currentId: Long, isNext: Boolean) {
-		val chapters = manga.chapters ?: return
+	suspend fun loadPrevNextChapter(manga: MangaDetails, currentId: Long, isNext: Boolean) {
+		val chapters = manga.allChapters
 		val predicate: (MangaChapter) -> Boolean = { it.id == currentId }
-		val index = if (isNext) {
-			chapters.indexOfFirst(predicate)
-		} else {
-			chapters.indexOfLast(predicate)
-		}
+		val index = if (isNext) chapters.indexOfFirst(predicate) else chapters.indexOfLast(predicate)
 		if (index == -1) return
 		val newChapter = chapters.getOrNull(if (isNext) index + 1 else index - 1) ?: return
 		val newPages = loadChapter(newChapter.id)
@@ -79,11 +65,7 @@ class ChaptersLoader @Inject constructor(
 		}
 	}
 
-	fun peekChapter(chapterId: Long): MangaChapter? = chapters.value[chapterId]
-
-	suspend fun awaitChapter(chapterId: Long): MangaChapter? = chapters.mapNotNull { x ->
-		x[chapterId]
-	}.firstOrNull()
+	fun peekChapter(chapterId: Long): MangaChapter? = chapters[chapterId]
 
 	fun getPages(chapterId: Long): List<ReaderPage> {
 		return chapterPages.subList(chapterId)
@@ -100,7 +82,7 @@ class ChaptersLoader @Inject constructor(
 	fun snapshot() = chapterPages.toList()
 
 	private suspend fun loadChapter(chapterId: Long): List<ReaderPage> {
-		val chapter = checkNotNull(awaitChapter(chapterId)) { "Requested chapter not found" }
+		val chapter = checkNotNull(chapters[chapterId]) { "Requested chapter not found" }
 		val repo = mangaRepositoryFactory.create(chapter.source)
 		return repo.getPages(chapter).mapIndexed { index, page ->
 			ReaderPage(page, index, chapterId)

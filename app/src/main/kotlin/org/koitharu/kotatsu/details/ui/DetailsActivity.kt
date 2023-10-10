@@ -93,6 +93,7 @@ class DetailsActivity :
 		viewBinding.buttonRead.setOnContextClickListenerCompat(this)
 		viewBinding.buttonDropdown.setOnClickListener(this)
 		viewBadge = ViewBadge(viewBinding.buttonRead, this)
+		viewBadge.setMaxCharacterCount(1)
 
 		if (viewBinding.layoutBottom != null) {
 			val behavior = BottomSheetBehavior.from(checkNotNull(viewBinding.layoutBottom))
@@ -139,7 +140,7 @@ class DetailsActivity :
 		}
 		viewModel.isChaptersReversed.observe(
 			this,
-			MenuInvalidator(viewBinding.toolbarChapters ?: this)
+			MenuInvalidator(viewBinding.toolbarChapters ?: this),
 		)
 		viewModel.favouriteCategories.observe(this, MenuInvalidator(this))
 		viewModel.branches.observe(this) {
@@ -148,7 +149,7 @@ class DetailsActivity :
 		viewModel.chapters.observe(this, PrefetchObserver(this))
 		viewModel.onDownloadStarted.observeEvent(
 			this,
-			DownloadStartedObserver(viewBinding.containerDetails)
+			DownloadStartedObserver(viewBinding.containerDetails),
 		)
 
 		addMenuProvider(
@@ -255,7 +256,7 @@ class DetailsActivity :
 			window.setNavigationBarTransparentCompat(
 				this,
 				viewBinding.layoutBottom?.elevation ?: 0f,
-				0.9f
+				0.9f,
 			)
 		}
 		viewBinding.cardChapters?.updateLayoutParams<MarginLayoutParams> {
@@ -281,14 +282,14 @@ class DetailsActivity :
 			info.currentChapter >= 0 -> getString(
 				R.string.chapter_d_of_d,
 				info.currentChapter + 1,
-				info.totalChapters
+				info.totalChapters,
 			)
 
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
 			else -> resources.getQuantityString(
 				R.plurals.chapters,
 				info.totalChapters,
-				info.totalChapters
+				info.totalChapters,
 			)
 		}
 		viewBinding.toolbarChapters?.title = text
@@ -311,8 +312,8 @@ class DetailsActivity :
 					ForegroundColorSpan(
 						v.context.getThemeColor(
 							android.R.attr.textColorSecondary,
-							Color.LTGRAY
-						)
+							Color.LTGRAY,
+						),
 					),
 					RelativeSizeSpan(0.74f),
 				) {
