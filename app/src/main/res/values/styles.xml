@@ -78,8 +78,8 @@
 		<item name="cardBackgroundColor">?attr/colorSurfaceContainerLow</item>
 	</style>
 
-	<style name="Widget.Kotatsu.MaterialCardView.Filled" parent="Widget.Material3.CardView.Filled">
-		<item name="cardBackgroundColor">?attr/m3ColorExploreButton</item>
+	<style name="Widget.Kotatsu.CardView.Filled" parent="Widget.Material3.CardView.Filled">
+		<item name="cardBackgroundColor">?attr/m3ColorCardBackground</item>
 		<item name="shapeAppearance">?attr/shapeAppearanceCornerExtraLarge</item>
 	</style>
 
@@ -226,7 +226,7 @@
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu.CardContainer" parent="">
-		<item name="android:colorBackground">?m3ColorExploreButton</item>
+		<item name="android:colorBackground">?m3ColorCardBackground</item>
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu.ActionMode" parent="">

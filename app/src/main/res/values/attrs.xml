@@ -10,6 +10,7 @@
 	<attr name="tipViewStyle" />
 	<attr name="m3ColorBackground" />
 	<attr name="m3ColorExploreButton" />
+	<attr name="m3ColorCardBackground" />
 	<attr name="m3ColorBottomMenuBackground" />
 
 	<!--CoverImageView attrs-->

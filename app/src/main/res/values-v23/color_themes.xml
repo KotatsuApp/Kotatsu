@@ -38,6 +38,7 @@
 		<item name="colorOutlineVariant">#BEC9C6</item>
 		<item name="m3ColorBackground">@color/background_miku</item>
 		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorCardBackground">#FFFFFF</item>
 		<item name="m3ColorBottomMenuBackground">#C4FFF7</item>
 	</style>
 
@@ -78,6 +79,7 @@
 		<item name="colorOutlineVariant">#D8C1C0</item>
 		<item name="m3ColorBackground">@color/background_asuka</item>
 		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorCardBackground">#FFFFFF</item>
 		<item name="m3ColorBottomMenuBackground">#FFDAD7</item>
 	</style>
 
@@ -118,6 +120,7 @@
 		<item name="colorOutlineVariant">#C0C9C1</item>
 		<item name="m3ColorBackground">@color/background_mion</item>
 		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorCardBackground">#FFFFFF</item>
 		<item name="m3ColorBottomMenuBackground">#CDFFE1</item>
 	</style>
 
@@ -158,6 +161,7 @@
 		<item name="colorOutlineVariant">#C8C5D0</item>
 		<item name="m3ColorBackground">@color/background_rikka</item>
 		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorCardBackground">#FFFFFF</item>
 		<item name="m3ColorBottomMenuBackground">#F0EBFF</item>
 	</style>
 
@@ -198,6 +202,7 @@
 		<item name="colorOutlineVariant">#D5C2C6</item>
 		<item name="m3ColorBackground">@color/background_sakura</item>
 		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorCardBackground">#FFFFFF</item>
 		<item name="m3ColorBottomMenuBackground">#FFE8ED</item>
 	</style>
 
@@ -238,6 +243,7 @@
 		<item name="colorOutlineVariant">#D7C1C2</item>
 		<item name="m3ColorBackground">@color/background_mamimi</item>
 		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorCardBackground">#FFFFFF</item>
 		<item name="m3ColorBottomMenuBackground">#FFE1E2</item>
 	</style>
 
@@ -278,6 +284,7 @@
 		<item name="colorOutlineVariant">#D5D5D5</item>
 		<item name="m3ColorBackground">@color/background_kanade</item>
 		<item name="m3ColorExploreButton">#FFFFFF</item>
+		<item name="m3ColorCardBackground">#FFFFFF</item>
 		<item name="m3ColorBottomMenuBackground">#DCDCDC</item>
 	</style>
 </resources>

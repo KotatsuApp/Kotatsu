@@ -45,6 +45,7 @@
 	<color name="kotatsu_m3_background">#EDF0FF</color>
 	<!-- White -->
 	<color name="kotatsu_m3_exploreButton">#FFFFFF</color>
+	<color name="kotatsu_m3_cardBackground">#FFFFFF</color>
 	<!-- Primary 90 -->
 	<color name="kotatsu_m3_bottom_menu">#D9E2FF</color>
 </resources>

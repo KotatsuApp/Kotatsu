@@ -57,6 +57,7 @@
 		<item name="android:colorBackground">@android:color/system_neutral2_900</item>
 		<item name="m3ColorBackground">@android:color/system_neutral2_900</item>
 		<item name="m3ColorExploreButton">@android:color/system_neutral2_800</item>
+		<item name="m3ColorCardBackground">@android:color/system_neutral2_700</item>
 		<item name="m3ColorBottomMenuBackground">@android:color/system_neutral2_800</item>
 		<!-- Default Framework Text Colors. -->
 		<item name="android:textColorPrimary">@color/m3_dynamic_dark_default_color_primary_text

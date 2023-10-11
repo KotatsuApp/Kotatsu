@@ -37,6 +37,7 @@
 		<item name="android:colorBackground">@color/kotatsu_m3_background</item>
 		<item name="m3ColorBackground">@color/kotatsu_m3_background</item>
 		<item name="m3ColorExploreButton">@color/kotatsu_m3_exploreButton</item>
+		<item name="m3ColorCardBackground">@color/kotatsu_m3_cardBackground</item>
 		<item name="m3ColorBottomMenuBackground">@color/kotatsu_m3_bottom_menu</item>
 		<item name="colorOnBackground">@color/kotatsu_onSurface</item>
 		<item name="colorError">@color/error</item>
@@ -54,7 +55,7 @@
 
 		<!-- Themes -->
 		<item name="android:windowLightStatusBar" tools:targetApi="M">@bool/light_status_bar</item>
-		<item name="android:statusBarColor">@color/dim_statusbar</item>
+		<item name="android:statusBarColor">@color/dim</item>
 		<item name="android:navigationBarColor">@color/surface_amoled</item>
 		<item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@null</item>
 		<item name="android:enforceNavigationBarContrast" tools:targetApi="Q">false</item>
@@ -79,7 +80,7 @@
 			@style/Widget.Kotatsu.BottomNavigationView.ColoredIndicators
 		</item>
 		<item name="tabStyle">@style/Widget.Kotatsu.Tabs</item>
-		<item name="materialCardViewStyle">@style/Widget.Kotatsu.MaterialCardView.Filled</item>
+		<item name="materialCardViewStyle">@style/Widget.Kotatsu.CardView.Filled</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
 		<item name="fastScrollerStyle">@style/Widget.Kotatsu.FastScroller</item>
 		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
