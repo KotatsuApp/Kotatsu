@@ -336,6 +336,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			return policy.isNetworkAllowed(connectivityManager)
 		}
 
+	val enhancedColors: Boolean
+		get() = prefs.getBoolean(KEY_32BIT_COLOR, false)
+
 	fun isTipEnabled(tip: String): Boolean {
 		return prefs.getStringSet(KEY_TIPS_CLOSED, emptySet())?.contains(tip) != true
 	}
@@ -491,6 +494,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_DISABLE_NSFW = "no_nsfw"
 		const val KEY_RELATED_MANGA = "related_manga"
 		const val KEY_NAV_MAIN = "nav_main"
+		const val KEY_32BIT_COLOR = "enhanced_colors"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

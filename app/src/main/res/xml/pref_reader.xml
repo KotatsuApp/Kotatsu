@@ -55,6 +55,12 @@
 		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="enhanced_colors"
+		android:summary="@string/enhanced_colors_summary"
+		android:title="@string/enhanced_colors" />
+
+	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="reader_bar"
 		android:summary="@string/reader_info_bar_summary"

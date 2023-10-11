@@ -1,8 +1,11 @@
 package org.koitharu.kotatsu.reader.ui.config
 
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import android.view.View
 import androidx.lifecycle.MediatorLiveData
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.Companion.preferredBitmapConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -29,6 +32,9 @@ class ReaderSettings(
 	val colorFilter: ReaderColorFilter?
 		get() = colorFilterFlow.value?.takeUnless { it.isEmpty }
 
+	val enhancedColors: Boolean
+		get() = settings.enhancedColors
+
 	val isPagesNumbersEnabled: Boolean
 		get() = settings.isPagesNumbersEnabled
 
@@ -38,6 +44,15 @@ class ReaderSettings(
 	fun applyBackground(view: View) {
 		val bg = settings.readerBackground
 		view.background = bg.resolve(view.context)
+	}
+
+	fun enhancedColorsMode() {
+		val modeEnabled = settings.enhancedColors
+		preferredBitmapConfig = if (modeEnabled) {
+			Bitmap.Config.ARGB_8888
+		} else {
+			Bitmap.Config.RGB_565
+		}
 	}
 
 	override fun onInactive() {
@@ -78,7 +93,8 @@ class ReaderSettings(
 				key == AppSettings.KEY_PAGES_NUMBERS ||
 				key == AppSettings.KEY_WEBTOON_ZOOM ||
 				key == AppSettings.KEY_READER_ZOOM_BUTTONS ||
-				key == AppSettings.KEY_READER_BACKGROUND
+				key == AppSettings.KEY_READER_BACKGROUND ||
+				key == AppSettings.KEY_32BIT_COLOR
 			) {
 				notifyChanged()
 			}

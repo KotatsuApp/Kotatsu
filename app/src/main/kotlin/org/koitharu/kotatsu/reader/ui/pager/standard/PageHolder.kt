@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.graphics.PointF
 import android.net.Uri
 import android.view.View
+import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.Companion.preferredBitmapConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
@@ -84,6 +86,7 @@ open class PageHolder(
 			binding.ssiv.height / binding.ssiv.sHeight.toFloat(),
 		)
 		binding.ssiv.colorFilter = settings.colorFilter?.toColorFilter()
+		settings.enhancedColorsMode()
 		when (settings.zoomMode) {
 			ZoomMode.FIT_CENTER -> {
 				binding.ssiv.minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
