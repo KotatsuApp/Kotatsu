@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -92,19 +93,25 @@ class MangaSourcesRepository @Inject constructor(
 		}
 	}
 
-	fun observeNewSources(): Flow<Set<MangaSource>> = combine(
-		dao.observeAll(),
-		observeIsNsfwDisabled(),
-	) { entities, skipNsfw ->
-		val result = EnumSet.copyOf(remoteSources)
-		for (e in entities) {
-			result.remove(MangaSource(e.source))
+	fun observeNewSources(): Flow<Set<MangaSource>> = observeIsNewSourcesEnabled().flatMapLatest {
+		if (it) {
+			combine(
+				dao.observeAll(),
+				observeIsNsfwDisabled(),
+			) { entities, skipNsfw ->
+				val result = EnumSet.copyOf(remoteSources)
+				for (e in entities) {
+					result.remove(MangaSource(e.source))
+				}
+				if (skipNsfw) {
+					result.removeAll { x -> x.isNsfw() }
+				}
+				result
+			}.distinctUntilChanged()
+		} else {
+			flowOf(emptySet())
 		}
-		if (skipNsfw) {
-			result.removeAll { x -> x.isNsfw() }
-		}
-		result
-	}.distinctUntilChanged()
+	}
 
 	suspend fun assimilateNewSources(): Set<MangaSource> {
 		val new = getNewSources()
@@ -155,5 +162,9 @@ class MangaSourcesRepository @Inject constructor(
 
 	private fun observeIsNsfwDisabled() = settings.observeAsFlow(AppSettings.KEY_DISABLE_NSFW) {
 		isNsfwContentDisabled
+	}
+
+	private fun observeIsNewSourcesEnabled() = settings.observeAsFlow(AppSettings.KEY_SOURCES_NEW) {
+		isNewSourcesTipEnabled
 	}
 }

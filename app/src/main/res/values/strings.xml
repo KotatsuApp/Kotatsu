@@ -494,4 +494,6 @@
 	<string name="state_abandoned">Dropped</string>
 	<string name="enhanced_colors_summary">Reduces banding, but may impact performance</string>
 	<string name="enhanced_colors">32-bit color mode</string>
+	<string name="suggest_new_sources">Suggest new sources after app update</string>
+	<string name="suggest_new_sources_summary">Prompt to enable newly added sources after updating the application</string>
 </resources>

@@ -201,6 +201,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_SOURCES_GRID, false)
 		set(value) = prefs.edit { putBoolean(KEY_SOURCES_GRID, value) }
 
+	val isNewSourcesTipEnabled: Boolean
+		get() = prefs.getBoolean(KEY_SOURCES_NEW, true)
+
 	val isPagesNumbersEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PAGES_NUMBERS, false)
 
@@ -477,6 +480,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LOGGING_ENABLED = "logging"
 		const val KEY_LOGS_SHARE = "logs_share"
 		const val KEY_SOURCES_GRID = "sources_grid"
+		const val KEY_SOURCES_NEW = "sources_new"
 		const val KEY_UPDATES_UNSTABLE = "updates_unstable"
 		const val KEY_TIPS_CLOSED = "tips_closed"
 		const val KEY_SSL_BYPASS = "ssl_bypass"

@@ -53,6 +53,12 @@
 			android:key="sources_grid"
 			android:title="@string/show_in_grid_view" />
 
+		<SwitchPreferenceCompat
+			android:defaultValue="true"
+			android:key="sources_new"
+			android:summary="@string/suggest_new_sources_summary"
+			android:title="@string/suggest_new_sources" />
+
 	</PreferenceCategory>
 
 	<PreferenceScreen
