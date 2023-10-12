@@ -492,4 +492,6 @@
 	<string name="keep_screen_on">Keep screen on</string>
 	<string name="keep_screen_on_summary">Do not turn the screen off while you\'re reading manga</string>
 	<string name="state_abandoned">Dropped</string>
+	<string name="enhanced_colors_summary">Reduces banding, but may impact performance</string>
+	<string name="enhanced_colors">32-bit color mode</string>
 </resources>

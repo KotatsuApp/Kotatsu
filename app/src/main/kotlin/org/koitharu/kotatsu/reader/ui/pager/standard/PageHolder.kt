@@ -46,6 +46,10 @@ open class PageHolder(
 	override fun onConfigChanged() {
 		super.onConfigChanged()
 		binding.zoomControl.isVisible = settings.isZoomControlsEnabled
+		@Suppress("SENSELESS_COMPARISON")
+		if (settings.applyBitmapConfig(binding.ssiv) && delegate != null) {
+			delegate.reload()
+		}
 	}
 
 	@SuppressLint("SetTextI18n")

@@ -6,7 +6,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -34,10 +33,17 @@ class WebtoonHolder(
 
 	init {
 		binding.ssiv.bindToLifecycle(owner)
-		binding.ssiv.regionDecoderFactory = SkiaPooledImageRegionDecoder.Factory()
 		binding.ssiv.addOnImageEventListener(delegate)
 		bindingInfo.buttonRetry.setOnClickListener(this)
 		bindingInfo.buttonErrorDetails.setOnClickListener(this)
+	}
+
+	override fun onConfigChanged() {
+		super.onConfigChanged()
+		@Suppress("SENSELESS_COMPARISON")
+		if (settings.applyBitmapConfig(binding.ssiv) && delegate != null) {
+			delegate.reload()
+		}
 	}
 
 	override fun onBind(data: ReaderPage) {
