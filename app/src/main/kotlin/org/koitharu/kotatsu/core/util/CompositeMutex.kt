@@ -8,6 +8,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.coroutineContext
 
+@Deprecated("", replaceWith = ReplaceWith("CompositeMutex2"))
 class CompositeMutex<T : Any> : Set<T> {
 
 	private val state = ArrayMap<T, MutableStateFlow<Boolean>>()

@@ -2,12 +2,18 @@ package org.koitharu.kotatsu.local.data.input
 
 import android.net.Uri
 import androidx.core.net.toFile
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.local.data.CbzFilter
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import java.io.File
 
 sealed class LocalMangaInput(
@@ -36,6 +42,24 @@ sealed class LocalMangaInput(
 			CbzFilter.isFileSupported(file.name) -> LocalMangaZipInput(file)
 			else -> null
 		}
+
+		suspend fun find(roots: Iterable<File>, manga: Manga): LocalMangaInput? = channelFlow {
+			val fileName = manga.title.toFileNameSafe()
+			for (root in roots) {
+				launch {
+					val dir = File(root, fileName)
+					val zip = File(root, "$fileName.cbz")
+					val input = when {
+						dir.isDirectory -> LocalMangaDirInput(dir)
+						zip.isFile -> LocalMangaZipInput(zip)
+						else -> null
+					}
+					if (input?.getMangaInfo()?.id == manga.id) {
+						send(input)
+					}
+				}
+			}
+		}.flowOn(Dispatchers.Default).firstOrNull()
 
 		@JvmStatic
 		protected fun zipUri(file: File, entryName: String): String =
