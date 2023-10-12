@@ -5,7 +5,8 @@ import android.graphics.Bitmap
 import android.view.View
 import androidx.lifecycle.MediatorLiveData
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.Companion.preferredBitmapConfig
+import com.davemorrissey.labs.subscaleview.decoder.SkiaImageDecoder
+import com.davemorrissey.labs.subscaleview.decoder.SkiaImageRegionDecoder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -32,8 +33,12 @@ class ReaderSettings(
 	val colorFilter: ReaderColorFilter?
 		get() = colorFilterFlow.value?.takeUnless { it.isEmpty }
 
-	val enhancedColors: Boolean
-		get() = settings.enhancedColors
+	val bitmapConfig: Bitmap.Config
+		get() = if (settings.is32BitColorsEnabled) {
+			Bitmap.Config.ARGB_8888
+		} else {
+			Bitmap.Config.RGB_565
+		}
 
 	val isPagesNumbersEnabled: Boolean
 		get() = settings.isPagesNumbersEnabled
@@ -46,12 +51,11 @@ class ReaderSettings(
 		view.background = bg.resolve(view.context)
 	}
 
-	fun enhancedColorsMode() {
-		val modeEnabled = settings.enhancedColors
-		preferredBitmapConfig = if (modeEnabled) {
-			Bitmap.Config.ARGB_8888
-		} else {
-			Bitmap.Config.RGB_565
+	fun applyBitmapConfig(ssiv: SubsamplingScaleImageView) {
+		val config = bitmapConfig
+		if (ssiv.regionDecoderFactory.bitmapConfig != config) {
+			ssiv.regionDecoderFactory = SkiaImageRegionDecoder.Factory(config)
+			ssiv.bitmapDecoderFactory = SkiaImageDecoder.Factory(config)
 		}
 	}
 

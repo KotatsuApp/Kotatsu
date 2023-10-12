@@ -336,7 +336,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			return policy.isNetworkAllowed(connectivityManager)
 		}
 
-	val enhancedColors: Boolean
+	val is32BitColorsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_32BIT_COLOR, false)
 
 	fun isTipEnabled(tip: String): Boolean {
