@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
+import androidx.core.text.buildSpannedString
+import androidx.core.text.color
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -21,6 +23,7 @@ import coil.request.SuccessResult
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
@@ -37,6 +40,7 @@ import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.drawableTop
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.isTextTruncated
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -70,6 +74,7 @@ import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorShee
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import javax.inject.Inject
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class DetailsFragment :
@@ -113,9 +118,9 @@ class DetailsFragment :
 		viewModel.bookmarks.observe(viewLifecycleOwner, ::onBookmarksChanged)
 		viewModel.scrobblingInfo.observe(viewLifecycleOwner, ::onScrobblingInfoChanged)
 		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
-		viewModel.chapters.observe(viewLifecycleOwner, ::onChaptersChanged)
 		viewModel.localSize.observe(viewLifecycleOwner, ::onLocalSizeChanged)
 		viewModel.relatedManga.observe(viewLifecycleOwner, ::onRelatedMangaChanged)
+		combine(viewModel.chapters, viewModel.newChaptersCount, ::Pair).observe(viewLifecycleOwner, ::onChaptersChanged)
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
@@ -191,14 +196,28 @@ class DetailsFragment :
 		}
 	}
 
-	private fun onChaptersChanged(chapters: List<ChapterListItem>?) {
+	private fun onChaptersChanged(data: Pair<List<ChapterListItem>?, Int>) {
+		val (chapters, newChapters) = data
 		val infoLayout = requireViewBinding().infoLayout
 		if (chapters.isNullOrEmpty()) {
 			infoLayout.textViewChapters.isVisible = false
 		} else {
 			val count = chapters.countChaptersByBranch()
 			infoLayout.textViewChapters.isVisible = true
-			infoLayout.textViewChapters.text = resources.getQuantityString(R.plurals.chapters, count, count)
+			val chaptersText = resources.getQuantityString(R.plurals.chapters, count, count)
+			infoLayout.textViewChapters.text = if (newChapters == 0) {
+				chaptersText
+			} else {
+				buildSpannedString {
+					append(chaptersText)
+					append(' ')
+					color(infoLayout.textViewChapters.context.getThemeColor(materialR.attr.colorError)) {
+						append("(+")
+						append(newChapters.toString())
+						append(')')
+					}
+				}
+			}
 		}
 	}
 

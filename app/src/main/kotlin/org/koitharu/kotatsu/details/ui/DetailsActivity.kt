@@ -39,7 +39,6 @@ import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
-import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.doOnExpansionsChanged
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
@@ -75,7 +74,6 @@ class DetailsActivity :
 	@Inject
 	lateinit var appShortcutManager: AppShortcutManager
 
-	private lateinit var viewBadge: ViewBadge
 	private var buttonTip: WeakReference<ButtonTip>? = null
 
 	private val viewModel: DetailsViewModel by viewModels()
@@ -92,8 +90,6 @@ class DetailsActivity :
 		viewBinding.buttonRead.setOnLongClickListener(this)
 		viewBinding.buttonRead.setOnContextClickListenerCompat(this)
 		viewBinding.buttonDropdown.setOnClickListener(this)
-		viewBadge = ViewBadge(viewBinding.buttonRead, this)
-		viewBadge.setMaxCharacterCount(1)
 
 		if (viewBinding.layoutBottom != null) {
 			val behavior = BottomSheetBehavior.from(checkNotNull(viewBinding.layoutBottom))
@@ -114,7 +110,6 @@ class DetailsActivity :
 		onBackPressedDispatcher.addCallback(chaptersMenuProvider)
 
 		viewModel.manga.filterNotNull().observe(this, ::onMangaUpdated)
-		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
 		viewModel.onError.observeEvent(
 			this,
@@ -294,10 +289,6 @@ class DetailsActivity :
 		}
 		viewBinding.toolbarChapters?.title = text
 		viewBinding.textViewTitle?.text = text
-	}
-
-	private fun onNewChaptersChanged(newChapters: Int) {
-		viewBadge.counter = newChapters
 	}
 
 	private fun showBranchPopupMenu(v: View) {

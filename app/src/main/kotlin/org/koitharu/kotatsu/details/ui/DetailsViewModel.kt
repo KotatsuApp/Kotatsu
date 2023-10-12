@@ -24,7 +24,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.getPreferredBranch
-import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -71,7 +70,6 @@ class DetailsViewModel @Inject constructor(
 	private val relatedMangaUseCase: RelatedMangaUseCase,
 	private val extraProvider: ListExtraProvider,
 	private val detailsLoadUseCase: DetailsLoadUseCase,
-	networkState: NetworkState,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -93,8 +91,13 @@ class DetailsViewModel @Inject constructor(
 	val favouriteCategories = interactor.observeIsFavourite(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
-	val newChaptersCount = interactor.observeNewChapters(mangaId)
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
+	val newChaptersCount = details.flatMapLatest { d ->
+		if (d?.isLocal == false) {
+			interactor.observeNewChapters(mangaId)
+		} else {
+			flowOf(0)
+		}
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
 
 	private val chaptersQuery = MutableStateFlow("")
 	val selectedBranch = MutableStateFlow<String?>(null)
