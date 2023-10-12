@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -38,6 +39,7 @@ import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
 import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
+import org.koitharu.kotatsu.details.domain.ProgressUpdateUseCase
 import org.koitharu.kotatsu.details.domain.RelatedMangaUseCase
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
@@ -70,6 +72,7 @@ class DetailsViewModel @Inject constructor(
 	private val relatedMangaUseCase: RelatedMangaUseCase,
 	private val extraProvider: ListExtraProvider,
 	private val detailsLoadUseCase: DetailsLoadUseCase,
+	private val progressUpdateUseCase: ProgressUpdateUseCase,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -201,6 +204,13 @@ class DetailsViewModel @Inject constructor(
 			if (settings.isTipEnabled(DetailsActivity.TIP_BUTTON)) {
 				manga.filterNot { it?.chapters.isNullOrEmpty() }.first()
 				onShowTip.call(Unit)
+			}
+		}
+		launchJob(Dispatchers.Default) {
+			val manga = details.firstOrNull { !it?.chapters.isNullOrEmpty() } ?: return@launchJob
+			val h = history.firstOrNull()
+			if (h != null) {
+				progressUpdateUseCase(manga.toManga())
 			}
 		}
 	}
