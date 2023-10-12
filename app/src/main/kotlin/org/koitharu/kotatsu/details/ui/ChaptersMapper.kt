@@ -21,12 +21,11 @@ fun MangaDetails.mapChapters(
 	val bookmarked = bookmarks.mapToSet { it.chapterId }
 	val currentId = history?.chapterId ?: 0L
 	val newFrom = if (newCount == 0 || remoteChapters.isEmpty()) Int.MAX_VALUE else remoteChapters.size - newCount
-	val chaptersSize = maxOf(remoteChapters.size, localChapters.size)
-	val ids = buildSet(chaptersSize) {
+	val ids = buildSet(maxOf(remoteChapters.size, localChapters.size)) {
 		remoteChapters.mapTo(this) { it.id }
 		localChapters.mapTo(this) { it.id }
 	}
-	val result = ArrayList<ChapterListItem>(chaptersSize)
+	val result = ArrayList<ChapterListItem>(ids.size)
 	val localMap = if (localChapters.isNotEmpty()) {
 		localChapters.associateByTo(LinkedHashMap(localChapters.size)) { it.id }
 	} else {
@@ -38,7 +37,7 @@ fun MangaDetails.mapChapters(
 		if (chapter.id == currentId) {
 			isUnread = true
 		}
-		result += chapter.toListItem(
+		result += (local ?: chapter).toListItem(
 			isCurrent = chapter.id == currentId,
 			isUnread = isUnread,
 			isNew = isUnread && result.size >= newFrom,
