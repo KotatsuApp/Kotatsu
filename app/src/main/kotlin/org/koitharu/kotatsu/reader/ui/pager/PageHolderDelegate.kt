@@ -84,6 +84,14 @@ class PageHolderDelegate(
 		job?.cancel()
 	}
 
+	fun reload() {
+		if (state == State.SHOWN ) {
+			file?.let {
+				callback.onImageReady(it.toUri())
+			}
+		}
+	}
+
 	override fun onReady() {
 		state = State.SHOWING
 		error = null

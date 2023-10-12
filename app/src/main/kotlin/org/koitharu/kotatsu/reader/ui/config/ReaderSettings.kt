@@ -3,10 +3,12 @@ package org.koitharu.kotatsu.reader.ui.config
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.view.View
+import androidx.annotation.CheckResult
 import androidx.lifecycle.MediatorLiveData
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.decoder.SkiaImageDecoder
 import com.davemorrissey.labs.subscaleview.decoder.SkiaImageRegionDecoder
+import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 
 class ReaderSettings(
@@ -51,11 +54,19 @@ class ReaderSettings(
 		view.background = bg.resolve(view.context)
 	}
 
-	fun applyBitmapConfig(ssiv: SubsamplingScaleImageView) {
+	@CheckResult
+	fun applyBitmapConfig(ssiv: SubsamplingScaleImageView): Boolean {
 		val config = bitmapConfig
-		if (ssiv.regionDecoderFactory.bitmapConfig != config) {
-			ssiv.regionDecoderFactory = SkiaImageRegionDecoder.Factory(config)
+		return if (ssiv.regionDecoderFactory.bitmapConfig != config) {
+			ssiv.regionDecoderFactory = if (ssiv.context.isLowRamDevice()) {
+				SkiaImageRegionDecoder.Factory(config)
+			} else {
+				SkiaPooledImageRegionDecoder.Factory(config)
+			}
 			ssiv.bitmapDecoderFactory = SkiaImageDecoder.Factory(config)
+			true
+		} else {
+			false
 		}
 	}
 

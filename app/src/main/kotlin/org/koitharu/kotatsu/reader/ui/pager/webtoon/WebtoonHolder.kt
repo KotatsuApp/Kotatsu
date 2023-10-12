@@ -40,7 +40,10 @@ class WebtoonHolder(
 
 	override fun onConfigChanged() {
 		super.onConfigChanged()
-		settings.applyBitmapConfig(binding.ssiv)
+		@Suppress("SENSELESS_COMPARISON")
+		if (settings.applyBitmapConfig(binding.ssiv) && delegate != null) {
+			delegate.reload()
+		}
 	}
 
 	override fun onBind(data: ReaderPage) {
