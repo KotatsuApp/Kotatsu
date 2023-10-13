@@ -83,8 +83,9 @@ abstract class FavouritesDao {
 
 		@Language("RoomSql")
 		val query = SimpleSQLiteQuery(
-			"SELECT m.cover_url AS url, m.source AS source FROM favourites AS f LEFT JOIN manga AS m ON f.manga_id = m.manga_id " +
-				"WHERE f.category_id = ? AND deleted_at = 0 ORDER BY $orderBy",
+			"SELECT manga.cover_url AS url, manga.source AS source FROM favourites " +
+				"LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
+				"WHERE favourites.category_id = ? AND deleted_at = 0 ORDER BY $orderBy",
 			arrayOf<Any>(categoryId),
 		)
 		return findCoversImpl(query)
@@ -164,12 +165,10 @@ abstract class FavouritesDao {
 	protected abstract suspend fun setDeletedAtAll(categoryId: Long, deletedAt: Long)
 
 	private fun getOrderBy(sortOrder: ListSortOrder) = when (sortOrder) {
-		ListSortOrder.RATING -> "rating DESC"
-		ListSortOrder.NEWEST,
-		ListSortOrder.UPDATED,
-		-> "created_at DESC"
-
-		ListSortOrder.ALPHABETIC -> "title ASC"
+		ListSortOrder.RATING -> "manga.rating DESC"
+		ListSortOrder.NEWEST -> "favourites.created_at DESC"
+		ListSortOrder.ALPHABETIC -> "manga.title ASC"
+		ListSortOrder.NEW_CHAPTERS -> "(SELECT chapters_new FROM tracks WHERE tracks.manga_id = manga.manga_id) DESC"
 		else -> throw IllegalArgumentException("Sort order $sortOrder is not supported")
 	}
 }

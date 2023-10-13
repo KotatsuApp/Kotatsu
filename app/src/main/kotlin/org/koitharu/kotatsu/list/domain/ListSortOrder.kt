@@ -15,15 +15,16 @@ enum class ListSortOrder(
 	ALPHABETIC(R.string.by_name),
 	RATING(R.string.by_rating),
 	RELEVANCE(R.string.by_relevance),
+	NEW_CHAPTERS(R.string.new_chapters),
 	;
 
 	fun isGroupingSupported() = this == UPDATED || this == NEWEST || this == PROGRESS
 
 	companion object {
 
-		val HISTORY = EnumSet.of(UPDATED, NEWEST, PROGRESS, ALPHABETIC)
-		val FAVORITES = EnumSet.of(ALPHABETIC, NEWEST, RATING)
-		val SUGGESTIONS = EnumSet.of(RELEVANCE)
+		val HISTORY: Set<ListSortOrder> = EnumSet.of(UPDATED, NEWEST, PROGRESS, ALPHABETIC, NEW_CHAPTERS)
+		val FAVORITES: Set<ListSortOrder> = EnumSet.of(ALPHABETIC, NEWEST, RATING, NEW_CHAPTERS)
+		val SUGGESTIONS: Set<ListSortOrder> = EnumSet.of(RELEVANCE)
 
 		operator fun invoke(value: String, fallback: ListSortOrder) = entries.find(value) ?: fallback
 	}
