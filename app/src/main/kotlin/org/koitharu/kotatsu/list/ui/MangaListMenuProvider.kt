@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.list.ui.config.ListConfigBottomSheet
 
 class MangaListMenuProvider(
 	private val fragment: Fragment,
@@ -17,7 +18,7 @@ class MangaListMenuProvider(
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 		R.id.action_list_mode -> {
-			ListModeBottomSheet.show(fragment.childFragmentManager)
+			ListConfigBottomSheet.show(fragment.childFragmentManager)
 			true
 		}
 

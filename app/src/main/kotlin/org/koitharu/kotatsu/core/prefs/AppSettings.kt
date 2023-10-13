@@ -72,6 +72,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
 		set(value) = prefs.edit { putInt(KEY_GRID_SIZE, value) }
 
+	var historyListMode: ListMode
+		get() = prefs.getEnumValue(KEY_LIST_MODE_HISTORY, listMode)
+		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE_HISTORY, value) }
+
+	var favoritesListMode: ListMode
+		get() = prefs.getEnumValue(KEY_LIST_MODE_FAVORITES, listMode)
+		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE_FAVORITES, value) }
+
 	var isNsfwContentDisabled: Boolean
 		get() = prefs.getBoolean(KEY_DISABLE_NSFW, false)
 		set(value) = prefs.edit { putBoolean(KEY_DISABLE_NSFW, value) }
@@ -407,6 +415,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val TRACK_FAVOURITES = "favourites"
 
 		const val KEY_LIST_MODE = "list_mode_2"
+		const val KEY_LIST_MODE_HISTORY = "list_mode_history"
+		const val KEY_LIST_MODE_FAVORITES = "list_mode_favorites"
 		const val KEY_THEME = "theme"
 		const val KEY_COLOR_THEME = "color_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"

@@ -496,4 +496,5 @@
 	<string name="enhanced_colors">32-bit color mode</string>
 	<string name="suggest_new_sources">Suggest new sources after app update</string>
 	<string name="suggest_new_sources_summary">Prompt to enable newly added sources after updating the application</string>
+	<string name="list_options">List options</string>
 </resources>

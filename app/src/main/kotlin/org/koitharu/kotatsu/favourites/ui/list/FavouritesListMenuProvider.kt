@@ -44,9 +44,7 @@ class FavouritesListMenuProvider(
 		}
 		return when (menuItem.itemId) {
 			R.id.action_edit -> {
-				context.startActivity(
-					FavouritesCategoryEditActivity.newIntent(context, viewModel.categoryId),
-				)
+				context.startActivity(FavouritesCategoryEditActivity.newIntent(context, viewModel.categoryId))
 				true
 			}
 

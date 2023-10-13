@@ -9,9 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkManageIntent
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
-import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
-import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
@@ -26,9 +24,6 @@ class HistoryListFragment : MangaListFragment() {
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		addMenuProvider(HistoryListMenuProvider(binding.root.context, viewModel))
-		val menuInvalidator = MenuInvalidator(requireActivity())
-		viewModel.isGroupingEnabled.observe(viewLifecycleOwner, menuInvalidator)
-		viewModel.sortOrder.observe(viewLifecycleOwner, menuInvalidator)
 	}
 
 	override fun onScrolledToEnd() = Unit

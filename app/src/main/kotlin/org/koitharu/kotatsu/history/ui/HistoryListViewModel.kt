@@ -54,22 +54,21 @@ class HistoryListViewModel @Inject constructor(
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
-	val sortOrder: StateFlow<HistoryOrder> = settings.observeAsStateFlow(
+	private val sortOrder: StateFlow<HistoryOrder> = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.IO,
 		key = AppSettings.KEY_HISTORY_ORDER,
 		valueProducer = { historySortOrder },
 	)
 
-	val isGroupingEnabled = settings.observeAsFlow(
+	override val listMode = settings.observeAsFlow(AppSettings.KEY_LIST_MODE_HISTORY) { historyListMode }
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.historyListMode)
+
+	private val isGroupingEnabled = settings.observeAsFlow(
 		key = AppSettings.KEY_HISTORY_GROUPING,
 		valueProducer = { isHistoryGroupingEnabled },
 	).combine(sortOrder) { g, s ->
 		g && s.isGroupingSupported()
-	}.stateIn(
-		scope = viewModelScope + Dispatchers.Default,
-		started = SharingStarted.Eagerly,
-		initialValue = settings.isHistoryGroupingEnabled && sortOrder.value.isGroupingSupported(),
-	)
+	}
 
 	override val content = combine(
 		sortOrder.flatMapLatest { repository.observeAllWithHistory(it) },
@@ -100,10 +99,6 @@ class HistoryListViewModel @Inject constructor(
 	override fun onRefresh() = Unit
 
 	override fun onRetry() = Unit
-
-	fun setSortOrder(order: HistoryOrder) {
-		settings.historySortOrder = order
-	}
 
 	fun clearHistory(minDate: Long) {
 		launchJob(Dispatchers.Default) {
