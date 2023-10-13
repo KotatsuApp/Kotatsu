@@ -1,13 +1,19 @@
 package org.koitharu.kotatsu.favourites.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.RawQuery
+import androidx.room.Transaction
+import androidx.room.Upsert
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.favourites.domain.model.Cover
-import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.list.domain.ListSortOrder
 
 @Dao
 abstract class FavouritesDao {
@@ -22,7 +28,7 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites WHERE deleted_at = 0 GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit")
 	abstract suspend fun findLast(limit: Int): List<FavouriteManga>
 
-	fun observeAll(order: SortOrder): Flow<List<FavouriteManga>> {
+	fun observeAll(order: ListSortOrder): Flow<List<FavouriteManga>> {
 		val orderBy = getOrderBy(order)
 
 		@Language("RoomSql")
@@ -47,7 +53,7 @@ abstract class FavouritesDao {
 	)
 	abstract suspend fun findAll(categoryId: Long): List<FavouriteManga>
 
-	fun observeAll(categoryId: Long, order: SortOrder): Flow<List<FavouriteManga>> {
+	fun observeAll(categoryId: Long, order: ListSortOrder): Flow<List<FavouriteManga>> {
 		val orderBy = getOrderBy(order)
 
 		@Language("RoomSql")
@@ -72,7 +78,7 @@ abstract class FavouritesDao {
 	)
 	abstract suspend fun findAllManga(categoryId: Int): List<MangaEntity>
 
-	suspend fun findCovers(categoryId: Long, order: SortOrder): List<Cover> {
+	suspend fun findCovers(categoryId: Long, order: ListSortOrder): List<Cover> {
 		val orderBy = getOrderBy(order)
 
 		@Language("RoomSql")
@@ -157,13 +163,13 @@ abstract class FavouritesDao {
 	@Query("UPDATE favourites SET deleted_at = :deletedAt WHERE category_id = :categoryId AND deleted_at = 0")
 	protected abstract suspend fun setDeletedAtAll(categoryId: Long, deletedAt: Long)
 
-	private fun getOrderBy(sortOrder: SortOrder) = when (sortOrder) {
-		SortOrder.RATING -> "rating DESC"
-		SortOrder.NEWEST,
-		SortOrder.UPDATED,
+	private fun getOrderBy(sortOrder: ListSortOrder) = when (sortOrder) {
+		ListSortOrder.RATING -> "rating DESC"
+		ListSortOrder.NEWEST,
+		ListSortOrder.UPDATED,
 		-> "created_at DESC"
 
-		SortOrder.ALPHABETICAL -> "title ASC"
+		ListSortOrder.ALPHABETIC -> "title ASC"
 		else -> throw IllegalArgumentException("Sort order $sortOrder is not supported")
 	}
 }

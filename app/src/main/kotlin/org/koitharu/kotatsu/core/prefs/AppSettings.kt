@@ -22,7 +22,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
-import org.koitharu.kotatsu.history.domain.model.HistoryOrder
+import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.find
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
@@ -75,6 +75,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	var historyListMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE_HISTORY, listMode)
 		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE_HISTORY, value) }
+
+	var suggestionsListMode: ListMode
+		get() = prefs.getEnumValue(KEY_LIST_MODE_SUGGESTIONS, listMode)
+		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE_SUGGESTIONS, value) }
 
 	var favoritesListMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE_FAVORITES, listMode)
@@ -315,8 +319,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getEnumValue(KEY_LOCAL_LIST_ORDER, SortOrder.NEWEST)
 		set(value) = prefs.edit { putEnumValue(KEY_LOCAL_LIST_ORDER, value) }
 
-	var historySortOrder: HistoryOrder
-		get() = prefs.getEnumValue(KEY_HISTORY_ORDER, HistoryOrder.UPDATED)
+	var historySortOrder: ListSortOrder
+		get() = prefs.getEnumValue(KEY_HISTORY_ORDER, ListSortOrder.UPDATED)
 		set(value) = prefs.edit { putEnumValue(KEY_HISTORY_ORDER, value) }
 
 	val isRelatedMangaEnabled: Boolean
@@ -417,6 +421,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LIST_MODE = "list_mode_2"
 		const val KEY_LIST_MODE_HISTORY = "list_mode_history"
 		const val KEY_LIST_MODE_FAVORITES = "list_mode_favorites"
+		const val KEY_LIST_MODE_SUGGESTIONS = "list_mode_suggestions"
 		const val KEY_THEME = "theme"
 		const val KEY_COLOR_THEME = "color_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"

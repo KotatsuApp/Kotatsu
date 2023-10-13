@@ -27,7 +27,6 @@ import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEdit
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -175,12 +174,6 @@ class FavouriteCategoriesActivity :
 	}
 
 	companion object {
-
-		val SORT_ORDERS = arrayOf(
-			SortOrder.ALPHABETICAL,
-			SortOrder.NEWEST,
-			SortOrder.RATING,
-		)
 
 		fun newIntent(context: Context) = Intent(context, FavouriteCategoriesActivity::class.java)
 	}

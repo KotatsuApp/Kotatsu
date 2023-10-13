@@ -26,9 +26,9 @@ import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
-import org.koitharu.kotatsu.history.domain.model.HistoryOrder
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -54,7 +54,7 @@ class HistoryListViewModel @Inject constructor(
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
-	private val sortOrder: StateFlow<HistoryOrder> = settings.observeAsStateFlow(
+	private val sortOrder: StateFlow<ListSortOrder> = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.IO,
 		key = AppSettings.KEY_HISTORY_ORDER,
 		valueProducer = { historySortOrder },
@@ -123,10 +123,6 @@ class HistoryListViewModel @Inject constructor(
 		}
 	}
 
-	fun setGrouping(isGroupingEnabled: Boolean) {
-		settings.isHistoryGroupingEnabled = isGroupingEnabled
-	}
-
 	private suspend fun mapList(
 		list: List<MangaWithHistory>,
 		grouped: Boolean,
@@ -168,10 +164,10 @@ class HistoryListViewModel @Inject constructor(
 		return result
 	}
 
-	private fun MangaHistory.header(order: HistoryOrder): ListHeader? = when (order) {
-		HistoryOrder.UPDATED -> ListHeader(timeAgo(updatedAt))
-		HistoryOrder.CREATED -> ListHeader(timeAgo(createdAt))
-		HistoryOrder.PROGRESS -> ListHeader(
+	private fun MangaHistory.header(order: ListSortOrder): ListHeader? = when (order) {
+		ListSortOrder.UPDATED -> ListHeader(timeAgo(updatedAt))
+		ListSortOrder.NEWEST -> ListHeader(timeAgo(createdAt))
+		ListSortOrder.PROGRESS -> ListHeader(
 			when (percent) {
 				1f -> R.string.status_completed
 				in 0f..0.01f -> R.string.status_planned
@@ -180,7 +176,9 @@ class HistoryListViewModel @Inject constructor(
 			},
 		)
 
-		HistoryOrder.ALPHABETIC -> null
+		ListSortOrder.ALPHABETIC,
+		ListSortOrder.RELEVANCE,
+		ListSortOrder.RATING -> null
 	}
 
 	private fun timeAgo(date: Date): DateTimeAgo {

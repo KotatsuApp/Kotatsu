@@ -22,12 +22,12 @@ import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.ARG_CATEGORY_ID
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,7 +44,7 @@ class FavouritesListViewModel @Inject constructor(
 	override val listMode = settings.observeAsFlow(AppSettings.KEY_LIST_MODE_FAVORITES) { favoritesListMode }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.favoritesListMode)
 
-	val sortOrder: StateFlow<SortOrder?> = if (categoryId == NO_ID) {
+	val sortOrder: StateFlow<ListSortOrder?> = if (categoryId == NO_ID) {
 		MutableStateFlow(null)
 	} else {
 		repository.observeCategory(categoryId)
@@ -54,7 +54,7 @@ class FavouritesListViewModel @Inject constructor(
 
 	override val content = combine(
 		if (categoryId == NO_ID) {
-			repository.observeAll(SortOrder.NEWEST)
+			repository.observeAll(ListSortOrder.NEWEST)
 		} else {
 			repository.observeAll(categoryId)
 		},
@@ -98,7 +98,7 @@ class FavouritesListViewModel @Inject constructor(
 		}
 	}
 
-	fun setSortOrder(order: SortOrder) {
+	fun setSortOrder(order: ListSortOrder) {
 		if (categoryId == NO_ID) {
 			return
 		}

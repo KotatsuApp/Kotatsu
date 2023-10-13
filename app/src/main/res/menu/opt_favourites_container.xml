@@ -5,7 +5,7 @@
 	<item
 		android:id="@+id/action_manage"
 		android:orderInCategory="48"
-		android:title="@string/manage_categories"
-		android:titleCondensed="@string/manage" />
+		android:title="@string/favourites_categories"
+		android:titleCondensed="@string/categories" />
 
 </menu>

@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import org.koitharu.kotatsu.core.model.findById
@@ -52,7 +52,7 @@ class PagesThumbnailsViewModel @Inject constructor(
 
 	init {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			chaptersLoader.init(checkNotNull(mangaDetails.last()))
+			chaptersLoader.init(checkNotNull(mangaDetails.first { x -> x?.isLoaded == true }))
 			chaptersLoader.loadSingleChapter(initialChapterId)
 			updateList()
 		}

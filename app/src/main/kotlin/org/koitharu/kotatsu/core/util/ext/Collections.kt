@@ -55,3 +55,5 @@ inline fun <reified E : Enum<E>> Collection<E>.toEnumSet(): EnumSet<E> = if (isE
 } else {
 	EnumSet.copyOf(this)
 }
+
+fun <E : Enum<E>> Collection<E>.sortedByOrdinal() = sortedBy { it.ordinal }

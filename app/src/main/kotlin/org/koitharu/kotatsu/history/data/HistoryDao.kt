@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
-import org.koitharu.kotatsu.history.domain.model.HistoryOrder
+import org.koitharu.kotatsu.list.domain.ListSortOrder
 
 @Dao
 abstract class HistoryDao {
@@ -33,12 +33,13 @@ abstract class HistoryDao {
 	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC LIMIT :limit")
 	abstract fun observeAll(limit: Int): Flow<List<HistoryWithManga>>
 
-	fun observeAll(order: HistoryOrder): Flow<List<HistoryWithManga>> {
+	fun observeAll(order: ListSortOrder): Flow<List<HistoryWithManga>> {
 		val orderBy = when (order) {
-			HistoryOrder.UPDATED -> "history.updated_at DESC"
-			HistoryOrder.CREATED -> "history.created_at DESC"
-			HistoryOrder.PROGRESS -> "history.percent DESC"
-			HistoryOrder.ALPHABETIC -> "manga.title"
+			ListSortOrder.UPDATED -> "history.updated_at DESC"
+			ListSortOrder.NEWEST -> "history.created_at DESC"
+			ListSortOrder.PROGRESS -> "history.percent DESC"
+			ListSortOrder.ALPHABETIC -> "manga.title"
+			else -> throw IllegalArgumentException("Sort order $order is not supported")
 		}
 
 		@Language("RoomSql")

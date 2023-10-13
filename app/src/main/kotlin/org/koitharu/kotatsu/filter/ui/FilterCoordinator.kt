@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.lifecycleScope
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
+import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.model.FilterItem
 import org.koitharu.kotatsu.filter.ui.model.FilterState
@@ -207,7 +208,7 @@ class FilterCoordinator @Inject constructor(
 		state: FilterState,
 		query: String,
 	): List<ListModel> {
-		val sortOrders = repository.sortOrders.sortedBy { it.ordinal }
+		val sortOrders = repository.sortOrders.sortedByOrdinal()
 		val tags = mergeTags(state.tags, allTags.tags).toList()
 		val list = ArrayList<ListModel>(tags.size + sortOrders.size + 3)
 		if (query.isEmpty()) {

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
@@ -30,6 +31,9 @@ class SuggestionsViewModel @Inject constructor(
 	downloadScheduler: DownloadWorker.Scheduler,
 	private val suggestionsScheduler: SuggestionsWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
+
+	override val listMode = settings.observeAsFlow(AppSettings.KEY_LIST_MODE_SUGGESTIONS) { suggestionsListMode }
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.suggestionsListMode)
 
 	override val content = combine(
 		repository.observeAll(),

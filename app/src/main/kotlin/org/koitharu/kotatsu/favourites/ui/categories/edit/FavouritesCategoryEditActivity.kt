@@ -18,16 +18,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getSerializableCompat
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setChecked
+import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.databinding.ActivityCategoryEditBinding
-import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
-import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.list.domain.ListSortOrder
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
@@ -38,7 +37,8 @@ class FavouritesCategoryEditActivity :
 	DefaultTextWatcher {
 
 	private val viewModel by viewModels<FavouritesCategoryEditViewModel>()
-	private var selectedSortOrder: SortOrder? = null
+	private var selectedSortOrder: ListSortOrder? = null
+	private val sortOrders = ListSortOrder.FAVORITES.sortedByOrdinal()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -68,7 +68,7 @@ class FavouritesCategoryEditActivity :
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		val order = savedInstanceState.getSerializableCompat<SortOrder>(KEY_SORT_ORDER)
+		val order = savedInstanceState.getSerializableCompat<ListSortOrder>(KEY_SORT_ORDER)
 		if (order != null) {
 			selectedSortOrder = order
 		}
@@ -103,7 +103,7 @@ class FavouritesCategoryEditActivity :
 	}
 
 	override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-		selectedSortOrder = FavouriteCategoriesActivity.SORT_ORDERS.getOrNull(position)
+		selectedSortOrder = sortOrders.getOrNull(position)
 	}
 
 	private fun onCategoryChanged(category: FavouriteCategory?) {
@@ -113,7 +113,7 @@ class FavouritesCategoryEditActivity :
 		}
 		viewBinding.editName.setText(category?.title)
 		selectedSortOrder = category?.order
-		val sortText = getString((category?.order ?: SortOrder.NEWEST).titleRes)
+		val sortText = getString((category?.order ?: ListSortOrder.NEWEST).titleResId)
 		viewBinding.editSort.setText(sortText, false)
 		viewBinding.switchTracker.setChecked(category?.isTrackingEnabled ?: true, false)
 		viewBinding.switchShelf.setChecked(category?.isVisibleInLibrary ?: true, false)
@@ -135,17 +135,17 @@ class FavouritesCategoryEditActivity :
 	}
 
 	private fun initSortSpinner() {
-		val entries = FavouriteCategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
+		val entries = sortOrders.map { getString(it.titleResId) }
 		val adapter = SortAdapter(this, entries)
 		viewBinding.editSort.setAdapter(adapter)
 		viewBinding.editSort.onItemClickListener = this
 	}
 
-	private fun getSelectedSortOrder(): SortOrder {
+	private fun getSelectedSortOrder(): ListSortOrder {
 		selectedSortOrder?.let { return it }
-		val entries = FavouriteCategoriesActivity.SORT_ORDERS.map { getString(it.titleRes) }
+		val entries = sortOrders.map { getString(it.titleResId) }
 		val index = entries.indexOf(viewBinding.editSort.text.toString())
-		return FavouriteCategoriesActivity.SORT_ORDERS.getOrNull(index) ?: SortOrder.NEWEST
+		return sortOrders.getOrNull(index) ?: ListSortOrder.NEWEST
 	}
 
 	private class SortAdapter(

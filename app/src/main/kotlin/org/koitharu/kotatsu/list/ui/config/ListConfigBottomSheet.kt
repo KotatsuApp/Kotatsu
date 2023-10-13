@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,11 +19,9 @@ import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.showDistinct
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.core.util.progress.IntPercentLabelFormatter
 import org.koitharu.kotatsu.databinding.SheetListModeBinding
-import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment
-import org.koitharu.kotatsu.history.domain.model.HistoryOrder
-import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,7 +32,10 @@ class ListConfigBottomSheet :
 	AdapterView.OnItemSelectedListener {
 
 	@Inject
+	@Deprecated("")
 	lateinit var settings: AppSettings
+
+	private val viewModel by viewModels<ListConfigViewModel>()
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -42,12 +44,7 @@ class ListConfigBottomSheet :
 
 	override fun onViewBindingCreated(binding: SheetListModeBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		val section = getSection()
-		val mode = when (section) {
-			Section.GENERAL -> settings.listMode
-			Section.HISTORY -> settings.historyListMode
-			Section.FAVORITES -> settings.favoritesListMode
-		}
+		val mode = viewModel.listMode
 		binding.buttonList.isChecked = mode == ListMode.LIST
 		binding.buttonListDetailed.isChecked = mode == ListMode.DETAILED_LIST
 		binding.buttonGrid.isChecked = mode == ListMode.GRID
@@ -55,27 +52,31 @@ class ListConfigBottomSheet :
 		binding.sliderGrid.isVisible = mode == ListMode.GRID
 
 		binding.sliderGrid.setLabelFormatter(IntPercentLabelFormatter(binding.root.context))
-		binding.sliderGrid.setValueRounded(settings.gridSize.toFloat())
+		binding.sliderGrid.setValueRounded(viewModel.gridSize.toFloat())
 		binding.sliderGrid.addOnChangeListener(this)
 
 		binding.checkableGroup.addOnButtonCheckedListener(this)
 
-		binding.switchGrouping.isVisible = section == Section.HISTORY
-		if (section == Section.HISTORY) {
+		binding.switchGrouping.isVisible = viewModel.isGroupingAvailable
+		if (viewModel.isGroupingAvailable) {
 			binding.switchGrouping.isEnabled = settings.historySortOrder.isGroupingSupported()
 		}
 		binding.switchGrouping.isChecked = settings.isHistoryGroupingEnabled
 		binding.switchGrouping.setOnCheckedChangeListener(this)
 
-		if (section == Section.HISTORY) {
+		val sortOrders = viewModel.getSortOrders()
+		if (sortOrders != null) {
 			binding.textViewOrderTitle.isVisible = true
 			binding.spinnerOrder.adapter = ArrayAdapter(
 				binding.spinnerOrder.context,
 				android.R.layout.simple_spinner_dropdown_item,
 				android.R.id.text1,
-				HistoryOrder.entries.map { getString(it.titleResId) },
+				sortOrders.map { binding.spinnerOrder.context.getString(it.titleResId) },
 			)
-			binding.spinnerOrder.setSelection(settings.historySortOrder.ordinal, false)
+			val selected = sortOrders.indexOf(viewModel.getSelectedSortOrder())
+			if (selected >= 0) {
+				binding.spinnerOrder.setSelection(selected, false)
+			}
 			binding.spinnerOrder.onItemSelectedListener = this
 			binding.cardOrder.isVisible = true
 		}
@@ -93,11 +94,7 @@ class ListConfigBottomSheet :
 		}
 		requireViewBinding().textViewGridTitle.isVisible = mode == ListMode.GRID
 		requireViewBinding().sliderGrid.isVisible = mode == ListMode.GRID
-		when (getSection()) {
-			Section.GENERAL -> settings.listMode = mode
-			Section.HISTORY -> settings.historyListMode = mode
-			Section.FAVORITES -> settings.favoritesListMode = mode
-		}
+		viewModel.listMode = mode
 	}
 
 	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
@@ -108,36 +105,28 @@ class ListConfigBottomSheet :
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
 		if (fromUser) {
-			settings.gridSize = value.toInt()
+			viewModel.gridSize = value.toInt()
 		}
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 		when (parent.id) {
 			R.id.spinner_order -> {
-				val value = HistoryOrder.entries[position]
-				settings.historySortOrder = value
-				viewBinding?.switchGrouping?.isEnabled = value.isGroupingSupported()
+				viewModel.setSortOrder(position)
+				viewBinding?.switchGrouping?.isEnabled = settings.historySortOrder.isGroupingSupported()
 			}
 		}
 	}
 
 	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
 
-	private fun getSection(): Section = when (parentFragment) {
-		is HistoryListFragment -> Section.HISTORY
-		is FavouritesListFragment -> Section.FAVORITES
-		else -> Section.GENERAL
-	}
-
-	enum class Section {
-		GENERAL, HISTORY, FAVORITES;
-	}
-
 	companion object {
 
 		private const val TAG = "ListModeSelectDialog"
+		const val ARG_SECTION = "section"
 
-		fun show(fm: FragmentManager) = ListConfigBottomSheet().showDistinct(fm, TAG)
+		fun show(fm: FragmentManager, section: ListConfigSection) = ListConfigBottomSheet().withArgs(1) {
+			putParcelable(ARG_SECTION, section)
+		}.showDistinct(fm, TAG)
 	}
 }

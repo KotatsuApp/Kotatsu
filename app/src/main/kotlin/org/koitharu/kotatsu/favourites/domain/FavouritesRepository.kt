@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.SortOrder
 import org.koitharu.kotatsu.core.db.entity.toEntities
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -20,8 +19,8 @@ import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.favourites.data.toManga
 import org.koitharu.kotatsu.favourites.data.toMangaList
 import org.koitharu.kotatsu.favourites.domain.model.Cover
+import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import javax.inject.Inject
 
@@ -41,7 +40,7 @@ class FavouritesRepository @Inject constructor(
 		return entities.toMangaList()
 	}
 
-	fun observeAll(order: SortOrder): Flow<List<Manga>> {
+	fun observeAll(order: ListSortOrder): Flow<List<Manga>> {
 		return db.favouritesDao.observeAll(order)
 			.mapItems { it.toManga() }
 	}
@@ -51,7 +50,7 @@ class FavouritesRepository @Inject constructor(
 		return entities.toMangaList()
 	}
 
-	fun observeAll(categoryId: Long, order: SortOrder): Flow<List<Manga>> {
+	fun observeAll(categoryId: Long, order: ListSortOrder): Flow<List<Manga>> {
 		return db.favouritesDao.observeAll(categoryId, order)
 			.mapItems { it.toManga() }
 	}
@@ -105,7 +104,7 @@ class FavouritesRepository @Inject constructor(
 
 	suspend fun createCategory(
 		title: String,
-		sortOrder: SortOrder,
+		sortOrder: ListSortOrder,
 		isTrackerEnabled: Boolean,
 		isVisibleOnShelf: Boolean,
 	): FavouriteCategory {
@@ -128,7 +127,7 @@ class FavouritesRepository @Inject constructor(
 	suspend fun updateCategory(
 		id: Long,
 		title: String,
-		sortOrder: SortOrder,
+		sortOrder: ListSortOrder,
 		isTrackerEnabled: Boolean,
 		isVisibleOnShelf: Boolean,
 	) {
@@ -156,7 +155,7 @@ class FavouritesRepository @Inject constructor(
 		}
 	}
 
-	suspend fun setCategoryOrder(id: Long, order: SortOrder) {
+	suspend fun setCategoryOrder(id: Long, order: ListSortOrder) {
 		db.favouriteCategoriesDao.updateOrder(id, order.name)
 	}
 
@@ -205,10 +204,10 @@ class FavouritesRepository @Inject constructor(
 		return ReversibleHandle { recoverToCategory(categoryId, ids) }
 	}
 
-	private fun observeOrder(categoryId: Long): Flow<SortOrder> {
+	private fun observeOrder(categoryId: Long): Flow<ListSortOrder> {
 		return db.favouriteCategoriesDao.observe(categoryId)
 			.filterNotNull()
-			.map { x -> SortOrder(x.order, SortOrder.NEWEST) }
+			.map { x -> ListSortOrder(x.order, ListSortOrder.NEWEST) }
 			.distinctUntilChanged()
 	}
 

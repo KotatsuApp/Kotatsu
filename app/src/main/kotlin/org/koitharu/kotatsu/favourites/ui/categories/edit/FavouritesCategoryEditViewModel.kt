@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity.Companion.EXTRA_ID
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity.Companion.NO_ID
-import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.list.domain.ListSortOrder
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,7 +48,7 @@ class FavouritesCategoryEditViewModel @Inject constructor(
 
 	fun save(
 		title: String,
-		sortOrder: SortOrder,
+		sortOrder: ListSortOrder,
 		isTrackerEnabled: Boolean,
 		isVisibleOnShelf: Boolean,
 	) {

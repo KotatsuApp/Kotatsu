@@ -10,13 +10,11 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
-import org.koitharu.kotatsu.core.ui.model.titleRes
-import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
-import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
-import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
+import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
@@ -27,12 +25,14 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 
 	override val isSwipeRefreshEnabled = false
 
+	val categoryId
+		get() = viewModel.categoryId
+
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		if (viewModel.categoryId != NO_ID) {
 			addMenuProvider(FavouritesListMenuProvider(binding.root.context, viewModel))
 		}
-		viewModel.sortOrder.observe(viewLifecycleOwner, MenuInvalidator(requireActivity()))
 	}
 
 	override fun onScrolledToEnd() = Unit
@@ -40,14 +40,15 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 	override fun onFilterClick(view: View?) {
 		val menu = PopupMenu(view?.context ?: return, view)
 		menu.setOnMenuItemClickListener(this)
-		for ((i, item) in FavouriteCategoriesActivity.SORT_ORDERS.withIndex()) {
-			menu.menu.add(Menu.NONE, Menu.NONE, i, item.titleRes)
+		val orders = ListSortOrder.FAVORITES.sortedByOrdinal()
+		for ((i, item) in orders.withIndex()) {
+			menu.menu.add(Menu.NONE, Menu.NONE, i, item.titleResId)
 		}
 		menu.show()
 	}
 
 	override fun onMenuItemClick(item: MenuItem): Boolean {
-		val order = FavouriteCategoriesActivity.SORT_ORDERS.getOrNull(item.order) ?: return false
+		val order = ListSortOrder.FAVORITES.sortedByOrdinal().getOrNull(item.order) ?: return false
 		viewModel.setSortOrder(order)
 		return true
 	}

@@ -2,9 +2,9 @@ package org.koitharu.kotatsu.core.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.Date
 
 @Parcelize
@@ -12,7 +12,7 @@ data class FavouriteCategory(
 	val id: Long,
 	val title: String,
 	val sortKey: Int,
-	val order: SortOrder,
+	val order: ListSortOrder,
 	val createdAt: Date,
 	val isTrackingEnabled: Boolean,
 	val isVisibleInLibrary: Boolean,
