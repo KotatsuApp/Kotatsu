@@ -23,7 +23,7 @@ enum class ListSortOrder(
 	companion object {
 
 		val HISTORY: Set<ListSortOrder> = EnumSet.of(UPDATED, NEWEST, PROGRESS, ALPHABETIC, NEW_CHAPTERS)
-		val FAVORITES: Set<ListSortOrder> = EnumSet.of(ALPHABETIC, NEWEST, RATING, NEW_CHAPTERS)
+		val FAVORITES: Set<ListSortOrder> = EnumSet.of(ALPHABETIC, NEWEST, RATING, NEW_CHAPTERS, PROGRESS)
 		val SUGGESTIONS: Set<ListSortOrder> = EnumSet.of(RELEVANCE)
 
 		operator fun invoke(value: String, fallback: ListSortOrder) = entries.find(value) ?: fallback
