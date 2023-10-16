@@ -477,4 +477,5 @@
     <string name="items_limit_exceeded">Tidak ada lagi item yang bisa ditambahkan</string>
     <string name="directories">Direktori</string>
     <string name="main_screen_sections">Bagian layar utama</string>
+    <string name="to_top">Ke atas</string>
 </resources>
