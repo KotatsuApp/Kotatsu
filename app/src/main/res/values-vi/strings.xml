@@ -429,4 +429,23 @@
     <string name="manga_error_description_pattern">Chi tiết lỗi:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Hãy thử mở truyện trong trình duyệt&lt;/a&gt; để đảm bảo rằng nó có sẵn trên nguồn truyện&lt;br&gt;2. Hãy chắc chắn rằng bạn đang sử dụng &lt;a href=kotatsu://about&gt;phiên bản mới nhất của Kotatsu&lt;/a&gt;&lt;br&gt;3. Nếu có thể, hãy gửi một báo cáo lỗi cho nhà phát triển.</string>
     <string name="text_history_holder_secondary">Tìm truyện để đọc trong phần «Khám phá»</string>
     <string name="this_month">Tháng này</string>
+    <string name="tracker_wifi_only_summary">Không kiểm tra các chương mới bằng kết nối mạng có đo lường</string>
+    <string name="user_agent">Tiêu đề tác nhân người dùng</string>
+    <string name="data_not_restored_text">Đảm bảo bạn đã chọn đúng tệp sao lưu</string>
+    <string name="auth_complete">Được ủy quyền</string>
+    <string name="data_not_restored">Dữ liệu chưa được khôi phục</string>
+    <string name="manage_categories">Quản lý danh mục</string>
+    <string name="scrobbling_empty_hint">Để theo dõi tiến trình đọc, chọn Danh sách → Theo dõi trên màn hình chi tiết manga.</string>
+    <string name="color_light">Sáng</string>
+    <string name="color_dark">Tối</string>
+    <string name="allow_unstable_updates_summary">Nhận thông báo về các bản dựng không ổn định</string>
+    <string name="related_manga">Truyện tranh liên quan</string>
+    <string name="suggestions_wifi_only_summary">Không cập nhật đề xuất bằng kết nối mạng có đo lường</string>
+    <string name="comics_archive">Kho lưu trữ truyện tranh</string>
+    <string name="folder_with_images_import_description">Bạn có thể chọn một thư mục có kho lưu trữ hoặc hình ảnh. Mỗi kho lưu trữ (hoặc thư mục con) sẽ được công nhận là một chương.</string>
+    <string name="voice_search">Tìm kiếm bằng giọng nói</string>
+    <string name="reader_control_ltr">Điều khiển trình đọc tiện dụng</string>
+    <string name="color_white">Trắng</string>
+    <string name="status_planned">Đã lên kế hoạch</string>
+    <string name="color_black">Đen</string>
 </resources>
