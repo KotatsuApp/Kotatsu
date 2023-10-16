@@ -428,4 +428,5 @@
     <string name="web_view_unavailable">WebView hiện không có sẵn, vui lòng kiểm tra trình cung cấp WebView liệu có được cài đặt</string>
     <string name="manga_error_description_pattern">Chi tiết lỗi:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Hãy thử mở truyện trong trình duyệt&lt;/a&gt; để đảm bảo rằng nó có sẵn trên nguồn truyện&lt;br&gt;2. Hãy chắc chắn rằng bạn đang sử dụng &lt;a href=kotatsu://about&gt;phiên bản mới nhất của Kotatsu&lt;/a&gt;&lt;br&gt;3. Nếu có thể, hãy gửi một báo cáo lỗi cho nhà phát triển.</string>
     <string name="text_history_holder_secondary">Tìm truyện để đọc trong phần «Khám phá»</string>
+    <string name="this_month">Tháng này</string>
 </resources>
