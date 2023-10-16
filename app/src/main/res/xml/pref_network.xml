@@ -41,7 +41,7 @@
 		android:title="@string/images_proxy_title" />
 
 	<SwitchPreferenceCompat
-		android:defaultValue="true"
+		android:defaultValue="false"
 		android:key="mirror_switching"
 		android:summary="@string/mirror_switching_summary"
 		android:title="@string/mirror_switching" />
