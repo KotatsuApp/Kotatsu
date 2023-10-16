@@ -65,7 +65,7 @@
     <string name="text_empty_holder_primary">Je tu nějak prázdno…</string>
     <string name="text_search_holder_secondary">Zkuste přeformulovat dotaz.</string>
     <string name="text_history_holder_primary">To co čtete se zobrazí zde</string>
-    <string name="text_history_holder_secondary">Zjistěte co číst na boční nabídce.</string>
+    <string name="text_history_holder_secondary">Co si přečíst, najdete v sekci «Prozkoumat»</string>
     <string name="text_shelf_holder_primary">Vaše manga bude zobrazena zde</string>
     <string name="text_shelf_holder_secondary">Zjistěte co číst v sekci «Prozkoumat»</string>
     <string name="text_local_holder_primary">Nejdříve něco uložte</string>
@@ -283,7 +283,7 @@
     <string name="language">Jazyk</string>
     <string name="share_logs">Sdílet záznamy</string>
     <string name="enable_logging">Zapnout zaznamenávání</string>
-    <string name="enable_logging_summary">Zaznamenat některé akce pro spravovací účely</string>
+    <string name="enable_logging_summary">Zaznamenejte některé akce pro účely ladění. Nezapínejte jej, pokud si nejste jisti, co děláte</string>
     <string name="show_suspicious_content">Zobrazovat podezřelý kontent</string>
     <string name="theme_name_dynamic">Dynamické</string>
     <string name="color_theme">Schéma barev</string>
@@ -299,7 +299,7 @@
     <string name="scrobbling_empty_hint">Pro sledování pokroku čtení, vyberte Menu → Sledovat na displeji detailů mangy.</string>
     <string name="services">Služby</string>
     <string name="allow_unstable_updates">Povolit nestabilní aktualizace</string>
-    <string name="allow_unstable_updates_summary">Navrhnout beta aktualizace této aplikace</string>
+    <string name="allow_unstable_updates_summary">Přijímat oznámení o nestabilních sestaveních</string>
     <string name="download_started">Stahování začalo</string>
     <string name="got_it">Mám to</string>
     <string name="sources_reorder_tip">Klikněte a přidržte na předmětu pro přeskupení</string>
@@ -314,7 +314,7 @@
     <string name="server_address">Adresa serveru</string>
     <string name="ignore_ssl_errors">Ignorovat SSL chyby</string>
     <string name="mirror_switching">Vybrat zrcadlo automaticky</string>
-    <string name="mirror_switching_summary">Automaticky prohodit doménu pro vzdálené zdroje při chybě pokud jsou zrcadla dostupná</string>
+    <string name="mirror_switching_summary">Automaticky přepínat domény pro zdroje manga při chybách, pokud jsou k dispozici zrcadla</string>
     <string name="pause">Pozastavit</string>
     <string name="resume">Vrátit</string>
     <string name="paused">Pozastaveno</string>
@@ -443,4 +443,5 @@
     <string name="webtoon_zoom_summary">Povolit přiblížení v gestu ve webtoon režimu</string>
     <string name="clear_source_cookies_summary">Vyčistit cookies pouze pro specifikované domény. Ve většině případech bude neplatná autorizace</string>
     <string name="download_option_manual_selection">Vyberte kapitoly manuálně</string>
+    <string name="description">Popis</string>
 </resources>
