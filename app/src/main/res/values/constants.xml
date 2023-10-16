@@ -13,8 +13,8 @@
 	<string name="anilist_clientId" translatable="false">9887</string>
 	<string name="anilist_clientSecret" translatable="false">wrMqFosItQWsmB8dtAHfIFPDt15FfQi2ZGiKkJoW</string>
 	<string name="mal_clientId" translatable="false">6cd8e6349e9a36bc1fc1ab97703c9fd1</string>
-	<string name="acra_login" translatable="false">SxhkCVnqVLbGogvi</string>
-	<string name="acra_password" translatable="false">xPDACTLHnHU9Nfjv</string>
+	<string name="acra_login" translatable="false">LxUiQIbVgKv1pdtM</string>
+	<string name="acra_password" translatable="false">gtG6y1MpEPHrdV1z</string>
 	<string name="sync_authority_history" translatable="false">org.koitharu.kotatsu.history</string>
 	<string name="sync_authority_favourites" translatable="false">org.koitharu.kotatsu.favourites</string>
 	<string-array name="values_theme" translatable="false">
