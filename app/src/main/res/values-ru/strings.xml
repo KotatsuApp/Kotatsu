@@ -485,4 +485,12 @@
     <string name="zoom_out">Отдалить</string>
     <string name="keep_screen_on">Держать экран включённым</string>
     <string name="keep_screen_on_summary">Не выключать экран во время чтения манги</string>
+    <string name="state_abandoned">Брошена</string>
+    <string name="categories">Категории</string>
+    <string name="list_options">Список опций</string>
+    <string name="suggest_new_sources">Предлагать новые источники после обновления приложения</string>
+    <string name="enhanced_colors_summary">Уменьшает полосы, но может повлиять на производительность</string>
+    <string name="by_relevance">Актуальность</string>
+    <string name="enhanced_colors">32-битный цветовой режим</string>
+    <string name="suggest_new_sources_summary">Запрос на включение вновь добавленных источников после обновления приложения</string>
 </resources>

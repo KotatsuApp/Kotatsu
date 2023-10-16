@@ -485,4 +485,12 @@
     <string name="zoom_out">Зменшити</string>
     <string name="keep_screen_on">Тримати екран увімкненим</string>
     <string name="keep_screen_on_summary">Не вимикати екран під час читання манги</string>
+    <string name="state_abandoned">Кинута</string>
+    <string name="categories">Категорії</string>
+    <string name="list_options">Список опцій</string>
+    <string name="suggest_new_sources">Пропонуйте нові джерела після оновлення застосунка</string>
+    <string name="enhanced_colors_summary">Зменшує смуги, але може вплинути на продуктивність</string>
+    <string name="by_relevance">Актуальність</string>
+    <string name="enhanced_colors">32-бітний колірний режим</string>
+    <string name="suggest_new_sources_summary">Запропонувати ввімкнути щойно додані джерела після оновлення застосунка</string>
 </resources>
