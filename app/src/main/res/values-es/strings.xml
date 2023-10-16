@@ -47,7 +47,7 @@
     <string name="dark">Oscuro</string>
     <string name="automatic">De acuerdo al sistema</string>
     <string name="pages">Páginas</string>
-    <string name="clear">Borrar</string>
+    <string name="clear">Limpiar</string>
     <string name="text_clear_history_prompt">Borrar todo el historial de lectura de forma permanente\?</string>
     <string name="remove">Eliminar</string>
     <string name="_s_deleted_from_local_storage">«%s» borrado del almacenamiento local</string>
@@ -485,4 +485,12 @@
     <string name="zoom_out">Alejar</string>
     <string name="keep_screen_on">Mantener pantalla encendida</string>
     <string name="keep_screen_on_summary">No apagues la pantalla mientras lees manga</string>
+    <string name="state_abandoned">Abandonó</string>
+    <string name="suggest_new_sources">Sugerir nuevas fuentes tras actualizar la aplicación</string>
+    <string name="enhanced_colors">Modo de color de 32 bits</string>
+    <string name="suggest_new_sources_summary">Solicitud para habilitar las nuevas fuentes añadidas tras actualizar la aplicación</string>
+    <string name="categories">Categorías</string>
+    <string name="list_options">Lista de opciones</string>
+    <string name="enhanced_colors_summary">Reduce el banding, pero puede afectar al rendimiento</string>
+    <string name="by_relevance">Relevancia</string>
 </resources>
