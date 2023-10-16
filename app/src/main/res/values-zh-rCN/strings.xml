@@ -481,4 +481,6 @@
     <string name="reader_zoom_buttons_summary">是否在右下角显示缩放按钮</string>
     <string name="reader_zoom_buttons">显示缩放按钮</string>
     <string name="zoom_out">缩小</string>
+    <string name="keep_screen_on">保持亮屏</string>
+    <string name="keep_screen_on_summary">阅读漫画时不关闭屏幕</string>
 </resources>
