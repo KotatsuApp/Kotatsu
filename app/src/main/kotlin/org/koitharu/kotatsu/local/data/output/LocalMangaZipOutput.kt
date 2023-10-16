@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.local.data.output
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.readText
 import org.koitharu.kotatsu.core.zip.ZipOutput
@@ -21,7 +22,9 @@ class LocalMangaZipOutput(
 	private val index = MangaIndex(null)
 
 	init {
-		index.setMangaInfo(manga, false)
+		if (!manga.isLocal) {
+			index.setMangaInfo(manga)
+		}
 	}
 
 	override suspend fun mergeWithExisting() {

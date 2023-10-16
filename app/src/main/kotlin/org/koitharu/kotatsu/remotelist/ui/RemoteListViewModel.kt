@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
@@ -67,7 +68,7 @@ open class RemoteListViewModel @Inject constructor(
 	private var randomJob: Job? = null
 
 	override val content = combine(
-		mangaList.map { it?.skipNsfwIfNeeded() },
+		mangaList.map { it?.distinctById()?.skipNsfwIfNeeded() },
 		listMode,
 		listError,
 		hasNextPage,
@@ -138,7 +139,7 @@ open class RemoteListViewModel @Inject constructor(
 				} else if (list.isNotEmpty()) {
 					mangaList.value = mangaList.value?.plus(list) ?: list
 				}
-				hasNextPage.value = list.isNotEmpty()
+				hasNextPage.value = list.isNotEmpty() // TODO check if new ids added
 			} catch (e: CancellationException) {
 				throw e
 			} catch (e: Throwable) {

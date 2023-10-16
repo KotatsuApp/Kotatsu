@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.local.data.output
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.model.findById
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.zip.ZipOutput
@@ -21,7 +22,9 @@ class LocalMangaDirOutput(
 	private val index = MangaIndex(File(rootFile, ENTRY_NAME_INDEX).takeIfReadable()?.readText())
 
 	init {
-		index.setMangaInfo(manga, append = true)
+		if (!manga.isLocal) {
+			index.setMangaInfo(manga)
+		}
 	}
 
 	override suspend fun mergeWithExisting() = Unit

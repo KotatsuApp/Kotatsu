@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -21,7 +22,8 @@ class MangaIndex(source: String?) {
 
 	private val json: JSONObject = source?.let(::JSONObject) ?: JSONObject()
 
-	fun setMangaInfo(manga: Manga, append: Boolean) {
+	fun setMangaInfo(manga: Manga) {
+		require(!manga.isLocal) { "Local manga information cannot be stored" }
 		json.put("id", manga.id)
 		json.put("title", manga.title)
 		json.put("title_alt", manga.altTitle)
@@ -46,7 +48,7 @@ class MangaIndex(source: String?) {
 				}
 			},
 		)
-		if (!append || !json.has("chapters")) {
+		if (!json.has("chapters")) {
 			json.put("chapters", JSONObject())
 		}
 		json.put("app_id", BuildConfig.APPLICATION_ID)

@@ -47,7 +47,7 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 		startForeground()
 		val mangaWithChapters = localMangaRepository.getDetails(manga)
 		localMangaRepository.deleteChapters(mangaWithChapters, chaptersIds)
-		localStorageChanges.emit(LocalManga(manga))
+		localStorageChanges.emit(LocalManga(localMangaRepository.getDetails(manga)))
 		ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
 	}
 

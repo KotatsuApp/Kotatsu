@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPage
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ColorFilterConfigViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
+	private val settings: AppSettings,
 	private val mangaDataRepository: MangaDataRepository,
 ) : BaseViewModel() {
 
@@ -30,6 +32,9 @@ class ColorFilterConfigViewModel @Inject constructor(
 
 	val isChanged: Boolean
 		get() = colorFilter.value != initialColorFilter
+
+	val is32BitColorsEnabled: Boolean
+		get() = settings.is32BitColorsEnabled
 
 	init {
 		launchLoadingJob {

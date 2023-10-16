@@ -14,7 +14,7 @@ import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.CompositeMutex
+import org.koitharu.kotatsu.core.util.CompositeMutex2
 import org.koitharu.kotatsu.core.util.ext.children
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.filterWith
@@ -45,7 +45,7 @@ class LocalMangaRepository @Inject constructor(
 ) : MangaRepository {
 
 	override val source = MangaSource.LOCAL
-	private val locks = CompositeMutex<Long>()
+	private val locks = CompositeMutex2<Long>()
 
 	override val sortOrders: Set<SortOrder> = EnumSet.of(SortOrder.ALPHABETICAL, SortOrder.RATING, SortOrder.NEWEST)
 
@@ -122,7 +122,7 @@ class LocalMangaRepository @Inject constructor(
 
 	suspend fun getRemoteManga(localManga: Manga): Manga? {
 		return runCatchingCancellable {
-			LocalMangaInput.of(localManga).getMangaInfo()
+			LocalMangaInput.of(localManga).getMangaInfo()?.takeUnless { it.isLocal }
 		}.onFailure {
 			it.printStackTraceDebug()
 		}.getOrNull()

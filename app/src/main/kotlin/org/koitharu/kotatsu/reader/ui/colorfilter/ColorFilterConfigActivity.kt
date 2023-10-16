@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.ui.colorfilter
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -121,10 +122,10 @@ class ColorFilterConfigActivity :
 			.scale(Scale.FILL)
 			.decodeRegion()
 			.tag(page.source)
+			.bitmapConfig(if (viewModel.is32BitColorsEnabled) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565)
 			.indicator(listOf(viewBinding.progressBefore, viewBinding.progressAfter))
 			.error(R.drawable.ic_error_placeholder)
 			.size(ViewSizeResolver(viewBinding.imageViewBefore))
-			.allowRgb565(false)
 			.target(DoubleViewTarget(viewBinding.imageViewBefore, viewBinding.imageViewAfter))
 			.enqueueWith(coil)
 	}

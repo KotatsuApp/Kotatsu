@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.details.domain
 
+import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.model.findChapter
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -11,12 +11,12 @@ import javax.inject.Inject
 
 class ProgressUpdateUseCase @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
-	private val historyRepository: HistoryRepository,
+	private val database: MangaDatabase,
 	private val localMangaRepository: LocalMangaRepository,
 ) {
 
 	suspend operator fun invoke(manga: Manga): Float {
-		val history = historyRepository.getOne(manga) ?: return PROGRESS_NONE
+		val history = database.historyDao.find(manga.id) ?: return PROGRESS_NONE
 		val seed = if (manga.isLocal) {
 			localMangaRepository.getRemoteManga(manga) ?: manga
 		} else {
@@ -42,13 +42,14 @@ class ProgressUpdateUseCase @Inject constructor(
 		val pagePercent = (history.page + 1) / pagesCount.toFloat()
 		val ppc = 1f / chaptersCount
 		val result = ppc * chapterIndex + ppc * pagePercent
-		historyRepository.addOrUpdate(
-			manga = details,
-			chapterId = chapter.id,
-			page = history.page,
-			scroll = history.scroll,
-			percent = result,
-		)
+		if (result != history.percent) {
+			database.historyDao.update(
+				history.copy(
+					chapterId = chapter.id,
+					percent = result,
+				),
+			)
+		}
 		return result
 	}
 }

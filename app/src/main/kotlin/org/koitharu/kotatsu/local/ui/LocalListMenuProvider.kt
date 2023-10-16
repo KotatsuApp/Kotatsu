@@ -24,7 +24,7 @@ class LocalListMenuProvider(
 				true
 			}
 
-			R.id.action_settings -> {
+			R.id.action_directories -> {
 				context.startActivity(MangaDirectoriesActivity.newIntent(context))
 				true
 			}
