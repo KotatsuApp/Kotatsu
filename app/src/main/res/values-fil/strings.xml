@@ -483,4 +483,14 @@
     <string name="main_screen_sections">Mga pangunahing seksyon ng screen</string>
     <string name="zoom_out">Mag-zoom palabas</string>
     <string name="to_top">Sa taas</string>
+    <string name="suggest_new_sources">Magmungkahi ng mga bagong source pagkatapos ng app update</string>
+    <string name="enhanced_colors_summary">Binabawasan ang banding, ngunit maaaring makaapekto ito sa performance</string>
+    <string name="state_abandoned">Na-drop</string>
+    <string name="keep_screen_on">Panatilihing naka-on ang screen</string>
+    <string name="enhanced_colors">32-bit color mode</string>
+    <string name="keep_screen_on_summary">Huwag I-off ang screen habang nagbabasa ng manga</string>
+    <string name="suggest_new_sources_summary">I-prompt na paganahin ang mga bagong idinagdag na source pagkatapos i-update ang aplikasyon</string>
+    <string name="categories">Mga Kategorya</string>
+    <string name="list_options">Opsyon sa Listahan</string>
+    <string name="by_relevance">Kaugnayan</string>
 </resources>
