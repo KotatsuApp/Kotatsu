@@ -493,4 +493,5 @@
     <string name="by_relevance">Актуальность</string>
     <string name="enhanced_colors">32-битный цветовой режим</string>
     <string name="suggest_new_sources_summary">Предлагать источники манги, добавленные в последнем обновлении приложения</string>
+    <string name="online_variant">Онлайн вариант</string>
 </resources>
