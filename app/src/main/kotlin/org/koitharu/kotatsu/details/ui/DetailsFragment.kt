@@ -81,7 +81,7 @@ class DetailsFragment :
 	BaseFragment<FragmentDetailsBinding>(),
 	View.OnClickListener,
 	ChipsView.OnChipClickListener,
-	OnListItemClickListener<Bookmark>, ViewTreeObserver.OnDrawListener {
+	OnListItemClickListener<Bookmark>, ViewTreeObserver.OnDrawListener, View.OnLayoutChangeListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -105,6 +105,7 @@ class DetailsFragment :
 		binding.buttonScrobblingMore.setOnClickListener(this)
 		binding.buttonRelatedMore.setOnClickListener(this)
 		binding.infoLayout.textViewSource.setOnClickListener(this)
+		binding.textViewDescription.addOnLayoutChangeListener(this)
 		binding.textViewDescription.viewTreeObserver.addOnDrawListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethod.getInstance()
 		binding.chipsTags.onChipClickListener = this
@@ -147,6 +148,22 @@ class DetailsFragment :
 		viewBinding?.run {
 			buttonDescriptionMore.isVisible = textViewDescription.maxLines == Int.MAX_VALUE ||
 				textViewDescription.isTextTruncated
+		}
+	}
+
+	override fun onLayoutChange(
+		v: View?,
+		left: Int,
+		top: Int,
+		right: Int,
+		bottom: Int,
+		oldLeft: Int,
+		oldTop: Int,
+		oldRight: Int,
+		oldBottom: Int
+	) {
+		with(viewBinding ?: return) {
+			buttonDescriptionMore.isVisible = textViewDescription.isTextTruncated
 		}
 	}
 
@@ -228,7 +245,6 @@ class DetailsFragment :
 		} else {
 			tv.text = description
 		}
-		requireViewBinding().buttonDescriptionMore.isVisible = tv.isTextTruncated
 	}
 
 	private fun onLocalSizeChanged(size: Long) {
