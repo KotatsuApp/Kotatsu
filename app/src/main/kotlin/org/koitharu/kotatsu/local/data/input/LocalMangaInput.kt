@@ -67,10 +67,11 @@ sealed class LocalMangaInput(
 
 		@JvmStatic
 		protected fun Manga.copy2(
-			url: String = this.url,
-			coverUrl: String = this.coverUrl,
-			chapters: List<MangaChapter>? = this.chapters,
-			source: MangaSource = this.source,
+			url: String,
+			coverUrl: String,
+			largeCoverUrl: String,
+			chapters: List<MangaChapter>?,
+			source: MangaSource,
 		) = Manga(
 			id = id,
 			title = title,
@@ -91,8 +92,8 @@ sealed class LocalMangaInput(
 
 		@JvmStatic
 		protected fun MangaChapter.copy(
-			url: String = this.url,
-			source: MangaSource = this.source,
+			url: String,
+			source: MangaSource,
 		) = MangaChapter(
 			id = id,
 			name = name,

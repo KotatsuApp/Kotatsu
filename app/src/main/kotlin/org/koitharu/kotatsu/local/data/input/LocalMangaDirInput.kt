@@ -40,13 +40,15 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 		val mangaUri = root.toUri().toString()
 		val chapterFiles = getChaptersFiles()
 		val info = index?.getMangaInfo()
+		val cover = fileUri(
+			root,
+			index?.getCoverEntry() ?: findFirstImageEntry().orEmpty(),
+		)
 		val manga = info?.copy2(
 			source = MangaSource.LOCAL,
 			url = mangaUri,
-			coverUrl = fileUri(
-				root,
-				index.getCoverEntry() ?: findFirstImageEntry().orEmpty(),
-			),
+			coverUrl = cover,
+			largeCoverUrl = cover,
 			chapters = info.chapters?.mapIndexed { i, c ->
 				c.copy(url = chapterFiles[i].toUri().toString(), source = MangaSource.LOCAL)
 			},

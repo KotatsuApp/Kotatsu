@@ -499,4 +499,5 @@
 	<string name="list_options">List options</string>
 	<string name="by_relevance">Relevance</string>
 	<string name="categories">Categories</string>
+	<string name="online_variant">Online variant</string>
 </resources>

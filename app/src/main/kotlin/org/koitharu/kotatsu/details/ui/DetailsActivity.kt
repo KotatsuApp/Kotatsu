@@ -137,7 +137,9 @@ class DetailsActivity :
 			this,
 			MenuInvalidator(viewBinding.toolbarChapters ?: this),
 		)
-		viewModel.favouriteCategories.observe(this, MenuInvalidator(this))
+		val menuInvalidator = MenuInvalidator(this)
+		viewModel.favouriteCategories.observe(this, menuInvalidator)
+		viewModel.remoteManga.observe(this, menuInvalidator)
 		viewModel.branches.observe(this) {
 			viewBinding.buttonDropdown.isVisible = it.size > 1
 		}

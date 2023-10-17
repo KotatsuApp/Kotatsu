@@ -44,6 +44,12 @@
 		app:showAsAction="never" />
 
 	<item
+		android:id="@+id/action_online"
+		android:orderInCategory="50"
+		android:title="@string/online_variant"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_browser"
 		android:orderInCategory="50"
 		android:title="@string/open_in_browser"

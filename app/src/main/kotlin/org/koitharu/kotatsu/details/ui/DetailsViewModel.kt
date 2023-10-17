@@ -94,6 +94,8 @@ class DetailsViewModel @Inject constructor(
 	val favouriteCategories = interactor.observeIsFavourite(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
+	val remoteManga = MutableStateFlow<Manga?>(null)
+
 	val newChaptersCount = details.flatMapLatest { d ->
 		if (d?.isLocal == false) {
 			interactor.observeNewChapters(mangaId)
@@ -212,6 +214,10 @@ class DetailsViewModel @Inject constructor(
 			if (h != null) {
 				progressUpdateUseCase(manga.toManga())
 			}
+		}
+		launchJob(Dispatchers.Default) {
+			val manga = details.firstOrNull { it != null && it.isLocal } ?: return@launchJob
+			remoteManga.value = interactor.findLocal(manga.toManga())
 		}
 	}
 

@@ -42,6 +42,7 @@ class DetailsMenuProvider(
 		menu.findItem(R.id.action_browser).isVisible = manga?.source != MangaSource.LOCAL
 		menu.findItem(R.id.action_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(activity)
 		menu.findItem(R.id.action_scrobbling).isVisible = viewModel.isScrobblingAvailable
+		menu.findItem(R.id.action_online).isVisible = viewModel.remoteManga.value != null
 		menu.findItem(R.id.action_favourite).setIcon(
 			if (viewModel.favouriteCategories.value) R.drawable.ic_heart else R.drawable.ic_heart_outline,
 		)
@@ -85,6 +86,12 @@ class DetailsMenuProvider(
 			R.id.action_browser -> {
 				viewModel.manga.value?.let {
 					activity.startActivity(BrowserActivity.newIntent(activity, it.publicUrl, it.title))
+				}
+			}
+
+			R.id.action_online -> {
+				viewModel.remoteManga.value?.let {
+					activity.startActivity(DetailsActivity.newIntent(activity, it))
 				}
 			}
 

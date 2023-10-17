@@ -41,14 +41,15 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 				val index = entry?.let(zip::readText)?.let(::MangaIndex)
 				val info = index?.getMangaInfo()
 				if (info != null) {
+					val cover = zipUri(
+						root,
+						entryName = index.getCoverEntry() ?: findFirstImageEntry(zip.entries())?.name.orEmpty(),
+					)
 					return@use info.copy2(
 						source = MangaSource.LOCAL,
 						url = fileUri,
-						coverUrl = zipUri(
-							root,
-							entryName = index.getCoverEntry()
-								?: findFirstImageEntry(zip.entries())?.name.orEmpty(),
-						),
+						coverUrl = cover,
+						largeCoverUrl = cover,
 						chapters = info.chapters?.map { c ->
 							c.copy(url = fileUri, source = MangaSource.LOCAL)
 						},
