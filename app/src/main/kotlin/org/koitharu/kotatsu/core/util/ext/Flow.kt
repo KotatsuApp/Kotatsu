@@ -26,6 +26,17 @@ fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
 	}
 }
 
+fun <T> Flow<T>.onEachWhile(action: suspend (T) -> Boolean): Flow<T> {
+	var isCalled = false
+	return onEach {
+		if (!isCalled) {
+			isCalled = action(it)
+		}
+	}.onCompletion {
+		isCalled = false
+	}
+}
+
 inline fun <T, R> Flow<List<T>>.mapItems(crossinline transform: (T) -> R): Flow<List<R>> {
 	return map { list -> list.map(transform) }
 }

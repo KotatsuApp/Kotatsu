@@ -33,7 +33,7 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.computeSize
-import org.koitharu.kotatsu.core.util.ext.onFirst
+import org.koitharu.kotatsu.core.util.ext.onEachWhile
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.domain.BranchComparator
@@ -313,11 +313,15 @@ class DetailsViewModel @Inject constructor(
 
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
 		detailsLoadUseCase.invoke(intent)
-			.onFirst {
+			.onEachWhile {
+				if (it.allChapters.isEmpty()) {
+					return@onEachWhile false
+				}
 				val manga = it.toManga()
 				// find default branch
 				val hist = historyRepository.getOne(manga)
 				selectedBranch.value = manga.getPreferredBranch(hist)
+				true
 			}.collect {
 				details.value = it
 			}
