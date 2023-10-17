@@ -128,6 +128,10 @@ class RemoteMangaRepository(
 		return details.await()
 	}
 
+	suspend fun peekDetails(manga: Manga): Manga? {
+		return cache.getDetails(source, manga.url)
+	}
+
 	suspend fun find(manga: Manga): Manga? {
 		val list = getList(0, manga.title)
 		return list.find { x -> x.id == manga.id }

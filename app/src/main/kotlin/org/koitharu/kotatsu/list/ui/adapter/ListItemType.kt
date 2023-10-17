@@ -26,4 +26,5 @@ enum class ListItemType {
 	CATEGORY_LARGE,
 	MANGA_SCROBBLING,
 	NAV_ITEM,
+	CHAPTER,
 }

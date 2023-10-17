@@ -24,7 +24,7 @@
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Medium"
 			tools:src="@tools:sample/backgrounds/scenic" />
 
-		<TextView
+		<CheckedTextView
 			android:id="@+id/textView_title"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
@@ -32,11 +32,14 @@
 			android:layout_marginTop="12dp"
 			android:layout_marginEnd="12dp"
 			android:ellipsize="end"
+			android:gravity="center_vertical"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceTitleSmall"
+			app:drawableTint="?android:colorControlNormal"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
+			tools:drawableEndCompat="@drawable/ic_expand_collapse"
 			tools:text="@tools:sample/lorem" />
 
 		<androidx.constraintlayout.widget.Barrier
@@ -100,6 +103,25 @@
 			app:layout_constraintTop_toBottomOf="@id/textView_status"
 			tools:text="@tools:sample/lorem[3]" />
 
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/card_details"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="12dp"
+			android:layout_marginTop="12dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/progressBar"
+			app:shapeAppearance="?shapeAppearanceCornerMedium">
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/recyclerView_chapters"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+		</com.google.android.material.card.MaterialCardView>
+
 		<Button
 			android:id="@+id/button_pause"
 			style="?materialButtonOutlinedStyle"
@@ -110,7 +132,7 @@
 			android:text="@string/pause"
 			android:visibility="gone"
 			app:layout_constraintEnd_toStartOf="@id/button_resume"
-			app:layout_constraintTop_toBottomOf="@id/progressBar"
+			app:layout_constraintTop_toBottomOf="@id/card_details"
 			tools:visibility="visible" />
 
 		<Button
@@ -123,7 +145,7 @@
 			android:text="@string/resume"
 			android:visibility="gone"
 			app:layout_constraintEnd_toStartOf="@id/button_cancel"
-			app:layout_constraintTop_toBottomOf="@id/progressBar" />
+			app:layout_constraintTop_toBottomOf="@id/card_details" />
 
 		<Button
 			android:id="@+id/button_cancel"
@@ -135,7 +157,7 @@
 			android:text="@android:string/cancel"
 			android:visibility="gone"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/progressBar"
+			app:layout_constraintTop_toBottomOf="@id/card_details"
 			tools:visibility="visible" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

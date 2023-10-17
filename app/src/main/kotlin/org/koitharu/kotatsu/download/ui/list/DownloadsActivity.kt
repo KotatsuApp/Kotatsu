@@ -82,7 +82,11 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		if (selectionController.onItemClick(item.id.mostSignificantBits)) {
 			return
 		}
-		startActivity(DetailsActivity.newIntent(view.context, item.manga))
+		if (item.isExpandable) {
+			viewModel.expandCollapse(item)
+		} else {
+			startActivity(DetailsActivity.newIntent(view.context, item.manga))
+		}
 	}
 
 	override fun onItemLongClick(item: DownloadItemModel, view: View): Boolean {

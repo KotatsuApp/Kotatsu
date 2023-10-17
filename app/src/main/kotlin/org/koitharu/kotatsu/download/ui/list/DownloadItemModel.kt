@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.download.ui.list
 
 import android.text.format.DateUtils
 import androidx.work.WorkInfo
+import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.util.Date
@@ -19,6 +20,8 @@ data class DownloadItemModel(
 	val progress: Int,
 	val eta: Long,
 	val timestamp: Date,
+	val chapters: List<DownloadChapter>,
+	val isExpanded: Boolean,
 ) : ListModel, Comparable<DownloadItemModel> {
 
 	val percent: Float
@@ -32,6 +35,9 @@ data class DownloadItemModel(
 
 	val canResume: Boolean
 		get() = workState == WorkInfo.State.RUNNING && isPaused
+
+	val isExpandable: Boolean
+		get() = chapters.isNotEmpty()
 
 	fun getEtaString(): CharSequence? = if (hasEta) {
 		DateUtils.getRelativeTimeSpanString(

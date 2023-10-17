@@ -8,15 +8,19 @@ import androidx.work.Data
 import androidx.work.WorkInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
+import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
@@ -24,6 +28,7 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.download.domain.DownloadState
+import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
@@ -31,6 +36,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.util.Date
 import java.util.LinkedList
 import java.util.UUID
@@ -41,13 +47,18 @@ import javax.inject.Inject
 class DownloadsViewModel @Inject constructor(
 	private val workScheduler: DownloadWorker.Scheduler,
 	private val mangaDataRepository: MangaDataRepository,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : BaseViewModel() {
 
 	private val mangaCache = LongSparseArray<Manga>()
 	private val cacheMutex = Mutex()
-	private val works = workScheduler.observeWorks()
-		.mapLatest { it.toDownloadsList() }
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
+	private val expanded = MutableStateFlow(emptySet<UUID>())
+	private val works = combine(
+		workScheduler.observeWorks(),
+		expanded,
+	) { list, exp ->
+		list.toDownloadsList(exp)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 
@@ -169,11 +180,21 @@ class DownloadsViewModel @Inject constructor(
 		it.id.mostSignificantBits
 	} ?: emptySet()
 
-	private suspend fun List<WorkInfo>.toDownloadsList(): List<DownloadItemModel> {
+	fun expandCollapse(item: DownloadItemModel) {
+		expanded.update {
+			if (item.id in it) {
+				it - item.id
+			} else {
+				it + item.id
+			}
+		}
+	}
+
+	private suspend fun List<WorkInfo>.toDownloadsList(exp: Set<UUID>): List<DownloadItemModel> {
 		if (isEmpty()) {
 			return emptyList()
 		}
-		val list = mapNotNullTo(ArrayList(size)) { it.toUiModel() }
+		val list = mapNotNullTo(ArrayList(size)) { it.toUiModel(it.id in exp) }
 		list.sortByDescending { it.timestamp }
 		return list
 	}
@@ -213,11 +234,13 @@ class DownloadsViewModel @Inject constructor(
 		return destination
 	}
 
-	private suspend fun WorkInfo.toUiModel(): DownloadItemModel? {
+	private suspend fun WorkInfo.toUiModel(isExpanded: Boolean): DownloadItemModel? {
 		val workData = if (outputData == Data.EMPTY) progress else outputData
 		val mangaId = DownloadState.getMangaId(workData)
 		if (mangaId == 0L) return null
 		val manga = getManga(mangaId) ?: return null
+		val downloadedChapters = DownloadState.getDownloadedChapters(workData)
+		val scheduledChapters = DownloadState.getScheduledChapters(workData).toSet()
 		return DownloadItemModel(
 			id = id,
 			workState = state,
@@ -229,7 +252,19 @@ class DownloadsViewModel @Inject constructor(
 			progress = DownloadState.getProgress(workData),
 			eta = DownloadState.getEta(workData),
 			timestamp = DownloadState.getTimestamp(workData),
-			totalChapters = DownloadState.getDownloadedChapters(workData).size,
+			totalChapters = downloadedChapters.size,
+			isExpanded = isExpanded,
+			chapters = manga.chapters?.mapNotNull {
+				if (it.id in scheduledChapters) {
+					DownloadChapter(
+						number = it.number,
+						name = it.name,
+						isDownloaded = it.id in downloadedChapters,
+					)
+				} else {
+					null
+				}
+			}.orEmpty(),
 		)
 	}
 
@@ -261,8 +296,16 @@ class DownloadsViewModel @Inject constructor(
 		}
 		return cacheMutex.withLock {
 			mangaCache.getOrElse(mangaId) {
-				mangaDataRepository.findMangaById(mangaId)?.also { mangaCache[mangaId] = it } ?: return null
+				mangaDataRepository.findMangaById(mangaId)?.let {
+					tryLoad(it) ?: it
+				}?.also {
+					mangaCache[mangaId] = it
+				} ?: return null
 			}
 		}
 	}
+
+	private suspend fun tryLoad(manga: Manga) = runCatchingCancellable {
+		(mangaRepositoryFactory.create(manga.source) as RemoteMangaRepository).peekDetails(manga)
+	}.getOrNull()
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:baselineAligned="false"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
+	android:paddingVertical="4dp">
+
+	<TextView
+		android:id="@+id/textView_number"
+		android:layout_width="24dp"
+		android:layout_height="24dp"
+		android:layout_marginStart="?android:listPreferredItemPaddingStart"
+		android:background="@drawable/bg_badge_default"
+		android:ellipsize="none"
+		android:gravity="center"
+		android:singleLine="true"
+		android:textAlignment="center"
+		android:textColor="?attr/colorOnPrimary"
+		android:textSize="12sp"
+		tools:text="13" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="?android:listPreferredItemPaddingStart"
+		android:layout_marginEnd="?android:listPreferredItemPaddingEnd"
+		android:drawablePadding="4dp"
+		android:ellipsize="end"
+		android:gravity="center_vertical"
+		android:singleLine="true"
+		android:textAppearance="?attr/textAppearanceBodySmall"
+		app:drawableTint="?colorControlNormal"
+		tools:drawableEnd="@drawable/ic_check"
+		tools:text="@tools:sample/lorem[15]" />
+
+</LinearLayout>

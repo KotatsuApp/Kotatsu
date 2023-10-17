@@ -19,6 +19,7 @@ data class DownloadState(
 	val eta: Long = -1L,
 	val localManga: LocalManga? = null,
 	val downloadedChapters: LongArray = LongArray(0),
+	val scheduledChapters: LongArray = LongArray(0),
 	val timestamp: Long = System.currentTimeMillis(),
 ) {
 
@@ -42,6 +43,7 @@ data class DownloadState(
 		.putLong(DATA_TIMESTAMP, timestamp)
 		.putString(DATA_ERROR, error)
 		.putLongArray(DATA_CHAPTERS, downloadedChapters)
+		.putLongArray(DATA_CHAPTERS_SRC, scheduledChapters)
 		.putBoolean(DATA_INDETERMINATE, isIndeterminate)
 		.putBoolean(DATA_PAUSED, isPaused)
 		.build()
@@ -64,10 +66,13 @@ data class DownloadState(
 		if (eta != other.eta) return false
 		if (localManga != other.localManga) return false
 		if (!downloadedChapters.contentEquals(other.downloadedChapters)) return false
+		if (!scheduledChapters.contentEquals(other.scheduledChapters)) return false
 		if (timestamp != other.timestamp) return false
 		if (max != other.max) return false
 		if (progress != other.progress) return false
-		return percent == other.percent
+		if (percent != other.percent) return false
+
+		return true
 	}
 
 	override fun hashCode(): Int {
@@ -83,6 +88,7 @@ data class DownloadState(
 		result = 31 * result + eta.hashCode()
 		result = 31 * result + (localManga?.hashCode() ?: 0)
 		result = 31 * result + downloadedChapters.contentHashCode()
+		result = 31 * result + scheduledChapters.contentHashCode()
 		result = 31 * result + timestamp.hashCode()
 		result = 31 * result + max
 		result = 31 * result + progress
@@ -90,12 +96,14 @@ data class DownloadState(
 		return result
 	}
 
+
 	companion object {
 
 		private const val DATA_MANGA_ID = "manga_id"
 		private const val DATA_MAX = "max"
 		private const val DATA_PROGRESS = "progress"
 		private const val DATA_CHAPTERS = "chapter"
+		private const val DATA_CHAPTERS_SRC = "chapters_src"
 		private const val DATA_ETA = "eta"
 		private const val DATA_TIMESTAMP = "timestamp"
 		private const val DATA_ERROR = "error"
@@ -119,5 +127,7 @@ data class DownloadState(
 		fun getTimestamp(data: Data): Date = Date(data.getLong(DATA_TIMESTAMP, 0L))
 
 		fun getDownloadedChapters(data: Data): LongArray = data.getLongArray(DATA_CHAPTERS) ?: LongArray(0)
+
+		fun getScheduledChapters(data: Data): LongArray = data.getLongArray(DATA_CHAPTERS_SRC) ?: LongArray(0)
 	}
 }

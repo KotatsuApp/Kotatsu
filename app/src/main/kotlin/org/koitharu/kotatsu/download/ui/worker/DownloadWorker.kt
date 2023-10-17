@@ -178,6 +178,9 @@ class DownloadWorker @AssistedInject constructor(
 					}
 				}
 				val chapters = getChapters(mangaDetails, includedIds)
+				publishState(
+					currentState.copy(scheduledChapters = LongArray(chapters.size) { i -> chapters[i].id }),
+				)
 				for ((chapterIndex, chapter) in chapters.withIndex()) {
 					if (chaptersToSkip.remove(chapter.id)) {
 						publishState(
