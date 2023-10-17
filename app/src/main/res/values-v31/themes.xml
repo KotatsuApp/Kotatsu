@@ -3,6 +3,7 @@
 
 	<style name="Base.V31.Kotatsu" parent="Base.V27.Kotatsu">
 		<item name="android:windowSplashScreenAnimatedIcon">@drawable/avd_splash</item>
+		<item name="android:windowSplashScreenBackground">@android:color/system_neutral2_50</item>
 		<item name="android:windowSplashScreenAnimationDuration">800</item>
 	</style>
 
