@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+	<style name="Base.V31.Kotatsu" parent="Base.V27.Kotatsu">
+		<item name="android:windowSplashScreenAnimatedIcon">@drawable/avd_splash</item>
+		<item name="android:windowSplashScreenBackground">@android:color/system_neutral2_900</item>
+		<item name="android:windowSplashScreenAnimationDuration">800</item>
+	</style>
+
 	<!-- From ThemeOverlay.Material3.DynamicColors.Dark -->
 	<style name="Theme.Kotatsu.Monet">
 		<item name="isMaterial3DynamicColorApplied">true</item>
