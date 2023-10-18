@@ -8,6 +8,7 @@
 	android:layout_height="wrap_content">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/constraintLayout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:paddingBottom="12dp">
@@ -106,10 +107,12 @@
 		<com.google.android.material.card.MaterialCardView
 			android:id="@+id/card_details"
 			android:layout_width="0dp"
-			android:layout_height="wrap_content"
+			android:layout_height="0dp"
 			android:layout_marginHorizontal="12dp"
 			android:layout_marginTop="12dp"
 			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHeight_default="wrap"
+			app:layout_constraintHeight_max="280dp"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/progressBar"
 			app:shapeAppearance="?shapeAppearanceCornerMedium">
@@ -117,8 +120,12 @@
 			<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/recyclerView_chapters"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+				android:layout_height="match_parent"
+				android:orientation="vertical"
+				android:scrollbars="vertical"
+				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+				tools:itemCount="200"
+				tools:listitem="@layout/item_chapter_download" />
 
 		</com.google.android.material.card.MaterialCardView>
 

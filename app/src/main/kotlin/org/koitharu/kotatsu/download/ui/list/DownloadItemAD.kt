@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.download.ui.list
 
+import android.transition.TransitionManager
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -14,12 +15,14 @@ import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.util.ext.drawableEnd
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemDownloadBinding
 import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
 import org.koitharu.kotatsu.download.ui.list.chapters.downloadChapterAD
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.util.format
@@ -60,6 +63,9 @@ fun downloadItemAD(
 	binding.recyclerViewChapters.adapter = chaptersAdapter
 
 	bind { payloads ->
+		if (ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED in payloads && context.isAnimationsEnabled) {
+			TransitionManager.beginDelayedTransition(binding.constraintLayout)
+		}
 		binding.textViewTitle.text = item.manga.title
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.apply {
 			placeholder(R.drawable.ic_placeholder)

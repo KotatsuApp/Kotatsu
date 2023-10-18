@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.download.ui.list
 import android.text.format.DateUtils
 import androidx.work.WorkInfo
 import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.util.Date
@@ -57,17 +58,10 @@ data class DownloadItemModel(
 		return other is DownloadItemModel && other.id == id
 	}
 
-	override fun getChangePayload(previousState: ListModel): Any? {
-		return when (previousState) {
-			is DownloadItemModel -> {
-				if (workState == previousState.workState) {
-					Unit
-				} else {
-					null
-				}
-			}
-
-			else -> super.getChangePayload(previousState)
-		}
+	override fun getChangePayload(previousState: ListModel): Any? = when {
+		previousState !is DownloadItemModel -> super.getChangePayload(previousState)
+		workState != previousState.workState -> null
+		isExpanded != previousState.isExpanded -> ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED
+		else -> ListModelDiffCallback.PAYLOAD_ANYTHING_CHANGED
 	}
 }
