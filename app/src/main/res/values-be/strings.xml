@@ -487,10 +487,11 @@
     <string name="keep_screen_on_summary">Ня выключаць экран падчас чытання мангі</string>
     <string name="state_abandoned">Кінута</string>
     <string name="categories">Катэгорыі</string>
-    <string name="list_options">Спіс опцый</string>
+    <string name="list_options">Параметры спісу</string>
     <string name="suggest_new_sources">Прапаноўваць новыя крыніцы пасля абнаўлення праграмы</string>
     <string name="enhanced_colors_summary">Памяншае паласы, але можа паўплываць на прадукцыйнасць</string>
     <string name="by_relevance">Актуальнасць</string>
     <string name="enhanced_colors">32-бітны каляровы рэжым</string>
-    <string name="suggest_new_sources_summary">Запыт на ўключэнне зноў дададзеных крыніц пасля абнаўлення праграмы</string>
+    <string name="suggest_new_sources_summary">Прапаноўваць крыніцы мангі, дададзеныя ў апошнім абнаўленні праграмы</string>
+    <string name="online_variant">Анлайн варыянт</string>
 </resources>
