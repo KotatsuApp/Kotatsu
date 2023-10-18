@@ -126,10 +126,10 @@ abstract class BaseActivity<B : ViewBinding> :
 		val actionModeColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			ColorUtils.compositeColors(
 				ContextCompat.getColor(this, com.google.android.material.R.color.m3_appbar_overlay_color),
-				getThemeColor(com.google.android.material.R.attr.colorSurface),
+				getThemeColor(R.attr.m3ColorBackground),
 			)
 		} else {
-			ContextCompat.getColor(this, R.color.kotatsu_secondaryContainer)
+			ContextCompat.getColor(this, R.color.kotatsu_m3_background)
 		}
 		val insets = ViewCompat.getRootWindowInsets(viewBinding.root)
 			?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
