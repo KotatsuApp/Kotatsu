@@ -490,4 +490,8 @@
     <string name="download_option_all_chapters">Çevirisi %s olan tüm bölümler</string>
     <string name="color_black">Siyah</string>
     <string name="this_month">Bu ay</string>
+    <string name="categories">Kategoriler</string>
+    <string name="list_options">Seçenekleri listele</string>
+    <string name="online_variant">Çevrimiçi varyant</string>
+    <string name="by_relevance">Alaka düzeyi</string>
 </resources>
