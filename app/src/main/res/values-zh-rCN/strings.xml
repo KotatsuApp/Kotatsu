@@ -68,7 +68,7 @@
     <string name="downloads">下载</string>
     <string name="by_name">名称</string>
     <string name="popular">热门</string>
-    <string name="updated">已更新</string>
+    <string name="updated">最近更新</string>
     <string name="sort_order">排序</string>
     <string name="filter">筛选</string>
     <string name="theme">主题</string>
@@ -483,4 +483,9 @@
     <string name="zoom_out">缩小</string>
     <string name="keep_screen_on">保持亮屏</string>
     <string name="keep_screen_on_summary">阅读漫画时不关闭屏幕</string>
+    <string name="list_options">列表选项</string>
+    <string name="suggest_new_sources">推荐新漫画源</string>
+    <string name="enhanced_colors_summary">减少色带，但可能会影响性能</string>
+    <string name="enhanced_colors">32位色彩模式</string>
+    <string name="suggest_new_sources_summary">应用更新后快速启用新增的漫画源</string>
 </resources>
