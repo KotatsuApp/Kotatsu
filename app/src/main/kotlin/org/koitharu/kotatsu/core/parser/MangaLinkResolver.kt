@@ -23,14 +23,14 @@ class MangaLinkResolver @Inject constructor(
 ) {
 
 	suspend fun resolve(uri: Uri): Manga {
-		return if (uri.host == "kotatsu.app") {
+		return if (uri.scheme == "kotatsu" || uri.host == "kotatsu.app") {
 			resolveAppLink(uri)
 		} else {
 			resolveExternalLink(uri)
-		} ?: throw NotFoundException("Manga not found", uri.toString())
+		} ?: throw NotFoundException("Cannot resolve link", uri.toString())
 	}
 
-	suspend fun resolveAppLink(uri: Uri): Manga? {
+	private suspend fun resolveAppLink(uri: Uri): Manga? {
 		require(uri.pathSegments.singleOrNull() == "manga") { "Invalid url" }
 		val sourceName = requireNotNull(uri.getQueryParameter("source")) { "Source is not specified" }
 		val source = MangaSource(sourceName)
@@ -42,7 +42,7 @@ class MangaLinkResolver @Inject constructor(
 		)
 	}
 
-	suspend fun resolveExternalLink(uri: Uri): Manga? {
+	private suspend fun resolveExternalLink(uri: Uri): Manga? {
 		dataRepository.findMangaByPublicUrl(uri.toString())?.let {
 			return it
 		}
