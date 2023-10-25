@@ -41,23 +41,23 @@ class TrackingRepository @Inject constructor(
 	private var isGcCalled = AtomicBoolean(false)
 
 	suspend fun getNewChaptersCount(mangaId: Long): Int {
-		return db.tracksDao.findNewChapters(mangaId) ?: 0
+		return db.getTracksDao().findNewChapters(mangaId) ?: 0
 	}
 
 	fun observeNewChaptersCount(mangaId: Long): Flow<Int> {
-		return db.tracksDao.observeNewChapters(mangaId).map { it ?: 0 }
+		return db.getTracksDao().observeNewChapters(mangaId).map { it ?: 0 }
 	}
 
 	fun observeUpdatedMangaCount(): Flow<Int> {
-		return db.tracksDao.observeNewChapters().map { list -> list.count { it > 0 } }
+		return db.getTracksDao().observeNewChapters().map { list -> list.count { it > 0 } }
 			.onStart { gcIfNotCalled() }
 	}
 
 	fun observeUpdatedManga(limit: Int = 0): Flow<List<Manga>> {
 		return if (limit == 0) {
-			db.tracksDao.observeUpdatedManga()
+			db.getTracksDao().observeUpdatedManga()
 		} else {
-			db.tracksDao.observeUpdatedManga(limit)
+			db.getTracksDao().observeUpdatedManga(limit)
 		}.mapItems { it.toManga() }
 			.distinctUntilChanged()
 			.onStart { gcIfNotCalled() }
@@ -65,7 +65,7 @@ class TrackingRepository @Inject constructor(
 
 	suspend fun getTracks(mangaList: Collection<Manga>): List<MangaTracking> {
 		val ids = mangaList.mapToSet { it.id }
-		val tracks = db.tracksDao.findAll(ids).groupBy { it.mangaId }
+		val tracks = db.getTracksDao().findAll(ids).groupBy { it.mangaId }
 		val idSet = HashSet<Long>()
 		val result = ArrayList<MangaTracking>(mangaList.size)
 		for (item in mangaList) {
@@ -89,7 +89,7 @@ class TrackingRepository @Inject constructor(
 
 	@VisibleForTesting
 	suspend fun getTrack(manga: Manga): MangaTracking {
-		val track = db.tracksDao.find(manga.id)
+		val track = db.getTracksDao().find(manga.id)
 		return MangaTracking(
 			manga = manga,
 			lastChapterId = track?.lastChapterId ?: NO_ID,
@@ -99,14 +99,14 @@ class TrackingRepository @Inject constructor(
 
 	@VisibleForTesting
 	suspend fun deleteTrack(mangaId: Long) {
-		db.tracksDao.delete(mangaId)
+		db.getTracksDao().delete(mangaId)
 	}
 
 	fun observeTrackingLog(limit: Flow<Int>): Flow<List<TrackingLogItem>> {
 		return limit.flatMapLatest { limitValue ->
 			combine(
-				db.tracksDao.observeNewChaptersMap(),
-				db.trackLogsDao.observeAll(limitValue),
+				db.getTracksDao().observeNewChaptersMap(),
+				db.getTrackLogsDao().observeAll(limitValue),
 			) { counters, entities ->
 				val countersMap = counters.toMutableMap()
 				entities.map { x -> x.toTrackingLogItem(countersMap) }
@@ -116,21 +116,21 @@ class TrackingRepository @Inject constructor(
 		}
 	}
 
-	suspend fun getLogsCount() = db.trackLogsDao.count()
+	suspend fun getLogsCount() = db.getTrackLogsDao().count()
 
-	suspend fun clearLogs() = db.trackLogsDao.clear()
+	suspend fun clearLogs() = db.getTrackLogsDao().clear()
 
-	suspend fun clearCounters() = db.tracksDao.clearCounters()
+	suspend fun clearCounters() = db.getTracksDao().clearCounters()
 
 	suspend fun gc() {
-		db.tracksDao.gc()
-		db.trackLogsDao.gc()
+		db.getTracksDao().gc()
+		db.getTrackLogsDao().gc()
 	}
 
 	suspend fun saveUpdates(updates: MangaUpdates.Success) {
 		db.withTransaction {
 			val track = getOrCreateTrack(updates.manga.id).mergeWith(updates)
-			db.tracksDao.upsert(track)
+			db.getTracksDao().upsert(track)
 			if (updates.isValid && updates.newChapters.isNotEmpty()) {
 				updatePercent(updates)
 				val logEntity = TrackLogEntity(
@@ -138,7 +138,7 @@ class TrackingRepository @Inject constructor(
 					chapters = updates.newChapters.joinToString("\n") { x -> x.name },
 					createdAt = System.currentTimeMillis(),
 				)
-				db.trackLogsDao.insert(logEntity)
+				db.getTrackLogsDao().insert(logEntity)
 			}
 		}
 	}
@@ -146,10 +146,10 @@ class TrackingRepository @Inject constructor(
 	suspend fun clearUpdates(ids: Collection<Long>) {
 		when {
 			ids.isEmpty() -> return
-			ids.size == 1 -> db.tracksDao.clearCounter(ids.single())
+			ids.size == 1 -> db.getTracksDao().clearCounter(ids.single())
 			else -> db.withTransaction {
 				for (id in ids) {
-					db.tracksDao.clearCounter(id)
+					db.getTracksDao().clearCounter(id)
 				}
 			}
 		}
@@ -174,11 +174,11 @@ class TrackingRepository @Inject constructor(
 			lastCheck = System.currentTimeMillis(),
 			lastNotifiedChapterId = lastChapterId,
 		)
-		db.tracksDao.upsert(entity)
+		db.getTracksDao().upsert(entity)
 	}
 
 	suspend fun getCategoriesCount(): IntArray {
-		val categories = db.favouriteCategoriesDao.findAll()
+		val categories = db.getFavouriteCategoriesDao().findAll()
 		return intArrayOf(
 			categories.count { it.track },
 			categories.size,
@@ -186,19 +186,19 @@ class TrackingRepository @Inject constructor(
 	}
 
 	suspend fun getAllFavouritesManga(): Map<FavouriteCategory, List<Manga>> {
-		val categories = db.favouriteCategoriesDao.findAll()
+		val categories = db.getFavouriteCategoriesDao().findAll()
 		return categories.associateTo(LinkedHashMap(categories.size)) { categoryEntity ->
 			categoryEntity.toFavouriteCategory() to
-				db.favouritesDao.findAllManga(categoryEntity.categoryId).toMangaList()
+				db.getFavouritesDao().findAllManga(categoryEntity.categoryId).toMangaList()
 		}
 	}
 
 	suspend fun getAllHistoryManga(): List<Manga> {
-		return db.historyDao.findAllManga().toMangaList()
+		return db.getHistoryDao().findAllManga().toMangaList()
 	}
 
 	private suspend fun getOrCreateTrack(mangaId: Long): TrackEntity {
-		return db.tracksDao.find(mangaId) ?: TrackEntity(
+		return db.getTracksDao().find(mangaId) ?: TrackEntity(
 			mangaId = mangaId,
 			totalChapters = 0,
 			lastChapterId = 0L,
@@ -209,7 +209,7 @@ class TrackingRepository @Inject constructor(
 	}
 
 	private suspend fun updatePercent(updates: MangaUpdates.Success) {
-		val history = db.historyDao.find(updates.manga.id) ?: return
+		val history = db.getHistoryDao().find(updates.manga.id) ?: return
 		val chapters = updates.manga.chapters
 		if (chapters.isNullOrEmpty()) {
 			return
@@ -220,7 +220,7 @@ class TrackingRepository @Inject constructor(
 		}
 		val position = (chapters.size - updates.newChapters.size) * history.percent
 		val newPercent = position / chapters.size.toFloat()
-		db.historyDao.update(history.copy(percent = newPercent))
+		db.getHistoryDao().update(history.copy(percent = newPercent))
 	}
 
 	private fun TrackEntity.mergeWith(updates: MangaUpdates.Success): TrackEntity {

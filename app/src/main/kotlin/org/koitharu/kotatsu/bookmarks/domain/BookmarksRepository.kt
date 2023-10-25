@@ -25,15 +25,15 @@ class BookmarksRepository @Inject constructor(
 ) {
 
 	fun observeBookmark(manga: Manga, chapterId: Long, page: Int): Flow<Bookmark?> {
-		return db.bookmarksDao.observe(manga.id, chapterId, page).map { it?.toBookmark(manga) }
+		return db.getBookmarksDao().observe(manga.id, chapterId, page).map { it?.toBookmark(manga) }
 	}
 
 	fun observeBookmarks(manga: Manga): Flow<List<Bookmark>> {
-		return db.bookmarksDao.observe(manga.id).mapItems { it.toBookmark(manga) }
+		return db.getBookmarksDao().observe(manga.id).mapItems { it.toBookmark(manga) }
 	}
 
 	fun observeBookmarks(): Flow<Map<Manga, List<Bookmark>>> {
-		return db.bookmarksDao.observe().map { map ->
+		return db.getBookmarksDao().observe().map { map ->
 			val res = LinkedHashMap<Manga, List<Bookmark>>(map.size)
 			for ((k, v) in map) {
 				val manga = k.toManga()
@@ -46,9 +46,9 @@ class BookmarksRepository @Inject constructor(
 	suspend fun addBookmark(bookmark: Bookmark) {
 		db.withTransaction {
 			val tags = bookmark.manga.tags.toEntities()
-			db.tagsDao.upsert(tags)
-			db.mangaDao.upsert(bookmark.manga.toEntity(), tags)
-			db.bookmarksDao.insert(bookmark.toEntity())
+			db.getTagsDao().upsert(tags)
+			db.getMangaDao().upsert(bookmark.manga.toEntity(), tags)
+			db.getBookmarksDao().insert(bookmark.toEntity())
 		}
 	}
 
@@ -56,11 +56,11 @@ class BookmarksRepository @Inject constructor(
 		val entity = bookmark.toEntity().copy(
 			imageUrl = imageUrl,
 		)
-		db.bookmarksDao.upsert(listOf(entity))
+		db.getBookmarksDao().upsert(listOf(entity))
 	}
 
 	suspend fun removeBookmark(mangaId: Long, chapterId: Long, page: Int) {
-		check(db.bookmarksDao.delete(mangaId, chapterId, page) != 0) {
+		check(db.getBookmarksDao().delete(mangaId, chapterId, page) != 0) {
 			"Bookmark not found"
 		}
 	}
@@ -72,7 +72,7 @@ class BookmarksRepository @Inject constructor(
 	suspend fun removeBookmarks(ids: Set<Long>): ReversibleHandle {
 		val entities = ArrayList<BookmarkEntity>(ids.size)
 		db.withTransaction {
-			val dao = db.bookmarksDao
+			val dao = db.getBookmarksDao()
 			for (pageId in ids) {
 				val e = dao.find(pageId)
 				if (e != null) {
@@ -92,7 +92,7 @@ class BookmarksRepository @Inject constructor(
 			db.withTransaction {
 				for (e in entities) {
 					try {
-						db.bookmarksDao.insert(e)
+						db.getBookmarksDao().insert(e)
 					} catch (e: SQLException) {
 						e.printStackTraceDebug()
 					}

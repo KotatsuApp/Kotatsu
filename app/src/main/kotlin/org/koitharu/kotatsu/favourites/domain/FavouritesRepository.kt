@@ -31,27 +31,27 @@ class FavouritesRepository @Inject constructor(
 ) {
 
 	suspend fun getAllManga(): List<Manga> {
-		val entities = db.favouritesDao.findAll()
+		val entities = db.getFavouritesDao().findAll()
 		return entities.toMangaList()
 	}
 
 	suspend fun getLastManga(limit: Int): List<Manga> {
-		val entities = db.favouritesDao.findLast(limit)
+		val entities = db.getFavouritesDao().findLast(limit)
 		return entities.toMangaList()
 	}
 
 	fun observeAll(order: ListSortOrder): Flow<List<Manga>> {
-		return db.favouritesDao.observeAll(order)
+		return db.getFavouritesDao().observeAll(order)
 			.mapItems { it.toManga() }
 	}
 
 	suspend fun getManga(categoryId: Long): List<Manga> {
-		val entities = db.favouritesDao.findAll(categoryId)
+		val entities = db.getFavouritesDao().findAll(categoryId)
 		return entities.toMangaList()
 	}
 
 	fun observeAll(categoryId: Long, order: ListSortOrder): Flow<List<Manga>> {
-		return db.favouritesDao.observeAll(categoryId, order)
+		return db.getFavouritesDao().observeAll(categoryId, order)
 			.mapItems { it.toManga() }
 	}
 
@@ -61,25 +61,25 @@ class FavouritesRepository @Inject constructor(
 	}
 
 	fun observeCategories(): Flow<List<FavouriteCategory>> {
-		return db.favouriteCategoriesDao.observeAll().mapItems {
+		return db.getFavouriteCategoriesDao().observeAll().mapItems {
 			it.toFavouriteCategory()
 		}.distinctUntilChanged()
 	}
 
 	fun observeCategoriesForLibrary(): Flow<List<FavouriteCategory>> {
-		return db.favouriteCategoriesDao.observeAllForLibrary().mapItems {
+		return db.getFavouriteCategoriesDao().observeAllForLibrary().mapItems {
 			it.toFavouriteCategory()
 		}.distinctUntilChanged()
 	}
 
 	fun observeCategoriesWithCovers(): Flow<Map<FavouriteCategory, List<Cover>>> {
-		return db.favouriteCategoriesDao.observeAll()
+		return db.getFavouriteCategoriesDao().observeAll()
 			.map {
 				db.withTransaction {
 					val res = LinkedHashMap<FavouriteCategory, List<Cover>>()
 					for (entity in it) {
 						val cat = entity.toFavouriteCategory()
-						res[cat] = db.favouritesDao.findCovers(
+						res[cat] = db.getFavouritesDao().findCovers(
 							categoryId = cat.id,
 							order = cat.order,
 						)
@@ -90,16 +90,16 @@ class FavouritesRepository @Inject constructor(
 	}
 
 	fun observeCategory(id: Long): Flow<FavouriteCategory?> {
-		return db.favouriteCategoriesDao.observe(id)
+		return db.getFavouriteCategoriesDao().observe(id)
 			.map { it?.toFavouriteCategory() }
 	}
 
 	fun observeCategoriesIds(mangaId: Long): Flow<Set<Long>> {
-		return db.favouritesDao.observeIds(mangaId).map { it.toSet() }
+		return db.getFavouritesDao().observeIds(mangaId).map { it.toSet() }
 	}
 
 	suspend fun getCategory(id: Long): FavouriteCategory {
-		return db.favouriteCategoriesDao.find(id.toInt()).toFavouriteCategory()
+		return db.getFavouriteCategoriesDao().find(id.toInt()).toFavouriteCategory()
 	}
 
 	suspend fun createCategory(
@@ -111,14 +111,14 @@ class FavouritesRepository @Inject constructor(
 		val entity = FavouriteCategoryEntity(
 			title = title,
 			createdAt = System.currentTimeMillis(),
-			sortKey = db.favouriteCategoriesDao.getNextSortKey(),
+			sortKey = db.getFavouriteCategoriesDao().getNextSortKey(),
 			categoryId = 0,
 			order = sortOrder.name,
 			track = isTrackerEnabled,
 			deletedAt = 0L,
 			isVisibleInLibrary = isVisibleOnShelf,
 		)
-		val id = db.favouriteCategoriesDao.insert(entity)
+		val id = db.getFavouriteCategoriesDao().insert(entity)
 		val category = entity.toFavouriteCategory(id)
 		channels.createChannel(category)
 		return category
@@ -131,22 +131,22 @@ class FavouritesRepository @Inject constructor(
 		isTrackerEnabled: Boolean,
 		isVisibleOnShelf: Boolean,
 	) {
-		db.favouriteCategoriesDao.update(id, title, sortOrder.name, isTrackerEnabled, isVisibleOnShelf)
+		db.getFavouriteCategoriesDao().update(id, title, sortOrder.name, isTrackerEnabled, isVisibleOnShelf)
 	}
 
 	suspend fun updateCategory(id: Long, isVisibleInLibrary: Boolean) {
-		db.favouriteCategoriesDao.updateLibVisibility(id, isVisibleInLibrary)
+		db.getFavouriteCategoriesDao().updateLibVisibility(id, isVisibleInLibrary)
 	}
 
 	suspend fun updateCategoryTracking(id: Long, isTrackingEnabled: Boolean) {
-		db.favouriteCategoriesDao.updateTracking(id, isTrackingEnabled)
+		db.getFavouriteCategoriesDao().updateTracking(id, isTrackingEnabled)
 	}
 
 	suspend fun removeCategories(ids: Collection<Long>) {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.deleteAll(id)
-				db.favouriteCategoriesDao.delete(id)
+				db.getFavouritesDao().deleteAll(id)
+				db.getFavouriteCategoriesDao().delete(id)
 			}
 		}
 		// run after transaction success
@@ -156,11 +156,11 @@ class FavouritesRepository @Inject constructor(
 	}
 
 	suspend fun setCategoryOrder(id: Long, order: ListSortOrder) {
-		db.favouriteCategoriesDao.updateOrder(id, order.name)
+		db.getFavouriteCategoriesDao().updateOrder(id, order.name)
 	}
 
 	suspend fun reorderCategories(orderedIds: List<Long>) {
-		val dao = db.favouriteCategoriesDao
+		val dao = db.getFavouriteCategoriesDao()
 		db.withTransaction {
 			for ((i, id) in orderedIds.withIndex()) {
 				dao.updateSortKey(id, i)
@@ -172,8 +172,8 @@ class FavouritesRepository @Inject constructor(
 		db.withTransaction {
 			for (manga in mangas) {
 				val tags = manga.tags.toEntities()
-				db.tagsDao.upsert(tags)
-				db.mangaDao.upsert(manga.toEntity(), tags)
+				db.getTagsDao().upsert(tags)
+				db.getMangaDao().upsert(manga.toEntity(), tags)
 				val entity = FavouriteEntity(
 					mangaId = manga.id,
 					categoryId = categoryId,
@@ -181,7 +181,7 @@ class FavouritesRepository @Inject constructor(
 					sortKey = 0,
 					deletedAt = 0L,
 				)
-				db.favouritesDao.insert(entity)
+				db.getFavouritesDao().insert(entity)
 			}
 		}
 	}
@@ -189,7 +189,7 @@ class FavouritesRepository @Inject constructor(
 	suspend fun removeFromFavourites(ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.delete(mangaId = id)
+				db.getFavouritesDao().delete(mangaId = id)
 			}
 		}
 		return ReversibleHandle { recoverToFavourites(ids) }
@@ -198,14 +198,14 @@ class FavouritesRepository @Inject constructor(
 	suspend fun removeFromCategory(categoryId: Long, ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.delete(categoryId = categoryId, mangaId = id)
+				db.getFavouritesDao().delete(categoryId = categoryId, mangaId = id)
 			}
 		}
 		return ReversibleHandle { recoverToCategory(categoryId, ids) }
 	}
 
 	private fun observeOrder(categoryId: Long): Flow<ListSortOrder> {
-		return db.favouriteCategoriesDao.observe(categoryId)
+		return db.getFavouriteCategoriesDao().observe(categoryId)
 			.filterNotNull()
 			.map { x -> ListSortOrder(x.order, ListSortOrder.NEWEST) }
 			.distinctUntilChanged()
@@ -214,7 +214,7 @@ class FavouritesRepository @Inject constructor(
 	private suspend fun recoverToFavourites(ids: Collection<Long>) {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.recover(mangaId = id)
+				db.getFavouritesDao().recover(mangaId = id)
 			}
 		}
 	}
@@ -222,7 +222,7 @@ class FavouritesRepository @Inject constructor(
 	private suspend fun recoverToCategory(categoryId: Long, ids: Collection<Long>) {
 		db.withTransaction {
 			for (id in ids) {
-				db.favouritesDao.recover(mangaId = id, categoryId = categoryId)
+				db.getFavouritesDao().recover(mangaId = id, categoryId = categoryId)
 			}
 		}
 	}

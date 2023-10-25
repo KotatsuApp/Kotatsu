@@ -40,9 +40,9 @@ class MangaSearchRepository @Inject constructor(
 		}
 		val skipNsfw = settings.isNsfwContentDisabled
 		return if (source != null) {
-			db.mangaDao.searchByTitle("%$query%", source.name, limit)
+			db.getMangaDao().searchByTitle("%$query%", source.name, limit)
 		} else {
-			db.mangaDao.searchByTitle("%$query%", limit)
+			db.getMangaDao().searchByTitle("%$query%", limit)
 		}.let {
 			if (skipNsfw) it.filterNot { x -> x.manga.isNsfw } else it
 		}
@@ -83,7 +83,7 @@ class MangaSearchRepository @Inject constructor(
 		if (query.isEmpty()) {
 			return emptyList()
 		}
-		val titles = db.suggestionDao.getTitles("$query%")
+		val titles = db.getSuggestionDao().getTitles("$query%")
 		if (titles.isEmpty()) {
 			return emptyList()
 		}
@@ -92,19 +92,20 @@ class MangaSearchRepository @Inject constructor(
 
 	suspend fun getTagsSuggestion(query: String, limit: Int, source: MangaSource?): List<MangaTag> {
 		return when {
-			query.isNotEmpty() && source != null -> db.tagsDao.findTags(source.name, "%$query%", limit)
-			query.isNotEmpty() -> db.tagsDao.findTags("%$query%", limit)
-			source != null -> db.tagsDao.findPopularTags(source.name, limit)
-			else -> db.tagsDao.findPopularTags(limit)
+			query.isNotEmpty() && source != null -> db.getTagsDao()
+				.findTags(source.name, "%$query%", limit)
+			query.isNotEmpty() -> db.getTagsDao().findTags("%$query%", limit)
+			source != null -> db.getTagsDao().findPopularTags(source.name, limit)
+			else -> db.getTagsDao().findPopularTags(limit)
 		}.toMangaTagsList()
 	}
 
 	suspend fun getTagsSuggestion(tags: Set<MangaTag>): List<MangaTag> {
 		val ids = tags.mapToSet { it.toEntity().id }
 		return if (ids.size == 1) {
-			db.tagsDao.findRelatedTags(ids.first())
+			db.getTagsDao().findRelatedTags(ids.first())
 		} else {
-			db.tagsDao.findRelatedTags(ids)
+			db.getTagsDao().findRelatedTags(ids)
 		}.mapNotNull { x ->
 			if (x.id in ids) null else x.toMangaTag()
 		}

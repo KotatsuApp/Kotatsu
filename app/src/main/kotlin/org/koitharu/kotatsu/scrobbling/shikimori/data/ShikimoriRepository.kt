@@ -84,7 +84,7 @@ class ShikimoriRepository @Inject constructor(
 		}
 
 	override suspend fun unregister(mangaId: Long) {
-		return db.scrobblingDao.delete(ScrobblerService.SHIKIMORI.id, mangaId)
+		return db.getScrobblingDao().delete(ScrobblerService.SHIKIMORI.id, mangaId)
 	}
 
 	override fun logout() {
@@ -192,7 +192,7 @@ class ShikimoriRepository @Inject constructor(
 			comment = json.getString("text"),
 			rating = (json.getDouble("score").toFloat() / 10f).coerceIn(0f, 1f),
 		)
-		db.scrobblingDao.upsert(entity)
+		db.getScrobblingDao().upsert(entity)
 	}
 
 	private fun ScrobblerManga(json: JSONObject) = ScrobblerManga(

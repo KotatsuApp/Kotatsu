@@ -16,7 +16,7 @@ class ProgressUpdateUseCase @Inject constructor(
 ) {
 
 	suspend operator fun invoke(manga: Manga): Float {
-		val history = database.historyDao.find(manga.id) ?: return PROGRESS_NONE
+		val history = database.getHistoryDao().find(manga.id) ?: return PROGRESS_NONE
 		val seed = if (manga.isLocal) {
 			localMangaRepository.getRemoteManga(manga) ?: manga
 		} else {
@@ -43,7 +43,7 @@ class ProgressUpdateUseCase @Inject constructor(
 		val ppc = 1f / chaptersCount
 		val result = ppc * chapterIndex + ppc * pagePercent
 		if (result != history.percent) {
-			database.historyDao.update(
+			database.getHistoryDao().update(
 				history.copy(
 					chapterId = chapter.id,
 					percent = result,

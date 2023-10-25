@@ -17,39 +17,39 @@ class SuggestionRepository @Inject constructor(
 ) {
 
 	fun observeAll(): Flow<List<Manga>> {
-		return db.suggestionDao.observeAll().mapItems {
+		return db.getSuggestionDao().observeAll().mapItems {
 			it.manga.toManga(it.tags.toMangaTags())
 		}
 	}
 
 	fun observeAll(limit: Int): Flow<List<Manga>> {
-		return db.suggestionDao.observeAll(limit).mapItems {
+		return db.getSuggestionDao().observeAll(limit).mapItems {
 			it.manga.toManga(it.tags.toMangaTags())
 		}
 	}
 
 	suspend fun getRandom(): Manga? {
-		return db.suggestionDao.getRandom()?.let {
+		return db.getSuggestionDao().getRandom()?.let {
 			it.manga.toManga(it.tags.toMangaTags())
 		}
 	}
 
 	suspend fun clear() {
-		db.suggestionDao.deleteAll()
+		db.getSuggestionDao().deleteAll()
 	}
 
 	suspend fun isEmpty(): Boolean {
-		return db.suggestionDao.count() == 0
+		return db.getSuggestionDao().count() == 0
 	}
 
 	suspend fun replace(suggestions: Iterable<MangaSuggestion>) {
 		db.withTransaction {
-			db.suggestionDao.deleteAll()
+			db.getSuggestionDao().deleteAll()
 			suggestions.forEach { (manga, relevance) ->
 				val tags = manga.tags.toEntities()
-				db.tagsDao.upsert(tags)
-				db.mangaDao.upsert(manga.toEntity(), tags)
-				db.suggestionDao.upsert(
+				db.getTagsDao().upsert(tags)
+				db.getMangaDao().upsert(manga.toEntity(), tags)
+				db.getSuggestionDao().upsert(
 					SuggestionEntity(
 						mangaId = manga.id,
 						relevance = relevance,

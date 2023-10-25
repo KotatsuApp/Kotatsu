@@ -67,24 +67,24 @@ abstract class Scrobbler(
 	}
 
 	suspend fun scrobble(mangaId: Long, chapter: MangaChapter) {
-		val entity = db.scrobblingDao.find(scrobblerService.id, mangaId) ?: return
+		val entity = db.getScrobblingDao().find(scrobblerService.id, mangaId) ?: return
 		repository.updateRate(entity.id, entity.mangaId, chapter)
 	}
 
 	suspend fun getScrobblingInfoOrNull(mangaId: Long): ScrobblingInfo? {
-		val entity = db.scrobblingDao.find(scrobblerService.id, mangaId) ?: return null
+		val entity = db.getScrobblingDao().find(scrobblerService.id, mangaId) ?: return null
 		return entity.toScrobblingInfo()
 	}
 
 	abstract suspend fun updateScrobblingInfo(mangaId: Long, rating: Float, status: ScrobblingStatus?, comment: String?)
 
 	fun observeScrobblingInfo(mangaId: Long): Flow<ScrobblingInfo?> {
-		return db.scrobblingDao.observe(scrobblerService.id, mangaId)
+		return db.getScrobblingDao().observe(scrobblerService.id, mangaId)
 			.map { it?.toScrobblingInfo() }
 	}
 
 	fun observeAllScrobblingInfo(): Flow<List<ScrobblingInfo>> {
-		return db.scrobblingDao.observe(scrobblerService.id)
+		return db.getScrobblingDao().observe(scrobblerService.id)
 			.map { entities ->
 				coroutineScope {
 					entities.map {

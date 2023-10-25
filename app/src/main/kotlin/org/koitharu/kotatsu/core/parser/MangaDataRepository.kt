@@ -28,16 +28,16 @@ class MangaDataRepository @Inject constructor(
 	suspend fun saveReaderMode(manga: Manga, mode: ReaderMode) {
 		db.withTransaction {
 			storeManga(manga)
-			val entity = db.preferencesDao.find(manga.id) ?: newEntity(manga.id)
-			db.preferencesDao.upsert(entity.copy(mode = mode.id))
+			val entity = db.getPreferencesDao().find(manga.id) ?: newEntity(manga.id)
+			db.getPreferencesDao().upsert(entity.copy(mode = mode.id))
 		}
 	}
 
 	suspend fun saveColorFilter(manga: Manga, colorFilter: ReaderColorFilter?) {
 		db.withTransaction {
 			storeManga(manga)
-			val entity = db.preferencesDao.find(manga.id) ?: newEntity(manga.id)
-			db.preferencesDao.upsert(
+			val entity = db.getPreferencesDao().find(manga.id) ?: newEntity(manga.id)
+			db.getPreferencesDao().upsert(
 				entity.copy(
 					cfBrightness = colorFilter?.brightness ?: 0f,
 					cfContrast = colorFilter?.contrast ?: 0f,
@@ -48,25 +48,25 @@ class MangaDataRepository @Inject constructor(
 	}
 
 	suspend fun getReaderMode(mangaId: Long): ReaderMode? {
-		return db.preferencesDao.find(mangaId)?.let { ReaderMode.valueOf(it.mode) }
+		return db.getPreferencesDao().find(mangaId)?.let { ReaderMode.valueOf(it.mode) }
 	}
 
 	suspend fun getColorFilter(mangaId: Long): ReaderColorFilter? {
-		return db.preferencesDao.find(mangaId)?.getColorFilterOrNull()
+		return db.getPreferencesDao().find(mangaId)?.getColorFilterOrNull()
 	}
 
 	fun observeColorFilter(mangaId: Long): Flow<ReaderColorFilter?> {
-		return db.preferencesDao.observe(mangaId)
+		return db.getPreferencesDao().observe(mangaId)
 			.map { it?.getColorFilterOrNull() }
 			.distinctUntilChanged()
 	}
 
 	suspend fun findMangaById(mangaId: Long): Manga? {
-		return db.mangaDao.find(mangaId)?.toManga()
+		return db.getMangaDao().find(mangaId)?.toManga()
 	}
 
 	suspend fun findMangaByPublicUrl(publicUrl: String): Manga? {
-		return db.mangaDao.findByPublicUrl(publicUrl)?.toManga()
+		return db.getMangaDao().findByPublicUrl(publicUrl)?.toManga()
 	}
 
 	suspend fun resolveIntent(intent: MangaIntent): Manga? = when {
@@ -79,13 +79,13 @@ class MangaDataRepository @Inject constructor(
 	suspend fun storeManga(manga: Manga) {
 		val tags = manga.tags.toEntities()
 		db.withTransaction {
-			db.tagsDao.upsert(tags)
-			db.mangaDao.upsert(manga.toEntity(), tags)
+			db.getTagsDao().upsert(tags)
+			db.getMangaDao().upsert(manga.toEntity(), tags)
 		}
 	}
 
 	suspend fun findTags(source: MangaSource): Set<MangaTag> {
-		return db.tagsDao.findTags(source.name).toMangaTags()
+		return db.getTagsDao().findTags(source.name).toMangaTags()
 	}
 
 	private fun MangaPrefsEntity.getColorFilterOrNull(): ReaderColorFilter? {

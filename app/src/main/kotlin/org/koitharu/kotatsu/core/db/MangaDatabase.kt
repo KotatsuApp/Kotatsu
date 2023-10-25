@@ -66,29 +66,29 @@ const val DATABASE_VERSION = 17
 )
 abstract class MangaDatabase : RoomDatabase() {
 
-	abstract val historyDao: HistoryDao
+	abstract fun getHistoryDao(): HistoryDao
 
-	abstract val tagsDao: TagsDao
+	abstract fun getTagsDao(): TagsDao
 
-	abstract val mangaDao: MangaDao
+	abstract fun getMangaDao(): MangaDao
 
-	abstract val favouritesDao: FavouritesDao
+	abstract fun getFavouritesDao(): FavouritesDao
 
-	abstract val preferencesDao: PreferencesDao
+	abstract fun getPreferencesDao(): PreferencesDao
 
-	abstract val favouriteCategoriesDao: FavouriteCategoriesDao
+	abstract fun getFavouriteCategoriesDao(): FavouriteCategoriesDao
 
-	abstract val tracksDao: TracksDao
+	abstract fun getTracksDao(): TracksDao
 
-	abstract val trackLogsDao: TrackLogsDao
+	abstract fun getTrackLogsDao(): TrackLogsDao
 
-	abstract val suggestionDao: SuggestionDao
+	abstract fun getSuggestionDao(): SuggestionDao
 
-	abstract val bookmarksDao: BookmarksDao
+	abstract fun getBookmarksDao(): BookmarksDao
 
-	abstract val scrobblingDao: ScrobblingDao
+	abstract fun getScrobblingDao(): ScrobblingDao
 
-	abstract val sourcesDao: MangaSourcesDao
+	abstract fun getSourcesDao(): MangaSourcesDao
 }
 
 fun getDatabaseMigrations(context: Context): Array<Migration> = arrayOf(

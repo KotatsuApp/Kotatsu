@@ -22,7 +22,7 @@ class BackupRepository @Inject constructor(
 		var offset = 0
 		val entry = BackupEntry(BackupEntry.HISTORY, JSONArray())
 		while (true) {
-			val history = db.historyDao.findAll(offset, PAGE_SIZE)
+			val history = db.getHistoryDao().findAll(offset, PAGE_SIZE)
 			if (history.isEmpty()) {
 				break
 			}
@@ -42,7 +42,7 @@ class BackupRepository @Inject constructor(
 
 	suspend fun dumpCategories(): BackupEntry {
 		val entry = BackupEntry(BackupEntry.CATEGORIES, JSONArray())
-		val categories = db.favouriteCategoriesDao.findAll()
+		val categories = db.getFavouriteCategoriesDao().findAll()
 		for (item in categories) {
 			entry.data.put(JsonSerializer(item).toJson())
 		}
@@ -53,7 +53,7 @@ class BackupRepository @Inject constructor(
 		var offset = 0
 		val entry = BackupEntry(BackupEntry.FAVOURITES, JSONArray())
 		while (true) {
-			val favourites = db.favouritesDao.findAll(offset, PAGE_SIZE)
+			val favourites = db.getFavouritesDao().findAll(offset, PAGE_SIZE)
 			if (favourites.isEmpty()) {
 				break
 			}
@@ -73,7 +73,7 @@ class BackupRepository @Inject constructor(
 
 	suspend fun dumpBookmarks(): BackupEntry {
 		val entry = BackupEntry(BackupEntry.BOOKMARKS, JSONArray())
-		val all = db.bookmarksDao.findAll()
+		val all = db.getBookmarksDao().findAll()
 		for ((m, b) in all) {
 			val json = JSONObject()
 			val manga = JsonSerializer(m.manga).toJson()
@@ -122,9 +122,9 @@ class BackupRepository @Inject constructor(
 			val history = JsonDeserializer(item).toHistoryEntity()
 			result += runCatchingCancellable {
 				db.withTransaction {
-					db.tagsDao.upsert(tags)
-					db.mangaDao.upsert(manga, tags)
-					db.historyDao.upsert(history)
+					db.getTagsDao().upsert(tags)
+					db.getMangaDao().upsert(manga, tags)
+					db.getHistoryDao().upsert(history)
 				}
 			}
 		}
@@ -136,7 +136,7 @@ class BackupRepository @Inject constructor(
 		for (item in entry.data.JSONIterator()) {
 			val category = JsonDeserializer(item).toFavouriteCategoryEntity()
 			result += runCatchingCancellable {
-				db.favouriteCategoriesDao.upsert(category)
+				db.getFavouriteCategoriesDao().upsert(category)
 			}
 		}
 		return result
@@ -153,9 +153,9 @@ class BackupRepository @Inject constructor(
 			val favourite = JsonDeserializer(item).toFavouriteEntity()
 			result += runCatchingCancellable {
 				db.withTransaction {
-					db.tagsDao.upsert(tags)
-					db.mangaDao.upsert(manga, tags)
-					db.favouritesDao.upsert(favourite)
+					db.getTagsDao().upsert(tags)
+					db.getMangaDao().upsert(manga, tags)
+					db.getFavouritesDao().upsert(favourite)
 				}
 			}
 		}
@@ -175,9 +175,9 @@ class BackupRepository @Inject constructor(
 			}
 			result += runCatchingCancellable {
 				db.withTransaction {
-					db.tagsDao.upsert(tags)
-					db.mangaDao.upsert(manga, tags)
-					db.bookmarksDao.upsert(bookmarks)
+					db.getTagsDao().upsert(tags)
+					db.getMangaDao().upsert(manga, tags)
+					db.getBookmarksDao().upsert(bookmarks)
 				}
 			}
 		}

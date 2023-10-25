@@ -38,36 +38,36 @@ class HistoryRepository @Inject constructor(
 ) {
 
 	suspend fun getList(offset: Int, limit: Int): List<Manga> {
-		val entities = db.historyDao.findAll(offset, limit)
+		val entities = db.getHistoryDao().findAll(offset, limit)
 		return entities.map { it.manga.toManga(it.tags.toMangaTags()) }
 	}
 
 	suspend fun getLastOrNull(): Manga? {
-		val entity = db.historyDao.findAll(0, 1).firstOrNull() ?: return null
+		val entity = db.getHistoryDao().findAll(0, 1).firstOrNull() ?: return null
 		return entity.manga.toManga(entity.tags.toMangaTags())
 	}
 
 	fun observeLast(): Flow<Manga?> {
-		return db.historyDao.observeAll(1).map {
+		return db.getHistoryDao().observeAll(1).map {
 			val first = it.firstOrNull()
 			first?.manga?.toManga(first.tags.toMangaTags())
 		}
 	}
 
 	fun observeAll(): Flow<List<Manga>> {
-		return db.historyDao.observeAll().mapItems {
+		return db.getHistoryDao().observeAll().mapItems {
 			it.manga.toManga(it.tags.toMangaTags())
 		}
 	}
 
 	fun observeAll(limit: Int): Flow<List<Manga>> {
-		return db.historyDao.observeAll(limit).mapItems {
+		return db.getHistoryDao().observeAll(limit).mapItems {
 			it.manga.toManga(it.tags.toMangaTags())
 		}
 	}
 
 	fun observeAllWithHistory(order: ListSortOrder): Flow<List<MangaWithHistory>> {
-		return db.historyDao.observeAll(order).mapItems {
+		return db.getHistoryDao().observeAll(order).mapItems {
 			MangaWithHistory(
 				it.manga.toManga(it.tags.toMangaTags()),
 				it.history.toMangaHistory(),
@@ -76,13 +76,13 @@ class HistoryRepository @Inject constructor(
 	}
 
 	fun observeOne(id: Long): Flow<MangaHistory?> {
-		return db.historyDao.observe(id).map {
+		return db.getHistoryDao().observe(id).map {
 			it?.toMangaHistory()
 		}
 	}
 
 	fun observeHasItems(): Flow<Boolean> {
-		return db.historyDao.observeCount()
+		return db.getHistoryDao().observeCount()
 			.map { it > 0 }
 			.distinctUntilChanged()
 	}
@@ -93,12 +93,12 @@ class HistoryRepository @Inject constructor(
 		}
 		val tags = manga.tags.toEntities()
 		db.withTransaction {
-			val existing = db.mangaDao.find(manga.id)?.manga
+			val existing = db.getMangaDao().find(manga.id)?.manga
 			if (existing == null || existing.source == manga.source.name) {
-				db.tagsDao.upsert(tags)
-				db.mangaDao.upsert(manga.toEntity(), tags)
+				db.getTagsDao().upsert(tags)
+				db.getMangaDao().upsert(manga.toEntity(), tags)
 			}
-			db.historyDao.upsert(
+			db.getHistoryDao().upsert(
 				HistoryEntity(
 					mangaId = manga.id,
 					createdAt = System.currentTimeMillis(),
@@ -119,29 +119,29 @@ class HistoryRepository @Inject constructor(
 	}
 
 	suspend fun getOne(manga: Manga): MangaHistory? {
-		return db.historyDao.find(manga.id)?.recoverIfNeeded(manga)?.toMangaHistory()
+		return db.getHistoryDao().find(manga.id)?.recoverIfNeeded(manga)?.toMangaHistory()
 	}
 
 	suspend fun getProgress(mangaId: Long): Float {
-		return db.historyDao.findProgress(mangaId) ?: PROGRESS_NONE
+		return db.getHistoryDao().findProgress(mangaId) ?: PROGRESS_NONE
 	}
 
 	suspend fun clear() {
-		db.historyDao.clear()
+		db.getHistoryDao().clear()
 	}
 
 	suspend fun delete(manga: Manga) {
-		db.historyDao.delete(manga.id)
+		db.getHistoryDao().delete(manga.id)
 	}
 
 	suspend fun deleteAfter(minDate: Long) {
-		db.historyDao.deleteAfter(minDate)
+		db.getHistoryDao().deleteAfter(minDate)
 	}
 
 	suspend fun delete(ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {
-				db.historyDao.delete(id)
+				db.getHistoryDao().delete(id)
 			}
 		}
 		return ReversibleHandle {
@@ -154,13 +154,13 @@ class HistoryRepository @Inject constructor(
 	 * Useful for replacing saved manga on deleting it with remote source
 	 */
 	suspend fun deleteOrSwap(manga: Manga, alternative: Manga?) {
-		if (alternative == null || db.mangaDao.update(alternative.toEntity()) <= 0) {
-			db.historyDao.delete(manga.id)
+		if (alternative == null || db.getMangaDao().update(alternative.toEntity()) <= 0) {
+			db.getHistoryDao().delete(manga.id)
 		}
 	}
 
 	suspend fun getPopularTags(limit: Int): List<MangaTag> {
-		return db.historyDao.findPopularTags(limit).map { x -> x.toMangaTag() }
+		return db.getHistoryDao().findPopularTags(limit).map { x -> x.toMangaTag() }
 	}
 
 	fun shouldSkip(manga: Manga): Boolean {
@@ -178,7 +178,7 @@ class HistoryRepository @Inject constructor(
 	private suspend fun recover(ids: Collection<Long>) {
 		db.withTransaction {
 			for (id in ids) {
-				db.historyDao.recover(id)
+				db.getHistoryDao().recover(id)
 			}
 		}
 	}
@@ -192,7 +192,7 @@ class HistoryRepository @Inject constructor(
 			(chapters.size * percent).toInt(),
 		)?.id ?: return this
 		val newEntity = copy(chapterId = newChapterId)
-		db.historyDao.update(newEntity)
+		db.getHistoryDao().update(newEntity)
 		return newEntity
 	}
 }

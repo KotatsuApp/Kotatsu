@@ -11,7 +11,7 @@ class TagsAutoCompleteProvider @Inject constructor(
 		if (query.isEmpty()) {
 			return emptyList()
 		}
-		val tags = db.tagsDao.findTags(query = "$query%", limit = 6)
+		val tags = db.getTagsDao().findTags(query = "$query%", limit = 6)
 		val set = HashSet<String>()
 		val result = ArrayList<String>(tags.size)
 		for (tag in tags) {

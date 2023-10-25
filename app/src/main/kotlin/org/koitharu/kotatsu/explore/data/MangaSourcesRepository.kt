@@ -30,7 +30,7 @@ class MangaSourcesRepository @Inject constructor(
 ) {
 
 	private val dao: MangaSourcesDao
-		get() = db.sourcesDao
+		get() = db.getSourcesDao()
 
 	private val remoteSources = EnumSet.allOf(MangaSource::class.java).apply {
 		remove(MangaSource.LOCAL)

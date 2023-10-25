@@ -120,11 +120,11 @@ class SyncController @Inject constructor(
 	private suspend fun MangaDatabase.gc(favourites: Boolean, history: Boolean) = withTransaction {
 		val deletedAt = System.currentTimeMillis() - defaultGcPeriod
 		if (history) {
-			historyDao.gc(deletedAt)
+			getHistoryDao().gc(deletedAt)
 		}
 		if (favourites) {
-			favouritesDao.gc(deletedAt)
-			favouriteCategoriesDao.gc(deletedAt)
+			getFavouritesDao().gc(deletedAt)
+			getFavouriteCategoriesDao().gc(deletedAt)
 		}
 	}
 

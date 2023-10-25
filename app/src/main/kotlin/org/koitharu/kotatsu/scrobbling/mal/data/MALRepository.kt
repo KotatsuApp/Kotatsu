@@ -85,7 +85,7 @@ class MALRepository @Inject constructor(
 	}
 
 	override suspend fun unregister(mangaId: Long) {
-		return db.scrobblingDao.delete(ScrobblerService.MAL.id, mangaId)
+		return db.getScrobblingDao().delete(ScrobblerService.MAL.id, mangaId)
 	}
 
 	override suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
@@ -176,7 +176,7 @@ class MALRepository @Inject constructor(
 			comment = json.getString("comments"),
 			rating = (json.getDouble("score").toFloat() / 10f).coerceIn(0f, 1f),
 		)
-		db.scrobblingDao.upsert(entity)
+		db.getScrobblingDao().upsert(entity)
 	}
 
 	override fun logout() {

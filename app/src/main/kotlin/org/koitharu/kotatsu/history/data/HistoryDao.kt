@@ -23,7 +23,7 @@ abstract class HistoryDao {
 
 	@Transaction
 	@Query("SELECT * FROM history WHERE deleted_at = 0 AND manga_id IN (:ids)")
-	abstract suspend fun findAll(ids: Collection<Long>): List<HistoryEntity?>
+	abstract suspend fun findAll(ids: Collection<Long>): List<HistoryEntity>
 
 	@Transaction
 	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC")
