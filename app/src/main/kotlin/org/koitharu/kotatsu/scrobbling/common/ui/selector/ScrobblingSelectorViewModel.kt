@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
@@ -18,6 +19,7 @@ import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -27,7 +29,6 @@ import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.model.ScrobblerHint
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,7 +54,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 		get() = availableScrobblers[selectedScrobblerIndex.requireValue()]
 
 	val content: StateFlow<List<ListModel>> = combine(
-		scrobblerMangaList,
+		scrobblerMangaList.map { it.distinctBy { x -> x.id } },
 		listError,
 		hasNextPage,
 	) { list, error, isHasNextPage ->

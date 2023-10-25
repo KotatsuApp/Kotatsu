@@ -24,6 +24,7 @@ import coil.request.ImageRequest
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
@@ -91,6 +92,7 @@ class ImportWorker @AssistedInject constructor(
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 			.setDefaults(0)
 			.setSilent(true)
+			.setAutoCancel(true)
 		result.onSuccess { manga ->
 			notification.setLargeIcon(
 				coil.execute(
@@ -110,10 +112,9 @@ class ImportWorker @AssistedInject constructor(
 					PendingIntent.FLAG_UPDATE_CURRENT,
 					false,
 				),
-			).setAutoCancel(true)
-				.setVisibility(
-					if (manga.isNsfw) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PUBLIC,
-				)
+			).setVisibility(
+				if (manga.isNsfw) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PUBLIC,
+			)
 			notification.setContentTitle(applicationContext.getString(R.string.import_completed))
 				.setContentText(applicationContext.getString(R.string.import_completed_hint))
 				.setSmallIcon(R.drawable.ic_stat_done)
@@ -123,6 +124,11 @@ class ImportWorker @AssistedInject constructor(
 			notification.setContentTitle(applicationContext.getString(R.string.error_occurred))
 				.setContentText(error.getDisplayMessage(applicationContext.resources))
 				.setSmallIcon(android.R.drawable.stat_notify_error)
+				.addAction(
+					R.drawable.ic_alert_outline,
+					applicationContext.getString(R.string.report),
+					ErrorReporterReceiver.getPendingIntent(applicationContext, error),
+				)
 		}
 		return notification.build()
 	}

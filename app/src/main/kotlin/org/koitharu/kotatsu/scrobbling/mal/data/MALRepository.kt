@@ -98,6 +98,7 @@ class MALRepository @Inject constructor(
 			.build()
 		val request = Request.Builder().url(url).get().build()
 		val response = okHttp.newCall(request).await().parseJson()
+		check(response.has("data")) { "Invalid response: \"$response\"" }
 		val data = response.getJSONArray("data")
 		return data.mapJSONNotNull { jsonToManga(it) }
 	}
