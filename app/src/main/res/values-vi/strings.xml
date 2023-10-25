@@ -407,7 +407,7 @@
     <string name="local_manga_processing">Xử lý các truyện được lưu</string>
     <string name="text_delete_local_manga_batch">Xoá vĩnh viễn những thứ được chọn khỏi thiết bị\?</string>
     <string name="percent_string_pattern">%1$s%%</string>
-    <string name="disable_battery_optimization_summary">Giúp kiểm tra chương mới dưới nền dễ dàng hơn</string>
+    <string name="disable_battery_optimization_summary">Giúp kiểm tra chương mới trong khi chạy dưới nền dễ dàng hơn</string>
     <string name="show_on_shelf">Hiển thị trên kệ sách</string>
     <string name="mirror_switching">Tự động chọn máy chủ dự phòng</string>
     <string name="mirror_switching_summary">Tự động chuyển tên miền sang máy chủ dự phòng (nếu có) nếu gặp lỗi trên tên miền chính</string>
