@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.distinctById
@@ -95,7 +96,6 @@ open class RemoteListViewModel @Inject constructor(
 			.onEach { filterState ->
 				loadingJob?.cancelAndJoin()
 				mangaList.value = null
-				hasNextPage.value = false
 				loadList(filterState, false)
 			}.catch { error ->
 				listError.value = error
@@ -134,12 +134,16 @@ open class RemoteListViewModel @Inject constructor(
 					sortOrder = filterState.sortOrder,
 					tags = filterState.tags,
 				)
-				if (!append) {
-					mangaList.value = list
-				} else if (list.isNotEmpty()) {
-					mangaList.value = mangaList.value?.plus(list) ?: list
+				mangaList.update { oldList ->
+					if (!append || oldList.isNullOrEmpty()) {
+						list
+					} else {
+						oldList + list
+					}
 				}
-				hasNextPage.value = list.isNotEmpty() // TODO check if new ids added
+				if (append) {
+					hasNextPage.value = list.isNotEmpty()
+				}
 			} catch (e: CancellationException) {
 				throw e
 			} catch (e: Throwable) {
