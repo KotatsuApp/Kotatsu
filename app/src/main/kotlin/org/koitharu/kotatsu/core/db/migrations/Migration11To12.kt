@@ -5,8 +5,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 class Migration11To12 : Migration(11, 12) {
 
-	override fun migrate(database: SupportSQLiteDatabase) {
-		database.execSQL(
+	override fun migrate(db: SupportSQLiteDatabase) {
+		db.execSQL(
 			"""
 			CREATE TABLE IF NOT EXISTS `scrobblings` (
 				`scrobbler` INTEGER NOT NULL,
@@ -21,7 +21,7 @@ class Migration11To12 : Migration(11, 12) {
 			)
 			""".trimIndent()
 		)
-		database.execSQL("ALTER TABLE history ADD COLUMN `percent` REAL NOT NULL DEFAULT -1")
-		database.execSQL("ALTER TABLE bookmarks ADD COLUMN `percent` REAL NOT NULL DEFAULT -1")
+		db.execSQL("ALTER TABLE history ADD COLUMN `percent` REAL NOT NULL DEFAULT -1")
+		db.execSQL("ALTER TABLE bookmarks ADD COLUMN `percent` REAL NOT NULL DEFAULT -1")
 	}
 }

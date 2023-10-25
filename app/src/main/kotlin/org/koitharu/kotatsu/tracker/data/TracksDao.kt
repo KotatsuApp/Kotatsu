@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.tracker.data
 
 import androidx.room.Dao
-import androidx.room.MapInfo
+import androidx.room.MapColumn
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
@@ -23,9 +23,8 @@ abstract class TracksDao {
 	@Query("SELECT chapters_new FROM tracks WHERE manga_id = :mangaId")
 	abstract suspend fun findNewChapters(mangaId: Long): Int?
 
-	@MapInfo(keyColumn = "manga_id", valueColumn = "chapters_new")
 	@Query("SELECT manga_id, chapters_new FROM tracks")
-	abstract fun observeNewChaptersMap(): Flow<Map<Long, Int>>
+	abstract fun observeNewChaptersMap(): Flow<Map<@MapColumn(columnName = "manga_id") Long, @MapColumn(columnName = "chapters_new") Int>>
 
 	@Query("SELECT chapters_new FROM tracks")
 	abstract fun observeNewChapters(): Flow<List<Int>>

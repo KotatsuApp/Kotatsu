@@ -34,8 +34,8 @@ class BookmarksActivity :
 		val fm = supportFragmentManager
 		if (fm.findFragmentById(R.id.container) == null) {
 			fm.commit {
-				val fragment = BookmarksFragment.newInstance()
-				replace(R.id.container, fragment)
+				setReorderingAllowed(true)
+				replace(R.id.container, BookmarksFragment::class.java, null)
 			}
 		}
 	}

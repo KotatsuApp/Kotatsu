@@ -29,8 +29,7 @@ class SuggestionsActivity :
 		if (fm.findFragmentById(R.id.container) == null) {
 			fm.commit {
 				setReorderingAllowed(true)
-				val fragment = SuggestionsFragment.newInstance()
-				replace(R.id.container, fragment)
+				replace(R.id.container, SuggestionsFragment::class.java, null)
 			}
 		}
 	}

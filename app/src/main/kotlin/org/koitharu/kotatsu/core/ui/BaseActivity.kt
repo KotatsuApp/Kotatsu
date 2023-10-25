@@ -97,7 +97,8 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem) = if (item.itemId == android.R.id.home) {
-		onBackPressed()
+		onBackPressedDispatcher.onBackPressed()
+		// TODO: navigateUpTo
 		true
 	} else super.onOptionsItemSelected(item)
 

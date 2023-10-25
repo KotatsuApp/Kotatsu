@@ -12,7 +12,7 @@ fun searchSuggestionQueryHintAD(
 	{ inflater, parent -> ItemSearchSuggestionQueryHintBinding.inflate(inflater, parent, false) },
 ) {
 
-	val viewClickListener = View.OnClickListener { v ->
+	val viewClickListener = View.OnClickListener { _ ->
 		listener.onQueryClick(item.query, true)
 	}
 

@@ -5,7 +5,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 class Migration2To3 : Migration(2, 3) {
 
-	override fun migrate(database: SupportSQLiteDatabase) {
-		database.execSQL("ALTER TABLE history ADD COLUMN scroll REAL NOT NULL DEFAULT 0")
+	override fun migrate(db: SupportSQLiteDatabase) {
+		db.execSQL("ALTER TABLE history ADD COLUMN scroll REAL NOT NULL DEFAULT 0")
 	}
 }

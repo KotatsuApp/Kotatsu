@@ -5,8 +5,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 class Migration10To11 : Migration(10, 11) {
 
-	override fun migrate(database: SupportSQLiteDatabase) {
-		database.execSQL(
+	override fun migrate(db: SupportSQLiteDatabase) {
+		db.execSQL(
 			"""
 			CREATE TABLE IF NOT EXISTS `bookmarks` (
 				`manga_id` INTEGER NOT NULL,
@@ -20,7 +20,7 @@ class Migration10To11 : Migration(10, 11) {
 				FOREIGN KEY(`manga_id`) REFERENCES `manga`(`manga_id`) ON UPDATE NO ACTION ON DELETE CASCADE )
 			""".trimIndent()
 		)
-		database.execSQL("CREATE INDEX IF NOT EXISTS `index_bookmarks_manga_id` ON `bookmarks` (`manga_id`)")
-		database.execSQL("CREATE INDEX IF NOT EXISTS `index_bookmarks_page_id` ON `bookmarks` (`page_id`)")
+		db.execSQL("CREATE INDEX IF NOT EXISTS `index_bookmarks_manga_id` ON `bookmarks` (`manga_id`)")
+		db.execSQL("CREATE INDEX IF NOT EXISTS `index_bookmarks_page_id` ON `bookmarks` (`page_id`)")
 	}
 }
