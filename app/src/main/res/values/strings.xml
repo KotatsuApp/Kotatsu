@@ -500,4 +500,13 @@
 	<string name="by_relevance">Relevance</string>
 	<string name="categories">Categories</string>
 	<string name="online_variant">Online variant</string>
+	<string name="periodic_backups">Periodic backups</string>
+	<string name="backup_frequency">Backup creation frequency</string>
+	<string name="frequency_every_day">Every day</string>
+	<string name="frequency_every_2_days">Every 2 days</string>
+	<string name="frequency_once_per_week">Once per week</string>
+	<string name="frequency_twice_per_month">Twice per month</string>
+	<string name="frequency_once_per_month">Once per month</string>
+	<string name="periodic_backups_enable">Enable periodic backups</string>
+	<string name="backups_output_directory">Backups output directory</string>
 </resources>

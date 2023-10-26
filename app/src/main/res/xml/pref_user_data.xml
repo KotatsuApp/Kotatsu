@@ -34,6 +34,12 @@
 			android:summary="@string/restore_summary"
 			android:title="@string/restore_backup" />
 
+		<Preference
+			android:fragment="org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment"
+			android:key="backup_periodic"
+			android:persistent="false"
+			android:title="@string/periodic_backups" />
+
 	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/storage_usage">

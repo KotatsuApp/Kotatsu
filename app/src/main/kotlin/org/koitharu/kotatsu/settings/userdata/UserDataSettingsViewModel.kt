@@ -5,12 +5,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runInterruptible
 import okhttp3.Cache
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
@@ -29,6 +32,7 @@ class UserDataSettingsViewModel @Inject constructor(
 	private val searchRepository: MangaSearchRepository,
 	private val trackingRepository: TrackingRepository,
 	private val cookieJar: MutableCookieJar,
+	private val settings: AppSettings,
 ) : BaseViewModel() {
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
@@ -39,6 +43,20 @@ class UserDataSettingsViewModel @Inject constructor(
 	val httpCacheSize = MutableStateFlow(-1L)
 	val cacheSizes = EnumMap<CacheDir, MutableStateFlow<Long>>(CacheDir::class.java)
 	val storageUsage = MutableStateFlow<StorageUsage?>(null)
+
+	val periodicalBackupFrequency = settings.observeAsFlow(
+		key = AppSettings.KEY_BACKUP_PERIODICAL_ENABLED,
+		valueProducer = { isPeriodicalBackupEnabled },
+	).flatMapLatest { isEnabled ->
+		if (isEnabled) {
+			settings.observeAsFlow(
+				key = AppSettings.KEY_BACKUP_PERIODICAL_FREQUENCY,
+				valueProducer = { periodicalBackupFrequency },
+			)
+		} else {
+			flowOf(0)
+		}
+	}
 
 	private var storageUsageJob: Job? = null
 

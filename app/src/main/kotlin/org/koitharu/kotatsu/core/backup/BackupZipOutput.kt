@@ -29,7 +29,7 @@ class BackupZipOutput(val file: File) : Closeable {
 	}
 }
 
-private const val DIR_BACKUPS = "backups"
+const val DIR_BACKUPS = "backups"
 
 suspend fun BackupZipOutput(context: Context): BackupZipOutput = runInterruptible(Dispatchers.IO) {
 	val dir = context.run {

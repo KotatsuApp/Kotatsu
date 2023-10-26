@@ -43,7 +43,6 @@ class BackupViewModel @Inject constructor(
 
 				backup.finish()
 				progress.value = 1f
-				backup.close()
 				backup.file
 			}
 			onBackupDone.call(file)

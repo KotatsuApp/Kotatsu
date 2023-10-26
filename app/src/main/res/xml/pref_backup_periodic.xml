@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="backup_periodic"
+		android:layout="@layout/preference_toggle_header"
+		android:title="@string/periodic_backups_enable" />
+
+	<ListPreference
+		android:defaultValue="7"
+		android:dependency="backup_periodic"
+		android:entries="@array/backup_frequency"
+		android:entryValues="@array/values_backup_frequency"
+		android:key="backup_periodic_freq"
+		android:title="@string/backup_frequency"
+		app:useSimpleSummaryProvider="true" />
+
+	<Preference
+		android:dependency="backup_periodic"
+		android:key="backup_periodic_output"
+		android:title="@string/backups_output_directory" />
+
+</androidx.preference.PreferenceScreen>

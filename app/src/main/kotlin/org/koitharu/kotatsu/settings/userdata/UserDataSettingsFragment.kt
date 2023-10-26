@@ -65,6 +65,7 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 		findPreference<Preference>(AppSettings.KEY_PAGES_CACHE_CLEAR)?.bindBytesSizeSummary(checkNotNull(viewModel.cacheSizes[CacheDir.PAGES]))
 		findPreference<Preference>(AppSettings.KEY_THUMBS_CACHE_CLEAR)?.bindBytesSizeSummary(checkNotNull(viewModel.cacheSizes[CacheDir.THUMBS]))
 		findPreference<Preference>(AppSettings.KEY_HTTP_CACHE_CLEAR)?.bindBytesSizeSummary(viewModel.httpCacheSize)
+		bindPeriodicalBackupSummary()
 		findPreference<Preference>(AppSettings.KEY_SEARCH_HISTORY_CLEAR)?.let { pref ->
 			viewModel.searchHistoryCount.observe(viewLifecycleOwner) {
 				pref.summary = if (it < 0) {
@@ -196,6 +197,20 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 				context.getString(R.string.computing_)
 			} else {
 				FileSize.BYTES.format(context, size)
+			}
+		}
+	}
+
+	private fun bindPeriodicalBackupSummary() {
+		val preference = findPreference<Preference>(AppSettings.KEY_BACKUP_PERIODICAL_ENABLED) ?: return
+		val entries = resources.getStringArray(R.array.backup_frequency)
+		val entryValues = resources.getStringArray(R.array.values_backup_frequency)
+		viewModel.periodicalBackupFrequency.observe(viewLifecycleOwner) { freq ->
+			preference.summary = if (freq == 0L) {
+				getString(R.string.disabled)
+			} else {
+				val index = entryValues.indexOf(freq.toString())
+				entries.getOrNull(index)
 			}
 		}
 	}

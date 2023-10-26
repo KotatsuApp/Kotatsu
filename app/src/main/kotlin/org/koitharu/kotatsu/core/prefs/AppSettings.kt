@@ -354,6 +354,16 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val is32BitColorsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_32BIT_COLOR, false)
 
+	val isPeriodicalBackupEnabled: Boolean
+		get() = prefs.getBoolean(KEY_BACKUP_PERIODICAL_ENABLED, false)
+
+	val periodicalBackupFrequency: Long
+		get() = prefs.getString(KEY_BACKUP_PERIODICAL_FREQUENCY, null)?.toLongOrNull() ?: 7L
+
+	var periodicalBackupOutput: Uri?
+		get() = prefs.getString(KEY_BACKUP_PERIODICAL_OUTPUT, null)?.toUriOrNull()
+		set(value) = prefs.edit { putString(KEY_BACKUP_PERIODICAL_OUTPUT, value?.toString()) }
+
 	fun isTipEnabled(tip: String): Boolean {
 		return prefs.getStringSet(KEY_TIPS_CLOSED, emptySet())?.contains(tip) != true
 	}
@@ -458,6 +468,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_ZOOM_MODE = "zoom_mode"
 		const val KEY_BACKUP = "backup"
 		const val KEY_RESTORE = "restore"
+		const val KEY_BACKUP_PERIODICAL_ENABLED = "backup_periodic"
+		const val KEY_BACKUP_PERIODICAL_FREQUENCY = "backup_periodic_freq"
+		const val KEY_BACKUP_PERIODICAL_OUTPUT = "backup_periodic_output"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
 		const val KEY_READING_INDICATORS = "reading_indicators"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
