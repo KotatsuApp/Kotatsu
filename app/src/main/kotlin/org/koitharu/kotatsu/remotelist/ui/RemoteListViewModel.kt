@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.distinctById
@@ -134,15 +134,17 @@ open class RemoteListViewModel @Inject constructor(
 					sortOrder = filterState.sortOrder,
 					tags = filterState.tags,
 				)
-				mangaList.update { oldList ->
+				val oldList = mangaList.getAndUpdate { oldList ->
 					if (!append || oldList.isNullOrEmpty()) {
 						list
 					} else {
 						oldList + list
 					}
-				}
-				if (append) {
-					hasNextPage.value = list.isNotEmpty()
+				}.orEmpty()
+				hasNextPage.value = if (append) {
+					list.isNotEmpty()
+				} else {
+					list.size > oldList.size || hasNextPage.value
 				}
 			} catch (e: CancellationException) {
 				throw e
@@ -152,6 +154,7 @@ open class RemoteListViewModel @Inject constructor(
 				if (!mangaList.value.isNullOrEmpty()) {
 					errorEvent.call(e)
 				}
+				hasNextPage.value = false
 			}
 		}.also { loadingJob = it }
 	}

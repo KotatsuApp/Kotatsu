@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 34
-		versionCode = 590
-		versionName = '6.2.3'
+		versionCode = 591
+		versionName = '6.2.4'
 		generatedDensities = []
 		testInstrumentationRunner "org.koitharu.kotatsu.HiltTestRunner"
 		ksp {
@@ -82,7 +82,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:6bf0ae92e4') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:af1aca8725') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -137,8 +137,8 @@ dependencies {
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
 
-	implementation 'ch.acra:acra-http:5.11.2'
-	implementation 'ch.acra:acra-dialog:5.11.2'
+	implementation 'ch.acra:acra-http:5.11.3'
+	implementation 'ch.acra:acra-dialog:5.11.3'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 
