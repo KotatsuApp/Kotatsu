@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui
 
+import android.view.MotionEvent
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import dagger.assisted.Assisted
@@ -8,11 +9,14 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import kotlin.math.roundToLong
@@ -33,6 +37,7 @@ class ScrollTimer @AssistedInject constructor(
 	private var delayMs: Long = 10L
 	private var pageSwitchDelay: Long = 100L
 	private var resumeAt = 0L
+	private var isTouchDown = MutableStateFlow(false)
 
 	var isEnabled: Boolean = false
 		set(value) {
@@ -53,6 +58,19 @@ class ScrollTimer @AssistedInject constructor(
 
 	fun onUserInteraction() {
 		resumeAt = System.currentTimeMillis() + INTERACTION_SKIP_MS
+	}
+
+	fun onTouchEvent(event: MotionEvent) {
+		when (event.actionMasked) {
+			MotionEvent.ACTION_DOWN -> {
+				isTouchDown.value = true
+			}
+
+			MotionEvent.ACTION_UP,
+			MotionEvent.ACTION_CANCEL -> {
+				isTouchDown.value = false
+			}
+		}
 	}
 
 	private fun onSpeedChanged(speed: Float) {
@@ -108,12 +126,18 @@ class ScrollTimer @AssistedInject constructor(
 	}
 
 	private fun isPaused(): Boolean {
-		return resumeAt > System.currentTimeMillis()
+		return isTouchDown.value || resumeAt > System.currentTimeMillis()
 	}
 
 	private suspend fun delayUntilResumed() {
 		while (isPaused()) {
-			delay(resumeAt - System.currentTimeMillis())
+			val delayTime = resumeAt - System.currentTimeMillis()
+			if (delayTime > 0) {
+				delay(delayTime)
+			} else {
+				yield()
+			}
+			isTouchDown.first { !it }
 		}
 	}
 

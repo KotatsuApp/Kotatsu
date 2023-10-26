@@ -249,6 +249,7 @@ class ReaderActivity :
 
 	override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
 		touchHelper.dispatchTouchEvent(ev)
+		scrollTimer.onTouchEvent(ev)
 		return super.dispatchTouchEvent(ev)
 	}
 
