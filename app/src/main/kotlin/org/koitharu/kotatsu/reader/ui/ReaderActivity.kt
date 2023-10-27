@@ -52,6 +52,7 @@ import org.koitharu.kotatsu.core.util.ext.postDelayed
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.zipWithPrevious
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
+import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
@@ -145,6 +146,11 @@ class ReaderActivity :
 				.setAnchorView(viewBinding.appbarBottom)
 				.show()
 		}
+	}
+
+	override fun getParentActivityIntent(): Intent? {
+		val manga = viewModel.manga?.toManga() ?: return null
+		return DetailsActivity.newIntent(this, manga)
 	}
 
 	override fun onUserInteraction() {

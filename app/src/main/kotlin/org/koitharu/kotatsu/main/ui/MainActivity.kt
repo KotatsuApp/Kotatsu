@@ -183,7 +183,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		android.R.id.home -> if (isSearchOpened()) {
-			super.onOptionsItemSelected(item)
+			closeSearchCallback.handleOnBackPressed()
+			true
 		} else {
 			viewBinding.searchView.requestFocus()
 			true

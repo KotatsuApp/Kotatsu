@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -96,11 +95,10 @@ abstract class BaseActivity<B : ViewBinding> :
 		insetsDelegate.onViewCreated(binding.root)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem) = if (item.itemId == android.R.id.home) {
-		onBackPressedDispatcher.onBackPressed()
-		// TODO: navigateUpTo
-		true
-	} else super.onOptionsItemSelected(item)
+	override fun onSupportNavigateUp(): Boolean {
+		dispatchNavigateUp()
+		return true
+	}
 
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
 		if (BuildConfig.DEBUG && keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
@@ -149,6 +147,17 @@ abstract class BaseActivity<B : ViewBinding> :
 		super.onSupportActionModeFinished(mode)
 		actionModeDelegate.onSupportActionModeFinished(mode)
 		window.statusBarColor = defaultStatusBarColor
+	}
+
+	protected open fun dispatchNavigateUp() {
+		val upIntent = parentActivityIntent
+		if (upIntent != null) {
+			if (!navigateUpTo(upIntent)) {
+				startActivity(upIntent)
+			}
+		} else {
+			finishAfterTransition()
+		}
 	}
 
 	private fun putDataToExtras(intent: Intent?) {
