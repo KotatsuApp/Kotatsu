@@ -130,9 +130,6 @@ class SyncHelper @AssistedInject constructor(
 	private fun upsertHistory(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
 		val uri = uri(authorityHistory, TABLE_HISTORY)
 		val operations = ArrayList<ContentProviderOperation>()
-		operations += ContentProviderOperation.newDelete(uri)
-			.withSelection("updated_at < ?", arrayOf(timestamp.toString()))
-			.build()
 		json.mapJSONTo(operations) { jo ->
 			operations.addAll(upsertManga(jo.removeJSONObject("manga"), authorityHistory))
 			ContentProviderOperation.newInsert(uri)
@@ -145,9 +142,6 @@ class SyncHelper @AssistedInject constructor(
 	private fun upsertFavouriteCategories(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
 		val uri = uri(authorityFavourites, TABLE_FAVOURITE_CATEGORIES)
 		val operations = ArrayList<ContentProviderOperation>()
-		operations += ContentProviderOperation.newDelete(uri)
-			.withSelection("created_at < ?", arrayOf(timestamp.toString()))
-			.build()
 		json.mapJSONTo(operations) { jo ->
 			ContentProviderOperation.newInsert(uri)
 				.withValues(jo.toContentValues())
@@ -159,9 +153,6 @@ class SyncHelper @AssistedInject constructor(
 	private fun upsertFavourites(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
 		val uri = uri(authorityFavourites, TABLE_FAVOURITES)
 		val operations = ArrayList<ContentProviderOperation>()
-		operations += ContentProviderOperation.newDelete(uri)
-			.withSelection("created_at < ?", arrayOf(timestamp.toString()))
-			.build()
 		json.mapJSONTo(operations) { jo ->
 			operations.addAll(upsertManga(jo.removeJSONObject("manga"), authorityFavourites))
 			ContentProviderOperation.newInsert(uri)
