@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.details.domain
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.model.findChapter
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
@@ -13,6 +14,7 @@ class ProgressUpdateUseCase @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val database: MangaDatabase,
 	private val localMangaRepository: LocalMangaRepository,
+	private val networkState: NetworkState,
 ) {
 
 	suspend operator fun invoke(manga: Manga): Float {
@@ -21,6 +23,9 @@ class ProgressUpdateUseCase @Inject constructor(
 			localMangaRepository.getRemoteManga(manga) ?: manga
 		} else {
 			manga
+		}
+		if (!seed.isLocal && !networkState.value) {
+			return PROGRESS_NONE
 		}
 		val repo = mangaRepositoryFactory.create(seed.source)
 		val details = if (manga.source != seed.source || seed.chapters.isNullOrEmpty()) {

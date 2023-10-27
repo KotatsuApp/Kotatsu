@@ -22,7 +22,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
-import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -67,7 +66,7 @@ class PeriodicalBackupWorker @AssistedInject constructor(
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 				constraints.setRequiresDeviceIdle(true)
 			}
-			val request = PeriodicWorkRequestBuilder<SuggestionsWorker>(
+			val request = PeriodicWorkRequestBuilder<PeriodicalBackupWorker>(
 				settings.periodicalBackupFrequency,
 				TimeUnit.HOURS,
 			).setConstraints(constraints.build())

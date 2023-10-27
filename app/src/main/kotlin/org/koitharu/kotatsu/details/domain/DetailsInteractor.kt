@@ -87,5 +87,5 @@ class DetailsInteractor @Inject constructor(
 		}
 	}
 
-	suspend fun findLocal(seed: Manga) = localMangaRepository.getRemoteManga(seed)
+	suspend fun findRemote(seed: Manga) = localMangaRepository.getRemoteManga(seed)
 }

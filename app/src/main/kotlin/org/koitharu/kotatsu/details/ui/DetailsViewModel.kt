@@ -149,15 +149,13 @@ class DetailsViewModel @Inject constructor(
 	val scrobblingInfo: StateFlow<List<ScrobblingInfo>> = interactor.observeScrobblingInfo(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
-	val relatedManga: StateFlow<List<MangaItemModel>> = manga
-		.mapLatest {
-			if (it != null && settings.isRelatedMangaEnabled) {
-				relatedMangaUseCase.invoke(it)?.toUi(ListMode.GRID, extraProvider).orEmpty()
-			} else {
-				emptyList()
-			}
+	val relatedManga: StateFlow<List<MangaItemModel>> = manga.mapLatest {
+		if (it != null && settings.isRelatedMangaEnabled) {
+			relatedMangaUseCase.invoke(it)?.toUi(ListMode.GRID, extraProvider).orEmpty()
+		} else {
+			emptyList()
 		}
-		.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+	}.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
 	val branches: StateFlow<List<MangaBranch>> = combine(
 		details,
@@ -217,7 +215,7 @@ class DetailsViewModel @Inject constructor(
 		}
 		launchJob(Dispatchers.Default) {
 			val manga = details.firstOrNull { it != null && it.isLocal } ?: return@launchJob
-			remoteManga.value = interactor.findLocal(manga.toManga())
+			remoteManga.value = interactor.findRemote(manga.toManga())
 		}
 	}
 
