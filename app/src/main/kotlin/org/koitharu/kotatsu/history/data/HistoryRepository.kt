@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.db.entity.toMangaTag
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.findById
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
@@ -185,7 +186,7 @@ class HistoryRepository @Inject constructor(
 
 	private suspend fun HistoryEntity.recoverIfNeeded(manga: Manga): HistoryEntity {
 		val chapters = manga.chapters
-		if (chapters.isNullOrEmpty() || chapters.findById(chapterId) != null) {
+		if (manga.isLocal || chapters.isNullOrEmpty() || chapters.findById(chapterId) != null) {
 			return this
 		}
 		val newChapterId = chapters.getOrNull(
