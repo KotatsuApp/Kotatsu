@@ -494,4 +494,13 @@
     <string name="list_options">Opsyon sa Listahan</string>
     <string name="by_relevance">Kaugnayan</string>
     <string name="online_variant">Online na baryante</string>
+    <string name="frequency_every_day">Araw araw</string>
+    <string name="backup_frequency">Dalas ng paglikha ng backup</string>
+    <string name="periodic_backups_enable">Paganahin ang periodic na pag-backup</string>
+    <string name="frequency_every_2_days">Kada 2 araw</string>
+    <string name="frequency_once_per_week">Isang beses kada linggo</string>
+    <string name="periodic_backups">Mga periodic na pag-backup</string>
+    <string name="frequency_twice_per_month">Dalawang beses bawat buwan</string>
+    <string name="frequency_once_per_month">Isang beses bawat buwan</string>
+    <string name="backups_output_directory">Output directory ng mga backup</string>
 </resources>
