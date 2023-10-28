@@ -494,4 +494,13 @@
     <string name="enhanced_colors_summary">Reduce el banding, pero puede afectar al rendimiento</string>
     <string name="by_relevance">Relevancia</string>
     <string name="online_variant">Variante en línea</string>
+    <string name="frequency_every_day">Cada día</string>
+    <string name="backup_frequency">Frecuencia de creación de las copias de seguridad</string>
+    <string name="periodic_backups_enable">Activar las copias de seguridad periódicas</string>
+    <string name="frequency_every_2_days">Cada 2 días</string>
+    <string name="frequency_once_per_week">Una vez a la semana</string>
+    <string name="periodic_backups">Copias de seguridad periódicas</string>
+    <string name="frequency_twice_per_month">Dos veces al mes</string>
+    <string name="frequency_once_per_month">Una vez al mes</string>
+    <string name="backups_output_directory">Directorio para guardar la copia de seguridad</string>
 </resources>
