@@ -494,4 +494,14 @@
     <string name="enhanced_colors">32-битный цветовой режим</string>
     <string name="suggest_new_sources_summary">Предлагать источники манги, добавленные в последнем обновлении приложения</string>
     <string name="online_variant">Онлайн вариант</string>
+    <string name="frequency_every_day">Каждый день</string>
+    <string name="backup_frequency">Частота создания резервных копий</string>
+    <string name="periodic_backups_enable">Включить резервное копирование по расписанию</string>
+    <string name="frequency_every_2_days">Каждые 2 дня</string>
+    <string name="frequency_once_per_week">Раз в неделю</string>
+    <string name="periodic_backups">Резервное копирование по расписанию</string>
+    <string name="frequency_twice_per_month">Дважды в месяц</string>
+    <string name="frequency_once_per_month">Один раз в месяц</string>
+    <string name="backups_output_directory">Каталог для сохранения резервных копий</string>
+    <string name="last_successful_backup">Последняя резервная копия: %s</string>
 </resources>
