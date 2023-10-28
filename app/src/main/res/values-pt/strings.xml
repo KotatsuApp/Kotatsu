@@ -491,4 +491,7 @@
     <string name="by_relevance">Relevância</string>
     <string name="enhanced_colors">Modo de cor 32-bit</string>
     <string name="suggest_new_sources_summary">Solicitar a ativação de fontes recém-adicionadas após atualizar o aplicativo</string>
+    <string name="state_abandoned">Caiu</string>
+    <string name="keep_screen_on">Manter a tela ligada</string>
+    <string name="keep_screen_on_summary">Não desligue a tela enquanto estiver lendo mangá</string>
 </resources>
