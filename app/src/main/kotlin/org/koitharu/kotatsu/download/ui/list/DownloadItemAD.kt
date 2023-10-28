@@ -6,6 +6,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.work.WorkInfo
 import coil.ImageLoader
+import coil.request.SuccessResult
+import coil.util.CoilUtils
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
@@ -55,14 +57,17 @@ fun downloadItemAD(
 			TransitionManager.beginDelayedTransition(binding.constraintLayout)
 		}
 		binding.textViewTitle.text = item.manga.title
-		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.apply {
-			placeholder(R.drawable.ic_placeholder)
-			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_error_placeholder)
-			allowRgb565(true)
-			transformations(TrimTransformation())
-			source(item.manga.source)
-			enqueueWith(coil)
+		if ((CoilUtils.result(binding.imageViewCover) as? SuccessResult)?.memoryCacheKey != item.coverCacheKey) {
+			binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.apply {
+				placeholder(R.drawable.ic_placeholder)
+				fallback(R.drawable.ic_placeholder)
+				error(R.drawable.ic_error_placeholder)
+				allowRgb565(true)
+				transformations(TrimTransformation())
+				memoryCacheKey(item.coverCacheKey)
+				source(item.manga.source)
+				enqueueWith(coil)
+			}
 		}
 		// binding.textViewTitle.isChecked = item.isExpanded
 		// binding.textViewTitle.drawableEnd = if (item.isExpandable) expandIcon else null

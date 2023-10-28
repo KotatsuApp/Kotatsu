@@ -77,7 +77,7 @@ class PeriodicalBackupWorker @AssistedInject constructor(
 			}
 			val request = PeriodicWorkRequestBuilder<PeriodicalBackupWorker>(
 				settings.periodicalBackupFrequency,
-				TimeUnit.HOURS,
+				TimeUnit.DAYS,
 			).setConstraints(constraints.build())
 				.addTag(TAG)
 				.build()

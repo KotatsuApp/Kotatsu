@@ -23,7 +23,7 @@ fun ImageView.newImageRequest(lifecycleOwner: LifecycleOwner, data: Any?): Image
 			return null
 		}
 	}
-	disposeImageRequest()
+	// disposeImageRequest()
 	return ImageRequest.Builder(context)
 		.data(data)
 		.lifecycle(lifecycleOwner)

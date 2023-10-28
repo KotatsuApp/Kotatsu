@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.download.ui.list
 
 import android.text.format.DateUtils
 import androidx.work.WorkInfo
+import coil.memory.MemoryCache
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -22,6 +23,8 @@ data class DownloadItemModel(
 	val chaptersDownloaded: Int,
 	val isExpanded: Boolean,
 ) : ListModel, Comparable<DownloadItemModel> {
+
+	val coverCacheKey = MemoryCache.Key(manga.coverUrl, mapOf("dl" to "1"))
 
 	val percent: Float
 		get() = if (max > 0) progress / max.toFloat() else 0f

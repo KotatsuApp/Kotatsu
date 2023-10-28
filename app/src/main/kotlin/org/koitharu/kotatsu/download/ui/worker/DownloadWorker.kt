@@ -105,9 +105,10 @@ class DownloadWorker @AssistedInject constructor(
 		setForeground(getForegroundInfo())
 		val mangaId = inputData.getLong(MANGA_ID, 0L)
 		val manga = mangaDataRepository.findMangaById(mangaId) ?: return Result.failure()
+		lastPublishedState = DownloadState(manga, isIndeterminate = true)
+		publishState(DownloadState(manga, isIndeterminate = true))
 		val chaptersIds = inputData.getLongArray(CHAPTERS_IDS)?.takeUnless { it.isEmpty() }
 		val downloadedIds = getDoneChapters(manga)
-		publishState(DownloadState(manga, isIndeterminate = true))
 		return try {
 			downloadMangaImpl(manga, chaptersIds, downloadedIds)
 			Result.success(currentState.toWorkData())
