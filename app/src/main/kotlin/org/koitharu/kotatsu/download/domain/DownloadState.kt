@@ -18,8 +18,7 @@ data class DownloadState(
 	val currentPage: Int = 0,
 	val eta: Long = -1L,
 	val localManga: LocalManga? = null,
-	val downloadedChapters: LongArray = LongArray(0),
-	val scheduledChapters: LongArray = LongArray(0),
+	val downloadedChapters: Int = 0,
 	val timestamp: Long = System.currentTimeMillis(),
 ) {
 
@@ -42,68 +41,17 @@ data class DownloadState(
 		.putLong(DATA_ETA, eta)
 		.putLong(DATA_TIMESTAMP, timestamp)
 		.putString(DATA_ERROR, error)
-		.putLongArray(DATA_CHAPTERS, downloadedChapters)
-		.putLongArray(DATA_CHAPTERS_SRC, scheduledChapters)
+		.putInt(DATA_CHAPTERS, downloadedChapters)
 		.putBoolean(DATA_INDETERMINATE, isIndeterminate)
 		.putBoolean(DATA_PAUSED, isPaused)
 		.build()
-
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as DownloadState
-
-		if (manga != other.manga) return false
-		if (isIndeterminate != other.isIndeterminate) return false
-		if (isPaused != other.isPaused) return false
-		if (isStopped != other.isStopped) return false
-		if (error != other.error) return false
-		if (totalChapters != other.totalChapters) return false
-		if (currentChapter != other.currentChapter) return false
-		if (totalPages != other.totalPages) return false
-		if (currentPage != other.currentPage) return false
-		if (eta != other.eta) return false
-		if (localManga != other.localManga) return false
-		if (!downloadedChapters.contentEquals(other.downloadedChapters)) return false
-		if (!scheduledChapters.contentEquals(other.scheduledChapters)) return false
-		if (timestamp != other.timestamp) return false
-		if (max != other.max) return false
-		if (progress != other.progress) return false
-		if (percent != other.percent) return false
-
-		return true
-	}
-
-	override fun hashCode(): Int {
-		var result = manga.hashCode()
-		result = 31 * result + isIndeterminate.hashCode()
-		result = 31 * result + isPaused.hashCode()
-		result = 31 * result + isStopped.hashCode()
-		result = 31 * result + (error?.hashCode() ?: 0)
-		result = 31 * result + totalChapters
-		result = 31 * result + currentChapter
-		result = 31 * result + totalPages
-		result = 31 * result + currentPage
-		result = 31 * result + eta.hashCode()
-		result = 31 * result + (localManga?.hashCode() ?: 0)
-		result = 31 * result + downloadedChapters.contentHashCode()
-		result = 31 * result + scheduledChapters.contentHashCode()
-		result = 31 * result + timestamp.hashCode()
-		result = 31 * result + max
-		result = 31 * result + progress
-		result = 31 * result + percent.hashCode()
-		return result
-	}
-
 
 	companion object {
 
 		private const val DATA_MANGA_ID = "manga_id"
 		private const val DATA_MAX = "max"
 		private const val DATA_PROGRESS = "progress"
-		private const val DATA_CHAPTERS = "chapter"
-		private const val DATA_CHAPTERS_SRC = "chapters_src"
+		private const val DATA_CHAPTERS = "chapter_cnt"
 		private const val DATA_ETA = "eta"
 		private const val DATA_TIMESTAMP = "timestamp"
 		private const val DATA_ERROR = "error"
@@ -126,8 +74,6 @@ data class DownloadState(
 
 		fun getTimestamp(data: Data): Date = Date(data.getLong(DATA_TIMESTAMP, 0L))
 
-		fun getDownloadedChapters(data: Data): LongArray = data.getLongArray(DATA_CHAPTERS) ?: LongArray(0)
-
-		fun getScheduledChapters(data: Data): LongArray = data.getLongArray(DATA_CHAPTERS_SRC) ?: LongArray(0)
+		fun getDownloadedChapters(data: Data): Int = data.getInt(DATA_CHAPTERS, 0)
 	}
 }

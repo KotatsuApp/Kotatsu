@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.download.ui.list
 
 import android.text.format.DateUtils
 import androidx.work.WorkInfo
-import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -17,11 +16,10 @@ data class DownloadItemModel(
 	val manga: Manga,
 	val error: String?,
 	val max: Int,
-	val totalChapters: Int,
 	val progress: Int,
 	val eta: Long,
 	val timestamp: Date,
-	val chapters: List<DownloadChapter>,
+	val chaptersDownloaded: Int,
 	val isExpanded: Boolean,
 ) : ListModel, Comparable<DownloadItemModel> {
 
@@ -38,7 +36,7 @@ data class DownloadItemModel(
 		get() = workState == WorkInfo.State.RUNNING && isPaused
 
 	val isExpandable: Boolean
-		get() = chapters.isNotEmpty()
+		get() = false // TODO
 
 	fun getEtaString(): CharSequence? = if (hasEta) {
 		DateUtils.getRelativeTimeSpanString(

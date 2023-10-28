@@ -38,6 +38,7 @@ import okio.buffer
 import okio.sink
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
+import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
@@ -46,7 +47,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.Throttler
 import org.koitharu.kotatsu.core.util.ext.awaitFinishedWorkInfosByTag
 import org.koitharu.kotatsu.core.util.ext.awaitUpdateWork
-import org.koitharu.kotatsu.core.util.ext.awaitWorkInfoById
 import org.koitharu.kotatsu.core.util.ext.awaitWorkInfosByTag
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.deleteWork
@@ -106,10 +106,10 @@ class DownloadWorker @AssistedInject constructor(
 		val mangaId = inputData.getLong(MANGA_ID, 0L)
 		val manga = mangaDataRepository.findMangaById(mangaId) ?: return Result.failure()
 		val chaptersIds = inputData.getLongArray(CHAPTERS_IDS)?.takeUnless { it.isEmpty() }
-		val downloadedIds = getDoneChapters()
-		lastPublishedState = DownloadState(manga, isIndeterminate = true)
+		val downloadedIds = getDoneChapters(manga)
+		publishState(DownloadState(manga, isIndeterminate = true))
 		return try {
-			downloadMangaImpl(chaptersIds, downloadedIds)
+			downloadMangaImpl(manga, chaptersIds, downloadedIds)
 			Result.success(currentState.toWorkData())
 		} catch (e: CancellationException) {
 			withContext(NonCancellable) {
@@ -147,10 +147,11 @@ class DownloadWorker @AssistedInject constructor(
 	}
 
 	private suspend fun downloadMangaImpl(
+		subject: Manga,
 		includedIds: LongArray?,
-		excludedIds: LongArray,
+		excludedIds: Set<Long>,
 	) {
-		var manga = currentState.manga
+		var manga = subject
 		val chaptersToSkip = excludedIds.toMutableSet()
 		withMangaLock(manga) {
 			ContextCompat.registerReceiver(
@@ -178,16 +179,9 @@ class DownloadWorker @AssistedInject constructor(
 					}
 				}
 				val chapters = getChapters(mangaDetails, includedIds)
-				publishState(
-					currentState.copy(scheduledChapters = LongArray(chapters.size) { i -> chapters[i].id }),
-				)
 				for ((chapterIndex, chapter) in chapters.withIndex()) {
 					if (chaptersToSkip.remove(chapter.id)) {
-						publishState(
-							currentState.copy(
-								downloadedChapters = currentState.downloadedChapters + chapter.id,
-							),
-						)
+						publishState(currentState.copy(downloadedChapters = currentState.downloadedChapters + 1))
 						continue
 					}
 					val pages = runFailsafe(pausingHandle) {
@@ -225,11 +219,7 @@ class DownloadWorker @AssistedInject constructor(
 							localStorageChanges.emit(LocalMangaInput.of(output.rootFile).getManga())
 						}.onFailure(Throwable::printStackTraceDebug)
 					}
-					publishState(
-						currentState.copy(
-							downloadedChapters = currentState.downloadedChapters + chapter.id,
-						),
-					)
+					publishState(currentState.copy(downloadedChapters = currentState.downloadedChapters + 1))
 				}
 				publishState(currentState.copy(isIndeterminate = true, eta = -1L))
 				output.mergeWithExisting()
@@ -336,11 +326,9 @@ class DownloadWorker @AssistedInject constructor(
 		setProgress(state.toWorkData())
 	}
 
-	private suspend fun getDoneChapters(): LongArray {
-		val work = WorkManager.getInstance(applicationContext).awaitWorkInfoById(id)
-			?: return LongArray(0)
-		return DownloadState.getDownloadedChapters(work.progress)
-	}
+	private suspend fun getDoneChapters(manga: Manga) = runCatchingCancellable {
+		localMangaRepository.getDetails(manga).chapters?.ids()
+	}.getOrNull().orEmpty()
 
 	private fun getChapters(
 		manga: Manga,

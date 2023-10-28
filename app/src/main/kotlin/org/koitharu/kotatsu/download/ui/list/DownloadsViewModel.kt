@@ -28,7 +28,6 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.daysDiff
 import org.koitharu.kotatsu.download.domain.DownloadState
-import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
@@ -239,8 +238,6 @@ class DownloadsViewModel @Inject constructor(
 		val mangaId = DownloadState.getMangaId(workData)
 		if (mangaId == 0L) return null
 		val manga = getManga(mangaId) ?: return null
-		val downloadedChapters = DownloadState.getDownloadedChapters(workData)
-		val scheduledChapters = DownloadState.getScheduledChapters(workData).toSet()
 		return DownloadItemModel(
 			id = id,
 			workState = state,
@@ -252,19 +249,8 @@ class DownloadsViewModel @Inject constructor(
 			progress = DownloadState.getProgress(workData),
 			eta = DownloadState.getEta(workData),
 			timestamp = DownloadState.getTimestamp(workData),
-			totalChapters = downloadedChapters.size,
+			chaptersDownloaded = DownloadState.getDownloadedChapters(workData),
 			isExpanded = isExpanded,
-			chapters = manga.chapters?.mapNotNull {
-				if (it.id in scheduledChapters) {
-					DownloadChapter(
-						number = it.number,
-						name = it.name,
-						isDownloaded = it.id in downloadedChapters,
-					)
-				} else {
-					null
-				}
-			}.orEmpty(),
 		)
 	}
 

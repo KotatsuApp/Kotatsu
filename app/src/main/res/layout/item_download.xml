@@ -104,31 +104,6 @@
 			app:layout_constraintTop_toBottomOf="@id/textView_status"
 			tools:text="@tools:sample/lorem[3]" />
 
-		<com.google.android.material.card.MaterialCardView
-			android:id="@+id/card_details"
-			android:layout_width="0dp"
-			android:layout_height="0dp"
-			android:layout_marginHorizontal="12dp"
-			android:layout_marginTop="12dp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHeight_default="wrap"
-			app:layout_constraintHeight_max="280dp"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/progressBar"
-			app:shapeAppearance="?shapeAppearanceCornerMedium">
-
-			<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/recyclerView_chapters"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:orientation="vertical"
-				android:scrollbars="vertical"
-				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-				tools:itemCount="200"
-				tools:listitem="@layout/item_chapter_download" />
-
-		</com.google.android.material.card.MaterialCardView>
-
 		<Button
 			android:id="@+id/button_pause"
 			style="?materialButtonOutlinedStyle"
@@ -139,7 +114,7 @@
 			android:text="@string/pause"
 			android:visibility="gone"
 			app:layout_constraintEnd_toStartOf="@id/button_resume"
-			app:layout_constraintTop_toBottomOf="@id/card_details"
+			app:layout_constraintTop_toBottomOf="@id/progressBar"
 			tools:visibility="visible" />
 
 		<Button
@@ -152,7 +127,7 @@
 			android:text="@string/resume"
 			android:visibility="gone"
 			app:layout_constraintEnd_toStartOf="@id/button_cancel"
-			app:layout_constraintTop_toBottomOf="@id/card_details" />
+			app:layout_constraintTop_toBottomOf="@id/progressBar" />
 
 		<Button
 			android:id="@+id/button_cancel"
@@ -164,7 +139,7 @@
 			android:text="@android:string/cancel"
 			android:visibility="gone"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/card_details"
+			app:layout_constraintTop_toBottomOf="@id/progressBar"
 			tools:visibility="visible" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
