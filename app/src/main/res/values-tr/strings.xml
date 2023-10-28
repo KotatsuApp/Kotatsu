@@ -494,4 +494,13 @@
     <string name="list_options">Seçenekleri listele</string>
     <string name="online_variant">Çevrimiçi varyant</string>
     <string name="by_relevance">Alaka düzeyi</string>
+    <string name="frequency_every_day">Her gün</string>
+    <string name="backup_frequency">Yedek oluşturma sıklığı</string>
+    <string name="periodic_backups_enable">Zamanlı yedeklemeleri etkinleştirin</string>
+    <string name="frequency_every_2_days">2 günde 1</string>
+    <string name="frequency_once_per_week">Haftada 1 kez</string>
+    <string name="periodic_backups">Zamanlı yedekleme</string>
+    <string name="frequency_twice_per_month">Ayda 2 kere</string>
+    <string name="frequency_once_per_month">Ayda 1 kere</string>
+    <string name="backups_output_directory">Yedekleme dizini</string>
 </resources>
