@@ -156,7 +156,7 @@
     <string name="long_ago">منذ فترة</string>
     <string name="notifications_settings">إعدادات الإشعارات</string>
     <string name="save_manga">حفظ</string>
-    <string name="large_manga_save_confirm">تحتوي هذه المانجا على s%. حفظ الكل؟</string>
+    <string name="large_manga_save_confirm">هذه المانجا فيها %s . حفظ الكل</string>
     <string name="read_more">اقرأ المزيد</string>
     <string name="search_results">نتائج البحث</string>
     <string name="file_not_found">الملف غير موجود</string>
@@ -172,9 +172,10 @@
     <string name="data_restored_success">استعيدت جميع البيانات</string>
     <string name="backup_information">يمكنك إنشاء نسخة احتياطية من السجل الخاص بك والمفضلة واستعادتها</string>
     <string name="available_sources">المصادر المتاحة</string>
-    <string name="external_storage">التخزين الخارجي</string>
+    <string name="external_storage">تخزين خارجي</string>
     <string name="silent">صامت</string>
     <string name="today">اليوم</string>
     <string name="system_default">الافتراضي</string>
     <string name="sign_in">تسجبل الدخول</string>
+    <string name="domain">المجال</string>
 </resources>
