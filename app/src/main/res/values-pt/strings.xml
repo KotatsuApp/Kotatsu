@@ -41,11 +41,11 @@
     <string name="remove">Remover</string>
     <string name="_s_deleted_from_local_storage">«%s» deletado do armazenamento local</string>
     <string name="save_page">Salvar página</string>
-    <string name="page_saved">Salvou</string>
+    <string name="page_saved">Salvo</string>
     <string name="share_image">Compartilhar imagem</string>
     <string name="_import">Importar</string>
     <string name="updated">Atualizado</string>
-    <string name="delete">Deletar</string>
+    <string name="delete">Delete</string>
     <string name="operation_not_supported">Essa operação não é suportada</string>
     <string name="clear_pages_cache">Limpar cache de página</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
@@ -66,10 +66,10 @@
     <string name="internal_storage">Armazenamento interno</string>
     <string name="external_storage">Armazenamento externo</string>
     <string name="domain">Domínio</string>
-    <string name="app_update_available">Uma nova versão da app está disponível</string>
+    <string name="app_update_available">Uma nova versão do app está disponível</string>
     <string name="open_in_browser">Abrir no navegador da web</string>
     <string name="large_manga_save_confirm">Este mangá tem %s. Salvar tudo isso\?</string>
-    <string name="save_manga">Salve</string>
+    <string name="save_manga">Salvar</string>
     <string name="notifications">Notificações</string>
     <string name="new_chapters">Novos capítulos</string>
     <string name="download">Download</string>
@@ -483,4 +483,12 @@
     <string name="show">Mostrar</string>
     <string name="color_black">Preto</string>
     <string name="this_month">Este mês</string>
+    <string name="categories">Categorias</string>
+    <string name="list_options">Listar opções</string>
+    <string name="suggest_new_sources">Sugira novas fontes após atualização do app</string>
+    <string name="enhanced_colors_summary">Reduz faixas, mas pode afetar o desempenho</string>
+    <string name="online_variant">Variante online</string>
+    <string name="by_relevance">Relevância</string>
+    <string name="enhanced_colors">Modo de cor 32-bit</string>
+    <string name="suggest_new_sources_summary">Solicitar a ativação de fontes recém-adicionadas após atualizar o aplicativo</string>
 </resources>
