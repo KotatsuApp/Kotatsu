@@ -15,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -53,6 +54,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 			addItemDecoration(decoration)
 			adapter = downloadsAdapter
 			selectionController.attachToRecyclerView(this)
+			RecyclerScrollKeeper(this).attach()
 		}
 		addMenuProvider(DownloadsMenuProvider(this, viewModel))
 		viewModel.items.observe(this) {
