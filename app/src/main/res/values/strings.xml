@@ -509,4 +509,5 @@
 	<string name="frequency_once_per_month">Once per month</string>
 	<string name="periodic_backups_enable">Enable periodic backups</string>
 	<string name="backups_output_directory">Backups output directory</string>
+	<string name="last_successful_backup">Last successful backup: %s</string>
 </resources>

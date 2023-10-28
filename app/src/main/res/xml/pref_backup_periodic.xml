@@ -23,4 +23,13 @@
 		android:key="backup_periodic_output"
 		android:title="@string/backups_output_directory" />
 
+	<Preference
+		android:dependency="backup_periodic"
+		android:icon="@drawable/ic_info_outline"
+		android:key="backup_periodic_last"
+		android:persistent="false"
+		android:selectable="false"
+		app:allowDividerAbove="true"
+		app:isPreferenceVisible="false" />
+
 </androidx.preference.PreferenceScreen>
