@@ -483,4 +483,25 @@
     <string name="show">Mostrar</string>
     <string name="color_black">Preto</string>
     <string name="this_month">Esse mês</string>
+    <string name="frequency_every_day">Diariamente</string>
+    <string name="categories">Categorias</string>
+    <string name="list_options">Opções da lista</string>
+    <string name="backup_frequency">Frequência de criação de backup</string>
+    <string name="suggest_new_sources">Sugerir novas fontes após a atualização do aplicativo</string>
+    <string name="periodic_backups_enable">Ativar backups periódicos</string>
+    <string name="enhanced_colors_summary">Reduz a formação de faixas, mas pode afetar o desempenho</string>
+    <string name="frequency_every_2_days">A cada 2 dias</string>
+    <string name="frequency_once_per_week">Semanalmente</string>
+    <string name="periodic_backups">Backups periódicos</string>
+    <string name="frequency_twice_per_month">Duas vezes ao mês</string>
+    <string name="online_variant">Variante on-line</string>
+    <string name="by_relevance">Relevância</string>
+    <string name="state_abandoned">Abandonado</string>
+    <string name="keep_screen_on">Manter a tela ligada</string>
+    <string name="frequency_once_per_month">Uma vez por mês</string>
+    <string name="enhanced_colors">Modo de cor de 32 bits</string>
+    <string name="keep_screen_on_summary">Não desligue a tela enquanto estiver lendo mangá</string>
+    <string name="last_successful_backup">Último backup bem-sucedido: %s</string>
+    <string name="backups_output_directory">Local de saída de backups</string>
+    <string name="suggest_new_sources_summary">Solicitação para ativar fontes recém-adicionadas após a atualização do aplicativo</string>
 </resources>
