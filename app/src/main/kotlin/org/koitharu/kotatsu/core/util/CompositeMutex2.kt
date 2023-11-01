@@ -19,7 +19,7 @@ class CompositeMutex2<T : Any> : Set<T> {
 	}
 
 	override fun isEmpty(): Boolean {
-		return delegates.isEmpty
+		return delegates.isEmpty()
 	}
 
 	override fun iterator(): Iterator<T> {

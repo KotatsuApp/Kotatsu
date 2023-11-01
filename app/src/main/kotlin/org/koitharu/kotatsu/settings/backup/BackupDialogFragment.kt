@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import java.io.File
 import java.io.FileOutputStream
@@ -81,7 +82,10 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	private fun onBackupDone(file: File) {
 		this.backup = file
-		saveFileContract.launch(file.name)
+		if (!saveFileContract.tryLaunch(file.name)) {
+			Toast.makeText(requireContext(), R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
+			dismiss()
+		}
 	}
 
 	private fun saveBackup(file: File, output: Uri) {
@@ -91,7 +95,7 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 					it.write(file.readBytes())
 				}
 			}
-			Toast.makeText(requireContext(), R.string.backup_saved, Toast.LENGTH_LONG).show()
+			Toast.makeText(requireContext(), R.string.backup_saved, Toast.LENGTH_SHORT).show()
 			dismiss()
 		} catch (e: InterruptedException) {
 			throw e

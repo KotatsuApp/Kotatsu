@@ -52,9 +52,9 @@ class PeriodicalBackupWorker @AssistedInject constructor(
 		}
 		val dirUri = settings.periodicalBackupOutput ?: return Result.success(resultData)
 		val target = DocumentFile.fromTreeUri(applicationContext, dirUri)
-			?.createFile("application/zip", file.name)
+			?.createFile("application/zip", file.nameWithoutExtension)
 			?.uri ?: return Result.failure()
-		applicationContext.contentResolver.openOutputStream(target)?.use { output ->
+		applicationContext.contentResolver.openOutputStream(target, "wt")?.use { output ->
 			file.source().use { input ->
 				output.sink().buffer().writeAllCancellable(input)
 			}

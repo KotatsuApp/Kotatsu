@@ -26,7 +26,7 @@ class CompositeMutex<T : Any> : Set<T> {
 	}
 
 	override fun isEmpty(): Boolean {
-		return state.isEmpty
+		return state.isEmpty()
 	}
 
 	override fun iterator(): Iterator<T> {

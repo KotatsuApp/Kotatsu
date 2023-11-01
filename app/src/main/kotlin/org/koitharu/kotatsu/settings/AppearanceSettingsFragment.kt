@@ -139,6 +139,7 @@ class AppearanceSettingsFragment :
 
 		private val deviceLocales = LocaleManagerCompat.getSystemLocales(context)
 			.map { it.language }
+			.distinct()
 
 		override fun compare(a: Locale, b: Locale): Int {
 			return if (a === b) {
