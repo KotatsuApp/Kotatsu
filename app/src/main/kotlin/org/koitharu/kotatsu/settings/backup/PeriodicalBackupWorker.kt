@@ -16,15 +16,11 @@ import androidx.work.workDataOf
 import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import okio.buffer
-import okio.sink
-import okio.source
 import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
-import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -55,9 +51,7 @@ class PeriodicalBackupWorker @AssistedInject constructor(
 			?.createFile("application/zip", file.nameWithoutExtension)
 			?.uri ?: return Result.failure()
 		applicationContext.contentResolver.openOutputStream(target, "wt")?.use { output ->
-			file.source().use { input ->
-				output.sink().buffer().writeAllCancellable(input)
-			}
+			file.inputStream().copyTo(output)
 		} ?: return Result.failure()
 		file.deleteAwait()
 		return Result.success(resultData)
@@ -79,6 +73,7 @@ class PeriodicalBackupWorker @AssistedInject constructor(
 				settings.periodicalBackupFrequency,
 				TimeUnit.DAYS,
 			).setConstraints(constraints.build())
+				.keepResultsForAtLeast(20, TimeUnit.DAYS)
 				.addTag(TAG)
 				.build()
 			workManager

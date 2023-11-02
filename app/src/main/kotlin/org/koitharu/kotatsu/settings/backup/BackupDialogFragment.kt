@@ -29,7 +29,7 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	private var backup: File? = null
 	private val saveFileContract = registerForActivityResult(
-		ActivityResultContracts.CreateDocument("*/*"),
+		ActivityResultContracts.CreateDocument("application/zip"),
 	) { uri ->
 		val file = backup
 		if (uri != null && file != null) {
