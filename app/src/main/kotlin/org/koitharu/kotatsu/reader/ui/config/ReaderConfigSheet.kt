@@ -128,7 +128,7 @@ class ReaderConfigSheet :
 		when (buttonView.id) {
 			R.id.switch_scroll_timer -> {
 				findCallback()?.isAutoScrollEnabled = isChecked
-				requireViewBinding().labelTimer.isVisible = isChecked
+				requireViewBinding().layoutTimer.isVisible = isChecked
 				requireViewBinding().sliderTimer.isVisible = isChecked
 			}
 		}
@@ -159,6 +159,7 @@ class ReaderConfigSheet :
 		if (fromUser) {
 			settings.readerAutoscrollSpeed = value
 		}
+		(viewBinding ?: return).labelTimerValue.text = getString(R.string.speed_value, value * 10f)
 	}
 
 	override fun onActivityResult(result: Uri?) {

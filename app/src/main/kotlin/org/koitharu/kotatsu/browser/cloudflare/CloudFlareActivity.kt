@@ -48,8 +48,8 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		if (!catchingWebViewUnavailability {
 				setContentView(
 					ActivityBrowserBinding.inflate(
-						layoutInflater
-					)
+						layoutInflater,
+					),
 				)
 			}) {
 			return
@@ -82,9 +82,11 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 	}
 
 	override fun onDestroy() {
-		viewBinding.webView.run {
-			stopLoading()
-			destroy()
+		runCatching {
+			viewBinding.webView
+		}.onSuccess {
+			it.stopLoading()
+			it.destroy()
 		}
 		super.onDestroy()
 	}
