@@ -503,4 +503,5 @@
     <string name="frequency_twice_per_month">Dos veces al mes</string>
     <string name="frequency_once_per_month">Una vez al mes</string>
     <string name="backups_output_directory">Directorio para guardar la copia de seguridad</string>
+    <string name="last_successful_backup">La última copia de seguridad correcta: %s</string>
 </resources>
