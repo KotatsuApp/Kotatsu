@@ -160,7 +160,7 @@
     <string name="zoom_mode_fit_center">พอดีตรงกลาง</string>
     <string name="zoom_mode_fit_height">พอดีกับความสูง</string>
     <string name="black_dark_theme">ดำ</string>
-    <string name="just_now">เมื่อกี้</string>
+    <string name="just_now">เมื่อเร็วนี้</string>
     <string name="clear_feed">เคลียร์ฟีด</string>
     <string name="backup_restore">สำรองและคืนค่า</string>
     <string name="create_backup">สร้างข้อมูลสำรอง</string>
