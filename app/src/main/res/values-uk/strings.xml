@@ -494,4 +494,14 @@
     <string name="enhanced_colors">32-бітний колірний режим</string>
     <string name="suggest_new_sources_summary">Пропонує включити нові джерела манґи після оновлення застосунку</string>
     <string name="online_variant">Онлайн варіант</string>
+    <string name="frequency_every_day">Кожен день</string>
+    <string name="backup_frequency">Частота резервного копіювання</string>
+    <string name="periodic_backups_enable">Увімкніть періодичне резервне копіювання</string>
+    <string name="frequency_every_2_days">Кожні 2 дні</string>
+    <string name="frequency_once_per_week">Раз на тиждень</string>
+    <string name="periodic_backups">Періодичне резервне копіювання</string>
+    <string name="frequency_twice_per_month">Двічі на місяць</string>
+    <string name="frequency_once_per_month">Раз на місяць</string>
+    <string name="last_successful_backup">Останнє успішне резервне копіювання: %s</string>
+    <string name="backups_output_directory">Вихідний каталог резервних копій</string>
 </resources>

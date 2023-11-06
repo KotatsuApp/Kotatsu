@@ -494,4 +494,14 @@
     <string name="enhanced_colors">32-бітны каляровы рэжым</string>
     <string name="suggest_new_sources_summary">Прапаноўваць крыніцы мангі, дададзеныя ў апошнім абнаўленні праграмы</string>
     <string name="online_variant">Анлайн варыянт</string>
+    <string name="frequency_every_day">Кожны дзень</string>
+    <string name="backup_frequency">Частата стварэння рэзервовых копій</string>
+    <string name="periodic_backups_enable">Уключыць перыядычнае рэзервовае капіраванне</string>
+    <string name="frequency_every_2_days">Кожныя 2 дні</string>
+    <string name="frequency_once_per_week">Раз на тыдзень</string>
+    <string name="periodic_backups">Перыядычнае рэзервовае капіраванне</string>
+    <string name="frequency_twice_per_month">Два разы на месяц</string>
+    <string name="frequency_once_per_month">Адзін раз у месяц</string>
+    <string name="last_successful_backup">Апошняе паспяховае рэзервовае капіраванне: %s</string>
+    <string name="backups_output_directory">Вывадны каталог рэзервовых копій</string>
 </resources>
