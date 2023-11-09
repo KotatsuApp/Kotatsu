@@ -504,4 +504,5 @@
     <string name="frequency_once_per_month">Раз на місяць</string>
     <string name="last_successful_backup">Останнє успішне резервне копіювання: %s</string>
     <string name="backups_output_directory">Вихідний каталог резервних копій</string>
+    <string name="speed_value">x%.1f</string>
 </resources>
