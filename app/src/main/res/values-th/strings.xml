@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="light">สว่าง</string>
     <string name="automatic">ตั้งค่าตามเครื่อง</string>
     <string name="text_clear_history_prompt">จะเคลียร์ประวัติการอ่านทั้งหมดแบบถาวรใช่ไหม\?</string>
@@ -344,4 +344,29 @@
     <string name="exit_confirmation_summary">กดย้อนกลับสองครั้งเพื่อออกจากแอป</string>
     <string name="bookmarks_removed">ลบบุ๊คมาร์กแล้ว</string>
     <string name="error_no_space_left">ไม่มีพื้นที่เหลือบนอุปกรณ์แล้ว</string>
+    <string name="zoom_in">ซูมเข้า</string>
+    <string name="detect_reader_mode">โหมดตรวจจับเครื่องอ่านอัตโนมัติ</string>
+    <string name="frequency_every_day">ทุกวัน</string>
+    <string name="categories">หมวดหมู่</string>
+    <string name="backup_frequency">ความถี่การสำรองข้อมูล</string>
+    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d of %2$d on</string>
+    <string name="unknown">ไม่ทราบ</string>
+    <string name="frequency_every_2_days">ทุก 2 วัน</string>
+    <string name="frequency_once_per_week">สัปดาห์ละครั้ง</string>
+    <string name="reader_zoom_buttons">โชว์ปุ่มซูม</string>
+    <string name="select_range">เลือกช่วง</string>
+    <string name="no_manga_sources">ไม่พบแหล่งมังงะ</string>
+    <string name="frequency_twice_per_month">สองครั้งต่อเดือน</string>
+    <string name="keep_screen_on">เปิดหน้าจอไว้ตลอด</string>
+    <string name="categories_delete_confirm">คุณแน่ใจหรือไม่ว่าต้องการลบหมวดหมู่รายการโปรดที่เลือก
+\nมังงะทั้งหมดในนั้นจะหายไปและไม่สามารถยกเลิกได้</string>
+    <string name="frequency_once_per_month">เดือนละครั้ง</string>
+    <string name="no_manga_sources_text">เปิดใช้งานแหล่งมังงะเพื่ออ่านมังงะออนไลน์</string>
+    <string name="enhanced_colors">โหมดสี 32 บิต</string>
+    <string name="background">พื้นหลัง</string>
+    <string name="speed_value">x%.1f</string>
+    <string name="use_fingerprint">ใช้สแกนลายนิ้วมือหากมี</string>
+    <string name="zoom_out">ซูมออก</string>
+    <string name="text_search_holder_secondary">โปรดลองเรียบเรียงคำค้นหา</string>
+    <string name="last_successful_backup">สำรองข้อมูลสำเร็จล่าสุด: %s</string>
 </resources>
