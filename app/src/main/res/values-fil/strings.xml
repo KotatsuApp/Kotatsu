@@ -504,4 +504,5 @@
     <string name="frequency_once_per_month">Isang beses bawat buwan</string>
     <string name="backups_output_directory">Output directory ng mga backup</string>
     <string name="last_successful_backup">Huling matagumpay na pag-backup: %s</string>
+    <string name="speed_value">x%.1f</string>
 </resources>
