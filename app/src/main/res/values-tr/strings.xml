@@ -503,4 +503,6 @@
     <string name="frequency_twice_per_month">Ayda 2 kere</string>
     <string name="frequency_once_per_month">Ayda 1 kere</string>
     <string name="backups_output_directory">Yedekleme dizini</string>
+    <string name="speed_value">x%.1f</string>
+    <string name="last_successful_backup">Son başarılı yedekleme: %s</string>
 </resources>
