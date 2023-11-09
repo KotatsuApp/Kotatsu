@@ -15,7 +15,7 @@
     <string name="chapter_d_of_d">Bab %1$d dari %2$d</string>
     <string name="close">Tutup</string>
     <string name="try_again">Coba lagi</string>
-    <string name="nothing_found">Nihil</string>
+    <string name="nothing_found">Hasil tidak ditemukan</string>
     <string name="history_is_empty">Belum ada riwayat</string>
     <string name="read">Baca</string>
     <string name="you_have_not_favourites_yet">Belum ada favorit</string>
@@ -37,8 +37,8 @@
     <string name="updated">Diperbarui</string>
     <string name="newest">Terbaru</string>
     <string name="by_rating">Peringkat</string>
-    <string name="sort_order">Urutan penyortiran</string>
-    <string name="filter">Saring</string>
+    <string name="sort_order">Urutkan berdasarkan</string>
+    <string name="filter">Filter</string>
     <string name="theme">Tema</string>
     <string name="light">Terang</string>
     <string name="dark">Gelap</string>
@@ -486,4 +486,23 @@
     <string name="keep_screen_on">Biarkan Layar Menyala</string>
     <string name="zoom_out">Perkecil</string>
     <string name="keep_screen_on_summary">Jangan Matikan Layar Saat Membaca Komik</string>
+    <string name="list_options">Opsi daftar</string>
+    <string name="reader_zoom_buttons_summary">Apakah menampilkan tombol kontrol zoom di sudut kanan bawah</string>
+    <string name="backup_frequency">Frekuensi pembuatan cadangan</string>
+    <string name="suggest_new_sources">Sumber baru yang disarankan setelah pembaruan aplikasi</string>
+    <string name="periodic_backups_enable">Aktifkan pencadangan berkala</string>
+    <string name="moved_to_top">Bergerak ke atas</string>
+    <string name="enhanced_colors_summary">Mengurangi banding, tetapi dapat mempengaruhi kinerja</string>
+    <string name="frequency_once_per_week">Sekali dalam seminggu</string>
+    <string name="periodic_backups">Pencadangan berkala</string>
+    <string name="reader_zoom_buttons">Tampilkan tombol zoom</string>
+    <string name="frequency_twice_per_month">Dua kali sebulan</string>
+    <string name="by_relevance">Relevansi</string>
+    <string name="state_abandoned">Istirahat</string>
+    <string name="frequency_once_per_month">Sebulan sekali</string>
+    <string name="enhanced_colors">mode warna 32-bit</string>
+    <string name="speed_value">x%.1f</string>
+    <string name="last_successful_backup">Cadangan sukses terakhir: %s</string>
+    <string name="backups_output_directory">Direktori keluaran cadangan</string>
+    <string name="suggest_new_sources_summary">Prompt untuk mengaktifkan sumber baru yang ditambahkan setelah memperbarui aplikasi</string>
 </resources>
