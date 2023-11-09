@@ -504,4 +504,5 @@
     <string name="frequency_once_per_month">Один раз в месяц</string>
     <string name="backups_output_directory">Каталог для сохранения резервных копий</string>
     <string name="last_successful_backup">Последняя резервная копия: %s</string>
+    <string name="speed_value">x%.1f</string>
 </resources>
