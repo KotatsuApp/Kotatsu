@@ -19,17 +19,12 @@ import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetFavoriteCategoriesBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
-import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 
 @AndroidEntryPoint
-class FavouriteSheet :
-	BaseAdaptiveSheet<SheetFavoriteCategoriesBinding>(),
-	OnListItemClickListener<MangaCategoryItem> {
+class FavoriteSheet : BaseAdaptiveSheet<SheetFavoriteCategoriesBinding>(), OnListItemClickListener<MangaCategoryItem> {
 
-	private val viewModel: MangaCategoriesViewModel by viewModels()
-
-	private var adapter: MangaCategoriesAdapter? = null
+	private val viewModel by viewModels<FavoriteSheetViewModel>()
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -41,23 +36,14 @@ class FavouriteSheet :
 		savedInstanceState: Bundle?,
 	) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		adapter = MangaCategoriesAdapter(this)
+		val adapter = MangaCategoriesAdapter(this)
 		binding.recyclerViewCategories.adapter = adapter
-		viewModel.content.observe(viewLifecycleOwner, this::onContentChanged)
+		viewModel.content.observe(viewLifecycleOwner, adapter)
 		viewModel.onError.observeEvent(viewLifecycleOwner, ::onError)
-	}
-
-	override fun onDestroyView() {
-		adapter = null
-		super.onDestroyView()
 	}
 
 	override fun onItemClick(item: MangaCategoryItem, view: View) {
 		viewModel.setChecked(item.category.id, !item.isChecked)
-	}
-
-	private fun onContentChanged(categories: List<ListModel>) {
-		adapter?.items = categories
 	}
 
 	private fun onError(e: Throwable) {
@@ -66,19 +52,16 @@ class FavouriteSheet :
 
 	companion object {
 
-		private const val TAG = "FavouriteCategoriesDialog"
+		private const val TAG = "FavoriteSheet"
 		const val KEY_MANGA_LIST = "manga_list"
 
-		fun show(fm: FragmentManager, manga: Manga) = Companion.show(fm, listOf(manga))
+		fun show(fm: FragmentManager, manga: Manga) = show(fm, setOf(manga))
 
-		fun show(fm: FragmentManager, manga: Collection<Manga>) =
-			FavouriteSheet().withArgs(1) {
-				putParcelableArrayList(
-					KEY_MANGA_LIST,
-					manga.mapTo(ArrayList(manga.size)) {
-						ParcelableManga(it)
-					},
-				)
-			}.showDistinct(fm, TAG)
+		fun show(fm: FragmentManager, manga: Collection<Manga>) = FavoriteSheet().withArgs(1) {
+			putParcelableArrayList(
+				KEY_MANGA_LIST,
+				manga.mapTo(ArrayList(manga.size), ::ParcelableManga),
+			)
+		}.showDistinct(fm, TAG)
 	}
 }

@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import coil.ImageLoader
@@ -26,7 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
@@ -159,7 +158,7 @@ class MultiSearchActivity :
 			}
 
 			R.id.action_favourite -> {
-				FavouriteSheet.show(supportFragmentManager, collectSelectedItems())
+				FavoriteSheet.show(supportFragmentManager, collectSelectedItems())
 				mode.finish()
 				true
 			}

@@ -4,77 +4,70 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
+import org.koitharu.kotatsu.core.util.ext.firstNotNull
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteSheet.Companion.KEY_MANGA_LIST
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.CategoriesHeaderItem
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
-import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import javax.inject.Inject
 
 @HiltViewModel
-class MangaCategoriesViewModel @Inject constructor(
+class FavoriteSheetViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val favouritesRepository: FavouritesRepository,
 	settings: AppSettings,
 ) : BaseViewModel() {
 
-	private val manga = savedStateHandle.require<List<ParcelableManga>>(KEY_MANGA_LIST).map { it.manga }
+	private val manga = savedStateHandle.require<List<ParcelableManga>>(FavoriteSheet.KEY_MANGA_LIST).mapToSet {
+		it.manga
+	}
 	private val header = CategoriesHeaderItem()
-
-	val content: StateFlow<List<ListModel>> = combine(
+	private val checkedCategories = MutableStateFlow<Set<Long>?>(null)
+	val content = combine(
 		favouritesRepository.observeCategories(),
-		observeCategoriesIds(),
-	) { all, checked ->
-		buildList(all.size + 1) {
+		checkedCategories.filterNotNull(),
+		settings.observeAsFlow(AppSettings.KEY_TRACKER_ENABLED) { isTrackerEnabled },
+	) { categories, checked, tracker ->
+		buildList(categories.size + 1) {
 			add(header)
-			all.mapTo(this) {
+			categories.mapTo(this) { cat ->
 				MangaCategoryItem(
-					category = it,
-					isChecked = it.id in checked,
-					isTrackerEnabled = settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources,
+					category = cat,
+					isChecked = cat.id in checked,
+					isTrackerEnabled = tracker,
 				)
 			}
 		}
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(header))
 
-	fun setChecked(categoryId: Long, isChecked: Boolean) {
+	init {
 		launchJob(Dispatchers.Default) {
-			if (isChecked) {
-				favouritesRepository.addToCategory(categoryId, manga)
-			} else {
-				favouritesRepository.removeFromCategory(categoryId, manga.ids())
-			}
+			checkedCategories.value = favouritesRepository.getCategoriesIds(manga.ids())
 		}
 	}
 
-	private fun observeCategoriesIds() = if (manga.size == 1) {
-		// Fast path
-		favouritesRepository.observeCategoriesIds(manga[0].id)
-	} else {
-		combine(
-			manga.map { favouritesRepository.observeCategoriesIds(it.id) },
-		) { array ->
-			val result = HashSet<Long>()
-			var isFirst = true
-			for (ids in array) {
-				if (isFirst) {
-					result.addAll(ids)
-					isFirst = false
-				} else {
-					result.retainAll(ids.toSet())
-				}
+	fun setChecked(categoryId: Long, isChecked: Boolean) {
+		launchJob(Dispatchers.Default) {
+			val checkedIds = checkedCategories.firstNotNull()
+			if (isChecked) {
+				checkedCategories.value = checkedIds + categoryId
+				favouritesRepository.addToCategory(categoryId, manga)
+			} else {
+				checkedCategories.value = checkedIds - categoryId
+				favouritesRepository.removeFromCategory(categoryId, manga.ids())
 			}
-			result
 		}
 	}
 }

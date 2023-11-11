@@ -102,6 +102,10 @@ class FavouritesRepository @Inject constructor(
 		return db.getFavouriteCategoriesDao().find(id.toInt()).toFavouriteCategory()
 	}
 
+	suspend fun getCategoriesIds(mangaIds: Collection<Long>): Set<Long> {
+		return db.getFavouritesDao().findCategoriesIds(mangaIds).toSet()
+	}
+
 	suspend fun createCategory(
 		title: String,
 		sortOrder: ListSortOrder,

@@ -22,6 +22,12 @@
 		app:showAsAction="ifRoom|withText" />
 
 	<item
+		android:id="@+id/action_favourite"
+		android:icon="@drawable/ic_heart"
+		android:title="@string/categories"
+		app:showAsAction="ifRoom|withText" />
+
+	<item
 		android:id="@+id/action_select_all"
 		android:icon="?actionModeSelectAllDrawable"
 		android:title="@android:string/selectAll"

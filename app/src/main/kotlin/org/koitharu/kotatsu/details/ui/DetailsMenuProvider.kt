@@ -19,7 +19,7 @@ import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.download.ui.dialog.DownloadOption
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavouriteSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
@@ -63,7 +63,7 @@ class DetailsMenuProvider(
 
 			R.id.action_favourite -> {
 				viewModel.manga.value?.let {
-					FavouriteSheet.show(activity.supportFragmentManager, it)
+					FavoriteSheet.show(activity.supportFragmentManager, it)
 				}
 			}
 

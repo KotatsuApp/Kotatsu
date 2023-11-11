@@ -106,6 +106,9 @@ abstract class FavouritesDao {
 	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id = :id AND deleted_at = 0")
 	abstract fun observeIds(id: Long): Flow<List<Long>>
 
+	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id IN (:mangaIds) AND deleted_at = 0")
+	abstract suspend fun findCategoriesIds(mangaIds: Collection<Long>): List<Long>
+
 	/** INSERT **/
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -171,6 +174,7 @@ abstract class FavouritesDao {
 		ListSortOrder.NEW_CHAPTERS -> "(SELECT chapters_new FROM tracks WHERE tracks.manga_id = manga.manga_id) DESC"
 		ListSortOrder.UPDATED, // for legacy support
 		ListSortOrder.PROGRESS -> "(SELECT percent FROM history WHERE history.manga_id = manga.manga_id) DESC"
+
 		else -> throw IllegalArgumentException("Sort order $sortOrder is not supported")
 	}
 }
