@@ -511,4 +511,5 @@
 	<string name="backups_output_directory">Backups output directory</string>
 	<string name="last_successful_backup">Last successful backup: %s</string>
 	<string name="speed_value">x%.1f</string>
+	<string name="lock_screen_rotation">Lock screen rotation</string>
 </resources>

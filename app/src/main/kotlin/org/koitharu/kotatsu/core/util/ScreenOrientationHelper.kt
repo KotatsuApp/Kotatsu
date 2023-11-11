@@ -6,13 +6,16 @@ import android.content.res.Configuration
 import android.database.ContentObserver
 import android.os.Handler
 import android.provider.Settings
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onStart
+import javax.inject.Inject
 
-class ScreenOrientationHelper(private val activity: Activity) {
+@ActivityScoped
+class ScreenOrientationHelper @Inject constructor(private val activity: Activity) {
 
 	val isAutoRotationEnabled: Boolean
 		get() = Settings.System.getInt(
@@ -31,9 +34,15 @@ class ScreenOrientationHelper(private val activity: Activity) {
 			}
 		}
 
-	fun toggleOrientation() {
-		isLandscape = !isLandscape
-	}
+	var isLocked: Boolean
+		get() = activity.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LOCKED
+		set(value) {
+			activity.requestedOrientation = if (value) {
+				ActivityInfo.SCREEN_ORIENTATION_LOCKED
+			} else {
+				ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+			}
+		}
 
 	fun observeAutoOrientation() = callbackFlow {
 		val observer = object : ContentObserver(Handler(activity.mainLooper)) {

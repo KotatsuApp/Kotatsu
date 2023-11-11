@@ -48,6 +48,22 @@
 				app:drawableStartCompat="@drawable/ic_screen_rotation"
 				tools:visibility="visible" />
 
+			<com.google.android.material.materialswitch.MaterialSwitch
+				android:id="@+id/switch_screen_lock_rotation"
+				android:layout_width="match_parent"
+				android:layout_height="?android:listPreferredItemHeightSmall"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:ellipsize="end"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:singleLine="true"
+				android:text="@string/lock_screen_rotation"
+				android:textAppearance="?attr/textAppearanceButton"
+				android:textColor="?colorOnSurfaceVariant"
+				android:visibility="gone"
+				app:drawableStartCompat="@drawable/ic_screen_rotation_lock"
+				tools:visibility="visible" />
+
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

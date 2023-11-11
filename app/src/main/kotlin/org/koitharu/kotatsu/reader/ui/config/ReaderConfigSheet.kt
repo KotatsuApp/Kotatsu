@@ -47,7 +47,10 @@ class ReaderConfigSheet :
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
 	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
-	private var orientationHelper: ScreenOrientationHelper? = null
+
+	@Inject
+	lateinit var orientationHelper: ScreenOrientationHelper
+
 	private lateinit var mode: ReaderMode
 
 	@Inject
@@ -113,7 +116,7 @@ class ReaderConfigSheet :
 			}
 
 			R.id.button_screen_rotate -> {
-				orientationHelper?.toggleOrientation()
+				orientationHelper.isLandscape = !orientationHelper.isLandscape
 			}
 
 			R.id.button_color_filter -> {
@@ -130,6 +133,10 @@ class ReaderConfigSheet :
 				findCallback()?.isAutoScrollEnabled = isChecked
 				requireViewBinding().layoutTimer.isVisible = isChecked
 				requireViewBinding().sliderTimer.isVisible = isChecked
+			}
+
+			R.id.switch_screen_lock_rotation -> {
+				orientationHelper.isLocked = isChecked
 			}
 		}
 	}
@@ -168,12 +175,21 @@ class ReaderConfigSheet :
 	}
 
 	private fun observeScreenOrientation() {
-		val helper = ScreenOrientationHelper(requireActivity())
-		orientationHelper = helper
-		helper.observeAutoOrientation()
+		orientationHelper.observeAutoOrientation()
 			.onEach {
-				requireViewBinding().buttonScreenRotate.isGone = it
+				with(requireViewBinding()) {
+					buttonScreenRotate.isGone = it
+					switchScreenLockRotation.isVisible = it
+					updateOrientationLockSwitch()
+				}
 			}.launchIn(viewLifecycleScope)
+	}
+
+	private fun updateOrientationLockSwitch() {
+		val switch = viewBinding?.switchScreenLockRotation ?: return
+		switch.setOnCheckedChangeListener(null)
+		switch.isChecked = orientationHelper.isLocked
+		switch.setOnCheckedChangeListener(this)
 	}
 
 	private fun findCallback(): Callback? {
