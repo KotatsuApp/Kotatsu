@@ -19,3 +19,4 @@
 -keep class org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment
 -keep class org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy { *; }
 -keep class org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment { *; }
+-keep class org.jsoup.parser.Tag
