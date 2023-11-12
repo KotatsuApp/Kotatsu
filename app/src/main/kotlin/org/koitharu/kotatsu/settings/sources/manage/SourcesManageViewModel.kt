@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings.sources
+package org.koitharu.kotatsu.settings.sources.manage
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

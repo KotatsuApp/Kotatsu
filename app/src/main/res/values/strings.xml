@@ -523,4 +523,7 @@
 	<string name="no_manga_sources_found">No available manga sources found by your query</string>
 	<string name="catalog">Catalog</string>
 	<string name="manage_sources">Manage sources</string>
+	<string name="manual">Manual</string>
+	<string name="available_d">Available: %1$d</string>
+	<string name="disable_nsfw_summary">Disable NSFW sources and hide adult manga from list if possible</string>
 </resources>

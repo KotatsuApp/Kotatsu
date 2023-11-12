@@ -31,7 +31,8 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
 import org.koitharu.kotatsu.settings.about.AppUpdateDialog
 import org.koitharu.kotatsu.settings.sources.SourceSettingsFragment
-import org.koitharu.kotatsu.settings.sources.SourcesManageFragment
+import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
+import org.koitharu.kotatsu.settings.sources.manage.SourcesManageFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
 import org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment
 
@@ -153,6 +154,7 @@ class SettingsActivity :
 			ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
 			ACTION_HISTORY -> UserDataSettingsFragment()
 			ACTION_TRACKER -> TrackerSettingsFragment()
+			ACTION_SOURCES -> SourcesSettingsFragment()
 			ACTION_MANAGE_DOWNLOADS -> DownloadsSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 				intent.getSerializableExtraCompat(EXTRA_SOURCE) as? MangaSource ?: MangaSource.LOCAL,
@@ -182,6 +184,7 @@ class SettingsActivity :
 		private const val ACTION_TRACKER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_TRACKER"
 		private const val ACTION_HISTORY = "${BuildConfig.APPLICATION_ID}.action.MANAGE_HISTORY"
 		private const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
+		private const val ACTION_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES"
 		private const val ACTION_MANAGE_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES_LIST"
 		private const val ACTION_MANAGE_DOWNLOADS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_DOWNLOADS"
 		private const val EXTRA_SOURCE = "source"
@@ -205,6 +208,10 @@ class SettingsActivity :
 		fun newHistorySettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_HISTORY)
+
+		fun newSourcesSettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_SOURCES)
 
 		fun newManageSourcesIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)

@@ -74,7 +74,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	}
 
 	override fun onTabSelected(tab: TabLayout.Tab) {
-		viewModel.setContentType(ContentType.entries[tab.position])
+		viewModel.setContentType(tab.tag as ContentType)
 	}
 
 	override fun onTabUnselected(tab: TabLayout.Tab) = Unit
@@ -86,8 +86,12 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	private fun initTabs() {
 		val tabs = viewBinding.tabs
 		for (type in ContentType.entries) {
+			if (viewModel.isNsfwDisabled && type == ContentType.HENTAI) {
+				continue
+			}
 			val tab = tabs.newTab()
 			tab.setText(type.titleResId)
+			tab.tag = type
 			tabs.addTab(tab)
 		}
 		tabs.addOnTabSelectedListener(this)

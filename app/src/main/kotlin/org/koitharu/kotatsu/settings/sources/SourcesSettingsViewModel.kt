@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings
+package org.koitharu.kotatsu.settings.sources
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,12 +11,15 @@ import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class RootSettingsViewModel @Inject constructor(
-	sourcesRepository: MangaSourcesRepository,
+class SourcesSettingsViewModel @Inject constructor(
+	private val sourcesRepository: MangaSourcesRepository,
 ) : BaseViewModel() {
 
 	val totalSourcesCount = sourcesRepository.allMangaSources.size
 
 	val enabledSourcesCount = sourcesRepository.observeEnabledSourcesCount()
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, -1)
+
+	val availableSourcesCount = sourcesRepository.observeAvailableSourcesCount()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, -1)
 }

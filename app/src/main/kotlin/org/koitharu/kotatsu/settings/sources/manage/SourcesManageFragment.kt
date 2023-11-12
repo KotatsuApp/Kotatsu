@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings.sources
+package org.koitharu.kotatsu.settings.sources.manage
 
 import android.content.Intent
 import android.os.Bundle
@@ -31,6 +31,7 @@ import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.settings.sources.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
 import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity

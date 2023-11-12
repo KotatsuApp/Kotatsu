@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings.sources
+package org.koitharu.kotatsu.settings.sources.manage
 
 import androidx.room.InvalidationTracker
 import dagger.hilt.android.ViewModelLifecycle
@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.lifecycleScope
 import org.koitharu.kotatsu.core.util.ext.toEnumSet
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
+import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import javax.inject.Inject
 
@@ -61,7 +62,8 @@ class SourcesListProducer @Inject constructor(
 	private suspend fun buildList(): List<SourceConfigItem> {
 		val enabledSources = repository.getEnabledSources()
 		val isNsfwDisabled = settings.isNsfwContentDisabled
-		val withTip = settings.isTipEnabled(TIP_REORDER)
+		val isReorderAvailable = settings.sourcesSortOrder == SourcesSortOrder.MANUAL
+		val withTip = isReorderAvailable && settings.isTipEnabled(TIP_REORDER)
 		val enabledSet = enabledSources.toEnumSet()
 		if (query.isNotEmpty()) {
 			return enabledSources.mapNotNull {
@@ -91,7 +93,7 @@ class SourcesListProducer @Inject constructor(
 				SourceConfigItem.SourceItem(
 					source = it,
 					isEnabled = true,
-					isDraggable = true,
+					isDraggable = isReorderAvailable,
 					isAvailable = false,
 				)
 			}

@@ -85,7 +85,7 @@ class ExploreFragment :
 			SpanSizeResolver(this, resources.getDimensionPixelSize(R.dimen.explore_grid_width)).attach()
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 		}
-		addMenuProvider(ExploreMenuProvider(binding.root.context, viewModel))
+		addMenuProvider(ExploreMenuProvider(binding.root.context))
 		viewModel.content.observe(viewLifecycleOwner) {
 			exploreAdapter?.items = it
 		}
@@ -176,7 +176,6 @@ class ExploreFragment :
 		} else {
 			LinearLayoutManager(requireContext())
 		}
-		activity?.invalidateOptionsMenu()
 	}
 
 	private fun showSuggestionsTip() {

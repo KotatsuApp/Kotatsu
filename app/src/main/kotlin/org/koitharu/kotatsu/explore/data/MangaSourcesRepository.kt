@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.util.Collections
 import java.util.EnumSet
 import javax.inject.Inject
@@ -43,18 +44,43 @@ class MangaSourcesRepository @Inject constructor(
 		get() = Collections.unmodifiableSet(remoteSources)
 
 	suspend fun getEnabledSources(): List<MangaSource> {
-		return dao.findAllEnabled().toSources(settings.isNsfwContentDisabled)
+		val order = settings.sourcesSortOrder
+		return dao.findAllEnabled(order).toSources(settings.isNsfwContentDisabled, order)
 	}
 
 	suspend fun getDisabledSources(): List<MangaSource> {
-		return dao.findAllDisabled().toSources(settings.isNsfwContentDisabled)
+		return dao.findAllDisabled().toSources(settings.isNsfwContentDisabled, null)
 	}
 
-	fun observeEnabledSources(): Flow<List<MangaSource>> = observeIsNsfwDisabled().flatMapLatest { skipNsfw ->
-		dao.observeEnabled().map {
-			it.toSources(skipNsfw)
-		}
+	fun observeEnabledSourcesCount(): Flow<Int> {
+		return combine(
+			observeIsNsfwDisabled(),
+			dao.observeEnabled(SourcesSortOrder.MANUAL),
+		) { skipNsfw, sources ->
+			sources.count { skipNsfw || !MangaSource(it.source).isNsfw() }
+		}.distinctUntilChanged()
 	}
+
+	fun observeAvailableSourcesCount(): Flow<Int> {
+		return combine(
+			observeIsNsfwDisabled(),
+			dao.observeEnabled(SourcesSortOrder.MANUAL),
+		) { skipNsfw, enabledSources ->
+			val enabled = enabledSources.mapToSet { it.source }
+			allMangaSources.count { x ->
+				x.name !in enabled && (!skipNsfw || !x.isNsfw())
+			}
+		}.distinctUntilChanged()
+	}
+
+	fun observeEnabledSources(): Flow<List<MangaSource>> = combine(
+		observeIsNsfwDisabled(),
+		observeSortOrder(),
+	) { skipNsfw, order ->
+		dao.observeEnabled(order).map {
+			it.toSources(skipNsfw, order)
+		}
+	}.flatMapLatest { it }
 
 	fun observeAll(): Flow<List<Pair<MangaSource, Boolean>>> = dao.observeAll().map { entities ->
 		val result = ArrayList<Pair<MangaSource, Boolean>>(entities.size)
@@ -150,7 +176,10 @@ class MangaSourcesRepository @Inject constructor(
 		return result
 	}
 
-	private fun List<MangaSourceEntity>.toSources(skipNsfwSources: Boolean): List<MangaSource> {
+	private fun List<MangaSourceEntity>.toSources(
+		skipNsfwSources: Boolean,
+		sortOrder: SourcesSortOrder?,
+	): List<MangaSource> {
 		val result = ArrayList<MangaSource>(size)
 		for (entity in this) {
 			val source = MangaSource(entity.source)
@@ -161,6 +190,9 @@ class MangaSourcesRepository @Inject constructor(
 				result.add(source)
 			}
 		}
+		if (sortOrder == SourcesSortOrder.ALPHABETIC) {
+			result.sortBy { it.title }
+		}
 		return result
 	}
 
@@ -170,5 +202,9 @@ class MangaSourcesRepository @Inject constructor(
 
 	private fun observeIsNewSourcesEnabled() = settings.observeAsFlow(AppSettings.KEY_SOURCES_NEW) {
 		isNewSourcesTipEnabled
+	}
+
+	private fun observeSortOrder() = settings.observeAsFlow(AppSettings.KEY_SOURCES_ORDER) {
+		sourcesSortOrder
 	}
 }

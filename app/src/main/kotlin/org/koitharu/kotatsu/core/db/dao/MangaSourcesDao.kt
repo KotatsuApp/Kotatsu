@@ -4,10 +4,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.room.Upsert
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
+import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
+import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 
 @Dao
 abstract class MangaSourcesDao {
@@ -15,14 +20,11 @@ abstract class MangaSourcesDao {
 	@Query("SELECT * FROM sources ORDER BY sort_key")
 	abstract suspend fun findAll(): List<MangaSourceEntity>
 
-	@Query("SELECT * FROM sources WHERE enabled = 1 ORDER BY sort_key")
-	abstract suspend fun findAllEnabled(): List<MangaSourceEntity>
-
 	@Query("SELECT * FROM sources WHERE enabled = 0 ORDER BY sort_key")
 	abstract suspend fun findAllDisabled(): List<MangaSourceEntity>
 
-	@Query("SELECT * FROM sources WHERE enabled = 1 ORDER BY sort_key")
-	abstract fun observeEnabled(): Flow<List<MangaSourceEntity>>
+	@Query("SELECT * FROM sources WHERE enabled = 0")
+	abstract fun observeDisabled(): Flow<List<MangaSourceEntity>>
 
 	@Query("SELECT * FROM sources ORDER BY sort_key")
 	abstract fun observeAll(): Flow<List<MangaSourceEntity>>
@@ -43,6 +45,22 @@ abstract class MangaSourcesDao {
 	@Upsert
 	abstract suspend fun upsert(entry: MangaSourceEntity)
 
+	fun observeEnabled(order: SourcesSortOrder): Flow<List<MangaSourceEntity>> {
+		val orderBy = getOrderBy(order)
+
+		@Language("RoomSql")
+		val query = SimpleSQLiteQuery("SELECT * FROM sources WHERE enabled = 1 ORDER BY $orderBy")
+		return observeImpl(query)
+	}
+
+	suspend fun findAllEnabled(order: SourcesSortOrder): List<MangaSourceEntity> {
+		val orderBy = getOrderBy(order)
+
+		@Language("RoomSql")
+		val query = SimpleSQLiteQuery("SELECT * FROM sources WHERE enabled = 1 ORDER BY $orderBy")
+		return findAllImpl(query)
+	}
+
 	@Transaction
 	open suspend fun setEnabled(source: String, isEnabled: Boolean) {
 		if (updateIsEnabled(source, isEnabled) == 0) {
@@ -57,4 +75,16 @@ abstract class MangaSourcesDao {
 
 	@Query("UPDATE sources SET enabled = :isEnabled WHERE source = :source")
 	protected abstract suspend fun updateIsEnabled(source: String, isEnabled: Boolean): Int
+
+	@RawQuery(observedEntities = [MangaSourceEntity::class])
+	protected abstract fun observeImpl(query: SupportSQLiteQuery): Flow<List<MangaSourceEntity>>
+
+	@RawQuery
+	protected abstract suspend fun findAllImpl(query: SupportSQLiteQuery): List<MangaSourceEntity>
+
+	private fun getOrderBy(order: SourcesSortOrder) = when (order) {
+		SourcesSortOrder.ALPHABETIC -> "source ASC"
+		SourcesSortOrder.POPULARITY -> "(SELECT COUNT(*) FROM manga WHERE source = sources.source) DESC"
+		SourcesSortOrder.MANUAL -> "sort_key ASC"
+	}
 }

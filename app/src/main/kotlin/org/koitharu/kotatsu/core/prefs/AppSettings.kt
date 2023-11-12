@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
+import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.find
@@ -208,6 +209,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 				NetworkPolicy.from(prefs.getString(KEY_PREFETCH_CONTENT, null), NetworkPolicy.NEVER)
 			return policy.isNetworkAllowed(connectivityManager)
 		}
+
+	var sourcesSortOrder: SourcesSortOrder
+		get() = prefs.getEnumValue(KEY_SOURCES_ORDER, SourcesSortOrder.MANUAL)
+		set(value) = prefs.edit { putEnumValue(KEY_SOURCES_ORDER, value) }
 
 	var isSourcesGridMode: Boolean
 		get() = prefs.getBoolean(KEY_SOURCES_GRID, false)
@@ -528,6 +533,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_RELATED_MANGA = "related_manga"
 		const val KEY_NAV_MAIN = "nav_main"
 		const val KEY_32BIT_COLOR = "enhanced_colors"
+		const val KEY_SOURCES_ORDER = "sources_sort_order"
+		const val KEY_SOURCES_CATALOG = "sources_catalog"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

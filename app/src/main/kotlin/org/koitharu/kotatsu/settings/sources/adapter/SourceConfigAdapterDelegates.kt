@@ -169,6 +169,7 @@ private fun showSourceMenu(
 	menu.inflate(R.menu.popup_source_config)
 	menu.menu.findItem(R.id.action_shortcut)
 		?.isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(anchor.context)
+	menu.menu.findItem(R.id.action_lift)?.isVisible = item.isDraggable
 	menu.setOnMenuItemClickListener {
 		when (it.itemId) {
 			R.id.action_settings -> listener.onItemSettingsClick(item)

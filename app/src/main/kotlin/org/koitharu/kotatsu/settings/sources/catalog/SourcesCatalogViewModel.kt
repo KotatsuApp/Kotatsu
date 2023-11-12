@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.LocaleComparator
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class SourcesCatalogViewModel @Inject constructor(
 	private val repository: MangaSourcesRepository,
 	private val listProducerFactory: SourcesCatalogListProducer.Factory,
+	private val settings: AppSettings,
 ) : BaseViewModel() {
 
 	private val lifecycle = RetainedLifecycleImpl()
@@ -36,6 +38,8 @@ class SourcesCatalogViewModel @Inject constructor(
 	val contentType = MutableStateFlow(ContentType.entries.first())
 	val locales = getLocalesImpl()
 	val locale = MutableStateFlow(locales.firstOrNull()?.language)
+
+	val isNsfwDisabled = settings.isNsfwContentDisabled
 
 	private val listProducer: StateFlow<SourcesCatalogListProducer?> = combine(
 		locale,

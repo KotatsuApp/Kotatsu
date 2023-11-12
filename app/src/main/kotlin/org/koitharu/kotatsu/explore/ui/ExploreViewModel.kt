@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
+import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.explore.ui.model.ExploreButtons
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
@@ -50,10 +51,12 @@ class ExploreViewModel @Inject constructor(
 		valueProducer = { isSourcesGridMode },
 	)
 
-	val isSuggestionsEnabled = settings.observeAsFlow(
+	private val isSuggestionsEnabled = settings.observeAsFlow(
 		key = AppSettings.KEY_SUGGESTIONS,
 		valueProducer = { isSuggestionsEnabled },
 	)
+
+	val sortOrder = MutableStateFlow(SourcesSortOrder.MANUAL) // TODO
 
 	val onOpenManga = MutableEventFlow<Manga>()
 	val onActionDone = MutableEventFlow<ReversibleAction>()
@@ -102,10 +105,6 @@ class ExploreViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			sourcesRepository.assimilateNewSources()
 		}
-	}
-
-	fun setGridMode(value: Boolean) {
-		settings.isSourcesGridMode = value
 	}
 
 	fun respondSuggestionTip(isAccepted: Boolean) {
