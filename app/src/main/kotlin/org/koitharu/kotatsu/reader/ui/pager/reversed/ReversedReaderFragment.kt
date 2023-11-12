@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.ReaderAnimation
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
+import org.koitharu.kotatsu.core.util.ext.findCurrentViewHolder
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.resetTransformations
@@ -28,6 +29,7 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.standard.NoAnimPageTransformer
+import org.koitharu.kotatsu.reader.ui.pager.standard.PageHolder
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerEventSupplier
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import javax.inject.Inject
@@ -103,6 +105,15 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 		networkState = networkState,
 		exceptionResolver = exceptionResolver,
 	)
+
+	override fun onZoomIn() {
+		(viewBinding?.pager?.findCurrentViewHolder() as? PageHolder)?.onZoomIn()
+	}
+
+	override fun onZoomOut() {
+		(viewBinding?.pager?.findCurrentViewHolder() as? PageHolder)?.onZoomOut()
+	}
+
 
 	override fun switchPageBy(delta: Int) {
 		with(requireViewBinding().pager) {

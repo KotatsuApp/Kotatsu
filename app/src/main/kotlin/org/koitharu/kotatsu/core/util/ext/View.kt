@@ -12,6 +12,7 @@ import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.slider.Slider
@@ -67,6 +68,10 @@ inline fun ViewPager2.doOnPageChanged(crossinline callback: (Int) -> Unit) {
 
 val ViewPager2.recyclerView: RecyclerView?
 	get() = children.firstNotNullOfOrNull { it as? RecyclerView }
+
+fun ViewPager2.findCurrentViewHolder(): ViewHolder? {
+	return recyclerView?.findViewHolderForAdapterPosition(currentItem)
+}
 
 fun View.resetTransformations() {
 	alpha = 1f

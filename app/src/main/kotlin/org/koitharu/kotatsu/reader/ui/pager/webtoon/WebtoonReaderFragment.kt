@@ -4,18 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
-import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
@@ -47,15 +44,6 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 			adapter = readerAdapter
 			addOnPageScrollListener(PageScrollListener())
 		}
-		binding.zoomControl.listener = binding.frame
-
-		viewModel.isWebtoonZoomEnabled.observe(viewLifecycleOwner) {
-			binding.frame.isZoomEnable = it
-		}
-		combine(viewModel.isWebtoonZoomEnabled, viewModel.isZoomControlEnabled, Boolean::and)
-			.observe(viewLifecycleOwner) {
-				binding.zoomControl.isVisible = it
-			}
 	}
 
 	override fun onDestroyView() {
@@ -109,6 +97,14 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 			scroll = (recyclerView.findViewHolderForAdapterPosition(currentItem) as? WebtoonHolder)
 				?.getScrollY() ?: 0,
 		)
+	}
+
+	override fun onZoomIn() {
+		viewBinding?.frame?.onZoomIn()
+	}
+
+	override fun onZoomOut() {
+		viewBinding?.frame?.onZoomOut()
 	}
 
 	private fun notifyPageChanged(page: Int) {

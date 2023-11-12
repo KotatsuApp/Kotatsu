@@ -118,17 +118,13 @@ class ReaderViewModel @Inject constructor(
 		valueProducer = { isReaderKeepScreenOn },
 	)
 
-	val isWebtoonZoomEnabled = settings.observeAsStateFlow(
-		scope = viewModelScope + Dispatchers.Default,
-		key = AppSettings.KEY_WEBTOON_ZOOM,
-		valueProducer = { isWebtoonZoomEnable },
-	)
-
-	val isZoomControlEnabled = settings.observeAsStateFlow(
-		scope = viewModelScope + Dispatchers.Default,
-		key = AppSettings.KEY_READER_ZOOM_BUTTONS,
-		valueProducer = { isReaderZoomButtonsEnabled },
-	)
+	val isZoomControlsEnabled = getObserveIsZoomControlEnabled().flatMapLatest { zoom ->
+		if (zoom) {
+			combine(readerMode, observeIsWebtoonZoomEnabled()) { mode, ze -> ze || mode != ReaderMode.WEBTOON }
+		} else {
+			flowOf(false)
+		}
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
 
 	val readerSettings = ReaderSettings(
 		parentScope = viewModelScope,
@@ -402,4 +398,14 @@ class ReaderViewModel @Inject constructor(
 		val ppc = 1f / chaptersCount
 		return ppc * chapterIndex + ppc * pagePercent
 	}
+
+	private fun observeIsWebtoonZoomEnabled() = settings.observeAsFlow(
+		key = AppSettings.KEY_WEBTOON_ZOOM,
+		valueProducer = { isWebtoonZoomEnable },
+	)
+
+	private fun getObserveIsZoomControlEnabled() = settings.observeAsFlow(
+		key = AppSettings.KEY_READER_ZOOM_BUTTONS,
+		valueProducer = { isReaderZoomButtonsEnabled },
+	)
 }

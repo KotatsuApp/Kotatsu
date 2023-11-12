@@ -40,6 +40,7 @@ import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.BaseFullscreenActivity
+import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.GridTouchHelper
 import org.koitharu.kotatsu.core.util.IdlingDetector
 import org.koitharu.kotatsu.core.util.ShareHelper
@@ -73,7 +74,8 @@ class ReaderActivity :
 	ReaderConfigSheet.Callback,
 	ReaderControlDelegate.OnInteractionListener,
 	OnApplyWindowInsetsListener,
-	IdlingDetector.Callback {
+	IdlingDetector.Callback,
+	ZoomControl.ZoomControlListener {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -111,6 +113,7 @@ class ReaderActivity :
 		controlDelegate = ReaderControlDelegate(resources, settings, this, this)
 		viewBinding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 		viewBinding.slider.setLabelFormatter(PageLabelFormatter())
+		viewBinding.zoomControl.listener = this
 		ReaderSliderListener(this, viewModel).attachToSlider(viewBinding.slider)
 		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
@@ -146,6 +149,9 @@ class ReaderActivity :
 				.setAnchorView(viewBinding.appbarBottom)
 				.show()
 		}
+		viewModel.isZoomControlsEnabled.observe(this) {
+			viewBinding.zoomControl.isVisible = it
+		}
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -161,6 +167,14 @@ class ReaderActivity :
 
 	override fun onIdle() {
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
+	}
+
+	override fun onZoomIn() {
+		readerManager.currentReader?.onZoomIn()
+	}
+
+	override fun onZoomOut() {
+		readerManager.currentReader?.onZoomOut()
 	}
 
 	private fun onInitReader(mode: ReaderMode?) {

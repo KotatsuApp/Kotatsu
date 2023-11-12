@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.ReaderAnimation
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
+import org.koitharu.kotatsu.core.util.ext.findCurrentViewHolder
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.resetTransformations
@@ -80,6 +81,14 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>(),
 	override fun onDestroyView() {
 		requireViewBinding().pager.adapter = null
 		super.onDestroyView()
+	}
+
+	override fun onZoomIn() {
+		(viewBinding?.pager?.findCurrentViewHolder() as? PageHolder)?.onZoomIn()
+	}
+
+	override fun onZoomOut() {
+		(viewBinding?.pager?.findCurrentViewHolder() as? PageHolder)?.onZoomOut()
 	}
 
 	override fun onGenericMotion(v: View?, event: MotionEvent): Boolean {

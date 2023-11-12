@@ -6,6 +6,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.prefs.ReaderAnimation
 import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.ext.getParcelableCompat
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -14,7 +15,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 
 private const val KEY_STATE = "state"
 
-abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>() {
+abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>(), ZoomControl.ZoomControlListener {
 
 	protected val viewModel by activityViewModels<ReaderViewModel>()
 	private var stateToSave: ReaderState? = null

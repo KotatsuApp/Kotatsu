@@ -22,6 +22,17 @@
 		android:visibility="gone"
 		tools:visibility="visible" />
 
+	<org.koitharu.kotatsu.core.ui.widgets.ZoomControl
+		android:id="@+id/zoomControl"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|end"
+		android:layout_margin="16dp"
+		android:orientation="vertical"
+		android:visibility="gone"
+		app:layout_dodgeInsetEdges="bottom"
+		tools:visibility="visible" />
+
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar_top"
 		android:layout_width="match_parent"

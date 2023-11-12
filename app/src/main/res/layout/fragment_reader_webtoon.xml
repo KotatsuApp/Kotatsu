@@ -2,7 +2,6 @@
 <org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonScalingFrame
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/frame"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
@@ -16,15 +15,5 @@
 		android:defaultFocusHighlightEnabled="false"
 		android:orientation="vertical"
 		app:layoutManager="org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonLayoutManager" />
-
-	<org.koitharu.kotatsu.core.ui.widgets.ZoomControl
-		android:id="@+id/zoomControl"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom|end"
-		android:layout_margin="16dp"
-		android:orientation="vertical"
-		android:visibility="gone"
-		tools:visibility="visible" />
 
 </org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonScalingFrame>

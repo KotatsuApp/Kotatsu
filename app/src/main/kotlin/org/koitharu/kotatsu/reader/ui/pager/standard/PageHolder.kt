@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.PointF
 import android.net.Uri
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -12,6 +13,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.os.NetworkState
+import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.ifZero
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
@@ -29,7 +31,8 @@ open class PageHolder(
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
 ) : BasePageHolder<ItemPageBinding>(binding, loader, settings, networkState, exceptionResolver),
-	View.OnClickListener {
+	View.OnClickListener,
+	ZoomControl.ZoomControlListener {
 
 	init {
 		binding.ssiv.bindToLifecycle(owner)
@@ -40,12 +43,10 @@ open class PageHolder(
 		@Suppress("LeakingThis")
 		bindingInfo.buttonErrorDetails.setOnClickListener(this)
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
-		binding.zoomControl.listener = SsivZoomListener(binding.ssiv)
 	}
 
 	override fun onConfigChanged() {
 		super.onConfigChanged()
-		binding.zoomControl.isVisible = settings.isZoomControlsEnabled
 		@Suppress("SENSELESS_COMPARISON")
 		if (settings.applyBitmapConfig(binding.ssiv) && delegate != null) {
 			delegate.reload()
@@ -140,5 +141,24 @@ open class PageHolder(
 		)
 		bindingInfo.layoutError.isVisible = true
 		bindingInfo.progressBar.hide()
+	}
+
+	override fun onZoomIn() {
+		scaleBy(1.2f)
+	}
+
+	override fun onZoomOut() {
+		scaleBy(0.8f)
+	}
+
+	private fun scaleBy(factor: Float) {
+		val ssiv = binding.ssiv
+		val center = ssiv.getCenter() ?: return
+		val newScale = ssiv.scale * factor
+		ssiv.animateScaleAndCenter(newScale, center)?.apply {
+			withDuration(ssiv.resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+			withInterpolator(DecelerateInterpolator())
+			start()
+		}
 	}
 }
