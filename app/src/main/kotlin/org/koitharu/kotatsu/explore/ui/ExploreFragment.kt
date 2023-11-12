@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.explore.ui
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -46,6 +47,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
+import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 import javax.inject.Inject
 
@@ -109,7 +111,7 @@ class ExploreFragment :
 	}
 
 	override fun onListHeaderClick(item: ListHeader, view: View) {
-		startActivity(SettingsActivity.newManageSourcesIntent(view.context))
+		startActivity(Intent(view.context, SourcesCatalogActivity::class.java))
 	}
 
 	override fun onPrimaryButtonClick(tipView: TipView) {

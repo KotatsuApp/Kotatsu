@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.settings.SettingsActivity
 
 class ExploreMenuProvider(
 	private val context: Context,
@@ -20,6 +21,11 @@ class ExploreMenuProvider(
 		return when (menuItem.itemId) {
 			R.id.action_grid -> {
 				viewModel.setGridMode(!menuItem.isChecked)
+				true
+			}
+
+			R.id.action_manage -> {
+				context.startActivity(SettingsActivity.newManageSourcesIntent(context))
 				true
 			}
 

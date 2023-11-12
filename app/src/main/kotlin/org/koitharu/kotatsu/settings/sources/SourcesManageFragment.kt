@@ -86,7 +86,7 @@ class SourcesManageFragment :
 
 	override fun onResume() {
 		super.onResume()
-		activity?.setTitle(R.string.remote_sources)
+		activity?.setTitle(R.string.manage_sources)
 	}
 
 	override fun onDestroyView() {

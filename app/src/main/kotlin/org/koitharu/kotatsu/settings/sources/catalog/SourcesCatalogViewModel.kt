@@ -31,6 +31,7 @@ class SourcesCatalogViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	private val lifecycle = RetainedLifecycleImpl()
+	private var searchQuery: String = ""
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val contentType = MutableStateFlow(ContentType.entries.first())
 	val locales = getLocalesImpl()
@@ -40,7 +41,9 @@ class SourcesCatalogViewModel @Inject constructor(
 		locale,
 		contentType,
 	) { lc, type ->
-		listProducerFactory.create(lc, type, lifecycle)
+		listProducerFactory.create(lc, type, lifecycle).also {
+			it.setQuery(searchQuery)
+		}
 	}.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
 	val content = listProducer.flatMapLatest {
@@ -53,6 +56,7 @@ class SourcesCatalogViewModel @Inject constructor(
 	}
 
 	fun performSearch(query: String) {
+		searchQuery = query
 		listProducer.value?.setQuery(query)
 	}
 

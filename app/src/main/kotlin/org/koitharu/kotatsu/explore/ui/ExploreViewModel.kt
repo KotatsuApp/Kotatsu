@@ -137,7 +137,7 @@ class ExploreViewModel @Inject constructor(
 			result += RecommendationsItem(recommendation)
 		}
 		if (sources.isNotEmpty()) {
-			result += ListHeader(R.string.remote_sources, R.string.manage)
+			result += ListHeader(R.string.remote_sources, R.string.catalog)
 			if (newSources.isNotEmpty()) {
 				result += TipModel(
 					key = TIP_NEW_SOURCES,

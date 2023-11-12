@@ -8,4 +8,9 @@
 		android:title="@string/show_in_grid_view"
 		android:titleCondensed="@string/grid" />
 
+	<item
+		android:id="@+id/action_manage"
+		android:title="@string/manage_sources"
+		android:titleCondensed="@string/manage" />
+
 </menu>
