@@ -4,9 +4,9 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/action_catalog"
-		android:icon="@drawable/ic_add"
-		android:title="@string/sources_catalog"
+		android:id="@+id/action_locales"
+		android:icon="@drawable/ic_expand_more"
+		android:title="@string/languages"
 		app:showAsAction="ifRoom" />
 
 	<item
@@ -15,16 +15,5 @@
 		android:title="@string/search"
 		app:actionViewClass="androidx.appcompat.widget.SearchView"
 		app:showAsAction="ifRoom|collapseActionView" />
-
-	<item
-		android:id="@+id/action_no_nsfw"
-		android:checkable="true"
-		android:title="@string/disable_nsfw"
-		app:showAsAction="never" />
-
-	<item
-		android:id="@+id/action_disable_all"
-		android:title="@string/disable_all"
-		app:showAsAction="never" />
 
 </menu>

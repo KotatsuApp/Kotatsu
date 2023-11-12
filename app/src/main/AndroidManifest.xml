@@ -221,6 +221,9 @@
 			</intent-filter>
 
 		</activity>
+		<activity
+			android:name="org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity"
+			android:label="@string/sources_catalog" />
 
 		<service
 			android:name="androidx.work.impl.foreground.SystemForegroundService"

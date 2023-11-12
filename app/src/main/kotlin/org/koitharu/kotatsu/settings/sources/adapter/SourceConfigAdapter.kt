@@ -13,8 +13,6 @@ class SourceConfigAdapter(
 
 	init {
 		with(delegatesManager) {
-			addDelegate(sourceConfigHeaderDelegate())
-			addDelegate(sourceConfigGroupDelegate(listener))
 			addDelegate(sourceConfigItemDelegate2(listener, coil, lifecycleOwner))
 			addDelegate(sourceConfigEmptySearchDelegate())
 			addDelegate(sourceConfigTipDelegate(listener))

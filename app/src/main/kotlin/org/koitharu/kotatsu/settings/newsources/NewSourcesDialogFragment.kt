@@ -65,8 +65,6 @@ class NewSourcesDialogFragment :
 		viewModel.onItemEnabledChanged(item, isEnabled)
 	}
 
-	override fun onHeaderClick(header: SourceConfigItem.LocaleGroup) = Unit
-
 	override fun onCloseTip(tip: SourceConfigItem.Tip) = Unit
 
 	companion object {

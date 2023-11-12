@@ -46,6 +46,10 @@ class MangaSourcesRepository @Inject constructor(
 		return dao.findAllEnabled().toSources(settings.isNsfwContentDisabled)
 	}
 
+	suspend fun getDisabledSources(): List<MangaSource> {
+		return dao.findAllDisabled().toSources(settings.isNsfwContentDisabled)
+	}
+
 	fun observeEnabledSources(): Flow<List<MangaSource>> = observeIsNsfwDisabled().flatMapLatest { skipNsfw ->
 		dao.observeEnabled().map {
 			it.toSources(skipNsfw)

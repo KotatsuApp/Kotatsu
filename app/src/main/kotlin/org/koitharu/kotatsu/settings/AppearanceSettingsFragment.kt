@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.settings
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -9,7 +8,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.LocaleManagerCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,8 +16,8 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
+import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.getLocalesConfig
-import org.koitharu.kotatsu.core.util.ext.map
 import org.koitharu.kotatsu.core.util.ext.postDelayed
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.core.util.ext.toList
@@ -27,7 +25,6 @@ import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.utils.ActivityListPreference
 import org.koitharu.kotatsu.settings.utils.SliderPreference
-import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -110,7 +107,7 @@ class AppearanceSettingsFragment :
 	private fun initLocalePicker(preference: ListPreference) {
 		val locales = preference.context.getLocalesConfig()
 			.toList()
-			.sortedWith(LocaleComparator(preference.context))
+			.sortedWith(LocaleComparator())
 		preference.entries = Array(locales.size + 1) { i ->
 			if (i == 0) {
 				getString(R.string.automatic)
@@ -132,27 +129,6 @@ class AppearanceSettingsFragment :
 		val pref = findPreference<Preference>(AppSettings.KEY_NAV_MAIN) ?: return
 		pref.summary = settings.mainNavItems.joinToString {
 			getString(it.title)
-		}
-	}
-
-	private class LocaleComparator(context: Context) : Comparator<Locale> {
-
-		private val deviceLocales = LocaleManagerCompat.getSystemLocales(context)
-			.map { it.language }
-			.distinct()
-
-		override fun compare(a: Locale, b: Locale): Int {
-			return if (a === b) {
-				0
-			} else {
-				val indexA = deviceLocales.indexOf(a.language)
-				val indexB = deviceLocales.indexOf(b.language)
-				if (indexA == -1 && indexB == -1) {
-					compareValues(a.language, b.language)
-				} else {
-					-2 - (indexA - indexB)
-				}
-			}
 		}
 	}
 }

@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
-import org.koitharu.kotatsu.core.model.getLocaleTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
@@ -35,7 +34,6 @@ class NewSourcesViewModel @Inject constructor(
 					SourceConfigItem.SourceItem(
 						source = source,
 						isEnabled = enabled,
-						summary = source.getLocaleTitle(),
 						isDraggable = false,
 						isAvailable = !skipNsfw || source.contentType != ContentType.HENTAI,
 					)

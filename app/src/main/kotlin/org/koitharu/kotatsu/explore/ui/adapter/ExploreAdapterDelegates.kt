@@ -7,6 +7,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.getSummary
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
@@ -48,8 +49,8 @@ fun exploreButtonsAD(
 			icon.setColorSchemeColors(
 				context.getThemeColor(
 					materialR.attr.colorPrimary,
-					Color.DKGRAY
-				)
+					Color.DKGRAY,
+				),
 			)
 			binding.buttonRandom.icon = icon
 			icon.start()
@@ -98,7 +99,7 @@ fun exploreSourceListItemAD(
 		ItemExploreSourceListBinding.inflate(
 			layoutInflater,
 			parent,
-			false
+			false,
 		)
 	},
 	on = { item, _, _ -> item is MangaSourceItem && !item.isGrid },
@@ -112,6 +113,7 @@ fun exploreSourceListItemAD(
 
 	bind {
 		binding.textViewTitle.text = item.source.title
+		binding.textViewSubtitle.text = item.source.getSummary(context)
 		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)
@@ -132,7 +134,7 @@ fun exploreSourceGridItemAD(
 		ItemExploreSourceGridBinding.inflate(
 			layoutInflater,
 			parent,
-			false
+			false,
 		)
 	},
 	on = { item, _, _ -> item is MangaSourceItem && item.isGrid },

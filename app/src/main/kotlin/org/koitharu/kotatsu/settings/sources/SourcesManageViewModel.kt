@@ -103,10 +103,6 @@ class SourcesManageViewModel @Inject constructor(
 		}
 	}
 
-	fun expandOrCollapse(headerId: String?) {
-		listProducer.expandCollapse(headerId)
-	}
-
 	fun performSearch(query: String?) {
 		listProducer.setQuery(query?.trim().orEmpty())
 	}

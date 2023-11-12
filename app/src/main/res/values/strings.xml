@@ -512,4 +512,13 @@
 	<string name="last_successful_backup">Last successful backup: %s</string>
 	<string name="speed_value">x%.1f</string>
 	<string name="lock_screen_rotation">Lock screen rotation</string>
+	<string name="content_type_manga">Manga</string>
+	<string name="content_type_hentai">Hentai</string>
+	<string name="content_type_comics">Comics</string>
+	<string name="content_type_other">Other</string>
+	<string name="source_summary_pattern">%1$s, %2$s</string>
+	<string name="sources_catalog">Sources catalog</string>
+	<string name="source_enabled">Source enabled</string>
+	<string name="no_manga_sources_catalog_text">No available sources in this section yet. Stay tuned</string>
+	<string name="no_manga_sources_found">No available manga sources found by your query</string>
 </resources>

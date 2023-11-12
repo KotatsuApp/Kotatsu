@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.sources
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -32,6 +33,7 @@ import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
+import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import javax.inject.Inject
 
@@ -77,7 +79,7 @@ class SourcesManageFragment :
 		viewModel.content.observe(viewLifecycleOwner, sourcesAdapter)
 		viewModel.onActionDone.observeEvent(
 			viewLifecycleOwner,
-			ReversibleActionObserver(binding.recyclerView)
+			ReversibleActionObserver(binding.recyclerView),
 		)
 		addMenuProvider(SourcesMenuProvider())
 	}
@@ -119,10 +121,6 @@ class SourcesManageFragment :
 		viewModel.setEnabled(item.source, isEnabled)
 	}
 
-	override fun onHeaderClick(header: SourceConfigItem.LocaleGroup) {
-		viewModel.expandOrCollapse(header.localeId)
-	}
-
 	override fun onCloseTip(tip: SourceConfigItem.Tip) {
 		viewModel.onTipClosed(tip)
 	}
@@ -143,6 +141,11 @@ class SourcesManageFragment :
 		}
 
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
+			R.id.action_catalog -> {
+				startActivity(Intent(context, SourcesCatalogActivity::class.java))
+				true
+			}
+
 			R.id.action_disable_all -> {
 				viewModel.disableAll()
 				true

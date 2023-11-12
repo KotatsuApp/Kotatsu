@@ -23,46 +23,17 @@
 		app:shapeAppearance="?shapeAppearanceCornerSmall"
 		tools:src="@tools:sample/avatars" />
 
-	<LinearLayout
+	<TextView
+		android:id="@+id/textView_title"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="?android:listPreferredItemPaddingStart"
 		android:layout_marginEnd="?android:listPreferredItemPaddingEnd"
 		android:layout_weight="1"
-		android:orientation="vertical">
-
-		<TextView
-			android:id="@+id/textView_title"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:ellipsize="end"
-			android:singleLine="true"
-			android:textAppearance="?attr/textAppearanceTitleSmall"
-			tools:text="@tools:sample/lorem[15]" />
-
-		<TextView
-			android:id="@+id/textView_description"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="2dp"
-			android:ellipsize="end"
-			android:singleLine="true"
-			android:textAppearance="?attr/textAppearanceBodySmall"
-			tools:text="English" />
-
-	</LinearLayout>
-
-	<ImageView
-		android:id="@+id/imageView_menu"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:background="?selectableItemBackgroundBorderless"
-		android:contentDescription="@string/more"
-		android:padding="@dimen/margin_small"
-		android:scaleType="center"
-		android:src="@drawable/abc_ic_menu_overflow_material"
-		android:tooltipText="@string/more"
-		app:tint="?colorControlNormal" />
+		android:ellipsize="end"
+		android:singleLine="true"
+		android:textAppearance="?attr/textAppearanceTitleSmall"
+		tools:text="@tools:sample/lorem[15]" />
 
 	<ImageView
 		android:id="@+id/imageView_add"
@@ -74,16 +45,5 @@
 		android:scaleType="center"
 		android:src="@drawable/ic_add"
 		android:tooltipText="@string/add" />
-
-	<ImageView
-		android:id="@+id/imageView_remove"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:background="?selectableItemBackgroundBorderless"
-		android:contentDescription="@string/remove"
-		android:padding="@dimen/margin_small"
-		android:scaleType="center"
-		android:src="@drawable/ic_delete"
-		android:tooltipText="@string/remove" />
 
 </LinearLayout>
