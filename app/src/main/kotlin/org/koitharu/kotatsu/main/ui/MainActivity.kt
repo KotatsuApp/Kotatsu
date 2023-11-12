@@ -22,6 +22,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
 import androidx.transition.TransitionManager
@@ -229,6 +230,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				supportFragmentManager.commit {
 					setReorderingAllowed(true)
 					add(R.id.container, SearchSuggestionFragment.newInstance(), TAG_SEARCH)
+					navigationDelegate.primaryFragment?.let {
+						setMaxLifecycle(it, Lifecycle.State.STARTED)
+					}
 					setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 					runOnCommit { onSearchOpened() }
 				}
@@ -414,16 +418,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	private inner class CloseSearchCallback : OnBackPressedCallback(false) {
 
 		override fun handleOnBackPressed() {
-			val fragment = supportFragmentManager.findFragmentByTag(TAG_SEARCH)
+			val fm = supportFragmentManager
+			val fragment = fm.findFragmentByTag(TAG_SEARCH)
 			viewBinding.searchView.clearFocus()
 			if (fragment == null) {
 				// this should not happen but who knows
 				isEnabled = false
 				return
 			}
-			supportFragmentManager.commit {
+			fm.commit {
 				setReorderingAllowed(true)
 				remove(fragment)
+				navigationDelegate.primaryFragment?.let {
+					setMaxLifecycle(it, Lifecycle.State.RESUMED)
+				}
 				setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 				runOnCommit { onSearchClosed() }
 			}
