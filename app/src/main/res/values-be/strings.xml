@@ -505,4 +505,5 @@
     <string name="last_successful_backup">Апошняе паспяховае рэзервовае капіраванне: %s</string>
     <string name="backups_output_directory">Вывадны каталог рэзервовых копій</string>
     <string name="speed_value">x%.1f</string>
+    <string name="lock_screen_rotation">Блакаванне павароту экрана</string>
 </resources>
