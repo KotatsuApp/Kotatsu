@@ -517,4 +517,7 @@
     <string name="content_type_other">Otros</string>
     <string name="catalog">Catálogo</string>
     <string name="manage_sources">Gestionar las fuentes</string>
+    <string name="manual">Manual</string>
+    <string name="disable_nsfw_summary">Desactivar las fuentes NSFW y ocultar el manga para adultos de la lista si es posible</string>
+    <string name="available_d">Disponible: %1$d</string>
 </resources>
