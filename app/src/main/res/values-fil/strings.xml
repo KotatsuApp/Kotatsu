@@ -505,4 +505,19 @@
     <string name="backups_output_directory">Output directory ng mga backup</string>
     <string name="last_successful_backup">Huling matagumpay na pag-backup: %s</string>
     <string name="speed_value">x%.1f</string>
+    <string name="sources_catalog">Katalugo ng mga source</string>
+    <string name="content_type_manga">Manga</string>
+    <string name="source_summary_pattern">%1$s, %2$s</string>
+    <string name="content_type_hentai">Hentai</string>
+    <string name="content_type_comics">Mga Comic</string>
+    <string name="catalog">Katalogo</string>
+    <string name="manage_sources">Pamahalaan ang mga source</string>
+    <string name="no_manga_sources_found">Walang available na manga source na nahanap base sa iyong query</string>
+    <string name="lock_screen_rotation">Rotation ng lock screen</string>
+    <string name="manual">Manu-mano</string>
+    <string name="source_enabled">Napaganang source</string>
+    <string name="disable_nsfw_summary">Huwag paganahin ang mga source na NSFW at itago ang manga na pang-adulto mula sa listahan kung maaari</string>
+    <string name="no_manga_sources_catalog_text">Walang available na source sa seksyong ito. Antabayanan</string>
+    <string name="available_d">Available: %1$d</string>
+    <string name="content_type_other">Iba pa</string>
 </resources>
