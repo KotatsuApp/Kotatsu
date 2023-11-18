@@ -307,15 +307,13 @@ class ReaderActivity :
 	private fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
 			Snackbar.make(viewBinding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
-				.setAnchorView(viewBinding.appbarBottom)
 				.setAction(R.string.share) {
 					ShareHelper(this).shareImage(uri)
-				}.show()
+				}
 		} else {
 			Snackbar.make(viewBinding.container, R.string.error_occurred, Snackbar.LENGTH_SHORT)
-				.setAnchorView(viewBinding.appbarBottom)
-				.show()
-		}
+		}.setAnchorView(viewBinding.appbarBottom)
+			.show()
 	}
 
 	private fun setWindowSecure(isSecure: Boolean) {

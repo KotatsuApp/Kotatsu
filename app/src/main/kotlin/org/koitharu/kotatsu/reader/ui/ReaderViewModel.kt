@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
@@ -255,10 +256,13 @@ class ReaderViewModel @Inject constructor(
 	@MainThread
 	fun onCurrentPageChanged(position: Int) {
 		val prevJob = stateChangeJob
+		val pages = content.value.pages // capture immediately
 		stateChangeJob = launchJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			loadingJob?.join()
-			val pages = content.value.pages
+			if (BuildConfig.DEBUG && pages.size != content.value.pages.size) {
+				throw IllegalStateException("Concurrent pages modification")
+			}
 			pages.getOrNull(position)?.let { page ->
 				currentState.update { cs ->
 					cs?.copy(chapterId = page.chapterId, page = page.index)
