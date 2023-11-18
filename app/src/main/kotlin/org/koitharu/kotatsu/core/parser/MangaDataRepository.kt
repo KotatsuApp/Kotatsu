@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.core.db.entity.toEntities
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -77,10 +78,18 @@ class MangaDataRepository @Inject constructor(
 	}
 
 	suspend fun storeManga(manga: Manga) {
-		val tags = manga.tags.toEntities()
 		db.withTransaction {
-			db.getTagsDao().upsert(tags)
-			db.getMangaDao().upsert(manga.toEntity(), tags)
+			// avoid storing local manga if remote one is already stored
+			val existing = if (manga.isLocal) {
+				db.getMangaDao().find(manga.id)?.manga
+			} else {
+				null
+			}
+			if (existing == null || existing.source == manga.source.name) {
+				val tags = manga.tags.toEntities()
+				db.getTagsDao().upsert(tags)
+				db.getMangaDao().upsert(manga.toEntity(), tags)
+			}
 		}
 	}
 

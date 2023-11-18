@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
@@ -36,6 +37,7 @@ class HistoryRepository @Inject constructor(
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
+	private val mangaRepository: MangaDataRepository,
 ) {
 
 	suspend fun getList(offset: Int, limit: Int): List<Manga> {
@@ -92,13 +94,8 @@ class HistoryRepository @Inject constructor(
 		if (shouldSkip(manga)) {
 			return
 		}
-		val tags = manga.tags.toEntities()
 		db.withTransaction {
-			val existing = db.getMangaDao().find(manga.id)?.manga
-			if (existing == null || existing.source == manga.source.name) {
-				db.getTagsDao().upsert(tags)
-				db.getMangaDao().upsert(manga.toEntity(), tags)
-			}
+			mangaRepository.storeManga(manga)
 			db.getHistoryDao().upsert(
 				HistoryEntity(
 					mangaId = manga.id,

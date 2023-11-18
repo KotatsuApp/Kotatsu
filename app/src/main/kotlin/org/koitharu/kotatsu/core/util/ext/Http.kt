@@ -8,6 +8,7 @@ import okhttp3.Response
 import okhttp3.internal.closeQuietly
 import okio.IOException
 import org.json.JSONObject
+import org.jsoup.HttpStatusException
 import java.net.HttpURLConnection
 
 private val TYPE_JSON = "application/json".toMediaType()
@@ -34,9 +35,8 @@ val HttpUrl.isHttpOrHttps: Boolean
 
 fun Response.ensureSuccess() = apply {
 	if (!isSuccessful || code == HttpURLConnection.HTTP_NO_CONTENT) {
-		val message = "Invalid response: $code $message at ${request.url}"
 		closeQuietly()
-		throw IllegalStateException(message)
+		throw HttpStatusException(message, code, request.url.toString())
 	}
 }
 
