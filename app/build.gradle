@@ -47,11 +47,12 @@ android {
 		main.java.srcDirs += 'src/main/kotlin/'
 	}
 	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_17
-		targetCompatibility JavaVersion.VERSION_17
+		coreLibraryDesugaringEnabled true
+		sourceCompatibility JavaVersion.VERSION_1_8
+		targetCompatibility JavaVersion.VERSION_1_8
 	}
 	kotlinOptions {
-		jvmTarget = JavaVersion.VERSION_17.toString()
+		jvmTarget = JavaVersion.VERSION_1_8.toString()
 		freeCompilerArgs += [
 			'-opt-in=kotlin.ExperimentalStdlibApi',
 			'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
@@ -81,10 +82,11 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:43fd7b8d47') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:41eea1c420') {
 		exclude group: 'org.json', module: 'json'
 	}
 
+	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.20'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 
