@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -32,6 +33,7 @@ class DetailsLoadUseCase @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val recoverUseCase: RecoverMangaUseCase,
 	private val imageGetter: Html.ImageGetter,
+	private val networkState: NetworkState,
 ) {
 
 	operator fun invoke(intent: MangaIntent): Flow<MangaDetails> = channelFlow {
@@ -46,6 +48,13 @@ class DetailsLoadUseCase @Inject constructor(
 			null
 		}
 		send(MangaDetails(manga, null, null, false))
+		if (!networkState.value) {
+			// try load offline instead
+			local?.await()?.manga?.let { localManga ->
+				send(MangaDetails(localManga, null, localManga.description?.parseAsHtml(withImages = false), true))
+				return@channelFlow
+			}
+		}
 		val details = getDetails(manga)
 		send(MangaDetails(details, local?.peek(), details.description?.parseAsHtml(withImages = false), false))
 		send(MangaDetails(details, local?.await(), details.description?.parseAsHtml(withImages = true), true))
