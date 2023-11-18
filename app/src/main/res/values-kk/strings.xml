@@ -15,7 +15,7 @@
     <string name="new_chapters">Жаңа тараулар</string>
     <string name="local_storage">Құрылғыда</string>
     <string name="history">Тарих</string>
-    <string name="chapters">Тараулар</string>
+    <string name="chapters">Тарау</string>
     <string name="detailed_list">Егжей-тегжейлі тізім</string>
     <string name="list_mode">Тізім түрі</string>
     <string name="remote_sources">Маңга қайнары</string>
@@ -23,8 +23,8 @@
     <string name="computing_">Есептеу…</string>
     <string name="favourites">Таңдаулы</string>
     <string name="network_error">Желі қатесі</string>
-    <string name="details">Деректер</string>
-    <string name="grid">Тор</string>
+    <string name="details">Дерек</string>
+    <string name="grid">Кесте</string>
     <string name="try_again">Қайта көру</string>
     <string name="clear_history">Тарихты тазалау</string>
     <string name="read">Оқу</string>
@@ -61,7 +61,7 @@
     <string name="text_file_sizes">Б|кБ|МБ|ГБ|ТБ</string>
     <string name="standard">Стандарт</string>
     <string name="webtoon">Уебтүн</string>
-    <string name="grid_size">Тор өлшемі</string>
+    <string name="grid_size">Кесте өлшемі</string>
     <string name="search_on_s">%s-те іздеу</string>
     <string name="delete_manga">Маңганы жою</string>
     <string name="reader_settings">Оқыманы баптау</string>
@@ -505,4 +505,19 @@
     <string name="this_month">Осы ай</string>
     <string name="proxy">Прокси</string>
     <string name="error_no_space_left">Жадта бос орын қалмады</string>
+    <string name="sources_catalog">Дереккөз каталогы</string>
+    <string name="content_type_manga">Маңга</string>
+    <string name="source_summary_pattern">%1$s, %2$s</string>
+    <string name="content_type_hentai">Хентай</string>
+    <string name="content_type_comics">Комикс</string>
+    <string name="catalog">Каталог</string>
+    <string name="manage_sources">Маңга дереккөзі</string>
+    <string name="no_manga_sources_found">Іздеуіңіз бойынша дереккөз табылмады</string>
+    <string name="lock_screen_rotation">Экран бұрылуын бұғаттау</string>
+    <string name="manual">Қолмен реттеу</string>
+    <string name="source_enabled">Дереккөз қосылған-ды</string>
+    <string name="disable_nsfw_summary">ҰЯТСЫЗ маңга дереккөзін өшіріп, тізімнен жасырып тастау</string>
+    <string name="no_manga_sources_catalog_text">Әзірге мына жерде қолжетімді дереккөз жоқ. Жаңарту күтіңіз</string>
+    <string name="available_d">Қолжетімді: %1$d</string>
+    <string name="content_type_other">Басқа</string>
 </resources>
