@@ -519,4 +519,5 @@
     <string name="no_manga_sources_catalog_text">Пока что в данном разделе нет доступных источников. Следите за обновлениями</string>
     <string name="available_d">Доступно: %1$d</string>
     <string name="content_type_other">Другое</string>
+    <string name="source_summary_pattern">%1$s, %2$s</string>
 </resources>
