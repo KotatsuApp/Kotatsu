@@ -506,4 +506,18 @@
     <string name="backups_output_directory">Вихідний каталог резервних копій</string>
     <string name="speed_value">x%.1f</string>
     <string name="lock_screen_rotation">Блокування повороту екрану</string>
+    <string name="sources_catalog">Каталог джерел</string>
+    <string name="content_type_manga">Манґа</string>
+    <string name="source_summary_pattern">%1$s, %2$s</string>
+    <string name="content_type_hentai">Хентай</string>
+    <string name="content_type_comics">Комікси</string>
+    <string name="catalog">Каталог</string>
+    <string name="manage_sources">Кіравання джерелами</string>
+    <string name="no_manga_sources_found">За вашим запитом не знайдено доступних джерел манґи</string>
+    <string name="manual">Вручну</string>
+    <string name="source_enabled">Джерело включено</string>
+    <string name="disable_nsfw_summary">Вимкніть джерела NSFW і приховайте манґу для дорослих зі списку, якщо можливо</string>
+    <string name="no_manga_sources_catalog_text">У цьому розділі ще немає доступних джерел. Слідкуйте за оновленнями</string>
+    <string name="available_d">Доступно: %1$d</string>
+    <string name="content_type_other">Інший</string>
 </resources>
