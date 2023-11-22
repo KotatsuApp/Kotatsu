@@ -29,11 +29,11 @@ import javax.inject.Inject
 class SourcesCatalogViewModel @Inject constructor(
 	private val repository: MangaSourcesRepository,
 	private val listProducerFactory: SourcesCatalogListProducer.Factory,
-	private val settings: AppSettings,
+	settings: AppSettings,
 ) : BaseViewModel() {
 
 	private val lifecycle = RetainedLifecycleImpl()
-	private var searchQuery: String = ""
+	private var searchQuery: String? = null
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val contentType = MutableStateFlow(ContentType.entries.first())
 	val locales = getLocalesImpl()
@@ -59,7 +59,7 @@ class SourcesCatalogViewModel @Inject constructor(
 		lifecycle.dispatchOnCleared()
 	}
 
-	fun performSearch(query: String) {
+	fun performSearch(query: String?) {
 		searchQuery = query
 		listProducer.value?.setQuery(query)
 	}

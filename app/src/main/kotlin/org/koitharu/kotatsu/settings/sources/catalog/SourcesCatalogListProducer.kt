@@ -28,7 +28,7 @@ class SourcesCatalogListProducer @AssistedInject constructor(
 ) : InvalidationTracker.Observer(TABLE_SOURCES), RetainedLifecycle.OnClearedListener {
 
 	private val scope = lifecycle.lifecycleScope
-	private var query: String = ""
+	private var query: String? = null
 	val list = MutableStateFlow(emptyList<SourceCatalogItem>())
 
 	private var job = scope.launch(Dispatchers.Default) {
@@ -54,20 +54,21 @@ class SourcesCatalogListProducer @AssistedInject constructor(
 		}
 	}
 
-	fun setQuery(value: String) {
+	fun setQuery(value: String?) {
 		this.query = value
 		onInvalidated(emptySet())
 	}
 
 	private suspend fun buildList(): List<SourceCatalogItem> {
 		val sources = repository.getDisabledSources().toMutableList()
-		sources.retainAll { it.contentType == contentType && it.locale == locale }
-		if (query.isNotEmpty()) {
-			sources.retainAll { it.title.contains(query, ignoreCase = true) }
+		when (val q = query) {
+			null -> sources.retainAll { it.contentType == contentType && it.locale == locale }
+			"" -> return emptyList()
+			else -> sources.retainAll { it.title.contains(q, ignoreCase = true) }
 		}
 		return if (sources.isEmpty()) {
 			listOf(
-				if (query.isEmpty()) {
+				if (query == null) {
 					SourceCatalogItem.Hint(
 						icon = R.drawable.ic_empty_feed,
 						title = R.string.no_manga_sources,
@@ -86,6 +87,7 @@ class SourcesCatalogListProducer @AssistedInject constructor(
 			sources.map {
 				SourceCatalogItem.Source(
 					source = it,
+					showSummary = query != null,
 				)
 			}
 		}

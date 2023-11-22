@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.getSummary
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
@@ -42,6 +43,12 @@ fun sourceCatalogItemSourceAD(
 			}
 		} else {
 			item.source.title
+		}
+		if (item.showSummary) {
+			binding.textViewDescription.text = item.source.getSummary(context)
+			binding.textViewDescription.isVisible = true
+		} else {
+			binding.textViewDescription.isVisible = false
 		}
 		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {

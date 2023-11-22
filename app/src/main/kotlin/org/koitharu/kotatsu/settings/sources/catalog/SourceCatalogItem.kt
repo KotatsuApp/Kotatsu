@@ -8,7 +8,8 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 sealed interface SourceCatalogItem : ListModel {
 
 	data class Source(
-		val source: MangaSource
+		val source: MangaSource,
+		val showSummary: Boolean,
 	) : SourceCatalogItem {
 
 		override fun areItemsTheSame(other: ListModel): Boolean {

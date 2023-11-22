@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.parsers.util.toTitleCase
 class SourcesCatalogMenuProvider(
 	private val activity: Activity,
 	private val viewModel: SourcesCatalogViewModel,
+	private val expandListener: MenuItem.OnActionExpandListener,
 ) : MenuProvider,
 	MenuItem.OnActionExpandListener,
 	SearchView.OnQueryTextListener {
@@ -40,18 +41,18 @@ class SourcesCatalogMenuProvider(
 
 	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
 		(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
-		return true
+		return expandListener.onMenuItemActionExpand(item)
 	}
 
 	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
 		(item.actionView as SearchView).setQuery("", false)
-		return true
+		return expandListener.onMenuItemActionCollapse(item)
 	}
 
 	override fun onQueryTextSubmit(query: String?): Boolean = false
 
 	override fun onQueryTextChange(newText: String?): Boolean {
-		viewModel.performSearch(newText.orEmpty())
+		viewModel.performSearch(newText?.trim().orEmpty())
 		return true
 	}
 

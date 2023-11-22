@@ -1,9 +1,12 @@
 package org.koitharu.kotatsu.settings.sources.catalog
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import com.google.android.material.appbar.AppBarLayout
@@ -28,7 +31,7 @@ import javax.inject.Inject
 class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	TabLayout.OnTabSelectedListener,
 	OnListItemClickListener<SourceCatalogItem.Source>,
-	AppBarOwner {
+	AppBarOwner, MenuItem.OnActionExpandListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -56,7 +59,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		viewModel.locale.observe(this) {
 			supportActionBar?.subtitle = it.getLocaleDisplayName()
 		}
-		addMenuProvider(SourcesCatalogMenuProvider(this, viewModel))
+		addMenuProvider(SourcesCatalogMenuProvider(this, viewModel, this))
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -81,6 +84,19 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 
 	override fun onTabReselected(tab: TabLayout.Tab) {
 		viewBinding.recyclerView.firstVisibleItemPosition = 0
+	}
+
+	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+		viewBinding.tabs.isVisible = false
+		val sq = (item.actionView as? SearchView)?.query?.trim()?.toString().orEmpty()
+		viewModel.performSearch(sq)
+		return true
+	}
+
+	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+		viewBinding.tabs.isVisible = true
+		viewModel.performSearch(null)
+		return true
 	}
 
 	private fun initTabs() {

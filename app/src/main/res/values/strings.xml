@@ -519,7 +519,7 @@
 	<string name="source_summary_pattern">%1$s, %2$s</string>
 	<string name="sources_catalog">Sources catalog</string>
 	<string name="source_enabled">Source enabled</string>
-	<string name="no_manga_sources_catalog_text">No available sources in this section yet. Stay tuned</string>
+	<string name="no_manga_sources_catalog_text">There are no sources available in this section, or all of it might have been already added.\nStay tuned</string>
 	<string name="no_manga_sources_found">No available manga sources found by your query</string>
 	<string name="catalog">Catalog</string>
 	<string name="manage_sources">Manage sources</string>
