@@ -119,9 +119,12 @@ class ReaderViewModel @Inject constructor(
 		valueProducer = { isReaderKeepScreenOn },
 	)
 
+	val isWebtoonZooEnabled = observeIsWebtoonZoomEnabled()
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
+
 	val isZoomControlsEnabled = getObserveIsZoomControlEnabled().flatMapLatest { zoom ->
 		if (zoom) {
-			combine(readerMode, observeIsWebtoonZoomEnabled()) { mode, ze -> ze || mode != ReaderMode.WEBTOON }
+			combine(readerMode, isWebtoonZooEnabled) { mode, ze -> ze || mode != ReaderMode.WEBTOON }
 		} else {
 			flowOf(false)
 		}

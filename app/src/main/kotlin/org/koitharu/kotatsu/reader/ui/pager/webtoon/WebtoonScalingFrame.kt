@@ -51,7 +51,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	private val targetHitRect = Rect()
 	private var animator: ValueAnimator? = null
 
-	var isZoomEnable = true
+	var isZoomEnable = false
 		set(value) {
 			field = value
 			if (scale != 1f) {

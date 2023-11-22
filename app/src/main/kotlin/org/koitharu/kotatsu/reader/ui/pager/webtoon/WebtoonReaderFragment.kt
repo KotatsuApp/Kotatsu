@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
@@ -43,6 +44,9 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 			setHasFixedSize(true)
 			adapter = readerAdapter
 			addOnPageScrollListener(PageScrollListener())
+		}
+		viewModel.isWebtoonZooEnabled.observe(viewLifecycleOwner) {
+			binding.frame.isZoomEnable = it
 		}
 	}
 
