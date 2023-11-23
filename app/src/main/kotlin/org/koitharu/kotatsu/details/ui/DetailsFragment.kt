@@ -197,6 +197,11 @@ class DetailsFragment :
 					drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_abandoned)
 				}
 
+				MangaState.PAUSED -> infoLayout.textViewState.apply {
+					textAndVisible = resources.getString(R.string.state_paused)
+					drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_action_pause)
+				}
+
 				null -> infoLayout.textViewState.isVisible = false
 			}
 			if (manga.source == MangaSource.LOCAL) {
