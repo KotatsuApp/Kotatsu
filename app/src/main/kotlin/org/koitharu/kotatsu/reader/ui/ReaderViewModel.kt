@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
@@ -263,8 +262,8 @@ class ReaderViewModel @Inject constructor(
 		stateChangeJob = launchJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			loadingJob?.join()
-			if (BuildConfig.DEBUG && pages.size != content.value.pages.size) {
-				throw IllegalStateException("Concurrent pages modification")
+			if (pages.size != content.value.pages.size) {
+				return@launchJob // TODO
 			}
 			pages.getOrNull(position)?.let { page ->
 				currentState.update { cs ->
