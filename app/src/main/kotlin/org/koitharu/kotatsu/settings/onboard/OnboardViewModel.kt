@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.map
 import org.koitharu.kotatsu.core.util.ext.mapToSet
+import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
@@ -78,7 +79,7 @@ class OnboardViewModel @Inject constructor(
 				summary = srcs.joinToString { it.title },
 				isChecked = key in selectedLocales,
 			)
-		}.sortedWith(SourceLocaleComparator())
+		}.sortedWithSafe(SourceLocaleComparator())
 	}
 
 	private class SourceLocaleComparator : Comparator<SourceLocale?> {

@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.util.ext
 
 import androidx.collection.ArrayMap
 import androidx.collection.ArraySet
+import org.koitharu.kotatsu.BuildConfig
 import java.util.Collections
 import java.util.EnumSet
 
@@ -57,3 +58,13 @@ inline fun <reified E : Enum<E>> Collection<E>.toEnumSet(): EnumSet<E> = if (isE
 }
 
 fun <E : Enum<E>> Collection<E>.sortedByOrdinal() = sortedBy { it.ordinal }
+
+fun <T> Iterable<T>.sortedWithSafe(comparator: Comparator<in T>): List<T> = try {
+	sortedWith(comparator)
+} catch (e: IllegalArgumentException) {
+	if (BuildConfig.DEBUG) {
+		throw e
+	} else {
+		toList()
+	}
+}

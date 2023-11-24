@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -82,6 +83,6 @@ class SourcesCatalogViewModel @Inject constructor(
 	private fun getLocalesImpl(): List<Locale?> {
 		return repository.allMangaSources
 			.mapToSet { it.locale?.let(::Locale) }
-			.sortedWith(LocaleComparator())
+			.sortedWithSafe(LocaleComparator())
 	}
 }

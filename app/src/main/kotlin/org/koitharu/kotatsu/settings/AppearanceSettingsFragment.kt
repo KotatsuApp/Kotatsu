@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.getLocalesConfig
 import org.koitharu.kotatsu.core.util.ext.postDelayed
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
+import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
 import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.parsers.util.toTitleCase
@@ -107,7 +108,7 @@ class AppearanceSettingsFragment :
 	private fun initLocalePicker(preference: ListPreference) {
 		val locales = preference.context.getLocalesConfig()
 			.toList()
-			.sortedWith(LocaleComparator())
+			.sortedWithSafe(LocaleComparator())
 		preference.entries = Array(locales.size + 1) { i ->
 			if (i == 0) {
 				getString(R.string.automatic)
