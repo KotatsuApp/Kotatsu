@@ -35,7 +35,8 @@ class PageHolderDelegate(
 ) : DefaultOnImageEventListener, Observer<ReaderSettings> {
 
 	private val scope = loader.loaderScope + Dispatchers.Main.immediate
-	private var state = State.EMPTY
+	var state = State.EMPTY
+		private set
 	private var job: Job? = null
 	private var file: File? = null
 	private var error: Throwable? = null
@@ -43,6 +44,8 @@ class PageHolderDelegate(
 	init {
 		callback.onConfigChanged()
 	}
+
+	fun isLoading() = job?.isActive == true
 
 	fun onBind(page: MangaPage) {
 		val prevJob = job
@@ -52,12 +55,15 @@ class PageHolderDelegate(
 		}
 	}
 
-	fun retry(page: MangaPage) {
+	fun retry(page: MangaPage, isFromUser: Boolean) {
 		val prevJob = job
 		job = scope.launch {
 			prevJob?.cancelAndJoin()
 			val e = error
 			if (e != null && ExceptionResolver.canResolve(e)) {
+				if (!isFromUser) {
+					return@launch
+				}
 				exceptionResolver.resolve(e)
 			}
 			doLoad(page, force = true)
@@ -85,7 +91,7 @@ class PageHolderDelegate(
 	}
 
 	fun reload() {
-		if (state == State.SHOWN ) {
+		if (state == State.SHOWN) {
 			file?.let {
 				callback.onImageReady(it.toUri())
 			}
@@ -166,7 +172,7 @@ class PageHolderDelegate(
 			callback.onError(e)
 			if (e is IOException && !networkState.value) {
 				networkState.awaitForConnection()
-				retry(data)
+				retry(data, isFromUser = false)
 			}
 		}
 	}
@@ -176,7 +182,7 @@ class PageHolderDelegate(
 		.onEach { callback.onProgressChanged((100 * it).toInt()) }
 		.launchIn(scope)
 
-	private enum class State {
+	enum class State {
 		EMPTY, LOADING, LOADED, CONVERTING, CONVERTED, SHOWING, SHOWN, ERROR
 	}
 

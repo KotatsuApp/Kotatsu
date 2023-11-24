@@ -2,13 +2,15 @@ package org.koitharu.kotatsu.reader.ui.pager
 
 import android.content.Context
 import androidx.annotation.CallSuper
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
+import org.koitharu.kotatsu.core.ui.list.lifecycle.LifecycleAwareViewHolder
 import org.koitharu.kotatsu.databinding.LayoutPageInfoBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
+import org.koitharu.kotatsu.reader.ui.pager.PageHolderDelegate.State
 
 abstract class BasePageHolder<B : ViewBinding>(
 	protected val binding: B,
@@ -16,7 +18,8 @@ abstract class BasePageHolder<B : ViewBinding>(
 	protected val settings: ReaderSettings,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
-) : RecyclerView.ViewHolder(binding.root), PageHolderDelegate.Callback {
+	lifecycleOwner: LifecycleOwner,
+) : LifecycleAwareViewHolder(binding.root, lifecycleOwner), PageHolderDelegate.Callback {
 
 	@Suppress("LeakingThis")
 	protected val delegate = PageHolderDelegate(loader, settings, this, networkState, exceptionResolver)
@@ -42,6 +45,13 @@ abstract class BasePageHolder<B : ViewBinding>(
 	}
 
 	protected abstract fun onBind(data: ReaderPage)
+
+	override fun onResume() {
+		super.onResume()
+		if (delegate.state == State.ERROR && !delegate.isLoading()) {
+			boundData?.let { delegate.retry(it.toMangaPage(), isFromUser = false) }
+		}
+	}
 
 	@CallSuper
 	open fun onAttachedToWindow() {

@@ -30,7 +30,7 @@ open class PageHolder(
 	settings: ReaderSettings,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
-) : BasePageHolder<ItemPageBinding>(binding, loader, settings, networkState, exceptionResolver),
+) : BasePageHolder<ItemPageBinding>(binding, loader, settings, networkState, exceptionResolver, owner),
 	View.OnClickListener,
 	ZoomControl.ZoomControlListener {
 
@@ -129,7 +129,7 @@ open class PageHolder(
 
 	final override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return)
+			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return, isFromUser = true)
 			R.id.button_error_details -> delegate.showErrorDetails(boundData?.url)
 		}
 	}

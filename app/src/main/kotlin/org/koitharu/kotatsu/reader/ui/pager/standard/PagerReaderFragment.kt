@@ -17,6 +17,7 @@ import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.ReaderAnimation
+import org.koitharu.kotatsu.core.ui.list.lifecycle.PagerLifecycleDispatcher
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
 import org.koitharu.kotatsu.core.util.ext.findCurrentViewHolder
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -61,6 +62,7 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>(),
 				recyclerView?.defaultFocusHighlightEnabled = false
 			}
 			PagerEventSupplier(this).attach()
+			registerOnPageChangeCallback(PagerLifecycleDispatcher(this))
 		}
 
 		viewModel.pageAnimation.observe(viewLifecycleOwner) {

@@ -25,7 +25,7 @@ class WebtoonHolder(
 	settings: ReaderSettings,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
-) : BasePageHolder<ItemPageWebtoonBinding>(binding, loader, settings, networkState, exceptionResolver),
+) : BasePageHolder<ItemPageWebtoonBinding>(binding, loader, settings, networkState, exceptionResolver, owner),
 	View.OnClickListener {
 
 	private var scrollToRestore = 0
@@ -107,7 +107,7 @@ class WebtoonHolder(
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return)
+			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return, isFromUser = true)
 			R.id.button_error_details -> delegate.showErrorDetails(boundData?.url)
 		}
 	}
