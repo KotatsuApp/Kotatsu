@@ -517,7 +517,9 @@
     <string name="manual">Уручную</string>
     <string name="source_enabled">Крыніца ўключана</string>
     <string name="disable_nsfw_summary">Адключыць крыніцы NSFW і схавайць мангу для дарослых са спісу, калі гэта магчыма</string>
-    <string name="no_manga_sources_catalog_text">У гэтым раздзеле пакуль няма даступных крыніц. Сачыце за абнаўленнямі</string>
+    <string name="no_manga_sources_catalog_text">У гэтым раздзеле няма даступных крыніц, ці ўсе яны маглі быць ужо дададзены.
+\nСачыце за абнаўленнямі</string>
     <string name="available_d">Даступна: %1$d</string>
     <string name="content_type_other">Іншае</string>
+    <string name="state_paused">Прыпынена</string>
 </resources>
