@@ -42,7 +42,9 @@ class PageHolderDelegate(
 	private var error: Throwable? = null
 
 	init {
-		callback.onConfigChanged()
+		scope.launch(Dispatchers.Main) { // the same as post() -- wait until child fields init
+			callback.onConfigChanged()
+		}
 	}
 
 	fun isLoading() = job?.isActive == true

@@ -527,4 +527,6 @@
 	<string name="available_d">Available: %1$d</string>
 	<string name="disable_nsfw_summary">Disable NSFW sources and hide adult manga from list if possible</string>
 	<string name="state_paused">Paused</string>
+	<string name="reader_optimize">Reduce memory consumption (beta)</string>
+	<string name="reader_optimize_summary">Reduce offscreen pages quality to use less memory</string>
 </resources>

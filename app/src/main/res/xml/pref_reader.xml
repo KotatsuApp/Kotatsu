@@ -61,6 +61,12 @@
 		android:title="@string/enhanced_colors" />
 
 	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="reader_optimize"
+		android:summary="@string/reader_optimize_summary"
+		android:title="@string/reader_optimize" />
+
+	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="reader_bar"
 		android:summary="@string/reader_info_bar_summary"

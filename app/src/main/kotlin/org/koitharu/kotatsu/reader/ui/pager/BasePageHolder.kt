@@ -7,6 +7,7 @@ import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.ui.list.lifecycle.LifecycleAwareViewHolder
+import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.databinding.LayoutPageInfoBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
@@ -66,5 +67,11 @@ abstract class BasePageHolder<B : ViewBinding>(
 	@CallSuper
 	open fun onRecycled() {
 		delegate.onRecycle()
+	}
+
+	protected fun getBackgroundDownsampling() = when {
+		!settings.isReaderOptimizationEnabled -> 1
+		context.isLowRamDevice() -> 8
+		else -> 4
 	}
 }

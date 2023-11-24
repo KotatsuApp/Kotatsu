@@ -45,12 +45,22 @@ open class PageHolder(
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}
 
+	override fun onResume() {
+		super.onResume()
+		binding.ssiv.downsampling = 1
+	}
+
+	override fun onPause() {
+		super.onPause()
+		binding.ssiv.downsampling = getBackgroundDownsampling()
+	}
+
 	override fun onConfigChanged() {
 		super.onConfigChanged()
-		@Suppress("SENSELESS_COMPARISON")
-		if (settings.applyBitmapConfig(binding.ssiv) && delegate != null) {
+		if (settings.applyBitmapConfig(binding.ssiv)) {
 			delegate.reload()
 		}
+		binding.ssiv.downsampling = if (isResumed()) 1 else getBackgroundDownsampling()
 	}
 
 	@SuppressLint("SetTextI18n")
