@@ -513,11 +513,13 @@
     <string name="content_type_comics">Cómic</string>
     <string name="no_manga_sources_found">No se han encontrado fuentes de manga disponibles en su búsqueda</string>
     <string name="source_enabled">Fuente habilitada</string>
-    <string name="no_manga_sources_catalog_text">Aún no hay fuentes disponibles en esta sección. Permanezca atento</string>
+    <string name="no_manga_sources_catalog_text">No hay fuentes disponibles en esta sección, o puede que ya se hayan añadido todas.
+\nPermanezca atento</string>
     <string name="content_type_other">Otros</string>
     <string name="catalog">Catálogo</string>
     <string name="manage_sources">Gestionar las fuentes</string>
     <string name="manual">Manual</string>
     <string name="disable_nsfw_summary">Desactivar las fuentes NSFW y ocultar el manga para adultos de la lista si es posible</string>
     <string name="available_d">Disponible: %1$d</string>
+    <string name="state_paused">Pausado</string>
 </resources>
