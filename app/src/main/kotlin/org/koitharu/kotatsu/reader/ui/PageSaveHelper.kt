@@ -15,7 +15,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okio.IOException
 import okio.buffer
 import okio.sink
-import okio.source
+import org.koitharu.kotatsu.core.util.ext.source
+import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
@@ -41,8 +42,8 @@ class PageSaveHelper @Inject constructor(
 		saveLauncher: ActivityResultLauncher<String>,
 	): Uri {
 		val pageUrl = pageLoader.getPageUrl(page)
-		val pageFile = pageLoader.loadPage(page, force = false)
-		val proposedName = getProposedFileName(pageUrl, pageFile)
+		val pageUri = pageLoader.loadPage(page, force = false)
+		val proposedName = getProposedFileName(pageUrl, pageUri)
 		val destination = withContext(Dispatchers.Main) {
 			suspendCancellableCoroutine { cont ->
 				continuation = cont
@@ -54,7 +55,7 @@ class PageSaveHelper @Inject constructor(
 		runInterruptible(Dispatchers.IO) {
 			contentResolver.openOutputStream(destination)?.sink()?.buffer()
 		}?.use { output ->
-			pageFile.source().use { input ->
+			pageUri.source().use { input ->
 				output.writeAllCancellable(input)
 			}
 		} ?: throw IOException("Output stream is null")
@@ -65,7 +66,7 @@ class PageSaveHelper @Inject constructor(
 		resume(uri)
 	} != null
 
-	private suspend fun getProposedFileName(url: String, file: File): String {
+	private suspend fun getProposedFileName(url: String, fileUri: Uri): String {
 		var name = if (url.startsWith("cbz://")) {
 			requireNotNull(url.toUri().fragment)
 		} else {
@@ -74,7 +75,7 @@ class PageSaveHelper @Inject constructor(
 		var extension = name.substringAfterLast('.', "")
 		name = name.substringBeforeLast('.')
 		if (extension.length !in 2..4) {
-			val mimeType = getImageMimeType(file)
+			val mimeType = fileUri.toFileOrNull()?.let { file -> getImageMimeType(file) }
 			extension = if (mimeType != null) {
 				MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: EXTENSION_FALLBACK
 			} else {

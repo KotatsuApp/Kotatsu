@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.annotation.AnyThread
 import androidx.collection.LongSparseArray
 import androidx.collection.set
+import androidx.core.net.toUri
 import dagger.hilt.android.ActivityRetainedLifecycle
 import dagger.hilt.android.lifecycle.RetainedLifecycle
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,15 +34,16 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
+import org.koitharu.kotatsu.core.util.ext.URI_SCHEME_ZIP
 import org.koitharu.kotatsu.core.util.ext.ensureSuccess
+import org.koitharu.kotatsu.core.util.ext.exists
 import org.koitharu.kotatsu.core.util.ext.getCompletionResultOrNull
-import org.koitharu.kotatsu.core.util.ext.isNotEmpty
 import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
+import org.koitharu.kotatsu.core.util.ext.isTargetNotEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
-import org.koitharu.kotatsu.core.zip.ZipPool
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.data.isCbzUri
 import org.koitharu.kotatsu.parsers.model.MangaPage
@@ -71,13 +73,12 @@ class PageLoader @Inject constructor(
 
 	val loaderScope = RetainedLifecycleCoroutineScope(lifecycle) + InternalErrorHandler() + Dispatchers.Default
 
-	private val tasks = LongSparseArray<ProgressDeferred<File, Float>>()
+	private val tasks = LongSparseArray<ProgressDeferred<Uri, Float>>()
 	private val semaphore = Semaphore(3)
 	private val convertLock = Mutex()
 	private val prefetchLock = Mutex()
 	private var repository: MangaRepository? = null
 	private val prefetchQueue = LinkedList<MangaPage>()
-	private val zipPool = ZipPool(2)
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
 
@@ -85,7 +86,6 @@ class PageLoader @Inject constructor(
 		synchronized(tasks) {
 			tasks.clear()
 		}
-		zipPool.evictAll()
 	}
 
 	fun isPrefetchApplicable(): Boolean {
@@ -113,7 +113,7 @@ class PageLoader @Inject constructor(
 		}
 	}
 
-	fun loadPageAsync(page: MangaPage, force: Boolean): ProgressDeferred<File, Float> {
+	fun loadPageAsync(page: MangaPage, force: Boolean): ProgressDeferred<Uri, Float> {
 		var task = tasks[page.id]?.takeIf { it.isValid() }
 		if (force) {
 			task?.cancel()
@@ -127,7 +127,7 @@ class PageLoader @Inject constructor(
 		return task
 	}
 
-	suspend fun loadPage(page: MangaPage, force: Boolean): File {
+	suspend fun loadPage(page: MangaPage, force: Boolean): Uri {
 		return loadPageAsync(page, force).await()
 	}
 
@@ -167,11 +167,11 @@ class PageLoader @Inject constructor(
 		}
 	}
 
-	private fun loadPageAsyncImpl(page: MangaPage, skipCache: Boolean): ProgressDeferred<File, Float> {
+	private fun loadPageAsyncImpl(page: MangaPage, skipCache: Boolean): ProgressDeferred<Uri, Float> {
 		val progress = MutableStateFlow(PROGRESS_UNDEFINED)
 		val deferred = loaderScope.async {
 			if (!skipCache) {
-				cache.get(page.url)?.let { return@async it }
+				cache.get(page.url)?.let { return@async it.toUri() }
 			}
 			counter.incrementAndGet()
 			try {
@@ -195,26 +195,20 @@ class PageLoader @Inject constructor(
 		}
 	}
 
-	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): File = semaphore.withPermit {
+	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): Uri = semaphore.withPermit {
 		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
 		val uri = Uri.parse(pageUrl)
 		return if (isCbzUri(uri)) {
-			runInterruptible(Dispatchers.IO) {
-				zipPool[uri]
-			}.use {
-				cache.put(pageUrl, it)
-			}
+			uri.buildUpon().scheme(URI_SCHEME_ZIP).build()
 		} else {
 			val request = createPageRequest(page, pageUrl)
 			imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
-				val body = checkNotNull(response.body) {
-					"Null response"
-				}
+				val body = checkNotNull(response.body) { "Null response body" }
 				body.withProgress(progress).use {
 					cache.put(pageUrl, it.source())
 				}
-			}
+			}.toUri()
 		}
 	}
 
@@ -222,9 +216,9 @@ class PageLoader @Inject constructor(
 		return context.ramAvailable <= FileSize.MEGABYTES.convert(PREFETCH_MIN_RAM_MB, FileSize.BYTES)
 	}
 
-	private fun Deferred<File>.isValid(): Boolean {
-		return getCompletionResultOrNull()?.map { file ->
-			file.exists() && file.isNotEmpty()
+	private fun Deferred<Uri>.isValid(): Boolean {
+		return getCompletionResultOrNull()?.map { uri ->
+			uri.exists() && uri.isTargetNotEmpty()
 		}?.getOrDefault(false) ?: true
 	}
 

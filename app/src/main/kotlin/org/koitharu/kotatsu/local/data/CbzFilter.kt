@@ -12,6 +12,6 @@ fun hasCbzExtension(string: String): Boolean {
 	return isCbzExtension(ext)
 }
 
-fun hasCbzExtension(file: File) = isCbzExtension(file.name)
+fun hasCbzExtension(file: File) = isCbzExtension(file.extension)
 
 fun isCbzUri(uri: Uri) = isCbzExtension(uri.scheme)

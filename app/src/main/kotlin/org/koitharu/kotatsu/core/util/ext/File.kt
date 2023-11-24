@@ -19,8 +19,8 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import kotlin.io.path.ExperimentalPathApi
-import kotlin.io.path.walk
 import kotlin.io.path.readAttributes
+import kotlin.io.path.walk
 
 fun File.subdir(name: String) = File(this, name).also {
 	if (!it.exists()) it.mkdirs()
@@ -50,7 +50,7 @@ fun File.getStorageName(context: Context): String = runCatching {
 	}
 }.getOrNull() ?: context.getString(R.string.other_storage)
 
-fun Uri.toFileOrNull() = if (scheme == "file") path?.let(::File) else null
+fun Uri.toFileOrNull() = if (scheme == URI_SCHEME_FILE) path?.let(::File) else null
 
 suspend fun File.deleteAwait() = withContext(Dispatchers.IO) {
 	delete() || deleteRecursively()

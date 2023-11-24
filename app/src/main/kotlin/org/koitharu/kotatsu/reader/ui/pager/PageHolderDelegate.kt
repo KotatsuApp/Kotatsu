@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
 import android.net.Uri
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
@@ -20,10 +21,10 @@ import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
-import java.io.File
 import java.io.IOException
 
 class PageHolderDelegate(
@@ -38,7 +39,7 @@ class PageHolderDelegate(
 	var state = State.EMPTY
 		private set
 	private var job: Job? = null
-	private var file: File? = null
+	private var uri: Uri? = null
 	private var error: Throwable? = null
 
 	init {
@@ -87,15 +88,15 @@ class PageHolderDelegate(
 
 	fun onRecycle() {
 		state = State.EMPTY
-		file = null
+		uri = null
 		error = null
 		job?.cancel()
 	}
 
 	fun reload() {
 		if (state == State.SHOWN) {
-			file?.let {
-				callback.onImageReady(it.toUri())
+			uri?.let {
+				callback.onImageReady(it)
 			}
 		}
 	}
@@ -114,10 +115,10 @@ class PageHolderDelegate(
 
 	override fun onImageLoadError(e: Throwable) {
 		e.printStackTraceDebug()
-		val file = this.file
+		val uri = this.uri
 		error = e
-		if (state == State.LOADED && e is IOException && file != null && file.exists()) {
-			tryConvert(file, e)
+		if (state == State.LOADED && e is IOException && uri != null && uri.toFileOrNull()?.exists() != false) {
+			tryConvert(uri, e)
 		} else {
 			state = State.ERROR
 			callback.onError(e)
@@ -131,12 +132,13 @@ class PageHolderDelegate(
 		callback.onConfigChanged()
 	}
 
-	private fun tryConvert(file: File, e: Exception) {
+	private fun tryConvert(uri: Uri, e: Exception) {
 		val prevJob = job
 		job = scope.launch {
 			prevJob?.join()
 			state = State.CONVERTING
 			try {
+				val file = uri.toFile()
 				loader.convertInPlace(file)
 				state = State.CONVERTED
 				callback.onImageReady(file.toUri())
@@ -157,14 +159,14 @@ class PageHolderDelegate(
 		yield()
 		try {
 			val task = loader.loadPageAsync(data, force)
-			file = coroutineScope {
+			uri = coroutineScope {
 				val progressObserver = observeProgress(this, task.progressAsFlow())
 				val file = task.await()
 				progressObserver.cancelAndJoin()
 				file
 			}
 			state = State.LOADED
-			callback.onImageReady(checkNotNull(file).toUri())
+			callback.onImageReady(checkNotNull(uri))
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {
