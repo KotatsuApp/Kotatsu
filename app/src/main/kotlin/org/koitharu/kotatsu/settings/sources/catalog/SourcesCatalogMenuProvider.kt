@@ -9,8 +9,8 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.getLocaleDisplayName
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
-import org.koitharu.kotatsu.parsers.util.toTitleCase
 
 class SourcesCatalogMenuProvider(
 	private val activity: Activity,
@@ -57,17 +57,18 @@ class SourcesCatalogMenuProvider(
 	}
 
 	private fun showLocalesMenu() {
-		val locales = viewModel.locales
+		val locales = viewModel.locales.map {
+			it to it.getLocaleDisplayName(activity)
+		}
 		val anchor: View = (activity as AppBarOwner).appBar.let {
 			it.findViewById<View?>(R.id.toolbar) ?: it
 		}
 		val menu = PopupMenu(activity, anchor)
 		for ((i, lc) in locales.withIndex()) {
-			val title = lc?.getDisplayLanguage(lc)?.toTitleCase(lc) ?: activity.getString(R.string.various_languages)
-			menu.menu.add(Menu.NONE, Menu.NONE, i, title)
+			menu.menu.add(Menu.NONE, Menu.NONE, i, lc.second)
 		}
 		menu.setOnMenuItemClickListener {
-			viewModel.setLocale(locales.getOrNull(it.order)?.language)
+			viewModel.setLocale(locales.getOrNull(it.order)?.first)
 			true
 		}
 		menu.show()

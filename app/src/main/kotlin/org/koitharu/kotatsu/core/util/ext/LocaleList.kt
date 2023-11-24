@@ -1,6 +1,9 @@
 package org.koitharu.kotatsu.core.util.ext
 
+import android.content.Context
 import androidx.core.os.LocaleListCompat
+import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.util.Locale
 
 operator fun LocaleListCompat.iterator(): ListIterator<Locale> = LocaleListCompatIterator(this)
@@ -16,6 +19,14 @@ inline fun <T> LocaleListCompat.mapToSet(block: (Locale) -> T): Set<T> {
 }
 
 fun LocaleListCompat.getOrThrow(index: Int) = get(index) ?: throw NoSuchElementException()
+
+fun String?.getLocaleDisplayName(context: Context): String {
+	if (this == null) {
+		return context.getString(R.string.various_languages)
+	}
+	val lc = Locale(this)
+	return lc.getDisplayLanguage(lc).toTitleCase(lc)
+}
 
 private class LocaleListCompatIterator(private val list: LocaleListCompat) : ListIterator<Locale> {
 

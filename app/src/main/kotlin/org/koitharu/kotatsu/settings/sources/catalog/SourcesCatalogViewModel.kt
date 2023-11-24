@@ -15,10 +15,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -37,8 +35,8 @@ class SourcesCatalogViewModel @Inject constructor(
 	private var searchQuery: String? = null
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val contentType = MutableStateFlow(ContentType.entries.first())
-	val locales = getLocalesImpl()
-	val locale = MutableStateFlow(locales.firstOrNull()?.language)
+	val locales = repository.allMangaSources.mapToSet { it.locale }
+	val locale = MutableStateFlow(Locale.getDefault().language.takeIf { it in locales })
 
 	val isNsfwDisabled = settings.isNsfwContentDisabled
 
@@ -78,11 +76,5 @@ class SourcesCatalogViewModel @Inject constructor(
 			val rollback = repository.setSourceEnabled(source, true)
 			onActionDone.call(ReversibleAction(R.string.source_enabled, rollback))
 		}
-	}
-
-	private fun getLocalesImpl(): List<Locale?> {
-		return repository.allMangaSources
-			.mapToSet { it.locale?.let(::Locale) }
-			.sortedWithSafe(LocaleComparator())
 	}
 }

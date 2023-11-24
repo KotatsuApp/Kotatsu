@@ -12,19 +12,17 @@ import coil.ImageLoader
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.titleResId
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
+import org.koitharu.kotatsu.core.util.ext.getLocaleDisplayName
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivitySourcesCatalogBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.ContentType
-import org.koitharu.kotatsu.parsers.util.toTitleCase
-import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -57,7 +55,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			ReversibleActionObserver(viewBinding.recyclerView),
 		)
 		viewModel.locale.observe(this) {
-			supportActionBar?.subtitle = it.getLocaleDisplayName()
+			supportActionBar?.subtitle = it.getLocaleDisplayName(this)
 		}
 		addMenuProvider(SourcesCatalogMenuProvider(this, viewModel, this))
 	}
@@ -111,13 +109,5 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			tabs.addTab(tab)
 		}
 		tabs.addOnTabSelectedListener(this)
-	}
-
-	private fun String?.getLocaleDisplayName(): String {
-		if (this == null) {
-			return getString(R.string.various_languages)
-		}
-		val lc = Locale(this)
-		return lc.getDisplayLanguage(lc).toTitleCase(lc)
 	}
 }
