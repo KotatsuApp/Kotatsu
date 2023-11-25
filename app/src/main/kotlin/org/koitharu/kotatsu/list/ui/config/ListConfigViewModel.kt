@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.list.domain.ListSortOrder
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,7 +55,7 @@ class ListConfigViewModel @Inject constructor(
 	}?.sortedByOrdinal()
 
 	fun getSelectedSortOrder(): ListSortOrder? = when (section) {
-		is ListConfigSection.Favorites -> runBlocking { favouritesRepository.getCategory(section.categoryId).order }
+		is ListConfigSection.Favorites -> getCategorySortOrder(section.categoryId)
 		ListConfigSection.General -> null
 		ListConfigSection.History -> settings.historySortOrder
 		ListConfigSection.Suggestions -> ListSortOrder.RELEVANCE // TODO
@@ -72,5 +73,11 @@ class ListConfigViewModel @Inject constructor(
 
 			ListConfigSection.Suggestions -> Unit
 		}
+	}
+
+	private fun getCategorySortOrder(id: Long): ListSortOrder = runBlocking {
+		runCatchingCancellable {
+			favouritesRepository.getCategory(id).order
+		}.getOrDefault(ListSortOrder.NEWEST)
 	}
 }
