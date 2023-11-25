@@ -30,7 +30,6 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.MangaFilter
-import org.koitharu.kotatsu.filter.ui.model.FilterState
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -40,6 +39,7 @@ import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import javax.inject.Inject
@@ -122,7 +122,7 @@ open class RemoteListViewModel @Inject constructor(
 		applyFilter(tags)
 	}
 
-	protected fun loadList(filterState: FilterState, append: Boolean): Job {
+	protected fun loadList(filterState: MangaListFilter.Advanced, append: Boolean): Job {
 		loadingJob?.let {
 			if (it.isActive) return it
 		}
@@ -131,8 +131,7 @@ open class RemoteListViewModel @Inject constructor(
 				listError.value = null
 				val list = repository.getList(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
-					sortOrder = filterState.sortOrder,
-					tags = filterState.tags,
+					filter = filterState,
 				)
 				val oldList = mangaList.getAndUpdate { oldList ->
 					if (!append || oldList.isNullOrEmpty()) {

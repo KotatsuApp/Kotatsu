@@ -7,8 +7,10 @@ import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.lang.ref.WeakReference
@@ -23,11 +25,13 @@ interface MangaRepository {
 
 	val sortOrders: Set<SortOrder>
 
+	val states: Set<MangaState>
+
 	var defaultSortOrder: SortOrder
 
-	suspend fun getList(offset: Int, query: String): List<Manga>
+	val isMultipleTagsSupported: Boolean
 
-	suspend fun getList(offset: Int, tags: Set<MangaTag>?, sortOrder: SortOrder?): List<Manga>
+	suspend fun getList(offset: Int, filter: MangaListFilter?): List<Manga>
 
 	suspend fun getDetails(manga: Manga): Manga
 

@@ -8,4 +8,6 @@ interface OnFilterChangedListener : ListHeaderClickListener {
 	fun onSortItemClick(item: FilterItem.Sort)
 
 	fun onTagItemClick(item: FilterItem.Tag)
+
+	fun onStateItemClick(item: FilterItem.State)
 }

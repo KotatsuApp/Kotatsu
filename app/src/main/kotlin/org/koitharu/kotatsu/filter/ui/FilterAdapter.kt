@@ -19,6 +19,8 @@ class FilterAdapter(
 	init {
 		addDelegate(ListItemType.FILTER_SORT, filterSortDelegate(listener))
 		addDelegate(ListItemType.FILTER_TAG, filterTagDelegate(listener))
+		addDelegate(ListItemType.FILTER_TAG_MULTI, filterTagMultipleDelegate(listener))
+		addDelegate(ListItemType.FILTER_STATE, filterStateDelegate(listener))
 		addDelegate(ListItemType.HEADER, listHeaderAD(listener))
 		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
 		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())

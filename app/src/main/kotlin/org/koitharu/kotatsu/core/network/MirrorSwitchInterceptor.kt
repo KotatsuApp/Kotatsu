@@ -63,6 +63,9 @@ class MirrorSwitchInterceptor @Inject constructor(
 		}
 		synchronized(obtainLock(repository.source)) {
 			val currentMirror = repository.domain
+			if (currentMirror !in mirrors) {
+				return@synchronized false
+			}
 			addToBlacklist(repository.source, currentMirror)
 			val newMirror = mirrors.firstOrNull { x ->
 				x != currentMirror && !isBlacklisted(repository.source, x)

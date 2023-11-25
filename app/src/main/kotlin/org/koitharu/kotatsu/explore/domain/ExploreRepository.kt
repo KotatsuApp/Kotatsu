@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.suggestions.domain.TagsBlacklist
@@ -73,7 +74,15 @@ class ExploreRepository @Inject constructor(
 		val tag = tags.firstNotNullOfOrNull { title ->
 			availableTags.find { x -> x.title.almostEquals(title, 0.4f) }
 		}
-		val list = repository.getList(0, setOfNotNull(tag), order).asArrayList()
+		val list = repository.getList(
+			offset = 0,
+			filter = MangaListFilter.Advanced(
+				sortOrder = order,
+				tags = setOfNotNull(tag),
+				locale = null,
+				states = emptySet(),
+			),
+		).asArrayList()
 		if (settings.isSuggestionsExcludeNsfw) {
 			list.removeAll { it.isNsfw }
 		}

@@ -4,6 +4,7 @@ import android.widget.TextView
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.titleResId
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.databinding.ItemCheckableMultipleBinding
@@ -27,10 +28,44 @@ fun filterSortDelegate(
 	}
 }
 
+fun filterStateDelegate(
+	listener: OnFilterChangedListener,
+) = adapterDelegateViewBinding<FilterItem.State, ListModel, ItemCheckableMultipleBinding>(
+	{ layoutInflater, parent -> ItemCheckableMultipleBinding.inflate(layoutInflater, parent, false) },
+) {
+
+	itemView.setOnClickListener {
+		listener.onStateItemClick(item)
+	}
+
+	bind { payloads ->
+		binding.root.setText(item.state.titleResId)
+		binding.root.setChecked(item.isChecked, payloads.isNotEmpty())
+	}
+}
+
 fun filterTagDelegate(
+	listener: OnFilterChangedListener,
+) = adapterDelegateViewBinding<FilterItem.Tag, ListModel, ItemCheckableSingleBinding>(
+	{ layoutInflater, parent -> ItemCheckableSingleBinding.inflate(layoutInflater, parent, false) },
+	on = { item, _, _ -> item is FilterItem.Tag && !item.isMultiple },
+) {
+
+	itemView.setOnClickListener {
+		listener.onTagItemClick(item)
+	}
+
+	bind { payloads ->
+		binding.root.text = item.tag.title
+		binding.root.setChecked(item.isChecked, payloads.isNotEmpty())
+	}
+}
+
+fun filterTagMultipleDelegate(
 	listener: OnFilterChangedListener,
 ) = adapterDelegateViewBinding<FilterItem.Tag, ListModel, ItemCheckableMultipleBinding>(
 	{ layoutInflater, parent -> ItemCheckableMultipleBinding.inflate(layoutInflater, parent, false) },
+	on = { item, _, _ -> item is FilterItem.Tag && item.isMultiple },
 ) {
 
 	itemView.setOnClickListener {

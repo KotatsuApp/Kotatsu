@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.almostEquals
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
@@ -58,7 +59,7 @@ class MangaLinkResolver @Inject constructor(
 
 	private suspend fun MangaRepository.findExact(url: String?, title: String?): Manga? {
 		if (!title.isNullOrEmpty()) {
-			val list = getList(0, title)
+			val list = getList(0, MangaListFilter.Search(title))
 			if (url != null) {
 				list.find { it.url == url }?.let {
 					return it
@@ -77,7 +78,7 @@ class MangaLinkResolver @Inject constructor(
 			}.ifNullOrEmpty {
 				seed.author
 			} ?: return@runCatchingCancellable null
-			val seedList = getList(0, seedTitle)
+			val seedList = getList(0, MangaListFilter.Search(seedTitle))
 			seedList.first { x -> x.url == url }
 		}.getOrThrow()
 	}

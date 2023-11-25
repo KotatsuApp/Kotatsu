@@ -7,6 +7,7 @@ class FilterHeaderModel(
 	val chips: Collection<ChipsView.ChipModel>,
 	val sortOrder: SortOrder?,
 	val hasSelectedTags: Boolean,
+	val allowMultipleTags: Boolean,
 ) {
 
 	val textSummary: String
@@ -19,6 +20,7 @@ class FilterHeaderModel(
 		other as FilterHeaderModel
 
 		if (chips != other.chips) return false
+		if (allowMultipleTags != other.allowMultipleTags) return false
 		return sortOrder == other.sortOrder
 		// Not need to check hasSelectedTags
 
@@ -26,6 +28,7 @@ class FilterHeaderModel(
 
 	override fun hashCode(): Int {
 		var result = chips.hashCode()
+		result = 31 * result + allowMultipleTags.hashCode()
 		result = 31 * result + (sortOrder?.hashCode() ?: 0)
 		return result
 	}

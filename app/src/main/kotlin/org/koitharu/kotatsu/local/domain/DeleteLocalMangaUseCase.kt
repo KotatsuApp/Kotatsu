@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.local.domain
 
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.IOException
 import javax.inject.Inject
 
@@ -27,7 +27,7 @@ class DeleteLocalMangaUseCase @Inject constructor(
 	}
 
 	suspend operator fun invoke(ids: Set<Long>) {
-		val list = localMangaRepository.getList(0, null, null)
+		val list = localMangaRepository.getList(0, null)
 		var removed = 0
 		for (manga in list) {
 			if (manga.id in ids) {

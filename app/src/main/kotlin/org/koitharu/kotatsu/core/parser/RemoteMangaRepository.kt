@@ -23,8 +23,10 @@ import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Favicons
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.domain
@@ -40,13 +42,19 @@ class RemoteMangaRepository(
 		get() = parser.source
 
 	override val sortOrders: Set<SortOrder>
-		get() = parser.sortOrders
+		get() = parser.availableSortOrders
+
+	override val states: Set<MangaState>
+		get() = parser.availableStates
 
 	override var defaultSortOrder: SortOrder
 		get() = getConfig().defaultSortOrder ?: sortOrders.first()
 		set(value) {
 			getConfig().defaultSortOrder = value
 		}
+
+	override val isMultipleTagsSupported: Boolean
+		get() = parser.isMultipleTagsSupported
 
 	var domain: String
 		get() = parser.domain
@@ -68,15 +76,9 @@ class RemoteMangaRepository(
 		}
 	}
 
-	override suspend fun getList(offset: Int, query: String): List<Manga> {
+	override suspend fun getList(offset: Int, filter: MangaListFilter?): List<Manga> {
 		return mirrorSwitchInterceptor.withMirrorSwitching {
-			parser.getList(offset, query)
-		}
-	}
-
-	override suspend fun getList(offset: Int, tags: Set<MangaTag>?, sortOrder: SortOrder?): List<Manga> {
-		return mirrorSwitchInterceptor.withMirrorSwitching {
-			parser.getList(offset, tags, sortOrder)
+			parser.getList(offset, filter)
 		}
 	}
 
@@ -98,7 +100,7 @@ class RemoteMangaRepository(
 	}
 
 	override suspend fun getTags(): Set<MangaTag> = mirrorSwitchInterceptor.withMirrorSwitching {
-		parser.getTags()
+		parser.getAvailableTags()
 	}
 
 	suspend fun getFavicons(): Favicons = mirrorSwitchInterceptor.withMirrorSwitching {
@@ -133,7 +135,7 @@ class RemoteMangaRepository(
 	}
 
 	suspend fun find(manga: Manga): Manga? {
-		val list = getList(0, manga.title)
+		val list = getList(0, MangaListFilter.Search(manga.title))
 		return list.find { x -> x.id == manga.id }
 	}
 

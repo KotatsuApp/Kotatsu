@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
 
@@ -18,7 +19,7 @@ class RecoverMangaUseCase @Inject constructor(
 			return@runCatchingCancellable null
 		}
 		val repository = repositoryFactory.create(manga.source)
-		val list = repository.getList(offset = 0, query = manga.title)
+		val list = repository.getList(offset = 0, filter = MangaListFilter.Search(manga.title))
 		val newManga = list.find { x -> x.title == manga.title }?.let {
 			repository.getDetails(it)
 		} ?: return@runCatchingCancellable null

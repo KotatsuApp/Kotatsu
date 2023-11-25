@@ -39,7 +39,7 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 		if (tag == null) {
 			FilterSheetFragment.show(parentFragmentManager)
 		} else {
-			filter.onTagItemClick(FilterItem.Tag(tag, !chip.isChecked))
+			filter.onTagItemClick(FilterItem.Tag(tag, filter.header.value.allowMultipleTags, !chip.isChecked))
 		}
 	}
 

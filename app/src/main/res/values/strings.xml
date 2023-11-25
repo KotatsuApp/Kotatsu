@@ -529,4 +529,5 @@
 	<string name="state_paused">Paused</string>
 	<string name="reader_optimize">Reduce memory consumption (beta)</string>
 	<string name="reader_optimize_summary">Reduce offscreen pages quality to use less memory</string>
+	<string name="state">State</string>
 </resources>

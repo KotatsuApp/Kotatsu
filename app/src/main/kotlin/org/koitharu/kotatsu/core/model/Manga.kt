@@ -1,12 +1,15 @@
 package org.koitharu.kotatsu.core.model
 
 import android.net.Uri
+import androidx.annotation.StringRes
 import androidx.core.os.LocaleListCompat
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.iterator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.util.mapToSet
 
 @JvmName("mangaIds")
@@ -30,6 +33,15 @@ fun Collection<ChapterListItem>.countChaptersByBranch(): Int {
 	}
 	return acc.values.max()
 }
+
+@get:StringRes
+val MangaState.titleResId: Int
+	get() = when (this) {
+		MangaState.ONGOING -> R.string.state_ongoing
+		MangaState.FINISHED -> R.string.state_finished
+		MangaState.ABANDONED -> R.string.state_abandoned
+		MangaState.PAUSED -> R.string.state_paused
+	}
 
 fun Manga.findChapter(id: Long): MangaChapter? {
 	return chapters?.findById(id)

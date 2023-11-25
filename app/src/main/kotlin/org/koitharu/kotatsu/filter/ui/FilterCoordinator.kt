@@ -28,11 +28,11 @@ import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.model.FilterItem
-import org.koitharu.kotatsu.filter.ui.model.FilterState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -55,7 +55,8 @@ class FilterCoordinator @Inject constructor(
 
 	private val coroutineScope = lifecycle.lifecycleScope
 	private val repository = mangaRepositoryFactory.create(savedStateHandle.require(RemoteListFragment.ARG_SOURCE))
-	private val currentState = MutableStateFlow(FilterState(repository.defaultSortOrder, emptySet()))
+	private val currentState =
+		MutableStateFlow(MangaListFilter.Advanced(repository.defaultSortOrder, emptySet(), null, emptySet()))
 	private var searchQuery = MutableStateFlow("")
 	private val localTags = SuspendLazy {
 		dataRepository.findTags(repository.source)
@@ -68,7 +69,12 @@ class FilterCoordinator @Inject constructor(
 	override val header: StateFlow<FilterHeaderModel> = getHeaderFlow().stateIn(
 		scope = coroutineScope + Dispatchers.Default,
 		started = SharingStarted.Lazily,
-		initialValue = FilterHeaderModel(emptyList(), repository.defaultSortOrder, false),
+		initialValue = FilterHeaderModel(
+			chips = emptyList(),
+			sortOrder = repository.defaultSortOrder,
+			hasSelectedTags = false,
+			allowMultipleTags = repository.isMultipleTagsSupported,
+		),
 	)
 
 	init {
@@ -81,24 +87,44 @@ class FilterCoordinator @Inject constructor(
 
 	override fun onSortItemClick(item: FilterItem.Sort) {
 		currentState.update { oldValue ->
-			FilterState(item.order, oldValue.tags)
+			oldValue.copy(sortOrder = item.order)
 		}
 		repository.defaultSortOrder = item.order
 	}
 
 	override fun onTagItemClick(item: FilterItem.Tag) {
 		currentState.update { oldValue ->
-			val newTags = if (item.isChecked) {
+			val newTags = if (!item.isMultiple) {
+				setOf(item.tag)
+			} else if (item.isChecked) {
 				oldValue.tags - item.tag
 			} else {
 				oldValue.tags + item.tag
 			}
-			FilterState(oldValue.sortOrder, newTags)
+			oldValue.copy(tags = newTags)
+		}
+	}
+
+	override fun onStateItemClick(item: FilterItem.State) {
+		currentState.update { oldValue ->
+			val newStates = if (item.isChecked) {
+				oldValue.states - item.state
+			} else {
+				oldValue.states + item.state
+			}
+			oldValue.copy(states = newStates)
 		}
 	}
 
 	override fun onListHeaderClick(item: ListHeader, view: View) {
-		reset()
+		currentState.update { oldValue ->
+			oldValue.copy(
+				sortOrder = oldValue.sortOrder,
+				tags = if (item.payload == R.string.genres) emptySet() else oldValue.tags,
+				locale = null,
+				states = if (item.payload == R.string.state) emptySet() else oldValue.states,
+			)
+		}
 	}
 
 	fun observeAvailableTags(): Flow<Set<MangaTag>?> = flow {
@@ -112,13 +138,13 @@ class FilterCoordinator @Inject constructor(
 
 	fun setTags(tags: Set<MangaTag>) {
 		currentState.update { oldValue ->
-			FilterState(oldValue.sortOrder, tags)
+			oldValue.copy(tags = tags)
 		}
 	}
 
 	fun reset() {
 		currentState.update { oldValue ->
-			FilterState(oldValue.sortOrder, emptySet())
+			oldValue.copy(oldValue.sortOrder, emptySet(), null, emptySet())
 		}
 	}
 
@@ -133,7 +159,12 @@ class FilterCoordinator @Inject constructor(
 		observeAvailableTags(),
 	) { state, available ->
 		val chips = createChipsList(state, available.orEmpty(), 8)
-		FilterHeaderModel(chips, state.sortOrder, state.tags.isNotEmpty())
+		FilterHeaderModel(
+			chips = chips,
+			sortOrder = state.sortOrder,
+			hasSelectedTags = state.tags.isNotEmpty(),
+			allowMultipleTags = repository.isMultipleTagsSupported,
+		)
 	}
 
 	private fun getItemsFlow() = combine(
@@ -156,7 +187,7 @@ class FilterCoordinator @Inject constructor(
 	}
 
 	private suspend fun createChipsList(
-		filterState: FilterState,
+		filterState: MangaListFilter.Advanced,
 		availableTags: Set<MangaTag>,
 		limit: Int,
 	): List<ChipsView.ChipModel> {
@@ -205,12 +236,14 @@ class FilterCoordinator @Inject constructor(
 	@WorkerThread
 	private fun buildFilterList(
 		allTags: TagsWrapper,
-		state: FilterState,
+		state: MangaListFilter.Advanced,
 		query: String,
 	): List<ListModel> {
 		val sortOrders = repository.sortOrders.sortedByOrdinal()
+		val states = repository.states
 		val tags = mergeTags(state.tags, allTags.tags).toList()
-		val list = ArrayList<ListModel>(tags.size + sortOrders.size + 3)
+		val list = ArrayList<ListModel>(tags.size + states.size + sortOrders.size + 4)
+		val isMultiTag = repository.isMultipleTagsSupported
 		if (query.isEmpty()) {
 			if (sortOrders.isNotEmpty()) {
 				list.add(ListHeader(R.string.sort_order))
@@ -218,10 +251,28 @@ class FilterCoordinator @Inject constructor(
 					FilterItem.Sort(it, isSelected = it == state.sortOrder)
 				}
 			}
+			if (states.isNotEmpty()) {
+				list.add(
+					ListHeader(
+						textRes = R.string.state,
+						buttonTextRes = if (state.states.isEmpty()) 0 else R.string.reset,
+						payload = R.string.state,
+					),
+				)
+				states.mapTo(list) {
+					FilterItem.State(it, isChecked = it in state.states)
+				}
+			}
 			if (allTags.isLoading || allTags.isError || tags.isNotEmpty()) {
-				list.add(ListHeader(R.string.genres, if (state.tags.isEmpty()) 0 else R.string.reset))
+				list.add(
+					ListHeader(
+						textRes = R.string.genres,
+						buttonTextRes = if (state.tags.isEmpty()) 0 else R.string.reset,
+						payload = R.string.genres,
+					),
+				)
 				tags.mapTo(list) {
-					FilterItem.Tag(it, isChecked = it in state.tags)
+					FilterItem.Tag(it, isMultiple = isMultiTag, isChecked = it in state.tags)
 				}
 			}
 			if (allTags.isError) {
@@ -232,7 +283,7 @@ class FilterCoordinator @Inject constructor(
 		} else {
 			tags.mapNotNullTo(list) {
 				if (it.title.contains(query, ignoreCase = true)) {
-					FilterItem.Tag(it, isChecked = it in state.tags)
+					FilterItem.Tag(it, isMultiple = isMultiTag, isChecked = it in state.tags)
 				} else {
 					null
 				}

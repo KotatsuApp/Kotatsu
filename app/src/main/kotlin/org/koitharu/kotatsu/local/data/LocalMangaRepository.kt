@@ -14,6 +14,7 @@ import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.CompositeMutex2
 import org.koitharu.kotatsu.core.util.ext.children
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
@@ -25,8 +26,10 @@ import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -47,7 +50,9 @@ class LocalMangaRepository @Inject constructor(
 	override val source = MangaSource.LOCAL
 	private val locks = CompositeMutex2<Long>()
 
+	override val isMultipleTagsSupported: Boolean = true
 	override val sortOrders: Set<SortOrder> = EnumSet.of(SortOrder.ALPHABETICAL, SortOrder.RATING, SortOrder.NEWEST)
+	override val states = emptySet<MangaState>()
 
 	override var defaultSortOrder: SortOrder
 		get() = settings.localListOrder
@@ -55,33 +60,32 @@ class LocalMangaRepository @Inject constructor(
 			settings.localListOrder = value
 		}
 
-	override suspend fun getList(offset: Int, query: String): List<Manga> {
+	override suspend fun getList(offset: Int, filter: MangaListFilter?): List<Manga> {
 		if (offset > 0) {
 			return emptyList()
 		}
 		val list = getRawList()
-		if (query.isNotEmpty()) {
-			list.retainAll { x -> x.isMatchesQuery(query) }
-		}
-		return list.unwrap()
-	}
+		when (filter) {
+			is MangaListFilter.Search -> {
+				list.retainAll { x -> x.isMatchesQuery(filter.query) }
+			}
 
-	override suspend fun getList(offset: Int, tags: Set<MangaTag>?, sortOrder: SortOrder?): List<Manga> {
-		if (offset > 0) {
-			return emptyList()
-		}
-		val list = getRawList()
-		if (!tags.isNullOrEmpty()) {
-			list.retainAll { x -> x.containsTags(tags) }
-		}
-		when (sortOrder) {
-			SortOrder.ALPHABETICAL -> list.sortWith(compareBy(org.koitharu.kotatsu.core.util.AlphanumComparator()) { x -> x.manga.title })
-			SortOrder.RATING -> list.sortByDescending { it.manga.rating }
-			SortOrder.NEWEST,
-			SortOrder.UPDATED,
-			-> list.sortByDescending { it.createdAt }
+			is MangaListFilter.Advanced -> {
+				if (filter.tags.isNotEmpty()) {
+					list.retainAll { x -> x.containsTags(filter.tags) }
+				}
+				when (filter.sortOrder) {
+					SortOrder.ALPHABETICAL -> list.sortWith(compareBy(AlphanumComparator()) { x -> x.manga.title })
+					SortOrder.RATING -> list.sortByDescending { it.manga.rating }
+					SortOrder.NEWEST,
+					SortOrder.UPDATED,
+					-> list.sortByDescending { it.createdAt }
 
-			else -> Unit
+					else -> Unit
+				}
+			}
+
+			null -> Unit
 		}
 		return list.unwrap()
 	}

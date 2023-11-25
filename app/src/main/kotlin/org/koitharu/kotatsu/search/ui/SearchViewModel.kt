@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -101,7 +102,7 @@ class SearchViewModel @Inject constructor(
 				listError.value = null
 				val list = repository.getList(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
-					query = query,
+					filter = MangaListFilter.Search(query)
 				)
 				if (!append) {
 					mangaList.value = list

@@ -35,6 +35,7 @@ import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
 
@@ -115,7 +116,7 @@ class MultiSearchViewModel @Inject constructor(
 			launch {
 				val item = runCatchingCancellable {
 					semaphore.withPermit {
-						mangaRepositoryFactory.create(source).getList(offset = 0, query = q)
+						mangaRepositoryFactory.create(source).getList(offset = 0, filter = MangaListFilter.Search(q))
 							.toUi(ListMode.GRID, extraProvider)
 					}
 				}.fold(
