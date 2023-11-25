@@ -121,13 +121,13 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 	private fun String.toHumanReadable() = replace("_", " ").toCamelCase()
 
 	private fun getChaptersFiles(): List<File> = root.walkCompat()
-		.filter { hasCbzExtension(it) }
+		.filter { it.hasCbzExtension() }
 		.toListSorted(compareBy(AlphanumComparator()) { it.name })
 
 	private fun findFirstImageEntry(): String? {
 		return root.walkCompat().firstOrNull { hasImageExtension(it) }?.toUri()?.toString()
 			?: run {
-				val cbz = root.walkCompat().firstOrNull { hasCbzExtension(it) } ?: return null
+				val cbz = root.walkCompat().firstOrNull { it.hasCbzExtension() } ?: return null
 				ZipFile(cbz).use { zip ->
 					zip.entries().asSequence()
 						.firstOrNull { !it.isDirectory && hasImageExtension(it.name) }

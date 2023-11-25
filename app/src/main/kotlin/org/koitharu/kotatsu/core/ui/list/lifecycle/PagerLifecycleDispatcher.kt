@@ -16,4 +16,8 @@ class PagerLifecycleDispatcher(
 			(wh as? LifecycleAwareViewHolder)?.setIsCurrent(wh.absoluteAdapterPosition == position)
 		}
 	}
+
+	fun invalidate() {
+		onPageSelected(pager.currentItem)
+	}
 }

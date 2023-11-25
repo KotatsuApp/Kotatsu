@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -34,6 +34,8 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 
 	private val scrollInterpolator = DecelerateInterpolator()
 
+	private var recyclerLifecycleDispatcher: RecyclerViewLifecycleDispatcher? = null
+
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -45,7 +47,9 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 			setHasFixedSize(true)
 			adapter = readerAdapter
 			addOnPageScrollListener(PageScrollListener())
-			addOnScrollListener(RecyclerViewLifecycleDispatcher())
+			recyclerLifecycleDispatcher = RecyclerViewLifecycleDispatcher().also {
+				addOnScrollListener(it)
+			}
 		}
 		viewModel.isWebtoonZooEnabled.observe(viewLifecycleOwner) {
 			binding.frame.isZoomEnable = it
@@ -53,6 +57,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 	}
 
 	override fun onDestroyView() {
+		recyclerLifecycleDispatcher = null
 		requireViewBinding().recyclerView.adapter = null
 		super.onDestroyView()
 	}
@@ -66,15 +71,18 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 	)
 
 	override suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) = coroutineScope {
-		val setItems = async {
+		val setItems = launch {
 			requireAdapter().setItems(pages)
 			yield()
+			viewBinding?.recyclerView?.let { rv ->
+				recyclerLifecycleDispatcher?.invalidate(rv)
+			}
 		}
 		if (pendingState != null) {
 			val position = pages.indexOfFirst {
 				it.chapterId == pendingState.chapterId && it.index == pendingState.page
 			}
-			setItems.await()
+			setItems.join()
 			if (position != -1) {
 				with(requireViewBinding().recyclerView) {
 					firstVisibleItemPosition = position
@@ -89,7 +97,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 					.show()
 			}
 		} else {
-			setItems.await()
+			setItems.join()
 		}
 	}
 

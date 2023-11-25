@@ -20,7 +20,7 @@ import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
-import org.koitharu.kotatsu.local.data.isCbzUri
+import org.koitharu.kotatsu.local.data.isZipUri
 import org.koitharu.kotatsu.local.data.util.withExtraCloseable
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.mimeType
@@ -56,7 +56,7 @@ class MangaPageFetcher(
 
 	private suspend fun loadPage(pageUrl: String): SourceResult {
 		val uri = pageUrl.toUri()
-		return if (isCbzUri(uri)) {
+		return if (uri.isZipUri()) {
 			runInterruptible(Dispatchers.IO) {
 				val zip = ZipFile(uri.schemeSpecificPart)
 				val entry = zip.getEntry(uri.fragment)

@@ -12,6 +12,10 @@ class RecyclerViewLifecycleDispatcher : RecyclerView.OnScrollListener() {
 
 	override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 		super.onScrolled(recyclerView, dx, dy)
+		invalidate(recyclerView)
+	}
+
+	fun invalidate(recyclerView: RecyclerView) {
 		val lm = recyclerView.layoutManager as? LinearLayoutManager ?: return
 		val first = lm.findFirstVisibleItemPosition()
 		val last = lm.findLastVisibleItemPosition()

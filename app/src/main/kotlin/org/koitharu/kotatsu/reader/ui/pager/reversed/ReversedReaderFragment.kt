@@ -11,12 +11,13 @@ import android.view.ViewGroup
 import androidx.core.view.children
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.ReaderAnimation
+import org.koitharu.kotatsu.core.ui.list.lifecycle.PagerLifecycleDispatcher
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
 import org.koitharu.kotatsu.core.util.ext.findCurrentViewHolder
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -46,6 +47,8 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 	@Inject
 	lateinit var pageLoader: PageLoader
 
+	private var pagerLifecycleDispatcher: PagerLifecycleDispatcher? = null
+
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -62,6 +65,9 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 				recyclerView?.defaultFocusHighlightEnabled = false
 			}
 			PagerEventSupplier(this).attach()
+			pagerLifecycleDispatcher = PagerLifecycleDispatcher(this).also {
+				registerOnPageChangeCallback(it)
+			}
 		}
 
 		viewModel.pageAnimation.observe(viewLifecycleOwner) {
@@ -80,6 +86,7 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 	}
 
 	override fun onDestroyView() {
+		pagerLifecycleDispatcher = null
 		requireViewBinding().pager.adapter = null
 		super.onDestroyView()
 	}
@@ -132,15 +139,16 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 
 	override suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) = coroutineScope {
 		val reversedPages = pages.asReversed()
-		val items = async {
+		val items = launch {
 			requireAdapter().setItems(reversedPages)
 			yield()
+			pagerLifecycleDispatcher?.invalidate()
 		}
 		if (pendingState != null) {
 			val position = reversedPages.indexOfLast {
 				it.chapterId == pendingState.chapterId && it.index == pendingState.page
 			}
-			items.await()
+			items.join()
 			if (position != -1) {
 				requireViewBinding().pager.setCurrentItem(position, false)
 				notifyPageChanged(position)
@@ -149,7 +157,7 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 					.show()
 			}
 		} else {
-			items.await()
+			items.join()
 		}
 	}
 
