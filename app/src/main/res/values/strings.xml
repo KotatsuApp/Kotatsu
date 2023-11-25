@@ -530,4 +530,7 @@
 	<string name="reader_optimize">Reduce memory consumption (beta)</string>
 	<string name="reader_optimize_summary">Reduce offscreen pages quality to use less memory</string>
 	<string name="state">State</string>
+	<string name="error_multiple_genres_not_supported">Filtering by multiple genres is not supported by this manga source</string>
+	<string name="error_multiple_states_not_supported">Filtering by multiple states is not supported by this manga source</string>
+	<string name="error_search_not_supported">Search is not supported by this manga source</string>
 </resources>

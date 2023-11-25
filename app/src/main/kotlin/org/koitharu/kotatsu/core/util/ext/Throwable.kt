@@ -27,7 +27,10 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 private const val MSG_NO_SPACE_LEFT = "No space left on device"
-private const val IMAGE_FORMAT_NO_SUPPORTED = "Image format not supported"
+private const val IMAGE_FORMAT_NOT_SUPPORTED = "Image format not supported"
+private const val MULTIPLE_GENRES_NOT_SUPPORTED = "Multiple genres are not supported by this source"
+private const val MULTIPLE_STATES_NOT_SUPPORTED = "Multiple states are not supported by this source"
+private const val SEARCH_NOT_SUPPORTED = "Search is not supported by this source"
 
 fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
@@ -56,8 +59,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is HttpException -> getHttpDisplayMessage(response.code, resources)
 	is HttpStatusException -> getHttpDisplayMessage(statusCode, resources)
 
-	is IOException -> getDisplayMessage(message, resources) ?: localizedMessage
-	else -> localizedMessage
+	else -> getDisplayMessage(message, resources) ?: localizedMessage
 }.ifNullOrEmpty {
 	resources.getString(R.string.error_occurred)
 }
@@ -82,7 +84,10 @@ private fun getHttpDisplayMessage(statusCode: Int, resources: Resources): String
 private fun getDisplayMessage(msg: String?, resources: Resources): String? = when {
 	msg.isNullOrEmpty() -> null
 	msg.contains(MSG_NO_SPACE_LEFT) -> resources.getString(R.string.error_no_space_left)
-	msg.contains(IMAGE_FORMAT_NO_SUPPORTED) -> resources.getString(R.string.error_corrupted_file)
+	msg.contains(IMAGE_FORMAT_NOT_SUPPORTED) -> resources.getString(R.string.error_corrupted_file)
+	msg == MULTIPLE_GENRES_NOT_SUPPORTED -> resources.getString(R.string.error_multiple_genres_not_supported)
+	msg == MULTIPLE_STATES_NOT_SUPPORTED -> resources.getString(R.string.error_multiple_states_not_supported)
+	msg == SEARCH_NOT_SUPPORTED -> resources.getString(R.string.error_search_not_supported)
 	else -> null
 }
 
