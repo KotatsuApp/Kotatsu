@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.parser
 
 import android.util.Log
+import coil.request.CachePolicy
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,7 +83,7 @@ class RemoteMangaRepository(
 		}
 	}
 
-	override suspend fun getDetails(manga: Manga): Manga = getDetails(manga, withCache = true)
+	override suspend fun getDetails(manga: Manga): Manga = getDetails(manga, CachePolicy.ENABLED)
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		cache.getPages(source, chapter.url)?.let { return it }
@@ -116,17 +117,18 @@ class RemoteMangaRepository(
 		return related.await()
 	}
 
-	suspend fun getDetails(manga: Manga, withCache: Boolean): Manga {
-		if (!withCache) {
-			return parser.getDetails(manga)
+	suspend fun getDetails(manga: Manga, cachePolicy: CachePolicy): Manga {
+		if (cachePolicy.readEnabled) {
+			cache.getDetails(source, manga.url)?.let { return it }
 		}
-		cache.getDetails(source, manga.url)?.let { return it }
 		val details = asyncSafe {
 			mirrorSwitchInterceptor.withMirrorSwitching {
 				parser.getDetails(manga)
 			}
 		}
-		cache.putDetails(source, manga.url, details)
+		if (cachePolicy.writeEnabled) {
+			cache.putDetails(source, manga.url, details)
+		}
 		return details.await()
 	}
 

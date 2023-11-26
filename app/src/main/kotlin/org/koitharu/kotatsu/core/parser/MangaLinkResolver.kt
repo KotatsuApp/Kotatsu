@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.parser
 
 import android.net.Uri
+import coil.request.CachePolicy
 import dagger.Reusable
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
@@ -85,7 +86,7 @@ class MangaLinkResolver @Inject constructor(
 
 	private suspend fun MangaRepository.getDetailsNoCache(manga: Manga): Manga {
 		return if (this is RemoteMangaRepository) {
-			getDetails(manga, withCache = false)
+			getDetails(manga, CachePolicy.READ_ONLY)
 		} else {
 			getDetails(manga)
 		}

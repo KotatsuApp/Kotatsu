@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.tracker.domain
 
 import androidx.annotation.VisibleForTesting
+import coil.request.CachePolicy
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -76,7 +78,9 @@ class Tracker @Inject constructor(
 	}
 
 	suspend fun fetchUpdates(track: MangaTracking, commit: Boolean): MangaUpdates.Success {
-		val manga = mangaRepositoryFactory.create(track.manga.source).getDetails(track.manga)
+		val repo = mangaRepositoryFactory.create(track.manga.source)
+		require(repo is RemoteMangaRepository) { "Repository ${repo.javaClass.simpleName} is not supported" }
+		val manga = repo.getDetails(track.manga, CachePolicy.WRITE_ONLY)
 		val updates = compare(track, manga, getBranch(manga))
 		if (commit) {
 			repository.saveUpdates(updates)
@@ -120,7 +124,7 @@ class Tracker @Inject constructor(
 					manga = manga,
 					newChapters = emptyList(),
 					isValid = chapters.lastOrNull()?.id == track.lastChapterId,
-					channelId = null
+					channelId = null,
 				)
 			}
 
