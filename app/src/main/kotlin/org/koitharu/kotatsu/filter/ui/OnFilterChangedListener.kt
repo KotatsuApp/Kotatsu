@@ -7,7 +7,7 @@ interface OnFilterChangedListener : ListHeaderClickListener {
 
 	fun onSortItemClick(item: FilterItem.Sort)
 
-	fun onTagItemClick(item: FilterItem.Tag)
+	fun onTagItemClick(item: FilterItem.Tag, isFromChip: Boolean)
 
 	fun onStateItemClick(item: FilterItem.State)
 }

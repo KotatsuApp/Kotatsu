@@ -92,10 +92,14 @@ class FilterCoordinator @Inject constructor(
 		repository.defaultSortOrder = item.order
 	}
 
-	override fun onTagItemClick(item: FilterItem.Tag) {
+	override fun onTagItemClick(item: FilterItem.Tag, isFromChip: Boolean) {
 		currentState.update { oldValue ->
 			val newTags = if (!item.isMultiple) {
-				setOf(item.tag)
+				if (isFromChip && item.isChecked) {
+					emptySet()
+				} else {
+					setOf(item.tag)
+				}
 			} else if (item.isChecked) {
 				oldValue.tags - item.tag
 			} else {

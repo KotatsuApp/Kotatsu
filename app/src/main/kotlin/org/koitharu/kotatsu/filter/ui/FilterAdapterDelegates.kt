@@ -52,7 +52,7 @@ fun filterTagDelegate(
 ) {
 
 	itemView.setOnClickListener {
-		listener.onTagItemClick(item)
+		listener.onTagItemClick(item, isFromChip = false)
 	}
 
 	bind { payloads ->
@@ -69,7 +69,7 @@ fun filterTagMultipleDelegate(
 ) {
 
 	itemView.setOnClickListener {
-		listener.onTagItemClick(item)
+		listener.onTagItemClick(item, isFromChip = false)
 	}
 
 	bind { payloads ->

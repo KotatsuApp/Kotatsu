@@ -98,7 +98,8 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 		if (filter == null) {
 			startActivity(MangaListActivity.newIntent(requireContext(), setOf(tag)))
 		} else {
-			filter.onTagItemClick(FilterItem.Tag(tag, filter.header.value.allowMultipleTags, false))
+			val filterItem = FilterItem.Tag(tag, filter.header.value.allowMultipleTags, false)
+			filter.onTagItemClick(filterItem, isFromChip = false)
 			closeSelf()
 		}
 	}
