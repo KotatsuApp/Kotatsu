@@ -522,4 +522,10 @@
     <string name="disable_nsfw_summary">Desactivar las fuentes NSFW y ocultar el manga para adultos de la lista si es posible</string>
     <string name="available_d">Disponible: %1$d</string>
     <string name="state_paused">Pausado</string>
+    <string name="error_multiple_states_not_supported">El filtrado por múltiples estados no es compatible con esta fuente del manga</string>
+    <string name="reader_optimize">Reducir el consumo de memoria (beta)</string>
+    <string name="error_multiple_genres_not_supported">Esta fuente del manga no permite filtrar por varios géneros</string>
+    <string name="error_search_not_supported">La búsqueda no es compatible con esta fuente del manga</string>
+    <string name="reader_optimize_summary">Reduce la resolución de las páginas fuera de pantalla para usar menos memoria</string>
+    <string name="state">Estado</string>
 </resources>
