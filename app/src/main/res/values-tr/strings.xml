@@ -30,7 +30,7 @@
     <string name="download_complete">İndirildi</string>
     <string name="downloads">İndirilenler</string>
     <string name="by_name">Ad</string>
-    <string name="updated">Güncellenme</string>
+    <string name="updated">Güncellendi</string>
     <string name="newest">Yeniler</string>
     <string name="by_rating">Puanlama</string>
     <string name="filter">Litre</string>
@@ -112,7 +112,7 @@
     <string name="restore_backup">Yedekten geri yükle</string>
     <string name="update">Güncelle</string>
     <string name="sign_in">Oturum aç</string>
-    <string name="state_finished">Bitti</string>
+    <string name="state_finished">Tamamlandı</string>
     <string name="about">Hakkında</string>
     <string name="auth_required">Bu içeriği görüntülemek için oturum açın</string>
     <string name="confirm">Onayla</string>
@@ -505,4 +505,16 @@
     <string name="backups_output_directory">Yedekleme dizini</string>
     <string name="speed_value">x%.1f</string>
     <string name="last_successful_backup">Son başarılı yedekleme: %s</string>
+    <string name="sources_catalog">Kaynak kataloğu</string>
+    <string name="content_type_manga">Manga</string>
+    <string name="content_type_hentai">Hentai</string>
+    <string name="catalog">Katalog</string>
+    <string name="reader_optimize">Bellek kullanımını düşür (beta)</string>
+    <string name="manage_sources">Kaynakları yönet</string>
+    <string name="reader_optimize_summary">Daha az bellek kullanımı için ekran dışı sayfaların çözünürlüğünü düşür</string>
+    <string name="source_enabled">Kaynak etkinleştirildi</string>
+    <string name="no_manga_sources_catalog_text">Bu bölüm için kullanılabilir kaynak yok ya da hepsi zaten eklenmiş olabilir.
+\nTakipte kalın</string>
+    <string name="state_paused">Durduruldu</string>
+    <string name="content_type_other">Diğer</string>
 </resources>
