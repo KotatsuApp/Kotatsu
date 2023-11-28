@@ -517,4 +517,15 @@
 \nTakipte kalın</string>
     <string name="state_paused">Durduruldu</string>
     <string name="content_type_other">Diğer</string>
+    <string name="error_multiple_states_not_supported">Birden fazla duruma göre filtreleme bu manga kaynağı tarafından desteklenmemektedir</string>
+    <string name="source_summary_pattern">%1$s,%2$s</string>
+    <string name="content_type_comics">Karikatür</string>
+    <string name="no_manga_sources_found">Sorgunuza göre mevcut manga kaynağı bulunamadı</string>
+    <string name="error_multiple_genres_not_supported">Birden fazla türe göre filtreleme bu manga kaynağı tarafından desteklenmemektedir</string>
+    <string name="lock_screen_rotation">Ekran döndürmeyi kilitle</string>
+    <string name="error_search_not_supported">Arama bu manga kaynağı tarafından desteklenmemektedir</string>
+    <string name="manual">Manuel</string>
+    <string name="disable_nsfw_summary">Eğer mümkünse yetişkin içerik ve NSFW kaynaklarını arama listesinden kaldır</string>
+    <string name="available_d">Mevcut:%1$d</string>
+    <string name="state">Durum</string>
 </resources>
