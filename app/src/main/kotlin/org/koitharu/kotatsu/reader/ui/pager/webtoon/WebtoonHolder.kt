@@ -5,7 +5,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -43,7 +42,7 @@ class WebtoonHolder(
 		if (settings.applyBitmapConfig(binding.ssiv)) {
 			delegate.reload()
 		}
-		binding.ssiv.downsampling = if (isResumed()) 1 else getBackgroundDownsampling()
+		// FIXME binding.ssiv.downsampling = if (isResumed()) 1 else getBackgroundDownsampling()
 	}
 
 	override fun onResume() {
@@ -53,7 +52,7 @@ class WebtoonHolder(
 
 	override fun onPause() {
 		super.onPause()
-		binding.ssiv.downsampling = getBackgroundDownsampling()
+		// FIXME binding.ssiv.downsampling = getBackgroundDownsampling()
 	}
 
 	override fun onBind(data: ReaderPage) {
@@ -97,9 +96,6 @@ class WebtoonHolder(
 	override fun onImageShowing(settings: ReaderSettings) {
 		binding.ssiv.colorFilter = settings.colorFilter?.toColorFilter()
 		with(binding.ssiv) {
-			minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
-			minScale = width / sWidth.toFloat()
-			maxScale = minScale
 			scrollTo(
 				when {
 					scrollToRestore != 0 -> scrollToRestore
