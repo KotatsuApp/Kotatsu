@@ -522,4 +522,10 @@
     <string name="content_type_other">Другое</string>
     <string name="source_summary_pattern">%1$s, %2$s</string>
     <string name="state_paused">Приостановлено</string>
+    <string name="error_multiple_states_not_supported">Фильтрация по нескольким состояниям не поддерживается этим источником манги</string>
+    <string name="reader_optimize">Уменьшение потребления памяти (бета)</string>
+    <string name="error_multiple_genres_not_supported">Фильтрация по нескольким жанрам не поддерживается этим источником манги</string>
+    <string name="error_search_not_supported">Поиск не поддерживается этим источником манги</string>
+    <string name="reader_optimize_summary">Уменьшить качество закадровых страниц, чтобы использовать меньше памяти</string>
+    <string name="state">Состояние</string>
 </resources>
