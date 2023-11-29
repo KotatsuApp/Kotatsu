@@ -100,17 +100,6 @@ class WebtoonImageView @JvmOverloads constructor(
 		}
 	}
 
-	override fun onReady() {
-		super.onReady()
-		adjustScale()
-	}
-
-	override fun onDownsamplingChanged() {
-		super.onDownsamplingChanged()
-		adjustScale()
-		computeScrollRange()
-	}
-
 	private fun scrollToInternal(pos: Int) {
 		scrollPos = pos
 		ct.set(sWidth / 2f, (height / 2f + pos.toFloat()) / minScale)
@@ -127,11 +116,5 @@ class WebtoonImageView @JvmOverloads constructor(
 
 	private fun parentHeight(): Int {
 		return ancestors.firstNotNullOfOrNull { it as? RecyclerView }?.height ?: 0
-	}
-
-	private fun adjustScale() {
-		minScale = width / sWidth.toFloat()
-		maxScale = minScale
-		minimumScaleType = SCALE_TYPE_CUSTOM
 	}
 }

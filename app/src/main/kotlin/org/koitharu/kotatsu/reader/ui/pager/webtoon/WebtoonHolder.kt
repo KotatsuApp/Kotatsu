@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -96,6 +97,9 @@ class WebtoonHolder(
 	override fun onImageShowing(settings: ReaderSettings) {
 		binding.ssiv.colorFilter = settings.colorFilter?.toColorFilter()
 		with(binding.ssiv) {
+			minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
+			minScale = width / sWidth.toFloat()
+			maxScale = minScale
 			scrollTo(
 				when {
 					scrollToRestore != 0 -> scrollToRestore
