@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.core.util
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.asFlow
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkQuery
@@ -27,8 +26,7 @@ class WorkServiceStopHelper(
 	fun setup() {
 		processLifecycleScope.launch(Dispatchers.Default) {
 			workManagerProvider.get()
-				.getWorkInfosLiveData(WorkQuery.fromStates(WorkInfo.State.RUNNING))
-				.asFlow()
+				.getWorkInfosFlow(WorkQuery.fromStates(WorkInfo.State.RUNNING))
 				.map { it.isEmpty() }
 				.distinctUntilChanged()
 				.collectLatest {

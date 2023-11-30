@@ -7,7 +7,6 @@ import android.os.Build
 import android.webkit.MimeTypeMap
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
-import androidx.lifecycle.asFlow
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -385,8 +384,7 @@ class DownloadWorker @AssistedInject constructor(
 		}
 
 		fun observeWorks(): Flow<List<WorkInfo>> = workManager
-			.getWorkInfosByTagLiveData(TAG)
-			.asFlow()
+			.getWorkInfosByTagFlow(TAG)
 
 		suspend fun cancel(id: UUID) {
 			workManager.cancelWorkById(id).await()

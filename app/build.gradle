@@ -95,7 +95,7 @@ dependencies {
 	implementation 'androidx.activity:activity-ktx:1.8.1'
 	implementation 'androidx.fragment:fragment-ktx:1.6.2'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
-	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
+//	implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
 	implementation 'androidx.lifecycle:lifecycle-service:2.6.2'
 	implementation 'androidx.lifecycle:lifecycle-process:2.6.2'
 	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -107,8 +107,7 @@ dependencies {
 	implementation 'com.google.android.material:material:1.10.0'
 	implementation 'androidx.lifecycle:lifecycle-common-java8:2.6.2'
 
-	// TODO https://issuetracker.google.com/issues/254846063
-	implementation 'androidx.work:work-runtime-ktx:2.8.1'
+	implementation 'androidx.work:work-runtime:2.9.0'
 	//noinspection GradleDependency
 	implementation('com.google.guava:guava:32.0.1-android') {
 		exclude group: 'com.google.guava', module: 'failureaccess'
@@ -154,7 +153,7 @@ dependencies {
 
 	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
 
-	androidTestImplementation 'androidx.room:room-testing:2.6.0'
+	androidTestImplementation 'androidx.room:room-testing:2.6.1'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.15.0'
 
 	androidTestImplementation 'com.google.dagger:hilt-android-testing:2.48.1'

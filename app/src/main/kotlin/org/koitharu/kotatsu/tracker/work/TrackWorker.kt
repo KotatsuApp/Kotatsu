@@ -13,7 +13,6 @@ import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.hilt.work.HiltWorker
-import androidx.lifecycle.asFlow
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -356,8 +355,7 @@ class TrackWorker @AssistedInject constructor(
 
 		fun observeIsRunning(): Flow<Boolean> {
 			val query = WorkQuery.Builder.fromTags(listOf(TAG, TAG_ONESHOT)).build()
-			return workManager.getWorkInfosLiveData(query)
-				.asFlow()
+			return workManager.getWorkInfosFlow(query)
 				.map { works ->
 					works.any { x -> x.state == WorkInfo.State.RUNNING }
 				}

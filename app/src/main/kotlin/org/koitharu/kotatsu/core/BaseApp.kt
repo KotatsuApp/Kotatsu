@@ -56,6 +56,11 @@ open class BaseApp : Application(), Configuration.Provider {
 	@Inject
 	lateinit var workManagerProvider: Provider<WorkManager>
 
+	override val workManagerConfiguration: Configuration
+		get() = Configuration.Builder()
+			.setWorkerFactory(workerFactory)
+			.build()
+
 	override fun onCreate() {
 		super.onCreate()
 		ACRA.errorReporter.putCustomData("isOriginalApp", appValidator.isOriginalApp.toString())
@@ -108,12 +113,6 @@ open class BaseApp : Application(), Configuration.Provider {
 				resTheme = android.R.style.Theme_Material_Light_Dialog_Alert
 			}
 		}
-	}
-
-	override fun getWorkManagerConfiguration(): Configuration {
-		return Configuration.Builder()
-			.setWorkerFactory(workerFactory)
-			.build()
 	}
 
 	@WorkerThread
