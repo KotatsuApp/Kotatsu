@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.local.data.output
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.readText
@@ -20,6 +22,7 @@ class LocalMangaZipOutput(
 
 	private val output = ZipOutput(File(rootFile.path + ".tmp"))
 	private val index = MangaIndex(null)
+	private val mutex = Mutex()
 
 	init {
 		if (!manga.isLocal) {
@@ -27,7 +30,7 @@ class LocalMangaZipOutput(
 		}
 	}
 
-	override suspend fun mergeWithExisting() {
+	override suspend fun mergeWithExisting() = mutex.withLock {
 		if (rootFile.exists()) {
 			runInterruptible(Dispatchers.IO) {
 				mergeWith(rootFile)
@@ -35,7 +38,7 @@ class LocalMangaZipOutput(
 		}
 	}
 
-	override suspend fun addCover(file: File, ext: String) {
+	override suspend fun addCover(file: File, ext: String) = mutex.withLock {
 		val name = buildString {
 			append(FILENAME_PATTERN.format(0, 0, 0))
 			if (ext.isNotEmpty() && ext.length <= 4) {
@@ -49,7 +52,7 @@ class LocalMangaZipOutput(
 		index.setCoverEntry(name)
 	}
 
-	override suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) {
+	override suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) = mutex.withLock {
 		val name = buildString {
 			append(FILENAME_PATTERN.format(chapter.branch.hashCode(), chapter.number, pageNumber))
 			if (ext.isNotEmpty() && ext.length <= 4) {
@@ -65,7 +68,7 @@ class LocalMangaZipOutput(
 
 	override suspend fun flushChapter(chapter: MangaChapter): Boolean = false
 
-	override suspend fun finish() {
+	override suspend fun finish() = mutex.withLock {
 		runInterruptible(Dispatchers.IO) {
 			output.put(ENTRY_NAME_INDEX, index.toString())
 			output.finish()
@@ -73,10 +76,12 @@ class LocalMangaZipOutput(
 		}
 		rootFile.deleteAwait()
 		output.file.renameTo(rootFile)
+		Unit
 	}
 
-	override suspend fun cleanup() {
+	override suspend fun cleanup() = mutex.withLock {
 		output.file.deleteAwait()
+		Unit
 	}
 
 	override fun close() {

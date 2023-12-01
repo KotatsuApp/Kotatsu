@@ -17,13 +17,14 @@
 		android:defaultValue="false"
 		android:key="downloads_wifi"
 		android:summary="@string/downloads_wifi_only_summary"
-		android:title="@string/downloads_wifi_only"
-		app:allowDividerAbove="true" />
+		android:title="@string/downloads_wifi_only" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="downloads_slowdown"
-		android:summary="@string/download_slowdown_summary"
-		android:title="@string/download_slowdown" />
+	<Preference
+		android:icon="@drawable/ic_info_outline"
+		android:key="tracker_notifications_info"
+		android:persistent="false"
+		android:selectable="false"
+		android:summary="@string/downloads_settings_info"
+		app:allowDividerAbove="true" />
 
 </PreferenceScreen>

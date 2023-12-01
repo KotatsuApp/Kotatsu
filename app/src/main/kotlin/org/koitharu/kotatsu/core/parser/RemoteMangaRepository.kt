@@ -151,6 +151,10 @@ class RemoteMangaRepository(
 		return parser.configKeyDomain.presetValues.toList()
 	}
 
+	fun isSlowdownEnabled(): Boolean {
+		return getConfig().isSlowdownEnabled
+	}
+
 	private fun getConfig() = parser.config as SourceSettings
 
 	private suspend fun <T> asyncSafe(block: suspend CoroutineScope.() -> T): SafeDeferred<T> {

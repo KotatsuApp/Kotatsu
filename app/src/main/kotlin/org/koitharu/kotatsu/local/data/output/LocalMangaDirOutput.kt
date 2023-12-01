@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.local.data.output
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
@@ -20,6 +22,7 @@ class LocalMangaDirOutput(
 
 	private val chaptersOutput = HashMap<MangaChapter, ZipOutput>()
 	private val index = MangaIndex(File(rootFile, ENTRY_NAME_INDEX).takeIfReadable()?.readText())
+	private val mutex = Mutex()
 
 	init {
 		if (!manga.isLocal) {
@@ -29,7 +32,7 @@ class LocalMangaDirOutput(
 
 	override suspend fun mergeWithExisting() = Unit
 
-	override suspend fun addCover(file: File, ext: String) {
+	override suspend fun addCover(file: File, ext: String) = mutex.withLock {
 		val name = buildString {
 			append("cover")
 			if (ext.isNotEmpty() && ext.length <= 4) {
@@ -44,7 +47,7 @@ class LocalMangaDirOutput(
 		flushIndex()
 	}
 
-	override suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) {
+	override suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) = mutex.withLock {
 		val output = chaptersOutput.getOrPut(chapter) {
 			ZipOutput(File(rootFile, chapterFileName(chapter) + SUFFIX_TMP))
 		}
@@ -61,14 +64,14 @@ class LocalMangaDirOutput(
 		index.addChapter(chapter, chapterFileName(chapter))
 	}
 
-	override suspend fun flushChapter(chapter: MangaChapter): Boolean {
-		val output = chaptersOutput.remove(chapter) ?: return false
+	override suspend fun flushChapter(chapter: MangaChapter): Boolean = mutex.withLock {
+		val output = chaptersOutput.remove(chapter) ?: return@withLock false
 		output.flushAndFinish()
 		flushIndex()
-		return true
+		true
 	}
 
-	override suspend fun finish() {
+	override suspend fun finish() = mutex.withLock {
 		flushIndex()
 		for (output in chaptersOutput.values) {
 			output.flushAndFinish()
@@ -76,7 +79,7 @@ class LocalMangaDirOutput(
 		chaptersOutput.clear()
 	}
 
-	override suspend fun cleanup() {
+	override suspend fun cleanup() = mutex.withLock {
 		for (output in chaptersOutput.values) {
 			output.file.deleteAwait()
 		}
@@ -88,7 +91,7 @@ class LocalMangaDirOutput(
 		}
 	}
 
-	suspend fun deleteChapter(chapterId: Long) {
+	suspend fun deleteChapter(chapterId: Long) = mutex.withLock {
 		val chapter = checkNotNull(index.getMangaInfo()?.chapters) {
 			"No chapters found"
 		}.findById(chapterId) ?: error("Chapter not found")

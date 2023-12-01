@@ -17,4 +17,12 @@
 		android:summary="@string/clear_source_cookies_summary"
 		android:title="@string/clear_cookies" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="slowdown"
+		android:order="105"
+		android:summary="@string/download_slowdown_summary"
+		android:title="@string/download_slowdown"
+		app:allowDividerAbove="true" />
+
 </PreferenceScreen>

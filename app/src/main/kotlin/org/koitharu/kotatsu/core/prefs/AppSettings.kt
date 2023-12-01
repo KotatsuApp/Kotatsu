@@ -259,9 +259,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			}
 		}
 
-	val isDownloadsSlowdownEnabled: Boolean
-		get() = prefs.getBoolean(KEY_DOWNLOADS_SLOWDOWN, false)
-
 	val isDownloadsWiFiOnly: Boolean
 		get() = prefs.getBoolean(KEY_DOWNLOADS_WIFI, false)
 
@@ -495,7 +492,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SHIKIMORI = "shikimori"
 		const val KEY_ANILIST = "anilist"
 		const val KEY_MAL = "mal"
-		const val KEY_DOWNLOADS_SLOWDOWN = "downloads_slowdown"
 		const val KEY_DOWNLOADS_WIFI = "downloads_wifi"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 		const val KEY_DOH = "doh"

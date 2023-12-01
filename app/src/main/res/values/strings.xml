@@ -533,4 +533,5 @@
 	<string name="error_multiple_genres_not_supported">Filtering by multiple genres is not supported by this manga source</string>
 	<string name="error_multiple_states_not_supported">Filtering by multiple states is not supported by this manga source</string>
 	<string name="error_search_not_supported">Search is not supported by this manga source</string>
+	<string name="downloads_settings_info">You can enable download slowdown for each manga source individually in the source settings if you are having problems with server-side blocking</string>
 </resources>

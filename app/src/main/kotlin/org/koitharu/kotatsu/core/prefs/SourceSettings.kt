@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
 
 private const val KEY_SORT_ORDER = "sort_order"
+private const val KEY_SLOWDOWN = "slowdown"
 
 class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig {
 
@@ -19,6 +20,9 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 	var defaultSortOrder: SortOrder?
 		get() = prefs.getEnumValue(KEY_SORT_ORDER, SortOrder::class.java)
 		set(value) = prefs.edit { putEnumValue(KEY_SORT_ORDER, value) }
+
+	val isSlowdownEnabled: Boolean
+		get() = prefs.getBoolean(KEY_SLOWDOWN, false)
 
 	@Suppress("UNCHECKED_CAST")
 	override fun <T> get(key: ConfigKey<T>): T {

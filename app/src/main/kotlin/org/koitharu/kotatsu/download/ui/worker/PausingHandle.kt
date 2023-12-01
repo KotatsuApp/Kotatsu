@@ -1,11 +1,13 @@
 package org.koitharu.kotatsu.download.ui.worker
 
 import androidx.annotation.AnyThread
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
 
-class PausingHandle {
+class PausingHandle : AbstractCoroutineContextElement(PausingHandle) {
 
 	private val paused = MutableStateFlow(false)
 
@@ -15,7 +17,7 @@ class PausingHandle {
 
 	@AnyThread
 	suspend fun awaitResumed() {
-		paused.filter { !it }.first()
+		paused.first { !it }
 	}
 
 	@AnyThread
@@ -26,5 +28,18 @@ class PausingHandle {
 	@AnyThread
 	fun resume() {
 		paused.value = false
+	}
+
+	suspend fun yield() {
+		if (paused.value) {
+			paused.first { !it }
+		}
+	}
+
+	companion object : CoroutineContext.Key<PausingHandle> {
+
+		suspend fun current() = checkNotNull(currentCoroutineContext()[this]) {
+			"PausingHandle not found in current context"
+		}
 	}
 }
