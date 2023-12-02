@@ -154,7 +154,7 @@
 			android:visibility="gone"
 			app:layout_constraintEnd_toStartOf="@id/button_resume"
 			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters"
-			tools:visibility="visible" />
+			tools:visibility="gone" />
 
 		<Button
 			android:id="@+id/button_resume"
@@ -166,7 +166,21 @@
 			android:text="@string/resume"
 			android:visibility="gone"
 			app:layout_constraintEnd_toStartOf="@id/button_cancel"
-			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters" />
+			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters"
+			tools:visibility="visible" />
+
+		<Button
+			android:id="@+id/button_skip"
+			style="?materialButtonOutlinedStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="12dp"
+			android:text="@string/skip"
+			android:visibility="gone"
+			app:layout_constraintEnd_toStartOf="@id/button_resume"
+			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters"
+			tools:visibility="visible" />
 
 		<Button
 			android:id="@+id/button_cancel"

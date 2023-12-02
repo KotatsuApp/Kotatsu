@@ -44,7 +44,8 @@ fun downloadItemAD(
 		override fun onClick(v: View) {
 			when (v.id) {
 				R.id.button_cancel -> listener.onCancelClick(item)
-				R.id.button_resume -> listener.onResumeClick(item)
+				R.id.button_resume -> listener.onResumeClick(item, skip = false)
+				R.id.button_skip -> listener.onResumeClick(item, skip = true)
 				R.id.button_pause -> listener.onPauseClick(item)
 				R.id.imageView_expand -> listener.onExpandClick(item)
 				else -> listener.onItemClick(item, v)
@@ -62,6 +63,7 @@ fun downloadItemAD(
 	binding.buttonCancel.setOnClickListener(clickListener)
 	binding.buttonPause.setOnClickListener(clickListener)
 	binding.buttonResume.setOnClickListener(clickListener)
+	binding.buttonSkip.setOnClickListener(clickListener)
 	binding.imageViewExpand.setOnClickListener(clickListener)
 	itemView.setOnClickListener(clickListener)
 	itemView.setOnLongClickListener(clickListener)
@@ -120,6 +122,7 @@ fun downloadItemAD(
 				binding.textViewDetails.isVisible = false
 				binding.buttonCancel.isVisible = true
 				binding.buttonResume.isVisible = false
+				binding.buttonSkip.isVisible = false
 				binding.buttonPause.isVisible = false
 			}
 
@@ -134,9 +137,10 @@ fun downloadItemAD(
 				binding.progressBar.setProgressCompat(item.progress, payloads.isNotEmpty())
 				binding.textViewPercent.text = percentPattern.format((item.percent * 100f).format(1))
 				binding.textViewPercent.isVisible = true
-				binding.textViewDetails.textAndVisible = item.getEtaString()
+				binding.textViewDetails.textAndVisible = if (item.isPaused) item.error else item.getEtaString()
 				binding.buttonCancel.isVisible = true
 				binding.buttonResume.isVisible = item.isPaused
+				binding.buttonSkip.isVisible = item.isPaused && item.error != null
 				binding.buttonPause.isVisible = item.canPause
 			}
 
@@ -158,6 +162,7 @@ fun downloadItemAD(
 				}
 				binding.buttonCancel.isVisible = false
 				binding.buttonResume.isVisible = false
+				binding.buttonSkip.isVisible = false
 				binding.buttonPause.isVisible = false
 			}
 
@@ -170,6 +175,7 @@ fun downloadItemAD(
 				binding.textViewDetails.textAndVisible = item.error
 				binding.buttonCancel.isVisible = false
 				binding.buttonResume.isVisible = false
+				binding.buttonSkip.isVisible = false
 				binding.buttonPause.isVisible = false
 			}
 
@@ -182,6 +188,7 @@ fun downloadItemAD(
 				binding.textViewDetails.isVisible = false
 				binding.buttonCancel.isVisible = false
 				binding.buttonResume.isVisible = false
+				binding.buttonSkip.isVisible = false
 				binding.buttonPause.isVisible = false
 			}
 		}

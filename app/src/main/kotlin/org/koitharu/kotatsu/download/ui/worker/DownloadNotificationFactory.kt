@@ -82,7 +82,15 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		NotificationCompat.Action(
 			R.drawable.ic_action_resume,
 			context.getString(R.string.resume),
-			PausingReceiver.createResumePendingIntent(context, uuid),
+			PausingReceiver.createResumePendingIntent(context, uuid, skipError = false),
+		)
+	}
+
+	private val actionSkip by lazy {
+		NotificationCompat.Action(
+			R.drawable.ic_action_skip,
+			context.getString(R.string.skip),
+			PausingReceiver.createResumePendingIntent(context, uuid, skipError = true),
 		)
 	}
 
@@ -163,6 +171,9 @@ class DownloadNotificationFactory @AssistedInject constructor(
 				builder.setSmallIcon(R.drawable.ic_stat_paused)
 				builder.addAction(actionCancel)
 				builder.addAction(actionResume)
+				if (state.error != null) {
+					builder.addAction(actionSkip)
+				}
 			}
 
 			state.error != null -> { // error, final state

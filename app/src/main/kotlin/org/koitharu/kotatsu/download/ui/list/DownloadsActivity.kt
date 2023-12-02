@@ -105,8 +105,8 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		sendBroadcast(PausingReceiver.getPauseIntent(this, item.id))
 	}
 
-	override fun onResumeClick(item: DownloadItemModel) {
-		sendBroadcast(PausingReceiver.getResumeIntent(this, item.id))
+	override fun onResumeClick(item: DownloadItemModel, skip: Boolean) {
+		sendBroadcast(PausingReceiver.getResumeIntent(this, item.id, skip))
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {

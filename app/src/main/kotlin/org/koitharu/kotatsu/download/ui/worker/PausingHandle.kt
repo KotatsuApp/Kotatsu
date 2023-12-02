@@ -10,6 +10,7 @@ import kotlin.coroutines.CoroutineContext
 class PausingHandle : AbstractCoroutineContextElement(PausingHandle) {
 
 	private val paused = MutableStateFlow(false)
+	private val isSkipError = MutableStateFlow(false)
 
 	@get:AnyThread
 	val isPaused: Boolean
@@ -26,7 +27,8 @@ class PausingHandle : AbstractCoroutineContextElement(PausingHandle) {
 	}
 
 	@AnyThread
-	fun resume() {
+	fun resume(skipError: Boolean) {
+		isSkipError.value = skipError
 		paused.value = false
 	}
 
@@ -35,6 +37,8 @@ class PausingHandle : AbstractCoroutineContextElement(PausingHandle) {
 			paused.first { !it }
 		}
 	}
+
+	fun skipCurrentError(): Boolean = isSkipError.compareAndSet(expect = true, update = false)
 
 	companion object : CoroutineContext.Key<PausingHandle> {
 

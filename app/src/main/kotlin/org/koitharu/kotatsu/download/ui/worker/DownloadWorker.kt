@@ -198,7 +198,7 @@ class DownloadWorker @AssistedInject constructor(
 					}
 					val pages = runFailsafe {
 						repo.getPages(chapter)
-					}
+					} ?: continue
 					val pageCounter = AtomicInteger(0)
 					channelFlow {
 						val semaphore = Semaphore(MAX_PAGES_PARALLELISM)
@@ -264,7 +264,7 @@ class DownloadWorker @AssistedInject constructor(
 
 	private suspend fun <R> runFailsafe(
 		block: suspend () -> R,
-	): R {
+	): R? {
 		checkIsPaused()
 		var countDown = MAX_FAILSAFE_ATTEMPTS
 		failsafe@ while (true) {
@@ -284,6 +284,9 @@ class DownloadWorker @AssistedInject constructor(
 					pausingHandle.pause()
 					try {
 						pausingHandle.awaitResumed()
+						if (pausingHandle.skipCurrentError()) {
+							return null
+						}
 					} finally {
 						publishState(currentState.copy(isPaused = false, error = null))
 					}
@@ -448,8 +451,8 @@ class DownloadWorker @AssistedInject constructor(
 			context.sendBroadcast(intent)
 		}
 
-		fun resume(id: UUID) {
-			val intent = PausingReceiver.getResumeIntent(context, id)
+		fun resume(id: UUID, skipError: Boolean) {
+			val intent = PausingReceiver.getResumeIntent(context, id, skipError)
 			context.sendBroadcast(intent)
 		}
 

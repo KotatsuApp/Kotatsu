@@ -143,7 +143,7 @@ class DownloadsViewModel @Inject constructor(
 		var isResumed = false
 		for (work in snapshot) {
 			if (work.workState == WorkInfo.State.RUNNING && work.isPaused) {
-				workScheduler.resume(work.id)
+				workScheduler.resume(work.id, skipError = false)
 				isResumed = true
 			}
 		}
@@ -156,7 +156,7 @@ class DownloadsViewModel @Inject constructor(
 		val snapshot = works.value ?: return
 		for (work in snapshot) {
 			if (work.id.mostSignificantBits in ids) {
-				workScheduler.resume(work.id)
+				workScheduler.resume(work.id, skipError = false)
 			}
 		}
 		onActionDone.call(ReversibleAction(R.string.downloads_resumed, null))

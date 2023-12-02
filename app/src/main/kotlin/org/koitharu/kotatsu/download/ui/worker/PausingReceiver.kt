@@ -21,7 +21,7 @@ class PausingReceiver(
 			return
 		}
 		when (intent.action) {
-			ACTION_RESUME -> pausingHandle.resume()
+			ACTION_RESUME -> pausingHandle.resume(intent.getBooleanExtra(EXTRA_SKIP_ERROR, false))
 			ACTION_PAUSE -> pausingHandle.pause()
 		}
 	}
@@ -31,6 +31,7 @@ class PausingReceiver(
 		private const val ACTION_PAUSE = "org.koitharu.kotatsu.download.PAUSE"
 		private const val ACTION_RESUME = "org.koitharu.kotatsu.download.RESUME"
 		private const val EXTRA_UUID = "uuid"
+		private const val EXTRA_SKIP_ERROR = "skip"
 		private const val SCHEME = "workuid"
 
 		fun createIntentFilter(id: UUID) = IntentFilter().apply {
@@ -45,10 +46,11 @@ class PausingReceiver(
 			.setPackage(context.packageName)
 			.putExtra(EXTRA_UUID, id.toString())
 
-		fun getResumeIntent(context: Context, id: UUID) = Intent(ACTION_RESUME)
+		fun getResumeIntent(context: Context, id: UUID, skipError: Boolean) = Intent(ACTION_RESUME)
 			.setData(Uri.parse("$SCHEME://$id"))
 			.setPackage(context.packageName)
 			.putExtra(EXTRA_UUID, id.toString())
+			.putExtra(EXTRA_SKIP_ERROR, skipError)
 
 		fun createPausePendingIntent(context: Context, id: UUID) = PendingIntentCompat.getBroadcast(
 			context,
@@ -58,12 +60,13 @@ class PausingReceiver(
 			false,
 		)
 
-		fun createResumePendingIntent(context: Context, id: UUID) = PendingIntentCompat.getBroadcast(
-			context,
-			0,
-			getResumeIntent(context, id),
-			0,
-			false,
-		)
+		fun createResumePendingIntent(context: Context, id: UUID, skipError: Boolean) =
+			PendingIntentCompat.getBroadcast(
+				context,
+				0,
+				getResumeIntent(context, id, skipError),
+				0,
+				false,
+			)
 	}
 }
