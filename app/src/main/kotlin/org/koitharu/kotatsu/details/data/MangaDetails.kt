@@ -21,8 +21,7 @@ data class MangaDetails(
 	val branches: Set<String?>
 		get() = chapters.keys
 
-	val allChapters: List<MangaChapter>
-		get() = manga.chapters.orEmpty()
+	val allChapters: List<MangaChapter> by lazy { mergeChapters() }
 
 	val isLocal
 		get() = manga.isLocal
@@ -40,4 +39,26 @@ data class MangaDetails(
 		description = description,
 		isLoaded = isLoaded,
 	)
+
+	private fun mergeChapters(): List<MangaChapter> {
+		val chapters = manga.chapters
+		val localChapters = local?.manga?.chapters.orEmpty()
+		if (chapters.isNullOrEmpty()) {
+			return localChapters
+		}
+		val localMap = if (localChapters.isNotEmpty()) {
+			localChapters.associateByTo(LinkedHashMap(localChapters.size)) { it.id }
+		} else {
+			null
+		}
+		val result = ArrayList<MangaChapter>(chapters.size)
+		for (chapter in chapters) {
+			val local = localMap?.remove(chapter.id)
+			result += local ?: chapter
+		}
+		if (!localMap.isNullOrEmpty()) {
+			result.addAll(localMap.values)
+		}
+		return result
+	}
 }
