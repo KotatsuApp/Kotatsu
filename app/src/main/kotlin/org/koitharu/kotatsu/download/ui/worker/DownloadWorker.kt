@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.download.ui.worker
 
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.ServiceInfo
@@ -55,6 +56,8 @@ import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.deleteWork
 import org.koitharu.kotatsu.core.util.ext.deleteWorks
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.getWorkInputData
+import org.koitharu.kotatsu.core.util.ext.getWorkSpec
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
@@ -121,7 +124,9 @@ class DownloadWorker @AssistedInject constructor(
 				val notification = notificationFactory.create(currentState.copy(isStopped = true))
 				notificationManager.notify(id.hashCode(), notification)
 			}
-			throw e
+			Result.failure(
+				currentState.copy(eta = -1L).toWorkData(),
+			)
 		} catch (e: IOException) {
 			e.printStackTraceDebug()
 			Result.retry()
@@ -416,6 +421,19 @@ class DownloadWorker @AssistedInject constructor(
 
 		fun observeWorks(): Flow<List<WorkInfo>> = workManager
 			.getWorkInfosByTagFlow(TAG)
+
+		@SuppressLint("RestrictedApi")
+		suspend fun getInputData(id: UUID): Data? {
+			val spec = workManager.getWorkSpec(id) ?: return null
+			return Data.Builder()
+				.putAll(spec.input)
+				.putLong(DownloadState.DATA_TIMESTAMP, spec.scheduleRequestedAt)
+				.build()
+		}
+
+		suspend fun getInputChaptersIds(workId: UUID): LongArray? {
+			return workManager.getWorkInputData(workId)?.getLongArray(CHAPTERS_IDS)?.takeUnless { it.isEmpty() }
+		}
 
 		suspend fun cancel(id: UUID) {
 			workManager.cancelWorkById(id).await()

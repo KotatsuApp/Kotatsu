@@ -53,7 +53,7 @@ data class DownloadState(
 		private const val DATA_PROGRESS = "progress"
 		private const val DATA_CHAPTERS = "chapter_cnt"
 		private const val DATA_ETA = "eta"
-		private const val DATA_TIMESTAMP = "timestamp"
+		const val DATA_TIMESTAMP = "timestamp"
 		private const val DATA_ERROR = "error"
 		private const val DATA_INDETERMINATE = "indeterminate"
 		private const val DATA_PAUSED = "paused"

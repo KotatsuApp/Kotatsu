@@ -79,7 +79,11 @@ sealed class DateTimeAgo {
 		private val day = date.daysDiff(0)
 
 		override fun format(resources: Resources): String {
-			return date.format("d MMMM")
+			return if (date.time == 0L) {
+				resources.getString(R.string.unknown)
+			} else {
+				date.format("d MMMM")
+			}
 		}
 
 		override fun equals(other: Any?): Boolean {

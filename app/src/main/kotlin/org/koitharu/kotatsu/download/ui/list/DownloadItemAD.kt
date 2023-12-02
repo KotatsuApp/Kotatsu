@@ -1,23 +1,31 @@
 package org.koitharu.kotatsu.download.ui.list
 
-import android.transition.TransitionManager
 import android.view.View
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
 import coil.ImageLoader
 import coil.request.SuccessResult
 import coil.util.CoilUtils
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemDownloadBinding
+import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
+import org.koitharu.kotatsu.download.ui.list.chapters.downloadChapterAD
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.util.format
 
@@ -30,7 +38,7 @@ fun downloadItemAD(
 ) {
 
 	val percentPattern = context.resources.getString(R.string.percent_string_pattern)
-	// val expandIcon = ContextCompat.getDrawable(context, R.drawable.ic_expand_collapse)
+	var chaptersJob: Job? = null
 
 	val clickListener = object : View.OnClickListener, View.OnLongClickListener {
 		override fun onClick(v: View) {
@@ -38,6 +46,7 @@ fun downloadItemAD(
 				R.id.button_cancel -> listener.onCancelClick(item)
 				R.id.button_resume -> listener.onResumeClick(item)
 				R.id.button_pause -> listener.onPauseClick(item)
+				R.id.imageView_expand -> listener.onExpandClick(item)
 				else -> listener.onItemClick(item, v)
 			}
 		}
@@ -46,31 +55,60 @@ fun downloadItemAD(
 			return listener.onItemLongClick(item, v)
 		}
 	}
+	val chaptersAdapter = BaseListAdapter<DownloadChapter>()
+		.addDelegate(ListItemType.CHAPTER, downloadChapterAD())
+
+	binding.recyclerViewChapters.adapter = chaptersAdapter
 	binding.buttonCancel.setOnClickListener(clickListener)
 	binding.buttonPause.setOnClickListener(clickListener)
 	binding.buttonResume.setOnClickListener(clickListener)
+	binding.imageViewExpand.setOnClickListener(clickListener)
 	itemView.setOnClickListener(clickListener)
 	itemView.setOnLongClickListener(clickListener)
 
-	bind { payloads ->
-		if (ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED in payloads && context.isAnimationsEnabled) {
-			TransitionManager.beginDelayedTransition(binding.constraintLayout)
+	fun scrollToCurrentChapter() {
+		val rv = binding.recyclerViewChapters
+		if (!rv.isVisible) {
+			return
 		}
-		binding.textViewTitle.text = item.manga.title
+		val chapters = chaptersAdapter.items
+		if (chapters.isEmpty()) {
+			return
+		}
+		val targetPos = item.chaptersDownloaded.coerceIn(chapters.indices)
+		(rv.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(targetPos, rv.height / 3)
+	}
+
+	bind { payloads ->
+		binding.textViewTitle.text = item.manga?.title ?: getString(R.string.unknown)
 		if ((CoilUtils.result(binding.imageViewCover) as? SuccessResult)?.memoryCacheKey != item.coverCacheKey) {
-			binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.apply {
+			binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga?.coverUrl)?.apply {
 				placeholder(R.drawable.ic_placeholder)
 				fallback(R.drawable.ic_placeholder)
 				error(R.drawable.ic_error_placeholder)
 				allowRgb565(true)
 				transformations(TrimTransformation())
 				memoryCacheKey(item.coverCacheKey)
-				source(item.manga.source)
+				source(item.manga?.source)
 				enqueueWith(coil)
 			}
 		}
-		// binding.textViewTitle.isChecked = item.isExpanded
-		// binding.textViewTitle.drawableEnd = if (item.isExpandable) expandIcon else null
+		if (chaptersJob == null || payloads.isEmpty()) {
+			chaptersJob?.cancel()
+			chaptersJob = lifecycleOwner.lifecycleScope.launch(start = CoroutineStart.UNDISPATCHED) {
+				item.chapters.collect { chapters ->
+					binding.imageViewExpand.isGone = chapters.isNullOrEmpty()
+					chaptersAdapter.emit(chapters)
+					scrollToCurrentChapter()
+				}
+			}
+		} else if (ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED in payloads) {
+			binding.recyclerViewChapters.post {
+				scrollToCurrentChapter()
+			}
+		}
+		binding.imageViewExpand.isChecked = item.isExpanded
+		binding.recyclerViewChapters.isVisible = item.isExpanded
 		when (item.workState) {
 			WorkInfo.State.ENQUEUED,
 			WorkInfo.State.BLOCKED -> {

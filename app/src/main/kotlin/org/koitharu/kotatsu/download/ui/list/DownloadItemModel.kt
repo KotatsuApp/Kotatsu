@@ -3,6 +3,8 @@ package org.koitharu.kotatsu.download.ui.list
 import android.text.format.DateUtils
 import androidx.work.WorkInfo
 import coil.memory.MemoryCache
+import kotlinx.coroutines.flow.StateFlow
+import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -14,7 +16,7 @@ data class DownloadItemModel(
 	val workState: WorkInfo.State,
 	val isIndeterminate: Boolean,
 	val isPaused: Boolean,
-	val manga: Manga,
+	val manga: Manga?,
 	val error: String?,
 	val max: Int,
 	val progress: Int,
@@ -22,9 +24,10 @@ data class DownloadItemModel(
 	val timestamp: Date,
 	val chaptersDownloaded: Int,
 	val isExpanded: Boolean,
+	val chapters: StateFlow<List<DownloadChapter>?>,
 ) : ListModel, Comparable<DownloadItemModel> {
 
-	val coverCacheKey = MemoryCache.Key(manga.coverUrl, mapOf("dl" to "1"))
+	val coverCacheKey = MemoryCache.Key(manga?.coverUrl.orEmpty(), mapOf("dl" to "1"))
 
 	val percent: Float
 		get() = if (max > 0) progress / max.toFloat() else 0f
@@ -37,9 +40,6 @@ data class DownloadItemModel(
 
 	val canResume: Boolean
 		get() = workState == WorkInfo.State.RUNNING && isPaused
-
-	val isExpandable: Boolean
-		get() = false // TODO
 
 	fun getEtaString(): CharSequence? = if (hasEta) {
 		DateUtils.getRelativeTimeSpanString(

@@ -1,12 +1,14 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.annotation.SuppressLint
+import androidx.work.Data
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkQuery
 import androidx.work.WorkRequest
 import androidx.work.await
 import androidx.work.impl.WorkManagerImpl
+import androidx.work.impl.model.WorkSpec
 import java.util.UUID
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -68,6 +70,25 @@ suspend fun WorkManager.awaitUniqueWorkInfoByName(name: String): List<WorkInfo> 
 suspend fun WorkManager.awaitUpdateWork(request: WorkRequest): WorkManager.UpdateResult {
 	return updateWork(request).await()
 }
+
+@SuppressLint("RestrictedApi")
+suspend fun WorkManager.getWorkSpec(id: UUID): WorkSpec? = suspendCoroutine { cont ->
+	workManagerImpl.workTaskExecutor.executeOnTaskThread {
+		try {
+			val spec = workManagerImpl.workDatabase.workSpecDao().getWorkSpec(id.toString())
+			cont.resume(spec)
+		} catch (e: Exception) {
+			cont.resumeWithException(e)
+		}
+	}
+}
+
+
+@SuppressLint("RestrictedApi")
+suspend fun WorkManager.getWorkInputData(id: UUID): Data? = getWorkSpec(id)?.input
+
+val Data.isEmpty: Boolean
+	get() = this == Data.EMPTY
 
 private val WorkManager.workManagerImpl
 	@SuppressLint("RestrictedApi") inline get() = this as WorkManagerImpl

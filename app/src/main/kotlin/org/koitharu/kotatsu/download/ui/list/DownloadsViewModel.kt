@@ -1,16 +1,19 @@
 package org.koitharu.kotatsu.download.ui.list
 
+import androidx.collection.ArrayMap
 import androidx.collection.LongSparseArray
 import androidx.collection.getOrElse
 import androidx.collection.set
 import androidx.lifecycle.viewModelScope
-import androidx.work.Data
 import androidx.work.WorkInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -27,12 +30,17 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.daysDiff
+import org.koitharu.kotatsu.core.util.ext.isEmpty
 import org.koitharu.kotatsu.download.domain.DownloadState
+import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -47,11 +55,15 @@ class DownloadsViewModel @Inject constructor(
 	private val workScheduler: DownloadWorker.Scheduler,
 	private val mangaDataRepository: MangaDataRepository,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
+	private val localMangaRepository: LocalMangaRepository,
 ) : BaseViewModel() {
 
 	private val mangaCache = LongSparseArray<Manga>()
 	private val cacheMutex = Mutex()
 	private val expanded = MutableStateFlow(emptySet<UUID>())
+	private val chaptersCache = ArrayMap<UUID, StateFlow<List<DownloadChapter>?>>()
+
 	private val works = combine(
 		workScheduler.observeWorks(),
 		expanded,
@@ -234,10 +246,18 @@ class DownloadsViewModel @Inject constructor(
 	}
 
 	private suspend fun WorkInfo.toUiModel(isExpanded: Boolean): DownloadItemModel? {
-		val workData = if (outputData == Data.EMPTY) progress else outputData
+		val workData = outputData.takeUnless { it.isEmpty }
+			?: progress.takeUnless { it.isEmpty }
+			?: workScheduler.getInputData(id)
+			?: return null
 		val mangaId = DownloadState.getMangaId(workData)
 		if (mangaId == 0L) return null
 		val manga = getManga(mangaId) ?: return null
+		val chapters = synchronized(chaptersCache) {
+			chaptersCache.getOrPut(id) {
+				observeChapters(manga, id)
+			}
+		}
 		return DownloadItemModel(
 			id = id,
 			workState = state,
@@ -251,6 +271,7 @@ class DownloadsViewModel @Inject constructor(
 			timestamp = DownloadState.getTimestamp(workData),
 			chaptersDownloaded = DownloadState.getDownloadedChapters(workData),
 			isExpanded = isExpanded,
+			chapters = chapters,
 		)
 	}
 
@@ -282,16 +303,42 @@ class DownloadsViewModel @Inject constructor(
 		}
 		return cacheMutex.withLock {
 			mangaCache.getOrElse(mangaId) {
-				mangaDataRepository.findMangaById(mangaId)?.let {
-					tryLoad(it) ?: it
-				}?.also {
+				mangaDataRepository.findMangaById(mangaId)?.also {
 					mangaCache[mangaId] = it
 				} ?: return null
 			}
 		}
 	}
 
+	private fun observeChapters(manga: Manga, workId: UUID): StateFlow<List<DownloadChapter>?> = flow {
+		val chapterIds = workScheduler.getInputChaptersIds(workId)?.toSet()
+		val chapters = (tryLoad(manga) ?: manga).chapters ?: return@flow
+
+		suspend fun mapChapters(): List<DownloadChapter> {
+			val size = chapterIds?.size ?: chapters.size
+			val localChapters =
+				localMangaRepository.findSavedManga(manga)?.manga?.chapters?.mapToSet { it.id }.orEmpty()
+			return chapters.mapNotNullTo(ArrayList(size)) {
+				if (chapterIds == null || it.id in chapterIds) {
+					DownloadChapter(
+						number = it.number,
+						name = it.name,
+						isDownloaded = it.id in localChapters,
+					)
+				} else {
+					null
+				}
+			}
+		}
+		emit(mapChapters())
+		localStorageChanges.collect {
+			if (it?.manga?.id == manga.id) {
+				emit(mapChapters())
+			}
+		}
+	}.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
 	private suspend fun tryLoad(manga: Manga) = runCatchingCancellable {
-		(mangaRepositoryFactory.create(manga.source) as RemoteMangaRepository).peekDetails(manga)
+		(mangaRepositoryFactory.create(manga.source) as RemoteMangaRepository).getDetails(manga)
 	}.getOrNull()
 }

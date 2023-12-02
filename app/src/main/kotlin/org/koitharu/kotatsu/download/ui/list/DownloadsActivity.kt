@@ -84,15 +84,17 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		if (selectionController.onItemClick(item.id.mostSignificantBits)) {
 			return
 		}
-		if (item.isExpandable) {
-			viewModel.expandCollapse(item)
-		} else {
-			startActivity(DetailsActivity.newIntent(view.context, item.manga))
-		}
+		startActivity(DetailsActivity.newIntent(view.context, item.manga ?: return))
 	}
 
 	override fun onItemLongClick(item: DownloadItemModel, view: View): Boolean {
 		return selectionController.onItemLongClick(item.id.mostSignificantBits)
+	}
+
+	override fun onExpandClick(item: DownloadItemModel) {
+		if (!selectionController.onItemClick(item.id.mostSignificantBits)) {
+			viewModel.expandCollapse(item)
+		}
 	}
 
 	override fun onCancelClick(item: DownloadItemModel) {

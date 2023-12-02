@@ -25,30 +25,43 @@
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Medium"
 			tools:src="@tools:sample/backgrounds/scenic" />
 
-		<CheckedTextView
+		<TextView
 			android:id="@+id/textView_title"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="12dp"
-			android:layout_marginEnd="12dp"
 			android:ellipsize="end"
 			android:gravity="center_vertical"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceTitleSmall"
-			app:drawableTint="?android:colorControlNormal"
-			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/imageView_expand"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
-			tools:drawableEndCompat="@drawable/ic_expand_collapse"
+			app:layout_goneMarginEnd="12dp"
 			tools:text="@tools:sample/lorem" />
+
+		<org.koitharu.kotatsu.core.ui.widgets.CheckableImageView
+			android:id="@+id/imageView_expand"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="?selectableItemBackgroundBorderless"
+			android:minWidth="?minTouchTargetSize"
+			android:minHeight="?minTouchTargetSize"
+			android:scaleType="center"
+			android:visibility="gone"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:srcCompat="@drawable/ic_expand_collapse"
+			app:tint="?colorControlActivated"
+			tools:visibility="visible" />
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/barrier_top"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			app:barrierDirection="bottom"
-			app:constraint_referenced_ids="imageView_cover, textView_status" />
+			app:constraint_referenced_ids="imageView_cover,textView_status,imageView_expand" />
 
 		<com.google.android.material.progressindicator.LinearProgressIndicator
 			android:id="@+id/progressBar"
@@ -62,6 +75,32 @@
 			app:layout_constraintTop_toBottomOf="@id/barrier_top"
 			app:trackColor="?android:colorBackground"
 			tools:progress="25" />
+
+		<org.koitharu.kotatsu.core.ui.widgets.NestedRecyclerView
+			android:id="@+id/recyclerView_chapters"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="12dp"
+			android:layout_marginTop="12dp"
+			android:layout_marginEnd="12dp"
+			android:background="@drawable/bg_card"
+			android:clipToOutline="true"
+			android:clipToPadding="false"
+			android:fadeScrollbars="false"
+			android:nestedScrollingEnabled="false"
+			android:orientation="vertical"
+			android:outlineProvider="background"
+			android:paddingVertical="8dp"
+			android:scrollbarStyle="insideOverlay"
+			android:scrollbars="vertical"
+			android:visibility="gone"
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/progressBar"
+			app:maxHeight="240dp"
+			tools:listitem="@layout/item_chapter_download"
+			tools:visibility="visible" />
 
 		<TextView
 			android:id="@+id/textView_status"
@@ -114,7 +153,7 @@
 			android:text="@string/pause"
 			android:visibility="gone"
 			app:layout_constraintEnd_toStartOf="@id/button_resume"
-			app:layout_constraintTop_toBottomOf="@id/progressBar"
+			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters"
 			tools:visibility="visible" />
 
 		<Button
@@ -127,7 +166,7 @@
 			android:text="@string/resume"
 			android:visibility="gone"
 			app:layout_constraintEnd_toStartOf="@id/button_cancel"
-			app:layout_constraintTop_toBottomOf="@id/progressBar" />
+			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters" />
 
 		<Button
 			android:id="@+id/button_cancel"
@@ -139,7 +178,7 @@
 			android:text="@android:string/cancel"
 			android:visibility="gone"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/progressBar"
+			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters"
 			tools:visibility="visible" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
