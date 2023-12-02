@@ -179,6 +179,7 @@
 				app:layout_constraintTop_toBottomOf="@id/textView_contrast" />
 
 			<TextView
+				android:id="@+id/textView_tip"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="@dimen/margin_normal"
@@ -188,6 +189,17 @@
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toEndOf="@id/guideline_vertical"
 				app:layout_constraintTop_toBottomOf="@id/slider_contrast" />
+
+			<CheckBox
+				android:id="@+id/checkBox_global"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_small"
+				android:text="Save these settings globally and apply for all manga"
+				app:layout_constraintEnd_toEndOf="@id/textView_tip"
+				app:layout_constraintStart_toStartOf="@id/textView_tip"
+				app:layout_constraintTop_toBottomOf="@id/textView_tip" />
+
 
 		</androidx.constraintlayout.widget.ConstraintLayout>
 

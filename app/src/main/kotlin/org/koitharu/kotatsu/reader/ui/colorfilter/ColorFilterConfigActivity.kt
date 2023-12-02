@@ -90,7 +90,12 @@ class ColorFilterConfigActivity :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_done -> viewModel.save()
+			R.id.button_done -> if (viewBinding.checkBoxGlobal.isChecked) {
+				viewModel.saveGlobally()
+			} else {
+				viewModel.save()
+			}
+
 			R.id.button_reset -> viewModel.reset()
 		}
 	}

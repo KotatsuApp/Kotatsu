@@ -34,7 +34,7 @@ class ReaderSettings(
 		get() = settings.zoomMode
 
 	val colorFilter: ReaderColorFilter?
-		get() = colorFilterFlow.value?.takeUnless { it.isEmpty }
+		get() = colorFilterFlow.value?.takeUnless { it.isEmpty } ?: settings.readerColorFilter
 
 	val isReaderOptimizationEnabled: Boolean
 		get() = settings.isReaderOptimizationEnabled
@@ -96,6 +96,18 @@ class ReaderSettings(
 		FlowCollector<ReaderColorFilter?>,
 		SharedPreferences.OnSharedPreferenceChangeListener {
 
+		private val settingsKeys = setOf(
+			AppSettings.KEY_ZOOM_MODE,
+			AppSettings.KEY_PAGES_NUMBERS,
+			AppSettings.KEY_READER_BACKGROUND,
+			AppSettings.KEY_32BIT_COLOR,
+			AppSettings.KEY_READER_OPTIMIZE,
+			AppSettings.KEY_CF_ENABLED,
+			AppSettings.KEY_CF_CONTRAST,
+			AppSettings.KEY_CF_BRIGHTNESS,
+			AppSettings.KEY_CF_INVERTED,
+		)
+
 		override suspend fun emit(value: ReaderColorFilter?) {
 			withContext(Dispatchers.Main.immediate) {
 				notifyChanged()
@@ -103,13 +115,7 @@ class ReaderSettings(
 		}
 
 		override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-			if (
-				key == AppSettings.KEY_ZOOM_MODE ||
-				key == AppSettings.KEY_PAGES_NUMBERS ||
-				key == AppSettings.KEY_READER_BACKGROUND ||
-				key == AppSettings.KEY_32BIT_COLOR ||
-				key == AppSettings.KEY_READER_OPTIMIZE
-			) {
+			if (key in settingsKeys) {
 				notifyChanged()
 			}
 		}

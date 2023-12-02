@@ -158,25 +158,37 @@
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/textView_contrast" />
 
-			<Button
-				android:id="@+id/button_reset"
-				style="?materialButtonOutlinedStyle"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_normal"
-				android:text="@string/reset"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/slider_contrast" />
-
 			<TextView
+				android:id="@+id/textView_tip"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
 				android:layout_marginEnd="@dimen/margin_normal"
 				android:text="@string/color_correction_hint"
 				android:textAppearance="?textAppearanceBodySmall"
 				app:layout_constraintEnd_toStartOf="@id/button_reset"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toTopOf="@id/button_reset" />
+				app:layout_constraintTop_toBottomOf="@id/slider_contrast" />
+
+			<CheckBox
+				android:id="@+id/checkBox_global"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_small"
+				android:text="Save these settings globally and apply for all manga"
+				app:layout_constraintEnd_toEndOf="@id/textView_tip"
+				app:layout_constraintStart_toStartOf="@id/textView_tip"
+				app:layout_constraintTop_toBottomOf="@id/textView_tip" />
+
+			<Button
+				android:id="@+id/button_reset"
+				style="?materialButtonOutlinedStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/reset"
+				app:layout_constraintBottom_toBottomOf="@id/checkBox_global"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toTopOf="@id/textView_tip" />
 
 		</androidx.constraintlayout.widget.ConstraintLayout>
 

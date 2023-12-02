@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.prefs
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -13,12 +14,16 @@ import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.getEnumValue
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
@@ -28,6 +33,7 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.find
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import java.io.File
 import java.net.Proxy
 import java.util.Locale
@@ -293,6 +299,27 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReaderKeepScreenOn: Boolean
 		get() = prefs.getBoolean(KEY_READER_SCREEN_ON, true)
 
+	var readerColorFilter: ReaderColorFilter?
+		get() {
+			if (!prefs.getBoolean(KEY_CF_ENABLED, false)) {
+				return null
+			}
+			val brightness = prefs.getFloat(KEY_CF_BRIGHTNESS, 0f)
+			val contrast = prefs.getFloat(KEY_CF_CONTRAST, 0f)
+			val inverted = prefs.getBoolean(KEY_CF_INVERTED, false)
+			return ReaderColorFilter(brightness, contrast, inverted)
+		}
+		set(value) {
+			prefs.edit {
+				putBoolean(KEY_CF_ENABLED, value != null)
+				if (value != null) {
+					putFloat(KEY_CF_BRIGHTNESS, value.brightness)
+					putFloat(KEY_CF_CONTRAST, value.contrast)
+					putBoolean(KEY_CF_INVERTED, value.isInverted)
+				}
+			}
+		}
+
 	val isImagesProxyEnabled: Boolean
 		get() = prefs.getBoolean(KEY_IMAGES_PROXY, false)
 
@@ -425,6 +452,17 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		return result
 	}
 
+	@SuppressLint("ApplySharedPref")
+	private inline fun SharedPreferences.editAsync(
+		action: SharedPreferences.Editor.() -> Unit
+	) {
+		val editor = edit()
+		action(editor)
+		processLifecycleScope.launch(Dispatchers.IO, CoroutineStart.ATOMIC) {
+			editor.commit()
+		}
+	}
+
 	companion object {
 
 		const val PAGE_SWITCH_TAPS = "taps"
@@ -535,6 +573,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_32BIT_COLOR = "enhanced_colors"
 		const val KEY_SOURCES_ORDER = "sources_sort_order"
 		const val KEY_SOURCES_CATALOG = "sources_catalog"
+		const val KEY_CF_ENABLED = "cf_enabled"
+		const val KEY_CF_BRIGHTNESS = "cf_brightness"
+		const val KEY_CF_CONTRAST = "cf_contrast"
+		const val KEY_CF_INVERTED = "cf_inverted"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
