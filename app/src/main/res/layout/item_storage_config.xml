@@ -27,7 +27,6 @@
 			android:gravity="center_vertical"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceTitleSmall"
-			app:drawableTint="@color/warning"
 			tools:drawableStart="@drawable/ic_alert_outline"
 			tools:text="@tools:sample/lorem[3]" />
 

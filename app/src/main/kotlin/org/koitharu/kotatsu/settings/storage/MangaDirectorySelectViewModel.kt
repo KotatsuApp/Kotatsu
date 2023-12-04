@@ -64,6 +64,7 @@ class MangaDirectorySelectViewModel @Inject constructor(
 						file = dir,
 						isChecked = dir == defaultValue,
 						isAvailable = true,
+						isRemovable = false,
 					)
 				}
 				this += DirectoryModel(
@@ -72,6 +73,7 @@ class MangaDirectorySelectViewModel @Inject constructor(
 					file = null,
 					isChecked = false,
 					isAvailable = true,
+					isRemovable = false,
 				)
 			}
 		}

@@ -59,16 +59,18 @@ class MangaDirectoriesViewModel @Inject constructor(
 		val prevJob = loadingJob
 		loadingJob = launchJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
+			val downloadDir = storageManager.getDefaultWriteableDir()
 			val applicationDirs = storageManager.getApplicationStorageDirs()
-			val customDirs = settings.userSpecifiedMangaDirectories
+			val customDirs = settings.userSpecifiedMangaDirectories - applicationDirs
 			items.value = buildList(applicationDirs.size + customDirs.size) {
 				applicationDirs.mapTo(this) { dir ->
 					DirectoryModel(
 						title = storageManager.getDirectoryDisplayName(dir, isFullPath = false),
 						titleRes = 0,
 						file = dir,
-						isChecked = false,
+						isChecked = dir == downloadDir,
 						isAvailable = dir.canRead() && dir.canWrite(),
+						isRemovable = false,
 					)
 				}
 				customDirs.mapTo(this) { dir ->
@@ -76,8 +78,9 @@ class MangaDirectoriesViewModel @Inject constructor(
 						title = storageManager.getDirectoryDisplayName(dir, isFullPath = false),
 						titleRes = 0,
 						file = dir,
-						isChecked = true,
+						isChecked = dir == downloadDir,
 						isAvailable = dir.canRead() && dir.canWrite(),
+						isRemovable = true,
 					)
 				}
 			}
