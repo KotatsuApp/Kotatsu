@@ -98,8 +98,8 @@ class MangaDataRepository @Inject constructor(
 	}
 
 	private fun MangaPrefsEntity.getColorFilterOrNull(): ReaderColorFilter? {
-		return if (cfBrightness != 0f || cfContrast != 0f || cfInvert) {
-			ReaderColorFilter(cfBrightness, cfContrast, cfInvert)
+		return if (cfBrightness != 0f || cfContrast != 0f || cfInvert || cfGrayscale) {
+			ReaderColorFilter(cfBrightness, cfContrast, cfInvert, cfGrayscale)
 		} else {
 			null
 		}
@@ -111,5 +111,6 @@ class MangaDataRepository @Inject constructor(
 		cfBrightness = 0f,
 		cfContrast = 0f,
 		cfInvert = false,
+		cfGrayscale = false,
 	)
 }

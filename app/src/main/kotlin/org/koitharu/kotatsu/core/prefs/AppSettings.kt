@@ -301,22 +301,19 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	var readerColorFilter: ReaderColorFilter?
 		get() {
-			if (!prefs.getBoolean(KEY_CF_ENABLED, false)) {
-				return null
-			}
-			val brightness = prefs.getFloat(KEY_CF_BRIGHTNESS, 0f)
-			val contrast = prefs.getFloat(KEY_CF_CONTRAST, 0f)
-			val inverted = prefs.getBoolean(KEY_CF_INVERTED, false)
-			return ReaderColorFilter(brightness, contrast, inverted)
+			val brightness = prefs.getFloat(KEY_CF_BRIGHTNESS, ReaderColorFilter.EMPTY.brightness)
+			val contrast = prefs.getFloat(KEY_CF_CONTRAST, ReaderColorFilter.EMPTY.contrast)
+			val inverted = prefs.getBoolean(KEY_CF_INVERTED, ReaderColorFilter.EMPTY.isInverted)
+			val grayscale = prefs.getBoolean(KEY_CF_GRAYSCALE, ReaderColorFilter.EMPTY.isGrayscale)
+			return ReaderColorFilter(brightness, contrast, inverted, grayscale).takeUnless { it.isEmpty }
 		}
 		set(value) {
 			prefs.edit {
-				putBoolean(KEY_CF_ENABLED, value != null)
-				if (value != null) {
-					putFloat(KEY_CF_BRIGHTNESS, value.brightness)
-					putFloat(KEY_CF_CONTRAST, value.contrast)
-					putBoolean(KEY_CF_INVERTED, value.isInverted)
-				}
+				val cf = value ?: ReaderColorFilter.EMPTY
+				putFloat(KEY_CF_BRIGHTNESS, cf.brightness)
+				putFloat(KEY_CF_CONTRAST, cf.contrast)
+				putBoolean(KEY_CF_INVERTED, cf.isInverted)
+				putBoolean(KEY_CF_GRAYSCALE, cf.isGrayscale)
 			}
 		}
 
@@ -573,10 +570,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_32BIT_COLOR = "enhanced_colors"
 		const val KEY_SOURCES_ORDER = "sources_sort_order"
 		const val KEY_SOURCES_CATALOG = "sources_catalog"
-		const val KEY_CF_ENABLED = "cf_enabled"
 		const val KEY_CF_BRIGHTNESS = "cf_brightness"
 		const val KEY_CF_CONTRAST = "cf_contrast"
 		const val KEY_CF_INVERTED = "cf_inverted"
+		const val KEY_CF_GRAYSCALE = "cf_grayscale"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

@@ -535,4 +535,9 @@
 	<string name="error_search_not_supported">Search is not supported by this manga source</string>
 	<string name="downloads_settings_info">You can enable download slowdown for each manga source individually in the source settings if you are having problems with server-side blocking</string>
 	<string name="skip">Skip</string>
+	<string name="grayscale">Grayscale</string>
+	<string name="globally">Globally</string>
+	<string name="this_manga">This manga</string>
+	<string name="color_correction_apply_text">These settings can be applied globally or only to the current manga. If applied globally, individual settings will not be overridden.</string>
+	<string name="apply">Apply</string>
 </resources>

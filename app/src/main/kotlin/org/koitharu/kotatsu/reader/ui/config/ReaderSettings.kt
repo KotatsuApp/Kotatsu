@@ -102,10 +102,10 @@ class ReaderSettings(
 			AppSettings.KEY_READER_BACKGROUND,
 			AppSettings.KEY_32BIT_COLOR,
 			AppSettings.KEY_READER_OPTIMIZE,
-			AppSettings.KEY_CF_ENABLED,
 			AppSettings.KEY_CF_CONTRAST,
 			AppSettings.KEY_CF_BRIGHTNESS,
 			AppSettings.KEY_CF_INVERTED,
+			AppSettings.KEY_CF_GRAYSCALE,
 		)
 
 		override suspend fun emit(value: ReaderColorFilter?) {
