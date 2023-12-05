@@ -1,13 +1,14 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -19,7 +20,6 @@ import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoryListModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.parsers.util.move
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,17 +30,9 @@ class FavouritesCategoriesViewModel @Inject constructor(
 
 	private var commitJob: Job? = null
 
-	val content = MutableStateFlow<List<ListModel>>(listOf(LoadingState))
-
-	init {
-		launchJob(Dispatchers.Default) {
-			repository.observeCategoriesWithCovers()
-				.collectLatest {
-					commitJob?.join()
-					updateContent(it)
-				}
-		}
-	}
+	val content = repository.observeCategoriesWithCovers()
+		.map { it.toUiList() }
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	fun deleteCategories(ids: Set<Long>) {
 		launchJob(Dispatchers.Default) {
@@ -54,11 +46,17 @@ class FavouritesCategoriesViewModel @Inject constructor(
 
 	fun isEmpty(): Boolean = content.value.none { it is CategoryListModel }
 
-	fun reorderCategories(oldPos: Int, newPos: Int) {
-		val snapshot = content.requireValue().toMutableList()
-		snapshot.move(oldPos, newPos)
-		content.value = snapshot
-		commit(snapshot)
+	fun saveOrder(snapshot: List<ListModel>) {
+		val prevJob = commitJob
+		commitJob = launchJob {
+			prevJob?.cancelAndJoin()
+			val ids = snapshot.mapNotNullTo(ArrayList(snapshot.size)) {
+				(it as? CategoryListModel)?.category?.id
+			}
+			if (ids.isNotEmpty()) {
+				repository.reorderCategories(ids)
+			}
+		}
 	}
 
 	fun setIsVisible(ids: Set<Long>, isVisible: Boolean) {
@@ -76,36 +74,21 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		}
 	}
 
-	private fun commit(snapshot: List<ListModel>) {
-		val prevJob = commitJob
-		commitJob = launchJob {
-			prevJob?.cancelAndJoin()
-			delay(500)
-			val ids = snapshot.mapNotNullTo(ArrayList(snapshot.size)) {
-				(it as? CategoryListModel)?.category?.id
-			}
-			repository.reorderCategories(ids)
-			yield()
-		}
-	}
-
-	private fun updateContent(categories: Map<FavouriteCategory, List<Cover>>) {
-		content.value = categories.map { (category, covers) ->
-			CategoryListModel(
-				mangaCount = covers.size,
-				covers = covers.take(3),
-				category = category,
-				isTrackerEnabled = settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources,
-			)
-		}.ifEmpty {
-			listOf(
-				EmptyState(
-					icon = R.drawable.ic_empty_favourites,
-					textPrimary = R.string.text_empty_holder_primary,
-					textSecondary = R.string.empty_favourite_categories,
-					actionStringRes = 0,
-				),
-			)
-		}
+	private fun Map<FavouriteCategory, List<Cover>>.toUiList(): List<ListModel> = map { (category, covers) ->
+		CategoryListModel(
+			mangaCount = covers.size,
+			covers = covers.take(3),
+			category = category,
+			isTrackerEnabled = settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources,
+		)
+	}.ifEmpty {
+		listOf(
+			EmptyState(
+				icon = R.drawable.ic_empty_favourites,
+				textPrimary = R.string.text_empty_holder_primary,
+				textSecondary = R.string.empty_favourite_categories,
+				actionStringRes = 0,
+			),
+		)
 	}
 }
