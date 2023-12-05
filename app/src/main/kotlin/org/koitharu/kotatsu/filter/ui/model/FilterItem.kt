@@ -1,11 +1,15 @@
 package org.koitharu.kotatsu.filter.ui.model
 
+import android.content.res.Resources
 import androidx.annotation.StringRes
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.toTitleCase
+import java.util.Locale
 
 sealed interface FilterItem : ListModel {
 
@@ -57,6 +61,28 @@ sealed interface FilterItem : ListModel {
 
 		override fun getChangePayload(previousState: ListModel): Any? {
 			return if (previousState is State && previousState.isChecked != isChecked) {
+				ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED
+			} else {
+				super.getChangePayload(previousState)
+			}
+		}
+	}
+
+	data class Language(
+		val locale: Locale?,
+		val isChecked: Boolean,
+	) : FilterItem {
+
+		private val displayText = locale?.getDisplayLanguage(locale)?.toTitleCase(locale)
+
+		fun getTitle(resources: Resources) = displayText ?: resources.getString(R.string.various_languages)
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is Language && other.locale == locale
+		}
+
+		override fun getChangePayload(previousState: ListModel): Any? {
+			return if (previousState is Language && previousState.isChecked != isChecked) {
 				ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED
 			} else {
 				super.getChangePayload(previousState)

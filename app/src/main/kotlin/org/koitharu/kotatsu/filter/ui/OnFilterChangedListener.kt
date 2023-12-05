@@ -10,4 +10,6 @@ interface OnFilterChangedListener : ListHeaderClickListener {
 	fun onTagItemClick(item: FilterItem.Tag, isFromChip: Boolean)
 
 	fun onStateItemClick(item: FilterItem.State)
+
+	fun onLanguageItemClick(item: FilterItem.Language)
 }

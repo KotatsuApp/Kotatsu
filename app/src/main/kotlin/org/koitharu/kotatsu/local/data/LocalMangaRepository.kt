@@ -35,6 +35,7 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
 import java.util.EnumSet
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -159,6 +160,8 @@ class LocalMangaRepository @Inject constructor(
 	override suspend fun getPageUrl(page: MangaPage) = page.url
 
 	override suspend fun getTags() = emptySet<MangaTag>()
+
+	override suspend fun getLocales() = emptySet<Locale>()
 
 	override suspend fun getRelated(seed: Manga): List<Manga> = emptyList()
 

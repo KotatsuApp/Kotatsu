@@ -44,6 +44,23 @@ fun filterStateDelegate(
 	}
 }
 
+
+fun filterLanguageDelegate(
+	listener: OnFilterChangedListener,
+) = adapterDelegateViewBinding<FilterItem.Language, ListModel, ItemCheckableSingleBinding>(
+	{ layoutInflater, parent -> ItemCheckableSingleBinding.inflate(layoutInflater, parent, false) },
+) {
+
+	itemView.setOnClickListener {
+		listener.onLanguageItemClick(item)
+	}
+
+	bind { payloads ->
+		binding.root.text = item.getTitle(context.resources)
+		binding.root.setChecked(item.isChecked, payloads.isNotEmpty())
+	}
+}
+
 fun filterTagDelegate(
 	listener: OnFilterChangedListener,
 ) = adapterDelegateViewBinding<FilterItem.Tag, ListModel, ItemCheckableSingleBinding>(

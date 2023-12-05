@@ -31,6 +31,7 @@ class TypedListSpacingDecoration(
 			ListItemType.FILTER_TAG,
 			ListItemType.FILTER_TAG_MULTI,
 			ListItemType.FILTER_STATE,
+			ListItemType.FILTER_LANGUAGE,
 			-> outRect.set(0)
 
 			ListItemType.HEADER,
