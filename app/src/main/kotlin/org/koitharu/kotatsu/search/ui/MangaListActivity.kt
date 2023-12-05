@@ -32,8 +32,8 @@ import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ActivityMangaListBinding
 import org.koitharu.kotatsu.filter.ui.FilterHeaderFragment
 import org.koitharu.kotatsu.filter.ui.FilterOwner
-import org.koitharu.kotatsu.filter.ui.FilterSheetFragment
 import org.koitharu.kotatsu.filter.ui.MangaFilter
+import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.preview.PreviewFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner

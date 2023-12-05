@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.filter.ui
 
 import android.view.View
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.ViewModelLifecycle
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -14,7 +13,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
@@ -22,18 +23,17 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.lifecycleScope
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
-import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
-import org.koitharu.kotatsu.filter.ui.model.FilterItem
+import org.koitharu.kotatsu.filter.ui.model.FilterProperty
 import org.koitharu.kotatsu.list.ui.model.ListHeader
-import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.LoadingFooter
-import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
+import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
@@ -55,17 +55,75 @@ class FilterCoordinator @Inject constructor(
 
 	private val coroutineScope = lifecycle.lifecycleScope
 	private val repository = mangaRepositoryFactory.create(savedStateHandle.require(RemoteListFragment.ARG_SOURCE))
-	private val currentState =
-		MutableStateFlow(MangaListFilter.Advanced(repository.defaultSortOrder, emptySet(), null, emptySet()))
-	private var searchQuery = MutableStateFlow("")
+	private val currentState = MutableStateFlow(
+		MangaListFilter.Advanced(repository.defaultSortOrder, emptySet(), null, emptySet()),
+	)
 	private val localTags = SuspendLazy {
 		dataRepository.findTags(repository.source)
 	}
 	private var availableTagsDeferred = loadTagsAsync()
 	private var availableLocalesDeferred = loadLocalesAsync()
 
-	override val filterItems: StateFlow<List<ListModel>> = getItemsFlow()
-		.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, listOf(LoadingState))
+	override val filterTags: StateFlow<FilterProperty<MangaTag>> = combine(
+		currentState.distinctUntilChangedBy { it.tags },
+		getTagsAsFlow(),
+	) { state, tags ->
+		FilterProperty(
+			availableItems = tags.items.sortedBy { it.title },
+			selectedItems = state.tags,
+			isLoading = tags.isLoading,
+			error = tags.error,
+		)
+	}.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, loadingProperty())
+
+	override val filterSortOrder: StateFlow<FilterProperty<SortOrder>> = combine(
+		currentState.distinctUntilChangedBy { it.sortOrder },
+		flowOf(repository.sortOrders),
+	) { state, orders ->
+		FilterProperty(
+			availableItems = orders.sortedBy { it.ordinal },
+			selectedItems = setOf(state.sortOrder),
+			isLoading = false,
+			error = null,
+		)
+	}.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, loadingProperty())
+
+	override val filterState: StateFlow<FilterProperty<MangaState>> = combine(
+		currentState.distinctUntilChangedBy { it.states },
+		flowOf(repository.states),
+	) { state, states ->
+		FilterProperty(
+			availableItems = states.sortedBy { it.ordinal },
+			selectedItems = state.states,
+			isLoading = false,
+			error = null,
+		)
+	}.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, loadingProperty())
+
+	override val filterLocale: StateFlow<FilterProperty<Locale?>> = combine(
+		currentState.distinctUntilChangedBy { it.locale },
+		getLocalesAsFlow(),
+	) { state, locales ->
+		val list = if (locales.items.isNotEmpty()) {
+			val l = ArrayList<Locale?>(locales.items.size + 1)
+			l.add(null)
+			l.addAll(locales.items)
+			try {
+				l.sortWith(nullsFirst(LocaleComparator()))
+			} catch (e: IllegalArgumentException) {
+				e.printStackTraceDebug()
+			}
+			l
+		} else {
+			emptyList()
+		}
+		FilterProperty(
+			availableItems = list,
+			selectedItems = setOf(state.locale),
+			isLoading = locales.isLoading,
+			error = locales.error,
+		)
+	}.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, loadingProperty())
 
 	override val header: StateFlow<FilterHeaderModel> = getHeaderFlow().stateIn(
 		scope = coroutineScope + Dispatchers.Default,
@@ -78,52 +136,50 @@ class FilterCoordinator @Inject constructor(
 		),
 	)
 
-	init {
-		observeState()
-	}
-
 	override fun applyFilter(tags: Set<MangaTag>) {
 		setTags(tags)
 	}
 
-	override fun onSortItemClick(item: FilterItem.Sort) {
+	override fun setSortOrder(value: SortOrder) {
 		currentState.update { oldValue ->
-			oldValue.copy(sortOrder = item.order)
+			oldValue.copy(sortOrder = value)
 		}
-		repository.defaultSortOrder = item.order
+		repository.defaultSortOrder = value
 	}
 
-	override fun onTagItemClick(item: FilterItem.Tag, isFromChip: Boolean) {
+	override fun setLanguage(value: Locale?) {
 		currentState.update { oldValue ->
-			val newTags = if (!item.isMultiple) {
-				if (isFromChip && item.isChecked) {
-					emptySet()
+			oldValue.copy(locale = value)
+		}
+	}
+
+	override fun setTag(value: MangaTag, addOrRemove: Boolean) {
+		currentState.update { oldValue ->
+			val newTags = if (repository.isMultipleTagsSupported) {
+				if (addOrRemove) {
+					oldValue.tags + value
 				} else {
-					setOf(item.tag)
+					oldValue.tags - value
 				}
-			} else if (item.isChecked) {
-				oldValue.tags - item.tag
 			} else {
-				oldValue.tags + item.tag
+				if (addOrRemove) {
+					setOf(value)
+				} else {
+					emptySet()
+				}
 			}
 			oldValue.copy(tags = newTags)
 		}
 	}
 
-	override fun onStateItemClick(item: FilterItem.State) {
+	override fun setState(value: MangaState, addOrRemove: Boolean) {
 		currentState.update { oldValue ->
-			val newStates = if (item.isChecked) {
-				oldValue.states - item.state
+			val newStates = if (addOrRemove) {
+				oldValue.states + value
 			} else {
-				oldValue.states + item.state
+				oldValue.states - value
 			}
 			oldValue.copy(states = newStates)
-		}
-	}
-
-	override fun onLanguageItemClick(item: FilterItem.Language) {
-		currentState.update { oldValue ->
-			oldValue.copy(locale = item.locale)
 		}
 	}
 
@@ -142,7 +198,7 @@ class FilterCoordinator @Inject constructor(
 		if (!availableTagsDeferred.isCompleted) {
 			emit(emptySet())
 		}
-		emit(availableTagsDeferred.await())
+		emit(availableTagsDeferred.await().getOrNull())
 	}
 
 	fun observeState() = currentState.asStateFlow()
@@ -161,10 +217,6 @@ class FilterCoordinator @Inject constructor(
 
 	fun snapshot() = currentState.value
 
-	fun performSearch(query: String) {
-		searchQuery.value = query
-	}
-
 	private fun getHeaderFlow() = combine(
 		observeState(),
 		observeAvailableTags(),
@@ -178,34 +230,25 @@ class FilterCoordinator @Inject constructor(
 		)
 	}
 
-	private fun getItemsFlow() = combine(
-		getTagsAsFlow(),
-		getLocalesAsFlow(),
-		currentState,
-		searchQuery,
-	) { tags, locales, state, query ->
-		buildFilterList(tags, locales, state, query)
-	}
-
 	private fun getTagsAsFlow() = flow {
 		val localTags = localTags.get()
-		emit(PendingSet(localTags, isLoading = true, isError = false))
-		val remoteTags = tryLoadTags()
-		if (remoteTags == null) {
-			emit(PendingSet(localTags, isLoading = false, isError = true))
-		} else {
-			emit(PendingSet(mergeTags(remoteTags, localTags), isLoading = false, isError = false))
-		}
+		emit(PendingSet(localTags, isLoading = true, error = null))
+		tryLoadTags()
+			.onSuccess { remoteTags ->
+				emit(PendingSet(mergeTags(remoteTags, localTags), isLoading = false, error = null))
+			}.onFailure {
+				emit(PendingSet(localTags, isLoading = false, error = it))
+			}
 	}
 
 	private fun getLocalesAsFlow(): Flow<PendingSet<Locale>> = flow {
-		emit(PendingSet(emptySet(), isLoading = true, isError = false))
-		val locales = tryLoadLocales()
-		if (locales == null) {
-			emit(PendingSet(emptySet(), isLoading = false, isError = true))
-		} else {
-			emit(PendingSet(locales, isLoading = false, isError = false))
-		}
+		emit(PendingSet(emptySet(), isLoading = true, error = null))
+		tryLoadLocales()
+			.onSuccess { locales ->
+				emit(PendingSet(locales, isLoading = false, error = null))
+			}.onFailure {
+				emit(PendingSet(emptySet(), isLoading = false, error = it))
+			}
 	}
 
 	private suspend fun createChipsList(
@@ -255,96 +298,20 @@ class FilterCoordinator @Inject constructor(
 		return result
 	}
 
-	@WorkerThread
-	private fun buildFilterList(
-		allTags: PendingSet<MangaTag>,
-		allLocales: PendingSet<Locale>,
-		state: MangaListFilter.Advanced,
-		query: String,
-	): List<ListModel> {
-		val sortOrders = repository.sortOrders.sortedByOrdinal()
-		val states = repository.states
-		val tags = mergeTags(state.tags, allTags.items).toList()
-		val list = ArrayList<ListModel>(tags.size + states.size + sortOrders.size + 4)
-		val isMultiTag = repository.isMultipleTagsSupported
-		if (query.isEmpty()) {
-			if (sortOrders.isNotEmpty()) {
-				list.add(ListHeader(R.string.sort_order))
-				sortOrders.mapTo(list) {
-					FilterItem.Sort(it, isSelected = it == state.sortOrder)
-				}
-			}
-			if (states.isNotEmpty()) {
-				list.add(
-					ListHeader(
-						textRes = R.string.state,
-						buttonTextRes = if (state.states.isEmpty()) 0 else R.string.reset,
-						payload = R.string.state,
-					),
-				)
-				states.mapTo(list) {
-					FilterItem.State(it, isChecked = it in state.states)
-				}
-			}
-			if (allLocales.items.isNotEmpty()) {
-				list.add(
-					ListHeader(
-						textRes = R.string.language,
-						buttonTextRes = if (state.locale == null) 0 else R.string.reset,
-						payload = R.string.language,
-					),
-				)
-				list.add(FilterItem.Language(null, isChecked = state.locale == null))
-				allLocales.items.mapTo(list) {
-					FilterItem.Language(it, isChecked = state.locale == it)
-				}
-			}
-			if (allTags.isLoading || allTags.isError || tags.isNotEmpty()) {
-				list.add(
-					ListHeader(
-						textRes = R.string.genres,
-						buttonTextRes = if (state.tags.isEmpty()) 0 else R.string.reset,
-						payload = R.string.genres,
-					),
-				)
-				tags.mapTo(list) {
-					FilterItem.Tag(it, isMultiple = isMultiTag, isChecked = it in state.tags)
-				}
-			}
-			if (allTags.isError) {
-				list.add(FilterItem.Error(R.string.filter_load_error))
-			} else if (allTags.isLoading) {
-				list.add(LoadingFooter())
-			}
-		} else {
-			tags.mapNotNullTo(list) {
-				if (it.title.contains(query, ignoreCase = true)) {
-					FilterItem.Tag(it, isMultiple = isMultiTag, isChecked = it in state.tags)
-				} else {
-					null
-				}
-			}
-			if (list.isEmpty()) {
-				list.add(FilterItem.Error(R.string.nothing_found))
-			}
-		}
-		return list
-	}
-
-	private suspend fun tryLoadTags(): Set<MangaTag>? {
+	private suspend fun tryLoadTags(): Result<Set<MangaTag>> {
 		val shouldRetryOnError = availableTagsDeferred.isCompleted
 		val result = availableTagsDeferred.await()
-		if (result == null && shouldRetryOnError) {
+		if (result.isFailure && shouldRetryOnError) {
 			availableTagsDeferred = loadTagsAsync()
 			return availableTagsDeferred.await()
 		}
 		return result
 	}
 
-	private suspend fun tryLoadLocales(): Set<Locale>? {
+	private suspend fun tryLoadLocales(): Result<Set<Locale>> {
 		val shouldRetryOnError = availableLocalesDeferred.isCompleted
 		val result = availableLocalesDeferred.await()
-		if (result == null && shouldRetryOnError) {
+		if (result.isFailure && shouldRetryOnError) {
 			availableLocalesDeferred = loadLocalesAsync()
 			return availableLocalesDeferred.await()
 		}
@@ -356,7 +323,7 @@ class FilterCoordinator @Inject constructor(
 			repository.getTags()
 		}.onFailure { error ->
 			error.printStackTraceDebug()
-		}.getOrNull()
+		}
 	}
 
 	private fun loadLocalesAsync() = coroutineScope.async(Dispatchers.Default, CoroutineStart.LAZY) {
@@ -364,7 +331,7 @@ class FilterCoordinator @Inject constructor(
 			repository.getLocales()
 		}.onFailure { error ->
 			error.printStackTraceDebug()
-		}.getOrNull()
+		}
 	}
 
 	private fun mergeTags(primary: Set<MangaTag>, secondary: Set<MangaTag>): Set<MangaTag> {
@@ -377,8 +344,10 @@ class FilterCoordinator @Inject constructor(
 	private data class PendingSet<T>(
 		val items: Set<T>,
 		val isLoading: Boolean,
-		val isError: Boolean,
+		val error: Throwable?,
 	)
+
+	private fun <T> loadingProperty() = FilterProperty<T>(emptyList(), emptySet(), true, null)
 
 	private class TagTitleComparator(lc: String?) : Comparator<MangaTag> {
 

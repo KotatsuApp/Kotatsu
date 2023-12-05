@@ -119,6 +119,7 @@
 				android:layout_marginHorizontal="16dp"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:visibility="gone"
+				app:cardBackgroundColor="?m3ColorBackground"
 				app:shapeAppearance="?shapeAppearanceCornerMedium"
 				app:strokeColor="@color/m3_button_outline_color_selector"
 				app:strokeWidth="@dimen/m3_comp_outlined_button_outline_width"

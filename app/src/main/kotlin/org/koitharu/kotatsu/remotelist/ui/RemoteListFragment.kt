@@ -21,8 +21,8 @@ import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.filter.ui.FilterOwner
-import org.koitharu.kotatsu.filter.ui.FilterSheetFragment
 import org.koitharu.kotatsu.filter.ui.MangaFilter
+import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource

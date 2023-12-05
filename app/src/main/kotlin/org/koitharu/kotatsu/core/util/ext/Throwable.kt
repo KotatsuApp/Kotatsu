@@ -19,6 +19,11 @@ import org.koitharu.kotatsu.core.exceptions.SyncApiException
 import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
+import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_LOCALE_GENRES_NOT_SUPPORTED
+import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_STATES_GENRES_NOT_SUPPORTED
+import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_MULTIPLE_GENRES_NOT_SUPPORTED
+import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_MULTIPLE_STATES_NOT_SUPPORTED
+import org.koitharu.kotatsu.parsers.ErrorMessages.SEARCH_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.ContentUnavailableException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
@@ -28,9 +33,6 @@ import java.net.UnknownHostException
 
 private const val MSG_NO_SPACE_LEFT = "No space left on device"
 private const val IMAGE_FORMAT_NOT_SUPPORTED = "Image format not supported"
-private const val MULTIPLE_GENRES_NOT_SUPPORTED = "Multiple genres are not supported by this source"
-private const val MULTIPLE_STATES_NOT_SUPPORTED = "Multiple states are not supported by this source"
-private const val SEARCH_NOT_SUPPORTED = "Search is not supported by this source"
 
 fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
@@ -85,9 +87,11 @@ private fun getDisplayMessage(msg: String?, resources: Resources): String? = whe
 	msg.isNullOrEmpty() -> null
 	msg.contains(MSG_NO_SPACE_LEFT) -> resources.getString(R.string.error_no_space_left)
 	msg.contains(IMAGE_FORMAT_NOT_SUPPORTED) -> resources.getString(R.string.error_corrupted_file)
-	msg == MULTIPLE_GENRES_NOT_SUPPORTED -> resources.getString(R.string.error_multiple_genres_not_supported)
-	msg == MULTIPLE_STATES_NOT_SUPPORTED -> resources.getString(R.string.error_multiple_states_not_supported)
+	msg == FILTER_MULTIPLE_GENRES_NOT_SUPPORTED -> resources.getString(R.string.error_multiple_genres_not_supported)
+	msg == FILTER_MULTIPLE_STATES_NOT_SUPPORTED -> resources.getString(R.string.error_multiple_states_not_supported)
 	msg == SEARCH_NOT_SUPPORTED -> resources.getString(R.string.error_search_not_supported)
+	msg == FILTER_BOTH_LOCALE_GENRES_NOT_SUPPORTED -> resources.getString(R.string.error_filter_locale_genre_not_supported)
+	msg == FILTER_BOTH_STATES_GENRES_NOT_SUPPORTED -> resources.getString(R.string.error_filter_states_genre_not_supported)
 	else -> null
 }
 

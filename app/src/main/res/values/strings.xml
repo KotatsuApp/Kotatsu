@@ -540,4 +540,6 @@
 	<string name="this_manga">This manga</string>
 	<string name="color_correction_apply_text">These settings can be applied globally or only to the current manga. If applied globally, individual settings will not be overridden.</string>
 	<string name="apply">Apply</string>
+	<string name="error_filter_locale_genre_not_supported">Filtering by both genres and locale is not supported by this source</string>
+	<string name="error_filter_states_genre_not_supported">Filtering by both genres and states is not supported by this source</string>
 </resources>

@@ -19,7 +19,7 @@ fun filterSortDelegate(
 ) {
 
 	itemView.setOnClickListener {
-		listener.onSortItemClick(item)
+		listener.setSortOrder(item.order)
 	}
 
 	bind { payloads ->
@@ -35,7 +35,7 @@ fun filterStateDelegate(
 ) {
 
 	itemView.setOnClickListener {
-		listener.onStateItemClick(item)
+		listener.setState(item.state, !item.isChecked)
 	}
 
 	bind { payloads ->
@@ -52,7 +52,7 @@ fun filterLanguageDelegate(
 ) {
 
 	itemView.setOnClickListener {
-		listener.onLanguageItemClick(item)
+		listener.setLanguage(item.locale)
 	}
 
 	bind { payloads ->
@@ -69,7 +69,7 @@ fun filterTagDelegate(
 ) {
 
 	itemView.setOnClickListener {
-		listener.onTagItemClick(item, isFromChip = false)
+		listener.setTag(item.tag, !item.isChecked)
 	}
 
 	bind { payloads ->
@@ -86,7 +86,7 @@ fun filterTagMultipleDelegate(
 ) {
 
 	itemView.setOnClickListener {
-		listener.onTagItemClick(item, isFromChip = false)
+		listener.setTag(item.tag, !item.isChecked)
 	}
 
 	bind { payloads ->

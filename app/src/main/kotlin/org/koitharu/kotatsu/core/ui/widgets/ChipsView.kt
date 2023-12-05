@@ -54,6 +54,14 @@ class ChipsView @JvmOverloads constructor(
 		defaultChipTextColor = a.getColorStateListOrThrow(materialR.styleable.Chip_android_textColor)
 		defaultChipIconTint = a.getColorStateListOrThrow(materialR.styleable.Chip_chipIconTint)
 		a.recycle()
+
+		if (isInEditMode) {
+			setChips(
+				List(5) {
+					ChipModel(0, "Chip $it", 0, false, false)
+				},
+			)
+		}
 	}
 
 	override fun requestLayout() {

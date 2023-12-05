@@ -28,7 +28,6 @@ import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.FragmentPreviewBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.filter.ui.FilterOwner
-import org.koitharu.kotatsu.filter.ui.model.FilterItem
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -98,8 +97,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 		if (filter == null) {
 			startActivity(MangaListActivity.newIntent(requireContext(), setOf(tag)))
 		} else {
-			val filterItem = FilterItem.Tag(tag, filter.header.value.allowMultipleTags, false)
-			filter.onTagItemClick(filterItem, isFromChip = false)
+			filter.setTag(tag, true)
 			closeSelf()
 		}
 	}

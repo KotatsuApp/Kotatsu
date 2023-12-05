@@ -18,8 +18,8 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.filter.ui.FilterOwner
-import org.koitharu.kotatsu.filter.ui.FilterSheetFragment
 import org.koitharu.kotatsu.filter.ui.MangaFilter
+import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
@@ -94,7 +94,7 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 		Snackbar.make(
 			requireViewBinding().recyclerView,
 			R.string.removal_completed,
-			Snackbar.LENGTH_SHORT
+			Snackbar.LENGTH_SHORT,
 		).show()
 	}
 
@@ -103,7 +103,7 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 		fun newInstance() = LocalListFragment().withArgs(1) {
 			putSerializable(
 				RemoteListFragment.ARG_SOURCE,
-				MangaSource.LOCAL
+				MangaSource.LOCAL,
 			) // required by FilterCoordinator
 		}
 	}
