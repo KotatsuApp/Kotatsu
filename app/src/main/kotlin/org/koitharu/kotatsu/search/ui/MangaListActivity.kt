@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
+import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -146,8 +147,11 @@ class MangaListActivity :
 		val filter = filterOwner.filter
 		val chipSort = viewBinding.buttonOrder
 		if (chipSort != null) {
+			val filterBadge = ViewBadge(chipSort, this)
+			filterBadge.setMaxCharacterCount(0)
 			filter.header.observe(this) {
 				chipSort.setTextAndVisible(it.sortOrder?.titleRes ?: 0)
+				filterBadge.counter = if (it.isFilterApplied) 1 else 0
 			}
 		} else {
 			filter.header.map {

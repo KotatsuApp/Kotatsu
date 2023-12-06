@@ -12,7 +12,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.*
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.Px
+import androidx.annotation.StyleableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -131,19 +136,19 @@ class FastScroller @JvmOverloads constructor(
 
 		var showTrack = false
 
-		context.withStyledAttributes(attrs, R.styleable.FastScroller, defStyleAttr) {
-			bubbleColor = getColor(R.styleable.FastScroller_bubbleColor, bubbleColor)
-			handleColor = getColor(R.styleable.FastScroller_thumbColor, handleColor)
-			trackColor = getColor(R.styleable.FastScroller_trackColor, trackColor)
-			textColor = getColor(R.styleable.FastScroller_bubbleTextColor, textColor)
-			hideScrollbar = getBoolean(R.styleable.FastScroller_hideScrollbar, hideScrollbar)
-			showBubble = getBoolean(R.styleable.FastScroller_showBubble, showBubble)
-			showBubbleAlways = getBoolean(R.styleable.FastScroller_showBubbleAlways, showBubbleAlways)
-			showTrack = getBoolean(R.styleable.FastScroller_showTrack, showTrack)
-			bubbleSize = getBubbleSize(R.styleable.FastScroller_bubbleSize, BubbleSize.NORMAL)
-			val textSize = getDimension(R.styleable.FastScroller_bubbleTextSize, bubbleSize.textSize)
+		context.withStyledAttributes(attrs, R.styleable.FastScrollRecyclerView, defStyleAttr) {
+			bubbleColor = getColor(R.styleable.FastScrollRecyclerView_bubbleColor, bubbleColor)
+			handleColor = getColor(R.styleable.FastScrollRecyclerView_thumbColor, handleColor)
+			trackColor = getColor(R.styleable.FastScrollRecyclerView_trackColor, trackColor)
+			textColor = getColor(R.styleable.FastScrollRecyclerView_bubbleTextColor, textColor)
+			hideScrollbar = getBoolean(R.styleable.FastScrollRecyclerView_hideScrollbar, hideScrollbar)
+			showBubble = getBoolean(R.styleable.FastScrollRecyclerView_showBubble, showBubble)
+			showBubbleAlways = getBoolean(R.styleable.FastScrollRecyclerView_showBubbleAlways, showBubbleAlways)
+			showTrack = getBoolean(R.styleable.FastScrollRecyclerView_showTrack, showTrack)
+			bubbleSize = getBubbleSize(R.styleable.FastScrollRecyclerView_bubbleSize, BubbleSize.NORMAL)
+			val textSize = getDimension(R.styleable.FastScrollRecyclerView_bubbleTextSize, bubbleSize.textSize)
 			binding.bubble.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-			offset = getDimensionPixelOffset(R.styleable.FastScroller_scrollerOffset, offset)
+			offset = getDimensionPixelOffset(R.styleable.FastScrollRecyclerView_scrollerOffset, offset)
 		}
 
 		setTrackColor(trackColor)

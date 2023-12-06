@@ -15,11 +15,14 @@ import org.koitharu.kotatsu.core.model.titleResId
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.showDistinct
-import org.koitharu.kotatsu.databinding.SheetFilter2Binding
+import org.koitharu.kotatsu.core.util.ext.textAndVisible
+import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.filter.ui.FilterOwner
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
+import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -28,14 +31,13 @@ import java.util.Locale
 import com.google.android.material.R as materialR
 
 class FilterSheetFragment :
-	BaseAdaptiveSheet<SheetFilter2Binding>(), AdapterView.OnItemSelectedListener, ChipsView.OnChipClickListener,
-	ChipsView.OnChipCloseClickListener {
+	BaseAdaptiveSheet<SheetFilterBinding>(), AdapterView.OnItemSelectedListener, ChipsView.OnChipClickListener {
 
-	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilter2Binding {
-		return SheetFilter2Binding.inflate(inflater, container, false)
+	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
+		return SheetFilterBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewBindingCreated(binding: SheetFilter2Binding, savedInstanceState: Bundle?) {
+	override fun onViewBindingCreated(binding: SheetFilterBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		if (dialog == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			binding.scrollView.scrollIndicators = 0
@@ -50,7 +52,6 @@ class FilterSheetFragment :
 		binding.spinnerOrder.onItemSelectedListener = this
 		binding.chipsState.onChipClickListener = this
 		binding.chipsGenres.onChipClickListener = this
-		binding.chipsGenres.onChipCloseClickListener = this
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -67,12 +68,9 @@ class FilterSheetFragment :
 		val filter = requireFilter()
 		when (data) {
 			is MangaState -> filter.setState(data, chip.isChecked)
+			is MangaTag -> filter.setTag(data, chip.isChecked)
+			null -> TagsCatalogSheet.show(childFragmentManager)
 		}
-	}
-
-	override fun onChipCloseClick(chip: Chip, data: Any?) {
-		val tag = data as? MangaTag ?: return
-		requireFilter().setTag(tag, false)
 	}
 
 	private fun onSortOrderChanged(value: FilterProperty<SortOrder>) {
@@ -122,19 +120,34 @@ class FilterSheetFragment :
 		val b = viewBinding ?: return
 		b.textViewGenresTitle.isGone = value.isEmpty()
 		b.chipsGenres.isGone = value.isEmpty()
+		b.textViewGenresHint.textAndVisible = value.error?.getDisplayMessage(resources)
 		if (value.isEmpty()) {
 			return
 		}
-		val chips = ArrayList<ChipsView.ChipModel>(value.selectedItems.size + 1)
+		val chips = ArrayList<ChipsView.ChipModel>(value.selectedItems.size + value.availableItems.size + 1)
 		value.selectedItems.mapTo(chips) { tag ->
 			ChipsView.ChipModel(
 				tint = 0,
 				title = tag.title,
 				icon = 0,
-				isCheckable = false,
-				isChecked = false,
+				isCheckable = true,
+				isChecked = true,
 				data = tag,
 			)
+		}
+		value.availableItems.mapNotNullTo(chips) { tag ->
+			if (tag !in value.selectedItems) {
+				ChipsView.ChipModel(
+					tint = 0,
+					title = tag.title,
+					icon = 0,
+					isCheckable = true,
+					isChecked = false,
+					data = tag,
+				)
+			} else {
+				null
+			}
 		}
 		chips.add(
 			ChipsView.ChipModel(

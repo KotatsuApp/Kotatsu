@@ -108,21 +108,11 @@
 	</style>
 
 	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
-		<item name="chipBackgroundColor">?attr/m3ColorBackground</item>
-		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
-		<item name="chipStrokeColor">?attr/colorOutline</item>
-		<item name="chipIconTint">?attr/colorControlNormal</item>
-		<item name="rippleColor">?attr/colorControlHighlight</item>
 
-		<!-- Custom chip states -->
-		<item name="android:clickable">true</item>
-		<item name="android:focusable">true</item>
+	</style>
 
-		<!-- Smaller text/height -->
-		<item name="chipMinHeight">28dp</item>
+	<style name="Widget.Kotatsu.Chip.Filter" parent="Widget.Material3.Chip.Filter">
 
-		<!-- Collapse horizontal margin -->
-		<item name="chipMinTouchTargetSize">28dp</item>
 	</style>
 
 	<style name="Widget.Kotatsu.Button.More" parent="Widget.Material3.Button.TextButton">

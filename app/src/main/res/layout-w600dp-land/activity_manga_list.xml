@@ -53,7 +53,7 @@
 			android:id="@+id/container_side"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			tools:layout="@layout/sheet_filter" />
+			tools:layout="@layout/sheet_tags" />
 
 	</com.google.android.material.card.MaterialCardView>
 

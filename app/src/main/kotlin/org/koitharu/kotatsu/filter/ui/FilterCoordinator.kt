@@ -6,7 +6,9 @@ import dagger.hilt.android.ViewModelLifecycle
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,20 +18,29 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.LocaleComparator
+import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.lifecycleScope
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
+import org.koitharu.kotatsu.filter.ui.model.TagCatalogItem
+import org.koitharu.kotatsu.list.ui.model.ErrorFooter
 import org.koitharu.kotatsu.list.ui.model.ListHeader
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
+import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -63,13 +74,22 @@ class FilterCoordinator @Inject constructor(
 	}
 	private var availableTagsDeferred = loadTagsAsync()
 	private var availableLocalesDeferred = loadLocalesAsync()
+	private var allTagsLoadJob: Job? = null
+
+	override val allTags = MutableStateFlow<List<ListModel>>(listOf(LoadingState))
+		get() {
+			if (allTagsLoadJob == null || field.value.any { it is ErrorFooter }) {
+				loadAllTags()
+			}
+			return field
+		}
 
 	override val filterTags: StateFlow<FilterProperty<MangaTag>> = combine(
 		currentState.distinctUntilChangedBy { it.tags },
-		getTagsAsFlow(),
+		getTopTagsAsFlow(currentState.map { it.tags }, 16),
 	) { state, tags ->
 		FilterProperty(
-			availableItems = tags.items.sortedBy { it.title },
+			availableItems = tags.items.asArrayList(),
 			selectedItems = state.tags,
 			isLoading = tags.isLoading,
 			error = tags.error,
@@ -131,8 +151,7 @@ class FilterCoordinator @Inject constructor(
 		initialValue = FilterHeaderModel(
 			chips = emptyList(),
 			sortOrder = repository.defaultSortOrder,
-			hasSelectedTags = false,
-			allowMultipleTags = repository.isMultipleTagsSupported,
+			isFilterApplied = false,
 		),
 	)
 
@@ -225,30 +244,46 @@ class FilterCoordinator @Inject constructor(
 		FilterHeaderModel(
 			chips = chips,
 			sortOrder = state.sortOrder,
-			hasSelectedTags = state.tags.isNotEmpty(),
-			allowMultipleTags = repository.isMultipleTagsSupported,
+			isFilterApplied = !state.isEmpty(),
 		)
 	}
 
 	private fun getTagsAsFlow() = flow {
 		val localTags = localTags.get()
-		emit(PendingSet(localTags, isLoading = true, error = null))
+		emit(PendingData(localTags, isLoading = true, error = null))
 		tryLoadTags()
 			.onSuccess { remoteTags ->
-				emit(PendingSet(mergeTags(remoteTags, localTags), isLoading = false, error = null))
+				emit(PendingData(mergeTags(remoteTags, localTags), isLoading = false, error = null))
 			}.onFailure {
-				emit(PendingSet(localTags, isLoading = false, error = it))
+				emit(PendingData(localTags, isLoading = false, error = it))
 			}
 	}
 
-	private fun getLocalesAsFlow(): Flow<PendingSet<Locale>> = flow {
-		emit(PendingSet(emptySet(), isLoading = true, error = null))
+	private fun getLocalesAsFlow(): Flow<PendingData<Locale>> = flow {
+		emit(PendingData(emptySet(), isLoading = true, error = null))
 		tryLoadLocales()
 			.onSuccess { locales ->
-				emit(PendingSet(locales, isLoading = false, error = null))
+				emit(PendingData(locales, isLoading = false, error = null))
 			}.onFailure {
-				emit(PendingSet(emptySet(), isLoading = false, error = it))
+				emit(PendingData(emptySet(), isLoading = false, error = it))
 			}
+	}
+
+	private fun getTopTagsAsFlow(selectedTags: Flow<Set<MangaTag>>, limit: Int): Flow<PendingData<MangaTag>> = combine(
+		selectedTags.map {
+			if (it.isEmpty()) {
+				searchRepository.getTagsSuggestion("", limit, repository.source)
+			} else {
+				searchRepository.getTagsSuggestion(it).take(limit)
+			}
+		},
+		getTagsAsFlow(),
+	) { suggested, all ->
+		val res = suggested.toMutableList()
+		if (res.size < limit) {
+			res.addAll(all.items.shuffled().take(limit - res.size))
+		}
+		PendingData(res, all.isLoading, all.error.takeIf { res.size < limit })
 	}
 
 	private suspend fun createChipsList(
@@ -341,8 +376,35 @@ class FilterCoordinator @Inject constructor(
 		return result
 	}
 
-	private data class PendingSet<T>(
-		val items: Set<T>,
+	private fun loadAllTags() {
+		val prevJob = allTagsLoadJob
+		allTagsLoadJob = coroutineScope.launch(Dispatchers.Default) {
+			runCatchingCancellable {
+				prevJob?.cancelAndJoin()
+				appendTagsList(localTags.get(), isLoading = true)
+				appendTagsList(availableTagsDeferred.await().getOrThrow(), isLoading = false)
+			}.onFailure { e ->
+				allTags.value = allTags.value.filterIsInstance<TagCatalogItem>() + e.toErrorFooter()
+			}
+		}
+	}
+
+	private fun appendTagsList(newTags: Collection<MangaTag>, isLoading: Boolean) = allTags.update { oldList ->
+		val oldTags = oldList.filterIsInstance<TagCatalogItem>()
+		buildList(oldTags.size + newTags.size + if (isLoading) 1 else 0) {
+			addAll(oldTags)
+			newTags.mapTo(this) { TagCatalogItem(it, isChecked = false) }
+			val tempSet = HashSet<MangaTag>(size)
+			removeAll { x -> x is TagCatalogItem && !tempSet.add(x.tag) }
+			sortBy { (it as TagCatalogItem).tag.title }
+			if (isLoading) {
+				add(LoadingFooter())
+			}
+		}
+	}
+
+	private data class PendingData<T>(
+		val items: Collection<T>,
 		val isLoading: Boolean,
 		val error: Throwable?,
 	)

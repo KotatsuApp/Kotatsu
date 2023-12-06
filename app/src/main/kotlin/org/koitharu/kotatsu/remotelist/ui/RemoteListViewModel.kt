@@ -78,7 +78,7 @@ open class RemoteListViewModel @Inject constructor(
 			when {
 				list.isNullOrEmpty() && error != null -> add(error.toErrorState(canRetry = true))
 				list == null -> add(LoadingState)
-				list.isEmpty() -> add(createEmptyState(header.value.hasSelectedTags))
+				list.isEmpty() -> add(createEmptyState(canResetFilter = header.value.isFilterApplied))
 				else -> {
 					list.toUi(this, mode, listExtraProvider)
 					when {

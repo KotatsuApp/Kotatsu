@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
+		android:id="@+id/headerBar"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:title="@string/filter" />
+
+	<EditText
+		android:id="@+id/edit_search"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:drawableStart="?android:actionModeWebSearchDrawable"
+		android:drawablePadding="12dp"
+		android:hint="@string/genres_search_hint"
+		android:imeOptions="actionSearch|flagNoFullscreen"
+		android:importantForAutofill="no"
+		android:inputType="text"
+		android:paddingHorizontal="6dp"
+		android:singleLine="true"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/headerBar"
+		tools:ignore="LabelFor" />
+
+	<ImageButton
+		android:id="@+id/button_search_clear"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="4dp"
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/clear"
+		android:minWidth="?minTouchTargetSize"
+		android:minHeight="?minTouchTargetSize"
+		android:src="@drawable/abc_ic_clear_material"
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="@id/edit_search"
+		app:layout_constraintEnd_toEndOf="@id/edit_search"
+		app:layout_constraintTop_toTopOf="@id/edit_search"
+		tools:visibility="visible" />
+
+	<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
+		android:id="@+id/recyclerView"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:clipToPadding="false"
+		android:orientation="vertical"
+		app:bubbleSize="normal"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/edit_search"
+		app:scrollerOffset="8dp"
+		tools:listitem="@layout/item_checkable_new" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

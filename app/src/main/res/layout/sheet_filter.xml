@@ -13,20 +13,140 @@
 		android:layout_height="wrap_content"
 		app:title="@string/filter" />
 
-	<FrameLayout
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/scrollView"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:scrollIndicators="top">
 
-		<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
-			android:id="@+id/recyclerView"
+		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:clipToPadding="false"
+			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:scrollIndicators="top"
-			app:bubbleSize="normal"
-			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-			tools:ignore="UnusedAttribute"
-			tools:listitem="@layout/item_checkable_new" />
-	</FrameLayout>
+			android:paddingBottom="@dimen/margin_normal">
+
+			<TextView
+				android:id="@+id/textView_order_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/sort_order"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/card_order"
+				style="?materialCardViewOutlinedStyle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:visibility="gone"
+				app:cardBackgroundColor="@color/m3_chip_background_color"
+				app:shapeAppearance="?shapeAppearanceCornerMedium"
+				app:strokeColor="@color/m3_button_outline_color_selector"
+				app:strokeWidth="@dimen/m3_comp_outlined_button_outline_width"
+				tools:visibility="visible">
+
+				<Spinner
+					android:id="@+id/spinner_order"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:minHeight="?listPreferredItemHeightSmall" />
+
+			</com.google.android.material.card.MaterialCardView>
+
+			<TextView
+				android:id="@+id/textView_locale_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/language"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/card_locale"
+				style="?materialCardViewOutlinedStyle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:visibility="gone"
+				app:cardBackgroundColor="@color/m3_chip_background_color"
+				app:shapeAppearance="?shapeAppearanceCornerMedium"
+				app:strokeColor="@color/m3_button_outline_color_selector"
+				app:strokeWidth="@dimen/m3_comp_outlined_button_outline_width"
+				tools:visibility="visible">
+
+				<Spinner
+					android:id="@+id/spinner_locale"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:minHeight="?listPreferredItemHeightSmall" />
+
+			</com.google.android.material.card.MaterialCardView>
+
+			<TextView
+				android:id="@+id/textView_genres_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/genres"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+				android:id="@+id/chips_genres"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:paddingHorizontal="@dimen/margin_normal"
+				android:visibility="gone"
+				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
+				tools:visibility="visible" />
+
+			<TextView
+				android:id="@+id/textView_genres_hint"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:paddingHorizontal="@dimen/margin_normal"
+				android:textAppearance="?textAppearanceBodySmall"
+				android:visibility="gone"
+				tools:text="@string/error_multiple_genres_not_supported"
+				tools:visibility="visible" />
+
+			<TextView
+				android:id="@+id/textView_state_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/state"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+				android:id="@+id/chips_state"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:paddingHorizontal="@dimen/margin_normal"
+				android:visibility="gone"
+				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
+				tools:visibility="visible" />
+
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
 </LinearLayout>
