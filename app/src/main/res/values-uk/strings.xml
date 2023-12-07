@@ -145,7 +145,7 @@
     <string name="reverse">В зворотньому порядку</string>
     <string name="sign_in">Увійти</string>
     <string name="auth_required">Увійдіть, щоб переглянути цей вміст</string>
-    <string name="default_s">За замовчуванням: %s</string>
+    <string name="default_s">За умовчанням: %s</string>
     <string name="next">Далі</string>
     <string name="protect_application_subtitle">Введіть пароль для запуску застосунку</string>
     <string name="confirm">Підтвердити</string>
@@ -194,7 +194,7 @@
     <string name="automatic">Як в системі</string>
     <string name="chapter_is_missing">Розділ відсутній</string>
     <string name="genres">Жанри</string>
-    <string name="system_default">За замовчуванням</string>
+    <string name="system_default">За умовчанням</string>
     <string name="always">Завжди</string>
     <string name="_continue">Продовжити</string>
     <string name="_import">Імпорт</string>
@@ -249,7 +249,7 @@
     <string name="undo">Відмінити</string>
     <string name="removed_from_history">Видалено з історії</string>
     <string name="dns_over_https">DNS через HTTPS</string>
-    <string name="default_mode">Режим за замовчуванням</string>
+    <string name="default_mode">Режим за умовчанням</string>
     <string name="detect_reader_mode_summary">Автоматично визначати, чи є манґа вебтуном</string>
     <string name="detect_reader_mode">Автовизначення режиму читання</string>
     <string name="disable_battery_optimization">Вимкнути оптимізацію акумулятора</string>
@@ -382,7 +382,7 @@
     <string name="find_similar">Знайти схожі</string>
     <string name="sync_settings">Параметри синхронізації</string>
     <string name="server_address">Адреса сервера</string>
-    <string name="sync_host_description">Ви можете використовувати власний сервер синхронізації або сервер за замовчуванням. Не змінюйте це, якщо ви не впевнені, що робите.</string>
+    <string name="sync_host_description">Ви можете використовувати власний сервер синхронізації або сервер за умовчанням. Не змінюйте це, якщо ви не впевнені, що робите.</string>
     <string name="ignore_ssl_errors">Ігноруйте помилки SSL</string>
     <string name="mirror_switching">Виберіть дзеркало автоматично</string>
     <string name="paused">Призупинено</string>
@@ -470,7 +470,7 @@
     <string name="related_manga_summary">Показати список пов\'язаної манґи. У деяких випадках він може бути неточним або відсутнім</string>
     <string name="too_many_requests_message">Занадто багато запитів. Спробуйте пізніше</string>
     <string name="advanced">Розширені</string>
-    <string name="default_section">Розділ за замовчуванням</string>
+    <string name="default_section">Розділ за умовчанням</string>
     <string name="manga_list">Список манґи</string>
     <string name="error_corrupted_file">Повертаються неправильні дані або файл пошкоджено</string>
     <string name="on_device">На пристрої</string>
@@ -528,4 +528,14 @@
     <string name="error_search_not_supported">Пошук не підтримується цим джерелом манґи</string>
     <string name="reader_optimize_summary">Зменшити якість закадрових сторінок, щоб використовувати менше пам\'яті</string>
     <string name="state">Стан</string>
+    <string name="error_filter_states_genre_not_supported">Це джерело не підтримує фільтрацію за жанрами та станами</string>
+    <string name="error_filter_locale_genre_not_supported">Це джерело не підтримує фільтрацію за жанрами та локалями</string>
+    <string name="apply">Застосувати</string>
+    <string name="genres_search_hint">Почніть вводити назву жанру</string>
+    <string name="globally">Глобально</string>
+    <string name="downloads_settings_info">Ви можете ввімкнути повільне завантаження для кожного джерела манґи окремо в налаштуваннях джерела, якщо у вас є проблеми з блокуванням на стороні сервера</string>
+    <string name="this_manga">Ця манга</string>
+    <string name="skip">Пропустити</string>
+    <string name="color_correction_apply_text">Ці налаштування можна застосувати глобально або лише до поточної манґи. Користувацькі налаштування не будуть замінені, якщо застосовувати їх глобально.</string>
+    <string name="grayscale">Відтінки сірого</string>
 </resources>
