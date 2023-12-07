@@ -520,4 +520,21 @@
     <string name="no_manga_sources_catalog_text">Walang available na source sa seksyong ito. Antabayanan</string>
     <string name="available_d">Available: %1$d</string>
     <string name="content_type_other">Iba pa</string>
+    <string name="error_multiple_states_not_supported">Ang pag-filter ayon sa maraming estado ay hindi sinusuportahan ng manga source na ito</string>
+    <string name="reader_optimize">Bawasan ang pagkonsumo ng memory (beta)</string>
+    <string name="error_multiple_genres_not_supported">Ang pag-filter ayon sa maramihang genre ay hindi sinusuportahan ng manga source na ito</string>
+    <string name="error_search_not_supported">Ang paghahanap ay hindi suportado ng manga source na ito</string>
+    <string name="reader_optimize_summary">Bawasan ang kalidad ng mga offscreen na pahina upang gumamit ng mas kaunting memory</string>
+    <string name="state">Estado</string>
+    <string name="state_paused">Na-pause</string>
+    <string name="error_filter_states_genre_not_supported">Ang pag-filter ayon sa magkaparehong genre at estado ay hindi sinusuportahan ng source na ito</string>
+    <string name="error_filter_locale_genre_not_supported">Ang pag-filter ayon sa magkaparehong genre at wika ay hindi sinusuportahan ng source na ito</string>
+    <string name="apply">Gamitin</string>
+    <string name="genres_search_hint">Simulan ang pag-type ng pangalan ng genre</string>
+    <string name="globally">Pangkahalatan</string>
+    <string name="downloads_settings_info">Maaari mong paganahin ang pabagal na pag-download para sa bawat source ng manga nang paisa-isa sa mga setting ng source kung nagkakaroon ka ng mga problema sa pagharang sa server-side</string>
+    <string name="this_manga">Itong manga na ito</string>
+    <string name="skip">Laktawan</string>
+    <string name="color_correction_apply_text">Ang mga setting na ito ay maaaring ilapat sa pangkahalatan o sa kasalukuyang manga lamang. Kung inilapat sa pangkahalatan, hindi ma-override ang mga indibidwal na setting.</string>
+    <string name="grayscale">Grayscale</string>
 </resources>
