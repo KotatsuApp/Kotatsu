@@ -15,38 +15,30 @@
 		app:layout_constraintTop_toTopOf="parent"
 		app:title="@string/filter" />
 
-	<EditText
-		android:id="@+id/edit_search"
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/text_input_layout"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:drawableStart="?android:actionModeWebSearchDrawable"
-		android:drawablePadding="12dp"
+		app:startIconDrawable="?android:actionModeWebSearchDrawable"
+		app:endIconMode="clear_text"
+		app:endIconDrawable="@drawable/abc_ic_clear_material"
 		android:hint="@string/genres_search_hint"
-		android:imeOptions="actionSearch|flagNoFullscreen"
-		android:importantForAutofill="no"
-		android:inputType="text"
-		android:paddingHorizontal="6dp"
-		android:singleLine="true"
+		android:layout_marginHorizontal="16dp"
+		android:layout_marginBottom="4dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/headerBar"
-		tools:ignore="LabelFor" />
+		app:layout_constraintBottom_toTopOf="@id/recyclerView">
 
-	<ImageButton
-		android:id="@+id/button_search_clear"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginEnd="4dp"
-		android:background="?selectableItemBackgroundBorderless"
-		android:contentDescription="@string/clear"
-		android:minWidth="?minTouchTargetSize"
-		android:minHeight="?minTouchTargetSize"
-		android:src="@drawable/abc_ic_clear_material"
-		android:visibility="gone"
-		app:layout_constraintBottom_toBottomOf="@id/edit_search"
-		app:layout_constraintEnd_toEndOf="@id/edit_search"
-		app:layout_constraintTop_toTopOf="@id/edit_search"
-		tools:visibility="visible" />
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/edit_search"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:imeOptions="actionSearch|flagNoFullscreen"
+			android:importantForAutofill="no"
+			android:inputType="text"/>
+
+	</com.google.android.material.textfield.TextInputLayout>
 
 	<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
 		android:id="@+id/recyclerView"
@@ -59,7 +51,7 @@
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/edit_search"
+		app:layout_constraintTop_toBottomOf="@id/text_input_layout"
 		app:scrollerOffset="8dp"
 		tools:listitem="@layout/item_checkable_new" />
 

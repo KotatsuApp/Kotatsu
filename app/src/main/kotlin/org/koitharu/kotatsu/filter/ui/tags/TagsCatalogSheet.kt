@@ -27,7 +27,7 @@ import org.koitharu.kotatsu.filter.ui.model.TagCatalogItem
 
 @AndroidEntryPoint
 class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickListener<TagCatalogItem>, TextWatcher,
-	AdaptiveSheetCallback, View.OnClickListener, View.OnFocusChangeListener, TextView.OnEditorActionListener {
+	AdaptiveSheetCallback, View.OnFocusChangeListener, TextView.OnEditorActionListener {
 
 	private val viewModel by viewModels<TagsCatalogViewModel>(
 		extrasProducer = {
@@ -50,7 +50,6 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 		binding.editSearch.addTextChangedListener(this)
 		binding.editSearch.onFocusChangeListener = this
 		binding.editSearch.setOnEditorActionListener(this)
-		binding.buttonSearchClear.setOnClickListener(this)
 		viewModel.content.observe(viewLifecycleOwner, adapter)
 		addSheetCallback(this)
 		disableFitToContents()
@@ -59,12 +58,6 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 	override fun onItemClick(item: TagCatalogItem, view: View) {
 		val filter = (requireActivity() as FilterOwner).filter
 		filter.setTag(item.tag, !item.isChecked)
-	}
-
-	override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_search_clear -> viewBinding?.editSearch?.text?.clear()
-		}
 	}
 
 	override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -90,7 +83,6 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 	override fun afterTextChanged(s: Editable?) {
 		val q = s?.toString().orEmpty()
 		viewModel.searchQuery.value = q
-		viewBinding?.buttonSearchClear?.isVisible = q.isNotEmpty()
 	}
 
 	override fun onStateChanged(sheet: View, newState: Int) {

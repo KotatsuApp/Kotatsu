@@ -12,6 +12,7 @@
 	<attr name="m3ColorExploreButton" />
 	<attr name="m3ColorCardBackground" />
 	<attr name="m3ColorBottomMenuBackground" />
+	<attr name="m3SpinnerStyle" />
 
 	<!--CoverImageView attrs-->
 	<declare-styleable name="CoverImageView">

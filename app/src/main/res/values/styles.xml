@@ -58,6 +58,19 @@
 		<item name="android:paddingBottom">0dp</item>
 	</style>
 
+	<style name="Widget.Kotatsu.Spinner.DropDown" parent="Widget.AppCompat.Spinner.DropDown">
+		<item name="android:popupBackground">@drawable/m3_spinner_popup_background</item>
+		<item name="android:elevation">8dp</item>
+		<item name="android:popupElevation">3dp</item>
+	</style>
+
+	<style name="Widget.Kotatsu.Material3.Spinner" parent="Widget.Material3.CardView.Outlined">
+		<item name="cardBackgroundColor">@android:color/transparent</item>
+		<item name="strokeWidth">2dp</item>
+		<item name="strokeColor">?attr/colorOutline</item>
+		<item name="cardCornerRadius">4dp</item>
+	</style>
+
 	<style name="ShapeAppearanceOverlay.Kotatsu.BottomSheet" parent="">
 		<item name="cornerFamily">rounded</item>
 		<item name="cornerSizeTopRight">@dimen/bottom_sheet_corner_radius</item>
