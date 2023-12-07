@@ -528,4 +528,14 @@
     <string name="error_search_not_supported">La búsqueda no es compatible con esta fuente del manga</string>
     <string name="reader_optimize_summary">Reduce la resolución de las páginas fuera de pantalla para usar menos memoria</string>
     <string name="state">Estado</string>
+    <string name="downloads_settings_info">Puedes activar la ralentización de la descarga para cada fuente de manga individualmente en la configuración de la fuente si tienes problemas con el bloqueo del servidor</string>
+    <string name="apply">Aplicar</string>
+    <string name="globally">Globalmente</string>
+    <string name="this_manga">Este manga</string>
+    <string name="skip">Omitir</string>
+    <string name="color_correction_apply_text">Estos ajustes pueden aplicarse globalmente o sólo al manga actual. Si se aplican globalmente, los ajustes individuales no se anularán.</string>
+    <string name="grayscale">Escala de grises</string>
+    <string name="error_filter_states_genre_not_supported">Esta fuente no permite filtrar por géneros ni por estados</string>
+    <string name="error_filter_locale_genre_not_supported">Esta fuente no permite filtrar por géneros ni por configuración regional</string>
+    <string name="genres_search_hint">Empieza a escribir el nombre del género</string>
 </resources>
