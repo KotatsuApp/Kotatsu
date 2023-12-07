@@ -26,6 +26,6 @@
     </plurals>
     <plurals name="months_ago">
         <item quantity="one">%1$d ay önce</item>
-        <item quantity="other"></item>
+        <item quantity="other">%1$d ay önce</item>
     </plurals>
 </resources>
