@@ -504,4 +504,28 @@
     <string name="last_successful_backup">Último backup bem-sucedido: %s</string>
     <string name="backups_output_directory">Local de saída de backups</string>
     <string name="suggest_new_sources_summary">Solicitação para ativar fontes recém-adicionadas após a atualização do aplicativo</string>
+    <string name="sources_catalog">Catálogo de fontes</string>
+    <string name="content_type_manga">Mangá</string>
+    <string name="error_multiple_states_not_supported">A filtragem por múltiplos estados não é suportada por esta fonte</string>
+    <string name="source_summary_pattern">%1$s, %2$s</string>
+    <string name="content_type_hentai">Hentai</string>
+    <string name="content_type_comics">Quadrinhos</string>
+    <string name="catalog">Catálogo</string>
+    <string name="reader_optimize">Reduzir o consumo de memória (beta)</string>
+    <string name="manage_sources">Gerenciar fontes</string>
+    <string name="no_manga_sources_found">Nenhuma fonte de mangá disponível encontrada por sua pesquisa</string>
+    <string name="error_multiple_genres_not_supported">A filtragem por múltiplos gêneros não é suportada por esta fonte</string>
+    <string name="lock_screen_rotation">Travar rotação de tela</string>
+    <string name="error_search_not_supported">A busca não é suportada por esta fonte</string>
+    <string name="manual">Manual</string>
+    <string name="reader_optimize_summary">Reduzir a qualidade das páginas fora da tela para usar menos memória</string>
+    <string name="source_enabled">Fonte habilitada</string>
+    <string name="disable_nsfw_summary">Desative as fontes NSFW e oculte os mangás adultos da lista, se possível</string>
+    <string name="speed_value">x%.1f</string>
+    <string name="no_manga_sources_catalog_text">Não há fontes disponíveis nesta seção, ou todas elas podem já ter sido adicionadas.
+\nFique atento</string>
+    <string name="available_d">Disponível: %1$d</string>
+    <string name="state">Estado</string>
+    <string name="state_paused">Pausado</string>
+    <string name="content_type_other">Outros</string>
 </resources>
