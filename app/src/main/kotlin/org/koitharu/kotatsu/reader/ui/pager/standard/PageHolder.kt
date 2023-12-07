@@ -47,12 +47,12 @@ open class PageHolder(
 
 	override fun onResume() {
 		super.onResume()
-		binding.ssiv.downsampling = 1
+		binding.ssiv.applyDownsampling(isForeground = true)
 	}
 
 	override fun onPause() {
 		super.onPause()
-		binding.ssiv.downsampling = getBackgroundDownsampling()
+		binding.ssiv.applyDownsampling(isForeground = false)
 	}
 
 	override fun onConfigChanged() {
@@ -60,7 +60,7 @@ open class PageHolder(
 		if (settings.applyBitmapConfig(binding.ssiv)) {
 			delegate.reload()
 		}
-		binding.ssiv.downsampling = if (isResumed()) 1 else getBackgroundDownsampling()
+		binding.ssiv.applyDownsampling(isResumed())
 	}
 
 	@SuppressLint("SetTextI18n")

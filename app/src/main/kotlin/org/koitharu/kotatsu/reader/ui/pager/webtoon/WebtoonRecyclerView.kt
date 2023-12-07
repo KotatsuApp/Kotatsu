@@ -3,9 +3,11 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.core.view.forEach
 import androidx.recyclerview.widget.RecyclerView
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import java.util.LinkedList
 import java.util.WeakHashMap
@@ -104,12 +106,16 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 	}
 
 	private fun notifyScrollChanged(dy: Int) {
+		updateChildrenScroll()
 		val listeners = onPageScrollListeners
 		if (listeners.isNullOrEmpty()) {
 			return
 		}
 		val centerPosition = findCenterViewPosition()
 		listeners.forEach { it.dispatchScroll(this, dy, centerPosition) }
+		if (BuildConfig.DEBUG) {
+			validateLayout()
+		}
 	}
 
 	fun relayoutChildren() {
@@ -118,6 +124,32 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		}
 		detachedViews.keys.forEach { child ->
 			(child as WebtoonFrameLayout).target.requestLayout()
+		}
+	}
+
+	fun updateChildrenScroll() {
+		forEach { child ->
+			val ssiv = (child as WebtoonFrameLayout).target
+			when {
+				child.top < 0 -> ssiv.scrollTo(ssiv.getScrollRange())
+				child.top > 0 -> ssiv.scrollTo(0)
+				else -> ssiv.scrollBy(0)
+			}
+		}
+	}
+
+	private fun validateLayout() {
+		forEach { child ->
+			val ssiv = (child as WebtoonFrameLayout).target
+			val scroll = ssiv.getScroll()
+			val assertion = when {
+				child.top < 0 -> scroll == ssiv.getScrollRange()
+				child.top > 0 -> scroll == 0
+				else -> true
+			}
+			if (!assertion) {
+				Toast.makeText(context, "Scroll = $scroll for view with top: ${child.top}", Toast.LENGTH_SHORT).show()
+			}
 		}
 	}
 

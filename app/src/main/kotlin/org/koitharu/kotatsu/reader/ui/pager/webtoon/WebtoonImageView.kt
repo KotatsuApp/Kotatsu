@@ -88,6 +88,18 @@ class WebtoonImageView @JvmOverloads constructor(
 		setMeasuredDimension(width, height)
 	}
 
+	override fun onDownsamplingChanged() {
+		super.onDownsamplingChanged()
+		adjustScale()
+		computeScrollRange()
+		ancestors.firstNotNullOfOrNull { it as? WebtoonRecyclerView }?.updateChildrenScroll()
+	}
+
+	override fun onReady() {
+		super.onReady()
+		adjustScale()
+	}
+
 	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
 		super.onSizeChanged(w, h, oldw, oldh)
 		if (oldh == h || oldw == 0 || oldh == 0 || scrollRange == SCROLL_UNKNOWN) return
@@ -101,6 +113,8 @@ class WebtoonImageView @JvmOverloads constructor(
 	}
 
 	private fun scrollToInternal(pos: Int) {
+		minScale = width / sWidth.toFloat()
+		maxScale = minScale
 		scrollPos = pos
 		ct.set(sWidth / 2f, (height / 2f + pos.toFloat()) / minScale)
 		setScaleAndCenter(minScale, ct)
@@ -112,6 +126,12 @@ class WebtoonImageView @JvmOverloads constructor(
 		}
 		val totalHeight = (sHeight * minScale).toIntUp()
 		scrollRange = (totalHeight - height).coerceAtLeast(0)
+	}
+
+	private fun adjustScale() {
+		minScale = width / sWidth.toFloat()
+		maxScale = minScale
+		minimumScaleType = SCALE_TYPE_CUSTOM
 	}
 
 	private fun parentHeight(): Int {

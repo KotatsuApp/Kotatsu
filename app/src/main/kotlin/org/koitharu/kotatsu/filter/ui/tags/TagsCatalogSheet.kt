@@ -58,7 +58,7 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 
 	override fun onItemClick(item: TagCatalogItem, view: View) {
 		val filter = (requireActivity() as FilterOwner).filter
-		filter.setTag(item.tag, true)
+		filter.setTag(item.tag, !item.isChecked)
 	}
 
 	override fun onClick(v: View) {
