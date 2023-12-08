@@ -17,12 +17,15 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.settings.storage.MangaDirectorySelectDialog
 import org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity
+import org.koitharu.kotatsu.settings.utils.DozeHelper
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class DownloadsSettingsFragment :
 	BasePreferenceFragment(R.string.downloads),
 	SharedPreferences.OnSharedPreferenceChangeListener {
+
+		private val dozeHelper = DozeHelper(this)
 
 	@Inject
 	lateinit var storageManager: LocalStorageManager
@@ -32,6 +35,7 @@ class DownloadsSettingsFragment :
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_downloads)
+		dozeHelper.updatePreference()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,6 +76,10 @@ class DownloadsSettingsFragment :
 			AppSettings.KEY_LOCAL_MANGA_DIRS -> {
 				startActivity(MangaDirectoriesActivity.newIntent(preference.context))
 				true
+			}
+
+			AppSettings.KEY_IGNORE_DOZE -> {
+				dozeHelper.startIgnoreDoseActivity()
 			}
 
 			else -> super.onPreferenceTreeClick(preference)

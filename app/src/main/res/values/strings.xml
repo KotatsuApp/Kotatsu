@@ -543,4 +543,5 @@
 	<string name="error_filter_locale_genre_not_supported">Filtering by both genres and locale is not supported by this source</string>
 	<string name="error_filter_states_genre_not_supported">Filtering by both genres and states is not supported by this source</string>
 	<string name="genres_search_hint">Start typing the genre name</string>
+	<string name="disable_battery_optimization_summary_downloads">Might help with getting the download started if you have any issues with it</string>
 </resources>

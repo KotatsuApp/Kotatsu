@@ -1,36 +1,28 @@
 package org.koitharu.kotatsu.settings.tracker
 
-import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import android.provider.Settings
 import android.text.style.URLSpan
 import android.view.View
-import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.fragment.app.viewModels
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.powerManager
 import org.koitharu.kotatsu.settings.tracker.categories.TrackerCategoriesConfigSheet
+import org.koitharu.kotatsu.settings.utils.DozeHelper
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import javax.inject.Inject
-
-private const val KEY_IGNORE_DOZE = "ignore_dose"
 
 @AndroidEntryPoint
 class TrackerSettingsFragment :
@@ -38,6 +30,7 @@ class TrackerSettingsFragment :
 	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private val viewModel by viewModels<TrackerSettingsViewModel>()
+	private val dozeHelper = DozeHelper(this)
 
 	@Inject
 	lateinit var channels: TrackerNotificationChannels
@@ -57,13 +50,12 @@ class TrackerSettingsFragment :
 				}
 			}
 		}
-		updateDozePreference()
+		dozeHelper.updatePreference()
 		updateCategoriesEnabled()
 	}
 
 	override fun onResume() {
 		super.onResume()
-		updateDozePreference()
 		updateNotificationsSummary()
 	}
 
@@ -111,18 +103,12 @@ class TrackerSettingsFragment :
 				true
 			}
 
-			KEY_IGNORE_DOZE -> {
-				startIgnoreDoseActivity(preference.context)
+			AppSettings.KEY_IGNORE_DOZE -> {
+				dozeHelper.startIgnoreDoseActivity()
 				true
 			}
 
 			else -> super.onPreferenceTreeClick(preference)
-		}
-	}
-
-	private fun updateDozePreference() {
-		findPreference<Preference>(KEY_IGNORE_DOZE)?.run {
-			isVisible = isDozeIgnoreAvailable(context)
 		}
 	}
 
@@ -147,35 +133,5 @@ class TrackerSettingsFragment :
 		pref.summary = count?.let {
 			getString(R.string.enabled_d_of_d, count[0], count[1])
 		}
-	}
-
-	@SuppressLint("BatteryLife")
-	private fun startIgnoreDoseActivity(context: Context) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-			Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
-			return
-		}
-		val packageName = context.packageName
-		val powerManager = context.powerManager ?: return
-		if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
-			try {
-				val intent = Intent(
-					Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-					"package:$packageName".toUri(),
-				)
-				startActivity(intent)
-			} catch (e: ActivityNotFoundException) {
-				Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
-			}
-		}
-	}
-
-	private fun isDozeIgnoreAvailable(context: Context): Boolean {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-			return false
-		}
-		val packageName = context.packageName
-		val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-		return !powerManager.isIgnoringBatteryOptimizations(packageName)
 	}
 }

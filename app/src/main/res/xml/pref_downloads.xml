@@ -20,6 +20,14 @@
 		android:title="@string/downloads_wifi_only" />
 
 	<Preference
+		android:key="ignore_dose"
+		android:persistent="false"
+		android:summary="@string/disable_battery_optimization_summary_downloads"
+		android:title="@string/disable_battery_optimization"
+		app:allowDividerAbove="true"
+		app:isPreferenceVisible="false" />
+
+	<Preference
 		android:icon="@drawable/ic_info_outline"
 		android:key="tracker_notifications_info"
 		android:persistent="false"

@@ -574,6 +574,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_CF_CONTRAST = "cf_contrast"
 		const val KEY_CF_INVERTED = "cf_inverted"
 		const val KEY_CF_GRAYSCALE = "cf_grayscale"
+		const val KEY_IGNORE_DOZE = "ignore_dose"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
