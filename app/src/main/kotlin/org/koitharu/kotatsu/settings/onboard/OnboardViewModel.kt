@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.ext.map
+import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.mapToSet
 import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
@@ -70,9 +70,7 @@ class OnboardViewModel @Inject constructor(
 		}
 		repository.setSourcesEnabledExclusive(enabledSources)
 		list.value = locales.map { (key, srcs) ->
-			val locale = if (key != null) {
-				Locale(key)
-			} else null
+			val locale = key?.let { Locale(it) }
 			SourceLocale(
 				key = key,
 				title = locale?.getDisplayLanguage(locale)?.toTitleCase(locale),
@@ -82,26 +80,14 @@ class OnboardViewModel @Inject constructor(
 		}.sortedWithSafe(SourceLocaleComparator())
 	}
 
-	private class SourceLocaleComparator : Comparator<SourceLocale?> {
+	private class SourceLocaleComparator : Comparator<SourceLocale> {
 
-		private val deviceLocales = LocaleListCompat.getAdjustedDefault()
-			.map { it.language }
+		private val delegate = nullsFirst(LocaleComparator())
 
-		override fun compare(a: SourceLocale?, b: SourceLocale?): Int {
-			return when {
-				a === b -> 0
-				a?.key == null -> 1
-				b?.key == null -> -1
-				else -> {
-					val indexA = deviceLocales.indexOf(a.key)
-					val indexB = deviceLocales.indexOf(b.key)
-					if (indexA == -1 && indexB == -1) {
-						compareValues(a.title, b.title)
-					} else {
-						-2 - (indexA - indexB)
-					}
-				}
-			}
+		override fun compare(a: SourceLocale, b: SourceLocale): Int {
+			val localeA = a.key?.let { Locale(it) }
+			val localeB = b.key?.let { Locale(it) }
+			return delegate.compare(localeA, localeB)
 		}
 	}
 }
