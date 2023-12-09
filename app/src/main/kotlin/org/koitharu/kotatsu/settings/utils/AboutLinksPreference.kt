@@ -7,8 +7,10 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.net.toUri
+import androidx.core.view.forEach
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
+import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.PreferenceAboutLinksBinding
 
@@ -27,12 +29,7 @@ class AboutLinksPreference @JvmOverloads constructor(
 		super.onBindViewHolder(holder)
 
 		val binding = PreferenceAboutLinksBinding.bind(holder.itemView)
-		arrayOf(
-			binding.btn4pda,
-			binding.btnDiscord,
-			binding.btnGithub,
-			binding.btnTelegram,
-		).forEach { button ->
+		binding.root.forEach { button ->
 			TooltipCompat.setTooltipText(button, button.contentDescription)
 			button.setOnClickListener(this)
 		}
@@ -40,16 +37,15 @@ class AboutLinksPreference @JvmOverloads constructor(
 
 	override fun onClick(v: View) {
 		val urlResId = when (v.id) {
-			R.id.btn_4pda -> R.string.url_forpda
 			R.id.btn_discord -> R.string.url_discord
 			R.id.btn_telegram -> R.string.url_telegram
 			R.id.btn_github -> R.string.url_github
 			else -> return
 		}
-		openLink(v.context.getString(urlResId), v.contentDescription)
+		openLink(v, v.context.getString(urlResId), v.contentDescription)
 	}
 
-	private fun openLink(url: String, title: CharSequence?) {
+	private fun openLink(v: View, url: String, title: CharSequence?) {
 		val intent = Intent(Intent.ACTION_VIEW, url.toUri())
 		try {
 			context.startActivity(
@@ -60,6 +56,7 @@ class AboutLinksPreference @JvmOverloads constructor(
 				},
 			)
 		} catch (_: ActivityNotFoundException) {
+			Snackbar.make(v, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
 		}
 	}
 }

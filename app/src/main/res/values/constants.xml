@@ -2,7 +2,6 @@
 <resources>
 	<string name="url_github" translatable="false">https://github.com/KotatsuApp/Kotatsu</string>
 	<string name="url_discord" translatable="false">https://discord.gg/NNJ5RgVBC5</string>
-	<string name="url_forpda" translatable="false">https://4pda.to/forum/index.php?showtopic=697669</string>
 	<string name="url_telegram" translatable="false">https://t.me/kotatsuapp</string>
 	<string name="url_weblate" translatable="false">https://hosted.weblate.org/engage/kotatsu</string>
 	<string name="url_error_report" translatable="false">https://acra.kotatsu.app/report</string>
@@ -13,8 +12,8 @@
 	<string name="anilist_clientId" translatable="false">9887</string>
 	<string name="anilist_clientSecret" translatable="false">wrMqFosItQWsmB8dtAHfIFPDt15FfQi2ZGiKkJoW</string>
 	<string name="mal_clientId" translatable="false">6cd8e6349e9a36bc1fc1ab97703c9fd1</string>
-	<string name="acra_login" translatable="false">LxUiQIbVgKv1pdtM</string>
-	<string name="acra_password" translatable="false">gtG6y1MpEPHrdV1z</string>
+	<string name="acra_login" translatable="false">zPALLBPdpn5mnCB4</string>
+	<string name="acra_password" translatable="false">kgpuhoNJpSsQDCwu</string>
 	<string name="sync_authority_history" translatable="false">org.koitharu.kotatsu.history</string>
 	<string name="sync_authority_favourites" translatable="false">org.koitharu.kotatsu.favourites</string>
 	<string-array name="values_theme" translatable="false">

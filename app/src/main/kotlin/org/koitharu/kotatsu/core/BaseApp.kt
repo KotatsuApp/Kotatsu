@@ -11,6 +11,7 @@ import androidx.work.WorkManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.acra.ACRA
 import org.acra.ReportField
 import org.acra.config.dialog
@@ -63,10 +64,15 @@ open class BaseApp : Application(), Configuration.Provider {
 
 	override fun onCreate() {
 		super.onCreate()
-		ACRA.errorReporter.putCustomData("isOriginalApp", appValidator.isOriginalApp.toString())
 		AppCompatDelegate.setDefaultNightMode(settings.theme)
 		AppCompatDelegate.setApplicationLocales(settings.appLocales)
 		setupActivityLifecycleCallbacks()
+		processLifecycleScope.launch {
+			val isOriginalApp = withContext(Dispatchers.Default) {
+				appValidator.isOriginalApp
+			}
+			ACRA.errorReporter.putCustomData("isOriginalApp", isOriginalApp.toString())
+		}
 		processLifecycleScope.launch(Dispatchers.Default) {
 			setupDatabaseObservers()
 		}
@@ -79,13 +85,6 @@ open class BaseApp : Application(), Configuration.Provider {
 		initAcra {
 			buildConfigClass = BuildConfig::class.java
 			reportFormat = StringFormat.JSON
-			excludeMatchingSharedPreferencesKeys = listOf(
-				"sources_\\w+",
-				AppSettings.KEY_APP_PASSWORD,
-				AppSettings.KEY_PROXY_LOGIN,
-				AppSettings.KEY_PROXY_ADDRESS,
-				AppSettings.KEY_PROXY_PASSWORD,
-			)
 			httpSender {
 				uri = getString(R.string.url_error_report)
 				basicAuthLogin = getString(R.string.acra_login)
@@ -102,7 +101,6 @@ open class BaseApp : Application(), Configuration.Provider {
 				ReportField.STACK_TRACE,
 				ReportField.CRASH_CONFIGURATION,
 				ReportField.CUSTOM_DATA,
-				ReportField.SHARED_PREFERENCES,
 			)
 
 			dialog {

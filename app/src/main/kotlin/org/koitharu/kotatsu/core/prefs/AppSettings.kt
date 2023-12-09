@@ -449,17 +449,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		return result
 	}
 
-	@SuppressLint("ApplySharedPref")
-	private inline fun SharedPreferences.editAsync(
-		action: SharedPreferences.Editor.() -> Unit
-	) {
-		val editor = edit()
-		action(editor)
-		processLifecycleScope.launch(Dispatchers.IO, CoroutineStart.ATOMIC) {
-			editor.commit()
-		}
-	}
-
 	companion object {
 
 		const val PAGE_SWITCH_TAPS = "taps"
