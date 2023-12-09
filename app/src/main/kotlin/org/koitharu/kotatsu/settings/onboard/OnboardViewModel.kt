@@ -1,14 +1,16 @@
 package org.koitharu.kotatsu.settings.onboard
 
-import androidx.core.os.LocaleListCompat
+import android.content.Context
+import androidx.core.os.ConfigurationCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.LocaleComparator
-import org.koitharu.kotatsu.core.util.ext.mapToSet
 import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
+import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
@@ -21,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OnboardViewModel @Inject constructor(
 	private val repository: MangaSourcesRepository,
+	@ApplicationContext context: Context,
 ) : BaseViewModel() {
 
 	private val allSources = repository.allMangaSources
@@ -32,13 +35,8 @@ class OnboardViewModel @Inject constructor(
 	init {
 		updateJob = launchJob(Dispatchers.Default) {
 			if (repository.isSetupRequired()) {
-				val deviceLocales = LocaleListCompat.getDefault().mapToSet { x ->
-					x.language
-				}
-				selectedLocales.addAll(deviceLocales)
-				if (selectedLocales.isEmpty()) {
-					selectedLocales += "en"
-				}
+				selectedLocales += ConfigurationCompat.getLocales(context.resources.configuration).toList()
+					.firstOrNull { lc -> lc.language in locales.keys }?.language
 				selectedLocales += null
 			} else {
 				selectedLocales.addAll(
