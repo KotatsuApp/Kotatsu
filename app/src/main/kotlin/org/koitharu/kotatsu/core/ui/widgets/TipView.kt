@@ -22,7 +22,6 @@ import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ViewTipBinding
-import com.google.android.material.R as materialR
 
 class TipView @JvmOverloads constructor(
 	context: Context,

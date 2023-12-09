@@ -104,6 +104,7 @@ fun RecyclerView.invalidateNestedItemDecorations() {
 val View.parentView: ViewGroup?
 	get() = parent as? ViewGroup
 
+@Suppress("UnusedReceiverParameter")
 fun View.measureDimension(desiredSize: Int, measureSpec: Int): Int {
 	var result: Int
 	val specMode = MeasureSpec.getMode(measureSpec)

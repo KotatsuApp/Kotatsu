@@ -48,7 +48,7 @@ class ChipsView @JvmOverloads constructor(
 		if (isInEditMode) {
 			setChips(
 				List(5) {
-					ChipModel(0, "Chip $it", 0, false, false)
+					ChipModel(0, "Chip $it", 0, isCheckable = false, isChecked = false)
 				},
 			)
 		}

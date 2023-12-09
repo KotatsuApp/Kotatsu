@@ -12,10 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SourcesSettingsViewModel @Inject constructor(
-	private val sourcesRepository: MangaSourcesRepository,
+	sourcesRepository: MangaSourcesRepository,
 ) : BaseViewModel() {
-
-	val totalSourcesCount = sourcesRepository.allMangaSources.size
 
 	val enabledSourcesCount = sourcesRepository.observeEnabledSourcesCount()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, -1)

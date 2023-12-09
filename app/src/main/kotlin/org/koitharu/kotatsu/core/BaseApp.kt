@@ -40,7 +40,7 @@ open class BaseApp : Application(), Configuration.Provider {
 	lateinit var activityLifecycleCallbacks: Set<@JvmSuppressWildcards ActivityLifecycleCallbacks>
 
 	@Inject
-	lateinit var database: MangaDatabase
+	lateinit var database: Provider<MangaDatabase>
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -52,7 +52,7 @@ open class BaseApp : Application(), Configuration.Provider {
 	lateinit var appValidator: AppValidator
 
 	@Inject
-	lateinit var workScheduleManager: WorkScheduleManager
+	lateinit var workScheduleManager: Provider<WorkScheduleManager>
 
 	@Inject
 	lateinit var workManagerProvider: Provider<WorkManager>
@@ -76,7 +76,7 @@ open class BaseApp : Application(), Configuration.Provider {
 		processLifecycleScope.launch(Dispatchers.Default) {
 			setupDatabaseObservers()
 		}
-		workScheduleManager.init()
+		workScheduleManager.get().init()
 		WorkServiceStopHelper(workManagerProvider).setup()
 	}
 
@@ -115,7 +115,7 @@ open class BaseApp : Application(), Configuration.Provider {
 
 	@WorkerThread
 	private fun setupDatabaseObservers() {
-		val tracker = database.invalidationTracker
+		val tracker = database.get().invalidationTracker
 		databaseObservers.forEach {
 			tracker.addObserver(it)
 		}

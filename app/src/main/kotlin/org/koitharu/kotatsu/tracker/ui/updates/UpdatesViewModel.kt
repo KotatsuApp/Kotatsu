@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UpdatesViewModel @Inject constructor(
 	private val repository: TrackingRepository,
-	private val settings: AppSettings,
+	settings: AppSettings,
 	private val extraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {

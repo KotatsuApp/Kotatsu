@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -158,7 +159,9 @@ class PageHolderDelegate(
 		callback.onLoadingStarted()
 		yield()
 		try {
-			val task = loader.loadPageAsync(data, force)
+			val task = withContext(Dispatchers.Default) {
+				loader.loadPageAsync(data, force)
+			}
 			uri = coroutineScope {
 				val progressObserver = observeProgress(this, task.progressAsFlow())
 				val file = task.await()

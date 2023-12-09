@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.prefs
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -14,16 +13,12 @@ import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.getEnumValue
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull

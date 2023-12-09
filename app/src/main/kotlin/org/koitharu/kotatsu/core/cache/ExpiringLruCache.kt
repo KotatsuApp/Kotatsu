@@ -12,7 +12,7 @@ class ExpiringLruCache<T>(
 	private val cache = LruCache<ContentCache.Key, ExpiringValue<T>>(maxSize)
 
 	operator fun get(key: ContentCache.Key): T? {
-		val value = cache.get(key) ?: return null
+		val value = cache[key] ?: return null
 		if (value.isExpired) {
 			cache.remove(key)
 		}
