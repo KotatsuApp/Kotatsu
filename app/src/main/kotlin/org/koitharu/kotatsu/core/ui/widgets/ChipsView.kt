@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.ui.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View.OnClickListener
@@ -9,7 +10,6 @@ import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
-import com.google.android.material.theme.overlay.MaterialThemeOverlay
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.castOrNull
 
@@ -27,7 +27,6 @@ class ChipsView @JvmOverloads constructor(
 	private val chipOnCloseListener = OnClickListener {
 		onChipCloseClickListener?.onChipCloseClick(it as Chip, it.tag)
 	}
-	private val chipStyle: Int
 	var onChipClickListener: OnChipClickListener? = null
 		set(value) {
 			field = value
@@ -42,9 +41,10 @@ class ChipsView @JvmOverloads constructor(
 		}
 
 	init {
-		chipStyle = context.obtainStyledAttributes(attrs, R.styleable.ChipsView, defStyleAttr, 0).use {
-			it.getResourceId(R.styleable.ChipsView_chipStyle, R.style.Widget_Kotatsu_Chip)
-		}
+		@SuppressLint("CustomViewStyleable")
+		val a = context.obtainStyledAttributes(null, com.google.android.material.R.styleable.Chip, 0, R.style.Widget_Kotatsu_Chip)
+		a.recycle()
+
 		if (isInEditMode) {
 			setChips(
 				List(5) {
@@ -103,9 +103,8 @@ class ChipsView @JvmOverloads constructor(
 	}
 
 	private fun addChip(): Chip {
-		val themedContext = MaterialThemeOverlay.wrap(context, null, 0, chipStyle)
-		val chip = Chip(themedContext, null)
-		val drawable = ChipDrawable.createFromAttributes(themedContext, null, 0, chipStyle)
+		val chip = Chip(context)
+		val drawable = ChipDrawable.createFromAttributes(context, null, 0, R.style.Widget_Kotatsu_Chip)
 		chip.setChipDrawable(drawable)
 		chip.isCheckedIconVisible = true
 		chip.isChipIconVisible = false

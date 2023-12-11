@@ -121,7 +121,12 @@
 	</style>
 
 	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
+		<item name="chipBackgroundColor">?attr/m3ColorBackground</item>
+		<item name="rippleColor">?attr/colorControlHighlight</item>
 
+		<!-- Custom chip states -->
+		<item name="android:clickable">true</item>
+		<item name="android:focusable">true</item>
 	</style>
 
 	<style name="Widget.Kotatsu.Chip.Filter" parent="Widget.Material3.Chip.Filter">
