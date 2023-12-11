@@ -72,7 +72,6 @@
 		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
 		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
 		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
-		<item name="chipStyle">@style/Widget.Kotatsu.Chip</item>
 		<item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
 		<item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>
 		<item name="appBarLayoutStyle">@style/Widget.Kotatsu.AppBarLayout</item>

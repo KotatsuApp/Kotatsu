@@ -121,7 +121,7 @@
 	</style>
 
 	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
-		<item name="chipBackgroundColor">?attr/m3ColorBackground</item>
+		<!--<item name="chipBackgroundColor">?attr/m3ColorBackground</item>-->
 		<item name="rippleColor">?attr/colorControlHighlight</item>
 
 		<!-- Custom chip states -->

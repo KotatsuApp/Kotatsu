@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 34
-		versionCode = 603
-		versionName = '6.5-b1'
+		versionCode = 604
+		versionName = '6.5-b2'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -82,7 +82,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:d6b578acb0') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:0ff4f976e1') {
 		exclude group: 'org.json', module: 'json'
 	}
 
