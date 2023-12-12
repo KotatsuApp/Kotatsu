@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.ui.widgets
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View.OnClickListener
@@ -27,6 +26,7 @@ class ChipsView @JvmOverloads constructor(
 	private val chipOnCloseListener = OnClickListener {
 		onChipCloseClickListener?.onChipCloseClick(it as Chip, it.tag)
 	}
+	private val chipStyle: Int
 	var onChipClickListener: OnChipClickListener? = null
 		set(value) {
 			field = value
@@ -41,10 +41,9 @@ class ChipsView @JvmOverloads constructor(
 		}
 
 	init {
-		@SuppressLint("CustomViewStyleable")
-		val a = context.obtainStyledAttributes(null, com.google.android.material.R.styleable.Chip, 0, R.style.Widget_Kotatsu_Chip)
-		a.recycle()
-
+		chipStyle = context.obtainStyledAttributes(attrs, R.styleable.ChipsView, defStyleAttr, 0).use {
+			it.getResourceId(R.styleable.ChipsView_chipStyle, R.style.Widget_Kotatsu_Chip)
+		}
 		if (isInEditMode) {
 			setChips(
 				List(5) {
@@ -104,12 +103,11 @@ class ChipsView @JvmOverloads constructor(
 
 	private fun addChip(): Chip {
 		val chip = Chip(context)
-		val drawable = ChipDrawable.createFromAttributes(context, null, 0, R.style.Widget_Kotatsu_Chip)
+		val drawable = ChipDrawable.createFromAttributes(context, null, 0, chipStyle)
 		chip.setChipDrawable(drawable)
 		chip.isCheckedIconVisible = true
 		chip.isChipIconVisible = false
 		chip.setCheckedIconResource(R.drawable.ic_check)
-		// chip.checkedIconTint = chip.ic
 		chip.isCloseIconVisible = onChipCloseClickListener != null
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)
