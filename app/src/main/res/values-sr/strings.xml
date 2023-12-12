@@ -121,7 +121,7 @@
     <string name="text_shelf_holder_secondary">Пронађите шта да читате у одељку „Преглед“</string>
     <string name="manga_shelf">Полица</string>
     <string name="check_for_updates">Провери ажурирања</string>
-    <string name="feed">Фид</string>
+    <string name="feed">Новости</string>
     <string name="services">Услуге</string>
     <string name="show_on_shelf">Прикажи на полици</string>
     <string name="explore">Преглед</string>
@@ -159,7 +159,7 @@
     <string name="frequency_every_day">Сваки дан</string>
     <string name="download_started">Преузимање је почело</string>
     <string name="categories">Категорије</string>
-    <string name="tracking">Праћење</string>
+    <string name="tracking">Пратим</string>
     <string name="progress">Напредак</string>
     <string name="cancel_all">Откажи све</string>
     <string name="sync_host_description">Можеш да користиш сервер за синхронизацију који се самостално хостује или подразумевани. Не мењај ово ако ниси сигуран шта радиш.</string>
@@ -183,7 +183,7 @@
     <string name="error_multiple_states_not_supported">Овај извор манга не подржава филтрирање према више стања</string>
     <string name="order_added">Додато</string>
     <string name="source_summary_pattern">%1$s, %2$s</string>
-    <string name="enable_logging">Омогући пријаву</string>
+    <string name="enable_logging">Омогући дијагностику</string>
     <string name="on_device">На уређају</string>
     <string name="download_option_whole_manga">Цела манга</string>
     <string name="settings_apply_restart_required">Поново покрени апликацију да би применио ове промене</string>
@@ -528,4 +528,15 @@
     <string name="done">Готово</string>
     <string name="error_no_space_left">Недовољно меморије на уређају</string>
     <string name="sign_in">Пријави се</string>
+    <string name="error_filter_states_genre_not_supported">Овај извор не подржава филтрирање по жанровима и стањима у исто време</string>
+    <string name="error_filter_locale_genre_not_supported">Овај извор не подржава филтрирање по жанровима и локалним стандардима у исто време</string>
+    <string name="apply">Примени</string>
+    <string name="genres_search_hint">Унеси назив жанра</string>
+    <string name="globally">Глобално</string>
+    <string name="downloads_settings_info">Можеш да омогућиш успоравање преузимања за сваки извор манге појединачно у поставкама извора ако имаш проблеме са блокирањем од стране сервера</string>
+    <string name="disable_battery_optimization_summary_downloads">Можда ће вам помоћи да започнете преузимање ако имате проблем са преузимањем</string>
+    <string name="this_manga">Ова манга</string>
+    <string name="skip">Прескочи</string>
+    <string name="color_correction_apply_text">Ова подешавања се могу применити глобално или само на тренутну мангу. Ако се примењују глобално, појединачна подешавања неће бити замењена.</string>
+    <string name="grayscale">Сиви тон</string>
 </resources>
