@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import java.io.File
 
@@ -54,7 +55,8 @@ sealed class LocalMangaInput(
 						zip.isFile -> LocalMangaZipInput(zip)
 						else -> null
 					}
-					if (input?.getMangaInfo()?.id == manga.id) {
+					val info = runCatchingCancellable { input?.getMangaInfo() }.getOrNull()
+					if (info?.id == manga.id) {
 						send(input)
 					}
 				}

@@ -41,9 +41,10 @@ class ChipsView @JvmOverloads constructor(
 		}
 
 	init {
-		chipStyle = context.obtainStyledAttributes(attrs, R.styleable.ChipsView, defStyleAttr, 0).use {
-			it.getResourceId(R.styleable.ChipsView_chipStyle, R.style.Widget_Kotatsu_Chip)
-		}
+		val ta = context.obtainStyledAttributes(attrs, R.styleable.ChipsView, defStyleAttr, 0)
+		chipStyle = ta.getResourceId(R.styleable.ChipsView_chipStyle, R.style.Widget_Kotatsu_Chip)
+		ta.recycle()
+
 		if (isInEditMode) {
 			setChips(
 				List(5) {

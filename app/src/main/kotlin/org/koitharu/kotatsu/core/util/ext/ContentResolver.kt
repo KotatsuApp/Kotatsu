@@ -50,7 +50,7 @@ private fun getVolumePathBeforeAndroid11(volumeId: String, context: Context): St
 	val length = ArrayReflect.getLength(checkNotNull(result))
 	(0 until length).firstNotNullOfOrNull { i ->
 		val storageVolumeElement = ArrayReflect.get(result, i)
-		val uuid = getUuid.invoke(storageVolumeElement) as String
+		val uuid = getUuid.invoke(storageVolumeElement) as String?
 		val primary = isPrimary.invoke(storageVolumeElement) as Boolean
 		when {
 			primary && volumeId == PRIMARY_VOLUME_NAME -> getPath.invoke(storageVolumeElement) as String
