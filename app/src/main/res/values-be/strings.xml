@@ -538,4 +538,5 @@
     <string name="skip">Прапусціць</string>
     <string name="color_correction_apply_text">Гэтыя налады могуць прымяняцца глабальна або толькі да бягучай мангі. Пры глабальным прымяненні індывідуальныя налады не будуць перавызначаны.</string>
     <string name="grayscale">Адценні шэрага</string>
+    <string name="disable_battery_optimization_summary_downloads">Можа дапамагчы з пачаткам загрузкі, калі ў вас узнікаюць з ёй праблемы</string>
 </resources>
