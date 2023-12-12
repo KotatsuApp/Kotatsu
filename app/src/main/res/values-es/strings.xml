@@ -538,4 +538,5 @@
     <string name="error_filter_states_genre_not_supported">Esta fuente no permite filtrar por géneros ni por estados</string>
     <string name="error_filter_locale_genre_not_supported">Esta fuente no permite filtrar por géneros ni por configuración regional</string>
     <string name="genres_search_hint">Empieza a escribir el nombre del género</string>
+    <string name="disable_battery_optimization_summary_downloads">Puede que te ayude a iniciar la descarga si tienes algún problema</string>
 </resources>
