@@ -3,18 +3,18 @@ package org.koitharu.kotatsu.core.util.ext
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
-import android.util.TypedValue
 import androidx.annotation.Px
+import androidx.core.util.TypedValueCompat
 import kotlin.math.roundToInt
 
 @Px
-fun Resources.resolveDp(dp: Int) = (dp * displayMetrics.density).roundToInt()
+fun Resources.resolveDp(dp: Int) = resolveDp(dp.toFloat()).roundToInt()
 
 @Px
-fun Resources.resolveDp(dp: Float) = dp * displayMetrics.density
+fun Resources.resolveDp(dp: Float) = TypedValueCompat.dpToPx(dp, displayMetrics)
 
 @Px
-fun Resources.resolveSp(sp: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, displayMetrics)
+fun Resources.resolveSp(sp: Float) = TypedValueCompat.spToPx(sp, displayMetrics)
 
 @SuppressLint("DiscouragedApi")
 fun Context.getSystemBoolean(resName: String, fallback: Boolean): Boolean {
