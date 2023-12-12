@@ -178,4 +178,7 @@
     <string name="system_default">الافتراضي</string>
     <string name="sign_in">تسجبل الدخول</string>
     <string name="domain">المجال</string>
+    <string name="text_history_holder_primary">كل ما تقرأه سيعرض هنا</string>
+    <string name="text_search_holder_secondary">حاول إعادة صياغة الكلمات.</string>
+    <string name="text_empty_holder_primary">يبدو أنه فارغ…</string>
 </resources>
