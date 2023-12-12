@@ -31,7 +31,9 @@
 				android:layout_marginHorizontal="@dimen/margin_normal"
 				android:singleLine="true"
 				android:text="@string/welcome"
-				android:textAppearance="?textAppearanceTitleSmall" />
+				android:textAppearance="?textAppearanceTitleLarge"
+				android:drawablePadding="16dp"
+				app:drawableStartCompat="@drawable/ic_welcome" />
 
 			<HorizontalScrollView
 				android:layout_width="match_parent"
