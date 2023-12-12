@@ -123,7 +123,7 @@
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d / %2$d açık</string>
     <string name="text_search_holder_secondary">Sorguyu yeniden biçimlendirmeyi deneyin.</string>
     <string name="text_history_holder_primary">Okuduklarınız burada görüntülenecek</string>
-    <string name="text_history_holder_secondary">Keşfet menüsünde ne okuyacağınızı bulun.</string>
+    <string name="text_history_holder_secondary">«Keşfet» kısmında neler okuyacağınızı bulun</string>
     <string name="text_local_holder_primary">Önce bir şey kaydedin</string>
     <string name="text_local_holder_secondary">Çevrim içi kaynaklardan kaydedin veya dosyaları içe aktarın.</string>
     <string name="manga_shelf">Raf</string>
@@ -282,8 +282,8 @@
     <string name="canceled">İptal edilmiş</string>
     <string name="account_already_exists">Hesap zaten var</string>
     <string name="back">Geri</string>
-    <string name="sync">Senkronizasyon</string>
-    <string name="sync_title">Verini yedekle</string>
+    <string name="sync">Eşitleme</string>
+    <string name="sync_title">Verinizi eşitleyin</string>
     <string name="email_enter_hint">Devam etmek için E-Postanızı girin</string>
     <string name="clear_all_history">Tüm gecmişi temizle</string>
     <string name="last_2_hours">Son 2 saat</string>
@@ -377,7 +377,7 @@
     <string name="enable">Etkinleştir</string>
     <string name="no_thanks">Hayır teşekkürler</string>
     <string name="clear_network_cache">İnternet geçmişini temizle</string>
-    <string name="sync_settings">Eşitleme seçenekleri</string>
+    <string name="sync_settings">Eşitleme ayarları</string>
     <string name="server_address">Sunucu adresi</string>
     <string name="sync_host_description">Şirket içinde barındırılan bir eşitleme sunucusu veya varsayılan bir sunucu kullanabilirsiniz. Ne yaptığınızdan emin değilseniz bunu değiştirmeyin.</string>
     <string name="mirror_switching_summary">Aynalar mevcutsa hatalarda manga kaynakları için etki alanlarını otomatik olarak değiştir</string>
@@ -528,4 +528,17 @@
     <string name="disable_nsfw_summary">Eğer mümkünse yetişkin içerik ve NSFW kaynaklarını arama listesinden kaldır</string>
     <string name="available_d">Mevcut:%1$d</string>
     <string name="state">Durum</string>
+    <string name="error_filter_states_genre_not_supported">Hem türlere hem de duruma göre filtreleme bu kaynak tarafından desteklenmiyor</string>
+    <string name="error_filter_locale_genre_not_supported">Hem türlere hem de yerel ayara göre filtreleme bu kaynak tarafından desteklenmiyor</string>
+    <string name="apply">Uygula</string>
+    <string name="genres_search_hint">Tür adını yazmaya başlayın</string>
+    <string name="globally">Genel</string>
+    <string name="downloads_settings_info">Sunucu taraflı engelleme ile ilgili sorun yaşıyorsanız, kaynak ayarlarında her manga kaynağı için ayrı ayrı indirme yavaşlatmayı etkinleştirebilirsiniz</string>
+    <string name="disable_battery_optimization_summary_downloads">Herhangi bir sorun yaşarsanız indirmeyi başlatmanıza yardımcı olabilir</string>
+    <string name="this_manga">Bu manga</string>
+    <string name="skip">Atla</string>
+    <string name="color_correction_apply_text">Bu ayarlar genel olarak veya yalnızca geçerli mangaya uygulanabilir. Genel olarak uygulanırsa, bireysel ayarlar geçersiz kılınmaz.</string>
+    <string name="grayscale">Gri tonlamalı</string>
+    <string name="welcome_text">Lütfen hangi içerik kaynaklarını etkinleştirmek istediğinizi seçin. Bu daha sonra ayarlardan da yapılandırılabilir</string>
+    <string name="sync_auth">Eşitleme hesabında oturum aç</string>
 </resources>
