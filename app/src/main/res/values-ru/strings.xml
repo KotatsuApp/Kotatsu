@@ -538,5 +538,6 @@
     <string name="skip">Пропустить</string>
     <string name="color_correction_apply_text">Эти настройки можно применить глобально или только к текущей манге. Если применяется глобально, отдельные настройки не будут переопределены.</string>
     <string name="grayscale">Оттенки серого</string>
-    <string name="disable_battery_optimization_summary_downloads">Может помочь с началом загрузки, если у вас возникают с ней проблемы</string>
+    <string name="disable_battery_optimization_summary_downloads">Может помочь с запуском загрузки, если у вас с этим возникают проблемы</string>
+    <string name="sync_auth">Войти в аккаунт синхронизации</string>
 </resources>
