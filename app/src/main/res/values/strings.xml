@@ -546,4 +546,6 @@
 	<string name="disable_battery_optimization_summary_downloads">Might help with getting the download started if you have any issues with it</string>
 	<string name="welcome_text">Please select which content sources you would like to enable. This can also be configured later in settings</string>
 	<string name="sync_auth">Login to sync account</string>
+	<string name="restore">Restore</string>
+	<string name="backup_date_">Backup date: %s</string>
 </resources>

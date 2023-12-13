@@ -5,6 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="?android:listPreferredItemHeightSmall"
+	android:background="?selectableItemBackground"
 	android:drawablePadding="?android:listPreferredItemPaddingStart"
 	android:gravity="center_vertical"
 	android:paddingStart="?android:listPreferredItemPaddingStart"

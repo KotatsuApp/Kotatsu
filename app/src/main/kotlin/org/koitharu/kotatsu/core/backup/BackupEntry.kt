@@ -3,18 +3,20 @@ package org.koitharu.kotatsu.core.backup
 import org.json.JSONArray
 
 class BackupEntry(
-	val name: String,
+	val name: Name,
 	val data: JSONArray
 ) {
 
-	companion object Names {
+	enum class Name(
+		val key: String,
+	) {
 
-		const val INDEX = "index"
-		const val HISTORY = "history"
-		const val CATEGORIES = "categories"
-		const val FAVOURITES = "favourites"
-		const val SETTINGS = "settings"
-		const val BOOKMARKS = "bookmarks"
-		const val SOURCES = "sources"
+		INDEX("index"),
+		HISTORY("history"),
+		CATEGORIES("categories"),
+		FAVOURITES("favourites"),
+		SETTINGS("settings"),
+		BOOKMARKS("bookmarks"),
+		SOURCES("sources"),
 	}
 }

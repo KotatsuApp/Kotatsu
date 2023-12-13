@@ -123,5 +123,11 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 		private const val TAG = "WelcomeSheet"
 
 		fun show(fm: FragmentManager) = WelcomeSheet().showDistinct(fm, TAG)
+
+		fun dismiss(fm: FragmentManager): Boolean {
+			val sheet = fm.findFragmentByTag(TAG) as? WelcomeSheet ?: return false
+			sheet.dismissAllowingStateLoss()
+			return true
+		}
 	}
 }

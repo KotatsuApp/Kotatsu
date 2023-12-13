@@ -54,7 +54,11 @@ class AppBackupAgent : BackupAgent() {
 		mtime: Long
 	) {
 		if (destination?.name?.endsWith(".bk.zip") == true) {
-			restoreBackupFile(data.fileDescriptor, size, BackupRepository(MangaDatabase(applicationContext), AppSettings(applicationContext)))
+			restoreBackupFile(
+				data.fileDescriptor,
+				size,
+				BackupRepository(MangaDatabase(applicationContext), AppSettings(applicationContext)),
+			)
 			destination.delete()
 		} else {
 			super.onRestoreFile(data, size, destination, type, mode, mtime)
@@ -87,12 +91,12 @@ class AppBackupAgent : BackupAgent() {
 		val backup = BackupZipInput(tempFile)
 		try {
 			runBlocking {
-				backup.getEntry(BackupEntry.HISTORY)?.let { repository.restoreHistory(it) }
-				backup.getEntry(BackupEntry.CATEGORIES)?.let { repository.restoreCategories(it) }
-				backup.getEntry(BackupEntry.FAVOURITES)?.let { repository.restoreFavourites(it) }
-				backup.getEntry(BackupEntry.BOOKMARKS)?.let { repository.restoreBookmarks(it) }
-				backup.getEntry(BackupEntry.SOURCES)?.let { repository.restoreSources(it) }
-				backup.getEntry(BackupEntry.SETTINGS)?.let { repository.restoreSettings(it) }
+				backup.getEntry(BackupEntry.Name.HISTORY)?.let { repository.restoreHistory(it) }
+				backup.getEntry(BackupEntry.Name.CATEGORIES)?.let { repository.restoreCategories(it) }
+				backup.getEntry(BackupEntry.Name.FAVOURITES)?.let { repository.restoreFavourites(it) }
+				backup.getEntry(BackupEntry.Name.BOOKMARKS)?.let { repository.restoreBookmarks(it) }
+				backup.getEntry(BackupEntry.Name.SOURCES)?.let { repository.restoreSources(it) }
+				backup.getEntry(BackupEntry.Name.SETTINGS)?.let { repository.restoreSettings(it) }
 			}
 		} finally {
 			backup.close()
