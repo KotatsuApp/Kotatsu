@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.backup
 import org.json.JSONObject
 import org.koitharu.kotatsu.bookmarks.data.BookmarkEntity
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
+import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
@@ -79,6 +80,14 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("image_url", e.imageUrl)
 			put("created_at", e.createdAt)
 			put("percent", e.percent)
+		},
+	)
+
+	constructor(e: MangaSourceEntity) : this(
+		JSONObject().apply {
+			put("source", e.source)
+			put("enabled", e.isEnabled)
+			put("sort_key", e.sortKey)
 		},
 	)
 

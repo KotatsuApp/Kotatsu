@@ -15,5 +15,6 @@ class BackupEntry(
 		const val FAVOURITES = "favourites"
 		const val SETTINGS = "settings"
 		const val BOOKMARKS = "bookmarks"
+		const val SOURCES = "sources"
 	}
 }

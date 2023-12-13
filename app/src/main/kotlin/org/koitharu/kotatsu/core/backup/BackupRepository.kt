@@ -101,6 +101,16 @@ class BackupRepository @Inject constructor(
 		return entry
 	}
 
+	suspend fun dumpSources(): BackupEntry {
+		val entry = BackupEntry(BackupEntry.SOURCES, JSONArray())
+		val all = db.getSourcesDao().findAll()
+		for (source in all) {
+			val json = JsonSerializer(source).toJson()
+			entry.data.put(json)
+		}
+		return entry
+	}
+
 	fun createIndex(): BackupEntry {
 		val entry = BackupEntry(BackupEntry.INDEX, JSONArray())
 		val json = JSONObject()
@@ -179,6 +189,17 @@ class BackupRepository @Inject constructor(
 					db.getMangaDao().upsert(manga, tags)
 					db.getBookmarksDao().upsert(bookmarks)
 				}
+			}
+		}
+		return result
+	}
+
+	suspend fun restoreSources(entry: BackupEntry): CompositeResult {
+		val result = CompositeResult()
+		for (item in entry.data.JSONIterator()) {
+			val source = JsonDeserializer(item).toMangaSourceEntity()
+			result += runCatchingCancellable {
+				db.getSourcesDao().upsert(source)
 			}
 		}
 		return result
