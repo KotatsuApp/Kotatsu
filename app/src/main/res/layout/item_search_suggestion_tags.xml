@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+<HorizontalScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/scrollView"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:paddingStart="?listPreferredItemPaddingStart"
-	android:paddingTop="4dp"
-	android:paddingEnd="?listPreferredItemPaddingEnd"
-	android:paddingBottom="6dp" />
+	android:scrollbars="none">
+
+	<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+		android:id="@+id/chips_genres"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingStart="?listPreferredItemPaddingStart"
+		android:paddingEnd="?listPreferredItemPaddingEnd"
+		app:singleLine="true" />
+
+</HorizontalScrollView>

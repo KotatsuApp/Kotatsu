@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.isGone
+import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.chip.Chip
 import org.koitharu.kotatsu.R
@@ -39,8 +40,11 @@ class FilterSheetFragment :
 
 	override fun onViewBindingCreated(binding: SheetFilterBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		if (dialog == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			binding.scrollView.scrollIndicators = 0
+		if (dialog == null) {
+			binding.layoutBody.updatePadding(top = binding.layoutBody.paddingBottom)
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				binding.scrollView.scrollIndicators = 0
+			}
 		}
 		val filter = requireFilter()
 		filter.filterSortOrder.observe(viewLifecycleOwner, this::onSortOrderChanged)

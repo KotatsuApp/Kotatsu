@@ -17,18 +17,19 @@
 
 	<com.google.android.material.textfield.TextInputLayout
 		android:id="@+id/text_input_layout"
+		style="?textInputFilledDenseStyle"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		app:startIconDrawable="?android:actionModeWebSearchDrawable"
-		app:endIconMode="clear_text"
-		app:endIconDrawable="@drawable/abc_ic_clear_material"
-		android:hint="@string/genres_search_hint"
 		android:layout_marginHorizontal="16dp"
 		android:layout_marginBottom="4dp"
+		android:hint="@string/genres_search_hint"
+		app:endIconDrawable="@drawable/abc_ic_clear_material"
+		app:endIconMode="clear_text"
+		app:layout_constraintBottom_toTopOf="@id/recyclerView"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/headerBar"
-		app:layout_constraintBottom_toTopOf="@id/recyclerView">
+		app:startIconDrawable="?android:actionModeWebSearchDrawable">
 
 		<com.google.android.material.textfield.TextInputEditText
 			android:id="@+id/edit_search"
@@ -36,7 +37,7 @@
 			android:layout_height="wrap_content"
 			android:imeOptions="actionSearch|flagNoFullscreen"
 			android:importantForAutofill="no"
-			android:inputType="text"/>
+			android:inputType="text" />
 
 	</com.google.android.material.textfield.TextInputLayout>
 

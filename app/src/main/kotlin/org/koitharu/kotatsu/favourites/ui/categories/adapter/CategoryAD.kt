@@ -65,10 +65,7 @@ fun categoryAD(
 	binding.imageViewEdit.setOnClickListener(eventListener)
 	binding.imageViewHandle.setOnTouchListener(eventListener)
 
-	bind { payloads ->
-		if (payloads.isNotEmpty()) {
-			return@bind
-		}
+	bind {
 		binding.textViewTitle.text = item.category.title
 		binding.textViewSubtitle.text = if (item.mangaCount == 0) {
 			getString(R.string.empty)
