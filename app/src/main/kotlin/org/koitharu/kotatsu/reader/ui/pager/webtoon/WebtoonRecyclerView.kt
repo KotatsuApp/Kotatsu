@@ -3,11 +3,10 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.core.view.forEach
+import androidx.core.view.iterator
 import androidx.recyclerview.widget.RecyclerView
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import java.util.LinkedList
 import java.util.WeakHashMap
@@ -18,6 +17,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 
 	private var onPageScrollListeners: MutableList<OnPageScrollListener>? = null
 	private val detachedViews = WeakHashMap<View, Unit>()
+	private var isFixingScroll: Boolean = false
 
 	override fun onChildDetachedFromWindow(child: View) {
 		super.onChildDetachedFromWindow(child)
@@ -54,6 +54,13 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		}
 		notifyScrollChanged(dy)
 		return consumedY != 0 || dy == 0
+	}
+
+	override fun onScrollStateChanged(state: Int) {
+		super.onScrollStateChanged(state)
+		if (state == SCROLL_STATE_IDLE) {
+			updateChildrenScroll()
+		}
 	}
 
 	private fun consumeVerticalScroll(dy: Int): Int {
@@ -106,16 +113,12 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 	}
 
 	private fun notifyScrollChanged(dy: Int) {
-		updateChildrenScroll()
 		val listeners = onPageScrollListeners
 		if (listeners.isNullOrEmpty()) {
 			return
 		}
 		val centerPosition = findCenterViewPosition()
 		listeners.forEach { it.dispatchScroll(this, dy, centerPosition) }
-		if (BuildConfig.DEBUG) {
-			validateLayout()
-		}
 	}
 
 	fun relayoutChildren() {
@@ -128,29 +131,35 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 	}
 
 	fun updateChildrenScroll() {
-		forEach { child ->
+		if (isFixingScroll) {
+			return
+		}
+		isFixingScroll = true
+		for (child in this) {
 			val ssiv = (child as WebtoonFrameLayout).target
-			when {
-				child.top < 0 -> ssiv.scrollTo(ssiv.getScrollRange())
-				child.top > 0 -> ssiv.scrollTo(0)
-				else -> ssiv.scrollBy(0)
+			if (adjustScroll(child, ssiv)) {
+				break
 			}
 		}
+		isFixingScroll = false
 	}
 
-	private fun validateLayout() {
-		forEach { child ->
-			val ssiv = (child as WebtoonFrameLayout).target
-			val scroll = ssiv.getScroll()
-			val assertion = when {
-				child.top < 0 -> scroll == ssiv.getScrollRange()
-				child.top > 0 -> scroll == 0
-				else -> true
-			}
-			if (!assertion) {
-				Toast.makeText(context, "Scroll = $scroll for view with top: ${child.top}", Toast.LENGTH_SHORT).show()
-			}
+	private fun adjustScroll(child: View, ssiv: WebtoonImageView): Boolean = when {
+		child.bottom < height && ssiv.getScroll() < ssiv.getScrollRange() -> {
+			val distance = minOf(height - child.bottom, ssiv.getScrollRange() - ssiv.getScroll())
+			scrollBy(0, -distance)
+			ssiv.scrollBy(distance)
+			true
 		}
+
+		child.top > 0 && ssiv.getScroll() > 0 -> {
+			val distance = minOf(child.top, ssiv.getScroll())
+			scrollBy(0, distance)
+			ssiv.scrollBy(-distance)
+			true
+		}
+
+		else -> false
 	}
 
 	abstract class OnPageScrollListener {

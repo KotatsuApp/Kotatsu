@@ -1,14 +1,16 @@
 package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.PointF
 import android.util.AttributeSet
 import androidx.core.view.ancestors
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import org.koitharu.kotatsu.parsers.util.toIntUp
-
-private const val SCROLL_UNKNOWN = -1
+import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.util.ext.resolveDp
+import kotlin.math.roundToInt
 
 class WebtoonImageView @JvmOverloads constructor(
 	context: Context,
@@ -18,7 +20,14 @@ class WebtoonImageView @JvmOverloads constructor(
 	private val ct = PointF()
 
 	private var scrollPos = 0
-	private var scrollRange = SCROLL_UNKNOWN
+	private var debugPaint: Paint? = null
+
+	override fun onDraw(canvas: Canvas) {
+		super.onDraw(canvas)
+		if (BuildConfig.DEBUG) {
+			drawDebug(canvas)
+		}
+	}
 
 	fun scrollBy(delta: Int) {
 		val maxScroll = getScrollRange()
@@ -41,14 +50,14 @@ class WebtoonImageView @JvmOverloads constructor(
 	fun getScroll() = scrollPos
 
 	fun getScrollRange(): Int {
-		if (scrollRange == SCROLL_UNKNOWN) {
-			computeScrollRange()
+		if (!isReady) {
+			return 0
 		}
-		return scrollRange.coerceAtLeast(0)
+		val totalHeight = (sHeight * width / sWidth.toFloat()).roundToInt()
+		return (totalHeight - height).coerceAtLeast(0)
 	}
 
 	override fun recycle() {
-		scrollRange = SCROLL_UNKNOWN
 		scrollPos = 0
 		super.recycle()
 	}
@@ -91,8 +100,6 @@ class WebtoonImageView @JvmOverloads constructor(
 	override fun onDownsamplingChanged() {
 		super.onDownsamplingChanged()
 		adjustScale()
-		computeScrollRange()
-		ancestors.firstNotNullOfOrNull { it as? WebtoonRecyclerView }?.updateChildrenScroll()
 	}
 
 	override fun onReady() {
@@ -102,13 +109,10 @@ class WebtoonImageView @JvmOverloads constructor(
 
 	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
 		super.onSizeChanged(w, h, oldw, oldh)
-		if (oldh == h || oldw == 0 || oldh == 0 || scrollRange == SCROLL_UNKNOWN) return
-
-		computeScrollRange()
-		val container = ancestors.firstNotNullOfOrNull { it as? WebtoonFrameLayout } ?: return
-		val parentHeight = parentHeight()
-		if (scrollPos != 0 && container.bottom < parentHeight) {
-			scrollTo(scrollRange)
+		if (oldh != h && oldw != 0 && oldh != 0 && isReady) {
+			ancestors.firstNotNullOfOrNull { it as? WebtoonRecyclerView }?.updateChildrenScroll()
+		} else {
+			return
 		}
 	}
 
@@ -120,14 +124,6 @@ class WebtoonImageView @JvmOverloads constructor(
 		setScaleAndCenter(minScale, ct)
 	}
 
-	private fun computeScrollRange() {
-		if (!isReady) {
-			return
-		}
-		val totalHeight = (sHeight * minScale).toIntUp()
-		scrollRange = (totalHeight - height).coerceAtLeast(0)
-	}
-
 	private fun adjustScale() {
 		minScale = width / sWidth.toFloat()
 		maxScale = minScale
@@ -136,5 +132,19 @@ class WebtoonImageView @JvmOverloads constructor(
 
 	private fun parentHeight(): Int {
 		return ancestors.firstNotNullOfOrNull { it as? RecyclerView }?.height ?: 0
+	}
+
+	private fun drawDebug(canvas: Canvas) {
+		val paint = debugPaint ?: Paint(Paint.ANTI_ALIAS_FLAG).apply {
+			color = android.graphics.Color.RED
+			strokeWidth = context.resources.resolveDp(2f)
+			textAlign = android.graphics.Paint.Align.LEFT
+			textSize = context.resources.resolveDp(14f)
+			debugPaint = this
+		}
+		paint.style = Paint.Style.STROKE
+		canvas.drawRect(1f, 1f, width.toFloat() - 1f, height.toFloat() - 1f, paint)
+		paint.style = Paint.Style.FILL
+		canvas.drawText("${getScroll()} / ${getScrollRange()}", 100f, 100f, paint)
 	}
 }
