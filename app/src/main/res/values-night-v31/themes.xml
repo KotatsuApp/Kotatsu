@@ -9,6 +9,7 @@
 
 	<!-- From ThemeOverlay.Material3.DynamicColors.Dark -->
 	<style name="Theme.Kotatsu.Monet">
+		<item name="android:navigationBarColor">@android:color/transparent</item>
 		<item name="isMaterial3DynamicColorApplied">true</item>
 		<!-- Color palettes -->
 		<item name="colorPrimary">@color/m3_sys_color_dynamic_dark_primary</item>
