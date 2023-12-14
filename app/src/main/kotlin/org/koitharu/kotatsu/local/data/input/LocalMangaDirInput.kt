@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toCamelCase
 import java.io.File
+import java.util.TreeMap
 import java.util.zip.ZipFile
 
 /**
@@ -49,8 +50,15 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 			url = mangaUri,
 			coverUrl = cover,
 			largeCoverUrl = cover,
-			chapters = info.chapters?.zip(chapterFiles) { c, f ->
-				c.copy(url = f.toUri().toString(), source = MangaSource.LOCAL)
+			chapters = info.chapters?.mapIndexedNotNull { i, c ->
+				val fileName = index.getChapterFileName(c.id)
+				val file = if (fileName != null) {
+					chapterFiles[fileName]
+				} else {
+					// old downloads
+					chapterFiles.values.elementAtOrNull(i)
+				} ?: return@mapIndexedNotNull null
+				c.copy(url = file.toUri().toString(), source = MangaSource.LOCAL)
 			},
 		) ?: Manga(
 			id = root.absolutePath.longHashCode(),
@@ -59,7 +67,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 			publicUrl = mangaUri,
 			source = MangaSource.LOCAL,
 			coverUrl = findFirstImageEntry().orEmpty(),
-			chapters = chapterFiles.mapIndexed { i, f ->
+			chapters = chapterFiles.values.mapIndexed { i, f ->
 				MangaChapter(
 					id = "$i${f.name}".longHashCode(),
 					name = f.nameWithoutExtension.toHumanReadable(),
@@ -120,9 +128,9 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 
 	private fun String.toHumanReadable() = replace("_", " ").toCamelCase()
 
-	private fun getChaptersFiles(): List<File> = root.walkCompat()
+	private fun getChaptersFiles() = root.walkCompat()
 		.filter { it.hasCbzExtension() }
-		.toListSorted(compareBy(AlphanumComparator()) { it.name })
+		.associateByTo(TreeMap(AlphanumComparator())) { it.name }
 
 	private fun findFirstImageEntry(): String? {
 		return root.walkCompat().firstOrNull { hasImageExtension(it) }?.toUri()?.toString()
