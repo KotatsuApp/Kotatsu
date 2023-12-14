@@ -91,7 +91,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 			val intent = Intent(context, MangaPrefetchService::class.java)
 			intent.action = ACTION_PREFETCH_DETAILS
 			intent.putExtra(EXTRA_MANGA, ParcelableManga(manga))
-			context.startService(intent)
+			tryStart(context, intent)
 		}
 
 		fun prefetchPages(context: Context, chapter: MangaChapter) {
@@ -99,19 +99,14 @@ class MangaPrefetchService : CoroutineIntentService() {
 			val intent = Intent(context, MangaPrefetchService::class.java)
 			intent.action = ACTION_PREFETCH_PAGES
 			intent.putExtra(EXTRA_CHAPTER, ParcelableChapter(chapter))
-			try {
-				context.startService(intent)
-			} catch (e: IllegalStateException) {
-				// probably app is in background
-				e.printStackTraceDebug()
-			}
+			tryStart(context, intent)
 		}
 
 		fun prefetchLast(context: Context) {
 			if (!isPrefetchAvailable(context, null)) return
 			val intent = Intent(context, MangaPrefetchService::class.java)
 			intent.action = ACTION_PREFETCH_LAST
-			context.startService(intent)
+			tryStart(context, intent)
 		}
 
 		private fun isPrefetchAvailable(context: Context, source: MangaSource?): Boolean {
@@ -126,6 +121,15 @@ class MangaPrefetchService : CoroutineIntentService() {
 				PrefetchCompanionEntryPoint::class.java,
 			)
 			return entryPoint.contentCache.isCachingEnabled && entryPoint.settings.isContentPrefetchEnabled
+		}
+
+		private fun tryStart(context: Context, intent: Intent) {
+			try {
+				context.startService(intent)
+			} catch (e: IllegalStateException) {
+				// probably app is in background
+				e.printStackTraceDebug()
+			}
 		}
 	}
 }

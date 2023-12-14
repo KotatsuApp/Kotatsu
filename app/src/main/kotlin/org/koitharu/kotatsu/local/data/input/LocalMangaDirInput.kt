@@ -49,8 +49,8 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 			url = mangaUri,
 			coverUrl = cover,
 			largeCoverUrl = cover,
-			chapters = info.chapters?.mapIndexed { i, c ->
-				c.copy(url = chapterFiles[i].toUri().toString(), source = MangaSource.LOCAL)
+			chapters = info.chapters?.zip(chapterFiles) { c, f ->
+				c.copy(url = f.toUri().toString(), source = MangaSource.LOCAL)
 			},
 		) ?: Manga(
 			id = root.absolutePath.longHashCode(),

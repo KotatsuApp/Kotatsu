@@ -133,7 +133,7 @@ class LocalMangaRepository @Inject constructor(
 		}.getOrNull()
 	}
 
-	suspend fun findSavedManga(remoteManga: Manga): LocalManga? {
+	suspend fun findSavedManga(remoteManga: Manga): LocalManga? = runCatchingCancellable {
 		// fast path
 		LocalMangaInput.find(storageManager.getReadableDirs(), remoteManga)?.let {
 			return it.getManga()
@@ -155,7 +155,9 @@ class LocalMangaRepository @Inject constructor(
 				}
 			}
 		}.firstOrNull()?.getManga()
-	}
+	}.onFailure {
+		it.printStackTraceDebug()
+	}.getOrNull()
 
 	override suspend fun getPageUrl(page: MangaPage) = page.url
 
