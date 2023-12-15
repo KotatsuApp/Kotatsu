@@ -378,4 +378,9 @@
     <string name="skip">ข้าม</string>
     <string name="state_paused">หยุดชั่วคราว</string>
     <string name="content_type_other">อื่น</string>
+    <string name="pages_cache">แคชหน้า</string>
+    <string name="reader_info_pattern">บท. %1$d/%2$d หน้า. %3$d/%4$d</string>
+    <string name="queued">เพิ่มเข้าคิวแล้ว</string>
+    <string name="exit_confirmation">ยืนยันการออก</string>
+    <string name="reorder">เรียงลำดับ</string>
 </resources>
