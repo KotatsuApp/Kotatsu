@@ -540,4 +540,7 @@
     <string name="grayscale">Оттенки серого</string>
     <string name="disable_battery_optimization_summary_downloads">Может помочь с запуском загрузки, если у вас с этим возникают проблемы</string>
     <string name="sync_auth">Войти в аккаунт синхронизации</string>
+    <string name="welcome_text">Пожалуйста, выберите, какие источники вы хотите включить. Это можно изменить в настройках позже</string>
+    <string name="restore">Восстановить</string>
+    <string name="backup_date_">Дата резервного копирования: %s</string>
 </resources>
