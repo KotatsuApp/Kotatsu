@@ -3,6 +3,7 @@
 
 	<style name="Base.V23.Kotatsu" parent="Base.Theme.Kotatsu">
 		<item name="android:statusBarColor">@android:color/transparent</item>
+		<item name="android:navigationBarColor">@android:color/transparent</item>
 	</style>
 
 	<style name="Theme.Kotatsu" parent="Base.V23.Kotatsu" />

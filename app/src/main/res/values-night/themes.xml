@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Dark" />
+	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Dark">
+		<item name="android:navigationBarColor">@android:color/transparent</item>
+	</style>
 
 	<style name="ThemeOverlay.Kotatsu.Amoled" parent="">
 		<item name="colorSurface">@color/surface_amoled</item>

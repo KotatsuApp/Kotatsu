@@ -13,8 +13,6 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -47,7 +45,6 @@ import org.koitharu.kotatsu.core.util.ext.hideKeyboard
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
-import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -97,17 +94,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
-
-		if (bottomNav != null) {
-			ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root) { _, insets ->
-				if (insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom > 0) {
-					val elevation = bottomNav?.elevation ?: 0f
-					window.setNavigationBarTransparentCompat(this@MainActivity, elevation)
-				}
-				insets
-			}
-			ViewCompat.requestApplyInsets(viewBinding.root)
-		}
 
 		with(viewBinding.searchView) {
 			onFocusChangeListener = this@MainActivity
