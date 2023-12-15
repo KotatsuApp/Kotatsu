@@ -2,7 +2,9 @@
 
 	<!--Toolbars-->
 
-	<style name="Widget.Kotatsu.CollapsingToolbar" parent="@style/Widget.Material3.CollapsingToolbar.Medium" />
+	<style name="Widget.Kotatsu.CollapsingToolbar" parent="@style/Widget.Material3.CollapsingToolbar.Medium">
+		<item name="contentScrim">?attr/m3ColorBottomMenuBackground</item>
+	</style>
 
 	<style name="Widget.Kotatsu.AppBarLayout" parent="@style/Widget.Material3.AppBarLayout">
 		<item name="android:background">?attr/m3ColorBackground</item>
@@ -12,11 +14,19 @@
 
 	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
 		<item name="labelVisibilityMode">labeled</item>
+		<item name="android:background">?attr/m3ColorBottomMenuBackground</item>
+		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
+		<item name="itemIconTint">@color/bottom_menu_active_item</item>
 	</style>
 
-	<style name="Widget.Kotatsu.BottomNavigationView.ColoredIndicators" />
+	<style name="Widget.Kotatsu.BottomNavigationView.ColoredIndicators">
+		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
+		<item name="itemIconTint">@color/bottom_menu_active_item</item>
+	</style>
 
-	<style name="Widget.Kotatsu.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator" />
+	<style name="Widget.Kotatsu.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+		<item name="android:color">@color/bottom_menu_active_indicator</item>
+	</style>
 
 	<style name="Widget.Kotatsu.ActionMode" parent="Base.Widget.Material3.ActionMode">
 		<!--<item name="titleTextStyle">@style/TextAppearance.Kotatsu.ActionBar.Title</item>-->
