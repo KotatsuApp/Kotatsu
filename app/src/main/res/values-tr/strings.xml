@@ -541,4 +541,6 @@
     <string name="grayscale">Gri tonlamalı</string>
     <string name="welcome_text">Lütfen hangi içerik kaynaklarını etkinleştirmek istediğinizi seçin. Bu daha sonra ayarlardan da yapılandırılabilir</string>
     <string name="sync_auth">Eşitleme hesabında oturum aç</string>
+    <string name="restore">Geri yükle</string>
+    <string name="backup_date_">Yedekleme tarihi: %s</string>
 </resources>
