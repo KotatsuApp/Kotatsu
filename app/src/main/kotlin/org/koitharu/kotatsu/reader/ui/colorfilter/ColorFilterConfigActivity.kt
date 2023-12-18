@@ -119,9 +119,9 @@ class ColorFilterConfigActivity :
 			.setMessage(R.string.color_correction_apply_text)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(R.string.this_manga) { _, _ ->
-				viewModel.saveGlobally()
-			}.setNeutralButton(R.string.globally) { _, _ ->
 				viewModel.save()
+			}.setNeutralButton(R.string.globally) { _, _ ->
+				viewModel.saveGlobally()
 			}.show()
 	}
 
