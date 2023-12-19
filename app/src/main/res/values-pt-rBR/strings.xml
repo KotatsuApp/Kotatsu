@@ -417,7 +417,7 @@
     <string name="download_option_all_chapters">Todos os capítulos com tradução %s</string>
     <string name="download_option_whole_manga">O mangá inteiro</string>
     <string name="download_option_first_n_chapters">Primeiro %s</string>
-    <string name="download_option_next_unread_n_chapters">Próxima não lida %s</string>
+    <string name="download_option_next_unread_n_chapters">Próximos %s não lidos</string>
     <string name="download_option_all_unread">Todos os capítulos não lidos</string>
     <string name="download_option_all_unread_b">Todos os capítulos não lidos (%s)</string>
     <string name="download_option_manual_selection">Selecionar capítulos manualmente</string>
