@@ -68,6 +68,7 @@
 		<item name="android:buttonStyle">?attr/borderlessButtonStyle</item>
 		<item name="android:backgroundDimAmount">0.32</item>
 		<item name="windowActionModeOverlay">true</item>
+		<item name="actionBarPopupTheme">@style/Widget.Material3.PopupMenu.ListPopupWindow</item>
 		<item name="actionModeStyle">@style/Widget.Kotatsu.ActionMode</item>
 		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
 		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
