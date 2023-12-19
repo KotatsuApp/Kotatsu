@@ -3,8 +3,8 @@
 
 	<style name="Base.V31.Kotatsu" parent="Base.V27.Kotatsu">
 		<item name="android:windowSplashScreenAnimatedIcon">@drawable/avd_splash</item>
+		<item name="android:windowSplashScreenAnimationDuration">@integer/splash_screen_duration</item>
 		<item name="android:windowSplashScreenBackground">@color/m3_sys_color_dynamic_dark_surface</item>
-		<item name="android:windowSplashScreenAnimationDuration">800</item>
 	</style>
 
 	<!-- From ThemeOverlay.Material3.DynamicColors.Dark -->

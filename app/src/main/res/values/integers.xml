@@ -7,4 +7,6 @@
 	<integer name="manga_badge_max_character_count">3</integer>
 	<integer name="explore_buttons_columns">2</integer>
 	<integer name="details_description_lines">5</integer>
+
+	<integer name="splash_screen_duration">450</integer>
 </resources>
