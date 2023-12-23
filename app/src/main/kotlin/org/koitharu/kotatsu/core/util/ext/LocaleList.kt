@@ -20,12 +20,13 @@ inline fun <T> LocaleListCompat.mapToSet(block: (Locale) -> T): Set<T> {
 
 fun LocaleListCompat.getOrThrow(index: Int) = get(index) ?: throw NoSuchElementException()
 
-fun String?.getLocaleDisplayName(context: Context): String {
+fun String.toLocale() = Locale(this)
+
+fun Locale?.getDisplayName(context: Context): String {
 	if (this == null) {
 		return context.getString(R.string.various_languages)
 	}
-	val lc = Locale(this)
-	return lc.getDisplayLanguage(lc).toTitleCase(lc)
+	return getDisplayLanguage(this).toTitleCase(this)
 }
 
 private class LocaleListCompatIterator(private val list: LocaleListCompat) : ListIterator<Locale> {

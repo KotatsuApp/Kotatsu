@@ -70,7 +70,7 @@ class WindowInsetsDelegate : OnApplyWindowInsetsListener, View.OnLayoutChangeLis
 		lastInsets = null
 	}
 
-	interface WindowInsetsListener {
+	fun interface WindowInsetsListener {
 
 		fun onWindowInsetsChanged(insets: Insets)
 	}

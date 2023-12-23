@@ -61,13 +61,20 @@ class CaptchaNotifier(
 	override fun onError(request: ImageRequest, result: ErrorResult) {
 		super.onError(request, result)
 		val e = result.throwable
-		if (e is CloudFlareProtectedException) {
+		if (e is CloudFlareProtectedException && request.parameters.value<Boolean>(PARAM_IGNORE_CAPTCHA) != true) {
 			notify(e)
 		}
 	}
 
-	private companion object {
+	companion object {
 
+		fun ImageRequest.Builder.ignoreCaptchaErrors() = setParameter(
+			key = PARAM_IGNORE_CAPTCHA,
+			value = true,
+			memoryCacheKey = null,
+		)
+
+		private const val PARAM_IGNORE_CAPTCHA = "ignore_captcha"
 		private const val CHANNEL_ID = "captcha"
 		private const val TAG = CHANNEL_ID
 	}

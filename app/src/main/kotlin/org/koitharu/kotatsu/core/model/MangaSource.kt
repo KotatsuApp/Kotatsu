@@ -10,17 +10,14 @@ import androidx.annotation.StringRes
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.util.Locale
 import com.google.android.material.R as materialR
-
-fun MangaSource.getLocaleTitle(): String? {
-	val lc = Locale(locale ?: return null)
-	return lc.getDisplayLanguage(lc).toTitleCase(lc)
-}
 
 fun MangaSource(name: String): MangaSource {
 	MangaSource.entries.forEach {
@@ -42,7 +39,7 @@ val ContentType.titleResId
 
 fun MangaSource.getSummary(context: Context): String {
 	val type = context.getString(contentType.titleResId)
-	val locale = getLocaleTitle() ?: context.getString(R.string.various_languages)
+	val locale = locale?.toLocale().getDisplayName(context)
 	return context.getString(R.string.source_summary_pattern, type, locale)
 }
 
