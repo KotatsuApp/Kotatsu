@@ -1,13 +1,12 @@
 package org.koitharu.kotatsu.settings.sources.catalog
 
-import androidx.core.text.buildSpannedString
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getSummary
-import org.koitharu.kotatsu.core.model.isNsfw
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -18,7 +17,6 @@ import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemEmptyHintBinding
 import org.koitharu.kotatsu.databinding.ItemSourceCatalogBinding
-import org.koitharu.kotatsu.settings.sources.adapter.appendNsfwLabel
 
 fun sourceCatalogItemSourceAD(
 	coil: ImageLoader,
@@ -35,15 +33,7 @@ fun sourceCatalogItemSourceAD(
 	}
 
 	bind {
-		binding.textViewTitle.text = if (item.source.isNsfw()) {
-			buildSpannedString {
-				append(item.source.title)
-				append(' ')
-				appendNsfwLabel(context)
-			}
-		} else {
-			item.source.title
-		}
+		binding.textViewTitle.text = item.source.getTitle(context)
 		if (item.showSummary) {
 			binding.textViewDescription.text = item.source.getSummary(context)
 			binding.textViewDescription.isVisible = true

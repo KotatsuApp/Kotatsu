@@ -1,12 +1,21 @@
 package org.koitharu.kotatsu.core.model
 
 import android.content.Context
+import android.graphics.Color
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.SuperscriptSpan
 import androidx.annotation.StringRes
+import androidx.core.text.buildSpannedString
+import androidx.core.text.inSpans
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.util.Locale
+import com.google.android.material.R as materialR
 
 fun MangaSource.getLocaleTitle(): String? {
 	val lc = Locale(locale ?: return null)
@@ -35,4 +44,22 @@ fun MangaSource.getSummary(context: Context): String {
 	val type = context.getString(contentType.titleResId)
 	val locale = getLocaleTitle() ?: context.getString(R.string.various_languages)
 	return context.getString(R.string.source_summary_pattern, type, locale)
+}
+
+fun MangaSource.getTitle(context: Context): CharSequence = if (isNsfw()) {
+	buildSpannedString {
+		append(title)
+		append(' ')
+		appendNsfwLabel(context)
+	}
+} else {
+	title
+}
+
+private fun SpannableStringBuilder.appendNsfwLabel(context: Context) = inSpans(
+	ForegroundColorSpan(context.getThemeColor(materialR.attr.colorError, Color.RED)),
+	RelativeSizeSpan(0.74f),
+	SuperscriptSpan(),
+) {
+	append(context.getString(R.string.nsfw))
 }
