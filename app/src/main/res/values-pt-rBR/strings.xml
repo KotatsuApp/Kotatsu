@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="read">Leitura</string>
+    <string name="read">Iniciar</string>
     <string name="you_have_not_favourites_yet">Ainda não há favoritos</string>
     <string name="local_storage">Armazenamento local</string>
     <string name="favourites">Favoritos</string>
     <string name="history">Histórico</string>
     <string name="error_occurred">Ocorreu um erro</string>
     <string name="network_error">Erro de rede</string>
-    <string name="details">Detalhes</string>
+    <string name="details">Detalhado</string>
     <string name="chapters">Capítulos</string>
     <string name="list">Lista</string>
     <string name="detailed_list">Lista detalhada</string>
@@ -104,7 +104,7 @@
     <string name="favourites_category_empty">Categoria vazia</string>
     <string name="read_later">Leia mais tarde</string>
     <string name="updates">Atualizações</string>
-    <string name="search_results">Procurar resultados</string>
+    <string name="search_results">Resultados encontrados</string>
     <string name="new_version_s">Nova versão: %s</string>
     <string name="size_s">Tamanho: %s</string>
     <string name="clear_updates_feed">Limpar feed de atualizações</string>
@@ -128,7 +128,7 @@
     <string name="tap_to_try_again">Toque para tentar novamente</string>
     <string name="reader_mode_hint">A configuração escolhida será lembrada para este mangá</string>
     <string name="silent">Silencioso</string>
-    <string name="captcha_required">CAPTCHA obrigatório</string>
+    <string name="captcha_required">CAPTCHA Obrigatório</string>
     <string name="captcha_solve">Resolver</string>
     <string name="clear_cookies">Limpar cookies</string>
     <string name="cookies_cleared">Todos os cookies foram removidos</string>
@@ -201,7 +201,7 @@
     <string name="black_dark_theme_summary">Consome menos bateria em telas AMOLED</string>
     <string name="create_backup">Criar backup de dados</string>
     <string name="text_local_holder_secondary">Salve-o de fontes online ou importe arquivos.</string>
-    <string name="check_for_updates">Verifique se há atualizações</string>
+    <string name="check_for_updates">Verificar se há atualizações</string>
     <string name="text_feed_holder">Novos capítulos do que você está lendo são exibidos aqui</string>
     <string name="app_version">Versão %s</string>
     <string name="zoom_mode_fit_width">Ajustar à largura</string>
@@ -288,7 +288,7 @@
     <string name="history_cleared">Histórico apagado</string>
     <string name="manage">Gerenciar</string>
     <string name="no_bookmarks_yet">Sem páginas marcadas ainda</string>
-    <string name="no_bookmarks_summary">Você pode criar um marcador de página enquanto lê o mangá</string>
+    <string name="no_bookmarks_summary">Você pode marcar uma página enquanto lê o mangá</string>
     <string name="bookmarks_removed">Marcadores de página removidos</string>
     <string name="no_manga_sources">Sem fontes de mangás</string>
     <string name="select_range">Selecionar intervalo</string>
@@ -339,7 +339,7 @@
     <string name="services">Serviços</string>
     <string name="nothing_here">Não há nada aqui</string>
     <string name="server_error">Erro do lado do servidor (%1$d). Por favor, tente novamente mais tarde</string>
-    <string name="compact">Compactar</string>
+    <string name="compact">Compacto</string>
     <string name="enable_logging">Habilitar registros</string>
     <string name="share_logs">Compartilhar registros</string>
     <string name="error_no_space_left">Não há espaço disponível no dispositivo</string>
@@ -416,7 +416,7 @@
     <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="download_option_all_chapters">Todos os capítulos com tradução %s</string>
     <string name="download_option_whole_manga">O mangá inteiro</string>
-    <string name="download_option_first_n_chapters">Primeiro %s</string>
+    <string name="download_option_first_n_chapters">Primeiros %s</string>
     <string name="download_option_next_unread_n_chapters">Próximos %s não lidos</string>
     <string name="download_option_all_unread">Todos os capítulos não lidos</string>
     <string name="download_option_all_unread_b">Todos os capítulos não lidos (%s)</string>
@@ -445,7 +445,7 @@
     <string name="local_manga_directories">Diretórios locais de mangá</string>
     <string name="languages">Idiomas</string>
     <string name="zoom_in">Aumentar o zoom</string>
-    <string name="captcha_required_summary">%s requer que um captcha seja resolvido para funcionar</string>
+    <string name="captcha_required_summary">%s requer que o captcha seja resolvido para funcionar corretamente</string>
     <string name="progress">Progresso</string>
     <string name="error_corrupted_file">Dados inválidos ou o arquivo está corrompido</string>
     <string name="related_manga_summary">Mostra uma lista de mangás relacionados. Em alguns casos, ela pode estar incorreta ou ausente</string>
