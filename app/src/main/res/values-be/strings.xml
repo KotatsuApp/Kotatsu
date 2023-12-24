@@ -539,4 +539,8 @@
     <string name="color_correction_apply_text">Гэтыя налады могуць прымяняцца глабальна або толькі да бягучай мангі. Пры глабальным прымяненні індывідуальныя налады не будуць перавызначаны.</string>
     <string name="grayscale">Адценні шэрага</string>
     <string name="disable_battery_optimization_summary_downloads">Можа дапамагчы з пачаткам загрузкі, калі ў вас узнікаюць з ёй праблемы</string>
+    <string name="welcome_text">Выберыце, якія крыніцы змесціва вы хочаце ўключыць. Гэта таксама можна наладзіць пазней у наладах</string>
+    <string name="restore">Аднавіць</string>
+    <string name="backup_date_">Дата стварэння рэзервовай копіі: %s</string>
+    <string name="sync_auth">Увайдзіце, каб сінхранізаваць уліковы запіс</string>
 </resources>

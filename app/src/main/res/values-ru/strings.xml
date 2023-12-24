@@ -542,5 +542,5 @@
     <string name="sync_auth">Войти в аккаунт синхронизации</string>
     <string name="welcome_text">Пожалуйста, выберите, какие источники вы хотите включить. Это можно изменить в настройках позже</string>
     <string name="restore">Восстановить</string>
-    <string name="backup_date_">Дата резервного копирования: %s</string>
+    <string name="backup_date_">Дата создания резервной копии: %s</string>
 </resources>
