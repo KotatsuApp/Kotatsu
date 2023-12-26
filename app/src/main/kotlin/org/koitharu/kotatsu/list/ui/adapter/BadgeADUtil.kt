@@ -14,20 +14,35 @@ import com.google.android.material.R as materialR
 
 @CheckResult
 fun View.bindBadge(badge: BadgeDrawable?, counter: Int): BadgeDrawable? {
-	return if (counter > 0) {
-		val badgeDrawable = badge ?: initBadge(this)
-		badgeDrawable.number = counter
-		badgeDrawable.isVisible = true
-		badgeDrawable.align(this)
-		badgeDrawable
-	} else {
-		badge?.isVisible = false
-		badge
-	}
+	return bindBadgeImpl(badge, null, counter)
+}
+
+@CheckResult
+fun View.bindBadge(badge: BadgeDrawable?, text: String?): BadgeDrawable? {
+	return bindBadgeImpl(badge, text, 0)
 }
 
 fun View.clearBadge(badge: BadgeDrawable?) {
 	BadgeUtils.detachBadgeDrawable(badge, this)
+}
+
+private fun View.bindBadgeImpl(
+	badge: BadgeDrawable?,
+	text: String?,
+	counter: Int,
+): BadgeDrawable? = if (text != null || counter > 0) {
+	val badgeDrawable = badge ?: initBadge(this)
+	if (counter > 0) {
+		badgeDrawable.number = counter
+	} else {
+		badgeDrawable.text = text?.takeUnless { it.isEmpty() }
+	}
+	badgeDrawable.isVisible = true
+	badgeDrawable.align(this)
+	badgeDrawable
+} else {
+	badge?.isVisible = false
+	badge
 }
 
 private fun initBadge(anchor: View): BadgeDrawable {

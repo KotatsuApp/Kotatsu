@@ -29,7 +29,6 @@ import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -126,24 +125,18 @@ class ExploreViewModel @Inject constructor(
 		randomLoading: Boolean,
 		newSources: Set<MangaSource>,
 	): List<ListModel> {
-		val result = ArrayList<ListModel>(sources.size + 4)
+		val result = ArrayList<ListModel>(sources.size + 3)
 		result += ExploreButtons(randomLoading)
 		if (recommendation != null) {
 			result += ListHeader(R.string.suggestions)
 			result += RecommendationsItem(recommendation)
 		}
 		if (sources.isNotEmpty()) {
-			result += ListHeader(R.string.remote_sources, R.string.manage)
-			if (newSources.isNotEmpty()) {
-				result += TipModel(
-					key = TIP_NEW_SOURCES,
-					title = R.string.new_sources_text,
-					text = R.string.new_sources_text,
-					icon = R.drawable.ic_explore_normal,
-					primaryButtonText = R.string.manage,
-					secondaryButtonText = R.string.discard,
-				)
-			}
+			result += ListHeader(
+				textRes = R.string.remote_sources,
+				buttonTextRes = R.string.catalog,
+				badge = if (newSources.isNotEmpty()) "" else null,
+			)
 			sources.mapTo(result) { MangaSourceItem(it, isGrid) }
 		} else {
 			result += EmptyHint(

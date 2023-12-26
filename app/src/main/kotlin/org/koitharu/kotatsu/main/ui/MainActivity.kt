@@ -125,7 +125,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.container, null))
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
-		viewModel.counters.observe(this, ::onCountersChanged)
+		viewModel.feedCounter.observe(this, ::onFeedCounterChanged)
 		viewModel.appUpdate.observe(this, MenuInvalidator(this))
 		viewModel.onFirstStart.observeEvent(this) {
 			WelcomeSheet.show(supportFragmentManager)
@@ -278,10 +278,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		startActivity(IntentBuilder(this).manga(manga).build(), options)
 	}
 
-	private fun onCountersChanged(counters: Map<NavItem, Int>) {
-		counters.forEach { (navItem, counter) ->
-			navigationDelegate.setCounter(navItem, counter)
-		}
+	private fun onFeedCounterChanged(counter: Int) {
+		navigationDelegate.setCounter(NavItem.FEED, counter)
 	}
 
 	private fun onIncognitoModeChanged(isIncognito: Boolean) {

@@ -10,8 +10,10 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
@@ -21,6 +23,7 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.databinding.ActivitySourcesCatalogBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
+import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -30,6 +33,8 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 
 	@Inject
 	lateinit var coil: ImageLoader
+
+	private var newSourcesSnackbar: Snackbar? = null
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
@@ -45,6 +50,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		val tabMediator = TabLayoutMediator(viewBinding.tabs, viewBinding.pager, pagerAdapter)
 		tabMediator.attach()
 		viewModel.content.observe(this, pagerAdapter)
+		viewModel.hasNewSources.observe(this, ::onHasNewSourcesChanged)
 		viewModel.onActionDone.observeEvent(
 			this,
 			ReversibleActionObserver(viewBinding.pager),
@@ -79,5 +85,32 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		viewBinding.pager.isUserInputEnabled = true
 		viewModel.performSearch(null)
 		return true
+	}
+
+	private fun onHasNewSourcesChanged(hasNewSources: Boolean) {
+		if (hasNewSources) {
+			if (newSourcesSnackbar?.isShownOrQueued == true) {
+				return
+			}
+			val snackbar = Snackbar.make(viewBinding.pager, R.string.new_sources_text, Snackbar.LENGTH_INDEFINITE)
+			snackbar.setAction(R.string.explore) {
+				NewSourcesDialogFragment.show(supportFragmentManager)
+			}
+			snackbar.addCallback(
+				object : Snackbar.Callback() {
+					override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+						super.onDismissed(transientBottomBar, event)
+						if (event == DISMISS_EVENT_SWIPE) {
+							viewModel.skipNewSources()
+						}
+					}
+				},
+			)
+			snackbar.show()
+			newSourcesSnackbar = snackbar
+		} else {
+			newSourcesSnackbar?.dismiss()
+			newSourcesSnackbar = null
+		}
 	}
 }

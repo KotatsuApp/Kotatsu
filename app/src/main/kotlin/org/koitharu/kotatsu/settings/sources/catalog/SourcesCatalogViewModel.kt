@@ -41,6 +41,10 @@ class SourcesCatalogViewModel @Inject constructor(
 	val locales = repository.allMangaSources.mapToSet { it.locale }
 	val locale = MutableStateFlow(Locale.getDefault().language.takeIf { it in locales })
 
+	val hasNewSources = repository.observeNewSources()
+		.map { it.isNotEmpty() }
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
+
 	private val listProducers = locale.map { lc ->
 		createListProducers(lc)
 	}.stateIn(viewModelScope, SharingStarted.Eagerly, createListProducers(locale.value))
@@ -68,6 +72,12 @@ class SourcesCatalogViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			val rollback = repository.setSourceEnabled(source, true)
 			onActionDone.call(ReversibleAction(R.string.source_enabled, rollback))
+		}
+	}
+
+	fun skipNewSources() {
+		launchJob {
+			repository.assimilateNewSources()
 		}
 	}
 
