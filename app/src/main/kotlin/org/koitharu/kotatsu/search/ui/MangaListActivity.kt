@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
+import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -32,8 +33,8 @@ import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ActivityMangaListBinding
 import org.koitharu.kotatsu.filter.ui.FilterHeaderFragment
 import org.koitharu.kotatsu.filter.ui.FilterOwner
-import org.koitharu.kotatsu.filter.ui.FilterSheetFragment
 import org.koitharu.kotatsu.filter.ui.MangaFilter
+import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.preview.PreviewFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
@@ -146,8 +147,11 @@ class MangaListActivity :
 		val filter = filterOwner.filter
 		val chipSort = viewBinding.buttonOrder
 		if (chipSort != null) {
+			val filterBadge = ViewBadge(chipSort, this)
+			filterBadge.setMaxCharacterCount(0)
 			filter.header.observe(this) {
 				chipSort.setTextAndVisible(it.sortOrder?.titleRes ?: 0)
+				filterBadge.counter = if (it.isFilterApplied) 1 else 0
 			}
 		} else {
 			filter.header.map {

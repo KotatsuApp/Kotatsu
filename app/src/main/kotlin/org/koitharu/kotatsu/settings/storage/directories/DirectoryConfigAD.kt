@@ -21,11 +21,16 @@ fun directoryConfigAD(
 	bind {
 		binding.textViewTitle.text = item.title ?: getString(item.titleRes)
 		binding.textViewSubtitle.textAndVisible = item.file?.absolutePath
-		binding.imageViewRemove.isVisible = item.isChecked
-		binding.textViewTitle.drawableStart = if (item.isAvailable) {
-			null
+		binding.imageViewRemove.isVisible = item.isRemovable
+		binding.imageViewRemove.isEnabled = !item.isChecked
+		binding.textViewTitle.drawableStart = if (!item.isAvailable) {
+			ContextCompat.getDrawable(context, R.drawable.ic_alert_outline)?.apply {
+				setTint(ContextCompat.getColor(context, R.color.warning))
+			}
+		} else if (item.isChecked) {
+			ContextCompat.getDrawable(context, R.drawable.ic_download)
 		} else {
-			ContextCompat.getDrawable(context, R.drawable.ic_alert_outline)
+			null
 		}
 	}
 }

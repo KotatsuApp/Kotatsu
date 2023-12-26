@@ -21,7 +21,6 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
-import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.explore.ui.model.ExploreButtons
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
@@ -55,8 +54,6 @@ class ExploreViewModel @Inject constructor(
 		key = AppSettings.KEY_SUGGESTIONS,
 		valueProducer = { isSuggestionsEnabled },
 	)
-
-	val sortOrder = MutableStateFlow(SourcesSortOrder.MANUAL) // TODO
 
 	val onOpenManga = MutableEventFlow<Manga>()
 	val onActionDone = MutableEventFlow<ReversibleAction>()
@@ -136,7 +133,7 @@ class ExploreViewModel @Inject constructor(
 			result += RecommendationsItem(recommendation)
 		}
 		if (sources.isNotEmpty()) {
-			result += ListHeader(R.string.remote_sources, R.string.catalog)
+			result += ListHeader(R.string.remote_sources, R.string.manage)
 			if (newSources.isNotEmpty()) {
 				result += TipModel(
 					key = TIP_NEW_SOURCES,
@@ -153,7 +150,7 @@ class ExploreViewModel @Inject constructor(
 				icon = R.drawable.ic_empty_common,
 				textPrimary = R.string.no_manga_sources,
 				textSecondary = R.string.no_manga_sources_text,
-				actionStringRes = R.string.manage,
+				actionStringRes = R.string.catalog,
 			)
 		}
 		return result

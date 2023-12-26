@@ -9,9 +9,11 @@ data class DirectoryModel(
 	val title: String?,
 	@StringRes val titleRes: Int,
 	val file: File?,
+	val isRemovable: Boolean,
 	val isChecked: Boolean,
 	val isAvailable: Boolean,
 ) : ListModel {
+
 	override fun areItemsTheSame(other: ListModel): Boolean {
 		return other is DirectoryModel && other.file == file && other.title == title && other.titleRes == titleRes
 	}

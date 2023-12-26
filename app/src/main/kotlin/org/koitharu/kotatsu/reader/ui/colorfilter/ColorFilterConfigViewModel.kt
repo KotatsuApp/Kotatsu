@@ -44,33 +44,19 @@ class ColorFilterConfigViewModel @Inject constructor(
 	}
 
 	fun setBrightness(brightness: Float) {
-		val cf = colorFilter.value
-		colorFilter.value = ReaderColorFilter(
-			brightness = brightness,
-			contrast = cf?.contrast ?: 0f,
-			isInverted = cf?.isInverted ?: false,
-		).takeUnless { it.isEmpty }
+		updateColorFilter { it.copy(brightness = brightness) }
 	}
 
 	fun setContrast(contrast: Float) {
-		val cf = colorFilter.value
-		colorFilter.value = ReaderColorFilter(
-			brightness = cf?.brightness ?: 0f,
-			contrast = contrast,
-			isInverted = cf?.isInverted ?: false,
-		).takeUnless { it.isEmpty }
+		updateColorFilter { it.copy(contrast = contrast) }
 	}
 
 	fun setInversion(invert: Boolean) {
-		val cf = colorFilter.value
-		if (invert == cf?.isInverted) {
-			return
-		}
-		colorFilter.value = ReaderColorFilter(
-			brightness = cf?.brightness ?: 0f,
-			contrast = cf?.contrast ?: 0f,
-			isInverted = invert,
-		).takeUnless { it.isEmpty }
+		updateColorFilter { it.copy(isInverted = invert) }
+	}
+
+	fun setGrayscale(grayscale: Boolean) {
+		updateColorFilter { it.copy(isGrayscale = grayscale) }
 	}
 
 	fun reset() {
@@ -85,7 +71,18 @@ class ColorFilterConfigViewModel @Inject constructor(
 	}
 
 	fun saveGlobally() {
-		settings.readerColorFilter = colorFilter.value
-		onDismiss.call(Unit)
+		launchLoadingJob(Dispatchers.Default) {
+			settings.readerColorFilter = colorFilter.value
+			if (mangaDataRepository.getColorFilter(manga.id) != null) {
+				mangaDataRepository.saveColorFilter(manga, colorFilter.value)
+			}
+			onDismiss.call(Unit)
+		}
+	}
+
+	private inline fun updateColorFilter(block: (ReaderColorFilter) -> ReaderColorFilter) {
+		colorFilter.value = block(
+			colorFilter.value ?: ReaderColorFilter.EMPTY,
+		).takeUnless { it.isEmpty }
 	}
 }

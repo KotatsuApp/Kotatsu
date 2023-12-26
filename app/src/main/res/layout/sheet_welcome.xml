@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
+		android:id="@+id/headerBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:title="@string/welcome" />
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/scrollView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:scrollIndicators="top">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingBottom="@dimen/margin_normal">
+
+			<TextView
+				android:id="@+id/textView_welcome_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/welcome"
+				android:textAppearance="?textAppearanceTitleLarge"
+				android:drawablePadding="16dp"
+				app:drawableStartCompat="@drawable/ic_welcome" />
+
+			<HorizontalScrollView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:scrollbars="none">
+
+				<com.google.android.material.chip.ChipGroup
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingHorizontal="@dimen/margin_normal"
+					app:singleLine="true">
+
+					<com.google.android.material.chip.Chip
+						android:id="@+id/chip_backup"
+						style="@style/Widget.Kotatsu.Chip.Assist"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/restore_backup"
+						app:chipIcon="@drawable/ic_backup_restore" />
+
+					<com.google.android.material.chip.Chip
+						android:id="@+id/chip_sync"
+						style="@style/Widget.Kotatsu.Chip.Assist"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/sync_auth"
+						app:chipIcon="@drawable/ic_sync" />
+
+				</com.google.android.material.chip.ChipGroup>
+
+			</HorizontalScrollView>
+
+			<TextView
+				android:id="@+id/textView_hint"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:paddingHorizontal="@dimen/margin_normal"
+				android:text="@string/welcome_text"
+				android:textAppearance="?textAppearanceBodyMedium" />
+
+			<TextView
+				android:id="@+id/textView_locales_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/languages"
+				android:textAppearance="?textAppearanceTitleSmall" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+				android:id="@+id/chips_locales"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:paddingHorizontal="@dimen/margin_normal"
+				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+
+			<TextView
+				android:id="@+id/textView_type_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/type"
+				android:textAppearance="?textAppearanceTitleSmall" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+				android:id="@+id/chips_type"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:paddingHorizontal="@dimen/margin_normal"
+				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+</LinearLayout>

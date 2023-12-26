@@ -369,4 +369,18 @@
     <string name="zoom_out">ซูมออก</string>
     <string name="text_search_holder_secondary">โปรดลองเรียบเรียงคำค้นหา</string>
     <string name="last_successful_backup">สำรองข้อมูลสำเร็จล่าสุด: %s</string>
+    <string name="content_type_manga">มังงะ</string>
+    <string name="source_summary_pattern">%1$s, %2$s</string>
+    <string name="reader_optimize">ลดการใช้แรม (เบต้า)</string>
+    <string name="disable_battery_optimization_summary_downloads">อาจจะช่วยในการเริ่มต้นการดาวน์โหลดถ้าคุณมีปัญหา</string>
+    <string name="this_manga">มังงะเรื่องนี้</string>
+    <string name="lock_screen_rotation">ล็อคการหมุนหน้าจอ</string>
+    <string name="skip">ข้าม</string>
+    <string name="state_paused">หยุดชั่วคราว</string>
+    <string name="content_type_other">อื่น</string>
+    <string name="pages_cache">แคชหน้า</string>
+    <string name="reader_info_pattern">บท. %1$d/%2$d หน้า. %3$d/%4$d</string>
+    <string name="queued">เพิ่มเข้าคิวแล้ว</string>
+    <string name="exit_confirmation">ยืนยันการออก</string>
+    <string name="reorder">เรียงลำดับ</string>
 </resources>

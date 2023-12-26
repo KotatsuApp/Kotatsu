@@ -15,8 +15,7 @@
 		app:elevation="1dp"
 		app:headerLayout="@layout/navigation_rail_fab"
 		app:labelVisibilityMode="labeled"
-		app:layout_constraintStart_toStartOf="parent"
-		tools:menu="@menu/nav_bottom" />
+		app:layout_constraintStart_toStartOf="parent" />
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"

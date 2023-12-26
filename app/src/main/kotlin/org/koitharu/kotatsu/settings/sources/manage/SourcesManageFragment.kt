@@ -54,6 +54,7 @@ class SourcesManageFragment :
 	lateinit var shortcutManager: AppShortcutManager
 
 	private var reorderHelper: ItemTouchHelper? = null
+	private var sourcesAdapter: SourceConfigAdapter? = null
 	private val viewModel by viewModels<SourcesManageViewModel>()
 
 	override val recyclerView: RecyclerView
@@ -69,7 +70,7 @@ class SourcesManageFragment :
 		savedInstanceState: Bundle?,
 	) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		val sourcesAdapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
+		sourcesAdapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = sourcesAdapter
@@ -77,7 +78,7 @@ class SourcesManageFragment :
 				it.attachToRecyclerView(this)
 			}
 		}
-		viewModel.content.observe(viewLifecycleOwner, sourcesAdapter)
+		viewModel.content.observe(viewLifecycleOwner, checkNotNull(sourcesAdapter))
 		viewModel.onActionDone.observeEvent(
 			viewLifecycleOwner,
 			ReversibleActionObserver(binding.recyclerView),
@@ -91,6 +92,7 @@ class SourcesManageFragment :
 	}
 
 	override fun onDestroyView() {
+		sourcesAdapter = null
 		reorderHelper = null
 		super.onDestroyView()
 	}
@@ -204,7 +206,7 @@ class SourcesManageFragment :
 			y: Int,
 		) {
 			super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
-			viewModel.reorderSources(fromPos, toPos)
+			sourcesAdapter?.reorderItems(fromPos, toPos)
 		}
 
 		override fun canDropOver(
@@ -248,5 +250,10 @@ class SourcesManageFragment :
 		}
 
 		override fun isLongPressDragEnabled() = true
+
+		override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+			super.clearView(recyclerView, viewHolder)
+			viewModel.saveSourcesOrder(sourcesAdapter?.items ?: return)
+		}
 	}
 }

@@ -113,21 +113,19 @@
 
 			<com.google.android.material.card.MaterialCardView
 				android:id="@+id/card_order"
-				style="?materialCardViewOutlinedStyle"
+				style="?m3SpinnerStyle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginHorizontal="16dp"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:visibility="gone"
-				app:shapeAppearance="?shapeAppearanceCornerMedium"
-				app:strokeColor="@color/m3_button_outline_color_selector"
-				app:strokeWidth="@dimen/m3_comp_outlined_button_outline_width"
 				tools:visibility="visible">
 
 				<Spinner
 					android:id="@+id/spinner_order"
 					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
+					android:layout_height="56dp"
+					android:paddingHorizontal="8dp"
 					android:minHeight="?listPreferredItemHeightSmall" />
 
 			</com.google.android.material.card.MaterialCardView>

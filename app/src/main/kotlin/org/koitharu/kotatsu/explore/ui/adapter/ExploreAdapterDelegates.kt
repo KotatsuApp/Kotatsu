@@ -8,6 +8,7 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getSummary
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
@@ -112,7 +113,7 @@ fun exploreSourceListItemAD(
 	binding.root.setOnContextClickListenerCompat(eventListener)
 
 	bind {
-		binding.textViewTitle.text = item.source.title
+		binding.textViewTitle.text = item.source.getTitle(context)
 		binding.textViewSubtitle.text = item.source.getSummary(context)
 		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
@@ -147,7 +148,7 @@ fun exploreSourceGridItemAD(
 	binding.root.setOnContextClickListenerCompat(eventListener)
 
 	bind {
-		binding.textViewTitle.text = item.source.title
+		binding.textViewTitle.text = item.source.getTitle(context)
 		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Large, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)

@@ -93,7 +93,6 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
 		android:clickable="true"
-		tools:ignore="KeyboardInaccessibleWidget"
-		tools:menu="@menu/nav_bottom" />
+		tools:ignore="KeyboardInaccessibleWidget" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

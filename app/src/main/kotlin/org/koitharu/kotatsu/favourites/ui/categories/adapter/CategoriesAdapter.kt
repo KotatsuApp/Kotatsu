@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.favourites.ui.categories.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
-import org.koitharu.kotatsu.core.ui.BaseListAdapter
+import org.koitharu.kotatsu.core.ui.ReorderableListAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -15,7 +15,7 @@ class CategoriesAdapter(
 	lifecycleOwner: LifecycleOwner,
 	onItemClickListener: FavouriteCategoriesListListener,
 	listListener: ListStateHolderListener,
-) : BaseListAdapter<ListModel>() {
+) : ReorderableListAdapter<ListModel>() {
 
 	init {
 		addDelegate(ListItemType.CATEGORY_LARGE, categoryAD(coil, lifecycleOwner, onItemClickListener))

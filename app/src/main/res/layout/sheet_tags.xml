@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
+		android:id="@+id/headerBar"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:title="@string/filter" />
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/text_input_layout"
+		style="?textInputFilledDenseStyle"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="16dp"
+		android:layout_marginBottom="4dp"
+		android:hint="@string/genres_search_hint"
+		app:endIconDrawable="@drawable/abc_ic_clear_material"
+		app:endIconMode="clear_text"
+		app:layout_constraintBottom_toTopOf="@id/recyclerView"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/headerBar"
+		app:startIconDrawable="?android:actionModeWebSearchDrawable">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/edit_search"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:imeOptions="actionSearch|flagNoFullscreen"
+			android:importantForAutofill="no"
+			android:inputType="text" />
+
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
+		android:id="@+id/recyclerView"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:clipToPadding="false"
+		android:orientation="vertical"
+		app:bubbleSize="normal"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/text_input_layout"
+		app:scrollerOffset="8dp"
+		tools:listitem="@layout/item_checkable_new" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

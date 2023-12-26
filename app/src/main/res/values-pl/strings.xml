@@ -271,7 +271,7 @@
     <string name="clear_thumbs_cache">Wyczyść pamięć podręczną miniatur</string>
     <string name="text_search_holder_secondary">Spróbuj przeformułować zapytanie.</string>
     <string name="text_history_holder_primary">To co czytasz będzie wyświetlane tutaj</string>
-    <string name="text_history_holder_secondary">Znajdź to, co warto przeczytać, w menu bocznym.</string>
+    <string name="text_history_holder_secondary">Znajdź rzeczy do przeczytania w sekcji Przegląd</string>
     <string name="text_local_holder_secondary">Zapisz ze źródeł online lub zaimportuj pliki.</string>
     <string name="manga_save_location">Folder pobranych</string>
     <string name="feed_will_update_soon">Aktualizacja tablicy rozpocznie się wkrótce</string>
@@ -355,7 +355,7 @@
     <string name="user_agent">Nagłówek UserAgent</string>
     <string name="translations">Tłumaczenia</string>
     <string name="share_logs">Udostępnij dzienniki</string>
-    <string name="enable_logging_summary">Zapisz niektóre działania do celów debugowania</string>
+    <string name="enable_logging_summary">Zapisz niektóre działania do celów debugowania. Nie włączaj go, jeśli nie jesteś pewien, co robisz</string>
     <string name="allow_unstable_updates">Zezwól na niestabilne altualizacje</string>
     <string name="got_it">Rozumiem</string>
     <string name="settings_apply_restart_required">Uruchom ponownie aplikację by wprowadzić te zmiany</string>
@@ -380,7 +380,7 @@
     <string name="mirror_switching">Wybierz lustro automatycznie</string>
     <string name="restore_backup_description">Zaimportuj utworzoną wcześniej kopię zapasową danych użytkownika</string>
     <string name="show_on_shelf">Pokaż na półce</string>
-    <string name="mirror_switching_summary">Automatycznie przełączaj domeny dla zdalnych źródeł w przypadku błędów, jeśli dostępne są kopie lustrzane</string>
+    <string name="mirror_switching_summary">Automatycznie przełączaj domeny źródeł mangi w przypadku błędów, jeśli dostępne są serwery lustrzane</string>
     <string name="pause">Pauza</string>
     <string name="resume">Wznawiać</string>
     <string name="paused">Wstrzymane</string>
@@ -394,7 +394,7 @@
     <string name="cancel_all_downloads_confirm">Wszystkie aktywne pobrania zostaną anulowane, częściowo pobrane dane zostaną utracone</string>
     <string name="remove_completed">Usuwanie zakończone</string>
     <string name="language">Język</string>
-    <string name="allow_unstable_updates_summary">Zaproponuj aktualizacje do wersji beta aplikacji</string>
+    <string name="allow_unstable_updates_summary">Otrzymuj powiadomienia o niestabilnych kompilacjach</string>
     <string name="download_started">Pobieranie rozpoczęte</string>
     <string name="sync_settings">Ustawienia synchronizacji</string>
     <string name="server_address">Adres serwera</string>
@@ -456,4 +456,24 @@
     <string name="description">Opis</string>
     <string name="languages">Języki</string>
     <string name="unknown">Nieznane</string>
+    <string name="captcha_required_summary">Do poprawnego działania %s wymagana jest weryfikacja Captcha</string>
+    <string name="error_corrupted_file">Zwracane są nieprawidłowe dane lub plik jest uszkodzony</string>
+    <string name="related_manga_summary">Pokaż listę podobnych mang. W niektórych przypadkach może być niedokładny lub brakować</string>
+    <string name="tracker_wifi_only_summary">Nie sprawdzaj dostępności nowych partycji, jeśli korzystasz z ograniczonego połączenia internetowego</string>
+    <string name="on_device">Na urządzeniu</string>
+    <string name="data_not_restored_text">Upewnij się, że wybrałeś właściwy plik kopii zapasowej</string>
+    <string name="view_list">Zobacz listę</string>
+    <string name="in_progress">W trakcie</string>
+    <string name="data_not_restored">Dane nie zostały przywrócone</string>
+    <string name="directories">Katalogi</string>
+    <string name="manage_categories">Zarządzaj kategoriami</string>
+    <string name="search_hint">Wpisz tytuł mangi, gatunek lub nazwę źródła</string>
+    <string name="main_screen_sections">Sekcje ekranu głównego</string>
+    <string name="too_many_requests_message">Zbyt dużo próśb. Spróbuj ponownie później</string>
+    <string name="related_manga">Podobna manga</string>
+    <string name="suggestions_wifi_only_summary">Nie aktualizuj rekomendacji, jeśli korzystasz z ograniczonego połączenia internetowego</string>
+    <string name="default_section">Sekcja domyślna</string>
+    <string name="manga_list">Lista mang</string>
+    <string name="disable_nsfw">Wyłącz NSFW</string>
+    <string name="show">Pokazywać</string>
 </resources>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:tools="http://schemas.android.com/tools"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:aapt="http://schemas.android.com/aapt">
+	<aapt:attr name="android:drawable">
+		<vector
+			android:name="splash"
+			android:width="320dp"
+			android:height="320dp"
+			android:viewportWidth="320"
+			android:viewportHeight="320">
+			<group
+				android:name="scaleme"
+				android:pivotX="160"
+				android:pivotY="160"
+				android:scaleX="1"
+				android:scaleY="1">
+				<group android:name="bg">
+					<path
+						android:name="circle"
+						android:pathData="M 160 110 C 146.744 110 134.018 115.271 124.645 124.645 C 115.271 134.018 110 146.744 110 160 C 110 173.256 115.271 185.982 124.645 195.355 C 134.018 204.729 146.744 210 160 210 C 173.256 210 185.982 204.729 195.355 195.355 C 204.729 185.982 210 173.256 210 160 C 210 146.744 204.729 134.018 195.355 124.645 C 185.982 115.271 173.256 110 160 110 Z"
+						android:fillColor="@color/m3_sys_color_dynamic_dark_primary_container"
+						android:fillAlpha="0"
+						android:strokeWidth="1" />
+				</group>
+				<group
+					android:name="fg"
+					android:pivotX="160"
+					android:pivotY="160"
+					android:scaleX="0"
+					android:scaleY="0">
+					<clip-path
+						android:name="mask"
+						android:pathData="M 160 60 C 133.489 60 108.036 70.543 89.289 89.289 C 70.543 108.036 60 133.489 60 160 C 60 186.511 70.543 211.964 89.289 230.711 C 108.036 249.457 133.489 260 160 260 C 186.511 260 211.964 249.457 230.711 230.711 C 249.457 211.964 260 186.511 260 160 C 260 133.489 249.457 108.036 230.711 89.289 C 211.964 70.543 186.511 60 160 60 Z" />
+					<group
+						android:name="totoro_group"
+						android:scaleX="0.73903004444"
+						android:scaleY="0.73903004444">
+						<clip-path android:pathData="M0.81,0.07h432v432h-432z" />
+						<path
+							android:name="totoro"
+							android:pathData="M242.26,418.58c-44.77,0 -89.54,0 -134.31,0c-6.96,0 -7.12,-0.56 -6.31,-7.57c6.75,-58.64 31.14,-110.6 61.45,-160.07c6.71,-10.95 9.45,-22.06 11.05,-34.22c1.43,-10.89 5.32,-20.99 13.4,-28.93c5.67,-5.58 9.49,-5.72 14.67,0.29c6.42,7.45 12.41,15.28 18.2,23.23c2.01,2.76 3.88,4.35 7.39,4.3c9.86,-0.15 19.72,-0.13 29.58,-0.01c3.26,0.04 5.21,-1.26 7.14,-3.9c6.02,-8.18 12.19,-16.28 18.74,-24.04c4.56,-5.41 8.36,-5.29 13.65,-0.51c8.35,7.53 11.83,17.58 13.9,28.16c1.14,5.82 1.07,11.88 2.18,17.71c0.61,3.18 2.21,6.32 3.97,9.1c19.34,30.51 35.86,62.44 48.61,96.27c8.91,23.64 15.25,47.93 18.01,73.09c0.72,6.6 0.28,7.1 -6.53,7.1C332.12,418.59 287.19,418.58 242.26,418.58zM172.46,404.96c0.23,-0.04 1.58,0.09 2.4,-0.51c8.32,-6.01 16.3,-5.48 24.88,-0.06c3.28,2.07 7.64,0.92 10.26,-2.87c2.4,-3.47 2.93,-7.99 -0.37,-10.11c-6.96,-4.48 -14.69,-7.79 -22.16,-11.45c-0.71,-0.35 -1.97,0.02 -2.8,0.42c-6.1,2.95 -12.31,5.72 -18.16,9.11c-3.47,2.01 -4.86,5.62 -3.44,9.68C164.45,403.11 167.3,405.15 172.46,404.96zM218.13,370.48c-0.72,7.32 5.26,12.42 10.7,10.65c3.5,-1.14 6.64,-3.36 10.15,-4.45c2.19,-0.68 4.93,-0.73 7.1,-0.05c3.5,1.09 6.63,3.81 10.14,4.31c2.71,0.39 6.58,-0.8 8.42,-2.72c1.69,-1.77 2.38,-5.74 1.7,-8.26c-1.66,-6.13 -21.82,-15 -27.76,-12.78c-0.3,0.11 -0.6,0.25 -0.88,0.39c-4.76,2.37 -9.72,4.42 -14.2,7.23C220.99,366.38 219.28,369.23 218.13,370.48zM312.12,405.04c5.83,-0.02 8.75,-2.02 9.96,-6c1.29,-4.24 -0.29,-7.83 -4,-9.92c-5.46,-3.07 -11.09,-5.89 -16.87,-8.3c-1.97,-0.82 -4.88,-0.73 -6.87,0.1c-5.49,2.28 -10.81,5.01 -16.03,7.87c-4.63,2.54 -6.06,7.19 -3.97,11.49c2.04,4.18 6.73,5.95 11.55,4.09c2.69,-1.04 5.36,-2.29 7.8,-3.82c3.12,-1.96 5.81,-1.75 8.95,0.07C306.06,402.61 309.82,403.99 312.12,405.04zM186.6,262.09c0.05,8.66 5.72,15.1 14.55,16.52c7.21,1.16 15.06,-3.96 17.57,-11.47c2.13,-6.36 0.68,-9.3 -5.95,-10.15c-3.72,-0.47 -4.65,-1.86 -5.04,-5.35c-0.62,-5.66 -3.07,-7 -8.67,-5.72C191.46,247.66 186.55,254.03 186.6,262.09zM282.02,278.75c7.26,0.03 14.41,-5.46 16.13,-12.38c1.46,-5.89 0.26,-8.38 -5.73,-9.23c-4.07,-0.58 -5.45,-2.48 -5.77,-6.12c-0.33,-3.76 -2.15,-6.05 -6.28,-5.61c-8.6,0.91 -15.51,8.95 -14.97,17.39C265.96,271.4 273.59,278.72 282.02,278.75zM259.29,278.52c-0.09,-5.33 -3.97,-9.16 -8.9,-9.28c-5.17,-0.13 -10.35,0 -15.52,-0.04c-3.82,-0.03 -6.54,1.76 -8.08,5.12c-1.56,3.4 -0.95,6.7 1.57,9.44c2.62,2.85 5.33,5.66 8.23,8.22c3.42,3.02 7.46,3.55 11.05,0.59c3.59,-2.97 6.8,-6.44 9.9,-9.93C258.63,281.4 258.91,279.45 259.29,278.52z"
+							android:fillType="evenOdd"
+							android:fillColor="@color/m3_sys_color_dynamic_dark_primary"
+							android:fillAlpha="0"
+							android:strokeWidth="1"
+							tools:targetApi="s" />
+					</group>
+				</group>
+			</group>
+		</vector>
+	</aapt:attr>
+	<target android:name="circle">
+		<aapt:attr name="android:animation">
+			<set>
+				<objectAnimator
+					android:propertyName="pathData"
+					android:startOffset="200"
+					android:duration="300"
+					android:valueFrom="M 160 110 C 146.744 110 134.018 115.271 124.645 124.645 C 115.271 134.018 110 146.744 110 160 C 110 173.256 115.271 185.982 124.645 195.355 C 134.018 204.729 146.744 210 160 210 C 173.256 210 185.982 204.729 195.355 195.355 C 204.729 185.982 210 173.256 210 160 C 210 146.744 204.729 134.018 195.355 124.645 C 185.982 115.271 173.256 110 160 110 Z"
+					android:valueTo="M 160 60 C 133.489 60 108.036 70.543 89.289 89.289 C 70.543 108.036 60 133.489 60 160 C 60 186.511 70.543 211.964 89.289 230.711 C 108.036 249.457 133.489 260 160 260 C 186.511 260 211.964 249.457 230.711 230.711 C 249.457 211.964 260 186.511 260 160 C 260 133.489 249.457 108.036 230.711 89.289 C 211.964 70.543 186.511 60 160 60 Z"
+					android:valueType="pathType"
+					android:interpolator="@android:anim/overshoot_interpolator" />
+				<objectAnimator
+					android:propertyName="fillAlpha"
+					android:startOffset="200"
+					android:duration="100"
+					android:valueFrom="0"
+					android:valueTo="1"
+					android:valueType="floatType"
+					android:interpolator="@android:interpolator/fast_out_slow_in" />
+			</set>
+		</aapt:attr>
+	</target>
+	<target android:name="totoro_group">
+		<aapt:attr name="android:animation">
+			<set>
+				<objectAnimator
+					android:startOffset="200"
+					android:duration="300"
+					android:propertyName="translateY"
+					android:valueFrom="160"
+					android:valueTo="0"
+					android:interpolator="@android:interpolator/fast_out_slow_in" />
+				<objectAnimator
+					android:startOffset="200"
+					android:duration="300"
+					android:propertyName="scaleY"
+					android:valueFrom="0.5"
+					android:valueTo="0.73903004444"
+					android:interpolator="@android:interpolator/fast_out_slow_in" />
+			</set>
+		</aapt:attr>
+	</target>
+	<target android:name="totoro">
+		<aapt:attr name="android:animation">
+			<set>
+				<objectAnimator
+					android:propertyName="fillAlpha"
+					android:startOffset="200"
+					android:duration="100"
+					android:valueFrom="0"
+					android:valueTo="1"
+					android:valueType="floatType"
+					android:interpolator="@android:interpolator/fast_out_slow_in" />
+			</set>
+		</aapt:attr>
+	</target>
+	<target android:name="fg">
+		<aapt:attr name="android:animation">
+			<set>
+				<objectAnimator
+					android:propertyName="scaleX"
+					android:startOffset="200"
+					android:duration="300"
+					android:valueFrom="0.5"
+					android:valueTo="1"
+					android:valueType="floatType"
+					android:interpolator="@android:anim/overshoot_interpolator" />
+				<objectAnimator
+					android:propertyName="scaleY"
+					android:startOffset="200"
+					android:duration="300"
+					android:valueFrom="0.5"
+					android:valueTo="1"
+					android:valueType="floatType"
+					android:interpolator="@android:anim/overshoot_interpolator" />
+			</set>
+		</aapt:attr>
+	</target>
+</animated-vector>

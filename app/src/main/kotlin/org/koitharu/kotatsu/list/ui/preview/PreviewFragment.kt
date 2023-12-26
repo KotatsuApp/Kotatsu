@@ -28,10 +28,10 @@ import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.FragmentPreviewBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.filter.ui.FilterOwner
-import org.koitharu.kotatsu.filter.ui.model.FilterItem
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
 import javax.inject.Inject
@@ -57,8 +57,10 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 		binding.textViewAuthor.setOnClickListener(this)
 		binding.imageViewCover.setOnClickListener(this)
 		binding.buttonOpen.setOnClickListener(this)
+		binding.buttonRead.setOnClickListener(this)
 
 		viewModel.manga.observe(viewLifecycleOwner, ::onMangaUpdated)
+		viewModel.footer.observe(viewLifecycleOwner, ::onFooterUpdated)
 		viewModel.tagsChips.observe(viewLifecycleOwner, ::onTagsChipsChanged)
 		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
 	}
@@ -70,6 +72,14 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			R.id.button_open -> startActivity(
 				DetailsActivity.newIntent(v.context, manga),
 			)
+
+			R.id.button_read -> {
+				startActivity(
+					ReaderActivity.IntentBuilder(v.context)
+						.manga(manga)
+						.build(),
+				)
+			}
 
 			R.id.textView_author -> startActivity(
 				SearchActivity.newIntent(
@@ -98,8 +108,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 		if (filter == null) {
 			startActivity(MangaListActivity.newIntent(requireContext(), setOf(tag)))
 		} else {
-			val filterItem = FilterItem.Tag(tag, filter.header.value.allowMultipleTags, false)
-			filter.onTagItemClick(filterItem, isFromChip = false)
+			filter.setTag(tag, true)
 			closeSelf()
 		}
 	}
@@ -117,6 +126,43 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			} else {
 				ratingBar.isVisible = false
 			}
+		}
+	}
+
+	private fun onFooterUpdated(footer: PreviewViewModel.FooterInfo?) {
+		with(requireViewBinding()) {
+			toolbarBottom.isVisible = footer != null
+			if (footer == null) {
+				return
+			}
+			toolbarBottom.title = when {
+				footer.isInProgress() -> {
+					getString(R.string.chapter_d_of_d, footer.currentChapter, footer.totalChapters)
+				}
+
+				footer.totalChapters > 0 -> {
+					resources.getQuantityString(R.plurals.chapters, footer.totalChapters, footer.totalChapters)
+				}
+
+				else -> {
+					getString(R.string.no_chapters)
+				}
+			}
+			buttonRead.isEnabled = footer.totalChapters > 0
+			buttonRead.setIconResource(
+				when {
+					footer.isIncognito -> R.drawable.ic_incognito
+					footer.isInProgress() -> R.drawable.ic_play
+					else -> R.drawable.ic_read
+				},
+			)
+			buttonRead.setText(
+				if (footer.isInProgress()) {
+					R.string._continue
+				} else {
+					R.string.read
+				},
+			)
 		}
 	}
 

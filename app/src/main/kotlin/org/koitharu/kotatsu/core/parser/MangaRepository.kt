@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.lang.ref.WeakReference
 import java.util.EnumMap
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.set
@@ -40,6 +41,8 @@ interface MangaRepository {
 	suspend fun getPageUrl(page: MangaPage): String
 
 	suspend fun getTags(): Set<MangaTag>
+
+	suspend fun getLocales(): Set<Locale>
 
 	suspend fun getRelated(seed: Manga): List<Manga>
 

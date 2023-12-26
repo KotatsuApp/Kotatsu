@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:gravity="center_vertical"
+	android:orientation="vertical"
+	android:paddingVertical="?dialogPreferredPadding">
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="?dialogPreferredPadding"
+		android:paddingBottom="@dimen/margin_normal"
+		android:text="@string/restore_backup"
+		android:textAppearance="?textAppearanceTitleLarge" />
+
+	<com.google.android.material.progressindicator.LinearProgressIndicator
+		android:id="@+id/progressBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="?dialogPreferredPadding"
+		android:indeterminate="true"
+		android:max="100"
+		android:visibility="gone"
+		tools:visibility="visible" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recyclerView"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:scrollIndicators="top|bottom"
+		android:visibility="gone"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		tools:itemCount="6"
+		tools:listitem="@layout/item_checkable_multiple"
+		tools:visibility="visible" />
+
+	<TextView
+		android:id="@+id/textView_subtitle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="?dialogPreferredPadding"
+		android:layout_marginTop="@dimen/margin_small"
+		android:textAppearance="?attr/textAppearanceLabelMedium"
+		android:textColor="?android:textColorSecondary"
+		tools:text="@tools:sample/lorem[10]" />
+
+	<LinearLayout
+		style="?buttonBarStyle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="?dialogPreferredPadding"
+		android:layout_marginTop="@dimen/margin_normal"
+		android:gravity="end"
+		android:orientation="horizontal">
+
+		<Button
+			android:id="@+id/button_cancel"
+			style="?buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@android:string/cancel" />
+
+		<Button
+			android:id="@+id/button_restore"
+			style="?buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/restore" />
+
+	</LinearLayout>
+
+</LinearLayout>

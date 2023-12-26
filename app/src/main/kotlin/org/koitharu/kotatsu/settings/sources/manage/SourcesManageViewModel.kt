@@ -4,8 +4,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.removeObserverAsync
@@ -43,17 +41,19 @@ class SourcesManageViewModel @Inject constructor(
 		database.invalidationTracker.removeObserverAsync(listProducer)
 	}
 
-	fun reorderSources(oldPos: Int, newPos: Int) {
-		val snapshot = content.value.toMutableList()
-		if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
-			return
+	fun saveSourcesOrder(snapshot: List<SourceConfigItem>) {
+		val prevJob = commitJob
+		commitJob = launchJob(Dispatchers.Default) {
+			prevJob?.cancelAndJoin()
+			val newSourcesList = snapshot.mapNotNull { x ->
+				if (x is SourceConfigItem.SourceItem && x.isDraggable) {
+					x.source
+				} else {
+					null
+				}
+			}
+			repository.setPositions(newSourcesList)
 		}
-		if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
-			return
-		}
-		snapshot.move(oldPos, newPos)
-		content.value = snapshot
-		commit(snapshot)
 	}
 
 	fun canReorder(oldPos: Int, newPos: Int): Boolean {
@@ -72,28 +72,31 @@ class SourcesManageViewModel @Inject constructor(
 	}
 
 	fun bringToTop(source: MangaSource) {
-		var oldPos = -1
-		var newPos = -1
 		val snapshot = content.value
-		for ((i, x) in snapshot.withIndex()) {
-			if (x !is SourceConfigItem.SourceItem) {
-				continue
+		launchJob(Dispatchers.Default) {
+			var oldPos = -1
+			var newPos = -1
+			for ((i, x) in snapshot.withIndex()) {
+				if (x !is SourceConfigItem.SourceItem) {
+					continue
+				}
+				if (newPos == -1) {
+					newPos = i
+				}
+				if (x.source == source) {
+					oldPos = i
+					break
+				}
 			}
-			if (newPos == -1) {
-				newPos = i
+			@Suppress("KotlinConstantConditions")
+			if (oldPos != -1 && newPos != -1) {
+				reorderSources(oldPos, newPos)
+				val revert = ReversibleAction(R.string.moved_to_top) {
+					reorderSources(newPos, oldPos)
+				}
+				commitJob?.join()
+				onActionDone.call(revert)
 			}
-			if (x.source == source) {
-				oldPos = i
-				break
-			}
-		}
-		@Suppress("KotlinConstantConditions")
-		if (oldPos != -1 && newPos != -1) {
-			reorderSources(oldPos, newPos)
-			val revert = ReversibleAction(R.string.moved_to_top) {
-				reorderSources(newPos, oldPos)
-			}
-			onActionDone.call(revert)
 		}
 	}
 
@@ -113,20 +116,15 @@ class SourcesManageViewModel @Inject constructor(
 		}
 	}
 
-	private fun commit(snapshot: List<SourceConfigItem>) {
-		val prevJob = commitJob
-		commitJob = launchJob {
-			prevJob?.cancelAndJoin()
-			delay(500)
-			val newSourcesList = snapshot.mapNotNull { x ->
-				if (x is SourceConfigItem.SourceItem && x.isDraggable) {
-					x.source
-				} else {
-					null
-				}
-			}
-			repository.setPositions(newSourcesList)
-			yield()
+	private fun reorderSources(oldPos: Int, newPos: Int) {
+		val snapshot = content.value.toMutableList()
+		if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
+			return
 		}
+		if ((snapshot[newPos] as? SourceConfigItem.SourceItem)?.isDraggable != true) {
+			return
+		}
+		snapshot.move(oldPos, newPos)
+		saveSourcesOrder(snapshot)
 	}
 }

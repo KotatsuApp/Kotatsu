@@ -528,4 +528,19 @@
     <string name="error_search_not_supported">Пошук не падтрымліваецца гэтай крыніцай мангі</string>
     <string name="reader_optimize_summary">Паменшыць якасць закадравых старонак, каб выкарыстоўваць менш памяці</string>
     <string name="state">Стан</string>
+    <string name="error_filter_states_genre_not_supported">Гэта крыніца не падтрымлівае фільтрацыю па жанрах і станах</string>
+    <string name="error_filter_locale_genre_not_supported">Гэта крыніца не падтрымлівае фільтрацыю па жанрах і лакалі</string>
+    <string name="apply">Ужыць</string>
+    <string name="genres_search_hint">Пачніце ўводзіць назву жанру</string>
+    <string name="globally">Глабальна</string>
+    <string name="downloads_settings_info">Вы можаце ўключыць запаволенне загрузкі для кожнай крыніцы мангі асобна ў наладах крыніцы, калі ў вас узніклі праблемы з блакіроўкай на баку сервера</string>
+    <string name="this_manga">Гэтая манга</string>
+    <string name="skip">Прапусціць</string>
+    <string name="color_correction_apply_text">Гэтыя налады могуць прымяняцца глабальна або толькі да бягучай мангі. Пры глабальным прымяненні індывідуальныя налады не будуць перавызначаны.</string>
+    <string name="grayscale">Адценні шэрага</string>
+    <string name="disable_battery_optimization_summary_downloads">Можа дапамагчы з пачаткам загрузкі, калі ў вас узнікаюць з ёй праблемы</string>
+    <string name="welcome_text">Выберыце, якія крыніцы змесціва вы хочаце ўключыць. Гэта таксама можна наладзіць пазней у наладах</string>
+    <string name="restore">Аднавіць</string>
+    <string name="backup_date_">Дата стварэння рэзервовай копіі: %s</string>
+    <string name="sync_auth">Увайдзіце, каб сінхранізаваць уліковы запіс</string>
 </resources>

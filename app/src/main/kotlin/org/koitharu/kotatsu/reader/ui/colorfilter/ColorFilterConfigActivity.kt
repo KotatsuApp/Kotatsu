@@ -16,6 +16,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.size.ViewSizeResolver
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,6 +63,7 @@ class ColorFilterConfigActivity :
 		viewBinding.sliderContrast.setLabelFormatter(formatter)
 		viewBinding.sliderBrightness.setLabelFormatter(formatter)
 		viewBinding.switchInvert.setOnCheckedChangeListener(this)
+		viewBinding.switchGrayscale.setOnCheckedChangeListener(this)
 		viewBinding.buttonDone.setOnClickListener(this)
 		viewBinding.buttonReset.setOnClickListener(this)
 
@@ -84,18 +86,16 @@ class ColorFilterConfigActivity :
 		}
 	}
 
-	override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-		viewModel.setInversion(isChecked)
+	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
+		when (buttonView.id) {
+			R.id.switch_invert -> viewModel.setInversion(isChecked)
+			R.id.switch_grayscale -> viewModel.setGrayscale(isChecked)
+		}
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_done -> if (viewBinding.checkBoxGlobal.isChecked) {
-				viewModel.saveGlobally()
-			} else {
-				viewModel.save()
-			}
-
+			R.id.button_done -> showSaveConfirmation()
 			R.id.button_reset -> viewModel.reset()
 		}
 	}
@@ -113,10 +113,23 @@ class ColorFilterConfigActivity :
 		}
 	}
 
+	fun showSaveConfirmation() {
+		MaterialAlertDialogBuilder(this)
+			.setTitle(R.string.apply)
+			.setMessage(R.string.color_correction_apply_text)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setPositiveButton(R.string.this_manga) { _, _ ->
+				viewModel.save()
+			}.setNeutralButton(R.string.globally) { _, _ ->
+				viewModel.saveGlobally()
+			}.show()
+	}
+
 	private fun onColorFilterChanged(readerColorFilter: ReaderColorFilter?) {
 		viewBinding.sliderBrightness.setValueRounded(readerColorFilter?.brightness ?: 0f)
 		viewBinding.sliderContrast.setValueRounded(readerColorFilter?.contrast ?: 0f)
 		viewBinding.switchInvert.setChecked(readerColorFilter?.isInverted ?: false, false)
+		viewBinding.switchGrayscale.setChecked(readerColorFilter?.isGrayscale ?: false, false)
 		viewBinding.imageViewAfter.colorFilter = readerColorFilter?.toColorFilter()
 	}
 
@@ -138,6 +151,8 @@ class ColorFilterConfigActivity :
 	private fun onLoadingChanged(isLoading: Boolean) {
 		viewBinding.sliderContrast.isEnabled = !isLoading
 		viewBinding.sliderBrightness.isEnabled = !isLoading
+		viewBinding.switchInvert.isEnabled = !isLoading
+		viewBinding.switchGrayscale.isEnabled = !isLoading
 		viewBinding.buttonDone.isEnabled = !isLoading
 	}
 

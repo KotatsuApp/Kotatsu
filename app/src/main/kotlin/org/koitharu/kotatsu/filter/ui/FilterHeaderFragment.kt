@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentFilterHeaderBinding
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
-import org.koitharu.kotatsu.filter.ui.model.FilterItem
+import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import com.google.android.material.R as materialR
 
@@ -37,10 +37,9 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag
 		if (tag == null) {
-			FilterSheetFragment.show(parentFragmentManager)
+			TagsCatalogSheet.show(parentFragmentManager)
 		} else {
-			val filterItem = FilterItem.Tag(tag, filter.header.value.allowMultipleTags, !chip.isChecked)
-			filter.onTagItemClick(filterItem, isFromChip = true)
+			filter.setTag(tag, chip.isChecked)
 		}
 	}
 

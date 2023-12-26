@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="minutes_ago">
-        <item quantity="other">%1$d 1分前</item>
+        <item quantity="other">%1$d 分前</item>
     </plurals>
     <plurals name="items">
         <item quantity="other">%1$d 項目</item>
     </plurals>
     <plurals name="hours_ago">
-        <item quantity="other">%1$d 1時間前</item>
+        <item quantity="other">%1$d 時間前</item>
     </plurals>
     <plurals name="days_ago">
-        <item quantity="other">%1$d 1日前</item>
+        <item quantity="other">%1$d 日前</item>
     </plurals>
     <plurals name="chapters">
-        <item quantity="other">%1$dチャプター</item>
+        <item quantity="other">%1$d 章</item>
     </plurals>
     <plurals name="new_chapters">
-        <item quantity="other">%1$d新しい章</item>
+        <item quantity="other">%1$d 件の新しい章</item>
     </plurals>
     <plurals name="months_ago">
         <item quantity="other">%1$d ヶ月前</item>

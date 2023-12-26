@@ -24,21 +24,25 @@ class BackupViewModel @Inject constructor(
 	init {
 		launchLoadingJob {
 			val file = BackupZipOutput(context).use { backup ->
+				val step = 1f / 6f
 				backup.put(repository.createIndex())
 
 				progress.value = 0f
 				backup.put(repository.dumpHistory())
 
-				progress.value = 0.2f
+				progress.value += step
 				backup.put(repository.dumpCategories())
 
-				progress.value = 0.4f
+				progress.value += step
 				backup.put(repository.dumpFavourites())
 
-				progress.value = 0.6f
+				progress.value += step
 				backup.put(repository.dumpBookmarks())
 
-				progress.value = 0.8f
+				progress.value += step
+				backup.put(repository.dumpSources())
+
+				progress.value += step
 				backup.put(repository.dumpSettings())
 
 				backup.finish()

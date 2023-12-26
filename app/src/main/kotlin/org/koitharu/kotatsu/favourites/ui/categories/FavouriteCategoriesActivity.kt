@@ -142,7 +142,11 @@ class FavouriteCategoriesActivity :
 			}
 			val fromPos = viewHolder.bindingAdapterPosition
 			val toPos = target.bindingAdapterPosition
-			return fromPos != toPos && fromPos != RecyclerView.NO_POSITION && toPos != RecyclerView.NO_POSITION
+			if (fromPos == toPos || fromPos == RecyclerView.NO_POSITION || toPos == RecyclerView.NO_POSITION) {
+				return false
+			}
+			adapter.reorderItems(fromPos, toPos)
+			return true
 		}
 
 		override fun canDropOver(
@@ -151,25 +155,16 @@ class FavouriteCategoriesActivity :
 			target: RecyclerView.ViewHolder,
 		): Boolean = current.itemViewType == target.itemViewType
 
-		override fun onMoved(
-			recyclerView: RecyclerView,
-			viewHolder: RecyclerView.ViewHolder,
-			fromPos: Int,
-			target: RecyclerView.ViewHolder,
-			toPos: Int,
-			x: Int,
-			y: Int,
-		) {
-			super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
-			viewModel.reorderCategories(fromPos, toPos)
-		}
-
 		override fun isLongPressDragEnabled(): Boolean = false
 
 		override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
 			super.onSelectedChanged(viewHolder, actionState)
-			viewBinding.recyclerView.isNestedScrollingEnabled =
-				actionState == ItemTouchHelper.ACTION_STATE_IDLE
+			viewBinding.recyclerView.isNestedScrollingEnabled = actionState == ItemTouchHelper.ACTION_STATE_IDLE
+		}
+
+		override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+			super.clearView(recyclerView, viewHolder)
+			viewModel.saveOrder(adapter.items ?: return)
 		}
 	}
 

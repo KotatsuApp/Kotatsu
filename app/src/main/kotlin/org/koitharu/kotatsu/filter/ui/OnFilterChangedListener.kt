@@ -1,13 +1,18 @@
 package org.koitharu.kotatsu.filter.ui
 
-import org.koitharu.kotatsu.filter.ui.model.FilterItem
 import org.koitharu.kotatsu.list.ui.adapter.ListHeaderClickListener
+import org.koitharu.kotatsu.parsers.model.MangaState
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.SortOrder
+import java.util.Locale
 
 interface OnFilterChangedListener : ListHeaderClickListener {
 
-	fun onSortItemClick(item: FilterItem.Sort)
+	fun setSortOrder(value: SortOrder)
 
-	fun onTagItemClick(item: FilterItem.Tag, isFromChip: Boolean)
+	fun setLanguage(value: Locale?)
 
-	fun onStateItemClick(item: FilterItem.State)
+	fun setTag(value: MangaTag, addOrRemove: Boolean)
+
+	fun setState(value: MangaState, addOrRemove: Boolean)
 }

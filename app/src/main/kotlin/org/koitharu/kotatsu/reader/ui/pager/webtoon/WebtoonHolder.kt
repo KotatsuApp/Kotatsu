@@ -5,7 +5,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -38,22 +37,22 @@ class WebtoonHolder(
 		bindingInfo.buttonErrorDetails.setOnClickListener(this)
 	}
 
+	override fun onResume() {
+		super.onResume()
+		binding.ssiv.applyDownsampling(isForeground = true)
+	}
+
+	override fun onPause() {
+		super.onPause()
+		binding.ssiv.applyDownsampling(isForeground = false)
+	}
+
 	override fun onConfigChanged() {
 		super.onConfigChanged()
 		if (settings.applyBitmapConfig(binding.ssiv)) {
 			delegate.reload()
 		}
-		// FIXME binding.ssiv.downsampling = if (isResumed()) 1 else getBackgroundDownsampling()
-	}
-
-	override fun onResume() {
-		super.onResume()
-		binding.ssiv.downsampling = 1
-	}
-
-	override fun onPause() {
-		super.onPause()
-		// FIXME binding.ssiv.downsampling = getBackgroundDownsampling()
+		binding.ssiv.applyDownsampling(isResumed())
 	}
 
 	override fun onBind(data: ReaderPage) {
@@ -97,9 +96,6 @@ class WebtoonHolder(
 	override fun onImageShowing(settings: ReaderSettings) {
 		binding.ssiv.colorFilter = settings.colorFilter?.toColorFilter()
 		with(binding.ssiv) {
-			minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
-			minScale = width / sWidth.toFloat()
-			maxScale = minScale
 			scrollTo(
 				when {
 					scrollToRestore != 0 -> scrollToRestore

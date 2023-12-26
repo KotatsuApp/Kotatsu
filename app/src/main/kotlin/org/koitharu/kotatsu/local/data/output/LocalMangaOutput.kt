@@ -5,9 +5,11 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import okio.Closeable
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import java.io.File
 
@@ -86,7 +88,11 @@ sealed class LocalMangaOutput(
 		}
 
 		private suspend fun canWriteTo(file: File, manga: Manga): Boolean {
-			val info = LocalMangaInput.of(file).getMangaInfo() ?: return false
+			val info = runCatchingCancellable {
+				LocalMangaInput.of(file).getMangaInfo()
+			}.onFailure {
+				it.printStackTraceDebug()
+			}.getOrNull() ?: return false
 			return info.id == manga.id
 		}
 	}

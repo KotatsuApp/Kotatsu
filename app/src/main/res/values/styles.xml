@@ -44,18 +44,29 @@
 	<!-- Bottom sheet -->
 
 	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
-		<item name="bottomSheetStyle">@style/Widget.Kotatsu.BottomSheet.Modal</item>
 		<item name="android:windowAnimationStyle">@style/Animation.Kotatsu.BottomSheetDialog</item>
 	</style>
 
 	<style name="Widget.Kotatsu.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
-		<item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Kotatsu.BottomSheet</item>
 		<item name="backgroundTint">?attr/m3ColorBottomMenuBackground</item>
 	</style>
 
 	<style name="Widget.Kotatsu.BottomSheet.DragHandle" parent="Widget.Material3.BottomSheet.DragHandle">
 		<!-- Fix weird bottom padding -->
 		<item name="android:paddingBottom">0dp</item>
+	</style>
+
+	<style name="Widget.Kotatsu.Spinner.DropDown" parent="Widget.AppCompat.Spinner.DropDown">
+		<item name="android:popupBackground">@drawable/m3_spinner_popup_background</item>
+		<item name="android:elevation">8dp</item>
+		<item name="android:popupElevation">3dp</item>
+	</style>
+
+	<style name="Widget.Kotatsu.Material3.Spinner" parent="Widget.Material3.CardView.Outlined">
+		<item name="cardBackgroundColor">@android:color/transparent</item>
+		<item name="strokeWidth">2dp</item>
+		<item name="strokeColor">?attr/colorOutline</item>
+		<item name="cardCornerRadius">4dp</item>
 	</style>
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.BottomSheet" parent="">
@@ -107,23 +118,11 @@
 		<item name="trackCornerRadius">@dimen/mtrl_progress_indicator_full_rounded_corner_radius</item>
 	</style>
 
-	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion">
-		<item name="chipBackgroundColor">?attr/m3ColorBackground</item>
-		<item name="android:textColor">?attr/colorOnSurfaceVariant</item>
-		<item name="chipStrokeColor">?attr/colorOutline</item>
-		<item name="chipIconTint">?attr/colorControlNormal</item>
-		<item name="rippleColor">?attr/colorControlHighlight</item>
+	<style name="Widget.Kotatsu.Chip" parent="Widget.Material3.Chip.Suggestion" />
 
-		<!-- Custom chip states -->
-		<item name="android:clickable">true</item>
-		<item name="android:focusable">true</item>
+	<style name="Widget.Kotatsu.Chip.Filter" parent="Widget.Material3.Chip.Filter" />
 
-		<!-- Smaller text/height -->
-		<item name="chipMinHeight">28dp</item>
-
-		<!-- Collapse horizontal margin -->
-		<item name="chipMinTouchTargetSize">28dp</item>
-	</style>
+	<style name="Widget.Kotatsu.Chip.Assist" parent="Widget.Material3.Chip.Assist" />
 
 	<style name="Widget.Kotatsu.Button.More" parent="Widget.Material3.Button.TextButton">
 		<item name="android:minWidth">48dp</item>

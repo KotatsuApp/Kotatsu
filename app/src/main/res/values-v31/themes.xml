@@ -3,14 +3,15 @@
 
 	<style name="Base.V31.Kotatsu" parent="Base.V27.Kotatsu">
 		<item name="android:windowSplashScreenAnimatedIcon">@drawable/avd_splash</item>
-		<item name="android:windowSplashScreenBackground">@android:color/system_neutral2_50</item>
-		<item name="android:windowSplashScreenAnimationDuration">800</item>
+		<item name="android:windowSplashScreenAnimationDuration">@integer/splash_screen_duration</item>
+		<item name="android:windowSplashScreenBackground">@color/m3_sys_color_dynamic_light_surface</item>
 	</style>
 
 	<style name="Theme.Kotatsu" parent="Base.V31.Kotatsu" />
 
 	<!-- From ThemeOverlay.Material3.DynamicColors.Light -->
 	<style name="Theme.Kotatsu.Monet">
+		<item name="android:navigationBarColor">@android:color/transparent</item>
 		<item name="isMaterial3DynamicColorApplied">true</item>
 		<!-- Color palettes -->
 		<item name="colorPrimary">@color/m3_sys_color_dynamic_light_primary</item>

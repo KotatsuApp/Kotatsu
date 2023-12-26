@@ -7,13 +7,17 @@ data class ReaderColorFilter(
 	val brightness: Float,
 	val contrast: Float,
 	val isInverted: Boolean,
+	val isGrayscale: Boolean,
 ) {
 
 	val isEmpty: Boolean
-		get() = !isInverted && brightness == 0f && contrast == 0f
+		get() = !isGrayscale && !isInverted && brightness == 0f && contrast == 0f
 
 	fun toColorFilter(): ColorMatrixColorFilter {
 		val cm = ColorMatrix()
+		if (isGrayscale) {
+			cm.grayscale()
+		}
 		if (isInverted) {
 			cm.inverted()
 		}
@@ -49,6 +53,20 @@ data class ReaderColorFilter(
 			0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
 			0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 		)
-		set(matrix)
+		postConcat(ColorMatrix(matrix))
+	}
+
+	private fun ColorMatrix.grayscale() {
+		setSaturation(0f)
+	}
+
+	companion object {
+
+		val EMPTY = ReaderColorFilter(
+			brightness = 0.0f,
+			contrast = 0.0f,
+			isInverted = false,
+			isGrayscale = false,
+		)
 	}
 }

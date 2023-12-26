@@ -95,7 +95,7 @@ class MultiSearchViewModel @Inject constructor(
 	}
 
 	fun retry() {
-		retryCounter.value = retryCounter.value + 1
+		retryCounter.value += 1
 	}
 
 	fun download(items: Set<Manga>) {

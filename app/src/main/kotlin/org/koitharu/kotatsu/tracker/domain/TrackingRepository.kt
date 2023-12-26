@@ -31,6 +31,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 private const val NO_ID = 0L
+private const val MAX_QUERY_IDS = 100
 
 @Reusable
 class TrackingRepository @Inject constructor(
@@ -65,7 +66,14 @@ class TrackingRepository @Inject constructor(
 
 	suspend fun getTracks(mangaList: Collection<Manga>): List<MangaTracking> {
 		val ids = mangaList.mapToSet { it.id }
-		val tracks = db.getTracksDao().findAll(ids).groupBy { it.mangaId }
+		val dao = db.getTracksDao()
+		val tracks = if (ids.size <= MAX_QUERY_IDS) {
+			dao.findAll(ids)
+		} else {
+			// TODO split tracks in the worker
+			ids.windowed(MAX_QUERY_IDS, MAX_QUERY_IDS, true)
+				.flatMap { dao.findAll(it) }
+		}.groupBy { it.mangaId }
 		val idSet = HashSet<Long>()
 		val result = ArrayList<MangaTracking>(mangaList.size)
 		for (item in mangaList) {

@@ -11,7 +11,8 @@
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:fitsSystemWindows="true">
+		android:fitsSystemWindows="true"
+		app:liftOnScroll="false">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
@@ -27,21 +28,10 @@
 
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<FrameLayout
-		android:id="@+id/layout_list"
+	<androidx.viewpager2.widget.ViewPager2
+		android:id="@+id/pager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-		<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
-			android:id="@+id/recyclerView"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:clipToPadding="false"
-			android:orientation="vertical"
-			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-			tools:listitem="@layout/item_source_config" />
-
-	</FrameLayout>
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

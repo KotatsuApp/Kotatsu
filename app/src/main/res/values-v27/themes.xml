@@ -2,7 +2,6 @@
 <resources>
 
 	<style name="Base.V27.Kotatsu" parent="Base.V23.Kotatsu">
-		<item name="android:navigationBarColor">@color/navigation_bar_scrim</item>
 		<item name="android:windowLightNavigationBar">@bool/light_navigation_bar</item>
 	</style>
 

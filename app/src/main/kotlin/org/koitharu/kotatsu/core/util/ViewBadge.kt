@@ -21,7 +21,11 @@ class ViewBadge(
 		get() = badgeDrawable?.number ?: 0
 		set(value) {
 			val badge = badgeDrawable ?: initBadge()
-			badge.number = value
+			if (maxCharacterCount != 0) {
+				badge.number = value
+			} else {
+				badge.clearNumber()
+			}
 			badge.isVisible = value > 0
 		}
 
@@ -51,7 +55,13 @@ class ViewBadge(
 
 	fun setMaxCharacterCount(value: Int) {
 		maxCharacterCount = value
-		badgeDrawable?.maxCharacterCount = value
+		badgeDrawable?.let {
+			if (value == 0) {
+				it.clearNumber()
+			} else {
+				it.maxCharacterCount = value
+			}
+		}
 	}
 
 	private fun initBadge(): BadgeDrawable {

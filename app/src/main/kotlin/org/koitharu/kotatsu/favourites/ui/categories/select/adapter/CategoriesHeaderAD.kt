@@ -15,13 +15,13 @@ fun categoriesHeaderAD() = adapterDelegateViewBinding<CategoriesHeaderItem, List
 
 	val onClickListener = View.OnClickListener { v ->
 		val intent = when (v.id) {
-			R.id.button_create -> FavouritesCategoryEditActivity.newIntent(v.context)
-			R.id.button_manage -> FavouriteCategoriesActivity.newIntent(v.context)
+			R.id.chip_create -> FavouritesCategoryEditActivity.newIntent(v.context)
+			R.id.chip_manage -> FavouriteCategoriesActivity.newIntent(v.context)
 			else -> return@OnClickListener
 		}
 		v.context.startActivity(intent)
 	}
 
-	binding.buttonCreate.setOnClickListener(onClickListener)
-	binding.buttonManage.setOnClickListener(onClickListener)
+	binding.chipCreate.setOnClickListener(onClickListener)
+	binding.chipManage.setOnClickListener(onClickListener)
 }

@@ -5,7 +5,9 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkInfo
 import coil.ImageLoader
 import coil.request.SuccessResult
@@ -59,6 +61,7 @@ fun downloadItemAD(
 	val chaptersAdapter = BaseListAdapter<DownloadChapter>()
 		.addDelegate(ListItemType.CHAPTER, downloadChapterAD())
 
+	binding.recyclerViewChapters.addItemDecoration(DividerItemDecoration(context, RecyclerView.VERTICAL))
 	binding.recyclerViewChapters.adapter = chaptersAdapter
 	binding.buttonCancel.setOnClickListener(clickListener)
 	binding.buttonPause.setOnClickListener(clickListener)

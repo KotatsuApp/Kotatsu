@@ -45,7 +45,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HistoryListViewModel @Inject constructor(
 	private val repository: HistoryRepository,
-	private val settings: AppSettings,
+	settings: AppSettings,
 	private val extraProvider: ListExtraProvider,
 	private val localMangaRepository: LocalMangaRepository,
 	networkState: NetworkState,

@@ -42,6 +42,7 @@ class PeriodicalBackupWorker @AssistedInject constructor(
 			backup.put(repository.dumpCategories())
 			backup.put(repository.dumpFavourites())
 			backup.put(repository.dumpBookmarks())
+			backup.put(repository.dumpSources())
 			backup.put(repository.dumpSettings())
 			backup.finish()
 			backup.file

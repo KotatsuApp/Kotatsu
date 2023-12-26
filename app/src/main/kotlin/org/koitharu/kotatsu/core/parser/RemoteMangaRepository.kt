@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.domain
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import java.util.Locale
 
 class RemoteMangaRepository(
 	private val parser: MangaParser,
@@ -102,6 +103,10 @@ class RemoteMangaRepository(
 
 	override suspend fun getTags(): Set<MangaTag> = mirrorSwitchInterceptor.withMirrorSwitching {
 		parser.getAvailableTags()
+	}
+
+	override suspend fun getLocales(): Set<Locale> {
+		return parser.getAvailableLocales()
 	}
 
 	suspend fun getFavicons(): Favicons = mirrorSwitchInterceptor.withMirrorSwitching {

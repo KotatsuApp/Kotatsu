@@ -528,4 +528,19 @@
     <string name="error_search_not_supported">Поиск не поддерживается этим источником манги</string>
     <string name="reader_optimize_summary">Уменьшить качество закадровых страниц, чтобы использовать меньше памяти</string>
     <string name="state">Состояние</string>
+    <string name="error_filter_states_genre_not_supported">Этот источник не поддерживает фильтрацию по жанрам и состояниям</string>
+    <string name="error_filter_locale_genre_not_supported">Этот источник не поддерживает фильтрацию по жанрам и локали</string>
+    <string name="apply">Применить</string>
+    <string name="genres_search_hint">Начните вводить название жанра</string>
+    <string name="globally">Глобально</string>
+    <string name="downloads_settings_info">Вы можете включить замедление загрузки для каждого источника манги индивидуально в настройках источника, если у вас возникли проблемы с блокировкой на стороне сервера</string>
+    <string name="this_manga">Эта манга</string>
+    <string name="skip">Пропустить</string>
+    <string name="color_correction_apply_text">Эти настройки можно применить глобально или только к текущей манге. Если применяется глобально, отдельные настройки не будут переопределены.</string>
+    <string name="grayscale">Оттенки серого</string>
+    <string name="disable_battery_optimization_summary_downloads">Может помочь с запуском загрузки, если у вас с этим возникают проблемы</string>
+    <string name="sync_auth">Войти в аккаунт синхронизации</string>
+    <string name="welcome_text">Пожалуйста, выберите, какие источники вы хотите включить. Это можно изменить в настройках позже</string>
+    <string name="restore">Восстановить</string>
+    <string name="backup_date_">Дата создания резервной копии: %s</string>
 </resources>

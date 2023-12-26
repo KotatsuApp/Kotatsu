@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser
 
+import androidx.core.net.toUri
 import androidx.room.withTransaction
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -97,9 +99,18 @@ class MangaDataRepository @Inject constructor(
 		return db.getTagsDao().findTags(source.name).toMangaTags()
 	}
 
+	suspend fun cleanupLocalManga() {
+		val dao = db.getMangaDao()
+		val broken = dao.findAllBySource(MangaSource.LOCAL.name)
+			.filter { x -> x.manga.url.toUri().toFileOrNull()?.exists() == false }
+		if (broken.isNotEmpty()) {
+			dao.delete(broken.map { it.manga })
+		}
+	}
+
 	private fun MangaPrefsEntity.getColorFilterOrNull(): ReaderColorFilter? {
-		return if (cfBrightness != 0f || cfContrast != 0f || cfInvert) {
-			ReaderColorFilter(cfBrightness, cfContrast, cfInvert)
+		return if (cfBrightness != 0f || cfContrast != 0f || cfInvert || cfGrayscale) {
+			ReaderColorFilter(cfBrightness, cfContrast, cfInvert, cfGrayscale)
 		} else {
 			null
 		}
@@ -111,5 +122,6 @@ class MangaDataRepository @Inject constructor(
 		cfBrightness = 0f,
 		cfContrast = 0f,
 		cfInvert = false,
+		cfGrayscale = false,
 	)
 }

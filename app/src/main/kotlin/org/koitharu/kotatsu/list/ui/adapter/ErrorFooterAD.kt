@@ -7,13 +7,15 @@ import org.koitharu.kotatsu.list.ui.model.ErrorFooter
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 fun errorFooterAD(
-	listener: MangaListListener,
+	listener: MangaListListener?,
 ) = adapterDelegateViewBinding<ErrorFooter, ListModel, ItemErrorFooterBinding>(
 	{ inflater, parent -> ItemErrorFooterBinding.inflate(inflater, parent, false) },
 ) {
 
-	binding.root.setOnClickListener {
-		listener.onRetryClick(item.exception)
+	if (listener != null) {
+		binding.root.setOnClickListener {
+			listener.onRetryClick(item.exception)
+		}
 	}
 
 	bind {

@@ -14,6 +14,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingVertical="@dimen/margin_small"
+		app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
 		app:selectionRequired="false"
 		app:singleLine="true"
 		app:singleSelection="false" />

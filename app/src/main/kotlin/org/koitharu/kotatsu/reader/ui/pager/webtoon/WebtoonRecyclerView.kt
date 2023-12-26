@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.core.view.forEach
+import androidx.core.view.iterator
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import java.util.LinkedList
@@ -16,6 +17,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 
 	private var onPageScrollListeners: MutableList<OnPageScrollListener>? = null
 	private val detachedViews = WeakHashMap<View, Unit>()
+	private var isFixingScroll: Boolean = false
 
 	override fun onChildDetachedFromWindow(child: View) {
 		super.onChildDetachedFromWindow(child)
@@ -52,6 +54,13 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		}
 		notifyScrollChanged(dy)
 		return consumedY != 0 || dy == 0
+	}
+
+	override fun onScrollStateChanged(state: Int) {
+		super.onScrollStateChanged(state)
+		if (state == SCROLL_STATE_IDLE) {
+			updateChildrenScroll()
+		}
 	}
 
 	private fun consumeVerticalScroll(dy: Int): Int {
@@ -119,6 +128,38 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		detachedViews.keys.forEach { child ->
 			(child as WebtoonFrameLayout).target.requestLayout()
 		}
+	}
+
+	fun updateChildrenScroll() {
+		if (isFixingScroll) {
+			return
+		}
+		isFixingScroll = true
+		for (child in this) {
+			val ssiv = (child as WebtoonFrameLayout).target
+			if (adjustScroll(child, ssiv)) {
+				break
+			}
+		}
+		isFixingScroll = false
+	}
+
+	private fun adjustScroll(child: View, ssiv: WebtoonImageView): Boolean = when {
+		child.bottom < height && ssiv.getScroll() < ssiv.getScrollRange() -> {
+			val distance = minOf(height - child.bottom, ssiv.getScrollRange() - ssiv.getScroll())
+			scrollBy(0, -distance)
+			ssiv.scrollBy(distance)
+			true
+		}
+
+		child.top > 0 && ssiv.getScroll() > 0 -> {
+			val distance = minOf(child.top, ssiv.getScroll())
+			scrollBy(0, distance)
+			ssiv.scrollBy(-distance)
+			true
+		}
+
+		else -> false
 	}
 
 	abstract class OnPageScrollListener {

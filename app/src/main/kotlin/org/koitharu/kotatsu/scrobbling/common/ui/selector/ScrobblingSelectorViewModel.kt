@@ -118,7 +118,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 				if (!append) {
 					scrobblerMangaList.value = list
 				} else if (list.isNotEmpty()) {
-					scrobblerMangaList.value = scrobblerMangaList.value + list
+					scrobblerMangaList.value += list
 				}
 				hasNextPage.value = list.isNotEmpty()
 			}.onFailure { error ->

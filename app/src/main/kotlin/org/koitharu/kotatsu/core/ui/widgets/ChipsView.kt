@@ -1,21 +1,16 @@
 package org.koitharu.kotatsu.core.ui.widgets
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.View.OnClickListener
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.getColorStateListOrThrow
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.castOrNull
-import com.google.android.material.R as materialR
 
 class ChipsView @JvmOverloads constructor(
 	context: Context,
@@ -31,9 +26,7 @@ class ChipsView @JvmOverloads constructor(
 	private val chipOnCloseListener = OnClickListener {
 		onChipCloseClickListener?.onChipCloseClick(it as Chip, it.tag)
 	}
-	private val defaultChipStrokeColor: ColorStateList
-	private val defaultChipTextColor: ColorStateList
-	private val defaultChipIconTint: ColorStateList
+	private val chipStyle: Int
 	var onChipClickListener: OnChipClickListener? = null
 		set(value) {
 			field = value
@@ -48,12 +41,17 @@ class ChipsView @JvmOverloads constructor(
 		}
 
 	init {
-		@SuppressLint("CustomViewStyleable")
-		val a = context.obtainStyledAttributes(null, materialR.styleable.Chip, 0, R.style.Widget_Kotatsu_Chip)
-		defaultChipStrokeColor = a.getColorStateListOrThrow(materialR.styleable.Chip_chipStrokeColor)
-		defaultChipTextColor = a.getColorStateListOrThrow(materialR.styleable.Chip_android_textColor)
-		defaultChipIconTint = a.getColorStateListOrThrow(materialR.styleable.Chip_chipIconTint)
-		a.recycle()
+		val ta = context.obtainStyledAttributes(attrs, R.styleable.ChipsView, defStyleAttr, 0)
+		chipStyle = ta.getResourceId(R.styleable.ChipsView_chipStyle, R.style.Widget_Kotatsu_Chip)
+		ta.recycle()
+
+		if (isInEditMode) {
+			setChips(
+				List(5) {
+					ChipModel(0, "Chip $it", 0, isCheckable = false, isChecked = false)
+				},
+			)
+		}
 	}
 
 	override fun requestLayout() {
@@ -91,15 +89,6 @@ class ChipsView @JvmOverloads constructor(
 
 	private fun bindChip(chip: Chip, model: ChipModel) {
 		chip.text = model.title
-		val tint = if (model.tint == 0) {
-			null
-		} else {
-			ContextCompat.getColorStateList(context, model.tint)
-		}
-		chip.chipIconTint = tint ?: defaultChipIconTint
-		chip.checkedIconTint = tint ?: defaultChipIconTint
-		chip.chipStrokeColor = tint ?: defaultChipStrokeColor
-		chip.setTextColor(tint ?: defaultChipTextColor)
 		chip.isClickable = onChipClickListener != null || model.isCheckable
 		chip.isCheckable = model.isCheckable
 		if (model.icon == 0) {
@@ -115,12 +104,11 @@ class ChipsView @JvmOverloads constructor(
 
 	private fun addChip(): Chip {
 		val chip = Chip(context)
-		val drawable = ChipDrawable.createFromAttributes(context, null, 0, R.style.Widget_Kotatsu_Chip)
+		val drawable = ChipDrawable.createFromAttributes(context, null, 0, chipStyle)
 		chip.setChipDrawable(drawable)
 		chip.isCheckedIconVisible = true
 		chip.isChipIconVisible = false
 		chip.setCheckedIconResource(R.drawable.ic_check)
-		chip.checkedIconTint = defaultChipIconTint
 		chip.isCloseIconVisible = onChipCloseClickListener != null
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)

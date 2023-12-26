@@ -53,6 +53,7 @@ import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
@@ -134,8 +135,14 @@ class DetailsViewModel @Inject constructor(
 		.map { it?.local }
 		.distinctUntilChanged()
 		.map { local ->
-			local?.file?.computeSize() ?: 0L
-		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(), 0)
+			if (local != null) {
+				runCatchingCancellable {
+					local.file.computeSize()
+				}.getOrDefault(0L)
+			} else {
+				0L
+			}
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(5000), 0L)
 
 	@Deprecated("")
 	val description = details

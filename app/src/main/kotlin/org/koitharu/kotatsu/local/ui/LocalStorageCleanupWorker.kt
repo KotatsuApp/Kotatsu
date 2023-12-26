@@ -12,6 +12,7 @@ import androidx.work.WorkerParameters
 import androidx.work.await
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import java.util.concurrent.TimeUnit
 
@@ -20,10 +21,12 @@ class LocalStorageCleanupWorker @AssistedInject constructor(
 	@Assisted appContext: Context,
 	@Assisted params: WorkerParameters,
 	private val localMangaRepository: LocalMangaRepository,
+	private val dataRepository: MangaDataRepository,
 ) : CoroutineWorker(appContext, params) {
 
 	override suspend fun doWork(): Result {
 		return if (localMangaRepository.cleanup()) {
+			dataRepository.cleanupLocalManga()
 			Result.success()
 		} else {
 			Result.retry()

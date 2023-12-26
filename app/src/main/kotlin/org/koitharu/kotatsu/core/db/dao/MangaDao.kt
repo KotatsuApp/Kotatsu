@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -24,6 +25,10 @@ abstract class MangaDao {
 	abstract suspend fun findByPublicUrl(publicUrl: String): MangaWithTags?
 
 	@Transaction
+	@Query("SELECT * FROM manga WHERE source = :source")
+	abstract suspend fun findAllBySource(source: String): List<MangaWithTags>
+
+	@Transaction
 	@Query("SELECT * FROM manga WHERE (title LIKE :query OR alt_title LIKE :query) AND manga_id IN (SELECT manga_id FROM favourites UNION SELECT manga_id FROM history) LIMIT :limit")
 	abstract suspend fun searchByTitle(query: String, limit: Int): List<MangaWithTags>
 
@@ -42,6 +47,10 @@ abstract class MangaDao {
 
 	@Query("DELETE FROM manga_tags WHERE manga_id = :mangaId")
 	abstract suspend fun clearTagRelation(mangaId: Long)
+
+	@Transaction
+	@Delete
+	abstract suspend fun delete(subjects: Collection<MangaEntity>)
 
 	@Transaction
 	open suspend fun upsert(manga: MangaEntity, tags: Iterable<TagEntity>? = null) {

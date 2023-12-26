@@ -13,6 +13,7 @@
 		android:layout_width="32dp"
 		android:layout_height="32dp"
 		android:layout_gravity="center_horizontal"
+		android:contentDescription="@null"
 		app:tint="?colorPrimary"
 		tools:src="@drawable/ic_notification" />
 

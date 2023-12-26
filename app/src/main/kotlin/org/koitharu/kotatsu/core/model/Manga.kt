@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.model
 
 import android.net.Uri
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.os.LocaleListCompat
 import org.koitharu.kotatsu.R
@@ -41,6 +42,15 @@ val MangaState.titleResId: Int
 		MangaState.FINISHED -> R.string.state_finished
 		MangaState.ABANDONED -> R.string.state_abandoned
 		MangaState.PAUSED -> R.string.state_paused
+	}
+
+@get:DrawableRes
+val MangaState.iconResId: Int
+	get() = when (this) {
+		MangaState.ONGOING -> R.drawable.ic_state_ongoing
+		MangaState.FINISHED -> R.drawable.ic_state_finished
+		MangaState.ABANDONED -> R.drawable.ic_state_abandoned
+		MangaState.PAUSED -> R.drawable.ic_action_pause
 	}
 
 fun Manga.findChapter(id: Long): MangaChapter? {

@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.search.ui.suggestion.adapter
 
-import androidx.core.text.buildSpannedString
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getSummary
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
@@ -14,7 +14,6 @@ import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemSearchSuggestionSourceBinding
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
-import org.koitharu.kotatsu.settings.sources.adapter.appendNsfwLabel
 
 fun searchSuggestionSourceAD(
 	coil: ImageLoader,
@@ -32,15 +31,7 @@ fun searchSuggestionSourceAD(
 	}
 
 	bind {
-		binding.textViewTitle.text = if (item.isNsfw) {
-			buildSpannedString {
-				append(item.source.title)
-				append(' ')
-				appendNsfwLabel(context)
-			}
-		} else {
-			item.source.title
-		}
+		binding.textViewTitle.text = item.source.getTitle(context)
 		binding.textViewSubtitle.text = item.source.getSummary(context)
 		binding.switchLocal.isChecked = item.isEnabled
 		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)

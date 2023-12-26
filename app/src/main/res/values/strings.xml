@@ -535,4 +535,17 @@
 	<string name="error_search_not_supported">Search is not supported by this manga source</string>
 	<string name="downloads_settings_info">You can enable download slowdown for each manga source individually in the source settings if you are having problems with server-side blocking</string>
 	<string name="skip">Skip</string>
+	<string name="grayscale">Grayscale</string>
+	<string name="globally">Globally</string>
+	<string name="this_manga">This manga</string>
+	<string name="color_correction_apply_text">These settings can be applied globally or only to the current manga. If applied globally, individual settings will not be overridden.</string>
+	<string name="apply">Apply</string>
+	<string name="error_filter_locale_genre_not_supported">Filtering by both genres and locale is not supported by this source</string>
+	<string name="error_filter_states_genre_not_supported">Filtering by both genres and states is not supported by this source</string>
+	<string name="genres_search_hint">Start typing the genre name</string>
+	<string name="disable_battery_optimization_summary_downloads">Might help with getting the download started if you have any issues with it</string>
+	<string name="welcome_text">Please select which content sources you would like to enable. This can also be configured later in settings</string>
+	<string name="sync_auth">Login to sync account</string>
+	<string name="restore">Restore</string>
+	<string name="backup_date_">Backup date: %s</string>
 </resources>
