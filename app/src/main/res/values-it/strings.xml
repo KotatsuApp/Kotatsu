@@ -539,4 +539,8 @@
     <string name="this_month">Questo mese</string>
     <string name="sync_auth">Accedi per sincronizzare l\'account</string>
     <string name="proxy">Proxy</string>
+    <string name="restore_backup_description">Importa un backup di dati utente creato precedentemente</string>
+    <string name="got_it">Ho capito</string>
+    <string name="comics_archive_import_description">Puoi selezionare uno o più file .cbz o .zip, ogni file sarà riconosciuto come un manga a parte.</string>
+    <string name="show_on_shelf">Mostra sullo Scaffale</string>
 </resources>
