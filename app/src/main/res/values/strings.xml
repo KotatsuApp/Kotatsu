@@ -548,4 +548,6 @@
 	<string name="sync_auth">Login to sync account</string>
 	<string name="restore">Restore</string>
 	<string name="backup_date_">Backup date: %s</string>
+	<string name="state_upcoming">Upcoming</string>
+	<string name="by_name_reverse">Name reversed</string>
 </resources>

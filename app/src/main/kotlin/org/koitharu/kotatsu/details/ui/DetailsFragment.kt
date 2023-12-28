@@ -30,6 +30,8 @@ import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.bookmarks.ui.sheet.BookmarksSheet
 import org.koitharu.kotatsu.core.model.countChaptersByBranch
+import org.koitharu.kotatsu.core.model.iconResId
+import org.koitharu.kotatsu.core.model.titleResId
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
@@ -66,7 +68,6 @@ import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
@@ -181,28 +182,13 @@ class DetailsFragment :
 				ratingBar.isVisible = false
 			}
 
-			when (manga.state) {
-				MangaState.FINISHED -> infoLayout.textViewState.apply {
-					textAndVisible = resources.getString(R.string.state_finished)
-					drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_finished)
+			infoLayout.textViewState.apply {
+				manga.state?.let { state ->
+					textAndVisible = resources.getString(state.titleResId)
+					drawableTop = ContextCompat.getDrawable(context, state.iconResId)
+				} ?: run {
+					isVisible = false
 				}
-
-				MangaState.ONGOING -> infoLayout.textViewState.apply {
-					textAndVisible = resources.getString(R.string.state_ongoing)
-					drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_ongoing)
-				}
-
-				MangaState.ABANDONED -> infoLayout.textViewState.apply {
-					textAndVisible = resources.getString(R.string.state_abandoned)
-					drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_state_abandoned)
-				}
-
-				MangaState.PAUSED -> infoLayout.textViewState.apply {
-					textAndVisible = resources.getString(R.string.state_paused)
-					drawableTop = ContextCompat.getDrawable(context, R.drawable.ic_action_pause)
-				}
-
-				null -> infoLayout.textViewState.isVisible = false
 			}
 			if (manga.source == MangaSource.LOCAL) {
 				infoLayout.textViewSource.isVisible = false

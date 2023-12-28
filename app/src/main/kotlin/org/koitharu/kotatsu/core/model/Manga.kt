@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import com.google.android.material.R as materialR
 
 @JvmName("mangaIds")
 fun Collection<Manga>.ids() = mapToSet { it.id }
@@ -42,15 +43,17 @@ val MangaState.titleResId: Int
 		MangaState.FINISHED -> R.string.state_finished
 		MangaState.ABANDONED -> R.string.state_abandoned
 		MangaState.PAUSED -> R.string.state_paused
+		MangaState.UPCOMING -> R.string.state_upcoming
 	}
 
 @get:DrawableRes
 val MangaState.iconResId: Int
 	get() = when (this) {
-		MangaState.ONGOING -> R.drawable.ic_state_ongoing
+		MangaState.ONGOING -> R.drawable.ic_play
 		MangaState.FINISHED -> R.drawable.ic_state_finished
 		MangaState.ABANDONED -> R.drawable.ic_state_abandoned
 		MangaState.PAUSED -> R.drawable.ic_action_pause
+		MangaState.UPCOMING -> materialR.drawable.ic_clock_black_24dp
 	}
 
 fun Manga.findChapter(id: Long): MangaChapter? {

@@ -12,4 +12,5 @@ val SortOrder.titleRes: Int
 		SortOrder.RATING -> R.string.by_rating
 		SortOrder.NEWEST -> R.string.newest
 		SortOrder.ALPHABETICAL -> R.string.by_name
+		SortOrder.ALPHABETICAL_DESC -> R.string.by_name_reverse
 	}

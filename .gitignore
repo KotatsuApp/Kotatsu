@@ -10,6 +10,7 @@
 /.idea/compiler.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml
+/.idea/ktlint-plugin.xml
 /.idea/assetWizardSettings.xml
 /.idea/kotlinScripting.xml
 /.idea/kotlinc.xml
