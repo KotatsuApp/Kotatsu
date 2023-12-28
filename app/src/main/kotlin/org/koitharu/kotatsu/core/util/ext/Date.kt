@@ -3,11 +3,13 @@ package org.koitharu.kotatsu.core.util.ext
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 fun calculateTimeAgo(instant: Instant, showMonths: Boolean = false): DateTimeAgo {
-	val localDate = LocalDate.ofInstant(instant, ZoneId.systemDefault())
+	// TODO: Use Java 9's LocalDate.ofInstant().
+	val localDate = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate()
 	val now = LocalDate.now()
 	val diffDays = localDate.until(now, ChronoUnit.DAYS)
 
