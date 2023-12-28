@@ -75,7 +75,7 @@ sealed class DateTimeAgo {
 
 	data class Absolute(private val date: LocalDate) : DateTimeAgo() {
 		override fun format(resources: Resources): String {
-			return if (date == LocalDate.EPOCH) {
+			return if (date == EPOCH_DATE) {
 				resources.getString(R.string.unknown)
 			} else {
 				date.format(formatter)
@@ -85,6 +85,8 @@ sealed class DateTimeAgo {
 		override fun toString() = "abs_${date.toEpochDay()}"
 
 		companion object {
+			// TODO: Use Java 9's LocalDate.EPOCH.
+			private val EPOCH_DATE = LocalDate.of(1970, 1, 1)
 			private val formatter = DateTimeFormatter.ofPattern("d MMMM")
 		}
 	}
