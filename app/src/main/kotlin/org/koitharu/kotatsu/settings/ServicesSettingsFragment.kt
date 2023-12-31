@@ -110,11 +110,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 				if (account == null) {
 					am.addAccount(accountType, accountType, null, null, requireActivity(), null, null)
 				} else {
-					try {
-						startActivity(SyncSettingsIntent(account))
-					} catch (_: ActivityNotFoundException) {
-						Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
-					}
+					startActivitySafe(SyncSettingsIntent(account))
 				}
 				true
 			}

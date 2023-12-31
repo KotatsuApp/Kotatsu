@@ -295,13 +295,13 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_READER_SCREEN_ON, true)
 
 	var readerColorFilter: ReaderColorFilter?
-		get() {
+		get() = runCatching {
 			val brightness = prefs.getFloat(KEY_CF_BRIGHTNESS, ReaderColorFilter.EMPTY.brightness)
 			val contrast = prefs.getFloat(KEY_CF_CONTRAST, ReaderColorFilter.EMPTY.contrast)
 			val inverted = prefs.getBoolean(KEY_CF_INVERTED, ReaderColorFilter.EMPTY.isInverted)
 			val grayscale = prefs.getBoolean(KEY_CF_GRAYSCALE, ReaderColorFilter.EMPTY.isGrayscale)
-			return ReaderColorFilter(brightness, contrast, inverted, grayscale).takeUnless { it.isEmpty }
-		}
+			ReaderColorFilter(brightness, contrast, inverted, grayscale).takeUnless { it.isEmpty }
+		}.getOrNull()
 		set(value) {
 			prefs.edit {
 				val cf = value ?: ReaderColorFilter.EMPTY

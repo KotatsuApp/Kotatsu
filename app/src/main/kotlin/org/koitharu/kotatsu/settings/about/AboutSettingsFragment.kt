@@ -83,7 +83,7 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 	private fun openLink(url: String, title: CharSequence?) {
 		val intent = Intent(Intent.ACTION_VIEW)
 		intent.data = url.toUri()
-		startActivity(
+		startActivitySafe(
 			if (title != null) {
 				Intent.createChooser(intent, title)
 			} else {

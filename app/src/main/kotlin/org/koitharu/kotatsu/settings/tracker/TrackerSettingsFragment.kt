@@ -84,14 +84,14 @@ class TrackerSettingsFragment :
 				Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
 					val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
 						.putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
-					startActivity(intent)
+					startActivitySafe(intent)
 					true
 				}
 
 				channels.areNotificationsDisabled -> {
 					val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
 						.setData(Uri.fromParts("package", requireContext().packageName, null))
-					startActivity(intent)
+					startActivitySafe(intent)
 					true
 				}
 
