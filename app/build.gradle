@@ -82,12 +82,12 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:a228d71d57') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:ea095084cc') {
 		exclude group: 'org.json', module: 'json'
 	}
 
 	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.21'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
