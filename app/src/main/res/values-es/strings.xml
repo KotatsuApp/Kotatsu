@@ -543,4 +543,6 @@
     <string name="restore">Restaurar</string>
     <string name="backup_date_">Fecha de la copia de seguridad: %s</string>
     <string name="sync_auth">Iniciar sesión en la cuenta de sincronización</string>
+    <string name="by_name_reverse">Nombre invertido</string>
+    <string name="state_upcoming">Próximamente</string>
 </resources>
