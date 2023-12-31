@@ -542,5 +542,7 @@
     <string name="welcome_text">Виберіть, які джерела вмісту ви хочете включити. Це також можна налаштувати пізніше в налаштуваннях</string>
     <string name="restore">Відновити</string>
     <string name="backup_date_">Дата створення резервної копії: %s</string>
-    <string name="sync_auth">Увійдіть, щоб синхронізувати обліковий запис</string>
+    <string name="sync_auth">Увійти до синхронізації</string>
+    <string name="by_name_reverse">Ім\'я (навпаки)</string>
+    <string name="state_upcoming">Очікується</string>
 </resources>

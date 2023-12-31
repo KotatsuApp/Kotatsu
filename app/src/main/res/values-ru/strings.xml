@@ -543,4 +543,6 @@
     <string name="welcome_text">Пожалуйста, выберите, какие источники вы хотите включить. Это можно изменить в настройках позже</string>
     <string name="restore">Восстановить</string>
     <string name="backup_date_">Дата создания резервной копии: %s</string>
+    <string name="by_name_reverse">Имя (обратно)</string>
+    <string name="state_upcoming">Ожидается</string>
 </resources>
