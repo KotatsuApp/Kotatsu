@@ -6,6 +6,7 @@ import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.CompositeMutex2
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
@@ -13,6 +14,8 @@ import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import org.koitharu.kotatsu.tracker.work.TrackingItem
 import javax.inject.Inject
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 class Tracker @Inject constructor(
 	private val settings: AppSettings,
@@ -77,7 +80,10 @@ class Tracker @Inject constructor(
 		repository.gc()
 	}
 
-	suspend fun fetchUpdates(track: MangaTracking, commit: Boolean): MangaUpdates.Success {
+	suspend fun fetchUpdates(
+		track: MangaTracking,
+		commit: Boolean
+	): MangaUpdates.Success = withMangaLock(track.manga.id) {
 		val repo = mangaRepositoryFactory.create(track.manga.source)
 		require(repo is RemoteMangaRepository) { "Repository ${repo.javaClass.simpleName} is not supported" }
 		val manga = repo.getDetails(track.manga, CachePolicy.WRITE_ONLY)
@@ -99,7 +105,7 @@ class Tracker @Inject constructor(
 	}
 
 	@VisibleForTesting
-	suspend fun deleteTrack(mangaId: Long) {
+	suspend fun deleteTrack(mangaId: Long) = withMangaLock(mangaId) {
 		repository.deleteTrack(mangaId)
 	}
 
@@ -134,6 +140,23 @@ class Tracker @Inject constructor(
 
 			else -> {
 				MangaUpdates.Success(manga, newChapters, isValid = true, channelId = null)
+			}
+		}
+	}
+
+	private companion object {
+
+		private val mangaMutex = CompositeMutex2<Long>()
+
+		suspend inline fun <T> withMangaLock(id: Long, action: () -> T): T {
+			contract {
+				callsInPlace(action, InvocationKind.EXACTLY_ONCE)
+			}
+			mangaMutex.lock(id)
+			try {
+				return action()
+			} finally {
+				mangaMutex.unlock(id)
 			}
 		}
 	}
