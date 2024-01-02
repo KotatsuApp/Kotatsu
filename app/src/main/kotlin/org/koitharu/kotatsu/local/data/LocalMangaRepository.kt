@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
 import org.koitharu.kotatsu.local.domain.model.LocalManga
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
@@ -52,8 +53,11 @@ class LocalMangaRepository @Inject constructor(
 	private val locks = CompositeMutex2<Long>()
 
 	override val isMultipleTagsSupported: Boolean = true
+	override val isTagsExclusionSupported: Boolean = true
+	override val isSearchSupported: Boolean = true
 	override val sortOrders: Set<SortOrder> = EnumSet.of(SortOrder.ALPHABETICAL, SortOrder.RATING, SortOrder.NEWEST)
 	override val states = emptySet<MangaState>()
+	override val contentRatings = emptySet<ContentRating>()
 
 	override var defaultSortOrder: SortOrder
 		get() = settings.localListOrder
@@ -74,6 +78,9 @@ class LocalMangaRepository @Inject constructor(
 			is MangaListFilter.Advanced -> {
 				if (filter.tags.isNotEmpty()) {
 					list.retainAll { x -> x.containsTags(filter.tags) }
+				}
+				if (filter.tagsExclude.isNotEmpty()) {
+					list.removeAll { x -> x.containsAnyTag(filter.tags) }
 				}
 				when (filter.sortOrder) {
 					SortOrder.ALPHABETICAL -> list.sortWith(compareBy(AlphanumComparator()) { x -> x.manga.title })

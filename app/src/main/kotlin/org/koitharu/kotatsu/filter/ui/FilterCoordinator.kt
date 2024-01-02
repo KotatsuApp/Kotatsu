@@ -41,6 +41,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -67,11 +68,28 @@ class FilterCoordinator @Inject constructor(
 	private val coroutineScope = lifecycle.lifecycleScope
 	private val repository = mangaRepositoryFactory.create(savedStateHandle.require(RemoteListFragment.ARG_SOURCE))
 	private val currentState = MutableStateFlow(
-		MangaListFilter.Advanced(repository.defaultSortOrder, emptySet(), null, emptySet()),
+		MangaListFilter.Advanced(
+			sortOrder = repository.defaultSortOrder,
+			tags = emptySet(),
+			tagsExclude = emptySet(),
+			locale = null,
+			states = emptySet(),
+			contentRating = emptySet(),
+		),
 	)
 	private val localTags = SuspendLazy {
 		dataRepository.findTags(repository.source)
 	}
+	private val tagsFlow = flow {
+		val localTags = localTags.get()
+		emit(PendingData(localTags, isLoading = true, error = null))
+		tryLoadTags()
+			.onSuccess { remoteTags ->
+				emit(PendingData(mergeTags(remoteTags, localTags), isLoading = false, error = null))
+			}.onFailure {
+				emit(PendingData(localTags, isLoading = false, error = it))
+			}
+	}.stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), PendingData(emptySet(), true, null))
 	private var availableTagsDeferred = loadTagsAsync()
 	private var availableLocalesDeferred = loadLocalesAsync()
 	private var allTagsLoadJob: Job? = null
@@ -96,6 +114,22 @@ class FilterCoordinator @Inject constructor(
 		)
 	}.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, loadingProperty())
 
+	override val filterTagsExcluded: StateFlow<FilterProperty<MangaTag>> = if (repository.isTagsExclusionSupported) {
+		combine(
+			currentState.distinctUntilChangedBy { it.tagsExclude },
+			getBottomTagsAsFlow(4),
+		) { state, tags ->
+			FilterProperty(
+				availableItems = tags.items.asArrayList(),
+				selectedItems = state.tagsExclude,
+				isLoading = tags.isLoading,
+				error = tags.error,
+			)
+		}.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, loadingProperty())
+	} else {
+		MutableStateFlow(emptyProperty())
+	}
+
 	override val filterSortOrder: StateFlow<FilterProperty<SortOrder>> = combine(
 		currentState.distinctUntilChangedBy { it.sortOrder },
 		flowOf(repository.sortOrders),
@@ -115,6 +149,18 @@ class FilterCoordinator @Inject constructor(
 		FilterProperty(
 			availableItems = states.sortedBy { it.ordinal },
 			selectedItems = state.states,
+			isLoading = false,
+			error = null,
+		)
+	}.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, loadingProperty())
+
+	override val filterContentRating: StateFlow<FilterProperty<ContentRating>> = combine(
+		currentState.distinctUntilChangedBy { it.contentRating },
+		flowOf(repository.contentRatings),
+	) { rating, ratings ->
+		FilterProperty(
+			availableItems = ratings.sortedBy { it.ordinal },
+			selectedItems = rating.contentRating,
 			isLoading = false,
 			error = null,
 		)
@@ -187,7 +233,32 @@ class FilterCoordinator @Inject constructor(
 					emptySet()
 				}
 			}
-			oldValue.copy(tags = newTags)
+			oldValue.copy(
+				tags = newTags,
+				tagsExclude = oldValue.tagsExclude - newTags,
+			)
+		}
+	}
+
+	override fun setTagExcluded(value: MangaTag, addOrRemove: Boolean) {
+		currentState.update { oldValue ->
+			val newTags = if (repository.isMultipleTagsSupported) {
+				if (addOrRemove) {
+					oldValue.tagsExclude + value
+				} else {
+					oldValue.tagsExclude - value
+				}
+			} else {
+				if (addOrRemove) {
+					setOf(value)
+				} else {
+					emptySet()
+				}
+			}
+			oldValue.copy(
+				tagsExclude = newTags,
+				tags = oldValue.tags - newTags
+			)
 		}
 	}
 
@@ -199,6 +270,17 @@ class FilterCoordinator @Inject constructor(
 				oldValue.states - value
 			}
 			oldValue.copy(states = newStates)
+		}
+	}
+
+	override fun setContentRating(value: ContentRating, addOrRemove: Boolean) {
+		currentState.update { oldValue ->
+			val newRating = if (addOrRemove) {
+				oldValue.contentRating + value
+			} else {
+				oldValue.contentRating - value
+			}
+			oldValue.copy(contentRating = newRating)
 		}
 	}
 
@@ -224,13 +306,16 @@ class FilterCoordinator @Inject constructor(
 
 	fun setTags(tags: Set<MangaTag>) {
 		currentState.update { oldValue ->
-			oldValue.copy(tags = tags)
+			oldValue.copy(
+				tags = tags,
+				tagsExclude = oldValue.tagsExclude - tags
+			)
 		}
 	}
 
 	fun reset() {
 		currentState.update { oldValue ->
-			oldValue.copy(oldValue.sortOrder, emptySet(), null, emptySet())
+			MangaListFilter.Advanced.Builder(oldValue.sortOrder).build()
 		}
 	}
 
@@ -246,17 +331,6 @@ class FilterCoordinator @Inject constructor(
 			sortOrder = state.sortOrder,
 			isFilterApplied = !state.isEmpty(),
 		)
-	}
-
-	private fun getTagsAsFlow() = flow {
-		val localTags = localTags.get()
-		emit(PendingData(localTags, isLoading = true, error = null))
-		tryLoadTags()
-			.onSuccess { remoteTags ->
-				emit(PendingData(mergeTags(remoteTags, localTags), isLoading = false, error = null))
-			}.onFailure {
-				emit(PendingData(localTags, isLoading = false, error = it))
-			}
 	}
 
 	private fun getLocalesAsFlow(): Flow<PendingData<Locale>> = flow {
@@ -277,7 +351,18 @@ class FilterCoordinator @Inject constructor(
 				searchRepository.getTagsSuggestion(it).take(limit)
 			}
 		},
-		getTagsAsFlow(),
+		tagsFlow,
+	) { suggested, all ->
+		val res = suggested.toMutableList()
+		if (res.size < limit) {
+			res.addAll(all.items.shuffled().take(limit - res.size))
+		}
+		PendingData(res, all.isLoading, all.error.takeIf { res.size < limit })
+	}
+
+	private fun getBottomTagsAsFlow(limit: Int): Flow<PendingData<MangaTag>> = combine(
+		flow { emit(searchRepository.getRareTags(repository.source, limit)) },
+		tagsFlow,
 	) { suggested, all ->
 		val res = suggested.toMutableList()
 		if (res.size < limit) {
@@ -410,6 +495,8 @@ class FilterCoordinator @Inject constructor(
 	)
 
 	private fun <T> loadingProperty() = FilterProperty<T>(emptyList(), emptySet(), true, null)
+
+	private fun <T> emptyProperty() = FilterProperty<T>(emptyList(), emptySet(), false, null)
 
 	private class TagTitleComparator(lc: String?) : Comparator<MangaTag> {
 

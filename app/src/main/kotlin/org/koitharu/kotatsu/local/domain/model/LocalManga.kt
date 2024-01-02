@@ -30,6 +30,12 @@ data class LocalManga(
 		return manga.tags.containsAll(tags)
 	}
 
+	fun containsAnyTag(tags: Set<MangaTag>): Boolean {
+		return tags.any { tag ->
+			manga.tags.contains(tag)
+		}
+	}
+
 	override fun toString(): String {
 		return "LocalManga(${file.path}: ${manga.title})"
 	}

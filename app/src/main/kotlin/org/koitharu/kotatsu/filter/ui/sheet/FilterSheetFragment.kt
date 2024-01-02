@@ -18,12 +18,14 @@ import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.filter.ui.FilterOwner
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
 import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -31,8 +33,9 @@ import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.util.Locale
 import com.google.android.material.R as materialR
 
-class FilterSheetFragment :
-	BaseAdaptiveSheet<SheetFilterBinding>(), AdapterView.OnItemSelectedListener, ChipsView.OnChipClickListener {
+class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
+	AdapterView.OnItemSelectedListener,
+	ChipsView.OnChipClickListener {
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
 		return SheetFilterBinding.inflate(inflater, container, false)
@@ -50,12 +53,16 @@ class FilterSheetFragment :
 		filter.filterSortOrder.observe(viewLifecycleOwner, this::onSortOrderChanged)
 		filter.filterLocale.observe(viewLifecycleOwner, this::onLocaleChanged)
 		filter.filterTags.observe(viewLifecycleOwner, this::onTagsChanged)
+		filter.filterTagsExcluded.observe(viewLifecycleOwner, this::onTagsExcludedChanged)
 		filter.filterState.observe(viewLifecycleOwner, this::onStateChanged)
+		filter.filterContentRating.observe(viewLifecycleOwner, this::onContentRatingChanged)
 
 		binding.spinnerLocale.onItemSelectedListener = this
 		binding.spinnerOrder.onItemSelectedListener = this
 		binding.chipsState.onChipClickListener = this
+		binding.chipsContentRating.onChipClickListener = this
 		binding.chipsGenres.onChipClickListener = this
+		binding.chipsGenresExclude.onChipClickListener = this
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -72,8 +79,14 @@ class FilterSheetFragment :
 		val filter = requireFilter()
 		when (data) {
 			is MangaState -> filter.setState(data, chip.isChecked)
-			is MangaTag -> filter.setTag(data, chip.isChecked)
-			null -> TagsCatalogSheet.show(childFragmentManager)
+			is MangaTag -> if (chip.parentView?.id == R.id.chips_genresExclude) {
+				filter.setTagExcluded(data, chip.isChecked)
+			} else {
+				filter.setTag(data, chip.isChecked)
+			}
+
+			is ContentRating -> filter.setContentRating(data, chip.isChecked)
+			null -> TagsCatalogSheet.show(childFragmentManager, chip.parentView?.id == R.id.chips_genresExclude)
 		}
 	}
 
@@ -166,6 +179,51 @@ class FilterSheetFragment :
 		b.chipsGenres.setChips(chips)
 	}
 
+	private fun onTagsExcludedChanged(value: FilterProperty<MangaTag>) {
+		val b = viewBinding ?: return
+		b.textViewGenresExcludeTitle.isGone = value.isEmpty()
+		b.chipsGenresExclude.isGone = value.isEmpty()
+		if (value.isEmpty()) {
+			return
+		}
+		val chips = ArrayList<ChipsView.ChipModel>(value.selectedItems.size + value.availableItems.size + 1)
+		value.selectedItems.mapTo(chips) { tag ->
+			ChipsView.ChipModel(
+				tint = 0,
+				title = tag.title,
+				icon = 0,
+				isCheckable = true,
+				isChecked = true,
+				data = tag,
+			)
+		}
+		value.availableItems.mapNotNullTo(chips) { tag ->
+			if (tag !in value.selectedItems) {
+				ChipsView.ChipModel(
+					tint = 0,
+					title = tag.title,
+					icon = 0,
+					isCheckable = true,
+					isChecked = false,
+					data = tag,
+				)
+			} else {
+				null
+			}
+		}
+		chips.add(
+			ChipsView.ChipModel(
+				tint = 0,
+				title = getString(R.string.more),
+				icon = materialR.drawable.abc_ic_menu_overflow_material,
+				isCheckable = false,
+				isChecked = false,
+				data = null,
+			),
+		)
+		b.chipsGenresExclude.setChips(chips)
+	}
+
 	private fun onStateChanged(value: FilterProperty<MangaState>) {
 		val b = viewBinding ?: return
 		b.textViewStateTitle.isGone = value.isEmpty()
@@ -184,6 +242,26 @@ class FilterSheetFragment :
 			)
 		}
 		b.chipsState.setChips(chips)
+	}
+
+	private fun onContentRatingChanged(value: FilterProperty<ContentRating>) {
+		val b = viewBinding ?: return
+		b.textViewContentRatingTitle.isGone = value.isEmpty()
+		b.chipsContentRating.isGone = value.isEmpty()
+		if (value.isEmpty()) {
+			return
+		}
+		val chips = value.availableItems.map { contentRating ->
+			ChipsView.ChipModel(
+				tint = 0,
+				title = getString(contentRating.titleResId),
+				icon = 0,
+				isCheckable = true,
+				isChecked = contentRating in value.selectedItems,
+				data = contentRating,
+			)
+		}
+		b.chipsContentRating.setChips(chips)
 	}
 
 	private fun requireFilter() = (requireActivity() as FilterOwner).filter

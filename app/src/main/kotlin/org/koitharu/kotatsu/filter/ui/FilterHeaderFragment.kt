@@ -37,7 +37,7 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag
 		if (tag == null) {
-			TagsCatalogSheet.show(parentFragmentManager)
+			TagsCatalogSheet.show(parentFragmentManager, isExcludeTag = false)
 		} else {
 			filter.setTag(tag, chip.isChecked)
 		}

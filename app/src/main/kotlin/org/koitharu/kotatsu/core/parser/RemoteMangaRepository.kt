@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.exception.ParseException
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Favicons
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -49,6 +50,9 @@ class RemoteMangaRepository(
 	override val states: Set<MangaState>
 		get() = parser.availableStates
 
+	override val contentRatings: Set<ContentRating>
+		get() = parser.availableContentRating
+
 	override var defaultSortOrder: SortOrder
 		get() = getConfig().defaultSortOrder ?: sortOrders.first()
 		set(value) {
@@ -57,6 +61,12 @@ class RemoteMangaRepository(
 
 	override val isMultipleTagsSupported: Boolean
 		get() = parser.isMultipleTagsSupported
+
+	override val isSearchSupported: Boolean
+		get() = parser.isSearchSupported
+
+	override val isTagsExclusionSupported: Boolean
+		get() = parser.isTagsExclusionSupported
 
 	var domain: String
 		get() = parser.domain

@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.core.cache.ContentCache
 import org.koitharu.kotatsu.core.network.MirrorSwitchInterceptor
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
@@ -28,9 +29,15 @@ interface MangaRepository {
 
 	val states: Set<MangaState>
 
+	val contentRatings: Set<ContentRating>
+
 	var defaultSortOrder: SortOrder
 
 	val isMultipleTagsSupported: Boolean
+
+	val isTagsExclusionSupported: Boolean
+
+	val isSearchSupported: Boolean
 
 	suspend fun getList(offset: Int, filter: MangaListFilter?): List<Manga>
 

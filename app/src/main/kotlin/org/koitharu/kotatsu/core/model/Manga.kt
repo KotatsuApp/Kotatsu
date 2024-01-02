@@ -7,6 +7,7 @@ import androidx.core.os.LocaleListCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.iterator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -54,6 +55,14 @@ val MangaState.iconResId: Int
 		MangaState.ABANDONED -> R.drawable.ic_state_abandoned
 		MangaState.PAUSED -> R.drawable.ic_action_pause
 		MangaState.UPCOMING -> materialR.drawable.ic_clock_black_24dp
+	}
+
+@get:StringRes
+val ContentRating.titleResId: Int
+	get() = when (this) {
+		ContentRating.SAFE -> R.string.rating_safe
+		ContentRating.SUGGESTIVE -> R.string.rating_suggestive
+		ContentRating.ADULT -> R.string.rating_adult
 	}
 
 fun Manga.findChapter(id: Long): MangaChapter? {

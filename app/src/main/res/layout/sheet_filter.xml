@@ -127,6 +127,28 @@
 				tools:visibility="visible" />
 
 			<TextView
+				android:id="@+id/textView_genresExclude_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/genres_exclude"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+				android:id="@+id/chips_genresExclude"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:paddingHorizontal="@dimen/margin_normal"
+				android:visibility="gone"
+				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
+				tools:visibility="visible" />
+
+			<TextView
 				android:id="@+id/textView_state_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -140,6 +162,28 @@
 
 			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
 				android:id="@+id/chips_state"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:paddingHorizontal="@dimen/margin_normal"
+				android:visibility="gone"
+				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
+				tools:visibility="visible" />
+
+			<TextView
+				android:id="@+id/textView_contentRating_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/content_rating"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+				android:id="@+id/chips_contentRating"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_normal"

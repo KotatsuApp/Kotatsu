@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.parsers.model.ContentType
+import org.koitharu.kotatsu.parsers.model.MangaSource
 
 class CaptchaNotifier(
 	private val context: Context,
@@ -56,6 +57,10 @@ class CaptchaNotifier(
 			.setContentIntent(PendingIntentCompat.getActivity(context, 0, intent, 0, false))
 			.build()
 		manager.notify(TAG, exception.source.hashCode(), notification)
+	}
+
+	fun dismiss(source: MangaSource) {
+		NotificationManagerCompat.from(context).cancel(TAG, source.hashCode())
 	}
 
 	override fun onError(request: ImageRequest, result: ErrorResult) {

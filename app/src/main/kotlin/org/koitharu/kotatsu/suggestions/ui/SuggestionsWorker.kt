@@ -211,12 +211,9 @@ class SuggestionsWorker @AssistedInject constructor(
 		}
 		val list = repository.getList(
 			offset = 0,
-			filter = MangaListFilter.Advanced(
-				sortOrder = order,
-				tags = setOfNotNull(tag),
-				locale = null,
-				states = setOf(),
-			),
+			filter = MangaListFilter.Advanced.Builder(order)
+				.tags(setOfNotNull(tag))
+				.build(),
 		).asArrayList()
 		if (appSettings.isSuggestionsExcludeNsfw) {
 			list.removeAll { it.isNsfw }

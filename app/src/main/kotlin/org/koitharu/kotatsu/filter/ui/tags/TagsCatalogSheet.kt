@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.showDistinct
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetTagsBinding
 import org.koitharu.kotatsu.filter.ui.FilterOwner
 import org.koitharu.kotatsu.filter.ui.model.TagCatalogItem
@@ -30,7 +31,10 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 	private val viewModel by viewModels<TagsCatalogViewModel>(
 		extrasProducer = {
 			defaultViewModelCreationExtras.withCreationCallback<TagsCatalogViewModel.Factory> { factory ->
-				factory.create((requireActivity() as FilterOwner).filter)
+				factory.create(
+					filter = (requireActivity() as FilterOwner).filter,
+					isExcludeTag = requireArguments().getBoolean(ARG_EXCLUDE),
+				)
 			}
 		},
 	)
@@ -54,8 +58,7 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 	}
 
 	override fun onItemClick(item: TagCatalogItem, view: View) {
-		val filter = (requireActivity() as FilterOwner).filter
-		filter.setTag(item.tag, !item.isChecked)
+		viewModel.handleTagClick(item.tag, item.isChecked)
 	}
 
 	override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -90,7 +93,10 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 	companion object {
 
 		private const val TAG = "TagsCatalogSheet"
+		private const val ARG_EXCLUDE = "exclude"
 
-		fun show(fm: FragmentManager) = TagsCatalogSheet().showDistinct(fm, TAG)
+		fun show(fm: FragmentManager, isExcludeTag: Boolean) = TagsCatalogSheet().withArgs(1) {
+			putBoolean(ARG_EXCLUDE, isExcludeTag)
+		}.showDistinct(fm, TAG)
 	}
 }

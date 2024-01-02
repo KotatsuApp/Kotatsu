@@ -34,6 +34,16 @@ abstract class TagsDao {
 	@Query(
 		"""SELECT tags.* FROM tags
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id 
+		WHERE tags.source = :source  
+		GROUP BY tags.title
+		ORDER BY COUNT(manga_id) ASC 
+		LIMIT :limit""",
+	)
+	abstract suspend fun findRareTags(source: String, limit: Int): List<TagEntity>
+
+	@Query(
+		"""SELECT tags.* FROM tags
+		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id 
 		WHERE tags.source = :source AND title LIKE :query 
 		GROUP BY tags.title
 		ORDER BY COUNT(manga_id) DESC 

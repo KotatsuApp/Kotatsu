@@ -111,6 +111,10 @@ class MangaSearchRepository @Inject constructor(
 		}
 	}
 
+	suspend fun getRareTags(source: MangaSource, limit: Int): List<MangaTag> {
+		return db.getTagsDao().findRareTags(source.name, limit).toMangaTagsList()
+	}
+
 	fun getSourcesSuggestion(query: String, limit: Int): List<MangaSource> {
 		if (query.length < 3) {
 			return emptyList()

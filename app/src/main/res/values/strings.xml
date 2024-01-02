@@ -550,4 +550,9 @@
 	<string name="backup_date_">Backup date: %s</string>
 	<string name="state_upcoming">Upcoming</string>
 	<string name="by_name_reverse">Name reversed</string>
+	<string name="content_rating">Content rating</string>
+	<string name="genres_exclude">Exclude genres</string>
+	<string name="rating_safe">Safe</string>
+	<string name="rating_suggestive">Suggestive</string>
+	<string name="rating_adult">Adult</string>
 </resources>
