@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.stateIn
 import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaIntent
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.firstNotNull
 import org.koitharu.kotatsu.core.util.ext.require
@@ -26,7 +25,6 @@ import javax.inject.Inject
 @HiltViewModel
 class PagesThumbnailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-	mangaRepositoryFactory: MangaRepository.Factory,
 	private val chaptersLoader: ChaptersLoader,
 	detailsLoadUseCase: DetailsLoadUseCase,
 ) : BaseViewModel() {
@@ -36,14 +34,13 @@ class PagesThumbnailsViewModel @Inject constructor(
 	private val initialChapterId: Long = savedStateHandle[PagesThumbnailsSheet.ARG_CHAPTER_ID] ?: 0L
 	val manga = savedStateHandle.require<ParcelableManga>(PagesThumbnailsSheet.ARG_MANGA).manga
 
-	private val repository = mangaRepositoryFactory.create(manga.source)
 	private val mangaDetails = detailsLoadUseCase(MangaIntent.of(manga)).map {
 		val b = manga.chapters?.findById(initialChapterId)?.branch
 		branch.value = b
 		it.filterChapters(b)
 	}.withErrorHandling()
 		.stateIn(viewModelScope, SharingStarted.Lazily, null)
-	private var loadingJob: Job? = null
+	private var loadingJob: Job
 	private var loadingPrevJob: Job? = null
 	private var loadingNextJob: Job? = null
 
@@ -59,14 +56,14 @@ class PagesThumbnailsViewModel @Inject constructor(
 	}
 
 	fun loadPrevChapter() {
-		if (loadingJob?.isActive == true || loadingPrevJob?.isActive == true) {
+		if (loadingJob.isActive || loadingPrevJob?.isActive == true) {
 			return
 		}
 		loadingPrevJob = loadPrevNextChapter(isNext = false)
 	}
 
 	fun loadNextChapter() {
-		if (loadingJob?.isActive == true || loadingNextJob?.isActive == true) {
+		if (loadingJob.isActive || loadingNextJob?.isActive == true) {
 			return
 		}
 		loadingNextJob = loadPrevNextChapter(isNext = true)
@@ -91,7 +88,6 @@ class PagesThumbnailsViewModel @Inject constructor(
 				}
 				this += PageThumbnail(
 					isCurrent = page.chapterId == initialChapterId && page.index == currentPageIndex,
-					repository = repository,
 					page = page,
 				)
 			}

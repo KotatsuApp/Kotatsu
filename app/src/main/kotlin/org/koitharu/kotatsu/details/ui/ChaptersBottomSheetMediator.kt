@@ -6,12 +6,14 @@ import android.view.View
 import android.view.View.OnLayoutChangeListener
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.view.ActionMode
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koitharu.kotatsu.core.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.util.ext.doOnExpansionsChanged
 
 class ChaptersBottomSheetMediator(
 	private val behavior: BottomSheetBehavior<*>,
+	private val pager: ViewPager2,
 ) : OnBackPressedCallback(false),
 	ActionModeListener,
 	OnLayoutChangeListener, View.OnGenericMotionListener {
@@ -74,6 +76,7 @@ class ChaptersBottomSheetMediator(
 	fun lock() {
 		lockCounter++
 		behavior.isDraggable = lockCounter <= 0
+		pager.isUserInputEnabled = lockCounter <= 0
 	}
 
 	fun unlock() {
@@ -82,5 +85,6 @@ class ChaptersBottomSheetMediator(
 			lockCounter = 0
 		}
 		behavior.isDraggable = lockCounter <= 0
+		pager.isUserInputEnabled = lockCounter <= 0
 	}
 }

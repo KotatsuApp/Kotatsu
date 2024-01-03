@@ -29,6 +29,7 @@ import androidx.core.view.updatePadding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.filterNotNull
@@ -46,6 +47,7 @@ import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.core.util.ext.setNavigationIconSafe
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
@@ -54,6 +56,7 @@ import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
+import org.koitharu.kotatsu.details.ui.pager.DetailsPagerAdapter
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -93,7 +96,7 @@ class DetailsActivity :
 
 		if (viewBinding.layoutBottom != null) {
 			val behavior = BottomSheetBehavior.from(checkNotNull(viewBinding.layoutBottom))
-			val bsMediator = ChaptersBottomSheetMediator(behavior)
+			val bsMediator = ChaptersBottomSheetMediator(behavior, viewBinding.pager)
 			actionModeDelegate.addListener(bsMediator)
 			checkNotNull(viewBinding.layoutBsHeader).addOnLayoutChangeListener(bsMediator)
 			onBackPressedDispatcher.addCallback(bsMediator)
@@ -108,9 +111,11 @@ class DetailsActivity :
 			addMenuProvider(chaptersMenuProvider)
 		}
 		onBackPressedDispatcher.addCallback(chaptersMenuProvider)
+		initPager()
 
 		viewModel.manga.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
+		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onError.observeEvent(
 			this,
 			SnackbarErrorObserver(
@@ -153,7 +158,7 @@ class DetailsActivity :
 			DetailsMenuProvider(
 				activity = this,
 				viewModel = viewModel,
-				snackbarHost = viewBinding.containerChapters,
+				snackbarHost = viewBinding.pager,
 				appShortcutManager = appShortcutManager,
 			),
 		)
@@ -293,6 +298,18 @@ class DetailsActivity :
 		viewBinding.textViewTitle?.text = text
 	}
 
+	private fun onNewChaptersChanged(count: Int) {
+		val tab = viewBinding.tabs.getTabAt(0) ?: return
+		if (count == 0) {
+			tab.removeBadge()
+		} else {
+			val badge = tab.orCreateBadge
+			badge.horizontalOffset = resources.getDimensionPixelOffset(R.dimen.margin_small)
+			badge.number = count
+			badge.isVisible = true
+		}
+	}
+
 	private fun showBranchPopupMenu(v: View) {
 		val menu = PopupMenu(v.context, v)
 		val branches = viewModel.branches.value
@@ -341,6 +358,13 @@ class DetailsActivity :
 				Toast.makeText(this, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 			}
 		}
+	}
+
+	private fun initPager() {
+		viewBinding.pager.recyclerView?.isNestedScrollingEnabled = false
+		val adapter = DetailsPagerAdapter(this)
+		viewBinding.pager.adapter = adapter
+		TabLayoutMediator(viewBinding.tabs, viewBinding.pager, adapter).attach()
 	}
 
 	private fun showBottomSheet(isVisible: Boolean) {
