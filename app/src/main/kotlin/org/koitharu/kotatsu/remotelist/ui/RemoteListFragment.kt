@@ -11,6 +11,8 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.drop
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
@@ -44,6 +46,11 @@ class RemoteListFragment : MangaListFragment(), FilterOwner {
 		viewModel.onOpenManga.observeEvent(viewLifecycleOwner) {
 			startActivity(DetailsActivity.newIntent(binding.root.context, it))
 		}
+		viewModel.header.distinctUntilChangedBy { it.isFilterApplied }
+			.drop(1)
+			.observe(viewLifecycleOwner) {
+				activity?.invalidateMenu()
+			}
 	}
 
 	override fun onScrolledToEnd() {
@@ -94,12 +101,18 @@ class RemoteListFragment : MangaListFragment(), FilterOwner {
 				true
 			}
 
+			R.id.action_filter_reset -> {
+				viewModel.resetFilter()
+				true
+			}
+
 			else -> false
 		}
 
 		override fun onPrepareMenu(menu: Menu) {
 			super.onPrepareMenu(menu)
 			menu.findItem(R.id.action_random)?.isEnabled = !viewModel.isRandomLoading.value
+			menu.findItem(R.id.action_filter_reset)?.isVisible = viewModel.header.value.isFilterApplied
 		}
 
 		override fun onQueryTextSubmit(query: String?): Boolean {
