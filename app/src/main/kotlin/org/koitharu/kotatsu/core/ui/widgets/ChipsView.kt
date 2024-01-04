@@ -108,7 +108,6 @@ class ChipsView @JvmOverloads constructor(
 		chip.setChipDrawable(drawable)
 		chip.isCheckedIconVisible = true
 		chip.isChipIconVisible = false
-		chip.setCheckedIconResource(R.drawable.ic_check)
 		chip.isCloseIconVisible = onChipCloseClickListener != null
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)
