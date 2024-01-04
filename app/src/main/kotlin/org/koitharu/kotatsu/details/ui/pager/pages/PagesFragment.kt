@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,7 +23,6 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.plus
 import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.FragmentPagesBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
@@ -55,9 +56,6 @@ class PagesFragment :
 	private var scrollListener: ScrollListener? = null
 
 	private val spanSizeLookup = SpanSizeLookup()
-	private val listCommitCallback = Runnable {
-		spanSizeLookup.invalidateCache()
-	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -66,7 +64,7 @@ class PagesFragment :
 			detailsViewModel.history,
 			detailsViewModel.selectedBranch,
 		) { details, history, branch ->
-			if (details?.isLoaded == true) {
+			if (details != null && (details.isLoaded || details.chapters.isNotEmpty())) {
 				PagesViewModel.State(details, history, branch)
 			} else {
 				null
@@ -89,6 +87,7 @@ class PagesFragment :
 		with(binding.recyclerView) {
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = thumbnailsAdapter
+			setHasFixedSize(true)
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver?.setGridSize(settings.gridSize / 100f, this)
 			addOnScrollListener(ScrollListener().also { scrollListener = it })
@@ -97,6 +96,7 @@ class PagesFragment :
 				it.spanCount = checkNotNull(spanResolver).spanCount
 			}
 		}
+		detailsViewModel.isChaptersEmpty.observe(viewLifecycleOwner, ::onNoChaptersChanged)
 		viewModel.thumbnails.observe(viewLifecycleOwner, ::onThumbnailsChanged)
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.isLoading.observe(viewLifecycleOwner) { binding.progressBar.showOrHide(it) }
@@ -121,7 +121,7 @@ class PagesFragment :
 		startActivity(intent)
 	}
 
-	private fun onThumbnailsChanged(list: List<ListModel>) {
+	private suspend fun onThumbnailsChanged(list: List<ListModel>) {
 		val adapter = thumbnailsAdapter ?: return
 		if (adapter.itemCount == 0) {
 			var position = list.indexOfFirst { it is PageThumbnail && it.isCurrent }
@@ -134,12 +134,24 @@ class PagesFragment :
 					0
 				}
 				val scrollCallback = RecyclerViewScrollCallback(requireViewBinding().recyclerView, position, offset)
-				adapter.setItems(list, listCommitCallback + scrollCallback)
+				adapter.emit(list)
+				scrollCallback.run()
 			} else {
-				adapter.setItems(list, listCommitCallback)
+				adapter.emit(list)
 			}
 		} else {
-			adapter.setItems(list, listCommitCallback)
+			adapter.emit(list)
+		}
+		spanSizeLookup.invalidateCache()
+		viewBinding?.recyclerView?.let {
+			scrollListener?.postInvalidate(it)
+		}
+	}
+
+	private fun onNoChaptersChanged(isNoChapters: Boolean) {
+		with(viewBinding ?: return) {
+			textViewHolder.isVisible = isNoChapters
+			recyclerView.isInvisible = isNoChapters
 		}
 	}
 

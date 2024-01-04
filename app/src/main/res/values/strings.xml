@@ -555,4 +555,5 @@
 	<string name="rating_safe">Safe</string>
 	<string name="rating_suggestive">Suggestive</string>
 	<string name="rating_adult">Adult</string>
+	<string name="default_tab">Default tab</string>
 </resources>

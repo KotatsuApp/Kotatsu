@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.details.ui
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -57,9 +56,6 @@ class ChaptersFragment :
 			checkNotNull(selectionController).attachToRecyclerView(this)
 			setHasFixedSize(true)
 			adapter = chaptersAdapter
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				scrollIndicators = if (resources.getBoolean(R.bool.is_tablet)) 0 else View.SCROLL_INDICATOR_TOP
-			}
 		}
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.chapters.observe(viewLifecycleOwner, this::onChaptersChanged)

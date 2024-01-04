@@ -38,4 +38,12 @@ abstract class BoundsScrollListener(
 		firstVisibleItemPosition: Int,
 		visibleItemCount: Int
 	) = Unit
+
+	fun invalidate(recyclerView: RecyclerView) {
+		onScrolled(recyclerView, 0, 0)
+	}
+
+	fun postInvalidate(recyclerView: RecyclerView) = recyclerView.post {
+		invalidate(recyclerView)
+	}
 }

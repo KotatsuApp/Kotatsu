@@ -171,6 +171,9 @@ abstract class MangaListFragment :
 	private suspend fun onListChanged(list: List<ListModel>) {
 		listAdapter?.emit(list)
 		spanSizeLookup.invalidateCache()
+		viewBinding?.recyclerView?.let {
+			paginationListener?.postInvalidate(it)
+		}
 	}
 
 	private fun resolveException(e: Throwable) {

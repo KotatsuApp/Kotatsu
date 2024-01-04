@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
+import okio.FileNotFoundException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
@@ -30,6 +31,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
+import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.computeSize
@@ -80,7 +82,7 @@ class DetailsViewModel @Inject constructor(
 	private val mangaId = intent.mangaId
 	private var loadingJob: Job
 
-	val onShowToast = MutableEventFlow<Int>()
+	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val onShowTip = MutableEventFlow<Unit>()
 	val onSelectChapter = MutableEventFlow<Long>()
 	val onDownloadStarted = MutableEventFlow<Unit>()
@@ -234,7 +236,7 @@ class DetailsViewModel @Inject constructor(
 	fun deleteLocal() {
 		val m = details.value?.local?.manga
 		if (m == null) {
-			onShowToast.call(R.string.file_not_found)
+			errorEvent.call(FileNotFoundException())
 			return
 		}
 		launchLoadingJob(Dispatchers.Default) {
@@ -246,7 +248,7 @@ class DetailsViewModel @Inject constructor(
 	fun removeBookmark(bookmark: Bookmark) {
 		launchJob(Dispatchers.Default) {
 			bookmarksRepository.removeBookmark(bookmark)
-			onShowToast.call(R.string.bookmark_removed)
+			onActionDone.call(ReversibleAction(R.string.bookmark_removed, null))
 		}
 	}
 

@@ -67,6 +67,10 @@ class ChaptersLoader @Inject constructor(
 
 	fun peekChapter(chapterId: Long): MangaChapter? = chapters[chapterId]
 
+	fun hasPages(chapterId: Long): Boolean {
+		return chapterId in chapterPages
+	}
+
 	fun getPages(chapterId: Long): List<ReaderPage> {
 		return chapterPages.subList(chapterId)
 	}

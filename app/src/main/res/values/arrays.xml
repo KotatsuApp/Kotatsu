@@ -81,4 +81,8 @@
 		<item>@string/frequency_twice_per_month</item>
 		<item>@string/frequency_once_per_month</item>
 	</string-array>
+	<string-array name="details_tabs" translatable="false">
+		<item>@string/chapters</item>
+		<item>@string/pages</item>
+	</string-array>
 </resources>

@@ -17,13 +17,10 @@
 
 	<TextView
 		android:id="@+id/textView_state"
+		style="@style/Widget.Kotatsu.TextView.Indicator.Vertical"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
-		android:drawablePadding="4dp"
-		android:gravity="center_horizontal"
-		android:padding="4dp"
-		android:textSize="12sp"
 		android:visibility="gone"
 		tools:drawableTopCompat="@drawable/ic_state_finished"
 		tools:text="Completed"
@@ -31,13 +28,10 @@
 
 	<TextView
 		android:id="@+id/textView_chapters"
+		style="@style/Widget.Kotatsu.TextView.Indicator.Vertical"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
-		android:drawablePadding="4dp"
-		android:gravity="center_horizontal"
-		android:padding="4dp"
-		android:textSize="12sp"
 		android:visibility="gone"
 		app:drawableTopCompat="@drawable/ic_book_page"
 		tools:text="52 chapters"
@@ -45,28 +39,22 @@
 
 	<TextView
 		android:id="@+id/textView_nsfw"
+		style="@style/Widget.Kotatsu.TextView.Indicator.Vertical"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
-		android:drawablePadding="4dp"
-		android:gravity="center"
-		android:padding="4dp"
 		android:text="@string/nsfw"
-		android:textSize="12sp"
 		android:visibility="gone"
 		app:drawableTopCompat="@drawable/ic_alert_outline"
 		tools:visibility="visible" />
 
 	<TextView
 		android:id="@+id/textView_source"
+		style="@style/Widget.Kotatsu.TextView.Indicator.Vertical"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
 		android:background="?selectableItemBackgroundBorderless"
-		android:drawablePadding="4dp"
-		android:gravity="center"
-		android:padding="4dp"
-		android:textSize="12sp"
 		android:visibility="gone"
 		app:drawableTopCompat="@drawable/ic_web"
 		tools:text="Source"
@@ -74,13 +62,10 @@
 
 	<TextView
 		android:id="@+id/textView_size"
+		style="@style/Widget.Kotatsu.TextView.Indicator.Vertical"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
-		android:drawablePadding="4dp"
-		android:gravity="center"
-		android:padding="4dp"
-		android:textSize="12sp"
 		android:visibility="gone"
 		app:drawableTopCompat="@drawable/ic_storage"
 		tools:text="1.8 GiB"

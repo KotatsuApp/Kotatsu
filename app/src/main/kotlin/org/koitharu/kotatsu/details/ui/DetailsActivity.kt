@@ -27,7 +27,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,8 +37,10 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
+import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.doOnExpansionsChanged
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
@@ -76,6 +77,9 @@ class DetailsActivity :
 
 	@Inject
 	lateinit var appShortcutManager: AppShortcutManager
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	private var buttonTip: WeakReference<ButtonTip>? = null
 
@@ -129,19 +133,16 @@ class DetailsActivity :
 				},
 			),
 		)
-		viewModel.onShowToast.observeEvent(this) {
-			makeSnackbar(getString(it), Snackbar.LENGTH_SHORT).show()
-		}
+		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.containerDetails))
 		viewModel.onShowTip.observeEvent(this) { showTip() }
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
 		viewModel.selectedBranch.observe(this) {
 			viewBinding.toolbarChapters?.subtitle = it
 			viewBinding.textViewSubtitle?.textAndVisible = it
 		}
-		viewModel.isChaptersReversed.observe(
-			this,
-			MenuInvalidator(viewBinding.toolbarChapters ?: this),
-		)
+		val chaptersMenuInvalidator = MenuInvalidator(viewBinding.toolbarChapters ?: this)
+		viewModel.isChaptersReversed.observe(this, chaptersMenuInvalidator)
+		viewModel.isChaptersEmpty.observe(this, chaptersMenuInvalidator)
 		val menuInvalidator = MenuInvalidator(this)
 		viewModel.favouriteCategories.observe(this, menuInvalidator)
 		viewModel.remoteManga.observe(this, menuInvalidator)
@@ -304,7 +305,7 @@ class DetailsActivity :
 			tab.removeBadge()
 		} else {
 			val badge = tab.orCreateBadge
-			badge.horizontalOffset = resources.getDimensionPixelOffset(R.dimen.margin_small)
+			badge.horizontalOffsetWithText = -resources.getDimensionPixelOffset(R.dimen.margin_small)
 			badge.number = count
 			badge.isVisible = true
 		}
@@ -343,9 +344,8 @@ class DetailsActivity :
 		val manga = viewModel.manga.value ?: return
 		val chapterId = viewModel.historyInfo.value.history?.chapterId
 		if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
-			val snackbar =
-				makeSnackbar(getString(R.string.chapter_is_missing), Snackbar.LENGTH_SHORT)
-			snackbar.show()
+			Snackbar.make(viewBinding.containerDetails, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
+				.show()
 		} else {
 			startActivity(
 				IntentBuilder(this)
@@ -365,6 +365,7 @@ class DetailsActivity :
 		val adapter = DetailsPagerAdapter(this)
 		viewBinding.pager.adapter = adapter
 		TabLayoutMediator(viewBinding.tabs, viewBinding.pager, adapter).attach()
+		viewBinding.pager.setCurrentItem(settings.defaultDetailsTab, false)
 	}
 
 	private fun showBottomSheet(isVisible: Boolean) {
@@ -375,17 +376,6 @@ class DetailsActivity :
 		transition.interpolator = AccelerateDecelerateInterpolator()
 		TransitionManager.beginDelayedTransition(viewBinding.root as ViewGroup, transition)
 		view.isVisible = isVisible
-	}
-
-	private fun makeSnackbar(
-		text: CharSequence,
-		@BaseTransientBottomBar.Duration duration: Int,
-	): Snackbar {
-		val sb = Snackbar.make(viewBinding.containerDetails, text, duration)
-		if (viewBinding.layoutBottom?.isVisible == true) {
-			sb.anchorView = viewBinding.toolbarChapters
-		}
-		return sb
 	}
 
 	private class PrefetchObserver(

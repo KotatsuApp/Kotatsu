@@ -46,6 +46,19 @@
 
 	</PreferenceCategory>
 
+	<PreferenceCategory
+		android:title="@string/details">
+
+		<ListPreference
+			android:defaultValue="0"
+			android:entries="@array/details_tabs"
+			android:entryValues="@array/details_tabs_values"
+			android:key="details_tab"
+			android:title="@string/default_tab"
+			app:useSimpleSummaryProvider="true" />
+
+	</PreferenceCategory>
+
 	<PreferenceScreen
 		android:fragment="org.koitharu.kotatsu.settings.nav.NavConfigFragment"
 		android:key="nav_main"

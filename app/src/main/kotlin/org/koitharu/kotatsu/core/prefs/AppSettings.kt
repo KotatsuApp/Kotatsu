@@ -204,6 +204,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isUnstableUpdatesAllowed: Boolean
 		get() = prefs.getBoolean(KEY_UPDATES_UNSTABLE, false)
 
+	val defaultDetailsTab: Int
+		get() = prefs.getString(KEY_DETAILS_TAB, null)?.toIntOrNull()?.coerceIn(0, 1) ?: 0
+
 	val isContentPrefetchEnabled: Boolean
 		get() {
 			if (isBackgroundNetworkRestricted()) {
@@ -559,6 +562,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_CF_INVERTED = "cf_inverted"
 		const val KEY_CF_GRAYSCALE = "cf_grayscale"
 		const val KEY_IGNORE_DOZE = "ignore_dose"
+		const val KEY_DETAILS_TAB = "details_tab"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

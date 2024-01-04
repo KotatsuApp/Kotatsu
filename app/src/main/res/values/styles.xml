@@ -220,6 +220,16 @@
 		<item name="android:textAppearance">?textAppearanceLabelMedium</item>
 	</style>
 
+	<style name="Widget.Kotatsu.TextView.Indicator.Vertical" parent="Widget.MaterialComponents.TextView">
+		<item name="android:drawablePadding">4dp</item>
+		<item name="android:gravity">center</item>
+		<item name="android:textAlignment">center</item>
+		<item name="android:padding">4dp</item>
+		<item name="android:singleLine">true</item>
+		<item name="android:textSize">12sp</item>
+		<item name="android:elegantTextHeight">false</item>
+	</style>
+
 	<style name="ThemeOverlay.Kotatsu.MainToolbar" parent="">
 		<item name="colorControlHighlight">@color/selector_overlay</item>
 	</style>

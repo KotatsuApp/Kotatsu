@@ -12,6 +12,7 @@
 		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:orientation="vertical"
+		android:scrollIndicators="top"
 		app:bubbleSize="small"
 		app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
 		tools:listitem="@layout/item_page_thumb"

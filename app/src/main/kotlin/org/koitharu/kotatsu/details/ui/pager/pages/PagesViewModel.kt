@@ -66,7 +66,9 @@ class PagesViewModel @Inject constructor(
 	private suspend fun doInit(state: State) {
 		chaptersLoader.init(state.details)
 		val initialChapterId = state.history?.chapterId ?: state.details.allChapters.firstOrNull()?.id ?: return
-		chaptersLoader.loadSingleChapter(initialChapterId)
+		if (!chaptersLoader.hasPages(initialChapterId)) {
+			chaptersLoader.loadSingleChapter(initialChapterId)
+		}
 		updateList(state.history)
 	}
 

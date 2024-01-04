@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.domain
 
 import androidx.collection.LongSparseArray
+import androidx.collection.contains
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 
 class ChapterPages private constructor(private val pages: ArrayDeque<ReaderPage>) : List<ReaderPage> by pages {
@@ -56,6 +57,8 @@ class ChapterPages private constructor(private val pages: ArrayDeque<ReaderPage>
 		val range = indices[id] ?: return emptyList()
 		return pages.subList(range.first, range.last + 1)
 	}
+
+	operator fun contains(chapterId: Long)  = indices.contains(chapterId)
 
 	private fun shiftIndices(delta: Int) {
 		for (i in 0 until indices.size()) {
