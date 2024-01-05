@@ -545,4 +545,10 @@
     <string name="sync_auth">Iniciar sesión en la cuenta de sincronización</string>
     <string name="by_name_reverse">Nombre invertido</string>
     <string name="state_upcoming">Próximamente</string>
+    <string name="rating_safe">Seguro</string>
+    <string name="rating_suggestive">Sugestivo</string>
+    <string name="genres_exclude">Excluir los géneros</string>
+    <string name="rating_adult">Adulto</string>
+    <string name="content_rating">Clasificación del contenido</string>
+    <string name="default_tab">Pestaña por defecto</string>
 </resources>
