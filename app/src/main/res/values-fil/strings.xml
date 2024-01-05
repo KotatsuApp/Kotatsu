@@ -543,4 +543,12 @@
     <string name="disable_battery_optimization_summary_downloads">Baka makatulong sa pag-simula ng download kung mayroong isyu</string>
     <string name="backup_date_">Petsa ng pag-backup: %s</string>
     <string name="sync_auth">Mag-login para i-sync ang account</string>
+    <string name="by_name_reverse">Binaligtad ang pangalan</string>
+    <string name="state_upcoming">Paparating</string>
+    <string name="rating_safe">Ligtas</string>
+    <string name="rating_suggestive">Mayroong pahiwatig</string>
+    <string name="genres_exclude">Ibukod na dyanra</string>
+    <string name="rating_adult">Nasa gulang</string>
+    <string name="content_rating">Content rating</string>
+    <string name="default_tab">Default na tab</string>
 </resources>
