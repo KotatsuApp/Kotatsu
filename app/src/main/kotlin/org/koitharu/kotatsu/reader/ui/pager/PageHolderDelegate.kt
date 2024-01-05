@@ -140,7 +140,10 @@ class PageHolderDelegate(
 			state = State.CONVERTING
 			try {
 				val file = uri.toFile()
-				loader.convertInPlace(file)
+				if (!loader.tryConvert(file)) {
+					state = State.ERROR
+					callback.onError(e)
+				}
 				state = State.CONVERTED
 				callback.onImageReady(file.toUri())
 			} catch (ce: CancellationException) {

@@ -9,7 +9,6 @@ import androidx.collection.LongSparseArray
 import androidx.collection.set
 import androidx.core.net.toUri
 import dagger.hilt.android.ActivityRetainedLifecycle
-import dagger.hilt.android.lifecycle.RetainedLifecycle
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -53,6 +52,7 @@ import java.io.File
 import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
+import kotlin.concurrent.Volatile
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
@@ -65,11 +65,7 @@ class PageLoader @Inject constructor(
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val imageProxyInterceptor: ImageProxyInterceptor,
-) : RetainedLifecycle.OnClearedListener {
-
-	init {
-		lifecycle.addOnClearedListener(this)
-	}
+) {
 
 	val loaderScope = RetainedLifecycleCoroutineScope(lifecycle) + InternalErrorHandler() + Dispatchers.Default
 
@@ -77,16 +73,11 @@ class PageLoader @Inject constructor(
 	private val semaphore = Semaphore(3)
 	private val convertLock = Mutex()
 	private val prefetchLock = Mutex()
+	@Volatile
 	private var repository: MangaRepository? = null
 	private val prefetchQueue = LinkedList<MangaPage>()
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
-
-	override fun onCleared() {
-		synchronized(tasks) {
-			tasks.clear()
-		}
-	}
 
 	fun isPrefetchApplicable(): Boolean {
 		return repository is RemoteMangaRepository
@@ -131,20 +122,18 @@ class PageLoader @Inject constructor(
 		return loadPageAsync(page, force).await()
 	}
 
-	suspend fun convertInPlace(file: File) {
-		convertLock.withLock {
-			if (context.ramAvailable < file.length() * 2) {
-				return@withLock
-			}
-			runInterruptible(Dispatchers.Default) {
-				val image = BitmapFactory.decodeFile(file.absolutePath)
-				try {
-					file.outputStream().use { out ->
-						image.compress(Bitmap.CompressFormat.PNG, 100, out)
-					}
-				} finally {
-					image.recycle()
+	suspend fun tryConvert(file: File): Boolean = convertLock.withLock {
+		if (context.ramAvailable < file.length() * 2) {
+			return@withLock false
+		}
+		runInterruptible(Dispatchers.Default) {
+			val image = BitmapFactory.decodeFile(file.absolutePath)
+			try {
+				file.outputStream().use { out ->
+					image.compress(Bitmap.CompressFormat.PNG, 100, out)
 				}
+			} finally {
+				image.recycle()
 			}
 		}
 	}
@@ -237,7 +226,7 @@ class PageLoader @Inject constructor(
 	companion object {
 
 		private const val PROGRESS_UNDEFINED = -1f
-		private const val PREFETCH_LIMIT_DEFAULT = 10
+		private const val PREFETCH_LIMIT_DEFAULT = 6
 		private const val PREFETCH_MIN_RAM_MB = 80L
 
 		fun createPageRequest(page: MangaPage, pageUrl: String) = Request.Builder()
