@@ -47,6 +47,10 @@ abstract class FavouritesDao {
 	abstract suspend fun findAll(offset: Int, limit: Int): List<FavouriteManga>
 
 	@Transaction
+	@Query("SELECT * FROM favourites WHERE deleted_at = 0 ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
+	abstract suspend fun findAllRaw(offset: Int, limit: Int): List<FavouriteManga>
+
+	@Transaction
 	@Query(
 		"SELECT * FROM favourites WHERE category_id = :categoryId AND deleted_at = 0 " +
 			"GROUP BY manga_id ORDER BY created_at DESC",

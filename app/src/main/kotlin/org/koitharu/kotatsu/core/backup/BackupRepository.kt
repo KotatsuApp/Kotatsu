@@ -55,7 +55,7 @@ class BackupRepository @Inject constructor(
 		var offset = 0
 		val entry = BackupEntry(BackupEntry.Name.FAVOURITES, JSONArray())
 		while (true) {
-			val favourites = db.getFavouritesDao().findAll(offset, PAGE_SIZE)
+			val favourites = db.getFavouritesDao().findAllRaw(offset, PAGE_SIZE)
 			if (favourites.isEmpty()) {
 				break
 			}
