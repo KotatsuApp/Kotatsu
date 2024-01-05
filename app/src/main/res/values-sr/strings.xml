@@ -48,7 +48,7 @@
     <string name="clear_search_history">Избриши историју претраге</string>
     <string name="gestures_only">Само покрети</string>
     <string name="app_update_available">Доступна је нова верзија апликације</string>
-    <string name="open_in_browser">Отворите у веб прегледачу</string>
+    <string name="open_in_browser">Отвори у веб прегледачу</string>
     <string name="notification_sound">Звук обавештења</string>
     <string name="vibration">Вибрација</string>
     <string name="text_empty_holder_primary">Овде је некако празно…</string>
@@ -341,7 +341,7 @@
     <string name="saved_manga">Сачувана манга</string>
     <string name="screenshots_block_all">Увек блокирај</string>
     <string name="new_sources_text">Доступни су нови извори манге</string>
-    <string name="manga_error_description_pattern">Детаљи о грешци:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Покушајте да &lt;a href=%2$s&gt;отворите мангу у веб прегледачу&lt;/a&gt; да бисте били сигурни да је доступна на извору&lt;br&gt;2. Уверите се да користите &lt;a href=kotatsu://about&gt;latest version of Kotatsu&gt;најновију верзију Котатсу-а&lt;/a&gt;&lt;br&gt;3. Ако је доступно, пошаљите извештај о грешци програмерима.</string>
+    <string name="manga_error_description_pattern">Детаљи о грешци:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Покушај да &lt;a href=%2$s&gt;отвориш мангу у веб прегледачу&lt;/a&gt; да би био сигуран да је доступна на извору&lt;br&gt;2. Увери се да користите &lt;a href=kotatsu://about&gt;latest version of Kotatsu&gt;најновију верзију Котатсу-а&lt;/a&gt;&lt;br&gt;3. Ако је доступно, пошаљи извештај о грешци програмерима.</string>
     <string name="state_abandoned">Напуштен</string>
     <string name="zoom_mode_fit_height">Уклопи по висини</string>
     <string name="not_available">Недоступно</string>
@@ -543,4 +543,6 @@
     <string name="restore">Поврати</string>
     <string name="backup_date_">Датум резервне копије: %s</string>
     <string name="sync_auth">Пријавите се за синхронизацију налога</string>
+    <string name="by_name_reverse">Обрнуто име</string>
+    <string name="state_upcoming">Излази</string>
 </resources>
