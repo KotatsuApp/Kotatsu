@@ -545,4 +545,6 @@
     <string name="backup_date_">Дата создания резервной копии: %s</string>
     <string name="by_name_reverse">Имя (обратно)</string>
     <string name="state_upcoming">Ожидается</string>
+    <string name="genres_exclude">Исключить жанры</string>
+    <string name="default_tab">Вкладка по умолчанию</string>
 </resources>
