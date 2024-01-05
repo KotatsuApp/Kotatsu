@@ -123,7 +123,8 @@
 				style="@style/Widget.Material3.TabLayout.Secondary"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:background="@null" />
+				android:background="@null"
+				app:tabUnboundedRipple="false" />
 
 			<androidx.viewpager2.widget.ViewPager2
 				android:id="@+id/pager"
