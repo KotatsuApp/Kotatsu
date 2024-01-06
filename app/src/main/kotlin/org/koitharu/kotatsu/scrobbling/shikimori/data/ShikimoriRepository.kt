@@ -28,8 +28,9 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val DOMAIN = "shikimori.one"
 private const val REDIRECT_URI = "kotatsu://shikimori-auth"
-private const val BASE_URL = "https://shikimori.me/"
+private const val BASE_URL = "https://$DOMAIN/"
 private const val MANGA_PAGE_SIZE = 10
 
 @Singleton
@@ -199,15 +200,15 @@ class ShikimoriRepository @Inject constructor(
 		id = json.getLong("id"),
 		name = json.getString("name"),
 		altName = json.getStringOrNull("russian"),
-		cover = json.getJSONObject("image").getString("preview").toAbsoluteUrl("shikimori.me"),
-		url = json.getString("url").toAbsoluteUrl("shikimori.me"),
+		cover = json.getJSONObject("image").getString("preview").toAbsoluteUrl(DOMAIN),
+		url = json.getString("url").toAbsoluteUrl(DOMAIN),
 	)
 
 	private fun ScrobblerMangaInfo(json: JSONObject) = ScrobblerMangaInfo(
 		id = json.getLong("id"),
 		name = json.getString("name"),
-		cover = json.getJSONObject("image").getString("preview").toAbsoluteUrl("shikimori.me"),
-		url = json.getString("url").toAbsoluteUrl("shikimori.me"),
+		cover = json.getJSONObject("image").getString("preview").toAbsoluteUrl(DOMAIN),
+		url = json.getString("url").toAbsoluteUrl(DOMAIN),
 		descriptionHtml = json.getString("description_html"),
 	)
 
