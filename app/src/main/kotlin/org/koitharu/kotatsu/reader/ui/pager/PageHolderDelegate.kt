@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
 import android.net.Uri
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
 import kotlinx.coroutines.CancellationException
@@ -139,13 +137,9 @@ class PageHolderDelegate(
 			prevJob?.join()
 			state = State.CONVERTING
 			try {
-				val file = uri.toFile()
-				if (!loader.tryConvert(file)) {
-					state = State.ERROR
-					callback.onError(e)
-				}
+				val newUri = loader.convertBimap(uri)
 				state = State.CONVERTED
-				callback.onImageReady(file.toUri())
+				callback.onImageReady(newUri)
 			} catch (ce: CancellationException) {
 				throw ce
 			} catch (e2: Throwable) {

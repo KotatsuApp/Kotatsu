@@ -17,6 +17,7 @@ import android.content.SyncResult
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.database.SQLException
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -29,6 +30,7 @@ import android.view.Window
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.IntegerRes
+import androidx.annotation.WorkerThread
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -37,6 +39,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
 import com.google.android.material.elevation.ElevationOverlayProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
@@ -45,7 +48,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runInterruptible
 import okio.IOException
+import okio.use
 import org.json.JSONException
 import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.BuildConfig
@@ -53,6 +58,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
+import java.io.File
 import kotlin.math.roundToLong
 
 val Context.activityManager: ActivityManager?
@@ -229,4 +235,19 @@ fun Context.checkNotificationPermission(): Boolean = if (Build.VERSION.SDK_INT >
 	ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
 } else {
 	NotificationManagerCompat.from(this).areNotificationsEnabled()
+}
+
+@WorkerThread
+suspend fun Bitmap.compressToPNG(output: File) = runInterruptible(Dispatchers.IO) {
+	output.outputStream().use { os ->
+		if (!compress(Bitmap.CompressFormat.PNG, 100, os)) {
+			throw IOException("Failed to encode bitmap into PNG format")
+		}
+	}
+}
+
+fun Context.ensureRamAtLeast(requiredSize: Long) {
+	if (ramAvailable < requiredSize) {
+		throw IllegalStateException("Not enough free memory")
+	}
 }

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.local.data
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.StatFs
 import com.tomclaw.cache.DiskLruCache
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -10,15 +11,17 @@ import kotlinx.coroutines.withContext
 import okio.Source
 import okio.buffer
 import okio.sink
+import okio.use
 import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.ext.compressToPNG
 import org.koitharu.kotatsu.core.util.ext.longHashCode
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.subdir
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.takeIfWriteable
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -60,6 +63,16 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 				it.writeAllCancellable(source)
 			}
 			check(bytes != 0L) { "No data has been written" }
+			lruCache.get().put(url, file)
+		} finally {
+			file.delete()
+		}
+	}
+
+	suspend fun put(url: String, bitmap: Bitmap): File = withContext(Dispatchers.IO) {
+		val file = File(cacheDir.get().parentFile, url.longHashCode().toString())
+		try {
+			bitmap.compressToPNG(file)
 			lruCache.get().put(url, file)
 		} finally {
 			file.delete()
