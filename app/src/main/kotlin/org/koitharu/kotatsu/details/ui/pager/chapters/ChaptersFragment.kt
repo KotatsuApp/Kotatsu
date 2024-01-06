@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.details.ui
+package org.koitharu.kotatsu.details.ui.pager.chapters
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
@@ -19,6 +20,9 @@ import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
+import org.koitharu.kotatsu.details.ui.ChaptersMenuProvider
+import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
@@ -64,6 +68,12 @@ class ChaptersFragment :
 		}
 		viewModel.onSelectChapter.observeEvent(viewLifecycleOwner) {
 			selectionController?.onItemLongClick(it)
+		}
+		val detailsActivity = activity as? DetailsActivity
+		if (detailsActivity != null) {
+			val menuProvider = ChaptersMenuProvider(viewModel, detailsActivity.bottomSheetMediator)
+			activity?.onBackPressedDispatcher?.addCallback(menuProvider)
+			detailsActivity.secondaryMenuHost.addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 		}
 	}
 

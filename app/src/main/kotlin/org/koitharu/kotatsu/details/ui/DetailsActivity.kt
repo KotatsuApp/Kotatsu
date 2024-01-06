@@ -22,6 +22,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
+import androidx.core.view.MenuHost
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -46,6 +47,7 @@ import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.measureHeight
+import org.koitharu.kotatsu.core.util.ext.menuView
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.recyclerView
@@ -84,7 +86,12 @@ class DetailsActivity :
 	private var buttonTip: WeakReference<ButtonTip>? = null
 
 	private val viewModel: DetailsViewModel by viewModels()
-	private lateinit var chaptersMenuProvider: ChaptersMenuProvider
+
+	val secondaryMenuHost: MenuHost
+		get() = viewBinding.toolbarChapters ?: this
+
+	var bottomSheetMediator: ChaptersBottomSheetMediator? = null
+		private set
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -104,17 +111,13 @@ class DetailsActivity :
 			actionModeDelegate.addListener(bsMediator)
 			checkNotNull(viewBinding.layoutBsHeader).addOnLayoutChangeListener(bsMediator)
 			onBackPressedDispatcher.addCallback(bsMediator)
-			chaptersMenuProvider = ChaptersMenuProvider(viewModel, bsMediator)
+			bottomSheetMediator = bsMediator
 			behavior.doOnExpansionsChanged(::onChaptersSheetStateChanged)
 			viewBinding.toolbarChapters?.setNavigationOnClickListener {
 				behavior.state = BottomSheetBehavior.STATE_COLLAPSED
 			}
 			viewBinding.toolbarChapters?.setOnGenericMotionListener(bsMediator)
-		} else {
-			chaptersMenuProvider = ChaptersMenuProvider(viewModel, null)
-			addMenuProvider(chaptersMenuProvider)
 		}
-		onBackPressedDispatcher.addCallback(chaptersMenuProvider)
 		initPager()
 
 		viewModel.manga.filterNotNull().observe(this, ::onMangaUpdated)
@@ -223,12 +226,11 @@ class DetailsActivity :
 			TransitionManager.beginDelayedTransition(toolbar, transition)
 		}
 		if (isExpanded) {
-			toolbar.addMenuProvider(chaptersMenuProvider)
 			toolbar.setNavigationIconSafe(materialR.drawable.abc_ic_clear_material)
 		} else {
-			toolbar.removeMenuProvider(chaptersMenuProvider)
 			toolbar.navigationIcon = null
 		}
+		toolbar.menuView?.isVisible = isExpanded
 		viewBinding.buttonRead.isGone = isExpanded
 	}
 

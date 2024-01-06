@@ -8,6 +8,8 @@ import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Checkable
+import androidx.appcompat.widget.ActionMenuView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.core.view.isVisible
@@ -153,3 +155,9 @@ fun View.setOnContextClickListenerCompat(listener: View.OnLongClickListener) {
 		setOnContextClickListener(listener::onLongClick)
 	}
 }
+
+val Toolbar.menuView: ActionMenuView?
+	get() {
+		menu // to call ensureMenu()
+		return children.firstNotNullOfOrNull { it as? ActionMenuView }
+	}
