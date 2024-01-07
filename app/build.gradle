@@ -138,6 +138,8 @@ dependencies {
 
 	implementation 'ch.acra:acra-http:5.11.3'
 	implementation 'ch.acra:acra-dialog:5.11.3'
+	compileOnly 'com.google.auto.service:auto-service-annotations:1.1.1'
+	ksp 'dev.zacsweers.autoservice:auto-service-ksp:1.1.0'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 
