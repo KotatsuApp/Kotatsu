@@ -545,4 +545,10 @@
     <string name="sync_auth">Пријавите се за синхронизацију налога</string>
     <string name="by_name_reverse">Обрнуто име</string>
     <string name="state_upcoming">Излази</string>
+    <string name="genres_exclude">Искључи жанрове</string>
+    <string name="rating_safe">Безбедно</string>
+    <string name="rating_suggestive">Препоручљиво</string>
+    <string name="default_tab">Подразумевана картица</string>
+    <string name="content_rating">Оцена садржаја</string>
+    <string name="rating_adult">За одрасле</string>
 </resources>
