@@ -512,7 +512,7 @@
     <string name="content_type_hentai">Хентай</string>
     <string name="content_type_comics">Комікси</string>
     <string name="catalog">Каталог</string>
-    <string name="manage_sources">Кіравання джерелами</string>
+    <string name="manage_sources">Керування джерелами</string>
     <string name="no_manga_sources_found">За вашим запитом не знайдено доступних джерел манґи</string>
     <string name="manual">Вручну</string>
     <string name="source_enabled">Джерело включено</string>
