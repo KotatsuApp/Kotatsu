@@ -545,4 +545,10 @@
     <string name="sync_auth">Увійти до синхронізації</string>
     <string name="by_name_reverse">Ім\'я (навпаки)</string>
     <string name="state_upcoming">Очікується</string>
+    <string name="genres_exclude">Виключити жанри</string>
+    <string name="rating_safe">Безпечний</string>
+    <string name="rating_adult">Дорослий</string>
+    <string name="default_tab">Типова вкладка</string>
+    <string name="content_rating">Рейтинг контенту</string>
+    <string name="rating_suggestive">З натяками</string>
 </resources>
