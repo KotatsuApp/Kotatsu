@@ -543,4 +543,12 @@
     <string name="backups_output_directory">Local de saída de backups</string>
     <string name="content_type_other">Outros</string>
     <string name="sync_auth">Faça login para sincronizar a conta</string>
+    <string name="state_upcoming">Próximo</string>
+    <string name="content_rating">Avaliação do conteúdo</string>
+    <string name="genres_exclude">Excluir gêneros</string>
+    <string name="rating_safe">Seguro</string>
+    <string name="rating_suggestive">Sugestivo</string>
+    <string name="rating_adult">Adulto</string>
+    <string name="default_tab">Guia padrão</string>
+    <string name="by_name_reverse">Nome invertido</string>
 </resources>
