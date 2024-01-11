@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.ARG_CATEGORY_ID
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
+import org.koitharu.kotatsu.history.domain.MarkAsReadUseCase
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -28,6 +29,7 @@ import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.parsers.model.Manga
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,11 +37,13 @@ class FavouritesListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val repository: FavouritesRepository,
 	private val listExtraProvider: ListExtraProvider,
+	private val markAsReadUseCase: MarkAsReadUseCase,
 	settings: AppSettings,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
 	val categoryId: Long = savedStateHandle[ARG_CATEGORY_ID] ?: NO_ID
+	private val refreshTrigger = MutableStateFlow(Any())
 
 	override val listMode = settings.observeAsFlow(AppSettings.KEY_LIST_MODE_FAVORITES) { favoritesListMode }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.favoritesListMode)
@@ -59,7 +63,8 @@ class FavouritesListViewModel @Inject constructor(
 			repository.observeAll(categoryId)
 		},
 		listMode,
-	) { list, mode ->
+		refreshTrigger,
+	) { list, mode, _ ->
 		when {
 			list.isEmpty() -> listOf(
 				EmptyState(
@@ -80,9 +85,18 @@ class FavouritesListViewModel @Inject constructor(
 		emit(listOf(it.toErrorState(canRetry = false)))
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
-	override fun onRefresh() = Unit
+	override fun onRefresh() {
+		refreshTrigger.value = Any()
+	}
 
 	override fun onRetry() = Unit
+
+	fun markAsRead(items: Set<Manga>) {
+		launchLoadingJob(Dispatchers.Default) {
+			markAsReadUseCase(items)
+			onRefresh()
+		}
+	}
 
 	fun removeFromFavourites(ids: Set<Long>) {
 		if (ids.isEmpty()) {

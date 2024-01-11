@@ -556,4 +556,6 @@
 	<string name="rating_suggestive">Suggestive</string>
 	<string name="rating_adult">Adult</string>
 	<string name="default_tab">Default tab</string>
+	<string name="mark_as_completed">Mark as completed</string>
+	<string name="mark_as_completed_prompt">Mark selected manga as completely read?\n\nWarning: current reading progress will be lost.</string>
 </resources>

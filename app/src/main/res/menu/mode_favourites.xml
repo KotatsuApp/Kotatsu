@@ -28,6 +28,12 @@
 		app:showAsAction="ifRoom|withText" />
 
 	<item
+		android:id="@+id/action_mark_current"
+		android:icon="@drawable/ic_eye_check"
+		android:title="@string/mark_as_completed"
+		app:showAsAction="ifRoom|withText" />
+
+	<item
 		android:id="@+id/action_select_all"
 		android:icon="?actionModeSelectAllDrawable"
 		android:title="@android:string/selectAll"
