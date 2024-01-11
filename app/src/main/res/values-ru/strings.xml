@@ -547,4 +547,8 @@
     <string name="state_upcoming">Ожидается</string>
     <string name="genres_exclude">Исключить жанры</string>
     <string name="default_tab">Вкладка по умолчанию</string>
+    <string name="content_rating">Рейтинг контента</string>
+    <string name="rating_safe">Безопасный</string>
+    <string name="rating_suggestive">С намёками</string>
+    <string name="rating_adult">Взрослый</string>
 </resources>

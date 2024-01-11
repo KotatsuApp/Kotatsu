@@ -543,4 +543,12 @@
     <string name="restore">Аднавіць</string>
     <string name="backup_date_">Дата стварэння рэзервовай копіі: %s</string>
     <string name="sync_auth">Увайдзіце, каб сінхранізаваць уліковы запіс</string>
+    <string name="by_name_reverse">Імя (зваротнае)</string>
+    <string name="content_rating">Рэйтынг кантэнту</string>
+    <string name="genres_exclude">Выключыць жанры</string>
+    <string name="rating_safe">Бяспечны</string>
+    <string name="rating_suggestive">З падказкамі</string>
+    <string name="rating_adult">Дарослы</string>
+    <string name="default_tab">Ўкладка па змаўчанні</string>
+    <string name="state_upcoming">Чакаецца</string>
 </resources>
