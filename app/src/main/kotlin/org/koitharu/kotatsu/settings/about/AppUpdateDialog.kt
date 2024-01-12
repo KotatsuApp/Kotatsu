@@ -16,6 +16,7 @@ import io.noties.markwon.Markwon
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import com.google.android.material.R as materialR
 
 class AppUpdateDialog(private val activity: AppCompatActivity) {
@@ -68,7 +69,7 @@ class AppUpdateDialog(private val activity: AppCompatActivity) {
 		}
 	}
 
-	private fun downloadUpdateImpl() {
+	private fun downloadUpdateImpl() = runCatching {
 		val version = latestVersion
 		val url = version.apkUrl.toUri()
 		val dm = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -78,7 +79,10 @@ class AppUpdateDialog(private val activity: AppCompatActivity) {
 			.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 			.setMimeType("application/vnd.android.package-archive")
 		dm.enqueue(request)
+	}.onSuccess {
 		Toast.makeText(activity, R.string.download_started, Toast.LENGTH_SHORT).show()
+	}.onFailure { e ->
+		Toast.makeText(activity, e.getDisplayMessage(activity.resources), Toast.LENGTH_SHORT).show()
 	}
 
 	private fun openInBrowser() {
