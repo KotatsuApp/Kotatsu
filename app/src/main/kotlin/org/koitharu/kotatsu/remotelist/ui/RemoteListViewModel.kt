@@ -68,6 +68,9 @@ open class RemoteListViewModel @Inject constructor(
 	private var loadingJob: Job? = null
 	private var randomJob: Job? = null
 
+	val isSearchAvailable: Boolean
+		get() = repository.isSearchSupported
+
 	override val content = combine(
 		mangaList.map { it?.distinctById()?.skipNsfwIfNeeded() },
 		listMode,

@@ -111,6 +111,7 @@ class RemoteListFragment : MangaListFragment(), FilterOwner {
 
 		override fun onPrepareMenu(menu: Menu) {
 			super.onPrepareMenu(menu)
+			menu.findItem(R.id.action_search)?.isVisible = viewModel.isSearchAvailable
 			menu.findItem(R.id.action_random)?.isEnabled = !viewModel.isRandomLoading.value
 			menu.findItem(R.id.action_filter_reset)?.isVisible = viewModel.header.value.isFilterApplied
 		}
