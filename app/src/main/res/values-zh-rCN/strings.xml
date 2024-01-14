@@ -551,4 +551,8 @@
     <string name="error_multiple_genres_not_supported">此漫画图源不支持按多个分类过滤</string>
     <string name="error_multiple_states_not_supported">此漫画图源不支持按多个状态过滤</string>
     <string name="by_relevance">关联</string>
+    <string name="mark_as_completed">标记为已读</string>
+    <string name="mark_as_completed_prompt">是否将已选定的漫画标记为已读？
+\n
+\n警告： 当前的阅读进度将会丢失。</string>
 </resources>
