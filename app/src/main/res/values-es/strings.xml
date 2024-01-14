@@ -67,7 +67,7 @@
     <string name="grid_size">Tamaño de la cuadrícula</string>
     <string name="search_on_s">Buscar en %s</string>
     <string name="delete_manga">Borrar manga</string>
-    <string name="text_delete_local_manga">¿Borrar \"%s\" del dispositivo permanentemente\?</string>
+    <string name="text_delete_local_manga">¿Borrar permanentemente \"%s\" del dispositivo?</string>
     <string name="reader_settings">Ajustes del lector</string>
     <string name="switch_pages">Cambiar de página</string>
     <string name="taps_on_edges">Toques de borde</string>
@@ -98,7 +98,7 @@
     <string name="manga_shelf">Estante</string>
     <string name="recent_manga">Reciente</string>
     <string name="pages_animation">Animación de página</string>
-    <string name="manga_save_location">Carpeta para descargas</string>
+    <string name="manga_save_location">Carpeta de descargas</string>
     <string name="not_available">No disponible</string>
     <string name="cannot_find_available_storage">No hay almacenamiento disponible</string>
     <string name="other_storage">Otro almacenamiento</string>
@@ -107,7 +107,7 @@
     <string name="favourites_category_empty">Categoría vacía</string>
     <string name="read_later">Leer más tarde</string>
     <string name="updates">Actualizaciones</string>
-    <string name="text_feed_holder">Aquí verás los nuevos episodios del manga que estás leyendo</string>
+    <string name="text_feed_holder">Aquí se muestran los nuevos capítulos de lo que está leyendo</string>
     <string name="search_results">Resultados de la búsqueda</string>
     <string name="new_version_s">Nueva versión: %s</string>
     <string name="size_s">Tamaño: %s</string>
@@ -169,7 +169,7 @@
     <string name="protect_application_subtitle">Introduce la contraseña que se requerirá cuando se inicie la aplicación</string>
     <string name="confirm">Confirmar</string>
     <string name="password_length_hint">La contraseña debe tener al menos 4 caracteres</string>
-    <string name="text_local_holder_secondary">Puedes guardarlo desde fuentes in línea o importarlo desde un archivo.</string>
+    <string name="text_local_holder_secondary">Guarda algo de un catálogo en línea o impórtalo desde un archivo.</string>
     <string name="text_local_holder_primary">Todavía no tienes ningún manga guardado</string>
     <string name="text_history_holder_secondary">Encuentra qué leer en la sección «Explorar»</string>
     <string name="text_history_holder_primary">Lo que leas se mostrará aquí</string>
@@ -551,4 +551,8 @@
     <string name="rating_adult">Adulto</string>
     <string name="content_rating">Clasificación del contenido</string>
     <string name="default_tab">Pestaña por defecto</string>
+    <string name="mark_as_completed">Marcar como completado</string>
+    <string name="mark_as_completed_prompt">¿Marcar el manga seleccionado como completamente leído?
+\n
+\nAdvertencia: el progreso de lectura actual se perderá.</string>
 </resources>
