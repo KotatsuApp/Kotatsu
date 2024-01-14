@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="local_storage">Εσωτερικός χώρος</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="local_storage">Τοπικός χώρος αποθήκευσης</string>
     <string name="favourites">Αγαπημένα</string>
     <string name="history">Ιστορικό</string>
     <string name="error_occurred">Προέκυψε σφάλμα</string>
@@ -513,4 +513,46 @@
     <string name="periodic_backups_enable">Ενεργοποίηση περιοδικής δημιουργίας αντιγράφων ασφαλείας</string>
     <string name="backups_output_directory">Directory όπου θα αποθηκεύονται τα αντίγραφα ασφαλείας</string>
     <string name="last_successful_backup">Τελευταία επιτυχής δημιουργία αντιγράφου ασφαλείας: %s</string>
+    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d από %2$d σέ</string>
+    <string name="edit_category">Επεξεργασία κατηγορίας</string>
+    <string name="tracking">Καταγραφή</string>
+    <string name="empty_favourite_categories">Χωρίς αγαπημένες κατηγορίες</string>
+    <string name="logout">Αποσύνδεση</string>
+    <string name="bookmarks">Σελιδοδείκτες</string>
+    <string name="bookmark_removed">Σελιδοδείκτης αφαιρέθηκε</string>
+    <string name="bookmark_added">Σελιδοδείκτης προστέθηκε</string>
+    <string name="undo">Αναίρεση</string>
+    <string name="removed_from_history">Αφαιρέθηκε από το ιστορικό</string>
+    <string name="detect_reader_mode_summary">Αυτόματη ανίχνευση αν το manga είναι webtoon</string>
+    <string name="status_planned">Προγραμματισμένο</string>
+    <string name="status_reading">Ανάγνωση</string>
+    <string name="status_re_reading">Επανάναγνωση</string>
+    <string name="status_completed">Ολοκληρώθηκε</string>
+    <string name="status_on_hold">Σε αναμονή</string>
+    <string name="status_dropped">Διακόπηκε</string>
+    <string name="disable_all">Απενεργοποίηση όλων</string>
+    <string name="use_fingerprint">Χρήση ανιχνευτή δακτυλικού αποτυπώματος αν διατίθεται</string>
+    <string name="show_reading_indicators_summary">Εμφάνιση ποσοστού ανάγνωσης στο ιστορικό και τα αγαπημένα</string>
+    <string name="name">Όνομα</string>
+    <string name="dns_over_https">DNS μέσω HTTPS</string>
+    <string name="default_mode">Προεπιλεγμένη λειτουργία</string>
+    <string name="disable_battery_optimization">Απενεργοποίηση βελτιστοποίησης μπαταρίας</string>
+    <string name="disable_battery_optimization_summary">Βοηθά στους ελέγχους ενημέρωσης στο παρασκήνιο</string>
+    <string name="crash_text">Κάτι πήγε στραβά. Παρακαλούμε υποβάλετε αναφορά σφάλματος στους προγραμματιστές για να μας βοηθήσετε να το διορθώσουμε.</string>
+    <string name="send">Αποστολή</string>
+    <string name="report">Αναφορά</string>
+    <string name="show_reading_indicators">Εμφάνιση δεικτών προόδου ανάγνωσης</string>
+    <string name="data_deletion">Διαγραφή δεδομένων</string>
+    <string name="show_all">Εμφάνιση όλων</string>
+    <string name="invalid_domain_message">Μη έγκυρο domain</string>
+    <string name="select_range">Επιλογή εύρους</string>
+    <string name="last_2_hours">Τελευταίες 2 ώρες</string>
+    <string name="edit">Επεξεργασία</string>
+    <string name="appwidget_shelf_description">Μάνγκα από τα αγαπημένα σας</string>
+    <string name="bookmark_add">Προσθήκη σελιδοδείκτη</string>
+    <string name="bookmark_remove">Αφαίρεση σελιδοδείκτη</string>
+    <string name="exclude_nsfw_from_history_summary">Μάνγκα που χαρακτηρίζεται ως NSFW δεν θα προστίθεται ποτέ στο ιστορικό και η πρόοδός σας δεν θα αποθηκεύεται</string>
+    <string name="clear_all_history">Εκκαθάριση όλου του ιστορικού</string>
+    <string name="appwidget_recent_description">Τα πρόσφατα διαβασμένα μάνγκα σας</string>
+    <string name="clear_cookies_summary">Μπορεί να βοηθήσει σε περίπτωση κάποιων προβλημάτων. Όλες οι εξουσιοδοτήσεις θα ακυρωθούν</string>
 </resources>
