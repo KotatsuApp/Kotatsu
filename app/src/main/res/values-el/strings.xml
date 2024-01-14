@@ -284,15 +284,15 @@
     <string name="import_completed_hint">Μπορείς να διαγράψεις το αρχικό αρχείο από τον χώρο αποθήκευσης για να απελευθερώσεις χώρο</string>
     <string name="import_will_start_soon">Η εισαγωγή θα ξεκινήσει σύντομα</string>
     <string name="reset">Επαναφορά</string>
-    <string name="color_correction_hint">Οι επιλεγμένες ρυθμίσεις χρώματος θα αποθηκευτούν για αυτό το μάνγκα</string>
+    <string name="color_correction_hint">Οι επιλεγμένες ρυθμίσεις χρώματος θα αποθηκευτούν για αυτό το manga</string>
     <string name="compact">Συμπαγής</string>
     <string name="language">Γλώσσα</string>
-    <string name="scrobbling_empty_hint">Για να καταγράψεις την πρόοδο σου, επίλεξε Μενού → Καταγραφή στην οθόνη λεπτομερειών για το μάνγκα.</string>
+    <string name="scrobbling_empty_hint">Για να καταγράψεις την πρόοδο σου, επίλεξε Μενού → Καταγραφή στην οθόνη λεπτομερειών για το manga.</string>
     <string name="services">Υπηρεσίες</string>
     <string name="allow_unstable_updates">Επίτρεψε ασταθείς ενημερώσεις</string>
     <string name="sources_reorder_tip">Πάτα παρατεταμένα ένα στοιχείο για να το αναταξινομήσεις</string>
     <string name="settings_apply_restart_required">Κάνε επανεκκίνηση της εφαρμογής για να εφαρμοστούν οι αλλαγές, παρακαλώ</string>
-    <string name="comics_archive_import_description">Μπορείς να επιλέξεις ένα ή περισσότερα .cbz ή .zip αρχεία, κάθε ένα θα αναγνωρίζεται ως ξεχωριστό μάνγκα.</string>
+    <string name="comics_archive_import_description">Μπορείς να επιλέξεις ένα ή περισσότερα .cbz ή .zip αρχεία, κάθε ένα θα αναγνωρίζεται ως ξεχωριστό manga.</string>
     <string name="speed">Ταχύτητα</string>
     <string name="restore_backup_description">Εισήγαγε ένα αντίγραφο ασφαλείας δεδομένων χρήστη</string>
     <string name="show_on_shelf">Εμφάνιζε στο Ράφι</string>
@@ -333,8 +333,8 @@
     <string name="importing_manga">Εισαγωγή manga σε εξέλιξη</string>
     <string name="import_completed">Η εισαγωγή ολοκληρώθηκε</string>
     <string name="feed">Τροφοδοτικό</string>
-    <string name="history_shortcuts">Εμφάνιζε συντομεύσεις σχετικά με πρόσφατα μάνγκα</string>
-    <string name="history_shortcuts_summary">Κάνε πρόσφατα μάνγκα διαθέσιμα πατώντας παρατεταμένα το εικονίδιο της εφαρμογής</string>
+    <string name="history_shortcuts">Εμφάνιζε συντομεύσεις σχετικά με πρόσφατα manga</string>
+    <string name="history_shortcuts_summary">Κάνε πρόσφατα manga διαθέσιμα πατώντας παρατεταμένα το εικονίδιο της εφαρμογής</string>
     <string name="contrast">Αντίθεση</string>
     <string name="reader_control_ltr_summary">Το πάτημα της δεξιάς πλευράς ή του δεξιού κουμπιού πάντα προχωράει στην επόμενη σελίδα</string>
     <string name="reader_control_ltr">Εργονομικός χειρισμός του εργαλείου ανάγνωσης</string>
@@ -349,7 +349,7 @@
     <string name="network_unavailable">Δεν υπάρχει διαθέσιμο δίκτυο</string>
     <string name="server_error">Σφάλμα διακομιστή (%1$d). Παρακαλώ ξαναπροσπαθήστε αργότερα</string>
     <string name="clear_new_chapters_counters">Επιπλέον, σβήσε πληροφορίες περί νέων κεφαλαίων</string>
-    <string name="network_unavailable_hint">Άνοιξε το Wi-Fi ή τα δεδομένα για να διαβάσεις μάνγκα διαδικτυακώς</string>
+    <string name="network_unavailable_hint">Άνοιξε το Wi-Fi ή τα δεδομένα για να διαβάσεις manga διαδικτυακώς</string>
     <string name="welcome_text">Παρακαλώ επίλεξε ποιες πηγές περιεχομένου θα ήθελες να ενεργοποιήσεις. Αυτό μπορεί να ρυθμιστεί ναι αργότερα από τις ρυθμίσεις</string>
     <string name="sync_auth">Συνδέσου στον λογαριασμό συγχρονισμού</string>
     <string name="downloads_settings_info">Μπορείς να ενεργοποιήσεις την καθυστέρηση λήψεων για κάθε πηγή manga ξεχωριστά μέσω των ρυθμίσεων των πηγών αν αντιμετωπίζεις προβλήματα με μπλοκάρισμα από πλευράς του διακομιστή</string>
@@ -437,7 +437,7 @@
     <string name="downloads_wifi_only">Λήψη μόνο μέσω Wi-Fi</string>
     <string name="downloads_wifi_only_summary">Σταματημός της λήψης με την αλλαγή σε δεδομένα</string>
     <string name="suggestion_manga">Προτάσεις: %s</string>
-    <string name="suggestions_notifications_summary">Εμφάνιζε μερικές φορές ειδοποιήσεις με προτεινόμενα μάνγκα</string>
+    <string name="suggestions_notifications_summary">Εμφάνιζε μερικές φορές ειδοποιήσεις με προτεινόμενα manga</string>
     <string name="more">Περισσότερα</string>
     <string name="enable">Ενεργοποίησε</string>
     <string name="remove_completed">Αφαίρεσε τα ολοκληρωμένα</string>
@@ -471,7 +471,7 @@
     <string name="remove_completed_downloads_confirm">Το ιστορικό λήψεων σου θα διαγραφεί</string>
     <string name="text_downloads_list_holder">Δεν έχεις κάποια λήψη</string>
     <string name="downloads_removed">Οι λήψεις αφαιρέθηκαν</string>
-    <string name="suggestions_enable_prompt">Θέλεις να λαμβάνεις εξατομικευμένες προτάσεις για μάνγκα;</string>
+    <string name="suggestions_enable_prompt">Θέλεις να λαμβάνεις εξατομικευμένες προτάσεις για manga;</string>
     <string name="web_view_unavailable">WebView μη διαθέσιμο: κοίτα αν κάποιος πάροχος WebView είναι εγκατεστημένο.</string>
     <string name="manga_error_description_pattern">Πληροφορίες σφάλματος:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Προσπάθησε να &lt;a href=%2$s&gt;ανοίξεις το manga μέσω ενός περιηγητή&lt;/a&gt; για να βεβαιωθείς για την διαθεσιμότητα του στην πηγή.&lt;br&gt;2. Βεβαιώσου πως χρησιμοποιείς την &lt;a href=kotatsu://about&gt;πιο πρόσφατη έκδοση του Kotatsu.&lt;/a&gt;&lt;br&gt;3. Αν είναι διαθέσιμο, στείλε αναφορά του σφάλματος στους δημιουργούς.</string>
     <string name="clear_network_cache">Καθάρισε προσωρινή μνήμη δικτύου</string>
@@ -481,7 +481,7 @@
     <string name="pick_custom_directory">Διάλεξε directory της επιλογής σου</string>
     <string name="enable_logging_summary">Κατάγραψε μερικές δράσεις που θα προορίζονται για την εξφαλμάτωση. Μην το ενεργοποιήσεις αν δεν είσαι βέβαιος για το τι κάνεις</string>
     <string name="show_in_grid_view">Εμφάνιζε με μορφή πλέγματος</string>
-    <string name="mirror_switching_summary">Αυτόματη αλλαγή τομέων για πήγες μάνγκα σε περίπτωση σφαλμάτων αν υπάρχει διαθεσιμότητα mirror</string>
+    <string name="mirror_switching_summary">Αυτόματη αλλαγή τομέων για πήγες manga σε περίπτωση σφαλμάτων αν υπάρχει διαθεσιμότητα mirror</string>
     <string name="folder_with_images_import_description">Μπορείς να επιλέξεις ένα directory με φακέλους αρχειοθέτησης ή εικόνες. Κάθε φάκελος αρχειοθέτησης (ή subdirectory) θα αναγνωρίζεται ως κεφάλαιο.</string>
     <string name="sync_host_description">Μπορείς να χρησιμοποιήσεις έναν self-hosted διακομιστή συγχρονισμού, ή έναν από τους προεπιλεγμένους. Μην πειράξεις αυτή την ρύθμιση αν δεν ξέρεις τι κάνεις.</string>
     <string name="sync_auth_hint">Μπορείς να συνδεθείς σε έναν προϋπάρχον λογαριασμό ή να φτιάξεις έναν καινούριο</string>
@@ -548,11 +548,11 @@
     <string name="select_range">Επιλογή εύρους</string>
     <string name="last_2_hours">Τελευταίες 2 ώρες</string>
     <string name="edit">Επεξεργασία</string>
-    <string name="appwidget_shelf_description">Μάνγκα από τα αγαπημένα σας</string>
+    <string name="appwidget_shelf_description">Manga από τα αγαπημένα σας</string>
     <string name="bookmark_add">Προσθήκη σελιδοδείκτη</string>
     <string name="bookmark_remove">Αφαίρεση σελιδοδείκτη</string>
-    <string name="exclude_nsfw_from_history_summary">Μάνγκα που χαρακτηρίζεται ως NSFW δεν θα προστίθεται ποτέ στο ιστορικό και η πρόοδός σας δεν θα αποθηκεύεται</string>
+    <string name="exclude_nsfw_from_history_summary">Manga που χαρακτηρίζονται ως NSFW δεν θα προστίθενται ποτέ στο ιστορικό και η πρόοδος σου δεν θα αποθηκεύεται</string>
     <string name="clear_all_history">Εκκαθάριση όλου του ιστορικού</string>
-    <string name="appwidget_recent_description">Τα πρόσφατα διαβασμένα μάνγκα σας</string>
+    <string name="appwidget_recent_description">Τα πρόσφατα διαβασμένα manga σου</string>
     <string name="clear_cookies_summary">Μπορεί να βοηθήσει σε περίπτωση κάποιων προβλημάτων. Όλες οι εξουσιοδοτήσεις θα ακυρωθούν</string>
 </resources>
