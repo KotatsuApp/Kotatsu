@@ -25,4 +25,9 @@
         <item quantity="one">%1$d giorno fa</item>
         <item quantity="other">%1$d giorni fa</item>
     </plurals>
+    <plurals name="months_ago">
+        <item quantity="one">%1$d mese fa</item>
+        <item quantity="many">%1$d mesi fa</item>
+        <item quantity="other"></item>
+    </plurals>
 </resources>
