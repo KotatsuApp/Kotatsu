@@ -336,7 +336,7 @@
     <string name="history_shortcuts">Εμφάνιζε συντομεύσεις σχετικά με πρόσφατα manga</string>
     <string name="history_shortcuts_summary">Κάνε πρόσφατα manga διαθέσιμα πατώντας παρατεταμένα το εικονίδιο της εφαρμογής</string>
     <string name="contrast">Αντίθεση</string>
-    <string name="reader_control_ltr_summary">Το πάτημα της δεξιάς πλευράς ή του δεξιού κουμπιού πάντα προχωράει στην επόμενη σελίδα</string>
+    <string name="reader_control_ltr_summary">Το πάτημα της δεξιάς πλευράς, ή του κουμπιού μείωσης της έντασης, πάντα προχωράει στην επόμενη σελίδα</string>
     <string name="reader_control_ltr">Εργονομικός χειρισμός του εργαλείου ανάγνωσης</string>
     <string name="color_correction">Χρωματική διόρθωση</string>
     <string name="brightness">Φωτεινότητα</string>
