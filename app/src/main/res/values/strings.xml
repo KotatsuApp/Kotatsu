@@ -105,7 +105,7 @@
     <string name="text_shelf_holder_primary">Your manga will be displayed here</string>
     <string name="text_shelf_holder_secondary">Find what to read in the «Explore» section</string>
     <string name="text_local_holder_primary">Save something first</string>
-    <string name="text_local_holder_secondary">Save it from online sources or import files.</string>
+    <string name="text_local_holder_secondary">Save something from an online catalog or import it from a file.</string>
     <string name="manga_shelf">Shelf</string>
     <string name="recent_manga">Recent</string>
     <string name="pages_animation">Page animation</string>
