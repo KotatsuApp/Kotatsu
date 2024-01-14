@@ -128,7 +128,7 @@
     <string name="text_history_holder_primary">你看过的内容将在这里显示</string>
     <string name="text_history_holder_secondary">在&lt;浏览&gt;页面搜索要读的漫画</string>
     <string name="text_local_holder_primary">先保存内容</string>
-    <string name="text_local_holder_secondary">从在线来源保存或导入文件。</string>
+    <string name="text_local_holder_secondary">从在线目录进行保存或通过文件进行导入。</string>
     <string name="manga_shelf">书架</string>
     <string name="recent_manga">最近</string>
     <string name="pages_animation">翻页动画</string>
