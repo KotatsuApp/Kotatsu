@@ -551,4 +551,8 @@
     <string name="default_tab">Подразумевана картица</string>
     <string name="content_rating">Оцена садржаја</string>
     <string name="rating_adult">За одрасле</string>
+    <string name="mark_as_completed">Означи као завршено</string>
+    <string name="mark_as_completed_prompt">Означи изабрану мангу као потпуно прочитану?
+\n
+\nУпозорење: тренутни напредак читања ће бити изгубљен</string>
 </resources>
