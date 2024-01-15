@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.domain.MarkAsReadUseCase
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.domain.ListSortOrder
@@ -39,6 +40,7 @@ import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
 import org.koitharu.kotatsu.list.ui.model.toListModel
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
+import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
 import javax.inject.Inject
 
@@ -48,6 +50,7 @@ class HistoryListViewModel @Inject constructor(
 	settings: AppSettings,
 	private val extraProvider: ListExtraProvider,
 	private val localMangaRepository: LocalMangaRepository,
+	private val markAsReadUseCase: MarkAsReadUseCase,
 	networkState: NetworkState,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
@@ -118,6 +121,12 @@ class HistoryListViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			val handle = repository.delete(ids)
 			onActionDone.call(ReversibleAction(R.string.removed_from_history, handle))
+		}
+	}
+
+	fun markAsRead(items: Set<Manga>) {
+		launchLoadingJob(Dispatchers.Default) {
+			markAsReadUseCase(items)
 		}
 	}
 

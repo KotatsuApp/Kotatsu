@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.viewModels
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkManageIntent
@@ -51,6 +52,18 @@ class HistoryListFragment : MangaListFragment() {
 			R.id.action_remove -> {
 				viewModel.removeFromHistory(selectedItemsIds)
 				mode.finish()
+				true
+			}
+
+			R.id.action_mark_current -> {
+				MaterialAlertDialogBuilder(context ?: return false)
+					.setTitle(item.title)
+					.setMessage(R.string.mark_as_completed_prompt)
+					.setNegativeButton(android.R.string.cancel, null)
+					.setPositiveButton(android.R.string.ok) { _, _ ->
+						viewModel.markAsRead(selectedItems)
+						mode.finish()
+					}.show()
 				true
 			}
 
