@@ -528,4 +528,26 @@
     <string name="backups_output_directory">Sauvegardes répertoire de sortie</string>
     <string name="suggest_new_sources_summary">Prompt pour permettre des sources nouvellement ajoutées après la mise à jour de l\'application</string>
     <string name="content_type_other">Autre</string>
+    <string name="state_upcoming">A venir</string>
+    <string name="welcome_text">S\'il vous plaît choisissez les sources que vous souhaitez activer. Cela peux aussi être fait plus tard dans les paramètres</string>
+    <string name="sync_auth">Connectez-vous pour synchroniser le compte</string>
+    <string name="skip">Passer</string>
+    <string name="restore">Restaurer</string>
+    <string name="content_rating">Note du contenu</string>
+    <string name="genres_exclude">Exclure les genres</string>
+    <string name="rating_safe">Sûr</string>
+    <string name="rating_adult">Adulte</string>
+    <string name="default_tab">Onglet par défaut</string>
+    <string name="color_correction_apply_text">Ces paramètres peuvent être appliqué globalement ou uniquement au manga actuel. S\'il est activé globalement il ne remplacera les paramètres individuel.</string>
+    <string name="globally">Globalement</string>
+    <string name="this_manga">Ce manga</string>
+    <string name="apply">Appliqué</string>
+    <string name="genres_search_hint">Commence a écrit un nom de genre</string>
+    <string name="downloads_settings_info">Vous pouvez activer la vitesse de téléchargement réduite individuellement pour chaque source de manga dans les paramètres si vous rencontrez des problèmes de bloquage avec le serveur.</string>
+    <string name="backup_date_">Date de sauvegarde: %s</string>
+    <string name="by_name_reverse">Nom réservé</string>
+    <string name="mark_as_completed">Marque comme terminé</string>
+    <string name="mark_as_completed_prompt">Marqué le manga sélectionné en terminé?
+\n
+\nAttention: la progression actuelle sera perdu.</string>
 </resources>

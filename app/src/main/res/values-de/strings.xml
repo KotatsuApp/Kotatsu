@@ -261,7 +261,7 @@
     <string name="appwidget_shelf_description">Manga aus deinen Favoriten</string>
     <string name="appwidget_recent_description">Deine kürzlich gelesenen Manga</string>
     <string name="report">Melden</string>
-    <string name="tracking">Nachverfolgung</string>
+    <string name="tracking">Externe Plattformen (Tracking)</string>
     <string name="logout">Abmelden</string>
     <string name="status_planned">Geplant</string>
     <string name="status_on_hold">In der Warteschleife</string>
@@ -270,7 +270,7 @@
     <string name="show_reading_indicators_summary">Zeige gelesenen Prozentsatz in Verlauf und Favoriten</string>
     <string name="clear_cookies_summary">Kann bei einigen Probleme helfen. Alle Anmeldungen werden ungültig</string>
     <string name="status_completed">Abgeschlossen</string>
-    <string name="exclude_nsfw_from_history_summary">Als NSFW markierte Manga werden nicht dem Verlauf beigefügt und dein Lesefortschritt wird nicht gespeichert</string>
+    <string name="exclude_nsfw_from_history_summary">Als NSFW markierte Manga werden nicht in den Verlauf aufgenommen und Ihr Fortschritt wird nicht gespeichert</string>
     <string name="data_deletion">Datenlöschung</string>
     <string name="invalid_domain_message">Ungültige Domain</string>
     <string name="status_reading">Lese</string>
@@ -347,7 +347,7 @@
     <string name="share_logs">Protokolle teilen</string>
     <string name="enable_logging">Protokollierung aktivieren</string>
     <string name="language">Sprache</string>
-    <string name="enable_logging_summary">Einige Aktionen zu Debug-Zwecken aufzeichnen. Aktivieren Sie dies nicht, wenn Sie sich nicht sicher sind, was Sie tun.</string>
+    <string name="enable_logging_summary">Einige Aktionen zu Debug-Zwecken aufzeichnen. Aktiviere dies nicht, wenn Du dir nicht sicher bist, was du tust.</string>
     <string name="history_shortcuts">Zeige Verknüpfungen zu aktuellen Manga</string>
     <string name="history_shortcuts_summary">Neueste Manga durch langes Drücken auf das Anwendungssymbol verfügbar machen</string>
     <string name="show_suspicious_content">Verdächtige Inhalte anzeigen</string>
@@ -358,7 +358,7 @@
     <string name="nothing_here">Hier ist nichts</string>
     <string name="services">Dienste</string>
     <string name="theme_name_kanade">Kanade</string>
-    <string name="scrobbling_empty_hint">Um deinen Lesefortschritt nachzuverfolgen, wähle Menu → Track auf dem Manga Details Bildschirm.</string>
+    <string name="scrobbling_empty_hint">Um deinen Lesefortschritt nachzuverfolgen, wähle Menü → Lesefortschritt aufzeichnen auf dem Manga Details Bildschirm.</string>
     <string name="find_similar">Ähnliche finden</string>
     <string name="theme_name_sakura">Sakura</string>
     <string name="allow_unstable_updates_summary">Benachrichtigungen über instabile Versionen erhalten</string>
@@ -382,7 +382,7 @@
     <string name="sync_settings">Synchronisationseinstellungen</string>
     <string name="sync_host_description">Du kannst einen Standard- oder einen selbst gehosteten Synchronisations-Server verwenden. Ändere diese Einstellungen nicht, wenn du dich nicht auskennst.</string>
     <string name="ignore_ssl_errors">Ignoriere SSL Errors</string>
-    <string name="mirror_switching_summary">Wechsel bei Fehlern automatisch die Domains für Manga-Quellen, falls Mirrors verfügbar sind</string>
+    <string name="mirror_switching_summary">Automatischer Domain-Wechsel für Manga-Quellen, falls Spiegelserver verfügbar sind</string>
     <string name="status_re_reading">Lese erneut</string>
     <string name="sync_auth_hint">Du kannst dich mit einem bestehenden Account anmelden oder einen neuen erstellen</string>
     <string name="user_agent">UserAgent-Kopfzeile</string>
@@ -465,7 +465,7 @@
     <string name="in_progress">In Arbeit</string>
     <string name="related_manga">Verwandte Manga</string>
     <string name="clear_source_cookies_summary">Cookies nur für bestimmte Domain löschen. In den meisten Fällen wird die Genehmigung ungültig</string>
-    <string name="default_section">Standardabschnitt</string>
+    <string name="default_section">Standard-Abschnitt</string>
     <string name="catalog">Katalog</string>
     <string name="manage_sources">Quellen verwalten</string>
     <string name="content_type_manga">Manga</string>
@@ -474,13 +474,13 @@
     <string name="sources_catalog">Quellenkatalog</string>
     <string name="source_enabled">Quelle aktiviert</string>
     <string name="keep_screen_on">Bildschirm eingeschaltet lassen</string>
-    <string name="lock_screen_rotation">Bildschirmrotation sperren</string>
+    <string name="lock_screen_rotation">Bildschirm-Ausrichtung sperren</string>
     <string name="manga_list">Manga liste</string>
     <string name="disable_nsfw">NSFW deaktivieren</string>
     <string name="too_many_requests_message">Zu viele Anfragen. Probier es später erneut</string>
     <string name="items_limit_exceeded">Es können keine weiteren Elemente hinzugefügt werden</string>
     <string name="zoom_out">Herauszoomen</string>
-    <string name="reader_zoom_buttons">Zoomtasten Anzeigen</string>
+    <string name="reader_zoom_buttons">Zoom - Schaltflächen anzeigen</string>
     <string name="periodic_backups">Periodische Backups</string>
     <string name="backup_frequency">Häufigkeit der Backup-Erstellung</string>
     <string name="error_multiple_genres_not_supported">Filtern nach mehreren Genres wird von dieser Manga-Quelle nicht unterstützt</string>
@@ -492,7 +492,7 @@
     <string name="moved_to_top">Nach oben verschoben</string>
     <string name="state_paused">Pausiert</string>
     <string name="zoom_in">Hereinzoomen</string>
-    <string name="reader_zoom_buttons_summary">Ob die Zoom-Steuerungstasten in der unteren rechten Ecke angezeigt werden sollen</string>
+    <string name="reader_zoom_buttons_summary">Ob die Zoom - Schaltflächen in der unteren rechten Ecke angezeigt werden sollen</string>
     <string name="reader_optimize">Speicherverbrauch reduzieren (beta)</string>
     <string name="reader_optimize_summary">Qualität von nicht sichtbaren Seiten verringern, um den Speicherverbrauch zu reduzieren</string>
     <string name="state">Zustand</string>
@@ -508,6 +508,51 @@
     <string name="frequency_once_per_week">Einmal pro Woche</string>
     <string name="frequency_once_per_month">Einmal pro Monat</string>
     <string name="periodic_backups_enable">Periodische Backups aktivieren</string>
-    <string name="backups_output_directory">Ausgabe-Verzeichnis für Backups</string>
+    <string name="backups_output_directory">Speicher-Verzeichnis für Backups</string>
     <string name="last_successful_backup">Letztes erfolgreiches Backup: %s</string>
+    <string name="state_upcoming">Erwartet</string>
+    <string name="by_name_reverse">Name reserviert</string>
+    <string name="advanced">Erweitert</string>
+    <string name="content_type_comics">Comics</string>
+    <string name="source_summary_pattern">%1$s, %2$s</string>
+    <string name="no_manga_sources_found">Keine verfügbaren Manga-Quellen für deinen Suchbegriff gefunden</string>
+    <string name="welcome_text">Bitte wähle aus, welche Inhalte-Quellen du aktivieren möchtest. Dies kannst du auch später in den Einstellungen konfigurieren</string>
+    <string name="sync_auth">Melde dich beim Sync - Account an</string>
+    <string name="downloads_settings_info">Du kannst die Download-Verlangsamung für jede Manga-Quelle einzeln in den Quelleneinstellungen aktivieren, wenn du Probleme mit der serverseitigen Blockierung hast</string>
+    <string name="skip">Überspringen</string>
+    <string name="restore">Wiederherstellen</string>
+    <string name="backup_date_">Sicherungsdatum: %s</string>
+    <string name="content_rating">Einstufung (Inhalt)</string>
+    <string name="genres_exclude">Genres ausschließen</string>
+    <string name="rating_safe">Sicher</string>
+    <string name="rating_suggestive">Suggestiv</string>
+    <string name="rating_adult">Erwachsene</string>
+    <string name="online_variant">Online-Variante</string>
+    <string name="keep_screen_on_summary">Bildschirm nicht ausschalten, während du Manga liest</string>
+    <string name="default_tab">Standard-Reiter</string>
+    <string name="related_manga_summary">Zeige eine Liste ähnlicher Manga. Diese kann in einigen Fällen ungenau sein oder fehlen</string>
+    <string name="grayscale">Graustufen</string>
+    <string name="globally">Global</string>
+    <string name="this_manga">Dieses Manga</string>
+    <string name="color_correction_apply_text">Diese Einstellungen können global oder nur auf das aktuelle Manga angewendet werden. Werden sie global angewendet, bleiben individuelle Einstellungen erhalten.</string>
+    <string name="apply">Anwenden</string>
+    <string name="manual">Anleitung</string>
+    <string name="speed_value">x%.1f</string>
+    <string name="error_filter_states_genre_not_supported">Die Filterung nach Genre und Status wird von dieser Quelle nicht unterstützt</string>
+    <string name="error_filter_locale_genre_not_supported">Die Filterung nach Genre und Lokalisation wird von dieser Quelle nicht unterstützt</string>
+    <string name="error_corrupted_file">Es wurden ungültige Daten zurückgegeben oder die Datei ist beschädigt</string>
+    <string name="genres_search_hint">Beginne den Genre-Namen einzutippen</string>
+    <string name="no_manga_sources_catalog_text">In diesem Abschnitt sind keine Quellen verfügbar, oder es wurde bereits alles hinzugefügt.
+\nBleibe dran für neue Quellen</string>
+    <string name="mark_as_completed">Als fertig markieren</string>
+    <string name="mark_as_completed_prompt">Ausgewählte Manga als vollständig gelesen markieren?
+\n
+\nAchtung: Der aktuelle Lesefortschritt geht verloren.</string>
+    <string name="main_screen_sections">Hauptbildschirm - Abschnitte</string>
+    <string name="disable_nsfw_summary">Deaktiviere NSFW - Quellen und verberge Erwachsenen-Manga von der Liste, wenn möglich</string>
+    <string name="disable_battery_optimization_summary_downloads">Könnte dir damit helfen, den Download zu starten, wenn du Probleme damit hast</string>
+    <string name="state_abandoned">Verworfen</string>
+    <string name="enhanced_colors_summary">Reduziert das Banding (harte Farbverläufe), kann aber die Leistung beeinträchtigen</string>
+    <string name="suggest_new_sources_summary">Aufforderung zur Aktivierung neu hinzugefügter Quellen nach Aktualisierung der Anwendung</string>
+    <string name="list_options">Listenoptionen</string>
 </resources>

@@ -48,7 +48,7 @@
     <string name="list_mode">Modalità elenco</string>
     <string name="grid">Griglia</string>
     <string name="detailed_list">Elenco dettagliato</string>
-    <string name="text_delete_local_manga">Vuoi davvero eliminare «%s» dalla memoria locale del tuo dispositivo\?</string>
+    <string name="text_delete_local_manga">Vuoi davvero eliminare «%s» dalla memoria locale del tuo dispositivo?</string>
     <string name="_s_deleted_from_local_storage">«%s» eliminato dall\'archiviazione locale</string>
     <string name="list">Lista</string>
     <string name="chapters">Capitoli</string>
@@ -113,11 +113,11 @@
     <string name="other_storage">Altro spazio di archiviazione</string>
     <string name="cannot_find_available_storage">Impossibile trovare uno spazio di archiviazione disponibile</string>
     <string name="not_available">Non disponibile</string>
-    <string name="manga_save_location">Posizione per lo scaricamento dei manga</string>
+    <string name="manga_save_location">Cartella di scaricamento</string>
     <string name="pages_animation">Animazione delle pagine</string>
     <string name="recent_manga">Manga recenti</string>
     <string name="manga_shelf">Scaffale da manga</string>
-    <string name="text_local_holder_secondary">Puoi salvarlo da fonti in linea o importarlo da un file.</string>
+    <string name="text_local_holder_secondary">Salva qualcosa da un catalogo online o importalo da un file.</string>
     <string name="text_local_holder_primary">Non hai ancora salvato nessun manga</string>
     <string name="text_history_holder_secondary">Trova cosa leggere nella sezione «Esplora»</string>
     <string name="text_history_holder_primary">I manga che stai leggendo saranno visualizzati qui</string>
@@ -543,4 +543,16 @@
     <string name="got_it">Ho capito</string>
     <string name="comics_archive_import_description">Puoi selezionare uno o più file .cbz o .zip, ogni file sarà riconosciuto come un manga a parte.</string>
     <string name="show_on_shelf">Mostra sullo Scaffale</string>
+    <string name="state_upcoming">Prossime</string>
+    <string name="by_name_reverse">Nome invertito</string>
+    <string name="content_rating">Classificazione dei contenuti</string>
+    <string name="genres_exclude">Escludi generi</string>
+    <string name="rating_safe">Sicuro</string>
+    <string name="rating_suggestive">Suggestivi</string>
+    <string name="rating_adult">Adulto</string>
+    <string name="default_tab">Scheda predefinita</string>
+    <string name="mark_as_completed">Segna come completo</string>
+    <string name="mark_as_completed_prompt">Segna il manga selezionato come completamente letto?
+\n
+\nAttenzione: l\'attuale avanzamento della lettura sarà perso.</string>
 </resources>

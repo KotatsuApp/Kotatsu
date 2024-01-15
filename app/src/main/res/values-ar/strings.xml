@@ -283,4 +283,8 @@
     <string name="empty_favourite_categories">لا توجد فئات مفضلة</string>
     <string name="screenshots_policy">سياسة لقطة الشاشة</string>
     <string name="done">تم</string>
+    <string name="no_thanks">لا شكرا</string>
+    <string name="enable">تفعيل</string>
+    <string name="cancel_all_downloads_confirm">سيتم إلغاء جميع التنزيلات النشطة، وستُفقَد البيانات المحملة جزئيًا</string>
+    <string name="text_downloads_list_holder">ليس لديك أية تنزيلات</string>
 </resources>

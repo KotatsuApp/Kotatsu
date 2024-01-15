@@ -551,4 +551,8 @@
     <string name="rating_adult">Adulto</string>
     <string name="default_tab">Aba padrão</string>
     <string name="content_rating">Classificação do Conteúdo</string>
+    <string name="mark_as_completed_prompt">Deseja marcar o mangá selecionado como completo?
+\n
+\nAviso: o progresso de leitura atual será perdido.</string>
+    <string name="mark_as_completed">Marcar como completo</string>
 </resources>
