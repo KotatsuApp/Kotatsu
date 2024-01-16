@@ -175,9 +175,9 @@ abstract class FavouritesDao {
 		ListSortOrder.RATING -> "manga.rating DESC"
 		ListSortOrder.NEWEST -> "favourites.created_at DESC"
 		ListSortOrder.ALPHABETIC -> "manga.title ASC"
-		ListSortOrder.NEW_CHAPTERS -> "(SELECT chapters_new FROM tracks WHERE tracks.manga_id = manga.manga_id) DESC"
+		ListSortOrder.NEW_CHAPTERS -> "IFNULL((SELECT chapters_new FROM tracks WHERE tracks.manga_id = manga.manga_id), 0) DESC"
 		ListSortOrder.UPDATED, // for legacy support
-		ListSortOrder.PROGRESS -> "(SELECT percent FROM history WHERE history.manga_id = manga.manga_id) DESC"
+		ListSortOrder.PROGRESS -> "IFNULL((SELECT percent FROM history WHERE history.manga_id = manga.manga_id), 0) DESC"
 
 		else -> throw IllegalArgumentException("Sort order $sortOrder is not supported")
 	}

@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
@@ -49,16 +51,19 @@ class FavouritesListViewModel @Inject constructor(
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.favoritesListMode)
 
 	val sortOrder: StateFlow<ListSortOrder?> = if (categoryId == NO_ID) {
-		MutableStateFlow(null)
+		settings.observeAsFlow(AppSettings.KEY_FAVORITES_ORDER) {
+			allFavoritesSortOrder
+		}
 	} else {
 		repository.observeCategory(categoryId)
 			.map { it?.order }
-			.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
-	}
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	override val content = combine(
 		if (categoryId == NO_ID) {
-			repository.observeAll(ListSortOrder.NEWEST)
+			sortOrder.filterNotNull().flatMapLatest {
+				repository.observeAll(it)
+			}
 		} else {
 			repository.observeAll(categoryId)
 		},

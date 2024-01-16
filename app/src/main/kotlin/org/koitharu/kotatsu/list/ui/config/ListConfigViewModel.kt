@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
+import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
@@ -65,7 +66,11 @@ class ListConfigViewModel @Inject constructor(
 		val value = getSortOrders()?.getOrNull(position) ?: return
 		when (section) {
 			is ListConfigSection.Favorites -> launchJob {
-				favouritesRepository.setCategoryOrder(section.categoryId, value)
+				if (section.categoryId == NO_ID) {
+					settings.allFavoritesSortOrder = value
+				} else {
+					favouritesRepository.setCategoryOrder(section.categoryId, value)
+				}
 			}
 
 			ListConfigSection.General -> Unit
@@ -75,9 +80,13 @@ class ListConfigViewModel @Inject constructor(
 		}
 	}
 
-	private fun getCategorySortOrder(id: Long): ListSortOrder = runBlocking {
+	private fun getCategorySortOrder(id: Long): ListSortOrder = if (id == NO_ID) {
+		settings.allFavoritesSortOrder
+	} else runBlocking {
 		runCatchingCancellable {
 			favouritesRepository.getCategory(id).order
-		}.getOrDefault(ListSortOrder.NEWEST)
+		}.getOrElse {
+			settings.allFavoritesSortOrder
+		}
 	}
 }
