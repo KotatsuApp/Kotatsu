@@ -91,7 +91,7 @@
     <string name="feed_will_update_soon">फीड अपडेट शीघ्र ही आरंभ होगा</string>
     <string name="app_update_available">इस ऐप का नया संस्करण उपलब्ध हैं</string>
     <string name="new_version_s">नया संस्करण: %s</string>
-    <string name="text_delete_local_manga">डिवाइस में से %s ko सदा के लिए निकाल दे\?</string>
+    <string name="text_delete_local_manga">डिवाइस से \"% s\" को स्थायी रूप से हटा दें?</string>
     <string name="text_history_holder_primary">जो भी आप पढ़ोगे वे सब यहां दिखेगा</string>
     <string name="delete_manga">मांगा को नष्ट करे</string>
     <string name="notification_sound">सूचना की ध्वनि</string>
