@@ -107,7 +107,7 @@ class DetailsActivity :
 
 		if (viewBinding.layoutBottom != null) {
 			val behavior = BottomSheetBehavior.from(checkNotNull(viewBinding.layoutBottom))
-			val bsMediator = ChaptersBottomSheetMediator(behavior, viewBinding.pager)
+			val bsMediator = ChaptersBottomSheetMediator(behavior, viewBinding.pager, viewBinding.tabs)
 			actionModeDelegate.addListener(bsMediator)
 			checkNotNull(viewBinding.layoutBsHeader).addOnLayoutChangeListener(bsMediator)
 			onBackPressedDispatcher.addCallback(bsMediator)

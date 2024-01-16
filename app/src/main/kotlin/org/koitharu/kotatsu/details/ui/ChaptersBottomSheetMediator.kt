@@ -8,12 +8,15 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.view.ActionMode
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.tabs.TabLayout
 import org.koitharu.kotatsu.core.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.util.ext.doOnExpansionsChanged
+import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 
 class ChaptersBottomSheetMediator(
 	private val behavior: BottomSheetBehavior<*>,
 	private val pager: ViewPager2,
+	private val tabLayout: TabLayout,
 ) : OnBackPressedCallback(false),
 	ActionModeListener,
 	OnLayoutChangeListener, View.OnGenericMotionListener {
@@ -75,8 +78,7 @@ class ChaptersBottomSheetMediator(
 
 	fun lock() {
 		lockCounter++
-		behavior.isDraggable = lockCounter <= 0
-		pager.isUserInputEnabled = lockCounter <= 0
+		updateLock()
 	}
 
 	fun unlock() {
@@ -84,7 +86,12 @@ class ChaptersBottomSheetMediator(
 		if (lockCounter < 0) {
 			lockCounter = 0
 		}
+		updateLock()
+	}
+
+	private fun updateLock() {
 		behavior.isDraggable = lockCounter <= 0
 		pager.isUserInputEnabled = lockCounter <= 0
+		tabLayout.setTabsEnabled(lockCounter <= 0)
 	}
 }
