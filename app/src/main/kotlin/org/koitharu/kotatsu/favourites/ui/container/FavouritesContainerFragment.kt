@@ -49,7 +49,7 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 		super.onViewBindingCreated(binding, savedInstanceState)
 		val pagerAdapter = FavouritesContainerAdapter(this)
 		binding.pager.adapter = pagerAdapter
-		binding.pager.offscreenPageLimit = 99 // FIXME
+		binding.pager.offscreenPageLimit = 1
 		binding.pager.recyclerView?.isNestedScrollingEnabled = false
 		TabLayoutMediator(
 			binding.tabs,

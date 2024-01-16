@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.annotation.AttrRes
+import androidx.core.view.ancestors
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import org.koitharu.kotatsu.R
 
 class FastScrollRecyclerView @JvmOverloads constructor(
@@ -15,6 +17,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
 	val fastScroller = FastScroller(context, attrs)
+	private var applyViewPager2Fix = false
 
 	var isFastScrollerEnabled: Boolean = true
 		set(value) {
@@ -43,10 +46,23 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 	override fun onAttachedToWindow() {
 		super.onAttachedToWindow()
 		fastScroller.attachRecyclerView(this)
+		applyViewPager2Fix = ancestors.any { it is ViewPager2 } == true
 	}
 
 	override fun onDetachedFromWindow() {
 		fastScroller.detachRecyclerView()
 		super.onDetachedFromWindow()
+		applyViewPager2Fix = false
+	}
+
+	override fun isLayoutRequested(): Boolean {
+		return if (applyViewPager2Fix) false else super.isLayoutRequested()
+	}
+
+	override fun requestLayout() {
+		super.requestLayout()
+		if (applyViewPager2Fix && parent?.isLayoutRequested == true) {
+			parent?.requestLayout()
+		}
 	}
 }
