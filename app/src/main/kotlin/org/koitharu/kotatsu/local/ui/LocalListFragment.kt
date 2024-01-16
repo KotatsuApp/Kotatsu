@@ -26,6 +26,15 @@ import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 
 class LocalListFragment : MangaListFragment(), FilterOwner {
 
+	init {
+		withArgs(1) {
+			putSerializable(
+				RemoteListFragment.ARG_SOURCE,
+				MangaSource.LOCAL,
+			) // required by FilterCoordinator
+		}
+	}
+
 	override val viewModel by viewModels<LocalListViewModel>()
 
 	override val filter: MangaFilter
@@ -96,15 +105,5 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 			R.string.removal_completed,
 			Snackbar.LENGTH_SHORT,
 		).show()
-	}
-
-	companion object {
-
-		fun newInstance() = LocalListFragment().withArgs(1) {
-			putSerializable(
-				RemoteListFragment.ARG_SOURCE,
-				MangaSource.LOCAL,
-			) // required by FilterCoordinator
-		}
 	}
 }

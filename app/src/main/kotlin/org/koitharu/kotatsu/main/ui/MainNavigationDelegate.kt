@@ -134,13 +134,13 @@ class MainNavigationDelegate(
 	private fun onNavigationItemSelected(@IdRes itemId: Int): Boolean {
 		return setPrimaryFragment(
 			when (itemId) {
-				R.id.nav_history -> HistoryListFragment()
-				R.id.nav_favorites -> FavouritesContainerFragment()
-				R.id.nav_explore -> ExploreFragment()
-				R.id.nav_feed -> FeedFragment()
-				R.id.nav_local -> LocalListFragment.newInstance()
-				R.id.nav_suggestions -> SuggestionsFragment()
-				R.id.nav_bookmarks -> BookmarksFragment()
+				R.id.nav_history -> HistoryListFragment::class.java
+				R.id.nav_favorites -> FavouritesContainerFragment::class.java
+				R.id.nav_explore -> ExploreFragment::class.java
+				R.id.nav_feed -> FeedFragment::class.java
+				R.id.nav_local -> LocalListFragment::class.java
+				R.id.nav_suggestions -> SuggestionsFragment::class.java
+				R.id.nav_bookmarks -> BookmarksFragment::class.java
 				else -> return false
 			},
 		)
@@ -157,16 +157,17 @@ class MainNavigationDelegate(
 		else -> 0
 	}
 
-	private fun setPrimaryFragment(fragment: Fragment): Boolean {
-		if (fragmentManager.isStateSaved) {
+	private fun setPrimaryFragment(fragmentClass: Class<out Fragment>): Boolean {
+		if (fragmentManager.isStateSaved || fragmentClass.isInstance(primaryFragment)) {
 			return false
 		}
+		val fragment = instantiateFragment(fragmentClass)
 		fragment.enterTransition = MaterialFadeThrough()
 		fragmentManager.beginTransaction()
 			.setReorderingAllowed(true)
-			.replace(R.id.container, fragment, TAG_PRIMARY)
+			.replace(R.id.container, fragmentClass, null, TAG_PRIMARY)
+			.runOnCommit { onFragmentChanged(fragment, fromUser = true) }
 			.commit()
-		onFragmentChanged(fragment, fromUser = true)
 		return true
 	}
 
@@ -180,6 +181,11 @@ class MainNavigationDelegate(
 			menu.add(Menu.NONE, item.id, Menu.NONE, item.title)
 				.setIcon(item.icon)
 		}
+	}
+
+	private fun instantiateFragment(fragmentClass: Class<out Fragment>): Fragment {
+		val classLoader = navBar.context.classLoader
+		return fragmentManager.fragmentFactory.instantiate(classLoader, fragmentClass.name)
 	}
 
 	private fun observeSettings(lifecycleOwner: LifecycleOwner) {

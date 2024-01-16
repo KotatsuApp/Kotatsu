@@ -118,7 +118,7 @@ class MangaListActivity :
 			fm.commit {
 				setReorderingAllowed(true)
 				val fragment = if (source == MangaSource.LOCAL) {
-					LocalListFragment.newInstance()
+					LocalListFragment()
 				} else {
 					RemoteListFragment.newInstance(source)
 				}
