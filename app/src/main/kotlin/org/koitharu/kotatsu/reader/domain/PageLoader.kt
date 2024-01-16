@@ -201,7 +201,7 @@ class PageLoader @Inject constructor(
 
 	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): Uri = semaphore.withPermit {
 		val pageUrl = getPageUrl(page)
-		check(pageUrl.isNotBlank()) { "Cannot obtain full image url" }
+		check(pageUrl.isNotBlank()) { "Cannot obtain full image url for $page" }
 		val uri = Uri.parse(pageUrl)
 		return if (uri.isZipUri()) {
 			if (uri.scheme == URI_SCHEME_ZIP) {

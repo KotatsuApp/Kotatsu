@@ -47,7 +47,7 @@ class SingleMangaImporter @Inject constructor(
 		val contentResolver = storageManager.contentResolver
 		val name = contentResolver.resolveName(uri) ?: throw IOException("Cannot fetch name from uri: $uri")
 		if (!hasCbzExtension(name)) {
-			throw UnsupportedFileException("Unsupported file on $uri")
+			throw UnsupportedFileException("Unsupported file $name on $uri")
 		}
 		val dest = File(getOutputDir(), name)
 		runInterruptible {
