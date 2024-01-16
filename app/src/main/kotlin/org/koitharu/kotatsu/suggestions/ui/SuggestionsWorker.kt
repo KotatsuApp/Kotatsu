@@ -352,7 +352,7 @@ class SuggestionsWorker @AssistedInject constructor(
 			val request = PeriodicWorkRequestBuilder<SuggestionsWorker>(6, TimeUnit.HOURS)
 				.setConstraints(createConstraints())
 				.addTag(TAG)
-				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
+				.setBackoffCriteria(BackoffPolicy.LINEAR, 1, TimeUnit.HOURS)
 				.build()
 			workManager
 				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)

@@ -323,7 +323,7 @@ class TrackWorker @AssistedInject constructor(
 			val request = PeriodicWorkRequestBuilder<TrackWorker>(4, TimeUnit.HOURS)
 				.setConstraints(constraints)
 				.addTag(TAG)
-				.setBackoffCriteria(BackoffPolicy.LINEAR, 5, TimeUnit.MINUTES)
+				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
 				.build()
 			workManager
 				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)
@@ -373,7 +373,7 @@ class TrackWorker @AssistedInject constructor(
 		const val TAG = "tracking"
 		const val TAG_ONESHOT = "tracking_oneshot"
 		const val MAX_PARALLELISM = 3
-		const val MAX_ATTEMPTS = 4
+		const val MAX_ATTEMPTS = 3
 		const val DATA_KEY_SUCCESS = "success"
 		const val DATA_KEY_FAILED = "failed"
 		const val KEY_RETRY_IDS = "retry"
