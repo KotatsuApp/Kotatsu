@@ -12,14 +12,18 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import coil.ImageLoader
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.util.ActionModeListener
+import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.FragmentFavouritesContainerBinding
@@ -43,15 +47,21 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 
 	override fun onViewBindingCreated(binding: FragmentFavouritesContainerBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		val adapter = FavouritesContainerAdapter(childFragmentManager)
-		binding.pager.adapter = adapter
-		binding.tabs.setupWithViewPager(binding.pager)
-		binding.pager.offscreenPageLimit = 1
+		val pagerAdapter = FavouritesContainerAdapter(this)
+		binding.pager.adapter = pagerAdapter
+		binding.pager.offscreenPageLimit = 99 // FIXME
+		binding.pager.recyclerView?.isNestedScrollingEnabled = false
+		TabLayoutMediator(
+			binding.tabs,
+			binding.pager,
+			FavouritesTabConfigurationStrategy(pagerAdapter, viewModel),
+		).attach()
 		binding.stubEmpty.setOnInflateListener(this)
 		actionModeDelegate.addListener(this)
-		viewModel.categories.observe(viewLifecycleOwner, adapter)
+		viewModel.categories.observe(viewLifecycleOwner, pagerAdapter)
 		viewModel.isEmpty.observe(viewLifecycleOwner, ::onEmptyStateChanged)
 		addMenuProvider(FavouritesContainerMenuProvider(binding.root.context))
+		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.pager))
 	}
 
 	override fun onDestroyView() {

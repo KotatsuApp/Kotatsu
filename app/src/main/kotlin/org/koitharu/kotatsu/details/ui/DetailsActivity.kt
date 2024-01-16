@@ -365,6 +365,7 @@ class DetailsActivity :
 	private fun initPager() {
 		viewBinding.pager.recyclerView?.isNestedScrollingEnabled = false
 		val adapter = DetailsPagerAdapter(this)
+		viewBinding.pager.offscreenPageLimit = 1
 		viewBinding.pager.adapter = adapter
 		TabLayoutMediator(viewBinding.tabs, viewBinding.pager, adapter).attach()
 		viewBinding.pager.setCurrentItem(settings.defaultDetailsTab, false)
