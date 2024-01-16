@@ -39,6 +39,7 @@ abstract class HistoryDao {
 			ListSortOrder.NEWEST -> "history.created_at DESC"
 			ListSortOrder.PROGRESS -> "history.percent DESC"
 			ListSortOrder.ALPHABETIC -> "manga.title"
+			ListSortOrder.ALPHABETIC_REVERSE -> "manga.title DESC"
 			ListSortOrder.NEW_CHAPTERS -> "IFNULL((SELECT chapters_new FROM tracks WHERE tracks.manga_id = manga.manga_id), 0) DESC"
 			else -> throw IllegalArgumentException("Sort order $order is not supported")
 		}
