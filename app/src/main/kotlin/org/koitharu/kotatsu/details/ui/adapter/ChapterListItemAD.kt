@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.details.ui.adapter
 
+import android.graphics.Typeface
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -7,11 +8,10 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.drawableStart
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemChapterBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
-import com.google.android.material.R as materialR
 
 fun chapterListItemAD(
 	clickListener: OnListItemClickListener<ChapterListItem>,
@@ -26,31 +26,38 @@ fun chapterListItemAD(
 	bind { payloads ->
 		if (payloads.isEmpty()) {
 			binding.textViewTitle.text = item.chapter.name
-			binding.textViewNumber.text = item.chapter.number.toString()
 			binding.textViewDescription.textAndVisible = item.description()
 		}
 		when {
 			item.isCurrent -> {
-				binding.textViewNumber.setBackgroundResource(R.drawable.bg_badge_primary)
-				binding.textViewNumber.setTextColor(context.getThemeColor(materialR.attr.colorOnPrimary))
+				binding.textViewTitle.drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_current_chapter)
+				binding.textViewTitle.setTextColor(context.getThemeColorStateList(android.R.attr.textColorPrimary))
+				binding.textViewDescription.setTextColor(context.getThemeColorStateList(android.R.attr.textColorPrimary))
+				binding.textViewTitle.typeface = Typeface.DEFAULT_BOLD
+				binding.textViewDescription.typeface = Typeface.DEFAULT_BOLD
 			}
 
 			item.isUnread -> {
-				binding.textViewNumber.setBackgroundResource(R.drawable.bg_badge_default)
-				binding.textViewNumber.setTextColor(context.getThemeColor(materialR.attr.colorOnTertiary))
+				binding.textViewTitle.drawableStart = if (item.isNew) {
+					ContextCompat.getDrawable(context, R.drawable.ic_new)
+				} else {
+					null
+				}
+				binding.textViewTitle.setTextColor(context.getThemeColorStateList(android.R.attr.textColorPrimary))
+				binding.textViewDescription.setTextColor(context.getThemeColorStateList(android.R.attr.textColorPrimary))
+				binding.textViewTitle.typeface = Typeface.DEFAULT
+				binding.textViewDescription.typeface = Typeface.DEFAULT
 			}
 
 			else -> {
-				binding.textViewNumber.setBackgroundResource(R.drawable.bg_badge_outline)
-				binding.textViewNumber.setTextColor(context.getThemeColor(android.R.attr.textColorTertiary))
+				binding.textViewTitle.drawableStart = null
+				binding.textViewTitle.setTextColor(context.getThemeColorStateList(android.R.attr.textColorHint))
+				binding.textViewDescription.setTextColor(context.getThemeColorStateList(android.R.attr.textColorHint))
+				binding.textViewTitle.typeface = Typeface.DEFAULT
+				binding.textViewDescription.typeface = Typeface.DEFAULT
 			}
 		}
 		binding.imageViewBookmarked.isVisible = item.isBookmarked
 		binding.imageViewDownloaded.isVisible = item.isDownloaded
-		binding.textViewTitle.drawableStart = if (item.isNew) {
-			ContextCompat.getDrawable(context, R.drawable.ic_new)
-		} else {
-			null
-		}
 	}
 }

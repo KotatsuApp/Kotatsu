@@ -38,12 +38,13 @@ data class ChapterListItem(
 	val isNew: Boolean
 		get() = hasFlag(FLAG_NEW)
 
-	fun description(): CharSequence? {
+	fun description(): CharSequence {
+		val number = chapter.number.toString()
 		val scanlator = chapter.scanlator?.takeUnless { it.isBlank() }
 		return when {
-			uploadDate != null && scanlator != null -> "$uploadDate • $scanlator"
-			scanlator != null -> scanlator
-			else -> uploadDate
+			uploadDate != null && scanlator != null -> "#$number • $uploadDate • $scanlator"
+			scanlator != null -> "#$number • $scanlator"
+			else -> "#$number • $uploadDate"
 		}
 	}
 
