@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+	android:color="?android:attr/colorControlHighlight">
+	<item
+		android:id="@android:id/mask"
+		android:left="8dp"
+		android:right="8dp">
+		<shape android:shape="rectangle">
+			<corners android:radius="@dimen/list_selector_corner" />
+			<solid android:color="@color/selector_overlay" />
+		</shape>
+	</item>
+</ripple>

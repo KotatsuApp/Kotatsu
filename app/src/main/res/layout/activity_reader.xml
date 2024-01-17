@@ -71,10 +71,9 @@
 				android:id="@+id/slider"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:stepSize="1"
+				android:stepSize="1.0"
 				android:valueFrom="0"
 				app:labelBehavior="floating"
-				app:tickVisible="false"
 				app:trackColorInactive="?attr/m3ColorBackground" />
 
 		</com.google.android.material.appbar.MaterialToolbar>
