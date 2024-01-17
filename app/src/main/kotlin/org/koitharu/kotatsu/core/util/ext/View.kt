@@ -15,7 +15,9 @@ import androidx.core.view.descendants
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.slider.Slider
 import com.google.android.material.tabs.TabLayout
@@ -161,3 +163,12 @@ val Toolbar.menuView: ActionMenuView?
 		menu // to call ensureMenu()
 		return children.firstNotNullOfOrNull { it as? ActionMenuView }
 	}
+
+fun MaterialButton.setProgressIcon() {
+	val progressDrawable = CircularProgressDrawable(context)
+	progressDrawable.strokeWidth = resources.resolveDp(2f)
+	progressDrawable.setColorSchemeColors(currentTextColor)
+	progressDrawable.setTintList(textColors)
+	icon = progressDrawable
+	progressDrawable.start()
+}

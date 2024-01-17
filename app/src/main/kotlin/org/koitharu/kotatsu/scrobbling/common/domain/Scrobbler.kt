@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.scrobbling.common.domain
 
+import androidx.annotation.FloatRange
 import androidx.collection.LongSparseArray
 import androidx.collection.getOrElse
 import androidx.core.text.parseAsHtml
@@ -11,9 +12,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.util.ext.findKeyByValue
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblingEntity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerMangaInfo
@@ -21,13 +24,12 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.util.EnumMap
 
 abstract class Scrobbler(
 	protected val db: MangaDatabase,
 	val scrobblerService: ScrobblerService,
-	private val repository: org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository,
+	private val repository: ScrobblerRepository,
 ) {
 
 	private val infoCache = LongSparseArray<ScrobblerMangaInfo>()
@@ -76,7 +78,12 @@ abstract class Scrobbler(
 		return entity.toScrobblingInfo()
 	}
 
-	abstract suspend fun updateScrobblingInfo(mangaId: Long, rating: Float, status: ScrobblingStatus?, comment: String?)
+	abstract suspend fun updateScrobblingInfo(
+		mangaId: Long,
+		@FloatRange(from = 0.0, to = 1.0) rating: Float,
+		status: ScrobblingStatus?,
+		comment: String?,
+	)
 
 	fun observeScrobblingInfo(mangaId: Long): Flow<ScrobblingInfo?> {
 		return db.getScrobblingDao().observe(scrobblerService.id, mangaId)

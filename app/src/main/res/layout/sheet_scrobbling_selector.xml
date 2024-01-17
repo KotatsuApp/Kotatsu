@@ -34,7 +34,7 @@
 				app:tabMode="scrollable"
 				tools:ignore="UnusedAttribute" />
 
-			<Button
+			<com.google.android.material.button.MaterialButton
 				android:id="@+id/button_done"
 				style="@style/Widget.Material3.Button.UnelevatedButton"
 				android:layout_width="wrap_content"

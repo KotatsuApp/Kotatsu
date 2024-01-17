@@ -23,6 +23,8 @@ import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.setProgressIcon
+import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetScrobblingSelectorBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -80,6 +82,15 @@ class ScrobblingSelectorSheet :
 		viewModel.onClose.observeEvent(viewLifecycleOwner) {
 			dismiss()
 		}
+		viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+			binding.buttonDone.isEnabled = !isLoading
+			if (isLoading) {
+				binding.buttonDone.setProgressIcon()
+			} else {
+				binding.buttonDone.icon = null
+			}
+			binding.tabs.setTabsEnabled(!isLoading)
+		}
 		viewModel.selectedScrobblerIndex.observe(viewLifecycleOwner) { index ->
 			val tab = binding.tabs.getTabAt(index)
 			if (tab != null && !tab.isSelected) {
@@ -100,7 +111,7 @@ class ScrobblingSelectorSheet :
 	}
 
 	override fun onItemClick(item: ScrobblerManga, view: View) {
-		viewModel.selectedItemId.value = item.id
+		viewModel.selectItem(item.id)
 	}
 
 	override fun onRetryClick(error: Throwable) {
