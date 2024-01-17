@@ -201,10 +201,26 @@ class DetailsFragment :
 
 	private fun onChaptersChanged(chapters: List<ChapterListItem>?) {
 		val infoLayout = requireViewBinding().infoLayout
+		val tv = requireViewBinding().approximateReadTime
 		if (chapters.isNullOrEmpty()) {
 			infoLayout.textViewChapters.isVisible = false
+			tv.text = "..."
 		} else {
 			val count = chapters.countChaptersByBranch()
+
+			// FIXME MAXIMUM HARDCODE!!! To do calculation with user's page read speed and his favourites/history mangas average pages in chapter
+			// Impossible task, I guess. Good luck on this.
+			val averageTime: Int = 20 * 10 * (count) // 20 pages, 10 seconds per page
+			val hours = averageTime / 3600
+			val minutes = averageTime % 3600 / 60
+
+			tv.text = buildString {
+				append(resources.getQuantityString(R.plurals.hour, hours, hours))
+				append(" ")
+				append(resources.getQuantityString(R.plurals.minute, minutes, minutes))
+			}
+
+			// Info
 			infoLayout.textViewChapters.isVisible = true
 			val chaptersText = resources.getQuantityString(R.plurals.chapters, count, count)
 			infoLayout.textViewChapters.text = chaptersText

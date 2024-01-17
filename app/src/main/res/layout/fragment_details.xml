@@ -139,6 +139,51 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/info_layout" />
 
+		<LinearLayout
+			android:id="@+id/approximate_read_time_layout"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/margin_normal"
+			android:gravity="center_vertical"
+			android:orientation="horizontal"
+			android:paddingHorizontal="16dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/chips_tags">
+
+			<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/ic_timelapse"
+				app:tint="?attr/colorControlNormal" />
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="16dp"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:ellipsize="end"
+					android:maxLines="1"
+					android:paddingVertical="2dp"
+					android:text="@string/approximate_reading_time"
+					android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+				<TextView
+					android:id="@+id/approximate_read_time"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:paddingVertical="2dp"
+					android:textAppearance="?attr/textAppearanceBodySmall"
+					tools:text="12 minutes" />
+
+			</LinearLayout>
+
+		</LinearLayout>
+
 		<TextView
 			android:id="@+id/textView_description_title"
 			android:layout_width="0dp"
@@ -153,7 +198,7 @@
 			android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
 			app:layout_constraintEnd_toStartOf="@id/button_description_more"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/chips_tags" />
+			app:layout_constraintTop_toBottomOf="@id/approximate_read_time_layout" />
 
 		<Button
 			android:id="@+id/button_description_more"

@@ -4,7 +4,7 @@
 	<item>
 		<shape
 			android:shape="rectangle">
-			<solid android:color="?attr/colorOutline"/>
+			<solid android:color="?attr/colorSurfaceVariant"/>
 		</shape>
 	</item>
 	<!-- ..., then draws a rectangle with the container color to cover the area not for the divider. -->
