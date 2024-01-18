@@ -82,18 +82,34 @@ abstract class FavouritesDao {
 	)
 	abstract suspend fun findAllManga(categoryId: Int): List<MangaEntity>
 
-	suspend fun findCovers(categoryId: Long, order: ListSortOrder): List<Cover> {
+	suspend fun findCovers(categoryId: Long, order: ListSortOrder, limit: Int): List<Cover> {
 		val orderBy = getOrderBy(order)
 
 		@Language("RoomSql")
 		val query = SimpleSQLiteQuery(
 			"SELECT manga.cover_url AS url, manga.source AS source FROM favourites " +
 				"LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
-				"WHERE favourites.category_id = ? AND deleted_at = 0 ORDER BY $orderBy",
-			arrayOf<Any>(categoryId),
+				"WHERE favourites.category_id = ? AND deleted_at = 0 ORDER BY $orderBy LIMIT ?",
+			arrayOf<Any>(categoryId, limit),
 		)
 		return findCoversImpl(query)
 	}
+
+	suspend fun findCovers(order: ListSortOrder, limit: Int): List<Cover> {
+		val orderBy = getOrderBy(order)
+
+		@Language("RoomSql")
+		val query = SimpleSQLiteQuery(
+			"SELECT manga.cover_url AS url, manga.source AS source FROM favourites " +
+				"LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
+				"WHERE deleted_at = 0 GROUP BY manga.manga_id ORDER BY $orderBy LIMIT ?",
+			arrayOf<Any>(limit),
+		)
+		return findCoversImpl(query)
+	}
+
+	@Query("SELECT COUNT(DISTINCT manga_id) FROM favourites WHERE deleted_at = 0")
+	abstract fun observeMangaCount(): Flow<Int>
 
 	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM favourites WHERE deleted_at = 0)")
 	abstract suspend fun findAllManga(): List<MangaEntity>
