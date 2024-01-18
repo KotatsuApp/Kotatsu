@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui.list
 
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,6 +13,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.core.util.ext.withArgs
+import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -25,6 +27,11 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 
 	val categoryId
 		get() = viewModel.categoryId
+
+	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
+		super.onViewBindingCreated(binding, savedInstanceState)
+		binding.recyclerView.isVP2BugWorkaroundEnabled = true
+	}
 
 	override fun onScrolledToEnd() = Unit
 
