@@ -59,6 +59,7 @@ class ChaptersFragment :
 		with(binding.recyclerViewChapters) {
 			checkNotNull(selectionController).attachToRecyclerView(this)
 			setHasFixedSize(true)
+			isNestedScrollingEnabled = false
 			adapter = chaptersAdapter
 		}
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
@@ -81,6 +82,17 @@ class ChaptersFragment :
 		chaptersAdapter = null
 		selectionController = null
 		super.onDestroyView()
+	}
+
+	override fun onPause() {
+		// required for BottomSheetBehavior
+		requireViewBinding().recyclerViewChapters.isNestedScrollingEnabled = false
+		super.onPause()
+	}
+
+	override fun onResume() {
+		requireViewBinding().recyclerViewChapters.isNestedScrollingEnabled = true
+		super.onResume()
 	}
 
 	override fun onItemClick(item: ChapterListItem, view: View) {

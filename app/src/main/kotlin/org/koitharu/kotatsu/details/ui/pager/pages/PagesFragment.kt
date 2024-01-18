@@ -88,6 +88,7 @@ class PagesFragment :
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = thumbnailsAdapter
 			setHasFixedSize(true)
+			isNestedScrollingEnabled = false
 			addOnLayoutChangeListener(spanResolver)
 			spanResolver?.setGridSize(settings.gridSize / 100f, this)
 			addOnScrollListener(ScrollListener().also { scrollListener = it })
@@ -110,6 +111,17 @@ class PagesFragment :
 		thumbnailsAdapter = null
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
+	}
+
+	override fun onPause() {
+		// required for BottomSheetBehavior
+		requireViewBinding().recyclerView.isNestedScrollingEnabled = false
+		super.onPause()
+	}
+
+	override fun onResume() {
+		requireViewBinding().recyclerView.isNestedScrollingEnabled = true
+		super.onResume()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
