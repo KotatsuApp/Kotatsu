@@ -26,7 +26,7 @@ fun chapterListItemAD(
 	bind { payloads ->
 		if (payloads.isEmpty()) {
 			binding.textViewTitle.text = item.chapter.name
-			binding.textViewDescription.textAndVisible = item.description()
+			binding.textViewDescription.textAndVisible = item.description
 		}
 		when {
 			item.isCurrent -> {
