@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@drawable/list_selector"
+	android:minHeight="98dp"
+	android:paddingStart="?android:listPreferredItemPaddingStart"
+	tools:ignore="RtlSymmetry">
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/imageView_cover3"
+		android:layout_width="0dp"
+		android:layout_height="64dp"
+		android:layout_marginStart="24dp"
+		android:layout_marginBottom="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
+		android:scaleType="centerCrop"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintDimensionRatio="W,13:18"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:tintMode="src_atop"
+		tools:backgroundTint="#99FFFFFF"
+		tools:src="@tools:sample/backgrounds/scenic"
+		tools:tint="#99FFFFFF" />
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/imageView_cover2"
+		android:layout_width="0dp"
+		android:layout_height="64dp"
+		android:layout_marginStart="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
+		android:scaleType="centerCrop"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintDimensionRatio="W,13:18"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:tintMode="src_atop"
+		tools:backgroundTint="#4DFFFFFF"
+		tools:src="@tools:sample/backgrounds/scenic"
+		tools:tint="#4DFFFFFF" />
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/imageView_cover1"
+		android:layout_width="0dp"
+		android:layout_height="64dp"
+		android:layout_marginTop="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
+		android:scaleType="centerCrop"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintDimensionRatio="W,13:18"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		tools:src="@tools:sample/backgrounds/scenic" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginEnd="?listPreferredItemPaddingEnd"
+		android:ellipsize="end"
+		android:singleLine="true"
+		android:text="@string/all_favourites"
+		android:textAppearance="?attr/textAppearanceBodyLarge"
+		app:layout_constraintBottom_toTopOf="@id/textView_subtitle"
+		app:layout_constraintEnd_toStartOf="@id/imageView_visible"
+		app:layout_constraintStart_toEndOf="@id/imageView_cover3"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_chainStyle="packed" />
+
+	<TextView
+		android:id="@+id/textView_subtitle"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginTop="4dp"
+		android:layout_marginEnd="8dp"
+		android:singleLine="true"
+		android:textAppearance="?attr/textAppearanceBodySmall"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/imageView_visible"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintStart_toEndOf="@id/imageView_cover3"
+		app:layout_constraintTop_toBottomOf="@id/textView_title"
+		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_default="wrap"
+		tools:text="@tools:sample/lorem[1]" />
+
+	<ImageView
+		android:id="@+id/imageView_visible"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/show_all"
+		android:padding="@dimen/margin_normal"
+		android:src="@drawable/ic_eye"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -76,7 +76,13 @@ class FavouriteCategoriesActivity :
 		}
 	}
 
-	override fun onItemClick(item: FavouriteCategory, view: View) {
+	override fun onItemClick(item: FavouriteCategory?, view: View) {
+		if (item == null) {
+			if (selectionController.count == 0) {
+				startActivity(FavouritesActivity.newIntent(view.context))
+			}
+			return
+		}
 		if (selectionController.onItemClick(item.id)) {
 			return
 		}
@@ -92,8 +98,12 @@ class FavouriteCategoriesActivity :
 		startActivity(intent)
 	}
 
-	override fun onItemLongClick(item: FavouriteCategory, view: View): Boolean {
-		return selectionController.onItemLongClick(item.id)
+	override fun onItemLongClick(item: FavouriteCategory?, view: View): Boolean {
+		return item != null && selectionController.onItemLongClick(item.id)
+	}
+
+	override fun onShowAllClick(isChecked: Boolean) {
+		viewModel.setAllCategoriesVisible(isChecked)
 	}
 
 	override fun onDragHandleTouch(holder: RecyclerView.ViewHolder): Boolean {

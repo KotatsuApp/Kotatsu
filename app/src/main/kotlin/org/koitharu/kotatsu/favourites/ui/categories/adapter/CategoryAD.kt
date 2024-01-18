@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
+import org.koitharu.kotatsu.databinding.ItemCategoriesAllBinding
 import org.koitharu.kotatsu.databinding.ItemCategoryBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -78,6 +79,71 @@ fun categoryAD(
 		}
 		binding.imageViewTracker.isVisible = item.category.isTrackingEnabled
 		binding.imageViewVisible.isVisible = item.category.isVisibleInLibrary
+		repeat(coverViews.size) { i ->
+			val cover = item.covers.getOrNull(i)
+			coverViews[i].newImageRequest(lifecycleOwner, cover?.url)?.run {
+				placeholder(R.drawable.ic_placeholder)
+				fallback(fallback)
+				source(cover?.mangaSource)
+				crossfade(crossFadeDuration * (i + 1))
+				error(R.drawable.ic_error_placeholder)
+				allowRgb565(true)
+				enqueueWith(coil)
+			}
+		}
+	}
+}
+
+fun allCategoriesAD(
+	coil: ImageLoader,
+	lifecycleOwner: LifecycleOwner,
+	clickListener: FavouriteCategoriesListListener,
+) = adapterDelegateViewBinding<AllCategoriesListModel, ListModel, ItemCategoriesAllBinding>(
+	{ inflater, parent -> ItemCategoriesAllBinding.inflate(inflater, parent, false) },
+) {
+	val eventListener = OnClickListener { v ->
+		if (v.id == R.id.imageView_visible) {
+			clickListener.onShowAllClick(!item.isVisible)
+		} else {
+			clickListener.onItemClick(null, v)
+		}
+	}
+	val backgroundColor = context.getThemeColor(android.R.attr.colorBackground)
+	ImageViewCompat.setImageTintList(
+		binding.imageViewCover3,
+		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 153)),
+	)
+	ImageViewCompat.setImageTintList(
+		binding.imageViewCover2,
+		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 76)),
+	)
+	binding.imageViewCover2.backgroundTintList =
+		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 76))
+	binding.imageViewCover3.backgroundTintList =
+		ColorStateList.valueOf(ColorUtils.setAlphaComponent(backgroundColor, 153))
+	val fallback = ColorDrawable(Color.TRANSPARENT)
+	val coverViews = arrayOf(binding.imageViewCover1, binding.imageViewCover2, binding.imageViewCover3)
+	val crossFadeDuration = context.getAnimationDuration(R.integer.config_defaultAnimTime).toInt()
+	itemView.setOnClickListener(eventListener)
+	binding.imageViewVisible.setOnClickListener(eventListener)
+
+	bind {
+		binding.textViewSubtitle.text = if (item.mangaCount == 0) {
+			getString(R.string.empty)
+		} else {
+			context.resources.getQuantityString(
+				R.plurals.items,
+				item.mangaCount,
+				item.mangaCount,
+			)
+		}
+		binding.imageViewVisible.setImageResource(
+			if (item.isVisible) {
+				R.drawable.ic_eye
+			} else {
+				R.drawable.ic_eye_off
+			},
+		)
 		repeat(coverViews.size) { i ->
 			val cover = item.covers.getOrNull(i)
 			coverViews[i].newImageRequest(lifecycleOwner, cover?.url)?.run {
