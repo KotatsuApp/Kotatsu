@@ -42,6 +42,7 @@ import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
 import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
 import org.koitharu.kotatsu.details.domain.ProgressUpdateUseCase
+import org.koitharu.kotatsu.details.domain.ReadingTimeUseCase
 import org.koitharu.kotatsu.details.domain.RelatedMangaUseCase
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
@@ -76,6 +77,7 @@ class DetailsViewModel @Inject constructor(
 	private val extraProvider: ListExtraProvider,
 	private val detailsLoadUseCase: DetailsLoadUseCase,
 	private val progressUpdateUseCase: ProgressUpdateUseCase,
+	private val readingTimeUseCase: ReadingTimeUseCase,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -199,6 +201,14 @@ class DetailsViewModel @Inject constructor(
 	) { list, reversed, query ->
 		(if (reversed) list.asReversed() else list).filterSearch(query)
 	}.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+	val readingTime = combine(
+		details,
+		selectedBranch,
+		history,
+	) { m, b, h ->
+		readingTimeUseCase.invoke(m, b, h)
+	}.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
 	val selectedBranchValue: String?
 		get() = selectedBranch.value

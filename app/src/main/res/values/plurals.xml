@@ -28,11 +28,11 @@
 		<item quantity="one">%1$d month ago</item>
 		<item quantity="other">%1$d months ago</item>
 	</plurals>
-	<plurals name="hour">
+	<plurals name="hours">
 		<item quantity="one">%1$d hour</item>
 		<item quantity="other">%1$d hours</item>
 	</plurals>
-	<plurals name="minute">
+	<plurals name="minutes">
 		<item quantity="one">%1$d minute</item>
 		<item quantity="other">%1$d minutes</item>
 	</plurals>

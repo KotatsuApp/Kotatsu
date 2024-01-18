@@ -560,4 +560,6 @@
     <string name="mark_as_completed_prompt">Mark selected manga as completely read?\n\nWarning: current reading progress will be lost.</string>
 	<string name="category_hidden_done">This category was hidden from the main screen and is accessible through Menu → Manage categories</string>
 	<string name="approximate_reading_time">Approximate reading time</string>
+	<string name="approximate_remaining_time">Approximate remaining time</string>
+	<string name="remaining_time_pattern">%1$s %2$s</string>
 </resources>

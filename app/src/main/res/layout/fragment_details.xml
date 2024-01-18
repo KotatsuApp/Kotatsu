@@ -147,9 +147,11 @@
 			android:gravity="center_vertical"
 			android:orientation="horizontal"
 			android:paddingHorizontal="16dp"
+			android:visibility="gone"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/chips_tags">
+			app:layout_constraintTop_toBottomOf="@id/chips_tags"
+			tools:visibility="visible">
 
 			<ImageView
 				android:layout_width="wrap_content"
@@ -164,12 +166,13 @@
 				android:orientation="vertical">
 
 				<TextView
+					android:id="@+id/approximate_read_time_title"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:ellipsize="end"
-					android:maxLines="1"
 					android:paddingVertical="2dp"
-					android:text="@string/approximate_reading_time"
+					android:singleLine="true"
+					tools:text="@string/approximate_reading_time"
 					android:textAppearance="?attr/textAppearanceBodyLarge" />
 
 				<TextView
@@ -177,6 +180,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:paddingVertical="2dp"
+					android:singleLine="true"
 					android:textAppearance="?attr/textAppearanceBodySmall"
 					tools:text="12 minutes" />
 

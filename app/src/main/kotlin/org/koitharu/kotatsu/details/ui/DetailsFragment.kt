@@ -48,6 +48,7 @@ import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.FragmentDetailsBinding
+import org.koitharu.kotatsu.details.data.ReadingTime
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.details.ui.related.RelatedMangaActivity
@@ -70,6 +71,8 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
+import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -118,6 +121,7 @@ class DetailsFragment :
 		viewModel.localSize.observe(viewLifecycleOwner, ::onLocalSizeChanged)
 		viewModel.relatedManga.observe(viewLifecycleOwner, ::onRelatedMangaChanged)
 		viewModel.chapters.observe(viewLifecycleOwner, ::onChaptersChanged)
+		viewModel.readingTime.observe(viewLifecycleOwner, ::onReadingTimeChanged)
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
@@ -201,30 +205,27 @@ class DetailsFragment :
 
 	private fun onChaptersChanged(chapters: List<ChapterListItem>?) {
 		val infoLayout = requireViewBinding().infoLayout
-		val tv = requireViewBinding().approximateReadTime
 		if (chapters.isNullOrEmpty()) {
 			infoLayout.textViewChapters.isVisible = false
-			tv.text = "..."
 		} else {
 			val count = chapters.countChaptersByBranch()
-
-			// FIXME MAXIMUM HARDCODE!!! To do calculation with user's page read speed and his favourites/history mangas average pages in chapter
-			// Impossible task, I guess. Good luck on this.
-			val averageTime: Int = 20 * 10 * (count) // 20 pages, 10 seconds per page
-			val hours = averageTime / 3600
-			val minutes = averageTime % 3600 / 60
-
-			tv.text = buildString {
-				append(resources.getQuantityString(R.plurals.hour, hours, hours))
-				append(" ")
-				append(resources.getQuantityString(R.plurals.minute, minutes, minutes))
-			}
-
-			// Info
 			infoLayout.textViewChapters.isVisible = true
 			val chaptersText = resources.getQuantityString(R.plurals.chapters, count, count)
 			infoLayout.textViewChapters.text = chaptersText
 		}
+	}
+
+	private fun onReadingTimeChanged(time: ReadingTime?) {
+		val binding = viewBinding ?: return
+		if (time == null) {
+			binding.approximateReadTimeLayout.isVisible = false
+			return
+		}
+		binding.approximateReadTime.text = time.format(resources)
+		binding.approximateReadTimeTitle.setText(
+			if (time.isContinue) R.string.approximate_remaining_time else R.string.approximate_reading_time
+		)
+		binding.approximateReadTimeLayout.isVisible = true
 	}
 
 	private fun onDescriptionChanged(description: CharSequence?) {
