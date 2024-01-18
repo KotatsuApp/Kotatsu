@@ -7,6 +7,7 @@ data class MangaBranch(
 	val name: String?,
 	val count: Int,
 	val isSelected: Boolean,
+	val isCurrent: Boolean,
 ) : ListModel {
 
 	override fun areItemsTheSame(other: ListModel): Boolean {

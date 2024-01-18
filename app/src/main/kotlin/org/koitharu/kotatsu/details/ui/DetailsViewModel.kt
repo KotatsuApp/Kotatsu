@@ -25,6 +25,7 @@ import okio.FileNotFoundException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
+import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -171,10 +172,21 @@ class DetailsViewModel @Inject constructor(
 	val branches: StateFlow<List<MangaBranch>> = combine(
 		details,
 		selectedBranch,
-	) { m, b ->
-		(m?.chapters ?: return@combine emptyList())
-			.map { x -> MangaBranch(x.key, x.value.size, x.key == b) }
-			.sortedWith(BranchComparator())
+		history,
+	) { m, b, h ->
+		val c = m?.chapters
+		if (c.isNullOrEmpty()) {
+			return@combine emptyList()
+		}
+		val currentBranch = h?.let { m.allChapters.findById(it.chapterId) }?.branch
+		c.map { x ->
+			MangaBranch(
+				name = x.key,
+				count = x.value.size,
+				isSelected = x.key == b,
+				isCurrent = h != null && x.key == currentBranch,
+			)
+		}.sortedWith(BranchComparator())
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	val isChaptersEmpty: StateFlow<Boolean> = details.map {

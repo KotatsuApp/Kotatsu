@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.text.style.DynamicDrawableSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.ImageSpan
 import android.text.style.RelativeSizeSpan
 import android.transition.AutoTransition
 import android.transition.Slide
@@ -318,6 +320,18 @@ class DetailsActivity :
 		val branches = viewModel.branches.value
 		for ((i, branch) in branches.withIndex()) {
 			val title = buildSpannedString {
+				if (branch.isCurrent) {
+					inSpans(
+						ImageSpan(
+							this@DetailsActivity,
+							R.drawable.ic_current_chapter,
+							DynamicDrawableSpan.ALIGN_BASELINE,
+						),
+					) {
+						append(' ')
+					}
+					append(' ')
+				}
 				append(branch.name ?: getString(R.string.system_default))
 				append(' ')
 				append(' ')
