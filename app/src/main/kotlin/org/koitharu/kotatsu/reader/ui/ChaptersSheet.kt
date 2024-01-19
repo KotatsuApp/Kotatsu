@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
@@ -15,9 +17,13 @@ import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.databinding.SheetChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
+import org.koitharu.kotatsu.details.ui.mapChapters
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
-import org.koitharu.kotatsu.details.ui.model.toListItem
+import org.koitharu.kotatsu.details.ui.withVolumeHeaders
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import java.time.Instant
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -37,32 +43,48 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 
 	override fun onViewBindingCreated(binding: SheetChaptersBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		val chapters = viewModel.manga?.allChapters
-		if (chapters.isNullOrEmpty()) {
+		val manga = viewModel.manga
+		if (manga == null) {
 			dismissAllowingStateLoss()
 			return
 		}
-		val currentId = viewModel.getCurrentState()?.chapterId ?: 0L
-		val currentPosition = chapters.indexOfFirst { it.id == currentId }
-		val items = chapters.mapIndexed { index, chapter ->
-			chapter.toListItem(
-				isCurrent = index == currentPosition,
-				isUnread = index > currentPosition,
-				isNew = false,
-				isDownloaded = false,
-				isBookmarked = false,
-			)
+		val state = viewModel.getCurrentState()
+		val currentChapter = state?.let { manga.allChapters.findById(it.chapterId) }
+		val chapters = manga.mapChapters(
+			history = state?.let {
+				MangaHistory(
+					createdAt = Instant.now(),
+					updatedAt = Instant.now(),
+					chapterId = it.chapterId,
+					page = it.page,
+					scroll = it.scroll,
+					percent = PROGRESS_NONE,
+				)
+			},
+			newCount = 0,
+			branch = currentChapter?.branch,
+			bookmarks = listOf(),
+		).withVolumeHeaders(binding.root.context)
+		if (chapters.isEmpty()) {
+			dismissAllowingStateLoss()
+			return
 		}
+		val currentPosition = if (currentChapter != null) {
+			chapters.indexOfFirst { it is ChapterListItem && it.chapter.id == currentChapter.id }
+		} else {
+			-1
+		}
+		binding.recyclerView.addItemDecoration(TypedListSpacingDecoration(binding.recyclerView.context, true))
 		binding.recyclerView.adapter = ChaptersAdapter(this).also { adapter ->
 			if (currentPosition >= 0) {
 				val targetPosition = (currentPosition - 1).coerceAtLeast(0)
 				val offset =
 					(resources.getDimensionPixelSize(R.dimen.chapter_list_item_height) * 0.6).roundToInt()
 				adapter.setItems(
-					items, RecyclerViewScrollCallback(binding.recyclerView, targetPosition, offset),
+					chapters, RecyclerViewScrollCallback(binding.recyclerView, targetPosition, offset),
 				)
 			} else {
-				adapter.items = items
+				adapter.items = chapters
 			}
 		}
 	}

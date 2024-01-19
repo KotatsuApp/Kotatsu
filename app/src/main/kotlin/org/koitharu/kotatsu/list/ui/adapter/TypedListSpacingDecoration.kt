@@ -83,4 +83,5 @@ class TypedListSpacingDecoration(
 	private fun ListItemType?.isEdgeToEdge() = this == ListItemType.MANGA_NESTED_GROUP
 		|| this == ListItemType.FILTER_SORT
 		|| this == ListItemType.FILTER_TAG
+		|| this == ListItemType.CHAPTER
 }

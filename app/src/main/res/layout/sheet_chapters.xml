@@ -20,6 +20,7 @@
 		android:layout_below="@id/headerBar"
 		android:orientation="vertical"
 		android:scrollIndicators="top"
+		app:bubbleSize="small"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 		tools:listitem="@layout/item_chapter" />

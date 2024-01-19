@@ -13,6 +13,7 @@
 		android:clipToPadding="false"
 		android:orientation="vertical"
 		android:scrollIndicators="top"
+		app:bubbleSize="small"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		tools:listitem="@layout/item_chapter" />
 

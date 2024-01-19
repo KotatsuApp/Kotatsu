@@ -562,4 +562,6 @@
 	<string name="approximate_reading_time">Approximate reading time</string>
 	<string name="approximate_remaining_time">Approximate remaining time</string>
 	<string name="remaining_time_pattern">%1$s %2$s</string>
+	<string name="volume_">Volume %d</string>
+	<string name="volume_unknown">Unknown volume</string>
 </resources>

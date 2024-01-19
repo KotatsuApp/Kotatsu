@@ -1,10 +1,14 @@
 package org.koitharu.kotatsu.details.ui
 
+import android.content.Context
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.toListItem
+import org.koitharu.kotatsu.list.ui.model.ListHeader
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.util.mapToSet
 
 fun MangaDetails.mapChapters(
@@ -58,6 +62,25 @@ fun MangaDetails.mapChapters(
 				isBookmarked = chapter.id in bookmarked,
 			)
 		}
+	}
+	return result
+}
+
+fun List<ChapterListItem>.withVolumeHeaders(context: Context): List<ListModel> {
+	var prevVolume = 0
+	val result = ArrayList<ListModel>((size * 1.4).toInt())
+	for (item in this) {
+		val chapter = item.chapter
+		if (chapter.volume != prevVolume) {
+			val text = if (chapter.volume == 0) {
+				context.getString(R.string.volume_unknown)
+			} else {
+				context.getString(R.string.volume_, chapter.volume)
+			}
+			result.add(ListHeader(text))
+			prevVolume = chapter.volume
+		}
+		result.add(item)
 	}
 	return result
 }

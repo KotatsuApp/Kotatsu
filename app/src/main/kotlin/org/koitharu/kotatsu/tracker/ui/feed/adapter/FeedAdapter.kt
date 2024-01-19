@@ -13,7 +13,6 @@ import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
-import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 
@@ -45,13 +44,6 @@ class FeedAdapter(
 	}
 
 	override fun getSectionText(context: Context, position: Int): CharSequence? {
-		val list = items
-		for (i in (0..position).reversed()) {
-			val item = list.getOrNull(i) ?: continue
-			if (item is ListHeader) {
-				return item.getText(context)
-			}
-		}
-		return null
+		return findHeader(position)?.getText(context)
 	}
 }

@@ -12,6 +12,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
@@ -26,6 +29,9 @@ import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
+import org.koitharu.kotatsu.details.ui.withVolumeHeaders
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
@@ -57,13 +63,17 @@ class ChaptersFragment :
 			callback = this,
 		)
 		with(binding.recyclerViewChapters) {
+			addItemDecoration(TypedListSpacingDecoration(context, true))
 			checkNotNull(selectionController).attachToRecyclerView(this)
 			setHasFixedSize(true)
 			isNestedScrollingEnabled = false
 			adapter = chaptersAdapter
 		}
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
-		viewModel.chapters.observe(viewLifecycleOwner, this::onChaptersChanged)
+		viewModel.chapters
+			.map { it.withVolumeHeaders(requireContext()) }
+			.flowOn(Dispatchers.Default)
+			.observe(viewLifecycleOwner, this::onChaptersChanged)
 		viewModel.isChaptersEmpty.observe(viewLifecycleOwner) {
 			binding.textViewHolder.isVisible = it
 		}
@@ -144,6 +154,9 @@ class ChaptersFragment :
 				val buffer = HashSet<Long>()
 				var isAdding = false
 				for (x in items) {
+					if (x !is ChapterListItem) {
+						continue
+					}
 					if (x.chapter.id in ids) {
 						isAdding = true
 						if (buffer.isNotEmpty()) {
@@ -159,7 +172,13 @@ class ChaptersFragment :
 			}
 
 			R.id.action_select_all -> {
-				val ids = chaptersAdapter?.items?.map { it.chapter.id } ?: return false
+				val ids = chaptersAdapter?.items?.mapNotNull {
+					if (it is ChapterListItem) {
+						it.chapter.id
+					} else {
+						null
+					}
+				} ?: return false
 				controller.addAll(ids)
 				true
 			}
@@ -183,7 +202,15 @@ class ChaptersFragment :
 	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		val selectedIds = selectionController?.peekCheckedIds() ?: return false
 		val allItems = chaptersAdapter?.items.orEmpty()
-		val items = allItems.withIndex().filter { (_, x) -> x.chapter.id in selectedIds }
+		val items = allItems.withIndex().mapNotNull<IndexedValue<ListModel>, IndexedValue<ChapterListItem>> { x ->
+			val value = x.value
+			@Suppress("UNCHECKED_CAST")
+			if (value is ChapterListItem && value.chapter.id in selectedIds) {
+				x as IndexedValue<ChapterListItem>
+			} else {
+				null
+			}
+		}
 		var canSave = true
 		var canDelete = true
 		items.forEach { (_, x) ->
@@ -212,10 +239,10 @@ class ChaptersFragment :
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
-	private fun onChaptersChanged(list: List<ChapterListItem>) {
+	private fun onChaptersChanged(list: List<ListModel>) {
 		val adapter = chaptersAdapter ?: return
 		if (adapter.itemCount == 0) {
-			val position = list.indexOfFirst { it.isCurrent } - 1
+			val position = list.indexOfFirst { it is ChapterListItem && it.isCurrent } - 1
 			if (position > 0) {
 				val offset = (resources.getDimensionPixelSize(R.dimen.chapter_list_item_height) * 0.6).roundToInt()
 				adapter.setItems(

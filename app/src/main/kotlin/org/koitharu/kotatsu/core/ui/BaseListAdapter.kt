@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.core.util.ContinuationResumeRunnable
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
+import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import kotlin.coroutines.suspendCoroutine
 
@@ -34,5 +35,16 @@ open class BaseListAdapter<T : ListModel> : AsyncListDifferDelegationAdapter<T>(
 
 	fun removeListListener(listListener: ListListener<T>) {
 		differ.removeListListener(listListener)
+	}
+
+	fun findHeader(position: Int): ListHeader? {
+		val snapshot = items
+		for (i in (0..position).reversed()) {
+			val item = snapshot.getOrNull(i) ?: continue
+			if (item is ListHeader) {
+				return item
+			}
+		}
+		return null
 	}
 }

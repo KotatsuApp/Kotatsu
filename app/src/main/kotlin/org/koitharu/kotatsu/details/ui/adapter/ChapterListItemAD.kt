@@ -12,10 +12,11 @@ import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemChapterBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
+import org.koitharu.kotatsu.list.ui.model.ListModel
 
 fun chapterListItemAD(
 	clickListener: OnListItemClickListener<ChapterListItem>,
-) = adapterDelegateViewBinding<ChapterListItem, ChapterListItem, ItemChapterBinding>(
+) = adapterDelegateViewBinding<ChapterListItem, ListModel, ItemChapterBinding>(
 	{ inflater, parent -> ItemChapterBinding.inflate(inflater, parent, false) },
 ) {
 

@@ -5,22 +5,20 @@ import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
+import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
+import org.koitharu.kotatsu.list.ui.model.ListModel
 
 class ChaptersAdapter(
 	onItemClickListener: OnListItemClickListener<ChapterListItem>,
-) : BaseListAdapter<ChapterListItem>(), FastScroller.SectionIndexer {
+) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
-		setHasStableIds(true)
-		delegatesManager.addDelegate(chapterListItemAD(onItemClickListener))
-	}
-
-	override fun getItemId(position: Int): Long {
-		return items[position].chapter.id
+		addDelegate(ListItemType.CHAPTER, chapterListItemAD(onItemClickListener))
+		addDelegate(ListItemType.HEADER, listHeaderAD(null))
 	}
 
 	override fun getSectionText(context: Context, position: Int): CharSequence? {
-		val item = items.getOrNull(position) ?: return null
-		return item.chapter.number.toString()
+		return findHeader(position)?.getText(context)
 	}
 }
