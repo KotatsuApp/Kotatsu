@@ -25,7 +25,7 @@ class ReadingTimeUseCase @Inject constructor() {
 			return null
 		}
 		return ReadingTime(
-			minutes = averageTimeSec / 60,
+			minutes = (averageTimeSec / 60) % 60,
 			hours = averageTimeSec / 3600,
 			isContinue = isOnHistoryBranch,
 		)
