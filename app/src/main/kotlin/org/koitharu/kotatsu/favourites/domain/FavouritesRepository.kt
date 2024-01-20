@@ -77,7 +77,7 @@ class FavouritesRepository @Inject constructor(
 		}.distinctUntilChanged()
 	}
 
-	fun observeCategoriesWithCovers(coversLimit: Int): Flow<Map<FavouriteCategory, List<Cover>>> {
+	fun observeCategoriesWithCovers(): Flow<Map<FavouriteCategory, List<Cover>>> {
 		return db.getFavouriteCategoriesDao().observeAll()
 			.map {
 				db.withTransaction {
@@ -87,7 +87,6 @@ class FavouritesRepository @Inject constructor(
 						res[cat] = db.getFavouritesDao().findCovers(
 							categoryId = cat.id,
 							order = cat.order,
-							limit = coversLimit,
 						)
 					}
 					res

@@ -35,7 +35,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 	private var commitJob: Job? = null
 
 	val content = combine(
-		repository.observeCategoriesWithCovers(coversLimit = 3),
+		repository.observeCategoriesWithCovers(),
 		observeAllCategories(),
 		settings.observeAsFlow(AppSettings.KEY_ALL_FAVOURITES_VISIBLE) { isAllFavouritesVisible },
 	) { cats, all, showAll ->
