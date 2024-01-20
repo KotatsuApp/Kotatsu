@@ -82,15 +82,15 @@ abstract class FavouritesDao {
 	)
 	abstract suspend fun findAllManga(categoryId: Int): List<MangaEntity>
 
-	suspend fun findCovers(categoryId: Long, order: ListSortOrder, limit: Int): List<Cover> {
+	suspend fun findCovers(categoryId: Long, order: ListSortOrder): List<Cover> {
 		val orderBy = getOrderBy(order)
 
 		@Language("RoomSql")
 		val query = SimpleSQLiteQuery(
 			"SELECT manga.cover_url AS url, manga.source AS source FROM favourites " +
 				"LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
-				"WHERE favourites.category_id = ? AND deleted_at = 0 ORDER BY $orderBy LIMIT ?",
-			arrayOf<Any>(categoryId, limit),
+				"WHERE favourites.category_id = ? AND deleted_at = 0 ORDER BY $orderBy",
+			arrayOf<Any>(categoryId),
 		)
 		return findCoversImpl(query)
 	}
