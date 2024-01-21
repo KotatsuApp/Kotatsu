@@ -4,12 +4,13 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.FragmentActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 
 class ReaderTopMenuProvider(
-	private val activity: ReaderActivity,
+	private val activity: FragmentActivity,
 	private val viewModel: ReaderViewModel,
 ) : MenuProvider {
 

@@ -50,14 +50,15 @@
 				android:id="@id/toolbar"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_weight="1" />
+				android:layout_weight="1"
+				tools:menu="@menu/opt_reader_top" />
 
 			<com.google.android.material.appbar.MaterialToolbar
 				android:id="@+id/toolbar_bottom"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
-				app:menu="@menu/opt_reader_bottom">
+				tools:menu="@menu/opt_reader_bottom">
 
 				<com.google.android.material.slider.Slider
 					android:id="@+id/slider"

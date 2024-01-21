@@ -10,7 +10,6 @@ import android.transition.TransitionManager
 import android.transition.TransitionSet
 import android.view.Gravity
 import android.view.KeyEvent
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -60,8 +59,6 @@ import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
-import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
-import org.koitharu.kotatsu.settings.SettingsActivity
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -111,7 +108,6 @@ class ReaderActivity :
 		touchHelper = GridTouchHelper(this, this)
 		scrollTimer = scrollTimerFactory.create(this, this)
 		controlDelegate = ReaderControlDelegate(resources, settings, this, this)
-		viewBinding.toolbarBottom.setOnMenuItemClickListener(::onOptionsItemSelected)
 		viewBinding.slider.setLabelFormatter(PageLabelFormatter())
 		viewBinding.zoomControl.listener = this
 		ReaderSliderListener(this, viewModel).attachToSlider(viewBinding.slider)
@@ -144,7 +140,7 @@ class ReaderActivity :
 		viewModel.isScreenshotsBlockEnabled.observe(this, this::setWindowSecure)
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
-		viewModel.isBookmarkAdded.observe(this, this::onBookmarkStateChanged)
+		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(viewBinding.toolbarBottom))
 		viewModel.onShowToast.observeEvent(this) { msgId ->
 			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
 				.setAnchorView(viewBinding.appbarBottom)
@@ -154,6 +150,7 @@ class ReaderActivity :
 			viewBinding.zoomControl.isVisible = it
 		}
 		addMenuProvider(ReaderTopMenuProvider(this, viewModel))
+		viewBinding.toolbarBottom.addMenuProvider(ReaderBottomMenuProvider(this, readerManager, viewModel))
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -192,41 +189,6 @@ class ReaderActivity :
 		viewBinding.slider.isRtl = mode == ReaderMode.REVERSED
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		when (item.itemId) {
-			R.id.action_settings -> {
-				startActivity(SettingsActivity.newReaderSettingsIntent(this))
-			}
-
-			R.id.action_pages_thumbs -> {
-				val state = viewModel.getCurrentState() ?: return false
-				PagesThumbnailsSheet.show(
-					supportFragmentManager,
-					viewModel.manga?.toManga() ?: return false,
-					state.chapterId,
-					state.page,
-				)
-			}
-
-			R.id.action_bookmark -> {
-				if (viewModel.isBookmarkAdded.value) {
-					viewModel.removeBookmark()
-				} else {
-					viewModel.addBookmark()
-				}
-			}
-
-			R.id.action_options -> {
-				viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
-				val currentMode = readerManager.currentMode ?: return false
-				ReaderConfigSheet.show(supportFragmentManager, currentMode)
-			}
-
-			else -> return super.onOptionsItemSelected(item)
-		}
-		return true
-	}
-
 	private fun onLoadingStateChanged(isLoading: Boolean) {
 		val hasPages = viewModel.content.value.pages.isNotEmpty()
 		viewBinding.layoutLoading.isVisible = isLoading && !hasPages
@@ -235,9 +197,7 @@ class ReaderActivity :
 		} else {
 			viewBinding.toastView.hide()
 		}
-		val menu = viewBinding.toolbarBottom.menu
-		menu.findItem(R.id.action_bookmark).isVisible = hasPages
-		menu.findItem(R.id.action_pages_thumbs).isVisible = hasPages
+		viewBinding.toolbarBottom.invalidateMenu()
 	}
 
 	override fun onGridTouch(area: Int) {
@@ -383,12 +343,6 @@ class ReaderActivity :
 
 	private fun onReaderBarChanged(isBarEnabled: Boolean) {
 		viewBinding.infoBar.isVisible = isBarEnabled && viewBinding.appbarTop.isGone
-	}
-
-	private fun onBookmarkStateChanged(isAdded: Boolean) {
-		val menuItem = viewBinding.toolbarBottom.menu.findItem(R.id.action_bookmark) ?: return
-		menuItem.setTitle(if (isAdded) R.string.bookmark_remove else R.string.bookmark_add)
-		menuItem.setIcon(if (isAdded) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark)
 	}
 
 	private fun onUiStateChanged(pair: Pair<ReaderUiState?, ReaderUiState?>) {
