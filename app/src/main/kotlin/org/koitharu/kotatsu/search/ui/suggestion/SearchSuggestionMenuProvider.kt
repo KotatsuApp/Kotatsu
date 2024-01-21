@@ -8,6 +8,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.MenuProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 import org.koitharu.kotatsu.core.util.ext.resolve
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import com.google.android.material.R as materialR
@@ -43,7 +44,7 @@ class SearchSuggestionMenuProvider(
 	}
 
 	private fun clearSearchHistory() {
-		MaterialAlertDialogBuilder(context, materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
+		MaterialAlertDialogBuilder(context, DIALOG_THEME_CENTERED)
 			.setTitle(R.string.clear_search_history)
 			.setIcon(R.drawable.ic_clear_all)
 			.setMessage(R.string.text_clear_search_history_prompt)

@@ -8,6 +8,7 @@ import androidx.core.view.MenuProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.dialog.RememberSelectionDialogListener
+import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -36,7 +37,7 @@ class HistoryListMenuProvider(
 
 	private fun showClearHistoryDialog() {
 		val selectionListener = RememberSelectionDialogListener(2)
-		MaterialAlertDialogBuilder(context, materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
+		MaterialAlertDialogBuilder(context, DIALOG_THEME_CENTERED)
 			.setTitle(R.string.clear_history)
 			.setSingleChoiceItems(
 				arrayOf(

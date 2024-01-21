@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:ignore="AlwaysShowAction">
 
 	<item
 		android:id="@+id/action_chapters"
 		android:icon="@drawable/ic_expand_more"
-		android:title="@string/chapters"
 		android:orderInCategory="0"
+		android:title="@string/chapters"
+		app:showAsAction="always" />
+
+	<item
+		android:id="@+id/action_incognito"
+		android:icon="@drawable/ic_incognito"
+		android:title="@string/incognito_mode"
+		android:visible="false"
 		app:showAsAction="always" />
 
 </menu>

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
-import com.google.android.material.R as materialR
+import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 
 class CategoriesSelectionCallback(
 	private val recyclerView: RecyclerView,
@@ -75,7 +75,7 @@ class CategoriesSelectionCallback(
 
 	private fun confirmDeleteCategories(ids: Set<Long>, mode: ActionMode) {
 		val context = recyclerView.context
-		MaterialAlertDialogBuilder(context, materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
+		MaterialAlertDialogBuilder(context, DIALOG_THEME_CENTERED)
 			.setMessage(R.string.categories_delete_confirm)
 			.setTitle(R.string.remove_category)
 			.setIcon(R.drawable.ic_delete)

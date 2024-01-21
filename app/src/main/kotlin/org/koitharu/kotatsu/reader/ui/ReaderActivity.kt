@@ -10,7 +10,6 @@ import android.transition.TransitionManager
 import android.transition.TransitionSet
 import android.view.Gravity
 import android.view.KeyEvent
-import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -40,6 +39,7 @@ import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.BaseFullscreenActivity
+import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.GridTouchHelper
 import org.koitharu.kotatsu.core.util.IdlingDetector
@@ -140,6 +140,7 @@ class ReaderActivity :
 		viewModel.content.observe(this) {
 			onLoadingStateChanged(viewModel.isLoading.value)
 		}
+		viewModel.incognitoMode.observe(this, MenuInvalidator(this))
 		viewModel.isScreenshotsBlockEnabled.observe(this, this::setWindowSecure)
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
@@ -152,6 +153,7 @@ class ReaderActivity :
 		viewModel.isZoomControlsEnabled.observe(this) {
 			viewBinding.zoomControl.isVisible = it
 		}
+		addMenuProvider(ReaderTopMenuProvider(this, viewModel))
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -190,19 +192,10 @@ class ReaderActivity :
 		viewBinding.slider.isRtl = mode == ReaderMode.REVERSED
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		menuInflater.inflate(R.menu.opt_reader_top, menu)
-		return super.onCreateOptionsMenu(menu)
-	}
-
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.action_settings -> {
 				startActivity(SettingsActivity.newReaderSettingsIntent(this))
-			}
-
-			R.id.action_chapters -> {
-				ChaptersSheet.show(supportFragmentManager)
 			}
 
 			R.id.action_pages_thumbs -> {
