@@ -102,6 +102,15 @@
 					app:icon="@drawable/ic_reader_rtl" />
 
 				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_vertical"
+					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/vertical"
+					app:icon="@drawable/ic_reader_vertical" />
+
+				<com.google.android.material.button.MaterialButton
 					android:id="@+id/button_webtoon"
 					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
 					android:layout_width="0dp"

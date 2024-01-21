@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.reversed.ReversedReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
+import org.koitharu.kotatsu.reader.ui.pager.vertical.VerticalReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonReaderFragment
 import java.util.EnumMap
 
@@ -21,6 +22,7 @@ class ReaderManager(
 		modeMap[ReaderMode.STANDARD] = PagerReaderFragment::class.java
 		modeMap[ReaderMode.REVERSED] = ReversedReaderFragment::class.java
 		modeMap[ReaderMode.WEBTOON] = WebtoonReaderFragment::class.java
+		modeMap[ReaderMode.VERTICAL] = VerticalReaderFragment::class.java
 	}
 
 	val currentReader: BaseReaderFragment<*>?
