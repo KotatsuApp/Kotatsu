@@ -96,6 +96,12 @@ class ReaderViewModel @Inject constructor(
 	val onShowToast = MutableEventFlow<Int>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
+	val incognitoMode = if (isIncognito) {
+		MutableStateFlow(true)
+	} else mangaFlow.map {
+		it != null && historyRepository.shouldSkip(it)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
+
 	val content = MutableStateFlow(ReaderContent(emptyList(), null))
 	val manga: MangaDetails?
 		get() = mangaData.value

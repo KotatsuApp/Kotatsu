@@ -8,9 +8,11 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.annotation.Px
+import androidx.annotation.StyleRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.use
 import androidx.core.graphics.ColorUtils
+import com.google.android.material.R as materialR
 
 fun Context.getThemeDrawable(
 	@AttrRes resId: Int,
@@ -75,3 +77,7 @@ fun TypedArray.getDrawableCompat(context: Context, index: Int): Drawable? {
 	val resId = getResourceId(index, 0)
 	return if (resId != 0) ContextCompat.getDrawable(context, resId) else null
 }
+
+@get:StyleRes
+val DIALOG_THEME_CENTERED: Int
+	inline get() = materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered

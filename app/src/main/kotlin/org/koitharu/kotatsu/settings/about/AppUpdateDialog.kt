@@ -16,8 +16,8 @@ import io.noties.markwon.Markwon
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
-import com.google.android.material.R as materialR
 
 class AppUpdateDialog(private val activity: AppCompatActivity) {
 
@@ -43,10 +43,7 @@ class AppUpdateDialog(private val activity: AppCompatActivity) {
 			appendLine()
 			append(Markwon.create(activity).toMarkdown(version.description))
 		}
-		MaterialAlertDialogBuilder(
-			activity,
-			materialR.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered,
-		)
+		MaterialAlertDialogBuilder(activity, DIALOG_THEME_CENTERED)
 			.setTitle(R.string.app_update_available)
 			.setMessage(message)
 			.setIcon(R.drawable.ic_app_update)

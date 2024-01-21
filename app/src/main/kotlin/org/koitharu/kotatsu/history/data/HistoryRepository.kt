@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
@@ -161,7 +162,7 @@ class HistoryRepository @Inject constructor(
 	}
 
 	fun shouldSkip(manga: Manga): Boolean {
-		return manga.isNsfw && settings.isHistoryExcludeNsfw || settings.isIncognitoModeEnabled
+		return ((manga.source.isNsfw() || manga.isNsfw) && settings.isHistoryExcludeNsfw) || settings.isIncognitoModeEnabled
 	}
 
 	fun observeShouldSkip(manga: Manga): Flow<Boolean> {
