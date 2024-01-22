@@ -42,7 +42,6 @@ open class PageHolder(
 		bindingInfo.buttonRetry.setOnClickListener(this)
 		@Suppress("LeakingThis")
 		bindingInfo.buttonErrorDetails.setOnClickListener(this)
-		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}
 
 	override fun onResume() {
@@ -61,6 +60,7 @@ open class PageHolder(
 			delegate.reload()
 		}
 		binding.ssiv.applyDownsampling(isResumed())
+		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}
 
 	@SuppressLint("SetTextI18n")
