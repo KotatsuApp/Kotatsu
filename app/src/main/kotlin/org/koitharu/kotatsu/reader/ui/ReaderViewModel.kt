@@ -51,6 +51,7 @@ import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.history.domain.HistoryUpdateUseCase
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.util.assertNotNull
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
 import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -381,18 +382,20 @@ class ReaderViewModel @Inject constructor(
 
 	@WorkerThread
 	private fun notifyStateChanged() {
-		val state = getCurrentState()
-		val chapter = state?.chapterId?.let { chaptersLoader.peekChapter(it) }
+		val state = getCurrentState().assertNotNull("state") ?: return
+		val chapter = chaptersLoader.peekChapter(state.chapterId).assertNotNull("chapter") ?: return
+		val m = manga.assertNotNull("manga") ?: return
+		val chapterIndex = m.chapters[chapter.branch]?.indexOf(chapter) ?: -1
 		val newState = ReaderUiState(
-			mangaName = manga?.toManga()?.title,
-			branch = chapter?.branch,
-			chapterName = chapter?.name,
-			chapterNumber = chapter?.number ?: 0,
-			chaptersTotal = manga?.chapters?.get(chapter?.branch)?.size ?: 0,
-			totalPages = if (chapter != null) chaptersLoader.getPagesCount(chapter.id) else 0,
-			currentPage = state?.page ?: 0,
+			mangaName = m.toManga().title,
+			branch = chapter.branch,
+			chapterName = chapter.name,
+			chapterNumber = chapterIndex + 1,
+			chaptersTotal = m.chapters[chapter.branch]?.size ?: 0,
+			totalPages = chaptersLoader.getPagesCount(chapter.id),
+			currentPage = state.page,
 			isSliderEnabled = settings.isReaderSliderEnabled,
-			percent = if (state != null) computePercent(state.chapterId, state.page) else PROGRESS_NONE,
+			percent = computePercent(state.chapterId, state.page),
 		)
 		uiState.value = newState
 	}

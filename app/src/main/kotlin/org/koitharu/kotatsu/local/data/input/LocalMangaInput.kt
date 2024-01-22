@@ -100,6 +100,7 @@ sealed class LocalMangaInput(
 			id = id,
 			name = name,
 			number = number,
+			volume = volume,
 			url = url,
 			scanlator = scanlator,
 			uploadDate = uploadDate,

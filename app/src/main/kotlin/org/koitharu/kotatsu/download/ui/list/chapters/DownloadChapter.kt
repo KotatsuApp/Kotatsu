@@ -4,7 +4,7 @@ import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 data class DownloadChapter(
-	val number: Int,
+	val number: String?,
 	val name: String,
 	val isDownloaded: Boolean,
 ) : ListModel {

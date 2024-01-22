@@ -76,7 +76,8 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 							MangaChapter(
 								id = "$i$s".longHashCode(),
 								name = s.ifEmpty { title },
-								number = i + 1,
+								number = 0f,
+								volume = 0,
 								source = MangaSource.LOCAL,
 								uploadDate = 0L,
 								url = uriBuilder.fragment(s).build().toString(),

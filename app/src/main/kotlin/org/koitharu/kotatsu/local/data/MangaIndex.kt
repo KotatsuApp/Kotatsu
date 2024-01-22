@@ -12,6 +12,8 @@ import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.find
 import org.koitharu.kotatsu.parsers.util.json.getBooleanOrDefault
+import org.koitharu.kotatsu.parsers.util.json.getFloatOrDefault
+import org.koitharu.kotatsu.parsers.util.json.getIntOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
@@ -91,6 +93,7 @@ class MangaIndex(source: String?) {
 		if (!chapters.has(chapter.id.toString())) {
 			val jo = JSONObject()
 			jo.put("number", chapter.number)
+			jo.put("volume", chapter.volume)
 			jo.put("url", chapter.url)
 			jo.put("name", chapter.name)
 			jo.put("uploadDate", chapter.uploadDate)
@@ -162,7 +165,8 @@ class MangaIndex(source: String?) {
 					id = k.toLong(),
 					name = v.getString("name"),
 					url = v.getString("url"),
-					number = v.getInt("number"),
+					number = v.getFloatOrDefault("number", 0f),
+					volume = v.getIntOrDefault("volume", 0),
 					uploadDate = v.getLongOrDefault("uploadDate", 0L),
 					scanlator = v.getStringOrNull("scanlator"),
 					branch = v.getStringOrNull("branch"),
