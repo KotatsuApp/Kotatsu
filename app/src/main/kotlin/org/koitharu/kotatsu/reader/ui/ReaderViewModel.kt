@@ -262,7 +262,7 @@ class ReaderViewModel @Inject constructor(
 	}
 
 	@MainThread
-	fun onCurrentPageChanged(position: Int) {
+	fun onCurrentPageChanged(lowerPos: Int, upperPos: Int) {
 		val prevJob = stateChangeJob
 		val pages = content.value.pages // capture immediately
 		stateChangeJob = launchJob(Dispatchers.Default) {
@@ -271,7 +271,8 @@ class ReaderViewModel @Inject constructor(
 			if (pages.size != content.value.pages.size) {
 				return@launchJob // TODO
 			}
-			pages.getOrNull(position)?.let { page ->
+			val centerPos = (lowerPos + upperPos) / 2
+			pages.getOrNull(centerPos)?.let { page ->
 				currentState.update { cs ->
 					cs?.copy(chapterId = page.chapterId, page = page.index)
 				}
@@ -281,14 +282,14 @@ class ReaderViewModel @Inject constructor(
 				return@launchJob
 			}
 			ensureActive()
-			if (position >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
+			if (upperPos >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
 				loadPrevNextChapter(pages.last().chapterId, isNext = true)
 			}
-			if (position <= BOUNDS_PAGE_OFFSET) {
+			if (lowerPos <= BOUNDS_PAGE_OFFSET) {
 				loadPrevNextChapter(pages.first().chapterId, isNext = false)
 			}
 			if (pageLoader.isPrefetchApplicable()) {
-				pageLoader.prefetch(pages.trySublist(position + 1, position + PREFETCH_LIMIT))
+				pageLoader.prefetch(pages.trySublist(upperPos + 1, upperPos + PREFETCH_LIMIT))
 			}
 		}
 	}

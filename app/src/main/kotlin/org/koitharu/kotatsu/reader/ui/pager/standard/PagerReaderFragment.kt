@@ -170,7 +170,7 @@ class PagerReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>(),
 	}
 
 	private fun notifyPageChanged(page: Int) {
-		viewModel.onCurrentPageChanged(page)
+		viewModel.onCurrentPageChanged(page, page)
 	}
 
 	companion object {

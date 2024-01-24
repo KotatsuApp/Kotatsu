@@ -172,7 +172,8 @@ class ReversedReaderFragment : BaseReaderFragment<FragmentReaderStandardBinding>
 	}
 
 	private fun notifyPageChanged(page: Int) {
-		viewModel.onCurrentPageChanged(reversed(page))
+		val pos = reversed(page)
+		viewModel.onCurrentPageChanged(pos, pos)
 	}
 
 	private fun reversed(position: Int): Int {
