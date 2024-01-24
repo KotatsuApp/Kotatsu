@@ -347,7 +347,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		set(value) = prefs.edit { putEnumValue(KEY_LOCAL_LIST_ORDER, value) }
 
 	var historySortOrder: ListSortOrder
-		get() = prefs.getEnumValue(KEY_HISTORY_ORDER, ListSortOrder.UPDATED)
+		get() = prefs.getEnumValue(KEY_HISTORY_ORDER, ListSortOrder.LAST_READ)
 		set(value) = prefs.edit { putEnumValue(KEY_HISTORY_ORDER, value) }
 
 	var allFavoritesSortOrder: ListSortOrder

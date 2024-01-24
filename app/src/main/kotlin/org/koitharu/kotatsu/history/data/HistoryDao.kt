@@ -35,7 +35,7 @@ abstract class HistoryDao {
 
 	fun observeAll(order: ListSortOrder): Flow<List<HistoryWithManga>> {
 		val orderBy = when (order) {
-			ListSortOrder.UPDATED -> "history.updated_at DESC"
+			ListSortOrder.LAST_READ -> "history.updated_at DESC"
 			ListSortOrder.NEWEST -> "history.created_at DESC"
 			ListSortOrder.PROGRESS -> "history.percent DESC"
 			ListSortOrder.ALPHABETIC -> "manga.title"

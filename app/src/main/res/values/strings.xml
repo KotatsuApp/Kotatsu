@@ -560,4 +560,5 @@
     <string name="mark_as_completed_prompt">Mark selected manga as completely read?\n\nWarning: current reading progress will be lost.</string>
 	<string name="category_hidden_done">This category was hidden from the main screen and is accessible through Menu → Manage categories</string>
 	<string name="incognito_mode_hint">Your reading progress will not be saved</string>
+	<string name="last_read">Last read</string>
 </resources>
