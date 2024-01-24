@@ -230,10 +230,19 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	val defaultDetailsTab: Int
 		get() = if (isPagesTabEnabled) {
-			prefs.getString(KEY_DETAILS_TAB, null)?.toIntOrNull()?.coerceIn(0, 1) ?: 0
+			val raw = prefs.getString(KEY_DETAILS_TAB, null)?.toIntOrNull() ?: 0
+			if (raw == -1) {
+				lastDetailsTab
+			} else {
+				raw
+			}.coerceIn(0, 2)
 		} else {
 			0
 		}
+
+	var lastDetailsTab: Int
+		get() = prefs.getInt(KEY_DETAILS_LAST_TAB, 0)
+		set(value) = prefs.edit { putInt(KEY_DETAILS_LAST_TAB, value) }
 
 	val isContentPrefetchEnabled: Boolean
 		get() {
@@ -636,6 +645,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_IGNORE_DOZE = "ignore_dose"
 		const val KEY_PAGES_TAB = "pages_tab"
 		const val KEY_DETAILS_TAB = "details_tab"
+		const val KEY_DETAILS_LAST_TAB = "details_last_tab"
 		const val KEY_READING_TIME = "reading_time"
 		const val KEY_PAGES_SAVE_DIR = "pages_dir"
 		const val KEY_PAGES_SAVE_ASK = "pages_dir_ask"

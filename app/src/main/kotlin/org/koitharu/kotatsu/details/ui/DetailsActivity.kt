@@ -438,7 +438,7 @@ class DetailsActivity :
 
 		private fun getActivityIntent(context: Context): Intent {
 			val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-			val useNewActivity = prefs.getBoolean(KEY_NEW_ACTIVITY, false)
+			val useNewActivity = prefs.getBoolean(KEY_NEW_ACTIVITY, true)
 			return Intent(
 				context,
 				if (useNewActivity) DetailsActivity2::class.java else DetailsActivity::class.java,

@@ -79,8 +79,10 @@
 		<item>@string/frequency_once_per_month</item>
 	</string-array>
 	<string-array name="details_tabs" translatable="false">
+		<item>@string/last_used</item>
 		<item>@string/chapters</item>
 		<item>@string/pages</item>
+		<item>@string/bookmarks</item>
 	</string-array>
 	<string-array name="download_formats" translatable="false">
 		<item>@string/automatic</item>
