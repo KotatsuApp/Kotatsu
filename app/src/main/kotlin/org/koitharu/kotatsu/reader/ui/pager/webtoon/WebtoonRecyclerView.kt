@@ -6,8 +6,8 @@ import android.view.View
 import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.core.view.forEach
 import androidx.core.view.iterator
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import java.util.LinkedList
 import java.util.WeakHashMap
 
@@ -15,7 +15,8 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
-	private var onPageScrollListeners: MutableList<OnPageScrollListener>? = null
+	private var onPageScrollListeners = LinkedList<OnWebtoonScrollListener>()
+	private val scrollDispatcher = WebtoonScrollDispatcher()
 	private val detachedViews = WeakHashMap<View, Unit>()
 	private var isFixingScroll: Boolean = false
 
@@ -103,22 +104,20 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		return 0
 	}
 
-	fun addOnPageScrollListener(listener: OnPageScrollListener) {
-		val list = onPageScrollListeners ?: LinkedList<OnPageScrollListener>().also { onPageScrollListeners = it }
-		list.add(listener)
+	fun addOnPageScrollListener(listener: OnWebtoonScrollListener) {
+		onPageScrollListeners.add(listener)
 	}
 
-	fun removeOnPageScrollListener(listener: OnPageScrollListener) {
-		onPageScrollListeners?.remove(listener)
+	fun removeOnPageScrollListener(listener: OnWebtoonScrollListener) {
+		onPageScrollListeners.remove(listener)
 	}
 
 	private fun notifyScrollChanged(dy: Int) {
 		val listeners = onPageScrollListeners
-		if (listeners.isNullOrEmpty()) {
+		if (listeners.isEmpty()) {
 			return
 		}
-		val centerPosition = findCenterViewPosition()
-		listeners.forEach { it.dispatchScroll(this, dy, centerPosition) }
+		scrollDispatcher.dispatchScroll(this, dy)
 	}
 
 	fun relayoutChildren() {
@@ -162,20 +161,30 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		else -> false
 	}
 
-	abstract class OnPageScrollListener {
+	private class WebtoonScrollDispatcher {
 
-		private var lastPosition = NO_POSITION
+		private var firstPos = NO_POSITION
+		private var lastPos = NO_POSITION
 
-		fun dispatchScroll(recyclerView: WebtoonRecyclerView, dy: Int, centerPosition: Int) {
-			onScroll(recyclerView, dy)
-			if (centerPosition != NO_POSITION && centerPosition != lastPosition) {
-				lastPosition = centerPosition
-				onPageChanged(recyclerView, centerPosition)
+		fun dispatchScroll(rv: WebtoonRecyclerView, dy: Int) {
+			val lm = rv.layoutManager as? LinearLayoutManager
+			if (lm == null) {
+				firstPos = NO_POSITION
+				lastPos = NO_POSITION
+				return
+			}
+			val newFirstPos = lm.findFirstVisibleItemPosition()
+			val newLastPos = lm.findLastVisibleItemPosition()
+			if (newFirstPos != firstPos || newLastPos != lastPos) {
+				firstPos = newFirstPos
+				lastPos = newLastPos
+				rv.onPageScrollListeners.forEach { it.onScrollChanged(rv, dy, newFirstPos, newLastPos) }
 			}
 		}
+	}
 
-		open fun onScroll(recyclerView: WebtoonRecyclerView, dy: Int) = Unit
+	interface OnWebtoonScrollListener {
 
-		open fun onPageChanged(recyclerView: WebtoonRecyclerView, index: Int) = Unit
+		fun onScrollChanged(recyclerView: WebtoonRecyclerView, dy: Int, firstVisiblePosition: Int, lastVisiblePosition: Int)
 	}
 }

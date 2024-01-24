@@ -24,7 +24,8 @@ import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>() {
+class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>(),
+	WebtoonRecyclerView.OnWebtoonScrollListener {
 
 	@Inject
 	lateinit var networkState: NetworkState
@@ -46,7 +47,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = readerAdapter
-			addOnPageScrollListener(PageScrollListener())
+			addOnPageScrollListener(this@WebtoonReaderFragment)
 			recyclerLifecycleDispatcher = RecyclerViewLifecycleDispatcher().also {
 				addOnScrollListener(it)
 			}
@@ -70,6 +71,15 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		exceptionResolver = exceptionResolver,
 	)
 
+	override fun onScrollChanged(
+		recyclerView: WebtoonRecyclerView,
+		dy: Int,
+		firstVisiblePosition: Int,
+		lastVisiblePosition: Int,
+	) {
+		viewModel.onCurrentPageChanged(firstVisiblePosition, lastVisiblePosition)
+	}
+
 	override suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) = coroutineScope {
 		val setItems = launch {
 			requireAdapter().setItems(pages)
@@ -91,7 +101,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 							?.restoreScroll(pendingState.scroll)
 					}
 				}
-				notifyPageChanged(position)
+				viewModel.onCurrentPageChanged(position, position)
 			} else {
 				Snackbar.make(requireView(), R.string.not_found_404, Snackbar.LENGTH_SHORT)
 					.show()
@@ -121,10 +131,6 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		viewBinding?.frame?.onZoomOut()
 	}
 
-	private fun notifyPageChanged(page: Int) {
-		viewModel.onCurrentPageChanged(page)
-	}
-
 	override fun switchPageBy(delta: Int) {
 		with(requireViewBinding().recyclerView) {
 			if (isAnimationEnabled()) {
@@ -146,13 +152,5 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 			requireViewBinding().recyclerView.nestedScrollBy(0, delta)
 		}
 		return true
-	}
-
-	private inner class PageScrollListener : WebtoonRecyclerView.OnPageScrollListener() {
-
-		override fun onPageChanged(recyclerView: WebtoonRecyclerView, index: Int) {
-			super.onPageChanged(recyclerView, index)
-			notifyPageChanged(index)
-		}
 	}
 }
