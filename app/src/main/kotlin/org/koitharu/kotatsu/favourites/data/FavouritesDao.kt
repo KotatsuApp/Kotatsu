@@ -193,8 +193,8 @@ abstract class FavouritesDao {
 		ListSortOrder.ALPHABETIC -> "manga.title ASC"
 		ListSortOrder.ALPHABETIC_REVERSE -> "manga.title DESC"
 		ListSortOrder.NEW_CHAPTERS -> "IFNULL((SELECT chapters_new FROM tracks WHERE tracks.manga_id = manga.manga_id), 0) DESC"
-		ListSortOrder.UPDATED, // for legacy support
 		ListSortOrder.PROGRESS -> "IFNULL((SELECT percent FROM history WHERE history.manga_id = manga.manga_id), 0) DESC"
+		ListSortOrder.LAST_READ -> "IFNULL((SELECT updated_at FROM history WHERE history.manga_id = manga.manga_id), 0) DESC"
 
 		else -> throw IllegalArgumentException("Sort order $sortOrder is not supported")
 	}

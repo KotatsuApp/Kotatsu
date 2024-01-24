@@ -566,4 +566,5 @@
 	<string name="volume_unknown">Unknown volume</string>
 	<string name="incognito_mode_hint">Your reading progress will not be saved</string>
 	<string name="vertical">Vertical</string>
+	<string name="last_read">Last read</string>
 </resources>
