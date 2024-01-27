@@ -5,10 +5,6 @@
 		<item>@string/light</item>
 		<item>@string/dark</item>
 	</string-array>
-	<string-array name="reader_switchers" translatable="false">
-		<item>@string/taps_on_edges</item>
-		<item>@string/volume_buttons</item>
-	</string-array>
 	<string-array name="zoom_modes" translatable="false">
 		<item>@string/zoom_mode_fit_center</item>
 		<item>@string/zoom_mode_fit_height</item>
@@ -43,6 +39,7 @@
 	<string-array name="reader_modes" translatable="false">
 		<item>@string/standard</item>
 		<item>@string/right_to_left</item>
+		<item>@string/vertical</item>
 		<item>@string/webtoon</item>
 	</string-array>
 	<string-array name="scrobbling_statuses" translatable="false">

@@ -34,19 +34,18 @@
 		android:summary="@string/reader_zoom_buttons_summary"
 		android:title="@string/reader_zoom_buttons" />
 
-	<MultiSelectListPreference
-		android:defaultValue="@array/values_reader_switchers_default"
-		android:entries="@array/reader_switchers"
-		android:entryValues="@array/values_reader_switchers"
-		android:key="reader_switchers"
-		android:title="@string/switch_pages"
+	<Preference
+		android:key="reader_tap_actions"
+		android:persistent="false"
+		android:summary="@string/reader_actions_summary"
+		android:title="@string/reader_actions"
 		app:allowDividerAbove="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
-		android:key="reader_taps_ltr"
-		android:summary="@string/reader_control_ltr_summary"
-		android:title="@string/reader_control_ltr" />
+		android:key="reader_volume_buttons"
+		android:summary="@string/switch_pages_volume_buttons_summary"
+		android:title="@string/switch_pages_volume_buttons" />
 
 	<ListPreference
 		android:entries="@array/reader_animation"
@@ -58,7 +57,8 @@
 		android:defaultValue="false"
 		android:key="enhanced_colors"
 		android:summary="@string/enhanced_colors_summary"
-		android:title="@string/enhanced_colors" />
+		android:title="@string/enhanced_colors"
+		app:allowDividerAbove="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"

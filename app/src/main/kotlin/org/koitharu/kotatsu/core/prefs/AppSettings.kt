@@ -101,14 +101,11 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			}
 		}
 
-	val readerPageSwitch: Set<String>
-		get() = prefs.getStringSet(KEY_READER_SWITCHERS, null) ?: setOf(PAGE_SWITCH_TAPS)
+	val isReaderVolumeButtonsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READER_VOLUME_BUTTONS, false)
 
 	val isReaderZoomButtonsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_ZOOM_BUTTONS, false)
-
-	val isReaderTapsAdaptive: Boolean
-		get() = !prefs.getBoolean(KEY_READER_TAPS_LTR, false)
 
 	val isReaderOptimizationEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_OPTIMIZE, false)
@@ -453,7 +450,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	companion object {
 
-		const val PAGE_SWITCH_TAPS = "taps"
 		const val PAGE_SWITCH_VOLUME_KEYS = "volume"
 
 		const val TRACK_HISTORY = "history"
@@ -476,8 +472,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_GRID_SIZE = "grid_size"
 		const val KEY_REMOTE_SOURCES = "remote_sources"
 		const val KEY_LOCAL_STORAGE = "local_storage"
-		const val KEY_READER_SWITCHERS = "reader_switchers"
 		const val KEY_READER_ZOOM_BUTTONS = "reader_zoom_buttons"
+		const val KEY_READER_VOLUME_BUTTONS = "reader_volume_buttons"
 		const val KEY_TRACKER_ENABLED = "tracker_enabled"
 		const val KEY_TRACKER_WIFI_ONLY = "tracker_wifi"
 		const val KEY_TRACK_SOURCES = "track_sources"
@@ -530,7 +526,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READER_BACKGROUND = "reader_background"
 		const val KEY_READER_SCREEN_ON = "reader_screen_on"
 		const val KEY_SHORTCUTS = "dynamic_shortcuts"
-		const val KEY_READER_TAPS_LTR = "reader_taps_ltr"
+		const val KEY_READER_TAP_ACTIONS = "reader_tap_actions"
 		const val KEY_READER_OPTIMIZE = "reader_optimize"
 		const val KEY_LOCAL_LIST_ORDER = "local_order"
 		const val KEY_HISTORY_ORDER = "history_order"

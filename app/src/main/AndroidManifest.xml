@@ -146,6 +146,9 @@
 			</intent-filter>
 		</activity>
 		<activity
+			android:name="org.koitharu.kotatsu.settings.reader.ReaderTapGridConfigActivity"
+			android:label="@string/reader_actions" />
+		<activity
 			android:name="org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity"
 			android:label="@string/local_manga_directories" />
 		<activity

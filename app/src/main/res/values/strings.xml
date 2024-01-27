@@ -568,4 +568,17 @@
 	<string name="vertical">Vertical</string>
 	<string name="last_read">Last read</string>
 	<string name="two_pages">Two pages</string>
+	<string name="show_menu">Show menu</string>
+	<string name="toggle_ui">Show/hide UI</string>
+	<string name="prev_chapter">Previous chapter</string>
+	<string name="next_chapter">Next chapter</string>
+	<string name="prev_page">Previous page</string>
+	<string name="next_page">Next page</string>
+	<string name="reader_actions">Reader actions</string>
+	<string name="reader_actions_summary">Configure actions for tappable screen areas</string>
+	<string name="switch_pages_volume_buttons">Enable volume buttons</string>
+	<string name="switch_pages_volume_buttons_summary">Use volume buttons for switching pages</string>
+	<string name="tap_action">Tap action</string>
+	<string name="long_tap_action">Long tap action</string>
+	<string name="none">None</string>
 </resources>

@@ -1,92 +1,49 @@
 package org.koitharu.kotatsu.reader.ui
 
-import android.content.SharedPreferences
 import android.content.res.Resources
 import android.view.KeyEvent
-import android.view.SoundEffectConstants
-import android.view.View
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.core.util.GridTouchHelper
+import org.koitharu.kotatsu.reader.data.TapGridSettings
+import org.koitharu.kotatsu.reader.domain.TapGridArea
+import org.koitharu.kotatsu.reader.ui.tapgrid.TapAction
 
 class ReaderControlDelegate(
 	resources: Resources,
 	private val settings: AppSettings,
+	private val tapGridSettings: TapGridSettings,
 	private val listener: OnInteractionListener,
-	owner: LifecycleOwner,
-) : DefaultLifecycleObserver, SharedPreferences.OnSharedPreferenceChangeListener {
+) {
 
-	private var isTapSwitchEnabled: Boolean = true
-	private var isVolumeKeysSwitchEnabled: Boolean = false
-	private var isReaderTapsAdaptive: Boolean = true
 	private var minScrollDelta = resources.getDimensionPixelSize(R.dimen.reader_scroll_delta_min)
 
-	init {
-		owner.lifecycle.addObserver(this)
-		settings.subscribe(this)
-		updateSettings()
+	fun onGridTouch(area: TapGridArea): Boolean {
+		val action = tapGridSettings.getTapAction(
+			area = area,
+			isLongTap = false,
+		) ?: return false
+		processAction(action)
+		return true
 	}
 
-	override fun onDestroy(owner: LifecycleOwner) {
-		settings.unsubscribe(this)
-		owner.lifecycle.removeObserver(this)
-		super.onDestroy(owner)
+	fun onGridLongTouch(area: TapGridArea) {
+		val action = tapGridSettings.getTapAction(
+			area = area,
+			isLongTap = true,
+		) ?: return
+		processAction(action)
 	}
 
-	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-		updateSettings()
-	}
-
-	fun onGridTouch(area: Int, view: View) {
-		when (area) {
-			GridTouchHelper.AREA_CENTER -> {
-				listener.toggleUiVisibility()
-				view.playSoundEffect(SoundEffectConstants.CLICK)
-			}
-
-			GridTouchHelper.AREA_TOP -> if (isTapSwitchEnabled) {
-				listener.switchPageBy(-1)
-				view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
-			}
-
-			GridTouchHelper.AREA_LEFT -> if (isTapSwitchEnabled) {
-				listener.switchPageBy(if (isReaderTapsReversed()) 1 else -1)
-				view.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT)
-			}
-
-			GridTouchHelper.AREA_BOTTOM -> if (isTapSwitchEnabled) {
-				listener.switchPageBy(1)
-				view.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN)
-			}
-
-			GridTouchHelper.AREA_RIGHT -> if (isTapSwitchEnabled) {
-				listener.switchPageBy(if (isReaderTapsReversed()) -1 else 1)
-				view.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT)
-			}
-		}
-	}
-
-	fun onGridLongTouch(area: Int, view: View) {
-		when (area) {
-			GridTouchHelper.AREA_CENTER -> {
-				listener.viewDialog()
-				view.playSoundEffect(SoundEffectConstants.CLICK)
-			}
-		}
-	}
-
-	fun onKeyDown(keyCode: Int, @Suppress("UNUSED_PARAMETER") event: KeyEvent?): Boolean = when (keyCode) {
-		KeyEvent.KEYCODE_VOLUME_UP -> if (isVolumeKeysSwitchEnabled) {
+	fun onKeyDown(keyCode: Int): Boolean = when (keyCode) {
+		KeyEvent.KEYCODE_VOLUME_UP -> if (settings.isReaderVolumeButtonsEnabled) {
 			listener.switchPageBy(-1)
 			true
 		} else {
 			false
 		}
 
-		KeyEvent.KEYCODE_VOLUME_DOWN -> if (isVolumeKeysSwitchEnabled) {
+		KeyEvent.KEYCODE_VOLUME_DOWN -> if (settings.isReaderVolumeButtonsEnabled) {
 			listener.switchPageBy(1)
 			true
 		} else {
@@ -141,21 +98,23 @@ class ReaderControlDelegate(
 	}
 
 	fun onKeyUp(keyCode: Int, @Suppress("UNUSED_PARAMETER") event: KeyEvent?): Boolean {
-		return (
-			isVolumeKeysSwitchEnabled &&
-				(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP)
-			)
+		return (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP)
+			&& settings.isReaderVolumeButtonsEnabled
 	}
 
-	private fun updateSettings() {
-		val switch = settings.readerPageSwitch
-		isTapSwitchEnabled = AppSettings.PAGE_SWITCH_TAPS in switch
-		isVolumeKeysSwitchEnabled = AppSettings.PAGE_SWITCH_VOLUME_KEYS in switch
-		isReaderTapsAdaptive = settings.isReaderTapsAdaptive
+	private fun processAction(action: TapAction) {
+		when (action) {
+			TapAction.PAGE_NEXT -> listener.switchPageBy(1)
+			TapAction.PAGE_PREV -> listener.switchPageBy(-1)
+			TapAction.CHAPTER_NEXT -> listener.switchChapterBy(1)
+			TapAction.CHAPTER_PREV -> listener.switchChapterBy(-1)
+			TapAction.TOGGLE_UI -> listener.toggleUiVisibility()
+			TapAction.SHOW_MENU -> listener.openMenu()
+		}
 	}
 
 	private fun isReaderTapsReversed(): Boolean {
-		return isReaderTapsAdaptive && listener.readerMode == ReaderMode.REVERSED
+		return listener.readerMode == ReaderMode.REVERSED
 	}
 
 	interface OnInteractionListener {
@@ -164,11 +123,13 @@ class ReaderControlDelegate(
 
 		fun switchPageBy(delta: Int)
 
-		fun viewDialog()
+		fun switchChapterBy(delta: Int)
 
 		fun scrollBy(delta: Int, smooth: Boolean): Boolean
 
 		fun toggleUiVisibility()
+
+		fun openMenu()
 
 		fun isReaderResumed(): Boolean
 	}

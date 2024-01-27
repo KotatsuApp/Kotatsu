@@ -262,6 +262,24 @@ class ReaderViewModel @Inject constructor(
 		}
 	}
 
+	fun switchChapterBy(delta: Int) {
+		val prevJob = loadingJob
+		loadingJob = launchLoadingJob(Dispatchers.Default) {
+			prevJob?.cancelAndJoin()
+			val currentChapterId = currentState.requireValue().chapterId
+			val allChapters = checkNotNull(manga).allChapters
+			var index = allChapters.indexOfFirst { x -> x.id == currentChapterId }
+			if (index < 0) {
+				return@launchLoadingJob
+			}
+			index += delta
+			val newChapterId = (allChapters.getOrNull(index) ?: return@launchLoadingJob).id
+			content.value = ReaderContent(emptyList(), null)
+			chaptersLoader.loadSingleChapter(newChapterId)
+			content.value = ReaderContent(chaptersLoader.snapshot(), ReaderState(newChapterId, 0, 0))
+		}
+	}
+
 	@MainThread
 	fun onCurrentPageChanged(lowerPos: Int, upperPos: Int) {
 		val prevJob = stateChangeJob
