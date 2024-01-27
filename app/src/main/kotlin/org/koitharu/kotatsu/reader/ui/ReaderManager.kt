@@ -6,7 +6,7 @@ import androidx.fragment.app.commit
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
-import org.koitharu.kotatsu.reader.ui.pager.doublepage.DoublePageReaderFragment
+import org.koitharu.kotatsu.reader.ui.pager.doublepage.DoubleReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.reversed.ReversedReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.standard.PagerReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.vertical.VerticalReaderFragment
@@ -23,7 +23,7 @@ class ReaderManager(
 	init {
 		val isTablet = container.resources.getBoolean(R.bool.is_tablet)
 		modeMap[ReaderMode.STANDARD] = if (isTablet) {
-			DoublePageReaderFragment::class.java
+			DoubleReaderFragment::class.java
 		} else {
 			PagerReaderFragment::class.java
 		}

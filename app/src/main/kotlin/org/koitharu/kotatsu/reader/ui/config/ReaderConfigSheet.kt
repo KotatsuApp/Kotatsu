@@ -80,6 +80,7 @@ class ReaderConfigSheet :
 		binding.buttonReversed.isChecked = mode == ReaderMode.REVERSED
 		binding.buttonWebtoon.isChecked = mode == ReaderMode.WEBTOON
 		binding.buttonVertical.isChecked = mode == ReaderMode.VERTICAL
+		binding.buttonDouble.isChecked = mode == ReaderMode.DOUBLE
 
 		binding.checkableGroup.addOnButtonCheckedListener(this)
 		binding.buttonSavePage.setOnClickListener(this)
@@ -155,6 +156,7 @@ class ReaderConfigSheet :
 			R.id.button_webtoon -> ReaderMode.WEBTOON
 			R.id.button_reversed -> ReaderMode.REVERSED
 			R.id.button_vertical -> ReaderMode.VERTICAL
+			R.id.button_double -> ReaderMode.DOUBLE
 			else -> return
 		}
 		if (newMode == mode) {

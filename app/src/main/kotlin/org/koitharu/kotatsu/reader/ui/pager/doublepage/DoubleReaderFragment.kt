@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -17,14 +17,16 @@ import org.koitharu.kotatsu.databinding.FragmentReaderDoubleBinding
 import org.koitharu.kotatsu.parsers.util.toIntUp
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import org.koitharu.kotatsu.reader.ui.pager.standard.PageHolder
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
 @AndroidEntryPoint
-class DoublePageReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>() {
+class DoubleReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>() {
 
 	@Inject
 	lateinit var networkState: NetworkState
@@ -44,7 +46,7 @@ class DoublePageReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>
 		super.onViewBindingCreated(binding, savedInstanceState)
 		with(binding.recyclerView) {
 			adapter = readerAdapter
-			addOnScrollListener(PageScrollListener())
+			addOnScrollListener(PageScrollListener(viewModel))
 			DoublePageSnapHelper().attachToRecyclerView(this)
 		}
 	}
@@ -54,28 +56,28 @@ class DoublePageReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>
 		super.onDestroyView()
 	}
 
-	override suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) =
-		coroutineScope {
-			val items = async {
-				requireAdapter().setItems(pages)
-				yield()
-			}
-			if (pendingState != null) {
-				val position = pages.indexOfFirst {
-					it.chapterId == pendingState.chapterId && it.index == pendingState.page
-				}
-				items.await()
-				if (position != -1) {
-					requireViewBinding().recyclerView.firstVisibleItemPosition = position or 1
-					notifyPageChanged(position)
-				} else {
-					Snackbar.make(requireView(), R.string.not_found_404, Snackbar.LENGTH_SHORT)
-						.show()
-				}
-			} else {
-				items.await()
-			}
+	override suspend fun onPagesChanged(pages: List<ReaderPage>, pendingState: ReaderState?) = coroutineScope {
+		val items = launch {
+			requireAdapter().setItems(pages)
+			yield()
 		}
+		if (pendingState != null) {
+			var position = pages.indexOfFirst {
+				it.chapterId == pendingState.chapterId && it.index == pendingState.page
+			}
+			items.join()
+			if (position != -1) {
+				position = position or 1
+				requireViewBinding().recyclerView.firstVisibleItemPosition = position
+				viewModel.onCurrentPageChanged(position, position + 1)
+			} else {
+				Snackbar.make(requireView(), R.string.not_found_404, Snackbar.LENGTH_SHORT)
+					.show()
+			}
+		} else {
+			items.join()
+		}
+	}
 
 	override fun onCreateAdapter() = DoublePagesAdapter(
 		lifecycleOwner = viewLifecycleOwner,
@@ -84,6 +86,16 @@ class DoublePageReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>
 		networkState = networkState,
 		exceptionResolver = exceptionResolver,
 	)
+
+	override fun onZoomIn() {
+		(viewBinding ?: return).recyclerView.pageHolders()
+			.forEach { it.onZoomIn() }
+	}
+
+	override fun onZoomOut() {
+		(viewBinding ?: return).recyclerView.pageHolders()
+			.forEach { it.onZoomOut() }
+	}
 
 	override fun switchPageBy(delta: Int) {
 		switchPageTo((requireViewBinding().recyclerView.currentItem() + delta) or 1, delta.absoluteValue > 1)
@@ -103,25 +115,38 @@ class DoublePageReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>
 		)
 	}
 
-	private fun notifyPageChanged(page: Int) {
-		viewModel.onCurrentPageChanged(page)
-	}
-
 	private fun RecyclerView.currentItem(): Int {
 		val lm = layoutManager as LinearLayoutManager
 		return ((lm.findFirstVisibleItemPosition() + lm.findLastVisibleItemPosition()) / 2f).toIntUp()
 	}
 
-	private inner class PageScrollListener : RecyclerView.OnScrollListener() {
+	private fun RecyclerView.pageHolders(): Sequence<PageHolder> {
+		val lm = layoutManager as? LinearLayoutManager ?: return emptySequence()
+		return (lm.findFirstVisibleItemPosition()..lm.findLastVisibleItemPosition()).asSequence()
+			.mapNotNull { findViewHolderForAdapterPosition(it) as? PageHolder }
+	}
 
-		private var lastPage = RecyclerView.NO_POSITION
+	private class PageScrollListener(
+		private val viewModel: ReaderViewModel,
+	) : RecyclerView.OnScrollListener() {
+
+		private var firstPos = RecyclerView.NO_POSITION
+		private var lastPos = RecyclerView.NO_POSITION
 
 		override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 			super.onScrolled(recyclerView, dx, dy)
-			val page = recyclerView.currentItem()
-			if (page != lastPage) {
-				lastPage = page
-				notifyPageChanged(page)
+			val lm = recyclerView.layoutManager as? LinearLayoutManager
+			if (lm == null) {
+				firstPos = RecyclerView.NO_POSITION
+				lastPos = RecyclerView.NO_POSITION
+				return
+			}
+			val newFirstPos = lm.findFirstVisibleItemPosition()
+			val newLastPos = lm.findLastVisibleItemPosition()
+			if (newFirstPos != firstPos || newLastPos != lastPos) {
+				firstPos = newFirstPos
+				lastPos = newLastPos
+				viewModel.onCurrentPageChanged(newFirstPos, newLastPos)
 			}
 		}
 	}

@@ -119,6 +119,15 @@
 					android:text="@string/webtoon"
 					app:icon="@drawable/ic_script" />
 
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_double"
+					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/two_pages"
+					app:icon="@drawable/ic_pager_double_ltr" />
+
 			</com.google.android.material.button.MaterialButtonToggleGroup>
 
 			<TextView
