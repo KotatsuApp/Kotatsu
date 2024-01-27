@@ -24,6 +24,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +44,7 @@ import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.GridTouchHelper
 import org.koitharu.kotatsu.core.util.IdlingDetector
 import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 import org.koitharu.kotatsu.core.util.ext.hasGlobalPoint
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.isRtl
@@ -204,6 +206,10 @@ class ReaderActivity :
 		controlDelegate.onGridTouch(area, viewBinding.container)
 	}
 
+	override fun onGridLongTouch(area: Int) {
+		controlDelegate.onGridLongTouch(area, viewBinding.container)
+	}
+
 	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {
 		return if (
 			rawX <= gestureInsets.left ||
@@ -334,6 +340,13 @@ class ReaderActivity :
 
 	override fun toggleUiVisibility() {
 		setUiIsVisible(!viewBinding.appbarTop.isVisible)
+	}
+
+	override fun viewDialog() {
+		MaterialAlertDialogBuilder(this, DIALOG_THEME_CENTERED)
+			.setMessage("Called dialog on long press")
+			.setPositiveButton(R.string.got_it, null)
+			.show()
 	}
 
 	override fun isReaderResumed(): Boolean {

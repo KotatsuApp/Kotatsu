@@ -69,6 +69,15 @@ class ReaderControlDelegate(
 		}
 	}
 
+	fun onGridLongTouch(area: Int, view: View) {
+		when (area) {
+			GridTouchHelper.AREA_CENTER -> {
+				listener.viewDialog()
+				view.playSoundEffect(SoundEffectConstants.CLICK)
+			}
+		}
+	}
+
 	fun onKeyDown(keyCode: Int, @Suppress("UNUSED_PARAMETER") event: KeyEvent?): Boolean = when (keyCode) {
 		KeyEvent.KEYCODE_VOLUME_UP -> if (isVolumeKeysSwitchEnabled) {
 			listener.switchPageBy(-1)
@@ -154,6 +163,8 @@ class ReaderControlDelegate(
 		val readerMode: ReaderMode?
 
 		fun switchPageBy(delta: Int)
+
+		fun viewDialog()
 
 		fun scrollBy(delta: Int, smooth: Boolean): Boolean
 

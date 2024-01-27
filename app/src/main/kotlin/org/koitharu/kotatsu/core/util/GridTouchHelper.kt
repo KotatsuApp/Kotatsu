@@ -52,6 +52,23 @@ class GridTouchHelper(
 		return true
 	}
 
+	override fun onLongPress(event: MotionEvent) {
+		super.onLongPress(event)
+		val xIndex = (event.rawX * 2f / width).roundToInt()
+		val yIndex = (event.rawY * 2f / height).roundToInt()
+		listener.onGridLongTouch(
+			when(xIndex) {
+				1 -> {
+					when (yIndex) {
+						1 -> AREA_CENTER
+						else -> -1
+					}
+				}
+				else -> -1
+			}
+		)
+	}
+
 	companion object {
 
 		const val AREA_CENTER = 1
@@ -64,6 +81,8 @@ class GridTouchHelper(
 	interface OnGridTouchListener {
 
 		fun onGridTouch(area: Int)
+
+		fun onGridLongTouch(area: Int)
 
 		fun onProcessTouch(rawX: Int, rawY: Int): Boolean
 	}
