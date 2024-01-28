@@ -141,6 +141,8 @@ dependencies {
 	compileOnly 'com.google.auto.service:auto-service-annotations:1.1.1'
 	ksp 'dev.zacsweers.autoservice:auto-service-ksp:1.1.0'
 
+	implementation 'org.conscrypt:conscrypt-android:2.5.2'
+
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.13'
 
 	testImplementation 'junit:junit:4.13.2'
