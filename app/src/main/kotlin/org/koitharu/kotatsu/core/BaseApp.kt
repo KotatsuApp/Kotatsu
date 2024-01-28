@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
@@ -19,6 +20,7 @@ import org.acra.config.httpSender
 import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
 import org.acra.sender.HttpSender
+import org.conscrypt.Conscrypt
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -27,6 +29,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.WorkServiceStopHelper
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.settings.work.WorkScheduleManager
+import java.security.Security
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -66,6 +69,10 @@ open class BaseApp : Application(), Configuration.Provider {
 		super.onCreate()
 		AppCompatDelegate.setDefaultNightMode(settings.theme)
 		AppCompatDelegate.setApplicationLocales(settings.appLocales)
+		// TLS 1.3 support for Android < 10
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+			Security.insertProviderAt(Conscrypt.newProvider(), 1)
+		}
 		setupActivityLifecycleCallbacks()
 		processLifecycleScope.launch {
 			val isOriginalApp = withContext(Dispatchers.Default) {
