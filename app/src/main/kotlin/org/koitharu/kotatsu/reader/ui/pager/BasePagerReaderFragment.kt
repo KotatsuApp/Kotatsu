@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
 import android.os.Build
+import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
 import android.view.InputDevice
 import android.view.KeyEvent
@@ -75,7 +76,7 @@ abstract class BasePagerReaderFragment : BaseReaderFragment<FragmentReaderPagerB
 
 		viewModel.pageAnimation.observe(viewLifecycleOwner) {
 			val transformer = when (it) {
-				ReaderAnimation.NONE -> NoAnimPageTransformer()
+				ReaderAnimation.NONE -> NoAnimPageTransformer(binding.pager.orientation)
 				ReaderAnimation.DEFAULT -> null
 				ReaderAnimation.ADVANCED -> onCreateAdvancedTransformer()
 			}

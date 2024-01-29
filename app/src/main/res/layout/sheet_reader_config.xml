@@ -119,15 +119,6 @@
 					android:text="@string/webtoon"
 					app:icon="@drawable/ic_script" />
 
-				<com.google.android.material.button.MaterialButton
-					android:id="@+id/button_double"
-					style="@style/Widget.Kotatsu.ToggleButton.Vertical"
-					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="@string/two_pages"
-					app:icon="@drawable/ic_pager_double_ltr" />
-
 			</com.google.android.material.button.MaterialButtonToggleGroup>
 
 			<TextView
@@ -139,10 +130,24 @@
 				android:textAppearance="?attr/textAppearanceBodySmall" />
 
 			<com.google.android.material.materialswitch.MaterialSwitch
-				android:id="@+id/switch_scroll_timer"
+				android:id="@+id/switch_double_reader"
 				android:layout_width="match_parent"
 				android:layout_height="?android:listPreferredItemHeightSmall"
 				android:layout_marginTop="@dimen/margin_normal"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:ellipsize="end"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:singleLine="true"
+				android:text="@string/use_two_pages_landscape"
+				android:textAppearance="?attr/textAppearanceButton"
+				android:textColor="?colorOnSurfaceVariant"
+				app:drawableStartCompat="@drawable/ic_split_horizontal" />
+
+			<com.google.android.material.materialswitch.MaterialSwitch
+				android:id="@+id/switch_scroll_timer"
+				android:layout_width="match_parent"
+				android:layout_height="?android:listPreferredItemHeightSmall"
 				android:drawablePadding="?android:listPreferredItemPaddingStart"
 				android:ellipsize="end"
 				android:paddingStart="?android:listPreferredItemPaddingStart"

@@ -16,4 +16,10 @@ class DoublePageLayoutManager(
 		lp?.width = width / 2
 		return super.checkLayoutParams(lp)
 	}
+
+	override fun calculateExtraLayoutSpace(state: RecyclerView.State, extraLayoutSpace: IntArray) {
+		val offscreenSpace = width / 2
+		extraLayoutSpace[0] = offscreenSpace
+		extraLayoutSpace[1] = offscreenSpace
+	}
 }

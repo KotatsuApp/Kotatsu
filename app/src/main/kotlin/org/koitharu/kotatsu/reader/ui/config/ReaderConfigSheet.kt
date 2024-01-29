@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.ui.config
 
 import android.net.Uri
+import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -80,7 +81,8 @@ class ReaderConfigSheet :
 		binding.buttonReversed.isChecked = mode == ReaderMode.REVERSED
 		binding.buttonWebtoon.isChecked = mode == ReaderMode.WEBTOON
 		binding.buttonVertical.isChecked = mode == ReaderMode.VERTICAL
-		binding.buttonDouble.isChecked = mode == ReaderMode.DOUBLE
+		binding.switchDoubleReader.isChecked = settings.isReaderDoubleOnLandscape
+		binding.switchDoubleReader.isEnabled = mode == ReaderMode.STANDARD
 
 		binding.checkableGroup.addOnButtonCheckedListener(this)
 		binding.buttonSavePage.setOnClickListener(this)
@@ -89,6 +91,7 @@ class ReaderConfigSheet :
 		binding.buttonColorFilter.setOnClickListener(this)
 		binding.sliderTimer.addOnChangeListener(this)
 		binding.switchScrollTimer.setOnCheckedChangeListener(this)
+		binding.switchDoubleReader.setOnCheckedChangeListener(this)
 
 		settings.observeAsStateFlow(
 			scope = lifecycleScope + Dispatchers.Default,
@@ -140,6 +143,11 @@ class ReaderConfigSheet :
 			R.id.switch_screen_lock_rotation -> {
 				orientationHelper.isLocked = isChecked
 			}
+
+			R.id.switch_double_reader -> {
+				settings.isReaderDoubleOnLandscape = isChecked
+				findCallback()?.onReaderModeChanged(mode)
+			}
 		}
 	}
 
@@ -156,9 +164,9 @@ class ReaderConfigSheet :
 			R.id.button_webtoon -> ReaderMode.WEBTOON
 			R.id.button_reversed -> ReaderMode.REVERSED
 			R.id.button_vertical -> ReaderMode.VERTICAL
-			R.id.button_double -> ReaderMode.DOUBLE
 			else -> return
 		}
+		viewBinding?.switchDoubleReader?.isEnabled = newMode == ReaderMode.STANDARD
 		if (newMode == mode) {
 			return
 		}

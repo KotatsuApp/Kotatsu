@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.ui
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
 import android.transition.Fade
 import android.transition.Slide
@@ -108,7 +109,7 @@ class ReaderActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderBinding.inflate(layoutInflater))
-		readerManager = ReaderManager(supportFragmentManager, viewBinding.container)
+		readerManager = ReaderManager(supportFragmentManager, viewBinding.container, settings)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = TapGridDispatcher(this, this)
 		scrollTimer = scrollTimerFactory.create(this, this)

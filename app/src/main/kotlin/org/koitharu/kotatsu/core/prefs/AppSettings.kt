@@ -101,6 +101,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			}
 		}
 
+	var isReaderDoubleOnLandscape: Boolean
+		get() = prefs.getBoolean(KEY_READER_DOUBLE_PAGES, false)
+		set(value) = prefs.edit { putBoolean(KEY_READER_DOUBLE_PAGES, value) }
+
 	val isReaderVolumeButtonsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_VOLUME_BUTTONS, false)
 
@@ -472,6 +476,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_GRID_SIZE = "grid_size"
 		const val KEY_REMOTE_SOURCES = "remote_sources"
 		const val KEY_LOCAL_STORAGE = "local_storage"
+		const val KEY_READER_DOUBLE_PAGES = "reader_double_pages"
 		const val KEY_READER_ZOOM_BUTTONS = "reader_zoom_buttons"
 		const val KEY_READER_VOLUME_BUTTONS = "reader_volume_buttons"
 		const val KEY_TRACKER_ENABLED = "tracker_enabled"
