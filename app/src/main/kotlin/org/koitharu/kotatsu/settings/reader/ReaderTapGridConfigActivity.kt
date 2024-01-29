@@ -5,6 +5,8 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.core.graphics.ColorUtils
@@ -56,6 +58,22 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 		}
 		updateValues()
 		tapGridSettings.observe().observe(this) { updateValues() }
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		menuInflater.inflate(R.menu.opt_tap_grid_config, menu)
+		return super.onCreateOptionsMenu(menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return when (item.itemId) {
+			R.id.action_reset -> {
+				confirmReset()
+				true
+			}
+
+			else -> super.onOptionsItemSelected(item)
+		}
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -118,12 +136,21 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 			.show()
 	}
 
+	private fun confirmReset() {
+		MaterialAlertDialogBuilder(this)
+			.setMessage(R.string.config_reset_confirm)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setPositiveButton(R.string.reset) { _, _ ->
+				tapGridSettings.reset()
+			}.show()
+	}
+
 	private fun createBackground(action: TapAction?): Drawable? {
 		val ripple = getThemeDrawable(materialR.attr.selectableItemBackground)
 		return if (action == null) {
 			ripple
 		} else {
-			LayerDrawable(arrayOf(ripple, ColorDrawable(ColorUtils.setAlphaComponent(action.color, 60))))
+			LayerDrawable(arrayOf(ripple, ColorDrawable(ColorUtils.setAlphaComponent(action.color, 40))))
 		}
 	}
 }

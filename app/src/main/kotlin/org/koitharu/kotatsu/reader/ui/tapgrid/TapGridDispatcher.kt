@@ -35,6 +35,11 @@ class TapGridDispatcher(
 		return listener.onGridTouch(getArea(event.rawX, event.rawY))
 	}
 
+	override fun onDoubleTapEvent(e: MotionEvent): Boolean {
+		isDispatching = false // ignore long press after double tap
+		return super.onDoubleTapEvent(e)
+	}
+
 	override fun onLongPress(event: MotionEvent) {
 		if (isDispatching) {
 			listener.onGridLongTouch(getArea(event.rawX, event.rawY))
