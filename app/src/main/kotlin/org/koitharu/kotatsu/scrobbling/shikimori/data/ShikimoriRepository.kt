@@ -216,7 +216,7 @@ class ShikimoriRepository @Inject constructor(
 	private fun ShikimoriUser(json: JSONObject) = ScrobblerUser(
 		id = json.getLong("id"),
 		nickname = json.getString("nickname"),
-		avatar = json.getString("avatar"),
+		avatar = json.getStringOrNull("avatar"),
 		service = ScrobblerService.SHIKIMORI,
 	)
 }

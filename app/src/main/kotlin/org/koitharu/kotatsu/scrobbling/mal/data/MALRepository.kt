@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.await
+import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONNotNull
 import org.koitharu.kotatsu.parsers.util.parseJson
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository
@@ -29,7 +30,6 @@ import javax.inject.Singleton
 private const val REDIRECT_URI = "kotatsu://mal-auth"
 private const val BASE_WEB_URL = "https://myanimelist.net"
 private const val BASE_API_URL = "https://api.myanimelist.net/v2"
-private const val AVATAR_STUB = "https://cdn.myanimelist.net/images/questionmark_50.gif"
 
 @Singleton
 class MALRepository @Inject constructor(
@@ -209,7 +209,7 @@ class MALRepository @Inject constructor(
 	private fun MALUser(json: JSONObject) = ScrobblerUser(
 		id = json.getLong("id"),
 		nickname = json.getString("name"),
-		avatar = json.getString("picture") ?: AVATAR_STUB,
+		avatar = json.getStringOrNull("picture"),
 		service = ScrobblerService.MAL,
 	)
 

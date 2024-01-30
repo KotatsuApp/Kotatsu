@@ -249,7 +249,7 @@ class AniListRepository @Inject constructor(
 	private fun AniListUser(json: JSONObject) = ScrobblerUser(
 		id = json.getLong("id"),
 		nickname = json.getString("name"),
-		avatar = json.getJSONObject("avatar").getString("medium"),
+		avatar = json.getJSONObject("avatar").getStringOrNull("medium"),
 		service = ScrobblerService.ANILIST,
 	)
 

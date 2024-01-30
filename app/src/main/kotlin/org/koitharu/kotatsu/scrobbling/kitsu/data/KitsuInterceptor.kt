@@ -5,7 +5,7 @@ import okhttp3.Response
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
 
-private const val JSON = "application/json"
+private const val JSON = "application/vnd.api+json"
 
 class KitsuInterceptor(private val storage: ScrobblerStorage) : Interceptor {
 

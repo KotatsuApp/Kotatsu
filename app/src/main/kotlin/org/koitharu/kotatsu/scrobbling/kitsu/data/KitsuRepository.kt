@@ -9,7 +9,10 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.await
+import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
+import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.parseJson
+import org.koitharu.kotatsu.parsers.util.urlEncoded
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
@@ -43,8 +46,8 @@ class KitsuRepository(
 		val body = FormBody.Builder()
 		if (code != null) {
 			body.add("grant_type", "password")
-			body.add("username", "test@test")
-			body.add("password", "test")
+			body.add("username", code.substringBefore(';'))
+			body.add("password", code.substringAfter(';'))
 		} else {
 			body.add("grant_type", "refresh_token")
 			body.add("refresh_token", checkNotNull(storage.refreshToken))
@@ -58,11 +61,22 @@ class KitsuRepository(
 	}
 
 	override suspend fun loadUser(): ScrobblerUser {
-		TODO("Not yet implemented")
+		val request = Request.Builder()
+			.get()
+			.url("${BASE_WEB_URL}/api/edge/users?filter[self]=true")
+		val response = okHttp.newCall(request.build()).await().parseJson()
+			.getJSONArray("data")
+			.getJSONObject(0)
+		return ScrobblerUser(
+			id = response.getLongOrDefault("id", 0L),
+			nickname = response.getJSONObject("attributes").getString("name"),
+			avatar = response.getJSONObject("attributes").optJSONObject("avatar")?.getStringOrNull("small"),
+			service = ScrobblerService.KITSU,
+		)
 	}
 
 	override fun logout() {
-		TODO("Not yet implemented")
+		storage.clear()
 	}
 
 	override suspend fun unregister(mangaId: Long) {
@@ -70,7 +84,11 @@ class KitsuRepository(
 	}
 
 	override suspend fun findManga(query: String, offset: Int): List<ScrobblerManga> {
-		TODO("Not yet implemented")
+		val request = Request.Builder()
+			.get()
+			.url("${BASE_WEB_URL}/api/edge/manga?page[limit]=20&page[offset]=$offset&filter[text]=${query.urlEncoded()}")
+		val response = okHttp.newCall(request.build()).await().parseJson()
+		return emptyList()
 	}
 
 	override suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
