@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
 import android.os.Build
-import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
 import android.view.InputDevice
 import android.view.KeyEvent

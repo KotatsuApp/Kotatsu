@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.config
 
 import android.net.Uri
-import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.reader.ui
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
 import android.transition.Fade
 import android.transition.Slide
