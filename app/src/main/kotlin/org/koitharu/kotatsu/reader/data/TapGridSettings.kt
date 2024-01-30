@@ -19,7 +19,7 @@ class TapGridSettings @Inject constructor(@ApplicationContext context: Context) 
 
 	init {
 		if (!prefs.getBoolean(KEY_INIT, false)) {
-			reset()
+			initPrefs(withDefaultValues = true)
 		}
 	}
 
@@ -34,14 +34,24 @@ class TapGridSettings @Inject constructor(@ApplicationContext context: Context) 
 	}
 
 	fun reset() {
-		prefs.edit {
-			clear()
-			initDefaultActions(this)
-			putBoolean(KEY_INIT, true)
-		}
+		initPrefs(withDefaultValues = true)
+	}
+
+	fun disableAll() {
+		initPrefs(withDefaultValues = false)
 	}
 
 	fun observe() = prefs.observe().flowOn(Dispatchers.IO)
+
+	private fun initPrefs(withDefaultValues: Boolean) {
+		prefs.edit {
+			clear()
+			if (withDefaultValues) {
+				initDefaultActions(this)
+			}
+			putBoolean(KEY_INIT, true)
+		}
+	}
 
 	private fun getPrefKey(area: TapGridArea, isLongTap: Boolean): String = if (isLongTap) {
 		area.name + SUFFIX_LONG

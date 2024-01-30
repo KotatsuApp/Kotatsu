@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.Insets
 import androidx.core.text.bold
@@ -22,19 +23,16 @@ import org.koitharu.kotatsu.core.util.ext.findKeyByValue
 import org.koitharu.kotatsu.core.util.ext.getThemeDrawable
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.ActivityReaderTapActionsBinding
-import org.koitharu.kotatsu.reader.data.TapGridSettings
 import org.koitharu.kotatsu.reader.domain.TapGridArea
 import org.koitharu.kotatsu.reader.ui.tapgrid.TapAction
 import java.util.EnumMap
-import javax.inject.Inject
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding>(), View.OnClickListener,
 	View.OnLongClickListener {
 
-	@Inject
-	lateinit var tapGridSettings: TapGridSettings
+	private val viewModel: ReaderTapGridConfigViewModel by viewModels()
 
 	private val controls = EnumMap<TapGridArea, TextView>(TapGridArea::class.java)
 
@@ -56,8 +54,8 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 			view.setOnClickListener(this)
 			view.setOnLongClickListener(this)
 		}
-		updateValues()
-		tapGridSettings.observe().observe(this) { updateValues() }
+
+		viewModel.content.observe(this, ::onContentChanged)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -69,6 +67,11 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 		return when (item.itemId) {
 			R.id.action_reset -> {
 				confirmReset()
+				true
+			}
+
+			R.id.action_disable_all -> {
+				viewModel.disableAll()
 				true
 			}
 
@@ -96,33 +99,37 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 		return true
 	}
 
-	private fun updateValues() {
+	private fun onContentChanged(content: Map<TapGridArea, ReaderTapGridConfigViewModel.TapActions>) {
 		controls.forEach { (area, view) ->
+			val actions = content[area]
 			view.text = buildSpannedString {
 				appendLine(getString(R.string.tap_action))
 				bold {
-					appendLine(getTapActionText(area, isLongTap = false))
+					appendLine(actions?.tapAction.getText())
 				}
 				appendLine()
 				appendLine(getString(R.string.long_tap_action))
 				bold {
-					appendLine(getTapActionText(area, isLongTap = true))
+					appendLine(actions?.longTapAction.getText())
 				}
 			}
-			view.background = createBackground(tapGridSettings.getTapAction(area, false))
+			view.background = createBackground(actions?.tapAction)
 		}
 	}
 
-	private fun getTapActionText(area: TapGridArea, isLongTap: Boolean): String {
-		return tapGridSettings.getTapAction(area, isLongTap)?.let {
-			getString(it.nameStringResId)
-		} ?: getString(R.string.none)
+	@Suppress("IfThenToElvis") // lint bug
+	private fun TapAction?.getText(): String = if (this != null) {
+		getString(nameStringResId)
+	} else {
+		getString(R.string.none)
 	}
 
 	private fun showActionSelector(area: TapGridArea, isLongTap: Boolean) {
-		val selectedItem = tapGridSettings.getTapAction(area, isLongTap)?.ordinal ?: -1
+		val selectedItem = viewModel.content.value[area]?.run {
+			if (isLongTap) longTapAction else tapAction
+		}?.ordinal ?: -1
 		val listener = DialogInterface.OnClickListener { dialog, which ->
-			tapGridSettings.setTapAction(area, isLongTap, TapAction.entries.getOrNull(which - 1))
+			viewModel.setTapAction(area, isLongTap, TapAction.entries.getOrNull(which - 1))
 			dialog.dismiss()
 		}
 		val names = arrayOfNulls<String>(TapAction.entries.size + 1)
@@ -138,10 +145,11 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 
 	private fun confirmReset() {
 		MaterialAlertDialogBuilder(this)
+			.setTitle(R.string.reader_actions)
 			.setMessage(R.string.config_reset_confirm)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(R.string.reset) { _, _ ->
-				tapGridSettings.reset()
+				viewModel.reset()
 			}.show()
 	}
 

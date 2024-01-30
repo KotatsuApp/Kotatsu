@@ -7,5 +7,10 @@
 		android:id="@+id/action_reset"
 		android:title="@string/reset"
 		app:showAsAction="never" />
+		
+	<item
+		android:id="@+id/action_disable_all"
+		android:title="@string/disable_all"
+		app:showAsAction="never" />
 
 </menu>
