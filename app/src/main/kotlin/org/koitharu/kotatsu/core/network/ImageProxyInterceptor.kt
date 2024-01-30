@@ -7,6 +7,7 @@ import coil.request.ErrorResult
 import coil.request.ImageResult
 import coil.request.SuccessResult
 import coil.size.Dimension
+import coil.size.isOriginal
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
@@ -46,11 +47,13 @@ class ImageProxyInterceptor @Inject constructor(
 			.scheme("https")
 			.host("wsrv.nl")
 			.addQueryParameter("url", url.toString())
-			.addQueryParameter("fit", "outside")
 			.addQueryParameter("we", null)
 		val size = request.sizeResolver.size()
-		(size.height as? Dimension.Pixels)?.let { newUrl.addQueryParameter("h", it.toString()) }
-		(size.width as? Dimension.Pixels)?.let { newUrl.addQueryParameter("w", it.toString()) }
+		if (!size.isOriginal) {
+			newUrl.addQueryParameter("crop", "cover")
+			(size.height as? Dimension.Pixels)?.let { newUrl.addQueryParameter("h", it.toString()) }
+			(size.width as? Dimension.Pixels)?.let { newUrl.addQueryParameter("w", it.toString()) }
+		}
 
 		val newRequest = request.newBuilder()
 			.data(newUrl.build())
