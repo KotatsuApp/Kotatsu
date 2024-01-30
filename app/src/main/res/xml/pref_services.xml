@@ -31,19 +31,24 @@
 	<PreferenceCategory android:title="@string/tracking">
 
 		<Preference
-			android:key="shikimori"
-			android:title="@string/shikimori"
-			app:icon="@drawable/ic_shikimori" />
-
-		<Preference
 			android:key="anilist"
 			android:title="@string/anilist"
 			app:icon="@drawable/ic_anilist" />
 
 		<Preference
+			android:key="kitsu"
+			android:title="@string/kitsu"
+			app:icon="@drawable/ic_kitsu" />
+
+		<Preference
 			android:key="mal"
 			android:title="@string/mal"
 			app:icon="@drawable/ic_mal" />
+
+		<Preference
+			android:key="shikimori"
+			android:title="@string/shikimori"
+			app:icon="@drawable/ic_shikimori" />
 
 	</PreferenceCategory>
 

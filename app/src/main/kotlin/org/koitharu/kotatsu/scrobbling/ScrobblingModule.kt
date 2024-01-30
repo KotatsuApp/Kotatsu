@@ -16,6 +16,10 @@ import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerType
+import org.koitharu.kotatsu.scrobbling.kitsu.data.KitsuAuthenticator
+import org.koitharu.kotatsu.scrobbling.kitsu.data.KitsuInterceptor
+import org.koitharu.kotatsu.scrobbling.kitsu.data.KitsuRepository
+import org.koitharu.kotatsu.scrobbling.kitsu.domain.KitsuScrobbler
 import org.koitharu.kotatsu.scrobbling.mal.data.MALAuthenticator
 import org.koitharu.kotatsu.scrobbling.mal.data.MALInterceptor
 import org.koitharu.kotatsu.scrobbling.mal.domain.MALScrobbler
@@ -66,6 +70,24 @@ object ScrobblingModule {
 
 	@Provides
 	@Singleton
+	fun provideKitsuRepository(
+		@ApplicationContext context: Context,
+		@ScrobblerType(ScrobblerService.KITSU) storage: ScrobblerStorage,
+		database: MangaDatabase,
+		authenticator: KitsuAuthenticator,
+	): KitsuRepository {
+		val okHttp = OkHttpClient.Builder().apply {
+			authenticator(authenticator)
+			addInterceptor(KitsuInterceptor(storage))
+			if (BuildConfig.DEBUG) {
+				addInterceptor(CurlLoggingInterceptor())
+			}
+		}.build()
+		return KitsuRepository(context, okHttp, storage, database)
+	}
+
+	@Provides
+	@Singleton
 	@ScrobblerType(ScrobblerService.ANILIST)
 	fun provideAniListStorage(
 		@ApplicationContext context: Context,
@@ -86,10 +108,18 @@ object ScrobblingModule {
 	): ScrobblerStorage = ScrobblerStorage(context, ScrobblerService.MAL)
 
 	@Provides
+	@Singleton
+	@ScrobblerType(ScrobblerService.KITSU)
+	fun provideKitsuStorage(
+		@ApplicationContext context: Context,
+	): ScrobblerStorage = ScrobblerStorage(context, ScrobblerService.KITSU)
+
+	@Provides
 	@ElementsIntoSet
 	fun provideScrobblers(
 		shikimoriScrobbler: ShikimoriScrobbler,
 		aniListScrobbler: AniListScrobbler,
 		malScrobbler: MALScrobbler,
-	): Set<@JvmSuppressWildcards Scrobbler> = setOf(shikimoriScrobbler, aniListScrobbler, malScrobbler)
+		kitsuScrobbler: KitsuScrobbler
+	): Set<@JvmSuppressWildcards Scrobbler> = setOf(shikimoriScrobbler, aniListScrobbler, malScrobbler, kitsuScrobbler)
 }

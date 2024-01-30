@@ -420,6 +420,8 @@
 	<string name="port">Port</string>
 	<string name="proxy">Proxy</string>
 	<string name="invalid_value_message">Invalid value</string>
+	<string name="kitsu" translatable="false">Kitsu</string>
+	<string name="email_password_enter_hint">Enter your email and password to continue</string>
 	<string name="manga_branch_title_template">%1$s (%2$s)</string>
 	<string name="downloaded">Downloaded</string>
 	<string name="images_proxy_title">Images optimization proxy</string>

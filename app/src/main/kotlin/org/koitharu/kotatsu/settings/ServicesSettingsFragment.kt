@@ -19,8 +19,10 @@ import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListRepository
+import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.ui.config.ScrobblerConfigActivity
+import org.koitharu.kotatsu.scrobbling.kitsu.data.KitsuRepository
 import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
 import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.sync.domain.SyncController
@@ -40,6 +42,9 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 
 	@Inject
 	lateinit var malRepository: MALRepository
+
+	@Inject
+	lateinit var kitsuRepository: KitsuRepository
 
 	@Inject
 	lateinit var syncController: SyncController
@@ -64,6 +69,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 		bindScrobblerSummary(AppSettings.KEY_SHIKIMORI, shikimoriRepository)
 		bindScrobblerSummary(AppSettings.KEY_ANILIST, aniListRepository)
 		bindScrobblerSummary(AppSettings.KEY_MAL, malRepository)
+		bindScrobblerSummary(AppSettings.KEY_KITSU, kitsuRepository)
 		bindSyncSummary()
 	}
 
@@ -103,6 +109,15 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 				true
 			}
 
+			AppSettings.KEY_KITSU -> {
+				if (!kitsuRepository.isAuthorized) {
+					launchScrobblerAuth(kitsuRepository)
+				} else {
+					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.KITSU))
+				}
+				true
+			}
+
 			AppSettings.KEY_SYNC -> {
 				val am = AccountManager.get(requireContext())
 				val accountType = getString(R.string.account_type_sync)
@@ -121,7 +136,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 
 	private fun bindScrobblerSummary(
 		key: String,
-		repository: org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository
+		repository: ScrobblerRepository
 	) {
 		val pref = findPreference<Preference>(key) ?: return
 		if (!repository.isAuthorized) {
@@ -147,7 +162,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 		}
 	}
 
-	private fun launchScrobblerAuth(repository: org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository) {
+	private fun launchScrobblerAuth(repository: ScrobblerRepository) {
 		runCatching {
 			val intent = Intent(Intent.ACTION_VIEW)
 			intent.data = Uri.parse(repository.oauthUrl)
