@@ -67,7 +67,7 @@
     <string name="grid_size">Размер сетки</string>
     <string name="search_on_s">Поиск по %s</string>
     <string name="delete_manga">Удалить мангу</string>
-    <string name="text_delete_local_manga">Удалить \"%s\" с устройства навсегда\?</string>
+    <string name="text_delete_local_manga">Удалить \"%s\" с устройства навсегда?</string>
     <string name="reader_settings">Настройки режима чтения</string>
     <string name="switch_pages">Листание страниц</string>
     <string name="taps_on_edges">Нажатия по краям</string>
@@ -104,7 +104,7 @@
     <string name="manga_shelf">Полка</string>
     <string name="recent_manga">Недавнее</string>
     <string name="pages_animation">Анимация пролистывания</string>
-    <string name="manga_save_location">Папка для загрузок</string>
+    <string name="manga_save_location">Папка загрузок</string>
     <string name="not_available">Недоступно</string>
     <string name="cannot_find_available_storage">Нет доступного хранилища</string>
     <string name="other_storage">Другое хранилище</string>
@@ -113,7 +113,7 @@
     <string name="favourites_category_empty">Категория пуста</string>
     <string name="read_later">Прочитать позже</string>
     <string name="updates">Обновления</string>
-    <string name="text_feed_holder">Новые главы из того, что вы читаете, будут показаны здесь</string>
+    <string name="text_feed_holder">Новые главы того, что вы читаете, будут показаны здесь</string>
     <string name="search_results">Результаты поиска</string>
     <string name="new_version_s">Новая версия: %s</string>
     <string name="size_s">Размер: %s</string>
@@ -551,4 +551,12 @@
     <string name="rating_safe">Безопасный</string>
     <string name="rating_suggestive">С намёками</string>
     <string name="rating_adult">Взрослый</string>
+    <string name="approximate_reading_time">Примерное время чтения</string>
+    <string name="category_hidden_done">Эта категория была скрыта с главного экрана и доступна через Меню → Управление категориями</string>
+    <string name="mark_as_completed">Отметить как завершённое</string>
+    <string name="mark_as_completed_prompt">Отметить выбранную мангу как полностью прочитанную?
+\n
+\nВнимание: текущий прогресс чтения будет потерян.</string>
+    <string name="approximate_remaining_time">Примерное оставшееся время</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
 </resources>

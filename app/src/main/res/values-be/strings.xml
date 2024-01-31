@@ -69,7 +69,7 @@
     <string name="delete_manga">Выдаліць мангу</string>
     <string name="reader_settings">Налады чытання</string>
     <string name="switch_pages">Гартанне старонак</string>
-    <string name="text_delete_local_manga">Вы ўпэўненыя, што жадаеце выдаліць «%s» з прылады\?</string>
+    <string name="text_delete_local_manga">Назаўсёды выдаліць \"%s\" з прылады?</string>
     <string name="taps_on_edges">Націск па краях</string>
     <string name="volume_buttons">Кнопкі гучнасці</string>
     <string name="_continue">Працягнцуць</string>
@@ -98,7 +98,7 @@
     <string name="manga_shelf">Паліца</string>
     <string name="recent_manga">Нядаўняя манга</string>
     <string name="pages_animation">Анімацыя гартання</string>
-    <string name="manga_save_location">Месца спампоўвання мангі</string>
+    <string name="manga_save_location">Папка для загрузак</string>
     <string name="not_available">Недаступна</string>
     <string name="cannot_find_available_storage">Не атрымалася знайсці ніводнага даступнага сховішча</string>
     <string name="other_storage">Іншае сховішча</string>
@@ -107,7 +107,7 @@
     <string name="favourites_category_empty">У гэтай катэгорыі нічога няма</string>
     <string name="read_later">Прачытаць пазней</string>
     <string name="updates">Абнаўленні</string>
-    <string name="text_feed_holder">Тут будуць паказвацца абнаўлення мангі, якую вы чытаеце</string>
+    <string name="text_feed_holder">Тут паказваюцца новыя раздзелы таго, што вы чытаеце</string>
     <string name="search_results">Вынікі пошуку</string>
     <string name="new_version_s">Новая версія: %s</string>
     <string name="size_s">Памер: %s</string>
@@ -174,7 +174,7 @@
     <string name="tracker_warning">Некаторыя вытворцы могуць змяняць паводзіны сістэмы, што можа парушаць выкананне фонавых задач.</string>
     <string name="backup_saved">Рэзервовая копія паспяхова захавана</string>
     <string name="welcome">Вітаю</string>
-    <string name="text_local_holder_secondary">Вы можаце захаваць мангу з анлайн-крыніц або імпартаваць з файла.</string>
+    <string name="text_local_holder_secondary">Захавайце што-небудзь з інтэрнэт-каталога або імпартуйце гэта з файла.</string>
     <string name="text_local_holder_primary">У вас яшчэ няма ніводнай захаванай мангі</string>
     <string name="text_history_holder_secondary">Знайдзіце, што пачытаць, у раздзеле «Агляд»</string>
     <string name="text_history_holder_primary">Тут будзе паказана манга, якую вы чытаеце</string>
@@ -551,4 +551,31 @@
     <string name="rating_adult">Дарослы</string>
     <string name="default_tab">Ўкладка па змаўчанні</string>
     <string name="state_upcoming">Чакаецца</string>
+    <string name="volume_">Гучнасць %d</string>
+    <string name="volume_unknown">Невядомая гучнасць</string>
+    <string name="incognito_mode_hint">Ваш прагрэс чытання не будзе захаваны</string>
+    <string name="vertical">Вертыкальны</string>
+    <string name="category_hidden_done">Гэтая катэгорыя была схаваная з галоўнага экрана і даступная праз Меню → Кіраванне катэгорыямі</string>
+    <string name="last_read">Апошняе чытанне</string>
+    <string name="two_pages">Дзве старонкі</string>
+    <string name="show_menu">Паказаць меню</string>
+    <string name="toggle_ui">Паказаць/схаваць інтэрфейс</string>
+    <string name="prev_chapter">Папярэдняя глава</string>
+    <string name="next_chapter">Наступная глава</string>
+    <string name="prev_page">Папярэдняя старонка</string>
+    <string name="next_page">Наступная старонка</string>
+    <string name="reader_actions">Дзеянні ў рэжыме чытання</string>
+    <string name="switch_pages_volume_buttons">Уключыць кнопкі гучнасці</string>
+    <string name="switch_pages_volume_buttons_summary">Выкарыстоўвайце кнопкі гучнасці для гартання старонак</string>
+    <string name="tap_action">Дзеянне пры націску</string>
+    <string name="long_tap_action">Дзеянне пры доўгім націску</string>
+    <string name="none">Нічога</string>
+    <string name="mark_as_completed">Адзначыць як выкананае</string>
+    <string name="mark_as_completed_prompt">Пазначыць выбраную мангу як цалкам прачытаную?
+\n
+\nУвага: бягучы ход чытання будзе страчаны.</string>
+    <string name="reader_actions_summary">Налада дзеянняў для сэнсарных абласцей экрана</string>
+    <string name="approximate_reading_time">Прыблізны час чытання</string>
+    <string name="approximate_remaining_time">Прыблізны час, які застаўся</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
 </resources>
