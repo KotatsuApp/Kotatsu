@@ -572,4 +572,10 @@
     <string name="prev_page">Попередня сторінка</string>
     <string name="next_page">Наступна сторінка</string>
     <string name="none">Нічого</string>
+    <string name="reader_actions">Дії в режимі читання</string>
+    <string name="switch_pages_volume_buttons_summary">Використовуйте кнопки гучності для перегортання сторінок</string>
+    <string name="tap_action">Дія при натисканні</string>
+    <string name="long_tap_action">Дія при тривалому натисканні</string>
+    <string name="switch_pages_volume_buttons">Увімкнути кнопки гучності</string>
+    <string name="reader_actions_summary">Налаштування дій для сенсорних областей екрана</string>
 </resources>
