@@ -82,7 +82,7 @@
     <string name="save_manga">Simpan</string>
     <string name="notifications">Pemberitahuan</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d dari %2$d diaktifkan</string>
-    <string name="new_chapters">Bab baru</string>
+    <string name="new_chapters">Chapter baru</string>
     <string name="download">Unduh</string>
     <string name="notifications_settings">Pengaturan pemberitahuan</string>
     <string name="notification_sound">Suara pemberitahuan</string>
@@ -558,11 +558,26 @@
     <string name="volume_">Volume%d</string>
     <string name="volume_unknown">Volume tidak diketahui</string>
     <string name="approximate_reading_time">Perkiraan waktu pembacaan</string>
-    <string name="incognito_mode_hint">Progres membaca Anda tidak akan disimpan</string>
+    <string name="incognito_mode_hint">Progres membaca Anda tidak akan tersimpan</string>
     <string name="rating_suggestive">Disarankan</string>
     <string name="vertical">Vertikal</string>
     <string name="last_read">Terakhir dibaca</string>
     <string name="two_pages">Dua halaman</string>
     <string name="approximate_remaining_time">Perkiraan waktu yang tersisa</string>
     <string name="remaining_time_pattern">%1$s%2$s</string>
+    <string name="toggle_ui">Tampilkan/Sembunyikan UI</string>
+    <string name="prev_chapter">Chapter sebelumnya</string>
+    <string name="switch_pages_volume_buttons">Aktifkan tombol volume</string>
+    <string name="reader_actions_summary">Konfigurasikan tindakan untuk area layar yang dapat diketuk</string>
+    <string name="tap_action">Tindakan saat diketuk</string>
+    <string name="reader_actions">Tindakan saat membaca</string>
+    <string name="long_tap_action">Tindakan saat diketuk lama</string>
+    <string name="none">Tidak ada</string>
+    <string name="next_chapter">Chapter selanjutnya</string>
+    <string name="prev_page">Halaman sebelumnya</string>
+    <string name="next_page">Halaman selanjutnya</string>
+    <string name="switch_pages_volume_buttons_summary">Gunakan tombol volume untuk berpindah halaman</string>
+    <string name="show_menu">Tampilkan menu</string>
+    <string name="config_reset_confirm">Kembalikan pengaturan ke bawaan? Tindakan ini tidak bisa dibatalkan.</string>
+    <string name="use_two_pages_landscape">Gunakan tata letak dua halaman pada orientasi landscape (beta)</string>
 </resources>
