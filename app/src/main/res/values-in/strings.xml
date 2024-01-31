@@ -515,7 +515,7 @@
     <string name="catalog">Katalog</string>
     <string name="welcome_text">Silahkan pilih sumber konten komik mana yang akan diaktifkan. konfigurasi ini dapat dilakukan nanti di pengaturan</string>
     <string name="genres_exclude">Kecualikan genre</string>
-    <string name="reader_optimize">Kurangi konsumsu memori (beta)</string>
+    <string name="reader_optimize">Kurangi konsumsi memori (beta)</string>
     <string name="apply">Terapkan</string>
     <string name="restore">Kembalikan</string>
     <string name="manage_sources">Kelola sumber</string>
@@ -553,4 +553,5 @@
 \n
 \nPeringatan : proses baca saat ini akan hilang.</string>
     <string name="error_multiple_states_not_supported">Filter berdasarkan banyak status tidak didukung berdasarkan sumber manga ini</string>
+    <string name="reader_optimize_summary">Mengurangi kualitas halaman di luar layar untuk menggunakan lebih sedikit memori</string>
 </resources>
