@@ -555,4 +555,13 @@
     <string name="mark_as_completed_prompt">是否将已选定的漫画标记为阅毕？
 \n
 \n警告： 当前的阅读进度将会丢失。</string>
+    <string name="category_hidden_done">主屏上看不到此分类，可通过菜单 → 管理分类来访问</string>
+    <string name="approximate_reading_time">大约需要的阅读时间</string>
+    <string name="approximate_remaining_time">大约剩余时间</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="volume_">卷 %d</string>
+    <string name="volume_unknown">未知卷</string>
+    <string name="incognito_mode_hint">你的阅读进度将不被保存</string>
+    <string name="vertical">垂直</string>
+    <string name="last_read">上次阅读</string>
 </resources>
