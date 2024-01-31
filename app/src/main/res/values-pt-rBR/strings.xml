@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="read">Iniciar</string>
+    <string name="read">Ler</string>
     <string name="you_have_not_favourites_yet">Ainda não há favoritos</string>
     <string name="local_storage">Armazenamento local</string>
     <string name="favourites">Favoritos</string>
@@ -28,7 +28,7 @@
     <string name="create_shortcut">Criar atalho…</string>
     <string name="share_s">Compartilhar %s</string>
     <string name="search">Procurar</string>
-    <string name="search_manga">Pesquisar mangá</string>
+    <string name="search_manga">Procurar mangá</string>
     <string name="manga_downloading_">Baixando…</string>
     <string name="processing_">Em processamento…</string>
     <string name="download_complete">Baixado</string>
@@ -63,7 +63,7 @@
     <string name="grid_size">Tamanho da grade</string>
     <string name="search_on_s">Pesquisar em %s</string>
     <string name="delete_manga">Excluir mangá</string>
-    <string name="text_delete_local_manga">Excluir “%s” do dispositivo permanentemente\?</string>
+    <string name="text_delete_local_manga">Excluir “%s” do dispositivo permanentemente?</string>
     <string name="reader_settings">Configurações do leitor</string>
     <string name="taps_on_edges">Toques de borda</string>
     <string name="volume_buttons">Botões de volume</string>
@@ -555,4 +555,5 @@
 \n
 \nAviso: o progresso de leitura atual será perdido.</string>
     <string name="mark_as_completed">Marcar como completo</string>
+    <string name="category_hidden_done">Esta categoria foi ocultada da tela inicial e pode ser acessado através de Menu → Gerenciar categorias</string>
 </resources>
