@@ -576,4 +576,6 @@
     <string name="next_chapter">Следующая глава</string>
     <string name="switch_pages_volume_buttons">Включить кнопки громкости</string>
     <string name="switch_pages_volume_buttons_summary">Использовать кнопки громкости для переключения страниц</string>
+    <string name="reader_actions">Действия в режиме чтения</string>
+    <string name="reader_actions_summary">Настройка действий для сенсорных областей экрана</string>
 </resources>
