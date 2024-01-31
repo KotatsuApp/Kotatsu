@@ -42,4 +42,16 @@
         <item quantity="many">%1$d місяців тому</item>
         <item quantity="other">%1$d місяців тому</item>
     </plurals>
+    <plurals name="hours">
+        <item quantity="one">%1$d година</item>
+        <item quantity="few">%1$d години</item>
+        <item quantity="many">%1$d годин</item>
+        <item quantity="other">%1$d годин</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d хвилина</item>
+        <item quantity="few">%1$d хвилини</item>
+        <item quantity="many">%1$d хвилин</item>
+        <item quantity="other">%1$d хвилин</item>
+    </plurals>
 </resources>
