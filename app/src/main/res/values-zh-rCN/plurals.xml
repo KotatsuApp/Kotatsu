@@ -21,4 +21,10 @@
     <plurals name="months_ago">
         <item quantity="other">%1$d 个月前</item>
     </plurals>
+    <plurals name="hours">
+        <item quantity="other">%1$d 个小时</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="other">%1$d 分钟</item>
+    </plurals>
 </resources>
