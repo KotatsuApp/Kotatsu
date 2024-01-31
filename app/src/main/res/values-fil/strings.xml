@@ -23,7 +23,7 @@
     <string name="grid_size">Laki ng grid</string>
     <string name="search_on_s">Hanapin sa %s</string>
     <string name="delete_manga">Tanggalin ang manga</string>
-    <string name="text_delete_local_manga">Permanenteng tanggalin ang \"%s\" sa device\?</string>
+    <string name="text_delete_local_manga">Permanenteng tanggalin ang \"%s\" mula sa device?</string>
     <string name="reader_settings">Mga setting sa pagbasa</string>
     <string name="switch_pages">Magpalit ng (mga) pahina</string>
     <string name="volume_buttons">Pindutan ng volume</string>
@@ -41,7 +41,7 @@
     <string name="text_history_holder_primary">Ang iyong nabasa ay ipapakita dito</string>
     <string name="text_shelf_holder_primary">Ang iyong manga ay ipapakita dito</string>
     <string name="text_local_holder_primary">Mag-save muna ng isang bagay</string>
-    <string name="text_local_holder_secondary">I-save ito mula sa mga online na source o mag import ng mga file.</string>
+    <string name="text_local_holder_secondary">Mag-save ng isang bagay mula sa isang online na catalog o i-import ito mula sa isang file.</string>
     <string name="manga_shelf">Istante</string>
     <string name="pages_animation">Animasyon ng pahina</string>
     <string name="not_available">Hindi magagamit</string>
@@ -153,7 +153,7 @@
     <string name="text_history_holder_secondary">Hanapin kung anong pwedeng basahin sa «Explore» section</string>
     <string name="text_shelf_holder_secondary">Hanapin kung ano ang babasahin sa seksyong «Mag-explore»</string>
     <string name="recent_manga">Kamakailan</string>
-    <string name="manga_save_location">Folder para sa mga download</string>
+    <string name="manga_save_location">Mga folder ng pag-download</string>
     <string name="save_page">I-save ang pahina</string>
     <string name="_s_deleted_from_local_storage">Natanggal ang \"%s\" sa lokal na storage</string>
     <string name="history_is_empty">Wala pang kasaysayan</string>
@@ -192,7 +192,7 @@
     <string name="disabled">Hindi pinagana</string>
     <string name="filter_load_error">Hindi ma-load ang listahan ng mga genre</string>
     <string name="reset_filter">I-reset ang filter</string>
-    <string name="text_feed_holder">Ang mga bagong kabanata ng iyong binabasa ay makikita dito</string>
+    <string name="text_feed_holder">Ang mga bagong kabanata ng iyong binabasa ay ipinapakita dito</string>
     <string name="rotate_screen">I-rotate ang screen</string>
     <string name="zoom_mode_fit_height">Pagkasyahin sa tangkad</string>
     <string name="never">Hindi kailanman</string>
@@ -538,7 +538,7 @@
     <string name="skip">Laktawan</string>
     <string name="color_correction_apply_text">Ang mga setting na ito ay maaaring ilapat sa pangkahalatan o sa kasalukuyang manga lamang. Kung inilapat sa pangkahalatan, hindi ma-override ang mga indibidwal na setting.</string>
     <string name="grayscale">Walang kulay</string>
-    <string name="welcome_text">Paki-select kung anong mga content source ang gusto mo i-enable. Pwede rin ito i-configure mamaya sa settings</string>
+    <string name="welcome_text">Piliin kung anong mga content source ang gusto mo i-enable. Pwede rin ito ayusin mamaya sa mga setting</string>
     <string name="restore">I-balik</string>
     <string name="disable_battery_optimization_summary_downloads">Baka makatulong sa pag-simula ng download kung mayroong isyu</string>
     <string name="backup_date_">Petsa ng pag-backup: %s</string>
@@ -546,9 +546,15 @@
     <string name="by_name_reverse">Binaligtad ang pangalan</string>
     <string name="state_upcoming">Paparating</string>
     <string name="rating_safe">Ligtas</string>
-    <string name="rating_suggestive">Mayroong pahiwatig</string>
+    <string name="rating_suggestive">Imoral</string>
     <string name="genres_exclude">Ibukod na dyanra</string>
     <string name="rating_adult">Nasa gulang</string>
     <string name="content_rating">Content rating</string>
     <string name="default_tab">Default na tab</string>
+    <string name="approximate_reading_time">Tinatayang oras ng pagbabasa</string>
+    <string name="mark_as_completed">Markahan bilang kumpleto na</string>
+    <string name="mark_as_completed_prompt">Markahan ang napiling manga bilang tapos na nabasa?
+\n
+\nBabala: mawawala ang kasalukuyang progress sa pagbabasa.</string>
+    <string name="category_hidden_done">Nakatago ang kategoryang ito mula sa pangunahing screen at naa-access sa pamamagitan ng Menu → Ayusin ang mga kategorya</string>
 </resources>
