@@ -229,7 +229,7 @@
     <string name="text_delete_local_manga_batch">¿Eliminar elementos seleccionados del dispositivo de forma permanente\?</string>
     <string name="hide">Ocultar</string>
     <string name="download_slowdown">Ralentización de la descarga</string>
-    <string name="new_sources_text">Nuevas fuentes de manga son disponibles</string>
+    <string name="new_sources_text">Hay nuevas fuentes de manga disponibles</string>
     <string name="download_slowdown_summary">Ayuda a evitar el bloqueo de tu dirección IP</string>
     <string name="local_manga_processing">Procesamiento de manga guardado</string>
     <string name="check_new_chapters_title">Comprueba si hay nuevos capítulos y notifica sobre ellos</string>
@@ -565,4 +565,16 @@
     <string name="vertical">Vertical</string>
     <string name="last_read">Última lectura</string>
     <string name="two_pages">Dos páginas</string>
+    <string name="show_menu">Mostrar menú</string>
+    <string name="toggle_ui">Mostrar/esconder interfaz</string>
+    <string name="next_chapter">Siguiente capítulo</string>
+    <string name="prev_page">Página anterior</string>
+    <string name="next_page">Página siguiente</string>
+    <string name="reader_actions">Acciones del lector</string>
+    <string name="reader_actions_summary">Configurara acciones para zonas clickeables</string>
+    <string name="switch_pages_volume_buttons">Activar botones de volumen</string>
+    <string name="tap_action">Acción de click</string>
+    <string name="long_tap_action">Acción de click largo</string>
+    <string name="prev_chapter">Capítulo anterior</string>
+    <string name="switch_pages_volume_buttons_summary">Utilizar botones de volumen para cambiar de página</string>
 </resources>
