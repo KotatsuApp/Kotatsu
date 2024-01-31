@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="new_chapters">
+        <item quantity="one">%1$d چپتر جدید</item>
+        <item quantity="other">%1$d چپتر جدید</item>
+    </plurals>
+    <plurals name="items">
+        <item quantity="one">%1$d مورد</item>
+        <item quantity="other">%1$d مورد</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="one">%1$d چپتر</item>
+        <item quantity="other">%1$d چپتر</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="one">%1$d دقیقه قبل</item>
+        <item quantity="other">%1$d دقیقه قبل</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="one">%1$d ساعت قبل</item>
+        <item quantity="other">%1$d ساعت قبل</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">%1$d روز قبل</item>
+        <item quantity="other">%1$d روز قبل</item>
+    </plurals>
+    <plurals name="months_ago">
+        <item quantity="one">%1$d ماه قبل</item>
+        <item quantity="other">%1$d ماه قبل</item>
+    </plurals>
+</resources>
