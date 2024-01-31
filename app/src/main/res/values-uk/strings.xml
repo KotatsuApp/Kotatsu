@@ -555,4 +555,11 @@
     <string name="mark_as_completed_prompt">Позначити вибрану мангу як повністю прочитану?
 \n
 \nПопередження: поточний прогрес читання буде втрачено.</string>
+    <string name="approximate_reading_time">Орієнтовний час читання</string>
+    <string name="category_hidden_done">Ця категорія була прихована на головному екрані і доступна через Меню → Керування категоріями</string>
+    <string name="approximate_remaining_time">Орієнтовний час, що залишився</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="incognito_mode_hint">Ваш прогрес читання не буде збережений</string>
+    <string name="volume_">Гучність %d</string>
+    <string name="volume_unknown">Невідома гучність</string>
 </resources>
