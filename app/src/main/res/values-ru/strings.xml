@@ -562,4 +562,18 @@
     <string name="volume_unknown">Неизвестный том</string>
     <string name="volume_">Том %d</string>
     <string name="incognito_mode_hint">Ваш прогресс чтения не сохранится</string>
+    <string name="vertical">Вертикальный</string>
+    <string name="last_read">Последнее прочитанное</string>
+    <string name="two_pages">Две страницы</string>
+    <string name="prev_page">Предыдущая страница</string>
+    <string name="next_page">Следующая страница</string>
+    <string name="tap_action">Действие при касании</string>
+    <string name="long_tap_action">Действие при длинном касании</string>
+    <string name="none">Ничего</string>
+    <string name="show_menu">Показать меню</string>
+    <string name="toggle_ui">Показать/Скрыть интерфейс</string>
+    <string name="prev_chapter">Предыдущая глава</string>
+    <string name="next_chapter">Следующая глава</string>
+    <string name="switch_pages_volume_buttons">Включить кнопки громкости</string>
+    <string name="switch_pages_volume_buttons_summary">Использовать кнопки громкости для переключения страниц</string>
 </resources>

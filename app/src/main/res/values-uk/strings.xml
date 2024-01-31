@@ -562,4 +562,14 @@
     <string name="incognito_mode_hint">Ваш прогрес читання не буде збережений</string>
     <string name="volume_">Гучність %d</string>
     <string name="volume_unknown">Невідома гучність</string>
+    <string name="vertical">Вертикальний</string>
+    <string name="last_read">Останнє прочитане</string>
+    <string name="two_pages">Дві сторінки</string>
+    <string name="show_menu">Показати меню</string>
+    <string name="toggle_ui">Показати/приховати інтерфейс</string>
+    <string name="prev_chapter">Попередня глава</string>
+    <string name="next_chapter">Наступна глава</string>
+    <string name="prev_page">Попередня сторінка</string>
+    <string name="next_page">Наступна сторінка</string>
+    <string name="none">Нічого</string>
 </resources>
