@@ -559,4 +559,7 @@
 \nВнимание: текущий прогресс чтения будет потерян.</string>
     <string name="approximate_remaining_time">Примерное оставшееся время</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="volume_unknown">Неизвестный том</string>
+    <string name="volume_">Том %d</string>
+    <string name="incognito_mode_hint">Ваш прогресс чтения не сохранится</string>
 </resources>
