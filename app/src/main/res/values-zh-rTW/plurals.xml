@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="new_chapters">
+        <item quantity="other">%1$d 個新章節</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="other">%1$d 個章節</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="other">%1$d 分鐘前</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="other">%1$d 小時前</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="other">%1$d 天前</item>
+    </plurals>
+    <plurals name="months_ago">
+        <item quantity="other">%1$d 個月前</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="other">%1$d 小時</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="other">%1$d 分鐘</item>
+    </plurals>
+    <plurals name="items">
+        <item quantity="other">%1$d 個項目</item>
+    </plurals>
+</resources>

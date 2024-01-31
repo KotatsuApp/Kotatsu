@@ -78,7 +78,7 @@
     <string name="exit_confirmation_summary">點擊兩次返回鍵以退出應用程式</string>
     <string name="no_manga_sources_text">啟用漫畫來源以閱讀線上漫畫</string>
     <string name="text_clear_history_prompt">永久清除所有閱讀歷史紀錄\?</string>
-    <string name="text_delete_local_manga">從裝置中永久刪除 \"%s\"\?</string>
+    <string name="text_delete_local_manga">從裝置中永久刪除 \"%s\"?</string>
     <string name="text_search_holder_secondary">嘗試重新表述查詢。</string>
     <string name="disable_battery_optimization_summary">帮助进行背景更新检查</string>
     <string name="exclude_nsfw_from_suggestions">不要推薦 NSFW 漫畫</string>
@@ -523,4 +523,45 @@
     <string name="backup_frequency">備份頻率</string>
     <string name="periodic_backups">定期備份</string>
     <string name="last_successful_backup">上次成功備份： %s</string>
+    <string name="by_name_reverse">名稱顛倒</string>
+    <string name="source_summary_pattern">%1$s, %2$s</string>
+    <string name="no_manga_sources_found">本次搜尋未發現可用的漫畫圖源</string>
+    <string name="welcome_text">請選擇需要啟用的內容圖源。也可稍後在設定中進行配置</string>
+    <string name="volume_">卷 %d</string>
+    <string name="volume_unknown">未知卷</string>
+    <string name="downloads_settings_info">如果您遇到伺服器端阻塞問題，可以在圖源設定中為每個漫畫圖源單獨啟用下載限速功能</string>
+    <string name="approximate_reading_time">大概閱讀時間</string>
+    <string name="restore">恢復</string>
+    <string name="incognito_mode_hint">您的閱讀進度將不會被儲存</string>
+    <string name="content_rating">內容評級</string>
+    <string name="genres_exclude">排除流派</string>
+    <string name="rating_suggestive">建議</string>
+    <string name="online_variant">其他線上版本</string>
+    <string name="vertical">垂直</string>
+    <string name="category_hidden_done">主屏上看不到此分類，可通過選單 → 管理分類來訪問</string>
+    <string name="state_abandoned">拖入</string>
+    <string name="disable_nsfw_summary">禁用NSFW圖源並儘可能從列表中隱藏成人漫畫</string>
+    <string name="speed_value">x%.1f</string>
+    <string name="last_read">最後閱讀</string>
+    <string name="content_type_hentai">紳士漫畫</string>
+    <string name="grayscale">灰階</string>
+    <string name="default_tab">預設標籤欄</string>
+    <string name="no_manga_sources_catalog_text">此頁面中沒有可用的圖源，或者可能已經添加了所有圖源。
+\n敬請期待</string>
+    <string name="color_correction_apply_text">這些設定可以全局應用，也可以只應用於當前漫畫。如果全局應用，單獨的設定將不會被覆蓋。</string>
+    <string name="error_filter_states_genre_not_supported">此圖源不支援同時按分類和狀態過濾</string>
+    <string name="error_filter_locale_genre_not_supported">此圖源不支援同時按分類和區域過濾</string>
+    <string name="genres_search_hint">開始輸入分類名稱</string>
+    <string name="reader_optimize_summary">降低當前畫面外的頁面質量以減少記憶體佔用</string>
+    <string name="mark_as_completed_prompt">是否將已選定的漫畫標記為閱畢？
+\n
+\n警告: 當前的閱讀進度將會丟失。</string>
+    <string name="disable_battery_optimization_summary_downloads">這可能幫助您解決下載過程相關的問題</string>
+    <string name="state">狀態</string>
+    <string name="error_multiple_genres_not_supported">此漫畫圖源不支援按多個分類過濾</string>
+    <string name="error_multiple_states_not_supported">此漫畫圖源不支援按多個狀態過濾</string>
+    <string name="error_search_not_supported">此漫畫圖源不支援搜尋</string>
+    <string name="enhanced_colors_summary">減少色帶，但可能會影響效能</string>
+    <string name="approximate_remaining_time">大約剩餘時間</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
 </resources>
