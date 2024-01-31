@@ -388,7 +388,7 @@ class ReaderViewModel @Inject constructor(
 			mangaName = manga?.toManga()?.title,
 			branch = chapter?.branch,
 			chapterName = chapter?.name,
-			chapterNumber = chapter?.number ?: 0,
+			chapterNumber = chapter?.number?.toInt() ?: 0,
 			chaptersTotal = manga?.chapters?.get(chapter?.branch)?.size ?: 0,
 			totalPages = if (chapter != null) chaptersLoader.getPagesCount(chapter.id) else 0,
 			currentPage = state?.page ?: 0,

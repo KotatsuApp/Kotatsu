@@ -306,7 +306,7 @@ class DownloadsViewModel @Inject constructor(
 			return chapters.mapNotNullTo(ArrayList(size)) {
 				if (chapterIds == null || it.id in chapterIds) {
 					DownloadChapter(
-						number = it.number,
+						number = it.number.toInt(),
 						name = it.name,
 						isDownloaded = it.id in localChapters,
 					)
