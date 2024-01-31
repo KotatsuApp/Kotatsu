@@ -393,14 +393,14 @@
     <string name="on_device">Su dispositivo</string>
     <string name="password">Password</string>
     <string name="download_option_whole_manga">L\'intero manga</string>
-    <string name="settings_apply_restart_required">Riavviare l\'applicazione per applicare queste modifiche</string>
+    <string name="settings_apply_restart_required">Riavvia l\'applicazione per applicare queste modifiche</string>
     <string name="backup_frequency">Frequenza creazione backup</string>
     <string name="data_and_privacy">Dati e privacy</string>
     <string name="content_type_hentai">Hentai</string>
     <string name="clear_source_cookies_summary">Pulisci cookies solo per dominio specifico. Nella maggior parte dei casi invaliderà l\'autorizzazione</string>
     <string name="downloads_wifi_only_summary">Smetti di scaricare quando si passa a rete mobile</string>
     <string name="suggest_new_sources">Suggerisci nuove fonti dopo aggiornamento dell\'app</string>
-    <string name="user_agent">Intestazione UserAgent</string>
+    <string name="user_agent">Header UserAgent</string>
     <string name="error_filter_states_genre_not_supported">Questa fonte non supporta il filtraggio per sia genere che stato</string>
     <string name="ignore_ssl_errors">Ignora errori SSL</string>
     <string name="error_filter_locale_genre_not_supported">Questa fonte non supporta il filtraggio per sia genere che localizzazione</string>
@@ -555,4 +555,10 @@
     <string name="mark_as_completed_prompt">Segna il manga selezionato come completamente letto?
 \n
 \nAttenzione: l\'attuale avanzamento della lettura sarà perso.</string>
+    <string name="volume_unknown">Volume sconosciuto</string>
+    <string name="approximate_reading_time">Tempo di lettura approssimativo</string>
+    <string name="volume_">Volume %d</string>
+    <string name="category_hidden_done">Questa categoria è stata nascosta dalla schermata principale ed è accessibile tramite Menù → Gestisci categorie</string>
+    <string name="approximate_remaining_time">Tempo rimanente approssimativo</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
 </resources>
