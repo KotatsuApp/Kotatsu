@@ -63,7 +63,7 @@
     <string name="grid_size">Розмір сітки</string>
     <string name="search_on_s">Пошук по %s</string>
     <string name="delete_manga">Видалити манґу</string>
-    <string name="text_delete_local_manga">Видалити \"%s\" з пристрою перманентно\?</string>
+    <string name="text_delete_local_manga">Назавжди видалити \"%s\" із пристрою?</string>
     <string name="reader_settings">Налаштування читача</string>
     <string name="switch_pages">Перегортання сторінок</string>
     <string name="volume_buttons">Кнопки гучності</string>
@@ -90,11 +90,11 @@
     <string name="text_history_holder_primary">Те, що ви читаєте, буде показано тут</string>
     <string name="text_history_holder_secondary">Знайдіть, що почитати, у розділі «Огляд»</string>
     <string name="text_local_holder_primary">Спочатку збережіть щось</string>
-    <string name="text_local_holder_secondary">Збережіть його з онлайн-джерела або імпортуйте файли.</string>
+    <string name="text_local_holder_secondary">Збережіть щось із онлайн-каталогу або імпортуйте це з файлу.</string>
     <string name="manga_shelf">Полиця</string>
     <string name="recent_manga">Недавні</string>
     <string name="pages_animation">Анімація перегортання</string>
-    <string name="manga_save_location">Тека для завантажень</string>
+    <string name="manga_save_location">Папка завантажень</string>
     <string name="other_storage">Інше сховище</string>
     <string name="done">Готово</string>
     <string name="all_favourites">Усі улюблені</string>
@@ -551,4 +551,8 @@
     <string name="default_tab">Типова вкладка</string>
     <string name="content_rating">Рейтинг контенту</string>
     <string name="rating_suggestive">З натяками</string>
+    <string name="mark_as_completed">Позначити як завершене</string>
+    <string name="mark_as_completed_prompt">Позначити вибрану мангу як повністю прочитану?
+\n
+\nПопередження: поточний прогрес читання буде втрачено.</string>
 </resources>
