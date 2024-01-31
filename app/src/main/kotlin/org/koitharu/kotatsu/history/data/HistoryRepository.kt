@@ -109,10 +109,7 @@ class HistoryRepository @Inject constructor(
 				),
 			)
 			trackingRepository.syncWithHistory(manga, chapterId)
-			val chapter = manga.chapters?.findById(chapterId)
-			if (chapter != null) {
-				scrobblers.forEach { it.tryScrobble(manga.id, chapter) }
-			}
+			scrobblers.forEach { it.tryScrobble(manga, chapterId) }
 		}
 	}
 

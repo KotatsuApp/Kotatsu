@@ -10,7 +10,6 @@ import okhttp3.Request
 import org.json.JSONObject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONNotNull
@@ -132,9 +131,9 @@ class MALRepository @Inject constructor(
 		saveRate(response, mangaId, scrobblerMangaId)
 	}
 
-	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: MangaChapter) {
+	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: Int) {
 		val body = FormBody.Builder()
-			.add("num_chapters_read", chapter.number.toString())
+			.add("num_chapters_read", chapter.toString())
 		val url = BASE_API_URL.toHttpUrl().newBuilder()
 			.addPathSegment("manga")
 			.addPathSegment(rateId.toString())

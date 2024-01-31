@@ -14,10 +14,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaIntent
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -40,7 +38,6 @@ class ScrobblingSelectorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	private val historyRepository: HistoryRepository,
-	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : BaseViewModel() {
 
 	val manga = savedStateHandle.require<ParcelableManga>(MangaIntent.KEY_MANGA).manga
@@ -164,15 +161,10 @@ class ScrobblingSelectorViewModel @Inject constructor(
 				comment = prevInfo?.comment,
 			)
 			if (history != null) {
-				val chapter = mangaRepositoryFactory.create(manga.source)
-					.getDetails(manga)
-					.chapters?.findById(history.chapterId)
-				if (chapter != null) {
-					currentScrobbler.scrobble(
-						mangaId = manga.id,
-						chapter = chapter,
-					)
-				}
+				currentScrobbler.scrobble(
+					manga = manga,
+					chapterId = history.chapterId,
+				)
 			}
 			onClose.call(Unit)
 		}

@@ -11,7 +11,6 @@ import org.json.JSONObject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.parsers.exception.GraphQLException
-import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
@@ -154,11 +153,11 @@ class AniListRepository @Inject constructor(
 		saveRate(response.getJSONObject("data").getJSONObject("SaveMediaListEntry"), mangaId)
 	}
 
-	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: MangaChapter) {
+	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: Int) {
 		val response = doRequest(
 			REQUEST_MUTATION,
 			"""
-				SaveMediaListEntry(id: $rateId, progress: ${chapter.number}) {
+				SaveMediaListEntry(id: $rateId, progress: $chapter) {
 					id
 					mediaId
 					status

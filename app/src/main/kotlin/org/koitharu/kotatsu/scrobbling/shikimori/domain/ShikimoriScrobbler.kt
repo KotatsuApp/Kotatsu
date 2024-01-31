@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.scrobbling.shikimori.domain
 
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
@@ -14,7 +15,8 @@ private const val RATING_MAX = 10f
 class ShikimoriScrobbler @Inject constructor(
 	private val repository: ShikimoriRepository,
 	db: MangaDatabase,
-) : Scrobbler(db, ScrobblerService.SHIKIMORI, repository) {
+	mangaRepositoryFactory: MangaRepository.Factory,
+) : Scrobbler(db, ScrobblerService.SHIKIMORI, repository, mangaRepositoryFactory) {
 
 	init {
 		statuses[ScrobblingStatus.PLANNED] = "planned"

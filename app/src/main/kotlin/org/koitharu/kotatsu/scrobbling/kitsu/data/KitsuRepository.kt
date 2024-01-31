@@ -12,7 +12,6 @@ import org.json.JSONObject
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.util.ext.parseJsonOrNull
-import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.getFloatOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getIntOrDefault
@@ -161,13 +160,13 @@ class KitsuRepository(
 		saveRate(response, mangaId)
 	}
 
-	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: MangaChapter) {
+	override suspend fun updateRate(rateId: Int, mangaId: Long, chapter: Int) {
 		val payload = JSONObject()
 		payload.putJO("data") {
 			put("type", "libraryEntries")
 			put("id", rateId)
 			putJO("attributes") {
-				put("progress", chapter.number.toInt()) // TODO
+				put("progress", chapter)
 			}
 		}
 		val request = Request.Builder()

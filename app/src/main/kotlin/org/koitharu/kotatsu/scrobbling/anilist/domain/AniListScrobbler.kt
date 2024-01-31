@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.scrobbling.anilist.domain
 
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.scrobbling.anilist.data.AniListRepository
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
@@ -12,7 +13,8 @@ import javax.inject.Singleton
 class AniListScrobbler @Inject constructor(
 	private val repository: AniListRepository,
 	db: MangaDatabase,
-) : Scrobbler(db, ScrobblerService.ANILIST, repository) {
+	mangaRepositoryFactory: MangaRepository.Factory,
+) : Scrobbler(db, ScrobblerService.ANILIST, repository, mangaRepositoryFactory) {
 
 	init {
 		statuses[ScrobblingStatus.PLANNED] = "PLANNING"
