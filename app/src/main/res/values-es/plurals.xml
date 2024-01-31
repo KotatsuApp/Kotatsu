@@ -35,4 +35,14 @@
         <item quantity="many">Hace %1$d meses</item>
         <item quantity="other">Hace %1$d meses</item>
     </plurals>
+    <plurals name="minute">
+        <item quantity="one">%1$d minuto</item>
+        <item quantity="many">%1$d minutos</item>
+        <item quantity="other">%1$d minutos</item>
+    </plurals>
+    <plurals name="hour">
+        <item quantity="one">%1$d hora</item>
+        <item quantity="many">%1$d horas</item>
+        <item quantity="other">%1$d horas</item>
+    </plurals>
 </resources>
