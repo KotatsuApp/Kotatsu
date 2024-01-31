@@ -554,4 +554,15 @@
 \nPeringatan : proses baca saat ini akan hilang.</string>
     <string name="error_multiple_states_not_supported">Filter berdasarkan banyak status tidak didukung berdasarkan sumber manga ini</string>
     <string name="reader_optimize_summary">Mengurangi kualitas halaman di luar layar untuk menggunakan lebih sedikit memori</string>
+    <string name="by_name_reverse">Nama terbalik</string>
+    <string name="volume_">Volume%d</string>
+    <string name="volume_unknown">Volume tidak diketahui</string>
+    <string name="approximate_reading_time">Perkiraan waktu pembacaan</string>
+    <string name="incognito_mode_hint">Progres membaca Anda tidak akan disimpan</string>
+    <string name="rating_suggestive">Disarankan</string>
+    <string name="vertical">Vertikal</string>
+    <string name="last_read">Terakhir dibaca</string>
+    <string name="two_pages">Dua halaman</string>
+    <string name="approximate_remaining_time">Perkiraan waktu yang tersisa</string>
+    <string name="remaining_time_pattern">%1$s%2$s</string>
 </resources>
