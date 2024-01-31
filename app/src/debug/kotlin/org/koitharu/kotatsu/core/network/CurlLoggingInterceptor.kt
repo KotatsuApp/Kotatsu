@@ -10,6 +10,8 @@ class CurlLoggingInterceptor(
 	private val curlOptions: String? = null
 ) : Interceptor {
 
+	private val escapeRegex = Regex("([\\[\\]\"])")
+
 	override fun intercept(chain: Interceptor.Chain): Response {
 		val request = chain.request()
 		var isCompressed = false
@@ -40,7 +42,7 @@ class CurlLoggingInterceptor(
 		if (isCompressed) {
 			curlCmd.append(" --compressed")
 		}
-		curlCmd.append(" \"").append(request.url).append('"')
+		curlCmd.append(" \"").append(request.url.toString().escape()).append('"')
 
 		log("---cURL (" + request.url + ")")
 		log(curlCmd.toString())
@@ -48,7 +50,12 @@ class CurlLoggingInterceptor(
 		return chain.proceed(request)
 	}
 
-	private fun String.escape() = replace("\"", "\\\"")
+	private fun String.escape() = replace(escapeRegex) { match ->
+		"\\" + match.value
+	}
+		// .replace("\"", "\\\"")
+		// .replace("[", "\\[")
+		// .replace("]", "\\]")
 
 	private fun log(msg: String) {
 		Log.d("CURL", msg)

@@ -5,15 +5,13 @@ import okhttp3.Response
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
 
-private const val JSON = "application/vnd.api+json"
-
 class KitsuInterceptor(private val storage: ScrobblerStorage) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
 		val sourceRequest = chain.request()
 		val request = sourceRequest.newBuilder()
-		request.header(CommonHeaders.CONTENT_TYPE, JSON)
-		request.header(CommonHeaders.ACCEPT, JSON)
+		request.header(CommonHeaders.CONTENT_TYPE, VND_JSON)
+		request.header(CommonHeaders.ACCEPT, VND_JSON)
 		if (!sourceRequest.url.pathSegments.contains("oauth")) {
 			storage.accessToken?.let {
 				request.header(CommonHeaders.AUTHORIZATION, "Bearer $it")
@@ -22,4 +20,8 @@ class KitsuInterceptor(private val storage: ScrobblerStorage) : Interceptor {
 		return chain.proceed(request.build())
 	}
 
+	companion object {
+
+		const val VND_JSON = "application/vnd.api+json"
+	}
 }

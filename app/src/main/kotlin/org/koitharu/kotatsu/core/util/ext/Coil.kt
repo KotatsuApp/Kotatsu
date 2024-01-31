@@ -25,7 +25,7 @@ fun ImageView.newImageRequest(lifecycleOwner: LifecycleOwner, data: Any?): Image
 	}
 	// disposeImageRequest()
 	return ImageRequest.Builder(context)
-		.data(data)
+		.data(data?.takeUnless { it == "" })
 		.lifecycle(lifecycleOwner)
 		.crossfade(context)
 		.target(this)

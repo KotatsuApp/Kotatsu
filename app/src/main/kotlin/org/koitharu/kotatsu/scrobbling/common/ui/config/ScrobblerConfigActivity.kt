@@ -111,7 +111,9 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 			return
 		}
 		viewBinding.imageViewAvatar.newImageRequest(this, user.avatar)
-			?.placeholder(R.drawable.ic_shortcut_default)
+			?.placeholder(R.drawable.bg_badge_empty)
+			?.fallback(R.drawable.ic_shortcut_default)
+			?.error(R.drawable.ic_shortcut_default)
 			?.enqueueWith(coil)
 	}
 

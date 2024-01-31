@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.RecyclerView.NO_ID
 import coil.ImageLoader
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,6 +21,7 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.util.CollapseActionViewCallback
+import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -29,6 +32,8 @@ import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetScrobblingSelectorBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
@@ -45,7 +50,7 @@ class ScrobblingSelectorSheet :
 	MenuItem.OnActionExpandListener,
 	SearchView.OnQueryTextListener,
 	TabLayout.OnTabSelectedListener,
-	ListStateHolderListener {
+	ListStateHolderListener, AsyncListDiffer.ListListener<ListModel> {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -62,6 +67,7 @@ class ScrobblingSelectorSheet :
 		super.onViewBindingCreated(binding, savedInstanceState)
 		disableFitToContents()
 		val listAdapter = ScrobblerSelectorAdapter(viewLifecycleOwner, coil, this, this)
+		listAdapter.addListListener(this)
 		val decoration = ScrobblerMangaSelectionDecoration(binding.root.context)
 		with(binding.recyclerView) {
 			adapter = listAdapter
@@ -73,7 +79,7 @@ class ScrobblingSelectorSheet :
 		initOptionsMenu()
 		initTabs()
 
-		viewModel.content.observe(viewLifecycleOwner) { listAdapter.items = it }
+		viewModel.content.observe(viewLifecycleOwner, listAdapter)
 		viewModel.selectedItemId.observe(viewLifecycleOwner) {
 			decoration.checkedItemId = it
 			binding.recyclerView.invalidateItemDecorations()
@@ -102,6 +108,19 @@ class ScrobblingSelectorSheet :
 	override fun onDestroyView() {
 		super.onDestroyView()
 		collapsibleActionViewCallback = null
+	}
+
+	override fun onCurrentListChanged(previousList: MutableList<ListModel>, currentList: MutableList<ListModel>) {
+		if (previousList.singleOrNull() is LoadingFooter) {
+			val rv = viewBinding?.recyclerView ?: return
+			val selectedId = viewModel.selectedItemId.value
+			val target = if (selectedId == NO_ID) {
+				0
+			} else {
+				currentList.indexOfFirst { it is ScrobblerManga && it.id == selectedId }.coerceAtLeast(0)
+			}
+			rv.post(RecyclerViewScrollCallback(rv, target, if (target == 0) 0 else rv.height / 3))
+		}
 	}
 
 	override fun onClick(v: View) {
