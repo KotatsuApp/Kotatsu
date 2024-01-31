@@ -95,7 +95,7 @@
     <string name="manga_shelf">Prateleira</string>
     <string name="recent_manga">Recente</string>
     <string name="pages_animation">Animação da página</string>
-    <string name="manga_save_location">Pasta para downloads</string>
+    <string name="manga_save_location">Pasta de downloads</string>
     <string name="not_available">Não disponível</string>
     <string name="cannot_find_available_storage">Sem armazenamento disponível</string>
     <string name="other_storage">Outro armazenamento</string>
@@ -200,7 +200,7 @@
     <string name="zoom_mode_keep_start">Manter no início</string>
     <string name="black_dark_theme_summary">Consome menos bateria em telas AMOLED</string>
     <string name="create_backup">Criar backup de dados</string>
-    <string name="text_local_holder_secondary">Salve-o de fontes online ou importe arquivos.</string>
+    <string name="text_local_holder_secondary">Salvar de fontes online ou importe arquivos.</string>
     <string name="check_for_updates">Verificar se há atualizações</string>
     <string name="text_feed_holder">Novos capítulos do que você está lendo são exibidos aqui</string>
     <string name="app_version">Versão %s</string>
@@ -556,4 +556,11 @@
 \nAviso: o progresso de leitura atual será perdido.</string>
     <string name="mark_as_completed">Marcar como completo</string>
     <string name="category_hidden_done">Esta categoria foi ocultada da tela inicial e pode ser acessado através de Menu → Gerenciar categorias</string>
+    <string name="volume_">Volume %d</string>
+    <string name="volume_unknown">Volume desconhecido</string>
+    <string name="approximate_reading_time">Tempo aproximado de leitura</string>
+    <string name="incognito_mode_hint">Seu progresso de leitura não será salvo</string>
+    <string name="vertical">Vertical</string>
+    <string name="approximate_remaining_time">Tempo restante aproximado</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
 </resources>
