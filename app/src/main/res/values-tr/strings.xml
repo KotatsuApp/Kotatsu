@@ -555,4 +555,29 @@
     <string name="mark_as_completed_prompt">Seçili mangayı tamamlandı olarak işaretle?
 \n
 \nUyarı: Şu anki ilerleme kaybolacaktır.</string>
+    <string name="category_hidden_done">Bu kategori ana ekrandan gizlendi ve Menü → Kategorileri yönet aracılığıyla erişilebilir</string>
+    <string name="approximate_reading_time">Yaklaşık okuma süresi</string>
+    <string name="volume_">%d. cilt</string>
+    <string name="volume_unknown">Bilinmeyen cilt</string>
+    <string name="approximate_remaining_time">Yaklaşık kalan süre</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="incognito_mode_hint">Okuma ilerleme durumunuz kaydedilmeyecek</string>
+    <string name="vertical">Dikey</string>
+    <string name="last_read">Son okunan</string>
+    <string name="two_pages">İki sayfa</string>
+    <string name="toggle_ui">Kullanıcı arayüzünü göster/gizle</string>
+    <string name="reader_actions">Okuyucu eylemleri</string>
+    <string name="reader_actions_summary">Dokunulabilir ekran alanları için eylemleri yapılandırın</string>
+    <string name="switch_pages_volume_buttons">Ses düğmelerini etkinleştir</string>
+    <string name="switch_pages_volume_buttons_summary">Sayfa değiştirmek için ses düğmelerini kullanın</string>
+    <string name="tap_action">Dokunma eylemi</string>
+    <string name="long_tap_action">Uzun dokunma eylemi</string>
+    <string name="none">Hiçbiri</string>
+    <string name="show_menu">Menüyü göster</string>
+    <string name="prev_chapter">Önceki bölüm</string>
+    <string name="next_chapter">Sonraki bölüm</string>
+    <string name="prev_page">Önceki sayfa</string>
+    <string name="next_page">Sonraki sayfa</string>
+    <string name="config_reset_confirm">Ayarlar öntanımlı değerlere sıfırlansın mı? Bu eylem geri alınamaz.</string>
+    <string name="use_two_pages_landscape">Yatay yönde iki sayfa düzeni kullan (beta)</string>
 </resources>
