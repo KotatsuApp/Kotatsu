@@ -555,4 +555,14 @@
     <string name="mark_as_completed_prompt">¿Marcar el manga seleccionado como completamente leído?
 \n
 \nAdvertencia: el progreso de lectura actual se perderá.</string>
+    <string name="category_hidden_done">Esta categoría estaba oculta en la pantalla principal y es accesible a través de Menú → Gestionar categorías</string>
+    <string name="approximate_reading_time">Tiempo aproximado de lectura</string>
+    <string name="approximate_remaining_time">Duración restante aproximada</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="volume_unknown">Volumen desconocido</string>
+    <string name="volume_">Volumen %d</string>
+    <string name="incognito_mode_hint">Tu progreso en la lectura no se guardará</string>
+    <string name="vertical">Vertical</string>
+    <string name="last_read">Última lectura</string>
+    <string name="two_pages">Dos páginas</string>
 </resources>
