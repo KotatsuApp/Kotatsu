@@ -36,15 +36,15 @@
     <string name="light">उज्यालो</string>
     <string name="automatic">सिस्टम पालना गर्नुहोस्</string>
     <string name="computing_">कम्प्युटिङ…</string>
-    <string name="favourites">मनपर्नेहरू</string>
-    <string name="details">विवरणहरू</string>
+    <string name="favourites">मनपर्ने</string>
+    <string name="details">विवरण</string>
     <string name="detailed_list">विस्तृत सूची</string>
     <string name="grid">ग्रिड</string>
-    <string name="chapter_d_of_d">%2$d को अध्याय %1$d</string>
+    <string name="chapter_d_of_d">अध्याय %1$d / %2$d</string>
     <string name="close">बन्द गर्नुहोस्</string>
     <string name="history_is_empty">अहिलेसम्म इतिहास छैन</string>
     <string name="add">थप्नुहोस्</string>
-    <string name="save">बचत गर्नुहोस्</string>
+    <string name="save">सेभ गर्नुहोस्</string>
     <string name="share">साझा गर्नुहोस्</string>
     <string name="create_shortcut">सर्टकट सिर्जना गर्नुहोस्…</string>
     <string name="popular">लोकप्रिय</string>
@@ -61,7 +61,7 @@
     <string name="webtoon">वेबटून</string>
     <string name="read_mode">पढ्ने मोड</string>
     <string name="grid_size">ग्रिड साइज</string>
-    <string name="text_delete_local_manga">यन्त्रबाट %s स्थायी रूपमा हटाउने हो\?</string>
+    <string name="text_delete_local_manga">यन्त्रबाट %s लाई सदाका लागि हटाउने हो?</string>
     <string name="reader_settings">रिडर सेटिङहरू</string>
     <string name="search_on_s">%s मा खोज्नुहोस्</string>
     <string name="delete_manga">माङ्गा हटाउनुहोस्</string>
@@ -89,9 +89,9 @@
     <string name="text_empty_holder_primary">यहाँ अलि खाली जस्तो छ…</string>
     <string name="text_search_holder_secondary">सोधपुछ सुधार गर्ने प्रयास गर्नुहोस्।</string>
     <string name="text_history_holder_primary">तपाईँले पढेको कुरा यहाँ देखाइनेछ</string>
-    <string name="text_history_holder_secondary">साइड मेनुमा के पढ्ने फेला पार्नुहोस्।</string>
+    <string name="text_history_holder_secondary">«अन्वेषण» खण्डमा गएर के पढ्ने हेर्नुहोस्</string>
     <string name="pages_animation">पृष्ठ एनिमेसन</string>
-    <string name="manga_save_location">डाउनलोडका लागि फोल्डर</string>
+    <string name="manga_save_location">डाउनलोड फोल्डर</string>
     <string name="recent_manga">हालैका</string>
     <string name="not_available">उपलब्ध छैन</string>
     <string name="text_feed_holder">तपाईंले पढिरहनु भएको माङ्गाको नयाँ अध्यायहरू यहाँ देखाइएको छ</string>
@@ -107,7 +107,7 @@
     <string name="clear_pages_cache">पृष्ठ क्यास खाली गर्नुहोस्</string>
     <string name="notification_sound">सूचना आवाज</string>
     <string name="text_local_holder_primary">पहिले केही सेभ गर्नुहोस्</string>
-    <string name="text_local_holder_secondary">यसलाई अनलाइन स्रोतहरूबाट सेभ गर्नुहोस् वा फाइलहरू आयात गर्नुहोस्।</string>
+    <string name="text_local_holder_secondary">अनलाइन क्याटलगबाट केहि सेभ गर्नुहोस् वा फाइलबाट आयात गर्नुहोस्।</string>
     <string name="updates_feed_cleared">खाली गरियो</string>
     <string name="protect_application">एप सुरक्षित गर्नुहोस्</string>
     <string name="protect_application_summary">Kotatsu सुरु गर्दा पासवर्ड माग्नुहोस्</string>
@@ -200,7 +200,7 @@
     <string name="exclude_nsfw_from_suggestions">NSFW मंगा सुझाव नगर्नुहोस्</string>
     <string name="enabled">सक्षम गरियो</string>
     <string name="disabled">अक्षम</string>
-    <string name="filter_load_error">विधाहरूको सूची लोड गर्न सकिएन</string>
+    <string name="filter_load_error">जानरा को सूची लोड गर्न सकिएन</string>
     <string name="reset_filter">फिल्टर रिसेट गर्नुहोस्</string>
     <string name="only_using_wifi">Wi-Fi मा मात्र</string>
     <string name="always">सधैं</string>
@@ -229,4 +229,6 @@
     <string name="reader_control_ltr_summary">दायाँ किनारामा ट्याप गर्नुहोस् वा दायाँ कुञ्जी थिच्दा सधैं अर्को पृष्ठमा स्विच हुन्छ</string>
     <string name="reader_control_ltr">Ergonomic पाठक नियन्त्रण</string>
     <string name="manga_error_description_pattern">त्रुटि विवरण:&lt;br&gt; &lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt; 1. &lt;a href=%2$s&gt;वेब ब्राउजरमा मंगा खोल्ने&lt;/a&gt; प्रयास गर्नुहोस् कि यो यसको स्रोतमा उपलब्ध छ&lt;br&gt; 2. निश्चित गर्नुहोस् कि तपाइँ &lt;a href=kotatsu://about&gt;Kotatsu को नवीनतम संस्करण&lt;/a&gt; प्रयोग गर्दै हुनुहुन्छ&lt;br&gt; 3. यदि यो उपलब्ध छ भने, विकासकर्ताहरूलाई त्रुटि रिपोर्ट पठाउनुहोस्।</string>
+    <string name="suggestions_excluded_genres">जानरा अलग गर्नु</string>
+    <string name="suggestions_updating">सुझावहरू अपडेट गर्दै</string>
 </resources>
