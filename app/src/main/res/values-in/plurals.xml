@@ -4,10 +4,10 @@
         <item quantity="other">%1$d item</item>
     </plurals>
     <plurals name="new_chapters">
-        <item quantity="other">%1$d bab baru</item>
+        <item quantity="other">%1$d chapter baru</item>
     </plurals>
     <plurals name="chapters">
-        <item quantity="other">%1$d bab</item>
+        <item quantity="other">%1$d chapter</item>
     </plurals>
     <plurals name="minutes_ago">
         <item quantity="other">%1$d menit yang lalu</item>
