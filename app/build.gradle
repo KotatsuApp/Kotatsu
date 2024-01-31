@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 34
-		versionCode = 615
-		versionName = '6.6.6'
+		versionCode = 616
+		versionName = '6.7-a1'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -82,7 +82,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:a8f9423307') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:52e4e6b802') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -94,6 +94,7 @@ dependencies {
 	implementation 'androidx.core:core-ktx:1.12.0'
 	implementation 'androidx.activity:activity-ktx:1.8.2'
 	implementation 'androidx.fragment:fragment-ktx:1.6.2'
+	implementation 'androidx.collection:collection:1.4.0'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
 	implementation 'androidx.lifecycle:lifecycle-service:2.7.0'
 	implementation 'androidx.lifecycle:lifecycle-process:2.7.0'
@@ -157,7 +158,7 @@ dependencies {
 	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
 
 	androidTestImplementation 'androidx.room:room-testing:2.6.1'
-	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.15.0'
+	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
 
 	androidTestImplementation 'com.google.dagger:hilt-android-testing:2.50'
 	kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.50'
