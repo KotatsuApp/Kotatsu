@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.parser
 
 import android.util.Log
+import androidx.collection.MutableLongSet
 import coil.request.CachePolicy
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -189,7 +190,7 @@ class RemoteMangaRepository(
 			return emptyList()
 		}
 		val result = ArrayList<MangaPage>(size)
-		val set = HashSet<Long>(size)
+		val set = MutableLongSet(size)
 		for (page in this) {
 			if (set.add(page.id)) {
 				result.add(page)

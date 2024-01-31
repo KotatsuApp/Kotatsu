@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.model
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.collection.MutableObjectIntMap
 import androidx.core.os.LocaleListCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.iterator
@@ -31,12 +32,14 @@ fun Collection<ChapterListItem>.countChaptersByBranch(): Int {
 	if (size <= 1) {
 		return size
 	}
-	val acc = HashMap<String?, Int>()
+	val acc = MutableObjectIntMap<String?>()
 	for (item in this) {
 		val branch = item.chapter.branch
-		acc[branch] = (acc[branch] ?: 0) + 1
+		acc[branch] = acc.getOrDefault(branch, 0) + 1
 	}
-	return acc.values.max()
+	var max = 0
+	acc.forEachValue { x -> if (x > max) max = x }
+	return max
 }
 
 @get:StringRes

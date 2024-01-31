@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.tracker.domain
 
 import androidx.annotation.VisibleForTesting
+import androidx.collection.MutableLongSet
 import androidx.room.withTransaction
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
@@ -74,7 +75,7 @@ class TrackingRepository @Inject constructor(
 			ids.windowed(MAX_QUERY_IDS, MAX_QUERY_IDS, true)
 				.flatMap { dao.findAll(it) }
 		}.groupBy { it.mangaId }
-		val idSet = HashSet<Long>()
+		val idSet = MutableLongSet(mangaList.size)
 		val result = ArrayList<MangaTracking>(mangaList.size)
 		for (item in mangaList) {
 			val manga = if (item.isLocal) {

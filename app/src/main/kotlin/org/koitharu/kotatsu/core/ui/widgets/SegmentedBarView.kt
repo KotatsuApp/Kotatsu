@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import androidx.collection.MutableFloatList
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
@@ -25,7 +26,7 @@ class SegmentedBarView @JvmOverloads constructor(
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private val segmentsData = ArrayList<Segment>()
-	private val segmentsSizes = ArrayList<Float>()
+	private val segmentsSizes = MutableFloatList()
 	private var cornerSize = 0f
 	private var scaleFactor = 1f
 	private var scaleAnimator: ValueAnimator? = null

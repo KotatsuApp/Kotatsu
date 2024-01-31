@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.download.ui.worker
 
+import androidx.collection.MutableObjectLongMap
 import kotlinx.coroutines.delay
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
@@ -9,7 +10,7 @@ class DownloadSlowdownDispatcher(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val defaultDelay: Long,
 ) {
-	private val timeMap = HashMap<MangaSource, Long>()
+	private val timeMap = MutableObjectLongMap<MangaSource>()
 
 	suspend fun delay(source: MangaSource) {
 		val repo = mangaRepositoryFactory.create(source) as? RemoteMangaRepository ?: return
@@ -17,7 +18,7 @@ class DownloadSlowdownDispatcher(
 			return
 		}
 		val lastRequest = synchronized(timeMap) {
-			val res = timeMap[source] ?: 0L
+			val res = timeMap.getOrDefault(source, 0L)
 			timeMap[source] = System.currentTimeMillis()
 			res
 		}

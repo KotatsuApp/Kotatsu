@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.tracker.domain
 
 import androidx.annotation.VisibleForTesting
+import androidx.collection.MutableLongSet
 import coil.request.CachePolicy
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -30,7 +31,7 @@ class Tracker @Inject constructor(
 		if (sources.isEmpty()) {
 			return emptyList()
 		}
-		val knownManga = HashSet<Long>()
+		val knownManga = MutableLongSet()
 		val result = ArrayList<TrackingItem>()
 		// Favourites
 		if (AppSettings.TRACK_FAVOURITES in sources) {

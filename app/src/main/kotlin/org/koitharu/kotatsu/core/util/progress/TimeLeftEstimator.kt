@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.core.util.progress
 
 import android.os.SystemClock
+import androidx.collection.IntList
+import androidx.collection.MutableIntList
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
@@ -10,7 +12,7 @@ private const val NO_TIME = -1L
 
 class TimeLeftEstimator {
 
-	private var times = ArrayList<Int>()
+	private var times = MutableIntList()
 	private var lastTick: Tick? = null
 	private val tooLargeTime = TimeUnit.DAYS.toMillis(1)
 
@@ -48,6 +50,15 @@ class TimeLeftEstimator {
 	fun getEta(): Long {
 		val etl = getEstimatedTimeLeft()
 		return if (etl == NO_TIME) NO_TIME else System.currentTimeMillis() + etl
+	}
+
+	private fun IntList.average(): Double {
+		if (isEmpty()) {
+			return 0.0
+		}
+		var acc = 0L
+		forEach { acc += it }
+		return acc / size.toDouble()
 	}
 
 	private class Tick(

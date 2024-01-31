@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.core.ui.widgets
 
 import android.content.Context
-import android.util.ArrayMap
 import android.util.AttributeSet
+import androidx.collection.MutableScatterMap
 import com.google.android.material.slider.Slider
 import kotlin.math.cbrt
 import kotlin.math.pow
@@ -12,7 +12,7 @@ class CubicSlider @JvmOverloads constructor(
 	attrs: AttributeSet? = null,
 ) : Slider(context, attrs) {
 
-	private val changeListeners = ArrayMap<OnChangeListener, OnChangeListenerMapper>(1)
+	private val changeListeners = MutableScatterMap<OnChangeListener, OnChangeListenerMapper>(1)
 
 	override fun setValue(value: Float) {
 		super.setValue(value.unmap())
