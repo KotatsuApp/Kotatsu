@@ -9,7 +9,7 @@
     <string name="grid">Kotak</string>
     <string name="list_mode">Gaya list</string>
     <string name="settings">Pengaturan</string>
-    <string name="remote_sources">Sumber</string>
+    <string name="remote_sources">Sumber manga</string>
     <string name="loading_">Memuat…</string>
     <string name="computing_">Menghitung…</string>
     <string name="chapter_d_of_d">Bab %1$d dari %2$d</string>
@@ -38,7 +38,7 @@
     <string name="newest">Terbaru</string>
     <string name="by_rating">Nilai</string>
     <string name="sort_order">Urutkan</string>
-    <string name="filter">Filter</string>
+    <string name="filter">Saring</string>
     <string name="theme">Tema</string>
     <string name="light">Terang</string>
     <string name="dark">Gelap</string>
@@ -62,7 +62,7 @@
     <string name="grid_size">Ukuran kisi</string>
     <string name="search_on_s">Cari di %s</string>
     <string name="delete_manga">Hapus komik</string>
-    <string name="text_delete_local_manga">Hapus \"%s\" dari perangkat secara permanen\?</string>
+    <string name="text_delete_local_manga">Hapus \"%s\" dari perangkat secara permanen?</string>
     <string name="reader_settings">Pengaturan pembaca</string>
     <string name="switch_pages">Ganti halaman</string>
     <string name="chapters">Bab</string>
@@ -508,8 +508,8 @@
     <string name="sources_catalog">Sumber katalog</string>
     <string name="rating_safe">Aman</string>
     <string name="content_type_manga">Komik</string>
-    <string name="content_type_hentai">Hentai</string>
-    <string name="error_filter_states_genre_not_supported">Filter berdasarkan genre dan negara tidak didukung untuk sumber ini</string>
+    <string name="content_type_hentai">Komik Dewasa</string>
+    <string name="error_filter_states_genre_not_supported">Filter berdasarkan genre dan status tidak didukung untuk sumber ini</string>
     <string name="error_filter_locale_genre_not_supported">Filter bedasarkan genre dan lokal tidak didukung oleh sumber ini</string>
     <string name="content_type_comics">Komik</string>
     <string name="catalog">Katalog</string>
@@ -535,8 +535,22 @@
     <string name="content_rating">Peringkat konten</string>
     <string name="backup_date_">Tanggal dicadangkan %s</string>
     <string name="available_d">Tersedia:%1$d</string>
-    <string name="state">Negara</string>
+    <string name="state">Status</string>
     <string name="state_paused">Di jeda</string>
     <string name="content_type_other">Lainnya</string>
     <string name="sync_auth">Masuk untuk sinkronisasi akun</string>
+    <string name="source_summary_pattern">%1$s, %2$s</string>
+    <string name="downloads_settings_info">Anda dapat mengaktifkan perlambatan pengunduhan untuk setiap sumber manga satu per satu di pengaturan sumber, jika Anda mengalami masalah dengan pemblokiran sisi server</string>
+    <string name="default_tab">Tab bawaan</string>
+    <string name="category_hidden_done">Kategori ini telah disembunyikan dari tampilan utama dan dapat di akses melalui Menu -&gt; Manage categoties</string>
+    <string name="grayscale">Skala abuabu</string>
+    <string name="manual">Dilakukan sendiri</string>
+    <string name="no_manga_sources_catalog_text">Tidak ada sumber yang tersedia di bagian ini, atau semuanya mungkin sudah ditambahkan.
+\nPantau terus</string>
+    <string name="mark_as_completed">Tandai telah selesai</string>
+    <string name="disable_battery_optimization_summary_downloads">Mungkinn membantu jika kamu mendapatkan masalah saat memulai pengunduhan</string>
+    <string name="mark_as_completed_prompt">Tandai manga yang dipilih telah selesai dibaca
+\n
+\nPeringatan : proses baca saat ini akan hilang.</string>
+    <string name="error_multiple_states_not_supported">Filter berdasarkan banyak status tidak didukung berdasarkan sumber manga ini</string>
 </resources>
