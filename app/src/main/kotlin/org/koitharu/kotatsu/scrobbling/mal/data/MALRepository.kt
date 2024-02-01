@@ -151,7 +151,8 @@ class MALRepository @Inject constructor(
 	override suspend fun updateRate(rateId: Int, mangaId: Long, rating: Float, status: String?, comment: String?) {
 		val body = FormBody.Builder()
 			.add("status", status.toString())
-			.add("score", rating.toString())
+			.add("score", rating.toInt().toString())
+			.add("comments", comment.orEmpty())
 		val url = BASE_API_URL.toHttpUrl().newBuilder()
 			.addPathSegment("manga")
 			.addPathSegment(rateId.toString())
