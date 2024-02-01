@@ -71,7 +71,8 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 				MangaChapter(
 					id = "$i${f.name}".longHashCode(),
 					name = f.nameWithoutExtension.toHumanReadable(),
-					number = i + 1,
+					number = 0f,
+					volume = 0,
 					source = MangaSource.LOCAL,
 					uploadDate = f.creationTime,
 					url = f.toUri().toString(),

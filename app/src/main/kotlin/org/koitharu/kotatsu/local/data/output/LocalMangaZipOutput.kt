@@ -52,9 +52,9 @@ class LocalMangaZipOutput(
 		index.setCoverEntry(name)
 	}
 
-	override suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) = mutex.withLock {
+	override suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, ext: String) = mutex.withLock {
 		val name = buildString {
-			append(FILENAME_PATTERN.format(chapter.branch.hashCode(), chapter.number, pageNumber))
+			append(FILENAME_PATTERN.format(chapter.value.branch.hashCode(), chapter.index + 1, pageNumber))
 			if (ext.isNotEmpty() && ext.length <= 4) {
 				append('.')
 				append(ext)
@@ -104,7 +104,7 @@ class LocalMangaZipOutput(
 				}
 			}
 		}
-		otherIndex?.getMangaInfo()?.chapters?.let { chapters ->
+		otherIndex?.getMangaInfo()?.chapters?.withIndex()?.let { chapters ->
 			for (chapter in chapters) {
 				index.addChapter(chapter, null)
 			}

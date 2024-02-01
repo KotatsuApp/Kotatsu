@@ -4,7 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
@@ -47,12 +46,12 @@ class LocalMangaDirOutput(
 		flushIndex()
 	}
 
-	override suspend fun addPage(chapter: MangaChapter, file: File, pageNumber: Int, ext: String) = mutex.withLock {
-		val output = chaptersOutput.getOrPut(chapter) {
+	override suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, ext: String) = mutex.withLock {
+		val output = chaptersOutput.getOrPut(chapter.value) {
 			ZipOutput(File(rootFile, chapterFileName(chapter) + SUFFIX_TMP))
 		}
 		val name = buildString {
-			append(FILENAME_PATTERN.format(chapter.branch.hashCode(), chapter.number, pageNumber))
+			append(FILENAME_PATTERN.format(chapter.value.branch.hashCode(), chapter.index + 1, pageNumber))
 			if (ext.isNotEmpty() && ext.length <= 4) {
 				append('.')
 				append(ext)
@@ -92,9 +91,9 @@ class LocalMangaDirOutput(
 	}
 
 	suspend fun deleteChapter(chapterId: Long) = mutex.withLock {
-		val chapter = checkNotNull(index.getMangaInfo()?.chapters) {
+		val chapter = checkNotNull(index.getMangaInfo()?.chapters?.withIndex()) {
 			"No chapters found"
-		}.findById(chapterId) ?: error("Chapter not found")
+		}.find { x -> x.value.id == chapterId } ?: error("Chapter not found")
 		val chapterDir = File(rootFile, chapterFileName(chapter))
 		chapterDir.deleteAwait()
 		index.removeChapter(chapterId)
@@ -111,11 +110,11 @@ class LocalMangaDirOutput(
 		file.renameTo(resFile)
 	}
 
-	private fun chapterFileName(chapter: MangaChapter): String {
-		index.getChapterFileName(chapter.id)?.let {
+	private fun chapterFileName(chapter: IndexedValue<MangaChapter>): String {
+		index.getChapterFileName(chapter.value.id)?.let {
 			return it
 		}
-		val baseName = "${chapter.number}_${chapter.name.toFileNameSafe()}".take(18)
+		val baseName = "${chapter.index}_${chapter.value.name.toFileNameSafe()}".take(18)
 		var i = 0
 		while (true) {
 			val name = (if (i == 0) baseName else baseName + "_$i") + ".cbz"

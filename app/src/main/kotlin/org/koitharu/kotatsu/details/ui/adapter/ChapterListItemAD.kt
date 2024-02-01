@@ -4,6 +4,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.formatNumber
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.drawableStart
@@ -26,7 +27,7 @@ fun chapterListItemAD(
 	bind { payloads ->
 		if (payloads.isEmpty()) {
 			binding.textViewTitle.text = item.chapter.name
-			binding.textViewNumber.text = item.chapter.number.toString()
+			binding.textViewNumber.text = item.chapter.formatNumber()
 			binding.textViewDescription.textAndVisible = item.description()
 		}
 		when {

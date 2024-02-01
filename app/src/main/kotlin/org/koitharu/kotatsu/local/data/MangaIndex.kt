@@ -12,6 +12,8 @@ import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.find
 import org.koitharu.kotatsu.parsers.util.json.getBooleanOrDefault
+import org.koitharu.kotatsu.parsers.util.json.getFloatOrDefault
+import org.koitharu.kotatsu.parsers.util.json.getIntOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
@@ -86,19 +88,20 @@ class MangaIndex(source: String?) {
 
 	fun getCoverEntry(): String? = json.getStringOrNull("cover_entry")
 
-	fun addChapter(chapter: MangaChapter, filename: String?) {
+	fun addChapter(chapter: IndexedValue<MangaChapter>, filename: String?) {
 		val chapters = json.getJSONObject("chapters")
-		if (!chapters.has(chapter.id.toString())) {
+		if (!chapters.has(chapter.value.id.toString())) {
 			val jo = JSONObject()
-			jo.put("number", chapter.number)
-			jo.put("url", chapter.url)
-			jo.put("name", chapter.name)
-			jo.put("uploadDate", chapter.uploadDate)
-			jo.put("scanlator", chapter.scanlator)
-			jo.put("branch", chapter.branch)
-			jo.put("entries", "%08d_%03d\\d{3}".format(chapter.branch.hashCode(), chapter.number))
+			jo.put("number", chapter.value.number)
+			jo.put("volume", chapter.value.volume)
+			jo.put("url", chapter.value.url)
+			jo.put("name", chapter.value.name)
+			jo.put("uploadDate", chapter.value.uploadDate)
+			jo.put("scanlator", chapter.value.scanlator)
+			jo.put("branch", chapter.value.branch)
+			jo.put("entries", "%08d_%03d\\d{3}".format(chapter.value.branch.hashCode(), chapter.index + 1))
 			jo.put("file", filename)
-			chapters.put(chapter.id.toString(), jo)
+			chapters.put(chapter.value.id.toString(), jo)
 		}
 	}
 
@@ -162,7 +165,8 @@ class MangaIndex(source: String?) {
 					id = k.toLong(),
 					name = v.getString("name"),
 					url = v.getString("url"),
-					number = v.getInt("number"),
+					number = v.getFloatOrDefault("number", 0f),
+					volume = v.getIntOrDefault("volume", 0),
 					uploadDate = v.getLongOrDefault("uploadDate", 0L),
 					scanlator = v.getStringOrNull("scanlator"),
 					branch = v.getStringOrNull("branch"),

@@ -13,6 +13,8 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import com.google.android.material.R as materialR
 
 @JvmName("mangaIds")
@@ -113,3 +115,16 @@ val Manga.appUrl: Uri
 		.appendQueryParameter("name", title)
 		.appendQueryParameter("url", url)
 		.build()
+
+private val chaptersNumberFormat = DecimalFormat("#.#").also { f ->
+	f.decimalFormatSymbols = DecimalFormatSymbols.getInstance().also {
+		it.decimalSeparator = '.'
+	}
+}
+
+fun MangaChapter.formatNumber(): String? {
+	if (number <= 0f) {
+		return null
+	}
+	return chaptersNumberFormat.format(number.toDouble())
+}
