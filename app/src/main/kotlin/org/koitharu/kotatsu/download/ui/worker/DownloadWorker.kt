@@ -193,12 +193,12 @@ class DownloadWorker @AssistedInject constructor(
 				val chapters = getChapters(mangaDetails, includedIds)
 				for ((chapterIndex, chapter) in chapters.withIndex()) {
 					checkIsPaused()
-					if (chaptersToSkip.remove(chapter.id)) {
+					if (chaptersToSkip.remove(chapter.value.id)) {
 						publishState(currentState.copy(downloadedChapters = currentState.downloadedChapters + 1))
 						continue
 					}
 					val pages = runFailsafe {
-						repo.getPages(chapter)
+						repo.getPages(chapter.value)
 					} ?: continue
 					val pageCounter = AtomicInteger(0)
 					channelFlow {
@@ -237,7 +237,7 @@ class DownloadWorker @AssistedInject constructor(
 							),
 						)
 					}
-					if (output.flushChapter(chapter)) {
+					if (output.flushChapter(chapter.value)) {
 						runCatchingCancellable {
 							localStorageChanges.emit(LocalMangaInput.of(output.rootFile).getManga())
 						}.onFailure(Throwable::printStackTraceDebug)
@@ -377,19 +377,26 @@ class DownloadWorker @AssistedInject constructor(
 	private fun getChapters(
 		manga: Manga,
 		includedIds: LongArray?,
-	): List<MangaChapter> {
-		val chapters = checkNotNull(manga.chapters) {
-			"Chapters list must not be null"
-		}.toMutableList()
-		if (includedIds != null) {
-			val chaptersIdsSet = includedIds.toMutableSet()
-			chapters.retainAll { x -> chaptersIdsSet.remove(x.id) }
+	): List<IndexedValue<MangaChapter>> {
+		val chapters = checkNotNull(manga.chapters) { "Chapters list must not be null" }
+		val chaptersIdsSet = includedIds?.toMutableSet()
+		val result = ArrayList<IndexedValue<MangaChapter>>((chaptersIdsSet ?: chapters).size)
+		val counters = HashMap<String?, Int>()
+		for (chapter in chapters) {
+			val index = counters[chapter.branch] ?: 0
+			counters[chapter.branch] = index + 1
+			if (chaptersIdsSet != null && !chaptersIdsSet.remove(chapter.id)) {
+				continue
+			}
+			result.add(IndexedValue(index, chapter))
+		}
+		if (chaptersIdsSet != null) {
 			check(chaptersIdsSet.isEmpty()) {
 				"${chaptersIdsSet.size} of ${includedIds.size} requested chapters not found in manga"
 			}
 		}
-		check(chapters.isNotEmpty()) { "Chapters list must not be empty" }
-		return chapters
+		check(result.isNotEmpty()) { "Chapters list must not be empty" }
+		return result
 	}
 
 	private suspend inline fun <T> withMangaLock(manga: Manga, block: () -> T) = try {

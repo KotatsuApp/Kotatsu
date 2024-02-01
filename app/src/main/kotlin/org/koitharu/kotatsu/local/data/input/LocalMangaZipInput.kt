@@ -7,6 +7,7 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.core.util.ext.readText
 import org.koitharu.kotatsu.core.util.ext.toListSorted
@@ -71,7 +72,7 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 					publicUrl = fileUri,
 					source = MangaSource.LOCAL,
 					coverUrl = zipUri(root, findFirstImageEntry(zip.entries())?.name.orEmpty()),
-					chapters = chapters.sortedWith(org.koitharu.kotatsu.core.util.AlphanumComparator())
+					chapters = chapters.sortedWith(AlphanumComparator())
 						.mapIndexed { i, s ->
 							MangaChapter(
 								id = "$i$s".longHashCode(),
@@ -127,7 +128,7 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 				}
 			}
 			entries
-				.toListSorted(compareBy(org.koitharu.kotatsu.core.util.AlphanumComparator()) { x -> x.name })
+				.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
 				.map { x ->
 					val entryUri = zipUri(file, x.name)
 					MangaPage(
@@ -143,7 +144,7 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 	private fun findFirstImageEntry(entries: Enumeration<out ZipEntry>): ZipEntry? {
 		val list = entries.toList()
 			.filterNot { it.isDirectory }
-			.sortedWith(compareBy(org.koitharu.kotatsu.core.util.AlphanumComparator()) { x -> x.name })
+			.sortedWith(compareBy(AlphanumComparator()) { x -> x.name })
 		val map = MimeTypeMap.getSingleton()
 		return list.firstOrNull {
 			map.getMimeTypeFromExtension(it.name.substringAfterLast('.'))
