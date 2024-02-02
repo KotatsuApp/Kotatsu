@@ -60,7 +60,7 @@
     <string name="show_pages_numbers">Приказ бројева на страницама</string>
     <string name="preload_pages">Преучитавање страница</string>
     <string name="appearance">Изглед</string>
-    <string name="check_new_chapters_title">Проверите да ли постоје нова поглавља и обавестите их</string>
+    <string name="check_new_chapters_title">Провери да ли постоје нова поглавља и обавести ме</string>
     <string name="show_notification_new_chapters_on">Добићеш обавештења о ажурирањима манге коју читаш</string>
     <string name="default_mode">Подразумевани режим</string>
     <string name="network_unavailable">Мрежа није доступна</string>
@@ -91,7 +91,7 @@
     <string name="pages">Странице</string>
     <string name="operation_not_supported">Ова операција није подржана</string>
     <string name="error">Грешка</string>
-    <string name="new_chapters">Новим поглављима</string>
+    <string name="new_chapters">Нова поглавља</string>
     <string name="notifications_settings">Подешавања обавештења</string>
     <string name="new_version_s">Нова верзија: %s</string>
     <string name="about_app_translation_summary">Преведите ову апликацију</string>
@@ -207,7 +207,7 @@
     <string name="suggest_new_sources">Предложи нове изворе након ажурирања апликације</string>
     <string name="import_completed">Увоз је завршен</string>
     <string name="different_languages">Други језици</string>
-    <string name="show_reading_indicators">Показатељ током читања</string>
+    <string name="show_reading_indicators">Показивач током читања</string>
     <string name="read_later">За касније</string>
     <string name="backup_saved">Резервна копија је сачувана</string>
     <string name="local_manga_processing">Сачувана обрада манге</string>
@@ -225,7 +225,7 @@
     <string name="server_address">Адреса сервера</string>
     <string name="content_type_comics">Стрипови</string>
     <string name="moved_to_top">Премештено је на врх</string>
-    <string name="text_feed_holder">Овде су приказана нова поглавља онога што читаш</string>
+    <string name="text_feed_holder">Нова поглавља онога што читаш су приказана овде</string>
     <string name="text_suggestion_holder">Почните да читате мангу и добићете персонализоване предлоге</string>
     <string name="find_similar">Пронађи сличне</string>
     <string name="show_notification_new_chapters_off">Нећете добијати обавештења, али ће нова поглавља бити истакнута на листама</string>
@@ -251,7 +251,7 @@
     <string name="remove_completed">Уклањање је завршено</string>
     <string name="items_limit_exceeded">Немогуће је додати више ставки</string>
     <string name="frequency_every_2_days">Свака 2 дана</string>
-    <string name="manga_save_location">Фолдер за преузимања</string>
+    <string name="manga_save_location">Фасцикла за преузимања</string>
     <string name="status_reading">Читам</string>
     <string name="auth_complete">Овлашћени</string>
     <string name="suggestions_notifications_summary">Понекад ми прикажи обавештења са предложеном мангом</string>
@@ -509,7 +509,7 @@
     <string name="available_sources">Доступни извори</string>
     <string name="share_logs">Дели дневнике</string>
     <string name="zoom_mode_keep_start">Задржи на почетку</string>
-    <string name="text_local_holder_secondary">Сачувај га из извора са мреже или увези датотеке.</string>
+    <string name="text_local_holder_secondary">Сачувај нешто из каталога или увези из датотеке.</string>
     <string name="speed">Брзина</string>
     <string name="silent">Тихо</string>
     <string name="download_option_all_chapters">Сва поглавља са преводом %s</string>
@@ -554,5 +554,30 @@
     <string name="mark_as_completed">Означи као завршено</string>
     <string name="mark_as_completed_prompt">Означи изабрану мангу као потпуно прочитану?
 \n
-\nУпозорење: тренутни напредак читања ће бити изгубљен</string>
+\nУпозорење: тренутни напредак читања ће бити изгубљен.</string>
+    <string name="approximate_reading_time">Приближно време читања</string>
+    <string name="incognito_mode_hint">Ваш напредак читања неће бити сачуван</string>
+    <string name="email_password_enter_hint">Унеси своју адресу е-поште и лозинку да бисте наставили</string>
+    <string name="category_hidden_done">Ова категорија је сакривена са главног екрана и доступна јој је преко Изборника → Управљај категоријама</string>
+    <string name="toggle_ui">Прикажи/сакриј интерфејс</string>
+    <string name="next_chapter">Ново поглавље</string>
+    <string name="long_tap_action">Радња дуготрајног додира</string>
+    <string name="none">Ниједан</string>
+    <string name="use_two_pages_landscape">Користи распоред две странице у пејзажној оријентацији (бета)</string>
+    <string name="vertical">Вертикално</string>
+    <string name="approximate_remaining_time">Приближно преостало време</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="show_menu">Прикажи изборник</string>
+    <string name="prev_chapter">Претходна поглавља</string>
+    <string name="tap_action">Радња додира</string>
+    <string name="config_reset_confirm">Вратити подешавања на подразумеване вредности? Ова радња се не може опозвати.</string>
+    <string name="two_pages">Две стране</string>
+    <string name="reader_actions_summary">Конфигуриши радње за области екрана које се могу додирнути</string>
+    <string name="switch_pages_volume_buttons">Омогући дугмад за јачину звука</string>
+    <string name="switch_pages_volume_buttons_summary">Користи дугмад за јачину звука за пребацивање страница</string>
+    <string name="prev_page">Претходна страница</string>
+    <string name="next_page">Следећа страница</string>
+    <string name="reader_actions">Радње читаоца</string>
+    <string name="volume_unknown">Непозната запремина</string>
+    <string name="last_read">Последње прочитано</string>
 </resources>
