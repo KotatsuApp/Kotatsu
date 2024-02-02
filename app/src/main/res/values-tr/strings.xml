@@ -580,4 +580,5 @@
     <string name="next_page">Sonraki sayfa</string>
     <string name="config_reset_confirm">Ayarlar öntanımlı değerlere sıfırlansın mı? Bu eylem geri alınamaz.</string>
     <string name="use_two_pages_landscape">Yatay yönde iki sayfa düzeni kullan (beta)</string>
+    <string name="email_password_enter_hint">Devam etmek için e-posta adresinizi ve parolanızı girin</string>
 </resources>
