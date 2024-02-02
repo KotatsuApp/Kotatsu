@@ -578,4 +578,7 @@
     <string name="long_tap_action">Дія при тривалому натисканні</string>
     <string name="switch_pages_volume_buttons">Увімкнути кнопки гучності</string>
     <string name="reader_actions_summary">Налаштування дій для сенсорних областей екрана</string>
+    <string name="email_password_enter_hint">Введіть свою адресу електронної пошти та пароль, щоб продовжити</string>
+    <string name="config_reset_confirm">Повернути налаштування до значень за замовчуванням? Цю дію неможливо скасувати.</string>
+    <string name="use_two_pages_landscape">Використовувати макет двох сторінок у альбомній орієнтації (бета)</string>
 </resources>
