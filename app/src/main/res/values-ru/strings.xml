@@ -578,4 +578,7 @@
     <string name="switch_pages_volume_buttons_summary">Использовать кнопки громкости для переключения страниц</string>
     <string name="reader_actions">Действия в режиме чтения</string>
     <string name="reader_actions_summary">Настройка действий для сенсорных областей экрана</string>
+    <string name="email_password_enter_hint">Введите свой адрес электронной почты и пароль, чтобы продолжить</string>
+    <string name="config_reset_confirm">Сбросить настройки до значений по умолчанию? Это действие нельзя отменить.</string>
+    <string name="use_two_pages_landscape">Использовать двухстраничный макет в альбомной ориентации (бета)</string>
 </resources>
