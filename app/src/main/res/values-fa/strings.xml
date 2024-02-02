@@ -232,4 +232,27 @@
     <string name="percent_string_pattern">%1$s%%</string>
     <string name="text_delete_local_manga_batch">موارد انتخاب شده از دستگاه بطور دائم پاک شوند؟</string>
     <string name="local_manga_processing">پردازش مانگا ذخیره شد</string>
+    <string name="hide">مخفی کردن</string>
+    <string name="canceled">لغو شد</string>
+    <string name="account_already_exists">اکانتی با این نام کاربری وجود دارد</string>
+    <string name="email_enter_hint">برای ادامه دادن، ایمیل خود را وارد کنید</string>
+    <string name="check_new_chapters_title">چک کردن و اطلاع دادن برای چپتر جدید</string>
+    <string name="show_notification_new_chapters_on">برای آپدیت مانگاهایی که درحال خواندن هستید، اعلان دریافت خواهید کرد</string>
+    <string name="show_notification_new_chapters_off">برای چپترهای جدید مانگاهایی که نشانه گذاری کرده اید، اعلان دریافت نخواهید کرد</string>
+    <string name="edit">ویرایش</string>
+    <string name="edit_category">ویرایش دسته بندی</string>
+    <string name="tracking">ردیابی</string>
+    <string name="empty_favourite_categories">هیچ دسته بندی مورد علاقه ای وجود ندارد</string>
+    <string name="logout">خروج از اکانت</string>
+    <string name="bookmark_add">نشان کردن</string>
+    <string name="new_sources_text">منابع جدید مانگا در دسترس هستند</string>
+    <string name="chapters_will_removed_background">چپترها در پس زمینه حذف خواهند شد</string>
+    <string name="bookmark_removed">نشانه گذاری حذف شد</string>
+    <string name="back">قبل</string>
+    <string name="sync">هماهنگ سازی</string>
+    <string name="sync_title">داده های خود را همگام سازی کنید</string>
+    <string name="name">اسم</string>
+    <string name="notifications_enable">فعال کردن اعلان ها</string>
+    <string name="bookmark_remove">حذف نشانه</string>
+    <string name="bookmarks">نشانه ها</string>
 </resources>
