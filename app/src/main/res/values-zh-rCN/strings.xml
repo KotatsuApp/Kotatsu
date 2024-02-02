@@ -482,7 +482,7 @@
     <string name="reader_zoom_buttons">缩放按钮</string>
     <string name="zoom_out">缩小</string>
     <string name="keep_screen_on">保持屏幕常亮</string>
-    <string name="keep_screen_on_summary">阅读时不熄屏</string>
+    <string name="keep_screen_on_summary">阅读时不息屏</string>
     <string name="list_options">显示选项</string>
     <string name="suggest_new_sources">新增漫画源推荐</string>
     <string name="enhanced_colors_summary">减少色带，但可能会影响性能</string>
@@ -515,7 +515,7 @@
     <string name="no_manga_sources_found">本次搜索未发现可用图源</string>
     <string name="no_manga_sources_catalog_text">此页面没有可用图源，或可能已添加所有图源。
 \n敬请期待后续更新</string>
-    <string name="welcome_text">请选择需要开启的图源内容。可稍后在设置 选项中设定</string>
+    <string name="welcome_text">请选择需要开启的图源内容。可稍后在设置选项中设定</string>
     <string name="sync_auth">网络同步</string>
     <string name="downloads_settings_info">若遇到服务器端阻塞，可以在图源设置中为每个图源单独开启限速下载功能</string>
     <string name="skip">跳过</string>
