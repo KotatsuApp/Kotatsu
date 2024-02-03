@@ -266,6 +266,10 @@ class ReaderActivity :
 		viewModel.switchMode(mode)
 	}
 
+	override fun onDoubleModeChanged(isEnabled: Boolean) {
+		readerManager.setDoubleReaderMode(isEnabled)
+	}
+
 	private fun onPageSaved(uri: Uri?) {
 		if (uri != null) {
 			Snackbar.make(viewBinding.container, R.string.page_saved, Snackbar.LENGTH_LONG)

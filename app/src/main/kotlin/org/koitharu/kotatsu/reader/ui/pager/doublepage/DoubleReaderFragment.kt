@@ -18,7 +18,6 @@ import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.databinding.FragmentReaderDoubleBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 import org.koitharu.kotatsu.reader.ui.pager.BaseReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
@@ -26,7 +25,7 @@ import javax.inject.Inject
 import kotlin.math.absoluteValue
 
 @AndroidEntryPoint
-class DoubleReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>() {
+open class DoubleReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>() {
 
 	@Inject
 	lateinit var networkState: NetworkState
@@ -51,7 +50,7 @@ class DoubleReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>() {
 			recyclerLifecycleDispatcher = RecyclerViewLifecycleDispatcher().also {
 				addOnScrollListener(it)
 			}
-			addOnScrollListener(PageScrollListener(viewModel))
+			addOnScrollListener(PageScrollListener())
 			DoublePageSnapHelper().attachToRecyclerView(this)
 		}
 	}
@@ -78,7 +77,7 @@ class DoubleReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>() {
 			if (position != -1) {
 				position = position.toPagePosition()
 				requireViewBinding().recyclerView.firstVisibleItemPosition = position
-				viewModel.onCurrentPageChanged(position, position + 1)
+				notifyPageChanged(position, position + 1)
 			} else {
 				Snackbar.make(requireView(), R.string.not_found_404, Snackbar.LENGTH_SHORT)
 					.show()
@@ -132,14 +131,16 @@ class DoubleReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>() {
 		)
 	}
 
+	protected open fun notifyPageChanged(lowerPos: Int, upperPos: Int) {
+		viewModel.onCurrentPageChanged(lowerPos, upperPos)
+	}
+
 	private fun getCurrentItem() = (requireViewBinding().recyclerView.layoutManager as LinearLayoutManager)
 		.findFirstCompletelyVisibleItemPosition().toPagePosition()
 
 	private fun Int.toPagePosition() = this and 1.inv()
 
-	private class PageScrollListener(
-		private val viewModel: ReaderViewModel,
-	) : RecyclerView.OnScrollListener() {
+	private inner class PageScrollListener : RecyclerView.OnScrollListener() {
 
 		private var firstPos = RecyclerView.NO_POSITION
 		private var lastPos = RecyclerView.NO_POSITION
@@ -157,7 +158,7 @@ class DoubleReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding>() {
 			if (newFirstPos != firstPos || newLastPos != lastPos) {
 				firstPos = newFirstPos
 				lastPos = newLastPos
-				viewModel.onCurrentPageChanged(newFirstPos, newLastPos)
+				notifyPageChanged(newFirstPos, newLastPos)
 			}
 		}
 	}

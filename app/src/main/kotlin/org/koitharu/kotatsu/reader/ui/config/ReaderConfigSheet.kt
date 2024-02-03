@@ -145,7 +145,7 @@ class ReaderConfigSheet :
 
 			R.id.switch_double_reader -> {
 				settings.isReaderDoubleOnLandscape = isChecked
-				findCallback()?.onReaderModeChanged(mode)
+				findCallback()?.onDoubleModeChanged(isChecked)
 			}
 		}
 	}
@@ -165,7 +165,7 @@ class ReaderConfigSheet :
 			R.id.button_vertical -> ReaderMode.VERTICAL
 			else -> return
 		}
-		viewBinding?.switchDoubleReader?.isEnabled = newMode == ReaderMode.STANDARD
+		viewBinding?.switchDoubleReader?.isEnabled = newMode == ReaderMode.STANDARD || newMode == ReaderMode.REVERSED
 		if (newMode == mode) {
 			return
 		}
@@ -212,6 +212,8 @@ class ReaderConfigSheet :
 		var isAutoScrollEnabled: Boolean
 
 		fun onReaderModeChanged(mode: ReaderMode)
+
+		fun onDoubleModeChanged(isEnabled: Boolean)
 	}
 
 	companion object {
