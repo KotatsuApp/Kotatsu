@@ -25,6 +25,10 @@ class DoublePageHolder(
 	private val isEven: Boolean
 		get() = bindingAdapterPosition and 1 == 0
 
+	init {
+		binding.ssiv.panLimit = SubsamplingScaleImageView.PAN_LIMIT_INSIDE
+	}
+
 	override fun onBind(data: ReaderPage) {
 		super.onBind(data)
 		(binding.textViewNumber.layoutParams as FrameLayout.LayoutParams)
@@ -41,7 +45,7 @@ class DoublePageHolder(
 			minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 			setScaleAndCenter(
 				minScale,
-				PointF(if (isEven) sWidth.toFloat() else 0f, 0f),
+				PointF(if (isEven) 0f else sWidth.toFloat(), sHeight / 2f),
 			)
 		}
 	}

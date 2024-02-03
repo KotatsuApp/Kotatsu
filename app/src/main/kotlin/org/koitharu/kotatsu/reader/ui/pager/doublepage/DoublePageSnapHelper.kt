@@ -158,7 +158,7 @@ class DoublePageSnapHelper : SnapHelper() {
 	}
 
 	private fun roundDownToBlockSize(trialPosition: Int): Int {
-		return trialPosition - trialPosition % blockSize
+		return trialPosition and 1.inv()
 	}
 
 	private fun roundUpToBlockSize(trialPosition: Int): Int {
@@ -197,19 +197,17 @@ class DoublePageSnapHelper : SnapHelper() {
 	private inner class LayoutDirectionHelper(direction: Int) {
 
 		// Is the layout an RTL one?
-		private val mIsRTL: Boolean
-
-		init {
-			mIsRTL = direction == View.LAYOUT_DIRECTION_RTL
-		}
+		private val isRTL = direction == View.LAYOUT_DIRECTION_RTL
 
 		/*
 			Calculate the amount of scroll needed to align the target view with the layout edge.
 		 */
 		fun getScrollToAlignView(targetView: View?): Int {
-			return if (mIsRTL) orientationHelper.getDecoratedEnd(targetView) - recyclerView.width else orientationHelper.getDecoratedStart(
-				targetView,
-			)
+			return if (isRTL) {
+				orientationHelper.getDecoratedEnd(targetView) - recyclerView.width
+			} else {
+				orientationHelper.getDecoratedStart(targetView)
+			}
 		}
 
 		/**
@@ -225,7 +223,7 @@ class DoublePageSnapHelper : SnapHelper() {
 			val firstVisiblePos = layoutManager.findFirstVisibleItemPosition()
 			if (layoutManager.canScrollHorizontally()) {
 				if (targetPos <= firstVisiblePos) { // scrolling toward top of data
-					if (mIsRTL) {
+					if (isRTL) {
 						val lastView = layoutManager.findViewByPosition(layoutManager.findLastVisibleItemPosition())
 						out[0] = (orientationHelper.getDecoratedEnd(lastView)
 							+ (firstVisiblePos - targetPos) * itemDimension)
@@ -263,18 +261,20 @@ class DoublePageSnapHelper : SnapHelper() {
 			if (scroll < 0) {
 				positionsToMove *= -1
 			}
-			if (mIsRTL) {
+			if (isRTL) {
 				positionsToMove *= -1
 			}
 			return if (layoutDirectionHelper.isDirectionToBottom(scroll < 0)) {
 				// Scrolling toward the bottom of data.
 				roundDownToBlockSize(llm.findFirstVisibleItemPosition()) + positionsToMove
-			} else roundDownToBlockSize(llm.findLastVisibleItemPosition()) + positionsToMove
+			} else {
+				roundDownToBlockSize(llm.findLastVisibleItemPosition()) + positionsToMove
+			}
 			// Scrolling toward the top of the data.
 		}
 
 		fun isDirectionToBottom(velocityNegative: Boolean): Boolean {
-			return if (mIsRTL) velocityNegative else !velocityNegative
+			return if (isRTL) velocityNegative else !velocityNegative
 		}
 	}
 }
