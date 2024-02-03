@@ -404,7 +404,7 @@ class ReaderViewModel @Inject constructor(
 		val state = getCurrentState().assertNotNull("state") ?: return
 		val chapter = chaptersLoader.peekChapter(state.chapterId).assertNotNull("chapter") ?: return
 		val m = manga.assertNotNull("manga") ?: return
-		val chapterIndex = m.chapters[chapter.branch]?.indexOf(chapter) ?: -1
+		val chapterIndex = m.chapters[chapter.branch]?.indexOfFirst { it.id == chapter.id } ?: -1
 		val newState = ReaderUiState(
 			mangaName = m.toManga().title,
 			branch = chapter.branch,
