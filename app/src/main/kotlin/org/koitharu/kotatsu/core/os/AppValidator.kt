@@ -13,7 +13,7 @@ class AppValidator @Inject constructor(
 ) {
 	@Suppress("NewApi")
 	val isOriginalApp by lazy {
-		val certificates = mapOf(CERT_SHA256.toByteArray() to PackageManager.CERT_INPUT_SHA256)
+		val certificates = mapOf(CERT_SHA256.hexToByteArray() to PackageManager.CERT_INPUT_SHA256)
 		PackageInfoCompat.hasSignatures(context.packageManager, context.packageName, certificates, false)
 	}
 
