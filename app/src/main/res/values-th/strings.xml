@@ -13,7 +13,7 @@
     <string name="standard">มาตรฐาน</string>
     <string name="read_mode">โหมดอ่าน</string>
     <string name="grid_size">ขนาดตาราง</string>
-    <string name="text_delete_local_manga">จะลบ \"%s\" ออกจากเครื่องแบบถาวรใช่ไหม\?</string>
+    <string name="text_delete_local_manga">ลบ \"%s\" ออกจากอุปกรณ์อย่างถาวรหรือไม่?</string>
     <string name="switch_pages">สลับหน้า</string>
     <string name="error">ข้อผิดพลาด</string>
     <string name="app_update_available">มีเวอร์ชันใหม่ของแอปนี้ให้ใช้งานแล้ว</string>
@@ -53,7 +53,7 @@
     <string name="text_shelf_holder_primary">มังงะของคุณจะแสดงที่นี่</string>
     <string name="cannot_find_available_storage">ไม่มีพื้นที่ว่างในอุปกรณ์</string>
     <string name="done">สำเร็จ</string>
-    <string name="text_feed_holder">บทใหม่ของเรื่องที่คุณกำลังอ่านจะแสดงอยู่ที่นี่</string>
+    <string name="text_feed_holder">บทใหม่ของเรื่องที่คุณกําลังอ่านจะแสดงไว้ที่นี่</string>
     <string name="passwords_mismatch">รหัสผ่านไม่ตรงกัน</string>
     <string name="text_empty_holder_primary">ที่นี่มันว่างเปล่า…</string>
     <string name="filter">กรอง</string>
@@ -70,7 +70,7 @@
     <string name="text_local_holder_primary">บันทึกบางอย่างก่อน</string>
     <string name="text_local_holder_secondary">บันทึกจากออนไลน์หรือนำเข้าไฟล์</string>
     <string name="recent_manga">ล่าสุด</string>
-    <string name="manga_save_location">แฟ้มสำหรับดาวน์โหลด</string>
+    <string name="manga_save_location">แฟ้มดาวน์โหลด</string>
     <string name="other_storage">พื้นที่จัดเก็บอื่น</string>
     <string name="favourites_category_empty">หมวดหมู่ที่ว่างเปล่า</string>
     <string name="read_later">อ่านทีหลัง</string>
@@ -199,7 +199,7 @@
     <string name="progress">ความคืบหน้า</string>
     <string name="search_hint">ใส่ชื่อเรื่องมังงะ,แนวหรือชื่อแหล่ง</string>
     <string name="this_month">เดือนนี้</string>
-    <string name="reader_settings">ตั้งค่าการแสดงผล</string>
+    <string name="reader_settings">ตั้งค่าการโปรแกรมอ่าน</string>
     <string name="default_section">ส่วนเริ่มต้น</string>
     <string name="light_indicator">ไฟ LED</string>
     <string name="genres">ประเภท</string>
@@ -345,7 +345,7 @@
     <string name="bookmarks_removed">ลบบุ๊คมาร์กแล้ว</string>
     <string name="error_no_space_left">ไม่มีพื้นที่เหลือบนอุปกรณ์แล้ว</string>
     <string name="zoom_in">ซูมเข้า</string>
-    <string name="detect_reader_mode">โหมดตรวจจับเครื่องอ่านอัตโนมัติ</string>
+    <string name="detect_reader_mode">โหมดตรวจจับโปรแกรมอ่านอัตโนมัติ</string>
     <string name="frequency_every_day">ทุกวัน</string>
     <string name="categories">หมวดหมู่</string>
     <string name="backup_frequency">ความถี่การสำรองข้อมูล</string>
@@ -383,4 +383,23 @@
     <string name="queued">เพิ่มเข้าคิวแล้ว</string>
     <string name="exit_confirmation">ยืนยันการออก</string>
     <string name="reorder">เรียงลำดับ</string>
+    <string name="clear_cookies_summary">สามารถช่วยได้ในกรณีที่มีปัญหาบางอย่าง การอนุญาตทั้งหมดจะถูกยกเลิก</string>
+    <string name="folder_with_images">แฟ้มที่มีรูปภาพ</string>
+    <string name="history_shortcuts">แสดงทางลัดมังงะล่าสุด</string>
+    <string name="reader_slider">แสดงแถบเลื่อนการสลับหน้า</string>
+    <string name="no_chapters">ไม่มีบท</string>
+    <string name="compact">กระชับ</string>
+    <string name="sync_auth_hint">คุณสามารถเข้าใช้บัญชีที่มีอยู่หรือสร้างบัญชีใหม่ได้</string>
+    <string name="suggestion_manga">คําแนะนํา: %s</string>
+    <string name="suggestions_updating">การอัปเดตคําแนะนํา</string>
+    <string name="local_manga_processing">ประมวลผลมังงะที่บันทึกไว้</string>
+    <string name="reader_info_bar">แสดงแถบข้อมูลในโปรแกรมอ่าน</string>
+    <string name="import_completed">นําเข้าเสร็จสมบูรณ์</string>
+    <string name="import_will_start_soon">การนําเข้าจะเริ่มเร็วๆ นี้</string>
+    <string name="color_correction">การแก้ไขสี</string>
+    <string name="different_languages">ภาษาต่างๆ</string>
+    <string name="prefetch_content">การโหลดเนื้อหาล่วงหน้า</string>
+    <string name="resume">ดำเนินการต่อ</string>
+    <string name="paused">หยุดชั่วคราว</string>
+    <string name="pause">หยุด</string>
 </resources>
