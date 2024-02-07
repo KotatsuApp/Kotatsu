@@ -563,7 +563,7 @@
     <string name="volume_">Volumen %d</string>
     <string name="incognito_mode_hint">Tu progreso en la lectura no se guardará</string>
     <string name="vertical">Vertical</string>
-    <string name="last_read">Última lectura</string>
+    <string name="last_read">Último leído</string>
     <string name="two_pages">Dos páginas</string>
     <string name="show_menu">Mostrar menú</string>
     <string name="toggle_ui">Mostrar/esconder interfaz</string>
@@ -577,4 +577,9 @@
     <string name="long_tap_action">Acción de click largo</string>
     <string name="prev_chapter">Capítulo anterior</string>
     <string name="switch_pages_volume_buttons_summary">Utilizar botones de volumen para cambiar de página</string>
+    <string name="email_password_enter_hint">Introduzca su correo electrónico y contraseña para continuar</string>
+    <string name="use_two_pages_landscape">Utilizar un diseño de dos páginas en orientación horizontal (beta)</string>
+    <string name="none">Ninguno</string>
+    <string name="config_reset_confirm">¿Restablecer los valores por defecto? Esta acción no se puede deshacer.</string>
+    <string name="default_webtoon_zoom_out">Alejar el zoom del webtoon predeterminado</string>
 </resources>
