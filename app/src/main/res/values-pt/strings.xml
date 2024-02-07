@@ -87,7 +87,7 @@
     <string name="_continue">Continuar</string>
     <string name="chapters">Capítulos</string>
     <string name="add_new_category">Nova categoria</string>
-    <string name="text_delete_local_manga">Apagar «%s» do dispositivo permanentemente\?</string>
+    <string name="text_delete_local_manga">Apagar permanentemente «%s» do dispositivo?</string>
     <string name="text_file_not_supported">Escolha um ficheiro ZIP ou CBZ.</string>
     <string name="clear_search_history">Limpar histórico de pesquisa</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Ativado %1$d de %2$d</string>
@@ -165,7 +165,7 @@
     <string name="cannot_find_available_storage">Sem armazenamento disponível</string>
     <string name="favourites_categories">Categorias favoritas</string>
     <string name="text_history_holder_secondary">Encontre o que ler na aba «Explorar»</string>
-    <string name="text_local_holder_secondary">Salve-o de fontes online ou importe fiheiros.</string>
+    <string name="text_local_holder_secondary">Salve-o de catálogos online ou importe de um arquivo.</string>
     <string name="recent_manga">Recente</string>
     <string name="other_storage">Outro armazenamento</string>
     <string name="text_search_holder_secondary">Tente reformular a consulta.</string>
@@ -179,7 +179,7 @@
     <string name="updates">Atualizações</string>
     <string name="all_favourites">Todos os favoritos</string>
     <string name="search_results">Resultados da pesquisa</string>
-    <string name="text_feed_holder">Novos capítulos do que lé são mostrados aqui</string>
+    <string name="text_feed_holder">Novos capítulos de que está lendo são mostrados aqui</string>
     <string name="new_version_s">Nova versão: %s</string>
     <string name="rotate_screen">Girar o ecrã</string>
     <string name="protect_application">Proteja a app</string>
@@ -192,7 +192,7 @@
     <string name="clear_cookies">Limpar cookies</string>
     <string name="text_clear_search_history_prompt">Remover todas as consultas de pesquisa recentes permanentemente\?</string>
     <string name="auth_required">Faça login para ver este conteúdo</string>
-    <string name="manga_save_location">Pasta para downloads</string>
+    <string name="manga_save_location">Pasta de downloads</string>
     <string name="exclude_nsfw_from_history">Excluir mangá NSFW do histórico</string>
     <string name="system_default">Padrão</string>
     <string name="computing_">A computar…</string>
@@ -551,4 +551,32 @@
     <string name="rating_adult">Adulto</string>
     <string name="default_tab">Guia padrão</string>
     <string name="by_name_reverse">Nome invertido</string>
+    <string name="volume_">Volume %d</string>
+    <string name="volume_unknown">Volume desconhecido</string>
+    <string name="approximate_reading_time">Tempo aproximado de leitura</string>
+    <string name="incognito_mode_hint">Seu processo de leitura não será salvo</string>
+    <string name="vertical">Vertical</string>
+    <string name="email_password_enter_hint">Coloque seu email e senha para continuar</string>
+    <string name="mark_as_completed_prompt">Marcar o mangá selecionado como lido completamente?
+\n
+\nAviso: o progresso da leitura atual será perdido.</string>
+    <string name="approximate_remaining_time">Tempo restante aproximado</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="show_menu">Mostrar menu</string>
+    <string name="toggle_ui">Mostrar/ocultar UI</string>
+    <string name="prev_chapter">Capítulo anterior</string>
+    <string name="next_chapter">Próximo capítulo</string>
+    <string name="prev_page">Página anterior</string>
+    <string name="next_page">Próxima página</string>
+    <string name="reader_actions">Ações do leitor</string>
+    <string name="reader_actions_summary">Configurar ações para áreas de tela ajustáveis</string>
+    <string name="switch_pages_volume_buttons">Ativar botões de volume</string>
+    <string name="switch_pages_volume_buttons_summary">Usar botões de volume para alternar páginas</string>
+    <string name="tap_action">Ação de toque</string>
+    <string name="long_tap_action">Ação de toque longo</string>
+    <string name="config_reset_confirm">Redefinir as configurações para valores padrões? Essa ação não pode ser desfeita.</string>
+    <string name="use_two_pages_landscape">Usar layout de duas páginas na orientação paisagem (beta)</string>
+    <string name="category_hidden_done">Essa categoria foi ocultada da tela principal e pode ser acessada através do Menu → Gerenciar categorias</string>
+    <string name="two_pages">Duas páginas</string>
+    <string name="mark_as_completed">Marcar como concluído</string>
 </resources>
