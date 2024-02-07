@@ -83,15 +83,15 @@
     <string name="read_later">बाद में पढ़े</string>
     <string name="cannot_find_available_storage">स्टोरेज उपलब्ध नहीं हैं</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%2$d में से %1$d</string>
-    <string name="text_feed_holder">जो भी मांगा आप पढ़ रहे हो उसके नए चैप्टर यहां दिखाएं देंगे</string>
+    <string name="text_feed_holder">आप जो पढ़ रहे हैं उसके नए अध्याय यहां दिखाए गए हैं</string>
     <string name="favourites_category_empty">केटेगोरी खाली हैं</string>
-    <string name="manga_save_location">डाउनलोड करने का फोल्डर</string>
+    <string name="manga_save_location">डाउनलोड फ़ोल्डर</string>
     <string name="updates_feed_cleared">साफ हो गया</string>
     <string name="update">अपडेट</string>
     <string name="feed_will_update_soon">फीड अपडेट शीघ्र ही आरंभ होगा</string>
     <string name="app_update_available">इस ऐप का नया संस्करण उपलब्ध हैं</string>
     <string name="new_version_s">नया संस्करण: %s</string>
-    <string name="text_delete_local_manga">डिवाइस से \"% s\" को स्थायी रूप से हटा दें?</string>
+    <string name="text_delete_local_manga">डिवाइस से \"%s\" को स्थायी रूप से हटाएं?</string>
     <string name="text_history_holder_primary">जो भी आप पढ़ोगे वे सब यहां दिखेगा</string>
     <string name="delete_manga">मांगा को नष्ट करे</string>
     <string name="notification_sound">सूचना की ध्वनि</string>
@@ -104,7 +104,7 @@
     <string name="download">डाउनलोड</string>
     <string name="size_s">साइज: %s</string>
     <string name="text_shelf_holder_primary">आपके मांगा यहाँ दिखाई देंगे</string>
-    <string name="new_chapters">नए चैप्टर</string>
+    <string name="new_chapters">नये अध्याय</string>
     <string name="volume_buttons">वॉल्यूम बटन</string>
     <string name="clear_updates_feed">अपडेट्स फीड को साफ करे</string>
     <string name="notifications_settings">सुचना के सेटिंग</string>
@@ -122,8 +122,10 @@
     <string name="pages_animation">पेज का एनीमेशन</string>
     <string name="other_storage">अन्य स्टोरेज</string>
     <string name="external_storage">बाहरी स्टोरेज</string>
-    <string name="text_local_holder_secondary">ऑनलाइन सूत्रों से जामा करे अथवा फाईल को आयात करे।</string>
+    <string name="text_local_holder_secondary">किसी ऑनलाइन कैटलॉग से कुछ सहेजें या किसी फ़ाइल से आयात करें।</string>
     <string name="text_local_holder_primary">पहले कुछ जमा करे</string>
     <string name="text_empty_holder_primary">लगता है यहां तोह कुछ नहीं हैं…</string>
     <string name="done">होगाया</string>
+    <string name="dont_check">जाँच मत करो</string>
+    <string name="enter_password">पासवर्ड दर्ज करें</string>
 </resources>
