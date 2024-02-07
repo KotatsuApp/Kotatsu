@@ -563,4 +563,20 @@
     <string name="vertical">Vertical</string>
     <string name="approximate_remaining_time">Tempo restante aproximado</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="email_password_enter_hint">Digite seu e-mail e senha para continuar</string>
+    <string name="two_pages">Duas páginas</string>
+    <string name="show_menu">Mostrar menu</string>
+    <string name="toggle_ui">Mostrar/ocultar UI</string>
+    <string name="prev_chapter">Capítulo anterior</string>
+    <string name="next_chapter">Próximo capítulo</string>
+    <string name="prev_page">Página anterior</string>
+    <string name="next_page">Próxima página</string>
+    <string name="reader_actions">Ações do leitor</string>
+    <string name="reader_actions_summary">Configurar ações para áreas de tela ajustáveis</string>
+    <string name="switch_pages_volume_buttons">Habilitar botões de volume</string>
+    <string name="switch_pages_volume_buttons_summary">Usar botões de volume para alternar páginas</string>
+    <string name="tap_action">Ação de toque</string>
+    <string name="long_tap_action">Ação de toque longo</string>
+    <string name="config_reset_confirm">Redefinir as configuração para os valores padrões? Essa ação não pode ser desfeita.</string>
+    <string name="use_two_pages_landscape">Usar layout de duas páginas na orientação paisagem (beta)</string>
 </resources>
