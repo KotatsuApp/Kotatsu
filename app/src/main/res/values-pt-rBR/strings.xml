@@ -579,4 +579,6 @@
     <string name="long_tap_action">Ação de toque longo</string>
     <string name="config_reset_confirm">Redefinir as configuração para os valores padrões? Essa ação não pode ser desfeita.</string>
     <string name="use_two_pages_landscape">Usar layout de duas páginas na orientação paisagem (beta)</string>
+    <string name="last_read">Última leitura</string>
+    <string name="none">Nenhum</string>
 </resources>
