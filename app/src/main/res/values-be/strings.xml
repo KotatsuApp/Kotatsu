@@ -578,4 +578,7 @@
     <string name="approximate_reading_time">Прыблізны час чытання</string>
     <string name="approximate_remaining_time">Прыблізны час, які застаўся</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="email_password_enter_hint">Каб працягнуць, увядзіце адрас электроннай пошты і пароль</string>
+    <string name="config_reset_confirm">Скінуць налады да значэнняў па змаўчанні? Гэта дзеянне нельга адмяніць.</string>
+    <string name="use_two_pages_landscape">Выкарыстоўвайце двухстаронкавы макет у альбомнай арыентацыі (бэта)</string>
 </resources>
