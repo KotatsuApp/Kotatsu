@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -127,6 +128,14 @@ class ReaderViewModel @Inject constructor(
 
 	val isWebtoonZooEnabled = observeIsWebtoonZoomEnabled()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
+
+	val defaultWebtoonZoomOut = observeIsWebtoonZoomEnabled().flatMapLatest {
+		if (it) {
+			observeWebtoonZoomOut()
+		} else {
+			flowOf(0f)
+		}
+	}.flowOn(Dispatchers.Default)
 
 	val isZoomControlsEnabled = getObserveIsZoomControlEnabled().flatMapLatest { zoom ->
 		if (zoom) {
@@ -436,6 +445,11 @@ class ReaderViewModel @Inject constructor(
 	private fun observeIsWebtoonZoomEnabled() = settings.observeAsFlow(
 		key = AppSettings.KEY_WEBTOON_ZOOM,
 		valueProducer = { isWebtoonZoomEnable },
+	)
+
+	private fun observeWebtoonZoomOut() = settings.observeAsFlow(
+		key = AppSettings.KEY_WEBTOON_ZOOM_OUT,
+		valueProducer = { defaultWebtoonZoomOut },
 	)
 
 	private fun getObserveIsZoomControlEnabled() = settings.observeAsFlow(

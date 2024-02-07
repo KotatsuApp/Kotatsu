@@ -7,6 +7,7 @@ import android.view.animation.DecelerateInterpolator
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
@@ -54,6 +55,9 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		}
 		viewModel.isWebtoonZooEnabled.observe(viewLifecycleOwner) {
 			binding.frame.isZoomEnable = it
+		}
+		viewModel.defaultWebtoonZoomOut.take(1).observe(viewLifecycleOwner) {
+			binding.frame.zoom = 1f - it
 		}
 	}
 

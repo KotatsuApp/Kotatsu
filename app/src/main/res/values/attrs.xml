@@ -23,6 +23,7 @@
 		<attr name="android:valueFrom" />
 		<attr name="android:valueTo" />
 		<attr name="android:stepSize" />
+		<attr name="tickVisible" />
 	</declare-styleable>
 
 	<declare-styleable name="ListItemTextView">

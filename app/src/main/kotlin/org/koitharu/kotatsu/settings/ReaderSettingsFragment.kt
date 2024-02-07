@@ -17,6 +17,8 @@ import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.reader.ReaderTapGridConfigActivity
+import org.koitharu.kotatsu.settings.utils.PercentSummaryProvider
+import org.koitharu.kotatsu.settings.utils.SliderPreference
 
 @AndroidEntryPoint
 class ReaderSettingsFragment :
@@ -46,6 +48,7 @@ class ReaderSettingsFragment :
 			entryValues = ZoomMode.entries.names()
 			setDefaultValueCompat(ZoomMode.FIT_CENTER.name)
 		}
+		findPreference<SliderPreference>(AppSettings.KEY_WEBTOON_ZOOM_OUT)?.summaryProvider = PercentSummaryProvider()
 		updateReaderModeDependency()
 	}
 

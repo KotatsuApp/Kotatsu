@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.core.view.forEach
+import androidx.core.view.iterator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Collections
@@ -18,6 +19,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 	private var onPageScrollListeners = LinkedList<OnWebtoonScrollListener>()
 	private val scrollDispatcher = WebtoonScrollDispatcher()
 	private val detachedViews = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
+	private var isFixingScroll = false
 
 	override fun onChildDetachedFromWindow(child: View) {
 		super.onChildDetachedFromWindow(child)
@@ -119,6 +121,36 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		detachedViews.forEach { child ->
 			(child as WebtoonFrameLayout).target.requestLayout()
 		}
+	}
+
+	 fun updateChildrenScroll() {
+		if (isFixingScroll) {
+			return
+		}
+		isFixingScroll = true
+		for (child in this) {
+			val ssiv = (child as WebtoonFrameLayout).target
+			if (adjustScroll(child, ssiv)) {
+				break
+			}
+		}
+		isFixingScroll = false
+	}
+
+	private fun adjustScroll(child: View, ssiv: WebtoonImageView): Boolean = when {
+		child.bottom < height && ssiv.getScroll() < ssiv.getScrollRange() -> {
+			val distance = minOf(height - child.bottom, ssiv.getScrollRange() - ssiv.getScroll())
+			ssiv.scrollBy(distance)
+			true
+		}
+
+		child.top > 0 && ssiv.getScroll() > 0 -> {
+			val distance = minOf(child.top, ssiv.getScroll())
+			ssiv.scrollBy(-distance)
+			true
+		}
+
+		else -> false
 	}
 
 	private class WebtoonScrollDispatcher {

@@ -24,6 +24,7 @@ class SliderPreference @JvmOverloads constructor(
 	private var valueTo: Int = 100
 	private var stepSize: Int = 1
 	private var currentValue: Int = 0
+	private var isTickVisible: Boolean = false
 
 	var value: Int
 		get() = currentValue
@@ -46,10 +47,9 @@ class SliderPreference @JvmOverloads constructor(
 				R.styleable.SliderPreference_android_valueFrom,
 				valueFrom.toFloat(),
 			).toInt()
-			valueTo =
-				getFloat(R.styleable.SliderPreference_android_valueTo, valueTo.toFloat()).toInt()
-			stepSize =
-				getFloat(R.styleable.SliderPreference_android_stepSize, stepSize.toFloat()).toInt()
+			valueTo = getFloat(R.styleable.SliderPreference_android_valueTo, valueTo.toFloat()).toInt()
+			stepSize = getFloat(R.styleable.SliderPreference_android_stepSize, stepSize.toFloat()).toInt()
+			isTickVisible = getBoolean(R.styleable.SliderPreference_tickVisible, isTickVisible)
 		}
 	}
 
@@ -61,6 +61,7 @@ class SliderPreference @JvmOverloads constructor(
 		slider.valueFrom = valueFrom.toFloat()
 		slider.valueTo = valueTo.toFloat()
 		slider.stepSize = stepSize.toFloat()
+		slider.isTickVisible = isTickVisible
 		slider.setValueRounded(currentValue.toFloat())
 		slider.isEnabled = isEnabled
 	}
@@ -112,7 +113,7 @@ class SliderPreference @JvmOverloads constructor(
 	private fun syncValueInternal(sliderValue: Int) {
 		if (sliderValue != currentValue) {
 			if (callChangeListener(sliderValue)) {
-				setValueInternal(sliderValue, notifyChanged = false)
+				setValueInternal(sliderValue, notifyChanged = true)
 			}
 		}
 	}

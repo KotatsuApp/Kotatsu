@@ -16,6 +16,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.OverScroller
+import androidx.core.animation.doOnEnd
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewConfigurationCompat
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
@@ -31,8 +32,6 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyles),
 	ScaleGestureDetector.OnScaleGestureListener,
 	ZoomControl.ZoomControlListener {
-
-	private val targetChild by lazy(LazyThreadSafetyMode.NONE) { getChildAt(0) as WebtoonRecyclerView }
 
 	private val scaleDetector = ScaleGestureDetector(context, this)
 	private val gestureDetector = GestureDetectorCompat(context, GestureListener())
@@ -56,6 +55,15 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			field = value
 			if (scale != 1f) {
 				scaleChild(1f, halfWidth, halfHeight)
+			}
+		}
+
+	var zoom: Float
+		get() = scale
+		set(value) {
+			if (value != scale) {
+				scaleChild(value, halfWidth, halfHeight)
+				onPostScale(invalidateLayout = true)
 			}
 		}
 
@@ -163,6 +171,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	}
 
 	private fun invalidateTarget() {
+		val targetChild = findTargetChild()
 		adjustBounds()
 		targetChild.run {
 			scaleX = scale
@@ -239,7 +248,19 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 		return true
 	}
 
-	override fun onScaleEnd(p0: ScaleGestureDetector) = Unit
+	override fun onScaleEnd(p0: ScaleGestureDetector) {
+		onPostScale(invalidateLayout = false)
+	}
+
+	private fun onPostScale(invalidateLayout: Boolean) {
+		val target = findTargetChild()
+		target.post {
+			target.updateChildrenScroll()
+			if (invalidateLayout) {
+				target.requestLayout()
+			}
+		}
+	}
 
 	private fun smoothScaleTo(target: Float) {
 		val newScale = target.coerceIn(MIN_SCALE, MAX_SCALE)
@@ -248,9 +269,12 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			setDuration(context.getAnimationDuration(android.R.integer.config_shortAnimTime))
 			interpolator = DecelerateInterpolator()
 			addUpdateListener { scaleChild(it.animatedValue as Float, halfWidth, halfHeight) }
+			doOnEnd { onPostScale(invalidateLayout = false) }
 			start()
 		}
 	}
+
+	private fun findTargetChild() = getChildAt(0) as WebtoonRecyclerView
 
 	private inner class GestureListener : GestureDetector.SimpleOnGestureListener(), Runnable {
 

@@ -361,6 +361,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isWebtoonZoomEnable: Boolean
 		get() = prefs.getBoolean(KEY_WEBTOON_ZOOM, true)
 
+	@get:FloatRange(from = 0.0, to = 0.5)
+	val defaultWebtoonZoomOut: Float
+		get() = prefs.getInt(KEY_WEBTOON_ZOOM_OUT, 0).coerceIn(0, 50) / 100f
+
 	@get:FloatRange(from = 0.0, to = 1.0)
 	var readerAutoscrollSpeed: Float
 		get() = prefs.getFloat(KEY_READER_AUTOSCROLL_SPEED, 0f)
@@ -538,6 +542,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_HISTORY_ORDER = "history_order"
 		const val KEY_FAVORITES_ORDER = "fav_order"
 		const val KEY_WEBTOON_ZOOM = "webtoon_zoom"
+		const val KEY_WEBTOON_ZOOM_OUT = "webtoon_zoom_out"
 		const val KEY_PREFETCH_CONTENT = "prefetch_content"
 		const val KEY_APP_LOCALE = "app_locale"
 		const val KEY_LOGGING_ENABLED = "logging"

@@ -28,6 +28,16 @@
 		android:summary="@string/webtoon_zoom_summary"
 		android:title="@string/webtoon_zoom" />
 
+	<org.koitharu.kotatsu.settings.utils.SliderPreference
+		android:dependency="webtoon_zoom"
+		android:key="webtoon_zoom_out"
+		android:stepSize="10"
+		android:title="@string/default_webtoon_zoom_out"
+		android:valueFrom="0"
+		android:valueTo="50"
+		app:defaultValue="0"
+		app:tickVisible="true" />
+
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="reader_zoom_buttons"

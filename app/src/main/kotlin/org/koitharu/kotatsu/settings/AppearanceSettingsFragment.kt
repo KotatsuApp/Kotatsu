@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.utils.ActivityListPreference
+import org.koitharu.kotatsu.settings.utils.PercentSummaryProvider
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import javax.inject.Inject
 
@@ -38,14 +39,7 @@ class AppearanceSettingsFragment :
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_appearance)
-		findPreference<SliderPreference>(AppSettings.KEY_GRID_SIZE)?.run {
-			val pattern = context.getString(R.string.percent_string_pattern)
-			summary = pattern.format(value.toString())
-			setOnPreferenceChangeListener { preference, newValue ->
-				preference.summary = pattern.format(newValue.toString())
-				true
-			}
-		}
+		findPreference<SliderPreference>(AppSettings.KEY_GRID_SIZE)?.summaryProvider = PercentSummaryProvider()
 		findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
 			entryValues = ListMode.entries.names()
 			setDefaultValueCompat(ListMode.GRID.name)
