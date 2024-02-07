@@ -579,4 +579,5 @@
     <string name="category_hidden_done">Essa categoria foi ocultada da tela principal e pode ser acessada através do Menu → Gerenciar categorias</string>
     <string name="two_pages">Duas páginas</string>
     <string name="mark_as_completed">Marcar como concluído</string>
+    <string name="none">nenhum</string>
 </resources>
