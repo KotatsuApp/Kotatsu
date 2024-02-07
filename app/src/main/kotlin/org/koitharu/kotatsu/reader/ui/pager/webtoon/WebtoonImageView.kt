@@ -80,40 +80,33 @@ class WebtoonImageView @JvmOverloads constructor(
 		val parentHeight = MeasureSpec.getSize(heightMeasureSpec)
 		val resizeWidth = widthSpecMode != MeasureSpec.EXACTLY
 		val resizeHeight = heightSpecMode != MeasureSpec.EXACTLY
-		var width = parentWidth
-		var height = parentHeight
+		var desiredWidth = parentWidth
+		var desiredHeight = parentHeight
 		if (sWidth > 0 && sHeight > 0) {
 			if (resizeWidth && resizeHeight) {
-				width = sWidth
-				height = sHeight
+				desiredWidth = sWidth
+				desiredHeight = sHeight
 			} else if (resizeHeight) {
-				height = (sHeight.toDouble() / sWidth.toDouble() * width).toInt()
+				desiredHeight = (sHeight.toDouble() / sWidth.toDouble() * desiredWidth).roundToInt()
 			} else if (resizeWidth) {
-				width = (sWidth.toDouble() / sHeight.toDouble() * height).toInt()
+				desiredWidth = (sWidth.toDouble() / sHeight.toDouble() * desiredHeight).roundToInt()
 			}
 		}
-		width = width.coerceAtLeast(suggestedMinimumWidth)
-		height = height.coerceAtLeast(suggestedMinimumHeight).coerceAtMost(parentHeight())
-		setMeasuredDimension(width, height)
+		desiredWidth = desiredWidth.coerceAtLeast(suggestedMinimumWidth)
+		desiredHeight = desiredHeight.coerceAtLeast(suggestedMinimumHeight).coerceAtMost(parentHeight())
+		setMeasuredDimension(desiredWidth, desiredHeight)
 	}
 
 	override fun onDownsamplingChanged() {
 		super.onDownsamplingChanged()
-		adjustScale()
+		post {
+			adjustScale()
+		}
 	}
 
 	override fun onReady() {
 		super.onReady()
 		adjustScale()
-	}
-
-	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-		super.onSizeChanged(w, h, oldw, oldh)
-		if (oldh != h && oldw != 0 && oldh != 0 && isReady) {
-			ancestors.firstNotNullOfOrNull { it as? WebtoonRecyclerView }?.updateChildrenScroll()
-		} else {
-			return
-		}
 	}
 
 	private fun scrollToInternal(pos: Int) {
@@ -128,6 +121,7 @@ class WebtoonImageView @JvmOverloads constructor(
 		minScale = width / sWidth.toFloat()
 		maxScale = minScale
 		minimumScaleType = SCALE_TYPE_CUSTOM
+		requestLayout()
 	}
 
 	private fun parentHeight(): Int {
