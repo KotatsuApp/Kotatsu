@@ -52,7 +52,7 @@
     <string name="manga_downloading_">Herunterladen…</string>
     <string name="create_shortcut">Verknüpfung erstellen…</string>
     <string name="loading_">Laden…</string>
-    <string name="text_delete_local_manga">„%s“ unwiderruflich vom Gerät löschen\?</string>
+    <string name="text_delete_local_manga">„%s“ Unwiderruflich vom Gerät löschen?</string>
     <string name="_s_deleted_from_local_storage">„%s“ aus lokalem Speicher gelöscht</string>
     <string name="detailed_list">Detaillierte Liste</string>
     <string name="list">Liste</string>
@@ -63,7 +63,7 @@
     <string name="history">Verlauf</string>
     <string name="favourites">Favoriten</string>
     <string name="local_storage">Lokaler Speicher</string>
-    <string name="manga_save_location">Ordner für Downloads</string>
+    <string name="manga_save_location">Download Order</string>
     <string name="text_history_holder_primary">Die Manga, die du gerade liest, werden hier angezeigt</string>
     <string name="zoom_mode_keep_start">Am Anfang ausrichten</string>
     <string name="zoom_mode_fit_width">An Breite anpassen</string>
@@ -101,7 +101,7 @@
     <string name="size_s">Größe: %s</string>
     <string name="new_version_s">Neue Version: %s</string>
     <string name="search_results">Suchergebnisse</string>
-    <string name="text_feed_holder">Hier siehst du neue Kapitel der Mangas, die du liest</string>
+    <string name="text_feed_holder">Hier siehst du neue Kapitel der Mangas, welche du liest</string>
     <string name="read_later">Später lesen</string>
     <string name="favourites_category_empty">Diese Kategorie ist leer</string>
     <string name="all_favourites">Alle Favoriten</string>
@@ -112,7 +112,7 @@
     <string name="pages_animation">Seitenanimation</string>
     <string name="recent_manga">Neueste Manga</string>
     <string name="manga_shelf">Regal</string>
-    <string name="text_local_holder_secondary">Speicher Manga aus Online-Quellen oder importiere Dateien.</string>
+    <string name="text_local_holder_secondary">Speichern aus einem Online-Katalog oder importieren aus einer Datei.</string>
     <string name="text_local_holder_primary">Speichere erst etwas</string>
     <string name="text_history_holder_secondary">Finde etwas zu lesen in der Rubrik „Erkunden“</string>
     <string name="text_search_holder_secondary">Versuche, die Anfrage umzuformulieren.</string>
@@ -521,7 +521,7 @@
     <string name="downloads_settings_info">Du kannst die Download-Verlangsamung für jede Manga-Quelle einzeln in den Quelleneinstellungen aktivieren, wenn du Probleme mit der serverseitigen Blockierung hast</string>
     <string name="skip">Überspringen</string>
     <string name="restore">Wiederherstellen</string>
-    <string name="backup_date_">Sicherungsdatum: %s</string>
+    <string name="backup_date_">Letzte Sicherung: %s</string>
     <string name="content_rating">Einstufung (Inhalt)</string>
     <string name="genres_exclude">Genres ausschließen</string>
     <string name="rating_safe">Sicher</string>
@@ -555,4 +555,29 @@
     <string name="enhanced_colors_summary">Reduziert das Banding (harte Farbverläufe), kann aber die Leistung beeinträchtigen</string>
     <string name="suggest_new_sources_summary">Aufforderung zur Aktivierung neu hinzugefügter Quellen nach Aktualisierung der Anwendung</string>
     <string name="list_options">Listenoptionen</string>
+    <string name="volume_">Speicher %d</string>
+    <string name="volume_unknown">Unbekannte Speicher Volumen</string>
+    <string name="email_password_enter_hint">Gebe deine E-Mail-Adresse und Passwort an, um fortzufahren</string>
+    <string name="incognito_mode_hint">Deine Lese fortschritt, wird nicht gespeichert</string>
+    <string name="vertical">Vertikal</string>
+    <string name="category_hidden_done">Diese Kategorie wurde vom Hauptbildschirm ausgeblendet und ist verfügbar unter: Menü → Kategorien verwalten</string>
+    <string name="approximate_reading_time">Ungefähre Lesezeit</string>
+    <string name="approximate_remaining_time">Ungefähre Lesezeit</string>
+    <string name="show_menu">Menü anzeigen</string>
+    <string name="toggle_ui">UI anzeigen/ausblenden</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="prev_chapter">Vorheriges Kapitel</string>
+    <string name="next_page">Nächste Seite</string>
+    <string name="reader_actions">Leseraktionen</string>
+    <string name="reader_actions_summary">Einstellungen für berührbare Bildschirmbereiche</string>
+    <string name="switch_pages_volume_buttons">Aktiviere Lautstärke Knöpfe</string>
+    <string name="switch_pages_volume_buttons_summary">Lautstärkeknöpfe zum Seitenwechsel benutzen</string>
+    <string name="tap_action">Tippen Aktion</string>
+    <string name="long_tap_action">Langtippen Aktion</string>
+    <string name="none">Keine</string>
+    <string name="config_reset_confirm">Einstellungen auf Standardwerte zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="use_two_pages_landscape">Zwei-Seiten-Layout im Querformat benutzen (experimentell)</string>
+    <string name="two_pages">Zwei Seiten</string>
+    <string name="next_chapter">Nächstes Kapitel</string>
+    <string name="prev_page">Vorherige Seite</string>
 </resources>
