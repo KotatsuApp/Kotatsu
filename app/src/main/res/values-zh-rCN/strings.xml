@@ -563,7 +563,7 @@
     <string name="volume_unknown">未知卷</string>
     <string name="incognito_mode_hint">阅读进度不会保存</string>
     <string name="vertical">垂直</string>
-    <string name="last_read">最近阅读</string>
+    <string name="last_read">上次阅读</string>
     <string name="switch_pages_volume_buttons_summary">使用音量键翻页</string>
     <string name="two_pages">双页</string>
     <string name="show_menu">显示菜单</string>
