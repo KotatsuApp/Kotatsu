@@ -55,7 +55,7 @@ open class BaseApp : Application(), Configuration.Provider {
 	lateinit var appValidator: AppValidator
 
 	@Inject
-	lateinit var workScheduleManager: Provider<WorkScheduleManager>
+	lateinit var workScheduleManager: WorkScheduleManager
 
 	@Inject
 	lateinit var workManagerProvider: Provider<WorkManager>
@@ -83,7 +83,7 @@ open class BaseApp : Application(), Configuration.Provider {
 		processLifecycleScope.launch(Dispatchers.Default) {
 			setupDatabaseObservers()
 		}
-		workScheduleManager.get().init()
+		workScheduleManager.init()
 		WorkServiceStopHelper(workManagerProvider).setup()
 	}
 

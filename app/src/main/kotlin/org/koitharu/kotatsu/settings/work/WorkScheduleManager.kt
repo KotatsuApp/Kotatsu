@@ -9,7 +9,9 @@ import org.koitharu.kotatsu.settings.backup.PeriodicalBackupWorker
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class WorkScheduleManager @Inject constructor(
 	private val settings: AppSettings,
 	private val suggestionScheduler: SuggestionsWorker.Scheduler,
