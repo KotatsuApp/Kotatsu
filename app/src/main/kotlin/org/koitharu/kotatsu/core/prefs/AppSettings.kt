@@ -111,6 +111,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReaderZoomButtonsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_ZOOM_BUTTONS, false)
 
+	val isReaderFullscreenEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READER_FULLSCREEN, true)
+
 	val isReaderOptimizationEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_OPTIMIZE, false)
 
@@ -482,6 +485,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LOCAL_STORAGE = "local_storage"
 		const val KEY_READER_DOUBLE_PAGES = "reader_double_pages"
 		const val KEY_READER_ZOOM_BUTTONS = "reader_zoom_buttons"
+		const val KEY_READER_FULLSCREEN = "reader_fullscreen"
 		const val KEY_READER_VOLUME_BUTTONS = "reader_volume_buttons"
 		const val KEY_TRACKER_ENABLED = "tracker_enabled"
 		const val KEY_TRACKER_WIFI_ONLY = "tracker_wifi"

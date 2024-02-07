@@ -78,10 +78,16 @@
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
+		android:key="reader_fullscreen"
+		android:summary="@string/reader_fullscreen_summary"
+		android:title="@string/fullscreen_mode"
+		app:allowDividerAbove="true" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
 		android:key="reader_bar"
 		android:summary="@string/reader_info_bar_summary"
-		android:title="@string/reader_info_bar"
-		app:allowDividerAbove="true" />
+		android:title="@string/reader_info_bar" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"

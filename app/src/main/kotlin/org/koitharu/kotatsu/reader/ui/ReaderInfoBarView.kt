@@ -62,6 +62,12 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	private val innerWidth
 		get() = width - paddingLeft - paddingRight - insetLeft - insetRight
 
+	var isTimeVisible: Boolean = true
+		set(value) {
+			field = value
+			invalidate()
+		}
+
 	init {
 		paint.strokeWidth = context.resources.resolveDp(2f)
 		val insetCorner = getSystemUiDimensionOffset("rounded_corner_content_padding")
@@ -92,12 +98,14 @@ class ReaderInfoBarView @JvmOverloads constructor(
 			(paddingLeft + insetLeft + cutoutInsetLeft).toFloat(),
 			paddingTop + insetTop + ty,
 		)
-		paint.textAlign = Paint.Align.RIGHT
-		canvas.drawTextOutline(
-			timeText,
-			(width - paddingRight - insetRight - cutoutInsetRight).toFloat(),
-			paddingTop + insetTop + ty,
-		)
+		if (isTimeVisible) {
+			paint.textAlign = Paint.Align.RIGHT
+			canvas.drawTextOutline(
+				timeText,
+				(width - paddingRight - insetRight - cutoutInsetRight).toFloat(),
+				paddingTop + insetTop + ty,
+			)
+		}
 	}
 
 	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -183,7 +191,9 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 		override fun onReceive(context: Context?, intent: Intent?) {
 			timeText = timeFormat.format(LocalTime.now())
-			invalidate()
+			if (isTimeVisible) {
+				invalidate()
+			}
 		}
 	}
 

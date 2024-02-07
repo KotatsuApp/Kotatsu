@@ -310,10 +310,12 @@ class ReaderActivity :
 				}
 				TransitionManager.beginDelayedTransition(viewBinding.root, transition)
 			}
+			val isFullscreen = settings.isReaderFullscreenEnabled
 			viewBinding.appbarTop.isVisible = isUiVisible
 			viewBinding.appbarBottom?.isVisible = isUiVisible
 			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
-			systemUiController.setSystemUiVisible(isUiVisible)
+			viewBinding.infoBar.isTimeVisible = isFullscreen
+			systemUiController.setSystemUiVisible(isUiVisible || !isFullscreen)
 		}
 	}
 
@@ -330,6 +332,9 @@ class ReaderActivity :
 			rightMargin = systemBars.right + topMargin
 			leftMargin = systemBars.left + topMargin
 		}
+		viewBinding.infoBar.updatePadding(
+			top = systemBars.top,
+		)
 		return WindowInsetsCompat.Builder(insets)
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
 			.build()
