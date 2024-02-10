@@ -240,7 +240,7 @@
     <string name="removed_from_history">Выдалена з гісторыі</string>
     <string name="dns_over_https">DNS праз HTTPS</string>
     <string name="detect_reader_mode">Аўтавызначэнне рэжыму чытання</string>
-    <string name="detect_reader_mode_summary">Аўтаматычна вызначае, ці з\'яўляецца манга вэб-коміксам</string>
+    <string name="detect_reader_mode_summary">Аўтаматычна вызначаць, ці з\'яўляецца манга манхвой</string>
     <string name="new_sources_text">Даступныя новыя крыніцы мангі</string>
     <string name="download_slowdown">Запавольванне спампоўкі</string>
     <string name="suggestions_excluded_genres">Выключыць жанры</string>
@@ -426,7 +426,7 @@
     <string name="show_pages_numbers_summary">Паказаць нумары старонак у ніжнім куце</string>
     <string name="network">Сетка</string>
     <string name="data_and_privacy">Дадзеныя і канфідэнцыяльнасць</string>
-    <string name="webtoon_zoom_summary">Уключыць жэст павелічэння маштабу ў рэжыме манхвы</string>
+    <string name="webtoon_zoom_summary">Дазволіць жэсты маштабавання ў рэжыме манхвы</string>
     <string name="details_button_tip">Націсніце і ўтрымлівайце кнопку \"Чытаць\", каб убачыць дадатковыя параметры</string>
     <string name="restore_summary">Аднавіць раней створаную рэзервовую копію</string>
     <string name="reader_info_bar_summary">Паказаць бягучы час і ход чытання ў верхняй частцы экрана</string>
@@ -581,4 +581,7 @@
     <string name="email_password_enter_hint">Каб працягнуць, увядзіце адрас электроннай пошты і пароль</string>
     <string name="config_reset_confirm">Скінуць налады да значэнняў па змаўчанні? Гэта дзеянне нельга адмяніць.</string>
     <string name="use_two_pages_landscape">Выкарыстоўвайце двухстаронкавы макет у альбомнай арыентацыі (бэта)</string>
+    <string name="default_webtoon_zoom_out">Аддаленне ў рэжыме манхвы</string>
+    <string name="fullscreen_mode">Поўнаэкранны рэжым</string>
+    <string name="reader_fullscreen_summary">Схаваць інтэрфейс сістэмы</string>
 </resources>
