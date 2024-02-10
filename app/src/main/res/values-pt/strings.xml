@@ -554,7 +554,7 @@
     <string name="volume_">Volume %d</string>
     <string name="volume_unknown">Volume desconhecido</string>
     <string name="approximate_reading_time">Tempo aproximado de leitura</string>
-    <string name="incognito_mode_hint">Seu processo de leitura não será salvo</string>
+    <string name="incognito_mode_hint">Seu progresso de leitura não será salvo</string>
     <string name="vertical">Vertical</string>
     <string name="email_password_enter_hint">Coloque seu email e senha para continuar</string>
     <string name="mark_as_completed_prompt">Marcar o mangá selecionado como lido completamente?
@@ -580,4 +580,8 @@
     <string name="two_pages">Duas páginas</string>
     <string name="mark_as_completed">Marcar como concluído</string>
     <string name="none">nenhum</string>
+    <string name="last_read">Última leitura</string>
+    <string name="default_webtoon_zoom_out">Redução de zoom padrão do webtoon</string>
+    <string name="fullscreen_mode">Modo de tela cheia</string>
+    <string name="reader_fullscreen_summary">Ocultar a barra de status e navegação</string>
 </resources>

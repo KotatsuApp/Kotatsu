@@ -581,4 +581,7 @@
     <string name="use_two_pages_landscape">Usar layout de duas páginas na orientação paisagem (beta)</string>
     <string name="last_read">Última leitura</string>
     <string name="none">Nenhum</string>
+    <string name="default_webtoon_zoom_out">Diminuir zoom padrão do webtoon</string>
+    <string name="fullscreen_mode">Modo de tela cheia</string>
+    <string name="reader_fullscreen_summary">Ocultar a barra de status e navegação</string>
 </resources>
