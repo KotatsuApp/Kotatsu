@@ -9,6 +9,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import android.os.BatteryManager
 import android.util.AttributeSet
 import android.view.View
 import android.view.WindowInsets
@@ -16,6 +18,7 @@ import androidx.annotation.AttrRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.withScale
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.koitharu.kotatsu.R
@@ -29,6 +32,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import com.google.android.material.R as materialR
 
+
 class ReaderInfoBarView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
@@ -38,7 +42,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private val textBounds = Rect()
 	private val timeFormat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-	private val timeReceiver = TimeReceiver()
+	private val systemStateReceiver = SystemStateReceiver()
 	private var insetLeft: Int = 0
 	private var insetRight: Int = 0
 	private var insetTop: Int = 0
@@ -52,8 +56,10 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		context.getThemeColor(materialR.attr.colorSurface, Color.WHITE),
 		200,
 	)
+	private val batteryIcon = ContextCompat.getDrawable(context, R.drawable.ic_battery_outline)
 
 	private var timeText = timeFormat.format(LocalTime.now())
+	private var batteryText = ""
 	private var text: String = ""
 	private var prevTextHeight: Int = 0
 
@@ -99,7 +105,8 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	override fun onDraw(canvas: Canvas) {
 		super.onDraw(canvas)
 		computeTextHeight()
-		val ty = innerHeight / 2f + textBounds.height() / 2f - textBounds.bottom
+		val h = innerHeight.toFloat()
+		val ty = h / 2f + textBounds.height() / 2f - textBounds.bottom
 		paint.textAlign = Paint.Align.LEFT
 		canvas.drawTextOutline(
 			text,
@@ -108,11 +115,26 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		)
 		if (isTimeVisible) {
 			paint.textAlign = Paint.Align.RIGHT
-			canvas.drawTextOutline(
-				timeText,
-				(width - paddingRight - insetRight - cutoutInsetRight).toFloat(),
-				paddingTop + insetTop + ty,
-			)
+			var endX = (width - paddingRight - insetRight - cutoutInsetRight).toFloat()
+			canvas.drawTextOutline(timeText, endX, paddingTop + insetTop + ty)
+			if (batteryText.isNotEmpty()) {
+				paint.getTextBounds(timeText, 0, timeText.length, textBounds)
+				endX -= textBounds.width()
+				endX -= h * 0.6f
+				canvas.drawTextOutline(batteryText, endX, paddingTop + insetTop + ty)
+				batteryIcon?.let {
+					paint.getTextBounds(batteryText, 0, batteryText.length, textBounds)
+					endX -= textBounds.width()
+					val iconCenter = paddingTop + insetTop + textBounds.height() / 2
+					it.setBounds(
+						(endX - h).toInt(),
+						(iconCenter - h / 2).toInt(),
+						endX.toInt(),
+						(iconCenter + h / 2).toInt(),
+					)
+					it.drawWithOutline(canvas)
+				}
+			}
 		}
 	}
 
@@ -130,8 +152,11 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		super.onAttachedToWindow()
 		ContextCompat.registerReceiver(
 			context,
-			timeReceiver,
-			IntentFilter(Intent.ACTION_TIME_TICK),
+			systemStateReceiver,
+			IntentFilter().apply {
+				addAction(Intent.ACTION_TIME_TICK)
+				addAction(Intent.ACTION_BATTERY_CHANGED)
+			},
 			ContextCompat.RECEIVER_EXPORTED,
 		)
 		updateCutoutInsets(ViewCompat.getRootWindowInsets(this))
@@ -139,7 +164,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	override fun onDetachedFromWindow() {
 		super.onDetachedFromWindow()
-		context.unregisterReceiver(timeReceiver)
+		context.unregisterReceiver(systemStateReceiver)
 	}
 
 	fun update(state: ReaderUiState?) {
@@ -167,7 +192,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	}
 
 	private fun computeTextHeight(): Int {
-		val str = text + timeText
+		val str = text + batteryText + timeText
 		paint.getTextBounds(str, 0, str.length, textBounds)
 		return textBounds.height()
 	}
@@ -179,6 +204,20 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		paint.color = colorText
 		paint.style = Paint.Style.FILL
 		drawText(text, x, y, paint)
+	}
+
+	private fun Drawable.drawWithOutline(canvas: Canvas) {
+		var requiredScale = (bounds.width() + paint.strokeWidth * 2f) / bounds.width().toFloat()
+		setTint(colorOutline)
+		canvas.withScale(requiredScale, requiredScale, bounds.exactCenterX(), bounds.exactCenterY()) {
+			draw(canvas)
+		}
+		requiredScale = 1f / requiredScale
+		canvas.withScale(requiredScale, requiredScale, bounds.exactCenterX(), bounds.exactCenterY()) {
+			draw(canvas)
+		}
+		setTint(colorText)
+		draw(canvas)
 	}
 
 	private fun updateCutoutInsets(insetsCompat: WindowInsetsCompat?) {
@@ -195,9 +234,15 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		}
 	}
 
-	private inner class TimeReceiver : BroadcastReceiver() {
+	private inner class SystemStateReceiver : BroadcastReceiver() {
 
-		override fun onReceive(context: Context?, intent: Intent?) {
+		override fun onReceive(context: Context, intent: Intent) {
+			val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+			val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+			if (level != -1 && scale != -1) {
+				batteryText = context.getString(R.string.percent_string_pattern, (level * 100 / scale).toString())
+			}
+
 			timeText = timeFormat.format(LocalTime.now())
 			if (isTimeVisible) {
 				invalidate()
