@@ -581,4 +581,7 @@
     <string name="email_password_enter_hint">Введіть свою адресу електронної пошти та пароль, щоб продовжити</string>
     <string name="config_reset_confirm">Повернути налаштування до значень за замовчуванням? Цю дію неможливо скасувати.</string>
     <string name="use_two_pages_landscape">Використовувати макет двох сторінок у альбомній орієнтації (бета)</string>
+    <string name="fullscreen_mode">Повноекранний режим</string>
+    <string name="reader_fullscreen_summary">Приховувати системний інтерфейс</string>
+    <string name="default_webtoon_zoom_out">Віддалення у режимі манхви</string>
 </resources>
