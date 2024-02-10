@@ -229,7 +229,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		val order = preferredSortOrders.first { it in availableOrders }
 		val availableTags = repository.getTags()
 		val tag = tags.firstNotNullOfOrNull { title ->
-			availableTags.find { x -> x.title.almostEquals(title, TAG_EQ_THRESHOLD) }
+			availableTags.find { x -> x !in blacklist && x.title.almostEquals(title, TAG_EQ_THRESHOLD) }
 		}
 		val list = repository.getList(
 			offset = 0,
