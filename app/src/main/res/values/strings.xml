@@ -588,7 +588,7 @@
 	<string name="default_webtoon_zoom_out">Default webtoon zoom out</string>
 	<string name="fullscreen_mode">Fullscreen mode</string>
 	<string name="reader_fullscreen_summary">Hide system status and navigation bars</string>
-	<string name="fraction_pattern">%1$d/%2$d</string>
+	<string name="fraction_pattern" translatable="false">%1$d/%2$d</string>
 	<string name="reading_time_estimation">Show estimated reading time</string>
 	<string name="reading_time_estimation_summary">The time estimation value may be inaccurate</string>
 </resources>
