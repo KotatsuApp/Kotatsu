@@ -37,9 +37,9 @@
     <string name="various_languages">多语言</string>
     <string name="search_chapters">查找章节</string>
     <string name="suggestions_excluded_genres">排除分类</string>
-    <string name="suggestions_updating">漫画推荐更新</string>
+    <string name="suggestions_updating">正在更新漫画推荐</string>
     <string name="check_new_chapters_title">检查新章节并通知结果</string>
-    <string name="details">作品详情界面</string>
+    <string name="details">作品详情</string>
     <string name="detailed_list">卡片</string>
     <string name="grid">网格</string>
     <string name="list_mode">视图选项</string>
@@ -48,7 +48,7 @@
     <string name="computing_">计算中…</string>
     <string name="chapter_d_of_d">%1$d/%2$d 章</string>
     <string name="close">关闭</string>
-    <string name="try_again">再试一次</string>
+    <string name="try_again">重试</string>
     <string name="clear_history">清除历史</string>
     <string name="nothing_found">结果为空</string>
     <string name="history_is_empty">暂无历史记录</string>
@@ -121,11 +121,11 @@
     <string name="notification_sound">通知声音</string>
     <string name="light_indicator">LED指示器</string>
     <string name="vibration">振动</string>
-    <string name="favourites_categories">收藏更新范围</string>
+    <string name="favourites_categories">收藏分类管理</string>
     <string name="remove_category">删除分类</string>
     <string name="text_empty_holder_primary">什么都没有…</string>
     <string name="text_search_holder_secondary">试试换一个词再搜索。</string>
-    <string name="text_history_holder_primary">看过的内容将在这里显示</string>
+    <string name="text_history_holder_primary">看过的漫画将在这里显示</string>
     <string name="text_history_holder_secondary">在&lt;浏览&gt;页面搜索要读的漫画</string>
     <string name="text_local_holder_primary">请先在线下载或进行本地导入</string>
     <string name="text_local_holder_secondary">下载图源内容或通过本地文件导入。</string>
@@ -141,7 +141,7 @@
     <string name="favourites_category_empty">目前分类为空</string>
     <string name="read_later">稍后阅读</string>
     <string name="updates">更新内容</string>
-    <string name="text_feed_holder">正在阅读的新章节将在这里显示</string>
+    <string name="text_feed_holder">正在阅读漫画的新章节将在这里显示</string>
     <string name="search_results">搜索结果</string>
     <string name="new_version_s">新版本: %s</string>
     <string name="clear_updates_feed">清除订阅更新记录</string>
@@ -227,7 +227,7 @@
     <string name="suggestions_excluded_genres_summary">输入不希望在推荐中看到的分类</string>
     <string name="text_delete_local_manga_batch">要从系统中永久删除所选项目吗？</string>
     <string name="removal_completed">删除成功</string>
-    <string name="download_slowdown">下载速度减慢</string>
+    <string name="download_slowdown">减慢下载速度</string>
     <string name="download_slowdown_summary">有助于避免封禁你的IP地址</string>
     <string name="local_manga_processing">正在处理已保存漫画</string>
     <string name="chapters_will_removed_background">章节将在后台被删除</string>
@@ -244,7 +244,7 @@
     <string name="bookmark_removed">书签已删除</string>
     <string name="bookmark_added">书签已添加</string>
     <string name="undo">撤销</string>
-    <string name="removed_from_history">从历史记录中删除</string>
+    <string name="removed_from_history">已从历史记录中删除</string>
     <string name="dns_over_https">基于 HTTPS 的 DNS</string>
     <string name="default_mode">默认阅读模式</string>
     <string name="detect_reader_mode">自动检测阅读模式</string>
@@ -271,7 +271,7 @@
     <string name="exclude_nsfw_from_history_summary">标记为成人内容的漫画将不会添加到历史记录，也不会保存阅读记录</string>
     <string name="clear_cookies_summary">能对部分问题起到一些作用。所有网站的授权将会失效</string>
     <string name="show_all">显示全部</string>
-    <string name="manga_error_description_pattern">错误详情：&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1.尝试&lt;a href=%2$s&gt;在网络浏览器中打开漫画&lt;/a&gt;以确保在其图源中可用&lt;br&gt;2. 请确保使用的是&lt;a href=kotatsu://about&gt;最新版本的Kotatsu&lt;/a&gt;&lt;br&gt;3.若图源没有问题，请向开发人员发送错误报告。</string>
+    <string name="manga_error_description_pattern">错误详情：&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1.尝试&lt;a href=%2$s&gt;在网络浏览器中打开漫画&lt;/a&gt;以确保在其图源中可用&lt;br&gt;2.请确保使用的是&lt;a href=kotatsu://about&gt;最新版本的Kotatsu&lt;/a&gt;&lt;br&gt;3.若图源没有问题，请向开发人员发送错误报告。</string>
     <string name="invalid_domain_message">无效域名</string>
     <string name="text_shelf_holder_primary">此处将显示你的漫画</string>
     <string name="text_shelf_holder_secondary">在&lt;浏览&gt;页面搜索要读的漫画</string>
@@ -315,7 +315,7 @@
     <string name="other_cache">其他缓存</string>
     <string name="storage_usage">存储占用</string>
     <string name="available">可用</string>
-    <string name="removed_from_favourites">从收藏中删除</string>
+    <string name="removed_from_favourites">已从收藏中删除</string>
     <string name="options">选项</string>
     <string name="incognito_mode">无痕模式</string>
     <string name="no_chapters">没有章节</string>
@@ -411,7 +411,7 @@
     <string name="address">地址</string>
     <string name="clear_network_cache">清除网络缓存</string>
     <string name="proxy">代理</string>
-    <string name="type">漫画类型</string>
+    <string name="type">类型</string>
     <string name="invalid_value_message">无效值</string>
     <string name="network">网络</string>
     <string name="restore_summary">从以前创建的备份恢复</string>
@@ -449,7 +449,7 @@
     <string name="languages">语言</string>
     <string name="captcha_required_summary">%s 需要通过验证才能正常运行</string>
     <string name="progress">阅读进度</string>
-    <string name="error_corrupted_file">无效数据回传或文件已损坏</string>
+    <string name="error_corrupted_file">回传的数据无效或文件已损坏</string>
     <string name="related_manga_summary">显示相关漫画。可能并不准确或缺失</string>
     <string name="tracker_wifi_only_summary">使用移动网络时停止检查新章节</string>
     <string name="order_added">添加日期</string>
@@ -520,7 +520,7 @@
     <string name="downloads_settings_info">若遇到服务器端阻塞，可以在图源设置中为每个图源单独开启限速下载功能</string>
     <string name="skip">跳过</string>
     <string name="backup_date_">备份日期：%s</string>
-    <string name="content_rating">内容评级</string>
+    <string name="content_rating">内容分级</string>
     <string name="genres_exclude">排除分类</string>
     <string name="rating_safe">全年龄</string>
     <string name="rating_suggestive">R15</string>
@@ -539,10 +539,10 @@
     <string name="available_d">%1$d 个可用</string>
     <string name="disable_nsfw_summary">禁用成人内容图源并尽可能从列表中隐藏成人漫画</string>
     <string name="speed_value">x%.1f</string>
-    <string name="error_filter_locale_genre_not_supported">此图源不支持同时按分类和区域过滤</string>
-    <string name="error_filter_states_genre_not_supported">此图源不支持同时按分类和状态过滤</string>
+    <string name="error_filter_locale_genre_not_supported">此图源不支持同时按分类和区域筛选</string>
+    <string name="error_filter_states_genre_not_supported">此图源不支持同时按分类和状态筛选</string>
     <string name="genres_search_hint">开始输入分类名称</string>
-    <string name="state_paused">暂停</string>
+    <string name="state_paused">休刊中</string>
     <string name="reader_optimize">降低内存占用（测试）</string>
     <string name="reader_optimize_summary">降低当前画面外的页面质量以减少内存占用</string>
     <string name="disable_battery_optimization_summary_downloads">可能帮助解决下载过程相关的问题</string>
@@ -551,19 +551,19 @@
     <string name="error_multiple_genres_not_supported">此图源不支持按多个分类筛选</string>
     <string name="error_multiple_states_not_supported">此图源不支持按多个状态筛选</string>
     <string name="by_relevance">关联</string>
-    <string name="mark_as_completed">标记为已读完</string>
-    <string name="mark_as_completed_prompt">要将选定的漫画标记为已读完吗？
+    <string name="mark_as_completed">标记为已读</string>
+    <string name="mark_as_completed_prompt">要将选定的漫画标记为已读吗？
 \n
 \n警告： 当前的阅读进度将会丢失。</string>
     <string name="category_hidden_done">此分类已从主页隐藏，可通过菜单 → 管理分类来访问</string>
-    <string name="approximate_reading_time">大约需要的阅读时间</string>
-    <string name="approximate_remaining_time">大约剩余时间</string>
+    <string name="approximate_reading_time">估计所需阅读时间</string>
+    <string name="approximate_remaining_time">估计剩余阅读时间</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="volume_">第 %d 卷</string>
     <string name="volume_unknown">未知卷</string>
     <string name="incognito_mode_hint">阅读进度不会保存</string>
     <string name="vertical">垂直</string>
-    <string name="last_read">上次阅读</string>
+    <string name="last_read">最近阅读</string>
     <string name="switch_pages_volume_buttons_summary">使用音量键翻页</string>
     <string name="two_pages">双页</string>
     <string name="show_menu">显示菜单</string>
@@ -581,4 +581,7 @@
     <string name="use_two_pages_landscape">在横屏时开启双页模式（测试）</string>
     <string name="config_reset_confirm">要恢复为默认设置吗？恢复后无法撤销。</string>
     <string name="email_password_enter_hint">输入邮箱和密码以继续</string>
+    <string name="fullscreen_mode">全屏模式</string>
+    <string name="default_webtoon_zoom_out">条漫默认缩小值</string>
+    <string name="reader_fullscreen_summary">将系统状态栏与通知栏隐藏</string>
 </resources>
