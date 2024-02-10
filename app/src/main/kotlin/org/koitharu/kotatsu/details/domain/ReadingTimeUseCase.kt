@@ -2,14 +2,20 @@ package org.koitharu.kotatsu.details.domain
 
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.findById
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.data.ReadingTime
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class ReadingTimeUseCase @Inject constructor() {
+class ReadingTimeUseCase @Inject constructor(
+	private val settings: AppSettings,
+) {
 
 	fun invoke(manga: MangaDetails?, branch: String?, history: MangaHistory?): ReadingTime? {
+		if (!settings.isReadingTimeEstimationEnabled) {
+			return null
+		}
 		// FIXME MAXIMUM HARDCODE!!! To do calculation with user's page read speed and his favourites/history mangas average pages in chapter
 		val chapters = manga?.chapters?.get(branch)
 		if (chapters.isNullOrEmpty()) {

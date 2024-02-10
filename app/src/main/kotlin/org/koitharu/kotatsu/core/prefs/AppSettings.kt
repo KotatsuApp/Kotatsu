@@ -403,6 +403,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getString(KEY_BACKUP_PERIODICAL_OUTPUT, null)?.toUriOrNull()
 		set(value) = prefs.edit { putString(KEY_BACKUP_PERIODICAL_OUTPUT, value?.toString()) }
 
+	val isReadingTimeEstimationEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READING_TIME, true)
+
 	fun isTipEnabled(tip: String): Boolean {
 		return prefs.getStringSet(KEY_TIPS_CLOSED, emptySet())?.contains(tip) != true
 	}
@@ -579,6 +582,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_CF_GRAYSCALE = "cf_grayscale"
 		const val KEY_IGNORE_DOZE = "ignore_dose"
 		const val KEY_DETAILS_TAB = "details_tab"
+		const val KEY_READING_TIME = "reading_time"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"
