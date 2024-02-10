@@ -582,4 +582,6 @@
     <string name="none">Ninguno</string>
     <string name="config_reset_confirm">¿Restablecer los valores por defecto? Esta acción no se puede deshacer.</string>
     <string name="default_webtoon_zoom_out">Alejar el zoom del webtoon predeterminado</string>
+    <string name="fullscreen_mode">Modo de pantalla completa</string>
+    <string name="reader_fullscreen_summary">Ocultar las barras de estado y navegación del sistema</string>
 </resources>
