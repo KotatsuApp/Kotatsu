@@ -39,7 +39,6 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
@@ -54,6 +53,7 @@ import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
+import org.koitharu.kotatsu.core.util.ext.onEachIndexed
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -61,11 +61,13 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import org.koitharu.kotatsu.tracker.domain.Tracker
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.google.android.material.R as materialR
 
 @HiltWorker
 class TrackWorker @AssistedInject constructor(
@@ -74,6 +76,7 @@ class TrackWorker @AssistedInject constructor(
 	private val coil: ImageLoader,
 	private val settings: AppSettings,
 	private val tracker: Tracker,
+	private val workManager: WorkManager,
 	@TrackerLogger private val logger: FileLogger,
 ) : CoroutineWorker(context, workerParams) {
 
@@ -164,7 +167,10 @@ class TrackWorker @AssistedInject constructor(
 					}
 				}
 			}
-		}.onEach {
+		}.onEachIndexed { index, it ->
+			if (applicationContext.checkNotificationPermission()) {
+				notificationManager.notify(WORKER_NOTIFICATION_ID, createWorkerNotification(tracks.size, index + 1))
+			}
 			when (it) {
 				is MangaUpdates.Failure -> {
 					val e = it.error
@@ -254,12 +260,11 @@ class TrackWorker @AssistedInject constructor(
 	}
 
 	override suspend fun getForegroundInfo(): ForegroundInfo {
-		val title = applicationContext.getString(R.string.check_for_new_chapters)
 		val channel = NotificationChannelCompat.Builder(
 			WORKER_CHANNEL_ID,
-			NotificationManagerCompat.IMPORTANCE_LOW
+			NotificationManagerCompat.IMPORTANCE_LOW,
 		)
-			.setName(title)
+			.setName(applicationContext.getString(R.string.check_for_new_chapters))
 			.setShowBadge(false)
 			.setVibrationEnabled(false)
 			.setSound(null, null)
@@ -267,27 +272,55 @@ class TrackWorker @AssistedInject constructor(
 			.build()
 		notificationManager.createNotificationChannel(channel)
 
-		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
-			.setContentTitle(title)
-			.setPriority(NotificationCompat.PRIORITY_MIN)
-			.setCategory(NotificationCompat.CATEGORY_SERVICE)
-			.setDefaults(0)
-			.setOngoing(false)
-			.setSilent(true)
-			.setProgress(0, 0, true)
-			.setSmallIcon(android.R.drawable.stat_notify_sync)
-			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
-			.build()
+		val notification = createWorkerNotification(0, 0)
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 			ForegroundInfo(
 				WORKER_NOTIFICATION_ID,
 				notification,
-				ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+				ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,
 			)
 		} else {
 			ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
 		}
 	}
+
+	private fun createWorkerNotification(max: Int, progress: Int) = NotificationCompat.Builder(
+		applicationContext,
+		WORKER_CHANNEL_ID,
+	).apply {
+		setContentTitle(applicationContext.getString(R.string.check_for_new_chapters))
+		setPriority(NotificationCompat.PRIORITY_MIN)
+		setCategory(NotificationCompat.CATEGORY_SERVICE)
+		setDefaults(0)
+		setOngoing(false)
+		setSilent(true)
+		setContentIntent(
+			PendingIntentCompat.getActivity(
+				applicationContext,
+				0,
+				SettingsActivity.newTrackerSettingsIntent(applicationContext),
+				0,
+				false,
+			),
+		)
+		addAction(
+			materialR.drawable.material_ic_clear_black_24dp,
+			applicationContext.getString(android.R.string.cancel),
+			workManager.createCancelPendingIntent(id),
+		)
+		if (max > 0) {
+			setSubText(applicationContext.getString(R.string.fraction_pattern, progress, max))
+		}
+		setProgress(max, progress, max == 0)
+		setSmallIcon(android.R.drawable.stat_notify_sync)
+		setForegroundServiceBehavior(
+			if (TAG_ONESHOT in tags) {
+				NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
+			} else {
+				NotificationCompat.FOREGROUND_SERVICE_DEFERRED
+			},
+		)
+	}.build()
 
 	private suspend fun setRetryIds(ids: Set<Long>) = runInterruptible(Dispatchers.IO) {
 		val prefs = applicationContext.getSharedPreferences(TAG, Context.MODE_PRIVATE)

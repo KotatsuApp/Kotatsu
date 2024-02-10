@@ -68,6 +68,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
+import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
@@ -76,6 +77,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.random.Random
+import com.google.android.material.R as materialR
 
 @HiltWorker
 class SuggestionsWorker @AssistedInject constructor(
@@ -86,6 +88,7 @@ class SuggestionsWorker @AssistedInject constructor(
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
 	private val appSettings: AppSettings,
+	private val workManager: WorkManager,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val sourcesRepository: MangaSourcesRepository,
 ) : CoroutineWorker(appContext, params) {
@@ -116,6 +119,19 @@ class SuggestionsWorker @AssistedInject constructor(
 
 		val notification = NotificationCompat.Builder(applicationContext, WORKER_CHANNEL_ID)
 			.setContentTitle(title)
+			.setContentIntent(
+				PendingIntentCompat.getActivity(
+					applicationContext,
+					0,
+					SettingsActivity.newSuggestionsSettingsIntent(applicationContext),
+					0,
+					false,
+				),
+			).addAction(
+				materialR.drawable.material_ic_clear_black_24dp,
+				applicationContext.getString(android.R.string.cancel),
+				workManager.createCancelPendingIntent(id),
+			)
 			.setPriority(NotificationCompat.PRIORITY_MIN)
 			.setCategory(NotificationCompat.CATEGORY_SERVICE)
 			.setDefaults(0)
@@ -123,7 +139,13 @@ class SuggestionsWorker @AssistedInject constructor(
 			.setSilent(true)
 			.setProgress(0, 0, true)
 			.setSmallIcon(android.R.drawable.stat_notify_sync)
-			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_DEFERRED)
+			.setForegroundServiceBehavior(
+				if (TAG_ONESHOT in tags) {
+					NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
+				} else {
+					NotificationCompat.FOREGROUND_SERVICE_DEFERRED
+				},
+			)
 			.build()
 
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

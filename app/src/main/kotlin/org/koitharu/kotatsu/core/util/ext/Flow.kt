@@ -11,8 +11,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import org.koitharu.kotatsu.R
+import java.util.concurrent.atomic.AtomicInteger
 
 fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
 	var isFirstCall = true
@@ -34,6 +36,14 @@ fun <T> Flow<T>.onEachWhile(action: suspend (T) -> Boolean): Flow<T> {
 		}
 	}.onCompletion {
 		isCalled = false
+	}
+}
+
+fun <T> Flow<T>.onEachIndexed(action: suspend (index: Int, T) -> Unit): Flow<T> {
+	val counter = AtomicInteger(0)
+	return transform { value ->
+		action(counter.getAndIncrement(), value)
+		return@transform emit(value)
 	}
 }
 
