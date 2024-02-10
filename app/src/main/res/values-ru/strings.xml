@@ -584,4 +584,6 @@
     <string name="default_webtoon_zoom_out">Отдаление в режиме манхвы</string>
     <string name="fullscreen_mode">На весь экран</string>
     <string name="reader_fullscreen_summary">Скрывать интерфейс системы</string>
+    <string name="reading_time_estimation">Отображать предполагаемое время чтения</string>
+    <string name="reading_time_estimation_summary">Данное значение может быть неточным</string>
 </resources>

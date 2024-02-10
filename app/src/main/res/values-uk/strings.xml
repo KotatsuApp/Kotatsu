@@ -584,4 +584,6 @@
     <string name="fullscreen_mode">Повноекранний режим</string>
     <string name="reader_fullscreen_summary">Приховувати інтерфейс системи</string>
     <string name="default_webtoon_zoom_out">Віддалення у режимі манхви</string>
+    <string name="reading_time_estimation">Відображати передбачуваний час читання</string>
+    <string name="reading_time_estimation_summary">Це значення може бути неточним</string>
 </resources>
