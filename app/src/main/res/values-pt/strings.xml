@@ -581,7 +581,7 @@
     <string name="mark_as_completed">Marcar como concluído</string>
     <string name="none">nenhum</string>
     <string name="last_read">Última leitura</string>
-    <string name="default_webtoon_zoom_out">Redução de zoom padrão do webtoon</string>
+    <string name="default_webtoon_zoom_out">Diminuir para zoom padrão do webtoon</string>
     <string name="fullscreen_mode">Modo de tela cheia</string>
     <string name="reader_fullscreen_summary">Ocultar a barra de status e navegação</string>
 </resources>
