@@ -7,6 +7,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.core.view.isEmpty
 import androidx.core.view.iterator
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -180,6 +181,9 @@ class MainNavigationDelegate(
 		for (item in items) {
 			menu.add(Menu.NONE, item.id, Menu.NONE, item.title)
 				.setIcon(item.icon)
+			if (menu.size >= navBar.maxItemCount) {
+				break
+			}
 		}
 	}
 

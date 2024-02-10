@@ -7,33 +7,37 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ItemNavAvailableBinding
 import org.koitharu.kotatsu.databinding.ItemNavConfigBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.settings.nav.model.NavItemAddModel
+import org.koitharu.kotatsu.settings.nav.model.NavItemConfigModel
 
 @SuppressLint("ClickableViewAccessibility")
 fun navConfigAD(
 	clickListener: OnListItemClickListener<NavItem>,
-) = adapterDelegateViewBinding<NavItem, ListModel, ItemNavConfigBinding>(
+) = adapterDelegateViewBinding<NavItemConfigModel, ListModel, ItemNavConfigBinding>(
 	{ layoutInflater, parent -> ItemNavConfigBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	val eventListener = object : View.OnClickListener, View.OnTouchListener {
-		override fun onClick(v: View) = clickListener.onItemClick(item, v)
+		override fun onClick(v: View) = clickListener.onItemClick(item.item, v)
 
 		override fun onTouch(v: View?, event: MotionEvent): Boolean =
 			event.actionMasked == MotionEvent.ACTION_DOWN &&
-					clickListener.onItemLongClick(item, itemView)
+				clickListener.onItemLongClick(item.item, itemView)
 	}
 	binding.imageViewRemove.setOnClickListener(eventListener)
 	binding.imageViewReorder.setOnTouchListener(eventListener)
 
 	bind {
 		with(binding.textViewTitle) {
-			setText(item.title)
-			setCompoundDrawablesRelativeWithIntrinsicBounds(item.icon, 0, 0, 0)
+			isEnabled = item.disabledHintResId == 0
+			setText(item.item.title)
+			setCompoundDrawablesRelativeWithIntrinsicBounds(item.item.icon, 0, 0, 0)
 		}
+		binding.textViewHint.setTextAndVisible(item.disabledHintResId)
 	}
 }
 

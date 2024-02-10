@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -20,6 +21,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.parsers.util.move
 import org.koitharu.kotatsu.settings.nav.model.NavItemAddModel
+import org.koitharu.kotatsu.settings.nav.model.NavItemConfigModel
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,15 +33,18 @@ class NavConfigViewModel @Inject constructor(
 	private val items = MutableStateFlow(settings.mainNavItems)
 
 	val content: StateFlow<List<ListModel>> = items.map { snapshot ->
-		if (snapshot.size < NavItem.entries.size) {
-			snapshot + NavItemAddModel(snapshot.size < 5)
-		} else {
-			snapshot
+		buildList(snapshot.size + 1) {
+			snapshot.mapTo(this) {
+				NavItemConfigModel(it, getUnavailabilityHint(it))
+			}
+			if (size < NavItem.entries.size) {
+				add(NavItemAddModel(size < 5))
+			}
 		}
 	}.stateIn(
 		viewModelScope + Dispatchers.Default,
 		SharingStarted.WhileSubscribed(5000),
-		emptyList()
+		emptyList(),
 	)
 
 	private var commitJob: Job? = null
@@ -80,5 +85,13 @@ class NavConfigViewModel @Inject constructor(
 			settings.mainNavItems = value
 			activityRecreationHandle.recreate(MainActivity::class.java)
 		}
+	}
+
+	private fun getUnavailabilityHint(item: NavItem) = if (item.isAvailable(settings)) {
+		0
+	} else when (item) {
+		NavItem.FEED -> R.string.check_for_new_chapters_disabled
+		NavItem.SUGGESTIONS -> R.string.suggestions_unavailable_text
+		else -> 0
 	}
 }
