@@ -251,7 +251,7 @@
     <string name="dns_over_https">DNS поверх HTTPS</string>
     <string name="default_mode">Режим по умолчанию</string>
     <string name="detect_reader_mode">Автоопределение режима чтения</string>
-    <string name="detect_reader_mode_summary">Автоматически определяет, является ли манга веб-комиксом</string>
+    <string name="detect_reader_mode_summary">Автоматически определять, является ли манга манхвой</string>
     <string name="disable_battery_optimization">Отключить оптимизацию батареи</string>
     <string name="disable_battery_optimization_summary">Помогает с фоновой проверкой обновлений</string>
     <string name="crash_text">Что-то пошло не так. Пожалуйста, отправьте отчёт разработчикам, чтобы помочь всё исправить.</string>
@@ -423,7 +423,7 @@
     <string name="images_proxy_title">Прокси для оптимизации изображений</string>
     <string name="images_procy_description">Используйте службу wsrv.nl, чтобы уменьшить использование трафика и ускорить загрузку изображений, если это возможно</string>
     <string name="invert_colors">Инвертировать цвета</string>
-    <string name="webtoon_zoom_summary">Включить жест увеличения масштаба в режиме манхвы</string>
+    <string name="webtoon_zoom_summary">Разрешить жесты масштабирования в режиме манхвы</string>
     <string name="network">Сеть</string>
     <string name="data_and_privacy">Данные и конфиденциальность</string>
     <string name="restore_summary">Восстановить ранее созданную резервную копию</string>
@@ -583,5 +583,5 @@
     <string name="use_two_pages_landscape">Использовать двухстраничный макет в альбомной ориентации (бета)</string>
     <string name="default_webtoon_zoom_out">Отдаление в режиме манхвы</string>
     <string name="fullscreen_mode">На весь экран</string>
-    <string name="reader_fullscreen_summary">Скрывать системный интерфейс</string>
+    <string name="reader_fullscreen_summary">Скрывать интерфейс системы</string>
 </resources>

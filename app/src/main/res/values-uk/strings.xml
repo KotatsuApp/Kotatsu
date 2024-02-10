@@ -58,7 +58,7 @@
     <string name="clear_pages_cache">Очистити кеш сторінок</string>
     <string name="text_file_sizes">Б|кБ|МБ|ГБ|ТБ</string>
     <string name="standard">Стандартний</string>
-    <string name="webtoon">Вебтун</string>
+    <string name="webtoon">Манхва</string>
     <string name="read_mode">Режим читання</string>
     <string name="grid_size">Розмір сітки</string>
     <string name="search_on_s">Пошук по %s</string>
@@ -250,7 +250,7 @@
     <string name="removed_from_history">Видалено з історії</string>
     <string name="dns_over_https">DNS через HTTPS</string>
     <string name="default_mode">Режим за умовчанням</string>
-    <string name="detect_reader_mode_summary">Автоматично визначати, чи є манґа вебтуном</string>
+    <string name="detect_reader_mode_summary">Автоматично визначати, чи є манґа манхвою</string>
     <string name="detect_reader_mode">Автовизначення режиму читання</string>
     <string name="disable_battery_optimization">Вимкнути оптимізацію акумулятора</string>
     <string name="disable_battery_optimization_summary">Допомагає з перевірками фонових оновлень</string>
@@ -342,7 +342,7 @@
     <string name="different_languages">Різні мови</string>
     <string name="network_unavailable">Мережа недоступна</string>
     <string name="network_unavailable_hint">Увімкніть Wi-Fi або мобільну мережу, щоб читати манґу онлайн</string>
-    <string name="webtoon_zoom">Масштабування в режимі вебтуну</string>
+    <string name="webtoon_zoom">Масштабування в режимі манхви</string>
     <string name="reader_slider">Відображати повзунок перемикання сторінок</string>
     <string name="compact">Компактно</string>
     <string name="prefetch_content">Передвчасне завантаження контенту</string>
@@ -430,7 +430,7 @@
     <string name="show_pages_numbers_summary">Показати номери сторінок у нижньому куті</string>
     <string name="pages_animation_summary">Анімація перегортання сторінок</string>
     <string name="details_button_tip">Натисніть і утримуйте кнопку «Читати», щоб переглянути додаткові параметри</string>
-    <string name="webtoon_zoom_summary">Дозволити жест збільшення в режимі webtoon</string>
+    <string name="webtoon_zoom_summary">Дозволити жести масштабування в режимі манхви</string>
     <string name="clear_source_cookies_summary">Очистити файли cookie лише для вказаного домену. У більшості випадків авторизація анулюється</string>
     <string name="pick_custom_directory">Вибрати користувальницький каталог</string>
     <string name="no_access_to_file">Ви не маєте доступу до цього файлу чи каталогу</string>
@@ -582,6 +582,6 @@
     <string name="config_reset_confirm">Повернути налаштування до значень за замовчуванням? Цю дію неможливо скасувати.</string>
     <string name="use_two_pages_landscape">Використовувати макет двох сторінок у альбомній орієнтації (бета)</string>
     <string name="fullscreen_mode">Повноекранний режим</string>
-    <string name="reader_fullscreen_summary">Приховувати системний інтерфейс</string>
+    <string name="reader_fullscreen_summary">Приховувати інтерфейс системи</string>
     <string name="default_webtoon_zoom_out">Віддалення у режимі манхви</string>
 </resources>

@@ -267,13 +267,13 @@
     <string name="_s_deleted_from_local_storage">„%s” usunięte z pamięci lokalnej</string>
     <string name="clear_updates_feed">Wyczyść tablicę aktualizacji</string>
     <string name="feed">Tablica</string>
-    <string name="text_delete_local_manga">Usunąć trwale „%s” z urządzenia?</string>
+    <string name="text_delete_local_manga">Trwale usunąć „%s” z urządzenia?</string>
     <string name="clear_thumbs_cache">Wyczyść pamięć podręczną miniatur</string>
     <string name="text_search_holder_secondary">Spróbuj przeformułować zapytanie.</string>
     <string name="text_history_holder_primary">To co czytasz będzie wyświetlane tutaj</string>
     <string name="text_history_holder_secondary">Znajdź rzeczy do przeczytania w sekcji Przegląd</string>
-    <string name="text_local_holder_secondary">Zapisz ze źródeł online lub zaimportuj pliki.</string>
-    <string name="manga_save_location">Folder pobranych</string>
+    <string name="text_local_holder_secondary">Zapisz coś z katalogu online lub zaimportuj z pliku.</string>
+    <string name="manga_save_location">Folder Pobrane</string>
     <string name="feed_will_update_soon">Aktualizacja tablicy rozpocznie się wkrótce</string>
     <string name="passwords_mismatch">Niezgodne hasła</string>
     <string name="right_to_left">Od prawej do lewej</string>
@@ -476,4 +476,14 @@
     <string name="manga_list">Lista mang</string>
     <string name="disable_nsfw">Wyłącz NSFW</string>
     <string name="show">Pokazywać</string>
+    <string name="email_password_enter_hint">Wpisz swój adres e-mail i hasło, aby kontynuować</string>
+    <string name="items_limit_exceeded">Nie można dodać więcej elementów</string>
+    <string name="to_top">W górę</string>
+    <string name="moved_to_top">Przeniesiono na górę</string>
+    <string name="zoom_out">Pomniejsz</string>
+    <string name="zoom_in">Zbliżenie</string>
+    <string name="reader_zoom_buttons">Pokaż przyciski powiększania</string>
+    <string name="reader_zoom_buttons_summary">Określa, czy wyświetlać elementy sterujące powiększeniem w prawym dolnym rogu</string>
+    <string name="keep_screen_on">Pozostaw ekran włączony</string>
+    <string name="keep_screen_on_summary">Nie wyłączaj ekranu podczas czytania mangi</string>
 </resources>
