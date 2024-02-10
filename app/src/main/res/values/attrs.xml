@@ -167,4 +167,9 @@
 		<attr name="chipStyle" />
 	</declare-styleable>
 
+	<declare-styleable name="ReaderInfoBarView">
+		<attr name="android:textSize" />
+		<attr name="android:strokeWidth" />
+	</declare-styleable>
+
 </resources>

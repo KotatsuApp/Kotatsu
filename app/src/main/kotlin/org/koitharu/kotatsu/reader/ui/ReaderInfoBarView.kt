@@ -14,6 +14,7 @@ import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -21,7 +22,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.measureDimension
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import java.time.LocalTime
@@ -55,6 +55,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	private var timeText = timeFormat.format(LocalTime.now())
 	private var text: String = ""
+	private var prevTextHeight: Int = 0
 
 	private val innerHeight
 		get() = height - paddingTop - paddingBottom - insetTop
@@ -69,7 +70,10 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		}
 
 	init {
-		paint.strokeWidth = context.resources.resolveDp(2f)
+		context.withStyledAttributes(attrs, R.styleable.ReaderInfoBarView, defStyleAttr) {
+			paint.strokeWidth = getDimension(R.styleable.ReaderInfoBarView_android_strokeWidth, 2f)
+			paint.textSize = getDimension(R.styleable.ReaderInfoBarView_android_textSize, 16f)
+		}
 		val insetCorner = getSystemUiDimensionOffset("rounded_corner_content_padding")
 		val fallbackInset = resources.getDimensionPixelOffset(R.dimen.reader_bar_inset_fallback)
 		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start", fallbackInset) + insetCorner
@@ -82,7 +86,10 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 		val desiredWidth = suggestedMinimumWidth + paddingLeft + paddingRight + insetLeft + insetRight
-		val desiredHeight = suggestedMinimumHeight + paddingTop + paddingBottom + insetTop
+		val desiredHeight = maxOf(
+			computeTextHeight().also { prevTextHeight = it },
+			suggestedMinimumHeight,
+		) + paddingTop + paddingBottom + insetTop
 		setMeasuredDimension(
 			measureDimension(desiredWidth, widthMeasureSpec),
 			measureDimension(desiredHeight, heightMeasureSpec),
@@ -91,6 +98,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	override fun onDraw(canvas: Canvas) {
 		super.onDraw(canvas)
+		computeTextHeight()
 		val ty = innerHeight / 2f + textBounds.height() / 2f - textBounds.bottom
 		paint.textAlign = Paint.Align.LEFT
 		canvas.drawTextOutline(
@@ -111,7 +119,6 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
 		super.onSizeChanged(w, h, oldw, oldh)
 		updateCutoutInsets(ViewCompat.getRootWindowInsets(this))
-		updateTextSize()
 	}
 
 	override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
@@ -151,17 +158,18 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		} else {
 			""
 		}
-		updateTextSize()
+		val newHeight = computeTextHeight()
+		if (newHeight != prevTextHeight) {
+			prevTextHeight = newHeight
+			requestLayout()
+		}
 		invalidate()
 	}
 
-	private fun updateTextSize() {
+	private fun computeTextHeight(): Int {
 		val str = text + timeText
-		val testTextSize = 48f
-		paint.textSize = testTextSize
 		paint.getTextBounds(str, 0, str.length, textBounds)
-		paint.textSize = testTextSize * innerHeight / textBounds.height()
-		paint.getTextBounds(str, 0, str.length, textBounds)
+		return textBounds.height()
 	}
 
 	private fun Canvas.drawTextOutline(text: String, x: Float, y: Float) {
