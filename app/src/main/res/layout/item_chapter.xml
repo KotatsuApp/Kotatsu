@@ -28,7 +28,8 @@
 			android:ellipsize="end"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceBodyLarge"
-			tools:text="@tools:sample/lorem[15]" />
+			tools:text="@tools:sample/lorem[15]"
+			tools:textColor="?android:textColorPrimary" />
 
 		<TextView
 			android:id="@+id/textView_description"
@@ -37,8 +38,10 @@
 			android:layout_marginTop="2dp"
 			android:ellipsize="end"
 			android:singleLine="true"
+			android:alpha="0.7"
 			android:textAppearance="?attr/textAppearanceBodySmall"
-			tools:text="05.10.2021 • Scanlator" />
+			tools:text="05.10.2021 • Scanlator"
+			tools:textColor="?android:textColorTertiary" />
 	</LinearLayout>
 
 	<ImageView
