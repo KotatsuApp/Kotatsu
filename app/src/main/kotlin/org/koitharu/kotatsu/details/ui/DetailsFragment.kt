@@ -71,8 +71,6 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
-import java.text.SimpleDateFormat
-import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint

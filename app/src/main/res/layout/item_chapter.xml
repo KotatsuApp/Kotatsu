@@ -38,7 +38,6 @@
 			android:layout_marginTop="2dp"
 			android:ellipsize="end"
 			android:singleLine="true"
-			android:alpha="0.7"
 			android:textAppearance="?attr/textAppearanceBodySmall"
 			tools:text="05.10.2021 • Scanlator"
 			tools:textColor="?android:textColorTertiary" />

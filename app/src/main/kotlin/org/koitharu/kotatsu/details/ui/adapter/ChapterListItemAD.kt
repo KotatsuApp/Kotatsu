@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemChapterBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import com.google.android.material.R as MR
 
 fun chapterListItemAD(
 	clickListener: OnListItemClickListener<ChapterListItem>,
@@ -33,7 +34,7 @@ fun chapterListItemAD(
 			item.isCurrent -> {
 				binding.textViewTitle.drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_current_chapter)
 				binding.textViewTitle.setTextColor(context.getThemeColorStateList(android.R.attr.textColorPrimary))
-				binding.textViewDescription.setTextColor(context.getThemeColorStateList(android.R.attr.textColorTertiary))
+				binding.textViewDescription.setTextColor(context.getThemeColorStateList(android.R.attr.textColorPrimary))
 				binding.textViewTitle.typeface = Typeface.DEFAULT_BOLD
 				binding.textViewDescription.typeface = Typeface.DEFAULT_BOLD
 			}
@@ -45,7 +46,7 @@ fun chapterListItemAD(
 					null
 				}
 				binding.textViewTitle.setTextColor(context.getThemeColorStateList(android.R.attr.textColorPrimary))
-				binding.textViewDescription.setTextColor(context.getThemeColorStateList(android.R.attr.textColorTertiary))
+				binding.textViewDescription.setTextColor(context.getThemeColorStateList(MR.attr.colorOutline))
 				binding.textViewTitle.typeface = Typeface.DEFAULT
 				binding.textViewDescription.typeface = Typeface.DEFAULT
 			}

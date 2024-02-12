@@ -42,7 +42,7 @@
 			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
 
-		<TextView
+		<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
 			android:id="@+id/textView_title"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
@@ -52,12 +52,13 @@
 			android:ellipsize="end"
 			android:maxLines="5"
 			android:textAppearance="?attr/textAppearanceHeadlineSmall"
+			android:textIsSelectable="true"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
 			tools:text="@tools:sample/lorem" />
 
-		<TextView
+		<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
 			android:id="@+id/textView_subtitle"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
@@ -67,6 +68,7 @@
 			android:ellipsize="end"
 			android:maxLines="3"
 			android:textAppearance="?attr/textAppearanceBodyMedium"
+			android:textIsSelectable="true"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/textView_title"
@@ -172,8 +174,8 @@
 					android:ellipsize="end"
 					android:paddingVertical="2dp"
 					android:singleLine="true"
-					tools:text="@string/approximate_reading_time"
-					android:textAppearance="?attr/textAppearanceBodyLarge" />
+					android:textAppearance="?attr/textAppearanceBodyLarge"
+					tools:text="@string/approximate_reading_time" />
 
 				<TextView
 					android:id="@+id/approximate_read_time"
