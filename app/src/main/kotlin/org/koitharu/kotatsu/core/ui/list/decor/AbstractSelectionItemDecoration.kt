@@ -91,7 +91,7 @@ abstract class AbstractSelectionItemDecoration : RecyclerView.ItemDecoration() {
 		canvas.restoreToCount(checkpoint)
 	}
 
-	protected open fun getItemId(parent: RecyclerView, child: View) = parent.getChildItemId(child)
+	abstract fun getItemId(parent: RecyclerView, child: View): Long
 
 	protected open fun onDrawBackground(
 		canvas: Canvas,

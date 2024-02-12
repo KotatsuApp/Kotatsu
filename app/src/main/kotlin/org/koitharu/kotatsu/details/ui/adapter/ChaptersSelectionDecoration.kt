@@ -9,7 +9,9 @@ import android.view.View
 import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import com.google.android.material.R as materialR
 
 class ChaptersSelectionDecoration(context: Context) : AbstractSelectionItemDecoration() {
@@ -23,6 +25,12 @@ class ChaptersSelectionDecoration(context: Context) : AbstractSelectionItemDecor
 			98,
 		)
 		paint.style = Paint.Style.FILL
+	}
+
+	override fun getItemId(parent: RecyclerView, child: View): Long {
+		val holder = parent.getChildViewHolder(child) ?: return RecyclerView.NO_ID
+		val item = holder.getItem(ChapterListItem::class.java) ?: return RecyclerView.NO_ID
+		return item.chapter.id
 	}
 
 	override fun onDrawBackground(
