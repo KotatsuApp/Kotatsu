@@ -18,7 +18,7 @@
     <plurals name="new_chapters">
         <item quantity="one">%1$d novo capítulo</item>
         <item quantity="many">%1$d novos capítulos</item>
-        <item quantity="other">%1$d capítulos novos</item>
+        <item quantity="other">%1$d novos capítulos</item>
     </plurals>
     <plurals name="months_ago">
         <item quantity="one">%1$d mês atrás</item>

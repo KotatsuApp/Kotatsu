@@ -45,7 +45,7 @@
     <string name="share_image">Compartilhar imagem</string>
     <string name="_import">Importar</string>
     <string name="updated">Atualizado</string>
-    <string name="delete">Delete</string>
+    <string name="delete">Excluir</string>
     <string name="operation_not_supported">Essa operação não é suportada</string>
     <string name="clear_pages_cache">Limpar cache de página</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
@@ -164,7 +164,7 @@
     <string name="vibration">Vibração</string>
     <string name="cannot_find_available_storage">Sem armazenamento disponível</string>
     <string name="favourites_categories">Categorias favoritas</string>
-    <string name="text_history_holder_secondary">Encontre o que ler na aba «Explorar»</string>
+    <string name="text_history_holder_secondary">Encontre o que ler na seção «Explorar»</string>
     <string name="text_local_holder_secondary">Salve-o de catálogos online ou importe de um arquivo.</string>
     <string name="recent_manga">Recente</string>
     <string name="other_storage">Outro armazenamento</string>
@@ -584,4 +584,8 @@
     <string name="default_webtoon_zoom_out">Diminuir para zoom padrão do webtoon</string>
     <string name="fullscreen_mode">Modo de tela cheia</string>
     <string name="reader_fullscreen_summary">Ocultar a barra de status e navegação</string>
+    <string name="suggestions_unavailable_text">O recurso de sugestões está desativado</string>
+    <string name="check_for_new_chapters_disabled">A verificação de novos capítulos está desativada</string>
+    <string name="reading_time_estimation">Mostrar tempo estimado de leitura</string>
+    <string name="reading_time_estimation_summary">O valor do tempo estimado pode ser impreciso</string>
 </resources>
