@@ -584,4 +584,8 @@
     <string name="default_webtoon_zoom_out">Öntanımlı webtoon uzaklaştırması</string>
     <string name="fullscreen_mode">Tam ekran modu</string>
     <string name="reader_fullscreen_summary">Sistem durumunu ve gezinme çubuklarını gizle</string>
+    <string name="suggestions_unavailable_text">Öneriler özelliği devre dışı</string>
+    <string name="check_for_new_chapters_disabled">Yeni bölümlerin denetlenmesi devre dışı</string>
+    <string name="reading_time_estimation">Tahmini okuma süresini göster</string>
+    <string name="reading_time_estimation_summary">Süre tahmin değeri yanlış olabilir</string>
 </resources>
