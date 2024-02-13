@@ -586,4 +586,6 @@
     <string name="reader_fullscreen_summary">Скрывать интерфейс системы</string>
     <string name="reading_time_estimation">Отображать предполагаемое время чтения</string>
     <string name="reading_time_estimation_summary">Данное значение может быть неточным</string>
+    <string name="check_for_new_chapters_disabled">Проверка новых глав отключена</string>
+    <string name="suggestions_unavailable_text">Функция предложения отключена</string>
 </resources>
