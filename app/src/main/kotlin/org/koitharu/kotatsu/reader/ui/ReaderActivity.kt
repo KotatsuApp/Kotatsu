@@ -206,11 +206,13 @@ class ReaderActivity :
 	}
 
 	override fun onGridTouch(area: TapGridArea): Boolean {
-		return controlDelegate.onGridTouch(area)
+		return isReaderResumed() && controlDelegate.onGridTouch(area)
 	}
 
 	override fun onGridLongTouch(area: TapGridArea) {
-		controlDelegate.onGridLongTouch(area)
+		if (isReaderResumed()) {
+			controlDelegate.onGridLongTouch(area)
+		}
 	}
 
 	override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {
