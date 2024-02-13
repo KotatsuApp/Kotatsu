@@ -584,4 +584,8 @@
     <string name="default_webtoon_zoom_out">Alejar el zoom del webtoon predeterminado</string>
     <string name="fullscreen_mode">Modo de pantalla completa</string>
     <string name="reader_fullscreen_summary">Ocultar las barras de estado y navegación del sistema</string>
+    <string name="reading_time_estimation">Mostrar el iempo estimado de lectura</string>
+    <string name="reading_time_estimation_summary">El valor estimado puede ser inexacto</string>
+    <string name="check_for_new_chapters_disabled">La búsqueda de nuevos capítulos está desactivada</string>
+    <string name="suggestions_unavailable_text">Sugerencias desactivadas</string>
 </resources>
