@@ -35,4 +35,14 @@
         <item quantity="many">Il y a %1$d mois</item>
         <item quantity="other">Il y a %1$d mois</item>
     </plurals>
+    <plurals name="hours">
+        <item quantity="one">heure</item>
+        <item quantity="many">heures</item>
+        <item quantity="other">heures</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">minute</item>
+        <item quantity="many">minutes</item>
+        <item quantity="other">minutes</item>
+    </plurals>
 </resources>

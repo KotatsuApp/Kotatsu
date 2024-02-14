@@ -79,7 +79,7 @@
     <string name="pages_animation">Animation de page</string>
     <string name="recent_manga">Récents</string>
     <string name="manga_shelf">Étagère</string>
-    <string name="text_local_holder_secondary">Enregistrez-le à partir de sources en ligne ou importez des fichiers.</string>
+    <string name="text_local_holder_secondary">Enregistrez quelque chose à partir d\'un catalogue en ligne ou importez-le à partir d\'un fichier.</string>
     <string name="text_local_holder_primary">Sauvegardez d\'abord quelque chose</string>
     <string name="text_history_holder_secondary">Trouver quoi lire dans la section « Explorer »</string>
     <string name="text_history_holder_primary">Ce que vous lisez sera affiché ici</string>
@@ -112,7 +112,7 @@
     <string name="taps_on_edges">Appuis au bord</string>
     <string name="switch_pages">Changer de pages</string>
     <string name="reader_settings">Paramètres du lecteur</string>
-    <string name="text_delete_local_manga">Supprimer « %s » de l\'appareil de façon permanente \?</string>
+    <string name="text_delete_local_manga">Supprimer « %s » de l\'appareil de façon permanente ?</string>
     <string name="delete_manga">Supprimer le manga</string>
     <string name="search_on_s">Rechercher sur %s</string>
     <string name="grid_size">Taille de la grille</string>
@@ -528,8 +528,8 @@
     <string name="backups_output_directory">Sauvegardes répertoire de sortie</string>
     <string name="suggest_new_sources_summary">Prompt pour permettre des sources nouvellement ajoutées après la mise à jour de l\'application</string>
     <string name="content_type_other">Autre</string>
-    <string name="state_upcoming">A venir</string>
-    <string name="welcome_text">S\'il vous plaît choisissez les sources que vous souhaitez activer. Cela peux aussi être fait plus tard dans les paramètres</string>
+    <string name="state_upcoming">À venir</string>
+    <string name="welcome_text">Veuillez choisir les sources que vous souhaitez activer. Cela peut aussi être configuré plus tard dans les paramètres</string>
     <string name="sync_auth">Connectez-vous pour synchroniser le compte</string>
     <string name="skip">Passer</string>
     <string name="restore">Restaurer</string>
@@ -545,9 +545,37 @@
     <string name="genres_search_hint">Commence a écrit un nom de genre</string>
     <string name="downloads_settings_info">Vous pouvez activer la vitesse de téléchargement réduite individuellement pour chaque source de manga dans les paramètres si vous rencontrez des problèmes de bloquage avec le serveur.</string>
     <string name="backup_date_">Date de sauvegarde: %s</string>
-    <string name="by_name_reverse">Nom réservé</string>
-    <string name="mark_as_completed">Marque comme terminé</string>
-    <string name="mark_as_completed_prompt">Marqué le manga sélectionné en terminé?
+    <string name="by_name_reverse">Nom inversé</string>
+    <string name="mark_as_completed">Marquer comme terminé</string>
+    <string name="mark_as_completed_prompt">Marquer le manga sélectionné comme terminé ?
 \n
-\nAttention: la progression actuelle sera perdu.</string>
+\nAttention : la progression actuelle sera perdue.</string>
+    <string name="approximate_reading_time">Temps de lecture approximatif</string>
+    <string name="incognito_mode_hint">Votre progression de lecture ne sera pas sauvegardée</string>
+    <string name="last_read">Dernier lu</string>
+    <string name="vertical">Vertical</string>
+    <string name="email_password_enter_hint">Entrez votre email et mot de passe pour continuer</string>
+    <string name="grayscale">Niveaux de gris</string>
+    <string name="error_filter_locale_genre_not_supported">Le filtrage à la fois par genres et par langues n\'est pas supporté par cette source</string>
+    <string name="error_filter_states_genre_not_supported">Le filtrage à la fois par genres et par statut n\'est pas supporté par cette source</string>
+    <string name="approximate_remaining_time">Temps restant approximatif</string>
+    <string name="volume_">Volume %d</string>
+    <string name="volume_unknown">Volume inconnu</string>
+    <string name="show_menu">Afficher le menu</string>
+    <string name="toggle_ui">Afficher/cacher UI</string>
+    <string name="prev_chapter">Chapitre précèdent</string>
+    <string name="next_chapter">Chapitre suivant</string>
+    <string name="prev_page">Page précédente</string>
+    <string name="next_page">Page suivante</string>
+    <string name="switch_pages_volume_buttons">Activer les boutons de volume</string>
+    <string name="switch_pages_volume_buttons_summary">Utiliser les boutons de volume pour changer de page</string>
+    <string name="none">Aucun</string>
+    <string name="config_reset_confirm">Revenir aux paramètres par défaut ?
+\nCette action ne pourra pas être annulée.</string>
+    <string name="use_two_pages_landscape">Utiliser la disposition pages doubles en orientation paysage (bêta)</string>
+    <string name="fullscreen_mode">Mode plein écran</string>
+    <string name="category_hidden_done">Cette catégorie a été cachée du menu principal et est accessible via Menu → Gérer les catégories</string>
+    <string name="two_pages">Pages doubles</string>
+    <string name="reading_time_estimation">Afficher le temps de lecture estimé</string>
+    <string name="reading_time_estimation_summary">Le temps estimé peut être inexact</string>
 </resources>
