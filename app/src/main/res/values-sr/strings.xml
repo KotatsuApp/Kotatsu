@@ -569,7 +569,7 @@
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="show_menu">Прикажи изборник</string>
     <string name="prev_chapter">Претходна поглавља</string>
-    <string name="tap_action">Радња додира</string>
+    <string name="tap_action">Радња при додиру</string>
     <string name="config_reset_confirm">Вратити подешавања на подразумеване вредности? Ова радња се не може опозвати.</string>
     <string name="two_pages">Две стране</string>
     <string name="reader_actions_summary">Конфигуриши радње за области екрана које се могу додирнути</string>
