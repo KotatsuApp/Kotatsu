@@ -586,4 +586,6 @@
     <string name="default_webtoon_zoom_out">Віддалення у режимі манхви</string>
     <string name="reading_time_estimation">Відображати передбачуваний час читання</string>
     <string name="reading_time_estimation_summary">Це значення може бути неточним</string>
+    <string name="check_for_new_chapters_disabled">Перевірка нових глав вимкнена</string>
+    <string name="suggestions_unavailable_text">Функція пропозицій вимкнена</string>
 </resources>
