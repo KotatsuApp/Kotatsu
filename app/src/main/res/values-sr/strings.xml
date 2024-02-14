@@ -4,7 +4,7 @@
     <string name="error_occurred">Грешка се појавила</string>
     <string name="favourites">Омиљено</string>
     <string name="history">Историја</string>
-    <string name="network_error">Мрежна грешка</string>
+    <string name="network_error">Грешка на мрежи</string>
     <string name="details">Детаљи</string>
     <string name="chapters">Поглавља</string>
     <string name="list">Листа</string>
@@ -569,7 +569,7 @@
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="show_menu">Прикажи изборник</string>
     <string name="prev_chapter">Претходна поглавља</string>
-    <string name="tap_action">Радња додира</string>
+    <string name="tap_action">Радња при додиру</string>
     <string name="config_reset_confirm">Вратити подешавања на подразумеване вредности? Ова радња се не може опозвати.</string>
     <string name="two_pages">Две стране</string>
     <string name="reader_actions_summary">Конфигуриши радње за области екрана које се могу додирнути</string>
@@ -580,4 +580,12 @@
     <string name="reader_actions">Радње читаоца</string>
     <string name="volume_unknown">Непозната запремина</string>
     <string name="last_read">Последње прочитано</string>
+    <string name="volume_">Количина %d</string>
+    <string name="default_webtoon_zoom_out">Подразумевано умањивање вебтоон-а</string>
+    <string name="reader_fullscreen_summary">Сакриј статус система и траке за навигацију</string>
+    <string name="suggestions_unavailable_text">Предлози су искључени</string>
+    <string name="reading_time_estimation">Прикажи процењено време читања</string>
+    <string name="reading_time_estimation_summary">Вредност процене времена може бити нетачна</string>
+    <string name="check_for_new_chapters_disabled">Провера нових поглавља је искључена</string>
+    <string name="fullscreen_mode">Режим целог екрана</string>
 </resources>
