@@ -10,7 +10,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import javax.inject.Inject
 
-@Reusable
 class SyncSettings(
 	context: Context,
 	private val account: Account?,
