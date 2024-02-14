@@ -343,7 +343,7 @@
     <string name="network_unavailable">网络未连接</string>
     <string name="network_unavailable_hint">打开 Wi-Fi 或移动网络开始在线阅读漫画</string>
     <string name="clear_new_chapters_counters">同时清除新章节信息</string>
-    <string name="server_error">服务器错误 (%1$d)。请稍后再试</string>
+    <string name="server_error">服务器错误 (%1$d)。请稍后重试</string>
     <string name="compact">紧凑</string>
     <string name="source_disabled">图源已禁用</string>
     <string name="prefetch_content">内容预加载</string>
@@ -378,7 +378,7 @@
     <string name="show_on_shelf">在书架上显示</string>
     <string name="comics_archive_import_description">可选择一个或多个 .cbz 或 .zip 文件，每个文件都将识别为一个单独的漫画。</string>
     <string name="folder_with_images_import_description">可选择一个包含压缩包或图片的文件夹。每个压缩包（或子文件夹）都会被识别为一个章节。</string>
-    <string name="find_similar">寻找相似漫画</string>
+    <string name="find_similar">搜索相似漫画</string>
     <string name="translations">翻译</string>
     <string name="web_view_unavailable">WebView不可用：检查是否已安装WebView</string>
     <string name="sync_host_description">可使用自建同步服务器或默认同步服务器。若不知道有何用处请不要自行修改。</string>
@@ -436,7 +436,7 @@
     <string name="username">用户名</string>
     <string name="download_option_all_unread_b">所有未读章节 (%s)</string>
     <string name="authorization_optional">授权 (可选)</string>
-    <string name="download_option_first_n_chapters">前 %s</string>
+    <string name="download_option_first_n_chapters">前%s</string>
     <string name="downloaded">下载进度</string>
     <string name="custom_directory">自定义目录</string>
     <string name="pages_animation_summary">翻页动画</string>
@@ -464,15 +464,15 @@
     <string name="manage_categories">管理分类</string>
     <string name="color_light">浅色</string>
     <string name="search_hint">输入漫画标题、分类或图源名称</string>
-    <string name="main_screen_sections">底部导航栏</string>
+    <string name="main_screen_sections">主页底部导航栏</string>
     <string name="advanced">高级</string>
     <string name="color_dark">深色</string>
-    <string name="too_many_requests_message">请求次数过多，稍候再尝试</string>
+    <string name="too_many_requests_message">请求次数过多，请稍后再试</string>
     <string name="suggestions_wifi_only_summary">使用移动网络时停止推荐漫画</string>
     <string name="default_section">默认页面</string>
     <string name="background">背景颜色</string>
     <string name="manga_list">漫画列表</string>
-    <string name="disable_nsfw">禁用成人内容图源</string>
+    <string name="disable_nsfw">隐藏成人内容</string>
     <string name="color_white">白色</string>
     <string name="to_top">置顶</string>
     <string name="show">显示</string>
