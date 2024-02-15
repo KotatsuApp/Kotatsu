@@ -52,6 +52,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 		viewBinding.toolbar.updatePadding(
 			left = insets.left,
 			right = insets.right,
+			top = insets.top
 		)
 		viewBinding.container.updatePadding(
 			bottom = insets.bottom,
