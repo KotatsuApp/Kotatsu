@@ -227,6 +227,5 @@ class RemoteMangaRepository(
 		}
 	}
 
-	private fun Result<*>.isValidResult() = exceptionOrNull() !is ParseException
-		&& (getOrNull() as? Collection<*>)?.isEmpty() != true
+	private fun Result<*>.isValidResult() = isSuccess && (getOrNull() as? Collection<*>)?.isEmpty() != true
 }
