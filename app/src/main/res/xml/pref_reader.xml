@@ -53,6 +53,12 @@
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
+		android:key="reader_taps_ltr"
+		android:summary="@string/reader_control_ltr_summary"
+		android:title="@string/reader_control_ltr" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
 		android:key="reader_volume_buttons"
 		android:summary="@string/switch_pages_volume_buttons_summary"
 		android:title="@string/switch_pages_volume_buttons" />

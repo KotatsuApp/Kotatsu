@@ -114,7 +114,7 @@ class ReaderControlDelegate(
 	}
 
 	private fun isReaderTapsReversed(): Boolean {
-		return listener.readerMode == ReaderMode.REVERSED
+		return settings.isReaderControlAlwaysLTR && listener.readerMode == ReaderMode.REVERSED
 	}
 
 	interface OnInteractionListener {

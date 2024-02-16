@@ -2,12 +2,17 @@ package org.koitharu.kotatsu.reader.ui.pager.reversed
 
 import androidx.viewpager2.widget.ViewPager2
 import dagger.hilt.android.AndroidEntryPoint
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.BasePagerReaderFragment
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ReversedReaderFragment : BasePagerReaderFragment() {
+
+	@Inject
+	lateinit var settings: AppSettings
 
 	override fun onCreateAdvancedTransformer(): ViewPager2.PageTransformer = ReversedPageAnimTransformer()
 
@@ -18,6 +23,11 @@ class ReversedReaderFragment : BasePagerReaderFragment() {
 		networkState = networkState,
 		exceptionResolver = exceptionResolver,
 	)
+
+	override fun onWheelScroll(axisValue: Float) {
+		val value = if (settings.isReaderControlAlwaysLTR) -axisValue else axisValue
+		super.onWheelScroll(value)
+	}
 
 	override fun switchPageBy(delta: Int) {
 		super.switchPageBy(-delta)

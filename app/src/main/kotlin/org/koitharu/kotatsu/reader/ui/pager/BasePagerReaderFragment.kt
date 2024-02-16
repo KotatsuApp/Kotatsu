@@ -108,7 +108,7 @@ abstract class BasePagerReaderFragment : BaseReaderFragment<FragmentReaderPagerB
 				val axisValue = event.getAxisValue(MotionEvent.AXIS_VSCROLL)
 				val withCtrl = event.metaState and KeyEvent.META_CTRL_MASK != 0
 				if (!withCtrl) {
-					switchPageBy(-axisValue.sign.toInt())
+					onWheelScroll(axisValue)
 					return true
 				}
 			}
@@ -170,6 +170,10 @@ abstract class BasePagerReaderFragment : BaseReaderFragment<FragmentReaderPagerB
 			page = page.index,
 			scroll = 0,
 		)
+	}
+
+	protected open fun onWheelScroll(axisValue: Float) {
+		switchPageBy(-axisValue.sign.toInt())
 	}
 
 	protected open fun onCreateAdvancedTransformer(): PageTransformer = PageAnimTransformer()
