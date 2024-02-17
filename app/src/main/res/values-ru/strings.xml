@@ -327,7 +327,7 @@
     <string name="manga_error_description_pattern">Сведения об ошибке:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Попробуйте &lt;a href=%2$s&gt;открыть мангу в веб-браузере&lt;/a&gt;, чтобы убедиться, что она доступна в источнике&lt;br&gt;2. Убедитесь, что вы используете &lt;a href=kotatsu://about&gt;последнюю версию Kotatsu&lt;/a&gt;&lt;br&gt;3. Если возможно, отправьте отчёт об ошибке разработчикам.</string>
     <string name="history_shortcuts">Показывать ярлыки последней прочитанной манги</string>
     <string name="history_shortcuts_summary">Сделать недавно прочитанную мангу доступной по долгому нажатию на иконку приложения</string>
-    <string name="reader_control_ltr_summary">Нажатие на правый край или нажатие правой клавиши всегда переключает на следующую страницу</string>
+    <string name="reader_control_ltr_summary">Навигация «Далее» всегда приводит к следующей странице при использовании мыши и клавиатуры.</string>
     <string name="reader_control_ltr">Эргономичное управление режимом чтения</string>
     <string name="reset">Сбросить</string>
     <string name="discard">Отклонить</string>
