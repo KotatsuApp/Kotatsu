@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.details.ui.pager.chapters
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +12,8 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -55,7 +58,7 @@ class ChaptersFragment :
 
 	override fun onViewBindingCreated(binding: FragmentChaptersBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		chaptersAdapter = ChaptersAdapter(this)
+		chaptersAdapter = ChaptersAdapter(this, viewModel.isChaptersInGridView.value)
 		selectionController = ListSelectionController(
 			activity = requireActivity(),
 			decoration = ChaptersSelectionDecoration(binding.root.context),
@@ -67,7 +70,15 @@ class ChaptersFragment :
 			checkNotNull(selectionController).attachToRecyclerView(this)
 			setHasFixedSize(true)
 			isNestedScrollingEnabled = false
-			adapter = chaptersAdapter
+		}
+		viewModel.isChaptersInGridView.observe(viewLifecycleOwner) { chaptersInGridView ->
+			chaptersAdapter?.setChapterAdapterDelegate(chaptersInGridView)
+			binding.recyclerViewChapters.adapter = chaptersAdapter
+			binding.recyclerViewChapters.layoutManager = if (chaptersInGridView) {
+				GridLayoutManager(context, 4)
+			} else {
+				LinearLayoutManager(context)
+			}
 		}
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.chapters

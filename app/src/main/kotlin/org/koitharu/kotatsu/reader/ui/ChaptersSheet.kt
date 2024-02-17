@@ -75,7 +75,7 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 			-1
 		}
 		binding.recyclerView.addItemDecoration(TypedListSpacingDecoration(binding.recyclerView.context, true))
-		binding.recyclerView.adapter = ChaptersAdapter(this).also { adapter ->
+		binding.recyclerView.adapter = ChaptersAdapter(this, false).also { adapter ->
 			if (currentPosition >= 0) {
 				val targetPosition = (currentPosition - 1).coerceAtLeast(0)
 				val offset =
