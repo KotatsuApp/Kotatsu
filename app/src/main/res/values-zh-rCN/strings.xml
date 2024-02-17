@@ -39,7 +39,7 @@
     <string name="suggestions_excluded_genres">排除分类</string>
     <string name="suggestions_updating">正在更新漫画推荐</string>
     <string name="check_new_chapters_title">检查新章节并通知结果</string>
-    <string name="details">作品详情</string>
+    <string name="details">详情</string>
     <string name="detailed_list">卡片</string>
     <string name="grid">网格</string>
     <string name="list_mode">视图选项</string>
@@ -325,7 +325,7 @@
     <string name="feed">订阅</string>
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="not_found_404">没有章节或已被删除</string>
-    <string name="reader_control_ltr_summary">点击屏幕右侧或按下右键始终翻到下一页</string>
+    <string name="reader_control_ltr_summary">当使用鼠标或键盘时，向下导航更改为下一页。</string>
     <string name="reader_control_ltr">简易控制</string>
     <string name="history_shortcuts_summary">长按应用图标显示最近阅读的漫画</string>
     <string name="history_shortcuts">显示最近阅读漫画的快捷方式</string>
@@ -344,7 +344,7 @@
     <string name="network_unavailable_hint">打开 Wi-Fi 或移动网络开始在线阅读漫画</string>
     <string name="clear_new_chapters_counters">同时清除新章节信息</string>
     <string name="server_error">服务器错误 (%1$d)。请稍后重试</string>
-    <string name="compact">紧凑</string>
+    <string name="compact">列表</string>
     <string name="source_disabled">图源已禁用</string>
     <string name="prefetch_content">内容预加载</string>
     <string name="mark_as_current">标为当前</string>
@@ -386,7 +386,7 @@
     <string name="mirror_switching_summary">若存在可用的镜像网址，在出错时开始自动切换</string>
     <string name="paused">已暂停</string>
     <string name="downloads_wifi_only_summary">切换到移动网络时停止下载</string>
-    <string name="remove_completed">删除已完成任务</string>
+    <string name="remove_completed">清除已完成任务</string>
     <string name="cancel_all">取消所有下载中的任务</string>
     <string name="downloads_wifi_only">仅在连接 Wi-Fi 时下载</string>
     <string name="enable">启用</string>
@@ -399,14 +399,14 @@
     <string name="text_downloads_list_holder">暂无下载任务</string>
     <string name="downloads_resumed">下载已继续</string>
     <string name="downloads_paused">下载已暂停</string>
-    <string name="downloads_removed">下载记录已删除</string>
+    <string name="downloads_removed">下载记录已全部清除</string>
     <string name="downloads_cancelled">下载已取消</string>
     <string name="suggestions_enable_prompt">想要接收个性化的漫画推荐吗？</string>
     <string name="suggestion_manga">推荐：%s</string>
     <string name="suggestions_notifications_summary">偶尔显示漫画推荐通知</string>
     <string name="more">更多</string>
     <string name="cancel_all_downloads_confirm">将取消所有进行中的下载，部分下载完成的数据将会删除</string>
-    <string name="remove_completed_downloads_confirm">所有已完成的下载历史将会永久删除</string>
+    <string name="remove_completed_downloads_confirm">所有已完成的下载记录将会永久清除</string>
     <string name="sync_auth_hint">可登陆已有账号或创建新账号</string>
     <string name="address">地址</string>
     <string name="clear_network_cache">清除网络缓存</string>
@@ -440,7 +440,7 @@
     <string name="downloaded">下载进度</string>
     <string name="custom_directory">自定义目录</string>
     <string name="pages_animation_summary">翻页动画</string>
-    <string name="download_option_next_unread_n_chapters">后续未读的%s</string>
+    <string name="download_option_next_unread_n_chapters">后续未读的 %s</string>
     <string name="images_procy_description">尽可能使用 wsrv.nl 代理服务减少流量使用并加快图片加载</string>
     <string name="invert_colors">反色</string>
     <string name="related_manga">相关漫画</string>
@@ -467,7 +467,7 @@
     <string name="main_screen_sections">主页底部导航栏</string>
     <string name="advanced">高级</string>
     <string name="color_dark">深色</string>
-    <string name="too_many_requests_message">请求次数过多，请稍后再试</string>
+    <string name="too_many_requests_message">请求次数过多，请稍后重试</string>
     <string name="suggestions_wifi_only_summary">使用移动网络时停止推荐漫画</string>
     <string name="default_section">默认页面</string>
     <string name="background">背景颜色</string>
@@ -513,7 +513,7 @@
     <string name="source_enabled">已启用图源</string>
     <string name="content_type_hentai">成人</string>
     <string name="no_manga_sources_found">本次搜索未发现可用图源</string>
-    <string name="no_manga_sources_catalog_text">此页面没有可用图源，或可能已添加所有图源。
+    <string name="no_manga_sources_catalog_text">此页面没有可用图源，或可能已添加所有可用图源。
 \n敬请期待后续更新</string>
     <string name="welcome_text">请选择需要开启的图源内容。可稍后在设置选项中设定</string>
     <string name="sync_auth">网络同步</string>
@@ -526,7 +526,7 @@
     <string name="rating_suggestive">R15</string>
     <string name="rating_adult">R18</string>
     <string name="lock_screen_rotation">锁定屏幕方向</string>
-    <string name="default_tab">默认导航栏</string>
+    <string name="default_tab">作品详情页默认界面</string>
     <string name="grayscale">灰度</string>
     <string name="globally">全局</string>
     <string name="this_manga">此漫画</string>
@@ -585,7 +585,7 @@
     <string name="default_webtoon_zoom_out">条漫默认缩小值</string>
     <string name="reader_fullscreen_summary">将系统状态栏与通知栏隐藏</string>
     <string name="suggestions_unavailable_text">漫画推荐功能已被禁用</string>
-    <string name="check_for_new_chapters_disabled">检查新章节功能已被禁用</string>
-    <string name="reading_time_estimation">显示估计阅读时间</string>
+    <string name="check_for_new_chapters_disabled">章节更新功能已被禁用</string>
+    <string name="reading_time_estimation">在作品详情页显示估计阅读时间</string>
     <string name="reading_time_estimation_summary">估计阅读时间可能会不准确</string>
 </resources>
