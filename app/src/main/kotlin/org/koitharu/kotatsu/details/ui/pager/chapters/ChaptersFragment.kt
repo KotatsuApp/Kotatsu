@@ -234,7 +234,7 @@ class ChaptersFragment :
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
-		requireViewBinding().recyclerViewChapters.invalidateItemDecorations()
+		viewBinding?.recyclerViewChapters?.invalidateItemDecorations()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
