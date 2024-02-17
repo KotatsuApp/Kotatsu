@@ -344,7 +344,7 @@
     <string name="server_error">Sunucu hatası (%1$d). Lütfen daha sonra tekrar deneyin</string>
     <string name="saved_manga">Kaydedilen mangalar</string>
     <string name="history_shortcuts_summary">Uygulama simgesine uzun basarak son mangaları kullanılabilir hale getirin</string>
-    <string name="reader_control_ltr_summary">Sağ kenara dokunulduğunda veya sağ tuşa basıldığında her zaman bir sonraki sayfaya geçilir</string>
+    <string name="reader_control_ltr_summary">Fare ve klavye kullanırken sonraki seçeneği sizi her zaman bir sonraki sayfaya götürür.</string>
     <string name="source_disabled">Kaynak devre dışı</string>
     <string name="prefetch_content">İçerik ön yüklemesi</string>
     <string name="mark_as_current">Geçerli olarak işaretle</string>
