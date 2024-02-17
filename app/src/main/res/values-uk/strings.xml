@@ -327,7 +327,7 @@
     <string name="manga_error_description_pattern">Деталі помилки:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Спробуйте &lt;a href=%2$s&gt;відкрити манґу у веб-браузері&lt;/a&gt;, щоб переконатися, що вона доступна в джерелі&lt;br&gt;2. Переконайтеся, що ви використовуєте &lt;a href=kotatsu://about&gt;останню версію Kotatsu&lt;/a&gt;&lt;br&gt;3. Якщо він доступний, надішліть звіт про помилку розробникам.</string>
     <string name="history_shortcuts">Показувати ярлики останньої прочитаної манґи</string>
     <string name="history_shortcuts_summary">Зробити нещодавно прочитану манґу доступною за довгим натисканням на іконку застосунку</string>
-    <string name="reader_control_ltr_summary">Натискання на правий край або натискання правої клавіші завжди переходить на наступну сторінку</string>
+    <string name="reader_control_ltr_summary">Навігація «Далі» завжди веде до наступної сторінки під час використання миші та клавіатури.</string>
     <string name="reader_control_ltr">Ергономічне керування режимом читання</string>
     <string name="brightness">Яскравість</string>
     <string name="color_correction">Корекція кольору</string>
