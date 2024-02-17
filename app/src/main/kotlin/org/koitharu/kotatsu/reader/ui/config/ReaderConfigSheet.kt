@@ -117,6 +117,7 @@ class ReaderConfigSheet :
 			R.id.button_save_page -> {
 				val page = viewModel.getCurrentPage() ?: return
 				viewModel.saveCurrentPage(page, savePageRequest)
+				dismissAllowingStateLoss()
 			}
 
 			R.id.button_screen_rotate -> {

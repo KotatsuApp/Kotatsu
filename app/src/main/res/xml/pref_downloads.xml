@@ -35,4 +35,18 @@
 		android:summary="@string/downloads_settings_info"
 		app:allowDividerAbove="true" />
 
+	<PreferenceCategory android:title="@string/pages_saving">
+
+		<Preference
+			android:key="pages_dir"
+			android:persistent="false"
+			android:title="@string/default_page_save_dir" />
+
+		<SwitchPreferenceCompat
+			android:defaultValue="true"
+			android:key="pages_dir_ask"
+			android:title="@string/ask_for_dest_dir_every_time" />
+
+	</PreferenceCategory>
+
 </PreferenceScreen>

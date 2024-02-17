@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.ArraySet
 import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
+import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONArray
@@ -412,6 +413,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReadingTimeEstimationEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READING_TIME, true)
 
+	val isPagesSavingAskEnabled: Boolean
+		get() = prefs.getBoolean(KEY_PAGES_SAVE_ASK, true)
+
 	fun isTipEnabled(tip: String): Boolean {
 		return prefs.getStringSet(KEY_TIPS_CLOSED, emptySet())?.contains(tip) != true
 	}
@@ -422,6 +426,15 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			return
 		}
 		prefs.edit { putStringSet(KEY_TIPS_CLOSED, closedTips + tip) }
+	}
+
+	fun getPagesSaveDir(context: Context): DocumentFile? =
+		prefs.getString(KEY_PAGES_SAVE_DIR, null)?.toUriOrNull()?.let {
+			DocumentFile.fromTreeUri(context, it)
+		}
+
+	fun setPagesSaveDir(uri: Uri?) {
+		prefs.edit { putString(KEY_PAGES_SAVE_DIR, uri?.toString()) }
 	}
 
 	fun subscribe(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
@@ -591,6 +604,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_IGNORE_DOZE = "ignore_dose"
 		const val KEY_DETAILS_TAB = "details_tab"
 		const val KEY_READING_TIME = "reading_time"
+		const val KEY_PAGES_SAVE_DIR = "pages_dir"
+		const val KEY_PAGES_SAVE_ASK = "pages_dir_ask"
 
 		// About
 		const val KEY_APP_UPDATE = "app_update"

@@ -1,9 +1,14 @@
 package org.koitharu.kotatsu.settings
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.documentfile.provider.DocumentFile
 import androidx.preference.Preference
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -12,6 +17,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.resolveFile
+import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.local.data.LocalStorageManager
@@ -25,13 +32,17 @@ class DownloadsSettingsFragment :
 	BasePreferenceFragment(R.string.downloads),
 	SharedPreferences.OnSharedPreferenceChangeListener {
 
-		private val dozeHelper = DozeHelper(this)
+	private val dozeHelper = DozeHelper(this)
 
 	@Inject
 	lateinit var storageManager: LocalStorageManager
 
 	@Inject
 	lateinit var downloadsScheduler: DownloadWorker.Scheduler
+
+	private val pickFileTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
+		if (it != null) onDirectoryPicked(it)
+	}
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_downloads)
@@ -42,6 +53,7 @@ class DownloadsSettingsFragment :
 		super.onViewCreated(view, savedInstanceState)
 		findPreference<Preference>(AppSettings.KEY_LOCAL_STORAGE)?.bindStorageName()
 		findPreference<Preference>(AppSettings.KEY_LOCAL_MANGA_DIRS)?.bindDirectoriesCount()
+		findPreference<Preference>(AppSettings.KEY_PAGES_SAVE_DIR)?.bindPagesDirectory()
 		settings.subscribe(this)
 	}
 
@@ -63,6 +75,10 @@ class DownloadsSettingsFragment :
 			AppSettings.KEY_DOWNLOADS_WIFI -> {
 				updateDownloadsConstraints()
 			}
+
+			AppSettings.KEY_PAGES_SAVE_DIR -> {
+				findPreference<Preference>(AppSettings.KEY_PAGES_SAVE_DIR)?.bindPagesDirectory()
+			}
 		}
 	}
 
@@ -82,8 +98,25 @@ class DownloadsSettingsFragment :
 				dozeHelper.startIgnoreDoseActivity()
 			}
 
+			AppSettings.KEY_PAGES_SAVE_DIR -> {
+				if (!pickFileTreeLauncher.tryLaunch(settings.getPagesSaveDir(preference.context)?.uri)) {
+					Snackbar.make(
+						requireView(), R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
+					).show()
+				}
+				true
+			}
+
 			else -> super.onPreferenceTreeClick(preference)
 		}
+	}
+
+	private fun onDirectoryPicked(uri: Uri) {
+		storageManager.takePermissions(uri)
+		val doc = DocumentFile.fromTreeUri(requireContext(), uri)?.takeIf {
+			it.canWrite()
+		}
+		settings.setPagesSaveDir(doc?.uri)
 	}
 
 	private fun Preference.bindStorageName() {
@@ -104,6 +137,16 @@ class DownloadsSettingsFragment :
 		}
 	}
 
+	private fun Preference.bindPagesDirectory() {
+		viewLifecycleScope.launch {
+			val df = withContext(Dispatchers.IO) {
+				settings.getPagesSaveDir(this@bindPagesDirectory.context)
+			}
+			summary = df?.getDisplayPath(this@bindPagesDirectory.context)
+				?: this@bindPagesDirectory.context.getString(androidx.preference.R.string.not_set)
+		}
+	}
+
 	private fun updateDownloadsConstraints() {
 		val preference = findPreference<Preference>(AppSettings.KEY_DOWNLOADS_WIFI)
 		viewLifecycleScope.launch {
@@ -119,4 +162,9 @@ class DownloadsSettingsFragment :
 			}
 		}
 	}
+
+	private fun DocumentFile.getDisplayPath(context: Context): String {
+		return uri.resolveFile(context)?.path ?: uri.toString()
+	}
+
 }

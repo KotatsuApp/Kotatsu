@@ -15,6 +15,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okio.IOException
 import okio.buffer
 import okio.sink
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
@@ -30,7 +31,8 @@ private const val MAX_FILENAME_LENGTH = 10
 private const val EXTENSION_FALLBACK = "png"
 
 class PageSaveHelper @Inject constructor(
-	@ApplicationContext context: Context,
+	@ApplicationContext private val context: Context,
+	private val settings: AppSettings,
 ) {
 
 	private var continuation: Continuation<Uri>? = null
@@ -44,14 +46,7 @@ class PageSaveHelper @Inject constructor(
 		val pageUrl = pageLoader.getPageUrl(page)
 		val pageUri = pageLoader.loadPage(page, force = false)
 		val proposedName = getProposedFileName(pageUrl, pageUri)
-		val destination = withContext(Dispatchers.Main) {
-			suspendCancellableCoroutine { cont ->
-				continuation = cont
-				saveLauncher.launch(proposedName)
-			}.also {
-				continuation = null
-			}
-		}
+		val destination = getDefaultFileUri(proposedName) ?: pickFileUri(saveLauncher, proposedName)
 		runInterruptible(Dispatchers.IO) {
 			contentResolver.openOutputStream(destination)?.sink()?.buffer()
 		}?.use { output ->
@@ -62,12 +57,35 @@ class PageSaveHelper @Inject constructor(
 		return destination
 	}
 
+	private fun getDefaultFileUri(proposedName: String): Uri? {
+		if (settings.isPagesSavingAskEnabled) {
+			return null
+		}
+		return settings.getPagesSaveDir(context)?.let {
+			val ext = proposedName.substringAfterLast('.', "")
+			val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext) ?: return null
+			it.createFile(mime, proposedName.substringBeforeLast('.'))?.uri
+		}
+	}
+
+	private suspend fun pickFileUri(saveLauncher: ActivityResultLauncher<String>, proposedName: String): Uri {
+		val defaultUri = settings.getPagesSaveDir(context)?.uri?.buildUpon()?.appendPath(proposedName)?.toString()
+		return withContext(Dispatchers.Main) {
+			suspendCancellableCoroutine { cont ->
+				continuation = cont
+				saveLauncher.launch(defaultUri ?: proposedName)
+			}.also {
+				continuation = null
+			}
+		}
+	}
+
 	fun onActivityResult(uri: Uri): Boolean = continuation?.apply {
 		resume(uri)
 	} != null
 
 	private suspend fun getProposedFileName(url: String, fileUri: Uri): String {
-		var name = if (url.startsWith("cbz://")) {
+		var name = if (url.startsWith("cbz:")) {
 			requireNotNull(url.toUri().fragment)
 		} else {
 			url.toHttpUrl().pathSegments.last()
