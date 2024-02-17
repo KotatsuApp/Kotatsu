@@ -46,8 +46,7 @@
 
 	</PreferenceCategory>
 
-	<PreferenceCategory
-		android:title="@string/details">
+	<PreferenceCategory android:title="@string/details">
 
 		<SwitchPreferenceCompat
 			android:defaultValue="true"
@@ -70,6 +69,11 @@
 		android:key="nav_main"
 		android:title="@string/main_screen_sections"
 		app:allowDividerAbove="true" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="nav_labels"
+		android:title="@string/show_labels_in_navbar" />
 
 	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
 		android:key="app_locale"

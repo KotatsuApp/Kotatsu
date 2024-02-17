@@ -10,6 +10,7 @@
 	<dimen name="list_spacing_large">12dp</dimen>
 	<!-- Navigation -->
 	<dimen name="nav_header_logo_size">36dp</dimen>
+	<dimen name="nav_bar_height_compact">62dp</dimen>
 
 	<dimen name="toolbar_height_expanded">172dp</dimen>
 	<dimen name="grid_spacing">8dp</dimen>

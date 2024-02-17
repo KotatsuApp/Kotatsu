@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.transition.MaterialFadeThrough
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +35,7 @@ import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
 import org.koitharu.kotatsu.tracker.ui.feed.FeedFragment
 import java.util.LinkedList
+import com.google.android.material.R as materialR
 
 private const val TAG_PRIMARY = "primary"
 
@@ -194,12 +196,15 @@ class MainNavigationDelegate(
 
 	private fun observeSettings(lifecycleOwner: LifecycleOwner) {
 		settings.observe()
-			.filter { x -> x == AppSettings.KEY_TRACKER_ENABLED || x == AppSettings.KEY_SUGGESTIONS }
+			.filter { x ->
+				x == AppSettings.KEY_TRACKER_ENABLED || x == AppSettings.KEY_SUGGESTIONS || x == AppSettings.KEY_NAV_LABELS
+			}
 			.onStart { emit("") }
-			.flowOn(Dispatchers.Default)
+			.flowOn(Dispatchers.IO)
 			.onEach {
 				setItemVisibility(R.id.nav_suggestions, settings.isSuggestionsEnabled)
 				setItemVisibility(R.id.nav_feed, settings.isTrackerEnabled)
+				setNavbarIsLabeled(settings.isNavLabelsVisible)
 			}.launchIn(lifecycleOwner.lifecycleScope)
 	}
 
@@ -209,6 +214,23 @@ class MainNavigationDelegate(
 			if (item.isVisible) return item
 		}
 		return null
+	}
+
+	private fun setNavbarIsLabeled(value: Boolean) {
+		if (navBar is BottomNavigationView) {
+			navBar.minimumHeight = navBar.resources.getDimensionPixelSize(
+				if (value) {
+					materialR.dimen.m3_bottom_nav_min_height
+				} else {
+					R.dimen.nav_bar_height_compact
+				},
+			)
+		}
+		navBar.labelVisibilityMode = if (value) {
+			NavigationBarView.LABEL_VISIBILITY_LABELED
+		} else {
+			NavigationBarView.LABEL_VISIBILITY_UNLABELED
+		}
 	}
 
 	interface OnFragmentChangedListener {

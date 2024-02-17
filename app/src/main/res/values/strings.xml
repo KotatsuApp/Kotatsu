@@ -593,4 +593,5 @@
 	<string name="reading_time_estimation_summary">The time estimation value may be inaccurate</string>
 	<string name="suggestions_unavailable_text">Suggestions feature is disabled</string>
 	<string name="check_for_new_chapters_disabled">Checking for new chapters is disabled</string>
+	<string name="show_labels_in_navbar">Show labels in navigation bar</string>
 </resources>
