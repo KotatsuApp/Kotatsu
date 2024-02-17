@@ -18,4 +18,11 @@
 		android:title="@string/reverse"
 		app:showAsAction="never" />
 
+	<item
+		android:id="@+id/action_grid_view"
+		android:checkable="true"
+		android:orderInCategory="30"
+		android:title="@string/chapters_grid_view"
+		app:showAsAction="never" />
+
 </menu>
