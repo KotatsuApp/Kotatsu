@@ -61,6 +61,8 @@ class WelcomeViewModel @Inject constructor(
 				selectedItems = selectedLocales,
 				isLoading = false,
 			)
+			repository.assimilateNewSources()
+			commit()
 		}
 	}
 
