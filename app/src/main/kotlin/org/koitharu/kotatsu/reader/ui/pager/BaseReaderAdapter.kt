@@ -22,6 +22,9 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 
 	private val differ = AsyncListDiffer(this, DiffCallback())
 
+	val hasItems: Boolean
+		get() = itemCount != 0
+
 	init {
 		stateRestorationPolicy = StateRestorationPolicy.PREVENT
 	}

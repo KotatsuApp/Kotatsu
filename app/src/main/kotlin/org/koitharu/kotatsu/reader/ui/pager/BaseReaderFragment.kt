@@ -29,7 +29,11 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>(), ZoomCont
 		readerAdapter = onCreateAdapter()
 
 		viewModel.content.observe(viewLifecycleOwner) {
-			onPagesChanged(it.pages, restoredState ?: it.state)
+			var pendingState = restoredState ?: it.state
+			if (pendingState == null && readerAdapter?.hasItems != true) {
+				pendingState = viewModel.getCurrentState()
+			}
+			onPagesChanged(it.pages, pendingState)
 			restoredState = null
 		}
 	}
