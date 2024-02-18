@@ -4,19 +4,10 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
+	android:layout_height="match_parent"
 	android:gravity="center_vertical"
 	android:orientation="vertical"
 	android:paddingVertical="?dialogPreferredPadding">
-
-	<TextView
-		android:id="@+id/textView_title"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginHorizontal="?dialogPreferredPadding"
-		android:paddingBottom="@dimen/margin_normal"
-		android:text="@string/restore_backup"
-		android:textAppearance="?textAppearanceTitleLarge" />
 
 	<com.google.android.material.progressindicator.LinearProgressIndicator
 		android:id="@+id/progressBar"
@@ -31,7 +22,8 @@
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="0dp"
+		android:layout_weight="1"
 		android:orientation="vertical"
 		android:scrollIndicators="top|bottom"
 		android:visibility="gone"

@@ -59,6 +59,7 @@ class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnLis
 
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
 		return super.onBuildDialog(builder)
+			.setTitle(R.string.restore_backup)
 			.setCancelable(false)
 	}
 
