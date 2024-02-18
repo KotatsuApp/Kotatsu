@@ -57,7 +57,7 @@ class MangaSourcesRepository @Inject constructor(
 			observeIsNsfwDisabled(),
 			dao.observeEnabled(SourcesSortOrder.MANUAL),
 		) { skipNsfw, sources ->
-			sources.count { skipNsfw || !MangaSource(it.source).isNsfw() }
+			sources.count { !skipNsfw || !MangaSource(it.source).isNsfw() }
 		}.distinctUntilChanged()
 	}
 
