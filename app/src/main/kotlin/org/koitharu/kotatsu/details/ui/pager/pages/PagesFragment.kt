@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -65,11 +67,12 @@ class PagesFragment :
 			detailsViewModel.selectedBranch,
 		) { details, history, branch ->
 			if (details != null && (details.isLoaded || details.chapters.isNotEmpty())) {
-				PagesViewModel.State(details, history, branch)
+				PagesViewModel.State(details.filterChapters(branch), history, branch)
 			} else {
 				null
 			}
-		}.observe(this, viewModel::updateState)
+		}.flowOn(Dispatchers.Default)
+			.observe(this, viewModel::updateState)
 	}
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentPagesBinding {
