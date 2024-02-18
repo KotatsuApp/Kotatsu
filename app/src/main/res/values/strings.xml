@@ -597,4 +597,5 @@
 	<string name="pages_saving">Saving pages</string>
 	<string name="ask_for_dest_dir_every_time">Ask for the destination dir every time</string>
 	<string name="default_page_save_dir">Default page save directory</string>
+	<string name="remove_from_history">Remove from history</string>
 </resources>

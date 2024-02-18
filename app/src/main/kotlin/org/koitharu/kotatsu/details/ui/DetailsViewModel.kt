@@ -346,6 +346,13 @@ class DetailsViewModel @Inject constructor(
 		settings.closeTip(DetailsActivity.TIP_BUTTON)
 	}
 
+	fun removeFromHistory() {
+		launchJob(Dispatchers.Default) {
+			val handle = historyRepository.delete(setOf(mangaId))
+			onActionDone.call(ReversibleAction(R.string.removed_from_history, handle))
+		}
+	}
+
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
 		detailsLoadUseCase.invoke(intent)
 			.onEachWhile {

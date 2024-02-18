@@ -138,7 +138,7 @@ class DetailsActivity :
 				},
 			),
 		)
-		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.containerDetails))
+		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.containerDetails, viewBinding.layoutBottom))
 		viewModel.onShowTip.observeEvent(this) { showTip() }
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
 		viewModel.selectedBranch.observe(this) {
@@ -187,6 +187,9 @@ class DetailsActivity :
 			buttonTip = null
 			val menu = PopupMenu(v.context, v)
 			menu.inflate(R.menu.popup_read)
+			menu.menu.findItem(R.id.action_forget)?.isVisible = viewModel.historyInfo.value.run {
+				!isIncognitoMode && history != null
+			}
 			menu.setOnMenuItemClickListener(this)
 			menu.setForceShowIcon(true)
 			menu.show()
@@ -200,6 +203,11 @@ class DetailsActivity :
 		return when (item.itemId) {
 			R.id.action_incognito -> {
 				openReader(isIncognitoMode = true)
+				true
+			}
+
+			R.id.action_forget -> {
+				viewModel.removeFromHistory()
 				true
 			}
 
