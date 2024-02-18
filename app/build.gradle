@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 34
-		versionCode = 623
-		versionName = '6.7.1'
+		versionCode = 624
+		versionName = '6.7.2'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -82,13 +82,13 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:09e1c14f37') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:3ff028c4e9') {
 		exclude group: 'org.json', module: 'json'
 	}
 
 	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
 	implementation 'androidx.core:core-ktx:1.12.0'
@@ -148,14 +148,14 @@ dependencies {
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20240205'
-	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
+	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0'
 
 	androidTestImplementation 'androidx.test:runner:1.5.2'
 	androidTestImplementation 'androidx.test:rules:1.5.0'
 	androidTestImplementation 'androidx.test:core-ktx:1.5.0'
 	androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
 
-	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
+	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0'
 
 	androidTestImplementation 'androidx.room:room-testing:2.6.1'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
