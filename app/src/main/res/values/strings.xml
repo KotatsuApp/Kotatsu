@@ -598,4 +598,6 @@
 	<string name="ask_for_dest_dir_every_time">Ask for the destination dir every time</string>
 	<string name="default_page_save_dir">Default page save directory</string>
 	<string name="remove_from_history">Remove from history</string>
+	<string name="stats_enabled">Enable statistics</string>
+	<string name="reading_stats">Reading statistics</string>
 </resources>

@@ -609,6 +609,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READING_TIME = "reading_time"
 		const val KEY_PAGES_SAVE_DIR = "pages_dir"
 		const val KEY_PAGES_SAVE_ASK = "pages_dir_ask"
+		const val KEY_STATS = "stats"
 		const val KEY_STATS_ENABLED = "stats_on"
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_TRANSLATION = "about_app_translation"

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="stats_on"
+		android:layout="@layout/preference_toggle_header"
+		android:title="@string/stats_enabled" />
+
+</androidx.preference.PreferenceScreen>
