@@ -58,6 +58,7 @@ import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
+import org.koitharu.kotatsu.stats.domain.StatsCollector
 import java.time.Instant
 import javax.inject.Inject
 
@@ -78,11 +79,11 @@ class ReaderViewModel @Inject constructor(
 	private val detailsLoadUseCase: DetailsLoadUseCase,
 	private val historyUpdateUseCase: HistoryUpdateUseCase,
 	private val detectReaderModeUseCase: DetectReaderModeUseCase,
+	private val statsCollector: StatsCollector,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
 	private val preselectedBranch = savedStateHandle.get<String>(ReaderActivity.EXTRA_BRANCH)
-	private val isIncognito = savedStateHandle.get<Boolean>(ReaderActivity.EXTRA_INCOGNITO) ?: false
 
 	private var loadingJob: Job? = null
 	private var pageSaveJob: Job? = null
@@ -98,7 +99,7 @@ class ReaderViewModel @Inject constructor(
 	val onShowToast = MutableEventFlow<Int>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
-	val incognitoMode = if (isIncognito) {
+	val incognitoMode = if (savedStateHandle.get<Boolean>(ReaderActivity.EXTRA_INCOGNITO) == true) {
 		MutableStateFlow(true)
 	} else mangaFlow.map {
 		it != null && historyRepository.shouldSkip(it)
@@ -208,7 +209,7 @@ class ReaderViewModel @Inject constructor(
 		if (state != null) {
 			currentState.value = state
 		}
-		if (isIncognito) {
+		if (incognitoMode.value) {
 			return
 		}
 		val readerState = state ?: currentState.value ?: return
@@ -377,7 +378,7 @@ class ReaderViewModel @Inject constructor(
 
 			chaptersLoader.loadSingleChapter(requireNotNull(currentState.value).chapterId)
 			// save state
-			if (!isIncognito) {
+			if (!incognitoMode.value) {
 				currentState.value?.let {
 					val percent = computePercent(it.chapterId, it.page)
 					historyUpdateUseCase.invoke(manga, it, percent)
@@ -426,6 +427,9 @@ class ReaderViewModel @Inject constructor(
 			percent = computePercent(state.chapterId, state.page),
 		)
 		uiState.value = newState
+		if (!incognitoMode.value) {
+			statsCollector.onStateChanged(m.id, state)
+		}
 	}
 
 	private fun computePercent(chapterId: Long, pageIndex: Int): Float {

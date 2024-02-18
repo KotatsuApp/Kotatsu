@@ -94,6 +94,7 @@ class HistoryRepository @Inject constructor(
 		if (shouldSkip(manga)) {
 			return
 		}
+		assert(manga.chapters != null)
 		db.withTransaction {
 			mangaRepository.storeManga(manga)
 			db.getHistoryDao().upsert(
@@ -105,6 +106,7 @@ class HistoryRepository @Inject constructor(
 					page = page,
 					scroll = scroll.toFloat(), // we migrate to int, but decide to not update database
 					percent = percent,
+					chaptersCount = manga.chapters?.size ?: -1,
 					deletedAt = 0L,
 				),
 			)

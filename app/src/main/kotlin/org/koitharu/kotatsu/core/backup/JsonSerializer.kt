@@ -41,6 +41,7 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("page", e.page)
 			put("scroll", e.scroll)
 			put("percent", e.percent)
+			put("chapters", e.chaptersCount)
 		},
 	)
 

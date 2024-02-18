@@ -15,8 +15,8 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 			parentColumns = ["manga_id"],
 			childColumns = ["manga_id"],
 			onDelete = ForeignKey.CASCADE,
-		)
-	]
+		),
+	],
 )
 data class HistoryEntity(
 	@PrimaryKey(autoGenerate = false)
@@ -28,4 +28,5 @@ data class HistoryEntity(
 	@ColumnInfo(name = "scroll") val scroll: Float,
 	@ColumnInfo(name = "percent") val percent: Float,
 	@ColumnInfo(name = "deleted_at") val deletedAt: Long,
+	@ColumnInfo(name = "chapters") val chaptersCount: Int,
 )

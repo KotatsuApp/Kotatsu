@@ -416,6 +416,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isPagesSavingAskEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PAGES_SAVE_ASK, true)
 
+	val isStatsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_STATS_ENABLED, false)
+
 	fun isTipEnabled(tip: String): Boolean {
 		return prefs.getStringSet(KEY_TIPS_CLOSED, emptySet())?.contains(tip) != true
 	}
@@ -606,8 +609,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READING_TIME = "reading_time"
 		const val KEY_PAGES_SAVE_DIR = "pages_dir"
 		const val KEY_PAGES_SAVE_ASK = "pages_dir_ask"
-
-		// About
+		const val KEY_STATS_ENABLED = "stats_on"
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
 	}

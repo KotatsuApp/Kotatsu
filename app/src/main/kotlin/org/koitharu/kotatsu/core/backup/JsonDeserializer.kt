@@ -54,6 +54,7 @@ class JsonDeserializer(private val json: JSONObject) {
 		page = json.getInt("page"),
 		scroll = json.getDouble("scroll").toFloat(),
 		percent = json.getFloatOrDefault("percent", -1f),
+		chaptersCount = json.getIntOrDefault("chapters", -1),
 		deletedAt = 0L,
 	)
 
