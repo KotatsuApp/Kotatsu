@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaHistory
@@ -75,7 +77,8 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 			-1
 		}
 		binding.recyclerView.addItemDecoration(TypedListSpacingDecoration(binding.recyclerView.context, true))
-		binding.recyclerView.adapter = ChaptersAdapter(this, false).also { adapter ->
+		val chaptersInGridView = settings.chaptersGridView
+		binding.recyclerView.adapter = ChaptersAdapter(this, chaptersInGridView).also { adapter ->
 			if (currentPosition >= 0) {
 				val targetPosition = (currentPosition - 1).coerceAtLeast(0)
 				val offset =
@@ -86,6 +89,11 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 			} else {
 				adapter.items = chapters
 			}
+		}
+		binding.recyclerView.layoutManager = if (chaptersInGridView) {
+			GridLayoutManager(context, 4)
+		} else {
+			LinearLayoutManager(context)
 		}
 	}
 
