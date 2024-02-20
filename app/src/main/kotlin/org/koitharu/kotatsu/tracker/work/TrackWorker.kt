@@ -293,6 +293,7 @@ class TrackWorker @AssistedInject constructor(
 		setCategory(NotificationCompat.CATEGORY_SERVICE)
 		setDefaults(0)
 		setOngoing(false)
+		setOnlyAlertOnce(true)
 		setSilent(true)
 		setContentIntent(
 			PendingIntentCompat.getActivity(
