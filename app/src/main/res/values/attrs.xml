@@ -134,31 +134,6 @@
 		<attr name="cornerSize" />
 	</declare-styleable>
 
-	<declare-styleable name="PieChart">
-		<attr name="pieChartColors" format="reference" />
-
-		<attr name="pieChartMarginTextFirst" format="dimension" />
-		<attr name="pieChartMarginTextSecond" format="dimension" />
-		<attr name="pieChartMarginTextThird" format="dimension" />
-		<attr name="pieChartMarginSmallCircle" format="dimension" />
-
-		<attr name="pieChartCircleStrokeWidth" format="dimension" />
-		<attr name="pieChartCirclePadding" format="dimension" />
-		<attr name="pieChartCirclePaintRoundSize" format="boolean" />
-		<attr name="pieChartCircleSectionSpace" format="float" />
-
-		<attr name="pieChartTextCircleRadius" format="dimension" />
-		<attr name="pieChartTextAmountSize" format="dimension" />
-		<attr name="pieChartTextNumberSize" format="dimension" />
-		<attr name="pieChartTextDescriptionSize" format="dimension" />
-
-		<attr name="pieChartTextAmountColor" format="color" />
-		<attr name="pieChartTextNumberColor" format="color" />
-		<attr name="pieChartTextDescriptionColor" format="color" />
-
-		<attr name="pieChartTextAmount" format="string" />
-	</declare-styleable>
-
 	<declare-styleable name="NestedRecyclerView">
 		<attr name="maxHeight" />
 	</declare-styleable>

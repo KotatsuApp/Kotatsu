@@ -4,13 +4,14 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
+import org.koitharu.kotatsu.history.data.HistoryEntity
 
 @Entity(
 	tableName = "stats",
 	primaryKeys = ["manga_id", "started_at"],
 	foreignKeys = [
 		ForeignKey(
-			entity = MangaEntity::class,
+			entity = HistoryEntity::class,
 			parentColumns = ["manga_id"],
 			childColumns = ["manga_id"],
 			onDelete = ForeignKey.CASCADE,

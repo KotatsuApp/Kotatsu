@@ -169,6 +169,11 @@ class ReaderActivity :
 		idlingDetector.onUserInteraction()
 	}
 
+	override fun onPause() {
+		super.onPause()
+		viewModel.onPause()
+	}
+
 	override fun onIdle() {
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 	}

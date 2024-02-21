@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+
+		<org.koitharu.kotatsu.stats.ui.views.PieChartView
+			android:id="@+id/chart"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_margin="24dp"
+			app:layout_constraintDimensionRatio="1"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<TextView
+			android:id="@+id/textView_legend"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="24dp"
+			android:paddingHorizontal="24dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/chart"
+			tools:text="@tools:sample/lorem/random" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

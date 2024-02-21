@@ -8,4 +8,9 @@
 		android:layout="@layout/preference_toggle_header"
 		android:title="@string/stats_enabled" />
 
+	<Preference
+		android:dependency="stats_on"
+		android:fragment="org.koitharu.kotatsu.stats.ui.StatsFragment"
+		android:title="@string/reading_stats" />
+
 </androidx.preference.PreferenceScreen>

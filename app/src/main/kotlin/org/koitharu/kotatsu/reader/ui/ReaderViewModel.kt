@@ -191,6 +191,12 @@ class ReaderViewModel @Inject constructor(
 		loadImpl()
 	}
 
+	fun onPause() {
+		manga?.let {
+			statsCollector.onPause(it.id)
+		}
+	}
+
 	fun switchMode(newMode: ReaderMode) {
 		launchJob {
 			val manga = checkNotNull(mangaData.value?.toManga())

@@ -55,6 +55,11 @@ class StatsCollector @Inject constructor(
 		commit(newEntry.stats)
 	}
 
+	@Synchronized
+	fun onPause(mangaId: Long) {
+		stats.remove(mangaId)
+	}
+
 	private fun commit(entity: StatsEntity) {
 		viewModelScope.launch(Dispatchers.Default) {
 			db.getStatsDao().upsert(entity)
