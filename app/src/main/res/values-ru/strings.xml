@@ -588,4 +588,9 @@
     <string name="reading_time_estimation_summary">Данное значение может быть неточным</string>
     <string name="check_for_new_chapters_disabled">Проверка новых глав отключена</string>
     <string name="suggestions_unavailable_text">Функция предложения отключена</string>
+    <string name="pages_saving">Сохранение страниц</string>
+    <string name="ask_for_dest_dir_every_time">Спрашивать папку для сохранения каждый раз</string>
+    <string name="remove_from_history">Убрать из истории</string>
+    <string name="show_labels_in_navbar">Показывать подписи на панели навигации</string>
+    <string name="default_page_save_dir">Папка для сохранений по умолчанию</string>
 </resources>
