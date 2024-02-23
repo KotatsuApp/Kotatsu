@@ -588,4 +588,9 @@
     <string name="reading_time_estimation_summary">Це значення може бути неточним</string>
     <string name="check_for_new_chapters_disabled">Перевірка нових глав вимкнена</string>
     <string name="suggestions_unavailable_text">Функція пропозицій вимкнена</string>
+    <string name="pages_saving">Збереження сторінок</string>
+    <string name="ask_for_dest_dir_every_time">Щоразу запитувати директорію призначення</string>
+    <string name="remove_from_history">Видалити з історії</string>
+    <string name="show_labels_in_navbar">Показувати мітки на панелі навігації</string>
+    <string name="default_page_save_dir">Директорія збереження сторінки за замовчуванням</string>
 </resources>
