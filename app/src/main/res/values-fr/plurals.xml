@@ -36,13 +36,13 @@
         <item quantity="other">Il y a %1$d mois</item>
     </plurals>
     <plurals name="hours">
-        <item quantity="one">heure</item>
-        <item quantity="many">heures</item>
-        <item quantity="other">heures</item>
+        <item quantity="one">%1$d heure</item>
+        <item quantity="many">%1$d heures</item>
+        <item quantity="other">%1$d heures</item>
     </plurals>
     <plurals name="minutes">
-        <item quantity="one">minute</item>
-        <item quantity="many">minutes</item>
-        <item quantity="other">minutes</item>
+        <item quantity="one">%1$d minute</item>
+        <item quantity="many">%1$d minutes</item>
+        <item quantity="other">%1$d minutes</item>
     </plurals>
 </resources>
