@@ -578,4 +578,11 @@
     <string name="two_pages">Pages doubles</string>
     <string name="reading_time_estimation">Afficher le temps de lecture estimé</string>
     <string name="reading_time_estimation_summary">Le temps estimé peut être inexact</string>
+    <string name="ask_for_dest_dir_every_time">Demande pour le répertoire de destination à chaque fois</string>
+    <string name="default_page_save_dir">Répertoire par défaut pour les pages sauvegardées</string>
+    <string name="remove_from_history">Retirer de l\'historique</string>
+    <string name="reader_actions">Actions du lecteur</string>
+    <string name="reader_fullscreen_summary">Cache la barre d\'état et les barres de nvigation</string>
+    <string name="suggestions_unavailable_text">La fonctionnalité de suggestions est désactivée</string>
+    <string name="check_for_new_chapters_disabled">La vérification des nouveaux chapitres est désactivée</string>
 </resources>
