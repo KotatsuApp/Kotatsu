@@ -93,7 +93,7 @@
     <string name="new_version_s">नया संस्करण: %s</string>
     <string name="text_delete_local_manga">डिवाइस से \"%s\" को स्थायी रूप से हटाएं?</string>
     <string name="text_history_holder_primary">जो भी आप पढ़ोगे वे सब यहां दिखेगा</string>
-    <string name="delete_manga">मांगा को नष्ट करे</string>
+    <string name="delete_manga">मंगा हटाएं</string>
     <string name="notification_sound">सूचना की ध्वनि</string>
     <string name="search_history_cleared">साफ हो गया</string>
     <string name="open_in_browser">ब्राउसर में खोले</string>
