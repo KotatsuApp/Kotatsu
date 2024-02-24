@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
 import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.sync.ui.SyncSettingsIntent
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.scrobbling.kitsu.ui.KitsuAuthActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -111,7 +112,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 
 			AppSettings.KEY_KITSU -> {
 				if (!kitsuRepository.isAuthorized) {
-					launchScrobblerAuth(kitsuRepository)
+					startActivity(Intent(preference.context, KitsuAuthActivity::class.java))
 				} else {
 					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.KITSU))
 				}
