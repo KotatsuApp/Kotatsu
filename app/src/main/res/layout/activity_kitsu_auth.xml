@@ -58,6 +58,7 @@
 				android:autofillHints="emailAddress"
 				android:imeOptions="actionDone"
 				android:inputType="textEmailAddress"
+				android:maxLength="512"
 				android:singleLine="true"
 				android:textSize="16sp"
 				tools:hint="Email" />
@@ -84,7 +85,7 @@
 				android:autofillHints="password"
 				android:imeOptions="actionDone"
 				android:inputType="textPassword"
-				android:maxLength="24"
+				android:maxLength="512"
 				android:singleLine="true"
 				android:textSize="16sp"
 				tools:hint="Password" />
