@@ -32,7 +32,8 @@ class TapGridDispatcher(
 		if (!isDispatching) {
 			return true
 		}
-		return listener.onGridTouch(getArea(event.rawX, event.rawY))
+		val area = getArea(event.rawX, event.rawY) ?: return false
+		return listener.onGridTouch(area)
 	}
 
 	override fun onDoubleTapEvent(e: MotionEvent): Boolean {
@@ -42,11 +43,12 @@ class TapGridDispatcher(
 
 	override fun onLongPress(event: MotionEvent) {
 		if (isDispatching) {
-			listener.onGridLongTouch(getArea(event.rawX, event.rawY))
+			val area = getArea(event.rawX, event.rawY) ?: return
+			listener.onGridLongTouch(area)
 		}
 	}
 
-	private fun getArea(x: Float, y: Float): TapGridArea {
+	private fun getArea(x: Float, y: Float): TapGridArea? {
 		val xIndex = (x * 2f / width).roundToInt()
 		val yIndex = (y * 2f / height).roundToInt()
 		val area = when (xIndex) {
@@ -73,7 +75,8 @@ class TapGridDispatcher(
 
 			else -> null
 		}
-		return checkNotNull(area) { "Invalid area ($xIndex, $yIndex)" }
+		assert(area != null) { "Invalid area ($xIndex, $yIndex)" }
+		return area
 	}
 
 	interface OnGridTouchListener {

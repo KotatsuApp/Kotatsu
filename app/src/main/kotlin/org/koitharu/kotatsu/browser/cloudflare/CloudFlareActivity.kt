@@ -27,7 +27,6 @@ import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.TaggedActivityResult
-import org.koitharu.kotatsu.core.util.ext.catchingWebViewUnavailability
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.network.UserAgents
 import javax.inject.Inject
@@ -45,13 +44,7 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		if (!catchingWebViewUnavailability {
-				setContentView(
-					ActivityBrowserBinding.inflate(
-						layoutInflater,
-					),
-				)
-			}) {
+		if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
 			return
 		}
 		supportActionBar?.run {

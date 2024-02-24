@@ -22,7 +22,6 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.TaggedActivityResult
-import org.koitharu.kotatsu.core.util.ext.catchingWebViewUnavailability
 import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
@@ -43,7 +42,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 	@SuppressLint("SetJavaScriptEnabled")
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		if (!catchingWebViewUnavailability { setContentView(ActivityBrowserBinding.inflate(layoutInflater)) }) {
+		if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
 			return
 		}
 		val source = intent?.getSerializableExtraCompat<MangaSource>(EXTRA_SOURCE)

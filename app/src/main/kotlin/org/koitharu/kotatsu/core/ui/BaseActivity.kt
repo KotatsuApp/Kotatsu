@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
@@ -29,6 +30,7 @@ import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.core.ui.util.BaseActivityEntryPoint
 import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.isWebViewUnavailable
 
 @Suppress("LeakingThis")
 abstract class BaseActivity<B : ViewBinding> :
@@ -162,6 +164,21 @@ abstract class BaseActivity<B : ViewBinding> :
 
 	private fun putDataToExtras(intent: Intent?) {
 		intent?.putExtra(EXTRA_DATA, intent.data)
+	}
+
+	protected fun setContentViewWebViewSafe(viewBindingProducer: () -> B): Boolean {
+		return try {
+			setContentView(viewBindingProducer())
+			true
+		} catch (e: Exception) {
+			if (e.isWebViewUnavailable()) {
+				Toast.makeText(this, R.string.web_view_unavailable, Toast.LENGTH_LONG).show()
+				finishAfterTransition()
+				false
+			} else {
+				throw e
+			}
+		}
 	}
 
 	companion object {
