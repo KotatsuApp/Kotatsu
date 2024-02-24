@@ -30,6 +30,7 @@ class MarkAsReadUseCase @Inject constructor(
 			page = pages.lastIndex,
 			scroll = 0,
 			percent = 1f,
+			force = true,
 		)
 	}
 

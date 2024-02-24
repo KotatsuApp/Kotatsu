@@ -7,7 +7,9 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -61,6 +63,7 @@ class AppBackupAgentTest {
 			page = 3,
 			scroll = 40,
 			percent = 0.2f,
+			force = false,
 		)
 		val history = checkNotNull(historyRepository.getOne(SampleData.manga))
 

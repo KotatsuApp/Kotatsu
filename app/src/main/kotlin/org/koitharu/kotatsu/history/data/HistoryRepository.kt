@@ -90,8 +90,8 @@ class HistoryRepository @Inject constructor(
 			.distinctUntilChanged()
 	}
 
-	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int, percent: Float) {
-		if (shouldSkip(manga)) {
+	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int, percent: Float, force: Boolean) {
+		if (!force && shouldSkip(manga)) {
 			return
 		}
 		db.withTransaction {
