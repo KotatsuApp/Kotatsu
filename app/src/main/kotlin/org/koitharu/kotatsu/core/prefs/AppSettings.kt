@@ -430,7 +430,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	fun getPagesSaveDir(context: Context): DocumentFile? =
 		prefs.getString(KEY_PAGES_SAVE_DIR, null)?.toUriOrNull()?.let {
-			DocumentFile.fromTreeUri(context, it)
+			DocumentFile.fromTreeUri(context, it)?.takeIf { it.canWrite() }
 		}
 
 	fun setPagesSaveDir(uri: Uri?) {

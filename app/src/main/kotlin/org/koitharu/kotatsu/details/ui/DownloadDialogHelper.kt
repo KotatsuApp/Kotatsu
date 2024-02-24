@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.core.ui.dialog.RecyclerViewAlertDialog
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.download.ui.dialog.DownloadOption
 import org.koitharu.kotatsu.download.ui.dialog.downloadOptionAD
+import org.koitharu.kotatsu.settings.SettingsActivity
 
 class DownloadDialogHelper(
 	private val host: View,
@@ -57,6 +58,9 @@ class DownloadDialogHelper(
 			.setCancelable(true)
 			.setTitle(R.string.download)
 			.setNegativeButton(android.R.string.cancel)
+			.setNeutralButton(R.string.settings) { _, _ ->
+				host.context.startActivity(SettingsActivity.newDownloadsSettingsIntent(host.context))
+			}
 			.setItems(options)
 			.create()
 			.also { it.show() }

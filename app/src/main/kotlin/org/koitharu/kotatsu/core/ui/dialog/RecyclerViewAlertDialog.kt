@@ -68,6 +68,14 @@ class RecyclerViewAlertDialog private constructor(
 			return this
 		}
 
+		fun setNeutralButton(
+			@StringRes textId: Int,
+			listener: DialogInterface.OnClickListener,
+		): Builder<T> {
+			delegate.setNeutralButton(textId, listener)
+			return this
+		}
+
 		fun setCancelable(isCancelable: Boolean): Builder<T> {
 			delegate.setCancelable(isCancelable)
 			return this

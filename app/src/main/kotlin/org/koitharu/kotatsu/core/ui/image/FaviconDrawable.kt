@@ -16,6 +16,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.withClip
 import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.Colors
 import kotlin.math.absoluteValue
 
 class FaviconDrawable(
@@ -44,7 +45,7 @@ class FaviconDrawable(
 		}
 		paint.textAlign = Paint.Align.CENTER
 		paint.isFakeBoldText = true
-		colorForeground = MaterialColors.harmonize(colorOfString(name), colorBackground)
+		colorForeground = MaterialColors.harmonize(Colors.random(name), colorBackground)
 	}
 
 	override fun draw(canvas: Canvas) {
@@ -103,10 +104,5 @@ class FaviconDrawable(
 		paint.textSize = testTextSize
 		paint.getTextBounds(text, 0, text.length, tempRect)
 		return testTextSize * width / tempRect.width()
-	}
-
-	private fun colorOfString(str: String): Int {
-		val hue = (str.hashCode() % 360).absoluteValue.toFloat()
-		return ColorUtils.HSLToColor(floatArrayOf(hue, 0.5f, 0.5f))
 	}
 }
