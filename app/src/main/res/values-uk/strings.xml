@@ -469,7 +469,7 @@
     <string name="disable_nsfw">Вимкнути NSFW</string>
     <string name="related_manga_summary">Показати список пов\'язаної манґи. У деяких випадках він може бути неточним або відсутнім</string>
     <string name="too_many_requests_message">Занадто багато запитів. Спробуйте пізніше</string>
-    <string name="advanced">Розширені</string>
+    <string name="advanced">Просунута</string>
     <string name="default_section">Розділ за умовчанням</string>
     <string name="manga_list">Список манґи</string>
     <string name="error_corrupted_file">Повертаються неправильні дані або файл пошкоджено</string>
@@ -593,4 +593,5 @@
     <string name="remove_from_history">Видалити з історії</string>
     <string name="show_labels_in_navbar">Показувати мітки на панелі навігації</string>
     <string name="default_page_save_dir">Директорія збереження сторінки за замовчуванням</string>
+    <string name="location">Розташування</string>
 </resources>

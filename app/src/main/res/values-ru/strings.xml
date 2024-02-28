@@ -206,7 +206,7 @@
     <string name="text_suggestion_holder">Начните читать мангу, чтобы получать персональные предложения</string>
     <string name="exclude_nsfw_from_suggestions">Не предлагать NSFW мангу</string>
     <string name="enabled">Включено</string>
-    <string name="disabled">Выключено</string>
+    <string name="disabled">Выкл.</string>
     <string name="filter_load_error">Не удалось загрузить список жанров</string>
     <string name="computing_">Вычисление…</string>
     <string name="reset_filter">Сбросить фильтр</string>
@@ -469,7 +469,7 @@
     <string name="disable_nsfw">Отключить NSFW</string>
     <string name="too_many_requests_message">Слишком много запросов. Попробуйте повторить позже</string>
     <string name="related_manga_summary">Показывать список связанной манги. В некоторых случаях список может быть нерелевантным или отсутствовать вовсе</string>
-    <string name="advanced">Расширенные</string>
+    <string name="advanced">Продвинутая</string>
     <string name="default_section">Раздел по умолчанию</string>
     <string name="manga_list">Список манги</string>
     <string name="error_corrupted_file">Возвращаются неверные данные или файл поврежден</string>
@@ -593,4 +593,5 @@
     <string name="remove_from_history">Убрать из истории</string>
     <string name="show_labels_in_navbar">Показывать подписи на панели навигации</string>
     <string name="default_page_save_dir">Папка для сохранений по умолчанию</string>
+    <string name="location">Расположение</string>
 </resources>

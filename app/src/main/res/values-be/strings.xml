@@ -201,7 +201,7 @@
     <string name="screenshots_block_all">Заўсёды блакуйце</string>
     <string name="screenshots_block_nsfw">Забараніць для NSFW</string>
     <string name="filter_load_error">Немагчыма загрузіць спіс жанраў</string>
-    <string name="disabled">Адключаны</string>
+    <string name="disabled">Адкл.</string>
     <string name="enabled">Ўключаны</string>
     <string name="exclude_nsfw_from_suggestions">Ня прапаноўваць NSFW мангу</string>
     <string name="text_suggestion_holder">Пачніце чытаць мангу, і вы атрымаеце персаналізаваныя прапановы</string>
@@ -469,7 +469,7 @@
     <string name="disable_nsfw">Адключыць NSFW</string>
     <string name="too_many_requests_message">Занадта шмат запытаў. Паўтарыце спробу пазней</string>
     <string name="related_manga_summary">Паказаць спіс звязанай мангі. У некаторых выпадках ён можа быць недакладным або адсутнічаць</string>
-    <string name="advanced">Пашыраныя</string>
+    <string name="advanced">Прасунутая</string>
     <string name="default_section">Раздзел па змаўчанні</string>
     <string name="manga_list">Спіс мангі</string>
     <string name="error_corrupted_file">Вяртаюцца няправільныя дадзеныя ці файл пашкоджаны</string>
@@ -593,4 +593,5 @@
     <string name="default_page_save_dir">Каталог захавання старонкі па змаўчанні</string>
     <string name="remove_from_history">Выдаліць з гісторыі</string>
     <string name="pages_saving">Захаванне старонак</string>
+    <string name="location">Размяшчэнне</string>
 </resources>
