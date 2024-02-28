@@ -61,7 +61,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			app:barrierDirection="bottom"
-			app:constraint_referenced_ids="imageView_cover,textView_status,imageView_expand" />
+			app:constraint_referenced_ids="imageView_cover,textView_status,imageView_expand,textView_details" />
 
 		<com.google.android.material.progressindicator.LinearProgressIndicator
 			android:id="@+id/progressBar"
@@ -141,7 +141,7 @@
 			app:layout_constraintEnd_toStartOf="@id/textView_percent"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/textView_status"
-			tools:text="@tools:sample/lorem[3]" />
+			tools:text="@tools:sample/lorem[10]" />
 
 		<Button
 			android:id="@+id/button_pause"
