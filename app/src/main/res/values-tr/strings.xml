@@ -578,10 +578,10 @@
     <string name="next_chapter">Sonraki bölüm</string>
     <string name="prev_page">Önceki sayfa</string>
     <string name="next_page">Sonraki sayfa</string>
-    <string name="config_reset_confirm">Ayarlar öntanımlı değerlere sıfırlansın mı? Bu eylem geri alınamaz.</string>
+    <string name="config_reset_confirm">Ayarlar varsayılan değerlere sıfırlansın mı? Bu eylem geri alınamaz.</string>
     <string name="use_two_pages_landscape">Yatay yönde iki sayfa düzeni kullan (beta)</string>
     <string name="email_password_enter_hint">Devam etmek için e-posta adresinizi ve parolanızı girin</string>
-    <string name="default_webtoon_zoom_out">Öntanımlı webtoon uzaklaştırması</string>
+    <string name="default_webtoon_zoom_out">Varsayılan webtoon uzaklaştırması</string>
     <string name="fullscreen_mode">Tam ekran modu</string>
     <string name="reader_fullscreen_summary">Sistem durumunu ve gezinme çubuklarını gizle</string>
     <string name="suggestions_unavailable_text">Öneriler özelliği devre dışı</string>
@@ -591,6 +591,6 @@
     <string name="show_labels_in_navbar">Gezinme çubuğunda etiketleri göster</string>
     <string name="pages_saving">Sayfalar kaydediliyor</string>
     <string name="ask_for_dest_dir_every_time">Her seferinde hedef dizini sor</string>
-    <string name="default_page_save_dir">Öntanımlı sayfa kaydetme dizini</string>
+    <string name="default_page_save_dir">Varsayılan sayfa kaydetme konumu</string>
     <string name="remove_from_history">Geçmişten kaldır</string>
 </resources>
