@@ -25,8 +25,7 @@ class ReaderManager(
 	private val modeMap = EnumMap<ReaderMode, Class<out BaseReaderFragment<*>>>(ReaderMode::class.java)
 
 	init {
-		val useDoublePages = container.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-			&& settings.isReaderDoubleOnLandscape
+		val useDoublePages = isLandscape() && settings.isReaderDoubleOnLandscape
 		invalidateTypesMap(useDoublePages)
 	}
 
@@ -49,7 +48,7 @@ class ReaderManager(
 
 	fun setDoubleReaderMode(isEnabled: Boolean) {
 		val prevMode = currentMode
-		invalidateTypesMap(isEnabled)
+		invalidateTypesMap(isEnabled && isLandscape())
 		val newMode = currentMode ?: return
 		if (newMode != prevMode) {
 			replace(newMode)
@@ -70,4 +69,6 @@ class ReaderManager(
 		modeMap[ReaderMode.WEBTOON] = WebtoonReaderFragment::class.java
 		modeMap[ReaderMode.VERTICAL] = VerticalReaderFragment::class.java
 	}
+
+	private fun isLandscape() = container.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 }
