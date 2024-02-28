@@ -328,7 +328,7 @@
     <string name="color_correction_hint">Los ajustes de color elegidos serán recordados para este manga</string>
     <string name="feed">Fuente</string>
     <string name="history_shortcuts">Mostrar los accesos directos a los mangas recientes</string>
-    <string name="reader_control_ltr_summary">Navegar a continuación siempre te lleva a la página siguiente cuando utilizas el ratón y el teclado.</string>
+    <string name="reader_control_ltr_summary">Tocando en el borde derecho, o pulsando la tecla derecha, se pasa siempre a la página siguiente.</string>
     <string name="reader_control_ltr">Control ergonómico del lector</string>
     <string name="color_correction">Corrección del color</string>
     <string name="brightness">Brillo</string>
@@ -593,4 +593,5 @@
     <string name="remove_from_history">Eliminar del historial</string>
     <string name="pages_saving">Guardar páginas</string>
     <string name="default_page_save_dir">Directorio predeterminado para guardar páginas</string>
+    <string name="location">Ubicación</string>
 </resources>
