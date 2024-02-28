@@ -331,7 +331,7 @@
     <string name="contrast">Kontrast</string>
     <string name="reset">Sıfırla</string>
     <string name="color_correction_hint">Seçilen renk ayarları bu manga için hatırlanacaktır</string>
-    <string name="text_unsaved_changes_prompt">Kaydedilmeyen değişiklikler kaydedilsin mi?</string>
+    <string name="text_unsaved_changes_prompt">Kaydedilmeyen değişiklikler kaydedilsin mi yoksa yok mu sayılsın?</string>
     <string name="discard">Yoksay</string>
     <string name="error_no_space_left">Cihazda yer yok</string>
     <string name="webtoon_zoom">Webtoon yakınlaştırma</string>
