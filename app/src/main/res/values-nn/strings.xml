@@ -100,7 +100,7 @@
     <string name="by_name">Namn</string>
     <string name="updated">Oppdatert</string>
     <string name="theme">Vising</string>
-    <string name="automatic">Lyd systemet</string>
+    <string name="follow_system">Lyd systemet</string>
     <string name="dark">Mørk</string>
     <string name="text_local_holder_primary">Hent noko først</string>
     <string name="not_available">Ikkje tilgjengeleg</string>

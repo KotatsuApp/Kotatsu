@@ -7,7 +7,7 @@
     <string name="filter">Pansala</string>
     <string name="theme">Tema</string>
     <string name="dark">Madilim</string>
-    <string name="automatic">Sundan ang sistema</string>
+    <string name="follow_system">Sundan ang sistema</string>
     <string name="error_occurred">May nangyaring error</string>
     <string name="network_error">Error sa network</string>
     <string name="details">Mga detalye</string>

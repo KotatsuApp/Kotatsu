@@ -42,7 +42,7 @@
     <string name="theme">Tema</string>
     <string name="light">Terang</string>
     <string name="dark">Gelap</string>
-    <string name="automatic">Ikuti sistem</string>
+    <string name="follow_system">Ikuti sistem</string>
     <string name="pages">Halaman</string>
     <string name="clear">Bersihkan</string>
     <string name="remove">Hapus</string>

@@ -188,7 +188,7 @@
     <string name="various_languages">Vários idiomas</string>
     <string name="text_clear_history_prompt">Limpar todo o histórico de leitura permanentemente\?</string>
     <string name="operation_not_supported">Esta operação não é suportada</string>
-    <string name="automatic">Automático (segue o sistema)</string>
+    <string name="follow_system">Automático (segue o sistema)</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d de %2$d em</string>
     <string name="webtoon">Webtoon</string>
     <string name="switch_pages">Alternar páginas</string>

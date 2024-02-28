@@ -45,7 +45,7 @@
     <string name="theme">Тэма</string>
     <string name="light">Светлая</string>
     <string name="dark">Цёмная</string>
-    <string name="automatic">Як у сістэме</string>
+    <string name="follow_system">Як у сістэме</string>
     <string name="pages">Старонкi</string>
     <string name="clear">Ачысціць</string>
     <string name="text_clear_history_prompt">Вы ўпэўненыя, што жадаеце ачысціць гісторыю\?</string>

@@ -48,7 +48,7 @@
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <!-- Should be as abstract as possible -->
-	<string name="automatic">Follow system</string>
+	<string name="follow_system">Follow system</string>
     <string name="pages">Pages</string>
     <string name="clear">Clear</string>
     <string name="text_clear_history_prompt">Clear all reading history permanently?</string>
@@ -599,4 +599,8 @@
     <string name="default_page_save_dir">Default page save directory</string>
     <string name="remove_from_history">Remove from history</string>
 	<string name="location">Location</string>
+	<string name="preferred_download_format">Preferred download format</string>
+	<string name="automatic">Automatic</string>
+	<string name="single_cbz_file">Single CBZ file</string>
+	<string name="multiple_cbz_files">Multiple CBZ files</string>
 </resources>

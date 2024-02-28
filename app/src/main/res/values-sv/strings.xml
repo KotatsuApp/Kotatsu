@@ -39,7 +39,7 @@
 	<string name="manga_downloading_">Laddar ned…</string>
 	<string name="processing_">Behandlar…</string>
 	<string name="theme">Tema</string>
-	<string name="automatic">Systemtema</string>
+	<string name="follow_system">Systemtema</string>
 	<string name="remove">Ta bort</string>
 	<string name="text_file_sizes">B|kB|MB|GB|TB</string>
 	<string name="add_new_category">Ny kategori</string>

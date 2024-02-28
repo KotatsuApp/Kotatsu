@@ -74,7 +74,7 @@
     <string name="theme">主题</string>
     <string name="dark">深色</string>
     <string name="light">浅色</string>
-    <string name="automatic">跟随系统</string>
+    <string name="follow_system">跟随系统</string>
     <string name="pages">页面</string>
     <string name="clear">清除</string>
     <string name="text_clear_history_prompt">确定永久清除所有阅读历史吗?</string>

@@ -37,7 +37,7 @@
     <string name="theme">Tema</string>
     <string name="light">Açık</string>
     <string name="dark">Koyu</string>
-    <string name="automatic">Sistemle uyumlu</string>
+    <string name="follow_system">Sistemle uyumlu</string>
     <string name="pages">Sayfalar</string>
     <string name="clear">Temizle</string>
     <string name="text_clear_history_prompt">Tüm okuma geçmişi kalıcı olarak silinsin mi\?</string>

@@ -33,7 +33,7 @@
     <string name="theme">Téma</string>
     <string name="light">Světlé</string>
     <string name="dark">Tmavé</string>
-    <string name="automatic">Následovat systém</string>
+    <string name="follow_system">Následovat systém</string>
     <string name="remove">Odstranit</string>
     <string name="_s_deleted_from_local_storage">\"%s\" smazáno z místního uložiště</string>
     <string name="share_image">Sdílet obrázek</string>

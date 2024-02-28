@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string-array name="themes" translatable="false">
-		<item>@string/automatic</item>
+		<item>@string/follow_system</item>
 		<item>@string/light</item>
 		<item>@string/dark</item>
 	</string-array>
@@ -81,5 +81,10 @@
 	<string-array name="details_tabs" translatable="false">
 		<item>@string/chapters</item>
 		<item>@string/pages</item>
+	</string-array>
+	<string-array name="download_formats" translatable="false">
+		<item>@string/automatic</item>
+		<item>@string/single_cbz_file</item>
+		<item>@string/multiple_cbz_files</item>
 	</string-array>
 </resources>

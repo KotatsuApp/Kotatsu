@@ -4,7 +4,7 @@
     <string name="text_clear_history_prompt">Gesamten Leseverlauf unwiderruflich löschen\?</string>
     <string name="theme">Design</string>
     <string name="pages">Seiten</string>
-    <string name="automatic">Wie System</string>
+    <string name="follow_system">Wie System</string>
     <string name="dark">Dunkel</string>
     <string name="light">Hell</string>
     <string name="filter">Filter</string>

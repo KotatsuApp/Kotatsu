@@ -191,7 +191,7 @@
     <string name="manga_downloading_">Завантаження…</string>
     <string name="clear">Очистити</string>
     <string name="downloads">Завантаження</string>
-    <string name="automatic">Як в системі</string>
+    <string name="follow_system">Як в системі</string>
     <string name="chapter_is_missing">Розділ відсутній</string>
     <string name="genres">Жанри</string>
     <string name="system_default">За умовчанням</string>

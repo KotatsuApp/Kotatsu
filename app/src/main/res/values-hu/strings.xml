@@ -32,7 +32,7 @@
     <string name="by_rating">Értékelés</string>
     <string name="filter">Szűrő</string>
     <string name="light">Fényes</string>
-    <string name="automatic">Rendszer alapján</string>
+    <string name="follow_system">Rendszer alapján</string>
     <string name="clear">Törlés</string>
     <string name="text_clear_history_prompt">Véglegesen törli az összes olvasási előzményt?</string>
     <string name="remove">Eltávolítás</string>

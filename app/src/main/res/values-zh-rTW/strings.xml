@@ -236,7 +236,7 @@
     <string name="by_rating">評分</string>
     <string name="sort_order">排列順序</string>
     <string name="dark">深色</string>
-    <string name="automatic">跟隨系統</string>
+    <string name="follow_system">跟隨系統</string>
     <string name="pages">頁數</string>
     <string name="_import">匯入</string>
     <string name="no_description">沒有描述</string>

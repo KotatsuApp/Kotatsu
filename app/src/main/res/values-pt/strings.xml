@@ -34,7 +34,7 @@
     <string name="sort_order">Ordem de classificação</string>
     <string name="filter">Filtro</string>
     <string name="dark">Escuro</string>
-    <string name="automatic">Siga o sistema</string>
+    <string name="follow_system">Siga o sistema</string>
     <string name="pages">Páginas</string>
     <string name="clear">Limpar</string>
     <string name="text_clear_history_prompt">Limpar todo o histórico de leitura permanentemente\?</string>

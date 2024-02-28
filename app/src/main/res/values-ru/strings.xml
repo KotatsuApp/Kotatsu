@@ -45,7 +45,7 @@
     <string name="theme">Тема</string>
     <string name="light">Светлая</string>
     <string name="dark">Тёмная</string>
-    <string name="automatic">Как в системе</string>
+    <string name="follow_system">Как в системе</string>
     <string name="pages">Страницы</string>
     <string name="clear">Очистить</string>
     <string name="text_clear_history_prompt">Очистить всю историю чтения полностью\?</string>

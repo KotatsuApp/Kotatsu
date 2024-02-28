@@ -168,7 +168,7 @@
     <string name="scale_mode">skaala mood</string>
     <string name="advanced">Täiustatud</string>
     <string name="only_using_wifi">Ainult Wi-Fi-l</string>
-    <string name="automatic">Jälgne süsteemile</string>
+    <string name="follow_system">Jälgne süsteemile</string>
     <string name="sync_settings">Sünkroniseeri seadeid</string>
     <string name="black_dark_theme">Must</string>
     <string name="text_history_holder_primary">Mis sa loed näidatakse siin</string>

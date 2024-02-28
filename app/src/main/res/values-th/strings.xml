@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="light">สว่าง</string>
-    <string name="automatic">ตั้งค่าตามเครื่อง</string>
+    <string name="follow_system">ตั้งค่าตามเครื่อง</string>
     <string name="text_clear_history_prompt">จะเคลียร์ประวัติการอ่านทั้งหมดแบบถาวรใช่ไหม\?</string>
     <string name="remove">ลบ</string>
     <string name="_s_deleted_from_local_storage">\"%s\" ได้ถูกลบจากที่จัดเก็บในเครื่องแล้ว</string>

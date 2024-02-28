@@ -37,7 +37,7 @@
     <string name="manga_downloading_">جاري التنزيل…</string>
     <string name="create_shortcut">انشاء اختصار…</string>
     <string name="theme">مظهر</string>
-    <string name="automatic">حسب النظام</string>
+    <string name="follow_system">حسب النظام</string>
     <string name="share_s">شارك %s</string>
     <string name="processing_">في طور معالجة…</string>
     <string name="updated">محدث</string>

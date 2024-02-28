@@ -277,6 +277,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isDownloadsWiFiOnly: Boolean
 		get() = prefs.getBoolean(KEY_DOWNLOADS_WIFI, false)
 
+	val preferredDownloadFormat: DownloadFormat
+		get() = prefs.getEnumValue(KEY_DOWNLOADS_FORMAT, DownloadFormat.AUTOMATIC)
+
 	var isSuggestionsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SUGGESTIONS, false)
 		set(value) = prefs.edit { putBoolean(KEY_SUGGESTIONS, value) }
@@ -552,6 +555,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_MAL = "mal"
 		const val KEY_KITSU = "kitsu"
 		const val KEY_DOWNLOADS_WIFI = "downloads_wifi"
+		const val KEY_DOWNLOADS_FORMAT = "downloads_format"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 		const val KEY_DOH = "doh"
 		const val KEY_EXIT_CONFIRM = "exit_confirm"

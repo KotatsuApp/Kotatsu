@@ -4,7 +4,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import okhttp3.internal.format
 import okio.Closeable
+import org.koitharu.kotatsu.core.prefs.DownloadFormat
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -35,22 +37,32 @@ sealed class LocalMangaOutput(
 		const val SUFFIX_TMP = ".tmp"
 		private val mutex = Mutex()
 
-		suspend fun getOrCreate(root: File, manga: Manga): LocalMangaOutput = withContext(Dispatchers.IO) {
-			val preferSingleCbz = manga.chapters.let {
-				it != null && it.size <= 3
+		suspend fun getOrCreate(
+			root: File,
+			manga: Manga,
+			format: DownloadFormat,
+		): LocalMangaOutput = withContext(Dispatchers.IO) {
+			val targetFormat = if (format == DownloadFormat.AUTOMATIC) {
+				if (manga.chapters.let { it != null && it.size <= 3 }) {
+					DownloadFormat.SINGLE_CBZ
+				} else {
+					DownloadFormat.MULTIPLE_CBZ
+				}
+			} else {
+				format
 			}
-			checkNotNull(getImpl(root, manga, onlyIfExists = false, preferSingleCbz))
+			checkNotNull(getImpl(root, manga, onlyIfExists = false, format = targetFormat))
 		}
 
 		suspend fun get(root: File, manga: Manga): LocalMangaOutput? = withContext(Dispatchers.IO) {
-			getImpl(root, manga, onlyIfExists = true, preferSingleCbz = false)
+			getImpl(root, manga, onlyIfExists = true, format = DownloadFormat.AUTOMATIC)
 		}
 
 		private suspend fun getImpl(
 			root: File,
 			manga: Manga,
 			onlyIfExists: Boolean,
-			preferSingleCbz: Boolean,
+			format: DownloadFormat,
 		): LocalMangaOutput? {
 			mutex.withLock {
 				var i = 0
@@ -75,10 +87,10 @@ sealed class LocalMangaOutput(
 							continue
 						}
 
-						!onlyIfExists -> if (preferSingleCbz) {
-							LocalMangaZipOutput(zip, manga)
-						} else {
-							LocalMangaDirOutput(dir, manga)
+						!onlyIfExists -> when (format) {
+							DownloadFormat.AUTOMATIC -> null
+							DownloadFormat.SINGLE_CBZ -> LocalMangaZipOutput(zip, manga)
+							DownloadFormat.MULTIPLE_CBZ -> LocalMangaDirOutput(dir, manga)
 						}
 
 						else -> null

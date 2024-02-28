@@ -85,7 +85,7 @@
     <string name="newest">Најновије</string>
     <string name="light">Светла</string>
     <string name="dark">Мрачна</string>
-    <string name="automatic">Прати систем</string>
+    <string name="follow_system">Прати систем</string>
     <string name="filter">Филтер</string>
     <string name="theme">Тема</string>
     <string name="pages">Странице</string>
