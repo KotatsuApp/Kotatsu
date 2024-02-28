@@ -593,4 +593,5 @@
     <string name="check_for_new_chapters_disabled">Naka-disable ang pagsuri para sa mga bagong kabanata</string>
     <string name="reading_time_estimation">Ipakita ang tinantyang oras ng pagbabasa</string>
     <string name="reading_time_estimation_summary">Maaaring hindi tumpak ang halaga ng pagtatantya ng oras</string>
+    <string name="location">Lokasyon</string>
 </resources>

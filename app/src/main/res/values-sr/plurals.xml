@@ -6,7 +6,7 @@
         <item quantity="other">%1$d ставки</item>
     </plurals>
     <plurals name="minutes_ago">
-        <item quantity="one">пре %1$d минута</item>
+        <item quantity="one">пре %1$d минут</item>
         <item quantity="few">пре %1$d минута</item>
         <item quantity="other">пре %1$d минута</item>
     </plurals>
@@ -26,7 +26,7 @@
         <item quantity="other">%1$d нових поглавља</item>
     </plurals>
     <plurals name="chapters">
-        <item quantity="one">%1$d поглављe</item>
+        <item quantity="one">%1$d поглавље</item>
         <item quantity="few">%1$d поглавља</item>
         <item quantity="other">%1$d поглавља</item>
     </plurals>
