@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.parsers.util.isNumeric
 import org.koitharu.kotatsu.parsers.util.md5
 import javax.inject.Inject
 
@@ -39,6 +40,7 @@ class ProtectSetupViewModel @Inject constructor(
 		} else {
 			if (firstPassword.value == password) {
 				settings.appPassword = password.md5()
+				settings.isAppPasswordNumeric = password.isNumeric()
 				onPasswordSet.call(Unit)
 			} else {
 				onPasswordMismatch.call(Unit)
