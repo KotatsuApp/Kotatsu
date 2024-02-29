@@ -29,6 +29,8 @@ import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.sync.ui.SyncSettingsIntent
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.scrobbling.kitsu.ui.KitsuAuthActivity
+import org.koitharu.kotatsu.settings.utils.SplitSwitchPreference
+import org.koitharu.kotatsu.stats.ui.StatsActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,6 +54,12 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_services)
+		findPreference<SplitSwitchPreference>(AppSettings.KEY_STATS_ENABLED)?.let {
+			it.onContainerClickListener = Preference.OnPreferenceClickListener {
+				it.context.startActivity(Intent(it.context, StatsActivity::class.java))
+				true
+			}
+		}
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -199,7 +207,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 	}
 
 	private fun bindStatsSummary() {
-		findPreference<Preference>(AppSettings.KEY_STATS)?.setSummary(
+		findPreference<Preference>(AppSettings.KEY_STATS_ENABLED)?.setSummary(
 			if (settings.isStatsEnabled) R.string.enabled else R.string.disabled,
 		)
 	}

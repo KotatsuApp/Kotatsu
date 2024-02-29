@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:baselineAligned="false"
+	android:clipToPadding="false"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
+	android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+	tools:ignore="RtlSymmetry">
+
+	<LinearLayout
+		android:id="@+id/press_container"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:background="?selectableItemBackground"
+		android:baselineAligned="false"
+		android:clipToPadding="false"
+		android:gravity="center_vertical"
+		android:minHeight="?android:attr/listPreferredItemHeightSmall"
+		android:orientation="horizontal"
+		android:paddingStart="?android:attr/listPreferredItemPaddingStart">
+
+		<include layout="@layout/image_frame" />
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingTop="16dp"
+			android:paddingBottom="16dp">
+
+			<TextView
+				android:id="@android:id/title"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:ellipsize="marquee"
+				android:singleLine="true"
+				android:textAppearance="?android:attr/textAppearanceListItem" />
+
+			<TextView
+				android:id="@android:id/summary"
+				style="@style/PreferenceSummaryTextStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@android:id/title"
+				android:layout_alignStart="@android:id/title"
+				android:layout_gravity="start"
+				android:maxLines="10"
+				android:textAlignment="viewStart"
+				android:textColor="?android:attr/textColorSecondary" />
+
+		</RelativeLayout>
+	</LinearLayout>
+
+	<View
+		android:layout_width="1dp"
+		android:layout_height="match_parent"
+		android:layout_marginVertical="16dp"
+		android:background="?dividerVertical" />
+
+	<!-- Preference should place its actual preference widget here. -->
+	<LinearLayout
+		android:id="@android:id/widget_frame"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:gravity="end|center_vertical"
+		android:orientation="vertical"
+		android:paddingStart="16dp"
+		android:paddingEnd="0dp" />
+
+</LinearLayout>

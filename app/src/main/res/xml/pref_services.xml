@@ -28,7 +28,7 @@
 		android:summary="@string/related_manga_summary"
 		android:title="@string/related_manga" />
 
-	<SwitchPreferenceCompat
+	<org.koitharu.kotatsu.settings.utils.SplitSwitchPreference
 		android:defaultValue="false"
 		android:key="stats_on"
 		android:title="@string/reading_stats"
