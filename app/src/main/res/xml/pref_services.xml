@@ -28,9 +28,9 @@
 		android:summary="@string/related_manga_summary"
 		android:title="@string/related_manga" />
 
-	<Preference
-		android:fragment="org.koitharu.kotatsu.settings.StatsSettingsFragment"
-		android:key="stats"
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="stats_on"
 		android:title="@string/reading_stats"
 		app:allowDividerAbove="true" />
 

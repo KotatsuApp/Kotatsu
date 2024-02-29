@@ -17,6 +17,7 @@
 		android:id="@+id/imageView_badge"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:contentDescription="@null"
 		app:srcCompat="@drawable/bg_rounded_square" />
 
 	<LinearLayout

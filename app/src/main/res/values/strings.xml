@@ -605,4 +605,7 @@
 	<string name="multiple_cbz_files">Multiple CBZ files</string>
 	<string name="stats_enabled">Enable statistics</string>
 	<string name="reading_stats">Reading statistics</string>
+	<string name="other_manga">Other manga</string>
+	<string name="less_than_minute">Less than a minute</string>
+	<string name="statistics">Statistics</string>
 </resources>

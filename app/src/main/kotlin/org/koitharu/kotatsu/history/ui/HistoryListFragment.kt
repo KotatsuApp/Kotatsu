@@ -11,7 +11,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkManageIntent
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
+import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
@@ -27,6 +29,7 @@ class HistoryListFragment : MangaListFragment() {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		RecyclerScrollKeeper(binding.recyclerView).attach()
 		addMenuProvider(HistoryListMenuProvider(binding.root.context, viewModel))
+		viewModel.isStatsEnabled.observe(viewLifecycleOwner, MenuInvalidator(requireActivity()))
 	}
 
 	override fun onScrolledToEnd() = Unit

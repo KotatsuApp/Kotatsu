@@ -9,4 +9,10 @@
 		android:title="@string/clear_history"
 		app:showAsAction="never" />
 
+	<item
+		android:id="@+id/action_stats"
+		android:orderInCategory="40"
+		android:title="@string/statistics"
+		app:showAsAction="never" />
+
 </menu>

@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.stats.ui
 
 import android.content.res.ColorStateList
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.databinding.ItemStatsBinding
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -14,12 +15,13 @@ fun statsAD(
 ) {
 
 	binding.root.setOnClickListener { v ->
-		listener.onItemClick(item.manga, v)
+		listener.onItemClick(item.manga ?: return@setOnClickListener, v)
 	}
 
 	bind {
-		binding.textViewTitle.text = item.manga.title
+		binding.textViewTitle.text = item.manga?.title ?: getString(R.string.other_manga)
 		binding.textViewSummary.text = item.time.format(context.resources)
 		binding.imageViewBadge.imageTintList = ColorStateList.valueOf(item.getColor(context))
+		binding.root.isClickable = item.manga != null
 	}
 }

@@ -239,6 +239,9 @@
 				<data android:scheme="kotatsu+kitsu" />
 			</intent-filter>
 		</activity>
+		<activity
+			android:name="org.koitharu.kotatsu.stats.ui.StatsActivity"
+			android:label="@string/reading_stats" />
 
 		<service
 			android:name="androidx.work.impl.foreground.SystemForegroundService"

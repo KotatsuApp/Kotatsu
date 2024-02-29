@@ -10,6 +10,7 @@ data class ReadingTime(
 ) {
 
 	fun format(resources: Resources): String = when {
+		hours == 0 && minutes == 0 -> resources.getString(R.string.less_than_minute)
 		hours == 0 -> resources.getQuantityString(R.plurals.minutes, minutes, minutes)
 		minutes == 0 -> resources.getQuantityString(R.plurals.hours, hours, hours)
 		else -> resources.getString(

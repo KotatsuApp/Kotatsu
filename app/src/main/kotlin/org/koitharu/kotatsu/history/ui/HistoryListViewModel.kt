@@ -71,6 +71,12 @@ class HistoryListViewModel @Inject constructor(
 		g && s.isGroupingSupported()
 	}
 
+	val isStatsEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_STATS_ENABLED,
+		valueProducer = { isStatsEnabled },
+	)
+
 	override val content = combine(
 		sortOrder.flatMapLatest { repository.observeAllWithHistory(it) },
 		isGroupingEnabled,

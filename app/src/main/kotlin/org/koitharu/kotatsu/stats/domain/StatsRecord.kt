@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.stats.domain
 
 import android.content.Context
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import com.google.android.material.R
 import com.google.android.material.color.MaterialColors
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
 
 data class StatsRecord(
-	val manga: Manga,
+	val manga: Manga?,
 	val duration: Long,
 ) : ListModel {
 
@@ -34,8 +35,12 @@ data class StatsRecord(
 
 	@ColorInt
 	fun getColor(context: Context): Int {
-		val hue = (manga.id.absoluteValue % 360).toFloat()
-		val color = ColorUtils.HSLToColor(floatArrayOf(hue, 0.5f, 0.5f))
+		val color = if (manga != null) {
+			val hue = (manga.id.absoluteValue % 360).toFloat()
+			ColorUtils.HSLToColor(floatArrayOf(hue, 0.5f, 0.5f))
+		} else {
+			context.getThemeColor(R.attr.colorSurface)
+		}
 		val backgroundColor = context.getThemeColor(R.attr.colorSurfaceContainerHigh)
 		return MaterialColors.harmonize(color, backgroundColor)
 	}

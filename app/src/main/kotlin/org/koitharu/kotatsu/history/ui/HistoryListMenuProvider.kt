@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.history.ui
 
 import android.content.Context
+import android.content.Intent
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -9,6 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.dialog.RememberSelectionDialogListener
 import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
+import org.koitharu.kotatsu.stats.ui.StatsActivity
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -24,10 +26,20 @@ class HistoryListMenuProvider(
 		menuInflater.inflate(R.menu.opt_history, menu)
 	}
 
+	override fun onPrepareMenu(menu: Menu) {
+		super.onPrepareMenu(menu)
+		menu.findItem(R.id.action_stats)?.isVisible = viewModel.isStatsEnabled.value
+	}
+
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		return when (menuItem.itemId) {
 			R.id.action_clear_history -> {
 				showClearHistoryDialog()
+				true
+			}
+
+			R.id.action_stats -> {
+				context.startActivity(Intent(context, StatsActivity::class.java))
 				true
 			}
 

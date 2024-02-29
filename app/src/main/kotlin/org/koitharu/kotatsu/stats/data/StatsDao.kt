@@ -29,7 +29,7 @@ interface StatsDao {
 	@Query("SELECT IFNULL(SUM(duration), 0) FROM stats")
 	suspend fun getTotalReadingTime(): Long
 
-	@Query("SELECT manga_id, SUM(duration) AS d FROM stats GROUP BY manga_id ORDER BY d")
+	@Query("SELECT manga_id, SUM(duration) AS d FROM stats GROUP BY manga_id ORDER BY d DESC")
 	suspend fun getDurationStats(): Map<@MapColumn("manga_id") Long, @MapColumn("d") Long>
 
 	@Upsert
