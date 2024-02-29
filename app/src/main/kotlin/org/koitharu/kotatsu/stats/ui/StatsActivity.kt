@@ -1,6 +1,11 @@
 package org.koitharu.kotatsu.stats.ui
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.style.DynamicDrawableSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.ImageSpan
+import android.text.style.RelativeSizeSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,7 +14,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
+import androidx.core.text.buildSpannedString
+import androidx.core.text.inSpans
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,6 +28,7 @@ import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.showOrHide
@@ -27,6 +36,7 @@ import org.koitharu.kotatsu.databinding.ActivityStatsBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.stats.domain.StatsPeriod
 import org.koitharu.kotatsu.stats.domain.StatsRecord
 import org.koitharu.kotatsu.stats.ui.views.PieChartView
 
@@ -46,6 +56,9 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(), OnListItemClickListe
 		viewBinding.chart.onSegmentClickListener = this
 		viewModel.isLoading.observe(this) {
 			viewBinding.progressBar.showOrHide(it)
+		}
+		viewModel.period.observe(this) {
+			supportActionBar?.setSubtitle(it.titleResId)
 		}
 		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.recyclerView))
 		viewModel.readingStats.observe(this) {
@@ -88,6 +101,11 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(), OnListItemClickListe
 				true
 			}
 
+			R.id.action_period -> {
+				showPeriodSelector()
+				true
+			}
+
 			else -> super.onOptionsItemSelected(item)
 		}
 	}
@@ -101,5 +119,18 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(), OnListItemClickListe
 			.setPositiveButton(R.string.clear) { _, _ ->
 				viewModel.clear()
 			}.show()
+	}
+
+	private fun showPeriodSelector() {
+		val menu = PopupMenu(this, viewBinding.toolbar)
+		for ((i, branch) in StatsPeriod.entries.withIndex()) {
+			menu.menu.add(Menu.NONE, Menu.NONE, i, branch.titleResId)
+		}
+		menu.setOnMenuItemClickListener {
+			StatsPeriod.entries.getOrNull(it.order)?.also {
+				viewModel.period.value = it
+			} != null
+		}
+		menu.show()
 	}
 }

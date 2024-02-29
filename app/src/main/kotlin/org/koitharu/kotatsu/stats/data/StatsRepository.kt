@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.stats.data
 import androidx.room.withTransaction
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toManga
+import org.koitharu.kotatsu.stats.domain.StatsPeriod
 import org.koitharu.kotatsu.stats.domain.StatsRecord
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -11,8 +12,13 @@ class StatsRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
 
-	suspend fun getReadingStats(): List<StatsRecord> = db.withTransaction {
-		val stats = db.getStatsDao().getDurationStats()
+	suspend fun getReadingStats(period: StatsPeriod): List<StatsRecord> = db.withTransaction {
+		val fromDate = if (period == StatsPeriod.ALL) {
+			0L
+		} else {
+			System.currentTimeMillis() - TimeUnit.DAYS.toMillis(period.days.toLong())
+		}
+		val stats = db.getStatsDao().getDurationStats(fromDate)
 		val minute = TimeUnit.MINUTES.toMillis(1)
 		val mangaDao = db.getMangaDao()
 		val result = ArrayList<StatsRecord>(stats.size)

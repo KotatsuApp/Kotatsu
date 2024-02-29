@@ -611,4 +611,9 @@
 	<string name="clear_stats">Clear statistics</string>
 	<string name="stats_cleared">Statistics cleared</string>
 	<string name="clear_stats_confirm">Do you really want to clear all reading statistics? This action cannot be undone.</string>
+	<string name="week">Week</string>
+	<string name="month">Month</string>
+	<string name="all_time">All time</string>
+	<string name="day">Day</string>
+	<string name="three_months">Three months</string>
 </resources>

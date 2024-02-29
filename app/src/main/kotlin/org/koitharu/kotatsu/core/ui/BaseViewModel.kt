@@ -68,6 +68,13 @@ abstract class BaseViewModel : ViewModel() {
 		errorEvent.call(error)
 	}
 
+	protected inline suspend fun <T> withLoading(block: () -> T): T = try {
+		loadingCounter.increment()
+		block()
+	} finally {
+		loadingCounter.decrement()
+	}
+
 	protected fun MutableStateFlow<Int>.increment() = update { it + 1 }
 
 	protected fun MutableStateFlow<Int>.decrement() = update { it - 1 }
