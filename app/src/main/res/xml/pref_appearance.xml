@@ -48,12 +48,6 @@
 
 	<PreferenceCategory android:title="@string/details">
 
-		<SwitchPreferenceCompat
-			android:defaultValue="true"
-			android:key="reading_time"
-			android:summary="@string/reading_time_estimation_summary"
-			android:title="@string/reading_time_estimation" />
-
 		<ListPreference
 			android:defaultValue="0"
 			android:entries="@array/details_tabs"

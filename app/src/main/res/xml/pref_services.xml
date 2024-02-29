@@ -34,6 +34,12 @@
 		android:title="@string/reading_stats"
 		app:allowDividerAbove="true" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="reading_time"
+		android:summary="@string/reading_time_estimation_summary"
+		android:title="@string/reading_time_estimation" />
+
 	<PreferenceCategory android:title="@string/tracking">
 
 		<Preference
