@@ -44,6 +44,12 @@ class ProtectActivity :
 		viewBinding.buttonNext.setOnClickListener(this)
 		viewBinding.buttonCancel.setOnClickListener(this)
 
+		viewBinding.editPassword.inputType = if (viewModel.isNumericPassword) {
+			EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD
+		} else {
+			EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_PASSWORD
+		}
+
 		viewModel.onError.observeEvent(this, this::onError)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.onUnlockSuccess.observeEvent(this) {
