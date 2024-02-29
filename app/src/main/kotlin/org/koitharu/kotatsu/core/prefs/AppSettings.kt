@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.find
+import org.koitharu.kotatsu.parsers.util.isNumeric
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
@@ -191,10 +192,12 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	var appPassword: String?
 		get() = prefs.getString(KEY_APP_PASSWORD, null)
 		set(value) = prefs.edit {
-			if (value != null) putString(KEY_APP_PASSWORD, value) else remove(
-				KEY_APP_PASSWORD,
-			)
+			if (value != null) putString(KEY_APP_PASSWORD, value) else remove(KEY_APP_PASSWORD)
 		}
+
+	var isAppPasswordNumeric: Boolean
+		get() = prefs.getBoolean(KEY_APP_PASSWORD_NUMERIC, false)
+		set(value) = prefs.edit { putBoolean(KEY_APP_PASSWORD_NUMERIC, value) }
 
 	val isLoggingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_LOGGING_ENABLED, false)
@@ -528,6 +531,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READER_MODE = "reader_mode"
 		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
 		const val KEY_APP_PASSWORD = "app_password"
+		const val KEY_APP_PASSWORD_NUMERIC = "app_password_num"
 		const val KEY_PROTECT_APP = "protect_app"
 		const val KEY_PROTECT_APP_BIOMETRIC = "protect_app_bio"
 		const val KEY_APP_VERSION = "app_version"
