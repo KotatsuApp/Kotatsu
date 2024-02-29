@@ -14,7 +14,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.util.ext.catchingWebViewUnavailability
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.network.UserAgents
 import com.google.android.material.R as materialR
@@ -26,7 +25,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		if (!catchingWebViewUnavailability { setContentView(ActivityBrowserBinding.inflate(layoutInflater)) }) {
+		if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
 			return
 		}
 		supportActionBar?.run {

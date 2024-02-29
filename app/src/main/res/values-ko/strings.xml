@@ -62,7 +62,7 @@
     <string name="processing_">처리중…</string>
     <string name="updated">최근 업데이트 순</string>
     <string name="newest">최근 발간 순</string>
-    <string name="automatic">시스템 설정</string>
+    <string name="follow_system">시스템 설정</string>
     <string name="delete">지우기</string>
     <string name="text_file_sizes">바이트|kB|MB|GB|TB</string>
     <string name="clear_pages_cache">페이지 캐시 지우기</string>

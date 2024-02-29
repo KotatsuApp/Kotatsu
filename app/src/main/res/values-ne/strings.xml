@@ -34,7 +34,7 @@
     <string name="sort_order">क्रमबद्ध क्रम</string>
     <string name="theme">थीम</string>
     <string name="light">उज्यालो</string>
-    <string name="automatic">सिस्टम पालना गर्नुहोस्</string>
+    <string name="follow_system">सिस्टम पालना गर्नुहोस्</string>
     <string name="computing_">कम्प्युटिङ…</string>
     <string name="favourites">मनपर्ने</string>
     <string name="details">विवरण</string>

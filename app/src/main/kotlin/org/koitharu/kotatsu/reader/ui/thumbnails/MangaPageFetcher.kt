@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.reader.ui.thumbnails
 
 import android.content.Context
+import android.webkit.MimeTypeMap
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import coil.ImageLoader
 import coil.decode.DataSource
@@ -20,6 +22,7 @@ import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.local.data.isFileUri
 import org.koitharu.kotatsu.local.data.isZipUri
 import org.koitharu.kotatsu.local.data.util.withExtraCloseable
 import org.koitharu.kotatsu.parsers.model.MangaPage
@@ -56,8 +59,8 @@ class MangaPageFetcher(
 
 	private suspend fun loadPage(pageUrl: String): SourceResult {
 		val uri = pageUrl.toUri()
-		return if (uri.isZipUri()) {
-			runInterruptible(Dispatchers.IO) {
+		return when {
+			uri.isZipUri() -> runInterruptible(Dispatchers.IO) {
 				val zip = ZipFile(uri.schemeSpecificPart)
 				val entry = zip.getEntry(uri.fragment)
 				SourceResult(
@@ -66,31 +69,47 @@ class MangaPageFetcher(
 						context = context,
 						metadata = MangaPageMetadata(page),
 					),
-					mimeType = null,
+					mimeType = MimeTypeMap.getSingleton()
+						.getMimeTypeFromExtension(entry.name.substringAfterLast('.', "")),
 					dataSource = DataSource.DISK,
 				)
 			}
-		} else {
-			val request = PageLoader.createPageRequest(page, pageUrl)
-			imageProxyInterceptor.interceptPageRequest(request, okHttpClient).use { response ->
-				check(response.isSuccessful) {
-					"Invalid response: ${response.code} ${response.message} at $pageUrl"
-				}
-				val body = checkNotNull(response.body) {
-					"Null response"
-				}
-				val mimeType = response.mimeType
-				val file = body.use {
-					pagesCache.put(pageUrl, it.source())
-				}
+
+			uri.isFileUri() -> runInterruptible(Dispatchers.IO) {
+				val file = uri.toFile()
 				SourceResult(
 					source = ImageSource(
-						file = file.toOkioPath(),
+						source = file.source().buffer(),
+						context = context,
 						metadata = MangaPageMetadata(page),
 					),
-					mimeType = mimeType,
-					dataSource = DataSource.NETWORK,
+					mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension),
+					dataSource = DataSource.DISK,
 				)
+			}
+
+			else -> {
+				val request = PageLoader.createPageRequest(page, pageUrl)
+				imageProxyInterceptor.interceptPageRequest(request, okHttpClient).use { response ->
+					check(response.isSuccessful) {
+						"Invalid response: ${response.code} ${response.message} at $pageUrl"
+					}
+					val body = checkNotNull(response.body) {
+						"Null response"
+					}
+					val mimeType = response.mimeType
+					val file = body.use {
+						pagesCache.put(pageUrl, it.source())
+					}
+					SourceResult(
+						source = ImageSource(
+							file = file.toOkioPath(),
+							metadata = MangaPageMetadata(page),
+						),
+						mimeType = mimeType,
+						dataSource = DataSource.NETWORK,
+					)
+				}
 			}
 		}
 	}

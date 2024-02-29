@@ -31,7 +31,7 @@
     <string name="by_rating">Βαθμολογία</string>
     <string name="filter">Φίλτρο</string>
     <string name="dark">Σκοτεινό</string>
-    <string name="automatic">Όπως στο σύστημα</string>
+    <string name="follow_system">Όπως στο σύστημα</string>
     <string name="clear">Εκκαθάριση</string>
     <string name="text_clear_history_prompt">Να διαγράψετε μόνιμα όλο το ιστορικό ανάγνωσης;</string>
     <string name="remove">Διαγραφή</string>

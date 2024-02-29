@@ -45,7 +45,7 @@
     <string name="theme">Tema</string>
     <string name="light">Claro</string>
     <string name="dark">Oscuro</string>
-    <string name="automatic">De acuerdo al sistema</string>
+    <string name="follow_system">De acuerdo al sistema</string>
     <string name="pages">Páginas</string>
     <string name="clear">Limpiar</string>
     <string name="text_clear_history_prompt">Borrar todo el historial de lectura de forma permanente\?</string>
@@ -328,7 +328,7 @@
     <string name="color_correction_hint">Los ajustes de color elegidos serán recordados para este manga</string>
     <string name="feed">Fuente</string>
     <string name="history_shortcuts">Mostrar los accesos directos a los mangas recientes</string>
-    <string name="reader_control_ltr_summary">Tocando el borde derecho o pulsando la tecla derecha se pasa siempre a la página siguiente</string>
+    <string name="reader_control_ltr_summary">Tocando en el borde derecho, o pulsando la tecla derecha, se pasa siempre a la página siguiente.</string>
     <string name="reader_control_ltr">Control ergonómico del lector</string>
     <string name="color_correction">Corrección del color</string>
     <string name="brightness">Brillo</string>
@@ -588,4 +588,10 @@
     <string name="reading_time_estimation_summary">El valor estimado puede ser inexacto</string>
     <string name="check_for_new_chapters_disabled">La búsqueda de nuevos capítulos está desactivada</string>
     <string name="suggestions_unavailable_text">Sugerencias desactivadas</string>
+    <string name="show_labels_in_navbar">Mostrar etiquetas en la barra de navegación</string>
+    <string name="ask_for_dest_dir_every_time">Preguntar siempre por el directorio de destino</string>
+    <string name="remove_from_history">Eliminar del historial</string>
+    <string name="pages_saving">Guardar páginas</string>
+    <string name="default_page_save_dir">Directorio predeterminado para guardar páginas</string>
+    <string name="location">Ubicación</string>
 </resources>

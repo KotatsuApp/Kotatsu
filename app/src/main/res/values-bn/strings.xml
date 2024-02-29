@@ -64,7 +64,7 @@
     <string name="theme">থিম</string>
     <string name="light">আলো</string>
     <string name="dark">আঁধার</string>
-    <string name="automatic">সিস্টেম অনুযায়ী</string>
+    <string name="follow_system">সিস্টেম অনুযায়ী</string>
     <string name="pages">পৃষ্ঠাগুলি</string>
     <string name="webtoon">ওয়েবটুন</string>
     <string name="read_mode">পড়ার মোড</string>

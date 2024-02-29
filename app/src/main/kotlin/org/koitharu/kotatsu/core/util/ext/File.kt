@@ -19,6 +19,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.PathWalkOption
 import kotlin.io.path.readAttributes
 import kotlin.io.path.walk
 
@@ -72,7 +73,7 @@ fun ContentResolver.resolveName(uri: Uri): String? {
 }
 
 suspend fun File.computeSize(): Long = runInterruptible(Dispatchers.IO) {
-	walkCompat().sumOf { it.length() }
+	walkCompat(includeDirectories = false).sumOf { it.length() }
 }
 
 fun File.children() = FileSequence(this)
@@ -87,10 +88,16 @@ val File.creationTime
 	}
 
 @OptIn(ExperimentalPathApi::class)
-fun File.walkCompat() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+fun File.walkCompat(includeDirectories: Boolean): Sequence<File> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 	// Use lazy loading on Android 8.0 and later
-	toPath().walk().map { it.toFile() }
+	val walk = if (includeDirectories) {
+		toPath().walk(PathWalkOption.INCLUDE_DIRECTORIES)
+	} else {
+		toPath().walk()
+	}
+	walk.map { it.toFile() }
 } else {
 	// Directories are excluded by default in Path.walk(), so do it here as well
-	walk().filter { it.isFile }
+	val walk = walk()
+	if (includeDirectories) walk else walk.filter { it.isFile }
 }

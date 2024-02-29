@@ -18,3 +18,5 @@ fun File.hasCbzExtension() = isCbzExtension(extension)
 fun Uri.isZipUri() = scheme.let {
 	it == URI_SCHEME_ZIP || it == "cbz" || it == "zip"
 }
+
+fun Uri.isFileUri() = scheme == "file"

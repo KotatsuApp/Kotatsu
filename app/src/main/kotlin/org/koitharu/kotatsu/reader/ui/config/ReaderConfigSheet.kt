@@ -39,14 +39,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ReaderConfigSheet :
 	BaseAdaptiveSheet<SheetReaderConfigBinding>(),
-	ActivityResultCallback<Uri?>,
 	View.OnClickListener,
 	MaterialButtonToggleGroup.OnButtonCheckedListener,
 	Slider.OnChangeListener,
 	CompoundButton.OnCheckedChangeListener {
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
-	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
 
 	@Inject
 	lateinit var orientationHelper: ScreenOrientationHelper
@@ -115,8 +113,7 @@ class ReaderConfigSheet :
 			}
 
 			R.id.button_save_page -> {
-				val page = viewModel.getCurrentPage() ?: return
-				viewModel.saveCurrentPage(page, savePageRequest)
+				findCallback()?.onSavePageClick() ?: return
 				dismissAllowingStateLoss()
 			}
 
@@ -181,11 +178,6 @@ class ReaderConfigSheet :
 		(viewBinding ?: return).labelTimerValue.text = getString(R.string.speed_value, value * 10f)
 	}
 
-	override fun onActivityResult(result: Uri?) {
-		viewModel.onActivityResult(result)
-		dismissAllowingStateLoss()
-	}
-
 	private fun observeScreenOrientation() {
 		orientationHelper.observeAutoOrientation()
 			.onEach {
@@ -215,6 +207,8 @@ class ReaderConfigSheet :
 		fun onReaderModeChanged(mode: ReaderMode)
 
 		fun onDoubleModeChanged(isEnabled: Boolean)
+
+		fun onSavePageClick()
 	}
 
 	companion object {

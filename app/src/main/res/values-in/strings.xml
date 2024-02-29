@@ -42,7 +42,7 @@
     <string name="theme">Tema</string>
     <string name="light">Terang</string>
     <string name="dark">Gelap</string>
-    <string name="automatic">Ikuti sistem</string>
+    <string name="follow_system">Ikuti sistem</string>
     <string name="pages">Halaman</string>
     <string name="clear">Bersihkan</string>
     <string name="remove">Hapus</string>
@@ -107,7 +107,7 @@
     <string name="new_version_s">Versi baru: %s</string>
     <string name="size_s">Ukuran: %s</string>
     <string name="updates_feed_cleared">Dibersihkan</string>
-    <string name="update">Pembaruan</string>
+    <string name="update">Perbarui</string>
     <string name="track_sources">Mencari pembaruan</string>
     <string name="dont_check">Jangan periksa</string>
     <string name="wrong_password">Kata sandi salah</string>

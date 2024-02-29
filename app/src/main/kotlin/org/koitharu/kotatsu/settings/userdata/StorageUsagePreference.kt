@@ -14,6 +14,7 @@ import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.widgets.SegmentedBarView
+import org.koitharu.kotatsu.core.util.Colors
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.databinding.PreferenceMemoryUsageBinding
@@ -38,15 +39,15 @@ class StorageUsagePreference @JvmOverloads constructor(
 		val binding = PreferenceMemoryUsageBinding.bind(holder.itemView)
 		val storageSegment = SegmentedBarView.Segment(
 			usage?.savedManga?.percent ?: 0f,
-			segmentColor(materialR.attr.colorPrimary),
+			Colors.segmentColor(context, materialR.attr.colorPrimary),
 		)
 		val pagesSegment = SegmentedBarView.Segment(
 			usage?.pagesCache?.percent ?: 0f,
-			segmentColor(materialR.attr.colorSecondary),
+			Colors.segmentColor(context, materialR.attr.colorSecondary),
 		)
 		val otherSegment = SegmentedBarView.Segment(
 			usage?.otherCache?.percent ?: 0f,
-			segmentColor(materialR.attr.colorTertiary),
+			Colors.segmentColor(context, materialR.attr.colorTertiary),
 		)
 
 		with(binding) {
@@ -80,28 +81,5 @@ class StorageUsagePreference @JvmOverloads constructor(
 		} else {
 			context.getString(emptyResId)
 		}
-	}
-
-	private fun getHue(hex: String): Float {
-		val r = (hex.substring(0, 2).toInt(16)).toFloat()
-		val g = (hex.substring(2, 4).toInt(16)).toFloat()
-		val b = (hex.substring(4, 6).toInt(16)).toFloat()
-
-		var hue = 0F
-		if ((r >= g) && (g >= b)) {
-			hue = 60 * (g - b) / (r - b)
-		} else if ((g > r) && (r >= b)) {
-			hue = 60 * (2 - (r - b) / (g - b))
-		}
-		return hue
-	}
-
-	@ColorInt
-	private fun segmentColor(@AttrRes resId: Int): Int {
-		val colorHex = String.format("%06x", context.getThemeColor(resId))
-		val hue = getHue(colorHex)
-		val color = ColorUtils.HSLToColor(floatArrayOf(hue, 0.5f, 0.5f))
-		val backgroundColor = context.getThemeColor(materialR.attr.colorSurfaceContainerHigh)
-		return MaterialColors.harmonize(color, backgroundColor)
 	}
 }

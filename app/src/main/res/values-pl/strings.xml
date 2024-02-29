@@ -174,7 +174,7 @@
     <string name="notifications_settings">Ustawienia powiadomień</string>
     <string name="remote_sources">Zewnętrzne źródła</string>
     <string name="theme">Motyw</string>
-    <string name="automatic">Systemowy</string>
+    <string name="follow_system">Systemowy</string>
     <string name="clear_pages_cache">Wyczyść pamięć podręczną stron</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="grid_size">Wielkość siatki</string>

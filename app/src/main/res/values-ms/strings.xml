@@ -45,7 +45,7 @@
     <string name="filter">Tapis</string>
     <string name="light">Terang</string>
     <string name="dark">Gelap</string>
-    <string name="automatic">Ikut sistem</string>
+    <string name="follow_system">Ikut sistem</string>
     <string name="pages">Muka surat</string>
     <string name="clear">Kosongkan</string>
     <string name="text_clear_history_prompt">Kosongkan semua sejarah pembacaan selama-lamanya?</string>

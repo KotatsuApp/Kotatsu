@@ -91,6 +91,7 @@ class DownloadWorker @AssistedInject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val mangaDataRepository: MangaDataRepository,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	private val settings: AppSettings,
 	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
 	notificationFactoryFactory: DownloadNotificationFactory.Factory,
 ) : CoroutineWorker(appContext, params) {
@@ -182,7 +183,7 @@ class DownloadWorker @AssistedInject constructor(
 				}
 				val repo = mangaRepositoryFactory.create(manga.source)
 				val mangaDetails = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
-				output = LocalMangaOutput.getOrCreate(destination, mangaDetails)
+				output = LocalMangaOutput.getOrCreate(destination, mangaDetails, settings.preferredDownloadFormat)
 				val coverUrl = mangaDetails.largeCoverUrl.ifNullOrEmpty { mangaDetails.coverUrl }
 				if (coverUrl.isNotEmpty()) {
 					downloadFile(coverUrl, destination, repo.source).let { file ->

@@ -7,7 +7,7 @@
     <string name="filter">Pansala</string>
     <string name="theme">Tema</string>
     <string name="dark">Madilim</string>
-    <string name="automatic">Sundan ang sistema</string>
+    <string name="follow_system">Sundan ang sistema</string>
     <string name="error_occurred">May nangyaring error</string>
     <string name="network_error">Error sa network</string>
     <string name="details">Mga detalye</string>
@@ -346,7 +346,7 @@
     <string name="allow_unstable_updates_summary">Makakuha ng paunawa tungkol sa mga unstable build</string>
     <string name="network_unavailable">Hindi magagamit ang network</string>
     <string name="network_unavailable_hint">I-on ang Wi-Fi o mobile network para magbasa ng manga online</string>
-    <string name="reader_control_ltr_summary">Mag-tap sa kanang gilid o ang pagpindot sa kanang key ay palaging lilipat sa susunod na pahina</string>
+    <string name="reader_control_ltr_summary">Ang susunod na pag-navigate ay palaging magdadala sa iyo sa susunod na pahina kapag gumagamit ng mouse at keyboard.</string>
     <string name="reader_slider">Ipakita ang slider ng paglipat ng pahina</string>
     <string name="manga_error_description_pattern">Mga detalye ng error:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Subukang &lt;a href=%2$s&gt;magbukas ng manga sa isang web browser&lt;/a&gt; upang matiyak na available ito sa souce&lt;br&gt;2. Tiyaking ginagamit mo ang &lt;a href=kotatsu://about&gt;pinakabagong bersyon ng Kotatsu&lt;/a&gt;&lt;br&gt;3. Kung available ito, magpadala ng ulat ng error sa mga developer.</string>
     <string name="enable_logging">Paganahin ang pag-log</string>
@@ -377,7 +377,7 @@
     <string name="show_on_shelf">Ipakita sa Istante</string>
     <string name="speed">Bilis</string>
     <string name="comics_archive_import_description">Maaari kang pumili ng isa o higit pang .cbz o .zip file, ang bawat file ay makikilala bilang isang hiwalay na manga.</string>
-    <string name="folder_with_images_import_description">Maaari kang pumili ng isang directory na may mga archive o mga larawan. Ang bawat archive (o subdirectory) ay makikilala bilang isang kabanata.</string>
+    <string name="folder_with_images_import_description">Maaari kang pumili ng isang direktoryo na may mga archive o mga larawan. Ang bawat archive (o subdirectory) ay makikilala bilang isang kabanata.</string>
     <string name="find_similar">Maghanap ng katulad</string>
     <string name="sync_auth_hint">Maaari kang mag-sign in sa isang umiiral na account o lumikha ng bago</string>
     <string name="translations">Mga pagsasalin</string>
@@ -438,7 +438,7 @@
     <string name="download_option_manual_selection">Manu-manong pumili ng mga kabanata</string>
     <string name="invert_colors">Baliktarin ang mga kulay</string>
     <string name="custom_directory">Custom na direktoryo</string>
-    <string name="pick_custom_directory">Pumili ng Custom na direktoryo</string>
+    <string name="pick_custom_directory">Pumili ng custom na direktoryo</string>
     <string name="no_access_to_file">Wala kang access sa file o direktoryo na ito</string>
     <string name="local_manga_directories">Mga lokal na direktoryo ng manga</string>
     <string name="password">Password</string>
@@ -478,7 +478,7 @@
     <string name="on_device">Sa device</string>
     <string name="moved_to_top">Nailipat sa itaas</string>
     <string name="items_limit_exceeded">Wala nang mga aytem na pwedeng idagdag</string>
-    <string name="directories">Mga Directory</string>
+    <string name="directories">Mga direktoryo</string>
     <string name="reader_zoom_buttons">Ipakita ang mga button ng pag-zoom</string>
     <string name="main_screen_sections">Mga pangunahing seksyon ng screen</string>
     <string name="zoom_out">Mag-zoom palabas</string>
@@ -502,7 +502,7 @@
     <string name="periodic_backups">Mga periodic na pag-backup</string>
     <string name="frequency_twice_per_month">Dalawang beses bawat buwan</string>
     <string name="frequency_once_per_month">Isang beses bawat buwan</string>
-    <string name="backups_output_directory">Output directory ng mga backup</string>
+    <string name="backups_output_directory">Output na direktoryo sa mga backup</string>
     <string name="last_successful_backup">Huling matagumpay na pag-backup: %s</string>
     <string name="speed_value">x%.1f</string>
     <string name="sources_catalog">Katalugo ng mga source</string>
@@ -557,4 +557,41 @@
 \n
 \nBabala: mawawala ang kasalukuyang progress sa pagbabasa.</string>
     <string name="category_hidden_done">Nakatago ang kategoryang ito mula sa pangunahing screen at naa-access sa pamamagitan ng Menu → Ayusin ang mga kategorya</string>
+    <string name="remove_from_history">Alisin sa kasaysayan</string>
+    <string name="incognito_mode_hint">Hindi mase-save ang iyong progress sa pagbabasa</string>
+    <string name="last_read">Huling nabasa</string>
+    <string name="default_webtoon_zoom_out">Default zoom out sa webtoon</string>
+    <string name="show_labels_in_navbar">Ipakita ang mga label sa navigation bar</string>
+    <string name="pages_saving">Nagse-save ng mga pahina</string>
+    <string name="ask_for_dest_dir_every_time">Laging magtanong sa direktoryo ng patutunguhan</string>
+    <string name="default_page_save_dir">Default na direktoryo ng pag-save ng pahina</string>
+    <string name="email_password_enter_hint">Ilagay ang iyong email at password upang magpatuloy</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="volume_">Volume %d</string>
+    <string name="volume_unknown">Hindi kilalang volume</string>
+    <string name="approximate_remaining_time">Tinatayang natitirang oras</string>
+    <string name="vertical">Patayo</string>
+    <string name="show_menu">Ipakita ang menu</string>
+    <string name="tap_action">Aksyon sa pag-tap</string>
+    <string name="long_tap_action">Aksyon sa matagal na pag-tap</string>
+    <string name="none">Wala</string>
+    <string name="config_reset_confirm">I-reset ang mga setting sa mga default na value? Ang gawaing ito ay hindi pwedeng bawiin.</string>
+    <string name="use_two_pages_landscape">Gumamit ng dalawang page na layout sa landscape na oryentasyon (beta)</string>
+    <string name="fullscreen_mode">Fullscreen mode</string>
+    <string name="reader_fullscreen_summary">Itago ang status ng system at mga navigation bar</string>
+    <string name="two_pages">Dalawang pahina</string>
+    <string name="toggle_ui">Ipakita/itago ang UI</string>
+    <string name="prev_chapter">Nakaraang kabanata</string>
+    <string name="next_chapter">Sunod na kabanata</string>
+    <string name="prev_page">Nakaraang pahina</string>
+    <string name="next_page">Susunod na pahina</string>
+    <string name="reader_actions">Mga aksyon sa reader</string>
+    <string name="reader_actions_summary">Ayusin ang mga pagkilos para sa mga nata-tap na lugar ng screen</string>
+    <string name="switch_pages_volume_buttons">Paganahin ang mga volume button</string>
+    <string name="switch_pages_volume_buttons_summary">Gumamit ng mga volume button para sa paglipat ng mga pahina</string>
+    <string name="suggestions_unavailable_text">Naka-disable ang feature na Mga suhestiyon</string>
+    <string name="check_for_new_chapters_disabled">Naka-disable ang pagsuri para sa mga bagong kabanata</string>
+    <string name="reading_time_estimation">Ipakita ang tinantyang oras ng pagbabasa</string>
+    <string name="reading_time_estimation_summary">Maaaring hindi tumpak ang halaga ng pagtatantya ng oras</string>
+    <string name="location">Lokasyon</string>
 </resources>

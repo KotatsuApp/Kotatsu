@@ -5,6 +5,7 @@ import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.util.AlphanumComparator
+import org.koitharu.kotatsu.core.util.ext.children
 import org.koitharu.kotatsu.core.util.ext.creationTime
 import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.core.util.ext.toListSorted
@@ -100,8 +101,8 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> = runInterruptible(Dispatchers.IO) {
 		val file = chapter.url.toUri().toFile()
 		if (file.isDirectory) {
-			file.walkCompat()
-				.filter { hasImageExtension(it) }
+			file.children()
+				.filter { it.isFile && hasImageExtension(it) }
 				.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
 				.map {
 					val pageUri = it.toUri().toString()
@@ -129,14 +130,16 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 
 	private fun String.toHumanReadable() = replace("_", " ").toCamelCase()
 
-	private fun getChaptersFiles() = root.walkCompat()
-		.filter { it.hasCbzExtension() }
+	private fun getChaptersFiles() = root.walkCompat(includeDirectories = true)
+		.filter { it != root && it.isChapterDirectory() || it.hasCbzExtension() }
 		.associateByTo(TreeMap(AlphanumComparator())) { it.name }
 
 	private fun findFirstImageEntry(): String? {
-		return root.walkCompat().firstOrNull { hasImageExtension(it) }?.toUri()?.toString()
+		return root.walkCompat(includeDirectories = false)
+			.firstOrNull { hasImageExtension(it) }?.toUri()?.toString()
 			?: run {
-				val cbz = root.walkCompat().firstOrNull { it.hasCbzExtension() } ?: return null
+				val cbz = root.walkCompat(includeDirectories = false)
+					.firstOrNull { it.hasCbzExtension() } ?: return null
 				ZipFile(cbz).use { zip ->
 					zip.entries().asSequence()
 						.firstOrNull { !it.isDirectory && hasImageExtension(it.name) }
@@ -147,5 +150,9 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 
 	private fun fileUri(base: File, name: String): String {
 		return File(base, name).toUri().toString()
+	}
+
+	private fun File.isChapterDirectory(): Boolean {
+		return isDirectory && children().any { hasImageExtension(it) }
 	}
 }

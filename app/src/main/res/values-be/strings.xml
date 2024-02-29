@@ -45,7 +45,7 @@
     <string name="theme">Тэма</string>
     <string name="light">Светлая</string>
     <string name="dark">Цёмная</string>
-    <string name="automatic">Як у сістэме</string>
+    <string name="follow_system">Як у сістэме</string>
     <string name="pages">Старонкi</string>
     <string name="clear">Ачысціць</string>
     <string name="text_clear_history_prompt">Вы ўпэўненыя, што жадаеце ачысціць гісторыю\?</string>
@@ -201,7 +201,7 @@
     <string name="screenshots_block_all">Заўсёды блакуйце</string>
     <string name="screenshots_block_nsfw">Забараніць для NSFW</string>
     <string name="filter_load_error">Немагчыма загрузіць спіс жанраў</string>
-    <string name="disabled">Адключаны</string>
+    <string name="disabled">Адкл.</string>
     <string name="enabled">Ўключаны</string>
     <string name="exclude_nsfw_from_suggestions">Ня прапаноўваць NSFW мангу</string>
     <string name="text_suggestion_holder">Пачніце чытаць мангу, і вы атрымаеце персаналізаваныя прапановы</string>
@@ -313,7 +313,7 @@
     <string name="manga_error_description_pattern">Дэталі памылкі:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Паспрабуйце &lt;a href=%2$s&gt;адкрыць мангу ў вэб-браўзеры&lt;/a&gt;, каб пераканацца, што яна даступная ў крыніцы&lt;br&gt;2. Упэўніцеся, што вы выкарыстоўваеце &lt;a href=kotatsu://about&gt;апошнюю версію Kotatsu&lt;/a&gt;&lt;br&gt;3. Калі ён даступны, адпраўце распрацоўнікам справаздачу аб памылцы.</string>
     <string name="history_shortcuts">Паказаць апошнія ярлыкі мангі</string>
     <string name="history_shortcuts_summary">Зрабіце нядаўнюю мангу даступнай, доўга націскаючы на значок праграмы</string>
-    <string name="reader_control_ltr_summary">Навігацыя \"Далей\" заўсёды прыводзіць да наступнай старонцы пры выкарыстанні мышы і клавіятуры.</string>
+    <string name="reader_control_ltr_summary">Націск на правы край або націск правай клавішы заўсёды перамыкае на наступную старонку.</string>
     <string name="reader_control_ltr">Эрганамічны упраўленне чытаннем</string>
     <string name="color_correction">Карэкцыя колеру</string>
     <string name="brightness">Яркасць</string>
@@ -469,7 +469,7 @@
     <string name="disable_nsfw">Адключыць NSFW</string>
     <string name="too_many_requests_message">Занадта шмат запытаў. Паўтарыце спробу пазней</string>
     <string name="related_manga_summary">Паказаць спіс звязанай мангі. У некаторых выпадках ён можа быць недакладным або адсутнічаць</string>
-    <string name="advanced">Пашыраныя</string>
+    <string name="advanced">Прасунутая</string>
     <string name="default_section">Раздзел па змаўчанні</string>
     <string name="manga_list">Спіс мангі</string>
     <string name="error_corrupted_file">Вяртаюцца няправільныя дадзеныя ці файл пашкоджаны</string>
@@ -588,4 +588,10 @@
     <string name="check_for_new_chapters_disabled">Праверка новых раздзелаў адключана</string>
     <string name="reading_time_estimation">Паказаць прыблізны час чытання</string>
     <string name="reading_time_estimation_summary">Значэнне ацэнкі часу можа быць недакладным</string>
+    <string name="show_labels_in_navbar">Паказаць меткі на панэлі навігацыі</string>
+    <string name="ask_for_dest_dir_every_time">Кожны раз запытваць каталог прызначэння</string>
+    <string name="default_page_save_dir">Каталог захавання старонкі па змаўчанні</string>
+    <string name="remove_from_history">Выдаліць з гісторыі</string>
+    <string name="pages_saving">Захаванне старонак</string>
+    <string name="location">Размяшчэнне</string>
 </resources>

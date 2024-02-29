@@ -37,7 +37,7 @@
     <string name="theme">Tema</string>
     <string name="light">Açık</string>
     <string name="dark">Koyu</string>
-    <string name="automatic">Sistemle uyumlu</string>
+    <string name="follow_system">Sistemle uyumlu</string>
     <string name="pages">Sayfalar</string>
     <string name="clear">Temizle</string>
     <string name="text_clear_history_prompt">Tüm okuma geçmişi kalıcı olarak silinsin mi\?</string>
@@ -331,7 +331,7 @@
     <string name="contrast">Kontrast</string>
     <string name="reset">Sıfırla</string>
     <string name="color_correction_hint">Seçilen renk ayarları bu manga için hatırlanacaktır</string>
-    <string name="text_unsaved_changes_prompt">Kaydedilmeyen değişiklikler kaydedilsin mi?</string>
+    <string name="text_unsaved_changes_prompt">Kaydedilmeyen değişiklikler kaydedilsin mi yoksa yok mu sayılsın?</string>
     <string name="discard">Yoksay</string>
     <string name="error_no_space_left">Cihazda yer yok</string>
     <string name="webtoon_zoom">Webtoon yakınlaştırma</string>
@@ -344,7 +344,7 @@
     <string name="server_error">Sunucu hatası (%1$d). Lütfen daha sonra tekrar deneyin</string>
     <string name="saved_manga">Kaydedilen mangalar</string>
     <string name="history_shortcuts_summary">Uygulama simgesine uzun basarak son mangaları kullanılabilir hale getirin</string>
-    <string name="reader_control_ltr_summary">Fare ve klavye kullanırken sonraki seçeneği sizi her zaman bir sonraki sayfaya götürür.</string>
+    <string name="reader_control_ltr_summary">Sağ kenara dokunulduğunda veya sağ tuşa basıldığında her zaman bir sonraki sayfaya geçilir.</string>
     <string name="source_disabled">Kaynak devre dışı</string>
     <string name="prefetch_content">İçerik ön yüklemesi</string>
     <string name="mark_as_current">Geçerli olarak işaretle</string>
@@ -578,14 +578,20 @@
     <string name="next_chapter">Sonraki bölüm</string>
     <string name="prev_page">Önceki sayfa</string>
     <string name="next_page">Sonraki sayfa</string>
-    <string name="config_reset_confirm">Ayarlar öntanımlı değerlere sıfırlansın mı? Bu eylem geri alınamaz.</string>
+    <string name="config_reset_confirm">Ayarlar varsayılan değerlere sıfırlansın mı? Bu eylem geri alınamaz.</string>
     <string name="use_two_pages_landscape">Yatay yönde iki sayfa düzeni kullan (beta)</string>
     <string name="email_password_enter_hint">Devam etmek için e-posta adresinizi ve parolanızı girin</string>
-    <string name="default_webtoon_zoom_out">Öntanımlı webtoon uzaklaştırması</string>
+    <string name="default_webtoon_zoom_out">Varsayılan webtoon uzaklaştırması</string>
     <string name="fullscreen_mode">Tam ekran modu</string>
     <string name="reader_fullscreen_summary">Sistem durumunu ve gezinme çubuklarını gizle</string>
     <string name="suggestions_unavailable_text">Öneriler özelliği devre dışı</string>
     <string name="check_for_new_chapters_disabled">Yeni bölümlerin denetlenmesi devre dışı</string>
     <string name="reading_time_estimation">Tahmini okuma süresini göster</string>
     <string name="reading_time_estimation_summary">Süre tahmin değeri yanlış olabilir</string>
+    <string name="show_labels_in_navbar">Gezinme çubuğunda etiketleri göster</string>
+    <string name="pages_saving">Sayfalar kaydediliyor</string>
+    <string name="ask_for_dest_dir_every_time">Her seferinde hedef dizini sor</string>
+    <string name="default_page_save_dir">Varsayılan sayfa kaydetme konumu</string>
+    <string name="remove_from_history">Geçmişten kaldır</string>
+    <string name="location">Konum</string>
 </resources>

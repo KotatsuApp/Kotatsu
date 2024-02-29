@@ -24,6 +24,7 @@ class HistoryUpdateUseCase @Inject constructor(
 			page = readerState.page,
 			scroll = readerState.scroll,
 			percent = percent,
+			force = false,
 		)
 	}
 

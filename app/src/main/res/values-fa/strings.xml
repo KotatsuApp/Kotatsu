@@ -14,7 +14,7 @@
     <string name="internal_storage">حافظه ی درونی</string>
     <string name="right_to_left">راست به چپ</string>
     <string name="reader_mode_hint">پیکربندی انتخاب شده برای این مانگا بخاطر خواهد ماند</string>
-    <string name="automatic">تم سیستم</string>
+    <string name="follow_system">تم سیستم</string>
     <string name="pages">صفحات</string>
     <string name="clear">پاکسازی</string>
     <string name="domain">دامنه</string>

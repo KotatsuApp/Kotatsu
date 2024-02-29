@@ -47,6 +47,7 @@ import org.koitharu.kotatsu.core.util.ext.ramAvailable
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
 import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.local.data.isFileUri
 import org.koitharu.kotatsu.local.data.isZipUri
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -203,20 +204,23 @@ class PageLoader @Inject constructor(
 		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url for $page" }
 		val uri = Uri.parse(pageUrl)
-		return if (uri.isZipUri()) {
-			if (uri.scheme == URI_SCHEME_ZIP) {
+		return when {
+			uri.isZipUri() -> if (uri.scheme == URI_SCHEME_ZIP) {
 				uri
 			} else { // legacy uri
 				uri.buildUpon().scheme(URI_SCHEME_ZIP).build()
 			}
-		} else {
-			val request = createPageRequest(page, pageUrl)
-			imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
-				val body = checkNotNull(response.body) { "Null response body" }
-				body.withProgress(progress).use {
-					cache.put(pageUrl, it.source())
-				}
-			}.toUri()
+
+			uri.isFileUri() -> uri
+			else -> {
+				val request = createPageRequest(page, pageUrl)
+				imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
+					val body = checkNotNull(response.body) { "Null response body" }
+					body.withProgress(progress).use {
+						cache.put(pageUrl, it.source())
+					}
+				}.toUri()
+			}
 		}
 	}
 

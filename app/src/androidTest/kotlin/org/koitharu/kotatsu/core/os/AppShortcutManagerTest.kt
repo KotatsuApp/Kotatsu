@@ -57,6 +57,7 @@ class AppShortcutManagerTest {
 			page = 4,
 			scroll = 2,
 			percent = 0.3f,
+			force = false,
 		)
 		awaitUpdate()
 

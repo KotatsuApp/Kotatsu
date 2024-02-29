@@ -45,7 +45,7 @@
     <string name="theme">Тема</string>
     <string name="light">Светлая</string>
     <string name="dark">Тёмная</string>
-    <string name="automatic">Как в системе</string>
+    <string name="follow_system">Как в системе</string>
     <string name="pages">Страницы</string>
     <string name="clear">Очистить</string>
     <string name="text_clear_history_prompt">Очистить всю историю чтения полностью\?</string>
@@ -206,7 +206,7 @@
     <string name="text_suggestion_holder">Начните читать мангу, чтобы получать персональные предложения</string>
     <string name="exclude_nsfw_from_suggestions">Не предлагать NSFW мангу</string>
     <string name="enabled">Включено</string>
-    <string name="disabled">Выключено</string>
+    <string name="disabled">Выкл.</string>
     <string name="filter_load_error">Не удалось загрузить список жанров</string>
     <string name="computing_">Вычисление…</string>
     <string name="reset_filter">Сбросить фильтр</string>
@@ -327,7 +327,7 @@
     <string name="manga_error_description_pattern">Сведения об ошибке:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Попробуйте &lt;a href=%2$s&gt;открыть мангу в веб-браузере&lt;/a&gt;, чтобы убедиться, что она доступна в источнике&lt;br&gt;2. Убедитесь, что вы используете &lt;a href=kotatsu://about&gt;последнюю версию Kotatsu&lt;/a&gt;&lt;br&gt;3. Если возможно, отправьте отчёт об ошибке разработчикам.</string>
     <string name="history_shortcuts">Показывать ярлыки последней прочитанной манги</string>
     <string name="history_shortcuts_summary">Сделать недавно прочитанную мангу доступной по долгому нажатию на иконку приложения</string>
-    <string name="reader_control_ltr_summary">Навигация «Далее» всегда приводит к следующей странице при использовании мыши и клавиатуры.</string>
+    <string name="reader_control_ltr_summary">Нажатие на правый край или нажатие правой клавиши всегда переключает на следующую страницу.</string>
     <string name="reader_control_ltr">Эргономичное управление режимом чтения</string>
     <string name="reset">Сбросить</string>
     <string name="discard">Отклонить</string>
@@ -469,7 +469,7 @@
     <string name="disable_nsfw">Отключить NSFW</string>
     <string name="too_many_requests_message">Слишком много запросов. Попробуйте повторить позже</string>
     <string name="related_manga_summary">Показывать список связанной манги. В некоторых случаях список может быть нерелевантным или отсутствовать вовсе</string>
-    <string name="advanced">Расширенные</string>
+    <string name="advanced">Продвинутая</string>
     <string name="default_section">Раздел по умолчанию</string>
     <string name="manga_list">Список манги</string>
     <string name="error_corrupted_file">Возвращаются неверные данные или файл поврежден</string>
@@ -588,4 +588,10 @@
     <string name="reading_time_estimation_summary">Данное значение может быть неточным</string>
     <string name="check_for_new_chapters_disabled">Проверка новых глав отключена</string>
     <string name="suggestions_unavailable_text">Функция предложения отключена</string>
+    <string name="pages_saving">Сохранение страниц</string>
+    <string name="ask_for_dest_dir_every_time">Спрашивать папку для сохранения каждый раз</string>
+    <string name="remove_from_history">Убрать из истории</string>
+    <string name="show_labels_in_navbar">Показывать подписи на панели навигации</string>
+    <string name="default_page_save_dir">Папка для сохранений по умолчанию</string>
+    <string name="location">Расположение</string>
 </resources>

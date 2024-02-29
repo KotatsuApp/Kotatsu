@@ -34,7 +34,7 @@
     <string name="sort_order">Ordem de classificação</string>
     <string name="filter">Filtro</string>
     <string name="dark">Escuro</string>
-    <string name="automatic">Siga o sistema</string>
+    <string name="follow_system">Siga o sistema</string>
     <string name="pages">Páginas</string>
     <string name="clear">Limpar</string>
     <string name="text_clear_history_prompt">Limpar todo o histórico de leitura permanentemente\?</string>
@@ -343,7 +343,7 @@
     <string name="import_will_start_soon">A importação começará em breve</string>
     <string name="feed">Fluxo</string>
     <string name="manga_error_description_pattern">Detalhes do erro:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Tente &lt;a href=%2$s&gt;abra a página do mangá em um navegador da web&lt;/a&gt; para garantir que o mesmo esteja disponível em sua fonte&lt;br&gt;2. Se estiver disponível, envie um relatório de erro para os desenvolvedores.</string>
-    <string name="reader_control_ltr_summary">Tocar na borda direita ou pressionar a tecla direita sempre muda para a próxima página</string>
+    <string name="reader_control_ltr_summary">Tocar na borda direita ou pressionar a tecla direita, sempre muda para a próxima página.</string>
     <string name="reader_control_ltr">Controle ergonômico do leitor</string>
     <string name="color_correction_hint">As configurações de cores escolhidas serão lembradas para este mangá</string>
     <string name="discard">Descartar</string>
@@ -588,4 +588,10 @@
     <string name="check_for_new_chapters_disabled">A verificação de novos capítulos está desativada</string>
     <string name="reading_time_estimation">Mostrar tempo estimado de leitura</string>
     <string name="reading_time_estimation_summary">O valor do tempo estimado pode ser impreciso</string>
+    <string name="remove_from_history">Remover do histórico</string>
+    <string name="show_labels_in_navbar">Mostrar rótulos na barra de navegação</string>
+    <string name="default_page_save_dir">Diretório de salvamento de página padrão</string>
+    <string name="location">Localização</string>
+    <string name="pages_saving">Salvando páginas</string>
+    <string name="ask_for_dest_dir_every_time">Sempre pedir diretório de destinação</string>
 </resources>

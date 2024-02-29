@@ -201,7 +201,7 @@
     <string name="sort_order">Sắp xếp theo</string>
     <string name="dark">Tối</string>
     <string name="light">Sáng</string>
-    <string name="automatic">Theo hệ thống</string>
+    <string name="follow_system">Theo hệ thống</string>
     <string name="_s_deleted_from_local_storage">\"%s\" đã bị xoá khỏi bộ nhớ cục bộ</string>
     <string name="share_image">Chia sẻ hình ảnh</string>
     <string name="page_saved">Đã lưu</string>

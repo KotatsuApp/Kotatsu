@@ -38,7 +38,7 @@
     <string name="newest">最新</string>
     <string name="by_rating">評価</string>
     <string name="sort_order">並べ替え</string>
-    <string name="automatic">システムに従う</string>
+    <string name="follow_system">システムに従う</string>
     <string name="clear">消去</string>
     <string name="text_clear_history_prompt">すべての履歴を永久に消去しますか？</string>
     <string name="remove">削除</string>

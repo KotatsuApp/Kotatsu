@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="detailed_list">تفاصيل القائمة</string>
+    <string name="detailed_list">قائمة مفصلة</string>
     <string name="error_occurred">حدث خطأ</string>
     <string name="details">التفاصيل</string>
     <string name="grid">شبكة</string>
@@ -11,8 +11,8 @@
     <string name="favourites">المفضلة</string>
     <string name="network_error">‌خطاء في الشبكة</string>
     <string name="loading_">جار التحميل…</string>
-    <string name="chapter_d_of_d">فصل %1$d في %2$d</string>
-    <string name="close">غلق</string>
+    <string name="chapter_d_of_d">فصل %1$d من %2$d</string>
+    <string name="close">إغلاق</string>
     <string name="try_again">حاول مجدداً</string>
     <string name="computing_">جاري الحوسبة …</string>
     <string name="local_storage">التخزين المحلي</string>
@@ -28,16 +28,16 @@
     <string name="newest">الأحدث</string>
     <string name="by_rating">تقييم</string>
     <string name="pages">صفحات</string>
-    <string name="read">اقرأ</string>
+    <string name="read">إقرأ</string>
     <string name="share">شارك</string>
-    <string name="nothing_found">لم يتم عثور على اي شيء</string>
+    <string name="nothing_found">لا شيء موجود</string>
     <string name="you_have_not_favourites_yet">لا مفضلة بعد</string>
     <string name="search">بحث</string>
     <string name="search_manga">البحث في المانجا</string>
     <string name="manga_downloading_">جاري التنزيل…</string>
     <string name="create_shortcut">انشاء اختصار…</string>
     <string name="theme">مظهر</string>
-    <string name="automatic">حسب النظام</string>
+    <string name="follow_system">حسب النظام</string>
     <string name="share_s">شارك %s</string>
     <string name="processing_">في طور معالجة…</string>
     <string name="updated">محدث</string>
@@ -48,7 +48,7 @@
     <string name="clear">مسح</string>
     <string name="remove">ازالة</string>
     <string name="popular">شائع</string>
-    <string name="add_new_category">أضف فئة جديدة</string>
+    <string name="add_new_category">فئة جديدة</string>
     <string name="download_complete">تم التنزيل</string>
     <string name="text_clear_history_prompt">هل تريد محو سجل القراءة بالكامل بشكل دائم؟</string>
     <string name="save_page">احفظ الصفحة</string>
@@ -211,7 +211,7 @@
     <string name="detect_reader_mode_summary">اكتشف تلقائيًا ما إذا كانت المانجا عبارة عن webtoon</string>
     <string name="appwidget_recent_description">المانجا التي قرأتها مؤخرًا</string>
     <string name="appearance">مظهر</string>
-    <string name="bookmark_remove">حذف من المحفظة</string>
+    <string name="bookmark_remove">حذف الإشارة المرجعية</string>
     <string name="disable_battery_optimization_summary">يساعد في فحص التحديثات في الخلفية</string>
     <string name="auth_not_supported_by">تسجيل الدخول على %s غير مدعوم</string>
     <string name="status_on_hold">معلقَّة</string>
@@ -228,7 +228,7 @@
     <string name="sync_title">مزامنة بياناتك</string>
     <string name="appwidget_shelf_description">مانغا من المفضلة لديك</string>
     <string name="send">إرسال</string>
-    <string name="bookmark_add">اضافة للمحفظة</string>
+    <string name="bookmark_add">اضافة إشارة مرجعية</string>
     <string name="screenshots_block_all">احظر دائما</string>
     <string name="new_sources_text">تتوفر مصادر مانغا جديدة</string>
     <string name="zoom_mode_fit_height">مناسب للارتفاع</string>
@@ -338,4 +338,12 @@
     <string name="folder_with_images_import_description">يمكنك اختيار مكان في الذاكرة يحتوي على أرشيفات أو صور. سيتم التعرف على كل أرشيف (أو مجلد فرعي) على أنه فصل.</string>
     <string name="speed">السرعة</string>
     <string name="restore_backup_description">استيراد نسخة احتياطية تم إنشاؤها لبيانات المستخدم.</string>
+    <string name="feed">الموجز</string>
+    <string name="light_indicator">مؤشر إل إي دي</string>
+    <string name="comics_archive">أرشيف القصص المصورة</string>
+    <string name="importing_manga">استيراد المانجا</string>
+    <string name="import_completed">تم الإستيراد</string>
+    <string name="import_completed_hint">يمكنك حذف الملف الأصلي من التخزين لتوفير مساحة</string>
+    <string name="import_will_start_soon">الإستيراد سيبدأ عن قريب</string>
+    <string name="history_shortcuts">إظهار اختصارات المانجا الحديثة</string>
 </resources>

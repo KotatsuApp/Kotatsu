@@ -62,6 +62,7 @@ import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
+import org.koitharu.kotatsu.local.ui.info.LocalInfoDialog
 import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -102,6 +103,7 @@ class DetailsFragment :
 		binding.buttonScrobblingMore.setOnClickListener(this)
 		binding.buttonRelatedMore.setOnClickListener(this)
 		binding.infoLayout.textViewSource.setOnClickListener(this)
+		binding.infoLayout.textViewSize.setOnClickListener(this)
 		binding.textViewDescription.addOnLayoutChangeListener(this)
 		binding.textViewDescription.viewTreeObserver.addOnDrawListener(this)
 		binding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
@@ -322,6 +324,10 @@ class DetailsFragment :
 						source = manga.source,
 					),
 				)
+			}
+
+			R.id.textView_size -> {
+				LocalInfoDialog.show(parentFragmentManager, manga)
 			}
 
 			R.id.imageView_cover -> {

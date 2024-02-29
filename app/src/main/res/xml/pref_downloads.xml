@@ -13,6 +13,12 @@
 		android:persistent="false"
 		android:title="@string/manga_save_location" />
 
+	<ListPreference
+		android:entries="@array/download_formats"
+		android:key="downloads_format"
+		android:title="@string/preferred_download_format"
+		app:useSimpleSummaryProvider="true" />
+
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="downloads_wifi"

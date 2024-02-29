@@ -54,7 +54,7 @@ class AppearanceSettingsFragment :
 			}
 			summaryProvider = Preference.SummaryProvider<ActivityListPreference> {
 				val locale = AppCompatDelegate.getApplicationLocales().get(0)
-				locale?.getDisplayName(locale)?.toTitleCase(locale) ?: getString(R.string.automatic)
+				locale?.getDisplayName(locale)?.toTitleCase(locale) ?: getString(R.string.follow_system)
 			}
 			setDefaultValueCompat("")
 		}
@@ -105,7 +105,7 @@ class AppearanceSettingsFragment :
 			.sortedWithSafe(LocaleComparator())
 		preference.entries = Array(locales.size + 1) { i ->
 			if (i == 0) {
-				getString(R.string.automatic)
+				getString(R.string.follow_system)
 			} else {
 				val lc = locales[i - 1]
 				lc.getDisplayName(lc).toTitleCase(lc)

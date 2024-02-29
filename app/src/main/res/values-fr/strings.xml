@@ -66,7 +66,7 @@
     <string name="size_s">Taille : %s</string>
     <string name="new_version_s">Nouvelle version : %s</string>
     <string name="search_results">Résultats de la recherche</string>
-    <string name="text_feed_holder">Les nouveaux chapitres de ce que vous lisez sont présentés ici</string>
+    <string name="text_feed_holder">Les nouveaux chapitres de ce que vous lisez sont affichés ici</string>
     <string name="updates">Mises à jour</string>
     <string name="read_later">Lire plus tard</string>
     <string name="favourites_category_empty">Catégorie vide</string>
@@ -134,7 +134,7 @@
     <string name="text_clear_history_prompt">Effacer définitivement l\'historique de lecture \?</string>
     <string name="clear">Effacer</string>
     <string name="pages">Pages</string>
-    <string name="automatic">Suivre le système</string>
+    <string name="follow_system">Suivre le système</string>
     <string name="dark">Sombre</string>
     <string name="light">Clair</string>
     <string name="theme">Thème</string>
@@ -328,7 +328,7 @@
     <string name="text_unsaved_changes_prompt">Sauvegarde ou abandon des modifications non sauvegardées \?</string>
     <string name="discard">Abandonner</string>
     <string name="history_shortcuts_summary">Rendre les mangas récents disponibles en appuyant longuement sur l\'icône de l\'application</string>
-    <string name="reader_control_ltr_summary">Taper sur le bord droit ou appuyer sur la touche droite permet toujours de passer à la page suivante</string>
+    <string name="reader_control_ltr_summary">Taper sur le bord droit ou appuyer sur la touche droite permet toujours de passer à la page suivante.</string>
     <string name="reader_control_ltr">Contrôle ergonomique du lecteur</string>
     <string name="history_shortcuts">Afficher les raccourcis des mangas récents</string>
     <string name="color_correction">Correction des couleurs</string>
@@ -424,7 +424,7 @@
     <string name="authorization_optional">Autorisation (optionnel)</string>
     <string name="invalid_port_number">Numéro de port invalide</string>
     <string name="restore_summary">Restaurer la sauvegarde précédemment créée</string>
-    <string name="webtoon_zoom_summary">Autoriser le geste de zoom avant en mode webtoon</string>
+    <string name="webtoon_zoom_summary">Autoriser le geste de zoom en mode webtoon</string>
     <string name="reader_info_bar_summary">Afficher l\'heure actuelle et la progression de la lecture en haut de l\'écran</string>
     <string name="pages_animation_summary">Animation de tournage de page</string>
     <string name="details_button_tip">Appuyez et maintenez le bouton Lire pour voir plus d\'options</string>
@@ -543,8 +543,8 @@
     <string name="this_manga">Ce manga</string>
     <string name="apply">Appliqué</string>
     <string name="genres_search_hint">Commence a écrit un nom de genre</string>
-    <string name="downloads_settings_info">Vous pouvez activer la vitesse de téléchargement réduite individuellement pour chaque source de manga dans les paramètres si vous rencontrez des problèmes de bloquage avec le serveur.</string>
-    <string name="backup_date_">Date de sauvegarde: %s</string>
+    <string name="downloads_settings_info">Vous pouvez réduire la vitesse de téléchargement individuellement pour chaque source de manga dans les paramètres si vous rencontrez des problèmes de blocage avec le serveur</string>
+    <string name="backup_date_">Date de sauvegarde : %s</string>
     <string name="by_name_reverse">Nom inversé</string>
     <string name="mark_as_completed">Marquer comme terminé</string>
     <string name="mark_as_completed_prompt">Marquer le manga sélectionné comme terminé ?
@@ -570,12 +570,27 @@
     <string name="switch_pages_volume_buttons">Activer les boutons de volume</string>
     <string name="switch_pages_volume_buttons_summary">Utiliser les boutons de volume pour changer de page</string>
     <string name="none">Aucun</string>
-    <string name="config_reset_confirm">Revenir aux paramètres par défaut ?
-\nCette action ne pourra pas être annulée.</string>
+    <string name="config_reset_confirm">Revenir aux paramètres par défaut ? Cette action ne pourra pas être annulée.</string>
     <string name="use_two_pages_landscape">Utiliser la disposition pages doubles en orientation paysage (bêta)</string>
     <string name="fullscreen_mode">Mode plein écran</string>
     <string name="category_hidden_done">Cette catégorie a été cachée du menu principal et est accessible via Menu → Gérer les catégories</string>
     <string name="two_pages">Pages doubles</string>
     <string name="reading_time_estimation">Afficher le temps de lecture estimé</string>
     <string name="reading_time_estimation_summary">Le temps estimé peut être inexact</string>
+    <string name="ask_for_dest_dir_every_time">Demander pour le répertoire de destination à chaque fois</string>
+    <string name="default_page_save_dir">Répertoire par défaut pour les pages sauvegardées</string>
+    <string name="remove_from_history">Retirer de l\'historique</string>
+    <string name="reader_actions">Actions du lecteur</string>
+    <string name="reader_fullscreen_summary">Cache la barre d\'état et les barres de navigations</string>
+    <string name="suggestions_unavailable_text">La fonctionnalité de suggestions est désactivée</string>
+    <string name="check_for_new_chapters_disabled">La vérification des nouveaux chapitres est désactivée</string>
+    <string name="rating_suggestive">Suggestif</string>
+    <string name="disable_battery_optimization_summary_downloads">Peut aider à démarrer le téléchargement si vous avez des problèmes avec</string>
+    <string name="remaining_time_pattern">%1$s %2$s</string>
+    <string name="reader_actions_summary">Configurer les actions pour les zones d’écran tactiles</string>
+    <string name="tap_action">Action de tapoter</string>
+    <string name="long_tap_action">Action d\'appuyez longuement</string>
+    <string name="show_labels_in_navbar">Afficher les étiquettes dans la barre de navigation</string>
+    <string name="pages_saving">Sauvegarder les pages</string>
+    <string name="default_webtoon_zoom_out">Zoom webtoon par défaut</string>
 </resources>

@@ -191,7 +191,7 @@
     <string name="manga_downloading_">Завантаження…</string>
     <string name="clear">Очистити</string>
     <string name="downloads">Завантаження</string>
-    <string name="automatic">Як в системі</string>
+    <string name="follow_system">Як в системі</string>
     <string name="chapter_is_missing">Розділ відсутній</string>
     <string name="genres">Жанри</string>
     <string name="system_default">За умовчанням</string>
@@ -327,7 +327,7 @@
     <string name="manga_error_description_pattern">Деталі помилки:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Спробуйте &lt;a href=%2$s&gt;відкрити манґу у веб-браузері&lt;/a&gt;, щоб переконатися, що вона доступна в джерелі&lt;br&gt;2. Переконайтеся, що ви використовуєте &lt;a href=kotatsu://about&gt;останню версію Kotatsu&lt;/a&gt;&lt;br&gt;3. Якщо він доступний, надішліть звіт про помилку розробникам.</string>
     <string name="history_shortcuts">Показувати ярлики останньої прочитаної манґи</string>
     <string name="history_shortcuts_summary">Зробити нещодавно прочитану манґу доступною за довгим натисканням на іконку застосунку</string>
-    <string name="reader_control_ltr_summary">Навігація «Далі» завжди веде до наступної сторінки під час використання миші та клавіатури.</string>
+    <string name="reader_control_ltr_summary">Натискання на правий край або натискання правої клавіші завжди перемикається на наступну сторінку.</string>
     <string name="reader_control_ltr">Ергономічне керування режимом читання</string>
     <string name="brightness">Яскравість</string>
     <string name="color_correction">Корекція кольору</string>
@@ -469,7 +469,7 @@
     <string name="disable_nsfw">Вимкнути NSFW</string>
     <string name="related_manga_summary">Показати список пов\'язаної манґи. У деяких випадках він може бути неточним або відсутнім</string>
     <string name="too_many_requests_message">Занадто багато запитів. Спробуйте пізніше</string>
-    <string name="advanced">Розширені</string>
+    <string name="advanced">Просунута</string>
     <string name="default_section">Розділ за умовчанням</string>
     <string name="manga_list">Список манґи</string>
     <string name="error_corrupted_file">Повертаються неправильні дані або файл пошкоджено</string>
@@ -588,4 +588,10 @@
     <string name="reading_time_estimation_summary">Це значення може бути неточним</string>
     <string name="check_for_new_chapters_disabled">Перевірка нових глав вимкнена</string>
     <string name="suggestions_unavailable_text">Функція пропозицій вимкнена</string>
+    <string name="pages_saving">Збереження сторінок</string>
+    <string name="ask_for_dest_dir_every_time">Щоразу запитувати директорію призначення</string>
+    <string name="remove_from_history">Видалити з історії</string>
+    <string name="show_labels_in_navbar">Показувати мітки на панелі навігації</string>
+    <string name="default_page_save_dir">Директорія збереження сторінки за замовчуванням</string>
+    <string name="location">Розташування</string>
 </resources>

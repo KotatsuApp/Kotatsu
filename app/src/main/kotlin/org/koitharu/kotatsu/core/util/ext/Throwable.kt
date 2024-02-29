@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.core.util.ext
 
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
-import android.util.AndroidRuntimeException
 import androidx.annotation.DrawableRes
 import androidx.collection.arraySetOf
 import coil.network.HttpException
@@ -115,8 +114,8 @@ private val reportableExceptions = arraySetOf<Class<*>>(
 )
 
 fun Throwable.isWebViewUnavailable(): Boolean {
-	return (this is AndroidRuntimeException && message?.contains("WebView") == true) ||
-		cause?.isWebViewUnavailable() == true
+	val trace = stackTraceToString()
+	return trace.contains("android.webkit.WebView.<init>")
 }
 
 @Suppress("FunctionName")

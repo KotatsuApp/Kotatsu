@@ -52,7 +52,7 @@
     <string name="notification_sound">Звук обавештења</string>
     <string name="vibration">Вибрација</string>
     <string name="text_empty_holder_primary">Овде је некако празно…</string>
-    <string name="pages_animation">Анимација превлачења</string>
+    <string name="pages_animation">Анимација превлачења странице</string>
     <string name="about">О апликацији</string>
     <string name="app_version">Верзија %s</string>
     <string name="black_dark_theme">Црна</string>
@@ -85,7 +85,7 @@
     <string name="newest">Најновије</string>
     <string name="light">Светла</string>
     <string name="dark">Мрачна</string>
-    <string name="automatic">Прати систем</string>
+    <string name="follow_system">Прати систем</string>
     <string name="filter">Филтер</string>
     <string name="theme">Тема</string>
     <string name="pages">Странице</string>
@@ -118,7 +118,7 @@
     <string name="volume_buttons">Притисни дугмад за јачину звука</string>
     <string name="notifications">Обавештења</string>
     <string name="pages_cache">Кеш страница</string>
-    <string name="text_shelf_holder_secondary">Пронађите шта да читате у одељку „Преглед“</string>
+    <string name="text_shelf_holder_secondary">Пронађи шта ћеш да читаш у одељку „Преглед“</string>
     <string name="manga_shelf">Полица</string>
     <string name="check_for_updates">Провери ажурирања</string>
     <string name="feed">Новости</string>
@@ -127,13 +127,13 @@
     <string name="explore">Преглед</string>
     <string name="options">Опције</string>
     <string name="add_to_favourites">Додај у омиљене</string>
-    <string name="text_history_holder_secondary">Пронађите ствари за читање у одељку „Преглед“</string>
-    <string name="light_indicator">ЛЕД показатељ</string>
+    <string name="text_history_holder_secondary">Пронађи ствари за читање у одељку „Преглед“</string>
+    <string name="light_indicator">Показатељ ЛЕД светла</string>
     <string name="favourites_categories">Омиљене категорије</string>
-    <string name="remove_category">Избриши</string>
+    <string name="remove_category">Уклони</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Омогућено је %1$d од %2$d</string>
     <string name="clear">Избриши</string>
-    <string name="text_history_holder_primary">Оно што прочитате биће приказано овде</string>
+    <string name="text_history_holder_primary">Оно што прочиташ биће приказано овде</string>
     <string name="delete">Избриши</string>
     <string name="search_history_cleared">Очишћено</string>
     <string name="_s_deleted_from_local_storage">\"%s\" избрисано из локалне меморије</string>
@@ -418,7 +418,7 @@
     <string name="no_access_to_file">Немаш приступ овој датотеци или директоријуму</string>
     <string name="exclude_nsfw_from_history_summary">Манга означена за одрасле никада неће бити додата у историју и ваш напредак неће бити сачуван</string>
     <string name="mark_as_current">Означи као тренутно</string>
-    <string name="protect_application_summary">Затражи лозинку када покрећете Котатсу</string>
+    <string name="protect_application_summary">Затражи лозинку када покрећеш Kotatsu</string>
     <string name="right_to_left">Са десна на лево</string>
     <string name="show_reading_indicators_summary">Прикажи проценат читања у историји и омиљеним</string>
     <string name="random">Насумично</string>
@@ -442,7 +442,7 @@
     <string name="theme_name_rikka">Рикка</string>
     <string name="disabled">Онемогући</string>
     <string name="long_ago">Давно</string>
-    <string name="reader_control_ltr_summary">Додиром на десну ивицу или притиском на десну стрелицу пребацује се на следећу страницу</string>
+    <string name="reader_control_ltr_summary">Додиривање десне ивице, или притискање десне стрелице, увек прелази на следећу страницу.</string>
     <string name="incognito_mode">Режим без чувања</string>
     <string name="no_bookmarks_summary">Можеш направити обележивач док читаш мангу</string>
     <string name="theme_name_mamimi">Мамими</string>
@@ -588,4 +588,10 @@
     <string name="reading_time_estimation_summary">Вредност процене времена може бити нетачна</string>
     <string name="check_for_new_chapters_disabled">Провера нових поглавља је искључена</string>
     <string name="fullscreen_mode">Режим целог екрана</string>
+    <string name="remove_from_history">Уклони из историје</string>
+    <string name="location">Локација</string>
+    <string name="ask_for_dest_dir_every_time">Затражи одредишни дииректоријум сваки пут</string>
+    <string name="default_page_save_dir">Подразумевани директоријум за чување странице</string>
+    <string name="show_labels_in_navbar">Прикажи ознаке на навигационој траци</string>
+    <string name="pages_saving">Чување страница</string>
 </resources>

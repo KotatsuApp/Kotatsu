@@ -320,6 +320,7 @@ class DetailsViewModel @Inject constructor(
 				page = 0,
 				scroll = 0,
 				percent = percent,
+				force = true,
 			)
 		}
 	}

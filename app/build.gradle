@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 34
-		versionCode = 624
-		versionName = '6.7.2'
+		versionCode = 626
+		versionName = '6.7.4'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -82,7 +82,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:3ff028c4e9') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:103f578c61') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -126,13 +126,13 @@ dependencies {
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2'
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
 
-	implementation 'com.google.dagger:hilt-android:2.50'
-	kapt 'com.google.dagger:hilt-compiler:2.50'
-	implementation 'androidx.hilt:hilt-work:1.1.0'
-	kapt 'androidx.hilt:hilt-compiler:1.1.0'
+	implementation 'com.google.dagger:hilt-android:2.51'
+	kapt 'com.google.dagger:hilt-compiler:2.51'
+	implementation 'androidx.hilt:hilt-work:1.2.0'
+	kapt 'androidx.hilt:hilt-compiler:1.2.0'
 
-	implementation 'io.coil-kt:coil-base:2.5.0'
-	implementation 'io.coil-kt:coil-svg:2.5.0'
+	implementation 'io.coil-kt:coil-base:2.6.0'
+	implementation 'io.coil-kt:coil-svg:2.6.0'
 	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:02e6d6cfe9'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
@@ -160,6 +160,6 @@ dependencies {
 	androidTestImplementation 'androidx.room:room-testing:2.6.1'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
 
-	androidTestImplementation 'com.google.dagger:hilt-android-testing:2.50'
-	kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.50'
+	androidTestImplementation 'com.google.dagger:hilt-android-testing:2.51'
+	kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.51'
 }

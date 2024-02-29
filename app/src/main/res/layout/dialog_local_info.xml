@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:padding="?dialogPreferredPadding">
+
+	<TextView
+		android:id="@+id/textView_path_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:singleLine="true"
+		android:text="@string/location"
+		android:textAppearance="?textAppearanceLabelMedium" />
+
+	<TextView
+		android:id="@+id/textView_path"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="4dp"
+		android:textAppearance="?textAppearanceBodyMedium"
+		tools:text="/storage/emulated/0/Manga/lorem.cbz" />
+
+	<org.koitharu.kotatsu.core.ui.widgets.SegmentedBarView
+		android:id="@+id/barView"
+		android:layout_width="match_parent"
+		android:layout_height="18dp"
+		android:layout_marginTop="12dp"
+		android:background="?colorSecondaryContainer" />
+
+	<TextView
+		android:id="@+id/label_used"
+		style="@style/Widget.Kotatsu.TextView.Indicator"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_normal"
+		android:text="@string/this_manga"
+		app:drawableStartCompat="@drawable/bg_rounded_square"
+		tools:drawableTint="?colorPrimary" />
+
+	<TextView
+		android:id="@+id/label_available"
+		style="@style/Widget.Kotatsu.TextView.Indicator"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_small"
+		android:text="@string/available"
+		app:drawableStartCompat="@drawable/bg_rounded_square"
+		app:drawableTint="?colorSecondaryContainer" />
+
+</LinearLayout>

@@ -137,7 +137,7 @@
 	<string name="text_clear_history_prompt">Haluatko todella tyhjentää koko lukuhistoriasi\?</string>
 	<string name="clear">Tyhjennä</string>
 	<string name="pages">Sivut</string>
-	<string name="automatic">Automaattinen</string>
+	<string name="follow_system">Automaattinen</string>
 	<string name="dark">Tumma</string>
 	<string name="light">Vaalea</string>
 	<string name="theme">Teema</string>

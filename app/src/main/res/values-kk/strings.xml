@@ -48,7 +48,7 @@
     <string name="theme">Кейіп</string>
     <string name="dark">Қараңғы</string>
     <string name="light">Ақшыл</string>
-    <string name="automatic">Жүйедегідей</string>
+    <string name="follow_system">Жүйедегідей</string>
     <string name="pages">Беттер</string>
     <string name="clear">Тазалау</string>
     <string name="remove">Жою</string>

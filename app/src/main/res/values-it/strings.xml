@@ -9,7 +9,7 @@
     <string name="page_saved">Pagina salvata correttamente</string>
     <string name="save_page">Salva la pagina</string>
     <string name="pages">Pagine</string>
-    <string name="automatic">Automatico</string>
+    <string name="follow_system">Automatico</string>
     <string name="dark">Scuro</string>
     <string name="light">Chiaro</string>
     <string name="theme">Tema</string>
