@@ -1,29 +1,25 @@
 package org.koitharu.kotatsu.stats.ui
 
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
-import android.graphics.drawable.shapes.Shape
 import android.os.Bundle
-import android.text.style.DynamicDrawableSpan
-import android.text.style.ImageSpan
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
-import androidx.core.text.buildSpannedString
-import androidx.core.text.inSpans
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentStatsBinding
+import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.stats.domain.StatsRecord
 import org.koitharu.kotatsu.stats.ui.views.PieChartView
 
 @AndroidEntryPoint
-class StatsFragment : BaseFragment<FragmentStatsBinding>() {
+class StatsFragment : BaseFragment<FragmentStatsBinding>(), OnListItemClickListener<Manga> {
 
 	private val viewModel: StatsViewModel by viewModels()
 
@@ -33,6 +29,9 @@ class StatsFragment : BaseFragment<FragmentStatsBinding>() {
 
 	override fun onViewBindingCreated(binding: FragmentStatsBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
+		val adapter = BaseListAdapter<StatsRecord>()
+			.addDelegate(ListItemType.FEED, statsAD(this))
+		binding.recyclerView.adapter = adapter
 		viewModel.readingStats.observe(viewLifecycleOwner) {
 			val sum = it.sumOf { it.duration }
 			binding.chart.setData(
@@ -45,27 +44,13 @@ class StatsFragment : BaseFragment<FragmentStatsBinding>() {
 					)
 				},
 			)
-			binding.textViewLegend.text = buildLegend(it)
+			adapter.emit(it)
 		}
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
-	private fun buildLegend(stats: List<StatsRecord>) = buildSpannedString {
-		val context = context ?: return@buildSpannedString
-		for (item in stats) {
-			ContextCompat.getDrawable(context, R.drawable.bg_rounded_square)?.let { icon ->
-				icon.setBounds(0, 0, icon.intrinsicWidth, icon.intrinsicHeight)
-				icon.setTint(item.getColor(context))
-				inSpans(ImageSpan(icon, DynamicDrawableSpan.ALIGN_BASELINE)) {
-					append(' ')
-				}
-				append(' ')
-			}
-			append(item.manga.title)
-			append(" - ")
-			append(item.time.format(context.resources))
-			appendLine()
-		}
+	override fun onItemClick(item: Manga, view: View) {
+		startActivity(DetailsActivity.newIntent(view.context, item))
 	}
 }

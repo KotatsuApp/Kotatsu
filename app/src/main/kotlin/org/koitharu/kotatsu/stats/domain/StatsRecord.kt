@@ -7,16 +7,19 @@ import com.google.android.material.R
 import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.details.data.ReadingTime
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
-import kotlin.math.min
 
 data class StatsRecord(
 	val manga: Manga,
 	val duration: Long,
-) {
+) : ListModel {
+
+	override fun areItemsTheSame(other: ListModel): Boolean {
+		return other is StatsRecord && other.manga == manga
+	}
 
 	val time: ReadingTime
 

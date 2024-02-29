@@ -1,14 +1,9 @@
 package org.koitharu.kotatsu.stats.data
 
-import androidx.collection.ArrayMap
-import androidx.collection.MutableScatterMap
-import androidx.collection.ScatterMap
 import androidx.room.withTransaction
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toManga
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.stats.domain.StatsRecord
-import java.util.Date
 import javax.inject.Inject
 
 class StatsRepository @Inject constructor(
