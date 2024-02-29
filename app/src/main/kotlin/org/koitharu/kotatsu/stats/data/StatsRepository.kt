@@ -44,4 +44,8 @@ class StatsRepository @Inject constructor(
 		}
 		time
 	}
+
+	suspend fun clearStats() {
+		db.getStatsDao().clear()
+	}
 }

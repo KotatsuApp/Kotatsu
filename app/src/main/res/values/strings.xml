@@ -608,4 +608,7 @@
 	<string name="other_manga">Other manga</string>
 	<string name="less_than_minute">Less than a minute</string>
 	<string name="statistics">Statistics</string>
+	<string name="clear_stats">Clear statistics</string>
+	<string name="stats_cleared">Statistics cleared</string>
+	<string name="clear_stats_confirm">Do you really want to clear all reading statistics? This action cannot be undone.</string>
 </resources>

@@ -32,6 +32,9 @@ interface StatsDao {
 	@Query("SELECT manga_id, SUM(duration) AS d FROM stats GROUP BY manga_id ORDER BY d DESC")
 	suspend fun getDurationStats(): Map<@MapColumn("manga_id") Long, @MapColumn("d") Long>
 
+	@Query("DELETE FROM stats")
+	suspend fun clear()
+
 	@Upsert
 	suspend fun upsert(entity: StatsEntity)
 }

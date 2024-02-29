@@ -98,6 +98,9 @@ class PieChartView @JvmOverloads constructor(
 	}
 
 	override fun onDown(e: MotionEvent): Boolean {
+		if (onSegmentClickListener == null) {
+			return false
+		}
 		val segment = findSegmentIndex(e.x, e.y)
 		if (segment != hightlightedSegment) {
 			hightlightedSegment = segment
