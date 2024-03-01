@@ -7,6 +7,7 @@ import androidx.core.graphics.ColorUtils
 import com.google.android.material.R
 import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.parsers.model.Manga
 import kotlin.math.absoluteValue
 
 object Colors {
@@ -20,9 +21,22 @@ object Colors {
 		return MaterialColors.harmonize(color, backgroundColor)
 	}
 
+	@ColorInt
 	fun random(seed: Any): Int {
 		val hue = (seed.hashCode() % 360).absoluteValue.toFloat()
 		return ColorUtils.HSLToColor(floatArrayOf(hue, 0.5f, 0.5f))
+	}
+
+	@ColorInt
+	fun of(context: Context, manga: Manga?): Int {
+		val color = if (manga != null) {
+			val hue = (manga.id.absoluteValue % 360).toFloat()
+			ColorUtils.HSLToColor(floatArrayOf(hue, 0.5f, 0.5f))
+		} else {
+			context.getThemeColor(R.attr.colorSurface)
+		}
+		val backgroundColor = context.getThemeColor(R.attr.colorSurfaceContainerHigh)
+		return MaterialColors.harmonize(color, backgroundColor)
 	}
 
 	private fun getHue(hex: String): Float {

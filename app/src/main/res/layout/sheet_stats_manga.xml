@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:paddingBottom="@dimen/screen_padding">
+
+	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
+		android:id="@+id/headerBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:title="@string/reading_stats" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingHorizontal="@dimen/screen_padding"
+		android:textAppearance="?textAppearanceTitleMedium"
+		tools:text="@tools:sample/lorem[4]" />
+
+	<org.koitharu.kotatsu.stats.ui.views.BarChartView
+		android:id="@+id/chartView"
+		android:layout_width="match_parent"
+		android:layout_height="240dp"
+		android:layout_marginTop="12dp"
+		android:paddingHorizontal="@dimen/screen_padding" />
+
+	<TextView
+		android:id="@+id/textView_start"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="2dp"
+		android:paddingHorizontal="@dimen/screen_padding"
+		android:textAppearance="?textAppearanceLabelSmall"
+		tools:text="Week ago" />
+
+</LinearLayout>

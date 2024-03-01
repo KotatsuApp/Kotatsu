@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.util.Colors
 import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
@@ -47,6 +48,7 @@ import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.stats.domain.StatsPeriod
 import org.koitharu.kotatsu.stats.domain.StatsRecord
+import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
 import org.koitharu.kotatsu.stats.ui.views.PieChartView
 import javax.inject.Inject
 
@@ -88,7 +90,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 						value = (v.duration / 1000).toInt(),
 						label = v.manga?.title ?: getString(R.string.other_manga),
 						percent = (v.duration.toDouble() / sum).toFloat(),
-						color = v.getColor(this),
+						color = Colors.of(this, v.manga),
 					)
 				},
 			)
@@ -99,7 +101,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun onItemClick(item: Manga, view: View) {
-		startActivity(DetailsActivity.newIntent(view.context, item))
+		MangaStatsSheet.show(supportFragmentManager, item)
 	}
 
 	override fun onSegmentClick(view: PieChartView, segment: PieChartView.Segment) {
