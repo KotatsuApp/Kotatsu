@@ -29,8 +29,9 @@ open class BaseListAdapter<T : ListModel> : AsyncListDifferDelegationAdapter<T>(
 		return this
 	}
 
-	fun addListListener(listListener: ListListener<T>) {
+	fun addListListener(listListener: ListListener<T>): BaseListAdapter<T> {
 		differ.addListListener(listListener)
+		return this
 	}
 
 	fun removeListListener(listListener: ListListener<T>) {

@@ -616,4 +616,5 @@
 	<string name="all_time">All time</string>
 	<string name="day">Day</string>
 	<string name="three_months">Three months</string>
+	<string name="empty_stats_text">There are no statistics for the selected period</string>
 </resources>

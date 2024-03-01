@@ -12,13 +12,18 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.AsyncListDiffer
+import coil.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -28,21 +33,32 @@ import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.ActivityStatsBinding
+import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.stats.domain.StatsPeriod
 import org.koitharu.kotatsu.stats.domain.StatsRecord
 import org.koitharu.kotatsu.stats.ui.views.PieChartView
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class StatsActivity : BaseActivity<ActivityStatsBinding>(), OnListItemClickListener<Manga>,
-	PieChartView.OnSegmentClickListener {
+class StatsActivity : BaseActivity<ActivityStatsBinding>(),
+	OnListItemClickListener<Manga>,
+	PieChartView.OnSegmentClickListener,
+	AsyncListDiffer.ListListener<StatsRecord>,
+	ViewStub.OnInflateListener {
+
+	@Inject
+	lateinit var coil: ImageLoader
 
 	private val viewModel: StatsViewModel by viewModels()
 
@@ -52,8 +68,11 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(), OnListItemClickListe
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val adapter = BaseListAdapter<StatsRecord>()
 			.addDelegate(ListItemType.FEED, statsAD(this))
+			.addListListener(this)
 		viewBinding.recyclerView.adapter = adapter
 		viewBinding.chart.onSegmentClickListener = this
+		viewBinding.stubEmpty.setOnInflateListener(this)
+
 		viewModel.isLoading.observe(this) {
 			viewBinding.progressBar.showOrHide(it)
 		}
@@ -108,6 +127,23 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(), OnListItemClickListe
 
 			else -> super.onOptionsItemSelected(item)
 		}
+	}
+
+	override fun onCurrentListChanged(previousList: MutableList<StatsRecord>, currentList: MutableList<StatsRecord>) {
+		val isEmpty = currentList.isEmpty()
+		with(viewBinding) {
+			chart.isGone = isEmpty
+			recyclerView.isGone = isEmpty
+			stubEmpty.isVisible = isEmpty
+		}
+	}
+
+	override fun onInflate(stub: ViewStub?, inflated: View) {
+		val stubBinding = ItemEmptyStateBinding.bind(inflated)
+		stubBinding.icon.newImageRequest(this, R.drawable.ic_empty_history)?.enqueueWith(coil)
+		stubBinding.textPrimary.setText(R.string.text_empty_holder_primary)
+		stubBinding.textSecondary.setTextAndVisible(R.string.empty_stats_text)
+		stubBinding.buttonRetry.isVisible = false
 	}
 
 	private fun showClearConfirmDialog() {

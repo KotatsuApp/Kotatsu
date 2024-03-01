@@ -66,4 +66,15 @@
 		tools:itemCount="4"
 		tools:listitem="@layout/item_stats" />
 
+	<ViewStub
+		android:id="@+id/stub_empty"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout="@layout/item_empty_state"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar"
+		tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
