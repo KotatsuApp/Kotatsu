@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.network.UserAgents
 import com.google.android.material.R as materialR
@@ -80,11 +81,14 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		}
 
 		R.id.action_browser -> {
-			val intent = Intent(Intent.ACTION_VIEW)
-			intent.data = Uri.parse(viewBinding.webView.url)
-			try {
-				startActivity(Intent.createChooser(intent, item.title))
-			} catch (_: ActivityNotFoundException) {
+			val url = viewBinding.webView.url?.toUriOrNull()
+			if (url != null) {
+				val intent = Intent(Intent.ACTION_VIEW)
+				intent.data = url
+				try {
+					startActivity(Intent.createChooser(intent, item.title))
+				} catch (_: ActivityNotFoundException) {
+				}
 			}
 			true
 		}
