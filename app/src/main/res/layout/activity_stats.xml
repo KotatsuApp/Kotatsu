@@ -41,6 +41,34 @@
 		app:trackCornerRadius="0dp"
 		tools:visibility="visible" />
 
+	<HorizontalScrollView
+		android:id="@+id/scrollView_chips"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:clipToPadding="false"
+		android:paddingHorizontal="12dp"
+		android:scrollbars="none"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar">
+
+		<com.google.android.material.chip.ChipGroup
+			android:id="@+id/layout_chips"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+
+			<com.google.android.material.chip.Chip
+				android:id="@+id/chip_period"
+				style="@style/Widget.Kotatsu.Chip.Dropdown"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/week"
+				app:chipIcon="@drawable/ic_history" />
+
+		</com.google.android.material.chip.ChipGroup>
+
+	</HorizontalScrollView>
+
 	<org.koitharu.kotatsu.stats.ui.views.PieChartView
 		android:id="@+id/chart"
 		android:layout_width="0dp"
@@ -49,7 +77,7 @@
 		app:layout_constraintDimensionRatio="1"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/appbar" />
+		app:layout_constraintTop_toBottomOf="@id/scrollView_chips" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView"
@@ -74,7 +102,7 @@
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/appbar"
+		app:layout_constraintTop_toBottomOf="@id/scrollView_chips"
 		tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

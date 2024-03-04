@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
@@ -14,9 +15,12 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import coil.ImageLoader
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -44,7 +48,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 	OnListItemClickListener<Manga>,
 	PieChartView.OnSegmentClickListener,
 	AsyncListDiffer.ListListener<StatsRecord>,
-	ViewStub.OnInflateListener {
+	ViewStub.OnInflateListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -61,13 +65,15 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 		viewBinding.recyclerView.adapter = adapter
 		viewBinding.chart.onSegmentClickListener = this
 		viewBinding.stubEmpty.setOnInflateListener(this)
+		viewBinding.chipPeriod.setOnClickListener(this)
 
 		viewModel.isLoading.observe(this) {
 			viewBinding.progressBar.showOrHide(it)
 		}
 		viewModel.period.observe(this) {
-			supportActionBar?.setSubtitle(it.titleResId)
+			viewBinding.chipPeriod.setText(it.titleResId)
 		}
+		viewModel.favoriteCategories.observe(this, ::createCategoriesChips)
 		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.recyclerView))
 		viewModel.readingStats.observe(this) {
 			val sum = it.sumOf { it.duration }
@@ -88,6 +94,17 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.chip_period -> showPeriodSelector()
+		}
+	}
+
+	override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+		val category = buttonView?.tag as? FavouriteCategory ?: return
+		viewModel.setCategoryChecked(category, isChecked)
+	}
+
 	override fun onItemClick(item: Manga, view: View) {
 		MangaStatsSheet.show(supportFragmentManager, item)
 	}
@@ -106,11 +123,6 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 		return when (item.itemId) {
 			R.id.action_clear -> {
 				showClearConfirmDialog()
-				true
-			}
-
-			R.id.action_period -> {
-				showPeriodSelector()
 				true
 			}
 
@@ -135,6 +147,25 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 		stubBinding.buttonRetry.isVisible = false
 	}
 
+	private fun createCategoriesChips(categories: List<FavouriteCategory>) {
+		val container = viewBinding.layoutChips
+		if (container.childCount > 1) {
+			// avoid duplication
+			return
+		}
+		val checkedIds = viewModel.selectedCategories.value
+		for (category in categories) {
+			val chip = Chip(this)
+			val drawable = ChipDrawable.createFromAttributes(this, null, 0, R.style.Widget_Kotatsu_Chip_Filter)
+			chip.setChipDrawable(drawable)
+			chip.text = category.title
+			chip.tag = category
+			chip.isChecked = category.id in checkedIds
+			chip.setOnCheckedChangeListener(this)
+			container.addView(chip)
+		}
+	}
+
 	private fun showClearConfirmDialog() {
 		MaterialAlertDialogBuilder(this, DIALOG_THEME_CENTERED)
 			.setMessage(R.string.clear_stats_confirm)
@@ -147,10 +178,15 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 	}
 
 	private fun showPeriodSelector() {
-		val menu = PopupMenu(this, viewBinding.toolbar)
+		val menu = PopupMenu(this, viewBinding.chipPeriod)
+		val selected = viewModel.period.value
 		for ((i, branch) in StatsPeriod.entries.withIndex()) {
-			menu.menu.add(Menu.NONE, Menu.NONE, i, branch.titleResId)
+			val item = menu.menu.add(R.id.group_period, Menu.NONE, i, branch.titleResId)
+			item.isCheckable = true
+			item.isChecked = selected.ordinal == i
 		}
+		menu.menu.setGroupCheckable(R.id.group_period, true, true)
+
 		menu.setOnMenuItemClickListener {
 			StatsPeriod.entries.getOrNull(it.order)?.also {
 				viewModel.period.value = it

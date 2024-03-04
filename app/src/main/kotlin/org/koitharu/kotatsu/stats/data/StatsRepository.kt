@@ -16,21 +16,20 @@ class StatsRepository @Inject constructor(
 	private val db: MangaDatabase,
 ) {
 
-	suspend fun getReadingStats(period: StatsPeriod): List<StatsRecord> = db.withTransaction {
+	suspend fun getReadingStats(period: StatsPeriod, categories: Set<Long>): List<StatsRecord> {
 		val fromDate = if (period == StatsPeriod.ALL) {
 			0L
 		} else {
 			System.currentTimeMillis() - TimeUnit.DAYS.toMillis(period.days.toLong())
 		}
-		val stats = db.getStatsDao().getDurationStats(fromDate)
-		val mangaDao = db.getMangaDao()
+		val stats = db.getStatsDao().getDurationStats(fromDate, null, categories)
 		val result = ArrayList<StatsRecord>(stats.size)
 		var other = StatsRecord(null, 0)
 		val total = stats.values.sum()
-		for ((mangaId, duration) in stats) {
-			val manga = mangaDao.find(mangaId)?.toManga()
+		for ((mangaEntity, duration) in stats) {
+			val manga = mangaEntity.toManga(emptySet())
 			val percent = duration.toDouble() / total
-			if (manga == null || percent < 0.05) {
+			if (percent < 0.05) {
 				other = other.copy(duration = other.duration + duration)
 			} else {
 				result += StatsRecord(
@@ -42,7 +41,7 @@ class StatsRepository @Inject constructor(
 		if (other.duration != 0L) {
 			result += other
 		}
-		result
+		return result
 	}
 
 	suspend fun getTimePerPage(mangaId: Long): Long = db.withTransaction {

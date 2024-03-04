@@ -5,14 +5,6 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<item
-		android:id="@+id/action_period"
-		android:icon="@drawable/ic_expand_more"
-		android:orderInCategory="0"
-		android:title="@string/chapters"
-		app:showAsAction="always"
-		tools:ignore="AlwaysShowAction" />
-
-	<item
 		android:id="@+id/action_clear"
 		android:title="@string/clear_stats"
 		android:titleCondensed="@string/clear"

@@ -124,6 +124,12 @@
 
 	<style name="Widget.Kotatsu.Chip.Assist" parent="Widget.Material3.Chip.Assist" />
 
+	<style name="Widget.Kotatsu.Chip.Dropdown" parent="Widget.Material3.Chip.Assist">
+		<item name="closeIconVisible">true</item>
+		<item name="closeIcon">@drawable/ic_expand_more</item>
+		<item name="chipIconVisible">true</item>
+	</style>
+
 	<style name="Widget.Kotatsu.Button.More" parent="Widget.Material3.Button.TextButton">
 		<item name="android:minWidth">48dp</item>
 	</style>

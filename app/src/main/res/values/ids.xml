@@ -6,6 +6,7 @@
 	<item name="fast_scroller" type="id" />
 	<item name="group_branches" type="id" />
 	<item name="layout_tip" type="id" />
+	<item name="group_period" type="id" />
 	<!-- Navigation -->
 	<item name="nav_history" type="id" />
 	<item name="nav_favorites" type="id" />
