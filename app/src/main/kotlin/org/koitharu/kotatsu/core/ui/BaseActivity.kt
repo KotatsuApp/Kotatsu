@@ -60,11 +60,11 @@ abstract class BaseActivity<B : ViewBinding> :
 		if (isAmoledTheme) {
 			setTheme(R.style.ThemeOverlay_Kotatsu_Amoled)
 		}
+		putDataToExtras(intent)
 		super.onCreate(savedInstanceState)
 		WindowCompat.setDecorFitsSystemWindows(window, false)
 		insetsDelegate.handleImeInsets = true
 		insetsDelegate.addInsetsListener(this)
-		putDataToExtras(intent)
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
