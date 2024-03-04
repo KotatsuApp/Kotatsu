@@ -138,7 +138,10 @@ class DetailsActivity :
 				},
 			),
 		)
-		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.containerDetails, viewBinding.layoutBottom))
+		viewModel.onActionDone.observeEvent(
+			this,
+			ReversibleActionObserver(viewBinding.containerDetails, viewBinding.layoutBottom),
+		)
 		viewModel.onShowTip.observeEvent(this) { showTip() }
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
 		viewModel.selectedBranch.observe(this) {
@@ -150,6 +153,7 @@ class DetailsActivity :
 		viewModel.isChaptersEmpty.observe(this, chaptersMenuInvalidator)
 		val menuInvalidator = MenuInvalidator(this)
 		viewModel.favouriteCategories.observe(this, menuInvalidator)
+		viewModel.isStatsEnabled.observe(this, menuInvalidator)
 		viewModel.remoteManga.observe(this, menuInvalidator)
 		viewModel.branches.observe(this) {
 			viewBinding.buttonDropdown.isVisible = it.size > 1

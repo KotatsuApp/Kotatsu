@@ -73,6 +73,7 @@ class JsonSerializerTest {
 			scroll = 24.0f,
 			percent = 0.6f,
 			deletedAt = 0L,
+			chaptersCount = 12,
 		)
 		val json = JsonSerializer(entity).toJson()
 		val result = JsonDeserializer(json).toHistoryEntity()

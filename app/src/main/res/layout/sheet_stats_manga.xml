@@ -14,28 +14,69 @@
 		android:layout_height="wrap_content"
 		app:title="@string/reading_stats" />
 
-	<TextView
-		android:id="@+id/textView_title"
+	<ScrollView
+		android:id="@+id/scrollView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:paddingHorizontal="@dimen/screen_padding"
-		android:textAppearance="?textAppearanceTitleMedium"
-		tools:text="@tools:sample/lorem[4]" />
+		android:scrollIndicators="top">
 
-	<org.koitharu.kotatsu.stats.ui.views.BarChartView
-		android:id="@+id/chartView"
-		android:layout_width="match_parent"
-		android:layout_height="240dp"
-		android:layout_marginTop="12dp"
-		android:paddingHorizontal="@dimen/screen_padding" />
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
 
-	<TextView
-		android:id="@+id/textView_start"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="2dp"
-		android:paddingHorizontal="@dimen/screen_padding"
-		android:textAppearance="?textAppearanceLabelSmall"
-		tools:text="Week ago" />
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:paddingHorizontal="@dimen/screen_padding">
 
+				<TextView
+					android:id="@+id/textView_title"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:textAppearance="?textAppearanceTitleMedium"
+					tools:text="@tools:sample/lorem[4]" />
+
+				<ImageButton
+					android:id="@+id/button_open"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="?selectableItemBackgroundBorderless"
+					android:minWidth="?minTouchTargetSize"
+					android:minHeight="?minTouchTargetSize"
+					app:srcCompat="@drawable/ic_open_external" />
+
+			</LinearLayout>
+
+			<org.koitharu.kotatsu.stats.ui.views.BarChartView
+				android:id="@+id/chartView"
+				android:layout_width="match_parent"
+				android:layout_height="240dp"
+				android:layout_marginTop="12dp"
+				android:paddingHorizontal="@dimen/screen_padding" />
+
+			<TextView
+				android:id="@+id/textView_start"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="2dp"
+				android:paddingHorizontal="@dimen/screen_padding"
+				android:textAppearance="?textAppearanceLabelSmall"
+				tools:text="Week ago" />
+
+
+			<TextView
+				android:id="@+id/textView_pages"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="12dp"
+				android:paddingHorizontal="@dimen/screen_padding"
+				android:textAppearance="?textAppearanceBodyMedium"
+				tools:text="Total pages read: 250" />
+
+		</LinearLayout>
+	</ScrollView>
 </LinearLayout>

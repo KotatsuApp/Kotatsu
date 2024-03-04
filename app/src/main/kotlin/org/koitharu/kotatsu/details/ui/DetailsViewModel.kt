@@ -100,6 +100,10 @@ class DetailsViewModel @Inject constructor(
 	val favouriteCategories = interactor.observeIsFavourite(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
+	val isStatsEnabled = settings.observeAsStateFlow(viewModelScope + Dispatchers.Default, AppSettings.KEY_STATS_ENABLED) {
+		isStatsEnabled
+	}
+
 	val remoteManga = MutableStateFlow<Manga?>(null)
 
 	val newChaptersCount = details.flatMapLatest { d ->

@@ -12,12 +12,10 @@ import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import androidx.annotation.StyleRes
 import androidx.core.content.withStyledAttributes
-import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.withClip
 import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.Colors
-import kotlin.math.absoluteValue
+import org.koitharu.kotatsu.core.util.KotatsuColors
 
 class FaviconDrawable(
 	context: Context,
@@ -45,7 +43,7 @@ class FaviconDrawable(
 		}
 		paint.textAlign = Paint.Align.CENTER
 		paint.isFakeBoldText = true
-		colorForeground = MaterialColors.harmonize(Colors.random(name), colorBackground)
+		colorForeground = MaterialColors.harmonize(KotatsuColors.random(name), colorBackground)
 	}
 
 	override fun draw(canvas: Canvas) {

@@ -1,41 +1,29 @@
 package org.koitharu.kotatsu.stats.ui
 
-import android.graphics.Color
 import android.os.Bundle
-import android.text.style.DynamicDrawableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.ImageSpan
-import android.text.style.RelativeSizeSpan
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewStub
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
-import androidx.core.text.buildSpannedString
-import androidx.core.text.inSpans
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.AsyncListDiffer
 import coil.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
-import org.koitharu.kotatsu.core.util.Colors
+import org.koitharu.kotatsu.core.util.KotatsuColors
 import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -43,7 +31,6 @@ import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.ActivityStatsBinding
 import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.stats.domain.StatsPeriod
@@ -90,7 +77,8 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 						value = (v.duration / 1000).toInt(),
 						label = v.manga?.title ?: getString(R.string.other_manga),
 						percent = (v.duration.toDouble() / sum).toFloat(),
-						color = Colors.of(this, v.manga),
+						color = KotatsuColors.ofManga(this, v.manga),
+						tag = v.manga,
 					)
 				},
 			)
@@ -105,9 +93,8 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 	}
 
 	override fun onSegmentClick(view: PieChartView, segment: PieChartView.Segment) {
-		Toast.makeText(this, segment.label, Toast.LENGTH_SHORT).apply {
-			setGravity(Gravity.TOP, 0, view.top + view.height / 2)
-		}.show()
+		val manga = segment.tag as? Manga ?: return
+		onItemClick(manga, view)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {

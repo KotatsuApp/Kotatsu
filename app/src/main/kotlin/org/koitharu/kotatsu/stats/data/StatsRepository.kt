@@ -56,6 +56,10 @@ class StatsRepository @Inject constructor(
 		time
 	}
 
+	suspend fun getTotalPagesRead(mangaId: Long): Int {
+		return db.getStatsDao().getReadPagesCount(mangaId)
+	}
+
 	suspend fun getMangaTimeline(mangaId: Long): NavigableMap<Long, Int> {
 		val entities = db.getStatsDao().findAll(mangaId)
 		val map = TreeMap<Long, Int>()

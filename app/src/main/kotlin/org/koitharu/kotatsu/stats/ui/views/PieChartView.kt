@@ -161,6 +161,7 @@ class PieChartView @JvmOverloads constructor(
 		val label: String,
 		val percent: Float,
 		val color: Int,
+		val tag: Any?,
 	)
 
 	interface OnSegmentClickListener {

@@ -38,6 +38,12 @@
 		app:showAsAction="never" />
 
 	<item
+		android:id="@+id/action_stats"
+		android:orderInCategory="50"
+		android:title="@string/statistics"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_related"
 		android:orderInCategory="50"
 		android:title="@string/find_similar"

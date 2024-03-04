@@ -30,6 +30,7 @@ class MangaStatsViewModel @Inject constructor(
 
 	val stats = MutableStateFlow<IntList>(emptyIntList())
 	val startDate = MutableStateFlow<DateTimeAgo?>(null)
+	val totalPagesRead = MutableStateFlow(0)
 
 	init {
 		launchLoadingJob(Dispatchers.Default) {
@@ -39,7 +40,7 @@ class MangaStatsViewModel @Inject constructor(
 				stats.value = emptyIntList()
 			} else {
 				val startDay = TimeUnit.MILLISECONDS.toDays(timeline.firstKey())
-				val endDay = TimeUnit.MILLISECONDS.toDays(timeline.lastKey())
+				val endDay = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis())
 				val res = MutableIntList((endDay - startDay).toInt() + 1)
 				for (day in startDay..endDay) {
 					val from = TimeUnit.DAYS.toMillis(day)
@@ -49,6 +50,9 @@ class MangaStatsViewModel @Inject constructor(
 				stats.value = res
 				startDate.value = calculateTimeAgo(Instant.ofEpochMilli(timeline.firstKey()))
 			}
+		}
+		launchLoadingJob(Dispatchers.Default) {
+			totalPagesRead.value = repository.getTotalPagesRead(manga.id)
 		}
 	}
 }

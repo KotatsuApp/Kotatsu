@@ -617,4 +617,5 @@
 	<string name="day">Day</string>
 	<string name="three_months">Three months</string>
 	<string name="empty_stats_text">There are no statistics for the selected period</string>
+	<string name="pages_read_s">Pages read: %s</string>
 </resources>
