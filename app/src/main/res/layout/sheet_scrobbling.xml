@@ -112,7 +112,7 @@
 			app:barrierMargin="8dp"
 			app:constraint_referenced_ids="imageView_cover,spinner_status" />
 
-		<TextView
+		<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
 			android:id="@+id/textView_description"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
