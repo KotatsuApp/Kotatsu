@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="local_storage">Armazenamento local</string>
     <string name="favourites">Favoritos</string>
-    <string name="error_occurred">Um erro ocorreu</string>
+    <string name="error_occurred">Ocorreu um erro</string>
     <string name="network_error">Erro de rede</string>
     <string name="details">Detalhes</string>
     <string name="list">Lista</string>
@@ -17,7 +17,7 @@
     <string name="nothing_found">Nada encontrado</string>
     <string name="history_is_empty">Sem histórico ainda</string>
     <string name="you_have_not_favourites_yet">Ainda não há favoritos</string>
-    <string name="add_to_favourites">Favoritar isso</string>
+    <string name="add_to_favourites">Favoritar isto</string>
     <string name="add">Adicionar</string>
     <string name="save">Salvar</string>
     <string name="share">Compartilhar</string>
@@ -594,4 +594,8 @@
     <string name="location">Localização</string>
     <string name="pages_saving">Salvando páginas</string>
     <string name="ask_for_dest_dir_every_time">Sempre pedir diretório de destinação</string>
+    <string name="automatic">Automatico</string>
+    <string name="single_cbz_file">Ficheiro CBZ único</string>
+    <string name="preferred_download_format">Formato de download preferida</string>
+    <string name="multiple_cbz_files">Múltiplos ficheiros CBZ</string>
 </resources>
