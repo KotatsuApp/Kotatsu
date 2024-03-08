@@ -36,4 +36,16 @@
         <item quantity="many">%1$d miesięcy temu</item>
         <item quantity="other">%1$d miesięcy temu</item>
     </plurals>
+    <plurals name="hours">
+        <item quantity="one">%1$d godzinę</item>
+        <item quantity="few">%1$d godzin</item>
+        <item quantity="many">%1$d godzin</item>
+        <item quantity="other">%1$d godzin</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d minutę</item>
+        <item quantity="few">%1$d minuty</item>
+        <item quantity="many">%1$d minut</item>
+        <item quantity="other">%1$d minut</item>
+    </plurals>
 </resources>
