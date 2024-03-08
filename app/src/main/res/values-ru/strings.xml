@@ -611,4 +611,6 @@
     <string name="three_months">Три месяца</string>
     <string name="empty_stats_text">Статистика за выбранный период отсутствует</string>
     <string name="pages_read_s">Страниц прочитано: %s</string>
+    <string name="reading_stats">Статистика чтения</string>
+    <string name="week">Неделя</string>
 </resources>

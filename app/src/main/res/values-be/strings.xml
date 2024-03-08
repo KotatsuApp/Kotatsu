@@ -594,4 +594,23 @@
     <string name="remove_from_history">Выдаліць з гісторыі</string>
     <string name="pages_saving">Захаванне старонак</string>
     <string name="location">Размяшчэнне</string>
+    <string name="stats_enabled">Ўключыць статыстыку</string>
+    <string name="reading_stats">Статыстыка чытання</string>
+    <string name="other_manga">Іншая манга</string>
+    <string name="less_than_minute">Менш хвіліны</string>
+    <string name="statistics">Статыстыка</string>
+    <string name="clear_stats">Ачысціць статыстыку</string>
+    <string name="week">Тыдзень</string>
+    <string name="stats_cleared">Статыстыка ачышчана</string>
+    <string name="month">Месяц</string>
+    <string name="all_time">Увесь час</string>
+    <string name="day">Дзень</string>
+    <string name="empty_stats_text">Статыстыка за абраны перыяд адсутнічае</string>
+    <string name="pages_read_s">Прачытана старонак: %s</string>
+    <string name="automatic">Аўтаматычна</string>
+    <string name="three_months">Тры месяцы</string>
+    <string name="clear_stats_confirm">Вы сапраўды хочаце ачысціць усю статыстыку чытання? Гэта дзеянне нельга адмяніць.</string>
+    <string name="preferred_download_format">Пераважны фармат для загрузак</string>
+    <string name="single_cbz_file">Адзін файл CBZ</string>
+    <string name="multiple_cbz_files">Некалькі файлаў CBZ</string>
 </resources>
