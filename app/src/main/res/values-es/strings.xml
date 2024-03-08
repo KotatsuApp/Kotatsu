@@ -594,4 +594,8 @@
     <string name="pages_saving">Guardar páginas</string>
     <string name="default_page_save_dir">Directorio predeterminado para guardar páginas</string>
     <string name="location">Ubicación</string>
+    <string name="automatic">Automático</string>
+    <string name="single_cbz_file">Un único archivo CBZ</string>
+    <string name="multiple_cbz_files">Varios archivos CBZ</string>
+    <string name="preferred_download_format">Formato preferido para la descarga</string>
 </resources>
