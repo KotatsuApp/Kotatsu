@@ -346,7 +346,7 @@
     <string name="allow_unstable_updates_summary">Makakuha ng paunawa tungkol sa mga unstable build</string>
     <string name="network_unavailable">Hindi magagamit ang network</string>
     <string name="network_unavailable_hint">I-on ang Wi-Fi o mobile network para magbasa ng manga online</string>
-    <string name="reader_control_ltr_summary">Ang susunod na pag-navigate ay palaging magdadala sa iyo sa susunod na pahina kapag gumagamit ng mouse at keyboard.</string>
+    <string name="reader_control_ltr_summary">Ang pag-tap sa kanang gilid, o pagpindot sa kanan na key, ay palaging lilipat sa susunod na pahina.</string>
     <string name="reader_slider">Ipakita ang slider ng paglipat ng pahina</string>
     <string name="manga_error_description_pattern">Mga detalye ng error:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Subukang &lt;a href=%2$s&gt;magbukas ng manga sa isang web browser&lt;/a&gt; upang matiyak na available ito sa souce&lt;br&gt;2. Tiyaking ginagamit mo ang &lt;a href=kotatsu://about&gt;pinakabagong bersyon ng Kotatsu&lt;/a&gt;&lt;br&gt;3. Kung available ito, magpadala ng ulat ng error sa mga developer.</string>
     <string name="enable_logging">Paganahin ang pag-log</string>
@@ -594,4 +594,23 @@
     <string name="reading_time_estimation">Ipakita ang tinantyang oras ng pagbabasa</string>
     <string name="reading_time_estimation_summary">Maaaring hindi tumpak ang halaga ng pagtatantya ng oras</string>
     <string name="location">Lokasyon</string>
+    <string name="automatic">Awtomatiko</string>
+    <string name="preferred_download_format">Ginustong format ng pag-download</string>
+    <string name="single_cbz_file">Isang CBZ na file</string>
+    <string name="multiple_cbz_files">Maramihang CBZ na file</string>
+    <string name="reading_stats">Statistika sa pagbabasa</string>
+    <string name="less_than_minute">Wala pang isang minuto</string>
+    <string name="statistics">Mga statistika</string>
+    <string name="clear_stats">I-clear ang statistika</string>
+    <string name="stats_cleared">Na-clear ang statistika</string>
+    <string name="pages_read_s">Mga nabasang pahina: %s</string>
+    <string name="stats_enabled">Paganahin ang statistika</string>
+    <string name="other_manga">Ibang manga</string>
+    <string name="day">Araw</string>
+    <string name="clear_stats_confirm">Gusto mo ba talagang i-clear ang lahat ng istatistika ng pagbabasa? Ang gawaing ito ay hindi pwedeng baguhin.</string>
+    <string name="week">Linggo</string>
+    <string name="all_time">Lahat ng oras</string>
+    <string name="month">Buwan</string>
+    <string name="three_months">Tatlong buwan</string>
+    <string name="empty_stats_text">Walang mga istatistika para sa napiling panahon</string>
 </resources>
