@@ -511,7 +511,7 @@
     <string name="backups_output_directory">Speicher-Verzeichnis für Backups</string>
     <string name="last_successful_backup">Letztes erfolgreiches Backup: %s</string>
     <string name="state_upcoming">Erwartet</string>
-    <string name="by_name_reverse">Name reserviert</string>
+    <string name="by_name_reverse">Name rückwärts</string>
     <string name="advanced">Erweitert</string>
     <string name="content_type_comics">Comics</string>
     <string name="source_summary_pattern">%1$s, %2$s</string>
@@ -580,4 +580,21 @@
     <string name="two_pages">Zwei Seiten</string>
     <string name="next_chapter">Nächstes Kapitel</string>
     <string name="prev_page">Vorherige Seite</string>
+    <string name="last_read">Zuletzt gelesen</string>
+    <string name="automatic">Automatisch</string>
+    <string name="show_labels_in_navbar">Beschriftungen in der Navigationsleiste anzeigen</string>
+    <string name="pages_saving">Seiten werden gespeichert</string>
+    <string name="ask_for_dest_dir_every_time">Jedes Mal nach dem Zielverzeichnis fragen</string>
+    <string name="default_page_save_dir">Standard-Seitenspeicherordner</string>
+    <string name="remove_from_history">Aus der Historie entfernen</string>
+    <string name="preferred_download_format">Bevorzugtes Download-Format</string>
+    <string name="fullscreen_mode">Vollbildmodus</string>
+    <string name="reader_fullscreen_summary">Systemstatus- und Navigationsleisten ausblenden</string>
+    <string name="single_cbz_file">Eine CBZ-Datei</string>
+    <string name="multiple_cbz_files">Mehrere CBZ-Dateien</string>
+    <string name="suggestions_unavailable_text">Die Vorschlagsfunktion ist deaktiviert</string>
+    <string name="check_for_new_chapters_disabled">Die Überprüfung auf neue Kapitel ist deaktiviert</string>
+    <string name="reading_time_estimation">Geschätzte Lesezeit anzeigen</string>
+    <string name="reading_time_estimation_summary">Die geschätzte Zeitangabe kann ungenau sein</string>
+    <string name="location">Ort</string>
 </resources>
