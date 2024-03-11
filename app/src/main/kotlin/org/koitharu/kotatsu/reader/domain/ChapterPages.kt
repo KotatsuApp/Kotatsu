@@ -14,6 +14,7 @@ class ChapterPages private constructor(private val pages: ArrayDeque<ReaderPage>
 	val chaptersSize: Int
 		get() = indices.size()
 
+	@Synchronized
 	fun removeFirst() {
 		val chapterId = pages.first().chapterId
 		indices.remove(chapterId)
@@ -25,6 +26,7 @@ class ChapterPages private constructor(private val pages: ArrayDeque<ReaderPage>
 		shiftIndices(delta)
 	}
 
+	@Synchronized
 	fun removeLast() {
 		val chapterId = pages.last().chapterId
 		indices.remove(chapterId)
@@ -33,17 +35,28 @@ class ChapterPages private constructor(private val pages: ArrayDeque<ReaderPage>
 		}
 	}
 
-	fun addLast(id: Long, newPages: List<ReaderPage>) {
+	@Synchronized
+	fun addLast(id: Long, newPages: List<ReaderPage>): Boolean {
+		if (id in indices) {
+			return false
+		}
 		indices.put(id, pages.size until (pages.size + newPages.size))
 		pages.addAll(newPages)
+		return true
 	}
 
-	fun addFirst(id: Long, newPages: List<ReaderPage>) {
+	@Synchronized
+	fun addFirst(id: Long, newPages: List<ReaderPage>): Boolean {
+		if (id in indices) {
+			return false
+		}
 		shiftIndices(newPages.size)
 		indices.put(id, newPages.indices)
 		pages.addAll(0, newPages)
+		return true
 	}
 
+	@Synchronized
 	fun clear() {
 		indices.clear()
 		pages.clear()
@@ -58,7 +71,7 @@ class ChapterPages private constructor(private val pages: ArrayDeque<ReaderPage>
 		return pages.subList(range.first, range.last + 1)
 	}
 
-	operator fun contains(chapterId: Long)  = indices.contains(chapterId)
+	operator fun contains(chapterId: Long) = chapterId in indices
 
 	private fun shiftIndices(delta: Int) {
 		for (i in 0 until indices.size()) {
