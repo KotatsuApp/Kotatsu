@@ -41,6 +41,9 @@ abstract class StatsDao {
 	@Query("DELETE FROM stats")
 	abstract suspend fun clear()
 
+	@Query("SELECT COUNT(*) FROM stats WHERE manga_id = :mangaId")
+	abstract fun observeRowCount(mangaId: Long): Flow<Int>
+
 	@Upsert
 	abstract suspend fun upsert(entity: StatsEntity)
 

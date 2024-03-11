@@ -153,7 +153,7 @@ class DetailsActivity :
 		viewModel.isChaptersEmpty.observe(this, chaptersMenuInvalidator)
 		val menuInvalidator = MenuInvalidator(this)
 		viewModel.favouriteCategories.observe(this, menuInvalidator)
-		viewModel.isStatsEnabled.observe(this, menuInvalidator)
+		viewModel.isStatsAvailable.observe(this, menuInvalidator)
 		viewModel.remoteManga.observe(this, menuInvalidator)
 		viewModel.branches.observe(this) {
 			viewBinding.buttonDropdown.isVisible = it.size > 1

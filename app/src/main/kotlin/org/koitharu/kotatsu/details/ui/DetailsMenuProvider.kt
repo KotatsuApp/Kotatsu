@@ -44,7 +44,7 @@ class DetailsMenuProvider(
 		menu.findItem(R.id.action_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(activity)
 		menu.findItem(R.id.action_scrobbling).isVisible = viewModel.isScrobblingAvailable
 		menu.findItem(R.id.action_online).isVisible = viewModel.remoteManga.value != null
-		menu.findItem(R.id.action_stats).isVisible = viewModel.isStatsEnabled.value
+		menu.findItem(R.id.action_stats).isVisible = viewModel.isStatsAvailable.value
 		menu.findItem(R.id.action_favourite).setIcon(
 			if (viewModel.favouriteCategories.value) R.drawable.ic_heart else R.drawable.ic_heart_outline,
 		)

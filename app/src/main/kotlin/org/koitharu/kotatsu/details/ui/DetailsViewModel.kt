@@ -61,6 +61,7 @@ import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
+import org.koitharu.kotatsu.stats.data.StatsRepository
 import javax.inject.Inject
 
 @HiltViewModel
@@ -79,6 +80,7 @@ class DetailsViewModel @Inject constructor(
 	private val detailsLoadUseCase: DetailsLoadUseCase,
 	private val progressUpdateUseCase: ProgressUpdateUseCase,
 	private val readingTimeUseCase: ReadingTimeUseCase,
+	private val statsRepository: StatsRepository,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -100,9 +102,8 @@ class DetailsViewModel @Inject constructor(
 	val favouriteCategories = interactor.observeIsFavourite(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
-	val isStatsEnabled = settings.observeAsStateFlow(viewModelScope + Dispatchers.Default, AppSettings.KEY_STATS_ENABLED) {
-		isStatsEnabled
-	}
+	val isStatsAvailable = statsRepository.observeHasStats(mangaId)
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
 	val remoteManga = MutableStateFlow<Manga?>(null)
 
