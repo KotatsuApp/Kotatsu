@@ -594,4 +594,23 @@
     <string name="show_labels_in_navbar">नेविगेशन बार में लेबल दिखाएँ</string>
     <string name="pages_saving">पन्ने सहेजा जा रहा है</string>
     <string name="ask_for_dest_dir_every_time">हर बार गंतव्य स्थान के लिए पूछें</string>
+    <string name="preferred_download_format">वरीय डाउनलोड प्रारूप</string>
+    <string name="multiple_cbz_files">अनेक CBZ फ़ाइलें</string>
+    <string name="automatic">ऑटोमैटिक</string>
+    <string name="single_cbz_file">एकल CBZ फ़ाइल</string>
+    <string name="reading_stats">पठन आँकड़े</string>
+    <string name="stats_cleared">आंकड़े साफ़ हो गए</string>
+    <string name="week">हफ्ता</string>
+    <string name="all_time">पूरा समय</string>
+    <string name="stats_enabled">आँकड़े सक्षम करें</string>
+    <string name="other_manga">अन्य मंगा</string>
+    <string name="less_than_minute">एक मिनट से कम</string>
+    <string name="statistics">आंकड़े</string>
+    <string name="clear_stats_confirm">क्या आप सचमुच सभी पठन आँकड़े साफ़ करना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता है।</string>
+    <string name="three_months">तीन महीने</string>
+    <string name="clear_stats">आँकड़े साफ़ करें</string>
+    <string name="month">महीना</string>
+    <string name="day">दिन</string>
+    <string name="empty_stats_text">चयनित अवधि के लिए कोई आँकड़े नहीं हैं</string>
+    <string name="pages_read_s">पेज पढ़ें गए: %s</string>
 </resources>

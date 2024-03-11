@@ -594,4 +594,8 @@
     <string name="pages_saving">正在儲存頁面</string>
     <string name="ask_for_dest_dir_every_time">每次都詢問目的地目錄</string>
     <string name="default_page_save_dir">預設頁面儲存目錄</string>
+    <string name="multiple_cbz_files">多個 CBZ 檔案</string>
+    <string name="preferred_download_format">偏好的下載格式</string>
+    <string name="automatic">自動</string>
+    <string name="single_cbz_file">單一 CBZ 檔案</string>
 </resources>

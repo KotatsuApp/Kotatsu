@@ -594,4 +594,23 @@
     <string name="default_page_save_dir">Varsayılan sayfa kaydetme konumu</string>
     <string name="remove_from_history">Geçmişten kaldır</string>
     <string name="location">Konum</string>
+    <string name="automatic">Otomatik</string>
+    <string name="single_cbz_file">Tek CBZ dosyası</string>
+    <string name="preferred_download_format">Tercih edilen indirme biçimi</string>
+    <string name="multiple_cbz_files">Birden fazla CBZ dosyası</string>
+    <string name="other_manga">Diğer manga</string>
+    <string name="week">Hafta</string>
+    <string name="month">Ay</string>
+    <string name="all_time">Tüm zamanlar</string>
+    <string name="day">Gün</string>
+    <string name="three_months">Üç ay</string>
+    <string name="empty_stats_text">Seçilen dönem için istatistik yok</string>
+    <string name="pages_read_s">Okunan sayfalar: %s</string>
+    <string name="stats_enabled">İstatistikleri etkinleştir</string>
+    <string name="clear_stats">İstatistikleri temizle</string>
+    <string name="reading_stats">Okuma istatistikleri</string>
+    <string name="statistics">İstatistikler</string>
+    <string name="less_than_minute">Bir dakikadan az</string>
+    <string name="stats_cleared">İstatistikler temizlendi</string>
+    <string name="clear_stats_confirm">Gerçekten tüm okuma istatistiklerini temizlemek istiyor musunuz? Bu işlem geri alınamaz.</string>
 </resources>

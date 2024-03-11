@@ -594,4 +594,23 @@
     <string name="show_labels_in_navbar">Показывать подписи на панели навигации</string>
     <string name="default_page_save_dir">Папка для сохранений по умолчанию</string>
     <string name="location">Расположение</string>
+    <string name="automatic">Автоматически</string>
+    <string name="single_cbz_file">Один файл CBZ</string>
+    <string name="multiple_cbz_files">Несколько файлов CBZ</string>
+    <string name="preferred_download_format">Предпочтительный формат загрузок</string>
+    <string name="stats_enabled">Включить статистику</string>
+    <string name="other_manga">Другая манга</string>
+    <string name="month">Месяц</string>
+    <string name="all_time">Всё время</string>
+    <string name="day">День</string>
+    <string name="less_than_minute">Меньше минуты</string>
+    <string name="statistics">Статистика</string>
+    <string name="clear_stats">Очистить статистику</string>
+    <string name="stats_cleared">Статистика очищена</string>
+    <string name="clear_stats_confirm">Вы действительно хотите очистить всю статистику чтения? Это действие нельзя отменить.</string>
+    <string name="three_months">Три месяца</string>
+    <string name="empty_stats_text">Статистика за выбранный период отсутствует</string>
+    <string name="pages_read_s">Страниц прочитано: %s</string>
+    <string name="reading_stats">Статистика чтения</string>
+    <string name="week">Неделя</string>
 </resources>

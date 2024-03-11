@@ -56,4 +56,12 @@
         <item quantity="many">%1$d ساعات مضت</item>
         <item quantity="other">%1$d ساعات مضت</item>
     </plurals>
+    <plurals name="minutes">
+        <item quantity="zero"></item>
+        <item quantity="one">دقيقة</item>
+        <item quantity="two">دقيقتان</item>
+        <item quantity="few">ثلاث دقائق</item>
+        <item quantity="many">إحدى عشر دقيقة</item>
+        <item quantity="other">مئة دقيقة</item>
+    </plurals>
 </resources>

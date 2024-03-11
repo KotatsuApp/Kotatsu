@@ -402,4 +402,11 @@
     <string name="resume">ดำเนินการต่อ</string>
     <string name="paused">หยุดชั่วคราว</string>
     <string name="pause">หยุด</string>
+    <string name="automatic">อัตโนมัติ</string>
+    <string name="fullscreen_mode">โหมดเต็มหน้าจอ</string>
+    <string name="remove_from_history">ลบออกจากประวัติ</string>
+    <string name="config_reset_confirm">รีเซ็ตการตั้งค่าเป็นค่าเริ่มต้นไหม? การกระทำนี้ไม่สามารถย้อนกลับได้</string>
+    <string name="reading_time_estimation">แสดงเวลาในการอ่านโดยประมาณ</string>
+    <string name="reading_time_estimation_summary">การประมาณเวลา ผลลัพธ์อาจจะไม่ถูกต้อง</string>
+    <string name="location">ตำแหน่ง</string>
 </resources>
