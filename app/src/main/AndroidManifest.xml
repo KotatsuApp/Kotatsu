@@ -242,6 +242,9 @@
 		<activity
 			android:name="org.koitharu.kotatsu.stats.ui.StatsActivity"
 			android:label="@string/reading_stats" />
+		<activity
+			android:name="org.koitharu.kotatsu.alternatives.ui.AlternativesActivity"
+			android:label="@string/alternatives" />
 
 		<service
 			android:name="androidx.work.impl.foreground.SystemForegroundService"

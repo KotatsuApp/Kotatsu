@@ -50,6 +50,12 @@
 		app:showAsAction="never" />
 
 	<item
+		android:id="@+id/action_alternatives"
+		android:orderInCategory="50"
+		android:title="@string/alternatives"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_online"
 		android:orderInCategory="50"
 		android:title="@string/online_variant"

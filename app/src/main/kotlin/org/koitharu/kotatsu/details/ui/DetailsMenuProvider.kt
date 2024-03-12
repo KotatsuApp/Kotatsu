@@ -14,6 +14,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.alternatives.ui.AlternativesActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -41,6 +42,7 @@ class DetailsMenuProvider(
 		menu.findItem(R.id.action_save).isVisible = manga?.source != null && manga.source != MangaSource.LOCAL
 		menu.findItem(R.id.action_delete).isVisible = manga?.source == MangaSource.LOCAL
 		menu.findItem(R.id.action_browser).isVisible = manga?.source != MangaSource.LOCAL
+		menu.findItem(R.id.action_alternatives).isVisible = manga?.source != MangaSource.LOCAL
 		menu.findItem(R.id.action_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(activity)
 		menu.findItem(R.id.action_scrobbling).isVisible = viewModel.isScrobblingAvailable
 		menu.findItem(R.id.action_online).isVisible = viewModel.remoteManga.value != null
@@ -100,6 +102,12 @@ class DetailsMenuProvider(
 			R.id.action_related -> {
 				viewModel.manga.value?.let {
 					activity.startActivity(MultiSearchActivity.newIntent(activity, it.title))
+				}
+			}
+
+			R.id.action_alternatives -> {
+				viewModel.manga.value?.let {
+					activity.startActivity(AlternativesActivity.newIntent(activity, it))
 				}
 			}
 

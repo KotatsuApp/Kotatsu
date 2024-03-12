@@ -25,6 +25,8 @@
 	<color name="status_bar_incognito">#99B39DDB</color>
 	<color name="warning">#E65100</color>
 	<color name="launcher_background">#FFFFFF</color>
+	<color name="common_green">#388E3C</color>
+	<color name="common_red">#D32F2F</color>
 
 	<!-- Color schemes colors -->
 	<color name="background_miku">#E4FFFA</color>

@@ -131,3 +131,19 @@ fun MangaChapter.formatNumber(): String? {
 	}
 	return chaptersNumberFormat.format(number.toDouble())
 }
+
+fun Manga.chaptersCount(): Int {
+	if (chapters.isNullOrEmpty()) {
+		return 0
+	}
+	val counters = MutableObjectIntMap<String?>()
+	var max = 0
+	chapters?.forEach { x ->
+		val c = counters.getOrDefault(x.branch, 0) + 1
+		counters[x.branch] = c
+		if (max < c) {
+			max = c
+		}
+	}
+	return max
+}

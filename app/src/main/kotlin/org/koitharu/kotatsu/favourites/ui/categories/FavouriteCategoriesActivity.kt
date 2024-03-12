@@ -178,6 +178,7 @@ class FavouriteCategoriesActivity :
 		}
 	}
 
+	@Deprecated("")
 	companion object {
 
 		fun newIntent(context: Context) = Intent(context, FavouriteCategoriesActivity::class.java)

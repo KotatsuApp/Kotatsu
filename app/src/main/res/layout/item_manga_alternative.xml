@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	app:cardCornerRadius="16dp">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<com.google.android.material.imageview.ShapeableImageView
+			android:id="@+id/imageView_cover"
+			android:layout_width="98dp"
+			android:layout_height="0dp"
+			android:background="?colorSurfaceContainer"
+			android:scaleType="centerCrop"
+			app:layout_constraintDimensionRatio="13:18"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+			tools:src="@tools:sample/backgrounds/scenic" />
+
+		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+			android:id="@+id/progressView"
+			android:layout_width="@dimen/card_indicator_size"
+			android:layout_height="@dimen/card_indicator_size"
+			android:layout_margin="@dimen/card_indicator_offset"
+			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
+			app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
+
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="12dp"
+			android:layout_marginTop="12dp"
+			android:layout_marginEnd="12dp"
+			android:ellipsize="end"
+			android:maxLines="2"
+			android:textAppearance="?attr/textAppearanceTitleMedium"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="@tools:sample/lorem" />
+
+		<TextView
+			android:id="@+id/textView_subtitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="12dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginEnd="12dp"
+			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:maxLines="2"
+			android:textAppearance="?attr/textAppearanceBodySmall"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@+id/textView_title"
+			tools:text="@tools:sample/lorem/random" />
+
+		<com.google.android.material.chip.Chip
+			android:id="@+id/chip_source"
+			style="@style/Widget.Kotatsu.Chip.Assist"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="12dp"
+			app:layout_constrainedWidth="true"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0"
+			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+			app:layout_constraintTop_toBottomOf="@+id/textView_subtitle"
+			tools:text="Mangadex" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_migrate"
+			style="@style/Widget.Material3.Button.TonalButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="12dp"
+			android:layout_marginBottom="12dp"
+			android:text="@string/migrate"
+			app:icon="@drawable/ic_replace"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/chip_source"
+			app:layout_constraintVertical_bias="1" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
