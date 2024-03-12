@@ -25,9 +25,7 @@ class LocalMangaUtil(
 				}
 
 				is LocalMangaDirOutput -> {
-					for (id in ids) {
-						output.deleteChapter(id)
-					}
+					output.deleteChapters(ids)
 					output.finish()
 				}
 			}

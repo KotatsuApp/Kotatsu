@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
@@ -45,10 +46,13 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 		val manga = intent.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga ?: return
 		val chaptersIds = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toSet() ?: return
 		startForeground()
-		val mangaWithChapters = localMangaRepository.getDetails(manga)
-		localMangaRepository.deleteChapters(mangaWithChapters, chaptersIds)
-		localStorageChanges.emit(LocalManga(localMangaRepository.getDetails(manga)))
-		ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+		try {
+			val mangaWithChapters = localMangaRepository.getDetails(manga)
+			localMangaRepository.deleteChapters(mangaWithChapters, chaptersIds)
+			localStorageChanges.emit(LocalManga(localMangaRepository.getDetails(manga)))
+		} finally {
+			ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+		}
 	}
 
 	override fun onError(startId: Int, error: Throwable) {
@@ -60,6 +64,7 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 			.setContentText(error.getDisplayMessage(resources))
 			.setSmallIcon(android.R.drawable.stat_notify_error)
 			.setAutoCancel(true)
+			.setContentIntent(ErrorReporterReceiver.getPendingIntent(this, error))
 			.build()
 		val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 		nm.notify(NOTIFICATION_ID + startId, notification)

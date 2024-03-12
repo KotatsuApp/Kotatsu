@@ -106,7 +106,7 @@ class MangaIndex(source: String?) {
 	}
 
 	fun removeChapter(id: Long): Boolean {
-		return json.getJSONObject("chapters").remove(id.toString()) != null
+		return json.has("chapters") && json.getJSONObject("chapters").remove(id.toString()) != null
 	}
 
 	fun getChapterFileName(chapterId: Long): String? {

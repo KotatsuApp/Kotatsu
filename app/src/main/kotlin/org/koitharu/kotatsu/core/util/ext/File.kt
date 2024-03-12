@@ -10,7 +10,6 @@ import android.provider.OpenableColumns
 import androidx.core.database.getStringOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.fs.FileSequence
 import java.io.File
@@ -53,7 +52,7 @@ fun File.getStorageName(context: Context): String = runCatching {
 
 fun Uri.toFileOrNull() = if (scheme == URI_SCHEME_FILE) path?.let(::File) else null
 
-suspend fun File.deleteAwait() = withContext(Dispatchers.IO) {
+suspend fun File.deleteAwait() = runInterruptible(Dispatchers.IO) {
 	delete() || deleteRecursively()
 }
 
