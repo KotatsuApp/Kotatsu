@@ -623,4 +623,9 @@
 	<string name="migrate_confirmation">Manga \"%1$s\" from \"%2$s\" will be replaced with \"%3$s\" from \"%4$s\" in your history and favorites (if present)</string>
 	<string name="manga_migration">Manga migration</string>
 	<string name="migration_completed">Migration completed</string>
+	<string name="delete_read_chapters">Delete read chapters</string>
+	<string name="no_chapters_deleted">No chapters have been deleted</string>
+	<string name="chapters_deleted_pattern">Removed %1$s, cleared %2$s</string>
+	<string name="delete_read_chapters_summary">Delete chapters you have already read from local storage to free up space</string>
+	<string name="delete_read_chapters_prompt">This will permanently delete all chapters marked as read from your local storage. You can re-download it later, but the imported chapters may be lost forever</string>
 </resources>

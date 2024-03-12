@@ -6,7 +6,8 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:padding="?dialogPreferredPadding">
+	android:paddingHorizontal="?dialogPreferredPadding"
+	android:paddingTop="?dialogPreferredPadding">
 
 	<TextView
 		android:id="@+id/textView_path_label"
@@ -50,5 +51,14 @@
 		android:text="@string/available"
 		app:drawableStartCompat="@drawable/bg_rounded_square"
 		app:drawableTint="?colorSecondaryContainer" />
+
+	<com.google.android.material.chip.Chip
+		android:id="@+id/chip_cleanup"
+		style="@style/Widget.Kotatsu.Chip.Assist"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="12dp"
+		android:text="@string/delete_read_chapters"
+		app:chipIcon="@drawable/ic_delete" />
 
 </LinearLayout>

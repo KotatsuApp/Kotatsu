@@ -18,8 +18,10 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.firstNotNull
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.LocalStorageManager
+import org.koitharu.kotatsu.local.domain.DeleteReadChaptersUseCase
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import java.util.EnumMap
@@ -33,6 +35,7 @@ class UserDataSettingsViewModel @Inject constructor(
 	private val trackingRepository: TrackingRepository,
 	private val cookieJar: MutableCookieJar,
 	private val settings: AppSettings,
+	private val deleteReadChaptersUseCase: DeleteReadChaptersUseCase,
 ) : BaseViewModel() {
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
@@ -43,6 +46,8 @@ class UserDataSettingsViewModel @Inject constructor(
 	val httpCacheSize = MutableStateFlow(-1L)
 	val cacheSizes = EnumMap<CacheDir, MutableStateFlow<Long>>(CacheDir::class.java)
 	val storageUsage = MutableStateFlow<StorageUsage?>(null)
+
+	val onChaptersCleanedUp = MutableEventFlow<Pair<Int, Long>>()
 
 	val periodicalBackupFrequency = settings.observeAsFlow(
 		key = AppSettings.KEY_BACKUP_PERIODICAL_ENABLED,
@@ -133,9 +138,24 @@ class UserDataSettingsViewModel @Inject constructor(
 		}
 	}
 
-	private fun loadStorageUsage() {
+	fun cleanupChapters() {
+		launchJob(Dispatchers.Default) {
+			try {
+				loadingKeys.update { it + AppSettings.KEY_CHAPTERS_CLEAR }
+				val oldSize = storageUsage.firstNotNull().savedManga.bytes
+				val chaptersCount = deleteReadChaptersUseCase.invoke()
+				loadStorageUsage().join()
+				val newSize = storageUsage.firstNotNull().savedManga.bytes
+				onChaptersCleanedUp.call(chaptersCount to oldSize - newSize)
+			} finally {
+				loadingKeys.update { it - AppSettings.KEY_CHAPTERS_CLEAR }
+			}
+		}
+	}
+
+	private fun loadStorageUsage(): Job {
 		val prevJob = storageUsageJob
-		storageUsageJob = launchJob(Dispatchers.Default) {
+		return launchJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			val pagesCacheSize = storageManager.computeCacheSize(CacheDir.PAGES)
 			val otherCacheSize = storageManager.computeCacheSize() - pagesCacheSize
@@ -160,6 +180,8 @@ class UserDataSettingsViewModel @Inject constructor(
 					percent = (availableSpace.toDouble() / totalBytes).toFloat(),
 				),
 			)
+		}.also {
+			storageUsageJob = it
 		}
 	}
 }

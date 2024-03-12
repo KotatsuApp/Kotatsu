@@ -83,6 +83,12 @@
 			android:summary="@string/clear_cookies_summary"
 			android:title="@string/clear_cookies" />
 
+		<Preference
+			android:key="chapters_clear"
+			android:persistent="false"
+			android:summary="@string/delete_read_chapters_summary"
+			android:title="@string/delete_read_chapters" />
+
 	</PreferenceCategory>
 
 </PreferenceScreen>

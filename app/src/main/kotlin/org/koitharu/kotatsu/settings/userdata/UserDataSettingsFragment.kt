@@ -94,6 +94,7 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 		}
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(listView, this))
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(listView))
+		viewModel.onChaptersCleanedUp.observeEvent(viewLifecycleOwner, ::onChaptersCleanedUp)
 		settings.subscribe(this)
 	}
 
@@ -126,6 +127,11 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 
 			AppSettings.KEY_HTTP_CACHE_CLEAR -> {
 				viewModel.clearHttpCache()
+				true
+			}
+
+			AppSettings.KEY_CHAPTERS_CLEAR -> {
+				cleanupChapters()
 				true
 			}
 
@@ -191,6 +197,21 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 		}
 	}
 
+	private fun onChaptersCleanedUp(result: Pair<Int, Long>) {
+		val c = context ?: return
+		val text = if (result.first == 0 && result.second == 0L) {
+			c.getString(R.string.no_chapters_deleted)
+		} else {
+			c.getString(
+				R.string.chapters_deleted_pattern,
+				c.resources.getQuantityString(R.plurals.chapters, result.first, result.first),
+				FileSize.BYTES.format(c, result.second),
+			)
+		}
+		Snackbar.make(listView, text, Snackbar.LENGTH_SHORT).show()
+	}
+
+
 	private fun Preference.bindBytesSizeSummary(stateFlow: StateFlow<Long>) {
 		stateFlow.observe(viewLifecycleOwner) { size ->
 			summary = if (size < 0) {
@@ -232,6 +253,16 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(R.string.clear) { _, _ ->
 				viewModel.clearCookies()
+			}.show()
+	}
+
+	private fun cleanupChapters() {
+		MaterialAlertDialogBuilder(context ?: return)
+			.setTitle(R.string.delete_read_chapters)
+			.setMessage(R.string.delete_read_chapters_prompt)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setPositiveButton(R.string.delete) { _, _ ->
+				viewModel.cleanupChapters()
 			}.show()
 	}
 

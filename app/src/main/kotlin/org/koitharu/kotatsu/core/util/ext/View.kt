@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.slider.Slider
 import com.google.android.material.tabs.TabLayout
@@ -167,5 +168,13 @@ fun MaterialButton.setProgressIcon() {
 	progressDrawable.setColorSchemeColors(currentTextColor)
 	progressDrawable.setTintList(textColors)
 	icon = progressDrawable
+	progressDrawable.start()
+}
+
+fun Chip.setProgressIcon() {
+	val progressDrawable = CircularProgressDrawable(context)
+	progressDrawable.strokeWidth = resources.resolveDp(2f)
+	progressDrawable.setColorSchemeColors(currentTextColor)
+	chipIcon = progressDrawable
 	progressDrawable.start()
 }
