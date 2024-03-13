@@ -125,6 +125,12 @@ class DetailsViewModel @Inject constructor(
 		valueProducer = { chaptersReverse },
 	)
 
+	val isChaptersInGridView = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_GRID_VIEW_CHAPTERS,
+		valueProducer = { chaptersGridView },
+	)
+
 	val historyInfo: StateFlow<HistoryInfo> = combine(
 		manga,
 		selectedBranch,
@@ -283,6 +289,10 @@ class DetailsViewModel @Inject constructor(
 
 	fun setChaptersReversed(newValue: Boolean) {
 		settings.chaptersReverse = newValue
+	}
+
+	fun setChaptersInGridView(newValue: Boolean) {
+		settings.chaptersGridView = newValue
 	}
 
 	fun setSelectedBranch(branch: String?) {

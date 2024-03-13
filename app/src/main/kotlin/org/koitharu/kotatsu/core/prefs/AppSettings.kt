@@ -182,6 +182,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_REVERSE_CHAPTERS, false)
 		set(value) = prefs.edit { putBoolean(KEY_REVERSE_CHAPTERS, value) }
 
+	var chaptersGridView: Boolean
+		get() = prefs.getBoolean(KEY_GRID_VIEW_CHAPTERS, false)
+		set(value) = prefs.edit { putBoolean(KEY_GRID_VIEW_CHAPTERS, value) }
+
 	val zoomMode: ZoomMode
 		get() = prefs.getEnumValue(KEY_ZOOM_MODE, ZoomMode.FIT_CENTER)
 
@@ -552,6 +556,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_HISTORY_GROUPING = "history_grouping"
 		const val KEY_READING_INDICATORS = "reading_indicators"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
+		const val KEY_GRID_VIEW_CHAPTERS = "grid_view_chapters"
 		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
 		const val KEY_PAGES_NUMBERS = "pages_numbers"
 		const val KEY_SCREENSHOTS_POLICY = "screenshots_policy"
