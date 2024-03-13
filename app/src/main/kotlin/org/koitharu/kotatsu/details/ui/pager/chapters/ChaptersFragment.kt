@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.details.ui.pager.chapters
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -65,19 +64,20 @@ class ChaptersFragment :
 			registryOwner = this,
 			callback = this,
 		)
+		viewModel.isChaptersInGridView.observe(viewLifecycleOwner) { chaptersInGridView ->
+			binding.recyclerViewChapters.layoutManager = if (chaptersInGridView) {
+				GridLayoutManager(context, ChapterGridSpanHelper.getSpanCount(binding.recyclerViewChapters))
+			} else {
+				LinearLayoutManager(context)
+			}
+		}
 		with(binding.recyclerViewChapters) {
 			addItemDecoration(TypedListSpacingDecoration(context, true))
 			checkNotNull(selectionController).attachToRecyclerView(this)
 			setHasFixedSize(true)
 			isNestedScrollingEnabled = false
 			adapter = chaptersAdapter
-		}
-		viewModel.isChaptersInGridView.observe(viewLifecycleOwner) { chaptersInGridView ->
-			binding.recyclerViewChapters.layoutManager = if (chaptersInGridView) {
-				GridLayoutManager(context, 4)
-			} else {
-				LinearLayoutManager(context)
-			}
+			ChapterGridSpanHelper.attach(this)
 		}
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.chapters

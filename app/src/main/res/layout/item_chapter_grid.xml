@@ -1,68 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	style="?materialCardViewOutlinedStyle"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
+	android:layout_height="wrap_content"
+	tools:layout_width="@dimen/chapter_grid_width">
 
-	<com.google.android.material.card.MaterialCardView
-		android:layout_width="0dp"
-		android:layout_height="0dp"
-		android:layout_margin="6dp"
-		android:clipChildren="false"
-		app:cardCornerRadius="16dp"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintDimensionRatio="H,1:1"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent">
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
 
-		<LinearLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:orientation="vertical">
+		<TextView
+			android:id="@+id/textView_title"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:gravity="center"
+			android:singleLine="true"
+			android:textAlignment="center"
+			android:textAppearance="?attr/textAppearanceTitleMedium"
+			app:layout_constraintDimensionRatio="1:1"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="150"
+			tools:textColor="?android:textColorPrimary" />
 
-			<TextView
-				android:id="@+id/textView_title"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center"
-				android:singleLine="true"
-				android:textAppearance="?attr/textAppearanceBodyLarge"
-				tools:text="150"
-				tools:textColor="?android:textColorPrimary" />
+		<ImageView
+			android:id="@+id/imageView_bookmarked"
+			android:layout_width="14dp"
+			android:layout_height="14dp"
+			android:layout_marginEnd="6dp"
+			android:layout_marginBottom="6dp"
+			android:contentDescription="@string/bookmarks"
+			android:visibility="gone"
+			app:layout_constraintBottom_toBottomOf="@id/textView_title"
+			app:layout_constraintEnd_toEndOf="@id/textView_title"
+			app:srcCompat="@drawable/ic_bookmark"
+			tools:visibility="visible" />
 
-			<LinearLayout
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center"
-				android:layout_marginTop="6dp"
-				android:orientation="horizontal">
+		<ImageView
+			android:id="@+id/imageView_downloaded"
+			android:layout_width="14dp"
+			android:layout_height="14dp"
+			android:layout_marginEnd="6dp"
+			android:layout_marginBottom="6dp"
+			android:contentDescription="@string/downloaded"
+			android:visibility="gone"
+			app:layout_constraintBottom_toBottomOf="@id/textView_title"
+			app:layout_constraintEnd_toStartOf="@id/imageView_bookmarked"
+			app:srcCompat="@drawable/ic_save_ok"
+			tools:visibility="visible" />
 
-				<ImageView
-					android:id="@+id/imageView_bookmarked"
-					android:layout_width="20dp"
-					android:layout_height="20dp"
-					android:layout_marginStart="6dp"
-					android:layout_marginEnd="6dp"
-					android:contentDescription="@string/bookmarks"
-					app:srcCompat="@drawable/ic_bookmark" />
+		<ImageView
+			android:id="@+id/imageView_new"
+			android:layout_width="8dp"
+			android:layout_height="8dp"
+			android:layout_marginTop="10dp"
+			android:layout_marginEnd="10dp"
+			android:contentDescription="@string/new_chapters"
+			android:visibility="gone"
+			app:layout_constraintEnd_toEndOf="@id/textView_title"
+			app:layout_constraintTop_toTopOf="@id/textView_title"
+			app:srcCompat="@drawable/ic_new"
+			tools:visibility="visible" />
 
-				<ImageView
-					android:id="@+id/imageView_downloaded"
-					android:layout_width="20dp"
-					android:layout_height="20dp"
-					android:layout_marginStart="6dp"
-					android:layout_marginEnd="6dp"
-					android:contentDescription="@string/downloaded"
-					app:srcCompat="@drawable/ic_save_ok" />
+		<ImageView
+			android:id="@+id/imageView_current"
+			android:layout_width="16dp"
+			android:layout_height="16dp"
+			android:layout_marginStart="6dp"
+			android:layout_marginTop="6dp"
+			android:contentDescription="@string/new_chapters"
+			android:visibility="gone"
+			app:layout_constraintStart_toStartOf="@id/textView_title"
+			app:layout_constraintTop_toTopOf="@id/textView_title"
+			app:srcCompat="@drawable/ic_current_chapter"
+			tools:visibility="visible" />
 
-			</LinearLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
-		</LinearLayout>
-
-	</com.google.android.material.card.MaterialCardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

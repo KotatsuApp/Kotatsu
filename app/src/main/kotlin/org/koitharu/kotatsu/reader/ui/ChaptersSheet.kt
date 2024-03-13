@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.databinding.SheetChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.mapChapters
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
+import org.koitharu.kotatsu.details.ui.pager.chapters.ChapterGridSpanHelper
 import org.koitharu.kotatsu.details.ui.withVolumeHeaders
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
@@ -90,8 +91,9 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 				adapter.items = chapters
 			}
 		}
+		ChapterGridSpanHelper.attach(binding.recyclerView)
 		binding.recyclerView.layoutManager = if (settings.isChaptersGridView) {
-			GridLayoutManager(context, 4)
+			GridLayoutManager(context, ChapterGridSpanHelper.getSpanCount(binding.recyclerView))
 		} else {
 			LinearLayoutManager(context)
 		}

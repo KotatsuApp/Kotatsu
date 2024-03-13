@@ -40,6 +40,7 @@
 	<dimen name="reader_bar_inset_fallback">8dp</dimen>
 	<dimen name="scrobbling_list_spacing">12dp</dimen>
 	<dimen name="explore_grid_width">120dp</dimen>
+	<dimen name="chapter_grid_width">80dp</dimen>
 	<dimen name="side_card_offset">8dp</dimen>
 
 	<dimen name="search_suggestions_manga_height">124dp</dimen>
@@ -54,6 +55,9 @@
 	<dimen name="card_indicator_size">32dp</dimen>
 	<dimen name="card_indicator_size_small">24dp</dimen>
 	<dimen name="card_indicator_offset">8dp</dimen>
+
+	<dimen name="chapter_check_size">16dp</dimen>
+	<dimen name="chapter_check_offset">6dp</dimen>
 
 	<dimen name="appwidget_corner_radius_inner">20dp</dimen>
 	<dimen name="appwidget_corner_radius_background">28dp</dimen>
