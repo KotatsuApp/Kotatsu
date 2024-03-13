@@ -178,11 +178,11 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_INCOGNITO_MODE, false)
 		set(value) = prefs.edit { putBoolean(KEY_INCOGNITO_MODE, value) }
 
-	var chaptersReverse: Boolean
+	var isChaptersReverse: Boolean
 		get() = prefs.getBoolean(KEY_REVERSE_CHAPTERS, false)
 		set(value) = prefs.edit { putBoolean(KEY_REVERSE_CHAPTERS, value) }
 
-	var chaptersGridView: Boolean
+	var isChaptersGridView: Boolean
 		get() = prefs.getBoolean(KEY_GRID_VIEW_CHAPTERS, false)
 		set(value) = prefs.edit { putBoolean(KEY_GRID_VIEW_CHAPTERS, value) }
 

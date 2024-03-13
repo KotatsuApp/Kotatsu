@@ -15,7 +15,7 @@ class SourcesCatalogAdapter(
 ) : BaseListAdapter<SourceCatalogItem>(), FastScroller.SectionIndexer {
 
 	init {
-		addDelegate(ListItemType.CHAPTER, sourceCatalogItemSourceAD(coil, lifecycleOwner, listener))
+		addDelegate(ListItemType.CHAPTER_LIST, sourceCatalogItemSourceAD(coil, lifecycleOwner, listener))
 		addDelegate(ListItemType.HINT_EMPTY, sourceCatalogItemHintAD(coil, lifecycleOwner))
 	}
 

@@ -10,6 +10,7 @@ data class ChapterListItem(
 	val chapter: MangaChapter,
 	val flags: Int,
 	private val uploadDateMs: Long,
+	val isGrid: Boolean,
 ) : ListModel {
 
 	var description: String? = null

@@ -13,6 +13,7 @@ fun MangaChapter.toListItem(
 	isNew: Boolean,
 	isDownloaded: Boolean,
 	isBookmarked: Boolean,
+	isGrid: Boolean,
 ): ChapterListItem {
 	var flags = 0
 	if (isCurrent) flags = flags or FLAG_CURRENT
@@ -24,5 +25,6 @@ fun MangaChapter.toListItem(
 		chapter = this,
 		flags = flags,
 		uploadDateMs = uploadDate,
+		isGrid = isGrid,
 	)
 }

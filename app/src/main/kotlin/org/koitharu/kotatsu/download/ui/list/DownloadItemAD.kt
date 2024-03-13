@@ -59,7 +59,7 @@ fun downloadItemAD(
 		}
 	}
 	val chaptersAdapter = BaseListAdapter<DownloadChapter>()
-		.addDelegate(ListItemType.CHAPTER, downloadChapterAD())
+		.addDelegate(ListItemType.CHAPTER_LIST, downloadChapterAD())
 
 	binding.recyclerViewChapters.addItemDecoration(DividerItemDecoration(context, RecyclerView.VERTICAL))
 	binding.recyclerViewChapters.adapter = chaptersAdapter

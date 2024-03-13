@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.onEachWhile
 import org.koitharu.kotatsu.core.util.ext.requireValue
@@ -122,13 +123,13 @@ class DetailsViewModel @Inject constructor(
 	val isChaptersReversed = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_REVERSE_CHAPTERS,
-		valueProducer = { chaptersReverse },
+		valueProducer = { isChaptersReverse },
 	)
 
 	val isChaptersInGridView = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_GRID_VIEW_CHAPTERS,
-		valueProducer = { chaptersGridView },
+		valueProducer = { isChaptersGridView },
 	)
 
 	val historyInfo: StateFlow<HistoryInfo> = combine(
@@ -213,12 +214,14 @@ class DetailsViewModel @Inject constructor(
 			selectedBranch,
 			newChaptersCount,
 			bookmarks,
-		) { manga, history, branch, news, bookmarks ->
+			isChaptersInGridView,
+		) { manga, history, branch, news, bookmarks, grid ->
 			manga?.mapChapters(
 				history,
 				news,
 				branch,
 				bookmarks,
+				grid,
 			).orEmpty()
 		},
 		isChaptersReversed,
@@ -288,11 +291,11 @@ class DetailsViewModel @Inject constructor(
 	}
 
 	fun setChaptersReversed(newValue: Boolean) {
-		settings.chaptersReverse = newValue
+		settings.isChaptersReverse = newValue
 	}
 
 	fun setChaptersInGridView(newValue: Boolean) {
-		settings.chaptersGridView = newValue
+		settings.isChaptersGridView = newValue
 	}
 
 	fun setSelectedBranch(branch: String?) {
