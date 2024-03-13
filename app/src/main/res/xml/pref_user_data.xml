@@ -89,6 +89,12 @@
 			android:summary="@string/delete_read_chapters_summary"
 			android:title="@string/delete_read_chapters" />
 
+		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="chapters_clear_auto"
+			android:summary="@string/runs_on_app_start"
+			android:title="@string/delete_read_chapters_auto" />
+
 	</PreferenceCategory>
 
 </PreferenceScreen>

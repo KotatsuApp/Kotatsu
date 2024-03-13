@@ -424,6 +424,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isStatsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_STATS_ENABLED, false)
 
+	val isAutoLocalChaptersCleanupEnabled: Boolean
+		get() = prefs.getBoolean(KEY_CHAPTERS_CLEAR_AUTO, false)
+
 	fun isTipEnabled(tip: String): Boolean {
 		return prefs.getStringSet(KEY_TIPS_CLOSED, emptySet())?.contains(tip) != true
 	}
@@ -508,6 +511,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_HTTP_CACHE_CLEAR = "http_cache_clear"
 		const val KEY_COOKIES_CLEAR = "cookies_clear"
 		const val KEY_CHAPTERS_CLEAR = "chapters_clear"
+		const val KEY_CHAPTERS_CLEAR_AUTO = "chapters_clear_auto"
 		const val KEY_THUMBS_CACHE_CLEAR = "thumbs_cache_clear"
 		const val KEY_SEARCH_HISTORY_CLEAR = "search_history_clear"
 		const val KEY_UPDATES_FEED_CLEAR = "updates_feed_clear"

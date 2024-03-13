@@ -628,4 +628,6 @@
 	<string name="chapters_deleted_pattern">Removed %1$s, cleared %2$s</string>
 	<string name="delete_read_chapters_summary">Delete chapters you have already read from local storage to free up space</string>
 	<string name="delete_read_chapters_prompt">This will permanently delete all chapters marked as read from your local storage. You can re-download it later, but the imported chapters may be lost forever</string>
+	<string name="delete_read_chapters_auto">Delete read chapters automatically</string>
+	<string name="runs_on_app_start">Runs when the application starts</string>
 </resources>

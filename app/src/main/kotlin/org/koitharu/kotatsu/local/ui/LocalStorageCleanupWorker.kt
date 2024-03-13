@@ -13,18 +13,25 @@ import androidx.work.await
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
+import org.koitharu.kotatsu.local.domain.DeleteReadChaptersUseCase
 import java.util.concurrent.TimeUnit
 
 @HiltWorker
 class LocalStorageCleanupWorker @AssistedInject constructor(
 	@Assisted appContext: Context,
 	@Assisted params: WorkerParameters,
+	private val settings: AppSettings,
 	private val localMangaRepository: LocalMangaRepository,
 	private val dataRepository: MangaDataRepository,
+	private val deleteReadChaptersUseCase: DeleteReadChaptersUseCase,
 ) : CoroutineWorker(appContext, params) {
 
 	override suspend fun doWork(): Result {
+		if (settings.isAutoLocalChaptersCleanupEnabled) {
+			deleteReadChaptersUseCase.invoke()
+		}
 		return if (localMangaRepository.cleanup()) {
 			dataRepository.cleanupLocalManga()
 			Result.success()
@@ -44,7 +51,7 @@ class LocalStorageCleanupWorker @AssistedInject constructor(
 			val request = OneTimeWorkRequestBuilder<ImportWorker>()
 				.setConstraints(constraints)
 				.addTag(TAG)
-				.setBackoffCriteria(BackoffPolicy.LINEAR, 1, TimeUnit.MINUTES)
+				.setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.MINUTES)
 				.build()
 			WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.KEEP, request).await()
 		}
