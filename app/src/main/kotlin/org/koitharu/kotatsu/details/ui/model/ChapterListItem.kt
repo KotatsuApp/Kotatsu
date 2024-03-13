@@ -48,6 +48,9 @@ data class ChapterListItem(
 	val isNew: Boolean
 		get() = hasFlag(FLAG_NEW)
 
+	val isGrid: Boolean
+		get() = hasFlag(FLAG_GRID)
+
 	private fun buildDescription(): String {
 		val joiner = StringJoiner(" • ")
 		chapter.formatNumber()?.let {
@@ -90,5 +93,6 @@ data class ChapterListItem(
 		const val FLAG_NEW = 8
 		const val FLAG_BOOKMARKED = 16
 		const val FLAG_DOWNLOADED = 32
+		const val FLAG_GRID = 64
 	}
 }

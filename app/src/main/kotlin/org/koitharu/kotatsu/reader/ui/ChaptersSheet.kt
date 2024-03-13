@@ -66,6 +66,7 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 			newCount = 0,
 			branch = currentChapter?.branch,
 			bookmarks = listOf(),
+			isGrid = settings.isChaptersGridView,
 		).withVolumeHeaders(binding.root.context)
 		if (chapters.isEmpty()) {
 			dismissAllowingStateLoss()
@@ -77,8 +78,7 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 			-1
 		}
 		binding.recyclerView.addItemDecoration(TypedListSpacingDecoration(binding.recyclerView.context, true))
-		val chaptersInGridView = settings.chaptersGridView
-		binding.recyclerView.adapter = ChaptersAdapter(this, chaptersInGridView).also { adapter ->
+		binding.recyclerView.adapter = ChaptersAdapter(this).also { adapter ->
 			if (currentPosition >= 0) {
 				val targetPosition = (currentPosition - 1).coerceAtLeast(0)
 				val offset =
@@ -90,7 +90,7 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 				adapter.items = chapters
 			}
 		}
-		binding.recyclerView.layoutManager = if (chaptersInGridView) {
+		binding.recyclerView.layoutManager = if (settings.isChaptersGridView) {
 			GridLayoutManager(context, 4)
 		} else {
 			LinearLayoutManager(context)

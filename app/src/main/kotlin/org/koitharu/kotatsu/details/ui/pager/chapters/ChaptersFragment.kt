@@ -58,7 +58,7 @@ class ChaptersFragment :
 
 	override fun onViewBindingCreated(binding: FragmentChaptersBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		chaptersAdapter = ChaptersAdapter(this, viewModel.isChaptersInGridView.value)
+		chaptersAdapter = ChaptersAdapter(this)
 		selectionController = ListSelectionController(
 			activity = requireActivity(),
 			decoration = ChaptersSelectionDecoration(binding.root.context),
@@ -70,10 +70,9 @@ class ChaptersFragment :
 			checkNotNull(selectionController).attachToRecyclerView(this)
 			setHasFixedSize(true)
 			isNestedScrollingEnabled = false
+			adapter = chaptersAdapter
 		}
 		viewModel.isChaptersInGridView.observe(viewLifecycleOwner) { chaptersInGridView ->
-			chaptersAdapter?.setChapterAdapterDelegate(chaptersInGridView)
-			binding.recyclerViewChapters.adapter = chaptersAdapter
 			binding.recyclerViewChapters.layoutManager = if (chaptersInGridView) {
 				GridLayoutManager(context, 4)
 			} else {

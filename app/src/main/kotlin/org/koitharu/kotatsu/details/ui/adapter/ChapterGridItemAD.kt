@@ -17,7 +17,8 @@ import kotlin.math.roundToInt
 fun chapterGridItemAD(
 	clickListener: OnListItemClickListener<ChapterListItem>,
 ) = adapterDelegateViewBinding<ChapterListItem, ListModel, ItemChapterGridBinding>(
-	{ inflater, parent -> ItemChapterGridBinding.inflate(inflater, parent, false) },
+	viewBinding = { inflater, parent -> ItemChapterGridBinding.inflate(inflater, parent, false) },
+	on = { item, _, _ -> item is ChapterListItem && item.isGrid }
 ) {
 
 	val eventListener = AdapterDelegateClickListenerAdapter(this, clickListener)

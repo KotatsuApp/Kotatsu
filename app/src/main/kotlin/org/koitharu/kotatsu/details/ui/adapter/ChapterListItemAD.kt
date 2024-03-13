@@ -18,7 +18,8 @@ import com.google.android.material.R as MR
 fun chapterListItemAD(
 	clickListener: OnListItemClickListener<ChapterListItem>,
 ) = adapterDelegateViewBinding<ChapterListItem, ListModel, ItemChapterBinding>(
-	{ inflater, parent -> ItemChapterBinding.inflate(inflater, parent, false) },
+	viewBinding = { inflater, parent -> ItemChapterBinding.inflate(inflater, parent, false) },
+	on = { item, _, _ -> item is ChapterListItem && !item.isGrid }
 ) {
 
 	val eventListener = AdapterDelegateClickListenerAdapter(this, clickListener)

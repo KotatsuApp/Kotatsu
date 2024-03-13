@@ -16,6 +16,7 @@ fun MangaDetails.mapChapters(
 	newCount: Int,
 	branch: String?,
 	bookmarks: List<Bookmark>,
+	isGrid: Boolean,
 ): List<ChapterListItem> {
 	val remoteChapters = chapters[branch].orEmpty()
 	val localChapters = local?.manga?.getChapters(branch).orEmpty()
@@ -47,6 +48,7 @@ fun MangaDetails.mapChapters(
 			isNew = isUnread && result.size >= newFrom,
 			isDownloaded = local != null,
 			isBookmarked = chapter.id in bookmarked,
+			isGrid = isGrid,
 		)
 	}
 	if (!localMap.isNullOrEmpty()) {
@@ -60,6 +62,7 @@ fun MangaDetails.mapChapters(
 				isNew = false,
 				isDownloaded = !isLocal,
 				isBookmarked = chapter.id in bookmarked,
+				isGrid = isGrid,
 			)
 		}
 	}

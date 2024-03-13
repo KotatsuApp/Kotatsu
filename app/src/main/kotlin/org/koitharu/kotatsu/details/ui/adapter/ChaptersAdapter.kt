@@ -11,21 +11,12 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 
 class ChaptersAdapter(
 	private val onItemClickListener: OnListItemClickListener<ChapterListItem>,
-	chaptersInGridView: Boolean,
 ) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
-		setChapterAdapterDelegate(chaptersInGridView)
 		addDelegate(ListItemType.HEADER, listHeaderAD(null))
-	}
-
-	fun setChapterAdapterDelegate(chaptersInGridView: Boolean) {
-		delegatesManager.removeDelegate(ListItemType.CHAPTER.ordinal)
-		if (chaptersInGridView) {
-			addDelegate(ListItemType.CHAPTER, chapterGridItemAD(onItemClickListener))
-		} else {
-			addDelegate(ListItemType.CHAPTER, chapterListItemAD(onItemClickListener))
-		}
+		addDelegate(ListItemType.CHAPTER_LIST, chapterListItemAD(onItemClickListener))
+		addDelegate(ListItemType.CHAPTER_GRID, chapterGridItemAD(onItemClickListener))
 	}
 
 	override fun getSectionText(context: Context, position: Int): CharSequence? {
