@@ -171,7 +171,11 @@ class RemoteMangaRepository(
 		return getConfig().isSlowdownEnabled
 	}
 
-	private fun getConfig() = parser.config as SourceSettings
+	fun invalidateCache() {
+		cache.clear(source)
+	}
+
+	fun getConfig() = parser.config as SourceSettings
 
 	private suspend fun <T> asyncSafe(block: suspend CoroutineScope.() -> T): SafeDeferred<T> {
 		var dispatcher = currentCoroutineContext()[CoroutineDispatcher.Key]

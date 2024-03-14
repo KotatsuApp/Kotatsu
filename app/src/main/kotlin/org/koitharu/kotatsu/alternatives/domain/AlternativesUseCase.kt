@@ -42,7 +42,7 @@ class AlternativesUseCase @Inject constructor(
 						}
 					}.getOrDefault(emptyList())
 					for (item in list) {
-						if (item != manga && item.matches(manga)) {
+						if (item.matches(manga)) {
 							send(item)
 						}
 					}

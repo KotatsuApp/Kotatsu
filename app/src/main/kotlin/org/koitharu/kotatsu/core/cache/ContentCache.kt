@@ -20,6 +20,8 @@ interface ContentCache {
 
 	fun putRelatedManga(source: MangaSource, url: String, related: SafeDeferred<List<Manga>>)
 
+	fun clear(source: MangaSource)
+
 	data class Key(
 		val source: MangaSource,
 		val url: String,

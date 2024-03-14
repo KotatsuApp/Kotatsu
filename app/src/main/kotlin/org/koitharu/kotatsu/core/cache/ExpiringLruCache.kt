@@ -7,9 +7,11 @@ class ExpiringLruCache<T>(
 	val maxSize: Int,
 	private val lifetime: Long,
 	private val timeUnit: TimeUnit,
-) {
+) : Iterable<ContentCache.Key> {
 
 	private val cache = LruCache<ContentCache.Key, ExpiringValue<T>>(maxSize)
+
+	override fun iterator(): Iterator<ContentCache.Key> = cache.snapshot().keys.iterator()
 
 	operator fun get(key: ContentCache.Key): T? {
 		val value = cache[key] ?: return null
@@ -29,5 +31,9 @@ class ExpiringLruCache<T>(
 
 	fun trimToSize(size: Int) {
 		cache.trimToSize(size)
+	}
+
+	fun remove(key: ContentCache.Key) {
+		cache.remove(key)
 	}
 }

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.sources
 
+import android.content.SharedPreferences
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -10,11 +11,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
@@ -24,7 +27,7 @@ class SourceSettingsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
 	private val cookieJar: MutableCookieJar,
-) : BaseViewModel() {
+) : BaseViewModel(), SharedPreferences.OnSharedPreferenceChangeListener {
 
 	val source = savedStateHandle.require<MangaSource>(SourceSettingsFragment.EXTRA_SOURCE)
 	val repository = mangaRepositoryFactory.create(source) as RemoteMangaRepository
@@ -34,7 +37,19 @@ class SourceSettingsViewModel @Inject constructor(
 	private var usernameLoadJob: Job? = null
 
 	init {
+		repository.getConfig().subscribe(this)
 		loadUsername()
+	}
+
+	override fun onCleared() {
+		repository.getConfig().unsubscribe(this)
+		super.onCleared()
+	}
+
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+		if (key != SourceSettings.KEY_SLOWDOWN && key != SourceSettings.KEY_SORT_ORDER) {
+			repository.invalidateCache()
+		}
 	}
 
 	fun onResume() {

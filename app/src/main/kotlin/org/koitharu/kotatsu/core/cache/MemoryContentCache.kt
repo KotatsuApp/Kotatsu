@@ -44,6 +44,12 @@ class MemoryContentCache(application: Application) : ContentCache, ComponentCall
 		relatedMangaCache[ContentCache.Key(source, url)] = related
 	}
 
+	override fun clear(source: MangaSource) {
+		clearCache(detailsCache, source)
+		clearCache(pagesCache, source)
+		clearCache(relatedMangaCache, source)
+	}
+
 	override fun onConfigurationChanged(newConfig: Configuration) = Unit
 
 	override fun onLowMemory() = Unit
@@ -65,6 +71,14 @@ class MemoryContentCache(application: Application) : ContentCache, ComponentCall
 			ComponentCallbacks2.TRIM_MEMORY_BACKGROUND -> cache.trimToSize(1)
 
 			else -> cache.trimToSize(cache.maxSize / 2)
+		}
+	}
+
+	private fun clearCache(cache: ExpiringLruCache<*>, source: MangaSource) {
+		cache.forEach { key ->
+			if (key.source == source) {
+				cache.remove(key)
+			}
 		}
 	}
 }

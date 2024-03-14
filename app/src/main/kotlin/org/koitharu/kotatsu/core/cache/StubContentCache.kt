@@ -19,4 +19,6 @@ class StubContentCache : ContentCache {
 	override suspend fun getRelatedManga(source: MangaSource, url: String): List<Manga>? = null
 
 	override fun putRelatedManga(source: MangaSource, url: String, related: SafeDeferred<List<Manga>>) = Unit
+
+	override fun clear(source: MangaSource) = Unit
 }
