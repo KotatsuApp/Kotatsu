@@ -62,6 +62,14 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 					setTitle(R.string.show_suspicious_content)
 				}
 			}
+
+			is ConfigKey.SplitByTranslations -> {
+				SwitchPreferenceCompat(requireContext()).apply {
+					setDefaultValue(key.defaultValue)
+					setTitle(R.string.split_by_translations)
+					setSummary(R.string.split_by_translations_summary)
+				}
+			}
 		}
 		preference.isIconSpaceReserved = false
 		preference.key = key.key

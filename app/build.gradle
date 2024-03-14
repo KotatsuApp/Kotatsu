@@ -82,12 +82,12 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:b7613606c0') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:c6d1f1b525') {
 		exclude group: 'org.json', module: 'json'
 	}
 
 	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.23'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -121,7 +121,7 @@ dependencies {
 
 	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.12.0'
-	implementation 'com.squareup.okio:okio:3.8.0'
+	implementation 'com.squareup.okio:okio:3.9.0'
 
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2'
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
@@ -147,7 +147,7 @@ dependencies {
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.13'
 
 	testImplementation 'junit:junit:4.13.2'
-	testImplementation 'org.json:json:20240205'
+	testImplementation 'org.json:json:20240303'
 	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0'
 
 	androidTestImplementation 'androidx.test:runner:1.5.2'

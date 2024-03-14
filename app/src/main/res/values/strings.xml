@@ -631,4 +631,6 @@
 	<string name="delete_read_chapters_prompt">This will permanently delete all chapters marked as read from your local storage. You can re-download it later, but the imported chapters may be lost forever</string>
 	<string name="delete_read_chapters_auto">Delete read chapters automatically</string>
 	<string name="runs_on_app_start">Runs when the application starts</string>
+	<string name="split_by_translations">Split by translations</string>
+	<string name="split_by_translations_summary">Show chapters with different translations separately, rather than in one list</string>
 </resources>
