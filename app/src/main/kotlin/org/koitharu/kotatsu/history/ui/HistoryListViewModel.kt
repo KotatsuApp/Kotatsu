@@ -178,8 +178,13 @@ class HistoryListViewModel @Inject constructor(
 	}
 
 	private fun MangaHistory.header(order: ListSortOrder): ListHeader? = when (order) {
-		ListSortOrder.LAST_READ -> ListHeader(calculateTimeAgo(updatedAt))
+		ListSortOrder.LAST_READ,
+		ListSortOrder.LONG_AGO_READ -> ListHeader(calculateTimeAgo(updatedAt))
+
+		ListSortOrder.OLDEST,
 		ListSortOrder.NEWEST -> ListHeader(calculateTimeAgo(createdAt))
+
+		ListSortOrder.UNREAD,
 		ListSortOrder.PROGRESS -> ListHeader(
 			when (percent) {
 				1f -> R.string.status_completed

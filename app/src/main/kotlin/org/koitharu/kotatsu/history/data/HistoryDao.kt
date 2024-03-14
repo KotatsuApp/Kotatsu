@@ -36,8 +36,11 @@ abstract class HistoryDao {
 	fun observeAll(order: ListSortOrder): Flow<List<HistoryWithManga>> {
 		val orderBy = when (order) {
 			ListSortOrder.LAST_READ -> "history.updated_at DESC"
+			ListSortOrder.LONG_AGO_READ -> "history.updated_at ASC"
 			ListSortOrder.NEWEST -> "history.created_at DESC"
+			ListSortOrder.OLDEST -> "history.created_at ASC"
 			ListSortOrder.PROGRESS -> "history.percent DESC"
+			ListSortOrder.UNREAD -> "history.percent ASC"
 			ListSortOrder.ALPHABETIC -> "manga.title"
 			ListSortOrder.ALPHABETIC_REVERSE -> "manga.title DESC"
 			ListSortOrder.NEW_CHAPTERS -> "IFNULL((SELECT chapters_new FROM tracks WHERE tracks.manga_id = manga.manga_id), 0) DESC"

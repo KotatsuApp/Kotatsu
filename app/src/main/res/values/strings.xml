@@ -633,4 +633,7 @@
 	<string name="runs_on_app_start">Runs when the application starts</string>
 	<string name="split_by_translations">Split by translations</string>
 	<string name="split_by_translations_summary">Show chapters with different translations separately, rather than in one list</string>
+	<string name="order_oldest">Oldest</string>
+	<string name="long_ago_read">Long time ago read</string>
+	<string name="unread">Unread</string>
 </resources>
