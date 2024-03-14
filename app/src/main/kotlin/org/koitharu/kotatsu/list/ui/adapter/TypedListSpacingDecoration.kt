@@ -86,4 +86,5 @@ class TypedListSpacingDecoration(
 		|| this == ListItemType.FILTER_SORT
 		|| this == ListItemType.FILTER_TAG
 		|| this == ListItemType.CHAPTER_LIST
+		|| this == ListItemType.CHAPTER_GRID
 }

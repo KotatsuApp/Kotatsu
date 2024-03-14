@@ -66,7 +66,9 @@ class ChaptersFragment :
 		)
 		viewModel.isChaptersInGridView.observe(viewLifecycleOwner) { chaptersInGridView ->
 			binding.recyclerViewChapters.layoutManager = if (chaptersInGridView) {
-				GridLayoutManager(context, ChapterGridSpanHelper.getSpanCount(binding.recyclerViewChapters))
+				GridLayoutManager(context, ChapterGridSpanHelper.getSpanCount(binding.recyclerViewChapters)).apply {
+					spanSizeLookup = ChapterGridSpanHelper.SpanSizeLookup(binding.recyclerViewChapters)
+				}
 			} else {
 				LinearLayoutManager(context)
 			}

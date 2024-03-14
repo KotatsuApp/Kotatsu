@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import kotlin.math.roundToInt
 
 class ChapterGridSpanHelper private constructor() : View.OnLayoutChangeListener {
@@ -27,6 +28,22 @@ class ChapterGridSpanHelper private constructor() : View.OnLayoutChangeListener 
 
 	private fun apply(rv: RecyclerView) {
 		(rv.layoutManager as? GridLayoutManager)?.spanCount = getSpanCount(rv)
+	}
+
+	class SpanSizeLookup(
+		private val recyclerView: RecyclerView
+	) : GridLayoutManager.SpanSizeLookup() {
+
+		override fun getSpanSize(position: Int): Int {
+			return when (recyclerView.adapter?.getItemViewType(position)) {
+				ListItemType.CHAPTER_LIST.ordinal, // for smooth transition
+				ListItemType.HEADER.ordinal -> getTotalSpans()
+
+				else -> 1
+			}
+		}
+
+		private fun getTotalSpans() = (recyclerView.layoutManager as? GridLayoutManager)?.spanCount ?: 1
 	}
 
 	companion object {

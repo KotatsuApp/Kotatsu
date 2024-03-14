@@ -24,7 +24,7 @@ fun chapterGridItemAD(
 
 	bind { payloads ->
 		if (payloads.isEmpty()) {
-			binding.textViewTitle.text = item.chapter.formatNumber()
+			binding.textViewTitle.text = item.chapter.formatNumber() ?: "?"
 		}
 		binding.imageViewNew.isVisible = item.isNew
 		binding.imageViewCurrent.isVisible = item.isCurrent

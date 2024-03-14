@@ -93,7 +93,9 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 		}
 		ChapterGridSpanHelper.attach(binding.recyclerView)
 		binding.recyclerView.layoutManager = if (settings.isChaptersGridView) {
-			GridLayoutManager(context, ChapterGridSpanHelper.getSpanCount(binding.recyclerView))
+			GridLayoutManager(context, ChapterGridSpanHelper.getSpanCount(binding.recyclerView)).apply {
+				spanSizeLookup = ChapterGridSpanHelper.SpanSizeLookup(binding.recyclerView)
+			}
 		} else {
 			LinearLayoutManager(context)
 		}
