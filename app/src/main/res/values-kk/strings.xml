@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="text_search_holder_secondary">Сұрауыңызды қайталап көріңіз.</string>
     <string name="text_history_holder_secondary">«Шолу» бөлімінен не оқуға болатынын табыңыз.</string>
-    <string name="text_local_holder_secondary">Файл импорттаңыз не онлайн каталогтан бірдеңе сақтаңыз.</string>
+    <string name="text_local_holder_secondary">Файлдан импорттаңыз не онлайн каталогтан бірдеңе сақтаңыз.</string>
     <string name="other_storage">Басқа бума</string>
     <string name="new_version_s">Жаңа нұсқа: %s</string>
     <string name="size_s">Өлшемі: %s</string>
@@ -120,7 +120,7 @@
     <string name="text_file_not_supported">CBZ не ZIP пішімде таңдаңыз.</string>
     <string name="clear_pages_cache">Бет кәшін тазалау</string>
     <string name="read_mode">Оқу режімі</string>
-    <string name="text_delete_local_manga">“%s” құрылғыдан біржолата жоямысыз\?</string>
+    <string name="text_delete_local_manga">“%s” құрылғыдан біржолата жоямысыз?</string>
     <string name="_continue">Жалғастыру</string>
     <string name="volume_buttons">Дыбыс батырмалары</string>
     <string name="error">Қате</string>
@@ -520,4 +520,19 @@
     <string name="no_manga_sources_catalog_text">Әзірге мына жерде қолжетімді дереккөз жоқ. Жаңарту күтіңіз</string>
     <string name="available_d">Қолжетімді: %1$d</string>
     <string name="content_type_other">Басқа</string>
+    <string name="skip">Өткізіп жіберу</string>
+    <string name="email_password_enter_hint">Жалғастыру үшін email поштаңыз бен құпиясөзіңізді жазыңыз</string>
+    <string name="state_paused">Кідіртілген</string>
+    <string name="reader_optimize">Жадты жұмсауды үнемдеу (beta)</string>
+    <string name="reader_optimize_summary">Жадта көп орын алмау үшін көрінбей тұрған беттердің сапасын азайту</string>
+    <string name="state">Күйі</string>
+    <string name="error_search_not_supported">Бұл дереккөзде іздеу мүмкіндігі жоқ</string>
+    <string name="error_multiple_states_not_supported">Бұл дереккөзде бірнеше күй бойынша сүзуге болмайды</string>
+    <string name="grayscale">Сұр реңк</string>
+    <string name="color_correction_apply_text">Бұл баптауды түгеліне я тек осы маңгаға қолдануға болады. Түгеліне қолдансаңыз, кейбір дара баптау алдын ала белгілі болмайды.</string>
+    <string name="apply">Қолдану</string>
+    <string name="globally">Ауқымды</string>
+    <string name="this_manga">Бұл маңга</string>
+    <string name="error_filter_locale_genre_not_supported">Бұл дереккөзде жанр бойынша және локал файлдар бойынша сүзуге болмайды</string>
+    <string name="error_multiple_genres_not_supported">Бұл дереккөзде бірнеше жанр бойынша сүзуге болмайды</string>
 </resources>
