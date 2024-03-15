@@ -613,4 +613,9 @@
     <string name="month">Місяць</string>
     <string name="day">День</string>
     <string name="empty_stats_text">Статистика за вибраний період відсутня</string>
+    <string name="alternatives">Альтернативи</string>
+    <string name="migrate">Перенести</string>
+    <string name="migrate_confirmation">Манга «%1$s» з «%2$s» буде замінена на «%3$s» з «%4$s» у вашій історії та у вибраному (якщо доступно)</string>
+    <string name="manga_migration">Перенесення манґи</string>
+    <string name="migration_completed">Перенесення завершено</string>
 </resources>
