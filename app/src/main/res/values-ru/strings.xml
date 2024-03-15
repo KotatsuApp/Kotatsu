@@ -613,4 +613,9 @@
     <string name="pages_read_s">Страниц прочитано: %s</string>
     <string name="reading_stats">Статистика чтения</string>
     <string name="week">Неделя</string>
+    <string name="alternatives">Альтернативы</string>
+    <string name="manga_migration">Перенос манги</string>
+    <string name="migration_completed">Перенос завершён</string>
+    <string name="migrate">Перенести</string>
+    <string name="migrate_confirmation">Манга \"%1$s\" из \"%2$s\" будет заменена на \"%3$s\" из \"%4$s\" в вашей истории и в избранных (если есть)</string>
 </resources>
