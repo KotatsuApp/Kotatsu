@@ -601,11 +601,11 @@
     <string name="stats_enabled">开启阅读统计</string>
     <string name="reading_stats">阅读统计</string>
     <string name="other_manga">其他漫画</string>
-    <string name="less_than_minute">刚刚</string>
+    <string name="less_than_minute">不到1分钟</string>
     <string name="statistics">统计</string>
     <string name="month">月</string>
     <string name="clear_stats_confirm">确定清除所有统计记录？清除后无法恢复。</string>
-    <string name="pages_read_s">已阅读： %s</string>
+    <string name="pages_read_s">已读页数： %s</string>
     <string name="clear_stats">清除统计记录</string>
     <string name="stats_cleared">统计记录已清除</string>
     <string name="week">周</string>
@@ -615,7 +615,7 @@
     <string name="empty_stats_text">选择的时间段没有阅读统计记录</string>
     <string name="migrate">换源</string>
     <string name="delete_read_chapters">删除已读章节</string>
-    <string name="no_chapters_deleted">无需删除</string>
+    <string name="no_chapters_deleted">尚未删除章节</string>
     <string name="chapters_deleted_pattern">已删除 %1$s, 清除了 %2$s</string>
     <string name="delete_read_chapters_summary">从本地设备中删除已读章节来释放存储空间</string>
     <string name="alternatives">其他版本</string>
