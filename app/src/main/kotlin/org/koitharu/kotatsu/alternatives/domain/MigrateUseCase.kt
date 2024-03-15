@@ -91,7 +91,7 @@ class MigrateUseCase @Inject constructor(
 		val oldChapters = checkNotNull(oldManga.getChapters(branch))
 		var index = oldChapters.indexOfFirst { it.id == history.chapterId }
 		if (index < 0) {
-			index = (oldChapters.size * history.percent).toInt()
+			index = (oldChapters.lastIndex * history.percent).toInt()
 		}
 		val newChapters = checkNotNull(newManga.chapters).groupBy { it.branch }
 		val newBranch = if (newChapters.containsKey(branch)) {
