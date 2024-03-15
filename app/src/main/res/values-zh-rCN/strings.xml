@@ -28,9 +28,9 @@
     <string name="captcha_solve">开始验证</string>
     <string name="today">今天</string>
     <string name="clear_cookies">清除 Cookies</string>
-    <string name="new_sources_text">以下是新增的可用图源</string>
+    <string name="new_sources_text">发现了新的可用漫画源</string>
     <string name="suggestions_summary">根据你的喜好推荐漫画</string>
-    <string name="suggestions_info">所有数据都在本地分析，不会发送到其他地方。</string>
+    <string name="suggestions_info">所有数据都在本地分析，不会发送至任何地方。</string>
     <string name="never">从不</string>
     <string name="show_notification_new_chapters_on">接收在读漫画的更新通知</string>
     <string name="nsfw">R18</string>
@@ -86,7 +86,7 @@
     <string name="_import">导入</string>
     <string name="delete">删除</string>
     <string name="operation_not_supported">操作无效</string>
-    <string name="text_file_not_supported">选择 ZIP 或 CBZ 文件。</string>
+    <string name="text_file_not_supported">必须选择一个 ZIP 或 CBZ 文件。</string>
     <string name="no_description">暂无简介</string>
     <string name="clear_pages_cache">清除页面缓存</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
@@ -124,7 +124,7 @@
     <string name="favourites_categories">收藏分类管理</string>
     <string name="remove_category">删除分类</string>
     <string name="text_empty_holder_primary">什么都没有…</string>
-    <string name="text_search_holder_secondary">试试换一个词再搜索。</string>
+    <string name="text_search_holder_secondary">试试换一个关键词再搜索</string>
     <string name="text_history_holder_primary">看过的漫画将在这里显示</string>
     <string name="text_history_holder_secondary">在&lt;浏览&gt;页面搜索想读的漫画</string>
     <string name="text_local_holder_primary">存点什么吧</string>
@@ -151,7 +151,7 @@
     <string name="feed_will_update_soon">即将开始更新漫画</string>
     <string name="track_sources">章节更新范围</string>
     <string name="dont_check">不检查</string>
-    <string name="enter_password">输入密码</string>
+    <string name="enter_password">请输入启动密码</string>
     <string name="wrong_password">密码错误</string>
     <string name="protect_application">应用锁</string>
     <string name="protect_application_summary">在启动Kotatsu时要求输入密码</string>
@@ -182,7 +182,7 @@
     <string name="auth_required">登录后可查看此内容</string>
     <string name="default_s">默认值：%s</string>
     <string name="next">下一步</string>
-    <string name="protect_application_subtitle">输入密码以解锁</string>
+    <string name="protect_application_subtitle">请填写密码</string>
     <string name="confirm">确认</string>
     <string name="password_length_hint">密码必须大于或等于4个字符</string>
     <string name="text_clear_search_history_prompt">确定永久清除所有搜索记录？</string>
@@ -351,7 +351,7 @@
     <string name="language">语言</string>
     <string name="enable_logging">开启日志记录</string>
     <string name="share_logs">分享日志</string>
-    <string name="enable_logging_summary">出于调试目的记录某些操作，若不知道有何用处请不要自行开启</string>
+    <string name="enable_logging_summary">出于调试目的记录一些操作，若不知道有何用处请不要自行开启</string>
     <string name="show_suspicious_content">显示可疑内容</string>
     <string name="theme_name_dynamic">动态</string>
     <string name="color_theme">配色主题</string>
@@ -365,7 +365,7 @@
     <string name="theme_name_mamimi">Mamimi</string>
     <string name="theme_name_kanade">Kanade</string>
     <string name="nothing_here">这里什么也没有</string>
-    <string name="scrobbling_empty_hint">要记录阅读进度，在漫画详情页里选中【菜单】→【进度记录】。</string>
+    <string name="scrobbling_empty_hint">要记录阅读进度，在漫画详情页里选择【菜单】→【进度记录】。</string>
     <string name="allow_unstable_updates">允许更新至测试版本</string>
     <string name="allow_unstable_updates_summary">接收测试版本的更新通知</string>
     <string name="download_started">下载已开始</string>
@@ -376,7 +376,7 @@
     <string name="speed">速度</string>
     <string name="restore_backup_description">导入先前创建的用户数据备份</string>
     <string name="show_on_shelf">在书架上显示</string>
-    <string name="comics_archive_import_description">可选择一个或多个 cbz 或 zip 文件，每个文件都将识别为一个单独的漫画。</string>
+    <string name="comics_archive_import_description">可选择一个或多个 CBZ 或 ZIP 文件，每个文件都将识别为一个单独的漫画。</string>
     <string name="folder_with_images_import_description">可选择一个包含压缩包或图片的文件夹，每个压缩包 (或子文件夹) 都会被识别为一个章节。</string>
     <string name="find_similar">搜索相似漫画</string>
     <string name="translations">翻译</string>
@@ -487,7 +487,7 @@
     <string name="suggest_new_sources">推荐新增图源</string>
     <string name="enhanced_colors_summary">减少色带，但可能会影响性能</string>
     <string name="enhanced_colors">32位色彩模式</string>
-    <string name="suggest_new_sources_summary">应用更新后推荐最近新增图源</string>
+    <string name="suggest_new_sources_summary">应用更新后推送最近新增图源</string>
     <string name="frequency_every_day">每天一次</string>
     <string name="categories">分类</string>
     <string name="backup_frequency">备份频率</string>
@@ -530,7 +530,7 @@
     <string name="grayscale">灰度</string>
     <string name="globally">全局</string>
     <string name="this_manga">此漫画</string>
-    <string name="color_correction_apply_text">这些设置可以全局应用，也可以只应用于当前漫画。如果全局应用，单独的设置将不会被覆盖。</string>
+    <string name="color_correction_apply_text">这些设置可以全局应用，也可以只应用于当前漫画。若全局应用，将不会覆盖单独的设置。</string>
     <string name="apply">应用</string>
     <string name="online_variant">在线版本</string>
     <string name="restore">恢复</string>
@@ -613,4 +613,22 @@
     <string name="day">日</string>
     <string name="three_months">三个月</string>
     <string name="empty_stats_text">选择的时间段没有阅读统计记录</string>
+    <string name="migrate">换源</string>
+    <string name="delete_read_chapters">删除已读章节</string>
+    <string name="no_chapters_deleted">无需删除</string>
+    <string name="chapters_deleted_pattern">已删除 %1$s, 清除了 %2$s</string>
+    <string name="delete_read_chapters_summary">从本地设备中删除已读章节来释放存储空间</string>
+    <string name="alternatives">其他版本</string>
+    <string name="manga_migration">漫画换源</string>
+    <string name="migration_completed">换源完成</string>
+    <string name="chapters_grid_view">网格视图</string>
+    <string name="delete_read_chapters_prompt">将会删除所有在本地设备内标记为已读的章节。可之后再重新下载，但已导入的章节将会永久丢失</string>
+    <string name="delete_read_chapters_auto">自动删除已读章节</string>
+    <string name="runs_on_app_start">开启应用时运行</string>
+    <string name="migrate_confirmation">\"%2$s\" 图源的 \"%1$s\" 漫画将会在你的历史记录和收藏中替换为 \"%4$s\" 图源的 \"%3$s\" 漫画（若资源存在）</string>
+    <string name="unread">未读</string>
+    <string name="order_oldest">最旧</string>
+    <string name="long_ago_read">很久以前阅读</string>
+    <string name="split_by_translations">翻译版本分开显示</string>
+    <string name="split_by_translations_summary">分开显示不同的翻译版本，而不是只合并成一个列表</string>
 </resources>
