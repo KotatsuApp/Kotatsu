@@ -77,7 +77,7 @@
     <string name="authorization_optional">Ауторизација (опционално)</string>
     <string name="images_procy_description">Користите wsrv.nl услуга за смањење употребе саобраћаја и убрзавање учитавања слика ако је могуће</string>
     <string name="manga_branch_title_template">%1$s (%2$s)</string>
-    <string name="details_button_tip">Притисните и држите дугме за читање да бисте видели више опција</string>
+    <string name="details_button_tip">Притисни и држи дугме за читање за више опција</string>
     <string name="computing_">Рачунање…</string>
     <string name="search">Претражи</string>
     <string name="by_rating">Оцени</string>
@@ -118,22 +118,22 @@
     <string name="volume_buttons">Притисни дугмад за јачину звука</string>
     <string name="notifications">Обавештења</string>
     <string name="pages_cache">Кеш страница</string>
-    <string name="text_shelf_holder_secondary">Пронађи шта ћеш да читаш у одељку „Преглед“</string>
+    <string name="text_shelf_holder_secondary">Пронађи шта ћеш да читаш у одељку „Истражи“</string>
     <string name="manga_shelf">Полица</string>
     <string name="check_for_updates">Провери ажурирања</string>
     <string name="feed">Новости</string>
     <string name="services">Услуге</string>
     <string name="show_on_shelf">Прикажи на полици</string>
-    <string name="explore">Преглед</string>
+    <string name="explore">Истражи</string>
     <string name="options">Опције</string>
     <string name="add_to_favourites">Додај у омиљене</string>
-    <string name="text_history_holder_secondary">Пронађи ствари за читање у одељку „Преглед“</string>
+    <string name="text_history_holder_secondary">Пронађи ствари за читање у одељку „Истражи“</string>
     <string name="light_indicator">Показатељ ЛЕД светла</string>
     <string name="favourites_categories">Омиљене категорије</string>
     <string name="remove_category">Уклони</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Омогућено је %1$d од %2$d</string>
     <string name="clear">Избриши</string>
-    <string name="text_history_holder_primary">Оно што прочиташ биће приказано овде</string>
+    <string name="text_history_holder_primary">Све што читаш биће приказано овде</string>
     <string name="delete">Избриши</string>
     <string name="search_history_cleared">Очишћено</string>
     <string name="_s_deleted_from_local_storage">\"%s\" избрисано из локалне меморије</string>
@@ -217,7 +217,7 @@
     <string name="tap_to_try_again">Додирни за поновни покушај</string>
     <string name="ignore_ssl_errors">Занемари SSL грешке</string>
     <string name="auth_required">Пријави се да би видео овај садржај</string>
-    <string name="next">Следеће</string>
+    <string name="next">Следећа</string>
     <string name="restore_backup">Обнови из резервне копије</string>
     <string name="reader_info_bar">Прикажи траку са информацијама у читачу</string>
     <string name="password_length_hint">Лозинка мора имати 4 знака или више</string>
@@ -422,10 +422,10 @@
     <string name="right_to_left">Са десна на лево</string>
     <string name="show_reading_indicators_summary">Прикажи проценат читања у историји и омиљеним</string>
     <string name="random">Насумично</string>
-    <string name="mirror_switching">Самостално изабери послуживач</string>
+    <string name="mirror_switching">Аутоматски изабери послуживач</string>
     <string name="use_fingerprint">Користи отисак прста ако је доступан</string>
     <string name="restore_summary">Врати претходно направљену резервну копију</string>
-    <string name="onboard_text">Изаберите језике на којима желите да читате мангу. Можете га променити касније у подешавањима.</string>
+    <string name="onboard_text">Изаберите језике на којима желите да читате мангу. Можете их променити касније у подешавањима.</string>
     <string name="zoom_out">Умањи</string>
     <string name="reader_mode_hint">Изабрана конфигурација ће бити запамћена за ову мангу</string>
     <string name="keep_screen_on_summary">Не искључуј екран док читам мангу</string>
@@ -476,7 +476,7 @@
     <string name="text_unsaved_changes_prompt">Сачувај или одбаци несачуване промене?</string>
     <string name="state_paused">Заустављано</string>
     <string name="folder_with_images">Фолдер са сликама</string>
-    <string name="cookies_cleared">Сви колачићи су избрисани</string>
+    <string name="cookies_cleared">Сви колачићи су уклоњени</string>
     <string name="disable_battery_optimization">Искључи оптимизацију батерије</string>
     <string name="status_planned">Планирано</string>
     <string name="state_finished">Завршено</string>
@@ -505,7 +505,7 @@
     <string name="no_bookmarks_yet">Нема обележивача за сада</string>
     <string name="no_thanks">Не хвала</string>
     <string name="suggest_new_sources_summary">Затражи да омогућиш новододате изворе након ажурирања апликације</string>
-    <string name="backup_information">Можеш направити резервну копију своје историје и омиљених и вратити је</string>
+    <string name="backup_information">Можеш да направиш резервну копију своје историје и омиљених и обновити је</string>
     <string name="available_sources">Доступни извори</string>
     <string name="share_logs">Дели дневнике</string>
     <string name="zoom_mode_keep_start">Задржи на почетку</string>
@@ -613,4 +613,9 @@
     <string name="all_time">Све време</string>
     <string name="empty_stats_text">Нема статистике за изабрани период</string>
     <string name="pages_read_s">Читане странице: %s</string>
+    <string name="manga_migration">Премештање Манге</string>
+    <string name="migration_completed">Премештање је завршено</string>
+    <string name="alternatives">Замене</string>
+    <string name="migrate">Премести</string>
+    <string name="migrate_confirmation">Манга „%1$s“ из „%2$s“ ће бити замењена са „%3$s“ из „%4$s“ у вашој Историји и Омиљеним (ако постоји)</string>
 </resources>
