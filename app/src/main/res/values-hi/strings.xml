@@ -613,4 +613,22 @@
     <string name="day">दिन</string>
     <string name="empty_stats_text">चयनित अवधि के लिए कोई आँकड़े नहीं हैं</string>
     <string name="pages_read_s">पेज पढ़ें गए: %s</string>
+    <string name="manga_migration">मंगा माइग्रेशन</string>
+    <string name="migration_completed">माइग्रेशन पूरा हुआ</string>
+    <string name="migrate">माइग्रेशन</string>
+    <string name="alternatives">वैकल्पिक</string>
+    <string name="migrate_confirmation">आपके इतिहास और पसंदीदा में \"%2$s\" से मंगा \"%1$s\" को \"%4$s\" से \"%3$s\" से बदल दिया जाएगा (यदि मौजूद है)</string>
+    <string name="delete_read_chapters">पढ़े हुए अध्याय हटाएँ</string>
+    <string name="no_chapters_deleted">कोई अध्याय नहीं हटाया गया है</string>
+    <string name="chapters_deleted_pattern">%1$s को हटाया गया, %2$s को साफ़ किया गया</string>
+    <string name="delete_read_chapters_summary">स्थान खाली करने के लिए स्थानीय स्टोरेज से उन अध्यायों को हटा दें जिन्हें आप पढ़ चुके हैं</string>
+    <string name="delete_read_chapters_prompt">यह आपके स्थानीय स्टोरेज से पढ़े गए के रूप में चिह्नित सभी अध्यायों को स्थायी रूप से हटा देगा। आप इसे बाद में पुनः डाउनलोड कर सकते हैं, लेकिन आयातित अध्याय हमेशा के लिए खो सकते हैं</string>
+    <string name="delete_read_chapters_auto">पढ़े गए अध्याय स्वचालित रूप से हटाएं</string>
+    <string name="runs_on_app_start">एप्लिकेशन प्रारंभ होने पर चलता है</string>
+    <string name="chapters_grid_view">ग्रिड दृश्य</string>
+    <string name="split_by_translations">अनुवाद द्वारा विभाजित</string>
+    <string name="split_by_translations_summary">विभिन्न अनुवादों वाले अध्यायों को एक सूची के बजाय अलग-अलग दिखाएँ</string>
+    <string name="order_oldest">सबसे पुराना</string>
+    <string name="long_ago_read">बहुत पहले पढ़ा था</string>
+    <string name="unread">अपठित</string>
 </resources>
