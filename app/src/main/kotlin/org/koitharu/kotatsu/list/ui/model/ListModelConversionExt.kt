@@ -83,5 +83,4 @@ fun Throwable.toErrorState(canRetry: Boolean = true) = ErrorState(
 
 fun Throwable.toErrorFooter() = ErrorFooter(
 	exception = this,
-	icon = R.drawable.ic_alert_outline,
 )

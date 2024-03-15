@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
+import androidx.preference.SwitchPreferenceCompat
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
@@ -18,7 +19,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 
 @AndroidEntryPoint
-class SourceSettingsFragment : BasePreferenceFragment(0) {
+class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenceChangeListener {
 
 	private val viewModel: SourceSettingsViewModel by viewModels()
 	private val exceptionResolver = ExceptionResolver(this)
@@ -34,6 +35,9 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 		addPreferencesFromResource(R.xml.pref_source)
 		addPreferencesFromRepository(viewModel.repository)
 
+		findPreference<SwitchPreferenceCompat>(KEY_ENABLE)?.run {
+			setOnPreferenceChangeListener(this@SourceSettingsFragment)
+		}
 		findPreference<Preference>(KEY_AUTH)?.run {
 			val authProvider = viewModel.repository.getAuthProvider()
 			isVisible = authProvider != null
@@ -59,6 +63,9 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 		viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
 			findPreference<Preference>(KEY_AUTH)?.isEnabled = !isLoading
 		}
+		viewModel.isEnabled.observe(viewLifecycleOwner) { enabled ->
+			findPreference<SwitchPreferenceCompat>(KEY_ENABLE)?.isChecked = enabled
+		}
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(listView))
 	}
 
@@ -68,6 +75,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 				startActivity(SourceAuthActivity.newIntent(preference.context, viewModel.source))
 				true
 			}
+
 			AppSettings.KEY_COOKIES_CLEAR -> {
 				viewModel.clearCookies()
 				true
@@ -77,9 +85,18 @@ class SourceSettingsFragment : BasePreferenceFragment(0) {
 		}
 	}
 
+	override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
+		when (preference.key) {
+			KEY_ENABLE -> viewModel.setEnabled(newValue == true)
+			else -> return false
+		}
+		return true
+	}
+
 	companion object {
 
 		private const val KEY_AUTH = "auth"
+		private const val KEY_ENABLE = "enable"
 
 		const val EXTRA_SOURCE = "source"
 

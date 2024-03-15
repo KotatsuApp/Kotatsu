@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 
 data class ErrorFooter(
 	val exception: Throwable,
-	@DrawableRes val icon: Int
 ) : ListModel {
 
 	override fun areItemsTheSame(other: ListModel): Boolean {

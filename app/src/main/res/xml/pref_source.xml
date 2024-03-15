@@ -3,6 +3,14 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="enable"
+		android:layout="@layout/preference_toggle_header"
+		android:order="0"
+		android:persistent="false"
+		android:title="@string/enable_source" />
+
 	<Preference
 		android:key="auth"
 		android:order="100"

@@ -20,6 +20,5 @@ fun errorFooterAD(
 
 	bind {
 		binding.textViewTitle.text = item.exception.getDisplayMessage(context.resources)
-		binding.imageViewIcon.setImageResource(item.icon)
 	}
 }

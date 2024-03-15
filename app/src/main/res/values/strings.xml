@@ -636,4 +636,5 @@
 	<string name="order_oldest">Oldest</string>
 	<string name="long_ago_read">Long time ago read</string>
 	<string name="unread">Unread</string>
+	<string name="enable_source">Enable source</string>
 </resources>

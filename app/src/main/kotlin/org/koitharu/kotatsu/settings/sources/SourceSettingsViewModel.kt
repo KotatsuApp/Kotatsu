@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -27,6 +28,7 @@ class SourceSettingsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
 	private val cookieJar: MutableCookieJar,
+	private val mangaSourcesRepository: MangaSourcesRepository,
 ) : BaseViewModel(), SharedPreferences.OnSharedPreferenceChangeListener {
 
 	val source = savedStateHandle.require<MangaSource>(SourceSettingsFragment.EXTRA_SOURCE)
@@ -34,6 +36,7 @@ class SourceSettingsViewModel @Inject constructor(
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val username = MutableStateFlow<String?>(null)
+	val isEnabled = mangaSourcesRepository.observeIsEnabled(source)
 	private var usernameLoadJob: Job? = null
 
 	init {
@@ -67,6 +70,12 @@ class SourceSettingsViewModel @Inject constructor(
 			cookieJar.removeCookies(url, null)
 			onActionDone.call(ReversibleAction(R.string.cookies_cleared, null))
 			loadUsername()
+		}
+	}
+
+	fun setEnabled(value: Boolean) {
+		launchJob(Dispatchers.Default) {
+			mangaSourcesRepository.setSourceEnabled(source, value)
 		}
 	}
 

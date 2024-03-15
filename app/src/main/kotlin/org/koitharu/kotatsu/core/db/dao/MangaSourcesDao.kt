@@ -29,6 +29,9 @@ abstract class MangaSourcesDao {
 	@Query("SELECT * FROM sources ORDER BY sort_key")
 	abstract fun observeAll(): Flow<List<MangaSourceEntity>>
 
+	@Query("SELECT enabled FROM sources WHERE source = :source")
+	abstract fun observeIsEnabled(source: String): Flow<Boolean>
+
 	@Query("SELECT IFNULL(MAX(sort_key),0) FROM sources")
 	abstract suspend fun getMaxSortKey(): Int
 

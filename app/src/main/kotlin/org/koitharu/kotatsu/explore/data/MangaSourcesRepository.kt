@@ -52,6 +52,10 @@ class MangaSourcesRepository @Inject constructor(
 		return dao.findAllDisabled().toSources(settings.isNsfwContentDisabled, null)
 	}
 
+	fun observeIsEnabled(source: MangaSource): Flow<Boolean> {
+		return dao.observeIsEnabled(source.name)
+	}
+
 	fun observeEnabledSourcesCount(): Flow<Int> {
 		return combine(
 			observeIsNsfwDisabled(),
