@@ -36,7 +36,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaIntent
@@ -125,19 +124,7 @@ class DetailsActivity :
 		viewModel.manga.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
-		viewModel.onError.observeEvent(
-			this,
-			SnackbarErrorObserver(
-				host = viewBinding.containerDetails,
-				fragment = null,
-				resolver = exceptionResolver,
-				onResolved = { isResolved ->
-					if (isResolved) {
-						viewModel.reload()
-					}
-				},
-			),
-		)
+		viewModel.onError.observeEvent(this, DetailsErrorObserver(this, viewModel, exceptionResolver))
 		viewModel.onActionDone.observeEvent(
 			this,
 			ReversibleActionObserver(viewBinding.containerDetails, viewBinding.layoutBottom),

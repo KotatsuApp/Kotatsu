@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.util.ext.almostEquals
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ class AlternativesUseCase @Inject constructor(
 ) {
 
 	suspend operator fun invoke(manga: Manga): Flow<Manga> {
-		val sources = sourcesRepository.getEnabledSources()
+		val sources = getSources(manga.source)
 		if (sources.isEmpty()) {
 			return emptyFlow()
 		}
@@ -55,6 +56,14 @@ class AlternativesUseCase @Inject constructor(
 		}
 	}
 
+	private suspend fun getSources(ref: MangaSource): List<MangaSource> {
+		val result = ArrayList<MangaSource>(MangaSource.entries.size - 2)
+		result.addAll(sourcesRepository.getEnabledSources())
+		result.sortByDescending { it.priority(ref) }
+		result.addAll(sourcesRepository.getDisabledSources().sortedByDescending { it.priority(ref) })
+		return result
+	}
+
 	private fun Manga.matches(ref: Manga): Boolean {
 		return matchesTitles(title, ref.title) ||
 			matchesTitles(title, ref.altTitle) ||
@@ -65,5 +74,12 @@ class AlternativesUseCase @Inject constructor(
 
 	private fun matchesTitles(a: String?, b: String?): Boolean {
 		return !a.isNullOrEmpty() && !b.isNullOrEmpty() && a.almostEquals(b, MATCH_THRESHOLD)
+	}
+
+	private fun MangaSource.priority(ref: MangaSource): Int {
+		var res = 0
+		if (locale == ref.locale) res += 2
+		if (contentType == ref.contentType) res++
+		return res
 	}
 }

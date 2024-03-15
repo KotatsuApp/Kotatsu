@@ -8,13 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import okhttp3.Headers
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.alternatives.ui.AlternativesActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
 import org.koitharu.kotatsu.core.util.TaggedActivityResult
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import kotlin.coroutines.Continuation
@@ -59,6 +62,11 @@ class ExceptionResolver : ActivityResultCallback<TaggedActivityResult> {
 			false
 		}
 
+		is UnsupportedSourceException -> {
+			e.manga?.let { openAlternatives(it) }
+			false
+		}
+
 		else -> false
 	}
 
@@ -77,6 +85,11 @@ class ExceptionResolver : ActivityResultCallback<TaggedActivityResult> {
 		context.startActivity(BrowserActivity.newIntent(context, url, null))
 	}
 
+	private fun openAlternatives(manga: Manga) {
+		val context = activity ?: fragment?.activity ?: return
+		context.startActivity(AlternativesActivity.newIntent(context, manga))
+	}
+
 	private fun getFragmentManager() = checkNotNull(fragment?.childFragmentManager ?: activity?.supportFragmentManager)
 
 	companion object {
@@ -86,6 +99,7 @@ class ExceptionResolver : ActivityResultCallback<TaggedActivityResult> {
 			is CloudFlareProtectedException -> R.string.captcha_solve
 			is AuthRequiredException -> R.string.sign_in
 			is NotFoundException -> if (e.url.isNotEmpty()) R.string.open_in_browser else 0
+			is UnsupportedSourceException -> if (e.manga != null) R.string.alternatives else 0
 			else -> 0
 		}
 

@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,9 +45,11 @@ class AlternativesViewModel @Inject constructor(
 
 	init {
 		launchJob(Dispatchers.Default) {
-			val ref = mangaRepositoryFactory.create(manga.source).getDetails(manga)
+			val ref = runCatchingCancellable {
+				mangaRepositoryFactory.create(manga.source).getDetails(manga)
+			}.getOrDefault(manga)
 			val refCount = ref.chaptersCount()
-			alternativesUseCase(manga)
+			alternativesUseCase(ref)
 				.map {
 					MangaAlternativeModel(
 						manga = it,
@@ -69,6 +72,7 @@ class AlternativesViewModel @Inject constructor(
 				}.collect {
 					content.value = it
 				}
+			content.value = content.value.filterNot { it is LoadingFooter }
 		}
 	}
 

@@ -43,7 +43,11 @@ fun alternativeAD(
 	bind { payloads ->
 		binding.textViewTitle.text = item.manga.title
 		binding.textViewSubtitle.text = buildSpannedString {
-			append(context.resources.getQuantityString(R.plurals.chapters, item.chaptersCount, item.chaptersCount))
+			if (item.chaptersCount > 0) {
+				append(context.resources.getQuantityString(R.plurals.chapters, item.chaptersCount, item.chaptersCount))
+			} else {
+				append(context.getString(R.string.no_chapters))
+			}
 			when (item.chaptersDiff.sign) {
 				-1 -> inSpans(ForegroundColorSpan(colorRed)) {
 					append("  ▼ ")

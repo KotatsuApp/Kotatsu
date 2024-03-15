@@ -21,7 +21,7 @@ abstract class ErrorObserver(
 	private val onResolved: Consumer<Boolean>?,
 ) : FlowCollector<Throwable> {
 
-	protected val activity = host.context.findActivity()
+	protected open val activity = host.context.findActivity()
 
 	private val lifecycleScope: LifecycleCoroutineScope
 		get() = checkNotNull(fragment?.viewLifecycleScope ?: (activity as? LifecycleOwner)?.lifecycle?.coroutineScope)
@@ -36,7 +36,7 @@ abstract class ErrorObserver(
 	private fun isAlive(): Boolean {
 		return when {
 			fragment != null -> fragment.view != null
-			activity != null -> !activity.isDestroyed
+			activity != null -> activity?.isDestroyed == false
 			else -> true
 		}
 	}
