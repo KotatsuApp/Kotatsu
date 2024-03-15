@@ -613,4 +613,22 @@
     <string name="less_than_minute">Bir dakikadan az</string>
     <string name="stats_cleared">İstatistikler temizlendi</string>
     <string name="clear_stats_confirm">Gerçekten tüm okuma istatistiklerini temizlemek istiyor musunuz? Bu işlem geri alınamaz.</string>
+    <string name="alternatives">Alternatifler</string>
+    <string name="migrate">Taşı</string>
+    <string name="migrate_confirmation">\"%1$s\" mangası (\"%2$s\"den), geçmişinizde ve favorilerinizde (varsa) \"%3$s\" ile (\"%4$s \"den) değiştirilecektir</string>
+    <string name="manga_migration">Manga taşıması</string>
+    <string name="migration_completed">Taşıma işlemi tamamlandı</string>
+    <string name="delete_read_chapters">Okunan bölümleri sil</string>
+    <string name="no_chapters_deleted">Hiçbir bölüm silinmedi</string>
+    <string name="chapters_deleted_pattern">%1$s kaldırıldı, %2$s temizlendi</string>
+    <string name="delete_read_chapters_summary">Yer açmak için yerel depolama alanından daha önce okuduğunuz bölümleri silin</string>
+    <string name="delete_read_chapters_prompt">Bu işlem, okundu olarak işaretlenen tüm bölümleri yerel depolama alanınızdan kalıcı olarak silecektir. Daha sonra yeniden indirebilirsiniz, ancak içe aktarılan bölümler sonsuza kadar kaybolabilir</string>
+    <string name="chapters_grid_view">Izgara görünümü</string>
+    <string name="delete_read_chapters_auto">Okunan bölümleri otomatik olarak sil</string>
+    <string name="runs_on_app_start">Uygulama başladığında çalışır</string>
+    <string name="split_by_translations">Çevirilere göre böl</string>
+    <string name="split_by_translations_summary">Farklı çevirilere sahip bölümleri tek bir liste yerine ayrı ayrı göster</string>
+    <string name="order_oldest">En eski</string>
+    <string name="long_ago_read">Uzun zaman önce okundu</string>
+    <string name="unread">Okunmadı</string>
 </resources>
