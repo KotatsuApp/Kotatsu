@@ -613,4 +613,22 @@
     <string name="month">Місяць</string>
     <string name="day">День</string>
     <string name="empty_stats_text">Статистика за вибраний період відсутня</string>
+    <string name="alternatives">Альтернативи</string>
+    <string name="migrate">Перенести</string>
+    <string name="migrate_confirmation">Манга «%1$s» з «%2$s» буде замінена на «%3$s» з «%4$s» у вашій історії та у вибраному (якщо доступно)</string>
+    <string name="manga_migration">Перенесення манґи</string>
+    <string name="migration_completed">Перенесення завершено</string>
+    <string name="chapters_grid_view">Вид сітки</string>
+    <string name="no_chapters_deleted">Жодна глава не була видалена</string>
+    <string name="delete_read_chapters_summary">Видаліть розділи, які ви вже прочитали, з локального сховища, щоб звільнити місце</string>
+    <string name="chapters_deleted_pattern">Видалено %1$s, очищено %2$s</string>
+    <string name="delete_read_chapters">Видалити прочитані розділи</string>
+    <string name="split_by_translations">Поділити за перекладами</string>
+    <string name="split_by_translations_summary">Показувати розділи з різними перекладами окремо, а не в одному списку</string>
+    <string name="order_oldest">Найстаріша</string>
+    <string name="long_ago_read">Давно прочитана</string>
+    <string name="unread">Непрочитана</string>
+    <string name="runs_on_app_start">Запускається під час запуску застосунка</string>
+    <string name="delete_read_chapters_auto">Автоматично видаляти прочитані розділи</string>
+    <string name="delete_read_chapters_prompt">Це призведе до остаточного видалення всіх розділів, позначених як прочитані, з вашого локального сховища. Ви можете завантажити їх пізніше, але імпортовані розділи можуть бути втрачені назавжди</string>
 </resources>
