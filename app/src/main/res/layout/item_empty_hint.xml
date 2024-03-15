@@ -22,7 +22,7 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/margin_small"
-		android:textAppearance="?attr/textAppearanceTitleLarge"
+		android:textAppearance="?attr/textAppearanceTitleMedium"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/icon"
 		app:layout_constraintTop_toTopOf="parent"

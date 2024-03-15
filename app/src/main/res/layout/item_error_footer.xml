@@ -3,38 +3,25 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="@dimen/list_footer_height_outer"
+	android:layout_height="wrap_content"
 	android:background="?selectableItemBackground"
 	android:gravity="center"
-	android:orientation="horizontal"
+	android:minHeight="@dimen/list_footer_height_outer"
+	android:orientation="vertical"
 	android:padding="4dp">
 
-	<ImageView
-		android:id="@+id/imageView_icon"
+	<TextView
+		android:id="@+id/textView_title"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:contentDescription="@null"
-		tools:src="@drawable/ic_alert_outline" />
+		android:textAppearance="?attr/textAppearanceTitleSmall"
+		tools:text="@string/too_many_requests_message" />
 
-	<LinearLayout
+	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginStart="8dp"
-		android:orientation="vertical">
-
-		<TextView
-			android:id="@+id/textView_title"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textAppearance="?attr/textAppearanceBodyLarge"
-			tools:text="@string/error_occurred" />
-
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/tap_to_try_again"
-			android:textAppearance="?attr/textAppearanceBodySmall" />
-
-	</LinearLayout>
+		android:layout_marginTop="2dp"
+		android:text="@string/tap_to_try_again"
+		android:textAppearance="?attr/textAppearanceBodySmall" />
 
 </LinearLayout>

@@ -91,7 +91,7 @@
 		android:ellipsize="end"
 		android:paddingTop="4dp"
 		android:singleLine="true"
-		android:textAppearance="?attr/textAppearanceBodySmall"
+		android:textAppearance="?attr/textAppearanceTitleSmall"
 		android:textColor="?android:attr/textColorPrimary"
 		tools:text="@string/theme_name_miku" />
 </LinearLayout>
