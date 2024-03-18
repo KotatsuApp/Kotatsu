@@ -618,4 +618,17 @@
     <string name="migration_completed">Перанос завершаны</string>
     <string name="manga_migration">Перанос мангі</string>
     <string name="migrate">Перанесці</string>
+    <string name="delete_read_chapters_summary">Выдаліце раздзелы, якія вы ўжо прачыталі, з лакальнага сховішча, каб вызваліць месца</string>
+    <string name="delete_read_chapters_prompt">Гэта прывядзе да незваротнага выдалення ўсіх раздзелаў, пазначаных як прачытаныя, з лакальнага сховішча. Вы можаце загрузіць іх пазней, але імпартаваныя раздзелы могуць быць страчаны назаўжды</string>
+    <string name="chapters_grid_view">Выгляд сеткі</string>
+    <string name="delete_read_chapters">Выдаліць прачытаныя раздзелы</string>
+    <string name="no_chapters_deleted">Ні адзін раздзел не быў выдалены</string>
+    <string name="chapters_deleted_pattern">Выдалены %1$s, ачышчаны %2$s</string>
+    <string name="runs_on_app_start">Запускаецца пры запуску праграмы</string>
+    <string name="long_ago_read">Даўно прачытаная</string>
+    <string name="split_by_translations">Падзяліць па перакладах</string>
+    <string name="split_by_translations_summary">Паказваць раздзелы з рознымі перакладамі асобна, а не ў адным спісе</string>
+    <string name="order_oldest">Самы стары</string>
+    <string name="unread">Непрачытаная</string>
+    <string name="delete_read_chapters_auto">Аўтаматычна выдаляць прачытаныя раздзелы</string>
 </resources>

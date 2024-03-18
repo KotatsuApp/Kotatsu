@@ -618,4 +618,17 @@
     <string name="migration_completed">Перенос завершён</string>
     <string name="migrate">Перенести</string>
     <string name="migrate_confirmation">Манга \"%1$s\" из \"%2$s\" будет заменена на \"%3$s\" из \"%4$s\" в вашей истории и в избранных (если есть)</string>
+    <string name="chapters_grid_view">Вид сетки</string>
+    <string name="delete_read_chapters">Удалить прочитанные главы</string>
+    <string name="no_chapters_deleted">Ни одна глава не была удалена</string>
+    <string name="chapters_deleted_pattern">Удалён %1$s, очищен %2$s</string>
+    <string name="delete_read_chapters_summary">Удалите главы, которые вы уже прочитали, из локального хранилища, чтобы освободить место</string>
+    <string name="delete_read_chapters_auto">Автоматически удалять прочитанные главы</string>
+    <string name="long_ago_read">Давно прочитанная</string>
+    <string name="runs_on_app_start">Запускается при запуске приложения</string>
+    <string name="split_by_translations">Разделить по переводам</string>
+    <string name="unread">Непрочитанная</string>
+    <string name="split_by_translations_summary">Показывать главы с разными переводами отдельно, а не одним списком</string>
+    <string name="order_oldest">Самые старые</string>
+    <string name="delete_read_chapters_prompt">Это приведёт к безвозвратному удалению всех глав, помеченных как прочитанные, из вашего локального хранилища. Вы можете повторно загрузить их позже, но импортированные главы могут быть потеряны навсегда</string>
 </resources>
