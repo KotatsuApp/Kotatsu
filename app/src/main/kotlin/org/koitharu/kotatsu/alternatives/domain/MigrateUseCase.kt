@@ -75,11 +75,16 @@ class MigrateUseCase @Inject constructor(
 		if (oldManga.chapters.isNullOrEmpty()) { // probably broken manga/source
 			val branch = newManga.getPreferredBranch(null)
 			val chapters = checkNotNull(newManga.getChapters(branch))
+			val currentChapter = if (history.percent in 0f..1f) {
+				chapters[(chapters.lastIndex * history.percent).toInt()]
+			} else {
+				chapters.first()
+			}
 			return HistoryEntity(
 				mangaId = newManga.id,
 				createdAt = history.createdAt,
 				updatedAt = System.currentTimeMillis(),
-				chapterId = chapters[(chapters.lastIndex * history.percent).toInt()].id,
+				chapterId = currentChapter.id,
 				page = history.page,
 				scroll = history.scroll,
 				percent = history.percent,
@@ -91,7 +96,11 @@ class MigrateUseCase @Inject constructor(
 		val oldChapters = checkNotNull(oldManga.getChapters(branch))
 		var index = oldChapters.indexOfFirst { it.id == history.chapterId }
 		if (index < 0) {
-			index = (oldChapters.lastIndex * history.percent).toInt()
+			index = if (history.percent in 0f..1f) {
+				(oldChapters.lastIndex * history.percent).toInt()
+			} else {
+				0
+			}
 		}
 		val newChapters = checkNotNull(newManga.chapters).groupBy { it.branch }
 		val newBranch = if (newChapters.containsKey(branch)) {
