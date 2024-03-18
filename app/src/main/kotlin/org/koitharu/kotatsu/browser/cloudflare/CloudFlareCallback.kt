@@ -11,4 +11,6 @@ interface CloudFlareCallback : BrowserCallback {
 	fun onPageLoaded()
 
 	fun onCheckPassed()
+
+	fun onLoopDetected()
 }

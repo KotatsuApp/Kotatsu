@@ -8,6 +8,7 @@ import androidx.preference.SwitchPreferenceCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.parsers.config.ConfigKey
+import org.koitharu.kotatsu.parsers.network.UserAgents
 import org.koitharu.kotatsu.settings.utils.AutoCompleteTextViewPreference
 import org.koitharu.kotatsu.settings.utils.EditTextBindListener
 import org.koitharu.kotatsu.settings.utils.EditTextDefaultSummaryProvider
@@ -42,7 +43,13 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 			}
 
 			is ConfigKey.UserAgent -> {
-				EditTextPreference(requireContext()).apply {
+				AutoCompleteTextViewPreference(requireContext()).apply {
+					entries = arrayOf(
+						UserAgents.FIREFOX_MOBILE,
+						UserAgents.CHROME_MOBILE,
+						UserAgents.FIREFOX_DESKTOP,
+						UserAgents.CHROME_DESKTOP,
+					)
 					summaryProvider = EditTextDefaultSummaryProvider(key.defaultValue)
 					setOnBindEditTextListener(
 						EditTextBindListener(
@@ -73,6 +80,7 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 		}
 		preference.isIconSpaceReserved = false
 		preference.key = key.key
+		preference.order = 10
 		screen.addPreference(preference)
 	}
 }

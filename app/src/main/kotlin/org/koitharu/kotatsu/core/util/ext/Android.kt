@@ -27,6 +27,7 @@ import android.provider.Settings
 import android.view.View
 import android.view.ViewPropertyAnimator
 import android.view.Window
+import android.webkit.WebView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.IntegerRes
 import androidx.annotation.WorkerThread
@@ -233,5 +234,15 @@ suspend fun Bitmap.compressToPNG(output: File) = runInterruptible(Dispatchers.IO
 fun Context.ensureRamAtLeast(requiredSize: Long) {
 	if (ramAvailable < requiredSize) {
 		throw IllegalStateException("Not enough free memory")
+	}
+}
+
+fun WebView.configureForParser(userAgentOverride: String?) = with(settings) {
+	javaScriptEnabled = true
+	domStorageEnabled = true
+	mediaPlaybackRequiresUserGesture = false
+	databaseEnabled = true
+	if (userAgentOverride != null) {
+		userAgentString = userAgentOverride
 	}
 }

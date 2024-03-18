@@ -14,9 +14,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
-import org.koitharu.kotatsu.parsers.network.UserAgents
 import com.google.android.material.R as materialR
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -33,10 +33,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
-		with(viewBinding.webView.settings) {
-			javaScriptEnabled = true
-			userAgentString = UserAgents.CHROME_MOBILE
-		}
+		viewBinding.webView.configureForParser(null)
 		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		viewBinding.webView.webViewClient = BrowserClient(this)
 		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)

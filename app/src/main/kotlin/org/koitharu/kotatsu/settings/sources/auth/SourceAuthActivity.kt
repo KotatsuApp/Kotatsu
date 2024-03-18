@@ -18,15 +18,16 @@ import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.browser.ProgressChromeClient
 import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
+import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.TaggedActivityResult
+import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.network.UserAgents
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -64,12 +65,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
-		with(viewBinding.webView.settings) {
-			javaScriptEnabled = true
-			domStorageEnabled = true
-			databaseEnabled = true
-			userAgentString = UserAgents.CHROME_MOBILE
-		}
+		viewBinding.webView.configureForParser(repository.headers[CommonHeaders.USER_AGENT])
 		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		viewBinding.webView.webViewClient = BrowserClient(this)
 		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)

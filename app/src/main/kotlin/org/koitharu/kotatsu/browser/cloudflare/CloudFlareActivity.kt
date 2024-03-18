@@ -27,8 +27,8 @@ import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.TaggedActivityResult
+import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
-import org.koitharu.kotatsu.parsers.network.UserAgents
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -40,6 +40,7 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 	@Inject
 	lateinit var cookieJar: MutableCookieJar
 
+	private lateinit var cfClient: CloudFlareClient
 	private var onBackPressedCallback: WebViewBackPressedCallback? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,13 +53,9 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		val url = intent?.dataString.orEmpty()
-		with(viewBinding.webView.settings) {
-			javaScriptEnabled = true
-			domStorageEnabled = true
-			databaseEnabled = true
-			userAgentString = intent?.getStringExtra(ARG_UA) ?: UserAgents.CHROME_MOBILE
-		}
-		viewBinding.webView.webViewClient = CloudFlareClient(cookieJar, this, url)
+		cfClient = CloudFlareClient(cookieJar, this, url)
+		viewBinding.webView.configureForParser(intent?.getStringExtra(ARG_UA))
+		viewBinding.webView.webViewClient = cfClient
 		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView).also {
 			onBackPressedDispatcher.addCallback(it)
 		}
@@ -118,15 +115,7 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		}
 
 		R.id.action_retry -> {
-			lifecycleScope.launch {
-				viewBinding.webView.stopLoading()
-				yield()
-				val targetUrl = intent?.dataString?.toHttpUrlOrNull()
-				if (targetUrl != null) {
-					clearCfCookies(targetUrl)
-					viewBinding.webView.loadUrl(targetUrl.toString())
-				}
-			}
+			restartCheck()
 			true
 		}
 
@@ -152,6 +141,10 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		viewBinding.progressBar.isInvisible = true
 	}
 
+	override fun onLoopDetected() {
+		restartCheck()
+	}
+
 	override fun onCheckPassed() {
 		pendingResult = RESULT_OK
 		finishAfterTransition()
@@ -171,10 +164,23 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 			subtitle?.toString()?.toHttpUrlOrNull()?.topPrivateDomain() ?: subtitle
 	}
 
+	private fun restartCheck() {
+		lifecycleScope.launch {
+			viewBinding.webView.stopLoading()
+			yield()
+			cfClient.reset()
+			val targetUrl = intent?.dataString?.toHttpUrlOrNull()
+			if (targetUrl != null) {
+				clearCfCookies(targetUrl)
+				viewBinding.webView.loadUrl(targetUrl.toString())
+			}
+		}
+	}
+
 	private suspend fun clearCfCookies(url: HttpUrl) = runInterruptible(Dispatchers.Default) {
 		cookieJar.removeCookies(url) { cookie ->
 			val name = cookie.name
-			name.startsWith("cf_") || name.startsWith("_cf") || name.startsWith("__cf")
+			name.startsWith("cf_") || name.startsWith("_cf") || name.startsWith("__cf") || name == "csrftoken"
 		}
 	}
 

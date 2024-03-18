@@ -7,11 +7,11 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.network.UserAgents
 import org.koitharu.kotatsu.parsers.util.mergeWith
 import java.net.IDN
 import javax.inject.Inject
@@ -20,6 +20,7 @@ import javax.inject.Singleton
 @Singleton
 class CommonHeadersInterceptor @Inject constructor(
 	private val mangaRepositoryFactoryLazy: Lazy<MangaRepository.Factory>,
+	private val mangaLoaderContextLazy: Lazy<MangaLoaderContextImpl>,
 ) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
@@ -38,7 +39,7 @@ class CommonHeadersInterceptor @Inject constructor(
 			headersBuilder.mergeWith(it, replaceExisting = false)
 		}
 		if (headersBuilder[CommonHeaders.USER_AGENT] == null) {
-			headersBuilder[CommonHeaders.USER_AGENT] = UserAgents.CHROME_MOBILE
+			headersBuilder[CommonHeaders.USER_AGENT] = mangaLoaderContextLazy.get().getDefaultUserAgent()
 		}
 		if (headersBuilder[CommonHeaders.REFERER] == null && repository != null) {
 			val idn = IDN.toASCII(repository.domain)
