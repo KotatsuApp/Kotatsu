@@ -36,7 +36,7 @@ class ChaptersSelectionDecoration(context: Context) : AbstractSelectionItemDecor
 			98,
 		)
 		paint.style = Paint.Style.FILL
-		hasBackground = false
+		hasBackground = true
 		hasForeground = true
 		isIncludeDecorAndMargins = false
 
