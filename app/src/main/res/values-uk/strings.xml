@@ -594,7 +594,7 @@
     <string name="show_labels_in_navbar">Показувати мітки на панелі навігації</string>
     <string name="default_page_save_dir">Директорія збереження сторінки за замовчуванням</string>
     <string name="location">Розташування</string>
-    <string name="automatic">Автоматично</string>
+    <string name="automatic">Автоматичний</string>
     <string name="multiple_cbz_files">Декілька файлів CBZ</string>
     <string name="preferred_download_format">Бажаний формат для завантажень</string>
     <string name="single_cbz_file">Один файл CBZ</string>
@@ -631,4 +631,6 @@
     <string name="runs_on_app_start">Запускається під час запуску застосунка</string>
     <string name="delete_read_chapters_auto">Автоматично видаляти прочитані розділи</string>
     <string name="delete_read_chapters_prompt">Це призведе до остаточного видалення всіх розділів, позначених як прочитані, з вашого локального сховища. Ви можете завантажити їх пізніше, але імпортовані розділи можуть бути втрачені назавжди</string>
+    <string name="enable_source">Увімкнути джерело</string>
+    <string name="unsupported_source">Це джерело манги не підтримується</string>
 </resources>

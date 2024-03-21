@@ -607,7 +607,7 @@
     <string name="day">Дзень</string>
     <string name="empty_stats_text">Статыстыка за абраны перыяд адсутнічае</string>
     <string name="pages_read_s">Прачытана старонак: %s</string>
-    <string name="automatic">Аўтаматычна</string>
+    <string name="automatic">Аўтаматычны</string>
     <string name="three_months">Тры месяцы</string>
     <string name="clear_stats_confirm">Вы сапраўды хочаце ачысціць усю статыстыку чытання? Гэта дзеянне нельга адмяніць.</string>
     <string name="preferred_download_format">Пераважны фармат для загрузак</string>
@@ -631,4 +631,6 @@
     <string name="order_oldest">Самы стары</string>
     <string name="unread">Непрачытаная</string>
     <string name="delete_read_chapters_auto">Аўтаматычна выдаляць прачытаныя раздзелы</string>
+    <string name="enable_source">Ўключыць крыніцу</string>
+    <string name="unsupported_source">Гэтая крыніца мангі не падтрымліваецца</string>
 </resources>
