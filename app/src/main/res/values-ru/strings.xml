@@ -408,7 +408,7 @@
     <string name="suggestions_enable_prompt">Хотите ли Вы получать персонализированные рекомендации манги\?</string>
     <string name="translations">Переводы</string>
     <string name="web_view_unavailable">WebView недоступен: проверьте, установлен ли провайдер WebView</string>
-    <string name="clear_network_cache">Очистить сетевой кеш</string>
+    <string name="clear_network_cache">Очистить сетевой кэш</string>
     <string name="address">Адрес</string>
     <string name="type">Тип</string>
     <string name="proxy">Прокси</string>
@@ -594,7 +594,7 @@
     <string name="show_labels_in_navbar">Показывать подписи на панели навигации</string>
     <string name="default_page_save_dir">Папка для сохранений по умолчанию</string>
     <string name="location">Расположение</string>
-    <string name="automatic">Автоматически</string>
+    <string name="automatic">Автоматический</string>
     <string name="single_cbz_file">Один файл CBZ</string>
     <string name="multiple_cbz_files">Несколько файлов CBZ</string>
     <string name="preferred_download_format">Предпочтительный формат загрузок</string>
@@ -631,4 +631,6 @@
     <string name="split_by_translations_summary">Показывать главы с разными переводами отдельно, а не одним списком</string>
     <string name="order_oldest">Самые старые</string>
     <string name="delete_read_chapters_prompt">Это приведёт к безвозвратному удалению всех глав, помеченных как прочитанные, из вашего локального хранилища. Вы можете повторно загрузить их позже, но импортированные главы могут быть потеряны навсегда</string>
+    <string name="enable_source">Включить источник</string>
+    <string name="unsupported_source">Этот источник манги не поддерживается</string>
 </resources>
