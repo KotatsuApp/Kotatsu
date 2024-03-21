@@ -613,4 +613,24 @@
     <string name="month">Buwan</string>
     <string name="three_months">Tatlong buwan</string>
     <string name="empty_stats_text">Walang mga istatistika para sa napiling panahon</string>
+    <string name="migrate_confirmation">Ang manga \"%1$s\" mula sa \"%2$s\" ay papalitan ng \"%3$s\" mula sa \"%4$s\" sa iyong kasaysayan at mga paborito (kung mayroon)</string>
+    <string name="delete_read_chapters">Tanggalin ang mga binasang kabanata</string>
+    <string name="no_chapters_deleted">Walang kabanata ang natanggal</string>
+    <string name="chapters_deleted_pattern">Natanggal %1$s, nalinisan %2$s</string>
+    <string name="delete_read_chapters_auto">Awtomatikong tanggalin ang mga nabasang kabanata</string>
+    <string name="long_ago_read">Matagal nang nabasa</string>
+    <string name="unread">Di pa nababasa</string>
+    <string name="chapters_grid_view">View na grid</string>
+    <string name="alternatives">Alternatibo</string>
+    <string name="migrate">Lumipat</string>
+    <string name="manga_migration">Paglilipat ng manga</string>
+    <string name="migration_completed">Natapos na ang paglilipat</string>
+    <string name="delete_read_chapters_summary">Tanggalin ang mga kabanata na nabasa mo na mula sa lokal na storage upang magbakante ng espasyo</string>
+    <string name="delete_read_chapters_prompt">Permanente nitong tatanggalin ang lahat ng kabanata na minarkahan bilang nabasa mula sa iyong lokal na storage. Maaari mong muling i-download ito sa ibang pagkakataon, ngunit ang mga na-import na kabanata ay maaaring mawala nang tuluyan</string>
+    <string name="runs_on_app_start">Tatakbo kapag nagsimula ang aplikasyon</string>
+    <string name="split_by_translations">Hatiin ayon sa mga pagsasalin</string>
+    <string name="split_by_translations_summary">Magpakita ng mga kabanata na may iba\'t ibang pagsasalin nang hiwalay, sa halip na sa isang listahan</string>
+    <string name="order_oldest">Pinakaluma</string>
+    <string name="enable_source">Paganahin ang source</string>
+    <string name="unsupported_source">Ang manga source na ito ay hindi suportado</string>
 </resources>
