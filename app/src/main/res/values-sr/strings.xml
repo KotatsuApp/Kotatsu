@@ -618,4 +618,19 @@
     <string name="alternatives">Замене</string>
     <string name="migrate">Премести</string>
     <string name="migrate_confirmation">Манга „%1$s“ из „%2$s“ ће бити замењена са „%3$s“ из „%4$s“ у вашој Историји и Омиљеним (ако постоји)</string>
+    <string name="delete_read_chapters_summary">Избриши поглавља која си већ прочитао из локалне меморије да би ослободио простор</string>
+    <string name="delete_read_chapters_prompt">Ово ће трајно избрисати сва поглавља означена као прочитана из твог локалног складишта. Можеш их поново преузети касније, али увезена поглавља могу бити изгубљена заувек</string>
+    <string name="long_ago_read">Давно прочитано</string>
+    <string name="unread">Непрочитано</string>
+    <string name="chapters_grid_view">Мрежни приказ</string>
+    <string name="delete_read_chapters">Избриши прочитана поглавља</string>
+    <string name="no_chapters_deleted">Ниједно поглавље није избрисано</string>
+    <string name="chapters_deleted_pattern">Уклоњено %1$s, избрисано %2$s</string>
+    <string name="delete_read_chapters_auto">Аутоматски избриши прочитана поглавља</string>
+    <string name="runs_on_app_start">Ради када се апликација покрене</string>
+    <string name="split_by_translations">Подели по преводима</string>
+    <string name="split_by_translations_summary">Прикажи поглавља са различитим преводима одвојено, а не на једној листи</string>
+    <string name="order_oldest">Најстарије</string>
+    <string name="enable_source">Омогући извор</string>
+    <string name="unsupported_source">Овај извор манге није подржан</string>
 </resources>
