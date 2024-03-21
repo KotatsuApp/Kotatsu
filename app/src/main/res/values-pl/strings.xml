@@ -623,4 +623,14 @@
     <string name="no_chapters_deleted">Żadne rozdziały nie zostały usunięte</string>
     <string name="chapters_deleted_pattern">Usunięto %1$s, wyczyszczono %2$s</string>
     <string name="delete_read_chapters_prompt">Spowoduje to trwałe usunięcie wszystkich rozdziałów oznaczonych jako przeczytane z pamięci lokalnej. Możesz je pobrać ponownie później, ale zaimportowane rozdziały mogą zostać utracone na zawsze</string>
+    <string name="chapters_grid_view">Widok siatki</string>
+    <string name="delete_read_chapters_auto">Automatyczne usuwanie przeczytanych rozdziałów</string>
+    <string name="runs_on_app_start">Wykonaj podczas uruchamiania aplikacji</string>
+    <string name="split_by_translations">Podziel według tłumaczeń</string>
+    <string name="split_by_translations_summary">Wyświetlaj rozdziały z różnymi tłumaczeniami osobno, a nie razem w jednej liście</string>
+    <string name="order_oldest">Najstarszy</string>
+    <string name="long_ago_read">Przeczytane dawno temu</string>
+    <string name="unread">Nieprzeczytany</string>
+    <string name="enable_source">Włącz źródło</string>
+    <string name="unsupported_source">To źródło mangi nie jest obsługiwane</string>
 </resources>
