@@ -631,4 +631,6 @@
     <string name="order_oldest">सबसे पुराना</string>
     <string name="long_ago_read">बहुत पहले पढ़ा था</string>
     <string name="unread">अपठित</string>
+    <string name="unsupported_source">यह मंगा स्रोत समर्थित नहीं है</string>
+    <string name="enable_source">स्रोत सक्षम करें</string>
 </resources>
