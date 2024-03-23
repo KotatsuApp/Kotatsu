@@ -12,7 +12,7 @@
     <string name="processing_">正在处理…</string>
     <string name="newest">最新</string>
     <string name="by_rating">评分</string>
-    <string name="cookies_cleared">已清除所有 Cookies</string>
+    <string name="cookies_cleared">Cookies 已清除</string>
     <string name="data_restored_success">数据已全部恢复</string>
     <string name="silent">无声</string>
     <string name="preparing_">准备中…</string>
@@ -202,7 +202,7 @@
     <string name="state_finished">已完结</string>
     <string name="system_default">默认</string>
     <string name="exclude_nsfw_from_history">屏蔽成人漫画阅读记录</string>
-    <string name="show_pages_numbers">页码</string>
+    <string name="show_pages_numbers">显示页码</string>
     <string name="enabled_sources">已用图源</string>
     <string name="available_sources">可用图源</string>
     <string name="screenshots_policy">阅读时截图限制</string>
@@ -213,7 +213,7 @@
     <string name="suggestions_enable">开启漫画推荐</string>
     <string name="text_suggestion_holder">开始阅读漫画，即可获取个性化推荐</string>
     <string name="exclude_nsfw_from_suggestions">禁止推荐成人漫画</string>
-    <string name="enabled">启用</string>
+    <string name="enabled">开启</string>
     <string name="disabled">关闭</string>
     <string name="filter_load_error">无法加载分类列表</string>
     <string name="reset_filter">重置筛选</string>
@@ -228,7 +228,7 @@
     <string name="text_delete_local_manga_batch">确定从设备中永久删除所选漫画？</string>
     <string name="removal_completed">删除成功</string>
     <string name="download_slowdown">限速下载</string>
-    <string name="download_slowdown_summary">有助于避免封禁你的IP地址</string>
+    <string name="download_slowdown_summary">帮助避免封禁你的IP地址</string>
     <string name="local_manga_processing">正在处理已保存漫画</string>
     <string name="chapters_will_removed_background">下载章节将在后台进行删除</string>
     <string name="hide">隐藏</string>
@@ -250,7 +250,7 @@
     <string name="detect_reader_mode">自动检测条漫模式</string>
     <string name="detect_reader_mode_summary">阅读条漫时自动应用条漫阅读模式</string>
     <string name="disable_battery_optimization">关闭电池优化</string>
-    <string name="disable_battery_optimization_summary">有助于检查更新的后台运行</string>
+    <string name="disable_battery_optimization_summary">帮助保持检查更新时的后台运行</string>
     <string name="crash_text">出错了，请向开发人员提交错误报告以帮助修复问题。</string>
     <string name="send">发送</string>
     <string name="disable_all">全部关闭</string>
@@ -268,8 +268,8 @@
     <string name="show_reading_indicators_summary">在历史和收藏中显示阅读百分比</string>
     <string name="show_reading_indicators">显示阅读进度</string>
     <string name="data_deletion">数据删除</string>
-    <string name="exclude_nsfw_from_history_summary">标记为含有成人内容的漫画将不会记录阅读历史及阅读进度</string>
-    <string name="clear_cookies_summary">可帮助稍微解决部分问题，所有网站的授权将会失效</string>
+    <string name="exclude_nsfw_from_history_summary">被标记为含有成人内容的漫画将不会记录阅读历史及阅读进度</string>
+    <string name="clear_cookies_summary">能帮助解决部分问题，所有网站的授权将会失效</string>
     <string name="show_all">显示全部</string>
     <string name="manga_error_description_pattern">错误详情：&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1.尝试&lt;a href=%2$s&gt;在浏览器中打开漫画&lt;/a&gt;确保漫画在图源中正常显示&lt;br&gt;2.确认正在使用的是&lt;a href=kotatsu://about&gt;最新版本的Kotatsu&lt;/a&gt;&lt;br&gt;3.若已排除以上问题，请向开发人员发送错误报告。</string>
     <string name="invalid_domain_message">无效域名</string>
@@ -375,7 +375,7 @@
     <string name="got_it">知道了</string>
     <string name="speed">速度</string>
     <string name="restore_backup_description">导入先前创建的用户数据备份</string>
-    <string name="show_on_shelf">在书架上显示</string>
+    <string name="show_on_shelf">在书架中显示</string>
     <string name="comics_archive_import_description">可选择一个或多个 CBZ 或 ZIP 文件，每个文件都将识别为一个单独的漫画。</string>
     <string name="folder_with_images_import_description">可选择一个包含压缩包或图片的文件夹，每个压缩包 (或子文件夹) 都会被识别为一个章节。</string>
     <string name="find_similar">搜索相似漫画</string>
@@ -389,13 +389,13 @@
     <string name="remove_completed">清除已完成任务</string>
     <string name="cancel_all">取消所有下载中的任务</string>
     <string name="downloads_wifi_only">仅在连接 Wi-Fi 时下载</string>
-    <string name="enable">启用</string>
+    <string name="enable">开启</string>
     <string name="no_thanks">不了谢谢</string>
     <string name="sync_settings">同步设定</string>
     <string name="server_address">服务器地址</string>
     <string name="pause">暂停</string>
     <string name="resume">继续</string>
-    <string name="ignore_ssl_errors">忽略 SSL 错误</string>
+    <string name="ignore_ssl_errors">忽略 SSL 证书错误</string>
     <string name="text_downloads_list_holder">暂无下载任务</string>
     <string name="downloads_resumed">下载已继续</string>
     <string name="downloads_paused">下载已暂停</string>
@@ -458,10 +458,10 @@
     <string name="data_not_restored_text">备份文件不正确</string>
     <string name="unknown">未知</string>
     <string name="in_progress">进行中</string>
-    <string name="items_limit_exceeded">没有可添加项目</string>
+    <string name="items_limit_exceeded">已达项目添加上限</string>
     <string name="data_not_restored">数据恢复失败</string>
     <string name="directories">目录</string>
-    <string name="manage_categories">管理分类</string>
+    <string name="manage_categories">分类管理</string>
     <string name="color_light">浅色</string>
     <string name="search_hint">输入漫画标题、分类或图源名称</string>
     <string name="main_screen_sections">主页底部导航栏</string>
@@ -555,7 +555,7 @@
     <string name="mark_as_completed_prompt">确定将选定漫画标记为已读？
 \n
 \n警告： 当前的阅读进度将会丢失。</string>
-    <string name="category_hidden_done">此分类已从主页隐藏，可通过菜单 → 管理分类来访问</string>
+    <string name="category_hidden_done">此分类已从主页隐藏，可通过菜单 → 收藏分类管理来访问</string>
     <string name="approximate_reading_time">估计所需阅读时间</string>
     <string name="approximate_remaining_time">估计剩余阅读时间</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
@@ -588,7 +588,7 @@
     <string name="check_for_new_chapters_disabled">漫画更新功能已被关闭</string>
     <string name="reading_time_estimation">在漫画详情页显示估计阅读时间</string>
     <string name="reading_time_estimation_summary">估计阅读时间可能会不准确</string>
-    <string name="show_labels_in_navbar">显示底部导航栏名称</string>
+    <string name="show_labels_in_navbar">显示底部导航栏标签名称</string>
     <string name="ask_for_dest_dir_every_time">保存图片时总是询问保存目录</string>
     <string name="pages_saving">图片保存</string>
     <string name="default_page_save_dir">图片默认保存目录</string>
@@ -602,7 +602,7 @@
     <string name="reading_stats">阅读统计</string>
     <string name="other_manga">其他漫画</string>
     <string name="less_than_minute">不到1分钟</string>
-    <string name="statistics">统计</string>
+    <string name="statistics">阅读统计</string>
     <string name="month">月</string>
     <string name="clear_stats_confirm">确定清除所有统计记录？清除后无法恢复。</string>
     <string name="pages_read_s">已读页数： %s</string>
@@ -615,20 +615,22 @@
     <string name="empty_stats_text">选择的时间段没有阅读统计记录</string>
     <string name="migrate">换源</string>
     <string name="delete_read_chapters">删除已读章节</string>
-    <string name="no_chapters_deleted">尚未删除章节</string>
-    <string name="chapters_deleted_pattern">已删除 %1$s, 清除了 %2$s</string>
+    <string name="no_chapters_deleted">没有章节可供删除</string>
+    <string name="chapters_deleted_pattern">已删除 %1$s, 释放了 %2$s 的存储空间</string>
     <string name="delete_read_chapters_summary">从本地设备中删除已读章节来释放存储空间</string>
-    <string name="alternatives">其他版本</string>
-    <string name="manga_migration">漫画换源</string>
+    <string name="alternatives">漫画换源</string>
+    <string name="manga_migration">即将换源</string>
     <string name="migration_completed">换源完成</string>
-    <string name="chapters_grid_view">网格视图</string>
-    <string name="delete_read_chapters_prompt">将会删除所有在本地设备内标记为已读的章节。可之后再重新下载，但已导入的章节将会永久丢失</string>
+    <string name="chapters_grid_view">切换为网格视图</string>
+    <string name="delete_read_chapters_prompt">将会删除所有储存在本地并被标记为已读的章节，可之后再重新下载，但已导入的章节将永久丢失</string>
     <string name="delete_read_chapters_auto">自动删除已读章节</string>
-    <string name="runs_on_app_start">开启应用时运行</string>
-    <string name="migrate_confirmation">\"%2$s\" 图源的 \"%1$s\" 漫画将会在你的历史记录和收藏中替换为 \"%4$s\" 图源的 \"%3$s\" 漫画（若资源存在）</string>
+    <string name="runs_on_app_start">启动应用时开始删除</string>
+    <string name="migrate_confirmation">将会把历史记录和收藏中 \"%2$s\" 图源的 \"%1$s\" 替换成 \"%4$s\" 图源的 \"%3$s\"（若资源存在）</string>
     <string name="unread">未读</string>
     <string name="order_oldest">最旧</string>
     <string name="long_ago_read">很久以前阅读</string>
     <string name="split_by_translations">翻译版本分开显示</string>
-    <string name="split_by_translations_summary">分开显示不同的翻译版本，而不是只合并成一个列表</string>
+    <string name="split_by_translations_summary">分开显示不同的翻译版本，而非合并成一个列表</string>
+    <string name="enable_source">开启图源</string>
+    <string name="unsupported_source">不支持此漫画图源</string>
 </resources>
