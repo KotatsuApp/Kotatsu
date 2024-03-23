@@ -273,7 +273,7 @@
     <string name="exclude_nsfw_from_history_summary">Als NSFW markierte Manga werden nicht in den Verlauf aufgenommen und Ihr Fortschritt wird nicht gespeichert</string>
     <string name="data_deletion">Datenlöschung</string>
     <string name="invalid_domain_message">Ungültige Domain</string>
-    <string name="status_reading">Lese</string>
+    <string name="status_reading">Lesen</string>
     <string name="select_range">Bereich auswählen</string>
     <string name="not_found_404">Inhalt nicht gefunden oder entfernt</string>
     <string name="manga_error_description_pattern">Fehlerdetails:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Versuche, &lt;a href=%2$s&gt;den Manga in einem Webbrowser zu öffnen&lt;/a&gt;, um sicherzustellen, dass er bei seiner Quelle verfügbar ist&lt;br&gt;2. Stelle sicher, dass du die &lt;a href=kotatsu://about&gt;neueste Kotatsu-Version&lt;/a&gt;&lt;br&gt;3 benutzt. Wenn er verfügbar ist, sende einen Fehlerbericht an die Entwickler.</string>
@@ -338,7 +338,7 @@
     <string name="different_languages">Verschiedene Sprachen</string>
     <string name="network_unavailable">Netzwerk ist nicht verfügbar</string>
     <string name="reader_control_ltr">Ergonomische Lesekontrolle</string>
-    <string name="reader_control_ltr_summary">Tippe auf den rechten Rand oder drücke die rechte Taste, um immer zur nächsten Seite zu wechseln</string>
+    <string name="reader_control_ltr_summary">Tippe auf den rechten Rand oder drücke die rechte Taste, um immer zur nächsten Seite zu wechseln.</string>
     <string name="reader_slider">Zeige Seitenwechsel-Schieber</string>
     <string name="source_disabled">Quelle deaktiviert</string>
     <string name="prefetch_content">Inhalte vorladen</string>
@@ -358,7 +358,7 @@
     <string name="nothing_here">Hier ist nichts</string>
     <string name="services">Dienste</string>
     <string name="theme_name_kanade">Kanade</string>
-    <string name="scrobbling_empty_hint">Um deinen Lesefortschritt nachzuverfolgen, wähle Menü → Lesefortschritt aufzeichnen auf dem Manga Details Bildschirm.</string>
+    <string name="scrobbling_empty_hint">Um deinen Lesefortschritt zu tracken, wähle Menü → Lesefortschritt tracken auf dem Manga Details Bildschirm.</string>
     <string name="find_similar">Ähnliche finden</string>
     <string name="theme_name_sakura">Sakura</string>
     <string name="allow_unstable_updates_summary">Benachrichtigungen über instabile Versionen erhalten</string>
@@ -383,7 +383,7 @@
     <string name="sync_host_description">Du kannst einen Standard- oder einen selbst gehosteten Synchronisations-Server verwenden. Ändere diese Einstellungen nicht, wenn du dich nicht auskennst.</string>
     <string name="ignore_ssl_errors">Ignoriere SSL Errors</string>
     <string name="mirror_switching_summary">Automatischer Domain-Wechsel für Manga-Quellen, falls Spiegelserver verfügbar sind</string>
-    <string name="status_re_reading">Lese erneut</string>
+    <string name="status_re_reading">Erneut Lesen</string>
     <string name="sync_auth_hint">Du kannst dich mit einem bestehenden Account anmelden oder einen neuen erstellen</string>
     <string name="user_agent">UserAgent-Kopfzeile</string>
     <string name="enable">Aktivieren</string>
@@ -458,7 +458,7 @@
     <string name="view_list">Liste ansehen</string>
     <string name="show">Anzeigen</string>
     <string name="images_procy_description">Wenn möglich bitte den Dienst wsrv.nl nutzen, um den Datenverkehr zu reduzieren und das Laden von Bildern zu beschleunigen</string>
-    <string name="clear_network_cache">Netzwerkcache löschen</string>
+    <string name="clear_network_cache">Netzwerk-Cache löschen</string>
     <string name="captcha_required_summary">%s erfordert ein Captcha, das gelöst werden muss, um richtig zu funktionieren</string>
     <string name="languages">Sprachen</string>
     <string name="unknown">Unbekannt</string>
@@ -549,7 +549,7 @@
 \n
 \nAchtung: Der aktuelle Lesefortschritt geht verloren.</string>
     <string name="main_screen_sections">Hauptbildschirm - Abschnitte</string>
-    <string name="disable_nsfw_summary">Deaktiviere NSFW - Quellen und verberge Erwachsenen-Manga von der Liste, wenn möglich</string>
+    <string name="disable_nsfw_summary">Deaktiviere NSFW-Quellen und verberge Erwachsenen-Manga von der Liste, wenn möglich</string>
     <string name="disable_battery_optimization_summary_downloads">Könnte dir damit helfen, den Download zu starten, wenn du Probleme damit hast</string>
     <string name="state_abandoned">Verworfen</string>
     <string name="enhanced_colors_summary">Reduziert das Banding (harte Farbverläufe), kann aber die Leistung beeinträchtigen</string>
@@ -585,7 +585,7 @@
     <string name="show_labels_in_navbar">Beschriftungen in der Navigationsleiste anzeigen</string>
     <string name="pages_saving">Seiten werden gespeichert</string>
     <string name="ask_for_dest_dir_every_time">Jedes Mal nach dem Zielverzeichnis fragen</string>
-    <string name="default_page_save_dir">Standard-Seitenspeicherordner</string>
+    <string name="default_page_save_dir">Standard Speicherordner für Seiten</string>
     <string name="remove_from_history">Aus der Historie entfernen</string>
     <string name="preferred_download_format">Bevorzugtes Download-Format</string>
     <string name="fullscreen_mode">Vollbildmodus</string>
@@ -596,5 +596,41 @@
     <string name="check_for_new_chapters_disabled">Die Überprüfung auf neue Kapitel ist deaktiviert</string>
     <string name="reading_time_estimation">Geschätzte Lesezeit anzeigen</string>
     <string name="reading_time_estimation_summary">Die geschätzte Zeitangabe kann ungenau sein</string>
-    <string name="location">Ort</string>
+    <string name="location">Speicherort</string>
+    <string name="default_webtoon_zoom_out">Standard Zoom Out für Webtoons</string>
+    <string name="other_manga">Andere Mangas</string>
+    <string name="less_than_minute">Weniger als eine Minute</string>
+    <string name="migration_completed">Migrierung abgeschlossen</string>
+    <string name="chapters_grid_view">Rasteransicht</string>
+    <string name="stats_enabled">Statistiken einschalten</string>
+    <string name="reading_stats">Lesestatistiken</string>
+    <string name="statistics">Statistiken</string>
+    <string name="clear_stats">Statistiken löschen</string>
+    <string name="stats_cleared">Statistiken gelöscht</string>
+    <string name="clear_stats_confirm">Willst du wirklich alle Statistiken löschen? Die Prozedur kann nicht rückgängig gemacht werden.</string>
+    <string name="all_time">Immer</string>
+    <string name="day">Tag</string>
+    <string name="alternatives">Alternativen</string>
+    <string name="migrate">Migrieren</string>
+    <string name="migrate_confirmation">Manga \"%1$s\" aus \"%2$s\" wird mit \"%3$s\" aus \"%4$s\" in deinem Verlauf und Favoriten (sofern vorhanden) ersetzt</string>
+    <string name="manga_migration">Manga Migrierung</string>
+    <string name="delete_read_chapters_auto">Lösche gelesene Kapitel automatisch</string>
+    <string name="runs_on_app_start">Wird ausgeführt wenn die App gestartet wird</string>
+    <string name="week">Woche</string>
+    <string name="month">Monat</string>
+    <string name="empty_stats_text">Es sind keine Statistiken für die ausgewählte Zeitspanne vorhanden</string>
+    <string name="three_months">Drei Monate</string>
+    <string name="pages_read_s">Gelesene Seiten:%s</string>
+    <string name="split_by_translations">Aufgeteilt nach Übersetzungen</string>
+    <string name="split_by_translations_summary">Zeige Kapitel mit unterschiedlichen Übersetzungen separiert anstatt in einer Liste</string>
+    <string name="order_oldest">Älteste</string>
+    <string name="long_ago_read">vor einer langen Zeit gelesen</string>
+    <string name="unread">Ungelesen</string>
+    <string name="delete_read_chapters">Gelesene Kapitel löschen</string>
+    <string name="no_chapters_deleted">Keine Kapitel wurden gelöscht</string>
+    <string name="delete_read_chapters_summary">Lösche schon gelesene Kapitel um Speicher freizugeben</string>
+    <string name="delete_read_chapters_prompt">Die Aktion wird alle als gelesen markierte Kapitel dauerhaft von deinem Speicher löschen. Du kannst sie später neu herunterladen, aber die importierten Kapitel können trotzdem verloren sein</string>
+    <string name="chapters_deleted_pattern">%1$s entfernt, %2$s gelöscht</string>
+    <string name="enable_source">Quelle aktivieren</string>
+    <string name="unsupported_source">Diese Manga-Quelle wird nicht unterstützt</string>
 </resources>
