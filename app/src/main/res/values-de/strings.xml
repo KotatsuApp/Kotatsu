@@ -549,7 +549,7 @@
 \n
 \nAchtung: Der aktuelle Lesefortschritt geht verloren.</string>
     <string name="main_screen_sections">Hauptbildschirm - Abschnitte</string>
-    <string name="disable_nsfw_summary">Deaktiviere NSFW-Quellen und verberge Erwachsenen-Manga von der Liste, wenn möglich</string>
+    <string name="disable_nsfw_summary">Deaktiviere NSFW-Quellen und verstecke 18+ Manga aus der Liste, wenn möglich</string>
     <string name="disable_battery_optimization_summary_downloads">Könnte dir damit helfen, den Download zu starten, wenn du Probleme damit hast</string>
     <string name="state_abandoned">Verworfen</string>
     <string name="enhanced_colors_summary">Reduziert das Banding (harte Farbverläufe), kann aber die Leistung beeinträchtigen</string>
