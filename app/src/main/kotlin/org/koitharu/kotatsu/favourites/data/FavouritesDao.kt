@@ -118,6 +118,9 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites WHERE manga_id = :id AND deleted_at = 0 GROUP BY manga_id")
 	abstract suspend fun find(id: Long): FavouriteManga?
 
+	@Query("SELECT * FROM favourites WHERE manga_id = :mangaId AND deleted_at = 0")
+	abstract suspend fun findAllRaw(mangaId: Long): List<FavouriteEntity>
+
 	@Transaction
 	@Deprecated("Ignores order")
 	@Query("SELECT * FROM favourites WHERE manga_id = :id AND deleted_at = 0 GROUP BY manga_id")

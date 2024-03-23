@@ -5,9 +5,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
 import org.koitharu.kotatsu.details.domain.ProgressUpdateUseCase
-import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.history.data.toMangaHistory
@@ -21,7 +19,6 @@ class MigrateUseCase @Inject constructor(
 	private val mangaDataRepository: MangaDataRepository,
 	private val database: MangaDatabase,
 	private val progressUpdateUseCase: ProgressUpdateUseCase,
-	private val useCase: DetailsLoadUseCase
 ) {
 
 	suspend operator fun invoke(oldManga: Manga, newManga: Manga) {
@@ -41,16 +38,12 @@ class MigrateUseCase @Inject constructor(
 		database.withTransaction {
 			// replace favorites
 			val favoritesDao = database.getFavouritesDao()
-			val oldFavourite = favoritesDao.find(oldDetails.id)
-			if (oldFavourite != null) {
+			val oldFavourites = favoritesDao.findAllRaw(oldDetails.id)
+			if (oldFavourites.isNotEmpty()) {
 				favoritesDao.delete(oldManga.id)
-				for (f in oldFavourite.categories) {
-					val e = FavouriteEntity(
+				for (f in oldFavourites) {
+					val e = f.copy(
 						mangaId = newManga.id,
-						categoryId = f.categoryId.toLong(),
-						sortKey = f.sortKey,
-						createdAt = f.createdAt,
-						deletedAt = 0,
 					)
 					favoritesDao.upsert(e)
 				}
