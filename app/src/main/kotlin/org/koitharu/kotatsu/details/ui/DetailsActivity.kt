@@ -376,12 +376,13 @@ class DetailsActivity :
 	}
 
 	private fun initPager() {
-		val adapter = DetailsPagerAdapter(this)
+		val adapter = DetailsPagerAdapter(this, settings)
 		viewBinding.pager.recyclerView?.isNestedScrollingEnabled = false
 		viewBinding.pager.offscreenPageLimit = 1
 		viewBinding.pager.adapter = adapter
 		TabLayoutMediator(viewBinding.tabs, viewBinding.pager, adapter).attach()
 		viewBinding.pager.setCurrentItem(settings.defaultDetailsTab, false)
+		viewBinding.tabs.isVisible = adapter.itemCount > 1
 	}
 
 	private fun showBottomSheet(isVisible: Boolean) {

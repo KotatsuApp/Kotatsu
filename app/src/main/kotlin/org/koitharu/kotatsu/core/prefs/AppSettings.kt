@@ -221,8 +221,15 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isUnstableUpdatesAllowed: Boolean
 		get() = prefs.getBoolean(KEY_UPDATES_UNSTABLE, false)
 
+	val isPagesTabEnabled: Boolean
+		get() = prefs.getBoolean(KEY_PAGES_TAB, true)
+
 	val defaultDetailsTab: Int
-		get() = prefs.getString(KEY_DETAILS_TAB, null)?.toIntOrNull()?.coerceIn(0, 1) ?: 0
+		get() = if (isPagesTabEnabled) {
+			prefs.getString(KEY_DETAILS_TAB, null)?.toIntOrNull()?.coerceIn(0, 1) ?: 0
+		} else {
+			0
+		}
 
 	val isContentPrefetchEnabled: Boolean
 		get() {
@@ -622,6 +629,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_CF_INVERTED = "cf_inverted"
 		const val KEY_CF_GRAYSCALE = "cf_grayscale"
 		const val KEY_IGNORE_DOZE = "ignore_dose"
+		const val KEY_PAGES_TAB = "pages_tab"
 		const val KEY_DETAILS_TAB = "details_tab"
 		const val KEY_READING_TIME = "reading_time"
 		const val KEY_PAGES_SAVE_DIR = "pages_dir"

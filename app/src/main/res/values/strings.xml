@@ -638,4 +638,6 @@
 	<string name="unread">Unread</string>
 	<string name="enable_source">Enable source</string>
 	<string name="unsupported_source">This manga source is not supported</string>
+	<string name="show_pages_thumbs">Show pages thumbnails</string>
+	<string name="show_pages_thumbs_summary">Enable the \"Pages\" tab on the details screen</string>
 </resources>

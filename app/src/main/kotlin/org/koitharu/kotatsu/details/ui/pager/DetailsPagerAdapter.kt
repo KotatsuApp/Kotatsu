@@ -6,13 +6,19 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.details.ui.pager.chapters.ChaptersFragment
 import org.koitharu.kotatsu.details.ui.pager.pages.PagesFragment
 
-class DetailsPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity),
+class DetailsPagerAdapter(
+	activity: FragmentActivity,
+	settings: AppSettings,
+) : FragmentStateAdapter(activity),
 	TabLayoutMediator.TabConfigurationStrategy {
 
-	override fun getItemCount(): Int = 2
+	val isPagesTabEnabled = settings.isPagesTabEnabled
+
+	override fun getItemCount(): Int = if (isPagesTabEnabled) 2 else 1
 
 	override fun createFragment(position: Int): Fragment = when (position) {
 		0 -> ChaptersFragment()
