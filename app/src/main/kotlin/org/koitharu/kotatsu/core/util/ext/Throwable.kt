@@ -110,8 +110,6 @@ fun Throwable.report() {
 }
 
 private val reportableExceptions = arraySetOf<Class<*>>(
-	ParseException::class.java,
-	JSONException::class.java,
 	RuntimeException::class.java,
 	IllegalStateException::class.java,
 	IllegalArgumentException::class.java,
