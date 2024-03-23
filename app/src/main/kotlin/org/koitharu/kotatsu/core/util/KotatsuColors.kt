@@ -33,7 +33,7 @@ object KotatsuColors {
 			val hue = (manga.id.absoluteValue % 360).toFloat()
 			ColorUtils.HSLToColor(floatArrayOf(hue, 0.5f, 0.5f))
 		} else {
-			context.getThemeColor(R.attr.colorSurface)
+			context.getThemeColor(R.attr.colorOutline)
 		}
 		val backgroundColor = context.getThemeColor(R.attr.colorSurfaceContainerHigh)
 		return MaterialColors.harmonize(color, backgroundColor)
