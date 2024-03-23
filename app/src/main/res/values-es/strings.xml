@@ -631,4 +631,8 @@
     <string name="order_oldest">Más antigua</string>
     <string name="long_ago_read">Leído hace mucho tiempo</string>
     <string name="unread">Sin leer</string>
+    <string name="enable_source">Activar fuente</string>
+    <string name="unsupported_source">Esta fuente del manga no es compatible</string>
+    <string name="show_pages_thumbs">Mostrar miniaturas de las páginas</string>
+    <string name="show_pages_thumbs_summary">Habilite la pestaña \"Páginas\" en la pantalla de detalles</string>
 </resources>
