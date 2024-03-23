@@ -13,13 +13,16 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import com.google.android.material.snackbar.Snackbar
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.ActivityMangaDirectoriesBinding
 import org.koitharu.kotatsu.settings.storage.DirectoryDiffCallback
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
@@ -42,7 +45,11 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 	) {
 		if (it) {
 			viewModel.updateList()
-			pickFileTreeLauncher.launch(null)
+			if (!pickFileTreeLauncher.tryLaunch(null)) {
+				Snackbar.make(
+					viewBinding.recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
+				).show()
+			}
 		}
 	}
 
@@ -68,7 +75,11 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 	}
 
 	override fun onClick(v: View?) {
-		permissionRequestLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+		if (!permissionRequestLauncher.tryLaunch(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+			Snackbar.make(
+				viewBinding.recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
+			).show()
+		}
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

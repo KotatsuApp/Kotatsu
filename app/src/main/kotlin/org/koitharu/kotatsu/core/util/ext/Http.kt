@@ -1,11 +1,13 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import okhttp3.Cookie
+import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
+import okhttp3.internal.isSensitiveHeader
 import okio.IOException
 import org.json.JSONObject
 import org.jsoup.HttpStatusException
@@ -58,4 +60,17 @@ fun Cookie.newBuilder(): Cookie.Builder = Cookie.Builder().also { c ->
 	if (httpOnly) {
 		c.httpOnly()
 	}
+}
+
+fun String.sanitizeHeaderValue(): String {
+	return if (all(Char::isValidForHeaderValue)) {
+		this // fast path
+	} else {
+		filter(Char::isValidForHeaderValue)
+	}
+}
+
+private fun Char.isValidForHeaderValue(): Boolean {
+	// from okhttp3.Headers$Companion.checkValue
+	return this == '\t' || this in '\u0020'..'\u007e'
 }

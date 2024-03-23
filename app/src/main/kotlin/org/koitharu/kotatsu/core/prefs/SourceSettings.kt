@@ -3,9 +3,11 @@ package org.koitharu.kotatsu.core.prefs
 import android.content.Context
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import androidx.core.content.edit
+import okhttp3.internal.isSensitiveHeader
 import org.koitharu.kotatsu.core.util.ext.getEnumValue
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
+import org.koitharu.kotatsu.core.util.ext.sanitizeHeaderValue
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -25,7 +27,10 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 	@Suppress("UNCHECKED_CAST")
 	override fun <T> get(key: ConfigKey<T>): T {
 		return when (key) {
-			is ConfigKey.UserAgent -> prefs.getString(key.key, key.defaultValue).ifNullOrEmpty { key.defaultValue }
+			is ConfigKey.UserAgent -> prefs.getString(key.key, key.defaultValue)
+				.ifNullOrEmpty { key.defaultValue }
+				.sanitizeHeaderValue()
+
 			is ConfigKey.Domain -> prefs.getString(key.key, key.defaultValue).ifNullOrEmpty { key.defaultValue }
 			is ConfigKey.ShowSuspiciousContent -> prefs.getBoolean(key.key, key.defaultValue)
 			is ConfigKey.SplitByTranslations -> prefs.getBoolean(key.key, key.defaultValue)
@@ -36,7 +41,7 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 		when (key) {
 			is ConfigKey.Domain -> putString(key.key, value as String?)
 			is ConfigKey.ShowSuspiciousContent -> putBoolean(key.key, value as Boolean)
-			is ConfigKey.UserAgent -> putString(key.key, value as String?)
+			is ConfigKey.UserAgent -> putString(key.key, (value as String?)?.sanitizeHeaderValue())
 			is ConfigKey.SplitByTranslations -> putBoolean(key.key, value as Boolean)
 		}
 	}

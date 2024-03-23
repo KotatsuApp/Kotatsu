@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.sanitizeHeaderValue
 import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
@@ -41,7 +42,7 @@ class MangaLoaderContextImpl @Inject constructor(
 	private val userAgentLazy = SuspendLazy {
 		withContext(Dispatchers.Main) {
 			obtainWebView().settings.userAgentString
-		}
+		}.sanitizeHeaderValue()
 	}
 
 	@SuppressLint("SetJavaScriptEnabled")
