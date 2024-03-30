@@ -59,6 +59,9 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		viewModel.defaultWebtoonZoomOut.take(1).observe(viewLifecycleOwner) {
 			binding.frame.zoom = 1f - it
 		}
+		viewModel.readerSettings.observe(viewLifecycleOwner) {
+			it.applyBackground(binding.root)
+		}
 	}
 
 	override fun onDestroyView() {

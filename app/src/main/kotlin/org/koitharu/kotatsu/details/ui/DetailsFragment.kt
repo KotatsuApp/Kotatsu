@@ -189,7 +189,7 @@ class DetailsFragment :
 					isVisible = false
 				}
 			}
-			if (manga.source == MangaSource.LOCAL) {
+			if (manga.source == MangaSource.LOCAL || manga.source == MangaSource.DUMMY) {
 				infoLayout.textViewSource.isVisible = false
 			} else {
 				infoLayout.textViewSource.text = manga.source.title
@@ -223,7 +223,7 @@ class DetailsFragment :
 		}
 		binding.approximateReadTime.text = time.format(resources)
 		binding.approximateReadTimeTitle.setText(
-			if (time.isContinue) R.string.approximate_remaining_time else R.string.approximate_reading_time
+			if (time.isContinue) R.string.approximate_remaining_time else R.string.approximate_reading_time,
 		)
 		binding.approximateReadTimeLayout.isVisible = true
 	}
