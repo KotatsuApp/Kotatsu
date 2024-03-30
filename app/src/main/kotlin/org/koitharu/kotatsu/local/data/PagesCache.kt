@@ -12,6 +12,7 @@ import okio.Source
 import okio.buffer
 import okio.sink
 import okio.use
+import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.compressToPNG
 import org.koitharu.kotatsu.core.util.ext.longHashCode
@@ -62,7 +63,9 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 			val bytes = file.sink(append = false).buffer().use {
 				it.writeAllCancellable(source)
 			}
-			check(bytes != 0L) { "No data has been written" }
+			if (bytes == 0L) {
+				throw NoDataReceivedException(url)
+			}
 			lruCache.get().put(url, file)
 		} finally {
 			file.delete()

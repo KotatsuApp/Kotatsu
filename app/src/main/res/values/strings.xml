@@ -640,4 +640,5 @@
 	<string name="unsupported_source">This manga source is not supported</string>
 	<string name="show_pages_thumbs">Show pages thumbnails</string>
 	<string name="show_pages_thumbs_summary">Enable the \"Pages\" tab on the details screen</string>
+	<string name="error_no_data_received">No data was received from server</string>
 </resources>

@@ -8,12 +8,12 @@ import coil.network.HttpException
 import okio.FileNotFoundException
 import okio.IOException
 import org.acra.ktx.sendWithAcra
-import org.json.JSONException
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CaughtException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
+import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
 import org.koitharu.kotatsu.core.exceptions.SyncApiException
 import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
@@ -54,6 +54,8 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is UnknownHostException,
 	is SocketTimeoutException,
 	-> resources.getString(R.string.network_error)
+
+	is NoDataReceivedException -> resources.getString(R.string.error_no_data_received)
 
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	is NotFoundException -> resources.getString(R.string.not_found_404)
@@ -115,6 +117,7 @@ private val reportableExceptions = arraySetOf<Class<*>>(
 	IllegalArgumentException::class.java,
 	ConcurrentModificationException::class.java,
 	UnsupportedOperationException::class.java,
+	NoDataReceivedException::class.java,
 )
 
 fun Throwable.isWebViewUnavailable(): Boolean {
