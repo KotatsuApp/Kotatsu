@@ -81,16 +81,6 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		super.onDestroy()
 	}
 
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		viewBinding.webView.saveState(outState)
-	}
-
-	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-		super.onRestoreInstanceState(savedInstanceState)
-		viewBinding.webView.restoreState(savedInstanceState)
-	}
-
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.opt_captcha, menu)
 		return super.onCreateOptionsMenu(menu)

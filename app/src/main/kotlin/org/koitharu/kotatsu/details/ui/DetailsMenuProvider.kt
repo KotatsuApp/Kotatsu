@@ -89,7 +89,7 @@ class DetailsMenuProvider(
 
 			R.id.action_browser -> {
 				viewModel.manga.value?.let {
-					activity.startActivity(BrowserActivity.newIntent(activity, it.publicUrl, it.title))
+					activity.startActivity(BrowserActivity.newIntent(activity, it.publicUrl, it.source, it.title))
 				}
 			}
 

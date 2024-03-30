@@ -82,16 +82,6 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		viewBinding.webView.loadUrl(url)
 	}
 
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		viewBinding.webView.saveState(outState)
-	}
-
-	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-		super.onRestoreInstanceState(savedInstanceState)
-		viewBinding.webView.restoreState(savedInstanceState)
-	}
-
 	override fun onDestroy() {
 		super.onDestroy()
 		viewBinding.webView.destroy()

@@ -82,7 +82,7 @@ class ExceptionResolver : ActivityResultCallback<TaggedActivityResult> {
 
 	private fun openInBrowser(url: String) {
 		val context = activity ?: fragment?.activity ?: return
-		context.startActivity(BrowserActivity.newIntent(context, url, null))
+		context.startActivity(BrowserActivity.newIntent(context, url, null, null))
 	}
 
 	private fun openAlternatives(manga: Manga) {

@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.browser
 
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -13,16 +12,24 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
+import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import javax.inject.Inject
 import com.google.android.material.R as materialR
 
-@SuppressLint("SetJavaScriptEnabled")
 class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
 
 	private lateinit var onBackPressedCallback: WebViewBackPressedCallback
+
+	@Inject
+	lateinit var mangaRepositoryFactory: MangaRepository.Factory
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -33,7 +40,11 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
-		viewBinding.webView.configureForParser(null)
+		val userAgent = intent?.getSerializableExtraCompat<MangaSource>(EXTRA_SOURCE)?.let { source ->
+			val repository = mangaRepositoryFactory.create(source) as? RemoteMangaRepository
+			repository?.headers?.get(CommonHeaders.USER_AGENT)
+		}
+		viewBinding.webView.configureForParser(userAgent)
 		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		viewBinding.webView.webViewClient = BrowserClient(this)
 		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)
@@ -52,16 +63,6 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			)
 			viewBinding.webView.loadUrl(url)
 		}
-	}
-
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		viewBinding.webView.saveState(outState)
-	}
-
-	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-		super.onRestoreInstanceState(savedInstanceState)
-		viewBinding.webView.restoreState(savedInstanceState)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -136,11 +137,13 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 	companion object {
 
 		private const val EXTRA_TITLE = "title"
+		private const val EXTRA_SOURCE = "source"
 
-		fun newIntent(context: Context, url: String, title: String?): Intent {
+		fun newIntent(context: Context, url: String, source: MangaSource?, title: String?): Intent {
 			return Intent(context, BrowserActivity::class.java)
 				.setData(Uri.parse(url))
 				.putExtra(EXTRA_TITLE, title)
+				.putExtra(EXTRA_SOURCE, source)
 		}
 	}
 }
