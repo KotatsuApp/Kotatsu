@@ -11,6 +11,7 @@ import android.webkit.CookieManager
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -24,6 +25,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
+@AndroidEntryPoint
 class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
 
 	private lateinit var onBackPressedCallback: WebViewBackPressedCallback
