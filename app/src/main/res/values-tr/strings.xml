@@ -633,4 +633,6 @@
     <string name="unread">Okunmadı</string>
     <string name="unsupported_source">Bu manga kaynağı desteklenmiyor</string>
     <string name="enable_source">Kaynağı etkinleştir</string>
+    <string name="show_pages_thumbs_summary">Ayrıntılar ekranında \"Sayfalar\" sekmesini etkinleştir</string>
+    <string name="show_pages_thumbs">Sayfa küçük resimlerini göster</string>
 </resources>

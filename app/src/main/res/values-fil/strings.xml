@@ -633,4 +633,6 @@
     <string name="order_oldest">Pinakaluma</string>
     <string name="enable_source">Paganahin ang source</string>
     <string name="unsupported_source">Ang manga source na ito ay hindi suportado</string>
+    <string name="show_pages_thumbs">Ipakita ang mga thumbnail ng pahina</string>
+    <string name="show_pages_thumbs_summary">Paganahin ang tab na \"Mga Pahina\" sa screen ng mga detalye</string>
 </resources>
