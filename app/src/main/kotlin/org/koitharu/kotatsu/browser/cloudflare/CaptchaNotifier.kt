@@ -20,7 +20,7 @@ class CaptchaNotifier(
 ) : EventListener {
 
 	fun notify(exception: CloudFlareProtectedException) {
-		if (!context.checkNotificationPermission()) {
+		if (!context.checkNotificationPermission(CHANNEL_ID)) {
 			return
 		}
 		val manager = NotificationManagerCompat.from(context)

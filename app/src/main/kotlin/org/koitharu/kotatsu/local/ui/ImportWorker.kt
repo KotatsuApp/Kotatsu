@@ -50,7 +50,7 @@ class ImportWorker @AssistedInject constructor(
 		val result = runCatchingCancellable {
 			importer.import(uri).manga
 		}
-		if (applicationContext.checkNotificationPermission()) {
+		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
 			val notification = buildNotification(result)
 			notificationManager.notify(uri.hashCode(), notification)
 		}

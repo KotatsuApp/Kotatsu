@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -15,8 +16,7 @@ import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SuggestionsSettingsFragment :
-	BasePreferenceFragment(R.string.suggestions),
+class SuggestionsSettingsFragment : BasePreferenceFragment(R.string.suggestions),
 	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	@Inject
@@ -48,16 +48,17 @@ class SuggestionsSettingsFragment :
 	}
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-		if (key == AppSettings.KEY_SUGGESTIONS && settings.isSuggestionsEnabled) {
-			onSuggestionsEnabled()
+		if (settings.isSuggestionsEnabled && (key == AppSettings.KEY_SUGGESTIONS
+				|| key == AppSettings.KEY_SUGGESTIONS_EXCLUDE_TAGS
+				|| key == AppSettings.KEY_SUGGESTIONS_EXCLUDE_NSFW)
+		) {
+			updateSuggestions()
 		}
 	}
 
-	private fun onSuggestionsEnabled() {
-		lifecycleScope.launch {
-			if (repository.isEmpty()) {
-				suggestionsScheduler.startNow()
-			}
+	private fun updateSuggestions() {
+		lifecycleScope.launch(Dispatchers.Default) {
+			suggestionsScheduler.startNow()
 		}
 	}
 }

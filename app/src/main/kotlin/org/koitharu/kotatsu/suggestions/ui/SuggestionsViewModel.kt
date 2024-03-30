@@ -64,6 +64,8 @@ class SuggestionsViewModel @Inject constructor(
 	override fun onRetry() = Unit
 
 	fun updateSuggestions() {
-		suggestionsScheduler.startNow()
+		launchJob(Dispatchers.Default) {
+			suggestionsScheduler.startNow()
+		}
 	}
 }

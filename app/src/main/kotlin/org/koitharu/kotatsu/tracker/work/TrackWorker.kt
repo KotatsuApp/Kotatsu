@@ -168,7 +168,7 @@ class TrackWorker @AssistedInject constructor(
 				}
 			}
 		}.onEachIndexed { index, it ->
-			if (applicationContext.checkNotificationPermission()) {
+			if (applicationContext.checkNotificationPermission(WORKER_CHANNEL_ID)) {
 				notificationManager.notify(WORKER_NOTIFICATION_ID, createWorkerNotification(tracks.size, index + 1))
 			}
 			when (it) {
@@ -197,7 +197,7 @@ class TrackWorker @AssistedInject constructor(
 		channelId: String?,
 		newChapters: List<MangaChapter>,
 	) {
-		if (newChapters.isEmpty() || channelId == null || !applicationContext.checkNotificationPermission()) {
+		if (newChapters.isEmpty() || channelId == null || !applicationContext.checkNotificationPermission(channelId)) {
 			return
 		}
 		val id = manga.url.hashCode()

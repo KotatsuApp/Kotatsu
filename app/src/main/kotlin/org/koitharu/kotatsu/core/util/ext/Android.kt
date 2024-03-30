@@ -14,7 +14,7 @@ import android.content.ContextWrapper
 import android.content.OperationApplicationException
 import android.content.SharedPreferences
 import android.content.SyncResult
-import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.content.pm.ResolveInfo
 import android.database.SQLException
 import android.graphics.Bitmap
@@ -216,10 +216,19 @@ fun Context.findActivity(): Activity? = when (this) {
 	else -> null
 }
 
-fun Context.checkNotificationPermission(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-	ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-} else {
-	NotificationManagerCompat.from(this).areNotificationsEnabled()
+fun Context.checkNotificationPermission(channelId: String?): Boolean {
+	val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+		ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PERMISSION_GRANTED
+	} else {
+		NotificationManagerCompat.from(this).areNotificationsEnabled()
+	}
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && hasPermission && channelId != null) {
+		val channel = NotificationManagerCompat.from(this).getNotificationChannel(channelId)
+		if (channel != null && channel.importance == NotificationManagerCompat.IMPORTANCE_NONE) {
+			return false
+		}
+	}
+	return hasPermission
 }
 
 @WorkerThread
