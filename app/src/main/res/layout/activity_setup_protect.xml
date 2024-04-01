@@ -54,7 +54,7 @@
 			android:gravity="center_horizontal"
 			android:imeOptions="actionDone"
 			android:importantForAutofill="no"
-			android:inputType="textPassword"
+			android:inputType="textPassword|textNoSuggestions"
 			android:maxLength="24"
 			android:singleLine="true"
 			android:textAlignment="center"
