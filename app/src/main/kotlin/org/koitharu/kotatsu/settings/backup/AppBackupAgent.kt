@@ -13,7 +13,9 @@ import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.exceptions.BadBackupFormatException
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileInputStream
@@ -88,7 +90,12 @@ class AppBackupAgent : BackupAgent() {
 				input.copyLimitedTo(output, size)
 			}
 		}
-		val backup = BackupZipInput(tempFile)
+		val backup = try {
+			BackupZipInput.from(tempFile)
+		} catch (e: BadBackupFormatException) {
+			tempFile.delete()
+			throw e
+		}
 		try {
 			runBlocking {
 				backup.getEntry(BackupEntry.Name.HISTORY)?.let { repository.restoreHistory(it) }

@@ -6,12 +6,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import okio.Closeable
 import org.json.JSONArray
+import org.koitharu.kotatsu.core.exceptions.BadBackupFormatException
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import java.io.File
 import java.util.EnumSet
+import java.util.zip.ZipException
 import java.util.zip.ZipFile
 
-class BackupZipInput(val file: File) : Closeable {
+class BackupZipInput private constructor(val file: File) : Closeable {
 
 	private val zipFile = ZipFile(file)
 
@@ -39,6 +41,19 @@ class BackupZipInput(val file: File) : Closeable {
 				close()
 				file.delete()
 			}
+		}
+	}
+
+	companion object {
+
+		fun from(file: File): BackupZipInput = try {
+			val res = BackupZipInput(file)
+			if (res.zipFile.getEntry("index") == null) {
+				throw BadBackupFormatException(null)
+			}
+			res
+		} catch (e: ZipException) {
+			throw BadBackupFormatException(e)
 		}
 	}
 }

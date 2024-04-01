@@ -10,6 +10,7 @@ import okio.IOException
 import org.acra.ktx.sendWithAcra
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.BadBackupFormatException
 import org.koitharu.kotatsu.core.exceptions.CaughtException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
@@ -43,6 +44,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 
 	is TooManyRequestExceptions -> resources.getString(R.string.too_many_requests_message)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
+	is BadBackupFormatException -> resources.getString(R.string.unsupported_backup_message)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
 	is AccessDeniedException -> resources.getString(R.string.no_access_to_file)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
