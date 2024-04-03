@@ -110,7 +110,7 @@ class ChipsView @JvmOverloads constructor(
 		chip.isChipIconVisible = false
 		chip.isCloseIconVisible = onChipCloseClickListener != null
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
-		chip.setEnsureMinTouchTargetSize(false) // TODO remove
+		chip.setEnsureMinTouchTargetSize(false)
 		chip.setOnClickListener(chipOnClickListener)
 		addView(chip)
 		return chip

@@ -132,6 +132,8 @@ abstract class BaseActivity<B : ViewBinding> :
 		} else {
 			ContextCompat.getColor(this, R.color.kotatsu_m3_background)
 		}
+		defaultStatusBarColor = window.statusBarColor
+		window.statusBarColor = actionModeColor
 		val insets = ViewCompat.getRootWindowInsets(viewBinding.root)
 			?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
 		findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar).apply {
@@ -140,8 +142,6 @@ abstract class BaseActivity<B : ViewBinding> :
 				topMargin = insets.top
 			}
 		}
-		defaultStatusBarColor = window.statusBarColor
-		window.statusBarColor = actionModeColor
 	}
 
 	@CallSuper

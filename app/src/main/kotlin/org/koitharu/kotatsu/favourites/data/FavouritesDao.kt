@@ -129,7 +129,10 @@ abstract class FavouritesDao {
 	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id = :id AND deleted_at = 0")
 	abstract fun observeIds(id: Long): Flow<List<Long>>
 
-	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id IN (:mangaIds) AND deleted_at = 0")
+	@Query("SELECT favourite_categories.* FROM favourites LEFT JOIN favourite_categories ON favourite_categories.category_id = favourites.category_id WHERE favourites.manga_id = :mangaId AND favourites.deleted_at = 0")
+	abstract fun observeCategories(mangaId: Long): Flow<List<FavouriteCategoryEntity>>
+
+	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id IN (:mangaIds) AND deleted_at = 0 ORDER BY favourites.created_at ASC")
 	abstract suspend fun findCategoriesIds(mangaIds: Collection<Long>): List<Long>
 
 	/** INSERT **/

@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -98,7 +99,7 @@ abstract class MangaListFragment :
 		listAdapter = onCreateAdapter()
 		spanResolver = MangaListSpanResolver(binding.root.resources)
 		selectionController = ListSelectionController(
-			activity = requireActivity(),
+			appCompatDelegate = checkNotNull(findAppCompatDelegate()),
 			decoration = MangaSelectionDecoration(binding.root.context),
 			registryOwner = this,
 			callback = this,

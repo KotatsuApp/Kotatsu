@@ -101,8 +101,8 @@ class DetailsViewModel @Inject constructor(
 	val history = historyRepository.observeOne(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
-	val favouriteCategories = interactor.observeIsFavourite(mangaId)
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
+	val favouriteCategories = interactor.observeFavourite(mangaId)
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptySet())
 
 	val isStatsAvailable = statsRepository.observeHasStats(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)

@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.details.data.MangaDetails
@@ -33,6 +34,10 @@ class DetailsInteractor @Inject constructor(
 	fun observeIsFavourite(mangaId: Long): Flow<Boolean> {
 		return favouritesRepository.observeCategoriesIds(mangaId)
 			.map { it.isNotEmpty() }
+	}
+
+	fun observeFavourite(mangaId: Long): Flow<Set<FavouriteCategory>> {
+		return favouritesRepository.observeCategories(mangaId)
 	}
 
 	fun observeNewChapters(mangaId: Long): Flow<Int> {

@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
@@ -59,7 +60,7 @@ class ChaptersFragment :
 		super.onViewBindingCreated(binding, savedInstanceState)
 		chaptersAdapter = ChaptersAdapter(this)
 		selectionController = ListSelectionController(
-			activity = requireActivity(),
+			appCompatDelegate = checkNotNull(findAppCompatDelegate()),
 			decoration = ChaptersSelectionDecoration(binding.root.context),
 			registryOwner = this,
 			callback = this,

@@ -642,4 +642,5 @@
 	<string name="show_pages_thumbs_summary">Enable the \"Pages\" tab on the details screen</string>
 	<string name="error_no_data_received">No data was received from server</string>
 	<string name="unsupported_backup_message">Please select a proper Kotatsu backup file</string>
+	<string name="list_ellipsize_pattern" translatable="false">(+%d)</string>
 </resources>

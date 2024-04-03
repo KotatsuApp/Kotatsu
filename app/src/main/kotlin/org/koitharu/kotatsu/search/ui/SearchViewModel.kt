@@ -9,9 +9,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.require
@@ -46,7 +48,7 @@ class SearchViewModel @Inject constructor(
 	private var loadingJob: Job? = null
 
 	override val content = combine(
-		mangaList,
+		mangaList.map { it?.skipNsfwIfNeeded() },
 		listMode,
 		listError,
 		hasNextPage,
@@ -102,14 +104,19 @@ class SearchViewModel @Inject constructor(
 				listError.value = null
 				val list = repository.getList(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
-					filter = MangaListFilter.Search(query)
+					filter = MangaListFilter.Search(query),
 				)
+				val prevList = mangaList.value.orEmpty()
 				if (!append) {
-					mangaList.value = list
+					mangaList.value = list.distinctById()
 				} else if (list.isNotEmpty()) {
-					mangaList.value = mangaList.value?.plus(list) ?: list
+					mangaList.value = (prevList + list).distinctById()
 				}
-				hasNextPage.value = list.isNotEmpty()
+				hasNextPage.value = if (append) {
+					prevList != mangaList.value
+				} else {
+					list.isNotEmpty()
+				}
 			} catch (e: CancellationException) {
 				throw e
 			} catch (e: Throwable) {

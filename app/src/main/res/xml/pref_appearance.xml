@@ -49,6 +49,11 @@
 	<PreferenceCategory android:title="@string/details">
 
 		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="new_details_screen"
+			android:title="Use new details screen (experimental)" />
+
+		<SwitchPreferenceCompat
 			android:defaultValue="true"
 			android:key="pages_tab"
 			android:summary="@string/show_pages_thumbs_summary"

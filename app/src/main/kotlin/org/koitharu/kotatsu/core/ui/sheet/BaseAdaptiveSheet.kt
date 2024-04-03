@@ -1,25 +1,39 @@
 package org.koitharu.kotatsu.core.ui.sheet
 
 import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import androidx.activity.OnBackPressedDispatcher
+import androidx.annotation.CallSuper
+import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.ActionBarContextView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.sidesheet.SideSheetDialog
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import com.google.android.material.R as materialR
 
 abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 
 	private var waitingForDismissAllowingStateLoss = false
 	private var isFitToContentsDisabled = false
+	private var defaultStatusBarColor = Color.TRANSPARENT
 
 	var viewBinding: B? = null
 		private set
@@ -30,6 +44,9 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 
 	protected val behavior: AdaptiveSheetBehavior?
 		get() = AdaptiveSheetBehavior.from(dialog)
+
+	@JvmField
+	val actionModeDelegate = ActionModeDelegate()
 
 	val isExpanded: Boolean
 		get() = behavior?.state == AdaptiveSheetBehavior.STATE_EXPANDED
@@ -60,11 +77,45 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		val context = requireContext()
-		return if (context.resources.getBoolean(R.bool.is_tablet)) {
-			SideSheetDialog(context, theme)
+		val dialog = if (context.resources.getBoolean(R.bool.is_tablet)) {
+			SideSheetDialogImpl(context, theme)
 		} else {
-			BottomSheetDialog(context, theme)
+			BottomSheetDialogImpl(context, theme)
 		}
+		dialog.onBackPressedDispatcher.addCallback(actionModeDelegate)
+		return dialog
+	}
+
+	@CallSuper
+	protected open fun dispatchSupportActionModeStarted(mode: ActionMode) {
+		actionModeDelegate.onSupportActionModeStarted(mode)
+		val ctx = requireContext()
+		val actionModeColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			ColorUtils.compositeColors(
+				ContextCompat.getColor(ctx, com.google.android.material.R.color.m3_appbar_overlay_color),
+				ctx.getThemeColor(R.attr.m3ColorBackground),
+			)
+		} else {
+			ContextCompat.getColor(ctx, R.color.kotatsu_m3_background)
+		}
+		dialog?.window?.let {
+			defaultStatusBarColor = it.statusBarColor
+			it.statusBarColor = actionModeColor
+		}
+		val insets = ViewCompat.getRootWindowInsets(requireView())
+			?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
+		dialog?.window?.decorView?.findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)?.apply {
+			setBackgroundColor(actionModeColor)
+			updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = insets.top
+			}
+		}
+	}
+
+	@CallSuper
+	protected open fun dispatchSupportActionModeFinished(mode: ActionMode) {
+		actionModeDelegate.onSupportActionModeFinished(mode)
+		dialog?.window?.statusBarColor = defaultStatusBarColor
 	}
 
 	fun addSheetCallback(callback: AdaptiveSheetCallback) {
@@ -80,6 +131,11 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 	protected abstract fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): B
 
 	protected open fun onViewBindingCreated(binding: B, savedInstanceState: Bundle?) = Unit
+
+	fun startSupportActionMode(callback: ActionMode.Callback): ActionMode? {
+		val appCompatDialog = dialog as? AppCompatDialog ?: return null
+		return appCompatDialog.delegate.startSupportActionMode(callback)
+	}
 
 	protected fun setExpanded(isExpanded: Boolean, isLocked: Boolean) {
 		val b = behavior ?: return
@@ -170,5 +226,39 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 		}
 
 		override fun onSlide(sheet: View, slideOffset: Float) {}
+	}
+
+	private inner class SideSheetDialogImpl(context: Context, theme: Int) : SideSheetDialog(context, theme) {
+
+		override fun onSupportActionModeStarted(mode: ActionMode?) {
+			super.onSupportActionModeStarted(mode)
+			if (mode != null) {
+				dispatchSupportActionModeStarted(mode)
+			}
+		}
+
+		override fun onSupportActionModeFinished(mode: ActionMode?) {
+			super.onSupportActionModeFinished(mode)
+			if (mode != null) {
+				dispatchSupportActionModeFinished(mode)
+			}
+		}
+	}
+
+	private inner class BottomSheetDialogImpl(context: Context, theme: Int) : BottomSheetDialog(context, theme) {
+
+		override fun onSupportActionModeStarted(mode: ActionMode?) {
+			super.onSupportActionModeStarted(mode)
+			if (mode != null) {
+				dispatchSupportActionModeStarted(mode)
+			}
+		}
+
+		override fun onSupportActionModeFinished(mode: ActionMode?) {
+			super.onSupportActionModeFinished(mode)
+			if (mode != null) {
+				dispatchSupportActionModeFinished(mode)
+			}
+		}
 	}
 }

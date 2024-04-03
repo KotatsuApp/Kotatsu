@@ -66,7 +66,7 @@ class MultiSearchActivity :
 		val sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = true)
 		val selectionDecoration = MangaSelectionDecoration(this)
 		selectionController = ListSelectionController(
-			activity = this,
+			appCompatDelegate = delegate,
 			decoration = selectionDecoration,
 			registryOwner = this,
 			callback = this,

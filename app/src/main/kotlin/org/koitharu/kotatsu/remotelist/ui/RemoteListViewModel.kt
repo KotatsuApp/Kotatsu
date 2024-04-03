@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -72,7 +71,7 @@ open class RemoteListViewModel @Inject constructor(
 		get() = repository.isSearchSupported
 
 	override val content = combine(
-		mangaList.map { it?.distinctById()?.skipNsfwIfNeeded() },
+		mangaList.map { it?.skipNsfwIfNeeded() },
 		listMode,
 		listError,
 		hasNextPage,
@@ -136,17 +135,16 @@ open class RemoteListViewModel @Inject constructor(
 					offset = if (append) mangaList.value?.size ?: 0 else 0,
 					filter = filterState,
 				)
-				val oldList = mangaList.getAndUpdate { oldList ->
-					if (!append || oldList.isNullOrEmpty()) {
-						list
-					} else {
-						oldList + list
-					}
-				}.orEmpty()
+				val prevList = mangaList.value.orEmpty()
+				if (!append) {
+					mangaList.value = list.distinctById()
+				} else if (list.isNotEmpty()) {
+					mangaList.value = (prevList + list).distinctById()
+				}
 				hasNextPage.value = if (append) {
-					list.isNotEmpty()
+					prevList != mangaList.value
 				} else {
-					list.size > oldList.size || hasNextPage.value
+					list.size > prevList.size || hasNextPage.value
 				}
 			} catch (e: CancellationException) {
 				throw e

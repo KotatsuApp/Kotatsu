@@ -44,7 +44,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		val downloadsAdapter = DownloadsAdapter(this, coil, this)
 		val decoration = TypedListSpacingDecoration(this, false)
 		selectionController = ListSelectionController(
-			activity = this,
+			appCompatDelegate = delegate,
 			decoration = DownloadsSelectionDecoration(this),
 			registryOwner = this,
 			callback = this,

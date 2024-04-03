@@ -8,6 +8,7 @@
 	<attr name="listItemTextViewStyle" />
 	<attr name="fastScrollerStyle" />
 	<attr name="tipViewStyle" />
+	<attr name="progressButtonStyle" />
 	<attr name="m3ColorBackground" />
 	<attr name="m3ColorExploreButton" />
 	<attr name="m3ColorCardBackground" />
@@ -145,6 +146,17 @@
 	<declare-styleable name="ReaderInfoBarView">
 		<attr name="android:textSize" />
 		<attr name="android:strokeWidth" />
+	</declare-styleable>
+
+	<declare-styleable name="ProgressButton">
+		<attr name="titleTextAppearance" />
+		<attr name="subtitleTextAppearance" />
+		<attr name="title" />
+		<attr name="subtitle" />
+		<attr name="android:max" />
+		<attr name="android:progress" />
+		<attr name="baseColor" format="color" />
+		<attr name="progressColor" format="color" />
 	</declare-styleable>
 
 </resources>

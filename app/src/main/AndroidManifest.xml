@@ -95,6 +95,34 @@
 			</intent-filter>
 		</activity>
 		<activity
+			android:name="org.koitharu.kotatsu.details.ui.DetailsActivity2"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="${applicationId}.action.VIEW_MANGA" />
+			</intent-filter>
+			<intent-filter android:autoVerify="true">
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:scheme="http" />
+				<data android:scheme="https" />
+				<data android:host="kotatsu.app" />
+				<data android:path="/manga" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:scheme="kotatsu" />
+				<data android:host="manga" />
+				<data android:host="kotatsu.app" />
+			</intent-filter>
+		</activity>
+		<activity
 			android:name="org.koitharu.kotatsu.reader.ui.ReaderActivity"
 			android:exported="true">
 			<intent-filter>

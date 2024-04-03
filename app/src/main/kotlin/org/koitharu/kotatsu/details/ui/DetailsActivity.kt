@@ -29,6 +29,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.preference.PreferenceManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -422,15 +423,25 @@ class DetailsActivity :
 	companion object {
 
 		const val TIP_BUTTON = "btn_read"
+		private const val KEY_NEW_ACTIVITY = "new_details_screen"
 
 		fun newIntent(context: Context, manga: Manga): Intent {
-			return Intent(context, DetailsActivity::class.java)
+			return getActivityIntent(context)
 				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
 		}
 
 		fun newIntent(context: Context, mangaId: Long): Intent {
-			return Intent(context, DetailsActivity::class.java)
+			return getActivityIntent(context)
 				.putExtra(MangaIntent.KEY_ID, mangaId)
+		}
+
+		private fun getActivityIntent(context: Context): Intent {
+			val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+			val useNewActivity = prefs.getBoolean(KEY_NEW_ACTIVITY, false)
+			return Intent(
+				context,
+				if (useNewActivity) DetailsActivity2::class.java else DetailsActivity::class.java,
+			)
 		}
 	}
 }
