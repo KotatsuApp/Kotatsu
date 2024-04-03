@@ -12,13 +12,23 @@
 		android:layout_height="wrap_content"
 		app:title="@string/chapters" />
 
-	<com.google.android.material.tabs.TabLayout
-		android:id="@+id/tabs"
-		style="@style/Widget.Material3.TabLayout.Secondary"
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/toolbar"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@null"
-		app:tabUnboundedRipple="false" />
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.tabs.TabLayout
+			android:id="@+id/tabs"
+			style="@style/Widget.Material3.TabLayout.Secondary"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="start"
+			android:background="@null"
+			app:tabGravity="start"
+			app:tabMode="scrollable"
+			app:tabUnboundedRipple="false" />
+
+	</com.google.android.material.appbar.MaterialToolbar>
 
 	<androidx.viewpager2.widget.ViewPager2
 		android:id="@+id/pager"

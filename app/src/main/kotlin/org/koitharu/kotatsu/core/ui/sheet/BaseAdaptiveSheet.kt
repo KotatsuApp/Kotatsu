@@ -54,6 +54,10 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 	val onBackPressedDispatcher: OnBackPressedDispatcher
 		get() = requireComponentDialog().onBackPressedDispatcher
 
+	var isLocked = false
+		private set
+	private var lockCounter = 0
+
 	final override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -138,6 +142,10 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 	}
 
 	protected fun setExpanded(isExpanded: Boolean, isLocked: Boolean) {
+		this.isLocked = isLocked
+		if (!isLocked) {
+			lockCounter = 0
+		}
 		val b = behavior ?: return
 		if (isExpanded) {
 			b.state = BottomSheetBehavior.STATE_EXPANDED
@@ -162,6 +170,20 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 		b.isFitToContents = false
 		dialog?.findViewById<View>(materialR.id.design_bottom_sheet)?.updateLayoutParams {
 			height = LayoutParams.MATCH_PARENT
+		}
+	}
+
+	@CallSuper
+	open fun expandAndLock() {
+		lockCounter++
+		setExpanded(isExpanded = true, isLocked = true)
+	}
+
+	@CallSuper
+	open fun unlock() {
+		lockCounter--
+		if (lockCounter <= 0) {
+			setExpanded(isExpanded, false)
 		}
 	}
 

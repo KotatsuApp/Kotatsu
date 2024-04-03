@@ -6,6 +6,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.details.ui.pager.bookmarks.MangaBookmarksFragment
 import org.koitharu.kotatsu.details.ui.pager.chapters.ChaptersFragment
 import org.koitharu.kotatsu.details.ui.pager.pages.PagesFragment
 
@@ -17,11 +18,12 @@ class DetailsPagerAdapter2(
 
 	val isPagesTabEnabled = settings.isPagesTabEnabled
 
-	override fun getItemCount(): Int = if (isPagesTabEnabled) 2 else 1
+	override fun getItemCount(): Int = if (isPagesTabEnabled) 3 else 2
 
 	override fun createFragment(position: Int): Fragment = when (position) {
 		0 -> ChaptersFragment()
-		1 -> PagesFragment()
+		1 -> if (isPagesTabEnabled) PagesFragment() else MangaBookmarksFragment()
+		2 -> MangaBookmarksFragment()
 		else -> throw IllegalArgumentException("Invalid position $position")
 	}
 
@@ -29,7 +31,8 @@ class DetailsPagerAdapter2(
 		tab.setText(
 			when (position) {
 				0 -> R.string.chapters
-				1 -> R.string.pages
+				1 -> if (isPagesTabEnabled) R.string.pages else R.string.bookmarks
+				2 -> R.string.bookmarks
 				else -> 0
 			},
 		)

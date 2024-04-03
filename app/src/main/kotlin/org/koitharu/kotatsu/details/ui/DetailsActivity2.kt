@@ -37,8 +37,6 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
-import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
-import org.koitharu.kotatsu.bookmarks.ui.sheet.BookmarksSheet
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.iconResId
@@ -96,7 +94,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ellipsize
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
@@ -147,7 +144,6 @@ class DetailsActivity2 :
 		viewBinding.infoLayout.chipAuthor.setOnClickListener(this)
 		viewBinding.imageViewCover.setOnClickListener(this)
 		viewBinding.buttonDescriptionMore.setOnClickListener(this)
-		viewBinding.buttonBookmarksMore.setOnClickListener(this)
 		viewBinding.buttonScrobblingMore.setOnClickListener(this)
 		viewBinding.buttonRelatedMore.setOnClickListener(this)
 		viewBinding.infoLayout.chipSource.setOnClickListener(this)
@@ -175,7 +171,6 @@ class DetailsActivity2 :
 		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.scrollView, null))
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
 		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
-		viewModel.bookmarks.observe(this, ::onBookmarksChanged)
 		viewModel.scrobblingInfo.observe(this, ::onScrobblingInfoChanged)
 		viewModel.localSize.observe(this, ::onLocalSizeChanged)
 		viewModel.relatedManga.observe(this, ::onRelatedMangaChanged)
@@ -271,11 +266,6 @@ class DetailsActivity2 :
 			R.id.button_scrobbling_more -> {
 				val manga = viewModel.manga.value ?: return
 				ScrobblingSelectorSheet.show(supportFragmentManager, manga, null)
-			}
-
-			R.id.button_bookmarks_more -> {
-				val manga = viewModel.manga.value ?: return
-				BookmarksSheet.show(supportFragmentManager, manga)
 			}
 
 			R.id.button_related_more -> {
@@ -452,20 +442,6 @@ class DetailsActivity2 :
 			)
 		} else {
 			button.setImageResource(R.drawable.ic_list_sheet)
-		}
-	}
-
-	private fun onBookmarksChanged(bookmarks: List<Bookmark>) {
-		var adapter = viewBinding.recyclerViewBookmarks.adapter as? BookmarksAdapter
-		viewBinding.groupBookmarks.isGone = bookmarks.isEmpty()
-		if (adapter != null) {
-			adapter.items = bookmarks
-		} else {
-			adapter = BookmarksAdapter(coil, this, this)
-			adapter.items = bookmarks
-			viewBinding.recyclerViewBookmarks.adapter = adapter
-			val spacing = resources.getDimensionPixelOffset(R.dimen.bookmark_list_spacing)
-			viewBinding.recyclerViewBookmarks.addItemDecoration(SpacingItemDecoration(spacing))
 		}
 	}
 

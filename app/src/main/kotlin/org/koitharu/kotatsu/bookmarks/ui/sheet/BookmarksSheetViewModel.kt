@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import javax.inject.Inject
 
+@Deprecated("")
 @HiltViewModel
 class BookmarksSheetViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
