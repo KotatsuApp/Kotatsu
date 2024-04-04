@@ -101,25 +101,37 @@
 				app:layout_constraintTop_toBottomOf="@id/textView_title"
 				tools:text="@tools:sample/lorem[12]" />
 
+			<ImageView
+				android:id="@+id/imageView_state"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:layout_marginStart="16dp"
+				android:layout_marginVertical="0.5dp"
+				app:layout_constraintBottom_toBottomOf="@id/textView_state"
+				app:layout_constraintDimensionRatio="1"
+				app:layout_constraintStart_toEndOf="@id/imageView_cover"
+				app:layout_constraintTop_toTopOf="@id/textView_state"
+				tools:src="@drawable/ic_state_ongoing" />
+
 			<TextView
 				android:id="@+id/textView_state"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginStart="16dp"
+				android:layout_marginStart="4dp"
 				android:layout_marginTop="4dp"
 				android:layout_marginEnd="16dp"
 				android:drawablePadding="4dp"
 				android:gravity="center_vertical"
+				android:labelFor="@id/imageView_state"
 				android:singleLine="true"
 				android:textColor="?colorTertiary"
 				android:textStyle="bold"
 				app:drawableTint="?colorTertiary"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="0"
-				app:layout_constraintStart_toEndOf="@id/imageView_cover"
+				app:layout_constraintStart_toEndOf="@id/imageView_state"
 				app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
 				app:layout_constraintWidth_default="wrap"
-				tools:drawableStart="@drawable/ic_state_ongoing"
 				tools:text="@string/state_ongoing" />
 
 			<RatingBar

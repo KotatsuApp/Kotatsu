@@ -22,7 +22,9 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
+import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
@@ -38,6 +40,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
+import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import kotlin.math.roundToInt
 
@@ -122,12 +125,17 @@ class ChaptersFragment :
 		if (selectionController?.onItemClick(item.chapter.id) == true) {
 			return
 		}
-		startActivity(
-			IntentBuilder(view.context)
-				.manga(viewModel.manga.value ?: return)
-				.state(ReaderState(item.chapter.id, 0, 0))
-				.build(),
-		)
+		val listener = findParentCallback(ReaderNavigationCallback::class.java)
+		if (listener != null && listener.onChapterSelected(item.chapter)) {
+			dismissParentDialog()
+		} else {
+			startActivity(
+				IntentBuilder(view.context)
+					.manga(viewModel.manga.value ?: return)
+					.state(ReaderState(item.chapter.id, 0, 0))
+					.build(),
+			)
+		}
 	}
 
 	override fun onItemLongClick(item: ChapterListItem, view: View): Boolean {

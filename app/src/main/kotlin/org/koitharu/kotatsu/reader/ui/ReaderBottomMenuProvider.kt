@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
 import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
 import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -42,13 +43,7 @@ class ReaderBottomMenuProvider(
 			}
 
 			R.id.action_pages_thumbs -> {
-				val state = viewModel.getCurrentState() ?: return false
-				PagesThumbnailsSheet.show(
-					activity.supportFragmentManager,
-					viewModel.manga?.toManga() ?: return false,
-					state.chapterId,
-					state.page,
-				)
+				ChaptersPagesSheet.show(activity.supportFragmentManager, true, ChaptersPagesSheet.TAB_PAGES)
 				true
 			}
 

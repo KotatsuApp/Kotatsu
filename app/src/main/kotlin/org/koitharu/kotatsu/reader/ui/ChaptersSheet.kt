@@ -30,6 +30,7 @@ import java.time.Instant
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+@Deprecated("Use ChaptersPagesSheet instead")
 @AndroidEntryPoint
 class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 	OnListItemClickListener<ChapterListItem> {
@@ -105,13 +106,13 @@ class ChaptersSheet : BaseAdaptiveSheet<SheetChaptersBinding>(),
 		((parentFragment as? OnChapterChangeListener)
 			?: (activity as? OnChapterChangeListener))?.let {
 			dismiss()
-			it.onChapterChanged(item.chapter)
+			it.onChapterSelected(item.chapter)
 		}
 	}
 
 	fun interface OnChapterChangeListener {
 
-		fun onChapterChanged(chapter: MangaChapter)
+		fun onChapterSelected(chapter: MangaChapter): Boolean
 	}
 
 	companion object {

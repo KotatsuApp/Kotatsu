@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,6 +16,8 @@ import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
 import org.koitharu.kotatsu.core.util.ext.menuView
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
+import org.koitharu.kotatsu.core.util.ext.showDistinct
+import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetChaptersPagesBinding
 import org.koitharu.kotatsu.details.ui.ChaptersMenuProvider2
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
@@ -34,13 +37,16 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 
 	override fun onViewBindingCreated(binding: SheetChaptersPagesBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		val adapter = DetailsPagerAdapter2(this, settings)
+		disableFitToContents()
+
+		val args = arguments ?: Bundle.EMPTY
+		val adapter = DetailsPagerAdapter2(this, args.getBoolean(ARG_SHOW_PAGES, settings.isPagesTabEnabled))
 		binding.pager.recyclerView?.isNestedScrollingEnabled = false
 		binding.pager.offscreenPageLimit = adapter.itemCount
 		binding.pager.adapter = adapter
 		binding.pager.doOnPageChanged(::onPageChanged)
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
-		binding.pager.setCurrentItem(settings.defaultDetailsTab, false)
+		binding.pager.setCurrentItem(args.getInt(ARG_TAB, settings.defaultDetailsTab), false)
 		binding.tabs.isVisible = adapter.itemCount > 1
 
 		val menuProvider = ChaptersMenuProvider2(viewModel, this)
@@ -79,5 +85,32 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 
 	private fun onPageChanged(position: Int) {
 		viewBinding?.toolbar?.menuView?.isVisible = position == 0
+	}
+
+	companion object {
+
+		const val TAB_CHAPTERS = 0
+		const val TAB_PAGES = 1
+		const val TAB_BOOKMARKS = 2
+		private const val ARG_TAB = "tag"
+		private const val ARG_SHOW_PAGES = "pages"
+		private const val TAG = "ChaptersPagesSheet"
+
+		fun show(fm: FragmentManager) {
+			ChaptersPagesSheet().showDistinct(fm, TAG)
+		}
+
+		fun show(fm: FragmentManager, showPagesTab: Boolean) {
+			ChaptersPagesSheet().withArgs(1) {
+				putBoolean(ARG_SHOW_PAGES, showPagesTab)
+			}.showDistinct(fm, TAG)
+		}
+
+		fun show(fm: FragmentManager, showPagesTab: Boolean, defaultTab: Int) {
+			ChaptersPagesSheet().withArgs(2) {
+				putBoolean(ARG_SHOW_PAGES, showPagesTab)
+				putInt(ARG_TAB, defaultTab)
+			}.showDistinct(fm, TAG)
+		}
 	}
 }

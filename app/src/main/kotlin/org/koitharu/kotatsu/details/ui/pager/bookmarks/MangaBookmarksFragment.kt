@@ -15,6 +15,8 @@ import org.koitharu.kotatsu.bookmarks.ui.sheet.BookmarksAdapter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
+import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentMangaBookmarksBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
@@ -22,6 +24,8 @@ import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
+import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
+import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import javax.inject.Inject
@@ -96,9 +100,9 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun onItemClick(item: Bookmark, view: View) {
-		val listener = (parentFragment as? OnPageSelectListener) ?: (activity as? OnPageSelectListener)
-		if (listener != null) {
-			listener.onPageSelected(ReaderPage(item.toMangaPage(), item.page, item.chapterId))
+		val listener = findParentCallback(ReaderNavigationCallback::class.java)
+		if (listener != null && listener.onBookmarkSelected(item)) {
+			dismissParentDialog()
 		} else {
 			val intent = IntentBuilder(view.context)
 				.manga(activityViewModel.manga.value ?: return)

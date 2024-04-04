@@ -23,6 +23,8 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.BoundsScrollListener
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
+import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.showOrHide
@@ -33,7 +35,9 @@ import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
+import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import org.koitharu.kotatsu.reader.ui.ReaderState
+import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import javax.inject.Inject
@@ -130,10 +134,17 @@ class PagesFragment :
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun onItemClick(item: PageThumbnail, view: View) {
-		val manga = detailsViewModel.manga.value ?: return
-		val state = ReaderState(item.page.chapterId, item.page.index, 0)
-		val intent = IntentBuilder(view.context).manga(manga).state(state).build()
-		startActivity(intent)
+		val listener = findParentCallback(ReaderNavigationCallback::class.java)
+		if (listener != null && listener.onPageSelected(item.page)) {
+			dismissParentDialog()
+		} else {
+			startActivity(
+				IntentBuilder(view.context)
+					.manga(detailsViewModel.manga.value ?: return)
+					.state(ReaderState(item.page.chapterId, item.page.index, 0))
+					.build(),
+			)
+		}
 	}
 
 	private suspend fun onThumbnailsChanged(list: List<ListModel>) {

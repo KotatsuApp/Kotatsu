@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
 
 class ReaderTopMenuProvider(
 	private val activity: FragmentActivity,
@@ -25,7 +26,7 @@ class ReaderTopMenuProvider(
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		return when (menuItem.itemId) {
 			R.id.action_chapters -> {
-				ChaptersSheet.show(activity.supportFragmentManager)
+				ChaptersPagesSheet.show(activity.supportFragmentManager, true, ChaptersPagesSheet.TAB_CHAPTERS)
 				true
 			}
 

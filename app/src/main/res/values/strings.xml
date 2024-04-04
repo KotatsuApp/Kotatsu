@@ -643,4 +643,10 @@
 	<string name="error_no_data_received">No data was received from server</string>
 	<string name="unsupported_backup_message">Please select a proper Kotatsu backup file</string>
 	<string name="list_ellipsize_pattern" translatable="false">(+%d)</string>
+	<!-- Short hours format pattern -->
+	<string name="hours_short">%d h</string>
+	<!-- Short minutes format pattern -->
+	<string name="minutes_short">%d m</string>
+	<!-- Short hours and minutes format pattern -->
+	<string name="hours_minutes_short">%1$d h %2$d m</string>
 </resources>

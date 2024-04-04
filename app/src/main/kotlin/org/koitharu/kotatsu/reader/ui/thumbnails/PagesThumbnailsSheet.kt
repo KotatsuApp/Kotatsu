@@ -38,6 +38,7 @@ import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+@Deprecated("Use ChaptersPagesSheet instead")
 @AndroidEntryPoint
 class PagesThumbnailsSheet :
 	BaseAdaptiveSheet<SheetPagesBinding>(),

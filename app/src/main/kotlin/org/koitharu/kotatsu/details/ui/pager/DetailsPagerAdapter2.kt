@@ -12,11 +12,9 @@ import org.koitharu.kotatsu.details.ui.pager.pages.PagesFragment
 
 class DetailsPagerAdapter2(
 	fragment: Fragment,
-	settings: AppSettings,
+	val isPagesTabEnabled: Boolean,
 ) : FragmentStateAdapter(fragment),
 	TabLayoutMediator.TabConfigurationStrategy {
-
-	val isPagesTabEnabled = settings.isPagesTabEnabled
 
 	override fun getItemCount(): Int = if (isPagesTabEnabled) 3 else 2
 

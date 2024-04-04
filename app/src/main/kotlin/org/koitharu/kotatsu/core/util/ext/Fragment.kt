@@ -60,3 +60,25 @@ fun DialogFragment.showDistinct(fm: FragmentManager, tag: String) {
 	}
 	show(fm, tag)
 }
+
+tailrec fun Fragment.dismissParentDialog(): Boolean {
+	return when (val parent = parentFragment) {
+		null -> return false
+		is DialogFragment -> {
+			parent.dismiss()
+			true
+		}
+
+		else -> parent.dismissParentDialog()
+	}
+}
+
+@Suppress("UNCHECKED_CAST")
+tailrec fun <T> Fragment.findParentCallback(cls: Class<T>): T? {
+	val parent = parentFragment
+	return when {
+		parent == null -> cls.castOrNull(activity)
+		cls.isInstance(parent) -> parent as T
+		else -> parent.findParentCallback(cls)
+	}
+}

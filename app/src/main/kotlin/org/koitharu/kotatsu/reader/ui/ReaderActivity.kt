@@ -74,6 +74,7 @@ class ReaderActivity :
 	ReaderConfigSheet.Callback,
 	ReaderControlDelegate.OnInteractionListener,
 	OnApplyWindowInsetsListener,
+	ReaderNavigationCallback,
 	IdlingDetector.Callback,
 	ActivityResultCallback<Uri?>,
 	ZoomControl.ZoomControlListener {
@@ -257,11 +258,12 @@ class ReaderActivity :
 		return controlDelegate.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event)
 	}
 
-	override fun onChapterChanged(chapter: MangaChapter) {
+	override fun onChapterSelected(chapter: MangaChapter): Boolean {
 		viewModel.switchChapter(chapter.id, 0)
+		return true
 	}
 
-	override fun onPageSelected(page: ReaderPage) {
+	override fun onPageSelected(page: ReaderPage): Boolean {
 		lifecycleScope.launch(Dispatchers.Default) {
 			val pages = viewModel.content.value.pages
 			val index = pages.indexOfFirst { it.chapterId == page.chapterId && it.id == page.id }
@@ -273,6 +275,7 @@ class ReaderActivity :
 				viewModel.switchChapter(page.chapterId, page.index)
 			}
 		}
+		return true
 	}
 
 	override fun onReaderModeChanged(mode: ReaderMode) {

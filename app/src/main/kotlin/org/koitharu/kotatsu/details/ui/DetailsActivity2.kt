@@ -100,6 +100,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.SearchActivity
+import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -142,6 +143,7 @@ class DetailsActivity2 :
 		viewBinding.infoLayout.chipSource.setOnClickListener(this)
 		viewBinding.infoLayout.chipFavorite.setOnClickListener(this)
 		viewBinding.infoLayout.chipAuthor.setOnClickListener(this)
+		viewBinding.infoLayout.chipTime.setOnClickListener(this)
 		viewBinding.imageViewCover.setOnClickListener(this)
 		viewBinding.buttonDescriptionMore.setOnClickListener(this)
 		viewBinding.buttonScrobblingMore.setOnClickListener(this)
@@ -175,7 +177,7 @@ class DetailsActivity2 :
 		viewModel.localSize.observe(this, ::onLocalSizeChanged)
 		viewModel.relatedManga.observe(this, ::onRelatedMangaChanged)
 		// viewModel.chapters.observe(this, ::onChaptersChanged)
-		// viewModel.readingTime.observe(this, ::onReadingTimeChanged)
+		viewModel.readingTime.observe(this, ::onReadingTimeChanged)
 		viewModel.selectedBranch.observe(this) {
 			viewBinding.infoLayout.chipBranch.text = it.ifNullOrEmpty { getString(R.string.system_default) }
 		}
@@ -207,7 +209,7 @@ class DetailsActivity2 :
 			R.id.button_read -> openReader(isIncognitoMode = false)
 			R.id.chip_branch -> showBranchPopupMenu(v)
 			R.id.button_chapters -> {
-				ChaptersPagesSheet().showDistinct(supportFragmentManager, "ChaptersPagesSheet")
+				ChaptersPagesSheet.show(supportFragmentManager)
 			}
 
 			R.id.chip_author -> {
@@ -239,6 +241,15 @@ class DetailsActivity2 :
 			R.id.chip_favorite -> {
 				val manga = viewModel.manga.value ?: return
 				FavoriteSheet.show(supportFragmentManager, manga)
+			}
+
+			R.id.chip_time -> {
+				if (viewModel.isStatsAvailable.value) {
+					val manga = viewModel.manga.value ?: return
+					MangaStatsSheet.show(supportFragmentManager, manga)
+				} else {
+					// TODO
+				}
 			}
 
 			R.id.imageView_cover -> {
@@ -386,7 +397,8 @@ class DetailsActivity2 :
 	}
 
 	private fun onReadingTimeChanged(time: ReadingTime?) {
-		// TODO
+		val chip = viewBinding.infoLayout.chipTime
+		chip.textAndVisible = time?.formatShort(chip.resources)
 	}
 
 	private fun onDescriptionChanged(description: CharSequence?) {
