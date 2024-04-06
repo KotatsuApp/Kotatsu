@@ -50,6 +50,9 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites WHERE deleted_at = 0 ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
 	abstract suspend fun findAllRaw(offset: Int, limit: Int): List<FavouriteManga>
 
+	@Query("SELECT DISTINCT manga_id FROM favourites WHERE deleted_at = 0 AND category_id IN (SELECT category_id FROM favourite_categories WHERE track = 1)")
+	abstract suspend fun findIdsWithTrack(): LongArray
+
 	@Transaction
 	@Query(
 		"SELECT * FROM favourites WHERE category_id = :categoryId AND deleted_at = 0 " +
@@ -134,6 +137,9 @@ abstract class FavouritesDao {
 
 	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id IN (:mangaIds) AND deleted_at = 0 ORDER BY favourites.created_at ASC")
 	abstract suspend fun findCategoriesIds(mangaIds: Collection<Long>): List<Long>
+
+	@Query("SELECT DISTINCT favourite_categories.category_id FROM favourites LEFT JOIN favourite_categories ON favourites.category_id = favourite_categories.category_id WHERE manga_id = :mangaId AND favourites.deleted_at = 0 AND favourite_categories.deleted_at = 0 AND favourite_categories.track = 1")
+	abstract suspend fun findCategoriesIdsWithTrack(mangaId: Long): List<Long>
 
 	/** INSERT **/
 

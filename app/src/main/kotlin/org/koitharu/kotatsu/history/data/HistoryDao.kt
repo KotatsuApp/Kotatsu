@@ -58,6 +58,9 @@ abstract class HistoryDao {
 	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM history WHERE deleted_at = 0)")
 	abstract suspend fun findAllManga(): List<MangaEntity>
 
+	@Query("SELECT manga_id FROM history WHERE deleted_at = 0")
+	abstract suspend fun findAllIds(): LongArray
+
 	@Query(
 		"""SELECT tags.* FROM tags
 		LEFT JOIN manga_tags ON tags.tag_id = manga_tags.tag_id

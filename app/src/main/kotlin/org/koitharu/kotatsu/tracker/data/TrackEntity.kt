@@ -33,5 +33,14 @@ class TrackEntity(
 		const val RESULT_HAS_UPDATE = 1
 		const val RESULT_NO_UPDATE = 2
 		const val RESULT_FAILED = 3
+
+		fun create(mangaId: Long) = TrackEntity(
+			mangaId = mangaId,
+			lastChapterId = 0L,
+			newChapters = 0,
+			lastCheckTime = 0L,
+			lastChapterDate = 0,
+			lastResult = RESULT_NONE,
+		)
 	}
 }
