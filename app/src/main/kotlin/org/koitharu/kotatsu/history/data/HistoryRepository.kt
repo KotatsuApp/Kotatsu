@@ -45,6 +45,10 @@ class HistoryRepository @Inject constructor(
 		return entities.map { it.manga.toManga(it.tags.toMangaTags()) }
 	}
 
+	suspend fun getCount(): Int {
+		return db.getHistoryDao().getCount()
+	}
+
 	suspend fun getLastOrNull(): Manga? {
 		val entity = db.getHistoryDao().findAll(0, 1).firstOrNull() ?: return null
 		return entity.manga.toManga(entity.tags.toMangaTags())

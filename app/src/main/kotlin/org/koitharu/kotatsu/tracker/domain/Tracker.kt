@@ -56,20 +56,21 @@ class Tracker @Inject constructor(
 		}
 		// History
 		if (AppSettings.TRACK_HISTORY in sources) {
-			val history = repository.getAllHistoryManga()
-			val historyTracks = repository.getTracks(history)
-			val channelId = if (channels.isHistoryNotificationsEnabled()) {
-				channels.getHistoryChannelId()
-			} else {
-				null
-			}
-			for (track in historyTracks) {
-				if (knownManga.add(track.manga.id)) {
-					result.add(TrackingItem(track, channelId))
+			for (i in 0 until historyRepository.getCount() step 20) {
+				val history = historyRepository.getList(i, 20)
+				val historyTracks = repository.getTracks(history)
+				val channelId = if (channels.isHistoryNotificationsEnabled()) {
+					channels.getHistoryChannelId()
+				} else {
+					null
+				}
+				for (track in historyTracks) {
+					if (knownManga.add(track.manga.id)) {
+						result.add(TrackingItem(track, channelId))
+					}
 				}
 			}
 		}
-		result.trimToSize()
 		return result
 	}
 

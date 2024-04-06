@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.util.ext.ifZero
 import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
@@ -32,7 +33,11 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 private const val NO_ID = 0L
+
+@Deprecated("Use buckets")
 private const val MAX_QUERY_IDS = 100
+private const val MAX_BUCKET_SIZE = 20
+private const val MAX_LOG_SIZE = 120
 
 @Reusable
 class TrackingRepository @Inject constructor(
@@ -65,6 +70,7 @@ class TrackingRepository @Inject constructor(
 			.onStart { gcIfNotCalled() }
 	}
 
+	@Deprecated("")
 	suspend fun getTracks(mangaList: Collection<Manga>): List<MangaTracking> {
 		val ids = mangaList.mapToSet { it.id }
 		val dao = db.getTracksDao()
@@ -90,7 +96,7 @@ class TrackingRepository @Inject constructor(
 			result += MangaTracking(
 				manga = manga,
 				lastChapterId = track?.lastChapterId ?: NO_ID,
-				lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(Instant::ofEpochMilli),
+				lastCheck = track?.lastCheckTime?.takeUnless { it == 0L }?.let(Instant::ofEpochMilli),
 			)
 		}
 		return result
@@ -102,7 +108,7 @@ class TrackingRepository @Inject constructor(
 		return MangaTracking(
 			manga = manga,
 			lastChapterId = track?.lastChapterId ?: NO_ID,
-			lastCheck = track?.lastCheck?.takeUnless { it == 0L }?.let(Instant::ofEpochMilli),
+			lastCheck = track?.lastCheckTime?.takeUnless { it == 0L }?.let(Instant::ofEpochMilli),
 		)
 	}
 
@@ -131,9 +137,12 @@ class TrackingRepository @Inject constructor(
 
 	suspend fun clearCounters() = db.getTracksDao().clearCounters()
 
-	suspend fun gc() {
+	suspend fun gc() = db.withTransaction {
 		db.getTracksDao().gc()
-		db.getTrackLogsDao().gc()
+		db.getTrackLogsDao().run {
+			gc()
+			trim(MAX_LOG_SIZE)
+		}
 	}
 
 	suspend fun saveUpdates(updates: MangaUpdates.Success) {
@@ -172,7 +181,6 @@ class TrackingRepository @Inject constructor(
 		val lastChapterId = chapters.lastOrNull()?.id ?: NO_ID
 		val entity = TrackEntity(
 			mangaId = manga.id,
-			totalChapters = chapters.size,
 			lastChapterId = lastChapterId,
 			newChapters = when {
 				track.newChapters == 0 -> 0
@@ -180,8 +188,9 @@ class TrackingRepository @Inject constructor(
 				chapterIndex >= lastNewChapterIndex -> chapters.lastIndex - chapterIndex
 				else -> track.newChapters
 			},
-			lastCheck = System.currentTimeMillis(),
-			lastNotifiedChapterId = lastChapterId,
+			lastCheckTime = System.currentTimeMillis(),
+			lastChapterDate = maxOf(track.lastChapterDate, chapters.lastOrNull()?.uploadDate ?: 0L),
+			lastResult = track.lastResult,
 		)
 		db.getTracksDao().upsert(entity)
 	}
@@ -202,18 +211,14 @@ class TrackingRepository @Inject constructor(
 		}
 	}
 
-	suspend fun getAllHistoryManga(): List<Manga> {
-		return db.getHistoryDao().findAllManga().toMangaList()
-	}
-
 	private suspend fun getOrCreateTrack(mangaId: Long): TrackEntity {
 		return db.getTracksDao().find(mangaId) ?: TrackEntity(
 			mangaId = mangaId,
-			totalChapters = 0,
 			lastChapterId = 0L,
 			newChapters = 0,
-			lastCheck = 0L,
-			lastNotifiedChapterId = 0L,
+			lastCheckTime = 0L,
+			lastChapterDate = 0,
+			lastResult = TrackEntity.RESULT_NONE,
 		)
 	}
 
@@ -236,11 +241,11 @@ class TrackingRepository @Inject constructor(
 		val chapters = updates.manga.chapters.orEmpty()
 		return TrackEntity(
 			mangaId = mangaId,
-			totalChapters = chapters.size,
 			lastChapterId = chapters.lastOrNull()?.id ?: NO_ID,
 			newChapters = if (updates.isValid) newChapters + updates.newChapters.size else 0,
-			lastCheck = System.currentTimeMillis(),
-			lastNotifiedChapterId = NO_ID,
+			lastCheckTime = System.currentTimeMillis(),
+			lastChapterDate = updates.lastChapterDate().ifZero { lastChapterDate },
+			lastResult = if (updates.isNotEmpty()) TrackEntity.RESULT_HAS_UPDATE else TrackEntity.RESULT_NO_UPDATE,
 		)
 	}
 

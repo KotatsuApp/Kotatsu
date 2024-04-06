@@ -20,11 +20,18 @@ import org.koitharu.kotatsu.core.db.entity.MangaEntity
 class TrackEntity(
 	@PrimaryKey(autoGenerate = false)
 	@ColumnInfo(name = "manga_id") val mangaId: Long,
-	@get:Deprecated(message = "Should not be used", level = DeprecationLevel.WARNING)
-	@ColumnInfo(name = "chapters_total") val totalChapters: Int,
 	@ColumnInfo(name = "last_chapter_id") val lastChapterId: Long,
 	@ColumnInfo(name = "chapters_new") val newChapters: Int,
-	@ColumnInfo(name = "last_check") val lastCheck: Long,
-	@get:Deprecated(message = "Should not be used", level = DeprecationLevel.WARNING)
-	@ColumnInfo(name = "last_notified_id") val lastNotifiedChapterId: Long
-)
+	@ColumnInfo(name = "last_check_time") val lastCheckTime: Long,
+	@ColumnInfo(name = "last_chapter_date") val lastChapterDate: Long,
+	@ColumnInfo(name = "last_result") val lastResult: Int,
+) {
+
+	companion object {
+
+		const val RESULT_NONE = 0
+		const val RESULT_HAS_UPDATE = 1
+		const val RESULT_NO_UPDATE = 2
+		const val RESULT_FAILED = 3
+	}
+}

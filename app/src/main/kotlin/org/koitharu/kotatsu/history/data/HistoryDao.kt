@@ -78,6 +78,9 @@ abstract class HistoryDao {
 	@Query("SELECT COUNT(*) FROM history WHERE deleted_at = 0")
 	abstract fun observeCount(): Flow<Int>
 
+	@Query("SELECT COUNT(*) FROM history WHERE deleted_at = 0")
+	abstract suspend fun getCount(): Int
+
 	@Query("SELECT percent FROM history WHERE manga_id = :id AND deleted_at = 0")
 	abstract suspend fun findProgress(id: Long): Float?
 
