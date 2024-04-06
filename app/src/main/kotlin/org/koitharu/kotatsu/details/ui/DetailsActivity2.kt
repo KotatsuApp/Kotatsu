@@ -16,7 +16,6 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
@@ -57,7 +56,6 @@ import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.crossfade
-import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
@@ -67,7 +65,6 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
-import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsNewBinding
@@ -486,14 +483,14 @@ class DetailsActivity2 :
 				ratingBar.isVisible = false
 			}
 
-			textViewState.apply {
-				manga.state?.let { state ->
-					textAndVisible = resources.getString(state.titleResId)
-					drawableStart = ContextCompat.getDrawable(context, state.iconResId)
-				} ?: run {
-					isVisible = false
-				}
+			manga.state?.let { state ->
+				textViewState.textAndVisible = resources.getString(state.titleResId)
+				imageViewState.setImageResource(state.iconResId)
+			} ?: run {
+				textViewState.isVisible = false
+				imageViewState.isVisible = false
 			}
+
 			if (manga.source == MangaSource.LOCAL || manga.source == MangaSource.DUMMY) {
 				infoLayout.chipSource.isVisible = false
 			} else {

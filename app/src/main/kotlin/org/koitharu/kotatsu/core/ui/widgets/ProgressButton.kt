@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.children
 import androidx.core.widget.TextViewCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
@@ -98,6 +99,11 @@ class ProgressButton @JvmOverloads constructor(
 		if (childCount != 0) {
 			applyGravity()
 		}
+	}
+
+	override fun setEnabled(enabled: Boolean) {
+		super.setEnabled(enabled)
+		children.forEach { it.isEnabled = enabled }
 	}
 
 	override fun onAnimationUpdate(animation: ValueAnimator) {

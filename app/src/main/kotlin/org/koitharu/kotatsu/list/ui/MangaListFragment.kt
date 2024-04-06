@@ -31,6 +31,7 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
@@ -230,6 +231,10 @@ abstract class MangaListFragment :
 	override fun onEmptyActionClick() = Unit
 
 	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
+
+	override fun onPrimaryButtonClick(tipView: TipView) = Unit
+
+	override fun onSecondaryButtonClick(tipView: TipView) = Unit
 
 	override fun onRetryClick(error: Throwable) {
 		resolveException(error)

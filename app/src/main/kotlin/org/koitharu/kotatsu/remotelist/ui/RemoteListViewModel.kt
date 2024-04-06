@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.filter.ui.MangaFilter
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
@@ -89,6 +90,7 @@ open class RemoteListViewModel @Inject constructor(
 					}
 				}
 			}
+			onBuildList(this)
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
@@ -165,6 +167,8 @@ open class RemoteListViewModel @Inject constructor(
 		textSecondary = 0,
 		actionStringRes = if (canResetFilter) R.string.reset_filter else 0,
 	)
+
+	protected open suspend fun onBuildList(list: MutableList<ListModel>) = Unit
 
 	fun openRandom() {
 		if (randomJob?.isActive == true) {

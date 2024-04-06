@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -139,6 +140,10 @@ class MultiSearchActivity :
 	override fun onEmptyActionClick() = Unit
 
 	override fun onListHeaderClick(item: ListHeader, view: View) = Unit
+
+	override fun onPrimaryButtonClick(tipView: TipView) = Unit
+
+	override fun onSecondaryButtonClick(tipView: TipView) = Unit
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
 		viewBinding.recyclerView.invalidateNestedItemDecorations()

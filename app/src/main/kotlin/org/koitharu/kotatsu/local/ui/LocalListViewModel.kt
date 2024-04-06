@@ -10,12 +10,18 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.toFileOrNull
+import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
+import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
@@ -32,6 +38,7 @@ class LocalListViewModel @Inject constructor(
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	exploreRepository: ExploreRepository,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
+	private val localStorageManager: LocalStorageManager,
 ) : RemoteListViewModel(
 	savedStateHandle,
 	mangaRepositoryFactory,
@@ -52,6 +59,31 @@ class LocalListViewModel @Inject constructor(
 				}
 		}
 		settings.subscribe(this)
+	}
+
+	override suspend fun onBuildList(list: MutableList<ListModel>) {
+		super.onBuildList(list)
+		if (localStorageManager.hasExternalStoragePermission(isReadOnly = true)) {
+			return
+		}
+		for (item in list) {
+			if (item !is MangaItemModel) {
+				continue
+			}
+			val file = item.manga.url.toUriOrNull()?.toFileOrNull() ?: continue
+			if (localStorageManager.isOnExternalStorage(file)) {
+				val tip = TipModel(
+					key = "permission",
+					title = R.string.external_storage,
+					text = R.string.missing_storage_permission,
+					icon = R.drawable.ic_storage,
+					primaryButtonText = R.string.fix,
+					secondaryButtonText = R.string.settings,
+				)
+				list.add(0, tip)
+				return
+			}
+		}
 	}
 
 	override fun onCleared() {

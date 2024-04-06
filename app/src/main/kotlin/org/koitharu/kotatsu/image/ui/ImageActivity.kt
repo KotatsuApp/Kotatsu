@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
+import androidx.core.view.marginBottom
 import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import coil.ImageLoader
 import coil.request.CachePolicy
 import coil.request.ErrorResult
@@ -21,6 +21,7 @@ import coil.target.ViewTarget
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import dagger.hilt.android.AndroidEntryPoint
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getDisplayIcon
@@ -42,27 +43,25 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityImageBinding.inflate(layoutInflater))
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setDisplayShowTitleEnabled(false)
-		}
+		viewBinding.buttonBack.setOnClickListener(this)
 		loadImage(intent.data)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		with(viewBinding.toolbar) {
-			updatePadding(
-				left = insets.left,
-				right = insets.right,
-			)
+		with(viewBinding.buttonBack) {
 			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
+				topMargin = insets.top + marginBottom
+				leftMargin = insets.left + marginBottom
+				rightMargin = insets.right + marginBottom
 			}
 		}
 	}
 
-	override fun onClick(v: View?) {
-		loadImage(intent.data)
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.button_back -> dispatchNavigateUp()
+			else -> loadImage(intent.data)
+		}
 	}
 
 	override fun onError(request: ImageRequest, result: ErrorResult) {

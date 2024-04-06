@@ -2,6 +2,7 @@
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
@@ -9,12 +10,19 @@
 		android:id="@+id/ssiv"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		app:restoreStrategy="deferred" />
+		app:restoreStrategy="deferred"
+		tools:background="@tools:sample/backgrounds/scenic" />
 
-	<com.google.android.material.appbar.MaterialToolbar
-		android:id="@+id/toolbar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content" />
+	<ImageButton
+		android:id="@+id/button_back"
+		android:layout_width="48dp"
+		android:layout_height="48dp"
+		android:layout_margin="@dimen/screen_padding"
+		android:background="@drawable/bg_circle_button"
+		android:contentDescription="@string/back"
+		android:elevation="4dp"
+		android:scaleType="center"
+		android:src="?homeAsUpIndicator" />
 
 	<com.google.android.material.progressindicator.CircularProgressIndicator
 		android:id="@+id/progressBar"
