@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui.categories.select.adapter
 
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -23,6 +24,6 @@ fun mangaCategoryAD(
 		binding.checkableImageView.setChecked(item.isChecked, ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED in payloads)
 		binding.textViewTitle.text = item.category.title
 		binding.imageViewTracker.isVisible = item.category.isTrackingEnabled && item.isTrackerEnabled
-		binding.imageViewVisible.isVisible = item.category.isVisibleInLibrary
+		binding.imageViewHidden.isGone = item.category.isVisibleInLibrary
 	}
 }

@@ -30,14 +30,12 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.FragmentPagesBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
-import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import javax.inject.Inject
@@ -58,7 +56,7 @@ class PagesFragment :
 	lateinit var settings: AppSettings
 
 	private var thumbnailsAdapter: PageThumbnailAdapter? = null
-	private var spanResolver: MangaListSpanResolver? = null
+	private var spanResolver: PagesGridSpanResolver? = null
 	private var scrollListener: ScrollListener? = null
 
 	private val spanSizeLookup = SpanSizeLookup()
@@ -85,19 +83,19 @@ class PagesFragment :
 
 	override fun onViewBindingCreated(binding: FragmentPagesBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		spanResolver = MangaListSpanResolver(binding.root.resources)
+		spanResolver = PagesGridSpanResolver(binding.root.resources)
 		thumbnailsAdapter = PageThumbnailAdapter(
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,
 			clickListener = this@PagesFragment,
 		)
+		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged) // before rv initialization
 		with(binding.recyclerView) {
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = thumbnailsAdapter
 			setHasFixedSize(true)
 			isNestedScrollingEnabled = false
 			addOnLayoutChangeListener(spanResolver)
-			spanResolver?.setGridSize(settings.gridSize / 100f, this)
 			addOnScrollListener(ScrollListener().also { scrollListener = it })
 			(layoutManager as GridLayoutManager).let {
 				it.spanSizeLookup = spanSizeLookup
@@ -172,6 +170,11 @@ class PagesFragment :
 		viewBinding?.recyclerView?.let {
 			scrollListener?.postInvalidate(it)
 		}
+	}
+
+	private fun onGridScaleChanged(scale: Float) {
+		spanSizeLookup.invalidateCache()
+		spanResolver?.setGridSize(scale, requireViewBinding().recyclerView)
 	}
 
 	private fun onNoChaptersChanged(isNoChapters: Boolean) {

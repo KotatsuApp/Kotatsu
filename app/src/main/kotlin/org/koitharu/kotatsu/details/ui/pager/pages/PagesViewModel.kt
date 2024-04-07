@@ -1,11 +1,15 @@
 package org.koitharu.kotatsu.details.ui.pager.pages
 
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.firstNotNull
 import org.koitharu.kotatsu.details.data.MangaDetails
@@ -18,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PagesViewModel @Inject constructor(
 	private val chaptersLoader: ChaptersLoader,
+	private val settings: AppSettings,
 ) : BaseViewModel() {
 
 	private var loadingJob: Job? = null
@@ -28,6 +33,12 @@ class PagesViewModel @Inject constructor(
 	val thumbnails = MutableStateFlow<List<ListModel>>(emptyList())
 	val isLoadingUp = MutableStateFlow(false)
 	val isLoadingDown = MutableStateFlow(false)
+
+	val gridScale = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_GRID_SIZE_PAGES,
+		valueProducer = { gridSizePages / 100f },
+	)
 
 	init {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {

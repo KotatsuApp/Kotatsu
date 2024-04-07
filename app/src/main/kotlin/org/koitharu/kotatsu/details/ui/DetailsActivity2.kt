@@ -92,7 +92,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
-import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.MangaListActivity
@@ -313,19 +312,6 @@ class DetailsActivity2 :
 
 			R.id.action_forget -> {
 				viewModel.removeFromHistory()
-				true
-			}
-
-			R.id.action_pages_thumbs -> {
-				val history = viewModel.historyInfo.value.history
-				PagesThumbnailsSheet.show(
-					fm = supportFragmentManager,
-					manga = viewModel.manga.value ?: return false,
-					chapterId = history?.chapterId
-						?: viewModel.chapters.value.firstOrNull()?.chapter?.id
-						?: return false,
-					currentPage = history?.page ?: 0,
-				)
 				true
 			}
 
@@ -606,8 +592,11 @@ class DetailsActivity2 :
 					append(branch.count.toString())
 				}
 			}
-			menu.menu.add(Menu.NONE, Menu.NONE, i, title)
+			val item = menu.menu.add(R.id.group_branches, Menu.NONE, i, title)
+			item.isCheckable = true
+			item.isChecked = branch.isSelected
 		}
+		menu.menu.setGroupCheckable(R.id.group_branches, true, true)
 		menu.setOnMenuItemClickListener {
 			viewModel.setSelectedBranch(branches.getOrNull(it.order)?.name)
 			true

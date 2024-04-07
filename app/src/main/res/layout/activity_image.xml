@@ -20,7 +20,7 @@
 		android:layout_margin="@dimen/screen_padding"
 		android:background="@drawable/bg_circle_button"
 		android:contentDescription="@string/back"
-		android:elevation="4dp"
+		android:elevation="@dimen/m3_sys_elevation_level1"
 		android:scaleType="center"
 		android:src="?homeAsUpIndicator" />
 

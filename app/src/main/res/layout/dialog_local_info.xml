@@ -17,12 +17,13 @@
 		android:text="@string/location"
 		android:textAppearance="?textAppearanceLabelMedium" />
 
-	<TextView
+	<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
 		android:id="@+id/textView_path"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="4dp"
 		android:textAppearance="?textAppearanceBodyMedium"
+		android:textIsSelectable="true"
 		tools:text="/storage/emulated/0/Manga/lorem.cbz" />
 
 	<org.koitharu.kotatsu.core.ui.widgets.SegmentedBarView

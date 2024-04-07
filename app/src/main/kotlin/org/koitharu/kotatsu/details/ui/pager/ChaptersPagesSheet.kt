@@ -19,7 +19,7 @@ import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetChaptersPagesBinding
-import org.koitharu.kotatsu.details.ui.ChaptersMenuProvider2
+import org.koitharu.kotatsu.details.ui.ChapterPagesMenuProvider
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import javax.inject.Inject
 
@@ -49,7 +49,7 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		binding.pager.setCurrentItem(args.getInt(ARG_TAB, settings.defaultDetailsTab), false)
 		binding.tabs.isVisible = adapter.itemCount > 1
 
-		val menuProvider = ChaptersMenuProvider2(viewModel, this)
+		val menuProvider = ChapterPagesMenuProvider(viewModel, this, binding.pager, settings)
 		onBackPressedDispatcher.addCallback(viewLifecycleOwner, menuProvider)
 		binding.toolbar.addMenuProvider(menuProvider)
 
@@ -84,7 +84,7 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 	}
 
 	private fun onPageChanged(position: Int) {
-		viewBinding?.toolbar?.menuView?.isVisible = position == 0
+		viewBinding?.toolbar?.invalidateMenu()
 	}
 
 	companion object {

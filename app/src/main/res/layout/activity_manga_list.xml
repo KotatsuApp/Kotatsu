@@ -35,7 +35,7 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:visibility="invisible"
-					app:icon="@drawable/ic_reorder"
+					app:icon="@drawable/ic_filter_menu"
 					tools:text="@string/newest"
 					tools:visibility="visible" />
 

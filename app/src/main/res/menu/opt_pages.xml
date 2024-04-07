@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:id="@+id/action_grid_size"
+		android:icon="@drawable/ic_size_large"
+		android:orderInCategory="10"
+		android:title="@string/grid_size"
+		app:actionViewClass="com.google.android.material.slider.Slider"
+		app:showAsAction="ifRoom|collapseActionView" />
+
+</menu>

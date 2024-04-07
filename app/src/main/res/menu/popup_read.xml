@@ -8,11 +8,6 @@
 		android:title="@string/incognito_mode" />
 
 	<item
-		android:id="@+id/action_pages_thumbs"
-		android:icon="@drawable/ic_grid"
-		android:title="@string/pages" />
-
-	<item
 		android:id="@+id/action_forget"
 		android:icon="@drawable/ic_delete"
 		android:title="@string/remove_from_history" />
