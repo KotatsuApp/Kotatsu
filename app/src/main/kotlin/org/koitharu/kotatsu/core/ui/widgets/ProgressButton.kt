@@ -35,8 +35,9 @@ class ProgressButton @JvmOverloads constructor(
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
 	private var progress = 0f
-	private var colorBase = context.getThemeColor(materialR.attr.colorSecondaryContainer)
+	private var colorBase = context.getThemeColor(materialR.attr.colorPrimaryContainer)
 	private var colorProgress = context.getThemeColor(materialR.attr.colorPrimary)
+	private var colorText = context.getThemeColor(materialR.attr.colorOnPrimaryContainer)
 	private var progressAnimator: ValueAnimator? = null
 
 	var title: CharSequence?
@@ -70,6 +71,9 @@ class ProgressButton @JvmOverloads constructor(
 			textViewSubtitle.text = getText(R.styleable.ProgressButton_subtitle)
 			colorBase = getColor(R.styleable.ProgressButton_baseColor, colorBase)
 			colorProgress = getColor(R.styleable.ProgressButton_progressColor, colorProgress)
+			colorText = getColor(R.styleable.ProgressButton_textColor, colorText)
+			textViewTitle.setTextColor(colorText)
+			textViewSubtitle.setTextColor(colorText)
 			progress = getInt(R.styleable.ProgressButton_android_progress, 0).toFloat() /
 				getInt(R.styleable.ProgressButton_android_max, 100).toFloat()
 		}
@@ -84,6 +88,7 @@ class ProgressButton @JvmOverloads constructor(
 
 		paint.style = Paint.Style.FILL
 		paint.color = colorProgress
+		paint.alpha = 84 // 255 * 0.33F
 		applyGravity()
 		setWillNotDraw(false)
 	}
