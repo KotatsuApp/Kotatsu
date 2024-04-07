@@ -75,7 +75,7 @@ class TipView @JvmOverloads constructor(
 			val shapeAppearanceModel = ShapeAppearanceModel.builder(context, attrs, defStyleAttr, 0).build()
 			background = MaterialShapeDrawable(shapeAppearanceModel).also {
 				it.fillColor = getColorStateList(R.styleable.TipView_cardBackgroundColor)
-					?: context.getThemeColorStateList(R.attr.m3ColorExploreButton)
+					?: context.getThemeColorStateList(com.google.android.material.R.attr.colorSurfaceContainerHigh)
 				it.strokeWidth = getDimension(R.styleable.TipView_strokeWidth, 0f)
 				it.strokeColor = getColorStateList(R.styleable.TipView_strokeColor)
 				it.elevation = getDimension(R.styleable.TipView_elevation, 0f)

@@ -3,18 +3,18 @@
 	<!--Toolbars-->
 
 	<style name="Widget.Kotatsu.CollapsingToolbar" parent="@style/Widget.Material3.CollapsingToolbar.Medium">
-		<item name="contentScrim">?attr/m3ColorBottomMenuBackground</item>
+		<item name="contentScrim">?attr/colorSurfaceContainer</item>
 	</style>
 
 	<style name="Widget.Kotatsu.AppBarLayout" parent="@style/Widget.Material3.AppBarLayout">
-		<item name="android:background">?attr/m3ColorBackground</item>
+		<item name="android:background">?android:attr/colorBackground</item>
 	</style>
 
 	<!--Navigation Views-->
 
 	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
 		<item name="labelVisibilityMode">labeled</item>
-		<item name="android:background">?attr/m3ColorBottomMenuBackground</item>
+		<item name="android:background">?attr/colorSurfaceContainer</item>
 		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
 		<item name="itemIconTint">@color/bottom_menu_active_item</item>
 	</style>
@@ -45,10 +45,6 @@
 
 	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
 		<item name="android:windowAnimationStyle">@style/Animation.Kotatsu.BottomSheetDialog</item>
-	</style>
-
-	<style name="Widget.Kotatsu.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
-		<item name="backgroundTint">?attr/m3ColorBottomMenuBackground</item>
 	</style>
 
 	<style name="Widget.Kotatsu.BottomSheet.DragHandle" parent="Widget.Material3.BottomSheet.DragHandle">
@@ -90,7 +86,6 @@
 	</style>
 
 	<style name="Widget.Kotatsu.CardView.Filled" parent="Widget.Material3.CardView.Filled">
-		<item name="cardBackgroundColor">?attr/m3ColorCardBackground</item>
 		<item name="shapeAppearance">?attr/shapeAppearanceCornerExtraLarge</item>
 	</style>
 
@@ -200,7 +195,7 @@
 	</style>
 
 	<style name="Widget.Kotatsu.ExploreButton" parent="Widget.Material3.Button.ElevatedButton.Icon">
-		<item name="android:minHeight">54dp</item>
+		<item name="android:minHeight">56dp</item>
 		<item name="android:singleLine">true</item>
 		<item name="shapeAppearance">?shapeAppearanceCornerExtraLarge</item>
 		<item name="android:ellipsize">marquee</item>
@@ -214,7 +209,7 @@
 		<item name="android:insetBottom">2dp</item>
 		<item name="android:gravity">start|center_vertical</item>
 		<item name="android:textAppearance">?textAppearanceButton</item>
-		<item name="backgroundTint">?attr/m3ColorExploreButton</item>
+		<item name="backgroundTint">?attr/colorSurfaceContainerHigh</item>
 		<!-- Hack. Removing shadow. For AMOLED -->
 		<item name="android:outlineProvider">none</item>
 		<item name="elevation">24dp</item>
@@ -240,10 +235,6 @@
 		<item name="colorControlHighlight">@color/selector_overlay</item>
 	</style>
 
-	<style name="ThemeOverlay.Kotatsu.CardContainer" parent="">
-		<item name="android:colorBackground">?m3ColorCardBackground</item>
-	</style>
-
 	<style name="ThemeOverlay.Kotatsu.ActionMode" parent="">
 		<item name="colorOnSurface">?colorPrimary</item>
 		<item name="colorControlNormal">?colorPrimary</item>
@@ -265,8 +256,8 @@
 
 	<style name="TextAppearance.Kotatsu.Menu" parent="TextAppearance.Material3.BodyLarge" />
 
-	<style name="TextAppearance.Kotatsu.SectionHeader" parent="TextAppearance.Material3.LabelLarge">
-		<item name="android:textColor">?android:attr/textColorSecondary</item>
+	<style name="TextAppearance.Kotatsu.SectionHeader" parent="TextAppearance.Material3.BodyLarge">
+		<item name="android:textStyle"></item>
 	</style>
 
 	<style name="TextAppearance.Kotatsu.SectionHeader2" parent="TextAppearance.Material3.LabelSmall">
@@ -286,15 +277,15 @@
 	<!-- Shapes -->
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Cover" parent="">
-		<item name="cornerSize">16dp</item>
-	</style>
-
-	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Medium" parent="">
 		<item name="cornerSize">12dp</item>
 	</style>
 
-	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Small" parent="">
+	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Medium" parent="">
 		<item name="cornerSize">8dp</item>
+	</style>
+
+	<style name="ShapeAppearanceOverlay.Kotatsu.Cover.Small" parent="">
+		<item name="cornerSize">4dp</item>
 	</style>
 
 	<style name="ShapeAppearanceOverlay.Kotatsu.Circle" parent="">

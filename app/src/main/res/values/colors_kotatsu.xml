@@ -41,11 +41,4 @@
 	<color name="kotatsu_shadow">#000000</color>
 	<color name="kotatsu_surfaceTint">#0059C8</color>
 	<color name="kotatsu_scrim">#000000</color>
-	<!-- Primary 95 -->
-	<color name="kotatsu_m3_background">#EDF0FF</color>
-	<!-- White -->
-	<color name="kotatsu_m3_exploreButton">#FFFFFF</color>
-	<color name="kotatsu_m3_cardBackground">#FFFFFF</color>
-	<!-- Primary 90 -->
-	<color name="kotatsu_m3_bottom_menu">#D9E2FF</color>
 </resources>

@@ -97,10 +97,10 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 		val actionModeColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			ColorUtils.compositeColors(
 				ContextCompat.getColor(ctx, com.google.android.material.R.color.m3_appbar_overlay_color),
-				ctx.getThemeColor(R.attr.m3ColorBackground),
+				ctx.getThemeColor(com.google.android.material.R.attr.colorSurface),
 			)
 		} else {
-			ContextCompat.getColor(ctx, R.color.kotatsu_m3_background)
+			ContextCompat.getColor(ctx, R.color.kotatsu_surface)
 		}
 		dialog?.window?.let {
 			defaultStatusBarColor = it.statusBarColor

@@ -527,6 +527,7 @@ class DetailsActivity2 :
 		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
+			bottom = insets.bottom
 		)
 	}
 

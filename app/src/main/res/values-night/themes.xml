@@ -8,10 +8,6 @@
 	<style name="ThemeOverlay.Kotatsu.Amoled" parent="">
 		<item name="colorSurface">@color/surface_amoled</item>
 		<item name="android:colorBackground">@color/background_amoled</item>
-		<item name="m3ColorBackground">@color/background_amoled</item>
-		<item name="m3ColorExploreButton">@color/surface_amoled</item>
-		<item name="m3ColorCardBackground">@color/surface_amoled</item>
-		<item name="m3ColorBottomMenuBackground">@color/surface_amoled</item>
 	</style>
 
 </resources>

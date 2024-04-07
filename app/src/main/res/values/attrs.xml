@@ -9,11 +9,6 @@
 	<attr name="fastScrollerStyle" />
 	<attr name="tipViewStyle" />
 	<attr name="progressButtonStyle" />
-	<attr name="m3ColorBackground" />
-	<attr name="m3ColorExploreButton" />
-	<attr name="m3ColorCardBackground" />
-	<attr name="m3ColorBottomMenuBackground" />
-	<attr name="m3SpinnerStyle" />
 
 	<!--CoverImageView attrs-->
 	<declare-styleable name="CoverImageView">
@@ -158,6 +153,10 @@
 		<attr name="android:progress" />
 		<attr name="baseColor" format="color" />
 		<attr name="progressColor" format="color" />
+	</declare-styleable>
+
+	<declare-styleable name="NonFilteringAutoCompleteTextView">
+		<attr name="readOnly" format="boolean" />
 	</declare-styleable>
 
 </resources>

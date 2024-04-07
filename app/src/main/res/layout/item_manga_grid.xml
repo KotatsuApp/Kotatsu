@@ -1,57 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:clipChildren="false"
-	app:cardCornerRadius="16dp"
+	android:orientation="vertical"
 	tools:layout_width="140dp">
 
-	<LinearLayout
+	<FrameLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical">
+		android:layout_height="wrap_content">
 
-		<FrameLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content">
-
-			<org.koitharu.kotatsu.core.ui.widgets.CoverImageView
-				android:id="@+id/imageView_cover"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:background="?colorSurfaceContainer"
-				android:orientation="horizontal"
-				android:scaleType="centerCrop"
-				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-				tools:ignore="ContentDescription"
-				tools:src="@tools:sample/backgrounds/scenic[5]" />
-
-			<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
-				android:id="@+id/progressView"
-				android:layout_width="@dimen/card_indicator_size"
-				android:layout_height="@dimen/card_indicator_size"
-				android:layout_gravity="bottom|end"
-				android:layout_margin="@dimen/card_indicator_offset" />
-
-		</FrameLayout>
-
-		<TextView
-			android:id="@+id/textView_title"
+		<org.koitharu.kotatsu.core.ui.widgets.CoverImageView
+			android:id="@+id/imageView_cover"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:elegantTextHeight="false"
-			android:ellipsize="end"
-			android:lines="2"
-			android:padding="8dp"
-			android:textAppearance="?attr/textAppearanceTitleSmall"
-			android:textColor="?android:attr/textColorPrimary"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/thumbnail"
-			tools:text="@tools:sample/lorem" />
+			android:background="?colorSurfaceContainer"
+			android:orientation="horizontal"
+			android:scaleType="centerCrop"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+			tools:ignore="ContentDescription"
+			tools:src="@tools:sample/backgrounds/scenic[5]" />
 
-	</LinearLayout>
+		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
+			android:id="@+id/progressView"
+			android:layout_width="@dimen/card_indicator_size"
+			android:layout_height="@dimen/card_indicator_size"
+			android:layout_gravity="bottom|end"
+			android:layout_margin="@dimen/card_indicator_offset" />
 
-</com.google.android.material.card.MaterialCardView>
+	</FrameLayout>
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:elegantTextHeight="false"
+		android:ellipsize="end"
+		android:lines="2"
+		android:paddingVertical="4dp"
+		android:textAppearance="?attr/textAppearanceTitleSmall"
+		android:textColor="?android:attr/textColorPrimary"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/thumbnail"
+		tools:text="@tools:sample/lorem" />
+
+</LinearLayout>
