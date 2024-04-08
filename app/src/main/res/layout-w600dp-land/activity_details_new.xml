@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/layout_root"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:clipToPadding="false"
-	android:orientation="vertical"
+	tools:context=".details.ui.DetailsActivity2"
 	tools:viewBindingType="android.view.ViewGroup">
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
-		android:layout_width="match_parent"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:fitsSystemWindows="true">
+		android:elevation="0dp"
+		android:fitsSystemWindows="true"
+		app:elevation="0dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintWidth_max="420dp"
+		app:layout_constraintWidth_percent="0.5"
+		app:liftOnScroll="false">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
@@ -25,11 +33,15 @@
 
 	<androidx.core.widget.NestedScrollView
 		android:id="@+id/scrollView"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
 		android:clipToPadding="false"
 		android:scrollIndicators="top"
-		android:scrollbars="vertical">
+		android:scrollbars="vertical"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="@id/appbar"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar">
 
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
@@ -175,16 +187,16 @@
 				android:id="@+id/button_read"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginStart="16dp"
+				android:layout_gravity="end|center_vertical"
+				android:layout_marginHorizontal="@dimen/screen_padding"
 				android:layout_marginTop="@dimen/margin_normal"
-				android:layout_marginEnd="12dp"
 				android:foreground="?selectableItemBackground"
 				android:gravity="center"
 				android:paddingHorizontal="6dp"
 				android:paddingVertical="8dp"
 				android:textColor="?colorOnPrimaryContainer"
 				app:baseColor="?colorSecondaryContainer"
-				app:layout_constraintEnd_toStartOf="@id/button_chapters"
+				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/info_layout"
 				app:progressColor="?colorPrimary"
@@ -195,28 +207,12 @@
 				tools:subtitle="12 chapters"
 				tools:title="@string/read" />
 
-			<ImageView
-				android:id="@+id/button_chapters"
-				android:layout_width="0dp"
-				android:layout_height="0dp"
-				android:layout_marginEnd="16dp"
-				android:background="@drawable/bg_circle_button"
-				android:backgroundTint="?colorSecondaryContainer"
-				android:contentDescription="@string/chapters"
-				android:scaleType="centerInside"
-				app:layout_constraintBottom_toBottomOf="@id/button_read"
-				app:layout_constraintDimensionRatio="1"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintTop_toTopOf="@id/button_read"
-				app:srcCompat="@drawable/ic_list_sheet" />
-
 			<TextView
 				android:id="@+id/textView_description_title"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="@dimen/margin_small"
 				android:layout_marginTop="@dimen/margin_normal"
-				android:layout_weight="1"
 				android:gravity="center_vertical|start"
 				android:padding="@dimen/grid_spacing"
 				android:singleLine="true"
@@ -390,4 +386,25 @@
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
 	</androidx.core.widget.NestedScrollView>
-</LinearLayout>
+
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/card_chapters"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_marginStart="@dimen/side_card_offset"
+		android:layout_marginTop="2dp"
+		android:layout_marginEnd="@dimen/side_card_offset"
+		android:layout_marginBottom="@dimen/side_card_offset"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/appbar"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/container_side"
+			android:name="org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
+
+	</com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

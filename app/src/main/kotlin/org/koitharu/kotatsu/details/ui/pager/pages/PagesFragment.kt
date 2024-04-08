@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.FragmentPagesBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
+import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -56,7 +57,7 @@ class PagesFragment :
 	lateinit var settings: AppSettings
 
 	private var thumbnailsAdapter: PageThumbnailAdapter? = null
-	private var spanResolver: PagesGridSpanResolver? = null
+	private var spanResolver: GridSpanResolver? = null
 	private var scrollListener: ScrollListener? = null
 
 	private val spanSizeLookup = SpanSizeLookup()
@@ -83,7 +84,7 @@ class PagesFragment :
 
 	override fun onViewBindingCreated(binding: FragmentPagesBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		spanResolver = PagesGridSpanResolver(binding.root.resources)
+		spanResolver = GridSpanResolver(binding.root.resources)
 		thumbnailsAdapter = PageThumbnailAdapter(
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,

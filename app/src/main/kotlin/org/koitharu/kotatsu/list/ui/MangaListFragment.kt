@@ -78,7 +78,7 @@ abstract class MangaListFragment :
 	private var listAdapter: MangaListAdapter? = null
 	private var paginationListener: PaginationScrollListener? = null
 	private var selectionController: ListSelectionController? = null
-	private var spanResolver: MangaListSpanResolver? = null
+	private var spanResolver: GridSpanResolver? = null
 	private val spanSizeLookup = SpanSizeLookup()
 	open val isSwipeRefreshEnabled = true
 
@@ -98,7 +98,7 @@ abstract class MangaListFragment :
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		listAdapter = onCreateAdapter()
-		spanResolver = MangaListSpanResolver(binding.root.resources)
+		spanResolver = GridSpanResolver(binding.root.resources)
 		selectionController = ListSelectionController(
 			appCompatDelegate = checkNotNull(findAppCompatDelegate()),
 			decoration = MangaSelectionDecoration(binding.root.context),

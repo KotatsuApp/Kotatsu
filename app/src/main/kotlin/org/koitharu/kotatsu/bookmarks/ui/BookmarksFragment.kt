@@ -30,7 +30,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
+import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListHeaderClickListener
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -86,7 +86,7 @@ class BookmarksFragment :
 		val spanSizeLookup = SpanSizeLookup()
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
-			val spanResolver = MangaListSpanResolver(resources)
+			val spanResolver = GridSpanResolver(resources)
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = bookmarksAdapter
 			addOnLayoutChangeListener(spanResolver)

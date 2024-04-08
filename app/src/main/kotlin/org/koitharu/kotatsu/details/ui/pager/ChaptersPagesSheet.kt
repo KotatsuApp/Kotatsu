@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetChaptersPagesBinding
-import org.koitharu.kotatsu.details.ui.ChapterPagesMenuProvider
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import javax.inject.Inject
 

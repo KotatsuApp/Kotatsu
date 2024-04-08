@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.details.ui.pager.pages
+package org.koitharu.kotatsu.list.ui
 
 import android.content.res.Resources
 import android.view.View
@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.R
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-class PagesGridSpanResolver(
+class GridSpanResolver(
 	resources: Resources,
 ) : View.OnLayoutChangeListener {
 

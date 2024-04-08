@@ -15,6 +15,8 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
@@ -26,9 +28,16 @@ import javax.inject.Inject
 @HiltViewModel
 class MangaBookmarksViewModel @Inject constructor(
 	bookmarksRepository: BookmarksRepository,
+	settings: AppSettings,
 ) : BaseViewModel(), FlowCollector<Manga?> {
 
 	private val manga = MutableStateFlow<Manga?>(null)
+
+	val gridScale = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_GRID_SIZE_PAGES,
+		valueProducer = { gridSizePages / 100f },
+	)
 
 	val content: StateFlow<List<ListModel>> = manga.filterNotNull().flatMapLatest { m ->
 		bookmarksRepository.observeBookmarks(m)

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import androidx.activity.ComponentDialog
 import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatDialog
@@ -52,7 +53,7 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 		get() = behavior?.state == AdaptiveSheetBehavior.STATE_EXPANDED
 
 	val onBackPressedDispatcher: OnBackPressedDispatcher
-		get() = requireComponentDialog().onBackPressedDispatcher
+		get() = (dialog as? ComponentDialog)?.onBackPressedDispatcher ?: requireActivity().onBackPressedDispatcher
 
 	var isLocked = false
 		private set

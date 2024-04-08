@@ -20,14 +20,11 @@ import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentMangaBookmarksBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
-import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
+import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
-import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,7 +41,7 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 	lateinit var settings: AppSettings
 
 	private var bookmarksAdapter: BookmarksAdapter? = null
-	private var spanResolver: MangaListSpanResolver? = null
+	private var spanResolver: GridSpanResolver? = null
 
 	private val spanSizeLookup = SpanSizeLookup()
 	private val listCommitCallback = Runnable {
@@ -62,19 +59,22 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 
 	override fun onViewBindingCreated(binding: FragmentMangaBookmarksBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		spanResolver = MangaListSpanResolver(binding.root.resources)
+		spanResolver = GridSpanResolver(binding.root.resources)
 		bookmarksAdapter = BookmarksAdapter(
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,
 			clickListener = this@MangaBookmarksFragment,
 			headerClickListener = null,
 		)
+		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged) // before rv initialization
 		with(binding.recyclerView) {
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = bookmarksAdapter
 			addOnLayoutChangeListener(spanResolver)
-			spanResolver?.setGridSize(settings.gridSize / 100f, this)
-			(layoutManager as GridLayoutManager).spanSizeLookup = spanSizeLookup
+			(layoutManager as GridLayoutManager).let {
+				it.spanSizeLookup = spanSizeLookup
+				it.spanCount = checkNotNull(spanResolver).spanCount
+			}
 		}
 		viewModel.content.observe(viewLifecycleOwner, checkNotNull(bookmarksAdapter))
 	}
@@ -111,6 +111,11 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 				.build()
 			startActivity(intent)
 		}
+	}
+
+	private fun onGridScaleChanged(scale: Float) {
+		spanSizeLookup.invalidateCache()
+		spanResolver?.setGridSize(scale, requireViewBinding().recyclerView)
 	}
 
 	private inner class SpanSizeLookup : GridLayoutManager.SpanSizeLookup() {

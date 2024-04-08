@@ -12,6 +12,7 @@ import android.transition.TransitionManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -22,6 +23,7 @@ import androidx.core.text.inSpans
 import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import coil.ImageLoader
@@ -133,7 +135,7 @@ class DetailsActivity2 :
 		viewBinding.buttonRead.setOnClickListener(this)
 		viewBinding.buttonRead.setOnLongClickListener(this)
 		viewBinding.buttonRead.setOnContextClickListenerCompat(this)
-		viewBinding.buttonChapters.setOnClickListener(this)
+		viewBinding.buttonChapters?.setOnClickListener(this)
 		viewBinding.infoLayout.chipBranch.setOnClickListener(this)
 		viewBinding.infoLayout.chipSize.setOnClickListener(this)
 		viewBinding.infoLayout.chipSource.setOnClickListener(this)
@@ -155,7 +157,7 @@ class DetailsActivity2 :
 		)
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
 
-		chaptersBadge = ViewBadge(viewBinding.buttonChapters, this)
+		chaptersBadge = ViewBadge(viewBinding.buttonChapters ?: viewBinding.buttonRead, this)
 
 		viewModel.details.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
@@ -426,7 +428,7 @@ class DetailsActivity2 :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		val button = viewBinding.buttonChapters
+		val button = viewBinding.buttonChapters ?: return
 		if (isLoading) {
 			button.setImageDrawable(
 				CircularProgressDrawable(this).also {
@@ -507,7 +509,7 @@ class DetailsActivity2 :
 					.enqueueWith(coil)
 			}
 
-			buttonChapters.isEnabled = hasChapters
+			buttonChapters?.isEnabled = hasChapters
 			title = manga.title
 			buttonRead.isEnabled = hasChapters
 			invalidateOptionsMenu()
@@ -527,7 +529,14 @@ class DetailsActivity2 :
 		viewBinding.root.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			bottom = insets.bottom
+		)
+		viewBinding.cardChapters?.updateLayoutParams<MarginLayoutParams> {
+			val baseOffset = leftMargin
+			bottomMargin = insets.bottom + baseOffset
+			topMargin = insets.bottom + baseOffset
+		}
+		viewBinding.scrollView.updatePadding(
+			bottom = insets.bottom,
 		)
 	}
 

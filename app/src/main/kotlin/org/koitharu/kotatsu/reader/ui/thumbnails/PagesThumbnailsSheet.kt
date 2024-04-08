@@ -27,7 +27,7 @@ import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
-import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
+import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -54,7 +54,7 @@ class PagesThumbnailsSheet :
 	lateinit var settings: AppSettings
 
 	private var thumbnailsAdapter: PageThumbnailAdapter? = null
-	private var spanResolver: MangaListSpanResolver? = null
+	private var spanResolver: GridSpanResolver? = null
 	private var scrollListener: ScrollListener? = null
 
 	private val spanSizeLookup = SpanSizeLookup()
@@ -69,7 +69,7 @@ class PagesThumbnailsSheet :
 	override fun onViewBindingCreated(binding: SheetPagesBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		addSheetCallback(this)
-		spanResolver = MangaListSpanResolver(binding.root.resources)
+		spanResolver = GridSpanResolver(binding.root.resources)
 		thumbnailsAdapter = PageThumbnailAdapter(
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,

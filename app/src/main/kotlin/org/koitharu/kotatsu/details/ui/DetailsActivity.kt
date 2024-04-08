@@ -71,6 +71,7 @@ import java.lang.ref.WeakReference
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
+@Deprecated("")
 @AndroidEntryPoint
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),

@@ -25,7 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.plus
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetPagesBinding
-import org.koitharu.kotatsu.list.ui.MangaListSpanResolver
+import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -53,7 +53,7 @@ class BookmarksSheet :
 	lateinit var settings: AppSettings
 
 	private var bookmarksAdapter: BookmarksAdapter? = null
-	private var spanResolver: MangaListSpanResolver? = null
+	private var spanResolver: GridSpanResolver? = null
 
 	private val spanSizeLookup = SpanSizeLookup()
 	private val listCommitCallback = Runnable {
@@ -67,7 +67,7 @@ class BookmarksSheet :
 	override fun onViewBindingCreated(binding: SheetPagesBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		addSheetCallback(this)
-		spanResolver = MangaListSpanResolver(binding.root.resources)
+		spanResolver = GridSpanResolver(binding.root.resources)
 		bookmarksAdapter = BookmarksAdapter(
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,

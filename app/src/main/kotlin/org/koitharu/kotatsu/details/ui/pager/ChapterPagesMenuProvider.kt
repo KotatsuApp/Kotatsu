@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.details.ui
+package org.koitharu.kotatsu.details.ui.pager
 
 import android.view.Menu
 import android.view.MenuInflater
@@ -14,6 +14,8 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.progress.IntPercentLabelFormatter
+import org.koitharu.kotatsu.details.ui.DetailsViewModel
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet.Companion.TAB_BOOKMARKS
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet.Companion.TAB_CHAPTERS
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet.Companion.TAB_PAGES
 import java.lang.ref.WeakReference
@@ -42,7 +44,7 @@ class ChapterPagesMenuProvider(
 				menu.findItem(R.id.action_grid_view)?.isChecked = viewModel.isChaptersInGridView.value == true
 			}
 
-			TAB_PAGES -> {
+			TAB_PAGES, TAB_BOOKMARKS -> {
 				menuInflater.inflate(R.menu.opt_pages, menu)
 				menu.findItem(R.id.action_grid_size)?.run {
 					setOnActionExpandListener(this@ChapterPagesMenuProvider)
