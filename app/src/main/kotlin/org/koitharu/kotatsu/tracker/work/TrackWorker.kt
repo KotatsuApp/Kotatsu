@@ -44,6 +44,7 @@ import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
+import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.logs.TrackerLogger
@@ -57,12 +58,14 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.toIntUp
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import org.koitharu.kotatsu.tracker.domain.Tracker
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Provider
 import com.google.android.material.R as materialR
 
 @HiltWorker
@@ -303,11 +306,15 @@ class TrackWorker @AssistedInject constructor(
 	class Scheduler @Inject constructor(
 		private val workManager: WorkManager,
 		private val settings: AppSettings,
+		private val dbProvider: Provider<MangaDatabase>,
 	) : PeriodicWorkScheduler {
 
 		override suspend fun schedule() {
 			val constraints = createConstraints()
-			val request = PeriodicWorkRequestBuilder<TrackWorker>(4, TimeUnit.HOURS)
+			val runCount = dbProvider.get().getTracksDao().getTracksCount()
+			val runsPerFullCheck = (runCount / BATCH_SIZE.toFloat()).toIntUp()
+			val interval = (6 / runsPerFullCheck).coerceAtLeast(2)
+			val request = PeriodicWorkRequestBuilder<TrackWorker>(interval.toLong(), TimeUnit.HOURS)
 				.setConstraints(constraints)
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
