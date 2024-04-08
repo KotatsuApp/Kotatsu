@@ -159,4 +159,12 @@
 		<attr name="readOnly" format="boolean" />
 	</declare-styleable>
 
+	<declare-styleable name="DotsIndicator">
+		<attr name="dotSize" format="dimension">
+			<enum name="fit" value="-1" />
+		</attr>
+		<attr name="dotColor" format="color" />
+		<attr name="dotSpacing" format="dimension" />
+	</declare-styleable>
+
 </resources>

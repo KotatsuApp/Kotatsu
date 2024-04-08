@@ -27,7 +27,7 @@ class ExploreAdapter(
 		addDelegate(ListItemType.EXPLORE_BUTTONS, exploreButtonsAD(listener))
 		addDelegate(
 			ListItemType.EXPLORE_SUGGESTION,
-			exploreRecommendationItemAD(coil, listener, mangaClickListener, lifecycleOwner),
+			exploreRecommendationItemAD(coil, mangaClickListener, lifecycleOwner),
 		)
 		addDelegate(ListItemType.HEADER, listHeaderAD(listener))
 		addDelegate(ListItemType.EXPLORE_SOURCE_LIST, exploreSourceListItemAD(coil, clickListener, lifecycleOwner))
