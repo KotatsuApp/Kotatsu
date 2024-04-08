@@ -2,7 +2,9 @@ package org.koitharu.kotatsu.core.ui.widgets
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Outline
 import android.graphics.Paint
 import android.util.AttributeSet
@@ -19,6 +21,7 @@ import androidx.core.widget.TextViewCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -35,9 +38,8 @@ class ProgressButton @JvmOverloads constructor(
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
 	private var progress = 0f
-	private var colorBase = context.getThemeColor(materialR.attr.colorPrimaryContainer)
-	private var colorProgress = context.getThemeColor(materialR.attr.colorPrimary)
-	private var colorText = context.getThemeColor(materialR.attr.colorOnPrimaryContainer)
+	private var colorBase: ColorStateList = ColorStateList.valueOf(Color.TRANSPARENT)
+	private var colorProgress: ColorStateList = ColorStateList.valueOf(Color.TRANSPARENT)
 	private var progressAnimator: ValueAnimator? = null
 
 	var title: CharSequence?
@@ -69,9 +71,12 @@ class ProgressButton @JvmOverloads constructor(
 			)
 			textViewTitle.text = getText(R.styleable.ProgressButton_title)
 			textViewSubtitle.text = getText(R.styleable.ProgressButton_subtitle)
-			colorBase = getColor(R.styleable.ProgressButton_baseColor, colorBase)
-			colorProgress = getColor(R.styleable.ProgressButton_progressColor, colorProgress)
-			colorText = getColor(R.styleable.ProgressButton_textColor, colorText)
+			colorBase = getColorStateList(R.styleable.ProgressButton_baseColor)
+				?: context.getThemeColorStateList(materialR.attr.colorPrimaryContainer) ?: colorBase
+			colorProgress = getColorStateList(R.styleable.ProgressButton_progressColor)
+				?: context.getThemeColorStateList(materialR.attr.colorPrimary) ?: colorProgress
+			val colorText = getColorStateList(R.styleable.ProgressButton_android_textColor)
+				?: context.getThemeColorStateList(materialR.attr.colorOnPrimaryContainer) ?: textViewTitle.textColors
 			textViewTitle.setTextColor(colorText)
 			textViewSubtitle.setTextColor(colorText)
 			progress = getInt(R.styleable.ProgressButton_android_progress, 0).toFloat() /
@@ -87,15 +92,15 @@ class ProgressButton @JvmOverloads constructor(
 		)
 
 		paint.style = Paint.Style.FILL
-		paint.color = colorProgress
-		paint.alpha = 84 // 255 * 0.33F
 		applyGravity()
 		setWillNotDraw(false)
 	}
 
 	override fun onDraw(canvas: Canvas) {
 		super.onDraw(canvas)
-		canvas.drawColor(colorBase)
+		canvas.drawColor(colorBase.getColorForState(drawableState, colorBase.defaultColor))
+		paint.color = colorProgress.getColorForState(drawableState, colorProgress.defaultColor)
+		paint.alpha = 84 // 255 * 0.33F
 		canvas.drawRect(0f, 0f, width * progress, height.toFloat(), paint)
 	}
 

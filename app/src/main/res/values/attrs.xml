@@ -153,7 +153,7 @@
 		<attr name="subtitleTextAppearance" />
 		<attr name="title" />
 		<attr name="subtitle" />
-		<attr name="textColor" format="color" />
+		<attr name="android:textColor" />
 		<attr name="android:max" />
 		<attr name="android:progress" />
 		<attr name="baseColor" format="color" />
