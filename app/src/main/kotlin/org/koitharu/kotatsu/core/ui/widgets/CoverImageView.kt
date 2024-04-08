@@ -10,8 +10,8 @@ import com.google.android.material.imageview.ShapeableImageView
 import org.koitharu.kotatsu.R
 import kotlin.math.roundToInt
 
-private const val ASPECT_RATIO_HEIGHT = 18f
-private const val ASPECT_RATIO_WIDTH = 13f
+private const val ASPECT_RATIO_HEIGHT = 3f
+private const val ASPECT_RATIO_WIDTH = 2f
 
 class CoverImageView @JvmOverloads constructor(
 	context: Context,

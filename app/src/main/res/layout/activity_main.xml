@@ -34,8 +34,9 @@
 		<FrameLayout
 			android:id="@+id/toolbar_card"
 			android:layout_width="match_parent"
-			android:layout_height="48dp"
-			android:layout_marginVertical="8dp"
+			android:layout_height="56dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginBottom="8dp"
 			android:background="@drawable/search_bar_background"
 			android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"
 			app:layout_scrollFlags="scroll|enterAlways|snap">

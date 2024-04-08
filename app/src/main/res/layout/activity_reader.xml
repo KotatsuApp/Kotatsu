@@ -36,7 +36,6 @@
 		android:id="@+id/appbar_top"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="?m3ColorBottomMenuBackground"
 		android:elevation="@dimen/m3_card_elevated_elevation"
 		app:elevation="@dimen/m3_card_elevated_elevation"
 		app:liftOnScroll="false">
@@ -59,7 +58,6 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
 		android:layout_margin="8dp"
-		app:cardBackgroundColor="?m3ColorBottomMenuBackground"
 		app:layout_insetEdge="bottom">
 
 		<com.google.android.material.appbar.MaterialToolbar
@@ -74,8 +72,7 @@
 				android:layout_height="wrap_content"
 				android:stepSize="1.0"
 				android:valueFrom="0"
-				app:labelBehavior="floating"
-				app:trackColorInactive="?attr/m3ColorBackground" />
+				app:labelBehavior="floating" />
 
 		</com.google.android.material.appbar.MaterialToolbar>
 

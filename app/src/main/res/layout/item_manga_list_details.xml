@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	android:background="?attr/selectableItemBackground"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	app:cardCornerRadius="16dp">
+	android:layout_height="wrap_content">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
@@ -13,14 +13,15 @@
 
 		<com.google.android.material.imageview.ShapeableImageView
 			android:id="@+id/imageView_cover"
-			android:layout_width="98dp"
-			android:layout_height="0dp"
+			android:layout_width="0dp"
+			android:layout_height="118dp"
 			android:background="?colorSurfaceContainer"
 			android:scaleType="centerCrop"
-			app:layout_constraintDimensionRatio="13:18"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintDimensionRatio="2:3"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Medium"
 			tools:src="@tools:sample/backgrounds/scenic" />
 
 		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
@@ -31,88 +32,58 @@
 			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
 
-		<TextView
-			android:id="@+id/textView_title"
+		<LinearLayout
 			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="12dp"
-			android:layout_marginTop="12dp"
-			android:layout_marginEnd="12dp"
-			android:ellipsize="end"
-			android:maxLines="2"
-			android:textAppearance="?attr/textAppearanceTitleMedium"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
-			tools:text="@tools:sample/lorem" />
+			android:layout_marginStart="16dp"
+			android:layout_marginEnd="12dp">
 
-		<TextView
-			android:id="@+id/textView_subtitle"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="12dp"
-			android:layout_marginTop="8dp"
-			android:layout_marginEnd="12dp"
-			android:ellipsize="end"
-			android:gravity="center_vertical"
-			android:maxLines="2"
-			android:textAppearance="?attr/textAppearanceBodySmall"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@+id/textView_title"
-			tools:text="@tools:sample/lorem/random" />
-
-		<HorizontalScrollView
-			android:id="@+id/scrollView_tags"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
-			android:layout_marginBottom="8dp"
-			android:scrollIndicators="start|end"
-			android:scrollbars="none"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
-			app:layout_goneMarginTop="12dp"
-			tools:ignore="UnusedAttribute">
-
-			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
-				android:id="@+id/chips_tags"
-				android:layout_width="wrap_content"
+			<TextView
+				android:id="@+id/textView_title"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:paddingHorizontal="12dp"
-				app:chipSpacingHorizontal="6dp"
-				app:chipSpacingVertical="6dp"
-				app:singleLine="true" />
-		</HorizontalScrollView>
+				android:ellipsize="end"
+				app:lineHeight="18dp"
+				android:maxLines="3"
+				android:textAppearance="?attr/textAppearanceBodyLarge"
+				tools:text="@tools:sample/lorem/random" />
 
-		<RatingBar
-			android:id="@+id/ratingBar"
-			style="?android:ratingBarStyleSmall"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:isIndicator="true"
-			android:paddingVertical="8dp"
-			app:layout_constraintEnd_toEndOf="@id/imageView_cover"
-			app:layout_constraintStart_toStartOf="@id/imageView_cover"
-			app:layout_constraintTop_toBottomOf="@id/imageView_cover" />
+			<TextView
+				android:id="@+id/textView_author"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="4dp"
+				android:ellipsize="end"
+				android:gravity="center_vertical"
+				android:maxLines="1"
+				android:textAppearance="?attr/textAppearanceBodyMedium"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+				app:layout_constraintTop_toBottomOf="@+id/textView_title"
+				tools:text="@tools:sample/lorem/random" />
 
-		<ImageView
-			android:id="@+id/button_read"
-			android:layout_width="48dp"
-			android:layout_height="48dp"
-			android:layout_marginTop="12dp"
-			android:layout_marginEnd="12dp"
-			android:layout_marginBottom="12dp"
-			android:background="@drawable/bg_circle_button"
-			android:contentDescription="@string/read"
-			android:scaleType="center"
-			android:src="@drawable/ic_read"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/scrollView_tags"
-			app:layout_constraintVertical_bias="1" />
+			<TextView
+				android:id="@+id/textView_tags"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="4dp"
+				android:ellipsize="end"
+				app:lineHeight="14dp"
+				android:gravity="center_vertical"
+				android:maxLines="2"
+				android:textAppearance="?attr/textAppearanceBodySmall"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/imageView_cover"
+				app:layout_constraintTop_toBottomOf="@+id/textView_author"
+				tools:text="@tools:sample/lorem/random" />
+
+		</LinearLayout>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</FrameLayout>

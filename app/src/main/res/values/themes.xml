@@ -34,11 +34,6 @@
 		<item name="colorOnSurfaceVariant">@color/kotatsu_onSurfaceVariant</item>
 		<item name="colorSurfaceInverse">@color/kotatsu_inverseSurface</item>
 		<item name="colorOnSurfaceInverse">@color/kotatsu_inverseOnSurface</item>
-		<item name="android:colorBackground">@color/kotatsu_m3_background</item>
-		<item name="m3ColorBackground">@color/kotatsu_m3_background</item>
-		<item name="m3ColorExploreButton">@color/kotatsu_m3_exploreButton</item>
-		<item name="m3ColorCardBackground">@color/kotatsu_m3_cardBackground</item>
-		<item name="m3ColorBottomMenuBackground">@color/kotatsu_m3_bottom_menu</item>
 		<item name="colorOnBackground">@color/kotatsu_onSurface</item>
 		<item name="colorError">@color/error</item>
 		<item name="colorErrorContainer">@color/errorContainer</item>
@@ -91,11 +86,9 @@
 		<item name="circularProgressIndicatorStyle">
 			@style/Widget.Kotatsu.CircularProgressIndicator
 		</item>
-		<item name="linearProgressIndicatorStyle">@style/Widget.Kotatsu.LinearProgressIndicator
-		</item>
+		<item name="linearProgressIndicatorStyle">@style/Widget.Kotatsu.LinearProgressIndicator</item>
 		<item name="bottomSheetDragHandleStyle">@style/Widget.Kotatsu.BottomSheet.DragHandle</item>
 		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>
-		<item name="m3SpinnerStyle">@style/Widget.Kotatsu.Material3.Spinner</item>
 
 		<!-- Text appearance -->
 		<item name="actionMenuTextAppearance">@style/TextAppearance.Kotatsu.Menu</item>

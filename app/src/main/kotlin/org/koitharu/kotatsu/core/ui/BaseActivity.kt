@@ -127,10 +127,10 @@ abstract class BaseActivity<B : ViewBinding> :
 		val actionModeColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			ColorUtils.compositeColors(
 				ContextCompat.getColor(this, com.google.android.material.R.color.m3_appbar_overlay_color),
-				getThemeColor(R.attr.m3ColorBackground),
+				getThemeColor(com.google.android.material.R.attr.colorSurface),
 			)
 		} else {
-			ContextCompat.getColor(this, R.color.kotatsu_m3_background)
+			ContextCompat.getColor(this, R.color.kotatsu_background)
 		}
 		defaultStatusBarColor = window.statusBarColor
 		window.statusBarColor = actionModeColor
