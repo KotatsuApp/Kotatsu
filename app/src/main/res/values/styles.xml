@@ -169,6 +169,10 @@
 		<item name="scrollerOffset">@dimen/grid_spacing_outer</item>
 	</style>
 
+	<style name="Widget.Kotatsu.DotIndicator" parent="">
+
+	</style>
+
 	<style name="Widget.Kotatsu.ListItemTextView" parent="">
 		<item name="android:textColor">@color/list_item_text_color</item>
 		<item name="backgroundFillColor">@color/list_item_background_color</item>

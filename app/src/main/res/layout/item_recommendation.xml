@@ -2,6 +2,7 @@
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical">
@@ -17,8 +18,11 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_horizontal"
 		android:layout_marginVertical="@dimen/margin_small"
+		app:dotAlpha="0.6"
 		app:dotSize="8dp"
-		app:dotSpacing="6dp" />
+		app:dotSpacing="4dp"
+		tools:max="6"
+		tools:progress="2" />
 
 </LinearLayout>
 

@@ -15,17 +15,23 @@ import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.measureDimension
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.toIntUp
+import com.google.android.material.R as materialR
 
 class DotsIndicator @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
-	defStyleAttr: Int = 0,
+	defStyleAttr: Int = R.attr.dotIndicatorStyle,
 ) : View(context, attrs, defStyleAttr) {
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 	private var indicatorSize = context.resources.resolveDp(12f)
 	private var dotSpacing = 0f
+	private var smallDotScale = 0.33f
+	private var smallDotAlpha = 0.6f
 	private var positionOffset: Float = 0f
+	private var position: Int = 0
+	private val inset = context.resources.resolveDp(1f)
+
 	var max: Int = 6
 		set(value) {
 			if (field != value) {
@@ -34,23 +40,28 @@ class DotsIndicator @JvmOverloads constructor(
 				invalidate()
 			}
 		}
-	var position: Int = 2
+	var progress: Int
+		get() = position
 		set(value) {
-			if (field != value) {
-				field = value
+			if (position != value) {
+				position = value
 				invalidate()
 			}
 		}
 
 	init {
-		paint.strokeWidth = context.resources.resolveDp(1.5f)
+		paint.style = Paint.Style.FILL
 		context.withStyledAttributes(attrs, R.styleable.DotsIndicator, defStyleAttr) {
 			paint.color = getColor(
 				R.styleable.DotsIndicator_dotColor,
-				context.getThemeColor(com.google.android.material.R.attr.colorPrimary, Color.DKGRAY),
+				context.getThemeColor(materialR.attr.colorOnBackground, Color.DKGRAY),
 			)
 			indicatorSize = getDimension(R.styleable.DotsIndicator_dotSize, indicatorSize)
 			dotSpacing = getDimension(R.styleable.DotsIndicator_dotSpacing, dotSpacing)
+			smallDotScale = getFloat(R.styleable.DotsIndicator_dotScale, smallDotScale).coerceIn(0f, 1f)
+			smallDotAlpha = getFloat(R.styleable.DotsIndicator_dotAlpha, smallDotAlpha).coerceIn(0f, 1f)
+			max = getInt(R.styleable.DotsIndicator_android_max, max)
+			position = getInt(R.styleable.DotsIndicator_android_progress, position)
 		}
 	}
 
@@ -59,26 +70,21 @@ class DotsIndicator @JvmOverloads constructor(
 		val dotSize = getDotSize()
 		val y = paddingTop + (height - paddingTop - paddingBottom) / 2f
 		var x = paddingLeft + dotSize / 2f
-		val radius = dotSize / 2f - paint.strokeWidth
+		val radius = dotSize / 2f - inset
 		val spacing = (width - paddingLeft - paddingRight) / max.toFloat() - dotSize
 		x += spacing / 2f
-		paint.style = Paint.Style.STROKE
 		for (i in 0 until max) {
-			canvas.drawCircle(x, y, radius, paint)
-			if (i == position) {
-				paint.style = Paint.Style.FILL
-				paint.alpha = (255 * (1f - positionOffset)).toInt()
-				canvas.drawCircle(x, y, radius, paint)
-				paint.alpha = 255
-				paint.style = Paint.Style.STROKE
+			val scale = when (i) {
+				position -> (1f - smallDotScale) * (1f - positionOffset) + smallDotScale
+				position + 1 -> (1f - smallDotScale) * positionOffset + smallDotScale
+				else -> smallDotScale
 			}
-			if (i == position + 1 && positionOffset > 0f) {
-				paint.style = Paint.Style.FILL
-				paint.alpha = (255 * positionOffset).toInt()
-				canvas.drawCircle(x, y, radius, paint)
-				paint.alpha = 255
-				paint.style = Paint.Style.STROKE
-			}
+			paint.alpha = (255 * when (i) {
+				position -> (1f - smallDotAlpha) * (1f - positionOffset) + smallDotAlpha
+				position + 1 -> (1f - smallDotAlpha) * positionOffset + smallDotAlpha
+				else -> smallDotAlpha
+			}).toInt()
+			canvas.drawCircle(x, y, radius * scale, paint)
 			x += spacing + dotSize
 		}
 	}
@@ -113,11 +119,6 @@ class DotsIndicator @JvmOverloads constructor(
 			this@DotsIndicator.position = position
 			this@DotsIndicator.positionOffset = positionOffset
 			invalidate()
-		}
-
-		override fun onPageSelected(position: Int) {
-			super.onPageSelected(position)
-			this@DotsIndicator.position = position
 		}
 	}
 

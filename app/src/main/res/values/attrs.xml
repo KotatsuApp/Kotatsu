@@ -9,6 +9,7 @@
 	<attr name="fastScrollerStyle" />
 	<attr name="tipViewStyle" />
 	<attr name="progressButtonStyle" />
+	<attr name="dotIndicatorStyle" />
 
 	<!--CoverImageView attrs-->
 	<declare-styleable name="CoverImageView">
@@ -163,8 +164,12 @@
 		<attr name="dotSize" format="dimension">
 			<enum name="fit" value="-1" />
 		</attr>
+		<attr name="dotScale" format="float" />
+		<attr name="dotAlpha" format="float" />
 		<attr name="dotColor" format="color" />
 		<attr name="dotSpacing" format="dimension" />
+		<attr name="android:max" />
+		<attr name="android:progress" />
 	</declare-styleable>
 
 </resources>
