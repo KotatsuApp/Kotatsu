@@ -19,7 +19,8 @@
 		android:layout_gravity="center_horizontal"
 		android:layout_marginVertical="@dimen/margin_small"
 		app:dotAlpha="0.6"
-		app:dotSize="8dp"
+		app:dotScale="0.4"
+		app:dotSize="10dp"
 		app:dotSpacing="4dp"
 		tools:max="6"
 		tools:progress="2" />

@@ -130,7 +130,7 @@ class ExploreViewModel @Inject constructor(
 		val result = ArrayList<ListModel>(sources.size + 3)
 		result += ExploreButtons(randomLoading)
 		if (recommendation.isNotEmpty()) {
-			result += ListHeader(R.string.suggestions, R.string.more)
+			result += ListHeader(R.string.suggestions, R.string.more, R.id.nav_suggestions)
 			result += RecommendationsItem(recommendation.toRecommendationList())
 		}
 		if (sources.isNotEmpty()) {
@@ -159,7 +159,7 @@ class ExploreViewModel @Inject constructor(
 	private fun getSuggestionFlow() = isSuggestionsEnabled.mapLatest { isEnabled ->
 		if (isEnabled) {
 			runCatchingCancellable {
-				suggestionRepository.getRandomList(8)
+				suggestionRepository.getRandomList(SUGGESTIONS_COUNT)
 			}.getOrDefault(emptyList())
 		} else {
 			emptyList()
@@ -181,6 +181,7 @@ class ExploreViewModel @Inject constructor(
 	companion object {
 
 		private const val TIP_SUGGESTIONS = "suggestions"
+		private const val SUGGESTIONS_COUNT = 8
 		const val TIP_NEW_SOURCES = "new_sources"
 	}
 }

@@ -23,6 +23,10 @@ abstract class SuggestionDao {
 	@Query("SELECT * FROM suggestions ORDER BY RANDOM() LIMIT 1")
 	abstract suspend fun getRandom(): SuggestionWithManga?
 
+	@Transaction
+	@Query("SELECT * FROM suggestions ORDER BY RANDOM() LIMIT :limit")
+	abstract suspend fun getRandom(limit: Int): List<SuggestionWithManga>
+
 	@Query("SELECT COUNT(*) FROM suggestions")
 	abstract suspend fun count(): Int
 
