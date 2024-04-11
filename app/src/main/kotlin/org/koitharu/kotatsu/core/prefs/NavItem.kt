@@ -17,12 +17,13 @@ enum class NavItem(
 	EXPLORE(R.id.nav_explore, R.string.explore, R.drawable.ic_explore_selector),
 	SUGGESTIONS(R.id.nav_suggestions, R.string.suggestions, R.drawable.ic_suggestion_selector),
 	FEED(R.id.nav_feed, R.string.feed, R.drawable.ic_feed_selector),
+	UPDATED(R.id.nav_updated, R.string.updated, R.drawable.ic_updated_selector),
 	BOOKMARKS(R.id.nav_bookmarks, R.string.bookmarks, R.drawable.ic_bookmark_selector),
 	;
 
 	fun isAvailable(settings: AppSettings): Boolean = when (this) {
 		SUGGESTIONS -> settings.isSuggestionsEnabled
-		FEED -> settings.isTrackerEnabled
+		UPDATED, FEED -> settings.isTrackerEnabled
 		else -> true
 	}
 }

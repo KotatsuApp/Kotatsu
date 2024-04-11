@@ -34,6 +34,7 @@ import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
 import org.koitharu.kotatsu.tracker.ui.feed.FeedFragment
+import org.koitharu.kotatsu.tracker.ui.updates.UpdatesFragment
 import java.util.LinkedList
 import com.google.android.material.R as materialR
 
@@ -144,6 +145,7 @@ class MainNavigationDelegate(
 				R.id.nav_local -> LocalListFragment::class.java
 				R.id.nav_suggestions -> SuggestionsFragment::class.java
 				R.id.nav_bookmarks -> BookmarksFragment::class.java
+				R.id.nav_updated -> UpdatesFragment::class.java
 				else -> return false
 			},
 		)
@@ -157,6 +159,7 @@ class MainNavigationDelegate(
 		is LocalListFragment -> R.id.nav_local
 		is SuggestionsFragment -> R.id.nav_suggestions
 		is BookmarksFragment -> R.id.nav_bookmarks
+		is UpdatesFragment -> R.id.nav_updated
 		else -> 0
 	}
 
