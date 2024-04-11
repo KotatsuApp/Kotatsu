@@ -96,6 +96,13 @@ class SettingsActivity :
 			true
 		}
 
+		R.id.action_tracker -> {
+			val intent = Intent()
+			intent.component = ComponentName(this, "org.koitharu.kotatsu.tracker.ui.debug.TrackerDebugActivity")
+			startActivity(intent)
+			true
+		}
+
 		else -> super.onOptionsItemSelected(item)
 	}
 

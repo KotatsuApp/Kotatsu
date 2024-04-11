@@ -18,6 +18,10 @@ abstract class TracksDao {
 	@Query("SELECT * FROM tracks ORDER BY last_check_time ASC LIMIT :limit OFFSET :offset")
 	abstract suspend fun findAll(offset: Int, limit: Int): List<TrackWithManga>
 
+	@Transaction
+	@Query("SELECT * FROM tracks ORDER BY last_check_time DESC")
+	abstract fun observeAll(): Flow<List<TrackWithManga>>
+
 	@Query("SELECT manga_id FROM tracks")
 	abstract suspend fun findAllIds(): LongArray
 

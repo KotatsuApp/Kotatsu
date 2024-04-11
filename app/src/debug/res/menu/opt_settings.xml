@@ -8,4 +8,9 @@
 		android:title="@string/leak_canary_display_activity_label"
 		app:showAsAction="never" />
 
+	<item
+		android:id="@id/action_tracker"
+		android:title="@string/check_for_new_chapters"
+		app:showAsAction="never" />
+
 </menu>

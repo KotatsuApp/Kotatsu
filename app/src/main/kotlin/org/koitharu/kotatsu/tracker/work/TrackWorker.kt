@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -337,8 +338,9 @@ class TrackWorker @AssistedInject constructor(
 		}
 
 		fun startNow() {
-			val constraints =
-				Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+			val constraints = Constraints.Builder()
+				.setRequiredNetworkType(NetworkType.CONNECTED)
+				.build()
 			val request = OneTimeWorkRequestBuilder<TrackWorker>()
 				.setConstraints(constraints)
 				.addTag(TAG_ONESHOT)
@@ -370,6 +372,6 @@ class TrackWorker @AssistedInject constructor(
 		const val MAX_ATTEMPTS = 3
 		const val DATA_KEY_SUCCESS = "success"
 		const val DATA_KEY_FAILED = "failed"
-		const val BATCH_SIZE = 20
+		val BATCH_SIZE = if (BuildConfig.DEBUG) 20 else 46
 	}
 }
