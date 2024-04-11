@@ -95,7 +95,7 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name="org.koitharu.kotatsu.details.ui.DetailsActivity2"
+			android:name="org.koitharu.kotatsu.details.ui.DetailsActivity"
 			android:exported="true">
 			<intent-filter>
 				<action android:name="${applicationId}.action.VIEW_MANGA" />

@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.reader.ui.thumbnails
+package org.koitharu.kotatsu.details.ui.pager.pages
 
 import android.content.Context
 import android.webkit.MimeTypeMap

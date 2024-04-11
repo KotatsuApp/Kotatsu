@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentActivity
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
 import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
-import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
 import org.koitharu.kotatsu.settings.SettingsActivity
 
 class ReaderBottomMenuProvider(

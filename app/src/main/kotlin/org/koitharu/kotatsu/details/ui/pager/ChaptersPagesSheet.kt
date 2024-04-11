@@ -39,7 +39,7 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		disableFitToContents()
 
 		val args = arguments ?: Bundle.EMPTY
-		val adapter = DetailsPagerAdapter2(this, args.getBoolean(ARG_SHOW_PAGES, settings.isPagesTabEnabled))
+		val adapter = ChaptersPagesAdapter(this, args.getBoolean(ARG_SHOW_PAGES, settings.isPagesTabEnabled))
 		binding.pager.recyclerView?.isNestedScrollingEnabled = false
 		binding.pager.offscreenPageLimit = adapter.itemCount
 		binding.pager.adapter = adapter

@@ -8,93 +8,118 @@ import android.text.style.DynamicDrawableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.text.style.RelativeSizeSpan
-import android.transition.AutoTransition
-import android.transition.Slide
 import android.transition.TransitionManager
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
-import androidx.core.view.MenuHost
+import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.preference.PreferenceManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
+import coil.transform.CircleCropTransformation
+import coil.util.CoilUtils
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.bookmarks.domain.Bookmark
+import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.model.iconResId
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.model.titleResId
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaIntent
-import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.BaseListAdapter
+import org.koitharu.kotatsu.core.ui.image.ChipIconTarget
+import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
-import org.koitharu.kotatsu.core.util.ext.doOnExpansionsChanged
-import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.ViewBadge
+import org.koitharu.kotatsu.core.util.ext.crossfade
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
-import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
-import org.koitharu.kotatsu.core.util.ext.measureHeight
-import org.koitharu.kotatsu.core.util.ext.menuView
+import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.isTextTruncated
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.recyclerView
-import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
-import org.koitharu.kotatsu.core.util.ext.setNavigationIconSafe
+import org.koitharu.kotatsu.core.util.ext.parentView
+import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
+import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
+import org.koitharu.kotatsu.details.data.MangaDetails
+import org.koitharu.kotatsu.details.data.ReadingTime
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
-import org.koitharu.kotatsu.details.ui.pager.DetailsPagerAdapter
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
+import org.koitharu.kotatsu.details.ui.related.RelatedMangaActivity
+import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
+import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.main.ui.owners.NoModalBottomSheetOwner
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
+import org.koitharu.kotatsu.image.ui.ImageActivity
+import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.ui.adapter.ListItemType
+import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
+import org.koitharu.kotatsu.local.ui.info.LocalInfoDialog
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
-import org.koitharu.kotatsu.reader.ui.thumbnails.PagesThumbnailsSheet
-import java.lang.ref.WeakReference
+import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
+import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
+import org.koitharu.kotatsu.search.ui.MangaListActivity
+import org.koitharu.kotatsu.search.ui.SearchActivity
+import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
-@Deprecated("")
 @AndroidEntryPoint
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
 	View.OnClickListener,
-	NoModalBottomSheetOwner,
-	View.OnLongClickListener,
-	PopupMenu.OnMenuItemClickListener {
+	View.OnLongClickListener, PopupMenu.OnMenuItemClickListener, View.OnLayoutChangeListener,
+	ViewTreeObserver.OnDrawListener, ChipsView.OnChipClickListener, OnListItemClickListener<Bookmark> {
 
 	@Inject
-	lateinit var appShortcutManager: AppShortcutManager
+	lateinit var shortcutManager: AppShortcutManager
 
 	@Inject
-	lateinit var settings: AppSettings
+	lateinit var coil: ImageLoader
 
-	private var buttonTip: WeakReference<ButtonTip>? = null
+	@Inject
+	lateinit var tagHighlighter: ListExtraProvider
 
 	private val viewModel: DetailsViewModel by viewModels()
 
-	val secondaryMenuHost: MenuHost
-		get() = viewBinding.toolbarChapters ?: this
-
-	var bottomSheetMediator: ChaptersBottomSheetMediator? = null
-		private set
+	private lateinit var chaptersBadge: ViewBadge
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -106,78 +131,157 @@ class DetailsActivity :
 		viewBinding.buttonRead.setOnClickListener(this)
 		viewBinding.buttonRead.setOnLongClickListener(this)
 		viewBinding.buttonRead.setOnContextClickListenerCompat(this)
-		viewBinding.buttonDropdown.setOnClickListener(this)
+		viewBinding.buttonChapters?.setOnClickListener(this)
+		viewBinding.infoLayout.chipBranch.setOnClickListener(this)
+		viewBinding.infoLayout.chipSize.setOnClickListener(this)
+		viewBinding.infoLayout.chipSource.setOnClickListener(this)
+		viewBinding.infoLayout.chipFavorite.setOnClickListener(this)
+		viewBinding.infoLayout.chipAuthor.setOnClickListener(this)
+		viewBinding.infoLayout.chipTime.setOnClickListener(this)
+		viewBinding.imageViewCover.setOnClickListener(this)
+		viewBinding.buttonDescriptionMore.setOnClickListener(this)
+		viewBinding.buttonScrobblingMore.setOnClickListener(this)
+		viewBinding.buttonRelatedMore.setOnClickListener(this)
+		viewBinding.infoLayout.chipSource.setOnClickListener(this)
+		viewBinding.infoLayout.chipSize.setOnClickListener(this)
+		viewBinding.textViewDescription.addOnLayoutChangeListener(this)
+		viewBinding.textViewDescription.viewTreeObserver.addOnDrawListener(this)
+		viewBinding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
+		viewBinding.chipsTags.onChipClickListener = this
+		viewBinding.recyclerViewRelated.addItemDecoration(
+			SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)),
+		)
+		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
 
-		if (viewBinding.layoutBottom != null) {
-			val behavior = BottomSheetBehavior.from(checkNotNull(viewBinding.layoutBottom))
-			val bsMediator = ChaptersBottomSheetMediator(behavior, viewBinding.pager, viewBinding.tabs)
-			actionModeDelegate.addListener(bsMediator)
-			checkNotNull(viewBinding.layoutBsHeader).addOnLayoutChangeListener(bsMediator)
-			onBackPressedDispatcher.addCallback(bsMediator)
-			bottomSheetMediator = bsMediator
-			behavior.doOnExpansionsChanged(::onChaptersSheetStateChanged)
-			viewBinding.toolbarChapters?.setNavigationOnClickListener {
-				behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-			}
-			viewBinding.toolbarChapters?.setOnGenericMotionListener(bsMediator)
-		}
-		initPager()
+		chaptersBadge = ViewBadge(viewBinding.buttonChapters ?: viewBinding.buttonRead, this)
 
-		viewModel.manga.filterNotNull().observe(this, ::onMangaUpdated)
+		viewModel.details.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onError.observeEvent(this, DetailsErrorObserver(this, viewModel, exceptionResolver))
-		viewModel.onActionDone.observeEvent(
-			this,
-			ReversibleActionObserver(viewBinding.containerDetails, viewBinding.layoutBottom),
-		)
-		viewModel.onShowTip.observeEvent(this) { showTip() }
+		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.scrollView, null))
 		viewModel.historyInfo.observe(this, ::onHistoryChanged)
+		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
+		viewModel.scrobblingInfo.observe(this, ::onScrobblingInfoChanged)
+		viewModel.localSize.observe(this, ::onLocalSizeChanged)
+		viewModel.relatedManga.observe(this, ::onRelatedMangaChanged)
+		// viewModel.chapters.observe(this, ::onChaptersChanged)
+		viewModel.readingTime.observe(this, ::onReadingTimeChanged)
 		viewModel.selectedBranch.observe(this) {
-			viewBinding.toolbarChapters?.subtitle = it
-			viewBinding.textViewSubtitle?.textAndVisible = it
+			viewBinding.infoLayout.chipBranch.text = it.ifNullOrEmpty { getString(R.string.system_default) }
 		}
-		val chaptersMenuInvalidator = MenuInvalidator(viewBinding.toolbarChapters ?: this)
-		viewModel.isChaptersReversed.observe(this, chaptersMenuInvalidator)
-		viewModel.isChaptersEmpty.observe(this, chaptersMenuInvalidator)
+		viewModel.favouriteCategories.observe(this, ::onFavoritesChanged)
 		val menuInvalidator = MenuInvalidator(this)
-		viewModel.favouriteCategories.observe(this, menuInvalidator)
 		viewModel.isStatsAvailable.observe(this, menuInvalidator)
 		viewModel.remoteManga.observe(this, menuInvalidator)
 		viewModel.branches.observe(this) {
-			viewBinding.buttonDropdown.isVisible = it.size > 1
+			viewBinding.infoLayout.chipBranch.isVisible = it.size > 1
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
 		viewModel.onDownloadStarted.observeEvent(
 			this,
-			DownloadStartedObserver(viewBinding.containerDetails),
+			DownloadStartedObserver(viewBinding.scrollView),
 		)
 
 		addMenuProvider(
 			DetailsMenuProvider(
 				activity = this,
 				viewModel = viewModel,
-				snackbarHost = viewBinding.pager,
-				appShortcutManager = appShortcutManager,
+				snackbarHost = viewBinding.scrollView,
+				appShortcutManager = shortcutManager,
 			),
 		)
-	}
-
-	override fun getBottomSheetCollapsedHeight(): Int {
-		return viewBinding.layoutBsHeader?.measureHeight() ?: 0
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_read -> openReader(isIncognitoMode = false)
-			R.id.button_dropdown -> showBranchPopupMenu(v)
+			R.id.chip_branch -> showBranchPopupMenu(v)
+			R.id.button_chapters -> {
+				ChaptersPagesSheet.show(supportFragmentManager)
+			}
+
+			R.id.chip_author -> {
+				val manga = viewModel.manga.value ?: return
+				startActivity(
+					SearchActivity.newIntent(
+						context = v.context,
+						source = manga.source,
+						query = manga.author ?: return,
+					),
+				)
+			}
+
+			R.id.chip_source -> {
+				val manga = viewModel.manga.value ?: return
+				startActivity(
+					MangaListActivity.newIntent(
+						context = v.context,
+						source = manga.source,
+					),
+				)
+			}
+
+			R.id.chip_size -> {
+				val manga = viewModel.manga.value ?: return
+				LocalInfoDialog.show(supportFragmentManager, manga)
+			}
+
+			R.id.chip_favorite -> {
+				val manga = viewModel.manga.value ?: return
+				FavoriteSheet.show(supportFragmentManager, manga)
+			}
+
+			R.id.chip_time -> {
+				if (viewModel.isStatsAvailable.value) {
+					val manga = viewModel.manga.value ?: return
+					MangaStatsSheet.show(supportFragmentManager, manga)
+				} else {
+					// TODO
+				}
+			}
+
+			R.id.imageView_cover -> {
+				val manga = viewModel.manga.value ?: return
+				startActivity(
+					ImageActivity.newIntent(
+						v.context,
+						manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
+						manga.source,
+					),
+					scaleUpActivityOptionsOf(v),
+				)
+			}
+
+			R.id.button_description_more -> {
+				val tv = viewBinding.textViewDescription
+				TransitionManager.beginDelayedTransition(tv.parentView)
+				if (tv.maxLines in 1 until Integer.MAX_VALUE) {
+					tv.maxLines = Integer.MAX_VALUE
+				} else {
+					tv.maxLines = resources.getInteger(R.integer.details_description_lines)
+				}
+			}
+
+			R.id.button_scrobbling_more -> {
+				val manga = viewModel.manga.value ?: return
+				ScrobblingSelectorSheet.show(supportFragmentManager, manga, null)
+			}
+
+			R.id.button_related_more -> {
+				val manga = viewModel.manga.value ?: return
+				startActivity(RelatedMangaActivity.newIntent(v.context, manga))
+			}
 		}
+	}
+
+	override fun onChipClick(chip: Chip, data: Any?) {
+		val tag = data as? MangaTag ?: return
+		startActivity(MangaListActivity.newIntent(this, setOf(tag)))
 	}
 
 	override fun onLongClick(v: View): Boolean = when (v.id) {
 		R.id.button_read -> {
-			buttonTip?.get()?.remove()
-			buttonTip = null
 			val menu = PopupMenu(v.context, v)
 			menu.inflate(R.menu.popup_read)
 			menu.menu.findItem(R.id.action_forget)?.isVisible = viewModel.historyInfo.value.run {
@@ -204,46 +308,203 @@ class DetailsActivity :
 				true
 			}
 
-			R.id.action_pages_thumbs -> {
-				val history = viewModel.historyInfo.value.history
-				PagesThumbnailsSheet.show(
-					fm = supportFragmentManager,
-					manga = viewModel.manga.value ?: return false,
-					chapterId = history?.chapterId
-						?: viewModel.chapters.value.firstOrNull()?.chapter?.id
-						?: return false,
-					currentPage = history?.page ?: 0,
-				)
-				true
-			}
-
 			else -> false
 		}
 	}
 
-	private fun onChaptersSheetStateChanged(isExpanded: Boolean) {
-		val toolbar = viewBinding.toolbarChapters ?: return
-		if (isAnimationsEnabled) {
-			val transition = AutoTransition()
-			transition.duration = getAnimationDuration(R.integer.config_shorterAnimTime)
-			TransitionManager.beginDelayedTransition(toolbar, transition)
-		}
-		if (isExpanded) {
-			toolbar.setNavigationIconSafe(materialR.drawable.abc_ic_clear_material)
-		} else {
-			toolbar.navigationIcon = null
-		}
-		toolbar.menuView?.isVisible = isExpanded
-		viewBinding.buttonRead.isGone = isExpanded
+	override fun onItemClick(item: Bookmark, view: View) {
+		startActivity(
+			IntentBuilder(view.context).bookmark(item).incognito(true).build(),
+		)
+		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
 
-	private fun onMangaUpdated(manga: Manga) {
-		title = manga.title
-		val hasChapters = !manga.chapters.isNullOrEmpty()
-		viewBinding.buttonRead.isEnabled = hasChapters
-		invalidateOptionsMenu()
-		showBottomSheet(manga.chapters != null)
-		viewBinding.groupHeader?.isVisible = hasChapters
+	override fun onDraw() {
+		viewBinding.run {
+			buttonDescriptionMore.isVisible = textViewDescription.maxLines == Int.MAX_VALUE ||
+				textViewDescription.isTextTruncated
+		}
+	}
+
+	override fun onLayoutChange(
+		v: View?,
+		left: Int,
+		top: Int,
+		right: Int,
+		bottom: Int,
+		oldLeft: Int,
+		oldTop: Int,
+		oldRight: Int,
+		oldBottom: Int
+	) {
+		with(viewBinding) {
+			buttonDescriptionMore.isVisible = textViewDescription.isTextTruncated
+		}
+	}
+
+	private fun onChaptersChanged(chapters: List<ChapterListItem>?) {
+		// TODO
+	}
+
+	private fun onFavoritesChanged(categories: Set<FavouriteCategory>) {
+		val chip = viewBinding.infoLayout.chipFavorite
+		chip.setChipIconResource(if (categories.isEmpty()) R.drawable.ic_heart_outline else R.drawable.ic_heart)
+		chip.text = if (categories.isEmpty()) {
+			getString(R.string.add_to_favourites)
+		} else {
+			if (categories.size == 1) {
+				categories.first().title.ellipsize(FAV_LABEL_LIMIT)
+			}
+			buildString(FAV_LABEL_LIMIT + 6) {
+				for ((i, cat) in categories.withIndex()) {
+					if (i == 0) {
+						append(cat.title.ellipsize(FAV_LABEL_LIMIT - 4))
+					} else if (length + cat.title.length > FAV_LABEL_LIMIT) {
+						append(", ")
+						append(getString(R.string.list_ellipsize_pattern, categories.size - i))
+						break
+					} else {
+						append(", ")
+						append(cat.title)
+					}
+				}
+			}
+		}
+	}
+
+	private fun onReadingTimeChanged(time: ReadingTime?) {
+		val chip = viewBinding.infoLayout.chipTime
+		chip.textAndVisible = time?.formatShort(chip.resources)
+	}
+
+	private fun onDescriptionChanged(description: CharSequence?) {
+		val tv = viewBinding.textViewDescription
+		if (description.isNullOrBlank()) {
+			tv.setText(R.string.no_description)
+		} else {
+			tv.text = description
+		}
+	}
+
+	private fun onLocalSizeChanged(size: Long) {
+		val chip = viewBinding.infoLayout.chipSize
+		if (size == 0L) {
+			chip.isVisible = false
+		} else {
+			chip.text = FileSize.BYTES.format(chip.context, size)
+			chip.isVisible = true
+		}
+	}
+
+	private fun onRelatedMangaChanged(related: List<MangaItemModel>) {
+		if (related.isEmpty()) {
+			viewBinding.groupRelated.isVisible = false
+			return
+		}
+		val rv = viewBinding.recyclerViewRelated
+
+		@Suppress("UNCHECKED_CAST")
+		val adapter = (rv.adapter as? BaseListAdapter<ListModel>) ?: BaseListAdapter<ListModel>()
+			.addDelegate(
+				ListItemType.MANGA_GRID,
+				mangaGridItemAD(
+					coil, this,
+					StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),
+				) { item, view ->
+					startActivity(newIntent(view.context, item))
+				},
+			).also { rv.adapter = it }
+		adapter.items = related
+		viewBinding.groupRelated.isVisible = true
+	}
+
+	private fun onLoadingStateChanged(isLoading: Boolean) {
+		val button = viewBinding.buttonChapters ?: return
+		if (isLoading) {
+			button.setImageDrawable(
+				CircularProgressDrawable(this).also {
+					it.setStyle(CircularProgressDrawable.LARGE)
+					it.setColorSchemeColors(getThemeColor(materialR.attr.colorControlNormal))
+					it.start()
+				},
+			)
+		} else {
+			button.setImageResource(R.drawable.ic_list_sheet)
+		}
+	}
+
+	private fun onScrobblingInfoChanged(scrobblings: List<ScrobblingInfo>) {
+		var adapter = viewBinding.recyclerViewScrobbling.adapter as? ScrollingInfoAdapter
+		viewBinding.groupScrobbling.isGone = scrobblings.isEmpty()
+		if (adapter != null) {
+			adapter.items = scrobblings
+		} else {
+			adapter = ScrollingInfoAdapter(this, coil, supportFragmentManager)
+			adapter.items = scrobblings
+			viewBinding.recyclerViewScrobbling.adapter = adapter
+			viewBinding.recyclerViewScrobbling.addItemDecoration(ScrobblingItemDecoration())
+		}
+	}
+
+	private fun onMangaUpdated(details: MangaDetails) {
+		with(viewBinding) {
+			val manga = details.toManga()
+			val hasChapters = !manga.chapters.isNullOrEmpty()
+			// Main
+			loadCover(manga)
+			textViewTitle.text = manga.title
+			textViewSubtitle.textAndVisible = manga.altTitle
+			infoLayout.chipAuthor.textAndVisible = manga.author
+			if (manga.hasRating) {
+				ratingBar.rating = manga.rating * ratingBar.numStars
+				ratingBar.isVisible = true
+			} else {
+				ratingBar.isVisible = false
+			}
+
+			manga.state?.let { state ->
+				textViewState.textAndVisible = resources.getString(state.titleResId)
+				imageViewState.setImageResource(state.iconResId)
+			} ?: run {
+				textViewState.isVisible = false
+				imageViewState.isVisible = false
+			}
+
+			if (manga.source == MangaSource.LOCAL || manga.source == MangaSource.DUMMY) {
+				infoLayout.chipSource.isVisible = false
+			} else {
+				infoLayout.chipSource.text = manga.source.title
+				infoLayout.chipSource.isVisible = true
+			}
+
+			textViewNsfw.isVisible = manga.isNsfw
+
+			// Chips
+			bindTags(manga)
+
+			textViewDescription.text = details.description.ifNullOrEmpty { getString(R.string.no_description) }
+
+			viewBinding.infoLayout.chipSource.also { chip ->
+				ImageRequest.Builder(this@DetailsActivity)
+					.data(manga.source.faviconUri())
+					.lifecycle(this@DetailsActivity)
+					.crossfade(false)
+					.size(resources.getDimensionPixelSize(materialR.dimen.m3_chip_icon_size))
+					.target(ChipIconTarget(chip))
+					.placeholder(R.drawable.ic_web)
+					.fallback(R.drawable.ic_web)
+					.error(R.drawable.ic_web)
+					.source(manga.source)
+					.transformations(CircleCropTransformation())
+					.allowRgb565(true)
+					.enqueueWith(coil)
+			}
+
+			buttonChapters?.isEnabled = hasChapters
+			title = manga.title
+			buttonRead.isEnabled = hasChapters
+			invalidateOptionsMenu()
+		}
 	}
 
 	private fun onMangaRemoved(manga: Manga) {
@@ -260,32 +521,25 @@ class DetailsActivity :
 			left = insets.left,
 			right = insets.right,
 		)
-		if (insets.bottom > 0) {
-			window.setNavigationBarTransparentCompat(
-				this,
-				viewBinding.layoutBottom?.elevation ?: 0f,
-				0.9f,
-			)
-		}
 		viewBinding.cardChapters?.updateLayoutParams<MarginLayoutParams> {
-			bottomMargin = insets.bottom + marginEnd
+			val baseOffset = leftMargin
+			bottomMargin = insets.bottom + baseOffset
+			topMargin = insets.bottom + baseOffset
 		}
-		viewBinding.dragHandle?.updateLayoutParams<MarginLayoutParams> {
-			bottomMargin = insets.top
-		}
+		viewBinding.scrollView.updatePadding(
+			bottom = insets.bottom,
+		)
 	}
 
 	private fun onHistoryChanged(info: HistoryInfo) {
 		with(viewBinding.buttonRead) {
 			if (info.history != null) {
-				setText(R.string._continue)
-				setIconResource(if (info.isIncognitoMode) R.drawable.ic_incognito else R.drawable.ic_play)
+				setTitle(R.string._continue)
 			} else {
-				setText(R.string.read)
-				setIconResource(if (info.isIncognitoMode) R.drawable.ic_incognito else R.drawable.ic_play)
+				setTitle(R.string.read)
 			}
 		}
-		val text = when {
+		viewBinding.buttonRead.subtitle = when {
 			!info.isValid -> getString(R.string.loading_)
 			info.currentChapter >= 0 -> getString(
 				R.string.chapter_d_of_d,
@@ -300,20 +554,11 @@ class DetailsActivity :
 				info.totalChapters,
 			)
 		}
-		viewBinding.toolbarChapters?.title = text
-		viewBinding.textViewTitle?.text = text
+		viewBinding.buttonRead.setProgress(info.history?.percent?.coerceIn(0f, 1f) ?: 0f, true)
 	}
 
 	private fun onNewChaptersChanged(count: Int) {
-		val tab = viewBinding.tabs.getTabAt(0) ?: return
-		if (count == 0) {
-			tab.removeBadge()
-		} else {
-			val badge = tab.orCreateBadge
-			badge.horizontalOffsetWithText = -resources.getDimensionPixelOffset(R.dimen.margin_small)
-			badge.number = count
-			badge.isVisible = true
-		}
+		chaptersBadge.counter = count
 	}
 
 	private fun showBranchPopupMenu(v: View) {
@@ -348,8 +593,11 @@ class DetailsActivity :
 					append(branch.count.toString())
 				}
 			}
-			menu.menu.add(Menu.NONE, Menu.NONE, i, title)
+			val item = menu.menu.add(R.id.group_branches, Menu.NONE, i, title)
+			item.isCheckable = true
+			item.isChecked = branch.isSelected
 		}
+		menu.menu.setGroupCheckable(R.id.group_branches, true, true)
 		menu.setOnMenuItemClickListener {
 			viewModel.setSelectedBranch(branches.getOrNull(it.order)?.name)
 			true
@@ -361,7 +609,7 @@ class DetailsActivity :
 		val manga = viewModel.manga.value ?: return
 		val chapterId = viewModel.historyInfo.value.history?.chapterId
 		if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
-			Snackbar.make(viewBinding.containerDetails, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
+			Snackbar.make(viewBinding.scrollView, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
 				.show()
 		} else {
 			startActivity(
@@ -377,24 +625,47 @@ class DetailsActivity :
 		}
 	}
 
-	private fun initPager() {
-		val adapter = DetailsPagerAdapter(this, settings)
-		viewBinding.pager.recyclerView?.isNestedScrollingEnabled = false
-		viewBinding.pager.offscreenPageLimit = 1
-		viewBinding.pager.adapter = adapter
-		TabLayoutMediator(viewBinding.tabs, viewBinding.pager, adapter).attach()
-		viewBinding.pager.setCurrentItem(settings.defaultDetailsTab, false)
-		viewBinding.tabs.isVisible = adapter.itemCount > 1
+	private fun bindTags(manga: Manga) {
+		viewBinding.chipsTags.isVisible = manga.tags.isNotEmpty()
+		viewBinding.chipsTags.setChips(
+			manga.tags.map { tag ->
+				ChipsView.ChipModel(
+					title = tag.title,
+					tint = tagHighlighter.getTagTint(tag),
+					icon = 0,
+					data = tag,
+					isCheckable = false,
+					isChecked = false,
+				)
+			},
+		)
 	}
 
-	private fun showBottomSheet(isVisible: Boolean) {
-		val view = viewBinding.layoutBottom ?: return
-		if (view.isVisible == isVisible) return
-		val transition = Slide(Gravity.BOTTOM)
-		transition.addTarget(view)
-		transition.interpolator = AccelerateDecelerateInterpolator()
-		TransitionManager.beginDelayedTransition(viewBinding.root as ViewGroup, transition)
-		view.isVisible = isVisible
+	private fun loadCover(manga: Manga) {
+		val imageUrl = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }
+		val lastResult = CoilUtils.result(viewBinding.imageViewCover)
+		if (lastResult is SuccessResult && lastResult.request.data == imageUrl) {
+			return
+		}
+		val request = ImageRequest.Builder(this)
+			.target(viewBinding.imageViewCover)
+			.size(CoverSizeResolver(viewBinding.imageViewCover))
+			.data(imageUrl)
+			.tag(manga.source)
+			.crossfade(this)
+			.lifecycle(this)
+			.placeholderMemoryCacheKey(manga.coverUrl)
+		val previousDrawable = lastResult?.drawable
+		if (previousDrawable != null) {
+			request.fallback(previousDrawable)
+				.placeholder(previousDrawable)
+				.error(previousDrawable)
+		} else {
+			request.fallback(R.drawable.ic_placeholder)
+				.placeholder(R.drawable.ic_placeholder)
+				.error(R.drawable.ic_error_placeholder)
+		}
+		request.enqueueWith(coil)
 	}
 
 	private class PrefetchObserver(
@@ -415,34 +686,18 @@ class DetailsActivity :
 		}
 	}
 
-	private fun showTip() {
-		val tip = ButtonTip(viewBinding.root as ViewGroup, insetsDelegate, viewModel)
-		tip.addToRoot()
-		buttonTip = WeakReference(tip)
-	}
-
 	companion object {
 
-		const val TIP_BUTTON = "btn_read"
-		private const val KEY_NEW_ACTIVITY = "new_details_screen"
+		private const val FAV_LABEL_LIMIT = 10
 
 		fun newIntent(context: Context, manga: Manga): Intent {
-			return getActivityIntent(context)
+			return Intent(context, DetailsActivity::class.java)
 				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
 		}
 
 		fun newIntent(context: Context, mangaId: Long): Intent {
-			return getActivityIntent(context)
+			return Intent(context, DetailsActivity::class.java)
 				.putExtra(MangaIntent.KEY_ID, mangaId)
-		}
-
-		private fun getActivityIntent(context: Context): Intent {
-			val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-			val useNewActivity = prefs.getBoolean(KEY_NEW_ACTIVITY, true)
-			return Intent(
-				context,
-				if (useNewActivity) DetailsActivity2::class.java else DetailsActivity::class.java,
-			)
 		}
 	}
 }

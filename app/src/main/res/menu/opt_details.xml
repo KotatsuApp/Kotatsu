@@ -4,13 +4,6 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/action_favourite"
-		android:icon="@drawable/ic_heart_outline"
-		android:orderInCategory="10"
-		android:title="@string/add_to_favourites"
-		app:showAsAction="ifRoom" />
-
-	<item
 		android:id="@+id/action_share"
 		android:icon="?actionModeShareDrawable"
 		android:orderInCategory="15"

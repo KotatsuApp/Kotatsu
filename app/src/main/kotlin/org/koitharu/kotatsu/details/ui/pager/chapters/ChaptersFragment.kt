@@ -10,7 +10,6 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -28,8 +27,6 @@ import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
-import org.koitharu.kotatsu.details.ui.ChaptersMenuProvider
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
@@ -95,12 +92,6 @@ class ChaptersFragment :
 		}
 		viewModel.onSelectChapter.observeEvent(viewLifecycleOwner) {
 			selectionController?.onItemLongClick(it)
-		}
-		val detailsActivity = activity as? DetailsActivity
-		if (detailsActivity != null) {
-			val menuProvider = ChaptersMenuProvider(viewModel, detailsActivity.bottomSheetMediator)
-			activity?.onBackPressedDispatcher?.addCallback(menuProvider)
-			detailsActivity.secondaryMenuHost.addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 		}
 	}
 

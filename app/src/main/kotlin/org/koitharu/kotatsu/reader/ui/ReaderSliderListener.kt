@@ -2,11 +2,10 @@ package org.koitharu.kotatsu.reader.ui
 
 import com.google.android.material.slider.Slider
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
-import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 
 class ReaderSliderListener(
-	private val pageSelectListener: OnPageSelectListener,
 	private val viewModel: ReaderViewModel,
+	private val callback: ReaderNavigationCallback,
 ) : Slider.OnChangeListener, Slider.OnSliderTouchListener {
 
 	private var isChanged = false
@@ -43,6 +42,6 @@ class ReaderSliderListener(
 		val pages = viewModel.getCurrentChapterPages()
 		val page = pages?.getOrNull(index) ?: return
 		val chapterId = viewModel.getCurrentState()?.chapterId ?: return
-		pageSelectListener.onPageSelected(ReaderPage(page, index, chapterId))
+		callback.onPageSelected(ReaderPage(page, index, chapterId))
 	}
 }

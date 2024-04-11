@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.reader.ui.thumbnails.adapter
+package org.koitharu.kotatsu.details.ui.pager.pages
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
@@ -9,7 +9,6 @@ import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 
 class PageThumbnailAdapter(
 	coil: ImageLoader,

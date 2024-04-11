@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.reader.ui.thumbnails.adapter
+package org.koitharu.kotatsu.details.ui.pager.pages
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
@@ -15,7 +15,6 @@ import org.koitharu.kotatsu.core.util.ext.setTextColorAttr
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 import com.google.android.material.R as materialR
 
 fun pageThumbnailAD(

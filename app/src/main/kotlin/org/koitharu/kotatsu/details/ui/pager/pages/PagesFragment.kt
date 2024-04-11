@@ -37,8 +37,6 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
-import org.koitharu.kotatsu.reader.ui.thumbnails.adapter.PageThumbnailAdapter
 import javax.inject.Inject
 import kotlin.math.roundToInt
 

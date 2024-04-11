@@ -16,7 +16,6 @@ import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
-import org.koitharu.kotatsu.reader.ui.thumbnails.PageThumbnail
 import javax.inject.Inject
 
 @HiltViewModel

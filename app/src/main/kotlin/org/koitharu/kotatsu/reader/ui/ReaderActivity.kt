@@ -61,16 +61,13 @@ import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.tapgrid.TapGridDispatcher
-import org.koitharu.kotatsu.reader.ui.thumbnails.OnPageSelectListener
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class ReaderActivity :
 	BaseFullscreenActivity<ActivityReaderBinding>(),
-	ChaptersSheet.OnChapterChangeListener,
 	TapGridDispatcher.OnGridTouchListener,
-	OnPageSelectListener,
 	ReaderConfigSheet.Callback,
 	ReaderControlDelegate.OnInteractionListener,
 	OnApplyWindowInsetsListener,
@@ -119,7 +116,7 @@ class ReaderActivity :
 		controlDelegate = ReaderControlDelegate(resources, settings, tapGridSettings, this)
 		viewBinding.slider.setLabelFormatter(PageLabelFormatter())
 		viewBinding.zoomControl.listener = this
-		ReaderSliderListener(this, viewModel).attachToSlider(viewBinding.slider)
+		ReaderSliderListener(viewModel, this).attachToSlider(viewBinding.slider)
 		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
 
