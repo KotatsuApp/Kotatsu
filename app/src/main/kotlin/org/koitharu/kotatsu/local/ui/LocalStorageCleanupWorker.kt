@@ -48,7 +48,7 @@ class LocalStorageCleanupWorker @AssistedInject constructor(
 			val constraints = Constraints.Builder()
 				.setRequiresBatteryNotLow(true)
 				.build()
-			val request = OneTimeWorkRequestBuilder<ImportWorker>()
+			val request = OneTimeWorkRequestBuilder<LocalStorageCleanupWorker>()
 				.setConstraints(constraints)
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.MINUTES)

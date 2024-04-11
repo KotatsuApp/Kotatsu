@@ -66,8 +66,12 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 			storageManager.takePermissions(it)
 		}
 		val ctx = requireContext()
-		ImportWorker.start(ctx, uris)
-		Toast.makeText(ctx, R.string.import_will_start_soon, Toast.LENGTH_LONG).show()
+		val msg = if (ImportService.start(ctx, uris)) {
+			R.string.import_will_start_soon
+		} else {
+			R.string.error_occurred
+		}
+		Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
 		dismiss()
 	}
 

@@ -282,6 +282,9 @@
 			android:name="org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService"
 			android:foregroundServiceType="dataSync" />
 		<service
+			android:name="org.koitharu.kotatsu.local.ui.ImportService"
+			android:foregroundServiceType="dataSync" />
+		<service
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />
 		<service

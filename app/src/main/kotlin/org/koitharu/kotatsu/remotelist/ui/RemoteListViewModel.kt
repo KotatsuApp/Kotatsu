@@ -92,7 +92,7 @@ open class RemoteListViewModel @Inject constructor(
 			}
 			onBuildList(this)
 		}
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, listOf(LoadingState))
 
 	init {
 		filter.observeState()

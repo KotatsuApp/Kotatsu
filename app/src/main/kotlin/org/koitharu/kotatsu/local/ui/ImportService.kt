@@ -3,63 +3,75 @@ package org.koitharu.kotatsu.local.ui
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.net.Uri
-import android.os.Build
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
-import androidx.hilt.work.HiltWorker
-import androidx.work.Constraints
-import androidx.work.CoroutineWorker
-import androidx.work.Data
-import androidx.work.ForegroundInfo
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
-import androidx.work.WorkManager
-import androidx.work.WorkerParameters
+import androidx.core.app.ServiceCompat
+import androidx.core.content.ContextCompat
 import coil.ImageLoader
 import coil.request.ImageRequest
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ErrorReporterReceiver
+import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.local.data.importer.SingleMangaImporter
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import javax.inject.Inject
 
-@HiltWorker
-class ImportWorker @AssistedInject constructor(
-	@Assisted appContext: Context,
-	@Assisted params: WorkerParameters,
-	private val importer: SingleMangaImporter,
-	private val coil: ImageLoader
-) : CoroutineWorker(appContext, params) {
+@AndroidEntryPoint
+class ImportService : CoroutineIntentService() {
 
-	private val notificationManager by lazy { NotificationManagerCompat.from(appContext) }
+	@Inject
+	lateinit var importer: SingleMangaImporter
 
-	override suspend fun doWork(): Result {
-		val uri = inputData.getString(DATA_URI)?.toUriOrNull() ?: return Result.failure()
-		setForeground(getForegroundInfo())
-		val result = runCatchingCancellable {
-			importer.import(uri).manga
-		}
-		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-			val notification = buildNotification(result)
-			notificationManager.notify(uri.hashCode(), notification)
-		}
-		return Result.success()
+	@Inject
+	lateinit var coil: ImageLoader
+
+	private lateinit var notificationManager: NotificationManagerCompat
+
+	override fun onCreate() {
+		super.onCreate()
+		notificationManager = NotificationManagerCompat.from(applicationContext)
 	}
 
-	override suspend fun getForegroundInfo(): ForegroundInfo {
+	override suspend fun processIntent(startId: Int, intent: Intent) {
+		val uri = requireNotNull(intent.getStringExtra(DATA_URI)?.toUriOrNull()) { "No unput uri" }
+		startForeground()
+		try {
+			val result = runCatchingCancellable {
+				importer.import(uri).manga
+			}
+			if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+				val notification = buildNotification(result)
+				notificationManager.notify(TAG, startId, notification)
+			}
+		} finally {
+			ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+		}
+	}
+
+	override fun onError(startId: Int, error: Throwable) {
+		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+			val notification = runBlocking { buildNotification(Result.failure(error)) }
+			notificationManager.notify(TAG, startId, notification)
+		}
+	}
+
+	private suspend fun startForeground() {
 		val title = applicationContext.getString(R.string.importing_manga)
-		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
+		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
 			.setName(title)
 			.setShowBadge(false)
 			.setVibrationEnabled(false)
@@ -80,14 +92,15 @@ class ImportWorker @AssistedInject constructor(
 			.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 			.build()
 
-		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			ForegroundInfo(FOREGROUND_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
-		} else {
-			ForegroundInfo(FOREGROUND_NOTIFICATION_ID, notification)
-		}
+		ServiceCompat.startForeground(
+			this,
+			FOREGROUND_NOTIFICATION_ID,
+			notification,
+			ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,
+		)
 	}
 
-	private suspend fun buildNotification(result: kotlin.Result<Manga>): Notification {
+	private suspend fun buildNotification(result: Result<Manga>): Notification {
 		val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 			.setDefaults(0)
@@ -135,26 +148,21 @@ class ImportWorker @AssistedInject constructor(
 
 	companion object {
 
-		const val DATA_URI = "uri"
-
+		private const val DATA_URI = "uri"
 		private const val TAG = "import"
 		private const val CHANNEL_ID = "importing"
 		private const val FOREGROUND_NOTIFICATION_ID = 37
 
-		fun start(context: Context, uris: Iterable<Uri>) {
-			val constraints = Constraints.Builder()
-				.setRequiresStorageNotLow(true)
-				.build()
-			val requests = uris.map { uri ->
-				OneTimeWorkRequestBuilder<ImportWorker>()
-					.setConstraints(constraints)
-					.addTag(TAG)
-					.setInputData(Data.Builder().putString(DATA_URI, uri.toString()).build())
-					.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-					.build()
+		fun start(context: Context, uris: Iterable<Uri>): Boolean = try {
+			for (uri in uris) {
+				val intent = Intent(context, ImportService::class.java)
+				intent.putExtra(DATA_URI, uri.toString())
+				ContextCompat.startForegroundService(context, intent)
 			}
-			WorkManager.getInstance(context)
-				.enqueue(requests)
+			true
+		} catch (e: Exception) {
+			e.printStackTraceDebug()
+			false
 		}
 	}
 }
