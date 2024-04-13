@@ -635,4 +635,6 @@
     <string name="unsupported_source">Esta fuente del manga no es compatible</string>
     <string name="show_pages_thumbs">Mostrar miniaturas de las páginas</string>
     <string name="show_pages_thumbs_summary">Habilite la pestaña \"Páginas\" en la pantalla de detalles</string>
+    <string name="error_no_data_received">No se recibieron datos del servidor</string>
+    <string name="unsupported_backup_message">Por favor, seleccione un archivo de copia de seguridad de Kotatsu adecuado</string>
 </resources>
