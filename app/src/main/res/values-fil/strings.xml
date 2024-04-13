@@ -635,4 +635,13 @@
     <string name="unsupported_source">Ang manga source na ito ay hindi suportado</string>
     <string name="show_pages_thumbs">Ipakita ang mga thumbnail ng pahina</string>
     <string name="show_pages_thumbs_summary">Paganahin ang tab na \"Mga Pahina\" sa screen ng mga detalye</string>
+    <string name="error_no_data_received">Walang natanggap na data mula sa server</string>
+    <string name="unsupported_backup_message">Mangyaring pumili ng wastong backup file ng Kotatsu</string>
+    <string name="hours_short">%d o</string>
+    <string name="minutes_short">%d m</string>
+    <string name="hours_minutes_short">%1$d o %2$d m</string>
+    <string name="fix">Ayusin</string>
+    <string name="missing_storage_permission">Walang pahintulot na ma-access ang manga sa external storage</string>
+    <string name="last_used">Huling nagamit</string>
+    <string name="show_updated">Ipakita ang mas bago</string>
 </resources>
