@@ -48,7 +48,7 @@
     <string name="pages">Сторінки</string>
     <string name="text_clear_history_prompt">Очистити всю історію читання перманентно\?</string>
     <string name="remove">Видалити</string>
-    <string name="_s_deleted_from_local_storage">\"%s\" видалено з локального сховища</string>
+    <string name="_s_deleted_from_local_storage">«%s» видалено з локального сховища</string>
     <string name="save_page">Зберегти сторінку</string>
     <string name="page_saved">Збережено</string>
     <string name="share_image">Поділитись зображенням</string>
@@ -63,7 +63,7 @@
     <string name="grid_size">Розмір сітки</string>
     <string name="search_on_s">Пошук по %s</string>
     <string name="delete_manga">Видалити манґу</string>
-    <string name="text_delete_local_manga">Назавжди видалити \"%s\" із пристрою?</string>
+    <string name="text_delete_local_manga">Назавжди видалити «%s» із пристрою?</string>
     <string name="reader_settings">Налаштування читача</string>
     <string name="switch_pages">Перегортання сторінок</string>
     <string name="volume_buttons">Кнопки гучності</string>
@@ -315,11 +315,11 @@
     <string name="account_already_exists">Обліковий запис уже існує</string>
     <string name="sync_title">Синхронізуйте ваші дані</string>
     <string name="canceled">Скасовано</string>
-    <string name="confirm_exit">Натисніть Назад ще раз, щоб вийти</string>
+    <string name="confirm_exit">Натисніть «Назад» ще раз, щоб вийти</string>
     <string name="sync">Синхронізація</string>
     <string name="clear_all_history">Очистити всю історію</string>
     <string name="last_2_hours">Останні 2 години</string>
-    <string name="exit_confirmation_summary">Двічі натисніть Назад, щоб вийти зі застосунку</string>
+    <string name="exit_confirmation_summary">Двічі натисніть «Назад», щоб вийти зі застосунку</string>
     <string name="exit_confirmation">Підтвердження виходу</string>
     <string name="removed_from_favourites">Видалено з уподобань</string>
     <string name="other_cache">Інший кеш</string>
@@ -633,4 +633,7 @@
     <string name="delete_read_chapters_prompt">Це призведе до остаточного видалення всіх розділів, позначених як прочитані, з вашого локального сховища. Ви можете завантажити їх пізніше, але імпортовані розділи можуть бути втрачені назавжди</string>
     <string name="enable_source">Увімкнути джерело</string>
     <string name="unsupported_source">Це джерело манги не підтримується</string>
+    <string name="show_pages_thumbs">Показати мініатюри сторінок</string>
+    <string name="show_pages_thumbs_summary">Увімкніть вкладку «Сторінки» на екрані відомостей</string>
+    <string name="error_no_data_received">Жодних даних не було отримано з сервера</string>
 </resources>
