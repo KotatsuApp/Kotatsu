@@ -69,11 +69,11 @@
     <string name="translations">Преводи</string>
     <string name="data_and_privacy">Подаци и приватност</string>
     <string name="network">Мрежа</string>
-    <string name="show_pages_numbers_summary">Прикажите бројеве страница у доњем углу</string>
+    <string name="show_pages_numbers_summary">Прикажи бројеве страница у доњем углу</string>
     <string name="pages_animation_summary">Анимација окретања страница</string>
     <string name="images_proxy_title">Посредни послуживач за оптимизацију слика</string>
     <string name="username">Корисничко име</string>
-    <string name="reader_info_bar_summary">Прикажите тренутно време и напредак читања на врху екрана</string>
+    <string name="reader_info_bar_summary">Прикажи тренутно време и напредак читања на врху екрана</string>
     <string name="authorization_optional">Ауторизација (опционално)</string>
     <string name="images_procy_description">Користите wsrv.nl услуга за смањење употребе саобраћаја и убрзавање учитавања слика ако је могуће</string>
     <string name="manga_branch_title_template">%1$s (%2$s)</string>
@@ -94,7 +94,7 @@
     <string name="new_chapters">Нова поглавља</string>
     <string name="notifications_settings">Подешавања обавештења</string>
     <string name="new_version_s">Нова верзија: %s</string>
-    <string name="about_app_translation_summary">Преведите ову апликацију</string>
+    <string name="about_app_translation_summary">Преведи ову апликацију</string>
     <string name="about_app_translation">Превод</string>
     <string name="screenshots_policy">Политика снимања екрана</string>
     <string name="clear_network_cache">Избриши мрежну кеш меморију</string>
@@ -138,7 +138,7 @@
     <string name="search_history_cleared">Очишћено</string>
     <string name="_s_deleted_from_local_storage">\"%s\" избрисано из локалне меморије</string>
     <string name="_import">Увоз</string>
-    <string name="download">Преузимање</string>
+    <string name="download">Преузми</string>
     <string name="text_shelf_holder_primary">Ваша манга ће бити приказана овде</string>
     <string name="share_s">Подели %s</string>
     <string name="domain">Домен</string>
@@ -169,7 +169,7 @@
     <string name="pick_custom_directory">Изабери прилагођени директоријум</string>
     <string name="no_chapters">Нема поглавља</string>
     <string name="list_options">Листа опција</string>
-    <string name="related_manga_summary">Прикажи листу сродних манги. У неким случајевима може бити нетачна или је неће бити</string>
+    <string name="related_manga_summary">Прикажи листу сродних Манги. У неким случајевима може бити нетачна или је неће бити</string>
     <string name="remove_completed_downloads_confirm">Ваша историја преузимања ће бити трајно избрисана</string>
     <string name="theme_name_dynamic">Динамичка</string>
     <string name="text_clear_cookies_prompt">Бићеш одјављен са свих извора</string>
@@ -185,7 +185,7 @@
     <string name="source_summary_pattern">%1$s, %2$s</string>
     <string name="enable_logging">Омогући дијагностику</string>
     <string name="on_device">На уређају</string>
-    <string name="download_option_whole_manga">Цела манга</string>
+    <string name="download_option_whole_manga">Целу Мангу</string>
     <string name="settings_apply_restart_required">Поново покрени апликацију да би применио ове промене</string>
     <string name="rotate_screen">Окрени екран</string>
     <string name="text_clear_updates_feed_prompt">Трајно избриши сву историју ажурирања?</string>
@@ -207,7 +207,7 @@
     <string name="suggest_new_sources">Предложи нове изворе након ажурирања апликације</string>
     <string name="import_completed">Увоз је завршен</string>
     <string name="different_languages">Други језици</string>
-    <string name="show_reading_indicators">Показивач током читања</string>
+    <string name="show_reading_indicators">Прикажи показивач током читања</string>
     <string name="read_later">За касније</string>
     <string name="backup_saved">Резервна копија је сачувана</string>
     <string name="local_manga_processing">Сачувана обрада манге</string>
@@ -217,7 +217,7 @@
     <string name="tap_to_try_again">Додирни за поновни покушај</string>
     <string name="ignore_ssl_errors">Занемари SSL грешке</string>
     <string name="auth_required">Пријави се да би видео овај садржај</string>
-    <string name="next">Следећа</string>
+    <string name="next">Следеће</string>
     <string name="restore_backup">Обнови из резервне копије</string>
     <string name="reader_info_bar">Прикажи траку са информацијама у читачу</string>
     <string name="password_length_hint">Лозинка мора имати 4 знака или више</string>
@@ -228,7 +228,7 @@
     <string name="text_feed_holder">Нова поглавља онога што читаш су приказана овде</string>
     <string name="text_suggestion_holder">Почните да читате мангу и добићете персонализоване предлоге</string>
     <string name="find_similar">Пронађи сличне</string>
-    <string name="show_notification_new_chapters_off">Нећете добијати обавештења, али ће нова поглавља бити истакнута на листама</string>
+    <string name="show_notification_new_chapters_off">Нећеш добијати обавештења, али ће нова поглавља бити истакнута на листама</string>
     <string name="storage_usage">Коришћење складиштења</string>
     <string name="data_not_restored_text">Увери се да си изабрао исправну датотеку резервне копије</string>
     <string name="data_restored">Обновљено</string>
@@ -254,7 +254,7 @@
     <string name="manga_save_location">Фасцикла за преузимања</string>
     <string name="status_reading">Читам</string>
     <string name="auth_complete">Овлашћени</string>
-    <string name="suggestions_notifications_summary">Понекад ми прикажи обавештења са предложеном мангом</string>
+    <string name="suggestions_notifications_summary">Понекад ми прикажи обавештења са предложеном Мангом</string>
     <string name="updates_feed_cleared">Избрисано</string>
     <string name="invalid_value_message">Погрешна вредност</string>
     <string name="downloads_cancelled">Преузимања су отказана</string>
@@ -330,7 +330,7 @@
     <string name="comics_archive_import_description">Можеш да изабереш једну или више .cbz или .zip датотека, свака датотека ће бити препозната као засебна манга.</string>
     <string name="downloads_paused">Преузимања су заустављена</string>
     <string name="too_many_requests_message">Превише захтева. Покушај поново касније</string>
-    <string name="downloads_wifi_only">Преузмите само преко Ви-Фи мреже</string>
+    <string name="downloads_wifi_only">Преузми само преко Ви-Фи мреже</string>
     <string name="lock_screen_rotation">Закључавање ротације екрана</string>
     <string name="cancel_all_downloads_confirm">Сва активна преузимања ће бити отказана, а делимично преузети подаци ће бити изгубљени</string>
     <string name="send">Пошаљи</string>
@@ -347,7 +347,7 @@
     <string name="not_available">Недоступно</string>
     <string name="history_shortcuts_summary">Учини недавну мангу доступном дугим притиском на икону апликације</string>
     <string name="automatic_scroll">Самостално померање</string>
-    <string name="download_option_first_n_chapters">Прво %s</string>
+    <string name="download_option_first_n_chapters">Првих %s</string>
     <string name="keep_screen_on">Задржи екран укљученим</string>
     <string name="reverse">Уназад</string>
     <string name="track_sources">Потражи ажурирања</string>
@@ -534,7 +534,7 @@
     <string name="genres_search_hint">Унеси назив жанра</string>
     <string name="globally">Глобално</string>
     <string name="downloads_settings_info">Можеш да омогућиш успоравање преузимања за сваки извор манге појединачно у поставкама извора ако имаш проблеме са блокирањем од стране послуживача</string>
-    <string name="disable_battery_optimization_summary_downloads">Можда ће вам помоћи да започнете преузимање ако имате проблем са преузимањем</string>
+    <string name="disable_battery_optimization_summary_downloads">Можда ће помоћи око започињања преузимања ако имаш проблем са преузимањем</string>
     <string name="this_manga">Ова манга</string>
     <string name="skip">Прескочи</string>
     <string name="color_correction_apply_text">Ова подешавања се могу применити глобално или само на тренутну мангу. Ако се примењују глобално, појединачна подешавања неће бити замењена.</string>
@@ -633,4 +633,13 @@
     <string name="order_oldest">Најстарије</string>
     <string name="enable_source">Омогући извор</string>
     <string name="unsupported_source">Овај извор манге није подржан</string>
+    <string name="show_pages_thumbs">Прикажи сличице страница</string>
+    <string name="error_no_data_received">Никакви подаци нису примљени са послуживача</string>
+    <string name="show_pages_thumbs_summary">Омогући картицу „Странице“ на екрану са детаљима</string>
+    <string name="unsupported_backup_message">Изабери одговарајућу Kotatsu датотеку резервне копије</string>
+    <string name="hours_short">%d ч</string>
+    <string name="hours_minutes_short">%1$d ч %2$d м</string>
+    <string name="minutes_short">%d м</string>
+    <string name="missing_storage_permission">Не постоји дозвола за приступање Манги на спољној меморији</string>
+    <string name="fix">Поправи</string>
 </resources>
