@@ -636,4 +636,7 @@
     <string name="show_pages_thumbs">Показать миниатюры страниц</string>
     <string name="show_pages_thumbs_summary">Включите вкладку «Страницы» на экране сведений</string>
     <string name="error_no_data_received">Никакие данные не были получены с сервера</string>
+    <string name="hours_short">%d ч</string>
+    <string name="minutes_short">%d мин</string>
+    <string name="hours_minutes_short">%1$d ч %2$d мин</string>
 </resources>
