@@ -18,4 +18,7 @@ sealed interface ListConfigSection : Parcelable {
 
 	@Parcelize
 	data object Suggestions : ListConfigSection
+
+	@Parcelize
+	data object Updated : ListConfigSection
 }

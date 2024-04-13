@@ -6,22 +6,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
-import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
+import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import org.koitharu.kotatsu.tracker.ui.feed.model.UpdatedMangaHeader
@@ -34,6 +37,7 @@ private const val PAGE_SIZE = 20
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
+	private val settings: AppSettings,
 	private val repository: TrackingRepository,
 	private val scheduler: TrackWorker.Scheduler,
 	private val listExtraProvider: ListExtraProvider,
@@ -44,6 +48,12 @@ class FeedViewModel @Inject constructor(
 
 	val isRunning = scheduler.observeIsRunning()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
+
+	val isHeaderEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_FEED_HEADER,
+		valueProducer = { isFeedHeaderVisible },
+	)
 
 	val onFeedCleared = MutableEventFlow<Unit>()
 	val content = combine(
@@ -94,6 +104,10 @@ class FeedViewModel @Inject constructor(
 		scheduler.startNow()
 	}
 
+	fun setHeaderEnabled(value: Boolean) {
+		settings.isFeedHeaderVisible = value
+	}
+
 	private fun List<TrackingLogItem>.mapListTo(destination: MutableList<ListModel>) {
 		var prevDate: DateTimeAgo? = null
 		for (item in this) {
@@ -106,11 +120,19 @@ class FeedViewModel @Inject constructor(
 		}
 	}
 
-	private fun observeHeader() = repository.observeUpdatedManga(10).map { mangaList ->
-		if (mangaList.isEmpty()) {
-			null
+	private fun observeHeader() = isHeaderEnabled.flatMapLatest { hasHeader ->
+		if (hasHeader) {
+			repository.observeUpdatedManga(10).map { mangaList ->
+				if (mangaList.isEmpty()) {
+					null
+				} else {
+					UpdatedMangaHeader(
+						mangaList.map { it.manga.toGridModel(listExtraProvider) },
+					)
+				}
+			}
 		} else {
-			UpdatedMangaHeader(mangaList.toUi(ListMode.GRID, listExtraProvider))
+			flowOf(null)
 		}
 	}
 }

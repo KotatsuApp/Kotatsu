@@ -14,7 +14,6 @@ import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
@@ -22,7 +21,6 @@ import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.core.util.progress.IntPercentLabelFormatter
 import org.koitharu.kotatsu.databinding.SheetListModeBinding
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ListConfigBottomSheet :
@@ -30,10 +28,6 @@ class ListConfigBottomSheet :
 	Slider.OnChangeListener,
 	MaterialButtonToggleGroup.OnButtonCheckedListener, CompoundButton.OnCheckedChangeListener,
 	AdapterView.OnItemSelectedListener {
-
-	@Inject
-	@Deprecated("")
-	lateinit var settings: AppSettings
 
 	private val viewModel by viewModels<ListConfigViewModel>()
 
@@ -57,11 +51,11 @@ class ListConfigBottomSheet :
 
 		binding.checkableGroup.addOnButtonCheckedListener(this)
 
-		binding.switchGrouping.isVisible = viewModel.isGroupingAvailable
-		if (viewModel.isGroupingAvailable) {
-			binding.switchGrouping.isEnabled = settings.historySortOrder.isGroupingSupported()
+		binding.switchGrouping.isVisible = viewModel.isGroupingSupported
+		if (viewModel.isGroupingSupported) {
+			binding.switchGrouping.isEnabled = viewModel.isGroupingAvailable
 		}
-		binding.switchGrouping.isChecked = settings.isHistoryGroupingEnabled
+		binding.switchGrouping.isChecked = viewModel.isGroupingEnabled
 		binding.switchGrouping.setOnCheckedChangeListener(this)
 
 		val sortOrders = viewModel.getSortOrders()
@@ -99,7 +93,7 @@ class ListConfigBottomSheet :
 
 	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
 		when (buttonView.id) {
-			R.id.switch_grouping -> settings.isHistoryGroupingEnabled = isChecked
+			R.id.switch_grouping -> viewModel.isGroupingEnabled = isChecked
 		}
 	}
 
@@ -113,7 +107,7 @@ class ListConfigBottomSheet :
 		when (parent.id) {
 			R.id.spinner_order -> {
 				viewModel.setSortOrder(position)
-				viewBinding?.switchGrouping?.isEnabled = settings.historySortOrder.isGroupingSupported()
+				viewBinding?.switchGrouping?.isEnabled = viewModel.isGroupingAvailable
 			}
 		}
 	}

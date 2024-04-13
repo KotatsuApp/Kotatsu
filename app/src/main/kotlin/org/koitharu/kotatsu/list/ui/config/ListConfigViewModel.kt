@@ -26,16 +26,18 @@ class ListConfigViewModel @Inject constructor(
 	var listMode: ListMode
 		get() = when (section) {
 			is ListConfigSection.Favorites -> settings.favoritesListMode
-			ListConfigSection.General -> settings.listMode
 			ListConfigSection.History -> settings.historyListMode
 			ListConfigSection.Suggestions -> settings.suggestionsListMode
+			ListConfigSection.General,
+			ListConfigSection.Updated -> settings.listMode
 		}
 		set(value) {
 			when (section) {
 				is ListConfigSection.Favorites -> settings.favoritesListMode = value
-				ListConfigSection.General -> settings.listMode = value
 				ListConfigSection.History -> settings.historyListMode = value
 				ListConfigSection.Suggestions -> settings.suggestionsListMode = value
+				ListConfigSection.Updated,
+				ListConfigSection.General -> settings.listMode = value
 			}
 		}
 
@@ -45,19 +47,40 @@ class ListConfigViewModel @Inject constructor(
 			settings.gridSize = value
 		}
 
+	val isGroupingSupported: Boolean
+		get() = section == ListConfigSection.History || section == ListConfigSection.Updated
+
 	val isGroupingAvailable: Boolean
-		get() = section == ListConfigSection.History
+		get() = when (section) {
+			ListConfigSection.History -> settings.historySortOrder.isGroupingSupported()
+			ListConfigSection.Updated -> true
+			else -> false
+		}
+
+	var isGroupingEnabled: Boolean
+		get() = when (section) {
+			ListConfigSection.History -> settings.isHistoryGroupingEnabled
+			ListConfigSection.Updated -> settings.isUpdatedGroupingEnabled
+			else -> false
+		}
+		set(value) = when (section) {
+			ListConfigSection.History -> settings.isHistoryGroupingEnabled = value
+			ListConfigSection.Updated -> settings.isUpdatedGroupingEnabled = value
+			else -> Unit
+		}
 
 	fun getSortOrders(): List<ListSortOrder>? = when (section) {
 		is ListConfigSection.Favorites -> ListSortOrder.FAVORITES
 		ListConfigSection.General -> null
 		ListConfigSection.History -> ListSortOrder.HISTORY
 		ListConfigSection.Suggestions -> ListSortOrder.SUGGESTIONS
+		ListConfigSection.Updated -> null
 	}?.sortedByOrdinal()
 
 	fun getSelectedSortOrder(): ListSortOrder? = when (section) {
 		is ListConfigSection.Favorites -> getCategorySortOrder(section.categoryId)
 		ListConfigSection.General -> null
+		ListConfigSection.Updated -> null
 		ListConfigSection.History -> settings.historySortOrder
 		ListConfigSection.Suggestions -> ListSortOrder.RELEVANCE // TODO
 	}
@@ -77,6 +100,7 @@ class ListConfigViewModel @Inject constructor(
 			ListConfigSection.History -> settings.historySortOrder = value
 
 			ListConfigSection.Suggestions -> Unit
+			ListConfigSection.Updated -> Unit
 		}
 	}
 

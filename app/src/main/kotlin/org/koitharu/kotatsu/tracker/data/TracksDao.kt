@@ -6,7 +6,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
-import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 
 @Dao
 abstract class TracksDao {
@@ -47,12 +46,12 @@ abstract class TracksDao {
 	abstract fun observeNewChapters(mangaId: Long): Flow<Int?>
 
 	@Transaction
-	@Query("SELECT manga.* FROM tracks LEFT JOIN manga ON manga.manga_id = tracks.manga_id WHERE chapters_new > 0 ORDER BY last_chapter_date DESC")
-	abstract fun observeUpdatedManga(): Flow<List<MangaWithTags>>
+	@Query("SELECT * FROM tracks WHERE chapters_new > 0 ORDER BY last_chapter_date DESC")
+	abstract fun observeUpdatedManga(): Flow<List<MangaWithTrack>>
 
 	@Transaction
-	@Query("SELECT manga.* FROM tracks LEFT JOIN manga ON manga.manga_id = tracks.manga_id WHERE chapters_new > 0 ORDER BY last_chapter_date DESC LIMIT :limit")
-	abstract fun observeUpdatedManga(limit: Int): Flow<List<MangaWithTags>>
+	@Query("SELECT * FROM tracks WHERE chapters_new > 0 ORDER BY last_chapter_date DESC LIMIT :limit")
+	abstract fun observeUpdatedManga(limit: Int): Flow<List<MangaWithTrack>>
 
 	@Query("DELETE FROM tracks")
 	abstract suspend fun clear()

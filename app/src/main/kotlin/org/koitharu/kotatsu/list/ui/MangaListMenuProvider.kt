@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.list.ui.config.ListConfigBottomSheet
 import org.koitharu.kotatsu.list.ui.config.ListConfigSection
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
+import org.koitharu.kotatsu.tracker.ui.updates.UpdatesFragment
 
 class MangaListMenuProvider(
 	private val fragment: Fragment,
@@ -26,6 +27,7 @@ class MangaListMenuProvider(
 				is HistoryListFragment -> ListConfigSection.History
 				is SuggestionsFragment -> ListConfigSection.Suggestions
 				is FavouritesListFragment -> ListConfigSection.Favorites(fragment.categoryId)
+				is UpdatesFragment -> ListConfigSection.Updated
 				else -> ListConfigSection.General
 			}
 			ListConfigBottomSheet.show(fragment.childFragmentManager, section)

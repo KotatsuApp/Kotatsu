@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
+import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.ifZero
@@ -59,13 +60,20 @@ class TrackingRepository @Inject constructor(
 			.onStart { gcIfNotCalled() }
 	}
 
-	fun observeUpdatedManga(limit: Int = 0): Flow<List<Manga>> {
+	fun observeUpdatedManga(limit: Int = 0): Flow<List<MangaTracking>> {
 		return if (limit == 0) {
 			db.getTracksDao().observeUpdatedManga()
 		} else {
 			db.getTracksDao().observeUpdatedManga(limit)
-		}.mapItems { it.toManga() }
-			.distinctUntilChanged()
+		}.mapItems {
+			MangaTracking(
+				manga = it.manga.toManga(it.tags.toMangaTags()),
+				lastChapterId = it.track.lastChapterId,
+				lastCheck = it.track.lastCheckTime.toInstantOrNull(),
+				lastChapterDate = it.track.lastChapterDate.toInstantOrNull(),
+				newChapters = it.track.newChapters,
+			)
+		}.distinctUntilChanged()
 			.onStart { gcIfNotCalled() }
 	}
 
@@ -79,6 +87,8 @@ class TrackingRepository @Inject constructor(
 				manga = it.manga.toManga(emptySet()),
 				lastChapterId = it.track.lastChapterId,
 				lastCheck = it.track.lastCheckTime.toInstantOrNull(),
+				lastChapterDate = it.track.lastChapterDate.toInstantOrNull(),
+				newChapters = it.track.newChapters,
 			)
 		}
 	}
@@ -90,6 +100,8 @@ class TrackingRepository @Inject constructor(
 			manga = manga,
 			lastChapterId = track?.lastChapterId ?: NO_ID,
 			lastCheck = track?.lastCheckTime?.toInstantOrNull(),
+			lastChapterDate = track?.lastChapterDate?.toInstantOrNull(),
+			newChapters = track?.newChapters ?: 0,
 		)
 	}
 

@@ -172,6 +172,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_HISTORY_GROUPING, true)
 		set(value) = prefs.edit { putBoolean(KEY_HISTORY_GROUPING, value) }
 
+	var isUpdatedGroupingEnabled: Boolean
+		get() = prefs.getBoolean(KEY_UPDATED_GROUPING, true)
+		set(value) = prefs.edit { putBoolean(KEY_UPDATED_GROUPING, value) }
+
+	var isFeedHeaderVisible: Boolean
+		get() = prefs.getBoolean(KEY_FEED_HEADER, true)
+		set(value) = prefs.edit { putBoolean(KEY_FEED_HEADER, value) }
+
 	val isReadingIndicatorsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READING_INDICATORS, true)
 
@@ -575,6 +583,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_BACKUP_PERIODICAL_OUTPUT = "backup_periodic_output"
 		const val KEY_BACKUP_PERIODICAL_LAST = "backup_periodic_last"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
+		const val KEY_UPDATED_GROUPING = "updated_grouping"
 		const val KEY_READING_INDICATORS = "reading_indicators"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 		const val KEY_GRID_VIEW_CHAPTERS = "grid_view_chapters"
@@ -652,5 +661,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_STATS_ENABLED = "stats_on"
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
+		const val KEY_FEED_HEADER = "feed_header"
 	}
 }

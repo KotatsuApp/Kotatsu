@@ -16,6 +16,13 @@
 		app:showAsAction="never" />
 
 	<item
+		android:id="@+id/action_show_updated"
+		android:checkable="true"
+		android:orderInCategory="50"
+		android:title="@string/show_updated"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_clear_feed"
 		android:orderInCategory="50"
 		android:title="@string/clear_feed"

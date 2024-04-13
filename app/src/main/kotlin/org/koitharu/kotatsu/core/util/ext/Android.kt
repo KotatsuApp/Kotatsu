@@ -65,6 +65,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.File
 import kotlin.math.roundToLong
+import com.google.android.material.R as materialR
 
 val Context.activityManager: ActivityManager?
 	get() = getSystemService(ACTIVITY_SERVICE) as? ActivityManager
@@ -141,7 +142,7 @@ fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float,
 	} else {
 		// Set navbar scrim 70% of navigationBarColor
 		ElevationOverlayProvider(context).compositeOverlayIfNeeded(
-			context.getThemeColor(com.google.android.material.R.attr.colorSurfaceContainer, alphaFactor),
+			context.getThemeColor(materialR.attr.colorSurfaceContainer, alphaFactor),
 			elevation,
 		)
 	}
