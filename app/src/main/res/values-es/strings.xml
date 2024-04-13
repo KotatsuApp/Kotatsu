@@ -637,7 +637,10 @@
     <string name="show_pages_thumbs_summary">Habilite la pestaña \"Páginas\" en la pantalla de detalles</string>
     <string name="error_no_data_received">No se recibieron datos del servidor</string>
     <string name="unsupported_backup_message">Por favor, seleccione un archivo de copia de seguridad de Kotatsu adecuado</string>
-    <string name="hours_short">%d h</string>
-    <string name="hours_minutes_short">%1$d h %2$d m</string>
-    <string name="minutes_short">%d m</string>
+    <string name="hours_short">%d hr.</string>
+    <string name="hours_minutes_short">%1$d hr. %2$d min</string>
+    <string name="minutes_short">%d min</string>
+    <string name="fix">Solucionar</string>
+    <string name="missing_storage_permission">No hay permiso para acceder al manga en el almacenamiento externo</string>
+    <string name="last_used">Utilizado por última vez</string>
 </resources>
