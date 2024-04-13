@@ -431,6 +431,7 @@ class ReaderViewModel @Inject constructor(
 			currentPage = state.page,
 			isSliderEnabled = settings.isReaderSliderEnabled,
 			percent = computePercent(state.chapterId, state.page),
+			incognito = incognitoMode.value,
 		)
 		uiState.value = newState
 		if (!incognitoMode.value) {

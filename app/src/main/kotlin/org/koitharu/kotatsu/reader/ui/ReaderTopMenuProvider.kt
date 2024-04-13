@@ -5,10 +5,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
-import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
 
 class ReaderTopMenuProvider(
 	private val activity: FragmentActivity,
@@ -20,31 +17,29 @@ class ReaderTopMenuProvider(
 	}
 
 	override fun onPrepareMenu(menu: Menu) {
-		menu.findItem(R.id.action_incognito)?.isVisible = viewModel.incognitoMode.value
+		menu.findItem(R.id.action_bookmark)?.let { bookmarkItem ->
+			val hasPages = viewModel.content.value.pages.isNotEmpty()
+			bookmarkItem.isVisible = hasPages
+			if (hasPages) {
+				val hasBookmark = viewModel.isBookmarkAdded.value
+				bookmarkItem.setTitle(if (hasBookmark) R.string.bookmark_remove else R.string.bookmark_add)
+				bookmarkItem.setIcon(if (hasBookmark) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark)
+			}
+		}
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		return when (menuItem.itemId) {
-			R.id.action_chapters -> {
-				ChaptersPagesSheet.show(activity.supportFragmentManager, true, ChaptersPagesSheet.TAB_CHAPTERS)
-				true
-			}
-
-			R.id.action_incognito -> {
-				showIncognitoModeDialog()
+			R.id.action_bookmark -> {
+				if (viewModel.isBookmarkAdded.value) {
+					viewModel.removeBookmark()
+				} else {
+					viewModel.addBookmark()
+				}
 				true
 			}
 
 			else -> false
 		}
-	}
-
-	private fun showIncognitoModeDialog() {
-		MaterialAlertDialogBuilder(activity, DIALOG_THEME_CENTERED)
-			.setIcon(R.drawable.ic_incognito)
-			.setTitle(R.string.incognito_mode)
-			.setMessage(R.string.incognito_mode_hint)
-			.setPositiveButton(R.string.got_it, null)
-			.show()
 	}
 }

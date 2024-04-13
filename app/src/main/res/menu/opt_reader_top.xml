@@ -6,17 +6,11 @@
 	tools:ignore="AlwaysShowAction">
 
 	<item
-		android:id="@+id/action_chapters"
-		android:icon="@drawable/ic_expand_more"
-		android:orderInCategory="0"
-		android:title="@string/chapters"
-		app:showAsAction="always" />
-
-	<item
-		android:id="@+id/action_incognito"
-		android:icon="@drawable/ic_incognito"
-		android:title="@string/incognito_mode"
+		android:id="@+id/action_bookmark"
+		android:icon="@drawable/ic_bookmark"
+		android:title="@string/bookmark_add"
 		android:visible="false"
-		app:showAsAction="always" />
+		app:showAsAction="always"
+		tools:visible="true" />
 
 </menu>

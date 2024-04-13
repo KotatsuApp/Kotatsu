@@ -6,18 +6,21 @@
 	tools:ignore="AlwaysShowAction">
 
 	<item
-		android:id="@+id/action_bookmark"
-		android:icon="@drawable/ic_bookmark"
-		android:title="@string/bookmark_add"
+		android:id="@+id/action_slider"
+		android:icon="@drawable/ic_slider"
+		android:title="@string/reader_slider"
 		android:visible="false"
-		app:showAsAction="always" />
+		app:actionViewClass="com.google.android.material.slider.Slider"
+		app:showAsAction="always|collapseActionView"
+		tools:visible="true" />
 
 	<item
 		android:id="@+id/action_pages_thumbs"
 		android:icon="@drawable/ic_grid"
 		android:title="@string/pages"
 		android:visible="false"
-		app:showAsAction="always" />
+		app:showAsAction="always"
+		tools:visible="true" />
 
 	<item
 		android:id="@+id/action_options"

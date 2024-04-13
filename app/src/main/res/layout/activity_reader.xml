@@ -58,23 +58,14 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
 		android:layout_margin="8dp"
+		app:cardBackgroundColor="?colorBackgroundFloating"
 		app:layout_insetEdge="bottom">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/toolbar_bottom"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			tools:menu="@menu/opt_reader_bottom">
-
-			<com.google.android.material.slider.Slider
-				android:id="@+id/slider"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:stepSize="1.0"
-				android:valueFrom="0"
-				app:labelBehavior="floating" />
-
-		</com.google.android.material.appbar.MaterialToolbar>
+			tools:menu="@menu/opt_reader_bottom" />
 
 	</com.google.android.material.card.MaterialCardView>
 
