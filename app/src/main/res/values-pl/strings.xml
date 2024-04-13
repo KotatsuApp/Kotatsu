@@ -4,7 +4,7 @@
     <string name="history">Historia</string>
     <string name="error_occurred">Napotkano błąd</string>
     <string name="details">Szczegółowy</string>
-    <string name="chapters">Rozdziałów</string>
+    <string name="chapters">Rozdziały</string>
     <string name="list">Lista</string>
     <string name="detailed_list">Lista szczegółowa</string>
     <string name="grid">Siatka</string>
@@ -633,4 +633,13 @@
     <string name="unread">Nieprzeczytany</string>
     <string name="enable_source">Włącz źródło</string>
     <string name="unsupported_source">To źródło mangi nie jest obsługiwane</string>
+    <string name="show_pages_thumbs">Pokaż miniatury stron</string>
+    <string name="error_no_data_received">Nie odebrano żadnych danych z serwera</string>
+    <string name="show_pages_thumbs_summary">Włącz zakładkę \"Strony\" na ekranie szczegółów</string>
+    <string name="unsupported_backup_message">Proszę wybrać odpowiedni plik kopii zapasowej Kotatsu</string>
+    <string name="hours_minutes_short">%1$d g %2$d m</string>
+    <string name="hours_short">%d g</string>
+    <string name="minutes_short">%d m</string>
+    <string name="fix">Napraw</string>
+    <string name="missing_storage_permission">Nie ma uprawień dostępu do mangi w pamięci zewnętrznej</string>
 </resources>
