@@ -67,7 +67,7 @@
     <string name="grid_size">Размер сетки</string>
     <string name="search_on_s">Поиск по %s</string>
     <string name="delete_manga">Удалить мангу</string>
-    <string name="text_delete_local_manga">Удалить \"%s\" с устройства навсегда?</string>
+    <string name="text_delete_local_manga">Удалить «%s» с устройства навсегда?</string>
     <string name="reader_settings">Настройки режима чтения</string>
     <string name="switch_pages">Листание страниц</string>
     <string name="taps_on_edges">Нажатия по краям</string>
@@ -617,7 +617,7 @@
     <string name="manga_migration">Перенос манги</string>
     <string name="migration_completed">Перенос завершён</string>
     <string name="migrate">Перенести</string>
-    <string name="migrate_confirmation">Манга \"%1$s\" из \"%2$s\" будет заменена на \"%3$s\" из \"%4$s\" в вашей истории и в избранных (если есть)</string>
+    <string name="migrate_confirmation">Манга «%1$s» из «%2$s» будет заменена на «%3$s» из «%4$s» в вашей истории и в избранных (если есть)</string>
     <string name="chapters_grid_view">Вид сетки</string>
     <string name="delete_read_chapters">Удалить прочитанные главы</string>
     <string name="no_chapters_deleted">Ни одна глава не была удалена</string>
@@ -633,4 +633,7 @@
     <string name="delete_read_chapters_prompt">Это приведёт к безвозвратному удалению всех глав, помеченных как прочитанные, из вашего локального хранилища. Вы можете повторно загрузить их позже, но импортированные главы могут быть потеряны навсегда</string>
     <string name="enable_source">Включить источник</string>
     <string name="unsupported_source">Этот источник манги не поддерживается</string>
+    <string name="show_pages_thumbs">Показать миниатюры страниц</string>
+    <string name="show_pages_thumbs_summary">Включите вкладку «Страницы» на экране сведений</string>
+    <string name="error_no_data_received">Никакие данные не были получены с сервера</string>
 </resources>

@@ -69,7 +69,7 @@
     <string name="delete_manga">Выдаліць мангу</string>
     <string name="reader_settings">Налады чытання</string>
     <string name="switch_pages">Гартанне старонак</string>
-    <string name="text_delete_local_manga">Назаўсёды выдаліць \"%s\" з прылады?</string>
+    <string name="text_delete_local_manga">Назаўсёды выдаліць «%s» з прылады?</string>
     <string name="taps_on_edges">Націск па краях</string>
     <string name="volume_buttons">Кнопкі гучнасці</string>
     <string name="_continue">Працягнцуць</string>
@@ -357,8 +357,8 @@
     <string name="reorder">Змяніць парадак</string>
     <string name="empty">Пуста</string>
     <string name="explore">Агляд</string>
-    <string name="confirm_exit">Націсніце \"Назад\" яшчэ раз, каб выйсці</string>
-    <string name="exit_confirmation_summary">Двойчы націсніце \"Назад\", каб выйсці з праграмы</string>
+    <string name="confirm_exit">Націсніце «Назад» яшчэ раз, каб выйсці</string>
+    <string name="exit_confirmation_summary">Двойчы націсніце «Назад», каб выйсці з праграмы</string>
     <string name="exit_confirmation">Пацверджанне выхаду</string>
     <string name="pages_cache">Кэш старонак</string>
     <string name="other_cache">Іншы кэш</string>
@@ -427,7 +427,7 @@
     <string name="network">Сетка</string>
     <string name="data_and_privacy">Дадзеныя і канфідэнцыяльнасць</string>
     <string name="webtoon_zoom_summary">Дазволіць жэсты маштабавання ў рэжыме манхвы</string>
-    <string name="details_button_tip">Націсніце і ўтрымлівайце кнопку \"Чытаць\", каб убачыць дадатковыя параметры</string>
+    <string name="details_button_tip">Націсніце і ўтрымлівайце кнопку «Чытаць», каб убачыць дадатковыя параметры</string>
     <string name="restore_summary">Аднавіць раней створаную рэзервовую копію</string>
     <string name="reader_info_bar_summary">Паказаць бягучы час і ход чытання ў верхняй частцы экрана</string>
     <string name="pages_animation_summary">Анімацыя перагортвання старонак</string>
@@ -614,7 +614,7 @@
     <string name="single_cbz_file">Адзін файл CBZ</string>
     <string name="multiple_cbz_files">Некалькі файлаў CBZ</string>
     <string name="alternatives">Альтэрнатывы</string>
-    <string name="migrate_confirmation">Манга \"%1$s\" з \"%2$s\" будзе заменена на \"%3$s\" з \"%4$s\" ў вашай гісторыі і ў абраных (калі ёсць)</string>
+    <string name="migrate_confirmation">Манга «%1$s» з «%2$s» будзе заменена на «%3$s» з «%4$s» ў вашай гісторыі і ў абраных (калі ёсць)</string>
     <string name="migration_completed">Перанос завершаны</string>
     <string name="manga_migration">Перанос мангі</string>
     <string name="migrate">Перанесці</string>
@@ -633,4 +633,14 @@
     <string name="delete_read_chapters_auto">Аўтаматычна выдаляць прачытаныя раздзелы</string>
     <string name="enable_source">Ўключыць крыніцу</string>
     <string name="unsupported_source">Гэтая крыніца мангі не падтрымліваецца</string>
+    <string name="show_pages_thumbs">Паказаць мініяцюры старонак</string>
+    <string name="show_pages_thumbs_summary">Ўключыце ўкладку «Старонкі» на экране звестак</string>
+    <string name="error_no_data_received">Ніякія дадзеныя не былі атрыманы з сервера</string>
+    <string name="unsupported_backup_message">Абярыце правільны файл рэзервовай копіі Kotatsu</string>
+    <string name="last_used">Апошні раз выкарыстоўваўся</string>
+    <string name="hours_minutes_short">%1$d гз. %2$d хв.</string>
+    <string name="minutes_short">%d хв.</string>
+    <string name="hours_short">%d гз.</string>
+    <string name="fix">Выправіць</string>
+    <string name="missing_storage_permission">Няма дазволу на доступ да мангі на знешнім сховішчы</string>
 </resources>
