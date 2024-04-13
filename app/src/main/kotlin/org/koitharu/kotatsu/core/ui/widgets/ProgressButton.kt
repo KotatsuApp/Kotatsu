@@ -20,7 +20,6 @@ import androidx.core.view.children
 import androidx.core.widget.TextViewCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
@@ -75,10 +74,10 @@ class ProgressButton @JvmOverloads constructor(
 				?: context.getThemeColorStateList(materialR.attr.colorPrimaryContainer) ?: colorBase
 			colorProgress = getColorStateList(R.styleable.ProgressButton_progressColor)
 				?: context.getThemeColorStateList(materialR.attr.colorPrimary) ?: colorProgress
-			val colorText = getColorStateList(R.styleable.ProgressButton_android_textColor)
-				?: context.getThemeColorStateList(materialR.attr.colorOnPrimaryContainer) ?: textViewTitle.textColors
-			textViewTitle.setTextColor(colorText)
-			textViewSubtitle.setTextColor(colorText)
+			getColorStateList(R.styleable.ProgressButton_android_textColor)?.let { colorText ->
+				textViewTitle.setTextColor(colorText)
+				textViewSubtitle.setTextColor(colorText)
+			}
 			progress = getInt(R.styleable.ProgressButton_android_progress, 0).toFloat() /
 				getInt(R.styleable.ProgressButton_android_max, 100).toFloat()
 		}
