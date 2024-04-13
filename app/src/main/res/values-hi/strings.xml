@@ -635,4 +635,13 @@
     <string name="enable_source">स्रोत सक्षम करें</string>
     <string name="show_pages_thumbs_summary">विवरण स्क्रीन पर \"पेज\" टैब सक्षम करें</string>
     <string name="show_pages_thumbs">पेज थंबनेल दिखाएँ</string>
+    <string name="error_no_data_received">सर्वर से कोई डेटा प्राप्त नहीं हुआ</string>
+    <string name="unsupported_backup_message">कृपया उचित कोटात्सु बैकअप फाइल चुनें</string>
+    <string name="hours_short">%d घं</string>
+    <string name="minutes_short">%d मि</string>
+    <string name="hours_minutes_short">%1$d घं %2$d मि</string>
+    <string name="fix">ठीक करें</string>
+    <string name="missing_storage_permission">बाहरी स्टोरेज पर मंगा तक पहुंचने की कोई अनुमति नहीं है</string>
+    <string name="last_used">अंतिम प्रयोग</string>
+    <string name="show_updated">अद्यतन दिखाएँ</string>
 </resources>
