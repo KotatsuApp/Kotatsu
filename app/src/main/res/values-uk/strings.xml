@@ -636,4 +636,5 @@
     <string name="show_pages_thumbs">Показати мініатюри сторінок</string>
     <string name="show_pages_thumbs_summary">Увімкніть вкладку «Сторінки» на екрані відомостей</string>
     <string name="error_no_data_received">Жодних даних не було отримано з сервера</string>
+    <string name="unsupported_backup_message">Виберіть правильний файл резервної копії Kotatsu</string>
 </resources>
