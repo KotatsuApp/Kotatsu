@@ -598,4 +598,5 @@
     <string name="single_cbz_file">Ficheiro CBZ único</string>
     <string name="preferred_download_format">Formato de download preferida</string>
     <string name="multiple_cbz_files">Múltiplos ficheiros CBZ</string>
+    <string name="chapters_grid_view">visualizar em grade</string>
 </resources>
