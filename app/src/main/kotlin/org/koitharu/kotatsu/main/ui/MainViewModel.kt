@@ -9,7 +9,6 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -37,12 +36,6 @@ class MainViewModel @Inject constructor(
 		scope = viewModelScope + Dispatchers.Default,
 		started = SharingStarted.WhileSubscribed(5000),
 		initialValue = false,
-	)
-
-	val isIncognitoMode = settings.observeAsStateFlow(
-		scope = viewModelScope + Dispatchers.Default,
-		key = AppSettings.KEY_INCOGNITO_MODE,
-		valueProducer = { isIncognitoModeEnabled },
 	)
 
 	val appUpdate = appUpdateRepository.observeAvailableUpdate()

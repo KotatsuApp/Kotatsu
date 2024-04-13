@@ -22,7 +22,7 @@
 		android:contentDescription="@string/back"
 		android:elevation="@dimen/m3_sys_elevation_level1"
 		android:scaleType="center"
-		android:src="?homeAsUpIndicator" />
+		app:srcCompat="?homeAsUpIndicator" />
 
 	<com.google.android.material.progressindicator.CircularProgressIndicator
 		android:id="@+id/progressBar"

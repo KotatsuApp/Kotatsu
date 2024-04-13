@@ -12,6 +12,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -103,14 +104,20 @@ class TipView @JvmOverloads constructor(
 
 	fun setPrimaryButtonText(@StringRes resId: Int) {
 		binding.buttonPrimary.setTextAndVisible(resId)
+		updateButtonsLayout()
 	}
 
 	fun setSecondaryButtonText(@StringRes resId: Int) {
 		binding.buttonSecondary.setTextAndVisible(resId)
+		updateButtonsLayout()
 	}
 
 	fun setIcon(@DrawableRes resId: Int) {
 		icon = ContextCompat.getDrawable(context, resId)
+	}
+
+	private fun updateButtonsLayout() {
+		binding.layoutButtons.isVisible = binding.buttonPrimary.isVisible || binding.buttonSecondary.isVisible
 	}
 
 	interface OnButtonClickListener {

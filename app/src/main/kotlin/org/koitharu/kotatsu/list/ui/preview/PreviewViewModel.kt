@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import javax.inject.Inject
 
@@ -56,7 +57,7 @@ class PreviewViewModel @Inject constructor(
 		val b = m.getPreferredBranch(history)
 		val chapters = m.getChapters(b).orEmpty()
 		FooterInfo(
-			branch = b,
+			percent = history?.percent ?: PROGRESS_NONE,
 			currentChapter = history?.chapterId?.let {
 				chapters.indexOfFirst { x -> x.id == it }
 			} ?: -1,
@@ -109,10 +110,10 @@ class PreviewViewModel @Inject constructor(
 	}
 
 	data class FooterInfo(
-		val branch: String?,
 		val currentChapter: Int,
 		val totalChapters: Int,
 		val isIncognito: Boolean,
+		val percent: Float,
 	) {
 
 		fun isInProgress() = currentChapter >= 0

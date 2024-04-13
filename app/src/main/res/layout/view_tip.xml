@@ -30,6 +30,7 @@
 		tools:text="Включите их, чтобы ничего не пропускать. Откройте настройки системы и разрешите их отправку." />
 
 	<LinearLayout
+		android:id="@+id/layout_buttons"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="8dp"

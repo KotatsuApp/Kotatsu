@@ -35,6 +35,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
@@ -160,12 +161,13 @@ class DetailsActivity :
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onError.observeEvent(this, DetailsErrorObserver(this, viewModel, exceptionResolver))
 		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.scrollView, null))
-		viewModel.historyInfo.observe(this, ::onHistoryChanged)
+		combine(viewModel.historyInfo, viewModel.isLoading, ::Pair).observe(this) {
+			onHistoryChanged(it.first, it.second)
+		}
 		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
 		viewModel.scrobblingInfo.observe(this, ::onScrobblingInfoChanged)
 		viewModel.localSize.observe(this, ::onLocalSizeChanged)
 		viewModel.relatedManga.observe(this, ::onRelatedMangaChanged)
-		// viewModel.chapters.observe(this, ::onChaptersChanged)
 		viewModel.readingTime.observe(this, ::onReadingTimeChanged)
 		viewModel.selectedBranch.observe(this) {
 			viewBinding.infoLayout.chipBranch.text = it.ifNullOrEmpty { getString(R.string.system_default) }
@@ -197,9 +199,7 @@ class DetailsActivity :
 		when (v.id) {
 			R.id.button_read -> openReader(isIncognitoMode = false)
 			R.id.chip_branch -> showBranchPopupMenu(v)
-			R.id.button_chapters -> {
-				ChaptersPagesSheet.show(supportFragmentManager)
-			}
+			R.id.button_chapters -> ChaptersPagesSheet.show(supportFragmentManager)
 
 			R.id.chip_author -> {
 				val manga = viewModel.manga.value ?: return
@@ -342,10 +342,6 @@ class DetailsActivity :
 		}
 	}
 
-	private fun onChaptersChanged(chapters: List<ChapterListItem>?) {
-		// TODO
-	}
-
 	private fun onFavoritesChanged(categories: Set<FavouriteCategory>) {
 		val chip = viewBinding.infoLayout.chipFavorite
 		chip.setChipIconResource(if (categories.isEmpty()) R.drawable.ic_heart_outline else R.drawable.ic_heart)
@@ -449,7 +445,6 @@ class DetailsActivity :
 	private fun onMangaUpdated(details: MangaDetails) {
 		with(viewBinding) {
 			val manga = details.toManga()
-			val hasChapters = !manga.chapters.isNullOrEmpty()
 			// Main
 			loadCover(manga)
 			textViewTitle.text = manga.title
@@ -500,9 +495,7 @@ class DetailsActivity :
 					.enqueueWith(coil)
 			}
 
-			buttonChapters?.isEnabled = hasChapters
 			title = manga.title
-			buttonRead.isEnabled = hasChapters
 			invalidateOptionsMenu()
 		}
 	}
@@ -531,30 +524,18 @@ class DetailsActivity :
 		)
 	}
 
-	private fun onHistoryChanged(info: HistoryInfo) {
-		with(viewBinding.buttonRead) {
-			if (info.history != null) {
-				setTitle(R.string._continue)
-			} else {
-				setTitle(R.string.read)
-			}
-		}
-		viewBinding.buttonRead.subtitle = when {
-			!info.isValid -> getString(R.string.loading_)
-			info.currentChapter >= 0 -> getString(
-				R.string.chapter_d_of_d,
-				info.currentChapter + 1,
-				info.totalChapters,
-			)
-
+	private fun onHistoryChanged(info: HistoryInfo, isLoading: Boolean) = with(viewBinding) {
+		buttonRead.setTitle(if (info.history != null) R.string._continue else R.string.read)
+		buttonRead.subtitle = when {
+			isLoading -> getString(R.string.loading_)
+			info.isIncognitoMode -> getString(R.string.incognito_mode)
+			info.currentChapter >= 0 -> getString(R.string.chapter_d_of_d, info.currentChapter + 1, info.totalChapters)
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
-			else -> resources.getQuantityString(
-				R.plurals.chapters,
-				info.totalChapters,
-				info.totalChapters,
-			)
+			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
 		}
-		viewBinding.buttonRead.setProgress(info.history?.percent?.coerceIn(0f, 1f) ?: 0f, true)
+		buttonRead.setProgress(info.history?.percent?.coerceIn(0f, 1f) ?: 0f, true)
+		buttonChapters?.isEnabled = info.isValid
+		buttonRead.isEnabled = info.isValid
 	}
 
 	private fun onNewChaptersChanged(count: Int) {

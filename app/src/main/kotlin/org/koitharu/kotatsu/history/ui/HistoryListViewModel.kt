@@ -35,6 +35,7 @@ import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
@@ -82,7 +83,8 @@ class HistoryListViewModel @Inject constructor(
 		isGroupingEnabled,
 		listMode,
 		networkState,
-	) { list, grouped, mode, online ->
+		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
+	) { list, grouped, mode, online, incognito ->
 		when {
 			list.isEmpty() -> listOf(
 				EmptyState(
@@ -93,7 +95,7 @@ class HistoryListViewModel @Inject constructor(
 				),
 			)
 
-			else -> mapList(list, grouped, mode, online)
+			else -> mapList(list, grouped, mode, online, incognito)
 		}
 	}.onStart {
 		loadingCounter.increment()
@@ -141,8 +143,19 @@ class HistoryListViewModel @Inject constructor(
 		grouped: Boolean,
 		mode: ListMode,
 		isOnline: Boolean,
+		isIncognito: Boolean,
 	): List<ListModel> {
-		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 1)
+		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 2)
+		if (isIncognito) {
+			result += TipModel(
+				key = AppSettings.KEY_INCOGNITO_MODE,
+				title = R.string.incognito_mode,
+				text = R.string.incognito_mode_hint,
+				icon = R.drawable.ic_incognito,
+				primaryButtonText = 0,
+				secondaryButtonText = 0,
+			)
+		}
 		val order = sortOrder.value
 		var prevHeader: ListHeader? = null
 		if (!isOnline) {

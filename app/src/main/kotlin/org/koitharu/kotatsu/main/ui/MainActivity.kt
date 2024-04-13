@@ -130,9 +130,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		viewModel.onFirstStart.observeEvent(this) {
 			WelcomeSheet.show(supportFragmentManager)
 		}
-		viewModel.isIncognitoMode.observe(this) {
-			adjustSearchUI(isSearchOpened(), false)
-		}
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 	}
 
@@ -368,10 +365,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		adjustFabVisibility(isSearchOpened = isOpened)
 		supportActionBar?.apply {
 			setHomeAsUpIndicator(
-				when {
-					isOpened -> materialR.drawable.abc_ic_ab_back_material
-					viewModel.isIncognitoMode.value -> R.drawable.ic_incognito
-					else -> materialR.drawable.abc_ic_search_api_material
+				if (isOpened) {
+					materialR.drawable.abc_ic_ab_back_material
+				} else {
+					materialR.drawable.abc_ic_search_api_material
 				},
 			)
 			setHomeActionContentDescription(
