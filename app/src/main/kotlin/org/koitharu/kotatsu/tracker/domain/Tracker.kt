@@ -28,7 +28,7 @@ class Tracker @Inject constructor(
 
 	suspend fun getTracks(limit: Int): List<TrackingItem> {
 		repository.updateTracks()
-		return repository.getTracks(0, limit).map {
+		return repository.getTracks(offset = 0, limit = limit).map {
 			val categoryId = repository.getCategoryId(it.manga.id)
 			TrackingItem(
 				tracking = it,

@@ -83,10 +83,10 @@ class TrackWorker @AssistedInject constructor(
 	private val notificationManager by lazy { NotificationManagerCompat.from(applicationContext) }
 
 	override suspend fun doWork(): Result {
-		trySetForeground()
+		val isForeground = trySetForeground()
 		logger.log("doWork(): attempt $runAttemptCount")
 		return try {
-			doWorkImpl(isFullRun = TAG_ONESHOT in tags)
+			doWorkImpl(isFullRun = isForeground && TAG_ONESHOT in tags)
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {
@@ -368,8 +368,7 @@ class TrackWorker @AssistedInject constructor(
 		const val WORKER_NOTIFICATION_ID = 35
 		const val TAG = "tracking"
 		const val TAG_ONESHOT = "tracking_oneshot"
-		const val MAX_PARALLELISM = 3
-		const val MAX_ATTEMPTS = 3
+		const val MAX_PARALLELISM = 6
 		const val DATA_KEY_SUCCESS = "success"
 		const val DATA_KEY_FAILED = "failed"
 		val BATCH_SIZE = if (BuildConfig.DEBUG) 20 else 46
