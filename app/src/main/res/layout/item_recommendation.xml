@@ -10,7 +10,8 @@
 	<androidx.viewpager2.widget.ViewPager2
 		android:id="@+id/pager"
 		android:layout_width="match_parent"
-		android:layout_height="@dimen/recommendation_item_height" />
+		android:layout_height="@dimen/recommendation_item_height"
+		android:nestedScrollingEnabled="false" />
 
 	<org.koitharu.kotatsu.core.ui.widgets.DotsIndicator
 		android:id="@+id/dots"

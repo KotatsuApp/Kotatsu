@@ -149,9 +149,6 @@ class DetailsActivity :
 		viewBinding.textViewDescription.viewTreeObserver.addOnDrawListener(this)
 		viewBinding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
 		viewBinding.chipsTags.onChipClickListener = this
-		viewBinding.recyclerViewRelated.addItemDecoration(
-			SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.grid_spacing)),
-		)
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
 
 		chaptersBadge = ViewBadge(viewBinding.buttonChapters ?: viewBinding.buttonRead, this)
@@ -457,6 +454,7 @@ class DetailsActivity :
 			manga.state?.let { state ->
 				textViewState.textAndVisible = resources.getString(state.titleResId)
 				imageViewState.setImageResource(state.iconResId)
+				imageViewState.isVisible = true
 			} ?: run {
 				textViewState.isVisible = false
 				imageViewState.isVisible = false

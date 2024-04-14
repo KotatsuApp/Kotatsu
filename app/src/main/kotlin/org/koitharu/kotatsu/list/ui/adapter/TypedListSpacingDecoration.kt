@@ -46,9 +46,8 @@ class TypedListSpacingDecoration(
 			ListItemType.MANGA_LIST_DETAILED,
 			-> outRect.set(spacingNormal)
 
-			ListItemType.PAGE_THUMB,
-			ListItemType.MANGA_GRID,
-			-> outRect.set(spacingNormal)
+			ListItemType.PAGE_THUMB -> outRect.set(spacingNormal)
+			ListItemType.MANGA_GRID -> outRect.set(0)
 
 			ListItemType.EXPLORE_BUTTONS -> outRect.set(spacingNormal)
 

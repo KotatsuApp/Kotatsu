@@ -113,6 +113,7 @@
 				app:layout_constraintDimensionRatio="1"
 				app:layout_constraintStart_toEndOf="@id/imageView_cover"
 				app:layout_constraintTop_toTopOf="@id/textView_state"
+				app:tint="?colorTertiary"
 				tools:src="@drawable/ic_state_ongoing" />
 
 			<TextView

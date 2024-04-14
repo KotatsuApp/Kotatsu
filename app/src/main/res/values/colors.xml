@@ -29,11 +29,11 @@
 	<color name="common_red">#D32F2F</color>
 
 	<!-- Color schemes colors -->
-	<color name="background_miku">#E4FFFA</color>
-	<color name="background_asuka">#FFEDEB</color>
-	<color name="background_mion">#E8FFEF</color>
-	<color name="background_rikka">#F6F2FF</color>
+	<color name="background_miku">#F7FAF8</color>
+	<color name="background_asuka">#FFF8F7</color>
+	<color name="background_mion">#F8FAF6</color>
+	<color name="background_rikka">#FCF8FD</color>
 	<color name="background_sakura">#FFF8F8</color>
-	<color name="background_mamimi">#FFF0F0</color>
-	<color name="background_kanade">#E6E6E6</color>
+	<color name="background_mamimi">#FFF8F7</color>
+	<color name="background_kanade">#F3F3F3</color>
 </resources>
