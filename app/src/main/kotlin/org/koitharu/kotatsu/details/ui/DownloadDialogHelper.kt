@@ -28,7 +28,7 @@ class DownloadDialogHelper(
 			}
 
 			if (history != null) {
-				val unreadChapters = branchChapters.takeLastWhile { it.id != history.chapterId }
+				val unreadChapters = branchChapters.dropWhile { it.id != history.chapterId }
 				if (unreadChapters.isNotEmpty() && unreadChapters.size < branchChapters.size) {
 					add(DownloadOption.AllUnreadChapters(unreadChapters.ids(), branch))
 					if (unreadChapters.size > 5) {
