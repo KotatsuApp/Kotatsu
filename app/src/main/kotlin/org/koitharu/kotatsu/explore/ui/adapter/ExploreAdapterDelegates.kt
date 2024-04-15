@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 import org.koitharu.kotatsu.core.util.ext.setProgressIcon
 import org.koitharu.kotatsu.core.util.ext.source
@@ -64,6 +65,7 @@ fun exploreRecommendationItemAD(
 	val adapter = BaseListAdapter<MangaListModel>()
 		.addDelegate(ListItemType.MANGA_LIST, recommendationMangaItemAD(coil, itemClickListener, lifecycleOwner))
 	binding.pager.adapter = adapter
+	binding.pager.recyclerView?.isNestedScrollingEnabled = false
 	binding.dots.bindToViewPager(binding.pager)
 
 	bind {

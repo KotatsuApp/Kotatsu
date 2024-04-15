@@ -653,4 +653,6 @@
 	<string name="missing_storage_permission">There is no permission to access manga on external storage</string>
 	<string name="last_used">Last used</string>
 	<string name="show_updated">Show updated</string>
+	<string name="webtoon_gaps">Gaps in webtoon mode</string>
+	<string name="webtoon_gaps_summary">Show vertical gaps between pages in webtoon mode</string>
 </resources>

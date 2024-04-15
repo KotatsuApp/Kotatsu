@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.ui.list.lifecycle.RecyclerViewLifecycleDispatch
 import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.removeItemDecoration
 import org.koitharu.kotatsu.databinding.FragmentReaderWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderState
@@ -58,6 +59,13 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		}
 		viewModel.defaultWebtoonZoomOut.take(1).observe(viewLifecycleOwner) {
 			binding.frame.zoom = 1f - it
+		}
+		viewModel.isWebtoonGapsEnabled.observe(viewLifecycleOwner) {
+			val rv = binding.recyclerView
+			rv.removeItemDecoration(WebtoonGapsDecoration::class.java)
+			if (it) {
+				rv.addItemDecoration(WebtoonGapsDecoration())
+			}
 		}
 		viewModel.readerSettings.observe(viewLifecycleOwner) {
 			it.applyBackground(binding.root)

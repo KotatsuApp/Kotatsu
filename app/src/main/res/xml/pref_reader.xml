@@ -44,6 +44,12 @@
 		android:summary="@string/reader_zoom_buttons_summary"
 		android:title="@string/reader_zoom_buttons" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="webtoon_gaps"
+		android:summary="@string/webtoon_gaps_summary"
+		android:title="@string/webtoon_gaps" />
+
 	<Preference
 		android:key="reader_tap_actions"
 		android:persistent="false"

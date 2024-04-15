@@ -405,8 +405,12 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isRelatedMangaEnabled: Boolean
 		get() = prefs.getBoolean(KEY_RELATED_MANGA, true)
 
-	val isWebtoonZoomEnable: Boolean
+	val isWebtoonZoomEnabled: Boolean
 		get() = prefs.getBoolean(KEY_WEBTOON_ZOOM, true)
+
+	var isWebtoonGapsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_WEBTOON_GAPS, false)
+		set(value) = prefs.edit { putBoolean(KEY_WEBTOON_GAPS, value) }
 
 	@get:FloatRange(from = 0.0, to = 0.5)
 	val defaultWebtoonZoomOut: Float
@@ -618,6 +622,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LOCAL_LIST_ORDER = "local_order"
 		const val KEY_HISTORY_ORDER = "history_order"
 		const val KEY_FAVORITES_ORDER = "fav_order"
+		const val KEY_WEBTOON_GAPS = "webtoon_gaps"
 		const val KEY_WEBTOON_ZOOM = "webtoon_zoom"
 		const val KEY_WEBTOON_ZOOM_OUT = "webtoon_zoom_out"
 		const val KEY_PREFETCH_CONTENT = "prefetch_content"
