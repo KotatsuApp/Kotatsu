@@ -313,7 +313,7 @@ class TrackWorker @AssistedInject constructor(
 		override suspend fun schedule() {
 			val constraints = createConstraints()
 			val runCount = dbProvider.get().getTracksDao().getTracksCount()
-			val runsPerFullCheck = (runCount / BATCH_SIZE.toFloat()).toIntUp()
+			val runsPerFullCheck = (runCount / BATCH_SIZE.toFloat()).toIntUp().coerceAtLeast(1)
 			val interval = (6 / runsPerFullCheck).coerceAtLeast(2)
 			val request = PeriodicWorkRequestBuilder<TrackWorker>(interval.toLong(), TimeUnit.HOURS)
 				.setConstraints(constraints)
