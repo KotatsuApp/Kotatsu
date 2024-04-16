@@ -51,7 +51,6 @@
 	<string name="follow_system">Follow system</string>
 	<string name="pages">Pages</string>
 	<string name="clear">Clear</string>
-	<string name="text_clear_history_prompt">Clear all reading history permanently?</string>
 	<string name="remove">Remove</string>
 	<string name="_s_deleted_from_local_storage">\"%s\" deleted from local storage</string>
 	<string name="save_page">Save page</string>
@@ -73,21 +72,16 @@
 	<string name="text_delete_local_manga">Permanently delete \"%s\" from device?</string>
 	<string name="reader_settings">Reader settings</string>
 	<string name="switch_pages">Switch pages</string>
-	<string name="taps_on_edges">Edge taps</string>
-	<string name="volume_buttons">Volume buttons</string>
 	<string name="_continue">Continue</string>
 	<string name="error">Error</string>
 	<string name="clear_thumbs_cache">Clear thumbnails cache</string>
 	<string name="clear_search_history">Clear search history</string>
 	<string name="search_history_cleared">Cleared</string>
-	<string name="gestures_only">Gestures only</string>
 	<string name="internal_storage">Internal storage</string>
 	<string name="external_storage">External storage</string>
 	<string name="domain">Domain</string>
 	<string name="app_update_available">A new version of the app is available</string>
 	<string name="open_in_browser">Open in web browser</string>
-	<string name="large_manga_save_confirm">This manga has %s. Save all of it?</string>
-	<string name="save_manga">Save</string>
 	<string name="notifications">Notifications</string>
 	<string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d of %2$d on</string>
 	<string name="new_chapters">New chapters</string>
@@ -102,8 +96,6 @@
 	<string name="text_search_holder_secondary">Try to reformulate the query.</string>
 	<string name="text_history_holder_primary">What you read will be displayed here</string>
 	<string name="text_history_holder_secondary">Find what to read in the «Explore» section</string>
-	<string name="text_shelf_holder_primary">Your manga will be displayed here</string>
-	<string name="text_shelf_holder_secondary">Find what to read in the «Explore» section</string>
 	<string name="text_local_holder_primary">Save something first</string>
 	<string name="text_local_holder_secondary">Save something from an online catalog or import it from a file.</string>
 	<string name="manga_shelf">Shelf</string>
@@ -199,8 +191,6 @@
 	<string name="system_default">Default</string>
 	<string name="exclude_nsfw_from_history">Exclude NSFW manga from history</string>
 	<string name="show_pages_numbers">Numbered pages</string>
-	<string name="enabled_sources">Used sources</string>
-	<string name="available_sources">Available sources</string>
 	<string name="screenshots_policy">Screenshot policy</string>
 	<string name="screenshots_allow">Allow</string>
 	<string name="screenshots_block_nsfw">Block on NSFW</string>
@@ -213,7 +203,6 @@
 	<string name="exclude_nsfw_from_suggestions">Do not suggest NSFW manga</string>
 	<string name="enabled">Enabled</string>
 	<string name="disabled">Disabled</string>
-	<string name="filter_load_error">Unable to load genres list</string>
 	<string name="reset_filter">Reset filter</string>
 	<string name="onboard_text">Select languages which you want to read manga. You can change it later in settings.</string>
 	<string name="never">Never</string>
@@ -338,13 +327,11 @@
 	<string name="brightness">Brightness</string>
 	<string name="contrast">Contrast</string>
 	<string name="reset">Reset</string>
-	<string name="color_correction_hint">The chosen color settings will be remembered for this manga</string>
 	<string name="text_unsaved_changes_prompt">Save or discard unsaved changes\?</string>
 	<string name="discard">Discard</string>
 	<string name="error_no_space_left">No space left on device</string>
 	<string name="reader_slider">Show page switching slider</string>
 	<string name="webtoon_zoom">Webtoon zoom</string>
-	<string name="different_languages">Different languages</string>
 	<string name="network_unavailable">Network is not available</string>
 	<string name="network_unavailable_hint">Turn on Wi-Fi or mobile network to read manga online</string>
 	<string name="server_error">Server side error (%1$d). Please try again later</string>
@@ -382,7 +369,6 @@
 	<string name="comics_archive_import_description">You can select one or more .cbz or .zip files, each file will be recognized as a separate manga.</string>
 	<string name="folder_with_images_import_description">You can select a directory with archives or images. Each archive (or subdirectory) will be recognized as a chapter.</string>
 	<string name="speed">Speed</string>
-	<string name="restore_backup_description">Import a previously created backup of user data</string>
 	<string name="show_on_shelf">Show on the Shelf</string>
 	<string name="sync_auth_hint">You can sign in into an existing account or create a new one</string>
 	<string name="find_similar">Find similar</string>
@@ -413,7 +399,6 @@
 	<string name="downloads_removed">Downloads have been removed</string>
 	<string name="downloads_cancelled">Downloads have been cancelled</string>
 	<string name="suggestions_enable_prompt">Do you want to receive personalized manga suggestions?</string>
-	<string name="translations">Translations</string>
 	<string name="web_view_unavailable">WebView not available: check if WebView provider is installed</string>
 	<string name="clear_network_cache">Clear network cache</string>
 	<string name="type">Type</string>
@@ -423,7 +408,6 @@
 	<string name="invalid_value_message">Invalid value</string>
 	<string name="kitsu" translatable="false">Kitsu</string>
 	<string name="email_password_enter_hint">Enter your email and password to continue</string>
-	<string name="manga_branch_title_template">%1$s (%2$s)</string>
 	<string name="downloaded">Downloaded</string>
 	<string name="images_proxy_title">Images optimization proxy</string>
 	<string name="images_procy_description">Use the wsrv.nl service to reduce traffic usage and speed up image loading if possible</string>
@@ -438,8 +422,6 @@
 	<string name="webtoon_zoom_summary">Allow zoom in gesture in webtoon mode</string>
 	<string name="reader_info_bar_summary">Show the current time and reading progress at the top of the screen</string>
 	<string name="show_pages_numbers_summary">Show page numbers in bottom corner</string>
-	<string name="pages_animation_summary">Animate page switching</string>
-	<string name="details_button_tip">Press and hold the Read button to see more options</string>
 	<string name="clear_source_cookies_summary">Clear cookies for specified domain only. In most cases will invalidate authorization</string>
 	<string name="download_option_all_chapters">All chapters with translation %s</string>
 	<string name="download_option_whole_manga">The whole manga</string>
@@ -448,7 +430,6 @@
 	<string name="download_option_all_unread">All unread chapters</string>
 	<string name="download_option_all_unread_b">All unread chapters (%s)</string>
 	<string name="download_option_manual_selection">Select chapters manually</string>
-	<string name="custom_directory">Custom directory</string>
 	<string name="pick_custom_directory">Pick custom directory</string>
 	<string name="no_access_to_file">You have no access to this file or directory</string>
 	<string name="local_manga_directories">Local manga directories</string>
@@ -469,7 +450,6 @@
 	<string name="search_hint">Enter manga title, genre or source name</string>
 	<string name="progress">Progress</string>
 	<string name="order_added">Added</string>
-	<string name="view_list">View list</string>
 	<string name="show">Show</string>
 	<string name="captcha_required_summary">%s requires a captcha to be resolved to work properly</string>
 	<string name="languages">Languages</string>
@@ -479,7 +459,6 @@
 	<string name="too_many_requests_message">Too many requests. Try again later</string>
 	<string name="related_manga_summary">Show a list of related manga. In some cases it may be inaccurate or missing</string>
 	<string name="advanced">Advanced</string>
-	<string name="default_section">Default section</string>
 	<string name="manga_list">Manga list</string>
 	<string name="error_corrupted_file">Invalid data is returned or file is corrupted</string>
 	<string name="on_device">On device</string>
@@ -562,15 +541,12 @@
 	<string name="mark_as_completed">Mark as completed</string>
 	<string name="mark_as_completed_prompt">Mark selected manga as completely read?\n\nWarning: current reading progress will be lost.</string>
 	<string name="category_hidden_done">This category was hidden from the main screen and is accessible through Menu → Manage categories</string>
-	<string name="approximate_reading_time">Approximate reading time</string>
-	<string name="approximate_remaining_time">Approximate remaining time</string>
 	<string name="remaining_time_pattern">%1$s %2$s</string>
 	<string name="volume_">Volume %d</string>
 	<string name="volume_unknown">Unknown volume</string>
 	<string name="incognito_mode_hint">Your reading progress will not be saved</string>
 	<string name="vertical">Vertical</string>
 	<string name="last_read">Last read</string>
-	<string name="two_pages">Two pages</string>
 	<string name="show_menu">Show menu</string>
 	<string name="toggle_ui">Show/hide UI</string>
 	<string name="prev_chapter">Previous chapter</string>
@@ -604,7 +580,6 @@
 	<string name="automatic">Automatic</string>
 	<string name="single_cbz_file">Single CBZ file</string>
 	<string name="multiple_cbz_files">Multiple CBZ files</string>
-	<string name="stats_enabled">Enable statistics</string>
 	<string name="reading_stats">Reading statistics</string>
 	<string name="other_manga">Other manga</string>
 	<string name="less_than_minute">Less than a minute</string>

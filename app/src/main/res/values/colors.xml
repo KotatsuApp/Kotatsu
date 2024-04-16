@@ -7,22 +7,14 @@
 	<color name="onErrorContainer">#410001</color>
 
 	<!-- AMOLED Theme -->
-	<color name="view_amoled">#0C0C0C</color>
 	<color name="surface_amoled">#080808</color>
 	<color name="background_amoled">#000000</color>
 
 	<!-- Other Colors -->
 
 	<color name="blue_primary">#1976D2</color>
-	<color name="blue_primary_dark">#1565C0</color>
-	<color name="red_accent">#EF5350</color>
 	<color name="grey">#424242</color>
-	<color name="grey_dark">#212121</color>
 	<color name="dim">#99000000</color>
-	<color name="scrollbar">#66000000</color>
-	<color name="selector_foreground">#29000000</color>
-	<color name="divider_default">#1F000000</color>
-	<color name="status_bar_incognito">#99B39DDB</color>
 	<color name="warning">#E65100</color>
 	<color name="launcher_background">#FFFFFF</color>
 	<color name="common_green">#388E3C</color>

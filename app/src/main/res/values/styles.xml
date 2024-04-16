@@ -58,21 +58,6 @@
 		<item name="android:popupElevation">3dp</item>
 	</style>
 
-	<style name="Widget.Kotatsu.Material3.Spinner" parent="Widget.Material3.CardView.Outlined">
-		<item name="cardBackgroundColor">@android:color/transparent</item>
-		<item name="strokeWidth">2dp</item>
-		<item name="strokeColor">?attr/colorOutline</item>
-		<item name="cardCornerRadius">4dp</item>
-	</style>
-
-	<style name="ShapeAppearanceOverlay.Kotatsu.BottomSheet" parent="">
-		<item name="cornerFamily">rounded</item>
-		<item name="cornerSizeTopRight">@dimen/bottom_sheet_corner_radius</item>
-		<item name="cornerSizeTopLeft">@dimen/bottom_sheet_corner_radius</item>
-		<item name="cornerSizeBottomRight">0dp</item>
-		<item name="cornerSizeBottomLeft">0dp</item>
-	</style>
-
 	<style name="Animation.Kotatsu.BottomSheetDialog" parent="Animation.AppCompat.Dialog">
 		<item name="android:windowEnterAnimation">@anim/bottom_sheet_slide_in</item>
 		<item name="android:windowExitAnimation">@anim/bottom_sheet_slide_out</item>
@@ -225,16 +210,6 @@
 		<item name="android:textAppearance">?textAppearanceLabelMedium</item>
 	</style>
 
-	<style name="Widget.Kotatsu.TextView.Indicator.Vertical" parent="Widget.MaterialComponents.TextView">
-		<item name="android:drawablePadding">4dp</item>
-		<item name="android:gravity">center</item>
-		<item name="android:textAlignment">center</item>
-		<item name="android:padding">4dp</item>
-		<item name="android:singleLine">true</item>
-		<item name="android:textSize">12sp</item>
-		<item name="android:elegantTextHeight">false</item>
-	</style>
-
 	<style name="ThemeOverlay.Kotatsu.MainToolbar" parent="">
 		<item name="colorControlHighlight">@color/selector_overlay</item>
 	</style>
@@ -262,11 +237,6 @@
 
 	<style name="TextAppearance.Kotatsu.SectionHeader" parent="TextAppearance.Material3.BodyLarge">
 		<item name="android:textStyle"></item>
-	</style>
-
-	<style name="TextAppearance.Kotatsu.SectionHeader2" parent="TextAppearance.Material3.LabelSmall">
-		<item name="android:textColor">?colorPrimary</item>
-		<item name="android:textAllCaps">true</item>
 	</style>
 
 	<style name="TextAppearance.Kotatsu.GridTitle" parent="TextAppearance.Material3.TitleSmall" />
