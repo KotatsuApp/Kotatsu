@@ -118,7 +118,7 @@ class ExploreViewModel @Inject constructor(
 		sourcesRepository.observeNewSources(),
 	) { content, suggestions, grid, randomLoading, newSources ->
 		buildList(content, suggestions, grid, randomLoading, newSources)
-	}
+	}.withErrorHandling()
 
 	private fun buildList(
 		sources: List<MangaSource>,

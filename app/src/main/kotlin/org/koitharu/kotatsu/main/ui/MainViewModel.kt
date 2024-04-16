@@ -32,15 +32,18 @@ class MainViewModel @Inject constructor(
 	val onOpenReader = MutableEventFlow<Manga>()
 	val onFirstStart = MutableEventFlow<Unit>()
 
-	val isResumeEnabled = readingResumeEnabledUseCase().stateIn(
-		scope = viewModelScope + Dispatchers.Default,
-		started = SharingStarted.WhileSubscribed(5000),
-		initialValue = false,
-	)
+	val isResumeEnabled = readingResumeEnabledUseCase()
+		.withErrorHandling()
+		.stateIn(
+			scope = viewModelScope + Dispatchers.Default,
+			started = SharingStarted.WhileSubscribed(5000),
+			initialValue = false,
+		)
 
 	val appUpdate = appUpdateRepository.observeAvailableUpdate()
 
-	val feedCounter = trackingRepository.observeUpdatedMangaCount()
+	val feedCounter = trackingRepository.observeUnreadUpdatesCount()
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, 0)
 
 	init {

@@ -106,7 +106,7 @@ class SearchSuggestionViewModel @Inject constructor(
 		}.distinctUntilChanged()
 			.onEach {
 				suggestion.value = it
-			}.launchIn(viewModelScope + Dispatchers.Default)
+			}.withErrorHandling().launchIn(viewModelScope + Dispatchers.Default)
 	}
 
 	private suspend fun buildSearchSuggestion(

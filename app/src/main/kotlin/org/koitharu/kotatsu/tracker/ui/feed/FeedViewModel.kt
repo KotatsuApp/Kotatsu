@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.tracker.ui.feed
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,6 +28,7 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
+import org.koitharu.kotatsu.tracker.ui.feed.model.FeedItem
 import org.koitharu.kotatsu.tracker.ui.feed.model.UpdatedMangaHeader
 import org.koitharu.kotatsu.tracker.ui.feed.model.toFeedItem
 import org.koitharu.kotatsu.tracker.work.TrackWorker
@@ -106,6 +108,12 @@ class FeedViewModel @Inject constructor(
 
 	fun setHeaderEnabled(value: Boolean) {
 		settings.isFeedHeaderVisible = value
+	}
+
+	fun onItemClick(item: FeedItem) {
+		launchJob(Dispatchers.Default, CoroutineStart.ATOMIC) {
+			repository.markAsRead(item.id)
+		}
 	}
 
 	private fun List<TrackingLogItem>.mapListTo(destination: MutableList<ListModel>) {

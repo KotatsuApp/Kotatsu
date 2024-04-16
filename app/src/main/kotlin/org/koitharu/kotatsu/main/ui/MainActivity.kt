@@ -277,7 +277,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 	private fun onFeedCounterChanged(counter: Int) {
 		navigationDelegate.setCounter(NavItem.FEED, counter)
-		navigationDelegate.setCounter(NavItem.UPDATED, counter)
 	}
 
 	private fun onIncognitoModeChanged(isIncognito: Boolean) {

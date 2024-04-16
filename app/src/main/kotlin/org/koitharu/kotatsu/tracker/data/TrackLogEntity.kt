@@ -23,4 +23,5 @@ class TrackLogEntity(
 	@ColumnInfo(name = "manga_id", index = true) val mangaId: Long,
 	@ColumnInfo(name = "chapters") val chapters: String,
 	@ColumnInfo(name = "created_at") val createdAt: Long,
+	@ColumnInfo(name = "unread") val isUnread: Boolean,
 )

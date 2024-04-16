@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleDestroyedException
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
@@ -10,17 +9,20 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.lifecycle.RetainedLifecycle
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.koitharu.kotatsu.core.util.AcraCoroutineErrorHandler
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-val processLifecycleScope: LifecycleCoroutineScope
-	inline get() = ProcessLifecycleOwner.get().lifecycleScope
+val processLifecycleScope: CoroutineScope
+	get() = ProcessLifecycleOwner.get().lifecycleScope + AcraCoroutineErrorHandler()
 
 val RetainedLifecycle.lifecycleScope: RetainedLifecycleCoroutineScope
 	inline get() = RetainedLifecycleCoroutineScope(this)

@@ -18,5 +18,6 @@ class RootSettingsViewModel @Inject constructor(
 	val totalSourcesCount = sourcesRepository.allMangaSources.size
 
 	val enabledSourcesCount = sourcesRepository.observeEnabledSourcesCount()
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, -1)
 }

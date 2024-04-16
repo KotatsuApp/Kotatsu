@@ -16,8 +16,10 @@ class SourcesSettingsViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	val enabledSourcesCount = sourcesRepository.observeEnabledSourcesCount()
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, -1)
 
 	val availableSourcesCount = sourcesRepository.observeAvailableSourcesCount()
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, -1)
 }

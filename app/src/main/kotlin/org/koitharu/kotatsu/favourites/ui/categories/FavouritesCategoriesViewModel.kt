@@ -40,7 +40,8 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		settings.observeAsFlow(AppSettings.KEY_ALL_FAVOURITES_VISIBLE) { isAllFavouritesVisible },
 	) { cats, all, showAll ->
 		cats.toUiList(all, showAll)
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
+	}.withErrorHandling()
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	fun deleteCategories(ids: Set<Long>) {
 		launchJob(Dispatchers.Default) {

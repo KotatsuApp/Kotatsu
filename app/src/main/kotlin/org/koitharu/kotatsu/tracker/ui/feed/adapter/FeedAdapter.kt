@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
+import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -15,16 +16,18 @@ import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
+import org.koitharu.kotatsu.tracker.ui.feed.model.FeedItem
 
 class FeedAdapter(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
 	sizeResolver: ItemSizeResolver,
+	feedClickListener: OnListItemClickListener<FeedItem>,
 ) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
-		addDelegate(ListItemType.FEED, feedItemAD(coil, lifecycleOwner, listener))
+		addDelegate(ListItemType.FEED, feedItemAD(coil, lifecycleOwner, feedClickListener))
 		addDelegate(
 			ListItemType.MANGA_NESTED_GROUP,
 			updatedMangaAD(

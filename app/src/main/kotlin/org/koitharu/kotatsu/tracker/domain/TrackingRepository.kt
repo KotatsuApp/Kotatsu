@@ -4,7 +4,6 @@ import androidx.annotation.VisibleForTesting
 import androidx.room.withTransaction
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -55,9 +54,14 @@ class TrackingRepository @Inject constructor(
 		return db.getTracksDao().observeNewChapters(mangaId).map { it ?: 0 }
 	}
 
+	@Deprecated("")
 	fun observeUpdatedMangaCount(): Flow<Int> {
 		return db.getTracksDao().observeNewChapters().map { list -> list.count { it > 0 } }
 			.onStart { gcIfNotCalled() }
+	}
+
+	fun observeUnreadUpdatesCount(): Flow<Int> {
+		return db.getTrackLogsDao().observeUnreadCount()
 	}
 
 	fun observeUpdatedManga(limit: Int = 0): Flow<List<MangaTracking>> {
@@ -112,13 +116,8 @@ class TrackingRepository @Inject constructor(
 
 	fun observeTrackingLog(limit: Flow<Int>): Flow<List<TrackingLogItem>> {
 		return limit.flatMapLatest { limitValue ->
-			combine(
-				db.getTracksDao().observeNewChaptersMap(),
-				db.getTrackLogsDao().observeAll(limitValue),
-			) { counters, entities ->
-				val countersMap = counters.toMutableMap()
-				entities.map { x -> x.toTrackingLogItem(countersMap) }
-			}
+			db.getTrackLogsDao().observeAll(limitValue)
+				.mapItems { it.toTrackingLogItem() }
 		}.onStart {
 			gcIfNotCalled()
 		}
@@ -129,6 +128,8 @@ class TrackingRepository @Inject constructor(
 	suspend fun clearLogs() = db.getTrackLogsDao().clear()
 
 	suspend fun clearCounters() = db.getTracksDao().clearCounters()
+
+	suspend fun markAsRead(trackLogId: Long) = db.getTrackLogsDao().markAsRead(trackLogId)
 
 	suspend fun gc() = db.withTransaction {
 		db.getTracksDao().gc()
@@ -148,6 +149,7 @@ class TrackingRepository @Inject constructor(
 					mangaId = updates.manga.id,
 					chapters = updates.newChapters.joinToString("\n") { x -> x.name },
 					createdAt = System.currentTimeMillis(),
+					isUnread = true,
 				)
 				db.getTrackLogsDao().insert(logEntity)
 			}

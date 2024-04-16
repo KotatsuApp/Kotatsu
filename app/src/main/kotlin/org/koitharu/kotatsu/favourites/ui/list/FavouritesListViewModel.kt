@@ -56,6 +56,7 @@ class FavouritesListViewModel @Inject constructor(
 		}
 	} else {
 		repository.observeCategory(categoryId)
+			.withErrorHandling()
 			.map { it?.order }
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 

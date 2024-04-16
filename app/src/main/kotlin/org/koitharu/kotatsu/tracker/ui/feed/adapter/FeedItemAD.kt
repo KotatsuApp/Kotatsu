@@ -12,20 +12,19 @@ import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemFeedBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.ui.feed.model.FeedItem
 
 fun feedItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-	clickListener: OnListItemClickListener<Manga>,
+	clickListener: OnListItemClickListener<FeedItem>,
 ) = adapterDelegateViewBinding<FeedItem, ListModel, ItemFeedBinding>(
 	{ inflater, parent -> ItemFeedBinding.inflate(inflater, parent, false) },
 ) {
 	val indicatorNew = ContextCompat.getDrawable(context, R.drawable.ic_new)
 
 	itemView.setOnClickListener {
-		clickListener.onItemClick(item.manga, it)
+		clickListener.onItemClick(item, it)
 	}
 
 	bind {
