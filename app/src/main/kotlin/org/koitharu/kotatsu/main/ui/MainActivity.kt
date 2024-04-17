@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
 import androidx.core.view.inputmethod.EditorInfoCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -259,12 +260,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		super.onSupportActionModeStarted(mode)
 		adjustFabVisibility()
 		bottomNav?.hide()
+		viewBinding.toolbarCard.isInvisible = true
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
 		adjustFabVisibility()
 		bottomNav?.show()
+		viewBinding.toolbarCard.isInvisible = false
 	}
 
 	private fun onOpenReader(manga: Manga) {
