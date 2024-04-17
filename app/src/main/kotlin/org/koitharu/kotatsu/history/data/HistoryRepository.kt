@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.history.data
 
 import androidx.room.withTransaction
+import dagger.Lazy
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -26,7 +27,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.tryScrobble
-import org.koitharu.kotatsu.tracker.domain.TrackingRepository
+import org.koitharu.kotatsu.tracker.domain.Tracker
 import javax.inject.Inject
 
 const val PROGRESS_NONE = -1f
@@ -34,10 +35,10 @@ const val PROGRESS_NONE = -1f
 @Reusable
 class HistoryRepository @Inject constructor(
 	private val db: MangaDatabase,
-	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	private val mangaRepository: MangaDataRepository,
+	private val trackerLazy: Lazy<Tracker>,
 ) {
 
 	suspend fun getList(offset: Int, limit: Int): List<Manga> {
@@ -114,7 +115,7 @@ class HistoryRepository @Inject constructor(
 					deletedAt = 0L,
 				),
 			)
-			trackingRepository.syncWithHistory(manga, chapterId)
+			trackerLazy.get().syncWithHistory(manga, chapterId)
 			scrobblers.forEach { it.tryScrobble(manga, chapterId) }
 		}
 	}

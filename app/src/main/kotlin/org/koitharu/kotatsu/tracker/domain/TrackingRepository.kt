@@ -31,10 +31,6 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 private const val NO_ID = 0L
-
-@Deprecated("Use buckets")
-private const val MAX_QUERY_IDS = 100
-private const val MAX_BUCKET_SIZE = 20
 private const val MAX_LOG_SIZE = 120
 
 @Reusable
@@ -99,13 +95,23 @@ class TrackingRepository @Inject constructor(
 
 	@VisibleForTesting
 	suspend fun getTrack(manga: Manga): MangaTracking {
-		val track = db.getTracksDao().find(manga.id)
+		return getTrackOrNull(manga) ?: MangaTracking(
+			manga = manga,
+			lastChapterId = NO_ID,
+			lastCheck = null,
+			lastChapterDate = null,
+			newChapters = 0,
+		)
+	}
+
+	suspend fun getTrackOrNull(manga: Manga): MangaTracking? {
+		val track = db.getTracksDao().find(manga.id) ?: return null
 		return MangaTracking(
 			manga = manga,
-			lastChapterId = track?.lastChapterId ?: NO_ID,
-			lastCheck = track?.lastCheckTime?.toInstantOrNull(),
-			lastChapterDate = track?.lastChapterDate?.toInstantOrNull(),
-			newChapters = track?.newChapters ?: 0,
+			lastChapterId = track.lastChapterId,
+			lastCheck = track.lastCheckTime.toInstantOrNull(),
+			lastChapterDate = track.lastChapterDate.toInstantOrNull(),
+			newChapters = track.newChapters,
 		)
 	}
 
@@ -168,24 +174,14 @@ class TrackingRepository @Inject constructor(
 		}
 	}
 
-	suspend fun syncWithHistory(manga: Manga, chapterId: Long) {
-		val chapters = manga.chapters ?: return
-		val chapterIndex = chapters.indexOfFirst { x -> x.id == chapterId }
-		val track = getOrCreateTrack(manga.id)
-		val lastNewChapterIndex = chapters.size - track.newChapters
-		val lastChapterId = chapters.lastOrNull()?.id ?: NO_ID
+	suspend fun mergeWith(tracking: MangaTracking) {
 		val entity = TrackEntity(
-			mangaId = manga.id,
-			lastChapterId = lastChapterId,
-			newChapters = when {
-				track.newChapters == 0 -> 0
-				chapterIndex < 0 -> track.newChapters
-				chapterIndex >= lastNewChapterIndex -> chapters.lastIndex - chapterIndex
-				else -> track.newChapters
-			},
-			lastCheckTime = System.currentTimeMillis(),
-			lastChapterDate = maxOf(track.lastChapterDate, chapters.lastOrNull()?.uploadDate ?: 0L),
-			lastResult = track.lastResult,
+			mangaId = tracking.manga.id,
+			lastChapterId = tracking.lastChapterId,
+			newChapters = tracking.newChapters,
+			lastCheckTime = tracking.lastCheck?.toEpochMilli() ?: 0L,
+			lastChapterDate = tracking.lastChapterDate?.toEpochMilli() ?: 0L,
+			lastResult = TrackEntity.RESULT_EXTERNAL_MODIFICATION,
 		)
 		db.getTracksDao().upsert(entity)
 	}

@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import okio.IOException
 import org.koitharu.kotatsu.core.model.isLocal
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.ext.peek
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.explore.domain.RecoverMangaUseCase
@@ -25,7 +27,9 @@ import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.recoverNotNull
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.tracker.domain.Tracker
 import javax.inject.Inject
+import javax.inject.Provider
 
 class DetailsLoadUseCase @Inject constructor(
 	private val mangaDataRepository: MangaDataRepository,
@@ -33,6 +37,7 @@ class DetailsLoadUseCase @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val recoverUseCase: RecoverMangaUseCase,
 	private val imageGetter: Html.ImageGetter,
+	private val trackerProvider: Provider<Tracker>,
 ) {
 
 	operator fun invoke(intent: MangaIntent): Flow<MangaDetails> = channelFlow {
@@ -49,6 +54,7 @@ class DetailsLoadUseCase @Inject constructor(
 		send(MangaDetails(manga, null, null, false))
 		try {
 			val details = getDetails(manga)
+			launch { updateTracker(manga) }
 			send(MangaDetails(details, local?.peek(), details.description?.parseAsHtml(withImages = false), false))
 			send(MangaDetails(details, local?.await(), details.description?.parseAsHtml(withImages = true), true))
 		} catch (e: IOException) {
@@ -89,5 +95,11 @@ class DetailsLoadUseCase @Inject constructor(
 			spannable.removeSpan(span)
 		}
 		return spannable
+	}
+
+	private suspend fun updateTracker(details: Manga) = runCatchingCancellable {
+		trackerProvider.get().syncWithDetails(details)
+	}.onFailure { e ->
+		e.printStackTraceDebug()
 	}
 }
