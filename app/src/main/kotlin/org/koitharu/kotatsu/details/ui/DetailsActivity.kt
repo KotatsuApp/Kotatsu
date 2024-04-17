@@ -51,13 +51,13 @@ import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.image.ChipIconTarget
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.crossfade
+import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
@@ -638,9 +638,7 @@ class DetailsActivity :
 				.placeholder(previousDrawable)
 				.error(previousDrawable)
 		} else {
-			request.fallback(R.drawable.ic_placeholder)
-				.placeholder(R.drawable.ic_placeholder)
-				.error(R.drawable.ic_error_placeholder)
+			request.defaultPlaceholders(this)
 		}
 		request.enqueueWith(coil)
 	}

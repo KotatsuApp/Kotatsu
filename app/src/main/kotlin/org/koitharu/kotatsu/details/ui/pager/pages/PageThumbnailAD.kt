@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
+import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.setTextColorAttr
@@ -38,9 +39,7 @@ fun pageThumbnailAD(
 	bind {
 		val data: Any = item.page.preview?.takeUnless { it.isEmpty() } ?: item.page.toMangaPage()
 		binding.imageViewThumb.newImageRequest(lifecycleOwner, data)?.run {
-			placeholder(R.drawable.ic_placeholder)
-			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_error_placeholder)
+			defaultPlaceholders(context)
 			size(thumbSize)
 			scale(Scale.FILL)
 			allowRgb565(true)

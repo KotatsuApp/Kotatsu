@@ -113,6 +113,7 @@ class ReaderBottomMenuProvider(
 		valueTo = state.totalPages.toFloat() - 1
 		setValueRounded(state.currentPage.toFloat())
 		labelBehavior = LabelFormatter.LABEL_FLOATING
+		isTickVisible = true
 		setLabelFormatter(PageLabelFormatter())
 		ReaderSliderListener(viewModel, callback).attachToSlider(this)
 	}

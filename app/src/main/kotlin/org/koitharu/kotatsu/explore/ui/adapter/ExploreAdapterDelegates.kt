@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.recyclerView
@@ -89,9 +90,7 @@ fun recommendationMangaItemAD(
 		binding.textViewTitle.text = item.manga.title
 		binding.textViewSubtitle.textAndVisible = item.subtitle
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.run {
-			placeholder(R.drawable.ic_placeholder)
-			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_error_placeholder)
+			defaultPlaceholders(context)
 			allowRgb565(true)
 			transformations(TrimTransformation())
 			source(item.manga.source)

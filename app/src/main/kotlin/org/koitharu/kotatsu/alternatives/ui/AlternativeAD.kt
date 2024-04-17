@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
@@ -79,9 +80,7 @@ fun alternativeAD(
 		}
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.run {
 			size(CoverSizeResolver(binding.imageViewCover))
-			placeholder(R.drawable.ic_placeholder)
-			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_error_placeholder)
+			defaultPlaceholders(context)
 			transformations(TrimTransformation())
 			allowRgb565(true)
 			tag(item.manga)

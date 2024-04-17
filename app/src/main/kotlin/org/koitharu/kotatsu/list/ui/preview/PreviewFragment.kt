@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.crossfade
+import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -178,9 +179,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 				.placeholder(previousDrawable)
 				.error(previousDrawable)
 		} else {
-			request.fallback(R.drawable.ic_placeholder)
-				.placeholder(R.drawable.ic_placeholder)
-				.error(R.drawable.ic_error_placeholder)
+			request.defaultPlaceholders(requireContext())
 		}
 		request.enqueueWith(coil)
 	}

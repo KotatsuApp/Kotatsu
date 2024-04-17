@@ -11,6 +11,7 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.source
@@ -56,9 +57,7 @@ private fun searchSuggestionMangaGridAD(
 
 	bind {
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
-			placeholder(R.drawable.ic_placeholder)
-			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_error_placeholder)
+			defaultPlaceholders(context)
 			allowRgb565(true)
 			source(item.source)
 			enqueueWith(coil)

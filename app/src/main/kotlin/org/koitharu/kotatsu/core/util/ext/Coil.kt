@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LifecycleOwner
@@ -12,9 +13,11 @@ import coil.request.SuccessResult
 import coil.util.CoilUtils
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.image.AnimatedPlaceholderDrawable
 import org.koitharu.kotatsu.core.ui.image.RegionBitmapDecoder
 import org.koitharu.kotatsu.core.util.progress.ImageRequestIndicatorListener
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import com.google.android.material.R as materialR
 
 fun ImageView.newImageRequest(lifecycleOwner: LifecycleOwner, data: Any?): ImageRequest.Builder? {
 	val current = CoilUtils.result(this)
@@ -83,6 +86,12 @@ fun ImageRequest.Builder.crossfade(context: Context): ImageRequest.Builder {
 
 fun ImageRequest.Builder.source(source: MangaSource?): ImageRequest.Builder {
 	return tag(MangaSource::class.java, source)
+}
+
+fun ImageRequest.Builder.defaultPlaceholders(context: Context): ImageRequest.Builder {
+	return placeholder(AnimatedPlaceholderDrawable(context))
+		.fallback(ColorDrawable(context.getThemeColor(materialR.attr.colorSurfaceContainer)))
+		.error(ColorDrawable(context.getThemeColor(materialR.attr.colorErrorContainer)))
 }
 
 fun ImageRequest.Builder.addListener(listener: ImageRequest.Listener): ImageRequest.Builder {

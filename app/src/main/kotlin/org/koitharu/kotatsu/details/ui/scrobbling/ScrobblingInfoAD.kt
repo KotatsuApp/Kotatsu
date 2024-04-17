@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.databinding.ItemScrobblingInfoBinding
@@ -24,9 +25,7 @@ fun scrobblingInfoAD(
 
 	bind {
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
-			placeholder(R.drawable.ic_placeholder)
-			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_error_placeholder)
+			defaultPlaceholders(context)
 			enqueueWith(coil)
 		}
 		binding.textViewTitle.setText(item.scrobbler.titleResId)

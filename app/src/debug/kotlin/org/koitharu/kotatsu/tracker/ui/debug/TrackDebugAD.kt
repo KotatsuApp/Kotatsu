@@ -11,6 +11,7 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
@@ -35,9 +36,7 @@ fun trackDebugAD(
 
 	bind {
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.run {
-			placeholder(R.drawable.ic_placeholder)
-			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_error_placeholder)
+			defaultPlaceholders(context)
 			allowRgb565(true)
 			source(item.manga.source)
 			enqueueWith(coil)

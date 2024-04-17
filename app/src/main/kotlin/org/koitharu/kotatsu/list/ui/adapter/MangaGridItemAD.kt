@@ -5,10 +5,10 @@ import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
@@ -44,9 +44,7 @@ fun mangaGridItemAD(
 		binding.progressView.setPercent(item.progress, ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads)
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			size(CoverSizeResolver(binding.imageViewCover))
-			placeholder(R.drawable.ic_placeholder)
-			fallback(R.drawable.ic_placeholder)
-			error(R.drawable.ic_error_placeholder)
+			defaultPlaceholders(context)
 			transformations(TrimTransformation())
 			allowRgb565(true)
 			tag(item.manga)
