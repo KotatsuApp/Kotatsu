@@ -643,4 +643,7 @@
     <string name="fix">Solucionar</string>
     <string name="missing_storage_permission">No hay permiso para acceder al manga en el almacenamiento externo</string>
     <string name="last_used">Utilizado por última vez</string>
+    <string name="show_updated">Mostrar lo actualizado</string>
+    <string name="webtoon_gaps_summary">Mostrar espacios verticales entre páginas en modo webtoon</string>
+    <string name="webtoon_gaps">Huecos en el modo webtoon</string>
 </resources>
