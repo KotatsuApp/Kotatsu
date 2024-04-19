@@ -643,4 +643,7 @@
     <string name="fix">Napraw</string>
     <string name="missing_storage_permission">Nie ma uprawień dostępu do mangi w pamięci zewnętrznej</string>
     <string name="last_used">Ostatnie użycie</string>
+    <string name="webtoon_gaps">Przerwy w trybie webtoon</string>
+    <string name="webtoon_gaps_summary">Pokaż pionowe przerwy pomiędzy stronami w trybie webtoon</string>
+    <string name="show_updated">Pokaż zaktualizowane</string>
 </resources>
