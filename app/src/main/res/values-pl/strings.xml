@@ -642,4 +642,5 @@
     <string name="minutes_short">%d m</string>
     <string name="fix">Napraw</string>
     <string name="missing_storage_permission">Nie ma uprawień dostępu do mangi w pamięci zewnętrznej</string>
+    <string name="last_used">Ostatnie użycie</string>
 </resources>
