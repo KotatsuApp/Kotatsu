@@ -642,4 +642,6 @@
     <string name="enable_source">Habilitar fonte</string>
     <string name="unsupported_source">Esta fonte de mangá não é suportada</string>
     <string name="delete_read_chapters_prompt">Isso irá apagar permanentemente todos os capítulos marcados como lidos do armazenamento local. Você pode baixá-los novamente mais tarde, mas os capítulos importados podem ser perdidos para sempre</string>
+    <string name="last_used">Usado pela última vez</string>
+    <string name="show_updated">Mostrar atualização</string>
 </resources>
