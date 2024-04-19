@@ -643,4 +643,7 @@
     <string name="error_no_data_received">未從服務器接收到資料</string>
     <string name="enable_source">啟用來源</string>
     <string name="unsupported_source">此漫畫來源不支援</string>
+    <string name="show_updated">顯示更新</string>
+    <string name="webtoon_gaps">網路漫畫模式中的間隙</string>
+    <string name="webtoon_gaps_summary">在網路漫畫模式中顯示頁面之間的垂直間隙</string>
 </resources>
