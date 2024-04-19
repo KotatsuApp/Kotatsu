@@ -644,4 +644,6 @@
     <string name="missing_storage_permission">无访问外部存储漫画权限</string>
     <string name="last_used">最近使用</string>
     <string name="show_updated">显示更新</string>
+    <string name="webtoon_gaps_summary">在条漫模式下添加页与页之间的横向缝隙</string>
+    <string name="webtoon_gaps">缝隙条漫模式</string>
 </resources>
