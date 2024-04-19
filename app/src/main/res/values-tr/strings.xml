@@ -644,4 +644,6 @@
     <string name="missing_storage_permission">Harici depolama alanındaki mangalara erişim izni yok</string>
     <string name="last_used">Son kullanılan</string>
     <string name="show_updated">Güncellenenleri göster</string>
+    <string name="webtoon_gaps">Webtoon modunda boşluklar</string>
+    <string name="webtoon_gaps_summary">Webtoon modunda sayfalar arasında dikey boşluklar göster</string>
 </resources>
