@@ -642,4 +642,8 @@
     <string name="minutes_short">%d м</string>
     <string name="missing_storage_permission">Не постоји дозвола за приступање Манги на спољној меморији</string>
     <string name="fix">Поправи</string>
+    <string name="show_updated">Прикажи ажурирано</string>
+    <string name="webtoon_gaps_summary">Прикажи усправне празнине између страница у Вебтун режиму</string>
+    <string name="last_used">Последњи пут коришћен</string>
+    <string name="webtoon_gaps">Празнине у режиму Вебтун-а</string>
 </resources>
