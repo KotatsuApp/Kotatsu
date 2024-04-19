@@ -644,4 +644,6 @@
     <string name="missing_storage_permission">Walang pahintulot na ma-access ang manga sa external storage</string>
     <string name="last_used">Huling nagamit</string>
     <string name="show_updated">Ipakita ang mas bago</string>
+    <string name="webtoon_gaps">Puwang sa webtoon mode</string>
+    <string name="webtoon_gaps_summary">Ipakita ang bertikal na puwang sa pagitan ng pahina sa webtoon mode</string>
 </resources>
