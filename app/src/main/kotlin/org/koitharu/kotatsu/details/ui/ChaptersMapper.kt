@@ -72,7 +72,8 @@ fun MangaDetails.mapChapters(
 fun List<ChapterListItem>.withVolumeHeaders(context: Context): List<ListModel> {
 	var prevVolume = 0
 	val result = ArrayList<ListModel>((size * 1.4).toInt())
-	for (item in this) {
+	var groupPos: Byte = 0
+	for ((index, item) in this.withIndex()) {
 		val chapter = item.chapter
 		if (chapter.volume != prevVolume) {
 			val text = if (chapter.volume == 0) {
@@ -82,8 +83,19 @@ fun List<ChapterListItem>.withVolumeHeaders(context: Context): List<ListModel> {
 			}
 			result.add(ListHeader(text))
 			prevVolume = chapter.volume
+			groupPos = ChapterListItem.GROUP_START
+		} else if (groupPos == ChapterListItem.GROUP_START) {
+			groupPos = ChapterListItem.GROUP_MIDDLE
 		}
-		result.add(item)
+		if (groupPos != 0.toByte()) {
+			val next = this.getOrNull(index + 1)
+			if (next == null || next.chapter.volume != prevVolume) {
+				groupPos = ChapterListItem.GROUP_END
+			}
+			result.add(item.copy(groupPosition = groupPos))
+		} else {
+			result.add(item)
+		}
 	}
 	return result
 }

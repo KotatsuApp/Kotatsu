@@ -5,11 +5,13 @@ import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.core.model.formatNumber
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import kotlin.experimental.and
 
 data class ChapterListItem(
 	val chapter: MangaChapter,
-	val flags: Int,
+	val flags: Byte,
 	private val uploadDateMs: Long,
+	private val groupPosition: Byte,
 ) : ListModel {
 
 	var description: String? = null
@@ -51,6 +53,15 @@ data class ChapterListItem(
 	val isGrid: Boolean
 		get() = hasFlag(FLAG_GRID)
 
+	val isGroupStart: Boolean
+		get() = (groupPosition and GROUP_START) == GROUP_START
+
+	val isGroupMiddle: Boolean
+		get() = (groupPosition and GROUP_MIDDLE) == GROUP_MIDDLE
+
+	val isGroupEnd: Boolean
+		get() = (groupPosition and GROUP_END) == GROUP_END
+
 	private fun buildDescription(): String {
 		val joiner = StringJoiner(" • ")
 		chapter.formatNumber()?.let {
@@ -67,7 +78,7 @@ data class ChapterListItem(
 		return joiner.complete()
 	}
 
-	private fun hasFlag(flag: Int): Boolean {
+	private fun hasFlag(flag: Byte): Boolean {
 		return (flags and flag) == flag
 	}
 
@@ -88,11 +99,15 @@ data class ChapterListItem(
 
 	companion object {
 
-		const val FLAG_UNREAD = 2
-		const val FLAG_CURRENT = 4
-		const val FLAG_NEW = 8
-		const val FLAG_BOOKMARKED = 16
-		const val FLAG_DOWNLOADED = 32
-		const val FLAG_GRID = 64
+		const val FLAG_UNREAD: Byte = 2
+		const val FLAG_CURRENT: Byte = 4
+		const val FLAG_NEW: Byte = 8
+		const val FLAG_BOOKMARKED: Byte = 16
+		const val FLAG_DOWNLOADED: Byte = 32
+		const val FLAG_GRID: Byte = 64
+
+		const val GROUP_START: Byte = 2
+		const val GROUP_MIDDLE: Byte = 4
+		const val GROUP_END: Byte = 8
 	}
 }

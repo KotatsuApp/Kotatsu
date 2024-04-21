@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_GRID
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_NEW
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem.Companion.FLAG_UNREAD
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import kotlin.experimental.or
 
 fun MangaChapter.toListItem(
 	isCurrent: Boolean,
@@ -16,7 +17,7 @@ fun MangaChapter.toListItem(
 	isBookmarked: Boolean,
 	isGrid: Boolean,
 ): ChapterListItem {
-	var flags = 0
+	var flags: Byte = 0
 	if (isCurrent) flags = flags or FLAG_CURRENT
 	if (isUnread) flags = flags or FLAG_UNREAD
 	if (isNew) flags = flags or FLAG_NEW
@@ -27,5 +28,6 @@ fun MangaChapter.toListItem(
 		chapter = this,
 		flags = flags,
 		uploadDateMs = uploadDate,
+		groupPosition = 0,
 	)
 }

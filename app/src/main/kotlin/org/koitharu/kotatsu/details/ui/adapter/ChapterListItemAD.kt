@@ -13,13 +13,13 @@ import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemChapterBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import com.google.android.material.R as MR
+import com.google.android.material.R as materialR
 
 fun chapterListItemAD(
 	clickListener: OnListItemClickListener<ChapterListItem>,
 ) = adapterDelegateViewBinding<ChapterListItem, ListModel, ItemChapterBinding>(
 	viewBinding = { inflater, parent -> ItemChapterBinding.inflate(inflater, parent, false) },
-	on = { item, _, _ -> item is ChapterListItem && !item.isGrid }
+	on = { item, _, _ -> item is ChapterListItem && !item.isGrid },
 ) {
 
 	val eventListener = AdapterDelegateClickListenerAdapter(this, clickListener)
@@ -27,10 +27,17 @@ fun chapterListItemAD(
 	itemView.setOnLongClickListener(eventListener)
 
 	bind { payloads ->
-		if (payloads.isEmpty()) {
-			binding.textViewTitle.text = item.chapter.name
-			binding.textViewDescription.textAndVisible = item.description
-		}
+		binding.textViewTitle.text = item.chapter.name
+		binding.textViewDescription.textAndVisible = item.description
+		itemView.setBackgroundResource(
+			when {
+				item.isGroupStart && item.isGroupEnd -> R.drawable.bg_card_full
+				item.isGroupStart -> R.drawable.bg_card_top
+				item.isGroupMiddle -> R.drawable.bg_card_none
+				item.isGroupEnd -> R.drawable.bg_card_bottom
+				else -> R.drawable.list_selector
+			},
+		)
 		when {
 			item.isCurrent -> {
 				binding.textViewTitle.drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_current_chapter)
@@ -47,7 +54,7 @@ fun chapterListItemAD(
 					null
 				}
 				binding.textViewTitle.setTextColor(context.getThemeColorStateList(android.R.attr.textColorPrimary))
-				binding.textViewDescription.setTextColor(context.getThemeColorStateList(MR.attr.colorOutline))
+				binding.textViewDescription.setTextColor(context.getThemeColorStateList(materialR.attr.colorOutline))
 				binding.textViewTitle.typeface = Typeface.DEFAULT
 				binding.textViewDescription.typeface = Typeface.DEFAULT
 			}

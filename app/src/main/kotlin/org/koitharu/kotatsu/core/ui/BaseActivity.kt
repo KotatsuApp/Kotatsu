@@ -72,7 +72,7 @@ abstract class BaseActivity<B : ViewBinding> :
 		onBackPressedDispatcher.addCallback(actionModeDelegate)
 	}
 
-	override fun onNewIntent(intent: Intent?) {
+	override fun onNewIntent(intent: Intent) {
 		putDataToExtras(intent)
 		super.onNewIntent(intent)
 	}
