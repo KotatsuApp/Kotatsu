@@ -574,7 +574,6 @@
     <string name="preferred_download_format">Жељени формат за преузимање</string>
     <string name="single_cbz_file">Једна CBZ датотека</string>
     <string name="multiple_cbz_files">Више CBZ датотека</string>
-    <string name="stats_enabled">Укључи статистику</string>
     <string name="reading_stats">Статистика читања</string>
     <string name="other_manga">Остала манга</string>
     <string name="less_than_minute">Мање од минут</string>
@@ -618,4 +617,8 @@
     <string name="minutes_short">%d м</string>
     <string name="missing_storage_permission">Не постоји дозвола за приступање Манги на спољној меморији</string>
     <string name="fix">Поправи</string>
+    <string name="show_updated">Прикажи ажурирано</string>
+    <string name="webtoon_gaps_summary">Прикажи усправне празнине између страница у Вебтун режиму</string>
+    <string name="last_used">Последњи пут коришћен</string>
+    <string name="webtoon_gaps">Празнине у режиму Вебтун-а</string>
 </resources>

@@ -574,7 +574,6 @@
     <string name="single_cbz_file">Один файл CBZ</string>
     <string name="multiple_cbz_files">Несколько файлов CBZ</string>
     <string name="preferred_download_format">Предпочтительный формат загрузок</string>
-    <string name="stats_enabled">Включить статистику</string>
     <string name="other_manga">Другая манга</string>
     <string name="month">Месяц</string>
     <string name="all_time">Всё время</string>
@@ -612,11 +611,14 @@
     <string name="show_pages_thumbs">Показать миниатюры страниц</string>
     <string name="show_pages_thumbs_summary">Включите вкладку «Страницы» на экране сведений</string>
     <string name="error_no_data_received">Никакие данные не были получены с сервера</string>
-    <string name="hours_short">%d ч</string>
-    <string name="minutes_short">%d мин</string>
-    <string name="hours_minutes_short">%1$d ч %2$d мин</string>
+    <string name="hours_short">%d ч.</string>
+    <string name="minutes_short">%d мин.</string>
+    <string name="hours_minutes_short">%1$d ч. %2$d мин.</string>
     <string name="unsupported_backup_message">Выберите правильный файл резервной копии Kotatsu</string>
     <string name="last_used">Последний раз использовался</string>
     <string name="fix">Исправить</string>
     <string name="missing_storage_permission">Нет разрешения на доступ к манге на внешнем хранилище</string>
+    <string name="show_updated">Показать обновлённые</string>
+    <string name="webtoon_gaps">Пробелы в режиме манхвы</string>
+    <string name="webtoon_gaps_summary">Показывать вертикальные промежутки между страницами в режиме манхвы</string>
 </resources>

@@ -60,7 +60,6 @@
     <string name="search_on_s">Cerca a %s</string>
     <string name="text_delete_local_manga">Esborrar permanentment \"%s\" del dispositiu?</string>
     <string name="switch_pages">Canviar pàgines</string>
-    <string name="volume_buttons">Botons de volum</string>
     <string name="_continue">Continua</string>
     <string name="error">Error</string>
     <string name="clear_thumbs_cache">Esborrar memòria cau de miniatures</string>

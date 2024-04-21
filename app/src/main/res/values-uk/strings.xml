@@ -463,7 +463,7 @@
     <string name="reader_zoom_buttons">Показати кнопки масштабування</string>
     <string name="zoom_out">Віддалити</string>
     <string name="keep_screen_on">Тримати екран увімкненим</string>
-    <string name="keep_screen_on_summary">Не вимикати екран під час читання манги</string>
+    <string name="keep_screen_on_summary">Не вимикати екран під час читання манґи</string>
     <string name="state_abandoned">Кинута</string>
     <string name="categories">Категорії</string>
     <string name="list_options">Параметри списку</string>
@@ -513,7 +513,7 @@
     <string name="genres_search_hint">Почніть вводити назву жанру</string>
     <string name="globally">Глобально</string>
     <string name="downloads_settings_info">Ви можете ввімкнути повільне завантаження для кожного джерела манґи окремо в налаштуваннях джерела, якщо у вас є проблеми з блокуванням на стороні сервера</string>
-    <string name="this_manga">Ця манга</string>
+    <string name="this_manga">Ця манґа</string>
     <string name="skip">Пропустити</string>
     <string name="color_correction_apply_text">Ці налаштування можна застосувати глобально або лише до поточної манґи. Користувацькі налаштування не будуть замінені, якщо застосовувати їх глобально.</string>
     <string name="grayscale">Відтінки сірого</string>
@@ -531,7 +531,7 @@
     <string name="content_rating">Рейтинг контенту</string>
     <string name="rating_suggestive">З натяками</string>
     <string name="mark_as_completed">Позначити як завершене</string>
-    <string name="mark_as_completed_prompt">Позначити вибрану мангу як повністю прочитану?
+    <string name="mark_as_completed_prompt">Позначити вибрану манґу як повністю прочитану?
 \n
 \nПопередження: поточний прогрес читання буде втрачено.</string>
     <string name="category_hidden_done">Ця категорія була прихована на головному екрані і доступна через Меню → Керування категоріями</string>
@@ -574,9 +574,8 @@
     <string name="multiple_cbz_files">Декілька файлів CBZ</string>
     <string name="preferred_download_format">Бажаний формат для завантажень</string>
     <string name="single_cbz_file">Один файл CBZ</string>
-    <string name="stats_enabled">Увімкнути статистику</string>
     <string name="reading_stats">Статистика читання</string>
-    <string name="other_manga">Інша манга</string>
+    <string name="other_manga">Інша манґа</string>
     <string name="less_than_minute">Менше хвилини</string>
     <string name="statistics">Статистика</string>
     <string name="clear_stats">Очистити статистику</string>
@@ -591,7 +590,7 @@
     <string name="empty_stats_text">Статистика за вибраний період відсутня</string>
     <string name="alternatives">Альтернативи</string>
     <string name="migrate">Перенести</string>
-    <string name="migrate_confirmation">Манга «%1$s» з «%2$s» буде замінена на «%3$s» з «%4$s» у вашій історії та у вибраному (якщо доступно)</string>
+    <string name="migrate_confirmation">Манґа «%1$s» з «%2$s» буде замінена на «%3$s» з «%4$s» у вашій історії та у вибраному (якщо доступно)</string>
     <string name="manga_migration">Перенесення манґи</string>
     <string name="migration_completed">Перенесення завершено</string>
     <string name="chapters_grid_view">Вид сітки</string>
@@ -608,9 +607,18 @@
     <string name="delete_read_chapters_auto">Автоматично видаляти прочитані розділи</string>
     <string name="delete_read_chapters_prompt">Це призведе до остаточного видалення всіх розділів, позначених як прочитані, з вашого локального сховища. Ви можете завантажити їх пізніше, але імпортовані розділи можуть бути втрачені назавжди</string>
     <string name="enable_source">Увімкнути джерело</string>
-    <string name="unsupported_source">Це джерело манги не підтримується</string>
+    <string name="unsupported_source">Це джерело манґи не підтримується</string>
     <string name="show_pages_thumbs">Показати мініатюри сторінок</string>
     <string name="show_pages_thumbs_summary">Увімкніть вкладку «Сторінки» на екрані відомостей</string>
     <string name="error_no_data_received">Жодних даних не було отримано з сервера</string>
     <string name="unsupported_backup_message">Виберіть правильний файл резервної копії Kotatsu</string>
+    <string name="last_used">Останнє використання</string>
+    <string name="hours_short">%d гз.</string>
+    <string name="minutes_short">%d хв.</string>
+    <string name="hours_minutes_short">%1$d гз. %2$d хв.</string>
+    <string name="webtoon_gaps">Прогалини в режимі манхви</string>
+    <string name="webtoon_gaps_summary">Показувати вертикальні проміжки між сторінками в режимі манхви</string>
+    <string name="show_updated">Показати оновлено</string>
+    <string name="fix">Виправити</string>
+    <string name="missing_storage_permission">Немає дозволу на доступ до манґи на зовнішній пам’яті</string>
 </resources>

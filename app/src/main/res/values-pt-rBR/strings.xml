@@ -578,7 +578,6 @@
     <string name="show_labels_in_navbar">Mostrar rótulos na barra de navegação</string>
     <string name="ask_for_dest_dir_every_time">Sempre pedir o diretório de destino</string>
     <string name="default_page_save_dir">Diretório padrão para o salvamento das páginas</string>
-    <string name="stats_enabled">Habilitar estatísticas</string>
     <string name="less_than_minute">Menos de um minuto</string>
     <string name="clear_stats">Limpar estatísticas</string>
     <string name="clear_stats_confirm">Você tem certeza que deseja limpar todas as estatísticas de leitura? A ação não pode ser desfeita.</string>
@@ -618,4 +617,6 @@
     <string name="enable_source">Habilitar fonte</string>
     <string name="unsupported_source">Esta fonte de mangá não é suportada</string>
     <string name="delete_read_chapters_prompt">Isso irá apagar permanentemente todos os capítulos marcados como lidos do armazenamento local. Você pode baixá-los novamente mais tarde, mas os capítulos importados podem ser perdidos para sempre</string>
+    <string name="last_used">Usado pela última vez</string>
+    <string name="show_updated">Mostrar atualização</string>
 </resources>

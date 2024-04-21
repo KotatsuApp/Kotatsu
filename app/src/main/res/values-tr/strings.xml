@@ -582,7 +582,6 @@
     <string name="three_months">Üç ay</string>
     <string name="empty_stats_text">Seçilen dönem için istatistik yok</string>
     <string name="pages_read_s">Okunan sayfalar: %s</string>
-    <string name="stats_enabled">İstatistikleri etkinleştir</string>
     <string name="clear_stats">İstatistikleri temizle</string>
     <string name="reading_stats">Okuma istatistikleri</string>
     <string name="statistics">İstatistikler</string>
@@ -620,4 +619,6 @@
     <string name="missing_storage_permission">Harici depolama alanındaki mangalara erişim izni yok</string>
     <string name="last_used">Son kullanılan</string>
     <string name="show_updated">Güncellenenleri göster</string>
+    <string name="webtoon_gaps">Webtoon modunda boşluklar</string>
+    <string name="webtoon_gaps_summary">Webtoon modunda sayfalar arasında dikey boşluklar göster</string>
 </resources>

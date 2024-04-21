@@ -580,7 +580,6 @@
     <string name="clear_stats">I-clear ang statistika</string>
     <string name="stats_cleared">Na-clear ang statistika</string>
     <string name="pages_read_s">Mga nabasang pahina: %s</string>
-    <string name="stats_enabled">Paganahin ang statistika</string>
     <string name="other_manga">Ibang manga</string>
     <string name="day">Araw</string>
     <string name="clear_stats_confirm">Gusto mo ba talagang i-clear ang lahat ng istatistika ng pagbabasa? Ang gawaing ito ay hindi pwedeng baguhin.</string>
@@ -620,4 +619,6 @@
     <string name="missing_storage_permission">Walang pahintulot na ma-access ang manga sa external storage</string>
     <string name="last_used">Huling nagamit</string>
     <string name="show_updated">Ipakita ang mas bago</string>
+    <string name="webtoon_gaps">Puwang sa webtoon mode</string>
+    <string name="webtoon_gaps_summary">Ipakita ang bertikal na puwang sa pagitan ng pahina sa webtoon mode</string>
 </resources>

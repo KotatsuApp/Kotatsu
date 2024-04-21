@@ -571,7 +571,6 @@
     <string name="rating_safe">Bezpieczny</string>
     <string name="rating_adult">Dorosły</string>
     <string name="default_tab">Domyślna zakładka</string>
-    <string name="approximate_remaining_time">Przybliżony pozostały czas</string>
     <string name="incognito_mode_hint">Twoje postępy w czytaniu nie zostaną zapisane</string>
     <string name="reading_stats">Statystyki czytania</string>
     <string name="default_webtoon_zoom_out">Domyślne pomniejszenie webtoona</string>
@@ -618,4 +617,8 @@
     <string name="minutes_short">%d m</string>
     <string name="fix">Napraw</string>
     <string name="missing_storage_permission">Nie ma uprawień dostępu do mangi w pamięci zewnętrznej</string>
+    <string name="last_used">Ostatnie użycie</string>
+    <string name="webtoon_gaps">Przerwy w trybie webtoon</string>
+    <string name="webtoon_gaps_summary">Pokaż pionowe przerwy pomiędzy stronami w trybie webtoon</string>
+    <string name="show_updated">Pokaż zaktualizowane</string>
 </resources>

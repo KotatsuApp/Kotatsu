@@ -134,7 +134,6 @@
 	<string name="exclude_nsfw_from_suggestions">Föreslå inte manga med vuxeninnehåll</string>
 	<string name="enabled">Aktiverad</string>
 	<string name="disabled">Inaktiverad</string>
-	<string name="filter_load_error">Kunde inte ladda genrelistan</string>
 	<string name="reset_filter">Återställ filter</string>
 	<string name="onboard_text">Välj det språk som du vill läsa manga på. Du kan ändra detta i inställningarna senare.</string>
 	<string name="never">Aldrig</string>

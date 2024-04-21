@@ -135,7 +135,6 @@
     <string name="clear_updates_feed">সাফ আপডেট ফিড</string>
     <string name="enable">সক্ষম করুন</string>
     <string name="notifications_settings">বিজ্ঞপ্তি সেটিংস</string>
-    <string name="large_manga_save_confirm">এই মঙ্গার %s আছে। এটা সব সংরক্ষণ?</string>
     <string name="text_search_holder_secondary">প্রশ্নটি সংস্কার করার চেষ্টা করুন।</string>
     <string name="recent_manga">সাম্প্রতিক</string>
     <string name="dont_check">চেক করবেন না</string>

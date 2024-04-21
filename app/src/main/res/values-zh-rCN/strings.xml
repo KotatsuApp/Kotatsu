@@ -574,7 +574,6 @@
     <string name="single_cbz_file">保存为单个 CBZ 文件</string>
     <string name="multiple_cbz_files">保存为多个 CBZ 文件</string>
     <string name="preferred_download_format">下载章节保存方式</string>
-    <string name="stats_enabled">开启阅读统计</string>
     <string name="reading_stats">阅读统计</string>
     <string name="other_manga">其他漫画</string>
     <string name="less_than_minute">不到1分钟</string>
@@ -620,4 +619,6 @@
     <string name="missing_storage_permission">无访问外部存储漫画权限</string>
     <string name="last_used">最近使用</string>
     <string name="show_updated">显示更新</string>
+    <string name="webtoon_gaps_summary">在条漫模式下添加页与页之间的横向缝隙</string>
+    <string name="webtoon_gaps">缝隙条漫模式</string>
 </resources>

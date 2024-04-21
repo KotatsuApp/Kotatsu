@@ -517,7 +517,7 @@
     <string name="skip">Прапусціць</string>
     <string name="color_correction_apply_text">Гэтыя налады могуць прымяняцца глабальна або толькі да бягучай мангі. Пры глабальным прымяненні індывідуальныя налады не будуць перавызначаны.</string>
     <string name="grayscale">Адценні шэрага</string>
-    <string name="disable_battery_optimization_summary_downloads">Можа дапамагчы з пачаткам загрузкі, калі ў вас узнікаюць з ёй праблемы</string>
+    <string name="disable_battery_optimization_summary_downloads">Можа дапамагчы з пачаткам загрузкі, калі у вас ўзнікаюць з ёй праблемы</string>
     <string name="welcome_text">Выберыце, якія крыніцы змесціва вы хочаце ўключыць. Гэта таксама можна наладзіць пазней ў наладах</string>
     <string name="restore">Аднавіць</string>
     <string name="backup_date_">Дата стварэння рэзервовай копіі: %s</string>
@@ -570,7 +570,6 @@
     <string name="remove_from_history">Выдаліць з гісторыі</string>
     <string name="pages_saving">Захаванне старонак</string>
     <string name="location">Размяшчэнне</string>
-    <string name="stats_enabled">Ўключыць статыстыку</string>
     <string name="reading_stats">Статыстыка чытання</string>
     <string name="other_manga">Іншая манга</string>
     <string name="less_than_minute">Менш хвіліны</string>
@@ -619,4 +618,7 @@
     <string name="hours_short">%d гз.</string>
     <string name="fix">Выправіць</string>
     <string name="missing_storage_permission">Няма дазволу на доступ да мангі на знешнім сховішчы</string>
+    <string name="show_updated">Паказаць абноўлена</string>
+    <string name="webtoon_gaps">Прабелы ў рэжыме манхвы</string>
+    <string name="webtoon_gaps_summary">Паказваць вертыкальныя прамежкі паміж старонкамі ў рэжыме манхвы</string>
 </resources>
