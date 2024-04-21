@@ -82,7 +82,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:fb387dbcd9') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:75a55e4748') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -91,8 +91,8 @@ dependencies {
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
-	implementation 'androidx.core:core-ktx:1.12.0'
-	implementation 'androidx.activity:activity-ktx:1.8.2'
+	implementation 'androidx.core:core-ktx:1.13.0'
+	implementation 'androidx.activity:activity-ktx:1.9.0'
 	implementation 'androidx.fragment:fragment-ktx:1.6.2'
 	implementation 'androidx.collection:collection-ktx:1.4.0'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
@@ -145,7 +145,7 @@ dependencies {
 
 	implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
-	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.13'
+	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20240303'
