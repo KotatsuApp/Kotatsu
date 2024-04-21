@@ -104,6 +104,7 @@ class TrackWorker @AssistedInject constructor(
 		if (!settings.isTrackerEnabled) {
 			return Result.success(workDataOf(0, 0))
 		}
+		tracker.updateNotificationsChannels()
 		val tracks = tracker.getTracks(if (isFullRun) Int.MAX_VALUE else BATCH_SIZE)
 		logger.log("Total ${tracks.size} tracks")
 		if (tracks.isEmpty()) {
@@ -194,6 +195,7 @@ class TrackWorker @AssistedInject constructor(
 				).toBitmapOrNull(),
 			)
 			setSmallIcon(R.drawable.ic_stat_book_plus)
+			setGroup(GROUP_NEW_CHAPTERS)
 			val style = NotificationCompat.InboxStyle(this)
 			for (chapter in newChapters) {
 				style.addLine(chapter.name)
@@ -366,6 +368,7 @@ class TrackWorker @AssistedInject constructor(
 
 		const val WORKER_CHANNEL_ID = "track_worker"
 		const val WORKER_NOTIFICATION_ID = 35
+		const val GROUP_NEW_CHAPTERS = "org.koitharu.kotatsu.NEW_CHAPTERS"
 		const val TAG = "tracking"
 		const val TAG_ONESHOT = "tracking_oneshot"
 		const val MAX_PARALLELISM = 6

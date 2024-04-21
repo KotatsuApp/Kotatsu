@@ -40,6 +40,7 @@ class CaptchaNotifier(
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 			.setDefaults(NotificationCompat.DEFAULT_SOUND)
 			.setSmallIcon(android.R.drawable.stat_notify_error)
+			.setGroup(GROUP_CAPTCHA)
 			.setAutoCancel(true)
 			.setVisibility(
 				if (exception.source?.contentType == ContentType.HENTAI) {
@@ -82,5 +83,6 @@ class CaptchaNotifier(
 		private const val PARAM_IGNORE_CAPTCHA = "ignore_captcha"
 		private const val CHANNEL_ID = "captcha"
 		private const val TAG = CHANNEL_ID
+		private const val GROUP_CAPTCHA = "org.koitharu.kotatsu.CAPTCHA"
 	}
 }

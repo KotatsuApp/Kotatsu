@@ -273,6 +273,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		with(builder) {
 			setContentText(tagsText)
 			setContentTitle(title)
+			setGroup(GROUP_SUGGESTION)
 			setLargeIcon(
 				coil.execute(
 					ImageRequest.Builder(applicationContext)
@@ -425,6 +426,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		const val DATA_COUNT = "count"
 		const val WORKER_CHANNEL_ID = "suggestion_worker"
 		const val MANGA_CHANNEL_ID = "suggestions"
+		const val GROUP_SUGGESTION = "org.koitharu.kotatsu.SUGGESTIONS"
 		const val WORKER_NOTIFICATION_ID = 36
 		const val MAX_RESULTS = 80
 		const val MAX_PARALLELISM = 3

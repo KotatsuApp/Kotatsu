@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.CompositeMutex2
 import org.koitharu.kotatsu.core.util.ext.toInstantOrNull
+import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -26,6 +27,7 @@ class Tracker @Inject constructor(
 	private val settings: AppSettings,
 	private val repository: TrackingRepository,
 	private val historyRepository: HistoryRepository,
+	private val favouritesRepository: FavouritesRepository,
 	private val channels: TrackerNotificationChannels,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
@@ -43,6 +45,11 @@ class Tracker @Inject constructor(
 				},
 			)
 		}
+	}
+
+	suspend fun updateNotificationsChannels() {
+		val categories = favouritesRepository.getCategories()
+		channels.updateChannels(categories)
 	}
 
 	suspend fun gc() {
