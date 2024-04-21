@@ -36,6 +36,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
@@ -54,6 +55,7 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.Event
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.crossfade
@@ -156,8 +158,12 @@ class DetailsActivity :
 		viewModel.details.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
 		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
-		viewModel.onError.observeEvent(this, DetailsErrorObserver(this, viewModel, exceptionResolver))
-		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.scrollView, null))
+		viewModel.onError
+			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
+			.observeEvent(this, DetailsErrorObserver(this, viewModel, exceptionResolver))
+		viewModel.onActionDone
+			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
+			.observeEvent(this, ReversibleActionObserver(viewBinding.scrollView, null))
 		combine(viewModel.historyInfo, viewModel.isLoading, ::Pair).observe(this) {
 			onHistoryChanged(it.first, it.second)
 		}
@@ -177,7 +183,9 @@ class DetailsActivity :
 			viewBinding.infoLayout.chipBranch.isVisible = it.size > 1
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
-		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(viewBinding.scrollView))
+		viewModel.onDownloadStarted
+			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
+			.observeEvent(this, DownloadStartedObserver(viewBinding.scrollView))
 
 		addMenuProvider(
 			DetailsMenuProvider(

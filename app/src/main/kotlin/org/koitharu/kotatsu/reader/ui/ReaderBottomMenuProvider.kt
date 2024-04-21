@@ -59,7 +59,7 @@ class ReaderBottomMenuProvider(
 			}
 
 			R.id.action_pages_thumbs -> {
-				ChaptersPagesSheet.show(activity.supportFragmentManager, true, ChaptersPagesSheet.TAB_PAGES)
+				ChaptersPagesSheet.show(activity.supportFragmentManager, ChaptersPagesSheet.TAB_PAGES)
 				true
 			}
 

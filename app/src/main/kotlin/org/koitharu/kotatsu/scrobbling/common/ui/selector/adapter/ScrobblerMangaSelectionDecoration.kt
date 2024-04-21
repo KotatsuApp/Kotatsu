@@ -38,15 +38,5 @@ class ScrobblerMangaSelectionDecoration(context: Context) : MangaSelectionDecora
 		paint.color = strokeColor
 		paint.style = Paint.Style.STROKE
 		canvas.drawRoundRect(bounds, defaultRadius, defaultRadius, paint)
-		checkIcon?.run {
-			val offset = (bounds.height() - intrinsicHeight) / 2
-			setBounds(
-				(bounds.right - offset - intrinsicWidth).toInt(),
-				(bounds.top + offset).toInt(),
-				(bounds.right - offset).toInt(),
-				(bounds.top + offset + intrinsicHeight).toInt(),
-			)
-			draw(canvas)
-		}
 	}
 }

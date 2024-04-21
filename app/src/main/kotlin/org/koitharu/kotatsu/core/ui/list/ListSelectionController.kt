@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.ui.list
 
+import android.app.Notification.Action
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -80,8 +81,7 @@ class ListSelectionController(
 	}
 
 	fun onItemLongClick(id: Long): Boolean {
-		startActionMode()
-		return actionMode?.also {
+		return startActionMode()?.also {
 			decoration.setItemIsChecked(id, true)
 			notifySelectionChanged()
 		} != null
@@ -105,9 +105,9 @@ class ListSelectionController(
 		actionMode = null
 	}
 
-	private fun startActionMode() {
-		if (actionMode == null) {
-			actionMode = appCompatDelegate.startSupportActionMode(this)
+	private fun startActionMode(): ActionMode? {
+		return actionMode ?: appCompatDelegate.startSupportActionMode(this).also {
+			actionMode = it
 		}
 	}
 

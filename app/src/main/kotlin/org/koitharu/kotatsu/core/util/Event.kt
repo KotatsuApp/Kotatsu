@@ -9,8 +9,8 @@ class Event<T>(
 
 	suspend fun consume(collector: FlowCollector<T>) {
 		if (!isConsumed) {
-			collector.emit(data)
 			isConsumed = true
+			collector.emit(data)
 		}
 	}
 

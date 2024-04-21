@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
@@ -90,8 +91,11 @@ class ChaptersFragment :
 		viewModel.isChaptersEmpty.observe(viewLifecycleOwner) {
 			binding.textViewHolder.isVisible = it
 		}
-		viewModel.onSelectChapter.observeEvent(viewLifecycleOwner) {
-			selectionController?.onItemLongClick(it)
+		viewModel.onSelectChapter.observeEvent(viewLifecycleOwner) { chapterId ->
+			chaptersAdapter?.observeItems()?.firstOrNull { items ->
+				items.any { x -> x is ChapterListItem && x.chapter.id == chapterId }
+			}
+			selectionController?.onItemLongClick(chapterId)
 		}
 	}
 
