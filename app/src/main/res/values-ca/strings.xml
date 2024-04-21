@@ -45,7 +45,6 @@
     <string name="follow_system">Seguir el sistema</string>
     <string name="pages">Pàgines</string>
     <string name="clear">Neteja</string>
-    <string name="text_clear_history_prompt">Netejar tot l\'historial de lectura permanentment?</string>
     <string name="remove">Suprimir</string>
     <string name="_s_deleted_from_local_storage">\"%s\" eliminat de l\'emmagatzematge local</string>
     <string name="save_page">Desa la pàgina</string>
@@ -61,7 +60,6 @@
     <string name="search_on_s">Cerca a %s</string>
     <string name="text_delete_local_manga">Esborrar permanentment \"%s\" del dispositiu?</string>
     <string name="switch_pages">Canviar pàgines</string>
-    <string name="taps_on_edges">Tocs de la vora</string>
     <string name="volume_buttons">Botons de volum</string>
     <string name="_continue">Continua</string>
     <string name="error">Error</string>

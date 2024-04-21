@@ -104,7 +104,6 @@
     <string name="compact">Kompaktowy</string>
     <string name="server_error">Błąd po stronie serwera (%1$d). Sprónuj ponownie później</string>
     <string name="network_unavailable">Sieć niedostępna</string>
-    <string name="different_languages">Inne języki</string>
     <string name="discard">Odrzuć</string>
     <string name="brightness">Jasność</string>
     <string name="contrast">Kontrast</string>
@@ -161,8 +160,6 @@
     <string name="light_indicator">Powiadomienie LED</string>
     <string name="new_chapters">Nowe rozdziały</string>
     <string name="local_storage">Pamięć wewnętrzna</string>
-    <string name="text_shelf_holder_primary">Tutaj będą wyświetlane Twoje mangi</string>
-    <string name="text_shelf_holder_secondary">Znajdź materiały do czytania w zakładce „Przeglądaj”</string>
     <string name="text_feed_holder">W tym miejscu pojawią się powiadomienia o nowych rozdziałach z mang które czytasz</string>
     <string name="pages_cache">Strony w pamięci podręcznej</string>
     <string name="pages_animation">Animacja przewracania strony</string>
@@ -187,8 +184,6 @@
     <string name="external_storage">Pamięć zewnętrzna</string>
     <string name="domain">Domena</string>
     <string name="app_update_available">Nowa wersja aplikacji jest dostępna</string>
-    <string name="large_manga_save_confirm">Ta manga ma %s. Zapisać wszystko?</string>
-    <string name="save_manga">Zapisz</string>
     <string name="download">Pobierz</string>
     <string name="text_local_holder_primary">Najpierw coś zapisz</string>
     <string name="not_available">Niedostępne</string>
@@ -218,16 +213,12 @@
     <string name="webtoon">Webtoon</string>
     <string name="reader_settings">Ustawienia czytnika</string>
     <string name="switch_pages">Zmiana strony</string>
-    <string name="volume_buttons">Przyciski głośności</string>
-    <string name="taps_on_edges">Dotknięcie krawędzi</string>
     <string name="updates_feed_cleared">Wyczyszczone</string>
     <string name="scale_mode">Tryb skalowania</string>
     <string name="clear_cookies">Wyczyść ciasteczka</string>
     <string name="cookies_cleared">Wszystkie ciasteczka wyczyszczone</string>
     <string name="about_app_translation_summary">Przetłumacz tą aplikację</string>
     <string name="about_app_translation">Tłumaczenie</string>
-    <string name="available_sources">Dostępne źródła</string>
-    <string name="gestures_only">Tylko gesty</string>
     <string name="cannot_find_available_storage">Brak dostępnej pamięci</string>
     <string name="other_storage">Inny</string>
     <string name="search_results">Wyniki wyszukiwania</string>
@@ -253,7 +244,6 @@
     <string name="clear_search_history">Wyczyść historię wyszukiwania</string>
     <string name="operation_not_supported">Ta operacja nie jest obsługiwana</string>
     <string name="sort_order">Tryb sortowania</string>
-    <string name="filter_load_error">Nie można załadować listy gatunków</string>
     <string name="status_on_hold">Wstrzymane</string>
     <string name="status_dropped">Porzucone</string>
     <string name="use_fingerprint">Użyj odcisku palca, jeśli jest dostępny</string>
@@ -263,7 +253,6 @@
     <string name="exclude_nsfw_from_history_summary">Manga oznaczona jako NSFW nigdy nie zostanie dodana do historii, a Twoje postępy nie zostaną zapisane</string>
     <string name="dns_over_https">DNS przez HTTPS</string>
     <string name="default_mode">Tryb domyślny</string>
-    <string name="text_clear_history_prompt">Trwale wyczyścić całą historię czytania?</string>
     <string name="_s_deleted_from_local_storage">„%s” usunięte z pamięci lokalnej</string>
     <string name="clear_updates_feed">Wyczyść tablicę aktualizacji</string>
     <string name="feed">Tablica</string>
@@ -296,7 +285,6 @@
     <string name="auth_not_supported_by">Logowanie na %s nie jest obsługiwane</string>
     <string name="text_clear_cookies_prompt">Zostaniesz wylogowany ze wszystkich źródeł</string>
     <string name="exclude_nsfw_from_history">Wyklucz mangi NSFW z historii</string>
-    <string name="enabled_sources">Wykorzystane źródła</string>
     <string name="screenshots_block_nsfw">Zablokuj na NSFW</string>
     <string name="suggestions_summary">Proponuj mangi na podstawie Twoich preferencji</string>
     <string name="suggestions_info">Wszystkie dane są analizowane tylko lokalnie na tym urządzeniu i nigdy nie są nigdzie wysyłane.</string>
@@ -334,7 +322,6 @@
     <string name="import_completed">Importowanie zakończone</string>
     <string name="import_completed_hint">Możesz usunąć oryginalny plik z pamięci, aby zaoszczędzić miejsce</string>
     <string name="import_will_start_soon">Import rozpocznie się wkrótce</string>
-    <string name="color_correction_hint">Wybrane ustawienia kolorów zostaną zapamiętane dla tej mangi</string>
     <string name="history_shortcuts">Pokaż ostatnie skróty do mang</string>
     <string name="history_shortcuts_summary">Pokaż ostatnie mangi po długim naciśnięciu ikony aplikacji</string>
     <string name="reader_control_ltr_summary">Stuknięcie w prawą krawędź lub naciśnięcie prawego klawisza zawsze powoduje przejście do następnej strony.</string>
@@ -353,7 +340,6 @@
     <string name="scrobbling_empty_hint">By śledzić postęp w czytaniu, wybierz Menu → Śledź na ekranie detali mangi.</string>
     <string name="find_similar">Znajdź podobne</string>
     <string name="user_agent">Nagłówek UserAgent</string>
-    <string name="translations">Tłumaczenia</string>
     <string name="share_logs">Udostępnij dzienniki</string>
     <string name="enable_logging_summary">Zapisz niektóre działania do celów debugowania. Nie włączaj go, jeśli nie jesteś pewien, co robisz</string>
     <string name="allow_unstable_updates">Zezwól na niestabilne altualizacje</string>
@@ -378,7 +364,6 @@
     <string name="theme_name_mion">Mion</string>
     <string name="ignore_ssl_errors">Ignoruj błędy SSL</string>
     <string name="mirror_switching">Wybierz lustro automatycznie</string>
-    <string name="restore_backup_description">Zaimportuj utworzoną wcześniej kopię zapasową danych użytkownika</string>
     <string name="show_on_shelf">Pokaż na półce</string>
     <string name="mirror_switching_summary">Automatycznie przełączaj domeny źródeł mangi w przypadku błędów, jeśli dostępne są serwery lustrzane</string>
     <string name="pause">Pauza</string>
@@ -427,10 +412,7 @@
     <string name="restore_summary">Przywróć wcześniej utworzoną kopię zapasową</string>
     <string name="webtoon_zoom_summary">Zezwalaj na powiększanie gestu w trybie webtoon</string>
     <string name="show_pages_numbers_summary">Pokaż numery stron w dolnym rogu</string>
-    <string name="pages_animation_summary">Animacja przewracania stron</string>
     <string name="reader_info_bar_summary">Pokaż aktualny czas i postęp czytania u góry ekranu</string>
-    <string name="details_button_tip">Naciśnij i przytrzymaj przycisk Czytaj, aby zobaczyć więcej opcji</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="clear_source_cookies_summary">Wyczyść pliki cookie tylko dla określonej domeny. W większości przypadków unieważni autoryzację</string>
     <string name="download_option_all_chapters">Wszystkie rozdziały z tłumaczeniem %s</string>
     <string name="download_option_first_n_chapters">Pierwszy %s</string>
@@ -439,7 +421,6 @@
     <string name="download_option_whole_manga">Cała manga</string>
     <string name="download_option_next_unread_n_chapters">Następna nieprzeczytana %s</string>
     <string name="download_option_manual_selection">Wybierz rozdziały ręcznie</string>
-    <string name="custom_directory">Katalog niestandardowy</string>
     <string name="pick_custom_directory">Wybierz katalog niestandardowy</string>
     <string name="no_access_to_file">Nie masz dostępu do tego pliku lub katalogu</string>
     <string name="local_manga_directories">Lokalne katalogi mangi</string>
@@ -462,7 +443,6 @@
     <string name="tracker_wifi_only_summary">Nie sprawdzaj dostępności nowych partycji, jeśli korzystasz z ograniczonego połączenia internetowego</string>
     <string name="on_device">Na urządzeniu</string>
     <string name="data_not_restored_text">Upewnij się, że wybrałeś właściwy plik kopii zapasowej</string>
-    <string name="view_list">Zobacz listę</string>
     <string name="in_progress">W trakcie</string>
     <string name="data_not_restored">Dane nie zostały przywrócone</string>
     <string name="directories">Katalogi</string>
@@ -472,7 +452,6 @@
     <string name="too_many_requests_message">Zbyt dużo próśb. Spróbuj ponownie później</string>
     <string name="related_manga">Podobna manga</string>
     <string name="suggestions_wifi_only_summary">Nie aktualizuj rekomendacji, jeśli korzystasz z ograniczonego połączenia internetowego</string>
-    <string name="default_section">Sekcja domyślna</string>
     <string name="manga_list">Lista mang</string>
     <string name="disable_nsfw">Wyłącz NSFW</string>
     <string name="show">Pokazywać</string>
@@ -545,9 +524,7 @@
     <string name="error_search_not_supported">Wyszukiwanie nie jest wspierane przez to źródło mangi</string>
     <string name="show_menu">Pokaż menu</string>
     <string name="toggle_ui">Pokaż/ukryj UI</string>
-    <string name="two_pages">Dwie strony</string>
     <string name="downloads_settings_info">Jeśli masz problemy z blokowaniem po stronie serwera, możesz włączyć spowolnienie pobierania dla każdego źródła mangi indywidualnie w ustawieniach tego źródła</string>
-    <string name="approximate_reading_time">Przybliżony czas czytania</string>
     <string name="content_rating">Klasyfikacja treści</string>
     <string name="rating_suggestive">Sugestywne</string>
     <string name="last_read">Ostatnio czytane</string>
@@ -584,7 +561,6 @@
     <string name="empty_stats_text">Nie ma statystyk dla wybranego okresu</string>
     <string name="statistics">Statystyki</string>
     <string name="week">Tydzień</string>
-    <string name="stats_enabled">Włącz statystyki</string>
     <string name="clear_stats_confirm">Czy na pewno chcesz wyczyścić wszystkie statystyki czytania? Tej czynności nie można cofnąć.</string>
     <string name="month">Miesiąc</string>
     <string name="pages_read_s">Strony przeczytane: %s</string>

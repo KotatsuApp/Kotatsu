@@ -11,7 +11,6 @@
     <string name="rotate_screen">Экранды айналдыру</string>
     <string name="update">Жаңарту</string>
     <string name="feed_will_update_soon">Жаңарту жақын арада басталады</string>
-    <string name="large_manga_save_confirm">Маңгада %s бар. Бәрін сақтаймысыз\?</string>
     <string name="new_chapters">Жаңа тараулар</string>
     <string name="local_storage">Құрылғыда</string>
     <string name="history">Тарих</string>
@@ -66,16 +65,13 @@
     <string name="delete_manga">Маңганы жою</string>
     <string name="reader_settings">Оқыманы баптау</string>
     <string name="switch_pages">Парақтау</string>
-    <string name="taps_on_edges">Шет жақты түру</string>
     <string name="clear_thumbs_cache">Нобай кәшін тазалау</string>
     <string name="search_history_cleared">Тазаланды</string>
-    <string name="gestures_only">Ым ғана</string>
     <string name="internal_storage">Ішкі жады</string>
     <string name="external_storage">Сыртқы жады</string>
     <string name="domain">Дәмейін</string>
     <string name="app_update_available">Жаңа нұсқа қолжетімді</string>
     <string name="open_in_browser">Уеб браузер арқылы ашу</string>
-    <string name="save_manga">Сақтау</string>
     <string name="notifications">Мәлімдеме</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d ішіндегі %2$d қосулы</string>
     <string name="download">Жүктеп алу</string>
@@ -87,8 +83,6 @@
     <string name="remove_category">Жою</string>
     <string name="text_empty_holder_primary">Мына жер бос екен…</string>
     <string name="text_history_holder_primary">Бұ жерде оқығаныңыз тұрады</string>
-    <string name="text_shelf_holder_primary">Маңганыз осы жерде тұрады</string>
-    <string name="text_shelf_holder_secondary">«Шолу» бөлімінен оқуға болатынды табыңыз</string>
     <string name="text_local_holder_primary">Алдымен бірдеңе сақтаңыз</string>
     <string name="manga_shelf">Сөре</string>
     <string name="recent_manga">Соңғы</string>
@@ -114,7 +108,6 @@
     <string name="search_manga">Маңга іздеу</string>
     <string name="add_to_favourites">Таңдаулыға</string>
     <string name="downloads">Жүктелгендер</string>
-    <string name="text_clear_history_prompt">Тарихты толықтай тазалаймысыз\?</string>
     <string name="operation_not_supported">Қолжетімсіз амал</string>
     <string name="delete">Жою</string>
     <string name="text_file_not_supported">CBZ не ZIP пішімде таңдаңыз.</string>
@@ -122,7 +115,6 @@
     <string name="read_mode">Оқу режімі</string>
     <string name="text_delete_local_manga">“%s” құрылғыдан біржолата жоямысыз?</string>
     <string name="_continue">Жалғастыру</string>
-    <string name="volume_buttons">Дыбыс батырмалары</string>
     <string name="error">Қате</string>
     <string name="clear_search_history">Іздеу тарихын тазалау</string>
     <string name="track_sources">Жаңартуларды қарау</string>
@@ -177,8 +169,6 @@
     <string name="state_ongoing">Шығып жатыр</string>
     <string name="show_pages_numbers">Беттерді нөмірлеу</string>
     <string name="system_default">Әдепкі</string>
-    <string name="available_sources">Қолжетімді дереккөздер</string>
-    <string name="enabled_sources">Қосылып тұрған дереккөздер</string>
     <string name="suggestions_summary">Ұнайды ма деген маңганы ұсыну</string>
     <string name="screenshots_block_nsfw">ҰЯТСЫЗ үшін бөгеу</string>
     <string name="suggestions_enable">Ұсынымды қосу</string>
@@ -226,7 +216,6 @@
     <string name="various_languages">Түрлі тіл</string>
     <string name="removal_completed">Жойылды</string>
     <string name="edit">Өңдеу</string>
-    <string name="filter_load_error">Жанр тізімі жүктеліне алмады</string>
     <string name="removed_from_history">Тарихтан жойылды</string>
     <string name="crash_text">Ақау пайда болды. Жөндеу үшін әзірлеушіге шағым жіберіңізші.</string>
     <string name="detect_reader_mode_summary">Маңга уебтүн бе екенін өздігінен анықтап береді</string>
@@ -291,7 +280,6 @@
     <string name="zoom_in">Ұлғайту</string>
     <string name="captcha_required_summary">%s дұрыс істеуі үшін captcha өтіңіз</string>
     <string name="download_option_all_unread">Түгел оқылмаған тарау</string>
-    <string name="restore_backup_description">Алдында жасалған жеке деректің сақтық көшірмесін импорттау</string>
     <string name="frequency_every_day">Күнде</string>
     <string name="download_started">Жүктеп алу басталды</string>
     <string name="categories">Санат</string>
@@ -325,7 +313,6 @@
     <string name="downloads_wifi_only_summary">Ұялы желіге көшкенде жүктеп алуды тоқтату</string>
     <string name="suggest_new_sources">Қолданбаны жаңартқан соң жаңа дереккөз ұсыну</string>
     <string name="import_completed">Импорт аяқталды</string>
-    <string name="different_languages">Әртүрлі тіл</string>
     <string name="user_agent">UserAgent басы</string>
     <string name="ignore_ssl_errors">SSL қатеге мән бермеу</string>
     <string name="reader_info_bar">Оқымада ақпар тақтасын көрсету</string>
@@ -337,7 +324,6 @@
     <string name="storage_usage">Жадты қолдану</string>
     <string name="data_not_restored_text">Дұрыс сақтық көшірме файылын таңдағаныңызды тексеріңіз</string>
     <string name="theme_name_sakura">Сакура</string>
-    <string name="view_list">Тізімді көру</string>
     <string name="unknown">Белгісіз</string>
     <string name="in_progress">Оқылып жатыр</string>
     <string name="download_option_manual_selection">Тарауды таңдап шығу</string>
@@ -362,7 +348,6 @@
     <string name="color_light">Жарық</string>
     <string name="web_view_unavailable">WebView қолжетімсіз: WebView провайдері орнатылғанын тексеріп көріңіз</string>
     <string name="port">Порт</string>
-    <string name="color_correction_hint">Таңдалған түс баптауы осы маңга үшін сақталып тұрады</string>
     <string name="not_found_404">Контент табылмады, жойылған-мыс</string>
     <string name="got_it">Ұқтым</string>
     <string name="type">Түрі</string>
@@ -392,7 +377,6 @@
     <string name="show_suspicious_content">Күмәнді контентті көрсету</string>
     <string name="reader_info_bar_summary">Экранның үстінгі жағында уақыт пен оқу прогрессін көрсету</string>
     <string name="allow_unstable_updates_summary">Тұрақсыз нұсқа туралы мәлімдеме алу</string>
-    <string name="translations">Аударма</string>
     <string name="comics_archive_import_description">Бір не одан көп .cbz я .zip файлын таңдай аласыз, әр файыл бөлек маңга болып анықталады.</string>
     <string name="downloads_paused">Жүктеп алу тоқтап қалды</string>
     <string name="too_many_requests_message">Тым көп сұрату. Біраздан соң қайталап көріңіз</string>
@@ -428,7 +412,6 @@
     <string name="suggestions_enable_prompt">Сізге арналған маңга ұсынысын алғыңыз келе ме\?</string>
     <string name="exit_confirmation">Шығуды растау</string>
     <string name="comics_archive">Комикс мұрағаты</string>
-    <string name="custom_directory">Жеке каталог</string>
     <string name="more">Тағы</string>
     <string name="theme_name_asuka">Асука</string>
     <string name="address">Адресі</string>
@@ -437,12 +420,10 @@
     <string name="enhanced_colors">32-биттік түс режімі</string>
     <string name="folder_with_images_import_description">Мұрағат я сурет каталогын таңдай аласыз. Әр мұрағат (яки ішкі каталог) бір тарау деп анықталады.</string>
     <string name="reorder">Ретін өзгерту</string>
-    <string name="default_section">Әдепкі бөлім</string>
     <string name="background">Ая</string>
     <string name="feed">Лек</string>
     <string name="speed_value">x%.1f</string>
     <string name="downloads_removed">Жүктеп алғаныңыз жойылды</string>
-    <string name="pages_animation_summary">Парақтау анимасасы</string>
     <string name="no_access_to_file">Бұл файлға я каталогқа рұқсатыңыз жоқ</string>
     <string name="mark_as_current">Қазіргі деп белгілеу</string>
     <string name="random">Кездейсоқ</string>
@@ -464,7 +445,6 @@
     <string name="no_bookmarks_summary">Оқып жатқан маңгаға бетбелгі жасай аласыз</string>
     <string name="images_procy_description">Трафик қолдануды азайтып, сурет жүктеп алуды тездету үшін wsrv.nl қызметін қолданыңыз</string>
     <string name="theme_name_mamimi">Мамими</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="manage">Реттеу</string>
     <string name="manga_list">Маңга тізімі</string>
     <string name="reader_control_ltr">Оқыманы эргономді басқару</string>

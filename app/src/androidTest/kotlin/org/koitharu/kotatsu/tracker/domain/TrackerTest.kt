@@ -174,12 +174,12 @@ class TrackerTest {
 		assertEquals(3, repository.getNewChaptersCount(mangaFirst.id))
 
 		var chapter = requireNotNull(mangaFull.chapters).run { get(lastIndex - 1) }
-		repository.syncWithHistory(mangaFull, chapter.id)
+		tracker.syncWithHistory(mangaFull, chapter.id)
 
 		assertEquals(1, repository.getNewChaptersCount(mangaFirst.id))
 
 		chapter = requireNotNull(mangaFull.chapters).run { get(lastIndex) }
-		repository.syncWithHistory(mangaFull, chapter.id)
+		tracker.syncWithHistory(mangaFull, chapter.id)
 
 		assertEquals(0, repository.getNewChaptersCount(mangaFirst.id))
 

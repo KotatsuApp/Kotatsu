@@ -53,7 +53,6 @@
     <string name="text_file_not_supported">ZIP या CBZ मैं से एक फ़ाइल चुनें।</string>
     <string name="updated">अपडेट हो गया</string>
     <string name="_s_deleted_from_local_storage">\"%s\" को स्थानीय स्टोरेज से हटा दिया गया</string>
-    <string name="text_clear_history_prompt">पढ़ने का इतिहास सदा के लिए मिटाए\?</string>
     <string name="save_page">पेज सहेजें</string>
     <string name="_import">आयात</string>
     <string name="operation_not_supported">यह कार्य समर्थित नहीं है</string>
@@ -70,12 +69,9 @@
     <string name="all_favourites">सभी पसंदीदा</string>
     <string name="light_indicator">LED सूचक</string>
     <string name="favourites_categories">पसंदीदा श्रेणियां</string>
-    <string name="gestures_only">केवल जेस्चर</string>
     <string name="clear_thumbs_cache">थंबनेल कैच को साफ करे</string>
-    <string name="taps_on_edges">किनारे पर टैप</string>
     <string name="switch_pages">पन्नो को बदले</string>
     <string name="rotate_screen">स्क्रीन घुमायें</string>
-    <string name="text_shelf_holder_secondary">\"एक्सप्लोर करें\" अनुभाग में जानें कि क्या पढ़ना है</string>
     <string name="vibration">कंपन</string>
     <string name="remove_category">हटाएँ</string>
     <string name="read_mode">पढ़ने की विधि</string>
@@ -103,14 +99,10 @@
     <string name="clear_search_history">खोजा हुवा इतिहास को साफ करे</string>
     <string name="download">डाउनलोड</string>
     <string name="size_s">आकार: %s</string>
-    <string name="text_shelf_holder_primary">आपका मंगा यहां प्रदर्शित किया जाएगा</string>
     <string name="new_chapters">नये अध्याय</string>
-    <string name="volume_buttons">वॉल्यूम बटन</string>
     <string name="clear_updates_feed">अपडेट फ़ीड साफ़ करें</string>
     <string name="notifications_settings">सुचना के सेटिंग</string>
     <string name="domain">डोमेन</string>
-    <string name="save_manga">सहेजें</string>
-    <string name="large_manga_save_confirm">इस मंगा में %s है। यह सब सहेजें?</string>
     <string name="reader_settings">रीडर के सेटिंग</string>
     <string name="text_search_holder_secondary">क्वेरी को पुन: तैयार करने का प्रयास करें।</string>
     <string name="error">त्रुटि</string>
@@ -137,7 +129,6 @@
     <string name="suggestions_enable">सुझाव सक्षम करें</string>
     <string name="suggestions_summary">अपनी प्राथमिकताओं के आधार पर मंगा का सुझाव दें</string>
     <string name="suggestions_info">सभी डेटा का विश्लेषण केवल इस डिवाइस पर स्थानीय रूप से किया जाता है और कभी भी कहीं नहीं भेजा जाता है।</string>
-    <string name="filter_load_error">शैलियों की सूची लोड करने में असमर्थ</string>
     <string name="reset_filter">फ़िल्टर रीसेट करें</string>
     <string name="onboard_text">उन भाषाओं का चयन करें जिन्हें आप मंगा पढ़ना चाहते हैं। आप इसे बाद में सेटिंग में बदल सकते हैं।</string>
     <string name="chapters_empty">इस मंगा में कोई अध्याय नहीं</string>
@@ -185,8 +176,6 @@
     <string name="system_default">डिफ़ॉल्ट</string>
     <string name="exclude_nsfw_from_history">इतिहास से NSFW मंगा को बाहर करें</string>
     <string name="show_pages_numbers">क्रमांकित पन्ने</string>
-    <string name="enabled_sources">प्रयुक्त स्रोत</string>
-    <string name="available_sources">उपलब्ध स्रोत</string>
     <string name="screenshots_block_nsfw">NSFW पर रोक लगाएं</string>
     <string name="screenshots_block_all">हमेशा ब्लॉक करें</string>
     <string name="text_suggestion_holder">मंगा पढ़ना शुरू करें और आपको व्यक्तिगत सुझाव मिलेंगे</string>
@@ -262,11 +251,9 @@
     <string name="storage_usage">स्टोरेज उपयोग</string>
     <string name="contrast">कंट्रास्ट</string>
     <string name="reset">रीसेट</string>
-    <string name="color_correction_hint">इस मंगा के लिए चुनी गई रंग सेटिंग्स याद रखी जाएंगी</string>
     <string name="text_unsaved_changes_prompt">सहेजे न गए परिवर्तन सहेजें या हटाएँ?</string>
     <string name="error_no_space_left">डिवाइस पर जगह समाप्त</string>
     <string name="reader_slider">पेज स्विचिंग स्लाइडर दिखाएँ</string>
-    <string name="different_languages">विभिन्न भाषाएं</string>
     <string name="network_unavailable">नेटवर्क उपलब्ध नहीं है</string>
     <string name="server_error">सर्वर साइड त्रुटि (%1$d). कृपया बाद में पुन: प्रयास करें</string>
     <string name="clear_new_chapters_counters">नए अध्यायों के बारे में भी स्पष्ट जानकारी</string>
@@ -287,7 +274,6 @@
     <string name="comics_archive_import_description">आप एक या अधिक .cbz या .zip फ़ाइलों का चयन कर सकते हैं, प्रत्येक फ़ाइल को एक अलग मंगा के रूप में पहचाना जाएगा।</string>
     <string name="user_agent">UserAgent हेडर</string>
     <string name="speed">गति</string>
-    <string name="restore_backup_description">उपयोगकर्ता डेटा का पहले से बनाया गया बैकअप आयात करें</string>
     <string name="show_on_shelf">शेल्फ पर दिखाएँ</string>
     <string name="sync_auth_hint">आप किसी मौजूदा खाते में साइन इन कर सकते हैं या एक नया खाता बना सकते हैं</string>
     <string name="mirror_switching_summary">यदि मिरर उपलब्ध हैं तो त्रुटियों पर मंगा स्रोतों के लिए स्वचालित रूप से डोमेन स्विच करें</string>
@@ -317,12 +303,10 @@
     <string name="port">पोर्ट</string>
     <string name="proxy">प्रॉक्सी</string>
     <string name="invalid_value_message">अमान्य मान</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="password">पासवर्ड</string>
     <string name="invert_colors">रंगों को उलटा करें</string>
     <string name="invalid_port_number">अमान्य पोर्ट नंबर</string>
     <string name="network">नेटवर्क</string>
-    <string name="pages_animation_summary">एनिमेट पेज स्विचिंग</string>
     <string name="show_pages_numbers_summary">निचले कोने में पेज संख्याएँ दिखाएँ</string>
     <string name="restore_summary">पहले बनाए गए बैकअप को पुनर्स्थापित करें</string>
     <string name="webtoon_zoom_summary">वेबटून मोड में ज़ूम इन जेस्चर की अनुमति दें</string>
@@ -330,9 +314,7 @@
     <string name="volume_">वॉल्यूम %d</string>
     <string name="volume_unknown">अज्ञात वॉल्यूम</string>
     <string name="downloads_settings_info">यदि आपको सर्वर-साइड ब्लॉकिंग की समस्या हो रही है तो आप स्रोत सेटिंग्स में प्रत्येक मंगा स्रोत के लिए व्यक्तिगत रूप से डाउनलोड मंदी को सक्षम कर सकते हैं</string>
-    <string name="approximate_reading_time">अनुमानित पढ़ने का समय</string>
     <string name="remove_from_history">इतिहास से हटा दें</string>
-    <string name="translations">अनुवाद</string>
     <string name="skip">छोड़ें</string>
     <string name="incognito_mode_hint">आपकी पढ़ने की प्रगति सहेजी नहीं जाएगी</string>
     <string name="content_rating">सामग्री मूल्यांकन</string>
@@ -350,7 +332,6 @@
     <string name="data_and_privacy">डेटा और गोपनीयता</string>
     <string name="email_password_enter_hint">जारी रखने के लिए अपना ईमेल और पासवर्ड डालें</string>
     <string name="clear_source_cookies_summary">केवल निर्दिष्ट डोमेन के लिए कुकीज़ साफ़ करें। अधिकांश मामलों में प्राधिकरण अमान्य हो जाएगा</string>
-    <string name="details_button_tip">अधिक विकल्प देखने के लिए पढ़ें बटन को दबाकर रखें</string>
     <string name="download_option_next_unread_n_chapters">अगला अपठित %s</string>
     <string name="no_access_to_file">आपके पास इस फ़ाइल या डॉयरेक्टरी तक कोई पहुंच नहीं है</string>
     <string name="voice_search">ध्वनि खोज</string>
@@ -427,9 +408,7 @@
     <string name="mark_as_completed_prompt">चयनित मंगा को पूरी तरह से पढ़ा गया के रूप में चिह्नित करें?
 \n
 \nचेतावनी: वर्तमान पठन प्रगति नष्ट हो जाएगी।</string>
-    <string name="approximate_remaining_time">अनुमानित समय शेष है</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
-    <string name="two_pages">दो पन्ने</string>
     <string name="show_menu">मेन्यू दिखाएँ</string>
     <string name="long_tap_action">लंबे टैप पर कार्रवाई</string>
     <string name="tap_action">टैप पर कार्रवाई</string>
@@ -448,12 +427,10 @@
     <string name="color_dark">गहरा</string>
     <string name="color_white">सफ़ेद</string>
     <string name="color_black">काला</string>
-    <string name="view_list">सूची देखें</string>
     <string name="manage_categories">श्रेणी व्यवस्थित करें</string>
     <string name="downloaded">डाउनलोड किया गया</string>
     <string name="too_many_requests_message">बहुत सारे अनुरोध. बाद में पुन: प्रयास</string>
     <string name="related_manga_summary">संबंधित मंगा की एक सूची दिखाएं. कुछ मामलों में यह ग़लत या गायब हो सकता है</string>
-    <string name="custom_directory">कस्टम डायरेक्टरी</string>
     <string name="pick_custom_directory">कस्टम डायरेक्टरी चुनें</string>
     <string name="default_webtoon_zoom_out">डिफ़ॉल्ट वेबटून ज़ूम आउट</string>
     <string name="captcha_required_summary">%s को ठीक से काम करने के लिए कैप्चा को हल करने की आवश्यकता है</string>
@@ -543,7 +520,6 @@
     <string name="show_reading_indicators_summary">इतिहास और पसंदीदा में पढ़ा गया प्रतिशत दिखाएँ</string>
     <string name="show_all">सब दिखाएं</string>
     <string name="downloads_cancelled">डाउनलोड रद्द कर दिए गए हैं</string>
-    <string name="default_section">डिफ़ॉल्ट अनुभाग</string>
     <string name="no_bookmarks_yet">अभी तक कोई बुकमार्क नहीं</string>
     <string name="no_bookmarks_summary">आप मंगा पढ़ते समय बुकमार्क बना सकते हैं</string>
     <string name="sync_settings">सिंक्रोनाइज़ेशन सेटिंग्स</string>

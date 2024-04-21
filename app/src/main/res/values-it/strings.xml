@@ -133,21 +133,16 @@
     <string name="new_chapters">Nuovi capitoli</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Abilitato %1$d di %2$d</string>
     <string name="notifications">Notifiche</string>
-    <string name="save_manga">Salva il manga</string>
-    <string name="large_manga_save_confirm">Questo manga ha %s. Vuoi salvare tutto\?</string>
     <string name="open_in_browser">Apri nel browser</string>
     <string name="app_update_available">Un aggiornamento per l\'applicazione è disponibile</string>
     <string name="domain">Dominio</string>
     <string name="external_storage">Archiviazione esterna</string>
     <string name="internal_storage">Archiviazione interna</string>
-    <string name="gestures_only">Solo gesti</string>
     <string name="search_history_cleared">Storia della ricerca cancellata</string>
     <string name="clear_search_history">Cancella la cronologia delle ricerche</string>
     <string name="clear_thumbs_cache">Svuota la cache delle miniature</string>
     <string name="error">Errore</string>
     <string name="_continue">Continua</string>
-    <string name="volume_buttons">Pulsanti volume</string>
-    <string name="taps_on_edges">Tocchi sui bordi</string>
     <string name="switch_pages">Cambia pagina</string>
     <string name="reader_settings">Impostazioni del lettore</string>
     <string name="delete_manga">Elimina il manga</string>
@@ -159,7 +154,6 @@
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="clear_pages_cache">Cancella la cache delle pagine</string>
     <string name="remove">Rimuovi</string>
-    <string name="text_clear_history_prompt">Vuoi davvero cancellare tutta la tua cronologia di lettura\?</string>
     <string name="clear">Cancella</string>
     <string name="tracker_warning">Alcuni produttori possono cambiare il comportamento del sistema, che può interrompere le attività nello sfondo.</string>
     <string name="backup_saved">Backup salvato con successo</string>
@@ -193,14 +187,11 @@
     <string name="system_default">Predefinito</string>
     <string name="exclude_nsfw_from_history">Escludi i manga NSFW dalla storia</string>
     <string name="show_pages_numbers">Mostra i numeri delle pagine</string>
-    <string name="enabled_sources">Fonti abilitate</string>
-    <string name="available_sources">Fonti disponibili</string>
     <string name="computing_">Calcolo…</string>
     <string name="screenshots_policy">Politica sulle schermate</string>
     <string name="screenshots_allow">Permetti</string>
     <string name="screenshots_block_nsfw">Blocca per NSFW</string>
     <string name="screenshots_block_all">Blocca sempre</string>
-    <string name="filter_load_error">Impossibile caricare la lista dei generi</string>
     <string name="suggestions_enable">Abilita i suggerimenti</string>
     <string name="suggestions_summary">Suggerisci manga in base alle tue preferenze</string>
     <string name="suggestions_info">Tutti i dati vengono analizzati solo localmente su questo dispositivo e mai inviati da nessuna parte.</string>
@@ -280,15 +271,12 @@
     <string name="not_found_404">Contenuto non trovato o rimosso</string>
     <string name="compact">Compatto</string>
     <string name="source_disabled">Fonte disabilitata</string>
-    <string name="text_shelf_holder_primary">I tuoi manga verrano visualizzati qui</string>
-    <string name="text_shelf_holder_secondary">Scopri cosa leggere nella sezione «Esplora»</string>
     <string name="canceled">Annullato</string>
     <string name="server_error">Errore lato server (%1$d). Riprovare più tardi</string>
     <string name="clear_new_chapters_counters">Informazioni chiare anche sui nuovi capitoli</string>
     <string name="prefetch_content">Precaricamento dei contenuti</string>
     <string name="mark_as_current">Contrassegna come corrente</string>
     <string name="error_no_space_left">Non c\'è più spazio sul dispositivo</string>
-    <string name="different_languages">Lingue diverse</string>
     <string name="network_unavailable">La rete non è disponibile</string>
     <string name="network_unavailable_hint">Attiva il Wi-Fi o la rete mobile per leggere i manga in linea</string>
     <string name="webtoon_zoom">Zoom Webtoon</string>
@@ -338,7 +326,6 @@
     <string name="email_enter_hint">Inserisci il tuo indirizzo e-mail per continuare</string>
     <string name="sync_title">Sincronizza i tuoi dati</string>
     <string name="history_shortcuts">Mostra i collegamenti ai manga recenti</string>
-    <string name="color_correction_hint">Le impostazioni di colore scelte saranno ricordate per questo manga</string>
     <string name="reader_control_ltr">Controllo ergonomico del lettore</string>
     <string name="brightness">Luminosità</string>
     <string name="categories_delete_confirm">Sei sicuro/a di voler eliminare le categorie preferite selezionate\?
@@ -411,7 +398,6 @@
     <string name="find_similar">Trova simili</string>
     <string name="data_not_restored_text">Assicurati di aver selezionato il file di backup corretto</string>
     <string name="catalog">Catalogo</string>
-    <string name="view_list">Vedi lista</string>
     <string name="welcome_text">Selezionare le fonti di contenuti da abilitare. Si può configurare anche successivamente nelle impostazioni</string>
     <string name="unknown">Sconosciuto</string>
     <string name="in_progress">In progresso</string>
@@ -461,7 +447,6 @@
     <string name="color_dark">Scuro</string>
     <string name="this_manga">Questo manga</string>
     <string name="reader_info_bar_summary">Mostra l\'orario attuale e il progresso di lettura in cima allo schermo</string>
-    <string name="translations">Traduzioni</string>
     <string name="downloads_paused">I download sono stati messi in pausa</string>
     <string name="too_many_requests_message">Troppe richieste. Riprova più tardi</string>
     <string name="downloads_wifi_only">Scarica solo via Wi-Fi</string>
@@ -484,7 +469,6 @@
     <string name="downloaded">Scaricato</string>
     <string name="suggestions_enable_prompt">Vuoi ricevere suggerimenti personalizzati di manga?</string>
     <string name="manual">Manuale</string>
-    <string name="custom_directory">Cartella personalizzata</string>
     <string name="more">Di più</string>
     <string name="reader_optimize_summary">Riduci la qualità delle pagine fuori schermo per usare meno memoria</string>
     <string name="address">Indirizzo</string>
@@ -492,12 +476,10 @@
     <string name="source_enabled">Fonte abilitata</string>
     <string name="enhanced_colors">Modalità colori 32-bit</string>
     <string name="folder_with_images_import_description">Puoi selezionare una cartella contenente archivi o immagini. Ogni archivio (o sottocartella) sarà riconosciuto come singolo capitolo.</string>
-    <string name="default_section">Sezione default</string>
     <string name="background">Sfondo</string>
     <string name="disable_nsfw_summary">Disabilita fonti per adulti e nascondi manga per adulti dalla lista se possibile</string>
     <string name="speed_value">x%.1f</string>
     <string name="downloads_removed">I download sono stati rimossi</string>
-    <string name="pages_animation_summary">Animazioni cambio pagina</string>
     <string name="no_access_to_file">Non hai accesso a questo file o cartella</string>
     <string name="mirror_switching">Scegli mirror automaticamente</string>
     <string name="restore_summary">Ripristina backup creato in precedenza</string>
@@ -513,7 +495,6 @@
     <string name="no_manga_sources_catalog_text">Non sono disponibili fonti in questa sezione, o potrebbero essere state aggiunte tutte.
 \nRimani sintonizzato</string>
     <string name="available_d">Disponibile: %1$d</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="state">Stato</string>
     <string name="manga_list">Lista manga</string>
     <string name="grayscale">Bianco e nero</string>
@@ -521,7 +502,6 @@
     <string name="last_successful_backup">Ultimo backup completato: %s</string>
     <string name="color_white">Bianco</string>
     <string name="downloads_resumed">I download sono stati ripresi</string>
-    <string name="details_button_tip">Tocca e tieni premuto il tasto Leggi per vedere più opzioni</string>
     <string name="state_paused">In pausa</string>
     <string name="to_top">Va in cima</string>
     <string name="show">Mostra</string>
@@ -539,7 +519,6 @@
     <string name="this_month">Questo mese</string>
     <string name="sync_auth">Accedi per sincronizzare l\'account</string>
     <string name="proxy">Proxy</string>
-    <string name="restore_backup_description">Importa un backup di dati utente creato precedentemente</string>
     <string name="got_it">Ho capito</string>
     <string name="comics_archive_import_description">Puoi selezionare uno o più file .cbz o .zip, ogni file sarà riconosciuto come un manga a parte.</string>
     <string name="show_on_shelf">Mostra sullo Scaffale</string>
@@ -556,7 +535,6 @@
 \n
 \nAttenzione: l\'attuale avanzamento della lettura sarà perso.</string>
     <string name="volume_unknown">Volume sconosciuto</string>
-    <string name="approximate_reading_time">Tempo di lettura approssimativo</string>
     <string name="volume_">Volume %d</string>
     <string name="category_hidden_done">Questa categoria è stata nascosta dalla schermata principale ed è accessibile tramite Menù → Gestisci categorie</string>
     <string name="approximate_remaining_time">Tempo rimanente approssimativo</string>

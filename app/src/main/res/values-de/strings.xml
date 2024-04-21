@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="remove">Entfernen</string>
-    <string name="text_clear_history_prompt">Gesamten Leseverlauf unwiderruflich löschen\?</string>
     <string name="theme">Design</string>
     <string name="pages">Seiten</string>
     <string name="follow_system">Wie System</string>
@@ -125,8 +124,6 @@
     <string name="new_chapters">Neue Kapitel</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d von %2$d aktiviert</string>
     <string name="notifications">Benachrichtigungen</string>
-    <string name="save_manga">Manga speichern</string>
-    <string name="large_manga_save_confirm">Dieser Manga hat %s. Alles davon speichern\?</string>
     <string name="open_in_browser">Im Browser öffnen</string>
     <string name="external_storage">Externer Speicher</string>
     <string name="internal_storage">Interner Speicher</string>
@@ -135,7 +132,6 @@
     <string name="clear_thumbs_cache">Miniaturansichten Cache löschen</string>
     <string name="error">Fehler</string>
     <string name="_continue">Weiter</string>
-    <string name="volume_buttons">Lautstärketasten</string>
     <string name="switch_pages">Seiten wechseln</string>
     <string name="reader_settings">Leseeinstellungen</string>
     <string name="delete_manga">Manga löschen</string>
@@ -155,7 +151,6 @@
     <string name="page_saved">Gespeichert</string>
     <string name="save_page">Seite speichern</string>
     <string name="clear">Löschen</string>
-    <string name="taps_on_edges">Rand antippen</string>
     <string name="captcha_solve">Lösen</string>
     <string name="captcha_required">CAPTCHA erforderlich</string>
     <string name="silent">Stumm</string>
@@ -179,7 +174,6 @@
     <string name="enter_password">Passwort eingeben</string>
     <string name="dont_check">Nicht prüfen</string>
     <string name="domain">Domäne</string>
-    <string name="gestures_only">Nur Gesten</string>
     <string name="chapter_is_missing">Das Kapitel fehlt</string>
     <string name="queued">In Warteschlange</string>
     <string name="about_app_translation">Übersetzung</string>
@@ -193,8 +187,6 @@
     <string name="system_default">Standard</string>
     <string name="exclude_nsfw_from_history">NSFW-Manga vom Verlauf ausschließen</string>
     <string name="show_pages_numbers">Nummerierte Seiten</string>
-    <string name="enabled_sources">Verwendete Quellen</string>
-    <string name="available_sources">Verfügbare Quellen</string>
     <string name="computing_">Berechnen…</string>
     <string name="screenshots_allow">Erlauben</string>
     <string name="screenshots_policy">Bildschirmfoto-Verhalten</string>
@@ -208,7 +200,6 @@
     <string name="enabled">Aktiviert</string>
     <string name="text_suggestion_holder">Beginne Manga zu lesen und du erhältst personalisierte Vorschläge</string>
     <string name="disabled">Deaktiviert</string>
-    <string name="filter_load_error">Liste der Genres kann nicht geladen werden</string>
     <string name="never">Nie</string>
     <string name="always">Immer</string>
     <string name="preload_pages">Seiten vorladen</string>
@@ -292,8 +283,6 @@
     <string name="automatic_scroll">Automatisches Blättern</string>
     <string name="comics_archive">Comics-Archiv</string>
     <string name="reader_info_pattern">Kap. %1$d/%2$d S. %3$d/%4$d</string>
-    <string name="text_shelf_holder_primary">Deine Manga werden hier angezeigt</string>
-    <string name="text_shelf_holder_secondary">Finde etwas zu lesen in der Rubrik „Erkunden“</string>
     <string name="canceled">Abgebrochen</string>
     <string name="account_already_exists">Konto existiert bereits</string>
     <string name="back">Zurück</string>
@@ -332,10 +321,8 @@
     <string name="discard">Verwerfen</string>
     <string name="reset">Zurücksetzen</string>
     <string name="brightness">Helligkeit</string>
-    <string name="color_correction_hint">Die gewählten Farbeinstellungen werden für diesen Manga beibehalten</string>
     <string name="color_correction">Farbkorrektur</string>
     <string name="error_no_space_left">Kein Platz übrig auf dem Gerät</string>
-    <string name="different_languages">Verschiedene Sprachen</string>
     <string name="network_unavailable">Netzwerk ist nicht verfügbar</string>
     <string name="reader_control_ltr">Ergonomische Lesekontrolle</string>
     <string name="reader_control_ltr_summary">Tippe auf den rechten Rand oder drücke die rechte Taste, um immer zur nächsten Seite zu wechseln.</string>
@@ -369,7 +356,6 @@
     <string name="comics_archive_import_description">Du kannst eine oder mehrere .cbz oder .zip Dateien auswählen, jede Datei wird als einzelner Manga erkannt.</string>
     <string name="folder_with_images_import_description">Du kannst einen Ordner mit Archiven oder Bildern auswählen. Jedes Archiv (oder Unterverzeichnis) wird als ein Kapitel erkannt.</string>
     <string name="speed">Geschwindigkeit</string>
-    <string name="restore_backup_description">Importiere ein zuvor erstelltes Nutzerdaten-Backup</string>
     <string name="show_on_shelf">Im Regal anzeigen</string>
     <string name="theme_name_miku">Miku</string>
     <string name="theme_name_asuka">Asuka</string>
@@ -406,14 +392,12 @@
     <string name="downloads_paused">Downloads wurden pausiert</string>
     <string name="downloads_cancelled">Downloads wurden abgebrochen</string>
     <string name="suggestions_enable_prompt">Willst du personalisierte Manga-Vorschläge erhalten\?</string>
-    <string name="translations">Übersetzungen</string>
     <string name="web_view_unavailable">WebView nicht verfügbar: Bitte prüfen, ob WebView installiert ist</string>
     <string name="address">Adresse</string>
     <string name="port">Port</string>
     <string name="proxy">Proxy</string>
     <string name="invalid_value_message">Ungültiger Wert</string>
     <string name="type">Typ</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="downloaded">Heruntergeladen</string>
     <string name="images_proxy_title">Bildoptimierungsproxy</string>
     <string name="username">Benutzername</string>
@@ -425,7 +409,6 @@
     <string name="restore_summary">Zuvor erstellte Sicherung wiederherstellen</string>
     <string name="reader_info_bar_summary">Die aktuelle Uhrzeit und den Lesefortschritt oben auf dem Bildschirm anzeigen</string>
     <string name="show_pages_numbers_summary">Seitenzahlen in der unteren Ecke anzeigen</string>
-    <string name="pages_animation_summary">Seitenwechsel animieren</string>
     <string name="download_option_whole_manga">Das ganze Manga</string>
     <string name="download_option_first_n_chapters">Erste %s</string>
     <string name="download_option_next_unread_n_chapters">Nächste ungelesene %s</string>
@@ -437,11 +420,9 @@
     <string name="voice_search">Sprachsuche</string>
     <string name="invert_colors">Farben umkehren</string>
     <string name="pick_custom_directory">Eigenes Verzeichnis wählen</string>
-    <string name="custom_directory">Eigenes Verzeichnis</string>
     <string name="no_access_to_file">Auf diese Datei oder dieses Verzeichnis kann nicht zugegriffen werden</string>
     <string name="local_manga_directories">Lokale Manga-Verzeichnisse</string>
     <string name="download_option_all_chapters">Alle Kapitel mit Übersetzung %s</string>
-    <string name="details_button_tip">Um weitere Optionen anzuzeigen, die Lesen-Taste drücken und gedrückt halten</string>
     <string name="color_light">Hell</string>
     <string name="color_dark">Dunkel</string>
     <string name="color_white">Weiß</string>
@@ -455,7 +436,6 @@
     <string name="suggestions_wifi_only_summary">Keine Vorschläge über getaktete Netzverbindungen aktualisieren</string>
     <string name="tracker_wifi_only_summary">Nicht über getaktete Netzverbindungen auf neue Kapitel prüfen</string>
     <string name="manage_categories">Kategorien verwalten</string>
-    <string name="view_list">Liste ansehen</string>
     <string name="show">Anzeigen</string>
     <string name="images_procy_description">Wenn möglich bitte den Dienst wsrv.nl nutzen, um den Datenverkehr zu reduzieren und das Laden von Bildern zu beschleunigen</string>
     <string name="clear_network_cache">Netzwerk-Cache löschen</string>
@@ -465,7 +445,6 @@
     <string name="in_progress">In Arbeit</string>
     <string name="related_manga">Verwandte Manga</string>
     <string name="clear_source_cookies_summary">Cookies nur für bestimmte Domain löschen. In den meisten Fällen wird die Genehmigung ungültig</string>
-    <string name="default_section">Standard-Abschnitt</string>
     <string name="catalog">Katalog</string>
     <string name="manage_sources">Quellen verwalten</string>
     <string name="content_type_manga">Manga</string>
@@ -561,8 +540,6 @@
     <string name="incognito_mode_hint">Deine Lese fortschritt, wird nicht gespeichert</string>
     <string name="vertical">Vertikal</string>
     <string name="category_hidden_done">Diese Kategorie wurde vom Hauptbildschirm ausgeblendet und ist verfügbar unter: Menü → Kategorien verwalten</string>
-    <string name="approximate_reading_time">Ungefähre Lesezeit</string>
-    <string name="approximate_remaining_time">Ungefähre Lesezeit</string>
     <string name="show_menu">Menü anzeigen</string>
     <string name="toggle_ui">UI anzeigen/ausblenden</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
@@ -577,7 +554,6 @@
     <string name="none">Keine</string>
     <string name="config_reset_confirm">Einstellungen auf Standardwerte zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
     <string name="use_two_pages_landscape">Zwei-Seiten-Layout im Querformat benutzen (experimentell)</string>
-    <string name="two_pages">Zwei Seiten</string>
     <string name="next_chapter">Nächstes Kapitel</string>
     <string name="prev_page">Vorherige Seite</string>
     <string name="last_read">Zuletzt gelesen</string>

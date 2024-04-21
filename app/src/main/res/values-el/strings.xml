@@ -33,7 +33,6 @@
     <string name="dark">Σκοτεινό</string>
     <string name="follow_system">Όπως στο σύστημα</string>
     <string name="clear">Εκκαθάριση</string>
-    <string name="text_clear_history_prompt">Να διαγράψετε μόνιμα όλο το ιστορικό ανάγνωσης;</string>
     <string name="remove">Διαγραφή</string>
     <string name="save_page">Αποθήκευση σελίδας</string>
     <string name="page_saved">Αποθηκευμένα</string>
@@ -82,8 +81,6 @@
     <string name="notifications">Ειδοποιήσεις</string>
     <string name="vibration">Δόνηση</string>
     <string name="favourites_categories">Αγαπημένες κατηγορίες</string>
-    <string name="text_shelf_holder_primary">Τα manga σου θα εμφανίζονται εδώ</string>
-    <string name="text_shelf_holder_secondary">Βρες κάτι να διαβάσεις στο τμήμα «Εξερεύνηση»</string>
     <string name="manga_save_location">Φάκελος λήψεων</string>
     <string name="not_available">Μη διαθέσιμο</string>
     <string name="all_favourites">Όλα τα αγαπημένα</string>
@@ -124,7 +121,6 @@
     <string name="suggestions_info">Όλα τα δεδομένα αναλύονται στην συσκευή αυτή και δεν στέλνονται πουθενά αλλού.</string>
     <string name="text_suggestion_holder">Ξεκίνα να διαβάσεις manga και θα λαμβάνεις εξατομικευμένες προτάσεις</string>
     <string name="exclude_nsfw_from_suggestions">Να μην προτείνονται manga που είναι NSFW</string>
-    <string name="filter_load_error">Η φόρτωση της λίστας ειδών απέτυχε</string>
     <string name="search_chapters">Βρες το κεφάλαιο</string>
     <string name="chapters_empty">Αυτό το manga δεν έχει κεφάλαια</string>
     <string name="chapters_will_removed_background">Τα κεφάλαια θα διαγράφονται στο παρασκήνιο</string>
@@ -132,19 +128,14 @@
     <string name="back">Πίσω</string>
     <string name="hide">Κρύψε</string>
     <string name="check_new_chapters_title">Έλεγξε για τυχόν νέα κεφάλαια και ενημέρωσε με</string>
-    <string name="taps_on_edges">Πλευρικά πατήματα</string>
-    <string name="volume_buttons">Κουμπιά έντασης</string>
     <string name="clear_thumbs_cache">Εκκαθάριση προσωρινής μνήμης σκίτσων</string>
     <string name="clear_search_history">Εκκαθάριση ιστορικού αναζήτησης</string>
     <string name="search_history_cleared">Καθαρίστηκε</string>
-    <string name="gestures_only">Μόνο με χειρονομίες</string>
     <string name="internal_storage">Εσωτερικός χώρος αποθήκευσης</string>
     <string name="external_storage">Εξωτερικός χώρος αποθήκευσης</string>
     <string name="domain">Τομέας</string>
     <string name="app_update_available">Μια νέα έκδοση της εφαρμογής έγινε διαθέσιμη</string>
     <string name="open_in_browser">Άνοιγμα μέσω περιηγητή</string>
-    <string name="large_manga_save_confirm">Αυτό το manga έχει %s. Να αποθηκευτεί ολόκληρο;</string>
-    <string name="save_manga">Αποθήκευση</string>
     <string name="text_empty_holder_primary">Λίγο άδειο το μέρος…</string>
     <string name="text_search_holder_secondary">Προσπάθησε να αναδιατυπώσεις την αναζήτηση.</string>
     <string name="text_history_holder_primary">Ό,τι διαβάζεις θα εμφανίζεται εδώ</string>
@@ -233,7 +224,6 @@
     <string name="next">Επόμενο</string>
     <string name="confirm">Επιβεβαίωση</string>
     <string name="welcome">Καλώς ήρθες</string>
-    <string name="available_sources">Διαθέσιμες πηγές</string>
     <string name="default_s">Προεπιλεγμένο: %s</string>
     <string name="text_clear_search_history_prompt">Εκκαθάριση όλων των πρόσφατων αναζητήσεων;</string>
     <string name="backup_saved">Το αντίγραφο ασφαλείας αποθηκεύτηκε</string>
@@ -241,7 +231,6 @@
     <string name="tracker_warning">Τα συστήματα μερικών συσκευών λειτουργούν διαφορετικά, και αυτό μπορεί να επηρεάσει τις λειτουργίες στο παρασκήνιο.</string>
     <string name="screenshots_policy">Πολιτική στιγμιότυπων οθόνης</string>
     <string name="screenshots_block_nsfw">Να μην επιτρέπονται σε NSFW manga</string>
-    <string name="enabled_sources">Χρησιμοποιημένες πηγές</string>
     <string name="screenshots_allow">Επίτρεψε</string>
     <string name="screenshots_block_all">Να απαγορεύονται πάντα</string>
     <string name="suggestions_summary">Να προτείνονται manga βάσει των προτιμήσεων σου</string>
@@ -255,7 +244,6 @@
     <string name="state_upcoming">Ανερχόμενο</string>
     <string name="by_name_reverse">Όνομα - αντεστρεμένα</string>
     <string name="advanced">Για προχωρημένους</string>
-    <string name="default_section">Προεπιλεγμένο τμήμα</string>
     <string name="catalog">Κατάλογος</string>
     <string name="manage_sources">Διαχείριση πηγών</string>
     <string name="content_type_comics">Comics</string>
@@ -284,7 +272,6 @@
     <string name="import_completed_hint">Μπορείς να διαγράψεις το αρχικό αρχείο από τον χώρο αποθήκευσης για να απελευθερώσεις χώρο</string>
     <string name="import_will_start_soon">Η εισαγωγή θα ξεκινήσει σύντομα</string>
     <string name="reset">Επαναφορά</string>
-    <string name="color_correction_hint">Οι επιλεγμένες ρυθμίσεις χρώματος θα αποθηκευτούν για αυτό το manga</string>
     <string name="compact">Συμπαγής</string>
     <string name="language">Γλώσσα</string>
     <string name="scrobbling_empty_hint">Για να καταγράψεις την πρόοδο σου, επίλεξε Μενού → Καταγραφή στην οθόνη λεπτομερειών για το manga.</string>
@@ -294,14 +281,12 @@
     <string name="settings_apply_restart_required">Κάνε επανεκκίνηση της εφαρμογής για να εφαρμοστούν οι αλλαγές, παρακαλώ</string>
     <string name="comics_archive_import_description">Μπορείς να επιλέξεις ένα ή περισσότερα .cbz ή .zip αρχεία, κάθε ένα θα αναγνωρίζεται ως ξεχωριστό manga.</string>
     <string name="speed">Ταχύτητα</string>
-    <string name="restore_backup_description">Εισήγαγε ένα αντίγραφο ασφαλείας δεδομένων χρήστη</string>
     <string name="show_on_shelf">Εμφάνιση στο Ράφι</string>
     <string name="find_similar">Βρες παρόμοια</string>
     <string name="ignore_ssl_errors">Αγνόησε σφάλματα SSL</string>
     <string name="no_thanks">Όχι ευχαριστώ</string>
     <string name="cancel_all_downloads_confirm">Όλες οι τρέχουσες λήψεις θα ακυρωθούν, και δεδομένα που έχουν ληφθεί μερικώς θα χαθούν</string>
     <string name="downloads_cancelled">Οι λήψεις ακυρώθηκαν</string>
-    <string name="translations">Μεταφράσεις</string>
     <string name="proxy">Διακομιστής μεσολάβησης</string>
     <string name="images_proxy_title">Διακομιστής μεσολάβησης βελτιστοποίησης εικόνων</string>
     <string name="invert_colors">Αντιστροφή χρωμάτων</string>
@@ -311,7 +296,6 @@
     <string name="restore_summary">Επανάφερε κάποιο αντίγραφο ασφαλείας</string>
     <string name="webtoon_zoom_summary">Επίτρεψε την χειρονομία μεγέθυνσης στην λειτουργία Webtoon</string>
     <string name="show_pages_numbers_summary">Εμφάνιση αριθμού σελίδων στην κάτω γωνία</string>
-    <string name="pages_animation_summary">Δείχνε την κίνηση των σελίδων κατά την αλλαγή τους</string>
     <string name="detect_reader_mode">Αυτόματη αναγνώριση κατάλληλης λειτουργίας ανάγνωσης</string>
     <string name="bookmarks_removed">Οι σελιδοδείκτες αφαιρέθηκαν</string>
     <string name="no_manga_sources">Δεν υπάρχουν πηγές για manga</string>
@@ -345,7 +329,6 @@
     <string name="error_no_space_left">Δεν έχει μείνει επαρκής αποθηκευτικός χώρος στην συσκευή</string>
     <string name="reader_slider">Εμφάνιση σύρτη αλλαγής σελίδων</string>
     <string name="webtoon_zoom">Μεγέθυνση Webtoon</string>
-    <string name="different_languages">Διαφορετικές γλώσσες</string>
     <string name="network_unavailable">Δεν υπάρχει διαθέσιμο δίκτυο</string>
     <string name="server_error">Σφάλμα διακομιστή (%1$d). Παρακαλώ ξαναπροσπαθήστε αργότερα</string>
     <string name="clear_new_chapters_counters">Επιπλέον, σβήσε πληροφορίες περί νέων κεφαλαίων</string>
@@ -353,7 +336,6 @@
     <string name="welcome_text">Παρακαλώ επίλεξε ποιες πηγές περιεχομένου θα ήθελες να ενεργοποιήσεις. Αυτό μπορεί να ρυθμιστεί ναι αργότερα από τις ρυθμίσεις</string>
     <string name="sync_auth">Συνδέσου στον λογαριασμό συγχρονισμού</string>
     <string name="downloads_settings_info">Μπορείς να ενεργοποιήσεις την καθυστέρηση λήψεων για κάθε πηγή manga ξεχωριστά μέσω των ρυθμίσεων των πηγών αν αντιμετωπίζεις προβλήματα με μπλοκάρισμα από πλευράς του διακομιστή</string>
-    <string name="details_button_tip">Πάτα παρατεταμένα το κουμπί Διάβασε για να δεις περαιτέρω επιλογές</string>
     <string name="prefetch_content">Προφόρτωση περιεχομένου</string>
     <string name="skip">Προσπέραση</string>
     <string name="restore">Επαναφορά</string>
@@ -375,7 +357,6 @@
     <string name="disable_nsfw">Απενεργοποιήση NSFW</string>
     <string name="got_it">Έγινε</string>
     <string name="default_tab">Προεπιλεγμένη καρτέλα</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="download_option_all_chapters">Όλα τα μεταφρασμένα κεφάλαια %s</string>
     <string name="download_option_whole_manga">Ολόκληρο το manga</string>
     <string name="download_option_first_n_chapters">Πρώτα %s</string>
@@ -397,7 +378,6 @@
     <string name="progress">Πρόοδος</string>
     <string name="order_added">Προσθήκη</string>
     <string name="manage_categories">Διαχείριση κατηγοριών</string>
-    <string name="view_list">Δες την λίστα</string>
     <string name="show">Εμφάνισε</string>
     <string name="downloaded">Ληφθέντα</string>
     <string name="too_many_requests_message">Υπερβολικά πολλά αιτήματα. Ξαναδοκιμάστε αργότερα</string>

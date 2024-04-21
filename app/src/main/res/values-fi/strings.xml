@@ -98,21 +98,16 @@
 	<string name="new_chapters">Uusia lukuja</string>
 	<string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Käytössä %1$d / %2$d</string>
 	<string name="notifications">Ilmoitukset</string>
-	<string name="save_manga">Tallenna manga</string>
-	<string name="large_manga_save_confirm">Tässä mangassa on %s. Haluatko tallentaa sen kokonaan\?</string>
 	<string name="open_in_browser">Avaa selaimessa</string>
 	<string name="app_update_available">Sovelluksen päivitys on saatavilla</string>
 	<string name="domain">Verkkotunnus</string>
 	<string name="external_storage">Ulkoinen tallennustila</string>
 	<string name="internal_storage">Sisäinen tallennustila</string>
-	<string name="gestures_only">Vain eleet</string>
 	<string name="search_history_cleared">Hakuhistoria tyhjennetty</string>
 	<string name="clear_search_history">Tyhjennä hakuhistoria</string>
 	<string name="clear_thumbs_cache">Tyhjennä pikkukuvien välimuisti</string>
 	<string name="error">Virhe</string>
 	<string name="_continue">Jatka</string>
-	<string name="volume_buttons">Äänenvoimakkuuspainikkeet</string>
-	<string name="taps_on_edges">Reunojen napauttaminen</string>
 	<string name="switch_pages">Vaihda sivuja</string>
 	<string name="reader_settings">Lukijan asetukset</string>
 	<string name="text_delete_local_manga">Haluatko todella poistaa ”%s” puhelimen paikallisesta tallennustilasta\?</string>
@@ -134,7 +129,6 @@
 	<string name="save_page">Tallenna sivu</string>
 	<string name="_s_deleted_from_local_storage">”%s” poistettu paikallisesta tallennustilasta</string>
 	<string name="remove">Poista</string>
-	<string name="text_clear_history_prompt">Haluatko todella tyhjentää koko lukuhistoriasi\?</string>
 	<string name="clear">Tyhjennä</string>
 	<string name="pages">Sivut</string>
 	<string name="follow_system">Automaattinen</string>
@@ -193,13 +187,11 @@
 	<string name="system_default">Oletus</string>
 	<string name="exclude_nsfw_from_history">Sulje NSFW-mangat pois historiasta</string>
 	<string name="show_pages_numbers">Numeroidut sivut</string>
-	<string name="enabled_sources">Käytetyt lähteet</string>
 	<string name="screenshots_policy">Kuvakaappausten politiikka</string>
 	<string name="screenshots_allow">Salli</string>
 	<string name="screenshots_block_nsfw">Estä NSFW:lle</string>
 	<string name="screenshots_block_all">Estä aina</string>
 	<string name="computing_">Lasketaan…</string>
-	<string name="available_sources">Käytettävissä olevat lähteet</string>
 	<string name="suggestions">Ehdotukset</string>
 	<string name="suggestions_summary">Ehdota mangaa mieltymystesi perusteella</string>
 	<string name="suggestions_info">Kaikki tiedot analysoidaan paikallisesti tässä laitteessa. Henkilötietojasi ei siirretä mihinkään palveluihin</string>

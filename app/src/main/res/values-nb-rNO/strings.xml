@@ -43,12 +43,10 @@
 	<string name="text_search_holder_secondary">Prøv å reformulere spørringen.</string>
 	<string name="text_empty_holder_primary">Det er ganske tomt her …</string>
 	<string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d av %2$d påskrudd</string>
-	<string name="large_manga_save_confirm">Denne mangaen har %s. Lagre hele\?</string>
 	<string name="open_in_browser">Åpne i nettleser</string>
 	<string name="app_update_available">En ny versjon av programmet er tilgjengelig</string>
 	<string name="search_history_cleared">Tømt</string>
 	<string name="clear_thumbs_cache">Tøm miniatyrbildehurtiglager</string>
-	<string name="taps_on_edges">Kanttrykk</string>
 	<string name="text_delete_local_manga">Slett «%s» fra enheten for godt\?</string>
 	<string name="webtoon">Nettserie</string>
 	<string name="standard">Forvalg</string>
@@ -57,7 +55,6 @@
 	<string name="operation_not_supported">Ustøttet handling</string>
 	<string name="_import">Importer</string>
 	<string name="page_saved">Lagret</string>
-	<string name="text_clear_history_prompt">Fjern all lesehistorikk for godt\?</string>
 	<string name="read">Les</string>
 	<string name="nothing_found">Resultatløst</string>
 	<string name="remote_sources">Manga-kilder</string>
@@ -114,15 +111,12 @@
 	<string name="download">Last ned</string>
 	<string name="new_chapters">Nye kapittel</string>
 	<string name="notifications">Merknader</string>
-	<string name="save_manga">Lagre</string>
 	<string name="domain">Domene</string>
 	<string name="external_storage">Eksternlagring</string>
 	<string name="internal_storage">Internlagring</string>
-	<string name="gestures_only">Kun håndvendinger</string>
 	<string name="clear_search_history">Tøm søkehistorikk</string>
 	<string name="error">Feil</string>
 	<string name="_continue">Fortsett</string>
-	<string name="volume_buttons">Lydstyrkeknapper</string>
 	<string name="switch_pages">Bytt sider</string>
 	<string name="reader_settings">Leserinnstillinger</string>
 	<string name="delete_manga">Slett manga</string>
@@ -192,9 +186,7 @@
 	<string name="genres">Sjangere</string>
 	<string name="exclude_nsfw_from_history">Utelat sensurerbar-manga fra historikk</string>
 	<string name="system_default">Forvalg</string>
-	<string name="available_sources">Tilgjengelige kilder</string>
 	<string name="show_pages_numbers">Sidenummerering</string>
-	<string name="enabled_sources">Brukte kilder</string>
 	<string name="computing_">Beregner …</string>
 	<string name="screenshots_allow">Tillat</string>
 	<string name="screenshots_block_nsfw">Blokker for sensurerbare</string>
@@ -205,7 +197,6 @@
 	<string name="text_suggestion_holder">Du vil få personaliserte forslag når du begynner å lese manga</string>
 	<string name="suggestions_info">Alle data analyseres lokalt på denne enheten. Det er ingen overføring av dine personlige data til noen tjenester</string>
 	<string name="exclude_nsfw_from_suggestions">Ikke foreslå sensurerbar manga</string>
-	<string name="filter_load_error">Kunne ikke laste inn sjangerliste</string>
 	<string name="suggestions_summary">Foreslå manga basert på vaner</string>
 	<string name="enabled">Påskrudd</string>
 	<string name="disabled">Avskrudd</string>
@@ -253,8 +244,6 @@
 	<string name="exit_confirmation_summary">Trykk «Tilbake» to ganger for å avslutte programmet</string>
 	<string name="removed_from_favourites">Fjernet fra favoritter</string>
 	<string name="options">Alternativer</string>
-	<string name="text_shelf_holder_primary">Din manga vil vises her</string>
-	<string name="text_shelf_holder_secondary">Finn ting å lese i «Utforsk»-delen</string>
 	<string name="suggestions_excluded_genres">Utelat sjangere</string>
 	<string name="suggestions_excluded_genres_summary">Angi sjangere du ikke vil ha foreslått</string>
 	<string name="text_delete_local_manga_batch">Slett valgte elementer fra enheten for godt\?</string>

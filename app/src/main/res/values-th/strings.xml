@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="light">สว่าง</string>
     <string name="follow_system">ตั้งค่าตามเครื่อง</string>
-    <string name="text_clear_history_prompt">จะเคลียร์ประวัติการอ่านทั้งหมดแบบถาวรใช่ไหม\?</string>
     <string name="remove">ลบ</string>
     <string name="_s_deleted_from_local_storage">\"%s\" ได้ถูกลบจากที่จัดเก็บในเครื่องแล้ว</string>
     <string name="share_image">แชร์รูปภาพ</string>
@@ -17,7 +16,6 @@
     <string name="switch_pages">สลับหน้า</string>
     <string name="error">ข้อผิดพลาด</string>
     <string name="app_update_available">มีเวอร์ชันใหม่ของแอปนี้ให้ใช้งานแล้ว</string>
-    <string name="save_manga">บันทึก</string>
     <string name="notifications">การแจ้งเตือน</string>
     <string name="notifications_settings">ตั้งค่าการแจ้งเตือน</string>
     <string name="vibration">สั่น</string>
@@ -50,7 +48,6 @@
     <string name="clear_search_history">เคลียร์ประวัติการค้นหา</string>
     <string name="download">ดาวน์โหลด</string>
     <string name="notification_sound">เสียงการแจ้งเตือน</string>
-    <string name="text_shelf_holder_primary">มังงะของคุณจะแสดงที่นี่</string>
     <string name="cannot_find_available_storage">ไม่มีพื้นที่ว่างในอุปกรณ์</string>
     <string name="done">สำเร็จ</string>
     <string name="text_feed_holder">บทใหม่ของเรื่องที่คุณกําลังอ่านจะแสดงไว้ที่นี่</string>
@@ -63,7 +60,6 @@
     <string name="internal_storage">ที่เก็บข้อมูลภายใน</string>
     <string name="external_storage">ที่จัดเก็บภายนอก</string>
     <string name="open_in_browser">เปิดในเบราว์เซอร์</string>
-    <string name="large_manga_save_confirm">มังงะเรื่องนี้มี %s บันทึกทั้งหมดหรือไม่\?</string>
     <string name="new_chapters">บทใหม่</string>
     <string name="favourites_categories">หมวดหมู่รายการโปรด</string>
     <string name="text_history_holder_primary">สิ่งที่คุณอ่านจะแสดงที่นี่</string>
@@ -119,7 +115,6 @@
     <string name="downloads_cancelled">การดาวน์โหลดของคุณได้ถูกยกเลิกแล้ว</string>
     <string name="downloaded">ดาวน์โหลดแล้ว</string>
     <string name="invert_colors">กลับสี</string>
-    <string name="pages_animation_summary">อนิเมชั่นการเปลี่ยนหน้า</string>
     <string name="check_new_chapters_title">ค้นหาบทใหม่และแจ้งเตือน</string>
     <string name="check_for_new_chapters">ตรวจสอบบทความใหม่</string>
     <string name="chapter_is_missing">บทที่หายไป</string>
@@ -141,11 +136,9 @@
     <string name="webtoon">เว็บตูน</string>
     <string name="operation_not_supported">ไม่รองรับการดำเนินการนี้</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
-    <string name="volume_buttons">ปุ่มเสียง</string>
     <string name="domain">โดเมน</string>
     <string name="updates_feed_cleared">เคลียร์แล้ว</string>
     <string name="text_history_holder_secondary">ค้นหาสิ่งที่ต้องอ่านในหมวด «สำรวจ»</string>
-    <string name="text_shelf_holder_secondary">ค้นหาสิ่งที่ต้องอ่านในหมวด «สำรวจ»</string>
     <string name="pages_animation">การเคลื่อนไหวหน้ามังงะ</string>
     <string name="all_favourites">รายการโปรดทั้งหมด</string>
     <string name="rotate_screen">หมุนหน้าจอ</string>
@@ -200,7 +193,6 @@
     <string name="search_hint">ใส่ชื่อเรื่องมังงะ,แนวหรือชื่อแหล่ง</string>
     <string name="this_month">เดือนนี้</string>
     <string name="reader_settings">ตั้งค่าการโปรแกรมอ่าน</string>
-    <string name="default_section">ส่วนเริ่มต้น</string>
     <string name="light_indicator">ไฟ LED</string>
     <string name="genres">ประเภท</string>
     <string name="exclude_nsfw_from_history">ไม่รวมมังงะ NSFW ออกจากประวัติ</string>
@@ -208,9 +200,7 @@
     <string name="state_ongoing">กำลังดำเนินการอยู่</string>
     <string name="system_default">ค่าเริ่มต้น</string>
     <string name="show_pages_numbers">จํานวนหน้า</string>
-    <string name="enabled_sources">แหล่งที่มาที่ใช้</string>
     <string name="screenshots_policy">นโยบายการบันทึกภาพหน้าจอ</string>
-    <string name="available_sources">แหล่งที่มาที่ใช้ได้</string>
     <string name="screenshots_allow">อนุญาต</string>
     <string name="screenshots_block_nsfw">บล็อกบน NSFW</string>
     <string name="screenshots_block_all">บล็อกตลอด</string>
@@ -275,7 +265,6 @@
     <string name="show_reading_indicators">แสดงตัวบอกความคืบหน้าในการอ่าน</string>
     <string name="show_notification_new_chapters_off">คุณจะไม่ได้รับการแจ้งเตือน แต่บทใหม่จะถูกเน้นในรายการ</string>
     <string name="text_clear_search_history_prompt">ลบคำค้นหาล่าสุดทั้งหมดอย่างถาวรไหม\?</string>
-    <string name="filter_load_error">ไม่สามารถโหลดรายการประเภทได้</string>
     <string name="detect_reader_mode_summary">ตรวจสอบอัตโนมัติว่ามังงะเป็นเว็บตูนหรือไม่</string>
     <string name="appwidget_recent_description">มังงะที่คุณอ่านล่าสุด</string>
     <string name="appearance">รูปร่าง</string>
@@ -304,12 +293,10 @@
     <string name="tracking">การติดตาม</string>
     <string name="cancel_all">ยกเลิกทั้งหมด</string>
     <string name="reset">รีเซ็ต</string>
-    <string name="gestures_only">ท่าทางเท่านั้น</string>
     <string name="source_disabled">แหล่งที่มาถูกปิดใช้งาน</string>
     <string name="storage_usage">การใช้พื้นที่เก็บข้อมูล</string>
     <string name="show_notification_new_chapters_on">คุณจะได้รับการแจ้งเตือนเกี่ยวกับการอัปเดตมังงะที่คุณกำลังอ่าน</string>
     <string name="various_languages">ภาษาต่างๆ</string>
-    <string name="color_correction_hint">การตั้งค่าสีที่เลือกจะถูกจดจำไว้สำหรับมังงะเรื่องนี้</string>
     <string name="not_found_404">ไม่พบหรือเนื้อหาอาจถูกลบแล้ว</string>
     <string name="feed_will_update_soon">การอัปเดตฟีดกำลังจะเริ่มเร็วๆ นี้</string>
     <string name="server_error">ข้อผิดพลาดฝั่งเซิร์ฟเวอร์ (%1$d) กรุณาลองใหม่อีกครั้งในภายหลัง</string>
@@ -317,7 +304,6 @@
     <string name="confirm_exit">กดย้อนกลับอีกครั้งเพื่อออก</string>
     <string name="sync_settings">การตั้งค่าการซิงค์ข้อมูล</string>
     <string name="other_cache">แคชอื่นๆ</string>
-    <string name="translations">การแปล</string>
     <string name="downloads_wifi_only">ดาวน์โหลดผ่าน Wi-Fi เท่านั้น</string>
     <string name="discard">ทิ้ง</string>
     <string name="saved_manga">มังงะที่บันทึกไว้</string>

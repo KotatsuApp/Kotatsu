@@ -68,10 +68,8 @@
     <string name="chapters">Bab</string>
     <string name="list">Daftar</string>
     <string name="detailed_list">Daftar rinci</string>
-    <string name="text_clear_history_prompt">Hapus semua riwayat membaca secara permanen?</string>
     <string name="webtoon">Webtoon</string>
     <string name="read_mode">Mode baca</string>
-    <string name="volume_buttons">Tombol volume</string>
     <string name="_continue">Lanjut</string>
     <string name="clear_thumbs_cache">Bersihkan singgahan gambar mini</string>
     <string name="clear_search_history">Bersihkan riwayat pencarian</string>
@@ -79,7 +77,6 @@
     <string name="domain">Domain</string>
     <string name="app_update_available">Versi baru aplikasi tersedia</string>
     <string name="open_in_browser">Buka di peramban web</string>
-    <string name="save_manga">Simpan</string>
     <string name="notifications">Pemberitahuan</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d dari %2$d diaktifkan</string>
     <string name="new_chapters">Bab baru</string>
@@ -151,8 +148,6 @@
     <string name="system_default">Bawaan</string>
     <string name="exclude_nsfw_from_history">Kecualikan komik NSFW dari riwayat</string>
     <string name="show_pages_numbers">Nomor halaman</string>
-    <string name="enabled_sources">Sumber yang digunakan</string>
-    <string name="available_sources">Sumber yang tersedia</string>
     <string name="screenshots_policy">Kebijakan tangkapan layar</string>
     <string name="screenshots_allow">Bolehkan</string>
     <string name="screenshots_block_nsfw">Blokir NSFW</string>
@@ -168,7 +163,6 @@
     <string name="logged_in_as">Masuk sebagai %s</string>
     <string name="enabled">Diaktifkan</string>
     <string name="disabled">Dinonaktifkan</string>
-    <string name="filter_load_error">Tidak bisa memuat daftar genre</string>
     <string name="reset_filter">Atur ulang filter</string>
     <string name="onboard_text">Pilih bahasa komik yang ingin Anda baca. Anda bisa mengubahnya nanti di pengaturan.</string>
     <string name="never">Jangan Pernah</string>
@@ -238,8 +232,6 @@
     <string name="sign_in">Masuk</string>
     <string name="default_s">Standar: %s</string>
     <string name="about_app_translation_summary">Terjemahkan aplikasi ini</string>
-    <string name="taps_on_edges">Tekan di tepi</string>
-    <string name="large_manga_save_confirm">Komik ini memiliki %s. Simpan semuanya\?</string>
     <string name="zoom_mode_fit_center">Pas tengah</string>
     <string name="zoom_mode_fit_height">Pas tinggi</string>
     <string name="zoom_mode_fit_width">Pas lebar</string>
@@ -247,8 +239,6 @@
     <string name="queued">Mengantre</string>
     <string name="auth_complete">Resmi</string>
     <string name="text_local_holder_secondary">Simpan dari sumber daring atau berkas impor.</string>
-    <string name="text_shelf_holder_primary">Komik Anda akan ditampilkan di sini</string>
-    <string name="text_shelf_holder_secondary">Cari apa untuk dibaca di bagian «Jelajah»</string>
     <string name="email_enter_hint">Masukkan surel Anda untuk melanjutkan</string>
     <string name="status_re_reading">Dibaca ulang</string>
     <string name="explore">Jelajah</string>
@@ -296,7 +286,6 @@
     <string name="brightness">Kecerahan</string>
     <string name="contrast">Kontras</string>
     <string name="reset">Atur Ulang</string>
-    <string name="color_correction_hint">Pengaturan warna yang dipilih akan diingat untuk komik ini</string>
     <string name="text_unsaved_changes_prompt">Simpan atau buang perubahan yang belum disimpan?</string>
     <string name="discard">Buang</string>
     <string name="use_fingerprint">Gunakan sidik jari jika tersedia</string>
@@ -322,7 +311,6 @@
     <string name="history_shortcuts_summary">Buat komik baru-baru ini tersedia dengan menekan panjang pada ikon aplikasi</string>
     <string name="select_range">Pilih rentang</string>
     <string name="disable_all">Matikan semua</string>
-    <string name="gestures_only">Hanya gestur</string>
     <string name="dns_over_https">DNS over HTTPS</string>
     <string name="status_dropped">Didrop</string>
     <string name="theme_name_mamimi">Mamimi</string>
@@ -369,14 +357,12 @@
     <string name="color_correction">Koreksi warna</string>
     <string name="reader_slider">Perlihatkan penggeser peralihan halaman</string>
     <string name="webtoon_zoom">Zum Webtoon</string>
-    <string name="different_languages">Berbagai bahasa</string>
     <string name="network_unavailable">Jaringan tidak tersedia</string>
     <string name="got_it">Oke</string>
     <string name="sources_reorder_tip">Ketuk dan tahan item untuk menyusun ulang</string>
     <string name="comics_archive_import_description">Anda dapat memilih satu atau beberapa berkas .cbz atau .zip, setiap file akan dikenali sebagai komik terpisah.</string>
     <string name="folder_with_images_import_description">Anda dapat memilih direktori yang berisi arsip atau gambar. Setiap arsip (atau subdirektori) akan dikenali sebagai sebuah bab.</string>
     <string name="speed">Kecepatan</string>
-    <string name="restore_backup_description">Impor cadangan data pengguna yang telah dibuat sebelumnya</string>
     <string name="show_on_shelf">Tampilkan di Rak</string>
     <string name="sync_auth_hint">Anda dapat masuk ke akun yang sudah ada atau membuat akun baru</string>
     <string name="find_similar">Temukan serupa</string>
@@ -406,7 +392,6 @@
     <string name="downloads_paused">Unduhan telah dijeda</string>
     <string name="downloads_removed">Unduhan telah dihapus</string>
     <string name="suggestions_enable_prompt">Apakah Anda ingin menerima saran manga yang dipersonalisasi\?</string>
-    <string name="translations">Terjemahan</string>
     <string name="web_view_unavailable">WebView tidak tersedia: periksa apakah penyedia WebView telah diinstal</string>
     <string name="clear_network_cache">Hapus singgahan jaringan</string>
     <string name="type">Tipe</string>
@@ -414,7 +399,6 @@
     <string name="port">Porta</string>
     <string name="proxy">Proksi</string>
     <string name="invalid_value_message">Nilai tidak sah</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="images_procy_description">Gunakan layanan wsrv.nl untuk mengurangi penggunaan lalu lintas dan mempercepat pemuatan gambar jika memungkinkan</string>
     <string name="images_proxy_title">Proksi pengoptimalan gambar</string>
     <string name="username">NamaUser</string>
@@ -422,7 +406,6 @@
     <string name="invert_colors">Balikkan warna</string>
     <string name="password">Kata sandi</string>
     <string name="authorization_optional">Otorisasi (opsional)</string>
-    <string name="details_button_tip">Tekan dan tahan tombol Baca untuk melihat opsi lainnya</string>
     <string name="data_and_privacy">Data dan privasi</string>
     <string name="restore_summary">Pulihkan cadangan yang dibuat sebelumnya</string>
     <string name="invalid_port_number">Nomor porta tak sah</string>
@@ -430,7 +413,6 @@
     <string name="show_pages_numbers_summary">Tampilkan nomor halaman di pojok bawah</string>
     <string name="webtoon_zoom_summary">Izinkan gestur zum pada mode webtoon</string>
     <string name="reader_info_bar_summary">Tampilkan waktu saat ini dan progres bacaan di bagian atas layar</string>
-    <string name="pages_animation_summary">Animasikan peralihan halaman</string>
     <string name="clear_source_cookies_summary">Hapus kuki hanya untuk domain tertentu. Dalam kebanyakan kasus akan membatalkan otorisasi</string>
     <string name="download_option_whole_manga">Seluruh manga</string>
     <string name="download_option_first_n_chapters">Pertama %s</string>
@@ -439,14 +421,12 @@
     <string name="download_option_all_chapters">Semua bab dengan terjemahan %s</string>
     <string name="download_option_next_unread_n_chapters">Belum dibaca %s</string>
     <string name="download_option_manual_selection">Pilih bab secara manual</string>
-    <string name="custom_directory">Direktori khusus</string>
     <string name="pick_custom_directory">Pilih direktori khusus</string>
     <string name="no_access_to_file">Anda tidak memiliki akses ke file atau direktori ini</string>
     <string name="local_manga_directories">Direktori manga</string>
     <string name="disable_nsfw">Matikan NSFW</string>
     <string name="description">Deskripsi</string>
     <string name="manage_categories">Atur kategori</string>
-    <string name="view_list">Lihat daftar</string>
     <string name="show">Tampilkan</string>
     <string name="related_manga_summary">Tampilkan daftar komik terkait. Bisa jadi tidak akurat atau hilang</string>
     <string name="suggestions_wifi_only_summary">Jangan perbarui saran dengan koneksi jaringan internet terbatas</string>
@@ -470,7 +450,6 @@
     <string name="unknown">Tidak diketahui</string>
     <string name="in_progress">Dalam progres</string>
     <string name="advanced">Lanjutan</string>
-    <string name="default_section">Bagian bawaan</string>
     <string name="manga_list">Daftar manga</string>
     <string name="error_corrupted_file">Data yang dikembalikan tak sah atau berkas rusak</string>
     <string name="on_device">Dari perangkat</string>
@@ -557,13 +536,10 @@
     <string name="by_name_reverse">Nama terbalik</string>
     <string name="volume_">Volume%d</string>
     <string name="volume_unknown">Volume tidak diketahui</string>
-    <string name="approximate_reading_time">Perkiraan waktu baca</string>
     <string name="incognito_mode_hint">Progres membaca Anda tidak akan tersimpan</string>
     <string name="rating_suggestive">Disarankan</string>
     <string name="vertical">Vertikal</string>
     <string name="last_read">Terakhir dibaca</string>
-    <string name="two_pages">Dua halaman</string>
-    <string name="approximate_remaining_time">Perkiraan waktu yang tersisa</string>
     <string name="remaining_time_pattern">%1$s%2$s</string>
     <string name="toggle_ui">Tampilkan/Sembunyikan UI</string>
     <string name="prev_chapter">Bab sebelumnya</string>

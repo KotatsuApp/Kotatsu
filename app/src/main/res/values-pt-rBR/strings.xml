@@ -65,20 +65,15 @@
     <string name="delete_manga">Excluir mangá</string>
     <string name="text_delete_local_manga">Excluir “%s” do dispositivo permanentemente?</string>
     <string name="reader_settings">Configurações do leitor</string>
-    <string name="taps_on_edges">Toques de borda</string>
-    <string name="volume_buttons">Botões de volume</string>
     <string name="_continue">Continuar</string>
     <string name="error">Erro</string>
     <string name="clear_search_history">Limpar histórico de pesquisa</string>
     <string name="search_history_cleared">Limpo</string>
-    <string name="gestures_only">Apenas gestos</string>
     <string name="internal_storage">Armazenamento interno</string>
     <string name="external_storage">Armazenamento externo</string>
     <string name="domain">Domínio</string>
     <string name="app_update_available">Uma nova versão do aplicativo está disponível</string>
     <string name="open_in_browser">Abrir no navegador da web</string>
-    <string name="large_manga_save_confirm">Este mangá tem %s. Salvar tudo isso\?</string>
-    <string name="save_manga">Salvar</string>
     <string name="notifications">Notificações</string>
     <string name="new_chapters">Novos capítulos</string>
     <string name="download">Download</string>
@@ -161,8 +156,6 @@
     <string name="system_default">Padrão</string>
     <string name="exclude_nsfw_from_history">Excluir mangás NSFW do histórico</string>
     <string name="show_pages_numbers">Páginas numeradas</string>
-    <string name="enabled_sources">Fontes usadas</string>
-    <string name="available_sources">Fontes disponíveis</string>
     <string name="screenshots_policy">Política de captura de tela</string>
     <string name="screenshots_allow">Permitir</string>
     <string name="screenshots_block_nsfw">Bloquear no NSFW</string>
@@ -176,7 +169,6 @@
     <string name="history_is_empty">Sem histórico ainda</string>
     <string name="enabled">Habilitado</string>
     <string name="disabled">Desabilitado</string>
-    <string name="filter_load_error">Não foi possível carregar a lista de gêneros</string>
     <string name="reset_filter">Redefinir filtro</string>
     <string name="onboard_text">Selecione os idiomas em que você deseja ler. Você pode alterá-los mais tarde nas configurações.</string>
     <string name="never">Nunca</string>
@@ -186,7 +178,6 @@
     <string name="logged_in_as">Conectado como %s</string>
     <string name="nsfw">+18</string>
     <string name="various_languages">Vários idiomas</string>
-    <string name="text_clear_history_prompt">Limpar todo o histórico de leitura permanentemente\?</string>
     <string name="operation_not_supported">Esta operação não é suportada</string>
     <string name="follow_system">Automático (segue o sistema)</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d de %2$d em</string>
@@ -261,8 +252,6 @@
     <string name="status_completed">Concluído</string>
     <string name="status_on_hold">Em espera</string>
     <string name="status_dropped">Desistido</string>
-    <string name="text_shelf_holder_primary">Seus mangás serão exibidos aqui</string>
-    <string name="text_shelf_holder_secondary">Encontre o que ler na seção «Explorar»</string>
     <string name="canceled">Cancelado</string>
     <string name="account_already_exists">Essa conta já existe</string>
     <string name="back">Voltar</string>
@@ -332,7 +321,6 @@
     <string name="brightness">Luminosidade</string>
     <string name="contrast">Contraste</string>
     <string name="reset">Redefinir</string>
-    <string name="color_correction_hint">As configurações de cor escolhidas serão lembradas para esse mangá</string>
     <string name="text_unsaved_changes_prompt">Você tem alterações não salvas, deseja salvá-las ou descartá-las\?</string>
     <string name="discard">Descartar</string>
     <string name="not_found_404">Conteúdo não encontrado ou removido</string>
@@ -355,7 +343,6 @@
     <string name="prefetch_content">Pré-carregamento de conteúdo</string>
     <string name="theme_name_dynamic">Dinâmico</string>
     <string name="settings_apply_restart_required">Por favor, reinicie o aplicativo para aplicar essas mudanças</string>
-    <string name="different_languages">Idiomas diferentes</string>
     <string name="theme_name_asuka">Asuka</string>
     <string name="theme_name_mion">Mion</string>
     <string name="theme_name_rikka">Rikka</string>
@@ -372,14 +359,12 @@
     <string name="comics_archive_import_description">Você pode selecionar um ou mais arquivos .cbz ou .zip, cada arquivo será reconhecido como um mangá separado.</string>
     <string name="folder_with_images_import_description">Você pode selecionar um diretório com arquivos ou imagens. Cada arquivo (ou subdiretório) será reconhecido como um capítulo.</string>
     <string name="speed">Velocidade</string>
-    <string name="restore_backup_description">Importar um backup criado anteriormente dos dados do usuário</string>
     <string name="show_on_shelf">Mostrar na Prateleira</string>
     <string name="got_it">Entendi</string>
     <string name="sources_reorder_tip">Toque e segure em um item para reordená-lo</string>
     <string name="user_agent">Cabeçalho User/Agent</string>
     <string name="reader_slider">Mostrar controle deslizante de troca de página</string>
     <string name="webtoon_zoom">Zoom Webtoon</string>
-    <string name="pages_animation_summary">Animar troca de página</string>
     <string name="show_pages_numbers_summary">Mostrar números de página no canto inferior</string>
     <string name="find_similar">Encontrar similares</string>
     <string name="resume">Retomar</string>
@@ -395,7 +380,6 @@
     <string name="downloads_paused">Os downloads foram pausados</string>
     <string name="downloads_removed">Os downloads foram removidos</string>
     <string name="downloads_cancelled">Os downloads foram cancelados</string>
-    <string name="translations">Traduções</string>
     <string name="clear_network_cache">Limpar cache de rede</string>
     <string name="type">Tipo</string>
     <string name="invalid_value_message">Valor inválido</string>
@@ -411,9 +395,7 @@
     <string name="restore_summary">Restaurar backup criado anteriormente</string>
     <string name="webtoon_zoom_summary">Permitir zoom no gesto no modo webtoon</string>
     <string name="reader_info_bar_summary">Mostrar a hora atual e o progresso da leitura na parte superior da tela</string>
-    <string name="details_button_tip">Pressione e segure o botão Ler para ver mais opções</string>
     <string name="clear_source_cookies_summary">Limpar cookies apenas para o domínio especificado. Na maioria dos casos invalidará a autorização</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="download_option_all_chapters">Todos os capítulos com tradução %s</string>
     <string name="download_option_whole_manga">O mangá inteiro</string>
     <string name="download_option_first_n_chapters">Primeiros %s</string>
@@ -421,7 +403,6 @@
     <string name="download_option_all_unread">Todos os capítulos não lidos</string>
     <string name="download_option_all_unread_b">Todos os capítulos não lidos (%s)</string>
     <string name="download_option_manual_selection">Selecionar capítulos manualmente</string>
-    <string name="custom_directory">Diretório personalizado</string>
     <string name="authorization_optional">Autorização (opcional)</string>
     <string name="proxy">Proxy</string>
     <string name="sync_settings">Configurações de sincronização</string>
@@ -455,7 +436,6 @@
     <string name="on_device">No dispositivo</string>
     <string name="moved_to_top">Movido pra cima</string>
     <string name="data_not_restored_text">Certifique-se de ter selecionado o arquivo de backup correto</string>
-    <string name="view_list">Ver lista</string>
     <string name="unknown">Desconhecido</string>
     <string name="in_progress">Em andamento</string>
     <string name="items_limit_exceeded">Não é possível adicionar mais itens</string>
@@ -472,7 +452,6 @@
     <string name="too_many_requests_message">Muitas tentativas. Tente de novo mais tarde</string>
     <string name="related_manga">Mangá relacionado</string>
     <string name="suggestions_wifi_only_summary">Não atualize as sugestões usando dados móveis</string>
-    <string name="default_section">Seção padrão</string>
     <string name="background">Fundo</string>
     <string name="zoom_out">Diminuir o zoom</string>
     <string name="voice_search">Pesquisa por voz</string>
@@ -558,13 +537,10 @@
     <string name="category_hidden_done">Esta categoria foi ocultada da tela inicial e pode ser acessado através de Menu → Gerenciar categorias</string>
     <string name="volume_">Volume %d</string>
     <string name="volume_unknown">Volume desconhecido</string>
-    <string name="approximate_reading_time">Tempo aproximado de leitura</string>
     <string name="incognito_mode_hint">Seu progresso de leitura não será salvo</string>
     <string name="vertical">Vertical</string>
-    <string name="approximate_remaining_time">Tempo restante aproximado</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="email_password_enter_hint">Digite seu e-mail e senha para continuar</string>
-    <string name="two_pages">Duas páginas</string>
     <string name="show_menu">Mostrar menu</string>
     <string name="toggle_ui">Mostrar/ocultar UI</string>
     <string name="prev_chapter">Capítulo anterior</string>

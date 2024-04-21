@@ -26,20 +26,16 @@
     <string name="text_delete_local_manga">Permanenteng tanggalin ang \"%s\" mula sa device?</string>
     <string name="reader_settings">Mga setting sa pagbasa</string>
     <string name="switch_pages">Magpalit ng (mga) pahina</string>
-    <string name="volume_buttons">Pindutan ng volume</string>
     <string name="_continue">Magpatuloy</string>
     <string name="clear_thumbs_cache">I-clear ang cache ng mga thumbnail</string>
     <string name="search_history_cleared">Na-clear</string>
-    <string name="gestures_only">Mga kilos lang</string>
     <string name="app_update_available">Available ang isang bagong bersyon ng app</string>
     <string name="open_in_browser">Buksan sa web browser</string>
-    <string name="large_manga_save_confirm">Ang manga na ito ay may %s. I-save ang lahat ng ito\?</string>
     <string name="notifications">Mga abiso</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d ng %2$d sa</string>
     <string name="new_chapters">Mga bagong kabanata</string>
     <string name="text_search_holder_secondary">Subukang i-reformulate ang query.</string>
     <string name="text_history_holder_primary">Ang iyong nabasa ay ipapakita dito</string>
-    <string name="text_shelf_holder_primary">Ang iyong manga ay ipapakita dito</string>
     <string name="text_local_holder_primary">Mag-save muna ng isang bagay</string>
     <string name="text_local_holder_secondary">Mag-save ng isang bagay mula sa isang online na catalog o i-import ito mula sa isang file.</string>
     <string name="manga_shelf">Istante</string>
@@ -143,7 +139,6 @@
     <string name="passwords_mismatch">Hindi tumutugma sa mga password</string>
     <string name="clear_cookies">I-clear ang mga cookie</string>
     <string name="clear_pages_cache">I-clear ang page cache</string>
-    <string name="save_manga">I-save</string>
     <string name="download">I-download</string>
     <string name="notifications_settings">Mga setting ng abiso</string>
     <string name="notification_sound">Tunog ng abiso</string>
@@ -151,13 +146,11 @@
     <string name="remove_category">Tanggalin</string>
     <string name="text_empty_holder_primary">Parang walang laman dito…</string>
     <string name="text_history_holder_secondary">Hanapin kung anong pwedeng basahin sa «Explore» section</string>
-    <string name="text_shelf_holder_secondary">Hanapin kung ano ang babasahin sa seksyong «Mag-explore»</string>
     <string name="recent_manga">Kamakailan</string>
     <string name="manga_save_location">Mga folder ng pag-download</string>
     <string name="save_page">I-save ang pahina</string>
     <string name="_s_deleted_from_local_storage">Natanggal ang \"%s\" sa lokal na storage</string>
     <string name="history_is_empty">Wala pang kasaysayan</string>
-    <string name="text_clear_history_prompt">Permanenteng i-clear ang lahat ng kasaysayan ng pagbabasa\?</string>
     <string name="dont_check">Huwag suriin</string>
     <string name="repeat_password">Ulitin ang password</string>
     <string name="protect_application">Protektahan ang app</string>
@@ -190,7 +183,6 @@
     <string name="suggestions_summary">Magmungkahi ng manga batay sa iyong mga kagustuhan</string>
     <string name="suggestions_info">Ang lahat ng data ay lokal lamang na sinusuri sa device na ito at hindi kailanman ipinadala kahit saan.</string>
     <string name="disabled">Hindi pinagana</string>
-    <string name="filter_load_error">Hindi ma-load ang listahan ng mga genre</string>
     <string name="reset_filter">I-reset ang filter</string>
     <string name="text_feed_holder">Ang mga bagong kabanata ng iyong binabasa ay ipinapakita dito</string>
     <string name="rotate_screen">I-rotate ang screen</string>
@@ -202,9 +194,6 @@
     <string name="try_again">Subukan ulit</string>
     <string name="sort_order">Pag-aayos ng order</string>
     <string name="clear">I-clear</string>
-    <string name="taps_on_edges">Mga taps ng gilid</string>
-    <string name="enabled_sources">Mga ginamit na source</string>
-    <string name="available_sources">Magagamit na mga source</string>
     <string name="always">Lagi na lang</string>
     <string name="preload_pages">I-preload ang mga pahina</string>
     <string name="logged_in_as">Naka-log in bilang %s</string>
@@ -284,7 +273,6 @@
     <string name="discard">Kalimutan</string>
     <string name="error_no_space_left">Walang natitirang espasyo sa device</string>
     <string name="webtoon_zoom">Pag-zoom sa webtoon</string>
-    <string name="different_languages">Iba\'t ibang wika</string>
     <string name="server_error">Server side error (%1$d). Subukang muli mamaya</string>
     <string name="clear_new_chapters_counters">I-clear din ang impormasyon tungkol sa mga bagong kabanata</string>
     <string name="prefetch_content">Preloading ng nilalaman</string>
@@ -353,7 +341,6 @@
     <string name="source_disabled">Hindi pinagana ang source</string>
     <string name="importing_manga">Pag-import ng manga</string>
     <string name="import_completed_hint">Maaari mong tanggalin ang orihinal na file mula sa storage upang makatipid ng espasyo</string>
-    <string name="color_correction_hint">Ang napiling mga setting ng kulay ay matatandaan para sa manga na ito</string>
     <string name="compact">Compact</string>
     <string name="scrobbling_empty_hint">Upang subaybayan ang pag unlad ng pagbabasa, piliin ang Menu → Track sa screen ng mga detalye ng manga.</string>
     <string name="download_started">Nagsimula na ang pag-download</string>
@@ -373,14 +360,12 @@
     <string name="settings_apply_restart_required">I-restart ang application para ma-ilapat ang mga pagbabagong ito</string>
     <string name="got_it">Nakuha ko</string>
     <string name="sources_reorder_tip">I-tap at hawakan ang isang aytem upang muling ayusin ang mga ito</string>
-    <string name="restore_backup_description">Mag-import ng dating ginawa na backup ng data ng user</string>
     <string name="show_on_shelf">Ipakita sa Istante</string>
     <string name="speed">Bilis</string>
     <string name="comics_archive_import_description">Maaari kang pumili ng isa o higit pang .cbz o .zip file, ang bawat file ay makikilala bilang isang hiwalay na manga.</string>
     <string name="folder_with_images_import_description">Maaari kang pumili ng isang direktoryo na may mga archive o mga larawan. Ang bawat archive (o subdirectory) ay makikilala bilang isang kabanata.</string>
     <string name="find_similar">Maghanap ng katulad</string>
     <string name="sync_auth_hint">Maaari kang mag-sign in sa isang umiiral na account o lumikha ng bago</string>
-    <string name="translations">Mga pagsasalin</string>
     <string name="web_view_unavailable">Hindi available ang WebView: tingnan kung naka-install ang WebView provider</string>
     <string name="enable">Paganahin</string>
     <string name="downloads_paused">Na-pause ang mga pag-download</string>
@@ -425,10 +410,8 @@
     <string name="webtoon_zoom_summary">Payagan ang pag-zoom in na gesture sa webtoon mode</string>
     <string name="reader_info_bar_summary">Ipakita ang kasalukuyang oras at progreso ng pagbabasa sa tuktok ng screen</string>
     <string name="show_pages_numbers_summary">Ipakita ang mga numero ng pahina sa ibabang gilid</string>
-    <string name="pages_animation_summary">I-animate ang paglipat ng pahina</string>
     <string name="invalid_port_number">Imbalidong numero ng port</string>
     <string name="clear_source_cookies_summary">I-clear ang mga cookie para sa tinukoy na domain lamang. Sa karamihan ng mga kaso, magpapawalang-bisa ang awtorisasyon</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="download_option_all_chapters">Lahat ng mga kabanata na may pagsasalin na %s</string>
     <string name="download_option_whole_manga">Ang buong manga</string>
     <string name="download_option_first_n_chapters">Unang %s</string>
@@ -437,12 +420,10 @@
     <string name="download_option_all_unread_b">Lahat ng di-nababasang kabanata (%s)</string>
     <string name="download_option_manual_selection">Manu-manong pumili ng mga kabanata</string>
     <string name="invert_colors">Baliktarin ang mga kulay</string>
-    <string name="custom_directory">Custom na direktoryo</string>
     <string name="pick_custom_directory">Pumili ng custom na direktoryo</string>
     <string name="no_access_to_file">Wala kang access sa file o direktoryo na ito</string>
     <string name="local_manga_directories">Mga lokal na direktoryo ng manga</string>
     <string name="password">Password</string>
-    <string name="details_button_tip">Pindutin nang matagal ang Magbasa na button upang makita ang iba pang opsyon</string>
     <string name="description">Paglalarawan</string>
     <string name="this_month">Sa buwang ito</string>
     <string name="color_light">Maliwanag</string>
@@ -456,7 +437,6 @@
     <string name="search_hint">Ilagay ang pamagat ng manga, genre o pangalan ng source</string>
     <string name="progress">Pag-unlad</string>
     <string name="order_added">Idinagdag na</string>
-    <string name="view_list">Tingnan ang listahan</string>
     <string name="languages">Mga wika</string>
     <string name="voice_search">Paghahanap gamit ang boses</string>
     <string name="related_manga">Kaugnay na manga</string>
@@ -471,7 +451,6 @@
     <string name="related_manga_summary">Magpakita ng listahan ng mga kaugnay na manga. Sa ilang mga kaso, ito ay maaaring may mali o nawawala</string>
     <string name="advanced">Advanced</string>
     <string name="too_many_requests_message">Masyadong maraming request. Subukang ulit mamaya</string>
-    <string name="default_section">Default na seksyon</string>
     <string name="manga_list">Listahan ng Manga</string>
     <string name="zoom_in">Mag-zoom paloob</string>
     <string name="reader_zoom_buttons_summary">Kung magpapakita ba ng mga button ng pang-zoom sa kanang sulok sa ibaba</string>
@@ -551,7 +530,6 @@
     <string name="rating_adult">Nasa gulang</string>
     <string name="content_rating">Content rating</string>
     <string name="default_tab">Default na tab</string>
-    <string name="approximate_reading_time">Tinatayang oras ng pagbabasa</string>
     <string name="mark_as_completed">Markahan bilang kumpleto na</string>
     <string name="mark_as_completed_prompt">Markahan ang napiling manga bilang tapos na nabasa?
 \n
@@ -569,7 +547,6 @@
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="volume_">Volume %d</string>
     <string name="volume_unknown">Hindi kilalang volume</string>
-    <string name="approximate_remaining_time">Tinatayang natitirang oras</string>
     <string name="vertical">Patayo</string>
     <string name="show_menu">Ipakita ang menu</string>
     <string name="tap_action">Aksyon sa pag-tap</string>
@@ -579,7 +556,6 @@
     <string name="use_two_pages_landscape">Gumamit ng dalawang page na layout sa landscape na oryentasyon (beta)</string>
     <string name="fullscreen_mode">Fullscreen mode</string>
     <string name="reader_fullscreen_summary">Itago ang status ng system at mga navigation bar</string>
-    <string name="two_pages">Dalawang pahina</string>
     <string name="toggle_ui">Ipakita/itago ang UI</string>
     <string name="prev_chapter">Nakaraang kabanata</string>
     <string name="next_chapter">Sunod na kabanata</string>

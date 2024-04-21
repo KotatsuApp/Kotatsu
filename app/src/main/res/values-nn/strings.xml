@@ -24,7 +24,6 @@
     <string name="light">Ljos</string>
     <string name="pages">Sider</string>
     <string name="clear">Tøm</string>
-    <string name="text_clear_history_prompt">Tøm lesehistorikken for godt\?</string>
     <string name="remove">Ta bort</string>
     <string name="save_page">Hent sida</string>
     <string name="page_saved">Henta</string>
@@ -46,8 +45,6 @@
     <string name="clear_thumbs_cache">Tøm mellomminnet for småbilete</string>
     <string name="clear_search_history">Tøm søkehistorikken</string>
     <string name="search_history_cleared">Tømt</string>
-    <string name="gestures_only">Berre handvendingar</string>
-    <string name="save_manga">Hent</string>
     <string name="notifications">Varsel</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d av %2$d</string>
     <string name="download">Hent</string>
@@ -121,11 +118,8 @@
     <string name="yesterday">I går</string>
     <string name="long_ago">Lenge sida</string>
     <string name="read_mode">Lesing</string>
-    <string name="taps_on_edges">Randetrykk</string>
-    <string name="volume_buttons">Ljodstyrkeknappar</string>
     <string name="app_update_available">Ei ny utgåve av appen er tilgjengeleg</string>
     <string name="open_in_browser">Opne i ein nettlesar</string>
-    <string name="large_manga_save_confirm">Denne mangaen har %s. Hent alle\?</string>
     <string name="text_history_holder_primary">Det du les vert vist her</string>
     <string name="enter_password">Rit inn lykelordet</string>
     <string name="repeat_password">Gjentak lykelordet</string>
@@ -152,8 +146,6 @@
     <string name="state_ongoing">I gang</string>
     <string name="exclude_nsfw_from_history">Utelèt mangaar med vakse innhald ifrå historikken</string>
     <string name="show_pages_numbers">Sidetal</string>
-    <string name="enabled_sources">Nytta kjelder</string>
-    <string name="available_sources">Tilgjengelege kjelder</string>
     <string name="screenshots_policy">Skjermbilete</string>
     <string name="screenshots_block_all">Hindre alltid</string>
     <string name="suggestions">Råd</string>
@@ -162,7 +154,6 @@
     <string name="text_suggestion_holder">Byrja å lesa nokre mangaar for å få personlege råd</string>
     <string name="exclude_nsfw_from_suggestions">Ikkje rå mangaar med vakse innhald</string>
     <string name="enabled">Påslegen</string>
-    <string name="filter_load_error">Kunne ikkje hente inn slaglista</string>
     <string name="various_languages">Fleire språk</string>
     <string name="percent_string_pattern">%1$s%%</string>
     <string name="suggestions_updating">Oppdaterer råd</string>
@@ -237,7 +228,6 @@
     <string name="error_no_space_left">Eininga er fylt</string>
     <string name="reader_slider">Vis ei rulleline til blading</string>
     <string name="webtoon_zoom">Auk/mink nettseriar</string>
-    <string name="different_languages">Ulike språk</string>
     <string name="network_unavailable">Nettverk ikkje tilgjengeleg</string>
     <string name="network_unavailable_hint">Slå på Wi-Fi eller mobilnettverk for å lesa mangaar på nett</string>
     <string name="server_error">Tjenarfeil (%1$d). Røyn att seinare</string>
@@ -305,7 +295,6 @@
     <string name="import_completed_hint">Slett den opphavlege fila for å frigjera rom</string>
     <string name="import_will_start_soon">Byrjar å føra inn snart</string>
     <string name="contrast">Motsetjing</string>
-    <string name="color_correction_hint">Brigde av letane vedkjem berre denne mangaen</string>
     <string name="show_suspicious_content">Vis mistenksamt innhald</string>
     <string name="theme_name_mion">Mion</string>
     <string name="theme_name_miku">Miku</string>
@@ -317,7 +306,6 @@
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="domain">Domene</string>
     <string name="new_chapters">Nye kapittel</string>
-    <string name="text_shelf_holder_primary">Mangaane dine vert viste her</string>
     <string name="pages_animation">Siderørsle</string>
     <string name="text_feed_holder">Nye kapittel av det du les vert viste her</string>
     <string name="check_for_new_chapters">Sjå etter nye kapittel</string>
@@ -336,7 +324,6 @@
     <string name="reader_control_ltr_summary">Trykk på høgre side eller ljodstyrke-ned-knappen blar alltid til neste side</string>
     <string name="compact">Samantrengt</string>
     <string name="show_on_shelf">Vis i hylla</string>
-    <string name="restore_backup_description">Før inn ei tryggleikskopi av brukardata</string>
     <string name="folder_with_images_import_description">Du kan velja ei mappe med arkiv eller bilete. Kvart arkiv (eller undermappe) vert tydde som eit kapittel.</string>
     <string name="speed">Snøggleik</string>
     <string name="comics_archive_import_description">Vel ei eller fleire .cbz eller .zip-filer, kvar fil vert tydde som ein eigen manga.</string>
@@ -354,7 +341,6 @@
     <string name="popular">Mest lest for tida</string>
     <string name="search_on_s">Søk på %s</string>
     <string name="text_history_holder_secondary">Finn lesnadar i sidemenyen.</string>
-    <string name="text_shelf_holder_secondary">Finn lesnadar i «Gransk»-delen</string>
     <string name="screenshots_allow">Tillat</string>
     <string name="allow_unstable_updates">Tillat ustøe oppdateringar</string>
     <string name="downloads_wifi_only">Hent berre på WiFi</string>
@@ -386,8 +372,6 @@
     <string name="data_and_privacy">Data og personvern</string>
     <string name="restore_summary">Gjenopprett ifrå ein tryggleiskopi</string>
     <string name="show_pages_numbers_summary">Vis sidetal i nedre hjørne</string>
-    <string name="details_button_tip">Trykk og hald leseknappen for å sjå fleire val</string>
-    <string name="translations">Omsetjing</string>
     <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="no_thanks">Nei takk</string>
     <string name="enable">Slå på</string>

@@ -40,7 +40,6 @@
     <string name="follow_system">Sistemle uyumlu</string>
     <string name="pages">Sayfalar</string>
     <string name="clear">Temizle</string>
-    <string name="text_clear_history_prompt">Tüm okuma geçmişi kalıcı olarak silinsin mi\?</string>
     <string name="remove">Kaldır</string>
     <string name="_s_deleted_from_local_storage">“%s” yerel depolama alanından sil</string>
     <string name="save_page">Sayfayı kaydet</string>
@@ -64,10 +63,8 @@
     <string name="webtoon">Webtoon</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
     <string name="reader_settings">Okuyucu ayarları</string>
-    <string name="volume_buttons">Ses tuşları</string>
     <string name="error">Hata</string>
     <string name="clear_thumbs_cache">Küçük resim önbelleğini temizle</string>
-    <string name="gestures_only">Yalnızca hareketler</string>
     <string name="domain">Alan adı</string>
     <string name="open_in_browser">Web tarayıcısında aç</string>
     <string name="new_chapters">Yeni bölümler</string>
@@ -90,7 +87,6 @@
     <string name="internal_storage">Dahili depolama</string>
     <string name="notifications">Bildirimler</string>
     <string name="switch_pages">Sayfalarda ilerleme</string>
-    <string name="save_manga">Kaydet</string>
     <string name="download">İndir</string>
     <string name="manga_save_location">İndirilenler klasörü</string>
     <string name="external_storage">Harici depolama</string>
@@ -118,8 +114,6 @@
     <string name="confirm">Onayla</string>
     <string name="auth_complete">Yetkilendirildi</string>
     <string name="just_now">Az önce</string>
-    <string name="taps_on_edges">Kenar dokunuşları</string>
-    <string name="large_manga_save_confirm">Bu mangada %s var. Hepsi kaydedilsin mi\?</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d / %2$d açık</string>
     <string name="text_search_holder_secondary">Sorguyu yeniden biçimlendirmeyi deneyin.</string>
     <string name="text_history_holder_primary">Okuduklarınız burada görüntülenecek</string>
@@ -159,8 +153,6 @@
     <string name="about_app_translation">Çeviri</string>
     <string name="state_ongoing">Devam ediyor</string>
     <string name="text_clear_cookies_prompt">Tüm kaynaklardaki oturumunuz kapatılacak</string>
-    <string name="enabled_sources">Kullanılan kaynaklar</string>
-    <string name="available_sources">Kullanılabilir kaynaklar</string>
     <string name="exclude_nsfw_from_history">Uygunsuz mangayı geçmişten hariç tut</string>
     <string name="show_pages_numbers">Sayfa numaraları</string>
     <string name="search_results">Arama sonuçları</string>
@@ -208,7 +200,6 @@
     <string name="exclude_nsfw_from_suggestions">Uygunsuz manga önerme</string>
     <string name="enabled">Etkin</string>
     <string name="disabled">Devre dışı</string>
-    <string name="filter_load_error">Türler listesi yüklenemiyor</string>
     <string name="reset_filter">Filtreyi sıfırla</string>
     <string name="onboard_text">Manga okumak istediğiniz dilleri seçin. Daha sonra ayarlardan değiştirebilirsiniz.</string>
     <string name="always">Her zaman</string>
@@ -278,7 +269,6 @@
     <string name="invalid_domain_message">Geçersiz etki alanı</string>
     <string name="select_range">Aralık seç</string>
     <string name="not_found_404">İçerik bulunamadı veya kaldırıldı</string>
-    <string name="text_shelf_holder_primary">Manganız burada görüntülenecek</string>
     <string name="canceled">İptal edilmiş</string>
     <string name="account_already_exists">Hesap zaten var</string>
     <string name="back">Geri</string>
@@ -303,7 +293,6 @@
     <string name="exit_confirmation">Çıkış doğrulaması</string>
     <string name="comics_archive">Çizgi roman arşivi</string>
     <string name="manga_error_description_pattern">Hata ayrıntıları:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Kaynağında bulunduğundan emin olmak için &lt;a href=%2$s&gt;mangayı bir web tarayıcısında açmayı&lt;/a&gt; deneyin&lt;br&gt;2. &lt;a href=kotatsu://about&gt;Kotatsu\'nun en son sürümünü&lt;/a&gt;&lt;br&gt;3 kullandığınızdan emin olun. Varsa, geliştiricilere bir hata raporu gönderin.</string>
-    <string name="text_shelf_holder_secondary">«Keşfet» kısmında neler okuyacağınızı bulun</string>
     <string name="categories_delete_confirm">Seçilen favori kategorileri silmek istediğinizden emin misiniz\?
 \nİçindeki tüm mangalar kaybolur ve bu işlem geri alınamaz.</string>
     <string name="reorder">Yeniden sırala</string>
@@ -330,7 +319,6 @@
     <string name="brightness">Parlaklık</string>
     <string name="contrast">Kontrast</string>
     <string name="reset">Sıfırla</string>
-    <string name="color_correction_hint">Seçilen renk ayarları bu manga için hatırlanacaktır</string>
     <string name="text_unsaved_changes_prompt">Kaydedilmeyen değişiklikler kaydedilsin mi yoksa yok mu sayılsın?</string>
     <string name="discard">Yoksay</string>
     <string name="error_no_space_left">Cihazda yer yok</string>
@@ -338,7 +326,6 @@
     <string name="reader_slider">Sayfa değiştirme kaydırıcısını göster</string>
     <string name="clear_new_chapters_counters">Ayrıca yeni bölümler hakkındaki bilgileri temizle</string>
     <string name="compact">Sıkı</string>
-    <string name="different_languages">Farklı diller</string>
     <string name="network_unavailable">Ağ kullanılamıyor</string>
     <string name="network_unavailable_hint">Çevrim içi manga okumak için Wi-Fi veya mobil ağı açın</string>
     <string name="server_error">Sunucu hatası (%1$d). Lütfen daha sonra tekrar deneyin</string>
@@ -372,7 +359,6 @@
     <string name="theme_name_sakura">Sakura</string>
     <string name="settings_apply_restart_required">Bu değişiklikleri uygulamak için lütfen uygulamayı yeniden başlatın</string>
     <string name="find_similar">Benzerini bul</string>
-    <string name="translations">Çeviriler</string>
     <string name="web_view_unavailable">WebView kullanılamıyor: WebView sağlayıcısının kurulu olup olmadığını kontrol edin</string>
     <string name="enable">Etkinleştir</string>
     <string name="no_thanks">Hayır teşekkürler</string>
@@ -390,7 +376,6 @@
     <string name="comics_archive_import_description">Bir veya daha fazla .cbz veya .zip dosyası seçebilirsiniz, her dosya ayrı bir manga olarak tanınacaktır.</string>
     <string name="folder_with_images_import_description">Arşivler veya resimler içeren bir dizin seçebilirsiniz. Her arşiv (veya alt dizin) bir bölüm olarak tanınacaktır.</string>
     <string name="speed">Hız</string>
-    <string name="restore_backup_description">Kullanıcı verilerinin önceden oluşturulmuş bir yedeğini içe aktarın</string>
     <string name="show_on_shelf">Rafta Göster</string>
     <string name="sync_auth_hint">Mevcut bir hesapta oturum açabilir veya yeni bir hesap oluşturabilirsiniz</string>
     <string name="ignore_ssl_errors">SSL hatalarını görmezden gel</string>
@@ -411,7 +396,6 @@
     <string name="suggestions_enable_prompt">Kişiselleştirilmiş manga önerileri almak istiyor musunuz\?</string>
     <string name="address">Adres</string>
     <string name="type">Tür</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="port">Port</string>
     <string name="proxy">Proxy</string>
     <string name="invalid_value_message">Geçersiz değer</string>
@@ -429,8 +413,6 @@
     <string name="webtoon_zoom_summary">Webtoon modunda yakınlaştırma hareketine izin ver</string>
     <string name="reader_info_bar_summary">Geçerli saati ve okuma ilerlemesini ekranın üst kısmında gösterin</string>
     <string name="show_pages_numbers_summary">Sayfa numaralarını alt köşede göster</string>
-    <string name="pages_animation_summary">Sayfa değiştirmelerini animasyonla yap</string>
-    <string name="details_button_tip">Daha fazla seçenek görmek için Oku düğmesini basılı tutun</string>
     <string name="languages">Diller</string>
     <string name="zoom_in">Yakınlaştır</string>
     <string name="captcha_required_summary">Düzgün okunmak için %s captcha gerektiriyor</string>
@@ -448,7 +430,6 @@
     <string name="suggest_new_sources">Uygulama güncellemesinden sonra yeni kaynaklar önerin</string>
     <string name="moved_to_top">Üste taşındı</string>
     <string name="data_not_restored_text">Doğru yedek dosyasını seçtiğinizden emin olun</string>
-    <string name="view_list">Listeyi gör</string>
     <string name="unknown">Bilinmeyen</string>
     <string name="in_progress">Devam ediyor</string>
     <string name="download_option_manual_selection">Bölümleri elle seç</string>
@@ -472,9 +453,7 @@
     <string name="download_option_first_n_chapters">Önce %s</string>
     <string name="keep_screen_on">Ekranı açık tut</string>
     <string name="suggestions_wifi_only_summary">Tarifeli bağlantılarını kullanarak önerileri güncellemeyin</string>
-    <string name="custom_directory">Özel dizin</string>
     <string name="enhanced_colors">32-bit renk modu</string>
-    <string name="default_section">Varsayılan bölüm</string>
     <string name="background">Arkaplan</string>
     <string name="no_access_to_file">Bu dosya veya dizine erişme izniniz yok</string>
     <string name="zoom_out">Uzaklaştır</string>
@@ -556,15 +535,12 @@
 \n
 \nUyarı: Şu anki ilerleme kaybolacaktır.</string>
     <string name="category_hidden_done">Bu kategori ana ekrandan gizlendi ve Menü → Kategorileri yönet aracılığıyla erişilebilir</string>
-    <string name="approximate_reading_time">Yaklaşık okuma süresi</string>
     <string name="volume_">%d. cilt</string>
     <string name="volume_unknown">Bilinmeyen cilt</string>
-    <string name="approximate_remaining_time">Yaklaşık kalan süre</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="incognito_mode_hint">Okuma ilerleme durumunuz kaydedilmeyecek</string>
     <string name="vertical">Dikey</string>
     <string name="last_read">Son okunan</string>
-    <string name="two_pages">İki sayfa</string>
     <string name="toggle_ui">Kullanıcı arayüzünü göster/gizle</string>
     <string name="reader_actions">Okuyucu eylemleri</string>
     <string name="reader_actions_summary">Dokunulabilir ekran alanları için eylemleri yapılandırın</string>

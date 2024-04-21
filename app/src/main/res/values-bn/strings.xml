@@ -6,7 +6,6 @@
     <string name="_continue">চালিয়ে যান</string>
     <string name="clear_thumbs_cache">থাম্বনেইল ক্যাচ সাফ করুন</string>
     <string name="clear_search_history">সার্চ ইতিহাস সাফ করুন</string>
-    <string name="gestures_only">শুধুমাত্র Gestures</string>
     <string name="internal_storage">ইন্টার্নাল স্টোরেজ</string>
     <string name="external_storage">এক্সটার্নাল স্টোরেজ</string>
     <string name="domain">ডোমেইন</string>
@@ -38,7 +37,6 @@
     <string name="delete">মুছে ফেলুন</string>
     <string name="operation_not_supported">এই কাজটি করা সম্ভব নয়</string>
     <string name="switch_pages">পেজ পাল্টান</string>
-    <string name="taps_on_edges">কোনার ট্যাপ</string>
     <string name="search_history_cleared">সাফ করা হয়েছে</string>
     <string name="network_error">নেটওয়ার্কে সমস্যা</string>
     <string name="remote_sources">মানগা সোর্স সমূহ</string>
@@ -70,7 +68,6 @@
     <string name="read_mode">পড়ার মোড</string>
     <string name="grid_size">গ্রিডের আকার</string>
     <string name="clear">পরিষ্কার</string>
-    <string name="text_clear_history_prompt">সকল পড়ার ইতিহাস সাফ করবেন\?</string>
     <string name="remove">সরিয়ে ফেলুন</string>
     <string name="_s_deleted_from_local_storage">\"%s\" লোকাল স্টোরেজ থেকে সরানো হয়েছে</string>
     <string name="save_page">পেজ সেভ করুন</string>
@@ -80,7 +77,6 @@
     <string name="delete_manga">মানগা ডিলিট করুন</string>
     <string name="text_delete_local_manga">\"%s\" পারমানেন্ট ভাবে ডিভাইস থেকে ডিলিট করতে চান\?</string>
     <string name="reader_settings">রিডারের সেটিংস</string>
-    <string name="volume_buttons">ভলিউম বাটন</string>
     <string name="error">সমস্যা</string>
     <string name="updates">আপডেট</string>
     <string name="manga_shelf">তাক</string>
@@ -91,7 +87,6 @@
     <string name="light_indicator">LED নির্দেশক</string>
     <string name="favourites_categories">প্রিয় বিভাগ</string>
     <string name="rotate_screen">পর্দা ঘোরান</string>
-    <string name="text_shelf_holder_secondary">\"এক্সপ্লোর\" বিভাগে কী পড়তে হবে তা খুঁজুন</string>
     <string name="vibration">কম্পন</string>
     <string name="no_update_available">কোন আপডেট উপলব্ধ নেই</string>
     <string name="remove_category">অপসারণ</string>
@@ -129,7 +124,6 @@
     <string name="size_s">আকার: %s</string>
     <string name="about">সম্পর্কিত</string>
     <string name="zoom_mode_fit_center">ফিট সেন্টার</string>
-    <string name="text_shelf_holder_primary">আপনার মাঙ্গা এখানে প্রদর্শিত হবে</string>
     <string name="new_chapters">নতুন অধ্যায়</string>
     <string name="more">আরো</string>
     <string name="protect_application">অ্যাপটি রক্ষা করুন</string>
@@ -141,7 +135,6 @@
     <string name="clear_updates_feed">সাফ আপডেট ফিড</string>
     <string name="enable">সক্ষম করুন</string>
     <string name="notifications_settings">বিজ্ঞপ্তি সেটিংস</string>
-    <string name="save_manga">সংরক্ষণ</string>
     <string name="large_manga_save_confirm">এই মঙ্গার %s আছে। এটা সব সংরক্ষণ?</string>
     <string name="text_search_holder_secondary">প্রশ্নটি সংস্কার করার চেষ্টা করুন।</string>
     <string name="recent_manga">সাম্প্রতিক</string>

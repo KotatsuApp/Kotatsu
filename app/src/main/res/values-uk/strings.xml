@@ -46,7 +46,6 @@
     <string name="light">Світла</string>
     <string name="dark">Темна</string>
     <string name="pages">Сторінки</string>
-    <string name="text_clear_history_prompt">Очистити всю історію читання перманентно\?</string>
     <string name="remove">Видалити</string>
     <string name="_s_deleted_from_local_storage">«%s» видалено з локального сховища</string>
     <string name="save_page">Зберегти сторінку</string>
@@ -66,18 +65,14 @@
     <string name="text_delete_local_manga">Назавжди видалити «%s» із пристрою?</string>
     <string name="reader_settings">Налаштування читача</string>
     <string name="switch_pages">Перегортання сторінок</string>
-    <string name="volume_buttons">Кнопки гучності</string>
     <string name="error">Помилка</string>
     <string name="clear_thumbs_cache">Очистити кеш мініатюр</string>
     <string name="clear_search_history">Очистити історію пошуку</string>
     <string name="search_history_cleared">Очищено</string>
-    <string name="gestures_only">Тільки жести</string>
     <string name="internal_storage">Внутрішнє сховище</string>
     <string name="external_storage">Зовнішнє сховище</string>
     <string name="domain">Домен</string>
     <string name="app_update_available">Доступна нова версія застосунку</string>
-    <string name="large_manga_save_confirm">Ця манґа має %s. Зберегти все це\?</string>
-    <string name="save_manga">Зберегти</string>
     <string name="notifications">Сповіщення</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Увімкнено %1$d з %2$d</string>
     <string name="new_chapters">Нові розділи</string>
@@ -163,7 +158,6 @@
     <string name="state_ongoing">Триває</string>
     <string name="exclude_nsfw_from_history">Виключити NSFW манґу з історії</string>
     <string name="show_pages_numbers">Показувати номери сторінок</string>
-    <string name="enabled_sources">Включені джерела</string>
     <string name="screenshots_policy">Політика щодо знімків екрана</string>
     <string name="screenshots_allow">Дозволити</string>
     <string name="suggestions_summary">Пропонувати манґу на основі ваших уподобань</string>
@@ -198,7 +192,6 @@
     <string name="always">Завжди</string>
     <string name="_continue">Продовжити</string>
     <string name="_import">Імпорт</string>
-    <string name="taps_on_edges">Натискання по краях</string>
     <string name="notifications_settings">Налаштування сповіщень</string>
     <string name="open_in_browser">Відкрити у веб-браузері</string>
     <string name="not_available">Недоступно</string>
@@ -220,13 +213,11 @@
     <string name="text_clear_updates_feed_prompt">Очистити всю історію оновлень назавжди\?</string>
     <string name="tracker_warning">Деякі пристрої мають різну поведінку системи, що може порушити фонові завдання.</string>
     <string name="text_clear_search_history_prompt">Видалити всі останні пошукові запити назавжди\?</string>
-    <string name="available_sources">Доступні джерела</string>
     <string name="screenshots_block_nsfw">Блок на NSFW</string>
     <string name="screenshots_block_all">Завжди блокувати</string>
     <string name="suggestions">Пропозиції</string>
     <string name="suggestions_enable">Увімкнути пропозиції</string>
     <string name="exclude_nsfw_from_suggestions">Не пропонувати NSFW манґу</string>
-    <string name="filter_load_error">Не вдалося завантажити список жанрів</string>
     <string name="never">Ніколи</string>
     <string name="appearance">Зовнішній вигляд</string>
     <string name="suggestions_excluded_genres">Виключити жанри</string>
@@ -278,8 +269,6 @@
     <string name="show_all">Показати всі</string>
     <string name="select_range">Виберіть діапазон</string>
     <string name="not_found_404">Вміст не знайдено або видалено</string>
-    <string name="text_shelf_holder_primary">Ваша манґа буде відображатися тут</string>
-    <string name="text_shelf_holder_secondary">Знайдіть, що почитати у розділі «Огляд»</string>
     <string name="back">Назад</string>
     <string name="email_enter_hint">Введіть свою електронну пошту, щоб продовжити</string>
     <string name="history_cleared">Історія очищена</string>
@@ -333,13 +322,11 @@
     <string name="color_correction">Корекція кольору</string>
     <string name="contrast">Контрастність</string>
     <string name="reset">Скинути</string>
-    <string name="color_correction_hint">Вибрані параметри кольору будуть запам\'ятовані для цієї манґи</string>
     <string name="text_unsaved_changes_prompt">Зберегти чи скасувати незбережені зміни\?</string>
     <string name="discard">Скасувати</string>
     <string name="server_error">Помилка на стороні сервера (%1$d). Будь ласка спробуйте пізніше</string>
     <string name="clear_new_chapters_counters">Також очистити інформацію про нові розділи</string>
     <string name="error_no_space_left">На пристрої не залишилося вільного місця</string>
-    <string name="different_languages">Різні мови</string>
     <string name="network_unavailable">Мережа недоступна</string>
     <string name="network_unavailable_hint">Увімкніть Wi-Fi або мобільну мережу, щоб читати манґу онлайн</string>
     <string name="webtoon_zoom">Масштабування в режимі манхви</string>
@@ -375,7 +362,6 @@
     <string name="comics_archive_import_description">Ви можете вибрати один або кілька файлів .cbz або .zip, кожен файл буде розпізнано як окрема манґа.</string>
     <string name="folder_with_images_import_description">Ви можете вибрати каталог з архівами або зображеннями. Кожен архів (або підкаталог) буде розпізнано як розділ.</string>
     <string name="speed">Швидкість</string>
-    <string name="restore_backup_description">Імпортуйте раніше створену резервну копію даних користувача</string>
     <string name="show_on_shelf">Показати на полиці</string>
     <string name="sources_reorder_tip">Натисніть і утримуйте елемент, щоб змінити його порядок</string>
     <string name="sync_auth_hint">Ви можете увійти в існуючий аккаунт, або створити новий</string>
@@ -407,13 +393,11 @@
     <string name="downloads_cancelled">Завантаження скасовано</string>
     <string name="suggestions_enable_prompt">Хочете отримувати персоналізовані пропозиції щодо манґи\?</string>
     <string name="web_view_unavailable">WebView недоступний: перевірте, чи встановлено провайдер WebView</string>
-    <string name="translations">Переклади</string>
     <string name="clear_network_cache">Очистити мережевий кеш</string>
     <string name="port">Порт</string>
     <string name="proxy">Проксі</string>
     <string name="type">Тип</string>
     <string name="address">Адреса</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="invalid_value_message">Недійсне значення</string>
     <string name="invalid_port_number">Недійсний номер порту</string>
     <string name="images_procy_description">Використовуйте службу wsrv.nl, щоб зменшити використання трафіку та прискорити завантаження зображень, якщо це можливо</string>
@@ -428,8 +412,6 @@
     <string name="restore_summary">Відновити раніше створену резервну копію</string>
     <string name="reader_info_bar_summary">Показувати поточний час і прогрес читання у верхній частині екрана</string>
     <string name="show_pages_numbers_summary">Показати номери сторінок у нижньому куті</string>
-    <string name="pages_animation_summary">Анімація перегортання сторінок</string>
-    <string name="details_button_tip">Натисніть і утримуйте кнопку «Читати», щоб переглянути додаткові параметри</string>
     <string name="webtoon_zoom_summary">Дозволити жести масштабування в режимі манхви</string>
     <string name="clear_source_cookies_summary">Очистити файли cookie лише для вказаного домену. У більшості випадків авторизація анулюється</string>
     <string name="pick_custom_directory">Вибрати користувальницький каталог</string>
@@ -440,7 +422,6 @@
     <string name="download_option_all_unread_b">Усі непрочитані розділи (%s)</string>
     <string name="download_option_manual_selection">Виберіть розділи вручну</string>
     <string name="local_manga_directories">Локальні каталоги манґи</string>
-    <string name="custom_directory">Користувальницький каталог</string>
     <string name="download_option_first_n_chapters">Перші %s</string>
     <string name="download_option_next_unread_n_chapters">Перші непрочитані %s</string>
     <string name="description">Опис</string>
@@ -455,7 +436,6 @@
     <string name="search_hint">Введіть назву манґи, жанр або назву джерела</string>
     <string name="progress">Прогрес</string>
     <string name="order_added">Додано</string>
-    <string name="view_list">Переглянути список</string>
     <string name="show">Показати</string>
     <string name="voice_search">Голосовий пошук</string>
     <string name="related_manga">Схожа манґа</string>
@@ -470,7 +450,6 @@
     <string name="related_manga_summary">Показати список пов\'язаної манґи. У деяких випадках він може бути неточним або відсутнім</string>
     <string name="too_many_requests_message">Занадто багато запитів. Спробуйте пізніше</string>
     <string name="advanced">Просунута</string>
-    <string name="default_section">Розділ за умовчанням</string>
     <string name="manga_list">Список манґи</string>
     <string name="error_corrupted_file">Повертаються неправильні дані або файл пошкоджено</string>
     <string name="on_device">На пристрої</string>
@@ -555,16 +534,13 @@
     <string name="mark_as_completed_prompt">Позначити вибрану мангу як повністю прочитану?
 \n
 \nПопередження: поточний прогрес читання буде втрачено.</string>
-    <string name="approximate_reading_time">Орієнтовний час читання</string>
     <string name="category_hidden_done">Ця категорія була прихована на головному екрані і доступна через Меню → Керування категоріями</string>
-    <string name="approximate_remaining_time">Орієнтовний час, що залишився</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="incognito_mode_hint">Ваш прогрес читання не буде збережений</string>
     <string name="volume_">Гучність %d</string>
     <string name="volume_unknown">Невідома гучність</string>
     <string name="vertical">Вертикальний</string>
     <string name="last_read">Останнє прочитане</string>
-    <string name="two_pages">Дві сторінки</string>
     <string name="show_menu">Показати меню</string>
     <string name="toggle_ui">Показати/приховати інтерфейс</string>
     <string name="prev_chapter">Попередня глава</string>

@@ -48,7 +48,6 @@
     <string name="follow_system">Ikut sistem</string>
     <string name="pages">Muka surat</string>
     <string name="clear">Kosongkan</string>
-    <string name="text_clear_history_prompt">Kosongkan semua sejarah pembacaan selama-lamanya?</string>
     <string name="remove">Buang</string>
     <string name="_s_deleted_from_local_storage">\"%s\" dibuang daripada storan tempatan</string>
     <string name="save_page">Simpan muka surat</string>
@@ -63,13 +62,10 @@
     <string name="error">Ralat</string>
     <string name="clear_search_history">Kosongkan sejarah carian</string>
     <string name="search_history_cleared">Dikosongkan</string>
-    <string name="gestures_only">Gerak isyarat sahaja</string>
     <string name="internal_storage">Storan dalaman</string>
     <string name="external_storage">Storan luaran</string>
     <string name="app_update_available">Sebuah versi baru apl tersedia</string>
     <string name="open_in_browser">Buka dalam pelayar web</string>
-    <string name="large_manga_save_confirm">Manga ini mempunyai %s. Simpan kesemuanya?</string>
-    <string name="save_manga">Simpan</string>
     <string name="notifications">Notifikasi</string>
     <string name="new_chapters">Bab baharu</string>
     <string name="notification_sound">Suara pemberitahuan</string>
@@ -77,8 +73,6 @@
     <string name="vibration">Getaran</string>
     <string name="remove_category">Buang</string>
     <string name="text_history_holder_primary">Apa yang anda baca akan dipaparkan di sini</string>
-    <string name="text_shelf_holder_primary">Manga anda akan dipaparkan di sini</string>
-    <string name="text_shelf_holder_secondary">Cari apa yang boleh dibaca melalui seksyen «Jelajah»</string>
     <string name="text_local_holder_primary">Simpan sesuatu dahulu</string>
     <string name="text_local_holder_secondary">Simpan sesuatu daripada katalog dalam talian atau import daripada fail.</string>
     <string name="manga_shelf">Rak</string>
@@ -141,7 +135,6 @@
     <string name="system_default">Lalai</string>
     <string name="exclude_nsfw_from_history">Kecualikan manga NSFW daripada sejarah</string>
     <string name="show_pages_numbers">Muka surat bernombor</string>
-    <string name="enabled_sources">Sumber digunakan</string>
     <string name="screenshots_policy">Polisi tangkapan skrin</string>
     <string name="screenshots_allow">Benarkan</string>
     <string name="screenshots_block_nsfw">Sekat pada NSFW</string>
@@ -152,7 +145,6 @@
     <string name="text_suggestion_holder">Mula baca manga dan anda akan mendapat pengesyoran peribadi</string>
     <string name="enabled">Dibolehkan</string>
     <string name="disabled">Dilumpuhkan</string>
-    <string name="filter_load_error">Tidak boleh memuat senarai genre</string>
     <string name="reset_filter">Set semula tapisan</string>
     <string name="never">Jangan</string>
     <string name="only_using_wifi">Hanya pada Wi-Fi</string>
@@ -251,7 +243,6 @@
     <string name="about_app_translation_summary">Terjemahkan apl ini</string>
     <string name="error_occurred">Sebuah ralat telah berlaku</string>
     <string name="share_s">Kongsi %s</string>
-    <string name="available_sources">Sumber tersedia</string>
     <string name="nothing_found">Tiada dijumpai</string>
     <string name="suggestions_info">Semua data hanya dianalisa secara tempatan pada peranti ini dan tidak dihantar ke mana-mana.</string>
     <string name="you_have_not_favourites_yet">Tiada kegemaran lagi</string>
@@ -268,7 +259,6 @@
     <string name="chapters_will_removed_background">Bab akan dibuang dalam latar belakang</string>
     <string name="operation_not_supported">Operasi ini tidak disokong</string>
     <string name="delete_manga">Buang manga</string>
-    <string name="taps_on_edges">Ketik tepi</string>
     <string name="page_saved">Disimpan</string>
     <string name="domain">Domain</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d daripada %2$d pada</string>

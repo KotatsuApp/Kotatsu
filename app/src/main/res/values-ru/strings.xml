@@ -48,7 +48,6 @@
     <string name="follow_system">Как в системе</string>
     <string name="pages">Страницы</string>
     <string name="clear">Очистить</string>
-    <string name="text_clear_history_prompt">Очистить всю историю чтения полностью\?</string>
     <string name="remove">Удалить</string>
     <string name="_s_deleted_from_local_storage">«%s» удалено с устройства</string>
     <string name="save_page">Сохранить страницу</string>
@@ -70,21 +69,16 @@
     <string name="text_delete_local_manga">Удалить «%s» с устройства навсегда?</string>
     <string name="reader_settings">Настройки режима чтения</string>
     <string name="switch_pages">Листание страниц</string>
-    <string name="taps_on_edges">Нажатия по краям</string>
-    <string name="volume_buttons">Кнопки громкости</string>
     <string name="_continue">Продолжить</string>
     <string name="error">Ошибка</string>
     <string name="clear_thumbs_cache">Очистить кэш миниатюр</string>
     <string name="clear_search_history">Очистить историю поиска</string>
     <string name="search_history_cleared">Очищено</string>
-    <string name="gestures_only">Только жесты</string>
     <string name="internal_storage">Внутренний накопитель</string>
     <string name="external_storage">Внешний накопитель</string>
     <string name="domain">Домен</string>
     <string name="app_update_available">Доступна новая версия приложения</string>
     <string name="open_in_browser">Открыть в веб-браузере</string>
-    <string name="large_manga_save_confirm">В этой манге %s. Сохранить их все\?</string>
-    <string name="save_manga">Сохранить</string>
     <string name="notifications">Уведомления</string>
     <string name="enabled_d_of_d">Включено %1$d из %2$d</string>
     <string name="new_chapters">Новые главы</string>
@@ -193,8 +187,6 @@
     <string name="system_default">По умолчанию</string>
     <string name="exclude_nsfw_from_history">Исключить NSFW мангу из истории</string>
     <string name="show_pages_numbers">Нумерация страниц</string>
-    <string name="enabled_sources">Включённые источники</string>
-    <string name="available_sources">Доступные источники</string>
     <string name="screenshots_policy">Политика скриншотов</string>
     <string name="screenshots_allow">Разрешить</string>
     <string name="screenshots_block_nsfw">Запретить для NSFW</string>
@@ -207,7 +199,6 @@
     <string name="exclude_nsfw_from_suggestions">Не предлагать NSFW мангу</string>
     <string name="enabled">Включено</string>
     <string name="disabled">Выкл.</string>
-    <string name="filter_load_error">Не удалось загрузить список жанров</string>
     <string name="computing_">Вычисление…</string>
     <string name="reset_filter">Сбросить фильтр</string>
     <string name="onboard_text">Выберите языки, на которых Вы хотите читать мангу. Это можно будет изменить позже в настройках.</string>
@@ -276,7 +267,6 @@
     <string name="clear_cookies_summary">Может помочь в случае каких-либо проблем. Все авторизации будут аннулированы</string>
     <string name="show_all">Показать все</string>
     <string name="invalid_domain_message">Неверное доменное имя</string>
-    <string name="text_shelf_holder_secondary">Найдите, что почитать во разделе «Обзор»</string>
     <string name="back">Назад</string>
     <string name="select_range">Выбрать диапазон</string>
     <string name="history_cleared">История очищена</string>
@@ -302,7 +292,6 @@
     <string name="sync">Синхронизация</string>
     <string name="sync_title">Синхронизируйте ваши данные</string>
     <string name="email_enter_hint">Введите электронную почту, чтобы продолжить</string>
-    <string name="text_shelf_holder_primary">Ваша манга будет показана здесь</string>
     <string name="account_already_exists">Аккаунт уже существует</string>
     <string name="no_bookmarks_summary">Вы можете создавать закладки во время чтения манги</string>
     <string name="exit_confirmation">Подтверждение выхода</string>
@@ -335,12 +324,10 @@
     <string name="contrast">Контрастность</string>
     <string name="brightness">Яркость</string>
     <string name="color_correction">Цветокоррекция</string>
-    <string name="color_correction_hint">Выбранные настройки цвета будут сохранены для этой манги</string>
     <string name="error_no_space_left">Не осталось свободного места на накопителе</string>
     <string name="webtoon_zoom">Масштабирование в режиме манхвы</string>
     <string name="reader_slider">Показывать слайдер переключения страниц</string>
     <string name="network_unavailable_hint">Включите Wi-Fi или передачу данных, чтобы читать мангу онлайн</string>
-    <string name="different_languages">Разные языки</string>
     <string name="network_unavailable">Сеть недоступна</string>
     <string name="clear_new_chapters_counters">Также очистить информацию о новых главах</string>
     <string name="server_error">Внутренняя ошибка сервера (%1$d). Повторите попытку позже</string>
@@ -376,7 +363,6 @@
     <string name="comics_archive_import_description">Вы можете выбрать один или несколько файлов .cbz или .zip, каждый файл будет распознан как отдельная манга.</string>
     <string name="folder_with_images_import_description">Вы можете выбрать каталог с архивами или изображениями. Каждый архив (или подкаталог) будет распознан как глава.</string>
     <string name="speed">Скорость</string>
-    <string name="restore_backup_description">Импорт ранее созданной резервной копии пользовательских данных</string>
     <string name="show_on_shelf">Показать на полке</string>
     <string name="find_similar">Найти похожие</string>
     <string name="sync_auth_hint">Вы можете войти в уже существующий аккаунт или же создать новый</string>
@@ -406,14 +392,12 @@
     <string name="suggestions_notifications_summary">Иногда показывать уведомления с рекомендуемой мангой</string>
     <string name="remove_completed_downloads_confirm">Ваша история загрузок будет удалена</string>
     <string name="suggestions_enable_prompt">Хотите ли Вы получать персонализированные рекомендации манги\?</string>
-    <string name="translations">Переводы</string>
     <string name="web_view_unavailable">WebView недоступен: проверьте, установлен ли провайдер WebView</string>
     <string name="clear_network_cache">Очистить сетевой кэш</string>
     <string name="address">Адрес</string>
     <string name="type">Тип</string>
     <string name="proxy">Прокси</string>
     <string name="port">Порт</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="invalid_value_message">Неверное значение</string>
     <string name="invalid_port_number">Неверный номер порта</string>
     <string name="username">Имя пользователя</string>
@@ -429,8 +413,6 @@
     <string name="restore_summary">Восстановить ранее созданную резервную копию</string>
     <string name="reader_info_bar_summary">Отображение текущего времени и прогресса чтения в верхней части экрана</string>
     <string name="show_pages_numbers_summary">Показывать номера страниц в нижнем углу</string>
-    <string name="pages_animation_summary">Анимация перелистывания страниц</string>
-    <string name="details_button_tip">Нажмите и удерживайте кнопку «Читать», чтобы просмотреть дополнительные параметры</string>
     <string name="clear_source_cookies_summary">Очистить куки для указанного домена. В большинстве случаев это аннулирует авторизацию</string>
     <string name="download_option_next_unread_n_chapters">Первые непрочитанные %s</string>
     <string name="download_option_all_unread">Все непрочитанные главы</string>
@@ -440,7 +422,6 @@
     <string name="download_option_all_unread_b">Все непрочитанные главы (%s)</string>
     <string name="download_option_manual_selection">Выбрать главы вручную</string>
     <string name="no_access_to_file">У вас нет доступа к этому файлу или каталогу</string>
-    <string name="custom_directory">Пользовательский каталог</string>
     <string name="local_manga_directories">Локальные каталоги манги</string>
     <string name="pick_custom_directory">Выбрать пользовательский каталог</string>
     <string name="this_month">Этот месяц</string>
@@ -454,7 +435,6 @@
     <string name="data_not_restored">Данные не были восстановлены</string>
     <string name="suggestions_wifi_only_summary">Не обновлять рекомендации при использовании лимитного интернет-соединения</string>
     <string name="order_added">Добавлено</string>
-    <string name="view_list">Посмотреть список</string>
     <string name="data_not_restored_text">Убедитесь, что вы выбрали правильный файл резервной копии</string>
     <string name="description">Описание</string>
     <string name="manage_categories">Управление категориями</string>
@@ -470,7 +450,6 @@
     <string name="too_many_requests_message">Слишком много запросов. Попробуйте повторить позже</string>
     <string name="related_manga_summary">Показывать список связанной манги. В некоторых случаях список может быть нерелевантным или отсутствовать вовсе</string>
     <string name="advanced">Продвинутая</string>
-    <string name="default_section">Раздел по умолчанию</string>
     <string name="manga_list">Список манги</string>
     <string name="error_corrupted_file">Возвращаются неверные данные или файл поврежден</string>
     <string name="on_device">На устройстве</string>
@@ -551,20 +530,17 @@
     <string name="rating_safe">Безопасный</string>
     <string name="rating_suggestive">С намёками</string>
     <string name="rating_adult">Взрослый</string>
-    <string name="approximate_reading_time">Примерное время чтения</string>
     <string name="category_hidden_done">Эта категория была скрыта с главного экрана и доступна через Меню → Управление категориями</string>
     <string name="mark_as_completed">Отметить как завершённое</string>
     <string name="mark_as_completed_prompt">Отметить выбранную мангу как полностью прочитанную?
 \n
 \nВнимание: текущий прогресс чтения будет потерян.</string>
-    <string name="approximate_remaining_time">Примерное оставшееся время</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="volume_unknown">Неизвестный том</string>
     <string name="volume_">Том %d</string>
     <string name="incognito_mode_hint">Ваш прогресс чтения не сохранится</string>
     <string name="vertical">Вертикальный</string>
     <string name="last_read">Последнее прочитанное</string>
-    <string name="two_pages">Две страницы</string>
     <string name="prev_page">Предыдущая страница</string>
     <string name="next_page">Следующая страница</string>
     <string name="tap_action">Действие при касании</string>

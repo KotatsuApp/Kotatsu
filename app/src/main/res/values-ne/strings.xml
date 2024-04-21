@@ -50,7 +50,6 @@
     <string name="popular">लोकप्रिय</string>
     <string name="by_rating">मूल्याङ्कन</string>
     <string name="new_chapters">नयाँ अध्यायहरू</string>
-    <string name="text_clear_history_prompt">सबै पढेको इतिहास स्थायी रूपमा खाली गर्ने हो\?</string>
     <string name="remove">हटाउनुहोस्</string>
     <string name="_s_deleted_from_local_storage">लोकल भण्डारणबाट %s हटाइयो</string>
     <string name="page_saved">सेभ गरियो</string>
@@ -66,16 +65,12 @@
     <string name="search_on_s">%s मा खोज्नुहोस्</string>
     <string name="delete_manga">माङ्गा हटाउनुहोस्</string>
     <string name="switch_pages">पृष्ठ स्विच गर्नुहोस्</string>
-    <string name="taps_on_edges">किनारा ट्यापहरू</string>
-    <string name="volume_buttons">भोल्युम बटन</string>
     <string name="_continue">जारी राख्नुहोस्</string>
     <string name="error">त्रुटि</string>
     <string name="search_history_cleared">खाली गरियो</string>
-    <string name="gestures_only">जेस्चर मात्र</string>
     <string name="clear_thumbs_cache">थम्बनेल क्यास खाली गर्नुहोस्</string>
     <string name="clear_search_history">खोज इतिहास खाली गर्नुहोस्</string>
     <string name="domain">डोमेन</string>
-    <string name="large_manga_save_confirm">यो माङ्गामा %s छ। यो सबै सेभ गर्ने\?</string>
     <string name="internal_storage">आन्तरिक भण्डारण</string>
     <string name="app_update_available">एपको नयाँ संस्करण उपलब्ध छ</string>
     <string name="external_storage">बाह्य भण्डारण</string>
@@ -115,11 +110,8 @@
     <string name="delete">हटाउनुहोस्</string>
     <string name="text_file_not_supported">या त ZIP वा CBZ फाइल छान्नुहोस्।</string>
     <string name="text_file_sizes">B|kB|MB|GB|TB</string>
-    <string name="save_manga">सेभ</string>
     <string name="notifications">सूचनाहरू</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%2$d को %1$d अन</string>
-    <string name="text_shelf_holder_primary">तपाईंको माङ्गा यहाँ देखाउनेछ</string>
-    <string name="text_shelf_holder_secondary">«अन्वेषण» भागमा के पढ्ने फेला पार्नुहोस्</string>
     <string name="manga_shelf">दराज</string>
     <string name="cannot_find_available_storage">भण्डारण उपलब्ध छैन</string>
     <string name="other_storage">अन्य भण्डारण</string>
@@ -187,8 +179,6 @@
     <string name="system_default">पूर्वनिर्धारित</string>
     <string name="exclude_nsfw_from_history">इतिहासबाट NSFW मङ्गा बहिष्कार गर्नुहोस्</string>
     <string name="show_pages_numbers">अंकित पृष्ठहरू</string>
-    <string name="enabled_sources">प्रयोग गरिएको स्रोतहरू</string>
-    <string name="available_sources">उपलब्ध स्रोतहरू</string>
     <string name="screenshots_policy">स्क्रिनसट नीति</string>
     <string name="screenshots_allow">अनुमति दिनुहोस्</string>
     <string name="screenshots_block_nsfw">NSFW मा रोक लगाउनुहोस्</string>

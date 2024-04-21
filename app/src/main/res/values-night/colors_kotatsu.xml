@@ -31,14 +31,5 @@
 	<color name="kotatsu_inverseSurface">#E3E2E6</color>
 	<color name="kotatsu_inverseOnSurface">#1A1B1F</color>
 	<color name="kotatsu_background">#1A1B1F</color>
-	<color name="kotatsu_onBackground">#E3E2E6</color>
-	<color name="kotatsu_error">#FFB4AB</color>
-	<color name="kotatsu_errorContainer">#93000A</color>
-	<color name="kotatsu_onError">#690005</color>
-	<color name="kotatsu_onErrorContainer">#FFDAD6</color>
 	<color name="kotatsu_outline">#8E9099</color>
-	<color name="kotatsu_outlineVariant">#44474E</color>
-	<color name="kotatsu_shadow">#000000</color>
-	<color name="kotatsu_surfaceTint">#ABC7FF</color>
-	<color name="kotatsu_scrim">#000000</color>
 </resources>

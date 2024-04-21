@@ -37,7 +37,6 @@
     <string name="follow_system">Siga o sistema</string>
     <string name="pages">Páginas</string>
     <string name="clear">Limpar</string>
-    <string name="text_clear_history_prompt">Limpar todo o histórico de leitura permanentemente\?</string>
     <string name="remove">Remover</string>
     <string name="_s_deleted_from_local_storage">«%s» deletado do armazenamento local</string>
     <string name="save_page">Salvar página</string>
@@ -57,19 +56,14 @@
     <string name="delete_manga">Deletar mangá</string>
     <string name="reader_settings">Configurações de leitura</string>
     <string name="switch_pages">Mudar páginas</string>
-    <string name="taps_on_edges">Toques de borda</string>
-    <string name="volume_buttons">Botões de volume</string>
     <string name="error">Erro</string>
     <string name="clear_thumbs_cache">Limpar cache de miniaturas</string>
     <string name="search_history_cleared">Limpo</string>
-    <string name="gestures_only">Apenas gestos</string>
     <string name="internal_storage">Armazenamento interno</string>
     <string name="external_storage">Armazenamento externo</string>
     <string name="domain">Domínio</string>
     <string name="app_update_available">Uma nova versão do app está disponível</string>
     <string name="open_in_browser">Abrir no navegador da web</string>
-    <string name="large_manga_save_confirm">Este mangá tem %s. Salvar tudo isso\?</string>
-    <string name="save_manga">Salvar</string>
     <string name="notifications">Notificações</string>
     <string name="new_chapters">Capítulos novos</string>
     <string name="download">Download</string>
@@ -151,8 +145,6 @@
     <string name="tracker_warning">Alguns aparelhos têm um comportamento de sistema diferente, o que pode interromper as tarefas em segundo plano.</string>
     <string name="read_more">Leia mais</string>
     <string name="welcome">Bem vindo</string>
-    <string name="available_sources">Fontes disponíveis</string>
-    <string name="enabled_sources">Fontes usadas</string>
     <string name="queued">Enfileirado</string>
     <string name="about_app_translation_summary">Traduzir esta aplicação</string>
     <string name="chapter_is_missing">O capítulo está em falta</string>
@@ -208,7 +200,6 @@
     <string name="exclude_nsfw_from_suggestions">Não sugira mangá NSFW</string>
     <string name="enabled">Habilitado</string>
     <string name="disabled">Desabilitado</string>
-    <string name="filter_load_error">Não foi possível carregar a lista de gêneros</string>
     <string name="only_using_wifi">Somente em Wi-Fi</string>
     <string name="onboard_text">Selecione os idiomas que deseja ler mangá. Pode alterá-lo mais tarde nas configurações.</string>
     <string name="always">Sempre</string>
@@ -223,7 +214,6 @@
     <string name="search_chapters">Encontrar capítulo</string>
     <string name="chapters_empty">Não há capítulos nesta manga</string>
     <string name="percent_string_pattern">%1$s%%</string>
-    <string name="text_shelf_holder_primary">O seu mangá será exibido aqui</string>
     <string name="color_correction">Correção de cor</string>
     <string name="server_error">Erro do servidor (%1$d). Por favor, tente novamente mais tarde</string>
     <string name="clear_new_chapters_counters">Apagar informações sobre novos capítulos</string>
@@ -242,7 +232,6 @@
     <string name="default_mode">Modo padrão</string>
     <string name="mark_as_current">Marcar como atual</string>
     <string name="error_no_space_left">Não há espaço disponível no dispositivo</string>
-    <string name="different_languages">Idiomas diferentes</string>
     <string name="network_unavailable">A rede não está disponível</string>
     <string name="network_unavailable_hint">Ative o Wi-Fi ou a rede móvel para ler o mangá online</string>
     <string name="name">Nome</string>
@@ -253,7 +242,6 @@
     <string name="empty_favourite_categories">Nenhuma categoria favorita</string>
     <string name="removed_from_history">Removido do histórico</string>
     <string name="send">Enviar</string>
-    <string name="text_shelf_holder_secondary">Encontre o que ler na secção «Explorar»</string>
     <string name="suggestions_excluded_genres">Excluir gêneros</string>
     <string name="download_slowdown">Download lento</string>
     <string name="download_slowdown_summary">Ajude a evitar o bloqueio do seu endereço IP</string>
@@ -345,7 +333,6 @@
     <string name="manga_error_description_pattern">Detalhes do erro:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Tente &lt;a href=%2$s&gt;abra a página do mangá em um navegador da web&lt;/a&gt; para garantir que o mesmo esteja disponível em sua fonte&lt;br&gt;2. Se estiver disponível, envie um relatório de erro para os desenvolvedores.</string>
     <string name="reader_control_ltr_summary">Tocar na borda direita ou pressionar a tecla direita, sempre muda para a próxima página.</string>
     <string name="reader_control_ltr">Controle ergonômico do leitor</string>
-    <string name="color_correction_hint">As configurações de cores escolhidas serão lembradas para este mangá</string>
     <string name="discard">Descartar</string>
     <string name="language">Idioma</string>
     <string name="theme_name_mamimi">Mamimi</string>
@@ -368,7 +355,6 @@
     <string name="settings_apply_restart_required">Por favor, reinicie o app para aplicar essas mudanças</string>
     <string name="theme_name_kanade">Kanade</string>
     <string name="scrobbling_empty_hint">Para acompanhar o progresso da leitura, selecione Menu → Vá até a tela de detalhes do mangá.</string>
-    <string name="details_button_tip">Pressione e segure o botão Ler para ver mais opções</string>
     <string name="webtoon_zoom">Zoom Webtoon</string>
     <string name="allow_unstable_updates_summary">Receber notificações sobre versões instáveis</string>
     <string name="got_it">Entendi</string>
@@ -384,7 +370,6 @@
     <string name="restore_summary">Restaurar backup criado anteriormente</string>
     <string name="webtoon_zoom_summary">Permitir zoom no gesto no modo webtoon</string>
     <string name="reader_info_bar_summary">Mostrar a hora atual e o progresso da leitura na parte superior da tela</string>
-    <string name="pages_animation_summary">Animação de virada de página</string>
     <string name="show_on_shelf">Mostrar na prateleira</string>
     <string name="sync_auth_hint">Você pode entrar em uma conta existente ou criar uma nova</string>
     <string name="find_similar">Encontrar semelhante</string>
@@ -403,7 +388,6 @@
     <string name="downloads_removed">Os downloads foram removidos</string>
     <string name="downloads_cancelled">Os downloads foram cancelados</string>
     <string name="suggestions_enable_prompt">Quer receber sugestões personalizadas de mangás\?</string>
-    <string name="translations">Traduções</string>
     <string name="web_view_unavailable">WebView não disponível: verifique se o provedor WebView está instalado</string>
     <string name="clear_network_cache">Limpar cache de rede</string>
     <string name="invalid_value_message">Valor inválido</string>
@@ -412,7 +396,6 @@
     <string name="show_pages_numbers_summary">Mostrar números de página no canto inferior</string>
     <string name="user_agent">Cabeçalho UserAgent</string>
     <string name="speed">Velocidade</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="images_proxy_title">Proxy de otimização de imagens</string>
     <string name="images_procy_description">Use o serviço wsrv.nl para reduzir o uso de tráfego e acelerar o carregamento de imagens, se possível</string>
     <string name="invert_colors">Cores invertidas</string>
@@ -423,7 +406,6 @@
     <string name="resume">Retomar</string>
     <string name="paused">Pausado</string>
     <string name="cancel_all">Cancelar tudo</string>
-    <string name="restore_backup_description">Importar um backup criado anteriormente dos dados do usuário</string>
     <string name="suggestion_manga">Sugestão: %s</string>
     <string name="suggestions_notifications_summary">Às vezes, mostra notificações com mangás sugeridos</string>
     <string name="remove_completed_downloads_confirm">Seu histórico de downloads será excluído permanentemente</string>
@@ -436,7 +418,6 @@
     <string name="download_option_manual_selection">Selecionar os capítulos manualmente</string>
     <string name="download_option_all_unread_b">Todos os capítulos não lidos (%s)</string>
     <string name="download_option_first_n_chapters">Primeiro %s</string>
-    <string name="custom_directory">Diretório personalizado</string>
     <string name="download_option_next_unread_n_chapters">Próximo não lido %s</string>
     <string name="download_option_all_chapters">Todos os capítulos com tradução %s</string>
     <string name="languages">Línguas</string>
@@ -453,7 +434,6 @@
     <string name="download_option_whole_manga">Todo o mangá</string>
     <string name="moved_to_top">Movido para o topo</string>
     <string name="data_not_restored_text">Certifique-se de que seleccionou o ficheiro de cópia de segurança correto</string>
-    <string name="view_list">Ver lista</string>
     <string name="unknown">Desconhecido</string>
     <string name="in_progress">Em curso</string>
     <string name="items_limit_exceeded">Não podem ser adicionados mais itens</string>
@@ -471,7 +451,6 @@
     <string name="too_many_requests_message">Demasiados pedidos. Tentar novamente mais tarde</string>
     <string name="related_manga">Mangá relacionado</string>
     <string name="suggestions_wifi_only_summary">Não atualizar sugestões utilizando ligações de rede com contador</string>
-    <string name="default_section">Secção predefinida</string>
     <string name="background">Fundo</string>
     <string name="no_access_to_file">Não tem acesso a este ficheiro ou diretório</string>
     <string name="zoom_out">Reduzir o zoom</string>
@@ -553,14 +532,12 @@
     <string name="by_name_reverse">Nome invertido</string>
     <string name="volume_">Volume %d</string>
     <string name="volume_unknown">Volume desconhecido</string>
-    <string name="approximate_reading_time">Tempo aproximado de leitura</string>
     <string name="incognito_mode_hint">Seu progresso de leitura não será salvo</string>
     <string name="vertical">Vertical</string>
     <string name="email_password_enter_hint">Coloque seu email e senha para continuar</string>
     <string name="mark_as_completed_prompt">Marcar o mangá selecionado como lido completamente?
 \n
 \nAviso: o progresso da leitura atual será perdido.</string>
-    <string name="approximate_remaining_time">Tempo restante aproximado</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="show_menu">Mostrar menu</string>
     <string name="toggle_ui">Mostrar/ocultar UI</string>
@@ -577,7 +554,6 @@
     <string name="config_reset_confirm">Redefinir as configurações para valores padrões? Essa ação não pode ser desfeita.</string>
     <string name="use_two_pages_landscape">Usar layout de duas páginas na orientação paisagem (beta)</string>
     <string name="category_hidden_done">Essa categoria foi ocultada da tela principal e pode ser acessada através do Menu → Gerenciar categorias</string>
-    <string name="two_pages">Duas páginas</string>
     <string name="mark_as_completed">Marcar como concluído</string>
     <string name="none">nenhum</string>
     <string name="last_read">Última leitura</string>

@@ -55,7 +55,6 @@
 	<string name="operation_not_supported">Denna åtgärden stöds inte</string>
 	<string name="no_description">Ingen beskrivning</string>
 	<string name="clear">Rensa</string>
-	<string name="text_clear_history_prompt">Rensa all läshistorik permanent\?</string>
 	<string name="_s_deleted_from_local_storage">\"%s\" borttaget från lokal lagring</string>
 	<string name="save_page">Spara sida</string>
 	<string name="page_saved">Sparad</string>
@@ -64,7 +63,6 @@
 	<string name="delete">Ta bort</string>
 	<string name="clear_pages_cache">Rensa sidcache</string>
 	<string name="text_delete_local_manga">Ta permanent bort \"%s\" från den här enheten\?</string>
-	<string name="volume_buttons">Volymknappar</string>
 	<string name="error">Error</string>
 	<string name="webtoon">Webtoon</string>
 	<string name="read_mode">Läsläge</string>
@@ -73,7 +71,6 @@
 	<string name="delete_manga">Ta bort manga</string>
 	<string name="reader_settings">Läsarinställningar</string>
 	<string name="switch_pages">Byt sida</string>
-	<string name="taps_on_edges">Kanttryck</string>
 	<string name="_continue">Fortsätt</string>
 	<string name="search_history_cleared">Rensat</string>
 	<string name="clear_thumbs_cache">Rensa cache för miniatyrer</string>
@@ -81,14 +78,11 @@
 	<string name="notifications">Aviseringar</string>
 	<string name="clear_search_history">Rensa sökhistorik</string>
 	<string name="domain">Domän</string>
-	<string name="gestures_only">Endast gester</string>
 	<string name="internal_storage">Internlagring</string>
 	<string name="external_storage">Externlagring</string>
 	<string name="app_update_available">En ny version av appen finns tillgänglig</string>
 	<string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d av %2$d aktiva</string>
 	<string name="new_chapters">Nya kapitel</string>
-	<string name="large_manga_save_confirm">Den här mangan har %s. Spara hela\?</string>
-	<string name="save_manga">Spara</string>
 	<string name="download">Ladda ned</string>
 	<string name="notifications_settings">Aviseringsinställningar</string>
 	<string name="light_indicator">LED-indikator</string>
@@ -128,8 +122,6 @@
 	<string name="state_finished">Färdig</string>
 	<string name="exclude_nsfw_from_history">Exkludera vuxeninnehåll från historiken</string>
 	<string name="show_pages_numbers">Numrerade sidor</string>
-	<string name="enabled_sources">Aktiva källor</string>
-	<string name="available_sources">Tillgängliga källor</string>
 	<string name="screenshots_policy">Policy för skärmdumpar</string>
 	<string name="screenshots_allow">Tillåt</string>
 	<string name="screenshots_block_nsfw">Blockera på vuxeninnehåll</string>

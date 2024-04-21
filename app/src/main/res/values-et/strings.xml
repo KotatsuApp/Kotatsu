@@ -5,7 +5,6 @@
     <string name="status_re_reading">Uuesti loen</string>
     <string name="add_to_favourites">Lisa lemmikuks</string>
     <string name="detect_reader_mode">Automaatne lugeja mood</string>
-    <string name="restore_backup_description">Impordi varem tehtud tagavara oma kasutaja andmetest</string>
     <string name="manga_shelf">Riiul</string>
     <string name="download_started">Allalaadimine alustatud</string>
     <string name="tracking">Jälgimine</string>
@@ -27,15 +26,12 @@
     <string name="pages_cache">Lehekülgede vahemälu</string>
     <string name="local_storage">Kohalik salvestamine</string>
     <string name="filter">Filterid</string>
-    <string name="enabled_sources">Kasutatud allikad</string>
     <string name="reset">Nulli</string>
     <string name="disable_all">Lülita kõik välja</string>
     <string name="error_occurred">Tekkis viga</string>
-    <string name="gestures_only">Ainult žestid</string>
     <string name="order_added">Lisatud</string>
     <string name="enable_logging">Lülita sisse loggig</string>
     <string name="clear_thumbs_cache">Tühjenda pisipildi vahemälu</string>
-    <string name="taps_on_edges">Külje puudutused</string>
     <string name="switch_pages">Vaheta lehekülge</string>
     <string name="settings_apply_restart_required">Muudatuste rakendamiseks käivitage rakendus uuesti</string>
     <string name="rotate_screen">Keera ekraani</string>
@@ -48,7 +44,6 @@
     <string name="welcome">Tere tulemast</string>
     <string name="no_description">Kirjeldus puudub</string>
     <string name="about_app_translation_summary">Tõlgi see äppi</string>
-    <string name="text_shelf_holder_secondary">Leia mida lugeda «Seiklemis» osakonnas</string>
     <string name="chapters_empty">Selles mangas ei ole peatükke</string>
     <string name="remove">Eemalda</string>
     <string name="vibration">Värisemine</string>
@@ -63,7 +58,6 @@
     <string name="read_mode">Lugemis mood</string>
     <string name="internal_storage">Sisemine mälu</string>
     <string name="import_completed">Importitud</string>
-    <string name="different_languages">Erinevad keeled</string>
     <string name="show_reading_indicators">Näita lugemis progressi näitaja</string>
     <string name="read_later">Loe hiljem</string>
     <string name="backup_saved">Tagavara salvestatud</string>
@@ -94,7 +88,6 @@
     <string name="remote_sources">Manga allikad</string>
     <string name="theme_name_sakura">Sakura</string>
     <string name="clear">Tühjenda</string>
-    <string name="view_list">Vaata nimekirja</string>
     <string name="by_rating">Hinnang</string>
     <string name="unknown">Mitte teatud</string>
     <string name="newest">Uusimad</string>
@@ -123,7 +116,6 @@
     <string name="theme_name_miku">Miku</string>
     <string name="edit">Muuda</string>
     <string name="captcha_required">CAPTCHA vajatud</string>
-    <string name="filter_load_error">Ei saa laadida žanrite nimekirja</string>
     <string name="popular">Populaarsed</string>
     <string name="manage_categories">Halda kategoorjaid</string>
     <string name="update">Uuenda</string>
@@ -132,7 +124,6 @@
     <string name="crash_text">Midagi läks valesti. Palun esitage arendajatele veateade, et aidata meil seda parandada.</string>
     <string name="theme">Teema</string>
     <string name="detect_reader_mode_summary">Automaatselt tuvastada, kas manga on webtoon</string>
-    <string name="color_correction_hint">Valitud värvi seaded jäetakse meelde selle manga jaoks</string>
     <string name="not_found_404">Sisu mitte saadaval või eemaldatud</string>
     <string name="feed_will_update_soon">Voogu uuendused algavad varsti</string>
     <string name="appwidget_recent_description">Sinu hiljuti loetud manga</string>
@@ -241,8 +232,6 @@
     <string name="read">Loe</string>
     <string name="text_delete_local_manga_batch">Kustuta valitud asjad seadmelt?</string>
     <string name="queued">Järjekorras</string>
-    <string name="text_clear_history_prompt">Tühjenda kõik lugemis ajalugu?</string>
-    <string name="text_shelf_holder_primary">Sinu mangat näidatakse siin</string>
     <string name="report">Raporteeri</string>
     <string name="captcha_solve">Lahenda</string>
     <string name="download_slowdown">Aeglusta alla laadimised</string>
@@ -291,7 +280,6 @@
     <string name="show_in_grid_view">Näita ruudustiku vaates</string>
     <string name="reader_mode_hint">Valitud konfiguratsioon jäetakse meelde selle manga jaoks</string>
     <string name="default_s">Default: %s</string>
-    <string name="volume_buttons">Helitugevusnupud</string>
     <string name="confirm">Kinnita</string>
     <string name="suggestions_updating">Soovitused uuendavad</string>
     <string name="add_new_category">Uus kategooria</string>
@@ -309,10 +297,8 @@
     <string name="notifications_settings">Teate seaded</string>
     <string name="language">Keel</string>
     <string name="domain">Domeen</string>
-    <string name="save_manga">Salvesta</string>
     <string name="incognito_mode">Inkognito mood</string>
     <string name="no_bookmarks_summary">Sa võid teha järjehoidjaid mangat lugedes</string>
-    <string name="large_manga_save_confirm">Sellel mangal on %s. Salvesta kõik?</string>
     <string name="search">Otsi</string>
     <string name="default_mode">Tava mood</string>
     <string name="reader_settings">Lugeja seaded</string>
@@ -388,7 +374,6 @@
     <string name="no_bookmarks_yet">Pole järjehoidjaid veel</string>
     <string name="no_thanks">Tänan ei</string>
     <string name="backup_information">Sa saad teha tagavara enda ajaloost, lemmikutest ja siis taastada need</string>
-    <string name="available_sources">Kättesaadavad allikad</string>
     <string name="share_logs">Jaga looge</string>
     <string name="zoom_mode_keep_start">Hoija stardis</string>
     <string name="external_storage">Väline mälu</string>
@@ -421,7 +406,6 @@
     <string name="images_proxy_title">Piltide optimeerimise puhverserver</string>
     <string name="username">Kasutaja nimi</string>
     <string name="authorization_optional">Autoriseerimine (valikuline)</string>
-    <string name="translations">Tõlked</string>
     <string name="downloads_paused">Allalaadimised on pausil</string>
     <string name="cancel_all_downloads_confirm">Kõik aktiivsed allalaadimised peatatakse ja poolenisti allalaetud sisu kaotatakse</string>
     <string name="text_downloads_list_holder">Sul pole midagi allalaetud</string>

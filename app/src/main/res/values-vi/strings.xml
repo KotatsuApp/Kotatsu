@@ -29,7 +29,6 @@
     <string name="theme">Chủ đề</string>
     <string name="pages">Danh sách trang</string>
     <string name="clear">Xoá</string>
-    <string name="text_clear_history_prompt">Xoá vĩnh viễn toàn bộ lịch sử đọc truyện\?</string>
     <string name="remove">Xoá</string>
     <string name="save_page">Lưu trang</string>
     <string name="delete">Xoá</string>
@@ -46,17 +45,12 @@
     <string name="text_delete_local_manga">Xoá \"%s\" vĩnh viễn khỏi thiết bị\?</string>
     <string name="reader_settings">Cài đặt trình đọc</string>
     <string name="switch_pages">Chuyển trang</string>
-    <string name="taps_on_edges">Chạm vào cạnh</string>
-    <string name="volume_buttons">Nút âm lượng</string>
     <string name="clear_thumbs_cache">Dọn dẹp bộ nhớ đệm ảnh bìa</string>
-    <string name="gestures_only">Chỉ bằng cử chỉ</string>
     <string name="internal_storage">Bộ nhớ trong</string>
     <string name="external_storage">Bộ nhớ ngoài</string>
     <string name="domain">Tên miền</string>
     <string name="app_update_available">Đã có phiên bản mới của ứng dụng</string>
     <string name="open_in_browser">Mở trong trình duyệt web</string>
-    <string name="large_manga_save_confirm">Truyện này có %s. Tải tất cả\?</string>
-    <string name="save_manga">Lưu truyện</string>
     <string name="notifications">Thông báo</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d trên %2$d đang bật</string>
     <string name="new_chapters">Chương mới</string>
@@ -66,8 +60,6 @@
     <string name="vibration">Rung</string>
     <string name="favourites_categories">Danh mục yêu thích</string>
     <string name="remove_category">Xoá</string>
-    <string name="text_shelf_holder_primary">Truyện của bạn sẽ được hiển thị ở đây</string>
-    <string name="text_shelf_holder_secondary">Tìm truyện để đọc trong phần «Khám phá»</string>
     <string name="text_local_holder_primary">Lưu gì đó trước</string>
     <string name="manga_shelf">Tủ truyện</string>
     <string name="pages_animation">Hoạt ảnh chuyển trang</string>
@@ -171,9 +163,7 @@
     <string name="history_shortcuts_summary">Hiển thị truyện đọc gần đây bằng cách ấn giữ biểu tượng ứng dụng</string>
     <string name="color_correction">Điều chỉnh màu</string>
     <string name="brightness">Độ sáng</string>
-    <string name="color_correction_hint">Cài đặt màu sẽ được lưu cho truyện này</string>
     <string name="discard">Huỷ bỏ</string>
-    <string name="different_languages">Các ngôn ngữ khác</string>
     <string name="network_unavailable">Không có mạng</string>
     <string name="network_unavailable_hint">Bật wifi hoặc dữ liệu di động để đọc truyện trực tuyến</string>
     <string name="prefetch_content">Tải trước nội dung</string>
@@ -209,8 +199,6 @@
     <string name="error">Lỗi</string>
     <string name="_continue">Tiếp tục</string>
     <string name="recent_manga">Gần đây</string>
-    <string name="enabled_sources">Nguồn được sử dụng</string>
-    <string name="available_sources">Nguồn khả dụng</string>
     <string name="screenshots_allow">Cho phép</string>
     <string name="suggestions_info">Tất cả dữ liệu chỉ được phân tích cục bộ trên thiết bị này và không bao giờ gửi đi nơi nào khác.</string>
     <string name="all_favourites">Tất cả truyện yêu thích</string>
@@ -259,7 +247,6 @@
     <string name="hide">Ẩn</string>
     <string name="sync">Đồng bộ hoá</string>
     <string name="disabled">Đã tắt</string>
-    <string name="filter_load_error">Không thể tải danh sách thể loại</string>
     <string name="onboard_text">Chọn những ngôn ngữ mà bạn muốn đọc. Bạn có thể thay đổi nó sau trong phần cài đặt.</string>
     <string name="reset_filter">Đặt lại bộ lọc</string>
     <string name="only_using_wifi">Chỉ sử dụng Wi-Fi</string>
@@ -340,7 +327,6 @@
     <string name="compact">Nhỏ gọn</string>
     <string name="services">Dịch vụ</string>
     <string name="allow_unstable_updates">Cho phép các bản cập nhật không ổn định</string>
-    <string name="pages_animation_summary">Hiệu ứng chuyển trang</string>
     <string name="_import">Nhập</string>
     <string name="text_unsaved_changes_prompt">Lưu hay loại bỏ những thay đổi chưa được lưu\?</string>
     <string name="download_started">Tải về bắt đầu</string>
@@ -355,7 +341,6 @@
     <string name="sync_auth_hint">Đăng nhập vào tài khoản hoặc tạo một tài khoản mới</string>
     <string name="sync_settings">Cài đặt đồng bộ hoá</string>
     <string name="speed">Tốc độ</string>
-    <string name="restore_backup_description">Nhập một bản sao lưu dữ liệu người dùng đã được tạo trước đó</string>
     <string name="pause">Tạm dừng</string>
     <string name="suggestion_manga">Đề xuất: %s</string>
     <string name="suggestions_notifications_summary">Đôi khi nhận thông báo với manga đã được đề xuất</string>
@@ -364,7 +349,6 @@
     <string name="downloads_paused">Tải xuống đã bị tạm dừng</string>
     <string name="text_downloads_list_holder">Bạn chưa tải xuống bộ truyện nào</string>
     <string name="downloads_cancelled">Tải xuống đã bị huỷ</string>
-    <string name="translations">Dịch thuật</string>
     <string name="suggestions_enable_prompt">Bạn có muốn nhận đề xuất manga đã được cá nhân hoá không\?</string>
     <string name="port">Cổng</string>
     <string name="proxy">Proxy</string>
@@ -374,7 +358,6 @@
     <string name="invalid_value_message">Giá trị không hợp lệ</string>
     <string name="webtoon_zoom_summary">Cho phép cử chỉ phóng to ở chế độ Webtoon</string>
     <string name="data_and_privacy">Dữ liệu và quyền riêng tư</string>
-    <string name="details_button_tip">Chạm và giữ nút \"Đọc\" để hiển thị nhiều lựa chọn hơn</string>
     <string name="show_pages_numbers_summary">Hiển thị số trang ở góc bên dưới</string>
     <string name="clear_source_cookies_summary">Xoá cookies chỉ cho tên miền này. Trong hầu hết mọi trường hợp sẽ làm mất hiệu lực uỷ quyền</string>
     <string name="ignore_ssl_errors">Bỏ qua lỗi SSL</string>
@@ -412,7 +395,6 @@
     <string name="mirror_switching">Tự động chọn máy chủ dự phòng</string>
     <string name="mirror_switching_summary">Tự động chuyển tên miền sang máy chủ dự phòng (nếu có) nếu gặp lỗi trên tên miền chính</string>
     <string name="paused">Đã tạm dừng</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="images_proxy_title">Proxy tối ưu hình ảnh</string>
     <string name="images_procy_description">Sử dụng dịch vụ wsrv.nl để giảm lưu lượng sử dụng và tăng tốc quá trình tải ảnh nếu có thể</string>
     <string name="restore_summary">Khôi phục bản sao lưu đã được tạo trước đó</string>

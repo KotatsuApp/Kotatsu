@@ -7,9 +7,7 @@
     <string name="network_error">خطای اتصال به شبکه</string>
     <string name="text_delete_local_manga">آیا \"%s\" بطور دائم از دستگاه حذف شود؟</string>
     <string name="about_app_translation_summary">این برنامه را ترجمه کنید</string>
-    <string name="enabled_sources">منابع استفاده شده</string>
     <string name="history_is_empty">هنوز تاریخچه ای وجود ندارد</string>
-    <string name="large_manga_save_confirm">این مانگا دارای %s می باشد. ذخیره سازی همه؟</string>
     <string name="list_mode">نوع لیستی</string>
     <string name="internal_storage">حافظه ی درونی</string>
     <string name="right_to_left">راست به چپ</string>
@@ -54,7 +52,6 @@
     <string name="remove_category">حذف دسته بندی</string>
     <string name="share_image">اشتراک گذاری عکس</string>
     <string name="switch_pages">جابه جایی صفحات</string>
-    <string name="taps_on_edges">ضربه های لبه</string>
     <string name="notification_sound">صدای اعلان</string>
     <string name="vibration">لرزاندن</string>
     <string name="silent">سکوت</string>
@@ -62,7 +59,6 @@
     <string name="confirm">تایید</string>
     <string name="password_length_hint">گذرواژه باید 4 کاراکتر یا بیشتر باشد</string>
     <string name="auth_not_supported_by">ورود به اکانت در %s پشتیبانی نمی شود</string>
-    <string name="filter_load_error">ناتوانایی در بارگذاری لیست ژانرها</string>
     <string name="preload_pages">از قبل صفحات را بارگذاری کنید</string>
     <string name="favourites_categories">دسته بندی های مورد علاقه</string>
     <string name="all_favourites">همه ی علاقه مندی ها</string>
@@ -106,7 +102,6 @@
     <string name="theme">تم</string>
     <string name="light">تم روشن</string>
     <string name="dark">تم تیره</string>
-    <string name="text_clear_history_prompt">همه ی تاریخچه ی خوانده شده ها پاکسازی شود؟</string>
     <string name="remove">حذف</string>
     <string name="delete">حذف کردن</string>
     <string name="clear_pages_cache">پاکسازی کش صفحه</string>
@@ -119,12 +114,9 @@
     <string name="notifications_settings">تنظیمات اعلان ها</string>
     <string name="webtoon">وبتون</string>
     <string name="reader_settings">تنظیمات خوانایی</string>
-    <string name="volume_buttons">دکمه های جلد</string>
     <string name="_continue">ادامه دادن</string>
     <string name="error">خطا</string>
     <string name="search_history_cleared">پاکسازی شد</string>
-    <string name="gestures_only">فقط حرکات</string>
-    <string name="save_manga">ذخیره</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d از %2$d فعال است</string>
     <string name="new_chapters">چپتر های جدید</string>
     <string name="text_history_holder_primary">چیزهایی که خوانده اید اینجا نمایش داده میشود</string>
@@ -140,8 +132,6 @@
     <string name="auth_complete">به اکانت وارد شدید</string>
     <string name="nothing_found">هیچ نتیجه ای پیدا نشد</string>
     <string name="notifications">اعلان ها</string>
-    <string name="text_shelf_holder_primary">مانگاهای شما اینجا نمایش داده می شوند</string>
-    <string name="text_shelf_holder_secondary">برای پیدا کردن چیزهای جدید برای خواندن، به بخش «Explore» مراجعه کنید</string>
     <string name="recent_manga">مانگاهای اخیر</string>
     <string name="chapter_is_missing">این چپتر پیدا نشد</string>
     <string name="about_app_translation">ترجمه</string>

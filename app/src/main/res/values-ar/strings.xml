@@ -50,7 +50,6 @@
     <string name="popular">شائع</string>
     <string name="add_new_category">فئة جديدة</string>
     <string name="download_complete">تم التنزيل</string>
-    <string name="text_clear_history_prompt">هل تريد محو سجل القراءة بالكامل بشكل دائم؟</string>
     <string name="save_page">احفظ الصفحة</string>
     <string name="page_saved">تم الحفظ</string>
     <string name="standard">اساسي</string>
@@ -69,8 +68,6 @@
     <string name="_import">استورد</string>
     <string name="operation_not_supported">هذا الخيار غير مدعوم</string>
     <string name="grid_size">حجم الشبكة</string>
-    <string name="volume_buttons">أزرار الصوت</string>
-    <string name="taps_on_edges">النقر على حواف الشاشة</string>
     <string name="_continue">أكمل</string>
     <string name="error">خطأ</string>
     <string name="clear_search_history">مسح تاريخ البحث</string>
@@ -80,8 +77,6 @@
     <string name="text_clear_cookies_prompt">سيتم تسجيل خروجك من جميع المصادر</string>
     <string name="clear_cookies">مسح ملفات تعريف الارتباط</string>
     <string name="favourites_categories">الفئات المفضلة</string>
-    <string name="enabled_sources">المصادر المستخدمة</string>
-    <string name="gestures_only">الإيماءات فقط</string>
     <string name="clear_thumbs_cache">مسح ذاكرة التخزين المؤقت للصور المصغرة</string>
     <string name="rotate_screen">تدوير الشاشة</string>
     <string name="text_clear_updates_feed_prompt">هل تريد مسح سجل التحديث بشكل دائم؟</string>
@@ -155,8 +150,6 @@
     <string name="disabled">معطل</string>
     <string name="long_ago">منذ فترة</string>
     <string name="notifications_settings">إعدادات الإشعارات</string>
-    <string name="save_manga">حفظ</string>
-    <string name="large_manga_save_confirm">هذه المانجا فيها %s . حفظ الكل؟</string>
     <string name="read_more">اقرأ المزيد</string>
     <string name="search_results">نتائج البحث</string>
     <string name="file_not_found">الملف غير موجود</string>
@@ -171,7 +164,6 @@
     <string name="repeat_password">كرر كلمة السر</string>
     <string name="data_restored_success">استعيدت جميع البيانات</string>
     <string name="backup_information">يمكنك إنشاء نسخة احتياطية من السجل الخاص بك والمفضلة واستعادتها</string>
-    <string name="available_sources">المصادر المتاحة</string>
     <string name="external_storage">تخزين خارجي</string>
     <string name="silent">صامت</string>
     <string name="today">اليوم</string>
@@ -189,7 +181,6 @@
     <string name="all_favourites">جميع المفضلة</string>
     <string name="email_enter_hint">أدخل بريدك الإلكتروني للمتابعة</string>
     <string name="disable_all">تعطيل الجميع</string>
-    <string name="text_shelf_holder_secondary">ابحث عن ما تقرأه في خانة «استكشاف».</string>
     <string name="chapters_empty">لا توجد فصول في هذه المانجا</string>
     <string name="preload_pages">إعادة تحميل الصفحات</string>
     <string name="show_reading_indicators">إظهار مؤشرات التقدم في القراءة</string>
@@ -205,7 +196,6 @@
     <string name="removal_completed">اكتملت عملية الإزالة</string>
     <string name="edit">تعديل</string>
     <string name="captcha_required">مطلوب التحقق من الCAPTCHA</string>
-    <string name="filter_load_error">غير قادر على تحميل قائمة الأنواع</string>
     <string name="removed_from_history">تمت الحذف من السجل</string>
     <string name="crash_text">"حدث خطأ ما.  يرجى إرسال تقرير بالخطأ إلى المطورين لمساعدتنا في إصلاحه."</string>
     <string name="detect_reader_mode_summary">اكتشف تلقائيًا ما إذا كانت المانجا عبارة عن webtoon</string>
@@ -242,7 +232,6 @@
     <string name="download_slowdown_summary">يساعد في تجنب حظر عنوان IP الخاص بك</string>
     <string name="text_delete_local_manga_batch">هل تريد حذف العناصر المحددة من الجهاز نهائيًا؟</string>
     <string name="queued">في قائمة الانتظار</string>
-    <string name="text_shelf_holder_primary">المانغا الخاصة بك ستظهر هنا</string>
     <string name="report">تبليغ</string>
     <string name="download_slowdown">تبطيء التحميل</string>
     <string name="sync">التزامن</string>
@@ -337,7 +326,6 @@
     <string name="comics_archive_import_description">يمكنك اختيار ملف أو أكثر بتنسيق cbz أو zip ، سيتم التعرف على كل ملف على أنه مانغا منفصلة</string>
     <string name="folder_with_images_import_description">يمكنك اختيار مكان في الذاكرة يحتوي على أرشيفات أو صور. سيتم التعرف على كل أرشيف (أو مجلد فرعي) على أنه فصل.</string>
     <string name="speed">السرعة</string>
-    <string name="restore_backup_description">استيراد نسخة احتياطية تم إنشاؤها لبيانات المستخدم.</string>
     <string name="feed">الموجز</string>
     <string name="light_indicator">مؤشر إل إي دي</string>
     <string name="comics_archive">أرشيف القصص المصورة</string>
