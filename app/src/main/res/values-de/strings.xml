@@ -578,7 +578,6 @@
     <string name="less_than_minute">Weniger als eine Minute</string>
     <string name="migration_completed">Migrierung abgeschlossen</string>
     <string name="chapters_grid_view">Rasteransicht</string>
-    <string name="stats_enabled">Statistiken einschalten</string>
     <string name="reading_stats">Lesestatistiken</string>
     <string name="statistics">Statistiken</string>
     <string name="clear_stats">Statistiken löschen</string>

@@ -383,7 +383,6 @@
     <string name="import_completed">นําเข้าเสร็จสมบูรณ์</string>
     <string name="import_will_start_soon">การนําเข้าจะเริ่มเร็วๆ นี้</string>
     <string name="color_correction">การแก้ไขสี</string>
-    <string name="different_languages">ภาษาต่างๆ</string>
     <string name="prefetch_content">การโหลดเนื้อหาล่วงหน้า</string>
     <string name="resume">ดำเนินการต่อ</string>
     <string name="paused">หยุดชั่วคราว</string>

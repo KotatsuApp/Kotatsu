@@ -372,7 +372,6 @@
     <string name="data_and_privacy">Data og personvern</string>
     <string name="restore_summary">Gjenopprett ifrå ein tryggleiskopi</string>
     <string name="show_pages_numbers_summary">Vis sidetal i nedre hjørne</string>
-    <string name="manga_branch_title_template">%1$s (%2$s)</string>
     <string name="no_thanks">Nei takk</string>
     <string name="enable">Slå på</string>
     <string name="clear_network_cache">Tøm nettverksmellomminnet</string>

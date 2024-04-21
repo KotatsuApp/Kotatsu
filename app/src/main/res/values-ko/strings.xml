@@ -317,7 +317,6 @@
     <string name="options">옵션</string>
     <string name="importing_manga">만화 가져오기</string>
     <string name="services">서비스</string>
-    <string name="details_button_tip">더 많은 옵션을 보려면 읽기 버튼을 길게 누르세요</string>
     <string name="clear_source_cookies_summary">지정된 도메인에 대해서만 쿠키를 지웁니다. 대부분의 경우 인증이 무효화됩니다</string>
     <string name="history_shortcuts_summary">응용 프로그램 아이콘을 길게 눌러 최신 만화를 사용할 수 있도록 합니다</string>
     <string name="reorder">재 주문</string>

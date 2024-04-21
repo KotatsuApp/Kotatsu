@@ -537,6 +537,5 @@
     <string name="volume_unknown">Volume sconosciuto</string>
     <string name="volume_">Volume %d</string>
     <string name="category_hidden_done">Questa categoria è stata nascosta dalla schermata principale ed è accessibile tramite Menù → Gestisci categorie</string>
-    <string name="approximate_remaining_time">Tempo rimanente approssimativo</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
 </resources>

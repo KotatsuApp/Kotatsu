@@ -450,7 +450,6 @@
     <string name="related_manga_summary">関連漫画のリストを表示します。場合によっては不正確または欠落している可能性があります</string>
     <string name="advanced">高度</string>
     <string name="too_many_requests_message">リクエストが多すぎます。 後でもう一度お試しください</string>
-    <string name="default_section">デフォルトセクション</string>
     <string name="manga_list">漫画一覧</string>
     <string name="disable_nsfw">NSFWを非表示にする</string>
     <string name="on_device">デバイス上</string>

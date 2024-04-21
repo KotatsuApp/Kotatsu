@@ -162,7 +162,6 @@
     <string name="text_clear_cookies_prompt">شما از اکانت های همه ی منابع خارج خواهید شد</string>
     <string name="state_finished">پایان یافته</string>
     <string name="show_pages_numbers">صفحات شماره دار</string>
-    <string name="available_sources">منابع در دسترس</string>
     <string name="screenshots_block_all">هیچوقت اجازه ندادن</string>
     <string name="suggestions">پیشنهادها</string>
     <string name="suggestions_enable">فعال سازی پیشنهادها</string>

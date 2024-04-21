@@ -593,7 +593,6 @@
     <string name="no_chapters_deleted">Nem lett fejezet törölve</string>
     <string name="chapters_deleted_pattern">Eltávolítva %1$s, eltakarítva %2$s</string>
     <string name="delete_read_chapters_summary">Töröl fejezeteket amiket már elolvastál a telefonodról hogy szabadíts fel helyet</string>
-    <string name="stats_enabled">Statisztika engedélyezése</string>
     <string name="reading_stats">Statisztika olvasása</string>
     <string name="other_manga">Egyéb manga</string>
     <string name="less_than_minute">Kevesebb mint egy perc</string>

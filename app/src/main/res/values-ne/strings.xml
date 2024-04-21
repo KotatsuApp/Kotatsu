@@ -190,7 +190,6 @@
     <string name="exclude_nsfw_from_suggestions">NSFW मंगा सुझाव नगर्नुहोस्</string>
     <string name="enabled">सक्षम गरियो</string>
     <string name="disabled">अक्षम</string>
-    <string name="filter_load_error">जानरा को सूची लोड गर्न सकिएन</string>
     <string name="reset_filter">फिल्टर रिसेट गर्नुहोस्</string>
     <string name="only_using_wifi">Wi-Fi मा मात्र</string>
     <string name="always">सधैं</string>

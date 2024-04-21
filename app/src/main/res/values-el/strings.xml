@@ -384,7 +384,6 @@
     <string name="manage">Διαχείριση</string>
     <string name="no_bookmarks_yet">Δεν έχεις κάποιον σελιδοδείκτη ακόμα</string>
     <string name="share_logs">Κοινοποίηση logs</string>
-    <string name="custom_directory">Directory της επιλογής σου</string>
     <string name="no_access_to_file">Δεν έχεις πρόσβαση σε αυτό το αρχείο ή directory</string>
     <string name="local_manga_directories">Directory για τοπικά manga</string>
     <string name="captcha_required_summary">%s απαιτεί την επίλυση ενός CAPTCHA για να λειτουργήσει κανονικά</string>

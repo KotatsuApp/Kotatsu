@@ -200,7 +200,6 @@
 	<string name="text_suggestion_holder">Aloita mangan lukeminen ja saat henkilökohtaisia ehdotuksia</string>
 	<string name="enabled">Käytössä</string>
 	<string name="disabled">Pois päältä</string>
-	<string name="filter_load_error">Genreluetteloa ei voida ladata</string>
 	<string name="only_using_wifi">Vain Wi-Fi:n käyttö</string>
 	<string name="preload_pages">Esilataa sivut</string>
 	<string name="always">Aina</string>

@@ -575,7 +575,6 @@
     <string name="alternatives">Alternatif</string>
     <string name="all_time">Sepanjang waktu</string>
     <string name="stats_cleared">Statistik dibersihkan</string>
-    <string name="stats_enabled">Aktifkan statistik</string>
     <string name="clear_stats_confirm">Apakah Anda benar-benar ingin menghapus semua statistik membaca? Tindakan ini tidak bisa dikembalikan.</string>
     <string name="week">Pekan</string>
     <string name="fullscreen_mode">Mode layar penuh</string>

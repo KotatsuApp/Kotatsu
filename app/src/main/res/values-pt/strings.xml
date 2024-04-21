@@ -593,7 +593,6 @@
     <string name="no_chapters_deleted">Nenhum capítulo foi apagado</string>
     <string name="delete_read_chapters_auto">Excluir capítulos lidos automaticamente</string>
     <string name="runs_on_app_start">É executado quando o aplicativo é iniciado</string>
-    <string name="stats_enabled">Ativar estatísticas</string>
     <string name="three_months">Três meses</string>
     <string name="day">Dia</string>
     <string name="empty_stats_text">Não há estatísticas para o período selecionado</string>

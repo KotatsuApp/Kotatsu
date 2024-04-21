@@ -455,7 +455,6 @@
     <string name="network_unavailable">Желі қолжетімсіз</string>
     <string name="empty">Бос</string>
     <string name="downloads_resumed">Жүктеп алу жалғасты</string>
-    <string name="details_button_tip">Қосымша реттеу көру үшін «Оқу» батырмасын басып тұрыңыз</string>
     <string name="text_unsaved_changes_prompt">Өзгерісті сақтайсыз ба\?</string>
     <string name="folder_with_images">Суреті бар бума</string>
     <string name="to_top">Үстіге</string>

@@ -286,7 +286,6 @@
 	<string name="color_theme">Fargedrakt</string>
 	<string name="theme_name_dynamic">Dynamisk</string>
 	<string name="language">Språk</string>
-	<string name="different_languages">Forskjellige språk</string>
 	<string name="enable_logging">Skru på loggføring</string>
 	<string name="storage_usage">Lagringsbruk</string>
 	<string name="sync_auth_hint">Du kan logge med en eksisterende konto, eller opprette en ny</string>
