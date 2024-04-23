@@ -621,4 +621,10 @@
     <string name="show_updated">显示更新</string>
     <string name="webtoon_gaps_summary">在条漫模式下添加页与页之间的横向缝隙</string>
     <string name="webtoon_gaps">缝隙条漫模式</string>
+    <string name="pin_navigation_ui">置顶导航 UI</string>
+    <string name="frequency_of_check">检查更新频率</string>
+    <string name="new_chapters_pattern">%1$s: %2$d</string>
+    <string name="pin_navigation_ui_summary">当上下滑动时不隐藏导航栏和搜索框</string>
+    <string name="more_frequently">频率较高</string>
+    <string name="less_frequently">频率较低</string>
 </resources>
