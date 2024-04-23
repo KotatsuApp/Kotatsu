@@ -21,7 +21,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.settings.tracker.categories.TrackerCategoriesConfigSheet
 import org.koitharu.kotatsu.settings.utils.DozeHelper
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
-import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
+import org.koitharu.kotatsu.tracker.work.TrackerNotificationHelper
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,7 +33,7 @@ class TrackerSettingsFragment :
 	private val dozeHelper = DozeHelper(this)
 
 	@Inject
-	lateinit var channels: TrackerNotificationChannels
+	lateinit var notificationHelper: TrackerNotificationHelper
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_tracker)
@@ -88,7 +88,7 @@ class TrackerSettingsFragment :
 					true
 				}
 
-				channels.areNotificationsDisabled -> {
+				!notificationHelper.getAreNotificationsEnabled() -> {
 					val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
 						.setData(Uri.fromParts("package", requireContext().packageName, null))
 					startActivitySafe(intent)
@@ -116,8 +116,7 @@ class TrackerSettingsFragment :
 		val pref = findPreference<Preference>(AppSettings.KEY_NOTIFICATIONS_SETTINGS) ?: return
 		pref.setSummary(
 			when {
-				channels.areNotificationsDisabled -> R.string.disabled
-				channels.isNotificationGroupEnabled() -> R.string.show_notification_new_chapters_on
+				notificationHelper.getAreNotificationsEnabled() -> R.string.show_notification_new_chapters_on
 				else -> R.string.show_notification_new_chapters_off
 			},
 		)

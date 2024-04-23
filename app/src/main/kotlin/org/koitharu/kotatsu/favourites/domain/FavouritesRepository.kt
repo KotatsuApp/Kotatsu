@@ -21,13 +21,11 @@ import org.koitharu.kotatsu.favourites.data.toMangaList
 import org.koitharu.kotatsu.favourites.domain.model.Cover
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.tracker.work.TrackerNotificationChannels
 import javax.inject.Inject
 
 @Reusable
 class FavouritesRepository @Inject constructor(
 	private val db: MangaDatabase,
-	private val channels: TrackerNotificationChannels,
 ) {
 
 	suspend fun getAllManga(): List<Manga> {
@@ -145,7 +143,6 @@ class FavouritesRepository @Inject constructor(
 		)
 		val id = db.getFavouriteCategoriesDao().insert(entity)
 		val category = entity.toFavouriteCategory(id)
-		channels.createChannel(category)
 		return category
 	}
 
@@ -173,10 +170,6 @@ class FavouritesRepository @Inject constructor(
 				db.getFavouritesDao().deleteAll(id)
 				db.getFavouriteCategoriesDao().delete(id)
 			}
-		}
-		// run after transaction success
-		for (id in ids) {
-			channels.deleteChannel(id)
 		}
 	}
 

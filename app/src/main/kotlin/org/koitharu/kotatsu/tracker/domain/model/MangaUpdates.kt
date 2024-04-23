@@ -13,7 +13,6 @@ sealed interface MangaUpdates {
 		override val manga: Manga,
 		val newChapters: List<MangaChapter>,
 		val isValid: Boolean,
-		val channelId: String?,
 	) : MangaUpdates {
 
 		fun isNotEmpty() = newChapters.isNotEmpty()
