@@ -169,7 +169,13 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	fun update(state: ReaderUiState?) {
 		text = if (state != null) {
-			state.resolveSummary(context) + if (state.percent in 0f..1f) {
+			context.getString(
+				R.string.reader_info_pattern,
+				state.chapterNumber,
+				state.chaptersTotal,
+				state.currentPage + 1,
+				state.totalPages,
+			) + if (state.percent in 0f..1f) {
 				"     " + context.getString(R.string.percent_string_pattern, (state.percent * 100).format())
 			} else {
 				""

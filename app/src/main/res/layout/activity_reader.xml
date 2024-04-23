@@ -65,7 +65,20 @@
 			android:id="@+id/toolbar_bottom"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			tools:menu="@menu/opt_reader_bottom" />
+			tools:menu="@menu/opt_reader_bottom">
+
+			<com.google.android.material.slider.Slider
+				android:id="@+id/slider"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:stepSize="1.0"
+				android:valueFrom="0"
+				app:labelBehavior="floating"
+				app:tickVisible="true"
+				tools:value="6"
+				tools:valueTo="20" />
+
+		</com.google.android.material.appbar.MaterialToolbar>
 
 	</com.google.android.material.card.MaterialCardView>
 
@@ -88,8 +101,12 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
+		android:background="@drawable/bg_card"
+		android:backgroundTint="?colorBackgroundFloating"
 		android:gravity="center_horizontal"
-		android:orientation="vertical">
+		android:orientation="vertical"
+		android:outlineProvider="background"
+		android:padding="@dimen/screen_padding">
 
 		<com.google.android.material.progressindicator.CircularProgressIndicator
 			android:id="@+id/progressBar"
@@ -101,9 +118,9 @@
 			android:id="@+id/textView_loading"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
+			android:layout_marginTop="10dp"
 			android:text="@string/loading_"
-			android:textAppearance="?attr/textAppearanceBody2" />
+			android:textAppearance="?attr/textAppearanceTitleMedium" />
 
 	</LinearLayout>
 

@@ -45,9 +45,11 @@ import org.koitharu.kotatsu.core.util.IdlingDetector
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.hasGlobalPoint
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
+import org.koitharu.kotatsu.core.util.ext.isRtl
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.postDelayed
+import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.zipWithPrevious
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -103,7 +105,6 @@ class ReaderActivity :
 	private var gestureInsets: Insets = Insets.NONE
 	private lateinit var readerManager: ReaderManager
 	private val hideUiRunnable = Runnable { setUiIsVisible(false) }
-	private lateinit var bottomMenuProvider: ReaderBottomMenuProvider
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -113,8 +114,9 @@ class ReaderActivity :
 		touchHelper = TapGridDispatcher(this, this)
 		scrollTimer = scrollTimerFactory.create(this, this)
 		controlDelegate = ReaderControlDelegate(resources, settings, tapGridSettings, this)
-		bottomMenuProvider = ReaderBottomMenuProvider(this, readerManager, viewModel, this)
+		viewBinding.slider.setLabelFormatter(PageLabelFormatter())
 		viewBinding.zoomControl.listener = this
+		ReaderSliderListener(viewModel, this).attachToSlider(viewBinding.slider)
 		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
 
@@ -153,8 +155,7 @@ class ReaderActivity :
 			viewBinding.zoomControl.isVisible = it
 		}
 		addMenuProvider(ReaderTopMenuProvider(this, viewModel))
-		viewBinding.toolbarBottom.addMenuProvider(bottomMenuProvider)
-		onBackPressedDispatcher.addCallback(bottomMenuProvider)
+		viewBinding.toolbarBottom.addMenuProvider(ReaderBottomMenuProvider(this, readerManager, viewModel))
 	}
 
 	override fun onActivityResult(result: Uri?) {
@@ -196,9 +197,10 @@ class ReaderActivity :
 		if (readerManager.currentMode != mode) {
 			readerManager.replace(mode)
 		}
-		if (viewBinding.appbarTop.isVisible && !bottomMenuProvider.isSliderExpanded()) {
+		if (viewBinding.appbarTop.isVisible) {
 			lifecycle.postDelayed(TimeUnit.SECONDS.toMillis(1), hideUiRunnable)
 		}
+		viewBinding.slider.isRtl = mode == ReaderMode.REVERSED
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -210,7 +212,6 @@ class ReaderActivity :
 			viewBinding.toastView.hide()
 		}
 		viewBinding.toolbarBottom.invalidateMenu()
-		invalidateMenu()
 	}
 
 	override fun onGridTouch(area: TapGridArea): Boolean {
@@ -328,9 +329,6 @@ class ReaderActivity :
 			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
 			viewBinding.infoBar.isTimeVisible = isFullscreen
 			systemUiController.setSystemUiVisible(isUiVisible || !isFullscreen)
-			if (!isUiVisible) {
-				bottomMenuProvider.collapseSlider()
-			}
 		}
 	}
 
@@ -396,19 +394,27 @@ class ReaderActivity :
 	private fun onUiStateChanged(pair: Pair<ReaderUiState?, ReaderUiState?>) {
 		val (previous: ReaderUiState?, uiState: ReaderUiState?) = pair
 		title = uiState?.mangaName ?: getString(R.string.loading_)
-		supportActionBar?.subtitle = uiState?.chapterName
-		with(viewBinding.toolbarBottom) {
-			title = uiState?.resolveSummary(context)
-			subtitle = uiState?.resolveSubtitle(context)
-		}
 		viewBinding.infoBar.update(uiState)
-		if (!bottomMenuProvider.updateState(uiState)) {
-			viewBinding.toolbarBottom.invalidateMenu()
+		if (uiState == null) {
+			supportActionBar?.subtitle = null
+			viewBinding.slider.isVisible = false
+			return
 		}
-		if (uiState != null && previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
+		supportActionBar?.subtitle = when {
+			uiState.incognito -> getString(R.string.incognito_mode)
+			else -> uiState.chapterName
+		}
+		if (previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
 			if (!uiState.chapterName.isNullOrEmpty()) {
 				viewBinding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
 			}
+		}
+		if (uiState.isSliderAvailable()) {
+			viewBinding.slider.valueTo = uiState.totalPages.toFloat() - 1
+			viewBinding.slider.setValueRounded(uiState.currentPage.toFloat())
+			viewBinding.slider.isVisible = true
+		} else {
+			viewBinding.slider.isVisible = false
 		}
 	}
 

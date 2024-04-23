@@ -6,15 +6,6 @@
 	tools:ignore="AlwaysShowAction">
 
 	<item
-		android:id="@+id/action_slider"
-		android:icon="@drawable/ic_slider"
-		android:title="@string/reader_slider"
-		android:visible="false"
-		app:actionViewClass="com.google.android.material.slider.Slider"
-		app:showAsAction="always|collapseActionView"
-		tools:visible="true" />
-
-	<item
 		android:id="@+id/action_pages_thumbs"
 		android:icon="@drawable/ic_grid"
 		android:title="@string/pages"
@@ -26,6 +17,7 @@
 		android:id="@+id/action_options"
 		android:icon="@drawable/abc_ic_menu_overflow_material"
 		android:title="@string/options"
-		app:showAsAction="always" />
+		app:showAsAction="always"
+		tools:visible="true" />
 
 </menu>
