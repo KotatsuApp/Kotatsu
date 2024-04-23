@@ -37,16 +37,6 @@
 					<solid android:color="@color/selector_overlay" />
 				</shape>
 			</item>
-			<item
-				android:bottom="2dp"
-				android:left="2dp"
-				android:right="2dp"
-				android:top="2dp">
-				<shape android:shape="rectangle">
-					<corners android:radius="@dimen/list_selector_corner" />
-					<solid android:color="?android:attr/windowBackground" />
-				</shape>
-			</item>
 		</selector>
 	</item>
 	<item
