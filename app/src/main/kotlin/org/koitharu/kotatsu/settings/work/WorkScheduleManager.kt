@@ -22,6 +22,7 @@ class WorkScheduleManager @Inject constructor(
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 		when (key) {
 			AppSettings.KEY_TRACKER_ENABLED,
+			AppSettings.KEY_TRACKER_FREQUENCY,
 			AppSettings.KEY_TRACKER_WIFI_ONLY -> updateWorker(
 				scheduler = trackerScheduler,
 				isEnabled = settings.isTrackerEnabled,

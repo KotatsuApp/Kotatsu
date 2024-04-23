@@ -16,13 +16,23 @@
 		android:summary="@string/tracker_wifi_only_summary"
 		android:title="@string/only_using_wifi" />
 
+	<ListPreference
+		android:defaultValue="1"
+		android:dependency="tracker_enabled"
+		android:entries="@array/tracker_frequency"
+		android:entryValues="@array/values_tracker_frequency"
+		android:key="tracker_freq"
+		android:title="@string/frequency_of_check"
+		app:useSimpleSummaryProvider="true" />
+
 	<MultiSelectListPreference
 		android:defaultValue="@array/values_track_sources_default"
 		android:dependency="tracker_enabled"
 		android:entries="@array/track_sources"
 		android:entryValues="@array/values_track_sources"
 		android:key="track_sources"
-		android:title="@string/track_sources" />
+		android:title="@string/track_sources"
+		app:allowDividerAbove="true" />
 
 	<Preference
 		android:key="track_categories"

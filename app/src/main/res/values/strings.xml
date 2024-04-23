@@ -630,4 +630,7 @@
 	<string name="show_updated">Show updated</string>
 	<string name="webtoon_gaps">Gaps in webtoon mode</string>
 	<string name="webtoon_gaps_summary">Show vertical gaps between pages in webtoon mode</string>
+	<string name="less_frequently">Less frequently</string>
+	<string name="more_frequently">More frequently</string>
+	<string name="frequency_of_check">Frequency of check</string>
 </resources>

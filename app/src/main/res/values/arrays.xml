@@ -85,4 +85,9 @@
 		<item>@string/single_cbz_file</item>
 		<item>@string/multiple_cbz_files</item>
 	</string-array>
+	<string-array name="tracker_frequency" translatable="false">
+		<item>@string/less_frequently</item>
+		<item>@string/system_default</item>
+		<item>@string/more_frequently</item>
+	</string-array>
 </resources>

@@ -67,6 +67,7 @@ import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.roundToInt
 import com.google.android.material.R as materialR
 
 @HiltWorker
@@ -284,9 +285,6 @@ class TrackWorker @AssistedInject constructor(
 			applicationContext.getString(android.R.string.cancel),
 			workManager.createCancelPendingIntent(id),
 		)
-		if (max > 0) {
-			setSubText(applicationContext.getString(R.string.fraction_pattern, progress, max))
-		}
 		setProgress(max, progress, max == 0)
 		setSmallIcon(android.R.drawable.stat_notify_sync)
 		setForegroundServiceBehavior(
@@ -316,7 +314,8 @@ class TrackWorker @AssistedInject constructor(
 			val constraints = createConstraints()
 			val runCount = dbProvider.get().getTracksDao().getTracksCount()
 			val runsPerFullCheck = (runCount / BATCH_SIZE.toFloat()).toIntUp().coerceAtLeast(1)
-			val interval = (6 / runsPerFullCheck).coerceAtLeast(2)
+			val frequency = settings.trackerFrequencyFactor
+			val interval = (18 / runsPerFullCheck / frequency).roundToInt().coerceAtLeast(2)
 			val request = PeriodicWorkRequestBuilder<TrackWorker>(interval.toLong(), TimeUnit.HOURS)
 				.setConstraints(constraints)
 				.addTag(TAG)
