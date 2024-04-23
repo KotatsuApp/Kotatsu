@@ -74,6 +74,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isNavLabelsVisible: Boolean
 		get() = prefs.getBoolean(KEY_NAV_LABELS, true)
 
+	val isNavBarPinned: Boolean
+		get() = prefs.getBoolean(KEY_NAV_PINNED, false)
+
 	var gridSize: Int
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
 		set(value) = prefs.edit { putInt(KEY_GRID_SIZE, value) }
@@ -653,6 +656,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_RELATED_MANGA = "related_manga"
 		const val KEY_NAV_MAIN = "nav_main"
 		const val KEY_NAV_LABELS = "nav_labels"
+		const val KEY_NAV_PINNED = "nav_pinned"
 		const val KEY_32BIT_COLOR = "enhanced_colors"
 		const val KEY_SOURCES_ORDER = "sources_sort_order"
 		const val KEY_SOURCES_CATALOG = "sources_catalog"

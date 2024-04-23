@@ -4,11 +4,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -45,6 +47,12 @@ class MainViewModel @Inject constructor(
 	val feedCounter = trackingRepository.observeUnreadUpdatesCount()
 		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, 0)
+
+	val isBottomNavPinned = settings.observeAsFlow(
+		AppSettings.KEY_NAV_PINNED,
+	) {
+		isNavBarPinned
+	}.flowOn(Dispatchers.Default)
 
 	init {
 		launchJob {

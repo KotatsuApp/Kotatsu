@@ -38,6 +38,15 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 	private var currentState = STATE_UP
 	private var behavior = HideBottomNavigationOnScrollBehavior()
 
+	var isPinned: Boolean
+		get() = behavior.isPinned
+		set(value) {
+			behavior.isPinned = value
+			if (value) {
+				translationX = 0f
+			}
+		}
+
 	override fun getBehavior(): CoordinatorLayout.Behavior<*> {
 		return behavior
 	}

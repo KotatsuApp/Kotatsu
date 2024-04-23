@@ -76,6 +76,12 @@
 		android:key="nav_labels"
 		android:title="@string/show_labels_in_navbar" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="nav_pinned"
+		android:summary="@string/pin_navigation_ui_summary"
+		android:title="@string/pin_navigation_ui" />
+
 	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
 		android:key="app_locale"
 		android:title="@string/language" />
