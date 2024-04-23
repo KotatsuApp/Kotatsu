@@ -621,4 +621,10 @@
     <string name="error_no_data_received">Không có dữ liệu nào nhận được từ server</string>
     <string name="enable_source">Bật nguồn</string>
     <string name="unsupported_source">Nguồn manga này không được hỗ trợ</string>
+    <string name="less_frequently">Ít thường xuyên</string>
+    <string name="more_frequently">Thường xuyên</string>
+    <string name="frequency_of_check">Tần xuất kiểm tra</string>
+    <string name="new_chapters_pattern">%1$s: %2$d</string>
+    <string name="pin_navigation_ui">Ghim UI điều hướng</string>
+    <string name="pin_navigation_ui_summary">Không ẩn thanh điều hướng và chế độ xem tìm kiếm khi cuộn</string>
 </resources>
