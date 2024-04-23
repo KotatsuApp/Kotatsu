@@ -621,4 +621,10 @@
     <string name="show_updated">अद्यतन दिखाएँ</string>
     <string name="webtoon_gaps">वेबटून मोड में अंतराल</string>
     <string name="webtoon_gaps_summary">वेबटून मोड में पृष्ठों के बीच लंबवत अंतराल दिखाएं</string>
+    <string name="less_frequently">कम बार</string>
+    <string name="more_frequently">अधिक बार</string>
+    <string name="frequency_of_check">जांच की आवृत्ति</string>
+    <string name="new_chapters_pattern">%1$s: %2$d</string>
+    <string name="pin_navigation_ui">पिन नेविगेशन UI</string>
+    <string name="pin_navigation_ui_summary">स्क्रॉल पर नेविगेशन बार और खोज दृश्य को न छिपाएं</string>
 </resources>
