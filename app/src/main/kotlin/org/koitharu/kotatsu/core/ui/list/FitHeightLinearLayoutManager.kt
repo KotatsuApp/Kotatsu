@@ -29,7 +29,7 @@ class FitHeightLinearLayoutManager : LinearLayoutManager {
 		if (orientation == RecyclerView.VERTICAL && child.layoutParams.height == LayoutParams.MATCH_PARENT) {
 			val parentBottom = height - paddingBottom
 			val offset = parentBottom - bottom
-			super.layoutDecoratedWithMargins(child, left, top + offset, right, bottom + offset)
+			super.layoutDecoratedWithMargins(child, left, top, right, bottom + offset)
 		} else {
 			super.layoutDecoratedWithMargins(child, left, top, right, bottom)
 		}

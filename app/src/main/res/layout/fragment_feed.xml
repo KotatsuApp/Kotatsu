@@ -19,7 +19,7 @@
 			android:orientation="vertical"
 			android:paddingVertical="@dimen/list_spacing_normal"
 			app:bubbleSize="small"
-			app:layoutManager=".core.ui.list.FitHeightLinearLayoutManager"
+			app:layoutManager="org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager"
 			tools:listitem="@layout/item_feed" />
 
 	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
