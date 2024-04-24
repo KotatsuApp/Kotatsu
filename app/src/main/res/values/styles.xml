@@ -35,10 +35,13 @@
 
 	<!--AlertDialog-->
 
-	<style name="ThemeOverlay.Kotatsu.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-		<item name="android:layout">@layout/m3_alert_dialog</item>
-		<item name="android:background">@drawable/m3_popup_background</item>
+	<style name="ThemeOverlay.Kotatsu.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+		<item name="alertDialogStyle">@style/AlertDialog.Kotatsu</item>
 		<item name="dialogCornerRadius">@dimen/m3_alert_dialog_corner_size</item>
+	</style>
+
+	<style name="AlertDialog.Kotatsu" parent="MaterialAlertDialog.Material3">
+		<item name="android:background">@drawable/m3_popup_background</item>
 	</style>
 
 	<!-- Bottom sheet -->
