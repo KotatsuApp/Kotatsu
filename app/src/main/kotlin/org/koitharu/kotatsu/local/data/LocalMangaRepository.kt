@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.AlphanumComparator
-import org.koitharu.kotatsu.core.util.CompositeMutex2
+import org.koitharu.kotatsu.core.util.MultiMutex
 import org.koitharu.kotatsu.core.util.ext.children
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.filterWith
@@ -50,7 +50,7 @@ class LocalMangaRepository @Inject constructor(
 ) : MangaRepository {
 
 	override val source = MangaSource.LOCAL
-	private val locks = CompositeMutex2<Long>()
+	private val locks = MultiMutex<Long>()
 
 	override val isMultipleTagsSupported: Boolean = true
 	override val isTagsExclusionSupported: Boolean = true

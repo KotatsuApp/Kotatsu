@@ -83,7 +83,6 @@ suspend fun WorkManager.getWorkSpec(id: UUID): WorkSpec? = suspendCoroutine { co
 	}
 }
 
-
 @SuppressLint("RestrictedApi")
 suspend fun WorkManager.getWorkInputData(id: UUID): Data? = getWorkSpec(id)?.input
 

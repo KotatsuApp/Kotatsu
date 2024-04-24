@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.postDelayed
 import androidx.fragment.app.viewModels
+import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
 import androidx.preference.forEach
@@ -21,6 +22,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.SearchSuggestionType
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
@@ -29,9 +31,12 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.local.data.CacheDir
+import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.backup.BackupDialogFragment
 import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
+import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -86,6 +91,12 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 		}
 		findPreference<StorageUsagePreference>("storage_usage")?.let { pref ->
 			viewModel.storageUsage.observe(viewLifecycleOwner, pref)
+		}
+		findPreference<MultiSelectListPreference>(AppSettings.KEY_SEARCH_SUGGESTION_TYPES)?.let { pref ->
+			pref.entryValues = SearchSuggestionType.entries.names()
+			pref.entries = SearchSuggestionType.entries.map { pref.context.getString(it.titleResId) }.toTypedArray()
+			pref.summaryProvider = MultiSummaryProvider(R.string.none)
+			pref.values = settings.searchSuggestionTypes.mapToSet { it.name }
 		}
 		viewModel.loadingKeys.observe(viewLifecycleOwner) { keys ->
 			preferenceScreen.forEach { pref ->

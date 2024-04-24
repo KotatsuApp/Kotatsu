@@ -68,3 +68,5 @@ fun <T> Iterable<T>.sortedWithSafe(comparator: Comparator<in T>): List<T> = try 
 		toList()
 	}
 }
+
+fun Collection<*>?.sizeOrZero() = if (this == null) 0 else size

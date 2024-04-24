@@ -1,12 +1,10 @@
 package org.koitharu.kotatsu.reader.ui.config
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import androidx.activity.result.ActivityResultCallback
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
@@ -25,12 +23,12 @@ import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ScreenOrientationHelper
+import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
-import org.koitharu.kotatsu.reader.ui.PageSaveContract
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -100,7 +98,7 @@ class ReaderConfigSheet :
 				binding.sliderTimer.valueTo,
 			)
 		}
-		findCallback()?.run {
+		findParentCallback(Callback::class.java)?.run {
 			binding.switchScrollTimer.isChecked = isAutoScrollEnabled
 		}
 	}
@@ -113,7 +111,7 @@ class ReaderConfigSheet :
 			}
 
 			R.id.button_save_page -> {
-				findCallback()?.onSavePageClick() ?: return
+				findParentCallback(Callback::class.java)?.onSavePageClick() ?: return
 				dismissAllowingStateLoss()
 			}
 
@@ -132,7 +130,7 @@ class ReaderConfigSheet :
 	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
 		when (buttonView.id) {
 			R.id.switch_scroll_timer -> {
-				findCallback()?.isAutoScrollEnabled = isChecked
+				findParentCallback(Callback::class.java)?.isAutoScrollEnabled = isChecked
 				requireViewBinding().layoutTimer.isVisible = isChecked
 				requireViewBinding().sliderTimer.isVisible = isChecked
 			}
@@ -143,7 +141,7 @@ class ReaderConfigSheet :
 
 			R.id.switch_double_reader -> {
 				settings.isReaderDoubleOnLandscape = isChecked
-				findCallback()?.onDoubleModeChanged(isChecked)
+				findParentCallback(Callback::class.java)?.onDoubleModeChanged(isChecked)
 			}
 		}
 	}
@@ -167,7 +165,7 @@ class ReaderConfigSheet :
 		if (newMode == mode) {
 			return
 		}
-		findCallback()?.onReaderModeChanged(newMode) ?: return
+		findParentCallback(Callback::class.java)?.onReaderModeChanged(newMode) ?: return
 		mode = newMode
 	}
 
@@ -194,10 +192,6 @@ class ReaderConfigSheet :
 		switch.setOnCheckedChangeListener(null)
 		switch.isChecked = orientationHelper.isLocked
 		switch.setOnCheckedChangeListener(this)
-	}
-
-	private fun findCallback(): Callback? {
-		return (parentFragment as? Callback) ?: (activity as? Callback)
 	}
 
 	interface Callback {

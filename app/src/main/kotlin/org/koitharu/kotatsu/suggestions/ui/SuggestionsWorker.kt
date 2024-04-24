@@ -56,6 +56,7 @@ import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.flatten
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitize
+import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.core.util.ext.takeMostFrequent
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
@@ -289,7 +290,7 @@ class SuggestionsWorker @AssistedInject constructor(
 				style.bigText(
 					buildSpannedString {
 						append(tagsText)
-						val chaptersCount = manga.chapters?.size ?: 0
+						val chaptersCount = manga.chapters.sizeOrZero()
 						appendLine()
 						bold {
 							append(

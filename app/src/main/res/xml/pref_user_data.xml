@@ -20,6 +20,10 @@
 		android:summary="@string/history_shortcuts_summary"
 		android:title="@string/history_shortcuts" />
 
+	<MultiSelectListPreference
+		android:key="search_suggest_types"
+		android:title="@string/search_suggestions" />
+
 	<PreferenceCategory android:title="@string/backup_restore">
 
 		<Preference

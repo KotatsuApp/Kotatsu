@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.CompositeMutex2
+import org.koitharu.kotatsu.core.util.MultiMutex
 import org.koitharu.kotatsu.core.util.ext.toInstantOrNull
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -139,7 +139,7 @@ class Tracker @Inject constructor(
 	private companion object {
 
 		const val NO_ID = 0L
-		private val mangaMutex = CompositeMutex2<Long>()
+		private val mangaMutex = MultiMutex<Long>()
 
 		suspend inline fun <T> withMangaLock(id: Long, action: () -> T): T {
 			contract {

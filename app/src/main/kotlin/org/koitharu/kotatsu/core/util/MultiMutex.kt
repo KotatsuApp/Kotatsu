@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.core.util
 import androidx.collection.ArrayMap
 import kotlinx.coroutines.sync.Mutex
 
-class CompositeMutex2<T : Any> : Set<T> {
+class MultiMutex<T : Any> : Set<T> {
 
 	private val delegates = ArrayMap<T, Mutex>()
 

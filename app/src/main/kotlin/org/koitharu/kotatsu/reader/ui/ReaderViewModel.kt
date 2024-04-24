@@ -45,6 +45,7 @@ import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.requireValue
+import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -432,7 +433,7 @@ class ReaderViewModel @Inject constructor(
 			branch = chapter.branch,
 			chapterName = chapter.name,
 			chapterNumber = chapterIndex + 1,
-			chaptersTotal = m.chapters[chapter.branch]?.size ?: 0,
+			chaptersTotal = m.chapters[chapter.branch].sizeOrZero(),
 			totalPages = chaptersLoader.getPagesCount(chapter.id),
 			currentPage = state.page,
 			isSliderEnabled = settings.isReaderSliderEnabled,

@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import java.io.File
 import java.net.Proxy
+import java.util.EnumSet
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -219,6 +220,13 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	var isAppPasswordNumeric: Boolean
 		get() = prefs.getBoolean(KEY_APP_PASSWORD_NUMERIC, false)
 		set(value) = prefs.edit { putBoolean(KEY_APP_PASSWORD_NUMERIC, value) }
+
+	val searchSuggestionTypes: Set<SearchSuggestionType>
+		get() = prefs.getStringSet(KEY_SEARCH_SUGGESTION_TYPES, null)?.let { stringSet ->
+			stringSet.mapNotNullTo(EnumSet.noneOf(SearchSuggestionType::class.java)) { x ->
+				enumValueOf<SearchSuggestionType>(x)
+			}
+		} ?: EnumSet.allOf(SearchSuggestionType::class.java)
 
 	val isLoggingEnabled: Boolean
 		get() = prefs.getBoolean(KEY_LOGGING_ENABLED, false)
@@ -675,5 +683,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_APP_UPDATE = "app_update"
 		const val KEY_APP_TRANSLATION = "about_app_translation"
 		const val KEY_FEED_HEADER = "feed_header"
+		const val KEY_SEARCH_SUGGESTION_TYPES = "search_suggest_types"
 	}
 }

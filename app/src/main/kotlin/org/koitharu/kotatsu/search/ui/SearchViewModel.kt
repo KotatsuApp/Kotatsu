@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.require
+import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -103,7 +104,7 @@ class SearchViewModel @Inject constructor(
 			try {
 				listError.value = null
 				val list = repository.getList(
-					offset = if (append) mangaList.value?.size ?: 0 else 0,
+					offset = if (append) mangaList.value.sizeOrZero() else 0,
 					filter = MangaListFilter.Search(query),
 				)
 				val prevList = mangaList.value.orEmpty()

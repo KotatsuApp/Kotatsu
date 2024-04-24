@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
+import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
@@ -134,7 +135,7 @@ open class RemoteListViewModel @Inject constructor(
 			try {
 				listError.value = null
 				val list = repository.getList(
-					offset = if (append) mangaList.value?.size ?: 0 else 0,
+					offset = if (append) mangaList.value.sizeOrZero() else 0,
 					filter = filterState,
 				)
 				val prevList = mangaList.value.orEmpty()

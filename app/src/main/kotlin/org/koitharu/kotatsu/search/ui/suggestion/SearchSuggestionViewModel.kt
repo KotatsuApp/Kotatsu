@@ -16,9 +16,12 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.SearchSuggestionType
+import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.core.util.ext.toEnumSet
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -100,9 +103,10 @@ class SearchSuggestionViewModel @Inject constructor(
 		suggestionJob = combine(
 			query.debounce(DEBOUNCE_TIMEOUT),
 			sourcesRepository.observeEnabledSources().map { it.toEnumSet() },
-			::Pair,
-		).mapLatest { (searchQuery, enabledSources) ->
-			buildSearchSuggestion(searchQuery, enabledSources)
+			settings.observeAsFlow(AppSettings.KEY_SEARCH_SUGGESTION_TYPES) { searchSuggestionTypes },
+			::Triple,
+		).mapLatest { (searchQuery, enabledSources, types) ->
+			buildSearchSuggestion(searchQuery, enabledSources, types)
 		}.distinctUntilChanged()
 			.onEach {
 				suggestion.value = it
@@ -112,36 +116,49 @@ class SearchSuggestionViewModel @Inject constructor(
 	private suspend fun buildSearchSuggestion(
 		searchQuery: String,
 		enabledSources: Set<MangaSource>,
+		types: Set<SearchSuggestionType>,
 	): List<SearchSuggestionItem> = coroutineScope {
-		val queriesDeferred = async {
-			repository.getQuerySuggestion(searchQuery, MAX_QUERY_ITEMS)
+		val queriesDeferred = if (SearchSuggestionType.QUERIES_RECENT in types) {
+			async { repository.getQuerySuggestion(searchQuery, MAX_QUERY_ITEMS) }
+		} else {
+			null
 		}
-		val hintsDeferred = async {
-			repository.getQueryHintSuggestion(searchQuery, MAX_HINTS_ITEMS)
+		val hintsDeferred = if (SearchSuggestionType.QUERIES_SUGGEST in types) {
+			async { repository.getQueryHintSuggestion(searchQuery, MAX_HINTS_ITEMS) }
+		} else {
+			null
 		}
-		val tagsDeferred = async {
-			repository.getTagsSuggestion(searchQuery, MAX_TAGS_ITEMS, null)
+		val tagsDeferred = if (SearchSuggestionType.GENRES in types) {
+			async { repository.getTagsSuggestion(searchQuery, MAX_TAGS_ITEMS, null) }
+		} else {
+			null
 		}
-		val mangaDeferred = async {
-			repository.getMangaSuggestion(searchQuery, MAX_MANGA_ITEMS, null)
+		val mangaDeferred = if (SearchSuggestionType.MANGA in types) {
+			async { repository.getMangaSuggestion(searchQuery, MAX_MANGA_ITEMS, null) }
+		} else {
+			null
 		}
-		val sources = repository.getSourcesSuggestion(searchQuery, MAX_SOURCES_ITEMS)
+		val sources = if (SearchSuggestionType.SOURCES in types) {
+			repository.getSourcesSuggestion(searchQuery, MAX_SOURCES_ITEMS)
+		} else {
+			null
+		}
 
-		val tags = tagsDeferred.await()
-		val mangaList = mangaDeferred.await()
-		val queries = queriesDeferred.await()
-		val hints = hintsDeferred.await()
+		val tags = tagsDeferred?.await()
+		val mangaList = mangaDeferred?.await()
+		val queries = queriesDeferred?.await()
+		val hints = hintsDeferred?.await()
 
-		buildList(queries.size + sources.size + hints.size + 2) {
-			if (tags.isNotEmpty()) {
+		buildList(queries.sizeOrZero() + sources.sizeOrZero() + hints.sizeOrZero() + 2) {
+			if (!tags.isNullOrEmpty()) {
 				add(SearchSuggestionItem.Tags(mapTags(tags)))
 			}
-			if (mangaList.isNotEmpty()) {
+			if (!mangaList.isNullOrEmpty()) {
 				add(SearchSuggestionItem.MangaList(mangaList))
 			}
-			sources.mapTo(this) { SearchSuggestionItem.Source(it, it in enabledSources) }
-			queries.mapTo(this) { SearchSuggestionItem.RecentQuery(it) }
-			hints.mapTo(this) { SearchSuggestionItem.Hint(it) }
+			sources?.mapTo(this) { SearchSuggestionItem.Source(it, it in enabledSources) }
+			queries?.mapTo(this) { SearchSuggestionItem.RecentQuery(it) }
+			hints?.mapTo(this) { SearchSuggestionItem.Hint(it) }
 		}
 	}
 
