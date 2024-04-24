@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
@@ -44,6 +45,7 @@ import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.OptionsMenuBadgeHelper
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.core.util.ext.hideKeyboard
+import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
@@ -402,7 +404,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	private fun setNavbarPinned(isPinned: Boolean) {
-		viewBinding.bottomNav?.isPinned = isPinned
+		val bottomNavBar = viewBinding.bottomNav
+		bottomNavBar?.isPinned = isPinned
 		for (view in viewBinding.appbar.children) {
 			val lp = view.layoutParams as? AppBarLayout.LayoutParams ?: continue
 			val scrollFlags = if (isPinned) {
@@ -413,6 +416,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			if (scrollFlags != lp.scrollFlags) {
 				lp.scrollFlags = scrollFlags
 				view.layoutParams = lp
+			}
+		}
+		viewBinding.container.updateLayoutParams<MarginLayoutParams> {
+			bottomMargin = if (isPinned) {
+				bottomNavBar?.measureHeight() ?: 0
+			} else {
+				0
 			}
 		}
 	}
