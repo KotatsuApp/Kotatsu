@@ -3,10 +3,9 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	style="@style/Widget.Material3.CardView.Outlined"
+	style="@style/Widget.Material3.CardView.Filled"
 	android:layout_width="wrap_content"
 	android:layout_height="match_parent"
-	app:contentPadding="4dp"
 	app:shapeAppearance="?shapeAppearanceCornerSmall"
 	tools:layout_height="@dimen/search_suggestions_manga_height">
 
@@ -32,6 +31,7 @@
 			android:elegantTextHeight="false"
 			android:ellipsize="end"
 			android:lines="1"
+			android:padding="4dp"
 			android:textAppearance="?attr/textAppearanceLabelSmall"
 			tools:text="@tools:sample/lorem" />
 

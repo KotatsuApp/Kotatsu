@@ -12,4 +12,5 @@ enum class SearchSuggestionType(
 	QUERIES_SUGGEST(R.string.suggested_queries),
 	MANGA(R.string.content_type_manga),
 	SOURCES(R.string.remote_sources),
+	AUTHORS(R.string.authors),
 }

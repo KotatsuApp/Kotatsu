@@ -639,4 +639,5 @@
 	<string name="search_suggestions">Search suggestions</string>
 	<string name="recent_queries">Recent queries</string>
 	<string name="suggested_queries">Suggested queries</string>
+	<string name="authors">Authors</string>
 </resources>

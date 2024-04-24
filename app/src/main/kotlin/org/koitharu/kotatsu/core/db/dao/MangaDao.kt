@@ -28,6 +28,9 @@ abstract class MangaDao {
 	@Query("SELECT * FROM manga WHERE source = :source")
 	abstract suspend fun findAllBySource(source: String): List<MangaWithTags>
 
+	@Query("SELECT author FROM manga WHERE author LIKE :query GROUP BY author ORDER BY COUNT(author) DESC LIMIT :limit")
+	abstract suspend fun findAuthors(query: String, limit: Int): List<String>
+
 	@Transaction
 	@Query("SELECT * FROM manga WHERE (title LIKE :query OR alt_title LIKE :query) AND manga_id IN (SELECT manga_id FROM favourites UNION SELECT manga_id FROM history) LIMIT :limit")
 	abstract suspend fun searchByTitle(query: String, limit: Int): List<MangaWithTags>

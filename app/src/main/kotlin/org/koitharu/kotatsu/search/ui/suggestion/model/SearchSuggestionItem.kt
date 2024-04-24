@@ -36,6 +36,15 @@ sealed interface SearchSuggestionItem : ListModel {
 		}
 	}
 
+	data class Author(
+		val name: String,
+	) : SearchSuggestionItem {
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is Author && name == other.name
+		}
+	}
+
 	data class Source(
 		val source: MangaSource,
 		val isEnabled: Boolean,

@@ -12,7 +12,9 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingStart="?listPreferredItemPaddingStart"
+		android:paddingTop="6dp"
 		android:paddingEnd="?listPreferredItemPaddingEnd"
+		android:paddingBottom="12dp"
 		app:singleLine="true" />
 
 </HorizontalScrollView>

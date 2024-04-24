@@ -31,9 +31,10 @@ import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 import javax.inject.Inject
 
 private const val DEBOUNCE_TIMEOUT = 500L
-private const val MAX_MANGA_ITEMS = 6
+private const val MAX_MANGA_ITEMS = 12
 private const val MAX_QUERY_ITEMS = 16
 private const val MAX_HINTS_ITEMS = 3
+private const val MAX_AUTHORS_ITEMS = 2
 private const val MAX_TAGS_ITEMS = 8
 private const val MAX_SOURCES_ITEMS = 6
 
@@ -128,6 +129,11 @@ class SearchSuggestionViewModel @Inject constructor(
 		} else {
 			null
 		}
+		val authorsDeferred = if (SearchSuggestionType.AUTHORS in types) {
+			async { repository.getAuthorsSuggestion(searchQuery, MAX_AUTHORS_ITEMS) }
+		} else {
+			null
+		}
 		val tagsDeferred = if (SearchSuggestionType.GENRES in types) {
 			async { repository.getTagsSuggestion(searchQuery, MAX_TAGS_ITEMS, null) }
 		} else {
@@ -148,8 +154,9 @@ class SearchSuggestionViewModel @Inject constructor(
 		val mangaList = mangaDeferred?.await()
 		val queries = queriesDeferred?.await()
 		val hints = hintsDeferred?.await()
+		val authors = authorsDeferred?.await()
 
-		buildList(queries.sizeOrZero() + sources.sizeOrZero() + hints.sizeOrZero() + 2) {
+		buildList(queries.sizeOrZero() + sources.sizeOrZero() + authors.sizeOrZero() + hints.sizeOrZero() + 2) {
 			if (!tags.isNullOrEmpty()) {
 				add(SearchSuggestionItem.Tags(mapTags(tags)))
 			}
@@ -158,6 +165,7 @@ class SearchSuggestionViewModel @Inject constructor(
 			}
 			sources?.mapTo(this) { SearchSuggestionItem.Source(it, it in enabledSources) }
 			queries?.mapTo(this) { SearchSuggestionItem.RecentQuery(it) }
+			authors?.mapTo(this) { SearchSuggestionItem.Author(it) }
 			hints?.mapTo(this) { SearchSuggestionItem.Hint(it) }
 		}
 	}

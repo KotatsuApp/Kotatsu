@@ -9,6 +9,7 @@ import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
@@ -59,6 +60,7 @@ private fun searchSuggestionMangaGridAD(
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			defaultPlaceholders(context)
 			allowRgb565(true)
+			transformations(TrimTransformation())
 			source(item.source)
 			enqueueWith(coil)
 		}

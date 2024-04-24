@@ -10,6 +10,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTag
@@ -35,19 +36,17 @@ class MangaSearchRepository @Inject constructor(
 ) {
 
 	suspend fun getMangaSuggestion(query: String, limit: Int, source: MangaSource?): List<Manga> {
-		if (query.isEmpty()) {
-			return emptyList()
-		}
-		val skipNsfw = settings.isNsfwContentDisabled
-		return if (source != null) {
-			db.getMangaDao().searchByTitle("%$query%", source.name, limit)
-		} else {
-			db.getMangaDao().searchByTitle("%$query%", limit)
+		return when {
+			query.isEmpty() -> db.getSuggestionDao().getRandom(limit).map { MangaWithTags(it.manga, it.tags) }
+			source != null -> db.getMangaDao().searchByTitle("%$query%", source.name, limit)
+			else -> db.getMangaDao().searchByTitle("%$query%", limit)
 		}.let {
-			if (skipNsfw) it.filterNot { x -> x.manga.isNsfw } else it
+			if (settings.isNsfwContentDisabled) it.filterNot { x -> x.manga.isNsfw } else it
+		}.map {
+			it.toManga()
+		}.sortedBy { x ->
+			x.title.levenshteinDistance(query)
 		}
-			.map { it.toManga() }
-			.sortedBy { x -> x.title.levenshteinDistance(query) }
 	}
 
 	suspend fun getQuerySuggestion(
@@ -90,10 +89,21 @@ class MangaSearchRepository @Inject constructor(
 		return titles.shuffled().take(limit)
 	}
 
+	suspend fun getAuthorsSuggestion(
+		query: String,
+		limit: Int,
+	): List<String> {
+		if (query.isEmpty()) {
+			return emptyList()
+		}
+		return db.getMangaDao().findAuthors("$query%", limit)
+	}
+
 	suspend fun getTagsSuggestion(query: String, limit: Int, source: MangaSource?): List<MangaTag> {
 		return when {
 			query.isNotEmpty() && source != null -> db.getTagsDao()
 				.findTags(source.name, "%$query%", limit)
+
 			query.isNotEmpty() -> db.getTagsDao().findTags("%$query%", limit)
 			source != null -> db.getTagsDao().findPopularTags(source.name, limit)
 			else -> db.getTagsDao().findPopularTags(limit)

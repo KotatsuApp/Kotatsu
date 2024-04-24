@@ -36,8 +36,8 @@
 	<dimen name="side_card_offset">8dp</dimen>
 	<dimen name="webtoon_pages_gap">24dp</dimen>
 
-	<dimen name="search_suggestions_manga_height">124dp</dimen>
-	<dimen name="search_suggestions_manga_spacing">4dp</dimen>
+	<dimen name="search_suggestions_manga_height">142dp</dimen>
+	<dimen name="search_suggestions_manga_spacing">6dp</dimen>
 
 	<dimen name="card_indicator_size">32dp</dimen>
 	<dimen name="card_indicator_size_small">24dp</dimen>
