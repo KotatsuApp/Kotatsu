@@ -212,6 +212,7 @@ class ReaderActivity :
 			viewBinding.toastView.hide()
 		}
 		viewBinding.toolbarBottom.invalidateMenu()
+		invalidateOptionsMenu()
 	}
 
 	override fun onGridTouch(area: TapGridArea): Boolean {

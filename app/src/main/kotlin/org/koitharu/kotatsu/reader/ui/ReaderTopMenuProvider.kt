@@ -19,7 +19,7 @@ class ReaderTopMenuProvider(
 	override fun onPrepareMenu(menu: Menu) {
 		menu.findItem(R.id.action_bookmark)?.let { bookmarkItem ->
 			val hasPages = viewModel.content.value.pages.isNotEmpty()
-			bookmarkItem.isVisible = hasPages
+			bookmarkItem.isEnabled = hasPages
 			if (hasPages) {
 				val hasBookmark = viewModel.isBookmarkAdded.value
 				bookmarkItem.setTitle(if (hasBookmark) R.string.bookmark_remove else R.string.bookmark_add)
