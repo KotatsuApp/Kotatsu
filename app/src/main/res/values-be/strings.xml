@@ -621,4 +621,14 @@
     <string name="show_updated">Паказаць абноўлена</string>
     <string name="webtoon_gaps">Прабелы ў рэжыме манхвы</string>
     <string name="webtoon_gaps_summary">Паказваць вертыкальныя прамежкі паміж старонкамі ў рэжыме манхвы</string>
+    <string name="search_suggestions">Пошукавыя прапановы</string>
+    <string name="recent_queries">Нядаўнія запыты</string>
+    <string name="suggested_queries">Прапанаваныя запыты</string>
+    <string name="pin_navigation_ui_summary">Не хаваць навігацыйную панэль і радок пошуку пры пракрутцы</string>
+    <string name="authors">Аўтары</string>
+    <string name="less_frequently">Радзей</string>
+    <string name="more_frequently">Часцей</string>
+    <string name="frequency_of_check">Частата праверкі</string>
+    <string name="new_chapters_pattern">%1$s: %2$d</string>
+    <string name="pin_navigation_ui">Замацаваць інтэрфейс навігацыі</string>
 </resources>
