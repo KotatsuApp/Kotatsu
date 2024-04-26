@@ -580,4 +580,5 @@
     <string name="fullscreen_mode">Mode layar penuh</string>
     <string name="reader_fullscreen_summary">Sembunyikan status sistem dan bilah navigasi</string>
     <string name="automatic">Otomatis</string>
+    <string name="default_webtoon_zoom_out">Zoom webtoon default</string>
 </resources>
