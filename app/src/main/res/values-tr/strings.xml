@@ -627,4 +627,8 @@
     <string name="less_frequently">Daha seyrek</string>
     <string name="more_frequently">Daha sık</string>
     <string name="pin_navigation_ui_summary">Kaydırma sırasında gezinme çubuğu ve arama görünümü gizlenmesin</string>
+    <string name="search_suggestions">Arama önerileri</string>
+    <string name="recent_queries">Son sorgular</string>
+    <string name="suggested_queries">Önerilen sorgular</string>
+    <string name="authors">Yazarlar</string>
 </resources>
