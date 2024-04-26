@@ -400,7 +400,7 @@
     <string name="invalid_value_message">无效值</string>
     <string name="network">网络</string>
     <string name="restore_summary">从以前创建的备份恢复</string>
-    <string name="show_pages_numbers_summary">在右下角显示页码</string>
+    <string name="show_pages_numbers_summary">在屏幕右下角显示页码</string>
     <string name="clear_source_cookies_summary">仅清除特定域名的 Cookies，大多数情况下会使网站授权失效</string>
     <string name="data_and_privacy">数据与隐私</string>
     <string name="reader_info_bar_summary">在屏幕顶部显示当前时间和阅读进度</string>
@@ -625,6 +625,10 @@
     <string name="frequency_of_check">检查更新频率</string>
     <string name="new_chapters_pattern">%1$s: %2$d</string>
     <string name="pin_navigation_ui_summary">当上下滑动时不隐藏导航栏和搜索框</string>
-    <string name="more_frequently">频率较高</string>
-    <string name="less_frequently">频率较低</string>
+    <string name="more_frequently">高频率</string>
+    <string name="less_frequently">低频率</string>
+    <string name="authors">作者</string>
+    <string name="search_suggestions">搜索建议</string>
+    <string name="suggested_queries">建议搜索</string>
+    <string name="recent_queries">最近搜索</string>
 </resources>
