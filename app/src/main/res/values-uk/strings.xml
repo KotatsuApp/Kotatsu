@@ -621,4 +621,14 @@
     <string name="show_updated">Показати оновлено</string>
     <string name="fix">Виправити</string>
     <string name="missing_storage_permission">Немає дозволу на доступ до манґи на зовнішній пам’яті</string>
+    <string name="search_suggestions">Пошукові пропозиції</string>
+    <string name="recent_queries">Останні запити</string>
+    <string name="suggested_queries">Пропоновані запити</string>
+    <string name="authors">Автори</string>
+    <string name="less_frequently">Рідше</string>
+    <string name="more_frequently">Частіше</string>
+    <string name="frequency_of_check">Частота перевірки</string>
+    <string name="new_chapters_pattern">%1$s: %2$d</string>
+    <string name="pin_navigation_ui">Закріпити інтерфейс навігації</string>
+    <string name="pin_navigation_ui_summary">Не ховати навігаційну панель та рядок пошуку під час прокручування</string>
 </resources>
