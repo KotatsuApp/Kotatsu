@@ -152,11 +152,11 @@ class ScrobblingSelectorViewModel @Inject constructor(
 			val history = historyRepository.getOne(manga)
 			currentScrobbler.updateScrobblingInfo(
 				mangaId = manga.id,
-				rating = prevInfo?.rating ?: manga.rating,
-				status = prevInfo?.status ?: if (history == null) {
-					ScrobblingStatus.PLANNED
-				} else {
-					ScrobblingStatus.READING
+				rating = prevInfo?.rating ?: 0f,
+				status = prevInfo?.status ?: when {
+					history == null -> ScrobblingStatus.PLANNED
+					history.percent == 1f -> ScrobblingStatus.COMPLETED
+					else -> ScrobblingStatus.READING
 				},
 				comment = prevInfo?.comment,
 			)
