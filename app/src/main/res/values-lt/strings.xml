@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chapter_d_of_d">%1$d skyrius iš %2$d</string>
+    <string name="close">Uždaryti</string>
+    <string name="try_again">Bandykite dar kartą</string>
+    <string name="clear_history">Išvalyti istoriją</string>
+    <string name="nothing_found">Nieko nerasta</string>
+    <string name="history_is_empty">Istorijos dar nėra</string>
+    <string name="read">Skaityti</string>
+    <string name="you_have_not_favourites_yet">Mėgstamiausių dar nėra</string>
+    <string name="add_new_category">Nauja kategorija</string>
+    <string name="add">Pridėti</string>
+    <string name="save">Išsaugoti</string>
+    <string name="search">Paieška</string>
+    <string name="computing_">Skaičiuojama…</string>
+    <string name="new_chapters">Nauji skyriai</string>
+    <string name="local_storage">Vietos saugykla</string>
+    <string name="favourites">Favoritai</string>
+    <string name="history">Istorija</string>
+    <string name="error_occurred">Atsitiko klaida</string>
+    <string name="network_error">Tinklo klaida</string>
+    <string name="details">Detalės</string>
+    <string name="chapters">Skyriai</string>
+    <string name="list">Sąrašas</string>
+    <string name="detailed_list">Detalus sąrašas</string>
+    <string name="grid">Tinklelis</string>
+    <string name="settings">Nustatymai</string>
+    <string name="loading_">Kraunasi…</string>
+    <string name="search_manga">Ieškoti manga</string>
+    <string name="remote_sources">Manga šaltiniai</string>
+    <string name="manga_downloading_">Atsisiunčiama…</string>
+</resources>

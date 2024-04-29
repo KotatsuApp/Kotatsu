@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="new_chapters">
+        <item quantity="one">%1$d naujas skyrius</item>
+        <item quantity="few">%1$d nauji skyriai</item>
+        <item quantity="other">%1$d naujų skyrių</item>
+    </plurals>
+    <plurals name="items">
+        <item quantity="one">%1$d pranešimas</item>
+        <item quantity="few">%1$d pranešimai</item>
+        <item quantity="other">%1$d pranešimų</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="one">prieš %1$d min</item>
+        <item quantity="few">prieš %1$d min</item>
+        <item quantity="other">prieš %1$d min</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="one">%1$d skyrius</item>
+        <item quantity="few">%1$d skyriai</item>
+        <item quantity="other">%1$d skyrių</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">%1$d val</item>
+        <item quantity="few">%1$d val</item>
+        <item quantity="other">%1$d val</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d min</item>
+        <item quantity="few">%1$d min</item>
+        <item quantity="other">%1$d min</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="one">prieš %1$d val</item>
+        <item quantity="few">prieš %1$d val</item>
+        <item quantity="other">prieš %1$d val</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">prieš %1$d dieną</item>
+        <item quantity="few">prieš %1$d dienas</item>
+        <item quantity="other">prieš %1$d dienų</item>
+    </plurals>
+    <plurals name="months_ago">
+        <item quantity="one">prieš %1$d mėn</item>
+        <item quantity="few">prieš %1$d mėn</item>
+        <item quantity="other">prieš %1$d mėn</item>
+    </plurals>
+</resources>
