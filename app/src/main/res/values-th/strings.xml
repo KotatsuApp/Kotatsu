@@ -394,4 +394,9 @@
     <string name="reading_time_estimation">แสดงเวลาในการอ่านโดยประมาณ</string>
     <string name="reading_time_estimation_summary">การประมาณเวลา ผลลัพธ์อาจจะไม่ถูกต้อง</string>
     <string name="location">ตำแหน่ง</string>
+    <string name="theme_name_mion">มิอง</string>
+    <string name="theme_name_sakura">ซากุระ</string>
+    <string name="nothing_here">ไม่มีอะไรอยู่ที่นี่</string>
+    <string name="theme_name_asuka">อาซึกะ</string>
+    <string name="theme_name_miku">มิกุ</string>
 </resources>
