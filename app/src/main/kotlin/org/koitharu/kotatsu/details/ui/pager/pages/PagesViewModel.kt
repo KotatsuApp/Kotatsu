@@ -75,7 +75,9 @@ class PagesViewModel @Inject constructor(
 
 	private suspend fun doInit(state: State) {
 		chaptersLoader.init(state.details)
-		val initialChapterId = state.history?.chapterId ?: state.details.allChapters.firstOrNull()?.id ?: return
+		val initialChapterId = state.history?.chapterId?.takeIf {
+			chaptersLoader.peekChapter(it) != null
+		} ?: state.details.allChapters.firstOrNull()?.id ?: return
 		if (!chaptersLoader.hasPages(initialChapterId)) {
 			chaptersLoader.loadSingleChapter(initialChapterId)
 		}

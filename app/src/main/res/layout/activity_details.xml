@@ -262,7 +262,7 @@
 				android:id="@+id/chips_tags"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
+				android:layout_marginTop="@dimen/margin_normal"
 				android:paddingStart="@dimen/screen_padding"
 				android:paddingEnd="@dimen/screen_padding"
 				app:chipSpacingHorizontal="6dp"

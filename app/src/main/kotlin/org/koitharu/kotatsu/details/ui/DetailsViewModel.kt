@@ -84,8 +84,8 @@ class DetailsViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
-	private val mangaId = intent.mangaId
 	private var loadingJob: Job
+	val mangaId = intent.mangaId
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val onShowTip = MutableEventFlow<Unit>()
@@ -131,7 +131,7 @@ class DetailsViewModel @Inject constructor(
 	)
 
 	val historyInfo: StateFlow<HistoryInfo> = combine(
-		manga,
+		details,
 		selectedBranch,
 		history,
 		interactor.observeIncognitoMode(manga),

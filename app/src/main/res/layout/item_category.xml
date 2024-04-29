@@ -104,13 +104,13 @@
 		android:layout_marginEnd="4dp"
 		android:contentDescription="@string/check_for_new_chapters"
 		app:layout_constraintBottom_toBottomOf="@id/textView_subtitle"
-		app:layout_constraintEnd_toStartOf="@id/imageView_visible"
+		app:layout_constraintEnd_toStartOf="@id/imageView_hidden"
 		app:layout_constraintStart_toEndOf="@id/textView_subtitle"
 		app:layout_constraintTop_toTopOf="@id/textView_subtitle"
 		app:srcCompat="@drawable/ic_notification" />
 
 	<ImageView
-		android:id="@+id/imageView_visible"
+		android:id="@+id/imageView_hidden"
 		android:layout_width="16dp"
 		android:layout_height="16dp"
 		android:contentDescription="@string/show_on_shelf"
@@ -118,7 +118,7 @@
 		app:layout_constraintEnd_toEndOf="@id/textView_title"
 		app:layout_constraintStart_toEndOf="@id/imageView_tracker"
 		app:layout_constraintTop_toTopOf="@id/textView_subtitle"
-		app:srcCompat="@drawable/ic_eye" />
+		app:srcCompat="@drawable/ic_eye_off" />
 
 	<ImageView
 		android:id="@+id/imageView_edit"

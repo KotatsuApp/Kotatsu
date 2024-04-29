@@ -53,7 +53,7 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 		binding.editSearch.onFocusChangeListener = this
 		binding.editSearch.setOnEditorActionListener(this)
 		viewModel.content.observe(viewLifecycleOwner, adapter)
-		addSheetCallback(this)
+		addSheetCallback(this, viewLifecycleOwner)
 		disableFitToContents()
 	}
 

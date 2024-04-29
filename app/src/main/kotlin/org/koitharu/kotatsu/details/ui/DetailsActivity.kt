@@ -97,7 +97,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ellipsize
-import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
+import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.MangaListActivity
@@ -320,7 +320,7 @@ class DetailsActivity :
 
 	override fun onItemClick(item: Bookmark, view: View) {
 		startActivity(
-			IntentBuilder(view.context).bookmark(item).incognito(true).build(),
+			ReaderActivity.IntentBuilder(view.context).bookmark(item).incognito(true).build(),
 		)
 		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
@@ -535,17 +535,18 @@ class DetailsActivity :
 	}
 
 	private fun onHistoryChanged(info: HistoryInfo, isLoading: Boolean) = with(viewBinding) {
-		buttonRead.setTitle(if (info.history != null) R.string._continue else R.string.read)
+		buttonRead.setTitle(if (info.canContinue) R.string._continue else R.string.read)
 		buttonRead.subtitle = when {
 			isLoading -> getString(R.string.loading_)
 			info.isIncognitoMode -> getString(R.string.incognito_mode)
+			info.isChapterMissing -> getString(R.string.chapter_is_missing)
 			info.currentChapter >= 0 -> getString(R.string.chapter_d_of_d, info.currentChapter + 1, info.totalChapters)
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
 			info.totalChapters == -1 -> getString(R.string.error_occurred)
 			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
 		}
 		buttonRead.setProgress(info.history?.percent?.coerceIn(0f, 1f) ?: 0f, true)
-		buttonDownload?.isEnabled = info.isValid
+		buttonDownload?.isEnabled = info.isValid && info.canDownload
 		buttonRead.isEnabled = info.isValid
 	}
 
@@ -605,7 +606,7 @@ class DetailsActivity :
 				.show()
 		} else {
 			startActivity(
-				IntentBuilder(this)
+				ReaderActivity.IntentBuilder(this)
 					.manga(manga)
 					.branch(viewModel.selectedBranchValue)
 					.incognito(isIncognitoMode)

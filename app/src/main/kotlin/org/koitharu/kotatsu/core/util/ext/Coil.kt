@@ -93,7 +93,7 @@ fun ImageRequest.Builder.defaultPlaceholders(context: Context): ImageRequest.Bui
 	val errorColor = ColorUtils.blendARGB(
 		context.getThemeColor(materialR.attr.colorErrorContainer),
 		context.getThemeColor(materialR.attr.colorBackgroundFloating),
-		0.4f,
+		0.25f,
 	)
 	return placeholder(AnimatedPlaceholderDrawable(context))
 		.fallback(ColorDrawable(context.getThemeColor(materialR.attr.colorSurfaceContainer)))

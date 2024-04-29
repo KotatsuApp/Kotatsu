@@ -18,8 +18,8 @@ import com.google.android.material.R as materialR
 
 class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, TimeAnimator.TimeListener {
 
-	private val colorLow = context.getThemeColor(materialR.attr.colorSurfaceContainerLow)
-	private val colorHigh = context.getThemeColor(materialR.attr.colorSurfaceContainerHigh)
+	private val colorLow = context.getThemeColor(materialR.attr.colorBackgroundFloating)
+	private val colorHigh = context.getThemeColor(materialR.attr.colorSurfaceContainer)
 	private var currentColor: Int = colorLow
 	private var alpha: Int = 255
 	private val interpolator = FastOutSlowInInterpolator()

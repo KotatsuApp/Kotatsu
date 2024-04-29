@@ -22,6 +22,10 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -131,14 +135,17 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 		dialog?.window?.statusBarColor = defaultStatusBarColor
 	}
 
-	fun addSheetCallback(callback: AdaptiveSheetCallback) {
-		val b = behavior ?: return
+	fun addSheetCallback(callback: AdaptiveSheetCallback, lifecycleOwner: LifecycleOwner): Boolean {
+		val b = behavior ?: return false
 		b.addCallback(callback)
 		val rootView = dialog?.findViewById<View>(materialR.id.design_bottom_sheet)
 			?: dialog?.findViewById(materialR.id.coordinator)
+			?: view
 		if (rootView != null) {
 			callback.onStateChanged(rootView, b.state)
 		}
+		lifecycleOwner.lifecycle.addObserver(CallbackRemoveObserver(b, callback))
+		return true
 	}
 
 	protected abstract fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): B
@@ -146,7 +153,8 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 	protected open fun onViewBindingCreated(binding: B, savedInstanceState: Bundle?) = Unit
 
 	fun startSupportActionMode(callback: ActionMode.Callback): ActionMode? {
-		val delegate = (dialog as? AppCompatDialog)?.delegate ?: (activity as? AppCompatActivity)?.delegate ?: return null
+		val delegate =
+			(dialog as? AppCompatDialog)?.delegate ?: (activity as? AppCompatActivity)?.delegate ?: return null
 		return delegate.startSupportActionMode(callback)
 	}
 
@@ -290,6 +298,18 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 			if (mode != null) {
 				dispatchSupportActionModeFinished(mode)
 			}
+		}
+	}
+
+	private class CallbackRemoveObserver(
+		private val behavior: AdaptiveSheetBehavior,
+		private val callback: AdaptiveSheetCallback,
+	) : DefaultLifecycleObserver {
+
+		override fun onDestroy(owner: LifecycleOwner) {
+			super.onDestroy(owner)
+			owner.lifecycle.removeObserver(this)
+			behavior.removeCallback(callback)
 		}
 	}
 }

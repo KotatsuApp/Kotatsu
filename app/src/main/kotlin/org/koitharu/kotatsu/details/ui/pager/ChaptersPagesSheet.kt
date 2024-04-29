@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.details.ui.pager
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.core.view.isVisible
@@ -12,6 +13,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior
+import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior.Companion.STATE_COLLAPSED
+import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior.Companion.STATE_DRAGGING
+import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior.Companion.STATE_EXPANDED
+import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior.Companion.STATE_SETTLING
+import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
@@ -28,7 +35,7 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), ActionModeListener {
+class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), ActionModeListener, AdaptiveSheetCallback {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -58,11 +65,20 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		binding.toolbar.addMenuProvider(menuProvider)
 
 		actionModeDelegate?.addListener(this, viewLifecycleOwner)
+		addSheetCallback(this, viewLifecycleOwner)
 
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.pager, this))
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.pager, null))
 		viewModel.onDownloadStarted.observeEvent(viewLifecycleOwner, DownloadStartedObserver(binding.pager))
 		viewModel.newChaptersCount.observe(viewLifecycleOwner, ::onNewChaptersChanged)
+	}
+
+	override fun onStateChanged(sheet: View, newState: Int) {
+		if (newState == STATE_DRAGGING || newState == STATE_SETTLING) {
+			return
+		}
+		val isActionModeStarted = actionModeDelegate?.isActionModeStarted == true
+		viewBinding?.toolbar?.menuView?.isVisible = newState != STATE_COLLAPSED && !isActionModeStarted
 	}
 
 	override fun onActionModeStarted(mode: ActionMode) {
@@ -72,7 +88,8 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 
 	override fun onActionModeFinished(mode: ActionMode) {
 		unlock()
-		viewBinding?.toolbar?.menuView?.isVisible = true
+		val state = behavior?.state ?: STATE_EXPANDED
+		viewBinding?.toolbar?.menuView?.isVisible = state != STATE_COLLAPSED
 	}
 
 	override fun expandAndLock() {

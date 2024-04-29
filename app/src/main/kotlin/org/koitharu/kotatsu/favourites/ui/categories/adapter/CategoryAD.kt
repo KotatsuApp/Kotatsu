@@ -10,6 +10,7 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.view.View.OnTouchListener
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.LifecycleOwner
@@ -78,7 +79,7 @@ fun categoryAD(
 			)
 		}
 		binding.imageViewTracker.isVisible = item.category.isTrackingEnabled
-		binding.imageViewVisible.isVisible = item.category.isVisibleInLibrary
+		binding.imageViewHidden.isGone = item.category.isVisibleInLibrary
 		repeat(coverViews.size) { i ->
 			val cover = item.covers.getOrNull(i)
 			coverViews[i].newImageRequest(lifecycleOwner, cover?.url)?.run {
