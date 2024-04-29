@@ -31,6 +31,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.transform.CircleCropTransformation
 import coil.util.CoilUtils
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,10 +53,10 @@ import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.image.ChipIconTarget
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.util.BottomSheetClollapseCallback
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
-import org.koitharu.kotatsu.core.util.Event
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.crossfade
@@ -68,6 +69,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -123,6 +125,7 @@ class DetailsActivity :
 	private val viewModel: DetailsViewModel by viewModels()
 
 	private lateinit var chaptersBadge: ViewBadge
+	private lateinit var menuProvider: DetailsMenuProvider
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -134,7 +137,7 @@ class DetailsActivity :
 		viewBinding.buttonRead.setOnClickListener(this)
 		viewBinding.buttonRead.setOnLongClickListener(this)
 		viewBinding.buttonRead.setOnContextClickListenerCompat(this)
-		viewBinding.buttonChapters?.setOnClickListener(this)
+		viewBinding.buttonDownload?.setOnClickListener(this)
 		viewBinding.infoLayout.chipBranch.setOnClickListener(this)
 		viewBinding.infoLayout.chipSize.setOnClickListener(this)
 		viewBinding.infoLayout.chipSource.setOnClickListener(this)
@@ -152,8 +155,10 @@ class DetailsActivity :
 		viewBinding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
 		viewBinding.chipsTags.onChipClickListener = this
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
-
-		chaptersBadge = ViewBadge(viewBinding.buttonChapters ?: viewBinding.buttonRead, this)
+		viewBinding.containerBottomSheet?.let { BottomSheetBehavior.from(it) }?.let { behavior ->
+			onBackPressedDispatcher.addCallback(BottomSheetClollapseCallback(behavior))
+		}
+		chaptersBadge = ViewBadge(viewBinding.buttonRead, this)
 
 		viewModel.details.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
@@ -187,21 +192,20 @@ class DetailsActivity :
 			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
 			.observeEvent(this, DownloadStartedObserver(viewBinding.scrollView))
 
-		addMenuProvider(
-			DetailsMenuProvider(
-				activity = this,
-				viewModel = viewModel,
-				snackbarHost = viewBinding.scrollView,
-				appShortcutManager = shortcutManager,
-			),
+		menuProvider = DetailsMenuProvider(
+			activity = this,
+			viewModel = viewModel,
+			snackbarHost = viewBinding.scrollView,
+			appShortcutManager = shortcutManager,
 		)
+		addMenuProvider(menuProvider)
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_read -> openReader(isIncognitoMode = false)
 			R.id.chip_branch -> showBranchPopupMenu(v)
-			R.id.button_chapters -> ChaptersPagesSheet.show(supportFragmentManager)
+			R.id.button_download -> DownloadDialogHelper(v, viewModel).show(menuProvider)
 
 			R.id.chip_author -> {
 				val manga = viewModel.manga.value ?: return
@@ -417,7 +421,7 @@ class DetailsActivity :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		val button = viewBinding.buttonChapters ?: return
+		val button = viewBinding.buttonDownload ?: return
 		if (isLoading) {
 			button.setImageDrawable(
 				CircularProgressDrawable(this).also {
@@ -427,7 +431,7 @@ class DetailsActivity :
 				},
 			)
 		} else {
-			button.setImageResource(R.drawable.ic_list_sheet)
+			button.setImageResource(R.drawable.ic_download)
 		}
 	}
 
@@ -525,6 +529,9 @@ class DetailsActivity :
 		viewBinding.scrollView.updatePadding(
 			bottom = insets.bottom,
 		)
+		viewBinding.containerBottomSheet?.let { bs ->
+			window.setNavigationBarTransparentCompat(this, bs.elevation, 0.9f)
+		}
 	}
 
 	private fun onHistoryChanged(info: HistoryInfo, isLoading: Boolean) = with(viewBinding) {
@@ -538,7 +545,7 @@ class DetailsActivity :
 			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
 		}
 		buttonRead.setProgress(info.history?.percent?.coerceIn(0f, 1f) ?: 0f, true)
-		buttonChapters?.isEnabled = info.isValid
+		buttonDownload?.isEnabled = info.isValid
 		buttonRead.isEnabled = info.isValid
 	}
 

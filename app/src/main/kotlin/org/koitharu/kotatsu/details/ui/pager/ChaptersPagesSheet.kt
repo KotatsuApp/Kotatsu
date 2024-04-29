@@ -17,8 +17,8 @@ import org.koitharu.kotatsu.core.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
 import org.koitharu.kotatsu.core.util.ext.menuView
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
@@ -46,7 +46,6 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		val args = arguments ?: Bundle.EMPTY
 		val defaultTab = args.getInt(ARG_TAB, settings.defaultDetailsTab)
 		val adapter = ChaptersPagesAdapter(this, settings.isPagesTabEnabled || defaultTab == TAB_PAGES)
-		binding.pager.recyclerView?.isNestedScrollingEnabled = false
 		binding.pager.offscreenPageLimit = adapter.itemCount
 		binding.pager.adapter = adapter
 		binding.pager.doOnPageChanged(::onPageChanged)
@@ -58,11 +57,12 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		onBackPressedDispatcher.addCallback(viewLifecycleOwner, menuProvider)
 		binding.toolbar.addMenuProvider(menuProvider)
 
-		actionModeDelegate.addListener(this, viewLifecycleOwner)
+		actionModeDelegate?.addListener(this, viewLifecycleOwner)
 
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.pager, this))
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.pager, null))
 		viewModel.onDownloadStarted.observeEvent(viewLifecycleOwner, DownloadStartedObserver(binding.pager))
+		viewModel.newChaptersCount.observe(viewLifecycleOwner, ::onNewChaptersChanged)
 	}
 
 	override fun onActionModeStarted(mode: ActionMode) {
@@ -95,6 +95,16 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 	private fun onPageChanged(position: Int) {
 		viewBinding?.toolbar?.invalidateMenu()
 		settings.lastDetailsTab = position
+	}
+
+	private fun onNewChaptersChanged(counter: Int) {
+		val tab = viewBinding?.tabs?.getTabAt(0) ?: return
+		if (counter == 0) {
+			tab.removeBadge()
+		} else {
+			val badge = tab.orCreateBadge
+			badge.number = counter
+		}
 	}
 
 	companion object {

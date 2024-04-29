@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -7,14 +7,16 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:clipToPadding="false"
-	android:orientation="vertical"
 	tools:viewBindingType="android.view.ViewGroup">
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:fitsSystemWindows="true">
+		android:elevation="0dp"
+		android:fitsSystemWindows="true"
+		app:elevation="0dp"
+		app:liftOnScroll="false">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
@@ -29,11 +31,13 @@
 		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:scrollIndicators="top"
-		android:scrollbars="vertical">
+		android:scrollbars="vertical"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
-			android:layout_height="match_parent">
+			android:layout_height="match_parent"
+			android:paddingBottom="@dimen/details_bs_peek_height">
 
 			<com.google.android.material.imageview.ShapeableImageView
 				android:id="@+id/imageView_cover"
@@ -184,7 +188,7 @@
 				android:paddingHorizontal="6dp"
 				android:paddingVertical="8dp"
 				app:baseColor="?colorSecondaryContainer"
-				app:layout_constraintEnd_toStartOf="@id/button_chapters"
+				app:layout_constraintEnd_toStartOf="@id/button_download"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/info_layout"
 				app:progressColor="?colorPrimary"
@@ -196,19 +200,19 @@
 				tools:title="@string/read" />
 
 			<ImageView
-				android:id="@+id/button_chapters"
+				android:id="@+id/button_download"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
 				android:layout_marginEnd="16dp"
 				android:background="@drawable/bg_circle_button"
 				android:backgroundTint="?colorSecondaryContainer"
-				android:contentDescription="@string/chapters"
+				android:contentDescription="@string/download"
 				android:scaleType="centerInside"
 				app:layout_constraintBottom_toBottomOf="@id/button_read"
 				app:layout_constraintDimensionRatio="1"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toTopOf="@id/button_read"
-				app:srcCompat="@drawable/ic_list_sheet" />
+				app:srcCompat="@drawable/ic_download" />
 
 			<TextView
 				android:id="@+id/textView_description_title"
@@ -390,4 +394,21 @@
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
 	</androidx.core.widget.NestedScrollView>
-</LinearLayout>
+
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@+id/container_bottom_sheet"
+		android:name="org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet"
+		style="@style/Widget.Material3.BottomSheet"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:elevation="6dp"
+		android:nestedScrollingEnabled="false"
+		android:outlineProvider="background"
+		app:behavior_fitToContents="false"
+		app:behavior_halfExpandedRatio="0.8"
+		app:behavior_hideable="false"
+		app:behavior_peekHeight="@dimen/details_bs_peek_height"
+		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+		tools:layout="@layout/sheet_chapters_pages" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

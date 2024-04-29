@@ -57,6 +57,6 @@
 		android:layout_height="wrap_content"
 		android:layout_marginEnd="?android:listPreferredItemPaddingEnd"
 		android:contentDescription="@string/downloaded"
-		app:srcCompat="@drawable/ic_save_ok" />
+		app:srcCompat="@drawable/ic_storage" />
 
 </LinearLayout>

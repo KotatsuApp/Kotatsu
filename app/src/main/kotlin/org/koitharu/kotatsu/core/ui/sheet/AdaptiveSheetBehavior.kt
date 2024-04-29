@@ -2,7 +2,10 @@ package org.koitharu.kotatsu.core.ui.sheet
 
 import android.app.Dialog
 import android.view.View
+import android.view.ViewParent
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ancestors
+import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -109,7 +112,16 @@ sealed class AdaptiveSheetBehavior {
 		const val STATE_DRAGGING = SideSheetBehavior.STATE_DRAGGING
 		const val STATE_HIDDEN = SideSheetBehavior.STATE_HIDDEN
 
-		fun from(dialog: Dialog?): AdaptiveSheetBehavior? = when (dialog) {
+		fun from(fragment: DialogFragment): AdaptiveSheetBehavior? {
+			from(fragment.dialog)?.let { return it }
+			val rootView = fragment.view ?: return null
+			for (parent in rootView.ancestors) {
+				from(parent)?.let { return it }
+			}
+			return null
+		}
+
+		private fun from(dialog: Dialog?): AdaptiveSheetBehavior? = when (dialog) {
 			is BottomSheetDialog -> Bottom(dialog.behavior)
 			is SideSheetDialog -> Side(dialog.behavior)
 			else -> null
@@ -121,5 +133,10 @@ sealed class AdaptiveSheetBehavior {
 				is SideSheetBehavior<*> -> Side(behavior)
 				else -> null
 			}
+
+		private fun from(parent: ViewParent): AdaptiveSheetBehavior? {
+			val lp = ((parent as? View)?.layoutParams as? CoordinatorLayout.LayoutParams) ?: return null
+			return from(lp)
+		}
 	}
 }
