@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.util.ext
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
@@ -89,9 +90,14 @@ fun ImageRequest.Builder.source(source: MangaSource?): ImageRequest.Builder {
 }
 
 fun ImageRequest.Builder.defaultPlaceholders(context: Context): ImageRequest.Builder {
+	val errorColor = ColorUtils.blendARGB(
+		context.getThemeColor(materialR.attr.colorErrorContainer),
+		context.getThemeColor(materialR.attr.colorBackgroundFloating),
+		0.4f,
+	)
 	return placeholder(AnimatedPlaceholderDrawable(context))
 		.fallback(ColorDrawable(context.getThemeColor(materialR.attr.colorSurfaceContainer)))
-		.error(ColorDrawable(context.getThemeColor(materialR.attr.colorErrorContainer)))
+		.error(ColorDrawable(errorColor))
 }
 
 fun ImageRequest.Builder.addListener(listener: ImageRequest.Listener): ImageRequest.Builder {

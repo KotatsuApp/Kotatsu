@@ -11,6 +11,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.graphics.ColorUtils
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.animation.ArgbEvaluatorCompat
+import org.koitharu.kotatsu.core.util.ext.animatorDurationScale
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import kotlin.math.abs
 import com.google.android.material.R as materialR
@@ -22,7 +23,7 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 	private var currentColor: Int = colorLow
 	private var alpha: Int = 255
 	private val interpolator = FastOutSlowInInterpolator()
-	private val period = 2000
+	private val period = 2000 * context.animatorDurationScale
 	private val timeAnimator = TimeAnimator()
 
 	init {

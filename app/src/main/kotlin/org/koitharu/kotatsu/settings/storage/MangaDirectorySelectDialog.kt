@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -19,6 +21,7 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.showDistinct
+import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.DialogDirectorySelectBinding
 
 @AndroidEntryPoint
@@ -68,7 +71,9 @@ class MangaDirectorySelectDialog : AlertDialogFragment<DialogDirectorySelectBind
 	}
 
 	private fun pickCustomDirectory() {
-		permissionRequestLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+		if (!permissionRequestLauncher.tryLaunch(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+			Toast.makeText(context ?: return, R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
+		}
 	}
 
 	companion object {
