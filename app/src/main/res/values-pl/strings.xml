@@ -630,4 +630,5 @@
     <string name="new_chapters_pattern">%1$s: %2$d</string>
     <string name="pin_navigation_ui">Przypnij interfejs nawigacji</string>
     <string name="pin_navigation_ui_summary">Nie ukrywaj paska nawigacji i paska wyszukiwania podczas przewijania</string>
+	<string name="search_suggestions">Sugestie wyszukiwania</string>
 </resources>

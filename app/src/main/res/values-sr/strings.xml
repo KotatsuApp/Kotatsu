@@ -621,4 +621,14 @@
     <string name="webtoon_gaps_summary">Прикажи усправне празнине између страница у Вебтун режиму</string>
     <string name="last_used">Последњи пут коришћен</string>
     <string name="webtoon_gaps">Празнине у режиму Вебтун-а</string>
+    <string name="search_suggestions">Предлози за претрагу</string>
+    <string name="recent_queries">Недавни упити</string>
+    <string name="suggested_queries">Предложени упити</string>
+    <string name="authors">Аутори</string>
+    <string name="less_frequently">Ређе</string>
+    <string name="more_frequently">Чешће</string>
+    <string name="frequency_of_check">Учесталост провера</string>
+    <string name="new_chapters_pattern">%1$s: %2$d</string>
+    <string name="pin_navigation_ui">Закачи навигациону траку</string>
+    <string name="pin_navigation_ui_summary">Не сакривај навигациону траку и приказ претраге при листању</string>
 </resources>

@@ -631,4 +631,5 @@
     <string name="recent_queries">हाल के प्रश्न</string>
     <string name="suggested_queries">सुझाए गए प्रश्न</string>
     <string name="authors">लेखक</string>
+    <string name="blocked_by_server_message">आपको सर्वर द्वारा ब्लॉक कर दिया गया है. किसी भिन्न नेटवर्क कनेक्शन (VPN, प्रॉक्सी, आदि) का उपयोग करने का प्रयास करें</string>
 </resources>
