@@ -40,6 +40,7 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -88,7 +89,7 @@ open class RemoteListViewModel @Inject constructor(
 				list.isNullOrEmpty() && error != null -> add(
 					error.toErrorState(
 						canRetry = true,
-						secondaryAction = if (browserUrl != null) R.string.open_in_browser else 0,
+						secondaryAction = if (error !is NotFoundException && browserUrl != null) R.string.open_in_browser else 0,
 					),
 				)
 

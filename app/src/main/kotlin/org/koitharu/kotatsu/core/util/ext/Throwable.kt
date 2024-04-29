@@ -12,6 +12,7 @@ import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.BadBackupFormatException
 import org.koitharu.kotatsu.core.exceptions.CaughtException
+import org.koitharu.kotatsu.core.exceptions.CloudFlareBlockedException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
@@ -38,6 +39,7 @@ private const val IMAGE_FORMAT_NOT_SUPPORTED = "Image format not supported"
 fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
 	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required)
+	is CloudFlareBlockedException -> resources.getString(R.string.blocked_by_server_message)
 	is ActivityNotFoundException,
 	is UnsupportedOperationException,
 	-> resources.getString(R.string.operation_not_supported)
@@ -78,6 +80,8 @@ fun Throwable.getDisplayIcon() = when (this) {
 	is UnknownHostException,
 	is SocketTimeoutException,
 	-> R.drawable.ic_plug_large
+
+	is CloudFlareBlockedException -> R.drawable.ic_denied_large
 
 	else -> R.drawable.ic_error_large
 }
