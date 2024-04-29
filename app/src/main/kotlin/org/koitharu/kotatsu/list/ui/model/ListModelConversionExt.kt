@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.list.ui.model
 
+import androidx.annotation.StringRes
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -74,11 +75,12 @@ suspend fun <C : MutableCollection<in MangaItemModel>> List<Manga>.toUi(
 	ListMode.GRID -> mapTo(destination) { it.toGridModel(extraProvider) }
 }
 
-fun Throwable.toErrorState(canRetry: Boolean = true) = ErrorState(
+fun Throwable.toErrorState(canRetry: Boolean = true, @StringRes secondaryAction: Int = 0) = ErrorState(
 	exception = this,
 	icon = getDisplayIcon(),
 	canRetry = canRetry,
 	buttonText = ExceptionResolver.getResolveStringId(this).ifZero { R.string.try_again },
+	secondaryButtonText = secondaryAction,
 )
 
 fun Throwable.toErrorFooter() = ErrorFooter(

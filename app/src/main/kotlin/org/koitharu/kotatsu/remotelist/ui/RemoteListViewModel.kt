@@ -20,6 +20,7 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -43,6 +44,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.concatUrl
 import javax.inject.Inject
 
 private const val FILTER_MIN_INTERVAL = 250L
@@ -72,6 +74,9 @@ open class RemoteListViewModel @Inject constructor(
 	val isSearchAvailable: Boolean
 		get() = repository.isSearchSupported
 
+	val browserUrl: String?
+		get() = (repository as? RemoteMangaRepository)?.domain?.let { "https://$it" }
+
 	override val content = combine(
 		mangaList.map { it?.skipNsfwIfNeeded() },
 		listMode,
@@ -80,7 +85,13 @@ open class RemoteListViewModel @Inject constructor(
 	) { list, mode, error, hasNext ->
 		buildList(list?.size?.plus(2) ?: 2) {
 			when {
-				list.isNullOrEmpty() && error != null -> add(error.toErrorState(canRetry = true))
+				list.isNullOrEmpty() && error != null -> add(
+					error.toErrorState(
+						canRetry = true,
+						secondaryAction = if (browserUrl != null) R.string.open_in_browser else 0,
+					),
+				)
+
 				list == null -> add(LoadingState)
 				list.isEmpty() -> add(createEmptyState(canResetFilter = header.value.isFilterApplied))
 				else -> {

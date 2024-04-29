@@ -29,4 +29,13 @@
 		android:layout_marginTop="16dp"
 		android:text="@string/try_again" />
 
+	<Button
+		android:id="@+id/button_secondary"
+		style="@style/Widget.Material3.Button.TextButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		tools:text="@string/open_in_browser"
+		tools:visibility="visible" />
+
 </LinearLayout>

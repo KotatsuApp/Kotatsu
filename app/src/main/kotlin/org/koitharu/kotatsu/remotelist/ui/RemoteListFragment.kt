@@ -10,10 +10,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.fragment.app.viewModels
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
@@ -68,6 +70,15 @@ class RemoteListFragment : MangaListFragment(), FilterOwner {
 
 	override fun onEmptyActionClick() {
 		viewModel.resetFilter()
+	}
+
+	override fun onSecondaryErrorActionClick(error: Throwable) {
+		viewModel.browserUrl?.also { url ->
+			startActivity(
+				BrowserActivity.newIntent(requireContext(), url, viewModel.source, viewModel.source.title),
+			)
+		} ?: Snackbar.make(requireViewBinding().recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
+			.show()
 	}
 
 	private inner class RemoteListMenuProvider :
