@@ -124,7 +124,6 @@ class DetailsActivity :
 
 	private val viewModel: DetailsViewModel by viewModels()
 
-	private lateinit var chaptersBadge: ViewBadge
 	private lateinit var menuProvider: DetailsMenuProvider
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,11 +157,9 @@ class DetailsActivity :
 		viewBinding.containerBottomSheet?.let { BottomSheetBehavior.from(it) }?.let { behavior ->
 			onBackPressedDispatcher.addCallback(BottomSheetClollapseCallback(behavior))
 		}
-		chaptersBadge = ViewBadge(viewBinding.buttonRead, this)
 
 		viewModel.details.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
-		viewModel.newChaptersCount.observe(this, ::onNewChaptersChanged)
 		viewModel.onError
 			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
 			.observeEvent(this, DetailsErrorObserver(this, viewModel, exceptionResolver))
@@ -379,15 +376,6 @@ class DetailsActivity :
 		chip.textAndVisible = time?.formatShort(chip.resources)
 	}
 
-	private fun onDescriptionChanged(description: CharSequence?) {
-		val tv = viewBinding.textViewDescription
-		if (description.isNullOrBlank()) {
-			tv.setText(R.string.no_description)
-		} else {
-			tv.text = description
-		}
-	}
-
 	private fun onLocalSizeChanged(size: Long) {
 		val chip = viewBinding.infoLayout.chipSize
 		if (size == 0L) {
@@ -548,10 +536,6 @@ class DetailsActivity :
 		buttonRead.setProgress(info.history?.percent?.coerceIn(0f, 1f) ?: 0f, true)
 		buttonDownload?.isEnabled = info.isValid && info.canDownload
 		buttonRead.isEnabled = info.isValid
-	}
-
-	private fun onNewChaptersChanged(count: Int) {
-		chaptersBadge.counter = count
 	}
 
 	private fun showBranchPopupMenu(v: View) {

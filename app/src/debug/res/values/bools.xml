@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 	<bool name="leak_canary_add_launcher_icon" tools:node="replace">false</bool>
+	<bool name="wi_launcher_icon_enabled" tools:node="replace">false</bool>
 </resources>

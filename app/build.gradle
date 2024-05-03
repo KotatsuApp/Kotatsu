@@ -146,7 +146,7 @@ dependencies {
 	implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
-	debugImplementation 'com.github.Koitharu:WorkInspector:2c2919f9f1'
+	debugImplementation 'com.github.Koitharu:WorkInspector:5778dd1747'
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20240303'

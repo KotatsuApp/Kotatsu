@@ -8,14 +8,12 @@ import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.domain.PageLoader
-import org.koitharu.workinspector.WorkInspector
 
 class KotatsuApp : BaseApp() {
 
 	override fun attachBaseContext(base: Context) {
 		super.attachBaseContext(base)
 		enableStrictMode()
-		WorkInspector.setLauncherIconEnabled(base, false)
 	}
 
 	private fun enableStrictMode() {

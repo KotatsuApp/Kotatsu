@@ -88,7 +88,6 @@ class DetailsViewModel @Inject constructor(
 	val mangaId = intent.mangaId
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
-	val onShowTip = MutableEventFlow<Unit>()
 	val onSelectChapter = MutableEventFlow<Long>()
 	val onDownloadStarted = MutableEventFlow<Unit>()
 
@@ -160,11 +159,6 @@ class DetailsViewModel @Inject constructor(
 				0L
 			}
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(5000), 0L)
-
-	@Deprecated("")
-	val description = details
-		.map { it?.description }
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, null)
 
 	val onMangaRemoved = MutableEventFlow<Manga>()
 	val isScrobblingAvailable: Boolean

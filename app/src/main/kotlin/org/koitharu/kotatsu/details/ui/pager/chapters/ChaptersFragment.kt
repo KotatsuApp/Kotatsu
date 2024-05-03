@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
@@ -25,6 +26,7 @@ import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
+import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
@@ -91,12 +93,7 @@ class ChaptersFragment :
 		viewModel.isChaptersEmpty.observe(viewLifecycleOwner) {
 			binding.textViewHolder.isVisible = it
 		}
-		viewModel.onSelectChapter.observeEvent(viewLifecycleOwner) { chapterId ->
-			chaptersAdapter?.observeItems()?.firstOrNull { items ->
-				items.any { x -> x is ChapterListItem && x.chapter.id == chapterId }
-			}
-			selectionController?.onItemLongClick(chapterId)
-		}
+		viewModel.onSelectChapter.observeEvent(viewLifecycleOwner, ::onSelectChapter)
 	}
 
 	override fun onDestroyView() {
@@ -270,6 +267,22 @@ class ChaptersFragment :
 			}
 		} else {
 			adapter.items = list
+		}
+	}
+
+	private suspend fun onSelectChapter(chapterId: Long) {
+		val position = withContext(Dispatchers.Default) {
+			val predicate: (ListModel) -> Boolean = { x -> x is ChapterListItem && x.chapter.id == chapterId }
+			val items = chaptersAdapter?.observeItems()?.firstOrNull { it.any(predicate) }
+			items?.indexOfFirst(predicate) ?: -1
+		}
+		if (position >= 0) {
+			selectionController?.onItemLongClick(chapterId)
+			val lm = (viewBinding?.recyclerViewChapters?.layoutManager as? LinearLayoutManager)
+			if (lm != null) {
+				val offset = resources.getDimensionPixelOffset(R.dimen.chapter_list_item_height)
+				lm.scrollToPositionWithOffset(position, offset)
+			}
 		}
 	}
 

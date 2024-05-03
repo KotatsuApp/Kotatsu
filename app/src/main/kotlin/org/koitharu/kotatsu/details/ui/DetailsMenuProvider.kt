@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ShareHelper
-import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
 import org.koitharu.kotatsu.download.ui.dialog.DownloadOption
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
@@ -135,7 +134,6 @@ class DetailsMenuProvider(
 			is DownloadOption.WholeManga -> null
 			is DownloadOption.SelectionHint -> {
 				viewModel.startChaptersSelection()
-				ChaptersPagesSheet.show(activity.supportFragmentManager, ChaptersPagesSheet.TAB_CHAPTERS)
 				return
 			}
 
