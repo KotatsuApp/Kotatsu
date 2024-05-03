@@ -42,6 +42,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
+import androidx.webkit.WebViewCompat
+import androidx.webkit.WebViewFeature
 import androidx.work.CoroutineWorker
 import com.google.android.material.elevation.ElevationOverlayProvider
 import kotlinx.coroutines.Dispatchers
@@ -59,7 +61,6 @@ import okio.use
 import org.json.JSONException
 import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -263,6 +264,9 @@ fun WebView.configureForParser(userAgentOverride: String?) = with(settings) {
 	javaScriptEnabled = true
 	domStorageEnabled = true
 	mediaPlaybackRequiresUserGesture = false
+	if (WebViewFeature.isFeatureSupported(WebViewFeature.MUTE_AUDIO)) {
+		WebViewCompat.setAudioMuted(this@configureForParser, true)
+	}
 	databaseEnabled = true
 	if (userAgentOverride != null) {
 		userAgentString = userAgentOverride

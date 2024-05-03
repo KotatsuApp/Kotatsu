@@ -103,6 +103,13 @@ class SettingsActivity :
 			true
 		}
 
+		R.id.action_works -> {
+			val intent = Intent()
+			intent.component = ComponentName(this, "org.koitharu.workinspector.WorkInspectorActivity")
+			startActivity(intent)
+			true
+		}
+
 		else -> super.onOptionsItemSelected(item)
 	}
 

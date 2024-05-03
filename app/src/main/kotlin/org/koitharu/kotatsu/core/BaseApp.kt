@@ -87,7 +87,7 @@ open class BaseApp : Application(), Configuration.Provider {
 		WorkServiceStopHelper(workManagerProvider).setup()
 	}
 
-	override fun attachBaseContext(base: Context?) {
+	override fun attachBaseContext(base: Context) {
 		super.attachBaseContext(base)
 		initAcra {
 			buildConfigClass = BuildConfig::class.java

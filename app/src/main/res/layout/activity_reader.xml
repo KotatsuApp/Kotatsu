@@ -58,7 +58,7 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
 		android:layout_margin="8dp"
-		app:cardBackgroundColor="?colorBackgroundFloating"
+		app:cardBackgroundColor="?colorSurfaceContainer"
 		app:layout_insetEdge="bottom">
 
 		<com.google.android.material.appbar.MaterialToolbar
@@ -102,7 +102,7 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:background="@drawable/bg_card"
-		android:backgroundTint="?colorBackgroundFloating"
+		android:backgroundTint="?colorSurfaceContainer"
 		android:gravity="center_horizontal"
 		android:orientation="vertical"
 		android:outlineProvider="background"

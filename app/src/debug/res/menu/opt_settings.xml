@@ -13,4 +13,9 @@
 		android:title="@string/check_for_new_chapters"
 		app:showAsAction="never" />
 
+	<item
+		android:id="@id/action_works"
+		android:title="Works"
+		app:showAsAction="never" />
+
 </menu>
