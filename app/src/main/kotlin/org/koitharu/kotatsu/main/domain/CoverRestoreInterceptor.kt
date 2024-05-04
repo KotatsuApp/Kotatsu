@@ -5,6 +5,7 @@ import coil.intercept.Interceptor
 import coil.network.HttpException
 import coil.request.ErrorResult
 import coil.request.ImageResult
+import okio.FileNotFoundException
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
@@ -13,11 +14,14 @@ import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import java.net.UnknownHostException
 import java.util.Collections
 import javax.inject.Inject
+import javax.net.ssl.SSLException
 
 class CoverRestoreInterceptor @Inject constructor(
 	private val dataRepository: MangaDataRepository,
@@ -56,6 +60,8 @@ class CoverRestoreInterceptor @Inject constructor(
 		}
 		val restored = runCatchingCancellable {
 			restoreMangaImpl(manga)
+		}.onFailure { e ->
+			e.printStackTraceDebug()
 		}.getOrDefault(false)
 		if (restored) {
 			blacklist.remove(key)
@@ -84,6 +90,8 @@ class CoverRestoreInterceptor @Inject constructor(
 		}
 		val restored = runCatchingCancellable {
 			restoreBookmarkImpl(bookmark)
+		}.onFailure { e ->
+			e.printStackTraceDebug()
 		}.getOrDefault(false)
 		if (restored) {
 			blacklist.remove(key)
@@ -105,6 +113,11 @@ class CoverRestoreInterceptor @Inject constructor(
 	}
 
 	private fun Throwable.shouldRestore(): Boolean {
-		return this is HttpException || this is HttpStatusException || this is ParseException
+		return this is HttpException
+			|| this is HttpStatusException
+			|| this is SSLException
+			|| this is ParseException
+			|| this is UnknownHostException
+			|| this is FileNotFoundException
 	}
 }
