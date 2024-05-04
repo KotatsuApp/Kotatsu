@@ -420,8 +420,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		}
 		viewBinding.container.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = if (isPinned) {
-				(bottomNavBar?.measureHeight() ?: 0)
-					.coerceAtLeast(resources.getDimensionPixelSize(materialR.dimen.m3_bottom_nav_min_height))
+				(bottomNavBar?.measureHeight()
+					?.coerceAtLeast(resources.getDimensionPixelSize(materialR.dimen.m3_bottom_nav_min_height)) ?: 0)
 			} else {
 				0
 			}
