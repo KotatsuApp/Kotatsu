@@ -146,6 +146,7 @@ class ReaderActivity :
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(this))
+		viewModel.isPagesSheetEnabled.observe(this, MenuInvalidator(viewBinding.toolbarBottom))
 		viewModel.onShowToast.observeEvent(this) { msgId ->
 			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
 				.setAnchorView(viewBinding.appbarBottom)

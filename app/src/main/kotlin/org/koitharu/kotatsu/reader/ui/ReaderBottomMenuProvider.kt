@@ -22,7 +22,12 @@ class ReaderBottomMenuProvider(
 
 	override fun onPrepareMenu(menu: Menu) {
 		val hasPages = viewModel.content.value.pages.isNotEmpty()
-		menu.findItem(R.id.action_pages_thumbs).isVisible = hasPages
+		menu.findItem(R.id.action_pages_thumbs).run {
+			isVisible = hasPages
+			if (hasPages) {
+				setIcon(if (viewModel.isPagesSheetEnabled.value) R.drawable.ic_grid else R.drawable.ic_list)
+			}
+		}
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

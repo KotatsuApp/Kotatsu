@@ -51,8 +51,11 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		disableFitToContents()
 
 		val args = arguments ?: Bundle.EMPTY
-		val defaultTab = args.getInt(ARG_TAB, settings.defaultDetailsTab)
-		val adapter = ChaptersPagesAdapter(this, settings.isPagesTabEnabled || defaultTab == TAB_PAGES)
+		var defaultTab = args.getInt(ARG_TAB, settings.defaultDetailsTab)
+		val adapter = ChaptersPagesAdapter(this, settings.isPagesTabEnabled)
+		if (!adapter.isPagesTabEnabled) {
+			defaultTab = (defaultTab - 1).coerceAtLeast(TAB_CHAPTERS)
+		}
 		binding.pager.offscreenPageLimit = adapter.itemCount
 		binding.pager.adapter = adapter
 		binding.pager.doOnPageChanged(::onPageChanged)
@@ -134,9 +137,6 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		const val TAB_PAGES = 1
 		const val TAB_BOOKMARKS = 2
 		private const val ARG_TAB = "tag"
-
-		@Deprecated("")
-		private const val ARG_SHOW_PAGES = "pages"
 		private const val TAG = "ChaptersPagesSheet"
 
 		fun show(fm: FragmentManager) {

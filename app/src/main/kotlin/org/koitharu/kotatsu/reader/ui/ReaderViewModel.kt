@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -48,6 +49,7 @@ import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet.Companion.TAB_PAGES
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.history.domain.HistoryUpdateUseCase
@@ -105,6 +107,8 @@ class ReaderViewModel @Inject constructor(
 	} else mangaFlow.map {
 		it != null && historyRepository.shouldSkip(it)
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
+
+	val isPagesSheetEnabled = observeIsPagesSheetEnabled()
 
 	val content = MutableStateFlow(ReaderContent(emptyList(), null))
 	val manga: MangaDetails?
@@ -474,4 +478,9 @@ class ReaderViewModel @Inject constructor(
 		key = AppSettings.KEY_READER_ZOOM_BUTTONS,
 		valueProducer = { isReaderZoomButtonsEnabled },
 	)
+
+	private fun observeIsPagesSheetEnabled() = settings.observe()
+		.filter { it == AppSettings.KEY_PAGES_TAB || it == AppSettings.KEY_DETAILS_TAB || it == AppSettings.KEY_DETAILS_LAST_TAB }
+		.map { settings.defaultDetailsTab == TAB_PAGES }
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.defaultDetailsTab == TAB_PAGES)
 }
