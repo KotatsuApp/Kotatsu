@@ -10,6 +10,7 @@ import coil.decode.ImageSource
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
+import coil.network.HttpException
 import coil.request.Options
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -44,15 +45,17 @@ class MangaPageFetcher(
 	override suspend fun fetch(): FetchResult {
 		val repo = mangaRepositoryFactory.create(page.source)
 		val pageUrl = repo.getPageUrl(page)
-		pagesCache.get(pageUrl)?.let { file ->
-			return SourceResult(
-				source = ImageSource(
-					file = file.toOkioPath(),
-					metadata = MangaPageMetadata(page),
-				),
-				mimeType = null,
-				dataSource = DataSource.DISK,
-			)
+		if (options.diskCachePolicy.readEnabled) {
+			pagesCache.get(pageUrl)?.let { file ->
+				return SourceResult(
+					source = ImageSource(
+						file = file.toOkioPath(),
+						metadata = MangaPageMetadata(page),
+					),
+					mimeType = null,
+					dataSource = DataSource.DISK,
+				)
+			}
 		}
 		return loadPage(pageUrl)
 	}
@@ -91,8 +94,8 @@ class MangaPageFetcher(
 			else -> {
 				val request = PageLoader.createPageRequest(page, pageUrl)
 				imageProxyInterceptor.interceptPageRequest(request, okHttpClient).use { response ->
-					check(response.isSuccessful) {
-						"Invalid response: ${response.code} ${response.message} at $pageUrl"
+					if (!response.isSuccessful) {
+						throw HttpException(response)
 					}
 					val body = checkNotNull(response.body) {
 						"Null response"
@@ -122,17 +125,15 @@ class MangaPageFetcher(
 		private val imageProxyInterceptor: ImageProxyInterceptor,
 	) : Fetcher.Factory<MangaPage> {
 
-		override fun create(data: MangaPage, options: Options, imageLoader: ImageLoader): Fetcher {
-			return MangaPageFetcher(
-				okHttpClient = okHttpClient,
-				pagesCache = pagesCache,
-				options = options,
-				page = data,
-				context = context,
-				mangaRepositoryFactory = mangaRepositoryFactory,
-				imageProxyInterceptor = imageProxyInterceptor,
-			)
-		}
+		override fun create(data: MangaPage, options: Options, imageLoader: ImageLoader) = MangaPageFetcher(
+			okHttpClient = okHttpClient,
+			pagesCache = pagesCache,
+			options = options,
+			page = data,
+			context = context,
+			mangaRepositoryFactory = mangaRepositoryFactory,
+			imageProxyInterceptor = imageProxyInterceptor,
+		)
 	}
 
 	class MangaPageMetadata(val page: MangaPage) : ImageSource.Metadata()

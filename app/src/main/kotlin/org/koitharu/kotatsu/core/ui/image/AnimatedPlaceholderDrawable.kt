@@ -7,23 +7,23 @@ import android.graphics.ColorFilter
 import android.graphics.PixelFormat
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
-import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.graphics.ColorUtils
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.animation.ArgbEvaluatorCompat
-import org.koitharu.kotatsu.core.util.ext.animatorDurationScale
+import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import kotlin.math.abs
 import com.google.android.material.R as materialR
 
 class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, TimeAnimator.TimeListener {
 
-	private val colorLow = context.getThemeColor(materialR.attr.colorBackgroundFloating)
-	private val colorHigh = context.getThemeColor(materialR.attr.colorSurfaceContainer)
+	private val colorLow = context.getThemeColor(materialR.attr.colorSurfaceContainerLowest)
+	private val colorHigh = context.getThemeColor(materialR.attr.colorSurfaceContainerHighest)
 	private var currentColor: Int = colorLow
 	private var alpha: Int = 255
 	private val interpolator = FastOutSlowInInterpolator()
-	private val period = 2000 * context.animatorDurationScale
+	private val period = context.getAnimationDuration(R.integer.config_longAnimTime) * 2
 	private val timeAnimator = TimeAnimator()
 
 	init {
@@ -40,23 +40,21 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 	}
 
 	override fun setAlpha(alpha: Int) {
-		this.alpha = alpha
+		// this.alpha = alpha FIXME coil's crossfade
 	}
 
-	override fun setColorFilter(colorFilter: ColorFilter?) {
-		throw UnsupportedOperationException("ColorFilter is not supported by PlaceholderDrawable")
-	}
+	override fun setColorFilter(colorFilter: ColorFilter?) = Unit
 
 	@Deprecated("Deprecated in Java")
-	override fun getOpacity(): Int = PixelFormat.OPAQUE
+	override fun getOpacity(): Int = if (alpha == 255) PixelFormat.OPAQUE else PixelFormat.TRANSLUCENT
 
 	override fun getAlpha(): Int = alpha
 
 	override fun onTimeUpdate(animation: TimeAnimator?, totalTime: Long, deltaTime: Long) {
-		if (callback != null) {
+		callback?.also {
 			updateColor()
-			invalidateSelf()
-		}
+			it.invalidateDrawable(this)
+		} ?: stop()
 	}
 
 	override fun start() {
@@ -64,7 +62,7 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 	}
 
 	override fun stop() {
-		timeAnimator.cancel()
+		timeAnimator.end()
 	}
 
 	override fun isRunning(): Boolean = timeAnimator.isStarted

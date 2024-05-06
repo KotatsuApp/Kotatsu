@@ -54,6 +54,7 @@ import org.koitharu.kotatsu.core.ui.image.ChipIconTarget
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.BottomSheetClollapseCallback
+import org.koitharu.kotatsu.core.ui.util.BottomSheetNoHalfExpandedCallback
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
@@ -155,6 +156,7 @@ class DetailsActivity :
 		viewBinding.chipsTags.onChipClickListener = this
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
 		viewBinding.containerBottomSheet?.let { BottomSheetBehavior.from(it) }?.let { behavior ->
+			behavior.addBottomSheetCallback(BottomSheetNoHalfExpandedCallback())
 			onBackPressedDispatcher.addCallback(BottomSheetClollapseCallback(behavior))
 		}
 

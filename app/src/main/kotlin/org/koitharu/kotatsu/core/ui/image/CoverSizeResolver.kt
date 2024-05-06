@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import coil.size.Dimension
 import coil.size.Size
-import coil.size.SizeResolver
+import coil.size.ViewSizeResolver
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -16,24 +16,24 @@ private const val ASPECT_RATIO_HEIGHT = 18f
 private const val ASPECT_RATIO_WIDTH = 13f
 
 class CoverSizeResolver(
-	private val imageView: ImageView,
-) : SizeResolver {
+	override val view: ImageView,
+) : ViewSizeResolver<ImageView> {
 
 	override suspend fun size(): Size {
 		getSize()?.let { return it }
 		return suspendCancellableCoroutine { cont ->
 			val layoutListener = LayoutListener(cont)
-			imageView.addOnLayoutChangeListener(layoutListener)
+			view.addOnLayoutChangeListener(layoutListener)
 			cont.invokeOnCancellation {
-				imageView.removeOnLayoutChangeListener(layoutListener)
+				view.removeOnLayoutChangeListener(layoutListener)
 			}
 		}
 	}
 
 	private fun getSize(): Size? {
-		val lp = imageView.layoutParams
-		var width = getDimension(lp.width, imageView.width, imageView.paddingLeft + imageView.paddingRight)
-		var height = getDimension(lp.height, imageView.height, imageView.paddingTop + imageView.paddingBottom)
+		val lp = view.layoutParams
+		var width = getDimension(lp.width, view.width, view.paddingLeft + view.paddingRight)
+		var height = getDimension(lp.height, view.height, view.paddingTop + view.paddingBottom)
 		if (width == null && height == null) {
 			return null
 		}

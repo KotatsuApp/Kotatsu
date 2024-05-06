@@ -43,6 +43,7 @@ import org.koitharu.kotatsu.core.util.AcraScreenLogger
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.details.ui.pager.pages.MangaPageFetcher
+import org.koitharu.kotatsu.details.ui.pager.pages.MangaPageKeyer
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.local.data.CbzFetcher
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
@@ -101,8 +102,8 @@ interface AppModule {
 			return ImageLoader.Builder(context)
 				.okHttpClient(okHttpClient.newBuilder().cache(null).build())
 				.interceptorDispatcher(Dispatchers.Default)
-				.fetcherDispatcher(Dispatchers.IO)
-				.decoderDispatcher(Dispatchers.Default)
+				.fetcherDispatcher(Dispatchers.Default)
+				.decoderDispatcher(Dispatchers.IO)
 				.transformationDispatcher(Dispatchers.Default)
 				.diskCache(diskCacheFactory)
 				.logger(if (BuildConfig.DEBUG) DebugLogger() else null)
@@ -113,6 +114,7 @@ interface AppModule {
 						.add(SvgDecoder.Factory())
 						.add(CbzFetcher.Factory())
 						.add(FaviconFetcher.Factory(context, okHttpClient, mangaRepositoryFactory))
+						.add(MangaPageKeyer())
 						.add(pageFetcherFactory)
 						.add(imageProxyInterceptor)
 						.add(coverRestoreInterceptor)
