@@ -19,7 +19,7 @@ import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity
+import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksActivity
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.ui.BaseFragment
@@ -133,7 +133,7 @@ class ExploreFragment :
 	override fun onClick(v: View) {
 		val intent = when (v.id) {
 			R.id.button_local -> MangaListActivity.newIntent(v.context, MangaSource.LOCAL)
-			R.id.button_bookmarks -> BookmarksActivity.newIntent(v.context)
+			R.id.button_bookmarks -> AllBookmarksActivity.newIntent(v.context)
 			R.id.button_more -> SuggestionsActivity.newIntent(v.context)
 			R.id.button_downloads -> DownloadsActivity.newIntent(v.context)
 			R.id.button_random -> {

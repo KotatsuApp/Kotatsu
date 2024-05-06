@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.bookmarks.ui.BookmarksFragment
+import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
@@ -144,7 +144,7 @@ class MainNavigationDelegate(
 				R.id.nav_feed -> FeedFragment::class.java
 				R.id.nav_local -> LocalListFragment::class.java
 				R.id.nav_suggestions -> SuggestionsFragment::class.java
-				R.id.nav_bookmarks -> BookmarksFragment::class.java
+				R.id.nav_bookmarks -> AllBookmarksFragment::class.java
 				R.id.nav_updated -> UpdatesFragment::class.java
 				else -> return false
 			},
@@ -158,7 +158,7 @@ class MainNavigationDelegate(
 		is FeedFragment -> R.id.nav_feed
 		is LocalListFragment -> R.id.nav_local
 		is SuggestionsFragment -> R.id.nav_suggestions
-		is BookmarksFragment -> R.id.nav_bookmarks
+		is AllBookmarksFragment -> R.id.nav_bookmarks
 		is UpdatesFragment -> R.id.nav_updated
 		else -> 0
 	}

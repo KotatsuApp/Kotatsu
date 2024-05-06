@@ -25,7 +25,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import javax.inject.Inject
 
 @HiltViewModel
-class BookmarksViewModel @Inject constructor(
+class AllBookmarksViewModel @Inject constructor(
 	private val repository: BookmarksRepository,
 ) : BaseViewModel() {
 

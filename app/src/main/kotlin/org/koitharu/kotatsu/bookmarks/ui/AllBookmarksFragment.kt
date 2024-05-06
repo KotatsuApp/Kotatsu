@@ -17,7 +17,7 @@ import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
-import org.koitharu.kotatsu.bookmarks.ui.sheet.BookmarksAdapter
+import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
@@ -42,7 +42,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class BookmarksFragment :
+class AllBookmarksFragment :
 	BaseFragment<FragmentListSimpleBinding>(),
 	ListStateHolderListener,
 	OnListItemClickListener<Bookmark>,
@@ -55,7 +55,7 @@ class BookmarksFragment :
 	@Inject
 	lateinit var settings: AppSettings
 
-	private val viewModel by viewModels<BookmarksViewModel>()
+	private val viewModel by viewModels<AllBookmarksViewModel>()
 	private var bookmarksAdapter: BookmarksAdapter? = null
 	private var selectionController: ListSelectionController? = null
 
@@ -213,6 +213,6 @@ class BookmarksFragment :
 				"org.koitharu.kotatsu.bookmarks.ui.BookmarksFragment",
 			),
 		)
-		fun newInstance() = BookmarksFragment()
+		fun newInstance() = AllBookmarksFragment()
 	}
 }

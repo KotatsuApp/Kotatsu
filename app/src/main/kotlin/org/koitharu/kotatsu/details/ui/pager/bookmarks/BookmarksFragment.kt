@@ -2,23 +2,33 @@ package org.koitharu.kotatsu.details.ui.pager.bookmarks
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
-import org.koitharu.kotatsu.bookmarks.ui.sheet.BookmarksAdapter
+import org.koitharu.kotatsu.bookmarks.ui.BookmarksSelectionDecoration
+import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
+import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
+import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentMangaBookmarksBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.list.ui.GridSpanResolver
@@ -29,11 +39,11 @@ import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
-	OnListItemClickListener<Bookmark> {
+class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
+	OnListItemClickListener<Bookmark>, ListSelectionController.Callback2 {
 
 	private val activityViewModel by activityViewModels<DetailsViewModel>()
-	private val viewModel by viewModels<MangaBookmarksViewModel>()
+	private val viewModel by viewModels<BookmarksViewModel>()
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -43,6 +53,7 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 
 	private var bookmarksAdapter: BookmarksAdapter? = null
 	private var spanResolver: GridSpanResolver? = null
+	private var selectionController: ListSelectionController? = null
 
 	private val spanSizeLookup = SpanSizeLookup()
 	private val listCommitCallback = Runnable {
@@ -61,10 +72,16 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 	override fun onViewBindingCreated(binding: FragmentMangaBookmarksBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		spanResolver = GridSpanResolver(binding.root.resources)
+		selectionController = ListSelectionController(
+			appCompatDelegate = checkNotNull(findAppCompatDelegate()),
+			decoration = BookmarksSelectionDecoration(binding.root.context),
+			registryOwner = this,
+			callback = this,
+		)
 		bookmarksAdapter = BookmarksAdapter(
 			coil = coil,
 			lifecycleOwner = viewLifecycleOwner,
-			clickListener = this@MangaBookmarksFragment,
+			clickListener = this@BookmarksFragment,
 			headerClickListener = null,
 		)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged) // before rv initialization
@@ -78,13 +95,21 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 				it.spanSizeLookup = spanSizeLookup
 				it.spanCount = checkNotNull(spanResolver).spanCount
 			}
+			selectionController?.attachToRecyclerView(this)
 		}
 		viewModel.content.observe(viewLifecycleOwner) { bookmarksAdapter?.setItems(it, listCommitCallback) }
+
+		viewModel.onError.observeEvent(
+			viewLifecycleOwner,
+			SnackbarErrorObserver(binding.recyclerView, this),
+		)
+		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 	}
 
 	override fun onDestroyView() {
 		spanResolver = null
 		bookmarksAdapter = null
+		selectionController = null
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
 	}
@@ -92,6 +117,9 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun onItemClick(item: Bookmark, view: View) {
+		if (selectionController?.onItemClick(item.pageId) == true) {
+			return
+		}
 		val listener = findParentCallback(ReaderNavigationCallback::class.java)
 		if (listener != null && listener.onBookmarkSelected(item)) {
 			dismissParentDialog()
@@ -102,6 +130,40 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 				.incognito(true)
 				.build()
 			startActivity(intent)
+		}
+	}
+
+	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
+		return selectionController?.onItemLongClick(item.pageId) ?: false
+	}
+
+	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
+		requireViewBinding().recyclerView.invalidateItemDecorations()
+	}
+
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		mode: ActionMode,
+		menu: Menu,
+	): Boolean {
+		mode.menuInflater.inflate(R.menu.mode_bookmarks, menu)
+		return true
+	}
+
+	override fun onActionItemClicked(
+		controller: ListSelectionController,
+		mode: ActionMode,
+		item: MenuItem,
+	): Boolean {
+		return when (item.itemId) {
+			R.id.action_remove -> {
+				val ids = selectionController?.snapshot() ?: return false
+				viewModel.removeBookmarks(ids)
+				mode.finish()
+				true
+			}
+
+			else -> false
 		}
 	}
 

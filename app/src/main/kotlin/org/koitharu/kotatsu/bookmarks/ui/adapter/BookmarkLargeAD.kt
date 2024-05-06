@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.bookmarks.ui.sheet
+package org.koitharu.kotatsu.bookmarks.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader

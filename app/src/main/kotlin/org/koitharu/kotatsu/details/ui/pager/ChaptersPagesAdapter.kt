@@ -5,7 +5,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.details.ui.pager.bookmarks.MangaBookmarksFragment
+import org.koitharu.kotatsu.details.ui.pager.bookmarks.BookmarksFragment
 import org.koitharu.kotatsu.details.ui.pager.chapters.ChaptersFragment
 import org.koitharu.kotatsu.details.ui.pager.pages.PagesFragment
 
@@ -19,8 +19,8 @@ class ChaptersPagesAdapter(
 
 	override fun createFragment(position: Int): Fragment = when (position) {
 		0 -> ChaptersFragment()
-		1 -> if (isPagesTabEnabled) PagesFragment() else MangaBookmarksFragment()
-		2 -> MangaBookmarksFragment()
+		1 -> if (isPagesTabEnabled) PagesFragment() else BookmarksFragment()
+		2 -> BookmarksFragment()
 		else -> throw IllegalArgumentException("Invalid position $position")
 	}
 

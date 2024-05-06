@@ -122,7 +122,7 @@
 			android:name="org.koitharu.kotatsu.favourites.ui.FavouritesActivity"
 			android:label="@string/favourites" />
 		<activity
-			android:name="org.koitharu.kotatsu.bookmarks.ui.BookmarksActivity"
+			android:name="org.koitharu.kotatsu.bookmarks.ui.AllBookmarksActivity"
 			android:label="@string/bookmarks" />
 		<activity
 			android:name="org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity"

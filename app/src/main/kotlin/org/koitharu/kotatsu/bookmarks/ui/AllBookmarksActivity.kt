@@ -16,7 +16,7 @@ import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.SnackbarOwner
 
 @AndroidEntryPoint
-class BookmarksActivity :
+class AllBookmarksActivity :
 	BaseActivity<ActivityContainerBinding>(),
 	AppBarOwner,
 	SnackbarOwner {
@@ -35,7 +35,7 @@ class BookmarksActivity :
 		if (fm.findFragmentById(R.id.container) == null) {
 			fm.commit {
 				setReorderingAllowed(true)
-				replace(R.id.container, BookmarksFragment::class.java, null)
+				replace(R.id.container, AllBookmarksFragment::class.java, null)
 			}
 		}
 	}
@@ -49,6 +49,6 @@ class BookmarksActivity :
 
 	companion object {
 
-		fun newIntent(context: Context) = Intent(context, BookmarksActivity::class.java)
+		fun newIntent(context: Context) = Intent(context, AllBookmarksActivity::class.java)
 	}
 }
