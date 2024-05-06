@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.BoundsScrollListener
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
@@ -93,7 +94,7 @@ class PagesFragment :
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = thumbnailsAdapter
 			setHasFixedSize(true)
-			isNestedScrollingEnabled = false
+			PagerNestedScrollHelper(this).bind(viewLifecycleOwner)
 			addOnLayoutChangeListener(spanResolver)
 			addOnScrollListener(ScrollListener().also { scrollListener = it })
 			(layoutManager as GridLayoutManager).let {
@@ -115,17 +116,6 @@ class PagesFragment :
 		thumbnailsAdapter = null
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
-	}
-
-	override fun onPause() {
-		// required for BottomSheetBehavior
-		requireViewBinding().recyclerView.isNestedScrollingEnabled = false
-		super.onPause()
-	}
-
-	override fun onResume() {
-		requireViewBinding().recyclerView.isNestedScrollingEnabled = true
-		super.onResume()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit

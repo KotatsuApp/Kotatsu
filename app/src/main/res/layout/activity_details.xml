@@ -406,7 +406,7 @@
 		android:nestedScrollingEnabled="false"
 		android:outlineProvider="background"
 		app:behavior_fitToContents="false"
-		app:behavior_halfExpandedRatio="0.00001"
+		app:behavior_halfExpandedRatio="0.8"
 		app:behavior_hideable="false"
 		app:behavior_peekHeight="@dimen/details_bs_peek_height"
 		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"

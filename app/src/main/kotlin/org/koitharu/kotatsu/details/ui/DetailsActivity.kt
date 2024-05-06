@@ -156,7 +156,6 @@ class DetailsActivity :
 		viewBinding.chipsTags.onChipClickListener = this
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
 		viewBinding.containerBottomSheet?.let { BottomSheetBehavior.from(it) }?.let { behavior ->
-			behavior.addBottomSheetCallback(BottomSheetNoHalfExpandedCallback())
 			onBackPressedDispatcher.addCallback(BottomSheetClollapseCallback(behavior))
 		}
 

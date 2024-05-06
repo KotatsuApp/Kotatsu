@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
@@ -80,7 +81,7 @@ class ChaptersFragment :
 			addItemDecoration(TypedListSpacingDecoration(context, true))
 			checkNotNull(selectionController).attachToRecyclerView(this)
 			setHasFixedSize(true)
-			isNestedScrollingEnabled = false
+			PagerNestedScrollHelper(this).bind(viewLifecycleOwner)
 			adapter = chaptersAdapter
 			ChapterGridSpanHelper.attach(this)
 		}
@@ -99,17 +100,6 @@ class ChaptersFragment :
 		chaptersAdapter = null
 		selectionController = null
 		super.onDestroyView()
-	}
-
-	override fun onPause() {
-		// required for BottomSheetBehavior
-		requireViewBinding().recyclerViewChapters.isNestedScrollingEnabled = false
-		super.onPause()
-	}
-
-	override fun onResume() {
-		requireViewBinding().recyclerViewChapters.isNestedScrollingEnabled = true
-		super.onResume()
 	}
 
 	override fun onItemClick(item: ChapterListItem, view: View) {

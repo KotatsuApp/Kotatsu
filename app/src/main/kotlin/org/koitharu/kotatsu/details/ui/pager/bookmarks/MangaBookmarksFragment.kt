@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.bookmarks.ui.sheet.BookmarksAdapter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
 import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -69,6 +70,8 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged) // before rv initialization
 		with(binding.recyclerView) {
 			addItemDecoration(TypedListSpacingDecoration(context, false))
+			setHasFixedSize(true)
+			PagerNestedScrollHelper(this).bind(viewLifecycleOwner)
 			adapter = bookmarksAdapter
 			addOnLayoutChangeListener(spanResolver)
 			(layoutManager as GridLayoutManager).let {
@@ -76,7 +79,7 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 				it.spanCount = checkNotNull(spanResolver).spanCount
 			}
 		}
-		viewModel.content.observe(viewLifecycleOwner, checkNotNull(bookmarksAdapter))
+		viewModel.content.observe(viewLifecycleOwner) { bookmarksAdapter?.setItems(it, listCommitCallback) }
 	}
 
 	override fun onDestroyView() {
@@ -84,17 +87,6 @@ class MangaBookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 		bookmarksAdapter = null
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
-	}
-
-	override fun onPause() {
-		// required for BottomSheetBehavior
-		requireViewBinding().recyclerView.isNestedScrollingEnabled = false
-		super.onPause()
-	}
-
-	override fun onResume() {
-		requireViewBinding().recyclerView.isNestedScrollingEnabled = true
-		super.onResume()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
