@@ -54,12 +54,10 @@ import org.koitharu.kotatsu.core.ui.image.ChipIconTarget
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.BottomSheetClollapseCallback
-import org.koitharu.kotatsu.core.ui.util.BottomSheetNoHalfExpandedCallback
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.FileSize
-import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
@@ -534,7 +532,9 @@ class DetailsActivity :
 			info.totalChapters == -1 -> getString(R.string.error_occurred)
 			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
 		}
-		buttonRead.setProgress(info.history?.percent?.coerceIn(0f, 1f) ?: 0f, true)
+		val isFirstCall = buttonRead.tag == null
+		buttonRead.tag = Unit
+		buttonRead.setProgress(info.history?.percent?.coerceIn(0f, 1f) ?: 0f, !isFirstCall)
 		buttonDownload?.isEnabled = info.isValid && info.canDownload
 		buttonRead.isEnabled = info.isValid
 	}

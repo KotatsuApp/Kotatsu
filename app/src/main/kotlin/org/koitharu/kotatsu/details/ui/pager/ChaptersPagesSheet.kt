@@ -87,8 +87,9 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		if (newState == STATE_DRAGGING || newState == STATE_SETTLING) {
 			return
 		}
+		val binding = viewBinding ?: return
 		val isActionModeStarted = actionModeDelegate?.isActionModeStarted == true
-		viewBinding?.toolbar?.menuView?.isVisible = newState != STATE_COLLAPSED && !isActionModeStarted
+		binding.toolbar.menuView?.isVisible = newState != STATE_COLLAPSED && !isActionModeStarted
 	}
 
 	override fun onActionModeStarted(mode: ActionMode) {

@@ -34,7 +34,7 @@
 		app:layout_constraintTop_toTopOf="@+id/imageView_cover"
 		tools:text="@tools:sample/lorem" />
 
-	<TextView
+	<org.koitharu.kotatsu.core.ui.widgets.MultilineEllipsizeTextView
 		android:id="@+id/textView_subtitle"
 		android:layout_width="0dp"
 		android:layout_height="0dp"

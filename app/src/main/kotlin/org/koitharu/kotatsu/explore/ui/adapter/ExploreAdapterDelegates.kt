@@ -85,7 +85,6 @@ fun recommendationMangaItemAD(
 	binding.root.setOnClickListener { v ->
 		itemClickListener.onItemClick(item.manga, v)
 	}
-
 	bind {
 		binding.textViewTitle.text = item.manga.title
 		binding.textViewSubtitle.textAndVisible = item.subtitle

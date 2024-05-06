@@ -27,7 +27,5 @@ fun MangaChapter.toListItem(
 	return ChapterListItem(
 		chapter = this,
 		flags = flags,
-		uploadDateMs = uploadDate,
-		groupPosition = 0,
 	)
 }

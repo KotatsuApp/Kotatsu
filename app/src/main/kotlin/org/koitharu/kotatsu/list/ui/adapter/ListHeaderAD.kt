@@ -4,14 +4,14 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import org.koitharu.kotatsu.databinding.ItemHeaderButtonBinding
+import org.koitharu.kotatsu.databinding.ItemHeaderBinding
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 fun listHeaderAD(
 	listener: ListHeaderClickListener?,
-) = adapterDelegateViewBinding<ListHeader, ListModel, ItemHeaderButtonBinding>(
-	{ inflater, parent -> ItemHeaderButtonBinding.inflate(inflater, parent, false) },
+) = adapterDelegateViewBinding<ListHeader, ListModel, ItemHeaderBinding>(
+	{ inflater, parent -> ItemHeaderBinding.inflate(inflater, parent, false) },
 ) {
 	var badge: BadgeDrawable? = null
 

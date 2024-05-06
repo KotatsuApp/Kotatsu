@@ -26,18 +26,9 @@ fun chapterListItemAD(
 	itemView.setOnClickListener(eventListener)
 	itemView.setOnLongClickListener(eventListener)
 
-	bind { payloads ->
+	bind {
 		binding.textViewTitle.text = item.chapter.name
 		binding.textViewDescription.textAndVisible = item.description
-		itemView.setBackgroundResource(
-			when {
-				item.isGroupStart && item.isGroupEnd -> R.drawable.bg_card_full
-				item.isGroupStart -> R.drawable.bg_card_top
-				item.isGroupMiddle -> R.drawable.bg_card_none
-				item.isGroupEnd -> R.drawable.bg_card_bottom
-				else -> R.drawable.list_selector
-			},
-		)
 		when {
 			item.isCurrent -> {
 				binding.textViewTitle.drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_current_chapter)

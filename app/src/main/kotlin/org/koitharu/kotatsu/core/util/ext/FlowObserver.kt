@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.util.ext
 
-import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -28,11 +27,16 @@ fun <T> Flow<T>.observe(owner: LifecycleOwner, minState: Lifecycle.State, collec
 }
 
 fun <T> Flow<Event<T>?>.observeEvent(owner: LifecycleOwner, collector: FlowCollector<T>) {
+	observeEvent(owner, Lifecycle.State.STARTED, collector)
+}
+
+fun <T> Flow<Event<T>?>.observeEvent(owner: LifecycleOwner, minState: Lifecycle.State, collector: FlowCollector<T>) {
 	owner.lifecycleScope.launch {
-		owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+		owner.repeatOnLifecycle(minState) {
 			collect {
 				it?.consume(collector)
 			}
 		}
 	}
 }
+

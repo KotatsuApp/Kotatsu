@@ -10,8 +10,6 @@ import kotlin.experimental.and
 data class ChapterListItem(
 	val chapter: MangaChapter,
 	val flags: Byte,
-	private val uploadDateMs: Long,
-	private val groupPosition: Byte,
 ) : ListModel {
 
 	var description: String? = null
@@ -26,9 +24,9 @@ data class ChapterListItem(
 		private set
 		get() {
 			if (field != null) return field
-			if (uploadDateMs == 0L) return null
+			if (chapter.uploadDate == 0L) return null
 			field = DateUtils.getRelativeTimeSpanString(
-				uploadDateMs,
+				chapter.uploadDate,
 				System.currentTimeMillis(),
 				DateUtils.DAY_IN_MILLIS,
 			)
@@ -52,15 +50,6 @@ data class ChapterListItem(
 
 	val isGrid: Boolean
 		get() = hasFlag(FLAG_GRID)
-
-	val isGroupStart: Boolean
-		get() = (groupPosition and GROUP_START) == GROUP_START
-
-	val isGroupMiddle: Boolean
-		get() = (groupPosition and GROUP_MIDDLE) == GROUP_MIDDLE
-
-	val isGroupEnd: Boolean
-		get() = (groupPosition and GROUP_END) == GROUP_END
 
 	private fun buildDescription(): String {
 		val joiner = StringJoiner(" • ")
@@ -105,9 +94,5 @@ data class ChapterListItem(
 		const val FLAG_BOOKMARKED: Byte = 16
 		const val FLAG_DOWNLOADED: Byte = 32
 		const val FLAG_GRID: Byte = 64
-
-		const val GROUP_START: Byte = 2
-		const val GROUP_MIDDLE: Byte = 4
-		const val GROUP_END: Byte = 8
 	}
 }

@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="?attr/listPreferredItemHeight"
-	android:background="?selectableItemBackground"
+	android:background="@drawable/list_selector"
 	android:baselineAligned="false"
 	android:gravity="center_vertical"
 	android:minHeight="@dimen/chapter_list_item_height"
