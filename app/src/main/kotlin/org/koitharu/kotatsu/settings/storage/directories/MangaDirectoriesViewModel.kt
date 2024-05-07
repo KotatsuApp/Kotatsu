@@ -37,7 +37,7 @@ class MangaDirectoriesViewModel @Inject constructor(
 			val dir = requireNotNull(storageManager.resolveUri(uri)) {
 				"Cannot resolve file name of \"$uri\""
 			}
-			if (!dir.canWrite()) {
+			if (!dir.canRead()) {
 				throw AccessDeniedException(dir)
 			}
 			if (dir !in storageManager.getApplicationStorageDirs()) {

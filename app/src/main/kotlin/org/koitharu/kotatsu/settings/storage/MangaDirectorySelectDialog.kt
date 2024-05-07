@@ -29,7 +29,7 @@ class MangaDirectorySelectDialog : AlertDialogFragment<DialogDirectorySelectBind
 	OnListItemClickListener<DirectoryModel> {
 
 	private val viewModel: MangaDirectorySelectViewModel by viewModels()
-	private val pickFileTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
+	private val pickFileTreeLauncher = registerForActivityResult(PickDirectoryContract()) {
 		if (it != null) viewModel.onCustomDirectoryPicked(it)
 	}
 	private val permissionRequestLauncher = registerForActivityResult(

@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.ActivityMangaDirectoriesBinding
 import org.koitharu.kotatsu.settings.storage.DirectoryDiffCallback
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
+import org.koitharu.kotatsu.settings.storage.PickDirectoryContract
 import org.koitharu.kotatsu.settings.storage.RequestStorageManagerPermissionContract
 
 @AndroidEntryPoint
@@ -33,7 +34,7 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 	OnListItemClickListener<DirectoryModel>, View.OnClickListener {
 
 	private val viewModel: MangaDirectoriesViewModel by viewModels()
-	private val pickFileTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
+	private val pickFileTreeLauncher = registerForActivityResult(PickDirectoryContract()) {
 		if (it != null) viewModel.onCustomDirectoryPicked(it)
 	}
 	private val permissionRequestLauncher = registerForActivityResult(

@@ -98,6 +98,10 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	override fun onSupportNavigateUp(): Boolean {
+		if (supportFragmentManager.backStackEntryCount > 0) {
+			supportFragmentManager.popBackStack()
+			return false
+		}
 		dispatchNavigateUp()
 		return true
 	}
