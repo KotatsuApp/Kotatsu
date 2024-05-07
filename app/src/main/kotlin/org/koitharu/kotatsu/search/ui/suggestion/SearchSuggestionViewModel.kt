@@ -73,7 +73,7 @@ class SearchSuggestionViewModel @Inject constructor(
 	}
 
 	fun clearSearchHistory() {
-		launchJob {
+		launchJob(Dispatchers.Default) {
 			repository.clearSearchHistory()
 			setupSuggestion()
 		}
@@ -93,7 +93,7 @@ class SearchSuggestionViewModel @Inject constructor(
 	}
 
 	fun deleteQuery(query: String) {
-		launchJob {
+		launchJob(Dispatchers.Default) {
 			repository.deleteSearchQuery(query)
 			setupSuggestion()
 		}

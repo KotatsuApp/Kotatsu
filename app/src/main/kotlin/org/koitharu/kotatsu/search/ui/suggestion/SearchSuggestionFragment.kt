@@ -48,9 +48,7 @@ class SearchSuggestionFragment :
 		addMenuProvider(SearchSuggestionMenuProvider(binding.root.context, voiceInputLauncher, viewModel))
 		binding.root.adapter = adapter
 		binding.root.setHasFixedSize(true)
-		viewModel.suggestion.observe(viewLifecycleOwner) {
-			adapter.items = it
-		}
+		viewModel.suggestion.observe(viewLifecycleOwner, adapter)
 		ItemTouchHelper(SearchSuggestionItemCallback(this))
 			.attachToRecyclerView(binding.root)
 	}

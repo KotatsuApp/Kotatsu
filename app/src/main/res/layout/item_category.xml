@@ -80,13 +80,14 @@
 
 	<TextView
 		android:id="@+id/textView_subtitle"
-		android:layout_width="0dp"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/margin_normal"
 		android:layout_marginTop="4dp"
 		android:layout_marginEnd="8dp"
 		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceBodySmall"
+		app:layout_constrainedWidth="true"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/imageView_tracker"
 		app:layout_constraintHorizontal_bias="0"
@@ -94,7 +95,6 @@
 		app:layout_constraintStart_toEndOf="@id/imageView_cover3"
 		app:layout_constraintTop_toBottomOf="@id/textView_title"
 		app:layout_constraintVertical_chainStyle="packed"
-		app:layout_constraintWidth_default="wrap"
 		tools:text="@tools:sample/lorem[1]" />
 
 	<ImageView

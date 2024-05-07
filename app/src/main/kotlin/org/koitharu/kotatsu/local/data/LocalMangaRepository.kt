@@ -150,9 +150,9 @@ class LocalMangaRepository @Inject constructor(
 		return channelFlow {
 			for (file in files) {
 				launch {
-					val mangaInput = LocalMangaInput.of(file)
+					val mangaInput = LocalMangaInput.ofOrNull(file)
 					runCatchingCancellable {
-						val mangaInfo = mangaInput.getMangaInfo()
+						val mangaInfo = mangaInput?.getMangaInfo()
 						if (mangaInfo != null && mangaInfo.id == remoteManga.id) {
 							send(mangaInput)
 						}

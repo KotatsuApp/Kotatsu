@@ -33,22 +33,29 @@ sealed class SystemUiController(
 	private class LegacyImpl(window: Window) : SystemUiController(window) {
 
 		override fun setSystemUiVisible(value: Boolean) {
+			val flags = window.decorView.systemUiVisibility
 			window.decorView.systemUiVisibility = if (value) {
-				View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-						View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-						View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+				(flags and LEGACY_FLAGS_HIDDEN.inv()) or LEGACY_FLAGS_VISIBLE
 			} else {
-				View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-						View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-						View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-						View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-						View.SYSTEM_UI_FLAG_FULLSCREEN or
-						View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+				(flags and LEGACY_FLAGS_VISIBLE.inv()) or LEGACY_FLAGS_HIDDEN
 			}
 		}
 	}
 
 	companion object {
+
+		@Suppress("DEPRECATION")
+		private const val LEGACY_FLAGS_VISIBLE = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+			View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+			View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+
+		@Suppress("DEPRECATION")
+		private const val LEGACY_FLAGS_HIDDEN = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+			View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+			View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+			View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+			View.SYSTEM_UI_FLAG_FULLSCREEN or
+			View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
 		operator fun invoke(window: Window): SystemUiController =
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

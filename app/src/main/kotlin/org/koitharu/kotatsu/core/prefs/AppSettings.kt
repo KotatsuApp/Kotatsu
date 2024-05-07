@@ -252,7 +252,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	val defaultDetailsTab: Int
 		get() = if (isPagesTabEnabled) {
-			val raw = prefs.getString(KEY_DETAILS_TAB, null)?.toIntOrNull() ?: 0
+			val raw = prefs.getString(KEY_DETAILS_TAB, null)?.toIntOrNull() ?: -1
 			if (raw == -1) {
 				lastDetailsTab
 			} else {

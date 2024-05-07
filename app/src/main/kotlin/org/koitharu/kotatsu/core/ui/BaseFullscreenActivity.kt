@@ -19,7 +19,7 @@ abstract class BaseFullscreenActivity<B : ViewBinding> :
 		with(window) {
 			systemUiController = SystemUiController(this)
 			statusBarColor = Color.TRANSPARENT
-			navigationBarColor = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+			navigationBarColor = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
 				ContextCompat.getColor(this@BaseFullscreenActivity, R.color.dim)
 			} else {
 				Color.TRANSPARENT

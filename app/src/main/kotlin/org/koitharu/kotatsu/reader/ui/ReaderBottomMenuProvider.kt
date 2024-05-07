@@ -33,7 +33,7 @@ class ReaderBottomMenuProvider(
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		return when (menuItem.itemId) {
 			R.id.action_pages_thumbs -> {
-				ChaptersPagesSheet.show(activity.supportFragmentManager, ChaptersPagesSheet.TAB_PAGES)
+				ChaptersPagesSheet.show(activity.supportFragmentManager)
 				true
 			}
 

@@ -37,6 +37,7 @@ import androidx.appcompat.app.AppCompatDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -140,6 +141,9 @@ fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float,
 		!context.getSystemBoolean("config_navBarNeedsScrim", true)
 	) {
 		Color.TRANSPARENT
+	} else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
+		val baseColor = context.getThemeColor(android.R.attr.navigationBarColor)
+		ColorUtils.setAlphaComponent(baseColor, (Color.alpha(baseColor) * alphaFactor).toInt())
 	} else {
 		// Set navbar scrim 70% of navigationBarColor
 		ElevationOverlayProvider(context).compositeOverlayIfNeeded(

@@ -67,7 +67,7 @@ class FastScroller @JvmOverloads constructor(
 	private var hideScrollbar = true
 	private var showBubble = true
 	private var showBubbleAlways = false
-	private var bubbleSize = BubbleSize.NORMAL
+	private var bubbleSize = BubbleSize.SMALL
 	private var bubbleImage: Drawable? = null
 	private var handleImage: Drawable? = null
 	private var trackImage: Drawable? = null
@@ -91,7 +91,7 @@ class FastScroller @JvmOverloads constructor(
 
 				if (showBubbleAlways) {
 					val targetPos = getRecyclerViewTargetPosition(y)
-					sectionIndexer?.let { binding.bubble.text = it.getSectionText(recyclerView.context, targetPos) }
+					sectionIndexer?.let { bindBubble(it.getSectionText(recyclerView.context, targetPos)) }
 				}
 			}
 		}
@@ -145,7 +145,7 @@ class FastScroller @JvmOverloads constructor(
 			showBubble = getBoolean(R.styleable.FastScrollRecyclerView_showBubble, showBubble)
 			showBubbleAlways = getBoolean(R.styleable.FastScrollRecyclerView_showBubbleAlways, showBubbleAlways)
 			showTrack = getBoolean(R.styleable.FastScrollRecyclerView_showTrack, showTrack)
-			bubbleSize = getBubbleSize(R.styleable.FastScrollRecyclerView_bubbleSize, BubbleSize.NORMAL)
+			bubbleSize = getBubbleSize(R.styleable.FastScrollRecyclerView_bubbleSize, bubbleSize)
 			val textSize = getDimension(R.styleable.FastScrollRecyclerView_bubbleTextSize, bubbleSize.textSize)
 			binding.bubble.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
 			offset = getDimensionPixelOffset(R.styleable.FastScrollRecyclerView_scrollerOffset, offset)
@@ -473,7 +473,7 @@ class FastScroller @JvmOverloads constructor(
 		val layoutManager = recyclerView?.layoutManager ?: return
 		val targetPos = getRecyclerViewTargetPosition(y)
 		layoutManager.scrollToPosition(targetPos)
-		if (showBubble) sectionIndexer?.let { binding.bubble.text = it.getSectionText(context, targetPos) }
+		if (showBubble) sectionIndexer?.let { bindBubble(it.getSectionText(context, targetPos)) }
 	}
 
 	private fun setViewPositions(y: Float) {
@@ -533,6 +533,11 @@ class FastScroller @JvmOverloads constructor(
 		} else {
 			null
 		}
+	}
+
+	private fun bindBubble(text: CharSequence?) {
+		binding.bubble.text = text
+		binding.bubble.alpha = if (text.isNullOrEmpty()) 0f else 1f
 	}
 
 	private val BubbleSize.textSize
