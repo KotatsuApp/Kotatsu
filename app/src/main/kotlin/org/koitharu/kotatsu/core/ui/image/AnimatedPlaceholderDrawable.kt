@@ -7,7 +7,6 @@ import android.graphics.ColorFilter
 import android.graphics.PixelFormat
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
-import androidx.core.graphics.ColorUtils
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.animation.ArgbEvaluatorCompat
 import org.koitharu.kotatsu.R
@@ -21,7 +20,6 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 	private val colorLow = context.getThemeColor(materialR.attr.colorSurfaceContainerLowest)
 	private val colorHigh = context.getThemeColor(materialR.attr.colorSurfaceContainerHighest)
 	private var currentColor: Int = colorLow
-	private var alpha: Int = 255
 	private val interpolator = FastOutSlowInInterpolator()
 	private val period = context.getAnimationDuration(R.integer.config_longAnimTime) * 2
 	private val timeAnimator = TimeAnimator()
@@ -32,7 +30,7 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 	}
 
 	override fun draw(canvas: Canvas) {
-		if (!isRunning) {
+		if (!isRunning && period > 0) {
 			updateColor()
 			start()
 		}
@@ -45,10 +43,11 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 
 	override fun setColorFilter(colorFilter: ColorFilter?) = Unit
 
+	@Suppress("DeprecatedCallableAddReplaceWith")
 	@Deprecated("Deprecated in Java")
-	override fun getOpacity(): Int = if (alpha == 255) PixelFormat.OPAQUE else PixelFormat.TRANSLUCENT
+	override fun getOpacity(): Int = PixelFormat.OPAQUE
 
-	override fun getAlpha(): Int = alpha
+	override fun getAlpha(): Int = 255
 
 	override fun onTimeUpdate(animation: TimeAnimator?, totalTime: Long, deltaTime: Long) {
 		callback?.also {
@@ -68,13 +67,12 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 	override fun isRunning(): Boolean = timeAnimator.isStarted
 
 	private fun updateColor() {
+		if (period <= 0f) {
+			return
+		}
 		val ph = period / 2
 		val fraction = abs((System.currentTimeMillis() % period) - ph) / ph.toFloat()
-		var color = ArgbEvaluatorCompat.getInstance()
+		currentColor = ArgbEvaluatorCompat.getInstance()
 			.evaluate(interpolator.getInterpolation(fraction), colorLow, colorHigh)
-		if (alpha != 255) {
-			color = ColorUtils.setAlphaComponent(color, alpha)
-		}
-		currentColor = color
 	}
 }

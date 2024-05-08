@@ -22,6 +22,7 @@ import androidx.core.widget.TextViewCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -146,7 +147,7 @@ class ProgressButton @JvmOverloads constructor(
 
 	fun setProgress(value: Float, animate: Boolean) {
 		val prevAnimator = progressAnimator
-		if (animate) {
+		if (animate && context.isAnimationsEnabled) {
 			if (value == targetProgress) {
 				return
 			}
