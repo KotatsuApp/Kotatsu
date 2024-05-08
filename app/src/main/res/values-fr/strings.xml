@@ -586,7 +586,7 @@
     <string name="statistics">Statistiques</string>
     <string name="clear_stats">Effacer les statistiques</string>
     <string name="stats_cleared">Statistiques effacés</string>
-    <string name="all_time">Tout les temps</string>
+    <string name="all_time">Tous les temps</string>
     <string name="day">Jour</string>
     <string name="empty_stats_text">Il n\'y a pas de statistiques pour la période sélectionné</string>
     <string name="pages_read_s">Pages lues: %s</string>
@@ -597,7 +597,7 @@
     <string name="migration_completed">Migration effectuée</string>
     <string name="no_chapters_deleted">Aucun chapitres n\'a été effacé</string>
     <string name="delete_read_chapters">Effacer les chapitres lus</string>
-    <string name="chapters_deleted_pattern">%1$s supprimer, %2$s effacer</string>
+    <string name="chapters_deleted_pattern">%1$s supprimé, %2$s effacé</string>
     <string name="delete_read_chapters_summary">Effacer les chapitres déjà lus pour libérer de l\'espace de stockage</string>
     <string name="delete_read_chapters_auto">Effacer automatiquement les chapitres lus</string>
     <string name="show_pages_thumbs">Afficher les miniatures des pages</string>
@@ -610,4 +610,25 @@
     <string name="unsupported_source">Cette source de manga n\'est pas supporté</string>
     <string name="fix">Corrigé</string>
     <string name="delete_read_chapters_prompt">Cela va définitivement effacé tout les chapitres marqués comme lus de l\'espace de stockage. Vous pouvez les re-télécharger plus tard, mais les chapitres importé pourraient ne pas être récupéré.</string>
+    <string name="last_used">Dernière utilisation</string>
+    <string name="missing_storage_permission">Il n\'y a aucune autorisation pour accéder aux mangas sur le stockage externe</string>
+    <string name="pin_navigation_ui">Épingler l\'interface de navigation</string>
+    <string name="hours_short">%d h</string>
+    <string name="minutes_short">%d m</string>
+    <string name="hours_minutes_short">%1$d h %2$d m</string>
+    <string name="runs_on_app_start">S\'exécute au démarrage de l\'application</string>
+    <string name="show_pages_thumbs_summary">Active l\'onglet \"Pages\" sur l\'écran de détails</string>
+    <string name="show_updated">Afficher mis à jour</string>
+    <string name="webtoon_gaps">Séparateurs en mode webtoon</string>
+    <string name="webtoon_gaps_summary">Afficher des espaces verticaux entre les pages en mode webtoon</string>
+    <string name="search_suggestions">Suggestions de recherche</string>
+    <string name="suggested_queries">Requêtes suggérées</string>
+    <string name="recent_queries">Requêtes récentes</string>
+    <string name="authors">Auteurs</string>
+    <string name="error_no_data_received">Aucune donnée n\'a été reçue du serveur</string>
+    <string name="blocked_by_server_message">Vous êtes bloqué par le serveur. Essayez d\'utiliser une autre connexion réseau (VPN, proxy, etc.)</string>
+    <string name="more_frequently">Plus souvent</string>
+    <string name="less_frequently">Moins souvent</string>
+    <string name="new_chapters_pattern">%1$s : %2$d</string>
+    <string name="pin_navigation_ui_summary">Ne pas masquer la barre de navigation et la vue de recherche lors du défilement</string>
 </resources>
