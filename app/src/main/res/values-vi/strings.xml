@@ -518,7 +518,7 @@
     <string name="keep_screen_on_summary">Không tắt màn hình khi bạn đang đọc manga</string>
     <string name="keep_screen_on">Giữ màn hình luôn sáng</string>
     <string name="state_abandoned">Đã huỷ</string>
-    <string name="enhanced_colors_summary">Giảm hệu ứng dải (banding), có thể ảnh hưởng hiệu năng thiết bị</string>
+    <string name="enhanced_colors_summary">Giảm hiệu ứng dải, nhưng có thể ảnh hưởng đến hiệu suất</string>
     <string name="enhanced_colors">Chế độ màu 32-bit</string>
     <string name="frequency_every_day">Hàng ngày</string>
     <string name="backup_frequency">Tần suất tạo bản sao lưu</string>
@@ -627,4 +627,9 @@
     <string name="new_chapters_pattern">%1$s: %2$d</string>
     <string name="pin_navigation_ui">Ghim UI điều hướng</string>
     <string name="pin_navigation_ui_summary">Không ẩn thanh điều hướng và chế độ xem tìm kiếm khi cuộn</string>
+    <string name="search_suggestions">Gợi ý tìm kiếm</string>
+    <string name="recent_queries">Các truy vấn gần đây</string>
+    <string name="suggested_queries">Truy vấn được đề xuất</string>
+    <string name="authors">Tác giả</string>
+    <string name="blocked_by_server_message">Bạn bị chặn bởi máy chủ. Hãy thử sử dụng kết nối mạng khác (VPN, Proxy, v.v.)</string>
 </resources>
