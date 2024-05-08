@@ -631,4 +631,5 @@
     <string name="recent_queries">Son sorgular</string>
     <string name="suggested_queries">Önerilen sorgular</string>
     <string name="authors">Yazarlar</string>
+    <string name="blocked_by_server_message">Sunucu tarafından engellendiniz. Farklı bir ağ bağlantısı kullanmayı deneyin (VPN, vekil sunucu, vb.)</string>
 </resources>
