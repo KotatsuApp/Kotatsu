@@ -608,4 +608,5 @@
     <string name="chapters_deleted_pattern">%1$s entfernt, %2$s gelöscht</string>
     <string name="enable_source">Quelle aktivieren</string>
     <string name="unsupported_source">Diese Manga-Quelle wird nicht unterstützt</string>
+    <string name="show_pages_thumbs">Seitenvorschau anzeigen</string>
 </resources>
