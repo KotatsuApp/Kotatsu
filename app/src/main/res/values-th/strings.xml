@@ -50,7 +50,7 @@
     <string name="notification_sound">เสียงการแจ้งเตือน</string>
     <string name="cannot_find_available_storage">ไม่มีพื้นที่ว่างในอุปกรณ์</string>
     <string name="done">สำเร็จ</string>
-    <string name="text_feed_holder">บทใหม่ของเรื่องที่คุณกําลังอ่านจะแสดงไว้ที่นี่</string>
+    <string name="text_feed_holder">ตอนใหม่ของเรื่องที่คุณกําลังอ่านจะแสดงไว้ที่นี่</string>
     <string name="passwords_mismatch">รหัสผ่านไม่ตรงกัน</string>
     <string name="text_empty_holder_primary">ที่นี่มันว่างเปล่า…</string>
     <string name="filter">กรอง</string>
@@ -60,7 +60,7 @@
     <string name="internal_storage">ที่เก็บข้อมูลภายใน</string>
     <string name="external_storage">ที่จัดเก็บภายนอก</string>
     <string name="open_in_browser">เปิดในเบราว์เซอร์</string>
-    <string name="new_chapters">บทใหม่</string>
+    <string name="new_chapters">ตอนใหม่</string>
     <string name="favourites_categories">หมวดหมู่รายการโปรด</string>
     <string name="text_history_holder_primary">สิ่งที่คุณอ่านจะแสดงที่นี่</string>
     <string name="text_local_holder_primary">บันทึกบางอย่างก่อน</string>
@@ -115,12 +115,12 @@
     <string name="downloads_cancelled">การดาวน์โหลดของคุณได้ถูกยกเลิกแล้ว</string>
     <string name="downloaded">ดาวน์โหลดแล้ว</string>
     <string name="invert_colors">กลับสี</string>
-    <string name="check_new_chapters_title">ค้นหาบทใหม่และแจ้งเตือน</string>
+    <string name="check_new_chapters_title">ตรวจสอบตอนใหม่และแจ้งเตือน</string>
     <string name="check_for_new_chapters">ตรวจสอบบทความใหม่</string>
     <string name="chapter_is_missing">บทที่หายไป</string>
-    <string name="search_chapters">ค้นหาบท</string>
-    <string name="chapters_empty">ไม่มีบทในมังงะนี้</string>
-    <string name="chapters">บท</string>
+    <string name="search_chapters">ค้นหาตอน</string>
+    <string name="chapters_empty">ไม่มีตอนในมังงะนี้</string>
+    <string name="chapters">ตอน</string>
     <string name="chapter_d_of_d">บทที่ %1$d จาก %2$d</string>
     <string name="disable_nsfw">ปิด NSFW</string>
     <string name="too_many_requests_message">คำขอมากเกินไป ลองอีกครั้งในภายหลัง</string>
@@ -373,7 +373,7 @@
     <string name="folder_with_images">แฟ้มที่มีรูปภาพ</string>
     <string name="history_shortcuts">แสดงทางลัดมังงะล่าสุด</string>
     <string name="reader_slider">แสดงแถบเลื่อนการสลับหน้า</string>
-    <string name="no_chapters">ไม่มีบท</string>
+    <string name="no_chapters">ไม่มีตอน</string>
     <string name="compact">กระชับ</string>
     <string name="sync_auth_hint">คุณสามารถเข้าใช้บัญชีที่มีอยู่หรือสร้างบัญชีใหม่ได้</string>
     <string name="suggestion_manga">คําแนะนํา: %s</string>
@@ -399,4 +399,6 @@
     <string name="nothing_here">ไม่มีอะไรอยู่ที่นี่</string>
     <string name="theme_name_asuka">อาซึกะ</string>
     <string name="theme_name_miku">มิกุ</string>
+    <string name="download_option_manual_selection">เลือกตอนด้วยตนเอง</string>
+    <string name="chapters_grid_view">แสดงแบบตาราง</string>
 </resources>
