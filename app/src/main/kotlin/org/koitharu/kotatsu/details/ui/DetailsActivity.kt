@@ -181,7 +181,8 @@ class DetailsActivity :
 		viewModel.isStatsAvailable.observe(this, menuInvalidator)
 		viewModel.remoteManga.observe(this, menuInvalidator)
 		viewModel.branches.observe(this) {
-			viewBinding.infoLayout.chipBranch.isVisible = it.size > 1
+			viewBinding.infoLayout.chipBranch.isVisible = it.size > 1 || it.firstOrNull() != null
+			viewBinding.infoLayout.chipBranch.isCloseIconVisible = it.size > 1
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
 		viewModel.onDownloadStarted
@@ -540,8 +541,11 @@ class DetailsActivity :
 	}
 
 	private fun showBranchPopupMenu(v: View) {
-		val menu = PopupMenu(v.context, v)
 		val branches = viewModel.branches.value
+		if (branches.size <= 1) {
+			return
+		}
+		val menu = PopupMenu(v.context, v)
 		for ((i, branch) in branches.withIndex()) {
 			val title = buildSpannedString {
 				if (branch.isCurrent) {
