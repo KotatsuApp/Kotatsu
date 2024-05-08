@@ -16,8 +16,10 @@ import org.koitharu.kotatsu.core.network.cookies.AndroidCookieJar
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.network.cookies.PreferencesCookieJar
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.assertNotInMainThread
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import java.util.concurrent.TimeUnit
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -50,10 +52,12 @@ interface NetworkModule {
 		@Singleton
 		@BaseHttpClient
 		fun provideBaseHttpClient(
+			@ApplicationContext contextProvider: Provider<Context>,
 			cache: Cache,
 			cookieJar: CookieJar,
 			settings: AppSettings,
 		): OkHttpClient = OkHttpClient.Builder().apply {
+			assertNotInMainThread()
 			connectTimeout(20, TimeUnit.SECONDS)
 			readTimeout(60, TimeUnit.SECONDS)
 			writeTimeout(20, TimeUnit.SECONDS)
@@ -62,7 +66,9 @@ interface NetworkModule {
 			proxyAuthenticator(ProxyAuthenticator(settings))
 			dns(DoHManager(cache, settings))
 			if (settings.isSSLBypassEnabled) {
-				bypassSSLErrors()
+				disableCertificateVerification()
+			} else {
+				installExtraCertsificates(contextProvider.get())
 			}
 			cache(cache)
 			addInterceptor(GZipInterceptor())

@@ -281,7 +281,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		set(value) = prefs.edit { putEnumValue(KEY_SOURCES_ORDER, value) }
 
 	var isSourcesGridMode: Boolean
-		get() = prefs.getBoolean(KEY_SOURCES_GRID, false)
+		get() = prefs.getBoolean(KEY_SOURCES_GRID, true)
 		set(value) = prefs.edit { putBoolean(KEY_SOURCES_GRID, value) }
 
 	val isNewSourcesTipEnabled: Boolean

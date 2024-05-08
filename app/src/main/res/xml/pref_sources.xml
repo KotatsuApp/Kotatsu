@@ -9,7 +9,7 @@
 		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
-		android:defaultValue="false"
+		android:defaultValue="true"
 		android:key="sources_grid"
 		android:title="@string/show_in_grid_view" />
 
