@@ -621,4 +621,15 @@
     <string name="show_updated">顯示更新</string>
     <string name="webtoon_gaps">網路漫畫模式中的間隙</string>
     <string name="webtoon_gaps_summary">在網路漫畫模式中顯示頁面之間的垂直間隙</string>
+    <string name="search_suggestions">搜尋建議</string>
+    <string name="recent_queries">近期查詢</string>
+    <string name="suggested_queries">建議查詢</string>
+    <string name="authors">作者</string>
+    <string name="blocked_by_server_message">您已被伺服器封鎖。嘗試使用不同的網路連線（VPN、代理等）</string>
+    <string name="less_frequently">較少頻率</string>
+    <string name="more_frequently">較多頻率</string>
+    <string name="frequency_of_check">檢查頻率</string>
+    <string name="new_chapters_pattern">%1$s：%2$d</string>
+    <string name="pin_navigation_ui">固定導航介面</string>
+    <string name="pin_navigation_ui_summary">滾動時不隱藏導航欄和搜尋視圖</string>
 </resources>
