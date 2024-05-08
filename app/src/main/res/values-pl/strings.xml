@@ -342,7 +342,7 @@
     <string name="user_agent">Nagłówek UserAgent</string>
     <string name="share_logs">Udostępnij dzienniki</string>
     <string name="enable_logging_summary">Zapisz niektóre działania do celów debugowania. Nie włączaj go, jeśli nie jesteś pewien, co robisz</string>
-    <string name="allow_unstable_updates">Zezwól na niestabilne altualizacje</string>
+    <string name="allow_unstable_updates">Zezwól na niestabilne aktualizacje</string>
     <string name="got_it">Rozumiem</string>
     <string name="settings_apply_restart_required">Uruchom ponownie aplikację by wprowadzić te zmiany</string>
     <string name="speed">Prędkość</string>
@@ -630,5 +630,6 @@
     <string name="new_chapters_pattern">%1$s: %2$d</string>
     <string name="pin_navigation_ui">Przypnij interfejs nawigacji</string>
     <string name="pin_navigation_ui_summary">Nie ukrywaj paska nawigacji i paska wyszukiwania podczas przewijania</string>
-	<string name="search_suggestions">Sugestie wyszukiwania</string>
+    <string name="search_suggestions">Sugestie wyszukiwania</string>
+    <string name="blocked_by_server_message">Jesteś zablokowany przez serwer. Spróbuj użyć innego połączenia sieciowego (VPN, proxy itp.)</string>
 </resources>
