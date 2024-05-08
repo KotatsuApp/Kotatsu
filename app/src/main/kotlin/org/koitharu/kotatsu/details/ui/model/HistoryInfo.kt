@@ -1,10 +1,7 @@
 package org.koitharu.kotatsu.details.ui.model
 
 import org.koitharu.kotatsu.core.model.MangaHistory
-import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.details.data.MangaDetails
-import org.koitharu.kotatsu.parsers.model.Manga
 
 data class HistoryInfo(
 	val totalChapters: Int,
@@ -17,8 +14,8 @@ data class HistoryInfo(
 	val isValid: Boolean
 		get() = totalChapters >= 0
 
-	val canContinue: Boolean
-		get() = history != null && !isChapterMissing
+	val canContinue
+		get() = currentChapter >= 0
 }
 
 fun HistoryInfo(
@@ -38,7 +35,7 @@ fun HistoryInfo(
 		currentChapter = currentChapter,
 		history = history,
 		isIncognitoMode = isIncognitoMode,
-		isChapterMissing = currentChapter == -1,
+		isChapterMissing = history != null && manga?.isLoaded == true && manga.allChapters.none { it.id == history.chapterId },
 		canDownload = manga?.isLocal == false,
 	)
 }

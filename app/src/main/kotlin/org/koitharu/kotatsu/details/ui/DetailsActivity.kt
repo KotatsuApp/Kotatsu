@@ -585,8 +585,7 @@ class DetailsActivity :
 
 	private fun openReader(isIncognitoMode: Boolean) {
 		val manga = viewModel.manga.value ?: return
-		val chapterId = viewModel.historyInfo.value.history?.chapterId
-		if (chapterId != null && manga.chapters?.none { x -> x.id == chapterId } == true) {
+		if (viewModel.historyInfo.value.isChapterMissing) {
 			Snackbar.make(viewBinding.scrollView, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
 				.show()
 		} else {
