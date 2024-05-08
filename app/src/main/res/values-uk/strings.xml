@@ -537,8 +537,8 @@
     <string name="category_hidden_done">Ця категорія була прихована на головному екрані і доступна через Меню → Керування категоріями</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="incognito_mode_hint">Ваш прогрес читання не буде збережений</string>
-    <string name="volume_">Гучність %d</string>
-    <string name="volume_unknown">Невідома гучність</string>
+    <string name="volume_">Том %d</string>
+    <string name="volume_unknown">Невідомий том</string>
     <string name="vertical">Вертикальний</string>
     <string name="last_read">Останнє прочитане</string>
     <string name="show_menu">Показати меню</string>
