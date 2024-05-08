@@ -6,10 +6,8 @@ import dagger.Reusable
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.MultiMutex
 import org.koitharu.kotatsu.core.util.ext.toInstantOrNull
-import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -22,10 +20,8 @@ import kotlin.contracts.contract
 
 @Reusable
 class Tracker @Inject constructor(
-	private val settings: AppSettings,
 	private val repository: TrackingRepository,
 	private val historyRepository: HistoryRepository,
-	private val favouritesRepository: FavouritesRepository,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 

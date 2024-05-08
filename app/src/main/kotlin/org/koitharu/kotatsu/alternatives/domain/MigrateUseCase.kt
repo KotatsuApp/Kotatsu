@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.history.data.toMangaHistory
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.tracker.data.TrackEntity
 import javax.inject.Inject
 
 class MigrateUseCase @Inject constructor(
@@ -55,6 +56,22 @@ class MigrateUseCase @Inject constructor(
 				val newHistory = makeNewHistory(oldDetails, newDetails, oldHistory)
 				historyDao.delete(oldDetails.id)
 				historyDao.upsert(newHistory)
+			}
+			// track
+			val tracksDao = database.getTracksDao()
+			val oldTrack = tracksDao.find(oldDetails.id)
+			if (oldTrack != null) {
+				val lastChapter = newDetails.chapters?.lastOrNull()
+				val newTrack = TrackEntity(
+					mangaId = newDetails.id,
+					lastChapterId = lastChapter?.id ?: 0L,
+					newChapters = 0,
+					lastCheckTime = System.currentTimeMillis(),
+					lastChapterDate = lastChapter?.uploadDate ?: 0L,
+					lastResult = TrackEntity.RESULT_EXTERNAL_MODIFICATION,
+				)
+				tracksDao.delete(oldDetails.id)
+				tracksDao.upsert(newTrack)
 			}
 		}
 		progressUpdateUseCase(newManga)

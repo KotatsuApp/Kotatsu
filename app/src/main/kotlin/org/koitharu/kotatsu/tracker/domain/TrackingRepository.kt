@@ -9,16 +9,13 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
-import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.ifZero
 import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.core.util.ext.toInstantOrNull
-import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
-import org.koitharu.kotatsu.local.data.LocalMangaRepository
+import org.koitharu.kotatsu.details.domain.ProgressUpdateUseCase
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.data.TrackEntity
 import org.koitharu.kotatsu.tracker.data.TrackLogEntity
@@ -28,7 +25,6 @@ import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
-import javax.inject.Provider
 
 private const val NO_ID = 0L
 private const val MAX_LOG_SIZE = 120
@@ -37,7 +33,7 @@ private const val MAX_LOG_SIZE = 120
 class TrackingRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val settings: AppSettings,
-	private val localMangaRepositoryProvider: Provider<LocalMangaRepository>,
+	private val progressUpdateUseCase: ProgressUpdateUseCase,
 ) {
 
 	private var isGcCalled = AtomicBoolean(false)
@@ -75,10 +71,6 @@ class TrackingRepository @Inject constructor(
 			)
 		}.distinctUntilChanged()
 			.onStart { gcIfNotCalled() }
-	}
-
-	suspend fun getCategoryId(mangaId: Long): Long {
-		return db.getFavouritesDao().findCategoriesIdsWithTrack(mangaId).firstOrNull() ?: NO_ID
 	}
 
 	suspend fun getTracks(offset: Int, limit: Int): List<MangaTracking> {
@@ -150,7 +142,7 @@ class TrackingRepository @Inject constructor(
 			val track = getOrCreateTrack(updates.manga.id).mergeWith(updates)
 			db.getTracksDao().upsert(track)
 			if (updates is MangaUpdates.Success && updates.isValid && updates.newChapters.isNotEmpty()) {
-				updatePercent(updates)
+				progressUpdateUseCase(updates.manga)
 				val logEntity = TrackLogEntity(
 					mangaId = updates.manga.id,
 					chapters = updates.newChapters.joinToString("\n") { x -> x.name },
@@ -194,14 +186,6 @@ class TrackingRepository @Inject constructor(
 		)
 	}
 
-	suspend fun getAllFavouritesManga(): Map<FavouriteCategory, List<Manga>> {
-		val categories = db.getFavouriteCategoriesDao().findAll()
-		return categories.associateTo(LinkedHashMap(categories.size)) { categoryEntity ->
-			categoryEntity.toFavouriteCategory() to
-				db.getFavouritesDao().findAllManga(categoryEntity.categoryId).toMangaList()
-		}
-	}
-
 	suspend fun updateTracks() = db.withTransaction {
 		val dao = db.getTracksDao()
 		dao.gc()
@@ -236,21 +220,6 @@ class TrackingRepository @Inject constructor(
 		return db.getTracksDao().find(mangaId) ?: TrackEntity.create(mangaId)
 	}
 
-	private suspend fun updatePercent(updates: MangaUpdates.Success) {
-		val history = db.getHistoryDao().find(updates.manga.id) ?: return
-		val chapters = updates.manga.chapters
-		if (chapters.isNullOrEmpty()) {
-			return
-		}
-		val chapterIndex = chapters.indexOfFirst { it.id == history.chapterId }
-		if (chapterIndex < 0) {
-			return
-		}
-		val position = (chapters.size - updates.newChapters.size) * history.percent
-		val newPercent = position / chapters.size.toFloat()
-		db.getHistoryDao().update(history.copy(percent = newPercent))
-	}
-
 	private fun TrackEntity.mergeWith(updates: MangaUpdates): TrackEntity {
 		val chapters = updates.manga.chapters.orEmpty()
 		return when (updates) {
@@ -279,6 +248,4 @@ class TrackingRepository @Inject constructor(
 			gc()
 		}
 	}
-
-	private fun Collection<MangaEntity>.toMangaList() = map { it.toManga(emptySet()) }
 }
