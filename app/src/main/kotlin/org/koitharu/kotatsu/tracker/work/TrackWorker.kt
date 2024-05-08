@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.tracker.work
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.provider.Settings
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
@@ -12,7 +14,6 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
-import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ForegroundInfo
 import androidx.work.NetworkType
@@ -98,12 +99,12 @@ class TrackWorker @AssistedInject constructor(
 
 	private suspend fun doWorkImpl(isFullRun: Boolean): Result {
 		if (!settings.isTrackerEnabled) {
-			return Result.success(workDataOf(0, 0))
+			return Result.success()
 		}
 		val tracks = tracker.getTracks(if (isFullRun) Int.MAX_VALUE else BATCH_SIZE)
 		logger.log("Total ${tracks.size} tracks")
 		if (tracks.isEmpty()) {
-			return Result.success(workDataOf(0, 0))
+			return Result.success()
 		}
 
 		val notifications = checkUpdatesAsync(tracks)
@@ -218,14 +219,21 @@ class TrackWorker @AssistedInject constructor(
 				NotificationCompat.FOREGROUND_SERVICE_DEFERRED
 			},
 		)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			val actionIntent = PendingIntentCompat.getActivity(
+				applicationContext, SETTINGS_ACTION_CODE,
+				Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+					.putExtra(Settings.EXTRA_APP_PACKAGE, applicationContext.packageName)
+					.putExtra(Settings.EXTRA_CHANNEL_ID, WORKER_CHANNEL_ID),
+				0, false,
+			)
+			addAction(
+				R.drawable.ic_settings,
+				applicationContext.getString(R.string.notifications_settings),
+				actionIntent,
+			)
+		}
 	}.build()
-
-	private fun workDataOf(success: Int, failed: Int): Data {
-		return Data.Builder()
-			.putInt(DATA_KEY_SUCCESS, success)
-			.putInt(DATA_KEY_FAILED, failed)
-			.build()
-	}
 
 	@Reusable
 	class Scheduler @Inject constructor(
@@ -294,8 +302,7 @@ class TrackWorker @AssistedInject constructor(
 		const val TAG = "tracking"
 		const val TAG_ONESHOT = "tracking_oneshot"
 		const val MAX_PARALLELISM = 6
-		const val DATA_KEY_SUCCESS = "success"
-		const val DATA_KEY_FAILED = "failed"
 		val BATCH_SIZE = if (BuildConfig.DEBUG) 20 else 46
+		const val SETTINGS_ACTION_CODE = 5
 	}
 }

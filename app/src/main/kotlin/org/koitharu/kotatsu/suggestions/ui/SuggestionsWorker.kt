@@ -3,8 +3,10 @@ package org.koitharu.kotatsu.suggestions.ui
 import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.provider.Settings
 import androidx.annotation.FloatRange
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationChannelCompat
@@ -149,12 +151,24 @@ class SuggestionsWorker @AssistedInject constructor(
 					NotificationCompat.FOREGROUND_SERVICE_DEFERRED
 				},
 			)
-			.build()
-
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			val actionIntent = PendingIntentCompat.getActivity(
+				applicationContext, SETTINGS_ACTION_CODE,
+				Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+					.putExtra(Settings.EXTRA_APP_PACKAGE, applicationContext.packageName)
+					.putExtra(Settings.EXTRA_CHANNEL_ID, WORKER_CHANNEL_ID),
+				0, false,
+			)
+			notification.addAction(
+				R.drawable.ic_settings,
+				applicationContext.getString(R.string.notifications_settings),
+				actionIntent,
+			)
+		}
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			ForegroundInfo(WORKER_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+			ForegroundInfo(WORKER_NOTIFICATION_ID, notification.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
 		} else {
-			ForegroundInfo(WORKER_NOTIFICATION_ID, notification)
+			ForegroundInfo(WORKER_NOTIFICATION_ID, notification.build())
 		}
 	}
 
@@ -435,6 +449,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		const val MAX_RAW_RESULTS = 200
 		const val TAG_EQ_THRESHOLD = 0.4f
 		const val RATING_MIN = 0.5f
+		const val SETTINGS_ACTION_CODE = 4
 
 		val preferredSortOrders = listOf(
 			SortOrder.UPDATED,

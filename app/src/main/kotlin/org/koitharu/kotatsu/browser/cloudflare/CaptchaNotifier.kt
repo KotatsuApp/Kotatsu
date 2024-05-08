@@ -1,6 +1,9 @@
 package org.koitharu.kotatsu.browser.cloudflare
 
 import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -56,8 +59,21 @@ class CaptchaNotifier(
 				),
 			)
 			.setContentIntent(PendingIntentCompat.getActivity(context, 0, intent, 0, false))
-			.build()
-		manager.notify(TAG, exception.source.hashCode(), notification)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			val actionIntent = PendingIntentCompat.getActivity(
+				context, SETTINGS_ACTION_CODE,
+				Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+					.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+					.putExtra(Settings.EXTRA_CHANNEL_ID, CHANNEL_ID),
+				0, false,
+			)
+			notification.addAction(
+				R.drawable.ic_settings,
+				context.getString(R.string.notifications_settings),
+				actionIntent,
+			)
+		}
+		manager.notify(TAG, exception.source.hashCode(), notification.build())
 	}
 
 	fun dismiss(source: MangaSource) {
@@ -84,5 +100,6 @@ class CaptchaNotifier(
 		private const val CHANNEL_ID = "captcha"
 		private const val TAG = CHANNEL_ID
 		private const val GROUP_CAPTCHA = "org.koitharu.kotatsu.CAPTCHA"
+		private const val SETTINGS_ACTION_CODE = 3
 	}
 }
