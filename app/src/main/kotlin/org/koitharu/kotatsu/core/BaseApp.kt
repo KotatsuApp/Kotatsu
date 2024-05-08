@@ -37,7 +37,7 @@ import javax.inject.Provider
 open class BaseApp : Application(), Configuration.Provider {
 
 	@Inject
-	lateinit var databaseObservers: Set<@JvmSuppressWildcards InvalidationTracker.Observer>
+	lateinit var databaseObserversProvider: Provider<Set<@JvmSuppressWildcards InvalidationTracker.Observer>>
 
 	@Inject
 	lateinit var activityLifecycleCallbacks: Set<@JvmSuppressWildcards ActivityLifecycleCallbacks>
@@ -123,7 +123,7 @@ open class BaseApp : Application(), Configuration.Provider {
 	@WorkerThread
 	private fun setupDatabaseObservers() {
 		val tracker = database.get().invalidationTracker
-		databaseObservers.forEach {
+		databaseObserversProvider.get().forEach {
 			tracker.addObserver(it)
 		}
 	}

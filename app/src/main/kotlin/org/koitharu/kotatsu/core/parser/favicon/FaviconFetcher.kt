@@ -170,10 +170,11 @@ class FaviconFetcher(
 
 	class Factory(
 		context: Context,
-		private val okHttpClient: OkHttpClient,
+		okHttpClientLazy: Lazy<OkHttpClient>,
 		private val mangaRepositoryFactory: MangaRepository.Factory,
 	) : Fetcher.Factory<Uri> {
 
+		private val okHttpClient by okHttpClientLazy
 		private val diskCache = lazy {
 			val rootDir = context.externalCacheDir ?: context.cacheDir
 			DiskCache.Builder()

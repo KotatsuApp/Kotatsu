@@ -55,6 +55,7 @@ import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
 import org.koitharu.kotatsu.settings.backup.BackupObserver
 import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.widget.WidgetUpdater
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -87,7 +88,7 @@ interface AppModule {
 		@Singleton
 		fun provideCoil(
 			@ApplicationContext context: Context,
-			@MangaHttpClient okHttpClient: OkHttpClient,
+			@MangaHttpClient okHttpClientProvider: Provider<OkHttpClient>,
 			mangaRepositoryFactory: MangaRepository.Factory,
 			imageProxyInterceptor: ImageProxyInterceptor,
 			pageFetcherFactory: MangaPageFetcher.Factory,
@@ -99,8 +100,11 @@ interface AppModule {
 					.directory(rootDir.resolve(CacheDir.THUMBS.dir))
 					.build()
 			}
+			val okHttpClientLazy = lazy {
+				okHttpClientProvider.get().newBuilder().cache(null).build()
+			}
 			return ImageLoader.Builder(context)
-				.okHttpClient(okHttpClient.newBuilder().cache(null).build())
+				.okHttpClient { okHttpClientLazy.value }
 				.interceptorDispatcher(Dispatchers.Default)
 				.fetcherDispatcher(Dispatchers.Default)
 				.decoderDispatcher(Dispatchers.IO)
@@ -113,7 +117,7 @@ interface AppModule {
 					ComponentRegistry.Builder()
 						.add(SvgDecoder.Factory())
 						.add(CbzFetcher.Factory())
-						.add(FaviconFetcher.Factory(context, okHttpClient, mangaRepositoryFactory))
+						.add(FaviconFetcher.Factory(context, okHttpClientLazy, mangaRepositoryFactory))
 						.add(MangaPageKeyer())
 						.add(pageFetcherFactory)
 						.add(imageProxyInterceptor)
