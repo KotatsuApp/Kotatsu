@@ -40,7 +40,7 @@ abstract class MangaDao {
 	abstract suspend fun searchByTitle(query: String, source: String, limit: Int): List<MangaWithTags>
 
 	@Upsert
-	abstract suspend fun upsert(manga: MangaEntity)
+	protected abstract suspend fun upsert(manga: MangaEntity)
 
 	@Update(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun update(manga: MangaEntity): Int

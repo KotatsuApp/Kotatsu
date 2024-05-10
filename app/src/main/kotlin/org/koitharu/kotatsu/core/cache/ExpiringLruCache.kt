@@ -2,18 +2,19 @@ package org.koitharu.kotatsu.core.cache
 
 import androidx.collection.LruCache
 import java.util.concurrent.TimeUnit
+import org.koitharu.kotatsu.core.cache.MemoryContentCache.Key as CacheKey
 
 class ExpiringLruCache<T>(
 	val maxSize: Int,
 	private val lifetime: Long,
 	private val timeUnit: TimeUnit,
-) : Iterable<ContentCache.Key> {
+) : Iterable<CacheKey> {
 
-	private val cache = LruCache<ContentCache.Key, ExpiringValue<T>>(maxSize)
+	private val cache = LruCache<CacheKey, ExpiringValue<T>>(maxSize)
 
-	override fun iterator(): Iterator<ContentCache.Key> = cache.snapshot().keys.iterator()
+	override fun iterator(): Iterator<CacheKey> = cache.snapshot().keys.iterator()
 
-	operator fun get(key: ContentCache.Key): T? {
+	operator fun get(key: CacheKey): T? {
 		val value = cache[key] ?: return null
 		if (value.isExpired) {
 			cache.remove(key)
@@ -21,7 +22,7 @@ class ExpiringLruCache<T>(
 		return value.get()
 	}
 
-	operator fun set(key: ContentCache.Key, value: T) {
+	operator fun set(key: CacheKey, value: T) {
 		cache.put(key, ExpiringValue(value, lifetime, timeUnit))
 	}
 
@@ -33,7 +34,7 @@ class ExpiringLruCache<T>(
 		cache.trimToSize(size)
 	}
 
-	fun remove(key: ContentCache.Key) {
+	fun remove(key: CacheKey) {
 		cache.remove(key)
 	}
 }

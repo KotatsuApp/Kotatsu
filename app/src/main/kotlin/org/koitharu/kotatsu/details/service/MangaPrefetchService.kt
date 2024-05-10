@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
-import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableChapter
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
@@ -27,7 +27,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 	lateinit var mangaRepositoryFactory: MangaRepository.Factory
 
 	@Inject
-	lateinit var cache: ContentCache
+	lateinit var cache: MemoryContentCache
 
 	@Inject
 	lateinit var historyRepository: HistoryRepository
@@ -120,7 +120,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 				context,
 				PrefetchCompanionEntryPoint::class.java,
 			)
-			return entryPoint.contentCache.isCachingEnabled && entryPoint.settings.isContentPrefetchEnabled
+			return entryPoint.settings.isContentPrefetchEnabled
 		}
 
 		private fun tryStart(context: Context, intent: Intent) {

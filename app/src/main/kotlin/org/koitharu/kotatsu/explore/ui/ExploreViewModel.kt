@@ -92,7 +92,7 @@ class ExploreViewModel @Inject constructor(
 		}
 	}
 
-	fun hideSource(source: MangaSource) {
+	fun disableSource(source: MangaSource) {
 		launchJob(Dispatchers.Default) {
 			val rollback = sourcesRepository.setSourceEnabled(source, isEnabled = false)
 			onActionDone.call(ReversibleAction(R.string.source_disabled, rollback))

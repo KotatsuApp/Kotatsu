@@ -20,7 +20,7 @@ abstract class FavouriteCategoriesDao {
 	abstract fun observeAll(): Flow<List<FavouriteCategoryEntity>>
 
 	@Query("SELECT * FROM favourite_categories WHERE deleted_at = 0 AND show_in_lib = 1 ORDER BY sort_key")
-	abstract fun observeAllForLibrary(): Flow<List<FavouriteCategoryEntity>>
+	abstract fun observeAllVisible(): Flow<List<FavouriteCategoryEntity>>
 
 	@Query("SELECT * FROM favourite_categories WHERE category_id = :id AND deleted_at = 0")
 	abstract fun observe(id: Long): Flow<FavouriteCategoryEntity?>
@@ -40,7 +40,7 @@ abstract class FavouriteCategoriesDao {
 	abstract suspend fun updateTracking(id: Long, isEnabled: Boolean)
 
 	@Query("UPDATE favourite_categories SET `show_in_lib` = :isEnabled WHERE category_id = :id")
-	abstract suspend fun updateLibVisibility(id: Long, isEnabled: Boolean)
+	abstract suspend fun updateVisibility(id: Long, isEnabled: Boolean)
 
 	@Query("UPDATE favourite_categories SET sort_key = :sortKey WHERE category_id = :id")
 	abstract suspend fun updateSortKey(id: Long, sortKey: Int)

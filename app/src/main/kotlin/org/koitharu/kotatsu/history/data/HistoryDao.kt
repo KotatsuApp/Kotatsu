@@ -10,7 +10,6 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.intellij.lang.annotations.Language
-import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 
@@ -22,10 +21,6 @@ abstract class HistoryDao {
 	abstract suspend fun findAll(offset: Int, limit: Int): List<HistoryWithManga>
 
 	@Transaction
-	@Query("SELECT * FROM history WHERE deleted_at = 0 AND manga_id IN (:ids)")
-	abstract suspend fun findAll(ids: Collection<Long>): List<HistoryEntity>
-
-	@Transaction
 	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC")
 	abstract fun observeAll(): Flow<List<HistoryWithManga>>
 
@@ -33,6 +28,7 @@ abstract class HistoryDao {
 	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC LIMIT :limit")
 	abstract fun observeAll(limit: Int): Flow<List<HistoryWithManga>>
 
+	// TODO pagination
 	fun observeAll(order: ListSortOrder): Flow<List<HistoryWithManga>> {
 		val orderBy = when (order) {
 			ListSortOrder.LAST_READ -> "history.updated_at DESC"
@@ -55,9 +51,6 @@ abstract class HistoryDao {
 		)
 		return observeAllImpl(query)
 	}
-
-	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM history WHERE deleted_at = 0)")
-	abstract suspend fun findAllManga(): List<MangaEntity>
 
 	@Query("SELECT manga_id FROM history WHERE deleted_at = 0")
 	abstract suspend fun findAllIds(): LongArray

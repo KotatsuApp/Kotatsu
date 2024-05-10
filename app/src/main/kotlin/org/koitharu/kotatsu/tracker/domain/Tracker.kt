@@ -15,8 +15,6 @@ import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import java.time.Instant
 import javax.inject.Inject
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 @Reusable
 class Tracker @Inject constructor(
@@ -24,6 +22,8 @@ class Tracker @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
+
+	private val mangaMutex = MultiMutex<Long>()
 
 	suspend fun getTracks(limit: Int): List<MangaTracking> {
 		repository.updateTracks()
@@ -37,7 +37,7 @@ class Tracker @Inject constructor(
 	suspend fun fetchUpdates(
 		track: MangaTracking,
 		commit: Boolean
-	): MangaUpdates = withMangaLock(track.manga.id) {
+	): MangaUpdates = mangaMutex.withLock(track.manga.id) {
 		val updates = runCatchingCancellable {
 			val repo = mangaRepositoryFactory.create(track.manga.source)
 			require(repo is RemoteMangaRepository) { "Repository ${repo.javaClass.simpleName} is not supported" }
@@ -52,7 +52,7 @@ class Tracker @Inject constructor(
 		if (commit) {
 			repository.saveUpdates(updates)
 		}
-		return updates
+		updates
 	}
 
 	suspend fun syncWithDetails(details: Manga) {
@@ -94,7 +94,7 @@ class Tracker @Inject constructor(
 	}
 
 	@VisibleForTesting
-	suspend fun deleteTrack(mangaId: Long) = withMangaLock(mangaId) {
+	suspend fun deleteTrack(mangaId: Long) = mangaMutex.withLock(mangaId) {
 		repository.deleteTrack(mangaId)
 	}
 
@@ -135,18 +135,5 @@ class Tracker @Inject constructor(
 	private companion object {
 
 		const val NO_ID = 0L
-		private val mangaMutex = MultiMutex<Long>()
-
-		suspend inline fun <T> withMangaLock(id: Long, action: () -> T): T {
-			contract {
-				callsInPlace(action, InvocationKind.EXACTLY_ONCE)
-			}
-			mangaMutex.lock(id)
-			try {
-				return action()
-			} finally {
-				mangaMutex.unlock(id)
-			}
-		}
 	}
 }

@@ -76,7 +76,7 @@ class FavouritesRepository @Inject constructor(
 	}
 
 	fun observeCategoriesForLibrary(): Flow<List<FavouriteCategory>> {
-		return db.getFavouriteCategoriesDao().observeAllForLibrary().mapItems {
+		return db.getFavouriteCategoriesDao().observeAllVisible().mapItems {
 			it.toFavouriteCategory()
 		}.distinctUntilChanged()
 	}
@@ -157,7 +157,7 @@ class FavouritesRepository @Inject constructor(
 	}
 
 	suspend fun updateCategory(id: Long, isVisibleInLibrary: Boolean) {
-		db.getFavouriteCategoriesDao().updateLibVisibility(id, isVisibleInLibrary)
+		db.getFavouriteCategoriesDao().updateVisibility(id, isVisibleInLibrary)
 	}
 
 	suspend fun updateCategoryTracking(id: Long, isTrackingEnabled: Boolean) {

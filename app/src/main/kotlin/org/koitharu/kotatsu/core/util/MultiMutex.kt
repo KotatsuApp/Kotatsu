@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.core.util
 
 import androidx.collection.ArrayMap
 import kotlinx.coroutines.sync.Mutex
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 class MultiMutex<T : Any> : Set<T> {
 
@@ -10,12 +12,12 @@ class MultiMutex<T : Any> : Set<T> {
 	override val size: Int
 		get() = delegates.size
 
-	override fun contains(element: T): Boolean {
-		return delegates.containsKey(element)
+	override fun contains(element: T): Boolean = synchronized(delegates) {
+		delegates.containsKey(element)
 	}
 
-	override fun containsAll(elements: Collection<T>): Boolean {
-		return elements.all { x -> delegates.containsKey(x) }
+	override fun containsAll(elements: Collection<T>): Boolean = synchronized(delegates) {
+		elements.all { x -> delegates.containsKey(x) }
 	}
 
 	override fun isEmpty(): Boolean {
@@ -38,6 +40,18 @@ class MultiMutex<T : Any> : Set<T> {
 	fun unlock(element: T) {
 		synchronized(delegates) {
 			delegates.remove(element)?.unlock()
+		}
+	}
+
+	suspend inline fun <R> withLock(element: T, block: () -> R): R {
+		contract {
+			callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+		}
+		return try {
+			lock(element)
+			block()
+		} finally {
+			unlock(element)
 		}
 	}
 }

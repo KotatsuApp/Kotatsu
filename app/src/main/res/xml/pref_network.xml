@@ -10,7 +10,6 @@
 		android:entryValues="@array/values_network_policy"
 		android:key="prefetch_content"
 		android:title="@string/prefetch_content"
-		app:isPreferenceVisible="false"
 		app:useSimpleSummaryProvider="true"
 		tools:isPreferenceVisible="true" />
 

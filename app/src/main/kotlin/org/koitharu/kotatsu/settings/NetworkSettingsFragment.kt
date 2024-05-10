@@ -8,7 +8,7 @@ import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
@@ -23,11 +23,10 @@ class NetworkSettingsFragment :
 	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	@Inject
-	lateinit var contentCache: ContentCache
+	lateinit var contentCache: MemoryContentCache
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_network)
-		findPreference<Preference>(AppSettings.KEY_PREFETCH_CONTENT)?.isVisible = contentCache.isCachingEnabled
 		findPreference<ListPreference>(AppSettings.KEY_DOH)?.run {
 			entryValues = DoHProvider.entries.names()
 			setDefaultValueCompat(DoHProvider.NONE.name)

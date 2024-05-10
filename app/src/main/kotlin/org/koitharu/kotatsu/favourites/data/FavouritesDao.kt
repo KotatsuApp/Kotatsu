@@ -11,7 +11,6 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.intellij.lang.annotations.Language
-import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.favourites.domain.model.Cover
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 
@@ -40,13 +39,6 @@ abstract class FavouritesDao {
 	}
 
 	@Transaction
-	@Query(
-		"SELECT * FROM favourites WHERE deleted_at = 0 " +
-			"GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset",
-	)
-	abstract suspend fun findAll(offset: Int, limit: Int): List<FavouriteManga>
-
-	@Transaction
 	@Query("SELECT * FROM favourites WHERE deleted_at = 0 ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
 	abstract suspend fun findAllRaw(offset: Int, limit: Int): List<FavouriteManga>
 
@@ -71,19 +63,6 @@ abstract class FavouritesDao {
 		)
 		return observeAllImpl(query)
 	}
-
-	@Transaction
-	@Query(
-		"SELECT * FROM favourites WHERE category_id = :categoryId AND deleted_at = 0 " +
-			"GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset",
-	)
-	abstract suspend fun findAll(categoryId: Long, offset: Int, limit: Int): List<FavouriteManga>
-
-	@Query(
-		"SELECT * FROM manga WHERE manga_id IN " +
-			"(SELECT manga_id FROM favourites WHERE category_id = :categoryId AND deleted_at = 0)",
-	)
-	abstract suspend fun findAllManga(categoryId: Int): List<MangaEntity>
 
 	suspend fun findCovers(categoryId: Long, order: ListSortOrder): List<Cover> {
 		val orderBy = getOrderBy(order)
@@ -114,20 +93,8 @@ abstract class FavouritesDao {
 	@Query("SELECT COUNT(DISTINCT manga_id) FROM favourites WHERE deleted_at = 0")
 	abstract fun observeMangaCount(): Flow<Int>
 
-	@Query("SELECT * FROM manga WHERE manga_id IN (SELECT manga_id FROM favourites WHERE deleted_at = 0)")
-	abstract suspend fun findAllManga(): List<MangaEntity>
-
-	@Transaction
-	@Query("SELECT * FROM favourites WHERE manga_id = :id AND deleted_at = 0 GROUP BY manga_id")
-	abstract suspend fun find(id: Long): FavouriteManga?
-
 	@Query("SELECT * FROM favourites WHERE manga_id = :mangaId AND deleted_at = 0")
 	abstract suspend fun findAllRaw(mangaId: Long): List<FavouriteEntity>
-
-	@Transaction
-	@Deprecated("Ignores order")
-	@Query("SELECT * FROM favourites WHERE manga_id = :id AND deleted_at = 0 GROUP BY manga_id")
-	abstract fun observe(id: Long): Flow<FavouriteManga?>
 
 	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id = :id AND deleted_at = 0")
 	abstract fun observeIds(id: Long): Flow<List<Long>>
@@ -137,9 +104,6 @@ abstract class FavouritesDao {
 
 	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id IN (:mangaIds) AND deleted_at = 0 ORDER BY favourites.created_at ASC")
 	abstract suspend fun findCategoriesIds(mangaIds: Collection<Long>): List<Long>
-
-	@Query("SELECT DISTINCT favourite_categories.category_id FROM favourites LEFT JOIN favourite_categories ON favourites.category_id = favourite_categories.category_id WHERE manga_id = :mangaId AND favourites.deleted_at = 0 AND favourite_categories.deleted_at = 0 AND favourite_categories.track = 1")
-	abstract suspend fun findCategoriesIdsWithTrack(mangaId: Long): List<Long>
 
 	/** INSERT **/
 
@@ -194,7 +158,7 @@ abstract class FavouritesDao {
 	protected abstract suspend fun setDeletedAt(mangaId: Long, deletedAt: Long)
 
 	@Query("UPDATE favourites SET deleted_at = :deletedAt WHERE manga_id = :mangaId AND category_id = :categoryId")
-	abstract suspend fun setDeletedAt(categoryId: Long, mangaId: Long, deletedAt: Long)
+	protected abstract suspend fun setDeletedAt(categoryId: Long, mangaId: Long, deletedAt: Long)
 
 	@Query("UPDATE favourites SET deleted_at = :deletedAt WHERE category_id = :categoryId AND deleted_at = 0")
 	protected abstract suspend fun setDeletedAtAll(categoryId: Long, deletedAt: Long)

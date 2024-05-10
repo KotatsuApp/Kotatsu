@@ -3,33 +3,27 @@ package org.koitharu.kotatsu.core.ui
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
-import androidx.appcompat.widget.ActionBarContextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.ColorUtils
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
-import org.koitharu.kotatsu.core.ui.util.BaseActivityEntryPoint
 import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.isWebViewUnavailable
 
 @Suppress("LeakingThis")
@@ -127,32 +121,13 @@ abstract class BaseActivity<B : ViewBinding> :
 	@CallSuper
 	override fun onSupportActionModeStarted(mode: ActionMode) {
 		super.onSupportActionModeStarted(mode)
-		actionModeDelegate.onSupportActionModeStarted(mode)
-		val actionModeColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			ColorUtils.compositeColors(
-				ContextCompat.getColor(this, com.google.android.material.R.color.m3_appbar_overlay_color),
-				getThemeColor(com.google.android.material.R.attr.colorSurface),
-			)
-		} else {
-			ContextCompat.getColor(this, R.color.kotatsu_background)
-		}
-		defaultStatusBarColor = window.statusBarColor
-		window.statusBarColor = actionModeColor
-		val insets = ViewCompat.getRootWindowInsets(viewBinding.root)
-			?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
-		findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar).apply {
-			setBackgroundColor(actionModeColor)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
-		}
+		actionModeDelegate.onSupportActionModeStarted(mode, window)
 	}
 
 	@CallSuper
 	override fun onSupportActionModeFinished(mode: ActionMode) {
 		super.onSupportActionModeFinished(mode)
-		actionModeDelegate.onSupportActionModeFinished(mode)
-		window.statusBarColor = defaultStatusBarColor
+		actionModeDelegate.onSupportActionModeFinished(mode, window)
 	}
 
 	protected open fun dispatchNavigateUp() {
@@ -183,6 +158,12 @@ abstract class BaseActivity<B : ViewBinding> :
 				throw e
 			}
 		}
+	}
+
+	@EntryPoint
+	@InstallIn(SingletonComponent::class)
+	interface BaseActivityEntryPoint {
+		val settings: AppSettings
 	}
 
 	companion object {

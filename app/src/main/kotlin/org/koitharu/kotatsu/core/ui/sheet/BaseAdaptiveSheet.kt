@@ -2,8 +2,6 @@ package org.koitharu.kotatsu.core.ui.sheet
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,15 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.view.ActionMode
-import androidx.appcompat.widget.ActionBarContextView
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.ColorUtils
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -33,14 +24,12 @@ import com.google.android.material.sidesheet.SideSheetDialog
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import com.google.android.material.R as materialR
 
 abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 
 	private var waitingForDismissAllowingStateLoss = false
 	private var isFitToContentsDisabled = false
-	private var defaultStatusBarColor = Color.TRANSPARENT
 
 	var viewBinding: B? = null
 		private set
@@ -105,40 +94,18 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 
 	@CallSuper
 	protected open fun dispatchSupportActionModeStarted(mode: ActionMode) {
-		actionModeDelegate?.onSupportActionModeStarted(mode)
-		val ctx = requireContext()
-		val actionModeColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			ColorUtils.compositeColors(
-				ContextCompat.getColor(ctx, com.google.android.material.R.color.m3_appbar_overlay_color),
-				ctx.getThemeColor(com.google.android.material.R.attr.colorSurface),
-			)
-		} else {
-			ContextCompat.getColor(ctx, R.color.kotatsu_surface)
-		}
-		dialog?.window?.let {
-			defaultStatusBarColor = it.statusBarColor
-			it.statusBarColor = actionModeColor
-		}
-		val insets = ViewCompat.getRootWindowInsets(requireView())
-			?.getInsets(WindowInsetsCompat.Type.systemBars()) ?: return
-		dialog?.window?.decorView?.findViewById<ActionBarContextView?>(androidx.appcompat.R.id.action_mode_bar)?.apply {
-			setBackgroundColor(actionModeColor)
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top
-			}
-		}
+		actionModeDelegate?.onSupportActionModeStarted(mode, dialog?.window)
 	}
 
 	@CallSuper
 	protected open fun dispatchSupportActionModeFinished(mode: ActionMode) {
-		actionModeDelegate?.onSupportActionModeFinished(mode)
-		dialog?.window?.statusBarColor = defaultStatusBarColor
+		actionModeDelegate?.onSupportActionModeFinished(mode, dialog?.window)
 	}
 
 	fun addSheetCallback(callback: AdaptiveSheetCallback, lifecycleOwner: LifecycleOwner): Boolean {
 		val b = behavior ?: return false
 		b.addCallback(callback)
-		val rootView = dialog?.findViewById<View>(materialR.id.design_bottom_sheet)
+		val rootView = dialog?.findViewById(materialR.id.design_bottom_sheet)
 			?: dialog?.findViewById(materialR.id.coordinator)
 			?: view
 		if (rootView != null) {

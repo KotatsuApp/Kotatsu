@@ -11,7 +11,7 @@
 		android:title="@string/create_shortcut" />
 
 	<item
-		android:id="@+id/action_hide"
-		android:title="@string/hide" />
+		android:id="@+id/action_disable"
+		android:title="@string/disable" />
 
 </menu>

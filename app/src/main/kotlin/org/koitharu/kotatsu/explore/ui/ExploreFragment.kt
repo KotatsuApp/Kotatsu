@@ -205,8 +205,8 @@ class ExploreFragment :
 					startActivity(SettingsActivity.newSourceSettingsIntent(requireContext(), sourceItem.source))
 				}
 
-				R.id.action_hide -> {
-					viewModel.hideSource(sourceItem.source)
+				R.id.action_disable -> {
+					viewModel.disableSource(sourceItem.source)
 				}
 
 				R.id.action_shortcut -> {

@@ -28,9 +28,6 @@ interface TrackLogsDao {
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun insert(entity: TrackLogEntity): Long
 
-	@Query("DELETE FROM track_logs WHERE manga_id = :mangaId")
-	suspend fun removeAll(mangaId: Long)
-
 	@Query("DELETE FROM track_logs WHERE manga_id NOT IN (SELECT manga_id FROM tracks)")
 	suspend fun gc()
 

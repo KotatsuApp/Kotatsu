@@ -13,10 +13,11 @@ import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.cache.SafeDeferred
 import org.koitharu.kotatsu.core.network.MirrorSwitchInterceptor
 import org.koitharu.kotatsu.core.prefs.SourceSettings
+import org.koitharu.kotatsu.core.util.MultiMutex
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
@@ -37,9 +38,13 @@ import java.util.Locale
 
 class RemoteMangaRepository(
 	private val parser: MangaParser,
-	private val cache: ContentCache,
+	private val cache: MemoryContentCache, // TODO fix concurrency
 	private val mirrorSwitchInterceptor: MirrorSwitchInterceptor,
 ) : MangaRepository, Interceptor {
+
+	private val detailsMutex = MultiMutex<Long>()
+	private val relatedMangaMutex = MultiMutex<Long>()
+	private val pagesMutex = MultiMutex<Long>()
 
 	override val source: MangaSource
 		get() = parser.source
@@ -96,7 +101,7 @@ class RemoteMangaRepository(
 
 	override suspend fun getDetails(manga: Manga): Manga = getDetails(manga, CachePolicy.ENABLED)
 
-	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
+	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> = pagesMutex.withLock(chapter.id) {
 		cache.getPages(source, chapter.url)?.let { return it }
 		val pages = asyncSafe {
 			mirrorSwitchInterceptor.withMirrorSwitching {
@@ -104,8 +109,8 @@ class RemoteMangaRepository(
 			}
 		}
 		cache.putPages(source, chapter.url, pages)
-		return pages.await()
-	}
+		pages
+	}.await()
 
 	override suspend fun getPageUrl(page: MangaPage): String = mirrorSwitchInterceptor.withMirrorSwitching {
 		parser.getPageUrl(page)
@@ -123,16 +128,16 @@ class RemoteMangaRepository(
 		parser.getFavicons()
 	}
 
-	override suspend fun getRelated(seed: Manga): List<Manga> {
+	override suspend fun getRelated(seed: Manga): List<Manga> = relatedMangaMutex.withLock(seed.id) {
 		cache.getRelatedManga(source, seed.url)?.let { return it }
 		val related = asyncSafe {
 			parser.getRelatedManga(seed).filterNot { it.id == seed.id }
 		}
 		cache.putRelatedManga(source, seed.url, related)
-		return related.await()
-	}
+		related
+	}.await()
 
-	suspend fun getDetails(manga: Manga, cachePolicy: CachePolicy): Manga {
+	suspend fun getDetails(manga: Manga, cachePolicy: CachePolicy): Manga = detailsMutex.withLock(manga.id) {
 		if (cachePolicy.readEnabled) {
 			cache.getDetails(source, manga.url)?.let { return it }
 		}
@@ -144,8 +149,8 @@ class RemoteMangaRepository(
 		if (cachePolicy.writeEnabled) {
 			cache.putDetails(source, manga.url, details)
 		}
-		return details.await()
-	}
+		details
+	}.await()
 
 	suspend fun peekDetails(manga: Manga): Manga? {
 		return cache.getDetails(source, manga.url)

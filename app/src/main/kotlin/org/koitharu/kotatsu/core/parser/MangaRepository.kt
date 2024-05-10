@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.core.parser
 
 import androidx.annotation.AnyThread
-import org.koitharu.kotatsu.core.cache.ContentCache
+import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.network.MirrorSwitchInterceptor
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
@@ -57,7 +57,7 @@ interface MangaRepository {
 	class Factory @Inject constructor(
 		private val localMangaRepository: LocalMangaRepository,
 		private val loaderContext: MangaLoaderContext,
-		private val contentCache: ContentCache,
+		private val contentCache: MemoryContentCache,
 		private val mirrorSwitchInterceptor: MirrorSwitchInterceptor,
 	) {
 

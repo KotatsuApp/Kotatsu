@@ -26,9 +26,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
-import org.koitharu.kotatsu.core.cache.ContentCache
-import org.koitharu.kotatsu.core.cache.MemoryContentCache
-import org.koitharu.kotatsu.core.cache.StubContentCache
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
@@ -158,18 +155,6 @@ interface AppModule {
 			activityRecreationHandle,
 			acraScreenLogger,
 		)
-
-		@Provides
-		@Singleton
-		fun provideContentCache(
-			application: Application,
-		): ContentCache {
-			return if (application.isLowRamDevice()) {
-				StubContentCache()
-			} else {
-				MemoryContentCache(application)
-			}
-		}
 
 		@Provides
 		@Singleton

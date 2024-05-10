@@ -1,24 +1,17 @@
 package org.koitharu.kotatsu.stats.data
 
-import android.database.sqlite.SQLiteQueryBuilder
 import androidx.room.Dao
 import androidx.room.MapColumn
 import androidx.room.Query
 import androidx.room.RawQuery
-import androidx.room.Transaction
 import androidx.room.Upsert
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.MangaEntity
-import org.koitharu.kotatsu.history.data.HistoryEntity
-import org.koitharu.kotatsu.history.data.HistoryWithManga
 
 @Dao
 abstract class StatsDao {
-
-	@Query("SELECT * FROM stats ORDER BY started_at")
-	abstract suspend fun findAll(): List<StatsEntity>
 
 	@Query("SELECT * FROM stats WHERE manga_id = :mangaId ORDER BY started_at")
 	abstract suspend fun findAll(mangaId: Long): List<StatsEntity>
@@ -32,12 +25,6 @@ abstract class StatsDao {
 	@Query("SELECT IFNULL(SUM(duration)/SUM(pages), 0) FROM stats")
 	abstract suspend fun getAverageTimePerPage(): Long
 
-	@Query("SELECT IFNULL(SUM(duration), 0) FROM stats WHERE manga_id = :mangaId")
-	abstract suspend fun getReadingTime(mangaId: Long): Long
-
-	@Query("SELECT IFNULL(SUM(duration), 0) FROM stats")
-	abstract suspend fun getTotalReadingTime(): Long
-
 	@Query("DELETE FROM stats")
 	abstract suspend fun clear()
 
@@ -47,7 +34,11 @@ abstract class StatsDao {
 	@Upsert
 	abstract suspend fun upsert(entity: StatsEntity)
 
-	suspend fun getDurationStats(fromDate: Long, isNsfw: Boolean?, favouriteCategories: Set<Long>): Map<MangaEntity, Long> {
+	suspend fun getDurationStats(
+		fromDate: Long,
+		isNsfw: Boolean?,
+		favouriteCategories: Set<Long>
+	): Map<MangaEntity, Long> {
 		val conditions = ArrayList<String>()
 		conditions.add("stats.started_at >= $fromDate")
 		if (favouriteCategories.isNotEmpty()) {
@@ -66,7 +57,7 @@ abstract class StatsDao {
 	}
 
 	@RawQuery
-	protected abstract fun getDurationStatsImpl(
+	protected abstract suspend fun getDurationStatsImpl(
 		query: SupportSQLiteQuery
 	): Map<@MapColumn("manga") MangaEntity, @MapColumn("d") Long>
 }
