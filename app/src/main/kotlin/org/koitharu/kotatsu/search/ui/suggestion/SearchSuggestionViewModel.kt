@@ -81,7 +81,7 @@ class SearchSuggestionViewModel @Inject constructor(
 
 	fun onSourceToggle(source: MangaSource, isEnabled: Boolean) {
 		launchJob(Dispatchers.Default) {
-			sourcesRepository.setSourceEnabled(source, isEnabled)
+			sourcesRepository.setSourcesEnabled(setOf(source), isEnabled)
 		}
 	}
 

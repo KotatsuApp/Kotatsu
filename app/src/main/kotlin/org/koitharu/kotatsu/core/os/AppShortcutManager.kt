@@ -18,6 +18,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
@@ -150,7 +151,7 @@ class AppShortcutManager @Inject constructor(
 			.build()
 	}
 
-	private suspend fun buildShortcutInfo(source: MangaSource): ShortcutInfoCompat {
+	private suspend fun buildShortcutInfo(source: MangaSource): ShortcutInfoCompat = withContext(Dispatchers.Default) {
 		val icon = runCatchingCancellable {
 			coil.execute(
 				ImageRequest.Builder(context)
@@ -163,7 +164,7 @@ class AppShortcutManager @Inject constructor(
 			onSuccess = { IconCompat.createWithAdaptiveBitmap(it) },
 			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) },
 		)
-		return ShortcutInfoCompat.Builder(context, source.name)
+		ShortcutInfoCompat.Builder(context, source.name)
 			.setShortLabel(source.title)
 			.setLongLabel(source.title)
 			.setIcon(icon)

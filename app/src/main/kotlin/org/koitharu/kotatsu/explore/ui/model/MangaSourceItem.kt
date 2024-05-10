@@ -8,6 +8,9 @@ data class MangaSourceItem(
 	val isGrid: Boolean,
 ) : ListModel {
 
+	val id: Long
+		get() = source.ordinal.toLong()
+
 	override fun areItemsTheSame(other: ListModel): Boolean {
 		return other is MangaSourceItem && other.source == source
 	}

@@ -64,7 +64,7 @@ class SourcesManageViewModel @Inject constructor(
 
 	fun setEnabled(source: MangaSource, isEnabled: Boolean) {
 		launchJob(Dispatchers.Default) {
-			val rollback = repository.setSourceEnabled(source, isEnabled)
+			val rollback = repository.setSourcesEnabled(setOf(source), isEnabled)
 			if (!isEnabled) {
 				onActionDone.call(ReversibleAction(R.string.source_disabled, rollback))
 			}

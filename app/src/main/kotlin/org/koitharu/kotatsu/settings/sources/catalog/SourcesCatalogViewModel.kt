@@ -70,7 +70,7 @@ class SourcesCatalogViewModel @Inject constructor(
 
 	fun addSource(source: MangaSource) {
 		launchJob(Dispatchers.Default) {
-			val rollback = repository.setSourceEnabled(source, true)
+			val rollback = repository.setSourcesEnabled(setOf(source), true)
 			onActionDone.call(ReversibleAction(R.string.source_enabled, rollback))
 		}
 	}

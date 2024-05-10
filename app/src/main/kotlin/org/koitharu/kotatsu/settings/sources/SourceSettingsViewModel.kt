@@ -18,7 +18,6 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
-import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
@@ -75,7 +74,7 @@ class SourceSettingsViewModel @Inject constructor(
 
 	fun setEnabled(value: Boolean) {
 		launchJob(Dispatchers.Default) {
-			mangaSourcesRepository.setSourceEnabled(source, value)
+			mangaSourcesRepository.setSourcesEnabled(setOf(source), value)
 		}
 	}
 

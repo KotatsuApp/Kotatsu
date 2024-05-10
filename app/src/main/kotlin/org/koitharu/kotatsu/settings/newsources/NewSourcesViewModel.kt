@@ -45,7 +45,7 @@ class NewSourcesViewModel @Inject constructor(
 
 	fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
 		launchJob(Dispatchers.Default) {
-			repository.setSourceEnabled(item.source, isEnabled)
+			repository.setSourcesEnabled(setOf(item.source), isEnabled)
 		}
 	}
 }

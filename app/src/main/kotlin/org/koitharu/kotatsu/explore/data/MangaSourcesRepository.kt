@@ -97,10 +97,10 @@ class MangaSourcesRepository @Inject constructor(
 		result
 	}
 
-	suspend fun setSourceEnabled(source: MangaSource, isEnabled: Boolean): ReversibleHandle {
-		dao.setEnabled(source.name, isEnabled)
+	suspend fun setSourcesEnabled(sources: Collection<MangaSource>, isEnabled: Boolean): ReversibleHandle {
+		setSourcesEnabledImpl(sources, isEnabled)
 		return ReversibleHandle {
-			dao.setEnabled(source.name, !isEnabled)
+			setSourcesEnabledImpl(sources, !isEnabled)
 		}
 	}
 
@@ -169,6 +169,18 @@ class MangaSourcesRepository @Inject constructor(
 
 	suspend fun isSetupRequired(): Boolean {
 		return dao.findAll().isEmpty()
+	}
+
+	private suspend fun setSourcesEnabledImpl(sources: Collection<MangaSource>, isEnabled: Boolean) {
+		if (sources.size == 1) { // fast path
+			dao.setEnabled(sources.first().name, isEnabled)
+			return
+		}
+		db.withTransaction {
+			for (source in sources) {
+				dao.setEnabled(source.name, isEnabled)
+			}
+		}
 	}
 
 	private suspend fun getNewSources(): MutableSet<MangaSource> {
