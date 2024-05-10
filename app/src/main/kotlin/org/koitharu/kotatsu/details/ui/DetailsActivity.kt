@@ -181,7 +181,7 @@ class DetailsActivity :
 		viewModel.isStatsAvailable.observe(this, menuInvalidator)
 		viewModel.remoteManga.observe(this, menuInvalidator)
 		viewModel.branches.observe(this) {
-			viewBinding.infoLayout.chipBranch.isVisible = it.size > 1 || it.firstOrNull() != null
+			viewBinding.infoLayout.chipBranch.isVisible = it.size > 1 || !it.firstOrNull()?.name.isNullOrEmpty()
 			viewBinding.infoLayout.chipBranch.isCloseIconVisible = it.size > 1
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
