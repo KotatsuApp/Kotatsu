@@ -39,7 +39,7 @@ suspend fun BackupZipOutput(context: Context): BackupZipOutput = runInterruptibl
 	val filename = buildString {
 		append(context.getString(R.string.app_name).replace(' ', '_').lowercase(Locale.ROOT))
 		append('_')
-		append(LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMyyyy")))
+		append(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
 		append(".bk.zip")
 	}
 	BackupZipOutput(File(dir, filename))
