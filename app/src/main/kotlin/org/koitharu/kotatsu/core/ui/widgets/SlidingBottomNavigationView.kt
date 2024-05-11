@@ -11,6 +11,7 @@ import android.view.ViewPropertyAnimator
 import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.isVisible
 import androidx.customview.view.AbsSavedState
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
@@ -46,6 +47,9 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 				translationX = 0f
 			}
 		}
+
+	val isShownOrShowing: Boolean
+		get() = isVisible && currentState == STATE_UP
 
 	override fun getBehavior(): CoordinatorLayout.Behavior<*> {
 		return behavior

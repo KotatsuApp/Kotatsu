@@ -281,6 +281,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		adjustFabVisibility()
 		bottomNav?.hide()
 		viewBinding.toolbarCard.isInvisible = true
+		updateContainerBottomMargin()
 	}
 
 	override fun onSupportActionModeFinished(mode: ActionMode) {
@@ -288,6 +289,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		adjustFabVisibility()
 		bottomNav?.show()
 		viewBinding.toolbarCard.isInvisible = false
+		updateContainerBottomMargin()
 	}
 
 	private fun onOpenReader(manga: Manga) {
@@ -403,6 +405,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		)
 		bottomNav?.showOrHide(!isOpened)
 		closeSearchCallback.isEnabled = isOpened
+		updateContainerBottomMargin()
 	}
 
 	private fun requestNotificationsPermission() {
@@ -439,7 +442,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 	private fun updateContainerBottomMargin() {
 		val bottomNavBar = viewBinding.bottomNav ?: return
-		val newMargin = if (bottomNavBar.isPinned) bottomNavBar.height else 0
+		val newMargin = if (bottomNavBar.isPinned && bottomNavBar.isShownOrShowing) bottomNavBar.height else 0
 		with(viewBinding.container) {
 			val params = layoutParams as MarginLayoutParams
 			if (params.bottomMargin != newMargin) {
