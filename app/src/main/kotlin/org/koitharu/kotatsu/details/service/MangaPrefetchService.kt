@@ -110,10 +110,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 		}
 
 		private fun isPrefetchAvailable(context: Context, source: MangaSource?): Boolean {
-			if (source == MangaSource.LOCAL) {
-				return false
-			}
-			if (context.isPowerSaveMode()) {
+			if (source == MangaSource.LOCAL || context.isPowerSaveMode()) {
 				return false
 			}
 			val entryPoint = EntryPointAccessors.fromApplication(

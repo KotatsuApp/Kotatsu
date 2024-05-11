@@ -1,35 +1,18 @@
 package org.koitharu.kotatsu.stats.ui.views
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
-import android.graphics.PathEffect
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
-import android.graphics.Xfermode
 import android.util.AttributeSet
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.ColorInt
-import androidx.collection.MutableIntList
-import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.minus
-import androidx.core.view.GestureDetectorCompat
-import androidx.core.view.setPadding
-import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.replaceWith
 import org.koitharu.kotatsu.parsers.util.toIntUp
-import kotlin.math.absoluteValue
-import kotlin.math.max
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 import kotlin.random.Random
 import com.google.android.material.R as materialR
 
@@ -126,7 +109,7 @@ class BarChartView @JvmOverloads constructor(
 			bars.clear()
 			return
 		}
-		var fullWidth = rawData.size * (barWidth + minBarSpacing) + minBarSpacing
+		val fullWidth = rawData.size * (barWidth + minBarSpacing) + minBarSpacing
 		val windowSize = (fullWidth / width.toFloat()).toIntUp()
 		bars.replaceWith(
 			rawData.chunked(windowSize) { it.average() },

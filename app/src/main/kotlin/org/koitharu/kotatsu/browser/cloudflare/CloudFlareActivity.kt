@@ -23,12 +23,15 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.TaggedActivityResult
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -137,6 +140,10 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 
 	override fun onCheckPassed() {
 		pendingResult = RESULT_OK
+		val source = intent?.getStringExtra(ARG_SOURCE)
+		if (source != null) {
+			CaptchaNotifier(this).dismiss(MangaSource(source))
+		}
 		finishAfterTransition()
 	}
 
@@ -174,9 +181,9 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		}
 	}
 
-	class Contract : ActivityResultContract<Pair<String, Headers?>, TaggedActivityResult>() {
-		override fun createIntent(context: Context, input: Pair<String, Headers?>): Intent {
-			return newIntent(context, input.first, input.second)
+	class Contract : ActivityResultContract<CloudFlareProtectedException, TaggedActivityResult>() {
+		override fun createIntent(context: Context, input: CloudFlareProtectedException): Intent {
+			return newIntent(context, input)
 		}
 
 		override fun parseResult(resultCode: Int, intent: Intent?): TaggedActivityResult {
@@ -188,13 +195,23 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 
 		const val TAG = "CloudFlareActivity"
 		private const val ARG_UA = "ua"
+		private const val ARG_SOURCE = "_source"
 
-		fun newIntent(
+		fun newIntent(context: Context, exception: CloudFlareProtectedException) = newIntent(
+			context = context,
+			url = exception.url,
+			source = exception.source,
+			headers = exception.headers,
+		)
+
+		private fun newIntent(
 			context: Context,
 			url: String,
+			source: MangaSource?,
 			headers: Headers?,
 		) = Intent(context, CloudFlareActivity::class.java).apply {
 			data = url.toUri()
+			putExtra(ARG_SOURCE, source?.name)
 			headers?.get(CommonHeaders.USER_AGENT)?.let {
 				putExtra(ARG_UA, it)
 			}

@@ -31,7 +31,7 @@ class ScrobblerStorage(context: Context, service: ScrobblerService) {
 			ScrobblerUser(
 				id = lines[0].toLong(),
 				nickname = lines[1],
-				avatar = lines[2],
+				avatar = lines[2].takeUnless(String::isEmpty),
 				service = ScrobblerService.valueOf(lines[3]),
 			)
 		}
@@ -43,7 +43,7 @@ class ScrobblerStorage(context: Context, service: ScrobblerService) {
 			val str = StringJoiner("\n")
 				.add(value.id)
 				.add(value.nickname)
-				.add(value.avatar)
+				.add(value.avatar.orEmpty())
 				.add(value.service.name)
 				.complete()
 			putString(KEY_USER, str)

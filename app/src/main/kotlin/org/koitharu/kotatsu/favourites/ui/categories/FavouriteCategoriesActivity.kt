@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -176,11 +174,5 @@ class FavouriteCategoriesActivity :
 			super.clearView(recyclerView, viewHolder)
 			viewModel.saveOrder(adapter.items ?: return)
 		}
-	}
-
-	@Deprecated("")
-	companion object {
-
-		fun newIntent(context: Context) = Intent(context, FavouriteCategoriesActivity::class.java)
 	}
 }

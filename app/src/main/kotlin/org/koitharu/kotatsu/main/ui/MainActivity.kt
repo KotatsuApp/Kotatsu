@@ -45,7 +45,6 @@ import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.OptionsMenuBadgeHelper
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.core.util.ext.hideKeyboard
-import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
@@ -77,7 +76,7 @@ private const val TAG_SEARCH = "search"
 class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNavOwner,
 	View.OnClickListener,
 	View.OnFocusChangeListener, SearchSuggestionListener,
-	MainNavigationDelegate.OnFragmentChangedListener {
+	MainNavigationDelegate.OnFragmentChangedListener, View.OnLayoutChangeListener {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -136,6 +135,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		}
 		viewModel.isBottomNavPinned.observe(this, ::setNavbarPinned)
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
+		viewBinding.bottomNav?.addOnLayoutChangeListener(this)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -209,6 +209,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			left = insets.left,
 			right = insets.right,
 		)
+	}
+
+	override fun onLayoutChange(
+		v: View?,
+		left: Int,
+		top: Int,
+		right: Int,
+		bottom: Int,
+		oldLeft: Int,
+		oldTop: Int,
+		oldRight: Int,
+		oldBottom: Int
+	) {
+		if (top != oldTop || bottom != oldBottom) {
+			updateContainerBottomMargin()
+		}
 	}
 
 	override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -418,12 +434,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				view.layoutParams = lp
 			}
 		}
-		viewBinding.container.updateLayoutParams<MarginLayoutParams> {
-			bottomMargin = if (isPinned) {
-				(bottomNavBar?.measureHeight()
-					?.coerceAtLeast(resources.getDimensionPixelSize(materialR.dimen.m3_bottom_nav_min_height)) ?: 0)
-			} else {
-				0
+		updateContainerBottomMargin()
+	}
+
+	private fun updateContainerBottomMargin() {
+		val bottomNavBar = viewBinding.bottomNav ?: return
+		val newMargin = if (bottomNavBar.isPinned) bottomNavBar.height else 0
+		with(viewBinding.container) {
+			val params = layoutParams as MarginLayoutParams
+			if (params.bottomMargin != newMargin) {
+				params.bottomMargin = newMargin
+				layoutParams = params
 			}
 		}
 	}

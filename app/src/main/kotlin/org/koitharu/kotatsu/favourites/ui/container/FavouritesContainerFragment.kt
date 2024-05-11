@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui.container
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -102,7 +103,7 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_retry -> startActivity(
-				FavouriteCategoriesActivity.newIntent(v.context),
+				Intent(v.context, FavouriteCategoriesActivity::class.java),
 			)
 		}
 	}

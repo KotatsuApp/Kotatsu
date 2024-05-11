@@ -322,7 +322,7 @@ class DownloadsViewModel @Inject constructor(
 				emit(mapChapters())
 			}
 		}
-	}.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	private suspend fun tryLoad(manga: Manga) = runCatchingCancellable {
 		(mangaRepositoryFactory.create(manga.source) as RemoteMangaRepository).getDetails(manga)

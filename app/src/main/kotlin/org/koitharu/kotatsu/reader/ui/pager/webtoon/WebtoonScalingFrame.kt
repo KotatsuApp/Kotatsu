@@ -18,7 +18,6 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.OverScroller
 import androidx.core.animation.doOnEnd
-import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewConfigurationCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
@@ -39,7 +38,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 	ZoomControl.ZoomControlListener {
 
 	private val scaleDetector = ScaleGestureDetector(context, this)
-	private val gestureDetector = GestureDetectorCompat(context, GestureListener())
+	private val gestureDetector = GestureDetector(context, GestureListener())
 	private val overScroller = OverScroller(context, AccelerateDecelerateInterpolator())
 
 	private val transformMatrix = Matrix()
@@ -339,7 +338,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			if (overScroller.computeScrollOffset()) {
 				transformMatrix.postTranslate(
 					overScroller.currX.toFloat() - prevPos.x,
-					overScroller.currY.toFloat() - prevPos.y
+					overScroller.currY.toFloat() - prevPos.y,
 				)
 				prevPos.set(overScroller.currX, overScroller.currY)
 				invalidateTarget()

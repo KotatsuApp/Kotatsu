@@ -67,10 +67,8 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 
 	override fun onNewIntent(intent: Intent) {
 		super.onNewIntent(intent)
-		if (intent != null) {
-			setIntent(intent)
-			processIntent(intent)
-		}
+		setIntent(intent)
+		processIntent(intent)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {

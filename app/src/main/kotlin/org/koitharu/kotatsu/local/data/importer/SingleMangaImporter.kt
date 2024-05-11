@@ -72,9 +72,6 @@ class SingleMangaImporter @Inject constructor(
 		return LocalMangaInput.of(dest).getManga()
 	}
 
-	/**
-	 * TODO: progress
-	 */
 	private suspend fun DocumentFile.copyTo(destDir: File) {
 		if (isDirectory) {
 			val subDir = File(destDir, requireName())

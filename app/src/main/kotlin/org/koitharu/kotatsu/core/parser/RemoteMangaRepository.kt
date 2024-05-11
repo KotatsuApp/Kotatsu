@@ -38,7 +38,7 @@ import java.util.Locale
 
 class RemoteMangaRepository(
 	private val parser: MangaParser,
-	private val cache: MemoryContentCache, // TODO fix concurrency
+	private val cache: MemoryContentCache,
 	private val mirrorSwitchInterceptor: MirrorSwitchInterceptor,
 ) : MangaRepository, Interceptor {
 

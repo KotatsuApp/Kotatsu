@@ -20,7 +20,7 @@ class SplitSwitchPreference @JvmOverloads constructor(
 
 	var onContainerClickListener: OnPreferenceClickListener? = null
 
-	private val containerClickListener = View.OnClickListener { v ->
+	private val containerClickListener = View.OnClickListener {
 		onContainerClickListener?.onPreferenceClick(this)
 	}
 

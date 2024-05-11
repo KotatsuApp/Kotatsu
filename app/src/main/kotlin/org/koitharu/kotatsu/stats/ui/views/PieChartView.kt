@@ -3,28 +3,17 @@ package org.koitharu.kotatsu.stats.ui.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
-import android.graphics.Xfermode
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import androidx.annotation.ColorInt
-import androidx.collection.MutableIntList
 import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.minus
-import androidx.core.view.GestureDetectorCompat
-import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.replaceWith
-import kotlin.math.absoluteValue
 import kotlin.math.sqrt
-import com.google.android.material.R as materialR
 
 class PieChartView @JvmOverloads constructor(
 	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -34,8 +23,8 @@ class PieChartView @JvmOverloads constructor(
 	private val segments = ArrayList<Segment>()
 	private val chartBounds = RectF()
 	private val clearColor = context.getThemeColor(android.R.attr.colorBackground)
-	private val touchDetector = GestureDetectorCompat(context, this)
-	private var hightlightedSegment = -1
+	private val touchDetector = GestureDetector(context, this)
+	private var highlightedSegment = -1
 
 	var onSegmentClickListener: OnSegmentClickListener? = null
 
@@ -49,7 +38,7 @@ class PieChartView @JvmOverloads constructor(
 		var angle = 0f
 		for ((i, segment) in segments.withIndex()) {
 			paint.color = segment.color
-			if (i == hightlightedSegment) {
+			if (i == highlightedSegment) {
 				paint.color = ColorUtils.setAlphaComponent(paint.color, 180)
 			}
 			paint.style = Paint.Style.FILL
@@ -91,7 +80,7 @@ class PieChartView @JvmOverloads constructor(
 	@SuppressLint("ClickableViewAccessibility")
 	override fun onTouchEvent(event: MotionEvent): Boolean {
 		if (event.actionMasked == MotionEvent.ACTION_CANCEL || event.actionMasked == MotionEvent.ACTION_UP) {
-			hightlightedSegment = -1
+			highlightedSegment = -1
 			invalidate()
 		}
 		return super.onTouchEvent(event) || touchDetector.onTouchEvent(event)
@@ -102,8 +91,8 @@ class PieChartView @JvmOverloads constructor(
 			return false
 		}
 		val segment = findSegmentIndex(e.x, e.y)
-		if (segment != hightlightedSegment) {
-			hightlightedSegment = segment
+		if (segment != highlightedSegment) {
+			highlightedSegment = segment
 			invalidate()
 			return true
 		} else {

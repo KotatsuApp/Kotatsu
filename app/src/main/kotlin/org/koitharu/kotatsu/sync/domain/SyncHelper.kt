@@ -79,12 +79,10 @@ class SyncHelper @AssistedInject constructor(
 			.build()
 		val response = httpClient.newCall(request).execute().log().parseJsonOrNull()
 		if (response != null) {
-			val timestamp = response.getLong(FIELD_TIMESTAMP)
-			val categoriesResult =
-				upsertFavouriteCategories(response.getJSONArray(TABLE_FAVOURITE_CATEGORIES), timestamp)
+			val categoriesResult = upsertFavouriteCategories(response.getJSONArray(TABLE_FAVOURITE_CATEGORIES))
 			stats.numDeletes += categoriesResult.first().count?.toLong() ?: 0L
 			stats.numInserts += categoriesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
-			val favouritesResult = upsertFavourites(response.getJSONArray(TABLE_FAVOURITES), timestamp)
+			val favouritesResult = upsertFavourites(response.getJSONArray(TABLE_FAVOURITES))
 			stats.numDeletes += favouritesResult.first().count?.toLong() ?: 0L
 			stats.numInserts += favouritesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
 			stats.numEntries += stats.numInserts + stats.numDeletes
@@ -105,7 +103,6 @@ class SyncHelper @AssistedInject constructor(
 		if (response != null) {
 			val result = upsertHistory(
 				json = response.getJSONArray(TABLE_HISTORY),
-				timestamp = response.getLong(FIELD_TIMESTAMP),
 			)
 			stats.numDeletes += result.first().count?.toLong() ?: 0L
 			stats.numInserts += result.drop(1).sumOf { it.count?.toLong() ?: 0L }
@@ -122,12 +119,12 @@ class SyncHelper @AssistedInject constructor(
 
 	fun onSyncComplete(result: SyncResult) {
 		if (logger.isEnabled) {
-			logger.log("Sync finshed: ${result.toDebugString()}")
+			logger.log("Sync finished: ${result.toDebugString()}")
 			logger.flushBlocking()
 		}
 	}
 
-	private fun upsertHistory(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
+	private fun upsertHistory(json: JSONArray): Array<ContentProviderResult> {
 		val uri = uri(authorityHistory, TABLE_HISTORY)
 		val operations = ArrayList<ContentProviderOperation>()
 		json.mapJSONTo(operations) { jo ->
@@ -139,7 +136,7 @@ class SyncHelper @AssistedInject constructor(
 		return provider.applyBatch(operations)
 	}
 
-	private fun upsertFavouriteCategories(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
+	private fun upsertFavouriteCategories(json: JSONArray): Array<ContentProviderResult> {
 		val uri = uri(authorityFavourites, TABLE_FAVOURITE_CATEGORIES)
 		val operations = ArrayList<ContentProviderOperation>()
 		json.mapJSONTo(operations) { jo ->
@@ -150,7 +147,7 @@ class SyncHelper @AssistedInject constructor(
 		return provider.applyBatch(operations)
 	}
 
-	private fun upsertFavourites(json: JSONArray, timestamp: Long): Array<ContentProviderResult> {
+	private fun upsertFavourites(json: JSONArray): Array<ContentProviderResult> {
 		val uri = uri(authorityFavourites, TABLE_FAVOURITES)
 		val operations = ArrayList<ContentProviderOperation>()
 		json.mapJSONTo(operations) { jo ->

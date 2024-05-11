@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.search.ui.MangaListActivity
@@ -89,6 +90,14 @@ class AppShortcutManager @Inject constructor(
 	} catch (e: IllegalStateException) {
 		e.printStackTraceDebug()
 		false
+	}
+
+	fun getMangaShortcuts(): Set<Long> {
+		val shortcuts = ShortcutManagerCompat.getShortcuts(
+			context,
+			ShortcutManagerCompat.FLAG_MATCH_CACHED or ShortcutManagerCompat.FLAG_MATCH_PINNED or ShortcutManagerCompat.FLAG_MATCH_DYNAMIC,
+		)
+		return shortcuts.mapNotNullToSet { it.id.toLongOrNull() }
 	}
 
 	@VisibleForTesting

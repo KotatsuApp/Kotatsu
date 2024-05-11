@@ -36,7 +36,7 @@ class CaptchaNotifier(
 			.build()
 		manager.createNotificationChannel(channel)
 
-		val intent = CloudFlareActivity.newIntent(context, exception.url, exception.headers)
+		val intent = CloudFlareActivity.newIntent(context, exception)
 			.setData(exception.url.toUri())
 		val notification = NotificationCompat.Builder(context, CHANNEL_ID)
 			.setContentTitle(channel.name)

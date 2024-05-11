@@ -173,7 +173,7 @@ class DetailsViewModel @Inject constructor(
 		} else {
 			emptyList()
 		}
-	}.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, emptyList())
 
 	val branches: StateFlow<List<MangaBranch>> = combine(
 		details,
@@ -220,7 +220,7 @@ class DetailsViewModel @Inject constructor(
 		chaptersQuery,
 	) { list, reversed, query ->
 		(if (reversed) list.asReversed() else list).filterSearch(query)
-	}.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	val readingTime = combine(
 		details,
@@ -228,7 +228,7 @@ class DetailsViewModel @Inject constructor(
 		history,
 	) { m, b, h ->
 		readingTimeUseCase.invoke(m, b, h)
-	}.stateIn(viewModelScope, SharingStarted.Lazily, null)
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, null)
 
 	val selectedBranchValue: String?
 		get() = selectedBranch.value

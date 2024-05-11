@@ -6,7 +6,6 @@ import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import okhttp3.Headers
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.alternatives.ui.AlternativesActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
@@ -30,7 +29,7 @@ class ExceptionResolver : ActivityResultCallback<TaggedActivityResult> {
 	private val activity: FragmentActivity?
 	private val fragment: Fragment?
 	private val sourceAuthContract: ActivityResultLauncher<MangaSource>
-	private val cloudflareContract: ActivityResultLauncher<Pair<String, Headers?>>
+	private val cloudflareContract: ActivityResultLauncher<CloudFlareProtectedException>
 
 	constructor(activity: FragmentActivity) {
 		this.activity = activity
@@ -55,7 +54,7 @@ class ExceptionResolver : ActivityResultCallback<TaggedActivityResult> {
 	}
 
 	suspend fun resolve(e: Throwable): Boolean = when (e) {
-		is CloudFlareProtectedException -> resolveCF(e.url, e.headers)
+		is CloudFlareProtectedException -> resolveCF(e)
 		is AuthRequiredException -> resolveAuthException(e.source)
 		is NotFoundException -> {
 			openInBrowser(e.url)
@@ -70,9 +69,9 @@ class ExceptionResolver : ActivityResultCallback<TaggedActivityResult> {
 		else -> false
 	}
 
-	private suspend fun resolveCF(url: String, headers: Headers): Boolean = suspendCoroutine { cont ->
+	private suspend fun resolveCF(e: CloudFlareProtectedException): Boolean = suspendCoroutine { cont ->
 		continuations[CloudFlareActivity.TAG] = cont
-		cloudflareContract.launch(url to headers)
+		cloudflareContract.launch(e)
 	}
 
 	private suspend fun resolveAuthException(source: MangaSource): Boolean = suspendCoroutine { cont ->

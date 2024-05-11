@@ -17,11 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksActivity
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
-import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.dialog.TwoButtonsAlertDialog
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
@@ -34,7 +32,6 @@ import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
@@ -63,9 +60,6 @@ class ExploreFragment :
 
 	@Inject
 	lateinit var coil: ImageLoader
-
-	@Inject
-	lateinit var shortcutManager: AppShortcutManager
 
 	private val viewModel by viewModels<ExploreViewModel>()
 	private var exploreAdapter: ExploreAdapter? = null
@@ -213,9 +207,7 @@ class ExploreFragment :
 
 			R.id.action_shortcut -> {
 				val source = selectedSources.singleOrNull() ?: return false
-				viewLifecycleScope.launch {
-					shortcutManager.requestPinShortcut(source)
-				}
+				viewModel.requestPinShortcut(source)
 				mode.finish()
 			}
 

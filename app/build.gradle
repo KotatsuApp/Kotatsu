@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 34
-		versionCode = 639
-		versionName = '7.0-rc2'
+		versionCode = 640
+		versionName = '7.0-rc3'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -87,8 +87,8 @@ dependencies {
 	}
 
 	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.23'
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.24'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
 
 	implementation 'androidx.appcompat:appcompat:1.6.1'
 	implementation 'androidx.core:core-ktx:1.13.1'
@@ -151,14 +151,14 @@ dependencies {
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20240303'
-	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0'
+	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1'
 
 	androidTestImplementation 'androidx.test:runner:1.5.2'
 	androidTestImplementation 'androidx.test:rules:1.5.0'
 	androidTestImplementation 'androidx.test:core-ktx:1.5.0'
 	androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
 
-	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0'
+	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1'
 
 	androidTestImplementation 'androidx.room:room-testing:2.6.1'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.15.1'

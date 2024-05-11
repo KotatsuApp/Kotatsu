@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui.categories.select.adapter
 
+import android.content.Intent
 import android.view.View
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
@@ -16,7 +17,7 @@ fun categoriesHeaderAD() = adapterDelegateViewBinding<CategoriesHeaderItem, List
 	val onClickListener = View.OnClickListener { v ->
 		val intent = when (v.id) {
 			R.id.chip_create -> FavouritesCategoryEditActivity.newIntent(v.context)
-			R.id.chip_manage -> FavouriteCategoriesActivity.newIntent(v.context)
+			R.id.chip_manage -> Intent(v.context, FavouriteCategoriesActivity::class.java)
 			else -> return@OnClickListener
 		}
 		v.context.startActivity(intent)

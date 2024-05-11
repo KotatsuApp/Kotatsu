@@ -4,7 +4,6 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.animation.Interpolator
 import android.widget.Scroller
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -57,7 +56,7 @@ class DoublePageSnapHelper : SnapHelper() {
 			val layoutManager = recyclerView.layoutManager as LinearLayoutManager
 			check(layoutManager.canScrollHorizontally()) { "RecyclerView must be scrollable" }
 			orientationHelper = OrientationHelper.createHorizontalHelper(layoutManager)
-			layoutDirectionHelper = LayoutDirectionHelper(ViewCompat.getLayoutDirection(recyclerView))
+			layoutDirectionHelper = LayoutDirectionHelper(recyclerView.layoutDirection)
 			scroller = Scroller(target.context, snapInterpolator)
 			initItemDimensionIfNeeded(layoutManager)
 		}

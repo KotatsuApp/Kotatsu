@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.favourites.ui.container
 
 import android.content.Context
+import android.content.Intent
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -19,7 +20,7 @@ class FavouritesContainerMenuProvider(
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		when (menuItem.itemId) {
 			R.id.action_manage -> {
-				context.startActivity(FavouriteCategoriesActivity.newIntent(context))
+				context.startActivity(Intent(context, FavouriteCategoriesActivity::class.java))
 			}
 
 			else -> return false

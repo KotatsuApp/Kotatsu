@@ -22,11 +22,11 @@ import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.network.UserAgents
-import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import java.lang.ref.WeakReference
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -38,15 +38,10 @@ class MangaLoaderContextImpl @Inject constructor(
 ) : MangaLoaderContext() {
 
 	private var webViewCached: WeakReference<WebView>? = null
-
-	private val userAgentLazy = SuspendLazy {
-		withContext(Dispatchers.Main) {
-			obtainWebView().settings.userAgentString
-		}.sanitizeHeaderValue()
-	}
+	private val webViewUserAgent by lazy { obtainWebViewUserAgent() }
 
 	@SuppressLint("SetJavaScriptEnabled")
-	override suspend fun evaluateJs(script: String): String? = withContext(Dispatchers.Main) {
+	override suspend fun evaluateJs(script: String): String? = withContext(Dispatchers.Main.immediate) {
 		val webView = obtainWebView()
 		suspendCoroutine { cont ->
 			webView.evaluateJavascript(script) { result ->
@@ -55,13 +50,7 @@ class MangaLoaderContextImpl @Inject constructor(
 		}
 	}
 
-	override fun getDefaultUserAgent(): String = runCatching {
-		runBlocking {
-			userAgentLazy.get()
-		}
-	}.onFailure { e ->
-		e.printStackTraceDebug()
-	}.getOrDefault(UserAgents.FIREFOX_MOBILE)
+	override fun getDefaultUserAgent(): String = webViewUserAgent
 
 	override fun getConfig(source: MangaSource): MangaSourceConfig {
 		return SourceSettings(androidContext, source)
@@ -86,4 +75,22 @@ class MangaLoaderContextImpl @Inject constructor(
 			webViewCached = WeakReference(it)
 		}
 	}
+
+	private fun obtainWebViewUserAgent(): String {
+		val mainDispatcher = Dispatchers.Main.immediate
+		return if (!mainDispatcher.isDispatchNeeded(EmptyCoroutineContext)) {
+			obtainWebViewUserAgentImpl()
+		} else {
+			runBlocking(mainDispatcher) {
+				obtainWebViewUserAgentImpl()
+			}
+		}
+	}
+
+	@MainThread
+	private fun obtainWebViewUserAgentImpl() = runCatching {
+		obtainWebView().settings.userAgentString.sanitizeHeaderValue()
+	}.onFailure { e ->
+		e.printStackTraceDebug()
+	}.getOrDefault(UserAgents.FIREFOX_MOBILE)
 }

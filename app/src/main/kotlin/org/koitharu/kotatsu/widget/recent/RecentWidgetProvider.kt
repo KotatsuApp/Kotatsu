@@ -31,6 +31,7 @@ class RecentWidgetProvider : BaseAppWidgetProvider() {
 		} else {
 			views.setInt(R.id.widget_root, "setBackgroundResource", R.drawable.bg_appwidget_root)
 		}
+		// TODO security
 		val adapter = Intent(context, RecentWidgetService::class.java)
 		adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, config.widgetId)
 		adapter.data = Uri.parse(adapter.toUri(Intent.URI_INTENT_SCHEME))

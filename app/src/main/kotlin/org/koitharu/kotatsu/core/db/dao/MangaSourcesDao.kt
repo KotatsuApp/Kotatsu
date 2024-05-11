@@ -20,8 +20,8 @@ abstract class MangaSourcesDao {
 	@Query("SELECT * FROM sources ORDER BY sort_key")
 	abstract suspend fun findAll(): List<MangaSourceEntity>
 
-	@Query("SELECT * FROM sources WHERE enabled = 0 ORDER BY sort_key")
-	abstract suspend fun findAllDisabled(): List<MangaSourceEntity>
+	@Query("SELECT source FROM sources WHERE enabled = 1")
+	abstract suspend fun findAllEnabledNames(): List<String>
 
 	@Query("SELECT * FROM sources ORDER BY sort_key")
 	abstract fun observeAll(): Flow<List<MangaSourceEntity>>
