@@ -32,6 +32,7 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
+import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
@@ -386,7 +387,7 @@ class ReaderViewModel @Inject constructor(
 			if (currentState.value == null) {
 				currentState.value = historyRepository.getOne(manga)?.let {
 					ReaderState(it)
-				} ?: ReaderState(manga, preselectedBranch)
+				} ?: ReaderState(manga, preselectedBranch ?: manga.getPreferredBranch(null))
 			}
 			val mode = detectReaderModeUseCase.invoke(manga, currentState.value)
 			val branch = chaptersLoader.peekChapter(currentState.value?.chapterId ?: 0L)?.branch

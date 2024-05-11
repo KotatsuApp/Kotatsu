@@ -10,9 +10,11 @@ import coil.executeBlocking
 import coil.request.ImageRequest
 import coil.size.Size
 import coil.transform.RoundedCornersTransformation
+import dagger.Lazy
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
@@ -23,7 +25,8 @@ import org.koitharu.kotatsu.parsers.util.replaceWith
 class ShelfListFactory(
 	private val context: Context,
 	private val favouritesRepository: FavouritesRepository,
-	private val coil: ImageLoader,
+	private val coilLazy: Lazy<ImageLoader>,
+	private val settings: AppSettings,
 	widgetId: Int,
 ) : RemoteViewsService.RemoteViewsFactory {
 
@@ -44,13 +47,17 @@ class ShelfListFactory(
 	override fun getItemId(position: Int) = dataSet.getOrNull(position)?.id ?: 0L
 
 	override fun onDataSetChanged() {
-		val data = runBlocking {
-			val category = config.categoryId
-			if (category == 0L) {
-				favouritesRepository.getAllManga()
-			} else {
-				favouritesRepository.getManga(category)
+		val data = if (settings.appPassword.isNullOrEmpty()) {
+			runBlocking {
+				val category = config.categoryId
+				if (category == 0L) {
+					favouritesRepository.getAllManga()
+				} else {
+					favouritesRepository.getManga(category)
+				}
 			}
+		} else {
+			emptyList()
 		}
 		dataSet.replaceWith(data)
 	}
@@ -62,7 +69,7 @@ class ShelfListFactory(
 		val item = dataSet.getOrNull(position) ?: return views
 		views.setTextViewText(R.id.textView_title, item.title)
 		runCatching {
-			coil.executeBlocking(
+			coilLazy.get().executeBlocking(
 				ImageRequest.Builder(context)
 					.data(item.coverUrl)
 					.size(coverSize)

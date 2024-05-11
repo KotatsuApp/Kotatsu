@@ -47,15 +47,6 @@ fun ImageResult.getDrawableOrThrow() = when (this) {
 	is ErrorResult -> throw throwable
 }
 
-@Deprecated(
-	"",
-	ReplaceWith(
-		"getDrawableOrThrow().toBitmap()",
-		"androidx.core.graphics.drawable.toBitmap",
-	),
-)
-fun ImageResult.requireBitmap() = getDrawableOrThrow().toBitmap()
-
 fun ImageResult.toBitmapOrNull() = when (this) {
 	is SuccessResult -> try {
 		drawable.toBitmap()

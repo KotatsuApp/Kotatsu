@@ -19,8 +19,8 @@ data class ReaderState(
 	)
 
 	constructor(manga: Manga, branch: String?) : this(
-		chapterId = manga.chapters?.firstOrNull {
-			it.branch == branch
+		chapterId = manga.chapters?.let {
+			it.firstOrNull { x -> x.branch == branch } ?: it.firstOrNull()
 		}?.id ?: error("Cannot find first chapter"),
 		page = 0,
 		scroll = 0,

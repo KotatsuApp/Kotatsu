@@ -130,7 +130,7 @@ class ReaderActivity :
 					if (isResolved) {
 						viewModel.reload()
 					} else if (viewModel.content.value.pages.isEmpty()) {
-						finishAfterTransition()
+						dispatchNavigateUp()
 					}
 				},
 			),

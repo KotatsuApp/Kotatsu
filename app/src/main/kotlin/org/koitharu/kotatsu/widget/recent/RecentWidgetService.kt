@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.widget.recent
 import android.content.Intent
 import android.widget.RemoteViewsService
 import coil.ImageLoader
+import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import javax.inject.Inject
 
@@ -14,9 +16,12 @@ class RecentWidgetService : RemoteViewsService() {
 	lateinit var historyRepository: HistoryRepository
 
 	@Inject
-	lateinit var coil: ImageLoader
+	lateinit var settings: AppSettings
+
+	@Inject
+	lateinit var coilLazy: Lazy<ImageLoader>
 
 	override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-		return RecentListFactory(applicationContext, historyRepository, coil)
+		return RecentListFactory(applicationContext, historyRepository, coilLazy, settings)
 	}
 }

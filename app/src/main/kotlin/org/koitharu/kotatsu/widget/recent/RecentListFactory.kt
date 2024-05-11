@@ -10,9 +10,11 @@ import coil.executeBlocking
 import coil.request.ImageRequest
 import coil.size.Size
 import coil.transform.RoundedCornersTransformation
+import dagger.Lazy
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -21,7 +23,8 @@ import org.koitharu.kotatsu.parsers.util.replaceWith
 class RecentListFactory(
 	private val context: Context,
 	private val historyRepository: HistoryRepository,
-	private val coil: ImageLoader,
+	private val coilLazy: Lazy<ImageLoader>,
+	private val settings: AppSettings,
 ) : RemoteViewsService.RemoteViewsFactory {
 
 	private val dataSet = ArrayList<Manga>()
@@ -40,7 +43,11 @@ class RecentListFactory(
 	override fun getItemId(position: Int) = dataSet.getOrNull(position)?.id ?: 0L
 
 	override fun onDataSetChanged() {
-		val data = runBlocking { historyRepository.getList(0, 10) }
+		val data = if (settings.appPassword.isNullOrEmpty()) {
+			runBlocking { historyRepository.getList(0, 10) }
+		} else {
+			emptyList()
+		}
 		dataSet.replaceWith(data)
 	}
 
@@ -50,7 +57,7 @@ class RecentListFactory(
 		val views = RemoteViews(context.packageName, R.layout.item_recent)
 		val item = dataSet.getOrNull(position) ?: return views
 		runCatching {
-			coil.executeBlocking(
+			coilLazy.get().executeBlocking(
 				ImageRequest.Builder(context)
 					.data(item.coverUrl)
 					.size(coverSize)
