@@ -443,7 +443,7 @@ class DetailsActivity :
 			loadCover(manga)
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
-			infoLayout.chipAuthor.textAndVisible = manga.author
+			infoLayout.chipAuthor.textAndVisible = manga.author?.ellipsize(AUTHOR_LABEL_LIMIT)
 			if (manga.hasRating) {
 				ratingBar.rating = manga.rating * ratingBar.numStars
 				ratingBar.isVisible = true
@@ -668,6 +668,7 @@ class DetailsActivity :
 	companion object {
 
 		private const val FAV_LABEL_LIMIT = 10
+		private const val AUTHOR_LABEL_LIMIT = 16
 
 		fun newIntent(context: Context, manga: Manga): Intent {
 			return Intent(context, DetailsActivity::class.java)
