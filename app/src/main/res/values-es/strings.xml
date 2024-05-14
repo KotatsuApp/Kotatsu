@@ -632,4 +632,6 @@
     <string name="pin_navigation_ui_summary">No ocultar la barra de navegación y la vista de búsqueda al desplazarse</string>
     <string name="pin_navigation_ui">Pin de la interfaz de usuario</string>
     <string name="blocked_by_server_message">Estás bloqueado por el servidor. Intente utilizar una conexión de red diferente (VPN, Proxy, etc.)</string>
+    <string name="disable">Desactivar</string>
+    <string name="sources_disabled">Fuentes deshabilitadas</string>
 </resources>
