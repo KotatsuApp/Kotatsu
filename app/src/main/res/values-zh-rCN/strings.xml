@@ -312,7 +312,7 @@
     <string name="import_completed_hint">可删除原文件节省存储空间</string>
     <string name="import_will_start_soon">即将开始导入</string>
     <string name="feed">更新</string>
-    <string name="memory_usage_pattern">%s - %s</string>
+    <string name="memory_usage_pattern">%1$s - %2$s</string>
     <string name="not_found_404">没有章节或已被删除</string>
     <string name="reader_control_ltr_summary">点击屏幕右侧边缘或按下右键总是翻到下一页</string>
     <string name="reader_control_ltr">简易操作</string>
@@ -629,7 +629,9 @@
     <string name="less_frequently">低频</string>
     <string name="authors">作者</string>
     <string name="search_suggestions">搜索建议</string>
-    <string name="suggested_queries">搜索建议</string>
+    <string name="suggested_queries">建议搜索</string>
     <string name="recent_queries">最近搜索</string>
     <string name="blocked_by_server_message">你的访问已被服务器拦截，请尝试使用不同的网络连接访问（如VPN代理等）</string>
+    <string name="disable">关闭</string>
+    <string name="sources_disabled">图源已关闭</string>
 </resources>
