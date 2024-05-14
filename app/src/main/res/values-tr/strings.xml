@@ -300,7 +300,7 @@
     <string name="other_cache">Diğer önbellekler</string>
     <string name="storage_usage">Depolama kullanımı</string>
     <string name="available">Mevcut</string>
-    <string name="memory_usage_pattern">%s - %s</string>
+    <string name="memory_usage_pattern">%1$s - %2$s</string>
     <string name="options">Seçenekler</string>
     <string name="incognito_mode">Gizli mod</string>
     <string name="no_chapters">Bölüm yok</string>
@@ -632,4 +632,6 @@
     <string name="suggested_queries">Önerilen sorgular</string>
     <string name="authors">Yazarlar</string>
     <string name="blocked_by_server_message">Sunucu tarafından engellendiniz. Farklı bir ağ bağlantısı kullanmayı deneyin (VPN, vekil sunucu, vb.)</string>
+    <string name="disable">Devre dışı bırak</string>
+    <string name="sources_disabled">Kaynaklar devre dışı bırakıldı</string>
 </resources>
