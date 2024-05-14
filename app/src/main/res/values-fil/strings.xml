@@ -182,7 +182,7 @@
     <string name="screenshots_block_nsfw">I-block sa NSFW</string>
     <string name="suggestions_summary">Magmungkahi ng manga batay sa iyong mga kagustuhan</string>
     <string name="suggestions_info">Ang lahat ng data ay lokal lamang na sinusuri sa device na ito at hindi kailanman ipinadala kahit saan.</string>
-    <string name="disabled">Hindi pinagana</string>
+    <string name="disabled">Di pinagana</string>
     <string name="reset_filter">I-reset ang filter</string>
     <string name="text_feed_holder">Ang mga bagong kabanata ng iyong binabasa ay ipinapakita dito</string>
     <string name="rotate_screen">I-rotate ang screen</string>
@@ -250,7 +250,7 @@
     <string name="other_cache">Iba pang cache</string>
     <string name="storage_usage">Paggamit ng storage</string>
     <string name="available">Magagamit na</string>
-    <string name="memory_usage_pattern">%s - %s</string>
+    <string name="memory_usage_pattern">%1$s - %2$s</string>
     <string name="removed_from_favourites">Inalis sa mga paborito</string>
     <string name="options">Mga pagpipilian</string>
     <string name="incognito_mode">Incognito mode</string>
@@ -322,12 +322,12 @@
 \nAng lahat ng manga sa loob nito ay mawawala at hindi na ito mababawi.</string>
     <string name="bookmark_added">Idinagdag ang bookmark</string>
     <string name="detect_reader_mode_summary">Awtomatikong matukoy kung ang manga ay webtoon</string>
-    <string name="disable_battery_optimization">Huwag paganahin ang pag-optimize ng baterya</string>
+    <string name="disable_battery_optimization">Di paganahin ang pag-optimize ng baterya</string>
     <string name="disable_battery_optimization_summary">Tumutulong sa mga pagsusuri sa mga update sa background</string>
     <string name="status_planned">Nakaplano</string>
     <string name="status_completed">Nakumpleto na</string>
     <string name="status_on_hold">Naka-hold</string>
-    <string name="disable_all">Huwag paganahin ang lahat</string>
+    <string name="disable_all">Di paganahin lahat</string>
     <string name="use_fingerprint">Gumamit ng fingerprint kung magagamit</string>
     <string name="report">Ulat</string>
     <string name="reset">I-reset</string>
@@ -338,7 +338,7 @@
     <string name="reader_slider">Ipakita ang slider ng paglipat ng pahina</string>
     <string name="manga_error_description_pattern">Mga detalye ng error:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Subukang &lt;a href=%2$s&gt;magbukas ng manga sa isang web browser&lt;/a&gt; upang matiyak na available ito sa souce&lt;br&gt;2. Tiyaking ginagamit mo ang &lt;a href=kotatsu://about&gt;pinakabagong bersyon ng Kotatsu&lt;/a&gt;&lt;br&gt;3. Kung available ito, magpadala ng ulat ng error sa mga developer.</string>
     <string name="enable_logging">Paganahin ang pag-log</string>
-    <string name="source_disabled">Hindi pinagana ang source</string>
+    <string name="source_disabled">Di pinagana ang source</string>
     <string name="importing_manga">Pag-import ng manga</string>
     <string name="import_completed_hint">Maaari mong tanggalin ang orihinal na file mula sa storage upang makatipid ng espasyo</string>
     <string name="compact">Compact</string>
@@ -446,7 +446,7 @@
     <string name="show">Ipakita</string>
     <string name="unknown">Di-kilala</string>
     <string name="in_progress">Isinasagawa</string>
-    <string name="disable_nsfw">I-disable ang NSFW</string>
+    <string name="disable_nsfw">Di paganahin ang NSFW</string>
     <string name="error_corrupted_file">Nabalik ang di-wastong data o na-corrupt ang file</string>
     <string name="related_manga_summary">Magpakita ng listahan ng mga kaugnay na manga. Sa ilang mga kaso, ito ay maaaring may mali o nawawala</string>
     <string name="advanced">Advanced</string>
@@ -495,7 +495,7 @@
     <string name="lock_screen_rotation">Rotation ng lock screen</string>
     <string name="manual">Manu-mano</string>
     <string name="source_enabled">Napaganang source</string>
-    <string name="disable_nsfw_summary">Huwag paganahin ang mga source na NSFW at itago ang manga na pang-adulto mula sa listahan kung maaari</string>
+    <string name="disable_nsfw_summary">Di paganahin ang mga source na NSFW at itago ang manga na pang-matanda mula sa listahan kung maaari</string>
     <string name="no_manga_sources_catalog_text">Walang mga sources na maaring gamitin sa seksyong ito, o maaring na-add na lahat.
 \nManatiling nakatutok para sa iba pang mga source</string>
     <string name="available_d">Available: %1$d</string>
@@ -565,8 +565,8 @@
     <string name="reader_actions_summary">Ayusin ang mga pagkilos para sa mga nata-tap na lugar ng screen</string>
     <string name="switch_pages_volume_buttons">Paganahin ang mga volume button</string>
     <string name="switch_pages_volume_buttons_summary">Gumamit ng mga volume button para sa paglipat ng mga pahina</string>
-    <string name="suggestions_unavailable_text">Naka-disable ang feature na Mga suhestiyon</string>
-    <string name="check_for_new_chapters_disabled">Naka-disable ang pagsuri para sa mga bagong kabanata</string>
+    <string name="suggestions_unavailable_text">Di pinagana ang feature na Mga suhestiyon</string>
+    <string name="check_for_new_chapters_disabled">Di pinagana ang pagsusuri para sa mga bagong kabanata</string>
     <string name="reading_time_estimation">Ipakita ang tinantyang oras ng pagbabasa</string>
     <string name="reading_time_estimation_summary">Maaaring hindi tumpak ang halaga ng pagtatantya ng oras</string>
     <string name="location">Lokasyon</string>
@@ -611,7 +611,7 @@
     <string name="show_pages_thumbs">Ipakita ang mga thumbnail ng pahina</string>
     <string name="show_pages_thumbs_summary">Paganahin ang tab na \"Mga Pahina\" sa screen ng mga detalye</string>
     <string name="error_no_data_received">Walang natanggap na data mula sa server</string>
-    <string name="unsupported_backup_message">Mangyaring pumili ng wastong backup file ng Kotatsu</string>
+    <string name="unsupported_backup_message">Pumili ng wastong backup file ng Kotatsu</string>
     <string name="hours_short">%d o</string>
     <string name="minutes_short">%d m</string>
     <string name="hours_minutes_short">%1$d o %2$d m</string>
@@ -632,4 +632,6 @@
     <string name="pin_navigation_ui">I-pin ang UI ng nabigasyon</string>
     <string name="pin_navigation_ui_summary">Huwag itago ang navigation bar at ang view ng paghahanap sa pag-scroll</string>
     <string name="blocked_by_server_message">Hinarangan ka ng server. Subukang gumamit ng ibang koneksyon sa network (VPN, Proxy, atbp.)</string>
+    <string name="disable">Di paganahin</string>
+    <string name="sources_disabled">Di pinagana ang mga source</string>
 </resources>
