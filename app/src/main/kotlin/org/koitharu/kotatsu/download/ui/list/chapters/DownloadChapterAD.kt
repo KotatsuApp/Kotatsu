@@ -13,7 +13,7 @@ fun downloadChapterAD() = adapterDelegateViewBinding<DownloadChapter, DownloadCh
 	val iconDone = ContextCompat.getDrawable(context, R.drawable.ic_check)
 
 	bind {
-		binding.textViewNumber.text = item.number.toString()
+		binding.textViewNumber.text = item.number
 		binding.textViewTitle.text = item.name
 		binding.textViewTitle.drawableEnd = if (item.isDownloaded) iconDone else null
 	}
