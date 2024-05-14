@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="new_chapters">
+        <item quantity="other">%1$d စာမျက်နှာအသစ်</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="other">%1$d စာမျက်နှာ</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="other">%1$d မိနစ်အကြာက</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="other">%1$d နာရီအကြာက</item>
+    </plurals>
+    <plurals name="items">
+        <item quantity="other">%1$d အချက်အလက်</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="other">%1$d ရက်အကြာက</item>
+    </plurals>
+    <plurals name="months_ago">
+        <item quantity="other">%1$d လအကြာက</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="other">%1$d နာရီ</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="other">%1$d မိနစ်</item>
+    </plurals>
+</resources>
