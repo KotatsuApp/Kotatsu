@@ -614,4 +614,21 @@
     <string name="enable_source">Ativar fonte</string>
     <string name="unsupported_source">Esta fonte de mangá não é suportada</string>
     <string name="delete_read_chapters_prompt">Isso irá apagar permanentemente todos os capítulos marcados como lidos do armazenamento local. Você pode baixá-los novamente mais tarde, mas os capítulos importados podem ser perdidos para sempre</string>
+    <string name="last_used">Usado por último</string>
+    <string name="show_updated">Mostrar atualização</string>
+    <string name="webtoon_gaps">Lacunas no modo webtoon</string>
+    <string name="authors">Autores</string>
+    <string name="disable">Desativar</string>
+    <string name="sources_disabled">Fontes desativadas</string>
+    <string name="webtoon_gaps_summary">Mostrar espaços verticais entre páginas no modo webtoon</string>
+    <string name="recent_queries">Consultas recentes</string>
+    <string name="search_suggestions">Sugestões de pesquisa</string>
+    <string name="suggested_queries">Consultas sugeridas</string>
+    <string name="blocked_by_server_message">Você está bloqueado pelo servidor. Tente usar uma conexão de rede diferente (VPN, Proxy, etc.)</string>
+    <string name="less_frequently">Menos frequência</string>
+    <string name="more_frequently">Mais frequência</string>
+    <string name="frequency_of_check">Frequência de verificação</string>
+    <string name="new_chapters_pattern">novo padrão de capítulos</string>
+    <string name="pin_navigation_ui">Fixar interface de navegação</string>
+    <string name="pin_navigation_ui_summary">Ao rolar, não esconda a barra de navegação e a visualização de busca</string>
 </resources>
