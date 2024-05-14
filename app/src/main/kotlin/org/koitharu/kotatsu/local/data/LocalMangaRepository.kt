@@ -51,6 +51,7 @@ class LocalMangaRepository @Inject constructor(
 
 	override val source = MangaSource.LOCAL
 	private val locks = MultiMutex<Long>()
+	private val localMappingCache = LocalMangaMappingCache()
 
 	override val isMultipleTagsSupported: Boolean = true
 	override val isTagsExclusionSupported: Boolean = true
@@ -141,6 +142,10 @@ class LocalMangaRepository @Inject constructor(
 	}
 
 	suspend fun findSavedManga(remoteManga: Manga): LocalManga? = runCatchingCancellable {
+		// very fast path
+		localMappingCache.get(remoteManga.id)?.let {
+			return@runCatchingCancellable it
+		}
 		// fast path
 		LocalMangaInput.find(storageManager.getReadableDirs(), remoteManga)?.let {
 			return it.getManga()
@@ -162,6 +167,8 @@ class LocalMangaRepository @Inject constructor(
 				}
 			}
 		}.firstOrNull()?.getManga()
+	}.onSuccess { x: LocalManga? ->
+		localMappingCache[remoteManga.id] = x
 	}.onFailure {
 		it.printStackTraceDebug()
 	}.getOrNull()

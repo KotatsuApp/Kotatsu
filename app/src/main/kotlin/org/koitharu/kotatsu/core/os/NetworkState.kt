@@ -19,7 +19,9 @@ class NetworkState(
 	override fun onActive() {
 		invalidate()
 		val request = NetworkRequest.Builder()
-			.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+			.addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+			.addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+			.addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
 			.build()
 		connectivityManager.registerNetworkCallback(request, callback)
 	}

@@ -19,6 +19,8 @@ fun ConnectivityManager.isOnline(): Boolean {
 }
 
 private fun ConnectivityManager.isOnline(network: Network): Boolean {
-	val capabilities = getNetworkCapabilities(network)
-	return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+	val capabilities = getNetworkCapabilities(network) ?: return false
+	return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+		|| capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+		|| capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
 }
