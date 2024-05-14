@@ -47,7 +47,7 @@
     <string name="clear_thumbs_cache">Избриши кеш сличица</string>
     <string name="clear_search_history">Избриши историју претраге</string>
     <string name="app_update_available">Доступна је нова верзија апликације</string>
-    <string name="open_in_browser">Отвори у веб прегледачу</string>
+    <string name="open_in_browser">Отвори у прегледачу</string>
     <string name="notification_sound">Звук обавештења</string>
     <string name="vibration">Вибрација</string>
     <string name="text_empty_holder_primary">Овде је некако празно…</string>
@@ -472,7 +472,7 @@
     <string name="invert_colors">Обрни боје</string>
     <string name="color_theme">Палета боја</string>
     <string name="brightness">Осветљеност</string>
-    <string name="memory_usage_pattern">%s - %s</string>
+    <string name="memory_usage_pattern">%1$s - %2$s</string>
     <string name="preparing_">Припрема се…</string>
     <string name="exit_confirmation_summary">Притисни Назад двапут да би изашао из апликације</string>
     <string name="bookmarks_removed">Обележивачи су уклоњени</string>
@@ -619,7 +619,7 @@
     <string name="fix">Поправи</string>
     <string name="show_updated">Прикажи ажурирано</string>
     <string name="webtoon_gaps_summary">Прикажи усправне празнине између страница у Вебтун режиму</string>
-    <string name="last_used">Последњи пут коришћен</string>
+    <string name="last_used">Последња кориштена</string>
     <string name="webtoon_gaps">Празнине у режиму Вебтун-а</string>
     <string name="search_suggestions">Предлози за претрагу</string>
     <string name="recent_queries">Недавни упити</string>
@@ -632,4 +632,6 @@
     <string name="pin_navigation_ui">Закачи навигациону траку</string>
     <string name="pin_navigation_ui_summary">Не сакривај навигациону траку и приказ претраге при листању</string>
     <string name="blocked_by_server_message">Блокирао вас је послуживач. Покушај да користиш другу мрежну везу (ВПН, прокси, итд.)</string>
+    <string name="disable">Онемогући</string>
+    <string name="sources_disabled">Извори су онемогућени</string>
 </resources>
