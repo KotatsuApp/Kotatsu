@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.main.ui
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
@@ -66,7 +67,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.settings.about.AppUpdateDialog
+import org.koitharu.kotatsu.settings.about.AppUpdateActivity
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -84,7 +85,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	private val viewModel by viewModels<MainViewModel>()
 	private val searchSuggestionViewModel by viewModels<SearchSuggestionViewModel>()
 	private val closeSearchCallback = CloseSearchCallback()
-	private val appUpdateDialog = AppUpdateDialog(this)
 	private lateinit var navigationDelegate: MainNavigationDelegate
 	private lateinit var appUpdateBadge: OptionsMenuBadgeHelper
 
@@ -190,9 +190,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		}
 
 		R.id.action_app_update -> {
-			viewModel.appUpdate.value?.also {
-				appUpdateDialog.show(it)
-			} != null
+			startActivity(Intent(this, AppUpdateActivity::class.java))
+			true
 		}
 
 		else -> super.onOptionsItemSelected(item)

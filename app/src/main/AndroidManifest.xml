@@ -245,6 +245,9 @@
 		<activity
 			android:name="org.koitharu.kotatsu.alternatives.ui.AlternativesActivity"
 			android:label="@string/alternatives" />
+		<activity
+			android:name="org.koitharu.kotatsu.settings.about.AppUpdateActivity"
+			android:label="@string/app_update_available" />
 
 		<service
 			android:name="androidx.work.impl.foreground.SystemForegroundService"
@@ -356,13 +359,6 @@
 			<meta-data
 				android:name="android.appwidget.provider"
 				android:resource="@xml/widget_recent" />
-		</receiver>
-		<receiver
-			android:name="org.koitharu.kotatsu.settings.about.UpdateDownloadReceiver"
-			android:exported="true">
-			<intent-filter>
-				<action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
-			</intent-filter>
 		</receiver>
 		<receiver
 			android:name="org.koitharu.kotatsu.core.ErrorReporterReceiver"
