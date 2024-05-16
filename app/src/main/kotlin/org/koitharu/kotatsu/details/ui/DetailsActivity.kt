@@ -667,7 +667,7 @@ class DetailsActivity :
 
 	companion object {
 
-		private const val FAV_LABEL_LIMIT = 10
+		private const val FAV_LABEL_LIMIT = 16
 		private const val AUTHOR_LABEL_LIMIT = 16
 
 		fun newIntent(context: Context, manga: Manga): Intent {
