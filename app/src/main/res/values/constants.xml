@@ -42,6 +42,7 @@
 	</string-array>
 	<string-array name="sync_host_list" translatable="false">
 		<item>@string/sync_host_default</item>
+		<item>moe.shirizu.org</item>
 		<item>86.57.183.214:8081</item>
 	</string-array>
 	<string-array name="values_proxy_types" translatable="false">

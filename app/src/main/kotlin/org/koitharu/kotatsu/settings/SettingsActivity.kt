@@ -11,7 +11,6 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.preference.Preference
@@ -21,9 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
-import org.koitharu.kotatsu.core.util.ext.isScrolledToTop
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
@@ -39,17 +36,18 @@ import org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment
 class SettingsActivity :
 	BaseActivity<ActivitySettingsBinding>(),
 	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
-	AppBarOwner,
-	FragmentManager.OnBackStackChangedListener {
+	AppBarOwner {
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
+
+	private val isMasterDetails
+		get() = viewBinding.containerMaster != null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySettingsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		val isMasterDetails = viewBinding.containerMaster != null
 		val fm = supportFragmentManager
 		val currentFragment = fm.findFragmentById(R.id.container)
 		if (currentFragment == null || (isMasterDetails && currentFragment is RootSettingsFragment)) {
@@ -61,21 +59,6 @@ class SettingsActivity :
 				replace(R.id.container_master, RootSettingsFragment())
 			}
 		}
-	}
-
-	override fun onTitleChanged(title: CharSequence?, color: Int) {
-		super.onTitleChanged(title, color)
-		viewBinding.collapsingToolbarLayout?.title = title
-	}
-
-	override fun onStart() {
-		super.onStart()
-		supportFragmentManager.addOnBackStackChangedListener(this)
-	}
-
-	override fun onStop() {
-		supportFragmentManager.removeOnBackStackChangedListener(this)
-		super.onStop()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -110,14 +93,6 @@ class SettingsActivity :
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun onBackStackChanged() {
-		val fragment = supportFragmentManager.findFragmentById(R.id.container) as? RecyclerViewOwner ?: return
-		val recyclerView = fragment.recyclerView
-		recyclerView.post {
-			viewBinding.appbar.setExpanded(recyclerView.isScrolledToTop, false)
-		}
-	}
-
 	override fun onPreferenceStartFragment(
 		caller: PreferenceFragmentCompat,
 		pref: Preference,
@@ -147,19 +122,17 @@ class SettingsActivity :
 
 	fun openFragment(fragment: Fragment, isFromRoot: Boolean) {
 		val hasFragment = supportFragmentManager.findFragmentById(R.id.container) != null
-		val isMasterDetail = viewBinding.containerMaster != null
 		supportFragmentManager.commit {
 			setReorderingAllowed(true)
 			replace(R.id.container, fragment)
 			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_MATCH_ACTIVITY_OPEN)
-			if (!isMasterDetail || (hasFragment && !isFromRoot)) {
+			if (!isMasterDetails || (hasFragment && !isFromRoot)) {
 				addToBackStack(null)
 			}
 		}
 	}
 
 	private fun openDefaultFragment() {
-		val hasMaster = viewBinding.containerMaster != null
 		val fragment = when (intent?.action) {
 			ACTION_READER -> ReaderSettingsFragment()
 			ACTION_SUGGESTIONS -> SuggestionsSettingsFragment()
@@ -181,7 +154,7 @@ class SettingsActivity :
 			}
 
 			else -> null
-		} ?: if (hasMaster) AppearanceSettingsFragment() else RootSettingsFragment()
+		} ?: if (isMasterDetails) AppearanceSettingsFragment() else RootSettingsFragment()
 		supportFragmentManager.commit {
 			setReorderingAllowed(true)
 			replace(R.id.container, fragment)
