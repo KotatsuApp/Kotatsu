@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<remote-actions version="1.2">
+	<action
+		id="next_filter"
+		label="@string/prev_page"
+		priority="1"
+		trigger_key="L">
+		<preference name="gesture" value="swipe_left"/>
+	</action>
+
+	<action
+		id="prev_filter"
+		label="@string/next_page"
+		priority="2"
+		trigger_key="R">
+		<preference name="gesture" value="swipe_right"/>
+	</action>
+
+</remote-actions>
