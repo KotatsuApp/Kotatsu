@@ -49,4 +49,8 @@
 		android:key="ssl_bypass"
 		android:title="@string/ignore_ssl_errors" />
 
+	<SwitchPreferenceCompat
+		android:key="no_offline"
+		android:title="@string/disable_connectivity_check" />
+
 </PreferenceScreen>

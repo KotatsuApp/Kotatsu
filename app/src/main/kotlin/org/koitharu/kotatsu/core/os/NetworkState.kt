@@ -5,13 +5,15 @@ import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.os.Build
 import kotlinx.coroutines.flow.first
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.MediatorStateFlow
-import org.koitharu.kotatsu.core.util.ext.isOnline
 
 class NetworkState(
 	private val connectivityManager: ConnectivityManager,
-) : MediatorStateFlow<Boolean>(connectivityManager.isOnline()) {
+	private val settings: AppSettings,
+) : MediatorStateFlow<Boolean>(connectivityManager.isOnline(settings)) {
 
 	private val callback = NetworkCallbackImpl()
 
@@ -22,6 +24,7 @@ class NetworkState(
 			.addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
 			.addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
 			.addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+			.addTransportType(NetworkCapabilities.TRANSPORT_VPN)
 			.build()
 		connectivityManager.registerNetworkCallback(request, callback)
 	}
@@ -39,7 +42,7 @@ class NetworkState(
 	}
 
 	private fun invalidate() {
-		publishValue(connectivityManager.isOnline())
+		publishValue(connectivityManager.isOnline(settings))
 	}
 
 	private inner class NetworkCallbackImpl : NetworkCallback() {
@@ -49,5 +52,28 @@ class NetworkState(
 		override fun onLost(network: Network) = invalidate()
 
 		override fun onUnavailable() = invalidate()
+	}
+
+	private companion object {
+
+		fun ConnectivityManager.isOnline(settings: AppSettings): Boolean {
+			if (settings.isOfflineCheckDisabled) {
+				return true
+			}
+			return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				activeNetwork?.let { isOnline(it) } ?: false
+			} else {
+				@Suppress("DEPRECATION")
+				activeNetworkInfo?.isConnected == true
+			}
+		}
+
+		private fun ConnectivityManager.isOnline(network: Network): Boolean {
+			val capabilities = getNetworkCapabilities(network) ?: return false
+			return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+				|| capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+				|| capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+				|| capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
+		}
 	}
 }

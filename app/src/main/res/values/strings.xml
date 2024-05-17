@@ -643,4 +643,5 @@
 	<string name="blocked_by_server_message">You are blocked by the server. Try to use a different network connection (VPN, Proxy, etc.)</string>
 	<string name="disable">Disable</string>
 	<string name="sources_disabled">Sources disabled</string>
+	<string name="disable_connectivity_check">Disable connectivity check</string>
 </resources>

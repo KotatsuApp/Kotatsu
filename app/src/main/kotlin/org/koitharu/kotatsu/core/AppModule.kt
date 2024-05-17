@@ -34,6 +34,7 @@ import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.favicon.FaviconFetcher
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.image.CoilImageGetter
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.util.AcraScreenLogger
@@ -70,8 +71,9 @@ interface AppModule {
 		@Provides
 		@Singleton
 		fun provideNetworkState(
-			@ApplicationContext context: Context
-		) = NetworkState(context.connectivityManager)
+			@ApplicationContext context: Context,
+			settings: AppSettings,
+		) = NetworkState(context.connectivityManager, settings)
 
 		@Provides
 		@Singleton

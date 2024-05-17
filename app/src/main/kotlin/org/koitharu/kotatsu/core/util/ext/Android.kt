@@ -19,6 +19,7 @@ import android.content.pm.ResolveInfo
 import android.database.SQLException
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -74,6 +75,9 @@ val Context.activityManager: ActivityManager?
 
 val Context.powerManager: PowerManager?
 	get() = getSystemService(POWER_SERVICE) as? PowerManager
+
+val Context.connectivityManager: ConnectivityManager
+	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
 
