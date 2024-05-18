@@ -49,6 +49,7 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 	override fun onViewBindingCreated(binding: SheetChaptersPagesBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		disableFitToContents()
+		binding.headerBar.isVisible = dialog != null
 
 		val args = arguments ?: Bundle.EMPTY
 		var defaultTab = args.getInt(ARG_TAB, settings.defaultDetailsTab)

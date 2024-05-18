@@ -25,7 +25,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
@@ -135,7 +134,7 @@ class DetailsActivity :
 		viewBinding.buttonRead.setOnClickListener(this)
 		viewBinding.buttonRead.setOnLongClickListener(this)
 		viewBinding.buttonRead.setOnContextClickListenerCompat(this)
-		viewBinding.buttonDownload?.setOnClickListener(this)
+		// viewBinding.buttonDownload?.setOnClickListener(this)
 		viewBinding.infoLayout.chipBranch.setOnClickListener(this)
 		viewBinding.infoLayout.chipSize.setOnClickListener(this)
 		viewBinding.infoLayout.chipSource.setOnClickListener(this)
@@ -153,7 +152,7 @@ class DetailsActivity :
 		viewBinding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
 		viewBinding.chipsTags.onChipClickListener = this
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
-		viewBinding.containerBottomSheet?.let { BottomSheetBehavior.from(it) }?.let { behavior ->
+		viewBinding.layoutBottomSheet?.let { BottomSheetBehavior.from(it) }?.let { behavior ->
 			onBackPressedDispatcher.addCallback(BottomSheetCollapseCallback(behavior))
 		}
 
@@ -202,7 +201,7 @@ class DetailsActivity :
 		when (v.id) {
 			R.id.button_read -> openReader(isIncognitoMode = false)
 			R.id.chip_branch -> showBranchPopupMenu(v)
-			R.id.button_download -> DownloadDialogHelper(v, viewModel).show(menuProvider)
+			// R.id.button_download -> DownloadDialogHelper(v, viewModel).show(menuProvider)
 
 			R.id.chip_author -> {
 				val manga = viewModel.manga.value ?: return
@@ -409,18 +408,18 @@ class DetailsActivity :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		val button = viewBinding.buttonDownload ?: return
-		if (isLoading) {
-			button.setImageDrawable(
-				CircularProgressDrawable(this).also {
-					it.setStyle(CircularProgressDrawable.LARGE)
-					it.setColorSchemeColors(getThemeColor(materialR.attr.colorControlNormal))
-					it.start()
-				},
-			)
-		} else {
-			button.setImageResource(R.drawable.ic_download)
-		}
+		// val button = null ?: return
+		// if (isLoading) {
+		// 	button.setImageDrawable(
+		// 		CircularProgressDrawable(this).also {
+		// 			it.setStyle(CircularProgressDrawable.LARGE)
+		// 			it.setColorSchemeColors(getThemeColor(materialR.attr.colorControlNormal))
+		// 			it.start()
+		// 		},
+		// 	)
+		// } else {
+		// 	button.setImageResource(R.drawable.ic_download)
+		// }
 	}
 
 	private fun onScrobblingInfoChanged(scrobblings: List<ScrobblingInfo>) {
@@ -536,7 +535,7 @@ class DetailsActivity :
 		val isFirstCall = buttonRead.tag == null
 		buttonRead.tag = Unit
 		buttonRead.setProgress(info.history?.percent?.coerceIn(0f, 1f) ?: 0f, !isFirstCall)
-		buttonDownload?.isEnabled = info.isValid && info.canDownload
+		// buttonDownload?.isEnabled = info.isValid && info.canDownload
 		buttonRead.isEnabled = info.isValid
 	}
 

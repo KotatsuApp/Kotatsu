@@ -177,44 +177,6 @@
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/barrier_header" />
 
-			<org.koitharu.kotatsu.core.ui.widgets.ProgressButton
-				android:id="@+id/button_read"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="16dp"
-				android:layout_marginTop="@dimen/margin_normal"
-				android:layout_marginEnd="12dp"
-				android:foreground="?selectableItemBackground"
-				android:gravity="center"
-				android:paddingHorizontal="6dp"
-				android:paddingVertical="8dp"
-				app:baseColor="?colorSecondaryContainer"
-				app:layout_constraintEnd_toStartOf="@id/button_download"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/info_layout"
-				app:progressColor="?colorPrimary"
-				app:subtitleTextAppearance="?textAppearanceBodySmall"
-				app:titleTextAppearance="?textAppearanceButton"
-				tools:max="100"
-				tools:progress="40"
-				tools:subtitle="12 chapters"
-				tools:title="@string/read" />
-
-			<ImageView
-				android:id="@+id/button_download"
-				android:layout_width="0dp"
-				android:layout_height="0dp"
-				android:layout_marginEnd="16dp"
-				android:background="@drawable/bg_circle_button"
-				android:backgroundTint="?colorSecondaryContainer"
-				android:contentDescription="@string/download"
-				android:scaleType="centerInside"
-				app:layout_constraintBottom_toBottomOf="@id/button_read"
-				app:layout_constraintDimensionRatio="1"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintTop_toTopOf="@id/button_read"
-				app:srcCompat="@drawable/ic_download" />
-
 			<TextView
 				android:id="@+id/textView_description_title"
 				android:layout_width="0dp"
@@ -229,7 +191,7 @@
 				android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
 				app:layout_constraintEnd_toStartOf="@id/button_description_more"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/button_read" />
+				app:layout_constraintTop_toBottomOf="@id/info_layout" />
 
 			<Button
 				android:id="@+id/button_description_more"
@@ -396,19 +358,78 @@
 
 	</androidx.core.widget.NestedScrollView>
 
-	<androidx.fragment.app.FragmentContainerView
-		android:id="@+id/container_bottom_sheet"
-		android:name="org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet"
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/layout_bottom_sheet"
 		style="@style/Widget.Material3.BottomSheet"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:elevation="6dp"
-		android:nestedScrollingEnabled="false"
 		android:outlineProvider="background"
 		app:behavior_fitToContents="false"
 		app:behavior_hideable="false"
 		app:behavior_peekHeight="@dimen/details_bs_peek_height"
-		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-		tools:layout="@layout/sheet_chapters_pages" />
+		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+		<com.google.android.material.bottomsheet.BottomSheetDragHandleView
+			android:id="@+id/drag_handle_sheet"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<ImageView
+			android:id="@+id/button_download"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_marginStart="16dp"
+			android:background="@drawable/bg_circle_button"
+			android:backgroundTint="?colorSecondaryContainer"
+			android:contentDescription="@string/download"
+			android:scaleType="centerInside"
+			app:layout_constraintBottom_toBottomOf="@id/button_read"
+			app:layout_constraintDimensionRatio="1"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="@id/button_read"
+			app:srcCompat="@drawable/ic_download" />
+
+		<org.koitharu.kotatsu.core.ui.widgets.ProgressButton
+			android:id="@+id/button_read"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="12dp"
+			android:layout_marginTop="@dimen/margin_normal"
+			android:foreground="?selectableItemBackground"
+			android:gravity="center"
+			android:minWidth="240dp"
+			android:paddingHorizontal="6dp"
+			android:paddingVertical="8dp"
+			app:baseColor="?colorSecondaryContainer"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/button_download"
+			app:layout_constraintTop_toBottomOf="@id/drag_handle_sheet"
+			app:progressColor="?colorPrimary"
+			app:subtitleTextAppearance="?textAppearanceBodySmall"
+			app:titleTextAppearance="?textAppearanceButton"
+			tools:max="100"
+			tools:progress="40"
+			tools:subtitle="12 chapters"
+			tools:title="@string/read" />
+
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/container_bottom_sheet"
+			android:name="org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_below="@id/drag_handle_sheet"
+			android:elevation="6dp"
+			android:visibility="gone"
+			android:nestedScrollingEnabled="false"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/drag_handle_sheet"
+			tools:layout="@layout/sheet_chapters_pages" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
