@@ -83,6 +83,11 @@ class DoHManager(
 					tryGetByIp("2a10:50c0::2:ff"),
 				),
 			).build()
+
+		DoHProvider.ZERO_MS -> DnsOverHttps.Builder().client(bootstrapClient)
+			.url("https://0ms.dev/dns-query".toHttpUrl())
+			.resolvePublicAddresses(true)
+			.build()
 	}
 
 	private fun tryGetByIp(ip: String): InetAddress? = try {

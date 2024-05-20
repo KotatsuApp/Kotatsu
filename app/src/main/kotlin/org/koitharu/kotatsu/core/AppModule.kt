@@ -27,8 +27,8 @@ import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
+import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl

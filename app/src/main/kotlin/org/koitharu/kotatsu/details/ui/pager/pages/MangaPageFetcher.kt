@@ -19,8 +19,8 @@ import okhttp3.OkHttpClient
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
-import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
+import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.data.isFileUri

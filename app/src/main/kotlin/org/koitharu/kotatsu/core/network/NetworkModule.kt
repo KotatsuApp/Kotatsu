@@ -15,6 +15,8 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.network.cookies.AndroidCookieJar
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.network.cookies.PreferencesCookieJar
+import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
+import org.koitharu.kotatsu.core.network.imageproxy.RealImageProxyInterceptor
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.assertNotInMainThread
 import org.koitharu.kotatsu.local.data.LocalStorageManager
@@ -28,6 +30,9 @@ interface NetworkModule {
 
 	@Binds
 	fun bindCookieJar(androidCookieJar: MutableCookieJar): CookieJar
+
+	@Binds
+	fun bindImageProxyInterceptor(impl: RealImageProxyInterceptor): ImageProxyInterceptor
 
 	companion object {
 

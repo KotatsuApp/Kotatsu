@@ -27,8 +27,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.use
 import org.koitharu.kotatsu.core.network.CommonHeaders
-import org.koitharu.kotatsu.core.network.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.MangaHttpClient
+import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings

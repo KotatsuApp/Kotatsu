@@ -33,11 +33,13 @@
 		android:title="@string/dns_over_https"
 		app:useSimpleSummaryProvider="true" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="images_proxy"
-		android:summary="@string/images_procy_description"
-		android:title="@string/images_proxy_title" />
+	<ListPreference
+		android:defaultValue="-1"
+		android:entries="@array/image_proxies"
+		android:entryValues="@array/values_image_proxies"
+		android:key="images_proxy_2"
+		android:title="@string/images_proxy_title"
+		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
