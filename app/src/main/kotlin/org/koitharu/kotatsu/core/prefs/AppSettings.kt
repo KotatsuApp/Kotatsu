@@ -386,8 +386,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val dnsOverHttps: DoHProvider
 		get() = prefs.getEnumValue(KEY_DOH, DoHProvider.NONE)
 
-	val isSSLBypassEnabled: Boolean
+	var isSSLBypassEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SSL_BYPASS, false)
+		set(value) = prefs.edit { putBoolean(KEY_SSL_BYPASS, value) }
 
 	val proxyType: Proxy.Type
 		get() {

@@ -47,10 +47,12 @@
 
 	<SwitchPreferenceCompat
 		android:key="ssl_bypass"
+		android:summary="@string/ignore_ssl_errors_summary"
 		android:title="@string/ignore_ssl_errors" />
 
 	<SwitchPreferenceCompat
 		android:key="no_offline"
+		android:summary="@string/disable_connectivity_check_summary"
 		android:title="@string/disable_connectivity_check" />
 
 </PreferenceScreen>
