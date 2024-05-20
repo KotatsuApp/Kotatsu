@@ -36,6 +36,17 @@ class ReaderControlDelegate(
 	}
 
 	fun onKeyDown(keyCode: Int): Boolean = when (keyCode) {
+
+		KeyEvent.KEYCODE_R -> {
+			listener.switchPageBy(1)
+			true
+		}
+
+		KeyEvent.KEYCODE_L -> {
+			listener.switchPageBy(-1)
+			true
+		}
+
 		KeyEvent.KEYCODE_VOLUME_UP -> if (settings.isReaderVolumeButtonsEnabled) {
 			listener.switchPageBy(-1)
 			true
