@@ -214,7 +214,7 @@
 	<string name="various_languages">Various languages</string>
 	<string name="search_chapters">Find chapter</string>
 	<string name="chapters_empty">No chapters in this manga</string>
-	<string name="percent_string_pattern">%1$s%%</string>
+	<string name="percent_string_pattern" translatable="false">%1$s%%</string>
 	<string name="appearance">Appearance</string>
 	<string name="suggestions_updating">Suggestions updating</string>
 	<string name="suggestions_excluded_genres">Exclude genres</string>
@@ -301,7 +301,7 @@
 	<string name="other_cache">Other cache</string>
 	<string name="storage_usage">Storage usage</string>
 	<string name="available">Available</string>
-	<string name="memory_usage_pattern">%1$s - %2$s</string>
+	<string name="memory_usage_pattern" translatable="false">%1$s - %2$s</string>
 	<string name="removed_from_favourites">Removed from favourites</string>
 	<string name="options">Options</string>
 	<string name="not_found_404">Content not found or removed</string>
@@ -498,7 +498,7 @@
 	<string name="content_type_hentai">Hentai</string>
 	<string name="content_type_comics">Comics</string>
 	<string name="content_type_other">Other</string>
-	<string name="source_summary_pattern">%1$s, %2$s</string>
+	<string name="source_summary_pattern" translatable="false">%1$s, %2$s</string>
 	<string name="sources_catalog">Sources catalog</string>
 	<string name="source_enabled">Source enabled</string>
 	<string name="no_manga_sources_catalog_text">There are no sources available in this section, or all of it might have been already added.\nStay tuned</string>
@@ -541,7 +541,7 @@
 	<string name="mark_as_completed">Mark as completed</string>
 	<string name="mark_as_completed_prompt">Mark selected manga as completely read?\n\nWarning: current reading progress will be lost.</string>
 	<string name="category_hidden_done">This category was hidden from the main screen and is accessible through Menu → Manage categories</string>
-	<string name="remaining_time_pattern">%1$s %2$s</string>
+	<string name="remaining_time_pattern" translatable="false">%1$s %2$s</string>
 	<string name="volume_">Volume %d</string>
 	<string name="volume_unknown">Unknown volume</string>
 	<string name="incognito_mode_hint">Your reading progress will not be saved</string>
@@ -633,7 +633,7 @@
 	<string name="less_frequently">Less frequently</string>
 	<string name="more_frequently">More frequently</string>
 	<string name="frequency_of_check">Frequency of check</string>
-	<string name="new_chapters_pattern">%1$s: %2$d</string>
+	<string name="new_chapters_pattern" translatable="false">%1$s: %2$d</string>
 	<string name="pin_navigation_ui">Pin navigation UI</string>
 	<string name="pin_navigation_ui_summary">Do not hide navigation bar and search view on scroll</string>
 	<string name="search_suggestions">Search suggestions</string>
