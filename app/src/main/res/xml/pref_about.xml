@@ -29,6 +29,12 @@
 			android:title="@string/share_logs" />
 
 		<Preference
+			android:key="tracker_debug"
+			android:persistent="false"
+			android:summary="@string/tracker_debug_info_summary"
+			android:title="@string/tracker_debug_info" />
+
+		<Preference
 			android:key="about_app_translation"
 			android:summary="@string/about_app_translation_summary"
 			android:title="@string/about_app_translation"

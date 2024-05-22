@@ -103,9 +103,10 @@
 			<intent-filter>
 				<action android:name="com.samsung.android.support.REMOTE_ACTION" />
 			</intent-filter>
+
 			<meta-data
 				android:name="com.samsung.android.support.REMOTE_ACTION"
-				android:resource="@xml/remote_action"/>
+				android:resource="@xml/remote_action" />
 		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.search.ui.SearchActivity"
@@ -254,6 +255,9 @@
 		<activity
 			android:name="org.koitharu.kotatsu.settings.about.AppUpdateActivity"
 			android:label="@string/app_update_available" />
+		<activity
+			android:name="org.koitharu.kotatsu.tracker.ui.debug.TrackerDebugActivity"
+			android:label="@string/tracker_debug_info" />
 
 		<service
 			android:name="androidx.work.impl.foreground.SystemForegroundService"

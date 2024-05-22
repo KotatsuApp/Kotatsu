@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.tracker.ui.debug.TrackerDebugActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -39,6 +40,12 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 		findPreference<SwitchPreferenceCompat>(AppSettings.KEY_UPDATES_UNSTABLE)?.run {
 			isEnabled = VersionId(BuildConfig.VERSION_NAME).isStable
 			if (!isEnabled) isChecked = true
+		}
+		if (!settings.isTrackerEnabled) {
+			findPreference<Preference>(AppSettings.KEY_TRACKER_DEBUG)?.run {
+				isEnabled = false
+				setSummary(R.string.check_for_new_chapters_disabled)
+			}
 		}
 	}
 
@@ -66,6 +73,12 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 				ShareHelper(preference.context).shareLogs(loggers)
 				true
 			}
+
+			AppSettings.KEY_TRACKER_DEBUG -> {
+				startActivity(Intent(preference.context, TrackerDebugActivity::class.java))
+				true
+			}
+
 
 			else -> super.onPreferenceTreeClick(preference)
 		}

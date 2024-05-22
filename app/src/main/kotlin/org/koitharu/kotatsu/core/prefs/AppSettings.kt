@@ -603,7 +603,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_APP_PASSWORD_NUMERIC = "app_password_num"
 		const val KEY_PROTECT_APP = "protect_app"
 		const val KEY_PROTECT_APP_BIOMETRIC = "protect_app_bio"
-		const val KEY_APP_VERSION = "app_version"
 		const val KEY_ZOOM_MODE = "zoom_mode"
 		const val KEY_BACKUP = "backup"
 		const val KEY_RESTORE = "restore"
@@ -653,7 +652,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PREFETCH_CONTENT = "prefetch_content"
 		const val KEY_APP_LOCALE = "app_locale"
 		const val KEY_LOGGING_ENABLED = "logging"
-		const val KEY_LOGS_SHARE = "logs_share"
 		const val KEY_SOURCES_GRID = "sources_grid"
 		const val KEY_SOURCES_NEW = "sources_new"
 		const val KEY_UPDATES_UNSTABLE = "updates_unstable"
@@ -682,7 +680,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_CF_CONTRAST = "cf_contrast"
 		const val KEY_CF_INVERTED = "cf_inverted"
 		const val KEY_CF_GRAYSCALE = "cf_grayscale"
-		const val KEY_IGNORE_DOZE = "ignore_dose"
 		const val KEY_PAGES_TAB = "pages_tab"
 		const val KEY_DETAILS_TAB = "details_tab"
 		const val KEY_DETAILS_LAST_TAB = "details_last_tab"
@@ -690,10 +687,16 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PAGES_SAVE_DIR = "pages_dir"
 		const val KEY_PAGES_SAVE_ASK = "pages_dir_ask"
 		const val KEY_STATS_ENABLED = "stats_on"
-		const val KEY_APP_UPDATE = "app_update"
-		const val KEY_APP_TRANSLATION = "about_app_translation"
 		const val KEY_FEED_HEADER = "feed_header"
 		const val KEY_SEARCH_SUGGESTION_TYPES = "search_suggest_types"
+
+		// keys for non-persistent preferences
+		const val KEY_APP_VERSION = "app_version"
+		const val KEY_IGNORE_DOZE = "ignore_dose"
+		const val KEY_TRACKER_DEBUG = "tracker_debug"
+		const val KEY_LOGS_SHARE = "logs_share"
+		const val KEY_APP_UPDATE = "app_update"
+		const val KEY_APP_TRANSLATION = "about_app_translation"
 
 		// old keys are for migration only
 		private const val KEY_IMAGES_PROXY_OLD = "images_proxy"

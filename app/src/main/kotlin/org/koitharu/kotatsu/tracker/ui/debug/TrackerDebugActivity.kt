@@ -32,6 +32,7 @@ class TrackerDebugActivity : BaseActivity<ActivityTrackerDebugBinding>(), OnList
 		val tracksAdapter = BaseListAdapter<TrackDebugItem>()
 			.addDelegate(ListItemType.FEED, trackDebugAD(this, coil, this))
 		with(viewBinding.recyclerView) {
+			setHasFixedSize(true)
 			adapter = tracksAdapter
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 		}
