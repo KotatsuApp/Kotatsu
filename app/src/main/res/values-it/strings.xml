@@ -556,7 +556,6 @@
     <string name="reader_actions_summary">Configura le azioni per le aree di schermo cliccabili</string>
     <string name="suggestions_unavailable_text">La funzione di suggerimento è disabilitata</string>
     <string name="show_labels_in_navbar">Mostra le etichette nella barra di navigazione</string>
-    <string name="ask_for_dest_dir_every_time"></string>
     <string name="delete_read_chapters_summary">Rimuovi i capitoli già letti dalla memoria locale per liberare spazio</string>
     <string name="delete_read_chapters_prompt">Questo eliminerà in modo permanente tutti i capitoli segnati come già letti dalla memoria locale. Puoi scaricarli di nuovo, ma i capitoli importati potrebbero essere persi per sempre</string>
     <string name="order_oldest">Meno recenti</string>
