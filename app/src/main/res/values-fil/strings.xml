@@ -634,4 +634,7 @@
     <string name="blocked_by_server_message">Hinarangan ka ng server. Subukang gumamit ng ibang koneksyon sa network (VPN, Proxy, atbp.)</string>
     <string name="disable">Di paganahin</string>
     <string name="sources_disabled">Di pinagana ang mga source</string>
+    <string name="disable_connectivity_check">Di paganahin ang pagtingin sa koneksyon</string>
+    <string name="disable_connectivity_check_summary">Laktawan ang pagsuri sa koneksyon kung sakaling mayroon kang isyu rito (hal. pagpunta sa offline mode kahit na nakakonekta sa network)</string>
+    <string name="ignore_ssl_errors_summary">Maaaring di paganahin ang pag-verify ng mga SSL certificate kung sakaling makaharap ka ng mga isyu na nauugnay sa SSL kapag nag-a-access ng mga network resource. Ito ay makaapekto sa iyong seguridad. Kinakailangang mag-restart ang aplikasyon pagkatapos baguhin ang setting na ito.</string>
 </resources>
