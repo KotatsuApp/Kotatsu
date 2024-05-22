@@ -236,7 +236,7 @@
     <string name="invalid_domain_message">Nieważna domena</string>
     <string name="reorder">Zmień kolejność</string>
     <string name="exit_confirmation">Potwierdzenie wyjścia</string>
-    <string name="memory_usage_pattern">%s - %s</string>
+    <string name="memory_usage_pattern">%1$s - %2$s</string>
     <string name="reader_info_pattern">Rozdz. %1$d/%2$d Str. %3$d/%4$d</string>
     <string name="network_unavailable_hint">Włącz Wi-Fi lub sieć komórkową, aby czytać mangę online</string>
     <string name="_import">Importuj</string>
@@ -632,4 +632,9 @@
     <string name="pin_navigation_ui_summary">Nie ukrywaj paska nawigacji i paska wyszukiwania podczas przewijania</string>
     <string name="search_suggestions">Sugestie wyszukiwania</string>
     <string name="blocked_by_server_message">Jesteś zablokowany przez serwer. Spróbuj użyć innego połączenia sieciowego (VPN, proxy itp.)</string>
+    <string name="sources_disabled">Źródła wyłączone</string>
+    <string name="disable">Wyłączone</string>
+    <string name="disable_connectivity_check">Wyłącz sprawdzanie łączności</string>
+    <string name="ignore_ssl_errors_summary">Możesz wyłączyć weryfikację certyfikatów SSL w przypadku wystąpienia problemów związanych z SSL podczas uzyskiwania dostępu do zasobów sieciowych. Może to mieć wpływ na Twoje bezpieczeństwo. Po zmianie tego ustawienia wymagane jest ponowne uruchomienie aplikacji.</string>
+    <string name="disable_connectivity_check_summary">Pomiń sprawdzanie łączności w przypadku problemów z nią (np. przejście do trybu offline, mimo że sieć jest podłączona)</string>
 </resources>
