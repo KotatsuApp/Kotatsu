@@ -308,7 +308,7 @@
     <string name="reader_info_pattern">Cap. %1$d/%2$d Pág. %3$d/%4$d</string>
     <string name="reader_info_bar">Mostrar barra de informações no leitor</string>
     <string name="folder_with_images">Pasta com imagens</string>
-    <string name="memory_usage_pattern">%s - %s</string>
+    <string name="memory_usage_pattern">%1$s - %2$s</string>
     <string name="comics_archive">Arquivo de quadrinhos</string>
     <string name="importing_manga">Importando mangá(s)</string>
     <string name="import_completed">Importação completa</string>
