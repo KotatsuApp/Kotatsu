@@ -634,4 +634,7 @@
     <string name="blocked_by_server_message">Sunucu tarafından engellendiniz. Farklı bir ağ bağlantısı kullanmayı deneyin (VPN, vekil sunucu, vb.)</string>
     <string name="disable">Devre dışı bırak</string>
     <string name="sources_disabled">Kaynaklar devre dışı bırakıldı</string>
+    <string name="disable_connectivity_check">Bağlantı denetimini devre dışı bırak</string>
+    <string name="ignore_ssl_errors_summary">Ağ kaynaklarına erişirken SSL ile ilgili bir sorunla karşılaşmanız durumunda SSL sertifikaları doğrulamasını devre dışı bırakabilirsiniz. Bu durum güvenliğinizi etkileyebilir. Bu ayarı değiştirdikten sonra uygulamanın yeniden başlatılması gerekir.</string>
+    <string name="disable_connectivity_check_summary">Sorun yaşamanız durumunda bağlantı denetimini atlayın (örneğin, ağ bağlı olmasına rağmen çevrim dışı moda geçiş)</string>
 </resources>
