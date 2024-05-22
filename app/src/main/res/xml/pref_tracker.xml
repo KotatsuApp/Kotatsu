@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
@@ -44,6 +45,13 @@
 		android:key="notifications_settings"
 		android:title="@string/notifications_settings" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:dependency="tracker_enabled"
+		android:key="tracker_no_nsfw"
+		android:summary="@string/disable_nsfw_notifications_summary"
+		android:title="@string/disable_nsfw_notifications" />
+
 	<Preference
 		android:dependency="tracker_enabled"
 		android:key="ignore_dose"
@@ -51,7 +59,8 @@
 		android:summary="@string/disable_battery_optimization_summary"
 		android:title="@string/disable_battery_optimization"
 		app:allowDividerAbove="true"
-		app:isPreferenceVisible="false" />
+		app:isPreferenceVisible="false"
+		tools:isPrefrenceVisible="true" />
 
 	<org.koitharu.kotatsu.settings.utils.LinksPreference
 		android:icon="@drawable/ic_info_outline"

@@ -155,6 +155,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isTrackerNotificationsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRACKER_NOTIFICATIONS, true)
 
+	val isTrackerNsfwDisabled: Boolean
+		get() = prefs.getBoolean(KEY_TRACKER_NO_NSFW, false)
+
 	var notificationSound: Uri
 		get() = prefs.getString(KEY_NOTIFICATIONS_SOUND, null)?.toUriOrNull()
 			?: Settings.System.DEFAULT_NOTIFICATION_URI
@@ -587,6 +590,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_TRACK_CATEGORIES = "track_categories"
 		const val KEY_TRACK_WARNING = "track_warning"
 		const val KEY_TRACKER_NOTIFICATIONS = "tracker_notifications"
+		const val KEY_TRACKER_NO_NSFW = "tracker_no_nsfw"
 		const val KEY_NOTIFICATIONS_SETTINGS = "notifications_settings"
 		const val KEY_NOTIFICATIONS_SOUND = "notifications_sound"
 		const val KEY_NOTIFICATIONS_VIBRATE = "notifications_vibrate"

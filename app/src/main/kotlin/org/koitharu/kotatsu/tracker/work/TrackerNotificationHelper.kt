@@ -49,6 +49,9 @@ class TrackerNotificationHelper @Inject constructor(
 		if (newChapters.isEmpty() || !applicationContext.checkNotificationPermission(CHANNEL_ID)) {
 			return null
 		}
+		if (manga.isNsfw && settings.isTrackerNsfwDisabled) {
+			return null
+		}
 		val id = manga.url.hashCode()
 		val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
 		val summary = applicationContext.resources.getQuantityString(
