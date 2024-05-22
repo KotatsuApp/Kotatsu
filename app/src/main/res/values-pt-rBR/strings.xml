@@ -619,4 +619,22 @@
     <string name="delete_read_chapters_prompt">Isso irá apagar permanentemente todos os capítulos marcados como lidos do armazenamento local. Você pode baixá-los novamente mais tarde, mas os capítulos importados podem ser perdidos para sempre</string>
     <string name="last_used">Usado pela última vez</string>
     <string name="show_updated">Mostrar atualização</string>
+    <string name="disable_connectivity_check">Desativar a verificação de conectividade</string>
+    <string name="disable_connectivity_check_summary">Ignore a verificação de conectividade caso tenha problemas com ela (por exemplo, entrar no modo off-line mesmo que a rede esteja conectada)</string>
+    <string name="webtoon_gaps">Lacunas no modo webtoon</string>
+    <string name="webtoon_gaps_summary">Mostrar espaços verticais entre as páginas no modo webtoon</string>
+    <string name="authors">Autores</string>
+    <string name="ignore_ssl_errors_summary">Você pode desativar a verificação de certificados SSL caso tenha problemas relacionados a SSL ao acessar recursos de rede. Isso pode afetar sua segurança. É necessário reiniciar o aplicativo após alterar essa configuração.</string>
+    <string name="search_suggestions">Sugestões de Pesquisa</string>
+    <string name="recent_queries">Consultas recentes</string>
+    <string name="suggested_queries">Consultas sugeridas</string>
+    <string name="disable">Desativar</string>
+    <string name="sources_disabled">Fontes desativadas</string>
+    <string name="blocked_by_server_message">Você está bloqueado pelo servidor. Tente usar uma conexão de internet diferente (VPN, Proxy, etc.)</string>
+    <string name="less_frequently">Com menos frequência</string>
+    <string name="more_frequently">Com mais frequência</string>
+    <string name="frequency_of_check">Frequência de verificação</string>
+    <string name="new_chapters_pattern">%1$s: %2$d</string>
+    <string name="pin_navigation_ui">Fixar interface de navegação</string>
+    <string name="pin_navigation_ui_summary">Não esconder barra de navegação e visualização de pesquisa ao rolar</string>
 </resources>
