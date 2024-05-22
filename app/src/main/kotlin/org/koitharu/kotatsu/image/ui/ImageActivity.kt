@@ -7,11 +7,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
-import androidx.core.view.marginBottom
 import androidx.core.view.updateLayoutParams
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import coil.ImageLoader
 import coil.request.CachePolicy
 import coil.request.ErrorResult
@@ -20,17 +21,26 @@ import coil.request.SuccessResult
 import coil.target.ViewTarget
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.PopupMenuMediator
+import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getDisplayIcon
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ActivityImageBinding
 import org.koitharu.kotatsu.databinding.ItemErrorStateBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listener, View.OnClickListener {
@@ -39,27 +49,45 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 	lateinit var coil: ImageLoader
 
 	private var errorBinding: ItemErrorStateBinding? = null
+	private val viewModel: ImageViewModel by viewModels()
+	private lateinit var menuMediator: PopupMenuMediator
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityImageBinding.inflate(layoutInflater))
 		viewBinding.buttonBack.setOnClickListener(this)
-		loadImage(intent.data)
+		viewBinding.buttonMenu.setOnClickListener(this)
+		val imageUrl = requireNotNull(intent.data)
+
+		val menuProvider = ImageMenuProvider(
+			activity = this,
+			snackbarHost = viewBinding.root,
+			viewModel = viewModel,
+		)
+		menuMediator = PopupMenuMediator(menuProvider)
+		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
+		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.root, null))
+		viewModel.onImageSaved.observeEvent(this, ::onImageSaved)
+		loadImage(imageUrl)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
-		with(viewBinding.buttonBack) {
-			updateLayoutParams<ViewGroup.MarginLayoutParams> {
-				topMargin = insets.top + marginBottom
-				leftMargin = insets.left + marginBottom
-				rightMargin = insets.right + marginBottom
-			}
+		viewBinding.buttonBack.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = insets.top + bottomMargin
+			leftMargin = insets.left + bottomMargin
+			rightMargin = insets.right + bottomMargin
+		}
+		viewBinding.buttonMenu.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = insets.top + bottomMargin
+			leftMargin = insets.left + bottomMargin
+			rightMargin = insets.right + bottomMargin
 		}
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_back -> dispatchNavigateUp()
+			R.id.button_menu -> menuMediator.onLongClick(v)
 			else -> loadImage(intent.data)
 		}
 	}
@@ -92,9 +120,32 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 			.memoryCachePolicy(CachePolicy.DISABLED)
 			.lifecycle(this)
 			.listener(this)
-			.tag(intent.getSerializableExtraCompat<MangaSource>(EXTRA_SOURCE))
+			.source(intent.getSerializableExtraCompat<MangaSource>(EXTRA_SOURCE))
 			.target(SsivTarget(viewBinding.ssiv))
 			.enqueueWith(coil)
+	}
+
+	private fun onImageSaved(uri: Uri) {
+		Snackbar.make(viewBinding.root, R.string.page_saved, Snackbar.LENGTH_LONG)
+			.setAction(R.string.share) {
+				ShareHelper(this).shareImage(uri)
+			}.show()
+	}
+
+	private fun onLoadingStateChanged(isLoading: Boolean) {
+		val button = viewBinding.buttonMenu
+		button.isClickable = !isLoading
+		if (isLoading) {
+			button.setImageDrawable(
+				CircularProgressDrawable(this).also {
+					it.setStyle(CircularProgressDrawable.LARGE)
+					it.setColorSchemeColors(getThemeColor(com.google.android.material.R.attr.colorControlNormal))
+					it.start()
+				},
+			)
+		} else {
+			button.setImageResource(materialR.drawable.abc_ic_menu_overflow_material)
+		}
 	}
 
 	private class SsivTarget(
@@ -124,7 +175,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 
 	companion object {
 
-		private const val EXTRA_SOURCE = "source"
+		const val EXTRA_SOURCE = "source"
 
 		fun newIntent(context: Context, url: String, source: MangaSource?): Intent {
 			return Intent(context, ImageActivity::class.java)
