@@ -82,11 +82,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	// TODO: change bac
-//	implementation('com.github.KotatsuApp:kotatsu-parsers:078b59b1e2') {
-//		exclude group: 'org.json', module: 'json'
-//	}
-	implementation('com.github.AwkwardPeak7:kotatsu-parsers:d7d42465de') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:350bc0ad58') {
 		exclude group: 'org.json', module: 'json'
 	}
 

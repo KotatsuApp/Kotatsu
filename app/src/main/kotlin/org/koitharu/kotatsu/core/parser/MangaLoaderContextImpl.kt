@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.parser
 
-import android.graphics.Bitmap as AndroidBitmap
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -22,6 +21,7 @@ import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.requireBody
 import org.koitharu.kotatsu.core.util.ext.sanitizeHeaderValue
 import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
@@ -76,17 +76,16 @@ class MangaLoaderContextImpl @Inject constructor(
 	}
 
 	override fun redrawImageResponse(response: Response, redraw: (image: Bitmap) -> Bitmap): Response {
-		val image = requireNotNull(response.body) {
-			"Response is null"
-		}.byteStream()
+		val image = response.requireBody().byteStream()
 
-		val bitmap = BitmapFactory.decodeStream(image)
-		val result = redraw(BitmapImpl.create(bitmap)) as BitmapImpl
+		val opts = BitmapFactory.Options()
+		opts.inMutable = true
+		val bitmap = BitmapFactory.decodeStream(image, null, opts) ?: error("Cannot decode bitmap")
+		val result = redraw(BitmapWrapper.create(bitmap)) as BitmapWrapper
 
-		val body = Buffer().run {
-			result.androidBitmap.compress(AndroidBitmap.CompressFormat.JPEG, 90, outputStream())
-			asResponseBody("image/jpeg".toMediaType())
-		}
+		val body = Buffer().also {
+			result.compressTo(it.outputStream())
+		}.asResponseBody("image/jpeg".toMediaType())
 
 		return response.newBuilder()
 			.body(body)
@@ -94,7 +93,7 @@ class MangaLoaderContextImpl @Inject constructor(
 	}
 
 	override fun createBitmap(width: Int, height: Int): Bitmap {
-		return BitmapImpl.create(width, height)
+		return BitmapWrapper.create(width, height)
 	}
 
 	@MainThread

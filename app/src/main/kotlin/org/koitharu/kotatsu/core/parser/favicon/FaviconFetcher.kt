@@ -150,10 +150,6 @@ class FaviconFetcher(
 		return if (networkResponse != null) DataSource.NETWORK else DataSource.DISK
 	}
 
-	private fun Response.requireBody(): ResponseBody {
-		return checkNotNull(body) { "response body == null" }
-	}
-
 	private fun Size.toCacheKey() = buildString {
 		append(width.toString())
 		append('x')

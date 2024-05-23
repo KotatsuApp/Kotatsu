@@ -1,13 +1,12 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import okhttp3.Cookie
-import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import okhttp3.ResponseBody
 import okhttp3.internal.closeQuietly
-import okhttp3.internal.isSensitiveHeader
 import okio.IOException
 import org.json.JSONObject
 import org.jsoup.HttpStatusException
@@ -41,6 +40,8 @@ fun Response.ensureSuccess() = apply {
 		throw HttpStatusException(message, code, request.url.toString())
 	}
 }
+
+fun Response.requireBody(): ResponseBody = checkNotNull(body) { "Response body is null" }
 
 fun Cookie.newBuilder(): Cookie.Builder = Cookie.Builder().also { c ->
 	c.name(name)
