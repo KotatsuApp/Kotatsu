@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.core.parser
 
+import android.graphics.Bitmap as AndroidBitmap
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.util.Base64
 import android.webkit.WebView
 import androidx.annotation.MainThread
@@ -10,7 +12,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.ResponseBody.Companion.asResponseBody
+import okio.Buffer
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.prefs.SourceSettings
@@ -19,6 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitizeHeaderValue
 import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
+import org.koitharu.kotatsu.parsers.bitmap.Bitmap
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.network.UserAgents
@@ -66,6 +73,28 @@ class MangaLoaderContextImpl @Inject constructor(
 
 	override fun getPreferredLocales(): List<Locale> {
 		return LocaleListCompat.getAdjustedDefault().toList()
+	}
+
+	override fun redrawImageResponse(response: Response, redraw: (image: Bitmap) -> Bitmap): Response {
+		val image = requireNotNull(response.body) {
+			"Response is null"
+		}.byteStream()
+
+		val bitmap = BitmapFactory.decodeStream(image)
+		val result = redraw(BitmapImpl.create(bitmap)) as BitmapImpl
+
+		val body = Buffer().run {
+			result.androidBitmap.compress(AndroidBitmap.CompressFormat.JPEG, 90, outputStream())
+			asResponseBody("image/jpeg".toMediaType())
+		}
+
+		return response.newBuilder()
+			.body(body)
+			.build()
+	}
+
+	override fun createBitmap(width: Int, height: Int): Bitmap {
+		return BitmapImpl.create(width, height)
 	}
 
 	@MainThread
