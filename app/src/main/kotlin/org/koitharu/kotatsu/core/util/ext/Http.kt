@@ -5,6 +5,7 @@ import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import okhttp3.ResponseBody
 import okhttp3.internal.closeQuietly
 import okio.IOException
 import org.json.JSONObject
@@ -39,6 +40,8 @@ fun Response.ensureSuccess() = apply {
 		throw HttpStatusException(message, code, request.url.toString())
 	}
 }
+
+fun Response.requireBody(): ResponseBody = checkNotNull(body) { "Response body is null" }
 
 fun Cookie.newBuilder(): Cookie.Builder = Cookie.Builder().also { c ->
 	c.name(name)
