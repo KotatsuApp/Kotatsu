@@ -32,7 +32,10 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+
+private const val PAGE_SIZE = 20
 
 @HiltViewModel
 class FavouritesListViewModel @Inject constructor(
@@ -46,6 +49,8 @@ class FavouritesListViewModel @Inject constructor(
 
 	val categoryId: Long = savedStateHandle[ARG_CATEGORY_ID] ?: NO_ID
 	private val refreshTrigger = MutableStateFlow(Any())
+	private val limit = MutableStateFlow(PAGE_SIZE)
+	private val isReady = AtomicBoolean(false)
 
 	override val listMode = settings.observeAsFlow(AppSettings.KEY_LIST_MODE_FAVORITES) { favoritesListMode }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.favoritesListMode)
@@ -61,13 +66,7 @@ class FavouritesListViewModel @Inject constructor(
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	override val content = combine(
-		if (categoryId == NO_ID) {
-			sortOrder.filterNotNull().flatMapLatest {
-				repository.observeAll(it)
-			}
-		} else {
-			repository.observeAll(categoryId)
-		},
+		observeFavorites(),
 		listMode,
 		refreshTrigger,
 	) { list, mode, _ ->
@@ -85,7 +84,10 @@ class FavouritesListViewModel @Inject constructor(
 				),
 			)
 
-			else -> list.toUi(mode, listExtraProvider)
+			else -> {
+				isReady.set(true)
+				list.toUi(mode, listExtraProvider)
+			}
 		}
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
@@ -124,6 +126,21 @@ class FavouritesListViewModel @Inject constructor(
 		}
 		launchJob {
 			repository.setCategoryOrder(categoryId, order)
+		}
+	}
+
+	fun requestMoreItems() {
+		if (isReady.compareAndSet(true, false)) {
+			limit.value += PAGE_SIZE
+		}
+	}
+
+	private fun observeFavorites() = if (categoryId == NO_ID) {
+		combine(sortOrder.filterNotNull(), limit, ::Pair)
+			.flatMapLatest { repository.observeAll(it.first, it.second) }
+	} else {
+		limit.flatMapLatest {
+			repository.observeAll(categoryId, it)
 		}
 	}
 }

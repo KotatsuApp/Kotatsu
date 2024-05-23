@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.history.ui
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -43,7 +44,10 @@ import org.koitharu.kotatsu.list.ui.model.toListModel
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+
+private const val PAGE_SIZE = 20
 
 @HiltViewModel
 class HistoryListViewModel @Inject constructor(
@@ -62,8 +66,11 @@ class HistoryListViewModel @Inject constructor(
 		valueProducer = { historySortOrder },
 	)
 
-	override val listMode = settings.observeAsFlow(AppSettings.KEY_LIST_MODE_HISTORY) { historyListMode }
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.historyListMode)
+	override val listMode = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_LIST_MODE_HISTORY,
+		valueProducer = { historyListMode },
+	)
 
 	private val isGroupingEnabled = settings.observeAsFlow(
 		key = AppSettings.KEY_HISTORY_GROUPING,
@@ -72,6 +79,9 @@ class HistoryListViewModel @Inject constructor(
 		g && s.isGroupingSupported()
 	}
 
+	private val limit = MutableStateFlow(PAGE_SIZE)
+	private val isReady = AtomicBoolean(false)
+
 	val isStatsEnabled = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_STATS_ENABLED,
@@ -79,7 +89,7 @@ class HistoryListViewModel @Inject constructor(
 	)
 
 	override val content = combine(
-		sortOrder.flatMapLatest { repository.observeAllWithHistory(it) },
+		observeHistory(),
 		isGroupingEnabled,
 		listMode,
 		networkState,
@@ -95,7 +105,10 @@ class HistoryListViewModel @Inject constructor(
 				),
 			)
 
-			else -> mapList(list, grouped, mode, online, incognito)
+			else -> {
+				isReady.set(true)
+				mapList(list, grouped, mode, online, incognito)
+			}
 		}
 	}.onStart {
 		loadingCounter.increment()
@@ -137,6 +150,15 @@ class HistoryListViewModel @Inject constructor(
 			markAsReadUseCase(items)
 		}
 	}
+
+	fun requestMoreItems() {
+		if (isReady.compareAndSet(true, false)) {
+			limit.value += PAGE_SIZE
+		}
+	}
+
+	private fun observeHistory() = combine(sortOrder, limit, ::Pair)
+		.flatMapLatest { repository.observeAllWithHistory(it.first, it.second) }
 
 	private suspend fun mapList(
 		list: List<MangaWithHistory>,

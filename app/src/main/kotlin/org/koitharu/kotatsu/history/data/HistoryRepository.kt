@@ -74,8 +74,8 @@ class HistoryRepository @Inject constructor(
 		}
 	}
 
-	fun observeAllWithHistory(order: ListSortOrder): Flow<List<MangaWithHistory>> {
-		return db.getHistoryDao().observeAll(order).mapItems {
+	fun observeAllWithHistory(order: ListSortOrder, limit: Int): Flow<List<MangaWithHistory>> {
+		return db.getHistoryDao().observeAll(order, limit).mapItems {
 			MangaWithHistory(
 				it.manga.toManga(it.tags.toMangaTags()),
 				it.history.toMangaHistory(),

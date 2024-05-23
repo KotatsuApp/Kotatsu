@@ -33,7 +33,7 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 		binding.recyclerView.isVP2BugWorkaroundEnabled = true
 	}
 
-	override fun onScrolledToEnd() = Unit
+	override fun onScrolledToEnd() = viewModel.requestMoreItems()
 
 	override fun onFilterClick(view: View?) {
 		val menu = PopupMenu(view?.context ?: return, view)

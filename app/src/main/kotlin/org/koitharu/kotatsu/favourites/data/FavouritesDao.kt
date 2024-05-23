@@ -27,15 +27,20 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites WHERE deleted_at = 0 GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit")
 	abstract suspend fun findLast(limit: Int): List<FavouriteManga>
 
-	fun observeAll(order: ListSortOrder): Flow<List<FavouriteManga>> {
+	fun observeAll(order: ListSortOrder, limit: Int): Flow<List<FavouriteManga>> {
 		val orderBy = getOrderBy(order)
-
-		@Language("RoomSql")
-		val query = SimpleSQLiteQuery(
-			"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
-				"WHERE favourites.deleted_at = 0 GROUP BY favourites.manga_id ORDER BY $orderBy",
-		)
-		return observeAllImpl(query)
+		val query = buildString {
+			append(
+				"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
+					"WHERE favourites.deleted_at = 0 GROUP BY favourites.manga_id ORDER BY ",
+			)
+			append(orderBy)
+			if (limit > 0) {
+				append(" LIMIT ")
+				append(limit)
+			}
+		}
+		return observeAllImpl(SimpleSQLiteQuery(query))
 	}
 
 	@Transaction
@@ -52,16 +57,21 @@ abstract class FavouritesDao {
 	)
 	abstract suspend fun findAll(categoryId: Long): List<FavouriteManga>
 
-	fun observeAll(categoryId: Long, order: ListSortOrder): Flow<List<FavouriteManga>> {
+	fun observeAll(categoryId: Long, order: ListSortOrder, limit: Int): Flow<List<FavouriteManga>> {
 		val orderBy = getOrderBy(order)
+		val query = buildString {
+			append(
+				"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
+					"WHERE category_id = ? AND deleted_at = 0 GROUP BY favourites.manga_id ORDER BY ",
+			)
+			append(orderBy)
+			if (limit > 0) {
+				append(" LIMIT ")
+				append(limit)
+			}
+		}
 
-		@Language("RoomSql")
-		val query = SimpleSQLiteQuery(
-			"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
-				"WHERE category_id = ? AND deleted_at = 0 GROUP BY favourites.manga_id ORDER BY $orderBy",
-			arrayOf<Any>(categoryId),
-		)
-		return observeAllImpl(query)
+		return observeAllImpl(SimpleSQLiteQuery(query, arrayOf<Any>(categoryId)))
 	}
 
 	suspend fun findCovers(categoryId: Long, order: ListSortOrder): List<Cover> {

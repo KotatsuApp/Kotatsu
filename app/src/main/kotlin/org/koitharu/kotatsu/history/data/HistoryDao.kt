@@ -9,7 +9,6 @@ import androidx.room.Transaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
-import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 
@@ -28,8 +27,7 @@ abstract class HistoryDao {
 	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC LIMIT :limit")
 	abstract fun observeAll(limit: Int): Flow<List<HistoryWithManga>>
 
-	// TODO pagination
-	fun observeAll(order: ListSortOrder): Flow<List<HistoryWithManga>> {
+	fun observeAll(order: ListSortOrder, limit: Int): Flow<List<HistoryWithManga>> {
 		val orderBy = when (order) {
 			ListSortOrder.LAST_READ -> "history.updated_at DESC"
 			ListSortOrder.LONG_AGO_READ -> "history.updated_at ASC"
@@ -43,13 +41,18 @@ abstract class HistoryDao {
 			ListSortOrder.UPDATED -> "IFNULL((SELECT last_chapter_date FROM tracks WHERE tracks.manga_id = manga.manga_id), 0) DESC"
 			else -> throw IllegalArgumentException("Sort order $order is not supported")
 		}
-
-		@Language("RoomSql")
-		val query = SimpleSQLiteQuery(
-			"SELECT * FROM history LEFT JOIN manga ON history.manga_id = manga.manga_id " +
-				"WHERE history.deleted_at = 0 GROUP BY history.manga_id ORDER BY $orderBy",
-		)
-		return observeAllImpl(query)
+		val query = buildString {
+			append(
+				"SELECT * FROM history LEFT JOIN manga ON history.manga_id = manga.manga_id " +
+					"WHERE history.deleted_at = 0 GROUP BY history.manga_id ORDER BY ",
+			)
+			append(orderBy)
+			if (limit > 0) {
+				append(" LIMIT ")
+				append(limit)
+			}
+		}
+		return observeAllImpl(SimpleSQLiteQuery(query))
 	}
 
 	@Query("SELECT manga_id FROM history WHERE deleted_at = 0")

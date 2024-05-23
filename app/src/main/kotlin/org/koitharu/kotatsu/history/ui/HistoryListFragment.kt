@@ -32,7 +32,7 @@ class HistoryListFragment : MangaListFragment() {
 		viewModel.isStatsEnabled.observe(viewLifecycleOwner, MenuInvalidator(requireActivity()))
 	}
 
-	override fun onScrolledToEnd() = Unit
+	override fun onScrolledToEnd() = viewModel.requestMoreItems()
 
 	override fun onEmptyActionClick() {
 		startActivity(NetworkManageIntent())

@@ -38,8 +38,8 @@ class FavouritesRepository @Inject constructor(
 		return entities.toMangaList()
 	}
 
-	fun observeAll(order: ListSortOrder): Flow<List<Manga>> {
-		return db.getFavouritesDao().observeAll(order)
+	fun observeAll(order: ListSortOrder, limit: Int): Flow<List<Manga>> {
+		return db.getFavouritesDao().observeAll(order, limit)
 			.mapItems { it.toManga() }
 	}
 
@@ -48,25 +48,19 @@ class FavouritesRepository @Inject constructor(
 		return entities.toMangaList()
 	}
 
-	fun observeAll(categoryId: Long, order: ListSortOrder): Flow<List<Manga>> {
-		return db.getFavouritesDao().observeAll(categoryId, order)
+	fun observeAll(categoryId: Long, order: ListSortOrder, limit: Int): Flow<List<Manga>> {
+		return db.getFavouritesDao().observeAll(categoryId, order, limit)
 			.mapItems { it.toManga() }
 	}
 
-	fun observeAll(categoryId: Long): Flow<List<Manga>> {
+	fun observeAll(categoryId: Long, limit: Int): Flow<List<Manga>> {
 		return observeOrder(categoryId)
-			.flatMapLatest { order -> observeAll(categoryId, order) }
+			.flatMapLatest { order -> observeAll(categoryId, order, limit) }
 	}
 
 	fun observeMangaCount(): Flow<Int> {
 		return db.getFavouritesDao().observeMangaCount()
 			.distinctUntilChanged()
-	}
-
-	suspend fun getCategories(): List<FavouriteCategory> {
-		return db.getFavouriteCategoriesDao().findAll().map {
-			it.toFavouriteCategory()
-		}
 	}
 
 	fun observeCategories(): Flow<List<FavouriteCategory>> {
