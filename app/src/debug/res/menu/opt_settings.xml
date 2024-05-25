@@ -9,13 +9,8 @@
 		app:showAsAction="never" />
 
 	<item
-		android:id="@id/action_tracker"
-		android:title="@string/check_for_new_chapters"
-		app:showAsAction="never" />
-
-	<item
 		android:id="@id/action_works"
-		android:title="Works"
+		android:title="@string/wi_lib_name"
 		app:showAsAction="never" />
 
 </menu>

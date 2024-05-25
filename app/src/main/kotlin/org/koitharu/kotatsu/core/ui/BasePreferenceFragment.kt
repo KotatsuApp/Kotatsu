@@ -63,7 +63,7 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 		)
 	}
 
-	protected fun setTitle(title: CharSequence?) {
+	protected open fun setTitle(title: CharSequence?) {
 		(activity as? SettingsActivity)?.setSectionTitle(title)
 	}
 
