@@ -125,7 +125,7 @@ class SettingsActivity :
 		supportFragmentManager.commit {
 			setReorderingAllowed(true)
 			replace(R.id.container, fragment)
-			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_MATCH_ACTIVITY_OPEN)
+			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 			if (!isMasterDetails || (hasFragment && !isFromRoot)) {
 				addToBackStack(null)
 			}

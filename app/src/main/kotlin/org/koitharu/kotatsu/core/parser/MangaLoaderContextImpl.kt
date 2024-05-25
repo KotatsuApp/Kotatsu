@@ -16,6 +16,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okio.Buffer
+import okio.IOException
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.prefs.SourceSettings
@@ -29,6 +30,7 @@ import org.koitharu.kotatsu.parsers.bitmap.Bitmap
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.network.UserAgents
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.lang.ref.WeakReference
 import java.util.Locale
 import javax.inject.Inject
@@ -75,7 +77,10 @@ class MangaLoaderContextImpl @Inject constructor(
 		return LocaleListCompat.getAdjustedDefault().toList()
 	}
 
-	override fun redrawImageResponse(response: Response, redraw: (image: Bitmap) -> Bitmap): Response {
+	override fun redrawImageResponse(
+		response: Response,
+		redraw: (image: Bitmap) -> Bitmap
+	): Response = runCatchingCancellable {
 		val image = response.requireBody().byteStream()
 
 		val opts = BitmapFactory.Options()
@@ -87,9 +92,15 @@ class MangaLoaderContextImpl @Inject constructor(
 			result.compressTo(it.outputStream())
 		}.asResponseBody("image/jpeg".toMediaType())
 
-		return response.newBuilder()
+		response.newBuilder()
 			.body(body)
 			.build()
+	}.getOrElse { error ->
+		if (error is IOException) {
+			throw error
+		} else {
+			throw IOException(error.message, error)
+		}
 	}
 
 	override fun createBitmap(width: Int, height: Int): Bitmap {

@@ -92,9 +92,6 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	override fun onSupportNavigateUp(): Boolean {
-		if (supportFragmentManager.popBackStackImmediate()) {
-			return false
-		}
 		dispatchNavigateUp()
 		return true
 	}
@@ -158,6 +155,8 @@ abstract class BaseActivity<B : ViewBinding> :
 			}
 		}
 	}
+
+	protected fun hasViewBinding() = ::viewBinding.isInitialized
 
 	@EntryPoint
 	@InstallIn(SingletonComponent::class)
