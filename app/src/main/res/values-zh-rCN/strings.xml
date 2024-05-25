@@ -637,4 +637,8 @@
     <string name="disable_connectivity_check">关闭连接连通性检查</string>
     <string name="disable_connectivity_check_summary">若连通性检查存在问题可打开此选项（例：即使连接了网络但依旧提示网络断开）</string>
     <string name="ignore_ssl_errors_summary">若在连接到在线图源时SSL证书出现问题，可关闭SSL证书认证，关闭后对安全性有所影响，需要重启应用来更改设置。</string>
+    <string name="disable_nsfw_notifications">关闭成人内容提醒</string>
+    <string name="disable_nsfw_notifications_summary">不显示成人漫画的更新提醒</string>
+    <string name="tracker_debug_info">漫画更新日志</string>
+    <string name="tracker_debug_info_summary">记录后台漫画更新时的调试信息</string>
 </resources>
