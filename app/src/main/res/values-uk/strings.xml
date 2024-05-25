@@ -632,4 +632,13 @@
     <string name="pin_navigation_ui">Закріпити інтерфейс навігації</string>
     <string name="pin_navigation_ui_summary">Не ховати навігаційну панель та рядок пошуку під час прокручування</string>
     <string name="blocked_by_server_message">Ви заблоковані сервером. Спробуйте використовувати інше підключення до мережі (VPN, проксі тощо)</string>
+    <string name="disable_connectivity_check">Вимкнути перевірку підключення</string>
+    <string name="ignore_ssl_errors_summary">Перевірку сертифіката SSL можна вимкнути, якщо під час доступу до мережних ресурсів виникають проблеми, пов\'язані з SSL. Це може вплинути на вашу безпеку. Після зміни цього параметра буде потрібно перезавантажити застосунок.</string>
+    <string name="disable_connectivity_check_summary">Пропустити перевірки підключення у разі проблем із підключенням (наприклад, перехід в автономний режим, навіть якщо мережа підключена)</string>
+    <string name="disable_nsfw_notifications">Вимкнути повідомлення NSFW</string>
+    <string name="tracker_debug_info">Журнал перевірки нових розділів</string>
+    <string name="tracker_debug_info_summary">Відлагоджувальна інформація про фонову перевірку наявності нових розділів</string>
+    <string name="disable_nsfw_notifications_summary">Не відображати повідомлення про оновлення манґи NSFW</string>
+    <string name="disable">Вимкнути</string>
+    <string name="sources_disabled">Джерела вимкнено</string>
 </resources>

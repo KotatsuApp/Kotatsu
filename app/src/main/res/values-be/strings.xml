@@ -632,4 +632,13 @@
     <string name="new_chapters_pattern">%1$s: %2$d</string>
     <string name="pin_navigation_ui">Замацаваць інтэрфейс навігацыі</string>
     <string name="blocked_by_server_message">Вы заблакаваныя серверам. Паспрабуйце выкарыстоўваць іншае сеткавае падлучэнне (VPN, проксі і т. д.)</string>
+    <string name="ignore_ssl_errors_summary">Вы можаце адключыць праверку SSL-сертыфіката, калі пры доступе да сеткавых рэсурсаў узнікаюць праблемы, звязаныя з SSL. Гэта можа паўплываць на вашую бяспеку. Пасля змены гэтага параметра запатрабуецца перазагрузка праграмы.</string>
+    <string name="disable_nsfw_notifications_summary">Не паказваць апавяшчэння аб абнаўленнях мангі NSFW</string>
+    <string name="tracker_debug_info">Часопіс праверкі новых раздзелаў</string>
+    <string name="tracker_debug_info_summary">Адладкавая інфармацыя аб фонавай праверцы наяўнасці новых раздзелаў</string>
+    <string name="disable_connectivity_check">Адключыць праверку падключэння</string>
+    <string name="disable_connectivity_check_summary">Прапусціць праверкі падключэння ў выпадку праблем з падключэннем (напрыклад, пераход у аўтаномны рэжым, нават калі сетка падключана)</string>
+    <string name="disable_nsfw_notifications">Адключыць апавяшчэння NSFW</string>
+    <string name="disable">Адкл.</string>
+    <string name="sources_disabled">Крыніцы адключаны</string>
 </resources>
