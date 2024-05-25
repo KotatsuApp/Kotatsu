@@ -1,11 +1,8 @@
 package org.koitharu.kotatsu.settings
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
@@ -44,9 +41,12 @@ class SettingsActivity :
 	private val isMasterDetails
 		get() = viewBinding.containerMaster != null
 
+	private var screenPadding = 0
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySettingsBinding.inflate(layoutInflater))
+		screenPadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val fm = supportFragmentManager
 		val currentFragment = fm.findFragmentById(R.id.container)
@@ -59,38 +59,7 @@ class SettingsActivity :
 				replace(R.id.container_master, RootSettingsFragment())
 			}
 		}
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		super.onCreateOptionsMenu(menu)
-		menuInflater.inflate(R.menu.opt_settings, menu)
-		return true
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-		R.id.action_leaks -> {
-			val intent = Intent()
-			intent.component = ComponentName(this, "leakcanary.internal.activity.LeakActivity")
-			intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-			startActivity(intent)
-			true
-		}
-
-		R.id.action_tracker -> {
-			val intent = Intent()
-			intent.component = ComponentName(this, "org.koitharu.kotatsu.tracker.ui.debug.TrackerDebugActivity")
-			startActivity(intent)
-			true
-		}
-
-		R.id.action_works -> {
-			val intent = Intent()
-			intent.component = ComponentName(this, "org.koitharu.workinspector.WorkInspectorActivity")
-			startActivity(intent)
-			true
-		}
-
-		else -> super.onOptionsItemSelected(item)
+		addMenuProvider(SettingsMenuProvider(this))
 	}
 
 	override fun onPreferenceStartFragment(
@@ -109,8 +78,8 @@ class SettingsActivity :
 			left = insets.left,
 			right = insets.right,
 		)
-		viewBinding.cardDetails?.updateLayoutParams<MarginLayoutParams> {
-			bottomMargin = marginStart + insets.bottom
+		viewBinding.textViewHeader?.updateLayoutParams<MarginLayoutParams> {
+			topMargin = screenPadding + insets.top
 		}
 	}
 

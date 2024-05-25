@@ -13,7 +13,7 @@
 		android:elevation="0dp"
 		android:fitsSystemWindows="true"
 		app:elevation="0dp"
-		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintEnd_toEndOf="@id/container_master"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:liftOnScroll="false">
@@ -30,50 +30,46 @@
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/card_details"
+		app:layout_constraintEnd_toStartOf="@id/container"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/appbar"
 		app:layout_constraintWidth_max="400dp"
 		app:layout_constraintWidth_min="320dp"
-		app:layout_constraintWidth_percent="0.35" />
+		app:layout_constraintWidth_percent="0.4" />
 
-	<com.google.android.material.card.MaterialCardView
-		android:id="@+id/card_details"
+	<TextView
+		android:id="@+id/textView_header"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="?listPreferredItemPaddingStart"
+		android:layout_marginTop="@dimen/screen_padding"
+		android:layout_marginEnd="?listPreferredItemPaddingEnd"
+		android:gravity="center_vertical|start"
+		android:padding="8dp"
+		android:singleLine="true"
+		android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/container_master"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:text="@string/appearance" />
+
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@id/container"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:layout_marginStart="@dimen/side_card_offset"
-		android:layout_marginTop="2dp"
-		android:layout_marginEnd="@dimen/side_card_offset"
-		android:layout_marginBottom="@dimen/side_card_offset"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/container_master"
-		app:layout_constraintTop_toBottomOf="@id/appbar">
+		app:layout_constraintTop_toBottomOf="@id/textView_header"
+		tools:layout="@layout/fragment_settings_sources" />
 
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:orientation="vertical">
-
-			<TextView
-				android:id="@+id/textView_header"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="?listPreferredItemPaddingStart"
-				android:layout_marginEnd="?listPreferredItemPaddingEnd"
-				android:gravity="center_vertical|start"
-				android:padding="8dp"
-				android:singleLine="true"
-				android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
-				tools:text="@string/appearance" />
-
-			<androidx.fragment.app.FragmentContainerView
-				android:id="@id/container"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent" />
-
-		</LinearLayout>
-
-	</com.google.android.material.card.MaterialCardView>
+	<View
+		android:layout_width="1dp"
+		android:layout_height="0dp"
+		android:background="?colorSurfaceDim"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="@id/container_master"
+		app:layout_constraintStart_toEndOf="@id/container_master"
+		app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

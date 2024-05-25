@@ -43,6 +43,12 @@ class RootSettingsFragment : BasePreferenceFragment(0) {
 		}
 	}
 
+	override fun setTitle(title: CharSequence?) {
+		if (!resources.getBoolean(R.bool.is_tablet)) {
+			super.setTitle(title)
+		}
+	}
+
 	private fun bindPreferenceSummary(key: String, @StringRes vararg items: Int) {
 		findPreference<Preference>(key)?.summary = items.joinToString { getString(it) }
 	}
