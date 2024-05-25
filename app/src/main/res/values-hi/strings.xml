@@ -637,4 +637,8 @@
     <string name="disable_connectivity_check">कनेक्टिविटी जांच अक्षम करें</string>
     <string name="ignore_ssl_errors_summary">यदि नेटवर्क संसाधनों तक पहुँचने के दौरान आपको SSL से संबंधित समस्याओं का सामना करना पड़ता है तो आप SSL प्रमाणपत्र सत्यापन को अक्षम कर सकते हैं। इससे आपकी सुरक्षा प्रभावित हो सकती है। इस सेटिंग को बदलने के बाद एप्लिकेशन को पुनरारंभ करना आवश्यक है।</string>
     <string name="disable_connectivity_check_summary">यदि आपको कनेक्टिविटी से जुड़ी कोई समस्या है तो कनेक्टिविटी जांच को छोड़ दें (उदाहरण के लिए नेटवर्क कनेक्ट होने के बावजूद ऑफ़लाइन मोड में जाना)</string>
+    <string name="disable_nsfw_notifications">NSFW सूचनाएं अक्षम करें</string>
+    <string name="disable_nsfw_notifications_summary">NSFW मंगा अपडेट के बारे में सूचनाएं न दिखाएं</string>
+    <string name="tracker_debug_info">नए अध्याय लॉग की जांच की जा रही है</string>
+    <string name="tracker_debug_info_summary">नए अध्यायों के लिए पृष्ठभूमि जांच के बारे में जानकारी डीबग करें</string>
 </resources>
