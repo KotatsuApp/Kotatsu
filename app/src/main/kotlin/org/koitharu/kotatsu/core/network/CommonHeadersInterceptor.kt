@@ -4,8 +4,10 @@ import android.util.Log
 import dagger.Lazy
 import okhttp3.Headers
 import okhttp3.Interceptor
+import okhttp3.Interceptor.Chain
 import okhttp3.Request
 import okhttp3.Response
+import okio.IOException
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -13,6 +15,7 @@ import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mergeWith
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.net.IDN
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,7 +26,7 @@ class CommonHeadersInterceptor @Inject constructor(
 	private val mangaLoaderContextLazy: Lazy<MangaLoaderContextImpl>,
 ) : Interceptor {
 
-	override fun intercept(chain: Interceptor.Chain): Response {
+	override fun intercept(chain: Chain): Response {
 		val request = chain.request()
 		val source = request.tag(MangaSource::class.java)
 		val repository = if (source != null) {
@@ -46,7 +49,7 @@ class CommonHeadersInterceptor @Inject constructor(
 			headersBuilder.trySet(CommonHeaders.REFERER, "https://$idn/")
 		}
 		val newRequest = request.newBuilder().headers(headersBuilder.build()).build()
-		return repository?.intercept(ProxyChain(chain, newRequest)) ?: chain.proceed(newRequest)
+		return repository?.interceptSafe(ProxyChain(chain, newRequest)) ?: chain.proceed(newRequest)
 	}
 
 	private fun Headers.Builder.trySet(name: String, value: String) = try {
@@ -55,10 +58,21 @@ class CommonHeadersInterceptor @Inject constructor(
 		e.printStackTraceDebug()
 	}
 
+	private fun Interceptor.interceptSafe(chain: Chain): Response = runCatchingCancellable {
+		intercept(chain)
+	}.getOrElse { e ->
+		if (e is IOException) {
+			throw e
+		} else {
+			// only IOException can be safely thrown from an Interceptor
+			throw IOException("Error in interceptor: ${e.message}", e)
+		}
+	}
+
 	private class ProxyChain(
-		private val delegate: Interceptor.Chain,
+		private val delegate: Chain,
 		private val request: Request,
-	) : Interceptor.Chain by delegate {
+	) : Chain by delegate {
 
 		override fun request(): Request = request
 	}
