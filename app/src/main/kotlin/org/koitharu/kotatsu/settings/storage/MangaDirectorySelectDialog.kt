@@ -11,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -41,7 +40,13 @@ class MangaDirectorySelectDialog : AlertDialogFragment<DialogDirectorySelectBind
 	) {
 		if (it) {
 			viewModel.refresh()
-			pickFileTreeLauncher.launch(null)
+			if (!pickFileTreeLauncher.tryLaunch(null)) {
+				Toast.makeText(
+					context ?: return@registerForActivityResult,
+					R.string.operation_not_supported,
+					Toast.LENGTH_SHORT,
+				).show()
+			}
 		}
 	}
 

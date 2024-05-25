@@ -31,7 +31,6 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.transform.CircleCropTransformation
 import coil.util.CoilUtils
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -153,8 +152,8 @@ class DetailsActivity :
 		viewBinding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
 		viewBinding.chipsTags.onChipClickListener = this
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
-		viewBinding.containerBottomSheet?.let { BottomSheetBehavior.from(it) }?.let { behavior ->
-			onBackPressedDispatcher.addCallback(BottomSheetCollapseCallback(behavior))
+		viewBinding.containerBottomSheet?.let { sheet ->
+			onBackPressedDispatcher.addCallback(BottomSheetCollapseCallback(sheet))
 		}
 
 		viewModel.details.filterNotNull().observe(this, ::onMangaUpdated)
