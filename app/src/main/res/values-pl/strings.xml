@@ -639,4 +639,6 @@
     <string name="disable_connectivity_check_summary">Pomiń sprawdzanie łączności w przypadku problemów z nią (np. przejście do trybu offline, mimo że sieć jest podłączona)</string>
     <string name="disable_nsfw_notifications">Wyłącz powiadomienia NSFW</string>
     <string name="disable_nsfw_notifications_summary">Nie pokazuj powiadomień o aktualizacjach mangi NSFW</string>
+    <string name="tracker_debug_info_summary">Debuguj informacje o sprawdzaniu dostępności nowych rozdziałów</string>
+    <string name="tracker_debug_info">Dziennik sprawdzania nowych rozdziałów</string>
 </resources>

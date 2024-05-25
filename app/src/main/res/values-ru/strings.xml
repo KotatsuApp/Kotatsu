@@ -632,4 +632,13 @@
     <string name="pin_navigation_ui_summary">Не прятать навигационную панель и строку поиска при прокрутке</string>
     <string name="new_chapters_pattern">%1$s: %2$d</string>
     <string name="blocked_by_server_message">Вы заблокированы сервером. Попробуйте использовать другое сетевое подключение (VPN, прокси и т. д.)</string>
+    <string name="disable_connectivity_check">Отключить проверку подключения</string>
+    <string name="ignore_ssl_errors_summary">Вы можете отключить проверку сертификата SSL, если при доступе к сетевым ресурсам возникают проблемы, связанные с SSL. Это может повлиять на вашу безопасность. После изменения этого параметра потребуется перезагрузка приложения.</string>
+    <string name="tracker_debug_info_summary">Отладочная информация о фоновой проверке наличия новых глав</string>
+    <string name="tracker_debug_info">Журнал проверки новых глав</string>
+    <string name="disable_connectivity_check_summary">Пропустить проверки подключения в случае проблем с подключением (например, переход в автономный режим, даже если сеть подключена)</string>
+    <string name="disable_nsfw_notifications">Отключить уведомления NSFW</string>
+    <string name="disable_nsfw_notifications_summary">Не показывать уведомления об обновлениях манги NSFW</string>
+    <string name="disable">Откл.</string>
+    <string name="sources_disabled">Источники отключены</string>
 </resources>
