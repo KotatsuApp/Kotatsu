@@ -60,7 +60,7 @@ body:
       attributes:
           label: Acknowledgements
           options:
-              - label: I have searched the existing issues and this is a new ticket, **NOT** a duplicate or related to another open issue.
+              - label: This is not a duplicate of an existing issue. Please look through the list of [open issues](https://github.com/KotatsuApp/Kotatsu/issues) before creating a new one.
                 required: true
-              - label: If this is an issue with a parser, I should be opening an issue in the [parsers repository](https://github.com/KotatsuApp/kotatsu-parsers/issues/new/choose).
+              - label: This is not an issue with a specific manga source. Otherwise, you have to open an issue in the [parsers repository](https://github.com/KotatsuApp/kotatsu-parsers/issues/new/choose).
                 required: true
