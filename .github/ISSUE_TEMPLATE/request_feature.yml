@@ -20,5 +20,5 @@ body:
           label: Acknowledgements
           description: Read this carefully, we will close and ignore your issue if you skimmed through this.
           options:
-              - label: I have searched the existing issues and this is a new ticket, **NOT** a duplicate or related to another open issue.
+              - label: This is not a duplicate of an existing issue. Please look through the list of [open issues](https://github.com/KotatsuApp/Kotatsu/issues) before creating a new one.
                 required: true

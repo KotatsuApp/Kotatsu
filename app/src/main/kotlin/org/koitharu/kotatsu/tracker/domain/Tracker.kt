@@ -30,10 +30,6 @@ class Tracker @Inject constructor(
 		return repository.getTracks(offset = 0, limit = limit)
 	}
 
-	suspend fun gc() {
-		repository.gc()
-	}
-
 	suspend fun fetchUpdates(
 		track: MangaTracking,
 		commit: Boolean
