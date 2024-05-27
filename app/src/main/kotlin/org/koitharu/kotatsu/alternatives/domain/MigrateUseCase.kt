@@ -69,6 +69,7 @@ class MigrateUseCase @Inject constructor(
 					lastCheckTime = System.currentTimeMillis(),
 					lastChapterDate = lastChapter?.uploadDate ?: 0L,
 					lastResult = TrackEntity.RESULT_EXTERNAL_MODIFICATION,
+					lastError = null,
 				)
 				tracksDao.delete(oldDetails.id)
 				tracksDao.upsert(newTrack)

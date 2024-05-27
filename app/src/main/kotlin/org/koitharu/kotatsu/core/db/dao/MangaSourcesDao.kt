@@ -11,6 +11,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.intellij.lang.annotations.Language
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 
@@ -68,6 +69,7 @@ abstract class MangaSourcesDao {
 				source = source,
 				isEnabled = isEnabled,
 				sortKey = getMaxSortKey() + 1,
+				addedIn = BuildConfig.VERSION_CODE,
 			)
 			upsert(entity)
 		}

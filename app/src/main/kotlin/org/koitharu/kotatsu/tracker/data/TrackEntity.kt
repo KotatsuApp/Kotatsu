@@ -25,6 +25,7 @@ class TrackEntity(
 	@ColumnInfo(name = "last_check_time") val lastCheckTime: Long,
 	@ColumnInfo(name = "last_chapter_date") val lastChapterDate: Long,
 	@ColumnInfo(name = "last_result") val lastResult: Int,
+	@ColumnInfo(name = "last_error") val lastError: String?,
 ) {
 
 	companion object {
@@ -42,6 +43,7 @@ class TrackEntity(
 			lastCheckTime = 0L,
 			lastChapterDate = 0,
 			lastResult = RESULT_NONE,
+			lastError = null,
 		)
 	}
 }
