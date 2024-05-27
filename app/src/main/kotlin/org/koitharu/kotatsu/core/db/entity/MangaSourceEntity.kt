@@ -14,5 +14,4 @@ data class MangaSourceEntity(
 	val source: String,
 	@ColumnInfo(name = "enabled") val isEnabled: Boolean,
 	@ColumnInfo(name = "sort_key", index = true) val sortKey: Int,
-	@ColumnInfo(name = "added_in") val addedIn: Int,
 )

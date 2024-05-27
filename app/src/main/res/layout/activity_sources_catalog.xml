@@ -19,36 +19,19 @@
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize" />
 
-		<HorizontalScrollView
-			android:id="@+id/scrollView_chips"
+		<com.google.android.material.tabs.TabLayout
+			android:id="@+id/tabs"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:clipToPadding="false"
-			android:paddingHorizontal="@dimen/list_spacing_large"
-			android:scrollbars="none">
-
-			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
-				android:id="@+id/chips_filter"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:clipChildren="false"
-				android:clipToPadding="false"
-				android:paddingVertical="@dimen/margin_small"
-				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
-				app:selectionRequired="false"
-				app:singleLine="true"
-				app:singleSelection="false" />
-
-		</HorizontalScrollView>
+			app:tabGravity="start"
+			app:tabMode="scrollable" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/recyclerView"
+	<androidx.viewpager2.widget.ViewPager2
+		android:id="@+id/pager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:scrollbars="vertical"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

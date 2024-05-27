@@ -84,7 +84,6 @@ class JsonDeserializer(private val json: JSONObject) {
 		source = json.getString("source"),
 		isEnabled = json.getBoolean("enabled"),
 		sortKey = json.getInt("sort_key"),
-		addedIn = json.getIntOrDefault("added_in", 0),
 	)
 
 	fun toMap(): Map<String, Any?> {

@@ -156,7 +156,6 @@ class MangaSourcesRepository @Inject constructor(
 		}
 	}
 
-	@Deprecated("")
 	suspend fun assimilateNewSources(): Set<MangaSource> {
 		val new = getNewSources()
 		if (new.isEmpty()) {
@@ -168,7 +167,6 @@ class MangaSourcesRepository @Inject constructor(
 				source = x.name,
 				isEnabled = false,
 				sortKey = ++maxSortKey,
-				addedIn = BuildConfig.VERSION_CODE,
 			)
 		}
 		dao.insertIfAbsent(entities)

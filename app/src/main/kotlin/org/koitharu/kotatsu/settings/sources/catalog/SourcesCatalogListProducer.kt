@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.core.util.ext.lifecycleScope
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.ContentType
 
-@Deprecated("")
 class SourcesCatalogListProducer @AssistedInject constructor(
 	@Assisted private val locale: String?,
 	@Assisted private val contentType: ContentType,

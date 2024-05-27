@@ -174,7 +174,6 @@ class TrackingRepository @Inject constructor(
 			lastCheckTime = tracking.lastCheck?.toEpochMilli() ?: 0L,
 			lastChapterDate = tracking.lastChapterDate?.toEpochMilli() ?: 0L,
 			lastResult = TrackEntity.RESULT_EXTERNAL_MODIFICATION,
-			lastError = null,
 		)
 		db.getTracksDao().upsert(entity)
 	}
@@ -231,7 +230,6 @@ class TrackingRepository @Inject constructor(
 				lastCheckTime = System.currentTimeMillis(),
 				lastChapterDate = lastChapterDate,
 				lastResult = TrackEntity.RESULT_FAILED,
-				lastError = updates.error?.toString(),
 			)
 
 			is MangaUpdates.Success -> TrackEntity(
@@ -241,7 +239,6 @@ class TrackingRepository @Inject constructor(
 				lastCheckTime = System.currentTimeMillis(),
 				lastChapterDate = updates.lastChapterDate().ifZero { lastChapterDate },
 				lastResult = if (updates.isNotEmpty()) TrackEntity.RESULT_HAS_UPDATE else TrackEntity.RESULT_NO_UPDATE,
-				lastError = null,
 			)
 		}
 	}
