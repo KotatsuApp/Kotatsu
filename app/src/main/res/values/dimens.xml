@@ -29,7 +29,6 @@
 	<dimen name="toolbar_button_margin">10dp</dimen>
 	<dimen name="widget_cover_height">116dp</dimen>
 	<dimen name="widget_cover_width">84dp</dimen>
-	<dimen name="reader_bar_inset_fallback">8dp</dimen>
 	<dimen name="scrobbling_list_spacing">12dp</dimen>
 	<dimen name="explore_grid_width">120dp</dimen>
 	<dimen name="chapter_grid_width">80dp</dimen>

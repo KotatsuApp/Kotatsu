@@ -11,7 +11,9 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.BatteryManager
+import android.os.Build
 import android.util.AttributeSet
+import android.view.RoundedCorner
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.AttrRes
@@ -46,8 +48,10 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	private var insetLeft: Int = 0
 	private var insetRight: Int = 0
 	private var insetTop: Int = 0
-	private var cutoutInsetLeft = 0
-	private var cutoutInsetRight = 0
+	private val insetLeftFallback: Int
+	private val insetRightFallback: Int
+	private val insetTopFallback: Int
+	private val insetCornerFallback = getSystemUiDimensionOffset("rounded_corner_content_padding")
 	private val colorText = ColorUtils.setAlphaComponent(
 		context.getThemeColor(materialR.attr.colorOnSurface, Color.BLACK),
 		200,
@@ -80,14 +84,12 @@ class ReaderInfoBarView @JvmOverloads constructor(
 			paint.strokeWidth = getDimension(R.styleable.ReaderInfoBarView_android_strokeWidth, 2f)
 			paint.textSize = getDimension(R.styleable.ReaderInfoBarView_android_textSize, 16f)
 		}
-		val insetCorner = getSystemUiDimensionOffset("rounded_corner_content_padding")
-		val fallbackInset = resources.getDimensionPixelOffset(R.dimen.reader_bar_inset_fallback)
-		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start", fallbackInset) + insetCorner
-		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end", fallbackInset) + insetCorner
+		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start")
+		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end")
 		val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
-		insetLeft = if (isRtl) insetEnd else insetStart
-		insetRight = if (isRtl) insetStart else insetEnd
-		insetTop = minOf(insetLeft, insetRight)
+		insetLeftFallback = if (isRtl) insetEnd else insetStart
+		insetRightFallback = if (isRtl) insetStart else insetEnd
+		insetTopFallback = minOf(insetLeftFallback, insetRightFallback)
 	}
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -110,12 +112,12 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		paint.textAlign = Paint.Align.LEFT
 		canvas.drawTextOutline(
 			text,
-			(paddingLeft + insetLeft + cutoutInsetLeft).toFloat(),
+			(paddingLeft + insetLeft).toFloat(),
 			paddingTop + insetTop + ty,
 		)
 		if (isTimeVisible) {
 			paint.textAlign = Paint.Align.RIGHT
-			var endX = (width - paddingRight - insetRight - cutoutInsetRight).toFloat()
+			var endX = (width - paddingRight - insetRight).toFloat()
 			canvas.drawTextOutline(timeText, endX, paddingTop + insetTop + ty)
 			if (batteryText.isNotEmpty()) {
 				paint.getTextBounds(timeText, 0, timeText.length, textBounds)
@@ -221,15 +223,29 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	}
 
 	private fun updateCutoutInsets(insetsCompat: WindowInsetsCompat?) {
-		val cutouts = (insetsCompat ?: return).displayCutout?.boundingRects.orEmpty()
-		cutoutInsetLeft = 0
-		cutoutInsetRight = 0
-		for (rect in cutouts) {
-			if (rect.left <= paddingLeft) {
-				cutoutInsetLeft += rect.width()
+		insetLeft = insetLeftFallback
+		insetRight = insetRightFallback
+		insetTop = insetTopFallback
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && insetsCompat != null) {
+			val nativeInsets = insetsCompat.toWindowInsets()
+			nativeInsets?.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT)?.let { corner ->
+				insetLeft += corner.radius
 			}
-			if (rect.right >= width - paddingRight) {
-				cutoutInsetRight += rect.width()
+			nativeInsets?.getRoundedCorner(RoundedCorner.POSITION_TOP_RIGHT)?.let { corner ->
+				insetRight += corner.radius
+			}
+		} else {
+			insetLeft += insetCornerFallback
+			insetRight += insetCornerFallback
+		}
+		insetsCompat?.displayCutout?.let { cutout ->
+			for (rect in cutout.boundingRects) {
+				if (rect.left <= paddingLeft) {
+					insetLeft += rect.width()
+				}
+				if (rect.right >= width - paddingRight) {
+					insetRight += rect.width()
+				}
 			}
 		}
 	}
