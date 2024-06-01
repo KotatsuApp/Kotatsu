@@ -61,10 +61,7 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 	}
 
 	private fun moreTagsChip() = ChipsView.ChipModel(
-		tint = 0,
 		title = getString(R.string.more),
 		icon = materialR.drawable.abc_ic_menu_overflow_material,
-		isCheckable = false,
-		isChecked = false,
 	)
 }

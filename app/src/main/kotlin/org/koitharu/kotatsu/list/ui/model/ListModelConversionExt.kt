@@ -37,9 +37,6 @@ suspend fun Manga.toListDetailedModel(
 		ChipsView.ChipModel(
 			tint = extraProvider?.getTagTint(it) ?: 0,
 			title = it.title,
-			icon = 0,
-			isCheckable = false,
-			isChecked = false,
 			data = it,
 		)
 	},

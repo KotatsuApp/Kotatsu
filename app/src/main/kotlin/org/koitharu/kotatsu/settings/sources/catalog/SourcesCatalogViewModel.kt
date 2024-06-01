@@ -7,16 +7,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.ui.widgets.ChipsView.ChipModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
+import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
@@ -27,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SourcesCatalogViewModel @Inject constructor(
 	private val repository: MangaSourcesRepository,
+	private val settings: AppSettings,
 ) : BaseViewModel() {
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
@@ -37,16 +38,14 @@ class SourcesCatalogViewModel @Inject constructor(
 		SourcesCatalogFilter(
 			types = emptySet(),
 			locale = Locale.getDefault().language.takeIf { it in locales },
+			isNewOnly = false,
 		),
 	)
 
-	val hasNewSources = repository.observeNewSources()
-		.map { it.isNotEmpty() }
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
+	val isNsfwDisabled = settings.isNsfwContentDisabled
 
-	val filter: StateFlow<List<ChipModel>> = appliedFilter.map {
-		buildFilter(it)
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, buildFilter(appliedFilter.value))
+	val hasNewSources = repository.observeHasNewSources()
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
 
 	val content: StateFlow<List<SourceCatalogItem>> = combine(
 		searchQuery,
@@ -54,6 +53,10 @@ class SourcesCatalogViewModel @Inject constructor(
 	) { q, f ->
 		buildSourcesList(f, q)
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
+
+	init {
+		repository.clearNewSourcesBadge()
+	}
 
 	fun performSearch(query: String?) {
 		searchQuery.value = query?.trim()
@@ -70,12 +73,6 @@ class SourcesCatalogViewModel @Inject constructor(
 		}
 	}
 
-	fun skipNewSources() {
-		launchJob {
-			repository.assimilateNewSources()
-		}
-	}
-
 	fun setContentType(value: ContentType, isAdd: Boolean) {
 		val filter = appliedFilter.value
 		val types = EnumSet.noneOf(ContentType::class.java)
@@ -88,29 +85,19 @@ class SourcesCatalogViewModel @Inject constructor(
 		appliedFilter.value = filter.copy(types = types)
 	}
 
-	private fun buildFilter(applied: SourcesCatalogFilter): List<ChipModel> = buildList(ContentType.entries.size) {
-		for (ct in ContentType.entries) {
-			add(
-				ChipModel(
-					tint = 0,
-					title = ct.name,
-					icon = 0,
-					isCheckable = true,
-					isChecked = ct in applied.types,
-					data = ct,
-				),
-			)
-		}
+	fun setNewOnly(value: Boolean) {
+		appliedFilter.value = appliedFilter.value.copy(isNewOnly = value)
 	}
 
 	private suspend fun buildSourcesList(filter: SourcesCatalogFilter, query: String?): List<SourceCatalogItem> {
-		val sources = repository.getDisabledSources().toMutableList()
-		sources.retainAll {
-			(filter.types.isEmpty() || it.contentType in filter.types) && it.locale == filter.locale
-		}
-		if (!query.isNullOrEmpty()) {
-			sources.retainAll { it.title.contains(query, ignoreCase = true) }
-		}
+		val sources = repository.getAvailableSources(
+			isDisabledOnly = true,
+			isNewOnly = filter.isNewOnly,
+			excludeBroken = false,
+			types = filter.types,
+			query = query,
+			sortOrder = SourcesSortOrder.ALPHABETIC,
+		).filter { it.locale == filter.locale }
 		return if (sources.isEmpty()) {
 			listOf(
 				if (query == null) {
@@ -128,12 +115,8 @@ class SourcesCatalogViewModel @Inject constructor(
 				},
 			)
 		} else {
-			sources.sortBy { it.title }
 			sources.map {
-				SourceCatalogItem.Source(
-					source = it,
-					showSummary = query != null,
-				)
+				SourceCatalogItem.Source(source = it)
 			}
 		}
 	}

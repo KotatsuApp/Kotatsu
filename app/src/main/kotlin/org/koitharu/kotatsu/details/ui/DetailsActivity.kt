@@ -612,10 +612,7 @@ class DetailsActivity :
 				ChipsView.ChipModel(
 					title = tag.title,
 					tint = tagHighlighter.getTagTint(tag),
-					icon = 0,
 					data = tag,
-					isCheckable = false,
-					isChecked = false,
 				)
 			},
 		)

@@ -4,14 +4,9 @@ import android.app.Activity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.LocaleComparator
-import org.koitharu.kotatsu.core.util.ext.getDisplayName
-import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 
 class SourcesCatalogMenuProvider(
@@ -32,14 +27,7 @@ class SourcesCatalogMenuProvider(
 		searchView.queryHint = searchMenuItem.title
 	}
 
-	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
-		R.id.action_locales -> {
-			showLocalesMenu()
-			true
-		}
-
-		else -> false
-	}
+	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
 
 	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
 		(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
@@ -56,25 +44,5 @@ class SourcesCatalogMenuProvider(
 	override fun onQueryTextChange(newText: String?): Boolean {
 		viewModel.performSearch(newText?.trim().orEmpty())
 		return true
-	}
-
-	private fun showLocalesMenu() {
-		val locales = viewModel.locales.mapTo(ArrayList(viewModel.locales.size)) {
-			it to it?.toLocale()
-		}
-		locales.sortWith(compareBy(nullsFirst(LocaleComparator())) { it.second })
-
-		val anchor: View = (activity as AppBarOwner).appBar.let {
-			it.findViewById<View?>(R.id.toolbar) ?: it
-		}
-		val menu = PopupMenu(activity, anchor)
-		for ((i, lc) in locales.withIndex()) {
-			menu.menu.add(Menu.NONE, Menu.NONE, i, lc.second.getDisplayName(activity))
-		}
-		menu.setOnMenuItemClickListener {
-			viewModel.setLocale(locales.getOrNull(it.order)?.first)
-			true
-		}
-		menu.show()
 	}
 }

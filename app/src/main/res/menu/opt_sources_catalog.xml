@@ -4,12 +4,6 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/action_locales"
-		android:icon="@drawable/ic_expand_more"
-		android:title="@string/languages"
-		app:showAsAction="ifRoom" />
-
-	<item
 		android:id="@+id/action_search"
 		android:icon="?actionModeWebSearchDrawable"
 		android:title="@string/search"

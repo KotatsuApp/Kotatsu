@@ -91,9 +91,7 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 		chips.setChips(
 			value.availableItems.map {
 				ChipsView.ChipModel(
-					tint = 0,
 					title = it?.getDisplayLanguage(it)?.toTitleCase(it) ?: getString(R.string.various_languages),
-					icon = 0,
 					isCheckable = true,
 					isChecked = it in value.selectedItems,
 					data = it,
@@ -107,9 +105,7 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 		chips.setChips(
 			value.availableItems.map {
 				ChipsView.ChipModel(
-					tint = 0,
 					title = getString(it.titleResId),
-					icon = 0,
 					isCheckable = true,
 					isChecked = it in value.selectedItems,
 					data = it,

@@ -257,7 +257,7 @@ class FilterCoordinator @Inject constructor(
 			}
 			oldValue.copy(
 				tagsExclude = newTags,
-				tags = oldValue.tags - newTags
+				tags = oldValue.tags - newTags,
 			)
 		}
 	}
@@ -308,7 +308,7 @@ class FilterCoordinator @Inject constructor(
 		currentState.update { oldValue ->
 			oldValue.copy(
 				tags = tags,
-				tagsExclude = oldValue.tagsExclude - tags
+				tagsExclude = oldValue.tagsExclude - tags,
 			)
 		}
 	}
@@ -391,9 +391,7 @@ class FilterCoordinator @Inject constructor(
 		val result = LinkedList<ChipsView.ChipModel>()
 		for (tag in tags) {
 			val model = ChipsView.ChipModel(
-				tint = 0,
 				title = tag.title,
-				icon = 0,
 				isCheckable = true,
 				isChecked = selectedTags.remove(tag),
 				data = tag,
@@ -406,9 +404,7 @@ class FilterCoordinator @Inject constructor(
 		}
 		for (tag in selectedTags) {
 			val model = ChipsView.ChipModel(
-				tint = 0,
 				title = tag.title,
-				icon = 0,
 				isCheckable = true,
 				isChecked = true,
 				data = tag,

@@ -27,7 +27,6 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.util.SpanSizeResolver
-import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -40,13 +39,11 @@ import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
-import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 import javax.inject.Inject
@@ -56,7 +53,7 @@ class ExploreFragment :
 	BaseFragment<FragmentExploreBinding>(),
 	RecyclerViewOwner,
 	ExploreListEventListener,
-	OnListItemClickListener<MangaSourceItem>, TipView.OnButtonClickListener, ListSelectionController.Callback2 {
+	OnListItemClickListener<MangaSourceItem>, ListSelectionController.Callback2 {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -74,7 +71,7 @@ class ExploreFragment :
 
 	override fun onViewBindingCreated(binding: FragmentExploreBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this, this) { manga, view ->
+		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this) { manga, view ->
 			startActivity(DetailsActivity.newIntent(view.context, manga))
 		}
 		sourceSelectionController = ListSelectionController(
@@ -121,18 +118,6 @@ class ExploreFragment :
 			startActivity(SuggestionsActivity.newIntent(view.context))
 		} else {
 			startActivity(Intent(view.context, SourcesCatalogActivity::class.java))
-		}
-	}
-
-	override fun onPrimaryButtonClick(tipView: TipView) {
-		when ((tipView.tag as? TipModel)?.key) {
-			ExploreViewModel.TIP_NEW_SOURCES -> NewSourcesDialogFragment.show(childFragmentManager)
-		}
-	}
-
-	override fun onSecondaryButtonClick(tipView: TipView) {
-		when ((tipView.tag as? TipModel)?.key) {
-			ExploreViewModel.TIP_NEW_SOURCES -> viewModel.discardNewSources()
 		}
 	}
 

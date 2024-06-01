@@ -1,22 +1,27 @@
 package org.koitharu.kotatsu.settings.sources.catalog
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.titleResId
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView.ChipModel
+import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -25,7 +30,7 @@ import org.koitharu.kotatsu.databinding.ActivitySourcesCatalogBinding
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.ContentType
-import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,8 +40,6 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 
 	@Inject
 	lateinit var coil: ImageLoader
-
-	private var newSourcesSnackbar: Snackbar? = null
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
@@ -55,16 +58,12 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		}
 		viewBinding.chipsFilter.onChipClickListener = this
 		viewModel.content.observe(this, sourcesAdapter)
-		viewModel.hasNewSources.observe(this, ::onHasNewSourcesChanged)
 		viewModel.onActionDone.observeEvent(
 			this,
 			ReversibleActionObserver(viewBinding.recyclerView),
 		)
-		viewModel.appliedFilter.observe(this) {
-			supportActionBar?.subtitle = it.locale?.toLocale().getDisplayName(this)
-		}
-		viewModel.filter.observe(this) {
-			viewBinding.chipsFilter.setChips(it)
+		combine(viewModel.appliedFilter, viewModel.hasNewSources, ::Pair).observe(this) {
+			updateFilers(it.first, it.second)
 		}
 		addMenuProvider(SourcesCatalogMenuProvider(this, viewModel, this))
 	}
@@ -79,11 +78,18 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	override fun onChipClick(chip: Chip, data: Any?) {
 		when (data) {
 			is ContentType -> viewModel.setContentType(data, chip.isChecked)
+			is Boolean -> viewModel.setNewOnly(chip.isChecked)
+			else -> showLocalesMenu(chip)
 		}
 	}
 
 	override fun onItemClick(item: SourceCatalogItem.Source, view: View) {
+		startActivity(MangaListActivity.newIntent(this, item.source))
+	}
+
+	override fun onItemLongClick(item: SourceCatalogItem.Source, view: View): Boolean {
 		viewModel.addSource(item.source)
+		return false
 	}
 
 	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
@@ -97,30 +103,52 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		return true
 	}
 
-	private fun onHasNewSourcesChanged(hasNewSources: Boolean) {
+	private fun updateFilers(
+		appliedFilter: SourcesCatalogFilter,
+		hasNewSources: Boolean,
+	) {
+		val chips = ArrayList<ChipModel>(ContentType.entries.size + 2)
+		chips += ChipModel(
+			title = appliedFilter.locale?.toLocale().getDisplayName(this),
+			icon = R.drawable.ic_language,
+			isDropdown = true,
+		)
 		if (hasNewSources) {
-			if (newSourcesSnackbar?.isShownOrQueued == true) {
-				return
-			}
-			val snackbar = Snackbar.make(viewBinding.recyclerView, R.string.new_sources_text, Snackbar.LENGTH_INDEFINITE)
-			snackbar.setAction(R.string.explore) {
-				NewSourcesDialogFragment.show(supportFragmentManager)
-			}
-			snackbar.addCallback(
-				object : Snackbar.Callback() {
-					override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-						super.onDismissed(transientBottomBar, event)
-						if (event == DISMISS_EVENT_SWIPE) {
-							viewModel.skipNewSources()
-						}
-					}
-				},
+			chips += ChipModel(
+				title = getString(R.string._new),
+				icon = R.drawable.ic_updated_selector,
+				isCheckable = true,
+				isChecked = appliedFilter.isNewOnly,
+				data = true,
 			)
-			snackbar.show()
-			newSourcesSnackbar = snackbar
-		} else {
-			newSourcesSnackbar?.dismiss()
-			newSourcesSnackbar = null
 		}
+		for (type in ContentType.entries) {
+			if (type == ContentType.HENTAI && viewModel.isNsfwDisabled) {
+				continue
+			}
+			chips += ChipModel(
+				title = getString(type.titleResId),
+				isCheckable = true,
+				isChecked = type in appliedFilter.types,
+				data = type,
+			)
+		}
+		viewBinding.chipsFilter.setChips(chips)
+	}
+
+	private fun showLocalesMenu(anchor: View) {
+		val locales = viewModel.locales.mapTo(ArrayList(viewModel.locales.size)) {
+			it to it?.toLocale()
+		}
+		locales.sortWith(compareBy(nullsFirst(LocaleComparator())) { it.second })
+		val menu = PopupMenu(this, anchor)
+		for ((i, lc) in locales.withIndex()) {
+			menu.menu.add(Menu.NONE, Menu.NONE, i, lc.second.getDisplayName(this))
+		}
+		menu.setOnMenuItemClickListener {
+			viewModel.setLocale(locales.getOrNull(it.order)?.first)
+			true
+		}
+		menu.show()
 	}
 }

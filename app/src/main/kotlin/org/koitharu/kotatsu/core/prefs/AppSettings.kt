@@ -290,8 +290,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_SOURCES_GRID, true)
 		set(value) = prefs.edit { putBoolean(KEY_SOURCES_GRID, value) }
 
-	val isNewSourcesTipEnabled: Boolean
-		get() = prefs.getBoolean(KEY_SOURCES_NEW, true)
+	var sourcesVersion: Int
+		get() = prefs.getInt(KEY_SOURCES_VERSION, 0)
+		set(value) = prefs.edit { putInt(KEY_SOURCES_VERSION, value) }
 
 	val isPagesNumbersEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PAGES_NUMBERS, false)
@@ -653,7 +654,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_APP_LOCALE = "app_locale"
 		const val KEY_LOGGING_ENABLED = "logging"
 		const val KEY_SOURCES_GRID = "sources_grid"
-		const val KEY_SOURCES_NEW = "sources_new"
 		const val KEY_UPDATES_UNSTABLE = "updates_unstable"
 		const val KEY_TIPS_CLOSED = "tips_closed"
 		const val KEY_SSL_BYPASS = "ssl_bypass"
@@ -689,6 +689,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_STATS_ENABLED = "stats_on"
 		const val KEY_FEED_HEADER = "feed_header"
 		const val KEY_SEARCH_SUGGESTION_TYPES = "search_suggest_types"
+		const val KEY_SOURCES_VERSION = "sources_version"
 
 		// keys for non-persistent preferences
 		const val KEY_APP_VERSION = "app_version"

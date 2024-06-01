@@ -102,12 +102,6 @@ class ExploreViewModel @Inject constructor(
 		}
 	}
 
-	fun discardNewSources() {
-		launchJob(Dispatchers.Default) {
-			sourcesRepository.assimilateNewSources()
-		}
-	}
-
 	fun requestPinShortcut(source: MangaSource) {
 		launchLoadingJob(Dispatchers.Default) {
 			shortcutManager.requestPinShortcut(source)
@@ -124,7 +118,7 @@ class ExploreViewModel @Inject constructor(
 		getSuggestionFlow(),
 		isGrid,
 		isRandomLoading,
-		sourcesRepository.observeNewSources(),
+		sourcesRepository.observeHasNewSourcesForBadge(),
 	) { content, suggestions, grid, randomLoading, newSources ->
 		buildList(content, suggestions, grid, randomLoading, newSources)
 	}.withErrorHandling()
@@ -134,7 +128,7 @@ class ExploreViewModel @Inject constructor(
 		recommendation: List<Manga>,
 		isGrid: Boolean,
 		randomLoading: Boolean,
-		newSources: Set<MangaSource>,
+		hasNewSources: Boolean,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(sources.size + 3)
 		result += ExploreButtons(randomLoading)
@@ -146,7 +140,7 @@ class ExploreViewModel @Inject constructor(
 			result += ListHeader(
 				textRes = R.string.remote_sources,
 				buttonTextRes = R.string.catalog,
-				badge = if (newSources.isNotEmpty()) "" else null,
+				badge = if (hasNewSources) "" else null,
 			)
 			sources.mapTo(result) { MangaSourceItem(it, isGrid) }
 		} else {
@@ -191,6 +185,5 @@ class ExploreViewModel @Inject constructor(
 
 		private const val TIP_SUGGESTIONS = "suggestions"
 		private const val SUGGESTIONS_COUNT = 8
-		const val TIP_NEW_SOURCES = "new_sources"
 	}
 }

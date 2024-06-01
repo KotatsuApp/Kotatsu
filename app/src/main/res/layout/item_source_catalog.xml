@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="?android:windowBackground"
+	android:background="?selectableItemBackground"
 	android:gravity="center_vertical"
 	android:minHeight="?listPreferredItemHeightSmall"
 	android:orientation="horizontal"
@@ -52,10 +52,17 @@
 
 	</LinearLayout>
 
+	<View
+		android:layout_width="1dp"
+		android:layout_height="match_parent"
+		android:layout_marginVertical="4dp"
+		android:background="?colorOutline" />
+
 	<ImageView
 		android:id="@+id/imageView_add"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/list_spacing_small"
 		android:background="?selectableItemBackgroundBorderless"
 		android:contentDescription="@string/add"
 		android:padding="@dimen/margin_small"

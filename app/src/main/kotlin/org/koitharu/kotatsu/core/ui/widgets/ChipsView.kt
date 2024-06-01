@@ -12,6 +12,8 @@ import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.castOrNull
 
+import com.google.android.material.R as materialR
+
 class ChipsView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
@@ -48,7 +50,7 @@ class ChipsView @JvmOverloads constructor(
 		if (isInEditMode) {
 			setChips(
 				List(5) {
-					ChipModel(0, "Chip $it", 0, isCheckable = false, isChecked = false)
+					ChipModel(title = "Chip $it")
 				},
 			)
 		}
@@ -99,6 +101,15 @@ class ChipsView @JvmOverloads constructor(
 			chip.isChipIconVisible = true
 		}
 		chip.isChecked = model.isChecked
+		chip.isCheckedIconVisible = chip.isCheckable && model.icon == 0
+		chip.isCloseIconVisible = if (onChipCloseClickListener != null || model.isDropdown) {
+			chip.setCloseIconResource(
+				if (model.isDropdown) R.drawable.ic_expand_more else materialR.drawable.ic_m3_chip_close,
+			)
+			true
+		} else {
+			false
+		}
 		chip.tag = model.data
 	}
 
@@ -106,12 +117,11 @@ class ChipsView @JvmOverloads constructor(
 		val chip = Chip(context)
 		val drawable = ChipDrawable.createFromAttributes(context, null, 0, chipStyle)
 		chip.setChipDrawable(drawable)
-		chip.isCheckedIconVisible = true
 		chip.isChipIconVisible = false
-		chip.isCloseIconVisible = onChipCloseClickListener != null
 		chip.setOnCloseIconClickListener(chipOnCloseListener)
 		chip.setEnsureMinTouchTargetSize(false)
 		chip.setOnClickListener(chipOnClickListener)
+		chip.isElegantTextHeight = false
 		addView(chip)
 		return chip
 	}
@@ -127,11 +137,12 @@ class ChipsView @JvmOverloads constructor(
 	}
 
 	data class ChipModel(
-		@ColorRes val tint: Int,
 		val title: CharSequence,
-		@DrawableRes val icon: Int,
-		val isCheckable: Boolean,
-		val isChecked: Boolean,
+		@DrawableRes val icon: Int = 0,
+		val isCheckable: Boolean = false,
+		@ColorRes val tint: Int = 0,
+		val isChecked: Boolean = false,
+		val isDropdown: Boolean = false,
 		val data: Any? = null,
 	)
 

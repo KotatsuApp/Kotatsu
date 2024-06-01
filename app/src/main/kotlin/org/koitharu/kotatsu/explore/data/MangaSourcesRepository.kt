@@ -6,21 +6,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.dao.MangaSourcesDao
 import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
+import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.util.Collections
 import java.util.EnumSet
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @Reusable
@@ -29,6 +30,7 @@ class MangaSourcesRepository @Inject constructor(
 	private val settings: AppSettings,
 ) {
 
+	private val isNewSourcesAssimilated = AtomicBoolean(false)
 	private val dao: MangaSourcesDao
 		get() = db.getSourcesDao()
 
@@ -43,25 +45,58 @@ class MangaSourcesRepository @Inject constructor(
 		get() = Collections.unmodifiableSet(remoteSources)
 
 	suspend fun getEnabledSources(): List<MangaSource> {
+		assimilateNewSources()
 		val order = settings.sourcesSortOrder
 		return dao.findAllEnabled(order).toSources(settings.isNsfwContentDisabled, order)
 	}
 
 	suspend fun getDisabledSources(): Set<MangaSource> {
+		assimilateNewSources()
 		val result = EnumSet.copyOf(remoteSources)
 		val enabled = dao.findAllEnabledNames()
 		for (name in enabled) {
-			val source = MangaSource(name)
+			val source = name.toMangaSourceOrNull() ?: continue
 			result.remove(source)
-		}
-		if (settings.isNsfwContentDisabled) {
-			result.removeAll { it.isNsfw() }
 		}
 		return result
 	}
 
+	suspend fun getAvailableSources(
+		isDisabledOnly: Boolean,
+		isNewOnly: Boolean,
+		excludeBroken: Boolean,
+		types: Set<ContentType>,
+		query: String?,
+		sortOrder: SourcesSortOrder?,
+	): List<MangaSource> {
+		assimilateNewSources()
+		val entities = dao.findAll().toMutableList()
+		if (isDisabledOnly) {
+			entities.removeAll { it.isEnabled }
+		}
+		if (isNewOnly) {
+			entities.retainAll { it.addedIn == BuildConfig.VERSION_CODE }
+		}
+		val sources = entities.toSources(
+			skipNsfwSources = settings.isNsfwContentDisabled,
+			sortOrder = sortOrder,
+		)
+		if (excludeBroken) {
+			sources.removeAll { it.isBroken }
+		}
+		if (types.isNotEmpty()) {
+			sources.retainAll { it.contentType in types }
+		}
+		if (!query.isNullOrEmpty()) {
+			sources.retainAll {
+				it.title.contains(query, ignoreCase = true) || it.name.contains(query, ignoreCase = true)
+			}
+		}
+		return sources
+	}
+
 	fun observeIsEnabled(source: MangaSource): Flow<Boolean> {
-		return dao.observeIsEnabled(source.name)
+		return dao.observeIsEnabled(source.name).onStart { assimilateNewSources() }
 	}
 
 	fun observeEnabledSourcesCount(): Flow<Int> {
@@ -69,8 +104,10 @@ class MangaSourcesRepository @Inject constructor(
 			observeIsNsfwDisabled(),
 			dao.observeEnabled(SourcesSortOrder.MANUAL),
 		) { skipNsfw, sources ->
-			sources.count { !skipNsfw || !MangaSource(it.source).isNsfw() }
-		}.distinctUntilChanged()
+			sources.count {
+				it.source.toMangaSourceOrNull()?.let { s -> !skipNsfw || !s.isNsfw() } == true
+			}
+		}.distinctUntilChanged().onStart { assimilateNewSources() }
 	}
 
 	fun observeAvailableSourcesCount(): Flow<Int> {
@@ -82,7 +119,7 @@ class MangaSourcesRepository @Inject constructor(
 			allMangaSources.count { x ->
 				x.name !in enabled && (!skipNsfw || !x.isNsfw())
 			}
-		}.distinctUntilChanged()
+		}.distinctUntilChanged().onStart { assimilateNewSources() }
 	}
 
 	fun observeEnabledSources(): Flow<List<MangaSource>> = combine(
@@ -92,18 +129,18 @@ class MangaSourcesRepository @Inject constructor(
 		dao.observeEnabled(order).map {
 			it.toSources(skipNsfw, order)
 		}
-	}.flatMapLatest { it }
+	}.flatMapLatest { it }.onStart { assimilateNewSources() }
 
 	fun observeAll(): Flow<List<Pair<MangaSource, Boolean>>> = dao.observeAll().map { entities ->
 		val result = ArrayList<Pair<MangaSource, Boolean>>(entities.size)
 		for (entity in entities) {
-			val source = MangaSource(entity.source)
+			val source = entity.source.toMangaSourceOrNull() ?: continue
 			if (source in remoteSources) {
 				result.add(source to entity.isEnabled)
 			}
 		}
 		result
-	}
+	}.onStart { assimilateNewSources() }
 
 	suspend fun setSourcesEnabled(sources: Collection<MangaSource>, isEnabled: Boolean): ReversibleHandle {
 		setSourcesEnabledImpl(sources, isEnabled)
@@ -114,6 +151,7 @@ class MangaSourcesRepository @Inject constructor(
 
 	suspend fun setSourcesEnabledExclusive(sources: Set<MangaSource>) {
 		db.withTransaction {
+			assimilateNewSources()
 			for (s in remoteSources) {
 				dao.setEnabled(s.name, s in sources)
 			}
@@ -135,32 +173,34 @@ class MangaSourcesRepository @Inject constructor(
 		}
 	}
 
-	fun observeNewSources(): Flow<Set<MangaSource>> = observeIsNewSourcesEnabled().flatMapLatest {
-		if (it) {
-			combine(
-				dao.observeAll(),
-				observeIsNsfwDisabled(),
-			) { entities, skipNsfw ->
-				val result = EnumSet.copyOf(remoteSources)
-				for (e in entities) {
-					result.remove(MangaSource(e.source))
-				}
-				if (skipNsfw) {
-					result.removeAll { x -> x.isNsfw() }
-				}
-				result
-			}.distinctUntilChanged()
+	fun observeHasNewSources(): Flow<Boolean> = observeIsNsfwDisabled().map { skipNsfw ->
+		val sources = dao.findAllFromVersion(BuildConfig.VERSION_CODE).toSources(skipNsfw, null)
+		sources.isNotEmpty()
+	}.onStart { assimilateNewSources() }
+
+	fun observeHasNewSourcesForBadge(): Flow<Boolean> = combine(
+		settings.observeAsFlow(AppSettings.KEY_SOURCES_VERSION) { sourcesVersion },
+		observeIsNsfwDisabled(),
+	) { version, skipNsfw ->
+		if (version < BuildConfig.VERSION_CODE) {
+			val sources = dao.findAllFromVersion(version).toSources(skipNsfw, null)
+			sources.isNotEmpty()
 		} else {
-			assimilateNewSources()
-			flowOf(emptySet())
+			false
 		}
+	}.onStart { assimilateNewSources() }
+
+	fun clearNewSourcesBadge() {
+		settings.sourcesVersion = BuildConfig.VERSION_CODE
 	}
 
-	@Deprecated("")
-	suspend fun assimilateNewSources(): Set<MangaSource> {
+	private suspend fun assimilateNewSources(): Boolean {
+		if (isNewSourcesAssimilated.getAndSet(true)) {
+			return false
+		}
 		val new = getNewSources()
 		if (new.isEmpty()) {
-			return emptySet()
+			return false
 		}
 		var maxSortKey = dao.getMaxSortKey()
 		val entities = new.map { x ->
@@ -172,14 +212,11 @@ class MangaSourcesRepository @Inject constructor(
 			)
 		}
 		dao.insertIfAbsent(entities)
-		if (settings.isNsfwContentDisabled) {
-			new.removeAll { x -> x.isNsfw() }
-		}
-		return new
+		return true
 	}
 
 	suspend fun isSetupRequired(): Boolean {
-		return dao.findAll().isEmpty()
+		return settings.sourcesVersion == 0 && dao.findAllEnabledNames().isEmpty()
 	}
 
 	private suspend fun setSourcesEnabledImpl(sources: Collection<MangaSource>, isEnabled: Boolean) {
@@ -198,7 +235,7 @@ class MangaSourcesRepository @Inject constructor(
 		val entities = dao.findAll()
 		val result = EnumSet.copyOf(remoteSources)
 		for (e in entities) {
-			result.remove(MangaSource(e.source))
+			result.remove(e.source.toMangaSourceOrNull() ?: continue)
 		}
 		return result
 	}
@@ -206,10 +243,10 @@ class MangaSourcesRepository @Inject constructor(
 	private fun List<MangaSourceEntity>.toSources(
 		skipNsfwSources: Boolean,
 		sortOrder: SourcesSortOrder?,
-	): List<MangaSource> {
+	): MutableList<MangaSource> {
 		val result = ArrayList<MangaSource>(size)
 		for (entity in this) {
-			val source = MangaSource(entity.source)
+			val source = entity.source.toMangaSourceOrNull() ?: continue
 			if (skipNsfwSources && source.isNsfw()) {
 				continue
 			}
@@ -227,11 +264,9 @@ class MangaSourcesRepository @Inject constructor(
 		isNsfwContentDisabled
 	}
 
-	private fun observeIsNewSourcesEnabled() = settings.observeAsFlow(AppSettings.KEY_SOURCES_NEW) {
-		isNewSourcesTipEnabled
-	}
-
 	private fun observeSortOrder() = settings.observeAsFlow(AppSettings.KEY_SOURCES_ORDER) {
 		sourcesSortOrder
 	}
+
+	private fun String.toMangaSourceOrNull(): MangaSource? = MangaSource.entries.find { it.name == this }
 }

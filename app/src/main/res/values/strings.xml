@@ -650,4 +650,6 @@
 	<string name="disable_nsfw_notifications_summary">Do not show notifications about NSFW manga updates</string>
 	<string name="tracker_debug_info">Checking for new chapters log</string>
 	<string name="tracker_debug_info_summary">Debug information about background checks for new chapters</string>
+	<!-- In plural, used for filter -->
+	<string name="_new">New</string>
 </resources>

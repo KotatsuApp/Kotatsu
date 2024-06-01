@@ -31,10 +31,4 @@
 		android:summary="@string/disable_nsfw_summary"
 		android:title="@string/disable_nsfw" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="true"
-		android:key="sources_new"
-		android:summary="@string/suggest_new_sources_summary"
-		android:title="@string/suggest_new_sources" />
-
 </androidx.preference.PreferenceScreen>

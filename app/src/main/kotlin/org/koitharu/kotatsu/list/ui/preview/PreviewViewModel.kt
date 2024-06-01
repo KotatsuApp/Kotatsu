@@ -85,10 +85,7 @@ class PreviewViewModel @Inject constructor(
 			ChipsView.ChipModel(
 				title = tag.title,
 				tint = extraProvider.getTagTint(tag),
-				icon = 0,
 				data = tag,
-				isCheckable = false,
-				isChecked = false,
 			)
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())

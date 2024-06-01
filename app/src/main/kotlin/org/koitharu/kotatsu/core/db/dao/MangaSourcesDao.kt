@@ -24,6 +24,9 @@ abstract class MangaSourcesDao {
 	@Query("SELECT source FROM sources WHERE enabled = 1")
 	abstract suspend fun findAllEnabledNames(): List<String>
 
+	@Query("SELECT * FROM sources WHERE added_in >= :version")
+	abstract suspend fun findAllFromVersion(version: Int): List<MangaSourceEntity>
+
 	@Query("SELECT * FROM sources ORDER BY sort_key")
 	abstract fun observeAll(): Flow<List<MangaSourceEntity>>
 

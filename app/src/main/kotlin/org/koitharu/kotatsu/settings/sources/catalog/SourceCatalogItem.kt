@@ -9,7 +9,6 @@ sealed interface SourceCatalogItem : ListModel {
 
 	data class Source(
 		val source: MangaSource,
-		val showSummary: Boolean,
 	) : SourceCatalogItem {
 
 		override fun areItemsTheSame(other: ListModel): Boolean {

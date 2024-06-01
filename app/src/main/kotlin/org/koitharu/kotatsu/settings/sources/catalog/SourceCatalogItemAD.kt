@@ -34,17 +34,15 @@ fun sourceCatalogItemSourceAD(
 ) {
 
 	binding.imageViewAdd.setOnClickListener { v ->
+		listener.onItemLongClick(item, v)
+	}
+	binding.root.setOnClickListener { v ->
 		listener.onItemClick(item, v)
 	}
 
 	bind {
 		binding.textViewTitle.text = item.source.getTitle(context)
-		if (item.showSummary) {
-			binding.textViewDescription.text = item.source.getSummary(context)
-			binding.textViewDescription.isVisible = true
-		} else {
-			binding.textViewDescription.isVisible = false
-		}
+		binding.textViewDescription.text = item.source.getSummary(context)
 		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			crossfade(context)
