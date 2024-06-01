@@ -227,9 +227,11 @@ class LocalMangaRepository @Inject constructor(
 		}.filterNotNullTo(ArrayList(files.size))
 	}
 
-	private suspend fun getAllFiles() = storageManager.getReadableDirs().asSequence().flatMap { dir ->
-		dir.children()
-	}
+	private suspend fun getAllFiles() = storageManager.getReadableDirs()
+		.asSequence()
+		.flatMap { dir ->
+			dir.children().filterNot { it.isHidden }
+		}
 
 	private fun Collection<LocalManga>.unwrap(): List<Manga> = map { it.manga }
 }
