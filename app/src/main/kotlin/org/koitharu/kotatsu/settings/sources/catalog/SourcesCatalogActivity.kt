@@ -6,30 +6,32 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
-import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import coil.ImageLoader
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.databinding.ActivitySourcesCatalogBinding
+import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
+import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.settings.newsources.NewSourcesDialogFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	OnListItemClickListener<SourceCatalogItem.Source>,
-	AppBarOwner, MenuItem.OnActionExpandListener {
+	AppBarOwner, MenuItem.OnActionExpandListener, ChipsView.OnChipClickListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -45,18 +47,24 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySourcesCatalogBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		val pagerAdapter = SourcesCatalogPagerAdapter(this, coil, this)
-		viewBinding.pager.adapter = pagerAdapter
-		val tabMediator = TabLayoutMediator(viewBinding.tabs, viewBinding.pager, pagerAdapter)
-		tabMediator.attach()
-		viewModel.content.observe(this, pagerAdapter)
+		val sourcesAdapter = SourcesCatalogAdapter(this, coil, this)
+		with(viewBinding.recyclerView) {
+			setHasFixedSize(true)
+			addItemDecoration(TypedListSpacingDecoration(context, false))
+			adapter = sourcesAdapter
+		}
+		viewBinding.chipsFilter.onChipClickListener = this
+		viewModel.content.observe(this, sourcesAdapter)
 		viewModel.hasNewSources.observe(this, ::onHasNewSourcesChanged)
 		viewModel.onActionDone.observeEvent(
 			this,
-			ReversibleActionObserver(viewBinding.pager),
+			ReversibleActionObserver(viewBinding.recyclerView),
 		)
-		viewModel.locale.observe(this) {
-			supportActionBar?.subtitle = it?.toLocale().getDisplayName(this)
+		viewModel.appliedFilter.observe(this) {
+			supportActionBar?.subtitle = it.locale?.toLocale().getDisplayName(this)
+		}
+		viewModel.filter.observe(this) {
+			viewBinding.chipsFilter.setChips(it)
 		}
 		addMenuProvider(SourcesCatalogMenuProvider(this, viewModel, this))
 	}
@@ -68,21 +76,23 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		)
 	}
 
+	override fun onChipClick(chip: Chip, data: Any?) {
+		when (data) {
+			is ContentType -> viewModel.setContentType(data, chip.isChecked)
+		}
+	}
+
 	override fun onItemClick(item: SourceCatalogItem.Source, view: View) {
 		viewModel.addSource(item.source)
 	}
 
 	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-		viewBinding.tabs.isVisible = false
-		viewBinding.pager.isUserInputEnabled = false
 		val sq = (item.actionView as? SearchView)?.query?.trim()?.toString().orEmpty()
 		viewModel.performSearch(sq)
 		return true
 	}
 
 	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-		viewBinding.tabs.isVisible = true
-		viewBinding.pager.isUserInputEnabled = true
 		viewModel.performSearch(null)
 		return true
 	}
@@ -92,7 +102,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			if (newSourcesSnackbar?.isShownOrQueued == true) {
 				return
 			}
-			val snackbar = Snackbar.make(viewBinding.pager, R.string.new_sources_text, Snackbar.LENGTH_INDEFINITE)
+			val snackbar = Snackbar.make(viewBinding.recyclerView, R.string.new_sources_text, Snackbar.LENGTH_INDEFINITE)
 			snackbar.setAction(R.string.explore) {
 				NewSourcesDialogFragment.show(supportFragmentManager)
 			}
