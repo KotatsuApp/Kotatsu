@@ -86,12 +86,8 @@ class DoHManager(
 
 		DoHProvider.ZERO_MS -> DnsOverHttps.Builder().client(bootstrapClient)
 			.url("https://2ca4h4crra.cloudflare-gateway.com/dns-query".toHttpUrl())
-			.resolvePrivateAddresses(true)
-			.bootstrapDnsHosts(
-				listOfNotNull(
-					tryGetByIp("2a06:98c1:54::384a"),
-				),
-			).build()
+			.resolvePublicAddresses(true)
+			.build()
 	}
 
 	private fun tryGetByIp(ip: String): InetAddress? = try {
