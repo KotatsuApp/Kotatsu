@@ -637,4 +637,9 @@
     <string name="disable_connectivity_check">Онемогућите проверу везе</string>
     <string name="disable_nsfw_notifications">Онемогућите НСФВ обавештења</string>
     <string name="disable_nsfw_notifications_summary">Не приказуј обавештења за ажурирања НСФВ манге</string>
+    <string name="ignore_ssl_errors_summary">Можеш да онемогућиш верификацију ССЛ сертификата у случају да се суочиш са проблемима везаним за ССЛ када приступаш мрежним ресурсима. Ово може утицати на твоју безбедност. Након промене овог подешавања потребно је поновно покретање апликације.</string>
+    <string name="disable_connectivity_check_summary">Прескочи проверу повезивања у случају да имаш проблема са њом (нпр. прелазак у режим ван мреже иако је мрежа повезана)</string>
+    <string name="tracker_debug_info">Провера дневника нових поглавља</string>
+    <string name="tracker_debug_info_summary">Информације о отклањању грешака о позадинским проверама за нова поглавља</string>
+    <string name="_new">Нови</string>
 </resources>
