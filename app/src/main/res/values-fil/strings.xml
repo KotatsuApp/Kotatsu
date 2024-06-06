@@ -637,4 +637,9 @@
     <string name="disable_connectivity_check">Di paganahin ang pagtingin sa koneksyon</string>
     <string name="disable_connectivity_check_summary">Laktawan ang pagsuri sa koneksyon kung sakaling mayroon kang isyu rito (hal. pagpunta sa offline mode kahit na nakakonekta sa network)</string>
     <string name="ignore_ssl_errors_summary">Maaaring di paganahin ang pag-verify ng mga SSL certificate kung sakaling makaharap ka ng mga isyu na nauugnay sa SSL kapag nag-a-access ng mga network resource. Ito ay makaapekto sa iyong seguridad. Kinakailangang mag-restart ang aplikasyon pagkatapos baguhin ang setting na ito.</string>
+    <string name="disable_nsfw_notifications_summary">Huwag magpakita ng mga abiso tungkol sa mga update ng NSFW manga</string>
+    <string name="tracker_debug_info">Sinusuri ang mga log ng mga bagong kabanata</string>
+    <string name="tracker_debug_info_summary">Debug na impormasyon tungkol sa mga pagsusuri sa background para sa mga bagong kabanata</string>
+    <string name="disable_nsfw_notifications">Di paganahin ang mga abisong NSFW</string>
+    <string name="_new">Mga bago</string>
 </resources>
