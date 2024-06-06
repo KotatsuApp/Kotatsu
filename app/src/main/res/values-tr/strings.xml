@@ -641,4 +641,7 @@
     <string name="disable_nsfw_notifications_summary">Uygunsuz manga güncellemeleri hakkında bildirim gösterilmesin</string>
     <string name="tracker_debug_info">Yeni bölümler günlüğü denetleniyor</string>
     <string name="tracker_debug_info_summary">Yeni bölümler için arka plan denetimleri hakkında hata ayıklama bilgileri</string>
+    <string name="_new">Yeni</string>
+    <string name="all_languages">Tüm diller</string>
+    <string name="screenshots_block_incognito">Gizli moddayken engelle</string>
 </resources>
