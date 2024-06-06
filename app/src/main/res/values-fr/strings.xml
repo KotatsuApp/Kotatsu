@@ -631,4 +631,15 @@
     <string name="less_frequently">Moins souvent</string>
     <string name="new_chapters_pattern">%1$s : %2$d</string>
     <string name="pin_navigation_ui_summary">Ne pas masquer la barre de navigation et la vue de recherche lors du défilement</string>
+    <string name="ignore_ssl_errors_summary">Vous pouvez désactiver la vérification des certificats SSL au cas où vous rencontreriez des problèmes liés à SSL lors de l\'accès aux ressources réseau. Cela peut affecter votre sécurité. Le redémarrage de l\'application est requis après avoir modifié ce paramètre.</string>
+    <string name="frequency_of_check">Fréquence de vérification</string>
+    <string name="disable">Désactiver</string>
+    <string name="sources_disabled">Sources désactivées</string>
+    <string name="disable_connectivity_check">Désactiver la vérification de la connectivité</string>
+    <string name="disable_connectivity_check_summary">Ignorez la vérification de la connectivité au cas où vous rencontreriez des problèmes (par exemple, passage en mode hors ligne alors que le réseau est connecté)</string>
+    <string name="disable_nsfw_notifications">Désactiver les notifications NSFW</string>
+    <string name="disable_nsfw_notifications_summary">Ne pas afficher les notifications concernant les mises à jour des mangas NSFW</string>
+    <string name="tracker_debug_info">Vérification du journal des nouveaux chapitres</string>
+    <string name="tracker_debug_info_summary">Informations de débogage sur la vérification en arrière-plan des nouveaux chapitres</string>
+    <string name="_new">Nouveaux</string>
 </resources>
