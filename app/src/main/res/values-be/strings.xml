@@ -641,4 +641,5 @@
     <string name="disable_nsfw_notifications">Адключыць апавяшчэння NSFW</string>
     <string name="disable">Адкл.</string>
     <string name="sources_disabled">Крыніцы адключаны</string>
+    <string name="_new">Новае</string>
 </resources>

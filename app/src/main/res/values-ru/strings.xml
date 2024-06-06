@@ -641,4 +641,5 @@
     <string name="disable_nsfw_notifications_summary">Не показывать уведомления об обновлениях манги NSFW</string>
     <string name="disable">Откл.</string>
     <string name="sources_disabled">Источники отключены</string>
+    <string name="_new">Новое</string>
 </resources>
