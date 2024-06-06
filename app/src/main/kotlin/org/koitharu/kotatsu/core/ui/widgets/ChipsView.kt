@@ -26,7 +26,9 @@ class ChipsView @JvmOverloads constructor(
 		onChipClickListener?.onChipClick(it as Chip, it.tag)
 	}
 	private val chipOnCloseListener = OnClickListener {
-		onChipCloseClickListener?.onChipCloseClick(it as Chip, it.tag)
+		val chip = it as Chip
+		val data = it.tag
+		onChipCloseClickListener?.onChipCloseClick(chip, data) ?: onChipClickListener?.onChipClick(chip, data)
 	}
 	private val chipStyle: Int
 	var onChipClickListener: OnChipClickListener? = null

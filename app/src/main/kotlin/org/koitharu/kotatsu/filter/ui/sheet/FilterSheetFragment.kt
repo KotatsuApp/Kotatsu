@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.showDistinct
@@ -29,7 +30,6 @@ import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.util.Locale
 import com.google.android.material.R as materialR
 
@@ -122,10 +122,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			b.spinnerLocale.context,
 			android.R.layout.simple_spinner_dropdown_item,
 			android.R.id.text1,
-			value.availableItems.map {
-				it?.getDisplayLanguage(it)?.toTitleCase(it)
-					?: b.spinnerLocale.context.getString(R.string.various_languages)
-			},
+			value.availableItems.map { it.getDisplayName(b.spinnerLocale.context) },
 		)
 		val selectedIndex = value.availableItems.indexOf(selected)
 		if (selectedIndex >= 0) {

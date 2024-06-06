@@ -7,16 +7,19 @@ import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
+import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
+import org.koitharu.kotatsu.list.ui.model.ListModel
 
 class SourcesCatalogAdapter(
 	listener: OnListItemClickListener<SourceCatalogItem.Source>,
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-) : BaseListAdapter<SourceCatalogItem>(), FastScroller.SectionIndexer {
+) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
 		addDelegate(ListItemType.CHAPTER_LIST, sourceCatalogItemSourceAD(coil, lifecycleOwner, listener))
 		addDelegate(ListItemType.HINT_EMPTY, sourceCatalogItemHintAD(coil, lifecycleOwner))
+		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
 	}
 
 	override fun getSectionText(context: Context, position: Int): CharSequence? {

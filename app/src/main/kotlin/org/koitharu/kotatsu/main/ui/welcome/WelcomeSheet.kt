@@ -18,13 +18,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.titleResId
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.SheetWelcomeBinding
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
 import org.koitharu.kotatsu.parsers.model.ContentType
-import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
 import java.util.Locale
 
@@ -58,7 +58,7 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 	override fun onChipClick(chip: Chip, data: Any?) {
 		when (data) {
 			is ContentType -> viewModel.setTypeChecked(data, chip.isChecked)
-			is Locale? -> viewModel.setLocaleChecked(data, chip.isChecked)
+			is Locale -> viewModel.setLocaleChecked(data, chip.isChecked)
 		}
 	}
 
@@ -86,12 +86,12 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 		}
 	}
 
-	private fun onLocalesChanged(value: FilterProperty<Locale?>) {
+	private fun onLocalesChanged(value: FilterProperty<Locale>) {
 		val chips = viewBinding?.chipsLocales ?: return
 		chips.setChips(
 			value.availableItems.map {
 				ChipsView.ChipModel(
-					title = it?.getDisplayLanguage(it)?.toTitleCase(it) ?: getString(R.string.various_languages),
+					title = it.getDisplayName(chips.context),
 					isCheckable = true,
 					isChecked = it in value.selectedItems,
 					data = it,

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.sources.catalog
 
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -15,6 +16,7 @@ import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.util.ext.crossfade
+import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
@@ -22,12 +24,13 @@ import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemCatalogPageBinding
 import org.koitharu.kotatsu.databinding.ItemEmptyHintBinding
 import org.koitharu.kotatsu.databinding.ItemSourceCatalogBinding
+import org.koitharu.kotatsu.list.ui.model.ListModel
 
 fun sourceCatalogItemSourceAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	listener: OnListItemClickListener<SourceCatalogItem.Source>
-) = adapterDelegateViewBinding<SourceCatalogItem.Source, SourceCatalogItem, ItemSourceCatalogBinding>(
+) = adapterDelegateViewBinding<SourceCatalogItem.Source, ListModel, ItemSourceCatalogBinding>(
 	{ layoutInflater, parent ->
 		ItemSourceCatalogBinding.inflate(layoutInflater, parent, false)
 	},
@@ -43,6 +46,11 @@ fun sourceCatalogItemSourceAD(
 	bind {
 		binding.textViewTitle.text = item.source.getTitle(context)
 		binding.textViewDescription.text = item.source.getSummary(context)
+		binding.textViewDescription.drawableStart = if (item.source.isBroken) {
+			ContextCompat.getDrawable(context, R.drawable.ic_off_small)
+		} else {
+			null
+		}
 		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			crossfade(context)
@@ -59,7 +67,7 @@ fun sourceCatalogItemSourceAD(
 fun sourceCatalogItemHintAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
-) = adapterDelegateViewBinding<SourceCatalogItem.Hint, SourceCatalogItem, ItemEmptyHintBinding>(
+) = adapterDelegateViewBinding<SourceCatalogItem.Hint, ListModel, ItemEmptyHintBinding>(
 	{ inflater, parent -> ItemEmptyHintBinding.inflate(inflater, parent, false) },
 ) {
 

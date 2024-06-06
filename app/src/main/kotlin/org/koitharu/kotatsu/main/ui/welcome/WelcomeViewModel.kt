@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
 import org.koitharu.kotatsu.core.util.ext.toList
+import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
 import org.koitharu.kotatsu.parsers.model.ContentType
@@ -27,14 +28,14 @@ class WelcomeViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	private val allSources = repository.allMangaSources
-	private val localesGroups by lazy { allSources.groupBy { it.locale?.let { x -> Locale(x) } } }
+	private val localesGroups by lazy { allSources.groupBy { it.locale.toLocale() } }
 
 	private var updateJob: Job
 
 	val locales = MutableStateFlow(
-		FilterProperty<Locale?>(
-			availableItems = listOf(null),
-			selectedItems = setOf(null),
+		FilterProperty<Locale>(
+			availableItems = listOf(Locale.ROOT),
+			selectedItems = setOf(Locale.ROOT),
 			isLoading = true,
 			error = null,
 		),
@@ -51,13 +52,14 @@ class WelcomeViewModel @Inject constructor(
 
 	init {
 		updateJob = launchJob(Dispatchers.Default) {
-			val languages = localesGroups.keys.associateBy { x -> x?.language }
-			val selectedLocales = HashSet<Locale?>(2)
-			selectedLocales += ConfigurationCompat.getLocales(context.resources.configuration).toList()
+			val languages = localesGroups.keys.associateBy { x -> x.language }
+			val selectedLocales = HashSet<Locale>(2)
+			ConfigurationCompat.getLocales(context.resources.configuration).toList()
 				.firstNotNullOfOrNull { lc -> languages[lc.language] }
-			selectedLocales += null
+				?.let { selectedLocales += it }
+			selectedLocales += Locale.ROOT
 			locales.value = locales.value.copy(
-				availableItems = localesGroups.keys.sortedWithSafe(nullsFirst(LocaleComparator())),
+				availableItems = localesGroups.keys.sortedWithSafe(LocaleComparator()),
 				selectedItems = selectedLocales,
 				isLoading = false,
 			)
@@ -66,7 +68,7 @@ class WelcomeViewModel @Inject constructor(
 		}
 	}
 
-	fun setLocaleChecked(locale: Locale?, isChecked: Boolean) {
+	fun setLocaleChecked(locale: Locale, isChecked: Boolean) {
 		val snapshot = locales.value
 		locales.value = snapshot.copy(
 			selectedItems = if (isChecked) {
@@ -99,7 +101,7 @@ class WelcomeViewModel @Inject constructor(
 	}
 
 	private suspend fun commit() {
-		val languages = locales.value.selectedItems.mapToSet { it?.language }
+		val languages = locales.value.selectedItems.mapToSet { it.language }
 		val types = types.value.selectedItems
 		val enabledSources = allSources.filterTo(EnumSet.noneOf(MangaSource::class.java)) { x ->
 			x.contentType in types && x.locale in languages

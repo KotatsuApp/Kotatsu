@@ -67,6 +67,7 @@ class MangaSourcesRepository @Inject constructor(
 		excludeBroken: Boolean,
 		types: Set<ContentType>,
 		query: String?,
+		locale: String?,
 		sortOrder: SourcesSortOrder?,
 	): List<MangaSource> {
 		assimilateNewSources()
@@ -81,6 +82,9 @@ class MangaSourcesRepository @Inject constructor(
 			skipNsfwSources = settings.isNsfwContentDisabled,
 			sortOrder = sortOrder,
 		)
+		if (locale != null) {
+			sources.retainAll { it.locale == locale }
+		}
 		if (excludeBroken) {
 			sources.removeAll { it.isBroken }
 		}
@@ -175,7 +179,7 @@ class MangaSourcesRepository @Inject constructor(
 
 	fun observeHasNewSources(): Flow<Boolean> = observeIsNsfwDisabled().map { skipNsfw ->
 		val sources = dao.findAllFromVersion(BuildConfig.VERSION_CODE).toSources(skipNsfw, null)
-		sources.isNotEmpty()
+		sources.isNotEmpty() && sources.size != remoteSources.size
 	}.onStart { assimilateNewSources() }
 
 	fun observeHasNewSourcesForBadge(): Flow<Boolean> = combine(

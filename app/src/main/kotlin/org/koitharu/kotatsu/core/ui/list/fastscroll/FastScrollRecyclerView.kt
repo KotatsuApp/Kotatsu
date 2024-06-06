@@ -52,6 +52,16 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 		fastScroller.visibility = if (isFastScrollerEnabled) visibility else GONE
 	}
 
+	override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
+		super.setPadding(left, top, right, bottom)
+		fastScroller.setPadding(left, top, right, bottom)
+	}
+
+	override fun setPaddingRelative(start: Int, top: Int, end: Int, bottom: Int) {
+		super.setPaddingRelative(start, top, end, bottom)
+		fastScroller.setPaddingRelative(start, top, end, bottom)
+	}
+
 	override fun onAttachedToWindow() {
 		super.onAttachedToWindow()
 		fastScroller.attachRecyclerView(this)

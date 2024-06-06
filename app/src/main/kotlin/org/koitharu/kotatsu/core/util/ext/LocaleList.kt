@@ -22,11 +22,10 @@ fun LocaleListCompat.getOrThrow(index: Int) = get(index) ?: throw NoSuchElementE
 
 fun String.toLocale() = Locale(this)
 
-fun Locale?.getDisplayName(context: Context): String {
-	if (this == null) {
-		return context.getString(R.string.various_languages)
-	}
-	return getDisplayLanguage(this).toTitleCase(this)
+fun Locale?.getDisplayName(context: Context): String = when (this) {
+	null -> context.getString(R.string.all_languages)
+	Locale.ROOT -> context.getString(R.string.various_languages)
+	else -> getDisplayLanguage(this).toTitleCase(this)
 }
 
 private class LocaleListCompatIterator(private val list: LocaleListCompat) : ListIterator<Locale> {

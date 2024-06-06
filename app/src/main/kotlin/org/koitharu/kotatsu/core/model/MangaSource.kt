@@ -15,8 +15,6 @@ import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.toTitleCase
-import java.util.Locale
 import com.google.android.material.R as materialR
 
 fun MangaSource(name: String): MangaSource {
@@ -39,7 +37,7 @@ val ContentType.titleResId
 
 fun MangaSource.getSummary(context: Context): String {
 	val type = context.getString(contentType.titleResId)
-	val locale = locale?.toLocale().getDisplayName(context)
+	val locale = locale.toLocale().getDisplayName(context)
 	return context.getString(R.string.source_summary_pattern, type, locale)
 }
 

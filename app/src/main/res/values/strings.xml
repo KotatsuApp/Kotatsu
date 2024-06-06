@@ -652,4 +652,5 @@
 	<string name="tracker_debug_info_summary">Debug information about background checks for new chapters</string>
 	<!-- In plural, used for filter -->
 	<string name="_new">New</string>
+	<string name="all_languages">All languages</string>
 </resources>

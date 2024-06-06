@@ -73,6 +73,9 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			left = insets.left,
 			right = insets.right,
 		)
+		viewBinding.recyclerView.updatePadding(
+			bottom = insets.bottom,
+		)
 	}
 
 	override fun onChipClick(chip: Chip, data: Any?) {

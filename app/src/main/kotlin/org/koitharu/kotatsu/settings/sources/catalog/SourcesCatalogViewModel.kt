@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.settings.sources.catalog
 
 import androidx.lifecycle.viewModelScope
+import androidx.room.invalidationTrackerFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,6 +11,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.db.TABLE_SOURCES
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
@@ -17,9 +20,10 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.util.EnumSet
 import java.util.Locale
 import javax.inject.Inject
@@ -27,11 +31,14 @@ import javax.inject.Inject
 @HiltViewModel
 class SourcesCatalogViewModel @Inject constructor(
 	private val repository: MangaSourcesRepository,
-	private val settings: AppSettings,
+	db: MangaDatabase,
+	settings: AppSettings,
 ) : BaseViewModel() {
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
-	val locales = repository.allMangaSources.mapToSet { it.locale }
+	val locales: Set<String?> = repository.allMangaSources.mapTo(HashSet<String?>()) { it.locale }.also {
+		it.add(null)
+	}
 
 	private val searchQuery = MutableStateFlow<String?>(null)
 	val appliedFilter = MutableStateFlow(
@@ -47,12 +54,13 @@ class SourcesCatalogViewModel @Inject constructor(
 	val hasNewSources = repository.observeHasNewSources()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
 
-	val content: StateFlow<List<SourceCatalogItem>> = combine(
+	val content: StateFlow<List<ListModel>> = combine(
 		searchQuery,
 		appliedFilter,
-	) { q, f ->
+		db.invalidationTrackerFlow(TABLE_SOURCES),
+	) { q, f, _ ->
 		buildSourcesList(f, q)
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	init {
 		repository.clearNewSourcesBadge()
@@ -96,8 +104,9 @@ class SourcesCatalogViewModel @Inject constructor(
 			excludeBroken = false,
 			types = filter.types,
 			query = query,
+			locale = filter.locale,
 			sortOrder = SourcesSortOrder.ALPHABETIC,
-		).filter { it.locale == filter.locale }
+		)
 		return if (sources.isEmpty()) {
 			listOf(
 				if (query == null) {
@@ -115,7 +124,9 @@ class SourcesCatalogViewModel @Inject constructor(
 				},
 			)
 		} else {
-			sources.map {
+			sources.sortedBy {
+				it.isBroken
+			}.map {
 				SourceCatalogItem.Source(source = it)
 			}
 		}
