@@ -19,6 +19,8 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
@@ -26,10 +28,12 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.util.ext.isWebViewUnavailable
+import org.koitharu.kotatsu.main.ui.protect.ScreenshotPolicyHelper
 
 @Suppress("LeakingThis")
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
+	ScreenshotPolicyHelper.ContentContainer,
 	WindowInsetsDelegate.WindowInsetsListener {
 
 	private var isAmoledTheme = false
@@ -150,6 +154,8 @@ abstract class BaseActivity<B : ViewBinding> :
 			finishAfterTransition()
 		}
 	}
+
+	override fun isNsfwContent(): Flow<Boolean> = flowOf(false)
 
 	private fun putDataToExtras(intent: Intent?) {
 		intent?.putExtra(EXTRA_DATA, intent.data)

@@ -28,6 +28,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.BuildConfig
@@ -142,7 +143,6 @@ class ReaderActivity :
 		viewModel.content.observe(this) {
 			onLoadingStateChanged(viewModel.isLoading.value)
 		}
-		viewModel.isScreenshotsBlockEnabled.observe(this, this::setWindowSecure)
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(this))
@@ -178,6 +178,8 @@ class ReaderActivity :
 		super.onPause()
 		viewModel.onPause()
 	}
+
+	override fun isNsfwContent(): Flow<Boolean> = viewModel.isMangaNsfw
 
 	override fun onIdle() {
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
@@ -295,14 +297,6 @@ class ReaderActivity :
 			Snackbar.make(viewBinding.container, R.string.error_occurred, Snackbar.LENGTH_SHORT)
 		}.setAnchorView(viewBinding.appbarBottom)
 			.show()
-	}
-
-	private fun setWindowSecure(isSecure: Boolean) {
-		if (isSecure) {
-			window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-		} else {
-			window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-		}
 	}
 
 	private fun setKeepScreenOn(isKeep: Boolean) {

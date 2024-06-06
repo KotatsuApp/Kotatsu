@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.postDelayed
 import androidx.fragment.app.viewModels
+import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
@@ -22,6 +23,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy
 import org.koitharu.kotatsu.core.prefs.SearchSuggestionType
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
@@ -29,6 +31,7 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.parsers.util.mapToSet
@@ -63,6 +66,10 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 			appShortcutManager.isDynamicShortcutsAvailable()
 		findPreference<TwoStatePreference>(AppSettings.KEY_PROTECT_APP)
 			?.isChecked = !settings.appPassword.isNullOrEmpty()
+		findPreference<ListPreference>(AppSettings.KEY_SCREENSHOTS_POLICY)?.run {
+			entryValues = ScreenshotsPolicy.entries.names()
+			setDefaultValueCompat(ScreenshotsPolicy.ALLOW.name)
+		}
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

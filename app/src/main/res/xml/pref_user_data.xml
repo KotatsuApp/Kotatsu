@@ -9,6 +9,13 @@
 		android:summary="@string/protect_application_summary"
 		android:title="@string/protect_application" />
 
+	<ListPreference
+		android:defaultValue="allow"
+		android:entries="@array/screenshots_policy"
+		android:key="screenshots_policy"
+		android:title="@string/screenshots_policy"
+		app:useSimpleSummaryProvider="true" />
+
 	<SwitchPreferenceCompat
 		android:key="history_exclude_nsfw"
 		android:summary="@string/exclude_nsfw_from_history_summary"

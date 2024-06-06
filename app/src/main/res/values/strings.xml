@@ -653,4 +653,5 @@
 	<!-- In plural, used for filter -->
 	<string name="_new">New</string>
 	<string name="all_languages">All languages</string>
+	<string name="screenshots_block_incognito">Block when incognito mode</string>
 </resources>

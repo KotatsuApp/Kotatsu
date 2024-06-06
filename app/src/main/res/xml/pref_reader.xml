@@ -126,14 +126,6 @@
 		app:allowDividerAbove="true" />
 
 	<ListPreference
-		android:defaultValue="allow"
-		android:entries="@array/screenshots_policy"
-		android:entryValues="@array/values_screenshots_policy"
-		android:key="screenshots_policy"
-		android:title="@string/screenshots_policy"
-		app:useSimpleSummaryProvider="true" />
-
-	<ListPreference
 		android:defaultValue="2"
 		android:entries="@array/network_policy"
 		android:entryValues="@array/values_network_policy"

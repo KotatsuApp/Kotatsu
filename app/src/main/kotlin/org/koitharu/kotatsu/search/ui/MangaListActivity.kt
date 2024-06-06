@@ -15,11 +15,14 @@ import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
 import org.koitharu.kotatsu.core.parser.MangaIntent
@@ -58,6 +61,8 @@ class MangaListActivity :
 			"Cannot find FilterOwner fragment in ${supportFragmentManager.fragments}"
 		}.filter
 
+	private var source: MangaSource? = null
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMangaListBinding.inflate(layoutInflater))
@@ -66,15 +71,18 @@ class MangaListActivity :
 		if (viewBinding.containerFilterHeader != null) {
 			viewBinding.appbar.addOnOffsetChangedListener(this)
 		}
-		val source = intent.getStringExtra(EXTRA_SOURCE)?.let(::MangaSource) ?: tags?.firstOrNull()?.source
-		if (source == null) {
+		source = intent.getStringExtra(EXTRA_SOURCE)?.let(::MangaSource) ?: tags?.firstOrNull()?.source
+		val src = source
+		if (src == null) {
 			finishAfterTransition()
-			return
+		} else {
+			viewBinding.buttonOrder?.setOnClickListener(this)
+			title = if (src == MangaSource.LOCAL) getString(R.string.local_storage) else src.title
+			initList(src, tags)
 		}
-		viewBinding.buttonOrder?.setOnClickListener(this)
-		title = if (source == MangaSource.LOCAL) getString(R.string.local_storage) else source.title
-		initList(source, tags)
 	}
+
+	override fun isNsfwContent(): Flow<Boolean> = flowOf(source?.isNsfw() == true)
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		viewBinding.root.updatePadding(

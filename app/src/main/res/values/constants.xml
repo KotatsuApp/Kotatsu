@@ -30,11 +30,6 @@
 	<string-array name="values_track_sources_default" translatable="false">
 		<item>favourites</item>
 	</string-array>
-	<string-array name="values_screenshots_policy" translatable="false">
-		<item>allow</item>
-		<item>block_nsfw</item>
-		<item>block_all</item>
-	</string-array>
 	<string-array name="values_network_policy" translatable="false">
 		<item>1</item>
 		<item>2</item>

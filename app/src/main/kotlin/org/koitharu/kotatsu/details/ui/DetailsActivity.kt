@@ -34,10 +34,12 @@ import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.model.FavouriteCategory
@@ -196,6 +198,8 @@ class DetailsActivity :
 		)
 		addMenuProvider(menuProvider)
 	}
+
+	override fun isNsfwContent(): Flow<Boolean> = viewModel.manga.map { it?.isNsfw == true }
 
 	override fun onClick(v: View) {
 		when (v.id) {

@@ -298,10 +298,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_PAGES_NUMBERS, false)
 
 	val screenshotsPolicy: ScreenshotsPolicy
-		get() = runCatching {
-			val key = prefs.getString(KEY_SCREENSHOTS_POLICY, null)?.uppercase(Locale.ROOT)
-			if (key == null) ScreenshotsPolicy.ALLOW else ScreenshotsPolicy.valueOf(key)
-		}.getOrDefault(ScreenshotsPolicy.ALLOW)
+		get() = prefs.getEnumValue(KEY_SCREENSHOTS_POLICY, ScreenshotsPolicy.ALLOW)
 
 	var userSpecifiedMangaDirectories: Set<File>
 		get() {

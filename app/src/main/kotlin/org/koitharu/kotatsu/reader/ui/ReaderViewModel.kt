@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -38,7 +39,6 @@ import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -166,13 +166,9 @@ class ReaderViewModel @Inject constructor(
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null),
 	)
 
-	val isScreenshotsBlockEnabled = combine(
-		mangaFlow,
-		settings.observeAsFlow(AppSettings.KEY_SCREENSHOTS_POLICY) { screenshotsPolicy },
-	) { manga, policy ->
-		policy == ScreenshotsPolicy.BLOCK_ALL ||
-			(policy == ScreenshotsPolicy.BLOCK_NSFW && manga != null && manga.isNsfw)
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
+	val isMangaNsfw = mangaFlow.map {
+		it?.isNsfw == true
+	}
 
 	val isBookmarkAdded = currentState.flatMapLatest { state ->
 		val manga = mangaData.value?.toManga()

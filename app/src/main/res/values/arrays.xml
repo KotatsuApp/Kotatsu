@@ -23,6 +23,7 @@
 	<string-array name="screenshots_policy" translatable="false">
 		<item>@string/screenshots_allow</item>
 		<item>@string/screenshots_block_nsfw</item>
+		<item>@string/screenshots_block_incognito</item>
 		<item>@string/screenshots_block_all</item>
 	</string-array>
 	<string-array name="network_policy" translatable="false">
