@@ -641,4 +641,7 @@
     <string name="disable_nsfw_notifications_summary">NSFW मंगा अपडेट के बारे में सूचनाएं न दिखाएं</string>
     <string name="tracker_debug_info">नए अध्याय लॉग की जांच की जा रही है</string>
     <string name="tracker_debug_info_summary">नए अध्यायों के लिए पृष्ठभूमि जांच के बारे में जानकारी डीबग करें</string>
+    <string name="_new">नया</string>
+    <string name="all_languages">सभी भाषाएं</string>
+    <string name="screenshots_block_incognito">गुप्त मोड में ब्लॉक करें</string>
 </resources>
