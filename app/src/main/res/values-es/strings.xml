@@ -642,4 +642,6 @@
     <string name="tracker_debug_info">Comprobando el registro de nuevos capítulos</string>
     <string name="tracker_debug_info_summary">Información de depuración sobre verificaciones de antecedentes para nuevos capítulos</string>
     <string name="_new">Nuevos</string>
+    <string name="all_languages">Todos los idiomas</string>
+    <string name="screenshots_block_incognito">Bloquear en modo incógnito</string>
 </resources>
