@@ -173,7 +173,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 			.setIcon(R.drawable.ic_delete)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(R.string.clear) { _, _ ->
-				viewModel.clear()
+				viewModel.clearStats()
 			}.show()
 	}
 
