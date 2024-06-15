@@ -642,4 +642,6 @@
     <string name="tracker_debug_info_summary">Debug na impormasyon tungkol sa mga pagsusuri sa background para sa mga bagong kabanata</string>
     <string name="disable_nsfw_notifications">Di paganahin ang mga abisong NSFW</string>
     <string name="_new">Mga bago</string>
+    <string name="screenshots_block_incognito">Harangan pag naka-incognito mode</string>
+    <string name="all_languages">Lahat ng wika</string>
 </resources>
