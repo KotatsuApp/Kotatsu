@@ -642,6 +642,6 @@
     <string name="tracker_debug_info">漫画更新日志</string>
     <string name="tracker_debug_info_summary">记录漫画后台更新时的调试日志</string>
     <string name="_new">最新</string>
-    <string name="screenshots_block_incognito">无痕模式时禁止</string>
+    <string name="screenshots_block_incognito">开启无痕模式时禁止</string>
     <string name="all_languages">所有语言</string>
 </resources>
