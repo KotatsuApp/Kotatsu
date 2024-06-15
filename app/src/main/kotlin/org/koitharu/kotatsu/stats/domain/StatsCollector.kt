@@ -9,6 +9,8 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.stats.data.StatsEntity
 import javax.inject.Inject
@@ -62,7 +64,11 @@ class StatsCollector @Inject constructor(
 
 	private fun commit(entity: StatsEntity) {
 		viewModelScope.launch(Dispatchers.Default) {
-			db.getStatsDao().upsert(entity)
+			runCatchingCancellable {
+				db.getStatsDao().upsert(entity)
+			}.onFailure { e ->
+				e.printStackTraceDebug()
+			}
 		}
 	}
 

@@ -221,7 +221,14 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 		syncMatrixValues()
 	}
 
-	private fun scaleChild(newScale: Float, focusX: Float, focusY: Float) {
+	private fun scaleChild(
+		newScale: Float,
+		focusX: Float,
+		focusY: Float,
+	): Boolean {
+		if (scale.isNaN() || scale == 0f) {
+			return false
+		}
 		val factor = newScale / scale
 		if (newScale > 1) {
 			translateBounds.set(
@@ -240,13 +247,12 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 		}
 		transformMatrix.postScale(factor, factor, focusX, focusY)
 		invalidateTarget()
+		return true
 	}
-
 
 	override fun onScale(detector: ScaleGestureDetector): Boolean {
 		val newScale = (scale * detector.scaleFactor).coerceIn(MIN_SCALE, MAX_SCALE)
-		scaleChild(newScale, detector.focusX, detector.focusY)
-		return true
+		return scaleChild(newScale, detector.focusX, detector.focusY)
 	}
 
 	override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {

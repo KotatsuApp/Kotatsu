@@ -93,15 +93,19 @@ class DetailsViewModel @Inject constructor(
 
 	val details = MutableStateFlow(intent.manga?.let { MangaDetails(it, null, null, false) })
 	val manga = details.map { x -> x?.toManga() }
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	val history = historyRepository.observeOne(mangaId)
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	val favouriteCategories = interactor.observeFavourite(mangaId)
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptySet())
 
 	val isStatsAvailable = statsRepository.observeHasStats(mangaId)
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
 	val remoteManga = MutableStateFlow<Manga?>(null)
