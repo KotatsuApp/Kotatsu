@@ -42,7 +42,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 
 	val manga = savedStateHandle.require<ParcelableManga>(MangaIntent.KEY_MANGA).manga
 
-	val availableScrobblers = scrobblers.filter { it.isAvailable }
+	val availableScrobblers = scrobblers.filter { it.isEnabled }
 
 	val selectedScrobblerIndex = MutableStateFlow(0)
 

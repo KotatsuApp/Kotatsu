@@ -51,7 +51,7 @@ abstract class Scrobbler(
 		}
 	}
 
-	val isAvailable: Boolean
+	val isEnabled: Boolean
 		get() = repository.isAuthorized
 
 	suspend fun authorize(authCode: String): ScrobblerUser {

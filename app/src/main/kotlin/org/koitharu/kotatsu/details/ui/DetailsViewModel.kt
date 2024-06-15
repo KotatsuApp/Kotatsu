@@ -162,7 +162,7 @@ class DetailsViewModel @Inject constructor(
 
 	val onMangaRemoved = MutableEventFlow<Manga>()
 	val isScrobblingAvailable: Boolean
-		get() = scrobblers.any { it.isAvailable }
+		get() = scrobblers.any { it.isEnabled }
 
 	val scrobblingInfo: StateFlow<List<ScrobblingInfo>> = interactor.observeScrobblingInfo(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
@@ -393,7 +393,7 @@ class DetailsViewModel @Inject constructor(
 	private fun getScrobbler(index: Int): Scrobbler? {
 		val info = scrobblingInfo.value.getOrNull(index)
 		val scrobbler = if (info != null) {
-			scrobblers.find { it.scrobblerService == info.scrobbler && it.isAvailable }
+			scrobblers.find { it.scrobblerService == info.scrobbler && it.isEnabled }
 		} else {
 			null
 		}
