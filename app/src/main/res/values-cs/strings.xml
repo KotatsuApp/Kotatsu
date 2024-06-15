@@ -632,4 +632,16 @@
     <string name="pin_navigation_ui">Upevnit uživatelské rozhraní pro navigaci</string>
     <string name="fix">Upevnit</string>
     <string name="pin_navigation_ui_summary">Neskrývat navigační panel a zobrazení vyhledávání při posouvání</string>
+    <string name="disable_connectivity_check">Vypnout kontrolu připojení</string>
+    <string name="ignore_ssl_errors_summary">Můžeš vypnout SSL certifikáty pokud se potýkáš s problémy při připojení k internetovým zdrojům. Toto může ovlivnit tvoji bezpečnost. Restart aplikace je požadován po změnění tohoto nastavení.</string>
+    <string name="sources_disabled">Vypnout zdroje</string>
+    <string name="disable">Vypnout</string>
+    <string name="_new">Nový l</string>
+    <string name="disable_connectivity_check_summary">Přeskoč kontrolu připojení pokud s tím máš problémy (např. zapnout offline režim i když jsi připojený k internetu)</string>
+    <string name="disable_nsfw_notifications_summary">Nezobrazovat notifikace o nových NSFW manga kapitolách</string>
+    <string name="all_languages">Všechny jazyky</string>
+    <string name="screenshots_block_incognito">Zablokovat když je privátní režim</string>
+    <string name="disable_nsfw_notifications">Vypnout NSFW oznámení</string>
+    <string name="tracker_debug_info">Log kontroly nových kapitol</string>
+    <string name="tracker_debug_info_summary">Debug informace o kontrole nových kapitol na pozadí</string>
 </resources>
