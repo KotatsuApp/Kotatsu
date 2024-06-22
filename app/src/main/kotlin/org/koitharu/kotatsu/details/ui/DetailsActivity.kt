@@ -463,7 +463,7 @@ class DetailsActivity :
 				imageViewState.isVisible = false
 			}
 
-			if (manga.source == MangaSource.LOCAL || manga.source == MangaSource.DUMMY) {
+			if (manga.source == MangaSource.LOCAL || manga.source == MangaSource.UNKNOWN) {
 				infoLayout.chipSource.isVisible = false
 			} else {
 				infoLayout.chipSource.text = manga.source.title

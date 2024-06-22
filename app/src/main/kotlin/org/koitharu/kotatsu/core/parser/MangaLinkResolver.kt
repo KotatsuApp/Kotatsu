@@ -36,7 +36,7 @@ class MangaLinkResolver @Inject constructor(
 		require(uri.pathSegments.singleOrNull() == "manga") { "Invalid url" }
 		val sourceName = requireNotNull(uri.getQueryParameter("source")) { "Source is not specified" }
 		val source = MangaSource(sourceName)
-		require(source != MangaSource.DUMMY) { "Manga source $sourceName is not supported" }
+		require(source != MangaSource.UNKNOWN) { "Manga source $sourceName is not supported" }
 		val repo = repositoryFactory.create(source)
 		return repo.findExact(
 			url = uri.getQueryParameter("url"),

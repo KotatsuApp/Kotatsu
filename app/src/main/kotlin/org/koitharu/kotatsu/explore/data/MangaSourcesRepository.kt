@@ -36,6 +36,7 @@ class MangaSourcesRepository @Inject constructor(
 
 	private val remoteSources = EnumSet.allOf(MangaSource::class.java).apply {
 		remove(MangaSource.LOCAL)
+		remove(MangaSource.UNKNOWN)
 		if (!BuildConfig.DEBUG) {
 			remove(MangaSource.DUMMY)
 		}

@@ -25,7 +25,7 @@ data class ParcelableChapter(
 				scanlator = parcel.readString(),
 				uploadDate = parcel.readLong(),
 				branch = parcel.readString(),
-				source = parcel.readSerializableCompat() ?: MangaSource.DUMMY,
+				source = parcel.readSerializableCompat() ?: MangaSource.UNKNOWN,
 			)
 		)
 

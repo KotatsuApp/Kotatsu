@@ -21,7 +21,7 @@ fun MangaSource(name: String): MangaSource {
 	MangaSource.entries.forEach {
 		if (it.name == name) return it
 	}
-	return MangaSource.DUMMY
+	return MangaSource.UNKNOWN
 }
 
 fun MangaSource.isNsfw() = contentType == ContentType.HENTAI
