@@ -19,7 +19,7 @@
     <plurals name="minutes_ago">
         <item quantity="zero">%1$d دقيقة مضت</item>
         <item quantity="one">%1$d دقيقة مضت</item>
-        <item quantity="two">%1$d دقائق مضت</item>
+        <item quantity="two">%1$d دقيقتين مضت</item>
         <item quantity="few">%1$d دقائق مضت</item>
         <item quantity="many">%1$d دقائق مضت</item>
         <item quantity="other">%1$d دقائق مضت</item>
@@ -57,7 +57,7 @@
         <item quantity="other">%1$d ساعات مضت</item>
     </plurals>
     <plurals name="minutes">
-        <item quantity="zero"></item>
+        <item quantity="zero"/>
         <item quantity="one">دقيقة</item>
         <item quantity="two">دقيقتان</item>
         <item quantity="few">ثلاث دقائق</item>

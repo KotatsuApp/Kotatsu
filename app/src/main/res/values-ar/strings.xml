@@ -307,7 +307,7 @@
     <string name="options">خيارات</string>
     <string name="incognito_mode">الوضع الخفي</string>
     <string name="automatic_scroll">تمرير تلقائي</string>
-    <string name="reader_info_pattern">Ch. %1$d/%2$d Pg. %3$d/%4$d</string>
+    <string name="reader_info_pattern">فصل %1$d/%2$d صفحة %3$d/%4$d</string>
     <string name="reader_info_bar">عرض شريط المعلومات في قارئ الصفحات</string>
     <string name="folder_with_images">مجلد مع صور</string>
     <string name="exclude_nsfw_from_history_summary">المانغا +18 لن يتم إضافتها إلى السجل، ولن يتم حفظ تقدمك فيها.\"</string>
@@ -334,4 +334,22 @@
     <string name="import_completed_hint">يمكنك حذف الملف الأصلي من التخزين لتوفير مساحة</string>
     <string name="import_will_start_soon">الإستيراد سيبدأ عن قريب</string>
     <string name="history_shortcuts">إظهار اختصارات المانجا الحديثة</string>
+    <string name="network_unavailable_hint">قم بتشغيل الواي فاي أو شبكة الهاتف المحمول لقراءة المانجا عبر الإنترنت</string>
+    <string name="contrast">تباين</string>
+    <string name="text_unsaved_changes_prompt">هل تريد حفظ أو تجاهل التغييرات الغير المحفوظة؟</string>
+    <string name="error_no_space_left">لا توجد مساحة متبقية على الجهاز</string>
+    <string name="reader_slider">إظهار شريط التمرير لتبديل الصفحات</string>
+    <string name="server_error">خطأ من جانب الخادم (%1$s). الرجاء المحاولة مرة أخرى لاحقًا</string>
+    <string name="chapters_grid_view">عرض الشبكة</string>
+    <string name="manga_error_description_pattern">تفاصيل الخطأ:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. حاول &lt;a href=\"%2$s\"&gt;فتح المانجا في متصفح ويب&lt;/a&gt; للتأكد من أنها متوفرة على مصدرها&lt;br&gt;2. تأكد من أنك تستخدم &lt;a href=kotatsu://about&gt;أحدث إصدار من Kotatsu&lt;/a&gt;&lt;br&gt;3. إذا كانت متوفرة، أرسل تقرير خطأ إلى المطورين.</string>
+    <string name="history_shortcuts_summary">إتاحة المانجا الحديثة بالضغط المطول على أيقونة التطبيق</string>
+    <string name="reader_control_ltr_summary">النقر على الحافة اليمنى أو الضغط على المفتاح الأيمن يؤدي دائمًا إلى الانتقال للصفحة التالية.</string>
+    <string name="reader_control_ltr">تحكم مريح في القراءة</string>
+    <string name="brightness">سطوع</string>
+    <string name="clear_new_chapters_counters">قم أيضًا بمسح المعلومات حول الفصول الجديدة</string>
+    <string name="color_correction">تصحيح الألوان</string>
+    <string name="reset">إعادة تعيين</string>
+    <string name="discard">تجاهل</string>
+    <string name="webtoon_zoom">تكبير الويبتون</string>
+    <string name="network_unavailable">الشبكة غير متاحة</string>
 </resources>
