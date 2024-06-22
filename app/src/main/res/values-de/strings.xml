@@ -609,4 +609,7 @@
     <string name="enable_source">Quelle aktivieren</string>
     <string name="unsupported_source">Diese Manga-Quelle wird nicht unterstützt</string>
     <string name="show_pages_thumbs">Seitenvorschau anzeigen</string>
+    <string name="unsupported_backup_message">Bitte wähle eine richtige Kotatsu-Backup-Datei aus</string>
+    <string name="show_pages_thumbs_summary">Registerkarte \"Seiten\" auf dem Detailbildschirm aktivieren</string>
+    <string name="error_no_data_received">Keine Daten vom Server erhalten</string>
 </resources>
