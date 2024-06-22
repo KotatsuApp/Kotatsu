@@ -55,7 +55,7 @@
     <string name="search_manga">Pretraži mangu</string>
     <string name="manga_downloading_">Preuzimanje…</string>
     <string name="network_error">Pogreška mreže</string>
-    <string name="list_mode">Režim liste</string>
+    <string name="list_mode">Način popisa</string>
     <string name="theme">Tema</string>
     <string name="light">Svijetla</string>
     <string name="dark">Tamna</string>
