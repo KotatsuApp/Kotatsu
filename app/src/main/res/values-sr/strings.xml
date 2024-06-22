@@ -243,7 +243,7 @@
     <string name="invalid_value_message">Погрешна вредност</string>
     <string name="downloads_cancelled">Преузимања су отказана</string>
     <string name="webtoon_zoom">Webtoon увећање</string>
-    <string name="various_languages">Сви језици</string>
+    <string name="various_languages">Разни језици</string>
     <string name="removal_completed">Уклањање је завршено</string>
     <string name="theme_name_miku">Мику</string>
     <string name="edit">Уреди</string>
@@ -642,4 +642,6 @@
     <string name="tracker_debug_info">Провера дневника нових поглавља</string>
     <string name="tracker_debug_info_summary">Информације о отклањању грешака о позадинским проверама за нова поглавља</string>
     <string name="_new">Нови</string>
+    <string name="all_languages">Сви језици</string>
+    <string name="screenshots_block_incognito">Блокирај у режиму без архивирања</string>
 </resources>
