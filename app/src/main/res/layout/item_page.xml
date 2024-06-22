@@ -12,6 +12,7 @@
 		android:layout_height="match_parent"
 		android:defaultFocusHighlightEnabled="false"
 		android:focusable="true"
+		app:doubleTapZoomStyle="center"
 		app:restoreStrategy="deferred" />
 
 	<TextView

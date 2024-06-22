@@ -97,8 +97,8 @@ class WebtoonImageView @JvmOverloads constructor(
 		setMeasuredDimension(desiredWidth, desiredHeight)
 	}
 
-	override fun onDownsamplingChanged() {
-		super.onDownsamplingChanged()
+	override fun onDownSamplingChanged() {
+		super.onDownSamplingChanged()
 		post {
 			adjustScale()
 		}

@@ -71,7 +71,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 	}
 
 	protected fun SubsamplingScaleImageView.applyDownsampling(isForeground: Boolean) {
-		downsampling = when {
+		downSampling = when {
 			isForeground || !settings.isReaderOptimizationEnabled -> 1
 			context.isLowRamDevice() -> 8
 			else -> 4
