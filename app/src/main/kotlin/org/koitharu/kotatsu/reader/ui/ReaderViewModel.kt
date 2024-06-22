@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -33,6 +32,7 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
+import org.koitharu.kotatsu.core.model.findChapter
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
@@ -70,7 +70,9 @@ private const val BOUNDS_PAGE_OFFSET = 2
 private const val PREFETCH_LIMIT = 10
 
 @HiltViewModel
-class ReaderViewModel @Inject constructor(
+class ReaderViewModel
+@Inject
+constructor(
 	savedStateHandle: SavedStateHandle,
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
@@ -85,7 +87,6 @@ class ReaderViewModel @Inject constructor(
 	private val detectReaderModeUseCase: DetectReaderModeUseCase,
 	private val statsCollector: StatsCollector,
 ) : BaseViewModel() {
-
 	private val intent = MangaIntent(savedStateHandle)
 	private val preselectedBranch = savedStateHandle.get<String>(ReaderActivity.EXTRA_BRANCH)
 
@@ -105,9 +106,11 @@ class ReaderViewModel @Inject constructor(
 
 	val incognitoMode = if (savedStateHandle.get<Boolean>(ReaderActivity.EXTRA_INCOGNITO) == true) {
 		MutableStateFlow(true)
-	} else mangaFlow.map {
-		it != null && historyRepository.shouldSkip(it)
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
+	} else {
+		mangaFlow.map {
+			it != null && historyRepository.shouldSkip(it)
+		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
+	}
 
 	val isPagesSheetEnabled = observeIsPagesSheetEnabled()
 
@@ -166,9 +169,7 @@ class ReaderViewModel @Inject constructor(
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null),
 	)
 
-	val isMangaNsfw = mangaFlow.map {
-		it?.isNsfw == true
-	}
+	val isMangaNsfw = mangaFlow.map { it?.isNsfw == true }
 
 	val isBookmarkAdded = currentState.flatMapLatest { state ->
 		val manga = mangaData.value?.toManga()
@@ -381,9 +382,7 @@ class ReaderViewModel @Inject constructor(
 			val manga = details.toManga()
 			// obtain state
 			if (currentState.value == null) {
-				currentState.value = historyRepository.getOne(manga)?.let {
-					ReaderState(it)
-				} ?: ReaderState(manga, preselectedBranch ?: manga.getPreferredBranch(null))
+				currentState.value = getStateFromIntent(manga)
 			}
 			val mode = detectReaderModeUseCase.invoke(manga, currentState.value)
 			val branch = chaptersLoader.peekChapter(currentState.value?.chapterId ?: 0L)?.branch
@@ -480,4 +479,18 @@ class ReaderViewModel @Inject constructor(
 		.filter { it == AppSettings.KEY_PAGES_TAB || it == AppSettings.KEY_DETAILS_TAB || it == AppSettings.KEY_DETAILS_LAST_TAB }
 		.map { settings.defaultDetailsTab == TAB_PAGES }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.defaultDetailsTab == TAB_PAGES)
+
+	private suspend fun getStateFromIntent(manga: Manga): ReaderState {
+		val history = historyRepository.getOne(manga)
+		val result = if (history != null) {
+			if (preselectedBranch != null && preselectedBranch != manga.findChapter(history.chapterId)?.branch) {
+				null
+			} else {
+				ReaderState(history)
+			}
+		} else {
+			null
+		}
+		return result ?: ReaderState(manga, preselectedBranch ?: manga.getPreferredBranch(null))
+	}
 }

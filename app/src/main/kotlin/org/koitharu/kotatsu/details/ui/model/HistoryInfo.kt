@@ -16,6 +16,13 @@ data class HistoryInfo(
 
 	val canContinue
 		get() = currentChapter >= 0
+
+	val percent: Float
+		get() = if (history != null && (canContinue || isChapterMissing)) {
+			history.percent
+		} else {
+			0f
+		}
 }
 
 fun HistoryInfo(
