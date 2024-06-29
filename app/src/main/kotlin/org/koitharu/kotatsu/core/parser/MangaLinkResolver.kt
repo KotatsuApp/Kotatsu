@@ -4,10 +4,11 @@ import android.net.Uri
 import coil.request.CachePolicy
 import dagger.Reusable
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.UnknownMangaSource
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
-import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -36,7 +37,7 @@ class MangaLinkResolver @Inject constructor(
 		require(uri.pathSegments.singleOrNull() == "manga") { "Invalid url" }
 		val sourceName = requireNotNull(uri.getQueryParameter("source")) { "Source is not specified" }
 		val source = MangaSource(sourceName)
-		require(source != MangaSource.UNKNOWN) { "Manga source $sourceName is not supported" }
+		require(source != UnknownMangaSource) { "Manga source $sourceName is not supported" }
 		val repo = repositoryFactory.create(source)
 		return repo.findExact(
 			url = uri.getQueryParameter("url"),
@@ -108,7 +109,7 @@ class MangaLinkResolver @Inject constructor(
 		url = url,
 		publicUrl = "",
 		rating = 0.0f,
-		isNsfw = source.contentType == ContentType.HENTAI,
+		isNsfw = source.isNsfw(),
 		coverUrl = "",
 		tags = emptySet(),
 		state = null,

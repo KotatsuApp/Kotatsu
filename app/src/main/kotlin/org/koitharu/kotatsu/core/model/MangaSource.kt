@@ -7,24 +7,41 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.SuperscriptSpan
 import androidx.annotation.StringRes
-import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.parsers.model.ContentType
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import com.google.android.material.R as materialR
 
-fun MangaSource(name: String): MangaSource {
-	MangaSource.entries.forEach {
-		if (it.name == name) return it
-	}
-	return MangaSource.UNKNOWN
+data object LocalMangaSource : MangaSource {
+	override val name = "LOCAL"
 }
 
-fun MangaSource.isNsfw() = contentType == ContentType.HENTAI
+data object UnknownMangaSource : MangaSource {
+	override val name = "UNKNOWN"
+}
+
+fun MangaSource(name: String?): MangaSource {
+	when (name) {
+		null,
+		UnknownMangaSource.name -> UnknownMangaSource
+
+		LocalMangaSource.name -> LocalMangaSource
+	}
+	MangaParserSource.entries.forEach {
+		if (it.name == name) return it
+	}
+	return UnknownMangaSource
+}
+
+fun MangaSource.isNsfw() = when (this) {
+	is MangaParserSource -> contentType == ContentType.HENTAI
+	else -> false
+}
 
 @get:StringRes
 val ContentType.titleResId
@@ -35,23 +52,23 @@ val ContentType.titleResId
 		ContentType.OTHER -> R.string.content_type_other
 	}
 
-fun MangaSource.getSummary(context: Context): String {
-	val type = context.getString(contentType.titleResId)
-	val locale = locale.toLocale().getDisplayName(context)
-	return context.getString(R.string.source_summary_pattern, type, locale)
-}
-
-fun MangaSource.getTitle(context: Context): CharSequence = if (isNsfw()) {
-	buildSpannedString {
-		append(title)
-		append(' ')
-		appendNsfwLabel(context)
+fun MangaSource.getSummary(context: Context): String? = when (this) {
+	is MangaParserSource -> {
+		val type = context.getString(contentType.titleResId)
+		val locale = locale.toLocale().getDisplayName(context)
+		context.getString(R.string.source_summary_pattern, type, locale)
 	}
-} else {
-	title
+
+	else -> null
 }
 
-private fun SpannableStringBuilder.appendNsfwLabel(context: Context) = inSpans(
+fun MangaSource.getTitle(context: Context): String = when (this) {
+	is MangaParserSource -> title
+	LocalMangaSource -> context.getString(R.string.local_storage)
+	else -> context.getString(R.string.unknown)
+}
+
+fun SpannableStringBuilder.appendNsfwLabel(context: Context) = inSpans(
 	ForegroundColorSpan(context.getThemeColor(materialR.attr.colorError, Color.RED)),
 	RelativeSizeSpan(0.74f),
 	SuperscriptSpan(),

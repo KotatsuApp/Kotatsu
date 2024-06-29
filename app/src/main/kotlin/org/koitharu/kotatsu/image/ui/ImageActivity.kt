@@ -25,13 +25,13 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.PopupMenuMediator
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getDisplayIcon
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
-import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -120,7 +120,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 			.memoryCachePolicy(CachePolicy.DISABLED)
 			.lifecycle(this)
 			.listener(this)
-			.source(intent.getSerializableExtraCompat<MangaSource>(EXTRA_SOURCE))
+			.source(MangaSource(intent.getStringExtra(EXTRA_SOURCE)))
 			.target(SsivTarget(viewBinding.ssiv))
 			.enqueueWith(coil)
 	}
@@ -180,7 +180,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 		fun newIntent(context: Context, url: String, source: MangaSource?): Intent {
 			return Intent(context, ImageActivity::class.java)
 				.setData(Uri.parse(url))
-				.putExtra(EXTRA_SOURCE, source)
+				.putExtra(EXTRA_SOURCE, source?.name)
 		}
 	}
 }

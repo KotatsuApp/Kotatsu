@@ -11,8 +11,9 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.showKeyboard
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
@@ -28,15 +29,12 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySearchBinding.inflate(layoutInflater))
-		source = intent.getSerializableExtraCompat(EXTRA_SOURCE) ?: run {
-			finishAfterTransition()
-			return
-		}
+		source = MangaSource(intent.getStringExtra(EXTRA_SOURCE))
 		val query = intent.getStringExtra(EXTRA_QUERY)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 		with(viewBinding.searchView) {
-			queryHint = getString(R.string.search_on_s, source.title)
+			queryHint = getString(R.string.search_on_s, source.getTitle(context))
 			setOnQueryTextListener(this@SearchActivity)
 
 			if (query.isNullOrBlank()) {
@@ -52,7 +50,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 		viewBinding.toolbar.updatePadding(
 			left = insets.left,
 			right = insets.right,
-			top = insets.top
+			top = insets.top,
 		)
 		viewBinding.container.updatePadding(
 			bottom = insets.bottom,
@@ -93,7 +91,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 
 		fun newIntent(context: Context, source: MangaSource, query: String?) =
 			Intent(context, SearchActivity::class.java)
-				.putExtra(EXTRA_SOURCE, source)
+				.putExtra(EXTRA_SOURCE, source.name)
 				.putExtra(EXTRA_QUERY, query)
 	}
 }

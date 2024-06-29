@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -40,7 +41,6 @@ import org.koitharu.kotatsu.details.ui.withVolumeHeaders
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import org.koitharu.kotatsu.reader.ui.ReaderState
@@ -218,7 +218,7 @@ class ChaptersFragment :
 		var canSave = true
 		var canDelete = true
 		items.forEach { (_, x) ->
-			val isLocal = x.isDownloaded || x.chapter.source == MangaSource.LOCAL
+			val isLocal = x.isDownloaded || x.chapter.source == LocalMangaSource
 			if (isLocal) canSave = false else canDelete = false
 		}
 		menu.findItem(R.id.action_save).isVisible = canSave

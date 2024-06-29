@@ -10,6 +10,7 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.image.ChipIconTarget
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
@@ -63,7 +64,7 @@ fun alternativeAD(
 		}
 		binding.progressView.setPercent(item.progress, ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads)
 		binding.chipSource.also { chip ->
-			chip.text = item.manga.source.title
+			chip.text = item.manga.source.getTitle(chip.context)
 			ImageRequest.Builder(context)
 				.data(item.manga.source.faviconUri())
 				.lifecycle(lifecycleOwner)

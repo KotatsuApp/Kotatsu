@@ -15,6 +15,7 @@ import okhttp3.internal.publicsuffix.PublicSuffixDatabase
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import java.util.EnumMap
 import javax.inject.Inject
@@ -26,8 +27,8 @@ class MirrorSwitchInterceptor @Inject constructor(
 	private val settings: AppSettings,
 ) : Interceptor {
 
-	private val locks = EnumMap<MangaSource, Any>(MangaSource::class.java)
-	private val blacklist = EnumMap<MangaSource, MutableSet<String>>(MangaSource::class.java)
+	private val locks = EnumMap<MangaParserSource, Any>(MangaParserSource::class.java)
+	private val blacklist = EnumMap<MangaParserSource, MutableSet<String>>(MangaParserSource::class.java)
 
 	val isEnabled: Boolean
 		get() = settings.isMirrorSwitchingAvailable
@@ -145,15 +146,15 @@ class MirrorSwitchInterceptor @Inject constructor(
 		return source().readByteArray().toResponseBody(contentType())
 	}
 
-	private fun obtainLock(source: MangaSource): Any = locks.getOrPut(source) {
+	private fun obtainLock(source: MangaParserSource): Any = locks.getOrPut(source) {
 		Any()
 	}
 
-	private fun isBlacklisted(source: MangaSource, domain: String): Boolean {
+	private fun isBlacklisted(source: MangaParserSource, domain: String): Boolean {
 		return blacklist[source]?.contains(domain) == true
 	}
 
-	private fun addToBlacklist(source: MangaSource, domain: String) {
+	private fun addToBlacklist(source: MangaParserSource, domain: String) {
 		blacklist.getOrPut(source) {
 			ArraySet(2)
 		}.add(domain)

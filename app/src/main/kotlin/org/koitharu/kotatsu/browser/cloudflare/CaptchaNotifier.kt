@@ -14,8 +14,9 @@ import coil.request.ErrorResult
 import coil.request.ImageRequest
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.model.getTitle
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
-import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
 class CaptchaNotifier(
@@ -46,7 +47,7 @@ class CaptchaNotifier(
 			.setGroup(GROUP_CAPTCHA)
 			.setAutoCancel(true)
 			.setVisibility(
-				if (exception.source?.contentType == ContentType.HENTAI) {
+				if (exception.source?.isNsfw() == true) {
 					NotificationCompat.VISIBILITY_SECRET
 				} else {
 					NotificationCompat.VISIBILITY_PUBLIC
@@ -55,7 +56,7 @@ class CaptchaNotifier(
 			.setContentText(
 				context.getString(
 					R.string.captcha_required_summary,
-					exception.source?.title ?: context.getString(R.string.app_name),
+					exception.source?.getTitle(context) ?: context.getString(R.string.app_name),
 				),
 			)
 			.setContentIntent(PendingIntentCompat.getActivity(context, 0, intent, 0, false))

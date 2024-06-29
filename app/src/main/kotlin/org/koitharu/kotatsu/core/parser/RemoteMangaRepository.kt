@@ -28,7 +28,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -46,7 +46,7 @@ class RemoteMangaRepository(
 	private val relatedMangaMutex = MultiMutex<Long>()
 	private val pagesMutex = MultiMutex<Long>()
 
-	override val source: MangaSource
+	override val source: MangaParserSource
 		get() = parser.source
 
 	override val sortOrders: Set<SortOrder>

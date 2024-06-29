@@ -43,6 +43,7 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -451,7 +452,7 @@ class FilterCoordinator @Inject constructor(
 	}
 
 	private fun mergeTags(primary: Set<MangaTag>, secondary: Set<MangaTag>): Set<MangaTag> {
-		val result = TreeSet(TagTitleComparator(repository.source.locale))
+		val result = TreeSet(TagTitleComparator((repository.source as? MangaParserSource)?.locale))
 		result.addAll(secondary)
 		result.addAll(primary)
 		return result

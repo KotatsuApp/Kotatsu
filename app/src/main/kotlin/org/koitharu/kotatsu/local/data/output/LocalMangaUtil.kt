@@ -4,17 +4,15 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaSource
 
 class LocalMangaUtil(
 	private val manga: Manga,
 ) {
 
 	init {
-		require(manga.source == MangaSource.LOCAL) {
-			"Expected LOCAL source but ${manga.source} found"
-		}
+		require(manga.isLocal) { "Expected LOCAL source but ${manga.source} found" }
 	}
 
 	suspend fun deleteChapters(ids: Set<Long>) {

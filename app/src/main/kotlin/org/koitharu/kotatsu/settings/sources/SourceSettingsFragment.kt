@@ -9,6 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
@@ -26,7 +27,9 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 
 	override fun onResume() {
 		super.onResume()
-		setTitle(viewModel.source.title)
+		context?.let { ctx ->
+			setTitle(viewModel.source.getTitle(ctx))
+		}
 		viewModel.onResume()
 	}
 
@@ -36,7 +39,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		addPreferencesFromRepository(viewModel.repository)
 
 		findPreference<SwitchPreferenceCompat>(KEY_ENABLE)?.run {
-			setOnPreferenceChangeListener(this@SourceSettingsFragment)
+			onPreferenceChangeListener = this@SourceSettingsFragment
 		}
 		findPreference<Preference>(KEY_AUTH)?.run {
 			val authProvider = viewModel.repository.getAuthProvider()
@@ -101,7 +104,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		const val EXTRA_SOURCE = "source"
 
 		fun newInstance(source: MangaSource) = SourceSettingsFragment().withArgs(1) {
-			putSerializable(EXTRA_SOURCE, source)
+			putString(EXTRA_SOURCE, source.name)
 		}
 	}
 }

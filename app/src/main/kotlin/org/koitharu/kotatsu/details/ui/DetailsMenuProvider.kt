@@ -16,11 +16,12 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.alternatives.ui.AlternativesActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
+import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.download.ui.dialog.DownloadOption
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
 import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
@@ -38,10 +39,10 @@ class DetailsMenuProvider(
 
 	override fun onPrepareMenu(menu: Menu) {
 		val manga = viewModel.manga.value
-		menu.findItem(R.id.action_save).isVisible = manga?.source != null && manga.source != MangaSource.LOCAL
-		menu.findItem(R.id.action_delete).isVisible = manga?.source == MangaSource.LOCAL
-		menu.findItem(R.id.action_browser).isVisible = manga?.source != MangaSource.LOCAL
-		menu.findItem(R.id.action_alternatives).isVisible = manga?.source != MangaSource.LOCAL
+		menu.findItem(R.id.action_save).isVisible = manga?.source != null && manga.source != LocalMangaSource
+		menu.findItem(R.id.action_delete).isVisible = manga?.source == LocalMangaSource
+		menu.findItem(R.id.action_browser).isVisible = manga?.source != LocalMangaSource
+		menu.findItem(R.id.action_alternatives).isVisible = manga?.source != LocalMangaSource
 		menu.findItem(R.id.action_shortcut).isVisible = ShortcutManagerCompat.isRequestPinShortcutSupported(activity)
 		menu.findItem(R.id.action_scrobbling).isVisible = viewModel.isScrobblingAvailable
 		menu.findItem(R.id.action_online).isVisible = viewModel.remoteManga.value != null
@@ -53,7 +54,7 @@ class DetailsMenuProvider(
 			R.id.action_share -> {
 				viewModel.manga.value?.let {
 					val shareHelper = ShareHelper(activity)
-					if (it.source == MangaSource.LOCAL) {
+					if (it.isLocal) {
 						shareHelper.shareCbz(listOf(it.url.toUri().toFile()))
 					} else {
 						shareHelper.shareMangaLink(it)

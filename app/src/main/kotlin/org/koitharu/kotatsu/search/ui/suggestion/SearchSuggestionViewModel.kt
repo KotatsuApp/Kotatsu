@@ -22,7 +22,6 @@ import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.sizeOrZero
-import org.koitharu.kotatsu.core.util.ext.toEnumSet
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -103,7 +102,7 @@ class SearchSuggestionViewModel @Inject constructor(
 		suggestionJob?.cancel()
 		suggestionJob = combine(
 			query.debounce(DEBOUNCE_TIMEOUT),
-			sourcesRepository.observeEnabledSources().map { it.toEnumSet() },
+			sourcesRepository.observeEnabledSources().map { it.toSet() },
 			settings.observeAsFlow(AppSettings.KEY_SEARCH_SUGGESTION_TYPES) { searchSuggestionTypes },
 			::Triple,
 		).mapLatest { (searchQuery, enabledSources, types) ->

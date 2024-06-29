@@ -21,7 +21,9 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
@@ -77,7 +79,7 @@ class MangaListActivity :
 			finishAfterTransition()
 		} else {
 			viewBinding.buttonOrder?.setOnClickListener(this)
-			title = if (src == MangaSource.LOCAL) getString(R.string.local_storage) else src.title
+			title = src.getTitle(this)
 			initList(src, tags)
 		}
 	}
@@ -125,7 +127,7 @@ class MangaListActivity :
 		} else {
 			fm.commit {
 				setReorderingAllowed(true)
-				val fragment = if (source == MangaSource.LOCAL) {
+				val fragment = if (source == LocalMangaSource) {
 					LocalListFragment()
 				} else {
 					RemoteListFragment.newInstance(source)

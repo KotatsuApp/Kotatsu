@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -29,7 +30,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -49,7 +49,7 @@ class LocalMangaRepository @Inject constructor(
 	private val settings: AppSettings,
 ) : MangaRepository {
 
-	override val source = MangaSource.LOCAL
+	override val source = LocalMangaSource
 	private val locks = MultiMutex<Long>()
 	private val localMappingCache = LocalMangaMappingCache()
 
@@ -100,7 +100,7 @@ class LocalMangaRepository @Inject constructor(
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga = when {
-		manga.source != MangaSource.LOCAL -> requireNotNull(findSavedManga(manga)?.manga) {
+		!manga.isLocal -> requireNotNull(findSavedManga(manga)?.manga) {
 			"Manga is not local or saved"
 		}
 

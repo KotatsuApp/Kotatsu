@@ -7,6 +7,7 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.core.util.ext.readText
@@ -17,7 +18,6 @@ import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toCamelCase
 import java.io.File
 import java.util.Enumeration
@@ -47,12 +47,12 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 						entryName = index.getCoverEntry() ?: findFirstImageEntry(zip.entries())?.name.orEmpty(),
 					)
 					return@use info.copy2(
-						source = MangaSource.LOCAL,
+						source = LocalMangaSource,
 						url = fileUri,
 						coverUrl = cover,
 						largeCoverUrl = cover,
 						chapters = info.chapters?.map { c ->
-							c.copy(url = fileUri, source = MangaSource.LOCAL)
+							c.copy(url = fileUri, source = LocalMangaSource)
 						},
 					)
 				}
@@ -70,7 +70,7 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 					title = title,
 					url = fileUri,
 					publicUrl = fileUri,
-					source = MangaSource.LOCAL,
+					source = LocalMangaSource,
 					coverUrl = zipUri(root, findFirstImageEntry(zip.entries())?.name.orEmpty()),
 					chapters = chapters.sortedWith(AlphanumComparator())
 						.mapIndexed { i, s ->
@@ -79,7 +79,7 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 								name = s.ifEmpty { title },
 								number = 0f,
 								volume = 0,
-								source = MangaSource.LOCAL,
+								source = LocalMangaSource,
 								uploadDate = 0L,
 								url = uriBuilder.fragment(s).build().toString(),
 								scanlator = null,
@@ -135,7 +135,7 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 						id = entryUri.longHashCode(),
 						url = entryUri,
 						preview = null,
-						source = MangaSource.LOCAL,
+						source = LocalMangaSource,
 					)
 				}
 		}

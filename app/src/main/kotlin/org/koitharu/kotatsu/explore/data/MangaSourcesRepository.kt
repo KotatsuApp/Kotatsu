@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.parsers.model.ContentType
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.util.Collections
@@ -34,15 +35,13 @@ class MangaSourcesRepository @Inject constructor(
 	private val dao: MangaSourcesDao
 		get() = db.getSourcesDao()
 
-	private val remoteSources = EnumSet.allOf(MangaSource::class.java).apply {
-		remove(MangaSource.LOCAL)
-		remove(MangaSource.UNKNOWN)
+	private val remoteSources = EnumSet.allOf(MangaParserSource::class.java).apply {
 		if (!BuildConfig.DEBUG) {
-			remove(MangaSource.DUMMY)
+			remove(MangaParserSource.DUMMY)
 		}
 	}
 
-	val allMangaSources: Set<MangaSource>
+	val allMangaSources: Set<MangaParserSource>
 		get() = Collections.unmodifiableSet(remoteSources)
 
 	suspend fun getEnabledSources(): List<MangaSource> {
@@ -70,7 +69,7 @@ class MangaSourcesRepository @Inject constructor(
 		query: String?,
 		locale: String?,
 		sortOrder: SourcesSortOrder?,
-	): List<MangaSource> {
+	): List<MangaParserSource> {
 		assimilateNewSources()
 		val entities = dao.findAll().toMutableList()
 		if (isDisabledOnly) {
@@ -236,7 +235,7 @@ class MangaSourcesRepository @Inject constructor(
 		}
 	}
 
-	private suspend fun getNewSources(): MutableSet<MangaSource> {
+	private suspend fun getNewSources(): MutableSet<out MangaSource> {
 		val entities = dao.findAll()
 		val result = EnumSet.copyOf(remoteSources)
 		for (e in entities) {
@@ -248,8 +247,8 @@ class MangaSourcesRepository @Inject constructor(
 	private fun List<MangaSourceEntity>.toSources(
 		skipNsfwSources: Boolean,
 		sortOrder: SourcesSortOrder?,
-	): MutableList<MangaSource> {
-		val result = ArrayList<MangaSource>(size)
+	): MutableList<MangaParserSource> {
+		val result = ArrayList<MangaParserSource>(size)
 		for (entity in this) {
 			val source = entity.source.toMangaSourceOrNull() ?: continue
 			if (skipNsfwSources && source.isNsfw()) {
@@ -273,5 +272,5 @@ class MangaSourcesRepository @Inject constructor(
 		sourcesSortOrder
 	}
 
-	private fun String.toMangaSourceOrNull(): MangaSource? = MangaSource.entries.find { it.name == this }
+	private fun String.toMangaSourceOrNull(): MangaParserSource? = MangaParserSource.entries.find { it.name == this }
 }

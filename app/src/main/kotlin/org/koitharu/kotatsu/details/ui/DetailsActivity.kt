@@ -43,6 +43,9 @@ import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.model.UnknownMangaSource
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.iconResId
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.titleResId
@@ -94,7 +97,6 @@ import org.koitharu.kotatsu.list.ui.model.MangaItemModel
 import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.local.ui.info.LocalInfoDialog
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
@@ -463,10 +465,10 @@ class DetailsActivity :
 				imageViewState.isVisible = false
 			}
 
-			if (manga.source == MangaSource.LOCAL || manga.source == MangaSource.UNKNOWN) {
+			if (manga.source == LocalMangaSource || manga.source == UnknownMangaSource) {
 				infoLayout.chipSource.isVisible = false
 			} else {
-				infoLayout.chipSource.text = manga.source.title
+				infoLayout.chipSource.text = manga.source.getTitle(this@DetailsActivity)
 				infoLayout.chipSource.isVisible = true
 			}
 

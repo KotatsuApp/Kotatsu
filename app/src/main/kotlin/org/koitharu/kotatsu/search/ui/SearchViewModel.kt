@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -42,7 +43,7 @@ class SearchViewModel @Inject constructor(
 ) : MangaListViewModel(settings, downloadScheduler) {
 
 	private val query = savedStateHandle.require<String>(SearchFragment.ARG_QUERY)
-	private val repository = repositoryFactory.create(savedStateHandle.require(SearchFragment.ARG_SOURCE))
+	private val repository = repositoryFactory.create(MangaSource(savedStateHandle.get(SearchFragment.ARG_SOURCE)))
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
 	private val listError = MutableStateFlow<Throwable?>(null)

@@ -16,8 +16,8 @@ import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
@@ -110,7 +110,7 @@ class SettingsActivity :
 			ACTION_SOURCES -> SourcesSettingsFragment()
 			ACTION_MANAGE_DOWNLOADS -> DownloadsSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
-				intent.getSerializableExtraCompat(EXTRA_SOURCE) ?: MangaSource.LOCAL,
+				MangaSource(intent.getStringExtra(EXTRA_SOURCE)),
 			)
 
 			ACTION_MANAGE_SOURCES -> SourcesManageFragment()
@@ -177,6 +177,6 @@ class SettingsActivity :
 		fun newSourceSettingsIntent(context: Context, source: MangaSource) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_SOURCE)
-				.putExtra(EXTRA_SOURCE, source)
+				.putExtra(EXTRA_SOURCE, source.name)
 	}
 }

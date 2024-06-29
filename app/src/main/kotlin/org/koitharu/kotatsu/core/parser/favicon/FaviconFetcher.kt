@@ -46,7 +46,7 @@ class FaviconFetcher(
 ) : Fetcher {
 
 	private val diskCacheKey
-		get() = options.diskCacheKey ?: "${mangaSource.name}[${mangaSource.ordinal}]x${options.size.toCacheKey()}"
+		get() = options.diskCacheKey ?: "${mangaSource.name}x${options.size.toCacheKey()}"
 
 	private val fileSystem
 		get() = checkNotNull(diskCache.value).fileSystem

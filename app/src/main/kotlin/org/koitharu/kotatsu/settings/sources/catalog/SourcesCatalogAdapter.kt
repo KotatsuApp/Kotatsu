@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.settings.sources.catalog
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
@@ -23,6 +24,6 @@ class SourcesCatalogAdapter(
 	}
 
 	override fun getSectionText(context: Context, position: Int): CharSequence? {
-		return (items.getOrNull(position) as? SourceCatalogItem.Source)?.source?.title?.take(1)
+		return (items.getOrNull(position) as? SourceCatalogItem.Source)?.source?.getTitle(context)?.take(1)
 	}
 }

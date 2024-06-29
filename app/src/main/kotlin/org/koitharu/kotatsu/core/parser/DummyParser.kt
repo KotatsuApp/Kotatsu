@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.EnumSet
@@ -16,7 +16,7 @@ import java.util.EnumSet
 /**
  * This parser is just for parser development, it should not be used in releases
  */
-class DummyParser(context: MangaLoaderContext) : MangaParser(context, MangaSource.DUMMY) {
+class DummyParser(context: MangaLoaderContext) : MangaParser(context, MangaParserSource.DUMMY) {
 
 	override val configKeyDomain: ConfigKey.Domain
 		get() = ConfigKey.Domain("localhost")

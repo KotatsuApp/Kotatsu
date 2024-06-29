@@ -8,6 +8,7 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
@@ -45,7 +46,7 @@ fun searchResultsAD(
 	binding.buttonMore.setOnClickListener(eventListener)
 
 	bind {
-		binding.textViewTitle.text = item.source.title
+		binding.textViewTitle.text = item.source.getTitle(context)
 		binding.buttonMore.isVisible = item.hasMore
 		adapter.items = item.list
 		adapter.notifyDataSetChanged()

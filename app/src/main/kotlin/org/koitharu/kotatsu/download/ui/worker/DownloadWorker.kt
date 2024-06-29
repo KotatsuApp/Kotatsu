@@ -43,6 +43,7 @@ import okio.sink
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
 import org.koitharu.kotatsu.core.model.ids
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
@@ -177,7 +178,7 @@ class DownloadWorker @AssistedInject constructor(
 			checkNotNull(destination) { applicationContext.getString(R.string.cannot_find_available_storage) }
 			var output: LocalMangaOutput? = null
 			try {
-				if (manga.source == MangaSource.LOCAL) {
+				if (manga.isLocal) {
 					manga = localMangaRepository.getRemoteManga(manga)
 						?: error("Cannot obtain remote manga instance")
 				}
