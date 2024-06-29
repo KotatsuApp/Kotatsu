@@ -2,12 +2,14 @@ package org.koitharu.kotatsu.reader.domain
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.graphics.Rect
 import android.net.Uri
 import androidx.annotation.AnyThread
 import androidx.collection.LongSparseArray
 import androidx.collection.set
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import com.davemorrissey.labs.subscaleview.ImageSource
 import dagger.hilt.android.ActivityRetainedLifecycle
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
@@ -51,6 +53,7 @@ import org.koitharu.kotatsu.local.data.isFileUri
 import org.koitharu.kotatsu.local.data.isZipUri
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
@@ -83,6 +86,7 @@ class PageLoader @Inject constructor(
 	private val prefetchQueue = LinkedList<MangaPage>()
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
+	private val whitespaceDetector = WhitespaceDetector(context)
 
 	fun isPrefetchApplicable(): Boolean {
 		return repository is RemoteMangaRepository
@@ -153,6 +157,12 @@ class PageLoader @Inject constructor(
 			uri
 		}
 	}
+
+	suspend fun getTrimmedBounds(uri: Uri): Rect? = runCatchingCancellable {
+		whitespaceDetector.getBounds(ImageSource.Uri(uri))
+	}.onFailure { error ->
+		error.printStackTraceDebug()
+	}.getOrNull()
 
 	suspend fun getPageUrl(page: MangaPage): String {
 		return getRepository(page.source).getPageUrl(page)

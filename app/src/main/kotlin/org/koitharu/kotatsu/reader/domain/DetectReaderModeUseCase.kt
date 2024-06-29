@@ -61,6 +61,7 @@ class DetectReaderModeUseCase @Inject constructor(
 		val page = requireNotNull(pages.getOrNull(pageIndex)) { "No pages" }
 		val url = repository.getPageUrl(page)
 		val uri = Uri.parse(url)
+		// TODO file support
 		val size = if (uri.scheme == "cbz") {
 			runInterruptible(Dispatchers.IO) {
 				val zip = ZipFile(uri.schemeSpecificPart)

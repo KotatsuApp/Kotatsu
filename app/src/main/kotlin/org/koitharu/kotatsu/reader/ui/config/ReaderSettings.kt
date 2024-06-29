@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 
@@ -53,6 +54,10 @@ class ReaderSettings(
 		val bg = settings.readerBackground
 		view.background = bg.resolve(view.context)
 	}
+
+	fun isPagesCropEnabled(isWebtoon: Boolean) = settings.isPagesCropEnabled(
+		if (isWebtoon) ReaderMode.WEBTOON else ReaderMode.STANDARD,
+	)
 
 	@CheckResult
 	fun applyBitmapConfig(ssiv: SubsamplingScaleImageView): Boolean {

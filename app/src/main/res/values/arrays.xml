@@ -97,4 +97,8 @@
 		<item>@string/system_default</item>
 		<item>@string/more_frequently</item>
 	</string-array>
+	<string-array name="reader_crop" translatable="false">
+		<item>@string/pages</item>
+		<item>@string/webtoon</item>
+	</string-array>
 </resources>
