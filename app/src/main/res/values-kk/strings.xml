@@ -17,8 +17,8 @@
     <string name="chapters">Тарау</string>
     <string name="detailed_list">Егжей-тегжейлі тізім</string>
     <string name="list_mode">Тізім түрі</string>
-    <string name="remote_sources">Маңга қайнары</string>
-    <string name="loading_">Жүктеу…</string>
+    <string name="remote_sources">Маңга дереккөзі</string>
+    <string name="loading_">Жүктеліп жатыр…</string>
     <string name="computing_">Есептеу…</string>
     <string name="favourites">Таңдаулы</string>
     <string name="network_error">Желі қатесі</string>
@@ -34,7 +34,7 @@
     <string name="create_shortcut">Таңбаша жасау…</string>
     <string name="share_s">%s бөлісу</string>
     <string name="search">Іздеу</string>
-    <string name="manga_downloading_">Жүктеу…</string>
+    <string name="manga_downloading_">Жүктеліп жатыр…</string>
     <string name="processing_">Үдерісте…</string>
     <string name="download_complete">Жүктелді</string>
     <string name="by_name">Атауы</string>
@@ -107,7 +107,7 @@
     <string name="history_is_empty">Әзірге тарих жоқ</string>
     <string name="search_manga">Маңга іздеу</string>
     <string name="add_to_favourites">Таңдаулыға</string>
-    <string name="downloads">Жүктелгендер</string>
+    <string name="downloads">Жүктелген</string>
     <string name="operation_not_supported">Қолжетімсіз амал</string>
     <string name="delete">Жою</string>
     <string name="text_file_not_supported">CBZ не ZIP пішімде таңдаңыз.</string>
@@ -272,7 +272,7 @@
     <string name="never">Ешқашан</string>
     <string name="disable_battery_optimization">Қуат оңтайлығын өшіру</string>
     <string name="status_planned">Жоспарланған</string>
-    <string name="bookmarks">Бетбелгілер</string>
+    <string name="bookmarks">Бетбелгі</string>
     <string name="show_all">Бәрін көрсету</string>
     <string name="empty_favourite_categories">Таңдаулы санатыңыз жоқ</string>
     <string name="invalid_domain_message">Қате дәмейін</string>
@@ -303,7 +303,7 @@
     <string name="password">Құпиясөз</string>
     <string name="download_option_whole_manga">Маңганы толықтай</string>
     <string name="settings_apply_restart_required">Өзгерту іске қосылуы үшін қолданбаны өшіріп қосыңыз</string>
-    <string name="source_disabled">Дереккөз сөніп жатыр</string>
+    <string name="source_disabled">Дереккөз өшіп жатыр</string>
     <string name="backup_frequency">Сақтық көшірмесінің жиілігі</string>
     <string name="data_and_privacy">Дерек пен құпиялық</string>
     <string name="clear_cookies_summary">Қате болса көмектесе алады. Түгел тіркелгінің күші жойылады</string>
@@ -381,7 +381,7 @@
     <string name="downloads_paused">Жүктеп алу тоқтап қалды</string>
     <string name="too_many_requests_message">Тым көп сұрату. Біраздан соң қайталап көріңіз</string>
     <string name="downloads_wifi_only">Wi-Fi арқылы ғана жүктеу</string>
-    <string name="cancel_all_downloads_confirm">Белсенді жүктеудің бәрі жойылып, жартылай жүктелгендер жоғалып кетеді</string>
+    <string name="cancel_all_downloads_confirm">Жүктеліп жатқанның бәрі жойылып, жартылай жүктелгендер жоғалып кетеді</string>
     <string name="by_relevance">Өзектілігі</string>
     <string name="related_manga">Ұқсас маңга</string>
     <string name="discard">Сақтамау</string>
@@ -471,7 +471,7 @@
     <string name="exit_confirmation_summary">Шығып кету үшін «Кері» батырмасын екі рет басыңыз</string>
     <string name="bookmarks_removed">Бетбелгілер жойылды</string>
     <string name="theme_name_mion">Мион</string>
-    <string name="mirror_switching_summary">Дереккөз дәмейіннің қатесі пайда болып, айнасы қолжетімді болса, өздігінен соған ауыстыру</string>
+    <string name="mirror_switching_summary">Дереккөз дәмейнінің қатесі пайда болып, айнасы қолжетімді болса, өздігінен соған ауыстыру</string>
     <string name="no_bookmarks_yet">Бетбелгі жоқ</string>
     <string name="no_thanks">Жоқ, рақмет</string>
     <string name="suggest_new_sources_summary">Қолданбаның жаңа нұсқасында пайда болған дереккөзді ұсыну</string>
@@ -514,4 +514,28 @@
     <string name="this_manga">Бұл маңга</string>
     <string name="error_filter_locale_genre_not_supported">Бұл дереккөзде жанр бойынша және локал файлдар бойынша сүзуге болмайды</string>
     <string name="error_multiple_genres_not_supported">Бұл дереккөзде бірнеше жанр бойынша сүзуге болмайды</string>
+    <string name="genres_exclude">Жанр алып тастау</string>
+    <string name="rating_safe">Қауіпсіз</string>
+    <string name="chapters_grid_view">Кесте түрі</string>
+    <string name="error_filter_states_genre_not_supported">Бұл дереккөзде жанр мен күні бойынша сүзу жоқ</string>
+    <string name="genres_search_hint">Жанр атауын тере бастаңыз</string>
+    <string name="disable_battery_optimization_summary_downloads">Жүктеу дұрыс басталмай жүрсе көмектесе алады</string>
+    <string name="restore">Қалпына келтіру</string>
+    <string name="backup_date_">Сақтық көшірме күні: %s</string>
+    <string name="state_upcoming">Жақында</string>
+    <string name="by_name_reverse">Теріс ат</string>
+    <string name="content_rating">Контент рейтиңі</string>
+    <string name="prev_chapter">Алдыңғы тарау</string>
+    <string name="next_chapter">Келесі тарау</string>
+    <string name="prev_page">Алдыңғы бет</string>
+    <string name="switch_pages_volume_buttons">Дыбыс батырмасын қосу</string>
+    <string name="switch_pages_volume_buttons_summary">Дыбыс батырмасы арқылы парақтау</string>
+    <string name="tap_action">Басқандағы әрекет</string>
+    <string name="long_tap_action">Басып тұрғандағы әрекет</string>
+    <string name="none">Түк</string>
+    <string name="welcome_text">Қандай дереккөз қосқыңыз келетінін таңдаңыз. Кейін баптап алуға болады</string>
+    <string name="next_page">Келесі бет</string>
+    <string name="reader_actions">Оқымадағы әрекет</string>
+    <string name="sync_auth">Синхрондау тіркелгісіне кіру</string>
+    <string name="config_reset_confirm">Әдепкі баптауға қайтайық па? Әрекетті қайтаруға болмайды.</string>
 </resources>
