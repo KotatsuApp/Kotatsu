@@ -8,6 +8,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.util.ext.mapToArray
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.network.UserAgents
 import org.koitharu.kotatsu.settings.utils.AutoCompleteTextViewPreference
@@ -101,11 +102,4 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 
 private fun Array<out String>.toStringArray(): Array<String> {
 	return Array(size) { i -> this[i] as? String ?: "" }
-}
-
-@Suppress("UNCHECKED_CAST")
-private inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
-	val result = arrayOfNulls<R>(size)
-	forEachIndexed { index, t -> result[index] = transform(t) }
-	return result as Array<R>
 }

@@ -48,7 +48,7 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 			is ConfigKey.ShowSuspiciousContent -> putBoolean(key.key, value as Boolean)
 			is ConfigKey.UserAgent -> putString(key.key, (value as String?)?.sanitizeHeaderValue())
 			is ConfigKey.SplitByTranslations -> putBoolean(key.key, value as Boolean)
-			is ConfigKey.PreferredImageServer -> putString(key.key, value as String?)
+			is ConfigKey.PreferredImageServer -> putString(key.key, value as String? ?: "")
 		}
 	}
 

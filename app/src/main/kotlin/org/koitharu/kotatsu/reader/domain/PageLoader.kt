@@ -37,6 +37,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.core.util.ext.URI_SCHEME_ZIP
+import org.koitharu.kotatsu.core.util.ext.cancelChildrenAndJoin
 import org.koitharu.kotatsu.core.util.ext.compressToPNG
 import org.koitharu.kotatsu.core.util.ext.ensureRamAtLeast
 import org.koitharu.kotatsu.core.util.ext.ensureSuccess
@@ -166,6 +167,14 @@ class PageLoader @Inject constructor(
 
 	suspend fun getPageUrl(page: MangaPage): String {
 		return getRepository(page.source).getPageUrl(page)
+	}
+
+	suspend fun invalidate(clearCache: Boolean) {
+		tasks.clear()
+		loaderScope.cancelChildrenAndJoin()
+		if (clearCache) {
+			cache.clear()
+		}
 	}
 
 	private fun onIdle() = loaderScope.launch {
