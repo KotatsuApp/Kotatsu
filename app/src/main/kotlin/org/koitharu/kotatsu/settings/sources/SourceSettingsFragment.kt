@@ -36,7 +36,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		addPreferencesFromRepository(viewModel.repository)
 
 		findPreference<SwitchPreferenceCompat>(KEY_ENABLE)?.run {
-			setOnPreferenceChangeListener(this@SourceSettingsFragment)
+			onPreferenceChangeListener = this@SourceSettingsFragment
 		}
 		findPreference<Preference>(KEY_AUTH)?.run {
 			val authProvider = viewModel.repository.getAuthProvider()

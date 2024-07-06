@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.settings.sources
 
 import android.view.inputmethod.EditorInfo
 import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -23,9 +24,9 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 			is ConfigKey.Domain -> {
 				val presetValues = key.presetValues
 				if (presetValues.size <= 1) {
-					EditTextPreference(requireContext())
+					EditTextPreference(screen.context)
 				} else {
-					AutoCompleteTextViewPreference(requireContext()).apply {
+					AutoCompleteTextViewPreference(screen.context).apply {
 						entries = presetValues.toStringArray()
 					}
 				}.apply {
@@ -43,7 +44,7 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 			}
 
 			is ConfigKey.UserAgent -> {
-				AutoCompleteTextViewPreference(requireContext()).apply {
+				AutoCompleteTextViewPreference(screen.context).apply {
 					entries = arrayOf(
 						UserAgents.FIREFOX_MOBILE,
 						UserAgents.CHROME_MOBILE,
@@ -64,17 +65,30 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 			}
 
 			is ConfigKey.ShowSuspiciousContent -> {
-				SwitchPreferenceCompat(requireContext()).apply {
+				SwitchPreferenceCompat(screen.context).apply {
 					setDefaultValue(key.defaultValue)
 					setTitle(R.string.show_suspicious_content)
 				}
 			}
 
 			is ConfigKey.SplitByTranslations -> {
-				SwitchPreferenceCompat(requireContext()).apply {
+				SwitchPreferenceCompat(screen.context).apply {
 					setDefaultValue(key.defaultValue)
 					setTitle(R.string.split_by_translations)
 					setSummary(R.string.split_by_translations_summary)
+				}
+			}
+
+			is ConfigKey.PreferredImageServer -> {
+				ListPreference(screen.context).apply {
+					entries = key.presetValues.values.mapToArray {
+						it ?: context.getString(R.string.automatic)
+					}
+					entryValues = key.presetValues.keys.mapToArray { it.orEmpty() }
+					setDefaultValue(key.defaultValue.orEmpty())
+					setTitle(R.string.image_server)
+					setDialogTitle(R.string.image_server)
+					summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
 				}
 			}
 		}
@@ -87,4 +101,11 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 
 private fun Array<out String>.toStringArray(): Array<String> {
 	return Array(size) { i -> this[i] as? String ?: "" }
+}
+
+@Suppress("UNCHECKED_CAST")
+private inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
+	val result = arrayOfNulls<R>(size)
+	forEachIndexed { index, t -> result[index] = transform(t) }
+	return result as Array<R>
 }

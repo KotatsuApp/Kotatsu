@@ -654,4 +654,5 @@
 	<string name="_new">New</string>
 	<string name="all_languages">All languages</string>
 	<string name="screenshots_block_incognito">Block when incognito mode</string>
+	<string name="image_server">Preferred image server</string>
 </resources>
