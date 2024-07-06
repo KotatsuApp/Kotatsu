@@ -47,6 +47,7 @@ import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
 import org.koitharu.kotatsu.core.util.ext.isTargetNotEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
+import org.koitharu.kotatsu.core.util.ext.use
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
 import org.koitharu.kotatsu.local.data.PagesCache
@@ -87,7 +88,7 @@ class PageLoader @Inject constructor(
 	private val prefetchQueue = LinkedList<MangaPage>()
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
-	private val whitespaceDetector = WhitespaceDetector(context)
+	private val edgeDetector = EdgeDetector(context)
 
 	fun isPrefetchApplicable(): Boolean {
 		return repository is RemoteMangaRepository
@@ -147,20 +148,17 @@ class PageLoader @Inject constructor(
 		} else {
 			val file = uri.toFile()
 			context.ensureRamAtLeast(file.length() * 2)
-			val image = runInterruptible(Dispatchers.IO) {
+			runInterruptible(Dispatchers.IO) {
 				BitmapFactory.decodeFile(file.absolutePath)
-			}
-			try {
+			}.use { image ->
 				image.compressToPNG(file)
-			} finally {
-				image.recycle()
 			}
 			uri
 		}
 	}
 
 	suspend fun getTrimmedBounds(uri: Uri): Rect? = runCatchingCancellable {
-		whitespaceDetector.getBounds(ImageSource.Uri(uri))
+		edgeDetector.getBounds(ImageSource.Uri(uri))
 	}.onFailure { error ->
 		error.printStackTraceDebug()
 	}.getOrNull()

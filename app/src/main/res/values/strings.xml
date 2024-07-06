@@ -656,4 +656,5 @@
 	<string name="screenshots_block_incognito">Block when incognito mode</string>
 	<string name="image_server">Preferred image server</string>
 	<string name="inline_preference_pattern" translatable="false">%1$s: %2$s</string>
+	<string name="crop_pages">Crop pages</string>
 </resources>
