@@ -59,6 +59,11 @@ class MangaSourcesRepository @Inject constructor(
 		}
 	}
 
+	suspend fun getTopSources(limit: Int): List<MangaSource> {
+		assimilateNewSources()
+		return dao.findLastUsed(limit).toSources(settings.isNsfwContentDisabled, null)
+	}
+
 	suspend fun getDisabledSources(): Set<MangaSource> {
 		assimilateNewSources()
 		val result = EnumSet.copyOf(remoteSources)
@@ -242,7 +247,9 @@ class MangaSourcesRepository @Inject constructor(
 	}
 
 	suspend fun trackUsage(source: MangaSource) {
-		dao.setLastUsed(source.name, System.currentTimeMillis())
+		if (!settings.isIncognitoModeEnabled && !(settings.isHistoryExcludeNsfw && source.isNsfw())) {
+			dao.setLastUsed(source.name, System.currentTimeMillis())
+		}
 	}
 
 	private suspend fun setSourcesEnabledImpl(sources: Collection<MangaSource>, isEnabled: Boolean) {

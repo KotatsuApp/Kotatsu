@@ -37,6 +37,7 @@ private const val MAX_HINTS_ITEMS = 3
 private const val MAX_AUTHORS_ITEMS = 2
 private const val MAX_TAGS_ITEMS = 8
 private const val MAX_SOURCES_ITEMS = 6
+private const val MAX_SOURCES_TIPS_ITEMS = 2
 
 @HiltViewModel
 class SearchSuggestionViewModel @Inject constructor(
@@ -149,12 +150,18 @@ class SearchSuggestionViewModel @Inject constructor(
 		} else {
 			null
 		}
+		val sourcesTipsDeferred = if (searchQuery.isEmpty() && SearchSuggestionType.RECENT_SOURCES in types) {
+			async { repository.getSourcesSuggestion(MAX_SOURCES_TIPS_ITEMS) }
+		} else {
+			null
+		}
 
 		val tags = tagsDeferred?.await()
 		val mangaList = mangaDeferred?.await()
 		val queries = queriesDeferred?.await()
 		val hints = hintsDeferred?.await()
 		val authors = authorsDeferred?.await()
+		val sourcesTips = sourcesTipsDeferred?.await()
 
 		buildList(queries.sizeOrZero() + sources.sizeOrZero() + authors.sizeOrZero() + hints.sizeOrZero() + 2) {
 			if (!tags.isNullOrEmpty()) {
@@ -167,6 +174,7 @@ class SearchSuggestionViewModel @Inject constructor(
 			queries?.mapTo(this) { SearchSuggestionItem.RecentQuery(it) }
 			authors?.mapTo(this) { SearchSuggestionItem.Author(it) }
 			hints?.mapTo(this) { SearchSuggestionItem.Hint(it) }
+			sourcesTips?.mapTo(this) { SearchSuggestionItem.SourceTip(it) }
 		}
 	}
 

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.search.ui.suggestion.model
 
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -66,6 +67,18 @@ sealed interface SearchSuggestionItem : ListModel {
 			} else {
 				null
 			}
+		}
+	}
+
+	data class SourceTip(
+		val source: MangaSource,
+	) : SearchSuggestionItem {
+
+		val isNsfw: Boolean
+			get() = source.isNsfw()
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is Source && other.source == source
 		}
 	}
 
