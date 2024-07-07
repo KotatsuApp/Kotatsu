@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.domain
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Size
+import androidx.core.net.toFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
@@ -14,6 +15,8 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.local.data.isFileUri
+import org.koitharu.kotatsu.local.data.isZipUri
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -61,20 +64,28 @@ class DetectReaderModeUseCase @Inject constructor(
 		val page = requireNotNull(pages.getOrNull(pageIndex)) { "No pages" }
 		val url = repository.getPageUrl(page)
 		val uri = Uri.parse(url)
-		// TODO file support
-		val size = if (uri.scheme == "cbz") {
-			runInterruptible(Dispatchers.IO) {
+
+		val size = when {
+			uri.isZipUri() -> runInterruptible(Dispatchers.IO) {
 				val zip = ZipFile(uri.schemeSpecificPart)
 				val entry = zip.getEntry(uri.fragment)
 				zip.getInputStream(entry).use {
 					getBitmapSize(it)
 				}
 			}
-		} else {
-			val request = PageLoader.createPageRequest(url, page.source)
-			imageProxyInterceptor.interceptPageRequest(request, okHttpClient).use {
-				runInterruptible(Dispatchers.IO) {
-					getBitmapSize(it.body?.byteStream())
+
+			uri.isFileUri() -> runInterruptible(Dispatchers.IO) {
+				uri.toFile().inputStream().use {
+					getBitmapSize(it)
+				}
+			}
+
+			else -> {
+				val request = PageLoader.createPageRequest(url, page.source)
+				imageProxyInterceptor.interceptPageRequest(request, okHttpClient).use {
+					runInterruptible(Dispatchers.IO) {
+						getBitmapSize(it.body?.byteStream())
+					}
 				}
 			}
 		}
