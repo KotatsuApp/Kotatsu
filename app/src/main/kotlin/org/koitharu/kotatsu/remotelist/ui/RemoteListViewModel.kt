@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.MangaFilter
@@ -45,7 +46,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.parsers.util.concatUrl
 import javax.inject.Inject
 
 private const val FILTER_MIN_INTERVAL = 250L
@@ -59,6 +59,7 @@ open class RemoteListViewModel @Inject constructor(
 	listExtraProvider: ListExtraProvider,
 	downloadScheduler: DownloadWorker.Scheduler,
 	private val exploreRepository: ExploreRepository,
+	sourcesRepository: MangaSourcesRepository,
 ) : MangaListViewModel(settings, downloadScheduler), MangaFilter by filter {
 
 	val source = savedStateHandle.require<MangaSource>(RemoteListFragment.ARG_SOURCE)
@@ -117,6 +118,10 @@ open class RemoteListViewModel @Inject constructor(
 			}.catch { error ->
 				listError.value = error
 			}.launchIn(viewModelScope)
+
+		launchJob(Dispatchers.Default) {
+			sourcesRepository.trackUsage(source)
+		}
 	}
 
 	override fun onRefresh() {

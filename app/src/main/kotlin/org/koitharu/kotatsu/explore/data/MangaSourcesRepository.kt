@@ -214,6 +214,8 @@ class MangaSourcesRepository @Inject constructor(
 				isEnabled = false,
 				sortKey = ++maxSortKey,
 				addedIn = BuildConfig.VERSION_CODE,
+				lastUsedAt = 0,
+				isPinned = false,
 			)
 		}
 		dao.insertIfAbsent(entities)
@@ -222,6 +224,14 @@ class MangaSourcesRepository @Inject constructor(
 
 	suspend fun isSetupRequired(): Boolean {
 		return settings.sourcesVersion == 0 && dao.findAllEnabledNames().isEmpty()
+	}
+
+	suspend fun setIsPinned(source: MangaSource, isPinned: Boolean) {
+		dao.setPinned(source.name, isPinned)
+	}
+
+	suspend fun trackUsage(source: MangaSource) {
+		dao.setLastUsed(source.name, System.currentTimeMillis())
 	}
 
 	private suspend fun setSourcesEnabledImpl(sources: Collection<MangaSource>, isEnabled: Boolean) {
