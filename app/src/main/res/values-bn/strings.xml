@@ -11,7 +11,7 @@
     <string name="domain">ডোমেইন</string>
     <string name="app_update_available">অ্যাপের নতুন ভার্সন পাওয়া গেছে</string>
     <string name="open_in_browser">ব্রাউজারে খুলুন</string>
-    <string name="error_occurred">কিছু একটা গন্ডগোল হয়েছে</string>
+    <string name="error_occurred">কিছু একটা সমস্যা হয়েছে</string>
     <string name="details">খুঁটিনাটি</string>
     <string name="chapters">পর্ব সমূহ</string>
     <string name="list">তালিকা</string>
@@ -102,7 +102,7 @@
     <string name="manga_save_location">ডাউনলোডের জন্য ফোল্ডার</string>
     <string name="suggestions_notifications_summary">কখনও কখনও প্রস্তাবিত মাঙ্গা সহ বিজ্ঞপ্তিগুলি দেখান৷</string>
     <string name="updates_feed_cleared">সাফ করা হয়েছে</string>
-    <string name="list_mode">তালিকা মোড</string>
+    <string name="list_mode">তালিকার ধরন</string>
     <string name="download_complete">ডাউনলোড করা হয়েছে</string>
     <string name="update">হালনাগাদ</string>
     <string name="feed_will_update_soon">ফিড আপডেট শীঘ্রই শুরু হবে</string>
