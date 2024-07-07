@@ -64,4 +64,12 @@
         <item quantity="many">إحدى عشر دقيقة</item>
         <item quantity="other">مئة دقيقة</item>
     </plurals>
+    <plurals name="hours">
+        <item quantity="zero">العربية</item>
+        <item quantity="one"></item>
+        <item quantity="two"></item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
+    </plurals>
 </resources>
