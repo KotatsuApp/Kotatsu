@@ -3,11 +3,6 @@ package org.koitharu.kotatsu.details.ui
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.view.MotionEvent
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.view.GestureDetector
-import android.view.ViewGroup
 import android.os.Bundle
 import android.text.style.DynamicDrawableSpan
 import android.text.style.ForegroundColorSpan
@@ -128,7 +123,6 @@ class DetailsActivity :
 	lateinit var tagHighlighter: ListExtraProvider
 
 	private val viewModel: DetailsViewModel by viewModels()
-	private lateinit var gestureDetector: GestureDetector
 	private lateinit var menuProvider: DetailsMenuProvider
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -162,32 +156,7 @@ class DetailsActivity :
 		viewBinding.containerBottomSheet?.let { sheet ->
 			onBackPressedDispatcher.addCallback(BottomSheetCollapseCallback(sheet))
 		}
-		gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-			override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-				val tv = viewBinding.textViewTitle
-				TransitionManager.beginDelayedTransition(tv.parent as ViewGroup)
-				if (tv.maxLines == 5) {
-					tv.maxLines = 20 // Expand text
-				} else {
-					tv.maxLines = 5 // Collapse text
-				}
-				return true
-			}
-
-			override fun onLongPress(e: MotionEvent) {
-				val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-				val clip = ClipData.newPlainText("copied text", viewBinding.textViewTitle.text)
-				clipboardManager.setPrimaryClip(clip)
-				Toast.makeText(this@DetailsActivity, "Text copied", Toast.LENGTH_SHORT).show()
-			}
-		})
-
-		viewBinding.textViewTitle.setOnTouchListener { _, motionEvent ->
-			gestureDetector.onTouchEvent(motionEvent)
-			true
-		}
-
-
+		TitleExpandListener(viewBinding.textViewTitle).attach()
 
 		viewModel.details.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)

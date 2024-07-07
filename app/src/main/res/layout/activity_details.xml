@@ -84,7 +84,7 @@
 				android:layout_marginTop="16dp"
 				android:layout_marginEnd="16dp"
 				android:ellipsize="end"
-				android:maxLines="5"
+				android:maxLines="@integer/details_title_lines"
 				android:textAppearance="?attr/textAppearanceHeadlineSmall"
 				android:textIsSelectable="true"
 				app:layout_constraintEnd_toEndOf="parent"
