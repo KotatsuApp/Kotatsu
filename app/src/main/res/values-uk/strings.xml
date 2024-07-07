@@ -642,4 +642,6 @@
     <string name="disable">Вимкнути</string>
     <string name="sources_disabled">Джерела вимкнено</string>
     <string name="_new">Нове</string>
+    <string name="all_languages">Всі мови</string>
+    <string name="screenshots_block_incognito">Блокувати в режимі інкогніто</string>
 </resources>

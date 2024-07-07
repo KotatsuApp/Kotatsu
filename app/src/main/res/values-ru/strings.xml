@@ -642,4 +642,6 @@
     <string name="disable">Откл.</string>
     <string name="sources_disabled">Источники отключены</string>
     <string name="_new">Новое</string>
+    <string name="all_languages">Все языки</string>
+    <string name="screenshots_block_incognito">Блокировать в режиме инкогнито</string>
 </resources>
