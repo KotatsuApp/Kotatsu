@@ -283,7 +283,9 @@ constructor(
 			prevJob?.cancelAndJoin()
 			content.value = ReaderContent(emptyList(), null)
 			chaptersLoader.loadSingleChapter(id)
-			content.value = ReaderContent(chaptersLoader.snapshot(), ReaderState(id, page, 0))
+			val newState = ReaderState(id, page, 0)
+			content.value = ReaderContent(chaptersLoader.snapshot(), newState)
+			saveCurrentState(newState)
 		}
 	}
 
@@ -305,14 +307,13 @@ constructor(
 			}
 			content.value = ReaderContent(emptyList(), null)
 			chaptersLoader.loadSingleChapter(newChapterId)
-			content.value = ReaderContent(
-				chaptersLoader.snapshot(),
-				ReaderState(
-					chapterId = newChapterId,
-					page = if (delta == 0) prevState.page else 0,
-					scroll = if (delta == 0) prevState.scroll else 0,
-				),
+			val newState = ReaderState(
+				chapterId = newChapterId,
+				page = if (delta == 0) prevState.page else 0,
+				scroll = if (delta == 0) prevState.scroll else 0,
 			)
+			content.value = ReaderContent(chaptersLoader.snapshot(), newState)
+			saveCurrentState(newState)
 		}
 	}
 
