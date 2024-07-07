@@ -230,7 +230,7 @@ class PageLoader @Inject constructor(
 
 			uri.isFileUri() -> uri
 			else -> {
-				val request = createPageRequest(page, pageUrl)
+				val request = createPageRequest(pageUrl, page.source)
 				imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
 					val body = checkNotNull(response.body) { "Null response body" }
 					body.withProgress(progress).use {
@@ -265,12 +265,12 @@ class PageLoader @Inject constructor(
 		private const val PREFETCH_LIMIT_DEFAULT = 6
 		private const val PREFETCH_MIN_RAM_MB = 80L
 
-		fun createPageRequest(page: MangaPage, pageUrl: String) = Request.Builder()
+		fun createPageRequest(pageUrl: String, mangaSource: MangaSource) = Request.Builder()
 			.url(pageUrl)
 			.get()
 			.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
 			.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
-			.tag(MangaSource::class.java, page.source)
+			.tag(MangaSource::class.java, mangaSource)
 			.build()
 	}
 }
