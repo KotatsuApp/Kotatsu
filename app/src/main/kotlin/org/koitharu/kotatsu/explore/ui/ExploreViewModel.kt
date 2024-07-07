@@ -108,6 +108,18 @@ class ExploreViewModel @Inject constructor(
 		}
 	}
 
+	fun setSourcesPinned(sources: Set<MangaSource>, isPinned: Boolean) {
+		launchJob(Dispatchers.Default) {
+			sourcesRepository.setIsPinned(sources, isPinned)
+			val message = if (sources.size == 1) {
+				if (isPinned) R.string.source_pinned else R.string.source_unpinned
+			} else {
+				if (isPinned) R.string.sources_pinned else R.string.sources_unpinned
+			}
+			onActionDone.call(ReversibleAction(message, null))
+		}
+	}
+
 	fun respondSuggestionTip(isAccepted: Boolean) {
 		settings.isSuggestionsEnabled = isAccepted
 		settings.closeTip(TIP_SUGGESTIONS)

@@ -18,7 +18,7 @@ import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 @Dao
 abstract class MangaSourcesDao {
 
-	@Query("SELECT * FROM sources ORDER BY sort_key")
+	@Query("SELECT * FROM sources ORDER BY pinned DESC, sort_key")
 	abstract suspend fun findAll(): List<MangaSourceEntity>
 
 	@Query("SELECT source FROM sources WHERE enabled = 1")
@@ -27,7 +27,7 @@ abstract class MangaSourcesDao {
 	@Query("SELECT * FROM sources WHERE added_in >= :version")
 	abstract suspend fun findAllFromVersion(version: Int): List<MangaSourceEntity>
 
-	@Query("SELECT * FROM sources ORDER BY sort_key")
+	@Query("SELECT * FROM sources ORDER BY pinned DESC, sort_key")
 	abstract fun observeAll(): Flow<List<MangaSourceEntity>>
 
 	@Query("SELECT enabled FROM sources WHERE source = :source")
@@ -55,6 +55,9 @@ abstract class MangaSourcesDao {
 	@Upsert
 	abstract suspend fun upsert(entry: MangaSourceEntity)
 
+	@Query("SELECT * FROM sources WHERE pinned = 1")
+	abstract suspend fun findAllPinned(): List<MangaSourceEntity>
+
 	fun observeEnabled(order: SourcesSortOrder): Flow<List<MangaSourceEntity>> {
 		val orderBy = getOrderBy(order)
 
@@ -67,7 +70,7 @@ abstract class MangaSourcesDao {
 		val orderBy = getOrderBy(order)
 
 		@Language("RoomSql")
-		val query = SimpleSQLiteQuery("SELECT * FROM sources WHERE enabled = 1 ORDER BY $orderBy")
+		val query = SimpleSQLiteQuery("SELECT * FROM sources WHERE enabled = 1 ORDER BY pinned DESC, $orderBy")
 		return findAllImpl(query)
 	}
 

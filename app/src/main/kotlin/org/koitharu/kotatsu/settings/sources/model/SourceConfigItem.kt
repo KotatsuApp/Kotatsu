@@ -13,6 +13,7 @@ sealed interface SourceConfigItem : ListModel {
 		val isEnabled: Boolean,
 		val isDraggable: Boolean,
 		val isAvailable: Boolean,
+		val isPinned: Boolean,
 	) : SourceConfigItem {
 
 		val isNsfw: Boolean

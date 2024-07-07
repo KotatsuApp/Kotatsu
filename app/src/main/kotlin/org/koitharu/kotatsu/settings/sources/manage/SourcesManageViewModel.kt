@@ -58,8 +58,9 @@ class SourcesManageViewModel @Inject constructor(
 
 	fun canReorder(oldPos: Int, newPos: Int): Boolean {
 		val snapshot = content.value
-		if ((snapshot[oldPos] as? SourceConfigItem.SourceItem)?.isEnabled != true) return false
-		return (snapshot[newPos] as? SourceConfigItem.SourceItem)?.isEnabled == true
+		val oldPosItem = snapshot.getOrNull(oldPos) as? SourceConfigItem.SourceItem ?: return false
+		val newPosItem = snapshot.getOrNull(newPos) as? SourceConfigItem.SourceItem ?: return false
+		return oldPosItem.isEnabled && newPosItem.isEnabled && oldPosItem.isPinned == newPosItem.isPinned
 	}
 
 	fun setEnabled(source: MangaSource, isEnabled: Boolean) {
@@ -68,6 +69,14 @@ class SourcesManageViewModel @Inject constructor(
 			if (!isEnabled) {
 				onActionDone.call(ReversibleAction(R.string.source_disabled, rollback))
 			}
+		}
+	}
+
+	fun setPinned(source: MangaSource, isPinned: Boolean) {
+		launchJob(Dispatchers.Default) {
+			val rollback = repository.setIsPinned(setOf(source), isPinned)
+			val message = if (isPinned) R.string.source_pinned else R.string.source_unpinned
+			onActionDone.call(ReversibleAction(message, rollback))
 		}
 	}
 
