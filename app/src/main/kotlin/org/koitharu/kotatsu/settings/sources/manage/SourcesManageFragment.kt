@@ -120,6 +120,10 @@ class SourcesManageFragment :
 		}
 	}
 
+	override fun onItemPinClick(item: SourceConfigItem.SourceItem) {
+		viewModel.setPinned(item.source, !item.isPinned)
+	}
+
 	override fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean) {
 		viewModel.setEnabled(item.source, isEnabled)
 	}

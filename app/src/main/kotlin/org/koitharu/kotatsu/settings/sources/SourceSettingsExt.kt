@@ -2,11 +2,13 @@ package org.koitharu.kotatsu.settings.sources
 
 import android.view.inputmethod.EditorInfo
 import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.util.ext.mapToArray
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.network.UserAgents
 import org.koitharu.kotatsu.settings.utils.AutoCompleteTextViewPreference
@@ -23,9 +25,9 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 			is ConfigKey.Domain -> {
 				val presetValues = key.presetValues
 				if (presetValues.size <= 1) {
-					EditTextPreference(requireContext())
+					EditTextPreference(screen.context)
 				} else {
-					AutoCompleteTextViewPreference(requireContext()).apply {
+					AutoCompleteTextViewPreference(screen.context).apply {
 						entries = presetValues.toStringArray()
 					}
 				}.apply {
@@ -43,7 +45,7 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 			}
 
 			is ConfigKey.UserAgent -> {
-				AutoCompleteTextViewPreference(requireContext()).apply {
+				AutoCompleteTextViewPreference(screen.context).apply {
 					entries = arrayOf(
 						UserAgents.FIREFOX_MOBILE,
 						UserAgents.CHROME_MOBILE,
@@ -64,17 +66,30 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 			}
 
 			is ConfigKey.ShowSuspiciousContent -> {
-				SwitchPreferenceCompat(requireContext()).apply {
+				SwitchPreferenceCompat(screen.context).apply {
 					setDefaultValue(key.defaultValue)
 					setTitle(R.string.show_suspicious_content)
 				}
 			}
 
 			is ConfigKey.SplitByTranslations -> {
-				SwitchPreferenceCompat(requireContext()).apply {
+				SwitchPreferenceCompat(screen.context).apply {
 					setDefaultValue(key.defaultValue)
 					setTitle(R.string.split_by_translations)
 					setSummary(R.string.split_by_translations_summary)
+				}
+			}
+
+			is ConfigKey.PreferredImageServer -> {
+				ListPreference(screen.context).apply {
+					entries = key.presetValues.values.mapToArray {
+						it ?: context.getString(R.string.automatic)
+					}
+					entryValues = key.presetValues.keys.mapToArray { it.orEmpty() }
+					setDefaultValue(key.defaultValue.orEmpty())
+					setTitle(R.string.image_server)
+					setDialogTitle(R.string.image_server)
+					summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
 				}
 			}
 		}

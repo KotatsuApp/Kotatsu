@@ -641,4 +641,6 @@
     <string name="blocked_by_server_message">Anda diblokir oleh server. Coba gunakan koneksi jaringan yang berbeda (VPN, Proxy, dll.)</string>
     <string name="less_frequently">Lebih jarang</string>
     <string name="pin_navigation_ui_summary">Jangan sembunyikan bilah navigasi dan tampilan pencarian saat menggulir</string>
+    <string name="chapters_deleted_pattern">Dihapus, dibersihkan</string>
+    <string name="suggested_queries">Pertanyaan yang disarankan</string>
 </resources>

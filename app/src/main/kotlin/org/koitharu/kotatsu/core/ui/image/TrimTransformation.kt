@@ -1,15 +1,10 @@
 package org.koitharu.kotatsu.core.ui.image
 
 import android.graphics.Bitmap
-import androidx.annotation.ColorInt
-import androidx.core.graphics.alpha
-import androidx.core.graphics.blue
 import androidx.core.graphics.get
-import androidx.core.graphics.green
-import androidx.core.graphics.red
 import coil.size.Size
 import coil.transform.Transformation
-import kotlin.math.abs
+import org.koitharu.kotatsu.reader.domain.EdgeDetector.Companion.isColorTheSame
 
 class TrimTransformation(
 	private val tolerance: Int = 20,
@@ -28,7 +23,7 @@ class TrimTransformation(
 			var isColBlank = true
 			val prevColor = input[x, 0]
 			for (y in 1 until input.height) {
-				if (!isColorTheSame(input[x, y], prevColor)) {
+				if (!isColorTheSame(input[x, y], prevColor, tolerance)) {
 					isColBlank = false
 					break
 				}
@@ -47,7 +42,7 @@ class TrimTransformation(
 			var isColBlank = true
 			val prevColor = input[x, 0]
 			for (y in 1 until input.height) {
-				if (!isColorTheSame(input[x, y], prevColor)) {
+				if (!isColorTheSame(input[x, y], prevColor, tolerance)) {
 					isColBlank = false
 					break
 				}
@@ -63,7 +58,7 @@ class TrimTransformation(
 			var isRowBlank = true
 			val prevColor = input[0, y]
 			for (x in 1 until input.width) {
-				if (!isColorTheSame(input[x, y], prevColor)) {
+				if (!isColorTheSame(input[x, y], prevColor, tolerance)) {
 					isRowBlank = false
 					break
 				}
@@ -79,7 +74,7 @@ class TrimTransformation(
 			var isRowBlank = true
 			val prevColor = input[0, y]
 			for (x in 1 until input.width) {
-				if (!isColorTheSame(input[x, y], prevColor)) {
+				if (!isColorTheSame(input[x, y], prevColor, tolerance)) {
 					isRowBlank = false
 					break
 				}
@@ -96,13 +91,6 @@ class TrimTransformation(
 		} else {
 			input
 		}
-	}
-
-	private fun isColorTheSame(@ColorInt a: Int, @ColorInt b: Int): Boolean {
-		return abs(a.red - b.red) <= tolerance &&
-			abs(a.green - b.green) <= tolerance &&
-			abs(a.blue - b.blue) <= tolerance &&
-			abs(a.alpha - b.alpha) <= tolerance
 	}
 
 	override fun equals(other: Any?): Boolean {

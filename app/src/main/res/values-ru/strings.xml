@@ -642,4 +642,15 @@
     <string name="disable">Откл.</string>
     <string name="sources_disabled">Источники отключены</string>
     <string name="_new">Новое</string>
+    <string name="all_languages">Все языки</string>
+    <string name="screenshots_block_incognito">Блокировать в режиме инкогнито</string>
+    <string name="source_pinned">Источник закреплён</string>
+    <string name="sources_unpinned">Источники откреплены</string>
+    <string name="sources_pinned">Источники закреплены</string>
+    <string name="recent_sources">Недавние источники</string>
+    <string name="crop_pages">Обрезать страницы</string>
+    <string name="pin">Закрепить</string>
+    <string name="unpin">Открепить</string>
+    <string name="source_unpinned">Источник откреплён</string>
+    <string name="image_server">Сервер изображений</string>
 </resources>

@@ -642,4 +642,15 @@
     <string name="disable">Вимкнути</string>
     <string name="sources_disabled">Джерела вимкнено</string>
     <string name="_new">Нове</string>
+    <string name="all_languages">Всі мови</string>
+    <string name="screenshots_block_incognito">Блокувати в режимі інкогніто</string>
+    <string name="image_server">Сервер зображень</string>
+    <string name="unpin">Відкріпити</string>
+    <string name="source_pinned">Джерело закріплено</string>
+    <string name="sources_pinned">Джерела закріплені</string>
+    <string name="recent_sources">Нещодавні джерела</string>
+    <string name="crop_pages">Обрізати сторінки</string>
+    <string name="sources_unpinned">Джерела відкріплені</string>
+    <string name="pin">Закріпити</string>
+    <string name="source_unpinned">Джерело відкріплено</string>
 </resources>

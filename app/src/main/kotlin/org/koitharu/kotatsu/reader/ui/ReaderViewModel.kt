@@ -283,7 +283,9 @@ constructor(
 			prevJob?.cancelAndJoin()
 			content.value = ReaderContent(emptyList(), null)
 			chaptersLoader.loadSingleChapter(id)
-			content.value = ReaderContent(chaptersLoader.snapshot(), ReaderState(id, page, 0))
+			val newState = ReaderState(id, page, 0)
+			content.value = ReaderContent(chaptersLoader.snapshot(), newState)
+			saveCurrentState(newState)
 		}
 	}
 
@@ -291,17 +293,27 @@ constructor(
 		val prevJob = loadingJob
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
-			val currentChapterId = currentState.requireValue().chapterId
-			val allChapters = checkNotNull(manga).allChapters
-			var index = allChapters.indexOfFirst { x -> x.id == currentChapterId }
-			if (index < 0) {
-				return@launchLoadingJob
+			val prevState = currentState.requireValue()
+			val newChapterId = if (delta != 0) {
+				val allChapters = checkNotNull(manga).allChapters
+				var index = allChapters.indexOfFirst { x -> x.id == prevState.chapterId }
+				if (index < 0) {
+					return@launchLoadingJob
+				}
+				index += delta
+				(allChapters.getOrNull(index) ?: return@launchLoadingJob).id
+			} else {
+				prevState.chapterId
 			}
-			index += delta
-			val newChapterId = (allChapters.getOrNull(index) ?: return@launchLoadingJob).id
 			content.value = ReaderContent(emptyList(), null)
 			chaptersLoader.loadSingleChapter(newChapterId)
-			content.value = ReaderContent(chaptersLoader.snapshot(), ReaderState(newChapterId, 0, 0))
+			val newState = ReaderState(
+				chapterId = newChapterId,
+				page = if (delta == 0) prevState.page else 0,
+				scroll = if (delta == 0) prevState.scroll else 0,
+			)
+			content.value = ReaderContent(chaptersLoader.snapshot(), newState)
+			saveCurrentState(newState)
 		}
 	}
 

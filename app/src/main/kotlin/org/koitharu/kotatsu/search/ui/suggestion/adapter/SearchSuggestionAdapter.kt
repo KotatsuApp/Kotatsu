@@ -18,6 +18,7 @@ class SearchSuggestionAdapter(
 		delegatesManager
 			.addDelegate(SEARCH_SUGGESTION_ITEM_TYPE_QUERY, searchSuggestionQueryAD(listener))
 			.addDelegate(searchSuggestionSourceAD(coil, lifecycleOwner, listener))
+			.addDelegate(searchSuggestionSourceTipAD(coil, lifecycleOwner, listener))
 			.addDelegate(searchSuggestionTagsAD(listener))
 			.addDelegate(searchSuggestionMangaListAD(coil, lifecycleOwner, listener))
 			.addDelegate(searchSuggestionQueryHintAD(listener))

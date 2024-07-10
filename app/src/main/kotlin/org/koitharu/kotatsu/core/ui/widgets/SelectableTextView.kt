@@ -23,11 +23,16 @@ class SelectableTextView @JvmOverloads constructor(
 	private fun fixSelectionRange() {
 		if (selectionStart < 0 || selectionEnd < 0) {
 			val spannableText = text as? Spannable ?: return
-			Selection.setSelection(spannableText, text.length)
+			Selection.setSelection(spannableText, spannableText.length)
 		}
 	}
 
 	override fun scrollTo(x: Int, y: Int) {
 		super.scrollTo(0, 0)
+	}
+
+	fun selectAll() {
+		val spannableText = text as? Spannable ?: return
+		Selection.selectAll(spannableText)
 	}
 }

@@ -92,7 +92,7 @@
 		android:entries="@array/reader_crop"
 		android:entryValues="@array/values_reader_crop"
 		android:key="reader_crop"
-		android:title="Crop pages (beta)" />
+		android:title="@string/crop_pages" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"

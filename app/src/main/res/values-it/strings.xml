@@ -593,4 +593,20 @@
     <string name="more_frequently">Più frequente</string>
     <string name="frequency_of_check">Frequenza di controllo</string>
     <string name="new_chapters_pattern">%1$s: %2$d</string>
+    <string name="_new">Nuovi</string>
+    <string name="automatic">Automatico</string>
+    <string name="all_languages">Tutte le lingue</string>
+    <string name="delete_read_chapters">Cancella capitoli letti</string>
+    <string name="manga_migration">Migrazione manga</string>
+    <string name="migration_completed">Migrazione completata</string>
+    <string name="no_chapters_deleted">Nessun capitolo è stato cancellato</string>
+    <string name="day">Giorno</string>
+    <string name="three_months">Tre mesi</string>
+    <string name="empty_stats_text">Non ci sono statistiche per il periodo selezionato</string>
+    <string name="ask_for_dest_dir_every_time">Chiedi per la cartella di destinazione ogni volta</string>
+    <string name="pages_saving">Salva pagine</string>
+    <string name="preferred_download_format">Formato download preferito</string>
+    <string name="single_cbz_file">File CBZ singolo</string>
+    <string name="multiple_cbz_files">Molti file CBZ</string>
+    <string name="reading_stats">Lettura statistiche</string>
 </resources>

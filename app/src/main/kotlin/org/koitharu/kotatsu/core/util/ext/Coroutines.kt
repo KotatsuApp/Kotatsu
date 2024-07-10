@@ -12,12 +12,16 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koitharu.kotatsu.core.util.AcraCoroutineErrorHandler
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
+import org.koitharu.kotatsu.parsers.util.cancelAll
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -89,4 +93,11 @@ fun <T> Deferred<T>.peek(): T? = if (isCompleted) {
 	}.getOrNull()
 } else {
 	null
+}
+
+@Suppress("SuspendFunctionOnCoroutineScope")
+suspend fun CoroutineScope.cancelChildrenAndJoin(cause: CancellationException? = null) {
+	val jobs = coroutineContext[Job]?.children?.toList() ?: return
+	jobs.cancelAll(cause)
+	jobs.joinAll()
 }

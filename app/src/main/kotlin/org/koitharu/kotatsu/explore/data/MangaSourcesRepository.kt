@@ -51,6 +51,19 @@ class MangaSourcesRepository @Inject constructor(
 		return dao.findAllEnabled(order).toSources(settings.isNsfwContentDisabled, order)
 	}
 
+	suspend fun getPinnedSources(): Set<MangaSource> {
+		assimilateNewSources()
+		val skipNsfw = settings.isNsfwContentDisabled
+		return dao.findAllPinned().mapNotNullTo(EnumSet.noneOf(MangaSource::class.java)) {
+			it.source.toMangaSourceOrNull()?.takeUnless { x -> skipNsfw && x.isNsfw() }
+		}
+	}
+
+	suspend fun getTopSources(limit: Int): List<MangaSource> {
+		assimilateNewSources()
+		return dao.findLastUsed(limit).toSources(settings.isNsfwContentDisabled, null)
+	}
+
 	suspend fun getDisabledSources(): Set<MangaSource> {
 		assimilateNewSources()
 		val result = EnumSet.copyOf(remoteSources)
@@ -214,6 +227,8 @@ class MangaSourcesRepository @Inject constructor(
 				isEnabled = false,
 				sortKey = ++maxSortKey,
 				addedIn = BuildConfig.VERSION_CODE,
+				lastUsedAt = 0,
+				isPinned = false,
 			)
 		}
 		dao.insertIfAbsent(entities)
@@ -224,6 +239,19 @@ class MangaSourcesRepository @Inject constructor(
 		return settings.sourcesVersion == 0 && dao.findAllEnabledNames().isEmpty()
 	}
 
+	suspend fun setIsPinned(sources: Collection<MangaSource>, isPinned: Boolean): ReversibleHandle {
+		setSourcesPinnedImpl(sources, isPinned)
+		return ReversibleHandle {
+			setSourcesEnabledImpl(sources, !isPinned)
+		}
+	}
+
+	suspend fun trackUsage(source: MangaSource) {
+		if (!settings.isIncognitoModeEnabled && !(settings.isHistoryExcludeNsfw && source.isNsfw())) {
+			dao.setLastUsed(source.name, System.currentTimeMillis())
+		}
+	}
+
 	private suspend fun setSourcesEnabledImpl(sources: Collection<MangaSource>, isEnabled: Boolean) {
 		if (sources.size == 1) { // fast path
 			dao.setEnabled(sources.first().name, isEnabled)
@@ -232,6 +260,18 @@ class MangaSourcesRepository @Inject constructor(
 		db.withTransaction {
 			for (source in sources) {
 				dao.setEnabled(source.name, isEnabled)
+			}
+		}
+	}
+
+	private suspend fun setSourcesPinnedImpl(sources: Collection<MangaSource>, isPinned: Boolean) {
+		if (sources.size == 1) { // fast path
+			dao.setPinned(sources.first().name, isPinned)
+			return
+		}
+		db.withTransaction {
+			for (source in sources) {
+				dao.setPinned(source.name, isPinned)
 			}
 		}
 	}
@@ -250,6 +290,7 @@ class MangaSourcesRepository @Inject constructor(
 		sortOrder: SourcesSortOrder?,
 	): MutableList<MangaSource> {
 		val result = ArrayList<MangaSource>(size)
+		val pinned = EnumSet.noneOf(MangaSource::class.java)
 		for (entity in this) {
 			val source = entity.source.toMangaSourceOrNull() ?: continue
 			if (skipNsfwSources && source.isNsfw()) {
@@ -257,10 +298,13 @@ class MangaSourcesRepository @Inject constructor(
 			}
 			if (source in remoteSources) {
 				result.add(source)
+				if (entity.isPinned) {
+					pinned.add(source)
+				}
 			}
 		}
 		if (sortOrder == SourcesSortOrder.ALPHABETIC) {
-			result.sortBy { it.title }
+			result.sortWith(compareBy<MangaSource> { it in pinned }.thenBy { it.title })
 		}
 		return result
 	}

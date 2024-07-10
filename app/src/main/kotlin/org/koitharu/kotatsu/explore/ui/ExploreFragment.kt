@@ -196,6 +196,16 @@ class ExploreFragment :
 				mode.finish()
 			}
 
+			R.id.action_pin -> {
+				viewModel.setSourcesPinned(selectedSources, isPinned = true)
+				mode.finish()
+			}
+
+			R.id.action_unpin -> {
+				viewModel.setSourcesPinned(selectedSources, isPinned = false)
+				mode.finish()
+			}
+
 			else -> return false
 		}
 		return true

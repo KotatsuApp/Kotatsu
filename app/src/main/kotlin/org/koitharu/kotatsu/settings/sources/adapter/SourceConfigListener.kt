@@ -11,5 +11,7 @@ interface SourceConfigListener : OnTipCloseListener<SourceConfigItem.Tip> {
 
 	fun onItemShortcutClick(item: SourceConfigItem.SourceItem)
 
+	fun onItemPinClick(item: SourceConfigItem.SourceItem)
+
 	fun onItemEnabledChanged(item: SourceConfigItem.SourceItem, isEnabled: Boolean)
 }

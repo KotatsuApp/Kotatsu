@@ -37,6 +37,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.core.util.ext.URI_SCHEME_ZIP
+import org.koitharu.kotatsu.core.util.ext.cancelChildrenAndJoin
 import org.koitharu.kotatsu.core.util.ext.compressToPNG
 import org.koitharu.kotatsu.core.util.ext.ensureRamAtLeast
 import org.koitharu.kotatsu.core.util.ext.ensureSuccess
@@ -46,6 +47,7 @@ import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
 import org.koitharu.kotatsu.core.util.ext.isTargetNotEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
+import org.koitharu.kotatsu.core.util.ext.use
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
 import org.koitharu.kotatsu.local.data.PagesCache
@@ -86,7 +88,7 @@ class PageLoader @Inject constructor(
 	private val prefetchQueue = LinkedList<MangaPage>()
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
-	private val whitespaceDetector = WhitespaceDetector(context)
+	private val edgeDetector = EdgeDetector(context)
 
 	fun isPrefetchApplicable(): Boolean {
 		return repository is RemoteMangaRepository
@@ -146,26 +148,31 @@ class PageLoader @Inject constructor(
 		} else {
 			val file = uri.toFile()
 			context.ensureRamAtLeast(file.length() * 2)
-			val image = runInterruptible(Dispatchers.IO) {
+			runInterruptible(Dispatchers.IO) {
 				BitmapFactory.decodeFile(file.absolutePath)
-			}
-			try {
+			}.use { image ->
 				image.compressToPNG(file)
-			} finally {
-				image.recycle()
 			}
 			uri
 		}
 	}
 
 	suspend fun getTrimmedBounds(uri: Uri): Rect? = runCatchingCancellable {
-		whitespaceDetector.getBounds(ImageSource.Uri(uri))
+		edgeDetector.getBounds(ImageSource.Uri(uri))
 	}.onFailure { error ->
 		error.printStackTraceDebug()
 	}.getOrNull()
 
 	suspend fun getPageUrl(page: MangaPage): String {
 		return getRepository(page.source).getPageUrl(page)
+	}
+
+	suspend fun invalidate(clearCache: Boolean) {
+		tasks.clear()
+		loaderScope.cancelChildrenAndJoin()
+		if (clearCache) {
+			cache.clear()
+		}
 	}
 
 	private fun onIdle() = loaderScope.launch {
@@ -223,7 +230,7 @@ class PageLoader @Inject constructor(
 
 			uri.isFileUri() -> uri
 			else -> {
-				val request = createPageRequest(page, pageUrl)
+				val request = createPageRequest(pageUrl, page.source)
 				imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
 					val body = checkNotNull(response.body) { "Null response body" }
 					body.withProgress(progress).use {
@@ -258,12 +265,12 @@ class PageLoader @Inject constructor(
 		private const val PREFETCH_LIMIT_DEFAULT = 6
 		private const val PREFETCH_MIN_RAM_MB = 80L
 
-		fun createPageRequest(page: MangaPage, pageUrl: String) = Request.Builder()
+		fun createPageRequest(pageUrl: String, mangaSource: MangaSource) = Request.Builder()
 			.url(pageUrl)
 			.get()
 			.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
 			.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
-			.tag(MangaSource::class.java, page.source)
+			.tag(MangaSource::class.java, mangaSource)
 			.build()
 	}
 }

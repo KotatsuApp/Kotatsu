@@ -383,4 +383,6 @@
     <string name="paused">متوقف مؤقتاً</string>
     <string name="downloads_wifi_only">التحميل عبر شبكة الوايفاي فقط</string>
     <string name="suggestions_notifications_summary">إظهار الإشعارات أحيانًا بالمانغا المقترحة</string>
+    <string name="mirror_switching_summary">اللغة العربية</string>
+    <string name="suggestions_enable_prompt">‌‌‍‎‎‍</string>
 </resources>
