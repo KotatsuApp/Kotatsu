@@ -88,6 +88,12 @@
 		android:summary="@string/reader_optimize_summary"
 		android:title="@string/reader_optimize" />
 
+	<MultiSelectListPreference
+		android:entries="@array/reader_crop"
+		android:entryValues="@array/values_reader_crop"
+		android:key="reader_crop"
+		android:title="@string/crop_pages" />
+
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="reader_fullscreen"

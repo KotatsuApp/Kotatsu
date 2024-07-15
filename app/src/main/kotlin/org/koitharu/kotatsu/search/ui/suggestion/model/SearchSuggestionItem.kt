@@ -69,6 +69,18 @@ sealed interface SearchSuggestionItem : ListModel {
 		}
 	}
 
+	data class SourceTip(
+		val source: MangaSource,
+	) : SearchSuggestionItem {
+
+		val isNsfw: Boolean
+			get() = source.isNsfw()
+
+		override fun areItemsTheSame(other: ListModel): Boolean {
+			return other is Source && other.source == source
+		}
+	}
+
 	data class Tags(
 		val tags: List<ChipsView.ChipModel>,
 	) : SearchSuggestionItem {

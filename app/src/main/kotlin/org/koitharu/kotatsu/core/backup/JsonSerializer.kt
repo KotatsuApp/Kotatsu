@@ -89,6 +89,9 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("source", e.source)
 			put("enabled", e.isEnabled)
 			put("sort_key", e.sortKey)
+			put("added_in", e.addedIn)
+			put("used_at", e.lastUsedAt)
+			put("pinned", e.isPinned)
 		},
 	)
 

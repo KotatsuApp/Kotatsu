@@ -644,4 +644,6 @@
     <string name="_new">नया</string>
     <string name="all_languages">सभी भाषाएं</string>
     <string name="screenshots_block_incognito">गुप्त मोड में ब्लॉक करें</string>
+    <string name="image_server">पसंदीदा छवि सर्वर</string>
+    <string name="crop_pages">पृष्ठ काटें</string>
 </resources>

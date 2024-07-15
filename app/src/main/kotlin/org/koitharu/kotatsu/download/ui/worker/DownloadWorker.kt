@@ -35,17 +35,18 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.internal.closeQuietly
 import okio.IOException
 import okio.buffer
 import okio.sink
+import okio.use
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.MangaHttpClient
+import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -56,6 +57,7 @@ import org.koitharu.kotatsu.core.util.ext.awaitWorkInfosByTag
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.deleteWork
 import org.koitharu.kotatsu.core.util.ext.deleteWorks
+import org.koitharu.kotatsu.core.util.ext.ensureSuccess
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getWorkInputData
 import org.koitharu.kotatsu.core.util.ext.getWorkSpec
@@ -74,9 +76,9 @@ import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -94,6 +96,7 @@ class DownloadWorker @AssistedInject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val settings: AppSettings,
 	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
+	private val imageProxyInterceptor: ImageProxyInterceptor,
 	notificationFactoryFactory: DownloadNotificationFactory.Factory,
 ) : CoroutineWorker(appContext, params) {
 
@@ -328,28 +331,24 @@ class DownloadWorker @AssistedInject constructor(
 		destination: File,
 		source: MangaSource,
 	): File {
-		val request = Request.Builder()
-			.url(url)
-			.tag(MangaSource::class.java, source)
-			.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
-			.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
-			.get()
-			.build()
+		val request = PageLoader.createPageRequest(url, source)
 		slowdownDispatcher.delay(source)
-		val call = okHttp.newCall(request)
-		val file = File(destination, UUID.randomUUID().toString() + ".tmp")
-		try {
-			val response = call.clone().await()
-			checkNotNull(response.body).use { body ->
-				file.sink(append = false).buffer().use {
-					it.writeAllCancellable(body.source())
+		return imageProxyInterceptor.interceptPageRequest(request, okHttp)
+			.ensureSuccess()
+			.use { response ->
+				val file = File(destination, UUID.randomUUID().toString() + ".tmp")
+				try {
+					checkNotNull(response.body).use { body ->
+						file.sink(append = false).buffer().use {
+							it.writeAllCancellable(body.source())
+						}
+					}
+				} catch (e: CancellationException) {
+					file.delete()
+					throw e
 				}
+				file
 			}
-		} catch (e: CancellationException) {
-			file.delete()
-			throw e
-		}
-		return file
 	}
 
 	private suspend fun publishState(state: DownloadState) {

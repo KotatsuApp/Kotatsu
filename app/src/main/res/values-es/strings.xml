@@ -644,4 +644,6 @@
     <string name="_new">Nuevos</string>
     <string name="all_languages">Todos los idiomas</string>
     <string name="screenshots_block_incognito">Bloquear en modo incógnito</string>
+    <string name="image_server">Servidor de imágenes preferido</string>
+    <string name="crop_pages">Páginas de recortes</string>
 </resources>

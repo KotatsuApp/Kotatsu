@@ -31,6 +31,7 @@ class TrackerDebugViewModel @Inject constructor(
 			lastCheckTime = it.track.lastCheckTime.toInstantOrNull(),
 			lastChapterDate = it.track.lastChapterDate.toInstantOrNull(),
 			lastResult = it.track.lastResult,
+			lastError = it.track.lastError,
 		)
 	}
 }

@@ -18,7 +18,7 @@ import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 @Dao
 abstract class MangaSourcesDao {
 
-	@Query("SELECT * FROM sources ORDER BY sort_key")
+	@Query("SELECT * FROM sources ORDER BY pinned DESC, sort_key")
 	abstract suspend fun findAll(): List<MangaSourceEntity>
 
 	@Query("SELECT source FROM sources WHERE enabled = 1")
@@ -27,7 +27,10 @@ abstract class MangaSourcesDao {
 	@Query("SELECT * FROM sources WHERE added_in >= :version")
 	abstract suspend fun findAllFromVersion(version: Int): List<MangaSourceEntity>
 
-	@Query("SELECT * FROM sources ORDER BY sort_key")
+	@Query("SELECT * FROM sources ORDER BY used_at DESC LIMIT :limit")
+	abstract suspend fun findLastUsed(limit: Int): List<MangaSourceEntity>
+
+	@Query("SELECT * FROM sources ORDER BY pinned DESC, sort_key")
 	abstract fun observeAll(): Flow<List<MangaSourceEntity>>
 
 	@Query("SELECT enabled FROM sources WHERE source = :source")
@@ -42,6 +45,12 @@ abstract class MangaSourcesDao {
 	@Query("UPDATE sources SET sort_key = :sortKey WHERE source = :source")
 	abstract suspend fun setSortKey(source: String, sortKey: Int)
 
+	@Query("UPDATE sources SET used_at = :value WHERE source = :source")
+	abstract suspend fun setLastUsed(source: String, value: Long)
+
+	@Query("UPDATE sources SET pinned = :isPinned WHERE source = :source")
+	abstract suspend fun setPinned(source: String, isPinned: Boolean)
+
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	@Transaction
 	abstract suspend fun insertIfAbsent(entries: Collection<MangaSourceEntity>)
@@ -49,11 +58,14 @@ abstract class MangaSourcesDao {
 	@Upsert
 	abstract suspend fun upsert(entry: MangaSourceEntity)
 
+	@Query("SELECT * FROM sources WHERE pinned = 1")
+	abstract suspend fun findAllPinned(): List<MangaSourceEntity>
+
 	fun observeEnabled(order: SourcesSortOrder): Flow<List<MangaSourceEntity>> {
 		val orderBy = getOrderBy(order)
 
 		@Language("RoomSql")
-		val query = SimpleSQLiteQuery("SELECT * FROM sources WHERE enabled = 1 ORDER BY $orderBy")
+		val query = SimpleSQLiteQuery("SELECT * FROM sources WHERE enabled = 1 ORDER BY pinned DESC, $orderBy")
 		return observeImpl(query)
 	}
 
@@ -61,7 +73,7 @@ abstract class MangaSourcesDao {
 		val orderBy = getOrderBy(order)
 
 		@Language("RoomSql")
-		val query = SimpleSQLiteQuery("SELECT * FROM sources WHERE enabled = 1 ORDER BY $orderBy")
+		val query = SimpleSQLiteQuery("SELECT * FROM sources WHERE enabled = 1 ORDER BY pinned DESC, $orderBy")
 		return findAllImpl(query)
 	}
 
@@ -73,6 +85,8 @@ abstract class MangaSourcesDao {
 				isEnabled = isEnabled,
 				sortKey = getMaxSortKey() + 1,
 				addedIn = BuildConfig.VERSION_CODE,
+				lastUsedAt = 0,
+				isPinned = false,
 			)
 			upsert(entity)
 		}
@@ -91,5 +105,6 @@ abstract class MangaSourcesDao {
 		SourcesSortOrder.ALPHABETIC -> "source ASC"
 		SourcesSortOrder.POPULARITY -> "(SELECT COUNT(*) FROM manga WHERE source = sources.source) DESC"
 		SourcesSortOrder.MANUAL -> "sort_key ASC"
+		SourcesSortOrder.LAST_USED -> "used_at DESC"
 	}
 }

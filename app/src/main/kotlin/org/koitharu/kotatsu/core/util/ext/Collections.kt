@@ -69,4 +69,11 @@ fun <T> Iterable<T>.sortedWithSafe(comparator: Comparator<in T>): List<T> = try 
 	}
 }
 
-fun Collection<*>?.sizeOrZero() = if (this == null) 0 else size
+fun Collection<*>?.sizeOrZero() = this?.size ?: 0
+
+@Suppress("UNCHECKED_CAST")
+inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
+	val result = arrayOfNulls<R>(size)
+	forEachIndexed { index, t -> result[index] = transform(t) }
+	return result as Array<R>
+}

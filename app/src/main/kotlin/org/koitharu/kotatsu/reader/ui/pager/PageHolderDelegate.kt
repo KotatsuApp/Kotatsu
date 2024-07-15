@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
+import android.graphics.Rect
 import android.net.Uri
 import androidx.lifecycle.Observer
 import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
@@ -32,6 +33,7 @@ class PageHolderDelegate(
 	private val callback: Callback,
 	private val networkState: NetworkState,
 	private val exceptionResolver: ExceptionResolver,
+	private val isWebtoon: Boolean,
 ) : DefaultOnImageEventListener, Observer<ReaderSettings> {
 
 	private val scope = loader.loaderScope + Dispatchers.Main.immediate
@@ -39,6 +41,7 @@ class PageHolderDelegate(
 		private set
 	private var job: Job? = null
 	private var uri: Uri? = null
+	private var cachedBounds: Rect? = null
 	private var error: Throwable? = null
 
 	init {
@@ -88,6 +91,7 @@ class PageHolderDelegate(
 	fun onRecycle() {
 		state = State.EMPTY
 		uri = null
+		cachedBounds = null
 		error = null
 		job?.cancel()
 	}
@@ -95,7 +99,7 @@ class PageHolderDelegate(
 	fun reload() {
 		if (state == State.SHOWN) {
 			uri?.let {
-				callback.onImageReady(it)
+				callback.onImageReady(it, cachedBounds)
 			}
 		}
 	}
@@ -138,8 +142,13 @@ class PageHolderDelegate(
 			state = State.CONVERTING
 			try {
 				val newUri = loader.convertBimap(uri)
+				cachedBounds = if (readerSettings.isPagesCropEnabled(isWebtoon)) {
+					loader.getTrimmedBounds(newUri)
+				} else {
+					null
+				}
 				state = State.CONVERTED
-				callback.onImageReady(newUri)
+				callback.onImageReady(newUri, cachedBounds)
 			} catch (ce: CancellationException) {
 				throw ce
 			} catch (e2: Throwable) {
@@ -166,7 +175,12 @@ class PageHolderDelegate(
 				file
 			}
 			state = State.LOADED
-			callback.onImageReady(checkNotNull(uri))
+			cachedBounds = if (readerSettings.isPagesCropEnabled(isWebtoon)) {
+				loader.getTrimmedBounds(checkNotNull(uri))
+			} else {
+				null
+			}
+			callback.onImageReady(checkNotNull(uri), cachedBounds)
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {
@@ -196,7 +210,7 @@ class PageHolderDelegate(
 
 		fun onError(e: Throwable)
 
-		fun onImageReady(uri: Uri)
+		fun onImageReady(uri: Uri, bounds: Rect?)
 
 		fun onImageShowing(settings: ReaderSettings)
 

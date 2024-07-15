@@ -64,6 +64,7 @@ class SourcesListProducer @Inject constructor(
 
 	private suspend fun buildList(): List<SourceConfigItem> {
 		val enabledSources = repository.getEnabledSources()
+		val pinned = repository.getPinnedSources()
 		val isNsfwDisabled = settings.isNsfwContentDisabled
 		val isReorderAvailable = settings.sourcesSortOrder == SourcesSortOrder.MANUAL
 		val withTip = isReorderAvailable && settings.isTipEnabled(TIP_REORDER)
@@ -78,6 +79,7 @@ class SourcesListProducer @Inject constructor(
 					isEnabled = it in enabledSet,
 					isDraggable = false,
 					isAvailable = !isNsfwDisabled || !it.isNsfw(),
+					isPinned = it in pinned,
 				)
 			}.ifEmpty {
 				listOf(SourceConfigItem.EmptySearchResult)
@@ -98,6 +100,7 @@ class SourcesListProducer @Inject constructor(
 					isEnabled = true,
 					isDraggable = isReorderAvailable,
 					isAvailable = false,
+					isPinned = it in pinned,
 				)
 			}
 		}

@@ -11,6 +11,7 @@ data class TrackDebugItem(
 	val lastCheckTime: Instant?,
 	val lastChapterDate: Instant?,
 	val lastResult: Int,
+	val lastError: String?,
 ) : ListModel {
 
 	override fun areItemsTheSame(other: ListModel): Boolean {

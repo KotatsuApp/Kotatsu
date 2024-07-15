@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.preference.ListPreference
+import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.reader.ReaderTapGridConfigActivity
+import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.settings.utils.PercentSummaryProvider
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 
@@ -47,6 +49,9 @@ class ReaderSettingsFragment :
 		findPreference<ListPreference>(AppSettings.KEY_ZOOM_MODE)?.run {
 			entryValues = ZoomMode.entries.names()
 			setDefaultValueCompat(ZoomMode.FIT_CENTER.name)
+		}
+		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_CROP)?.run {
+			summaryProvider = MultiSummaryProvider(R.string.disabled)
 		}
 		findPreference<SliderPreference>(AppSettings.KEY_WEBTOON_ZOOM_OUT)?.summaryProvider = PercentSummaryProvider()
 		updateReaderModeDependency()

@@ -16,8 +16,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
@@ -29,6 +31,7 @@ import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
+import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -47,7 +50,14 @@ class ReaderConfigSheet :
 	@Inject
 	lateinit var orientationHelper: ScreenOrientationHelper
 
+	@Inject
+	lateinit var mangaRepositoryFactory: MangaRepository.Factory
+
+	@Inject
+	lateinit var pageLoader: PageLoader
+
 	private lateinit var mode: ReaderMode
+	private lateinit var imageServerDelegate: ImageServerDelegate
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -57,6 +67,10 @@ class ReaderConfigSheet :
 		mode = arguments?.getInt(ARG_MODE)
 			?.let { ReaderMode.valueOf(it) }
 			?: ReaderMode.STANDARD
+		imageServerDelegate = ImageServerDelegate(
+			mangaRepositoryFactory = mangaRepositoryFactory,
+			mangaSource = viewModel.manga?.toManga()?.source,
+		)
 	}
 
 	override fun onCreateViewBinding(
@@ -83,10 +97,19 @@ class ReaderConfigSheet :
 		binding.buttonSavePage.setOnClickListener(this)
 		binding.buttonScreenRotate.setOnClickListener(this)
 		binding.buttonSettings.setOnClickListener(this)
+		binding.buttonImageServer.setOnClickListener(this)
 		binding.buttonColorFilter.setOnClickListener(this)
 		binding.sliderTimer.addOnChangeListener(this)
 		binding.switchScrollTimer.setOnCheckedChangeListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
+
+		viewLifecycleScope.launch {
+			val isAvailable = imageServerDelegate.isAvailable()
+			if (isAvailable) {
+				bindImageServerTitle()
+			}
+			binding.buttonImageServer.isVisible = isAvailable
+		}
 
 		settings.observeAsStateFlow(
 			scope = lifecycleScope + Dispatchers.Default,
@@ -123,6 +146,14 @@ class ReaderConfigSheet :
 				val page = viewModel.getCurrentPage() ?: return
 				val manga = viewModel.manga?.toManga() ?: return
 				startActivity(ColorFilterConfigActivity.newIntent(v.context, manga, page))
+			}
+
+			R.id.button_image_server -> viewLifecycleScope.launch {
+				if (imageServerDelegate.showDialog(v.context)) {
+					bindImageServerTitle()
+					pageLoader.invalidate(clearCache = true)
+					viewModel.switchChapterBy(0)
+				}
 			}
 		}
 	}
@@ -192,6 +223,14 @@ class ReaderConfigSheet :
 		switch.setOnCheckedChangeListener(null)
 		switch.isChecked = orientationHelper.isLocked
 		switch.setOnCheckedChangeListener(this)
+	}
+
+	private suspend fun bindImageServerTitle() {
+		viewBinding?.buttonImageServer?.text = getString(
+			R.string.inline_preference_pattern,
+			getString(R.string.image_server),
+			imageServerDelegate.getValue() ?: getString(R.string.automatic),
+		)
 	}
 
 	interface Callback {

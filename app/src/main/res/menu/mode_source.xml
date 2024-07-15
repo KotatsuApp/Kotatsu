@@ -11,8 +11,20 @@
 
 	<item
 		android:id="@+id/action_shortcut"
-		android:icon="@drawable/ic_pin"
+		android:icon="@drawable/ic_shortcut"
 		android:title="@string/create_shortcut"
+		app:showAsAction="ifRoom|withText" />
+
+	<item
+		android:id="@+id/action_pin"
+		android:icon="@drawable/ic_pin"
+		android:title="@string/pin"
+		app:showAsAction="ifRoom|withText" />
+
+	<item
+		android:id="@+id/action_unpin"
+		android:icon="@drawable/ic_unpin"
+		android:title="@string/unpin"
 		app:showAsAction="ifRoom|withText" />
 
 	<item

@@ -33,7 +33,6 @@ import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import java.io.File
 import java.net.Proxy
 import java.util.EnumSet
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -485,6 +484,15 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isAutoLocalChaptersCleanupEnabled: Boolean
 		get() = prefs.getBoolean(KEY_CHAPTERS_CLEAR_AUTO, false)
 
+	fun isPagesCropEnabled(mode: ReaderMode): Boolean {
+		val rawValue = prefs.getStringSet(KEY_READER_CROP, emptySet())
+		if (rawValue.isNullOrEmpty()) {
+			return false
+		}
+		val needle = if (mode == ReaderMode.WEBTOON) READER_CROP_WEBTOON else READER_CROP_PAGED
+		return needle.toString() in rawValue
+	}
+
 	fun isTipEnabled(tip: String): Boolean {
 		return prefs.getStringSet(KEY_TIPS_CLOSED, emptySet())?.contains(tip) != true
 	}
@@ -597,6 +605,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READER_ANIMATION = "reader_animation2"
 		const val KEY_READER_MODE = "reader_mode"
 		const val KEY_READER_MODE_DETECT = "reader_mode_detect"
+		const val KEY_READER_CROP = "reader_crop"
 		const val KEY_APP_PASSWORD = "app_password"
 		const val KEY_APP_PASSWORD_NUMERIC = "app_password_num"
 		const val KEY_PROTECT_APP = "protect_app"
@@ -698,5 +707,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 		// old keys are for migration only
 		private const val KEY_IMAGES_PROXY_OLD = "images_proxy"
+
+		// values
+		private const val READER_CROP_PAGED = 1
+		private const val READER_CROP_WEBTOON = 2
 	}
 }

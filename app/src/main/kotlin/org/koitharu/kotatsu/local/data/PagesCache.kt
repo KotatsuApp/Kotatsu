@@ -82,6 +82,13 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		}
 	}
 
+	suspend fun clear() {
+		val cache = lruCache.get()
+		runInterruptible(Dispatchers.IO) {
+			cache.clearCache()
+		}
+	}
+
 	private suspend fun getAvailableSize(): Long = runCatchingCancellable {
 		val statFs = StatFs(cacheDir.get().absolutePath)
 		statFs.availableBytes

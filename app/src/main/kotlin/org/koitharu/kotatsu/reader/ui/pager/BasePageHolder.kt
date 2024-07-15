@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.databinding.LayoutPageInfoBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.PageHolderDelegate.State
+import org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonHolder
 
 abstract class BasePageHolder<B : ViewBinding>(
 	protected val binding: B,
@@ -24,7 +25,14 @@ abstract class BasePageHolder<B : ViewBinding>(
 ) : LifecycleAwareViewHolder(binding.root, lifecycleOwner), PageHolderDelegate.Callback {
 
 	@Suppress("LeakingThis")
-	protected val delegate = PageHolderDelegate(loader, settings, this, networkState, exceptionResolver)
+	protected val delegate = PageHolderDelegate(
+		loader = loader,
+		readerSettings = settings,
+		callback = this,
+		networkState = networkState,
+		exceptionResolver = exceptionResolver,
+		isWebtoon = this is WebtoonHolder,
+	)
 	protected val bindingInfo = LayoutPageInfoBinding.bind(binding.root)
 
 	val context: Context
@@ -70,7 +78,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 		delegate.onRecycle()
 	}
 
-	protected fun SubsamplingScaleImageView.applyDownsampling(isForeground: Boolean) {
+	protected fun SubsamplingScaleImageView.applyDownSampling(isForeground: Boolean) {
 		downSampling = when {
 			isForeground || !settings.isReaderOptimizationEnabled -> 1
 			context.isLowRamDevice() -> 8

@@ -2,12 +2,14 @@ package org.koitharu.kotatsu.reader.domain
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.graphics.Rect
 import android.net.Uri
 import androidx.annotation.AnyThread
 import androidx.collection.LongSparseArray
 import androidx.collection.set
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import com.davemorrissey.labs.subscaleview.ImageSource
 import dagger.hilt.android.ActivityRetainedLifecycle
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
@@ -35,6 +37,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.core.util.ext.URI_SCHEME_ZIP
+import org.koitharu.kotatsu.core.util.ext.cancelChildrenAndJoin
 import org.koitharu.kotatsu.core.util.ext.compressToPNG
 import org.koitharu.kotatsu.core.util.ext.ensureRamAtLeast
 import org.koitharu.kotatsu.core.util.ext.ensureSuccess
@@ -44,6 +47,7 @@ import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
 import org.koitharu.kotatsu.core.util.ext.isTargetNotEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
+import org.koitharu.kotatsu.core.util.ext.use
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
 import org.koitharu.kotatsu.local.data.PagesCache
@@ -51,6 +55,7 @@ import org.koitharu.kotatsu.local.data.isFileUri
 import org.koitharu.kotatsu.local.data.isZipUri
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
@@ -83,6 +88,7 @@ class PageLoader @Inject constructor(
 	private val prefetchQueue = LinkedList<MangaPage>()
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
+	private val edgeDetector = EdgeDetector(context)
 
 	fun isPrefetchApplicable(): Boolean {
 		return repository is RemoteMangaRepository
@@ -142,20 +148,31 @@ class PageLoader @Inject constructor(
 		} else {
 			val file = uri.toFile()
 			context.ensureRamAtLeast(file.length() * 2)
-			val image = runInterruptible(Dispatchers.IO) {
+			runInterruptible(Dispatchers.IO) {
 				BitmapFactory.decodeFile(file.absolutePath)
-			}
-			try {
+			}.use { image ->
 				image.compressToPNG(file)
-			} finally {
-				image.recycle()
 			}
 			uri
 		}
 	}
 
+	suspend fun getTrimmedBounds(uri: Uri): Rect? = runCatchingCancellable {
+		edgeDetector.getBounds(ImageSource.Uri(uri))
+	}.onFailure { error ->
+		error.printStackTraceDebug()
+	}.getOrNull()
+
 	suspend fun getPageUrl(page: MangaPage): String {
 		return getRepository(page.source).getPageUrl(page)
+	}
+
+	suspend fun invalidate(clearCache: Boolean) {
+		tasks.clear()
+		loaderScope.cancelChildrenAndJoin()
+		if (clearCache) {
+			cache.clear()
+		}
 	}
 
 	private fun onIdle() = loaderScope.launch {
@@ -213,7 +230,7 @@ class PageLoader @Inject constructor(
 
 			uri.isFileUri() -> uri
 			else -> {
-				val request = createPageRequest(page, pageUrl)
+				val request = createPageRequest(pageUrl, page.source)
 				imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
 					val body = checkNotNull(response.body) { "Null response body" }
 					body.withProgress(progress).use {
@@ -248,12 +265,12 @@ class PageLoader @Inject constructor(
 		private const val PREFETCH_LIMIT_DEFAULT = 6
 		private const val PREFETCH_MIN_RAM_MB = 80L
 
-		fun createPageRequest(page: MangaPage, pageUrl: String) = Request.Builder()
+		fun createPageRequest(pageUrl: String, mangaSource: MangaSource) = Request.Builder()
 			.url(pageUrl)
 			.get()
 			.header(CommonHeaders.ACCEPT, "image/webp,image/png;q=0.9,image/jpeg,*/*;q=0.8")
 			.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
-			.tag(MangaSource::class.java, page.source)
+			.tag(MangaSource::class.java, mangaSource)
 			.build()
 	}
 }

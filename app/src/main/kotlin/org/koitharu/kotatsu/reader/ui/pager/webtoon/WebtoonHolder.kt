@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
+import android.graphics.Rect
 import android.net.Uri
 import android.view.View
 import androidx.core.view.isVisible
@@ -39,12 +40,12 @@ class WebtoonHolder(
 
 	override fun onResume() {
 		super.onResume()
-		binding.ssiv.applyDownsampling(isForeground = true)
+		binding.ssiv.applyDownSampling(isForeground = true)
 	}
 
 	override fun onPause() {
 		super.onPause()
-		binding.ssiv.applyDownsampling(isForeground = false)
+		binding.ssiv.applyDownSampling(isForeground = false)
 	}
 
 	override fun onConfigChanged() {
@@ -52,7 +53,7 @@ class WebtoonHolder(
 		if (settings.applyBitmapConfig(binding.ssiv)) {
 			delegate.reload()
 		}
-		binding.ssiv.applyDownsampling(isResumed())
+		binding.ssiv.applyDownSampling(isResumed())
 	}
 
 	override fun onBind(data: ReaderPage) {
@@ -89,8 +90,12 @@ class WebtoonHolder(
 		}
 	}
 
-	override fun onImageReady(uri: Uri) {
-		binding.ssiv.setImage(ImageSource.Uri(uri))
+	override fun onImageReady(uri: Uri, bounds: Rect?) {
+		val source = ImageSource.Uri(uri)
+		if (bounds != null) {
+			source.region(bounds)
+		}
+		binding.ssiv.setImage(source)
 	}
 
 	override fun onImageShowing(settings: ReaderSettings) {
