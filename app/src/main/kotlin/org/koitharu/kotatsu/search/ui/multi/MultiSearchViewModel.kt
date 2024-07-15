@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.search.ui.multi
 
 import androidx.annotation.CheckResult
+import androidx.collection.LongSet
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -81,7 +82,7 @@ class MultiSearchViewModel @Inject constructor(
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
-	fun getItems(ids: Set<Long>): Set<Manga> {
+	fun getItems(ids: LongSet): Set<Manga> {
 		val snapshot = listData.value ?: return emptySet()
 		val result = HashSet<Manga>(ids.size)
 		snapshot.forEach { x ->

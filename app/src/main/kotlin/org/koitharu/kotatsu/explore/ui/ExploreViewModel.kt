@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.explore.ui
 
+import androidx.collection.LongSet
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -126,7 +127,7 @@ class ExploreViewModel @Inject constructor(
 		settings.closeTip(TIP_SUGGESTIONS)
 	}
 
-	fun sourcesSnapshot(ids: Set<Long>): List<MangaSourceInfo> {
+	fun sourcesSnapshot(ids: LongSet): List<MangaSourceInfo> {
 		return content.value.mapNotNull {
 			(it as? MangaSourceItem)?.takeIf { x -> x.id in ids }?.source
 		}

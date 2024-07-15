@@ -32,6 +32,8 @@ import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.toCollection
+import org.koitharu.kotatsu.core.util.ext.toSet
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
@@ -137,10 +139,10 @@ class ChaptersFragment :
 				val ids = selectionController?.peekCheckedIds()
 				val manga = viewModel.manga.value
 				when {
-					ids.isNullOrEmpty() || manga == null -> Unit
+					ids == null || ids.isEmpty() || manga == null -> Unit
 					ids.size == manga.chapters?.size -> viewModel.deleteLocal()
 					else -> {
-						LocalChaptersRemoveService.start(requireContext(), manga, ids)
+						LocalChaptersRemoveService.start(requireContext(), manga, ids.toSet())
 						Snackbar.make(
 							requireViewBinding().recyclerViewChapters,
 							R.string.chapters_will_removed_background,
@@ -154,7 +156,7 @@ class ChaptersFragment :
 
 			R.id.action_select_range -> {
 				val items = chaptersAdapter?.items ?: return false
-				val ids = HashSet(controller.peekCheckedIds())
+				val ids = controller.peekCheckedIds().toCollection(HashSet())
 				val buffer = HashSet<Long>()
 				var isAdding = false
 				for (x in items) {
@@ -188,8 +190,12 @@ class ChaptersFragment :
 			}
 
 			R.id.action_mark_current -> {
-				val id = controller.peekCheckedIds().singleOrNull() ?: return false
-				viewModel.markChapterAsCurrent(id)
+				val ids = controller.peekCheckedIds()
+				if (ids.size == 1) {
+					viewModel.markChapterAsCurrent(ids.first())
+				} else {
+					return false
+				}
 				mode.finish()
 				true
 			}

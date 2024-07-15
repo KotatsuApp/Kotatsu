@@ -1,11 +1,11 @@
 package org.koitharu.kotatsu.core.ui.list
 
-import android.app.Notification.Action
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.ActionMode
+import androidx.collection.LongSet
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -14,6 +14,8 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
 import kotlinx.coroutines.Dispatchers
 import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
+import org.koitharu.kotatsu.core.util.ext.toLongArray
+import org.koitharu.kotatsu.core.util.ext.toSet
 import kotlin.coroutines.EmptyCoroutineContext
 
 private const val KEY_SELECTION = "selection"
@@ -35,11 +37,9 @@ class ListSelectionController(
 		registryOwner.lifecycle.addObserver(StateEventObserver())
 	}
 
-	fun snapshot(): Set<Long> {
-		return peekCheckedIds().toSet()
-	}
+	fun snapshot(): Set<Long> = peekCheckedIds().toSet()
 
-	fun peekCheckedIds(): Set<Long> {
+	fun peekCheckedIds(): LongSet {
 		return decoration.checkedItemsIds
 	}
 

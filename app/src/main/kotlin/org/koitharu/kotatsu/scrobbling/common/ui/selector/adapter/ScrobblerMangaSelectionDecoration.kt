@@ -14,7 +14,11 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 class ScrobblerMangaSelectionDecoration(context: Context) : MangaSelectionDecoration(context) {
 
 	var checkedItemId: Long
-		get() = selection.singleOrNull() ?: NO_ID
+		get() = if (selection.size == 1) {
+			selection.first()
+		} else {
+			NO_ID
+		}
 		set(value) {
 			clearSelection()
 			if (value != NO_ID) {

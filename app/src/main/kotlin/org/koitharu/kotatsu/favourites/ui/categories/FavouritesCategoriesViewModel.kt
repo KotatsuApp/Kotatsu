@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
+import androidx.collection.LongSet
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -76,7 +77,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		}
 	}
 
-	fun getCategories(ids: Set<Long>): ArrayList<FavouriteCategory> {
+	fun getCategories(ids: LongSet): ArrayList<FavouriteCategory> {
 		val items = content.requireValue()
 		return items.mapNotNullTo(ArrayList(ids.size)) { item ->
 			(item as? CategoryListModel)?.category?.takeIf { it.id in ids }

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.download.ui.list
 
 import androidx.collection.ArrayMap
+import androidx.collection.LongSet
 import androidx.collection.LongSparseArray
 import androidx.collection.getOrElse
 import androidx.collection.set
@@ -182,7 +183,7 @@ class DownloadsViewModel @Inject constructor(
 		}
 	}
 
-	fun snapshot(ids: Set<Long>): Collection<DownloadItemModel> {
+	fun snapshot(ids: LongSet): Collection<DownloadItemModel> {
 		return works.value?.filterTo(ArrayList(ids.size)) { x -> x.id.mostSignificantBits in ids }.orEmpty()
 	}
 
