@@ -12,7 +12,7 @@ abstract class AbstractSelectionItemDecoration : RecyclerView.ItemDecoration() {
 
 	private val bounds = Rect()
 	private val boundsF = RectF()
-	protected val selection = HashSet<Long>()
+	protected val selection = HashSet<Long>() // TODO MutableLongSet
 
 	protected var hasBackground: Boolean = true
 	protected var hasForeground: Boolean = false

@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.dao.MangaSourcesDao
 import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
+import org.koitharu.kotatsu.core.model.MangaSourceInfo
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -146,7 +147,7 @@ class MangaSourcesRepository @Inject constructor(
 		}.distinctUntilChanged().onStart { assimilateNewSources() }
 	}
 
-	fun observeEnabledSources(): Flow<List<MangaSource>> = combine(
+	fun observeEnabledSources(): Flow<List<MangaSourceInfo>> = combine(
 		observeIsNsfwDisabled(),
 		observeSortOrder(),
 	) { skipNsfw, order ->
@@ -295,23 +296,25 @@ class MangaSourcesRepository @Inject constructor(
 	private fun List<MangaSourceEntity>.toSources(
 		skipNsfwSources: Boolean,
 		sortOrder: SourcesSortOrder?,
-	): MutableList<MangaSource> {
-		val result = ArrayList<MangaSource>(size)
-		val pinned = HashSet<MangaSource>()
+	): MutableList<MangaSourceInfo> {
+		val result = ArrayList<MangaSourceInfo>(size)
 		for (entity in this) {
 			val source = entity.source.toMangaSourceOrNull() ?: continue
 			if (skipNsfwSources && source.isNsfw()) {
 				continue
 			}
 			if (source in remoteSources) {
-				result.add(source)
-				if (entity.isPinned) {
-					pinned.add(source)
-				}
+				result.add(
+					MangaSourceInfo(
+						mangaSource = source,
+						isEnabled = entity.isEnabled,
+						isPinned = entity.isPinned,
+					),
+				)
 			}
 		}
 		if (sortOrder == SourcesSortOrder.ALPHABETIC) {
-			result.sortWith(compareBy<MangaSource> { it in pinned }.thenBy { it.getTitle(context) })
+			result.sortWith(compareBy<MangaSourceInfo> { it.isPinned }.thenBy { it.getTitle(context) })
 		}
 		return result
 	}

@@ -41,8 +41,6 @@ import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaParserSource
-import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity
@@ -166,16 +164,17 @@ class ExploreFragment :
 	}
 
 	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		val isSingleSelection = controller.count == 1
+		val selectedSources = viewModel.sourcesSnapshot(controller.peekCheckedIds())
+		val isSingleSelection = selectedSources.size == 1
 		menu.findItem(R.id.action_settings).isVisible = isSingleSelection
 		menu.findItem(R.id.action_shortcut).isVisible = isSingleSelection
+		menu.findItem(R.id.action_pin).isVisible = selectedSources.all { !it.isPinned }
+		menu.findItem(R.id.action_unpin).isVisible = selectedSources.all { it.isPinned }
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
 
 	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
-		val selectedSources = controller.peekCheckedIds().mapNotNullToSet { id ->
-			MangaParserSource.entries.getOrNull(id.toInt()) // TODO
-		}
+		val selectedSources = viewModel.sourcesSnapshot(controller.peekCheckedIds())
 		if (selectedSources.isEmpty()) {
 			return false
 		}

@@ -37,9 +37,11 @@
 			android:id="@+id/textView_title"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:drawablePadding="2dp"
 			android:ellipsize="end"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceTitleSmall"
+			tools:drawableStart="@drawable/ic_pin_small"
 			tools:text="@tools:sample/lorem[2]" />
 
 		<TextView

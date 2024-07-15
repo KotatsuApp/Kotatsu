@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSourceInfo
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -108,7 +109,7 @@ class ExploreViewModel @Inject constructor(
 		}
 	}
 
-	fun setSourcesPinned(sources: Set<MangaSource>, isPinned: Boolean) {
+	fun setSourcesPinned(sources: Collection<MangaSource>, isPinned: Boolean) {
 		launchJob(Dispatchers.Default) {
 			sourcesRepository.setIsPinned(sources, isPinned)
 			val message = if (sources.size == 1) {
@@ -125,6 +126,12 @@ class ExploreViewModel @Inject constructor(
 		settings.closeTip(TIP_SUGGESTIONS)
 	}
 
+	fun sourcesSnapshot(ids: Set<Long>): List<MangaSourceInfo> {
+		return content.value.mapNotNull {
+			(it as? MangaSourceItem)?.takeIf { x -> x.id in ids }?.source
+		}
+	}
+
 	private fun createContentFlow() = combine(
 		sourcesRepository.observeEnabledSources(),
 		getSuggestionFlow(),
@@ -136,7 +143,7 @@ class ExploreViewModel @Inject constructor(
 	}.withErrorHandling()
 
 	private fun buildList(
-		sources: List<MangaSource>,
+		sources: List<MangaSourceInfo>,
 		recommendation: List<Manga>,
 		isGrid: Boolean,
 		randomLoading: Boolean,
