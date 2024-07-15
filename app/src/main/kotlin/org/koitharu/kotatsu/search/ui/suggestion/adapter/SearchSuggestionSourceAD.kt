@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getSummary
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
+import org.koitharu.kotatsu.core.ui.image.AnimatedFaviconDrawable
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
@@ -37,7 +38,7 @@ fun searchSuggestionSourceAD(
 		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			fallback(fallbackIcon)
-			placeholder(fallbackIcon)
+			placeholder(AnimatedFaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name))
 			error(fallbackIcon)
 			source(item.source)
 			enqueueWith(coil)

@@ -17,18 +17,18 @@ import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.KotatsuColors
 
-class FaviconDrawable(
+open class FaviconDrawable(
 	context: Context,
 	@StyleRes styleResId: Int,
 	name: String,
 ) : Drawable() {
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-	private var colorBackground = Color.WHITE
+	protected var colorBackground = Color.WHITE
+	protected var colorForeground = Color.DKGRAY
 	private var colorStroke = Color.LTGRAY
 	private val letter = name.take(1).uppercase()
 	private var cornerSize = 0f
-	private var colorForeground = Color.DKGRAY
 	private val textBounds = Rect()
 	private val tempRect = Rect()
 	private val boundsF = RectF()
