@@ -98,7 +98,7 @@ class SourcesCatalogViewModel @Inject constructor(
 	}
 
 	private suspend fun buildSourcesList(filter: SourcesCatalogFilter, query: String?): List<SourceCatalogItem> {
-		val sources = repository.getAvailableSources(
+		val sources = repository.queryParserSources(
 			isDisabledOnly = true,
 			isNewOnly = filter.isNewOnly,
 			excludeBroken = false,
@@ -124,9 +124,7 @@ class SourcesCatalogViewModel @Inject constructor(
 				},
 			)
 		} else {
-			sources.sortedBy {
-				it.isBroken
-			}.map {
+			sources.map {
 				SourceCatalogItem.Source(source = it)
 			}
 		}

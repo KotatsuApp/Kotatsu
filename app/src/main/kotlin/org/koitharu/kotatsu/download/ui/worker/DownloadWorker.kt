@@ -44,7 +44,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.isLocal
-import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.MangaDataRepository

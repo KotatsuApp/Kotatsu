@@ -79,7 +79,7 @@ class MangaSourcesRepository @Inject constructor(
 		return result
 	}
 
-	suspend fun getAvailableSources(
+	suspend fun queryParserSources(
 		isDisabledOnly: Boolean,
 		isNewOnly: Boolean,
 		excludeBroken: Boolean,
@@ -87,7 +87,7 @@ class MangaSourcesRepository @Inject constructor(
 		query: String?,
 		locale: String?,
 		sortOrder: SourcesSortOrder?,
-	): List<MangaSource> {
+	): List<MangaParserSource> {
 		assimilateNewSources()
 		val entities = dao.findAll().toMutableList()
 		if (isDisabledOnly) {
@@ -99,15 +99,17 @@ class MangaSourcesRepository @Inject constructor(
 		val sources = entities.toSources(
 			skipNsfwSources = settings.isNsfwContentDisabled,
 			sortOrder = sortOrder,
-		)
+		).run {
+			filterIsInstanceTo(ArrayList<MangaParserSource>(size))
+		}
 		if (locale != null) {
-			sources.retainAll { it is MangaParserSource && it.locale == locale }
+			sources.retainAll { it.locale == locale }
 		}
 		if (excludeBroken) {
-			sources.removeAll { it is MangaParserSource && it.isBroken }
+			sources.removeAll { it.isBroken }
 		}
 		if (types.isNotEmpty()) {
-			sources.retainAll { it is MangaParserSource && it.contentType in types }
+			sources.retainAll { it.contentType in types }
 		}
 		if (!query.isNullOrEmpty()) {
 			sources.retainAll {
