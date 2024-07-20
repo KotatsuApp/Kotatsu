@@ -101,7 +101,7 @@ class MangaSourcesRepository @Inject constructor(
 			skipNsfwSources = settings.isNsfwContentDisabled,
 			sortOrder = sortOrder,
 		).run {
-			filterIsInstanceTo(ArrayList<MangaParserSource>(size))
+			mapNotNullTo(ArrayList(size)) { it.mangaSource as? MangaParserSource }
 		}
 		if (locale != null) {
 			sources.retainAll { it.locale == locale }
