@@ -15,7 +15,7 @@ android {
 	defaultConfig {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
-		targetSdk = 34
+		targetSdk = 35
 		versionCode = 652
 		versionName = '7.4-a1'
 		generatedDensities = []
@@ -82,13 +82,13 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:b06288e7eb') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:5404743f17') {
 		exclude group: 'org.json', module: 'json'
 	}
 
 	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.24'
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.10-RC'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0-RC'
 
 	implementation 'androidx.appcompat:appcompat:1.7.0'
 	implementation 'androidx.core:core-ktx:1.13.1'
@@ -134,8 +134,8 @@ dependencies {
 	implementation 'androidx.hilt:hilt-work:1.2.0'
 	kapt 'androidx.hilt:hilt-compiler:1.2.0'
 
-	implementation 'io.coil-kt:coil-base:2.6.0'
-	implementation 'io.coil-kt:coil-svg:2.6.0'
+	implementation 'io.coil-kt:coil-base:2.7.0'
+	implementation 'io.coil-kt:coil-svg:2.7.0'
 	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:882bc0620c'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
