@@ -314,7 +314,7 @@ class MangaSourcesRepository @Inject constructor(
 			}
 		}
 		if (sortOrder == SourcesSortOrder.ALPHABETIC) {
-			result.sortWith(compareBy<MangaSourceInfo> { it.isPinned }.thenBy { it.getTitle(context) })
+			result.sortWith(compareBy<MangaSourceInfo> { !it.isPinned }.thenBy { it.getTitle(context) })
 		}
 		return result
 	}
