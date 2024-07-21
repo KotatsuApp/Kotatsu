@@ -29,10 +29,10 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:drawablePadding="16dp"
 				android:singleLine="true"
 				android:text="@string/welcome"
 				android:textAppearance="?textAppearanceTitleLarge"
-				android:drawablePadding="16dp"
 				app:drawableStartCompat="@drawable/ic_welcome" />
 
 			<HorizontalScrollView
@@ -90,8 +90,8 @@
 				android:id="@+id/chips_locales"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
 				android:layout_marginTop="@dimen/margin_normal"
-				android:paddingHorizontal="@dimen/margin_normal"
 				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
 
 			<TextView
@@ -108,8 +108,8 @@
 				android:id="@+id/chips_type"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
 				android:layout_marginTop="@dimen/margin_normal"
-				android:paddingHorizontal="@dimen/margin_normal"
 				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
 
 		</LinearLayout>

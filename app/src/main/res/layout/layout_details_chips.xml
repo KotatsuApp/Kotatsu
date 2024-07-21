@@ -6,7 +6,6 @@
 	android:id="@+id/info_layout"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:paddingHorizontal="@dimen/screen_padding"
 	app:chipSpacingHorizontal="6dp"
 	app:chipSpacingVertical="6dp">
 
