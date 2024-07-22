@@ -16,13 +16,13 @@ import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemMangaListDetailsBinding
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
+import org.koitharu.kotatsu.list.ui.model.MangaDetailedListModel
 
 fun mangaListDetailedItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: MangaDetailsClickListener,
-) = adapterDelegateViewBinding<MangaListDetailedModel, ListModel, ItemMangaListDetailsBinding>(
+) = adapterDelegateViewBinding<MangaDetailedListModel, ListModel, ItemMangaListDetailsBinding>(
 	{ inflater, parent -> ItemMangaListDetailsBinding.inflate(inflater, parent, false) },
 ) {
 	var badge: BadgeDrawable? = null

@@ -89,11 +89,11 @@ import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
 import org.koitharu.kotatsu.image.ui.ImageActivity
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.local.ui.info.LocalInfoDialog
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -122,7 +122,7 @@ class DetailsActivity :
 	lateinit var coil: ImageLoader
 
 	@Inject
-	lateinit var tagHighlighter: ListExtraProvider
+	lateinit var listMapper: MangaListMapper
 
 	private val viewModel: DetailsViewModel by viewModels()
 	private lateinit var menuProvider: DetailsMenuProvider
@@ -391,7 +391,7 @@ class DetailsActivity :
 		}
 	}
 
-	private fun onRelatedMangaChanged(related: List<MangaItemModel>) {
+	private fun onRelatedMangaChanged(related: List<MangaListModel>) {
 		if (related.isEmpty()) {
 			viewBinding.groupRelated.isVisible = false
 			return
@@ -613,15 +613,7 @@ class DetailsActivity :
 
 	private fun bindTags(manga: Manga) {
 		viewBinding.chipsTags.isVisible = manga.tags.isNotEmpty()
-		viewBinding.chipsTags.setChips(
-			manga.tags.map { tag ->
-				ChipsView.ChipModel(
-					title = tag.title,
-					tint = tagHighlighter.getTagTint(tag),
-					data = tag,
-				)
-			},
-		)
+		viewBinding.chipsTags.setChips(listMapper.mapTags(manga.tags))
 	}
 
 	private fun loadCover(manga: Manga) {

@@ -34,7 +34,7 @@ import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
 import org.koitharu.kotatsu.explore.ui.model.RecommendationsItem
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.MangaListModel
+import org.koitharu.kotatsu.list.ui.model.MangaCompactListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 
 fun exploreButtonsAD(
@@ -66,7 +66,7 @@ fun exploreRecommendationItemAD(
 	{ layoutInflater, parent -> ItemRecommendationBinding.inflate(layoutInflater, parent, false) },
 ) {
 
-	val adapter = BaseListAdapter<MangaListModel>()
+	val adapter = BaseListAdapter<MangaCompactListModel>()
 		.addDelegate(ListItemType.MANGA_LIST, recommendationMangaItemAD(coil, itemClickListener, lifecycleOwner))
 	binding.pager.adapter = adapter
 	binding.pager.recyclerView?.isNestedScrollingEnabled = false
@@ -81,7 +81,7 @@ fun recommendationMangaItemAD(
 	coil: ImageLoader,
 	itemClickListener: OnListItemClickListener<Manga>,
 	lifecycleOwner: LifecycleOwner,
-) = adapterDelegateViewBinding<MangaListModel, MangaListModel, ItemRecommendationMangaBinding>(
+) = adapterDelegateViewBinding<MangaCompactListModel, MangaCompactListModel, ItemRecommendationMangaBinding>(
 	{ layoutInflater, parent -> ItemRecommendationMangaBinding.inflate(layoutInflater, parent, false) },
 ) {
 

@@ -28,8 +28,8 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MarkAsReadUseCase
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.domain.ListSortOrder
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -38,9 +38,6 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.list.ui.model.toGridModel
-import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
-import org.koitharu.kotatsu.list.ui.model.toListModel
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
@@ -53,7 +50,7 @@ private const val PAGE_SIZE = 20
 class HistoryListViewModel @Inject constructor(
 	private val repository: HistoryRepository,
 	settings: AppSettings,
-	private val extraProvider: ListExtraProvider,
+	private val mangaListMapper: MangaListMapper,
 	private val localMangaRepository: LocalMangaRepository,
 	private val markAsReadUseCase: MarkAsReadUseCase,
 	networkState: NetworkState,
@@ -203,11 +200,7 @@ class HistoryListViewModel @Inject constructor(
 					prevHeader = header
 				}
 			}
-			result += when (mode) {
-				ListMode.LIST -> manga.toListModel(extraProvider)
-				ListMode.DETAILED_LIST -> manga.toListDetailedModel(extraProvider)
-				ListMode.GRID -> manga.toGridModel(extraProvider)
-			}
+			result += mangaListMapper.toListModel(manga, mode)
 		}
 		return result
 	}

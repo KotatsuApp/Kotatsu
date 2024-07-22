@@ -50,9 +50,8 @@ import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
-import org.koitharu.kotatsu.list.ui.model.MangaItemModel
-import org.koitharu.kotatsu.list.ui.model.toUi
+import org.koitharu.kotatsu.list.domain.MangaListMapper
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
@@ -76,7 +75,7 @@ class DetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	private val relatedMangaUseCase: RelatedMangaUseCase,
-	private val extraProvider: ListExtraProvider,
+	private val mangaListMapper: MangaListMapper,
 	private val detailsLoadUseCase: DetailsLoadUseCase,
 	private val progressUpdateUseCase: ProgressUpdateUseCase,
 	private val readingTimeUseCase: ReadingTimeUseCase,
@@ -171,9 +170,12 @@ class DetailsViewModel @Inject constructor(
 	val scrobblingInfo: StateFlow<List<ScrobblingInfo>> = interactor.observeScrobblingInfo(mangaId)
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
-	val relatedManga: StateFlow<List<MangaItemModel>> = manga.mapLatest {
+	val relatedManga: StateFlow<List<MangaListModel>> = manga.mapLatest {
 		if (it != null && settings.isRelatedMangaEnabled) {
-			relatedMangaUseCase.invoke(it)?.toUi(ListMode.GRID, extraProvider).orEmpty()
+			mangaListMapper.toListModelList(
+				manga = relatedMangaUseCase(it).orEmpty(),
+				mode = ListMode.GRID,
+			)
 		} else {
 			emptyList()
 		}

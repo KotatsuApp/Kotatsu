@@ -16,10 +16,10 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
@@ -35,7 +35,7 @@ class LocalListViewModel @Inject constructor(
 	filter: FilterCoordinator,
 	private val settings: AppSettings,
 	downloadScheduler: DownloadWorker.Scheduler,
-	listExtraProvider: ListExtraProvider,
+	mangaListMapper: MangaListMapper,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	exploreRepository: ExploreRepository,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
@@ -46,7 +46,7 @@ class LocalListViewModel @Inject constructor(
 	mangaRepositoryFactory,
 	filter,
 	settings,
-	listExtraProvider,
+	mangaListMapper,
 	downloadScheduler,
 	exploreRepository,
 	sourcesRepository,
@@ -70,7 +70,7 @@ class LocalListViewModel @Inject constructor(
 			return
 		}
 		for (item in list) {
-			if (item !is MangaItemModel) {
+			if (item !is MangaListModel) {
 				continue
 			}
 			val file = item.manga.url.toUriOrNull()?.toFileOrNull() ?: continue

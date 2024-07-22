@@ -24,13 +24,12 @@ import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.ARG_CATEGORY_ID
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 import org.koitharu.kotatsu.history.domain.MarkAsReadUseCase
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
 import org.koitharu.kotatsu.list.domain.ListSortOrder
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -41,7 +40,7 @@ private const val PAGE_SIZE = 20
 class FavouritesListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val repository: FavouritesRepository,
-	private val listExtraProvider: ListExtraProvider,
+	private val mangaListMapper: MangaListMapper,
 	private val markAsReadUseCase: MarkAsReadUseCase,
 	settings: AppSettings,
 	downloadScheduler: DownloadWorker.Scheduler,
@@ -86,7 +85,7 @@ class FavouritesListViewModel @Inject constructor(
 
 			else -> {
 				isReady.set(true)
-				list.toUi(mode, listExtraProvider)
+				mangaListMapper.toListModelList(list, mode)
 			}
 		}
 	}.catch {

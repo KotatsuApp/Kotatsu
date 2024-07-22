@@ -29,12 +29,11 @@ import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -46,7 +45,7 @@ private const val MIN_HAS_MORE_ITEMS = 8
 @HiltViewModel
 class MultiSearchViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-	private val extraProvider: ListExtraProvider,
+	private val mangaListMapper: MangaListMapper,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val downloadScheduler: DownloadWorker.Scheduler,
 	private val sourcesRepository: MangaSourcesRepository,
@@ -121,8 +120,10 @@ class MultiSearchViewModel @Inject constructor(
 			launch {
 				val item = runCatchingCancellable {
 					semaphore.withPermit {
-						repository.getList(offset = 0, filter = MangaListFilter.Search(q))
-							.toUi(ListMode.GRID, extraProvider)
+						mangaListMapper.toListModelList(
+							manga = repository.getList(offset = 0, filter = MangaListFilter.Search(q)),
+							mode = ListMode.GRID,
+						)
 					}
 				}.fold(
 					onSuccess = { list ->

@@ -20,7 +20,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -28,7 +28,6 @@ import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import javax.inject.Inject
@@ -38,7 +37,7 @@ class SearchViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	repositoryFactory: MangaRepository.Factory,
 	settings: AppSettings,
-	private val extraProvider: ListExtraProvider,
+	private val mangaListMapper: MangaListMapper,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
@@ -69,7 +68,7 @@ class SearchViewModel @Inject constructor(
 
 			else -> {
 				val result = ArrayList<ListModel>(list.size + 1)
-				list.toUi(result, mode, extraProvider)
+				mangaListMapper.toListModelList(result, list, mode)
 				when {
 					error != null -> result += error.toErrorFooter()
 					hasNext -> result += LoadingFooter()

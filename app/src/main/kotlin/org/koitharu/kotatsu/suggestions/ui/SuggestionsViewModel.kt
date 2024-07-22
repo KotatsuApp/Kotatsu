@@ -14,12 +14,11 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import javax.inject.Inject
 
@@ -27,7 +26,7 @@ import javax.inject.Inject
 class SuggestionsViewModel @Inject constructor(
 	repository: SuggestionRepository,
 	settings: AppSettings,
-	private val extraProvider: ListExtraProvider,
+	private val mangaListMapper: MangaListMapper,
 	downloadScheduler: DownloadWorker.Scheduler,
 	private val suggestionsScheduler: SuggestionsWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
@@ -49,7 +48,7 @@ class SuggestionsViewModel @Inject constructor(
 				),
 			)
 
-			else -> list.toUi(mode, extraProvider)
+			else -> mangaListMapper.toListModelList(list, mode)
 		}
 	}.onStart {
 		loadingCounter.increment()

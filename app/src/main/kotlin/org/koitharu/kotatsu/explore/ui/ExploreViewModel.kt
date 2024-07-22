@@ -33,7 +33,7 @@ import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.MangaListModel
+import org.koitharu.kotatsu.list.ui.model.MangaCompactListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -190,7 +190,7 @@ class ExploreViewModel @Inject constructor(
 	}
 
 	private fun List<Manga>.toRecommendationList() = map { manga ->
-		MangaListModel(
+		MangaCompactListModel(
 			id = manga.id,
 			title = manga.title,
 			subtitle = manga.tags.joinToString { it.title },

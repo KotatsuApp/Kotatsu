@@ -15,11 +15,13 @@ import org.koitharu.kotatsu.core.model.chaptersCount
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
@@ -34,7 +36,8 @@ class AlternativesViewModel @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val alternativesUseCase: AlternativesUseCase,
 	private val migrateUseCase: MigrateUseCase,
-	private val extraProvider: ListExtraProvider,
+	private val historyRepository: HistoryRepository,
+	private val settings: AppSettings,
 ) : BaseViewModel() {
 
 	val manga = savedStateHandle.require<ParcelableManga>(MangaIntent.KEY_MANGA).manga
@@ -53,7 +56,7 @@ class AlternativesViewModel @Inject constructor(
 				.map {
 					MangaAlternativeModel(
 						manga = it,
-						progress = extraProvider.getProgress(it.id),
+						progress = getProgress(it.id),
 						referenceChapters = refCount,
 					)
 				}.runningFold<MangaAlternativeModel, List<ListModel>>(listOf(LoadingState)) { acc, item ->
@@ -86,13 +89,11 @@ class AlternativesViewModel @Inject constructor(
 		}
 	}
 
-	private suspend fun mapList(list: List<Manga>, refCount: Int): List<MangaAlternativeModel> {
-		return list.map {
-			MangaAlternativeModel(
-				manga = it,
-				progress = extraProvider.getProgress(it.id),
-				referenceChapters = refCount,
-			)
+	private suspend fun getProgress(mangaId: Long): Float {
+		return if (settings.isReadingIndicatorsEnabled) {
+			historyRepository.getProgress(mangaId)
+		} else {
+			PROGRESS_NONE
 		}
 	}
 }
