@@ -21,7 +21,7 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.history.data.HistoryRepository
-import org.koitharu.kotatsu.history.data.PROGRESS_NONE
+import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
@@ -89,11 +89,7 @@ class AlternativesViewModel @Inject constructor(
 		}
 	}
 
-	private suspend fun getProgress(mangaId: Long): Float {
-		return if (settings.isReadingIndicatorsEnabled) {
-			historyRepository.getProgress(mangaId)
-		} else {
-			PROGRESS_NONE
-		}
+	private suspend fun getProgress(mangaId: Long): ReadingProgress? {
+		return historyRepository.getProgress(mangaId, settings.progressIndicatorMode)
 	}
 }

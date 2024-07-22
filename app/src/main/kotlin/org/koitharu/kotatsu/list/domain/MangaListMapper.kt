@@ -11,7 +11,6 @@ import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
-import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.model.MangaCompactListModel
 import org.koitharu.kotatsu.list.ui.model.MangaDetailedListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
@@ -59,6 +58,7 @@ class MangaListMapper @Inject constructor(
 		manga = manga,
 		counter = getCounter(manga.id),
 		progress = getProgress(manga.id),
+		isFavorite = isFavorite(manga.id),
 	)
 
 	suspend fun toDetailedListModel(manga: Manga) = MangaDetailedListModel(
@@ -69,6 +69,7 @@ class MangaListMapper @Inject constructor(
 		manga = manga,
 		counter = getCounter(manga.id),
 		progress = getProgress(manga.id),
+		isFavorite = isFavorite(manga.id),
 		tags = mapTags(manga.tags),
 	)
 
@@ -79,6 +80,7 @@ class MangaListMapper @Inject constructor(
 		manga = manga,
 		counter = getCounter(manga.id),
 		progress = getProgress(manga.id),
+		isFavorite = isFavorite(manga.id),
 	)
 
 	fun mapTags(tags: Collection<MangaTag>) = tags.map {
@@ -97,12 +99,12 @@ class MangaListMapper @Inject constructor(
 		}
 	}
 
-	private suspend fun getProgress(mangaId: Long): Float {
-		return if (settings.isReadingIndicatorsEnabled) {
-			historyRepository.getProgress(mangaId)
-		} else {
-			PROGRESS_NONE
-		}
+	private suspend fun getProgress(mangaId: Long): ReadingProgress? {
+		return historyRepository.getProgress(mangaId, settings.progressIndicatorMode)
+	}
+
+	private fun isFavorite(mangaId: Long): Boolean {
+		return false // TODO favouritesRepository.isFavorite(mangaId)
 	}
 
 	@ColorRes

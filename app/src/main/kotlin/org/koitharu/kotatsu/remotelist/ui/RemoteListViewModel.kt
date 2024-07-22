@@ -79,7 +79,7 @@ open class RemoteListViewModel @Inject constructor(
 
 	override val content = combine(
 		mangaList.map { it?.skipNsfwIfNeeded() },
-		listMode,
+		observeListModeWithTriggers(),
 		listError,
 		hasNextPage,
 	) { list, mode, error, hasNext ->

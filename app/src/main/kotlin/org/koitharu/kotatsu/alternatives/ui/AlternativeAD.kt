@@ -62,7 +62,7 @@ fun alternativeAD(
 				}
 			}
 		}
-		binding.progressView.setPercent(item.progress, ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads)
+		binding.progressView.setProgress(item.progress, ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads)
 		binding.chipSource.also { chip ->
 			chip.text = item.manga.source.getTitle(chip.context)
 			ImageRequest.Builder(context)

@@ -5,11 +5,11 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="@drawable/custom_selectable_item_background"
 	android:layout_margin="2dp"
-	android:padding="6dp"
+	android:background="@drawable/custom_selectable_item_background"
 	android:clipChildren="false"
 	android:orientation="vertical"
+	android:padding="6dp"
 	tools:layout_width="140dp">
 
 	<FrameLayout
@@ -33,6 +33,17 @@
 			android:layout_height="@dimen/card_indicator_size"
 			android:layout_gravity="bottom|end"
 			android:layout_margin="@dimen/card_indicator_offset" />
+
+		<ImageView
+			android:id="@+id/imageView_favorite"
+			android:layout_width="@dimen/card_indicator_size"
+			android:layout_height="@dimen/card_indicator_size"
+			android:layout_gravity="bottom|start"
+			android:layout_margin="@dimen/card_indicator_offset"
+			android:contentDescription="@string/favourites"
+			android:scaleType="centerInside"
+			app:srcCompat="@drawable/ic_heart"
+			app:tint="?colorSurfaceBright" />
 
 	</FrameLayout>
 

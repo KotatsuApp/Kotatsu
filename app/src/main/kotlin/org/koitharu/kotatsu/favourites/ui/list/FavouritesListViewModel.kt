@@ -66,7 +66,7 @@ class FavouritesListViewModel @Inject constructor(
 
 	override val content = combine(
 		observeFavorites(),
-		listMode,
+		observeListModeWithTriggers(),
 		refreshTrigger,
 	) { list, mode, _ ->
 		when {

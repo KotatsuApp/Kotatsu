@@ -101,4 +101,11 @@
 		<item>@string/pages</item>
 		<item>@string/webtoon</item>
 	</string-array>
+	<string-array name="progress_indicators" translatable="false">
+		<item>@string/disabled</item>
+		<item>@string/percent_read</item>
+		<item>@string/percent_left</item>
+		<item>@string/chapters_read</item>
+		<item>@string/chapters_left</item>
+	</string-array>
 </resources>

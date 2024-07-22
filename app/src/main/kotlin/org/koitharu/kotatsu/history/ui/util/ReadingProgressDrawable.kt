@@ -26,7 +26,6 @@ class ReadingProgressDrawable(
 	private val outlineColor: Int
 	private val backgroundColor: Int
 	private val textColor: Int
-	private val textPattern = context.getString(R.string.percent_string_pattern)
 	private val textBounds = Rect()
 	private val tempRect = Rect()
 	private val hasBackground: Boolean
@@ -36,14 +35,18 @@ class ReadingProgressDrawable(
 	private val desiredWidth: Int
 	private val autoFitTextSize: Boolean
 
-	var progress: Float = PROGRESS_NONE
+	var percent: Float = PROGRESS_NONE
 		set(value) {
 			field = value
-			text = textPattern.format((value * 100f).toInt().toString())
+			invalidateSelf()
+		}
+
+	var text = ""
+		set(value) {
+			field = value
 			paint.getTextBounds(text, 0, text.length, textBounds)
 			invalidateSelf()
 		}
-	private var text = ""
 
 	init {
 		val ta = context.obtainStyledAttributes(styleResId, R.styleable.ProgressDrawable)
@@ -79,7 +82,7 @@ class ReadingProgressDrawable(
 	}
 
 	override fun draw(canvas: Canvas) {
-		if (progress < 0f) {
+		if (percent < 0f) {
 			return
 		}
 		val cx = bounds.exactCenterX()
@@ -103,12 +106,12 @@ class ReadingProgressDrawable(
 			cx + innerRadius,
 			cy + innerRadius,
 			-90f,
-			360f * progress,
+			360f * percent,
 			false,
 			paint,
 		)
 		if (hasText) {
-			if (checkDrawable != null && progress >= 1f - Math.ulp(progress)) {
+			if (checkDrawable != null && percent >= 1f - Math.ulp(percent)) {
 				tempRect.set(bounds)
 				tempRect.scale(0.6)
 				checkDrawable.bounds = tempRect

@@ -38,11 +38,11 @@
 			android:valueTo="150"
 			app:defaultValue="100" />
 
-		<SwitchPreferenceCompat
-			android:defaultValue="true"
-			android:key="reading_indicators"
-			android:summary="@string/show_reading_indicators_summary"
-			android:title="@string/show_reading_indicators" />
+		<ListPreference
+			android:entries="@array/progress_indicators"
+			android:key="progress_indicators"
+			android:title="@string/show_reading_indicators"
+			app:useSimpleSummaryProvider="true" />
 
 	</PreferenceCategory>
 

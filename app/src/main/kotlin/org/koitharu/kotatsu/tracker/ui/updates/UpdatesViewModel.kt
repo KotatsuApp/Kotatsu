@@ -39,7 +39,7 @@ class UpdatesViewModel @Inject constructor(
 	override val content = combine(
 		repository.observeUpdatedManga(),
 		settings.observeAsFlow(AppSettings.KEY_UPDATED_GROUPING) { isUpdatedGroupingEnabled },
-		listMode,
+		observeListModeWithTriggers(),
 	) { mangaList, grouping, mode ->
 		when {
 			mangaList.isEmpty() -> listOf(

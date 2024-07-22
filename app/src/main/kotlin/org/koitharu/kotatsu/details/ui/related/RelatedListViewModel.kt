@@ -45,7 +45,7 @@ class RelatedListViewModel @Inject constructor(
 
 	override val content = combine(
 		mangaList,
-		listMode,
+		observeListModeWithTriggers(),
 		listError,
 	) { list, mode, error ->
 		when {

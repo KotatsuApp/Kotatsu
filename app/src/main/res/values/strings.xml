@@ -664,4 +664,8 @@
 	<string name="sources_unpinned">Sources unpinned</string>
 	<string name="sources_pinned">Sources pinned</string>
 	<string name="recent_sources">Recent sources</string>
+	<string name="percent_read">Percent read</string>
+	<string name="percent_left">Percent left</string>
+	<string name="chapters_read">Chapters read</string>
+	<string name="chapters_left">Chapters left</string>
 </resources>

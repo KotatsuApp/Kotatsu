@@ -88,7 +88,7 @@ class HistoryListViewModel @Inject constructor(
 	override val content = combine(
 		observeHistory(),
 		isGroupingEnabled,
-		listMode,
+		observeListModeWithTriggers(),
 		networkState,
 		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
 	) { list, grouped, mode, online, incognito ->

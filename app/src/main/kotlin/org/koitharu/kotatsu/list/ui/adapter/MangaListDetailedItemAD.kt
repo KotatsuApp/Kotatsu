@@ -39,7 +39,10 @@ fun mangaListDetailedItemAD(
 	bind { payloads ->
 		binding.textViewTitle.text = item.title
 		binding.textViewAuthor.textAndVisible = item.manga.author
-		binding.progressView.setPercent(item.progress, ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads)
+		binding.progressView.setProgress(
+			value = item.progress,
+			animate = ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads,
+		)
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			size(CoverSizeResolver(binding.imageViewCover))
 			defaultPlaceholders(context)

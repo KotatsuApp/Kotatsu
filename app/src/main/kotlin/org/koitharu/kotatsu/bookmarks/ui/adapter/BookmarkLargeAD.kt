@@ -37,6 +37,6 @@ fun bookmarkLargeAD(
 			source(item.manga.source)
 			enqueueWith(coil)
 		}
-		binding.progressView.percent = item.percent
+		binding.progressView.setProgress(item.percent, false)
 	}
 }

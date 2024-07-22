@@ -19,10 +19,12 @@ import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ProgressIndicatorMode
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.domain.ListSortOrder
+import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
@@ -102,6 +104,7 @@ class HistoryRepository @Inject constructor(
 		assert(manga.chapters != null)
 		db.withTransaction {
 			mangaRepository.storeManga(manga)
+			val branch = manga.chapters?.findById(chapterId)?.branch
 			db.getHistoryDao().upsert(
 				HistoryEntity(
 					mangaId = manga.id,
@@ -111,7 +114,7 @@ class HistoryRepository @Inject constructor(
 					page = page,
 					scroll = scroll.toFloat(), // we migrate to int, but decide to not update database
 					percent = percent,
-					chaptersCount = manga.chapters?.size ?: -1,
+					chaptersCount = manga.chapters?.count { it.branch == branch } ?: 0,
 					deletedAt = 0L,
 				),
 			)
@@ -124,8 +127,13 @@ class HistoryRepository @Inject constructor(
 		return db.getHistoryDao().find(manga.id)?.recoverIfNeeded(manga)?.toMangaHistory()
 	}
 
-	suspend fun getProgress(mangaId: Long): Float {
-		return db.getHistoryDao().findProgress(mangaId) ?: PROGRESS_NONE
+	suspend fun getProgress(mangaId: Long, mode: ProgressIndicatorMode): ReadingProgress? {
+		val entity = db.getHistoryDao().find(mangaId) ?: return null
+		return ReadingProgress(
+			percent = entity.percent,
+			totalChapters = entity.chaptersCount,
+			mode = mode,
+		).takeIf { it.isValid() }
 	}
 
 	suspend fun clear() {

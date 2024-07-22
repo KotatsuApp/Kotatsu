@@ -36,7 +36,7 @@ class SuggestionsViewModel @Inject constructor(
 
 	override val content = combine(
 		repository.observeAll(),
-		listMode,
+		observeListModeWithTriggers(),
 	) { list, mode ->
 		when {
 			list.isEmpty() -> listOf(

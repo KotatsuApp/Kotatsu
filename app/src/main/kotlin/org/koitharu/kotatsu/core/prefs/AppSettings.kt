@@ -192,8 +192,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_FEED_HEADER, true)
 		set(value) = prefs.edit { putBoolean(KEY_FEED_HEADER, value) }
 
-	val isReadingIndicatorsEnabled: Boolean
-		get() = prefs.getBoolean(KEY_READING_INDICATORS, true)
+	val progressIndicatorMode: ProgressIndicatorMode
+		get() = prefs.getEnumValue(KEY_PROGRESS_INDICATORS, ProgressIndicatorMode.PERCENT_READ)
 
 	val isHistoryExcludeNsfw: Boolean
 		get() = prefs.getBoolean(KEY_HISTORY_EXCLUDE_NSFW, false)
@@ -619,7 +619,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_BACKUP_PERIODICAL_LAST = "backup_periodic_last"
 		const val KEY_HISTORY_GROUPING = "history_grouping"
 		const val KEY_UPDATED_GROUPING = "updated_grouping"
-		const val KEY_READING_INDICATORS = "reading_indicators"
+		const val KEY_PROGRESS_INDICATORS = "progress_indicators"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 		const val KEY_GRID_VIEW_CHAPTERS = "grid_view_chapters"
 		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
