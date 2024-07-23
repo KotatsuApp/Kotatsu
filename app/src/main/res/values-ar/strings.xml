@@ -7,7 +7,7 @@
     <string name="list_mode">وضع القائمة</string>
     <string name="settings">إعدادات</string>
     <string name="remote_sources">مصادر المانجا</string>
-    <string name="chapters">فصول</string>
+    <string name="chapters">فُصول</string>
     <string name="favourites">المفضلة</string>
     <string name="network_error">‌خطاء في الشبكة</string>
     <string name="loading_">جار التحميل…</string>
@@ -41,7 +41,7 @@
     <string name="share_s">شارك %s</string>
     <string name="processing_">في طور معالجة…</string>
     <string name="updated">محدث</string>
-    <string name="filter">فلتر</string>
+    <string name="filter">تصفية</string>
     <string name="sort_order">ترتيب الفرز</string>
     <string name="light">فاتح</string>
     <string name="dark">داكن</string>
@@ -71,7 +71,7 @@
     <string name="_continue">أكمل</string>
     <string name="error">خطأ</string>
     <string name="clear_search_history">مسح تاريخ البحث</string>
-    <string name="disable_nsfw">تعطيل NSFW</string>
+    <string name="disable_nsfw">تعطيل المانجا والمصادر التى 🔞</string>
     <string name="updates">التحديثات</string>
     <string name="sync_host_description">يمكنك استخدام سيرفر التزامن ذاتياً أو السيرفر الافتراضي. لا تغير هذا إن لم تكن متأكداً مما تفعله.</string>
     <string name="text_clear_cookies_prompt">سيتم تسجيل خروجك من جميع المصادر</string>
@@ -177,7 +177,7 @@
     <string name="detect_reader_mode">وضع القارئ التلقائي</string>
     <string name="manga_shelf">رف</string>
     <string name="tracking">تتبع</string>
-    <string name="text_history_holder_secondary">ابحث عن ما تقرأه في قسم «استكشاف».</string>
+    <string name="text_history_holder_secondary">ابحث عن ما تقرأه في قسم «استكشاف»</string>
     <string name="all_favourites">جميع المفضلة</string>
     <string name="email_enter_hint">أدخل بريدك الإلكتروني للمتابعة</string>
     <string name="disable_all">تعطيل الجميع</string>
@@ -186,7 +186,7 @@
     <string name="show_reading_indicators">إظهار مؤشرات التقدم في القراءة</string>
     <string name="local_manga_processing">معالجة المانجا المحفوظة</string>
     <string name="cannot_find_available_storage">لاتوجد مساحة تخزين كافية</string>
-    <string name="show_notification_new_chapters_off">"لن تتلقى إشعارات ولكن سيتم تمييز  الفصول الجديدة في القوائم"</string>
+    <string name="show_notification_new_chapters_off">لن تتلقى إشعارات ولكن سيتم تمييز الفصول الجديدة في القوائم</string>
     <string name="favourites_category_empty">فئة فارغة</string>
     <string name="show_notification_new_chapters_on">ستتلقى إشعارات حول تحديثات المانجا التي تقرأها</string>
     <string name="manga_save_location">مجلد التحميلات</string>
@@ -197,7 +197,7 @@
     <string name="edit">تعديل</string>
     <string name="captcha_required">مطلوب التحقق من الCAPTCHA</string>
     <string name="removed_from_history">تمت الحذف من السجل</string>
-    <string name="crash_text">"حدث خطأ ما.  يرجى إرسال تقرير بالخطأ إلى المطورين لمساعدتنا في إصلاحه."</string>
+    <string name="crash_text">حدث خطأ ما. يرجى إرسال تقرير بالخطأ إلى المطورين لمساعدتنا في إصلاحه.</string>
     <string name="detect_reader_mode_summary">اكتشف تلقائيًا ما إذا كانت المانجا عبارة عن webtoon</string>
     <string name="appwidget_recent_description">المانجا التي قرأتها مؤخرًا</string>
     <string name="appearance">مظهر</string>
@@ -311,19 +311,20 @@
     <string name="reader_info_bar">عرض شريط المعلومات في قارئ الصفحات</string>
     <string name="folder_with_images">مجلد مع صور</string>
     <string name="exclude_nsfw_from_history_summary">المانغا +18 لن يتم إضافتها إلى السجل، ولن يتم حفظ تقدمك فيها.\"</string>
-    <string name="clear_cookies_summary">يمكنها المساعدة في حالة حدوث مشاكل. سيتم إلغاء جميع التفويضات.</string>
-    <string name="confirm_exit">اضغط زر العود للخلف مرة أخرى للخروج.</string>
-    <string name="scrobbling_empty_hint">لتتبع تقدم القراءة، اختر القائمة → \"تتبع\" على شاشة تفاصيل المانغا.\"</string>
-    <string name="user_agent">UserAgent header</string>
+    <string name="clear_cookies_summary">يمكنها المساعدة في حالة حدوث مشاكل. سيتم إلغاء جميع التفويضات</string>
+    <string name="confirm_exit">اضغط زر العود للخلف مرة أخرى للخروج</string>
+    <string name="scrobbling_empty_hint">لتتبع تقدم القراءة، اختر القائمة → \"تتبع\" على شاشة تفاصيل المانغا.\".</string>
+    <string name="user_agent">موجه UserAgent</string>
     <string name="settings_apply_restart_required">يرجى إعادة تشغيل التطبيق لرؤية التغييرات.\"</string>
     <string name="removed_from_favourites">ازالة من المفضلة</string>
     <string name="no_chapters">لا توجد فصول</string>
     <string name="allow_unstable_updates">السماح بالتحديثات غير مستقرة</string>
     <string name="allow_unstable_updates_summary">تلقي إشعارات حول الإصدارات الغير مستقرة</string>
-    <string name="categories_delete_confirm">هل أنت متأكد أنك تريد حذف فئات المفضلة المحددة؟ سيتم فقدان جميع المانغا فيها ولا يمكن التراجع عن هذا.</string>
+    <string name="categories_delete_confirm">هل أنت متأكد أنك تريد حذف فئات المفضلة المحددة
+\n؟ سيتم فقدان جميع المانغا فيها ولا يمكن التراجع عن هذا.</string>
     <string name="pages_cache">بيانات التخزين المؤقت للصفحات</string>
     <string name="not_found_404">المحتوى غير موجود أو تمت إزالته</string>
-    <string name="comics_archive_import_description">يمكنك اختيار ملف أو أكثر بتنسيق cbz أو zip ، سيتم التعرف على كل ملف على أنه مانغا منفصلة</string>
+    <string name="comics_archive_import_description">يمكنك اختيار ملف أو أكثر بتنسيق cbz أو zip ، سيتم التعرف على كل ملف على أنه مانغا منفصلة.</string>
     <string name="folder_with_images_import_description">يمكنك اختيار مكان في الذاكرة يحتوي على أرشيفات أو صور. سيتم التعرف على كل أرشيف (أو مجلد فرعي) على أنه فصل.</string>
     <string name="speed">السرعة</string>
     <string name="feed">الموجز</string>
@@ -339,7 +340,7 @@
     <string name="text_unsaved_changes_prompt">هل تريد حفظ أو تجاهل التغييرات الغير المحفوظة؟</string>
     <string name="error_no_space_left">لا توجد مساحة متبقية على الجهاز</string>
     <string name="reader_slider">إظهار شريط التمرير لتبديل الصفحات</string>
-    <string name="server_error">خطأ من جانب الخادم (%1$s). الرجاء المحاولة مرة أخرى لاحقًا</string>
+    <string name="server_error">خطأ من جانب الخادم (%1$d). الرجاء المحاولة مرة أخرى لاحقًا</string>
     <string name="chapters_grid_view">عرض الشبكة</string>
     <string name="manga_error_description_pattern">تفاصيل الخطأ:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. حاول &lt;a href=\"%2$s\"&gt;فتح المانجا في متصفح ويب&lt;/a&gt; للتأكد من أنها متوفرة على مصدرها&lt;br&gt;2. تأكد من أنك تستخدم &lt;a href=kotatsu://about&gt;أحدث إصدار من Kotatsu&lt;/a&gt;&lt;br&gt;3. إذا كانت متوفرة، أرسل تقرير خطأ إلى المطورين.</string>
     <string name="history_shortcuts_summary">إتاحة المانجا الحديثة بالضغط المطول على أيقونة التطبيق</string>
@@ -384,5 +385,70 @@
     <string name="downloads_wifi_only">التحميل عبر شبكة الوايفاي فقط</string>
     <string name="suggestions_notifications_summary">إظهار الإشعارات أحيانًا بالمانغا المقترحة</string>
     <string name="mirror_switching_summary">اللغة العربية</string>
-    <string name="suggestions_enable_prompt">‌‌‍‎‎‍</string>
+    <string name="suggestions_enable_prompt">‌‌‍‎‎‍هل ترغب في تلقي اقتراحات المانجا الشخصية؟</string>
+    <string name="images_proxy_title">وكيل تحسين الصور</string>
+    <string name="webtoon_zoom_summary">السماح بإيماءة التكبير في وضع الويب تون</string>
+    <string name="share_logs">مشاركة السجلات</string>
+    <string name="downloaded">تم التنزيل</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="password">كلمة المرور</string>
+    <string name="authorization_optional">التفويض (اختياري)</string>
+    <string name="reader_info_bar_summary">إظهار الوقت الحالي وقراءة التقدم في الجزء العلوي من الشاشة</string>
+    <string name="show_pages_numbers_summary">إظهار أرقام الصفحات في الزاوية السفلية</string>
+    <string name="in_progress">في تَقَدم</string>
+    <string name="too_many_requests_message">طلبات كثيرة جدا. حاول مرة أخرى في وقت لاحق</string>
+    <string name="email_password_enter_hint">أدخل بريدك الإلكتروني وكلمة المرور للمتابعة</string>
+    <string name="network">اتصال</string>
+    <string name="data_and_privacy">البيانات والخصوصية</string>
+    <string name="download_option_first_n_chapters">أولاً%s</string>
+    <string name="invalid_port_number">رقم المنفذ غير صالح</string>
+    <string name="restore_summary">استعادة النسخة الاحتياطية التي تم إنشاؤها مسبقًا</string>
+    <string name="download_option_all_unread_b">جميع الفصول غير المقروءة (%s)</string>
+    <string name="download_option_next_unread_n_chapters">التالي غير المقروء %s</string>
+    <string name="no_access_to_file">ليس لديك حق الوصول إلى هذا الملف أو الدليل</string>
+    <string name="pick_custom_directory">اختر الدليل المخصص</string>
+    <string name="local_manga_directories">أدلة المانجا المحلية</string>
+    <string name="description">وصف</string>
+    <string name="this_month">هذا الشهر</string>
+    <string name="voice_search">البحث الصوتي</string>
+    <string name="related_manga">المانجا ذات الصلة</string>
+    <string name="color_light">فاتح</string>
+    <string name="color_dark">غامق</string>
+    <string name="color_white">ابيض</string>
+    <string name="color_black">أسود</string>
+    <string name="background">خلفية</string>
+    <string name="data_not_restored">لم تتم استعادة البيانات</string>
+    <string name="tracker_wifi_only_summary">لا تتحقق من وجود فصول جديدة باستخدام اتصالات الشبكة المقاسة</string>
+    <string name="search_hint">أدخل عنوان المانجا أو الفئة أو اسم المصدر</string>
+    <string name="data_not_restored_text">تأكد من تحديد ملف النسخ الاحتياطي الصحيح</string>
+    <string name="suggestions_wifi_only_summary">لا تقم بتحديث الاقتراحات باستخدام اتصالات الشبكة المقيدة</string>
+    <string name="captcha_required_summary">%s يتطلب حل كلمة التحقق للعمل بشكل صحيح</string>
+    <string name="progress">تقدم</string>
+    <string name="order_added">تمت الإضافة</string>
+    <string name="show">أعرض</string>
+    <string name="unknown">مجهول</string>
+    <string name="related_manga_summary">عرض قائمة المانغا ذات الصلة. وفي بعض الحالات قد تكون غير دقيقة أو مفقودة</string>
+    <string name="invert_colors">عكس الألوان</string>
+    <string name="images_procy_description">استخدم خدمة wsrv.nl لتقليل استهلاك الانترنت وتسريع تحميل الصور إن أمكن</string>
+    <string name="type">أكتب</string>
+    <string name="languages">اللغات</string>
+    <string name="compact">المدمج</string>
+    <string name="address">عنوان</string>
+    <string name="download_option_manual_selection">حدد الفصول يدويا</string>
+    <string name="mirror_switching">اختر المرآة تلقائيًا</string>
+    <string name="suggestion_manga">اقتراح : %s</string>
+    <string name="downloads_resumed">تم استئناف التنزيلات</string>
+    <string name="downloads_paused">لقد تم إيقاف التنزيلات مؤقتًا</string>
+    <string name="downloads_removed">تمت إزالة التنزيلات</string>
+    <string name="downloads_cancelled">تم إلغاء التنزيلات</string>
+    <string name="web_view_unavailable">WebView غير متوفر: تحقق من تثبيت موفر الWebView</string>
+    <string name="clear_network_cache">مسح ذاكرة التخزين المؤقت للشبكة</string>
+    <string name="proxy">الوكيل</string>
+    <string name="invalid_value_message">قيمة غير صالحة</string>
+    <string name="port">منفذ</string>
+    <string name="clear_source_cookies_summary">مسح ملفات تعريف الارتباط للمجال المحدد فقط. في معظم الحالات سوف يبطل الترخيص</string>
+    <string name="download_option_all_chapters">جميع الفصول مع الترجمة : %s</string>
+    <string name="download_option_whole_manga">المانجا كلها</string>
+    <string name="download_option_all_unread">جميع الفصول غير المقروءة</string>
+    <string name="manage_categories">إدارة الفئات</string>
 </resources>
