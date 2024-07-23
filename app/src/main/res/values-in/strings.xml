@@ -3,8 +3,8 @@
     <string name="local_storage">Penyimpanan lokal</string>
     <string name="favourites">Favorit</string>
     <string name="history">Riwayat</string>
-    <string name="error_occurred">Terjadi galat</string>
-    <string name="network_error">Galat jaringan</string>
+    <string name="error_occurred">Terjadi kesalahan</string>
+    <string name="network_error">Kesalahan jaringan</string>
     <string name="details">Detail</string>
     <string name="grid">Kisi</string>
     <string name="list_mode">Mode daftar</string>
@@ -15,7 +15,7 @@
     <string name="chapter_d_of_d">Bab %1$d dari %2$d</string>
     <string name="close">Tutup</string>
     <string name="try_again">Coba lagi</string>
-    <string name="nothing_found">Tidak ketemu</string>
+    <string name="nothing_found">Tidak ditemukan</string>
     <string name="history_is_empty">Riwayat kosong</string>
     <string name="read">Baca</string>
     <string name="you_have_not_favourites_yet">Belum ada favorit</string>
@@ -643,4 +643,6 @@
     <string name="pin_navigation_ui_summary">Jangan sembunyikan bilah navigasi dan tampilan pencarian saat menggulir</string>
     <string name="chapters_deleted_pattern">Dihapus, dibersihkan</string>
     <string name="suggested_queries">Pertanyaan yang disarankan</string>
+    <string name="source_pinned">Sumber disematkan</string>
+    <string name="recent_sources">Sumber sumbver terbaru</string>
 </resources>
