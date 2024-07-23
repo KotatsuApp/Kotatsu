@@ -637,4 +637,11 @@
     <string name="new_chapters_pattern">%1$s: %2$d</string>
     <string name="pin_navigation_ui">Fixar interface de navegação</string>
     <string name="pin_navigation_ui_summary">Não esconder barra de navegação e visualização de pesquisa ao rolar</string>
+    <string name="_new">Novo</string>
+    <string name="all_languages">Todas as línguas</string>
+    <string name="screenshots_block_incognito">Bloquear no modo de navegação anônima</string>
+    <string name="image_server">Servidor de imagem preferido</string>
+    <string name="crop_pages">Cortar páginas</string>
+    <string name="disable_nsfw_notifications">Desativar notificações NSFW</string>
+    <string name="disable_nsfw_notifications_summary">Não mostrar notificações sobre atualizações de mangás NSFW</string>
 </resources>
