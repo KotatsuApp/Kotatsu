@@ -644,4 +644,13 @@
     <string name="_new">Nowy</string>
     <string name="screenshots_block_incognito">Blokuj w trybie incognito</string>
     <string name="all_languages">Wszystkie języki</string>
+    <string name="image_server">Preferowany serwer obrazów</string>
+    <string name="crop_pages">Kadrowanie stron</string>
+    <string name="pin">Przypnij</string>
+    <string name="unpin">Odepnij</string>
+    <string name="source_pinned">Przypięte źródło</string>
+    <string name="source_unpinned">Źródło odpięte</string>
+    <string name="sources_unpinned">Odpięte źródła</string>
+    <string name="sources_pinned">Przypięte źródła</string>
+    <string name="recent_sources">Najnowsze źródła</string>
 </resources>
