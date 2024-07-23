@@ -110,6 +110,8 @@ interface AppModule {
 				.decoderDispatcher(Dispatchers.IO)
 				.transformationDispatcher(Dispatchers.Default)
 				.diskCache(diskCacheFactory)
+				.respectCacheHeaders(false)
+				.networkObserverEnabled(false)
 				.logger(if (BuildConfig.DEBUG) DebugLogger() else null)
 				.allowRgb565(context.isLowRamDevice())
 				.eventListener(CaptchaNotifier(context))
