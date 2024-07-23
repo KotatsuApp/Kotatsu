@@ -435,7 +435,7 @@
     <string name="tracker_wifi_only_summary">使用移动网络时停止检查新章节</string>
     <string name="order_added">添加日期</string>
     <string name="on_device">本地</string>
-    <string name="moved_to_top">移动到顶部</string>
+    <string name="moved_to_top">已移动至顶部</string>
     <string name="data_not_restored_text">备份文件不正确</string>
     <string name="unknown">未知</string>
     <string name="in_progress">进行中</string>
@@ -454,7 +454,7 @@
     <string name="manga_list">漫画列表</string>
     <string name="disable_nsfw">隐藏成人内容</string>
     <string name="color_white">白色</string>
-    <string name="to_top">置顶</string>
+    <string name="to_top">移动至顶部</string>
     <string name="show">显示</string>
     <string name="color_black">黑色</string>
     <string name="zoom_in">放大</string>
@@ -636,12 +636,25 @@
     <string name="sources_disabled">图源已关闭</string>
     <string name="disable_connectivity_check">关闭连接连通性检查</string>
     <string name="disable_connectivity_check_summary">若连通性检查存在问题可打开此选项（例：即使连接了网络但依旧提示网络断开）</string>
-    <string name="ignore_ssl_errors_summary">若在连接到在线图源时SSL证书出现问题，可关闭SSL证书认证，关闭后对安全性有所影响，需要重启应用来更改设置。</string>
-    <string name="disable_nsfw_notifications">关闭成人内容提醒</string>
-    <string name="disable_nsfw_notifications_summary">不显示成人漫画的更新提醒</string>
+    <string name="ignore_ssl_errors_summary">连接在线图源时若SSL证书出现问题，可关闭SSL证书认证，关闭后对安全性有所影响，需要重启应用来更改设置。</string>
+    <string name="disable_nsfw_notifications">关闭成人内容相关通知</string>
+    <string name="disable_nsfw_notifications_summary">不接收成人漫画的更新通知</string>
     <string name="tracker_debug_info">漫画更新日志</string>
     <string name="tracker_debug_info_summary">记录漫画后台更新时的调试日志</string>
     <string name="_new">最新</string>
     <string name="screenshots_block_incognito">开启无痕模式时禁止</string>
     <string name="all_languages">所有语言</string>
+    <string name="image_server">图片服务器偏好</string>
+    <string name="crop_pages">裁剪页面</string>
+    <string name="pin">置顶</string>
+    <string name="unpin">取消置顶</string>
+    <string name="source_pinned">图源已置顶</string>
+    <string name="source_unpinned">图源置顶已取消</string>
+    <string name="sources_unpinned">图源置顶已取消</string>
+    <string name="sources_pinned">图源已置顶</string>
+    <string name="recent_sources">最近使用图源</string>
+    <string name="percent_read">已读章节百分比</string>
+    <string name="percent_left">剩余章节百分比</string>
+    <string name="chapters_read">已读章节数</string>
+    <string name="chapters_left">剩余章节数</string>
 </resources>
