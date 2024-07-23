@@ -3,7 +3,7 @@
     <plurals name="new_chapters">
         <item quantity="zero">لا يوجد فصل جديد</item>
         <item quantity="one">فصل جديد</item>
-        <item quantity="two">%1$d فصلين جديدين</item>
+        <item quantity="two">%1$d فصلان جديدان</item>
         <item quantity="few">%1$d فصول جديدة</item>
         <item quantity="many">%1$d فصل جديد</item>
         <item quantity="other">%1$d فصل جديد</item>
@@ -33,16 +33,16 @@
         <item quantity="other">%1$d عناصر</item>
     </plurals>
     <plurals name="months_ago">
-        <item quantity="zero">%1$d شهر مضا</item>
-        <item quantity="one">%1$d شهر مضا</item>
+        <item quantity="zero">%1$d شهر مضى</item>
+        <item quantity="one">%1$d شهر مضى</item>
         <item quantity="two">%1$d شهرين مضت</item>
         <item quantity="few">%1$d أشهر مضت</item>
         <item quantity="many">%1$d أشهر مضت</item>
         <item quantity="other">%1$d أشهر مضت</item>
     </plurals>
     <plurals name="days_ago">
-        <item quantity="zero">%1$d يوم مضا</item>
-        <item quantity="one">%1$d يوم مضا</item>
+        <item quantity="zero">%1$d يوم مضى</item>
+        <item quantity="one">%1$d يوم مضى</item>
         <item quantity="two">%1$d يومين مضت</item>
         <item quantity="few">%1$d أيام مضت</item>
         <item quantity="many">%1$d أيام مضت</item>
