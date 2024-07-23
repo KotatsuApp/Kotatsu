@@ -644,4 +644,17 @@
     <string name="_new">Mga bago</string>
     <string name="screenshots_block_incognito">Harangan pag naka-incognito mode</string>
     <string name="all_languages">Lahat ng wika</string>
+    <string name="image_server">Piniling image server</string>
+    <string name="crop_pages">Mag-crop ng pahina</string>
+    <string name="source_unpinned">Na-unpin ang source</string>
+    <string name="sources_unpinned">Mga source na na-unpin</string>
+    <string name="unpin">I-unpin</string>
+    <string name="sources_pinned">Mga source na na-pin</string>
+    <string name="pin">I-pin</string>
+    <string name="source_pinned">Naka-pin ang source</string>
+    <string name="recent_sources">Kamakailang mga source</string>
+    <string name="percent_left">Porsyentong natitira</string>
+    <string name="chapters_left">Kabanatang natitira</string>
+    <string name="percent_read">Porsyentong nabasa</string>
+    <string name="chapters_read">Kabanatang nabasa</string>
 </resources>
