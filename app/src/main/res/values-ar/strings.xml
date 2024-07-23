@@ -5,10 +5,10 @@
     <string name="details">التفاصيل</string>
     <string name="grid">شبكة</string>
     <string name="list_mode">وضع القائمة</string>
-    <string name="settings">إعدادات</string>
+    <string name="settings">الإعدادات</string>
     <string name="remote_sources">مصادر المانجا</string>
-    <string name="chapters">فُصول</string>
-    <string name="favourites">المفضلة</string>
+    <string name="chapters">الفصول</string>
+    <string name="favourites">المُفضلة</string>
     <string name="network_error">‌خطاء في الشبكة</string>
     <string name="loading_">جار التحميل…</string>
     <string name="chapter_d_of_d">فصل %1$d من %2$d</string>
@@ -17,7 +17,7 @@
     <string name="computing_">جاري الحوسبة …</string>
     <string name="local_storage">التخزين المحلي</string>
     <string name="history">السجل</string>
-    <string name="list">قائمة</string>
+    <string name="list">القائمه</string>
     <string name="clear_history">محو سجل</string>
     <string name="add_to_favourites">أضف للمفضلة</string>
     <string name="add">أضف</string>
@@ -46,9 +46,9 @@
     <string name="light">فاتح</string>
     <string name="dark">داكن</string>
     <string name="clear">مسح</string>
-    <string name="remove">ازالة</string>
+    <string name="remove">حذف</string>
     <string name="popular">شائع</string>
-    <string name="add_new_category">فئة جديدة</string>
+    <string name="add_new_category">قائمة جديدة</string>
     <string name="download_complete">تم التنزيل</string>
     <string name="save_page">احفظ الصفحة</string>
     <string name="page_saved">تم الحفظ</string>
@@ -71,22 +71,22 @@
     <string name="_continue">أكمل</string>
     <string name="error">خطأ</string>
     <string name="clear_search_history">مسح تاريخ البحث</string>
-    <string name="disable_nsfw">تعطيل المانجا والمصادر التى 🔞</string>
+    <string name="disable_nsfw">تعطيل NSFW</string>
     <string name="updates">التحديثات</string>
     <string name="sync_host_description">يمكنك استخدام سيرفر التزامن ذاتياً أو السيرفر الافتراضي. لا تغير هذا إن لم تكن متأكداً مما تفعله.</string>
     <string name="text_clear_cookies_prompt">سيتم تسجيل خروجك من جميع المصادر</string>
     <string name="clear_cookies">مسح ملفات تعريف الارتباط</string>
-    <string name="favourites_categories">الفئات المفضلة</string>
+    <string name="favourites_categories">قوائم المُفضلة</string>
     <string name="clear_thumbs_cache">مسح ذاكرة التخزين المؤقت للصور المصغرة</string>
     <string name="rotate_screen">تدوير الشاشة</string>
     <string name="text_clear_updates_feed_prompt">هل تريد مسح سجل التحديث بشكل دائم؟</string>
     <string name="suggestions_enable">تفعيل الاقتراحات</string>
-    <string name="clear_feed">مسح الخلاصة</string>
+    <string name="clear_feed">مسح الموجز</string>
     <string name="welcome">مرحبا</string>
     <string name="about_app_translation_summary">ترجمة هذا التطبيق</string>
     <string name="vibration">اهتزاز</string>
     <string name="no_update_available">لا يوجد تحديثات</string>
-    <string name="remove_category">حذف الفئة</string>
+    <string name="remove_category">حذف</string>
     <string name="internal_storage">التخزين الداخلي</string>
     <string name="read_later">اقرأ لاحقا</string>
     <string name="backup_saved">تم حفظ النسخة الاحتياطية</string>
@@ -109,16 +109,16 @@
     <string name="text_clear_search_history_prompt">هل تريد إزالة استعلامات البحث الأخيرة نهائيًا؟</string>
     <string name="updates_feed_cleared">تم المسح</string>
     <string name="update">تحديث</string>
-    <string name="feed_will_update_soon">سيبدأ تحديث الخلاصة قريبًا</string>
+    <string name="feed_will_update_soon">سيبدأ تحديث الموجز قريبًا</string>
     <string name="app_update_available">تتوفر نسخة جديدة من التطبيق</string>
     <string name="new_version_s">نسخة جديدة: %s</string>
     <string name="sync_settings">إعدادات التزامن</string>
-    <string name="create_category">أضف فئة جديدة</string>
+    <string name="create_category">قائمة جديدة</string>
     <string name="notification_sound">صوت الإشعار</string>
     <string name="backup_restore">النسخ الاحتياطي و الاستعادة</string>
     <string name="show_pages_numbers">إظهار أرقام الصفحات</string>
     <string name="search_history_cleared">تم المسح</string>
-    <string name="_s_deleted_from_local_storage">تم ازالة \"%s\" من التخزين المحلي</string>
+    <string name="_s_deleted_from_local_storage">تم حذف \"%s\" من التخزين المحلي</string>
     <string name="saved_manga">المانجا المحفوظة</string>
     <string name="open_in_browser">الفتح في المتصفح</string>
     <string name="about_app_translation">ترجمة</string>
@@ -163,7 +163,7 @@
     <string name="enter_password">ادخل كلمة السر</string>
     <string name="repeat_password">كرر كلمة السر</string>
     <string name="data_restored_success">استعيدت جميع البيانات</string>
-    <string name="backup_information">يمكنك إنشاء نسخة احتياطية من السجل الخاص بك والمفضلة واستعادتها</string>
+    <string name="backup_information">يمكنك إنشاء نسخة احتياطية من السجل الخاص بك والمُفضلة واستعادتها</string>
     <string name="external_storage">تخزين خارجي</string>
     <string name="silent">صامت</string>
     <string name="today">اليوم</string>
@@ -178,7 +178,7 @@
     <string name="manga_shelf">رف</string>
     <string name="tracking">تتبع</string>
     <string name="text_history_holder_secondary">ابحث عن ما تقرأه في قسم «استكشاف»</string>
-    <string name="all_favourites">جميع المفضلة</string>
+    <string name="all_favourites">كل المُفضلة</string>
     <string name="email_enter_hint">أدخل بريدك الإلكتروني للمتابعة</string>
     <string name="disable_all">تعطيل الجميع</string>
     <string name="chapters_empty">لا توجد فصول في هذه المانجا</string>
@@ -187,7 +187,7 @@
     <string name="local_manga_processing">معالجة المانجا المحفوظة</string>
     <string name="cannot_find_available_storage">لاتوجد مساحة تخزين كافية</string>
     <string name="show_notification_new_chapters_off">لن تتلقى إشعارات ولكن سيتم تمييز الفصول الجديدة في القوائم</string>
-    <string name="favourites_category_empty">فئة فارغة</string>
+    <string name="favourites_category_empty">قائمة فارغة</string>
     <string name="show_notification_new_chapters_on">ستتلقى إشعارات حول تحديثات المانجا التي تقرأها</string>
     <string name="manga_save_location">مجلد التحميلات</string>
     <string name="status_reading">أقرأها</string>
@@ -196,7 +196,7 @@
     <string name="removal_completed">اكتملت عملية الإزالة</string>
     <string name="edit">تعديل</string>
     <string name="captcha_required">مطلوب التحقق من الCAPTCHA</string>
-    <string name="removed_from_history">تمت الحذف من السجل</string>
+    <string name="removed_from_history">تم الحذف من السجل</string>
     <string name="crash_text">حدث خطأ ما. يرجى إرسال تقرير بالخطأ إلى المطورين لمساعدتنا في إصلاحه.</string>
     <string name="detect_reader_mode_summary">اكتشف تلقائيًا ما إذا كانت المانجا عبارة عن webtoon</string>
     <string name="appwidget_recent_description">المانجا التي قرأتها مؤخرًا</string>
@@ -206,9 +206,9 @@
     <string name="auth_not_supported_by">تسجيل الدخول على %s غير مدعوم</string>
     <string name="status_on_hold">معلقَّة</string>
     <string name="name">اسم</string>
-    <string name="edit_category">تغيير الفئة</string>
+    <string name="edit_category">تعديل القائمة</string>
     <string name="tracker_warning">تتميز بعض الأجهزة بسلوك نظام مختلف، مما قد يؤدي إلى تعطيل مهام الخلفية.</string>
-    <string name="suggestions_excluded_genres_summary">حدد الأنواع التي لا تريد رؤيتها في الاقتراحات</string>
+    <string name="suggestions_excluded_genres_summary">حدد التصنيفات التي لا تريد رؤيتها في الاقتراحات</string>
     <string name="scale_mode">وضع القياس</string>
     <string name="only_using_wifi">فقط على Wi-Fi</string>
     <string name="black_dark_theme">أسود</string>
@@ -216,7 +216,7 @@
     <string name="screenshots_allow">السماح</string>
     <string name="dns_over_https">DNS مع HTTPS</string>
     <string name="sync_title">مزامنة بياناتك</string>
-    <string name="appwidget_shelf_description">مانغا من المفضلة لديك</string>
+    <string name="appwidget_shelf_description">مانجا من المُفضلة لديك</string>
     <string name="send">إرسال</string>
     <string name="bookmark_add">اضافة إشارة مرجعية</string>
     <string name="screenshots_block_all">احظر دائما</string>
@@ -228,7 +228,7 @@
     <string name="suggestions_info">يتم تحليل جميع البيانات محليًا فقط على هذا الجهاز ولا يتم إرسالها إلى أي مكان.</string>
     <string name="undo">تراجع</string>
     <string name="zoom_mode_fit_center">مناسب للمركز</string>
-    <string name="exclude_nsfw_from_history">استبعاد مانغا +18 من سجل التصفح</string>
+    <string name="exclude_nsfw_from_history">استبعد المانجات NSFW من سجل التصفح</string>
     <string name="download_slowdown_summary">يساعد في تجنب حظر عنوان IP الخاص بك</string>
     <string name="text_delete_local_manga_batch">هل تريد حذف العناصر المحددة من الجهاز نهائيًا؟</string>
     <string name="queued">في قائمة الانتظار</string>
@@ -237,7 +237,7 @@
     <string name="sync">التزامن</string>
     <string name="search_chapters">البحث عن الفصل</string>
     <string name="always">دائما</string>
-    <string name="suggestions_excluded_genres">استبعاد الأنواع</string>
+    <string name="suggestions_excluded_genres">أقصاء التصنيفات</string>
     <string name="canceled">ألغيت</string>
     <string name="account_already_exists">الحساب موجود بالفعل</string>
     <string name="hide">أخفِ</string>
@@ -257,19 +257,19 @@
     <string name="nsfw">+18</string>
     <string name="black_dark_theme_summary">يستهلك طاقة بطارية أقل على شاشات AMOLED</string>
     <string name="notifications_enable">تمكين الإشعارات</string>
-    <string name="exclude_nsfw_from_suggestions">لا تقترح مانغا +18</string>
+    <string name="exclude_nsfw_from_suggestions">لا تقترح مانجات NSFW</string>
     <string name="never">أبداً</string>
     <string name="disable_battery_optimization">تعطيل \"إستهلاك أقل للبطارية\"</string>
     <string name="status_planned">أنوي قرأتها</string>
     <string name="pages_animation">انيميشن الصفحة</string>
     <string name="genres">الأنواع</string>
     <string name="other_storage">خيارات تخزين أخرى</string>
-    <string name="screenshots_block_nsfw">حظر على محتوى +18</string>
+    <string name="screenshots_block_nsfw">حظر على NSFW</string>
     <string name="zoom_mode_keep_start">إبقاء في البداية</string>
     <string name="text_local_holder_secondary">احفظ شيئًا أو قم باستيراده من ملف.</string>
     <string name="text_local_holder_primary">قم بحفظ شيءٍ أولاً</string>
     <string name="bookmarks">المحفوظات</string>
-    <string name="empty_favourite_categories">لا توجد فئات مفضلة</string>
+    <string name="empty_favourite_categories">لا توجد قوائم مُفضلة</string>
     <string name="screenshots_policy">سياسة لقطة الشاشة</string>
     <string name="done">تم</string>
     <string name="no_thanks">لا شكرا</string>
@@ -278,7 +278,7 @@
     <string name="text_downloads_list_holder">ليس لديك أية تنزيلات</string>
     <string name="bookmark_added">تم الإضافة للمحفظة</string>
     <string name="data_deletion">حذف البيانات</string>
-    <string name="show_reading_indicators_summary">اظهر نسبة القراءة في السجل و المفضلة</string>
+    <string name="show_reading_indicators_summary">اظهر نسبة القراءة في السجل و المُفضلة</string>
     <string name="show_all">اظهر الكل</string>
     <string name="invalid_domain_message">مجال غير صالح</string>
     <string name="history_cleared">تم مسح سجل التصفح</string>
@@ -310,18 +310,18 @@
     <string name="reader_info_pattern">فصل %1$d/%2$d صفحة %3$d/%4$d</string>
     <string name="reader_info_bar">عرض شريط المعلومات في قارئ الصفحات</string>
     <string name="folder_with_images">مجلد مع صور</string>
-    <string name="exclude_nsfw_from_history_summary">المانغا +18 لن يتم إضافتها إلى السجل، ولن يتم حفظ تقدمك فيها.\"</string>
+    <string name="exclude_nsfw_from_history_summary">المانجات المعلمة كـ(NSFW) لن يتم إضافتها إلى السجل، ولن يتم حفظ تقدمك فيها</string>
     <string name="clear_cookies_summary">يمكنها المساعدة في حالة حدوث مشاكل. سيتم إلغاء جميع التفويضات</string>
     <string name="confirm_exit">اضغط زر العود للخلف مرة أخرى للخروج</string>
     <string name="scrobbling_empty_hint">لتتبع تقدم القراءة، اختر القائمة → \"تتبع\" على شاشة تفاصيل المانغا.\".</string>
     <string name="user_agent">موجه UserAgent</string>
     <string name="settings_apply_restart_required">يرجى إعادة تشغيل التطبيق لرؤية التغييرات.\"</string>
-    <string name="removed_from_favourites">ازالة من المفضلة</string>
+    <string name="removed_from_favourites">تم الحذف من المُفضلة</string>
     <string name="no_chapters">لا توجد فصول</string>
     <string name="allow_unstable_updates">السماح بالتحديثات غير مستقرة</string>
     <string name="allow_unstable_updates_summary">تلقي إشعارات حول الإصدارات الغير مستقرة</string>
-    <string name="categories_delete_confirm">هل أنت متأكد أنك تريد حذف فئات المفضلة المحددة
-\n؟ سيتم فقدان جميع المانغا فيها ولا يمكن التراجع عن هذا.</string>
+    <string name="categories_delete_confirm">هل أنت متأكد أنك تريد حذف قوائم المُفضلة المحددة
+\n؟ سيتم فقدان جميع المانجا فيها ولا يمكن التراجع عن هذا.</string>
     <string name="pages_cache">بيانات التخزين المؤقت للصفحات</string>
     <string name="not_found_404">المحتوى غير موجود أو تمت إزالته</string>
     <string name="comics_archive_import_description">يمكنك اختيار ملف أو أكثر بتنسيق cbz أو zip ، سيتم التعرف على كل ملف على أنه مانغا منفصلة.</string>
@@ -366,7 +366,7 @@
     <string name="downloads_wifi_only_summary">إيقاف التحميل عند الانتقال إلى شبكة الهاتف المحمول</string>
     <string name="resume">استئناف</string>
     <string name="cancel_all">إلغاء الكل</string>
-    <string name="source_disabled">المصدر معطل</string>
+    <string name="source_disabled">تم تعطيل المصدر</string>
     <string name="theme_name_rikka">ريكا</string>
     <string name="theme_name_sakura">ساكورا</string>
     <string name="pause">إيقاف مؤقت</string>
@@ -405,8 +405,8 @@
     <string name="restore_summary">استعادة النسخة الاحتياطية التي تم إنشاؤها مسبقًا</string>
     <string name="download_option_all_unread_b">جميع الفصول غير المقروءة (%s)</string>
     <string name="download_option_next_unread_n_chapters">التالي غير المقروء %s</string>
-    <string name="no_access_to_file">ليس لديك حق الوصول إلى هذا الملف أو الدليل</string>
-    <string name="pick_custom_directory">اختر الدليل المخصص</string>
+    <string name="no_access_to_file">ليس لديك حق الوصول إلى هذا الملف أو المجلد</string>
+    <string name="pick_custom_directory">اختر مجلد مخصص</string>
     <string name="local_manga_directories">مجلدات المانجا المحلية</string>
     <string name="description">وصف</string>
     <string name="this_month">هذا الشهر</string>
@@ -419,7 +419,7 @@
     <string name="background">خلفية</string>
     <string name="data_not_restored">لم تتم استعادة البيانات</string>
     <string name="tracker_wifi_only_summary">لا تتحقق من وجود فصول جديدة باستخدام اتصالات الشبكة المقاسة</string>
-    <string name="search_hint">أدخل عنوان المانجا أو الفئة أو اسم المصدر</string>
+    <string name="search_hint">أدخل عنوان المانجا أو التصنيف أو اسم المصدر</string>
     <string name="data_not_restored_text">تأكد من تحديد ملف النسخ الاحتياطي الصحيح</string>
     <string name="suggestions_wifi_only_summary">لا تقم بتحديث الاقتراحات باستخدام اتصالات الشبكة المقيدة</string>
     <string name="captcha_required_summary">%s يتطلب حل كلمة التحقق للعمل بشكل صحيح</string>
@@ -450,19 +450,19 @@
     <string name="download_option_all_chapters">جميع الفصول مع الترجمة : %s</string>
     <string name="download_option_whole_manga">المانجا كلها</string>
     <string name="download_option_all_unread">جميع الفصول غير المقروءة</string>
-    <string name="manage_categories">إدارة الفئات</string>
-    <string name="advanced">متقدم</string>
+    <string name="manage_categories">إدارة القوائم</string>
+    <string name="advanced">مُتقدم</string>
     <string name="catalog">القائمة</string>
-    <string name="source_enabled">المصادر المفعلة</string>
+    <string name="source_enabled">تم تفعيل المصدر</string>
     <string name="sources_catalog">قائمة المصادر</string>
     <string name="keep_screen_on">إبقاء الشاشة قيد التشغيل</string>
     <string name="keep_screen_on_summary">إبقاء الشاشة قيد التشغيل اثناء القرائه</string>
     <string name="content_type_manga">مانجا</string>
-    <string name="categories">الفئات</string>
+    <string name="categories">القوائم</string>
     <string name="manga_list">قائمة المانجا</string>
     <string name="moved_to_top">تم تحريكه الى الاعلى</string>
     <string name="zoom_in">تكبير</string>
-    <string name="error_corrupted_file">تم إرجاع بيانات غير صالحة أو الملف تالف</string>
+    <string name="error_corrupted_file">تم استلام بيانات خاطئه او الملف تالف</string>
     <string name="enhanced_colors_summary">يقلل من النطاقات، ولكنه قد يؤثر على الأداء</string>
     <string name="state_abandoned">متروك</string>
     <string name="reader_zoom_buttons">اظهر ازرار التكبير/التصغير</string>
@@ -479,7 +479,7 @@
     <string name="frequency_twice_per_month">مرتين في الشهر</string>
     <string name="frequency_once_per_month">مرة في الشهر</string>
     <string name="periodic_backups_enable">تفعيل النسخ الاحتياطي الدوري</string>
-    <string name="backups_output_directory">ملف إخراج النسخ الاحتياطية</string>
+    <string name="backups_output_directory">مجلد إخراج النسخ الاحتياطية</string>
     <string name="last_successful_backup">آخر نسخ احتياطي ناجح: %s</string>
     <string name="lock_screen_rotation">قفل دوران الشاشة</string>
     <string name="available_d">متاح: %1$d</string>
@@ -491,33 +491,163 @@
     <string name="error_multiple_states_not_supported">لا يدعم مصدر المانجا هذا التصفية حسب الحالات المتعددة</string>
     <string name="error_search_not_supported">البحث غير مدعوم من مصدر المانجا هذا</string>
     <string name="manual">يدوي</string>
-    <string name="on_device">علي الجهاز</string>
+    <string name="on_device">في الجهاز</string>
     <string name="to_top">الى الاعلى</string>
     <string name="zoom_out">تصغير</string>
-    <string name="reader_optimize">تقليل استهلاك الذاكرة (beta)</string>
-    <string name="main_screen_sections">أقسام الشاشة الرئيسية</string>
+    <string name="reader_optimize">تقليل استهلاك الذاكرة (تجريبي)</string>
+    <string name="main_screen_sections">أقسام الشاشه الرئيسيه</string>
     <string name="content_type_other">آخر</string>
     <string name="content_type_comics">كوميكس</string>
     <string name="content_type_hentai">هينتاي</string>
     <string name="items_limit_exceeded">لا يمكن اضافة المزيد من العناصر</string>
     <string name="directories">المجلدات</string>
-    <string name="manage_sources">مصادر المانجا</string>
+    <string name="manage_sources">مصادر المانجات</string>
     <string name="state_paused">متوقف</string>
     <string name="state">الحالة</string>
     <string name="list_options">خيارات القائمة</string>
     <string name="by_relevance">ملاءمة</string>
     <string name="no_manga_sources_found">لم يتم العثور على مصادر مانجا متاحة من خلال طلبك</string>
     <string name="downloads_settings_info">يمكنك تمكين تباطؤ التنزيل لكل مصدر مانغا بشكل فردي في إعدادات المصدر إذا كنت تواجه مشكلات في الحظر من جانب الخادم</string>
-    <string name="error_filter_locale_genre_not_supported">لا يدعم هذا المصدر التصفية حسب الفئات والإعدادات المحلية</string>
-    <string name="error_filter_states_genre_not_supported">لا يدعم هذا المصدر التصفية حسب الفئات والحالات</string>
+    <string name="error_filter_locale_genre_not_supported">لا يدعم هذا المصدر التصفية حسب التصنيفات والإعدادات المحلية</string>
+    <string name="error_filter_states_genre_not_supported">لا يدعم هذا المصدر التصفية حسب التصنيفات والحالات</string>
     <string name="disable_battery_optimization_summary_downloads">قد يساعد في بدء التنزيل إذا كان لديك أي مشاكل معه</string>
-    <string name="genres_search_hint">ابدأ بكتابة اسم الفئة</string>
+    <string name="genres_search_hint">ابدأ بكتابة اسم التصنيف</string>
     <string name="speed_value">س%.1f</string>
     <string name="skip">تخطى</string>
     <string name="grayscale">تدرج الرمادي</string>
-    <string name="globally">عالمي</string>
+    <string name="globally">عالماً</string>
     <string name="this_manga">هذه المانجا</string>
-    <string name="color_correction_apply_text">يمكن تطبيق هذه الإعدادات عالميًا أو على المانجا الحالية فقط. إذا تم تطبيقه عالميًا، فلن يتم تجاوز الإعدادات الفردية.</string>
-    <string name="apply">تَفعيل</string>
+    <string name="color_correction_apply_text">يمكن تطبيق هذه الإعدادات عالمياً أو على المانجا الحالية فقط. إذا تم تطبيقه عالمياً، فلن يتم تجاوز الإعدادات الفردية.</string>
+    <string name="apply">طَبِق</string>
     <string name="welcome_text">الرجاء تحديد مصادر المحتوى التي ترغب في تمكينها. يمكن أيضًا تكوين هذا لاحقًا في الإعدادات</string>
+    <string name="volume_unknown">مجلد مجهول</string>
+    <string name="content_rating">تقييم المحتوى</string>
+    <string name="last_read">آخر ما تم قراءته</string>
+    <string name="show_labels_in_navbar">إظهار التسميات في شريط التنقل</string>
+    <string name="suggestions_unavailable_text">ميزة الاقتراحات معطلة</string>
+    <string name="check_for_new_chapters_disabled">تم تعطيل التحقق من الفصول الجديدة</string>
+    <string name="three_months">ثلاث أشهر</string>
+    <string name="migrate">نقل</string>
+    <string name="state_upcoming">قادم</string>
+    <string name="by_name_reverse">الاسم معكوس</string>
+    <string name="mark_as_completed_prompt">عَلِّم المانجا المحددة كمقروءة بالكامل
+\n
+\nتحذير: سيتم فقدان تقدم القراءة الحالي.</string>
+    <string name="category_hidden_done">تم إخفاء هذه القائمة من الشاشة الرئيسية ويمكن الوصول إليها من خلال القائمة ← إدارة القوائم</string>
+    <string name="switch_pages_volume_buttons_summary">استخدم أزرار الصوت للتبديل بين الصفحات</string>
+    <string name="vertical">عمودي</string>
+    <string name="show_menu">أظهر القائمة</string>
+    <string name="switch_pages_volume_buttons">تمكين أزرار الصوت</string>
+    <string name="none">لا شئ</string>
+    <string name="long_tap_action">اضغط مطولاً على الإجراء</string>
+    <string name="month">شهر</string>
+    <string name="all_time">كل الوقت</string>
+    <string name="fullscreen_mode">وضع ملء الشاشة</string>
+    <string name="reader_fullscreen_summary">إخفاء حالة النظام وأشرطة التنقل</string>
+    <string name="reading_time_estimation_summary">قد تكون قيمة تقدير الوقت غير دقيقة</string>
+    <string name="reading_time_estimation">عرض توقيت القراءة المقدرة</string>
+    <string name="sync_auth">سجل المزامنة</string>
+    <string name="restore">أسترجع</string>
+    <string name="backup_date_">تاريخ النسخ الاحتياطي: %s</string>
+    <string name="genres_exclude">اقصاء التصنيفات</string>
+    <string name="rating_safe">آمن</string>
+    <string name="rating_adult">للكبار</string>
+    <string name="volume_">المجلد %d</string>
+    <string name="incognito_mode_hint">لن يتم حفظ تقدم القراءة الخاص بك</string>
+    <string name="toggle_ui">إظهر/إخفِ واجهة المستخدم</string>
+    <string name="prev_page">الصفحة السابقة</string>
+    <string name="reader_actions">أداء القارئ</string>
+    <string name="tap_action">اضغط على الإجراء</string>
+    <string name="config_reset_confirm">إعادة ضبط الإعدادات على القيم الافتراضية؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="use_two_pages_landscape">استخدم تصميم الصفحتين في الاتجاه الأفقي (تجريبي)</string>
+    <string name="default_webtoon_zoom_out">تصغير الويبتون الافتراضي</string>
+    <string name="pages_saving">حفظ الصفحات</string>
+    <string name="day">يوم</string>
+    <string name="manga_migration">نقل المانجا</string>
+    <string name="no_chapters_deleted">لم يتم حذف أي فصول</string>
+    <string name="delete_read_chapters_summary">احذف الفصول التي قرأتها بالفعل من وحدة التخزين المحلية لتحرير المساحة</string>
+    <string name="delete_read_chapters_prompt">سيؤدي هذا إلى حذف جميع الفصول المُعَلمة كـ\"مقروءة\" من وحدة التخزين المحلية لديك بشكل دائم. يمكنك إعادة تنزيلها لاحقًا، ولكن قد يتم فقدان الفصول المستوردة إلى الأبد</string>
+    <string name="mark_as_completed">عَلِّم كمقروء</string>
+    <string name="prev_chapter">الفصل السابق</string>
+    <string name="next_chapter">الفصل التالي</string>
+    <string name="next_page">الصفحة التالية</string>
+    <string name="migrate_confirmation">سيتم استبدال المانجا \"%1$s\" من \"%2$s\" بـ \"%3$s\" من \"%4$s\" في سجلك ومفضلاتك (إن وجدت)</string>
+    <string name="migration_completed">تم النقل بنجاح</string>
+    <string name="delete_read_chapters">حذف الفصول المقروءة</string>
+    <string name="chapters_deleted_pattern">تمت إزالة %1$s، وتم مسح %2$s</string>
+    <string name="delete_read_chapters_auto">حذف فصول المقروءة تلقائياً</string>
+    <string name="last_used">آخر أستخدام</string>
+    <string name="_new">جديد</string>
+    <string name="remove_from_history">حذف من السجل</string>
+    <string name="all_languages">كل اللغات</string>
+    <string name="screenshots_block_incognito">الحظر عند وضع التصفح المتخفي</string>
+    <string name="alternatives">بدائل</string>
+    <string name="empty_stats_text">لا توجد إحصائيات للفترة المحددة</string>
+    <string name="image_server">خادم الصور المُفضل</string>
+    <string name="crop_pages">قص الصفحات</string>
+    <string name="pin">تثبيت</string>
+    <string name="unpin">إلغاء التثبيت</string>
+    <string name="source_unpinned">تم إلغاء تثبيت المصدر</string>
+    <string name="source_pinned">تم تثبيت المصدر</string>
+    <string name="sources_unpinned">تم إلغاء تثبيت المصادر</string>
+    <string name="sources_pinned">تم تثبيت المصادر</string>
+    <string name="default_tab">الصفحة الافتراضية</string>
+    <string name="recent_sources">المصادر الحديثة</string>
+    <string name="less_than_minute">أقل من دقيقة</string>
+    <string name="clear_stats_confirm">هل تريد حقًا مسح جميع إحصائيات القراءة؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="week">أسبوع</string>
+    <string name="pages_read_s">الصفحات التي قرأت: %s</string>
+    <string name="show_pages_thumbs_summary">قم بتمكين علامة التبويب \"الصفحات\" في شاشة التفاصيل</string>
+    <string name="disable_connectivity_check">تعطيل التحقق من الاتصال</string>
+    <string name="show_updated">عرض التحديثات</string>
+    <string name="rating_suggestive">موحية</string>
+    <string name="reader_actions_summary">تهيئة الإجراءات لمناطق الشاشة القابلة للنقر عليها</string>
+    <string name="ask_for_dest_dir_every_time">اطلب دليل الوجهة في كل مرة</string>
+    <string name="default_page_save_dir">مجلد حفظ الصفحة الافتراضية</string>
+    <string name="preferred_download_format">تنسيق التحميل المُفضل</string>
+    <string name="automatic">تلقائي</string>
+    <string name="multiple_cbz_files">ملفات CBZ متعددة</string>
+    <string name="reading_stats">إحصائيات القراءة</string>
+    <string name="other_manga">مانجا أخرى</string>
+    <string name="statistics">الإحصائيات</string>
+    <string name="clear_stats">حذف الإحصائيات</string>
+    <string name="stats_cleared">تم حذف الإحصائيات</string>
+    <string name="split_by_translations">تقسيم عن طريق الترجمة</string>
+    <string name="split_by_translations_summary">اعرض الفصول ذات الترجمات المختلفة بشكل منفصل، وليس في قائمة واحدة</string>
+    <string name="order_oldest">الأقدم</string>
+    <string name="long_ago_read">قرأت منذ وقت طويل</string>
+    <string name="unread">غير مقروءة</string>
+    <string name="show_pages_thumbs">إظهار الصور المصغرة للصفحات</string>
+    <string name="unsupported_backup_message">الرجاء تحديد ملف النسخ الاحتياطي السليم لKotatsu</string>
+    <string name="minutes_short">%d ش</string>
+    <string name="hours_minutes_short">%1$d س %2$d ش</string>
+    <string name="webtoon_gaps">الفجوات في وضع الويبتون</string>
+    <string name="location">المكان</string>
+    <string name="disable_nsfw_notifications">تعطيل اشعارات NSFW</string>
+    <string name="disable_nsfw_notifications_summary">لا تعرض إشعارات حول تحديثات مانجات NSFW</string>
+    <string name="tracker_debug_info">التحقق من سجل الفصول الجديدة</string>
+    <string name="tracker_debug_info_summary">تصحيح المعلومات حول عمليات التحقق من الخلفية للفصول الجديدة</string>
+    <string name="search_suggestions">اقتراحات البحث</string>
+    <string name="recent_queries">الأستعلامات الأخيره</string>
+    <string name="suggested_queries">الاستعلامات المقترحة</string>
+    <string name="single_cbz_file">ملف CBZ واحد</string>
+    <string name="hours_short">%d س</string>
+    <string name="webtoon_gaps_summary">إظهار الفجوات الرأسية بين الصفحات في وضع الويبتون</string>
+    <string name="authors">المؤلفون</string>
+    <string name="disable_connectivity_check_summary">تخطي التحقق من الاتصال في حالة وجود مشكلات في الاتصال (على سبيل المثال، الانتقال إلى وضع عدم الاتصال بالإنترنت على الرغم من اتصال الشبكة)</string>
+    <string name="ignore_ssl_errors_summary">يمكنك تعطيل التحقق من شهادات SSL في حالة مواجهة مشكلات متعلقة بـ SSL عند الوصول إلى موارد الشبكة. قد يؤثر هذا على أمانك. مطلوب إعادة تشغيل التطبيق بعد تغيير هذا الإعداد.</string>
+    <string name="runs_on_app_start">يعمل عند بدء تشغيل التطبيق</string>
+    <string name="error_no_data_received">لم يتم تلقي أي بيانات من الخادم</string>
+    <string name="disable">تعطيل</string>
+    <string name="sources_disabled">تم تعطيل المصادر</string>
+    <string name="enable_source">تمكين المصدر</string>
+    <string name="unsupported_source">مصدر المانجا هذا غير مدعوم</string>
+    <string name="blocked_by_server_message">لقد تم حظرك من قبل الخادم. حاول استخدام اتصال شبكة مختلف (VPN, Proxy, الخ.)</string>
+    <string name="less_frequently">أقل ترددا</string>
+    <string name="more_frequently">أكثر ترددا</string>
+    <string name="frequency_of_check">تردد الفحص</string>
+    <string name="pin_navigation_ui">تثبيت واجهة المستخدم</string>
+    <string name="pin_navigation_ui_summary">لا تخفي شريط التنقل وعرض البحث عند التمرير</string>
+    <string name="fix">اصلاح</string>
+    <string name="missing_storage_permission">لا يوجد إذن للوصول إلى المانجا على وحدة التخزين الخارجية</string>
 </resources>

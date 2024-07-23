@@ -2,32 +2,32 @@
 <resources>
     <plurals name="new_chapters">
         <item quantity="zero">لا يوجد فصل جديد</item>
-        <item quantity="one">فصل جديد</item>
-        <item quantity="two">%1$d فصلان جديدان</item>
+        <item quantity="one">%1$d فصل جديد</item>
+        <item quantity="two">%1$d فصلين جديدين</item>
         <item quantity="few">%1$d فصول جديدة</item>
-        <item quantity="many">%1$d فصل جديد</item>
-        <item quantity="other">%1$d فصل جديد</item>
+        <item quantity="many">%1$d فصول جديدة</item>
+        <item quantity="other">%1$d فصول جديدة</item>
     </plurals>
     <plurals name="chapters">
-        <item quantity="zero">لا فصل</item>
+        <item quantity="zero">لا يوجد فصول</item>
         <item quantity="one">فصل واحد</item>
         <item quantity="two">فصلين</item>
         <item quantity="few">%1$d فصول</item>
-        <item quantity="many">%1$d فصل</item>
-        <item quantity="other">%1$d فصل</item>
+        <item quantity="many">%1$d فصول</item>
+        <item quantity="other">%1$d فصول</item>
     </plurals>
     <plurals name="minutes_ago">
-        <item quantity="zero">%1$d دقيقة مضت</item>
-        <item quantity="one">%1$d دقيقة مضت</item>
-        <item quantity="two">%1$d دقيقتين مضت</item>
-        <item quantity="few">%1$d دقائق مضت</item>
-        <item quantity="many">%1$d دقائق مضت</item>
-        <item quantity="other">%1$d دقائق مضت</item>
+        <item quantity="zero">%1$dدقائق مضت</item>
+        <item quantity="one">%1$dدقيقة مضت</item>
+        <item quantity="two">%1$dدقائق مضت</item>
+        <item quantity="few">%1$dدقائق مضت</item>
+        <item quantity="many">%1$dدقائق مضت</item>
+        <item quantity="other">%1$dدقائق مضت</item>
     </plurals>
     <plurals name="items">
         <item quantity="zero">%1$d عنصر</item>
         <item quantity="one">%1$d عنصر</item>
-        <item quantity="two">%1$d عناصر</item>
+        <item quantity="two">%1$d عنصران</item>
         <item quantity="few">%1$d عناصر</item>
         <item quantity="many">%1$d عناصر</item>
         <item quantity="other">%1$d عناصر</item>
@@ -51,22 +51,22 @@
     <plurals name="hours_ago">
         <item quantity="zero">%1$d ساعة مضت</item>
         <item quantity="one">%1$d ساعة مضت</item>
-        <item quantity="two">%1$d ساعات مضت</item>
+        <item quantity="two">%1$d ساعتين مضت</item>
         <item quantity="few">%1$d ساعات مضت</item>
         <item quantity="many">%1$d ساعات مضت</item>
         <item quantity="other">%1$d ساعات مضت</item>
     </plurals>
     <plurals name="minutes">
         <item quantity="zero">%1$d دقيقة</item>
-        <item quantity="one">دقيقة</item>
-        <item quantity="two">دقيقتان</item>
+        <item quantity="one">%1$d دقيقة</item>
+        <item quantity="two">%1$d دقيقتان</item>
         <item quantity="few">%1$d دقائق</item>
         <item quantity="many">%1$d دقيقة</item>
         <item quantity="other">%1$d ساعة</item>
     </plurals>
     <plurals name="hours">
         <item quantity="zero">%1$d ساعة</item>
-        <item quantity="one">ساعة واحدة</item>
+        <item quantity="one">ساعة</item>
         <item quantity="two">ساعتان</item>
         <item quantity="few">%1$d ساعات</item>
         <item quantity="many">%1$d ساعة</item>
