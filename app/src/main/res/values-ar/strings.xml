@@ -507,4 +507,17 @@
     <string name="list_options">خيارات القائمة</string>
     <string name="by_relevance">ملاءمة</string>
     <string name="no_manga_sources_found">لم يتم العثور على مصادر مانجا متاحة من خلال طلبك</string>
+    <string name="downloads_settings_info">يمكنك تمكين تباطؤ التنزيل لكل مصدر مانغا بشكل فردي في إعدادات المصدر إذا كنت تواجه مشكلات في الحظر من جانب الخادم</string>
+    <string name="error_filter_locale_genre_not_supported">لا يدعم هذا المصدر التصفية حسب الفئات والإعدادات المحلية</string>
+    <string name="error_filter_states_genre_not_supported">لا يدعم هذا المصدر التصفية حسب الفئات والحالات</string>
+    <string name="disable_battery_optimization_summary_downloads">قد يساعد في بدء التنزيل إذا كان لديك أي مشاكل معه</string>
+    <string name="genres_search_hint">ابدأ بكتابة اسم الفئة</string>
+    <string name="speed_value">س%.1f</string>
+    <string name="skip">تخطى</string>
+    <string name="grayscale">تدرج الرمادي</string>
+    <string name="globally">عالمي</string>
+    <string name="this_manga">هذه المانجا</string>
+    <string name="color_correction_apply_text">يمكن تطبيق هذه الإعدادات عالميًا أو على المانجا الحالية فقط. إذا تم تطبيقه عالميًا، فلن يتم تجاوز الإعدادات الفردية.</string>
+    <string name="apply">تَفعيل</string>
+    <string name="welcome_text">الرجاء تحديد مصادر المحتوى التي ترغب في تمكينها. يمكن أيضًا تكوين هذا لاحقًا في الإعدادات</string>
 </resources>
