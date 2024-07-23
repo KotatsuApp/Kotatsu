@@ -610,7 +610,6 @@
     <string name="multiple_cbz_files">Molti file CBZ</string>
     <string name="reading_stats">Lettura statistiche</string>
     <string name="remove_from_history">Rimuovi dalla cronologia</string>
-    <string name="default_webtoon_zoom_out"></string>
     <string name="statistics">Statistiche</string>
     <string name="migrate">Migrare</string>
     <string name="alternatives">Alternative</string>
@@ -640,7 +639,6 @@
     <string name="disable_connectivity_check_summary">Salta la verifica di connessione in caso di problemi con essa (es. andare in modalità offline pur essendo conessi ad una rete)</string>
     <string name="screenshots_block_incognito">Blocca in modalità incognito</string>
     <string name="suggested_queries">Query suggerite</string>
-    <string name="tracker_debug_info"></string>
     <string name="disable">Disabilita</string>
     <string name="sources_disabled">Fonti disabilitate</string>
     <string name="pin_navigation_ui">Blocca UI di navigazione</string>
