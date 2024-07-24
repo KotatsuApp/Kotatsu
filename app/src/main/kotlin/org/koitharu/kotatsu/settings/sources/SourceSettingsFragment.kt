@@ -10,7 +10,10 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.getTitle
+import org.koitharu.kotatsu.core.parser.EmptyMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -37,15 +40,18 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		preferenceManager.sharedPreferencesName = viewModel.source.name
 		addPreferencesFromResource(R.xml.pref_source)
 		addPreferencesFromRepository(viewModel.repository)
+		val isValidSource = viewModel.repository !is EmptyMangaRepository
 
 		findPreference<SwitchPreferenceCompat>(KEY_ENABLE)?.run {
+			isVisible = isValidSource
 			onPreferenceChangeListener = this@SourceSettingsFragment
 		}
 		findPreference<Preference>(KEY_AUTH)?.run {
-			val authProvider = viewModel.repository.getAuthProvider()
+			val authProvider = (viewModel.repository as? ParserMangaRepository)?.getAuthProvider()
 			isVisible = authProvider != null
 			isEnabled = authProvider?.isAuthorized == false
 		}
+		findPreference<Preference>(SourceSettings.KEY_SLOWDOWN)?.isVisible = isValidSource
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

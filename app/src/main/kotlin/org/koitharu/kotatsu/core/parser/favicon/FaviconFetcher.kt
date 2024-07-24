@@ -25,7 +25,7 @@ import okio.buffer
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.requireBody
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.local.data.CacheDir
@@ -53,7 +53,7 @@ class FaviconFetcher(
 
 	override suspend fun fetch(): FetchResult {
 		getCached(options)?.let { return it }
-		val repo = mangaRepositoryFactory.create(mangaSource) as RemoteMangaRepository
+		val repo = mangaRepositoryFactory.create(mangaSource) as ParserMangaRepository
 		val sizePx = maxOf(
 			options.size.width.pxOrElse { FALLBACK_SIZE },
 			options.size.height.pxOrElse { FALLBACK_SIZE },

@@ -88,7 +88,7 @@ interface MangaRepository {
 		}
 
 		private fun createRepository(source: MangaSource): MangaRepository? = when (source) {
-			is MangaParserSource -> RemoteMangaRepository(
+			is MangaParserSource -> ParserMangaRepository(
 				parser = MangaParser(source, loaderContext),
 				cache = contentCache,
 				mirrorSwitchInterceptor = mirrorSwitchInterceptor,

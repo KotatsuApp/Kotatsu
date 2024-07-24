@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
@@ -44,7 +44,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		val mangaSource = MangaSource(intent?.getStringExtra(EXTRA_SOURCE))
-		val repository = mangaRepositoryFactory.create(mangaSource) as? RemoteMangaRepository
+		val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository
 		repository?.headers?.get(CommonHeaders.USER_AGENT)
 		viewBinding.webView.configureForParser(userAgent)
 		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)

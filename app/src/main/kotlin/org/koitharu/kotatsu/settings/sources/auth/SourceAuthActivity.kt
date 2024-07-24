@@ -21,7 +21,7 @@ import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.TaggedActivityResult
 import org.koitharu.kotatsu.core.util.ext.configureForParser
@@ -52,7 +52,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 			finishAfterTransition()
 			return
 		}
-		val repository = mangaRepositoryFactory.create(source) as? RemoteMangaRepository
+		val repository = mangaRepositoryFactory.create(source) as? ParserMangaRepository
 		authProvider = (repository)?.getAuthProvider() ?: run {
 			Toast.makeText(
 				this,

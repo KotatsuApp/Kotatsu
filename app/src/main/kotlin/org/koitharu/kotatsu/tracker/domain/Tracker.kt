@@ -5,7 +5,7 @@ import coil.request.CachePolicy
 import dagger.Reusable
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.MultiMutex
 import org.koitharu.kotatsu.core.util.ext.toInstantOrNull
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -36,7 +36,7 @@ class Tracker @Inject constructor(
 	): MangaUpdates = mangaMutex.withLock(track.manga.id) {
 		val updates = runCatchingCancellable {
 			val repo = mangaRepositoryFactory.create(track.manga.source)
-			require(repo is RemoteMangaRepository) { "Repository ${repo.javaClass.simpleName} is not supported" }
+			require(repo is ParserMangaRepository) { "Repository ${repo.javaClass.simpleName} is not supported" }
 			val manga = repo.getDetails(track.manga, CachePolicy.WRITE_ONLY)
 			compare(track, manga, getBranch(manga))
 		}.getOrElse { error ->

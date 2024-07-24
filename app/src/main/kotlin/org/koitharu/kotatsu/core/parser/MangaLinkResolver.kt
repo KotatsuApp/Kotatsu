@@ -52,7 +52,7 @@ class MangaLinkResolver @Inject constructor(
 		val host = uri.host ?: return null
 		val repo = sourcesRepository.allMangaSources.asSequence()
 			.map { source ->
-				repositoryFactory.create(source) as RemoteMangaRepository
+				repositoryFactory.create(source) as ParserMangaRepository
 			}.find { repo ->
 				host in repo.domains
 			} ?: return null
@@ -86,7 +86,7 @@ class MangaLinkResolver @Inject constructor(
 	}
 
 	private suspend fun MangaRepository.getDetailsNoCache(manga: Manga): Manga {
-		return if (this is RemoteMangaRepository) {
+		return if (this is ParserMangaRepository) {
 			getDetails(manga, CachePolicy.READ_ONLY)
 		} else {
 			getDetails(manga)

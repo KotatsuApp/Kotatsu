@@ -13,7 +13,7 @@ import okhttp3.internal.canParseAsIpAddress
 import okhttp3.internal.closeQuietly
 import okhttp3.internal.publicsuffix.PublicSuffixDatabase
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -54,7 +54,7 @@ class MirrorSwitchInterceptor @Inject constructor(
 		}
 	}
 
-	suspend fun trySwitchMirror(repository: RemoteMangaRepository): Boolean = runInterruptible(Dispatchers.Default) {
+	suspend fun trySwitchMirror(repository: ParserMangaRepository): Boolean = runInterruptible(Dispatchers.Default) {
 		if (!isEnabled) {
 			return@runInterruptible false
 		}
@@ -76,14 +76,14 @@ class MirrorSwitchInterceptor @Inject constructor(
 		}
 	}
 
-	fun rollback(repository: RemoteMangaRepository, oldMirror: String) = synchronized(obtainLock(repository.source)) {
+	fun rollback(repository: ParserMangaRepository, oldMirror: String) = synchronized(obtainLock(repository.source)) {
 		blacklist[repository.source]?.remove(oldMirror)
 		repository.domain = oldMirror
 	}
 
 	private fun trySwitchMirror(request: Request, chain: Interceptor.Chain): Response? {
 		val source = request.tag(MangaSource::class.java) ?: return null
-		val repository = mangaRepositoryFactoryLazy.get().create(source) as? RemoteMangaRepository ?: return null
+		val repository = mangaRepositoryFactoryLazy.get().create(source) as? ParserMangaRepository ?: return null
 		val mirrors = repository.getAvailableMirrors()
 		if (mirrors.isEmpty()) {
 			return null
@@ -94,7 +94,7 @@ class MirrorSwitchInterceptor @Inject constructor(
 	}
 
 	private fun tryMirrors(
-		repository: RemoteMangaRepository,
+		repository: ParserMangaRepository,
 		mirrors: List<String>,
 		chain: Interceptor.Chain,
 		request: Request,

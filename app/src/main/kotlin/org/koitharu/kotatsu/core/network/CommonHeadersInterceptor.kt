@@ -11,7 +11,7 @@ import okio.IOException
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mergeWith
@@ -30,7 +30,7 @@ class CommonHeadersInterceptor @Inject constructor(
 		val request = chain.request()
 		val source = request.tag(MangaSource::class.java)
 		val repository = if (source != null) {
-			mangaRepositoryFactoryLazy.get().create(source) as? RemoteMangaRepository
+			mangaRepositoryFactoryLazy.get().create(source) as? ParserMangaRepository
 		} else {
 			if (BuildConfig.DEBUG) {
 				Log.w("Http", "Request without source tag: ${request.url}")

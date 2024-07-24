@@ -21,7 +21,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -75,7 +75,7 @@ open class RemoteListViewModel @Inject constructor(
 		get() = repository.isSearchSupported
 
 	val browserUrl: String?
-		get() = (repository as? RemoteMangaRepository)?.domain?.let { "https://$it" }
+		get() = (repository as? ParserMangaRepository)?.domain?.let { "https://$it" }
 
 	override val content = combine(
 		mangaList.map { it?.skipNsfwIfNeeded() },

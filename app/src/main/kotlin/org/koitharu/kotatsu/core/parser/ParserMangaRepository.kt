@@ -36,7 +36,7 @@ import org.koitharu.kotatsu.parsers.util.domain
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.util.Locale
 
-class RemoteMangaRepository(
+class ParserMangaRepository(
 	private val parser: MangaParser,
 	private val cache: MemoryContentCache,
 	private val mirrorSwitchInterceptor: MirrorSwitchInterceptor,
@@ -220,14 +220,14 @@ class RemoteMangaRepository(
 		if (result.isValidResult()) {
 			return result.getOrThrow()
 		}
-		return if (trySwitchMirror(this@RemoteMangaRepository)) {
+		return if (trySwitchMirror(this@ParserMangaRepository)) {
 			val newResult = runCatchingCancellable {
 				block()
 			}
 			if (newResult.isValidResult()) {
 				return newResult.getOrThrow()
 			} else {
-				rollback(this@RemoteMangaRepository, initialMirror)
+				rollback(this@ParserMangaRepository, initialMirror)
 				return result.getOrThrow()
 			}
 		} else {
