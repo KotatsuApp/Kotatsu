@@ -28,9 +28,9 @@ data object UnknownMangaSource : MangaSource {
 fun MangaSource(name: String?): MangaSource {
 	when (name) {
 		null,
-		UnknownMangaSource.name -> UnknownMangaSource
+		UnknownMangaSource.name -> return UnknownMangaSource
 
-		LocalMangaSource.name -> LocalMangaSource
+		LocalMangaSource.name -> return LocalMangaSource
 	}
 	MangaParserSource.entries.forEach {
 		if (it.name == name) return it
