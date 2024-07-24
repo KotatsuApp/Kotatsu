@@ -4,6 +4,7 @@ import androidx.annotation.AnyThread
 import androidx.collection.ArrayMap
 import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.model.MangaSourceInfo
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.core.network.MirrorSwitchInterceptor
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
@@ -69,6 +70,7 @@ interface MangaRepository {
 		@AnyThread
 		fun create(source: MangaSource): MangaRepository {
 			when (source) {
+				is MangaSourceInfo -> return create(source.mangaSource)
 				LocalMangaSource -> return localMangaRepository
 				UnknownMangaSource -> return EmptyMangaRepository(source)
 			}

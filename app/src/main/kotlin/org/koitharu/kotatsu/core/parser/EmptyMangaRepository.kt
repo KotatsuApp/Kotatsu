@@ -13,9 +13,6 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.EnumSet
 import java.util.Locale
 
-/**
- * This parser is just for parser development, it should not be used in releases
- */
 class EmptyMangaRepository(override val source: MangaSource) : MangaRepository {
 
 	override val sortOrders: Set<SortOrder>
