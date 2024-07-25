@@ -644,4 +644,17 @@
     <string name="_new">Нови</string>
     <string name="all_languages">Сви језици</string>
     <string name="screenshots_block_incognito">Блокирај у режиму без архивирања</string>
+    <string name="percent_left">Преостали постотак</string>
+    <string name="percent_read">Постотак читања</string>
+    <string name="chapters_read">Прочитана поглавља</string>
+    <string name="chapters_left">Остала поглавља</string>
+    <string name="pin">Закачи</string>
+    <string name="unpin">Откачи</string>
+    <string name="source_pinned">Извор је закачен</string>
+    <string name="source_unpinned">Извор је откачен</string>
+    <string name="sources_unpinned">Извори су откачени</string>
+    <string name="sources_pinned">Извори су закачени</string>
+    <string name="recent_sources">Недавни извори</string>
+    <string name="image_server">Жељени послуживач слика</string>
+    <string name="crop_pages">Изрежи странице</string>
 </resources>
