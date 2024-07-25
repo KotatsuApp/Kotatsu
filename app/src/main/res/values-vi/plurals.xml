@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="new_chapters">
-        <item quantity="other">%1$d chương mới</item>
+        <item quantity="other">%1$d Chương mới</item>
     </plurals>
     <plurals name="chapters">
         <item quantity="other">%1$d chương</item>

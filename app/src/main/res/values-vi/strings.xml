@@ -648,9 +648,13 @@
     <string name="disable_nsfw_notifications">Vô hiệu hóa thông báo NSFW</string>
     <string name="disable_nsfw_notifications_summary">Ẩn các thông báo liên quan đến cập nhật manga người lớn (NSFW)</string>
     <string name="tracker_debug_info">Kiểm tra các bản ghi về chương mới</string>
-    <string name="disable_connectivity_check_summary">Bỏ qua kiểm tra kết nối mạng của bạn trong ứng dụng nếu bạn gặp vấn đề với nó (Ví dụ như bạn đã kết nối mạng như ứng dụng lại nói \"Bạn đang ngoại tuyến\",...)</string>
+    <string name="disable_connectivity_check_summary">Bỏ qua kiểm tra kết nối mạng của bạn trong ứng dụng nếu bạn gặp vấn đề với nó (Ví dụ như bạn đã kết nối mạng nhưng ứng dụng nói \"Bạn đang ngoại tuyến\",...)</string>
     <string name="ignore_ssl_errors_summary">Bạn có thể vô hiệu hóa xác thực chứng chỉ SSL nếu bạn gặp phải sự cố liên quan đến SSL khi truy cập vào nguồn truyện. Điều này có thể ảnh hưởng đến việc bảo mật kết nối của bạn. Bắt buộc phải khởi động lại ứng dụng nếu bạn thay đổi thiết đặt này.</string>
     <string name="disable">Vô hiệu hóa</string>
     <string name="sources_disabled">Nguồn bị vô hiệu hóa</string>
     <string name="tracker_debug_info_summary">Gỡ lỗi các thông tin về tính năng kiểm tra chương mới trong nền</string>
+    <string name="percent_read">Tiến trình đọc</string>
+    <string name="percent_left">Tiến trình đọc còn lại</string>
+    <string name="chapters_read">Chương đã đọc</string>
+    <string name="chapters_left">Chương còn lại</string>
 </resources>
