@@ -1,12 +1,19 @@
 package org.koitharu.kotatsu.core.parser.favicon
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.AdaptiveIconDrawable
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.net.Uri
+import android.os.Build
 import android.webkit.MimeTypeMap
 import coil.ImageLoader
 import coil.decode.DataSource
 import coil.decode.ImageSource
 import coil.disk.DiskCache
+import coil.fetch.DrawableResult
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
@@ -14,7 +21,9 @@ import coil.network.HttpException
 import coil.request.Options
 import coil.size.Size
 import coil.size.pxOrElse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -24,8 +33,10 @@ import okio.Closeable
 import okio.buffer
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.parser.EmptyMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
+import org.koitharu.kotatsu.core.parser.external.ExternalMangaRepository
 import org.koitharu.kotatsu.core.util.ext.requireBody
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.local.data.CacheDir
@@ -53,7 +64,20 @@ class FaviconFetcher(
 
 	override suspend fun fetch(): FetchResult {
 		getCached(options)?.let { return it }
-		val repo = mangaRepositoryFactory.create(mangaSource) as ParserMangaRepository
+		return when (val repo = mangaRepositoryFactory.create(mangaSource)) {
+			is ParserMangaRepository -> fetchParserFavicon(repo)
+			is ExternalMangaRepository -> fetchPluginIcon(repo)
+			is EmptyMangaRepository -> DrawableResult(
+				drawable = ColorDrawable(Color.WHITE),
+				isSampled = false,
+				dataSource = DataSource.MEMORY,
+			)
+
+			else -> throw IllegalArgumentException("")
+		}
+	}
+
+	private suspend fun fetchParserFavicon(repo: ParserMangaRepository): FetchResult {
 		val sizePx = maxOf(
 			options.size.width.pxOrElse { FALLBACK_SIZE },
 			options.size.height.pxOrElse { FALLBACK_SIZE },
@@ -98,6 +122,20 @@ class FaviconFetcher(
 			throw HttpException(response)
 		}
 		return response
+	}
+
+	private suspend fun fetchPluginIcon(repository: ExternalMangaRepository): FetchResult {
+		val source = repository.source
+		val pm = options.context.packageManager
+		val icon = runInterruptible(Dispatchers.IO) {
+			val provider = pm.resolveContentProvider(source.authority, 0)
+			provider?.loadIcon(pm) ?: pm.getApplicationIcon(source.packageName)
+		}
+		return DrawableResult(
+			drawable = icon.nonAdaptive(),
+			isSampled = false,
+			dataSource = DataSource.DISK,
+		)
 	}
 
 	private fun getCached(options: Options): SourceResult? {
@@ -164,6 +202,13 @@ class FaviconFetcher(
 			throw NoSuchElementException("No favicons found")
 		}
 	}
+
+	private fun Drawable.nonAdaptive() =
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && this is AdaptiveIconDrawable) {
+			LayerDrawable(arrayOf(background, foreground))
+		} else {
+			this
+		}
 
 	class Factory(
 		context: Context,

@@ -1,10 +1,16 @@
 package org.koitharu.kotatsu.explore.data
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import androidx.room.withTransaction
-import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -17,6 +23,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
 import org.koitharu.kotatsu.core.model.MangaSourceInfo
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
+import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
@@ -29,8 +36,9 @@ import java.util.Collections
 import java.util.EnumSet
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@Reusable
+@Singleton
 class MangaSourcesRepository @Inject constructor(
 	@ApplicationContext private val context: Context,
 	private val db: MangaDatabase,
@@ -154,7 +162,14 @@ class MangaSourcesRepository @Inject constructor(
 		dao.observeEnabled(order).map {
 			it.toSources(skipNsfw, order)
 		}
-	}.flatMapLatest { it }.onStart { assimilateNewSources() }
+	}.flatMapLatest { it }
+		.onStart { assimilateNewSources() }
+		.combine(observeExternalSources()) { enabled, external ->
+			val list = ArrayList<MangaSourceInfo>(enabled.size + external.size)
+			external.mapTo(list) { MangaSourceInfo(it, isEnabled = true, isPinned = true) }
+			list.addAll(enabled)
+			list
+		}
 
 	fun observeAll(): Flow<List<Pair<MangaSource, Boolean>>> = dao.observeAll().map { entities ->
 		val result = ArrayList<Pair<MangaSource, Boolean>>(entities.size)
@@ -292,6 +307,40 @@ class MangaSourcesRepository @Inject constructor(
 		}
 	}
 
+	private fun observeExternalSources(): Flow<List<ExternalMangaSource>> {
+		val intent = Intent("app.kotatsu.parser.PROVIDE_MANGA")
+		val pm = context.packageManager
+		return callbackFlow {
+			val receiver = object : BroadcastReceiver() {
+				override fun onReceive(context: Context?, intent: Intent?) {
+					trySendBlocking(intent)
+				}
+			}
+			ContextCompat.registerReceiver(
+				context,
+				receiver,
+				IntentFilter().apply {
+					addAction(Intent.ACTION_PACKAGE_ADDED)
+					addAction(Intent.ACTION_PACKAGE_VERIFIED)
+					addAction(Intent.ACTION_PACKAGE_REPLACED)
+					addAction(Intent.ACTION_PACKAGE_REMOVED)
+					addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED)
+					addDataScheme("package")
+				},
+				ContextCompat.RECEIVER_EXPORTED,
+			)
+			awaitClose { context.unregisterReceiver(receiver) }
+		}.onStart {
+			emit(null)
+		}.map {
+			pm.queryIntentContentProviders(intent, 0).map { resolveInfo ->
+				ExternalMangaSource(
+					packageName = resolveInfo.providerInfo.packageName,
+					authority = resolveInfo.providerInfo.authority,
+				)
+			}
+		}.distinctUntilChanged()
+	}
 
 	private fun List<MangaSourceEntity>.toSources(
 		skipNsfwSources: Boolean,

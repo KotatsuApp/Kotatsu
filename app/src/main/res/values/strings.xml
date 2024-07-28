@@ -668,4 +668,5 @@
 	<string name="percent_left">Percent left</string>
 	<string name="chapters_read">Chapters read</string>
 	<string name="chapters_left">Chapters left</string>
+	<string name="external_source">External/plugin</string>
 </resources>

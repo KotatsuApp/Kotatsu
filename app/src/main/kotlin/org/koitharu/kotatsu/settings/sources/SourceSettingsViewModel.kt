@@ -10,6 +10,7 @@ import okhttp3.HttpUrl
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
+import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
@@ -58,7 +59,7 @@ class SourceSettingsViewModel @Inject constructor(
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 		when (repository) {
-			is ParserMangaRepository -> {
+			is CachingMangaRepository -> {
 				if (key != SourceSettings.KEY_SLOWDOWN && key != SourceSettings.KEY_SORT_ORDER) {
 					repository.invalidateCache()
 				}

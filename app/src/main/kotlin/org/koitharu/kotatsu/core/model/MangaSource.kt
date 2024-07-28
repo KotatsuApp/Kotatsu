@@ -9,12 +9,14 @@ import android.text.style.SuperscriptSpan
 import androidx.annotation.StringRes
 import androidx.core.text.inSpans
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.splitTwoParts
 import com.google.android.material.R as materialR
 
 data object LocalMangaSource : MangaSource {
@@ -26,11 +28,14 @@ data object UnknownMangaSource : MangaSource {
 }
 
 fun MangaSource(name: String?): MangaSource {
-	when (name) {
-		null,
+	when (name ?: return UnknownMangaSource) {
 		UnknownMangaSource.name -> return UnknownMangaSource
 
 		LocalMangaSource.name -> return LocalMangaSource
+	}
+	if (name.startsWith("content:")) {
+		val parts = name.substringAfter(':').splitTwoParts('/') ?: return UnknownMangaSource
+		return ExternalMangaSource(packageName = parts.first, authority = parts.second)
 	}
 	MangaParserSource.entries.forEach {
 		if (it.name == name) return it
@@ -61,6 +66,8 @@ fun MangaSource.getSummary(context: Context): String? = when (this) {
 		context.getString(R.string.source_summary_pattern, type, locale)
 	}
 
+	is ExternalMangaSource -> context.getString(R.string.external_source)
+
 	else -> null
 }
 
@@ -68,6 +75,7 @@ fun MangaSource.getTitle(context: Context): String = when (this) {
 	is MangaSourceInfo -> mangaSource.getTitle(context)
 	is MangaParserSource -> title
 	LocalMangaSource -> context.getString(R.string.local_storage)
+	is ExternalMangaSource -> resolveName(context)
 	else -> context.getString(R.string.unknown)
 }
 

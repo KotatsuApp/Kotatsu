@@ -2,7 +2,9 @@ package org.koitharu.kotatsu.settings
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
@@ -17,6 +19,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.MangaSourceInfo
+import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
@@ -174,9 +178,14 @@ class SettingsActivity :
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_MANAGE_DOWNLOADS)
 
-		fun newSourceSettingsIntent(context: Context, source: MangaSource) =
-			Intent(context, SettingsActivity::class.java)
+		fun newSourceSettingsIntent(context: Context, source: MangaSource): Intent = when (source) {
+			is MangaSourceInfo -> newSourceSettingsIntent(context, source.mangaSource)
+			is ExternalMangaSource -> Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+				.setData(Uri.fromParts("package", source.packageName, null))
+
+			else -> Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_SOURCE)
 				.putExtra(EXTRA_SOURCE, source.name)
+		}
 	}
 }

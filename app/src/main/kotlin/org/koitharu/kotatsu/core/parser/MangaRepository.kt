@@ -1,12 +1,16 @@
 package org.koitharu.kotatsu.core.parser
 
+import android.content.Context
 import androidx.annotation.AnyThread
 import androidx.collection.ArrayMap
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.MangaSourceInfo
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.core.network.MirrorSwitchInterceptor
+import org.koitharu.kotatsu.core.parser.external.ExternalMangaRepository
+import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.model.ContentRating
@@ -57,8 +61,14 @@ interface MangaRepository {
 
 	suspend fun getRelated(seed: Manga): List<Manga>
 
+	suspend fun find(manga: Manga): Manga? {
+		val list = getList(0, MangaListFilter.Search(manga.title))
+		return list.find { x -> x.id == manga.id }
+	}
+
 	@Singleton
 	class Factory @Inject constructor(
+		@ApplicationContext private val context: Context,
 		private val localMangaRepository: LocalMangaRepository,
 		private val loaderContext: MangaLoaderContext,
 		private val contentCache: MemoryContentCache,
@@ -93,6 +103,16 @@ interface MangaRepository {
 				cache = contentCache,
 				mirrorSwitchInterceptor = mirrorSwitchInterceptor,
 			)
+
+			is ExternalMangaSource -> if (source.isAvailable(context)) {
+				ExternalMangaRepository(
+					contentResolver = context.contentResolver,
+					source = source,
+					cache = contentCache,
+				)
+			} else {
+				EmptyMangaRepository(source)
+			}
 
 			else -> null
 		}
