@@ -657,4 +657,5 @@
     <string name="percent_left">剩余章节百分比</string>
     <string name="chapters_read">已读章节数</string>
     <string name="chapters_left">剩余章节数</string>
+    <string name="external_source">外部插件</string>
 </resources>
