@@ -657,4 +657,5 @@
     <string name="percent_left">Kalan yüzde</string>
     <string name="chapters_read">Okunan bölüm</string>
     <string name="chapters_left">Kalan bölüm</string>
+    <string name="external_source">Harici/eklenti</string>
 </resources>
