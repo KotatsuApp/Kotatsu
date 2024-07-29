@@ -39,7 +39,7 @@
     <string name="theme">مظهر</string>
     <string name="follow_system">حسب النظام</string>
     <string name="share_s">شارك %s</string>
-    <string name="processing_">في طور معالجة…</string>
+    <string name="processing_">في طور المعالجة…</string>
     <string name="updated">محدث</string>
     <string name="filter">تصفية</string>
     <string name="sort_order">ترتيب الفرز</string>
@@ -141,7 +141,7 @@
     <string name="passwords_mismatch">كلمة السر غير مطابقة</string>
     <string name="yesterday">أمس</string>
     <string name="check_for_updates">تحقق من وجود تحديثات</string>
-    <string name="protect_application_summary">اطلب كلمة السر عند تشغيل كوتاتسو</string>
+    <string name="protect_application_summary">اطلب كلمة السر عند تشغيل التطبيق</string>
     <string name="right_to_left">من اليمين الى اليسار</string>
     <string name="reader_mode_hint">سيتم تذكر الاعدادات المختارة لهذه المانجا</string>
     <string name="default_s">الافتراضي: %s</string>
@@ -313,7 +313,7 @@
     <string name="exclude_nsfw_from_history_summary">المانجات المعلمة كـ(NSFW) لن يتم إضافتها إلى السجل، ولن يتم حفظ تقدمك فيها</string>
     <string name="clear_cookies_summary">يمكنها المساعدة في حالة حدوث مشاكل. سيتم إلغاء جميع التفويضات</string>
     <string name="confirm_exit">اضغط زر العود للخلف مرة أخرى للخروج</string>
-    <string name="scrobbling_empty_hint">لتتبع تقدم القراءة، اختر القائمة → \"تتبع\" على شاشة تفاصيل المانغا.\".</string>
+    <string name="scrobbling_empty_hint">لتتبع تقدم القراءة، اختر القائمة ← \"تتبع\" على شاشة تفاصيل المانجا.</string>
     <string name="user_agent">موجه UserAgent</string>
     <string name="settings_apply_restart_required">يرجى إعادة تشغيل التطبيق لرؤية التغييرات.\"</string>
     <string name="removed_from_favourites">تم الحذف من المُفضلة</string>
@@ -393,9 +393,9 @@
     <string name="username">اسم المستخدم</string>
     <string name="password">كلمة المرور</string>
     <string name="authorization_optional">التفويض (اختياري)</string>
-    <string name="reader_info_bar_summary">إظهار الوقت الحالي وقراءة التقدم في الجزء العلوي من الشاشة</string>
+    <string name="reader_info_bar_summary">إظهار الوقت الحالي و تقدم القراءة في الجزء العلوي من الشاشة</string>
     <string name="show_pages_numbers_summary">إظهار أرقام الصفحات في الزاوية السفلية</string>
-    <string name="in_progress">في تَقَدم</string>
+    <string name="in_progress">قيد التنفيذ</string>
     <string name="too_many_requests_message">طلبات كثيرة جدا. حاول مرة أخرى في وقت لاحق</string>
     <string name="email_password_enter_hint">أدخل بريدك الإلكتروني وكلمة المرور للمتابعة</string>
     <string name="network">اتصال</string>
@@ -422,7 +422,7 @@
     <string name="search_hint">أدخل عنوان المانجا أو التصنيف أو اسم المصدر</string>
     <string name="data_not_restored_text">تأكد من تحديد ملف النسخ الاحتياطي الصحيح</string>
     <string name="suggestions_wifi_only_summary">لا تقم بتحديث الاقتراحات باستخدام اتصالات الشبكة المقيدة</string>
-    <string name="captcha_required_summary">%s يتطلب حل كلمة التحقق للعمل بشكل صحيح</string>
+    <string name="captcha_required_summary">%s يتطلب حل CAPTCHA للعمل بشكل صحيح</string>
     <string name="progress">تقدم</string>
     <string name="order_added">تمت الإضافة</string>
     <string name="show">أعرض</string>
@@ -650,4 +650,8 @@
     <string name="pin_navigation_ui_summary">لا تخفي شريط التنقل وعرض البحث عند التمرير</string>
     <string name="fix">اصلاح</string>
     <string name="missing_storage_permission">لا يوجد إذن للوصول إلى المانجا على وحدة التخزين الخارجية</string>
+    <string name="percent_read">نسبة القراءة</string>
+    <string name="percent_left">النسبة المتبقية</string>
+    <string name="chapters_read">الفصول المقروءة</string>
+    <string name="chapters_left">الفصول المتبقية</string>
 </resources>
