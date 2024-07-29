@@ -657,4 +657,5 @@
     <string name="percent_left">Porcentaje restante</string>
     <string name="chapters_read">Capítulos leídos</string>
     <string name="chapters_left">Capítulos restantes</string>
+    <string name="external_source">Externo/plugin</string>
 </resources>
