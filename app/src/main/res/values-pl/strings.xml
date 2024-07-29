@@ -653,4 +653,8 @@
     <string name="sources_unpinned">Odpięte źródła</string>
     <string name="sources_pinned">Przypięte źródła</string>
     <string name="recent_sources">Najnowsze źródła</string>
+    <string name="percent_read">Procent przeczytania</string>
+    <string name="percent_left">Pozostały procent</string>
+    <string name="chapters_read">Przeczytane rozdziały</string>
+    <string name="chapters_left">Pozostałe rozdziały</string>
 </resources>
