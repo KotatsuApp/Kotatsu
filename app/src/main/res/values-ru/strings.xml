@@ -653,4 +653,8 @@
     <string name="unpin">Открепить</string>
     <string name="source_unpinned">Источник откреплён</string>
     <string name="image_server">Сервер изображений</string>
+    <string name="percent_read">Процент прочитанного</string>
+    <string name="chapters_read">Глав прочитано</string>
+    <string name="percent_left">Процент оставшегося</string>
+    <string name="chapters_left">Глав осталось</string>
 </resources>

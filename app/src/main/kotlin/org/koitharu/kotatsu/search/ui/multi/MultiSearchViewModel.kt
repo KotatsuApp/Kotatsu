@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.search.ui.multi
 
 import androidx.annotation.CheckResult
+import androidx.collection.LongSet
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,8 +14,10 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.sync.Semaphore
@@ -28,12 +31,11 @@ import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -45,7 +47,7 @@ private const val MIN_HAS_MORE_ITEMS = 8
 @HiltViewModel
 class MultiSearchViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-	private val extraProvider: ListExtraProvider,
+	private val mangaListMapper: MangaListMapper,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val downloadScheduler: DownloadWorker.Scheduler,
 	private val sourcesRepository: MangaSourcesRepository,
@@ -81,7 +83,7 @@ class MultiSearchViewModel @Inject constructor(
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
-	fun getItems(ids: Set<Long>): Set<Manga> {
+	fun getItems(ids: LongSet): Set<Manga> {
 		val snapshot = listData.value ?: return emptySet()
 		val result = HashSet<Manga>(ids.size)
 		snapshot.forEach { x ->
@@ -112,35 +114,39 @@ class MultiSearchViewModel @Inject constructor(
 			return@channelFlow
 		}
 		val semaphore = Semaphore(MAX_PARALLELISM)
-		for (source in sources) {
+		sources.mapNotNull { source ->
 			val repository = mangaRepositoryFactory.create(source)
 			if (!repository.isSearchSupported) {
-				continue
-			}
-			launch {
-				val item = runCatchingCancellable {
-					semaphore.withPermit {
-						repository.getList(offset = 0, filter = MangaListFilter.Search(q))
-							.toUi(ListMode.GRID, extraProvider)
-					}
-				}.fold(
-					onSuccess = { list ->
-						if (list.isEmpty()) {
-							null
-						} else {
-							MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list, null)
+				null
+			} else {
+				launch {
+					val item = runCatchingCancellable {
+						semaphore.withPermit {
+							mangaListMapper.toListModelList(
+								manga = repository.getList(offset = 0, filter = MangaListFilter.Search(q)),
+								mode = ListMode.GRID,
+							)
 						}
-					},
-					onFailure = { error ->
-						error.printStackTraceDebug()
-						MultiSearchListModel(source, true, emptyList(), error)
-					},
-				)
-				if (item != null) {
-					send(item)
+					}.fold(
+						onSuccess = { list ->
+							if (list.isEmpty()) {
+								null
+							} else {
+								MultiSearchListModel(source, list.size > MIN_HAS_MORE_ITEMS, list, null)
+							}
+						},
+						onFailure = { error ->
+							error.printStackTraceDebug()
+							MultiSearchListModel(source, true, emptyList(), error)
+						},
+					)
+					if (item != null) {
+						send(item)
+					}
 				}
 			}
-		}
+		}.joinAll()
 	}.runningFold<MultiSearchListModel, List<MultiSearchListModel>?>(null) { list, item -> list.orEmpty() + item }
 		.filterNotNull()
+		.onEmpty { emit(emptyList()) }
 }

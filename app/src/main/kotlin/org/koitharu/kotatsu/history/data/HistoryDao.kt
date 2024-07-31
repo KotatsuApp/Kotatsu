@@ -88,7 +88,7 @@ abstract class HistoryDao {
 	abstract suspend fun insert(entity: HistoryEntity): Long
 
 	@Query(
-		"UPDATE history SET page = :page, chapter_id = :chapterId, scroll = :scroll, percent = :percent, updated_at = :updatedAt, deleted_at = 0 WHERE manga_id = :mangaId",
+		"UPDATE history SET page = :page, chapter_id = :chapterId, scroll = :scroll, percent = :percent, updated_at = :updatedAt, chapters = :chapters, deleted_at = 0 WHERE manga_id = :mangaId",
 	)
 	abstract suspend fun update(
 		mangaId: Long,
@@ -96,6 +96,7 @@ abstract class HistoryDao {
 		chapterId: Long,
 		scroll: Float,
 		percent: Float,
+		chapters: Int,
 		updatedAt: Long,
 	): Int
 
@@ -116,6 +117,7 @@ abstract class HistoryDao {
 		chapterId = entity.chapterId,
 		scroll = entity.scroll,
 		percent = entity.percent,
+		chapters = entity.chaptersCount,
 		updatedAt = entity.updatedAt,
 	)
 

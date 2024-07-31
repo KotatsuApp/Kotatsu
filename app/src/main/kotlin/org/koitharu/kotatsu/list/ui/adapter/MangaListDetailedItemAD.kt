@@ -16,13 +16,13 @@ import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemMangaListDetailsBinding
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.MangaListDetailedModel
+import org.koitharu.kotatsu.list.ui.model.MangaDetailedListModel
 
 fun mangaListDetailedItemAD(
 	coil: ImageLoader,
 	lifecycleOwner: LifecycleOwner,
 	clickListener: MangaDetailsClickListener,
-) = adapterDelegateViewBinding<MangaListDetailedModel, ListModel, ItemMangaListDetailsBinding>(
+) = adapterDelegateViewBinding<MangaDetailedListModel, ListModel, ItemMangaListDetailsBinding>(
 	{ inflater, parent -> ItemMangaListDetailsBinding.inflate(inflater, parent, false) },
 ) {
 	var badge: BadgeDrawable? = null
@@ -39,7 +39,10 @@ fun mangaListDetailedItemAD(
 	bind { payloads ->
 		binding.textViewTitle.text = item.title
 		binding.textViewAuthor.textAndVisible = item.manga.author
-		binding.progressView.setPercent(item.progress, ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads)
+		binding.progressView.setProgress(
+			value = item.progress,
+			animate = ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads,
+		)
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			size(CoverSizeResolver(binding.imageViewCover))
 			defaultPlaceholders(context)

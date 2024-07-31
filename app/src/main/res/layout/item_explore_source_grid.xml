@@ -27,15 +27,17 @@
 
 	<TextView
 		android:id="@+id/textView_title"
-		android:layout_width="match_parent"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/list_spacing"
+		android:drawablePadding="1dp"
 		android:elegantTextHeight="false"
 		android:ellipsize="end"
 		android:gravity="center_horizontal"
 		android:singleLine="true"
 		android:textAlignment="center"
 		android:textAppearance="?attr/textAppearanceBodyMedium"
-		tools:text="@tools:sample/lorem[2]" />
+		tools:drawableStart="@drawable/ic_pin_small"
+		tools:text="@tools:sample/lorem[0]" />
 
 </LinearLayout>

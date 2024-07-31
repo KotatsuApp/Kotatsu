@@ -55,11 +55,11 @@ class DetailsLoadUseCase @Inject constructor(
 		try {
 			val details = getDetails(manga)
 			launch { updateTracker(details) }
-			send(MangaDetails(details, local?.peek(), details.description?.parseAsHtml(withImages = false), false))
-			send(MangaDetails(details, local?.await(), details.description?.parseAsHtml(withImages = true), true))
+			send(MangaDetails(details, local?.peek(), details.description?.parseAsHtml(withImages = false)?.trim(), false))
+			send(MangaDetails(details, local?.await(), details.description?.parseAsHtml(withImages = true)?.trim(), true))
 		} catch (e: IOException) {
 			local?.await()?.manga?.also { localManga ->
-				send(MangaDetails(localManga, null, localManga.description?.parseAsHtml(withImages = false), true))
+				send(MangaDetails(localManga, null, localManga.description?.parseAsHtml(withImages = false)?.trim(), true))
 			} ?: close(e)
 		}
 	}

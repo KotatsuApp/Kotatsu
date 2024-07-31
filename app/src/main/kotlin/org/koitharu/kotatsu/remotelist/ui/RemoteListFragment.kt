@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
@@ -75,7 +76,12 @@ class RemoteListFragment : MangaListFragment(), FilterOwner {
 	override fun onSecondaryErrorActionClick(error: Throwable) {
 		viewModel.browserUrl?.also { url ->
 			startActivity(
-				BrowserActivity.newIntent(requireContext(), url, viewModel.source, viewModel.source.title),
+				BrowserActivity.newIntent(
+					requireContext(),
+					url,
+					viewModel.source,
+					viewModel.source.getTitle(requireContext()),
+				),
 			)
 		} ?: Snackbar.make(requireViewBinding().recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
 			.show()
@@ -165,8 +171,8 @@ class RemoteListFragment : MangaListFragment(), FilterOwner {
 
 		const val ARG_SOURCE = "provider"
 
-		fun newInstance(provider: MangaSource) = RemoteListFragment().withArgs(1) {
-			putSerializable(ARG_SOURCE, provider)
+		fun newInstance(source: MangaSource) = RemoteListFragment().withArgs(1) {
+			putString(ARG_SOURCE, source.name)
 		}
 	}
 }

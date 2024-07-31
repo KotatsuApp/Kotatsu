@@ -38,4 +38,16 @@
         <item quantity="many">%1$d месяцаў таму</item>
         <item quantity="other">%1$d месяцаў таму</item>
     </plurals>
+    <plurals name="hours">
+        <item quantity="one">%1$dгадзіна</item>
+        <item quantity="few">%1$dгадзіны</item>
+        <item quantity="many">%1$dгадзін</item>
+        <item quantity="other">%1$dгадзін</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$dхвіліна</item>
+        <item quantity="few">%1$dхвіліны</item>
+        <item quantity="many">%1$dхвілін</item>
+        <item quantity="other">%1$dхвілін</item>
+    </plurals>
 </resources>

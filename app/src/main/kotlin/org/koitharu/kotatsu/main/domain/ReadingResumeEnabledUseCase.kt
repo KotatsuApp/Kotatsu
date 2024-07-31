@@ -4,11 +4,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.history.data.HistoryRepository
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
 
 class ReadingResumeEnabledUseCase @Inject constructor(
@@ -24,7 +24,7 @@ class ReadingResumeEnabledUseCase @Inject constructor(
 			flowOf(false)
 		} else {
 			combine(networkState, historyRepository.observeLast()) { isOnline, last ->
-				last != null && (isOnline || last.source == MangaSource.LOCAL)
+				last != null && (isOnline || last.isLocal)
 			}
 		}
 	}

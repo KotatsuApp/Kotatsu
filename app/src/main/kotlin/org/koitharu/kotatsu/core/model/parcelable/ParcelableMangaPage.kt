@@ -5,7 +5,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.TypeParceler
-import org.koitharu.kotatsu.core.util.ext.readSerializableCompat
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaPage
 
 object MangaPageParceler : Parceler<MangaPage> {
@@ -13,14 +13,14 @@ object MangaPageParceler : Parceler<MangaPage> {
 		id = parcel.readLong(),
 		url = requireNotNull(parcel.readString()),
 		preview = parcel.readString(),
-		source = requireNotNull(parcel.readSerializableCompat()),
+		source = MangaSource(parcel.readString()),
 	)
 
 	override fun MangaPage.write(parcel: Parcel, flags: Int) {
 		parcel.writeLong(id)
 		parcel.writeString(url)
 		parcel.writeString(preview)
-		parcel.writeSerializable(source)
+		parcel.writeString(source.name)
 	}
 }
 

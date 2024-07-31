@@ -5,20 +5,20 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.TypeParceler
-import org.koitharu.kotatsu.core.util.ext.readSerializableCompat
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 
 object MangaTagParceler : Parceler<MangaTag> {
 	override fun create(parcel: Parcel) = MangaTag(
 		title = requireNotNull(parcel.readString()),
 		key = requireNotNull(parcel.readString()),
-		source = requireNotNull(parcel.readSerializableCompat()),
+		source = MangaSource(parcel.readString()),
 	)
 
 	override fun MangaTag.write(parcel: Parcel, flags: Int) {
 		parcel.writeString(title)
 		parcel.writeString(key)
-		parcel.writeSerializable(source)
+		parcel.writeString(source.name)
 	}
 }
 

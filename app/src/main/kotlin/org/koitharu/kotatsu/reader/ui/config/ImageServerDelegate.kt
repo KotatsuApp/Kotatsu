@@ -7,7 +7,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.mapToArray
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -20,7 +20,7 @@ class ImageServerDelegate(
 ) {
 
 	private val repositoryLazy = SuspendLazy {
-		mangaRepositoryFactory.create(checkNotNull(mangaSource)) as RemoteMangaRepository
+		mangaRepositoryFactory.create(checkNotNull(mangaSource)) as ParserMangaRepository
 	}
 
 	suspend fun isAvailable() = withContext(Dispatchers.Default) {

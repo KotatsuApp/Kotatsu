@@ -2,13 +2,13 @@ package org.koitharu.kotatsu.search.ui.multi
 
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
 data class MultiSearchListModel(
 	val source: MangaSource,
 	val hasMore: Boolean,
-	val list: List<MangaItemModel>,
+	val list: List<MangaListModel>,
 	val error: Throwable?,
 ) : ListModel {
 

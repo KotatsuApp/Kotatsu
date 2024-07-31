@@ -55,7 +55,11 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
-		val url = intent?.dataString.orEmpty()
+		val url = intent?.dataString
+		if (url.isNullOrEmpty()) {
+			finishAfterTransition()
+			return
+		}
 		cfClient = CloudFlareClient(cookieJar, this, url)
 		viewBinding.webView.configureForParser(intent?.getStringExtra(ARG_UA))
 		viewBinding.webView.webViewClient = cfClient
@@ -63,12 +67,7 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 			onBackPressedDispatcher.addCallback(it)
 		}
 		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
-		if (savedInstanceState != null) {
-			return
-		}
-		if (url.isEmpty()) {
-			finishAfterTransition()
-		} else {
+		if (savedInstanceState == null) {
 			onTitleChanged(getString(R.string.loading_), url)
 			viewBinding.webView.loadUrl(url)
 		}

@@ -11,21 +11,6 @@
 		android:persistent="false"
 		android:title="@string/enable_source" />
 
-	<Preference
-		android:key="auth"
-		android:order="100"
-		android:persistent="false"
-		android:title="@string/sign_in"
-		app:allowDividerAbove="true" />
-
-	<Preference
-		android:key="cookies_clear"
-		android:order="101"
-		android:persistent="false"
-		android:summary="@string/clear_source_cookies_summary"
-		android:title="@string/clear_cookies"
-		app:allowDividerAbove="true" />
-
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="slowdown"

@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -173,9 +174,10 @@ class AppShortcutManager @Inject constructor(
 			onSuccess = { IconCompat.createWithAdaptiveBitmap(it) },
 			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) },
 		)
+		val title = source.getTitle(context)
 		ShortcutInfoCompat.Builder(context, source.name)
-			.setShortLabel(source.title)
-			.setLongLabel(source.title)
+			.setShortLabel(title)
+			.setLongLabel(title)
 			.setIcon(icon)
 			.setLongLived(true)
 			.setIntent(MangaListActivity.newIntent(context, source))

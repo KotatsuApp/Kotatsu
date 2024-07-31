@@ -13,6 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
@@ -95,9 +96,9 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 				getString(
 					R.string.migrate_confirmation,
 					viewModel.manga.title,
-					viewModel.manga.source.title,
+					viewModel.manga.source.getTitle(this),
 					target.title,
-					target.source.title,
+					target.source.getTitle(this),
 				),
 			)
 			.setNegativeButton(android.R.string.cancel, null)

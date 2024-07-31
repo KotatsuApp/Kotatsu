@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.prefs.ProgressIndicatorMode
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.util.LocaleComparator
@@ -43,6 +44,10 @@ class AppearanceSettingsFragment :
 		findPreference<ListPreference>(AppSettings.KEY_LIST_MODE)?.run {
 			entryValues = ListMode.entries.names()
 			setDefaultValueCompat(ListMode.GRID.name)
+		}
+		findPreference<ListPreference>(AppSettings.KEY_PROGRESS_INDICATORS)?.run {
+			entryValues = ProgressIndicatorMode.entries.names()
+			setDefaultValueCompat(ProgressIndicatorMode.PERCENT_READ.name)
 		}
 		findPreference<ActivityListPreference>(AppSettings.KEY_APP_LOCALE)?.run {
 			initLocalePicker(this)

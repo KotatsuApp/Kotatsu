@@ -173,6 +173,7 @@
 				layout="@layout/layout_details_chips"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/screen_padding"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/barrier_header" />
@@ -263,9 +264,8 @@
 				android:id="@+id/chips_tags"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/screen_padding"
 				android:layout_marginTop="@dimen/margin_normal"
-				android:paddingStart="@dimen/screen_padding"
-				android:paddingEnd="@dimen/screen_padding"
 				app:chipSpacingHorizontal="6dp"
 				app:chipSpacingVertical="6dp"
 				app:layout_constraintEnd_toEndOf="parent"

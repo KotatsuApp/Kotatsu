@@ -644,4 +644,18 @@
     <string name="_new">Yeni</string>
     <string name="all_languages">Tüm diller</string>
     <string name="screenshots_block_incognito">Gizli moddayken engelle</string>
+    <string name="image_server">Tercih edilen resim sunucusu</string>
+    <string name="crop_pages">Sayfaları kırp</string>
+    <string name="pin">Sabitle</string>
+    <string name="unpin">Sabitlemeyi kaldır</string>
+    <string name="source_pinned">Kaynak sabitlendi</string>
+    <string name="source_unpinned">Kaynağın sabitlenmesi kaldırıldı</string>
+    <string name="sources_unpinned">Kaynakların sabitlenmesi kaldırıldı</string>
+    <string name="sources_pinned">Kaynaklar sabitlendi</string>
+    <string name="recent_sources">Son kaynaklar</string>
+    <string name="percent_read">Okunan yüzde</string>
+    <string name="percent_left">Kalan yüzde</string>
+    <string name="chapters_read">Okunan bölüm</string>
+    <string name="chapters_left">Kalan bölüm</string>
+    <string name="external_source">Harici/eklenti</string>
 </resources>

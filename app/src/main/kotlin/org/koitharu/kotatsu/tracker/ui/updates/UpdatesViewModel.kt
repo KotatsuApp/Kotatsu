@@ -17,16 +17,13 @@ import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.list.ui.model.toGridModel
-import org.koitharu.kotatsu.list.ui.model.toListDetailedModel
-import org.koitharu.kotatsu.list.ui.model.toListModel
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import javax.inject.Inject
@@ -35,14 +32,14 @@ import javax.inject.Inject
 class UpdatesViewModel @Inject constructor(
 	private val repository: TrackingRepository,
 	settings: AppSettings,
-	private val extraProvider: ListExtraProvider,
+	private val mangaListMapper: MangaListMapper,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
 	override val content = combine(
 		repository.observeUpdatedManga(),
 		settings.observeAsFlow(AppSettings.KEY_UPDATED_GROUPING) { isUpdatedGroupingEnabled },
-		listMode,
+		observeListModeWithTriggers(),
 	) { mangaList, grouping, mode ->
 		when {
 			mangaList.isEmpty() -> listOf(
@@ -93,11 +90,7 @@ class UpdatesViewModel @Inject constructor(
 					prevHeader = header
 				}
 			}
-			result += when (mode) {
-				ListMode.LIST -> item.manga.toListModel(extraProvider)
-				ListMode.DETAILED_LIST -> item.manga.toListDetailedModel(extraProvider)
-				ListMode.GRID -> item.manga.toGridModel(extraProvider)
-			}
+			result += mangaListMapper.toListModel(item.manga, mode)
 		}
 		return result
 	}

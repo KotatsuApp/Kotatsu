@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getSummary
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
+import org.koitharu.kotatsu.core.ui.image.AnimatedFaviconDrawable
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.list.OnTipCloseListener
 import org.koitharu.kotatsu.core.util.ext.crossfade
@@ -62,7 +63,7 @@ fun sourceConfigItemDelegate2(
 		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
 			crossfade(context)
 			error(fallbackIcon)
-			placeholder(fallbackIcon)
+			placeholder(AnimatedFaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name))
 			fallback(fallbackIcon)
 			source(item.source)
 			enqueueWith(coil)

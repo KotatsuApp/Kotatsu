@@ -4,10 +4,11 @@ import android.net.Uri
 import coil.request.CachePolicy
 import dagger.Reusable
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.UnknownMangaSource
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
-import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -36,7 +37,7 @@ class MangaLinkResolver @Inject constructor(
 		require(uri.pathSegments.singleOrNull() == "manga") { "Invalid url" }
 		val sourceName = requireNotNull(uri.getQueryParameter("source")) { "Source is not specified" }
 		val source = MangaSource(sourceName)
-		require(source != MangaSource.UNKNOWN) { "Manga source $sourceName is not supported" }
+		require(source != UnknownMangaSource) { "Manga source $sourceName is not supported" }
 		val repo = repositoryFactory.create(source)
 		return repo.findExact(
 			url = uri.getQueryParameter("url"),
@@ -51,7 +52,7 @@ class MangaLinkResolver @Inject constructor(
 		val host = uri.host ?: return null
 		val repo = sourcesRepository.allMangaSources.asSequence()
 			.map { source ->
-				repositoryFactory.create(source) as RemoteMangaRepository
+				repositoryFactory.create(source) as ParserMangaRepository
 			}.find { repo ->
 				host in repo.domains
 			} ?: return null
@@ -85,7 +86,7 @@ class MangaLinkResolver @Inject constructor(
 	}
 
 	private suspend fun MangaRepository.getDetailsNoCache(manga: Manga): Manga {
-		return if (this is RemoteMangaRepository) {
+		return if (this is ParserMangaRepository) {
 			getDetails(manga, CachePolicy.READ_ONLY)
 		} else {
 			getDetails(manga)
@@ -108,7 +109,7 @@ class MangaLinkResolver @Inject constructor(
 		url = url,
 		publicUrl = "",
 		rating = 0.0f,
-		isNsfw = source.contentType == ContentType.HENTAI,
+		isNsfw = source.isNsfw(),
 		coverUrl = "",
 		tags = emptySet(),
 		state = null,

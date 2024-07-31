@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.util.ext.almostEquals
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
@@ -57,7 +58,7 @@ class AlternativesUseCase @Inject constructor(
 	}
 
 	private suspend fun getSources(ref: MangaSource): List<MangaSource> {
-		val result = ArrayList<MangaSource>(MangaSource.entries.size - 2)
+		val result = ArrayList<MangaSource>(MangaParserSource.entries.size - 2)
 		result.addAll(sourcesRepository.getEnabledSources())
 		result.sortByDescending { it.priority(ref) }
 		result.addAll(sourcesRepository.getDisabledSources().sortedByDescending { it.priority(ref) })
@@ -78,8 +79,10 @@ class AlternativesUseCase @Inject constructor(
 
 	private fun MangaSource.priority(ref: MangaSource): Int {
 		var res = 0
-		if (locale == ref.locale) res += 2
-		if (contentType == ref.contentType) res++
+		if (this is MangaParserSource && ref is MangaParserSource) {
+			if (locale == ref.locale) res += 2
+			if (contentType == ref.contentType) res++
+		}
 		return res
 	}
 }

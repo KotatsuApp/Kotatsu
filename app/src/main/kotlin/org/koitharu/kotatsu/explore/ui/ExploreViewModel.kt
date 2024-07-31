@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.explore.ui
 
+import androidx.collection.LongSet
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSourceInfo
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -26,12 +28,11 @@ import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.explore.ui.model.ExploreButtons
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
 import org.koitharu.kotatsu.explore.ui.model.RecommendationsItem
-import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.MangaListModel
+import org.koitharu.kotatsu.list.ui.model.MangaCompactListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -108,7 +109,7 @@ class ExploreViewModel @Inject constructor(
 		}
 	}
 
-	fun setSourcesPinned(sources: Set<MangaSource>, isPinned: Boolean) {
+	fun setSourcesPinned(sources: Collection<MangaSource>, isPinned: Boolean) {
 		launchJob(Dispatchers.Default) {
 			sourcesRepository.setIsPinned(sources, isPinned)
 			val message = if (sources.size == 1) {
@@ -125,6 +126,12 @@ class ExploreViewModel @Inject constructor(
 		settings.closeTip(TIP_SUGGESTIONS)
 	}
 
+	fun sourcesSnapshot(ids: LongSet): List<MangaSourceInfo> {
+		return content.value.mapNotNull {
+			(it as? MangaSourceItem)?.takeIf { x -> x.id in ids }?.source
+		}
+	}
+
 	private fun createContentFlow() = combine(
 		sourcesRepository.observeEnabledSources(),
 		getSuggestionFlow(),
@@ -136,7 +143,7 @@ class ExploreViewModel @Inject constructor(
 	}.withErrorHandling()
 
 	private fun buildList(
-		sources: List<MangaSource>,
+		sources: List<MangaSourceInfo>,
 		recommendation: List<Manga>,
 		isGrid: Boolean,
 		randomLoading: Boolean,
@@ -182,14 +189,15 @@ class ExploreViewModel @Inject constructor(
 	}
 
 	private fun List<Manga>.toRecommendationList() = map { manga ->
-		MangaListModel(
+		MangaCompactListModel(
 			id = manga.id,
 			title = manga.title,
 			subtitle = manga.tags.joinToString { it.title },
 			coverUrl = manga.coverUrl,
 			manga = manga,
 			counter = 0,
-			progress = PROGRESS_NONE,
+			progress = null,
+			isFavorite = false,
 		)
 	}
 

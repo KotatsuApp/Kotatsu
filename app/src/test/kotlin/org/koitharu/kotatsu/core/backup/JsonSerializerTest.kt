@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.history.data.HistoryEntity
-import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.concurrent.TimeUnit
@@ -42,7 +42,7 @@ class JsonSerializerTest {
 			largeCoverUrl = null,
 			state = MangaState.FINISHED.name,
 			author = "RERE",
-			source = MangaSource.DUMMY.name,
+			source = MangaParserSource.DUMMY.name,
 		)
 		val json = JsonSerializer(entity).toJson()
 		val result = JsonDeserializer(json).toMangaEntity()
@@ -55,7 +55,7 @@ class JsonSerializerTest {
 			id = 934023534,
 			title = "Adventure",
 			key = "adventure",
-			source = MangaSource.DUMMY.name,
+			source = MangaParserSource.DUMMY.name,
 		)
 		val json = JsonSerializer(entity).toJson()
 		val result = JsonDeserializer(json).toTagEntity()

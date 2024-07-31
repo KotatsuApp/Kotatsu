@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<Preference
+		android:key="auth"
+		android:order="100"
+		android:persistent="false"
+		android:title="@string/sign_in"
+		app:allowDividerAbove="true" />
+
+	<Preference
+		android:key="cookies_clear"
+		android:order="101"
+		android:persistent="false"
+		android:summary="@string/clear_source_cookies_summary"
+		android:title="@string/clear_cookies"
+		app:allowDividerAbove="true" />
+
+</PreferenceScreen>

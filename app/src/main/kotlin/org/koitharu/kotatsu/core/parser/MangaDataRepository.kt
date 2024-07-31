@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.db.entity.toEntities
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
+import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
@@ -101,7 +102,7 @@ class MangaDataRepository @Inject constructor(
 
 	suspend fun cleanupLocalManga() {
 		val dao = db.getMangaDao()
-		val broken = dao.findAllBySource(MangaSource.LOCAL.name)
+		val broken = dao.findAllBySource(LocalMangaSource.name)
 			.filter { x -> x.manga.url.toUri().toFileOrNull()?.exists() == false }
 		if (broken.isNotEmpty()) {
 			dao.delete(broken.map { it.manga })

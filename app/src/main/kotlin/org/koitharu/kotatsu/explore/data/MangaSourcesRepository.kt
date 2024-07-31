@@ -1,8 +1,16 @@
 package org.koitharu.kotatsu.explore.data
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import androidx.room.withTransaction
-import dagger.Reusable
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -12,20 +20,27 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.dao.MangaSourcesDao
 import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
+import org.koitharu.kotatsu.core.model.MangaSourceInfo
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
+import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.parsers.model.ContentType
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.util.Collections
 import java.util.EnumSet
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@Reusable
+@Singleton
 class MangaSourcesRepository @Inject constructor(
+	@ApplicationContext private val context: Context,
 	private val db: MangaDatabase,
 	private val settings: AppSettings,
 ) {
@@ -34,15 +49,13 @@ class MangaSourcesRepository @Inject constructor(
 	private val dao: MangaSourcesDao
 		get() = db.getSourcesDao()
 
-	private val remoteSources = EnumSet.allOf(MangaSource::class.java).apply {
-		remove(MangaSource.LOCAL)
-		remove(MangaSource.UNKNOWN)
+	private val remoteSources = EnumSet.allOf(MangaParserSource::class.java).apply {
 		if (!BuildConfig.DEBUG) {
-			remove(MangaSource.DUMMY)
+			remove(MangaParserSource.DUMMY)
 		}
 	}
 
-	val allMangaSources: Set<MangaSource>
+	val allMangaSources: Set<MangaParserSource>
 		get() = Collections.unmodifiableSet(remoteSources)
 
 	suspend fun getEnabledSources(): List<MangaSource> {
@@ -54,7 +67,7 @@ class MangaSourcesRepository @Inject constructor(
 	suspend fun getPinnedSources(): Set<MangaSource> {
 		assimilateNewSources()
 		val skipNsfw = settings.isNsfwContentDisabled
-		return dao.findAllPinned().mapNotNullTo(EnumSet.noneOf(MangaSource::class.java)) {
+		return dao.findAllPinned().mapNotNullToSet {
 			it.source.toMangaSourceOrNull()?.takeUnless { x -> skipNsfw && x.isNsfw() }
 		}
 	}
@@ -75,7 +88,7 @@ class MangaSourcesRepository @Inject constructor(
 		return result
 	}
 
-	suspend fun getAvailableSources(
+	suspend fun queryParserSources(
 		isDisabledOnly: Boolean,
 		isNewOnly: Boolean,
 		excludeBroken: Boolean,
@@ -83,7 +96,7 @@ class MangaSourcesRepository @Inject constructor(
 		query: String?,
 		locale: String?,
 		sortOrder: SourcesSortOrder?,
-	): List<MangaSource> {
+	): List<MangaParserSource> {
 		assimilateNewSources()
 		val entities = dao.findAll().toMutableList()
 		if (isDisabledOnly) {
@@ -95,7 +108,9 @@ class MangaSourcesRepository @Inject constructor(
 		val sources = entities.toSources(
 			skipNsfwSources = settings.isNsfwContentDisabled,
 			sortOrder = sortOrder,
-		)
+		).run {
+			mapNotNullTo(ArrayList(size)) { it.mangaSource as? MangaParserSource }
+		}
 		if (locale != null) {
 			sources.retainAll { it.locale == locale }
 		}
@@ -107,7 +122,7 @@ class MangaSourcesRepository @Inject constructor(
 		}
 		if (!query.isNullOrEmpty()) {
 			sources.retainAll {
-				it.title.contains(query, ignoreCase = true) || it.name.contains(query, ignoreCase = true)
+				it.getTitle(context).contains(query, ignoreCase = true) || it.name.contains(query, ignoreCase = true)
 			}
 		}
 		return sources
@@ -140,14 +155,21 @@ class MangaSourcesRepository @Inject constructor(
 		}.distinctUntilChanged().onStart { assimilateNewSources() }
 	}
 
-	fun observeEnabledSources(): Flow<List<MangaSource>> = combine(
+	fun observeEnabledSources(): Flow<List<MangaSourceInfo>> = combine(
 		observeIsNsfwDisabled(),
 		observeSortOrder(),
 	) { skipNsfw, order ->
 		dao.observeEnabled(order).map {
 			it.toSources(skipNsfw, order)
 		}
-	}.flatMapLatest { it }.onStart { assimilateNewSources() }
+	}.flatMapLatest { it }
+		.onStart { assimilateNewSources() }
+		.combine(observeExternalSources()) { enabled, external ->
+			val list = ArrayList<MangaSourceInfo>(enabled.size + external.size)
+			external.mapTo(list) { MangaSourceInfo(it, isEnabled = true, isPinned = true) }
+			list.addAll(enabled)
+			list
+		}
 
 	fun observeAll(): Flow<List<Pair<MangaSource, Boolean>>> = dao.observeAll().map { entities ->
 		val result = ArrayList<Pair<MangaSource, Boolean>>(entities.size)
@@ -264,6 +286,15 @@ class MangaSourcesRepository @Inject constructor(
 		}
 	}
 
+	private suspend fun getNewSources(): MutableSet<out MangaSource> {
+		val entities = dao.findAll()
+		val result = EnumSet.copyOf(remoteSources)
+		for (e in entities) {
+			result.remove(e.source.toMangaSourceOrNull() ?: continue)
+		}
+		return result
+	}
+
 	private suspend fun setSourcesPinnedImpl(sources: Collection<MangaSource>, isPinned: Boolean) {
 		if (sources.size == 1) { // fast path
 			dao.setPinned(sources.first().name, isPinned)
@@ -276,35 +307,63 @@ class MangaSourcesRepository @Inject constructor(
 		}
 	}
 
-	private suspend fun getNewSources(): MutableSet<MangaSource> {
-		val entities = dao.findAll()
-		val result = EnumSet.copyOf(remoteSources)
-		for (e in entities) {
-			result.remove(e.source.toMangaSourceOrNull() ?: continue)
-		}
-		return result
+	private fun observeExternalSources(): Flow<List<ExternalMangaSource>> {
+		val intent = Intent("app.kotatsu.parser.PROVIDE_MANGA")
+		val pm = context.packageManager
+		return callbackFlow {
+			val receiver = object : BroadcastReceiver() {
+				override fun onReceive(context: Context?, intent: Intent?) {
+					trySendBlocking(intent)
+				}
+			}
+			ContextCompat.registerReceiver(
+				context,
+				receiver,
+				IntentFilter().apply {
+					addAction(Intent.ACTION_PACKAGE_ADDED)
+					addAction(Intent.ACTION_PACKAGE_VERIFIED)
+					addAction(Intent.ACTION_PACKAGE_REPLACED)
+					addAction(Intent.ACTION_PACKAGE_REMOVED)
+					addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED)
+					addDataScheme("package")
+				},
+				ContextCompat.RECEIVER_EXPORTED,
+			)
+			awaitClose { context.unregisterReceiver(receiver) }
+		}.onStart {
+			emit(null)
+		}.map {
+			pm.queryIntentContentProviders(intent, 0).map { resolveInfo ->
+				ExternalMangaSource(
+					packageName = resolveInfo.providerInfo.packageName,
+					authority = resolveInfo.providerInfo.authority,
+				)
+			}
+		}.distinctUntilChanged()
 	}
 
 	private fun List<MangaSourceEntity>.toSources(
 		skipNsfwSources: Boolean,
 		sortOrder: SourcesSortOrder?,
-	): MutableList<MangaSource> {
-		val result = ArrayList<MangaSource>(size)
-		val pinned = EnumSet.noneOf(MangaSource::class.java)
+	): MutableList<MangaSourceInfo> {
+		val result = ArrayList<MangaSourceInfo>(size)
 		for (entity in this) {
 			val source = entity.source.toMangaSourceOrNull() ?: continue
 			if (skipNsfwSources && source.isNsfw()) {
 				continue
 			}
 			if (source in remoteSources) {
-				result.add(source)
-				if (entity.isPinned) {
-					pinned.add(source)
-				}
+				result.add(
+					MangaSourceInfo(
+						mangaSource = source,
+						isEnabled = entity.isEnabled,
+						isPinned = entity.isPinned,
+					),
+				)
 			}
 		}
 		if (sortOrder == SourcesSortOrder.ALPHABETIC) {
-			result.sortWith(compareBy<MangaSource> { it in pinned }.thenBy { it.title })
+			result.sortWith(compareBy<MangaSourceInfo> { !it.isPinned }.thenBy { it.getTitle(context) })
 		}
 		return result
 	}
@@ -317,5 +376,5 @@ class MangaSourcesRepository @Inject constructor(
 		sourcesSortOrder
 	}
 
-	private fun String.toMangaSourceOrNull(): MangaSource? = MangaSource.entries.find { it.name == this }
+	private fun String.toMangaSourceOrNull(): MangaParserSource? = MangaParserSource.entries.find { it.name == this }
 }

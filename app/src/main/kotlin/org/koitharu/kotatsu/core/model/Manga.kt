@@ -11,7 +11,6 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.util.formatSimple
 import org.koitharu.kotatsu.parsers.util.mapToSet
@@ -109,7 +108,7 @@ fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 }
 
 val Manga.isLocal: Boolean
-	get() = source == MangaSource.LOCAL
+	get() = source == LocalMangaSource
 
 val Manga.appUrl: Uri
 	get() = Uri.parse("https://kotatsu.app/manga").buildUpon()

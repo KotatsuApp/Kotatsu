@@ -15,7 +15,7 @@ import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
 import org.koitharu.kotatsu.parsers.model.ContentType
-import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.util.EnumSet
 import java.util.Locale
@@ -103,7 +103,7 @@ class WelcomeViewModel @Inject constructor(
 	private suspend fun commit() {
 		val languages = locales.value.selectedItems.mapToSet { it.language }
 		val types = types.value.selectedItems
-		val enabledSources = allSources.filterTo(EnumSet.noneOf(MangaSource::class.java)) { x ->
+		val enabledSources = allSources.filterTo(EnumSet.noneOf(MangaParserSource::class.java)) { x ->
 			x.contentType in types && x.locale in languages
 		}
 		repository.setSourcesEnabledExclusive(enabledSources)

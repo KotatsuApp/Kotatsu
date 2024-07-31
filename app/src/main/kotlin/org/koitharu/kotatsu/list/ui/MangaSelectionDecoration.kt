@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
-import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import com.google.android.material.R as materialR
 
 open class MangaSelectionDecoration(context: Context) : AbstractSelectionItemDecoration() {
@@ -37,7 +37,7 @@ open class MangaSelectionDecoration(context: Context) : AbstractSelectionItemDec
 
 	override fun getItemId(parent: RecyclerView, child: View): Long {
 		val holder = parent.getChildViewHolder(child) ?: return NO_ID
-		val item = holder.getItem(MangaItemModel::class.java) ?: return NO_ID
+		val item = holder.getItem(MangaListModel::class.java) ?: return NO_ID
 		return item.id
 	}
 

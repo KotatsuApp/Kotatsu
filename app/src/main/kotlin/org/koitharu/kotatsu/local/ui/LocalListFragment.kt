@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ShareHelper
@@ -26,7 +27,6 @@ import org.koitharu.kotatsu.filter.ui.FilterOwner
 import org.koitharu.kotatsu.filter.ui.MangaFilter
 import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.settings.storage.RequestStorageManagerPermissionContract
 import org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity
@@ -47,9 +47,9 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 
 	init {
 		withArgs(1) {
-			putSerializable(
+			putString(
 				RemoteListFragment.ARG_SOURCE,
-				MangaSource.LOCAL,
+				LocalMangaSource.name,
 			) // required by FilterCoordinator
 		}
 	}

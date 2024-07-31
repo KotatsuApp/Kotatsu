@@ -43,6 +43,9 @@ import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.model.UnknownMangaSource
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.iconResId
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.titleResId
@@ -86,15 +89,14 @@ import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
 import org.koitharu.kotatsu.image.ui.ImageActivity
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.local.ui.info.LocalInfoDialog
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
@@ -120,7 +122,7 @@ class DetailsActivity :
 	lateinit var coil: ImageLoader
 
 	@Inject
-	lateinit var tagHighlighter: ListExtraProvider
+	lateinit var listMapper: MangaListMapper
 
 	private val viewModel: DetailsViewModel by viewModels()
 	private lateinit var menuProvider: DetailsMenuProvider
@@ -389,7 +391,7 @@ class DetailsActivity :
 		}
 	}
 
-	private fun onRelatedMangaChanged(related: List<MangaItemModel>) {
+	private fun onRelatedMangaChanged(related: List<MangaListModel>) {
 		if (related.isEmpty()) {
 			viewBinding.groupRelated.isVisible = false
 			return
@@ -463,10 +465,10 @@ class DetailsActivity :
 				imageViewState.isVisible = false
 			}
 
-			if (manga.source == MangaSource.LOCAL || manga.source == MangaSource.UNKNOWN) {
+			if (manga.source == LocalMangaSource || manga.source == UnknownMangaSource) {
 				infoLayout.chipSource.isVisible = false
 			} else {
-				infoLayout.chipSource.text = manga.source.title
+				infoLayout.chipSource.text = manga.source.getTitle(this@DetailsActivity)
 				infoLayout.chipSource.isVisible = true
 			}
 
@@ -611,15 +613,7 @@ class DetailsActivity :
 
 	private fun bindTags(manga: Manga) {
 		viewBinding.chipsTags.isVisible = manga.tags.isNotEmpty()
-		viewBinding.chipsTags.setChips(
-			manga.tags.map { tag ->
-				ChipsView.ChipModel(
-					title = tag.title,
-					tint = tagHighlighter.getTagTint(tag),
-					data = tag,
-				)
-			},
-		)
+		viewBinding.chipsTags.setChips(listMapper.mapTags(manga.tags))
 	}
 
 	private fun loadCover(manga: Manga) {

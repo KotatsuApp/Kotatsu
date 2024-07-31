@@ -18,21 +18,21 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.MangaFilter
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -40,11 +40,9 @@ import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.list.ui.model.toUi
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import javax.inject.Inject
 
@@ -56,13 +54,13 @@ open class RemoteListViewModel @Inject constructor(
 	mangaRepositoryFactory: MangaRepository.Factory,
 	private val filter: FilterCoordinator,
 	settings: AppSettings,
-	listExtraProvider: ListExtraProvider,
+	mangaListMapper: MangaListMapper,
 	downloadScheduler: DownloadWorker.Scheduler,
 	private val exploreRepository: ExploreRepository,
 	sourcesRepository: MangaSourcesRepository,
 ) : MangaListViewModel(settings, downloadScheduler), MangaFilter by filter {
 
-	val source = savedStateHandle.require<MangaSource>(RemoteListFragment.ARG_SOURCE)
+	val source = MangaSource(savedStateHandle[RemoteListFragment.ARG_SOURCE])
 	val isRandomLoading = MutableStateFlow(false)
 	val onOpenManga = MutableEventFlow<Manga>()
 
@@ -77,11 +75,11 @@ open class RemoteListViewModel @Inject constructor(
 		get() = repository.isSearchSupported
 
 	val browserUrl: String?
-		get() = (repository as? RemoteMangaRepository)?.domain?.let { "https://$it" }
+		get() = (repository as? ParserMangaRepository)?.domain?.let { "https://$it" }
 
 	override val content = combine(
 		mangaList.map { it?.skipNsfwIfNeeded() },
-		listMode,
+		observeListModeWithTriggers(),
 		listError,
 		hasNextPage,
 	) { list, mode, error, hasNext ->
@@ -97,7 +95,7 @@ open class RemoteListViewModel @Inject constructor(
 				list == null -> add(LoadingState)
 				list.isEmpty() -> add(createEmptyState(canResetFilter = header.value.isFilterApplied))
 				else -> {
-					list.toUi(this, mode, listExtraProvider)
+					mangaListMapper.toListModelList(this, list, mode)
 					when {
 						error != null -> add(error.toErrorFooter())
 						hasNext -> add(LoadingFooter())

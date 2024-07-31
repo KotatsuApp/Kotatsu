@@ -2,8 +2,8 @@ package org.koitharu.kotatsu.settings.sources.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
 sealed interface SourceConfigItem : ListModel {
@@ -17,7 +17,7 @@ sealed interface SourceConfigItem : ListModel {
 	) : SourceConfigItem {
 
 		val isNsfw: Boolean
-			get() = source.contentType == ContentType.HENTAI
+			get() = source.isNsfw()
 
 		override fun areItemsTheSame(other: ListModel): Boolean {
 			return other is SourceItem && other.source == source

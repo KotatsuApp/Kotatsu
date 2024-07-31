@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.os.NetworkManageIntent
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
@@ -17,7 +18,6 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
-import org.koitharu.kotatsu.parsers.model.MangaSource
 
 @AndroidEntryPoint
 class HistoryListFragment : MangaListFragment() {
@@ -44,9 +44,7 @@ class HistoryListFragment : MangaListFragment() {
 	}
 
 	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		menu.findItem(R.id.action_save)?.isVisible = selectedItems.none {
-			it.source == MangaSource.LOCAL
-		}
+		menu.findItem(R.id.action_save)?.isVisible = selectedItems.none { it.isLocal }
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
 

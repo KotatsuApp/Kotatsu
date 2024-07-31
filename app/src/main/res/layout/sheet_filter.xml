@@ -24,13 +24,13 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
+			android:paddingHorizontal="@dimen/screen_padding"
 			android:paddingBottom="@dimen/margin_normal">
 
 			<TextView
 				android:id="@+id/textView_order_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
 				android:singleLine="true"
 				android:text="@string/sort_order"
 				android:textAppearance="?textAppearanceTitleSmall"
@@ -41,7 +41,6 @@
 				android:id="@+id/card_order"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="16dp"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:visibility="gone"
 				tools:visibility="visible">
@@ -59,7 +58,6 @@
 				android:id="@+id/textView_locale_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:singleLine="true"
 				android:text="@string/language"
@@ -71,7 +69,6 @@
 				android:id="@+id/card_locale"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="16dp"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:visibility="gone"
 				tools:visibility="visible">
@@ -90,7 +87,6 @@
 				android:id="@+id/textView_genres_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:singleLine="true"
 				android:text="@string/genres"
@@ -103,7 +99,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_normal"
-				android:paddingHorizontal="@dimen/margin_normal"
 				android:visibility="gone"
 				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
 				tools:visibility="visible" />
@@ -115,7 +110,6 @@
 				android:layout_marginTop="8dp"
 				android:drawablePadding="16dp"
 				android:gravity="center_vertical"
-				android:paddingHorizontal="@dimen/margin_normal"
 				android:paddingVertical="8dp"
 				android:textAppearance="?textAppearanceBodySmall"
 				android:visibility="gone"
@@ -128,7 +122,6 @@
 				android:id="@+id/textView_genresExclude_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:singleLine="true"
 				android:text="@string/genres_exclude"
@@ -141,7 +134,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_normal"
-				android:paddingHorizontal="@dimen/margin_normal"
 				android:visibility="gone"
 				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
 				tools:visibility="visible" />
@@ -150,7 +142,6 @@
 				android:id="@+id/textView_state_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:singleLine="true"
 				android:text="@string/state"
@@ -163,7 +154,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_normal"
-				android:paddingHorizontal="@dimen/margin_normal"
 				android:visibility="gone"
 				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
 				tools:visibility="visible" />
@@ -172,7 +162,6 @@
 				android:id="@+id/textView_contentRating_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:singleLine="true"
 				android:text="@string/content_rating"
@@ -185,7 +174,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_normal"
-				android:paddingHorizontal="@dimen/margin_normal"
 				android:visibility="gone"
 				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
 				tools:visibility="visible" />

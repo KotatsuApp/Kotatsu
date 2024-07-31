@@ -9,7 +9,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.model.getTitle
+import org.koitharu.kotatsu.core.parser.EmptyMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -17,6 +21,7 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
+import java.io.File
 
 @AndroidEntryPoint
 class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenceChangeListener {
@@ -26,23 +31,28 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 
 	override fun onResume() {
 		super.onResume()
-		setTitle(viewModel.source.title)
+		context?.let { ctx ->
+			setTitle(viewModel.source.getTitle(ctx))
+		}
 		viewModel.onResume()
 	}
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-		preferenceManager.sharedPreferencesName = viewModel.source.name
+		preferenceManager.sharedPreferencesName = viewModel.source.name.replace(File.separatorChar, '$')
 		addPreferencesFromResource(R.xml.pref_source)
 		addPreferencesFromRepository(viewModel.repository)
+		val isValidSource = viewModel.repository !is EmptyMangaRepository
 
 		findPreference<SwitchPreferenceCompat>(KEY_ENABLE)?.run {
+			isVisible = isValidSource
 			onPreferenceChangeListener = this@SourceSettingsFragment
 		}
 		findPreference<Preference>(KEY_AUTH)?.run {
-			val authProvider = viewModel.repository.getAuthProvider()
+			val authProvider = (viewModel.repository as? ParserMangaRepository)?.getAuthProvider()
 			isVisible = authProvider != null
 			isEnabled = authProvider?.isAuthorized == false
 		}
+		findPreference<Preference>(SourceSettings.KEY_SLOWDOWN)?.isVisible = isValidSource
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,7 +111,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		const val EXTRA_SOURCE = "source"
 
 		fun newInstance(source: MangaSource) = SourceSettingsFragment().withArgs(1) {
-			putSerializable(EXTRA_SOURCE, source)
+			putString(EXTRA_SOURCE, source.name)
 		}
 	}
 }

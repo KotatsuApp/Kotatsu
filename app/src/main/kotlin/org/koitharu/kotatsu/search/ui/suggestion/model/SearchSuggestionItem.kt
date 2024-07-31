@@ -4,7 +4,6 @@ import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
@@ -52,7 +51,7 @@ sealed interface SearchSuggestionItem : ListModel {
 	) : SearchSuggestionItem {
 
 		val isNsfw: Boolean
-			get() = source.contentType == ContentType.HENTAI
+			get() = source.isNsfw()
 
 		override fun areItemsTheSame(other: ListModel): Boolean {
 			return other is Source && other.source == source

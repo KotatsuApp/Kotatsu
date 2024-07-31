@@ -20,12 +20,11 @@ import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.list.domain.ListExtraProvider
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.toGridModel
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import org.koitharu.kotatsu.tracker.ui.feed.model.FeedItem
@@ -42,7 +41,7 @@ class FeedViewModel @Inject constructor(
 	private val settings: AppSettings,
 	private val repository: TrackingRepository,
 	private val scheduler: TrackWorker.Scheduler,
-	private val listExtraProvider: ListExtraProvider,
+	private val mangaListMapper: MangaListMapper,
 ) : BaseViewModel() {
 
 	private val limit = MutableStateFlow(PAGE_SIZE)
@@ -135,7 +134,7 @@ class FeedViewModel @Inject constructor(
 					null
 				} else {
 					UpdatedMangaHeader(
-						mangaList.map { it.manga.toGridModel(listExtraProvider) },
+						mangaList.map { mangaListMapper.toGridModel(it.manga) },
 					)
 				}
 			}

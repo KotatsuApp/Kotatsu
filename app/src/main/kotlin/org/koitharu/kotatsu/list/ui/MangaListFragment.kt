@@ -20,7 +20,6 @@ import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -51,7 +50,7 @@ import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.list.ui.model.MangaItemModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
@@ -281,7 +280,7 @@ abstract class MangaListFragment :
 		return when (item.itemId) {
 			R.id.action_select_all -> {
 				val ids = listAdapter?.items?.mapNotNull {
-					(it as? MangaItemModel)?.id
+					(it as? MangaListModel)?.id
 				} ?: return false
 				selectionController?.addAll(ids)
 				true
@@ -327,7 +326,7 @@ abstract class MangaListFragment :
 		val items = listAdapter?.items ?: return emptySet()
 		val result = ArraySet<Manga>(checkedIds.size)
 		for (item in items) {
-			if (item is MangaItemModel && item.id in checkedIds) {
+			if (item is MangaListModel && item.id in checkedIds) {
 				result.add(item.manga)
 			}
 		}

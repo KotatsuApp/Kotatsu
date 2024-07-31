@@ -18,15 +18,16 @@ import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.browser.ProgressChromeClient
 import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.TaggedActivityResult
 import org.koitharu.kotatsu.core.util.ext.configureForParser
-import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -46,12 +47,12 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
 			return
 		}
-		val source = intent?.getSerializableExtraCompat<MangaSource>(EXTRA_SOURCE)
-		if (source == null) {
+		val source = MangaSource(intent?.getStringExtra(EXTRA_SOURCE))
+		if (source !is MangaParserSource) {
 			finishAfterTransition()
 			return
 		}
-		val repository = mangaRepositoryFactory.create(source) as? RemoteMangaRepository
+		val repository = mangaRepositoryFactory.create(source) as? ParserMangaRepository
 		authProvider = (repository)?.getAuthProvider() ?: run {
 			Toast.makeText(
 				this,
@@ -148,7 +149,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 
 		fun newIntent(context: Context, source: MangaSource): Intent {
 			return Intent(context, SourceAuthActivity::class.java)
-				.putExtra(EXTRA_SOURCE, source)
+				.putExtra(EXTRA_SOURCE, source.name)
 		}
 	}
 }

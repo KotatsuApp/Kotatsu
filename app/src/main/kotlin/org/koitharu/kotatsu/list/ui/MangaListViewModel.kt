@@ -2,11 +2,16 @@ package org.koitharu.kotatsu.list.ui
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -54,5 +59,14 @@ abstract class MangaListViewModel(
 		filterNot { it.isNsfw }
 	} else {
 		this
+	}
+
+	protected fun observeListModeWithTriggers(): Flow<ListMode> = combine(
+		listMode,
+		settings.observe().filter { key ->
+			key == AppSettings.KEY_PROGRESS_INDICATORS || key == AppSettings.KEY_TRACKER_ENABLED
+		}.onStart { emit("") }
+	) { mode, _ ->
+		mode
 	}
 }

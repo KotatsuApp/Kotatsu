@@ -58,7 +58,7 @@ fun trackDebugAD(
 				append(" - ")
 				bold {
 					color(context.getThemeColor(materialR.attr.colorError, Color.RED)) {
-						append(getString(R.string.error))
+						append(item.lastError ?: getString(R.string.error))
 					}
 				}
 			}

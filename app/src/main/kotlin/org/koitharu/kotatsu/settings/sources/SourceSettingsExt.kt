@@ -7,7 +7,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.EmptyMangaRepository
+import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.mapToArray
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.network.UserAgents
@@ -17,7 +19,14 @@ import org.koitharu.kotatsu.settings.utils.EditTextDefaultSummaryProvider
 import org.koitharu.kotatsu.settings.utils.validation.DomainValidator
 import org.koitharu.kotatsu.settings.utils.validation.HeaderValidator
 
-fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMangaRepository) {
+fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: MangaRepository) = when (repository) {
+	is ParserMangaRepository -> addPreferencesFromParserRepository(repository)
+	is EmptyMangaRepository -> addPreferencesFromEmptyRepository()
+	else -> Unit
+}
+
+private fun PreferenceFragmentCompat.addPreferencesFromParserRepository(repository: ParserMangaRepository) {
+	addPreferencesFromResource(R.xml.pref_source_parser)
 	val configKeys = repository.getConfigKeys()
 	val screen = preferenceScreen
 	for (key in configKeys) {
@@ -98,6 +107,16 @@ fun PreferenceFragmentCompat.addPreferencesFromRepository(repository: RemoteMang
 		preference.order = 10
 		screen.addPreference(preference)
 	}
+}
+
+private fun PreferenceFragmentCompat.addPreferencesFromEmptyRepository() {
+	val preference = Preference(requireContext())
+	preference.setIcon(R.drawable.ic_alert_outline)
+	preference.isPersistent = false
+	preference.isSelectable = false
+	preference.order = 200
+	preference.setSummary(R.string.unsupported_source)
+	preferenceScreen.addPreference(preference)
 }
 
 private fun Array<out String>.toStringArray(): Array<String> {

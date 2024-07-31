@@ -646,4 +646,16 @@
     <string name="screenshots_block_incognito">Bloquear en modo incógnito</string>
     <string name="image_server">Servidor de imágenes preferido</string>
     <string name="crop_pages">Páginas de recortes</string>
+    <string name="recent_sources">Fuentes recientes</string>
+    <string name="pin">Fijar</string>
+    <string name="unpin">No fijar</string>
+    <string name="source_pinned">Fuente fijada</string>
+    <string name="source_unpinned">Fuente no fijada</string>
+    <string name="sources_unpinned">Fuentes no fijadas</string>
+    <string name="sources_pinned">Fuentes ancladas</string>
+    <string name="percent_read">Porcentaje leído</string>
+    <string name="percent_left">Porcentaje restante</string>
+    <string name="chapters_read">Capítulos leídos</string>
+    <string name="chapters_left">Capítulos restantes</string>
+    <string name="external_source">Externo/plugin</string>
 </resources>

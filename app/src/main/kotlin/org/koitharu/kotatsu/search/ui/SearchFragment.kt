@@ -30,7 +30,7 @@ class SearchFragment : MangaListFragment() {
 		const val ARG_SOURCE = "source"
 
 		fun newInstance(source: MangaSource, query: String) = SearchFragment().withArgs(2) {
-			putSerializable(ARG_SOURCE, source)
+			putString(ARG_SOURCE, source.name)
 			putString(ARG_QUERY, query)
 		}
 	}

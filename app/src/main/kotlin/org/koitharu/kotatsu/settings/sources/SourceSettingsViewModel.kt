@@ -8,18 +8,19 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.HttpUrl
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
+import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
+import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,8 +31,8 @@ class SourceSettingsViewModel @Inject constructor(
 	private val mangaSourcesRepository: MangaSourcesRepository,
 ) : BaseViewModel(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-	val source = savedStateHandle.require<MangaSource>(SourceSettingsFragment.EXTRA_SOURCE)
-	val repository = mangaRepositoryFactory.create(source) as RemoteMangaRepository
+	val source = MangaSource(savedStateHandle.get<String>(SourceSettingsFragment.EXTRA_SOURCE))
+	val repository = mangaRepositoryFactory.create(source)
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val username = MutableStateFlow<String?>(null)
@@ -39,28 +40,41 @@ class SourceSettingsViewModel @Inject constructor(
 	private var usernameLoadJob: Job? = null
 
 	init {
-		repository.getConfig().subscribe(this)
-		loadUsername()
+		when (repository) {
+			is ParserMangaRepository -> {
+				repository.getConfig().subscribe(this)
+				loadUsername(repository.getAuthProvider())
+			}
+		}
 	}
 
 	override fun onCleared() {
-		repository.getConfig().unsubscribe(this)
+		when (repository) {
+			is ParserMangaRepository -> {
+				repository.getConfig().unsubscribe(this)
+			}
+		}
 		super.onCleared()
 	}
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-		if (key != SourceSettings.KEY_SLOWDOWN && key != SourceSettings.KEY_SORT_ORDER) {
-			repository.invalidateCache()
+		when (repository) {
+			is CachingMangaRepository -> {
+				if (key != SourceSettings.KEY_SLOWDOWN && key != SourceSettings.KEY_SORT_ORDER) {
+					repository.invalidateCache()
+				}
+			}
 		}
 	}
 
 	fun onResume() {
-		if (usernameLoadJob?.isActive != true) {
-			loadUsername()
+		if (usernameLoadJob?.isActive != true && repository is ParserMangaRepository) {
+			loadUsername(repository.getAuthProvider())
 		}
 	}
 
 	fun clearCookies() {
+		if (repository !is ParserMangaRepository) return
 		launchLoadingJob(Dispatchers.Default) {
 			val url = HttpUrl.Builder()
 				.scheme("https")
@@ -68,7 +82,7 @@ class SourceSettingsViewModel @Inject constructor(
 				.build()
 			cookieJar.removeCookies(url, null)
 			onActionDone.call(ReversibleAction(R.string.cookies_cleared, null))
-			loadUsername()
+			loadUsername(repository.getAuthProvider())
 		}
 	}
 
@@ -78,11 +92,11 @@ class SourceSettingsViewModel @Inject constructor(
 		}
 	}
 
-	private fun loadUsername() {
+	private fun loadUsername(authProvider: MangaParserAuthProvider?) {
 		launchLoadingJob(Dispatchers.Default) {
 			try {
 				username.value = null
-				username.value = repository.getAuthProvider()?.getUsername()
+				username.value = authProvider?.getUsername()
 			} catch (_: AuthRequiredException) {
 			}
 		}

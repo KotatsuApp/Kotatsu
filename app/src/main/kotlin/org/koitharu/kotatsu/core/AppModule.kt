@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core
 
 import android.app.Application
+import android.content.ContentResolver
 import android.content.Context
 import android.provider.SearchRecentSuggestions
 import android.text.Html
@@ -110,6 +111,8 @@ interface AppModule {
 				.decoderDispatcher(Dispatchers.IO)
 				.transformationDispatcher(Dispatchers.Default)
 				.diskCache(diskCacheFactory)
+				.respectCacheHeaders(false)
+				.networkObserverEnabled(false)
 				.logger(if (BuildConfig.DEBUG) DebugLogger() else null)
 				.allowRgb565(context.isLowRamDevice())
 				.eventListener(CaptchaNotifier(context))

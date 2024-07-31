@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.explore.ui
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -20,6 +22,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksActivity
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.dialog.TwoButtonsAlertDialog
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
@@ -40,8 +44,7 @@ import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity
@@ -123,7 +126,7 @@ class ExploreFragment :
 
 	override fun onClick(v: View) {
 		val intent = when (v.id) {
-			R.id.button_local -> MangaListActivity.newIntent(v.context, MangaSource.LOCAL)
+			R.id.button_local -> MangaListActivity.newIntent(v.context, LocalMangaSource)
 			R.id.button_bookmarks -> AllBookmarksActivity.newIntent(v.context)
 			R.id.button_more -> SuggestionsActivity.newIntent(v.context)
 			R.id.button_downloads -> DownloadsActivity.newIntent(v.context)
@@ -165,16 +168,19 @@ class ExploreFragment :
 	}
 
 	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		val isSingleSelection = controller.count == 1
+		val selectedSources = viewModel.sourcesSnapshot(controller.peekCheckedIds())
+		val isSingleSelection = selectedSources.size == 1
 		menu.findItem(R.id.action_settings).isVisible = isSingleSelection
 		menu.findItem(R.id.action_shortcut).isVisible = isSingleSelection
+		menu.findItem(R.id.action_pin).isVisible = selectedSources.all { !it.isPinned }
+		menu.findItem(R.id.action_unpin).isVisible = selectedSources.all { it.isPinned }
+		menu.findItem(R.id.action_disable)?.isVisible = selectedSources.all { it.mangaSource is MangaParserSource }
+		menu.findItem(R.id.action_delete)?.isVisible = selectedSources.all { it.mangaSource is ExternalMangaSource }
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
 
 	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
-		val selectedSources = controller.peekCheckedIds().mapNotNullToSet { id ->
-			MangaSource.entries.getOrNull(id.toInt())
-		}
+		val selectedSources = viewModel.sourcesSnapshot(controller.peekCheckedIds())
 		if (selectedSources.isEmpty()) {
 			return false
 		}
@@ -187,6 +193,13 @@ class ExploreFragment :
 
 			R.id.action_disable -> {
 				viewModel.disableSources(selectedSources)
+				mode.finish()
+			}
+
+			R.id.action_delete -> {
+				selectedSources.forEach {
+					(it.mangaSource as? ExternalMangaSource)?.let { uninstallExternalSource(it) }
+				}
 				mode.finish()
 			}
 
@@ -237,5 +250,15 @@ class ExploreFragment :
 			.setNegativeButton(R.string.no_thanks, listener)
 			.create()
 			.show()
+	}
+
+	private fun uninstallExternalSource(source: ExternalMangaSource) {
+		val uri = Uri.fromParts("package", source.packageName, null)
+		val action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			Intent.ACTION_DELETE
+		} else {
+			Intent.ACTION_UNINSTALL_PACKAGE
+		}
+		context?.startActivity(Intent(action, uri))
 	}
 }

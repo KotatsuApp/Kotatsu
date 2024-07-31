@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.google.android.material.badge.BadgeDrawable
@@ -14,7 +15,7 @@ import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemMangaGridBinding
-import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback.Companion.PAYLOAD_PROGRESS_CHANGED
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
 import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
@@ -41,7 +42,8 @@ fun mangaGridItemAD(
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title
-		binding.progressView.setPercent(item.progress, ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads)
+		binding.progressView.setProgress(item.progress, PAYLOAD_PROGRESS_CHANGED in payloads)
+		binding.imageViewFavorite.isVisible = item.isFavorite
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			size(CoverSizeResolver(binding.imageViewCover))
 			defaultPlaceholders(context)

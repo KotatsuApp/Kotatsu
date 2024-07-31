@@ -5,6 +5,7 @@ import android.os.Parcelable
 import androidx.core.os.ParcelCompat
 import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.util.ext.readParcelableCompat
 import org.koitharu.kotatsu.core.util.ext.readSerializableCompat
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -30,7 +31,7 @@ data class ParcelableManga(
 			parcel.writeParcelable(ParcelableMangaTags(tags), flags)
 			parcel.writeSerializable(state)
 			parcel.writeString(author)
-			parcel.writeSerializable(source)
+			parcel.writeString(source.name)
 		}
 
 		override fun create(parcel: Parcel) = ParcelableManga(
@@ -49,8 +50,8 @@ data class ParcelableManga(
 				state = parcel.readSerializableCompat(),
 				author = parcel.readString(),
 				chapters = null,
-				source = requireNotNull(parcel.readSerializableCompat()),
-			)
+				source = MangaSource(parcel.readString()),
+			),
 		)
 	}
 }

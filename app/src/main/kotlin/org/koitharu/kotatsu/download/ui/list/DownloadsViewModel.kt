@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.download.ui.list
 
 import androidx.collection.ArrayMap
+import androidx.collection.LongSet
 import androidx.collection.LongSparseArray
 import androidx.collection.getOrElse
 import androidx.collection.set
@@ -24,7 +25,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.formatNumber
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
@@ -182,7 +183,7 @@ class DownloadsViewModel @Inject constructor(
 		}
 	}
 
-	fun snapshot(ids: Set<Long>): Collection<DownloadItemModel> {
+	fun snapshot(ids: LongSet): Collection<DownloadItemModel> {
 		return works.value?.filterTo(ArrayList(ids.size)) { x -> x.id.mostSignificantBits in ids }.orEmpty()
 	}
 
@@ -325,6 +326,6 @@ class DownloadsViewModel @Inject constructor(
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	private suspend fun tryLoad(manga: Manga) = runCatchingCancellable {
-		(mangaRepositoryFactory.create(manga.source) as RemoteMangaRepository).getDetails(manga)
+		(mangaRepositoryFactory.create(manga.source) as ParserMangaRepository).getDetails(manga)
 	}.getOrNull()
 }

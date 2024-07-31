@@ -4,6 +4,8 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.RectF
 import android.view.View
+import androidx.collection.LongSet
+import androidx.collection.MutableLongSet
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_ID
@@ -12,7 +14,7 @@ abstract class AbstractSelectionItemDecoration : RecyclerView.ItemDecoration() {
 
 	private val bounds = Rect()
 	private val boundsF = RectF()
-	protected val selection = HashSet<Long>()
+	protected val selection = MutableLongSet()
 
 	protected var hasBackground: Boolean = true
 	protected var hasForeground: Boolean = false
@@ -21,7 +23,7 @@ abstract class AbstractSelectionItemDecoration : RecyclerView.ItemDecoration() {
 	val checkedItemsCount: Int
 		get() = selection.size
 
-	val checkedItemsIds: Set<Long>
+	val checkedItemsIds: LongSet
 		get() = selection
 
 	fun toggleItemChecked(id: Long) {
@@ -39,7 +41,9 @@ abstract class AbstractSelectionItemDecoration : RecyclerView.ItemDecoration() {
 	}
 
 	fun checkAll(ids: Collection<Long>) {
-		selection.addAll(ids)
+		for (id in ids) {
+			selection.add(id)
+		}
 	}
 
 	fun clearSelection() {

@@ -25,3 +25,4 @@
 .externalNativeBuild
 .cxx
 /.idea/deviceManager.xml
+/.kotlin/

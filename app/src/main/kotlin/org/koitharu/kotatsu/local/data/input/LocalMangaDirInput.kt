@@ -4,6 +4,7 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.ext.children
 import org.koitharu.kotatsu.core.util.ext.creationTime
@@ -18,7 +19,6 @@ import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toCamelCase
 import java.io.File
 import java.util.TreeMap
@@ -47,7 +47,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 			index?.getCoverEntry() ?: findFirstImageEntry().orEmpty(),
 		)
 		val manga = info?.copy2(
-			source = MangaSource.LOCAL,
+			source = LocalMangaSource,
 			url = mangaUri,
 			coverUrl = cover,
 			largeCoverUrl = cover,
@@ -59,14 +59,14 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 					// old downloads
 					chapterFiles.values.elementAtOrNull(i)
 				} ?: return@mapIndexedNotNull null
-				c.copy(url = file.toUri().toString(), source = MangaSource.LOCAL)
+				c.copy(url = file.toUri().toString(), source = LocalMangaSource)
 			},
 		) ?: Manga(
 			id = root.absolutePath.longHashCode(),
 			title = root.name.toHumanReadable(),
 			url = mangaUri,
 			publicUrl = mangaUri,
-			source = MangaSource.LOCAL,
+			source = LocalMangaSource,
 			coverUrl = findFirstImageEntry().orEmpty(),
 			chapters = chapterFiles.values.mapIndexed { i, f ->
 				MangaChapter(
@@ -74,7 +74,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 					name = f.nameWithoutExtension.toHumanReadable(),
 					number = 0f,
 					volume = 0,
-					source = MangaSource.LOCAL,
+					source = LocalMangaSource,
 					uploadDate = f.creationTime,
 					url = f.toUri().toString(),
 					scanlator = null,
@@ -106,7 +106,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 				.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
 				.map {
 					val pageUri = it.toUri().toString()
-					MangaPage(pageUri.longHashCode(), pageUri, null, MangaSource.LOCAL)
+					MangaPage(pageUri.longHashCode(), pageUri, null, LocalMangaSource)
 				}
 		} else {
 			ZipFile(file).use { zip ->
@@ -121,7 +121,7 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 							id = pageUri.longHashCode(),
 							url = pageUri,
 							preview = null,
-							source = MangaSource.LOCAL,
+							source = LocalMangaSource,
 						)
 					}
 			}

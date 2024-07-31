@@ -646,4 +646,11 @@
     <string name="screenshots_block_incognito">गुप्त मोड में ब्लॉक करें</string>
     <string name="image_server">पसंदीदा छवि सर्वर</string>
     <string name="crop_pages">पृष्ठ काटें</string>
+    <string name="pin">पिन करें</string>
+    <string name="unpin">अनपिन करें</string>
+    <string name="sources_unpinned">स्रोत अनपिन किए गए</string>
+    <string name="sources_pinned">स्रोत पिन किए गए</string>
+    <string name="source_pinned">स्रोत पिन किया गया</string>
+    <string name="source_unpinned">स्रोत अनपिन किया गया</string>
+    <string name="recent_sources">हालिया स्रोत</string>
 </resources>

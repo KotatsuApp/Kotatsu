@@ -115,6 +115,10 @@ class FavouritesRepository @Inject constructor(
 		return db.getFavouriteCategoriesDao().find(id.toInt()).toFavouriteCategory()
 	}
 
+	suspend fun isFavorite(mangaId: Long): Boolean {
+		return db.getFavouritesDao().findCategoriesCount(mangaId) != 0
+	}
+
 	suspend fun getCategoriesIds(mangaIds: Collection<Long>): Set<Long> {
 		return db.getFavouritesDao().findCategoriesIds(mangaIds).toSet()
 	}

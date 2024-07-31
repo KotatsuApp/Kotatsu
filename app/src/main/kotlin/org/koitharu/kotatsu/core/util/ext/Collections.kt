@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.util.ext
 
 import androidx.collection.ArrayMap
 import androidx.collection.ArraySet
+import androidx.collection.LongSet
 import org.koitharu.kotatsu.BuildConfig
 import java.util.Collections
 import java.util.EnumSet
@@ -76,4 +77,17 @@ inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R
 	val result = arrayOfNulls<R>(size)
 	forEachIndexed { index, t -> result[index] = transform(t) }
 	return result as Array<R>
+}
+
+fun LongSet.toLongArray(): LongArray {
+	val result = LongArray(size)
+	var i = 0
+	forEach { result[i++] = it }
+	return result
+}
+
+fun LongSet.toSet(): Set<Long> = toCollection(ArraySet<Long>(size))
+
+fun <R : MutableCollection<Long>> LongSet.toCollection(out: R): R = out.also { result ->
+	forEach(result::add)
 }

@@ -12,13 +12,14 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.internal.userAgent
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.RemoteMangaRepository
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
-import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -42,10 +43,9 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
-		val userAgent = intent?.getSerializableExtraCompat<MangaSource>(EXTRA_SOURCE)?.let { source ->
-			val repository = mangaRepositoryFactory.create(source) as? RemoteMangaRepository
-			repository?.headers?.get(CommonHeaders.USER_AGENT)
-		}
+		val mangaSource = MangaSource(intent?.getStringExtra(EXTRA_SOURCE))
+		val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository
+		repository?.headers?.get(CommonHeaders.USER_AGENT)
 		viewBinding.webView.configureForParser(userAgent)
 		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		viewBinding.webView.webViewClient = BrowserClient(this)
@@ -147,7 +147,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			return Intent(context, BrowserActivity::class.java)
 				.setData(Uri.parse(url))
 				.putExtra(EXTRA_TITLE, title)
-				.putExtra(EXTRA_SOURCE, source)
+				.putExtra(EXTRA_SOURCE, source?.name)
 		}
 	}
 }
