@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.exceptions.CaughtException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareBlockedException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
+import org.koitharu.kotatsu.core.exceptions.IncompatiblePluginException
 import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
 import org.koitharu.kotatsu.core.exceptions.SyncApiException
 import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
@@ -60,7 +61,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	-> resources.getString(R.string.network_error)
 
 	is NoDataReceivedException -> resources.getString(R.string.error_no_data_received)
-
+	is IncompatiblePluginException -> resources.getString(R.string.plugin_incompatible)
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	is NotFoundException -> resources.getString(R.string.not_found_404)
 	is UnsupportedSourceException -> resources.getString(R.string.unsupported_source)

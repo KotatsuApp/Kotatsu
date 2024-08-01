@@ -669,4 +669,5 @@
 	<string name="chapters_read">Chapters read</string>
 	<string name="chapters_left">Chapters left</string>
 	<string name="external_source">External/plugin</string>
+	<string name="plugin_incompatible">Incompatible plugin or internal error. Make sure you are using the latest version of the plugin and Kotatsu</string>
 </resources>
