@@ -657,4 +657,5 @@
     <string name="chapters_read">Глав прочитано</string>
     <string name="percent_left">Процент оставшегося</string>
     <string name="chapters_left">Глав осталось</string>
+    <string name="external_source">Внешний/плагин</string>
 </resources>

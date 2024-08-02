@@ -653,4 +653,9 @@
     <string name="recent_sources">Нядаўнія крыніцы</string>
     <string name="sources_pinned">Крыніцы замацаваны</string>
     <string name="crop_pages">Абрэзаць старонкі</string>
+    <string name="percent_read">Працэнт прачытанага</string>
+    <string name="percent_left">Астатні працэнт</string>
+    <string name="chapters_read">Прачытаныя раздзелы</string>
+    <string name="chapters_left">Астатнія раздзелы</string>
+    <string name="external_source">Знешні/плагін</string>
 </resources>
