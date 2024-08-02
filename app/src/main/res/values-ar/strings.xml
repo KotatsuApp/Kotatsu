@@ -383,7 +383,7 @@
     <string name="sync_auth_hint">يمكنك تسجيل الدخول إلى حساب موجود أصلا أو إنشاء حساب جديد</string>
     <string name="paused">متوقف مؤقتاً</string>
     <string name="downloads_wifi_only">التحميل عبر شبكة الوايفاي فقط</string>
-    <string name="suggestions_notifications_summary">إظهار الإشعارات أحيانًا بالمانغا المقترحة</string>
+    <string name="suggestions_notifications_summary">إظهار الإشعارات أحيانًا بالمانجا المقترحة</string>
     <string name="mirror_switching_summary">اللغة العربية</string>
     <string name="suggestions_enable_prompt">‌‌‍‎‎‍هل ترغب في تلقي اقتراحات المانجا الشخصية؟</string>
     <string name="images_proxy_title">وكيل تحسين الصور</string>
@@ -515,7 +515,7 @@
     <string name="speed_value">س%.1f</string>
     <string name="skip">تخطى</string>
     <string name="grayscale">تدرج الرمادي</string>
-    <string name="globally">عالماً</string>
+    <string name="globally">عالمياً</string>
     <string name="this_manga">هذه المانجا</string>
     <string name="color_correction_apply_text">يمكن تطبيق هذه الإعدادات عالمياً أو على المانجا الحالية فقط. إذا تم تطبيقه عالمياً، فلن يتم تجاوز الإعدادات الفردية.</string>
     <string name="apply">طَبِق</string>
@@ -602,7 +602,7 @@
     <string name="show_updated">عرض التحديثات</string>
     <string name="rating_suggestive">موحية</string>
     <string name="reader_actions_summary">تهيئة الإجراءات لمناطق الشاشة القابلة للنقر عليها</string>
-    <string name="ask_for_dest_dir_every_time">اطلب دليل الوجهة في كل مرة</string>
+    <string name="ask_for_dest_dir_every_time">اطلب وجهة المجلد في كل مرة</string>
     <string name="default_page_save_dir">مجلد حفظ الصفحة الافتراضية</string>
     <string name="preferred_download_format">تنسيق التحميل المُفضل</string>
     <string name="automatic">تلقائي</string>
