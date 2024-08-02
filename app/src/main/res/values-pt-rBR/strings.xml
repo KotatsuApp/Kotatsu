@@ -644,4 +644,18 @@
     <string name="crop_pages">Cortar páginas</string>
     <string name="disable_nsfw_notifications">Desativar notificações NSFW</string>
     <string name="disable_nsfw_notifications_summary">Não mostrar notificações sobre atualizações de mangás NSFW</string>
+    <string name="percent_read">Porcentagem lido</string>
+    <string name="percent_left">Porcentagem restante</string>
+    <string name="chapters_read">Capítulos lidos</string>
+    <string name="chapters_left">Capítulos restantes</string>
+    <string name="pin">Pin</string>
+    <string name="unpin">Unpin</string>
+    <string name="source_pinned">Fonte destacada</string>
+    <string name="source_unpinned">Fonte não destacada</string>
+    <string name="sources_pinned">Fontes destacadas</string>
+    <string name="recent_sources">Fontes recentes</string>
+    <string name="external_source">Plugin/Externo</string>
+    <string name="sources_unpinned">Fontes não destacadas</string>
+    <string name="tracker_debug_info">Checando por novos logs de capítulos</string>
+    <string name="tracker_debug_info_summary">Informações de Debug sobre a checagem de fundo para novos capítulos</string>
 </resources>
