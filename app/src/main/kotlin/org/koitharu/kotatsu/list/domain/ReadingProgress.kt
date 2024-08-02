@@ -31,5 +31,7 @@ data class ReadingProgress(
 		CHAPTERS_LEFT -> totalChapters > 0 && percent in 0f..1f
 	}
 
+	fun isComplete() = percent >= 1f - Math.ulp(percent)
+
 	fun isReversed() = mode == PERCENT_LEFT || mode == CHAPTERS_LEFT
 }

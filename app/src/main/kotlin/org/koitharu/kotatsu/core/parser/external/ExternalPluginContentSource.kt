@@ -50,7 +50,7 @@ class ExternalPluginContentSource(
 			null -> Unit
 		}
 		contentResolver.query(uri.build(), null, null, null, filter?.sortOrder?.name)
-			.indexed()
+			.safe()
 			.use { cursor ->
 				val result = ArrayList<Manga>(cursor.count)
 				if (cursor.moveToFirst()) {
@@ -94,7 +94,7 @@ class ExternalPluginContentSource(
 			.appendPath(chapter.url)
 			.build()
 		contentResolver.query(uri, null, null, null, null)
-			.indexed()
+			.safe()
 			.use { cursor ->
 				val result = ArrayList<MangaPage>(cursor.count)
 				if (cursor.moveToFirst()) {
@@ -116,7 +116,7 @@ class ExternalPluginContentSource(
 	fun getTags(): Set<MangaTag> = runCatchingCompatibility {
 		val uri = "content://${source.authority}/tags".toUri()
 		contentResolver.query(uri, null, null, null, null)
-			.indexed()
+			.safe()
 			.use { cursor ->
 				val result = ArraySet<MangaTag>(cursor.count)
 				if (cursor.moveToFirst()) {
@@ -135,7 +135,7 @@ class ExternalPluginContentSource(
 	fun getCapabilities(): MangaSourceCapabilities? {
 		val uri = "content://${source.authority}/capabilities".toUri()
 		return contentResolver.query(uri, null, null, null, null)
-			.indexed()
+			.safe()
 			.use { cursor ->
 				if (cursor.moveToFirst()) {
 					MangaSourceCapabilities(
@@ -177,7 +177,7 @@ class ExternalPluginContentSource(
 			.appendPath(url)
 			.build()
 		return contentResolver.query(uri, null, null, null, null)
-			.indexed()
+			.safe()
 			.use { cursor ->
 				cursor.moveToFirst()
 				cursor.getManga()
@@ -190,7 +190,7 @@ class ExternalPluginContentSource(
 			.appendPath(url)
 			.build()
 		return contentResolver.query(uri, null, null, null, null)
-			.indexed()
+			.safe()
 			.use { cursor ->
 				val result = ArrayList<MangaChapter>(cursor.count)
 				if (cursor.moveToFirst()) {
@@ -212,7 +212,7 @@ class ExternalPluginContentSource(
 			}
 	}
 
-	private fun IndexedCursor.getManga() = Manga(
+	private fun SafeCursor.getManga() = Manga(
 		id = getLong(COLUMN_ID),
 		title = getString(COLUMN_TITLE),
 		altTitle = getStringOrNull(COLUMN_ALT_TITLE),
@@ -241,7 +241,7 @@ class ExternalPluginContentSource(
 		throw IncompatiblePluginException(source.name, e)
 	}
 
-	private fun Cursor?.indexed() = IndexedCursor(this ?: throw IncompatiblePluginException(source.name, null))
+	private fun Cursor?.safe() = SafeCursor(this ?: throw IncompatiblePluginException(source.name, null))
 
 	class MangaSourceCapabilities(
 		val availableSortOrders: Set<SortOrder>,
