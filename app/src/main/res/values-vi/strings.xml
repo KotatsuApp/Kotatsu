@@ -657,4 +657,5 @@
     <string name="percent_left">Tiến trình đọc còn lại</string>
     <string name="chapters_read">Chương đã đọc</string>
     <string name="chapters_left">Chương còn lại</string>
+    <string name="external_source">Nguồn / Plugin bên ngoài</string>
 </resources>
