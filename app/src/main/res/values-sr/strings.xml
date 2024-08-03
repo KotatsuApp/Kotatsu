@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="local_storage">Локално складиште</string>
     <string name="error_occurred">Грешка се појавила</string>
-    <string name="favourites">Омиљено</string>
+    <string name="favourites">Омиљене</string>
     <string name="history">Историја</string>
     <string name="network_error">Грешка на мрежи</string>
     <string name="details">Детаљи</string>
@@ -117,7 +117,7 @@
     <string name="show_on_shelf">Прикажи на полици</string>
     <string name="explore">Истражи</string>
     <string name="options">Опције</string>
-    <string name="add_to_favourites">Додај у омиљене</string>
+    <string name="add_to_favourites">Додај у Омиљене</string>
     <string name="text_history_holder_secondary">Пронађи ствари за читање у одељку „Истражи“</string>
     <string name="light_indicator">Показатељ ЛЕД светла</string>
     <string name="favourites_categories">Омиљене категорије</string>
@@ -151,7 +151,7 @@
     <string name="cancel_all">Откажи све</string>
     <string name="sync_host_description">Можеш да користиш послуживач за синхронизацију који се самостално хостује или подразумевани. Не мењај ово ако ниси сигуран шта радиш.</string>
     <string name="error_corrupted_file">Враћени су неважећи подаци или је датотека оштећена</string>
-    <string name="all_favourites">Сви омиљени</string>
+    <string name="all_favourites">Све омиљене</string>
     <string name="email_enter_hint">Унесите своју адресу е-поште да бисте наставили</string>
     <string name="pick_custom_directory">Изабери прилагођени директоријум</string>
     <string name="no_chapters">Нема поглавља</string>
@@ -189,7 +189,7 @@
     <string name="clear_all_history">Избриши сву историју</string>
     <string name="data_deletion">Брисање података</string>
     <string name="history_shortcuts">Прикажи недавне пречице за мангу</string>
-    <string name="downloads_wifi_only_summary">Заустави преузимање када пређеш на мобилну мрежу</string>
+    <string name="downloads_wifi_only_summary">Зауставља преузимање када пређеш на мобилну мрежу</string>
     <string name="suggest_new_sources">Предложи нове изворе након ажурирања апликације</string>
     <string name="import_completed">Увоз је завршен</string>
     <string name="show_reading_indicators">Прикажи показивач током читања</string>
@@ -252,7 +252,7 @@
     <string name="data_not_restored">Подаци нису враћени</string>
     <string name="manage_sources">Управљај изворима</string>
     <string name="directories">Директоријуми</string>
-    <string name="local_manga_directories">Локални директорији манги</string>
+    <string name="local_manga_directories">Локални директоријуми Манги</string>
     <string name="manage_categories">Управљај категоријама</string>
     <string name="update">Ажурирај</string>
     <string name="scrobbling_empty_hint">Да бисте пратили напредак читања, изаберите Изборник → Прати на екрану са детаљима манге.</string>
@@ -308,7 +308,7 @@
     <string name="dns_over_https">DNS преко HTTPS-а</string>
     <string name="show_suspicious_content">Прикажи сумњив садржај</string>
     <string name="sync_title">Синхронизујте своје податке</string>
-    <string name="appwidget_shelf_description">Манга из ваших омиљених</string>
+    <string name="appwidget_shelf_description">Манга из ваших Омиљених</string>
     <string name="comics_archive_import_description">Можеш да изабереш једну или више .cbz или .zip датотека, свака датотека ће бити препозната као засебна манга.</string>
     <string name="downloads_paused">Преузимања су заустављена</string>
     <string name="too_many_requests_message">Превише захтева. Покушај поново касније</string>
@@ -400,7 +400,7 @@
     <string name="mark_as_current">Означи као тренутно</string>
     <string name="protect_application_summary">Затражи лозинку при покретању Котатсу-а</string>
     <string name="right_to_left">Са десна на лево</string>
-    <string name="show_reading_indicators_summary">Прикажи проценат читања у историји и омиљеним</string>
+    <string name="show_reading_indicators_summary">Прикажи проценат читања у Историји и Омиљеним</string>
     <string name="random">Насумично</string>
     <string name="mirror_switching">Аутоматски изабери послуживач</string>
     <string name="use_fingerprint">Користи отисак прста ако је доступан</string>
@@ -495,7 +495,7 @@
     <string name="content_type_other">Остало</string>
     <string name="suggestion_manga">Предлог: %s</string>
     <string name="color_black">Црна</string>
-    <string name="removed_from_favourites">Уклоњено из омиљених</string>
+    <string name="removed_from_favourites">Уклоњено из Омиљених</string>
     <string name="bookmarks">Обележивачи</string>
     <string name="show_all">Покажи све</string>
     <string name="this_month">Овог месеца</string>
@@ -657,4 +657,5 @@
     <string name="recent_sources">Недавни извори</string>
     <string name="image_server">Жељени послуживач слика</string>
     <string name="crop_pages">Изрежи странице</string>
+    <string name="external_source">Спољни/додатак</string>
 </resources>
