@@ -658,5 +658,5 @@
     <string name="chapters_read">已读章节数</string>
     <string name="chapters_left">剩余章节数</string>
     <string name="external_source">外部插件</string>
-    <string name="plugin_incompatible">插件不兼容或出现了外部错误，请确保你已经更新到最新版本的 Kotatsu 以及插件</string>
+    <string name="plugin_incompatible">插件不兼容或出现了外部错误，请确保你已经将 Kotatsu 以及插件更新至最新版本</string>
 </resources>
