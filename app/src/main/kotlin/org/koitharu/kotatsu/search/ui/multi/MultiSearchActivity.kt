@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
@@ -132,6 +133,8 @@ class MultiSearchActivity :
 	override fun onRetryClick(error: Throwable) {
 		viewModel.retry()
 	}
+
+	override fun onFilterOptionClick(option: ListFilterOption) = Unit
 
 	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit
 

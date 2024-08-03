@@ -24,6 +24,7 @@ open class MangaListAdapter(
 		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listener))
 		addDelegate(ListItemType.HINT_EMPTY, emptyHintAD(coil, lifecycleOwner, listener))
 		addDelegate(ListItemType.HEADER, listHeaderAD(listener))
+		addDelegate(ListItemType.FILTER_HEADER, quickFilterAD(listener))
 		addDelegate(ListItemType.TIP, tipAD(listener))
 	}
 }

@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View.OnClickListener
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
@@ -92,7 +93,11 @@ class ChipsView @JvmOverloads constructor(
 	}
 
 	private fun bindChip(chip: Chip, model: ChipModel) {
-		chip.text = model.title
+		if (model.titleResId == 0) {
+			chip.text = model.title
+		} else {
+			chip.setText(model.titleResId)
+		}
 		chip.isClickable = onChipClickListener != null || model.isCheckable
 		chip.isCheckable = model.isCheckable
 		if (model.icon == 0) {
@@ -139,7 +144,8 @@ class ChipsView @JvmOverloads constructor(
 	}
 
 	data class ChipModel(
-		val title: CharSequence,
+		val title: CharSequence? = null,
+		@StringRes val titleResId: Int = 0,
 		@DrawableRes val icon: Int = 0,
 		val isCheckable: Boolean = false,
 		@ColorRes val tint: Int = 0,

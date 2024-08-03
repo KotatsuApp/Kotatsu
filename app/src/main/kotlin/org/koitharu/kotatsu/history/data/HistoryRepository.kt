@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.core.prefs.ProgressIndicatorMode
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -76,8 +77,12 @@ class HistoryRepository @Inject constructor(
 		}
 	}
 
-	fun observeAllWithHistory(order: ListSortOrder, limit: Int): Flow<List<MangaWithHistory>> {
-		return db.getHistoryDao().observeAll(order, limit).mapItems {
+	fun observeAllWithHistory(
+		order: ListSortOrder,
+		filterOptions: Set<ListFilterOption>,
+		limit: Int
+	): Flow<List<MangaWithHistory>> {
+		return db.getHistoryDao().observeAll(order, filterOptions, limit).mapItems {
 			MangaWithHistory(
 				it.manga.toManga(it.tags.toMangaTags()),
 				it.history.toMangaHistory(),
