@@ -653,4 +653,10 @@
     <string name="source_pinned">स्रोत पिन किया गया</string>
     <string name="source_unpinned">स्रोत अनपिन किया गया</string>
     <string name="recent_sources">हालिया स्रोत</string>
+    <string name="percent_read">प्रतिशत पढ़ा</string>
+    <string name="percent_left">प्रतिशत शेष</string>
+    <string name="chapters_read">अध्याय पढ़ा</string>
+    <string name="external_source">बाहरी/प्लगइन</string>
+    <string name="chapters_left">अध्याय शेष</string>
+    <string name="plugin_incompatible">असंगत प्लगइन या आंतरिक त्रुटि। सुनिश्चित करें कि आप प्लगइन और कोटात्सु के नवीनतम संस्करण का उपयोग कर रहे हैं</string>
 </resources>
