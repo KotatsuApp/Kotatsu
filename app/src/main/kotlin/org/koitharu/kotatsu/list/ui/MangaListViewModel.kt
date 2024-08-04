@@ -65,7 +65,7 @@ abstract class MangaListViewModel(
 		listMode,
 		settings.observe().filter { key ->
 			key == AppSettings.KEY_PROGRESS_INDICATORS || key == AppSettings.KEY_TRACKER_ENABLED
-		}.onStart { emit("") }
+		}.onStart { emit("") },
 	) { mode, _ ->
 		mode
 	}

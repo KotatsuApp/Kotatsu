@@ -3,6 +3,9 @@ package org.koitharu.kotatsu.history.ui
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,31 +24,30 @@ import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.history.domain.HistoryListQuickFilter
 import org.koitharu.kotatsu.history.domain.MarkAsReadUseCase
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.domain.MangaListMapper
+import org.koitharu.kotatsu.list.domain.QuickFilterListener
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.QuickFilter
 import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
-import java.util.EnumSet
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -58,17 +60,16 @@ class HistoryListViewModel @Inject constructor(
 	private val mangaListMapper: MangaListMapper,
 	private val localMangaRepository: LocalMangaRepository,
 	private val markAsReadUseCase: MarkAsReadUseCase,
+	private val quickFilter: HistoryListQuickFilter,
 	networkState: NetworkState,
 	downloadScheduler: DownloadWorker.Scheduler,
-) : MangaListViewModel(settings, downloadScheduler) {
+) : MangaListViewModel(settings, downloadScheduler), QuickFilterListener by quickFilter {
 
 	private val sortOrder: StateFlow<ListSortOrder> = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.IO,
 		key = AppSettings.KEY_HISTORY_ORDER,
 		valueProducer = { historySortOrder },
 	)
-
-	private val filterOptions = MutableStateFlow<Set<ListFilterOption>>(EnumSet.noneOf(ListFilterOption::class.java))
 
 	override val listMode = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
@@ -93,7 +94,7 @@ class HistoryListViewModel @Inject constructor(
 	)
 
 	override val content = combine(
-		filterOptions,
+		quickFilter.appliedOptions,
 		observeHistory(),
 		isGroupingEnabled,
 		observeListModeWithTriggers(),
@@ -105,7 +106,7 @@ class HistoryListViewModel @Inject constructor(
 				if (filters.isEmpty()) {
 					listOf(getEmptyState(hasFilters = false))
 				} else {
-					listOf(filterItem(filters), getEmptyState(hasFilters = true))
+					listOf(quickFilter.filterItem(filters), getEmptyState(hasFilters = true))
 				}
 			}
 
@@ -118,8 +119,8 @@ class HistoryListViewModel @Inject constructor(
 		loadingCounter.increment()
 	}.onFirst {
 		loadingCounter.decrement()
-	}.catch {
-		emit(listOf(it.toErrorState(canRetry = false)))
+	}.catch { e ->
+		emit(listOf(e.toErrorState(canRetry = false)))
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	override fun onRefresh() = Unit
@@ -161,29 +162,24 @@ class HistoryListViewModel @Inject constructor(
 		}
 	}
 
-	fun onFilterOptionClick(option: ListFilterOption) {
-		filterOptions.value = EnumSet.copyOf(filterOptions.value).also {
-			if (option in it) {
-				it.remove(option)
-			} else {
-				it.add(option)
-			}
-		}
-	}
-
-	private fun observeHistory() = combine(sortOrder, filterOptions, limit, ::Triple)
-		.flatMapLatest { repository.observeAllWithHistory(it.first, it.second - ListFilterOption.DOWNLOADED, it.third) }
+	private fun observeHistory() = combine(sortOrder, quickFilter.appliedOptions, limit, ::Triple)
+		.flatMapLatest { repository.observeAllWithHistory(it.first, it.second - ListFilterOption.Downloaded, it.third) }
 
 	private suspend fun mapList(
 		filters: Set<ListFilterOption>,
-		list: List<MangaWithHistory>,
+		historyList: List<MangaWithHistory>,
 		grouped: Boolean,
 		mode: ListMode,
 		isOnline: Boolean,
 		isIncognito: Boolean,
 	): List<ListModel> {
+		val list = if (!isOnline || ListFilterOption.Downloaded in filters) {
+			historyList.mapToLocal()
+		} else {
+			historyList
+		}
 		val result = ArrayList<ListModel>((if (grouped) (list.size * 1.4).toInt() else list.size) + 3)
-		result += filterItem(filters)
+		result += quickFilter.filterItem(filters)
 		if (isIncognito) {
 			result += TipModel(
 				key = AppSettings.KEY_INCOGNITO_MODE,
@@ -205,12 +201,7 @@ class HistoryListViewModel @Inject constructor(
 			)
 		}
 		var isEmpty = true
-		for ((m, history) in list) {
-			val manga = if ((!isOnline && !m.isLocal) || ListFilterOption.DOWNLOADED in filters) {
-				localMangaRepository.findSavedManga(m)?.manga ?: continue
-			} else {
-				m
-			}
+		for ((manga, history) in list) {
 			isEmpty = false
 			if (grouped) {
 				val header = history.header(order)
@@ -227,6 +218,20 @@ class HistoryListViewModel @Inject constructor(
 			result += getEmptyState(hasFilters = true)
 		}
 		return result
+	}
+
+	private suspend fun List<MangaWithHistory>.mapToLocal() = coroutineScope {
+		map {
+			async {
+				if (it.manga.isLocal) {
+					it
+				} else {
+					localMangaRepository.findSavedManga(it.manga)?.let { localManga ->
+						MangaWithHistory(localManga.manga, it.history)
+					}
+				}
+			}
+		}.awaitAll().filterNotNull()
 	}
 
 	private fun MangaHistory.header(order: ListSortOrder): ListHeader? = when (order) {
@@ -253,18 +258,6 @@ class HistoryListViewModel @Inject constructor(
 		ListSortOrder.UPDATED,
 		ListSortOrder.RATING -> null
 	}
-
-	private fun filterItem(selected: Set<ListFilterOption>) = QuickFilter(
-		items = ListFilterOption.HISTORY.map { option ->
-			ChipsView.ChipModel(
-				titleResId = option.titleResId,
-				icon = option.iconResId,
-				isCheckable = true,
-				isChecked = option in selected,
-				data = option,
-			)
-		},
-	)
 
 	private fun getEmptyState(hasFilters: Boolean) = if (hasFilters) {
 		EmptyState(

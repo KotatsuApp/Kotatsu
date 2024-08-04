@@ -10,6 +10,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.TagEntity
+import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 
@@ -51,9 +52,19 @@ abstract class HistoryDao {
 				"SELECT * FROM history LEFT JOIN manga ON history.manga_id = manga.manga_id " +
 					"WHERE history.deleted_at = 0",
 			)
-			for (option in filterOptions) {
+			val groupedOptions = filterOptions.groupBy { it.groupKey }
+			for ((_, group) in groupedOptions) {
+				if (group.isEmpty()) {
+					continue
+				}
 				append(" AND ")
-				append(option.getCondition())
+				if (group.size > 1) {
+					group.joinTo(this, separator = " OR ", prefix = "(", postfix = ")") {
+						it.getCondition()
+					}
+				} else {
+					append(group.single().getCondition())
+				}
 			}
 			append(" GROUP BY history.manga_id ORDER BY ")
 			append(orderBy)
@@ -159,9 +170,11 @@ abstract class HistoryDao {
 	protected abstract fun observeAllImpl(query: SupportSQLiteQuery): Flow<List<HistoryWithManga>>
 
 	private fun ListFilterOption.getCondition(): String = when (this) {
-		ListFilterOption.NEW_CHAPTERS -> "(SELECT chapters_new FROM tracks WHERE tracks.manga_id = history.manga_id) > 0"
-		ListFilterOption.FAVORITE -> "EXISTS(SELECT * FROM favourites WHERE history.manga_id = favourites.manga_id)"
-		ListFilterOption.COMPLETED -> "percent >= 0.9999"
-		ListFilterOption.DOWNLOADED -> throw IllegalArgumentException("Unsupported option $this")
+		ListFilterOption.Downloaded -> throw IllegalArgumentException("Unsupported option $this")
+		is ListFilterOption.Favorite -> "EXISTS(SELECT * FROM favourites WHERE history.manga_id = favourites.manga_id AND category_id = ${category.id})"
+		ListFilterOption.Macro.COMPLETED -> "percent >= 0.9999"
+		ListFilterOption.Macro.NEW_CHAPTERS -> "(SELECT chapters_new FROM tracks WHERE tracks.manga_id = history.manga_id) > 0"
+		ListFilterOption.Macro.FAVORITE -> "EXISTS(SELECT * FROM favourites WHERE history.manga_id = favourites.manga_id)"
+		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE history.manga_id = manga_tags.manga_id AND tag_id = ${tag.toEntity().id})"
 	}
 }

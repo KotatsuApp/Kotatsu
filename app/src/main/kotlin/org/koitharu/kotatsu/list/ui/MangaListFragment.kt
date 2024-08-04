@@ -45,6 +45,7 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
 import org.koitharu.kotatsu.list.domain.ListFilterOption
+import org.koitharu.kotatsu.list.domain.QuickFilterListener
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.MangaListAdapter
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -227,7 +228,9 @@ abstract class MangaListFragment :
 		}
 	}
 
-	override fun onFilterOptionClick(option: ListFilterOption) = Unit
+	override fun onFilterOptionClick(option: ListFilterOption) {
+		(viewModel as? QuickFilterListener)?.toggleFilterOption(option)
+	}
 
 	override fun onFilterClick(view: View?) = Unit
 

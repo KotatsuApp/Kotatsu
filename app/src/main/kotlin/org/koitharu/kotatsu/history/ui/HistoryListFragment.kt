@@ -16,7 +16,6 @@ import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentListBinding
-import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 
@@ -34,10 +33,6 @@ class HistoryListFragment : MangaListFragment() {
 	}
 
 	override fun onScrolledToEnd() = viewModel.requestMoreItems()
-
-	override fun onFilterOptionClick(option: ListFilterOption) {
-		viewModel.onFilterOptionClick(option)
-	}
 
 	override fun onEmptyActionClick() {
 		startActivity(NetworkManageIntent())

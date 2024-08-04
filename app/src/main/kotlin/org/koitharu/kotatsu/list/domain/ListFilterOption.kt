@@ -3,26 +3,84 @@ package org.koitharu.kotatsu.list.domain
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.R
-import java.util.EnumSet
+import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.parsers.model.MangaTag
 
-enum class ListFilterOption(
-	@StringRes val titleResId: Int,
-	@DrawableRes val iconResId: Int,
-) {
+sealed interface ListFilterOption {
 
-	DOWNLOADED(R.string.on_device, R.drawable.ic_storage),
-	COMPLETED(R.string.status_completed, R.drawable.ic_state_finished),
-	NEW_CHAPTERS(R.string.new_chapters, R.drawable.ic_updated),
-	FAVORITE(R.string.favourites, R.drawable.ic_heart_outline),
-	;
+	@get:StringRes
+	val titleResId: Int
 
-	companion object {
+	@get:DrawableRes
+	val iconResId: Int
 
-		val HISTORY: Set<ListFilterOption> = EnumSet.of(
-			DOWNLOADED,
-			NEW_CHAPTERS,
-			FAVORITE,
-			COMPLETED,
-		)
+	val titleText: CharSequence?
+
+	val groupKey: String
+
+	data object Downloaded : ListFilterOption {
+
+		override val titleResId: Int
+			get() = R.string.on_device
+
+		override val iconResId: Int
+			get() = R.drawable.ic_storage
+
+		override val titleText: CharSequence?
+			get() = null
+
+		override val groupKey: String
+			get() = "_downloaded"
+	}
+
+	enum class Macro(
+		@StringRes override val titleResId: Int,
+		@DrawableRes override val iconResId: Int,
+	) : ListFilterOption {
+
+		COMPLETED(R.string.status_completed, R.drawable.ic_state_finished),
+		NEW_CHAPTERS(R.string.new_chapters, R.drawable.ic_updated),
+		FAVORITE(R.string.favourites, R.drawable.ic_heart_outline),
+		;
+
+		override val titleText: CharSequence?
+			get() = null
+
+		override val groupKey: String
+			get() = name
+	}
+
+	data class Tag(
+		val tag: MangaTag
+	) : ListFilterOption {
+
+		override val titleResId: Int
+			get() = 0
+
+		override val iconResId: Int
+			get() = R.drawable.ic_tag
+
+		override val titleText: String
+			get() = tag.title
+
+		override val groupKey: String
+			get() = "_tag"
+	}
+
+	data class Favorite(
+		val category: FavouriteCategory
+	) : ListFilterOption {
+
+		override val titleResId: Int
+			get() = 0
+
+		override val iconResId: Int
+			get() = R.drawable.ic_heart_outline
+
+		override val titleText: String
+			get() = category.title
+
+		override val groupKey: String
+			get() = "_favcat"
 	}
 }
