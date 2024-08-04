@@ -37,3 +37,5 @@ fun JSONObject.toContentValues(): ContentValues {
 }
 
 private fun String.escapeName() = "`$this`"
+
+fun Cursor.getBoolean(columnIndex: Int) = getInt(columnIndex) > 0

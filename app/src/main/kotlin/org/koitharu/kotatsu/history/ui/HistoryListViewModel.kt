@@ -21,13 +21,16 @@ import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.history.domain.MarkAsReadUseCase
 import org.koitharu.kotatsu.history.domain.model.MangaWithHistory
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
@@ -36,11 +39,13 @@ import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.QuickFilter
 import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
+import java.util.EnumSet
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -62,6 +67,8 @@ class HistoryListViewModel @Inject constructor(
 		key = AppSettings.KEY_HISTORY_ORDER,
 		valueProducer = { historySortOrder },
 	)
+
+	private val filterOptions = MutableStateFlow<Set<ListFilterOption>>(EnumSet.noneOf(ListFilterOption::class.java))
 
 	override val listMode = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
@@ -86,25 +93,25 @@ class HistoryListViewModel @Inject constructor(
 	)
 
 	override val content = combine(
+		filterOptions,
 		observeHistory(),
 		isGroupingEnabled,
 		observeListModeWithTriggers(),
 		networkState,
 		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
-	) { list, grouped, mode, online, incognito ->
+	) { filters, list, grouped, mode, online, incognito ->
 		when {
-			list.isEmpty() -> listOf(
-				EmptyState(
-					icon = R.drawable.ic_empty_history,
-					textPrimary = R.string.text_history_holder_primary,
-					textSecondary = R.string.text_history_holder_secondary,
-					actionStringRes = 0,
-				),
-			)
+			list.isEmpty() -> {
+				if (filters.isEmpty()) {
+					listOf(getEmptyState(hasFilters = false))
+				} else {
+					listOf(filterItem(filters), getEmptyState(hasFilters = true))
+				}
+			}
 
 			else -> {
 				isReady.set(true)
-				mapList(list, grouped, mode, online, incognito)
+				mapList(filters, list, grouped, mode, online, incognito)
 			}
 		}
 	}.onStart {
@@ -154,17 +161,29 @@ class HistoryListViewModel @Inject constructor(
 		}
 	}
 
-	private fun observeHistory() = combine(sortOrder, limit, ::Pair)
-		.flatMapLatest { repository.observeAllWithHistory(it.first, it.second) }
+	fun onFilterOptionClick(option: ListFilterOption) {
+		filterOptions.value = EnumSet.copyOf(filterOptions.value).also {
+			if (option in it) {
+				it.remove(option)
+			} else {
+				it.add(option)
+			}
+		}
+	}
+
+	private fun observeHistory() = combine(sortOrder, filterOptions, limit, ::Triple)
+		.flatMapLatest { repository.observeAllWithHistory(it.first, it.second - ListFilterOption.DOWNLOADED, it.third) }
 
 	private suspend fun mapList(
+		filters: Set<ListFilterOption>,
 		list: List<MangaWithHistory>,
 		grouped: Boolean,
 		mode: ListMode,
 		isOnline: Boolean,
 		isIncognito: Boolean,
 	): List<ListModel> {
-		val result = ArrayList<ListModel>(if (grouped) (list.size * 1.4).toInt() else list.size + 2)
+		val result = ArrayList<ListModel>((if (grouped) (list.size * 1.4).toInt() else list.size) + 3)
+		result += filterItem(filters)
 		if (isIncognito) {
 			result += TipModel(
 				key = AppSettings.KEY_INCOGNITO_MODE,
@@ -185,12 +204,14 @@ class HistoryListViewModel @Inject constructor(
 				actionStringRes = R.string.manage,
 			)
 		}
+		var isEmpty = true
 		for ((m, history) in list) {
-			val manga = if (!isOnline && !m.isLocal) {
+			val manga = if ((!isOnline && !m.isLocal) || ListFilterOption.DOWNLOADED in filters) {
 				localMangaRepository.findSavedManga(m)?.manga ?: continue
 			} else {
 				m
 			}
+			isEmpty = false
 			if (grouped) {
 				val header = history.header(order)
 				if (header != prevHeader) {
@@ -201,6 +222,9 @@ class HistoryListViewModel @Inject constructor(
 				}
 			}
 			result += mangaListMapper.toListModel(manga, mode)
+		}
+		if (filters.isNotEmpty() && isEmpty) {
+			result += getEmptyState(hasFilters = true)
 		}
 		return result
 	}
@@ -228,5 +252,33 @@ class HistoryListViewModel @Inject constructor(
 		ListSortOrder.NEW_CHAPTERS,
 		ListSortOrder.UPDATED,
 		ListSortOrder.RATING -> null
+	}
+
+	private fun filterItem(selected: Set<ListFilterOption>) = QuickFilter(
+		items = ListFilterOption.HISTORY.map { option ->
+			ChipsView.ChipModel(
+				titleResId = option.titleResId,
+				icon = option.iconResId,
+				isCheckable = true,
+				isChecked = option in selected,
+				data = option,
+			)
+		},
+	)
+
+	private fun getEmptyState(hasFilters: Boolean) = if (hasFilters) {
+		EmptyState(
+			icon = R.drawable.ic_empty_history,
+			textPrimary = R.string.nothing_found,
+			textSecondary = R.string.text_history_holder_secondary_filtered,
+			actionStringRes = 0,
+		)
+	} else {
+		EmptyState(
+			icon = R.drawable.ic_empty_history,
+			textPrimary = R.string.text_history_holder_primary,
+			textSecondary = R.string.text_history_holder_secondary,
+			actionStringRes = 0,
+		)
 	}
 }

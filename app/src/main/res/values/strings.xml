@@ -96,6 +96,7 @@
 	<string name="text_search_holder_secondary">Try to reformulate the query.</string>
 	<string name="text_history_holder_primary">What you read will be displayed here</string>
 	<string name="text_history_holder_secondary">Find what to read in the «Explore» section</string>
+	<string name="text_history_holder_secondary_filtered">There are no manga matching the filters you selected</string>
 	<string name="text_local_holder_primary">Save something first</string>
 	<string name="text_local_holder_secondary">Save something from an online catalog or import it from a file.</string>
 	<string name="manga_shelf">Shelf</string>
@@ -267,7 +268,7 @@
 	<string name="status_on_hold">On hold</string>
 	<string name="status_dropped">Dropped</string>
 	<string name="disable_all">Disable all</string>
-	<string name="use_fingerprint">Use fingerprint if available</string>
+	<string name="use_fingerprint">Use biometric if available</string>
 	<string name="appwidget_shelf_description">Manga from your favourites</string>
 	<string name="appwidget_recent_description">Your recently read manga</string>
 	<string name="report">Report</string>
@@ -669,4 +670,5 @@
 	<string name="chapters_read">Chapters read</string>
 	<string name="chapters_left">Chapters left</string>
 	<string name="external_source">External/plugin</string>
+	<string name="plugin_incompatible">Incompatible plugin or internal error. Make sure you are using the latest version of the plugin and Kotatsu</string>
 </resources>

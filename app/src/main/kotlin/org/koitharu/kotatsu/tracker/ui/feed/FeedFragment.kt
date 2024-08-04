@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentFeedBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
@@ -93,6 +94,8 @@ class FeedFragment :
 	override fun onRefresh() {
 		viewModel.update()
 	}
+
+	override fun onFilterOptionClick(option: ListFilterOption) = Unit
 
 	override fun onRetryClick(error: Throwable) = Unit
 

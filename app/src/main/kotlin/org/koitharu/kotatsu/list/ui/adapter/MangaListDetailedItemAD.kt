@@ -52,7 +52,7 @@ fun mangaListDetailedItemAD(
 			source(item.source)
 			enqueueWith(coil)
 		}
-		binding.textViewTags.text = item.tags.joinToString(separator = ", ") { it.title }
+		binding.textViewTags.text = item.tags.joinToString(separator = ", ") { it.title ?: "" }
 		badge = itemView.bindBadge(badge, item.counter)
 	}
 }

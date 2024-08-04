@@ -13,28 +13,23 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 
-private const val KEY_STATE = "state"
-
 abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>(), ZoomControl.ZoomControlListener {
 
 	protected val viewModel by activityViewModels<ReaderViewModel>()
-	private var stateToSave: ReaderState? = null
 
 	protected var readerAdapter: BaseReaderAdapter<*>? = null
 		private set
 
 	override fun onViewBindingCreated(binding: B, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		var restoredState = savedInstanceState?.getParcelableCompat<ReaderState>(KEY_STATE)
 		readerAdapter = onCreateAdapter()
 
 		viewModel.content.observe(viewLifecycleOwner) {
-			var pendingState = restoredState ?: it.state
-			if (pendingState == null && it.pages.isNotEmpty() && readerAdapter?.hasItems != true) {
-				pendingState = viewModel.getCurrentState()
+			if (it.state == null && it.pages.isNotEmpty() && readerAdapter?.hasItems != true) {
+				onPagesChanged(it.pages, viewModel.getCurrentState())
+			} else {
+				onPagesChanged(it.pages, it.state)
 			}
-			onPagesChanged(it.pages, pendingState)
-			restoredState = null
 		}
 	}
 
@@ -44,17 +39,9 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>(), ZoomCont
 	}
 
 	override fun onDestroyView() {
-		stateToSave = getCurrentState()
+		viewModel.saveCurrentState(getCurrentState())
 		readerAdapter = null
 		super.onDestroyView()
-	}
-
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		getCurrentState()?.let {
-			stateToSave = it
-		}
-		outState.putParcelable(KEY_STATE, stateToSave)
 	}
 
 	protected fun requireAdapter() = checkNotNull(readerAdapter) {

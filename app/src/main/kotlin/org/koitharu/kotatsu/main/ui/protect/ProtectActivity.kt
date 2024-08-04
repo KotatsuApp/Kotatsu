@@ -17,6 +17,7 @@ import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.AuthenticationCallback
 import androidx.core.graphics.Insets
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
@@ -25,6 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityProtectBinding
+import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ProtectActivity :
@@ -34,6 +36,7 @@ class ProtectActivity :
 	View.OnClickListener {
 
 	private val viewModel by viewModels<ProtectViewModel>()
+	private var canUseBiometric = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -61,7 +64,9 @@ class ProtectActivity :
 
 	override fun onStart() {
 		super.onStart()
-		if (!useFingerprint()) {
+		canUseBiometric = useFingerprint()
+		updateEndIcon()
+		if (!canUseBiometric) {
 			viewBinding.editPassword.requestFocus()
 		}
 	}
@@ -80,6 +85,7 @@ class ProtectActivity :
 		when (v.id) {
 			R.id.button_next -> viewModel.tryUnlock(viewBinding.editPassword.text?.toString().orEmpty())
 			R.id.button_cancel -> finish()
+			materialR.id.text_input_end_icon -> useFingerprint()
 		}
 	}
 
@@ -99,6 +105,7 @@ class ProtectActivity :
 	override fun afterTextChanged(s: Editable?) {
 		viewBinding.layoutPassword.error = null
 		viewBinding.buttonNext.isEnabled = !s.isNullOrEmpty()
+		updateEndIcon()
 	}
 
 	private fun onError(e: Throwable) {
@@ -125,6 +132,24 @@ class ProtectActivity :
 			.build()
 		prompt.authenticate(promptInfo)
 		return true
+	}
+
+	private fun updateEndIcon() = with(viewBinding.layoutPassword) {
+		val isFingerprintIcon = canUseBiometric && viewBinding.editPassword.text.isNullOrEmpty()
+		if (isFingerprintIcon == (endIconMode == TextInputLayout.END_ICON_CUSTOM)) {
+			return@with
+		}
+		if (isFingerprintIcon) {
+			endIconMode = TextInputLayout.END_ICON_CUSTOM
+			setEndIconDrawable(androidx.biometric.R.drawable.fingerprint_dialog_fp_icon)
+			endIconContentDescription = getString(androidx.biometric.R.string.use_biometric_label)
+			setEndIconOnClickListener(this@ProtectActivity)
+		} else {
+			setEndIconOnClickListener(null)
+			setEndIconDrawable(0)
+			endIconContentDescription = null
+			endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+		}
 	}
 
 	private inner class BiometricCallback : AuthenticationCallback() {

@@ -5,7 +5,7 @@ import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.parsers.model.MangaTag
 
 interface MangaListListener : MangaDetailsClickListener, ListStateHolderListener, ListHeaderClickListener,
-	TipView.OnButtonClickListener {
+	TipView.OnButtonClickListener, QuickFilterClickListener {
 
 	fun onUpdateFilter(tags: Set<MangaTag>)
 

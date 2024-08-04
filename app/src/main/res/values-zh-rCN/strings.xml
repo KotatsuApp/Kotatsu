@@ -617,7 +617,7 @@
     <string name="hours_minutes_short">%1$d 时 %2$d 分</string>
     <string name="fix">修复</string>
     <string name="missing_storage_permission">无访问外部存储漫画权限</string>
-    <string name="last_used">最近使用</string>
+    <string name="last_used">上次使用</string>
     <string name="show_updated">显示更新</string>
     <string name="webtoon_gaps_summary">在条漫模式下添加页与页之间的横向缝隙</string>
     <string name="webtoon_gaps">缝隙条漫模式</string>
@@ -658,4 +658,5 @@
     <string name="chapters_read">已读章节数</string>
     <string name="chapters_left">剩余章节数</string>
     <string name="external_source">外部插件</string>
+    <string name="plugin_incompatible">插件不兼容或出现了外部错误，请确保你已经将 Kotatsu 以及插件更新至最新版本</string>
 </resources>

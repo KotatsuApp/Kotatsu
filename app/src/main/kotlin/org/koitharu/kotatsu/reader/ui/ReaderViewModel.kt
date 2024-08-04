@@ -73,7 +73,7 @@ private const val PREFETCH_LIMIT = 10
 class ReaderViewModel
 @Inject
 constructor(
-	savedStateHandle: SavedStateHandle,
+	private val savedStateHandle: SavedStateHandle,
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val bookmarksRepository: BookmarksRepository,
@@ -223,6 +223,7 @@ constructor(
 	fun saveCurrentState(state: ReaderState? = null) {
 		if (state != null) {
 			currentState.value = state
+			savedStateHandle[ReaderActivity.EXTRA_STATE] = state
 		}
 		if (incognitoMode.value) {
 			return
