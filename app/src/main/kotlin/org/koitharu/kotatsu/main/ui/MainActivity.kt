@@ -42,6 +42,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.FadingAppbarHelper
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.OptionsMenuBadgeHelper
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
@@ -105,6 +106,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 		viewBinding.fab?.setOnClickListener(this)
 		viewBinding.navRail?.headerView?.setOnClickListener(this)
+		FadingAppbarHelper(viewBinding.toolbarCard).setup(viewBinding.appbar)
 
 		navigationDelegate = MainNavigationDelegate(
 			navBar = checkNotNull(bottomNav ?: viewBinding.navRail),
@@ -374,9 +376,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
 		}
 		viewBinding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
-			scrollFlags = appBarScrollFlags
-		}
-		viewBinding.insetsHolder.updateLayoutParams<AppBarLayout.LayoutParams> {
 			scrollFlags = appBarScrollFlags
 		}
 		viewBinding.toolbarCard.background = if (isOpened) {
