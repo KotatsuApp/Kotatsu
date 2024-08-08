@@ -297,7 +297,7 @@
     <string name="status_completed">Đã hoàn thành</string>
     <string name="clear_cookies_summary">Có thể giúp ích trong trường hợp có vấn đề. Mọi uỷ quyền sẽ bị vô hiệu hoá</string>
     <string name="manage">Quản lý</string>
-    <string name="use_fingerprint">Sử dụng vân tay nếu có</string>
+    <string name="use_fingerprint">Sử dụng vân tay / sinh trắc học (nếu có)</string>
     <string name="data_deletion">Xoá dữ liệu</string>
     <string name="removed_from_favourites">Đã xoá khỏi yêu thích</string>
     <string name="error_no_space_left">Không đủ dung lượng lưu trữ trên thiết bị</string>
@@ -658,4 +658,6 @@
     <string name="chapters_read">Chương đã đọc</string>
     <string name="chapters_left">Chương còn lại</string>
     <string name="external_source">Nguồn / Plugin bên ngoài</string>
+    <string name="plugin_incompatible">Plugin bị lỗi hoặc không phù hợp. Hãy đảm bảo rằng bạn đang sử dụng phiên bản mới nhất của Kotatsu hoặc của Plugin đó</string>
+    <string name="text_history_holder_secondary_filtered">Không có bộ truyện nào phù hợp với bộ lọc mà bạn đã chọn</string>
 </resources>

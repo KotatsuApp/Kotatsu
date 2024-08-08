@@ -328,7 +328,7 @@
     <string name="status_completed">Nakumpleto na</string>
     <string name="status_on_hold">Naka-hold</string>
     <string name="disable_all">Di paganahin lahat</string>
-    <string name="use_fingerprint">Gumamit ng fingerprint kung magagamit</string>
+    <string name="use_fingerprint">Gumamit ng biometric kung magagamit</string>
     <string name="report">Ulat</string>
     <string name="reset">I-reset</string>
     <string name="allow_unstable_updates_summary">Makakuha ng paunawa tungkol sa mga unstable build</string>
@@ -657,4 +657,6 @@
     <string name="chapters_left">Kabanatang natitira</string>
     <string name="percent_read">Porsyentong nabasa</string>
     <string name="chapters_read">Kabanatang nabasa</string>
+    <string name="plugin_incompatible">Hindi tugmang plugin o internal na error. Tiyaking ginagamit mo ang pinakabagong bersyon ng plugin at Kotatsu</string>
+    <string name="text_history_holder_secondary_filtered">Walang manga na tumutugma sa mga filter na iyong pinili</string>
 </resources>
