@@ -19,10 +19,19 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:clipToPadding="false"
-		android:fitsSystemWindows="true"
+		android:fitsSystemWindows="false"
 		android:paddingHorizontal="16dp"
 		android:stateListAnimator="@null"
+		app:liftOnScrollColor="@null"
 		app:liftOnScroll="false">
+
+		<org.koitharu.kotatsu.core.ui.widgets.WindowInsetHolder
+			android:id="@+id/insetsHolder"
+			android:fitsSystemWindows="true"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top"
+			app:layout_scrollFlags="scroll|enterAlways|snap" />
 
 		<FrameLayout
 			android:id="@+id/toolbar_card"

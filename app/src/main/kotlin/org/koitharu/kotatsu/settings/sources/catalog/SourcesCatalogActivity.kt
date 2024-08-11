@@ -58,7 +58,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			adapter = sourcesAdapter
 		}
 		viewBinding.chipsFilter.onChipClickListener = this
-		FadingAppbarHelper(viewBinding.toolbar).setup(appBar)
+		FadingAppbarHelper(viewBinding.appbar, viewBinding.toolbar).bind()
 		viewModel.content.observe(this, sourcesAdapter)
 		viewModel.onActionDone.observeEvent(
 			this,

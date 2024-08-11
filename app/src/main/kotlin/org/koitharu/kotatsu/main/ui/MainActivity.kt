@@ -53,6 +53,7 @@ import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.favourites.ui.container.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalStorageCleanupWorker
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
@@ -88,6 +89,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	private val closeSearchCallback = CloseSearchCallback()
 	private lateinit var navigationDelegate: MainNavigationDelegate
 	private lateinit var appUpdateBadge: OptionsMenuBadgeHelper
+	private lateinit var fadingAppbarHelper: FadingAppbarHelper
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
@@ -106,7 +108,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 		viewBinding.fab?.setOnClickListener(this)
 		viewBinding.navRail?.headerView?.setOnClickListener(this)
-		FadingAppbarHelper(viewBinding.toolbarCard).setup(viewBinding.appbar)
+		fadingAppbarHelper = FadingAppbarHelper(viewBinding.appbar, viewBinding.toolbarCard)
 
 		navigationDelegate = MainNavigationDelegate(
 			navBar = checkNotNull(bottomNav ?: viewBinding.navRail),
@@ -147,6 +149,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
 		adjustFabVisibility(topFragment = fragment)
+		adjustAppbar(topFragment = fragment)
 		if (fromUser) {
 			actionModeDelegate.finishActionMode()
 			closeSearchCallback.handleOnBackPressed()
@@ -349,6 +352,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		}
 	}
 
+	private fun adjustAppbar(topFragment: Fragment) {
+		if (topFragment is FavouritesContainerFragment) {
+			viewBinding.appbar.fitsSystemWindows = true
+			fadingAppbarHelper.bind()
+		} else {
+			viewBinding.appbar.fitsSystemWindows = false
+			fadingAppbarHelper.unBind()
+		}
+	}
+
 	private fun adjustFabVisibility(
 		isResumeEnabled: Boolean = viewModel.isResumeEnabled.value,
 		topFragment: Fragment? = navigationDelegate.primaryFragment,
@@ -376,6 +389,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			SCROLL_FLAG_SCROLL or SCROLL_FLAG_ENTER_ALWAYS or SCROLL_FLAG_SNAP
 		}
 		viewBinding.toolbarCard.updateLayoutParams<AppBarLayout.LayoutParams> {
+			scrollFlags = appBarScrollFlags
+		}
+		viewBinding.insetsHolder.updateLayoutParams<AppBarLayout.LayoutParams> {
 			scrollFlags = appBarScrollFlags
 		}
 		viewBinding.toolbarCard.background = if (isOpened) {
