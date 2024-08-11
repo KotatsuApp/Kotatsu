@@ -4,11 +4,17 @@ import android.view.View
 import com.google.android.material.appbar.AppBarLayout
 
 class FadingAppbarHelper(
+	private val appBarLayout: AppBarLayout,
 	private val target: View
 ) : AppBarLayout.OnOffsetChangedListener {
 
-	fun setup(appBarLayout: AppBarLayout) {
+	fun bind() {
 		appBarLayout.addOnOffsetChangedListener(this)
+	}
+
+	fun unBind() {
+		appBarLayout.removeOnOffsetChangedListener(this)
+		target.alpha = 1f
 	}
 
 	override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
