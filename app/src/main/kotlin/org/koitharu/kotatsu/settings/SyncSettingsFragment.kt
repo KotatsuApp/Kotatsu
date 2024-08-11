@@ -29,7 +29,7 @@ class SyncSettingsFragment : BasePreferenceFragment(R.string.sync_settings), Fra
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
-			SyncSettings.KEY_HOST -> {
+			SyncSettings.KEY_SYNC_URL -> {
 				SyncHostDialogFragment.show(childFragmentManager, null)
 				true
 			}
@@ -43,7 +43,7 @@ class SyncSettingsFragment : BasePreferenceFragment(R.string.sync_settings), Fra
 	}
 
 	private fun bindHostSummary() {
-		val preference = findPreference<Preference>(SyncSettings.KEY_HOST) ?: return
-		preference.summary = syncSettings.host
+		val preference = findPreference<Preference>(SyncSettings.KEY_SYNC_URL) ?: return
+		preference.summary = syncSettings.syncURL
 	}
 }
