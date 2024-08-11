@@ -278,7 +278,7 @@
 	<string name="exclude_nsfw_from_history_summary">Manga marked as NSFW will never be added to the history and your progress will not be saved</string>
 	<string name="clear_cookies_summary">Can help in case of some issues. All authorizations will be invalidated</string>
 	<string name="show_all">Show all</string>
-	<string name="invalid_domain_message">Invalid domain</string>
+	<string name="invalid_domain_message">Invalid server address</string>
 	<string name="select_range">Select range</string>
 	<string name="clear_all_history">Clear all history</string>
 	<string name="last_2_hours">Last 2 hours</string>
@@ -375,7 +375,7 @@
 	<string name="find_similar">Find similar</string>
 	<string name="sync_settings">Synchronization settings</string>
 	<string name="server_address">Server address</string>
-	<string name="sync_host_description">You can use a self-hosted synchronization server or a default one. Don\'t change this if you\'re not sure what you\'re doing.</string>
+	<string name="sync_url_description">You can use a self-hosted synchronization server or a default one. Don\'t change this if you\'re not sure what you\'re doing.</string>
 	<string name="ignore_ssl_errors">Ignore SSL errors</string>
 	<string name="mirror_switching">Choose mirror automatically</string>
 	<string name="mirror_switching_summary">Automatically switch domains for manga sources on errors if mirrors are available</string>

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.utils.validation
 
+import android.webkit.URLUtil
 import okhttp3.HttpUrl
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.EditTextValidator
@@ -20,15 +21,20 @@ class DomainValidator : EditTextValidator() {
 
 	companion object {
 
-		fun isValidDomain(value: String): Boolean = runCatching {
-			require(value.isNotEmpty())
-			val parts = value.split(':')
-			require(parts.size <= 2)
-			val urlBuilder = HttpUrl.Builder()
-			urlBuilder.host(parts.first())
-			if (parts.size == 2) {
-				urlBuilder.port(parts[1].toInt())
+		fun isValidDomain(value: String): Boolean {
+			if ( ! URLUtil.isValidUrl(value) ) {
+				return runCatching {
+					require(value.isNotEmpty())
+					val parts = value.split(':')
+					require(parts.size <= 2)
+					val urlBuilder = HttpUrl.Builder()
+					urlBuilder.host(parts.first())
+					if (parts.size == 2) {
+						urlBuilder.port(parts[1].toInt())
+					}
+				}.isSuccess
 			}
-		}.isSuccess
+			return true
+		}
 	}
 }

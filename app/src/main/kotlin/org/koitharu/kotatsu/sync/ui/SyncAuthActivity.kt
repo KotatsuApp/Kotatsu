@@ -104,14 +104,14 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 			}
 
 			R.id.button_settings -> {
-				SyncHostDialogFragment.show(supportFragmentManager, viewModel.host.value)
+				SyncHostDialogFragment.show(supportFragmentManager, viewModel.syncURL.value)
 			}
 		}
 	}
 
 	override fun onFragmentResult(requestKey: String, result: Bundle) {
-		val host = result.getString(SyncHostDialogFragment.KEY_HOST) ?: return
-		viewModel.host.value = host
+		val syncURL = result.getString(SyncHostDialogFragment.KEY_SYNC_URL) ?: return
+		viewModel.syncURL.value = syncURL
 	}
 
 	override fun finish() {
@@ -144,7 +144,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		val am = AccountManager.get(this)
 		val account = Account(authResult.email, getString(R.string.account_type_sync))
 		val userdata = Bundle(1)
-		userdata.putString(SyncSettings.KEY_HOST, authResult.host)
+		userdata.putString(SyncSettings.KEY_SYNC_URL, authResult.syncURL)
 		val result = Bundle()
 		if (am.addAccountExplicitly(account, authResult.password, userdata)) {
 			result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name)

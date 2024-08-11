@@ -49,10 +49,10 @@ class SyncHostDialogFragment : AlertDialogFragment<PreferenceDialogAutocompletet
 			topMargin = binding.root.resources.getDimensionPixelOffset(R.dimen.screen_padding)
 			bottomMargin = topMargin
 		}
-		binding.message.setText(R.string.sync_host_description)
-		val entries = binding.root.resources.getStringArray(R.array.sync_host_list)
+		binding.message.setText(R.string.sync_url_description)
+		val entries = binding.root.resources.getStringArray(R.array.sync_url_list)
 		val editText = binding.edit
-		editText.setText(arguments?.getString(KEY_HOST).ifNullOrEmpty { syncSettings.host })
+		editText.setText(arguments?.getString(KEY_SYNC_URL).ifNullOrEmpty { syncSettings.syncURL })
 		editText.threshold = 0
 		editText.setAdapter(ArrayAdapter(binding.root.context, android.R.layout.simple_spinner_dropdown_item, entries))
 		binding.dropdown.setOnClickListener {
@@ -65,8 +65,12 @@ class SyncHostDialogFragment : AlertDialogFragment<PreferenceDialogAutocompletet
 		when (which) {
 			DialogInterface.BUTTON_POSITIVE -> {
 				val result = requireViewBinding().edit.text?.toString().orEmpty()
-				syncSettings.host = result
-				parentFragmentManager.setFragmentResult(REQUEST_KEY, bundleOf(KEY_HOST to result))
+				var scheme = ""
+				if ( ! result.startsWith("https://") && ! result.startsWith("http://")) {
+					scheme = "http://"
+				}
+				syncSettings.syncURL = "$scheme$result"
+				parentFragmentManager.setFragmentResult(REQUEST_KEY, bundleOf(KEY_SYNC_URL to "$scheme$result"))
 			}
 		}
 		dialog.dismiss()
@@ -75,11 +79,11 @@ class SyncHostDialogFragment : AlertDialogFragment<PreferenceDialogAutocompletet
 	companion object {
 
 		private const val TAG = "SyncHostDialogFragment"
-		const val REQUEST_KEY = "sync_host"
-		const val KEY_HOST = "host"
+		const val REQUEST_KEY = "host"
+		const val KEY_SYNC_URL = "host"
 
-		fun show(fm: FragmentManager, host: String?) = SyncHostDialogFragment().withArgs(1) {
-			putString(KEY_HOST, host)
+		fun show(fm: FragmentManager, syncURL: String?) = SyncHostDialogFragment().withArgs(1) {
+			putString(KEY_SYNC_URL, syncURL)
 		}.show(fm, TAG)
 	}
 }
