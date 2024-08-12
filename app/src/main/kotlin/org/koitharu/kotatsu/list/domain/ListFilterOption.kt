@@ -41,6 +41,7 @@ sealed interface ListFilterOption {
 		COMPLETED(R.string.status_completed, R.drawable.ic_state_finished),
 		NEW_CHAPTERS(R.string.new_chapters, R.drawable.ic_updated),
 		FAVORITE(R.string.favourites, R.drawable.ic_heart_outline),
+		NSFW(R.string.nsfw, R.drawable.ic_nsfw),
 		;
 
 		override val titleText: CharSequence?

@@ -175,6 +175,7 @@ abstract class HistoryDao {
 		ListFilterOption.Macro.COMPLETED -> "percent >= 0.9999"
 		ListFilterOption.Macro.NEW_CHAPTERS -> "(SELECT chapters_new FROM tracks WHERE tracks.manga_id = history.manga_id) > 0"
 		ListFilterOption.Macro.FAVORITE -> "EXISTS(SELECT * FROM favourites WHERE history.manga_id = favourites.manga_id)"
+		ListFilterOption.Macro.NSFW -> "manga.nsfw = 1"
 		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE history.manga_id = manga_tags.manga_id AND tag_id = ${tag.toEntity().id})"
 	}
 }
