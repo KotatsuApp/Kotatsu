@@ -37,10 +37,10 @@ import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.domain.QuickFilterListener
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
+import org.koitharu.kotatsu.list.ui.model.InfoModel
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -175,13 +175,11 @@ class HistoryListViewModel @Inject constructor(
 		val result = ArrayList<ListModel>((if (grouped) (list.size * 1.4).toInt() else list.size) + 2)
 		result += quickFilter.filterItem(filters)
 		if (isIncognito) {
-			result += TipModel(
+			result += InfoModel(
 				key = AppSettings.KEY_INCOGNITO_MODE,
 				title = R.string.incognito_mode,
 				text = R.string.incognito_mode_hint,
 				icon = R.drawable.ic_incognito,
-				primaryButtonText = 0,
-				secondaryButtonText = 0,
 			)
 		}
 		val order = sortOrder.value
