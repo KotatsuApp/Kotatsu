@@ -36,4 +36,10 @@
 
 	</PreferenceCategory>
 
+	<Preference
+		android:key="proxy_test"
+		android:persistent="false"
+		android:title="Test connection"
+		app:allowDividerAbove="true" />
+
 </PreferenceScreen>
