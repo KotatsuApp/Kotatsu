@@ -17,6 +17,16 @@ abstract class MangaListQuickFilter : QuickFilterListener {
 	val appliedOptions
 		get() = appliedFilter.asStateFlow()
 
+	override fun setFilterOption(option: ListFilterOption, isApplied: Boolean) {
+		appliedFilter.value = ArraySet(appliedFilter.value).also {
+			if (isApplied) {
+				it.add(option)
+			} else {
+				it.remove(option)
+			}
+		}
+	}
+
 	override fun toggleFilterOption(option: ListFilterOption) {
 		appliedFilter.value = ArraySet(appliedFilter.value).also {
 			if (option in it) {

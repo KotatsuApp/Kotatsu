@@ -11,7 +11,9 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.intellij.lang.annotations.Language
+import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.favourites.domain.model.Cover
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 
 @Dao
@@ -27,21 +29,11 @@ abstract class FavouritesDao {
 	@Query("SELECT * FROM favourites WHERE deleted_at = 0 GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit")
 	abstract suspend fun findLast(limit: Int): List<FavouriteManga>
 
-	fun observeAll(order: ListSortOrder, limit: Int): Flow<List<FavouriteManga>> {
-		val orderBy = getOrderBy(order)
-		val query = buildString {
-			append(
-				"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
-					"WHERE favourites.deleted_at = 0 GROUP BY favourites.manga_id ORDER BY ",
-			)
-			append(orderBy)
-			if (limit > 0) {
-				append(" LIMIT ")
-				append(limit)
-			}
-		}
-		return observeAllImpl(SimpleSQLiteQuery(query))
-	}
+	fun observeAll(
+		order: ListSortOrder,
+		filterOptions: Set<ListFilterOption>,
+		limit: Int
+	): Flow<List<FavouriteManga>> = observeAll(0L, order, filterOptions, limit)
 
 	@Transaction
 	@Query("SELECT * FROM favourites WHERE deleted_at = 0 ORDER BY created_at DESC LIMIT :limit OFFSET :offset")
@@ -57,13 +49,37 @@ abstract class FavouritesDao {
 	)
 	abstract suspend fun findAll(categoryId: Long): List<FavouriteManga>
 
-	fun observeAll(categoryId: Long, order: ListSortOrder, limit: Int): Flow<List<FavouriteManga>> {
+	fun observeAll(
+		categoryId: Long,
+		order: ListSortOrder,
+		filterOptions: Set<ListFilterOption>,
+		limit: Int
+	): Flow<List<FavouriteManga>> {
 		val orderBy = getOrderBy(order)
 		val query = buildString {
 			append(
 				"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
-					"WHERE category_id = ? AND deleted_at = 0 GROUP BY favourites.manga_id ORDER BY ",
+					"WHERE deleted_at = 0",
 			)
+			if (categoryId != 0L) {
+				append(" AND category_id = ")
+				append(categoryId)
+			}
+			val groupedOptions = filterOptions.groupBy { it.groupKey }
+			for ((_, group) in groupedOptions) {
+				if (group.isEmpty()) {
+					continue
+				}
+				append(" AND ")
+				if (group.size > 1) {
+					group.joinTo(this, separator = " OR ", prefix = "(", postfix = ")") {
+						it.getCondition()
+					}
+				} else {
+					append(group.single().getCondition())
+				}
+			}
+			append(" GROUP BY favourites.manga_id ORDER BY ")
 			append(orderBy)
 			if (limit > 0) {
 				append(" LIMIT ")
@@ -71,7 +87,7 @@ abstract class FavouritesDao {
 			}
 		}
 
-		return observeAllImpl(SimpleSQLiteQuery(query, arrayOf<Any>(categoryId)))
+		return observeAllImpl(SimpleSQLiteQuery(query))
 	}
 
 	suspend fun findCovers(categoryId: Long, order: ListSortOrder): List<Cover> {
@@ -190,5 +206,12 @@ abstract class FavouritesDao {
 		ListSortOrder.UPDATED -> "IFNULL((SELECT last_chapter_date FROM tracks WHERE tracks.manga_id = manga.manga_id), 0) DESC"
 
 		else -> throw IllegalArgumentException("Sort order $sortOrder is not supported")
+	}
+
+	private fun ListFilterOption.getCondition(): String = when (this) {
+		ListFilterOption.Macro.COMPLETED -> "EXISTS(SELECT * FROM history WHERE history.manga_id = favourites.manga_id AND history.percent >= 0.9999)"
+		ListFilterOption.Macro.NEW_CHAPTERS -> "(SELECT chapters_new FROM tracks WHERE tracks.manga_id = favourites.manga_id) > 0"
+		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE favourites.manga_id = manga_tags.manga_id AND tag_id = ${tag.toEntity().id})"
+		else -> throw IllegalArgumentException("Unsupported option $this")
 	}
 }

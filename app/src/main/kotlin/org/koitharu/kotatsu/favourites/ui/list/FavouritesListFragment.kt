@@ -35,6 +35,8 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 
 	override fun onScrolledToEnd() = viewModel.requestMoreItems()
 
+	override fun onEmptyActionClick() = viewModel.clearFilter()
+
 	override fun onFilterClick(view: View?) {
 		val menu = PopupMenu(view?.context ?: return, view)
 		menu.setOnMenuItemClickListener(this)

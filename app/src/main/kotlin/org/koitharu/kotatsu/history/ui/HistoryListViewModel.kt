@@ -18,7 +18,6 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.model.isLocal
-import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -26,7 +25,6 @@ import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -38,7 +36,6 @@ import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.domain.QuickFilterListener
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
-import org.koitharu.kotatsu.list.ui.model.EmptyHint
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -61,7 +58,6 @@ class HistoryListViewModel @Inject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val markAsReadUseCase: MarkAsReadUseCase,
 	private val quickFilter: HistoryListQuickFilter,
-	networkState: NetworkState,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler), QuickFilterListener by quickFilter {
 
@@ -98,9 +94,8 @@ class HistoryListViewModel @Inject constructor(
 		observeHistory(),
 		isGroupingEnabled,
 		observeListModeWithTriggers(),
-		networkState,
 		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
-	) { filters, list, grouped, mode, online, incognito ->
+	) { filters, list, grouped, mode, incognito ->
 		when {
 			list.isEmpty() -> {
 				if (filters.isEmpty()) {
@@ -112,7 +107,7 @@ class HistoryListViewModel @Inject constructor(
 
 			else -> {
 				isReady.set(true)
-				mapList(filters, list, grouped, mode, online, incognito)
+				mapList(list, grouped, mode, filters, incognito)
 			}
 		}
 	}.onStart {
@@ -166,19 +161,18 @@ class HistoryListViewModel @Inject constructor(
 		.flatMapLatest { repository.observeAllWithHistory(it.first, it.second - ListFilterOption.Downloaded, it.third) }
 
 	private suspend fun mapList(
-		filters: Set<ListFilterOption>,
 		historyList: List<MangaWithHistory>,
 		grouped: Boolean,
 		mode: ListMode,
-		isOnline: Boolean,
+		filters: Set<ListFilterOption>,
 		isIncognito: Boolean,
 	): List<ListModel> {
-		val list = if (!isOnline || ListFilterOption.Downloaded in filters) {
+		val list = if (ListFilterOption.Downloaded in filters) {
 			historyList.mapToLocal()
 		} else {
 			historyList
 		}
-		val result = ArrayList<ListModel>((if (grouped) (list.size * 1.4).toInt() else list.size) + 3)
+		val result = ArrayList<ListModel>((if (grouped) (list.size * 1.4).toInt() else list.size) + 2)
 		result += quickFilter.filterItem(filters)
 		if (isIncognito) {
 			result += TipModel(
@@ -192,14 +186,6 @@ class HistoryListViewModel @Inject constructor(
 		}
 		val order = sortOrder.value
 		var prevHeader: ListHeader? = null
-		if (!isOnline) {
-			result += EmptyHint(
-				icon = R.drawable.ic_empty_common,
-				textPrimary = R.string.network_unavailable,
-				textSecondary = R.string.network_unavailable_hint,
-				actionStringRes = R.string.manage,
-			)
-		}
 		var isEmpty = true
 		for ((manga, history) in list) {
 			isEmpty = false
@@ -263,8 +249,8 @@ class HistoryListViewModel @Inject constructor(
 		EmptyState(
 			icon = R.drawable.ic_empty_history,
 			textPrimary = R.string.nothing_found,
-			textSecondary = R.string.text_history_holder_secondary_filtered,
-			actionStringRes = 0,
+			textSecondary = R.string.text_empty_holder_secondary_filtered,
+			actionStringRes = R.string.reset_filter,
 		)
 	} else {
 		EmptyState(

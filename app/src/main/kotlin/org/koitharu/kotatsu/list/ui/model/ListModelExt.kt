@@ -17,3 +17,12 @@ fun Throwable.toErrorState(canRetry: Boolean = true, @StringRes secondaryAction:
 fun Throwable.toErrorFooter() = ErrorFooter(
 	exception = this,
 )
+
+operator fun ListModel.plus(list: List<ListModel>): List<ListModel> {
+	val result = ArrayList<ListModel>(list.size + 1)
+	result.add(this)
+	result.addAll(list)
+	return result
+}
+
+operator fun ListModel.plus(other: ListModel): List<ListModel> = listOf(this, other)

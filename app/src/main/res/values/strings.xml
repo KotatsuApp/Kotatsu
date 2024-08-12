@@ -96,7 +96,7 @@
 	<string name="text_search_holder_secondary">Try to reformulate the query.</string>
 	<string name="text_history_holder_primary">What you read will be displayed here</string>
 	<string name="text_history_holder_secondary">Find what to read in the «Explore» section</string>
-	<string name="text_history_holder_secondary_filtered">There are no manga matching the filters you selected</string>
+	<string name="text_empty_holder_secondary_filtered">There are no manga matching the filters you selected</string>
 	<string name="text_local_holder_primary">Save something first</string>
 	<string name="text_local_holder_secondary">Save something from an online catalog or import it from a file.</string>
 	<string name="manga_shelf">Shelf</string>

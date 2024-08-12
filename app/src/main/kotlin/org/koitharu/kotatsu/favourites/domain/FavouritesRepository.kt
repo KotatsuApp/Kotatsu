@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
 import org.koitharu.kotatsu.favourites.data.toManga
 import org.koitharu.kotatsu.favourites.data.toMangaList
 import org.koitharu.kotatsu.favourites.domain.model.Cover
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.model.Manga
 import javax.inject.Inject
@@ -38,8 +39,8 @@ class FavouritesRepository @Inject constructor(
 		return entities.toMangaList()
 	}
 
-	fun observeAll(order: ListSortOrder, limit: Int): Flow<List<Manga>> {
-		return db.getFavouritesDao().observeAll(order, limit)
+	fun observeAll(order: ListSortOrder, filterOptions: Set<ListFilterOption>, limit: Int): Flow<List<Manga>> {
+		return db.getFavouritesDao().observeAll(order, filterOptions, limit)
 			.mapItems { it.toManga() }
 	}
 
@@ -48,14 +49,19 @@ class FavouritesRepository @Inject constructor(
 		return entities.toMangaList()
 	}
 
-	fun observeAll(categoryId: Long, order: ListSortOrder, limit: Int): Flow<List<Manga>> {
-		return db.getFavouritesDao().observeAll(categoryId, order, limit)
+	fun observeAll(
+		categoryId: Long,
+		order: ListSortOrder,
+		filterOptions: Set<ListFilterOption>,
+		limit: Int
+	): Flow<List<Manga>> {
+		return db.getFavouritesDao().observeAll(categoryId, order, filterOptions, limit)
 			.mapItems { it.toManga() }
 	}
 
-	fun observeAll(categoryId: Long, limit: Int): Flow<List<Manga>> {
+	fun observeAll(categoryId: Long, filterOptions: Set<ListFilterOption>, limit: Int): Flow<List<Manga>> {
 		return observeOrder(categoryId)
-			.flatMapLatest { order -> observeAll(categoryId, order, limit) }
+			.flatMapLatest { order -> observeAll(categoryId, order, filterOptions, limit) }
 	}
 
 	fun observeMangaCount(): Flow<Int> {

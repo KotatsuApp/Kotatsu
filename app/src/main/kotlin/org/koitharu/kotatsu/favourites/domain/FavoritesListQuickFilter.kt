@@ -1,15 +1,14 @@
-package org.koitharu.kotatsu.history.domain
+package org.koitharu.kotatsu.favourites.domain
 
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.MangaListQuickFilter
 import javax.inject.Inject
 
-class HistoryListQuickFilter @Inject constructor(
+class FavoritesListQuickFilter @Inject constructor(
 	private val settings: AppSettings,
-	private val repository: HistoryRepository,
+	private val repository: FavouritesRepository,
 	networkState: NetworkState,
 ) : MangaListQuickFilter() {
 
@@ -23,9 +22,5 @@ class HistoryListQuickFilter @Inject constructor(
 			add(ListFilterOption.Macro.NEW_CHAPTERS)
 		}
 		add(ListFilterOption.Macro.COMPLETED)
-		add(ListFilterOption.Macro.FAVORITE)
-		repository.getPopularTags(3).mapTo(this) {
-			ListFilterOption.Tag(it)
-		}
 	}
 }

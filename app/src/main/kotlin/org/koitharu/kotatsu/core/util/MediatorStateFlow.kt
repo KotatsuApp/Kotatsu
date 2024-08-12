@@ -13,7 +13,7 @@ abstract class MediatorStateFlow<T>(initialValue: T) : StateFlow<T> {
 	final override val replayCache: List<T>
 		get() = delegate.replayCache
 
-	final override val value: T
+	override val value: T
 		get() = delegate.value
 
 	final override suspend fun collect(collector: FlowCollector<T>): Nothing {
