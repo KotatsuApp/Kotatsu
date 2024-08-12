@@ -176,8 +176,10 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 		val targetChild = findTargetChild()
 		adjustBounds()
 		targetChild.run {
-			scaleX = scale
-			scaleY = scale
+			if (!scale.isNaN()) {
+				scaleX = scale
+				scaleY = scale
+			}
 			translationX = transX
 			translationY = transY
 			if (pendingScroll != 0) {
@@ -298,7 +300,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			distanceX: Float,
 			distanceY: Float,
 		): Boolean {
-			if (scale <= 1f) return false
+			if (scale <= 1f || scale.isNaN()) return false
 			transformMatrix.postTranslate(-distanceX, -distanceY)
 			invalidateTarget()
 			return true
@@ -323,7 +325,7 @@ class WebtoonScalingFrame @JvmOverloads constructor(
 			velocityX: Float,
 			velocityY: Float,
 		): Boolean {
-			if (scale <= 1) return false
+			if (scale <= 1 || scale.isNaN()) return false
 
 			prevPos.set(transX.toInt(), transY.toInt())
 			overScroller.fling(

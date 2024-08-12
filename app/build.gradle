@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 658
-		versionName = '7.4.1'
+		versionCode = 659
+		versionName = '7.4.2'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -82,7 +82,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:3b5a018f8c') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:ca212ca692') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -95,7 +95,7 @@ dependencies {
 	implementation 'androidx.activity:activity-ktx:1.9.1'
 	implementation 'androidx.fragment:fragment-ktx:1.8.2'
 	implementation 'androidx.transition:transition-ktx:1.5.1'
-	implementation 'androidx.collection:collection-ktx:1.4.2'
+	implementation 'androidx.collection:collection-ktx:1.4.3'
 	implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4'
 	implementation 'androidx.lifecycle:lifecycle-service:2.8.4'
 	implementation 'androidx.lifecycle:lifecycle-process:2.8.4'
@@ -109,7 +109,7 @@ dependencies {
 	implementation 'androidx.lifecycle:lifecycle-common-java8:2.8.4'
 	implementation 'androidx.webkit:webkit:1.11.0'
 
-	implementation 'androidx.work:work-runtime:2.9.0'
+	implementation 'androidx.work:work-runtime:2.9.1'
 	//noinspection GradleDependency
 	implementation('com.google.guava:guava:32.0.1-android') {
 		exclude group: 'com.google.guava', module: 'failureaccess'
