@@ -42,7 +42,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.ui.util.FadingAppbarHelper
+import org.koitharu.kotatsu.core.ui.util.FadingAppbarMediator
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.OptionsMenuBadgeHelper
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
@@ -89,7 +89,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	private val closeSearchCallback = CloseSearchCallback()
 	private lateinit var navigationDelegate: MainNavigationDelegate
 	private lateinit var appUpdateBadge: OptionsMenuBadgeHelper
-	private lateinit var fadingAppbarHelper: FadingAppbarHelper
+	private lateinit var fadingAppbarMediator: FadingAppbarMediator
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
@@ -108,7 +108,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 		viewBinding.fab?.setOnClickListener(this)
 		viewBinding.navRail?.headerView?.setOnClickListener(this)
-		fadingAppbarHelper = FadingAppbarHelper(viewBinding.appbar, viewBinding.toolbarCard)
+		fadingAppbarMediator = FadingAppbarMediator(viewBinding.appbar, viewBinding.toolbarCard)
 
 		navigationDelegate = MainNavigationDelegate(
 			navBar = checkNotNull(bottomNav ?: viewBinding.navRail),
@@ -355,10 +355,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	private fun adjustAppbar(topFragment: Fragment) {
 		if (topFragment is FavouritesContainerFragment) {
 			viewBinding.appbar.fitsSystemWindows = true
-			fadingAppbarHelper.bind()
+			fadingAppbarMediator.bind()
 		} else {
 			viewBinding.appbar.fitsSystemWindows = false
-			fadingAppbarHelper.unBind()
+			fadingAppbarMediator.unbind()
 		}
 	}
 

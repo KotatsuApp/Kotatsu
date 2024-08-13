@@ -3,23 +3,31 @@ package org.koitharu.kotatsu.core.ui.util
 import android.view.View
 import com.google.android.material.appbar.AppBarLayout
 
-class FadingAppbarHelper(
+class FadingAppbarMediator(
 	private val appBarLayout: AppBarLayout,
 	private val target: View
 ) : AppBarLayout.OnOffsetChangedListener {
 
+	private var isBound: Boolean = false
+
 	fun bind() {
-		appBarLayout.addOnOffsetChangedListener(this)
+		if (!isBound) {
+			appBarLayout.addOnOffsetChangedListener(this)
+			isBound = true
+		}
 	}
 
-	fun unBind() {
-		appBarLayout.removeOnOffsetChangedListener(this)
+	fun unbind() {
+		if (isBound) {
+			appBarLayout.removeOnOffsetChangedListener(this)
+			isBound = false
+		}
 		target.alpha = 1f
 	}
 
 	override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-		val scrollRange = appBarLayout?.totalScrollRange
-		if (scrollRange == null || scrollRange == 0) {
+		val scrollRange = (appBarLayout ?: return).totalScrollRange
+		if (scrollRange <= 0) {
 			return
 		}
 
