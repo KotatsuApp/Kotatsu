@@ -7,6 +7,7 @@ import androidx.collection.arraySetOf
 import coil.network.HttpException
 import okio.FileNotFoundException
 import okio.IOException
+import okio.ProtocolException
 import org.acra.ktx.sendWithAcra
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.R
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.IncompatiblePluginException
 import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
+import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.exceptions.SyncApiException
 import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
@@ -43,7 +45,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is CloudFlareBlockedException -> resources.getString(R.string.blocked_by_server_message)
 	is ActivityNotFoundException,
 	is UnsupportedOperationException,
-	-> resources.getString(R.string.operation_not_supported)
+		-> resources.getString(R.string.operation_not_supported)
 
 	is TooManyRequestExceptions -> resources.getString(R.string.too_many_requests_message)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
@@ -51,14 +53,13 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
 	is AccessDeniedException -> resources.getString(R.string.no_access_to_file)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
+	is ProxyConfigException -> resources.getString(R.string.invalid_proxy_configuration)
 	is SyncApiException,
-	is ContentUnavailableException,
-	-> message
+	is ContentUnavailableException -> message
 
 	is ParseException -> shortMessage
 	is UnknownHostException,
-	is SocketTimeoutException,
-	-> resources.getString(R.string.network_error)
+	is SocketTimeoutException -> resources.getString(R.string.network_error)
 
 	is NoDataReceivedException -> resources.getString(R.string.error_no_data_received)
 	is IncompatiblePluginException -> resources.getString(R.string.plugin_incompatible)
@@ -80,7 +81,7 @@ fun Throwable.getDisplayIcon() = when (this) {
 	is CloudFlareProtectedException -> R.drawable.ic_bot_large
 	is UnknownHostException,
 	is SocketTimeoutException,
-	-> R.drawable.ic_plug_large
+	is ProtocolException -> R.drawable.ic_plug_large
 
 	is CloudFlareBlockedException -> R.drawable.ic_denied_large
 

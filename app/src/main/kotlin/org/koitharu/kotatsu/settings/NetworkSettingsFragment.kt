@@ -63,10 +63,10 @@ class NetworkSettingsFragment :
 			val type = settings.proxyType
 			val address = settings.proxyAddress
 			val port = settings.proxyPort
-			summary = if (type == Proxy.Type.DIRECT || address.isNullOrEmpty() || port == 0) {
-				context.getString(R.string.disabled)
-			} else {
-				"$address:$port"
+			summary = when {
+				type == Proxy.Type.DIRECT -> context.getString(R.string.disabled)
+				address.isNullOrEmpty() || port == 0 -> context.getString(R.string.invalid_proxy_configuration)
+				else -> "$address:$port"
 			}
 		}
 	}

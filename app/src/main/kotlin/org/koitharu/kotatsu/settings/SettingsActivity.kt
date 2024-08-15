@@ -112,6 +112,7 @@ class SettingsActivity :
 			ACTION_HISTORY -> UserDataSettingsFragment()
 			ACTION_TRACKER -> TrackerSettingsFragment()
 			ACTION_SOURCES -> SourcesSettingsFragment()
+			ACTION_PROXY -> ProxySettingsFragment()
 			ACTION_MANAGE_DOWNLOADS -> DownloadsSettingsFragment()
 			ACTION_SOURCE -> SourceSettingsFragment.newInstance(
 				MangaSource(intent.getStringExtra(EXTRA_SOURCE)),
@@ -144,6 +145,7 @@ class SettingsActivity :
 		private const val ACTION_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES"
 		private const val ACTION_MANAGE_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES_LIST"
 		private const val ACTION_MANAGE_DOWNLOADS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_DOWNLOADS"
+		private const val ACTION_PROXY = "${BuildConfig.APPLICATION_ID}.action.MANAGE_PROXY"
 		private const val EXTRA_SOURCE = "source"
 		private const val HOST_ABOUT = "about"
 		private const val HOST_SYNC_SETTINGS = "sync-settings"
@@ -161,6 +163,10 @@ class SettingsActivity :
 		fun newTrackerSettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_TRACKER)
+
+		fun newProxySettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_PROXY)
 
 		fun newHistorySettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)

@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.alternatives.ui.AlternativesActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseActivity.BaseActivityEntryPoint
@@ -25,6 +26,7 @@ import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import java.security.cert.CertPathValidatorException
 import javax.net.ssl.SSLException
@@ -71,6 +73,13 @@ class ExceptionResolver : ActivityResultCallback<TaggedActivityResult> {
 		is SSLException,
 		is CertPathValidatorException -> {
 			showSslErrorDialog()
+			false
+		}
+
+		is ProxyConfigException -> {
+			context?.run {
+				startActivity(SettingsActivity.newProxySettingsIntent(this))
+			}
 			false
 		}
 
@@ -143,6 +152,8 @@ class ExceptionResolver : ActivityResultCallback<TaggedActivityResult> {
 			is UnsupportedSourceException -> if (e.manga != null) R.string.alternatives else 0
 			is SSLException,
 			is CertPathValidatorException -> R.string.fix
+
+			is ProxyConfigException -> R.string.settings
 
 			else -> 0
 		}

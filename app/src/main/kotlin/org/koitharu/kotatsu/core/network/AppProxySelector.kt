@@ -1,8 +1,9 @@
 package org.koitharu.kotatsu.core.network
 
+import okio.IOException
+import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.net.ProxySelector
@@ -31,8 +32,11 @@ class AppProxySelector(
 		val type = settings.proxyType
 		val address = settings.proxyAddress
 		val port = settings.proxyPort
-		if (type == Proxy.Type.DIRECT || address.isNullOrEmpty() || port == 0) {
+		if (type == Proxy.Type.DIRECT) {
 			return Proxy.NO_PROXY
+		}
+		if (address.isNullOrEmpty() || port == 0) {
+			throw ProxyConfigException()
 		}
 		cachedProxy?.let {
 			val addr = it.address() as? InetSocketAddress
