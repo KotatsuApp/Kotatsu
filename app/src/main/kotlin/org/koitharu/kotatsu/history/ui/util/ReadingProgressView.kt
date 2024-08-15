@@ -17,8 +17,8 @@ import org.koitharu.kotatsu.core.prefs.ProgressIndicatorMode.NONE
 import org.koitharu.kotatsu.core.prefs.ProgressIndicatorMode.PERCENT_LEFT
 import org.koitharu.kotatsu.core.prefs.ProgressIndicatorMode.PERCENT_READ
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
-import org.koitharu.kotatsu.history.data.PROGRESS_NONE
 import org.koitharu.kotatsu.list.domain.ReadingProgress
+import org.koitharu.kotatsu.list.domain.ReadingProgress.Companion.PROGRESS_NONE
 
 class ReadingProgressView @JvmOverloads constructor(
 	context: Context,

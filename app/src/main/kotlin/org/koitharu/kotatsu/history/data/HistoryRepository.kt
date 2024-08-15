@@ -33,8 +33,6 @@ import org.koitharu.kotatsu.tracker.domain.CheckNewChaptersUseCase
 import javax.inject.Inject
 import javax.inject.Provider
 
-const val PROGRESS_NONE = -1f
-
 @Reusable
 class HistoryRepository @Inject constructor(
 	private val db: MangaDatabase,

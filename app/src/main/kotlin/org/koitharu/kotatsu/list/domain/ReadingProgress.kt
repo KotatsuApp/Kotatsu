@@ -31,7 +31,17 @@ data class ReadingProgress(
 		CHAPTERS_LEFT -> totalChapters > 0 && percent in 0f..1f
 	}
 
-	fun isComplete() = percent >= 1f - Math.ulp(percent)
+	fun isCompleted() = Companion.isCompleted(percent)
 
 	fun isReversed() = mode == PERCENT_LEFT || mode == CHAPTERS_LEFT
+
+	companion object {
+
+		const val PROGRESS_NONE = -1f
+		const val PROGRESS_COMPLETED = 0.995f
+
+		fun isValid(percent: Float) = percent in 0f..1f
+
+		fun isCompleted(percent: Float) = percent >= PROGRESS_COMPLETED
+	}
 }

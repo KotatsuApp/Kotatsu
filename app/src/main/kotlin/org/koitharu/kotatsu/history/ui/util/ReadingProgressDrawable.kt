@@ -13,7 +13,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.ColorUtils
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.scale
-import org.koitharu.kotatsu.history.data.PROGRESS_NONE
+import org.koitharu.kotatsu.list.domain.ReadingProgress
+import org.koitharu.kotatsu.list.domain.ReadingProgress.Companion.PROGRESS_NONE
 
 class ReadingProgressDrawable(
 	context: Context,
@@ -111,7 +112,7 @@ class ReadingProgressDrawable(
 			paint,
 		)
 		if (hasText) {
-			if (checkDrawable != null && percent >= 1f - Math.ulp(percent)) {
+			if (checkDrawable != null && ReadingProgress.isCompleted(percent)) {
 				tempRect.set(bounds)
 				tempRect.scale(0.6)
 				checkDrawable.bounds = tempRect
