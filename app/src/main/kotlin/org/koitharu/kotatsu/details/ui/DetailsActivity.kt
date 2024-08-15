@@ -68,6 +68,7 @@ import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.isTextTruncated
+import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
@@ -356,23 +357,7 @@ class DetailsActivity :
 		chip.text = if (categories.isEmpty()) {
 			getString(R.string.add_to_favourites)
 		} else {
-			if (categories.size == 1) {
-				categories.first().title.ellipsize(FAV_LABEL_LIMIT)
-			}
-			buildString(FAV_LABEL_LIMIT + 6) {
-				for ((i, cat) in categories.withIndex()) {
-					if (i == 0) {
-						append(cat.title.ellipsize(FAV_LABEL_LIMIT - 4))
-					} else if (length + cat.title.length > FAV_LABEL_LIMIT) {
-						append(", ")
-						append(getString(R.string.list_ellipsize_pattern, categories.size - i))
-						break
-					} else {
-						append(", ")
-						append(cat.title)
-					}
-				}
-			}
+			categories.joinToStringWithLimit(this, FAV_LABEL_LIMIT) { it.title }
 		}
 	}
 

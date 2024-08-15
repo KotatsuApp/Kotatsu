@@ -1,6 +1,9 @@
 package org.koitharu.kotatsu.core.util.ext
 
+import android.content.Context
 import androidx.annotation.FloatRange
+import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import java.util.UUID
 
@@ -40,3 +43,24 @@ fun CharSequence.sanitize(): CharSequence {
 }
 
 fun Char.isReplacement() = this in '\uFFF0'..'\uFFFF'
+
+fun <T> Collection<T>.joinToStringWithLimit(context: Context, limit: Int, transform: ((T) -> String)): String {
+	if (size == 1) {
+		return transform(first()).ellipsize(limit)
+	}
+	return buildString(limit + 6) {
+		for ((i, item) in this@joinToStringWithLimit.withIndex()) {
+			val str = transform(item)
+			when {
+				i == 0 -> append(str.ellipsize(limit - 4))
+				length + str.length > limit -> {
+					append(", ")
+					append(context.getString(R.string.list_ellipsize_pattern, this@joinToStringWithLimit.size - i))
+					break
+				}
+
+				else -> append(", ").append(str)
+			}
+		}
+	}
+}

@@ -125,8 +125,13 @@ class FavouritesRepository @Inject constructor(
 		return db.getFavouritesDao().findCategoriesCount(mangaId) != 0
 	}
 
+	@Deprecated("")
 	suspend fun getCategoriesIds(mangaIds: Collection<Long>): Set<Long> {
 		return db.getFavouritesDao().findCategoriesIds(mangaIds).toSet()
+	}
+
+	suspend fun getCategoriesIds(mangaId: Long): Set<Long> {
+		return db.getFavouritesDao().findCategoriesIds(mangaId).toSet()
 	}
 
 	suspend fun createCategory(
