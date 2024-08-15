@@ -55,7 +55,8 @@ import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.toIntUp
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
-import org.koitharu.kotatsu.tracker.domain.Tracker
+import org.koitharu.kotatsu.tracker.domain.CheckNewChaptersUseCase
+import org.koitharu.kotatsu.tracker.domain.GetTracksUseCase
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationHelper.NotificationInfo
@@ -71,7 +72,8 @@ class TrackWorker @AssistedInject constructor(
 	@Assisted workerParams: WorkerParameters,
 	private val notificationHelper: TrackerNotificationHelper,
 	private val settings: AppSettings,
-	private val tracker: Tracker,
+	private val getTracksUseCase: GetTracksUseCase,
+	private val checkNewChaptersUseCase: CheckNewChaptersUseCase,
 	private val workManager: WorkManager,
 	@TrackerLogger private val logger: FileLogger,
 ) : CoroutineWorker(context, workerParams) {
@@ -101,7 +103,7 @@ class TrackWorker @AssistedInject constructor(
 		if (!settings.isTrackerEnabled) {
 			return Result.success()
 		}
-		val tracks = tracker.getTracks(if (isFullRun) Int.MAX_VALUE else BATCH_SIZE)
+		val tracks = getTracksUseCase(if (isFullRun) Int.MAX_VALUE else BATCH_SIZE)
 		logger.log("Total ${tracks.size} tracks")
 		if (tracks.isEmpty()) {
 			return Result.success()
@@ -127,7 +129,7 @@ class TrackWorker @AssistedInject constructor(
 					semaphore.withPermit {
 						send(
 							runCatchingCancellable {
-								tracker.fetchUpdates(track, commit = true)
+								checkNewChaptersUseCase.invoke(track)
 							}.getOrElse { error ->
 								MangaUpdates.Failure(
 									manga = track.manga,

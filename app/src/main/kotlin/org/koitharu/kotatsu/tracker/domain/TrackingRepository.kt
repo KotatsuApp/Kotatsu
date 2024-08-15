@@ -85,7 +85,7 @@ class TrackingRepository @Inject constructor(
 		}
 	}
 
-	@VisibleForTesting
+	@Deprecated("")
 	suspend fun getTrack(manga: Manga): MangaTracking {
 		return getTrackOrNull(manga) ?: MangaTracking(
 			manga = manga,
@@ -217,7 +217,7 @@ class TrackingRepository @Inject constructor(
 		size - ids.size
 	}
 
-	private suspend fun getOrCreateTrack(mangaId: Long): TrackEntity {
+	suspend fun getOrCreateTrack(mangaId: Long): TrackEntity {
 		return db.getTracksDao().find(mangaId) ?: TrackEntity.create(mangaId)
 	}
 

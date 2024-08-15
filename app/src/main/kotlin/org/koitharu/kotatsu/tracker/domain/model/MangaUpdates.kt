@@ -19,11 +19,8 @@ sealed interface MangaUpdates {
 
 		fun lastChapterDate(): Long {
 			val lastChapter = newChapters.lastOrNull()
-			return if (lastChapter == null) {
-				manga.chapters?.lastOrNull()?.uploadDate ?: 0L
-			} else {
-				lastChapter.uploadDate.ifZero { System.currentTimeMillis() }
-			}
+			return lastChapter?.uploadDate?.ifZero { System.currentTimeMillis() }
+				?: (manga.chapters?.lastOrNull()?.uploadDate ?: 0L)
 		}
 	}
 
