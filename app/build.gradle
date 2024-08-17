@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 659
-		versionName = '7.4.2'
+		versionCode = 660
+		versionName = '7.5-a1'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -142,12 +142,10 @@ dependencies {
 
 	implementation 'ch.acra:acra-http:5.11.3'
 	implementation 'ch.acra:acra-dialog:5.11.3'
-	compileOnly 'com.google.auto.service:auto-service-annotations:1.1.1'
-	ksp 'dev.zacsweers.autoservice:auto-service-ksp:1.1.0'
 
 	implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
-	debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
+	debugImplementation 'com.squareup.leakcanary:leakcanary-android:3.0-alpha-8'
 	debugImplementation 'com.github.Koitharu:WorkInspector:5778dd1747'
 
 	testImplementation 'junit:junit:4.13.2'

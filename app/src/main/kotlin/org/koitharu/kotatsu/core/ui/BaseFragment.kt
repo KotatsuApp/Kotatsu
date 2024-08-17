@@ -18,10 +18,6 @@ abstract class BaseFragment<B : ViewBinding> :
 	var viewBinding: B? = null
 		private set
 
-	@Deprecated("", ReplaceWith("requireViewBinding()"))
-	protected val binding: B
-		get() = requireViewBinding()
-
 	@JvmField
 	protected val exceptionResolver = ExceptionResolver(this)
 
@@ -58,9 +54,6 @@ abstract class BaseFragment<B : ViewBinding> :
 	fun requireViewBinding(): B = checkNotNull(viewBinding) {
 		"Fragment $this did not return a ViewBinding from onCreateView() or this was called before onCreateView()."
 	}
-
-	@Deprecated("", ReplaceWith("viewBinding"))
-	protected fun bindingOrNull() = viewBinding
 
 	protected abstract fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): B
 

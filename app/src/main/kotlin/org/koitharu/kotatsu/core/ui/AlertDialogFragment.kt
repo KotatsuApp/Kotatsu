@@ -16,10 +16,6 @@ abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 	var viewBinding: B? = null
 		private set
 
-	@Deprecated("", ReplaceWith("requireViewBinding()"))
-	protected val binding: B
-		get() = requireViewBinding()
-
 	final override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		val binding = onCreateViewBinding(layoutInflater, null)
 		viewBinding = binding
@@ -50,9 +46,6 @@ abstract class AlertDialogFragment<B : ViewBinding> : DialogFragment() {
 	open fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder = builder
 
 	open fun onDialogCreated(dialog: AlertDialog) = Unit
-
-	@Deprecated("", ReplaceWith("viewBinding"))
-	protected fun bindingOrNull() = viewBinding
 
 	fun requireViewBinding(): B = checkNotNull(viewBinding) {
 		"Fragment $this did not return a ViewBinding from onCreateView() or this was called before onCreateView()."

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Checkable
 import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.SoftwareKeyboardControllerCompat
 import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.core.view.isVisible
@@ -22,14 +21,6 @@ import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.slider.Slider
 import com.google.android.material.tabs.TabLayout
 import kotlin.math.roundToInt
-
-fun View.hideKeyboard() {
-	SoftwareKeyboardControllerCompat(this).hide()
-}
-
-fun View.showKeyboard() {
-	SoftwareKeyboardControllerCompat(this).show()
-}
 
 fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 	if (visibility != View.VISIBLE) {

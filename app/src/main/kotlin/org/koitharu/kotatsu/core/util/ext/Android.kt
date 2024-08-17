@@ -20,7 +20,6 @@ import android.database.SQLException
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.ConnectivityManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
@@ -31,7 +30,6 @@ import android.view.Window
 import android.webkit.WebView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.IntegerRes
-import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDialog
@@ -78,8 +76,6 @@ val Context.powerManager: PowerManager?
 
 val Context.connectivityManager: ConnectivityManager
 	get() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
 
 suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatchingCancellable {
 	val info = getForegroundInfo()
@@ -131,8 +127,7 @@ fun SyncResult.onError(error: Throwable) {
 	when (error) {
 		is IOException -> stats.numIoExceptions++
 		is OperationApplicationException,
-		is SQLException,
-		-> databaseError = true
+		is SQLException -> databaseError = true
 
 		is JSONException -> stats.numParseExceptions++
 		else -> if (BuildConfig.DEBUG) throw error
@@ -253,7 +248,6 @@ fun Context.checkNotificationPermission(channelId: String?): Boolean {
 	return hasPermission
 }
 
-@WorkerThread
 suspend fun Bitmap.compressToPNG(output: File) = runInterruptible(Dispatchers.IO) {
 	output.outputStream().use { os ->
 		if (!compress(Bitmap.CompressFormat.PNG, 100, os)) {

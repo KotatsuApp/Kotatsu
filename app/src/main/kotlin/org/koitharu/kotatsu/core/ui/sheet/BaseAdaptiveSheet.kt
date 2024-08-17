@@ -34,10 +34,6 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 	var viewBinding: B? = null
 		private set
 
-	@Deprecated("", ReplaceWith("requireViewBinding()"))
-	protected val binding: B
-		get() = requireViewBinding()
-
 	protected val behavior: AdaptiveSheetBehavior?
 		get() = AdaptiveSheetBehavior.from(this)
 
