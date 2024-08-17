@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.parser
 
-import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.koitharu.kotatsu.core.cache.MemoryContentCache
@@ -65,9 +64,6 @@ class ParserMangaRepository(
 	val domains: Array<out String>
 		get() = parser.configKeyDomain.presetValues
 
-	val headers: Headers
-		get() = parser.headers
-
 	override fun intercept(chain: Interceptor.Chain): Response {
 		return if (parser is Interceptor) {
 			parser.intercept(chain)
@@ -111,6 +107,8 @@ class ParserMangaRepository(
 	}
 
 	fun getAuthProvider(): MangaParserAuthProvider? = parser as? MangaParserAuthProvider
+
+	fun getRequestHeaders() = parser.getRequestHeaders()
 
 	fun getConfigKeys(): List<ConfigKey<*>> = ArrayList<ConfigKey<*>>().also {
 		parser.onCreateConfig(it)

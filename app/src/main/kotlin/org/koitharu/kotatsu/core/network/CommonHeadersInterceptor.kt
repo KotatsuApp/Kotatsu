@@ -38,7 +38,7 @@ class CommonHeadersInterceptor @Inject constructor(
 			null
 		}
 		val headersBuilder = request.headers.newBuilder()
-		repository?.headers?.let {
+		repository?.getRequestHeaders()?.let {
 			headersBuilder.mergeWith(it, replaceExisting = false)
 		}
 		if (headersBuilder[CommonHeaders.USER_AGENT] == null) {
