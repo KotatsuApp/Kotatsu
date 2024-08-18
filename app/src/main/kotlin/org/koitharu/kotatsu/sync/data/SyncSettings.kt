@@ -30,7 +30,11 @@ class SyncSettings(
 	@set:WorkerThread
 	var syncURL: String
 		get() = account?.let {
-			accountManager.getUserData(it, KEY_SYNC_URL)
+			val sync_url = accountManager.getUserData(it, KEY_SYNC_URL)
+			if ( !sync_url.startsWith("http://") && !sync_url.startsWith("https://") ) {
+				return "http://$sync_url"
+			}
+			return sync_url
 		}.ifNullOrEmpty { defaultSyncUrl }
 		set(value) {
 			account?.let {
