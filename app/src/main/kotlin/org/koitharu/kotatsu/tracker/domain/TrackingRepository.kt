@@ -5,7 +5,6 @@ import androidx.room.withTransaction
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -16,6 +15,7 @@ import org.koitharu.kotatsu.core.util.ext.ifZero
 import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.core.util.ext.toInstantOrNull
 import org.koitharu.kotatsu.details.domain.ProgressUpdateUseCase
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.data.TrackEntity
 import org.koitharu.kotatsu.tracker.data.TrackLogEntity
@@ -56,20 +56,17 @@ class TrackingRepository @Inject constructor(
 		return db.getTrackLogsDao().observeUnreadCount()
 	}
 
-	fun observeUpdatedManga(limit: Int = 0): Flow<List<MangaTracking>> {
-		return if (limit == 0) {
-			db.getTracksDao().observeUpdatedManga()
-		} else {
-			db.getTracksDao().observeUpdatedManga(limit)
-		}.mapItems {
-			MangaTracking(
-				manga = it.manga.toManga(it.tags.toMangaTags()),
-				lastChapterId = it.track.lastChapterId,
-				lastCheck = it.track.lastCheckTime.toInstantOrNull(),
-				lastChapterDate = it.track.lastChapterDate.toInstantOrNull(),
-				newChapters = it.track.newChapters,
-			)
-		}.distinctUntilChanged()
+	fun observeUpdatedManga(limit: Int, filterOptions: Set<ListFilterOption>): Flow<List<MangaTracking>> {
+		return db.getTracksDao().observeUpdatedManga(limit, filterOptions)
+			.mapItems {
+				MangaTracking(
+					manga = it.manga.toManga(it.tags.toMangaTags()),
+					lastChapterId = it.track.lastChapterId,
+					lastCheck = it.track.lastCheckTime.toInstantOrNull(),
+					lastChapterDate = it.track.lastChapterDate.toInstantOrNull(),
+					newChapters = it.track.newChapters,
+				)
+			}.distinctUntilChanged()
 			.onStart { gcIfNotCalled() }
 	}
 
@@ -112,13 +109,10 @@ class TrackingRepository @Inject constructor(
 		db.getTracksDao().delete(mangaId)
 	}
 
-	fun observeTrackingLog(limit: Flow<Int>): Flow<List<TrackingLogItem>> {
-		return limit.flatMapLatest { limitValue ->
-			db.getTrackLogsDao().observeAll(limitValue)
-				.mapItems { it.toTrackingLogItem() }
-		}.onStart {
-			gcIfNotCalled()
-		}
+	fun observeTrackingLog(limit: Int, filterOptions: Set<ListFilterOption>): Flow<List<TrackingLogItem>> {
+		return db.getTrackLogsDao().observeAll(limit, filterOptions)
+			.mapItems { it.toTrackingLogItem() }
+			.onStart { gcIfNotCalled() }
 	}
 
 	suspend fun getLogsCount() = db.getTrackLogsDao().count()
@@ -217,7 +211,7 @@ class TrackingRepository @Inject constructor(
 		size - ids.size
 	}
 
-	suspend fun getOrCreateTrack(mangaId: Long): TrackEntity {
+	private suspend fun getOrCreateTrack(mangaId: Long): TrackEntity {
 		return db.getTracksDao().find(mangaId) ?: TrackEntity.create(mangaId)
 	}
 

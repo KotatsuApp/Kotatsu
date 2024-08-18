@@ -86,7 +86,7 @@ class FavouritesListViewModel @Inject constructor(
 			list.isEmpty() -> if (filters.isEmpty()) {
 				listOf(getEmptyState(hasFilters = false))
 			} else {
-				listOf(quickFilter.filterItem(filters), getEmptyState(hasFilters = true))
+				listOfNotNull(quickFilter.filterItem(filters), getEmptyState(hasFilters = true))
 			}
 
 			else -> {
@@ -146,7 +146,7 @@ class FavouritesListViewModel @Inject constructor(
 			this
 		}
 		val result = ArrayList<ListModel>(list.size + 1)
-		result += quickFilter.filterItem(filters)
+		quickFilter.filterItem(filters)?.let(result::add)
 		mangaListMapper.toListModelList(result, list, mode)
 		return result
 	}

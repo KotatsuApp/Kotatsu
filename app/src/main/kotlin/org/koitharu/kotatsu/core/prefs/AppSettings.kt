@@ -85,6 +85,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getInt(KEY_GRID_SIZE_PAGES, 100)
 		set(value) = prefs.edit { putInt(KEY_GRID_SIZE_PAGES, value) }
 
+	val isQuickFilterEnabled: Boolean
+		get() = prefs.getBoolean(KEY_QUICK_FILTER, true)
+
 	var historyListMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE_HISTORY, listMode)
 		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE_HISTORY, value) }
@@ -696,6 +699,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_FEED_HEADER = "feed_header"
 		const val KEY_SEARCH_SUGGESTION_TYPES = "search_suggest_types"
 		const val KEY_SOURCES_VERSION = "sources_version"
+		const val KEY_QUICK_FILTER = "quick_filter"
 
 		// keys for non-persistent preferences
 		const val KEY_APP_VERSION = "app_version"

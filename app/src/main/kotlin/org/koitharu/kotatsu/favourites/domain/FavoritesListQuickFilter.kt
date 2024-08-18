@@ -10,7 +10,7 @@ class FavoritesListQuickFilter @Inject constructor(
 	private val settings: AppSettings,
 	private val repository: FavouritesRepository,
 	networkState: NetworkState,
-) : MangaListQuickFilter() {
+) : MangaListQuickFilter(settings) {
 
 	init {
 		setFilterOption(ListFilterOption.Downloaded, !networkState.value)

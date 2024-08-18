@@ -11,7 +11,7 @@ class HistoryListQuickFilter @Inject constructor(
 	private val settings: AppSettings,
 	private val repository: HistoryRepository,
 	networkState: NetworkState,
-) : MangaListQuickFilter() {
+) : MangaListQuickFilter(settings) {
 
 	init {
 		setFilterOption(ListFilterOption.Downloaded, !networkState.value)

@@ -3,11 +3,14 @@ package org.koitharu.kotatsu.list.domain
 import androidx.collection.ArraySet
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.list.ui.model.QuickFilter
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 
-abstract class MangaListQuickFilter : QuickFilterListener {
+abstract class MangaListQuickFilter(
+	private val settings: AppSettings,
+) : QuickFilterListener {
 
 	private val appliedFilter = MutableStateFlow<Set<ListFilterOption>>(emptySet())
 	private val availableFilterOptions = SuspendLazy {
@@ -43,8 +46,11 @@ abstract class MangaListQuickFilter : QuickFilterListener {
 
 	suspend fun filterItem(
 		selectedOptions: Set<ListFilterOption>,
-	) = QuickFilter(
-		items = availableFilterOptions.tryGet().getOrNull()?.map { option ->
+	): QuickFilter? {
+		if (!settings.isQuickFilterEnabled) {
+			return null
+		}
+		val availableOptions = availableFilterOptions.tryGet().getOrNull()?.map { option ->
 			ChipsView.ChipModel(
 				title = option.titleText,
 				titleResId = option.titleResId,
@@ -53,8 +59,13 @@ abstract class MangaListQuickFilter : QuickFilterListener {
 				isChecked = option in selectedOptions,
 				data = option,
 			)
-		}.orEmpty(),
-	)
+		}.orEmpty()
+		return if (availableOptions.isNotEmpty()) {
+			QuickFilter(availableOptions)
+		} else {
+			null
+		}
+	}
 
 	protected abstract suspend fun getAvailableFilterOptions(): List<ListFilterOption>
 }

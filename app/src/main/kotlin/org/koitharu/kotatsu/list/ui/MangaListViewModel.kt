@@ -64,7 +64,9 @@ abstract class MangaListViewModel(
 	protected fun observeListModeWithTriggers(): Flow<ListMode> = combine(
 		listMode,
 		settings.observe().filter { key ->
-			key == AppSettings.KEY_PROGRESS_INDICATORS || key == AppSettings.KEY_TRACKER_ENABLED
+			key == AppSettings.KEY_PROGRESS_INDICATORS
+				|| key == AppSettings.KEY_TRACKER_ENABLED
+				|| key == AppSettings.KEY_QUICK_FILTER
 		}.onStart { emit("") },
 	) { mode, _ ->
 		mode

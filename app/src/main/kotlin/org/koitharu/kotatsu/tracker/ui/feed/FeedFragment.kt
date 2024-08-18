@@ -95,7 +95,7 @@ class FeedFragment :
 		viewModel.update()
 	}
 
-	override fun onFilterOptionClick(option: ListFilterOption) = Unit
+	override fun onFilterOptionClick(option: ListFilterOption) = viewModel.toggleFilterOption(option)
 
 	override fun onRetryClick(error: Throwable) = Unit
 

@@ -2,9 +2,14 @@ package org.koitharu.kotatsu.tracker.data
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.room.Upsert
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
+import org.koitharu.kotatsu.core.db.entity.toEntity
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 
 @Dao
 abstract class TracksDao {
@@ -39,9 +44,33 @@ abstract class TracksDao {
 	@Query("SELECT * FROM tracks WHERE chapters_new > 0 ORDER BY last_chapter_date DESC")
 	abstract fun observeUpdatedManga(): Flow<List<MangaWithTrack>>
 
-	@Transaction
-	@Query("SELECT * FROM tracks WHERE chapters_new > 0 ORDER BY last_chapter_date DESC LIMIT :limit")
-	abstract fun observeUpdatedManga(limit: Int): Flow<List<MangaWithTrack>>
+	fun observeUpdatedManga(limit: Int, filterOptions: Set<ListFilterOption>): Flow<List<MangaWithTrack>> {
+		val query = buildString {
+			append("SELECT * FROM tracks WHERE chapters_new > 0")
+			if (filterOptions.isNotEmpty()) {
+				val groupedOptions = filterOptions.groupBy { it.groupKey }
+				for ((_, group) in groupedOptions) {
+					if (group.isEmpty()) {
+						continue
+					}
+					append(" AND ")
+					if (group.size > 1) {
+						group.joinTo(this, separator = " OR ", prefix = "(", postfix = ")") {
+							it.getCondition()
+						}
+					} else {
+						append(group.single().getCondition())
+					}
+				}
+			}
+			append(" ORDER BY last_chapter_date DESC")
+			if (limit > 0) {
+				append(" LIMIT ")
+				append(limit)
+			}
+		}
+		return observeMangaImpl(SimpleSQLiteQuery(query))
+	}
 
 	@Query("DELETE FROM tracks")
 	abstract suspend fun clear()
@@ -60,4 +89,18 @@ abstract class TracksDao {
 
 	@Upsert
 	abstract suspend fun upsert(entity: TrackEntity)
+
+	@Transaction
+	@RawQuery(observedEntities = [TrackEntity::class])
+	protected abstract fun observeMangaImpl(query: SupportSQLiteQuery): Flow<List<MangaWithTrack>>
+
+	private fun ListFilterOption.getCondition(): String = when (this) {
+		ListFilterOption.Macro.FAVORITE -> "EXISTS(SELECT * FROM favourites WHERE favourites.manga_id = tracks.manga_id)"
+		is ListFilterOption.Favorite -> "EXISTS(SELECT * FROM favourites WHERE favourites.manga_id = tracks.manga_id AND favourites.category_id = ${category.id})"
+		ListFilterOption.Macro.COMPLETED -> TODO()
+		ListFilterOption.Macro.NEW_CHAPTERS -> TODO()
+		ListFilterOption.Macro.NSFW -> TODO()
+		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE manga_tags.manga_id = tracks.manga_id AND tag_id = ${tag.toEntity().id})"
+		else -> throw IllegalArgumentException("Unsupported option $this")
+	}
 }

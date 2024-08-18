@@ -38,6 +38,12 @@
 			android:valueTo="150"
 			app:defaultValue="100" />
 
+		<SwitchPreferenceCompat
+			android:defaultValue="true"
+			android:key="quick_filter"
+			android:summary="@string/show_quick_filters_summary"
+			android:title="@string/show_quick_filters" />
+
 		<ListPreference
 			android:entries="@array/progress_indicators"
 			android:key="progress_indicators"

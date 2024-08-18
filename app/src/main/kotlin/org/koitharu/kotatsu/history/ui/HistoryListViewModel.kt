@@ -101,7 +101,7 @@ class HistoryListViewModel @Inject constructor(
 				if (filters.isEmpty()) {
 					listOf(getEmptyState(hasFilters = false))
 				} else {
-					listOf(quickFilter.filterItem(filters), getEmptyState(hasFilters = true))
+					listOfNotNull(quickFilter.filterItem(filters), getEmptyState(hasFilters = true))
 				}
 			}
 
@@ -173,7 +173,7 @@ class HistoryListViewModel @Inject constructor(
 			historyList
 		}
 		val result = ArrayList<ListModel>((if (grouped) (list.size * 1.4).toInt() else list.size) + 2)
-		result += quickFilter.filterItem(filters)
+		quickFilter.filterItem(filters)?.let(result::add)
 		if (isIncognito) {
 			result += InfoModel(
 				key = AppSettings.KEY_INCOGNITO_MODE,

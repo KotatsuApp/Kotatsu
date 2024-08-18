@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
+import org.koitharu.kotatsu.list.domain.ReadingProgress.Companion.PROGRESS_COMPLETED
 
 @Dao
 abstract class HistoryDao {
@@ -172,7 +173,7 @@ abstract class HistoryDao {
 	private fun ListFilterOption.getCondition(): String = when (this) {
 		ListFilterOption.Downloaded -> throw IllegalArgumentException("Unsupported option $this")
 		is ListFilterOption.Favorite -> "EXISTS(SELECT * FROM favourites WHERE history.manga_id = favourites.manga_id AND category_id = ${category.id})"
-		ListFilterOption.Macro.COMPLETED -> "percent >= 0.9999"
+		ListFilterOption.Macro.COMPLETED -> "percent >= $PROGRESS_COMPLETED"
 		ListFilterOption.Macro.NEW_CHAPTERS -> "(SELECT chapters_new FROM tracks WHERE tracks.manga_id = history.manga_id) > 0"
 		ListFilterOption.Macro.FAVORITE -> "EXISTS(SELECT * FROM favourites WHERE history.manga_id = favourites.manga_id)"
 		ListFilterOption.Macro.NSFW -> "manga.nsfw = 1"

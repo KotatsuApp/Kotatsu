@@ -238,6 +238,12 @@ class FavouritesRepository @Inject constructor(
 			.distinctUntilChanged()
 	}
 
+	suspend fun getMostUpdatedCategories(limit: Int): List<FavouriteCategory> {
+		return db.getFavouriteCategoriesDao().getMostUpdatedCategories(limit).map {
+			it.toFavouriteCategory()
+		}
+	}
+
 	private suspend fun recoverToFavourites(ids: Collection<Long>) {
 		db.withTransaction {
 			for (id in ids) {
