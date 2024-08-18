@@ -49,7 +49,7 @@ class SyncHostDialogFragment : AlertDialogFragment<PreferenceDialogAutocompletet
 			topMargin = binding.root.resources.getDimensionPixelOffset(R.dimen.screen_padding)
 			bottomMargin = topMargin
 		}
-		binding.message.setText(R.string.sync_url_description)
+		binding.message.setText(R.string.sync_host_description)
 		val entries = binding.root.resources.getStringArray(R.array.sync_url_list)
 		val editText = binding.edit
 		editText.setText(arguments?.getString(KEY_SYNC_URL).ifNullOrEmpty { syncSettings.syncURL })
@@ -66,7 +66,7 @@ class SyncHostDialogFragment : AlertDialogFragment<PreferenceDialogAutocompletet
 			DialogInterface.BUTTON_POSITIVE -> {
 				val result = requireViewBinding().edit.text?.toString().orEmpty()
 				var scheme = ""
-				if ( ! result.startsWith("https://") && ! result.startsWith("http://")) {
+				if (!result.startsWith("https://") && !result.startsWith("http://")) {
 					scheme = "http://"
 				}
 				syncSettings.syncURL = "$scheme$result"

@@ -375,7 +375,7 @@
 	<string name="find_similar">Find similar</string>
 	<string name="sync_settings">Synchronization settings</string>
 	<string name="server_address">Server address</string>
-	<string name="sync_url_description">You can use a self-hosted synchronization server or a default one. Don\'t change this if you\'re not sure what you\'re doing.</string>
+	<string name="sync_host_description">You can use a self-hosted synchronization server or a default one. Don\'t change this if you\'re not sure what you\'re doing.</string>
 	<string name="ignore_ssl_errors">Ignore SSL errors</string>
 	<string name="mirror_switching">Choose mirror automatically</string>
 	<string name="mirror_switching_summary">Automatically switch domains for manga sources on errors if mirrors are available</string>
