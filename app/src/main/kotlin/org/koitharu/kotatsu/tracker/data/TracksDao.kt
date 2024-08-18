@@ -97,9 +97,6 @@ abstract class TracksDao {
 	private fun ListFilterOption.getCondition(): String = when (this) {
 		ListFilterOption.Macro.FAVORITE -> "EXISTS(SELECT * FROM favourites WHERE favourites.manga_id = tracks.manga_id)"
 		is ListFilterOption.Favorite -> "EXISTS(SELECT * FROM favourites WHERE favourites.manga_id = tracks.manga_id AND favourites.category_id = ${category.id})"
-		ListFilterOption.Macro.COMPLETED -> TODO()
-		ListFilterOption.Macro.NEW_CHAPTERS -> TODO()
-		ListFilterOption.Macro.NSFW -> TODO()
 		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE manga_tags.manga_id = tracks.manga_id AND tag_id = ${tag.toEntity().id})"
 		else -> throw IllegalArgumentException("Unsupported option $this")
 	}

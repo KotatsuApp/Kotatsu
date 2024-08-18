@@ -53,7 +53,7 @@ class SuggestionsFragment : MangaListFragment() {
 				viewModel.updateSuggestions()
 				Snackbar.make(
 					requireViewBinding().recyclerView,
-					R.string.feed_will_update_soon,
+					R.string.suggestions_updating,
 					Snackbar.LENGTH_LONG,
 				).show()
 				true
