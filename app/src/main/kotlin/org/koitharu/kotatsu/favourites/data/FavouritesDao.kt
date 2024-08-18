@@ -11,14 +11,15 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.intellij.lang.annotations.Language
-import org.koitharu.kotatsu.core.db.entity.toEntity
+import org.koitharu.kotatsu.core.db.MangaQueryBuilder
+import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
 import org.koitharu.kotatsu.favourites.domain.model.Cover
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.domain.ReadingProgress.Companion.PROGRESS_COMPLETED
 
 @Dao
-abstract class FavouritesDao {
+abstract class FavouritesDao : MangaQueryBuilder.ConditionCallback {
 
 	/** SELECT **/
 
@@ -55,41 +56,17 @@ abstract class FavouritesDao {
 		order: ListSortOrder,
 		filterOptions: Set<ListFilterOption>,
 		limit: Int
-	): Flow<List<FavouriteManga>> {
-		val orderBy = getOrderBy(order)
-		val query = buildString {
-			append(
-				"SELECT * FROM favourites LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
-					"WHERE deleted_at = 0",
-			)
-			if (categoryId != 0L) {
-				append(" AND category_id = ")
-				append(categoryId)
-			}
-			val groupedOptions = filterOptions.groupBy { it.groupKey }
-			for ((_, group) in groupedOptions) {
-				if (group.isEmpty()) {
-					continue
-				}
-				append(" AND ")
-				if (group.size > 1) {
-					group.joinTo(this, separator = " OR ", prefix = "(", postfix = ")") {
-						it.getCondition()
-					}
-				} else {
-					append(group.single().getCondition())
-				}
-			}
-			append(" GROUP BY favourites.manga_id ORDER BY ")
-			append(orderBy)
-			if (limit > 0) {
-				append(" LIMIT ")
-				append(limit)
-			}
-		}
-
-		return observeAllImpl(SimpleSQLiteQuery(query))
-	}
+	): Flow<List<FavouriteManga>> = observeAllImpl(
+		MangaQueryBuilder(TABLE_FAVOURITES, this)
+			.join("LEFT JOIN manga ON favourites.manga_id = manga.manga_id")
+			.where("deleted_at = 0")
+			.run { if (categoryId != 0L) where("category_id = $categoryId") else this }
+			.filters(filterOptions)
+			.groupBy("favourites.manga_id")
+			.orderBy(getOrderBy(order))
+			.limit(limit)
+			.build(),
+	)
 
 	suspend fun findCovers(categoryId: Long, order: ListSortOrder): List<Cover> {
 		val orderBy = getOrderBy(order)
@@ -213,13 +190,13 @@ abstract class FavouritesDao {
 		else -> throw IllegalArgumentException("Sort order $sortOrder is not supported")
 	}
 
-	private fun ListFilterOption.getCondition(): String = when (this) {
+	override fun getCondition(option: ListFilterOption): String? = when (option) {
 		ListFilterOption.Macro.COMPLETED -> "EXISTS(SELECT * FROM history WHERE history.manga_id = favourites.manga_id AND history.percent >= $PROGRESS_COMPLETED)"
 		ListFilterOption.Macro.NEW_CHAPTERS -> "(SELECT chapters_new FROM tracks WHERE tracks.manga_id = favourites.manga_id) > 0"
 		ListFilterOption.Macro.NSFW -> "manga.nsfw = 1"
-		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE favourites.manga_id = manga_tags.manga_id AND tag_id = ${tag.toEntity().id})"
+		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE favourites.manga_id = manga_tags.manga_id AND tag_id = ${option.tagId})"
 		ListFilterOption.Downloaded,
 		is ListFilterOption.Favorite,
-		ListFilterOption.Macro.FAVORITE -> throw IllegalArgumentException("Unsupported option $this")
+		ListFilterOption.Macro.FAVORITE -> null
 	}
 }

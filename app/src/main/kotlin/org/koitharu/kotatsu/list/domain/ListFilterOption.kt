@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.list.domain
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.parsers.model.MangaTag
 
@@ -54,6 +55,8 @@ sealed interface ListFilterOption {
 	data class Tag(
 		val tag: MangaTag
 	) : ListFilterOption {
+
+		val tagId: Long = tag.toEntity().id
 
 		override val titleResId: Int
 			get() = 0

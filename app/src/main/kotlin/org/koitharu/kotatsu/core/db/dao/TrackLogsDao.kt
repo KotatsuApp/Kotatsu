@@ -6,51 +6,26 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.Transaction
-import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
-import org.koitharu.kotatsu.core.db.entity.toEntity
+import org.koitharu.kotatsu.core.db.MangaQueryBuilder
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.tracker.data.TrackLogEntity
 import org.koitharu.kotatsu.tracker.data.TrackLogWithManga
 
 @Dao
-abstract class TrackLogsDao {
+abstract class TrackLogsDao : MangaQueryBuilder.ConditionCallback {
 
-	fun observeAll(limit: Int, filterOptions: Set<ListFilterOption>): Flow<List<TrackLogWithManga>> {
-		val query = buildString {
-			append("SELECT * FROM track_logs")
-			if (filterOptions.isNotEmpty()) {
-				append(" WHERE")
-				var isFirst = true
-				val groupedOptions = filterOptions.groupBy { it.groupKey }
-				for ((_, group) in groupedOptions) {
-					if (group.isEmpty()) {
-						continue
-					}
-					if (isFirst) {
-						isFirst = false
-						append(' ')
-					} else {
-						append(" AND ")
-					}
-					if (group.size > 1) {
-						group.joinTo(this, separator = " OR ", prefix = "(", postfix = ")") {
-							it.getCondition()
-						}
-					} else {
-						append(group.single().getCondition())
-					}
-				}
-			}
-			append(" ORDER BY created_at DESC")
-			if (limit > 0) {
-				append(" LIMIT ")
-				append(limit)
-			}
-		}
-		return observeAllImpl(SimpleSQLiteQuery(query))
-	}
+	fun observeAll(
+		limit: Int,
+		filterOptions: Set<ListFilterOption>,
+	): Flow<List<TrackLogWithManga>> = observeAllImpl(
+		MangaQueryBuilder("track_logs", this)
+			.filters(filterOptions)
+			.limit(limit)
+			.orderBy("created_at DESC")
+			.build(),
+	)
 
 	@Query("SELECT COUNT(*) FROM track_logs WHERE unread = 1")
 	abstract fun observeUnreadCount(): Flow<Int>
@@ -77,10 +52,10 @@ abstract class TrackLogsDao {
 	@RawQuery(observedEntities = [TrackLogEntity::class])
 	protected abstract fun observeAllImpl(query: SupportSQLiteQuery): Flow<List<TrackLogWithManga>>
 
-	private fun ListFilterOption.getCondition(): String = when (this) {
+	override fun getCondition(option: ListFilterOption): String? = when (option) {
 		ListFilterOption.Macro.FAVORITE -> "EXISTS(SELECT * FROM favourites WHERE favourites.manga_id = track_logs.manga_id)"
-		is ListFilterOption.Favorite -> "EXISTS(SELECT * FROM favourites WHERE favourites.manga_id = track_logs.manga_id AND favourites.category_id = ${category.id})"
-		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE manga_tags.manga_id = track_logs.manga_id AND tag_id = ${tag.toEntity().id})"
-		else -> throw IllegalArgumentException("Unsupported option $this")
+		is ListFilterOption.Favorite -> "EXISTS(SELECT * FROM favourites WHERE favourites.manga_id = track_logs.manga_id AND favourites.category_id = ${option.category.id})"
+		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE manga_tags.manga_id = track_logs.manga_id AND tag_id = ${option.tagId})"
+		else -> null
 	}
 }

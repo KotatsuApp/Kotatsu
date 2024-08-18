@@ -7,54 +7,29 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.room.Update
-import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
+import org.koitharu.kotatsu.core.db.MangaQueryBuilder
 import org.koitharu.kotatsu.core.db.entity.TagEntity
-import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 
 @Dao
-abstract class SuggestionDao {
+abstract class SuggestionDao : MangaQueryBuilder.ConditionCallback {
 
 	@Transaction
 	@Query("SELECT * FROM suggestions ORDER BY relevance DESC")
 	abstract fun observeAll(): Flow<List<SuggestionWithManga>>
 
-	fun observeAll(limit: Int, filterOptions: Collection<ListFilterOption>): Flow<List<SuggestionWithManga>> {
-		val query = buildString {
-			append("SELECT * FROM suggestions")
-			if (filterOptions.isNotEmpty()) {
-				append(" WHERE")
-				var isFirst = true
-				val groupedOptions = filterOptions.groupBy { it.groupKey }
-				for ((_, group) in groupedOptions) {
-					if (group.isEmpty()) {
-						continue
-					}
-					if (isFirst) {
-						isFirst = false
-						append(' ')
-					} else {
-						append(" AND ")
-					}
-					if (group.size > 1) {
-						group.joinTo(this, separator = " OR ", prefix = "(", postfix = ")") {
-							it.getCondition()
-						}
-					} else {
-						append(group.single().getCondition())
-					}
-				}
-			}
-			append(" ORDER BY relevance DESC")
-			if (limit > 0) {
-				append(" LIMIT ")
-				append(limit)
-			}
-		}
-		return observeAllImpl(SimpleSQLiteQuery(query))
-	}
+	fun observeAll(
+		limit: Int,
+		filterOptions: Collection<ListFilterOption>
+	): Flow<List<SuggestionWithManga>> = observeAllImpl(
+		MangaQueryBuilder("suggestions", this)
+			.filters(filterOptions)
+			.orderBy("relevance DESC")
+			.limit(limit)
+			.build(),
+	)
 
 	@Transaction
 	@Query("SELECT * FROM suggestions ORDER BY RANDOM() LIMIT 1")
@@ -93,9 +68,9 @@ abstract class SuggestionDao {
 	@RawQuery(observedEntities = [SuggestionEntity::class])
 	protected abstract fun observeAllImpl(query: SupportSQLiteQuery): Flow<List<SuggestionWithManga>>
 
-	private fun ListFilterOption.getCondition(): String = when (this) {
+	override fun getCondition(option: ListFilterOption): String? = when (option) {
 		ListFilterOption.Macro.NSFW -> "(SELECT nsfw FROM manga WHERE manga.manga_id = suggestions.manga_id) = 1"
-		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE manga_tags.manga_id = suggestions.manga_id AND tag_id = ${tag.toEntity().id})"
-		else -> throw IllegalArgumentException("Unsupported option $this")
+		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE manga_tags.manga_id = suggestions.manga_id AND tag_id = ${option.tagId})"
+		else -> null
 	}
 }
