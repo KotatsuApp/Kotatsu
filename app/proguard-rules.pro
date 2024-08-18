@@ -14,6 +14,7 @@
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
+-dontwarn com.google.j2objc.annotations.**
 
 -keep class org.koitharu.kotatsu.core.exceptions.* { *; }
 -keep class org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment
