@@ -5,6 +5,7 @@ import androidx.annotation.CallSuper
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.ui.list.lifecycle.LifecycleAwareViewHolder
@@ -81,6 +82,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 	protected fun SubsamplingScaleImageView.applyDownSampling(isForeground: Boolean) {
 		downSampling = when {
 			isForeground || !settings.isReaderOptimizationEnabled -> 1
+			BuildConfig.DEBUG -> 32
 			context.isLowRamDevice() -> 8
 			else -> 4
 		}
