@@ -16,7 +16,7 @@ import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.PreferenceDialogAutocompletetextviewBinding
-import org.koitharu.kotatsu.settings.utils.validation.DomainValidator
+import org.koitharu.kotatsu.settings.utils.validation.UrlValidator
 import org.koitharu.kotatsu.sync.data.SyncSettings
 import javax.inject.Inject
 
@@ -58,7 +58,7 @@ class SyncHostDialogFragment : AlertDialogFragment<PreferenceDialogAutocompletet
 		binding.dropdown.setOnClickListener {
 			editText.showDropDown()
 		}
-		DomainValidator().attachToEditText(editText)
+		UrlValidator().attachToEditText(editText)
 	}
 
 	override fun onClick(dialog: DialogInterface, which: Int) {
