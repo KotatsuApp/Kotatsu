@@ -48,6 +48,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.distinctById
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.almostEquals
@@ -187,6 +188,9 @@ class SuggestionsWorker @AssistedInject constructor(
 		val semaphore = Semaphore(MAX_PARALLELISM)
 		val producer = channelFlow {
 			for (it in sources.shuffled()) {
+				if (it.isNsfw() && appSettings.isSuggestionsExcludeNsfw) {
+					continue
+				}
 				launch {
 					semaphore.withPermit {
 						send(getList(it, tags, tagsBlacklist))
