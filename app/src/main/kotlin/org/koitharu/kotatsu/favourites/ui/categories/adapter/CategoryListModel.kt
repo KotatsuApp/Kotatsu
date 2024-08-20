@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.favourites.ui.categories.adapter
 
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.favourites.domain.model.Cover
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 class CategoryListModel(
@@ -9,10 +10,17 @@ class CategoryListModel(
 	val covers: List<Cover>,
 	val category: FavouriteCategory,
 	val isTrackerEnabled: Boolean,
+	val isActionsEnabled: Boolean,
 ) : ListModel {
 
 	override fun areItemsTheSame(other: ListModel): Boolean {
 		return other is CategoryListModel && other.category.id == category.id
+	}
+
+	override fun getChangePayload(previousState: ListModel): Any? = when {
+		previousState !is CategoryListModel -> super.getChangePayload(previousState)
+		previousState.isActionsEnabled != isActionsEnabled -> ListModelDiffCallback.PAYLOAD_ANYTHING_CHANGED
+		else -> super.getChangePayload(previousState)
 	}
 
 	override fun equals(other: Any?): Boolean {
@@ -23,6 +31,7 @@ class CategoryListModel(
 
 		if (mangaCount != other.mangaCount) return false
 		if (isTrackerEnabled != other.isTrackerEnabled) return false
+		if (isActionsEnabled != other.isActionsEnabled) return false
 		if (covers != other.covers) return false
 		if (category.id != other.category.id) return false
 		if (category.title != other.category.title) return false
@@ -36,6 +45,7 @@ class CategoryListModel(
 	override fun hashCode(): Int {
 		var result = mangaCount
 		result = 31 * result + isTrackerEnabled.hashCode()
+		result = 31 * result + isActionsEnabled.hashCode()
 		result = 31 * result + covers.hashCode()
 		result = 31 * result + category.id.hashCode()
 		result = 31 * result + category.title.hashCode()

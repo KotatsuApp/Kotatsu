@@ -68,6 +68,8 @@ fun categoryAD(
 	binding.imageViewHandle.setOnTouchListener(eventListener)
 
 	bind {
+		binding.imageViewHandle.isVisible = item.isActionsEnabled
+		binding.imageViewEdit.isVisible = item.isActionsEnabled
 		binding.textViewTitle.text = item.category.title
 		binding.textViewSubtitle.text = if (item.mangaCount == 0) {
 			getString(R.string.empty)
@@ -138,6 +140,7 @@ fun allCategoriesAD(
 				item.mangaCount,
 			)
 		}
+		binding.imageViewVisible.isVisible = item.isActionsEnabled
 		binding.imageViewVisible.setImageResource(
 			if (item.isVisible) {
 				R.drawable.ic_eye
