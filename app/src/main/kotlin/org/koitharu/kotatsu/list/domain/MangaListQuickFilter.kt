@@ -23,7 +23,7 @@ abstract class MangaListQuickFilter(
 	override fun setFilterOption(option: ListFilterOption, isApplied: Boolean) {
 		appliedFilter.value = ArraySet(appliedFilter.value).also {
 			if (isApplied) {
-				it.add(option)
+				it.addNoConflicts(option)
 			} else {
 				it.remove(option)
 			}
@@ -35,7 +35,7 @@ abstract class MangaListQuickFilter(
 			if (option in it) {
 				it.remove(option)
 			} else {
-				it.add(option)
+				it.addNoConflicts(option)
 			}
 		}
 	}
@@ -55,7 +55,6 @@ abstract class MangaListQuickFilter(
 				title = option.titleText,
 				titleResId = option.titleResId,
 				icon = option.iconResId,
-				isCheckable = true,
 				isChecked = option in selectedOptions,
 				data = option,
 			)
@@ -68,4 +67,13 @@ abstract class MangaListQuickFilter(
 	}
 
 	protected abstract suspend fun getAvailableFilterOptions(): List<ListFilterOption>
+
+	private fun ArraySet<ListFilterOption>.addNoConflicts(option: ListFilterOption) {
+		add(option)
+		if (option is ListFilterOption.Inverted) {
+			remove(option.option)
+		} else {
+			removeIf { it is ListFilterOption.Inverted && it.option == option }
+		}
+	}
 }

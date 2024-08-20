@@ -393,7 +393,6 @@ class FilterCoordinator @Inject constructor(
 		for (tag in tags) {
 			val model = ChipsView.ChipModel(
 				title = tag.title,
-				isCheckable = true,
 				isChecked = selectedTags.remove(tag),
 				data = tag,
 			)
@@ -406,7 +405,6 @@ class FilterCoordinator @Inject constructor(
 		for (tag in selectedTags) {
 			val model = ChipsView.ChipModel(
 				title = tag.title,
-				isCheckable = true,
 				isChecked = true,
 				data = tag,
 			)

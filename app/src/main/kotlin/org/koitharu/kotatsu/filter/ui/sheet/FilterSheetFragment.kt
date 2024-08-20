@@ -78,14 +78,14 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val filter = requireFilter()
 		when (data) {
-			is MangaState -> filter.setState(data, chip.isChecked)
+			is MangaState -> filter.setState(data, !chip.isChecked)
 			is MangaTag -> if (chip.parentView?.id == R.id.chips_genresExclude) {
-				filter.setTagExcluded(data, chip.isChecked)
+				filter.setTagExcluded(data, !chip.isChecked)
 			} else {
-				filter.setTag(data, chip.isChecked)
+				filter.setTag(data, !chip.isChecked)
 			}
 
-			is ContentRating -> filter.setContentRating(data, chip.isChecked)
+			is ContentRating -> filter.setContentRating(data, !chip.isChecked)
 			null -> TagsCatalogSheet.show(childFragmentManager, chip.parentView?.id == R.id.chips_genresExclude)
 		}
 	}
@@ -142,7 +142,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		value.selectedItems.mapTo(chips) { tag ->
 			ChipsView.ChipModel(
 				title = tag.title,
-				isCheckable = true,
 				isChecked = true,
 				data = tag,
 			)
@@ -151,7 +150,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			if (tag !in value.selectedItems) {
 				ChipsView.ChipModel(
 					title = tag.title,
-					isCheckable = true,
 					isChecked = false,
 					data = tag,
 				)
@@ -181,7 +179,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 				tint = 0,
 				title = tag.title,
 				icon = 0,
-				isCheckable = true,
 				isChecked = true,
 				data = tag,
 			)
@@ -190,7 +187,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			if (tag !in value.selectedItems) {
 				ChipsView.ChipModel(
 					title = tag.title,
-					isCheckable = true,
 					isChecked = false,
 					data = tag,
 				)
@@ -217,7 +213,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		val chips = value.availableItems.map { state ->
 			ChipsView.ChipModel(
 				title = getString(state.titleResId),
-				isCheckable = true,
 				isChecked = state in value.selectedItems,
 				data = state,
 			)
@@ -235,7 +230,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		val chips = value.availableItems.map { contentRating ->
 			ChipsView.ChipModel(
 				title = getString(contentRating.titleResId),
-				isCheckable = true,
 				isChecked = contentRating in value.selectedItems,
 				data = contentRating,
 			)

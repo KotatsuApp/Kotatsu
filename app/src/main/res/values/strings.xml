@@ -675,4 +675,5 @@
 	<string name="invalid_proxy_configuration">Invalid proxy configuration</string>
 	<string name="show_quick_filters">Show quick filters</string>
 	<string name="show_quick_filters_summary">Provides the ability to filter manga lists by certain parameters</string>
+	<string name="sfw">SFW</string>
 </resources>

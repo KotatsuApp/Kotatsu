@@ -57,6 +57,8 @@ class MangaQueryBuilder(
 		if (filterOptions.isNotEmpty()) {
 			if (whereConditions.isEmpty()) {
 				append(" WHERE")
+			} else {
+				append(" AND")
 			}
 			var isFirst = true
 			val groupedOptions = filterOptions.groupBy { it.groupKey }
@@ -97,10 +99,12 @@ class MangaQueryBuilder(
 		}
 	}.let { SimpleSQLiteQuery(it) }
 
-	private fun getConditionOrThrow(option: ListFilterOption): String =
-		requireNotNull(conditionCallback.getCondition(option)) {
+	private fun getConditionOrThrow(option: ListFilterOption): String = when (option) {
+		is ListFilterOption.Inverted -> "NOT(${getConditionOrThrow(option.option)})"
+		else -> requireNotNull(conditionCallback.getCondition(option)) {
 			"Unsupported filter option $option"
 		}
+	}
 
 	fun interface ConditionCallback {
 

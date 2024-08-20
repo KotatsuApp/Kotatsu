@@ -87,4 +87,15 @@ sealed interface ListFilterOption {
 		override val groupKey: String
 			get() = "_favcat"
 	}
+
+	data class Inverted(
+		val option: ListFilterOption,
+		override val iconResId: Int,
+		override val titleResId: Int,
+		override val titleText: CharSequence?,
+	) : ListFilterOption {
+
+		override val groupKey: String
+			get() = "_inv" + option.groupKey
+	}
 }
