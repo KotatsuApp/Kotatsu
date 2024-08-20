@@ -19,6 +19,10 @@ class PagerLifecycleDispatcher(
 		setResumedPage(pager.currentItem)
 	}
 
+	fun postInvalidate() = pager.post {
+		invalidate()
+	}
+
 	private fun setResumedPage(position: Int) {
 		pendingUpdate?.cancel()
 		pendingUpdate = null

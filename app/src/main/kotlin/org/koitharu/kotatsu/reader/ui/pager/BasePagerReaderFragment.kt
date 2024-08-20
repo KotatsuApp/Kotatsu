@@ -120,7 +120,7 @@ abstract class BasePagerReaderFragment : BaseReaderFragment<FragmentReaderPagerB
 		val items = launch {
 			requireAdapter().setItems(pages)
 			yield()
-			pagerLifecycleDispatcher?.invalidate()
+			pagerLifecycleDispatcher?.postInvalidate()
 		}
 		if (pendingState != null) {
 			val position = pages.indexOfFirst {
