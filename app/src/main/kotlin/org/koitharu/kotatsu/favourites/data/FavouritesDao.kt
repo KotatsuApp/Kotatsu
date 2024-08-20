@@ -60,7 +60,13 @@ abstract class FavouritesDao : MangaQueryBuilder.ConditionCallback {
 		MangaQueryBuilder(TABLE_FAVOURITES, this)
 			.join("LEFT JOIN manga ON favourites.manga_id = manga.manga_id")
 			.where("deleted_at = 0")
-			.run { if (categoryId != 0L) where("category_id = $categoryId") else this }
+			.where(
+				if (categoryId != 0L) {
+					"category_id = $categoryId"
+				} else {
+					"(SELECT show_in_lib FROM favourite_categories WHERE favourite_categories.category_id = favourites.category_id) = 1"
+				},
+			)
 			.filters(filterOptions)
 			.groupBy("favourites.manga_id")
 			.orderBy(getOrderBy(order))
@@ -88,7 +94,9 @@ abstract class FavouritesDao : MangaQueryBuilder.ConditionCallback {
 		val query = SimpleSQLiteQuery(
 			"SELECT manga.cover_url AS url, manga.source AS source FROM favourites " +
 				"LEFT JOIN manga ON favourites.manga_id = manga.manga_id " +
-				"WHERE deleted_at = 0 GROUP BY manga.manga_id ORDER BY $orderBy LIMIT ?",
+				"WHERE deleted_at = 0 AND " +
+				"(SELECT show_in_lib FROM favourite_categories WHERE favourite_categories.category_id = favourites.category_id) = 1 " +
+				"GROUP BY manga.manga_id ORDER BY $orderBy LIMIT ?",
 			arrayOf<Any>(limit),
 		)
 		return findCoversImpl(query)
