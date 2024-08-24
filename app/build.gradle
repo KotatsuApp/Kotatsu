@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 663
-		versionName = '7.5-a3'
+		versionCode = 664
+		versionName = '7.5-a4'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -83,7 +83,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:939b6b1e46') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:2e138da3d5') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -144,7 +144,7 @@ dependencies {
 	implementation 'ch.acra:acra-http:5.11.3'
 	implementation 'ch.acra:acra-dialog:5.11.3'
 
-	implementation 'org.conscrypt:conscrypt-android:2.5.2'
+	implementation 'org.conscrypt:conscrypt-android:2.5.3'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:3.0-alpha-8'
 	debugImplementation 'com.github.Koitharu:WorkInspector:5778dd1747'
