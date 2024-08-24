@@ -148,25 +148,17 @@
 			style="?materialButtonOutlinedStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
-			android:layout_marginEnd="12dp"
 			android:text="@string/pause"
 			android:visibility="gone"
-			app:layout_constraintEnd_toStartOf="@id/button_resume"
-			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters"
-			tools:visibility="gone" />
+			tools:visibility="visible" />
 
 		<Button
 			android:id="@+id/button_resume"
 			style="?materialButtonOutlinedStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
-			android:layout_marginEnd="12dp"
 			android:text="@string/resume"
 			android:visibility="gone"
-			app:layout_constraintEnd_toStartOf="@id/button_cancel"
-			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters"
 			tools:visibility="visible" />
 
 		<Button
@@ -174,12 +166,17 @@
 			style="?materialButtonOutlinedStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
-			android:layout_marginEnd="12dp"
 			android:text="@string/skip"
 			android:visibility="gone"
-			app:layout_constraintEnd_toStartOf="@id/button_resume"
-			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters"
+			tools:visibility="visible" />
+
+		<Button
+			android:id="@+id/button_skip_all"
+			style="?materialButtonOutlinedStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/skip_all"
+			android:visibility="gone"
 			tools:visibility="visible" />
 
 		<Button
@@ -187,13 +184,25 @@
 			style="?materialButtonOutlinedStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
-			android:layout_marginEnd="12dp"
 			android:text="@android:string/cancel"
 			android:visibility="gone"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters"
 			tools:visibility="visible" />
+
+		<androidx.constraintlayout.helper.widget.Flow
+			android:id="@+id/flow_buttons"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="12dp"
+			android:layout_marginTop="8dp"
+			app:constraint_referenced_ids="button_pause,button_resume,button_skip,button_skip_all,button_cancel"
+			app:flow_horizontalAlign="end"
+			app:flow_horizontalBias="1"
+			app:flow_horizontalGap="8dp"
+			app:flow_horizontalStyle="packed"
+			app:flow_wrapMode="chain"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/recyclerView_chapters" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 

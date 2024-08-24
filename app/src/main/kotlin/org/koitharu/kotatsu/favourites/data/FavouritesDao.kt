@@ -114,10 +114,6 @@ abstract class FavouritesDao : MangaQueryBuilder.ConditionCallback {
 	@Query("SELECT favourite_categories.* FROM favourites LEFT JOIN favourite_categories ON favourite_categories.category_id = favourites.category_id WHERE favourites.manga_id = :mangaId AND favourites.deleted_at = 0")
 	abstract fun observeCategories(mangaId: Long): Flow<List<FavouriteCategoryEntity>>
 
-	@Deprecated("")
-	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id IN (:mangaIds) AND deleted_at = 0 ORDER BY favourites.created_at ASC")
-	abstract suspend fun findCategoriesIds(mangaIds: Collection<Long>): List<Long>
-
 	@Query("SELECT DISTINCT category_id FROM favourites WHERE manga_id = :mangaId AND deleted_at = 0 ORDER BY favourites.created_at ASC")
 	abstract suspend fun findCategoriesIds(mangaId: Long): List<Long>
 

@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.core.util.ext
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
 import androidx.annotation.DrawableRes
-import androidx.collection.arraySetOf
 import coil.network.HttpException
 import okio.FileNotFoundException
 import okio.IOException
@@ -23,6 +22,7 @@ import org.koitharu.kotatsu.core.exceptions.SyncApiException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_LOCALE_GENRES_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_STATES_GENRES_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_MULTIPLE_GENRES_NOT_SUPPORTED
@@ -47,7 +47,20 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is UnsupportedOperationException,
 		-> resources.getString(R.string.operation_not_supported)
 
-	is TooManyRequestExceptions -> resources.getString(R.string.too_many_requests_message)
+	is TooManyRequestExceptions -> {
+		val delay = getRetryDelay()
+		val formattedTime = if (delay > 0L && delay < Long.MAX_VALUE) {
+			resources.formatDurationShort(delay)
+		} else {
+			null
+		}
+		if (formattedTime != null) {
+			resources.getString(R.string.too_many_requests_message_retry, formattedTime)
+		} else {
+			resources.getString(R.string.too_many_requests_message)
+		}
+	}
+
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is BadBackupFormatException -> resources.getString(R.string.unsupported_backup_message)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
@@ -107,7 +120,25 @@ private fun getDisplayMessage(msg: String?, resources: Resources): String? = whe
 }
 
 fun Throwable.isReportable(): Boolean {
-	return this is Error || this.javaClass in reportableExceptions
+	if (this is Error) {
+		return true
+	}
+	if (this is CaughtException) {
+		return cause?.isReportable() == true
+	}
+	if (ExceptionResolver.canResolve(this)) {
+		return false
+	}
+	if (this is ParseException
+		|| this.isNetworkError()
+		|| this is CloudFlareBlockedException
+		|| this is CloudFlareProtectedException
+		|| this is BadBackupFormatException
+		|| this is WrongPasswordException
+	) {
+		return false
+	}
+	return true
 }
 
 fun Throwable.isNetworkError(): Boolean {
@@ -118,15 +149,6 @@ fun Throwable.report() {
 	val exception = CaughtException(this, "${javaClass.simpleName}($message)")
 	exception.sendWithAcra()
 }
-
-private val reportableExceptions = arraySetOf<Class<*>>(
-	RuntimeException::class.java,
-	IllegalStateException::class.java,
-	IllegalArgumentException::class.java,
-	ConcurrentModificationException::class.java,
-	UnsupportedOperationException::class.java,
-	NoDataReceivedException::class.java,
-)
 
 fun Throwable.isWebViewUnavailable(): Boolean {
 	val trace = stackTraceToString()

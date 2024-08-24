@@ -1,15 +1,22 @@
 package org.koitharu.kotatsu.download.ui.list
 
+import android.content.Context
+import android.graphics.Color
 import android.text.format.DateUtils
+import androidx.core.text.bold
+import androidx.core.text.buildSpannedString
+import androidx.core.text.color
 import androidx.work.WorkInfo
 import coil.memory.MemoryCache
 import kotlinx.coroutines.flow.StateFlow
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
 import java.util.UUID
+import com.google.android.material.R as materialR
 
 data class DownloadItemModel(
 	val id: UUID,
@@ -21,6 +28,7 @@ data class DownloadItemModel(
 	val max: Int,
 	val progress: Int,
 	val eta: Long,
+	val isStuck: Boolean,
 	val timestamp: Instant,
 	val chaptersDownloaded: Int,
 	val isExpanded: Boolean,
@@ -47,6 +55,18 @@ data class DownloadItemModel(
 			System.currentTimeMillis(),
 			DateUtils.SECOND_IN_MILLIS,
 		)
+	} else {
+		null
+	}
+
+	fun getErrorMessage(context: Context): CharSequence? = if (error != null) {
+		buildSpannedString {
+			bold {
+				color(context.getThemeColor(materialR.attr.colorError, Color.RED)) {
+					append(error)
+				}
+			}
+		}
 	} else {
 		null
 	}

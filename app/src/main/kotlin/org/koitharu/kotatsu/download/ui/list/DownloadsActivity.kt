@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.download.ui.list
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -22,7 +20,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.ui.worker.PausingReceiver
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import javax.inject.Inject
 
@@ -33,6 +31,9 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 
 	@Inject
 	lateinit var coil: ImageLoader
+
+	@Inject
+	lateinit var scheduler: DownloadWorker.Scheduler
 
 	private val viewModel by viewModels<DownloadsViewModel>()
 	private lateinit var selectionController: ListSelectionController
@@ -102,11 +103,19 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	}
 
 	override fun onPauseClick(item: DownloadItemModel) {
-		sendBroadcast(PausingReceiver.getPauseIntent(this, item.id))
+		scheduler.pause(item.id)
 	}
 
-	override fun onResumeClick(item: DownloadItemModel, skip: Boolean) {
-		sendBroadcast(PausingReceiver.getResumeIntent(this, item.id, skip))
+	override fun onResumeClick(item: DownloadItemModel) {
+		scheduler.resume(item.id)
+	}
+
+	override fun onSkipClick(item: DownloadItemModel) {
+		scheduler.skip(item.id)
+	}
+
+	override fun onSkipAllClick(item: DownloadItemModel) {
+		scheduler.skipAll(item.id)
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
@@ -170,10 +179,5 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		menu.findItem(R.id.action_cancel)?.isVisible = canCancel
 		menu.findItem(R.id.action_remove)?.isVisible = canRemove
 		return super.onPrepareActionMode(controller, mode, menu)
-	}
-
-	companion object {
-
-		fun newIntent(context: Context) = Intent(context, DownloadsActivity::class.java)
 	}
 }

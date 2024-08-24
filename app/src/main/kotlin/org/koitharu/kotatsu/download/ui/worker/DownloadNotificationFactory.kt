@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.download.ui.worker
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.text.format.DateUtils
 import androidx.core.app.NotificationChannelCompat
@@ -21,8 +22,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
+import org.koitharu.kotatsu.core.util.ext.isReportable
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState
@@ -57,7 +60,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 	private val queueIntent = PendingIntentCompat.getActivity(
 		context,
 		0,
-		DownloadsActivity.newIntent(context),
+		Intent(context, DownloadsActivity::class.java),
 		0,
 		false,
 	)
@@ -82,7 +85,15 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		NotificationCompat.Action(
 			R.drawable.ic_action_resume,
 			context.getString(R.string.resume),
-			PausingReceiver.createResumePendingIntent(context, uuid, skipError = false),
+			PausingReceiver.createResumePendingIntent(context, uuid),
+		)
+	}
+
+	private val actionRetry by lazy {
+		NotificationCompat.Action(
+			R.drawable.ic_retry,
+			context.getString(R.string.retry),
+			actionResume.actionIntent,
 		)
 	}
 
@@ -90,7 +101,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		NotificationCompat.Action(
 			R.drawable.ic_action_skip,
 			context.getString(R.string.skip),
-			PausingReceiver.createResumePendingIntent(context, uuid, skipError = true),
+			PausingReceiver.createSkipPendingIntent(context, uuid),
 		)
 	}
 
@@ -160,8 +171,14 @@ class DownloadNotificationFactory @AssistedInject constructor(
 				} else {
 					null
 				}
-				if (state.error != null) {
-					builder.setContentText(context.getString(R.string.download_summary_pattern, percent, state.error))
+				if (state.errorMessage != null) {
+					builder.setContentText(
+						context.getString(
+							R.string.download_summary_pattern,
+							percent,
+							state.errorMessage,
+						),
+					)
 				} else {
 					builder.setContentText(percent)
 				}
@@ -170,9 +187,11 @@ class DownloadNotificationFactory @AssistedInject constructor(
 				builder.setOngoing(true)
 				builder.setSmallIcon(R.drawable.ic_stat_paused)
 				builder.addAction(actionCancel)
-				builder.addAction(actionResume)
-				if (state.error != null) {
+				if (state.errorMessage != null) {
+					builder.addAction(actionRetry)
 					builder.addAction(actionSkip)
+				} else {
+					builder.addAction(actionResume)
 				}
 			}
 
@@ -180,18 +199,27 @@ class DownloadNotificationFactory @AssistedInject constructor(
 				builder.setProgress(0, 0, false)
 				builder.setSmallIcon(android.R.drawable.stat_notify_error)
 				builder.setSubText(context.getString(R.string.error))
-				builder.setContentText(state.error)
+				builder.setContentText(state.errorMessage)
 				builder.setAutoCancel(true)
 				builder.setOngoing(false)
 				builder.setCategory(NotificationCompat.CATEGORY_ERROR)
 				builder.setShowWhen(true)
 				builder.setWhen(System.currentTimeMillis())
-				builder.setStyle(NotificationCompat.BigTextStyle().bigText(state.error))
+				builder.setStyle(NotificationCompat.BigTextStyle().bigText(state.errorMessage))
+				if (state.error.isReportable()) {
+					builder.addAction(
+						NotificationCompat.Action(
+							0,
+							context.getString(R.string.report),
+							ErrorReporterReceiver.getPendingIntent(context, state.error),
+						),
+					)
+				}
 			}
 
 			else -> {
 				builder.setProgress(state.max, state.progress, false)
-				builder.setContentText(getProgressString(state.percent, state.eta))
+				builder.setContentText(getProgressString(state.percent, state.eta, state.isStuck))
 				builder.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 				builder.setStyle(null)
 				builder.setOngoing(true)
@@ -202,20 +230,20 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		return builder.build()
 	}
 
-	private fun getProgressString(percent: Float, eta: Long): CharSequence? {
+	private fun getProgressString(percent: Float, eta: Long, isStuck: Boolean): CharSequence? {
 		val percentString = if (percent >= 0f) {
 			context.getString(R.string.percent_string_pattern, (percent * 100).format())
 		} else {
 			null
 		}
-		val etaString = if (eta > 0L) {
-			DateUtils.getRelativeTimeSpanString(
+		val etaString = when {
+			eta <= 0L -> null
+			isStuck -> context.getString(R.string.stuck)
+			else -> DateUtils.getRelativeTimeSpanString(
 				eta,
 				System.currentTimeMillis(),
 				DateUtils.SECOND_IN_MILLIS,
 			)
-		} else {
-			null
 		}
 		return when {
 			percentString == null && etaString == null -> null

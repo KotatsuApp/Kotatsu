@@ -129,7 +129,7 @@ class ExploreFragment :
 			R.id.button_local -> MangaListActivity.newIntent(v.context, LocalMangaSource)
 			R.id.button_bookmarks -> AllBookmarksActivity.newIntent(v.context)
 			R.id.button_more -> SuggestionsActivity.newIntent(v.context)
-			R.id.button_downloads -> DownloadsActivity.newIntent(v.context)
+			R.id.button_downloads -> Intent(v.context, DownloadsActivity::class.java)
 			R.id.button_random -> {
 				viewModel.openRandom()
 				return
@@ -257,6 +257,7 @@ class ExploreFragment :
 		val action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 			Intent.ACTION_DELETE
 		} else {
+			@Suppress("DEPRECATION")
 			Intent.ACTION_UNINSTALL_PACKAGE
 		}
 		context?.startActivity(Intent(action, uri))

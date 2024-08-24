@@ -5,7 +5,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-class MultiMutex<T : Any> : Set<T> {
+open class MultiMutex<T : Any> : Set<T> {
 
 	private val delegates = ArrayMap<T, Mutex>()
 
@@ -20,19 +20,26 @@ class MultiMutex<T : Any> : Set<T> {
 		elements.all { x -> delegates.containsKey(x) }
 	}
 
-	override fun isEmpty(): Boolean {
-		return delegates.isEmpty()
+	override fun isEmpty(): Boolean = delegates.isEmpty()
+
+	override fun iterator(): Iterator<T> = synchronized(delegates) {
+		delegates.keys.toList()
+	}.iterator()
+
+	fun isLocked(element: T): Boolean = synchronized(delegates) {
+		delegates[element]?.isLocked == true
 	}
 
-	override fun iterator(): Iterator<T> {
-		return delegates.keys.iterator()
+	fun tryLock(element: T): Boolean {
+		val mutex = synchronized(delegates) {
+			delegates.getOrPut(element, ::Mutex)
+		}
+		return mutex.tryLock()
 	}
 
 	suspend fun lock(element: T) {
 		val mutex = synchronized(delegates) {
-			delegates.getOrPut(element) {
-				Mutex()
-			}
+			delegates.getOrPut(element, ::Mutex)
 		}
 		mutex.lock()
 	}

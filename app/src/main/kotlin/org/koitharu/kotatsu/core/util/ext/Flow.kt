@@ -4,6 +4,8 @@ import android.os.SystemClock
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import org.koitharu.kotatsu.R
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 fun <T> Flow<T>.onFirst(action: suspend (T) -> Unit): Flow<T> {
@@ -85,6 +88,20 @@ fun <T> Flow<T>.zipWithPrevious(): Flow<Pair<T?, T>> = flow {
 		previous = value
 		emit(result)
 	}
+}
+
+fun tickerFlow(interval: Long, timeUnit: TimeUnit): Flow<Long> = flow {
+	while (true) {
+		emit(SystemClock.elapsedRealtime())
+		delay(timeUnit.toMillis(interval))
+	}
+}
+
+fun <T> Flow<T>.withTicker(interval: Long, timeUnit: TimeUnit) = channelFlow<T> {
+	onCompletion { cause ->
+		close(cause)
+	}.combine(tickerFlow(interval, timeUnit)) { x, _ -> x }
+		.collectLatest { send(it) }
 }
 
 @Suppress("UNCHECKED_CAST")

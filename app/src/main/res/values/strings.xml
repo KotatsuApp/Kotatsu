@@ -19,6 +19,7 @@
 	<string name="chapter_d_of_d">Chapter %1$d of %2$d</string>
 	<string name="close">Close</string>
 	<string name="try_again">Try again</string>
+	<string name="retry">Retry</string>
 	<string name="clear_history">Clear history</string>
 	<string name="nothing_found">Nothing found</string>
 	<string name="history_is_empty">No history yet</string>
@@ -459,6 +460,7 @@
 	<string name="in_progress">In progress</string>
 	<string name="disable_nsfw">Disable NSFW</string>
 	<string name="too_many_requests_message">Too many requests. Try again later</string>
+	<string name="too_many_requests_message_retry">Too many requests. Try again after %s</string>
 	<string name="related_manga_summary">Show a list of related manga. In some cases it may be inaccurate or missing</string>
 	<string name="advanced">Advanced</string>
 	<string name="manga_list">Manga list</string>
@@ -624,8 +626,12 @@
 	<string name="hours_short">%d h</string>
 	<!-- Short minutes format pattern -->
 	<string name="minutes_short">%d m</string>
+	<!-- Short seconds format pattern -->
+	<string name="seconds_short">%d s</string>
 	<!-- Short hours and minutes format pattern -->
 	<string name="hours_minutes_short">%1$d h %2$d m</string>
+	<!-- Short minutes and seconds format pattern -->
+	<string name="minutes_seconds_short">%1$d m %2$d s</string>
 	<string name="fix">Fix</string>
 	<string name="missing_storage_permission">There is no permission to access manga on external storage</string>
 	<string name="last_used">Last used</string>
@@ -677,4 +683,6 @@
 	<string name="show_quick_filters">Show quick filters</string>
 	<string name="show_quick_filters_summary">Provides the ability to filter manga lists by certain parameters</string>
 	<string name="sfw">SFW</string>
+	<string name="skip_all">Skip all</string>
+	<string name="stuck">Stuck</string>
 </resources>
