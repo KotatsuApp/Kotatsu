@@ -188,7 +188,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		val semaphore = Semaphore(MAX_PARALLELISM)
 		val producer = channelFlow {
 			for (it in sources.shuffled()) {
-				if (it.isNsfw() && appSettings.isSuggestionsExcludeNsfw) {
+				if (it.isNsfw() && (appSettings.isSuggestionsExcludeNsfw || appSettings.isNsfwContentDisabled)) {
 					continue
 				}
 				launch {
@@ -224,7 +224,7 @@ class SuggestionsWorker @AssistedInject constructor(
 					if (details.rating > 0 && details.rating < RATING_MIN) {
 						continue
 					}
-					if (details.isNsfw && appSettings.isSuggestionsExcludeNsfw) {
+					if (details.isNsfw && (appSettings.isSuggestionsExcludeNsfw || appSettings.isNsfwContentDisabled)) {
 						continue
 					}
 					if (details in tagsBlacklist) {

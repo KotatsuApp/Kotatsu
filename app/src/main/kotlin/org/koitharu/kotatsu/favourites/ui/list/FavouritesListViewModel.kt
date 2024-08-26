@@ -152,7 +152,7 @@ class FavouritesListViewModel @Inject constructor(
 	}
 
 	private fun observeFavorites() = if (categoryId == NO_ID) {
-		combine(sortOrder.filterNotNull(), quickFilter.appliedOptions, limit, ::Triple)
+		combine(sortOrder.filterNotNull(), quickFilter.appliedOptions.combineWithSettings(), limit, ::Triple)
 			.flatMapLatest { repository.observeAll(it.first, it.second - ListFilterOption.Downloaded, it.third) }
 	} else {
 		combine(quickFilter.appliedOptions, limit, ::Pair)

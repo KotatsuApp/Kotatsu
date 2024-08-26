@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -19,6 +20,7 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -55,10 +57,20 @@ abstract class MangaListViewModel(
 		}
 	}
 
-	fun List<Manga>.skipNsfwIfNeeded() = if (settings.isNsfwContentDisabled) {
+	protected fun List<Manga>.skipNsfwIfNeeded() = if (settings.isNsfwContentDisabled) {
 		filterNot { it.isNsfw }
 	} else {
 		this
+	}
+
+	protected fun Flow<Set<ListFilterOption>>.combineWithSettings(): Flow<Set<ListFilterOption>> = combine(
+		settings.observeAsFlow(AppSettings.KEY_DISABLE_NSFW) { isNsfwContentDisabled },
+	) { filters, skipNsfw ->
+		if (skipNsfw) {
+			filters + ListFilterOption.Inverted(ListFilterOption.Macro.NSFW, R.drawable.ic_sfw, R.string.sfw, null)
+		} else {
+			filters
+		}
 	}
 
 	protected fun observeListModeWithTriggers(): Flow<ListMode> = combine(

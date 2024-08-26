@@ -71,6 +71,9 @@ class LocalMangaRepository @Inject constructor(
 			return emptyList()
 		}
 		val list = getRawList()
+		if (settings.isNsfwContentDisabled) {
+			list.removeIf { it.manga.isNsfw }
+		}
 		when (filter) {
 			is MangaListFilter.Search -> {
 				list.retainAll { x -> x.isMatchesQuery(filter.query) }

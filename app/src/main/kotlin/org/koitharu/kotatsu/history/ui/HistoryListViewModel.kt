@@ -157,7 +157,7 @@ class HistoryListViewModel @Inject constructor(
 		}
 	}
 
-	private fun observeHistory() = combine(sortOrder, quickFilter.appliedOptions, limit, ::Triple)
+	private fun observeHistory() = combine(sortOrder, quickFilter.appliedOptions.combineWithSettings(), limit, ::Triple)
 		.flatMapLatest { repository.observeAllWithHistory(it.first, it.second - ListFilterOption.Downloaded, it.third) }
 
 	private suspend fun mapList(

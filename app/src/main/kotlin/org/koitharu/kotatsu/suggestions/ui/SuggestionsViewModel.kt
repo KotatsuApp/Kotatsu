@@ -39,7 +39,7 @@ class SuggestionsViewModel @Inject constructor(
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.suggestionsListMode)
 
 	override val content = combine(
-		quickFilter.appliedOptions.flatMapLatest { repository.observeAll(0, it) },
+		quickFilter.appliedOptions.combineWithSettings().flatMapLatest { repository.observeAll(0, it) },
 		quickFilter.appliedOptions,
 		observeListModeWithTriggers(),
 	) { list, filters, mode ->
