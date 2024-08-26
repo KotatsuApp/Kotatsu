@@ -685,4 +685,5 @@
 	<string name="sfw">SFW</string>
 	<string name="skip_all">Skip all</string>
 	<string name="stuck">Stuck</string>
+	<string name="not_in_favorites">Not in favoites</string>
 </resources>

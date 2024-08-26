@@ -11,6 +11,7 @@
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:clipChildren="false"
 		android:clipToPadding="false"
 		android:orientation="vertical"
 		android:padding="@dimen/list_spacing_normal"

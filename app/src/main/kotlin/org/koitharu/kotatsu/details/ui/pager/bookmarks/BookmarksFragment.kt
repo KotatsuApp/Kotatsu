@@ -40,7 +40,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
-	OnListItemClickListener<Bookmark>, ListSelectionController.Callback2 {
+	OnListItemClickListener<Bookmark>, ListSelectionController.Callback {
 
 	private val activityViewModel by activityViewModels<DetailsViewModel>()
 	private val viewModel by viewModels<BookmarksViewModel>()

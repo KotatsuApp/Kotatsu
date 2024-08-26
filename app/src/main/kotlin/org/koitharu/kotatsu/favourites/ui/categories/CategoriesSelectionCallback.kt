@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 class CategoriesSelectionCallback(
 	private val recyclerView: RecyclerView,
 	private val viewModel: FavouritesCategoriesViewModel,
-) : ListSelectionController.Callback2 {
+) : ListSelectionController.Callback {
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
 		recyclerView.invalidateItemDecorations()

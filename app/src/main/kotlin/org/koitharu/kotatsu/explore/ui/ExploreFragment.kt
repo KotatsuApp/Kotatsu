@@ -56,7 +56,7 @@ class ExploreFragment :
 	BaseFragment<FragmentExploreBinding>(),
 	RecyclerViewOwner,
 	ExploreListEventListener,
-	OnListItemClickListener<MangaSourceItem>, ListSelectionController.Callback2 {
+	OnListItemClickListener<MangaSourceItem>, ListSelectionController.Callback {
 
 	@Inject
 	lateinit var coil: ImageLoader

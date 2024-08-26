@@ -93,8 +93,8 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 	}
 
 	override fun onActionModeStarted(mode: ActionMode) {
-		expandAndLock()
 		viewBinding?.toolbar?.menuView?.isVisible = false
+		view?.post(::expandAndLock)
 	}
 
 	override fun onActionModeFinished(mode: ActionMode) {

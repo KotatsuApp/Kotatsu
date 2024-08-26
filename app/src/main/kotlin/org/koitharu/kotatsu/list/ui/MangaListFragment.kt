@@ -68,7 +68,7 @@ abstract class MangaListFragment :
 	PaginationScrollListener.Callback,
 	MangaListListener,
 	SwipeRefreshLayout.OnRefreshListener,
-	ListSelectionController.Callback2,
+	ListSelectionController.Callback,
 	FastScroller.FastScrollListener {
 
 	@Inject

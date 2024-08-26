@@ -27,7 +27,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	DownloadItemListener,
-	ListSelectionController.Callback2 {
+	ListSelectionController.Callback {
 
 	@Inject
 	lateinit var coil: ImageLoader

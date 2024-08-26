@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.history.domain
 
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -24,6 +25,14 @@ class HistoryListQuickFilter @Inject constructor(
 		}
 		add(ListFilterOption.Macro.COMPLETED)
 		add(ListFilterOption.Macro.FAVORITE)
+		add(
+			ListFilterOption.Inverted(
+				option = ListFilterOption.Macro.FAVORITE,
+				iconResId = R.drawable.ic_heart_off,
+				titleResId = R.string.not_in_favorites,
+				titleText = null,
+			),
+		)
 		if (!settings.isNsfwContentDisabled && !settings.isHistoryExcludeNsfw) {
 			add(ListFilterOption.Macro.NSFW)
 		}
