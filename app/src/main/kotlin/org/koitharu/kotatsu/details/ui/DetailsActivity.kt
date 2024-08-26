@@ -29,7 +29,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import coil.transform.CircleCropTransformation
+import coil.transform.RoundedCornersTransformation
 import coil.util.CoilUtils
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
@@ -72,6 +72,7 @@ import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
+import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
@@ -475,7 +476,7 @@ class DetailsActivity :
 					.fallback(R.drawable.ic_web)
 					.error(R.drawable.ic_web)
 					.source(manga.source)
-					.transformations(CircleCropTransformation())
+					.transformations(RoundedCornersTransformation(resources.getDimension(R.dimen.chip_icon_corner)))
 					.allowRgb565(true)
 					.enqueueWith(coil)
 			}

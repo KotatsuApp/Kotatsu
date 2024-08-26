@@ -8,16 +8,16 @@ plugins {
 }
 
 android {
-	compileSdk = 34
-	buildToolsVersion = '34.0.0'
+	compileSdk = 35
+	buildToolsVersion = '35.0.0'
 	namespace = 'org.koitharu.kotatsu'
 
 	defaultConfig {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 664
-		versionName = '7.5-a4'
+		versionCode = 665
+		versionName = '7.5-b1'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -137,7 +137,7 @@ dependencies {
 
 	implementation 'io.coil-kt:coil-base:2.7.0'
 	implementation 'io.coil-kt:coil-svg:2.7.0'
-	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:882bc0620c'
+	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:4ec7176962'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
 
