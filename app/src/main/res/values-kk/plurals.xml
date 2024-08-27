@@ -28,4 +28,8 @@
         <item quantity="one">%1$d сағат бұрын</item>
         <item quantity="other">%1$d сағат бұрын</item>
     </plurals>
+    <plurals name="hours">
+        <item quantity="one">Бір</item>
+        <item quantity="other">Нөл , екі, үш, төрт, бес, алты, жеті, сегіз, тоғыз, он</item>
+    </plurals>
 </resources>
