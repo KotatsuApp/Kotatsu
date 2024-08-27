@@ -253,7 +253,7 @@
     <string name="status_reading">在读</string>
     <string name="status_re_reading">重读</string>
     <string name="status_completed">完成</string>
-    <string name="use_fingerprint">使用指纹</string>
+    <string name="use_fingerprint">如果可用，使用生物认证</string>
     <string name="appwidget_shelf_description">收藏的漫画</string>
     <string name="appwidget_recent_description">最近阅读的漫画</string>
     <string name="show_reading_indicators_summary">在历史和收藏中显示阅读百分比</string>
@@ -659,4 +659,19 @@
     <string name="chapters_left">剩余章节数</string>
     <string name="external_source">外部插件</string>
     <string name="plugin_incompatible">插件不兼容或出现了外部错误，请确保你已经将 Kotatsu 以及插件更新至最新版本</string>
+    <string name="text_history_holder_secondary_filtered">没有匹配到经筛选后的漫画</string>
+    <string name="connection_ok">连接正常</string>
+    <string name="text_empty_holder_secondary_filtered">无筛选结果</string>
+    <string name="invalid_proxy_configuration">无效代理配置</string>
+    <string name="show_quick_filters">显示快速筛选</string>
+    <string name="show_quick_filters_summary">可通过某些确定的范围来筛选漫画</string>
+    <string name="invalid_server_address_message">无效服务器地址</string>
+    <string name="sfw">全年龄</string>
+    <string name="too_many_requests_message_retry">请求过多，%s 之后再尝试</string>
+    <string name="seconds_short">%d 秒</string>
+    <string name="skip_all">跳过全部</string>
+    <string name="stuck">粘贴</string>
+    <string name="retry">重试</string>
+    <string name="minutes_seconds_short">%1$d 分 %2$d 秒</string>
+    <string name="not_in_favorites">不在收藏中</string>
 </resources>
