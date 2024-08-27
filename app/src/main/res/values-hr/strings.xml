@@ -508,7 +508,7 @@
     <string name="empty_favourite_categories">Nema omiljenih kategorija</string>
     <string name="undo">Poništi</string>
     <string name="disable_all">Onemogući sve</string>
-    <string name="use_fingerprint">Koristite otisak prsta ako je dostupan</string>
+    <string name="use_fingerprint">Koristite biometriju ako je dostupna</string>
     <string name="appwidget_recent_description">Vaša nedavno pročitana manga</string>
     <string name="explore">Istraži</string>
     <string name="confirm_exit">Ponovno pritisnite Natrag za izlaz</string>
@@ -639,4 +639,27 @@
     <string name="lock_screen_rotation">Zaključavanje zakretanja zaslona</string>
     <string name="migrate_confirmation">Manga \"%1$s\" iz \"%2$s\" bit će zamijenjena s \"%3$s\" iz \"%4$s\" u vašoj povijesti i favoritima (ako postoje)</string>
     <string name="delete_read_chapters">Brisanje pročitanih poglavlja</string>
+    <string name="crop_pages">Izreži stranice</string>
+    <string name="sources_unpinned">Izvori otkvačeni</string>
+    <string name="pin">Prikvači</string>
+    <string name="unpin">Otkvači</string>
+    <string name="source_pinned">Izvor prikvačen</string>
+    <string name="source_unpinned">Izvor otkvačen</string>
+    <string name="recent_sources">Nedavni izvori</string>
+    <string name="external_source">Eksterni/dodatak</string>
+    <string name="text_history_holder_secondary_filtered">Nema manga koji odgovaraju odabranim filtrima</string>
+    <string name="image_server">Preferirani server slika</string>
+    <string name="sources_pinned">Izvori prikvačeni</string>
+    <string name="percent_read">Postotak pročitano</string>
+    <string name="percent_left">Postotak preostalo</string>
+    <string name="chapters_read">Pročitana poglavlja</string>
+    <string name="chapters_left">Preostala poglavlja</string>
+    <string name="plugin_incompatible">Nekompatibilni dodatak ili interna pogreška. Provjerite koristite li najnoviju verziju dodatka i Kotatsu</string>
+    <string name="text_empty_holder_secondary_filtered">Nema manga koji odgovaraju odabranim filtrima</string>
+    <string name="connection_ok">Veza je u redu</string>
+    <string name="invalid_proxy_configuration">Neispravna konfiguracija proksija</string>
+    <string name="show_quick_filters">Prikaži brze filtre</string>
+    <string name="show_quick_filters_summary">Pruža mogućnost filtriranja popisa manga prema određenim parametrima</string>
+    <string name="invalid_server_address_message">Nevažeća adresa servera</string>
+    <string name="sfw">SFW</string>
 </resources>
