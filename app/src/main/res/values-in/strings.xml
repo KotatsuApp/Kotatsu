@@ -288,7 +288,7 @@
     <string name="reset">Atur Ulang</string>
     <string name="text_unsaved_changes_prompt">Simpan atau buang perubahan yang belum disimpan?</string>
     <string name="discard">Buang</string>
-    <string name="use_fingerprint">Gunakan sidik jari jika tersedia</string>
+    <string name="use_fingerprint">Gunakan biometrik jika tersedia</string>
     <string name="appwidget_shelf_description">Komik dari favorit Anda</string>
     <string name="appwidget_recent_description">Komik yang baru-baru ini Anda baca</string>
     <string name="data_deletion">Penghapusan data</string>
@@ -645,4 +645,5 @@
     <string name="suggested_queries">Pertanyaan yang disarankan</string>
     <string name="source_pinned">Sumber disematkan</string>
     <string name="recent_sources">Sumber sumbver terbaru</string>
+    <string name="text_empty_holder_secondary_filtered">Tidak ada manga yang cocok dengan filter yang kamu pilih</string>
 </resources>
