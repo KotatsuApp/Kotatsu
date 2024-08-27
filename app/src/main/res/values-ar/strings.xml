@@ -2,12 +2,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="detailed_list">قائمة مفصلة</string>
     <string name="error_occurred">حدث خطأ</string>
-    <string name="details">التفاصيل</string>
+    <string name="details">تفاصيل</string>
     <string name="grid">شبكة</string>
     <string name="list_mode">وضع القائمة</string>
     <string name="settings">الإعدادات</string>
     <string name="remote_sources">مصادر المانجا</string>
-    <string name="chapters">الفصول</string>
+    <string name="chapters">فصول</string>
     <string name="favourites">المُفضلة</string>
     <string name="network_error">‌خطاء في الشبكة</string>
     <string name="loading_">جار التحميل…</string>
@@ -241,7 +241,7 @@
     <string name="canceled">ألغيت</string>
     <string name="account_already_exists">الحساب موجود بالفعل</string>
     <string name="hide">أخفِ</string>
-    <string name="use_fingerprint">استخدم بصمة الإصبع إذا كانت متوفرة</string>
+    <string name="use_fingerprint">استخدم المقاييس الحيوية إذا كانت متاحة</string>
     <string name="onboard_text">حدد اللغات التي تريد قراءة المانجا بها. ويمكنك تغيير الخيار لاحقًا في الإعدادات.</string>
     <string name="suggestions_updating">تحديث الاقتراحات</string>
     <string name="percent_string_pattern">%1$s%%</string>
@@ -654,4 +654,8 @@
     <string name="percent_left">النسبة المتبقية</string>
     <string name="chapters_read">الفصول المقروءة</string>
     <string name="chapters_left">الفصول المتبقية</string>
+    <string name="text_empty_holder_secondary_filtered">لا توجد مانجا تطابق التصفيات التي حددتها</string>
+    <string name="connection_ok">الاتصال جيد</string>
+    <string name="external_source">خارجي/إضافي</string>
+    <string name="plugin_incompatible">مكون إضافي غير متوافق أو خطأ داخلي. تأكد من استخدام أحدث إصدار من المكون الإضافي وKotatsu</string>
 </resources>
