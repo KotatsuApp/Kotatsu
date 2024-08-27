@@ -247,7 +247,7 @@
     <string name="disable_battery_optimization">Desactivar la optimización de la batería</string>
     <string name="send">Enviar</string>
     <string name="crash_text">Algo ha ido mal. Por favor, envía un informe de errores a los desarrolladores para ayudarnos a solucionarlo.</string>
-    <string name="use_fingerprint">Utilizar la huella dactilar si está disponible</string>
+    <string name="use_fingerprint">Usar la biométria si está disponible</string>
     <string name="appwidget_shelf_description">Mangas de tus favoritos</string>
     <string name="appwidget_recent_description">Sus mangas recientemente leídos</string>
     <string name="logout">Cerrar sesión</string>
@@ -659,4 +659,5 @@
     <string name="chapters_left">Capítulos restantes</string>
     <string name="external_source">Externo/plugin</string>
     <string name="plugin_incompatible">Complemento incompatible o error interno. Asegúrate de estar usando la última versión del complemento y de Kotatsu</string>
+    <string name="text_history_holder_secondary_filtered">No hay mangas que coincidan con los filtros que seleccionaste</string>
 </resources>
