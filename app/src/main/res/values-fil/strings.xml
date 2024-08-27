@@ -36,7 +36,7 @@
     <string name="new_chapters">Mga bagong kabanata</string>
     <string name="text_search_holder_secondary">Subukang i-reformulate ang query.</string>
     <string name="text_history_holder_primary">Ang iyong nabasa ay ipapakita dito</string>
-    <string name="text_local_holder_primary">Mag-save muna ng isang bagay</string>
+    <string name="text_local_holder_primary">Mag-save muna ng isa</string>
     <string name="text_local_holder_secondary">Mag-save ng isang bagay mula sa isang online na catalog o i-import ito mula sa isang file.</string>
     <string name="manga_shelf">Istante</string>
     <string name="pages_animation">Animasyon ng pahina</string>
@@ -292,7 +292,7 @@
     <string name="services">Mga serbisyo</string>
     <string name="allow_unstable_updates">Payagan ang mga hindi stable na update</string>
     <string name="show_reading_indicators">Ipakita ang pang-hiwatig ng progreso</string>
-    <string name="exclude_nsfw_from_history_summary">Ang mga Manga na naka-mark na NSFW ay hindi madadagdag sa history at yung progreso mo ay hindi ma-sasave</string>
+    <string name="exclude_nsfw_from_history_summary">Ang mga Manga na naka-mark na NSFW ay hindi masasali sa kasaysayan at ang progress mo ay hindi ma-sasave</string>
     <string name="clear_cookies_summary">Maaaring makatulong sa kaso ng ilang mga isyu. Ang lahat ng pahintulot ay mawawalan ng bisa</string>
     <string name="invalid_domain_message">Imbalidong domain</string>
     <string name="last_2_hours">Huling 2 oras</string>
@@ -328,7 +328,7 @@
     <string name="status_completed">Nakumpleto na</string>
     <string name="status_on_hold">Naka-hold</string>
     <string name="disable_all">Di paganahin lahat</string>
-    <string name="use_fingerprint">Gumamit ng fingerprint kung magagamit</string>
+    <string name="use_fingerprint">Gumamit ng biometric kung magagamit</string>
     <string name="report">Ulat</string>
     <string name="reset">I-reset</string>
     <string name="allow_unstable_updates_summary">Makakuha ng paunawa tungkol sa mga unstable build</string>
@@ -363,7 +363,7 @@
     <string name="show_on_shelf">Ipakita sa Istante</string>
     <string name="speed">Bilis</string>
     <string name="comics_archive_import_description">Maaari kang pumili ng isa o higit pang .cbz o .zip file, ang bawat file ay makikilala bilang isang hiwalay na manga.</string>
-    <string name="folder_with_images_import_description">Maaari kang pumili ng isang direktoryo na may mga archive o mga larawan. Ang bawat archive (o subdirectory) ay makikilala bilang isang kabanata.</string>
+    <string name="folder_with_images_import_description">Maaari kang pumili ng isang directory na may mga archive o mga larawan. Ang bawat archive (o subdirectory) ay makikilala bilang isang kabanata.</string>
     <string name="find_similar">Maghanap ng katulad</string>
     <string name="sync_auth_hint">Maaari kang mag-sign in sa isang umiiral na account o lumikha ng bago</string>
     <string name="web_view_unavailable">Hindi available ang WebView: tingnan kung naka-install ang WebView provider</string>
@@ -420,8 +420,8 @@
     <string name="download_option_all_unread_b">Lahat ng di-nababasang kabanata (%s)</string>
     <string name="download_option_manual_selection">Manu-manong pumili ng mga kabanata</string>
     <string name="invert_colors">Baliktarin ang mga kulay</string>
-    <string name="pick_custom_directory">Pumili ng custom na direktoryo</string>
-    <string name="no_access_to_file">Wala kang access sa file o direktoryo na ito</string>
+    <string name="pick_custom_directory">Pumili ng custom na directory</string>
+    <string name="no_access_to_file">Wala kang access sa file o directory na ito</string>
     <string name="local_manga_directories">Mga lokal na direktoryo ng manga</string>
     <string name="password">Password</string>
     <string name="description">Paglalarawan</string>
@@ -481,7 +481,7 @@
     <string name="periodic_backups">Mga periodic na pag-backup</string>
     <string name="frequency_twice_per_month">Dalawang beses bawat buwan</string>
     <string name="frequency_once_per_month">Isang beses bawat buwan</string>
-    <string name="backups_output_directory">Output na direktoryo sa mga backup</string>
+    <string name="backups_output_directory">Output na directory ng mga backup</string>
     <string name="last_successful_backup">Huling matagumpay na pag-backup: %s</string>
     <string name="speed_value">x%.1f</string>
     <string name="sources_catalog">Katalugo ng mga source</string>
@@ -542,7 +542,7 @@
     <string name="show_labels_in_navbar">Ipakita ang mga label sa navigation bar</string>
     <string name="pages_saving">Nagse-save ng mga pahina</string>
     <string name="ask_for_dest_dir_every_time">Laging magtanong sa direktoryo ng patutunguhan</string>
-    <string name="default_page_save_dir">Default na direktoryo ng pag-save ng pahina</string>
+    <string name="default_page_save_dir">Default na directory ng pag-save ng pahina</string>
     <string name="email_password_enter_hint">Ilagay ang iyong email at password upang magpatuloy</string>
     <string name="remaining_time_pattern">%1$s %2$s</string>
     <string name="volume_">Volume %d</string>
@@ -657,4 +657,16 @@
     <string name="chapters_left">Kabanatang natitira</string>
     <string name="percent_read">Porsyentong nabasa</string>
     <string name="chapters_read">Kabanatang nabasa</string>
+    <string name="plugin_incompatible">Hindi tugmang plugin o internal na error. Tiyaking ginagamit mo ang pinakabagong bersyon ng plugin at Kotatsu</string>
+    <string name="text_history_holder_secondary_filtered">Walang manga na tumutugma sa mga filter na iyong pinili</string>
+    <string name="text_empty_holder_secondary_filtered">Walang manga na tumutugma sa mga filter na iyong pinili</string>
+    <string name="connection_ok">Maayos ang koneksyon</string>
+    <string name="invalid_proxy_configuration">Imbalidong configuaration sa proxy</string>
+    <string name="show_quick_filters">Ipakita ang mabilisang filter</string>
+    <string name="show_quick_filters_summary">Nagbibigay ng kakayahang i-filter ang mga listahan ng manga batay sa ilang mga parameter</string>
+    <string name="invalid_server_address_message">Di-balidong address ng server</string>
+    <string name="stuck">Naipit</string>
+    <string name="retry">Subukan muli</string>
+    <string name="too_many_requests_message_retry">Masyado maraming request. Subukan muli pagkatapos ng %s</string>
+    <string name="skip_all">Laktawan lahat</string>
 </resources>
