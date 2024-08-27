@@ -669,4 +669,9 @@
     <string name="retry">Subukan muli</string>
     <string name="too_many_requests_message_retry">Masyado maraming request. Subukan muli pagkatapos ng %s</string>
     <string name="skip_all">Laktawan lahat</string>
+    <string name="external_source">Ang external o plugin</string>
+    <string name="seconds_short">s %d</string>
+    <string name="minutes_seconds_short">%1$d m %2$d s</string>
+    <string name="sfw">SFW</string>
+    <string name="not_in_favorites">Wala sa paborito mo</string>
 </resources>
