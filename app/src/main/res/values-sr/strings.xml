@@ -403,7 +403,7 @@
     <string name="show_reading_indicators_summary">Прикажи проценат читања у Историји и Омиљеним</string>
     <string name="random">Насумично</string>
     <string name="mirror_switching">Аутоматски изабери послуживач</string>
-    <string name="use_fingerprint">Користи отисак прста ако је доступан</string>
+    <string name="use_fingerprint">Користи биометријско откључавање ако је доступно</string>
     <string name="restore_summary">Врати претходно направљену резервну копију</string>
     <string name="onboard_text">Изаберите језике на којима желите да читате мангу. Можете их променити касније у подешавањима.</string>
     <string name="zoom_out">Умањи</string>
@@ -658,4 +658,19 @@
     <string name="image_server">Жељени послуживач слика</string>
     <string name="crop_pages">Изрежи странице</string>
     <string name="external_source">Спољни/додатак</string>
+    <string name="text_empty_holder_secondary_filtered">Нема Манге која одговара филтерима које си изабрао</string>
+    <string name="connection_ok">Веза је У РЕДУ</string>
+    <string name="plugin_incompatible">Некомпатибилан додатак или интерна грешка. Увери се да користиш најновију верзију додатка и Котатсу-а</string>
+    <string name="invalid_proxy_configuration">Неважећа конфигурација проксија</string>
+    <string name="sfw">БЗП</string>
+    <string name="seconds_short">%d с</string>
+    <string name="skip_all">Прескочи све</string>
+    <string name="stuck">Застој</string>
+    <string name="not_in_favorites">Није у омиљенима</string>
+    <string name="too_many_requests_message_retry">Превише захтева. Покушај поново после %s</string>
+    <string name="retry">Покушај опет</string>
+    <string name="invalid_server_address_message">Неважећа адреса послуживача</string>
+    <string name="minutes_seconds_short">%1$d мин %2$d с</string>
+    <string name="show_quick_filters_summary">Пружа могућност филтрирања манга листа према одређеним параметрима</string>
+    <string name="show_quick_filters">Прикажи брзе филтере</string>
 </resources>
