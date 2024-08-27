@@ -659,4 +659,7 @@
     <string name="ignore_ssl_errors_summary">Você pode desativar a verificação de certificados SSL caso enfrente problemas relacionados ao SSL ao acessar recursos de rede. Isso pode afetar sua segurança. É necessário reiniciar o aplicativo após alterar essa configuração.</string>
     <string name="disable_connectivity_check_summary">Pule a verificação de conectividade caso tenha problemas com ela (por exemplo, entrar no modo offline mesmo estando conectado à rede)</string>
     <string name="plugin_incompatible">Plugin incompatível ou erro interno. Certifique-se de que está usando a versão mais recente do plugin e do Kotatsu</string>
+    <string name="text_empty_holder_secondary_filtered">Não há mangás que correspondam aos filtros selecionados</string>
+    <string name="connection_ok">A conexão está OK</string>
+    <string name="invalid_proxy_configuration">Configuração de proxy inválida</string>
 </resources>
