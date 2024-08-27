@@ -56,7 +56,7 @@
     <string name="new_chapters">Chương mới</string>
     <string name="download">Tải xuống</string>
     <string name="notification_sound">Âm thanh thông báo</string>
-    <string name="light_indicator">Đèn LED thông báo</string>
+    <string name="light_indicator">Tín hiệu đèn LED thông báo</string>
     <string name="vibration">Rung</string>
     <string name="favourites_categories">Danh mục yêu thích</string>
     <string name="remove_category">Xoá</string>
@@ -106,7 +106,7 @@
     <string name="auth_required">Đăng nhập để xem nội dung này</string>
     <string name="default_s">Mặc định: %s</string>
     <string name="next">Kế tiếp</string>
-    <string name="protect_application_subtitle">Nhập mật khẩu để khởi động ứng dụng với</string>
+    <string name="protect_application_subtitle">Hãy đặt mật khẩu để mở ứng dụng</string>
     <string name="confirm">Xác nhận</string>
     <string name="password_length_hint">Mật khẩu phải có 4 ký tự hoặc hơn</string>
     <string name="text_clear_search_history_prompt">Xoá vĩnh viễn tất cả lịch sử tìm kiếm gần đây\?</string>
@@ -297,7 +297,7 @@
     <string name="status_completed">Đã hoàn thành</string>
     <string name="clear_cookies_summary">Có thể giúp ích trong trường hợp có vấn đề. Mọi uỷ quyền sẽ bị vô hiệu hoá</string>
     <string name="manage">Quản lý</string>
-    <string name="use_fingerprint">Sử dụng vân tay nếu có</string>
+    <string name="use_fingerprint">Sử dụng vân tay / sinh trắc học (nếu có)</string>
     <string name="data_deletion">Xoá dữ liệu</string>
     <string name="removed_from_favourites">Đã xoá khỏi yêu thích</string>
     <string name="error_no_space_left">Không đủ dung lượng lưu trữ trên thiết bị</string>
@@ -411,7 +411,7 @@
     <string name="text_history_holder_secondary">Tìm truyện để đọc trong phần «Khám phá»</string>
     <string name="this_month">Tháng này</string>
     <string name="tracker_wifi_only_summary">Không kiểm tra các chương mới bằng kết nối mạng có đo lường</string>
-    <string name="user_agent">Tiêu đề tác nhân người dùng</string>
+    <string name="user_agent">Tùy chỉnh User-Agent</string>
     <string name="data_not_restored_text">Đảm bảo bạn đã chọn đúng tệp sao lưu</string>
     <string name="auth_complete">Được ủy quyền</string>
     <string name="data_not_restored">Dữ liệu chưa được khôi phục</string>
@@ -423,7 +423,7 @@
     <string name="related_manga">Truyện tranh liên quan</string>
     <string name="suggestions_wifi_only_summary">Không cập nhật đề xuất bằng kết nối mạng có đo lường</string>
     <string name="comics_archive">Kho lưu trữ truyện tranh</string>
-    <string name="folder_with_images_import_description">Bạn có thể chọn một thư mục có kho lưu trữ hoặc hình ảnh. Mỗi kho lưu trữ (hoặc thư mục con) sẽ được công nhận là một chương.</string>
+    <string name="folder_with_images_import_description">Bạn có thể chọn một thư mục để làm kho lưu trữ / hình ảnh. Mỗi kho lưu trữ (hoặc thư mục con) sẽ được coi là một chương.</string>
     <string name="voice_search">Tìm kiếm bằng giọng nói</string>
     <string name="reader_control_ltr">Điều khiển trình đọc tiện dụng</string>
     <string name="color_white">Trắng</string>
@@ -436,14 +436,14 @@
     <string name="incognito_mode_hint">Tiến trình đọc của bản sẽ không được lưu</string>
     <string name="rating_adult">Người lớn</string>
     <string name="rating_suggestive">Khiêu gợi</string>
-    <string name="minutes_short">%d p</string>
-    <string name="hours_short">%d g</string>
-    <string name="hours_minutes_short">%1$d g %2$d p</string>
+    <string name="minutes_short">%d phút</string>
+    <string name="hours_short">%d giờ</string>
+    <string name="hours_minutes_short">%1$d giờ %2$d phút</string>
     <string name="vertical">Hướng dọc</string>
     <string name="chapters_grid_view">Chế độ xem lưới</string>
     <string name="remove_completed">Xoá hoàn tất</string>
     <string name="search_hint">Nhập tên manga, thể loại hoặc tên nguồn</string>
-    <string name="clear_network_cache">Xoá cache (Network Cache)</string>
+    <string name="clear_network_cache">Xoá cache (Cache của mạng)</string>
     <string name="type">Thể loại</string>
     <string name="suggest_new_sources">Gợi ý nguồn mới sau khi cập nhật ứng dụng</string>
     <string name="manga_list">Danh sách manga</string>
@@ -504,7 +504,7 @@
     <string name="advanced">Nâng cao</string>
     <string name="error_corrupted_file">Dữ liệu trả lại không hợp lệ hoặc file đã bị hỏng</string>
     <string name="related_manga_summary">Hiển thị danh sách manga có liên quan. Đôi khi có thể không có hoặc không liên quan</string>
-    <string name="too_many_requests_message">Yêu cầu quá nhiều. Hãy thử lại sau</string>
+    <string name="too_many_requests_message">Yêu cầu quá nhiều. Hãy thoát ra và vào lại ¯\\_(ツ)_/¯</string>
     <string name="on_device">Trên máy</string>
     <string name="main_screen_sections">Phần màn hình chính</string>
     <string name="directories">Đường dẫn</string>
@@ -533,7 +533,7 @@
     <string name="no_manga_sources_catalog_text">Không còn nguồn nào cả hoặc đã bật hết các nguồn.
 \nHãy chờ bản cập nhật sau</string>
     <string name="state_paused">Tạm dừng</string>
-    <string name="error_multiple_genres_not_supported">Lọc với nhiều thể loại không được hỗ trợ trên nguồn này</string>
+    <string name="error_multiple_genres_not_supported">Lọc với nhiều thể loại không được hỗ trợ trên nguồn truyện này</string>
     <string name="error_multiple_states_not_supported">Lọc với nhiều trạng thái không được hỗ trợ bởi nguồn này</string>
     <string name="grayscale">Thang đo xám (Grayscale)</string>
     <string name="error_search_not_supported">Tìm kiếm không được hỗ trợ bởi nguồn này</string>
@@ -559,7 +559,7 @@
     <string name="tap_action">Chạm</string>
     <string name="long_tap_action">Nhấn giữ</string>
     <string name="none">Để trống</string>
-    <string name="config_reset_confirm">Đặt lại mặc định? Tiếp tục sẽ không thể phục hồi cài đặt trước đó</string>
+    <string name="config_reset_confirm">Đặt lại về mặc định? Tiếp tục sẽ không thể phục hồi cài đặt trước đó.</string>
     <string name="use_two_pages_landscape">Dùng bố cục hai trang cho định dạng màn hình ngang (beta)</string>
     <string name="reading_stats">Thống kê đọc</string>
     <string name="statistics">Thống kê</string>
@@ -613,7 +613,7 @@
     <string name="default_page_save_dir">Địa chỉ lưu trang mặc định</string>
     <string name="delete_read_chapters_summary">Xoá các chương mà bạn đã đọc khỏi bộ nhớ trong để giải phóng bộ nhớ</string>
     <string name="long_ago_read">Đã đọc từ rất lâu trước</string>
-    <string name="last_used">Lần cuối dùng</string>
+    <string name="last_used">Đã đọc gần đây</string>
     <string name="show_updated">Hiển thị cập nhật</string>
     <string name="downloads_settings_info">Bật làm chậm tải xuống cho nguồn manga trong cài đặt nguồn của nó nếu bạn bị chặn bởi server (server-side blocking)</string>
     <string name="state">Tình trạng</string>
@@ -658,4 +658,20 @@
     <string name="chapters_read">Chương đã đọc</string>
     <string name="chapters_left">Chương còn lại</string>
     <string name="external_source">Nguồn / Plugin bên ngoài</string>
+    <string name="plugin_incompatible">Plugin bị lỗi hoặc không phù hợp. Hãy đảm bảo rằng bạn đang sử dụng phiên bản mới nhất của Kotatsu hoặc của Plugin đó</string>
+    <string name="text_history_holder_secondary_filtered">Không có bộ truyện nào phù hợp với bộ lọc mà bạn đã chọn</string>
+    <string name="text_empty_holder_secondary_filtered">Không có bộ truyện nào phù hợp với bộ lọc của bạn ở đây ¯\\_(ツ)_/¯</string>
+    <string name="connection_ok">Kết nối rất OK ¯\\_(ツ)_/¯</string>
+    <string name="invalid_proxy_configuration">Cấu hình Proxy này không hợp lệ</string>
+    <string name="show_quick_filters">Hiện bộ lọc nhanh</string>
+    <string name="show_quick_filters_summary">Cung cấp khả năng lọc danh sách Manga dựa vào dữ liệu cụ thể</string>
+    <string name="invalid_server_address_message">Địa chỉ máy chủ này không hợp lệ</string>
+    <string name="sfw">Truyện SFW</string>
+    <string name="too_many_requests_message_retry">Quá nhiều yêu cầu được gửi đi, vui lòng thử lại sau %s</string>
+    <string name="seconds_short">%d giây</string>
+    <string name="minutes_seconds_short">%1$d phút %2$d giây</string>
+    <string name="skip_all">Bỏ qua tất cả</string>
+    <string name="retry">Thử lại</string>
+    <string name="stuck">Kẹt đứng</string>
+    <string name="not_in_favorites">Không có ở trong mục yêu thích của bạn</string>
 </resources>
