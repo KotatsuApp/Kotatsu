@@ -246,7 +246,7 @@
     <string name="disable_battery_optimization">Desativar a otimização da bateria</string>
     <string name="disable_battery_optimization_summary">Ajuda com as verificações de atualizações em segundo plano</string>
     <string name="invalid_domain_message">Domínio inválido</string>
-    <string name="use_fingerprint">Usar impressão digital, se disponível</string>
+    <string name="use_fingerprint">Usar biometria, se disponível</string>
     <string name="appwidget_shelf_description">Suas obras favoritas</string>
     <string name="appwidget_recent_description">Obras que você leu recentemente</string>
     <string name="status_completed">Concluída</string>
