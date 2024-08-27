@@ -319,7 +319,7 @@
     <string name="prefetch_content">Pramuat konten</string>
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="nothing_here">Tidak ada apapun di sini</string>
-    <string name="reader_control_ltr_summary">Ketuk di tepi kanan atau menekan tombol kanan akan selalu beralih ke halaman berikutnya</string>
+    <string name="reader_control_ltr_summary">Mengetuk tepi kanan, atau menekan tombol kanan, akan selalu beralih ke halaman selanjutnya</string>
     <string name="source_disabled">Sumber dinonaktifkan</string>
     <string name="mark_as_current">Tandai sebagai saat ini</string>
     <string name="show_suspicious_content">Tampilkan konten yang mencurigakan</string>
@@ -646,4 +646,6 @@
     <string name="source_pinned">Sumber disematkan</string>
     <string name="recent_sources">Sumber sumbver terbaru</string>
     <string name="text_empty_holder_secondary_filtered">Tidak ada manga yang cocok dengan filter yang kamu pilih</string>
+    <string name="image_server">Server gambar yang dipilih</string>
+    <string name="crop_pages">Potong Halaman</string>
 </resources>
