@@ -246,7 +246,7 @@
     <string name="sort_order">Tryb sortowania</string>
     <string name="status_on_hold">Wstrzymane</string>
     <string name="status_dropped">Porzucone</string>
-    <string name="use_fingerprint">Użyj odcisku palca, jeśli jest dostępny</string>
+    <string name="use_fingerprint">Użyj biometrii, jeśli jest dostępna</string>
     <string name="appwidget_shelf_description">Mangi z Twoich ulubionych</string>
     <string name="show_reading_indicators">Pokaż wskaźniki postępu czytania</string>
     <string name="show_reading_indicators_summary">Pokaż procent przeczytania w historii i ulubionych</string>
@@ -657,4 +657,11 @@
     <string name="percent_left">Pozostały procent</string>
     <string name="chapters_read">Przeczytane rozdziały</string>
     <string name="chapters_left">Pozostałe rozdziały</string>
+    <string name="show_quick_filters">Pokaż szybkie filtry</string>
+    <string name="show_quick_filters_summary">Zapewnia możliwość filtrowania list mangi według określonych parametrów</string>
+    <string name="text_empty_holder_secondary_filtered">Nie ma mangi pasującej do wybranych filtrów</string>
+    <string name="connection_ok">Połączenie jest OK</string>
+    <string name="invalid_proxy_configuration">Błędna konfiguracja serwera proxy</string>
+    <string name="external_source">Zewnętrzne/wtyczka</string>
+    <string name="plugin_incompatible">Niekompatybilna wtyczka lub błąd wewnętrzny. Upewnij się, że używasz najnowszej wersji wtyczki i Kotatsu</string>
 </resources>
