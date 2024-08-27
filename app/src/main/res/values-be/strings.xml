@@ -215,7 +215,7 @@
     <string name="hide">Схаваць</string>
     <string name="appearance">Знешні выгляд</string>
     <string name="disable_all">Адключыць усе</string>
-    <string name="use_fingerprint">Выкарыстоўваць адбітак пальца, калі даступна</string>
+    <string name="use_fingerprint">Выкарыстоўваць біяметрычныя дадзеныя, калі яны даступныя</string>
     <string name="appwidget_shelf_description">Манга з абраных</string>
     <string name="appwidget_recent_description">Манга, якую вы нядаўна чыталі</string>
     <string name="suggestions_updating">Абнаўленне рэкамендацый</string>
@@ -658,4 +658,9 @@
     <string name="chapters_read">Прачытаныя раздзелы</string>
     <string name="chapters_left">Астатнія раздзелы</string>
     <string name="external_source">Знешні/плагін</string>
+    <string name="plugin_incompatible">Несумяшчальны плягін або ўнутраная памылка. Пераканайцеся, што вы карыстаецеся апошнюю версію плагіна і Kotatsu</string>
+    <string name="text_history_holder_secondary_filtered">Няма мангі, якая адпавядае абраным вамі фільтрам</string>
+    <string name="text_empty_holder_secondary_filtered">Няма мангі, якая адпавядае абраным вамі фільтрам</string>
+    <string name="connection_ok">Злучэнне ў парадку</string>
+    <string name="invalid_proxy_configuration">Няправільная канфігурацыя проксі</string>
 </resources>

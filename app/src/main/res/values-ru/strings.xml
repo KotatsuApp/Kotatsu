@@ -248,7 +248,7 @@
     <string name="crash_text">Что-то пошло не так. Пожалуйста, отправьте отчёт разработчикам, чтобы помочь всё исправить.</string>
     <string name="send">Отправить</string>
     <string name="disable_all">Отключить все</string>
-    <string name="use_fingerprint">Использовать отпечаток пальца, если доступно</string>
+    <string name="use_fingerprint">Использовать биометрические данные, если они доступны</string>
     <string name="appwidget_shelf_description">Манга из Вашего избранного</string>
     <string name="appwidget_recent_description">Манга, которую Вы недавно читали</string>
     <string name="status_reading">Читаю</string>
@@ -658,4 +658,9 @@
     <string name="percent_left">Процент оставшегося</string>
     <string name="chapters_left">Глав осталось</string>
     <string name="external_source">Внешний/плагин</string>
+    <string name="plugin_incompatible">Несовместимый плагин или внутренняя ошибка. Убедитесь, что вы используете последнюю версию плагина и Kotatsu</string>
+    <string name="text_history_holder_secondary_filtered">Нет манги, соответствующей выбранным вами фильтрам</string>
+    <string name="text_empty_holder_secondary_filtered">Нет манги, соответствующей выбранным вами фильтрам</string>
+    <string name="connection_ok">Соединение в порядке</string>
+    <string name="invalid_proxy_configuration">Неверная конфигурация прокси</string>
 </resources>

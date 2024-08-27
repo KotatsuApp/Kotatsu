@@ -248,7 +248,7 @@
     <string name="crash_text">Щось пішло не так. Будь ласка, надішліть звіт про помилку розробникам, щоб допомогти нам її виправити.</string>
     <string name="send">Надіслати</string>
     <string name="disable_all">Вимкнути все</string>
-    <string name="use_fingerprint">Використовувати відбиток пальця, якщо доступно</string>
+    <string name="use_fingerprint">Використовувати біометричні дані, якщо вони доступні</string>
     <string name="appwidget_shelf_description">Манґа з Ваших обраних</string>
     <string name="appwidget_recent_description">Манґа, яку Ви нещодавно читали</string>
     <string name="invalid_domain_message">Недійсний домен</string>
@@ -653,4 +653,14 @@
     <string name="sources_unpinned">Джерела відкріплені</string>
     <string name="pin">Закріпити</string>
     <string name="source_unpinned">Джерело відкріплено</string>
+    <string name="text_history_holder_secondary_filtered">Немає манґи, що відповідає вибраним вами фільтрам</string>
+    <string name="percent_read">Відсоток прочитаного</string>
+    <string name="percent_left">Відсоток, що залишився</string>
+    <string name="chapters_read">Прочитані глави</string>
+    <string name="chapters_left">Розділів залишилося</string>
+    <string name="external_source">Зовнішній/плагін</string>
+    <string name="plugin_incompatible">Несумісний плагін чи внутрішня помилка. Переконайтеся, що ви використовуєте останню версію плагіна та Kotatsu</string>
+    <string name="text_empty_holder_secondary_filtered">Немає манґи, що відповідає вибраним вами фільтрам</string>
+    <string name="connection_ok">З\'єднання в порядку</string>
+    <string name="invalid_proxy_configuration">Неправильна конфігурація проксі</string>
 </resources>
