@@ -5,8 +5,8 @@
         <item quantity="one">فصل جديد</item>
         <item quantity="two">فصلين جديدين</item>
         <item quantity="few">%1$d فصول جديدة</item>
-        <item quantity="many">%1$d فصل جديدة</item>
-        <item quantity="other">%1$d فصل جديدة</item>
+        <item quantity="many">%1$d فصل جديد</item>
+        <item quantity="other">%1$d فصل جديد</item>
     </plurals>
     <plurals name="chapters">
         <item quantity="zero">لا يوجد فصول</item>
