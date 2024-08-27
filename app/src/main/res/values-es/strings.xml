@@ -16,7 +16,7 @@
     <string name="loading_">Cargando…</string>
     <string name="chapter_d_of_d">Capítulo %1$d de %2$d</string>
     <string name="close">Cerrar</string>
-    <string name="try_again">Reintentar</string>
+    <string name="try_again">Inténtalo de nuevo</string>
     <string name="clear_history">Borrar historial</string>
     <string name="nothing_found">No se encontró nada</string>
     <string name="history_is_empty">Aún sin historial</string>
@@ -662,4 +662,16 @@
     <string name="text_history_holder_secondary_filtered">No hay mangas que coincidan con los filtros que seleccionaste</string>
     <string name="connection_ok">La conexión está bien</string>
     <string name="text_empty_holder_secondary_filtered">No hay manga que coincida con los filtros que seleccionaste</string>
+    <string name="invalid_proxy_configuration">Configuración del proxy no válida</string>
+    <string name="show_quick_filters">Mostrar filtros rápidos</string>
+    <string name="show_quick_filters_summary">Proporciona la posibilidad de filtrar listas de manga por ciertos parámetros</string>
+    <string name="invalid_server_address_message">Dirección del servidor no válida</string>
+    <string name="sfw">SFW</string>
+    <string name="minutes_seconds_short">%1$d m %2$d s</string>
+    <string name="too_many_requests_message_retry">Demasiadas peticiones. Inténtalo de nuevo después de %s</string>
+    <string name="retry">Reintentar</string>
+    <string name="seconds_short">%d s</string>
+    <string name="skip_all">Omitir todo</string>
+    <string name="stuck">Fijado</string>
+    <string name="not_in_favorites">No está en favoritos</string>
 </resources>
