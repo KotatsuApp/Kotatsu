@@ -87,7 +87,7 @@ dependencies {
 		exclude group: 'org.json', module: 'json'
 	}
 
-	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.0'
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.10'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0-RC.2'
 
