@@ -1,13 +1,14 @@
 package org.koitharu.kotatsu.filter.ui
 
 import kotlinx.coroutines.flow.StateFlow
+import org.koitharu.kotatsu.core.model.GenericSortOrder
+import org.koitharu.kotatsu.core.model.SortDirection
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.Locale
 
 interface MangaFilter : OnFilterChangedListener {
@@ -18,7 +19,9 @@ interface MangaFilter : OnFilterChangedListener {
 
 	val filterTagsExcluded: StateFlow<FilterProperty<MangaTag>>
 
-	val filterSortOrder: StateFlow<FilterProperty<SortOrder>>
+	val filterSortOrder: StateFlow<FilterProperty<GenericSortOrder>>
+
+	val filterSortDirection: StateFlow<FilterProperty<SortDirection>>
 
 	val filterState: StateFlow<FilterProperty<MangaState>>
 

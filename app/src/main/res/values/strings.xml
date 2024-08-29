@@ -686,4 +686,11 @@
 	<string name="skip_all">Skip all</string>
 	<string name="stuck">Stuck</string>
 	<string name="not_in_favorites">Not in favoites</string>
+	<string name="updated_long_ago">Updated long ago</string>
+	<string name="unpopular">Unpopular</string>
+	<string name="low_rating">Low rating</string>
+	<string name="sort_order_asc">Ascending</string>
+	<string name="sort_order_desc">Descending</string>
+	<string name="by_date">Date</string>
+	<string name="popularity">Popularity</string>
 </resources>

@@ -24,14 +24,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.GenericSortOrder
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.SortDirection
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.ui.model.direction
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.lifecycleScope
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
 import org.koitharu.kotatsu.filter.ui.model.TagCatalogItem
@@ -52,6 +56,7 @@ import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import java.text.Collator
+import java.util.EnumSet
 import java.util.LinkedList
 import java.util.Locale
 import java.util.TreeSet
@@ -131,24 +136,42 @@ class FilterCoordinator @Inject constructor(
 		MutableStateFlow(emptyProperty())
 	}
 
-	override val filterSortOrder: StateFlow<FilterProperty<SortOrder>> = combine(
-		currentState.distinctUntilChangedBy { it.sortOrder },
-		flowOf(repository.sortOrders),
-	) { state, orders ->
-		FilterProperty(
-			availableItems = orders.sortedBy { it.ordinal },
-			selectedItems = setOf(state.sortOrder),
-			isLoading = false,
-			error = null,
-		)
-	}.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, loadingProperty())
+	override val filterSortOrder: StateFlow<FilterProperty<GenericSortOrder>> =
+		currentState.distinctUntilChangedBy { it.sortOrder }.map { state ->
+			val orders = repository.sortOrders
+			FilterProperty(
+				availableItems = orders.mapTo(EnumSet.noneOf(GenericSortOrder::class.java)) {
+					GenericSortOrder.of(it)
+				}.sortedByOrdinal(),
+				selectedItems = setOf(GenericSortOrder.of(state.sortOrder)),
+				isLoading = false,
+				error = null,
+			)
+		}.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, loadingProperty())
+
+	override val filterSortDirection: StateFlow<FilterProperty<SortDirection>> =
+		currentState.distinctUntilChangedBy { it.sortOrder }.map { state ->
+			val orders = repository.sortOrders
+			FilterProperty(
+				availableItems = state.sortOrder.let {
+					val genericOrder = GenericSortOrder.of(it)
+					val result = EnumSet.noneOf(SortDirection::class.java)
+					if (genericOrder.ascending in orders) result.add(SortDirection.ASC)
+					if (genericOrder.descending in orders) result.add(SortDirection.DESC)
+					result
+				}?.sortedByOrdinal().orEmpty(),
+				selectedItems = setOf(state.sortOrder.direction),
+				isLoading = false,
+				error = null,
+			)
+		}.stateIn(coroutineScope + Dispatchers.Default, SharingStarted.Lazily, loadingProperty())
 
 	override val filterState: StateFlow<FilterProperty<MangaState>> = combine(
 		currentState.distinctUntilChangedBy { it.states },
 		flowOf(repository.states),
 	) { state, states ->
 		FilterProperty(
-			availableItems = states.sortedBy { it.ordinal },
+			availableItems = states.sortedByOrdinal(),
 			selectedItems = state.states,
 			isLoading = false,
 			error = null,
@@ -160,7 +183,7 @@ class FilterCoordinator @Inject constructor(
 		flowOf(repository.contentRatings),
 	) { rating, ratings ->
 		FilterProperty(
-			availableItems = ratings.sortedBy { it.ordinal },
+			availableItems = ratings.sortedByOrdinal(),
 			selectedItems = rating.contentRating,
 			isLoading = false,
 			error = null,

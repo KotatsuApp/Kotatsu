@@ -31,7 +31,7 @@ class ExternalPluginContentSource(
 
 	@Blocking
 	@WorkerThread
-	fun getList(offset: Int, filter: MangaListFilter?): List<Manga> = runCatchingCompatibility {
+	fun getList(offset: Int, filter: MangaListFilter?): List<Manga> {
 		val uri = "content://${source.authority}/manga".toUri().buildUpon()
 		uri.appendQueryParameter("offset", offset.toString())
 		when (filter) {
@@ -49,7 +49,7 @@ class ExternalPluginContentSource(
 
 			null -> Unit
 		}
-		contentResolver.query(uri.build(), null, null, null, filter?.sortOrder?.name)
+		return contentResolver.query(uri.build(), null, null, null, filter?.sortOrder?.name)
 			.safe()
 			.use { cursor ->
 				val result = ArrayList<Manga>(cursor.count)
@@ -64,10 +64,10 @@ class ExternalPluginContentSource(
 
 	@Blocking
 	@WorkerThread
-	fun getDetails(manga: Manga) = runCatchingCompatibility {
+	fun getDetails(manga: Manga): Manga {
 		val chapters = queryChapters(manga.url)
 		val details = queryDetails(manga.url)
-		Manga(
+		return Manga(
 			id = manga.id,
 			title = details.title.ifBlank { manga.title },
 			altTitle = details.altTitle.ifNullOrEmpty { manga.altTitle },
@@ -88,12 +88,12 @@ class ExternalPluginContentSource(
 
 	@Blocking
 	@WorkerThread
-	fun getPages(chapter: MangaChapter): List<MangaPage> = runCatchingCompatibility {
+	fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val uri = "content://${source.authority}/chapters".toUri()
 			.buildUpon()
 			.appendPath(chapter.url)
 			.build()
-		contentResolver.query(uri, null, null, null, null)
+		return contentResolver.query(uri, null, null, null, null)
 			.safe()
 			.use { cursor ->
 				val result = ArrayList<MangaPage>(cursor.count)
@@ -113,9 +113,9 @@ class ExternalPluginContentSource(
 
 	@Blocking
 	@WorkerThread
-	fun getTags(): Set<MangaTag> = runCatchingCompatibility {
+	fun getTags(): Set<MangaTag> {
 		val uri = "content://${source.authority}/tags".toUri()
-		contentResolver.query(uri, null, null, null, null)
+		return contentResolver.query(uri, null, null, null, null)
 			.safe()
 			.use { cursor ->
 				val result = ArraySet<MangaTag>(cursor.count)
@@ -212,7 +212,7 @@ class ExternalPluginContentSource(
 			}
 	}
 
-	private fun SafeCursor.getManga() = Manga(
+	private fun ExternalPluginCursor.getManga() = Manga(
 		id = getLong(COLUMN_ID),
 		title = getString(COLUMN_TITLE),
 		altTitle = getStringOrNull(COLUMN_ALT_TITLE),
@@ -233,15 +233,10 @@ class ExternalPluginContentSource(
 		source = source,
 	)
 
-	private inline fun <R> runCatchingCompatibility(block: () -> R): R = try {
-		block()
-	} catch (e: NoSuchElementException) { // unknown column name
-		throw IncompatiblePluginException(source.name, e)
-	} catch (e: IllegalArgumentException) {
-		throw IncompatiblePluginException(source.name, e)
-	}
-
-	private fun Cursor?.safe() = SafeCursor(this ?: throw IncompatiblePluginException(source.name, null))
+	private fun Cursor?.safe() = ExternalPluginCursor(
+		source = source,
+		cursor = this ?: throw IncompatiblePluginException(source.name, null),
+	)
 
 	class MangaSourceCapabilities(
 		val availableSortOrders: Set<SortOrder>,

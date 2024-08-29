@@ -2,13 +2,18 @@ package org.koitharu.kotatsu.core.parser.external
 
 import android.database.Cursor
 import android.database.CursorWrapper
+import org.koitharu.kotatsu.core.exceptions.IncompatiblePluginException
 import org.koitharu.kotatsu.core.util.ext.getBoolean
 
-class SafeCursor(cursor: Cursor) : CursorWrapper(cursor) {
+class ExternalPluginCursor(private val source: ExternalMangaSource, cursor: Cursor) : CursorWrapper(cursor) {
 
-	fun getString(columnName: String): String {
-		return getString(getColumnIndexOrThrow(columnName))
+	override fun getColumnIndexOrThrow(columnName: String?): Int = try {
+		super.getColumnIndexOrThrow(columnName)
+	} catch (e: Exception) {
+		throw IncompatiblePluginException(source.name, e)
 	}
+
+	fun getString(columnName: String): String = getString(getColumnIndexOrThrow(columnName))
 
 	fun getStringOrNull(columnName: String): String? {
 		val columnIndex = getColumnIndex(columnName)
@@ -19,9 +24,7 @@ class SafeCursor(cursor: Cursor) : CursorWrapper(cursor) {
 		}
 	}
 
-	fun getBoolean(columnName: String): Boolean {
-		return getBoolean(getColumnIndexOrThrow(columnName))
-	}
+	fun getBoolean(columnName: String): Boolean = getBoolean(getColumnIndexOrThrow(columnName))
 
 	fun getBooleanOrDefault(columnName: String, defaultValue: Boolean): Boolean {
 		val columnIndex = getColumnIndex(columnName)
@@ -32,9 +35,7 @@ class SafeCursor(cursor: Cursor) : CursorWrapper(cursor) {
 		}
 	}
 
-	fun getInt(columnName: String): Int {
-		return getInt(getColumnIndexOrThrow(columnName))
-	}
+	fun getInt(columnName: String): Int = getInt(getColumnIndexOrThrow(columnName))
 
 	fun getIntOrDefault(columnName: String, defaultValue: Int): Int {
 		val columnIndex = getColumnIndex(columnName)
@@ -45,9 +46,7 @@ class SafeCursor(cursor: Cursor) : CursorWrapper(cursor) {
 		}
 	}
 
-	fun getLong(columnName: String): Long {
-		return getLong(getColumnIndexOrThrow(columnName))
-	}
+	fun getLong(columnName: String): Long = getLong(getColumnIndexOrThrow(columnName))
 
 	fun getLongOrDefault(columnName: String, defaultValue: Long): Long {
 		val columnIndex = getColumnIndex(columnName)
@@ -58,9 +57,7 @@ class SafeCursor(cursor: Cursor) : CursorWrapper(cursor) {
 		}
 	}
 
-	fun getFloat(columnName: String): Float {
-		return getFloat(getColumnIndexOrThrow(columnName))
-	}
+	fun getFloat(columnName: String): Float = getFloat(getColumnIndexOrThrow(columnName))
 
 	fun getFloatOrDefault(columnName: String, defaultValue: Float): Float {
 		val columnIndex = getColumnIndex(columnName)

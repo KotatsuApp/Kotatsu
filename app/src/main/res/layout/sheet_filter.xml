@@ -39,6 +39,7 @@
 
 			<com.google.android.material.card.MaterialCardView
 				android:id="@+id/card_order"
+				style="?materialCardViewOutlinedStyle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_normal"
@@ -54,6 +55,37 @@
 
 			</com.google.android.material.card.MaterialCardView>
 
+			<com.google.android.material.button.MaterialButtonToggleGroup
+				android:id="@+id/layout_sort_direction"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="12dp"
+				android:baselineAligned="false"
+				android:orientation="horizontal"
+				android:weightSum="2"
+				app:selectionRequired="true"
+				app:singleSelection="true">
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_order_asc"
+					style="@style/Widget.Kotatsu.ToggleButton"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/sort_order_asc"
+					app:icon="@drawable/ic_sort_asc" />
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_order_desc"
+					style="@style/Widget.Kotatsu.ToggleButton"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/sort_order_desc"
+					app:icon="@drawable/ic_sort_desc" />
+
+			</com.google.android.material.button.MaterialButtonToggleGroup>
+
 			<TextView
 				android:id="@+id/textView_locale_title"
 				android:layout_width="match_parent"
@@ -67,6 +99,7 @@
 
 			<com.google.android.material.card.MaterialCardView
 				android:id="@+id/card_locale"
+				style="?materialCardViewOutlinedStyle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_normal"
