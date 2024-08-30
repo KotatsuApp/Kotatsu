@@ -663,4 +663,21 @@
     <string name="text_empty_holder_secondary_filtered">Няма мангі, якая адпавядае абраным вамі фільтрам</string>
     <string name="connection_ok">Злучэнне ў парадку</string>
     <string name="invalid_proxy_configuration">Няправільная канфігурацыя проксі</string>
+    <string name="invalid_server_address_message">Няверны адрас сервера</string>
+    <string name="show_quick_filters_summary">Дае магчымасць фільтраваць спісы мангі па пэўных параметрах</string>
+    <string name="sfw">SFW</string>
+    <string name="seconds_short">%d с</string>
+    <string name="minutes_seconds_short">%1$d хв %2$d с</string>
+    <string name="show_quick_filters">Паказаць хуткія фільтры</string>
+    <string name="not_in_favorites">Няма ў абраных</string>
+    <string name="updated_long_ago">Абноўлена даўно</string>
+    <string name="unpopular">Непапулярны</string>
+    <string name="low_rating">Нізкі рэйтынг</string>
+    <string name="sort_order_asc">Па ўзрастанні</string>
+    <string name="sort_order_desc">Па змяншэнні</string>
+    <string name="by_date">Дата</string>
+    <string name="popularity">Папулярнасць</string>
+    <string name="retry">Паўтарыць спробу</string>
+    <string name="too_many_requests_message_retry">Занадта шмат запытаў. Паспрабуйце яшчэ раз пасля %s</string>
+    <string name="skip_all">Прапусціць усе</string>
 </resources>
