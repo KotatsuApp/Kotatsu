@@ -664,4 +664,13 @@
     <string name="invalid_proxy_configuration">Błędna konfiguracja serwera proxy</string>
     <string name="external_source">Zewnętrzne/wtyczka</string>
     <string name="plugin_incompatible">Niekompatybilna wtyczka lub błąd wewnętrzny. Upewnij się, że używasz najnowszej wersji wtyczki i Kotatsu</string>
+    <string name="invalid_server_address_message">Nieprawidłowy adres serwera</string>
+    <string name="too_many_requests_message_retry">Zbyt wiele żądań. Spróbuj ponownie za %s</string>
+    <string name="seconds_short">%d s</string>
+    <string name="minutes_seconds_short">%1$d min %2$d s</string>
+    <string name="sfw">SFW</string>
+    <string name="skip_all">Pomiń wszystko</string>
+    <string name="stuck">Utknął</string>
+    <string name="not_in_favorites">Nie w ulubionych</string>
+    <string name="retry">Ponów</string>
 </resources>
