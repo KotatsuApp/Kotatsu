@@ -674,4 +674,11 @@
     <string name="retry">Thử lại</string>
     <string name="stuck">Kẹt đứng</string>
     <string name="not_in_favorites">Không có ở trong mục yêu thích của bạn</string>
+    <string name="unpopular">Không quá nổi bật</string>
+    <string name="low_rating">Được đánh giá thấp</string>
+    <string name="sort_order_asc">Tăng dần</string>
+    <string name="sort_order_desc">Giảm dần</string>
+    <string name="by_date">Theo ngày</string>
+    <string name="popularity">Theo mức độ phổ biến</string>
+    <string name="updated_long_ago">Đã được cập nhật từ trước đó</string>
 </resources>
