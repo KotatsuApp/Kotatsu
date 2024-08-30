@@ -674,4 +674,11 @@
     <string name="too_many_requests_message_retry">Çok fazla istek. %s sonra tekrar deneyin</string>
     <string name="skip_all">Tümünü atla</string>
     <string name="not_in_favorites">Favorilerde yok</string>
+    <string name="unpopular">Popüler değil</string>
+    <string name="low_rating">Düşük puan</string>
+    <string name="updated_long_ago">Uzun zaman önce güncellendi</string>
+    <string name="sort_order_asc">Artan</string>
+    <string name="by_date">Tarih</string>
+    <string name="sort_order_desc">Azalan</string>
+    <string name="popularity">Popülerlik</string>
 </resources>
