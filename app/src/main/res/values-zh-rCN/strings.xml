@@ -674,4 +674,11 @@
     <string name="retry">重试</string>
     <string name="minutes_seconds_short">%1$d 分 %2$d 秒</string>
     <string name="not_in_favorites">不在收藏中</string>
+    <string name="updated_long_ago">很久之前更新</string>
+    <string name="low_rating">低评分</string>
+    <string name="unpopular">低人气</string>
+    <string name="sort_order_asc">升序</string>
+    <string name="sort_order_desc">降序</string>
+    <string name="by_date">日期</string>
+    <string name="popularity">人气</string>
 </resources>
