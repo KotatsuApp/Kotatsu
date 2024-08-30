@@ -673,4 +673,8 @@
     <string name="minutes_seconds_short">%1$d мин %2$d с</string>
     <string name="show_quick_filters_summary">Пружа могућност филтрирања манга листа према одређеним параметрима</string>
     <string name="show_quick_filters">Прикажи брзе филтере</string>
+    <string name="updated_long_ago">Ажурирано давно</string>
+    <string name="unpopular">Непопуларно</string>
+    <string name="by_date">Датум</string>
+    <string name="popularity">Популарност</string>
 </resources>

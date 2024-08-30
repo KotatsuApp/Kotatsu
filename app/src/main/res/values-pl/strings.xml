@@ -673,4 +673,9 @@
     <string name="stuck">Utknął</string>
     <string name="not_in_favorites">Nie w ulubionych</string>
     <string name="retry">Ponów</string>
+    <string name="unpopular">Niepopularny</string>
+    <string name="low_rating">Niska ocena</string>
+    <string name="by_date">Data</string>
+    <string name="popularity">Popularność</string>
+    <string name="updated_long_ago">Zaktualizowano dawno temu</string>
 </resources>
