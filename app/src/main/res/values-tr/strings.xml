@@ -659,7 +659,6 @@
     <string name="chapters_left">Kalan bölüm</string>
     <string name="external_source">Harici/eklenti</string>
     <string name="plugin_incompatible">Uyumsuz eklenti veya dahili hata. Eklentinin ve Kotatsu\'nun en son sürümünü kullandığınızdan emin olun</string>
-    <string name="text_history_holder_secondary_filtered">Seçtiğiniz filtrelerle eşleşen manga yok</string>
     <string name="text_empty_holder_secondary_filtered">Seçtiğiniz filtrelerle eşleşen manga yok</string>
     <string name="connection_ok">Bağlantı tamam</string>
     <string name="invalid_proxy_configuration">Geçersiz vekil sunucu yapılandırması</string>

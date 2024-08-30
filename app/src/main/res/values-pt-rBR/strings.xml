@@ -658,6 +658,5 @@
     <string name="sources_unpinned">Fontes desfixadas</string>
     <string name="tracker_debug_info">Checando por novos logs de capítulos</string>
     <string name="tracker_debug_info_summary">Informações de Debug sobre a checagem de fundo para novos capítulos</string>
-    <string name="text_history_holder_secondary_filtered">Não há obras que correspondam aos filtros que você selecionou</string>
     <string name="plugin_incompatible">Plugin incompatível ou erro interno. Certifique-se de que está usando a versão mais recente do plugin e do Kotatsu</string>
 </resources>

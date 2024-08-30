@@ -617,6 +617,5 @@
     <string name="all_languages">Összes nyelv</string>
     <string name="screenshots_block_incognito">Blokkold inkognitó módban</string>
     <string name="crop_pages">Lap kivágása</string>
-    <string name="text_history_holder_secondary_filtered">Nincsen megfelelő manga a beállított szűrőkhöz</string>
     <string name="image_server">Előnyben részesített kiszolgáló</string>
 </resources>

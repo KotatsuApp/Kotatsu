@@ -658,7 +658,6 @@
     <string name="percent_read">Porsyentong nabasa</string>
     <string name="chapters_read">Kabanatang nabasa</string>
     <string name="plugin_incompatible">Hindi tugmang plugin o internal na error. Tiyaking ginagamit mo ang pinakabagong bersyon ng plugin at Kotatsu</string>
-    <string name="text_history_holder_secondary_filtered">Walang manga na tumutugma sa mga filter na iyong pinili</string>
     <string name="text_empty_holder_secondary_filtered">Walang manga na tumutugma sa mga filter na iyong pinili</string>
     <string name="connection_ok">Maayos ang koneksyon</string>
     <string name="invalid_proxy_configuration">Imbalidong configuaration sa proxy</string>

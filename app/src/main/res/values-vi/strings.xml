@@ -659,7 +659,6 @@
     <string name="chapters_left">Chương còn lại</string>
     <string name="external_source">Nguồn / Plugin bên ngoài</string>
     <string name="plugin_incompatible">Plugin bị lỗi hoặc không phù hợp. Hãy đảm bảo rằng bạn đang sử dụng phiên bản mới nhất của Kotatsu hoặc của Plugin đó</string>
-    <string name="text_history_holder_secondary_filtered">Không có bộ truyện nào phù hợp với bộ lọc mà bạn đã chọn</string>
     <string name="text_empty_holder_secondary_filtered">Không có bộ truyện nào phù hợp với bộ lọc của bạn ở đây ¯\\_(ツ)_/¯</string>
     <string name="connection_ok">Kết nối rất OK ¯\\_(ツ)_/¯</string>
     <string name="invalid_proxy_configuration">Cấu hình Proxy này không hợp lệ</string>

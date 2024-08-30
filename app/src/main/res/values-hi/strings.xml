@@ -659,7 +659,6 @@
     <string name="external_source">बाहरी/प्लगइन</string>
     <string name="chapters_left">अध्याय शेष</string>
     <string name="plugin_incompatible">असंगत प्लगइन या आंतरिक त्रुटि। सुनिश्चित करें कि आप प्लगइन और कोटात्सु के नवीनतम संस्करण का उपयोग कर रहे हैं</string>
-    <string name="text_history_holder_secondary_filtered">चुने गए फिल्टर से मेल खाने वाला कोई मंगा नहीं है</string>
     <string name="text_empty_holder_secondary_filtered">आपके द्वारा चयनित फिल्टर से मेल खाने वाला कोई मंगा नहीं है</string>
     <string name="connection_ok">कनेक्शन ठीक है</string>
     <string name="show_quick_filters">शीघ्र फिल्टर दिखाएं</string>

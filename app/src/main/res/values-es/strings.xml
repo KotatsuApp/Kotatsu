@@ -659,7 +659,6 @@
     <string name="chapters_left">Capítulos restantes</string>
     <string name="external_source">Externo/plugin</string>
     <string name="plugin_incompatible">Complemento incompatible o error interno. Asegúrate de estar usando la última versión del complemento y de Kotatsu</string>
-    <string name="text_history_holder_secondary_filtered">No hay mangas que coincidan con los filtros que seleccionaste</string>
     <string name="connection_ok">La conexión está bien</string>
     <string name="text_empty_holder_secondary_filtered">No hay manga que coincida con los filtros que seleccionaste</string>
     <string name="invalid_proxy_configuration">Configuración del proxy no válida</string>

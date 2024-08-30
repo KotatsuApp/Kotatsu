@@ -659,7 +659,6 @@
     <string name="chapters_left">Астатнія раздзелы</string>
     <string name="external_source">Знешні/плагін</string>
     <string name="plugin_incompatible">Несумяшчальны плягін або ўнутраная памылка. Пераканайцеся, што вы карыстаецеся апошнюю версію плагіна і Kotatsu</string>
-    <string name="text_history_holder_secondary_filtered">Няма мангі, якая адпавядае абраным вамі фільтрам</string>
     <string name="text_empty_holder_secondary_filtered">Няма мангі, якая адпавядае абраным вамі фільтрам</string>
     <string name="connection_ok">Злучэнне ў парадку</string>
     <string name="invalid_proxy_configuration">Няправільная канфігурацыя проксі</string>

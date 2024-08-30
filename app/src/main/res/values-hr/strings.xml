@@ -647,7 +647,6 @@
     <string name="source_unpinned">Izvor otkvačen</string>
     <string name="recent_sources">Nedavni izvori</string>
     <string name="external_source">Eksterni/dodatak</string>
-    <string name="text_history_holder_secondary_filtered">Nema manga koji odgovaraju odabranim filtrima</string>
     <string name="image_server">Preferirani server slika</string>
     <string name="sources_pinned">Izvori prikvačeni</string>
     <string name="percent_read">Postotak pročitano</string>

@@ -659,7 +659,6 @@
     <string name="chapters_left">剩余章节数</string>
     <string name="external_source">外部插件</string>
     <string name="plugin_incompatible">插件不兼容或出现了外部错误，请确保你已经将 Kotatsu 以及插件更新至最新版本</string>
-    <string name="text_history_holder_secondary_filtered">没有匹配到经筛选后的漫画</string>
     <string name="connection_ok">连接正常</string>
     <string name="text_empty_holder_secondary_filtered">无筛选结果</string>
     <string name="invalid_proxy_configuration">无效代理配置</string>
