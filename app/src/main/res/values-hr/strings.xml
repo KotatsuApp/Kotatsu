@@ -662,4 +662,18 @@
     <string name="show_quick_filters_summary">Pruža mogućnost filtriranja popisa manga prema određenim parametrima</string>
     <string name="invalid_server_address_message">Nevažeća adresa servera</string>
     <string name="sfw">SFW</string>
+    <string name="retry">Pokušajte ponovno</string>
+    <string name="too_many_requests_message_retry">Previše zahtjeva. Pokušajte ponovno nakon %s</string>
+    <string name="seconds_short">%d s</string>
+    <string name="minutes_seconds_short">%1$d min %2$d s</string>
+    <string name="skip_all">Preskoči sve</string>
+    <string name="not_in_favorites">Nije u favoritima</string>
+    <string name="unpopular">Nepopularno</string>
+    <string name="stuck">Zastoj</string>
+    <string name="low_rating">Niska ocjena</string>
+    <string name="sort_order_asc">Uzlazno</string>
+    <string name="sort_order_desc">Silazno</string>
+    <string name="by_date">Datum</string>
+    <string name="popularity">Popularnost</string>
+    <string name="updated_long_ago">Aktualizirano davno</string>
 </resources>
