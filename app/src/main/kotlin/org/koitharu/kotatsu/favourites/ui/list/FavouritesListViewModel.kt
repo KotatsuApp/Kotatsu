@@ -82,17 +82,7 @@ class FavouritesListViewModel @Inject constructor(
 		observeListModeWithTriggers(),
 		refreshTrigger,
 	) { list, filters, mode, _ ->
-		when {
-			list.isEmpty() -> if (filters.isEmpty()) {
-				listOf(getEmptyState(hasFilters = false))
-			} else {
-				listOfNotNull(quickFilter.filterItem(filters), getEmptyState(hasFilters = true))
-			}
-
-			else -> {
-				list.mapList(mode, filters).also { isReady.set(true) }
-			}
-		}
+		list.mapList(mode, filters).also { isReady.set(true) }
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
@@ -144,6 +134,13 @@ class FavouritesListViewModel @Inject constructor(
 			mapToLocal()
 		} else {
 			this
+		}
+		if (list.isEmpty()) {
+			return if (filters.isEmpty()) {
+				listOf(getEmptyState(hasFilters = false))
+			} else {
+				listOfNotNull(quickFilter.filterItem(filters), getEmptyState(hasFilters = true))
+			}
 		}
 		val result = ArrayList<ListModel>(list.size + 1)
 		quickFilter.filterItem(filters)?.let(result::add)

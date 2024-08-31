@@ -96,20 +96,7 @@ class HistoryListViewModel @Inject constructor(
 		observeListModeWithTriggers(),
 		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
 	) { filters, list, grouped, mode, incognito ->
-		when {
-			list.isEmpty() -> {
-				if (filters.isEmpty()) {
-					listOf(getEmptyState(hasFilters = false))
-				} else {
-					listOfNotNull(quickFilter.filterItem(filters), getEmptyState(hasFilters = true))
-				}
-			}
-
-			else -> {
-				isReady.set(true)
-				mapList(list, grouped, mode, filters, incognito)
-			}
-		}
+		mapList(list, grouped, mode, filters, incognito).also { isReady.set(true) }
 	}.onStart {
 		loadingCounter.increment()
 	}.onFirst {
@@ -171,6 +158,13 @@ class HistoryListViewModel @Inject constructor(
 			historyList.mapToLocal()
 		} else {
 			historyList
+		}
+		if (list.isEmpty()) {
+			return if (filters.isEmpty()) {
+				listOf(getEmptyState(hasFilters = false))
+			} else {
+				listOfNotNull(quickFilter.filterItem(filters), getEmptyState(hasFilters = true))
+			}
 		}
 		val result = ArrayList<ListModel>((if (grouped) (list.size * 1.4).toInt() else list.size) + 2)
 		quickFilter.filterItem(filters)?.let(result::add)
