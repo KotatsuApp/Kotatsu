@@ -19,6 +19,7 @@
 	<string name="chapter_d_of_d">Chapter %1$d of %2$d</string>
 	<string name="close">Close</string>
 	<string name="try_again">Try again</string>
+	<!-- Should be short -->
 	<string name="retry">Retry</string>
 	<string name="clear_history">Clear history</string>
 	<string name="nothing_found">Nothing found</string>

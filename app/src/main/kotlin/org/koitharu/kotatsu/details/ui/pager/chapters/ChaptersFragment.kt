@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.ancestors
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
@@ -28,10 +28,10 @@ import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
-import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.details.ui.withVolumeHeaders
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -40,11 +40,12 @@ import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import kotlin.math.roundToInt
 
+@AndroidEntryPoint
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
 	OnListItemClickListener<ChapterListItem> {
 
-	private val viewModel by activityViewModels<DetailsViewModel>()
+	private val viewModel by ChaptersPagesViewModel.ActivityVMLazy(this)
 
 	private var chaptersAdapter: ChaptersAdapter? = null
 	private var selectionController: ListSelectionController? = null
@@ -107,7 +108,7 @@ class ChaptersFragment :
 		} else {
 			startActivity(
 				IntentBuilder(view.context)
-					.manga(viewModel.manga.value ?: return)
+					.manga(viewModel.getMangaOrNull() ?: return)
 					.state(ReaderState(item.chapter.id, 0, 0))
 					.build(),
 			)

@@ -164,7 +164,7 @@ class ReaderActivity :
 	}
 
 	override fun getParentActivityIntent(): Intent? {
-		val manga = viewModel.manga?.toManga() ?: return null
+		val manga = viewModel.getMangaOrNull() ?: return null
 		return DetailsActivity.newIntent(this, manga)
 	}
 

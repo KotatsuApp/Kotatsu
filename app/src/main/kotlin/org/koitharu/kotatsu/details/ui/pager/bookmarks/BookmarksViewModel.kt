@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -32,7 +33,7 @@ import javax.inject.Inject
 class BookmarksViewModel @Inject constructor(
 	private val bookmarksRepository: BookmarksRepository,
 	settings: AppSettings,
-) : BaseViewModel(), FlowCollector<Manga?> {
+) : BaseViewModel(), FlowCollector<MangaDetails?> {
 
 	private val manga = MutableStateFlow<Manga?>(null)
 	val onActionDone = MutableEventFlow<ReversibleAction>()
@@ -50,8 +51,8 @@ class BookmarksViewModel @Inject constructor(
 		.filterNotNull()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, listOf(LoadingState))
 
-	override suspend fun emit(value: Manga?) {
-		manga.value = value
+	override suspend fun emit(value: MangaDetails?) {
+		manga.value = value?.toManga()
 	}
 
 	fun removeBookmarks(ids: Set<Long>) {

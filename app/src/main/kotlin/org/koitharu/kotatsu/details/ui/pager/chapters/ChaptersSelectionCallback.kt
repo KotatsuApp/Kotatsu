@@ -11,11 +11,11 @@ import org.koitharu.kotatsu.core.ui.list.BaseListSelectionCallback
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.toCollection
 import org.koitharu.kotatsu.core.util.ext.toSet
-import org.koitharu.kotatsu.details.ui.DetailsViewModel
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 
 class ChaptersSelectionCallback(
-	private val viewModel: DetailsViewModel,
+	private val viewModel: ChaptersPagesViewModel,
 	recyclerView: RecyclerView,
 ) : BaseListSelectionCallback(recyclerView) {
 
@@ -60,7 +60,7 @@ class ChaptersSelectionCallback(
 
 			R.id.action_delete -> {
 				val ids = controller.peekCheckedIds()
-				val manga = viewModel.manga.value
+				val manga = viewModel.getMangaOrNull()
 				when {
 					ids.isEmpty() || manga == null -> Unit
 					ids.size == manga.chapters?.size -> viewModel.deleteLocal()

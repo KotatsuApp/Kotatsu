@@ -72,7 +72,6 @@ import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
-import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
@@ -162,7 +161,7 @@ class DetailsActivity :
 		}
 		TitleExpandListener(viewBinding.textViewTitle).attach()
 
-		viewModel.details.filterNotNull().observe(this, ::onMangaUpdated)
+		viewModel.mangaDetails.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
 		viewModel.onError
 			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
