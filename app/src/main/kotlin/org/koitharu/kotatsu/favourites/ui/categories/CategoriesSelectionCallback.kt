@@ -4,10 +4,9 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.view.ActionMode
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
-import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 
 class CategoriesSelectionCallback(
 	private val recyclerView: RecyclerView,
@@ -74,15 +73,15 @@ class CategoriesSelectionCallback(
 	}
 
 	private fun confirmDeleteCategories(ids: Set<Long>, mode: ActionMode) {
-		val context = recyclerView.context
-		MaterialAlertDialogBuilder(context, DIALOG_THEME_CENTERED)
-			.setMessage(R.string.categories_delete_confirm)
-			.setTitle(R.string.remove_category)
-			.setIcon(R.drawable.ic_delete)
-			.setNegativeButton(android.R.string.cancel, null)
-			.setPositiveButton(R.string.remove) { _, _ ->
+		buildAlertDialog(recyclerView.context, isCentered = true) {
+			setMessage(R.string.categories_delete_confirm)
+			setTitle(R.string.remove_category)
+			setIcon(R.drawable.ic_delete)
+			setNegativeButton(android.R.string.cancel, null)
+			setPositiveButton(R.string.remove) { _, _ ->
 				viewModel.deleteCategories(ids)
 				mode.finish()
-			}.show()
+			}
+		}.show()
 	}
 }

@@ -7,7 +7,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ui.dialog.CheckBoxAlertDialog
+import org.koitharu.kotatsu.core.ui.dialog.RememberCheckListener
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
+import org.koitharu.kotatsu.core.ui.dialog.setCheckbox
 
 class FeedMenuProvider(
 	private val snackbarHost: View,
@@ -38,15 +40,17 @@ class FeedMenuProvider(
 		}
 
 		R.id.action_clear_feed -> {
-			CheckBoxAlertDialog.Builder(context)
-				.setTitle(R.string.clear_updates_feed)
-				.setMessage(R.string.text_clear_updates_feed_prompt)
-				.setNegativeButton(android.R.string.cancel, null)
-				.setCheckBoxChecked(true)
-				.setCheckBoxText(R.string.clear_new_chapters_counters)
-				.setPositiveButton(R.string.clear) { _, isChecked ->
-					viewModel.clearFeed(isChecked)
-				}.create().show()
+			val checkListener = RememberCheckListener(true)
+			buildAlertDialog(context, isCentered = true) {
+				setIcon(R.drawable.ic_clear_all)
+				setTitle(R.string.clear_updates_feed)
+				setMessage(R.string.text_clear_updates_feed_prompt)
+				setNegativeButton(android.R.string.cancel, null)
+				setCheckbox(R.string.clear_new_chapters_counters, true, checkListener)
+				setPositiveButton(R.string.clear) { _, _ ->
+					viewModel.clearFeed(checkListener.isChecked)
+				}
+			}.show()
 			true
 		}
 

@@ -4,7 +4,8 @@ import android.content.DialogInterface
 import android.view.View
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.ids
-import org.koitharu.kotatsu.core.ui.dialog.RecyclerViewAlertDialog
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
+import org.koitharu.kotatsu.core.ui.dialog.setRecyclerViewList
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.download.ui.dialog.DownloadOption
 import org.koitharu.kotatsu.download.ui.dialog.downloadOptionAD
@@ -53,16 +54,14 @@ class DownloadDialogHelper(
 			callback.onItemClick(item, host)
 			dialog?.dismiss()
 		}
-		dialog = RecyclerViewAlertDialog.Builder<DownloadOption>(host.context)
-			.addAdapterDelegate(downloadOptionAD(listener))
-			.setCancelable(true)
-			.setTitle(R.string.download)
-			.setNegativeButton(android.R.string.cancel)
-			.setNeutralButton(R.string.settings) { _, _ ->
+		dialog = buildAlertDialog(host.context) {
+			setCancelable(true)
+			setTitle(R.string.download)
+			setNegativeButton(android.R.string.cancel, null)
+			setNeutralButton(R.string.settings) { _, _ ->
 				host.context.startActivity(SettingsActivity.newDownloadsSettingsIntent(host.context))
 			}
-			.setItems(options)
-			.create()
-			.also { it.show() }
+			setRecyclerViewList(options, downloadOptionAD(listener))
+		}.also { it.show() }
 	}
 }

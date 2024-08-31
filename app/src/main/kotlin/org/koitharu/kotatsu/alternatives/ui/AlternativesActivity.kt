@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import coil.ImageLoader
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
@@ -18,8 +17,8 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityAlternativesBinding
@@ -89,22 +88,23 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 	}
 
 	private fun confirmMigration(target: Manga) {
-		MaterialAlertDialogBuilder(this, DIALOG_THEME_CENTERED)
-			.setIcon(R.drawable.ic_replace)
-			.setTitle(R.string.manga_migration)
-			.setMessage(
+		buildAlertDialog(this, isCentered = true) {
+			setIcon(R.drawable.ic_replace)
+			setTitle(R.string.manga_migration)
+			setMessage(
 				getString(
 					R.string.migrate_confirmation,
 					viewModel.manga.title,
-					viewModel.manga.source.getTitle(this),
+					viewModel.manga.source.getTitle(context),
 					target.title,
-					target.source.getTitle(this),
+					target.source.getTitle(context),
 				),
 			)
-			.setNegativeButton(android.R.string.cancel, null)
-			.setPositiveButton(R.string.migrate) { _, _ ->
+			setNegativeButton(android.R.string.cancel, null)
+			setPositiveButton(R.string.migrate) { _, _ ->
 				viewModel.migrate(target)
-			}.show()
+			}
+		}.show()
 	}
 
 	companion object {

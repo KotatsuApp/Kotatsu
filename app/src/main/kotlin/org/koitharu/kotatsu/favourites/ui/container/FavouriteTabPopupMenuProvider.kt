@@ -5,9 +5,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 
@@ -41,13 +40,12 @@ class FavouriteTabPopupMenuProvider(
 	}
 
 	private fun confirmDelete() {
-		MaterialAlertDialogBuilder(context, DIALOG_THEME_CENTERED)
-			.setMessage(R.string.categories_delete_confirm)
-			.setTitle(R.string.remove_category)
-			.setIcon(R.drawable.ic_delete)
-			.setNegativeButton(android.R.string.cancel, null)
-			.setPositiveButton(R.string.remove) { _, _ ->
-				viewModel.deleteCategory(categoryId)
-			}.show()
+		buildAlertDialog(context, isCentered = true) {
+			setMessage(R.string.categories_delete_confirm)
+			setTitle(R.string.remove_category)
+			setIcon(R.drawable.ic_delete)
+			setNegativeButton(android.R.string.cancel, null)
+			setPositiveButton(R.string.remove) { _, _ -> viewModel.deleteCategory(categoryId) }
+		}.show()
 	}
 }

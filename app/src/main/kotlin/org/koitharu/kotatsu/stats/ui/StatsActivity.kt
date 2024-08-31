@@ -1,13 +1,11 @@
 package org.koitharu.kotatsu.stats.ui
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
 import android.widget.CompoundButton
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
@@ -17,16 +15,15 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import coil.ImageLoader
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.KotatsuColors
-import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -167,14 +164,13 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 	}
 
 	private fun showClearConfirmDialog() {
-		MaterialAlertDialogBuilder(this, DIALOG_THEME_CENTERED)
-			.setMessage(R.string.clear_stats_confirm)
-			.setTitle(R.string.clear_stats)
-			.setIcon(R.drawable.ic_delete)
-			.setNegativeButton(android.R.string.cancel, null)
-			.setPositiveButton(R.string.clear) { _, _ ->
-				viewModel.clearStats()
-			}.show()
+		buildAlertDialog(this, isCentered = true) {
+			setMessage(R.string.clear_stats_confirm)
+			setTitle(R.string.clear_stats)
+			setIcon(R.drawable.ic_delete_all)
+			setNegativeButton(android.R.string.cancel, null)
+			setPositiveButton(R.string.clear) { _, _ -> viewModel.clearStats() }
+		}.show()
 	}
 
 	private fun showPeriodSelector() {
