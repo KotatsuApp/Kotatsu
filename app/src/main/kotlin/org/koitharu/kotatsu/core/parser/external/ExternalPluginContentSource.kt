@@ -36,8 +36,8 @@ class ExternalPluginContentSource(
 		uri.appendQueryParameter("offset", offset.toString())
 		when (filter) {
 			is MangaListFilter.Advanced -> {
-				filter.tags.forEach { uri.appendQueryParameter("tag_include", it.key) }
-				filter.tagsExclude.forEach { uri.appendQueryParameter("tag_exclude", it.key) }
+				filter.tags.forEach { uri.appendQueryParameter("tags_include", "${it.key}=${it.title}") }
+				filter.tagsExclude.forEach { uri.appendQueryParameter("tags_exclude", "${it.key}=${it.title}") }
 				filter.states.forEach { uri.appendQueryParameter("state", it.name) }
 				filter.locale?.let { uri.appendQueryParameter("locale", it.language) }
 				filter.contentRating.forEach { uri.appendQueryParameter("content_rating", it.name) }
