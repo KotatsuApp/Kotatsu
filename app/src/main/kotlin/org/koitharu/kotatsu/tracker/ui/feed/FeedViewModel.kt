@@ -164,7 +164,7 @@ class FeedViewModel @Inject constructor(
 		settings.observeAsFlow(AppSettings.KEY_DISABLE_NSFW) { isNsfwContentDisabled },
 	) { filters, skipNsfw ->
 		if (skipNsfw) {
-			filters + ListFilterOption.Inverted(ListFilterOption.Macro.NSFW, R.drawable.ic_sfw, R.string.sfw, null)
+			filters + ListFilterOption.SFW
 		} else {
 			filters
 		}

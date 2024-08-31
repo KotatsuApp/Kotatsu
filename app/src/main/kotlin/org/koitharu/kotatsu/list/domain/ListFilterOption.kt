@@ -98,4 +98,23 @@ sealed interface ListFilterOption {
 		override val groupKey: String
 			get() = "_inv" + option.groupKey
 	}
+
+	companion object {
+
+		val SFW
+			get() = Inverted(
+				option = Macro.NSFW,
+				iconResId = R.drawable.ic_sfw,
+				titleResId = R.string.sfw,
+				titleText = null,
+			)
+
+		val NOT_FAVORITE
+			get() = Inverted(
+				option = Macro.FAVORITE,
+				iconResId = R.drawable.ic_heart_off,
+				titleResId = R.string.not_in_favorites,
+				titleText = null,
+			)
+	}
 }

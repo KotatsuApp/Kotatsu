@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -67,7 +66,7 @@ abstract class MangaListViewModel(
 		settings.observeAsFlow(AppSettings.KEY_DISABLE_NSFW) { isNsfwContentDisabled },
 	) { filters, skipNsfw ->
 		if (skipNsfw) {
-			filters + ListFilterOption.Inverted(ListFilterOption.Macro.NSFW, R.drawable.ic_sfw, R.string.sfw, null)
+			filters + ListFilterOption.SFW
 		} else {
 			filters
 		}

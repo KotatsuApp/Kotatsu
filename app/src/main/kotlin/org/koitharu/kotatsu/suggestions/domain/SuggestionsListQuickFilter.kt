@@ -17,14 +17,7 @@ class SuggestionsListQuickFilter @Inject constructor(
 		}
 		if (!settings.isNsfwContentDisabled && !settings.isSuggestionsExcludeNsfw) {
 			add(ListFilterOption.Macro.NSFW)
-			add(
-				ListFilterOption.Inverted(
-					option = ListFilterOption.Macro.NSFW,
-					iconResId = R.drawable.ic_sfw,
-					titleResId = R.string.sfw,
-					titleText = null,
-				),
-			)
+			add(ListFilterOption.SFW)
 		}
 	}
 }
