@@ -64,6 +64,7 @@
 		<item>2</item>
 	</string-array>
 	<string-array name="values_tracker_frequency" translatable="false">
+		<item>-1</item>
 		<item>0.4</item>
 		<item>1</item>
 		<item>2</item>
