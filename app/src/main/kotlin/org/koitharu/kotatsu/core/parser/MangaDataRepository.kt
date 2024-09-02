@@ -46,6 +46,7 @@ class MangaDataRepository @Inject constructor(
 					cfBrightness = colorFilter?.brightness ?: 0f,
 					cfContrast = colorFilter?.contrast ?: 0f,
 					cfInvert = colorFilter?.isInverted ?: false,
+					cfGrayscale = colorFilter?.isGrayscale ?: false,
 				),
 			)
 		}
