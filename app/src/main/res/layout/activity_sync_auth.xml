@@ -161,6 +161,43 @@
 		android:visibility="gone"
 		app:constraint_referenced_ids="textView_subtitle_2,button_back,button_done,layout_password" />
 
+	<View
+		android:id="@+id/view_line"
+		android:layout_width="4dp"
+		android:layout_height="0dp"
+		android:background="@drawable/bg_chip"
+		android:backgroundTint="?colorError"
+		app:layout_constraintBottom_toBottomOf="@id/textView_hint_body"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="@id/textView_hint_title" />
+
+	<TextView
+		android:id="@+id/textView_hint_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="32dp"
+		android:drawablePadding="10dp"
+		android:gravity="center_vertical"
+		android:text="@string/unstable_feature"
+		android:textAppearance="?textAppearanceTitleMedium"
+		app:drawableStartCompat="@drawable/ic_alert_outline"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/view_line"
+		app:layout_constraintTop_toBottomOf="@id/layout_email" />
+
+	<TextView
+		android:id="@+id/textView_hint_body"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:paddingBottom="6dp"
+		android:text="@string/unstable_feature_summary"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="@id/textView_hint_title"
+		app:layout_constraintTop_toBottomOf="@id/textView_hint_title" />
+
 	<FrameLayout
 		android:id="@+id/layout_progress"
 		android:layout_width="0dp"

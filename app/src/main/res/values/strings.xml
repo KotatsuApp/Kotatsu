@@ -696,4 +696,6 @@
 	<string name="popularity">Popularity</string>
 	<string name="scrobbler_auth_required">Sign in to %s to continue</string>
 	<string name="scrobbler_auth_intro">Sign in to set up integration with %s. This will allow you to track your manga reading progress and status</string>
+	<string name="unstable_feature">Unstable feature</string>
+	<string name="unstable_feature_summary">This function is experimental. Please make sure you have a backup to avoid data loss</string>
 </resources>
