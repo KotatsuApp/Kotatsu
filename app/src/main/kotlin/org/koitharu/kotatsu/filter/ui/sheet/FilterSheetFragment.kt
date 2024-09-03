@@ -17,7 +17,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.GenericSortOrder
 import org.koitharu.kotatsu.core.model.SortDirection
 import org.koitharu.kotatsu.core.model.titleResId
-import org.koitharu.kotatsu.core.ui.model.direction
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
@@ -25,7 +24,6 @@ import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.showDistinct
-import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.filter.ui.FilterOwner
@@ -34,9 +32,6 @@ import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.util.mapToSet
-import java.util.EnumSet
 import java.util.Locale
 import com.google.android.material.R as materialR
 
@@ -106,7 +101,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			}
 
 			is ContentRating -> filter.setContentRating(data, !chip.isChecked)
-			null -> TagsCatalogSheet.show(childFragmentManager, chip.parentView?.id == R.id.chips_genresExclude)
+			null -> TagsCatalogSheet.show(getChildFragmentManager(), chip.parentView?.id == R.id.chips_genresExclude)
 		}
 	}
 

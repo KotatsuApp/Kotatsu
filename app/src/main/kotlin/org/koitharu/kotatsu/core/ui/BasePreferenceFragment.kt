@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.ui
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -12,7 +13,9 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
@@ -25,7 +28,11 @@ import javax.inject.Inject
 abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	PreferenceFragmentCompat(),
 	WindowInsetsDelegate.WindowInsetsListener,
-	RecyclerViewOwner {
+	RecyclerViewOwner,
+	ExceptionResolver.Host {
+
+	protected lateinit var exceptionResolver: ExceptionResolver
+		private set
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -35,6 +42,12 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 
 	override val recyclerView: RecyclerView
 		get() = listView
+
+	override fun onAttach(context: Context) {
+		super.onAttach(context)
+		val entryPoint = EntryPointAccessors.fromApplication<BaseActivityEntryPoint>(context)
+		exceptionResolver = entryPoint.exceptionResolverFactory.create(this)
+	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)

@@ -23,7 +23,6 @@ import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.util.TaggedActivityResult
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
@@ -132,13 +131,13 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		viewBinding.webView.updatePadding(bottom = insets.bottom)
 	}
 
-	class Contract : ActivityResultContract<MangaSource, TaggedActivityResult>() {
+	class Contract : ActivityResultContract<MangaSource, Boolean>() {
 		override fun createIntent(context: Context, input: MangaSource): Intent {
 			return newIntent(context, input)
 		}
 
-		override fun parseResult(resultCode: Int, intent: Intent?): TaggedActivityResult {
-			return TaggedActivityResult(TAG, resultCode)
+		override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
+			return resultCode == RESULT_OK
 		}
 	}
 

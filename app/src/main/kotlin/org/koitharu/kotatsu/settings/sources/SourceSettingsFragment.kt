@@ -7,7 +7,6 @@ import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.parser.EmptyMangaRepository
@@ -27,7 +26,6 @@ import java.io.File
 class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenceChangeListener {
 
 	private val viewModel: SourceSettingsViewModel by viewModels()
-	private val exceptionResolver = ExceptionResolver(this)
 
 	override fun onResume() {
 		super.onResume()

@@ -299,7 +299,7 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_favourite -> {
-				FavoriteSheet.show(childFragmentManager, selectedItems)
+				FavoriteSheet.show(getChildFragmentManager(), selectedItems)
 				mode.finish()
 				true
 			}

@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.parsers.exception.ContentUnavailableException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
+import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerAuthRequiredException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -40,6 +41,11 @@ private const val MSG_NO_SPACE_LEFT = "No space left on device"
 private const val IMAGE_FORMAT_NOT_SUPPORTED = "Image format not supported"
 
 fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
+	is ScrobblerAuthRequiredException -> resources.getString(
+		R.string.scrobbler_auth_required,
+		resources.getString(scrobbler.titleResId),
+	)
+
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
 	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required)
 	is CloudFlareBlockedException -> resources.getString(R.string.blocked_by_server_message)

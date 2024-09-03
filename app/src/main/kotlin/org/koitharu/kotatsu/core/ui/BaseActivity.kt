@@ -14,25 +14,22 @@ import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowCompat
+import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.util.ext.isWebViewUnavailable
 import org.koitharu.kotatsu.main.ui.protect.ScreenshotPolicyHelper
 
-@Suppress("LeakingThis")
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
+	ExceptionResolver.Host,
 	ScreenshotPolicyHelper.ContentContainer,
 	WindowInsetsDelegate.WindowInsetsListener {
 
@@ -41,8 +38,8 @@ abstract class BaseActivity<B : ViewBinding> :
 	lateinit var viewBinding: B
 		private set
 
-	@JvmField
-	protected val exceptionResolver = ExceptionResolver(this)
+	protected lateinit var exceptionResolver: ExceptionResolver
+		private set
 
 	@JvmField
 	protected val insetsDelegate = WindowInsetsDelegate()
@@ -53,13 +50,15 @@ abstract class BaseActivity<B : ViewBinding> :
 	private var defaultStatusBarColor = Color.TRANSPARENT
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-		val settings = EntryPointAccessors.fromApplication(this, BaseActivityEntryPoint::class.java).settings
+		val entryPoint = EntryPointAccessors.fromApplication<BaseActivityEntryPoint>(this)
+		val settings = entryPoint.settings
 		isAmoledTheme = settings.isAmoledTheme
 		setTheme(settings.colorScheme.styleResId)
 		if (isAmoledTheme) {
 			setTheme(R.style.ThemeOverlay_Kotatsu_Amoled)
 		}
 		putDataToExtras(intent)
+		exceptionResolver = entryPoint.exceptionResolverFactory.create(this)
 		super.onCreate(savedInstanceState)
 		WindowCompat.setDecorFitsSystemWindows(window, false)
 		insetsDelegate.handleImeInsets = true
@@ -87,6 +86,10 @@ abstract class BaseActivity<B : ViewBinding> :
 		super.setContentView(view)
 		setupToolbar()
 	}
+
+	override fun getContext() = this
+
+	override fun getChildFragmentManager(): FragmentManager = supportFragmentManager
 
 	protected fun setContentView(binding: B) {
 		this.viewBinding = binding
@@ -177,12 +180,6 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	protected fun hasViewBinding() = ::viewBinding.isInitialized
-
-	@EntryPoint
-	@InstallIn(SingletonComponent::class)
-	interface BaseActivityEntryPoint {
-		val settings: AppSettings
-	}
 
 	companion object {
 

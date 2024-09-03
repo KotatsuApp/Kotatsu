@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.settings
 import android.accounts.AccountManager
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.preference.Preference
@@ -15,22 +14,17 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
-import org.koitharu.kotatsu.scrobbling.anilist.data.AniListRepository
-import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerRepository
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
+import org.koitharu.kotatsu.scrobbling.common.ui.ScrobblerAuthHelper
 import org.koitharu.kotatsu.scrobbling.common.ui.config.ScrobblerConfigActivity
-import org.koitharu.kotatsu.scrobbling.kitsu.data.KitsuRepository
-import org.koitharu.kotatsu.scrobbling.mal.data.MALRepository
-import org.koitharu.kotatsu.scrobbling.shikimori.data.ShikimoriRepository
-import org.koitharu.kotatsu.sync.domain.SyncController
-import org.koitharu.kotatsu.sync.ui.SyncSettingsIntent
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.scrobbling.kitsu.ui.KitsuAuthActivity
 import org.koitharu.kotatsu.settings.utils.SplitSwitchPreference
 import org.koitharu.kotatsu.stats.ui.StatsActivity
+import org.koitharu.kotatsu.sync.domain.SyncController
+import org.koitharu.kotatsu.sync.ui.SyncSettingsIntent
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,19 +32,10 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	@Inject
-	lateinit var shikimoriRepository: ShikimoriRepository
-
-	@Inject
-	lateinit var aniListRepository: AniListRepository
-
-	@Inject
-	lateinit var malRepository: MALRepository
-
-	@Inject
-	lateinit var kitsuRepository: KitsuRepository
-
-	@Inject
 	lateinit var syncController: SyncController
+
+	@Inject
+	lateinit var scrobblerAuthHelper: ScrobblerAuthHelper
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_services)
@@ -76,10 +61,10 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 
 	override fun onResume() {
 		super.onResume()
-		bindScrobblerSummary(AppSettings.KEY_SHIKIMORI, shikimoriRepository)
-		bindScrobblerSummary(AppSettings.KEY_ANILIST, aniListRepository)
-		bindScrobblerSummary(AppSettings.KEY_MAL, malRepository)
-		bindScrobblerSummary(AppSettings.KEY_KITSU, kitsuRepository)
+		bindScrobblerSummary(AppSettings.KEY_SHIKIMORI, ScrobblerService.SHIKIMORI)
+		bindScrobblerSummary(AppSettings.KEY_ANILIST, ScrobblerService.ANILIST)
+		bindScrobblerSummary(AppSettings.KEY_MAL, ScrobblerService.MAL)
+		bindScrobblerSummary(AppSettings.KEY_KITSU, ScrobblerService.KITSU)
 		bindSyncSummary()
 	}
 
@@ -94,38 +79,22 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
 			AppSettings.KEY_SHIKIMORI -> {
-				if (!shikimoriRepository.isAuthorized) {
-					launchScrobblerAuth(shikimoriRepository)
-				} else {
-					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.SHIKIMORI))
-				}
+				handleScrobblerClick(ScrobblerService.SHIKIMORI)
 				true
 			}
 
 			AppSettings.KEY_MAL -> {
-				if (!malRepository.isAuthorized) {
-					launchScrobblerAuth(malRepository)
-				} else {
-					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.MAL))
-				}
+				handleScrobblerClick(ScrobblerService.MAL)
 				true
 			}
 
 			AppSettings.KEY_ANILIST -> {
-				if (!aniListRepository.isAuthorized) {
-					launchScrobblerAuth(aniListRepository)
-				} else {
-					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.ANILIST))
-				}
+				handleScrobblerClick(ScrobblerService.ANILIST)
 				true
 			}
 
 			AppSettings.KEY_KITSU -> {
-				if (!kitsuRepository.isAuthorized) {
-					startActivity(Intent(preference.context, KitsuAuthActivity::class.java))
-				} else {
-					startActivity(ScrobblerConfigActivity.newIntent(preference.context, ScrobblerService.KITSU))
-				}
+				handleScrobblerClick(ScrobblerService.KITSU)
 				true
 			}
 
@@ -147,14 +116,14 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 
 	private fun bindScrobblerSummary(
 		key: String,
-		repository: ScrobblerRepository
+		scrobblerService: ScrobblerService
 	) {
 		val pref = findPreference<Preference>(key) ?: return
-		if (!repository.isAuthorized) {
+		if (!scrobblerAuthHelper.isAuthorized(scrobblerService)) {
 			pref.setSummary(R.string.disabled)
 			return
 		}
-		val username = repository.cachedUser?.nickname
+		val username = scrobblerAuthHelper.getCachedUser(scrobblerService)?.nickname
 		if (username != null) {
 			pref.summary = getString(R.string.logged_in_as, username)
 		} else {
@@ -162,7 +131,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 			viewLifecycleScope.launch {
 				pref.summary = withContext(Dispatchers.Default) {
 					runCatching {
-						val user = repository.loadUser()
+						val user = scrobblerAuthHelper.getUser(scrobblerService)
 						getString(R.string.logged_in_as, user.nickname)
 					}.getOrElse {
 						it.printStackTraceDebug()
@@ -173,13 +142,11 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 		}
 	}
 
-	private fun launchScrobblerAuth(repository: ScrobblerRepository) {
-		runCatching {
-			val intent = Intent(Intent.ACTION_VIEW)
-			intent.data = Uri.parse(repository.oauthUrl)
-			startActivity(intent)
-		}.onFailure {
-			Snackbar.make(listView, it.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+	private fun handleScrobblerClick(scrobblerService: ScrobblerService) {
+		if (!scrobblerAuthHelper.isAuthorized(scrobblerService)) {
+			confirmScrobblerAuth(scrobblerService)
+		} else {
+			startActivity(ScrobblerConfigActivity.newIntent(context ?: return, scrobblerService))
 		}
 	}
 
@@ -210,5 +177,19 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 		findPreference<Preference>(AppSettings.KEY_STATS_ENABLED)?.setSummary(
 			if (settings.isStatsEnabled) R.string.enabled else R.string.disabled,
 		)
+	}
+
+	private fun confirmScrobblerAuth(scrobblerService: ScrobblerService) {
+		buildAlertDialog(context ?: return, isCentered = true) {
+			setIcon(scrobblerService.iconResId)
+			setTitle(scrobblerService.titleResId)
+			setMessage(context.getString(R.string.scrobbler_auth_intro, context.getString(scrobblerService.titleResId)))
+			setPositiveButton(R.string.sign_in) { _, _ ->
+				scrobblerAuthHelper.startAuth(context, scrobblerService).onFailure {
+					Snackbar.make(listView, it.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+				}
+			}
+			setNegativeButton(android.R.string.cancel, null)
+		}.show()
 	}
 }

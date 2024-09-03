@@ -694,4 +694,6 @@
 	<string name="sort_order_desc">Descending</string>
 	<string name="by_date">Date</string>
 	<string name="popularity">Popularity</string>
+	<string name="scrobbler_auth_required">Sign in to %s to continue</string>
+	<string name="scrobbler_auth_intro">Sign in to set up integration with %s. This will allow you to track your manga reading progress and status</string>
 </resources>

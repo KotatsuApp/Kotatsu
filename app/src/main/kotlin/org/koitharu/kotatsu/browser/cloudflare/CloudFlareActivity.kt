@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.browser.cloudflare
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -28,7 +29,6 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.util.TaggedActivityResult
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -180,13 +180,13 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		}
 	}
 
-	class Contract : ActivityResultContract<CloudFlareProtectedException, TaggedActivityResult>() {
+	class Contract : ActivityResultContract<CloudFlareProtectedException, Boolean>() {
 		override fun createIntent(context: Context, input: CloudFlareProtectedException): Intent {
 			return newIntent(context, input)
 		}
 
-		override fun parseResult(resultCode: Int, intent: Intent?): TaggedActivityResult {
-			return TaggedActivityResult(TAG, resultCode)
+		override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
+			return resultCode == Activity.RESULT_OK
 		}
 	}
 

@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView.NO_ID
 import coil.ImageLoader
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -28,6 +30,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setProgressIcon
 import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
+import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetScrobblingSelectorBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
@@ -50,7 +53,8 @@ class ScrobblingSelectorSheet :
 	MenuItem.OnActionExpandListener,
 	SearchView.OnQueryTextListener,
 	TabLayout.OnTabSelectedListener,
-	ListStateHolderListener, AsyncListDiffer.ListListener<ListModel> {
+	ListStateHolderListener,
+	AsyncListDiffer.ListListener<ListModel> {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -134,7 +138,15 @@ class ScrobblingSelectorSheet :
 	}
 
 	override fun onRetryClick(error: Throwable) {
-		viewModel.retry()
+		if (ExceptionResolver.canResolve(error)) {
+			viewLifecycleScope.launch {
+				if (exceptionResolver.resolve(error)) {
+					viewModel.retry()
+				}
+			}
+		} else {
+			viewModel.retry()
+		}
 	}
 
 	override fun onEmptyActionClick() {
