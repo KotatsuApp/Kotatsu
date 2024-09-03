@@ -673,10 +673,11 @@
     <string name="low_rating">Низкий рейтинг</string>
     <string name="sort_order_asc">По возрастанию</string>
     <string name="sort_order_desc">По убыванию</string>
-    <string name="retry">Повторить попытку</string>
+    <string name="retry">Повторить</string>
     <string name="too_many_requests_message_retry">Слишком много запросов. Попробуйте ещё раз после %s</string>
     <string name="sfw">SFW</string>
     <string name="skip_all">Пропустить все</string>
     <string name="by_date">Дата</string>
     <string name="popularity">Популярность</string>
+    <string name="stuck">Зависло</string>
 </resources>
