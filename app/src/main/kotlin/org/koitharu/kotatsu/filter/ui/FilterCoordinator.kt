@@ -230,10 +230,21 @@ class FilterCoordinator @Inject constructor(
 	}
 
 	override fun setSortOrder(value: SortOrder) {
-		currentState.update { oldValue ->
-			oldValue.copy(sortOrder = value)
+		val available = repository.sortOrders
+		val sortOrder = if (value !in available) {
+			val generic = GenericSortOrder.of(value)
+			when {
+				generic.ascending in available -> generic.ascending
+				generic.descending in available -> generic.descending
+				else -> return
+			}
+		} else {
+			value
 		}
-		repository.defaultSortOrder = value
+		currentState.update { oldValue ->
+			oldValue.copy(sortOrder = sortOrder)
+		}
+		repository.defaultSortOrder = sortOrder
 	}
 
 	override fun setLanguage(value: Locale?) {
