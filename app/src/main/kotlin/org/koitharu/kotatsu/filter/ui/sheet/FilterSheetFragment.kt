@@ -71,7 +71,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
 	override fun onButtonChecked(group: MaterialButtonToggleGroup?, checkedId: Int, isChecked: Boolean) {
 		if (isChecked) {
-			setSortDirection(getSortDirection(checkedId))
+			setSortDirection(getSortDirection(checkedId) ?: return)
 		}
 	}
 
@@ -81,7 +81,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			R.id.spinner_order -> {
 				val genericOrder = filter.filterSortOrder.value.availableItems[position]
 				val direction = getSortDirection(requireViewBinding().layoutSortDirection.checkedButtonId)
-				filter.setSortOrder(genericOrder[direction])
+				filter.setSortOrder(genericOrder[direction ?: SortDirection.DESC])
 			}
 
 			R.id.spinner_locale -> filter.setLanguage(filter.filterLocale.value.availableItems[position])
@@ -280,10 +280,10 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		filter.setSortOrder(newOrder)
 	}
 
-	private fun getSortDirection(@IdRes buttonId: Int): SortDirection = when (buttonId) {
+	private fun getSortDirection(@IdRes buttonId: Int): SortDirection? = when (buttonId) {
 		R.id.button_order_asc -> SortDirection.ASC
 		R.id.button_order_desc -> SortDirection.DESC
-		else -> throw IllegalArgumentException("Wrong button id $buttonId")
+		else -> null
 	}
 
 	companion object {

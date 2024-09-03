@@ -213,6 +213,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			left = insets.left,
 			right = insets.right,
 		)
+		viewBinding.bottomNav?.updatePadding(bottom = insets.bottom)
 	}
 
 	override fun onLayoutChange(
