@@ -227,7 +227,7 @@
     <string name="crash_text">May nangyaring mali. Mangyaring magsumite ng isang bug report sa mga developer upang matulungan kaming ayusin ito.</string>
     <string name="send">Ipadala</string>
     <string name="status_re_reading">Muling pagbabasa</string>
-    <string name="status_dropped">Binitawan</string>
+    <string name="status_dropped">Itinigil</string>
     <string name="appwidget_shelf_description">Manga mula sa iyong mga paborito</string>
     <string name="appwidget_recent_description">Ang iyong kamakailang nabasa na manga</string>
     <string name="data_deletion">Pagtanggal ng data</string>
@@ -326,7 +326,7 @@
     <string name="disable_battery_optimization_summary">Tumutulong sa mga pagsusuri sa mga update sa background</string>
     <string name="status_planned">Nakaplano</string>
     <string name="status_completed">Nakumpleto na</string>
-    <string name="status_on_hold">Naka-hold</string>
+    <string name="status_on_hold">Na-hold</string>
     <string name="disable_all">Di paganahin lahat</string>
     <string name="use_fingerprint">Gumamit ng biometric kung magagamit</string>
     <string name="report">Ulat</string>
@@ -555,7 +555,7 @@
     <string name="config_reset_confirm">I-reset ang mga setting sa mga default na value? Ang gawaing ito ay hindi pwedeng bawiin.</string>
     <string name="use_two_pages_landscape">Gumamit ng dalawang page na layout sa landscape na oryentasyon (beta)</string>
     <string name="fullscreen_mode">Fullscreen mode</string>
-    <string name="reader_fullscreen_summary">Itago ang status ng system at mga navigation bar</string>
+    <string name="reader_fullscreen_summary">Itago ang status ng system at navigation bar</string>
     <string name="toggle_ui">Ipakita/itago ang UI</string>
     <string name="prev_chapter">Nakaraang kabanata</string>
     <string name="next_chapter">Sunod na kabanata</string>
@@ -680,4 +680,6 @@
     <string name="popularity">Kasikatan</string>
     <string name="updated_long_ago">Matagal nang na-update</string>
     <string name="by_date">Petsa</string>
+    <string name="scrobbler_auth_required">Mag sign in sa %s upang magpatuloy</string>
+    <string name="scrobbler_auth_intro">Mag sign in para mag set up ng integration ng %s. Ito ay magbibigay-daan sa iyo na ma-track ang iyong progress at status sa pagbabasa ng manga</string>
 </resources>
