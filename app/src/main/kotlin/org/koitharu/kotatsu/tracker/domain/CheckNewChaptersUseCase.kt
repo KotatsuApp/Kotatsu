@@ -6,6 +6,7 @@ import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.MultiMutex
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toInstantOrNull
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
@@ -41,26 +42,30 @@ class CheckNewChaptersUseCase @Inject constructor(
 	}
 
 	suspend operator fun invoke(manga: Manga, currentChapterId: Long) = mutex.withLock(manga.id) {
-		repository.updateTracks()
-		val details = getFullManga(manga)
-		val chapters = details.chapters ?: return@withLock
-		val track = repository.getTrackOrNull(manga) ?: return@withLock
-		val chapterIndex = chapters.indexOfFirst { x -> x.id == currentChapterId }
-		val lastNewChapterIndex = chapters.size - track.newChapters
-		val lastChapter = chapters.lastOrNull()
-		val tracking = MangaTracking(
-			manga = details,
-			lastChapterId = lastChapter?.id ?: 0L,
-			lastCheck = Instant.now(),
-			lastChapterDate = lastChapter?.uploadDate?.toInstantOrNull() ?: track.lastChapterDate,
-			newChapters = when {
-				track.newChapters == 0 -> 0
-				chapterIndex < 0 -> track.newChapters
-				chapterIndex >= lastNewChapterIndex -> chapters.lastIndex - chapterIndex
-				else -> track.newChapters
-			},
-		)
-		repository.mergeWith(tracking)
+		runCatchingCancellable {
+			repository.updateTracks()
+			val details = getFullManga(manga)
+			val chapters = details.chapters ?: return@withLock
+			val track = repository.getTrackOrNull(manga) ?: return@withLock
+			val chapterIndex = chapters.indexOfFirst { x -> x.id == currentChapterId }
+			val lastNewChapterIndex = chapters.size - track.newChapters
+			val lastChapter = chapters.lastOrNull()
+			val tracking = MangaTracking(
+				manga = details,
+				lastChapterId = lastChapter?.id ?: 0L,
+				lastCheck = Instant.now(),
+				lastChapterDate = lastChapter?.uploadDate?.toInstantOrNull() ?: track.lastChapterDate,
+				newChapters = when {
+					track.newChapters == 0 -> 0
+					chapterIndex < 0 -> track.newChapters
+					chapterIndex >= lastNewChapterIndex -> chapters.lastIndex - chapterIndex
+					else -> track.newChapters
+				},
+			)
+			repository.mergeWith(tracking)
+		}.onFailure { e ->
+			e.printStackTraceDebug()
+		}.isSuccess
 	}
 
 	private suspend fun invokeImpl(track: MangaTracking): MangaUpdates = runCatchingCancellable {
