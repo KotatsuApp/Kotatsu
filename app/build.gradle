@@ -83,7 +83,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:b404b44008') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:ad726a3fd7') {
 		exclude group: 'org.json', module: 'json'
 	}
 
