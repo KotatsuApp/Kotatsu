@@ -3,21 +3,16 @@ package org.koitharu.kotatsu.history.ui
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaHistory
-import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -25,6 +20,7 @@ import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.flattenLatest
 import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -42,20 +38,18 @@ import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
-private const val PAGE_SIZE = 20
+private const val PAGE_SIZE = 16
 
 @HiltViewModel
 class HistoryListViewModel @Inject constructor(
 	private val repository: HistoryRepository,
 	settings: AppSettings,
 	private val mangaListMapper: MangaListMapper,
-	private val localMangaRepository: LocalMangaRepository,
 	private val markAsReadUseCase: MarkAsReadUseCase,
 	private val quickFilter: HistoryListQuickFilter,
 	downloadScheduler: DownloadWorker.Scheduler,
@@ -144,21 +138,22 @@ class HistoryListViewModel @Inject constructor(
 		}
 	}
 
-	private fun observeHistory() = combine(sortOrder, quickFilter.appliedOptions.combineWithSettings(), limit, ::Triple)
-		.flatMapLatest { repository.observeAllWithHistory(it.first, it.second - ListFilterOption.Downloaded, it.third) }
+	private fun observeHistory() = combine(
+		sortOrder,
+		quickFilter.appliedOptions.combineWithSettings(),
+		limit,
+	) { order, filters, limit ->
+		isReady.set(false)
+		repository.observeAllWithHistory(order, filters, limit)
+	}.flattenLatest()
 
 	private suspend fun mapList(
-		historyList: List<MangaWithHistory>,
+		list: List<MangaWithHistory>,
 		grouped: Boolean,
 		mode: ListMode,
 		filters: Set<ListFilterOption>,
 		isIncognito: Boolean,
 	): List<ListModel> {
-		val list = if (ListFilterOption.Downloaded in filters) {
-			historyList.mapToLocal()
-		} else {
-			historyList
-		}
 		if (list.isEmpty()) {
 			return if (filters.isEmpty()) {
 				listOf(getEmptyState(hasFilters = false))
@@ -196,20 +191,6 @@ class HistoryListViewModel @Inject constructor(
 			result += getEmptyState(hasFilters = true)
 		}
 		return result
-	}
-
-	private suspend fun List<MangaWithHistory>.mapToLocal() = coroutineScope {
-		map {
-			async {
-				if (it.manga.isLocal) {
-					it
-				} else {
-					localMangaRepository.findSavedManga(it.manga)?.let { localManga ->
-						MangaWithHistory(localManga.manga, it.history)
-					}
-				}
-			}
-		}.awaitAll().filterNotNull()
 	}
 
 	private fun MangaHistory.header(order: ListSortOrder): ListHeader? = when (order) {

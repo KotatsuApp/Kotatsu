@@ -4,26 +4,22 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.flattenLatest
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.favourites.domain.FavoritesListQuickFilter
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
@@ -39,12 +35,11 @@ import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
-private const val PAGE_SIZE = 20
+private const val PAGE_SIZE = 16
 
 @HiltViewModel
 class FavouritesListViewModel @Inject constructor(
@@ -53,7 +48,6 @@ class FavouritesListViewModel @Inject constructor(
 	private val mangaListMapper: MangaListMapper,
 	private val markAsReadUseCase: MarkAsReadUseCase,
 	private val quickFilter: FavoritesListQuickFilter,
-	private val localMangaRepository: LocalMangaRepository,
 	settings: AppSettings,
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler), QuickFilterListener by quickFilter {
@@ -130,30 +124,32 @@ class FavouritesListViewModel @Inject constructor(
 	}
 
 	private suspend fun List<Manga>.mapList(mode: ListMode, filters: Set<ListFilterOption>): List<ListModel> {
-		val list = if (ListFilterOption.Downloaded in filters) {
-			mapToLocal()
-		} else {
-			this
-		}
-		if (list.isEmpty()) {
+		if (isEmpty()) {
 			return if (filters.isEmpty()) {
 				listOf(getEmptyState(hasFilters = false))
 			} else {
 				listOfNotNull(quickFilter.filterItem(filters), getEmptyState(hasFilters = true))
 			}
 		}
-		val result = ArrayList<ListModel>(list.size + 1)
+		val result = ArrayList<ListModel>(size + 1)
 		quickFilter.filterItem(filters)?.let(result::add)
-		mangaListMapper.toListModelList(result, list, mode)
+		mangaListMapper.toListModelList(result, this, mode)
 		return result
 	}
 
 	private fun observeFavorites() = if (categoryId == NO_ID) {
-		combine(sortOrder.filterNotNull(), quickFilter.appliedOptions.combineWithSettings(), limit, ::Triple)
-			.flatMapLatest { repository.observeAll(it.first, it.second - ListFilterOption.Downloaded, it.third) }
+		combine(
+			sortOrder.filterNotNull(),
+			quickFilter.appliedOptions.combineWithSettings(),
+			limit,
+		) { order, filters, limit ->
+			isReady.set(false)
+			repository.observeAll(order, filters, limit)
+		}.flattenLatest()
 	} else {
-		combine(quickFilter.appliedOptions, limit, ::Pair)
-			.flatMapLatest { repository.observeAll(categoryId, it.first - ListFilterOption.Downloaded, it.second) }
+		combine(quickFilter.appliedOptions.combineWithSettings(), limit) { filters, limit ->
+			repository.observeAll(categoryId, filters, limit)
+		}.flattenLatest()
 	}
 
 	private fun getEmptyState(hasFilters: Boolean) = if (hasFilters) {
@@ -174,17 +170,5 @@ class FavouritesListViewModel @Inject constructor(
 			},
 			actionStringRes = 0,
 		)
-	}
-
-	private suspend fun List<Manga>.mapToLocal(): List<Manga> = coroutineScope {
-		map {
-			async {
-				if (it.isLocal) {
-					it
-				} else {
-					localMangaRepository.findSavedManga(it)?.manga
-				}
-			}
-		}.awaitAll().filterNotNull()
 	}
 }

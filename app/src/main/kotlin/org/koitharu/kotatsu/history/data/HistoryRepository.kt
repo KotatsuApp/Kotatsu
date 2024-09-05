@@ -39,6 +39,7 @@ class HistoryRepository @Inject constructor(
 	private val settings: AppSettings,
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	private val mangaRepository: MangaDataRepository,
+	private val localObserver: HistoryLocalObserver,
 	private val newChaptersUseCaseProvider: Provider<CheckNewChaptersUseCase>,
 ) {
 
@@ -80,6 +81,9 @@ class HistoryRepository @Inject constructor(
 		filterOptions: Set<ListFilterOption>,
 		limit: Int
 	): Flow<List<MangaWithHistory>> {
+		if (ListFilterOption.Downloaded in filterOptions) {
+			return localObserver.observeAll(order, filterOptions - ListFilterOption.Downloaded, limit)
+		}
 		return db.getHistoryDao().observeAll(order, filterOptions, limit).mapItems {
 			MangaWithHistory(
 				it.manga.toManga(it.tags.toMangaTags()),
