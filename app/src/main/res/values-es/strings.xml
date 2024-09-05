@@ -682,4 +682,6 @@
     <string name="popularity">Popularidad</string>
     <string name="scrobbler_auth_required">Iniciar sesión en %s para continuar</string>
     <string name="scrobbler_auth_intro">Inicia sesión para configurar la integración con %s . Esto te permitirá seguir tu progreso de lectura del manga</string>
+    <string name="unstable_feature">Función inestable</string>
+    <string name="unstable_feature_summary">Esta función es experimental. Por favor, asegúrate de tener una copia de seguridad para evitar la pérdida de datos</string>
 </resources>
