@@ -680,4 +680,8 @@
     <string name="by_date">Tarih</string>
     <string name="sort_order_desc">Azalan</string>
     <string name="popularity">Popülerlik</string>
+    <string name="scrobbler_auth_required">Devam etmek için %s\'de oturum açın</string>
+    <string name="scrobbler_auth_intro">%s ile bütünleşmeyi ayarlamak için oturum açın. Bu, manga okuma ilerlemenizi ve durumunuzu izlemenizi sağlayacaktır</string>
+    <string name="unstable_feature">Kararsız özellik</string>
+    <string name="unstable_feature_summary">Bu işlev deneyseldir. Veri kaybını önlemek için lütfen yedeğiniz olduğundan emin olun</string>
 </resources>
