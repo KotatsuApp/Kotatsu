@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.core.ui
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -100,11 +99,6 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	override fun onSupportNavigateUp(): Boolean {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-			// TODO fix behavior on Android 14
-			dispatchNavigateUp()
-			return true
-		}
 		val fm = supportFragmentManager
 		if (fm.isStateSaved) {
 			return false
