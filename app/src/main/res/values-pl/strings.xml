@@ -678,4 +678,10 @@
     <string name="by_date">Data</string>
     <string name="popularity">Popularność</string>
     <string name="updated_long_ago">Zaktualizowano dawno temu</string>
+    <string name="scrobbler_auth_required">Zaloguj się do %s aby kontynuować</string>
+    <string name="scrobbler_auth_intro">Zaloguj się, aby skonfigurować integrację z %s. Umożliwi to śledzenie postępów i statusu czytania mangi</string>
+    <string name="unstable_feature">Niestabilna funkcja</string>
+    <string name="unstable_feature_summary">Ta funkcja jest eksperymentalna. Upewnij się, że masz kopię zapasową, aby uniknąć utraty danych</string>
+    <string name="sort_order_asc">Rosnąco</string>
+    <string name="sort_order_desc">Malejąco</string>
 </resources>
