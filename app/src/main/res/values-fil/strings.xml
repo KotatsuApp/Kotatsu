@@ -682,4 +682,6 @@
     <string name="by_date">Petsa</string>
     <string name="scrobbler_auth_required">Mag sign in sa %s upang magpatuloy</string>
     <string name="scrobbler_auth_intro">Mag sign in para mag set up ng integration ng %s. Ito ay magbibigay-daan sa iyo na ma-track ang iyong progress at status sa pagbabasa ng manga</string>
+    <string name="unstable_feature">Hindi matatag ang katangian</string>
+    <string name="unstable_feature_summary">Ang function na ito ay pang-eksperimento. Pakitiyak na mayroon kang backup upang maiwasan ang pagkawala ng data</string>
 </resources>
