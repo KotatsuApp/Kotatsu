@@ -680,4 +680,8 @@
     <string name="by_date">Theo ngày</string>
     <string name="popularity">Theo mức độ phổ biến</string>
     <string name="updated_long_ago">Đã được cập nhật từ trước đó</string>
+    <string name="scrobbler_auth_required">Đăng nhập vào %s để tiếp tục</string>
+    <string name="unstable_feature">Tính năng không ổn định</string>
+    <string name="scrobbler_auth_intro">Đăng nhập để thiết đặt với %s. Điều này sẽ cho phép bạn theo dõi tiến trình và trạng thái đọc manga của mình</string>
+    <string name="unstable_feature_summary">Tính năng này đang được thử nghiệm. Hãy chắc chắn rằng bạn đã tạo bản sao lưu để tránh việc mất dữ liệu oan</string>
 </resources>
