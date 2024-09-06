@@ -22,3 +22,7 @@
 -keep class org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment { *; }
 -keep class org.jsoup.parser.Tag
 -keep class org.jsoup.internal.StringUtil
+
+-keep class org.acra.security.NoKeyStoreFactory { *; }
+-keep class org.acra.config.DefaultRetryPolicy { *; }
+-keep class org.acra.attachment.DefaultAttachmentProvider { *; }

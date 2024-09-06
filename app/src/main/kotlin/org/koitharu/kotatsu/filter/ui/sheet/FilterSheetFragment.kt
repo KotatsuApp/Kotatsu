@@ -275,7 +275,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
 	private fun setSortDirection(direction: SortDirection) {
 		val filter = requireFilter()
-		val currentOrder = filter.filterSortOrder.value.selectedItems.single()
+		val currentOrder = filter.filterSortOrder.value.selectedItems.singleOrNull() ?: return
 		val newOrder = currentOrder[direction]
 		filter.setSortOrder(newOrder)
 	}

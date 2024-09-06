@@ -144,7 +144,7 @@ dependencies {
 	implementation 'ch.acra:acra-http:5.11.3'
 	implementation 'ch.acra:acra-dialog:5.11.3'
 
-	implementation 'org.conscrypt:conscrypt-android:2.5.3'
+	implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
 	debugImplementation 'com.squareup.leakcanary:leakcanary-android:3.0-alpha-8'
 	debugImplementation 'com.github.Koitharu:WorkInspector:5778dd1747'
