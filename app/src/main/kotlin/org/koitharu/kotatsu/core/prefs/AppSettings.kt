@@ -669,7 +669,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READER_AUTOSCROLL_SPEED = "as_speed"
 		const val KEY_MIRROR_SWITCHING = "mirror_switching"
 		const val KEY_PROXY = "proxy"
-		const val KEY_PROXY_TYPE = "proxy_type"
+		const val KEY_PROXY_TYPE = "proxy_type_2"
 		const val KEY_PROXY_ADDRESS = "proxy_address"
 		const val KEY_PROXY_PORT = "proxy_port"
 		const val KEY_PROXY_AUTH = "proxy_auth"
