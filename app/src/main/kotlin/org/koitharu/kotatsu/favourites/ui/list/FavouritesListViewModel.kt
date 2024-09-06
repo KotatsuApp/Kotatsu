@@ -9,8 +9,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
@@ -55,7 +57,7 @@ class FavouritesListViewModel @Inject constructor(
 	val categoryId: Long = savedStateHandle[ARG_CATEGORY_ID] ?: NO_ID
 	private val refreshTrigger = MutableStateFlow(Any())
 	private val limit = MutableStateFlow(PAGE_SIZE)
-	private val isReady = AtomicBoolean(false)
+	private val isPaginationReady = AtomicBoolean(false)
 
 	override val listMode = settings.observeAsFlow(AppSettings.KEY_LIST_MODE_FAVORITES) { favoritesListMode }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.favoritesListMode)
@@ -76,7 +78,9 @@ class FavouritesListViewModel @Inject constructor(
 		observeListModeWithTriggers(),
 		refreshTrigger,
 	) { list, filters, mode, _ ->
-		list.mapList(mode, filters).also { isReady.set(true) }
+		list.mapList(mode, filters)
+	}.distinctUntilChanged().onEach {
+		isPaginationReady.set(true)
 	}.catch {
 		emit(listOf(it.toErrorState(canRetry = false)))
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
@@ -118,7 +122,7 @@ class FavouritesListViewModel @Inject constructor(
 	}
 
 	fun requestMoreItems() {
-		if (isReady.compareAndSet(true, false)) {
+		if (isPaginationReady.compareAndSet(true, false)) {
 			limit.value += PAGE_SIZE
 		}
 	}
@@ -143,7 +147,7 @@ class FavouritesListViewModel @Inject constructor(
 			quickFilter.appliedOptions.combineWithSettings(),
 			limit,
 		) { order, filters, limit ->
-			isReady.set(false)
+			isPaginationReady.set(false)
 			repository.observeAll(order, filters, limit)
 		}.flattenLatest()
 	} else {

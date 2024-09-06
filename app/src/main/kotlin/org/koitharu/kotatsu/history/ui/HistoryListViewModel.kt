@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
@@ -21,7 +22,6 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.flattenLatest
-import org.koitharu.kotatsu.core.util.ext.onFirst
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.history.domain.HistoryListQuickFilter
@@ -75,7 +75,7 @@ class HistoryListViewModel @Inject constructor(
 	}
 
 	private val limit = MutableStateFlow(PAGE_SIZE)
-	private val isReady = AtomicBoolean(false)
+	private val isPaginationReady = AtomicBoolean(false)
 
 	val isStatsEnabled = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
@@ -90,11 +90,9 @@ class HistoryListViewModel @Inject constructor(
 		observeListModeWithTriggers(),
 		settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) { isIncognitoModeEnabled },
 	) { filters, list, grouped, mode, incognito ->
-		mapList(list, grouped, mode, filters, incognito).also { isReady.set(true) }
-	}.onStart {
-		loadingCounter.increment()
-	}.onFirst {
-		loadingCounter.decrement()
+		mapList(list, grouped, mode, filters, incognito)
+	}.distinctUntilChanged().onEach {
+		isPaginationReady.set(true)
 	}.catch { e ->
 		emit(listOf(e.toErrorState(canRetry = false)))
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
@@ -133,7 +131,7 @@ class HistoryListViewModel @Inject constructor(
 	}
 
 	fun requestMoreItems() {
-		if (isReady.compareAndSet(true, false)) {
+		if (isPaginationReady.compareAndSet(true, false)) {
 			limit.value += PAGE_SIZE
 		}
 	}
@@ -143,7 +141,7 @@ class HistoryListViewModel @Inject constructor(
 		quickFilter.appliedOptions.combineWithSettings(),
 		limit,
 	) { order, filters, limit ->
-		isReady.set(false)
+		isPaginationReady.set(false)
 		repository.observeAllWithHistory(order, filters, limit)
 	}.flattenLatest()
 
