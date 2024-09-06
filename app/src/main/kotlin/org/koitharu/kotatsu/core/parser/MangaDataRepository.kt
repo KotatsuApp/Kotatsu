@@ -52,6 +52,10 @@ class MangaDataRepository @Inject constructor(
 		}
 	}
 
+	suspend fun resetColorFilters() {
+		db.getPreferencesDao().resetColorFilters()
+	}
+
 	suspend fun getReaderMode(mangaId: Long): ReaderMode? {
 		return db.getPreferencesDao().find(mangaId)?.let { ReaderMode.valueOf(it.mode) }
 	}

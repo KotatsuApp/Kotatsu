@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.core.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
 
@@ -12,6 +14,9 @@ abstract class PreferencesDao {
 
 	@Query("SELECT * FROM preferences WHERE manga_id = :mangaId")
 	abstract fun observe(mangaId: Long): Flow<MangaPrefsEntity?>
+
+	@Query("UPDATE preferences SET cf_brightness = 0, cf_contrast = 0, cf_invert = 0, cf_grayscale = 0")
+	abstract suspend fun resetColorFilters()
 
 	@Upsert
 	abstract suspend fun upsert(pref: MangaPrefsEntity)

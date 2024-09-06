@@ -73,9 +73,7 @@ class ColorFilterConfigViewModel @Inject constructor(
 	fun saveGlobally() {
 		launchLoadingJob(Dispatchers.Default) {
 			settings.readerColorFilter = colorFilter.value
-			if (mangaDataRepository.getColorFilter(manga.id) != null) {
-				mangaDataRepository.saveColorFilter(manga, colorFilter.value)
-			}
+			mangaDataRepository.resetColorFilters()
 			onDismiss.call(Unit)
 		}
 	}
