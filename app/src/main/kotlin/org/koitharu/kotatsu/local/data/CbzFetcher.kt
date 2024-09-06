@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okio.buffer
 import okio.source
+import org.koitharu.kotatsu.core.util.ext.getInputStreamOrClose
 import org.koitharu.kotatsu.local.data.util.withExtraCloseable
 import java.util.zip.ZipFile
 
@@ -24,7 +25,7 @@ class CbzFetcher(
 		val zip = ZipFile(uri.schemeSpecificPart)
 		val entry = zip.getEntry(uri.fragment)
 		val ext = MimeTypeMap.getFileExtensionFromUrl(entry.name)
-		val bufferedSource = zip.getInputStream(entry).source().withExtraCloseable(zip).buffer()
+		val bufferedSource = zip.getInputStreamOrClose(entry).source().withExtraCloseable(zip).buffer()
 		SourceResult(
 			source = ImageSource(
 				source = bufferedSource,

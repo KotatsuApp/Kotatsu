@@ -67,10 +67,11 @@ class DetectReaderModeUseCase @Inject constructor(
 
 		val size = when {
 			uri.isZipUri() -> runInterruptible(Dispatchers.IO) {
-				val zip = ZipFile(uri.schemeSpecificPart)
-				val entry = zip.getEntry(uri.fragment)
-				zip.getInputStream(entry).use {
-					getBitmapSize(it)
+				ZipFile(uri.schemeSpecificPart).use { zip ->
+					val entry = zip.getEntry(uri.fragment)
+					zip.getInputStream(entry).use {
+						getBitmapSize(it)
+					}
 				}
 			}
 

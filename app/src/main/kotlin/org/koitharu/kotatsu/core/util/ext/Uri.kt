@@ -41,7 +41,7 @@ fun Uri.source(): Source = when (scheme) {
 	URI_SCHEME_ZIP -> {
 		val zip = ZipFile(schemeSpecificPart)
 		val entry = zip.getEntry(fragment)
-		zip.getInputStream(entry).source().withExtraCloseable(zip)
+		zip.getInputStreamOrClose(entry).source().withExtraCloseable(zip)
 	}
 
 	else -> unsupportedUri(this)
