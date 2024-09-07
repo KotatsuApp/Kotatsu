@@ -11,7 +11,6 @@ import androidx.core.content.res.use
 import androidx.core.view.isGone
 import androidx.core.widget.TextViewCompat
 
-
 var TextView.textAndVisible: CharSequence?
 	get() = text?.takeIf { visibility == View.VISIBLE }
 	set(value) {

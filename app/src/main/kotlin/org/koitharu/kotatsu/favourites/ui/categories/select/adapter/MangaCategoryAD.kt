@@ -21,6 +21,8 @@ fun mangaCategoryAD(
 	}
 
 	bind { payloads ->
+		binding.root.isEnabled = item.isEnabled
+		binding.checkableImageView.isEnabled = item.isEnabled
 		binding.checkableImageView.setChecked(item.isChecked, ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED in payloads)
 		binding.textViewTitle.text = item.category.title
 		binding.imageViewTracker.isVisible = item.category.isTrackingEnabled && item.isTrackerEnabled

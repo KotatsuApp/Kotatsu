@@ -7,13 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.annotation.IdRes
 import androidx.core.view.isGone
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.chip.Chip
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.GenericSortOrder
+import org.koitharu.kotatsu.core.model.SortDirection
 import org.koitharu.kotatsu.core.model.titleResId
-import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
@@ -29,13 +32,12 @@ import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.Locale
 import com.google.android.material.R as materialR
 
 class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	AdapterView.OnItemSelectedListener,
-	ChipsView.OnChipClickListener {
+	ChipsView.OnChipClickListener, MaterialButtonToggleGroup.OnButtonCheckedListener {
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
 		return SheetFilterBinding.inflate(inflater, container, false)
@@ -51,6 +53,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		}
 		val filter = requireFilter()
 		filter.filterSortOrder.observe(viewLifecycleOwner, this::onSortOrderChanged)
+		filter.filterSortDirection.observe(viewLifecycleOwner, this::onSortDirectionChanged)
 		filter.filterLocale.observe(viewLifecycleOwner, this::onLocaleChanged)
 		filter.filterTags.observe(viewLifecycleOwner, this::onTagsChanged)
 		filter.filterTagsExcluded.observe(viewLifecycleOwner, this::onTagsExcludedChanged)
@@ -63,12 +66,24 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		binding.chipsContentRating.onChipClickListener = this
 		binding.chipsGenres.onChipClickListener = this
 		binding.chipsGenresExclude.onChipClickListener = this
+		binding.layoutSortDirection.addOnButtonCheckedListener(this)
+	}
+
+	override fun onButtonChecked(group: MaterialButtonToggleGroup?, checkedId: Int, isChecked: Boolean) {
+		if (isChecked) {
+			setSortDirection(getSortDirection(checkedId) ?: return)
+		}
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 		val filter = requireFilter()
 		when (parent.id) {
-			R.id.spinner_order -> filter.setSortOrder(filter.filterSortOrder.value.availableItems[position])
+			R.id.spinner_order -> {
+				val genericOrder = filter.filterSortOrder.value.availableItems[position]
+				val direction = getSortDirection(requireViewBinding().layoutSortDirection.checkedButtonId)
+				filter.setSortOrder(genericOrder[direction ?: SortDirection.DESC])
+			}
+
 			R.id.spinner_locale -> filter.setLanguage(filter.filterLocale.value.availableItems[position])
 		}
 	}
@@ -78,19 +93,19 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val filter = requireFilter()
 		when (data) {
-			is MangaState -> filter.setState(data, chip.isChecked)
+			is MangaState -> filter.setState(data, !chip.isChecked)
 			is MangaTag -> if (chip.parentView?.id == R.id.chips_genresExclude) {
-				filter.setTagExcluded(data, chip.isChecked)
+				filter.setTagExcluded(data, !chip.isChecked)
 			} else {
-				filter.setTag(data, chip.isChecked)
+				filter.setTag(data, !chip.isChecked)
 			}
 
-			is ContentRating -> filter.setContentRating(data, chip.isChecked)
-			null -> TagsCatalogSheet.show(childFragmentManager, chip.parentView?.id == R.id.chips_genresExclude)
+			is ContentRating -> filter.setContentRating(data, !chip.isChecked)
+			null -> TagsCatalogSheet.show(getChildFragmentManager(), chip.parentView?.id == R.id.chips_genresExclude)
 		}
 	}
 
-	private fun onSortOrderChanged(value: FilterProperty<SortOrder>) {
+	private fun onSortOrderChanged(value: FilterProperty<GenericSortOrder>) {
 		val b = viewBinding ?: return
 		b.textViewOrderTitle.isGone = value.isEmpty()
 		b.cardOrder.isGone = value.isEmpty()
@@ -102,12 +117,31 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			b.spinnerOrder.context,
 			android.R.layout.simple_spinner_dropdown_item,
 			android.R.id.text1,
-			value.availableItems.map { b.spinnerOrder.context.getString(it.titleRes) },
+			value.availableItems.map { b.spinnerOrder.context.getString(it.titleResId) },
 		)
 		val selectedIndex = value.availableItems.indexOf(selected)
 		if (selectedIndex >= 0) {
 			b.spinnerOrder.setSelection(selectedIndex, false)
 		}
+	}
+
+	private fun onSortDirectionChanged(value: FilterProperty<SortDirection>) {
+		val b = viewBinding ?: return
+		b.layoutSortDirection.isGone = value.isEmpty()
+		if (value.isEmpty()) {
+			return
+		}
+		val selected = value.selectedItems.single()
+		b.buttonOrderAsc.isEnabled = SortDirection.ASC in value.availableItems
+		b.buttonOrderDesc.isEnabled = SortDirection.DESC in value.availableItems
+		b.layoutSortDirection.removeOnButtonCheckedListener(this)
+		b.layoutSortDirection.check(
+			when (selected) {
+				SortDirection.ASC -> R.id.button_order_asc
+				SortDirection.DESC -> R.id.button_order_desc
+			},
+		)
+		b.layoutSortDirection.addOnButtonCheckedListener(this)
 	}
 
 	private fun onLocaleChanged(value: FilterProperty<Locale?>) {
@@ -142,7 +176,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		value.selectedItems.mapTo(chips) { tag ->
 			ChipsView.ChipModel(
 				title = tag.title,
-				isCheckable = true,
 				isChecked = true,
 				data = tag,
 			)
@@ -151,7 +184,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			if (tag !in value.selectedItems) {
 				ChipsView.ChipModel(
 					title = tag.title,
-					isCheckable = true,
 					isChecked = false,
 					data = tag,
 				)
@@ -181,7 +213,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 				tint = 0,
 				title = tag.title,
 				icon = 0,
-				isCheckable = true,
 				isChecked = true,
 				data = tag,
 			)
@@ -190,7 +221,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			if (tag !in value.selectedItems) {
 				ChipsView.ChipModel(
 					title = tag.title,
-					isCheckable = true,
 					isChecked = false,
 					data = tag,
 				)
@@ -217,7 +247,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		val chips = value.availableItems.map { state ->
 			ChipsView.ChipModel(
 				title = getString(state.titleResId),
-				isCheckable = true,
 				isChecked = state in value.selectedItems,
 				data = state,
 			)
@@ -235,7 +264,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		val chips = value.availableItems.map { contentRating ->
 			ChipsView.ChipModel(
 				title = getString(contentRating.titleResId),
-				isCheckable = true,
 				isChecked = contentRating in value.selectedItems,
 				data = contentRating,
 			)
@@ -244,6 +272,19 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	}
 
 	private fun requireFilter() = (requireActivity() as FilterOwner).filter
+
+	private fun setSortDirection(direction: SortDirection) {
+		val filter = requireFilter()
+		val currentOrder = filter.filterSortOrder.value.selectedItems.singleOrNull() ?: return
+		val newOrder = currentOrder[direction]
+		filter.setSortOrder(newOrder)
+	}
+
+	private fun getSortDirection(@IdRes buttonId: Int): SortDirection? = when (buttonId) {
+		R.id.button_order_asc -> SortDirection.ASC
+		R.id.button_order_desc -> SortDirection.DESC
+		else -> null
+	}
 
 	companion object {
 

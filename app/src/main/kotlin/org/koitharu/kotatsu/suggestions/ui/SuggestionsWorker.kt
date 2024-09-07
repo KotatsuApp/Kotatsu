@@ -48,6 +48,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.distinctById
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.almostEquals
@@ -187,6 +188,9 @@ class SuggestionsWorker @AssistedInject constructor(
 		val semaphore = Semaphore(MAX_PARALLELISM)
 		val producer = channelFlow {
 			for (it in sources.shuffled()) {
+				if (it.isNsfw() && (appSettings.isSuggestionsExcludeNsfw || appSettings.isNsfwContentDisabled)) {
+					continue
+				}
 				launch {
 					semaphore.withPermit {
 						send(getList(it, tags, tagsBlacklist))
@@ -220,7 +224,7 @@ class SuggestionsWorker @AssistedInject constructor(
 					if (details.rating > 0 && details.rating < RATING_MIN) {
 						continue
 					}
-					if (details.isNsfw && appSettings.isSuggestionsExcludeNsfw) {
+					if (details.isNsfw && (appSettings.isSuggestionsExcludeNsfw || appSettings.isNsfwContentDisabled)) {
 						continue
 					}
 					if (details in tagsBlacklist) {
@@ -443,10 +447,10 @@ class SuggestionsWorker @AssistedInject constructor(
 		const val MANGA_CHANNEL_ID = "suggestions"
 		const val GROUP_SUGGESTION = "org.koitharu.kotatsu.SUGGESTIONS"
 		const val WORKER_NOTIFICATION_ID = 36
-		const val MAX_RESULTS = 80
+		const val MAX_RESULTS = 160
 		const val MAX_PARALLELISM = 3
-		const val MAX_SOURCE_RESULTS = 14
-		const val MAX_RAW_RESULTS = 200
+		const val MAX_SOURCE_RESULTS = 20
+		const val MAX_RAW_RESULTS = 280
 		const val TAG_EQ_THRESHOLD = 0.4f
 		const val RATING_MIN = 0.5f
 		const val SETTINGS_ACTION_CODE = 4

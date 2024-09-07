@@ -77,4 +77,6 @@
 	<dimen name="reader_scroll_delta_min">200dp</dimen>
 
 	<dimen name="badge_offset">12dp</dimen>
+
+	<dimen name="chip_icon_corner">3dp</dimen>
 </resources>

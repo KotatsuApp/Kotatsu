@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.download.domain
 
 import androidx.work.Data
-import org.koitharu.kotatsu.history.data.PROGRESS_NONE
+import org.koitharu.kotatsu.list.domain.ReadingProgress.Companion.PROGRESS_NONE
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
@@ -11,12 +11,14 @@ data class DownloadState(
 	val isIndeterminate: Boolean,
 	val isPaused: Boolean = false,
 	val isStopped: Boolean = false,
-	val error: String? = null,
+	val error: Throwable? = null,
+	val errorMessage: String? = null,
 	val totalChapters: Int = 0,
 	val currentChapter: Int = 0,
 	val totalPages: Int = 0,
 	val currentPage: Int = 0,
 	val eta: Long = -1L,
+	val isStuck: Boolean = false,
 	val localManga: LocalManga? = null,
 	val downloadedChapters: Int = 0,
 	val timestamp: Long = System.currentTimeMillis(),
@@ -39,8 +41,9 @@ data class DownloadState(
 		.putInt(DATA_MAX, max)
 		.putInt(DATA_PROGRESS, progress)
 		.putLong(DATA_ETA, eta)
+		.putBoolean(DATA_STUCK, isStuck)
 		.putLong(DATA_TIMESTAMP, timestamp)
-		.putString(DATA_ERROR, error)
+		.putString(DATA_ERROR, errorMessage)
 		.putInt(DATA_CHAPTERS, downloadedChapters)
 		.putBoolean(DATA_INDETERMINATE, isIndeterminate)
 		.putBoolean(DATA_PAUSED, isPaused)
@@ -53,6 +56,7 @@ data class DownloadState(
 		private const val DATA_PROGRESS = "progress"
 		private const val DATA_CHAPTERS = "chapter_cnt"
 		private const val DATA_ETA = "eta"
+		private const val DATA_STUCK = "stuck"
 		const val DATA_TIMESTAMP = "timestamp"
 		private const val DATA_ERROR = "error"
 		private const val DATA_INDETERMINATE = "indeterminate"
@@ -71,6 +75,8 @@ data class DownloadState(
 		fun getProgress(data: Data): Int = data.getInt(DATA_PROGRESS, 0)
 
 		fun getEta(data: Data): Long = data.getLong(DATA_ETA, -1L)
+
+		fun isStuck(data: Data): Boolean = data.getBoolean(DATA_STUCK, false)
 
 		fun getTimestamp(data: Data): Instant = Instant.ofEpochMilli(data.getLong(DATA_TIMESTAMP, 0L))
 

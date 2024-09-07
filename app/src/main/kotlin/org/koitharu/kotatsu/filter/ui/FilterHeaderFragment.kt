@@ -39,7 +39,7 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 		if (tag == null) {
 			TagsCatalogSheet.show(parentFragmentManager, isExcludeTag = false)
 		} else {
-			filter.setTag(tag, chip.isChecked)
+			filter.setTag(tag, !chip.isChecked)
 		}
 	}
 

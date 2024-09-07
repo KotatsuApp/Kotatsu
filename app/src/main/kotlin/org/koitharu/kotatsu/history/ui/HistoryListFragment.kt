@@ -9,14 +9,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.isLocal
-import org.koitharu.kotatsu.core.os.NetworkManageIntent
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentListBinding
-import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 
@@ -35,13 +33,7 @@ class HistoryListFragment : MangaListFragment() {
 
 	override fun onScrolledToEnd() = viewModel.requestMoreItems()
 
-	override fun onFilterOptionClick(option: ListFilterOption) {
-		viewModel.onFilterOptionClick(option)
-	}
-
-	override fun onEmptyActionClick() {
-		startActivity(NetworkManageIntent())
-	}
+	override fun onEmptyActionClick() = viewModel.clearFilter()
 
 	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_history, menu)

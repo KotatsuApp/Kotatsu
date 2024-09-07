@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.list.ui.adapter
 
 enum class ListItemType {
 
-	FILTER_HEADER,
+	QUICK_FILTER,
 	FILTER_SORT,
 	FILTER_TAG,
 	FILTER_TAG_MULTI,
@@ -23,6 +23,7 @@ enum class ListItemType {
 	EXPLORE_SOURCE_LIST,
 	EXPLORE_SUGGESTION,
 	TIP,
+	INFO,
 	HINT_EMPTY,
 	PAGE_THUMB,
 	FEED,

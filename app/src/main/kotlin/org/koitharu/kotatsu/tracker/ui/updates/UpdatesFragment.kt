@@ -26,6 +26,7 @@ class UpdatesFragment : MangaListFragment() {
 		return when (item.itemId) {
 			R.id.action_remove -> {
 				viewModel.remove(controller.snapshot())
+				mode.finish()
 				true
 			}
 

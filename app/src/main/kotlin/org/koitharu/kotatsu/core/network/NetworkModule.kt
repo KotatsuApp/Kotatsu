@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.core.network
 
 import android.content.Context
-import android.util.AndroidRuntimeException
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -19,6 +18,7 @@ import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.network.imageproxy.RealImageProxyInterceptor
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.assertNotInMainThread
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Provider
@@ -40,9 +40,10 @@ interface NetworkModule {
 		@Singleton
 		fun provideCookieJar(
 			@ApplicationContext context: Context
-		): MutableCookieJar = try {
+		): MutableCookieJar = runCatching {
 			AndroidCookieJar()
-		} catch (e: AndroidRuntimeException) {
+		}.getOrElse { e ->
+			e.printStackTraceDebug()
 			// WebView is not available
 			PreferencesCookieJar(context)
 		}

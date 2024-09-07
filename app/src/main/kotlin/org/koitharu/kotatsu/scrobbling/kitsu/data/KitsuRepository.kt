@@ -28,7 +28,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.kitsu.data.KitsuInterceptor.Companion.VND_JSON
 
-private const val BASE_WEB_URL = "https://kitsu.io"
+private const val BASE_WEB_URL = "https://kitsu.app"
 
 class KitsuRepository(
 	@ApplicationContext context: Context,

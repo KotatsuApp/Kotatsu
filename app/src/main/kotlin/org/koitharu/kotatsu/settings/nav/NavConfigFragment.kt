@@ -15,7 +15,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
-import org.koitharu.kotatsu.core.ui.dialog.RecyclerViewAlertDialog
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
+import org.koitharu.kotatsu.core.ui.dialog.setRecyclerViewList
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -85,14 +86,12 @@ class NavConfigFragment : BaseFragment<FragmentSettingsSourcesBinding>(), Recycl
 			viewModel.addItem(item)
 			dialog?.dismiss()
 		}
-		dialog = RecyclerViewAlertDialog.Builder<NavItem>(v.context)
-			.setTitle(R.string.add)
-			.addAdapterDelegate(navAvailableAD(listener))
-			.setCancelable(true)
-			.setItems(viewModel.availableItems)
-			.setNegativeButton(android.R.string.cancel, null)
-			.create()
-			.apply { show() }
+		dialog = buildAlertDialog(v.context) {
+			setTitle(R.string.add)
+			setCancelable(true)
+			setRecyclerViewList(viewModel.availableItems, navAvailableAD(listener))
+			setNegativeButton(android.R.string.cancel, null)
+		}.apply { show() }
 	}
 
 	override fun onItemClick(item: NavItem, view: View) {

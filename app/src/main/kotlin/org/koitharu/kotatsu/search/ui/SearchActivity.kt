@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
+import androidx.core.view.SoftwareKeyboardControllerCompat
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
@@ -15,7 +16,6 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.showKeyboard
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
@@ -39,7 +39,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchView.OnQuery
 
 			if (query.isNullOrBlank()) {
 				requestFocus()
-				showKeyboard()
+				SoftwareKeyboardControllerCompat(this).show()
 			} else {
 				setQuery(query, true)
 			}

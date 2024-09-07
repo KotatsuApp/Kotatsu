@@ -21,8 +21,9 @@ class PausingReceiver(
 			return
 		}
 		when (intent.action) {
-			ACTION_RESUME -> pausingHandle.resume(skipError = false)
-			ACTION_SKIP -> pausingHandle.resume(skipError = true)
+			ACTION_RESUME -> pausingHandle.resume()
+			ACTION_SKIP -> pausingHandle.skip()
+			ACTION_SKIP_ALL -> pausingHandle.skipAll()
 			ACTION_PAUSE -> pausingHandle.pause()
 		}
 	}
@@ -32,6 +33,7 @@ class PausingReceiver(
 		private const val ACTION_PAUSE = "org.koitharu.kotatsu.download.PAUSE"
 		private const val ACTION_RESUME = "org.koitharu.kotatsu.download.RESUME"
 		private const val ACTION_SKIP = "org.koitharu.kotatsu.download.SKIP"
+		private const val ACTION_SKIP_ALL = "org.koitharu.kotatsu.download.SKIP_ALL"
 		private const val EXTRA_UUID = "uuid"
 		private const val SCHEME = "workuid"
 
@@ -39,20 +41,18 @@ class PausingReceiver(
 			addAction(ACTION_PAUSE)
 			addAction(ACTION_RESUME)
 			addAction(ACTION_SKIP)
+			addAction(ACTION_SKIP_ALL)
 			addDataScheme(SCHEME)
-			addDataPath(id.toString(), PatternMatcher.PATTERN_SIMPLE_GLOB)
+			addDataPath(id.toString(), PatternMatcher.PATTERN_LITERAL)
 		}
 
-		fun getPauseIntent(context: Context, id: UUID) = Intent(ACTION_PAUSE)
-			.setData(Uri.parse("$SCHEME://$id"))
-			.setPackage(context.packageName)
-			.putExtra(EXTRA_UUID, id.toString())
+		fun getPauseIntent(context: Context, id: UUID) = createIntent(context, id, ACTION_PAUSE)
 
-		fun getResumeIntent(context: Context, id: UUID, skipError: Boolean) = Intent(
-			if (skipError) ACTION_SKIP else ACTION_RESUME,
-		).setData(Uri.parse("$SCHEME://$id"))
-			.setPackage(context.packageName)
-			.putExtra(EXTRA_UUID, id.toString())
+		fun getResumeIntent(context: Context, id: UUID) = createIntent(context, id, ACTION_RESUME)
+
+		fun getSkipIntent(context: Context, id: UUID) = createIntent(context, id, ACTION_SKIP)
+
+		fun getSkipAllIntent(context: Context, id: UUID) = createIntent(context, id, ACTION_SKIP_ALL)
 
 		fun createPausePendingIntent(context: Context, id: UUID) = PendingIntentCompat.getBroadcast(
 			context,
@@ -62,13 +62,27 @@ class PausingReceiver(
 			false,
 		)
 
-		fun createResumePendingIntent(context: Context, id: UUID, skipError: Boolean) =
+		fun createResumePendingIntent(context: Context, id: UUID) =
 			PendingIntentCompat.getBroadcast(
 				context,
 				0,
-				getResumeIntent(context, id, skipError),
+				getResumeIntent(context, id),
 				0,
 				false,
 			)
+
+		fun createSkipPendingIntent(context: Context, id: UUID) =
+			PendingIntentCompat.getBroadcast(
+				context,
+				0,
+				getSkipIntent(context, id),
+				0,
+				false,
+			)
+
+		private fun createIntent(context: Context, id: UUID, action: String) = Intent(action)
+			.setData(Uri.parse("$SCHEME://$id"))
+			.setPackage(context.packageName)
+			.putExtra(EXTRA_UUID, id.toString())
 	}
 }

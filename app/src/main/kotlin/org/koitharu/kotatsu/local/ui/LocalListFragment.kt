@@ -66,11 +66,11 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 	}
 
 	override fun onEmptyActionClick() {
-		ImportDialogFragment.show(childFragmentManager)
+		ImportDialogFragment.show(getChildFragmentManager())
 	}
 
 	override fun onFilterClick(view: View?) {
-		FilterSheetFragment.show(childFragmentManager)
+		FilterSheetFragment.show(getChildFragmentManager())
 	}
 
 	override fun onPrimaryButtonClick(tipView: TipView) {

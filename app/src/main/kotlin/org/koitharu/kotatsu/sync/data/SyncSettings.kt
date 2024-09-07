@@ -24,22 +24,26 @@ class SyncSettings(
 	)
 
 	private val accountManager = AccountManager.get(context)
-	private val defaultHost = context.getString(R.string.sync_host_default)
+	private val defaultSyncUrl = context.getString(R.string.sync_url_default)
 
 	@get:WorkerThread
 	@set:WorkerThread
-	var host: String
+	var syncURL: String
 		get() = account?.let {
-			accountManager.getUserData(it, KEY_HOST)
-		}.ifNullOrEmpty { defaultHost }
+			val sync_url = accountManager.getUserData(it, KEY_SYNC_URL)
+			if ( !sync_url.startsWith("http://") && !sync_url.startsWith("https://") ) {
+				return "http://$sync_url"
+			}
+			return sync_url
+		}.ifNullOrEmpty { defaultSyncUrl }
 		set(value) {
 			account?.let {
-				accountManager.setUserData(it, KEY_HOST, value)
+				accountManager.setUserData(it, KEY_SYNC_URL, value)
 			}
 		}
 
 	companion object {
 
-		const val KEY_HOST = "host"
+		const val KEY_SYNC_URL = "host"
 	}
 }

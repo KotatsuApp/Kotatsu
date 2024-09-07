@@ -15,6 +15,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
+import androidx.core.view.SoftwareKeyboardControllerCompat
 import androidx.core.view.children
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.isInvisible
@@ -42,16 +43,17 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.FadingAppbarMediator
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.OptionsMenuBadgeHelper
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
-import org.koitharu.kotatsu.core.util.ext.hideKeyboard
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.favourites.ui.container.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalStorageCleanupWorker
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
@@ -87,6 +89,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	private val closeSearchCallback = CloseSearchCallback()
 	private lateinit var navigationDelegate: MainNavigationDelegate
 	private lateinit var appUpdateBadge: OptionsMenuBadgeHelper
+	private lateinit var fadingAppbarMediator: FadingAppbarMediator
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
@@ -105,6 +108,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 		viewBinding.fab?.setOnClickListener(this)
 		viewBinding.navRail?.headerView?.setOnClickListener(this)
+		fadingAppbarMediator = FadingAppbarMediator(viewBinding.appbar, viewBinding.toolbarCard)
 
 		navigationDelegate = MainNavigationDelegate(
 			navBar = checkNotNull(bottomNav ?: viewBinding.navRail),
@@ -145,6 +149,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
 		adjustFabVisibility(topFragment = fragment)
+		adjustAppbar(topFragment = fragment)
 		if (fromUser) {
 			actionModeDelegate.finishActionMode()
 			closeSearchCallback.handleOnBackPressed()
@@ -208,6 +213,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			left = insets.left,
 			right = insets.right,
 		)
+		viewBinding.bottomNav?.updatePadding(bottom = insets.bottom)
 	}
 
 	override fun onLayoutChange(
@@ -327,7 +333,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	private fun onSearchClosed() {
-		viewBinding.searchView.hideKeyboard()
+		SoftwareKeyboardControllerCompat(viewBinding.searchView).hide()
 		adjustSearchUI(isOpened = false, animate = true)
 	}
 
@@ -344,6 +350,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				MangaPrefetchService.prefetchLast(this@MainActivity)
 				requestNotificationsPermission()
 			}
+		}
+	}
+
+	private fun adjustAppbar(topFragment: Fragment) {
+		if (topFragment is FavouritesContainerFragment) {
+			viewBinding.appbar.fitsSystemWindows = true
+			fadingAppbarMediator.bind()
+		} else {
+			viewBinding.appbar.fitsSystemWindows = false
+			fadingAppbarMediator.unbind()
 		}
 	}
 

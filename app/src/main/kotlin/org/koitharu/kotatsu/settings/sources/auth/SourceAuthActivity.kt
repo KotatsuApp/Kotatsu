@@ -23,7 +23,6 @@ import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.util.TaggedActivityResult
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
@@ -66,7 +65,7 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
-		viewBinding.webView.configureForParser(repository.headers[CommonHeaders.USER_AGENT])
+		viewBinding.webView.configureForParser(repository.getRequestHeaders()[CommonHeaders.USER_AGENT])
 		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		viewBinding.webView.webViewClient = BrowserClient(this)
 		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)
@@ -132,13 +131,13 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		viewBinding.webView.updatePadding(bottom = insets.bottom)
 	}
 
-	class Contract : ActivityResultContract<MangaSource, TaggedActivityResult>() {
+	class Contract : ActivityResultContract<MangaSource, Boolean>() {
 		override fun createIntent(context: Context, input: MangaSource): Intent {
 			return newIntent(context, input)
 		}
 
-		override fun parseResult(resultCode: Int, intent: Intent?): TaggedActivityResult {
-			return TaggedActivityResult(TAG, resultCode)
+		override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
+			return resultCode == RESULT_OK
 		}
 	}
 

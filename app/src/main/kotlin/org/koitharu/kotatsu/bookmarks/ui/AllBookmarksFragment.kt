@@ -46,7 +46,7 @@ class AllBookmarksFragment :
 	BaseFragment<FragmentListSimpleBinding>(),
 	ListStateHolderListener,
 	OnListItemClickListener<Bookmark>,
-	ListSelectionController.Callback2,
+	ListSelectionController.Callback,
 	FastScroller.FastScrollListener, ListHeaderClickListener {
 
 	@Inject

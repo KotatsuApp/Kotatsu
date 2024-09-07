@@ -208,7 +208,7 @@
     <string name="disable_battery_optimization">बैटरी अनुकूलन अक्षम करें</string>
     <string name="send">भेजें</string>
     <string name="disable_all">सब अक्षम करें</string>
-    <string name="use_fingerprint">यदि उपलब्ध हो तो फिंगरप्रिंट का उपयोग करें</string>
+    <string name="use_fingerprint">यदि उपलब्ध हो तो बायोमेट्रिक का उपयोग करें</string>
     <string name="appwidget_shelf_description">आपके पसंदीदा में से मंगा</string>
     <string name="appwidget_recent_description">आपके हालिया पढ़ें मंगा</string>
     <string name="report">रिपोर्ट</string>
@@ -659,4 +659,9 @@
     <string name="external_source">बाहरी/प्लगइन</string>
     <string name="chapters_left">अध्याय शेष</string>
     <string name="plugin_incompatible">असंगत प्लगइन या आंतरिक त्रुटि। सुनिश्चित करें कि आप प्लगइन और कोटात्सु के नवीनतम संस्करण का उपयोग कर रहे हैं</string>
+    <string name="text_empty_holder_secondary_filtered">आपके द्वारा चयनित फिल्टर से मेल खाने वाला कोई मंगा नहीं है</string>
+    <string name="connection_ok">कनेक्शन ठीक है</string>
+    <string name="show_quick_filters">शीघ्र फिल्टर दिखाएं</string>
+    <string name="invalid_proxy_configuration">अमान्य प्रॉक्सी विन्यास</string>
+    <string name="show_quick_filters_summary">कुछ मापदंडों के आधार पर मंगा सूचियों को फिल्टर करने की क्षमता प्रदान करता है</string>
 </resources>

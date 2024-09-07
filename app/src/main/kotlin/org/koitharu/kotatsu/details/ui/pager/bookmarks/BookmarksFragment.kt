@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import coil.ImageLoader
@@ -30,7 +29,7 @@ import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentMangaBookmarksBinding
-import org.koitharu.kotatsu.details.ui.DetailsViewModel
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
@@ -40,9 +39,9 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
-	OnListItemClickListener<Bookmark>, ListSelectionController.Callback2 {
+	OnListItemClickListener<Bookmark>, ListSelectionController.Callback {
 
-	private val activityViewModel by activityViewModels<DetailsViewModel>()
+	private val activityViewModel by ChaptersPagesViewModel.ActivityVMLazy(this)
 	private val viewModel by viewModels<BookmarksViewModel>()
 
 	@Inject
@@ -62,7 +61,7 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		activityViewModel.manga.observe(this, viewModel)
+		activityViewModel.mangaDetails.observe(this, viewModel)
 	}
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentMangaBookmarksBinding {
@@ -125,7 +124,7 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 			dismissParentDialog()
 		} else {
 			val intent = IntentBuilder(view.context)
-				.manga(activityViewModel.manga.value ?: return)
+				.manga(activityViewModel.getMangaOrNull() ?: return)
 				.bookmark(item)
 				.incognito(true)
 				.build()

@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.titleResId
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.util.FadingAppbarMediator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView.ChipModel
@@ -57,6 +58,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			adapter = sourcesAdapter
 		}
 		viewBinding.chipsFilter.onChipClickListener = this
+		FadingAppbarMediator(viewBinding.appbar, viewBinding.toolbar).bind()
 		viewModel.content.observe(this, sourcesAdapter)
 		viewModel.onActionDone.observeEvent(
 			this,
@@ -80,8 +82,8 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		when (data) {
-			is ContentType -> viewModel.setContentType(data, chip.isChecked)
-			is Boolean -> viewModel.setNewOnly(chip.isChecked)
+			is ContentType -> viewModel.setContentType(data, !chip.isChecked)
+			is Boolean -> viewModel.setNewOnly(!chip.isChecked)
 			else -> showLocalesMenu(chip)
 		}
 	}
@@ -119,8 +121,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		if (hasNewSources) {
 			chips += ChipModel(
 				title = getString(R.string._new),
-				icon = R.drawable.ic_updated_selector,
-				isCheckable = true,
+				icon = R.drawable.ic_updated,
 				isChecked = appliedFilter.isNewOnly,
 				data = true,
 			)
@@ -131,7 +132,6 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			}
 			chips += ChipModel(
 				title = getString(type.titleResId),
-				isCheckable = true,
 				isChecked = type in appliedFilter.types,
 				data = type,
 			)

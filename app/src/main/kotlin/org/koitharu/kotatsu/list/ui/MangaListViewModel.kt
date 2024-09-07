@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -55,17 +56,29 @@ abstract class MangaListViewModel(
 		}
 	}
 
-	fun List<Manga>.skipNsfwIfNeeded() = if (settings.isNsfwContentDisabled) {
+	protected fun List<Manga>.skipNsfwIfNeeded() = if (settings.isNsfwContentDisabled) {
 		filterNot { it.isNsfw }
 	} else {
 		this
 	}
 
+	protected fun Flow<Set<ListFilterOption>>.combineWithSettings(): Flow<Set<ListFilterOption>> = combine(
+		settings.observeAsFlow(AppSettings.KEY_DISABLE_NSFW) { isNsfwContentDisabled },
+	) { filters, skipNsfw ->
+		if (skipNsfw) {
+			filters + ListFilterOption.SFW
+		} else {
+			filters
+		}
+	}
+
 	protected fun observeListModeWithTriggers(): Flow<ListMode> = combine(
 		listMode,
 		settings.observe().filter { key ->
-			key == AppSettings.KEY_PROGRESS_INDICATORS || key == AppSettings.KEY_TRACKER_ENABLED
-		}.onStart { emit("") }
+			key == AppSettings.KEY_PROGRESS_INDICATORS
+				|| key == AppSettings.KEY_TRACKER_ENABLED
+				|| key == AppSettings.KEY_QUICK_FILTER
+		}.onStart { emit("") },
 	) { mode, _ ->
 		mode
 	}

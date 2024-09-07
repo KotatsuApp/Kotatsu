@@ -112,32 +112,33 @@ class LocalMangaZipInput(root: File) : LocalMangaInput(root) {
 		return runInterruptible(Dispatchers.IO) {
 			val uri = Uri.parse(chapter.url)
 			val file = uri.toFile()
-			val zip = ZipFile(file)
-			val index = zip.getEntry(LocalMangaOutput.ENTRY_NAME_INDEX)?.let(zip::readText)?.let(::MangaIndex)
-			var entries = zip.entries().asSequence()
-			entries = if (index != null) {
-				val pattern = index.getChapterNamesPattern(chapter)
-				entries.filter { x -> !x.isDirectory && x.name.substringBefore('.').matches(pattern) }
-			} else {
-				val parent = uri.fragment.orEmpty()
-				entries.filter { x ->
-					!x.isDirectory && x.name.substringBeforeLast(
-						File.separatorChar,
-						"",
-					) == parent
+			ZipFile(file).use { zip ->
+				val index = zip.getEntry(LocalMangaOutput.ENTRY_NAME_INDEX)?.let(zip::readText)?.let(::MangaIndex)
+				var entries = zip.entries().asSequence()
+				entries = if (index != null) {
+					val pattern = index.getChapterNamesPattern(chapter)
+					entries.filter { x -> !x.isDirectory && x.name.substringBefore('.').matches(pattern) }
+				} else {
+					val parent = uri.fragment.orEmpty()
+					entries.filter { x ->
+						!x.isDirectory && x.name.substringBeforeLast(
+							File.separatorChar,
+							"",
+						) == parent
+					}
 				}
+				entries
+					.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
+					.map { x ->
+						val entryUri = zipUri(file, x.name)
+						MangaPage(
+							id = entryUri.longHashCode(),
+							url = entryUri,
+							preview = null,
+							source = LocalMangaSource,
+						)
+					}
 			}
-			entries
-				.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
-				.map { x ->
-					val entryUri = zipUri(file, x.name)
-					MangaPage(
-						id = entryUri.longHashCode(),
-						url = entryUri,
-						preview = null,
-						source = LocalMangaSource,
-					)
-				}
 		}
 	}
 

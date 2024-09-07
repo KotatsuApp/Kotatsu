@@ -25,7 +25,7 @@ class ListSelectionController(
 	private val appCompatDelegate: AppCompatDelegate,
 	private val decoration: AbstractSelectionItemDecoration,
 	private val registryOwner: SavedStateRegistryOwner,
-	private val callback: Callback2,
+	private val callback: Callback,
 ) : ActionMode.Callback, SavedStateRegistry.SavedStateProvider {
 
 	private var actionMode: ActionMode? = null
@@ -130,43 +130,7 @@ class ListSelectionController(
 		notifySelectionChanged()
 	}
 
-	@Deprecated("")
-	interface Callback : Callback2 {
-
-		fun onSelectionChanged(count: Int)
-
-		fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean
-
-		fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean
-
-		fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean
-
-		fun onDestroyActionMode(mode: ActionMode) = Unit
-
-		override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
-			onSelectionChanged(count)
-		}
-
-		override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-			return onCreateActionMode(mode, menu)
-		}
-
-		override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-			return onPrepareActionMode(mode, menu)
-		}
-
-		override fun onActionItemClicked(
-			controller: ListSelectionController,
-			mode: ActionMode,
-			item: MenuItem,
-		): Boolean = onActionItemClicked(mode, item)
-
-		override fun onDestroyActionMode(controller: ListSelectionController, mode: ActionMode) {
-			onDestroyActionMode(mode)
-		}
-	}
-
-	interface Callback2 {
+	interface Callback {
 
 		fun onSelectionChanged(controller: ListSelectionController, count: Int)
 

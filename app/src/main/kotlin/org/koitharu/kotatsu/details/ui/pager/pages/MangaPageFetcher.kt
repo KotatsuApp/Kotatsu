@@ -22,6 +22,7 @@ import okio.source
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.util.ext.getInputStreamOrClose
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.data.isFileUri
 import org.koitharu.kotatsu.local.data.isZipUri
@@ -68,7 +69,7 @@ class MangaPageFetcher(
 				val entry = zip.getEntry(uri.fragment)
 				SourceResult(
 					source = ImageSource(
-						source = zip.getInputStream(entry).source().withExtraCloseable(zip).buffer(),
+						source = zip.getInputStreamOrClose(entry).source().withExtraCloseable(zip).buffer(),
 						context = context,
 						metadata = MangaPageMetadata(page),
 					),

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="details">Detaļas</string>
+    <string name="list">Saraksts</string>
+    <string name="grid">Kastes</string>
+    <string name="list_mode">Saraksta veids</string>
+    <string name="settings">Iestatījumi</string>
+    <string name="remote_sources">Manga avoti</string>
+    <string name="chapters">Daļas</string>
+    <string name="computing_">Darbojas…</string>
+    <string name="read">Lasīt</string>
+    <string name="local_storage">Vietējā krātuve</string>
+    <string name="history">Vēsture</string>
+    <string name="network_error">Interneta kļūda</string>
+    <string name="error_occurred">Notika kļūda</string>
+    <string name="close">Aizvērt</string>
+    <string name="detailed_list">Detalizēts saraksts</string>
+    <string name="loading_">Lādējas…</string>
+    <string name="try_again">Atkārtot</string>
+    <string name="clear_history">Iztukšot vēsturi</string>
+    <string name="nothing_found">Neko neatradu</string>
+    <string name="add_to_favourites">Man patīk</string>
+    <string name="history_is_empty">Nav vēstures</string>
+    <string name="add_new_category">Jauna nodaļa</string>
+    <string name="you_have_not_favourites_yet">Nekas vēl nav paticis</string>
+    <string name="favourites">Patīkošie</string>
+    <string name="chapter_d_of_d">%1$d. daļa no %2$d</string>
+    <string name="add">Pievienot</string>
+    <string name="save">Saglabāt</string>
+    <string name="share">Kopīgot</string>
+</resources>

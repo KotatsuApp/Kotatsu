@@ -288,7 +288,7 @@
     <string name="reset">Atur Ulang</string>
     <string name="text_unsaved_changes_prompt">Simpan atau buang perubahan yang belum disimpan?</string>
     <string name="discard">Buang</string>
-    <string name="use_fingerprint">Gunakan sidik jari jika tersedia</string>
+    <string name="use_fingerprint">Gunakan biometrik jika tersedia</string>
     <string name="appwidget_shelf_description">Komik dari favorit Anda</string>
     <string name="appwidget_recent_description">Komik yang baru-baru ini Anda baca</string>
     <string name="data_deletion">Penghapusan data</string>
@@ -319,7 +319,7 @@
     <string name="prefetch_content">Pramuat konten</string>
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="nothing_here">Tidak ada apapun di sini</string>
-    <string name="reader_control_ltr_summary">Ketuk di tepi kanan atau menekan tombol kanan akan selalu beralih ke halaman berikutnya</string>
+    <string name="reader_control_ltr_summary">Ketuk tepi kanan atau tekan tombol kanan, akan selalu beralih ke halaman selanjutnya</string>
     <string name="source_disabled">Sumber dinonaktifkan</string>
     <string name="mark_as_current">Tandai sebagai saat ini</string>
     <string name="show_suspicious_content">Tampilkan konten yang mencurigakan</string>
@@ -620,7 +620,7 @@
     <string name="split_by_translations">Dibagi berdasarkan terjemahan</string>
     <string name="split_by_translations_summary">Menampilkan bab dengan terjemahan yang berbeda secara terpisah, bukan dalam satu daftar</string>
     <string name="order_oldest">Terlama</string>
-    <string name="long_ago_read">Dibaca lama sekali</string>
+    <string name="long_ago_read">Dulu pernah dibaca</string>
     <string name="webtoon_gaps">Celah dalam mode webtoon</string>
     <string name="more_frequently">Lebih sering</string>
     <string name="webtoon_gaps_summary">Menampilkan celah vertikal di antara halaman dalam mode webtoon</string>
@@ -645,4 +645,10 @@
     <string name="suggested_queries">Pertanyaan yang disarankan</string>
     <string name="source_pinned">Sumber disematkan</string>
     <string name="recent_sources">Sumber sumbver terbaru</string>
+    <string name="text_empty_holder_secondary_filtered">Tidak ada manga yang cocok dengan filter yang kamu pilih</string>
+    <string name="image_server">Server gambar yang dipilih</string>
+    <string name="crop_pages">Potong Halaman</string>
+    <string name="pin">Sematkan</string>
+    <string name="unpin">Batal sematkan</string>
+    <string name="source_unpinned">Sumber yang tidak disematkan</string>
 </resources>

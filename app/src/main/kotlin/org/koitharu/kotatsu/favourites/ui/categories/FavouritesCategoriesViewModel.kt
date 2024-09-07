@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
@@ -34,13 +35,15 @@ class FavouritesCategoriesViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	private var commitJob: Job? = null
+	private val isActionsEnabled = MutableStateFlow(true)
 
 	val content = combine(
 		repository.observeCategoriesWithCovers(),
 		observeAllCategories(),
 		settings.observeAsFlow(AppSettings.KEY_ALL_FAVOURITES_VISIBLE) { isAllFavouritesVisible },
-	) { cats, all, showAll ->
-		cats.toUiList(all, showAll)
+		isActionsEnabled,
+	) { cats, all, showAll, hasActions ->
+		cats.toUiList(all, showAll, hasActions)
 	}.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
@@ -77,6 +80,10 @@ class FavouritesCategoriesViewModel @Inject constructor(
 		}
 	}
 
+	fun setActionsEnabled(value: Boolean) {
+		isActionsEnabled.value = value
+	}
+
 	fun getCategories(ids: LongSet): ArrayList<FavouriteCategory> {
 		val items = content.requireValue()
 		return items.mapNotNullTo(ArrayList(ids.size)) { item ->
@@ -86,7 +93,8 @@ class FavouritesCategoriesViewModel @Inject constructor(
 
 	private fun Map<FavouriteCategory, List<Cover>>.toUiList(
 		allFavorites: Pair<Int, List<Cover>>,
-		showAll: Boolean
+		showAll: Boolean,
+		hasActions: Boolean,
 	): List<ListModel> {
 		if (isEmpty()) {
 			return listOf(
@@ -104,6 +112,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 				mangaCount = allFavorites.first,
 				covers = allFavorites.second,
 				isVisible = showAll,
+				isActionsEnabled = hasActions,
 			),
 		)
 		mapTo(result) { (category, covers) ->
@@ -111,6 +120,7 @@ class FavouritesCategoriesViewModel @Inject constructor(
 				mangaCount = covers.size,
 				covers = covers.take(3),
 				category = category,
+				isActionsEnabled = hasActions,
 				isTrackerEnabled = settings.isTrackerEnabled && AppSettings.TRACK_FAVOURITES in settings.trackSources,
 			)
 		}

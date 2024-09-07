@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -100,6 +101,18 @@ class FavouriteCategoriesActivity :
 		return item != null && selectionController.onItemLongClick(item.id)
 	}
 
+	override fun onSupportActionModeStarted(mode: ActionMode) {
+		super.onSupportActionModeStarted(mode)
+		viewBinding.fabAdd.hide()
+		viewModel.setActionsEnabled(false)
+	}
+
+	override fun onSupportActionModeFinished(mode: ActionMode) {
+		super.onSupportActionModeFinished(mode)
+		viewBinding.fabAdd.show()
+		viewModel.setActionsEnabled(true)
+	}
+
 	override fun onShowAllClick(isChecked: Boolean) {
 		viewModel.setAllCategoriesVisible(isChecked)
 	}
@@ -137,6 +150,14 @@ class FavouriteCategoriesActivity :
 		ItemTouchHelper.DOWN or ItemTouchHelper.UP,
 		0,
 	) {
+
+		override fun getDragDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+			return if (actionModeDelegate.isActionModeStarted) {
+				0
+			} else {
+				super.getDragDirs(recyclerView, viewHolder)
+			}
+		}
 
 		override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
 

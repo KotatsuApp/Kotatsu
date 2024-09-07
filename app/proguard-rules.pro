@@ -14,6 +14,7 @@
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
+-dontwarn com.google.j2objc.annotations.**
 
 -keep class org.koitharu.kotatsu.core.exceptions.* { *; }
 -keep class org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment
@@ -21,3 +22,7 @@
 -keep class org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment { *; }
 -keep class org.jsoup.parser.Tag
 -keep class org.jsoup.internal.StringUtil
+
+-keep class org.acra.security.NoKeyStoreFactory { *; }
+-keep class org.acra.config.DefaultRetryPolicy { *; }
+-keep class org.acra.attachment.DefaultAttachmentProvider { *; }

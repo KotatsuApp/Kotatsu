@@ -248,7 +248,7 @@
     <string name="crash_text">Что-то пошло не так. Пожалуйста, отправьте отчёт разработчикам, чтобы помочь всё исправить.</string>
     <string name="send">Отправить</string>
     <string name="disable_all">Отключить все</string>
-    <string name="use_fingerprint">Использовать отпечаток пальца, если доступно</string>
+    <string name="use_fingerprint">Использовать биометрические данные, если они доступны</string>
     <string name="appwidget_shelf_description">Манга из Вашего избранного</string>
     <string name="appwidget_recent_description">Манга, которую Вы недавно читали</string>
     <string name="status_reading">Читаю</string>
@@ -658,4 +658,26 @@
     <string name="percent_left">Процент оставшегося</string>
     <string name="chapters_left">Глав осталось</string>
     <string name="external_source">Внешний/плагин</string>
+    <string name="plugin_incompatible">Несовместимый плагин или внутренняя ошибка. Убедитесь, что вы используете последнюю версию плагина и Kotatsu</string>
+    <string name="text_empty_holder_secondary_filtered">Нет манги, соответствующей выбранным вами фильтрам</string>
+    <string name="connection_ok">Соединение в порядке</string>
+    <string name="invalid_proxy_configuration">Неверная конфигурация прокси</string>
+    <string name="invalid_server_address_message">Неверный адрес сервера</string>
+    <string name="seconds_short">%d с</string>
+    <string name="minutes_seconds_short">%1$d м %2$d с</string>
+    <string name="show_quick_filters">Показать быстрые фильтры</string>
+    <string name="show_quick_filters_summary">Предоставляет возможность фильтровать списки манги по определённым параметрам</string>
+    <string name="not_in_favorites">Нет в избранных</string>
+    <string name="updated_long_ago">Обновлено давно</string>
+    <string name="unpopular">Непопулярно</string>
+    <string name="low_rating">Низкий рейтинг</string>
+    <string name="sort_order_asc">По возрастанию</string>
+    <string name="sort_order_desc">По убыванию</string>
+    <string name="retry">Повторить</string>
+    <string name="too_many_requests_message_retry">Слишком много запросов. Попробуйте ещё раз после %s</string>
+    <string name="sfw">SFW</string>
+    <string name="skip_all">Пропустить все</string>
+    <string name="by_date">Дата</string>
+    <string name="popularity">Популярность</string>
+    <string name="stuck">Зависло</string>
 </resources>

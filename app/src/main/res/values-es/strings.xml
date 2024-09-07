@@ -16,7 +16,7 @@
     <string name="loading_">Cargando…</string>
     <string name="chapter_d_of_d">Capítulo %1$d de %2$d</string>
     <string name="close">Cerrar</string>
-    <string name="try_again">Reintentar</string>
+    <string name="try_again">Inténtalo de nuevo</string>
     <string name="clear_history">Borrar historial</string>
     <string name="nothing_found">No se encontró nada</string>
     <string name="history_is_empty">Aún sin historial</string>
@@ -36,7 +36,7 @@
     <string name="download_complete">Descargado</string>
     <string name="downloads">Descargas</string>
     <string name="by_name">Nombre</string>
-    <string name="popular">Popularidad</string>
+    <string name="popular">Popular</string>
     <string name="updated">Actualización</string>
     <string name="newest">Recientes</string>
     <string name="by_rating">Calificación</string>
@@ -247,7 +247,7 @@
     <string name="disable_battery_optimization">Desactivar la optimización de la batería</string>
     <string name="send">Enviar</string>
     <string name="crash_text">Algo ha ido mal. Por favor, envía un informe de errores a los desarrolladores para ayudarnos a solucionarlo.</string>
-    <string name="use_fingerprint">Utilizar la huella dactilar si está disponible</string>
+    <string name="use_fingerprint">Usar la biométria si está disponible</string>
     <string name="appwidget_shelf_description">Mangas de tus favoritos</string>
     <string name="appwidget_recent_description">Sus mangas recientemente leídos</string>
     <string name="logout">Cerrar sesión</string>
@@ -659,4 +659,29 @@
     <string name="chapters_left">Capítulos restantes</string>
     <string name="external_source">Externo/plugin</string>
     <string name="plugin_incompatible">Complemento incompatible o error interno. Asegúrate de estar usando la última versión del complemento y de Kotatsu</string>
+    <string name="connection_ok">La conexión está bien</string>
+    <string name="text_empty_holder_secondary_filtered">No hay manga que coincida con los filtros que seleccionaste</string>
+    <string name="invalid_proxy_configuration">Configuración del proxy no válida</string>
+    <string name="show_quick_filters">Mostrar filtros rápidos</string>
+    <string name="show_quick_filters_summary">Proporciona la posibilidad de filtrar listas de manga por ciertos parámetros</string>
+    <string name="invalid_server_address_message">Dirección del servidor no válida</string>
+    <string name="sfw">SFW</string>
+    <string name="minutes_seconds_short">%1$d m %2$d s</string>
+    <string name="too_many_requests_message_retry">Demasiadas peticiones. Inténtalo de nuevo después de %s</string>
+    <string name="retry">Reintentar</string>
+    <string name="seconds_short">%d s</string>
+    <string name="skip_all">Omitir todo</string>
+    <string name="stuck">Fijado</string>
+    <string name="not_in_favorites">No está en favoritos</string>
+    <string name="updated_long_ago">Actualizado hace mucho tiempo</string>
+    <string name="unpopular">Impopular</string>
+    <string name="low_rating">Valoración baja</string>
+    <string name="sort_order_asc">Ascendente</string>
+    <string name="sort_order_desc">Descendente</string>
+    <string name="by_date">Fecha</string>
+    <string name="popularity">Popularidad</string>
+    <string name="scrobbler_auth_required">Iniciar sesión en %s para continuar</string>
+    <string name="scrobbler_auth_intro">Inicia sesión para configurar la integración con %s . Esto te permitirá seguir tu progreso de lectura del manga</string>
+    <string name="unstable_feature">Función inestable</string>
+    <string name="unstable_feature_summary">Esta función es experimental. Por favor, asegúrate de tener una copia de seguridad para evitar la pérdida de datos</string>
 </resources>

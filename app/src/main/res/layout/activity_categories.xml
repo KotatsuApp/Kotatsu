@@ -54,18 +54,17 @@
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 		tools:listitem="@layout/item_category" />
 
-	<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
 		android:id="@+id/fab_add"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_margin="16dp"
 		android:contentDescription="@string/add_new_category"
-		android:text="@string/create_category"
+		android:src="@drawable/ic_add"
 		app:fabSize="normal"
-		app:icon="@drawable/ic_add"
 		app:layout_anchor="@id/recyclerView"
 		app:layout_anchorGravity="bottom|end"
-		app:layout_behavior="org.koitharu.kotatsu.core.ui.util.ShrinkOnScrollBehavior"
+		app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
 		app:layout_dodgeInsetEdges="bottom" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

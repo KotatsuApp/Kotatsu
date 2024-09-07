@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
+import org.koitharu.kotatsu.core.util.ext.flattenLatest
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -61,7 +62,13 @@ class MangaSourcesRepository @Inject constructor(
 	suspend fun getEnabledSources(): List<MangaSource> {
 		assimilateNewSources()
 		val order = settings.sourcesSortOrder
-		return dao.findAllEnabled(order).toSources(settings.isNsfwContentDisabled, order)
+		return dao.findAllEnabled(order).toSources(settings.isNsfwContentDisabled, order).let { enabled ->
+			val external = getExternalSources()
+			val list = ArrayList<MangaSourceInfo>(enabled.size + external.size)
+			external.mapTo(list) { MangaSourceInfo(it, isEnabled = true, isPinned = true) }
+			list.addAll(enabled)
+			list
+		}
 	}
 
 	suspend fun getPinnedSources(): Set<MangaSource> {
@@ -162,7 +169,7 @@ class MangaSourcesRepository @Inject constructor(
 		dao.observeEnabled(order).map {
 			it.toSources(skipNsfw, order)
 		}
-	}.flatMapLatest { it }
+	}.flattenLatest()
 		.onStart { assimilateNewSources() }
 		.combine(observeExternalSources()) { enabled, external ->
 			val list = ArrayList<MangaSourceInfo>(enabled.size + external.size)
@@ -308,8 +315,6 @@ class MangaSourcesRepository @Inject constructor(
 	}
 
 	private fun observeExternalSources(): Flow<List<ExternalMangaSource>> {
-		val intent = Intent("app.kotatsu.parser.PROVIDE_MANGA")
-		val pm = context.packageManager
 		return callbackFlow {
 			val receiver = object : BroadcastReceiver() {
 				override fun onReceive(context: Context?, intent: Intent?) {
@@ -333,13 +338,17 @@ class MangaSourcesRepository @Inject constructor(
 		}.onStart {
 			emit(null)
 		}.map {
-			pm.queryIntentContentProviders(intent, 0).map { resolveInfo ->
-				ExternalMangaSource(
-					packageName = resolveInfo.providerInfo.packageName,
-					authority = resolveInfo.providerInfo.authority,
-				)
-			}
+			getExternalSources()
 		}.distinctUntilChanged()
+	}
+
+	private fun getExternalSources() = context.packageManager.queryIntentContentProviders(
+		Intent("app.kotatsu.parser.PROVIDE_MANGA"), 0,
+	).map { resolveInfo ->
+		ExternalMangaSource(
+			packageName = resolveInfo.providerInfo.packageName,
+			authority = resolveInfo.providerInfo.authority,
+		)
 	}
 
 	private fun List<MangaSourceEntity>.toSources(

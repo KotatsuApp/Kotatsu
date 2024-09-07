@@ -14,11 +14,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.ifZero
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.requireValue
@@ -79,8 +81,8 @@ class ScrobblingSelectorViewModel @Inject constructor(
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	val selectedItemId = MutableStateFlow(NO_ID)
-	val searchQuery = MutableStateFlow(manga.title)
 	val onClose = MutableEventFlow<Unit>()
+	private val searchQuery = MutableStateFlow(manga.title)
 
 	val isEmpty: Boolean
 		get() = scrobblerMangaList.value.isEmpty()
@@ -201,11 +203,14 @@ class ScrobblingSelectorViewModel @Inject constructor(
 		actionStringRes = R.string.search,
 	)
 
-	private fun errorHint(e: Throwable) = ScrobblerHint(
-		icon = R.drawable.ic_error_large,
-		textPrimary = R.string.error_occurred,
-		error = e,
-		textSecondary = 0,
-		actionStringRes = R.string.try_again,
-	)
+	private fun errorHint(e: Throwable): ScrobblerHint {
+		val resolveAction = ExceptionResolver.getResolveStringId(e)
+		return ScrobblerHint(
+			icon = R.drawable.ic_error_large,
+			textPrimary = R.string.error_occurred,
+			error = e,
+			textSecondary = if (resolveAction == 0) 0 else R.string.try_again,
+			actionStringRes = resolveAction.ifZero { R.string.try_again },
+		)
+	}
 }

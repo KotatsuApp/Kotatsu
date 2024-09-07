@@ -3,10 +3,10 @@ package org.koitharu.kotatsu.core.util.ext
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
 import androidx.annotation.DrawableRes
-import androidx.collection.arraySetOf
 import coil.network.HttpException
 import okio.FileNotFoundException
 import okio.IOException
+import okio.ProtocolException
 import org.acra.ktx.sendWithAcra
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.R
@@ -17,11 +17,12 @@ import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.IncompatiblePluginException
 import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
+import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.exceptions.SyncApiException
-import org.koitharu.kotatsu.core.exceptions.TooManyRequestExceptions
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_LOCALE_GENRES_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_STATES_GENRES_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_MULTIPLE_GENRES_NOT_SUPPORTED
@@ -31,6 +32,8 @@ import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.ContentUnavailableException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.exception.ParseException
+import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
+import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerAuthRequiredException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -38,27 +41,44 @@ private const val MSG_NO_SPACE_LEFT = "No space left on device"
 private const val IMAGE_FORMAT_NOT_SUPPORTED = "Image format not supported"
 
 fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
+	is ScrobblerAuthRequiredException -> resources.getString(
+		R.string.scrobbler_auth_required,
+		resources.getString(scrobbler.titleResId),
+	)
+
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
 	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required)
 	is CloudFlareBlockedException -> resources.getString(R.string.blocked_by_server_message)
 	is ActivityNotFoundException,
 	is UnsupportedOperationException,
-	-> resources.getString(R.string.operation_not_supported)
+		-> resources.getString(R.string.operation_not_supported)
 
-	is TooManyRequestExceptions -> resources.getString(R.string.too_many_requests_message)
+	is TooManyRequestExceptions -> {
+		val delay = getRetryDelay()
+		val formattedTime = if (delay > 0L && delay < Long.MAX_VALUE) {
+			resources.formatDurationShort(delay)
+		} else {
+			null
+		}
+		if (formattedTime != null) {
+			resources.getString(R.string.too_many_requests_message_retry, formattedTime)
+		} else {
+			resources.getString(R.string.too_many_requests_message)
+		}
+	}
+
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is BadBackupFormatException -> resources.getString(R.string.unsupported_backup_message)
 	is FileNotFoundException -> resources.getString(R.string.file_not_found)
 	is AccessDeniedException -> resources.getString(R.string.no_access_to_file)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
+	is ProxyConfigException -> resources.getString(R.string.invalid_proxy_configuration)
 	is SyncApiException,
-	is ContentUnavailableException,
-	-> message
+	is ContentUnavailableException -> message
 
 	is ParseException -> shortMessage
 	is UnknownHostException,
-	is SocketTimeoutException,
-	-> resources.getString(R.string.network_error)
+	is SocketTimeoutException -> resources.getString(R.string.network_error)
 
 	is NoDataReceivedException -> resources.getString(R.string.error_no_data_received)
 	is IncompatiblePluginException -> resources.getString(R.string.plugin_incompatible)
@@ -80,7 +100,7 @@ fun Throwable.getDisplayIcon() = when (this) {
 	is CloudFlareProtectedException -> R.drawable.ic_bot_large
 	is UnknownHostException,
 	is SocketTimeoutException,
-	-> R.drawable.ic_plug_large
+	is ProtocolException -> R.drawable.ic_plug_large
 
 	is CloudFlareBlockedException -> R.drawable.ic_denied_large
 
@@ -106,7 +126,25 @@ private fun getDisplayMessage(msg: String?, resources: Resources): String? = whe
 }
 
 fun Throwable.isReportable(): Boolean {
-	return this is Error || this.javaClass in reportableExceptions
+	if (this is Error) {
+		return true
+	}
+	if (this is CaughtException) {
+		return cause?.isReportable() == true
+	}
+	if (ExceptionResolver.canResolve(this)) {
+		return false
+	}
+	if (this is ParseException
+		|| this.isNetworkError()
+		|| this is CloudFlareBlockedException
+		|| this is CloudFlareProtectedException
+		|| this is BadBackupFormatException
+		|| this is WrongPasswordException
+	) {
+		return false
+	}
+	return true
 }
 
 fun Throwable.isNetworkError(): Boolean {
@@ -117,15 +155,6 @@ fun Throwable.report() {
 	val exception = CaughtException(this, "${javaClass.simpleName}($message)")
 	exception.sendWithAcra()
 }
-
-private val reportableExceptions = arraySetOf<Class<*>>(
-	RuntimeException::class.java,
-	IllegalStateException::class.java,
-	IllegalArgumentException::class.java,
-	ConcurrentModificationException::class.java,
-	UnsupportedOperationException::class.java,
-	NoDataReceivedException::class.java,
-)
 
 fun Throwable.isWebViewUnavailable(): Boolean {
 	val trace = stackTraceToString()

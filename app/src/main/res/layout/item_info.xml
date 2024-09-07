@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:paddingTop="6dp">
+
+	<View
+		android:id="@+id/view_line"
+		android:layout_width="4dp"
+		android:layout_height="0dp"
+		android:layout_marginVertical="4dp"
+		android:layout_marginStart="8dp"
+		android:background="@drawable/bg_chip"
+		android:backgroundTint="?colorPrimary"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="6dp"
+		android:drawablePadding="10dp"
+		android:gravity="center_vertical"
+		android:textAppearance="?textAppearanceTitleMedium"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/view_line"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:drawableStartCompat="@drawable/ic_app_update"
+		tools:text="Уведомления отключены" />
+
+	<TextView
+		android:id="@+id/textView_body"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:paddingBottom="6dp"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="@id/textView_title"
+		app:layout_constraintTop_toBottomOf="@id/textView_title"
+		tools:text="Включите их, чтобы ничего не пропускать. Откройте настройки системы и разрешите их отправку." />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

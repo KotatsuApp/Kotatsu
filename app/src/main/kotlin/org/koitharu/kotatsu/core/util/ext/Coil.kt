@@ -57,10 +57,6 @@ fun ImageResult.toBitmapOrNull() = when (this) {
 	is ErrorResult -> null
 }
 
-fun ImageRequest.Builder.indicator(indicator: BaseProgressIndicator<*>): ImageRequest.Builder {
-	return addListener(ImageRequestIndicatorListener(listOf(indicator)))
-}
-
 fun ImageRequest.Builder.indicator(indicators: List<BaseProgressIndicator<*>>): ImageRequest.Builder {
 	return addListener(ImageRequestIndicatorListener(indicators))
 }

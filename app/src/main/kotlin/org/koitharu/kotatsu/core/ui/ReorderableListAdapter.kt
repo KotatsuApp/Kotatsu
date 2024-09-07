@@ -52,8 +52,8 @@ open class ReorderableListAdapter<T : ListModel> : ListDelegationAdapter<List<T>
 	}
 
 	protected class DiffCallback<T : ListModel>(
-		val oldList: List<T>,
-		val newList: List<T>,
+		private val oldList: List<T>,
+		private val newList: List<T>,
 	) : DiffUtil.Callback() {
 
 		override fun getOldListSize(): Int = oldList.size
@@ -70,6 +70,12 @@ open class ReorderableListAdapter<T : ListModel> : ListDelegationAdapter<List<T>
 			val oldItem = oldList[oldItemPosition]
 			val newItem = newList[newItemPosition]
 			return newItem == oldItem
+		}
+
+		override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+			val oldItem = oldList[oldItemPosition]
+			val newItem = newList[newItemPosition]
+			return newItem.getChangePayload(oldItem)
 		}
 	}
 }

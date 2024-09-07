@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +29,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.FragmentPagesBinding
-import org.koitharu.kotatsu.details.ui.DetailsViewModel
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
@@ -46,14 +45,14 @@ class PagesFragment :
 	BaseFragment<FragmentPagesBinding>(),
 	OnListItemClickListener<PageThumbnail> {
 
-	private val detailsViewModel by activityViewModels<DetailsViewModel>()
-	private val viewModel by viewModels<PagesViewModel>()
-
 	@Inject
 	lateinit var coil: ImageLoader
 
 	@Inject
 	lateinit var settings: AppSettings
+
+	private val parentViewModel by ChaptersPagesViewModel.ActivityVMLazy(this)
+	private val viewModel by viewModels<PagesViewModel>()
 
 	private var thumbnailsAdapter: PageThumbnailAdapter? = null
 	private var spanResolver: GridSpanResolver? = null
@@ -64,12 +63,12 @@ class PagesFragment :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		combine(
-			detailsViewModel.details,
-			detailsViewModel.history,
-			detailsViewModel.selectedBranch,
-		) { details, history, branch ->
+			parentViewModel.mangaDetails,
+			parentViewModel.readingState,
+			parentViewModel.selectedBranch,
+		) { details, readingState, branch ->
 			if (details != null && (details.isLoaded || details.chapters.isNotEmpty())) {
-				PagesViewModel.State(details.filterChapters(branch), history, branch)
+				PagesViewModel.State(details.filterChapters(branch), readingState, branch)
 			} else {
 				null
 			}
@@ -102,7 +101,7 @@ class PagesFragment :
 				it.spanCount = checkNotNull(spanResolver).spanCount
 			}
 		}
-		detailsViewModel.isChaptersEmpty.observe(viewLifecycleOwner, ::onNoChaptersChanged)
+		parentViewModel.isChaptersEmpty.observe(viewLifecycleOwner, ::onNoChaptersChanged)
 		viewModel.thumbnails.observe(viewLifecycleOwner, ::onThumbnailsChanged)
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.isLoading.observe(viewLifecycleOwner) { binding.progressBar.showOrHide(it) }
@@ -127,7 +126,7 @@ class PagesFragment :
 		} else {
 			startActivity(
 				IntentBuilder(view.context)
-					.manga(detailsViewModel.manga.value ?: return)
+					.manga(parentViewModel.getMangaOrNull() ?: return)
 					.state(ReaderState(item.page.chapterId, item.page.index, 0))
 					.build(),
 			)

@@ -7,7 +7,7 @@
 		android:defaultValue="DIRECT"
 		android:entries="@array/proxy_types"
 		android:entryValues="@array/values_proxy_types"
-		android:key="proxy_type"
+		android:key="proxy_type_2"
 		android:title="@string/type"
 		app:useSimpleSummaryProvider="true" />
 
@@ -35,5 +35,11 @@
 			android:title="@string/password" />
 
 	</PreferenceCategory>
+
+	<Preference
+		android:key="proxy_test"
+		android:persistent="false"
+		android:title="Test connection"
+		app:allowDividerAbove="true" />
 
 </PreferenceScreen>

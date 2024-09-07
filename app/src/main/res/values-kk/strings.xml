@@ -17,7 +17,7 @@
     <string name="chapters">Тарау</string>
     <string name="detailed_list">Егжей-тегжейлі тізім</string>
     <string name="list_mode">Тізім түрі</string>
-    <string name="remote_sources">Маңга дереккөзі</string>
+    <string name="remote_sources">Манга дереккөзі</string>
     <string name="loading_">Жүктеліп жатыр…</string>
     <string name="computing_">Есептеу…</string>
     <string name="favourites">Таңдаулы</string>
@@ -62,7 +62,7 @@
     <string name="webtoon">Уебтүн</string>
     <string name="grid_size">Кесте өлшемі</string>
     <string name="search_on_s">%s-те іздеу</string>
-    <string name="delete_manga">Маңганы жою</string>
+    <string name="delete_manga">Манганы жою</string>
     <string name="reader_settings">Оқыманы баптау</string>
     <string name="switch_pages">Парақтау</string>
     <string name="clear_thumbs_cache">Нобай кәшін тазалау</string>
@@ -105,7 +105,7 @@
     <string name="nothing_found">Түк табылмады</string>
     <string name="you_have_not_favourites_yet">Әзірге таңдаулы жоқ</string>
     <string name="history_is_empty">Әзірге тарих жоқ</string>
-    <string name="search_manga">Маңга іздеу</string>
+    <string name="search_manga">Манга іздеу</string>
     <string name="add_to_favourites">Таңдаулыға</string>
     <string name="downloads">Жүктелген</string>
     <string name="operation_not_supported">Қолжетімсіз амал</string>
@@ -165,7 +165,7 @@
     <string name="data_restored">Қалыпқа келді</string>
     <string name="preparing_">Дайындау…</string>
     <string name="data_restored_with_errors">Дерек қалыпқа келсе де, сәл қате шығып қалды</string>
-    <string name="exclude_nsfw_from_history">ҰЯТСЫЗ маңганы тарихта көрсетпеу</string>
+    <string name="exclude_nsfw_from_history">ҰЯТСЫЗ манганы тарихта көрсетпеу</string>
     <string name="state_ongoing">Шығып жатыр</string>
     <string name="show_pages_numbers">Беттерді нөмірлеу</string>
     <string name="system_default">Әдепкі</string>

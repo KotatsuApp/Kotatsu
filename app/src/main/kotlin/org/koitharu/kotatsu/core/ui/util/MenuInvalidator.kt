@@ -7,7 +7,5 @@ class MenuInvalidator(
 	private val host: MenuHost,
 ) : FlowCollector<Any?> {
 
-	override suspend fun emit(value: Any?) {
-		host.invalidateMenu()
-	}
+	override suspend fun emit(value: Any?) = host.invalidateMenu()
 }

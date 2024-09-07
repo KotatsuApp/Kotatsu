@@ -12,32 +12,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
-import okio.FileNotFoundException
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
-import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
-import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
-import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.onEachWhile
-import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.domain.BranchComparator
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
@@ -45,9 +36,9 @@ import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
 import org.koitharu.kotatsu.details.domain.ProgressUpdateUseCase
 import org.koitharu.kotatsu.details.domain.ReadingTimeUseCase
 import org.koitharu.kotatsu.details.domain.RelatedMangaUseCase
-import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.list.domain.MangaListMapper
@@ -57,6 +48,7 @@ import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
@@ -66,37 +58,42 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
-	private val bookmarksRepository: BookmarksRepository,
-	private val settings: AppSettings,
+	bookmarksRepository: BookmarksRepository,
+	settings: AppSettings,
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
-	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
-	private val downloadScheduler: DownloadWorker.Scheduler,
+	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
+	downloadScheduler: DownloadWorker.Scheduler,
 	private val interactor: DetailsInteractor,
 	savedStateHandle: SavedStateHandle,
-	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
+	deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	private val relatedMangaUseCase: RelatedMangaUseCase,
 	private val mangaListMapper: MangaListMapper,
 	private val detailsLoadUseCase: DetailsLoadUseCase,
 	private val progressUpdateUseCase: ProgressUpdateUseCase,
 	private val readingTimeUseCase: ReadingTimeUseCase,
-	private val statsRepository: StatsRepository,
-) : BaseViewModel() {
+	statsRepository: StatsRepository,
+) : ChaptersPagesViewModel(
+	settings = settings,
+	interactor = interactor,
+	bookmarksRepository = bookmarksRepository,
+	historyRepository = historyRepository,
+	downloadScheduler = downloadScheduler,
+	deleteLocalMangaUseCase = deleteLocalMangaUseCase,
+	localStorageChanges = localStorageChanges,
+) {
 
 	private val intent = MangaIntent(savedStateHandle)
 	private var loadingJob: Job
 	val mangaId = intent.mangaId
 
-	val onActionDone = MutableEventFlow<ReversibleAction>()
-	val onSelectChapter = MutableEventFlow<Long>()
-	val onDownloadStarted = MutableEventFlow<Unit>()
-
-	val details = MutableStateFlow(intent.manga?.let { MangaDetails(it, null, null, false) })
-	val manga = details.map { x -> x?.toManga() }
-		.withErrorHandling()
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
+	init {
+		mangaDetails.value = intent.manga?.let { MangaDetails(it, null, null, false) }
+	}
 
 	val history = historyRepository.observeOne(mangaId)
-		.withErrorHandling()
+		.onEach { h ->
+			readingState.value = h?.let(::ReaderState)
+		}.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	val favouriteCategories = interactor.observeFavourite(mangaId)
@@ -109,31 +106,8 @@ class DetailsViewModel @Inject constructor(
 
 	val remoteManga = MutableStateFlow<Manga?>(null)
 
-	val newChaptersCount = details.flatMapLatest { d ->
-		if (d?.isLocal == false) {
-			interactor.observeNewChapters(mangaId)
-		} else {
-			flowOf(0)
-		}
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, 0)
-
-	private val chaptersQuery = MutableStateFlow("")
-	val selectedBranch = MutableStateFlow<String?>(null)
-
-	val isChaptersReversed = settings.observeAsStateFlow(
-		scope = viewModelScope + Dispatchers.Default,
-		key = AppSettings.KEY_REVERSE_CHAPTERS,
-		valueProducer = { isChaptersReverse },
-	)
-
-	val isChaptersInGridView = settings.observeAsStateFlow(
-		scope = viewModelScope + Dispatchers.Default,
-		key = AppSettings.KEY_GRID_VIEW_CHAPTERS,
-		valueProducer = { isChaptersGridView },
-	)
-
 	val historyInfo: StateFlow<HistoryInfo> = combine(
-		details,
+		mangaDetails,
 		selectedBranch,
 		history,
 		interactor.observeIncognitoMode(manga),
@@ -145,11 +119,7 @@ class DetailsViewModel @Inject constructor(
 		initialValue = HistoryInfo(null, null, null, false),
 	)
 
-	val bookmarks = manga.flatMapLatest {
-		if (it != null) bookmarksRepository.observeBookmarks(it) else flowOf(emptyList())
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, emptyList())
-
-	val localSize = details
+	val localSize = mangaDetails
 		.map { it?.local }
 		.distinctUntilChanged()
 		.combine(localStorageChanges.onStart { emit(null) }) { x, _ -> x }
@@ -163,7 +133,6 @@ class DetailsViewModel @Inject constructor(
 			}
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.WhileSubscribed(5000), 0L)
 
-	val onMangaRemoved = MutableEventFlow<Manga>()
 	val isScrobblingAvailable: Boolean
 		get() = scrobblers.any { it.isEnabled }
 
@@ -182,7 +151,7 @@ class DetailsViewModel @Inject constructor(
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, emptyList())
 
 	val branches: StateFlow<List<MangaBranch>> = combine(
-		details,
+		mangaDetails,
 		selectedBranch,
 		history,
 	) { m, b, h ->
@@ -201,35 +170,8 @@ class DetailsViewModel @Inject constructor(
 		}.sortedWith(BranchComparator())
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
-	val isChaptersEmpty: StateFlow<Boolean> = details.map {
-		it != null && it.isLoaded && it.allChapters.isEmpty()
-	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
-
-	val chapters = combine(
-		combine(
-			details,
-			history,
-			selectedBranch,
-			newChaptersCount,
-			bookmarks,
-			isChaptersInGridView,
-		) { manga, history, branch, news, bookmarks, grid ->
-			manga?.mapChapters(
-				history,
-				news,
-				branch,
-				bookmarks,
-				grid,
-			).orEmpty()
-		},
-		isChaptersReversed,
-		chaptersQuery,
-	) { list, reversed, query ->
-		(if (reversed) list.asReversed() else list).filterSearch(query)
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
-
 	val readingTime = combine(
-		details,
+		mangaDetails,
 		selectedBranch,
 		history,
 	) { m, b, h ->
@@ -242,18 +184,14 @@ class DetailsViewModel @Inject constructor(
 	init {
 		loadingJob = doLoad()
 		launchJob(Dispatchers.Default) {
-			localStorageChanges
-				.collect { onDownloadComplete(it) }
-		}
-		launchJob(Dispatchers.Default) {
-			val manga = details.firstOrNull { !it?.chapters.isNullOrEmpty() } ?: return@launchJob
+			val manga = mangaDetails.firstOrNull { !it?.chapters.isNullOrEmpty() } ?: return@launchJob
 			val h = history.firstOrNull()
 			if (h != null) {
 				progressUpdateUseCase(manga.toManga())
 			}
 		}
 		launchJob(Dispatchers.Default) {
-			val manga = details.firstOrNull { it != null && it.isLocal } ?: return@launchJob
+			val manga = mangaDetails.firstOrNull { it != null && it.isLocal } ?: return@launchJob
 			remoteManga.value = interactor.findRemote(manga.toManga())
 		}
 	}
@@ -261,41 +199,6 @@ class DetailsViewModel @Inject constructor(
 	fun reload() {
 		loadingJob.cancel()
 		loadingJob = doLoad()
-	}
-
-	fun deleteLocal() {
-		val m = details.value?.local?.manga
-		if (m == null) {
-			errorEvent.call(FileNotFoundException())
-			return
-		}
-		launchLoadingJob(Dispatchers.Default) {
-			deleteLocalMangaUseCase(m)
-			onMangaRemoved.call(m)
-		}
-	}
-
-	fun removeBookmark(bookmark: Bookmark) {
-		launchJob(Dispatchers.Default) {
-			bookmarksRepository.removeBookmark(bookmark)
-			onActionDone.call(ReversibleAction(R.string.bookmark_removed, null))
-		}
-	}
-
-	fun setChaptersReversed(newValue: Boolean) {
-		settings.isChaptersReverse = newValue
-	}
-
-	fun setChaptersInGridView(newValue: Boolean) {
-		settings.isChaptersGridView = newValue
-	}
-
-	fun setSelectedBranch(branch: String?) {
-		selectedBranch.value = branch
-	}
-
-	fun performChapterSearch(query: String?) {
-		chaptersQuery.value = query?.trim().orEmpty()
 	}
 
 	fun updateScrobbling(index: Int, rating: Float, status: ScrobblingStatus?) {
@@ -316,34 +219,6 @@ class DetailsViewModel @Inject constructor(
 			scrobbler.unregisterScrobbling(
 				mangaId = mangaId,
 			)
-		}
-	}
-
-	fun markChapterAsCurrent(chapterId: Long) {
-		launchJob(Dispatchers.Default) {
-			val manga = checkNotNull(details.value)
-			val chapters = checkNotNull(manga.chapters[selectedBranchValue])
-			val chapterIndex = chapters.indexOfFirst { it.id == chapterId }
-			check(chapterIndex in chapters.indices) { "Chapter not found" }
-			val percent = chapterIndex / chapters.size.toFloat()
-			historyRepository.addOrUpdate(
-				manga = manga.toManga(),
-				chapterId = chapterId,
-				page = 0,
-				scroll = 0,
-				percent = percent,
-				force = true,
-			)
-		}
-	}
-
-	fun download(chaptersIds: Set<Long>?) {
-		launchJob(Dispatchers.Default) {
-			downloadScheduler.schedule(
-				details.requireValue().toManga(),
-				chaptersIds,
-			)
-			onDownloadStarted.call(Unit)
 		}
 	}
 
@@ -374,26 +249,8 @@ class DetailsViewModel @Inject constructor(
 				selectedBranch.value = manga.getPreferredBranch(hist)
 				true
 			}.collect {
-				details.value = it
+				mangaDetails.value = it
 			}
-	}
-
-	private fun List<ChapterListItem>.filterSearch(query: String): List<ChapterListItem> {
-		if (query.isEmpty() || this.isEmpty()) {
-			return this
-		}
-		return filter {
-			it.chapter.name.contains(query, ignoreCase = true)
-		}
-	}
-
-	private suspend fun onDownloadComplete(downloadedManga: LocalManga?) {
-		downloadedManga ?: return
-		launchJob {
-			details.update {
-				interactor.updateLocal(it, downloadedManga)
-			}
-		}
 	}
 
 	private fun getScrobbler(index: Int): Scrobbler? {

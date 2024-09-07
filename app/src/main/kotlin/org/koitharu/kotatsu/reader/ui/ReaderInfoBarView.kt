@@ -84,8 +84,8 @@ class ReaderInfoBarView @JvmOverloads constructor(
 			paint.strokeWidth = getDimension(R.styleable.ReaderInfoBarView_android_strokeWidth, 2f)
 			paint.textSize = getDimension(R.styleable.ReaderInfoBarView_android_textSize, 16f)
 		}
-		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start")
-		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end")
+		val insetStart = getSystemUiDimensionOffset("status_bar_padding_start").coerceAtLeast(0)
+		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end").coerceAtLeast(0)
 		val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
 		insetLeftFallback = if (isRtl) insetEnd else insetStart
 		insetRightFallback = if (isRtl) insetStart else insetEnd

@@ -21,22 +21,24 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.sidesheet.SideSheetDialog
+import dagger.hilt.android.EntryPointAccessors
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.BaseActivityEntryPoint
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
 import com.google.android.material.R as materialR
 
-abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
+abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment(), ExceptionResolver.Host {
 
 	private var waitingForDismissAllowingStateLoss = false
 	private var isFitToContentsDisabled = false
 
-	var viewBinding: B? = null
+	protected lateinit var exceptionResolver: ExceptionResolver
 		private set
 
-	@Deprecated("", ReplaceWith("requireViewBinding()"))
-	protected val binding: B
-		get() = requireViewBinding()
+	var viewBinding: B? = null
+		private set
 
 	protected val behavior: AdaptiveSheetBehavior?
 		get() = AdaptiveSheetBehavior.from(this)
@@ -53,6 +55,12 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment() {
 	var isLocked = false
 		private set
 	private var lockCounter = 0
+
+	override fun onAttach(context: Context) {
+		super.onAttach(context)
+		val entryPoint = EntryPointAccessors.fromApplication<BaseActivityEntryPoint>(context)
+		exceptionResolver = entryPoint.exceptionResolverFactory.create(this)
+	}
 
 	final override fun onCreateView(
 		inflater: LayoutInflater,

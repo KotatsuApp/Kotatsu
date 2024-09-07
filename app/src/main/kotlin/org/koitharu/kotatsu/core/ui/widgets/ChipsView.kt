@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.ui.widgets
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -11,8 +12,6 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.castOrNull
-
 import com.google.android.material.R as materialR
 
 class ChipsView @JvmOverloads constructor(
@@ -23,9 +22,7 @@ class ChipsView @JvmOverloads constructor(
 
 	private var isLayoutSuppressedCompat = false
 	private var isLayoutCalledOnSuppressed = false
-	private val chipOnClickListener = OnClickListener {
-		onChipClickListener?.onChipClick(it as Chip, it.tag)
-	}
+	private val chipOnClickListener = InternalChipClickListener()
 	private val chipOnCloseListener = OnClickListener {
 		val chip = it as Chip
 		val data = it.tag
@@ -71,8 +68,8 @@ class ChipsView @JvmOverloads constructor(
 		suppressLayoutCompat(true)
 		try {
 			for ((i, model) in items.withIndex()) {
-				val chip = getChildAt(i) as Chip? ?: addChip()
-				bindChip(chip, model)
+				val chip = getChildAt(i) as DataChip? ?: addChip()
+				chip.bind(model)
 			}
 			if (childCount > items.size) {
 				removeViews(items.size, childCount - items.size)
@@ -82,56 +79,7 @@ class ChipsView @JvmOverloads constructor(
 		}
 	}
 
-	fun <T> getCheckedData(cls: Class<T>): Set<T> {
-		val result = LinkedHashSet<T>(childCount)
-		for (child in children) {
-			if (child is Chip && child.isChecked) {
-				result += cls.castOrNull(child.tag) ?: continue
-			}
-		}
-		return result
-	}
-
-	private fun bindChip(chip: Chip, model: ChipModel) {
-		if (model.titleResId == 0) {
-			chip.text = model.title
-		} else {
-			chip.setText(model.titleResId)
-		}
-		chip.isClickable = onChipClickListener != null || model.isCheckable
-		chip.isCheckable = model.isCheckable
-		if (model.icon == 0) {
-			chip.chipIcon = null
-			chip.isChipIconVisible = false
-		} else {
-			chip.setChipIconResource(model.icon)
-			chip.isChipIconVisible = true
-		}
-		chip.isChecked = model.isChecked
-		chip.isCheckedIconVisible = chip.isCheckable && model.icon == 0
-		chip.isCloseIconVisible = if (onChipCloseClickListener != null || model.isDropdown) {
-			chip.setCloseIconResource(
-				if (model.isDropdown) R.drawable.ic_expand_more else materialR.drawable.ic_m3_chip_close,
-			)
-			true
-		} else {
-			false
-		}
-		chip.tag = model.data
-	}
-
-	private fun addChip(): Chip {
-		val chip = Chip(context)
-		val drawable = ChipDrawable.createFromAttributes(context, null, 0, chipStyle)
-		chip.setChipDrawable(drawable)
-		chip.isChipIconVisible = false
-		chip.setOnCloseIconClickListener(chipOnCloseListener)
-		chip.setEnsureMinTouchTargetSize(false)
-		chip.setOnClickListener(chipOnClickListener)
-		chip.isElegantTextHeight = false
-		addView(chip)
-		return chip
-	}
+	private fun addChip() = DataChip(context).also { addView(it) }
 
 	private fun suppressLayoutCompat(suppress: Boolean) {
 		isLayoutSuppressedCompat = suppress
@@ -147,12 +95,70 @@ class ChipsView @JvmOverloads constructor(
 		val title: CharSequence? = null,
 		@StringRes val titleResId: Int = 0,
 		@DrawableRes val icon: Int = 0,
-		val isCheckable: Boolean = false,
 		@ColorRes val tint: Int = 0,
 		val isChecked: Boolean = false,
 		val isDropdown: Boolean = false,
 		val data: Any? = null,
 	)
+
+	private inner class DataChip(context: Context) : Chip(context) {
+
+		private var model: ChipModel? = null
+
+		init {
+			val drawable = ChipDrawable.createFromAttributes(context, null, 0, chipStyle)
+			setChipDrawable(drawable)
+			isChipIconVisible = false
+			setOnCloseIconClickListener(chipOnCloseListener)
+			setEnsureMinTouchTargetSize(false)
+			setOnClickListener(chipOnClickListener)
+			isElegantTextHeight = false
+		}
+
+		fun bind(model: ChipModel) {
+			this.model = model
+
+			if (model.titleResId == 0) {
+				text = model.title
+			} else {
+				setText(model.titleResId)
+			}
+			isClickable = onChipClickListener != null
+			if (model.isChecked) {
+				isCheckable = true
+				isChecked = true
+			} else {
+				isChecked = false
+				isCheckable = false
+			}
+			if (model.icon == 0 || model.isChecked) {
+				chipIcon = null
+				isChipIconVisible = false
+			} else {
+				setChipIconResource(model.icon)
+				isChipIconVisible = true
+			}
+			isCheckedIconVisible = model.isChecked
+			isCloseIconVisible = if (onChipCloseClickListener != null || model.isDropdown) {
+				setCloseIconResource(
+					if (model.isDropdown) R.drawable.ic_expand_more else materialR.drawable.ic_m3_chip_close,
+				)
+				true
+			} else {
+				false
+			}
+			tag = model.data
+		}
+
+		override fun toggle() = Unit
+	}
+
+	private inner class InternalChipClickListener : OnClickListener {
+		override fun onClick(v: View?) {
+			val chip = v as? DataChip ?: return
+			onChipClickListener?.onChipClick(chip, chip.tag)
+		}
+	}
 
 	fun interface OnChipClickListener {
 

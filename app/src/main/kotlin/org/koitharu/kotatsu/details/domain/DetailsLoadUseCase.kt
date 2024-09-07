@@ -27,7 +27,7 @@ import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.recoverNotNull
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.tracker.domain.Tracker
+import org.koitharu.kotatsu.tracker.domain.CheckNewChaptersUseCase
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -37,7 +37,7 @@ class DetailsLoadUseCase @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val recoverUseCase: RecoverMangaUseCase,
 	private val imageGetter: Html.ImageGetter,
-	private val trackerProvider: Provider<Tracker>,
+	private val newChaptersUseCaseProvider: Provider<CheckNewChaptersUseCase>,
 ) {
 
 	operator fun invoke(intent: MangaIntent): Flow<MangaDetails> = channelFlow {
@@ -55,11 +55,32 @@ class DetailsLoadUseCase @Inject constructor(
 		try {
 			val details = getDetails(manga)
 			launch { updateTracker(details) }
-			send(MangaDetails(details, local?.peek(), details.description?.parseAsHtml(withImages = false)?.trim(), false))
-			send(MangaDetails(details, local?.await(), details.description?.parseAsHtml(withImages = true)?.trim(), true))
+			send(
+				MangaDetails(
+					details,
+					local?.peek(),
+					details.description?.parseAsHtml(withImages = false)?.trim(),
+					false,
+				),
+			)
+			send(
+				MangaDetails(
+					details,
+					local?.await(),
+					details.description?.parseAsHtml(withImages = true)?.trim(),
+					true,
+				),
+			)
 		} catch (e: IOException) {
 			local?.await()?.manga?.also { localManga ->
-				send(MangaDetails(localManga, null, localManga.description?.parseAsHtml(withImages = false)?.trim(), true))
+				send(
+					MangaDetails(
+						localManga,
+						null,
+						localManga.description?.parseAsHtml(withImages = false)?.trim(),
+						true,
+					),
+				)
 			} ?: close(e)
 		}
 	}
@@ -97,7 +118,7 @@ class DetailsLoadUseCase @Inject constructor(
 	}
 
 	private suspend fun updateTracker(details: Manga) = runCatchingCancellable {
-		trackerProvider.get().syncWithDetails(details)
+		newChaptersUseCaseProvider.get()(details)
 	}.onFailure { e ->
 		e.printStackTraceDebug()
 	}

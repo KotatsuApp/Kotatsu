@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
@@ -30,7 +29,6 @@ import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetChaptersPagesBinding
-import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import javax.inject.Inject
 
@@ -40,7 +38,7 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 	@Inject
 	lateinit var settings: AppSettings
 
-	private val viewModel by activityViewModels<DetailsViewModel>()
+	private val viewModel by ChaptersPagesViewModel.ActivityVMLazy(this)
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetChaptersPagesBinding {
 		return SheetChaptersPagesBinding.inflate(inflater, container, false)
@@ -93,8 +91,8 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 	}
 
 	override fun onActionModeStarted(mode: ActionMode) {
-		expandAndLock()
 		viewBinding?.toolbar?.menuView?.isVisible = false
+		view?.post(::expandAndLock)
 	}
 
 	override fun onActionModeFinished(mode: ActionMode) {

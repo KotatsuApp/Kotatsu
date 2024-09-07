@@ -8,7 +8,11 @@ interface DownloadItemListener : OnListItemClickListener<DownloadItemModel> {
 
 	fun onPauseClick(item: DownloadItemModel)
 
-	fun onResumeClick(item: DownloadItemModel, skip: Boolean)
+	fun onResumeClick(item: DownloadItemModel)
+
+	fun onSkipClick(item: DownloadItemModel)
+
+	fun onSkipAllClick(item: DownloadItemModel)
 
 	fun onExpandClick(item: DownloadItemModel)
 }

@@ -17,6 +17,9 @@ class NetworkState(
 
 	private val callback = NetworkCallbackImpl()
 
+	override val value: Boolean
+		get() = connectivityManager.isOnline(settings)
+
 	@Synchronized
 	override fun onActive() {
 		invalidate()

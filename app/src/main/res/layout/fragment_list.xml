@@ -15,10 +15,11 @@
 			android:id="@+id/recyclerView"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
+			android:clipChildren="false"
 			android:clipToPadding="false"
 			android:orientation="vertical"
-			app:bubbleSize="small"
 			android:padding="@dimen/list_spacing_normal"
+			app:bubbleSize="small"
 			tools:layoutManager="org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager"
 			tools:listitem="@layout/item_manga_list" />
 

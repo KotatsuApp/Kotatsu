@@ -5,6 +5,7 @@
 	android:id="@+id/scrollView"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	android:clipChildren="false"
 	android:clipToPadding="false"
 	android:paddingHorizontal="@dimen/list_spacing"
 	android:scrollbars="none">
@@ -15,7 +16,8 @@
 		android:layout_height="wrap_content"
 		android:clipChildren="false"
 		android:clipToPadding="false"
-		android:paddingVertical="2dp"
+		android:paddingTop="2dp"
+		android:paddingBottom="6dp"
 		app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
 		app:selectionRequired="false"
 		app:singleLine="true"

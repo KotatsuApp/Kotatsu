@@ -7,7 +7,7 @@ import androidx.core.text.inSpans
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.transform.CircleCropTransformation
+import coil.transform.RoundedCornersTransformation
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getTitle
@@ -75,7 +75,7 @@ fun alternativeAD(
 				.fallback(R.drawable.ic_web)
 				.error(R.drawable.ic_web)
 				.source(item.manga.source)
-				.transformations(CircleCropTransformation())
+				.transformations(RoundedCornersTransformation(context.resources.getDimension(R.dimen.chip_icon_corner)))
 				.allowRgb565(true)
 				.enqueueWith(coil)
 		}

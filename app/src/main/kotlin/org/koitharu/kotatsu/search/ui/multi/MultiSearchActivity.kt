@@ -45,7 +45,7 @@ import javax.inject.Inject
 class MultiSearchActivity :
 	BaseActivity<ActivitySearchMultiBinding>(),
 	MangaListListener,
-	ListSelectionController.Callback2 {
+	ListSelectionController.Callback {
 
 	@Inject
 	lateinit var coil: ImageLoader

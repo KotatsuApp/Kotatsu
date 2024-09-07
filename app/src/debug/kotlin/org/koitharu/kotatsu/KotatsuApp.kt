@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 
 class KotatsuApp : BaseApp() {
 
@@ -30,6 +31,7 @@ class KotatsuApp : BaseApp() {
 				.setClassInstanceLimit(PagesCache::class.java, 1)
 				.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
 				.setClassInstanceLimit(PageLoader::class.java, 1)
+				.setClassInstanceLimit(ReaderViewModel::class.java, 1)
 				.penaltyLog()
 				.build(),
 		)

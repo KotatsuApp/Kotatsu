@@ -113,6 +113,7 @@
 
 			<com.google.android.material.card.MaterialCardView
 				android:id="@+id/card_order"
+				style="?materialCardViewOutlinedStyle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginHorizontal="16dp"
@@ -124,8 +125,8 @@
 					android:id="@+id/spinner_order"
 					android:layout_width="match_parent"
 					android:layout_height="56dp"
-					android:paddingHorizontal="8dp"
-					android:minHeight="?listPreferredItemHeightSmall" />
+					android:minHeight="?listPreferredItemHeightSmall"
+					android:paddingHorizontal="8dp" />
 
 			</com.google.android.material.card.MaterialCardView>
 

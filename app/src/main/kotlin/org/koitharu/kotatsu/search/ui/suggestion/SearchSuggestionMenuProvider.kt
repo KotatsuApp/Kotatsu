@@ -6,12 +6,10 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.MenuProvider
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.DIALOG_THEME_CENTERED
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.util.ext.resolve
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
-import com.google.android.material.R as materialR
 
 class SearchSuggestionMenuProvider(
 	private val context: Context,
@@ -44,13 +42,13 @@ class SearchSuggestionMenuProvider(
 	}
 
 	private fun clearSearchHistory() {
-		MaterialAlertDialogBuilder(context, DIALOG_THEME_CENTERED)
-			.setTitle(R.string.clear_search_history)
-			.setIcon(R.drawable.ic_clear_all)
-			.setMessage(R.string.text_clear_search_history_prompt)
-			.setNegativeButton(android.R.string.cancel, null)
-			.setPositiveButton(R.string.clear) { _, _ ->
-				viewModel.clearSearchHistory()
-			}.show()
+		buildAlertDialog(context, isCentered = true) {
+			setTitle(R.string.clear_search_history)
+			setIcon(R.drawable.ic_clear_all)
+			setCancelable(true)
+			setMessage(R.string.text_clear_search_history_prompt)
+			setNegativeButton(android.R.string.cancel, null)
+			setPositiveButton(R.string.clear) { _, _ -> viewModel.clearSearchHistory() }
+		}.show()
 	}
 }

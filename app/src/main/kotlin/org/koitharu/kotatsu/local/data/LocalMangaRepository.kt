@@ -16,7 +16,6 @@ import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.AlphanumComparator
-import org.koitharu.kotatsu.core.util.MultiMutex
 import org.koitharu.kotatsu.core.util.ext.children
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.filterWith
@@ -24,6 +23,7 @@ import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
+import org.koitharu.kotatsu.local.domain.MangaLock
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -47,10 +47,10 @@ class LocalMangaRepository @Inject constructor(
 	private val storageManager: LocalStorageManager,
 	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
 	private val settings: AppSettings,
+	private val lock: MangaLock,
 ) : MangaRepository {
 
 	override val source = LocalMangaSource
-	private val locks = MultiMutex<Long>()
 	private val localMappingCache = LocalMangaMappingCache()
 
 	override val isMultipleTagsSupported: Boolean = true
@@ -71,6 +71,9 @@ class LocalMangaRepository @Inject constructor(
 			return emptyList()
 		}
 		val list = getRawList()
+		if (settings.isNsfwContentDisabled) {
+			list.removeIf { it.manga.isNsfw }
+		}
 		when (filter) {
 			is MangaListFilter.Search -> {
 				list.retainAll { x -> x.isMatchesQuery(filter.query) }
@@ -88,7 +91,7 @@ class LocalMangaRepository @Inject constructor(
 					SortOrder.RATING -> list.sortByDescending { it.manga.rating }
 					SortOrder.NEWEST,
 					SortOrder.UPDATED,
-					-> list.sortByDescending { it.createdAt }
+						-> list.sortByDescending { it.createdAt }
 
 					else -> Unit
 				}
@@ -120,17 +123,12 @@ class LocalMangaRepository @Inject constructor(
 		return result
 	}
 
-	suspend fun deleteChapters(manga: Manga, ids: Set<Long>) {
-		lockManga(manga.id)
-		try {
-			val subject = if (manga.isLocal) manga else checkNotNull(findSavedManga(manga)) {
-				"Manga is not stored on local storage"
-			}.manga
-			LocalMangaUtil(subject).deleteChapters(ids)
-			localStorageChanges.emit(LocalManga(subject))
-		} finally {
-			unlockManga(manga.id)
-		}
+	suspend fun deleteChapters(manga: Manga, ids: Set<Long>) = lock.withLock(manga) {
+		val subject = if (manga.isLocal) manga else checkNotNull(findSavedManga(manga)) {
+			"Manga is not stored on local storage"
+		}.manga
+		LocalMangaUtil(subject).deleteChapters(ids)
+		localStorageChanges.emit(LocalManga(subject))
 	}
 
 	suspend fun getRemoteManga(localManga: Manga): Manga? {
@@ -193,7 +191,7 @@ class LocalMangaRepository @Inject constructor(
 	}
 
 	suspend fun cleanup(): Boolean {
-		if (locks.isNotEmpty()) {
+		if (lock.isNotEmpty()) {
 			return false
 		}
 		val dirs = storageManager.getWriteableDirs()
@@ -205,14 +203,6 @@ class LocalMangaRepository @Inject constructor(
 			}
 		}
 		return true
-	}
-
-	suspend fun lockManga(id: Long) {
-		locks.lock(id)
-	}
-
-	fun unlockManga(id: Long) {
-		locks.unlock(id)
 	}
 
 	private suspend fun getRawList(): ArrayList<LocalManga> {

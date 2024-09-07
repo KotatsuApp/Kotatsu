@@ -69,7 +69,7 @@ class ReaderConfigSheet :
 			?: ReaderMode.STANDARD
 		imageServerDelegate = ImageServerDelegate(
 			mangaRepositoryFactory = mangaRepositoryFactory,
-			mangaSource = viewModel.manga?.toManga()?.source,
+			mangaSource = viewModel.getMangaOrNull()?.source,
 		)
 	}
 
@@ -144,7 +144,7 @@ class ReaderConfigSheet :
 
 			R.id.button_color_filter -> {
 				val page = viewModel.getCurrentPage() ?: return
-				val manga = viewModel.manga?.toManga() ?: return
+				val manga = viewModel.getMangaOrNull() ?: return
 				startActivity(ColorFilterConfigActivity.newIntent(v.context, manga, page))
 			}
 

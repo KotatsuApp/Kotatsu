@@ -30,7 +30,7 @@ class SourcesCatalogMenuProvider(
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
 
 	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-		(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
+		(activity as? AppBarOwner)?.appBar?.setExpanded(true, true)
 		return expandListener.onMenuItemActionExpand(item)
 	}
 

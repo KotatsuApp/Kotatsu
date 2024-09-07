@@ -57,8 +57,8 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		when (data) {
-			is ContentType -> viewModel.setTypeChecked(data, chip.isChecked)
-			is Locale -> viewModel.setLocaleChecked(data, chip.isChecked)
+			is ContentType -> viewModel.setTypeChecked(data, !chip.isChecked)
+			is Locale -> viewModel.setLocaleChecked(data, !chip.isChecked)
 		}
 	}
 
@@ -92,7 +92,6 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 			value.availableItems.map {
 				ChipsView.ChipModel(
 					title = it.getDisplayName(chips.context),
-					isCheckable = true,
 					isChecked = it in value.selectedItems,
 					data = it,
 				)
@@ -106,7 +105,6 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 			value.availableItems.map {
 				ChipsView.ChipModel(
 					title = getString(it.titleResId),
-					isCheckable = true,
 					isChecked = it in value.selectedItems,
 					data = it,
 				)

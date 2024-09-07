@@ -32,7 +32,7 @@ class SyncAuthenticator(
 	private fun tryRefreshToken() = runCatching {
 		runBlocking {
 			authApi.authenticate(
-				syncSettings.host,
+				syncSettings.syncURL,
 				account.name,
 				accountManager.getPassword(account),
 			)

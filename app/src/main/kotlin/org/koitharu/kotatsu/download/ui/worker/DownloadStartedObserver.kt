@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.download.ui.worker
 
+import android.content.Intent
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.FlowCollector
@@ -18,7 +19,7 @@ class DownloadStartedObserver(
 			snackbar.anchorView = it.bottomNav
 		}
 		snackbar.setAction(R.string.details) {
-			it.context.startActivity(DownloadsActivity.newIntent(it.context))
+			it.context.startActivity(Intent(it.context, DownloadsActivity::class.java))
 		}
 		snackbar.show()
 	}

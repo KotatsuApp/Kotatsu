@@ -32,20 +32,20 @@ class TypedListSpacingDecoration(
 			ListItemType.FILTER_TAG_MULTI,
 			ListItemType.FILTER_STATE,
 			ListItemType.FILTER_LANGUAGE,
-			ListItemType.FILTER_HEADER,
-			-> outRect.set(0)
+			ListItemType.QUICK_FILTER,
+				-> outRect.set(0)
 
 			ListItemType.HEADER,
 			ListItemType.FEED,
 			ListItemType.EXPLORE_SOURCE_LIST,
 			ListItemType.MANGA_SCROBBLING,
 			ListItemType.MANGA_LIST,
-			-> outRect.set(0)
+				-> outRect.set(0)
 
 			ListItemType.DOWNLOAD,
 			ListItemType.HINT_EMPTY,
 			ListItemType.MANGA_LIST_DETAILED,
-			-> outRect.set(spacingNormal)
+				-> outRect.set(spacingNormal)
 
 			ListItemType.PAGE_THUMB -> outRect.set(spacingNormal)
 			ListItemType.MANGA_GRID -> outRect.set(0)
@@ -63,8 +63,9 @@ class TypedListSpacingDecoration(
 			ListItemType.CATEGORY_LARGE,
 			ListItemType.NAV_ITEM,
 			ListItemType.CHAPTER_LIST,
+			ListItemType.INFO,
 			null,
-			-> outRect.set(0)
+				-> outRect.set(0)
 
 			ListItemType.CHAPTER_GRID -> outRect.set(spacingSmall)
 

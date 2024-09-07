@@ -49,7 +49,7 @@ class TrackerNotificationHelper @Inject constructor(
 		if (newChapters.isEmpty() || !applicationContext.checkNotificationPermission(CHANNEL_ID)) {
 			return null
 		}
-		if (manga.isNsfw && settings.isTrackerNsfwDisabled) {
+		if (manga.isNsfw && (settings.isTrackerNsfwDisabled || settings.isNsfwContentDisabled)) {
 			return null
 		}
 		val id = manga.url.hashCode()

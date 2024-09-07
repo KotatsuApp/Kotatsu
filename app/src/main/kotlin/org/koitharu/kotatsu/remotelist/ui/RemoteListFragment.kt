@@ -66,7 +66,7 @@ class RemoteListFragment : MangaListFragment(), FilterOwner {
 	}
 
 	override fun onFilterClick(view: View?) {
-		FilterSheetFragment.show(childFragmentManager)
+		FilterSheetFragment.show(getChildFragmentManager())
 	}
 
 	override fun onEmptyActionClick() {

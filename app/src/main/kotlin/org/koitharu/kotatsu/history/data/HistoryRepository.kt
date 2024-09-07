@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.history.data
 
 import androidx.room.withTransaction
-import dagger.Lazy
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -30,10 +29,9 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.tryScrobble
-import org.koitharu.kotatsu.tracker.domain.Tracker
+import org.koitharu.kotatsu.tracker.domain.CheckNewChaptersUseCase
 import javax.inject.Inject
-
-const val PROGRESS_NONE = -1f
+import javax.inject.Provider
 
 @Reusable
 class HistoryRepository @Inject constructor(
@@ -41,7 +39,8 @@ class HistoryRepository @Inject constructor(
 	private val settings: AppSettings,
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	private val mangaRepository: MangaDataRepository,
-	private val trackerLazy: Lazy<Tracker>,
+	private val localObserver: HistoryLocalObserver,
+	private val newChaptersUseCaseProvider: Provider<CheckNewChaptersUseCase>,
 ) {
 
 	suspend fun getList(offset: Int, limit: Int): List<Manga> {
@@ -82,6 +81,9 @@ class HistoryRepository @Inject constructor(
 		filterOptions: Set<ListFilterOption>,
 		limit: Int
 	): Flow<List<MangaWithHistory>> {
+		if (ListFilterOption.Downloaded in filterOptions) {
+			return localObserver.observeAll(order, filterOptions - ListFilterOption.Downloaded, limit)
+		}
 		return db.getHistoryDao().observeAll(order, filterOptions, limit).mapItems {
 			MangaWithHistory(
 				it.manga.toManga(it.tags.toMangaTags()),
@@ -123,7 +125,7 @@ class HistoryRepository @Inject constructor(
 					deletedAt = 0L,
 				),
 			)
-			trackerLazy.get().syncWithHistory(manga, chapterId)
+			newChaptersUseCaseProvider.get()(manga, chapterId)
 			scrobblers.forEach { it.tryScrobble(manga, chapterId) }
 		}
 	}
