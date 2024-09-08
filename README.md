@@ -53,5 +53,5 @@ install instructions.
 
 ### DMCA disclaimer
 
-The developers of this application does not have any affiliation with the content available in the app.
-It is collecting from the sources freely available through any web browser.
+The developers of this application do not have any affiliation with the content available in the app.
+It collects content from sources that are freely available through any web browser
