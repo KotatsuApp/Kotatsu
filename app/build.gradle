@@ -48,11 +48,11 @@ android {
 	}
 	compileOptions {
 		coreLibraryDesugaringEnabled true
-		sourceCompatibility JavaVersion.VERSION_1_8
-		targetCompatibility JavaVersion.VERSION_1_8
+		sourceCompatibility JavaVersion.VERSION_11
+		targetCompatibility JavaVersion.VERSION_11
 	}
 	kotlinOptions {
-		jvmTarget = JavaVersion.VERSION_1_8.toString()
+		jvmTarget = JavaVersion.VERSION_11.toString()
 		freeCompilerArgs += [
 			'-opt-in=kotlin.ExperimentalStdlibApi',
 			'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
@@ -88,7 +88,7 @@ dependencies {
 	}
 
 	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
-	implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.10'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.20'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0-RC.2'
 
 	implementation 'androidx.appcompat:appcompat:1.7.0'
