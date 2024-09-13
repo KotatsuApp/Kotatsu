@@ -244,4 +244,12 @@
     <string name="notifications_enable">فعال کردن اعلان ها</string>
     <string name="bookmark_remove">حذف نشانه</string>
     <string name="bookmarks">نشانه ها</string>
+    <string name="text_empty_holder_secondary_filtered">مانگایی یافت نشد که با دسته‌بندی های انتخاب شده تطابق داشته باشد</string>
+    <string name="bookmark_added">نشانه اضافه شد</string>
+    <string name="chapters_grid_view">نمای مربعی</string>
+    <string name="removed_from_history">از تاریخچه پاک شد</string>
+    <string name="default_mode">حالت پیشفرض</string>
+    <string name="disable_battery_optimization">غیرفعال کردن بهینه سازی باتری</string>
+    <string name="send">فرستادن</string>
+    <string name="retry">تلاش مجدد</string>
 </resources>
