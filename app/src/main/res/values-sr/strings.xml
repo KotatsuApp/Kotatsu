@@ -677,4 +677,11 @@
     <string name="unpopular">Непопуларно</string>
     <string name="by_date">Датум</string>
     <string name="popularity">Популарност</string>
+    <string name="unstable_feature">Нестабилна карактеристика</string>
+    <string name="unstable_feature_summary">Ова функција је експериментална. Увери се да имаш резервну копију да не би дошло до губитка података</string>
+    <string name="scrobbler_auth_required">Пријави се на %s да би наставио</string>
+    <string name="scrobbler_auth_intro">Пријави се да би подесио интеграцију са %s. Ово ће ти омогућити да пратиш напредак и статус читања манге</string>
+    <string name="low_rating">Ниска оцена</string>
+    <string name="sort_order_asc">Узлазно</string>
+    <string name="sort_order_desc">Силазно</string>
 </resources>
