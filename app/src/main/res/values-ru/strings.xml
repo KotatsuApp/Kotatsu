@@ -680,4 +680,8 @@
     <string name="by_date">Дата</string>
     <string name="popularity">Популярность</string>
     <string name="stuck">Зависло</string>
+    <string name="scrobbler_auth_required">Войдите в %s, чтобы продолжить</string>
+    <string name="unstable_feature">Нестабильная функция</string>
+    <string name="scrobbler_auth_intro">Войдите, чтобы настроить интеграцию с %s. Это позволит вам отслеживать прогресс и статус чтения манги</string>
+    <string name="unstable_feature_summary">Эта функция экспериментальная. Убедитесь, что у вас есть резервная копия, чтобы избежать потери данных</string>
 </resources>
