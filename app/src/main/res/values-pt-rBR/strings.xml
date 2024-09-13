@@ -28,7 +28,7 @@
     <string name="create_shortcut">Criar atalho…</string>
     <string name="share_s">Compartilhar %s</string>
     <string name="search">Procurar</string>
-    <string name="search_manga">Procurar mangá</string>
+    <string name="search_manga">Procurar obra</string>
     <string name="manga_downloading_">Baixando…</string>
     <string name="processing_">Processando…</string>
     <string name="download_complete">Baixado</string>
@@ -659,4 +659,6 @@
     <string name="tracker_debug_info">Checando por novos logs de capítulos</string>
     <string name="tracker_debug_info_summary">Informações de Debug sobre a checagem de fundo para novos capítulos</string>
     <string name="plugin_incompatible">Plugin incompatível ou erro interno. Certifique-se de que está usando a versão mais recente do plugin e do Kotatsu</string>
+    <string name="show_quick_filters_summary">Habilitar filtros em todas as fontes compatíveis</string>
+    <string name="show_quick_filters">Mostrar filtros</string>
 </resources>
