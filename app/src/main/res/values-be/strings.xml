@@ -679,4 +679,9 @@
     <string name="retry">Паўтарыць спробу</string>
     <string name="too_many_requests_message_retry">Занадта шмат запытаў. Паспрабуйце яшчэ раз пасля %s</string>
     <string name="skip_all">Прапусціць усе</string>
+    <string name="scrobbler_auth_required">Увайдзіце ў %s, каб працягваць</string>
+    <string name="unstable_feature">Нестабільная функцыя</string>
+    <string name="unstable_feature_summary">Гэта функцыя эксперыментальная. Пераканайцеся, што ў вас ёсць рэзервовая копія, каб пазбегнуць страты даных</string>
+    <string name="scrobbler_auth_intro">Увайдзіце, каб настроіць інтэграцыю з %s. Гэта дазволіць вам адсочваць прагрэс і статус чытання мангі</string>
+    <string name="stuck">Завісла</string>
 </resources>
