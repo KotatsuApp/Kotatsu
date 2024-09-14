@@ -104,7 +104,10 @@ class DownloadWorker @AssistedInject constructor(
 	notificationFactoryFactory: DownloadNotificationFactory.Factory,
 ) : CoroutineWorker(appContext, params) {
 
-	private val notificationFactory = notificationFactoryFactory.create(params.id)
+	private val notificationFactory = notificationFactoryFactory.create(
+		uuid = params.id,
+		isSilent = params.inputData.getBoolean(IS_SILENT, false),
+	)
 	private val notificationManager = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 	private val slowdownDispatcher = DownloadSlowdownDispatcher(mangaRepositoryFactory, SLOWDOWN_DELAY)
 
@@ -120,8 +123,7 @@ class DownloadWorker @AssistedInject constructor(
 		setForeground(getForegroundInfo())
 		val mangaId = inputData.getLong(MANGA_ID, 0L)
 		val manga = mangaDataRepository.findMangaById(mangaId) ?: return Result.failure()
-		lastPublishedState = DownloadState(manga, isIndeterminate = true)
-		publishState(DownloadState(manga, isIndeterminate = true))
+		publishState(DownloadState(manga = manga, isIndeterminate = true).also { lastPublishedState = it })
 		val chaptersIds = inputData.getLongArray(CHAPTERS_IDS)?.takeUnless { it.isEmpty() }
 		val downloadedIds = getDoneChapters(manga)
 		return try {
@@ -380,7 +382,9 @@ class DownloadWorker @AssistedInject constructor(
 		}
 		val notification = notificationFactory.create(state)
 		if (state.isFinalState) {
-			notificationManager.notify(id.toString(), id.hashCode(), notification)
+			if (!notificationFactory.isSilent) {
+				notificationManager.notify(id.toString(), id.hashCode(), notification)
+			}
 		} else if (notificationThrottler.throttle()) {
 			notificationManager.notify(id.hashCode(), notification)
 		} else {
@@ -426,10 +430,11 @@ class DownloadWorker @AssistedInject constructor(
 		private val settings: AppSettings,
 	) {
 
-		suspend fun schedule(manga: Manga, chaptersIds: Collection<Long>?) {
+		suspend fun schedule(manga: Manga, chaptersIds: Collection<Long>?, isSilent: Boolean) {
 			dataRepository.storeManga(manga)
 			val data = Data.Builder()
 				.putLong(MANGA_ID, manga.id)
+				.putBoolean(IS_SILENT, isSilent)
 			if (!chaptersIds.isNullOrEmpty()) {
 				data.putLongArray(CHAPTERS_IDS, chaptersIds.toLongArray())
 			}
@@ -549,6 +554,7 @@ class DownloadWorker @AssistedInject constructor(
 		const val SLOWDOWN_DELAY = 200L
 		const val MANGA_ID = "manga_id"
 		const val CHAPTERS_IDS = "chapters"
+		const val IS_SILENT = "silent"
 		const val TAG = "download"
 	}
 }

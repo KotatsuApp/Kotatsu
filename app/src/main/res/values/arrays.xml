@@ -109,4 +109,8 @@
 		<item>@string/chapters_read</item>
 		<item>@string/chapters_left</item>
 	</string-array>
+	<string-array name="tracker_download_strategies" translatable="false">
+		<item>@string/never</item>
+		<item>@string/manga_with_downloaded_chapters</item>
+	</string-array>
 </resources>

@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.core.prefs
 
 import android.net.ConnectivityManager
+import androidx.annotation.Keep
 
+@Keep
 enum class NetworkPolicy(
 	private val key: Int,
 ) {

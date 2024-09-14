@@ -166,8 +166,9 @@ abstract class ChaptersPagesViewModel(
 	fun download(chaptersIds: Set<Long>?) {
 		launchJob(Dispatchers.Default) {
 			downloadScheduler.schedule(
-				requireManga(),
-				chaptersIds,
+				manga = requireManga(),
+				chaptersIds = chaptersIds,
+				isSilent = false,
 			)
 			onDownloadStarted.call(Unit)
 		}

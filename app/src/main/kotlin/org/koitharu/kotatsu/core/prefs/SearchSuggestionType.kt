@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.core.prefs
 
+import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.R
 
+@Keep
 enum class SearchSuggestionType(
 	@StringRes val titleResId: Int,
 ) {
