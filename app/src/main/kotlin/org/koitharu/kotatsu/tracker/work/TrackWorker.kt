@@ -25,6 +25,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkQuery
 import androidx.work.WorkerParameters
 import androidx.work.await
+import dagger.Lazy
 import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -47,10 +48,14 @@ import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.TrackerDownloadStrategy
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.onEachIndexed
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
+import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.toIntUp
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -76,6 +81,8 @@ class TrackWorker @AssistedInject constructor(
 	private val checkNewChaptersUseCase: CheckNewChaptersUseCase,
 	private val workManager: WorkManager,
 	@TrackerLogger private val logger: FileLogger,
+	private val localRepositoryLazy: Lazy<LocalMangaRepository>,
+	private val downloadSchedulerLazy: Lazy<DownloadWorker.Scheduler>,
 ) : CoroutineWorker(context, workerParams) {
 
 	private val notificationManager by lazy { NotificationManagerCompat.from(applicationContext) }
@@ -144,12 +151,16 @@ class TrackWorker @AssistedInject constructor(
 			if (applicationContext.checkNotificationPermission(WORKER_CHANNEL_ID)) {
 				notificationManager.notify(WORKER_NOTIFICATION_ID, createWorkerNotification(tracks.size, index + 1))
 			}
-			if (it is MangaUpdates.Failure) {
-				val e = it.error
-				logger.log("checkUpdatesAsync", e)
-				if (e is CloudFlareProtectedException) {
-					CaptchaNotifier(applicationContext).notify(e)
+			when (it) {
+				is MangaUpdates.Failure -> {
+					val e = it.error
+					logger.log("checkUpdatesAsync", e)
+					if (e is CloudFlareProtectedException) {
+						CaptchaNotifier(applicationContext).notify(e)
+					}
 				}
+
+				is MangaUpdates.Success -> processDownload(it)
 			}
 		}.mapNotNull {
 			when (it) {
@@ -236,6 +247,25 @@ class TrackWorker @AssistedInject constructor(
 			)
 		}
 	}.build()
+
+	private suspend fun processDownload(mangaUpdates: MangaUpdates.Success) {
+		if (!mangaUpdates.isValid || mangaUpdates.newChapters.isEmpty()) {
+			return
+		}
+		when (settings.trackerDownloadStrategy) {
+			TrackerDownloadStrategy.DISABLED -> Unit
+			TrackerDownloadStrategy.DOWNLOADED -> {
+				val localManga = localRepositoryLazy.get().findSavedManga(mangaUpdates.manga)
+				if (localManga != null) {
+					downloadSchedulerLazy.get().schedule(
+						manga = mangaUpdates.manga,
+						chaptersIds = mangaUpdates.newChapters.mapToSet { it.id },
+						isSilent = true,
+					)
+				}
+			}
+		}
+	}
 
 	@Reusable
 	class Scheduler @Inject constructor(

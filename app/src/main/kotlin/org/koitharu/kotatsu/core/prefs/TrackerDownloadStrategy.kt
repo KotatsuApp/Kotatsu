@@ -3,8 +3,7 @@ package org.koitharu.kotatsu.core.prefs
 import androidx.annotation.Keep
 
 @Keep
-enum class ReaderAnimation {
+enum class TrackerDownloadStrategy {
 
-	// Do not rename this
-	NONE, DEFAULT, ADVANCED;
+	DISABLED, DOWNLOADED;
 }

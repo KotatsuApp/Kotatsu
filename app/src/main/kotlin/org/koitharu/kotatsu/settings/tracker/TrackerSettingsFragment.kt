@@ -11,13 +11,17 @@ import android.view.View
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.fragment.app.viewModels
+import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.TrackerDownloadStrategy
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
+import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.tracker.categories.TrackerCategoriesConfigSheet
 import org.koitharu.kotatsu.settings.utils.DozeHelper
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
@@ -49,6 +53,10 @@ class TrackerSettingsFragment :
 					append(getString(R.string.read_more))
 				}
 			}
+		}
+		findPreference<ListPreference>(AppSettings.KEY_TRACKER_DOWNLOAD)?.run {
+			entryValues = TrackerDownloadStrategy.entries.names()
+			setDefaultValueCompat(TrackerDownloadStrategy.DISABLED.name)
 		}
 		dozeHelper.updatePreference()
 		updateCategoriesEnabled()

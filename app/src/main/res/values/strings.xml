@@ -698,4 +698,7 @@
 	<string name="scrobbler_auth_intro">Sign in to set up integration with %s. This will allow you to track your manga reading progress and status</string>
 	<string name="unstable_feature">Unstable feature</string>
 	<string name="unstable_feature_summary">This function is experimental. Please make sure you have a backup to avoid data loss</string>
+	<string name="downloads_background">Background downloads</string>
+	<string name="download_new_chapters">Download new chapters</string>
+	<string name="manga_with_downloaded_chapters">Manga with downloaded chapters</string>
 </resources>

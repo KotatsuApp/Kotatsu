@@ -1,11 +1,13 @@
 package org.koitharu.kotatsu.core.prefs
 
+import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import com.google.android.material.color.DynamicColors
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.find
 
+@Keep
 enum class ColorScheme(
 	@StyleRes val styleResId: Int,
 	@StringRes val titleResId: Int,

@@ -52,6 +52,13 @@
 		android:summary="@string/disable_nsfw_notifications_summary"
 		android:title="@string/disable_nsfw_notifications" />
 
+	<ListPreference
+		android:dependency="tracker_enabled"
+		android:entries="@array/tracker_download_strategies"
+		android:key="tracker_download"
+		android:title="@string/download_new_chapters"
+		app:useSimpleSummaryProvider="true" />
+
 	<Preference
 		android:dependency="tracker_enabled"
 		android:key="ignore_dose"

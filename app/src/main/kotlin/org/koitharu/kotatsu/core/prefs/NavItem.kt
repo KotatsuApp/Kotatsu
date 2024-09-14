@@ -2,9 +2,11 @@ package org.koitharu.kotatsu.core.prefs
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
+import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.R
 
+@Keep
 enum class NavItem(
 	@IdRes val id: Int,
 	@StringRes val title: Int,

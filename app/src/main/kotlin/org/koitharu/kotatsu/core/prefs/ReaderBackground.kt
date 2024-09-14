@@ -2,11 +2,13 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import android.view.ContextThemeWrapper
+import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import org.koitharu.kotatsu.core.util.ext.getThemeDrawable
 import com.google.android.material.R as materialR
 
+@Keep
 enum class ReaderBackground {
 
 	DEFAULT, LIGHT, DARK, WHITE, BLACK;
