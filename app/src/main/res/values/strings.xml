@@ -701,10 +701,10 @@
 	<string name="downloads_background">Background downloads</string>
 	<string name="download_new_chapters">Download new chapters</string>
 	<string name="manga_with_downloaded_chapters">Manga with downloaded chapters</string>
-	<string name="manga_replaced">Manga %1$s(%2$s) replaced with %3$s(%4$s)</string>
+	<string name="manga_replaced">Manga \"%1$s\" (%2$s) replaced with \"%3$s\" (%4$s)</string>
 	<string name="fixing_manga">Fixing manga</string>
 	<string name="fixed">Fixed successfully</string>
-	<string name="no_fix_required">No fix required for %s</string>
-	<string name="no_alternatives_found">No alternatives found for %s</string>
+	<string name="no_fix_required">No fix required for \"%s\"</string>
+	<string name="no_alternatives_found">No alternatives found for \"%s\"</string>
 	<string name="manga_fix_prompt">This function will find alternative sources for the selected manga. The task will take some time and will proceed in the background</string>
 </resources>

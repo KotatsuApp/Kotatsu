@@ -89,7 +89,7 @@ dependencies {
 
 	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
 	implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.20'
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0-RC.2'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0'
 
 	implementation 'androidx.appcompat:appcompat:1.7.0'
 	implementation 'androidx.core:core-ktx:1.13.1'
@@ -125,7 +125,7 @@ dependencies {
 	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 	implementation 'com.squareup.okhttp3:okhttp-tls:4.12.0'
 	implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.12.0'
-	implementation 'com.squareup.okio:okio:3.9.0'
+	implementation 'com.squareup.okio:okio:3.9.1'
 
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2'
 	implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2'
@@ -141,8 +141,8 @@ dependencies {
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
 
-	implementation 'ch.acra:acra-http:5.11.3'
-	implementation 'ch.acra:acra-dialog:5.11.3'
+	implementation 'ch.acra:acra-http:5.11.4'
+	implementation 'ch.acra:acra-dialog:5.11.4'
 
 	implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
@@ -151,14 +151,14 @@ dependencies {
 
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.json:json:20240303'
-	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1'
+	testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0'
 
 	androidTestImplementation 'androidx.test:runner:1.6.1'
 	androidTestImplementation 'androidx.test:rules:1.6.1'
 	androidTestImplementation 'androidx.test:core-ktx:1.6.1'
 	androidTestImplementation 'androidx.test.ext:junit-ktx:1.2.1'
 
-	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1'
+	androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0'
 
 	androidTestImplementation 'androidx.room:room-testing:2.6.1'
 	androidTestImplementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
