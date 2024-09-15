@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.local.ui
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
@@ -47,7 +48,7 @@ class ImportService : CoroutineIntentService() {
 	}
 
 	override suspend fun processIntent(startId: Int, intent: Intent) {
-		val uri = requireNotNull(intent.getStringExtra(DATA_URI)?.toUriOrNull()) { "No unput uri" }
+		val uri = requireNotNull(intent.getStringExtra(DATA_URI)?.toUriOrNull()) { "No input uri" }
 		startForeground()
 		try {
 			val result = runCatchingCancellable {
@@ -69,7 +70,8 @@ class ImportService : CoroutineIntentService() {
 		}
 	}
 
-	private suspend fun startForeground() {
+	@SuppressLint("InlinedApi")
+	private fun startForeground() {
 		val title = applicationContext.getString(R.string.importing_manga)
 		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
 			.setName(title)

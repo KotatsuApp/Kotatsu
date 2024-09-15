@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.core.util.ext.withArgs
@@ -56,11 +55,6 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
 		mode.menuInflater.inflate(R.menu.mode_favourites, menu)
 		return super.onCreateActionMode(controller, mode, menu)
-	}
-
-	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		menu.findItem(R.id.action_save)?.isVisible = selectedItems.none { it.isLocal }
-		return super.onPrepareActionMode(controller, mode, menu)
 	}
 
 	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {

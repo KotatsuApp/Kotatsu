@@ -28,6 +28,12 @@
 		app:showAsAction="ifRoom|withText" />
 
 	<item
+		android:id="@+id/action_fix"
+		android:icon="@drawable/ic_auto_fix"
+		android:title="@string/fix"
+		app:showAsAction="ifRoom|withText" />
+
+	<item
 		android:id="@+id/action_mark_current"
 		android:icon="@drawable/ic_eye_check"
 		android:title="@string/mark_as_completed"

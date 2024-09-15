@@ -10,4 +10,5 @@ fun HistoryEntity.toMangaHistory() = MangaHistory(
 	page = page,
 	scroll = scroll.toInt(),
 	percent = percent,
+	chaptersCount = chaptersCount,
 )

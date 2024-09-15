@@ -5,10 +5,9 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.viewModels
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
@@ -40,11 +39,6 @@ class HistoryListFragment : MangaListFragment() {
 		return super.onCreateActionMode(controller, mode, menu)
 	}
 
-	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		menu.findItem(R.id.action_save)?.isVisible = selectedItems.none { it.isLocal }
-		return super.onPrepareActionMode(controller, mode, menu)
-	}
-
 	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_remove -> {
@@ -54,14 +48,16 @@ class HistoryListFragment : MangaListFragment() {
 			}
 
 			R.id.action_mark_current -> {
-				MaterialAlertDialogBuilder(context ?: return false)
-					.setTitle(item.title)
-					.setMessage(R.string.mark_as_completed_prompt)
-					.setNegativeButton(android.R.string.cancel, null)
-					.setPositiveButton(android.R.string.ok) { _, _ ->
+				buildAlertDialog(context ?: return false, isCentered = true) {
+					setTitle(item.title)
+					setIcon(item.icon)
+					setMessage(R.string.mark_as_completed_prompt)
+					setNegativeButton(android.R.string.cancel, null)
+					setPositiveButton(android.R.string.ok) { _, _ ->
 						viewModel.markAsRead(selectedItems)
 						mode.finish()
-					}.show()
+					}
+				}.show()
 				true
 			}
 
