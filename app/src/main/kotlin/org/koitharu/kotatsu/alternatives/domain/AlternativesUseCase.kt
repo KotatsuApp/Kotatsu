@@ -18,14 +18,16 @@ import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
 
 private const val MAX_PARALLELISM = 4
-private const val MATCH_THRESHOLD = 0.2f
+private const val MATCH_THRESHOLD_DEFAULT = 0.2f
 
 class AlternativesUseCase @Inject constructor(
 	private val sourcesRepository: MangaSourcesRepository,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 
-	suspend operator fun invoke(manga: Manga): Flow<Manga> {
+	suspend operator fun invoke(manga: Manga): Flow<Manga> = invoke(manga, MATCH_THRESHOLD_DEFAULT)
+
+	suspend operator fun invoke(manga: Manga, matchThreshold: Float): Flow<Manga> {
 		val sources = getSources(manga.source)
 		if (sources.isEmpty()) {
 			return emptyFlow()
@@ -44,7 +46,7 @@ class AlternativesUseCase @Inject constructor(
 						}
 					}.getOrDefault(emptyList())
 					for (item in list) {
-						if (item.matches(manga)) {
+						if (item.matches(manga, matchThreshold)) {
 							send(item)
 						}
 					}
@@ -65,16 +67,16 @@ class AlternativesUseCase @Inject constructor(
 		return result
 	}
 
-	private fun Manga.matches(ref: Manga): Boolean {
-		return matchesTitles(title, ref.title) ||
-			matchesTitles(title, ref.altTitle) ||
-			matchesTitles(altTitle, ref.title) ||
-			matchesTitles(altTitle, ref.altTitle)
+	private fun Manga.matches(ref: Manga, threshold: Float): Boolean {
+		return matchesTitles(title, ref.title, threshold) ||
+			matchesTitles(title, ref.altTitle, threshold) ||
+			matchesTitles(altTitle, ref.title, threshold) ||
+			matchesTitles(altTitle, ref.altTitle, threshold)
 
 	}
 
-	private fun matchesTitles(a: String?, b: String?): Boolean {
-		return !a.isNullOrEmpty() && !b.isNullOrEmpty() && a.almostEquals(b, MATCH_THRESHOLD)
+	private fun matchesTitles(a: String?, b: String?, threshold: Float): Boolean {
+		return !a.isNullOrEmpty() && !b.isNullOrEmpty() && a.almostEquals(b, threshold)
 	}
 
 	private fun MangaSource.priority(ref: MangaSource): Int {

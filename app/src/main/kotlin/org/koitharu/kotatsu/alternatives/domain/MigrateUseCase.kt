@@ -136,7 +136,7 @@ constructor(
 			return HistoryEntity(
 				mangaId = newManga.id,
 				createdAt = history.createdAt,
-				updatedAt = System.currentTimeMillis(),
+				updatedAt = history.updatedAt,
 				chapterId = currentChapter.id,
 				page = history.page,
 				scroll = history.scroll,
@@ -173,7 +173,7 @@ constructor(
 		return HistoryEntity(
 			mangaId = newManga.id,
 			createdAt = history.createdAt,
-			updatedAt = System.currentTimeMillis(),
+			updatedAt = history.updatedAt,
 			chapterId = newChapterId,
 			page = history.page,
 			scroll = history.scroll,

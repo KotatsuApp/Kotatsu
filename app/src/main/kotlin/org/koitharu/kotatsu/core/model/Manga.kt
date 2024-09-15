@@ -110,6 +110,9 @@ fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 val Manga.isLocal: Boolean
 	get() = source == LocalMangaSource
 
+val Manga.isBroken: Boolean
+	get() = source == UnknownMangaSource
+
 val Manga.appUrl: Uri
 	get() = Uri.parse("https://kotatsu.app/manga").buildUpon()
 		.appendQueryParameter("source", source.name)
