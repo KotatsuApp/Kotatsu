@@ -67,6 +67,9 @@ class FilterCoordinator @Inject constructor(
 	val isFilterApplied: Boolean
 		get() = !currentListFilter.value.isEmpty()
 
+	val query: StateFlow<String?> = currentListFilter.map { it.query }
+		.stateIn(coroutineScope, SharingStarted.Lazily, null)
+
 	val sortOrder: StateFlow<FilterProperty<SortOrder>> = currentSortOrder.map { selected ->
 		FilterProperty(
 			availableItems = availableSortOrders.sortedByOrdinal(),
@@ -261,6 +264,12 @@ class FilterCoordinator @Inject constructor(
 		currentListFilter.value = value
 	}
 
+	fun setQuery(value: String?) {
+		currentListFilter.update { oldValue ->
+			oldValue.copy(query = value?.trim()?.takeUnless { it.isEmpty() })
+		}
+	}
+
 	fun setLocale(value: Locale?) {
 		currentListFilter.update { oldValue ->
 			oldValue.copy(locale = value)
@@ -270,6 +279,12 @@ class FilterCoordinator @Inject constructor(
 	fun setYear(value: Int) {
 		currentListFilter.update { oldValue ->
 			oldValue.copy(year = value)
+		}
+	}
+
+	fun setYearRange(valueFrom: Int, valueTo: Int) {
+		currentListFilter.update { oldValue ->
+			oldValue.copy(yearFrom = valueFrom, yearTo = valueTo)
 		}
 	}
 
@@ -285,6 +300,14 @@ class FilterCoordinator @Inject constructor(
 		currentListFilter.update { oldValue ->
 			oldValue.copy(
 				contentRating = if (isSelected) oldValue.contentRating + value else oldValue.contentRating - value,
+			)
+		}
+	}
+
+	fun toggleContentType(value: ContentType, isSelected: Boolean) {
+		currentListFilter.update { oldValue ->
+			oldValue.copy(
+				types = if (isSelected) oldValue.types + value else oldValue.types - value,
 			)
 		}
 	}

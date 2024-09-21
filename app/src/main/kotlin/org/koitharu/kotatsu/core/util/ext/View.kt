@@ -18,6 +18,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.progressindicator.BaseProgressIndicator
+import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import com.google.android.material.tabs.TabLayout
 import kotlin.math.roundToInt
@@ -86,6 +87,17 @@ fun Slider.setValueRounded(newValue: Float) {
 		(newValue / step).roundToInt() * step
 	}
 	value = roundedValue.coerceIn(valueFrom, valueTo)
+}
+
+fun RangeSlider.setValuesRounded(vararg newValues: Float) {
+	val step = stepSize
+	values = newValues.map { newValue ->
+		if (step <= 0f) {
+			newValue
+		} else {
+			(newValue / step).roundToInt() * step
+		}
+	}
 }
 
 fun RecyclerView.invalidateNestedItemDecorations() {

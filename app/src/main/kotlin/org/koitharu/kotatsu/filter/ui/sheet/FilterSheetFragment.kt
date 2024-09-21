@@ -13,6 +13,8 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.chip.Chip
+import com.google.android.material.slider.BaseOnChangeListener
+import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.SortDirection
@@ -25,6 +27,7 @@ import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
+import org.koitharu.kotatsu.core.util.ext.setValuesRounded
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
@@ -32,16 +35,19 @@ import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
 import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
 import org.koitharu.kotatsu.parsers.model.ContentRating
+import org.koitharu.kotatsu.parsers.model.ContentType
+import org.koitharu.kotatsu.parsers.model.Demographic
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.model.YEAR_UNKNOWN
+import org.koitharu.kotatsu.parsers.util.toIntUp
 import java.util.Locale
 import com.google.android.material.R as materialR
 
 class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	AdapterView.OnItemSelectedListener,
-	ChipsView.OnChipClickListener, MaterialButtonToggleGroup.OnButtonCheckedListener, Slider.OnChangeListener {
+	ChipsView.OnChipClickListener, MaterialButtonToggleGroup.OnButtonCheckedListener {
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
 		return SheetFilterBinding.inflate(inflater, container, false)
@@ -62,16 +68,21 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		filter.tags.observe(viewLifecycleOwner, this::onTagsChanged)
 		filter.tagsExcluded.observe(viewLifecycleOwner, this::onTagsExcludedChanged)
 		filter.states.observe(viewLifecycleOwner, this::onStateChanged)
+		filter.contentTypes.observe(viewLifecycleOwner, this::onContentTypesChanged)
 		filter.contentRating.observe(viewLifecycleOwner, this::onContentRatingChanged)
+		filter.demographics.observe(viewLifecycleOwner, this::onDemographicsChanged)
 		filter.year.observe(viewLifecycleOwner, this::onYearChanged)
+		filter.yearRange.observe(viewLifecycleOwner, this::onYearRangeChanged)
 
 		binding.spinnerLocale.onItemSelectedListener = this
 		binding.spinnerOrder.onItemSelectedListener = this
 		binding.chipsState.onChipClickListener = this
+		binding.chipsTypes.onChipClickListener = this
 		binding.chipsContentRating.onChipClickListener = this
 		binding.chipsGenres.onChipClickListener = this
 		binding.chipsGenresExclude.onChipClickListener = this
-		binding.sliderYear.addOnChangeListener(this)
+		binding.sliderYear.addOnChangeListener(this::onSliderValueChange)
+		binding.sliderYearsRange.addOnChangeListener(this::onRangeSliderValueChange)
 		binding.layoutSortDirection.addOnButtonCheckedListener(this)
 	}
 
@@ -95,14 +106,33 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
 	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
 
-	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
+	private fun onSliderValueChange(slider: Slider, value: Float, fromUser: Boolean) {
 		if (!fromUser) {
 			return
 		}
 		val intValue = value.toInt()
 		val filter = requireFilter()
 		when (slider.id) {
-			R.id.slider_year -> filter.setYear(intValue)
+			R.id.slider_year -> filter.setYear(
+				if (intValue <= slider.valueFrom.toIntUp()) {
+					YEAR_UNKNOWN
+				} else {
+					intValue
+				},
+			)
+		}
+	}
+
+	private fun onRangeSliderValueChange(slider: RangeSlider, value: Float, fromUser: Boolean) {
+		if (!fromUser) {
+			return
+		}
+		val filter = requireFilter()
+		when (slider.id) {
+			R.id.slider_yearsRange -> filter.setYearRange(
+				valueFrom = slider.valueFrom.toInt(),
+				valueTo = slider.valueTo.toInt(),
+			)
 		}
 	}
 
@@ -116,6 +146,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 				filter.toggleTag(data, !chip.isChecked)
 			}
 
+			is ContentType -> filter.toggleContentType(data, !chip.isChecked)
 			is ContentRating -> filter.toggleContentRating(data, !chip.isChecked)
 			null -> TagsCatalogSheet.show(getChildFragmentManager(), chip.parentView?.id == R.id.chips_genresExclude)
 		}
@@ -270,6 +301,23 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		b.chipsState.setChips(chips)
 	}
 
+	private fun onContentTypesChanged(value: FilterProperty<ContentType>) {
+		val b = viewBinding ?: return
+		b.textViewTypesTitle.isGone = value.isEmpty()
+		b.chipsTypes.isGone = value.isEmpty()
+		if (value.isEmpty()) {
+			return
+		}
+		val chips = value.availableItems.map { type ->
+			ChipsView.ChipModel(
+				title = getString(type.titleResId),
+				isChecked = type in value.selectedItems,
+				data = type,
+			)
+		}
+		b.chipsTypes.setChips(chips)
+	}
+
 	private fun onContentRatingChanged(value: FilterProperty<ContentRating>) {
 		val b = viewBinding ?: return
 		b.textViewContentRatingTitle.isGone = value.isEmpty()
@@ -287,16 +335,58 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		b.chipsContentRating.setChips(chips)
 	}
 
+	private fun onDemographicsChanged(value: FilterProperty<Demographic>) {
+		val b = viewBinding ?: return
+		b.textViewDemographicsTitle.isGone = value.isEmpty()
+		b.chipsDemographics.isGone = value.isEmpty()
+		if (value.isEmpty()) {
+			return
+		}
+		val chips = value.availableItems.map { demographic ->
+			ChipsView.ChipModel(
+				title = getString(demographic.titleResId),
+				isChecked = demographic in value.selectedItems,
+				data = demographic,
+			)
+		}
+		b.chipsDemographics.setChips(chips)
+	}
+
 	private fun onYearChanged(value: FilterProperty<Int>) {
 		val b = viewBinding ?: return
-		b.textViewYear.isGone = value.isEmpty()
+		b.headerYear.isGone = value.isEmpty()
 		b.sliderYear.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
+		val currentValue = value.selectedItems.singleOrNull() ?: YEAR_UNKNOWN
+		b.textViewYearValue.text = if (currentValue == YEAR_UNKNOWN) {
+			getString(R.string.none)
+		} else {
+			currentValue.toString()
+		}
 		b.sliderYear.valueFrom = value.availableItems.first().toFloat()
 		b.sliderYear.valueTo = value.availableItems.last().toFloat()
-		b.sliderYear.setValueRounded((value.selectedItems.singleOrNull() ?: YEAR_UNKNOWN).toFloat())
+		b.sliderYear.setValueRounded(currentValue.toFloat())
+	}
+
+	private fun onYearRangeChanged(value: FilterProperty<Int>) {
+		val b = viewBinding ?: return
+		b.headerYearsRange.isGone = value.isEmpty()
+		b.sliderYearsRange.isGone = value.isEmpty()
+		if (value.isEmpty()) {
+			return
+		}
+		b.sliderYearsRange.valueFrom = value.availableItems.first().toFloat()
+		b.sliderYearsRange.valueTo = value.availableItems.last().toFloat()
+		val currentValueFrom = value.selectedItems.firstOrNull()?.toFloat() ?: b.sliderYearsRange.valueFrom
+		val currentValueTo = value.selectedItems.lastOrNull()?.toFloat() ?: b.sliderYearsRange.valueTo
+		b.textViewYearsRangeValue.text = getString(
+			R.string.memory_usage_pattern,
+			currentValueFrom.toString(),
+			currentValueTo.toString(),
+		)
+		b.sliderYearsRange.setValuesRounded(currentValueFrom, currentValueTo)
 	}
 
 	private fun requireFilter() = (requireActivity() as FilterCoordinator.Owner).filterCoordinator
