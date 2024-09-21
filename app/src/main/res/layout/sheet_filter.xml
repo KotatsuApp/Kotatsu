@@ -205,6 +205,26 @@
 				tools:visibility="visible" />
 
 			<TextView
+				android:id="@+id/textView_types_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/type"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+				android:id="@+id/chips_types"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:visibility="gone"
+				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
+				tools:visibility="visible" />
+
+			<TextView
 				android:id="@+id/textView_state_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -245,15 +265,54 @@
 				tools:visibility="visible" />
 
 			<TextView
-				android:id="@+id/textView_year"
+				android:id="@+id/textView_demographics_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:singleLine="true"
-				android:text="@string/year"
+				android:text="@string/demographics"
 				android:textAppearance="?textAppearanceTitleSmall"
 				android:visibility="gone"
 				tools:visibility="visible" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+				android:id="@+id/chips_demographics"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:visibility="gone"
+				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
+				tools:visibility="visible" />
+
+			<LinearLayout
+				android:id="@+id/header_year"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:baselineAligned="true"
+				android:baselineAlignedChildIndex="0"
+				android:orientation="horizontal"
+				android:visibility="gone"
+				tools:visibility="visible">
+
+				<TextView
+					android:id="@+id/textView_year"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:singleLine="true"
+					android:text="@string/year"
+					android:textAppearance="?textAppearanceTitleSmall" />
+
+				<TextView
+					android:id="@+id/textView_year_value"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:singleLine="true"
+					android:textAppearance="?textAppearanceBodyMedium"
+					tools:text="2024" />
+
+			</LinearLayout>
 
 			<com.google.android.material.slider.Slider
 				android:id="@+id/slider_year"
@@ -262,8 +321,55 @@
 				android:layout_marginTop="@dimen/margin_normal"
 				android:stepSize="1"
 				android:visibility="gone"
-				app:labelBehavior="visible"
+				app:labelBehavior="gone"
 				app:tickVisible="true"
+				tools:value="2020"
+				tools:valueFrom="1900"
+				tools:valueTo="2090"
+				tools:visibility="visible" />
+
+
+			<LinearLayout
+				android:id="@+id/header_yearsRange"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:baselineAligned="true"
+				android:baselineAlignedChildIndex="0"
+				android:orientation="horizontal"
+				android:visibility="gone"
+				tools:visibility="visible">
+
+				<TextView
+					android:id="@+id/textView_yearsRange"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:singleLine="true"
+					android:text="@string/year"
+					android:textAppearance="?textAppearanceTitleSmall" />
+
+				<TextView
+					android:id="@+id/textView_yearsRange_value"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:singleLine="true"
+					android:textAppearance="?textAppearanceBodyMedium"
+					tools:text="2024" />
+
+			</LinearLayout>
+
+			<com.google.android.material.slider.RangeSlider
+				android:id="@+id/slider_yearsRange"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:stepSize="1"
+				android:visibility="gone"
+				app:labelBehavior="gone"
+				app:tickVisible="true"
+				tools:valueFrom="1900"
+				tools:valueTo="2090"
 				tools:visibility="visible" />
 
 		</LinearLayout>

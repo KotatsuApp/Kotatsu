@@ -719,4 +719,9 @@
 	<string name="popular_in_year">Popular this year</string>
 	<string name="original_language">Original language</string>
 	<string name="year">Year</string>
+	<string name="demographics">Demographics</string>
+	<string name="demographic_shounen">Shounen</string>
+	<string name="demographic_shoujo">Shoujo</string>
+	<string name="demographic_seinen">Seinen</string>
+	<string name="demographic_josei">Josei</string>
 </resources>

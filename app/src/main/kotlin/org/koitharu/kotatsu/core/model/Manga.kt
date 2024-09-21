@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.iterator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.parsers.model.ContentRating
+import org.koitharu.kotatsu.parsers.model.Demographic
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaState
@@ -66,6 +67,16 @@ val ContentRating.titleResId: Int
 		ContentRating.SAFE -> R.string.rating_safe
 		ContentRating.SUGGESTIVE -> R.string.rating_suggestive
 		ContentRating.ADULT -> R.string.rating_adult
+	}
+
+@get:StringRes
+val Demographic.titleResId: Int
+	get() = when (this) {
+		Demographic.SHOUNEN -> R.string.demographic_shounen
+		Demographic.SHOUJO -> R.string.demographic_shoujo
+		Demographic.SEINEN -> R.string.demographic_seinen
+		Demographic.JOSEI -> R.string.demographic_josei
+		Demographic.NONE -> R.string.none
 	}
 
 fun Manga.findChapter(id: Long): MangaChapter? {
