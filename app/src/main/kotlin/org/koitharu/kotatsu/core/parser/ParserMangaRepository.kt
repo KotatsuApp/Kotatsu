@@ -13,11 +13,14 @@ import org.koitharu.kotatsu.parsers.model.Favicons
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
+import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
+import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.domain
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.util.Locale
@@ -28,32 +31,26 @@ class ParserMangaRepository(
 	cache: MemoryContentCache,
 ) : CachingMangaRepository(cache), Interceptor {
 
+	private val filterOptionsLazy = SuspendLazy {
+		mirrorSwitchInterceptor.withMirrorSwitching {
+			parser.getFilterOptions()
+		}
+	}
+
 	override val source: MangaParserSource
 		get() = parser.source
 
 	override val sortOrders: Set<SortOrder>
 		get() = parser.availableSortOrders
 
-	override val states: Set<MangaState>
-		get() = parser.availableStates
-
-	override val contentRatings: Set<ContentRating>
-		get() = parser.availableContentRating
+	override val filterCapabilities: MangaListFilterCapabilities
+		get() = parser.filterCapabilities
 
 	override var defaultSortOrder: SortOrder
 		get() = getConfig().defaultSortOrder ?: sortOrders.first()
 		set(value) {
 			getConfig().defaultSortOrder = value
 		}
-
-	override val isMultipleTagsSupported: Boolean
-		get() = parser.isMultipleTagsSupported
-
-	override val isSearchSupported: Boolean
-		get() = parser.isSearchSupported
-
-	override val isTagsExclusionSupported: Boolean
-		get() = parser.isTagsExclusionSupported
 
 	var domain: String
 		get() = parser.domain
@@ -72,9 +69,9 @@ class ParserMangaRepository(
 		}
 	}
 
-	override suspend fun getList(offset: Int, filter: MangaListFilter?): List<Manga> {
+	override suspend fun getList(offset: Int, order: SortOrder?, filter: MangaListFilter?): List<Manga> {
 		return mirrorSwitchInterceptor.withMirrorSwitching {
-			parser.getList(offset, filter)
+			parser.getList(offset, order ?: defaultSortOrder, filter ?: MangaListFilter.EMPTY)
 		}
 	}
 
@@ -88,13 +85,7 @@ class ParserMangaRepository(
 		parser.getPageUrl(page)
 	}
 
-	override suspend fun getTags(): Set<MangaTag> = mirrorSwitchInterceptor.withMirrorSwitching {
-		parser.getAvailableTags()
-	}
-
-	override suspend fun getLocales(): Set<Locale> {
-		return parser.getAvailableLocales()
-	}
+	override suspend fun getFilterOptions(): MangaListFilterOptions = filterOptionsLazy.get()
 
 	suspend fun getFavicons(): Favicons = mirrorSwitchInterceptor.withMirrorSwitching {
 		parser.getFavicons()

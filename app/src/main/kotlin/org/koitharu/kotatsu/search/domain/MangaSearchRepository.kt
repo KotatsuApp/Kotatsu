@@ -125,6 +125,10 @@ class MangaSearchRepository @Inject constructor(
 		return db.getTagsDao().findRareTags(source.name, limit).toMangaTagsList()
 	}
 
+	suspend fun getTopTags(source: MangaSource, limit: Int): List<MangaTag> {
+		return db.getTagsDao().findPopularTags(source.name, limit).toMangaTagsList()
+	}
+
 	suspend fun getSourcesSuggestion(limit: Int): List<MangaSource> = sourcesRepository.getTopSources(limit)
 
 	fun getSourcesSuggestion(query: String, limit: Int): List<MangaSource> {

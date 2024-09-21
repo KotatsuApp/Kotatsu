@@ -19,7 +19,7 @@ class RecoverMangaUseCase @Inject constructor(
 			return@runCatchingCancellable null
 		}
 		val repository = repositoryFactory.create(manga.source)
-		val list = repository.getList(offset = 0, filter = MangaListFilter.Search(manga.title))
+		val list = repository.getList(offset = 0, null, MangaListFilter(query = manga.title))
 		val newManga = list.find { x -> x.title == manga.title }?.let {
 			repository.getDetails(it)
 		} ?: return@runCatchingCancellable null

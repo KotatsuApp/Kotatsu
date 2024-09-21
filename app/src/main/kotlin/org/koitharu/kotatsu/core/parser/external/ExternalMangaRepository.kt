@@ -6,16 +6,14 @@ import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
+import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
+import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.model.MangaState
-import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.EnumSet
-import java.util.Locale
 
 class ExternalMangaRepository(
 	private val contentResolver: ContentResolver,
@@ -36,28 +34,39 @@ class ExternalMangaRepository(
 	override val sortOrders: Set<SortOrder>
 		get() = capabilities?.availableSortOrders ?: EnumSet.of(SortOrder.ALPHABETICAL)
 
-	override val states: Set<MangaState>
-		get() = capabilities?.availableStates.orEmpty()
-
-	override val contentRatings: Set<ContentRating>
-		get() = capabilities?.availableContentRating.orEmpty()
+	override val filterCapabilities: MangaListFilterCapabilities
+		get() = capabilities.let {
+			MangaListFilterCapabilities(
+				isMultipleTagsSupported = it?.isMultipleTagsSupported == true,
+				isTagsExclusionSupported = it?.isTagsExclusionSupported == true,
+				isSearchSupported = it?.isSearchSupported == true,
+				isSearchWithFiltersSupported = false, // TODO
+				isYearSupported = false, // TODO
+				isYearRangeSupported = false, // TODO
+				isOriginalLocaleSupported = false, // TODO
+			)
+		}
 
 	override var defaultSortOrder: SortOrder
 		get() = capabilities?.defaultSortOrder ?: SortOrder.ALPHABETICAL
 		set(value) = Unit
 
-	override val isMultipleTagsSupported: Boolean
-		get() = capabilities?.isMultipleTagsSupported ?: true
+	override suspend fun getFilterOptions(): MangaListFilterOptions = capabilities.let {
+		MangaListFilterOptions(
+			availableTags = runInterruptible(Dispatchers.IO) {
+				contentSource.getTags()
+			},
+			availableStates = it?.availableStates.orEmpty(),
+			availableContentRating = it?.availableContentRating.orEmpty(),
+			availableContentTypes = emptySet(),
+			availableDemographics = emptySet(),
+			availableLocales = emptySet(),
+		)
+	}
 
-	override val isTagsExclusionSupported: Boolean
-		get() = capabilities?.isTagsExclusionSupported ?: false
-
-	override val isSearchSupported: Boolean
-		get() = capabilities?.isSearchSupported ?: true
-
-	override suspend fun getList(offset: Int, filter: MangaListFilter?): List<Manga> =
+	override suspend fun getList(offset: Int, order: SortOrder?, filter: MangaListFilter?): List<Manga> =
 		runInterruptible(Dispatchers.IO) {
-			contentSource.getList(offset, filter)
+			contentSource.getList(offset, order ?: defaultSortOrder, filter ?: MangaListFilter.EMPTY)
 		}
 
 	override suspend fun getDetailsImpl(manga: Manga): Manga = runInterruptible(Dispatchers.IO) {
@@ -69,12 +78,6 @@ class ExternalMangaRepository(
 	}
 
 	override suspend fun getPageUrl(page: MangaPage): String = page.url // TODO
-
-	override suspend fun getTags(): Set<MangaTag> = runInterruptible(Dispatchers.IO) {
-		contentSource.getTags()
-	}
-
-	override suspend fun getLocales(): Set<Locale> = emptySet() // TODO
 
 	override suspend fun getRelatedMangaImpl(seed: Manga): List<Manga> = emptyList() // TODO
 }

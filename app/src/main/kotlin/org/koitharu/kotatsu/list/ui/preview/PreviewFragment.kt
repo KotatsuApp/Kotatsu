@@ -28,7 +28,7 @@ import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.FragmentPreviewBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.filter.ui.FilterOwner
+import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -105,11 +105,11 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag ?: return
-		val filter = (activity as? FilterOwner)?.filter
+		val filter = (activity as? FilterCoordinator.Owner)?.filterCoordinator
 		if (filter == null) {
 			startActivity(MangaListActivity.newIntent(requireContext(), setOf(tag)))
 		} else {
-			filter.setTag(tag, true)
+			filter.toggleTag(tag, true)
 			closeSelf()
 		}
 	}

@@ -25,8 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.filter.ui.FilterOwner
-import org.koitharu.kotatsu.filter.ui.MangaFilter
+import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
@@ -35,12 +34,12 @@ import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 
 @AndroidEntryPoint
-class RemoteListFragment : MangaListFragment(), FilterOwner {
+class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 
 	override val viewModel by viewModels<RemoteListViewModel>()
 
-	override val filter: MangaFilter
-		get() = viewModel
+	override val filterCoordinator: FilterCoordinator
+		get() = viewModel.filterCoordinator
 
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
@@ -49,7 +48,7 @@ class RemoteListFragment : MangaListFragment(), FilterOwner {
 		viewModel.onOpenManga.observeEvent(viewLifecycleOwner) {
 			startActivity(DetailsActivity.newIntent(binding.root.context, it))
 		}
-		viewModel.header.distinctUntilChangedBy { it.isFilterApplied }
+		filterCoordinator.observe().distinctUntilChangedBy { it.listFilter.isEmpty() }
 			.drop(1)
 			.observe(viewLifecycleOwner) {
 				activity?.invalidateMenu()
@@ -130,7 +129,7 @@ class RemoteListFragment : MangaListFragment(), FilterOwner {
 			super.onPrepareMenu(menu)
 			menu.findItem(R.id.action_search)?.isVisible = viewModel.isSearchAvailable
 			menu.findItem(R.id.action_random)?.isEnabled = !viewModel.isRandomLoading.value
-			menu.findItem(R.id.action_filter_reset)?.isVisible = viewModel.header.value.isFilterApplied
+			menu.findItem(R.id.action_filter_reset)?.isVisible = filterCoordinator.isFilterApplied
 		}
 
 		override fun onQueryTextSubmit(query: String?): Boolean {

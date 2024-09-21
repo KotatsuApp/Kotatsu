@@ -27,7 +27,7 @@ class DeleteLocalMangaUseCase @Inject constructor(
 	}
 
 	suspend operator fun invoke(ids: Set<Long>) {
-		val list = localMangaRepository.getList(0, null)
+		val list = localMangaRepository.getList(0, null, null)
 		var removed = 0
 		for (manga in list) {
 			if (manga.id in ids) {

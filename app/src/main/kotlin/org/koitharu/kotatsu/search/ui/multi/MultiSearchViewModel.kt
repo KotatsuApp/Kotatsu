@@ -116,14 +116,14 @@ class MultiSearchViewModel @Inject constructor(
 		val semaphore = Semaphore(MAX_PARALLELISM)
 		sources.mapNotNull { source ->
 			val repository = mangaRepositoryFactory.create(source)
-			if (!repository.isSearchSupported) {
+			if (!repository.filterCapabilities.isSearchSupported) {
 				null
 			} else {
 				launch {
 					val item = runCatchingCancellable {
 						semaphore.withPermit {
 							mangaListMapper.toListModelList(
-								manga = repository.getList(offset = 0, filter = MangaListFilter.Search(q)),
+								manga = repository.getList(offset = 0, null, MangaListFilter(query = q)),
 								mode = ListMode.GRID,
 							)
 						}

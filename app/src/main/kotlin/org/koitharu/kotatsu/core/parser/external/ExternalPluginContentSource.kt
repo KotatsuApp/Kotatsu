@@ -31,25 +31,18 @@ class ExternalPluginContentSource(
 
 	@Blocking
 	@WorkerThread
-	fun getList(offset: Int, filter: MangaListFilter?): List<Manga> {
+	fun getList(offset: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
 		val uri = "content://${source.authority}/manga".toUri().buildUpon()
 		uri.appendQueryParameter("offset", offset.toString())
-		when (filter) {
-			is MangaListFilter.Advanced -> {
-				filter.tags.forEach { uri.appendQueryParameter("tags_include", "${it.key}=${it.title}") }
-				filter.tagsExclude.forEach { uri.appendQueryParameter("tags_exclude", "${it.key}=${it.title}") }
-				filter.states.forEach { uri.appendQueryParameter("state", it.name) }
-				filter.locale?.let { uri.appendQueryParameter("locale", it.language) }
-				filter.contentRating.forEach { uri.appendQueryParameter("content_rating", it.name) }
-			}
-
-			is MangaListFilter.Search -> {
-				uri.appendQueryParameter("query", filter.query)
-			}
-
-			null -> Unit
+		filter.tags.forEach { uri.appendQueryParameter("tags_include", "${it.key}=${it.title}") }
+		filter.tagsExclude.forEach { uri.appendQueryParameter("tags_exclude", "${it.key}=${it.title}") }
+		filter.states.forEach { uri.appendQueryParameter("state", it.name) }
+		filter.locale?.let { uri.appendQueryParameter("locale", it.language) }
+		filter.contentRating.forEach { uri.appendQueryParameter("content_rating", it.name) }
+		if (!filter.query.isNullOrEmpty()) {
+			uri.appendQueryParameter("query", filter.query)
 		}
-		return contentResolver.query(uri.build(), null, null, null, filter?.sortOrder?.name)
+		return contentResolver.query(uri.build(), null, null, null, order.name)
 			.safe()
 			.use { cursor ->
 				val result = ArrayList<Manga>(cursor.count)

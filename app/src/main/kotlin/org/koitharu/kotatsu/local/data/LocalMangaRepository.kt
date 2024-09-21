@@ -25,18 +25,16 @@ import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
 import org.koitharu.kotatsu.local.domain.MangaLock
 import org.koitharu.kotatsu.local.domain.model.LocalManga
-import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
+import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
+import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.model.MangaState
-import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
 import java.util.EnumSet
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -53,12 +51,15 @@ class LocalMangaRepository @Inject constructor(
 	override val source = LocalMangaSource
 	private val localMappingCache = LocalMangaMappingCache()
 
-	override val isMultipleTagsSupported: Boolean = true
-	override val isTagsExclusionSupported: Boolean = true
-	override val isSearchSupported: Boolean = true
+	override val filterCapabilities: MangaListFilterCapabilities
+		get() = MangaListFilterCapabilities(
+			isMultipleTagsSupported = true,
+			isTagsExclusionSupported = true,
+			isSearchSupported = true,
+			isSearchWithFiltersSupported = true,
+		)
+
 	override val sortOrders: Set<SortOrder> = EnumSet.of(SortOrder.ALPHABETICAL, SortOrder.RATING, SortOrder.NEWEST)
-	override val states = emptySet<MangaState>()
-	override val contentRatings = emptySet<ContentRating>()
 
 	override var defaultSortOrder: SortOrder
 		get() = settings.localListOrder
@@ -66,7 +67,9 @@ class LocalMangaRepository @Inject constructor(
 			settings.localListOrder = value
 		}
 
-	override suspend fun getList(offset: Int, filter: MangaListFilter?): List<Manga> {
+	override suspend fun getFilterOptions() = MangaListFilterOptions()
+
+	override suspend fun getList(offset: Int, order: SortOrder?, filter: MangaListFilter?): List<Manga> {
 		if (offset > 0) {
 			return emptyList()
 		}
@@ -74,30 +77,25 @@ class LocalMangaRepository @Inject constructor(
 		if (settings.isNsfwContentDisabled) {
 			list.removeIf { it.manga.isNsfw }
 		}
-		when (filter) {
-			is MangaListFilter.Search -> {
-				list.retainAll { x -> x.isMatchesQuery(filter.query) }
+		if (filter != null) {
+			val query = filter.query
+			if (!query.isNullOrEmpty()) {
+				list.retainAll { x -> x.isMatchesQuery(query) }
 			}
-
-			is MangaListFilter.Advanced -> {
-				if (filter.tags.isNotEmpty()) {
-					list.retainAll { x -> x.containsTags(filter.tags) }
-				}
-				if (filter.tagsExclude.isNotEmpty()) {
-					list.removeAll { x -> x.containsAnyTag(filter.tags) }
-				}
-				when (filter.sortOrder) {
-					SortOrder.ALPHABETICAL -> list.sortWith(compareBy(AlphanumComparator()) { x -> x.manga.title })
-					SortOrder.RATING -> list.sortByDescending { it.manga.rating }
-					SortOrder.NEWEST,
-					SortOrder.UPDATED,
-						-> list.sortByDescending { it.createdAt }
-
-					else -> Unit
-				}
+			if (filter.tags.isNotEmpty()) {
+				list.retainAll { x -> x.containsTags(filter.tags) }
 			}
+			if (filter.tagsExclude.isNotEmpty()) {
+				list.removeAll { x -> x.containsAnyTag(filter.tags) }
+			}
+		}
+		when (order) {
+			SortOrder.ALPHABETICAL -> list.sortWith(compareBy(AlphanumComparator()) { x -> x.manga.title })
+			SortOrder.RATING -> list.sortByDescending { it.manga.rating }
+			SortOrder.NEWEST,
+			SortOrder.UPDATED -> list.sortByDescending { it.createdAt }
 
-			null -> Unit
+			else -> Unit
 		}
 		return list.unwrap()
 	}
@@ -172,10 +170,6 @@ class LocalMangaRepository @Inject constructor(
 	}.getOrNull()
 
 	override suspend fun getPageUrl(page: MangaPage) = page.url
-
-	override suspend fun getTags() = emptySet<MangaTag>()
-
-	override suspend fun getLocales() = emptySet<Locale>()
 
 	override suspend fun getRelated(seed: Manga): List<Manga> = emptyList()
 

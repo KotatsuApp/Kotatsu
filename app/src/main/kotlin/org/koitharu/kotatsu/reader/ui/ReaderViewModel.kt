@@ -62,7 +62,6 @@ import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.util.assertNotNull
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
 import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -452,9 +451,9 @@ class ReaderViewModel @Inject constructor(
 
 	@WorkerThread
 	private fun notifyStateChanged() {
-		val state = getCurrentState().assertNotNull("state") ?: return
-		val chapter = chaptersLoader.peekChapter(state.chapterId).assertNotNull("chapter") ?: return
-		val m = mangaDetails.value.assertNotNull("manga") ?: return
+		val state = getCurrentState() ?: return
+		val chapter = chaptersLoader.peekChapter(state.chapterId) ?: return
+		val m = mangaDetails.value ?: return
 		val chapterIndex = m.chapters[chapter.branch]?.indexOfFirst { it.id == chapter.id } ?: -1
 		val newState = ReaderUiState(
 			mangaName = m.toManga().title,

@@ -61,7 +61,7 @@ class MangaLinkResolver @Inject constructor(
 
 	private suspend fun MangaRepository.findExact(url: String?, title: String?): Manga? {
 		if (!title.isNullOrEmpty()) {
-			val list = getList(0, MangaListFilter.Search(title))
+			val list = getList(0, null, MangaListFilter(query = title))
 			if (url != null) {
 				list.find { it.url == url }?.let {
 					return it
@@ -80,7 +80,7 @@ class MangaLinkResolver @Inject constructor(
 			}.ifNullOrEmpty {
 				seed.author
 			} ?: return@runCatchingCancellable null
-			val seedList = getList(0, MangaListFilter.Search(seedTitle))
+			val seedList = getList(0, null, MangaListFilter(query = seedTitle))
 			seedList.first { x -> x.url == url }
 		}.getOrThrow()
 	}

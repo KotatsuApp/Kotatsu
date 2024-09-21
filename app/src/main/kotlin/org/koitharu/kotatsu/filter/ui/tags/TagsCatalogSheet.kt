@@ -21,7 +21,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetTagsBinding
-import org.koitharu.kotatsu.filter.ui.FilterOwner
+import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.model.TagCatalogItem
 
 @AndroidEntryPoint
@@ -32,7 +32,7 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 		extrasProducer = {
 			defaultViewModelCreationExtras.withCreationCallback<TagsCatalogViewModel.Factory> { factory ->
 				factory.create(
-					filter = (requireActivity() as FilterOwner).filter,
+					filter = (requireActivity() as FilterCoordinator.Owner).filterCoordinator,
 					isExcludeTag = requireArguments().getBoolean(ARG_EXCLUDE),
 				)
 			}

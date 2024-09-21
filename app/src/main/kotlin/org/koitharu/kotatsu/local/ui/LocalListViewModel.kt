@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
+import org.koitharu.kotatsu.filter.ui.FilterHeaderProducer
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -32,7 +33,7 @@ import javax.inject.Inject
 class LocalListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
-	filter: FilterCoordinator,
+	filterCoordinator: FilterCoordinator,
 	private val settings: AppSettings,
 	downloadScheduler: DownloadWorker.Scheduler,
 	mangaListMapper: MangaListMapper,
@@ -40,11 +41,12 @@ class LocalListViewModel @Inject constructor(
 	exploreRepository: ExploreRepository,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 	private val localStorageManager: LocalStorageManager,
+	filterHeaderProducer: FilterHeaderProducer,
 	sourcesRepository: MangaSourcesRepository,
 ) : RemoteListViewModel(
 	savedStateHandle,
 	mangaRepositoryFactory,
-	filter,
+	filterCoordinator,
 	settings,
 	mangaListMapper,
 	downloadScheduler,
@@ -58,7 +60,7 @@ class LocalListViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			localStorageChanges
 				.collect {
-					loadList(filter.snapshot(), append = false).join()
+					loadList(filterCoordinator.snapshot(), append = false).join()
 				}
 		}
 		settings.subscribe(this)
