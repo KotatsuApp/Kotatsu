@@ -7,17 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.annotation.IdRes
 import androidx.core.view.isGone
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.chip.Chip
-import com.google.android.material.slider.BaseOnChangeListener
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.SortDirection
 import org.koitharu.kotatsu.core.model.titleResId
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
@@ -29,7 +25,6 @@ import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.setValuesRounded
 import org.koitharu.kotatsu.core.util.ext.showDistinct
-import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
@@ -43,11 +38,10 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.model.YEAR_UNKNOWN
 import org.koitharu.kotatsu.parsers.util.toIntUp
 import java.util.Locale
-import com.google.android.material.R as materialR
 
 class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	AdapterView.OnItemSelectedListener,
-	ChipsView.OnChipClickListener, MaterialButtonToggleGroup.OnButtonCheckedListener {
+	ChipsView.OnChipClickListener {
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetFilterBinding {
 		return SheetFilterBinding.inflate(inflater, container, false)
@@ -63,8 +57,8 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		}
 		val filter = requireFilter()
 		filter.sortOrder.observe(viewLifecycleOwner, this::onSortOrderChanged)
-		// filter.filterSortDirection.observe(viewLifecycleOwner, this::onSortDirectionChanged)
 		filter.locale.observe(viewLifecycleOwner, this::onLocaleChanged)
+		filter.originalLocale.observe(viewLifecycleOwner, this::onOriginalLocaleChanged)
 		filter.tags.observe(viewLifecycleOwner, this::onTagsChanged)
 		filter.tagsExcluded.observe(viewLifecycleOwner, this::onTagsExcludedChanged)
 		filter.states.observe(viewLifecycleOwner, this::onStateChanged)
@@ -75,6 +69,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		filter.yearRange.observe(viewLifecycleOwner, this::onYearRangeChanged)
 
 		binding.spinnerLocale.onItemSelectedListener = this
+		binding.spinnerOriginalLocale.onItemSelectedListener = this
 		binding.spinnerOrder.onItemSelectedListener = this
 		binding.chipsState.onChipClickListener = this
 		binding.chipsTypes.onChipClickListener = this
@@ -83,24 +78,20 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		binding.chipsGenresExclude.onChipClickListener = this
 		binding.sliderYear.addOnChangeListener(this::onSliderValueChange)
 		binding.sliderYearsRange.addOnChangeListener(this::onRangeSliderValueChange)
-		binding.layoutSortDirection.addOnButtonCheckedListener(this)
-	}
-
-	override fun onButtonChecked(group: MaterialButtonToggleGroup?, checkedId: Int, isChecked: Boolean) {
-		if (isChecked) {
-			// setSortDirection(getSortDirection(checkedId) ?: return)
+		binding.layoutGenres.setOnMoreButtonClickListener {
+			TagsCatalogSheet.show(getChildFragmentManager(), isExcludeTag = false)
+		}
+		binding.layoutGenresExclude.setOnMoreButtonClickListener {
+			TagsCatalogSheet.show(getChildFragmentManager(), isExcludeTag = true)
 		}
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 		val filter = requireFilter()
 		when (parent.id) {
-			R.id.spinner_order -> {
-				val value = filter.sortOrder.value.availableItems[position]
-				filter.setSortOrder(value)
-			}
-
+			R.id.spinner_order -> filter.setSortOrder(filter.sortOrder.value.availableItems[position])
 			R.id.spinner_locale -> filter.setLocale(filter.locale.value.availableItems[position])
+			R.id.spinner_original_locale -> filter.setOriginalLocale(filter.originalLocale.value.availableItems[position])
 		}
 	}
 
@@ -130,8 +121,12 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		val filter = requireFilter()
 		when (slider.id) {
 			R.id.slider_yearsRange -> filter.setYearRange(
-				valueFrom = slider.valueFrom.toInt(),
-				valueTo = slider.valueTo.toInt(),
+				valueFrom = slider.values.firstOrNull()?.let {
+					if (it <= slider.valueFrom) YEAR_UNKNOWN else it.toInt()
+				} ?: YEAR_UNKNOWN,
+				valueTo = slider.values.lastOrNull()?.let {
+					if (it >= slider.valueTo) YEAR_UNKNOWN else it.toInt()
+				} ?: YEAR_UNKNOWN,
 			)
 		}
 	}
@@ -154,8 +149,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
 	private fun onSortOrderChanged(value: FilterProperty<SortOrder>) {
 		val b = viewBinding ?: return
-		b.textViewOrderTitle.isGone = value.isEmpty()
-		b.cardOrder.isGone = value.isEmpty()
+		b.layoutOrder.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
@@ -172,29 +166,9 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		}
 	}
 
-	private fun onSortDirectionChanged(value: FilterProperty<SortDirection>) {
-		val b = viewBinding ?: return
-		b.layoutSortDirection.isGone = value.isEmpty()
-		if (value.isEmpty()) {
-			return
-		}
-		val selected = value.selectedItems.single()
-		b.buttonOrderAsc.isEnabled = SortDirection.ASC in value.availableItems
-		b.buttonOrderDesc.isEnabled = SortDirection.DESC in value.availableItems
-		b.layoutSortDirection.removeOnButtonCheckedListener(this)
-		b.layoutSortDirection.check(
-			when (selected) {
-				SortDirection.ASC -> R.id.button_order_asc
-				SortDirection.DESC -> R.id.button_order_desc
-			},
-		)
-		b.layoutSortDirection.addOnButtonCheckedListener(this)
-	}
-
 	private fun onLocaleChanged(value: FilterProperty<Locale?>) {
 		val b = viewBinding ?: return
-		b.textViewLocaleTitle.isGone = value.isEmpty()
-		b.cardLocale.isGone = value.isEmpty()
+		b.layoutLocale.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
@@ -211,83 +185,61 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		}
 	}
 
-	private fun onTagsChanged(value: FilterProperty<MangaTag>) {
+	private fun onOriginalLocaleChanged(value: FilterProperty<Locale?>) {
 		val b = viewBinding ?: return
-		b.textViewGenresTitle.isGone = value.isEmpty()
-		b.chipsGenres.isGone = value.isEmpty()
-		b.textViewGenresHint.textAndVisible = value.error?.getDisplayMessage(resources)
+		b.layoutOriginalLocale.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
-		val chips = ArrayList<ChipsView.ChipModel>(value.selectedItems.size + value.availableItems.size + 1)
-		value.selectedItems.mapTo(chips) { tag ->
+		val selected = value.selectedItems.singleOrNull()
+		b.spinnerOriginalLocale.adapter = ArrayAdapter(
+			b.spinnerOriginalLocale.context,
+			android.R.layout.simple_spinner_dropdown_item,
+			android.R.id.text1,
+			value.availableItems.map { it.getDisplayName(b.spinnerOriginalLocale.context) },
+		)
+		val selectedIndex = value.availableItems.indexOf(selected)
+		if (selectedIndex >= 0) {
+			b.spinnerOriginalLocale.setSelection(selectedIndex, false)
+		}
+	}
+
+	private fun onTagsChanged(value: FilterProperty<MangaTag>) {
+		val b = viewBinding ?: return
+		b.layoutGenres.isGone = value.isEmptyAndSuccess()
+		b.layoutGenres.setError(value.error?.getDisplayMessage(resources))
+		if (value.isEmpty()) {
+			return
+		}
+		val chips = value.availableItems.map { tag ->
 			ChipsView.ChipModel(
 				title = tag.title,
-				isChecked = true,
+				isChecked = tag in value.selectedItems,
 				data = tag,
 			)
 		}
-		value.availableItems.mapNotNullTo(chips) { tag ->
-			if (tag !in value.selectedItems) {
-				ChipsView.ChipModel(
-					title = tag.title,
-					isChecked = false,
-					data = tag,
-				)
-			} else {
-				null
-			}
-		}
-		chips.add(
-			ChipsView.ChipModel(
-				title = getString(R.string.more),
-				icon = materialR.drawable.abc_ic_menu_overflow_material,
-			),
-		)
 		b.chipsGenres.setChips(chips)
 	}
 
 	private fun onTagsExcludedChanged(value: FilterProperty<MangaTag>) {
 		val b = viewBinding ?: return
-		b.textViewGenresExcludeTitle.isGone = value.isEmpty()
-		b.chipsGenresExclude.isGone = value.isEmpty()
+		b.layoutGenresExclude.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
-		val chips = ArrayList<ChipsView.ChipModel>(value.selectedItems.size + value.availableItems.size + 1)
-		value.selectedItems.mapTo(chips) { tag ->
+		val chips = value.availableItems.map { tag ->
 			ChipsView.ChipModel(
-				tint = 0,
 				title = tag.title,
-				icon = 0,
-				isChecked = true,
+				isChecked = tag in value.selectedItems,
 				data = tag,
 			)
 		}
-		value.availableItems.mapNotNullTo(chips) { tag ->
-			if (tag !in value.selectedItems) {
-				ChipsView.ChipModel(
-					title = tag.title,
-					isChecked = false,
-					data = tag,
-				)
-			} else {
-				null
-			}
-		}
-		chips.add(
-			ChipsView.ChipModel(
-				title = getString(R.string.more),
-				icon = materialR.drawable.abc_ic_menu_overflow_material,
-			),
-		)
 		b.chipsGenresExclude.setChips(chips)
 	}
 
 	private fun onStateChanged(value: FilterProperty<MangaState>) {
 		val b = viewBinding ?: return
-		b.textViewStateTitle.isGone = value.isEmpty()
-		b.chipsState.isGone = value.isEmpty()
+		b.layoutState.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
@@ -303,8 +255,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
 	private fun onContentTypesChanged(value: FilterProperty<ContentType>) {
 		val b = viewBinding ?: return
-		b.textViewTypesTitle.isGone = value.isEmpty()
-		b.chipsTypes.isGone = value.isEmpty()
+		b.layoutTypes.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
@@ -320,8 +271,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
 	private fun onContentRatingChanged(value: FilterProperty<ContentRating>) {
 		val b = viewBinding ?: return
-		b.textViewContentRatingTitle.isGone = value.isEmpty()
-		b.chipsContentRating.isGone = value.isEmpty()
+		b.layoutContentRating.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
@@ -337,8 +287,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
 	private fun onDemographicsChanged(value: FilterProperty<Demographic>) {
 		val b = viewBinding ?: return
-		b.textViewDemographicsTitle.isGone = value.isEmpty()
-		b.chipsDemographics.isGone = value.isEmpty()
+		b.layoutDemographics.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
@@ -354,17 +303,18 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
 	private fun onYearChanged(value: FilterProperty<Int>) {
 		val b = viewBinding ?: return
-		b.headerYear.isGone = value.isEmpty()
-		b.sliderYear.isGone = value.isEmpty()
+		b.layoutYear.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
 		val currentValue = value.selectedItems.singleOrNull() ?: YEAR_UNKNOWN
-		b.textViewYearValue.text = if (currentValue == YEAR_UNKNOWN) {
-			getString(R.string.none)
-		} else {
-			currentValue.toString()
-		}
+		b.layoutYear.setValueText(
+			if (currentValue == YEAR_UNKNOWN) {
+				getString(R.string.any)
+			} else {
+				currentValue.toString()
+			},
+		)
 		b.sliderYear.valueFrom = value.availableItems.first().toFloat()
 		b.sliderYear.valueTo = value.availableItems.last().toFloat()
 		b.sliderYear.setValueRounded(currentValue.toFloat())
@@ -372,8 +322,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
 	private fun onYearRangeChanged(value: FilterProperty<Int>) {
 		val b = viewBinding ?: return
-		b.headerYearsRange.isGone = value.isEmpty()
-		b.sliderYearsRange.isGone = value.isEmpty()
+		b.layoutYearsRange.isGone = value.isEmpty()
 		if (value.isEmpty()) {
 			return
 		}
@@ -381,21 +330,17 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		b.sliderYearsRange.valueTo = value.availableItems.last().toFloat()
 		val currentValueFrom = value.selectedItems.firstOrNull()?.toFloat() ?: b.sliderYearsRange.valueFrom
 		val currentValueTo = value.selectedItems.lastOrNull()?.toFloat() ?: b.sliderYearsRange.valueTo
-		b.textViewYearsRangeValue.text = getString(
-			R.string.memory_usage_pattern,
-			currentValueFrom.toString(),
-			currentValueTo.toString(),
+		b.layoutYearsRange.setValueText(
+			getString(
+				R.string.memory_usage_pattern,
+				currentValueFrom.toInt().toString(),
+				currentValueTo.toInt().toString(),
+			),
 		)
 		b.sliderYearsRange.setValuesRounded(currentValueFrom, currentValueTo)
 	}
 
 	private fun requireFilter() = (requireActivity() as FilterCoordinator.Owner).filterCoordinator
-
-	private fun getSortDirection(@IdRes buttonId: Int): SortDirection? = when (buttonId) {
-		R.id.button_order_asc -> SortDirection.ASC
-		R.id.button_order_desc -> SortDirection.DESC
-		else -> null
-	}
 
 	companion object {
 

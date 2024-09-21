@@ -724,4 +724,6 @@
 	<string name="demographic_shoujo">Shoujo</string>
 	<string name="demographic_seinen">Seinen</string>
 	<string name="demographic_josei">Josei</string>
+	<string name="years">Years</string>
+	<string name="any">Any</string>
 </resources>

@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.model.YEAR_MIN
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
+import org.koitharu.kotatsu.parsers.util.ifZero
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import java.util.Calendar
@@ -238,7 +239,7 @@ class FilterCoordinator @Inject constructor(
 		}.map { selected ->
 			FilterProperty(
 				availableItems = listOf(YEAR_MIN, MAX_YEAR),
-				selectedItems = setOf(selected.yearFrom, selected.yearTo),
+				selectedItems = setOf(selected.yearFrom.ifZero { YEAR_MIN }, selected.yearTo.ifZero { MAX_YEAR }),
 			)
 		}.stateIn(coroutineScope, SharingStarted.Lazily, FilterProperty.LOADING)
 	} else {
@@ -258,6 +259,7 @@ class FilterCoordinator @Inject constructor(
 
 	fun setSortOrder(newSortOrder: SortOrder) {
 		currentSortOrder.value = newSortOrder
+		repository.defaultSortOrder = newSortOrder
 	}
 
 	fun set(value: MangaListFilter) {
@@ -273,6 +275,12 @@ class FilterCoordinator @Inject constructor(
 	fun setLocale(value: Locale?) {
 		currentListFilter.update { oldValue ->
 			oldValue.copy(locale = value)
+		}
+	}
+
+	fun setOriginalLocale(value: Locale?) {
+		currentListFilter.update { oldValue ->
+			oldValue.copy(originalLocale = value)
 		}
 	}
 

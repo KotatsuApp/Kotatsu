@@ -96,7 +96,7 @@ fun RangeSlider.setValuesRounded(vararg newValues: Float) {
 			newValue
 		} else {
 			(newValue / step).roundToInt() * step
-		}
+		}.coerceIn(valueFrom, valueTo)
 	}
 }
 

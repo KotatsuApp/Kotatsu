@@ -172,4 +172,9 @@
 		<attr name="android:progress" />
 	</declare-styleable>
 
+	<declare-styleable name="FilterFieldLayout">
+		<attr name="title" />
+		<attr name="showMoreButton" format="boolean" />
+	</declare-styleable>
+
 </resources>

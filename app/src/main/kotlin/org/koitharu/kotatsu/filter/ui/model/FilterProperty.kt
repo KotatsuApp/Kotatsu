@@ -29,6 +29,8 @@ data class FilterProperty<out T>(
 
 	fun isEmpty(): Boolean = availableItems.isEmpty()
 
+	fun isEmptyAndSuccess(): Boolean = availableItems.isEmpty() && error == null
+
 	companion object {
 
 		val LOADING = FilterProperty<Nothing>(
