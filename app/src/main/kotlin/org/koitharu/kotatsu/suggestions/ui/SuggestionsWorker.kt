@@ -250,15 +250,14 @@ class SuggestionsWorker @AssistedInject constructor(
 		val repository = mangaRepositoryFactory.create(source)
 		val availableOrders = repository.sortOrders
 		val order = preferredSortOrders.first { it in availableOrders }
-		val availableTags = repository.getTags()
+		val availableTags = repository.getFilterOptions().availableTags
 		val tag = tags.firstNotNullOfOrNull { title ->
 			availableTags.find { x -> x !in blacklist && x.title.almostEquals(title, TAG_EQ_THRESHOLD) }
 		}
 		val list = repository.getList(
 			offset = 0,
-			filter = MangaListFilter.Advanced.Builder(order)
-				.tags(setOfNotNull(tag))
-				.build(),
+			order = order,
+			filter = MangaListFilter(tags = setOfNotNull(tag))
 		).asArrayList()
 		if (appSettings.isSuggestionsExcludeNsfw) {
 			list.removeAll { it.isNsfw }

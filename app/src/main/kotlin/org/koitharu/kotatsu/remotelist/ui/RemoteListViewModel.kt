@@ -31,7 +31,6 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
-import org.koitharu.kotatsu.filter.ui.MangaFilter
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -52,13 +51,13 @@ private const val FILTER_MIN_INTERVAL = 250L
 open class RemoteListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
-	private val filter: FilterCoordinator,
+	override val filterCoordinator: FilterCoordinator,
 	settings: AppSettings,
 	mangaListMapper: MangaListMapper,
 	downloadScheduler: DownloadWorker.Scheduler,
 	private val exploreRepository: ExploreRepository,
 	sourcesRepository: MangaSourcesRepository,
-) : MangaListViewModel(settings, downloadScheduler), MangaFilter by filter {
+) : MangaListViewModel(settings, downloadScheduler), FilterCoordinator.Owner {
 
 	val source = MangaSource(savedStateHandle[RemoteListFragment.ARG_SOURCE])
 	val isRandomLoading = MutableStateFlow(false)
@@ -72,7 +71,7 @@ open class RemoteListViewModel @Inject constructor(
 	private var randomJob: Job? = null
 
 	val isSearchAvailable: Boolean
-		get() = repository.isSearchSupported
+		get() = repository.filterCapabilities.isSearchSupported
 
 	val browserUrl: String?
 		get() = (repository as? ParserMangaRepository)?.domain?.let { "https://$it" }
@@ -93,7 +92,7 @@ open class RemoteListViewModel @Inject constructor(
 				)
 
 				list == null -> add(LoadingState)
-				list.isEmpty() -> add(createEmptyState(canResetFilter = header.value.isFilterApplied))
+				list.isEmpty() -> add(createEmptyState(canResetFilter = filterCoordinator.isFilterApplied))
 				else -> {
 					mangaListMapper.toListModelList(this, list, mode)
 					when {
@@ -107,7 +106,7 @@ open class RemoteListViewModel @Inject constructor(
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, listOf(LoadingState))
 
 	init {
-		filter.observeState()
+		filterCoordinator.observe()
 			.debounce(FILTER_MIN_INTERVAL)
 			.onEach { filterState ->
 				loadingJob?.cancelAndJoin()
@@ -123,26 +122,26 @@ open class RemoteListViewModel @Inject constructor(
 	}
 
 	override fun onRefresh() {
-		loadList(filter.snapshot(), append = false)
+		loadList(filterCoordinator.snapshot(), append = false)
 	}
 
 	override fun onRetry() {
-		loadList(filter.snapshot(), append = !mangaList.value.isNullOrEmpty())
+		loadList(filterCoordinator.snapshot(), append = !mangaList.value.isNullOrEmpty())
 	}
 
 	fun loadNextPage() {
 		if (hasNextPage.value && listError.value == null) {
-			loadList(filter.snapshot(), append = true)
+			loadList(filterCoordinator.snapshot(), append = true)
 		}
 	}
 
-	fun resetFilter() = filter.reset()
+	fun resetFilter() = filterCoordinator.reset()
 
 	override fun onUpdateFilter(tags: Set<MangaTag>) {
-		applyFilter(tags)
+		filterCoordinator.set(MangaListFilter(tags = tags))
 	}
 
-	protected fun loadList(filterState: MangaListFilter.Advanced, append: Boolean): Job {
+	protected fun loadList(filterState: FilterCoordinator.Snapshot, append: Boolean): Job {
 		loadingJob?.let {
 			if (it.isActive) return it
 		}
@@ -151,7 +150,8 @@ open class RemoteListViewModel @Inject constructor(
 				listError.value = null
 				val list = repository.getList(
 					offset = if (append) mangaList.value.sizeOrZero() else 0,
-					filter = filterState,
+					order = filterState.sortOrder,
+					filter = filterState.listFilter,
 				)
 				val prevList = mangaList.value.orEmpty()
 				if (!append) {

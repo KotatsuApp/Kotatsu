@@ -23,15 +23,14 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
-import org.koitharu.kotatsu.filter.ui.FilterOwner
-import org.koitharu.kotatsu.filter.ui.MangaFilter
+import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.settings.storage.RequestStorageManagerPermissionContract
 import org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity
 
-class LocalListFragment : MangaListFragment(), FilterOwner {
+class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 
 	private val permissionRequestLauncher = registerForActivityResult(
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -56,8 +55,8 @@ class LocalListFragment : MangaListFragment(), FilterOwner {
 
 	override val viewModel by viewModels<LocalListViewModel>()
 
-	override val filter: MangaFilter
-		get() = viewModel
+	override val filterCoordinator: FilterCoordinator
+		get() = viewModel.filterCoordinator
 
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)

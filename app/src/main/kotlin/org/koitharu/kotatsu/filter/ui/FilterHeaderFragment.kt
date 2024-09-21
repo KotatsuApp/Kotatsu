@@ -6,6 +6,9 @@ import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
@@ -15,12 +18,17 @@ import org.koitharu.kotatsu.databinding.FragmentFilterHeaderBinding
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import javax.inject.Inject
 import com.google.android.material.R as materialR
 
+@AndroidEntryPoint
 class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsView.OnChipClickListener {
 
-	private val filter: MangaFilter
-		get() = (requireActivity() as FilterOwner).filter
+	@Inject
+	lateinit var filterHeaderProducer: FilterHeaderProducer
+
+	private val filter: FilterCoordinator
+		get() = (requireActivity() as FilterCoordinator.Owner).filterCoordinator
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentFilterHeaderBinding {
 		return FragmentFilterHeaderBinding.inflate(inflater, container, false)
@@ -29,7 +37,9 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 	override fun onViewBindingCreated(binding: FragmentFilterHeaderBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.chipsTags.onChipClickListener = this
-		filter.header.observe(viewLifecycleOwner, ::onDataChanged)
+		filterHeaderProducer.observeHeader(filter)
+			.flowOn(Dispatchers.Default)
+			.observe(viewLifecycleOwner, ::onDataChanged)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
@@ -39,7 +49,7 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 		if (tag == null) {
 			TagsCatalogSheet.show(parentFragmentManager, isExcludeTag = false)
 		} else {
-			filter.setTag(tag, !chip.isChecked)
+			filter.toggleTag(tag, !chip.isChecked)
 		}
 	}
 

@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.model.SortOrder
 
+@Deprecated("")
 enum class GenericSortOrder(
 	@StringRes val titleResId: Int,
 	val ascending: SortOrder,

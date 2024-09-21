@@ -38,7 +38,7 @@ class DeleteReadChaptersUseCase @Inject constructor(
 	}
 
 	suspend operator fun invoke(): Int {
-		val list = localMangaRepository.getList(0, null)
+		val list = localMangaRepository.getList(0, null, null)
 		if (list.isEmpty()) {
 			return 0
 		}

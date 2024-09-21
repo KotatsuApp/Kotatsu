@@ -36,14 +36,14 @@ import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ActivityMangaListBinding
+import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.FilterHeaderFragment
-import org.koitharu.kotatsu.filter.ui.FilterOwner
-import org.koitharu.kotatsu.filter.ui.MangaFilter
 import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.preview.PreviewFragment
 import org.koitharu.kotatsu.local.ui.LocalListFragment
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
@@ -53,15 +53,15 @@ import com.google.android.material.R as materialR
 @AndroidEntryPoint
 class MangaListActivity :
 	BaseActivity<ActivityMangaListBinding>(),
-	AppBarOwner, View.OnClickListener, FilterOwner, AppBarLayout.OnOffsetChangedListener {
+	AppBarOwner, View.OnClickListener, FilterCoordinator.Owner, AppBarLayout.OnOffsetChangedListener {
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
 
-	override val filter: MangaFilter
+	override val filterCoordinator: FilterCoordinator
 		get() = checkNotNull(findFilterOwner()) {
-			"Cannot find FilterOwner fragment in ${supportFragmentManager.fragments}"
-		}.filter
+			"Cannot find FilterCoordinator.Owner fragment in ${supportFragmentManager.fragments}"
+		}.filterCoordinator
 
 	private var source: MangaSource? = null
 
@@ -122,7 +122,7 @@ class MangaListActivity :
 	private fun initList(source: MangaSource, tags: Set<MangaTag>?) {
 		val fm = supportFragmentManager
 		val existingFragment = fm.findFragmentById(R.id.container)
-		if (existingFragment is FilterOwner) {
+		if (existingFragment is FilterCoordinator.Owner) {
 			initFilter(existingFragment)
 		} else {
 			fm.commit {
@@ -141,7 +141,7 @@ class MangaListActivity :
 		}
 	}
 
-	private fun initFilter(filterOwner: FilterOwner) {
+	private fun initFilter(filterOwner: FilterCoordinator.Owner) {
 		if (viewBinding.containerSide != null) {
 			if (supportFragmentManager.findFragmentById(R.id.container_side) == null) {
 				setSideFragment(FilterSheetFragment::class.java, null)
@@ -154,18 +154,18 @@ class MangaListActivity :
 				}
 			}
 		}
-		val filter = filterOwner.filter
+		val filter = filterOwner.filterCoordinator
 		val chipSort = viewBinding.buttonOrder
 		if (chipSort != null) {
 			val filterBadge = ViewBadge(chipSort, this)
 			filterBadge.setMaxCharacterCount(0)
-			filter.header.observe(this) {
-				chipSort.setTextAndVisible(it.sortOrder?.titleRes ?: 0)
-				filterBadge.counter = if (it.isFilterApplied) 1 else 0
+			filter.observe().observe(this) { snapshot ->
+				chipSort.setTextAndVisible(snapshot.sortOrder.titleRes)
+				filterBadge.counter = if (snapshot.listFilter.isEmpty()) 0 else 1
 			}
 		} else {
-			filter.header.map {
-				it.textSummary
+			filter.observe().map {
+				it.listFilter.tags.joinToString { tag -> tag.title }
 			}.flowOn(Dispatchers.Default)
 				.observe(this) {
 					supportActionBar?.subtitle = it
@@ -173,8 +173,8 @@ class MangaListActivity :
 		}
 	}
 
-	private fun findFilterOwner(): FilterOwner? {
-		return supportFragmentManager.findFragmentById(R.id.container) as? FilterOwner
+	private fun findFilterOwner(): FilterCoordinator.Owner? {
+		return supportFragmentManager.findFragmentById(R.id.container) as? FilterCoordinator.Owner
 	}
 
 	private fun setSideFragment(cls: Class<out Fragment>, args: Bundle?) = if (viewBinding.containerSide != null) {
@@ -188,12 +188,12 @@ class MangaListActivity :
 	}
 
 	private class ApplyFilterRunnable(
-		private val filterOwner: FilterOwner,
+		private val filterOwner: FilterCoordinator.Owner,
 		private val tags: Set<MangaTag>,
 	) : Runnable {
 
 		override fun run() {
-			filterOwner.filter.applyFilter(tags)
+			filterOwner.filterCoordinator.set(MangaListFilter(tags = tags))
 		}
 	}
 

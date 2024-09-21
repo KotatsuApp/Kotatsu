@@ -42,7 +42,7 @@ class SearchViewModel @Inject constructor(
 ) : MangaListViewModel(settings, downloadScheduler) {
 
 	private val query = savedStateHandle.require<String>(SearchFragment.ARG_QUERY)
-	private val repository = repositoryFactory.create(MangaSource(savedStateHandle.get(SearchFragment.ARG_SOURCE)))
+	private val repository = repositoryFactory.create(MangaSource(savedStateHandle[SearchFragment.ARG_SOURCE]))
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val hasNextPage = MutableStateFlow(false)
 	private val listError = MutableStateFlow<Throwable?>(null)
@@ -105,7 +105,8 @@ class SearchViewModel @Inject constructor(
 				listError.value = null
 				val list = repository.getList(
 					offset = if (append) mangaList.value.sizeOrZero() else 0,
-					filter = MangaListFilter.Search(query),
+					order = null,
+					filter = MangaListFilter(query = query),
 				)
 				val prevList = mangaList.value.orEmpty()
 				if (!append) {

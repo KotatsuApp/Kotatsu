@@ -707,4 +707,16 @@
 	<string name="no_fix_required">No fix required for \"%s\"</string>
 	<string name="no_alternatives_found">No alternatives found for \"%s\"</string>
 	<string name="manga_fix_prompt">This function will find alternative sources for the selected manga. The task will take some time and will proceed in the background</string>
+	<string name="content_type_novel">Novel</string>
+	<string name="content_type_manhua">Manhua</string>
+	<string name="content_type_manhwa">Manhwa</string>
+	<string name="recently_added">Recently added</string>
+	<string name="added_long_ago">Added long ago</string>
+	<string name="popular_in_hour">Popular this hour</string>
+	<string name="popular_today">Popular today</string>
+	<string name="popular_in_week">Popular this week</string>
+	<string name="popular_in_month">Popular this month</string>
+	<string name="popular_in_year">Popular this year</string>
+	<string name="original_language">Original language</string>
+	<string name="year">Year</string>
 </resources>

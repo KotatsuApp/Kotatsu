@@ -49,7 +49,7 @@
 				<Spinner
 					android:id="@+id/spinner_order"
 					android:layout_width="match_parent"
-					android:layout_height="56dp"
+					android:layout_height="@dimen/spinner_height"
 					android:minHeight="?listPreferredItemHeightSmall"
 					android:paddingHorizontal="8dp" />
 
@@ -62,9 +62,11 @@
 				android:layout_marginTop="12dp"
 				android:baselineAligned="false"
 				android:orientation="horizontal"
+				android:visibility="gone"
 				android:weightSum="2"
 				app:selectionRequired="true"
-				app:singleSelection="true">
+				app:singleSelection="true"
+				tools:visibility="visible">
 
 				<com.google.android.material.button.MaterialButton
 					android:id="@+id/button_order_asc"
@@ -109,7 +111,38 @@
 				<Spinner
 					android:id="@+id/spinner_locale"
 					android:layout_width="match_parent"
-					android:layout_height="56dp"
+					android:layout_height="@dimen/spinner_height"
+					android:minHeight="?listPreferredItemHeightSmall"
+					android:paddingHorizontal="8dp"
+					android:popupBackground="@drawable/m3_spinner_popup_background" />
+
+			</com.google.android.material.card.MaterialCardView>
+
+
+			<TextView
+				android:id="@+id/textView_original_locale_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/original_language"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/card_original_locale"
+				style="?materialCardViewOutlinedStyle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:visibility="gone"
+				tools:visibility="visible">
+
+				<Spinner
+					android:id="@+id/spinner_original_locale"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/spinner_height"
 					android:minHeight="?listPreferredItemHeightSmall"
 					android:paddingHorizontal="8dp"
 					android:popupBackground="@drawable/m3_spinner_popup_background" />
@@ -209,6 +242,28 @@
 				android:layout_marginTop="@dimen/margin_normal"
 				android:visibility="gone"
 				app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
+				tools:visibility="visible" />
+
+			<TextView
+				android:id="@+id/textView_year"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:singleLine="true"
+				android:text="@string/year"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<com.google.android.material.slider.Slider
+				android:id="@+id/slider_year"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:stepSize="1"
+				android:visibility="gone"
+				app:labelBehavior="visible"
+				app:tickVisible="true"
 				tools:visibility="visible" />
 
 		</LinearLayout>

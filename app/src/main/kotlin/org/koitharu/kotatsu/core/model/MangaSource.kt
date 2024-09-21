@@ -56,6 +56,9 @@ val ContentType.titleResId
 		ContentType.HENTAI -> R.string.content_type_hentai
 		ContentType.COMICS -> R.string.content_type_comics
 		ContentType.OTHER -> R.string.content_type_other
+		ContentType.MANHWA -> R.string.content_type_manhwa
+		ContentType.MANHUA -> R.string.content_type_manhua
+		ContentType.NOVEL -> R.string.content_type_novel
 	}
 
 fun MangaSource.getSummary(context: Context): String? = when (this) {

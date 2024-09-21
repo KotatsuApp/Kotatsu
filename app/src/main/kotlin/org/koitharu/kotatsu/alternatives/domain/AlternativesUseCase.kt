@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
 
@@ -36,13 +37,13 @@ class AlternativesUseCase @Inject constructor(
 		return channelFlow {
 			for (source in sources) {
 				val repository = mangaRepositoryFactory.create(source)
-				if (!repository.isSearchSupported) {
+				if (!repository.filterCapabilities.isSearchSupported) {
 					continue
 				}
 				launch {
 					val list = runCatchingCancellable {
 						semaphore.withPermit {
-							repository.getList(offset = 0, filter = MangaListFilter.Search(manga.title))
+							repository.getList(offset = 0, SortOrder.RELEVANCE, MangaListFilter(query = manga.title))
 						}
 					}.getOrDefault(emptyList())
 					for (item in list) {
