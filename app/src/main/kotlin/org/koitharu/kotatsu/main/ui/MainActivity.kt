@@ -60,6 +60,7 @@ import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.main.ui.welcome.WelcomeSheet
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
@@ -265,7 +266,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	override fun onTagClick(tag: MangaTag) {
-		startActivity(MangaListActivity.newIntent(this, setOf(tag)))
+		startActivity(MangaListActivity.newIntent(this, tag.source, MangaListFilter(tags = setOf(tag))))
 	}
 
 	override fun onQueryChanged(query: String) {
@@ -277,7 +278,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	override fun onSourceClick(source: MangaSource) {
-		val intent = MangaListActivity.newIntent(this, source)
+		val intent = MangaListActivity.newIntent(this, source, null)
 		startActivity(intent)
 	}
 

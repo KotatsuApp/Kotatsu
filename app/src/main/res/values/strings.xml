@@ -726,4 +726,5 @@
 	<string name="demographic_josei">Josei</string>
 	<string name="years">Years</string>
 	<string name="any">Any</string>
+	<string name="filter_search_warning">This source does not support search with filters. Your filters have been cleared</string>
 </resources>

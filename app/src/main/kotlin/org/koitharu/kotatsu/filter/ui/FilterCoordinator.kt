@@ -59,8 +59,8 @@ class FilterCoordinator @Inject constructor(
 	private val currentSortOrder = MutableStateFlow(repository.defaultSortOrder)
 
 	private val availableSortOrders = repository.sortOrders
-	private val capabilities = repository.filterCapabilities
 	private val filterOptions = SuspendLazy { repository.getFilterOptions() }
+	val capabilities = repository.filterCapabilities
 
 	val mangaSource: MangaSource
 		get() = repository.source
@@ -69,7 +69,7 @@ class FilterCoordinator @Inject constructor(
 		get() = !currentListFilter.value.isEmpty()
 
 	val query: StateFlow<String?> = currentListFilter.map { it.query }
-		.stateIn(coroutineScope, SharingStarted.Lazily, null)
+		.stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
 	val sortOrder: StateFlow<FilterProperty<SortOrder>> = currentSortOrder.map { selected ->
 		FilterProperty(

@@ -22,7 +22,8 @@ import javax.inject.Inject
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
-class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsView.OnChipClickListener {
+class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsView.OnChipClickListener,
+	ChipsView.OnChipCloseClickListener {
 
 	@Inject
 	lateinit var filterHeaderProducer: FilterHeaderProducer
@@ -37,6 +38,7 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 	override fun onViewBindingCreated(binding: FragmentFilterHeaderBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.chipsTags.onChipClickListener = this
+		binding.chipsTags.onChipCloseClickListener = this
 		filterHeaderProducer.observeHeader(filter)
 			.flowOn(Dispatchers.Default)
 			.observe(viewLifecycleOwner, ::onDataChanged)
@@ -45,11 +47,16 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun onChipClick(chip: Chip, data: Any?) {
-		val tag = data as? MangaTag
-		if (tag == null) {
-			TagsCatalogSheet.show(parentFragmentManager, isExcludeTag = false)
-		} else {
-			filter.toggleTag(tag, !chip.isChecked)
+		when (data) {
+			is MangaTag -> filter.toggleTag(data, !chip.isChecked)
+			is String -> Unit
+			null -> TagsCatalogSheet.show(parentFragmentManager, isExcludeTag = false)
+		}
+	}
+
+	override fun onChipCloseClick(chip: Chip, data: Any?) {
+		when (data) {
+			is String -> filter.setQuery(null)
 		}
 	}
 

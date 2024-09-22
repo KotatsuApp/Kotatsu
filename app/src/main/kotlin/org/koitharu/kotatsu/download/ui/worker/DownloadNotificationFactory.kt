@@ -265,7 +265,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		if (manga != null) {
 			DetailsActivity.newIntent(context, manga)
 		} else {
-			MangaListActivity.newIntent(context, LocalMangaSource)
+			MangaListActivity.newIntent(context, LocalMangaSource, null)
 		},
 		PendingIntent.FLAG_CANCEL_CURRENT,
 		false,

@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
+import org.koitharu.kotatsu.remotelist.ui.MangaSearchMenuProvider
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.settings.storage.RequestStorageManagerPermissionContract
 import org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity
@@ -61,6 +62,7 @@ class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		addMenuProvider(LocalListMenuProvider(binding.root.context, this::onEmptyActionClick))
+		addMenuProvider(MangaSearchMenuProvider(filterCoordinator, viewModel))
 		viewModel.onMangaRemoved.observeEvent(viewLifecycleOwner) { onItemRemoved() }
 	}
 

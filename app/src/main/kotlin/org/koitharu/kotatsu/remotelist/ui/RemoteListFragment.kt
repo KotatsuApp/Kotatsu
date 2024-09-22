@@ -6,9 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
-import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
-import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,9 +26,7 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
-import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 
 @AndroidEntryPoint
@@ -44,6 +40,7 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		addMenuProvider(RemoteListMenuProvider())
+		addMenuProvider(MangaSearchMenuProvider(filterCoordinator, viewModel))
 		viewModel.isRandomLoading.observe(viewLifecycleOwner, MenuInvalidator(requireActivity()))
 		viewModel.onOpenManga.observeEvent(viewLifecycleOwner) {
 			startActivity(DetailsActivity.newIntent(binding.root.context, it))
@@ -86,19 +83,10 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 			.show()
 	}
 
-	private inner class RemoteListMenuProvider :
-		MenuProvider,
-		SearchView.OnQueryTextListener,
-		MenuItem.OnActionExpandListener {
+	private inner class RemoteListMenuProvider : MenuProvider {
 
 		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 			menuInflater.inflate(R.menu.opt_list_remote, menu)
-			val searchMenuItem = menu.findItem(R.id.action_search)
-			searchMenuItem.setOnActionExpandListener(this)
-			val searchView = searchMenuItem.actionView as SearchView
-			searchView.setOnQueryTextListener(this)
-			searchView.setIconifiedByDefault(false)
-			searchView.queryHint = searchMenuItem.title
 		}
 
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
@@ -127,42 +115,8 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 
 		override fun onPrepareMenu(menu: Menu) {
 			super.onPrepareMenu(menu)
-			menu.findItem(R.id.action_search)?.isVisible = viewModel.isSearchAvailable
 			menu.findItem(R.id.action_random)?.isEnabled = !viewModel.isRandomLoading.value
 			menu.findItem(R.id.action_filter_reset)?.isVisible = filterCoordinator.isFilterApplied
-		}
-
-		override fun onQueryTextSubmit(query: String?): Boolean {
-			if (query.isNullOrEmpty()) {
-				return false
-			}
-			val intent = SearchActivity.newIntent(
-				context = this@RemoteListFragment.context ?: return false,
-				source = viewModel.source,
-				query = query,
-			)
-			startActivity(intent)
-			return true
-		}
-
-		override fun onQueryTextChange(newText: String?): Boolean = false
-
-		override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-			(activity as? AppBarOwner)?.appBar?.setExpanded(false, true)
-			(item.actionView as? SearchView)?.run {
-				imeOptions = if (viewModel.isIncognitoModeEnabled) {
-					imeOptions or EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING
-				} else {
-					imeOptions and EditorInfoCompat.IME_FLAG_NO_PERSONALIZED_LEARNING.inv()
-				}
-			}
-			return true
-		}
-
-		override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-			val searchView = (item.actionView as? SearchView) ?: return false
-			searchView.setQuery("", false)
-			return true
 		}
 	}
 

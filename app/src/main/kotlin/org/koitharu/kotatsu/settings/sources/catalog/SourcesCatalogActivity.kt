@@ -89,7 +89,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	}
 
 	override fun onItemClick(item: SourceCatalogItem.Source, view: View) {
-		startActivity(MangaListActivity.newIntent(this, item.source))
+		startActivity(MangaListActivity.newIntent(this, item.source, null))
 	}
 
 	override fun onItemLongClick(item: SourceCatalogItem.Source, view: View): Boolean {

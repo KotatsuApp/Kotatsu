@@ -5,15 +5,9 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<item
-		android:id="@+id/action_search"
-		android:icon="?actionModeWebSearchDrawable"
-		android:title="@string/search"
-		app:actionViewClass="androidx.appcompat.widget.SearchView"
-		app:showAsAction="ifRoom|collapseActionView" />
-
-	<item
 		android:id="@+id/action_random"
 		android:icon="@drawable/ic_dice"
+		android:orderInCategory="10"
 		android:title="@string/random"
 		app:showAsAction="ifRoom" />
 

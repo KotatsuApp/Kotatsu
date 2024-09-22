@@ -36,11 +36,6 @@ class ChipsView @JvmOverloads constructor(
 			children.forEach { it.isClickable = isChipClickable }
 		}
 	var onChipCloseClickListener: OnChipCloseClickListener? = null
-		set(value) {
-			field = value
-			val isCloseIconVisible = value != null
-			children.forEach { (it as? Chip)?.isCloseIconVisible = isCloseIconVisible }
-		}
 
 	init {
 		val ta = context.obtainStyledAttributes(attrs, R.styleable.ChipsView, defStyleAttr, 0)
@@ -98,6 +93,7 @@ class ChipsView @JvmOverloads constructor(
 		@ColorRes val tint: Int = 0,
 		val isChecked: Boolean = false,
 		val isDropdown: Boolean = false,
+		val isCloseable: Boolean = false,
 		val data: Any? = null,
 	)
 
@@ -139,7 +135,7 @@ class ChipsView @JvmOverloads constructor(
 				isChipIconVisible = true
 			}
 			isCheckedIconVisible = model.isChecked
-			isCloseIconVisible = if (onChipCloseClickListener != null || model.isDropdown) {
+			isCloseIconVisible = if (model.isCloseable || model.isDropdown) {
 				setCloseIconResource(
 					if (model.isDropdown) R.drawable.ic_expand_more else materialR.drawable.ic_m3_chip_close,
 				)

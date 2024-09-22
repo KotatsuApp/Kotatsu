@@ -30,7 +30,8 @@ import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.search.ui.SearchActivity
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
+import org.koitharu.kotatsu.search.ui.MangaListActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -81,7 +82,14 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 
 	override fun onItemClick(item: MangaAlternativeModel, view: View) {
 		when (view.id) {
-			R.id.chip_source -> startActivity(SearchActivity.newIntent(this, item.manga.source, viewModel.manga.title))
+			R.id.chip_source -> startActivity(
+				MangaListActivity.newIntent(
+					this,
+					item.manga.source,
+					MangaListFilter(query = viewModel.manga.title),
+				),
+			)
+
 			R.id.button_migrate -> confirmMigration(item.manga)
 			else -> startActivity(DetailsActivity.newIntent(this, item.manga))
 		}

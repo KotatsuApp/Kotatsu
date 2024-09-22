@@ -25,6 +25,12 @@ fun <T> Collection<T>.asArrayList(): ArrayList<T> = if (this is ArrayList<*>) {
 	ArrayList(this)
 }
 
+fun <E : Enum<E>> Set<E>.asEnumSet(cls: Class<E>): EnumSet<E> = if (this is EnumSet<*>) {
+	this as EnumSet<E>
+} else {
+	EnumSet.noneOf(cls).apply { addAll(this@asEnumSet) }
+}
+
 fun <K, V> Map<K, V>.findKeyByValue(value: V): K? {
 	for ((k, v) in entries) {
 		if (v == value) {

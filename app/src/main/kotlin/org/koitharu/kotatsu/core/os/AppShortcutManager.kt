@@ -180,7 +180,7 @@ class AppShortcutManager @Inject constructor(
 			.setLongLabel(title)
 			.setIcon(icon)
 			.setLongLived(true)
-			.setIntent(MangaListActivity.newIntent(context, source))
+			.setIntent(MangaListActivity.newIntent(context, source, null))
 			.build()
 	}
 }
