@@ -16,7 +16,6 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
-import org.koitharu.kotatsu.filter.ui.FilterHeaderProducer
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -41,7 +40,6 @@ class LocalListViewModel @Inject constructor(
 	exploreRepository: ExploreRepository,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 	private val localStorageManager: LocalStorageManager,
-	filterHeaderProducer: FilterHeaderProducer,
 	sourcesRepository: MangaSourcesRepository,
 ) : RemoteListViewModel(
 	savedStateHandle,
@@ -109,8 +107,10 @@ class LocalListViewModel @Inject constructor(
 		}
 	}
 
-	override fun createEmptyState(canResetFilter: Boolean): EmptyState {
-		return EmptyState(
+	override fun createEmptyState(canResetFilter: Boolean): EmptyState = if (canResetFilter) {
+		super.createEmptyState(canResetFilter)
+	} else {
+		EmptyState(
 			icon = R.drawable.ic_empty_local,
 			textPrimary = R.string.text_local_holder_primary,
 			textSecondary = R.string.text_local_holder_secondary,

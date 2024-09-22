@@ -12,6 +12,7 @@ import androidx.core.os.BundleCompat
 import androidx.core.os.ParcelCompat
 import androidx.lifecycle.SavedStateHandle
 import java.io.Serializable
+import java.util.EnumSet
 
 // https://issuetracker.google.com/issues/240585930
 
@@ -51,6 +52,31 @@ inline fun <reified T : Serializable> Bundle.requireSerializable(key: String): T
 	return checkNotNull(getSerializableCompat(key)) {
 		"Serializable of type \"${T::class.java.name}\" not found at \"$key\""
 	}
+}
+
+fun <E : Enum<E>> Parcel.writeEnumSet(set: Set<E>?) {
+	if (set == null) {
+		writeValue(null)
+	} else {
+		val array = IntArray(set.size)
+		set.forEachIndexed { i, e -> array[i] = e.ordinal }
+		writeIntArray(array)
+	}
+}
+
+inline fun <reified E : Enum<E>> Parcel.readEnumSet(): Set<E>? = readEnumSet(E::class.java)
+
+fun <E : Enum<E>> Parcel.readEnumSet(cls: Class<E>): Set<E>? {
+	val array = createIntArray() ?: return null
+	if (array.isEmpty()) {
+		return emptySet()
+	}
+	val enumValues = cls.enumConstants ?: return null
+	val set = EnumSet.noneOf(cls)
+	array.forEach { e ->
+		set.add(enumValues[e])
+	}
+	return set
 }
 
 fun <T> SavedStateHandle.require(key: String): T {

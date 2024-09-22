@@ -98,13 +98,13 @@ import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.local.ui.info.LocalInfoDialog
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -213,10 +213,10 @@ class DetailsActivity :
 			R.id.chip_author -> {
 				val manga = viewModel.manga.value ?: return
 				startActivity(
-					SearchActivity.newIntent(
+					MangaListActivity.newIntent(
 						context = v.context,
 						source = manga.source,
-						query = manga.author ?: return,
+						filter = MangaListFilter(query = manga.author),
 					),
 				)
 			}
@@ -227,6 +227,7 @@ class DetailsActivity :
 					MangaListActivity.newIntent(
 						context = v.context,
 						source = manga.source,
+						filter = null,
 					),
 				)
 			}
@@ -286,7 +287,8 @@ class DetailsActivity :
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag ?: return
-		startActivity(MangaListActivity.newIntent(this, setOf(tag)))
+		// TODO dialog
+		startActivity(MangaListActivity.newIntent(this, tag.source, MangaListFilter(tags = setOf(tag))))
 	}
 
 	override fun onLongClick(v: View): Boolean = when (v.id) {

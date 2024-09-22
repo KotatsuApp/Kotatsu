@@ -70,9 +70,6 @@ open class RemoteListViewModel @Inject constructor(
 	private var loadingJob: Job? = null
 	private var randomJob: Job? = null
 
-	val isSearchAvailable: Boolean
-		get() = repository.filterCapabilities.isSearchSupported
-
 	val browserUrl: String?
 		get() = (repository as? ParserMangaRepository)?.domain?.let { "https://$it" }
 

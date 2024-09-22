@@ -34,10 +34,10 @@ import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.search.ui.SearchActivity
 import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
 import javax.inject.Inject
 
@@ -63,7 +63,13 @@ class MultiSearchActivity :
 		title = viewModel.query
 
 		val itemCLickListener = OnListItemClickListener<MultiSearchListModel> { item, view ->
-			startActivity(SearchActivity.newIntent(view.context, item.source, viewModel.query))
+			startActivity(
+				MangaListActivity.newIntent(
+					view.context,
+					item.source,
+					MangaListFilter(query = viewModel.query),
+				),
+			)
 		}
 		val sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = true)
 		val selectionDecoration = MangaSelectionDecoration(this)
@@ -125,7 +131,7 @@ class MultiSearchActivity :
 
 	override fun onTagClick(manga: Manga, tag: MangaTag, view: View) {
 		if (!selectionController.onItemClick(manga.id)) {
-			val intent = MangaListActivity.newIntent(this, setOf(tag))
+			val intent = MangaListActivity.newIntent(this, manga.source, MangaListFilter(tags = setOf(tag)))
 			startActivity(intent)
 		}
 	}

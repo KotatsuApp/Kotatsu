@@ -126,7 +126,7 @@ class ExploreFragment :
 
 	override fun onClick(v: View) {
 		val intent = when (v.id) {
-			R.id.button_local -> MangaListActivity.newIntent(v.context, LocalMangaSource)
+			R.id.button_local -> MangaListActivity.newIntent(v.context, LocalMangaSource, null)
 			R.id.button_bookmarks -> AllBookmarksActivity.newIntent(v.context)
 			R.id.button_more -> SuggestionsActivity.newIntent(v.context)
 			R.id.button_downloads -> Intent(v.context, DownloadsActivity::class.java)
@@ -144,7 +144,7 @@ class ExploreFragment :
 		if (sourceSelectionController?.onItemClick(item.id) == true) {
 			return
 		}
-		val intent = MangaListActivity.newIntent(view.context, item.source)
+		val intent = MangaListActivity.newIntent(view.context, item.source, null)
 		startActivity(intent)
 	}
 

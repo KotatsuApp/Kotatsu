@@ -68,7 +68,7 @@
 			</intent-filter>
 			<meta-data
 				android:name="android.app.default_searchable"
-				android:value="org.koitharu.kotatsu.ui.search.SearchActivity" />
+				android:value="org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity" />
 		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.details.ui.DetailsActivity"
@@ -112,9 +112,6 @@
 				android:name="com.samsung.android.support.REMOTE_ACTION"
 				android:resource="@xml/remote_action" />
 		</activity>
-		<activity
-			android:name="org.koitharu.kotatsu.search.ui.SearchActivity"
-			android:label="@string/search" />
 		<activity
 			android:name="org.koitharu.kotatsu.search.ui.MangaListActivity"
 			android:exported="true"

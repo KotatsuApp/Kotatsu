@@ -1,10 +1,13 @@
 package org.koitharu.kotatsu.core.model
 
 import android.net.Uri
+import android.text.SpannableStringBuilder
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.collection.MutableObjectIntMap
 import androidx.core.os.LocaleListCompat
+import androidx.core.text.buildSpannedString
+import androidx.core.text.strikeThrough
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.iterator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
@@ -12,6 +15,7 @@ import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Demographic
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.util.formatSimple
 import org.koitharu.kotatsu.parsers.util.mapToSet
@@ -151,4 +155,27 @@ fun Manga.chaptersCount(): Int {
 		}
 	}
 	return max
+}
+
+fun MangaListFilter.getSummary() = buildSpannedString {
+	if (!query.isNullOrEmpty()) {
+		append(query)
+		if (tags.isNotEmpty() || tagsExclude.isNotEmpty()) {
+			append(' ')
+			append('(')
+			appendTagsSummary(this@getSummary)
+			append(')')
+		}
+	} else {
+		appendTagsSummary(this@getSummary)
+	}
+}
+
+private fun SpannableStringBuilder.appendTagsSummary(filter: MangaListFilter) {
+	filter.tags.joinTo(this) { it.title }
+	if (filter.tagsExclude.isNotEmpty()) {
+		strikeThrough {
+			filter.tagsExclude.joinTo(this) { it.title }
+		}
+	}
 }

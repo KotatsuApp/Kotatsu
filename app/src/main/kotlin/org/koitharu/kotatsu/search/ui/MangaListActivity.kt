@@ -23,10 +23,11 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.getSummary
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaTags
+import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaListFilter
 import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
@@ -45,7 +46,7 @@ import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.isNullOrEmpty
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import kotlin.math.absoluteValue
 import com.google.android.material.R as materialR
@@ -63,28 +64,23 @@ class MangaListActivity :
 			"Cannot find FilterCoordinator.Owner fragment in ${supportFragmentManager.fragments}"
 		}.filterCoordinator
 
-	private var source: MangaSource? = null
+	private lateinit var source: MangaSource
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMangaListBinding.inflate(layoutInflater))
-		val tags = intent.getParcelableExtraCompat<ParcelableMangaTags>(EXTRA_TAGS)?.tags
+		val filter = intent.getParcelableExtraCompat<ParcelableMangaListFilter>(EXTRA_FILTER)?.filter
+		source = MangaSource(intent.getStringExtra(EXTRA_SOURCE))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		if (viewBinding.containerFilterHeader != null) {
 			viewBinding.appbar.addOnOffsetChangedListener(this)
 		}
-		source = intent.getStringExtra(EXTRA_SOURCE)?.let(::MangaSource) ?: tags?.firstOrNull()?.source
-		val src = source
-		if (src == null) {
-			finishAfterTransition()
-		} else {
-			viewBinding.buttonOrder?.setOnClickListener(this)
-			title = src.getTitle(this)
-			initList(src, tags)
-		}
+		viewBinding.buttonOrder?.setOnClickListener(this)
+		title = source.getTitle(this)
+		initList(source, filter)
 	}
 
-	override fun isNsfwContent(): Flow<Boolean> = flowOf(source?.isNsfw() == true)
+	override fun isNsfwContent(): Flow<Boolean> = flowOf(source.isNsfw())
 
 	override fun onWindowInsetsChanged(insets: Insets) {
 		viewBinding.root.updatePadding(
@@ -119,7 +115,7 @@ class MangaListActivity :
 
 	fun hidePreview() = setSideFragment(FilterSheetFragment::class.java, null)
 
-	private fun initList(source: MangaSource, tags: Set<MangaTag>?) {
+	private fun initList(source: MangaSource, filter: MangaListFilter?) {
 		val fm = supportFragmentManager
 		val existingFragment = fm.findFragmentById(R.id.container)
 		if (existingFragment is FilterCoordinator.Owner) {
@@ -134,8 +130,8 @@ class MangaListActivity :
 				}
 				replace(R.id.container, fragment)
 				runOnCommit { initFilter(fragment) }
-				if (!tags.isNullOrEmpty()) {
-					runOnCommit(ApplyFilterRunnable(fragment, tags))
+				if (filter != null) {
+					runOnCommit(ApplyFilterRunnable(fragment, filter))
 				}
 			}
 		}
@@ -161,11 +157,12 @@ class MangaListActivity :
 			filterBadge.setMaxCharacterCount(0)
 			filter.observe().observe(this) { snapshot ->
 				chipSort.setTextAndVisible(snapshot.sortOrder.titleRes)
-				filterBadge.counter = if (snapshot.listFilter.isEmpty()) 0 else 1
+				filterBadge.counter = if (snapshot.listFilter.hasNonSearchOptions()) 1 else 0
+				supportActionBar?.subtitle = snapshot.listFilter.query
 			}
 		} else {
 			filter.observe().map {
-				it.listFilter.tags.joinToString { tag -> tag.title }
+				it.listFilter.getSummary()
 			}.flowOn(Dispatchers.Default)
 				.observe(this) {
 					supportActionBar?.subtitle = it
@@ -189,26 +186,28 @@ class MangaListActivity :
 
 	private class ApplyFilterRunnable(
 		private val filterOwner: FilterCoordinator.Owner,
-		private val tags: Set<MangaTag>,
+		private val filter: MangaListFilter,
 	) : Runnable {
 
 		override fun run() {
-			filterOwner.filterCoordinator.set(MangaListFilter(tags = tags))
+			filterOwner.filterCoordinator.set(filter)
 		}
 	}
 
 	companion object {
 
-		private const val EXTRA_TAGS = "tags"
+		private const val EXTRA_FILTER = "filter"
 		private const val EXTRA_SOURCE = "source"
-		const val ACTION_MANGA_EXPLORE = "${BuildConfig.APPLICATION_ID}.action.EXPLORE_MANGA"
+		private const val ACTION_MANGA_EXPLORE = "${BuildConfig.APPLICATION_ID}.action.EXPLORE_MANGA"
 
-		fun newIntent(context: Context, tags: Set<MangaTag>) = Intent(context, MangaListActivity::class.java)
-			.setAction(ACTION_MANGA_EXPLORE)
-			.putExtra(EXTRA_TAGS, ParcelableMangaTags(tags))
-
-		fun newIntent(context: Context, source: MangaSource) = Intent(context, MangaListActivity::class.java)
-			.setAction(ACTION_MANGA_EXPLORE)
-			.putExtra(EXTRA_SOURCE, source.name)
+		fun newIntent(context: Context, source: MangaSource, filter: MangaListFilter?): Intent =
+			Intent(context, MangaListActivity::class.java)
+				.setAction(ACTION_MANGA_EXPLORE)
+				.putExtra(EXTRA_SOURCE, source.name)
+				.apply {
+					if (!filter.isNullOrEmpty()) {
+						putExtra(EXTRA_FILTER, ParcelableMangaListFilter(filter))
+					}
+				}
 	}
 }

@@ -31,10 +31,10 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.search.ui.SearchActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -83,10 +83,10 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			}
 
 			R.id.textView_author -> startActivity(
-				SearchActivity.newIntent(
+				MangaListActivity.newIntent(
 					context = v.context,
 					source = manga.source,
-					query = manga.author ?: return,
+					filter = MangaListFilter(query = manga.author),
 				),
 			)
 
@@ -107,7 +107,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 		val tag = data as? MangaTag ?: return
 		val filter = (activity as? FilterCoordinator.Owner)?.filterCoordinator
 		if (filter == null) {
-			startActivity(MangaListActivity.newIntent(requireContext(), setOf(tag)))
+			startActivity(MangaListActivity.newIntent(chip.context, tag.source, MangaListFilter(tags = setOf(tag))))
 		} else {
 			filter.toggleTag(tag, true)
 			closeSelf()

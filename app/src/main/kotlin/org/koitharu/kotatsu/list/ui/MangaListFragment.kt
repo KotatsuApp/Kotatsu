@@ -60,6 +60,7 @@ import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
@@ -164,7 +165,8 @@ abstract class MangaListFragment :
 
 	override fun onTagClick(manga: Manga, tag: MangaTag, view: View) {
 		if (selectionController?.onItemClick(manga.id) != true) {
-			val intent = MangaListActivity.newIntent(context ?: return, setOf(tag))
+			// TODO dialog
+			val intent = MangaListActivity.newIntent(view.context, tag.source, MangaListFilter(tags = setOf(tag)))
 			startActivity(intent)
 		}
 	}
