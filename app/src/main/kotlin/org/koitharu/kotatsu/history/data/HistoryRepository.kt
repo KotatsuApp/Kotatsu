@@ -82,7 +82,7 @@ class HistoryRepository @Inject constructor(
 		limit: Int
 	): Flow<List<MangaWithHistory>> {
 		if (ListFilterOption.Downloaded in filterOptions) {
-			return localObserver.observeAll(order, filterOptions - ListFilterOption.Downloaded, limit)
+			return localObserver.observeAll(order, filterOptions, limit)
 		}
 		return db.getHistoryDao().observeAll(order, filterOptions, limit).mapItems {
 			MangaWithHistory(

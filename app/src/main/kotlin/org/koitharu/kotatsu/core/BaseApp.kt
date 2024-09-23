@@ -11,6 +11,7 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.acra.ACRA
@@ -28,6 +29,9 @@ import org.koitharu.kotatsu.core.os.AppValidator
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.WorkServiceStopHelper
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
+import org.koitharu.kotatsu.local.data.index.LocalMangaIndex
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.settings.work.WorkScheduleManager
 import java.security.Security
 import javax.inject.Inject
@@ -60,6 +64,13 @@ open class BaseApp : Application(), Configuration.Provider {
 	@Inject
 	lateinit var workManagerProvider: Provider<WorkManager>
 
+	@Inject
+	lateinit var localMangaIndexProvider: Provider<LocalMangaIndex>
+
+	@Inject
+	@LocalStorageChanges
+	lateinit var localStorageChanges: MutableSharedFlow<LocalManga?>
+
 	override val workManagerConfiguration: Configuration
 		get() = Configuration.Builder()
 			.setWorkerFactory(workerFactory)
@@ -82,6 +93,7 @@ open class BaseApp : Application(), Configuration.Provider {
 		}
 		processLifecycleScope.launch(Dispatchers.Default) {
 			setupDatabaseObservers()
+			localStorageChanges.collect(localMangaIndexProvider.get())
 		}
 		workScheduleManager.init()
 		WorkServiceStopHelper(workManagerProvider).setup()
