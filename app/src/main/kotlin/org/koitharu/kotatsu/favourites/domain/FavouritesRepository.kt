@@ -42,7 +42,7 @@ class FavouritesRepository @Inject constructor(
 
 	fun observeAll(order: ListSortOrder, filterOptions: Set<ListFilterOption>, limit: Int): Flow<List<Manga>> {
 		if (ListFilterOption.Downloaded in filterOptions) {
-			return localObserver.observeAll(order, filterOptions - ListFilterOption.Downloaded, limit)
+			return localObserver.observeAll(order, filterOptions, limit)
 		}
 		return db.getFavouritesDao().observeAll(order, filterOptions, limit)
 			.mapItems { it.toManga() }
@@ -60,7 +60,7 @@ class FavouritesRepository @Inject constructor(
 		limit: Int
 	): Flow<List<Manga>> {
 		if (ListFilterOption.Downloaded in filterOptions) {
-			return localObserver.observeAll(categoryId, order, filterOptions - ListFilterOption.Downloaded, limit)
+			return localObserver.observeAll(categoryId, order, filterOptions, limit)
 		}
 		return db.getFavouritesDao().observeAll(categoryId, order, filterOptions, limit)
 			.mapItems { it.toManga() }

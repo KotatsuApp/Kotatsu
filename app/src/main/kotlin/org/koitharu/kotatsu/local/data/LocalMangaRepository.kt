@@ -3,12 +3,11 @@ package org.koitharu.kotatsu.local.data
 import android.net.Uri
 import androidx.core.net.toFile
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.model.LocalMangaSource
@@ -20,6 +19,7 @@ import org.koitharu.kotatsu.core.util.ext.children
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.filterWith
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.local.data.index.LocalMangaIndex
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
@@ -43,13 +43,13 @@ private const val MAX_PARALLELISM = 4
 @Singleton
 class LocalMangaRepository @Inject constructor(
 	private val storageManager: LocalStorageManager,
+	private val localMangaIndex: LocalMangaIndex,
 	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
 	private val settings: AppSettings,
 	private val lock: MangaLock,
 ) : MangaRepository {
 
 	override val source = LocalMangaSource
-	private val localMappingCache = LocalMangaMappingCache()
 
 	override val filterCapabilities: MangaListFilterCapabilities
 		get() = MangaListFilterCapabilities(
@@ -116,6 +116,7 @@ class LocalMangaRepository @Inject constructor(
 		val file = Uri.parse(manga.url).toFile()
 		val result = file.deleteAwait()
 		if (result) {
+			localMangaIndex.delete(manga.id)
 			localStorageChanges.emit(null)
 		}
 		return result
@@ -139,7 +140,7 @@ class LocalMangaRepository @Inject constructor(
 
 	suspend fun findSavedManga(remoteManga: Manga): LocalManga? = runCatchingCancellable {
 		// very fast path
-		localMappingCache.get(remoteManga.id)?.let {
+		localMangaIndex.get(remoteManga.id)?.let {
 			return@runCatchingCancellable it
 		}
 		// fast path
@@ -164,7 +165,9 @@ class LocalMangaRepository @Inject constructor(
 			}
 		}.firstOrNull()?.getManga()
 	}.onSuccess { x: LocalManga? ->
-		localMappingCache[remoteManga.id] = x
+		if (x != null) {
+			localMangaIndex.put(x)
+		}
 	}.onFailure {
 		it.printStackTraceDebug()
 	}.getOrNull()
@@ -199,17 +202,20 @@ class LocalMangaRepository @Inject constructor(
 		return true
 	}
 
-	private suspend fun getRawList(): ArrayList<LocalManga> {
-		val files = getAllFiles().toList() // TODO remove toList()
-		return coroutineScope {
-			val dispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)
-			files.map { file ->
-				async(dispatcher) {
-					runCatchingCancellable { LocalMangaInput.ofOrNull(file)?.getManga() }.getOrNull()
+	fun getRawListAsFlow(): Flow<LocalManga> = channelFlow {
+		val files = getAllFiles()
+		val dispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)
+		for (file in files) {
+			launch(dispatcher) {
+				val m = LocalMangaInput.ofOrNull(file)?.getManga()
+				if (m != null) {
+					send(m)
 				}
-			}.awaitAll()
-		}.filterNotNullTo(ArrayList(files.size))
+			}
+		}
 	}
+
+	private suspend fun getRawList(): ArrayList<LocalManga> = getRawListAsFlow().toCollection(ArrayList())
 
 	private suspend fun getAllFiles() = storageManager.getReadableDirs()
 		.asSequence()
