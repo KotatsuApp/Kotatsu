@@ -371,7 +371,7 @@
     <string name="sync">Синхронизација</string>
     <string name="search_chapters">Пронађи поглавље</string>
     <string name="exit_confirmation">Потврда изласка</string>
-    <string name="manual">Ручном избору</string>
+    <string name="manual">По прилагођеном избору</string>
     <string name="comics_archive">Архива стрипова</string>
     <string name="more">Више</string>
     <string name="theme_name_asuka">Асука</string>
@@ -566,7 +566,7 @@
     <string name="fullscreen_mode">Режим целог екрана</string>
     <string name="remove_from_history">Уклони из историје</string>
     <string name="location">Локација</string>
-    <string name="ask_for_dest_dir_every_time">Затражи одредишни дииректоријум сваки пут</string>
+    <string name="ask_for_dest_dir_every_time">Затражи одредишни диркторијум сваки пут</string>
     <string name="default_page_save_dir">Подразумевани директоријум за чување странице</string>
     <string name="show_labels_in_navbar">Прикажи ознаке на навигационој траци</string>
     <string name="pages_saving">Чување страница</string>
@@ -684,4 +684,13 @@
     <string name="low_rating">Ниска оцена</string>
     <string name="sort_order_asc">Узлазно</string>
     <string name="sort_order_desc">Силазно</string>
+    <string name="downloads_background">Позадинска преузимања</string>
+    <string name="download_new_chapters">Преузми нова поглавља</string>
+    <string name="manga_with_downloaded_chapters">Манга са преузетим поглављима</string>
+    <string name="fixing_manga">Поправљање манге</string>
+    <string name="fixed">Успешно поправљено</string>
+    <string name="no_fix_required">Није потребна исправка за „%s“</string>
+    <string name="manga_fix_prompt">Ова функција ће пронаћи алтернативне изворе за изабрану мангу. Задатак ће потрајати и наставиће се у позадини</string>
+    <string name="manga_replaced">Манга „%1$s“ (%2$s) је замењена са „%3$s“ (%4$s)</string>
+    <string name="no_alternatives_found">Нису пронађене алтернативе за „%s“</string>
 </resources>
