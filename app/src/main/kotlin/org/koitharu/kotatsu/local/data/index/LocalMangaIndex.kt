@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.domain.model.LocalManga
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
 import javax.inject.Inject
@@ -83,6 +84,10 @@ class LocalMangaIndex @Inject constructor(
 
 	suspend fun delete(mangaId: Long) {
 		db.getLocalMangaIndexDao().delete(mangaId)
+	}
+
+	suspend fun getAvailableTags(): List<String> {
+		return db.getLocalMangaIndexDao().findTags()
 	}
 
 	private fun LocalManga.toEntity() = LocalMangaIndexEntity(

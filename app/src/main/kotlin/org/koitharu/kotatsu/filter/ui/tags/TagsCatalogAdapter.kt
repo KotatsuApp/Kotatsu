@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.filter.ui.model.TagCatalogItem
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.errorFooterAD
+import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -24,6 +25,7 @@ class TagsCatalogAdapter(
 		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
 		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
 		addDelegate(ListItemType.FOOTER_ERROR, errorFooterAD(null))
+		addDelegate(ListItemType.STATE_ERROR, errorStateListAD(null))
 	}
 
 	override fun getSectionText(context: Context, position: Int): CharSequence? {

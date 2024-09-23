@@ -11,20 +11,22 @@ import org.koitharu.kotatsu.list.ui.model.ErrorState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 fun errorStateListAD(
-	listener: ListStateHolderListener,
+	listener: ListStateHolderListener?,
 ) = adapterDelegateViewBinding<ErrorState, ListModel, ItemErrorStateBinding>(
 	{ inflater, parent -> ItemErrorStateBinding.inflate(inflater, parent, false) },
 ) {
 
-	val onClickListener = View.OnClickListener { v ->
-		when (v.id) {
-			R.id.button_retry -> listener.onRetryClick(item.exception)
-			R.id.button_secondary -> listener.onSecondaryErrorActionClick(item.exception)
+	if (listener != null) {
+		val onClickListener = View.OnClickListener { v ->
+			when (v.id) {
+				R.id.button_retry -> listener.onRetryClick(item.exception)
+				R.id.button_secondary -> listener.onSecondaryErrorActionClick(item.exception)
+			}
 		}
-	}
 
-	binding.buttonRetry.setOnClickListener(onClickListener)
-	binding.buttonSecondary.setOnClickListener(onClickListener)
+		binding.buttonRetry.setOnClickListener(onClickListener)
+		binding.buttonSecondary.setOnClickListener(onClickListener)
+	}
 
 	bind {
 		with(binding.textViewError) {
@@ -32,7 +34,7 @@ fun errorStateListAD(
 			setCompoundDrawablesWithIntrinsicBounds(0, item.icon, 0, 0)
 		}
 		with(binding.buttonRetry) {
-			isVisible = item.canRetry
+			isVisible = item.canRetry && listener != null
 			setText(item.buttonText)
 		}
 		binding.buttonSecondary.setTextAndVisible(item.secondaryButtonText)
