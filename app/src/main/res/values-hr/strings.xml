@@ -675,4 +675,8 @@
     <string name="by_date">Datum</string>
     <string name="popularity">Popularnost</string>
     <string name="updated_long_ago">Aktualizirano davno</string>
+    <string name="manga_replaced">Manga „%1$s” (%2$s) zamijenjen sa „%3$s” (%4$s)</string>
+    <string name="downloads_background">Preuzimanja u pozadini</string>
+    <string name="download_new_chapters">Preuzmi nova poglavlja</string>
+    <string name="manga_with_downloaded_chapters">Manga s preuzetim poglavljima</string>
 </resources>
