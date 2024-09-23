@@ -66,21 +66,32 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 	}
 
 	override fun onEmptyActionClick() {
-		viewModel.resetFilter()
+		if (filterCoordinator.isFilterApplied) {
+			filterCoordinator.reset()
+		} else {
+			openInBrowser()
+		}
 	}
 
 	override fun onSecondaryErrorActionClick(error: Throwable) {
-		viewModel.browserUrl?.also { url ->
+		openInBrowser()
+	}
+
+	private fun openInBrowser() {
+		val browserUrl = viewModel.browserUrl
+		if (browserUrl.isNullOrEmpty()) {
+			Snackbar.make(requireViewBinding().recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
+				.show()
+		} else {
 			startActivity(
 				BrowserActivity.newIntent(
 					requireContext(),
-					url,
+					browserUrl,
 					viewModel.source,
 					viewModel.source.getTitle(requireContext()),
 				),
 			)
-		} ?: Snackbar.make(requireViewBinding().recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
-			.show()
+		}
 	}
 
 	private inner class RemoteListMenuProvider : MenuProvider {
@@ -106,7 +117,7 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 			}
 
 			R.id.action_filter_reset -> {
-				viewModel.resetFilter()
+				filterCoordinator.reset()
 				true
 			}
 

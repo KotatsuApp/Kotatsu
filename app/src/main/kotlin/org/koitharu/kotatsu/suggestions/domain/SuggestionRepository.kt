@@ -8,9 +8,11 @@ import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.db.entity.toMangaTagsList
+import org.koitharu.kotatsu.core.model.toMangaSources
 import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
 import javax.inject.Inject
@@ -54,6 +56,11 @@ class SuggestionRepository @Inject constructor(
 	suspend fun getTopTags(limit: Int): List<MangaTag> {
 		return db.getSuggestionDao().getTopTags(limit)
 			.toMangaTagsList()
+	}
+
+	suspend fun getTopSources(limit: Int): List<MangaSource> {
+		return db.getSuggestionDao().getTopSources(limit)
+			.toMangaSources()
 	}
 
 	suspend fun replace(suggestions: Iterable<MangaSuggestion>) {

@@ -41,8 +41,6 @@ import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaListFilter
-import org.koitharu.kotatsu.parsers.model.MangaTag
 import javax.inject.Inject
 
 private const val FILTER_MIN_INTERVAL = 250L
@@ -51,7 +49,7 @@ private const val FILTER_MIN_INTERVAL = 250L
 open class RemoteListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	mangaRepositoryFactory: MangaRepository.Factory,
-	override val filterCoordinator: FilterCoordinator,
+	final override val filterCoordinator: FilterCoordinator,
 	settings: AppSettings,
 	mangaListMapper: MangaListMapper,
 	downloadScheduler: DownloadWorker.Scheduler,
@@ -132,12 +130,6 @@ open class RemoteListViewModel @Inject constructor(
 		}
 	}
 
-	fun resetFilter() = filterCoordinator.reset()
-
-	override fun onUpdateFilter(tags: Set<MangaTag>) {
-		filterCoordinator.set(MangaListFilter(tags = tags))
-	}
-
 	protected fun loadList(filterState: FilterCoordinator.Snapshot, append: Boolean): Job {
 		loadingJob?.let {
 			if (it.isActive) return it
@@ -178,7 +170,7 @@ open class RemoteListViewModel @Inject constructor(
 		icon = R.drawable.ic_empty_common,
 		textPrimary = R.string.nothing_found,
 		textSecondary = 0,
-		actionStringRes = if (canResetFilter) R.string.reset_filter else 0,
+		actionStringRes = if (canResetFilter) R.string.reset_filter else R.string.open_in_browser,
 	)
 
 	protected open suspend fun onBuildList(list: MutableList<ListModel>) = Unit

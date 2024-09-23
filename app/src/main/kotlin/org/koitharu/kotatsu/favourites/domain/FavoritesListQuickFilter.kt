@@ -1,12 +1,15 @@
 package org.koitharu.kotatsu.favourites.domain
 
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.MangaListQuickFilter
-import javax.inject.Inject
 
-class FavoritesListQuickFilter @Inject constructor(
+class FavoritesListQuickFilter @AssistedInject constructor(
+	@Assisted private val categoryId: Long,
 	private val settings: AppSettings,
 	private val repository: FavouritesRepository,
 	networkState: NetworkState,
@@ -22,5 +25,14 @@ class FavoritesListQuickFilter @Inject constructor(
 			add(ListFilterOption.Macro.NEW_CHAPTERS)
 		}
 		add(ListFilterOption.Macro.COMPLETED)
+		repository.findPopularSources(categoryId, 3).mapTo(this) {
+			ListFilterOption.Source(it)
+		}
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(categoryId: Long): FavoritesListQuickFilter
 	}
 }

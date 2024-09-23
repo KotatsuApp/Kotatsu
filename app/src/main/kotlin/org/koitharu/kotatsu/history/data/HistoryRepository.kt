@@ -12,10 +12,13 @@ import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTag
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
+import org.koitharu.kotatsu.core.db.entity.toMangaTagsList
 import org.koitharu.kotatsu.core.model.MangaHistory
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.model.isNsfw
+import org.koitharu.kotatsu.core.model.toMangaSources
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ProgressIndicatorMode
@@ -26,6 +29,7 @@ import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.tryScrobble
@@ -177,7 +181,11 @@ class HistoryRepository @Inject constructor(
 	}
 
 	suspend fun getPopularTags(limit: Int): List<MangaTag> {
-		return db.getHistoryDao().findPopularTags(limit).map { x -> x.toMangaTag() }
+		return db.getHistoryDao().findPopularTags(limit).toMangaTagsList()
+	}
+
+	suspend fun getPopularSources(limit: Int): List<MangaSource> {
+		return db.getHistoryDao().findPopularSources(limit).toMangaSources()
 	}
 
 	fun shouldSkip(manga: Manga): Boolean {

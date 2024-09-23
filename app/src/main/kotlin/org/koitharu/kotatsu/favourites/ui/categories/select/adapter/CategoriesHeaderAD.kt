@@ -6,11 +6,13 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
@@ -64,14 +66,20 @@ fun categoriesHeaderAD(
 
 		repeat(coverViews.size) { i ->
 			val cover = item.covers.getOrNull(i)
-			coverViews[i].newImageRequest(lifecycleOwner, cover?.url)?.run {
-				placeholder(R.drawable.ic_placeholder)
-				fallback(fallback)
-				source(cover?.mangaSource)
-				crossfade(crossFadeDuration * (i + 1))
-				error(R.drawable.ic_error_placeholder)
-				allowRgb565(true)
-				enqueueWith(coil)
+			val view = coverViews[i]
+			view.isVisible = cover != null
+			if (cover == null) {
+				view.disposeImageRequest()
+			} else {
+				view.newImageRequest(lifecycleOwner, cover.url)?.run {
+					placeholder(R.drawable.ic_placeholder)
+					fallback(fallback)
+					source(cover.mangaSource)
+					crossfade(crossFadeDuration * (i + 1))
+					error(R.drawable.ic_error_placeholder)
+					allowRgb565(true)
+					enqueueWith(coil)
+				}
 			}
 		}
 	}

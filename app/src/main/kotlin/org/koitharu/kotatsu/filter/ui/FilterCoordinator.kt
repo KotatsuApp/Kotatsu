@@ -66,7 +66,7 @@ class FilterCoordinator @Inject constructor(
 		get() = repository.source
 
 	val isFilterApplied: Boolean
-		get() = !currentListFilter.value.isEmpty()
+		get() = currentListFilter.value.isNotEmpty()
 
 	val query: StateFlow<String?> = currentListFilter.map { it.query }
 		.stateIn(coroutineScope, SharingStarted.Eagerly, null)

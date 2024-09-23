@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.content.Context
+import android.database.DatabaseUtils
 import androidx.annotation.FloatRange
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.ellipsize
@@ -64,3 +65,11 @@ fun <T> Collection<T>.joinToStringWithLimit(context: Context, limit: Int, transf
 		}
 	}
 }
+
+@Deprecated("",
+	ReplaceWith(
+		"sqlEscapeString(this)",
+		"android.database.DatabaseUtils.sqlEscapeString"
+	)
+)
+fun String.sqlEscape(): String = DatabaseUtils.sqlEscapeString(this)

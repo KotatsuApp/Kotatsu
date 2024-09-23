@@ -43,8 +43,6 @@ abstract class MangaListViewModel(
 	val isIncognitoModeEnabled: Boolean
 		get() = settings.isIncognitoModeEnabled
 
-	open fun onUpdateFilter(tags: Set<MangaTag>) = Unit
-
 	abstract fun onRefresh()
 
 	abstract fun onRetry()
