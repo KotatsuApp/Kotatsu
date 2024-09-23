@@ -15,7 +15,7 @@
     <string name="list">Listahan</string>
     <string name="page_saved">Na-save</string>
     <string name="share_image">I-share ang larawan</string>
-    <string name="_import">Mag-angkat</string>
+    <string name="_import">Mag-import</string>
     <string name="delete">Tanggalin</string>
     <string name="operation_not_supported">Hindi suportado ang operasyong ito</string>
     <string name="text_file_not_supported">Pumili ng ZIP o CBZ file.</string>
@@ -24,7 +24,7 @@
     <string name="search_on_s">Hanapin sa %s</string>
     <string name="delete_manga">Tanggalin ang manga</string>
     <string name="text_delete_local_manga">Permanenteng tanggalin ang \"%s\" mula sa device?</string>
-    <string name="reader_settings">Mga setting sa pagbasa</string>
+    <string name="reader_settings">Mga setting sa reader</string>
     <string name="switch_pages">Magpalit ng (mga) pahina</string>
     <string name="_continue">Magpatuloy</string>
     <string name="clear_thumbs_cache">I-clear ang cache ng mga thumbnail</string>
@@ -32,7 +32,7 @@
     <string name="app_update_available">Available ang isang bagong bersyon ng app</string>
     <string name="open_in_browser">Buksan sa web browser</string>
     <string name="notifications">Mga abiso</string>
-    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d ng %2$d sa</string>
+    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d ng %2$d ay napagana</string>
     <string name="new_chapters">Mga bagong kabanata</string>
     <string name="text_search_holder_secondary">Subukang i-reformulate ang query.</string>
     <string name="text_history_holder_primary">Ang iyong nabasa ay ipapakita dito</string>
@@ -68,7 +68,7 @@
     <string name="data_restored">Naibalik na</string>
     <string name="preparing_">Naghahanda…</string>
     <string name="file_not_found">Hindi nahanap ang file</string>
-    <string name="backup_information">Maaari kang lumikha ng backup ng iyong kasaysayan at mga paborito at ibalik ito</string>
+    <string name="backup_information">Maaari kang lumikha ng backup ng iyong kasaysayan at mga paborito at i-restore ito</string>
     <string name="just_now">Ngayon lang</string>
     <string name="yesterday">Kahapon</string>
     <string name="long_ago">Matagal na ang nakalipas</string>
@@ -145,7 +145,7 @@
     <string name="favourites_categories">Mga paboritong kategorya</string>
     <string name="remove_category">Tanggalin</string>
     <string name="text_empty_holder_primary">Parang walang laman dito…</string>
-    <string name="text_history_holder_secondary">Hanapin kung anong pwedeng basahin sa «Explore» section</string>
+    <string name="text_history_holder_secondary">Hanapin kung anong pwedeng basahin sa «Mag-Explore» na seksyon</string>
     <string name="recent_manga">Kamakailan</string>
     <string name="manga_save_location">Mga folder ng pag-download</string>
     <string name="save_page">I-save ang pahina</string>
@@ -164,10 +164,10 @@
     <string name="zoom_mode_fit_width">Pagkasyahin sa lapad</string>
     <string name="black_dark_theme">Itim</string>
     <string name="create_backup">Lumikha ng data backup</string>
-    <string name="restore_backup">Ibalik mula sa backup</string>
+    <string name="restore_backup">I-restore mula sa backup</string>
     <string name="data_restored_success">Naibalik ang lahat ng data</string>
     <string name="data_restored_with_errors">Ang data ay naibalik, ngunit may mga error</string>
-    <string name="reader_mode_hint">Ang napiling pagsasaayos ay maaalala para sa manga na ito</string>
+    <string name="reader_mode_hint">Ang napiling konpigurasyon ay maaalala para sa manga na ito</string>
     <string name="about_app_translation_summary">Isalin ang app na ito</string>
     <string name="auth_complete">Awtorisado na</string>
     <string name="captcha_required">Kinakailangan ang CAPTCHA</string>
@@ -211,7 +211,7 @@
     <string name="sync">Pag-synchronize</string>
     <string name="email_enter_hint">Ilagay ang iyong email upang magpatuloy</string>
     <string name="hide">Itago</string>
-    <string name="new_sources_text">May mga bagong source ng manga</string>
+    <string name="new_sources_text">May mga bagong source ng manga ay available</string>
     <string name="show_notification_new_chapters_off">Hindi ka makakatanggap ng mga abiso ngunit ang mga bagong kabanata ay iha-highlight sa mga listahan</string>
     <string name="notifications_enable">Paganahin ang mga abiso</string>
     <string name="edit_category">Ayusin ang kategorya</string>
@@ -256,8 +256,8 @@
     <string name="incognito_mode">Incognito mode</string>
     <string name="no_chapters">Walang mga kabanata</string>
     <string name="automatic_scroll">Awtomatikong pag-scroll</string>
-    <string name="reader_info_pattern">Ka. %1$d/%2$d Pp. %3$d/%4$d</string>
-    <string name="reader_info_bar">Ipakita ang information bar sa pagbasa</string>
+    <string name="reader_info_pattern">Kab. %1$d/%2$d Pah. %3$d/%4$d</string>
+    <string name="reader_info_bar">Ipakita ang information bar sa reader</string>
     <string name="comics_archive">Archive ng mga comics</string>
     <string name="folder_with_images">Folder na may mga larawan</string>
     <string name="import_completed">Nakumpleto na ang pag-import</string>
@@ -265,7 +265,7 @@
     <string name="feed">Feed</string>
     <string name="history_shortcuts_summary">Gawing magagamit ang kamakailang manga sa pamamagitan ng mahabang pagpindot sa icon ng application</string>
     <string name="history_shortcuts">Ipakita ang mga kamakailang manga shortcut</string>
-    <string name="reader_control_ltr">Ergonomic na kontrol sa mambabasa</string>
+    <string name="reader_control_ltr">Ergonomic na kontrol sa reader</string>
     <string name="color_correction">Pagwawasto ng kulay</string>
     <string name="brightness">Liwanag</string>
     <string name="contrast">Kaibahan</string>
@@ -351,9 +351,9 @@
     <string name="standard">Pamantayan</string>
     <string name="webtoon">Webtoon</string>
     <string name="read_mode">Mode na pang-basa</string>
-    <string name="error">May Mali</string>
-    <string name="internal_storage">Pangkaloobang storage</string>
-    <string name="external_storage">Panlabasang storage</string>
+    <string name="error">Mayroong Error</string>
+    <string name="internal_storage">Internal na storage</string>
+    <string name="external_storage">External na storage</string>
     <string name="vibration">Vibration</string>
     <string name="domain">Domain</string>
     <string name="light_indicator">LED indicator</string>
@@ -588,7 +588,7 @@
     <string name="month">Buwan</string>
     <string name="three_months">Tatlong buwan</string>
     <string name="empty_stats_text">Walang mga istatistika para sa napiling panahon</string>
-    <string name="migrate_confirmation">Ang manga \"%1$s\" mula sa \"%2$s\" ay papalitan ng \"%3$s\" mula sa \"%4$s\" sa iyong kasaysayan at mga paborito (kung mayroon)</string>
+    <string name="migrate_confirmation">Ang manga \"%1$s\" mula sa \"%2$s\" ay papalitan ng \"%3$s\" galing sa \"%4$s\" sa iyong kasaysayan at mga paborito (kung mayroon)</string>
     <string name="delete_read_chapters">Tanggalin ang mga binasang kabanata</string>
     <string name="no_chapters_deleted">Walang kabanata ang natanggal</string>
     <string name="chapters_deleted_pattern">Natanggal %1$s, nalinisan %2$s</string>
@@ -684,4 +684,13 @@
     <string name="scrobbler_auth_intro">Mag sign in para mag set up ng integration ng %s. Ito ay magbibigay-daan sa iyo na ma-track ang iyong progress at status sa pagbabasa ng manga</string>
     <string name="unstable_feature">Hindi matatag ang katangian</string>
     <string name="unstable_feature_summary">Ang function na ito ay pang-eksperimento. Pakitiyak na mayroon kang backup upang maiwasan ang pagkawala ng data</string>
+    <string name="downloads_background">Mga download sa background</string>
+    <string name="download_new_chapters">Mag-download ng mga bagong kabanata</string>
+    <string name="manga_with_downloaded_chapters">Manga na may na-download na mga kabanata</string>
+    <string name="fixing_manga">Inaayos ang manga</string>
+    <string name="fixed">Matagumpay na naayos</string>
+    <string name="manga_fix_prompt">Ang function na ito ay makakahanap ng mga alternatibong source para sa napiling manga. Ang gawain ay magtatagal at magpapatuloy sa background</string>
+    <string name="manga_replaced">Ang Manga na \"%1$s\" (%2$s) ay pinalitan ng \"%3$s\" (%4$s)</string>
+    <string name="no_fix_required">Di kinakailangan ng paayos sa \"%s\"</string>
+    <string name="no_alternatives_found">Walang alternatibong nahanap para sa \"%s\"</string>
 </resources>
