@@ -114,6 +114,7 @@ class FaviconFetcher(
 			.url(url)
 			.get()
 			.tag(MangaSource::class.java, source)
+		request.tag(MangaSource::class.java, source)
 		@Suppress("UNCHECKED_CAST")
 		options.tags.asMap().forEach { request.tag(it.key as Class<Any>, it.value) }
 		val response = okHttpClient.newCall(request.build()).await()

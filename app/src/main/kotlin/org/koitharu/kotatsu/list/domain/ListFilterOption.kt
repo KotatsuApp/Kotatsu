@@ -5,6 +5,12 @@ import androidx.annotation.StringRes
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.model.unwrap
+import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
+import org.koitharu.kotatsu.core.parser.favicon.faviconUri
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 
 sealed interface ListFilterOption {
@@ -18,6 +24,8 @@ sealed interface ListFilterOption {
 	val titleText: CharSequence?
 
 	val groupKey: String
+
+	fun getIconData(): Any? = null
 
 	data object Downloaded : ListFilterOption {
 
@@ -86,6 +94,31 @@ sealed interface ListFilterOption {
 
 		override val groupKey: String
 			get() = "_favcat"
+	}
+
+	data class Source(
+		val mangaSource: MangaSource
+	) : ListFilterOption {
+		override val titleResId: Int
+			get() = when (mangaSource.unwrap()) {
+				is ExternalMangaSource -> R.string.external_source
+				LocalMangaSource -> R.string.local_storage
+				else -> 0
+			}
+
+		override val iconResId: Int
+			get() = R.drawable.ic_web
+
+		override val titleText: CharSequence?
+			get() = when (val source = mangaSource.unwrap()) {
+				is MangaParserSource -> source.title
+				else -> null
+			}
+
+		override val groupKey: String
+			get() = "_source"
+
+		override fun getIconData() = mangaSource.faviconUri()
 	}
 
 	data class Inverted(

@@ -251,10 +251,6 @@ abstract class MangaListFragment :
 		resolveException(error)
 	}
 
-	override fun onUpdateFilter(tags: Set<MangaTag>) {
-		viewModel.onUpdateFilter(tags)
-	}
-
 	private fun onGridScaleChanged(scale: Float) {
 		spanSizeLookup.invalidateCache()
 		spanResolver?.setGridSize(scale, requireViewBinding().recyclerView)

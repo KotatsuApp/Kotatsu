@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.favourites.data
 
+import android.database.DatabaseUtils.sqlEscapeString
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -120,6 +121,12 @@ abstract class FavouritesDao : MangaQueryBuilder.ConditionCallback {
 	@Query("SELECT COUNT(category_id) FROM favourites WHERE manga_id = :mangaId AND deleted_at = 0")
 	abstract suspend fun findCategoriesCount(mangaId: Long): Int
 
+	@Query("SELECT manga.source AS count FROM favourites LEFT JOIN manga ON manga.manga_id = favourites.manga_id GROUP BY manga.source ORDER BY COUNT(manga.source) DESC LIMIT :limit")
+	abstract suspend fun findPopularSources(limit: Int): List<String>
+
+	@Query("SELECT manga.source AS count FROM favourites LEFT JOIN manga ON manga.manga_id = favourites.manga_id WHERE favourites.category_id = :categoryId GROUP BY manga.source ORDER BY COUNT(manga.source) DESC LIMIT :limit")
+	abstract suspend fun findPopularSources(categoryId: Long, limit: Int): List<String>
+
 	/** INSERT **/
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -200,6 +207,7 @@ abstract class FavouritesDao : MangaQueryBuilder.ConditionCallback {
 		ListFilterOption.Macro.NSFW -> "manga.nsfw = 1"
 		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE favourites.manga_id = manga_tags.manga_id AND tag_id = ${option.tagId})"
 		ListFilterOption.Downloaded -> "EXISTS(SELECT * FROM local_index WHERE local_index.manga_id = favourites.manga_id)"
+		is ListFilterOption.Source -> "manga.source = ${sqlEscapeString(option.mangaSource.name)}"
 		else -> null
 	}
 }

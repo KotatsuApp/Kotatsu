@@ -49,12 +49,13 @@ class FavouritesListViewModel @Inject constructor(
 	private val repository: FavouritesRepository,
 	private val mangaListMapper: MangaListMapper,
 	private val markAsReadUseCase: MarkAsReadUseCase,
-	private val quickFilter: FavoritesListQuickFilter,
+	quickFilterFactory: FavoritesListQuickFilter.Factory,
 	settings: AppSettings,
 	downloadScheduler: DownloadWorker.Scheduler,
-) : MangaListViewModel(settings, downloadScheduler), QuickFilterListener by quickFilter {
+) : MangaListViewModel(settings, downloadScheduler), QuickFilterListener {
 
 	val categoryId: Long = savedStateHandle[ARG_CATEGORY_ID] ?: NO_ID
+	private val quickFilter = quickFilterFactory.create(categoryId)
 	private val refreshTrigger = MutableStateFlow(Any())
 	private val limit = MutableStateFlow(PAGE_SIZE)
 	private val isPaginationReady = AtomicBoolean(false)
@@ -90,6 +91,12 @@ class FavouritesListViewModel @Inject constructor(
 	}
 
 	override fun onRetry() = Unit
+
+	override fun setFilterOption(option: ListFilterOption, isApplied: Boolean) = quickFilter.setFilterOption(option, isApplied)
+
+	override fun toggleFilterOption(option: ListFilterOption) = quickFilter.toggleFilterOption(option)
+
+	override fun clearFilter() = quickFilter.clearFilter()
 
 	fun markAsRead(items: Set<Manga>) {
 		launchLoadingJob(Dispatchers.Default) {

@@ -8,17 +8,31 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.view.children
+import coil.ImageLoader
+import coil.request.Disposable
+import coil.request.ImageRequest
+import coil.transform.RoundedCornersTransformation
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.image.ChipIconTarget
+import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.setProgressIcon
+import org.koitharu.kotatsu.parsers.util.ifZero
+import javax.inject.Inject
 import com.google.android.material.R as materialR
 
+@AndroidEntryPoint
 class ChipsView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	defStyleAttr: Int = com.google.android.material.R.attr.chipGroupStyle,
 ) : ChipGroup(context, attrs, defStyleAttr) {
+
+	@Inject
+	lateinit var coil: ImageLoader
 
 	private var isLayoutSuppressedCompat = false
 	private var isLayoutCalledOnSuppressed = false
@@ -90,8 +104,10 @@ class ChipsView @JvmOverloads constructor(
 		val title: CharSequence? = null,
 		@StringRes val titleResId: Int = 0,
 		@DrawableRes val icon: Int = 0,
+		val iconData: Any? = null,
 		@ColorRes val tint: Int = 0,
 		val isChecked: Boolean = false,
+		val isLoading: Boolean = false,
 		val isDropdown: Boolean = false,
 		val isCloseable: Boolean = false,
 		val data: Any? = null,
@@ -100,6 +116,7 @@ class ChipsView @JvmOverloads constructor(
 	private inner class DataChip(context: Context) : Chip(context) {
 
 		private var model: ChipModel? = null
+		private var imageRequest: Disposable? = null
 
 		init {
 			val drawable = ChipDrawable.createFromAttributes(context, null, 0, chipStyle)
@@ -112,6 +129,9 @@ class ChipsView @JvmOverloads constructor(
 		}
 
 		fun bind(model: ChipModel) {
+			if (this.model == model) {
+				return
+			}
 			this.model = model
 
 			if (model.titleResId == 0) {
@@ -127,13 +147,7 @@ class ChipsView @JvmOverloads constructor(
 				isChecked = false
 				isCheckable = false
 			}
-			if (model.icon == 0 || model.isChecked) {
-				chipIcon = null
-				isChipIconVisible = false
-			} else {
-				setChipIconResource(model.icon)
-				isChipIconVisible = true
-			}
+			bindIcon(model)
 			isCheckedIconVisible = model.isChecked
 			isCloseIconVisible = if (model.isCloseable || model.isDropdown) {
 				setCloseIconResource(
@@ -147,6 +161,54 @@ class ChipsView @JvmOverloads constructor(
 		}
 
 		override fun toggle() = Unit
+
+		private fun bindIcon(model: ChipModel) {
+			when {
+				model.isChecked -> {
+					imageRequest?.dispose()
+					imageRequest = null
+					chipIcon = null
+					isChipIconVisible = false
+				}
+
+				model.isLoading -> {
+					imageRequest?.dispose()
+					imageRequest = null
+					isChipIconVisible = true
+					setProgressIcon()
+				}
+
+				model.iconData != null -> {
+					val placeholder = model.icon.ifZero { materialR.drawable.navigation_empty_icon }
+					imageRequest = ImageRequest.Builder(context)
+						.data(model.iconData)
+						.crossfade(false)
+						.size(resources.getDimensionPixelSize(materialR.dimen.m3_chip_icon_size))
+						.target(ChipIconTarget(this))
+						.placeholder(placeholder)
+						.fallback(placeholder)
+						.error(placeholder)
+						.transformations(RoundedCornersTransformation(resources.getDimension(R.dimen.chip_icon_corner)))
+						.allowRgb565(true)
+						.enqueueWith(coil)
+					isChipIconVisible = true
+				}
+
+				model.icon != 0 -> {
+					imageRequest?.dispose()
+					imageRequest = null
+					setChipIconResource(model.icon)
+					isChipIconVisible = true
+				}
+
+				else -> {
+					imageRequest?.dispose()
+					imageRequest = null
+					chipIcon = null
+					isChipIconVisible = false
+				}
+			}
+		}
 	}
 
 	private inner class InternalChipClickListener : OnClickListener {

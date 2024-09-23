@@ -108,7 +108,7 @@ class LocalListViewModel @Inject constructor(
 	}
 
 	override fun createEmptyState(canResetFilter: Boolean): EmptyState = if (canResetFilter) {
-		super.createEmptyState(canResetFilter)
+		super.createEmptyState(true)
 	} else {
 		EmptyState(
 			icon = R.drawable.ic_empty_local,

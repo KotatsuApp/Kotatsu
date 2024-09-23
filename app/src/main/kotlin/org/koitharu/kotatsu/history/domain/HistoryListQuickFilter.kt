@@ -31,5 +31,8 @@ class HistoryListQuickFilter @Inject constructor(
 		repository.getPopularTags(3).mapTo(this) {
 			ListFilterOption.Tag(it)
 		}
+		repository.getPopularSources(3).mapTo(this) {
+			ListFilterOption.Source(it)
+		}
 	}
 }

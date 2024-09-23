@@ -22,7 +22,7 @@ import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.databinding.FragmentFeedBinding
+import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -39,7 +39,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class FeedFragment :
-	BaseFragment<FragmentFeedBinding>(),
+	BaseFragment<FragmentListBinding>(),
 	PaginationScrollListener.Callback,
 	MangaListListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -53,9 +53,9 @@ class FeedFragment :
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
-	) = FragmentFeedBinding.inflate(inflater, container, false)
+	) = FragmentListBinding.inflate(inflater, container, false)
 
-	override fun onViewBindingCreated(binding: FragmentFeedBinding, savedInstanceState: Bundle?) {
+	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		val sizeResolver = StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width))
 		feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this, sizeResolver) { item, v ->
@@ -98,8 +98,6 @@ class FeedFragment :
 	override fun onFilterOptionClick(option: ListFilterOption) = viewModel.toggleFilterOption(option)
 
 	override fun onRetryClick(error: Throwable) = Unit
-
-	override fun onUpdateFilter(tags: Set<MangaTag>) = Unit
 
 	override fun onFilterClick(view: View?) = Unit
 

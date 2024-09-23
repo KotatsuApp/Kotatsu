@@ -55,6 +55,7 @@ abstract class MangaListQuickFilter(
 				title = option.titleText,
 				titleResId = option.titleResId,
 				icon = option.iconResId,
+				iconData = option.getIconData(),
 				isChecked = option in selectedOptions,
 				data = option,
 			)

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.suggestions.data
 
+import android.database.DatabaseUtils.sqlEscapeString
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -48,6 +49,9 @@ abstract class SuggestionDao : MangaQueryBuilder.ConditionCallback {
 	@Query("SELECT tags.* FROM suggestions LEFT JOIN tags ON (tag_id IN (SELECT tag_id FROM manga_tags WHERE manga_tags.manga_id = suggestions.manga_id)) GROUP BY tag_id ORDER BY COUNT(tags.tag_id) DESC LIMIT :limit")
 	abstract suspend fun getTopTags(limit: Int): List<TagEntity>
 
+	@Query("SELECT manga.source AS count FROM suggestions LEFT JOIN manga ON manga.manga_id = suggestions.manga_id GROUP BY manga.source ORDER BY COUNT(manga.source) DESC LIMIT :limit")
+	abstract suspend fun getTopSources(limit: Int): List<String>
+
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(entity: SuggestionEntity): Long
 
@@ -71,6 +75,7 @@ abstract class SuggestionDao : MangaQueryBuilder.ConditionCallback {
 	override fun getCondition(option: ListFilterOption): String? = when (option) {
 		ListFilterOption.Macro.NSFW -> "(SELECT nsfw FROM manga WHERE manga.manga_id = suggestions.manga_id) = 1"
 		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE manga_tags.manga_id = suggestions.manga_id AND tag_id = ${option.tagId})"
+		is ListFilterOption.Source -> "(SELECT source FROM manga WHERE manga.manga_id = suggestions.manga_id) = ${sqlEscapeString(option.mangaSource.name)}"
 		else -> null
 	}
 }

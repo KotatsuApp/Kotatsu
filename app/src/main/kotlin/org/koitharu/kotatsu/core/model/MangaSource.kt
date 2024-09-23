@@ -43,6 +43,8 @@ fun MangaSource(name: String?): MangaSource {
 	return UnknownMangaSource
 }
 
+fun Collection<String>.toMangaSources() = map(::MangaSource)
+
 fun MangaSource.isNsfw(): Boolean = when (this) {
 	is MangaSourceInfo -> mangaSource.isNsfw()
 	is MangaParserSource -> contentType == ContentType.HENTAI
@@ -61,11 +63,16 @@ val ContentType.titleResId
 		ContentType.NOVEL -> R.string.content_type_novel
 	}
 
-fun MangaSource.getSummary(context: Context): String? = when (this) {
-	is MangaSourceInfo -> mangaSource.getSummary(context)
+tailrec fun MangaSource.unwrap(): MangaSource = if (this is MangaSourceInfo) {
+	mangaSource.unwrap()
+} else {
+	this
+}
+
+fun MangaSource.getSummary(context: Context): String? = when (val source = unwrap()) {
 	is MangaParserSource -> {
-		val type = context.getString(contentType.titleResId)
-		val locale = locale.toLocale().getDisplayName(context)
+		val type = context.getString(source.contentType.titleResId)
+		val locale = source.locale.toLocale().getDisplayName(context)
 		context.getString(R.string.source_summary_pattern, type, locale)
 	}
 
@@ -74,11 +81,10 @@ fun MangaSource.getSummary(context: Context): String? = when (this) {
 	else -> null
 }
 
-fun MangaSource.getTitle(context: Context): String = when (this) {
-	is MangaSourceInfo -> mangaSource.getTitle(context)
-	is MangaParserSource -> title
+fun MangaSource.getTitle(context: Context): String = when (val source = unwrap()) {
+	is MangaParserSource -> source.title
 	LocalMangaSource -> context.getString(R.string.local_storage)
-	is ExternalMangaSource -> resolveName(context)
+	is ExternalMangaSource -> source.resolveName(context)
 	else -> context.getString(R.string.unknown)
 }
 

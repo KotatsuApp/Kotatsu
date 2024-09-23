@@ -7,6 +7,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -30,6 +32,7 @@ class LocalMangaIndex @Inject constructor(
 ) : FlowCollector<LocalManga?> {
 
 	private val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+	private val mutex = Mutex()
 
 	private var previousHash: Long
 		get() = prefs.getLong(KEY_HASH, 0L)
@@ -41,7 +44,7 @@ class LocalMangaIndex @Inject constructor(
 		}
 	}
 
-	suspend fun update(): Boolean {
+	suspend fun update(): Boolean = mutex.withLock {
 		val newHash = computeHash()
 		if (newHash == previousHash) {
 			return false
@@ -57,7 +60,13 @@ class LocalMangaIndex @Inject constructor(
 	}
 
 	suspend fun get(mangaId: Long): LocalManga? {
-		val path = db.getLocalMangaIndexDao().findPath(mangaId) ?: return null
+		var path = db.getLocalMangaIndexDao().findPath(mangaId)
+		if (path == null && mutex.isLocked) { // wait for updating complete
+			path = mutex.withLock { db.getLocalMangaIndexDao().findPath(mangaId) }
+		}
+		if (path == null) {
+			return null
+		}
 		return runCatchingCancellable {
 			LocalMangaInput.of(File(path)).getManga()
 		}.onFailure {
@@ -65,9 +74,11 @@ class LocalMangaIndex @Inject constructor(
 		}.getOrNull()
 	}
 
-	suspend fun put(manga: LocalManga) = db.withTransaction {
-		mangaDataRepository.storeManga(manga.manga)
-		db.getLocalMangaIndexDao().upsert(manga.toEntity())
+	suspend fun put(manga: LocalManga) = mutex.withLock {
+		db.withTransaction {
+			mangaDataRepository.storeManga(manga.manga)
+			db.getLocalMangaIndexDao().upsert(manga.toEntity())
+		}
 	}
 
 	suspend fun delete(mangaId: Long) {
