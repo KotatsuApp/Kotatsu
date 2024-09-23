@@ -632,4 +632,11 @@
     <string name="new_chapters_pattern">%1$s：%2$d</string>
     <string name="pin_navigation_ui">固定導航介面</string>
     <string name="pin_navigation_ui_summary">滾動時不隱藏導航欄和搜尋視圖</string>
+    <string name="scrobbler_auth_intro">登入以設定與 %s 的整合。這將允許您追蹤您的漫畫閱讀進度與狀態</string>
+    <string name="unstable_feature_summary">此功能為實驗性質，請確保您有備份以避免資料遺失</string>
+    <string name="ignore_ssl_errors_summary">您可以停用 SSL 憑證驗證，以防在存取網路資源時遇到 SSL 相關問題。這可能會影響您的安全性。更改此設定後，需重新啟動應用程式。</string>
+    <string name="disable_connectivity_check_summary">若您遇到連線檢查問題（例如，網路已連接但應用程式進入離線模式），可以略過連線檢查</string>
+    <string name="manga_fix_prompt">此功能將為選定的漫畫尋找替代來源。此任務將需要一些時間，並會在背景中進行</string>
+    <string name="show_quick_filters_summary">提供依照特定參數過濾漫畫列表的功能</string>
+    <string name="plugin_incompatible">不相容的外掛或內部錯誤。請確保您使用的是最新版本的外掛與 Kotatsu</string>
 </resources>
