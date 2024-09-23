@@ -25,13 +25,16 @@ import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
 import org.koitharu.kotatsu.local.domain.MangaLock
 import org.koitharu.kotatsu.local.domain.model.LocalManga
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
 import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
 import java.util.EnumSet
@@ -67,7 +70,14 @@ class LocalMangaRepository @Inject constructor(
 			settings.localListOrder = value
 		}
 
-	override suspend fun getFilterOptions() = MangaListFilterOptions()
+	override suspend fun getFilterOptions() = MangaListFilterOptions(
+		availableTags = localMangaIndex.getAvailableTags().mapToSet { MangaTag(title = it, key = it, source = source) },
+		availableContentRating = if (!settings.isNsfwContentDisabled) {
+			EnumSet.of(ContentRating.SAFE, ContentRating.ADULT)
+		} else {
+			emptySet()
+		},
+	)
 
 	override suspend fun getList(offset: Int, order: SortOrder?, filter: MangaListFilter?): List<Manga> {
 		if (offset > 0) {
@@ -75,7 +85,7 @@ class LocalMangaRepository @Inject constructor(
 		}
 		val list = getRawList()
 		if (settings.isNsfwContentDisabled) {
-			list.removeIf { it.manga.isNsfw }
+			list.removeAll { it.manga.isNsfw }
 		}
 		if (filter != null) {
 			val query = filter.query
@@ -83,10 +93,14 @@ class LocalMangaRepository @Inject constructor(
 				list.retainAll { x -> x.isMatchesQuery(query) }
 			}
 			if (filter.tags.isNotEmpty()) {
-				list.retainAll { x -> x.containsTags(filter.tags) }
+				list.retainAll { x -> x.containsTags(filter.tags.mapToSet { it.title }) }
 			}
 			if (filter.tagsExclude.isNotEmpty()) {
-				list.removeAll { x -> x.containsAnyTag(filter.tags) }
+				list.removeAll { x -> x.containsAnyTag(filter.tagsExclude.mapToSet { it.title }) }
+			}
+			filter.contentRating.singleOrNull()?.let { contentRating ->
+				val isNsfw = contentRating == ContentRating.ADULT
+				list.retainAll { it.manga.isNsfw == isNsfw }
 			}
 		}
 		when (order) {

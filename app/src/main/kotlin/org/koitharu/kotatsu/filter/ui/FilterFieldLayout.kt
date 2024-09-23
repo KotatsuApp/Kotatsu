@@ -97,7 +97,7 @@ class FilterFieldLayout @JvmOverloads constructor(
 			label,
 			context.getThemeColorStateList(materialR.attr.colorControlNormal),
 		)
-		addView(errorView)
+		addView(label)
 		errorView = label
 		return label
 	}

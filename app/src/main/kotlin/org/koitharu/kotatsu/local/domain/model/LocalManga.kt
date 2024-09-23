@@ -23,17 +23,20 @@ data class LocalManga(
 
 	fun isMatchesQuery(query: String): Boolean {
 		return manga.title.contains(query, ignoreCase = true) ||
-			manga.altTitle?.contains(query, ignoreCase = true) == true
+			manga.altTitle?.contains(query, ignoreCase = true) == true ||
+			manga.author?.contains(query, ignoreCase = true) == true
 	}
 
-	fun containsTags(tags: Set<MangaTag>): Boolean {
-		return manga.tags.containsAll(tags)
+	fun containsTags(tags: Collection<String>): Boolean {
+		return tags.all { tag -> tag in manga.tags }
 	}
 
-	fun containsAnyTag(tags: Set<MangaTag>): Boolean {
-		return tags.any { tag ->
-			manga.tags.contains(tag)
-		}
+	fun containsAnyTag(tags: Collection<String>): Boolean {
+		return tags.any { tag -> tag in manga.tags }
+	}
+
+	private operator fun Collection<MangaTag>.contains(title: String): Boolean {
+		return any { it.title.equals(title, ignoreCase = true) }
 	}
 
 	override fun toString(): String {
