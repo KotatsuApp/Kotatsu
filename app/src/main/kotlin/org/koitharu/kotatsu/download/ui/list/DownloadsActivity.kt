@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.download.ui.list
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
@@ -87,7 +88,11 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	}
 
 	override fun onItemLongClick(item: DownloadItemModel, view: View): Boolean {
-		return selectionController.onItemLongClick(item.id.mostSignificantBits)
+		return selectionController.onItemLongClick(view, item.id.mostSignificantBits)
+	}
+
+	override fun onItemContextClick(item: DownloadItemModel, view: View): Boolean {
+		return selectionController.onItemContextClick(view, item.id.mostSignificantBits)
 	}
 
 	override fun onExpandClick(item: DownloadItemModel) {
@@ -120,34 +125,38 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		viewBinding.recyclerView.invalidateItemDecorations()
 	}
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_downloads, menu)
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		menuInflater: MenuInflater,
+		menu: Menu
+	): Boolean {
+		menuInflater.inflate(R.menu.mode_downloads, menu)
 		return true
 	}
 
-	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_resume -> {
 				viewModel.resume(controller.snapshot())
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
 			R.id.action_pause -> {
 				viewModel.pause(controller.snapshot())
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
 			R.id.action_cancel -> {
 				viewModel.cancel(controller.snapshot())
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
 			R.id.action_remove -> {
 				viewModel.remove(controller.snapshot())
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
@@ -160,7 +169,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		}
 	}
 
-	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
+	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode?, menu: Menu): Boolean {
 		val snapshot = viewModel.snapshot(controller.peekCheckedIds())
 		var canPause = true
 		var canResume = true

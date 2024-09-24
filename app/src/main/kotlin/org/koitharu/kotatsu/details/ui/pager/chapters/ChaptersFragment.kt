@@ -116,7 +116,11 @@ class ChaptersFragment :
 	}
 
 	override fun onItemLongClick(item: ChapterListItem, view: View): Boolean {
-		return selectionController?.onItemLongClick(item.chapter.id) ?: false
+		return selectionController?.onItemLongClick(view, item.chapter.id) ?: false
+	}
+
+	override fun onItemContextClick(item: ChapterListItem, view: View): Boolean {
+		return selectionController?.onItemContextClick(view, item.chapter.id) ?: false
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
@@ -149,7 +153,7 @@ class ChaptersFragment :
 			items?.indexOfFirst(predicate) ?: -1
 		}
 		if (position >= 0) {
-			selectionController?.onItemLongClick(chapterId)
+			selectionController?.startSelection(chapterId)
 			val lm = (viewBinding?.recyclerViewChapters?.layoutManager as? LinearLayoutManager)
 			if (lm != null) {
 				val offset = resources.getDimensionPixelOffset(R.dimen.chapter_list_item_height)

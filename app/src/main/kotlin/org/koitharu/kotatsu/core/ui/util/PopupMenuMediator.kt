@@ -4,11 +4,15 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuProvider
+import org.koitharu.kotatsu.core.ui.OnContextClickListenerCompat
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 
 class PopupMenuMediator(
 	private val provider: MenuProvider,
-) : View.OnLongClickListener, PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener {
+) : View.OnLongClickListener, OnContextClickListenerCompat, PopupMenu.OnMenuItemClickListener,
+	PopupMenu.OnDismissListener {
+
+	override fun onContextClick(v: View): Boolean = onLongClick(v)
 
 	override fun onLongClick(v: View): Boolean {
 		val menu = PopupMenu(v.context, v)

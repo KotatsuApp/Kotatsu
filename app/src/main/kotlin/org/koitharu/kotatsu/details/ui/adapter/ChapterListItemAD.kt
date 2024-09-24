@@ -22,9 +22,7 @@ fun chapterListItemAD(
 	on = { item, _, _ -> item is ChapterListItem && !item.isGrid },
 ) {
 
-	val eventListener = AdapterDelegateClickListenerAdapter(this, clickListener)
-	itemView.setOnClickListener(eventListener)
-	itemView.setOnLongClickListener(eventListener)
+	AdapterDelegateClickListenerAdapter(this, clickListener).attach(itemView)
 
 	bind {
 		binding.textViewTitle.text = item.chapter.name

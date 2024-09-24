@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.tracker.ui.updates
 
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.viewModels
@@ -17,16 +18,20 @@ class UpdatesFragment : MangaListFragment() {
 
 	override fun onScrolledToEnd() = Unit
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_updates, menu)
-		return super.onCreateActionMode(controller, mode, menu)
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		menuInflater: MenuInflater,
+		menu: Menu
+	): Boolean {
+		menuInflater.inflate(R.menu.mode_updates, menu)
+		return super.onCreateActionMode(controller, menuInflater, menu)
 	}
 
-	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_remove -> {
 				viewModel.remove(controller.snapshot())
-				mode.finish()
+				mode?.finish()
 				true
 			}
 

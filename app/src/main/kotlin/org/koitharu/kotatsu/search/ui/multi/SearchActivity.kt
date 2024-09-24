@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
@@ -118,7 +119,11 @@ class SearchActivity :
 	}
 
 	override fun onItemLongClick(item: Manga, view: View): Boolean {
-		return selectionController.onItemLongClick(item.id)
+		return selectionController.onItemLongClick(view, item.id)
+	}
+
+	override fun onItemContextClick(item: Manga, view: View): Boolean {
+		return selectionController.onItemContextClick(view, item.id)
 	}
 
 	override fun onReadClick(manga: Manga, view: View) {
@@ -155,28 +160,32 @@ class SearchActivity :
 		viewBinding.recyclerView.invalidateNestedItemDecorations()
 	}
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_remote, menu)
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		menuInflater: MenuInflater,
+		menu: Menu
+	): Boolean {
+		menuInflater.inflate(R.menu.mode_remote, menu)
 		return true
 	}
 
-	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_share -> {
 				ShareHelper(this).shareMangaLinks(collectSelectedItems())
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
 			R.id.action_favourite -> {
 				FavoriteSheet.show(supportFragmentManager, collectSelectedItems())
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
 			R.id.action_save -> {
 				viewModel.download(collectSelectedItems())
-				mode.finish()
+				mode?.finish()
 				true
 			}
 

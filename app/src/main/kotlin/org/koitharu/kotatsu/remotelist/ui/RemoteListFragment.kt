@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.view.ActionMode
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
@@ -56,9 +55,13 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 		viewModel.loadNextPage()
 	}
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_remote, menu)
-		return super.onCreateActionMode(controller, mode, menu)
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		menuInflater: MenuInflater,
+		menu: Menu
+	): Boolean {
+		menuInflater.inflate(R.menu.mode_remote, menu)
+		return super.onCreateActionMode(controller, menuInflater, menu)
 	}
 
 	override fun onFilterClick(view: View?) {

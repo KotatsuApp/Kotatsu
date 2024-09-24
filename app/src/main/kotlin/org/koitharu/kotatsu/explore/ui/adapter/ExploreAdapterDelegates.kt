@@ -20,7 +20,6 @@ import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.recyclerView
-import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 import org.koitharu.kotatsu.core.util.ext.setProgressIcon
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -117,12 +116,8 @@ fun exploreSourceListItemAD(
 	on = { item, _, _ -> item is MangaSourceItem && !item.isGrid },
 ) {
 
-	val eventListener = AdapterDelegateClickListenerAdapter(this, listener)
+	AdapterDelegateClickListenerAdapter(this, listener).attach(itemView)
 	val iconPinned = ContextCompat.getDrawable(context, R.drawable.ic_pin_small)
-
-	binding.root.setOnClickListener(eventListener)
-	binding.root.setOnLongClickListener(eventListener)
-	binding.root.setOnContextClickListenerCompat(eventListener)
 
 	bind {
 		binding.textViewTitle.text = item.source.getTitle(context)
@@ -154,12 +149,8 @@ fun exploreSourceGridItemAD(
 	on = { item, _, _ -> item is MangaSourceItem && item.isGrid },
 ) {
 
-	val eventListener = AdapterDelegateClickListenerAdapter(this, listener)
+	AdapterDelegateClickListenerAdapter(this, listener).attach(itemView)
 	val iconPinned = ContextCompat.getDrawable(context, R.drawable.ic_pin_small)
-
-	binding.root.setOnClickListener(eventListener)
-	binding.root.setOnLongClickListener(eventListener)
-	binding.root.setOnContextClickListenerCompat(eventListener)
 
 	bind {
 		binding.textViewTitle.text = item.source.getTitle(context)

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.details.ui.pager.chapters
 
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.view.ActionMode
 import androidx.recyclerview.widget.RecyclerView
@@ -19,12 +20,16 @@ class ChaptersSelectionCallback(
 	recyclerView: RecyclerView,
 ) : BaseListSelectionCallback(recyclerView) {
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_chapters, menu)
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		menuInflater: MenuInflater,
+		menu: Menu
+	): Boolean {
+		menuInflater.inflate(R.menu.mode_chapters, menu)
 		return true
 	}
 
-	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
+	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode?, menu: Menu): Boolean {
 		val selectedIds = controller.peekCheckedIds()
 		val allItems = viewModel.chapters.value
 		val items = allItems.withIndex().filter { it.value.chapter.id in selectedIds }
@@ -38,7 +43,7 @@ class ChaptersSelectionCallback(
 		menu.findItem(R.id.action_delete).isVisible = canDelete
 		menu.findItem(R.id.action_select_all).isVisible = items.size < allItems.size
 		menu.findItem(R.id.action_mark_current).isVisible = items.size == 1
-		mode.title = items.size.toString()
+		mode?.title = items.size.toString()
 		var hasGap = false
 		for (i in 0 until items.size - 1) {
 			if (items[i].index + 1 != items[i + 1].index) {
@@ -50,11 +55,11 @@ class ChaptersSelectionCallback(
 		return true
 	}
 
-	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_save -> {
 				viewModel.download(controller.snapshot())
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
@@ -73,7 +78,7 @@ class ChaptersSelectionCallback(
 						).show()
 					}
 				}
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
@@ -112,7 +117,7 @@ class ChaptersSelectionCallback(
 				} else {
 					return false
 				}
-				mode.finish()
+				mode?.finish()
 				true
 			}
 

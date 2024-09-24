@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -147,7 +148,11 @@ class ExploreFragment :
 	}
 
 	override fun onItemLongClick(item: MangaSourceItem, view: View): Boolean {
-		return sourceSelectionController?.onItemLongClick(item.id) ?: false
+		return sourceSelectionController?.onItemLongClick(view, item.id) ?: false
+	}
+
+	override fun onItemContextClick(item: MangaSourceItem, view: View): Boolean {
+		return sourceSelectionController?.onItemContextClick(view, item.id) ?: false
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit
@@ -160,12 +165,16 @@ class ExploreFragment :
 		viewBinding?.recyclerView?.invalidateItemDecorations()
 	}
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_source, menu)
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		menuInflater: MenuInflater,
+		menu: Menu
+	): Boolean {
+		menuInflater.inflate(R.menu.mode_source, menu)
 		return true
 	}
 
-	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
+	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode?, menu: Menu): Boolean {
 		val selectedSources = viewModel.sourcesSnapshot(controller.peekCheckedIds())
 		val isSingleSelection = selectedSources.size == 1
 		menu.findItem(R.id.action_settings).isVisible = isSingleSelection
@@ -177,7 +186,7 @@ class ExploreFragment :
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
 
-	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean {
 		val selectedSources = viewModel.sourcesSnapshot(controller.peekCheckedIds())
 		if (selectedSources.isEmpty()) {
 			return false
@@ -186,35 +195,35 @@ class ExploreFragment :
 			R.id.action_settings -> {
 				val source = selectedSources.singleOrNull() ?: return false
 				startActivity(SettingsActivity.newSourceSettingsIntent(requireContext(), source))
-				mode.finish()
+				mode?.finish()
 			}
 
 			R.id.action_disable -> {
 				viewModel.disableSources(selectedSources)
-				mode.finish()
+				mode?.finish()
 			}
 
 			R.id.action_delete -> {
 				selectedSources.forEach {
 					(it.mangaSource as? ExternalMangaSource)?.let { uninstallExternalSource(it) }
 				}
-				mode.finish()
+				mode?.finish()
 			}
 
 			R.id.action_shortcut -> {
 				val source = selectedSources.singleOrNull() ?: return false
 				viewModel.requestPinShortcut(source)
-				mode.finish()
+				mode?.finish()
 			}
 
 			R.id.action_pin -> {
 				viewModel.setSourcesPinned(selectedSources, isPinned = true)
-				mode.finish()
+				mode?.finish()
 			}
 
 			R.id.action_unpin -> {
 				viewModel.setSourcesPinned(selectedSources, isPinned = false)
-				mode.finish()
+				mode?.finish()
 			}
 
 			else -> return false

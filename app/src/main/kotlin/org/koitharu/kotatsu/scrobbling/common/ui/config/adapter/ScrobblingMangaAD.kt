@@ -20,8 +20,7 @@ fun scrobblingMangaAD(
 	{ layoutInflater, parent -> ItemScrobblingMangaBinding.inflate(layoutInflater, parent, false) },
 ) {
 
-	val clickListenerAdapter = AdapterDelegateClickListenerAdapter(this, clickListener)
-	itemView.setOnClickListener(clickListenerAdapter)
+	AdapterDelegateClickListenerAdapter(this, clickListener).attach(itemView)
 
 	bind {
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
