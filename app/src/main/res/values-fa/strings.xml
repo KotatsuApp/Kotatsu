@@ -274,7 +274,7 @@
     <string name="popularity">محبوبیت</string>
     <string name="status_on_hold">در انتظار</string>
     <string name="status_dropped">رها شده</string>
-    <string name="exclude_nsfw_from_history_summary">مانگای نشان شده به عنوان NSFW هرگز به تاریخچه افزوده نخواهد شد و پیشرفت شما ذخیره نخواهد شد.</string>
+    <string name="exclude_nsfw_from_history_summary">مانگای نشان شده به عنوان NSFWهرگز به تاریخچه افزوده نخواهد شد و پیشرفت شما ذخیره نخواهد شد.</string>
     <string name="disable_battery_optimization_summary">به بررسی‌های به‌روز رسانی‌های پس‌زمینه کمک می‌کند</string>
     <string name="appwidget_shelf_description">مانگا از پسندیده‌های شما</string>
     <string name="report">گزارش</string>
