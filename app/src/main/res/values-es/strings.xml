@@ -316,7 +316,7 @@
     <string name="history_shortcuts_summary">Hacer que los mangas recientes estén disponibles mediante una pulsación larga en el icono de la aplicación</string>
     <string name="feed">Fuente</string>
     <string name="history_shortcuts">Mostrar los accesos directos a los mangas recientes</string>
-    <string name="reader_control_ltr_summary">Tocando en el borde derecho, o pulsando la tecla derecha, se pasa siempre a la página siguiente.</string>
+    <string name="reader_control_ltr_summary">No modifique el método de paso de página al modo de lectura ya configurado. Por ejemplo: presionar el botón derecho siempre pasa a la página siguiente. Esta configuración solo es válida para dispositivos de hardware.</string>
     <string name="reader_control_ltr">Control ergonómico del lector</string>
     <string name="color_correction">Corrección del color</string>
     <string name="brightness">Brillo</string>
@@ -713,4 +713,6 @@
     <string name="demographic_seinen">Seinen</string>
     <string name="demographic_josei">Josei</string>
     <string name="filter_search_warning">Esta fuente no admite búsquedas con filtros. Se han eliminado los filtros</string>
+    <string name="content_type_one_shot">Un disparo</string>
+    <string name="demographic_kodomo">Kodomo</string>
 </resources>
