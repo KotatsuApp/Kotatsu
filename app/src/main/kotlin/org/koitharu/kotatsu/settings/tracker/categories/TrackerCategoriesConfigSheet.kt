@@ -31,7 +31,7 @@ class TrackerCategoriesConfigSheet :
 		val adapter = TrackerCategoriesConfigAdapter(this)
 		binding.recyclerView.adapter = adapter
 
-		viewModel.content.observe(viewLifecycleOwner) { adapter.items = it }
+		viewModel.content.observe(viewLifecycleOwner, adapter)
 	}
 
 	override fun onItemClick(item: FavouriteCategory, view: View) {

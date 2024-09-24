@@ -91,9 +91,7 @@ class ExploreFragment :
 			checkNotNull(sourceSelectionController).attachToRecyclerView(this)
 		}
 		addMenuProvider(ExploreMenuProvider(binding.root.context))
-		viewModel.content.observe(viewLifecycleOwner) {
-			exploreAdapter?.items = it
-		}
+		viewModel.content.observe(viewLifecycleOwner, checkNotNull(exploreAdapter))
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onOpenManga.observeEvent(viewLifecycleOwner, ::onOpenManga)
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))

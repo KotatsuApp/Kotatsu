@@ -39,6 +39,8 @@ fun MangaEntity.toManga(tags: Set<MangaTag>) = Manga(
 
 fun MangaWithTags.toManga() = manga.toManga(tags.toMangaTags())
 
+fun Collection<MangaWithTags>.toMangaList() = map { it.toManga() }
+
 // Model to entity
 
 fun Manga.toEntity() = MangaEntity(

@@ -192,7 +192,7 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name="org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity"
+			android:name="org.koitharu.kotatsu.search.ui.multi.SearchActivity"
 			android:label="@string/search" />
 		<activity
 			android:name="org.koitharu.kotatsu.main.ui.protect.ProtectActivity"

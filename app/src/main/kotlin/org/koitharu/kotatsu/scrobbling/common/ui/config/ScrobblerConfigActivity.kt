@@ -54,7 +54,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		}
 		viewBinding.imageViewAvatar.setOnClickListener(this)
 
-		viewModel.content.observe(this, listAdapter::setItems)
+		viewModel.content.observe(this, listAdapter)
 		viewModel.user.observe(this, this::onUserChanged)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))

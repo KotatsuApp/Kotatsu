@@ -66,7 +66,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
+import org.koitharu.kotatsu.search.ui.multi.SearchActivity
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
@@ -258,7 +258,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	override fun onQueryClick(query: String, submit: Boolean) {
 		viewBinding.searchView.query = query
 		if (submit && query.isNotEmpty()) {
-			startActivity(MultiSearchActivity.newIntent(this, query))
+			startActivity(SearchActivity.newIntent(this, query))
 			searchSuggestionViewModel.saveQuery(query)
 			viewBinding.searchView.post {
 				closeSearchCallback.handleOnBackPressed()

@@ -23,7 +23,7 @@ import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.databinding.ActivitySearchMultiBinding
+import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
@@ -38,12 +38,12 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.search.ui.multi.adapter.MultiSearchAdapter
+import org.koitharu.kotatsu.search.ui.multi.adapter.SearchAdapter
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MultiSearchActivity :
-	BaseActivity<ActivitySearchMultiBinding>(),
+class SearchActivity :
+	BaseActivity<ActivitySearchBinding>(),
 	MangaListListener,
 	ListSelectionController.Callback {
 
@@ -53,16 +53,15 @@ class MultiSearchActivity :
 	@Inject
 	lateinit var settings: AppSettings
 
-	private val viewModel by viewModels<MultiSearchViewModel>()
-	private lateinit var adapter: MultiSearchAdapter
+	private val viewModel by viewModels<SearchViewModel>()
 	private lateinit var selectionController: ListSelectionController
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(ActivitySearchMultiBinding.inflate(layoutInflater))
+		setContentView(ActivitySearchBinding.inflate(layoutInflater))
 		title = viewModel.query
 
-		val itemCLickListener = OnListItemClickListener<MultiSearchListModel> { item, view ->
+		val itemCLickListener = OnListItemClickListener<SearchResultsListModel> { item, view ->
 			startActivity(
 				MangaListActivity.newIntent(
 					view.context,
@@ -79,7 +78,7 @@ class MultiSearchActivity :
 			registryOwner = this,
 			callback = this,
 		)
-		adapter = MultiSearchAdapter(
+		val adapter = SearchAdapter(
 			lifecycleOwner = this,
 			coil = coil,
 			listener = this,
@@ -96,7 +95,7 @@ class MultiSearchActivity :
 			setSubtitle(R.string.search_results)
 		}
 
-		viewModel.list.observe(this) { adapter.items = it }
+		viewModel.list.observe(this, adapter)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(viewBinding.recyclerView))
 	}
@@ -194,7 +193,7 @@ class MultiSearchActivity :
 		const val EXTRA_QUERY = "query"
 
 		fun newIntent(context: Context, query: String) =
-			Intent(context, MultiSearchActivity::class.java)
+			Intent(context, SearchActivity::class.java)
 				.putExtra(EXTRA_QUERY, query)
 	}
 }

@@ -10,21 +10,21 @@ import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toEntities
 import org.koitharu.kotatsu.core.db.entity.toEntity
+import org.koitharu.kotatsu.core.db.entity.toMangaList
 import org.koitharu.kotatsu.core.model.FavouriteCategory
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.toMangaSources
 import org.koitharu.kotatsu.core.ui.util.ReversibleHandle
 import org.koitharu.kotatsu.core.util.ext.mapItems
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.favourites.data.toFavouriteCategory
-import org.koitharu.kotatsu.favourites.data.toManga
 import org.koitharu.kotatsu.favourites.data.toMangaList
 import org.koitharu.kotatsu.favourites.domain.model.Cover
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import javax.inject.Inject
 
 @Reusable
@@ -43,12 +43,17 @@ class FavouritesRepository @Inject constructor(
 		return entities.toMangaList()
 	}
 
+	suspend fun search(query: String, limit: Int): List<Manga> {
+		val entities = db.getFavouritesDao().search("%$query%", limit)
+		return entities.toMangaList().sortedBy { it.title.levenshteinDistance(query) }
+	}
+
 	fun observeAll(order: ListSortOrder, filterOptions: Set<ListFilterOption>, limit: Int): Flow<List<Manga>> {
 		if (ListFilterOption.Downloaded in filterOptions) {
 			return localObserver.observeAll(order, filterOptions, limit)
 		}
 		return db.getFavouritesDao().observeAll(order, filterOptions, limit)
-			.mapItems { it.toManga() }
+			.map { it.toMangaList() }
 	}
 
 	suspend fun getManga(categoryId: Long): List<Manga> {
@@ -66,7 +71,7 @@ class FavouritesRepository @Inject constructor(
 			return localObserver.observeAll(categoryId, order, filterOptions, limit)
 		}
 		return db.getFavouritesDao().observeAll(categoryId, order, filterOptions, limit)
-			.mapItems { it.toManga() }
+			.map { it.toMangaList() }
 	}
 
 	fun observeAll(categoryId: Long, filterOptions: Set<ListFilterOption>, limit: Int): Flow<List<Manga>> {
