@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.favourites.domain
 
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapLatest
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
@@ -18,24 +17,20 @@ import javax.inject.Inject
 class LocalFavoritesObserver @Inject constructor(
 	localMangaIndex: LocalMangaIndex,
 	private val db: MangaDatabase,
-) : LocalObserveMapper<FavouriteManga, Manga>(localMangaIndex, limitStep = 10) {
+) : LocalObserveMapper<FavouriteManga, Manga>(localMangaIndex) {
 
 	fun observeAll(
 		order: ListSortOrder,
 		filterOptions: Set<ListFilterOption>,
 		limit: Int
-	): Flow<List<Manga>> = db.getFavouritesDao().observeAll(order, filterOptions, limit).mapLatest {
-		it.mapToLocal()
-	}
+	): Flow<List<Manga>> = db.getFavouritesDao().observeAll(order, filterOptions, limit).mapToLocal()
 
 	fun observeAll(
 		categoryId: Long,
 		order: ListSortOrder,
 		filterOptions: Set<ListFilterOption>,
 		limit: Int
-	): Flow<List<Manga>> = db.getFavouritesDao().observeAll(categoryId, order, filterOptions, limit).mapLatest {
-		it.mapToLocal()
-	}
+	): Flow<List<Manga>> = db.getFavouritesDao().observeAll(categoryId, order, filterOptions, limit).mapToLocal()
 
 	override fun toManga(e: FavouriteManga) = e.manga.toManga(e.tags.toMangaTags())
 

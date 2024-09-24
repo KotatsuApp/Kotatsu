@@ -9,6 +9,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.LocaleComparator
+import org.koitharu.kotatsu.core.util.ext.mapSortedByCount
 import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
 import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.core.util.ext.toLocale
@@ -43,15 +44,20 @@ class WelcomeViewModel @Inject constructor(
 
 	val types = MutableStateFlow(
 		FilterProperty(
-			availableItems = ContentType.entries.toList(),
+			availableItems = listOf(ContentType.MANGA),
 			selectedItems = setOf(ContentType.MANGA),
-			isLoading = false,
+			isLoading = true,
 			error = null,
 		),
 	)
 
 	init {
 		updateJob = launchJob(Dispatchers.Default) {
+			val contentTypes = allSources.mapSortedByCount { it.contentType }
+			types.value = types.value.copy(
+				availableItems = contentTypes,
+				isLoading = false,
+			)
 			val languages = localesGroups.keys.associateBy { x -> x.language }
 			val selectedLocales = HashSet<Locale>(2)
 			ConfigurationCompat.getLocales(context.resources.configuration).toList()
