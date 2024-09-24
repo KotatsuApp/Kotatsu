@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
+import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
@@ -19,6 +20,7 @@ class FilterHeaderProducer @Inject constructor(
 		return combine(filterCoordinator.tags, filterCoordinator.query) { tags, query ->
 			createChipsList(
 				source = filterCoordinator.mangaSource,
+				capabilities = filterCoordinator.capabilities,
 				property = tags,
 				query = query,
 				limit = 8,
@@ -34,42 +36,45 @@ class FilterHeaderProducer @Inject constructor(
 
 	private suspend fun createChipsList(
 		source: MangaSource,
+		capabilities: MangaListFilterCapabilities,
 		property: FilterProperty<MangaTag>,
 		query: String?,
 		limit: Int,
 	): List<ChipsView.ChipModel> {
-		val selectedTags = property.selectedItems.toMutableSet()
-		var tags = if (selectedTags.isEmpty()) {
-			searchRepository.getTagsSuggestion("", limit, source)
-		} else {
-			searchRepository.getTagsSuggestion(selectedTags).take(limit)
-		}
-		if (tags.size < limit) {
-			tags = tags + property.availableItems.take(limit - tags.size)
-		}
-		if (tags.isEmpty() && selectedTags.isEmpty()) {
-			return emptyList()
-		}
-		val result = ArrayDeque<ChipsView.ChipModel>(tags.size + selectedTags.size + 1)
-		for (tag in tags) {
-			val model = ChipsView.ChipModel(
-				title = tag.title,
-				isChecked = selectedTags.remove(tag),
-				data = tag,
-			)
-			if (model.isChecked) {
-				result.addFirst(model)
+		val result = ArrayDeque<ChipsView.ChipModel>(limit + 3)
+		if (query.isNullOrEmpty() || capabilities.isSearchWithFiltersSupported) {
+			val selectedTags = property.selectedItems.toMutableSet()
+			var tags = if (selectedTags.isEmpty()) {
+				searchRepository.getTagsSuggestion("", limit, source)
 			} else {
-				result.addLast(model)
+				searchRepository.getTagsSuggestion(selectedTags).take(limit)
 			}
-		}
-		for (tag in selectedTags) {
-			val model = ChipsView.ChipModel(
-				title = tag.title,
-				isChecked = true,
-				data = tag,
-			)
-			result.addFirst(model)
+			if (tags.size < limit) {
+				tags = tags + property.availableItems.take(limit - tags.size)
+			}
+			if (tags.isEmpty() && selectedTags.isEmpty()) {
+				return emptyList()
+			}
+			for (tag in tags) {
+				val model = ChipsView.ChipModel(
+					title = tag.title,
+					isChecked = selectedTags.remove(tag),
+					data = tag,
+				)
+				if (model.isChecked) {
+					result.addFirst(model)
+				} else {
+					result.addLast(model)
+				}
+			}
+			for (tag in selectedTags) {
+				val model = ChipsView.ChipModel(
+					title = tag.title,
+					isChecked = true,
+					data = tag,
+				)
+				result.addFirst(model)
+			}
 		}
 		if (!query.isNullOrEmpty()) {
 			result.addFirst(

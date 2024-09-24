@@ -89,7 +89,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is HttpException -> getHttpDisplayMessage(response.code, resources)
 	is HttpStatusException -> getHttpDisplayMessage(statusCode, resources)
 
-	else -> getDisplayMessage(message, resources) ?: localizedMessage
+	else -> getDisplayMessage(message, resources) ?: message
 }.ifNullOrEmpty {
 	resources.getString(R.string.error_occurred)
 }

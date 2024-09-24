@@ -80,6 +80,7 @@ val Demographic.titleResId: Int
 		Demographic.SHOUJO -> R.string.demographic_shoujo
 		Demographic.SEINEN -> R.string.demographic_seinen
 		Demographic.JOSEI -> R.string.demographic_josei
+		Demographic.KODOMO -> R.string.demographic_kodomo
 		Demographic.NONE -> R.string.none
 	}
 
