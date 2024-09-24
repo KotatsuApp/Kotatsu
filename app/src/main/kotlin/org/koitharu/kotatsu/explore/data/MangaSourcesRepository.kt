@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.BuildConfig
@@ -50,14 +49,13 @@ class MangaSourcesRepository @Inject constructor(
 	private val dao: MangaSourcesDao
 		get() = db.getSourcesDao()
 
-	private val remoteSources = EnumSet.allOf(MangaParserSource::class.java).apply {
-		if (!BuildConfig.DEBUG) {
-			remove(MangaParserSource.DUMMY)
-		}
-	}
-
-	val allMangaSources: Set<MangaParserSource>
-		get() = Collections.unmodifiableSet(remoteSources)
+	val allMangaSources: Set<MangaParserSource> = Collections.unmodifiableSet(
+		EnumSet.allOf(MangaParserSource::class.java).apply {
+			if (!BuildConfig.DEBUG) {
+				remove(MangaParserSource.DUMMY)
+			}
+		},
+	)
 
 	suspend fun getEnabledSources(): List<MangaSource> {
 		assimilateNewSources()
@@ -86,7 +84,7 @@ class MangaSourcesRepository @Inject constructor(
 
 	suspend fun getDisabledSources(): Set<MangaSource> {
 		assimilateNewSources()
-		val result = EnumSet.copyOf(remoteSources)
+		val result = EnumSet.copyOf(allMangaSources)
 		val enabled = dao.findAllEnabledNames()
 		for (name in enabled) {
 			val source = name.toMangaSourceOrNull() ?: continue
@@ -182,7 +180,7 @@ class MangaSourcesRepository @Inject constructor(
 		val result = ArrayList<Pair<MangaSource, Boolean>>(entities.size)
 		for (entity in entities) {
 			val source = entity.source.toMangaSourceOrNull() ?: continue
-			if (source in remoteSources) {
+			if (source in allMangaSources) {
 				result.add(source to entity.isEnabled)
 			}
 		}
@@ -199,7 +197,7 @@ class MangaSourcesRepository @Inject constructor(
 	suspend fun setSourcesEnabledExclusive(sources: Set<MangaSource>) {
 		db.withTransaction {
 			assimilateNewSources()
-			for (s in remoteSources) {
+			for (s in allMangaSources) {
 				dao.setEnabled(s.name, s in sources)
 			}
 		}
@@ -222,7 +220,7 @@ class MangaSourcesRepository @Inject constructor(
 
 	fun observeHasNewSources(): Flow<Boolean> = observeIsNsfwDisabled().map { skipNsfw ->
 		val sources = dao.findAllFromVersion(BuildConfig.VERSION_CODE).toSources(skipNsfw, null)
-		sources.isNotEmpty() && sources.size != remoteSources.size
+		sources.isNotEmpty() && sources.size != allMangaSources.size
 	}.onStart { assimilateNewSources() }
 
 	fun observeHasNewSourcesForBadge(): Flow<Boolean> = combine(
@@ -295,7 +293,7 @@ class MangaSourcesRepository @Inject constructor(
 
 	private suspend fun getNewSources(): MutableSet<out MangaSource> {
 		val entities = dao.findAll()
-		val result = EnumSet.copyOf(remoteSources)
+		val result = EnumSet.copyOf(allMangaSources)
 		for (e in entities) {
 			result.remove(e.source.toMangaSourceOrNull() ?: continue)
 		}
@@ -361,7 +359,7 @@ class MangaSourcesRepository @Inject constructor(
 			if (skipNsfwSources && source.isNsfw()) {
 				continue
 			}
-			if (source in remoteSources) {
+			if (source in allMangaSources) {
 				result.add(
 					MangaSourceInfo(
 						mangaSource = source,

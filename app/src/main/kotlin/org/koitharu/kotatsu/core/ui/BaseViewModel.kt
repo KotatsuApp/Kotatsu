@@ -65,6 +65,7 @@ abstract class BaseViewModel : ViewModel() {
 	}
 
 	protected fun <T> Flow<T>.withErrorHandling() = catch { error ->
+		error.printStackTraceDebug()
 		errorEvent.call(error)
 	}
 

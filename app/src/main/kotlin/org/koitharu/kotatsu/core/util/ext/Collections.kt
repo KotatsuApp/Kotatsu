@@ -97,3 +97,14 @@ fun LongSet.toSet(): Set<Long> = toCollection(ArraySet<Long>(size))
 fun <R : MutableCollection<Long>> LongSet.toCollection(out: R): R = out.also { result ->
 	forEach(result::add)
 }
+
+fun <T, R> Collection<T>.mapSortedByCount(isDescending: Boolean = true, mapper: (T) -> R): List<R> {
+	val grouped = groupBy(mapper).toList()
+	val sortSelector: (Pair<R, List<T>>) -> Int = { it.second.size }
+	val sorted = if (isDescending) {
+		grouped.sortedByDescending(sortSelector)
+	} else {
+		grouped.sortedBy(sortSelector)
+	}
+	return sorted.map { it.first }
+}

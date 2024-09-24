@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.history.data
 
 import dagger.Reusable
-import kotlinx.coroutines.flow.mapLatest
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
@@ -17,15 +16,13 @@ import javax.inject.Inject
 class HistoryLocalObserver @Inject constructor(
 	localMangaIndex: LocalMangaIndex,
 	private val db: MangaDatabase,
-) : LocalObserveMapper<HistoryWithManga, MangaWithHistory>(localMangaIndex, limitStep = 10) {
+) : LocalObserveMapper<HistoryWithManga, MangaWithHistory>(localMangaIndex) {
 
 	fun observeAll(
 		order: ListSortOrder,
 		filterOptions: Set<ListFilterOption>,
 		limit: Int
-	) = db.getHistoryDao().observeAll(order, filterOptions, limit).mapLatest {
-		it.mapToLocal()
-	}
+	) = db.getHistoryDao().observeAll(order, filterOptions, limit).mapToLocal()
 
 	override fun toManga(e: HistoryWithManga) = e.manga.toManga(e.tags.toMangaTags())
 

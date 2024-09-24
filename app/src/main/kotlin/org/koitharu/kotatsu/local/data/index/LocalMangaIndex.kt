@@ -4,19 +4,15 @@ import android.content.Context
 import androidx.core.content.edit
 import androidx.room.withTransaction
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
-import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.domain.model.LocalManga
-import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
 import javax.inject.Inject
@@ -27,7 +23,6 @@ import javax.inject.Singleton
 class LocalMangaIndex @Inject constructor(
 	private val mangaDataRepository: MangaDataRepository,
 	private val db: MangaDatabase,
-	private val localStorageManager: LocalStorageManager,
 	@ApplicationContext context: Context,
 	private val localMangaRepositoryProvider: Provider<LocalMangaRepository>,
 ) : FlowCollector<LocalManga?> {
@@ -35,9 +30,9 @@ class LocalMangaIndex @Inject constructor(
 	private val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 	private val mutex = Mutex()
 
-	private var previousHash: Long
-		get() = prefs.getLong(KEY_HASH, 0L)
-		set(value) = prefs.edit { putLong(KEY_HASH, value) }
+	private var currentVersion: Int
+		get() = prefs.getInt(KEY_VERSION, 0)
+		set(value) = prefs.edit { putInt(KEY_VERSION, value) }
 
 	override suspend fun emit(value: LocalManga?) {
 		if (value != null) {
@@ -45,22 +40,25 @@ class LocalMangaIndex @Inject constructor(
 		}
 	}
 
-	suspend fun update(): Boolean = mutex.withLock {
-		val newHash = computeHash()
-		if (newHash == previousHash) {
-			return false
-		}
+	suspend fun update() = mutex.withLock {
 		db.withTransaction {
 			val dao = db.getLocalMangaIndexDao()
 			dao.clear()
-			localMangaRepositoryProvider.get().getRawListAsFlow()
-				.collect { dao.upsert(it.toEntity()) }
+			localMangaRepositoryProvider.get()
+				.getRawListAsFlow()
+				.collect { upsert(it) }
 		}
-		previousHash = newHash
-		return true
+		currentVersion = VERSION
+	}
+
+	suspend fun updateIfRequired() {
+		if (isUpdateRequired()) {
+			update()
+		}
 	}
 
 	suspend fun get(mangaId: Long): LocalManga? {
+		updateIfRequired()
 		var path = db.getLocalMangaIndexDao().findPath(mangaId)
 		if (path == null && mutex.isLocked) { // wait for updating complete
 			path = mutex.withLock { db.getLocalMangaIndexDao().findPath(mangaId) }
@@ -77,8 +75,7 @@ class LocalMangaIndex @Inject constructor(
 
 	suspend fun put(manga: LocalManga) = mutex.withLock {
 		db.withTransaction {
-			mangaDataRepository.storeManga(manga.manga)
-			db.getLocalMangaIndexDao().upsert(manga.toEntity())
+			upsert(manga)
 		}
 	}
 
@@ -90,27 +87,22 @@ class LocalMangaIndex @Inject constructor(
 		return db.getLocalMangaIndexDao().findTags()
 	}
 
+	private suspend fun upsert(manga: LocalManga) {
+		mangaDataRepository.storeManga(manga.manga)
+		db.getLocalMangaIndexDao().upsert(manga.toEntity())
+	}
+
 	private fun LocalManga.toEntity() = LocalMangaIndexEntity(
 		mangaId = manga.id,
 		path = file.path,
 	)
 
-	private suspend fun computeHash(): Long {
-		return runCatchingCancellable {
-			localStorageManager.getReadableDirs()
-				.fold(0L) { acc, file -> acc + file.computeHash() }
-		}.onFailure {
-			it.printStackTraceDebug()
-		}.getOrDefault(0L)
-	}
-
-	private suspend fun File.computeHash(): Long = runInterruptible(Dispatchers.IO) {
-		lastModified() // TODO size
-	}
+	private fun isUpdateRequired() = currentVersion < VERSION
 
 	companion object {
 
 		private const val PREF_NAME = "_local_index"
-		private const val KEY_HASH = "hash"
+		private const val KEY_VERSION = "ver"
+		private const val VERSION = 1
 	}
 }
