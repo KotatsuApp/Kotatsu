@@ -34,6 +34,7 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
@@ -62,7 +63,12 @@ class LocalMangaRepository @Inject constructor(
 			isSearchWithFiltersSupported = true,
 		)
 
-	override val sortOrders: Set<SortOrder> = EnumSet.of(SortOrder.ALPHABETICAL, SortOrder.RATING, SortOrder.NEWEST)
+	override val sortOrders: Set<SortOrder> = EnumSet.of(
+		SortOrder.ALPHABETICAL,
+		SortOrder.RATING,
+		SortOrder.NEWEST,
+		SortOrder.RELEVANCE,
+	)
 
 	override var defaultSortOrder: SortOrder
 		get() = settings.localListOrder
@@ -101,6 +107,9 @@ class LocalMangaRepository @Inject constructor(
 			filter.contentRating.singleOrNull()?.let { contentRating ->
 				val isNsfw = contentRating == ContentRating.ADULT
 				list.retainAll { it.manga.isNsfw == isNsfw }
+			}
+			if (!query.isNullOrEmpty() && order == SortOrder.RELEVANCE) {
+				list.sortBy { it.manga.title.levenshteinDistance(query) }
 			}
 		}
 		when (order) {

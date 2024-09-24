@@ -1,23 +1,33 @@
 package org.koitharu.kotatsu.search.ui.multi
 
+import android.content.Context
+import androidx.annotation.StringRes
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
-data class MultiSearchListModel(
+data class SearchResultsListModel(
+	@StringRes val titleResId: Int,
 	val source: MangaSource,
 	val hasMore: Boolean,
 	val list: List<MangaListModel>,
 	val error: Throwable?,
 ) : ListModel {
 
+	fun getTitle(context: Context): String = if (titleResId != 0) {
+		context.getString(titleResId)
+	} else {
+		source.getTitle(context)
+	}
+
 	override fun areItemsTheSame(other: ListModel): Boolean {
-		return other is MultiSearchListModel && source == other.source
+		return other is SearchResultsListModel && source == other.source && titleResId == other.titleResId
 	}
 
 	override fun getChangePayload(previousState: ListModel): Any? {
-		return if (previousState is MultiSearchListModel && previousState.list != list) {
+		return if (previousState is SearchResultsListModel && previousState.list != list) {
 			ListModelDiffCallback.PAYLOAD_NESTED_LIST_CHANGED
 		} else {
 			super.getChangePayload(previousState)

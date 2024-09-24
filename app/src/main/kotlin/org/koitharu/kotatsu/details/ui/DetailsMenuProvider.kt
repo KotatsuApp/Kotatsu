@@ -23,7 +23,7 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.download.ui.dialog.DownloadOption
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
-import org.koitharu.kotatsu.search.ui.multi.MultiSearchActivity
+import org.koitharu.kotatsu.search.ui.multi.SearchActivity
 import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
 
 class DetailsMenuProvider(
@@ -92,7 +92,7 @@ class DetailsMenuProvider(
 
 			R.id.action_related -> {
 				viewModel.manga.value?.let {
-					activity.startActivity(MultiSearchActivity.newIntent(activity, it.title))
+					activity.startActivity(SearchActivity.newIntent(activity, it.title))
 				}
 			}
 

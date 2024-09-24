@@ -10,11 +10,10 @@ import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
-import org.koitharu.kotatsu.core.db.entity.toMangaTag
+import org.koitharu.kotatsu.core.db.entity.toMangaList
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.db.entity.toMangaTagsList
 import org.koitharu.kotatsu.core.model.MangaHistory
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.model.isNsfw
@@ -31,6 +30,7 @@ import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.tryScrobble
 import org.koitharu.kotatsu.tracker.domain.CheckNewChaptersUseCase
@@ -50,6 +50,11 @@ class HistoryRepository @Inject constructor(
 	suspend fun getList(offset: Int, limit: Int): List<Manga> {
 		val entities = db.getHistoryDao().findAll(offset, limit)
 		return entities.map { it.manga.toManga(it.tags.toMangaTags()) }
+	}
+
+	suspend fun search(query: String, limit: Int): List<Manga> {
+		val entities = db.getHistoryDao().search("%$query%", limit)
+		return entities.toMangaList().sortedBy { it.title.levenshteinDistance(query) }
 	}
 
 	suspend fun getCount(): Int {

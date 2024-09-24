@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.core.db.MangaQueryBuilder
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
+import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 import org.koitharu.kotatsu.favourites.domain.model.Cover
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
@@ -31,6 +32,10 @@ abstract class FavouritesDao : MangaQueryBuilder.ConditionCallback {
 	@Transaction
 	@Query("SELECT * FROM favourites WHERE deleted_at = 0 GROUP BY manga_id ORDER BY created_at DESC LIMIT :limit")
 	abstract suspend fun findLast(limit: Int): List<FavouriteManga>
+
+	@Transaction
+	@Query("SELECT manga.* FROM favourites LEFT JOIN manga ON manga.manga_id = favourites.manga_id WHERE favourites.deleted_at = 0 AND (manga.title LIKE :query OR manga.alt_title LIKE :query) LIMIT :limit")
+	abstract suspend fun search(query: String, limit: Int): List<MangaWithTags>
 
 	fun observeAll(
 		order: ListSortOrder,

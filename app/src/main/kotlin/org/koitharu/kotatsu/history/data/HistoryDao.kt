@@ -11,6 +11,7 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.MangaQueryBuilder
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
+import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
@@ -22,6 +23,10 @@ abstract class HistoryDao : MangaQueryBuilder.ConditionCallback {
 	@Transaction
 	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC LIMIT :limit OFFSET :offset")
 	abstract suspend fun findAll(offset: Int, limit: Int): List<HistoryWithManga>
+
+	@Transaction
+	@Query("SELECT manga.* FROM history LEFT JOIN manga ON manga.manga_id = history.manga_id WHERE history.deleted_at = 0 AND (manga.title LIKE :query OR manga.alt_title LIKE :query) LIMIT :limit")
+	abstract suspend fun search(query: String, limit: Int): List<MangaWithTags>
 
 	@Transaction
 	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC")

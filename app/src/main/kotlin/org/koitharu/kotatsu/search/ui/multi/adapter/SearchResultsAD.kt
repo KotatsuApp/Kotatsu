@@ -8,7 +8,6 @@ import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
@@ -20,7 +19,7 @@ import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.search.ui.multi.MultiSearchListModel
+import org.koitharu.kotatsu.search.ui.multi.SearchResultsListModel
 
 fun searchResultsAD(
 	sharedPool: RecycledViewPool,
@@ -29,8 +28,8 @@ fun searchResultsAD(
 	sizeResolver: ItemSizeResolver,
 	selectionDecoration: MangaSelectionDecoration,
 	listener: OnListItemClickListener<Manga>,
-	itemClickListener: OnListItemClickListener<MultiSearchListModel>,
-) = adapterDelegateViewBinding<MultiSearchListModel, ListModel, ItemListGroupBinding>(
+	itemClickListener: OnListItemClickListener<SearchResultsListModel>,
+) = adapterDelegateViewBinding<SearchResultsListModel, ListModel, ItemListGroupBinding>(
 	{ layoutInflater, parent -> ItemListGroupBinding.inflate(layoutInflater, parent, false) },
 ) {
 
@@ -40,13 +39,13 @@ fun searchResultsAD(
 	)
 	binding.recyclerView.addItemDecoration(selectionDecoration)
 	binding.recyclerView.adapter = adapter
-	val spacing = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing)
+	val spacing = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
 	binding.recyclerView.addItemDecoration(SpacingItemDecoration(spacing))
 	val eventListener = AdapterDelegateClickListenerAdapter(this, itemClickListener)
 	binding.buttonMore.setOnClickListener(eventListener)
 
 	bind {
-		binding.textViewTitle.text = item.source.getTitle(context)
+		binding.textViewTitle.text = item.getTitle(context)
 		binding.buttonMore.isVisible = item.hasMore
 		adapter.items = item.list
 		adapter.notifyDataSetChanged()

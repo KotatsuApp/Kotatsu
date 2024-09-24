@@ -56,7 +56,7 @@ class ShelfWidgetConfigActivity :
 		viewModel.checkedId = config.categoryId
 		viewBinding.switchBackground.isChecked = config.hasBackground
 
-		viewModel.content.observe(this, this::onContentChanged)
+		viewModel.content.observe(this, adapter)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 	}
 
@@ -94,10 +94,6 @@ class ShelfWidgetConfigActivity :
 				topMargin = insets.top
 			}
 		}
-	}
-
-	private fun onContentChanged(categories: List<CategoryItem>) {
-		adapter.items = categories
 	}
 
 	private fun updateWidget() {

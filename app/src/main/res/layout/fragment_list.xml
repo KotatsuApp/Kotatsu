@@ -19,7 +19,6 @@
 			android:clipToPadding="false"
 			android:orientation="vertical"
 			android:padding="@dimen/list_spacing_normal"
-			app:bubbleSize="small"
 			tools:layoutManager="org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager"
 			tools:listitem="@layout/item_manga_list" />
 

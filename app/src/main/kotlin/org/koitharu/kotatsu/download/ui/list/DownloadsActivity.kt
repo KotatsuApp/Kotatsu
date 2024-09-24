@@ -58,9 +58,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 			RecyclerScrollKeeper(this).attach()
 		}
 		addMenuProvider(DownloadsMenuProvider(this, viewModel))
-		viewModel.items.observe(this) {
-			downloadsAdapter.items = it
-		}
+		viewModel.items.observe(this, downloadsAdapter)
 		viewModel.onActionDone.observeEvent(this, ReversibleActionObserver(viewBinding.recyclerView))
 		val menuInvalidator = MenuInvalidator(this)
 		viewModel.hasActiveWorks.observe(this, menuInvalidator)

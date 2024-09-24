@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.ImageLoader
 import com.google.android.material.snackbar.Snackbar
@@ -28,7 +30,6 @@ import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
-import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -48,8 +49,6 @@ class FeedFragment :
 
 	private val viewModel by viewModels<FeedViewModel>()
 
-	private var feedAdapter: FeedAdapter? = null
-
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -58,11 +57,12 @@ class FeedFragment :
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		val sizeResolver = StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width))
-		feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this, sizeResolver) { item, v ->
+		val feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this, sizeResolver) { item, v ->
 			viewModel.onItemClick(item)
 			onItemClick(item.manga, v)
 		}
 		with(binding.recyclerView) {
+			layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 			adapter = feedAdapter
 			setHasFixedSize(true)
 			addOnScrollListener(PaginationScrollListener(4, this@FeedFragment))
@@ -73,15 +73,10 @@ class FeedFragment :
 		addMenuProvider(FeedMenuProvider(binding.recyclerView, viewModel))
 
 		viewModel.isHeaderEnabled.drop(1).observe(viewLifecycleOwner, MenuInvalidator(requireActivity()))
-		viewModel.content.observe(viewLifecycleOwner, this::onListChanged)
+		viewModel.content.observe(viewLifecycleOwner, feedAdapter)
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onFeedCleared.observeEvent(viewLifecycleOwner) { onFeedCleared() }
 		viewModel.isRunning.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
-	}
-
-	override fun onDestroyView() {
-		feedAdapter = null
-		super.onDestroyView()
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -110,10 +105,6 @@ class FeedFragment :
 	override fun onListHeaderClick(item: ListHeader, view: View) {
 		val context = view.context
 		context.startActivity(UpdatesActivity.newIntent(context))
-	}
-
-	private fun onListChanged(list: List<ListModel>) {
-		feedAdapter?.items = list
 	}
 
 	private fun onFeedCleared() {
