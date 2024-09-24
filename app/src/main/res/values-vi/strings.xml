@@ -312,7 +312,7 @@
     <string name="import_completed_hint">Bạn có thể xoá file gốc khỏi bộ nhớ để tiết kiệm dung lượng</string>
     <string name="reset">Đặt lại</string>
     <string name="feed">Bảng tin</string>
-    <string name="reader_control_ltr_summary">Chạm vào bên phải màn hình hoặc nhấn nút phải để chuyển tới trang tiếp theo.</string>
+    <string name="reader_control_ltr_summary">Chạm vào bên phải màn hình hoặc nhấn nút mũi tên bên phải để sang trang kế tiếp. Điều này phụ thuộc vào thiết bị / giả lập bạn đang dùng (Không điều chỉnh hướng với chế độ đọc)</string>
     <string name="history_shortcuts">Hiển thị lối tắt truyện đọc gần đây</string>
     <string name="contrast">Tương phản</string>
     <string name="reader_slider">Hiện thanh trượt chuyển trang</string>
