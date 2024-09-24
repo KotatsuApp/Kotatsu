@@ -5,13 +5,29 @@
 		label="@string/prev_page"
 		priority="1"
 		trigger_key="L">
-		<preference name="gesture" value="swipe_left"/>
+		<preference name="gesture" value="double_click"/>
 	</action>
 
 	<action
 		id="prev_filter"
 		label="@string/next_page"
 		priority="2"
+		trigger_key="R">
+		<preference name="gesture" value="click"/>
+	</action>
+
+	<action
+		id="next_filter"
+		label="@string/prev_page"
+		priority="3"
+		trigger_key="L">
+		<preference name="gesture" value="swipe_left"/>
+	</action>
+
+	<action
+		id="prev_filter"
+		label="@string/next_page"
+		priority="4"
 		trigger_key="R">
 		<preference name="gesture" value="swipe_right"/>
 	</action>
