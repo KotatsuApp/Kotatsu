@@ -64,8 +64,8 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			this,
 			ReversibleActionObserver(viewBinding.recyclerView),
 		)
-		combine(viewModel.appliedFilter, viewModel.hasNewSources, ::Pair).observe(this) {
-			updateFilers(it.first, it.second)
+		combine(viewModel.appliedFilter, viewModel.hasNewSources, viewModel.contentTypes, ::Triple).observe(this) {
+			updateFilers(it.first, it.second, it.third)
 		}
 		addMenuProvider(SourcesCatalogMenuProvider(this, viewModel, this))
 	}
@@ -111,8 +111,9 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	private fun updateFilers(
 		appliedFilter: SourcesCatalogFilter,
 		hasNewSources: Boolean,
+		contentTypes: List<ContentType>,
 	) {
-		val chips = ArrayList<ChipModel>(ContentType.entries.size + 2)
+		val chips = ArrayList<ChipModel>(contentTypes.size + 2)
 		chips += ChipModel(
 			title = appliedFilter.locale?.toLocale().getDisplayName(this),
 			icon = R.drawable.ic_language,
@@ -126,11 +127,8 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 				data = true,
 			)
 		}
-		for (type in ContentType.entries) {
-			if (type == ContentType.HENTAI && viewModel.isNsfwDisabled) {
-				continue
-			}
-			chips += ChipModel(
+		contentTypes.mapTo(chips) { type ->
+			ChipModel(
 				title = getString(type.titleResId),
 				isChecked = type in appliedFilter.types,
 				data = type,

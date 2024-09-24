@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.sources.catalog
 
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.viewModelScope
 import androidx.room.invalidationTrackerFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +14,7 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.TABLE_SOURCES
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
@@ -23,7 +25,9 @@ import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.ContentType
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import java.util.EnumMap
 import java.util.EnumSet
 import java.util.Locale
 import javax.inject.Inject
@@ -49,10 +53,10 @@ class SourcesCatalogViewModel @Inject constructor(
 		),
 	)
 
-	val isNsfwDisabled = settings.isNsfwContentDisabled
-
 	val hasNewSources = repository.observeHasNewSources()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
+
+	val contentTypes = MutableStateFlow<List<ContentType>>(emptyList())
 
 	val content: StateFlow<List<ListModel>> = combine(
 		searchQuery,
@@ -64,6 +68,9 @@ class SourcesCatalogViewModel @Inject constructor(
 
 	init {
 		repository.clearNewSourcesBadge()
+		launchJob(Dispatchers.Default) {
+			contentTypes.value = getContentTypes(settings.isNsfwContentDisabled)
+		}
 	}
 
 	fun performSearch(query: String?) {
@@ -128,5 +135,17 @@ class SourcesCatalogViewModel @Inject constructor(
 				SourceCatalogItem.Source(source = it)
 			}
 		}
+	}
+
+	@WorkerThread
+	private fun getContentTypes(isNsfwDisabled: Boolean): List<ContentType> {
+		val map = EnumMap<ContentType, Int>(ContentType::class.java)
+		for (e in MangaParserSource.entries) {
+			if (isNsfwDisabled && e.isNsfw()) {
+				continue
+			}
+			map[e.contentType] = map.getOrDefault(e.contentType, 0) + 1
+		}
+		return map.entries.sortedByDescending { it.value }.map { it.key }
 	}
 }
