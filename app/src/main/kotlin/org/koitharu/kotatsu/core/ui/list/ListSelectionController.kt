@@ -2,10 +2,14 @@ package org.koitharu.kotatsu.core.ui.list
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.PopupMenu
 import androidx.collection.LongSet
+import androidx.collection.longSetOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -29,18 +33,21 @@ class ListSelectionController(
 ) : ActionMode.Callback, SavedStateRegistry.SavedStateProvider {
 
 	private var actionMode: ActionMode? = null
+	private var focusedItemId: LongSet? = null
+
+	var useActionMode: Boolean = true
 
 	val count: Int
-		get() = decoration.checkedItemsCount
+		get() = if (focusedItemId != null) 1 else decoration.checkedItemsCount
 
 	init {
 		registryOwner.lifecycle.addObserver(StateEventObserver())
 	}
 
-	fun snapshot(): Set<Long> = peekCheckedIds().toSet()
+	fun snapshot(): Set<Long> = (focusedItemId ?: peekCheckedIds()).toSet()
 
 	fun peekCheckedIds(): LongSet {
-		return decoration.checkedItemsIds
+		return focusedItemId ?: decoration.checkedItemsIds
 	}
 
 	fun clear() {
@@ -52,6 +59,7 @@ class ListSelectionController(
 		if (ids.isEmpty()) {
 			return
 		}
+		startActionMode()
 		decoration.checkAll(ids)
 		notifySelectionChanged()
 	}
@@ -80,15 +88,42 @@ class ListSelectionController(
 		return false
 	}
 
-	fun onItemLongClick(id: Long): Boolean {
-		return startActionMode()?.also {
-			decoration.setItemIsChecked(id, true)
-			notifySelectionChanged()
-		} != null
+	fun onItemLongClick(view: View, id: Long): Boolean {
+		return if (useActionMode) {
+			startSelection(id)
+		} else {
+			onItemContextClick(view, id)
+		}
 	}
 
+	fun onItemContextClick(view: View, id: Long): Boolean {
+		focusedItemId = longSetOf(id)
+		val menu = PopupMenu(view.context, view)
+		callback.onCreateActionMode(this, menu.menuInflater, menu.menu)
+		callback.onPrepareActionMode(this, null, menu.menu)
+		menu.setForceShowIcon(true)
+		if (menu.menu.hasVisibleItems()) {
+			menu.setOnMenuItemClickListener { menuItem ->
+				callback.onActionItemClicked(this, null, menuItem)
+			}
+			menu.setOnDismissListener {
+				focusedItemId = null
+			}
+			menu.show()
+			return true
+		} else {
+			focusedItemId = null
+			return false
+		}
+	}
+
+	fun startSelection(id: Long): Boolean = startActionMode()?.also {
+		decoration.setItemIsChecked(id, true)
+		notifySelectionChanged()
+	} != null
+
 	override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-		return callback.onCreateActionMode(this, mode, menu)
+		return callback.onCreateActionMode(this, mode.menuInflater, menu)
 	}
 
 	override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
@@ -106,6 +141,7 @@ class ListSelectionController(
 	}
 
 	private fun startActionMode(): ActionMode? {
+		focusedItemId = null
 		return actionMode ?: appCompatDelegate.startSupportActionMode(this).also {
 			actionMode = it
 		}
@@ -134,14 +170,14 @@ class ListSelectionController(
 
 		fun onSelectionChanged(controller: ListSelectionController, count: Int)
 
-		fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean
+		fun onCreateActionMode(controller: ListSelectionController, menuInflater: MenuInflater, menu: Menu): Boolean
 
-		fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-			mode.title = controller.count.toString()
+		fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode?, menu: Menu): Boolean {
+			mode?.title = controller.count.toString()
 			return true
 		}
 
-		fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean
+		fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean
 
 		fun onDestroyActionMode(controller: ListSelectionController, mode: ActionMode) = Unit
 	}

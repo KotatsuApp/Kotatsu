@@ -32,9 +32,7 @@ fun pageThumbnailAD(
 		height = (gridWidth / 13f * 18f).toInt(),
 	)
 
-	val clickListenerAdapter = AdapterDelegateClickListenerAdapter(this, clickListener)
-	binding.root.setOnClickListener(clickListenerAdapter)
-	binding.root.setOnLongClickListener(clickListenerAdapter)
+	AdapterDelegateClickListenerAdapter(this, clickListener).attach(itemView)
 
 	bind {
 		val data: Any = item.page.preview?.takeUnless { it.isEmpty() } ?: item.page.toMangaPage()

@@ -62,6 +62,8 @@ class FeedFragment :
 			onItemClick(item.manga, v)
 		}
 		with(binding.recyclerView) {
+			val paddingVertical = resources.getDimensionPixelSize(R.dimen.list_spacing_normal)
+			setPadding(0, paddingVertical, 0, paddingVertical)
 			layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 			adapter = feedAdapter
 			setHasFixedSize(true)

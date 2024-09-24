@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.favourites.ui.list
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
@@ -52,27 +53,32 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 		return true
 	}
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_favourites, menu)
-		return super.onCreateActionMode(controller, mode, menu)
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		menuInflater: MenuInflater,
+		menu: Menu
+	): Boolean {
+		menuInflater.inflate(R.menu.mode_favourites, menu)
+		return super.onCreateActionMode(controller, menuInflater, menu)
 	}
 
-	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_remove -> {
 				viewModel.removeFromFavourites(selectedItemsIds)
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
 			R.id.action_mark_current -> {
+				val itemsSnapshot = selectedItems
 				MaterialAlertDialogBuilder(context ?: return false)
 					.setTitle(item.title)
 					.setMessage(R.string.mark_as_completed_prompt)
 					.setNegativeButton(android.R.string.cancel, null)
 					.setPositiveButton(android.R.string.ok) { _, _ ->
-						viewModel.markAsRead(selectedItems)
-						mode.finish()
+						viewModel.markAsRead(itemsSnapshot)
+						mode?.finish()
 					}.show()
 				true
 			}

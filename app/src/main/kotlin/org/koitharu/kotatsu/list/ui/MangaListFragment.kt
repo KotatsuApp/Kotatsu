@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.list.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,6 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.view.ActionMode
 import androidx.collection.ArraySet
 import androidx.core.graphics.Insets
-import androidx.core.view.isNotEmpty
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
@@ -153,7 +153,11 @@ abstract class MangaListFragment :
 	}
 
 	override fun onItemLongClick(item: Manga, view: View): Boolean {
-		return selectionController?.onItemLongClick(item.id) ?: false
+		return selectionController?.onItemLongClick(view, item.id) ?: false
+	}
+
+	override fun onItemContextClick(item: Manga, view: View): Boolean {
+		return selectionController?.onItemContextClick(view, item.id) ?: false
 	}
 
 	override fun onReadClick(manga: Manga, view: View) {
@@ -280,18 +284,22 @@ abstract class MangaListFragment :
 	}
 
 	@CallSuper
-	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
+	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode?, menu: Menu): Boolean {
 		val hasNoLocal = selectedItems.none { it.isLocal }
 		menu.findItem(R.id.action_save)?.isVisible = hasNoLocal
 		menu.findItem(R.id.action_fix)?.isVisible = hasNoLocal
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
 
-	override fun onCreateActionMode(controller: ListSelectionController, mode: ActionMode, menu: Menu): Boolean {
-		return menu.isNotEmpty()
+	override fun onCreateActionMode(
+		controller: ListSelectionController,
+		menuInflater: MenuInflater,
+		menu: Menu
+	): Boolean {
+		return menu.hasVisibleItems()
 	}
 
-	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode, item: MenuItem): Boolean {
+	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_select_all -> {
 				val ids = listAdapter?.items?.mapNotNull {
@@ -303,31 +311,32 @@ abstract class MangaListFragment :
 
 			R.id.action_share -> {
 				ShareHelper(requireContext()).shareMangaLinks(selectedItems)
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
 			R.id.action_favourite -> {
 				FavoriteSheet.show(getChildFragmentManager(), selectedItems)
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
 			R.id.action_save -> {
 				viewModel.download(selectedItems)
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
 			R.id.action_fix -> {
+				val itemsSnapshot = selectedItemsIds
 				buildAlertDialog(context ?: return false, isCentered = true) {
 					setTitle(item.title)
 					setIcon(item.icon)
 					setMessage(R.string.manga_fix_prompt)
 					setNegativeButton(android.R.string.cancel, null)
 					setPositiveButton(R.string.fix) { _, _ ->
-						AutoFixService.start(context, selectedItemsIds)
-						mode.finish()
+						AutoFixService.start(context, itemsSnapshot)
+						mode?.finish()
 					}
 				}.show()
 				true

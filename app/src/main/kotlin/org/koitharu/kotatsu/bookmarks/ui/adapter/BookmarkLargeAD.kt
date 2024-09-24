@@ -22,10 +22,7 @@ fun bookmarkLargeAD(
 ) = adapterDelegateViewBinding<Bookmark, ListModel, ItemBookmarkLargeBinding>(
 	{ inflater, parent -> ItemBookmarkLargeBinding.inflate(inflater, parent, false) },
 ) {
-	val listener = AdapterDelegateClickListenerAdapter(this, clickListener)
-
-	binding.root.setOnClickListener(listener)
-	binding.root.setOnLongClickListener(listener)
+	AdapterDelegateClickListenerAdapter(this, clickListener).attach(itemView)
 
 	bind {
 		binding.imageViewThumb.newImageRequest(lifecycleOwner, item.imageLoadData)?.run {

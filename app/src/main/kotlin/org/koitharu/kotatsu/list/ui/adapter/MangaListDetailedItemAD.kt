@@ -1,16 +1,15 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
-import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
+import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
-import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemMangaListDetailsBinding
@@ -27,14 +26,7 @@ fun mangaListDetailedItemAD(
 ) {
 	var badge: BadgeDrawable? = null
 
-	val listenerAdapter = object : View.OnClickListener, View.OnLongClickListener {
-		override fun onClick(v: View) = clickListener.onItemClick(item.manga, v)
-
-		override fun onLongClick(v: View): Boolean = clickListener.onItemLongClick(item.manga, v)
-	}
-	itemView.setOnClickListener(listenerAdapter)
-	itemView.setOnLongClickListener(listenerAdapter)
-	itemView.setOnContextClickListenerCompat(listenerAdapter)
+	AdapterDelegateClickListenerAdapter(this, clickListener, MangaDetailedListModel::manga).attach(itemView)
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title

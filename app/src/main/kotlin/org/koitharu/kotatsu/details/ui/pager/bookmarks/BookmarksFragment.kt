@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.details.ui.pager.bookmarks
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -133,7 +134,11 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 	}
 
 	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
-		return selectionController?.onItemLongClick(item.pageId) ?: false
+		return selectionController?.onItemLongClick(view, item.pageId) ?: false
+	}
+
+	override fun onItemContextClick(item: Bookmark, view: View): Boolean {
+		return selectionController?.onItemContextClick(view, item.pageId) ?: false
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
@@ -142,23 +147,23 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 
 	override fun onCreateActionMode(
 		controller: ListSelectionController,
-		mode: ActionMode,
+		menuInflater: MenuInflater,
 		menu: Menu,
 	): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_bookmarks, menu)
+		menuInflater.inflate(R.menu.mode_bookmarks, menu)
 		return true
 	}
 
 	override fun onActionItemClicked(
 		controller: ListSelectionController,
-		mode: ActionMode,
+		mode: ActionMode?,
 		item: MenuItem,
 	): Boolean {
 		return when (item.itemId) {
 			R.id.action_remove -> {
 				val ids = selectionController?.snapshot() ?: return false
 				viewModel.removeBookmarks(ids)
-				mode.finish()
+				mode?.finish()
 				true
 			}
 

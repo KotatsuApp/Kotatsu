@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -88,16 +89,16 @@ class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 
 	override fun onCreateActionMode(
 		controller: ListSelectionController,
-		mode: ActionMode,
+		menuInflater: MenuInflater,
 		menu: Menu,
 	): Boolean {
-		mode.menuInflater.inflate(R.menu.mode_local, menu)
-		return super.onCreateActionMode(controller, mode, menu)
+		menuInflater.inflate(R.menu.mode_local, menu)
+		return super.onCreateActionMode(controller, menuInflater, menu)
 	}
 
 	override fun onActionItemClicked(
 		controller: ListSelectionController,
-		mode: ActionMode,
+		mode: ActionMode?,
 		item: MenuItem,
 	): Boolean {
 		return when (item.itemId) {
@@ -109,7 +110,7 @@ class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 			R.id.action_share -> {
 				val files = selectedItems.map { it.url.toUri().toFile() }
 				ShareHelper(requireContext()).shareCbz(files)
-				mode.finish()
+				mode?.finish()
 				true
 			}
 
@@ -117,13 +118,13 @@ class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 		}
 	}
 
-	private fun showDeletionConfirm(ids: Set<Long>, mode: ActionMode) {
+	private fun showDeletionConfirm(ids: Set<Long>, mode: ActionMode?) {
 		MaterialAlertDialogBuilder(context ?: return)
 			.setTitle(R.string.delete_manga)
 			.setMessage(getString(R.string.text_delete_local_manga_batch))
 			.setPositiveButton(R.string.delete) { _, _ ->
 				viewModel.delete(ids)
-				mode.finish()
+				mode?.finish()
 			}
 			.setNegativeButton(android.R.string.cancel, null)
 			.show()

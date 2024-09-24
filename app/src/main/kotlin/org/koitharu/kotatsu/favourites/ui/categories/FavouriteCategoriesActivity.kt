@@ -98,7 +98,11 @@ class FavouriteCategoriesActivity :
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory?, view: View): Boolean {
-		return item != null && selectionController.onItemLongClick(item.id)
+		return item != null && selectionController.onItemLongClick(view, item.id)
+	}
+
+	override fun onItemContextClick(item: FavouriteCategory?, view: View): Boolean {
+		return item != null && selectionController.onItemContextClick(view, item.id)
 	}
 
 	override fun onSupportActionModeStarted(mode: ActionMode) {

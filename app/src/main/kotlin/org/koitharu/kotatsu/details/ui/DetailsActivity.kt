@@ -54,6 +54,7 @@ import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
+import org.koitharu.kotatsu.core.ui.OnContextClickListenerCompat
 import org.koitharu.kotatsu.core.ui.image.ChipIconTarget
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -114,7 +115,8 @@ class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
 	View.OnClickListener,
 	View.OnLongClickListener, PopupMenu.OnMenuItemClickListener, View.OnLayoutChangeListener,
-	ViewTreeObserver.OnDrawListener, ChipsView.OnChipClickListener, OnListItemClickListener<Bookmark> {
+	ViewTreeObserver.OnDrawListener, ChipsView.OnChipClickListener, OnListItemClickListener<Bookmark>,
+	OnContextClickListenerCompat {
 
 	@Inject
 	lateinit var shortcutManager: AppShortcutManager
@@ -290,6 +292,8 @@ class DetailsActivity :
 		// TODO dialog
 		startActivity(MangaListActivity.newIntent(this, tag.source, MangaListFilter(tags = setOf(tag))))
 	}
+
+	override fun onContextClick(v: View): Boolean = onLongClick(v)
 
 	override fun onLongClick(v: View): Boolean = when (v.id) {
 		R.id.button_read -> {
