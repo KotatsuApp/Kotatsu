@@ -713,4 +713,6 @@
     <string name="years">Năm</string>
     <string name="any">Bất kì</string>
     <string name="filter_search_warning">Bộ lọc của bạn đã bị xóa do nguồn đọc này không hỗ trợ cho việc tìm kiếm bằng bộ lọc</string>
+    <string name="demographic_kodomo">Dành cho trẻ em</string>
+    <string name="content_type_one_shot">One shot</string>
 </resources>
