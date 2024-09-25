@@ -8,12 +8,14 @@ import androidx.core.net.toUri
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.core.exceptions.IncompatiblePluginException
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
-import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.ContentType
+import org.koitharu.kotatsu.parsers.model.Demographic
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
+import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
+import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -28,6 +30,17 @@ class ExternalPluginContentSource(
 	private val contentResolver: ContentResolver,
 	private val source: ExternalMangaSource,
 ) {
+
+	@Blocking
+	@WorkerThread
+	fun getListFilterOptions() = MangaListFilterOptions(
+		availableTags = fetchTags(),
+		availableStates = fetchEnumSet(MangaState::class.java, "filter/states"),
+		availableContentRating = fetchEnumSet(ContentRating::class.java, "filter/content_ratings"),
+		availableContentTypes = fetchEnumSet(ContentType::class.java, "filter/content_types"),
+		availableDemographics = fetchEnumSet(Demographic::class.java, "filter/demographics"),
+		availableLocales = fetchLocales(),
+	)
 
 	@Blocking
 	@WorkerThread
@@ -106,8 +119,8 @@ class ExternalPluginContentSource(
 
 	@Blocking
 	@WorkerThread
-	fun getTags(): Set<MangaTag> {
-		val uri = "content://${source.authority}/tags".toUri()
+	private fun fetchTags(): Set<MangaTag> {
+		val uri = "content://${source.authority}/filter/tags".toUri()
 		return contentResolver.query(uri, null, null, null, null)
 			.safe()
 			.use { cursor ->
@@ -119,6 +132,40 @@ class ExternalPluginContentSource(
 							title = cursor.getString(COLUMN_TITLE),
 							source = source,
 						)
+					} while (cursor.moveToNext())
+				}
+				result
+			}
+	}
+
+	@Blocking
+	@WorkerThread
+	fun getPageUrl(url: String): String {
+		val uri = "content://${source.authority}/pages/0".toUri().buildUpon()
+			.appendQueryParameter("url", url)
+			.build()
+		return contentResolver.query(uri, null, null, null, null)
+			.safe()
+			.use { cursor ->
+				if (cursor.moveToFirst()) {
+					cursor.getString(COLUMN_VALUE)
+				} else {
+					url
+				}
+			}
+	}
+
+	@Blocking
+	@WorkerThread
+	private fun fetchLocales(): Set<Locale> {
+		val uri = "content://${source.authority}/filter/locales".toUri()
+		return contentResolver.query(uri, null, null, null, null)
+			.safe()
+			.use { cursor ->
+				val result = ArraySet<Locale>(cursor.count)
+				if (cursor.moveToFirst()) {
+					do {
+						result += Locale(cursor.getString(COLUMN_NAME))
 					} while (cursor.moveToNext())
 				}
 				result
@@ -137,26 +184,18 @@ class ExternalPluginContentSource(
 							?.mapNotNullTo(EnumSet.noneOf(SortOrder::class.java)) {
 								SortOrder.entries.find(it)
 							}.orEmpty(),
-						availableStates = cursor.getStringOrNull(COLUMN_STATES)
-							?.split(',')
-							?.mapNotNullTo(EnumSet.noneOf(MangaState::class.java)) {
-								MangaState.entries.find(it)
-							}.orEmpty(),
-						availableContentRating = cursor.getStringOrNull(COLUMN_CONTENT_RATING)
-							?.split(',')
-							?.mapNotNullTo(EnumSet.noneOf(ContentRating::class.java)) {
-								ContentRating.entries.find(it)
-							}.orEmpty(),
-						isMultipleTagsSupported = cursor.getBooleanOrDefault(COLUMN_MULTIPLE_TAGS_SUPPORTED, true),
-						isTagsExclusionSupported = cursor.getBooleanOrDefault(COLUMN_TAGS_EXCLUSION_SUPPORTED, false),
-						isSearchSupported = cursor.getBooleanOrDefault(COLUMN_SEARCH_SUPPORTED, true),
-						contentType = cursor.getStringOrNull(COLUMN_CONTENT_TYPE)?.let {
-							ContentType.entries.find(it)
-						} ?: ContentType.OTHER,
-						defaultSortOrder = cursor.getStringOrNull(COLUMN_DEFAULT_SORT_ORDER)?.let {
-							SortOrder.entries.find(it)
-						} ?: SortOrder.ALPHABETICAL,
-						sourceLocale = cursor.getStringOrNull(COLUMN_LOCALE)?.toLocale() ?: Locale.ROOT,
+						listFilterCapabilities = MangaListFilterCapabilities(
+							isMultipleTagsSupported = cursor.getBooleanOrDefault(COLUMN_MULTIPLE_TAGS, false),
+							isTagsExclusionSupported = cursor.getBooleanOrDefault(COLUMN_TAGS_EXCLUSION, false),
+							isSearchSupported = cursor.getBooleanOrDefault(COLUMN_SEARCH, false),
+							isSearchWithFiltersSupported = cursor.getBooleanOrDefault(
+								COLUMN_SEARCH_WITH_FILTERS,
+								false,
+							),
+							isYearSupported = cursor.getBooleanOrDefault(COLUMN_YEAR, false),
+							isYearRangeSupported = cursor.getBooleanOrDefault(COLUMN_YEAR_RANGE, false),
+							isOriginalLocaleSupported = cursor.getBooleanOrDefault(COLUMN_ORIGINAL_LOCALE, false),
+						),
 					)
 				} else {
 					null
@@ -226,6 +265,26 @@ class ExternalPluginContentSource(
 		source = source,
 	)
 
+	private fun <E : Enum<E>> fetchEnumSet(cls: Class<E>, path: String): EnumSet<E> {
+		val uri = "content://${source.authority}/$path".toUri()
+		return contentResolver.query(uri, null, null, null, null)
+			.safe()
+			.use { cursor ->
+				val result = EnumSet.noneOf(cls)
+				val enumConstants = cls.enumConstants ?: return@use result
+				if (cursor.moveToFirst()) {
+					do {
+						val name = cursor.getString(COLUMN_NAME)
+						val enumValue = enumConstants.find { it.name == name }
+						if (enumValue != null) {
+							result.add(enumValue)
+						}
+					} while (cursor.moveToNext())
+				}
+				result
+			}
+	}
+
 	private fun Cursor?.safe() = ExternalPluginCursor(
 		source = source,
 		cursor = this ?: throw IncompatiblePluginException(source.name, null),
@@ -233,27 +292,19 @@ class ExternalPluginContentSource(
 
 	class MangaSourceCapabilities(
 		val availableSortOrders: Set<SortOrder>,
-		val availableStates: Set<MangaState>,
-		val availableContentRating: Set<ContentRating>,
-		val isMultipleTagsSupported: Boolean,
-		val isTagsExclusionSupported: Boolean,
-		val isSearchSupported: Boolean,
-		val contentType: ContentType,
-		val defaultSortOrder: SortOrder,
-		val sourceLocale: Locale,
+		val listFilterCapabilities: MangaListFilterCapabilities,
 	)
 
 	private companion object {
 
 		const val COLUMN_SORT_ORDERS = "sort_orders"
-		const val COLUMN_STATES = "states"
-		const val COLUMN_CONTENT_RATING = "content_rating"
-		const val COLUMN_MULTIPLE_TAGS_SUPPORTED = "multiple_tags_supported"
-		const val COLUMN_TAGS_EXCLUSION_SUPPORTED = "tags_exclusion_supported"
-		const val COLUMN_SEARCH_SUPPORTED = "search_supported"
-		const val COLUMN_CONTENT_TYPE = "content_type"
-		const val COLUMN_DEFAULT_SORT_ORDER = "default_sort_order"
-		const val COLUMN_LOCALE = "locale"
+		const val COLUMN_MULTIPLE_TAGS = "multiple_tags"
+		const val COLUMN_TAGS_EXCLUSION = "tags_exclusion"
+		const val COLUMN_SEARCH = "search"
+		const val COLUMN_SEARCH_WITH_FILTERS = "search_with_filters"
+		const val COLUMN_YEAR = "year"
+		const val COLUMN_YEAR_RANGE = "year_range"
+		const val COLUMN_ORIGINAL_LOCALE = "original_locale"
 		const val COLUMN_ID = "id"
 		const val COLUMN_NAME = "name"
 		const val COLUMN_NUMBER = "number"
@@ -275,5 +326,6 @@ class ExternalPluginContentSource(
 		const val COLUMN_DESCRIPTION = "description"
 		const val COLUMN_PREVIEW = "preview"
 		const val COLUMN_KEY = "key"
+		const val COLUMN_VALUE = "value"
 	}
 }

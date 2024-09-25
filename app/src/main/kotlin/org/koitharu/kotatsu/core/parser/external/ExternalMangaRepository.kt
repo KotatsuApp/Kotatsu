@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
 import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import java.util.EnumSet
 
 class ExternalMangaRepository(
@@ -31,38 +32,19 @@ class ExternalMangaRepository(
 		}.getOrNull()
 	}
 
+	private val filterOptions = SuspendLazy(contentSource::getListFilterOptions)
+
 	override val sortOrders: Set<SortOrder>
-		get() = capabilities?.availableSortOrders ?: EnumSet.of(SortOrder.ALPHABETICAL)
+		get() = capabilities?.availableSortOrders ?: EnumSet.of(SortOrder.POPULARITY)
 
 	override val filterCapabilities: MangaListFilterCapabilities
-		get() = capabilities.let {
-			MangaListFilterCapabilities(
-				isMultipleTagsSupported = it?.isMultipleTagsSupported == true,
-				isTagsExclusionSupported = it?.isTagsExclusionSupported == true,
-				isSearchSupported = it?.isSearchSupported == true,
-				isSearchWithFiltersSupported = false, // TODO
-				isYearSupported = false, // TODO
-				isYearRangeSupported = false, // TODO
-				isOriginalLocaleSupported = false, // TODO
-			)
-		}
+		get() = capabilities?.listFilterCapabilities ?: MangaListFilterCapabilities()
 
 	override var defaultSortOrder: SortOrder
-		get() = capabilities?.defaultSortOrder ?: SortOrder.ALPHABETICAL
+		get() = capabilities?.availableSortOrders?.firstOrNull() ?: SortOrder.ALPHABETICAL
 		set(value) = Unit
 
-	override suspend fun getFilterOptions(): MangaListFilterOptions = capabilities.let {
-		MangaListFilterOptions(
-			availableTags = runInterruptible(Dispatchers.IO) {
-				contentSource.getTags()
-			},
-			availableStates = it?.availableStates.orEmpty(),
-			availableContentRating = it?.availableContentRating.orEmpty(),
-			availableContentTypes = emptySet(),
-			availableDemographics = emptySet(),
-			availableLocales = emptySet(),
-		)
-	}
+	override suspend fun getFilterOptions(): MangaListFilterOptions = filterOptions.get()
 
 	override suspend fun getList(offset: Int, order: SortOrder?, filter: MangaListFilter?): List<Manga> =
 		runInterruptible(Dispatchers.IO) {
@@ -77,7 +59,9 @@ class ExternalMangaRepository(
 		contentSource.getPages(chapter)
 	}
 
-	override suspend fun getPageUrl(page: MangaPage): String = page.url // TODO
+	override suspend fun getPageUrl(page: MangaPage): String = runInterruptible(Dispatchers.IO) {
+		contentSource.getPageUrl(page.url)
+	}
 
 	override suspend fun getRelatedMangaImpl(seed: Manga): List<Manga> = emptyList() // TODO
 }
