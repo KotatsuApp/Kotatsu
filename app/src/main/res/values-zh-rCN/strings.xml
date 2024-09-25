@@ -314,7 +314,7 @@
     <string name="feed">更新</string>
     <string name="memory_usage_pattern">%1$s - %2$s</string>
     <string name="not_found_404">没有章节或已被删除</string>
-    <string name="reader_control_ltr_summary">不修改翻页方式到已经设置的阅读模式，例：按下右键总是翻到下一页，此设置只对硬件设备有效</string>
+    <string name="reader_control_ltr_summary">不修改翻页方向到已经设置的阅读模式，例：按下右键总是翻到下一页，此设置只对硬件设备有效</string>
     <string name="reader_control_ltr">简易操作</string>
     <string name="history_shortcuts_summary">长按应用图标显示最近阅读的漫画</string>
     <string name="history_shortcuts">显示最近阅读漫画的快捷方式</string>
@@ -712,4 +712,6 @@
     <string name="filter_search_warning">本图源不支持筛选搜索，筛选器已被清除</string>
     <string name="manga_replaced">来自(%2$s)源的\"%1$s\"漫画已替换成来自(%4$s)源的\"%3$s\"</string>
     <string name="popular_in_hour">一小时内热门</string>
+    <string name="demographic_kodomo">子供向</string>
+    <string name="content_type_one_shot">短篇</string>
 </resources>
