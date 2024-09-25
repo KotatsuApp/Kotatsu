@@ -709,7 +709,7 @@
     <string name="demographic_josei">女性向</string>
     <string name="years">年</string>
     <string name="any">所有</string>
-    <string name="filter_search_warning">本图源不支持筛选搜索，已经选定的筛选已被重置。</string>
+    <string name="filter_search_warning">本图源不支持筛选搜索，筛选器已被清除</string>
     <string name="manga_replaced">来自(%2$s)源的\"%1$s\"漫画已替换成来自(%4$s)源的\"%3$s\"</string>
     <string name="popular_in_hour">一小时内热门</string>
 </resources>
