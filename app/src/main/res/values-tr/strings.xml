@@ -713,4 +713,6 @@
     <string name="years">Yıl</string>
     <string name="any">Hepsi</string>
     <string name="filter_search_warning">Bu kaynak filtrelerle aramayı desteklemiyor. Filtreleriniz temizlendi</string>
+    <string name="demographic_kodomo">Kodomo</string>
+    <string name="content_type_one_shot">Bir kerelik</string>
 </resources>
