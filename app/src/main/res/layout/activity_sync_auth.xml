@@ -161,6 +161,13 @@
 		android:visibility="gone"
 		app:constraint_referenced_ids="textView_subtitle_2,button_back,button_done,layout_password" />
 
+	<androidx.constraintlayout.widget.Barrier
+		android:id="@+id/barrier_input"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:barrierDirection="bottom"
+		app:constraint_referenced_ids="layout_email,layout_password" />
+
 	<View
 		android:id="@+id/view_line"
 		android:layout_width="4dp"
@@ -184,7 +191,7 @@
 		app:drawableStartCompat="@drawable/ic_alert_outline"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/view_line"
-		app:layout_constraintTop_toBottomOf="@id/layout_email" />
+		app:layout_constraintTop_toBottomOf="@id/barrier_input" />
 
 	<TextView
 		android:id="@+id/textView_hint_body"
