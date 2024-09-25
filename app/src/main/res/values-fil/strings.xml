@@ -334,7 +334,7 @@
     <string name="allow_unstable_updates_summary">Makakuha ng paunawa tungkol sa mga unstable build</string>
     <string name="network_unavailable">Hindi magagamit ang network</string>
     <string name="network_unavailable_hint">I-on ang Wi-Fi o mobile network para magbasa ng manga online</string>
-    <string name="reader_control_ltr_summary">Ang pag-tap sa kanang gilid, o pagpindot sa kanan na key, ay palaging lilipat sa susunod na pahina.</string>
+    <string name="reader_control_ltr_summary">Huwag i-adjust ang direksyon ng pagpalit ng pahina sa reader mode, hal. kapag pindutin ang kanan (right) na key ay palaging lumilipat sa susunod na pahina. Ang opsyong ito ay nakakaapekto lamang sa mga hardware input device</string>
     <string name="reader_slider">Ipakita ang slider ng paglipat ng pahina</string>
     <string name="manga_error_description_pattern">Mga detalye ng error:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Subukang &lt;a href=%2$s&gt;magbukas ng manga sa isang web browser&lt;/a&gt; upang matiyak na available ito sa souce&lt;br&gt;2. Tiyaking ginagamit mo ang &lt;a href=kotatsu://about&gt;pinakabagong bersyon ng Kotatsu&lt;/a&gt;&lt;br&gt;3. Kung available ito, magpadala ng ulat ng error sa mga developer.</string>
     <string name="enable_logging">Paganahin ang pag-log</string>
@@ -693,4 +693,18 @@
     <string name="manga_replaced">Ang Manga na \"%1$s\" (%2$s) ay pinalitan ng \"%3$s\" (%4$s)</string>
     <string name="no_fix_required">Di kinakailangan ng paayos sa \"%s\"</string>
     <string name="no_alternatives_found">Walang alternatibong nahanap para sa \"%s\"</string>
+    <string name="content_type_novel">Nobela</string>
+    <string name="recently_added">Kamakailang idinagdag</string>
+    <string name="added_long_ago">Matagal nang naidagdag</string>
+    <string name="popular_in_hour">Sikat sa oras na ito</string>
+    <string name="popular_today">Sikat ngayong araw</string>
+    <string name="popular_in_week">Sikat ngayong linggo</string>
+    <string name="popular_in_month">Sikat ngayong buwan</string>
+    <string name="popular_in_year">Sikat ngayong taon</string>
+    <string name="original_language">Orihinal na wika</string>
+    <string name="year">Taon</string>
+    <string name="years">Mga Taon</string>
+    <string name="any">Kahit ano</string>
+    <string name="filter_search_warning">Ang source na ito ay hindi sinusuportahan ang paghahanap na may mga filter. Ang iyong mga filter ay na-clear</string>
+    <string name="demographics">Demograpiko</string>
 </resources>
