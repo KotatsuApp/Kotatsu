@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.domain
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.net.Uri
@@ -140,7 +141,7 @@ class PageLoader @Inject constructor(
 					val entry = zip.getEntry(uri.fragment)
 					context.ensureRamAtLeast(entry.size * 2)
 					zip.getInputStream(zip.getEntry(uri.fragment)).use {
-						BitmapFactory.decodeStream(it)
+						checkBitmapNotNull(BitmapFactory.decodeStream(it))
 					}
 				}
 			}
@@ -149,7 +150,7 @@ class PageLoader @Inject constructor(
 			val file = uri.toFile()
 			context.ensureRamAtLeast(file.length() * 2)
 			runInterruptible(Dispatchers.IO) {
-				BitmapFactory.decodeFile(file.absolutePath)
+				checkBitmapNotNull(BitmapFactory.decodeFile(file.absolutePath))
 			}.use { image ->
 				image.compressToPNG(file)
 			}
@@ -244,6 +245,8 @@ class PageLoader @Inject constructor(
 	private fun isLowRam(): Boolean {
 		return context.ramAvailable <= FileSize.MEGABYTES.convert(PREFETCH_MIN_RAM_MB, FileSize.BYTES)
 	}
+
+	private fun checkBitmapNotNull(bitmap: Bitmap?): Bitmap = checkNotNull(bitmap) { "Cannot decode bitmap" }
 
 	private fun Deferred<Uri>.isValid(): Boolean {
 		return getCompletionResultOrNull()?.map { uri ->
