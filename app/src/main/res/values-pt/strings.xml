@@ -666,7 +666,6 @@
     <string name="unstable_feature">Característica instável</string>
     <string name="unstable_feature_summary">Esta função é experimental. Certifique-se de ter um backup para evitar perda de dados</string>
     <string name="content_type_novel">Romance</string>
-    <string name="content_type_manhua"></string>
     <string name="recently_added">Adicionado recentemente</string>
     <string name="added_long_ago">Adicionado há muito tempo</string>
     <string name="popular_today">Popular hoje</string>
@@ -677,7 +676,6 @@
     <string name="original_language">Idioma original</string>
     <string name="year">Ano</string>
     <string name="demographics">Demografia</string>
-    <string name="demographic_shounen"></string>
     <string name="years">Anos</string>
     <string name="any">Qualquer</string>
     <string name="invalid_server_address_message">Endereço de Servidor Inválido</string>
