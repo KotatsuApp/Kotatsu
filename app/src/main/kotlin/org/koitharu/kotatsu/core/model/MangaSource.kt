@@ -62,6 +62,10 @@ val ContentType.titleResId
 		ContentType.MANHUA -> R.string.content_type_manhua
 		ContentType.NOVEL -> R.string.content_type_novel
 		ContentType.ONE_SHOT -> R.string.content_type_one_shot
+		ContentType.DOUJINSHI -> R.string.content_type_doujinshi
+		ContentType.IMAGE_SET -> R.string.content_type_image_set
+		ContentType.ARTIST_CG -> R.string.content_type_artist_cg
+		ContentType.GAME_CG -> R.string.content_type_game_cg
 	}
 
 tailrec fun MangaSource.unwrap(): MangaSource = if (this is MangaSourceInfo) {

@@ -729,4 +729,8 @@
 	<string name="filter_search_warning">This source does not support search with filters. Your filters have been cleared</string>
 	<string name="demographic_kodomo">Kodomo</string>
 	<string name="content_type_one_shot">One shot</string>
+	<string name="content_type_doujinshi">Doujinshi</string>
+	<string name="content_type_image_set">Image set</string>
+	<string name="content_type_artist_cg">Artist CG</string>
+	<string name="content_type_game_cg">Game CG</string>
 </resources>
