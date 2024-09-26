@@ -64,7 +64,7 @@
     <string name="zoom_mode_fit_center">Pagkasyahin sa gitna</string>
     <string name="zoom_mode_keep_start">Panatilihin sa simula</string>
     <string name="black_dark_theme_summary">Gumagamit ng mas kaunting power sa mga AMOLED na screen</string>
-    <string name="backup_restore">I-backup at i-restore</string>
+    <string name="backup_restore">I-backup at I-restore</string>
     <string name="data_restored">Naibalik na</string>
     <string name="preparing_">Naghahanda…</string>
     <string name="file_not_found">Hindi nahanap ang file</string>
@@ -165,8 +165,8 @@
     <string name="black_dark_theme">Itim</string>
     <string name="create_backup">Lumikha ng data backup</string>
     <string name="restore_backup">I-restore mula sa backup</string>
-    <string name="data_restored_success">Naibalik ang lahat ng data</string>
-    <string name="data_restored_with_errors">Ang data ay naibalik, ngunit may mga error</string>
+    <string name="data_restored_success">Na-restore ang lahat ng data</string>
+    <string name="data_restored_with_errors">Ang data ay na-restore, ngunit may mga error</string>
     <string name="reader_mode_hint">Ang napiling konpigurasyon ay maaalala para sa manga na ito</string>
     <string name="about_app_translation_summary">Isalin ang app na ito</string>
     <string name="auth_complete">Awtorisado na</string>
@@ -707,4 +707,5 @@
     <string name="any">Kahit ano</string>
     <string name="filter_search_warning">Ang source na ito ay hindi sinusuportahan ang paghahanap na may mga filter. Ang iyong mga filter ay na-clear</string>
     <string name="demographics">Demograpiko</string>
+    <string name="content_type_image_set">Set ng mga imahe</string>
 </resources>
