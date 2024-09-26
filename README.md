@@ -1,8 +1,8 @@
 # Kotatsu
 
-Kotatsu is a free and open source manga reader for Android.
+Kotatsu is a free and open-source manga reader for Android with built-in online content sources.
 
-![Android 5.0](https://img.shields.io/badge/android-5.0+-brightgreen) ![Kotlin](https://img.shields.io/github/languages/top/KotatsuApp/Kotatsu) ![License](https://img.shields.io/github/license/KotatsuApp/Kotatsu) [![weblate](https://hosted.weblate.org/widgets/kotatsu/-/strings/svg-badge.svg)](https://hosted.weblate.org/engage/kotatsu/) [![Telegram](https://img.shields.io/badge/chat-telegram-60ACFF)](https://t.me/kotatsuapp) [![Discord](https://img.shields.io/discord/898363402467045416?color=5865f2&label=discord)](https://discord.gg/NNJ5RgVBC5)
+[![Sources count](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FKotatsuApp%2Fkotatsu-parsers%2Frefs%2Fheads%2Fmaster%2F.github%2Fsummary.yaml&query=total&label=manga%20sources&color=%23E9321C)](https://github.com/KotatsuApp/kotatsu-parsers) ![Android 5.0](https://img.shields.io/badge/android-5.0+-brightgreen) [![weblate](https://hosted.weblate.org/widgets/kotatsu/-/strings/svg-badge.svg)](https://hosted.weblate.org/engage/kotatsu/) [![Telegram](https://img.shields.io/badge/chat-telegram-60ACFF)](https://t.me/kotatsuapp) [![Discord](https://img.shields.io/discord/898363402467045416?color=5865f2&label=discord)](https://discord.gg/NNJ5RgVBC5) [![License](https://img.shields.io/github/license/KotatsuApp/Kotatsu)](https://github.com/KotatsuApp/Kotatsu/blob/devel/LICENSE)
 
 ### Download
 
@@ -12,16 +12,15 @@ Kotatsu is a free and open source manga reader for Android.
 ### Main Features
 
 * Online [manga catalogues](https://github.com/KotatsuApp/kotatsu-parsers)
-* Search manga by name and genres
+* Search manga by name, genres, and more filters
 * Reading history and bookmarks
-* Favourites organized by user-defined categories
+* Favorites organized by user-defined categories
 * Downloading manga and reading it offline. Third-party CBZ archives also supported
 * Tablet-optimized Material You UI
-* Standard and Webtoon-optimized reader
+* Standard and Webtoon-optimized customizable reader
 * Notifications about new chapters with updates feed
 * Integration with manga tracking services: Shikimori, AniList, MyAnimeList, Kitsu
-* Password/fingerprint protect access to the app
-* History and favourites [synchronization](https://github.com/KotatsuApp/kotatsu-syncserver) across devices
+* Password/fingerprint-protected access to the app
 
 ### Screenshots
 
