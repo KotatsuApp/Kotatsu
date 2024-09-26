@@ -21,14 +21,15 @@ import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.core.util.ext.requireBody
 import org.koitharu.kotatsu.core.util.ext.sanitizeHeaderValue
 import org.koitharu.kotatsu.core.util.ext.toList
+import org.koitharu.kotatsu.core.util.ext.use
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.bitmap.Bitmap
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.network.UserAgents
+import org.koitharu.kotatsu.parsers.util.map
 import java.lang.ref.WeakReference
 import java.util.Locale
 import javax.inject.Inject
@@ -76,32 +77,25 @@ class MangaLoaderContextImpl @Inject constructor(
 	}
 
 	override fun redrawImageResponse(response: Response, redraw: (image: Bitmap) -> Bitmap): Response {
-		val image = response.requireBody().byteStream()
-
-		val opts = BitmapFactory.Options()
-		opts.inMutable = true
-		val bitmap = BitmapFactory.decodeStream(image, null, opts) ?: error("Cannot decode bitmap")
-		val result = redraw(BitmapWrapper.create(bitmap)) as BitmapWrapper
-
-		val body = Buffer().also {
-			result.compressTo(it.outputStream())
-		}.asResponseBody("image/jpeg".toMediaType())
-
-		return response.newBuilder()
-			.body(body)
-			.build()
+		return response.map { body ->
+			val opts = BitmapFactory.Options()
+			opts.inMutable = true
+			BitmapFactory.decodeStream(body.byteStream(), null, opts)?.use { bitmap ->
+				(redraw(BitmapWrapper.create(bitmap)) as BitmapWrapper).use { result ->
+					Buffer().also {
+						result.compressTo(it.outputStream())
+					}.asResponseBody("image/jpeg".toMediaType())
+				}
+			} ?: error("Cannot decode bitmap")
+		}
 	}
 
-	override fun createBitmap(width: Int, height: Int): Bitmap {
-		return BitmapWrapper.create(width, height)
-	}
+	override fun createBitmap(width: Int, height: Int): Bitmap = BitmapWrapper.create(width, height)
 
 	@MainThread
-	private fun obtainWebView(): WebView {
-		return webViewCached?.get() ?: WebView(androidContext).also {
-			it.configureForParser(null)
-			webViewCached = WeakReference(it)
-		}
+	private fun obtainWebView(): WebView = webViewCached?.get() ?: WebView(androidContext).also {
+		it.configureForParser(null)
+		webViewCached = WeakReference(it)
 	}
 
 	private fun obtainWebViewUserAgent(): String {
