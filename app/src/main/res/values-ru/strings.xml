@@ -715,4 +715,6 @@
     <string name="manga_replaced">Манга «%1$s» (%2$s) заменена на «%3$s» (%4$s)</string>
     <string name="no_fix_required">Исправление для «%s» не требуется</string>
     <string name="no_alternatives_found">Альтернативы для «%s» не найдены</string>
+    <string name="content_type_doujinshi">Додзинси</string>
+    <string name="content_type_image_set">Набор изображений</string>
 </resources>
