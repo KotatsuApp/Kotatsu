@@ -9,7 +9,6 @@ import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
@@ -19,7 +18,6 @@ import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import javax.inject.Inject
-import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsView.OnChipClickListener,
@@ -68,17 +66,12 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 			binding.root.isVisible = false
 			return
 		}
+		binding.chipsTags.setChips(header.chips)
+		binding.root.isVisible = true
 		if (binding.root.context.isAnimationsEnabled) {
 			binding.scrollView.smoothScrollTo(0, 0)
 		} else {
 			binding.scrollView.scrollTo(0, 0)
 		}
-		binding.chipsTags.setChips(header.chips + moreTagsChip())
-		binding.root.isVisible = true
 	}
-
-	private fun moreTagsChip() = ChipsView.ChipModel(
-		title = getString(R.string.more),
-		icon = materialR.drawable.abc_ic_menu_overflow_material,
-	)
 }

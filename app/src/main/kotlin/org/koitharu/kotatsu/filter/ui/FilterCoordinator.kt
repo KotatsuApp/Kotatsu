@@ -267,32 +267,50 @@ class FilterCoordinator @Inject constructor(
 	}
 
 	fun setQuery(value: String?) {
+		val newQuery = value?.trim()?.takeUnless { it.isEmpty() }
 		currentListFilter.update { oldValue ->
-			oldValue.copy(query = value?.trim()?.takeUnless { it.isEmpty() })
+			if (capabilities.isSearchWithFiltersSupported || newQuery == null) {
+				oldValue.copy(query = newQuery)
+			} else {
+				MangaListFilter(query = newQuery)
+			}
 		}
 	}
 
 	fun setLocale(value: Locale?) {
 		currentListFilter.update { oldValue ->
-			oldValue.copy(locale = value)
+			oldValue.copy(
+				locale = value,
+				query = oldValue.takeQueryIfSupported(),
+			)
 		}
 	}
 
 	fun setOriginalLocale(value: Locale?) {
 		currentListFilter.update { oldValue ->
-			oldValue.copy(originalLocale = value)
+			oldValue.copy(
+				originalLocale = value,
+				query = oldValue.takeQueryIfSupported(),
+			)
 		}
 	}
 
 	fun setYear(value: Int) {
 		currentListFilter.update { oldValue ->
-			oldValue.copy(year = value)
+			oldValue.copy(
+				year = value,
+				query = oldValue.takeQueryIfSupported(),
+			)
 		}
 	}
 
 	fun setYearRange(valueFrom: Int, valueTo: Int) {
 		currentListFilter.update { oldValue ->
-			oldValue.copy(yearFrom = valueFrom, yearTo = valueTo)
+			oldValue.copy(
+				yearFrom = valueFrom,
+				yearTo = valueTo,
+				query = oldValue.takeQueryIfSupported(),
+			)
 		}
 	}
 
@@ -300,6 +318,7 @@ class FilterCoordinator @Inject constructor(
 		currentListFilter.update { oldValue ->
 			oldValue.copy(
 				states = if (isSelected) oldValue.states + value else oldValue.states - value,
+				query = oldValue.takeQueryIfSupported(),
 			)
 		}
 	}
@@ -308,6 +327,7 @@ class FilterCoordinator @Inject constructor(
 		currentListFilter.update { oldValue ->
 			oldValue.copy(
 				contentRating = if (isSelected) oldValue.contentRating + value else oldValue.contentRating - value,
+				query = oldValue.takeQueryIfSupported(),
 			)
 		}
 	}
@@ -316,6 +336,7 @@ class FilterCoordinator @Inject constructor(
 		currentListFilter.update { oldValue ->
 			oldValue.copy(
 				types = if (isSelected) oldValue.types + value else oldValue.types - value,
+				query = oldValue.takeQueryIfSupported(),
 			)
 		}
 	}
@@ -330,6 +351,7 @@ class FilterCoordinator @Inject constructor(
 			oldValue.copy(
 				tags = newTags,
 				tagsExclude = oldValue.tagsExclude - newTags,
+				query = oldValue.takeQueryIfSupported(),
 			)
 		}
 	}
@@ -344,12 +366,20 @@ class FilterCoordinator @Inject constructor(
 			oldValue.copy(
 				tags = oldValue.tags - newTagsExclude,
 				tagsExclude = newTagsExclude,
+				query = oldValue.takeQueryIfSupported(),
 			)
 		}
 	}
 
 	fun getAllTags(): Flow<Result<List<MangaTag>>> = filterOptions.asFlow().map {
 		it.map { x -> x.availableTags.sortedWithSafe(TagTitleComparator(sourceLocale)) }
+	}
+
+	private fun MangaListFilter.takeQueryIfSupported() = when {
+		capabilities.isSearchWithFiltersSupported -> query
+		query.isNullOrEmpty() -> query
+		hasNonSearchOptions() -> null
+		else -> query
 	}
 
 	private fun getTopTags(limit: Int): Flow<Result<List<MangaTag>>> = combine(
