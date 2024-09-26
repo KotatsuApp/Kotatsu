@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.filter.ui
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
@@ -86,6 +87,16 @@ class FilterHeaderProducer @Inject constructor(
 				),
 			)
 		}
+		val hasTags = result.any { it.data is MangaTag }
+		if (hasTags) {
+			result.addLast(moreTagsChip())
+		}
 		return result
 	}
+
+	private fun moreTagsChip() = ChipsView.ChipModel(
+		titleResId = R.string.more,
+		isDropdown = true,
+		// icon = materialR.drawable.abc_ic_menu_overflow_material,
+	)
 }
