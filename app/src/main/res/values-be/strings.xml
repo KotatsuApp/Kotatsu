@@ -303,7 +303,7 @@
     <string name="manga_error_description_pattern">Дэталі памылкі:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Паспрабуйце &lt;a href=%2$s&gt;адкрыць мангу ў вэб-браўзеры&lt;/a&gt;, каб пераканацца, што яна даступная ў крыніцы&lt;br&gt;2. Упэўніцеся, што вы выкарыстоўваеце &lt;a href=kotatsu://about&gt;апошнюю версію Kotatsu&lt;/a&gt;&lt;br&gt;3. Калі ён даступны, адпраўце распрацоўнікам справаздачу аб памылцы.</string>
     <string name="history_shortcuts">Паказаць апошнія ярлыкі мангі</string>
     <string name="history_shortcuts_summary">Зрабіце нядаўнюю мангу даступнай, доўга націскаючы на значок праграмы</string>
-    <string name="reader_control_ltr_summary">Націск на правы край або націск правай клавішы заўсёды перамыкае на наступную старонку.</string>
+    <string name="reader_control_ltr_summary">Не настройвайце кірунак пераключэння старонак у рэжым чытання, напрыклад, націск правай клавішы заўсёды перамыкае на наступную старонку. Гэтая опцыя ўплывае толькі на апаратныя прылады ўводу</string>
     <string name="reader_control_ltr">Эрганамічнае кіраванне рэжымам чытання</string>
     <string name="color_correction">Карэкцыя колеру</string>
     <string name="brightness">Яркасць</string>
@@ -684,4 +684,35 @@
     <string name="unstable_feature_summary">Гэта функцыя эксперыментальная. Пераканайцеся, што ў вас ёсць рэзервовая копія, каб пазбегнуць страты даных</string>
     <string name="scrobbler_auth_intro">Увайдзіце, каб настроіць інтэграцыю з %s. Гэта дазволіць вам адсочваць прагрэс і статус чытання мангі</string>
     <string name="stuck">Завісла</string>
+    <string name="content_type_novel">Навэла</string>
+    <string name="content_type_manhua">Маньхуа</string>
+    <string name="content_type_manhwa">Манхва</string>
+    <string name="recently_added">Нядаўна дададзена</string>
+    <string name="added_long_ago">Дадаў даўно</string>
+    <string name="popular_today">Папулярна сёння</string>
+    <string name="popular_in_week">Папулярна на гэтым тыдні</string>
+    <string name="popular_in_month">Папулярна ў гэтым месяцы</string>
+    <string name="popular_in_year">Папулярна ў гэтым годзе</string>
+    <string name="original_language">Зыходная мова</string>
+    <string name="year">Год</string>
+    <string name="popular_in_hour">Папулярна ў гэтую гадзіну</string>
+    <string name="demographic_shounen">Сёнэн</string>
+    <string name="demographics">Дэмаграфія</string>
+    <string name="demographic_shoujo">Сёдзё</string>
+    <string name="demographic_seinen">Сэйнэн</string>
+    <string name="demographic_josei">Дзёсэй</string>
+    <string name="years">Гады</string>
+    <string name="any">Любой</string>
+    <string name="content_type_one_shot">Ваншот</string>
+    <string name="filter_search_warning">Гэтая крыніца не падтрымлівае пошук з фільтрамі. Вашы фільтры былі ачышчаны</string>
+    <string name="demographic_kodomo">Кодомо</string>
+    <string name="downloads_background">Фонавыя загрузкі</string>
+    <string name="manga_with_downloaded_chapters">Манга з загружанымі раздзеламі</string>
+    <string name="download_new_chapters">Спампаваць новыя раздзелы</string>
+    <string name="manga_replaced">Манга «%1$s» (%2$s) заменена на «%3$s» (%4$s)</string>
+    <string name="fixing_manga">Выпраўленне мангі</string>
+    <string name="fixed">Выпраўлена паспяхова</string>
+    <string name="no_fix_required">Выпраўленне для «%s» не патрабуецца</string>
+    <string name="no_alternatives_found">Альтэрнатывы для «%s» не знойдзены</string>
+    <string name="manga_fix_prompt">Гэтая функцыя знойдзе альтэрнатыўныя крыніцы для абранай мангі. Задача зойме некаторы час і будзе выконвацца ў фонавым рэжыме</string>
 </resources>
