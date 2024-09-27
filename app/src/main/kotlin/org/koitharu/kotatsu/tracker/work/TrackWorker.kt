@@ -45,13 +45,12 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
-import org.koitharu.kotatsu.core.logs.FileLogger
-import org.koitharu.kotatsu.core.logs.TrackerLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.TrackerDownloadStrategy
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.onEachIndexed
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
@@ -80,7 +79,6 @@ class TrackWorker @AssistedInject constructor(
 	private val getTracksUseCase: GetTracksUseCase,
 	private val checkNewChaptersUseCase: CheckNewChaptersUseCase,
 	private val workManager: WorkManager,
-	@TrackerLogger private val logger: FileLogger,
 	private val localRepositoryLazy: Lazy<LocalMangaRepository>,
 	private val downloadSchedulerLazy: Lazy<DownloadWorker.Scheduler>,
 ) : CoroutineWorker(context, workerParams) {
@@ -90,17 +88,15 @@ class TrackWorker @AssistedInject constructor(
 	override suspend fun doWork(): Result {
 		notificationHelper.updateChannels()
 		val isForeground = trySetForeground()
-		logger.log("doWork(): attempt $runAttemptCount")
 		return try {
 			doWorkImpl(isFullRun = isForeground && TAG_ONESHOT in tags)
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {
-			logger.log("fatal", e)
+			e.printStackTraceDebug()
 			Result.failure()
 		} finally {
 			withContext(NonCancellable) {
-				logger.flush()
 				notificationManager.cancel(WORKER_NOTIFICATION_ID)
 			}
 		}
@@ -111,7 +107,6 @@ class TrackWorker @AssistedInject constructor(
 			return Result.success()
 		}
 		val tracks = getTracksUseCase(if (isFullRun) Int.MAX_VALUE else BATCH_SIZE)
-		logger.log("Total ${tracks.size} tracks")
 		if (tracks.isEmpty()) {
 			return Result.success()
 		}
@@ -154,7 +149,6 @@ class TrackWorker @AssistedInject constructor(
 			when (it) {
 				is MangaUpdates.Failure -> {
 					val e = it.error
-					logger.log("checkUpdatesAsync", e)
 					if (e is CloudFlareProtectedException) {
 						CaptchaNotifier(applicationContext).notify(e)
 					}

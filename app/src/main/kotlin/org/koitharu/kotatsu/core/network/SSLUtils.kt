@@ -35,7 +35,7 @@ fun OkHttpClient.Builder.disableCertificateVerification() = also { builder ->
 	}
 }
 
-fun OkHttpClient.Builder.installExtraCertsificates(context: Context) = also { builder ->
+fun OkHttpClient.Builder.installExtraCertificates(context: Context) = also { builder ->
 	val certificatesBuilder = HandshakeCertificates.Builder()
 		.addPlatformTrustedCertificates()
 	val assets = context.assets.list("").orEmpty()

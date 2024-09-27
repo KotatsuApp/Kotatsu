@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.tracker.categories.TrackerCategoriesConfigSheet
 import org.koitharu.kotatsu.settings.utils.DozeHelper
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
+import org.koitharu.kotatsu.tracker.ui.debug.TrackerDebugActivity
 import org.koitharu.kotatsu.tracker.work.TrackerNotificationHelper
 import javax.inject.Inject
 
@@ -113,6 +114,11 @@ class TrackerSettingsFragment :
 
 			AppSettings.KEY_IGNORE_DOZE -> {
 				dozeHelper.startIgnoreDoseActivity()
+				true
+			}
+
+			AppSettings.KEY_TRACKER_DEBUG -> {
+				startActivity(Intent(preference.context, TrackerDebugActivity::class.java))
 				true
 			}
 
