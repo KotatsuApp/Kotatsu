@@ -74,7 +74,7 @@ interface NetworkModule {
 			if (settings.isSSLBypassEnabled) {
 				disableCertificateVerification()
 			} else {
-				installExtraCertsificates(contextProvider.get())
+				installExtraCertificates(contextProvider.get())
 			}
 			cache(cache)
 			addInterceptor(GZipInterceptor())

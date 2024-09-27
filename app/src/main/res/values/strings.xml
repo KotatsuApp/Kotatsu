@@ -733,4 +733,8 @@
 	<string name="content_type_image_set">Image set</string>
 	<string name="content_type_artist_cg">Artist CG</string>
 	<string name="content_type_game_cg">Game CG</string>
+	<string name="debug">Debug</string>
+	<string name="source_code">Source code</string>
+	<string name="user_manual">User manual</string>
+	<string name="telegram_group">Telegram group</string>
 </resources>

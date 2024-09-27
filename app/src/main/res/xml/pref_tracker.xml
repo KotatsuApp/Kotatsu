@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools">
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
@@ -59,22 +58,29 @@
 		android:title="@string/download_new_chapters"
 		app:useSimpleSummaryProvider="true" />
 
-	<Preference
-		android:dependency="tracker_enabled"
-		android:key="ignore_dose"
-		android:persistent="false"
-		android:summary="@string/disable_battery_optimization_summary"
-		android:title="@string/disable_battery_optimization"
-		app:allowDividerAbove="true"
-		app:isPreferenceVisible="false"
-		tools:isPrefrenceVisible="true" />
+	<PreferenceCategory android:title="@string/debug">
 
-	<org.koitharu.kotatsu.settings.utils.LinksPreference
-		android:icon="@drawable/ic_info_outline"
-		android:key="track_warning"
-		android:persistent="false"
-		android:selectable="false"
-		android:summary="@string/tracker_warning"
-		app:allowDividerAbove="true" />
+		<Preference
+			android:dependency="tracker_enabled"
+			android:key="tracker_debug"
+			android:persistent="false"
+			android:summary="@string/tracker_debug_info_summary"
+			android:title="@string/tracker_debug_info" />
 
+		<Preference
+			android:dependency="tracker_enabled"
+			android:key="ignore_dose"
+			android:persistent="false"
+			android:summary="@string/disable_battery_optimization_summary"
+			android:title="@string/disable_battery_optimization"
+			app:isPreferenceVisible="false" />
+
+		<org.koitharu.kotatsu.settings.utils.LinksPreference
+			android:icon="@drawable/ic_info_outline"
+			android:key="track_warning"
+			android:persistent="false"
+			android:selectable="false"
+			android:summary="@string/tracker_warning" />
+
+	</PreferenceCategory>
 </PreferenceScreen>

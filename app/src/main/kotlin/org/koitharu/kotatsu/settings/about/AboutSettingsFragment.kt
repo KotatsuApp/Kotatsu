@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.settings.about
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
@@ -14,22 +15,15 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.github.VersionId
 import org.koitharu.kotatsu.core.github.isStable
-import org.koitharu.kotatsu.core.logs.FileLogger
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
-import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.tracker.ui.debug.TrackerDebugActivity
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 
 	private val viewModel by viewModels<AboutSettingsViewModel>()
-
-	@Inject
-	lateinit var loggers: Set<@JvmSuppressWildcards FileLogger>
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_about)
@@ -40,12 +34,6 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 		findPreference<SwitchPreferenceCompat>(AppSettings.KEY_UPDATES_UNSTABLE)?.run {
 			isEnabled = VersionId(BuildConfig.VERSION_NAME).isStable
 			if (!isEnabled) isChecked = true
-		}
-		if (!settings.isTrackerEnabled) {
-			findPreference<Preference>(AppSettings.KEY_TRACKER_DEBUG)?.run {
-				isEnabled = false
-				setSummary(R.string.check_for_new_chapters_disabled)
-			}
 		}
 	}
 
@@ -64,21 +52,27 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 				true
 			}
 
-			AppSettings.KEY_APP_TRANSLATION -> {
-				openLink(getString(R.string.url_weblate), preference.title)
+			AppSettings.KEY_LINK_WEBLATE -> {
+				openLink(R.string.url_weblate, preference.title)
 				true
 			}
 
-			AppSettings.KEY_LOGS_SHARE -> {
-				ShareHelper(preference.context).shareLogs(loggers)
+			AppSettings.KEY_LINK_GITHUB -> {
+				openLink(R.string.url_github, preference.title)
 				true
 			}
 
-			AppSettings.KEY_TRACKER_DEBUG -> {
-				startActivity(Intent(preference.context, TrackerDebugActivity::class.java))
+			AppSettings.KEY_LINK_MANUAL -> {
+				openLink(R.string.url_user_manual, preference.title)
 				true
 			}
 
+			AppSettings.KEY_LINK_TELEGRAM -> {
+				if (!openLink(R.string.url_telegram, null)) {
+					openLink(R.string.url_telegram_web, preference.title)
+				}
+				true
+			}
 
 			else -> super.onPreferenceTreeClick(preference)
 		}
@@ -87,15 +81,15 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 	private fun onUpdateAvailable(version: AppVersion?) {
 		if (version == null) {
 			Snackbar.make(listView, R.string.no_update_available, Snackbar.LENGTH_SHORT).show()
-			return
+		} else {
+			startActivity(Intent(requireContext(), AppUpdateActivity::class.java))
 		}
-		startActivity(Intent(requireContext(), AppUpdateActivity::class.java))
 	}
 
-	private fun openLink(url: String, title: CharSequence?) {
+	private fun openLink(@StringRes url: Int, title: CharSequence?): Boolean {
 		val intent = Intent(Intent.ACTION_VIEW)
-		intent.data = url.toUri()
-		startActivitySafe(
+		intent.data = getString(url).toUri()
+		return startActivitySafe(
 			if (title != null) {
 				Intent.createChooser(intent, title)
 			} else {

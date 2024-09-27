@@ -10,6 +10,7 @@ import android.content.SyncResult
 import android.content.SyncStats
 import android.database.Cursor
 import android.net.Uri
+import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.core.content.contentValuesOf
 import dagger.assisted.Assisted
@@ -18,9 +19,9 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITE_CATEGORIES
@@ -28,10 +29,9 @@ import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.db.TABLE_MANGA
 import org.koitharu.kotatsu.core.db.TABLE_MANGA_TAGS
 import org.koitharu.kotatsu.core.db.TABLE_TAGS
-import org.koitharu.kotatsu.core.logs.FileLogger
-import org.koitharu.kotatsu.core.logs.SyncLogger
 import org.koitharu.kotatsu.core.network.BaseHttpClient
 import org.koitharu.kotatsu.core.util.ext.parseJsonOrNull
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toContentValues
 import org.koitharu.kotatsu.core.util.ext.toJson
 import org.koitharu.kotatsu.core.util.ext.toRequestBody
@@ -50,7 +50,6 @@ class SyncHelper @AssistedInject constructor(
 	@Assisted private val account: Account,
 	@Assisted private val provider: ContentProviderClient,
 	private val settings: SyncSettings,
-	@SyncLogger private val logger: FileLogger,
 ) {
 
 	private val authorityHistory = context.getString(R.string.sync_authority_history)
@@ -75,7 +74,7 @@ class SyncHelper @AssistedInject constructor(
 			.url("$baseUrl/resource/$TABLE_FAVOURITES")
 			.post(data.toRequestBody())
 			.build()
-		val response = httpClient.newCall(request).execute().log().parseJsonOrNull()
+		val response = httpClient.newCall(request).execute().parseJsonOrNull()
 		if (response != null) {
 			val categoriesResult = upsertFavouriteCategories(response.getJSONArray(TABLE_FAVOURITE_CATEGORIES))
 			stats.numDeletes += categoriesResult.first().count?.toLong() ?: 0L
@@ -97,7 +96,7 @@ class SyncHelper @AssistedInject constructor(
 			.url("$baseUrl/resource/$TABLE_HISTORY")
 			.post(data.toRequestBody())
 			.build()
-		val response = httpClient.newCall(request).execute().log().parseJsonOrNull()
+		val response = httpClient.newCall(request).execute().parseJsonOrNull()
 		if (response != null) {
 			val result = upsertHistory(
 				json = response.getJSONArray(TABLE_HISTORY),
@@ -110,15 +109,12 @@ class SyncHelper @AssistedInject constructor(
 	}
 
 	fun onError(e: Throwable) {
-		if (logger.isEnabled) {
-			logger.log("Sync error", e)
-		}
+		e.printStackTraceDebug()
 	}
 
 	fun onSyncComplete(result: SyncResult) {
-		if (logger.isEnabled) {
-			logger.log("Sync finished: ${result.toDebugString()}")
-			logger.flushBlocking()
+		if (BuildConfig.DEBUG) {
+			Log.i("Sync", "Sync finished: ${result.toDebugString()}")
 		}
 	}
 
@@ -297,12 +293,6 @@ class SyncHelper @AssistedInject constructor(
 	private fun JSONObject.removeJSONObject(name: String) = remove(name) as JSONObject
 
 	private fun JSONObject.removeJSONArray(name: String) = remove(name) as JSONArray
-
-	private fun Response.log() = apply {
-		if (logger.isEnabled) {
-			logger.log("$code ${request.url}")
-		}
-	}
 
 	@AssistedFactory
 	interface Factory {

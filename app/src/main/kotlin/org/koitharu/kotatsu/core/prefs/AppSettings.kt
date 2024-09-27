@@ -239,9 +239,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			}
 		} ?: EnumSet.allOf(SearchSuggestionType::class.java)
 
-	val isLoggingEnabled: Boolean
-		get() = prefs.getBoolean(KEY_LOGGING_ENABLED, false)
-
 	var isBiometricProtectionEnabled: Boolean
 		get() = prefs.getBoolean(KEY_PROTECT_APP_BIOMETRIC, true)
 		set(value) = prefs.edit { putBoolean(KEY_PROTECT_APP_BIOMETRIC, value) }
@@ -665,7 +662,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_WEBTOON_ZOOM_OUT = "webtoon_zoom_out"
 		const val KEY_PREFETCH_CONTENT = "prefetch_content"
 		const val KEY_APP_LOCALE = "app_locale"
-		const val KEY_LOGGING_ENABLED = "logging"
 		const val KEY_SOURCES_GRID = "sources_grid"
 		const val KEY_UPDATES_UNSTABLE = "updates_unstable"
 		const val KEY_TIPS_CLOSED = "tips_closed"
@@ -709,9 +705,11 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_APP_VERSION = "app_version"
 		const val KEY_IGNORE_DOZE = "ignore_dose"
 		const val KEY_TRACKER_DEBUG = "tracker_debug"
-		const val KEY_LOGS_SHARE = "logs_share"
 		const val KEY_APP_UPDATE = "app_update"
-		const val KEY_APP_TRANSLATION = "about_app_translation"
+		const val KEY_LINK_WEBLATE = "about_app_translation"
+		const val KEY_LINK_TELEGRAM = "about_telegram"
+		const val KEY_LINK_GITHUB = "about_github"
+		const val KEY_LINK_MANUAL = "about_help"
 		const val PROXY_TEST = "proxy_test"
 
 		// old keys are for migration only

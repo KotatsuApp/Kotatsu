@@ -3,45 +3,40 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<PreferenceCategory android:title="@string/app_name">
+	<Preference
+		android:key="app_version"
+		android:persistent="false"
+		android:summary="@string/check_for_updates" />
 
-		<Preference
-			android:key="app_version"
-			android:persistent="false"
-			android:summary="@string/check_for_updates" />
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="updates_unstable"
+		android:summary="@string/allow_unstable_updates_summary"
+		android:title="@string/allow_unstable_updates" />
 
-		<SwitchPreferenceCompat
-			android:defaultValue="false"
-			android:key="updates_unstable"
-			android:summary="@string/allow_unstable_updates_summary"
-			android:title="@string/allow_unstable_updates" />
+	<Preference
+		android:key="about_help"
+		android:persistent="false"
+		android:summary="@string/url_user_manual"
+		android:title="@string/user_manual"
+		app:allowDividerAbove="true" />
 
-		<SwitchPreferenceCompat
-			android:defaultValue="false"
-			android:key="logging"
-			android:summary="@string/enable_logging_summary"
-			android:title="@string/enable_logging"
-			app:allowDividerAbove="true" />
+	<Preference
+		android:key="about_github"
+		android:persistent="false"
+		android:summary="@string/url_github"
+		android:title="@string/source_code" />
 
-		<Preference
-			android:dependency="logging"
-			android:key="logs_share"
-			android:title="@string/share_logs" />
+	<Preference
+		android:key="about_app_translation"
+		android:persistent="false"
+		android:summary="@string/url_weblate"
+		android:title="@string/about_app_translation_summary" />
 
-		<Preference
-			android:key="tracker_debug"
-			android:persistent="false"
-			android:summary="@string/tracker_debug_info_summary"
-			android:title="@string/tracker_debug_info" />
-
-		<Preference
-			android:key="about_app_translation"
-			android:summary="@string/about_app_translation_summary"
-			android:title="@string/about_app_translation"
-			app:allowDividerAbove="true" />
-
-		<org.koitharu.kotatsu.settings.utils.AboutLinksPreference />
-
-	</PreferenceCategory>
+	<Preference
+		android:key="about_telegram"
+		android:persistent="false"
+		android:summary="@string/url_telegram_web"
+		android:title="@string/telegram_group" />
 
 </PreferenceScreen>

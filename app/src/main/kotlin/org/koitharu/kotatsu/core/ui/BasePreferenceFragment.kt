@@ -80,11 +80,11 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 		(activity as? SettingsActivity)?.setSectionTitle(title)
 	}
 
-	protected fun startActivitySafe(intent: Intent) {
-		try {
-			startActivity(intent)
-		} catch (_: ActivityNotFoundException) {
-			Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
-		}
+	protected fun startActivitySafe(intent: Intent): Boolean = try {
+		startActivity(intent)
+		true
+	} catch (_: ActivityNotFoundException) {
+		Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
+		false
 	}
 }
