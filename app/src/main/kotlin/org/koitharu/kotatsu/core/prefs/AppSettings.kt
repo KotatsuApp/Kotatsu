@@ -43,6 +43,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	private val connectivityManager = context.connectivityManager
 	private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
+
 	var telegramChatId: String?
 		get() = preferences.getString("telegram_chat_id", null)
 		set(value) {

@@ -43,5 +43,4 @@
 		android:defaultValue=""
 		android:summary="Enter the chat ID where backups should be sent" />
 
-
 </androidx.preference.PreferenceScreen>

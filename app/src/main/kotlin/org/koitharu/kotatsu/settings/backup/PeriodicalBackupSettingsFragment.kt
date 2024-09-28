@@ -194,3 +194,4 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 		return resolveFile(context)?.path ?: toString()
 	}
 }
+
