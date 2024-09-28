@@ -21,4 +21,10 @@
     <plurals name="months_ago">
         <item quantity="other">%1$d ヶ月前</item>
     </plurals>
+    <plurals name="hours">
+        <item quantity="other">%1$d時間</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="other">%1$d分</item>
+    </plurals>
 </resources>
