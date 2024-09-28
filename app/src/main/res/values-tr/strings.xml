@@ -715,4 +715,12 @@
     <string name="filter_search_warning">Bu kaynak filtrelerle aramayı desteklemiyor. Filtreleriniz temizlendi</string>
     <string name="demographic_kodomo">Kodomo</string>
     <string name="content_type_one_shot">Bir kerelik</string>
+    <string name="content_type_image_set">Resim kümesi</string>
+    <string name="content_type_doujinshi">Doujinshi</string>
+    <string name="content_type_artist_cg">Sanatçı CG</string>
+    <string name="content_type_game_cg">Oyun CG</string>
+    <string name="debug">Hata ayıkla</string>
+    <string name="user_manual">Kullanıcı kılavuzu</string>
+    <string name="source_code">Kaynak kodu</string>
+    <string name="telegram_group">Telegram grubu</string>
 </resources>
