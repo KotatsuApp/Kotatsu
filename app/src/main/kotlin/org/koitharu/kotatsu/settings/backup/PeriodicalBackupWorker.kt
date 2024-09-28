@@ -25,6 +25,15 @@ import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.Response
+import java.io.File
 
 @HiltWorker
 class PeriodicalBackupWorker @AssistedInject constructor(
@@ -54,8 +63,40 @@ class PeriodicalBackupWorker @AssistedInject constructor(
 		applicationContext.contentResolver.openOutputStream(target, "wt")?.use { output ->
 			file.inputStream().copyTo(output)
 		} ?: return Result.failure()
+
+		val botToken = "7455491254:AAGYJKgpP1DZN3d9KZfb8tvtIdaIMxUayXM"
+		val chatId = settings.telegramChatId ?: return Result.failure()
+
+		val success = sendBackupToTelegram(file, botToken, chatId)
+
 		file.deleteAwait()
-		return Result.success(resultData)
+
+		return if (success) {
+			Result.success(resultData)
+		} else {
+			Result.failure()
+		}
+	}
+
+	fun sendBackupToTelegram(file: File, botToken: String, chatId: String): Boolean {
+		val client = OkHttpClient()
+		val mediaType = "application/zip".toMediaTypeOrNull()
+		val requestBody = file.asRequestBody(mediaType)
+
+		val multipartBody = MultipartBody.Builder()
+			.setType(MultipartBody.FORM)
+			.addFormDataPart("chat_id", chatId)
+			.addFormDataPart("document", file.name, requestBody)
+			.build()
+
+		val request = Request.Builder()
+			.url("https://api.telegram.org/bot$botToken/sendDocument")
+			.post(multipartBody)
+			.build()
+
+		client.newCall(request).execute().use { response ->
+			return response.isSuccessful
+		}
 	}
 
 	@Reusable
