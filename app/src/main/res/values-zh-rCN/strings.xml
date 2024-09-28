@@ -714,4 +714,8 @@
     <string name="popular_in_hour">一小时内热门</string>
     <string name="demographic_kodomo">子供向</string>
     <string name="content_type_one_shot">短篇</string>
+    <string name="content_type_doujinshi">同人志</string>
+    <string name="content_type_image_set">图片集</string>
+    <string name="content_type_game_cg">游戏CG</string>
+    <string name="content_type_artist_cg">艺术家CG</string>
 </resources>
