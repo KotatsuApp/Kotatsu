@@ -718,4 +718,9 @@
     <string name="content_type_image_set">图片集</string>
     <string name="content_type_game_cg">游戏CG</string>
     <string name="content_type_artist_cg">艺术家CG</string>
+    <string name="debug">调试</string>
+    <string name="source_code">源代码</string>
+    <string name="user_manual">用户手册</string>
+    <string name="telegram_group">Telegram 群</string>
+    <string name="manga_with_downloaded_chapters">有已下载章节的漫画</string>
 </resources>
