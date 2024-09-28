@@ -52,7 +52,6 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 			openTelegramBot("kotatsu_backup_bot")
 			true
 		}
-		// Кнопка для проверки работы API
 		val checkApiButton = Preference(requireContext()).apply {
 			key = "check_api_working"
 			title = "Проверить работу API"
@@ -102,7 +101,6 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 			telegramIntent.setPackage("org.telegram.messenger")
 			startActivity(telegramIntent)
 		} catch (e: Exception) {
-			// Если Telegram не установлен, открываем через браузер
 			val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/$botUsername"))
 			startActivity(browserIntent)
 		}
