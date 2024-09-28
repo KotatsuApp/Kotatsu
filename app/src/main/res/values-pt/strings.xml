@@ -705,4 +705,11 @@
     <string name="sort_order_asc">Ascendente</string>
     <string name="by_date">Data</string>
     <string name="popularity">Popularidade</string>
+    <string name="content_type_artist_cg">Artista CG</string>
+    <string name="debug">Depurar</string>
+    <string name="source_code">Código fonte</string>
+    <string name="user_manual">Manual do usuário</string>
+    <string name="telegram_group">Grupo Telegram</string>
+    <string name="content_type_image_set">Conjunto de imagens</string>
+    <string name="content_type_game_cg">Jogo CG</string>
 </resources>
