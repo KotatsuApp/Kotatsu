@@ -715,4 +715,12 @@
     <string name="filter_search_warning">Bộ lọc của bạn đã bị xóa do nguồn đọc này không hỗ trợ cho việc tìm kiếm bằng bộ lọc</string>
     <string name="demographic_kodomo">Dành cho trẻ em</string>
     <string name="content_type_one_shot">One shot</string>
+    <string name="content_type_image_set">Đặt hình ảnh</string>
+    <string name="content_type_game_cg">Game CG</string>
+    <string name="content_type_doujinshi">Doujinshi</string>
+    <string name="content_type_artist_cg">Họa sĩ CG</string>
+    <string name="source_code">Mã nguồn</string>
+    <string name="user_manual">Hướng dẫn sử dụng</string>
+    <string name="telegram_group">Nhóm Telegram</string>
+    <string name="debug">Gỡ lỗi</string>
 </resources>
