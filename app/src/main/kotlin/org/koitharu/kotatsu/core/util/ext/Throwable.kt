@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.res.Resources
 import androidx.annotation.DrawableRes
 import coil.network.HttpException
+import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
 import okio.FileNotFoundException
 import okio.IOException
 import okio.ProtocolException
@@ -80,6 +81,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is UnknownHostException,
 	is SocketTimeoutException -> resources.getString(R.string.network_error)
 
+	is ImageDecodeException -> resources.getString(R.string.error_corrupted_file)
 	is NoDataReceivedException -> resources.getString(R.string.error_no_data_received)
 	is IncompatiblePluginException -> resources.getString(R.string.plugin_incompatible)
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
