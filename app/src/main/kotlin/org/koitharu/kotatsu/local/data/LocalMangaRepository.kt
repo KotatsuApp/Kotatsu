@@ -230,9 +230,12 @@ class LocalMangaRepository @Inject constructor(
 		val dispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)
 		for (file in files) {
 			launch(dispatcher) {
-				val m = LocalMangaInput.ofOrNull(file)?.getManga()
-				if (m != null) {
-					send(m)
+				runCatchingCancellable {
+					LocalMangaInput.ofOrNull(file)?.getManga()
+				}.onFailure { e ->
+					e.printStackTraceDebug()
+				}.onSuccess { m ->
+					if (m != null) send(m)
 				}
 			}
 		}
