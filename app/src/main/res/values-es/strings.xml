@@ -316,7 +316,7 @@
     <string name="history_shortcuts_summary">Hacer que los mangas recientes estén disponibles mediante una pulsación larga en el icono de la aplicación</string>
     <string name="feed">Fuente</string>
     <string name="history_shortcuts">Mostrar los accesos directos a los mangas recientes</string>
-    <string name="reader_control_ltr_summary">No modifique el método de paso de página al modo de lectura ya configurado. Por ejemplo: presionar el botón derecho siempre pasa a la página siguiente. Esta configuración solo es válida para dispositivos de hardware.</string>
+    <string name="reader_control_ltr_summary">No modifique el método de paso de página al modo de lectura ya configurado. Por ejemplo: presionar el botón derecho siempre pasa a la página siguiente. Esta configuración solo es válida para dispositivos de hardware</string>
     <string name="reader_control_ltr">Control ergonómico del lector</string>
     <string name="color_correction">Corrección del color</string>
     <string name="brightness">Brillo</string>
@@ -715,4 +715,12 @@
     <string name="filter_search_warning">Esta fuente no admite búsquedas con filtros. Se han eliminado los filtros</string>
     <string name="content_type_one_shot">Un disparo</string>
     <string name="demographic_kodomo">Kodomo</string>
+    <string name="content_type_artist_cg">Artista CG</string>
+    <string name="content_type_doujinshi">Dōjinshi</string>
+    <string name="content_type_game_cg">Juego CG</string>
+    <string name="content_type_image_set">Conjunto de imágenes</string>
+    <string name="user_manual">Manual de usuario</string>
+    <string name="source_code">Código fuente</string>
+    <string name="telegram_group">Grupo de Telegram</string>
+    <string name="debug">Depurar</string>
 </resources>
