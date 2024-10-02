@@ -22,50 +22,49 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
 
-	private lateinit var onBackPressedCallback: WebViewBackPressedCallback
+    private lateinit var onBackPressedCallback: WebViewBackPressedCallback
 
-	@Inject
-	lateinit var mangaRepositoryFactory: MangaRepository.Factory
+    @Inject
+    lateinit var mangaRepositoryFactory: MangaRepository.Factory
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
-			return
-		}
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
-		}
-		val mangaSource = MangaSource(intent?.getStringExtra(EXTRA_SOURCE))
-		val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository
-		repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)
-		viewBinding.webView.configureForParser(userAgent)
-		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
-		viewBinding.webView.webViewClient = BrowserClient(this)
-		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)
-		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView)
-		onBackPressedDispatcher.addCallback(onBackPressedCallback)
-		if (savedInstanceState != null) {
-			return
-		}
-		val url = intent?.dataString
-		if (url.isNullOrEmpty()) {
-			finishAfterTransition()
-		} else {
-			onTitleChanged(
-				intent?.getStringExtra(EXTRA_TITLE) ?: getString(R.string.loading_),
-				url,
-			)
-			viewBinding.webView.loadUrl(url)
-		}
-	}
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
+            return
+        }
+        supportActionBar?.run {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
+        }
+        val mangaSource = MangaSource(intent?.getStringExtra(EXTRA_SOURCE))
+        val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository
+        val userAgent = repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)
+        viewBinding.webView.configureForParser(userAgent)
+        CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
+        viewBinding.webView.webViewClient = BrowserClient(this)
+        viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)
+        onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView)
+        onBackPressedDispatcher.addCallback(onBackPressedCallback)
+        if (savedInstanceState != null) {
+            return
+        }
+        val url = intent?.dataString
+        if (url.isNullOrEmpty()) {
+            finishAfterTransition()
+        } else {
+            onTitleChanged(
+                intent?.getStringExtra(EXTRA_TITLE) ?: getString(R.string.loading_),
+                url,
+            )
+            viewBinding.webView.loadUrl(url)
+        }
+    }
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		super.onCreateOptionsMenu(menu)
@@ -137,17 +136,17 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			bottom = insets.bottom,
 		)
 	}
+	
+    companion object {
 
-	companion object {
+        private const val EXTRA_TITLE = "title"
+        private const val EXTRA_SOURCE = "source"
 
-		private const val EXTRA_TITLE = "title"
-		private const val EXTRA_SOURCE = "source"
-
-		fun newIntent(context: Context, url: String, source: MangaSource?, title: String?): Intent {
-			return Intent(context, BrowserActivity::class.java)
-				.setData(Uri.parse(url))
-				.putExtra(EXTRA_TITLE, title)
-				.putExtra(EXTRA_SOURCE, source?.name)
-		}
-	}
+        fun newIntent(context: Context, url: String, source: MangaSource?, title: String?): Intent {
+            return Intent(context, BrowserActivity::class.java)
+                .setData(Uri.parse(url))
+                .putExtra(EXTRA_TITLE, title)
+                .putExtra(EXTRA_SOURCE, source?.name)
+        }
+    }
 }
