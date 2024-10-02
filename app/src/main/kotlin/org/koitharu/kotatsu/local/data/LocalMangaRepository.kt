@@ -15,10 +15,9 @@ import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.AlphanumComparator
-import org.koitharu.kotatsu.core.util.ext.children
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
-import org.koitharu.kotatsu.core.util.ext.filterWith
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.withChildren
 import org.koitharu.kotatsu.local.data.index.LocalMangaIndex
 import org.koitharu.kotatsu.local.data.input.LocalMangaInput
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
@@ -216,10 +215,15 @@ class LocalMangaRepository @Inject constructor(
 		}
 		val dirs = storageManager.getWriteableDirs()
 		runInterruptible(Dispatchers.IO) {
-			dirs.flatMap { dir ->
-				dir.children().filterWith(TempFileFilter())
-			}.forEach { file ->
-				file.deleteRecursively()
+			val filter = TempFileFilter()
+			dirs.forEach { dir ->
+				dir.withChildren { children ->
+					children.forEach { child ->
+						if (filter.accept(child)) {
+							child.deleteRecursively()
+						}
+					}
+				}
 			}
 		}
 		return true
@@ -246,7 +250,7 @@ class LocalMangaRepository @Inject constructor(
 	private suspend fun getAllFiles() = storageManager.getReadableDirs()
 		.asSequence()
 		.flatMap { dir ->
-			dir.children().filterNot { it.isHidden }
+			dir.withChildren { children -> children.filterNot { it.isHidden }.toList() }
 		}
 
 	private fun Collection<LocalManga>.unwrap(): List<Manga> = map { it.manga }

@@ -129,7 +129,7 @@ class LocalMangaDirOutput(
 		index.getChapterFileName(chapter.value.id)?.let {
 			return it
 		}
-		val baseName = "${chapter.index}_${chapter.value.name.toFileNameSafe()}".take(18)
+		val baseName = "${chapter.index}_${chapter.value.name.toFileNameSafe()}".take(32)
 		var i = 0
 		while (true) {
 			val name = (if (i == 0) baseName else baseName + "_$i") + ".cbz"

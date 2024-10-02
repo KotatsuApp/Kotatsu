@@ -81,6 +81,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import java.io.File
@@ -359,7 +360,7 @@ class DownloadWorker @AssistedInject constructor(
 			.use { response ->
 				val file = File(destination, UUID.randomUUID().toString() + ".tmp")
 				try {
-					checkNotNull(response.body).use { body ->
+					response.requireBody().use { body ->
 						file.sink(append = false).buffer().use {
 							it.writeAllCancellable(body.source())
 						}

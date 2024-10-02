@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.local.data.isZipUri
 import org.koitharu.kotatsu.local.data.util.withExtraCloseable
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.mimeType
+import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import java.util.zip.ZipFile
 import javax.inject.Inject
@@ -98,9 +99,7 @@ class MangaPageFetcher(
 					if (!response.isSuccessful) {
 						throw HttpException(response)
 					}
-					val body = checkNotNull(response.body) {
-						"Null response"
-					}
+					val body = response.requireBody()
 					val mimeType = response.mimeType
 					val file = body.use {
 						pagesCache.put(pageUrl, it.source())

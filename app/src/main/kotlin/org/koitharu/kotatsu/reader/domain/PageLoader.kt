@@ -56,6 +56,7 @@ import org.koitharu.kotatsu.local.data.isFileUri
 import org.koitharu.kotatsu.local.data.isZipUri
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import java.util.LinkedList
@@ -233,8 +234,7 @@ class PageLoader @Inject constructor(
 			else -> {
 				val request = createPageRequest(pageUrl, page.source)
 				imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
-					val body = checkNotNull(response.body) { "Null response body" }
-					body.withProgress(progress).use {
+					response.requireBody().withProgress(progress).use {
 						cache.put(pageUrl, it.source())
 					}
 				}.toUri()

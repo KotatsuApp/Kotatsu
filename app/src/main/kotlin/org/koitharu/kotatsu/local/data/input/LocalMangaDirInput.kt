@@ -6,11 +6,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.util.AlphanumComparator
-import org.koitharu.kotatsu.core.util.ext.children
 import org.koitharu.kotatsu.core.util.ext.creationTime
 import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.core.util.ext.toListSorted
 import org.koitharu.kotatsu.core.util.ext.walkCompat
+import org.koitharu.kotatsu.core.util.ext.withChildren
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.hasCbzExtension
 import org.koitharu.kotatsu.local.data.hasImageExtension
@@ -101,13 +101,14 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> = runInterruptible(Dispatchers.IO) {
 		val file = chapter.url.toUri().toFile()
 		if (file.isDirectory) {
-			file.children()
-				.filter { it.isFile && hasImageExtension(it) }
-				.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
-				.map {
-					val pageUri = it.toUri().toString()
-					MangaPage(pageUri.longHashCode(), pageUri, null, LocalMangaSource)
-				}
+			file.withChildren { children ->
+				children
+					.filter { it.isFile && hasImageExtension(it) }
+					.toListSorted(compareBy(AlphanumComparator()) { x -> x.name })
+			}.map {
+				val pageUri = it.toUri().toString()
+				MangaPage(pageUri.longHashCode(), pageUri, null, LocalMangaSource)
+			}
 		} else {
 			ZipFile(file).use { zip ->
 				zip.entries()
@@ -153,6 +154,6 @@ class LocalMangaDirInput(root: File) : LocalMangaInput(root) {
 	}
 
 	private fun File.isChapterDirectory(): Boolean {
-		return isDirectory && children().any { hasImageExtension(it) }
+		return isDirectory && withChildren { children -> children.any { hasImageExtension(it) } }
 	}
 }

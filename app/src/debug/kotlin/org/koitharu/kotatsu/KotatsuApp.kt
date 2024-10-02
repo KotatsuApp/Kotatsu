@@ -25,51 +25,50 @@ class KotatsuApp : BaseApp() {
 			null
 		}
 		StrictMode.setThreadPolicy(
-			StrictMode.ThreadPolicy.Builder()
-				.detectAll()
-				.penaltyLog()
-				.run {
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && notifier != null) {
-						penaltyListener(notifier.executor, notifier)
-					} else {
-						this
-					}
-				}.build(),
+			StrictMode.ThreadPolicy.Builder().apply {
+				detectNetwork()
+				detectDiskWrites()
+				detectCustomSlowCalls()
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) detectUnbufferedIo()
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) detectResourceMismatches()
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) detectExplicitGc()
+				penaltyLog()
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && notifier != null) {
+					penaltyListener(notifier.executor, notifier)
+				}
+			}.build(),
 		)
 		StrictMode.setVmPolicy(
-			StrictMode.VmPolicy.Builder()
-				.detectActivityLeaks()
-				.detectLeakedSqlLiteObjects()
-				.detectLeakedClosableObjects()
-				.detectLeakedRegistrationObjects()
-				.setClassInstanceLimit(LocalMangaRepository::class.java, 1)
-				.setClassInstanceLimit(PagesCache::class.java, 1)
-				.setClassInstanceLimit(MangaLoaderContext::class.java, 1)
-				.setClassInstanceLimit(PageLoader::class.java, 1)
-				.setClassInstanceLimit(ReaderViewModel::class.java, 1)
-				.penaltyLog()
-				.run {
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && notifier != null) {
-						penaltyListener(notifier.executor, notifier)
-					} else {
-						this
-					}
-				}.build(),
-		)
-		FragmentStrictMode.defaultPolicy = FragmentStrictMode.Policy.Builder()
-			.penaltyDeath()
-			.detectFragmentReuse()
-			.detectWrongFragmentContainer()
-			.detectRetainInstanceUsage()
-			.detectSetUserVisibleHint()
-			.detectFragmentTagUsage()
-			.penaltyLog()
-			.run {
-				if (notifier != null) {
-					penaltyListener(notifier)
-				} else {
-					this
+			StrictMode.VmPolicy.Builder().apply {
+				detectActivityLeaks()
+				detectLeakedSqlLiteObjects()
+				detectLeakedClosableObjects()
+				detectLeakedRegistrationObjects()
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) detectContentUriWithoutPermission()
+				detectFileUriExposure()
+				setClassInstanceLimit(LocalMangaRepository::class.java, 1)
+				setClassInstanceLimit(PagesCache::class.java, 1)
+				setClassInstanceLimit(MangaLoaderContext::class.java, 1)
+				setClassInstanceLimit(PageLoader::class.java, 1)
+				setClassInstanceLimit(ReaderViewModel::class.java, 1)
+				penaltyLog()
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && notifier != null) {
+					penaltyListener(notifier.executor, notifier)
 				}
 			}.build()
+		)
+		FragmentStrictMode.defaultPolicy = FragmentStrictMode.Policy.Builder().apply {
+			detectWrongFragmentContainer()
+			detectFragmentTagUsage()
+			detectRetainInstanceUsage()
+			detectSetUserVisibleHint()
+			detectWrongNestedHierarchy()
+			detectTargetFragmentUsage()
+			detectFragmentReuse()
+			penaltyLog()
+			if (notifier != null) {
+				penaltyListener(notifier)
+			}
+		}.build()
 	}
 }

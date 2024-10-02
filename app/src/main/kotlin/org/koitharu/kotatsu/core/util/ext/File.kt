@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.fs.FileSequence
 import java.io.File
-import java.io.FileFilter
 import java.io.InputStream
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.zip.ZipEntry
@@ -87,9 +86,13 @@ suspend fun File.computeSize(): Long = runInterruptible(Dispatchers.IO) {
 	walkCompat(includeDirectories = false).sumOf { it.length() }
 }
 
-fun File.children() = FileSequence(this)
+inline fun <R> File.withChildren(block: (children: Sequence<File>) -> R): R = FileSequence(this).use(block)
 
-fun Sequence<File>.filterWith(filter: FileFilter): Sequence<File> = filter { f -> filter.accept(f) }
+fun FileSequence(dir: File): FileSequence = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+	FileSequence.StreamImpl(dir)
+} else {
+	FileSequence.ListImpl(dir)
+}
 
 val File.creationTime
 	get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
