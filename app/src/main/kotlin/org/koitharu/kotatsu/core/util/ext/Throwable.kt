@@ -81,7 +81,11 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is UnknownHostException,
 	is SocketTimeoutException -> resources.getString(R.string.network_error)
 
-	is ImageDecodeException -> resources.getString(R.string.error_corrupted_file)
+	is ImageDecodeException -> resources.getString(
+		R.string.error_image_format,
+		format.ifNullOrEmpty { resources.getString(R.string.unknown) },
+	)
+
 	is NoDataReceivedException -> resources.getString(R.string.error_no_data_received)
 	is IncompatiblePluginException -> resources.getString(R.string.plugin_incompatible)
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
