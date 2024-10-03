@@ -17,9 +17,6 @@ data class Bookmark(
 	val percent: Float,
 ) : ListModel {
 
-	val directImageUrl: String?
-		get() = if (isImageUrlDirect()) imageUrl else null
-
 	val imageLoadData: Any
 		get() = if (isImageUrlDirect()) imageUrl else toMangaPage()
 

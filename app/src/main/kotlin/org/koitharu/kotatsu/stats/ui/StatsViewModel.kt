@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StatsViewModel @Inject constructor(
 	private val repository: StatsRepository,
-	private val favouritesRepository: FavouritesRepository,
+	favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
 
 	val period = MutableStateFlow(StatsPeriod.WEEK)

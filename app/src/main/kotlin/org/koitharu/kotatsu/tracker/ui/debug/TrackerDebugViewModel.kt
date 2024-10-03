@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TrackerDebugViewModel @Inject constructor(
-	private val db: MangaDatabase
+	db: MangaDatabase
 ) : BaseViewModel() {
 
 	val content = db.getTracksDao().observeAll()

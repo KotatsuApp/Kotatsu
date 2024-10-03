@@ -28,10 +28,12 @@ open class ReorderableListAdapter<T : ListModel> : ListDelegationAdapter<List<T>
 		listListeners.forEach { it.onCurrentListChanged(oldList, newList) }
 	}
 
-	@Deprecated("Use emit() to dispatch list updates", level = DeprecationLevel.ERROR)
-	override fun setItems(items: List<T>?) {
-		super.setItems(items)
-	}
+	@Deprecated(
+		message = "Use emit() to dispatch list updates",
+		level = DeprecationLevel.ERROR,
+		replaceWith = ReplaceWith("emit(items)"),
+	)
+	override fun setItems(items: List<T>?) = super.setItems(items)
 
 	fun reorderItems(oldPos: Int, newPos: Int) {
 		Collections.swap(items ?: return, oldPos, newPos)

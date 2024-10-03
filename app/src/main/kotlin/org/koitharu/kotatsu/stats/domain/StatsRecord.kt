@@ -1,17 +1,9 @@
 package org.koitharu.kotatsu.stats.domain
 
-import android.content.Context
-import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.ColorUtils
-import com.google.android.material.R
-import com.google.android.material.color.MaterialColors
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.details.data.ReadingTime
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.util.concurrent.TimeUnit
-import kotlin.math.absoluteValue
 
 data class StatsRecord(
 	val manga: Manga?,

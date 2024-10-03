@@ -13,6 +13,7 @@ import androidx.core.graphics.ColorUtils
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.replaceWith
+import kotlin.math.atan2
 import kotlin.math.sqrt
 
 class PieChartView @JvmOverloads constructor(
@@ -130,7 +131,7 @@ class PieChartView @JvmOverloads constructor(
 		if (distance < chartBounds.height() / 4f || distance > chartBounds.centerX()) {
 			return -1
 		}
-		var touchAngle = Math.toDegrees(Math.atan2(dy, dx)).toFloat()
+		var touchAngle = Math.toDegrees(atan2(dy, dx)).toFloat()
 		if (touchAngle < 0) {
 			touchAngle += 360
 		}

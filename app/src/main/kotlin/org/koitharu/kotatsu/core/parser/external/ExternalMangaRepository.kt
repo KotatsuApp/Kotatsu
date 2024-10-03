@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import java.util.EnumSet
 
 class ExternalMangaRepository(
-	private val contentResolver: ContentResolver,
+	contentResolver: ContentResolver,
 	override val source: ExternalMangaSource,
 	cache: MemoryContentCache,
 ) : CachingMangaRepository(cache) {
