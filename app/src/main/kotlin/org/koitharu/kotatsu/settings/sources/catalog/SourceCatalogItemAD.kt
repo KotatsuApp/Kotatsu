@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.settings.sources.catalog
 
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePaddingRelative
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -16,12 +17,14 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getThemeDimensionPixelOffset
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemEmptyHintBinding
 import org.koitharu.kotatsu.databinding.ItemSourceCatalogBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import com.google.android.material.R as materialR
 
 fun sourceCatalogItemSourceAD(
 	coil: ImageLoader,
@@ -39,6 +42,13 @@ fun sourceCatalogItemSourceAD(
 	binding.root.setOnClickListener { v ->
 		listener.onItemClick(item, v)
 	}
+	val basePadding = context.getThemeDimensionPixelOffset(
+		materialR.attr.listPreferredItemPaddingEnd,
+		binding.root.paddingStart,
+	)
+	binding.root.updatePaddingRelative(
+		end = (basePadding - context.resources.getDimensionPixelOffset(R.dimen.margin_small)).coerceAtLeast(0),
+	)
 
 	bind {
 		binding.textViewTitle.text = item.source.getTitle(context)
