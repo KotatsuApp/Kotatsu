@@ -708,4 +708,8 @@
     <string name="filter_search_warning">Ang source na ito ay hindi sinusuportahan ang paghahanap na may mga filter. Ang iyong mga filter ay na-clear</string>
     <string name="demographics">Demograpiko</string>
     <string name="content_type_image_set">Set ng mga imahe</string>
+    <string name="debug">Mag-debug</string>
+    <string name="user_manual">Manwal ng gumagamit</string>
+    <string name="telegram_group">Grupo sa Telegram</string>
+    <string name="error_image_format">Di-suportadong format ng imahe: %s</string>
 </resources>
