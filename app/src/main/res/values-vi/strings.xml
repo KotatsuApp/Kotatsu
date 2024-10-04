@@ -723,4 +723,8 @@
     <string name="user_manual">Hướng dẫn sử dụng</string>
     <string name="telegram_group">Nhóm Telegram</string>
     <string name="debug">Gỡ lỗi</string>
+    <string name="error_image_format">Định dạng hình ảnh không được hỗ trợ: %s</string>
+    <string name="save_manga">Lưu manga</string>
+    <string name="start_download">Bắt đầu tải về</string>
+    <string name="save_manga_confirm">Lưu manga đã chọn? Điều này sẽ tiêu tốn bộ nhớ của máy và dữ liệu mạng của bạn</string>
 </resources>
