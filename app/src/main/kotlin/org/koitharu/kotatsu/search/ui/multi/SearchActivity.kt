@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.widgets.TipView
@@ -184,8 +185,11 @@ class SearchActivity :
 			}
 
 			R.id.action_save -> {
-				viewModel.download(collectSelectedItems())
-				mode?.finish()
+				val itemsSnapshot = collectSelectedItems()
+				CommonAlertDialogs.showDownloadConfirmation(this) { startPaused ->
+					mode?.finish()
+					viewModel.download(itemsSnapshot, isPaused = startPaused)
+				}
 				true
 			}
 

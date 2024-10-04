@@ -168,6 +168,7 @@ abstract class ChaptersPagesViewModel(
 			downloadScheduler.schedule(
 				manga = requireManga(),
 				chaptersIds = chaptersIds,
+				isPaused = false,
 				isSilent = false,
 			)
 			onDownloadStarted.call(Unit)

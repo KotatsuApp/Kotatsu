@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseFragment
+import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.list.FitHeightGridLayoutManager
 import org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager
@@ -238,6 +239,7 @@ abstract class MangaListFragment :
 	}
 
 	override fun onFilterOptionClick(option: ListFilterOption) {
+		selectionController?.clear()
 		(viewModel as? QuickFilterListener)?.toggleFilterOption(option)
 	}
 
@@ -322,8 +324,11 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_save -> {
-				viewModel.download(selectedItems)
-				mode?.finish()
+				val itemsSnapshot = selectedItems
+				CommonAlertDialogs.showDownloadConfirmation(context ?: return false) { startPaused ->
+					mode?.finish()
+					viewModel.download(itemsSnapshot, isPaused = startPaused)
+				}
 				true
 			}
 

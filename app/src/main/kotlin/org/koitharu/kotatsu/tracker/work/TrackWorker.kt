@@ -254,6 +254,7 @@ class TrackWorker @AssistedInject constructor(
 					downloadSchedulerLazy.get().schedule(
 						manga = mangaUpdates.manga,
 						chaptersIds = mangaUpdates.newChapters.mapToSet { it.id },
+						isPaused = false,
 						isSilent = true,
 					)
 				}

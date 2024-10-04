@@ -128,7 +128,11 @@ class DownloadWorker @AssistedInject constructor(
 		val chaptersIds = inputData.getLongArray(CHAPTERS_IDS)?.takeUnless { it.isEmpty() }
 		val downloadedIds = getDoneChapters(manga)
 		return try {
-			withContext(PausingHandle()) {
+			val pausingHandle = PausingHandle()
+			if (inputData.getBoolean(START_PAUSED, false)) {
+				pausingHandle.pause()
+			}
+			withContext(pausingHandle) {
 				downloadMangaImpl(manga, chaptersIds, downloadedIds)
 			}
 			Result.success(currentState.toWorkData())
@@ -431,10 +435,16 @@ class DownloadWorker @AssistedInject constructor(
 		private val settings: AppSettings,
 	) {
 
-		suspend fun schedule(manga: Manga, chaptersIds: Collection<Long>?, isSilent: Boolean) {
+		suspend fun schedule(
+			manga: Manga,
+			chaptersIds: Collection<Long>?,
+			isPaused: Boolean,
+			isSilent: Boolean,
+		) {
 			dataRepository.storeManga(manga)
 			val data = Data.Builder()
 				.putLong(MANGA_ID, manga.id)
+				.putBoolean(START_PAUSED, isPaused)
 				.putBoolean(IS_SILENT, isSilent)
 			if (!chaptersIds.isNullOrEmpty()) {
 				data.putLongArray(CHAPTERS_IDS, chaptersIds.toLongArray())
@@ -442,11 +452,15 @@ class DownloadWorker @AssistedInject constructor(
 			scheduleImpl(listOf(data.build()))
 		}
 
-		suspend fun schedule(manga: Collection<Manga>) {
+		suspend fun schedule(
+			manga: Collection<Manga>,
+			isPaused: Boolean,
+		) {
 			val data = manga.map {
 				dataRepository.storeManga(it)
 				Data.Builder()
 					.putLong(MANGA_ID, it.id)
+					.putBoolean(START_PAUSED, isPaused)
 					.build()
 			}
 			scheduleImpl(data)
@@ -556,6 +570,7 @@ class DownloadWorker @AssistedInject constructor(
 		const val MANGA_ID = "manga_id"
 		const val CHAPTERS_IDS = "chapters"
 		const val IS_SILENT = "silent"
+		const val START_PAUSED = "paused"
 		const val TAG = "download"
 	}
 }

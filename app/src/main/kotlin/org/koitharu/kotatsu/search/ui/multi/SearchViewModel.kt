@@ -109,9 +109,9 @@ class SearchViewModel @Inject constructor(
 		retryCounter.value += 1
 	}
 
-	fun download(items: Set<Manga>) {
+	fun download(items: Set<Manga>, isPaused: Boolean) {
 		launchJob(Dispatchers.Default) {
-			downloadScheduler.schedule(items)
+			downloadScheduler.schedule(items, isPaused)
 			onDownloadStarted.call(Unit)
 		}
 	}
