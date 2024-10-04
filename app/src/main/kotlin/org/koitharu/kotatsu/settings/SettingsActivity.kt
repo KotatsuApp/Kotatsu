@@ -10,6 +10,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.preference.Preference
@@ -70,10 +71,12 @@ class SettingsActivity :
 		caller: PreferenceFragmentCompat,
 		pref: Preference,
 	): Boolean {
-		val fm = supportFragmentManager
-		val fragment = fm.fragmentFactory.instantiate(classLoader, pref.fragment ?: return false)
-		fragment.arguments = pref.extras
-		openFragment(fragment, isFromRoot = caller is RootSettingsFragment)
+		val fragmentName = pref.fragment ?: return false
+		openFragment(
+			fragmentClass = FragmentFactory.loadFragmentClass(classLoader, fragmentName),
+			args = pref.peekExtras(),
+			isFromRoot = caller is RootSettingsFragment,
+		)
 		return true
 	}
 
@@ -93,11 +96,11 @@ class SettingsActivity :
 		} ?: setTitle(title ?: getString(R.string.settings))
 	}
 
-	fun openFragment(fragment: Fragment, isFromRoot: Boolean) {
+	fun openFragment(fragmentClass: Class<out Fragment>, args: Bundle?, isFromRoot: Boolean) {
 		val hasFragment = supportFragmentManager.findFragmentById(R.id.container) != null
 		supportFragmentManager.commit {
 			setReorderingAllowed(true)
-			replace(R.id.container, fragment)
+			replace(R.id.container, fragmentClass, args)
 			setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 			if (!isMasterDetails || (hasFragment && !isFromRoot)) {
 				addToBackStack(null)

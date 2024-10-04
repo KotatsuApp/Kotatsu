@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import java.util.Collections
+import org.koitharu.kotatsu.parsers.util.move
 import java.util.LinkedList
 
 open class ReorderableListAdapter<T : ListModel> : ListDelegationAdapter<List<T>>(), FlowCollector<List<T>?> {
@@ -36,7 +36,9 @@ open class ReorderableListAdapter<T : ListModel> : ListDelegationAdapter<List<T>
 	override fun setItems(items: List<T>?) = super.setItems(items)
 
 	fun reorderItems(oldPos: Int, newPos: Int) {
-		Collections.swap(items ?: return, oldPos, newPos)
+		val reordered = items?.toMutableList() ?: return
+		reordered.move(oldPos, newPos)
+		super.setItems(reordered)
 		notifyItemMoved(oldPos, newPos)
 	}
 

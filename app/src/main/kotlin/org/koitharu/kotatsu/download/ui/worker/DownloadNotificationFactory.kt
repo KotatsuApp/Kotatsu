@@ -213,13 +213,15 @@ class DownloadNotificationFactory @AssistedInject constructor(
 				builder.setWhen(System.currentTimeMillis())
 				builder.setStyle(NotificationCompat.BigTextStyle().bigText(state.errorMessage))
 				if (state.error.isReportable()) {
-					builder.addAction(
-						NotificationCompat.Action(
-							0,
-							context.getString(R.string.report),
-							ErrorReporterReceiver.getPendingIntent(context, state.error),
-						),
-					)
+					ErrorReporterReceiver.getPendingIntent(context, state.error)?.let { reportIntent ->
+						builder.addAction(
+							NotificationCompat.Action(
+								0,
+								context.getString(R.string.report),
+								reportIntent,
+							),
+						)
+					}
 				}
 			}
 

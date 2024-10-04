@@ -139,11 +139,13 @@ class ImportService : CoroutineIntentService() {
 			notification.setContentTitle(applicationContext.getString(R.string.error_occurred))
 				.setContentText(error.getDisplayMessage(applicationContext.resources))
 				.setSmallIcon(android.R.drawable.stat_notify_error)
-				.addAction(
+			ErrorReporterReceiver.getPendingIntent(applicationContext, error)?.let { reportIntent ->
+				notification.addAction(
 					R.drawable.ic_alert_outline,
 					applicationContext.getString(R.string.report),
-					ErrorReporterReceiver.getPendingIntent(applicationContext, error),
+					reportIntent,
 				)
+			}
 		}
 		return notification.build()
 	}

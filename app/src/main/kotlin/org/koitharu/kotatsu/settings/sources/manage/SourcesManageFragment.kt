@@ -106,8 +106,11 @@ class SourcesManageFragment :
 	}
 
 	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) {
-		val fragment = SourceSettingsFragment.newInstance(item.source)
-		(activity as? SettingsActivity)?.openFragment(fragment, false)
+		(activity as? SettingsActivity)?.openFragment(
+			fragmentClass = SourceSettingsFragment::class.java,
+			args = Bundle(1).apply { putString(SourceSettingsFragment.EXTRA_SOURCE, item.source.name) },
+			isFromRoot = false,
+		)
 	}
 
 	override fun onItemLiftClick(item: SourceConfigItem.SourceItem) {
