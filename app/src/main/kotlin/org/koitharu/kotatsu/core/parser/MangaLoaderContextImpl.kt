@@ -7,6 +7,7 @@ import android.util.Base64
 import android.webkit.WebView
 import androidx.annotation.MainThread
 import androidx.core.os.LocaleListCompat
+import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -30,6 +31,7 @@ import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.network.UserAgents
 import org.koitharu.kotatsu.parsers.util.map
+import org.koitharu.kotatsu.parsers.util.mimeType
 import java.lang.ref.WeakReference
 import java.util.Locale
 import javax.inject.Inject
@@ -86,7 +88,7 @@ class MangaLoaderContextImpl @Inject constructor(
 						result.compressTo(it.outputStream())
 					}.asResponseBody("image/jpeg".toMediaType())
 				}
-			} ?: error("Cannot decode bitmap")
+			} ?: throw ImageDecodeException(response.request.url.toString(), response.mimeType)
 		}
 	}
 

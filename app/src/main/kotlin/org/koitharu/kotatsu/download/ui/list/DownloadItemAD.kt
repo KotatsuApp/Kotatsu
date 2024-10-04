@@ -124,6 +124,7 @@ fun downloadItemAD(
 				binding.buttonCancel.isVisible = true
 				binding.buttonResume.isVisible = false
 				binding.buttonSkip.isVisible = false
+				binding.buttonSkipAll.isVisible = false
 				binding.buttonPause.isVisible = false
 			}
 
@@ -147,6 +148,7 @@ fun downloadItemAD(
 				binding.buttonResume.isVisible = item.isPaused
 				binding.buttonResume.setText(if (item.error == null) R.string.resume else R.string.retry)
 				binding.buttonSkip.isVisible = item.isPaused && item.error != null
+				binding.buttonSkipAll.isVisible = item.isPaused && item.error != null
 				binding.buttonPause.isVisible = item.canPause
 			}
 
@@ -169,6 +171,7 @@ fun downloadItemAD(
 				binding.buttonCancel.isVisible = false
 				binding.buttonResume.isVisible = false
 				binding.buttonSkip.isVisible = false
+				binding.buttonSkipAll.isVisible = false
 				binding.buttonPause.isVisible = false
 			}
 
@@ -182,6 +185,7 @@ fun downloadItemAD(
 				binding.buttonCancel.isVisible = false
 				binding.buttonResume.isVisible = false
 				binding.buttonSkip.isVisible = false
+				binding.buttonSkipAll.isVisible = false
 				binding.buttonPause.isVisible = false
 			}
 
@@ -195,6 +199,7 @@ fun downloadItemAD(
 				binding.buttonCancel.isVisible = false
 				binding.buttonResume.isVisible = false
 				binding.buttonSkip.isVisible = false
+				binding.buttonSkipAll.isVisible = false
 				binding.buttonPause.isVisible = false
 			}
 		}

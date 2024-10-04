@@ -113,6 +113,18 @@ fun Throwable.getDisplayIcon() = when (this) {
 	else -> R.drawable.ic_error_large
 }
 
+fun Throwable.getCauseUrl(): String? = when (this) {
+	is ParseException -> url
+	is NotFoundException -> url
+	is TooManyRequestExceptions -> url
+	is CaughtException -> cause?.getCauseUrl()
+	is CloudFlareBlockedException -> url
+	is CloudFlareProtectedException -> url
+	is HttpStatusException -> url
+	is HttpException -> response.request.url.toString()
+	else -> null
+}
+
 private fun getHttpDisplayMessage(statusCode: Int, resources: Resources): String? = when (statusCode) {
 	404 -> resources.getString(R.string.not_found_404)
 	in 500..599 -> resources.getString(R.string.server_error, statusCode)

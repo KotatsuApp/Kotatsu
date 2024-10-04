@@ -43,17 +43,17 @@ fun trackDebugAD(
 		}
 		binding.textViewTitle.text = item.manga.title
 		binding.textViewSummary.text = buildSpannedString {
-			item.lastCheckTime?.let {
-				append(
+			append(
+				item.lastCheckTime?.let {
 					DateUtils.getRelativeDateTimeString(
 						context,
 						it.toEpochMilli(),
 						DateUtils.MINUTE_IN_MILLIS,
 						DateUtils.WEEK_IN_MILLIS,
 						0,
-					),
-				)
-			}
+					)
+				} ?: getString(R.string.never),
+			)
 			if (item.lastResult == TrackEntity.RESULT_FAILED) {
 				append(" - ")
 				bold {

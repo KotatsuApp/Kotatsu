@@ -6,6 +6,7 @@ import okio.Closeable
 import org.koitharu.kotatsu.core.util.ext.withChildren
 import java.io.File
 import java.io.FileInputStream
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.zip.Deflater
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
@@ -17,7 +18,7 @@ class ZipOutput(
 ) : Closeable {
 
 	private val entryNames = ArraySet<String>()
-	private var isClosed = false
+	private val isClosed = AtomicBoolean(false)
 	private val output = ZipOutputStream(file.outputStream()).apply {
 		setLevel(compressionLevel)
 	}
@@ -72,9 +73,8 @@ class ZipOutput(
 	}
 
 	override fun close() {
-		if (!isClosed) {
+		if (isClosed.compareAndSet(false, true)) {
 			output.close()
-			isClosed = true
 		}
 	}
 

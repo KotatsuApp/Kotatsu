@@ -83,8 +83,13 @@ class LocalMangaIndex @Inject constructor(
 		db.getLocalMangaIndexDao().delete(mangaId)
 	}
 
-	suspend fun getAvailableTags(): List<String> {
-		return db.getLocalMangaIndexDao().findTags()
+	suspend fun getAvailableTags(skipNsfw: Boolean): List<String> {
+		val dao = db.getLocalMangaIndexDao()
+		return if (skipNsfw) {
+			dao.findTags(isNsfw = false)
+		} else {
+			dao.findTags()
+		}
 	}
 
 	private suspend fun upsert(manga: LocalManga) {

@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 674
-		versionName = '7.6.1'
+		versionCode = 675
+		versionName = '7.6.2'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -64,7 +64,7 @@ android {
 	}
 	lint {
 		abortOnError true
-		disable 'MissingTranslation', 'PrivateResource', 'NotifyDataSetChanged', 'SetJavaScriptEnabled'
+		disable 'MissingTranslation', 'PrivateResource', 'SetJavaScriptEnabled'
 	}
 	testOptions {
 		unitTests.includeAndroidResources true
@@ -83,7 +83,7 @@ afterEvaluate {
 }
 dependencies {
 	//noinspection GradleDependency
-	implementation('com.github.KotatsuApp:kotatsu-parsers:a8df8665ae') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:645006fde8') {
 		exclude group: 'org.json', module: 'json'
 	}
 

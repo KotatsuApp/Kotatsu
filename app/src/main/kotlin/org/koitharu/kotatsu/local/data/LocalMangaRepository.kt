@@ -76,7 +76,9 @@ class LocalMangaRepository @Inject constructor(
 		}
 
 	override suspend fun getFilterOptions() = MangaListFilterOptions(
-		availableTags = localMangaIndex.getAvailableTags().mapToSet { MangaTag(title = it, key = it, source = source) },
+		availableTags = localMangaIndex.getAvailableTags(
+			skipNsfw = settings.isNsfwContentDisabled,
+		).mapToSet { MangaTag(title = it, key = it, source = source) },
 		availableContentRating = if (!settings.isNsfwContentDisabled) {
 			EnumSet.of(ContentRating.SAFE, ContentRating.ADULT)
 		} else {
