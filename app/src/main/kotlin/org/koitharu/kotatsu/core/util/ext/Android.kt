@@ -7,10 +7,12 @@ import android.app.ActivityManager
 import android.app.ActivityManager.MemoryInfo
 import android.app.ActivityOptions
 import android.app.LocaleConfig
+import android.content.ComponentName
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Context.POWER_SERVICE
 import android.content.ContextWrapper
+import android.content.Intent
 import android.content.OperationApplicationException
 import android.content.SharedPreferences
 import android.content.SyncResult
@@ -33,6 +35,7 @@ import androidx.annotation.IntegerRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -61,6 +64,7 @@ import okio.use
 import org.json.JSONException
 import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -273,4 +277,11 @@ fun WebView.configureForParser(userAgentOverride: String?) = with(settings) {
 	if (userAgentOverride != null) {
 		userAgentString = userAgentOverride
 	}
+}
+
+fun Context.restartApplication() {
+	val activity = findActivity()
+	val intent = Intent.makeRestartActivityTask(ComponentName(this, MainActivity::class.java))
+	startActivity(intent)
+	activity?.finishAndRemoveTask()
 }

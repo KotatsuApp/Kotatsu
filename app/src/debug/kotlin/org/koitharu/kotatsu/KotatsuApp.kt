@@ -63,7 +63,6 @@ class KotatsuApp : BaseApp() {
 			detectRetainInstanceUsage()
 			detectSetUserVisibleHint()
 			detectWrongNestedHierarchy()
-			detectTargetFragmentUsage()
 			detectFragmentReuse()
 			penaltyLog()
 			if (notifier != null) {

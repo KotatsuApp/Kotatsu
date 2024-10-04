@@ -165,13 +165,14 @@ class AutoFixService : CoroutineIntentService() {
 					} else {
 						error.getDisplayMessage(applicationContext.resources)
 					},
-				)
-				.setSmallIcon(android.R.drawable.stat_notify_error)
-				.addAction(
+				).setSmallIcon(android.R.drawable.stat_notify_error)
+			ErrorReporterReceiver.getPendingIntent(applicationContext, error)?.let { reportIntent ->
+				notification.addAction(
 					R.drawable.ic_alert_outline,
 					applicationContext.getString(R.string.report),
-					ErrorReporterReceiver.getPendingIntent(applicationContext, error),
+					reportIntent,
 				)
+			}
 		}
 		return notification.build()
 	}

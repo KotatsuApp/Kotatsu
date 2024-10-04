@@ -10,9 +10,9 @@ import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.findById
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.exception.ParseException
@@ -70,10 +70,10 @@ class CoverRestoreInterceptor @Inject constructor(
 	}
 
 	private suspend fun restoreMangaImpl(manga: Manga): Boolean {
-		if (dataRepository.findMangaById(manga.id) == null) {
+		if (dataRepository.findMangaById(manga.id) == null || manga.isLocal) {
 			return false
 		}
-		val repo = repositoryFactory.create(manga.source) as? ParserMangaRepository ?: return false
+		val repo = repositoryFactory.create(manga.source)
 		val fixed = repo.find(manga) ?: return false
 		return if (fixed != manga) {
 			dataRepository.storeManga(fixed)
@@ -100,7 +100,10 @@ class CoverRestoreInterceptor @Inject constructor(
 	}
 
 	private suspend fun restoreBookmarkImpl(bookmark: Bookmark): Boolean {
-		val repo = repositoryFactory.create(bookmark.manga.source) as? ParserMangaRepository ?: return false
+		if (bookmark.manga.isLocal) {
+			return false
+		}
+		val repo = repositoryFactory.create(bookmark.manga.source)
 		val chapter = repo.getDetails(bookmark.manga).chapters?.findById(bookmark.chapterId) ?: return false
 		val page = repo.getPages(chapter)[bookmark.page]
 		val imageUrl = page.preview.ifNullOrEmpty { page.url }
