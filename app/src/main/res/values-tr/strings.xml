@@ -723,4 +723,8 @@
     <string name="user_manual">Kullanıcı kılavuzu</string>
     <string name="source_code">Kaynak kodu</string>
     <string name="telegram_group">Telegram grubu</string>
+    <string name="error_image_format">Desteklenmeyen resim biçimi: %s</string>
+    <string name="start_download">İndirmeye başla</string>
+    <string name="save_manga_confirm">Seçilen manga kaydedilsin mi? Bu veri kullanabilir ve disk alanı tüketebilir</string>
+    <string name="save_manga">Mangayı kaydet</string>
 </resources>
