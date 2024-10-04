@@ -723,4 +723,8 @@
     <string name="user_manual">用户手册</string>
     <string name="telegram_group">Telegram 群</string>
     <string name="manga_with_downloaded_chapters">有已下载章节的漫画</string>
+    <string name="error_image_format">图片文件不受支持：%s</string>
+    <string name="save_manga">下载漫画</string>
+    <string name="start_download">开始下载</string>
+    <string name="save_manga_confirm">要下载选择的漫画吗？下载漫画会消耗流量和磁盘空间</string>
 </resources>
