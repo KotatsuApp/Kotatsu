@@ -741,4 +741,5 @@
 	<string name="start_download">Start download</string>
 	<string name="save_manga_confirm">Save selected manga? This may consume traffic and disk space</string>
 	<string name="save_manga">Save manga</string>
+	<string name="genre">Genre</string>
 </resources>

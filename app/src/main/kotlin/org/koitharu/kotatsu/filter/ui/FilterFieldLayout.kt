@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.AttrRes
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.isInvisible
@@ -66,6 +67,10 @@ class FilterFieldLayout @JvmOverloads constructor(
 		if (!binding.buttonMore.isVisible) {
 			binding.textViewValue.textAndVisible = valueText
 		}
+	}
+
+	fun setTitle(@StringRes titleResId: Int) {
+		binding.textViewTitle.setText(titleResId)
 	}
 
 	fun setError(errorMessage: String?) {

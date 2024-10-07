@@ -68,12 +68,20 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		filter.year.observe(viewLifecycleOwner, this::onYearChanged)
 		filter.yearRange.observe(viewLifecycleOwner, this::onYearRangeChanged)
 
+		binding.layoutGenres.setTitle(
+			if (filter.capabilities.isMultipleTagsSupported) {
+				R.string.genres
+			} else {
+				R.string.genre
+			},
+		)
 		binding.spinnerLocale.onItemSelectedListener = this
 		binding.spinnerOriginalLocale.onItemSelectedListener = this
 		binding.spinnerOrder.onItemSelectedListener = this
 		binding.chipsState.onChipClickListener = this
 		binding.chipsTypes.onChipClickListener = this
 		binding.chipsContentRating.onChipClickListener = this
+		binding.chipsDemographics.onChipClickListener = this
 		binding.chipsGenres.onChipClickListener = this
 		binding.chipsGenresExclude.onChipClickListener = this
 		binding.sliderYear.addOnChangeListener(this::onSliderValueChange)
@@ -143,6 +151,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
 			is ContentType -> filter.toggleContentType(data, !chip.isChecked)
 			is ContentRating -> filter.toggleContentRating(data, !chip.isChecked)
+			is Demographic -> filter.toggleDemographic(data, !chip.isChecked)
 			null -> TagsCatalogSheet.show(getChildFragmentManager(), chip.parentView?.id == R.id.chips_genresExclude)
 		}
 	}
