@@ -332,6 +332,15 @@ class FilterCoordinator @Inject constructor(
 		}
 	}
 
+	fun toggleDemographic(value: Demographic, isSelected: Boolean) {
+		currentListFilter.update { oldValue ->
+			oldValue.copy(
+				demographics = if (isSelected) oldValue.demographics + value else oldValue.demographics - value,
+				query = oldValue.takeQueryIfSupported(),
+			)
+		}
+	}
+
 	fun toggleContentType(value: ContentType, isSelected: Boolean) {
 		currentListFilter.update { oldValue ->
 			oldValue.copy(
