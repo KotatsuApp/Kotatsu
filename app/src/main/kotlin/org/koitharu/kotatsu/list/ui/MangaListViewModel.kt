@@ -17,7 +17,6 @@ import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
-import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -37,7 +36,6 @@ abstract class MangaListViewModel(
 		key = AppSettings.KEY_GRID_SIZE,
 		valueProducer = { gridSize / 100f },
 	)
-	val onDownloadStarted = MutableEventFlow<Unit>()
 
 	val isIncognitoModeEnabled: Boolean
 		get() = settings.isIncognitoModeEnabled
@@ -45,13 +43,6 @@ abstract class MangaListViewModel(
 	abstract fun onRefresh()
 
 	abstract fun onRetry()
-
-	fun download(items: Set<Manga>, isPaused: Boolean) {
-		launchJob(Dispatchers.Default) {
-			downloadScheduler.schedule(items, isPaused)
-			onDownloadStarted.call(Unit)
-		}
-	}
 
 	protected fun List<Manga>.skipNsfwIfNeeded() = if (settings.isNsfwContentDisabled) {
 		filterNot { it.isNsfw }

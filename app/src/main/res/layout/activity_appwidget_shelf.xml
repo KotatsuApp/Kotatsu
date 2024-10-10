@@ -51,7 +51,7 @@
 			android:paddingEnd="?listPreferredItemPaddingEnd"
 			android:singleLine="true"
 			android:text="@string/favourites_categories"
-			android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader" />
+			android:textAppearance="?textAppearanceTitleSmall" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 

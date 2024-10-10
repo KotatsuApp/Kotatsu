@@ -50,6 +50,8 @@
 		<attr name="icon" />
 		<attr name="titleTextAppearance" />
 		<attr name="subtitleTextAppearance" />
+		<attr name="android:checked" />
+		<attr name="android:button" />
 	</declare-styleable>
 
 	<declare-styleable name="ProgressDrawable">

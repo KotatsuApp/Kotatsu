@@ -21,6 +21,7 @@ class ZipOutput(
 	private val isClosed = AtomicBoolean(false)
 	private val output = ZipOutputStream(file.outputStream()).apply {
 		setLevel(compressionLevel)
+		// FIXME: Deflater has been closed
 	}
 
 	@WorkerThread

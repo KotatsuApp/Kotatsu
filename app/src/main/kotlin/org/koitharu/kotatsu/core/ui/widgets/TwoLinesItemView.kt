@@ -11,11 +11,13 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.Checkable
 import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.ImageViewCompat
 import androidx.core.widget.TextViewCompat
@@ -23,6 +25,7 @@ import com.google.android.material.ripple.RippleUtils
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.getDrawableCompat
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ViewTwoLinesItemBinding
@@ -32,7 +35,7 @@ class TwoLinesItemView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	@AttrRes defStyleAttr: Int = 0,
-) : LinearLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr), Checkable {
 
 	private val binding = ViewTwoLinesItemBinding.inflate(LayoutInflater.from(context), this)
 
@@ -46,6 +49,12 @@ class TwoLinesItemView @JvmOverloads constructor(
 		get() = binding.subtitle.textAndVisible
 		set(value) {
 			binding.subtitle.textAndVisible = value
+		}
+
+	var isButtonEnabled: Boolean
+		get() = binding.button.isEnabled
+		set(value) {
+			binding.button.isEnabled = value
 		}
 
 	init {
@@ -68,7 +77,7 @@ class TwoLinesItemView @JvmOverloads constructor(
 			binding.layoutText.updateLayoutParams<MarginLayoutParams> { marginStart = drawablePadding }
 			setIconResource(getResourceId(R.styleable.TwoLinesItemView_icon, 0))
 			binding.title.text = getText(R.styleable.TwoLinesItemView_title)
-			binding.subtitle.text = getText(R.styleable.TwoLinesItemView_subtitle)
+			binding.subtitle.textAndVisible = getText(R.styleable.TwoLinesItemView_subtitle)
 			textColors = getColorStateList(R.styleable.TwoLinesItemView_android_textColor)
 			val textAppearanceFallback = androidx.appcompat.R.style.TextAppearance_AppCompat
 			TextViewCompat.setTextAppearance(
@@ -79,6 +88,10 @@ class TwoLinesItemView @JvmOverloads constructor(
 				binding.subtitle,
 				getResourceId(R.styleable.TwoLinesItemView_subtitleTextAppearance, textAppearanceFallback),
 			)
+			binding.icon.isChecked = getBoolean(R.styleable.TwoLinesItemView_android_checked, false)
+			val button = getDrawableCompat(context, R.styleable.TwoLinesItemView_android_button)
+			binding.button.setImageDrawable(button)
+			binding.button.isVisible = button != null
 		}
 		if (textColors == null) {
 			textColors = binding.title.textColors
@@ -87,6 +100,16 @@ class TwoLinesItemView @JvmOverloads constructor(
 		binding.subtitle.setTextColor(textColors)
 		ImageViewCompat.setImageTintList(binding.icon, textColors)
 	}
+
+	override fun isChecked() = binding.icon.isChecked
+
+	override fun toggle() = binding.icon.toggle()
+
+	override fun setChecked(checked: Boolean) {
+		binding.icon.isChecked = checked
+	}
+
+	fun setOnButtonClickListener(listener: OnClickListener?) = binding.button.setOnClickListener(listener)
 
 	fun setIconResource(@DrawableRes resId: Int) {
 		binding.icon.setImageResource(resId)

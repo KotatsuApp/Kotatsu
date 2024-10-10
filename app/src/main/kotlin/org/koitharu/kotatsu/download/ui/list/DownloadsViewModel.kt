@@ -299,7 +299,7 @@ class DownloadsViewModel @Inject constructor(
 	}
 
 	private fun observeChapters(manga: Manga, workId: UUID): StateFlow<List<DownloadChapter>?> = flow {
-		val chapterIds = workScheduler.getInputChaptersIds(workId)?.toSet()
+		val chapterIds = workScheduler.getTask(workId)?.chaptersIds
 		val chapters = (tryLoad(manga) ?: manga).chapters ?: return@flow
 
 		suspend fun mapChapters(): List<DownloadChapter> {

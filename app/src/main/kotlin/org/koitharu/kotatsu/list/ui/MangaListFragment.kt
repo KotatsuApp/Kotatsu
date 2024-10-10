@@ -27,7 +27,6 @@ import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseFragment
-import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.list.FitHeightGridLayoutManager
 import org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager
@@ -46,7 +45,7 @@ import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
+import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.QuickFilterListener
@@ -126,6 +125,7 @@ abstract class MangaListFragment :
 			isEnabled = isSwipeRefreshEnabled
 		}
 		addMenuProvider(MangaListMenuProvider(this))
+		DownloadDialogFragment.registerCallback(this, binding.recyclerView)
 
 		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
@@ -133,7 +133,6 @@ abstract class MangaListFragment :
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
-		viewModel.onDownloadStarted.observeEvent(viewLifecycleOwner, DownloadStartedObserver(binding.recyclerView))
 	}
 
 	override fun onDestroyView() {
@@ -324,11 +323,8 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_save -> {
-				val itemsSnapshot = selectedItems
-				CommonAlertDialogs.showDownloadConfirmation(context ?: return false) { startPaused ->
-					mode?.finish()
-					viewModel.download(itemsSnapshot, isPaused = startPaused)
-				}
+				DownloadDialogFragment.show(childFragmentManager, selectedItems)
+				mode?.finish()
 				true
 			}
 

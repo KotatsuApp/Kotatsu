@@ -15,7 +15,7 @@
 		android:gravity="center_vertical|start"
 		android:padding="@dimen/grid_spacing"
 		android:singleLine="true"
-		android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
+		android:textAppearance="?textAppearanceTitleSmall"
 		tools:text="@string/genres" />
 
 	<com.google.android.material.button.MaterialButton

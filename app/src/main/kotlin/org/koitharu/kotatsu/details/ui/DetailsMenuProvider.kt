@@ -19,9 +19,8 @@ import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.os.AppShortcutManager
-import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ShareHelper
-import org.koitharu.kotatsu.download.ui.dialog.DownloadOption
+import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
 import org.koitharu.kotatsu.search.ui.multi.SearchActivity
 import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
@@ -31,7 +30,7 @@ class DetailsMenuProvider(
 	private val viewModel: DetailsViewModel,
 	private val snackbarHost: View,
 	private val appShortcutManager: AppShortcutManager,
-) : MenuProvider, OnListItemClickListener<DownloadOption> {
+) : MenuProvider {
 
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 		menuInflater.inflate(R.menu.opt_details, menu)
@@ -75,7 +74,7 @@ class DetailsMenuProvider(
 			}
 
 			R.id.action_save -> {
-				DownloadDialogHelper(snackbarHost, viewModel).show(this)
+				DownloadDialogFragment.show(activity.supportFragmentManager, listOfNotNull(viewModel.manga.value))
 			}
 
 			R.id.action_browser -> {
@@ -128,18 +127,5 @@ class DetailsMenuProvider(
 			else -> return false
 		}
 		return true
-	}
-
-	override fun onItemClick(item: DownloadOption, view: View) {
-		val chaptersIds: Set<Long>? = when (item) {
-			is DownloadOption.WholeManga -> null
-			is DownloadOption.SelectionHint -> {
-				viewModel.startChaptersSelection()
-				return
-			}
-
-			else -> item.chaptersIds
-		}
-		viewModel.download(chaptersIds)
 	}
 }

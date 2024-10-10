@@ -200,8 +200,8 @@ class LocalMangaRepository @Inject constructor(
 
 	override suspend fun getRelated(seed: Manga): List<Manga> = emptyList()
 
-	suspend fun getOutputDir(manga: Manga): File? {
-		val defaultDir = storageManager.getDefaultWriteableDir()
+	suspend fun getOutputDir(manga: Manga, fallback: File?): File? {
+		val defaultDir = fallback ?: storageManager.getDefaultWriteableDir()
 		if (defaultDir != null && LocalMangaOutput.get(defaultDir, manga) != null) {
 			return defaultDir
 		}

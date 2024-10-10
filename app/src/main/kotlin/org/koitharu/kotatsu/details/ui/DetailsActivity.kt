@@ -88,6 +88,7 @@ import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
 import org.koitharu.kotatsu.details.ui.related.RelatedMangaActivity
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
+import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
 import org.koitharu.kotatsu.image.ui.ImageActivity
@@ -195,6 +196,7 @@ class DetailsActivity :
 			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
 			.observeEvent(this, DownloadStartedObserver(viewBinding.scrollView))
 
+		DownloadDialogFragment.registerCallback(this, viewBinding.scrollView)
 		menuProvider = DetailsMenuProvider(
 			activity = this,
 			viewModel = viewModel,
@@ -210,7 +212,10 @@ class DetailsActivity :
 		when (v.id) {
 			R.id.button_read -> openReader(isIncognitoMode = false)
 			R.id.chip_branch -> showBranchPopupMenu(v)
-			R.id.button_download -> DownloadDialogHelper(v, viewModel).show(menuProvider)
+			R.id.button_download -> {
+				val manga = viewModel.manga.value ?: return
+				DownloadDialogFragment.show(supportFragmentManager, listOf(manga))
+			}
 
 			R.id.chip_author -> {
 				val manga = viewModel.manga.value ?: return

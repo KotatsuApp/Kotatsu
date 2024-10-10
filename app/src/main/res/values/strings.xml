@@ -396,7 +396,7 @@
 	<string name="enable">Enable</string>
 	<string name="no_thanks">No thanks</string>
 	<string name="cancel_all_downloads_confirm">All active downloads will be cancelled, partially downloaded data will be lost</string>
-	<string name="remove_completed_downloads_confirm">Your downloads history will be permanently deleted</string>
+	<string name="remove_completed_downloads_confirm">Your downloads history will be permanently deleted. No downloaded files will be affected</string>
 	<string name="text_downloads_list_holder">You don\'t have any downloads</string>
 	<string name="downloads_resumed">Downloads have been resumed</string>
 	<string name="downloads_paused">Downloads have been paused</string>
@@ -742,4 +742,10 @@
 	<string name="save_manga_confirm">Save selected manga? This may consume traffic and disk space</string>
 	<string name="save_manga">Save manga</string>
 	<string name="genre">Genre</string>
+	<string name="download_added">Download added</string>
+	<string name="more_options">More options</string>
+	<string name="destination_directory">Destination directory</string>
+	<string name="chapter_selection_hint">You can select chapters to download by long click on item in the chapter list.</string>
+	<!-- For chapters -->
+	<string name="chapters_all">All</string>
 </resources>

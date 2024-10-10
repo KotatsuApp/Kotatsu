@@ -227,7 +227,7 @@
 				android:padding="@dimen/grid_spacing"
 				android:singleLine="true"
 				android:text="@string/description"
-				android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
+				android:textAppearance="?textAppearanceTitleSmall"
 				app:layout_constraintEnd_toStartOf="@id/button_description_more"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/button_read" />
@@ -283,7 +283,7 @@
 				android:padding="@dimen/grid_spacing"
 				android:singleLine="true"
 				android:text="@string/tracking"
-				android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
+				android:textAppearance="?textAppearanceTitleSmall"
 				app:layout_constraintEnd_toStartOf="@id/button_scrobbling_more"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/chips_tags" />
@@ -352,7 +352,7 @@
 				android:padding="@dimen/grid_spacing"
 				android:singleLine="true"
 				android:text="@string/related_manga"
-				android:textAppearance="@style/TextAppearance.Kotatsu.SectionHeader"
+				android:textAppearance="?textAppearanceTitleSmall"
 				app:layout_constraintEnd_toStartOf="@id/button_related_more"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/recyclerView_scrobbling" />
