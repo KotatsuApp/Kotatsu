@@ -719,9 +719,12 @@
     <string name="telegram_group">Телеграм група</string>
     <string name="popular_in_hour">Популарно овог часа</string>
     <string name="popular_in_week">Популарно ове седмице</string>
-    <string name="content_type_artist_cg">Уметник ЦГ</string>
+    <string name="content_type_artist_cg">Уметник (Рачунарско Генерисани)</string>
     <string name="error_image_format">Неподржан формат слике: %s</string>
     <string name="filter_search_warning">Овај извор не подржава претрагу са филтерима. Ваши филтери су обрисани</string>
     <string name="content_type_one_shot">Један ударац</string>
-    <string name="content_type_game_cg">Игра ЦГ</string>
+    <string name="content_type_game_cg">Игра (Рачунарско Генерисана)</string>
+    <string name="start_download">Започни преузимање</string>
+    <string name="save_manga_confirm">Сачувати изабрану мангу? Ово може да потроши мрежни саобраћај и простор на диску</string>
+    <string name="save_manga">Сачувај мангу</string>
 </resources>
