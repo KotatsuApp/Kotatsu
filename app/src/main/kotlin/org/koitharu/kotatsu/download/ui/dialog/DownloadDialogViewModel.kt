@@ -57,7 +57,6 @@ class DownloadDialogViewModel @Inject constructor(
 			}.awaitAll()
 		}
 	}
-
 	val onScheduled = MutableEventFlow<Boolean>()
 	val defaultFormat = MutableStateFlow<DownloadFormat?>(null)
 	val availableDestinations = MutableStateFlow(listOf(defaultDestination()))
@@ -90,6 +89,7 @@ class DownloadDialogViewModel @Inject constructor(
 		chaptersMacro: ChaptersSelectMacro,
 		format: DownloadFormat?,
 		destination: DirectoryModel?,
+		allowMetered: Boolean,
 	) {
 		launchLoadingJob(Dispatchers.Default) {
 			val tasks = mangaDetails.get().map { m ->
@@ -102,6 +102,7 @@ class DownloadDialogViewModel @Inject constructor(
 					chaptersIds = chaptersMacro.getChaptersIds(m.id, chapters)?.toLongArray(),
 					destination = destination?.file,
 					format = format,
+					allowMeteredNetwork = allowMetered,
 				)
 			}
 			scheduler.schedule(tasks)

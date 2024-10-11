@@ -45,16 +45,18 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.TrackerDownloadStrategy
+import org.koitharu.kotatsu.core.prefs.TriStateOption
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.onEachIndexed
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
+import org.koitharu.kotatsu.download.ui.worker.DownloadTask
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
-import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.toIntUp
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -251,12 +253,16 @@ class TrackWorker @AssistedInject constructor(
 			TrackerDownloadStrategy.DOWNLOADED -> {
 				val localManga = localRepositoryLazy.get().findSavedManga(mangaUpdates.manga)
 				if (localManga != null) {
-					downloadSchedulerLazy.get().schedule(
-						manga = mangaUpdates.manga,
-						chaptersIds = mangaUpdates.newChapters.mapToSet { it.id },
+					val task = DownloadTask(
+						mangaId = mangaUpdates.manga.id,
 						isPaused = false,
-						isSilent = true,
+						isSilent = false,
+						chaptersIds = mangaUpdates.newChapters.ids().toLongArray(),
+						destination = null,
+						format = null,
+						allowMeteredNetwork = settings.allowDownloadOnMeteredNetwork != TriStateOption.DISABLED,
 					)
+					downloadSchedulerLazy.get().schedule(setOf(task))
 				}
 			}
 		}

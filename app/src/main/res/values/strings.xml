@@ -748,4 +748,10 @@
 	<string name="chapter_selection_hint">You can select chapters to download by long click on item in the chapter list.</string>
 	<!-- For chapters -->
 	<string name="chapters_all">All</string>
+	<string name="download_over_cellular">Downloading over cellular network</string>
+	<string name="download_cellular_confirm">Allow downloads over cellular network?</string>
+	<string name="dont_allow">Don\'t allow</string>
+	<string name="allow_always">Allow always</string>
+	<string name="allow_once">Allow once</string>
+	<string name="ask_every_time">Ask every time</string>
 </resources>

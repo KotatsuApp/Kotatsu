@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.prefs.DownloadFormat
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
 import org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
 import org.koitharu.kotatsu.core.util.ext.findActivity
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
@@ -39,12 +40,16 @@ import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), View.OnClickListener {
 
 	private val viewModel by viewModels<DownloadDialogViewModel>()
 	private var optionViews: Array<out TwoLinesItemView>? = null
+
+	@Inject
+	lateinit var commonAlertDialogs: CommonAlertDialogs
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?) =
 		DialogDownloadBinding.inflate(inflater, container, false)
@@ -104,21 +109,10 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_cancel -> dialog?.cancel()
-			R.id.button_confirm -> viewBinding?.run {
-				val options = viewModel.chaptersSelectOptions.value
-				viewModel.confirm(
-					startNow = switchStart.isChecked,
-					chaptersMacro = when {
-						optionWholeManga.isChecked -> options.wholeManga
-						optionWholeBranch.isChecked -> options.wholeBranch ?: return@run
-						optionFirstChapters.isChecked -> options.firstChapters ?: return@run
-						optionUnreadChapters.isChecked -> options.unreadChapters ?: return@run
-						else -> return@run
-					},
-					format = DownloadFormat.entries.getOrNull(spinnerFormat.selectedItemPosition),
-					destination = viewModel.availableDestinations.value.getOrNull(spinnerDestination.selectedItemPosition),
-				)
-			}
+			R.id.button_confirm -> commonAlertDialogs.askForDownloadOverMeteredNetwork(
+				context = context ?: return,
+				onConfirmed = ::schedule,
+			)
 
 			R.id.textView_more -> {
 				val binding = viewBinding ?: return
@@ -135,6 +129,25 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 			else -> if (v is TwoLinesItemView) {
 				setCheckedOption(v.id)
 			}
+		}
+	}
+
+	private fun schedule(allowMeteredNetwork: Boolean) {
+		viewBinding?.run {
+			val options = viewModel.chaptersSelectOptions.value
+			viewModel.confirm(
+				startNow = switchStart.isChecked,
+				chaptersMacro = when {
+					optionWholeManga.isChecked -> options.wholeManga
+					optionWholeBranch.isChecked -> options.wholeBranch ?: return@run
+					optionFirstChapters.isChecked -> options.firstChapters ?: return@run
+					optionUnreadChapters.isChecked -> options.unreadChapters ?: return@run
+					else -> return@run
+				},
+				format = DownloadFormat.entries.getOrNull(spinnerFormat.selectedItemPosition),
+				destination = viewModel.availableDestinations.value.getOrNull(spinnerDestination.selectedItemPosition),
+				allowMetered = allowMeteredNetwork,
+			)
 		}
 	}
 

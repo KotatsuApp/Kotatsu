@@ -19,11 +19,11 @@
 		android:title="@string/preferred_download_format"
 		app:useSimpleSummaryProvider="true" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="downloads_wifi"
-		android:summary="@string/downloads_wifi_only_summary"
-		android:title="@string/downloads_wifi_only" />
+	<ListPreference
+		android:entries="@array/metered_network_options"
+		android:key="downloads_metered_network"
+		android:title="@string/download_over_cellular"
+		app:useSimpleSummaryProvider="true" />
 
 	<Preference
 		android:key="ignore_dose"

@@ -434,47 +434,7 @@ class DownloadWorker @AssistedInject constructor(
 	class Scheduler @Inject constructor(
 		@ApplicationContext private val context: Context,
 		private val workManager: WorkManager,
-		private val dataRepository: MangaDataRepository,
-		private val settings: AppSettings,
 	) {
-
-		@Deprecated("")
-		suspend fun schedule(
-			manga: Manga,
-			chaptersIds: Set<Long>?,
-			isPaused: Boolean,
-			isSilent: Boolean,
-		) {
-			dataRepository.storeManga(manga)
-			val task = DownloadTask(
-				mangaId = manga.id,
-				isPaused = isPaused,
-				isSilent = isSilent,
-				chaptersIds = chaptersIds?.toLongArray(),
-				destination = null,
-				format = null,
-			)
-			schedule(listOf(task))
-		}
-
-		@Deprecated("")
-		suspend fun schedule(
-			manga: Collection<Manga>,
-			isPaused: Boolean,
-		) {
-			val tasks = manga.map {
-				dataRepository.storeManga(it)
-				DownloadTask(
-					mangaId = it.id,
-					isPaused = isPaused,
-					isSilent = false,
-					chaptersIds = null,
-					destination = null,
-					format = null,
-				)
-			}
-			schedule(tasks)
-		}
 
 		fun observeWorks(): Flow<List<WorkInfo>> = workManager
 			.getWorkInfosByTagFlow(TAG)
@@ -531,8 +491,8 @@ class DownloadWorker @AssistedInject constructor(
 			workManager.deleteWorks(finishedWorks.mapToSet { it.id })
 		}
 
-		suspend fun updateConstraints() {
-			val constraints = createConstraints()
+		suspend fun updateConstraints(allowMeteredNetwork: Boolean) {
+			val constraints = createConstraints(allowMeteredNetwork)
 			val works = workManager.awaitWorkInfosByTag(TAG)
 			for (work in works) {
 				if (work.state.isFinished) {
@@ -551,10 +511,9 @@ class DownloadWorker @AssistedInject constructor(
 			if (tasks.isEmpty()) {
 				return
 			}
-			val constraints = createConstraints()
 			val requests = tasks.map { task ->
 				OneTimeWorkRequestBuilder<DownloadWorker>()
-					.setConstraints(constraints)
+					.setConstraints(createConstraints(task.allowMeteredNetwork))
 					.addTag(TAG)
 					.keepResultsForAtLeast(30, TimeUnit.DAYS)
 					.setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
@@ -565,8 +524,8 @@ class DownloadWorker @AssistedInject constructor(
 			workManager.enqueue(requests).await()
 		}
 
-		private fun createConstraints() = Constraints.Builder()
-			.setRequiredNetworkType(if (settings.isDownloadsWiFiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
+		private fun createConstraints(allowMeteredNetwork: Boolean) = Constraints.Builder()
+			.setRequiredNetworkType(if (allowMeteredNetwork) NetworkType.CONNECTED else NetworkType.UNMETERED)
 			.build()
 	}
 

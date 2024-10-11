@@ -134,10 +134,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReaderOptimizationEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_OPTIMIZE, false)
 
-	var isTrafficWarningEnabled: Boolean
-		get() = prefs.getBoolean(KEY_TRAFFIC_WARNING, true)
-		set(value) = prefs.edit { putBoolean(KEY_TRAFFIC_WARNING, value) }
-
 	val isOfflineCheckDisabled: Boolean
 		get() = prefs.getBoolean(KEY_OFFLINE_DISABLED, false)
 
@@ -328,8 +324,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			}
 		}
 
-	val isDownloadsWiFiOnly: Boolean
-		get() = prefs.getBoolean(KEY_DOWNLOADS_WIFI, false)
+	var allowDownloadOnMeteredNetwork: TriStateOption
+		get() = prefs.getEnumValue(KEY_DOWNLOADS_METERED_NETWORK, TriStateOption.ASK)
+		set(value) = prefs.edit { putEnumValue(KEY_DOWNLOADS_METERED_NETWORK, value) }
 
 	val preferredDownloadFormat: DownloadFormat
 		get() = prefs.getEnumValue(KEY_DOWNLOADS_FORMAT, DownloadFormat.AUTOMATIC)
@@ -573,7 +570,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_THEME = "theme"
 		const val KEY_COLOR_THEME = "color_theme"
 		const val KEY_THEME_AMOLED = "amoled_theme"
-		const val KEY_TRAFFIC_WARNING = "traffic_warning"
 		const val KEY_OFFLINE_DISABLED = "no_offline"
 		const val KEY_PAGES_CACHE_CLEAR = "pages_cache_clear"
 		const val KEY_HTTP_CACHE_CLEAR = "http_cache_clear"
@@ -639,7 +635,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_ANILIST = "anilist"
 		const val KEY_MAL = "mal"
 		const val KEY_KITSU = "kitsu"
-		const val KEY_DOWNLOADS_WIFI = "downloads_wifi"
+		const val KEY_DOWNLOADS_METERED_NETWORK = "downloads_metered_network"
 		const val KEY_DOWNLOADS_FORMAT = "downloads_format"
 		const val KEY_ALL_FAVOURITES_VISIBLE = "all_favourites_visible"
 		const val KEY_DOH = "doh"

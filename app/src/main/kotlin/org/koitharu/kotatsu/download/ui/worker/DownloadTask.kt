@@ -15,6 +15,7 @@ class DownloadTask(
 	val chaptersIds: LongArray?,
 	val destination: File?,
 	val format: DownloadFormat?,
+	val allowMeteredNetwork: Boolean,
 ) : Parcelable {
 
 	constructor(data: Data) : this(
@@ -24,6 +25,7 @@ class DownloadTask(
 		chaptersIds = data.getLongArray(CHAPTERS)?.takeUnless(LongArray::isEmpty),
 		destination = data.getString(DESTINATION)?.let { File(it) },
 		format = data.getString(FORMAT)?.let { DownloadFormat.entries.find(it) },
+		allowMeteredNetwork = data.getBoolean(ALLOW_METERED, true),
 	)
 
 	fun toData(): Data = Data.Builder()
@@ -47,6 +49,7 @@ class DownloadTask(
 		if (!(chaptersIds contentEquals other.chaptersIds)) return false
 		if (destination != other.destination) return false
 		if (format != other.format) return false
+		if (allowMeteredNetwork != other.allowMeteredNetwork) return false
 
 		return true
 	}
@@ -58,6 +61,7 @@ class DownloadTask(
 		result = 31 * result + (chaptersIds?.contentHashCode() ?: 0)
 		result = 31 * result + (destination?.hashCode() ?: 0)
 		result = 31 * result + (format?.hashCode() ?: 0)
+		result = 31 * result + allowMeteredNetwork.hashCode()
 		return result
 	}
 
@@ -69,5 +73,6 @@ class DownloadTask(
 		const val CHAPTERS = "chapters"
 		const val DESTINATION = "dest"
 		const val FORMAT = "format"
+		const val ALLOW_METERED = "metered"
 	}
 }

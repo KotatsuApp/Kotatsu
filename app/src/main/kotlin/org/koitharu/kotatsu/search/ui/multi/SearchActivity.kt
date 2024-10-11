@@ -17,7 +17,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.widgets.TipView
@@ -27,7 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
+import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
@@ -99,7 +98,8 @@ class SearchActivity :
 
 		viewModel.list.observe(this, adapter)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
-		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(viewBinding.recyclerView))
+
+		DownloadDialogFragment.registerCallback(this, viewBinding.recyclerView)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -185,11 +185,8 @@ class SearchActivity :
 			}
 
 			R.id.action_save -> {
-				val itemsSnapshot = collectSelectedItems()
-				CommonAlertDialogs.showDownloadConfirmation(this) { startPaused ->
-					mode?.finish()
-					viewModel.download(itemsSnapshot, isPaused = startPaused)
-				}
+				DownloadDialogFragment.show(supportFragmentManager, collectSelectedItems())
+				mode?.finish()
 				true
 			}
 
