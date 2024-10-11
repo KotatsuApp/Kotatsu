@@ -39,14 +39,6 @@ fun ZipFile.readText(entry: ZipEntry) = getInputStream(entry).bufferedReader().u
 	it.readText()
 }
 
-@Blocking
-fun ZipFile.getInputStreamOrClose(entry: ZipEntry): InputStream = try {
-	getInputStream(entry)
-} catch (e: Throwable) {
-	closeQuietly()
-	throw e
-}
-
 fun File.getStorageName(context: Context): String = runCatching {
 	val manager = context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

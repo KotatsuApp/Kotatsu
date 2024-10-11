@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import java.io.File
@@ -71,7 +72,11 @@ class RestoreViewModel @Inject constructor(
 
 	override fun onCleared() {
 		super.onCleared()
-		backupInput.peek()?.cleanupAsync()
+		runCatching {
+			backupInput.peek()?.closeAndDelete()
+		}.onFailure {
+			it.printStackTraceDebug()
+		}
 	}
 
 	fun onItemClick(item: BackupEntryModel) {
