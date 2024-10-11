@@ -16,13 +16,13 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
+import okhttp3.internal.closeQuietly
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.util.ext.getInputStreamOrClose
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.data.isFileUri
 import org.koitharu.kotatsu.local.data.isZipUri
@@ -67,17 +67,22 @@ class MangaPageFetcher(
 		return when {
 			uri.isZipUri() -> runInterruptible(Dispatchers.IO) {
 				val zip = ZipFile(uri.schemeSpecificPart)
-				val entry = zip.getEntry(uri.fragment)
-				SourceResult(
-					source = ImageSource(
-						source = zip.getInputStreamOrClose(entry).source().withExtraCloseable(zip).buffer(),
-						context = context,
-						metadata = MangaPageMetadata(page),
-					),
-					mimeType = MimeTypeMap.getSingleton()
-						.getMimeTypeFromExtension(entry.name.substringAfterLast('.', "")),
-					dataSource = DataSource.DISK,
-				)
+				try {
+					val entry = zip.getEntry(uri.fragment)
+					SourceResult(
+						source = ImageSource(
+							source = zip.getInputStream(entry).source().withExtraCloseable(zip).buffer(),
+							context = context,
+							metadata = MangaPageMetadata(page),
+						),
+						mimeType = MimeTypeMap.getSingleton()
+							.getMimeTypeFromExtension(entry.name.substringAfterLast('.', "")),
+						dataSource = DataSource.DISK,
+					)
+				} catch (e: Throwable) {
+					zip.closeQuietly()
+					throw e
+				}
 			}
 
 			uri.isFileUri() -> runInterruptible(Dispatchers.IO) {

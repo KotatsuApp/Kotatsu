@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.util.ext
 
 import android.net.Uri
 import androidx.core.net.toFile
+import okhttp3.internal.closeQuietly
 import okio.Source
 import okio.source
 import okio.use
@@ -40,8 +41,13 @@ fun Uri.source(): Source = when (scheme) {
 	URI_SCHEME_FILE -> toFile().source()
 	URI_SCHEME_ZIP -> {
 		val zip = ZipFile(schemeSpecificPart)
-		val entry = zip.getEntry(fragment)
-		zip.getInputStreamOrClose(entry).source().withExtraCloseable(zip)
+		try {
+			val entry = zip.getEntry(fragment)
+			zip.getInputStream(entry).source().withExtraCloseable(zip)
+		} catch (e: Throwable) {
+			zip.closeQuietly()
+			throw e
+		}
 	}
 
 	else -> unsupportedUri(this)
