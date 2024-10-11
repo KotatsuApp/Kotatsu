@@ -311,6 +311,10 @@ class DownloadWorker @AssistedInject constructor(
 					DOWNLOAD_ERROR_DELAY
 				}
 				if (countDown <= 0 || retryDelay < 0 || retryDelay > MAX_RETRY_DELAY) {
+					val pausingHandle = PausingHandle.current()
+					if (pausingHandle.skipAllErrors()) {
+						return null
+					}
 					publishState(
 						currentState.copy(
 							isPaused = true,
@@ -321,7 +325,6 @@ class DownloadWorker @AssistedInject constructor(
 						),
 					)
 					countDown = MAX_FAILSAFE_ATTEMPTS
-					val pausingHandle = PausingHandle.current()
 					pausingHandle.pause()
 					try {
 						pausingHandle.awaitResumed()
