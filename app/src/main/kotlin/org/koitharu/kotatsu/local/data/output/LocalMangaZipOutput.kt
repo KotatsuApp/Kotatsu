@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import okhttp3.internal.closeQuietly
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.readText
@@ -52,27 +53,29 @@ class LocalMangaZipOutput(
 		index.setCoverEntry(name)
 	}
 
-	override suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, ext: String) = mutex.withLock {
-		val name = buildString {
-			append(FILENAME_PATTERN.format(chapter.value.branch.hashCode(), chapter.index + 1, pageNumber))
-			if (ext.isNotEmpty() && ext.length <= 4) {
-				append('.')
-				append(ext)
+	override suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, ext: String) =
+		mutex.withLock {
+			val name = buildString {
+				append(FILENAME_PATTERN.format(chapter.value.branch.hashCode(), chapter.index + 1, pageNumber))
+				if (ext.isNotEmpty() && ext.length <= 4) {
+					append('.')
+					append(ext)
+				}
 			}
+			runInterruptible(Dispatchers.IO) {
+				output.put(name, file)
+			}
+			index.addChapter(chapter, null)
 		}
-		runInterruptible(Dispatchers.IO) {
-			output.put(name, file)
-		}
-		index.addChapter(chapter, null)
-	}
 
 	override suspend fun flushChapter(chapter: MangaChapter): Boolean = false
 
 	override suspend fun finish() = mutex.withLock {
 		runInterruptible(Dispatchers.IO) {
-			output.put(ENTRY_NAME_INDEX, index.toString())
-			output.finish()
-			output.close()
+			output.use { output ->
+				output.put(ENTRY_NAME_INDEX, index.toString())
+				output.finish()
+			}
 		}
 		rootFile.deleteAwait()
 		output.file.renameTo(rootFile)
@@ -115,42 +118,53 @@ class LocalMangaZipOutput(
 
 		private const val FILENAME_PATTERN = "%08d_%03d%03d"
 
-		@WorkerThread
-		fun filterChapters(subject: LocalMangaZipOutput, idsToRemove: Set<Long>) {
-			ZipFile(subject.rootFile).use { zip ->
-				val index = MangaIndex(zip.readText(zip.getEntry(ENTRY_NAME_INDEX)))
-				idsToRemove.forEach { id -> index.removeChapter(id) }
-				val patterns = requireNotNull(index.getMangaInfo()?.chapters).map {
-					index.getChapterNamesPattern(it)
-				}
-				val coverEntryName = index.getCoverEntry()
-				for (entry in zip.entries()) {
-					when {
-						entry.name == ENTRY_NAME_INDEX -> {
-							subject.output.put(ENTRY_NAME_INDEX, index.toString())
+		suspend fun filterChapters(file: File, manga: Manga, idsToRemove: Set<Long>) =
+			runInterruptible(Dispatchers.IO) {
+				val subject = LocalMangaZipOutput(file, manga)
+				try {
+					ZipFile(subject.rootFile).use { zip ->
+						val index = MangaIndex(zip.readText(zip.getEntry(ENTRY_NAME_INDEX)))
+						idsToRemove.forEach { id -> index.removeChapter(id) }
+						val patterns = requireNotNull(index.getMangaInfo()?.chapters).map {
+							index.getChapterNamesPattern(it)
 						}
+						val coverEntryName = index.getCoverEntry()
+						for (entry in zip.entries()) {
+							when {
+								entry.name == ENTRY_NAME_INDEX -> {
+									subject.output.put(ENTRY_NAME_INDEX, index.toString())
+								}
 
-						entry.isDirectory -> {
-							subject.output.addDirectory(entry.name)
-						}
+								entry.isDirectory -> {
+									subject.output.addDirectory(entry.name)
+								}
 
-						entry.name == coverEntryName -> {
-							subject.output.copyEntryFrom(zip, entry)
-						}
+								entry.name == coverEntryName -> {
+									subject.output.copyEntryFrom(zip, entry)
+								}
 
-						else -> {
-							val name = entry.name.substringBefore('.')
-							if (patterns.any { it.matches(name) }) {
-								subject.output.copyEntryFrom(zip, entry)
+								else -> {
+									val name = entry.name.substringBefore('.')
+									if (patterns.any { it.matches(name) }) {
+										subject.output.copyEntryFrom(zip, entry)
+									}
+								}
 							}
 						}
+						subject.output.finish()
+						subject.output.close()
+						subject.rootFile.delete()
+						subject.output.file.renameTo(subject.rootFile)
 					}
+				} catch (e: Throwable) {
+					subject.closeQuietly()
+					try {
+						subject.output.file.delete()
+					} catch (e2: Throwable) {
+						e.addSuppressed(e2)
+					}
+					throw e
 				}
-				subject.output.finish()
-				subject.output.close()
-				subject.rootFile.delete()
-				subject.output.file.renameTo(subject.rootFile)
 			}
-		}
 	}
 }
