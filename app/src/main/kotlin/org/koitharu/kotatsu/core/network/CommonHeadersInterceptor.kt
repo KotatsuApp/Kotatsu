@@ -9,6 +9,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
@@ -29,13 +30,13 @@ class CommonHeadersInterceptor @Inject constructor(
 	override fun intercept(chain: Chain): Response {
 		val request = chain.request()
 		val source = request.tag(MangaSource::class.java)
-		val repository = if (source != null) {
-			mangaRepositoryFactoryLazy.get().create(source) as? ParserMangaRepository
-		} else {
-			if (BuildConfig.DEBUG) {
+		val repository = if (source == null || source == UnknownMangaSource) {
+			if (BuildConfig.DEBUG && source == null) {
 				Log.w("Http", "Request without source tag: ${request.url}")
 			}
 			null
+		} else {
+			mangaRepositoryFactoryLazy.get().create(source) as? ParserMangaRepository
 		}
 		val headersBuilder = request.headers.newBuilder()
 		repository?.getRequestHeaders()?.let {
