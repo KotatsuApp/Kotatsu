@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
@@ -36,7 +37,7 @@ class ImageViewModel @Inject constructor(
 				.memoryCachePolicy(CachePolicy.READ_ONLY)
 				.data(savedStateHandle.require<Uri>(BaseActivity.EXTRA_DATA))
 				.memoryCachePolicy(CachePolicy.DISABLED)
-				.source(savedStateHandle[ImageActivity.EXTRA_SOURCE])
+				.source(MangaSource(savedStateHandle[ImageActivity.EXTRA_SOURCE]))
 				.build()
 			val bitmap = coil.execute(request).getDrawableOrThrow().toBitmap()
 			runInterruptible(Dispatchers.IO) {
