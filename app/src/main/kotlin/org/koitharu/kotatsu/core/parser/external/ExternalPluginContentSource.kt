@@ -141,7 +141,7 @@ class ExternalPluginContentSource(
 	@Blocking
 	@WorkerThread
 	fun getPageUrl(url: String): String {
-		val uri = "content://${source.authority}/pages/0".toUri().buildUpon()
+		val uri = "content://${source.authority}/manga/pages/0".toUri().buildUpon()
 			.appendQueryParameter("url", url)
 			.build()
 		return contentResolver.query(uri, null, null, null, null)
