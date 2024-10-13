@@ -103,8 +103,11 @@ class ZipOutput(
 				}
 				val zipEntry = ZipEntry(name)
 				putNextEntry(zipEntry)
-				fis.copyTo(this)
-				closeEntry()
+				try {
+					fis.copyTo(this)
+				} finally {
+					closeEntry()
+				}
 			}
 		}
 		return true
@@ -117,8 +120,11 @@ class ZipOutput(
 		}
 		val zipEntry = ZipEntry(name)
 		putNextEntry(zipEntry)
-		content.byteInputStream().copyTo(this)
-		closeEntry()
+		try {
+			content.byteInputStream().copyTo(this)
+		} finally {
+			closeEntry()
+		}
 		return true
 	}
 }

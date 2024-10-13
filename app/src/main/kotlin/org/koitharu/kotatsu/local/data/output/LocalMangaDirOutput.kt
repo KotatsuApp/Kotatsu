@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import okhttp3.internal.closeQuietly
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
@@ -90,7 +91,7 @@ class LocalMangaDirOutput(
 
 	override fun close() {
 		for (output in chaptersOutput.values) {
-			output.close()
+			output.closeQuietly()
 		}
 	}
 
@@ -119,10 +120,21 @@ class LocalMangaDirOutput(
 	}
 
 	private suspend fun ZipOutput.flushAndFinish() = runInterruptible(Dispatchers.IO) {
-		finish()
-		close()
-		val resFile = File(file.absolutePath.removeSuffix(SUFFIX_TMP))
-		file.renameTo(resFile)
+		val e: Throwable? = try {
+			finish()
+			null
+		} catch (e: Throwable) {
+			e
+		} finally {
+			close()
+		}
+		if (e == null) {
+			val resFile = File(file.absolutePath.removeSuffix(SUFFIX_TMP))
+			file.renameTo(resFile)
+		} else {
+			file.delete()
+			throw e
+		}
 	}
 
 	private fun chapterFileName(chapter: IndexedValue<MangaChapter>): String {
