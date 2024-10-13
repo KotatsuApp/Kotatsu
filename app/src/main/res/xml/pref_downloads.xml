@@ -26,20 +26,19 @@
 		app:useSimpleSummaryProvider="true" />
 
 	<Preference
+		android:icon="@drawable/ic_info_outline"
+		android:key="tracker_notifications_info"
+		android:persistent="false"
+		android:selectable="false"
+		android:summary="@string/downloads_settings_info" />
+
+	<Preference
 		android:key="ignore_dose"
 		android:persistent="false"
 		android:summary="@string/disable_battery_optimization_summary_downloads"
 		android:title="@string/disable_battery_optimization"
 		app:allowDividerAbove="true"
 		app:isPreferenceVisible="false" />
-
-	<Preference
-		android:icon="@drawable/ic_info_outline"
-		android:key="tracker_notifications_info"
-		android:persistent="false"
-		android:selectable="false"
-		android:summary="@string/downloads_settings_info"
-		app:allowDividerAbove="true" />
 
 	<PreferenceCategory android:title="@string/pages_saving">
 

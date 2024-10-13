@@ -166,7 +166,7 @@ open class RemoteListViewModel @Inject constructor(
 		icon = R.drawable.ic_empty_common,
 		textPrimary = R.string.nothing_found,
 		textSecondary = 0,
-		actionStringRes = if (canResetFilter) R.string.reset_filter else R.string.open_in_browser,
+		actionStringRes = if (canResetFilter) R.string.reset_filter else 0,
 	)
 
 	protected open suspend fun onBuildList(list: MutableList<ListModel>) = Unit

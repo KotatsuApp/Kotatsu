@@ -706,7 +706,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_LINK_TELEGRAM = "about_telegram"
 		const val KEY_LINK_GITHUB = "about_github"
 		const val KEY_LINK_MANUAL = "about_help"
-		const val PROXY_TEST = "proxy_test"
+		const val KEY_PROXY_TEST = "proxy_test"
+		const val KEY_OPEN_BROWSER = "open_browser"
 
 		// old keys are for migration only
 		private const val KEY_IMAGES_PROXY_OLD = "images_proxy"

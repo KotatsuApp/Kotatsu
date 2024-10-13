@@ -73,7 +73,7 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 		if (filterCoordinator.isFilterApplied) {
 			filterCoordinator.reset()
 		} else {
-			openInBrowser(null)
+			openInBrowser(null) // should never be called
 		}
 	}
 
