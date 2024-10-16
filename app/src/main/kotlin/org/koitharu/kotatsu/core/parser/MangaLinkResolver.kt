@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
-import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
+import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
@@ -15,21 +15,20 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.almostEquals
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.parsers.util.toRelativeUrl
 import javax.inject.Inject
 
 @Reusable
 class MangaLinkResolver @Inject constructor(
 	private val repositoryFactory: MangaRepository.Factory,
-	private val sourcesRepository: MangaSourcesRepository,
 	private val dataRepository: MangaDataRepository,
+	private val context: MangaLoaderContext,
 ) {
 
 	suspend fun resolve(uri: Uri): Manga {
 		return if (uri.scheme == "kotatsu" || uri.host == "kotatsu.app") {
 			resolveAppLink(uri)
 		} else {
-			resolveExternalLink(uri)
+			resolveExternalLink(uri.toString())
 		} ?: throw NotFoundException("Cannot resolve link", uri.toString())
 	}
 
@@ -45,18 +44,11 @@ class MangaLinkResolver @Inject constructor(
 		)
 	}
 
-	private suspend fun resolveExternalLink(uri: Uri): Manga? {
-		dataRepository.findMangaByPublicUrl(uri.toString())?.let {
+	private suspend fun resolveExternalLink(uri: String): Manga? {
+		dataRepository.findMangaByPublicUrl(uri)?.let {
 			return it
 		}
-		val host = uri.host ?: return null
-		val repo = sourcesRepository.allMangaSources.asSequence()
-			.map { source ->
-				repositoryFactory.create(source) as ParserMangaRepository
-			}.find { repo ->
-				host in repo.domains
-			} ?: return null
-		return repo.findExact(uri.toString().toRelativeUrl(host), null)
+		return context.newLinkResolver(uri).getManga()
 	}
 
 	private suspend fun MangaRepository.findExact(url: String?, title: String?): Manga? {
@@ -85,12 +77,10 @@ class MangaLinkResolver @Inject constructor(
 		}.getOrThrow()
 	}
 
-	private suspend fun MangaRepository.getDetailsNoCache(manga: Manga): Manga {
-		return if (this is ParserMangaRepository) {
-			getDetails(manga, CachePolicy.READ_ONLY)
-		} else {
-			getDetails(manga)
-		}
+	private suspend fun MangaRepository.getDetailsNoCache(manga: Manga): Manga = if (this is CachingMangaRepository) {
+		getDetails(manga, CachePolicy.READ_ONLY)
+	} else {
+		getDetails(manga)
 	}
 
 	private fun getSeedManga(source: MangaSource, url: String, title: String?) = Manga(
