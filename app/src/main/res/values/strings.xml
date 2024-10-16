@@ -754,4 +754,7 @@
 	<string name="allow_always">Allow always</string>
 	<string name="allow_once">Allow once</string>
 	<string name="ask_every_time">Ask every time</string>
+	<string name="screen_orientation">Screen orientation</string>
+	<string name="portrait">Portrait</string>
+	<string name="landscape">Landscape</string>
 </resources>

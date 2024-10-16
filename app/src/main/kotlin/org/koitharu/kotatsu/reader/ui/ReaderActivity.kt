@@ -83,6 +83,12 @@ class ReaderActivity :
 	@Inject
 	lateinit var tapGridSettings: TapGridSettings
 
+	@Inject
+	lateinit var scrollTimerFactory: ScrollTimer.Factory
+
+	@Inject
+	lateinit var screenOrientationHelper: ScreenOrientationHelper
+
 	private val idlingDetector = IdlingDetector(TimeUnit.SECONDS.toMillis(10), this)
 	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
 
@@ -97,9 +103,6 @@ class ReaderActivity :
 			scrollTimer.isEnabled = value
 		}
 
-	@Inject
-	lateinit var scrollTimerFactory: ScrollTimer.Factory
-
 	private lateinit var scrollTimer: ScrollTimer
 	private lateinit var touchHelper: TapGridDispatcher
 	private lateinit var controlDelegate: ReaderControlDelegate
@@ -110,6 +113,7 @@ class ReaderActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderBinding.inflate(layoutInflater))
+		screenOrientationHelper.init(settings.readerScreenOrientation)
 		readerManager = ReaderManager(supportFragmentManager, viewBinding.container, settings)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = TapGridDispatcher(this, this)

@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
@@ -118,6 +119,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	var isReaderDoubleOnLandscape: Boolean
 		get() = prefs.getBoolean(KEY_READER_DOUBLE_PAGES, false)
 		set(value) = prefs.edit { putBoolean(KEY_READER_DOUBLE_PAGES, value) }
+
+	val readerScreenOrientation: Int
+		get() = prefs.getString(KEY_READER_ORIENTATION, null)?.toIntOrNull()
+			?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
 	val isReaderVolumeButtonsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_VOLUME_BUTTONS, false)
@@ -588,6 +593,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_READER_CONTROL_LTR = "reader_taps_ltr"
 		const val KEY_READER_FULLSCREEN = "reader_fullscreen"
 		const val KEY_READER_VOLUME_BUTTONS = "reader_volume_buttons"
+		const val KEY_READER_ORIENTATION = "reader_orientation"
 		const val KEY_TRACKER_ENABLED = "tracker_enabled"
 		const val KEY_TRACKER_WIFI_ONLY = "tracker_wifi"
 		const val KEY_TRACKER_FREQUENCY = "tracker_freq"

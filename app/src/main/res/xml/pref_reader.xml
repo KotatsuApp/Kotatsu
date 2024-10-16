@@ -101,11 +101,24 @@
 		android:title="@string/fullscreen_mode"
 		app:allowDividerAbove="true" />
 
+	<ListPreference
+		android:entries="@array/screen_orientations"
+		android:key="reader_orientation"
+		android:title="@string/screen_orientation"
+		app:useSimpleSummaryProvider="true" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="reader_screen_on"
+		android:summary="@string/keep_screen_on_summary"
+		android:title="@string/keep_screen_on" />
+
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="reader_bar"
 		android:summary="@string/reader_info_bar_summary"
-		android:title="@string/reader_info_bar" />
+		android:title="@string/reader_info_bar"
+		app:allowDividerAbove="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
@@ -122,14 +135,7 @@
 		android:defaultValue="false"
 		android:key="pages_numbers"
 		android:summary="@string/show_pages_numbers_summary"
-		android:title="@string/show_pages_numbers" />
-
-	<SwitchPreferenceCompat
-		android:defaultValue="true"
-		android:key="reader_screen_on"
-		android:summary="@string/keep_screen_on_summary"
-		android:title="@string/keep_screen_on"
-		app:allowDividerAbove="true" />
+		android:title="@string/show_pages_numbers" />x
 
 	<ListPreference
 		android:defaultValue="2"

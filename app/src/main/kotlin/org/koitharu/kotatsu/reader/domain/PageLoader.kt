@@ -32,8 +32,8 @@ import okio.use
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
+import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
@@ -93,7 +93,7 @@ class PageLoader @Inject constructor(
 	private val edgeDetector = EdgeDetector(context)
 
 	fun isPrefetchApplicable(): Boolean {
-		return repository is ParserMangaRepository
+		return repository is CachingMangaRepository
 			&& settings.isPagesPreloadEnabled
 			&& !context.isPowerSaveMode()
 			&& !isLowRam()
