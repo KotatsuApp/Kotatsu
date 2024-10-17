@@ -739,4 +739,7 @@
     <string name="ask_every_time">每次询问</string>
     <string name="dont_allow">拒绝</string>
     <string name="download_cellular_confirm">确定使用数据流量下载漫画？</string>
+    <string name="landscape">横屏</string>
+    <string name="screen_orientation">屏幕方向</string>
+    <string name="portrait">竖屏</string>
 </resources>
