@@ -28,6 +28,8 @@ class AdapterDelegateClickListenerAdapter<I, O>(
 
 	private fun mappedItem(): O = itemMapper.apply(adapterDelegate.item)
 
+	fun attach() = attach(adapterDelegate.itemView)
+
 	fun attach(itemView: View) {
 		itemView.setOnClickListener(this)
 		itemView.setOnLongClickListener(this)

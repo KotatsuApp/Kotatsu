@@ -757,4 +757,5 @@
 	<string name="screen_orientation">Screen orientation</string>
 	<string name="portrait">Portrait</string>
 	<string name="landscape">Landscape</string>
+	<string name="breadcrumbs_separator" translatable="false"><![CDATA[" > "]]></string>
 </resources>

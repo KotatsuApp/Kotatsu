@@ -74,6 +74,12 @@ class SearchSuggestionFragment :
 
 	companion object {
 
+		@Deprecated("",
+			ReplaceWith(
+				"SearchSuggestionFragment()",
+				"org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment"
+			)
+		)
 		fun newInstance() = SearchSuggestionFragment()
 	}
 }
