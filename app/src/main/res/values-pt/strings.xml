@@ -408,7 +408,7 @@
     <string name="cancel_all">Cancelar tudo</string>
     <string name="suggestion_manga">Sugestão: %s</string>
     <string name="suggestions_notifications_summary">Às vezes, mostra notificações com mangás sugeridos</string>
-    <string name="remove_completed_downloads_confirm">Seu histórico de downloads será excluído permanentemente</string>
+    <string name="remove_completed_downloads_confirm">Seu histórico de downloads será excluído permanentemente. Nenhum arquivo baixado será afetado</string>
     <string name="more">Mais</string>
     <string name="enable">Activar</string>
     <string name="no_thanks">Não obrigado</string>
@@ -713,4 +713,20 @@
     <string name="content_type_image_set">Conjunto de imagens</string>
     <string name="content_type_game_cg">Jogo CG</string>
     <string name="sfw">sfw</string>
+    <string name="download_over_cellular">Baixando pela rede celular</string>
+    <string name="error_image_format">Formato de imagem não suportado: %s</string>
+    <string name="start_download">Iniciar download</string>
+    <string name="save_manga_confirm">Salvar mangá selecionado? Isso pode consumir tráfego e espaço em disco</string>
+    <string name="save_manga">Salvar mangá</string>
+    <string name="genre">Gênero</string>
+    <string name="download_added">Download adicionado</string>
+    <string name="more_options">Mais opções</string>
+    <string name="destination_directory">Diretório de destino</string>
+    <string name="chapter_selection_hint">Você pode selecionar capítulos para baixar clicando longamente no item na lista de capítulos.</string>
+    <string name="chapters_all">Todos</string>
+    <string name="download_cellular_confirm">Permitir downloads pela rede celular?</string>
+    <string name="dont_allow">Não permitido</string>
+    <string name="allow_always">Permitir sempre</string>
+    <string name="allow_once">Permitir uma vez</string>
+    <string name="ask_every_time">Perguntar sempre</string>
 </resources>
