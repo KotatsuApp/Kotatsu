@@ -1,0 +1,109 @@
+[versions]
+acraHttp = "5.11.4"
+activityKtx = "1.9.3"
+adapterdelegates4KotlinDsl = "4.3.2"
+appcompat = "1.7.0"
+biometricKtx = "1.2.0-alpha05"
+coilBase = "2.7.0"
+collectionKtx = "1.4.4"
+conscryptAndroid = "2.5.2"
+constraintlayout = "2.1.4"
+core = "4.6.2"
+coreKtx = "1.13.1"
+desugar_jdk_libs = "2.1.2"
+diskLruCache = "1.4"
+fragmentKtx = "1.8.4"
+gradle = "8.7.1"
+guava = "33.2.1-android"
+hiltAndroid = "2.52"
+hiltWork = "1.2.0"
+junit = "4.13.2"
+json = "20240303"
+junitKtx = "1.2.1"
+kotatsuParsers = "d8cb38a9be"
+kotlinGradlePlugin = "2.0.20"
+kotlinStdlib = "2.0.21"
+kotlinxCoroutinesAndroid = "1.9.0"
+leakcanaryAndroid = "3.0-alpha-8"
+lifecycleViewmodelKtx = "2.8.6"
+material = "1.12.0"
+moshiKotlin = "1.15.1"
+okhttp = "4.12.0"
+okio = "3.9.1"
+preferenceKtx = "1.2.1"
+recyclerview = "1.3.2"
+roomRuntime = "2.6.1"
+runner = "1.6.2"
+rules = "1.6.1"
+subsamplingScaleImageView = "e04098de68"
+swiperefreshlayout = "1.1.0"
+symbolProcessingGradlePlugin = "2.0.21-1.0.25"
+transitionKtx = "1.5.1"
+viewpager2 = "1.1.0"
+webkit = "1.12.1"
+workinspector = "5778dd1747"
+workRuntime = "2.9.1"
+[libraries]
+acra-dialog = { module = "ch.acra:acra-dialog", version.ref = "acraHttp" }
+acra-http = { module = "ch.acra:acra-http", version.ref = "acraHttp" }
+activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
+adapterdelegates4-kotlin-dsl = { module = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl", version.ref = "adapterdelegates4KotlinDsl" }
+adapterdelegates4-kotlin-dsl-viewbinding = { module = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding", version.ref = "adapterdelegates4KotlinDsl" }
+androidx-biometric-ktx = { module = "androidx.biometric:biometric-ktx", version.ref = "biometricKtx" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-core-ktx = { module = "androidx.test:core-ktx", version.ref = "rules" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltWork" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
+androidx-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitKtx" }
+androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "lifecycleViewmodelKtx" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "roomRuntime" }
+androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
+androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }
+androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntime" }
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+coil-base = { module = "io.coil-kt:coil-base", version.ref = "coilBase" }
+coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coilBase" }
+collection-ktx = { module = "androidx.collection:collection-ktx", version.ref = "collectionKtx" }
+conscrypt-android = { module = "org.conscrypt:conscrypt-android", version.ref = "conscryptAndroid" }
+core = { module = "io.noties.markwon:core", version.ref = "core" }
+core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+disk-lru-cache = { module = "com.github.solkin:disk-lru-cache", version.ref = "diskLruCache" }
+fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroid" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroid" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
+json = { module = "org.json:json", version.ref = "json" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotatsu-parsers = { module = "com.github.KotatsuApp:kotatsu-parsers", version.ref = "kotatsuParsers" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesAndroid" }
+leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
+lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleViewmodelKtx" }
+lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "lifecycleViewmodelKtx" }
+lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlin" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+okhttp-dnsoverhttps = { module = "com.squareup.okhttp3:okhttp-dnsoverhttps", version.ref = "okhttp" }
+okhttp-tls = { module = "com.squareup.okhttp3:okhttp-tls", version.ref = "okhttp" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+subsampling-scale-image-view = { module = "com.github.KotatsuApp:subsampling-scale-image-view", version.ref = "subsamplingScaleImageView" }
+symbol-processing-gradle-plugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "symbolProcessingGradlePlugin" }
+transition-ktx = { module = "androidx.transition:transition-ktx", version.ref = "transitionKtx" }
+workinspector = { module = "com.github.Koitharu:WorkInspector", version.ref = "workinspector" }
+[plugins]
