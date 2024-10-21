@@ -717,4 +717,15 @@
     <string name="no_alternatives_found">Альтернативы для «%s» не найдены</string>
     <string name="content_type_doujinshi">Додзинси</string>
     <string name="content_type_image_set">Набор изображений</string>
+    <string name="content_type_artist_cg">Художник CG</string>
+    <string name="content_type_game_cg">Игровая CG</string>
+    <string name="debug">Отладка</string>
+    <string name="source_code">Исходный код</string>
+    <string name="user_manual">Руководство пользователя</string>
+    <string name="telegram_group">Группа в Telegram</string>
+    <string name="error_image_format">Неподдерживаемый формат изображения: %s</string>
+    <string name="genre">Жанр</string>
+    <string name="save_manga">Сохранить мангу</string>
+    <string name="start_download">Начать загрузку</string>
+    <string name="save_manga_confirm">Сохранить выбранную мангу? Это может занять трафик и место на диске</string>
 </resources>
