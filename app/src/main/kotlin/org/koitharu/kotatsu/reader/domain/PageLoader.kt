@@ -3,8 +3,10 @@ package org.koitharu.kotatsu.reader.domain
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
 import androidx.annotation.AnyThread
 import androidx.collection.LongSparseArray
 import androidx.collection.set
@@ -56,6 +58,7 @@ import org.koitharu.kotatsu.local.data.isFileUri
 import org.koitharu.kotatsu.local.data.isZipUri
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.mimeType
 import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
@@ -149,9 +152,13 @@ class PageLoader @Inject constructor(
 			cache.put(uri.toString(), bitmap).toUri()
 		} else {
 			val file = uri.toFile()
-			context.ensureRamAtLeast(file.length() * 2)
 			runInterruptible(Dispatchers.IO) {
-				checkBitmapNotNull(BitmapFactory.decodeFile(file.absolutePath))
+				context.ensureRamAtLeast(file.length() * 2)
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+					ImageDecoder.decodeBitmap(ImageDecoder.createSource(file))
+				} else {
+					checkBitmapNotNull(BitmapFactory.decodeFile(file.absolutePath))
+				}
 			}.use { image ->
 				image.compressToPNG(file)
 			}
@@ -235,7 +242,7 @@ class PageLoader @Inject constructor(
 				val request = createPageRequest(pageUrl, page.source)
 				imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
 					response.requireBody().withProgress(progress).use {
-						cache.put(pageUrl, it.source())
+						cache.put(pageUrl, it.source(), response.mimeType)
 					}
 				}.toUri()
 			}
