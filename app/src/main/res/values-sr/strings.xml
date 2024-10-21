@@ -157,7 +157,7 @@
     <string name="no_chapters">Нема поглавља</string>
     <string name="list_options">Листа опција</string>
     <string name="related_manga_summary">Прикажи листу сродних Манги. У неким случајевима може бити нетачна или је неће бити</string>
-    <string name="remove_completed_downloads_confirm">Ваша историја преузимања ће бити трајно избрисана</string>
+    <string name="remove_completed_downloads_confirm">Ваша историја преузимања ће бити трајно избрисана. Ниједна преузета датотека неће бити избрисана</string>
     <string name="theme_name_dynamic">Динамичка</string>
     <string name="text_clear_cookies_prompt">Бићеш одјављен са свих извора</string>
     <string name="clear_cookies">Избриши колачиће</string>
@@ -348,7 +348,7 @@
     <string name="frequency_once_per_month">Једном месечно</string>
     <string name="logged_in_as">Пријављен као %s</string>
     <string name="suggestions_info">Сви подаци се анализирају само локално на овом уређају и никада се нигде не шаљу.</string>
-    <string name="reader_info_pattern">Погавље %1$d/%2$d Страна %3$d/%4$d</string>
+    <string name="reader_info_pattern">Поглавље %1$d/%2$d Страна %3$d/%4$d</string>
     <string name="contrast">Контраст</string>
     <string name="history_cleared">Историја је очишћена</string>
     <string name="size_s">Величина: %s</string>
@@ -719,9 +719,18 @@
     <string name="telegram_group">Телеграм група</string>
     <string name="popular_in_hour">Популарно овог часа</string>
     <string name="popular_in_week">Популарно ове седмице</string>
-    <string name="content_type_artist_cg">Уметник ЦГ</string>
+    <string name="content_type_artist_cg">Уметник (Рачунарско Генерисани)</string>
     <string name="error_image_format">Неподржан формат слике: %s</string>
     <string name="filter_search_warning">Овај извор не подржава претрагу са филтерима. Ваши филтери су обрисани</string>
     <string name="content_type_one_shot">Један ударац</string>
-    <string name="content_type_game_cg">Игра ЦГ</string>
+    <string name="content_type_game_cg">Игра (Рачунарско Генерисана)</string>
+    <string name="start_download">Започни преузимање</string>
+    <string name="save_manga_confirm">Сачувати изабрану мангу? Ово може да потроши мрежни саобраћај и простор на диску</string>
+    <string name="save_manga">Сачувај мангу</string>
+    <string name="genre">Жанр</string>
+    <string name="download_added">Преузимање додато</string>
+    <string name="more_options">Више опција</string>
+    <string name="destination_directory">Одредишни именик</string>
+    <string name="chapter_selection_hint">Можеш одабрати поглавља за преузимање дугим притиском на ставку на листи поглавља.</string>
+    <string name="chapters_all">Сва</string>
 </resources>
