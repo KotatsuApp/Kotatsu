@@ -112,7 +112,7 @@
     <string name="various_languages">Erinevad keeled</string>
     <string name="list_mode">Loetelu mood</string>
     <string name="removal_completed">Eemaldatud</string>
-    <string name="download_complete">Allalaaaditud</string>
+    <string name="download_complete">Allalaaditud</string>
     <string name="theme_name_miku">Miku</string>
     <string name="edit">Muuda</string>
     <string name="captcha_required">CAPTCHA vajatud</string>
@@ -181,7 +181,7 @@
     <string name="search_history_cleared">Tühjendatud</string>
     <string name="_s_deleted_from_local_storage">\"%s\" eemaldatud lokaasest salvestusruumist</string>
     <string name="too_many_requests_message">Liiga palju taotlusi. Proovige hiljem uuesti</string>
-    <string name="downloads_wifi_only">Allalaadi ainult üle Wi-Fi</string>
+    <string name="downloads_wifi_only">Laadi alla ainult WiFi võrgus</string>
     <string name="send">Saada</string>
     <string name="bookmark_add">Lisa järjehoidja</string>
     <string name="discard">Unusta</string>
@@ -395,7 +395,7 @@
     <string name="done">Tehtud</string>
     <string name="error_no_space_left">Ruumi pole ülejäänud seadmel</string>
     <string name="sign_in">Logi sisse</string>
-    <string name="remove_completed_downloads_confirm">Sinu allalaadimise ajalugu kustutatakse igaveseks</string>
+    <string name="remove_completed_downloads_confirm">Sinu allalaadimise ajalugu kustutatakse jäädavalt. Allalaaditud failid jäävad alles</string>
     <string name="password">Parool</string>
     <string name="data_and_privacy">Andmed ja privaatsus</string>
     <string name="invalid_value_message">Kehtetu väärtus</string>
@@ -407,7 +407,7 @@
     <string name="username">Kasutaja nimi</string>
     <string name="authorization_optional">Autoriseerimine (valikuline)</string>
     <string name="downloads_paused">Allalaadimised on pausil</string>
-    <string name="cancel_all_downloads_confirm">Kõik aktiivsed allalaadimised peatatakse ja poolenisti allalaetud sisu kaotatakse</string>
+    <string name="cancel_all_downloads_confirm">Kõik pooleliolevad allalaadimised peatatakse ja poolenisti allalaaditud sisu kustutatakse</string>
     <string name="text_downloads_list_holder">Sul pole midagi allalaetud</string>
     <string name="invalid_port_number">Vigane pordi number</string>
     <string name="webtoon_zoom_summary">Luba sisse suumimis liigutusi webtooni moodis</string>
@@ -419,7 +419,7 @@
     <string name="restore_summary">Taasta varem loodud varukoopia</string>
     <string name="clear_network_cache">Tühjendage võrgu vahemälu</string>
     <string name="images_procy_description">Kasutage wsrv.nl teenust liikluskasutuse vähendamiseks ja võimalusel piltide laadimise kiirendamiseks</string>
-    <string name="downloads_resumed">Allalaadimised on jätkanud</string>
+    <string name="downloads_resumed">Allalaadimine jätkub</string>
     <string name="invert_colors">Pööra värvid tagurpidi</string>
     <string name="proxy">Puhverserver</string>
     <string name="text_empty_holder_secondary_filtered">Sinu otsingutingimustele ei vasta ühtegi mangat</string>
@@ -511,4 +511,9 @@
     <string name="next_page">Järgmine leht</string>
     <string name="content_type_hentai">Hentai</string>
     <string name="content_type_comics">Koomiks</string>
+    <string name="restore">Taasta</string>
+    <string name="source_enabled">Andmeallikas on kasutusel</string>
+    <string name="this_manga">See manga</string>
+    <string name="sources_catalog">Andmeallikate kataloog</string>
+    <string name="backup_date_">Varukoopia kuupäev: %s</string>
 </resources>
