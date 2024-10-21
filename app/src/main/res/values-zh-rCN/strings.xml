@@ -36,7 +36,7 @@
     <string name="nsfw">R18</string>
     <string name="various_languages">多语言</string>
     <string name="search_chapters">查找章节</string>
-    <string name="suggestions_excluded_genres">屏蔽分类</string>
+    <string name="suggestions_excluded_genres">屏蔽风格</string>
     <string name="suggestions_updating">推荐更新</string>
     <string name="check_new_chapters_title">检查漫画新章节并接收通知</string>
     <string name="details">详情</string>
@@ -186,12 +186,12 @@
     <string name="read_more">了解详情</string>
     <string name="queued">等待</string>
     <string name="chapter_is_missing">该章缺失</string>
-    <string name="about_app_translation_summary">帮助我们翻译软件内容</string>
+    <string name="about_app_translation_summary">协助翻译</string>
     <string name="about_app_translation">协助翻译</string>
     <string name="auth_complete">授权</string>
     <string name="auth_not_supported_by">不支持在%s上登录</string>
     <string name="text_clear_cookies_prompt">会导致退出所有已登录图源</string>
-    <string name="genres">分类</string>
+    <string name="genres">风格</string>
     <string name="state_ongoing">连载中</string>
     <string name="state_finished">已完结</string>
     <string name="system_default">默认</string>
@@ -215,7 +215,7 @@
     <string name="logged_in_as">以 %s 登录</string>
     <string name="chapters_empty">此漫画没有章节</string>
     <string name="appearance">外观</string>
-    <string name="suggestions_excluded_genres_summary">输入不希望在推荐中看到的分类</string>
+    <string name="suggestions_excluded_genres_summary">输入不希望在推荐中看到的风格</string>
     <string name="text_delete_local_manga_batch">确定从设备中永久删除所选漫画？</string>
     <string name="removal_completed">删除成功</string>
     <string name="download_slowdown">限速下载</string>
@@ -391,7 +391,7 @@
     <string name="suggestions_notifications_summary">偶尔显示漫画推荐通知</string>
     <string name="more">更多</string>
     <string name="cancel_all_downloads_confirm">将取消所有进行中的下载，部分已下载完成的数据将会丢失</string>
-    <string name="remove_completed_downloads_confirm">所有已完成的下载记录将会永久清除</string>
+    <string name="remove_completed_downloads_confirm">所有已完成的下载记录以及其中未下载的文件将会永久清除</string>
     <string name="sync_auth_hint">可登陆已有账号或创建新账号</string>
     <string name="address">地址</string>
     <string name="clear_network_cache">清除网络缓存</string>
@@ -672,8 +672,8 @@
     <string name="stuck">粘贴</string>
     <string name="retry">重试</string>
     <string name="minutes_seconds_short">%1$d 分 %2$d 秒</string>
-    <string name="not_in_favorites">不在收藏中</string>
-    <string name="updated_long_ago">很久之前更新</string>
+    <string name="not_in_favorites">非收藏</string>
+    <string name="updated_long_ago">很久前更新</string>
     <string name="low_rating">低评分</string>
     <string name="unpopular">低人气</string>
     <string name="sort_order_asc">升序</string>
@@ -709,7 +709,7 @@
     <string name="demographic_josei">女性向</string>
     <string name="years">年</string>
     <string name="any">所有</string>
-    <string name="filter_search_warning">本图源不支持筛选搜索，筛选器已被清除</string>
+    <string name="filter_search_warning">本图源不支持筛选搜索，筛选已被重置</string>
     <string name="manga_replaced">来自(%2$s)源的\"%1$s\"漫画已替换成来自(%4$s)源的\"%3$s\"</string>
     <string name="popular_in_hour">一小时内热门</string>
     <string name="demographic_kodomo">子供向</string>
@@ -722,10 +722,21 @@
     <string name="source_code">源代码</string>
     <string name="user_manual">用户手册</string>
     <string name="telegram_group">Telegram 群</string>
-    <string name="manga_with_downloaded_chapters">有已下载章节的漫画</string>
+    <string name="manga_with_downloaded_chapters">当存在已下载章节的漫画时</string>
     <string name="error_image_format">图片文件不受支持：%s</string>
     <string name="save_manga">下载漫画</string>
     <string name="start_download">开始下载</string>
     <string name="save_manga_confirm">要下载选择的漫画吗？下载漫画会消耗流量和磁盘空间</string>
-    <string name="genre">流派</string>
+    <string name="genre">风格</string>
+    <string name="destination_directory">目标目录</string>
+    <string name="download_added">已开始下载</string>
+    <string name="more_options">更多设置</string>
+    <string name="chapter_selection_hint">可在章节列表长按选择章节下载。</string>
+    <string name="chapters_all">全部</string>
+    <string name="allow_always">总是允许</string>
+    <string name="download_over_cellular">数据流量下载</string>
+    <string name="allow_once">允许一次</string>
+    <string name="ask_every_time">每次询问</string>
+    <string name="dont_allow">拒绝</string>
+    <string name="download_cellular_confirm">确定使用数据流量下载漫画？</string>
 </resources>
