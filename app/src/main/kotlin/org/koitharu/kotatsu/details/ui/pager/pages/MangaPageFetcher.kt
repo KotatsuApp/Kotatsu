@@ -104,10 +104,9 @@ class MangaPageFetcher(
 					if (!response.isSuccessful) {
 						throw HttpException(response)
 					}
-					val body = response.requireBody()
 					val mimeType = response.mimeType
-					val file = body.use {
-						pagesCache.put(pageUrl, it.source())
+					val file = response.requireBody().use {
+						pagesCache.put(pageUrl, it.source(), mimeType)
 					}
 					SourceResult(
 						source = ImageSource(

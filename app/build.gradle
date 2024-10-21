@@ -136,7 +136,7 @@ dependencies {
 
 	implementation 'io.coil-kt:coil-base:2.7.0'
 	implementation 'io.coil-kt:coil-svg:2.7.0'
-	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:e04098de68'
+	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:ac7360c5e3'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
 

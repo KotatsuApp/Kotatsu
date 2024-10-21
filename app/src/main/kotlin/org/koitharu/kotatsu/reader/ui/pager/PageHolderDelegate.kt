@@ -152,6 +152,7 @@ class PageHolderDelegate(
 			} catch (ce: CancellationException) {
 				throw ce
 			} catch (e2: Throwable) {
+				e2.printStackTrace()
 				e.addSuppressed(e2)
 				state = State.ERROR
 				callback.onError(e)

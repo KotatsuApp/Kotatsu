@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.local.data
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.StatFs
+import android.webkit.MimeTypeMap
 import com.tomclaw.cache.DiskLruCache
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +16,7 @@ import okio.use
 import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.compressToPNG
-import org.koitharu.kotatsu.core.util.ext.longHashCode
+import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.subdir
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
@@ -24,6 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -50,15 +52,15 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		}.getOrThrow()
 	}
 
-	suspend fun get(url: String): File? {
+	suspend fun get(url: String): File? = withContext(Dispatchers.IO) {
 		val cache = lruCache.get()
-		return runInterruptible(Dispatchers.IO) {
+		runInterruptible {
 			cache.get(url)?.takeIfReadable()
 		}
 	}
 
-	suspend fun put(url: String, source: Source): File = withContext(Dispatchers.IO) {
-		val file = File(cacheDir.get().parentFile, url.longHashCode().toString())
+	suspend fun put(url: String, source: Source, mimeType: String?): File = withContext(Dispatchers.IO) {
+		val file = createBufferFile(url, mimeType)
 		try {
 			val bytes = file.sink(append = false).buffer().use {
 				it.writeAllCancellable(source)
@@ -66,17 +68,23 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 			if (bytes == 0L) {
 				throw NoDataReceivedException(url)
 			}
-			lruCache.get().put(url, file)
+			val cache = lruCache.get()
+			runInterruptible {
+				cache.put(url, file)
+			}
 		} finally {
 			file.delete()
 		}
 	}
 
 	suspend fun put(url: String, bitmap: Bitmap): File = withContext(Dispatchers.IO) {
-		val file = File(cacheDir.get().parentFile, url.longHashCode().toString())
+		val file = createBufferFile(url, "image/png")
 		try {
 			bitmap.compressToPNG(file)
-			lruCache.get().put(url, file)
+			val cache = lruCache.get()
+			runInterruptible {
+				cache.put(url, file)
+			}
 		} finally {
 			file.delete()
 		}
@@ -90,11 +98,23 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 	}
 
 	private suspend fun getAvailableSize(): Long = runCatchingCancellable {
-		val statFs = StatFs(cacheDir.get().absolutePath)
-		statFs.availableBytes
+		val dir = cacheDir.get()
+		runInterruptible(Dispatchers.IO) {
+			val statFs = StatFs(dir.absolutePath)
+			statFs.availableBytes
+		}
 	}.onFailure {
 		it.printStackTraceDebug()
 	}.getOrDefault(SIZE_DEFAULT)
+
+	private suspend fun createBufferFile(url: String, mimeType: String?): File {
+		val ext = mimeType?.let { MimeTypeMap.getSingleton().getExtensionFromMimeType(it) }
+			?: MimeTypeMap.getFileExtensionFromUrl(url).ifNullOrEmpty { "dat" }
+		val cacheDir = cacheDir.get()
+		val rootDir = checkNotNull(cacheDir.parentFile) { "Cannot get parent for ${cacheDir.absolutePath}" }
+		val name = UUID.randomUUID().toString() + "." + ext
+		return File(rootDir, name)
+	}
 
 	private companion object {
 
