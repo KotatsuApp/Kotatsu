@@ -657,4 +657,27 @@
     <string name="chapters_deleted_pattern">Rimosso %1$s, cancellato %2$s</string>
     <string name="search_suggestions">Suggerimenti per la ricerca</string>
     <string name="tracker_debug_info">Controllo del registro di nuovi capitoli</string>
+    <string name="scrobbler_auth_required">Accedi a %s per continuare</string>
+    <string name="text_empty_holder_secondary_filtered">Non ci sono manga che corrispondono ai filtri selezionati</string>
+    <string name="unstable_feature">Funzionalità instabile</string>
+    <string name="scrobbler_auth_intro">Accedi per configurare l\'integrazione con %s. Ciò ti consentirà di monitorare i progressi e lo stato della lettura dei manga</string>
+    <string name="invalid_proxy_configuration">Configurazione proxy non valida</string>
+    <string name="show_quick_filters">Mostra filtri rapidi</string>
+    <string name="show_quick_filters_summary">Fornisce la possibilità di filtrare gli elenchi di manga in base a determinati parametri</string>
+    <string name="external_source">Esterno/plugin</string>
+    <string name="connection_ok">La connessione è OK</string>
+    <string name="invalid_server_address_message">Indirizzo server non valido</string>
+    <string name="too_many_requests_message_retry">Troppe richieste. Riprova dopo %s</string>
+    <string name="skip_all">Salta tutto</string>
+    <string name="stuck">Bloccato</string>
+    <string name="not_in_favorites">Non nei preferiti</string>
+    <string name="plugin_incompatible">Plugin incompatibile o errore interno. Assicurati di utilizzare l\'ultima versione del plugin e di Kotatsu</string>
+    <string name="updated_long_ago">Aggiornato molto tempo fa</string>
+    <string name="unpopular">Impopolare</string>
+    <string name="low_rating">Valutazione bassa</string>
+    <string name="sort_order_asc">Ascendente</string>
+    <string name="sort_order_desc">Discendente</string>
+    <string name="by_date">Data</string>
+    <string name="popularity">Popolarità</string>
+    <string name="retry">Riprovare</string>
 </resources>
