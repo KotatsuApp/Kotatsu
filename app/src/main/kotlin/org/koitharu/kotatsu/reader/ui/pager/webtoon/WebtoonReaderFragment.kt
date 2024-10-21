@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.coroutineScope
@@ -13,7 +14,6 @@ import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.ui.list.lifecycle.RecyclerViewLifecycleDispatcher
-import org.koitharu.kotatsu.core.util.ext.findCenterViewPosition
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.removeItemDecoration
@@ -127,14 +127,13 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 	}
 
 	override fun getCurrentState(): ReaderState? = viewBinding?.run {
-		val currentItem = recyclerView.findCenterViewPosition()
+		val currentItem = recyclerView.findCurrentPagePosition()
 		val adapter = recyclerView.adapter as? BaseReaderAdapter<*>
 		val page = adapter?.getItemOrNull(currentItem) ?: return@run null
 		ReaderState(
 			chapterId = page.chapterId,
 			page = page.index,
-			scroll = (recyclerView.findViewHolderForAdapterPosition(currentItem) as? WebtoonHolder)
-				?.getScrollY() ?: 0,
+			scroll = (recyclerView.findViewHolderForAdapterPosition(currentItem) as? WebtoonHolder)?.getScrollY() ?: 0,
 		)
 	}
 
@@ -167,5 +166,15 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 			requireViewBinding().recyclerView.nestedScrollBy(0, delta)
 		}
 		return true
+	}
+
+	private fun RecyclerView.findCurrentPagePosition(): Int {
+		val centerX = width / 2f
+		val centerY = height - resources.getDimension(R.dimen.webtoon_pages_gap)
+		if (centerY <= 0) {
+			return RecyclerView.NO_POSITION
+		}
+		val view = findChildViewUnder(centerX, centerY) ?: return RecyclerView.NO_POSITION
+		return getChildAdapterPosition(view)
 	}
 }
