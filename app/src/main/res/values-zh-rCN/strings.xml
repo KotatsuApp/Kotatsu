@@ -727,4 +727,5 @@
     <string name="save_manga">下载漫画</string>
     <string name="start_download">开始下载</string>
     <string name="save_manga_confirm">要下载选择的漫画吗？下载漫画会消耗流量和磁盘空间</string>
+    <string name="genre">流派</string>
 </resources>
