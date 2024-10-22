@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 681
-		versionName = '7.7-a2'
+		versionCode = 682
+		versionName = '7.7-a3'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -92,7 +92,7 @@ dependencies {
 
 	implementation 'androidx.appcompat:appcompat:1.7.0'
 	implementation 'androidx.core:core-ktx:1.13.1'
-	implementation 'androidx.activity:activity-ktx:1.9.2'
+	implementation 'androidx.activity:activity-ktx:1.9.3'
 	implementation 'androidx.fragment:fragment-ktx:1.8.4'
 	implementation 'androidx.transition:transition-ktx:1.5.1'
 	implementation 'androidx.collection:collection-ktx:1.4.4'
@@ -136,7 +136,8 @@ dependencies {
 
 	implementation 'io.coil-kt:coil-base:2.7.0'
 	implementation 'io.coil-kt:coil-svg:2.7.0'
-	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:ac7360c5e3'
+	implementation 'org.aomedia.avif.android:avif:1.1.1.14d8e3c4'
+	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:d1d10a6975'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'
 	implementation 'io.noties.markwon:core:4.6.2'
 

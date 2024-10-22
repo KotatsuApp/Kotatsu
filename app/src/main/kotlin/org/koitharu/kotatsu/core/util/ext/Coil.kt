@@ -14,8 +14,8 @@ import coil.request.SuccessResult
 import coil.util.CoilUtils
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.image.RegionBitmapDecoder
 import org.koitharu.kotatsu.core.ui.image.AnimatedPlaceholderDrawable
-import org.koitharu.kotatsu.core.ui.image.RegionBitmapDecoder
 import org.koitharu.kotatsu.core.util.progress.ImageRequestIndicatorListener
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import com.google.android.material.R as materialR
@@ -63,7 +63,7 @@ fun ImageRequest.Builder.indicator(indicators: List<BaseProgressIndicator<*>>): 
 
 fun ImageRequest.Builder.decodeRegion(
 	scroll: Int = RegionBitmapDecoder.SCROLL_UNDEFINED,
-): ImageRequest.Builder = decoderFactory(RegionBitmapDecoder.Factory())
+): ImageRequest.Builder = setParameter(RegionBitmapDecoder.PARAM_REGION, true)
 	.setParameter(RegionBitmapDecoder.PARAM_SCROLL, scroll)
 
 @Suppress("SpellCheckingInspection")

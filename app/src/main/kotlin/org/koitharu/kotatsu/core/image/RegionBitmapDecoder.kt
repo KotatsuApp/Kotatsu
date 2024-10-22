@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.core.ui.image
+package org.koitharu.kotatsu.core.image
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -13,27 +13,14 @@ import coil.decode.Decoder
 import coil.decode.ImageSource
 import coil.fetch.SourceResult
 import coil.request.Options
-import coil.size.Dimension
-import coil.size.Scale
-import coil.size.Size
-import coil.size.isOriginal
-import coil.size.pxOrElse
-import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import kotlin.math.roundToInt
 
 class RegionBitmapDecoder(
-	private val source: ImageSource,
-	private val options: Options,
-	private val parallelismLock: Semaphore,
-) : Decoder {
+	source: ImageSource, options: Options, parallelismLock: Semaphore
+) : BaseCoilDecoder(source, options, parallelismLock) {
 
-	override suspend fun decode() = parallelismLock.withPermit {
-		runInterruptible { BitmapFactory.Options().decode() }
-	}
-
-	private fun BitmapFactory.Options.decode(): DecodeResult {
+	override fun BitmapFactory.Options.decode(): DecodeResult {
 		val regionDecoder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 			BitmapRegionDecoder.newInstance(source.source().inputStream())
 		} else {
@@ -53,29 +40,6 @@ class RegionBitmapDecoder(
 		} finally {
 			regionDecoder.recycle()
 		}
-	}
-
-	private fun BitmapFactory.Options.configureConfig() {
-		var config = options.config
-
-		inMutable = false
-
-		if (Build.VERSION.SDK_INT >= 26 && options.colorSpace != null) {
-			inPreferredColorSpace = options.colorSpace
-		}
-		inPremultiplied = options.premultipliedAlpha
-
-		// Decode the image as RGB_565 as an optimization if allowed.
-		if (options.allowRgb565 && config == Bitmap.Config.ARGB_8888 && outMimeType == "image/jpeg") {
-			config = Bitmap.Config.RGB_565
-		}
-
-		// High color depth images must be decoded as either RGBA_F16 or HARDWARE.
-		if (Build.VERSION.SDK_INT >= 26 && outConfig == Bitmap.Config.RGBA_F16 && config != Bitmap.Config.HARDWARE) {
-			config = Bitmap.Config.RGBA_F16
-		}
-
-		inPreferredConfig = config
 	}
 
 	/** Compute and set the scaling properties for [BitmapFactory.Options]. */
@@ -142,18 +106,41 @@ class RegionBitmapDecoder(
 		return rect
 	}
 
-	class Factory(
-		maxParallelism: Int = DEFAULT_MAX_PARALLELISM,
-	) : Decoder.Factory {
+	private fun BitmapFactory.Options.configureConfig() {
+		var config = options.config
 
-		@Suppress("NEWER_VERSION_IN_SINCE_KOTLIN")
-		@SinceKotlin("999.9") // Only public in Java.
-		constructor() : this()
+		inMutable = false
 
-		private val parallelismLock = Semaphore(maxParallelism)
+		if (Build.VERSION.SDK_INT >= 26 && options.colorSpace != null) {
+			inPreferredColorSpace = options.colorSpace
+		}
+		inPremultiplied = options.premultipliedAlpha
 
-		override fun create(result: SourceResult, options: Options, imageLoader: ImageLoader): Decoder {
-			return RegionBitmapDecoder(result.source, options, parallelismLock)
+		// Decode the image as RGB_565 as an optimization if allowed.
+		if (options.allowRgb565 && config == Bitmap.Config.ARGB_8888 && outMimeType == "image/jpeg") {
+			config = Bitmap.Config.RGB_565
+		}
+
+		// High color depth images must be decoded as either RGBA_F16 or HARDWARE.
+		if (Build.VERSION.SDK_INT >= 26 && outConfig == Bitmap.Config.RGBA_F16 && config != Bitmap.Config.HARDWARE) {
+			config = Bitmap.Config.RGBA_F16
+		}
+
+		inPreferredConfig = config
+	}
+
+	class Factory : Decoder.Factory {
+
+		private val parallelismLock = Semaphore(DEFAULT_PARALLELISM)
+
+		override fun create(
+			result: SourceResult,
+			options: Options,
+			imageLoader: ImageLoader
+		): Decoder? = if (options.parameters.value<Boolean>(PARAM_REGION) == true) {
+			RegionBitmapDecoder(result.source, options, parallelismLock)
+		} else {
+			null
 		}
 
 		override fun equals(other: Any?) = other is Factory
@@ -164,22 +151,7 @@ class RegionBitmapDecoder(
 	companion object {
 
 		const val PARAM_SCROLL = "scroll"
+		const val PARAM_REGION = "region"
 		const val SCROLL_UNDEFINED = -1
-		private const val DEFAULT_MAX_PARALLELISM = 4
-
-		private inline fun Size.widthPx(scale: Scale, original: () -> Int): Int {
-			return if (isOriginal) original() else width.toPx(scale)
-		}
-
-		private inline fun Size.heightPx(scale: Scale, original: () -> Int): Int {
-			return if (isOriginal) original() else height.toPx(scale)
-		}
-
-		private fun Dimension.toPx(scale: Scale) = pxOrElse {
-			when (scale) {
-				Scale.FILL -> Int.MIN_VALUE
-				Scale.FIT -> Int.MAX_VALUE
-			}
-		}
 	}
 }
