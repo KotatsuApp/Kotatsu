@@ -1,24 +1,25 @@
 package org.koitharu.kotatsu.core.image
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import androidx.core.graphics.drawable.toDrawable
-import coil.ImageLoader
-import coil.decode.DecodeResult
-import coil.decode.Decoder
-import coil.decode.ImageSource
-import coil.fetch.SourceResult
-import coil.request.Options
+import coil3.ImageLoader
+import coil3.asImage
+import coil3.decode.DecodeResult
+import coil3.decode.Decoder
+import coil3.decode.ImageSource
+import coil3.fetch.SourceFetchResult
+import coil3.request.Options
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
-import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.runInterruptible
 import org.aomedia.avif.android.AvifDecoder
 import org.aomedia.avif.android.AvifDecoder.Info
 import org.koitharu.kotatsu.core.util.ext.toByteBuffer
 
-class AvifImageDecoder(source: ImageSource, options: Options, parallelismLock: Semaphore) :
-	BaseCoilDecoder(source, options, parallelismLock) {
+class AvifImageDecoder(
+	private val source: ImageSource,
+	private val options: Options,
+) : Decoder {
 
-	override fun BitmapFactory.Options.decode(): DecodeResult {
+	override suspend fun decode(): DecodeResult = runInterruptible {
 		val bytes = source.source().use {
 			it.inputStream().toByteBuffer()
 		}
@@ -36,22 +37,20 @@ class AvifImageDecoder(source: ImageSource, options: Options, parallelismLock: S
 			bitmap.recycle()
 			throw ImageDecodeException(null, "avif")
 		}
-		return DecodeResult(
-			drawable = bitmap.toDrawable(options.context.resources),
+		DecodeResult(
+			image = bitmap.asImage(),
 			isSampled = false,
 		)
 	}
 
 	class Factory : Decoder.Factory {
 
-		private val parallelismLock = Semaphore(DEFAULT_PARALLELISM)
-
 		override fun create(
-			result: SourceResult,
+			result: SourceFetchResult,
 			options: Options,
 			imageLoader: ImageLoader
 		): Decoder? = if (isApplicable(result)) {
-			AvifImageDecoder(result.source, options, parallelismLock)
+			AvifImageDecoder(result.source, options)
 		} else {
 			null
 		}
@@ -60,7 +59,7 @@ class AvifImageDecoder(source: ImageSource, options: Options, parallelismLock: S
 
 		override fun hashCode() = javaClass.hashCode()
 
-		private fun isApplicable(result: SourceResult): Boolean {
+		private fun isApplicable(result: SourceFetchResult): Boolean {
 			return result.mimeType == "image/avif"
 		}
 	}

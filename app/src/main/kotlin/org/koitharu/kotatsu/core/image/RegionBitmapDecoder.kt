@@ -5,22 +5,35 @@ import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build
-import androidx.core.graphics.drawable.toDrawable
-import coil.ImageLoader
-import coil.decode.DecodeResult
-import coil.decode.DecodeUtils
-import coil.decode.Decoder
-import coil.decode.ImageSource
-import coil.fetch.SourceResult
-import coil.request.Options
-import kotlinx.coroutines.sync.Semaphore
+import coil3.Extras
+import coil3.ImageLoader
+import coil3.asImage
+import coil3.decode.DecodeResult
+import coil3.decode.DecodeUtils
+import coil3.decode.Decoder
+import coil3.decode.ImageSource
+import coil3.fetch.SourceFetchResult
+import coil3.getExtra
+import coil3.request.Options
+import coil3.request.allowRgb565
+import coil3.request.bitmapConfig
+import coil3.request.colorSpace
+import coil3.request.premultipliedAlpha
+import coil3.size.Dimension
+import coil3.size.Precision
+import coil3.size.Scale
+import coil3.size.Size
+import coil3.size.isOriginal
+import coil3.size.pxOrElse
+import kotlinx.coroutines.runInterruptible
 import kotlin.math.roundToInt
 
 class RegionBitmapDecoder(
-	source: ImageSource, options: Options, parallelismLock: Semaphore
-) : BaseCoilDecoder(source, options, parallelismLock) {
+	private val source: ImageSource,
+	private val options: Options,
+) : Decoder {
 
-	override fun BitmapFactory.Options.decode(): DecodeResult {
+	override suspend fun decode(): DecodeResult = runInterruptible {
 		val regionDecoder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 			BitmapRegionDecoder.newInstance(source.source().inputStream())
 		} else {
@@ -28,13 +41,14 @@ class RegionBitmapDecoder(
 			BitmapRegionDecoder.newInstance(source.source().inputStream(), false)
 		}
 		checkNotNull(regionDecoder)
+		val bitmapOptions = BitmapFactory.Options()
 		try {
-			val rect = configureScale(regionDecoder.width, regionDecoder.height)
-			configureConfig()
-			val bitmap = regionDecoder.decodeRegion(rect, this)
+			val rect = bitmapOptions.configureScale(regionDecoder.width, regionDecoder.height)
+			bitmapOptions.configureConfig()
+			val bitmap = regionDecoder.decodeRegion(rect, bitmapOptions)
 			bitmap.density = options.context.resources.displayMetrics.densityDpi
-			return DecodeResult(
-				drawable = bitmap.toDrawable(options.context.resources),
+			DecodeResult(
+				image = bitmap.asImage(),
 				isSampled = true,
 			)
 		} finally {
@@ -55,7 +69,7 @@ class RegionBitmapDecoder(
 		} else {
 			Rect(0, 0, (srcHeight / dstRatio).toInt().coerceAtLeast(1), srcHeight)
 		}
-		val scroll = options.parameters.value(PARAM_SCROLL) ?: SCROLL_UNDEFINED
+		val scroll = options.getExtra(regionScrollKey)
 		if (scroll == SCROLL_UNDEFINED) {
 			rect.offsetTo(
 				(srcWidth - rect.width()) / 2,
@@ -87,7 +101,7 @@ class RegionBitmapDecoder(
 		)
 
 		// Only upscale the image if the options require an exact size.
-		if (options.allowInexactSize) {
+		if (options.precision == Precision.INEXACT) {
 			scale = scale.coerceAtMost(1.0)
 		}
 
@@ -107,7 +121,7 @@ class RegionBitmapDecoder(
 	}
 
 	private fun BitmapFactory.Options.configureConfig() {
-		var config = options.config
+		var config = options.bitmapConfig
 
 		inMutable = false
 
@@ -131,13 +145,11 @@ class RegionBitmapDecoder(
 
 	object Factory : Decoder.Factory {
 
-		private val parallelismLock = Semaphore(DEFAULT_PARALLELISM)
-
 		override fun create(
-			result: SourceResult,
+			result: SourceFetchResult,
 			options: Options,
 			imageLoader: ImageLoader
-		): Decoder = RegionBitmapDecoder(result.source, options, parallelismLock)
+		): Decoder = RegionBitmapDecoder(result.source, options)
 
 		override fun equals(other: Any?) = other is Factory
 
@@ -146,7 +158,22 @@ class RegionBitmapDecoder(
 
 	companion object {
 
-		const val PARAM_SCROLL = "scroll"
 		const val SCROLL_UNDEFINED = -1
+		val regionScrollKey = Extras.Key(SCROLL_UNDEFINED)
+
+		private inline fun Size.widthPx(scale: Scale, original: () -> Int): Int {
+			return if (isOriginal) original() else width.toPx(scale)
+		}
+
+		private inline fun Size.heightPx(scale: Scale, original: () -> Int): Int {
+			return if (isOriginal) original() else height.toPx(scale)
+		}
+
+		private fun Dimension.toPx(scale: Scale) = pxOrElse {
+			when (scale) {
+				Scale.FILL -> Int.MIN_VALUE
+				Scale.FIT -> Int.MAX_VALUE
+			}
+		}
 	}
 }

@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.core.parser
 
 import android.util.Log
 import androidx.collection.MutableLongSet
-import coil.request.CachePolicy
+import coil3.request.CachePolicy
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

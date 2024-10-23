@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.core.network.imageproxy
 
-import coil.intercept.Interceptor
+import coil3.intercept.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response

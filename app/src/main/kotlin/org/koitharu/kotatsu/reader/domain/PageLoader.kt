@@ -1,10 +1,8 @@
 package org.koitharu.kotatsu.reader.domain
 
-import android.content.ContentResolver.MimeTypeInfo
 import android.content.Context
 import android.graphics.Rect
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import androidx.annotation.AnyThread
 import androidx.collection.LongSparseArray
 import androidx.collection.set
@@ -29,6 +27,8 @@ import kotlinx.coroutines.sync.withPermit
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.use
+import org.jetbrains.annotations.Blocking
+import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
@@ -42,26 +42,25 @@ import org.koitharu.kotatsu.core.util.ext.cancelChildrenAndJoin
 import org.koitharu.kotatsu.core.util.ext.compressToPNG
 import org.koitharu.kotatsu.core.util.ext.ensureRamAtLeast
 import org.koitharu.kotatsu.core.util.ext.ensureSuccess
-import org.koitharu.kotatsu.core.util.ext.exists
 import org.koitharu.kotatsu.core.util.ext.getCompletionResultOrNull
+import org.koitharu.kotatsu.core.util.ext.isFileUri
+import org.koitharu.kotatsu.core.util.ext.isNotEmpty
 import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
-import org.koitharu.kotatsu.core.util.ext.isTargetNotEmpty
+import org.koitharu.kotatsu.core.util.ext.isZipUri
+import org.koitharu.kotatsu.core.util.ext.mimeType
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
 import org.koitharu.kotatsu.core.util.ext.use
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
 import org.koitharu.kotatsu.local.data.PagesCache
-import org.koitharu.kotatsu.local.data.isFileUri
-import org.koitharu.kotatsu.local.data.isZipUri
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mimeType
 import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
-import org.koitharu.kotatsu.core.util.ext.mimeType
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import java.io.File
 import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipFile
@@ -276,5 +275,28 @@ class PageLoader @Inject constructor(
 			.cacheControl(CommonHeaders.CACHE_CONTROL_NO_STORE)
 			.tag(MangaSource::class.java, mangaSource)
 			.build()
+
+
+		@Blocking
+		private fun Uri.exists(): Boolean = when {
+			isFileUri() -> toFile().exists()
+			isZipUri() -> {
+				val file = File(requireNotNull(schemeSpecificPart))
+				file.exists() && ZipFile(file).use { it.getEntry(fragment) != null }
+			}
+
+			else -> false
+		}
+
+		@Blocking
+		private fun Uri.isTargetNotEmpty(): Boolean = when {
+			isFileUri() -> toFile().isNotEmpty()
+			isZipUri() -> {
+				val file = File(requireNotNull(schemeSpecificPart))
+				file.exists() && ZipFile(file).use { (it.getEntry(fragment)?.size ?: 0L) != 0L }
+			}
+
+			else -> false
+		}
 	}
 }

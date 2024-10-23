@@ -9,7 +9,12 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
+import coil3.request.allowRgb565
+import coil3.request.crossfade
+import coil3.request.error
+import coil3.request.fallback
+import coil3.request.placeholder
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
@@ -17,8 +22,8 @@ import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
-import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemCategoriesHeaderBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
@@ -74,7 +79,7 @@ fun categoriesHeaderAD(
 				view.newImageRequest(lifecycleOwner, cover.url)?.run {
 					placeholder(R.drawable.ic_placeholder)
 					fallback(fallback)
-					source(cover.mangaSource)
+					mangaSourceExtra(cover.mangaSource)
 					crossfade(crossFadeDuration * (i + 1))
 					error(R.drawable.ic_error_placeholder)
 					allowRgb565(true)

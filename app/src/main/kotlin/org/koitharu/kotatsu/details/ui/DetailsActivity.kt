@@ -26,11 +26,20 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
-import coil.transform.RoundedCornersTransformation
-import coil.util.CoilUtils
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
+import coil3.request.allowRgb565
+import coil3.request.crossfade
+import coil3.request.error
+import coil3.request.fallback
+import coil3.request.lifecycle
+import coil3.request.placeholder
+import coil3.request.target
+import coil3.request.transformations
+import coil3.size.Scale
+import coil3.transform.RoundedCornersTransformation
+import coil3.util.CoilUtils
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,18 +74,19 @@ import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
+import org.koitharu.kotatsu.core.util.ext.drawable
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.isTextTruncated
 import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
-import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.details.data.MangaDetails
@@ -485,7 +495,7 @@ class DetailsActivity :
 					.placeholder(R.drawable.ic_web)
 					.fallback(R.drawable.ic_web)
 					.error(R.drawable.ic_web)
-					.source(manga.source)
+					.mangaSourceExtra(manga.source)
 					.transformations(RoundedCornersTransformation(resources.getDimension(R.dimen.chip_icon_corner)))
 					.allowRgb565(true)
 					.enqueueWith(coil)
@@ -621,8 +631,9 @@ class DetailsActivity :
 		val request = ImageRequest.Builder(this)
 			.target(viewBinding.imageViewCover)
 			.size(CoverSizeResolver(viewBinding.imageViewCover))
+			.scale(Scale.FILL)
 			.data(imageUrl)
-			.tag(manga.source)
+			.mangaSourceExtra(manga.source)
 			.crossfade(this)
 			.lifecycle(this)
 			.placeholderMemoryCacheKey(manga.coverUrl)

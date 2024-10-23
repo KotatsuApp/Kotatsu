@@ -12,10 +12,12 @@ import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.size.Scale
-import coil.size.ViewSizeResolver
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.request.bitmapConfig
+import coil3.request.error
+import coil3.size.Scale
+import coil3.size.ViewSizeResolver
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
@@ -27,6 +29,7 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.indicator
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setChecked
@@ -139,7 +142,7 @@ class ColorFilterConfigActivity :
 			.data(data)
 			.scale(Scale.FILL)
 			.decodeRegion()
-			.tag(page.source)
+			.mangaSourceExtra(page.source)
 			.bitmapConfig(if (viewModel.is32BitColorsEnabled) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565)
 			.indicator(listOf(viewBinding.progressBefore, viewBinding.progressAfter))
 			.error(R.drawable.ic_error_placeholder)

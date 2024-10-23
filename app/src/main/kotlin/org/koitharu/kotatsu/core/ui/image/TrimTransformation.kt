@@ -2,13 +2,13 @@ package org.koitharu.kotatsu.core.ui.image
 
 import android.graphics.Bitmap
 import androidx.core.graphics.get
-import coil.size.Size
-import coil.transform.Transformation
+import coil3.size.Size
+import coil3.transform.Transformation
 import org.koitharu.kotatsu.reader.domain.EdgeDetector.Companion.isColorTheSame
 
 class TrimTransformation(
 	private val tolerance: Int = 20,
-) : Transformation {
+) : Transformation() {
 
 	override val cacheKey: String = "${javaClass.name}-$tolerance"
 
@@ -91,13 +91,5 @@ class TrimTransformation(
 		} else {
 			input
 		}
-	}
-
-	override fun equals(other: Any?): Boolean {
-		return this === other || (other is TrimTransformation && other.tolerance == tolerance)
-	}
-
-	override fun hashCode(): Int {
-		return tolerance
 	}
 }

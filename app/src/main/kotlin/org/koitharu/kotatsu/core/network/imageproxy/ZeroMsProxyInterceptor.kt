@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.core.network.imageproxy
 
-import coil.request.ImageRequest
+import coil3.request.ImageRequest
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request

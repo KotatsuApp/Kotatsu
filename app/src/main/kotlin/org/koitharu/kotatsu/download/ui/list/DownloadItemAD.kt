@@ -7,9 +7,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
-import coil.ImageLoader
-import coil.request.SuccessResult
-import coil.util.CoilUtils
+import coil3.ImageLoader
+import coil3.request.SuccessResult
+import coil3.request.allowRgb565
+import coil3.request.transformations
+import coil3.util.CoilUtils
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -19,8 +21,8 @@ import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
-import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemDownloadBinding
 import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
@@ -92,7 +94,7 @@ fun downloadItemAD(
 				allowRgb565(true)
 				transformations(TrimTransformation())
 				memoryCacheKey(item.coverCacheKey)
-				source(item.manga?.source)
+				mangaSourceExtra(item.manga?.source)
 				enqueueWith(coil)
 			}
 		}

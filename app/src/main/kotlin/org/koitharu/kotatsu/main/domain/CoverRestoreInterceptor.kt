@@ -1,10 +1,10 @@
 package org.koitharu.kotatsu.main.domain
 
 import androidx.collection.ArraySet
-import coil.intercept.Interceptor
-import coil.network.HttpException
-import coil.request.ErrorResult
-import coil.request.ImageResult
+import coil3.intercept.Interceptor
+import coil3.network.HttpException
+import coil3.request.ErrorResult
+import coil3.request.ImageResult
 import okio.FileNotFoundException
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
@@ -13,7 +13,9 @@ import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.util.ext.bookmarkKey
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.mangaKey
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -33,18 +35,18 @@ class CoverRestoreInterceptor @Inject constructor(
 
 	override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
 		val request = chain.request
-		val result = chain.proceed(request)
+		val result = chain.proceed()
 		if (result is ErrorResult && result.throwable.shouldRestore()) {
-			request.tags.tag<Manga>()?.let {
+			request.extras[mangaKey]?.let {
 				if (restoreManga(it)) {
-					return chain.proceed(request.newBuilder().build())
+					return chain.withRequest(request.newBuilder().build()).proceed()
 				} else {
 					return result
 				}
 			}
-			request.tags.tag<Bookmark>()?.let {
+			request.extras[bookmarkKey]?.let {
 				if (restoreBookmark(it)) {
-					return chain.proceed(request.newBuilder().build())
+					return chain.withRequest(request.newBuilder().build()).proceed()
 				} else {
 					return result
 				}

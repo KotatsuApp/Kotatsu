@@ -9,11 +9,12 @@ import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
 import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.core.model.UnknownMangaSource
+import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mergeWith
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -30,15 +31,17 @@ class CommonHeadersInterceptor @Inject constructor(
 	override fun intercept(chain: Chain): Response {
 		val request = chain.request()
 		val source = request.tag(MangaSource::class.java)
-		val repository = if (source == null || source == UnknownMangaSource) {
+			?: request.headers[CommonHeaders.MANGA_SOURCE]?.let { MangaSource(it) }
+		val repository = if (source is MangaParserSource) {
+			mangaRepositoryFactoryLazy.get().create(source) as? ParserMangaRepository
+		} else {
 			if (BuildConfig.DEBUG && source == null) {
 				Log.w("Http", "Request without source tag: ${request.url}")
 			}
 			null
-		} else {
-			mangaRepositoryFactoryLazy.get().create(source) as? ParserMangaRepository
 		}
 		val headersBuilder = request.headers.newBuilder()
+			.removeAll(CommonHeaders.MANGA_SOURCE)
 		repository?.getRequestHeaders()?.let {
 			headersBuilder.mergeWith(it, replaceExisting = false)
 		}

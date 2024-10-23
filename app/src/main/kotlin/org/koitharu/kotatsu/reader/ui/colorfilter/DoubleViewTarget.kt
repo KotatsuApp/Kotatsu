@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.reader.ui.colorfilter
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
-import coil.target.ImageViewTarget
+import coil3.target.ImageViewTarget
 
 class DoubleViewTarget(
 	primaryView: ImageView,

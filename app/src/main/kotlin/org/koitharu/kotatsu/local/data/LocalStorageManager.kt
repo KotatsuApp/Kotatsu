@@ -19,9 +19,9 @@ import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import okhttp3.Cache
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.ext.URI_SCHEME_FILE
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.getStorageName
+import org.koitharu.kotatsu.core.util.ext.isFileUri
 import org.koitharu.kotatsu.core.util.ext.resolveFile
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.io.File
@@ -90,7 +90,7 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	suspend fun resolveUri(uri: Uri): File? = runInterruptible(Dispatchers.IO) {
-		if (uri.scheme == URI_SCHEME_FILE) {
+		if (uri.isFileUri()) {
 			uri.toFile()
 		} else {
 			uri.resolveFile(context)

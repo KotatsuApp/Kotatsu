@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.settings.sources.adapter
 
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
 import org.koitharu.kotatsu.core.ui.ReorderableListAdapter
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 

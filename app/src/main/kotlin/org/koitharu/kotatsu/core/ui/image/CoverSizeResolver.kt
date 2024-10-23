@@ -4,9 +4,9 @@ import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.view.ViewGroup
 import android.widget.ImageView
-import coil.size.Dimension
-import coil.size.Size
-import coil.size.ViewSizeResolver
+import coil3.size.Dimension
+import coil3.size.Size
+import coil3.size.ViewSizeResolver
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume

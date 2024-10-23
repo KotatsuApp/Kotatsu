@@ -7,7 +7,8 @@ import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.color
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
+import coil3.request.allowRgb565
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -15,8 +16,8 @@ import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
-import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemTrackDebugBinding
 import org.koitharu.kotatsu.tracker.data.TrackEntity
 import com.google.android.material.R as materialR
@@ -38,7 +39,7 @@ fun trackDebugAD(
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.run {
 			defaultPlaceholders(context)
 			allowRgb565(true)
-			source(item.manga.source)
+			mangaSourceExtra(item.manga.source)
 			enqueueWith(coil)
 		}
 		binding.textViewTitle.text = item.manga.title

@@ -1,9 +1,10 @@
 package org.koitharu.kotatsu.details.ui.pager.pages
 
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
-import coil.size.Scale
-import coil.size.Size
+import coil3.ImageLoader
+import coil3.request.allowRgb565
+import coil3.size.Scale
+import coil3.size.Size
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
@@ -11,9 +12,9 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.setTextColorAttr
-import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import com.google.android.material.R as materialR
@@ -42,13 +43,13 @@ fun pageThumbnailAD(
 			scale(Scale.FILL)
 			allowRgb565(true)
 			decodeRegion(0)
-			source(item.page.source)
+			mangaSourceExtra(item.page.source)
 			enqueueWith(coil)
 		}
 		with(binding.textViewNumber) {
 			setBackgroundResource(if (item.isCurrent) R.drawable.bg_badge_accent else R.drawable.bg_badge_empty)
 			setTextColorAttr(if (item.isCurrent) materialR.attr.colorOnTertiary else android.R.attr.textColorPrimary)
-			text = (item.number).toString()
+			text = item.number.toString()
 		}
 	}
 }

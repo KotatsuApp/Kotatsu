@@ -9,9 +9,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.net.toUri
-import coil.EventListener
-import coil.request.ErrorResult
-import coil.request.ImageRequest
+import coil3.EventListener
+import coil3.Extras
+import coil3.request.ErrorResult
+import coil3.request.ImageRequest
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.getTitle
@@ -21,7 +22,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 
 class CaptchaNotifier(
 	private val context: Context,
-) : EventListener {
+) : EventListener() {
 
 	fun notify(exception: CloudFlareProtectedException) {
 		if (!context.checkNotificationPermission(CHANNEL_ID)) {
@@ -84,20 +85,19 @@ class CaptchaNotifier(
 	override fun onError(request: ImageRequest, result: ErrorResult) {
 		super.onError(request, result)
 		val e = result.throwable
-		if (e is CloudFlareProtectedException && request.parameters.value<Boolean>(PARAM_IGNORE_CAPTCHA) != true) {
+		if (e is CloudFlareProtectedException && request.extras[ignoreCaptchaKey] != true) {
 			notify(e)
 		}
 	}
 
 	companion object {
 
-		fun ImageRequest.Builder.ignoreCaptchaErrors() = setParameter(
-			key = PARAM_IGNORE_CAPTCHA,
-			value = true,
-			memoryCacheKey = null,
-		)
+		fun ImageRequest.Builder.ignoreCaptchaErrors() = apply {
+			extras[ignoreCaptchaKey] = true
+		}
 
-		private const val PARAM_IGNORE_CAPTCHA = "ignore_captcha"
+		val ignoreCaptchaKey = Extras.Key(false)
+
 		private const val CHANNEL_ID = "captcha"
 		private const val TAG = CHANNEL_ID
 		private const val GROUP_CAPTCHA = "org.koitharu.kotatsu.CAPTCHA"

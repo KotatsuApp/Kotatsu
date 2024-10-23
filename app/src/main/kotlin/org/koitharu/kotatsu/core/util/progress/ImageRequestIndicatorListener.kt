@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.core.util.progress
 
-import coil.request.ErrorResult
-import coil.request.ImageRequest
-import coil.request.SuccessResult
+import coil3.request.ErrorResult
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
 import com.google.android.material.progressindicator.BaseProgressIndicator
 
 class ImageRequestIndicatorListener(

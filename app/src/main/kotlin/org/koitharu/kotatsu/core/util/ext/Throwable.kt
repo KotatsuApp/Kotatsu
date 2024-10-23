@@ -3,8 +3,9 @@ package org.koitharu.kotatsu.core.util.ext
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
 import androidx.annotation.DrawableRes
-import coil.network.HttpException
+import coil3.network.HttpException
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
+import okhttp3.Response
 import okio.FileNotFoundException
 import okio.IOException
 import okio.ProtocolException
@@ -121,7 +122,7 @@ fun Throwable.getCauseUrl(): String? = when (this) {
 	is CloudFlareBlockedException -> url
 	is CloudFlareProtectedException -> url
 	is HttpStatusException -> url
-	is HttpException -> response.request.url.toString()
+	is HttpException -> (response.delegate as? Response)?.request?.url?.toString()
 	else -> null
 }
 

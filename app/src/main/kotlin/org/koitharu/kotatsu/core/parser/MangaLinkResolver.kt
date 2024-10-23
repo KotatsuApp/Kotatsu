@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.core.parser
 
 import android.net.Uri
-import coil.request.CachePolicy
+import coil3.request.CachePolicy
 import dagger.Reusable
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.UnknownMangaSource

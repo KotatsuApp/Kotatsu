@@ -7,7 +7,7 @@ import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.color
 import androidx.work.WorkInfo
-import coil.memory.MemoryCache
+import coil3.memory.MemoryCache
 import kotlinx.coroutines.flow.StateFlow
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter

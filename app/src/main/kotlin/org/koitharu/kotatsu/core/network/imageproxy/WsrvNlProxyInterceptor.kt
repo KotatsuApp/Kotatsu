@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.core.network.imageproxy
 
-import coil.request.ImageRequest
-import coil.size.Dimension
-import coil.size.isOriginal
+import coil3.request.ImageRequest
+import coil3.size.Dimension
+import coil3.size.isOriginal
 import okhttp3.HttpUrl
 import okhttp3.Request
 

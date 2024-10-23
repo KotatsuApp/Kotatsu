@@ -1,60 +1,53 @@
 package org.koitharu.kotatsu.details.ui.pager.pages
 
-import android.content.Context
 import android.webkit.MimeTypeMap
-import androidx.core.net.toFile
 import androidx.core.net.toUri
-import coil.ImageLoader
-import coil.decode.DataSource
-import coil.decode.ImageSource
-import coil.fetch.FetchResult
-import coil.fetch.Fetcher
-import coil.fetch.SourceResult
-import coil.network.HttpException
-import coil.request.Options
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runInterruptible
+import coil3.ImageLoader
+import coil3.decode.DataSource
+import coil3.decode.ImageSource
+import coil3.fetch.FetchResult
+import coil3.fetch.Fetcher
+import coil3.fetch.SourceFetchResult
+import coil3.network.HttpException
+import coil3.network.NetworkHeaders
+import coil3.network.NetworkResponse
+import coil3.network.NetworkResponseBody
+import coil3.request.Options
+import okhttp3.Headers
 import okhttp3.OkHttpClient
-import okhttp3.internal.closeQuietly
+import okhttp3.Response
+import okio.FileSystem
 import okio.Path.Companion.toOkioPath
-import okio.buffer
-import okio.source
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.util.ext.fetch
+import org.koitharu.kotatsu.core.util.ext.isNetworkUri
 import org.koitharu.kotatsu.local.data.PagesCache
-import org.koitharu.kotatsu.local.data.isFileUri
-import org.koitharu.kotatsu.local.data.isZipUri
-import org.koitharu.kotatsu.local.data.util.withExtraCloseable
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.mimeType
 import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.reader.domain.PageLoader
-import java.util.zip.ZipFile
 import javax.inject.Inject
 
 class MangaPageFetcher(
-	private val context: Context,
 	private val okHttpClient: OkHttpClient,
 	private val pagesCache: PagesCache,
 	private val options: Options,
 	private val page: MangaPage,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val imageProxyInterceptor: ImageProxyInterceptor,
+	private val imageLoader: ImageLoader,
 ) : Fetcher {
 
-	override suspend fun fetch(): FetchResult {
+	override suspend fun fetch(): FetchResult? {
 		val repo = mangaRepositoryFactory.create(page.source)
 		val pageUrl = repo.getPageUrl(page)
 		if (options.diskCachePolicy.readEnabled) {
 			pagesCache.get(pageUrl)?.let { file ->
-				return SourceResult(
-					source = ImageSource(
-						file = file.toOkioPath(),
-						metadata = MangaPageMetadata(page),
-					),
-					mimeType = null,
+				return SourceFetchResult(
+					source = ImageSource(file.toOkioPath(), options.fileSystem),
+					mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension),
 					dataSource = DataSource.DISK,
 				)
 			}
@@ -62,67 +55,50 @@ class MangaPageFetcher(
 		return loadPage(pageUrl)
 	}
 
-	private suspend fun loadPage(pageUrl: String): SourceResult {
-		val uri = pageUrl.toUri()
-		return when {
-			uri.isZipUri() -> runInterruptible(Dispatchers.IO) {
-				val zip = ZipFile(uri.schemeSpecificPart)
-				try {
-					val entry = zip.getEntry(uri.fragment)
-					SourceResult(
-						source = ImageSource(
-							source = zip.getInputStream(entry).source().withExtraCloseable(zip).buffer(),
-							context = context,
-							metadata = MangaPageMetadata(page),
-						),
-						mimeType = MimeTypeMap.getSingleton()
-							.getMimeTypeFromExtension(entry.name.substringAfterLast('.', "")),
-						dataSource = DataSource.DISK,
-					)
-				} catch (e: Throwable) {
-					zip.closeQuietly()
-					throw e
-				}
-			}
+	private suspend fun loadPage(pageUrl: String): FetchResult? = if (pageUrl.toUri().isNetworkUri()) {
+		fetchPage(pageUrl)
+	} else {
+		imageLoader.fetch(pageUrl, options)
+	}
 
-			uri.isFileUri() -> runInterruptible(Dispatchers.IO) {
-				val file = uri.toFile()
-				SourceResult(
-					source = ImageSource(
-						source = file.source().buffer(),
-						context = context,
-						metadata = MangaPageMetadata(page),
-					),
-					mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension),
-					dataSource = DataSource.DISK,
-				)
+	private suspend fun fetchPage(pageUrl: String): FetchResult {
+		val request = PageLoader.createPageRequest(pageUrl, page.source)
+		return imageProxyInterceptor.interceptPageRequest(request, okHttpClient).use { response ->
+			if (!response.isSuccessful) {
+				throw HttpException(response.toNetworkResponse())
 			}
-
-			else -> {
-				val request = PageLoader.createPageRequest(pageUrl, page.source)
-				imageProxyInterceptor.interceptPageRequest(request, okHttpClient).use { response ->
-					if (!response.isSuccessful) {
-						throw HttpException(response)
-					}
-					val mimeType = response.mimeType
-					val file = response.requireBody().use {
-						pagesCache.put(pageUrl, it.source(), mimeType)
-					}
-					SourceResult(
-						source = ImageSource(
-							file = file.toOkioPath(),
-							metadata = MangaPageMetadata(page),
-						),
-						mimeType = mimeType,
-						dataSource = DataSource.NETWORK,
-					)
-				}
+			val mimeType = response.mimeType
+			val file = response.requireBody().use {
+				pagesCache.put(pageUrl, it.source(), mimeType)
 			}
+			SourceFetchResult(
+				source = ImageSource(file.toOkioPath(), FileSystem.SYSTEM),
+				mimeType = mimeType,
+				dataSource = DataSource.NETWORK,
+			)
 		}
 	}
 
+	private fun Response.toNetworkResponse(): NetworkResponse {
+		return NetworkResponse(
+			code = code,
+			requestMillis = sentRequestAtMillis,
+			responseMillis = receivedResponseAtMillis,
+			headers = headers.toNetworkHeaders(),
+			body = body?.source()?.let(::NetworkResponseBody),
+			delegate = this,
+		)
+	}
+
+	private fun Headers.toNetworkHeaders(): NetworkHeaders {
+		val headers = NetworkHeaders.Builder()
+		for ((key, values) in this) {
+			headers.add(key, values)
+		}
+		return headers.build()
+	}
+
 	class Factory @Inject constructor(
-		@ApplicationContext private val context: Context,
 		@MangaHttpClient private val okHttpClient: OkHttpClient,
 		private val pagesCache: PagesCache,
 		private val mangaRepositoryFactory: MangaRepository.Factory,
@@ -134,11 +110,9 @@ class MangaPageFetcher(
 			pagesCache = pagesCache,
 			options = options,
 			page = data,
-			context = context,
 			mangaRepositoryFactory = mangaRepositoryFactory,
 			imageProxyInterceptor = imageProxyInterceptor,
+			imageLoader = imageLoader,
 		)
 	}
-
-	class MangaPageMetadata(val page: MangaPage) : ImageSource.Metadata()
 }

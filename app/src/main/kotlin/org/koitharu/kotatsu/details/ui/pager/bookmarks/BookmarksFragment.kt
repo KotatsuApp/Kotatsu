@@ -11,7 +11,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import coil.ImageLoader
+import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark

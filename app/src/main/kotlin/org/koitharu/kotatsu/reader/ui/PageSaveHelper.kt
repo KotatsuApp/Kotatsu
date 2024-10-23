@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResultLauncher
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -12,11 +13,17 @@ import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import okio.FileSystem
 import okio.IOException
+import okio.Path.Companion.toPath
+import okio.Source
 import okio.buffer
+import okio.openZip
 import okio.sink
+import okio.source
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.ext.source
+import org.koitharu.kotatsu.core.util.ext.isFileUri
+import org.koitharu.kotatsu.core.util.ext.isZipUri
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.parsers.model.MangaPage
@@ -50,7 +57,7 @@ class PageSaveHelper @Inject constructor(
 		runInterruptible(Dispatchers.IO) {
 			contentResolver.openOutputStream(destination)?.sink()?.buffer()
 		}?.use { output ->
-			pageUri.source().use { input ->
+			getSource(pageUri).use { input ->
 				output.writeAllCancellable(input)
 			}
 		} ?: throw IOException("Output stream is null")
@@ -66,6 +73,14 @@ class PageSaveHelper @Inject constructor(
 			val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext) ?: return null
 			it.createFile(mime, proposedName.substringBeforeLast('.'))?.uri
 		}
+	}
+
+	private fun getSource(uri: Uri): Source = when {
+		uri.isFileUri() -> uri.toFile().source()
+		uri.isZipUri() -> FileSystem.SYSTEM.openZip(uri.schemeSpecificPart.toPath())
+			.source(requireNotNull(uri.fragment).toPath())
+
+		else -> throw IllegalArgumentException("Bad uri $uri: unsupported scheme")
 	}
 
 	private suspend fun pickFileUri(saveLauncher: ActivityResultLauncher<String>, proposedName: String): Uri {

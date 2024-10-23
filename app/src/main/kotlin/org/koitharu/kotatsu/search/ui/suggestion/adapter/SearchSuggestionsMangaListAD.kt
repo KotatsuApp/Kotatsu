@@ -4,7 +4,9 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.ImageLoader
+import coil3.ImageLoader
+import coil3.request.allowRgb565
+import coil3.request.transformations
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -14,8 +16,8 @@ import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
-import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemSearchSuggestionMangaGridBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
@@ -61,7 +63,7 @@ private fun searchSuggestionMangaGridAD(
 			defaultPlaceholders(context)
 			allowRgb565(true)
 			transformations(TrimTransformation())
-			source(item.source)
+			mangaSourceExtra(item.source)
 			enqueueWith(coil)
 		}
 		binding.textViewTitle.text = item.title

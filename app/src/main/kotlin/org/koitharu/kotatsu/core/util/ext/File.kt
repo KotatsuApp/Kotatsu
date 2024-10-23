@@ -61,7 +61,7 @@ fun File.getStorageName(context: Context): String = runCatching {
 	}
 }.getOrNull() ?: context.getString(R.string.other_storage)
 
-fun Uri.toFileOrNull() = if (scheme == URI_SCHEME_FILE) path?.let(::File) else null
+fun Uri.toFileOrNull() = if (isFileUri()) path?.let(::File) else null
 
 suspend fun File.deleteAwait() = runInterruptible(Dispatchers.IO) {
 	delete() || deleteRecursively()

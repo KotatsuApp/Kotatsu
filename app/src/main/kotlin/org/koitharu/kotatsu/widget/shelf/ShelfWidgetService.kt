@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.widget.shelf
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.widget.RemoteViewsService
-import coil.ImageLoader
+import coil3.ImageLoader
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.prefs.AppSettings

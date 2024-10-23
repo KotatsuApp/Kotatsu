@@ -11,8 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuProvider
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.isZipUri
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
-import org.koitharu.kotatsu.local.data.isZipUri
 
 class ImageMenuProvider(
 	private val activity: ComponentActivity,

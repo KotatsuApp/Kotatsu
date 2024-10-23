@@ -59,7 +59,7 @@ android {
 			'-opt-in=kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi',
 			'-opt-in=kotlinx.coroutines.FlowPreview',
 			'-opt-in=kotlin.contracts.ExperimentalContracts',
-			'-opt-in=coil.annotation.ExperimentalCoilApi',
+			'-opt-in=coil3.annotation.ExperimentalCoilApi',
 		]
 	}
 	lint {
@@ -134,8 +134,9 @@ dependencies {
 	implementation 'androidx.hilt:hilt-work:1.2.0'
 	kapt 'androidx.hilt:hilt-compiler:1.2.0'
 
-	implementation 'io.coil-kt:coil-base:2.7.0'
-	implementation 'io.coil-kt:coil-svg:2.7.0'
+	implementation 'io.coil-kt.coil3:coil-core:3.0.0-rc01'
+	implementation 'io.coil-kt.coil3:coil-network-okhttp:3.0.0-rc01'
+	implementation 'io.coil-kt.coil3:coil-gif:3.0.0-rc01'
 	implementation 'org.aomedia.avif.android:avif:1.1.1.14d8e3c4'
 	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:d1d10a6975'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'

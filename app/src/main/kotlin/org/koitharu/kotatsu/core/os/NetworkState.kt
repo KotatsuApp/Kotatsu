@@ -6,6 +6,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
+import coil3.network.ConnectivityChecker
 import kotlinx.coroutines.flow.first
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.MediatorStateFlow
@@ -13,12 +14,16 @@ import org.koitharu.kotatsu.core.util.MediatorStateFlow
 class NetworkState(
 	private val connectivityManager: ConnectivityManager,
 	private val settings: AppSettings,
-) : MediatorStateFlow<Boolean>(connectivityManager.isOnline(settings)) {
+) : MediatorStateFlow<Boolean>(connectivityManager.isOnline(settings)), ConnectivityChecker {
 
 	private val callback = NetworkCallbackImpl()
 
 	override val value: Boolean
 		get() = connectivityManager.isOnline(settings)
+
+	override fun isOnline(): Boolean {
+		return connectivityManager.isOnline(settings)
+	}
 
 	@Synchronized
 	override fun onActive() {

@@ -7,7 +7,10 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
+import coil3.request.error
+import coil3.request.fallback
+import coil3.request.placeholder
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
@@ -20,8 +23,8 @@ import org.koitharu.kotatsu.core.ui.list.OnTipCloseListener
 import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
-import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemSourceConfigBinding
 import org.koitharu.kotatsu.databinding.ItemTipBinding
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
@@ -65,7 +68,7 @@ fun sourceConfigItemDelegate2(
 			error(fallbackIcon)
 			placeholder(AnimatedFaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name))
 			fallback(fallbackIcon)
-			source(item.source)
+			mangaSourceExtra(item.source)
 			enqueueWith(coil)
 		}
 	}

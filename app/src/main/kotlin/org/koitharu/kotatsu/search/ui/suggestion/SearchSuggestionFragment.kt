@@ -7,7 +7,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
-import coil.ImageLoader
+import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.VoiceInputContract
@@ -74,11 +74,12 @@ class SearchSuggestionFragment :
 
 	companion object {
 
-		@Deprecated("",
+		@Deprecated(
+			"",
 			ReplaceWith(
 				"SearchSuggestionFragment()",
-				"org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment"
-			)
+				"org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment",
+			),
 		)
 		fun newInstance() = SearchSuggestionFragment()
 	}

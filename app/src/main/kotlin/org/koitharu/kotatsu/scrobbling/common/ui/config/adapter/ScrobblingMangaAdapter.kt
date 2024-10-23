@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.scrobbling.common.ui.config.adapter
 
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType

@@ -12,8 +12,8 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
-import coil.ImageLoader
-import coil.request.ImageRequest
+import coil3.ImageLoader
+import coil3.request.ImageRequest
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -121,7 +122,7 @@ class AutoFixService : CoroutineIntentService() {
 					coil.execute(
 						ImageRequest.Builder(applicationContext)
 							.data(replacement.coverUrl)
-							.tag(replacement.source)
+							.mangaSourceExtra(replacement.source)
 							.build(),
 					).toBitmapOrNull(),
 				)

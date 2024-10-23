@@ -12,9 +12,10 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.work.WorkManager
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.size.Scale
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
+import coil3.size.Scale
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.core.util.ext.isReportable
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState
@@ -279,7 +281,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 				ImageRequest.Builder(context)
 					.data(manga.coverUrl)
 					.allowHardware(false)
-					.tag(manga.source)
+					.mangaSourceExtra(manga.source)
 					.size(coverWidth, coverHeight)
 					.scale(Scale.FILL)
 					.build(),

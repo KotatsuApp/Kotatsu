@@ -2,11 +2,11 @@ package org.koitharu.kotatsu.core.ui.image
 
 import android.graphics.Bitmap
 import android.media.ThumbnailUtils
-import coil.size.Size
-import coil.size.pxOrElse
-import coil.transform.Transformation
+import coil3.size.Size
+import coil3.size.pxOrElse
+import coil3.transform.Transformation
 
-class ThumbnailTransformation : Transformation {
+class ThumbnailTransformation : Transformation() {
 
 	override val cacheKey: String = javaClass.name
 
@@ -17,8 +17,4 @@ class ThumbnailTransformation : Transformation {
 			size.height.pxOrElse { input.height },
 		)
 	}
-
-	override fun equals(other: Any?) = other is ThumbnailTransformation
-
-	override fun hashCode() = javaClass.hashCode()
 }

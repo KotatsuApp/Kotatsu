@@ -16,6 +16,7 @@ object CommonHeaders {
 	const val CACHE_CONTROL = "Cache-Control"
 	const val PROXY_AUTHORIZATION = "Proxy-Authorization"
 	const val RETRY_AFTER = "Retry-After"
+	const val MANGA_SOURCE = "X-Manga-Source"
 
 	val CACHE_CONTROL_NO_STORE: CacheControl
 		get() = CacheControl.Builder().noStore().build()

@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import org.koitharu.kotatsu.core.util.ext.toZipUri
 import org.koitharu.kotatsu.local.data.hasCbzExtension
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -64,8 +65,7 @@ sealed class LocalMangaInput(
 		}.flowOn(Dispatchers.Default).firstOrNull()
 
 		@JvmStatic
-		protected fun zipUri(file: File, entryName: String): String =
-			Uri.fromParts("cbz", file.path, entryName).toString()
+		protected fun zipUri(file: File, entryName: String): String = file.toZipUri(entryName).toString()
 
 		@JvmStatic
 		protected fun Manga.copy2(
