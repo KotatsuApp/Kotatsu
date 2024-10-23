@@ -28,7 +28,6 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.image.AvifImageDecoder
-import org.koitharu.kotatsu.core.image.RegionBitmapDecoder
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.os.AppShortcutManager
@@ -82,9 +81,7 @@ interface AppModule {
 		@Singleton
 		fun provideMangaDatabase(
 			@ApplicationContext context: Context,
-		): MangaDatabase {
-			return MangaDatabase(context)
-		}
+		): MangaDatabase = MangaDatabase(context)
 
 		@Provides
 		@Singleton
@@ -122,7 +119,6 @@ interface AppModule {
 						.add(SvgDecoder.Factory())
 						.add(CbzFetcher.Factory())
 						.add(AvifImageDecoder.Factory())
-						.add(RegionBitmapDecoder.Factory())
 						.add(FaviconFetcher.Factory(context, okHttpClientLazy, mangaRepositoryFactory))
 						.add(MangaPageKeyer())
 						.add(pageFetcherFactory)

@@ -129,7 +129,7 @@ class RegionBitmapDecoder(
 		inPreferredConfig = config
 	}
 
-	class Factory : Decoder.Factory {
+	object Factory : Decoder.Factory {
 
 		private val parallelismLock = Semaphore(DEFAULT_PARALLELISM)
 
@@ -137,11 +137,7 @@ class RegionBitmapDecoder(
 			result: SourceResult,
 			options: Options,
 			imageLoader: ImageLoader
-		): Decoder? = if (options.parameters.value<Boolean>(PARAM_REGION) == true) {
-			RegionBitmapDecoder(result.source, options, parallelismLock)
-		} else {
-			null
-		}
+		): Decoder = RegionBitmapDecoder(result.source, options, parallelismLock)
 
 		override fun equals(other: Any?) = other is Factory
 
@@ -151,7 +147,6 @@ class RegionBitmapDecoder(
 	companion object {
 
 		const val PARAM_SCROLL = "scroll"
-		const val PARAM_REGION = "region"
 		const val SCROLL_UNDEFINED = -1
 	}
 }
