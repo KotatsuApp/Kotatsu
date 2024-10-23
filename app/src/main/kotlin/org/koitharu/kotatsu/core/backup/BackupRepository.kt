@@ -6,7 +6,7 @@ import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.parsers.util.json.JSONIterator
+import org.koitharu.kotatsu.parsers.util.json.asTypedList
 import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -130,7 +130,7 @@ class BackupRepository @Inject constructor(
 
 	suspend fun restoreHistory(entry: BackupEntry): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data.JSONIterator()) {
+		for (item in entry.data.asTypedList<JSONObject>()) {
 			val mangaJson = item.getJSONObject("manga")
 			val manga = JsonDeserializer(mangaJson).toMangaEntity()
 			val tags = mangaJson.getJSONArray("tags").mapJSON {
@@ -150,7 +150,7 @@ class BackupRepository @Inject constructor(
 
 	suspend fun restoreCategories(entry: BackupEntry): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data.JSONIterator()) {
+		for (item in entry.data.asTypedList<JSONObject>()) {
 			val category = JsonDeserializer(item).toFavouriteCategoryEntity()
 			result += runCatchingCancellable {
 				db.getFavouriteCategoriesDao().upsert(category)
@@ -161,7 +161,7 @@ class BackupRepository @Inject constructor(
 
 	suspend fun restoreFavourites(entry: BackupEntry): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data.JSONIterator()) {
+		for (item in entry.data.asTypedList<JSONObject>()) {
 			val mangaJson = item.getJSONObject("manga")
 			val manga = JsonDeserializer(mangaJson).toMangaEntity()
 			val tags = mangaJson.getJSONArray("tags").mapJSON {
@@ -181,7 +181,7 @@ class BackupRepository @Inject constructor(
 
 	suspend fun restoreBookmarks(entry: BackupEntry): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data.JSONIterator()) {
+		for (item in entry.data.asTypedList<JSONObject>()) {
 			val mangaJson = item.getJSONObject("manga")
 			val manga = JsonDeserializer(mangaJson).toMangaEntity()
 			val tags = item.getJSONArray("tags").mapJSON {
@@ -203,7 +203,7 @@ class BackupRepository @Inject constructor(
 
 	suspend fun restoreSources(entry: BackupEntry): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data.JSONIterator()) {
+		for (item in entry.data.asTypedList<JSONObject>()) {
 			val source = JsonDeserializer(item).toMangaSourceEntity()
 			result += runCatchingCancellable {
 				db.getSourcesDao().upsert(source)
@@ -214,7 +214,7 @@ class BackupRepository @Inject constructor(
 
 	fun restoreSettings(entry: BackupEntry): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data.JSONIterator()) {
+		for (item in entry.data.asTypedList<JSONObject>()) {
 			result += runCatchingCancellable {
 				settings.upsertAll(JsonDeserializer(item).toMap())
 			}
