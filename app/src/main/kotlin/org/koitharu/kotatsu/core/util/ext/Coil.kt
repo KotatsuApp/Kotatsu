@@ -63,7 +63,7 @@ fun ImageRequest.Builder.indicator(indicators: List<BaseProgressIndicator<*>>): 
 
 fun ImageRequest.Builder.decodeRegion(
 	scroll: Int = RegionBitmapDecoder.SCROLL_UNDEFINED,
-): ImageRequest.Builder = setParameter(RegionBitmapDecoder.PARAM_REGION, true)
+): ImageRequest.Builder = decoderFactory(RegionBitmapDecoder.Factory)
 	.setParameter(RegionBitmapDecoder.PARAM_SCROLL, scroll)
 
 @Suppress("SpellCheckingInspection")
