@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.local.data
 
 import android.net.Uri
 import androidx.core.net.toFile
+import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,7 +20,7 @@ import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.withChildren
 import org.koitharu.kotatsu.local.data.index.LocalMangaIndex
-import org.koitharu.kotatsu.local.data.input.LocalMangaInput
+import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.data.output.LocalMangaUtil
 import org.koitharu.kotatsu.local.domain.MangaLock
@@ -125,15 +126,15 @@ class LocalMangaRepository @Inject constructor(
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga = when {
-		!manga.isLocal -> requireNotNull(findSavedManga(manga)?.manga) {
+		!manga.isLocal -> requireNotNull(findSavedManga(manga, withDetails = true)?.manga) {
 			"Manga is not local or saved"
 		}
 
-		else -> LocalMangaInput.of(manga).getManga().manga
+		else -> LocalMangaParser(manga.url.toUri()).getManga(withDetails = true).manga
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		return LocalMangaInput.of(chapter).getPages(chapter)
+		return LocalMangaParser(chapter.url.toUri()).getPages(chapter)
 	}
 
 	suspend fun delete(manga: Manga): Boolean {
@@ -147,7 +148,7 @@ class LocalMangaRepository @Inject constructor(
 	}
 
 	suspend fun deleteChapters(manga: Manga, ids: Set<Long>) = lock.withLock(manga) {
-		val subject = if (manga.isLocal) manga else checkNotNull(findSavedManga(manga)) {
+		val subject = if (manga.isLocal) manga else checkNotNull(findSavedManga(manga, withDetails = false)) {
 			"Manga is not stored on local storage"
 		}.manga
 		LocalMangaUtil(subject).deleteChapters(ids)
@@ -156,27 +157,27 @@ class LocalMangaRepository @Inject constructor(
 
 	suspend fun getRemoteManga(localManga: Manga): Manga? {
 		return runCatchingCancellable {
-			LocalMangaInput.of(localManga).getMangaInfo()?.takeUnless { it.isLocal }
+			LocalMangaParser(localManga.url.toUri()).getMangaInfo()?.takeUnless { it.isLocal }
 		}.onFailure {
 			it.printStackTraceDebug()
 		}.getOrNull()
 	}
 
-	suspend fun findSavedManga(remoteManga: Manga): LocalManga? = runCatchingCancellable {
+	suspend fun findSavedManga(remoteManga: Manga, withDetails: Boolean = true): LocalManga? = runCatchingCancellable {
 		// very fast path
-		localMangaIndex.get(remoteManga.id)?.let {
-			return@runCatchingCancellable it
+		localMangaIndex.get(remoteManga.id, withDetails)?.let { cached ->
+			return@runCatchingCancellable cached
 		}
 		// fast path
-		LocalMangaInput.find(storageManager.getReadableDirs(), remoteManga)?.let {
-			return it.getManga()
+		LocalMangaParser.find(storageManager.getReadableDirs(), remoteManga)?.let {
+			return it.getManga(withDetails)
 		}
 		// slow path
 		val files = getAllFiles()
 		return channelFlow {
 			for (file in files) {
 				launch {
-					val mangaInput = LocalMangaInput.ofOrNull(file)
+					val mangaInput = LocalMangaParser.getOrNull(file)
 					runCatchingCancellable {
 						val mangaInfo = mangaInput?.getMangaInfo()
 						if (mangaInfo != null && mangaInfo.id == remoteManga.id) {
@@ -187,7 +188,7 @@ class LocalMangaRepository @Inject constructor(
 					}
 				}
 			}
-		}.firstOrNull()?.getManga()
+		}.firstOrNull()?.getManga(withDetails)
 	}.onSuccess { x: LocalManga? ->
 		if (x != null) {
 			localMangaIndex.put(x)
@@ -237,7 +238,7 @@ class LocalMangaRepository @Inject constructor(
 		for (file in files) {
 			launch(dispatcher) {
 				runCatchingCancellable {
-					LocalMangaInput.ofOrNull(file)?.getManga()
+					LocalMangaParser.getOrNull(file)?.getManga(withDetails = false)
 				}.onFailure { e ->
 					e.printStackTraceDebug()
 				}.onSuccess { m ->

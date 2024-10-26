@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.net.Uri
+import androidx.core.net.toUri
+import okio.Path
 import java.io.File
 
 const val URI_SCHEME_ZIP = "file+zip"
@@ -20,6 +22,17 @@ fun Uri.isNetworkUri() = scheme.let {
 	it == URI_SCHEME_HTTP || it == URI_SCHEME_HTTPS
 }
 
-fun File.toZipUri(entryName: String): Uri = Uri.parse("$URI_SCHEME_ZIP://$absolutePath#$entryName")
+fun File.toZipUri(entryPath: String): Uri = Uri.parse("$URI_SCHEME_ZIP://$absolutePath#$entryPath")
+
+fun File.toZipUri(entryPath: Path?): Uri =
+	toZipUri(entryPath?.toString()?.removePrefix(Path.DIRECTORY_SEPARATOR).orEmpty())
 
 fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
+
+fun File.toUri(fragment: String?): Uri = toUri().run {
+	if (fragment != null) {
+		buildUpon().fragment(fragment).build()
+	} else {
+		this
+	}
+}

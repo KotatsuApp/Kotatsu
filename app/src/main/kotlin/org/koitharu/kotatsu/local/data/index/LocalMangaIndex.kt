@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
-import org.koitharu.kotatsu.local.data.input.LocalMangaInput
+import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
@@ -57,7 +57,7 @@ class LocalMangaIndex @Inject constructor(
 		}
 	}
 
-	suspend fun get(mangaId: Long): LocalManga? {
+	suspend fun get(mangaId: Long, withDetails: Boolean): LocalManga? {
 		updateIfRequired()
 		var path = db.getLocalMangaIndexDao().findPath(mangaId)
 		if (path == null && mutex.isLocked) { // wait for updating complete
@@ -67,7 +67,7 @@ class LocalMangaIndex @Inject constructor(
 			return null
 		}
 		return runCatchingCancellable {
-			LocalMangaInput.of(File(path)).getManga()
+			LocalMangaParser(File(path)).getManga(withDetails)
 		}.onFailure {
 			it.printStackTraceDebug()
 		}.getOrNull()

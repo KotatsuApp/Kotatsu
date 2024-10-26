@@ -71,7 +71,7 @@ import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.data.TempFileFilter
-import org.koitharu.kotatsu.local.data.input.LocalMangaInput
+import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.domain.MangaLock
 import org.koitharu.kotatsu.local.domain.model.LocalManga
@@ -262,7 +262,7 @@ class DownloadWorker @AssistedInject constructor(
 					}
 					if (output.flushChapter(chapter.value)) {
 						runCatchingCancellable {
-							localStorageChanges.emit(LocalMangaInput.of(output.rootFile).getManga())
+							localStorageChanges.emit(LocalMangaParser(output.rootFile).getManga(withDetails = false))
 						}.onFailure(Throwable::printStackTraceDebug)
 					}
 					publishState(currentState.copy(downloadedChapters = currentState.downloadedChapters + 1))
@@ -270,7 +270,7 @@ class DownloadWorker @AssistedInject constructor(
 				publishState(currentState.copy(isIndeterminate = true, eta = -1L, isStuck = false))
 				output.mergeWithExisting()
 				output.finish()
-				val localManga = LocalMangaInput.of(output.rootFile).getManga()
+				val localManga = LocalMangaParser(output.rootFile).getManga(withDetails = false)
 				localStorageChanges.emit(localManga)
 				publishState(currentState.copy(localManga = localManga, eta = -1L, isStuck = false))
 			} catch (e: Exception) {

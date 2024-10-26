@@ -19,6 +19,7 @@ import coil3.toAndroidUri
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.runInterruptible
 import okio.IOException
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.EmptyMangaRepository
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.parser.external.ExternalMangaRepository
 import org.koitharu.kotatsu.core.util.ext.fetch
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import kotlin.coroutines.coroutineContext
 import coil3.Uri as CoilUri
 
@@ -36,7 +38,7 @@ class FaviconFetcher(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : Fetcher {
 
-	override suspend fun fetch(): FetchResult {
+	override suspend fun fetch(): FetchResult? {
 		val mangaSource = MangaSource(uri.schemeSpecificPart)
 
 		return when (val repo = mangaRepositoryFactory.create(mangaSource)) {
@@ -48,7 +50,9 @@ class FaviconFetcher(
 				dataSource = DataSource.MEMORY,
 			)
 
-			else -> throw IllegalArgumentException("")
+			is LocalMangaRepository -> imageLoader.fetch(R.drawable.ic_storage, options)
+
+			else -> throw IllegalArgumentException("Unsupported repo ${repo.javaClass.simpleName}")
 		}
 	}
 

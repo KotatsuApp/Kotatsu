@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 import okio.Closeable
 import org.koitharu.kotatsu.core.prefs.DownloadFormat
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.local.data.input.LocalMangaInput
+import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -100,7 +100,7 @@ sealed class LocalMangaOutput(
 
 		private suspend fun canWriteTo(file: File, manga: Manga): Boolean {
 			val info = runCatchingCancellable {
-				LocalMangaInput.of(file).getMangaInfo()
+				LocalMangaParser(file).getMangaInfo()
 			}.onFailure {
 				it.printStackTraceDebug()
 			}.getOrNull() ?: return false

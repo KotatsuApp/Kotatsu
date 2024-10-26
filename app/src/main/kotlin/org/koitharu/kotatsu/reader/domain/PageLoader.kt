@@ -1,10 +1,8 @@
 package org.koitharu.kotatsu.reader.domain
 
-import android.content.ContentResolver.MimeTypeInfo
 import android.content.Context
 import android.graphics.Rect
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import androidx.annotation.AnyThread
 import androidx.collection.LongSparseArray
 import androidx.collection.set
@@ -61,8 +59,6 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mimeType
 import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
-import org.koitharu.kotatsu.core.util.ext.mimeType
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import java.io.File
 import java.util.LinkedList

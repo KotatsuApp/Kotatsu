@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.local.domain.model
 
+import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import org.koitharu.kotatsu.core.util.ext.creationTime
@@ -20,6 +21,8 @@ data class LocalManga(
 			}
 			return field
 		}
+
+	fun toUri(): Uri = manga.url.toUri()
 
 	fun isMatchesQuery(query: String): Boolean {
 		return manga.title.contains(query, ignoreCase = true) ||

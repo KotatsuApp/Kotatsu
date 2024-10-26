@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import okio.BufferedSink
+import okio.FileSystem
+import okio.IOException
+import okio.Path
 import okio.Source
 import org.koitharu.kotatsu.core.util.CancellableSource
 import org.koitharu.kotatsu.core.util.progress.ProgressResponseBody
@@ -32,4 +35,16 @@ fun InputStream.toByteBuffer(): ByteBuffer {
 	copyTo(outStream)
 	val bytes = outStream.toByteArray()
 	return ByteBuffer.allocateDirect(bytes.size).put(bytes).position(0) as ByteBuffer
+}
+
+fun FileSystem.isDirectory(path: Path) = try {
+	metadataOrNull(path)?.isDirectory == true
+} catch (_: IOException) {
+	false
+}
+
+fun FileSystem.isRegularFile(path: Path) = try {
+	metadataOrNull(path)?.isRegularFile == true
+} catch (_: IOException) {
+	false
 }
