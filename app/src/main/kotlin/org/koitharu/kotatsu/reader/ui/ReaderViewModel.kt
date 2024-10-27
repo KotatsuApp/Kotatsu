@@ -1,14 +1,12 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.net.Uri
-import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -44,7 +42,6 @@ import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.details.data.MangaDetails
@@ -80,7 +77,6 @@ class ReaderViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val bookmarksRepository: BookmarksRepository,
 	settings: AppSettings,
-	private val pageSaveHelper: PageSaveHelper,
 	private val pageLoader: PageLoader,
 	private val chaptersLoader: ChaptersLoader,
 	private val appShortcutManager: AppShortcutManager,
@@ -256,30 +252,14 @@ class ReaderViewModel @Inject constructor(
 	}
 
 	fun saveCurrentPage(
-		page: MangaPage,
-		saveLauncher: ActivityResultLauncher<String>,
+		pageSaveHelper: PageSaveHelper
 	) {
 		val prevJob = pageSaveJob
 		pageSaveJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
-			try {
-				val dest = pageSaveHelper.savePage(pageLoader, page, saveLauncher)
-				onPageSaved.call(dest)
-			} catch (e: CancellationException) {
-				throw e
-			} catch (e: Exception) {
-				e.printStackTraceDebug()
-				onPageSaved.call(null)
-			}
-		}
-	}
-
-	fun onActivityResult(uri: Uri?) {
-		if (uri != null) {
-			pageSaveHelper.onActivityResult(uri)
-		} else {
-			pageSaveJob?.cancel()
-			pageSaveJob = null
+			val currentPage = checkNotNull(getCurrentPage()) { "Cannot find current page" }
+			val dest = pageSaveHelper.save(setOf(currentPage))
+			onPageSaved.call(dest)
 		}
 	}
 

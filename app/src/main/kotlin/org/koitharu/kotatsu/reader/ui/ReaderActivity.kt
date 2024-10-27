@@ -14,7 +14,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowManager
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.OnApplyWindowInsetsListener
@@ -74,7 +73,6 @@ class ReaderActivity :
 	OnApplyWindowInsetsListener,
 	ReaderNavigationCallback,
 	IdlingDetector.Callback,
-	ActivityResultCallback<Uri?>,
 	ZoomControl.ZoomControlListener {
 
 	@Inject
@@ -84,13 +82,15 @@ class ReaderActivity :
 	lateinit var tapGridSettings: TapGridSettings
 
 	@Inject
+	lateinit var pageSaveHelperFactory: PageSaveHelper.Factory
+
+	@Inject
 	lateinit var scrollTimerFactory: ScrollTimer.Factory
 
 	@Inject
 	lateinit var screenOrientationHelper: ScreenOrientationHelper
 
 	private val idlingDetector = IdlingDetector(TimeUnit.SECONDS.toMillis(10), this)
-	private val savePageRequest = registerForActivityResult(PageSaveContract(), this)
 
 	private val viewModel: ReaderViewModel by viewModels()
 
@@ -104,6 +104,7 @@ class ReaderActivity :
 		}
 
 	private lateinit var scrollTimer: ScrollTimer
+	private lateinit var pageSaveHelper: PageSaveHelper
 	private lateinit var touchHelper: TapGridDispatcher
 	private lateinit var controlDelegate: ReaderControlDelegate
 	private var gestureInsets: Insets = Insets.NONE
@@ -118,6 +119,7 @@ class ReaderActivity :
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = TapGridDispatcher(this, this)
 		scrollTimer = scrollTimerFactory.create(this, this)
+		pageSaveHelper = pageSaveHelperFactory.create(this)
 		controlDelegate = ReaderControlDelegate(resources, settings, tapGridSettings, this)
 		viewBinding.slider.setLabelFormatter(PageLabelFormatter())
 		viewBinding.zoomControl.listener = this
@@ -161,10 +163,6 @@ class ReaderActivity :
 		}
 		addMenuProvider(ReaderTopMenuProvider(this, viewModel))
 		viewBinding.toolbarBottom.addMenuProvider(ReaderBottomMenuProvider(this, readerManager, viewModel))
-	}
-
-	override fun onActivityResult(result: Uri?) {
-		viewModel.onActivityResult(result)
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -292,15 +290,14 @@ class ReaderActivity :
 	}
 
 	private fun onPageSaved(uri: Uri?) {
+		val snackbar = Snackbar.make(viewBinding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
 		if (uri != null) {
-			Snackbar.make(viewBinding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
-				.setAction(R.string.share) {
-					ShareHelper(this).shareImage(uri)
-				}
-		} else {
-			Snackbar.make(viewBinding.container, R.string.error_occurred, Snackbar.LENGTH_SHORT)
-		}.setAnchorView(viewBinding.appbarBottom)
-			.show()
+			snackbar.setAction(R.string.share) {
+				ShareHelper(this).shareImage(uri)
+			}
+		}
+		snackbar.setAnchorView(viewBinding.appbarBottom)
+		snackbar.show()
 	}
 
 	private fun setKeepScreenOn(isKeep: Boolean) {
@@ -383,8 +380,7 @@ class ReaderActivity :
 	}
 
 	override fun onSavePageClick() {
-		val page = viewModel.getCurrentPage() ?: return
-		viewModel.saveCurrentPage(page, savePageRequest)
+		viewModel.saveCurrentPage(pageSaveHelper)
 	}
 
 	private fun onReaderBarChanged(isBarEnabled: Boolean) {

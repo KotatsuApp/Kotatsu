@@ -56,7 +56,7 @@
 	<string name="remove">Remove</string>
 	<string name="_s_deleted_from_local_storage">\"%s\" deleted from local storage</string>
 	<string name="save_page">Save page</string>
-	<string name="page_saved">Saved</string>
+	<string name="page_saved">Page saved</string>
 	<string name="share_image">Share image</string>
 	<string name="_import">Import</string>
 	<string name="delete">Delete</string>

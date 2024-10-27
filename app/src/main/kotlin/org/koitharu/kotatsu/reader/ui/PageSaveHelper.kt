@@ -4,15 +4,22 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.webkit.MimeTypeMap
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import androidx.documentfile.provider.DocumentFile
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okio.FileSystem
 import okio.IOException
 import okio.Path.Companion.toPath
@@ -30,48 +37,98 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import java.io.File
-import javax.inject.Inject
-import kotlin.coroutines.Continuation
+import javax.inject.Provider
 import kotlin.coroutines.resume
 
-private const val MAX_FILENAME_LENGTH = 10
-private const val EXTENSION_FALLBACK = "png"
-
-class PageSaveHelper @Inject constructor(
+class PageSaveHelper @AssistedInject constructor(
+	@Assisted activityResultCaller: ActivityResultCaller,
 	@ApplicationContext private val context: Context,
 	private val settings: AppSettings,
-) {
+	private val pageLoaderProvider: Provider<PageLoader>,
+) : ActivityResultCallback<Uri?> {
 
-	private var continuation: Continuation<Uri>? = null
-	private val contentResolver = context.contentResolver
+	private val savePageRequest = activityResultCaller.registerForActivityResult(PageSaveContract(), this)
+	private val pickDirectoryRequest =
+		activityResultCaller.registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), this)
 
-	suspend fun savePage(
-		pageLoader: PageLoader,
-		page: MangaPage,
-		saveLauncher: ActivityResultLauncher<String>,
-	): Uri {
-		val pageUrl = pageLoader.getPageUrl(page)
+	private var continuation: CancellableContinuation<Uri>? = null
+
+	override fun onActivityResult(result: Uri?) {
+		continuation?.also { cont ->
+			if (result != null) {
+				cont.resume(result)
+			} else {
+				cont.cancel()
+			}
+		}
+	}
+
+	suspend fun save(pages: Collection<MangaPage>): Uri? = when (pages.size) {
+		0 -> null
+		1 -> saveImpl(pages.first())
+		else -> {
+			saveImpl(pages)
+			null
+		}
+	}
+
+	private suspend fun saveImpl(page: MangaPage): Uri {
+		val pageLoader = pageLoaderProvider.get()
+		val pageUrl = pageLoader.getPageUrl(page).toUri()
 		val pageUri = pageLoader.loadPage(page, force = false)
 		val proposedName = getProposedFileName(pageUrl, pageUri)
-		val destination = getDefaultFileUri(proposedName) ?: pickFileUri(saveLauncher, proposedName)
-		runInterruptible(Dispatchers.IO) {
-			contentResolver.openOutputStream(destination)?.sink()?.buffer()
-		}?.use { output ->
-			getSource(pageUri).use { input ->
-				output.writeAllCancellable(input)
-			}
-		} ?: throw IOException("Output stream is null")
+		val destination = getDefaultFileUri(proposedName)?.uri ?: run {
+			val defaultUri = settings.getPagesSaveDir(context)?.uri?.buildUpon()?.appendPath(proposedName)?.toString()
+			savePageRequest.launchAndAwait(defaultUri ?: proposedName)
+		}
+		copyImpl(pageUri, destination)
 		return destination
 	}
 
-	private fun getDefaultFileUri(proposedName: String): Uri? {
+	private suspend fun saveImpl(pages: Collection<MangaPage>) {
+		val pageLoader = pageLoaderProvider.get()
+		val destinationDir = getDefaultFileUri(null) ?: run {
+			val defaultUri = settings.getPagesSaveDir(context)?.uri
+			DocumentFile.fromTreeUri(context, pickDirectoryRequest.launchAndAwait(defaultUri))
+		} ?: throw IOException("Cannot get destination directory")
+		for (page in pages) {
+			val pageUrl = pageLoader.getPageUrl(page).toUri()
+			val pageUri = pageLoader.loadPage(page, force = false)
+			val proposedName = getProposedFileName(pageUrl, pageUri)
+			val ext = proposedName.substringAfterLast('.', "")
+			val mime = requireNotNull(MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)) {
+				"Unknown type of $proposedName"
+			}
+			val destination = destinationDir.createFile(mime, proposedName.substringBeforeLast('.'))
+			copyImpl(pageUri, destination?.uri ?: throw IOException("Cannot create destination file"))
+		}
+	}
+
+	private suspend fun <I> ActivityResultLauncher<I>.launchAndAwait(input: I): Uri {
+		continuation?.cancel()
+		return withContext(Dispatchers.Main) {
+			try {
+				suspendCancellableCoroutine { cont ->
+					continuation = cont
+					launch(input)
+				}
+			} finally {
+				continuation = null
+			}
+		}
+	}
+
+	private fun getDefaultFileUri(proposedName: String?): DocumentFile? {
 		if (settings.isPagesSavingAskEnabled) {
 			return null
 		}
-		return settings.getPagesSaveDir(context)?.let {
+		val dir = settings.getPagesSaveDir(context) ?: return null
+		if (proposedName == null) {
+			return dir
+		} else {
 			val ext = proposedName.substringAfterLast('.', "")
 			val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext) ?: return null
-			it.createFile(mime, proposedName.substringBeforeLast('.'))?.uri
+			return dir.createFile(mime, proposedName.substringBeforeLast('.'))
 		}
 	}
 
@@ -83,28 +140,24 @@ class PageSaveHelper @Inject constructor(
 		else -> throw IllegalArgumentException("Bad uri $uri: unsupported scheme")
 	}
 
-	private suspend fun pickFileUri(saveLauncher: ActivityResultLauncher<String>, proposedName: String): Uri {
-		val defaultUri = settings.getPagesSaveDir(context)?.uri?.buildUpon()?.appendPath(proposedName)?.toString()
-		return withContext(Dispatchers.Main) {
-			suspendCancellableCoroutine { cont ->
-				continuation = cont
-				saveLauncher.launch(defaultUri ?: proposedName)
-			}.also {
-				continuation = null
+	private suspend fun copyImpl(source: Uri, destination: Uri) = withContext(Dispatchers.IO) {
+		runInterruptible {
+			context.contentResolver.openOutputStream(destination) ?: throw IOException("Output stream is null")
+		}.sink().buffer().use { sink ->
+			getSource(source).use { input ->
+				sink.writeAllCancellable(input)
 			}
 		}
 	}
 
-	fun onActivityResult(uri: Uri): Boolean = continuation?.apply {
-		resume(uri)
-	} != null
-
-	private suspend fun getProposedFileName(url: String, fileUri: Uri): String {
-		var name = if (url.startsWith("cbz:")) {
-			requireNotNull(url.toUri().fragment)
-		} else {
-			url.toHttpUrl().pathSegments.last()
-		}
+	private suspend fun getProposedFileName(url: Uri, fileUri: Uri): String {
+		var name = requireNotNull(
+			if (url.isZipUri()) {
+				url.fragment?.substringAfterLast(File.separatorChar)
+			} else {
+				url.lastPathSegment
+			},
+		) { "Invalid page url: $url" }
 		var extension = name.substringAfterLast('.', "")
 		name = name.substringBeforeLast('.')
 		if (extension.length !in 2..4) {
@@ -124,5 +177,17 @@ class PageSaveHelper @Inject constructor(
 		}
 		BitmapFactory.decodeFile(file.path, options)?.recycle()
 		options.outMimeType
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(activityResultCaller: ActivityResultCaller): PageSaveHelper
+	}
+
+	private companion object {
+
+		private const val MAX_FILENAME_LENGTH = 16
+		private const val EXTENSION_FALLBACK = "png"
 	}
 }
