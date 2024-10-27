@@ -62,7 +62,7 @@ class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		addMenuProvider(LocalListMenuProvider(binding.root.context, this::onEmptyActionClick))
+		addMenuProvider(LocalListMenuProvider(binding.root.context, childFragmentManager, this::onEmptyActionClick))
 		addMenuProvider(MangaSearchMenuProvider(filterCoordinator, viewModel))
 		viewModel.onMangaRemoved.observeEvent(viewLifecycleOwner) { onItemRemoved() }
 	}

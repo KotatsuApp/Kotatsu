@@ -679,6 +679,7 @@
 	<string name="chapters_left">Chapters left</string>
 	<string name="external_source">External/plugin</string>
 	<string name="plugin_incompatible">Incompatible plugin or internal error. Make sure you are using the latest version of the plugin and Kotatsu</string>
+	<string name="plugin_incompatible_with_cause">Plugin error: %s\n Make sure you are using the latest version of the plugin and Kotatsu</string>
 	<string name="connection_ok">Connection is OK</string>
 	<string name="invalid_proxy_configuration">Invalid proxy configuration</string>
 	<string name="show_quick_filters">Show quick filters</string>

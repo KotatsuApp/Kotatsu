@@ -29,7 +29,7 @@ class CaptchaNotifier(
 			return
 		}
 		val manager = NotificationManagerCompat.from(context)
-		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
+		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
 			.setName(context.getString(R.string.captcha_required))
 			.setShowBadge(true)
 			.setVibrationEnabled(false)
@@ -42,8 +42,8 @@ class CaptchaNotifier(
 			.setData(exception.url.toUri())
 		val notification = NotificationCompat.Builder(context, CHANNEL_ID)
 			.setContentTitle(channel.name)
-			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
-			.setDefaults(NotificationCompat.DEFAULT_SOUND)
+			.setPriority(NotificationCompat.PRIORITY_LOW)
+			.setDefaults(0)
 			.setSmallIcon(android.R.drawable.stat_notify_error)
 			.setGroup(GROUP_CAPTCHA)
 			.setAutoCancel(true)

@@ -42,7 +42,10 @@ import java.net.UnknownHostException
 private const val MSG_NO_SPACE_LEFT = "No space left on device"
 private const val IMAGE_FORMAT_NOT_SUPPORTED = "Image format not supported"
 
-fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
+fun Throwable.getDisplayMessage(resources: Resources): String = getDisplayMessageOrNull(resources)
+	?: resources.getString(R.string.error_occurred)
+
+private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = when (this) {
 	is ScrobblerAuthRequiredException -> resources.getString(
 		R.string.scrobbler_auth_required,
 		resources.getString(scrobbler.titleResId),
@@ -88,7 +91,11 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	)
 
 	is NoDataReceivedException -> resources.getString(R.string.error_no_data_received)
-	is IncompatiblePluginException -> resources.getString(R.string.plugin_incompatible)
+	is IncompatiblePluginException -> {
+		cause?.getDisplayMessageOrNull(resources)?.let {
+			resources.getString(R.string.plugin_incompatible_with_cause, it)
+		} ?: resources.getString(R.string.plugin_incompatible)
+	}
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	is NotFoundException -> resources.getString(R.string.not_found_404)
 	is UnsupportedSourceException -> resources.getString(R.string.unsupported_source)
@@ -97,9 +104,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is HttpStatusException -> getHttpDisplayMessage(statusCode, resources)
 
 	else -> getDisplayMessage(message, resources) ?: message
-}.ifNullOrEmpty {
-	resources.getString(R.string.error_occurred)
-}
+}.takeUnless { it.isNullOrBlank() }
 
 @DrawableRes
 fun Throwable.getDisplayIcon() = when (this) {

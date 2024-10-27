@@ -8,6 +8,7 @@ import androidx.core.net.toUri
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.core.exceptions.IncompatiblePluginException
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Demographic

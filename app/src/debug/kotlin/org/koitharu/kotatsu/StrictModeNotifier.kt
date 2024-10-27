@@ -42,7 +42,7 @@ class StrictModeNotifier(
 	override fun onViolation(violation: FragmentViolation) = showNotification(violation)
 
 	private fun showNotification(violation: Throwable) = Notification.Builder(context, CHANNEL_ID)
-		.setSmallIcon(android.R.drawable.stat_notify_error)
+		.setSmallIcon(R.drawable.ic_bug)
 		.setContentTitle(context.getString(R.string.strict_mode))
 		.setContentText(violation.message)
 		.setStyle(

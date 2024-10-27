@@ -5,11 +5,14 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.FragmentManager
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity
 
 class LocalListMenuProvider(
 	private val context: Context,
+	private val fragmentManager: FragmentManager,
 	private val onImportClick: Function0<Unit>,
 ) : MenuProvider {
 
@@ -26,6 +29,11 @@ class LocalListMenuProvider(
 
 			R.id.action_directories -> {
 				context.startActivity(MangaDirectoriesActivity.newIntent(context))
+				true
+			}
+
+			R.id.action_filter -> {
+				FilterSheetFragment.show(fragmentManager)
 				true
 			}
 
