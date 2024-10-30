@@ -9,11 +9,12 @@ import android.os.Build
 import android.os.StrictMode
 import android.os.strictmode.Violation
 import androidx.annotation.RequiresApi
+import androidx.core.app.PendingIntentCompat
 import androidx.core.content.getSystemService
 import androidx.fragment.app.strictmode.FragmentStrictMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
-import org.koitharu.kotatsu.core.ErrorReporterReceiver
+import org.koitharu.kotatsu.core.util.ShareHelper
 import kotlin.math.absoluteValue
 import androidx.fragment.app.strictmode.Violation as FragmentViolation
 
@@ -51,7 +52,15 @@ class StrictModeNotifier(
 				.setSummaryText(violation.message)
 				.bigText(violation.stackTraceToString()),
 		).setShowWhen(true)
-		.setContentIntent(ErrorReporterReceiver.getPendingIntent(context, violation))
+		.setContentIntent(
+			PendingIntentCompat.getActivity(
+				context,
+				0,
+				ShareHelper(context).getShareTextIntent(violation.stackTraceToString()),
+				0,
+				false,
+			),
+		)
 		.setAutoCancel(true)
 		.setGroup(CHANNEL_ID)
 		.build()

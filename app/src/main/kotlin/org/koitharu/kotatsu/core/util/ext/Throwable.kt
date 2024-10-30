@@ -36,8 +36,11 @@ import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
 import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerAuthRequiredException
+import java.net.ConnectException
+import java.net.NoRouteToHostException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.Locale
 
 private const val MSG_NO_SPACE_LEFT = "No space left on device"
 private const val IMAGE_FORMAT_NOT_SUPPORTED = "Image format not supported"
@@ -82,13 +85,20 @@ private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = w
 	is ContentUnavailableException -> message
 
 	is ParseException -> shortMessage
+	is ConnectException,
 	is UnknownHostException,
+	is NoRouteToHostException,
 	is SocketTimeoutException -> resources.getString(R.string.network_error)
 
-	is ImageDecodeException -> resources.getString(
-		R.string.error_image_format,
-		format.ifNullOrEmpty { resources.getString(R.string.unknown) },
-	)
+	is ImageDecodeException -> {
+		val type = format?.substringBefore('/')
+		val formatString = format.ifNullOrEmpty { resources.getString(R.string.unknown).lowercase(Locale.getDefault()) }
+		if (type.isNullOrEmpty() || type == "image") {
+			resources.getString(R.string.error_image_format, formatString)
+		} else {
+			resources.getString(R.string.error_not_image, formatString)
+		}
+	}
 
 	is NoDataReceivedException -> resources.getString(R.string.error_no_data_received)
 	is IncompatiblePluginException -> {
@@ -96,6 +106,7 @@ private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = w
 			resources.getString(R.string.plugin_incompatible_with_cause, it)
 		} ?: resources.getString(R.string.plugin_incompatible)
 	}
+
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	is NotFoundException -> resources.getString(R.string.not_found_404)
 	is UnsupportedSourceException -> resources.getString(R.string.unsupported_source)
@@ -112,6 +123,8 @@ fun Throwable.getDisplayIcon() = when (this) {
 	is CloudFlareProtectedException -> R.drawable.ic_bot_large
 	is UnknownHostException,
 	is SocketTimeoutException,
+	is ConnectException,
+	is NoRouteToHostException,
 	is ProtocolException -> R.drawable.ic_plug_large
 
 	is CloudFlareBlockedException -> R.drawable.ic_denied_large
@@ -133,6 +146,7 @@ fun Throwable.getCauseUrl(): String? = when (this) {
 
 private fun getHttpDisplayMessage(statusCode: Int, resources: Resources): String? = when (statusCode) {
 	404 -> resources.getString(R.string.not_found_404)
+	403 -> resources.getString(R.string.access_denied_403)
 	in 500..599 -> resources.getString(R.string.server_error, statusCode)
 	else -> null
 }
@@ -165,6 +179,8 @@ fun Throwable.isReportable(): Boolean {
 		|| this is CloudFlareProtectedException
 		|| this is BadBackupFormatException
 		|| this is WrongPasswordException
+		|| this is TooManyRequestExceptions
+		|| this is HttpStatusException
 	) {
 		return false
 	}

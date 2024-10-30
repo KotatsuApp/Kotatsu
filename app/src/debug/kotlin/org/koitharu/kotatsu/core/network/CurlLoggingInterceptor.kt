@@ -53,9 +53,6 @@ class CurlLoggingInterceptor(
 	private fun String.escape() = replace(escapeRegex) { match ->
 		"\\" + match.value
 	}
-		// .replace("\"", "\\\"")
-		// .replace("[", "\\[")
-		// .replace("]", "\\]")
 
 	private fun log(msg: String) {
 		Log.d("CURL", msg)

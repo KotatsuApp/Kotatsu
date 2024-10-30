@@ -739,6 +739,7 @@
 	<string name="user_manual">User manual</string>
 	<string name="telegram_group">Telegram group</string>
 	<string name="error_image_format">Unsupported image format: %s</string>
+	<string name="error_not_image">Invalid format: expected image but got %s</string>
 	<string name="start_download">Start download</string>
 	<string name="save_manga_confirm">Save selected manga? This may consume traffic and disk space</string>
 	<string name="save_manga">Save manga</string>
@@ -759,4 +760,5 @@
 	<string name="portrait">Portrait</string>
 	<string name="landscape">Landscape</string>
 	<string name="breadcrumbs_separator" translatable="false"><![CDATA[" > "]]></string>
+	<string name="access_denied_403">Access denied (403)</string>
 </resources>

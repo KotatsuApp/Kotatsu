@@ -79,16 +79,14 @@ class MangaPageFetcher(
 		}
 	}
 
-	private fun Response.toNetworkResponse(): NetworkResponse {
-		return NetworkResponse(
-			code = code,
-			requestMillis = sentRequestAtMillis,
-			responseMillis = receivedResponseAtMillis,
-			headers = headers.toNetworkHeaders(),
-			body = body?.source()?.let(::NetworkResponseBody),
-			delegate = this,
-		)
-	}
+	private fun Response.toNetworkResponse() = NetworkResponse(
+		code = code,
+		requestMillis = sentRequestAtMillis,
+		responseMillis = receivedResponseAtMillis,
+		headers = headers.toNetworkHeaders(),
+		body = body?.source()?.let(::NetworkResponseBody),
+		delegate = this,
+	)
 
 	private fun Headers.toNetworkHeaders(): NetworkHeaders {
 		val headers = NetworkHeaders.Builder()
