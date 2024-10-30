@@ -116,7 +116,7 @@ class PageSaveHelper @AssistedInject constructor(
 		var currentTime = getCurrentTime()
 		var extension = getPageExtension(pageUrl, pageUri)
 
-		return mangaInfos + "_" + currentTime + "_" + extension
+		return mangaInfos + "_" + currentTime + extension
 	}
 
 	private fun getNameFromMangaChapterPage(manga: Manga, chapter: MangaChapter, pageNumber: Number): String {
