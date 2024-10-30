@@ -33,10 +33,13 @@ import org.koitharu.kotatsu.core.util.ext.isFileUri
 import org.koitharu.kotatsu.core.util.ext.isZipUri
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
+import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import java.io.File
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Provider
 import kotlin.coroutines.resume
 
@@ -63,20 +66,20 @@ class PageSaveHelper @AssistedInject constructor(
 		}
 	}
 
-	suspend fun save(pages: Collection<MangaPage>): Uri? = when (pages.size) {
+	suspend fun save(manga: Manga, chapter: MangaChapter, pageNumber: Int, pages: Set<MangaPage>): Uri? = when (pages.size) {
 		0 -> null
-		1 -> saveImpl(pages.first())
+		1 -> saveImpl(manga, chapter, pageNumber, pages.first())
 		else -> {
-			saveImpl(pages)
+			saveImpl(manga, chapter, pageNumber, pages)
 			null
 		}
 	}
 
-	private suspend fun saveImpl(page: MangaPage): Uri {
+	private suspend fun saveImpl(manga: Manga, chapter: MangaChapter, pageNumber: Int, page: MangaPage): Uri {
 		val pageLoader = pageLoaderProvider.get()
 		val pageUrl = pageLoader.getPageUrl(page).toUri()
 		val pageUri = pageLoader.loadPage(page, force = false)
-		val proposedName = getProposedFileName(pageUrl, pageUri)
+		val proposedName = getProposedFileName(manga, chapter, pageNumber, pageUrl, pageUri)
 		val destination = getDefaultFileUri(proposedName)?.uri ?: run {
 			val defaultUri = settings.getPagesSaveDir(context)?.uri?.buildUpon()?.appendPath(proposedName)?.toString()
 			savePageRequest.launchAndAwait(defaultUri ?: proposedName)
@@ -85,23 +88,65 @@ class PageSaveHelper @AssistedInject constructor(
 		return destination
 	}
 
-	private suspend fun saveImpl(pages: Collection<MangaPage>) {
+	private suspend fun saveImpl(manga: Manga, chapter: MangaChapter, pageNumber: Int, pages: Collection<MangaPage>) {
 		val pageLoader = pageLoaderProvider.get()
 		val destinationDir = getDefaultFileUri(null) ?: run {
 			val defaultUri = settings.getPagesSaveDir(context)?.uri
 			DocumentFile.fromTreeUri(context, pickDirectoryRequest.launchAndAwait(defaultUri))
 		} ?: throw IOException("Cannot get destination directory")
+
+		var count = 0
 		for (page in pages) {
 			val pageUrl = pageLoader.getPageUrl(page).toUri()
 			val pageUri = pageLoader.loadPage(page, force = false)
-			val proposedName = getProposedFileName(pageUrl, pageUri)
+			val proposedName = getProposedFileName(manga, chapter, pageNumber.plus(count), pageUrl, pageUri)
 			val ext = proposedName.substringAfterLast('.', "")
 			val mime = requireNotNull(MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)) {
 				"Unknown type of $proposedName"
 			}
 			val destination = destinationDir.createFile(mime, proposedName.substringBeforeLast('.'))
 			copyImpl(pageUri, destination?.uri ?: throw IOException("Cannot create destination file"))
+
+			count++
 		}
+	}
+
+	private suspend fun getProposedFileName(manga: Manga, chapter: MangaChapter, pageNumber: Number, pageUrl: Uri, pageUri: Uri): String {
+		var mangaInfos = getNameFromMangaChapterPage(manga, chapter, pageNumber)
+		var currentTime = getCurrentTime()
+		var extension = getPageExtension(pageUrl, pageUri)
+
+		return mangaInfos + "_" + currentTime + "_" + extension
+	}
+
+	private fun getNameFromMangaChapterPage(manga: Manga, chapter: MangaChapter, pageNumber: Number): String {
+		return manga.title + "-" + chapter.number + "-" + pageNumber
+	}
+
+	private fun getCurrentTime(): String {
+		val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmm")
+		val current = LocalDateTime.now().format(formatter)
+		return  current
+	}
+
+	private suspend fun getPageExtension(url: Uri, fileUri: Uri): String {
+		var name = requireNotNull(
+			if (url.isZipUri()) {
+				url.fragment?.substringAfterLast(File.separatorChar)
+			} else {
+				url.lastPathSegment
+			},
+		) { "Invalid page url: $url" }
+		var extension = name.substringAfterLast('.', "")
+		if (extension.length !in 2..4) {
+			val mimeType = fileUri.toFileOrNull()?.let { file -> getImageMimeType(file) }
+			extension = if (mimeType != null) {
+				MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: EXTENSION_FALLBACK
+			} else {
+				EXTENSION_FALLBACK
+			}
+		}
+		return ".$extension"
 	}
 
 	private suspend fun <I> ActivityResultLauncher<I>.launchAndAwait(input: I): Uri {
@@ -148,27 +193,6 @@ class PageSaveHelper @AssistedInject constructor(
 				sink.writeAllCancellable(input)
 			}
 		}
-	}
-
-	private suspend fun getProposedFileName(url: Uri, fileUri: Uri): String {
-		var name = requireNotNull(
-			if (url.isZipUri()) {
-				url.fragment?.substringAfterLast(File.separatorChar)
-			} else {
-				url.lastPathSegment
-			},
-		) { "Invalid page url: $url" }
-		var extension = name.substringAfterLast('.', "")
-		name = name.substringBeforeLast('.')
-		if (extension.length !in 2..4) {
-			val mimeType = fileUri.toFileOrNull()?.let { file -> getImageMimeType(file) }
-			extension = if (mimeType != null) {
-				MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: EXTENSION_FALLBACK
-			} else {
-				EXTENSION_FALLBACK
-			}
-		}
-		return name.toFileNameSafe().take(MAX_FILENAME_LENGTH) + "." + extension
 	}
 
 	private suspend fun getImageMimeType(file: File): String? = runInterruptible(Dispatchers.IO) {
