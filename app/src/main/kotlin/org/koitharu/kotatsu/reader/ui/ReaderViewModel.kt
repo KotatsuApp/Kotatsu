@@ -57,6 +57,7 @@ import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
 import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
@@ -257,9 +258,23 @@ class ReaderViewModel @Inject constructor(
 		val prevJob = pageSaveJob
 		pageSaveJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
+			val currentManga = checkNotNull(getCurrentManga()) { "Cannot find current manga" }
+			val currentChapter = checkNotNull(getCurrentChapter()) { "Cannot find current chapter" }
+			val currentPageNumber = checkNotNull(getPageNumber()) { "Cannot find current page number" }
 			val currentPage = checkNotNull(getCurrentPage()) { "Cannot find current page" }
-			val dest = pageSaveHelper.save(setOf(currentPage))
+			val dest = pageSaveHelper.save(currentManga, currentChapter, currentPageNumber, setOf(currentPage))
 			onPageSaved.call(dest)
+		}
+	}
+
+	fun getCurrentManga(): Manga? {
+		return manga.value
+	}
+
+	fun getCurrentChapter(): MangaChapter? {
+		val state = readingState.value?: return null
+		return manga.value?.chapters?.find {
+			it.id == state.chapterId
 		}
 	}
 
@@ -268,6 +283,11 @@ class ReaderViewModel @Inject constructor(
 		return content.value.pages.find {
 			it.chapterId == state.chapterId && it.index == state.page
 		}?.toMangaPage()
+	}
+
+	fun getPageNumber(): Int? {
+		val state = readingState.value?: return null
+		return state.page
 	}
 
 	fun switchChapter(id: Long, page: Int) {
