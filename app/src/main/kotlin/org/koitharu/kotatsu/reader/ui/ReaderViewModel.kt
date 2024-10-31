@@ -258,9 +258,10 @@ class ReaderViewModel @Inject constructor(
 		val prevJob = pageSaveJob
 		pageSaveJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
-			val currentManga = checkNotNull(getCurrentManga()) { "Cannot find current manga" }
-			val currentChapter = checkNotNull(getCurrentChapter()) { "Cannot find current chapter" }
-			val currentPageNumber = checkNotNull(getPageNumber()) { "Cannot find current page number" }
+			val state = checkNotNull(getCurrentState())
+			val currentManga = manga.requireValue()
+			val currentChapter = checkNotNull(currentManga.findChapter(state.chapterId))
+			val currentPageNumber = state.page
 			val currentPage = checkNotNull(getCurrentPage()) { "Cannot find current page" }
 			val dest = pageSaveHelper.save(currentManga, currentChapter, currentPageNumber, setOf(currentPage))
 			onPageSaved.call(dest)
