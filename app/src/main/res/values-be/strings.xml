@@ -386,7 +386,7 @@
     <string name="suggestions_enable_prompt">Хочаце атрымліваць персаналізаваныя прапановы мангі\?</string>
     <string name="suggestion_manga">Прапанова: %s</string>
     <string name="no_thanks">Не, дзякуй</string>
-    <string name="remove_completed_downloads_confirm">Ваша гісторыя спамповак будзе выдалена назаўсёды</string>
+    <string name="remove_completed_downloads_confirm">Ваша гісторыя загрузак будзе выдалена назаўжды. Загружаныя файлы не будуць закрануты</string>
     <string name="text_downloads_list_holder">У вас няма загрузак</string>
     <string name="downloads_resumed">Спампоўкі аднавіліся</string>
     <string name="downloads_paused">Спампоўкі прыпыненыя</string>
@@ -728,4 +728,19 @@
     <string name="save_manga_confirm">Захаваць выбраную мангу? Гэта можа заняць трафік і месца на дыску</string>
     <string name="save_manga">Захаваць мангу</string>
     <string name="genre">Жанр</string>
+    <string name="landscape">Ландшафтная</string>
+    <string name="plugin_incompatible_with_cause">Памылка плагіна: %s\nПераканайцеся, што вы карыстаецеся апошнюю версію плагіна і Kotatsu</string>
+    <string name="download_added">Загрузка дададзена</string>
+    <string name="more_options">Больш опцый</string>
+    <string name="destination_directory">Каталог прызначэння</string>
+    <string name="chapter_selection_hint">Вы можаце абраць раздзелы для загрузкі, утрымліваючы па элеменце ў спісе раздзелаў.</string>
+    <string name="chapters_all">Усё</string>
+    <string name="download_over_cellular">Загрузка праз мабільную сетку</string>
+    <string name="download_cellular_confirm">Дазволіць загрузку праз мабільную сетку?</string>
+    <string name="dont_allow">Не дазваляць</string>
+    <string name="allow_always">Дазволіць заўсёды</string>
+    <string name="allow_once">Дазволіць адзін раз</string>
+    <string name="ask_every_time">Пытацца кожны раз</string>
+    <string name="screen_orientation">Арыентацыя экрана</string>
+    <string name="portrait">Партрэтная</string>
 </resources>
