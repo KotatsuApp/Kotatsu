@@ -742,4 +742,5 @@
     <string name="landscape">横屏</string>
     <string name="screen_orientation">屏幕方向</string>
     <string name="portrait">竖屏</string>
+    <string name="plugin_incompatible_with_cause">插件错误： %s\n请确认正在使用的插件及Kotatsu是否为最新版本</string>
 </resources>
