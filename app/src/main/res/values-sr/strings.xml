@@ -733,4 +733,13 @@
     <string name="destination_directory">Одредишни именик</string>
     <string name="chapter_selection_hint">Можеш одабрати поглавља за преузимање дугим притиском на ставку на листи поглавља.</string>
     <string name="chapters_all">Сва</string>
+    <string name="screen_orientation">Окретање екрана</string>
+    <string name="portrait">Усправно</string>
+    <string name="landscape">Положено</string>
+    <string name="download_over_cellular">Преузимање преко мобилне мреже</string>
+    <string name="download_cellular_confirm">Дозволити преузимања преко мобилне мреже?</string>
+    <string name="dont_allow">Не дозволи</string>
+    <string name="allow_always">Дозволи увек</string>
+    <string name="allow_once">Дозволи једном</string>
+    <string name="ask_every_time">Питај ме сваки пут</string>
 </resources>
