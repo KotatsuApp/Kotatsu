@@ -194,7 +194,7 @@
     <string name="follow_system">Theo hệ thống</string>
     <string name="_s_deleted_from_local_storage">\"%s\" đã bị xoá khỏi bộ nhớ cục bộ</string>
     <string name="share_image">Chia sẻ hình ảnh</string>
-    <string name="page_saved">Đã lưu</string>
+    <string name="page_saved">Đã lưu trang này</string>
     <string name="text_file_not_supported">Vui lòng chọn tập tin ZIP hoặc CBZ.</string>
     <string name="error">Lỗi</string>
     <string name="_continue">Tiếp tục</string>
@@ -742,4 +742,5 @@
     <string name="portrait">Dọc</string>
     <string name="landscape">Ngang</string>
     <string name="screen_orientation">Xoay hướng màn hình</string>
+    <string name="plugin_incompatible_with_cause">Lỗi Plugin: %s\nHãy đảm bảo rằng bạn đang sử dụng phiên bản mới nhất của Kotatsu / Đã cập nhật Plugin đó</string>
 </resources>
