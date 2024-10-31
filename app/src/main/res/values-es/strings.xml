@@ -51,7 +51,7 @@
     <string name="remove">Eliminar</string>
     <string name="_s_deleted_from_local_storage">«%s» borrado del almacenamiento local</string>
     <string name="save_page">Guardar página</string>
-    <string name="page_saved">Guardado</string>
+    <string name="page_saved">Página guardada</string>
     <string name="share_image">Compartir imagen</string>
     <string name="_import">Importar</string>
     <string name="delete">Borrar</string>
@@ -742,4 +742,5 @@
     <string name="screen_orientation">Orientación de la pantalla</string>
     <string name="landscape">Horizontal</string>
     <string name="portrait">Vertical</string>
+    <string name="plugin_incompatible_with_cause">Error del plugin: %s\n Asegúrese de que está utilizando la última versión del plugin y Kotatsu</string>
 </resources>
