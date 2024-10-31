@@ -13,7 +13,7 @@
     <string name="details">Mga detalye</string>
     <string name="chapters">Mga kabanata</string>
     <string name="list">Listahan</string>
-    <string name="page_saved">Na-save</string>
+    <string name="page_saved">Na-save ang pahina</string>
     <string name="share_image">I-share ang larawan</string>
     <string name="_import">Mag-import</string>
     <string name="delete">Tanggalin</string>
@@ -742,4 +742,5 @@
     <string name="screen_orientation">Oryentasyon ng screen</string>
     <string name="portrait">Patayo (portrait)</string>
     <string name="landscape">Pahalang (landscape)</string>
+    <string name="plugin_incompatible_with_cause">Plugin error: %s\n Tiyaking ginagamit mo ang pinakabagong bersyon ng plugin at Kotatsu</string>
 </resources>
