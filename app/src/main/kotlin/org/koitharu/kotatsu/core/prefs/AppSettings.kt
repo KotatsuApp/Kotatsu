@@ -473,7 +473,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val periodicalBackupFrequency: Long
 		get() = prefs.getString(KEY_BACKUP_PERIODICAL_FREQUENCY, null)?.toLongOrNull() ?: 7L
 
-	var periodicalBackupOutput: Uri?
+	val periodicalBackupMaxCount: Int
+		get() = prefs.getInt(KEY_BACKUP_PERIODICAL_COUNT, 10)
+
+	var periodicalBackupDirectory: Uri?
 		get() = prefs.getString(KEY_BACKUP_PERIODICAL_OUTPUT, null)?.toUriOrNull()
 		set(value) = prefs.edit { putString(KEY_BACKUP_PERIODICAL_OUTPUT, value?.toString()) }
 
@@ -621,6 +624,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_RESTORE = "restore"
 		const val KEY_BACKUP_PERIODICAL_ENABLED = "backup_periodic"
 		const val KEY_BACKUP_PERIODICAL_FREQUENCY = "backup_periodic_freq"
+		const val KEY_BACKUP_PERIODICAL_COUNT = "backup_periodic_count"
 		const val KEY_BACKUP_PERIODICAL_OUTPUT = "backup_periodic_output"
 		const val KEY_BACKUP_PERIODICAL_LAST = "backup_periodic_last"
 		const val KEY_HISTORY_GROUPING = "history_grouping"

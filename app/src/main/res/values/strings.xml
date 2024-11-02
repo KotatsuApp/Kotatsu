@@ -761,4 +761,5 @@
 	<string name="landscape">Landscape</string>
 	<string name="breadcrumbs_separator" translatable="false"><![CDATA[" > "]]></string>
 	<string name="access_denied_403">Access denied (403)</string>
+	<string name="max_backups_count">Max number of backups</string>
 </resources>

@@ -12,9 +12,9 @@ class LocalIndexUpdateService : CoroutineIntentService() {
 	@Inject
 	lateinit var localMangaIndex: LocalMangaIndex
 
-	override suspend fun processIntent(startId: Int, intent: Intent) {
+	override suspend fun IntentJobContext.processIntent(intent: Intent) {
 		localMangaIndex.update()
 	}
 
-	override fun onError(startId: Int, error: Throwable) = Unit
+	override fun IntentJobContext.onError(error: Throwable) = Unit
 }

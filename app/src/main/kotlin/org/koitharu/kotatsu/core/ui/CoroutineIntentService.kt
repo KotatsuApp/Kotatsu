@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.ui
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -9,11 +10,10 @@ import android.os.PatternMatcher
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.core.app.PendingIntentCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -21,60 +21,104 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import kotlin.coroutines.CoroutineContext
 
 abstract class CoroutineIntentService : BaseService() {
 
 	private val mutex = Mutex()
-	protected open val dispatcher: CoroutineDispatcher = Dispatchers.Default
 
 	final override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		super.onStartCommand(intent, flags, startId)
-		val job = launchCoroutine(intent, startId)
-		val receiver = CancelReceiver(job)
-		ContextCompat.registerReceiver(
-			this,
-			receiver,
-			createIntentFilter(this, startId),
-			ContextCompat.RECEIVER_NOT_EXPORTED,
-		)
-		job.invokeOnCompletion { unregisterReceiver(receiver) }
+		launchCoroutine(intent, startId)
 		return START_REDELIVER_INTENT
 	}
 
-	private fun launchCoroutine(intent: Intent?, startId: Int) = lifecycleScope.launch(errorHandler(startId)) {
+	private fun launchCoroutine(intent: Intent?, startId: Int) = lifecycleScope.launch {
+		val intentJobContext = IntentJobContextImpl(startId, coroutineContext)
 		mutex.withLock {
 			try {
 				if (intent != null) {
-					withContext(dispatcher) {
-						processIntent(startId, intent)
+					withContext(Dispatchers.Default) {
+						intentJobContext.processIntent(intent)
 					}
 				}
 			} catch (e: Throwable) {
 				e.printStackTraceDebug()
-				onError(startId, e)
+				intentJobContext.onError(e)
 			} finally {
-				stopSelf(startId)
+				intentJobContext.stop()
 			}
 		}
 	}
 
 	@WorkerThread
-	protected abstract suspend fun processIntent(startId: Int, intent: Intent)
+	protected abstract suspend fun IntentJobContext.processIntent(intent: Intent)
 
 	@AnyThread
-	protected abstract fun onError(startId: Int, error: Throwable)
+	protected abstract fun IntentJobContext.onError(error: Throwable)
 
-	protected fun getCancelIntent(startId: Int) = PendingIntentCompat.getBroadcast(
-		this,
-		0,
-		createCancelIntent(this, startId),
-		PendingIntent.FLAG_UPDATE_CURRENT,
-		false,
-	)
+	interface IntentJobContext {
 
-	private fun errorHandler(startId: Int) = CoroutineExceptionHandler { _, throwable ->
-		throwable.printStackTraceDebug()
-		onError(startId, throwable)
+		val startId: Int
+
+		fun getCancelIntent(): PendingIntent?
+
+		fun setForeground(id: Int, notification: Notification, serviceType: Int)
+	}
+
+	protected inner class IntentJobContextImpl(
+		override val startId: Int,
+		private val coroutineContext: CoroutineContext,
+	) : IntentJobContext {
+
+		private var cancelReceiver: CancelReceiver? = null
+		private var isStopped = false
+		private var isForeground = false
+
+		override fun getCancelIntent(): PendingIntent? {
+			ensureHasCancelReceiver()
+			return PendingIntentCompat.getBroadcast(
+				applicationContext,
+				0,
+				createCancelIntent(this@CoroutineIntentService, startId),
+				PendingIntent.FLAG_UPDATE_CURRENT,
+				false,
+			)
+		}
+
+		override fun setForeground(id: Int, notification: Notification, serviceType: Int) {
+			ServiceCompat.startForeground(this@CoroutineIntentService, id, notification, serviceType)
+			isForeground = true
+		}
+
+		fun stop() {
+			synchronized(this) {
+				cancelReceiver?.let { unregisterReceiver(it) }
+				isStopped = true
+			}
+			if (isForeground) {
+				ServiceCompat.stopForeground(this@CoroutineIntentService, ServiceCompat.STOP_FOREGROUND_REMOVE)
+			}
+			stopSelf(startId)
+		}
+
+		private fun ensureHasCancelReceiver() {
+			if (cancelReceiver == null && !isStopped) {
+				synchronized(this) {
+					if (cancelReceiver == null && !isStopped) {
+						val job = coroutineContext[Job] ?: return
+						cancelReceiver = CancelReceiver(job).also { receiver ->
+							ContextCompat.registerReceiver(
+								applicationContext,
+								receiver,
+								createIntentFilter(this@CoroutineIntentService, startId),
+								ContextCompat.RECEIVER_NOT_EXPORTED,
+							)
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private class CancelReceiver(

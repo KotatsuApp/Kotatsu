@@ -15,6 +15,7 @@ import coil3.gif.AnimatedImageDecoder
 import coil3.gif.GifDecoder
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.allowRgb565
+import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
 import dagger.Binds
 import dagger.Module
@@ -126,6 +127,7 @@ interface AppModule {
 					} else {
 						add(GifDecoder.Factory())
 					}
+					add(SvgDecoder.Factory())
 					add(CbzFetcher.Factory())
 					add(AvifImageDecoder.Factory())
 					add(FaviconFetcher.Factory(mangaRepositoryFactory))

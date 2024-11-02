@@ -196,6 +196,9 @@ class MangaIndex(source: String?) {
 		@Blocking
 		@WorkerThread
 		fun read(fileSystem: FileSystem, path: Path): MangaIndex? = runCatchingCancellable {
+			if (!fileSystem.exists(path)) {
+				return@runCatchingCancellable null
+			}
 			val text = fileSystem.source(path).use {
 				it.buffer().use { buffer ->
 					buffer.readUtf8()

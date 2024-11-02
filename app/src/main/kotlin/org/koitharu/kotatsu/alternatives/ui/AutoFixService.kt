@@ -48,25 +48,21 @@ class AutoFixService : CoroutineIntentService() {
 		notificationManager = NotificationManagerCompat.from(applicationContext)
 	}
 
-	override suspend fun processIntent(startId: Int, intent: Intent) {
+	override suspend fun IntentJobContext.processIntent(intent: Intent) {
 		val ids = requireNotNull(intent.getLongArrayExtra(DATA_IDS))
-		startForeground(startId)
-		try {
-			for (mangaId in ids) {
-				val result = runCatchingCancellable {
-					autoFixUseCase.invoke(mangaId)
-				}
-				if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-					val notification = buildNotification(result)
-					notificationManager.notify(TAG, startId, notification)
-				}
+		startForeground(this)
+		for (mangaId in ids) {
+			val result = runCatchingCancellable {
+				autoFixUseCase.invoke(mangaId)
 			}
-		} finally {
-			ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+			if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+				val notification = buildNotification(result)
+				notificationManager.notify(TAG, startId, notification)
+			}
 		}
 	}
 
-	override fun onError(startId: Int, error: Throwable) {
+	override fun IntentJobContext.onError(error: Throwable) {
 		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
 			val notification = runBlocking { buildNotification(Result.failure(error)) }
 			notificationManager.notify(TAG, startId, notification)
@@ -74,7 +70,7 @@ class AutoFixService : CoroutineIntentService() {
 	}
 
 	@SuppressLint("InlinedApi")
-	private fun startForeground(startId: Int) {
+	private fun startForeground(jobContext: IntentJobContext) {
 		val title = applicationContext.getString(R.string.fixing_manga)
 		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_MIN)
 			.setName(title)
@@ -98,12 +94,11 @@ class AutoFixService : CoroutineIntentService() {
 			.addAction(
 				materialR.drawable.material_ic_clear_black_24dp,
 				applicationContext.getString(android.R.string.cancel),
-				getCancelIntent(startId),
+				jobContext.getCancelIntent(),
 			)
 			.build()
 
-		ServiceCompat.startForeground(
-			this,
+		jobContext.setForeground(
 			FOREGROUND_NOTIFICATION_ID,
 			notification,
 			ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,

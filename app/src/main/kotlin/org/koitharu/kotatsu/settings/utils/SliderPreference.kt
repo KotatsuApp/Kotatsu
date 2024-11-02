@@ -50,6 +50,9 @@ class SliderPreference @JvmOverloads constructor(
 			valueTo = getFloat(R.styleable.SliderPreference_android_valueTo, valueTo.toFloat()).toInt()
 			stepSize = getFloat(R.styleable.SliderPreference_android_stepSize, stepSize.toFloat()).toInt()
 			isTickVisible = getBoolean(R.styleable.SliderPreference_tickVisible, isTickVisible)
+			if (getBoolean(R.styleable.SliderPreference_useSimpleSummaryProvider, false)) {
+				summaryProvider = SimpleSummaryProvider
+			}
 		}
 	}
 
@@ -116,6 +119,11 @@ class SliderPreference @JvmOverloads constructor(
 				setValueInternal(sliderValue, notifyChanged = true)
 			}
 		}
+	}
+
+	private object SimpleSummaryProvider : SummaryProvider<SliderPreference> {
+
+		override fun provideSummary(preference: SliderPreference) = preference.value.toString()
 	}
 
 	private class SavedState : AbsSavedState {

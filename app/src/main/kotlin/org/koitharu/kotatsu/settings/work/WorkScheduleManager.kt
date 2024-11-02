@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
-import org.koitharu.kotatsu.settings.backup.PeriodicalBackupWorker
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsWorker
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import javax.inject.Inject
@@ -16,7 +15,6 @@ class WorkScheduleManager @Inject constructor(
 	private val settings: AppSettings,
 	private val suggestionScheduler: SuggestionsWorker.Scheduler,
 	private val trackerScheduler: TrackWorker.Scheduler,
-	private val periodicalBackupScheduler: PeriodicalBackupWorker.Scheduler,
 ) : SharedPreferences.OnSharedPreferenceChangeListener {
 
 	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -35,13 +33,6 @@ class WorkScheduleManager @Inject constructor(
 				isEnabled = settings.isSuggestionsEnabled,
 				force = key != AppSettings.KEY_SUGGESTIONS,
 			)
-
-			AppSettings.KEY_BACKUP_PERIODICAL_ENABLED,
-			AppSettings.KEY_BACKUP_PERIODICAL_FREQUENCY -> updateWorker(
-				scheduler = periodicalBackupScheduler,
-				isEnabled = settings.isPeriodicalBackupEnabled,
-				force = key != AppSettings.KEY_BACKUP_PERIODICAL_ENABLED,
-			)
 		}
 	}
 
@@ -50,7 +41,6 @@ class WorkScheduleManager @Inject constructor(
 		processLifecycleScope.launch(Dispatchers.Default) {
 			updateWorkerImpl(trackerScheduler, settings.isTrackerEnabled, true) // always force due to adaptive interval
 			updateWorkerImpl(suggestionScheduler, settings.isSuggestionsEnabled, false)
-			updateWorkerImpl(periodicalBackupScheduler, settings.isPeriodicalBackupEnabled, false)
 		}
 	}
 

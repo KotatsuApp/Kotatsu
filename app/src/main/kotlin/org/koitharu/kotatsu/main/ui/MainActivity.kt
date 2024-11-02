@@ -72,6 +72,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.about.AppUpdateActivity
+import org.koitharu.kotatsu.settings.backup.PeriodicalBackupService
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -353,6 +354,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				requestNotificationsPermission()
 			}
 			startService(Intent(this@MainActivity, LocalIndexUpdateService::class.java))
+			startService(Intent(this@MainActivity, PeriodicalBackupService::class.java))
 		}
 	}
 

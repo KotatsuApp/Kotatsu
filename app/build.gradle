@@ -16,8 +16,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 683
-		versionName = '7.7-a4'
+		versionCode = 685
+		versionName = '7.7-a6'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -82,7 +82,7 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.KotatsuApp:kotatsu-parsers:1.4') {
+	implementation('com.github.KotatsuApp:kotatsu-parsers:79e1d59482') {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -134,9 +134,10 @@ dependencies {
 	implementation 'androidx.hilt:hilt-work:1.2.0'
 	kapt 'androidx.hilt:hilt-compiler:1.2.0'
 
-	implementation 'io.coil-kt.coil3:coil-core:3.0.0-rc01'
-	implementation 'io.coil-kt.coil3:coil-network-okhttp:3.0.0-rc01'
-	implementation 'io.coil-kt.coil3:coil-gif:3.0.0-rc01'
+	implementation 'io.coil-kt.coil3:coil-core:3.0.0-rc02'
+	implementation 'io.coil-kt.coil3:coil-network-okhttp:3.0.0-rc02'
+	implementation 'io.coil-kt.coil3:coil-gif:3.0.0-rc02'
+	implementation 'io.coil-kt.coil3:coil-svg:3.0.0-rc02'
 	implementation 'org.aomedia.avif.android:avif:1.1.1.14d8e3c4'
 	implementation 'com.github.KotatsuApp:subsampling-scale-image-view:d1d10a6975'
 	implementation 'com.github.solkin:disk-lru-cache:1.4'

@@ -11,7 +11,6 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
-import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import coil3.ImageLoader
 import coil3.request.ImageRequest
@@ -48,23 +47,19 @@ class ImportService : CoroutineIntentService() {
 		notificationManager = NotificationManagerCompat.from(applicationContext)
 	}
 
-	override suspend fun processIntent(startId: Int, intent: Intent) {
+	override suspend fun IntentJobContext.processIntent(intent: Intent) {
 		val uri = requireNotNull(intent.getStringExtra(DATA_URI)?.toUriOrNull()) { "No input uri" }
-		startForeground()
-		try {
-			val result = runCatchingCancellable {
-				importer.import(uri).manga
-			}
-			if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-				val notification = buildNotification(result)
-				notificationManager.notify(TAG, startId, notification)
-			}
-		} finally {
-			ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+		startForeground(this)
+		val result = runCatchingCancellable {
+			importer.import(uri).manga
+		}
+		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+			val notification = buildNotification(result)
+			notificationManager.notify(TAG, startId, notification)
 		}
 	}
 
-	override fun onError(startId: Int, error: Throwable) {
+	override fun IntentJobContext.onError(error: Throwable) {
 		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
 			val notification = runBlocking { buildNotification(Result.failure(error)) }
 			notificationManager.notify(TAG, startId, notification)
@@ -72,7 +67,7 @@ class ImportService : CoroutineIntentService() {
 	}
 
 	@SuppressLint("InlinedApi")
-	private fun startForeground() {
+	private fun startForeground(jobContext: IntentJobContext) {
 		val title = applicationContext.getString(R.string.importing_manga)
 		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
 			.setName(title)
@@ -95,8 +90,7 @@ class ImportService : CoroutineIntentService() {
 			.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 			.build()
 
-		ServiceCompat.startForeground(
-			this,
+		jobContext.setForeground(
 			FOREGROUND_NOTIFICATION_ID,
 			notification,
 			ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,

@@ -10,6 +10,11 @@
 		android:layout="@layout/preference_toggle_header"
 		android:title="@string/periodic_backups_enable" />
 
+	<Preference
+		android:dependency="backup_periodic"
+		android:key="backup_periodic_output"
+		android:title="@string/backups_output_directory" />
+
 	<ListPreference
 		android:defaultValue="7"
 		android:dependency="backup_periodic"
@@ -19,10 +24,14 @@
 		android:title="@string/backup_frequency"
 		app:useSimpleSummaryProvider="true" />
 
-	<Preference
-		android:dependency="backup_periodic"
-		android:key="backup_periodic_output"
-		android:title="@string/backups_output_directory" />
+	<org.koitharu.kotatsu.settings.utils.SliderPreference
+		android:key="backup_periodic_count"
+		android:stepSize="1"
+		android:title="@string/max_backups_count"
+		android:valueFrom="1"
+		android:valueTo="32"
+		app:defaultValue="10"
+		app:useSimpleSummaryProvider="true" />
 
 	<Preference
 		android:dependency="backup_periodic"

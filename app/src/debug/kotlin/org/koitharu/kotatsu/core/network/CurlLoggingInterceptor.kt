@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.network
 
 import android.util.Log
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
 import okio.Buffer
 import org.koitharu.kotatsu.core.network.CommonHeaders.ACCEPT_ENCODING
@@ -12,8 +13,11 @@ class CurlLoggingInterceptor(
 
 	private val escapeRegex = Regex("([\\[\\]\"])")
 
-	override fun intercept(chain: Interceptor.Chain): Response {
-		val request = chain.request()
+	override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(chain.request()).also {
+		logRequest(it.networkResponse?.request ?: it.request)
+	}
+
+	private fun logRequest(request: Request) {
 		var isCompressed = false
 
 		val curlCmd = StringBuilder()
@@ -46,8 +50,6 @@ class CurlLoggingInterceptor(
 
 		log("---cURL (" + request.url + ")")
 		log(curlCmd.toString())
-
-		return chain.proceed(request)
 	}
 
 	private fun String.escape() = replace(escapeRegex) { match ->

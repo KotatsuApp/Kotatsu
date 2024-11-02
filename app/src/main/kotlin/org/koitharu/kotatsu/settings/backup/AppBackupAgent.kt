@@ -68,7 +68,7 @@ class AppBackupAgent : BackupAgent() {
 
 	@VisibleForTesting
 	fun createBackupFile(context: Context, repository: BackupRepository) = runBlocking {
-		BackupZipOutput(context).use { backup ->
+		BackupZipOutput.createTemp(context).use { backup ->
 			backup.put(repository.createIndex())
 			backup.put(repository.dumpHistory())
 			backup.put(repository.dumpCategories())
