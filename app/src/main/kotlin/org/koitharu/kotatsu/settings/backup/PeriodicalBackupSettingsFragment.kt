@@ -22,8 +22,7 @@ import org.koitharu.kotatsu.core.util.ext.resolveFile
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import java.io.File
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -83,8 +82,8 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 				backupStorage.getLastBackupDate()
 			}
 			preference.summary = lastDate?.let {
-				val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)
-				preference.context.getString(R.string.last_successful_backup, it.format(formatter))
+				val formatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG)
+				preference.context.getString(R.string.last_successful_backup, formatter.format(it))
 			}
 			preference.isVisible = lastDate != null
 		}

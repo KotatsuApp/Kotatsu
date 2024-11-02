@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.backup
 
+import android.annotation.SuppressLint
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
@@ -8,9 +9,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.zip.ZipOutput
 import java.io.File
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeParseException
+import java.util.Date
 import java.util.Locale
 import java.util.zip.Deflater
 
@@ -33,17 +34,18 @@ class BackupZipOutput(val file: File) : Closeable {
 	companion object {
 
 		const val DIR_BACKUPS = "backups"
-		private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm")
+		@SuppressLint("SimpleDateFormat")
+		private val dateTimeFormat = SimpleDateFormat("yyyyMMdd-HHmm")
 
 		fun generateFileName(context: Context) = buildString {
 			append(context.getString(R.string.app_name).replace(' ', '_').lowercase(Locale.ROOT))
 			append('_')
-			append(LocalDateTime.now().format(dateTimeFormat))
+			append(dateTimeFormat.format(Date()))
 			append(".bk.zip")
 		}
 
-		fun parseBackupDateTime(fileName: String): LocalDateTime? = try {
-			LocalDateTime.parse(fileName.substringAfterLast('_').substringBefore('.'), dateTimeFormat)
+		fun parseBackupDateTime(fileName: String): Date? = try {
+			dateTimeFormat.parse(fileName.substringAfterLast('_').substringBefore('.'))
 		} catch (e: DateTimeParseException) {
 			e.printStackTraceDebug()
 			null

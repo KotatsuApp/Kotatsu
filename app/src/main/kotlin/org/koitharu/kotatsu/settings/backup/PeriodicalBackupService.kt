@@ -7,8 +7,6 @@ import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.backup.ExternalBackupStorage
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -28,9 +26,7 @@ class PeriodicalBackupService : CoroutineIntentService() {
 			return
 		}
 		val lastBackupDate = externalBackupStorage.getLastBackupDate()
-		if (lastBackupDate != null && lastBackupDate.plus(settings.periodicalBackupFrequency, ChronoUnit.MILLIS)
-				.isAfter(LocalDateTime.now())
-		) {
+		if (lastBackupDate != null && lastBackupDate.time + settings.periodicalBackupFrequency > System.currentTimeMillis()) {
 			return
 		}
 		val output = BackupZipOutput.createTemp(applicationContext)
