@@ -25,7 +25,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.formatNumber
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
@@ -327,6 +326,6 @@ class DownloadsViewModel @Inject constructor(
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	private suspend fun tryLoad(manga: Manga) = runCatchingCancellable {
-		(mangaRepositoryFactory.create(manga.source) as ParserMangaRepository).getDetails(manga)
+		mangaRepositoryFactory.create(manga.source).getDetails(manga)
 	}.getOrNull()
 }

@@ -9,8 +9,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.zip.ZipOutput
 import java.io.File
+import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeParseException
 import java.util.Date
 import java.util.Locale
 import java.util.zip.Deflater
@@ -46,7 +46,7 @@ class BackupZipOutput(val file: File) : Closeable {
 
 		fun parseBackupDateTime(fileName: String): Date? = try {
 			dateTimeFormat.parse(fileName.substringAfterLast('_').substringBefore('.'))
-		} catch (e: DateTimeParseException) {
+		} catch (e: ParseException) {
 			e.printStackTraceDebug()
 			null
 		}

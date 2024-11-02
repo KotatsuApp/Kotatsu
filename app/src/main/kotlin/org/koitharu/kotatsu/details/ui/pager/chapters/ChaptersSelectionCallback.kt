@@ -62,10 +62,12 @@ class ChaptersSelectionCallback(
 			R.id.action_save -> {
 				val snapshot = controller.snapshot()
 				mode?.finish()
-				commonAlertDialogs.askForDownloadOverMeteredNetwork(
-					context = recyclerView.context,
-					onConfirmed = { viewModel.download(snapshot, it) },
-				)
+				if (snapshot.isNotEmpty()) {
+					commonAlertDialogs.askForDownloadOverMeteredNetwork(
+						context = recyclerView.context,
+						onConfirmed = { viewModel.download(snapshot, it) },
+					)
+				}
 				true
 			}
 
