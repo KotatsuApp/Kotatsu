@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.util
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
@@ -75,11 +76,9 @@ class ShareHelper(private val context: Context) {
 			.startChooser()
 	}
 
-	fun shareText(text: String) {
-		ShareCompat.IntentBuilder(context)
-			.setText(text)
-			.setType(TYPE_TEXT)
-			.setChooserTitle(R.string.share)
-			.startChooser()
-	}
+	fun getShareTextIntent(text: String): Intent = ShareCompat.IntentBuilder(context)
+		.setText(text)
+		.setType(TYPE_TEXT)
+		.setChooserTitle(R.string.share)
+		.createChooserIntent()
 }

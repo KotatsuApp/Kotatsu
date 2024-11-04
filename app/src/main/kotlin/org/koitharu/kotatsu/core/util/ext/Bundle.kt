@@ -20,6 +20,10 @@ inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String): T? 
 	return BundleCompat.getParcelable(this, key, T::class.java)
 }
 
+inline fun <reified T : Parcelable> Bundle.requireParcelable(key: String): T = checkNotNull(getParcelableCompat(key)) {
+	"Parcelable of type \"${T::class.java.name}\" not found at \"$key\""
+}
+
 inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String): T? {
 	return IntentCompat.getParcelableExtra(this, key, T::class.java)
 }

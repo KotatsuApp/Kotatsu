@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
+import org.koitharu.kotatsu.core.util.ext.isSerializable
 import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.parsers.util.ifZero
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -154,6 +155,7 @@ open class PageHolder(
 		bindingInfo.buttonRetry.setText(
 			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again },
 		)
+		bindingInfo.buttonErrorDetails.isVisible = e.isSerializable()
 		bindingInfo.layoutError.isVisible = true
 		bindingInfo.progressBar.hide()
 	}

@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.isNetworkError
+import org.koitharu.kotatsu.core.util.ext.isSerializable
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.exception.ParseException
 
@@ -38,7 +39,7 @@ class DetailsErrorObserver(
 
 			value is ParseException -> {
 				val fm = fragmentManager
-				if (fm != null) {
+				if (fm != null && value.isSerializable()) {
 					snackbar.setAction(R.string.details) {
 						ErrorDetailsDialog.show(fm, value, value.url)
 					}
