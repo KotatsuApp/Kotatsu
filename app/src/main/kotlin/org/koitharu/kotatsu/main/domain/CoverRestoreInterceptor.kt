@@ -2,11 +2,8 @@ package org.koitharu.kotatsu.main.domain
 
 import androidx.collection.ArraySet
 import coil.intercept.Interceptor
-import coil.network.HttpException
 import coil.request.ErrorResult
 import coil.request.ImageResult
-import okio.FileNotFoundException
-import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.findById
@@ -15,13 +12,10 @@ import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import java.net.UnknownHostException
 import java.util.Collections
 import javax.inject.Inject
-import javax.net.ssl.SSLException
 
 class CoverRestoreInterceptor @Inject constructor(
 	private val dataRepository: MangaDataRepository,
@@ -116,11 +110,6 @@ class CoverRestoreInterceptor @Inject constructor(
 	}
 
 	private fun Throwable.shouldRestore(): Boolean {
-		return this is HttpException
-			|| this is HttpStatusException
-			|| this is SSLException
-			|| this is ParseException
-			|| this is UnknownHostException
-			|| this is FileNotFoundException
+		return this is Exception // any Exception but not Error
 	}
 }
