@@ -101,6 +101,7 @@ class DownloadWorker @AssistedInject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val settings: AppSettings,
 	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
+	private val slowdownDispatcher: DownloadSlowdownDispatcher,
 	private val imageProxyInterceptor: ImageProxyInterceptor,
 	notificationFactoryFactory: DownloadNotificationFactory.Factory,
 ) : CoroutineWorker(appContext, params) {
@@ -110,7 +111,6 @@ class DownloadWorker @AssistedInject constructor(
 		isSilent = params.inputData.getBoolean(IS_SILENT, false),
 	)
 	private val notificationManager = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-	private val slowdownDispatcher = DownloadSlowdownDispatcher(mangaRepositoryFactory, SLOWDOWN_DELAY)
 
 	@Volatile
 	private var lastPublishedState: DownloadState? = null
@@ -569,7 +569,6 @@ class DownloadWorker @AssistedInject constructor(
 		const val MAX_PAGES_PARALLELISM = 4
 		const val DOWNLOAD_ERROR_DELAY = 2_000L
 		const val MAX_RETRY_DELAY = 7_200_000L // 2 hours
-		const val SLOWDOWN_DELAY = 200L
 		const val MANGA_ID = "manga_id"
 		const val CHAPTERS_IDS = "chapters"
 		const val IS_SILENT = "silent"
