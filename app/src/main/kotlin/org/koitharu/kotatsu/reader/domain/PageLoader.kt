@@ -53,6 +53,7 @@ import org.koitharu.kotatsu.core.util.ext.ramAvailable
 import org.koitharu.kotatsu.core.util.ext.use
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
+import org.koitharu.kotatsu.download.ui.worker.DownloadSlowdownDispatcher
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -78,6 +79,7 @@ class PageLoader @Inject constructor(
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val imageProxyInterceptor: ImageProxyInterceptor,
+	private val downloadSlowdownDispatcher: DownloadSlowdownDispatcher,
 ) {
 
 	val loaderScope = RetainedLifecycleCoroutineScope(lifecycle) + InternalErrorHandler() + Dispatchers.Default
@@ -126,7 +128,7 @@ class PageLoader @Inject constructor(
 		} else if (task?.isCancelled == false) {
 			return task
 		}
-		task = loadPageAsyncImpl(page, force)
+		task = loadPageAsyncImpl(page, skipCache = force, isPrefetch = false)
 		synchronized(tasks) {
 			tasks[page.id] = task
 		}
@@ -185,7 +187,7 @@ class PageLoader @Inject constructor(
 				val page = prefetchQueue.pollFirst() ?: return@launch
 				if (cache.get(page.url) == null) {
 					synchronized(tasks) {
-						tasks[page.id] = loadPageAsyncImpl(page, false)
+						tasks[page.id] = loadPageAsyncImpl(page, skipCache = false, isPrefetch = true)
 					}
 					return@launch
 				}
@@ -193,7 +195,11 @@ class PageLoader @Inject constructor(
 		}
 	}
 
-	private fun loadPageAsyncImpl(page: MangaPage, skipCache: Boolean): ProgressDeferred<Uri, Float> {
+	private fun loadPageAsyncImpl(
+		page: MangaPage,
+		skipCache: Boolean,
+		isPrefetch: Boolean,
+	): ProgressDeferred<Uri, Float> {
 		val progress = MutableStateFlow(PROGRESS_UNDEFINED)
 		val deferred = loaderScope.async {
 			if (!skipCache) {
@@ -201,7 +207,7 @@ class PageLoader @Inject constructor(
 			}
 			counter.incrementAndGet()
 			try {
-				loadPageImpl(page, progress)
+				loadPageImpl(page, progress, isPrefetch)
 			} finally {
 				if (counter.decrementAndGet() == 0) {
 					onIdle()
@@ -221,7 +227,11 @@ class PageLoader @Inject constructor(
 		}
 	}
 
-	private suspend fun loadPageImpl(page: MangaPage, progress: MutableStateFlow<Float>): Uri = semaphore.withPermit {
+	private suspend fun loadPageImpl(
+		page: MangaPage,
+		progress: MutableStateFlow<Float>,
+		isPrefetch: Boolean,
+	): Uri = semaphore.withPermit {
 		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url for $page" }
 		val uri = Uri.parse(pageUrl)
@@ -234,6 +244,9 @@ class PageLoader @Inject constructor(
 
 			uri.isFileUri() -> uri
 			else -> {
+				if (isPrefetch) {
+					downloadSlowdownDispatcher.delay(page.source)
+				}
 				val request = createPageRequest(pageUrl, page.source)
 				imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
 					response.requireBody().withProgress(progress).use {

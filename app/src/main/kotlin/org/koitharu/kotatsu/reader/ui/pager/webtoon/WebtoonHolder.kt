@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.util.GoneOnInvisibleListener
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.isSerializable
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
 import org.koitharu.kotatsu.parsers.util.ifZero
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -128,6 +129,7 @@ class WebtoonHolder(
 		bindingInfo.buttonRetry.setText(
 			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again },
 		)
+		bindingInfo.buttonErrorDetails.isVisible = e.isSerializable()
 		bindingInfo.layoutError.isVisible = true
 		bindingInfo.progressBar.hide()
 	}
