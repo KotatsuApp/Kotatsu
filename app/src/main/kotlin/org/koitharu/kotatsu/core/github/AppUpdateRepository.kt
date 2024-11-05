@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.core.github
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -9,6 +11,7 @@ import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.BaseHttpClient
 import org.koitharu.kotatsu.core.os.AppValidator
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -22,22 +25,29 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val CONTENT_TYPE_APK = "application/vnd.android.package-archive"
+private const val BUILD_TYPE_RELEASE = "release"
 
 @Singleton
 class AppUpdateRepository @Inject constructor(
 	private val appValidator: AppValidator,
 	private val settings: AppSettings,
 	@BaseHttpClient private val okHttp: OkHttpClient,
+	@ApplicationContext context: Context,
 ) {
 
 	private val availableUpdate = MutableStateFlow<AppVersion?>(null)
+	private val releasesUrl = buildString {
+		append("https://api.github.com/repos/")
+		append(context.getString(R.string.github_updates_repo))
+		append("/releases?page=1&per_page=10")
+	}
 
 	fun observeAvailableUpdate() = availableUpdate.asStateFlow()
 
 	suspend fun getAvailableVersions(): List<AppVersion> {
 		val request = Request.Builder()
 			.get()
-			.url("https://api.github.com/repos/KotatsuApp/Kotatsu/releases?page=1&per_page=10")
+			.url(releasesUrl)
 		val jsonArray = okHttp.newCall(request.build()).await().parseJsonArray()
 		return jsonArray.mapJSONNotNull { json ->
 			val asset = json.optJSONArray("assets")?.find { jo ->
@@ -74,8 +84,9 @@ class AppUpdateRepository @Inject constructor(
 		}.getOrNull()
 	}
 
+	@Suppress("KotlinConstantConditions")
 	fun isUpdateSupported(): Boolean {
-		return BuildConfig.DEBUG || appValidator.isOriginalApp
+		return BuildConfig.BUILD_TYPE != BUILD_TYPE_RELEASE || appValidator.isOriginalApp
 	}
 
 	suspend fun getCurrentVersionChangelog(): String? {

@@ -1,3 +1,5 @@
+import java.time.LocalDateTime
+
 plugins {
 	id 'com.android.application'
 	id 'kotlin-android'
@@ -36,6 +38,12 @@ android {
 			minifyEnabled true
 			shrinkResources true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+		}
+		nightly {
+			initWith release
+			applicationIdSuffix = '.nightly'
+			defaultConfig.versionCode = LocalDateTime.now().format("yyMMdd").toInteger()
+			defaultConfig.versionName = "N" + LocalDateTime.now().format("yyMMdd")
 		}
 	}
 	buildFeatures {

@@ -8,6 +8,7 @@
 	<string name="url_error_report" translatable="false">https://bugs.kotatsu.app/report</string>
 	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
 	<string name="sync_url_default" translatable="false">https://sync.kotatsu.app</string>
+	<string name="github_updates_repo" translatable="false">KotatsuApp/Kotatsu</string>
 	<string name="shikimori_clientId" translatable="false">Mw6F0tPEOgyV7F9U9Twg50Q8SndMY7hzIOfXg0AX_XU</string>
 	<string name="shikimori_clientSecret" translatable="false">euBMt1GGRSDpVIFQVPxZrO7Kh6X4gWyv0dABuj4B-M8</string>
 	<string name="anilist_clientId" translatable="false">9887</string>
