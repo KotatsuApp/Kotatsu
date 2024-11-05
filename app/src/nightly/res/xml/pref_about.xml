@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:title="@string/about">
+
+	<Preference
+		android:key="app_version"
+		android:persistent="false"
+		android:summary="@string/check_for_updates" />
+
+	<Preference
+		android:key="about_help"
+		android:persistent="false"
+		android:summary="@string/url_user_manual"
+		android:title="@string/user_manual"
+		app:allowDividerAbove="true" />
+
+	<Preference
+		android:key="about_github"
+		android:persistent="false"
+		android:summary="@string/url_github"
+		android:title="@string/source_code" />
+
+	<Preference
+		android:key="about_app_translation"
+		android:persistent="false"
+		android:summary="@string/url_weblate"
+		android:title="@string/about_app_translation_summary" />
+
+	<Preference
+		android:key="about_telegram"
+		android:persistent="false"
+		android:summary="@string/url_telegram_web"
+		android:title="@string/telegram_group" />
+
+</PreferenceScreen>
