@@ -6,9 +6,9 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkQuery
 import androidx.work.WorkRequest
-import androidx.work.await
 import androidx.work.impl.WorkManagerImpl
 import androidx.work.impl.model.WorkSpec
+import kotlinx.coroutines.guava.await
 import java.util.UUID
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -63,7 +63,7 @@ suspend fun WorkManager.awaitWorkInfoById(id: UUID): WorkInfo? {
 
 @SuppressLint("RestrictedApi")
 suspend fun WorkManager.awaitUniqueWorkInfoByName(name: String): List<WorkInfo> {
-	return getWorkInfosForUniqueWork(name).await().orEmpty()
+	return getWorkInfosForUniqueWork(name).await()
 }
 
 @SuppressLint("RestrictedApi")

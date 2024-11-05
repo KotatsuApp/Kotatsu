@@ -535,10 +535,6 @@ class DownloadWorker @AssistedInject constructor(
 		const val MAX_PAGES_PARALLELISM = 4
 		const val DOWNLOAD_ERROR_DELAY = 2_000L
 		const val MAX_RETRY_DELAY = 7_200_000L // 2 hours
-		const val MANGA_ID = "manga_id"
-		const val CHAPTERS_IDS = "chapters"
-		const val IS_SILENT = "silent"
-		const val START_PAUSED = "paused"
 		const val TAG = "download"
 	}
 }
