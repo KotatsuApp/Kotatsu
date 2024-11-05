@@ -18,8 +18,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 685
-		versionName = '7.7-a6'
+		versionCode = 686
+		versionName = '7.7-a7'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -42,8 +42,6 @@ android {
 		nightly {
 			initWith release
 			applicationIdSuffix = '.nightly'
-			defaultConfig.versionCode = LocalDateTime.now().format("yyMMdd").toInteger()
-			defaultConfig.versionName = "N" + LocalDateTime.now().format("yyMMdd")
 		}
 	}
 	buildFeatures {
@@ -79,6 +77,15 @@ android {
 		unitTests.returnDefaultValues false
 		kotlinOptions {
 			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
+		}
+	}
+	applicationVariants.configureEach { variant ->
+		if (variant.name == 'nightly') {
+			variant.outputs.each { output ->
+				def now = LocalDateTime.now().format("yyMMdd")
+				output.versionCodeOverride = now.toInteger()
+				output.versionNameOverride = 'N' + now
+			}
 		}
 	}
 }
