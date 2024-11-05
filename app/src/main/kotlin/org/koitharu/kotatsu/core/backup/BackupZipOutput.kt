@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.backup
 
-import android.annotation.SuppressLint
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
@@ -34,7 +33,6 @@ class BackupZipOutput(val file: File) : Closeable {
 	companion object {
 
 		const val DIR_BACKUPS = "backups"
-		@SuppressLint("SimpleDateFormat")
 		private val dateTimeFormat = SimpleDateFormat("yyyyMMdd-HHmm")
 
 		fun generateFileName(context: Context) = buildString {

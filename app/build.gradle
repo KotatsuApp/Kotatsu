@@ -72,7 +72,7 @@ android {
 	}
 	lint {
 		abortOnError true
-		disable 'MissingTranslation', 'PrivateResource', 'SetJavaScriptEnabled'
+		disable 'MissingTranslation', 'PrivateResource', 'SetJavaScriptEnabled', 'SimpleDateFormat'
 	}
 	testOptions {
 		unitTests.includeAndroidResources true
