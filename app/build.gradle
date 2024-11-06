@@ -48,6 +48,14 @@ android {
 		viewBinding true
 		buildConfig true
 	}
+	packagingOptions {
+		resources {
+			excludes += [
+				'META-INF/README.md',
+				'META-INF/NOTICE.md'
+			]
+		}
+	}
 	sourceSets {
 		androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
 		main.java.srcDirs += 'src/main/kotlin/'
@@ -82,9 +90,9 @@ android {
 	applicationVariants.configureEach { variant ->
 		if (variant.name == 'nightly') {
 			variant.outputs.each { output ->
-				def now = LocalDateTime.now().format("yyMMdd")
-				output.versionCodeOverride = now.toInteger()
-				output.versionNameOverride = 'N' + now
+				def now = LocalDateTime.now()
+				output.versionCodeOverride = now.format("yyMMdd").toInteger()
+				output.versionNameOverride = 'N' + now.format("yyyyMMdd")
 			}
 		}
 	}
@@ -97,7 +105,13 @@ afterEvaluate {
 	}
 }
 dependencies {
-	implementation('com.github.KotatsuApp:kotatsu-parsers:f80b586081') {
+	def parsersVersion = "f80b586081"
+	if (System.properties.containsKey('parsersVersionOverride')) {
+		// usage:
+		// -DparsersVersionOverride=$(curl -s https://api.github.com/repos/kotatsuapp/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
+		parsersVersion = System.getProperty('parsersVersionOverride')
+	}
+	implementation("com.github.KotatsuApp:kotatsu-parsers$parsersVersion") {
 		exclude group: 'org.json', module: 'json'
 	}
 
