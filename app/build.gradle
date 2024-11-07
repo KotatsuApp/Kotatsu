@@ -105,13 +105,14 @@ afterEvaluate {
 	}
 }
 dependencies {
-	def parsersVersion = "f80b586081"
+	def parsersVersion = libs.versions.parsers.get()
 	if (System.properties.containsKey('parsersVersionOverride')) {
 		// usage:
 		// -DparsersVersionOverride=$(curl -s https://api.github.com/repos/kotatsuapp/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
 		parsersVersion = System.getProperty('parsersVersionOverride')
 	}
-	implementation("com.github.KotatsuApp:kotatsu-parsers$parsersVersion") {
+	//noinspection UseTomlInstead
+	implementation("com.github.KotatsuApp:kotatsu-parsers:$parsersVersion") {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -140,12 +141,7 @@ dependencies {
 	implementation libs.androidx.webkit
 
 	implementation libs.androidx.work.runtime
-	//noinspection GradleDependency
-	implementation(libs.guava) {
-		exclude group: 'com.google.guava', module: 'failureaccess'
-		exclude group: 'org.checkerframework', module: 'checker-qual'
-		exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
-	}
+	implementation libs.guava
 
 	implementation libs.androidx.room.runtime
 	implementation libs.androidx.room.ktx
@@ -164,8 +160,11 @@ dependencies {
 	implementation libs.androidx.hilt.work
 	kapt libs.androidx.hilt.compiler
 
-	implementation libs.coil.base
+	implementation libs.coil.core
+	implementation libs.coil.network
+	implementation libs.coil.gif
 	implementation libs.coil.svg
+	implementation libs.avif.decoder
 	implementation libs.subsampling.scale.image.view
 	implementation libs.disk.lru.cache
 	implementation libs.core
