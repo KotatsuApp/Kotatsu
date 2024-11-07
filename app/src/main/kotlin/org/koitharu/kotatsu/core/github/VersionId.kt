@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.github
 
+import org.koitharu.kotatsu.core.util.ext.digits
 import java.util.Locale
 
 data class VersionId(
@@ -48,7 +49,7 @@ fun VersionId(versionName: String): VersionId {
 		return VersionId(
 			major = 0,
 			minor = 0,
-			build = versionName.drop(1).toIntOrNull() ?: 0,
+			build = versionName.digits().toIntOrNull() ?: 0,
 			variantType = "n",
 			variantNumber = 0,
 		)

@@ -28,6 +28,8 @@ fun String.toUUIDOrNull(): UUID? = try {
 	null
 }
 
+fun String.digits() = filter { it.isDigit() }
+
 /**
  * @param threshold 0 = exact match
  */
