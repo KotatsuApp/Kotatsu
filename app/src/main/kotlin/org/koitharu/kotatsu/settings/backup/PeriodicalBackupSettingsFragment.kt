@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.View
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,7 +23,6 @@ import org.koitharu.kotatsu.core.util.ext.resolveFile
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import java.io.File
-import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -60,6 +60,7 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 			context?.contentResolver?.takePersistableUriPermission(result, takeFlags)
 			settings.periodicalBackupDirectory = result
 			bindOutputSummary()
+			bindLastBackupInfo()
 		}
 	}
 
@@ -82,8 +83,10 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 				backupStorage.getLastBackupDate()
 			}
 			preference.summary = lastDate?.let {
-				val formatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG)
-				preference.context.getString(R.string.last_successful_backup, formatter.format(it))
+				preference.context.getString(
+					R.string.last_successful_backup,
+					DateUtils.getRelativeTimeSpanString(it.time),
+				)
 			}
 			preference.isVisible = lastDate != null
 		}

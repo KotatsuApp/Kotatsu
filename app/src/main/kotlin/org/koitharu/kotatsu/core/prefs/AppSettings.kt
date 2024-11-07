@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.ArraySet
 import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
+import androidx.core.util.TimeUtils
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -34,6 +35,7 @@ import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import java.io.File
 import java.net.Proxy
 import java.util.EnumSet
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -471,7 +473,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_BACKUP_PERIODICAL_ENABLED, false)
 
 	val periodicalBackupFrequency: Long
-		get() = prefs.getString(KEY_BACKUP_PERIODICAL_FREQUENCY, null)?.toLongOrNull() ?: 7L
+		get() = TimeUnit.DAYS.toMillis(prefs.getString(KEY_BACKUP_PERIODICAL_FREQUENCY, null)?.toLongOrNull() ?: 7L)
 
 	val periodicalBackupMaxCount: Int
 		get() = prefs.getInt(KEY_BACKUP_PERIODICAL_COUNT, 10)
