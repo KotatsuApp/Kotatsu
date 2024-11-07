@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -175,8 +176,7 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 
 	private suspend fun clearCfCookies(url: HttpUrl) = runInterruptible(Dispatchers.Default) {
 		cookieJar.removeCookies(url) { cookie ->
-			val name = cookie.name
-			name.startsWith("cf_") || name.startsWith("_cf") || name.startsWith("__cf") || name == "csrftoken"
+			CloudFlareHelper.isCloudFlareCookie(cookie.name)
 		}
 	}
 

@@ -9,10 +9,15 @@ import androidx.core.graphics.Insets
 import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
-import coil.util.CoilUtils
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
+import coil3.request.error
+import coil3.request.fallback
+import coil3.request.lifecycle
+import coil3.request.placeholder
+import coil3.request.target
+import coil3.util.CoilUtils
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -21,8 +26,10 @@ import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
+import org.koitharu.kotatsu.core.util.ext.drawable
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -169,7 +176,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			.target(requireViewBinding().imageViewCover)
 			.size(CoverSizeResolver(requireViewBinding().imageViewCover))
 			.data(imageUrl)
-			.tag(manga.source)
+			.mangaSourceExtra(manga.source)
 			.crossfade(requireContext())
 			.lifecycle(viewLifecycleOwner)
 			.placeholderMemoryCacheKey(manga.coverUrl)

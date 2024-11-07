@@ -12,7 +12,7 @@ import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 class ChaptersAdapter(
-	private val onItemClickListener: OnListItemClickListener<ChapterListItem>,
+	onItemClickListener: OnListItemClickListener<ChapterListItem>,
 ) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	private var hasVolumes = false

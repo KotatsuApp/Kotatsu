@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.core.network.imageproxy
 
-import coil.intercept.Interceptor
-import coil.request.ImageResult
+import coil3.intercept.Interceptor
+import coil3.request.ImageResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.plus
 import okhttp3.OkHttpClient
@@ -26,7 +26,7 @@ class RealImageProxyInterceptor @Inject constructor(
 	)
 
 	override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
-		return delegate.value?.intercept(chain) ?: chain.proceed(chain.request)
+		return delegate.value?.intercept(chain) ?: chain.proceed()
 	}
 
 	override suspend fun interceptPageRequest(request: Request, okHttp: OkHttpClient): Response {

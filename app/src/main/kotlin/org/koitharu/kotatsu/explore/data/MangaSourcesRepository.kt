@@ -12,6 +12,7 @@ import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -338,6 +339,7 @@ class MangaSourcesRepository @Inject constructor(
 		}.map {
 			getExternalSources()
 		}.distinctUntilChanged()
+			.conflate()
 	}
 
 	private fun getExternalSources() = context.packageManager.queryIntentContentProviders(

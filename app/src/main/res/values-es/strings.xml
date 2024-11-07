@@ -51,7 +51,7 @@
     <string name="remove">Eliminar</string>
     <string name="_s_deleted_from_local_storage">«%s» borrado del almacenamiento local</string>
     <string name="save_page">Guardar página</string>
-    <string name="page_saved">Guardado</string>
+    <string name="page_saved">Página guardada</string>
     <string name="share_image">Compartir imagen</string>
     <string name="_import">Importar</string>
     <string name="delete">Borrar</string>
@@ -387,7 +387,7 @@
     <string name="downloads_resumed">Las descargas se han reanudado</string>
     <string name="more">Más</string>
     <string name="cancel_all_downloads_confirm">Todas las descargas activas se cancelarán, los datos descargados parcialmente se perderán</string>
-    <string name="remove_completed_downloads_confirm">Tu historial de descargas se borrará permanentemente</string>
+    <string name="remove_completed_downloads_confirm">Tu historial de descargas se eliminará de forma permanente. Ningún archivo descargado se verá afectado</string>
     <string name="downloads_paused">Se han pausado las descargas</string>
     <string name="downloads_removed">Las descargas se han eliminado</string>
     <string name="downloads_cancelled">Las descargas se han cancelado</string>
@@ -723,4 +723,24 @@
     <string name="source_code">Código fuente</string>
     <string name="telegram_group">Grupo de Telegram</string>
     <string name="debug">Depurar</string>
+    <string name="error_image_format">Formato de imagen no compatible: %s</string>
+    <string name="start_download">Iniciar descarga</string>
+    <string name="save_manga">Guardar manga</string>
+    <string name="save_manga_confirm">¿Guardar el manga seleccionado? Esto puede consumir tráfico y espacio en disco</string>
+    <string name="genre">Género</string>
+    <string name="more_options">Más opciones</string>
+    <string name="chapter_selection_hint">Puede seleccionar capítulos para descargar haciendo una pulsación prolongada en el elemento de la lista de capítulos.</string>
+    <string name="chapters_all">Todos</string>
+    <string name="download_added">Descarga añadida</string>
+    <string name="destination_directory">Directorio de destino</string>
+    <string name="dont_allow">No permitir</string>
+    <string name="allow_always">Permitir siempre</string>
+    <string name="allow_once">Una vez</string>
+    <string name="ask_every_time">Preguntar siempre</string>
+    <string name="download_over_cellular">Descarga a través de la red móvil</string>
+    <string name="download_cellular_confirm">¿Permitir descargas a través de la red móvil?</string>
+    <string name="screen_orientation">Orientación de la pantalla</string>
+    <string name="landscape">Horizontal</string>
+    <string name="portrait">Vertical</string>
+    <string name="plugin_incompatible_with_cause">Error del plugin: %s\n Asegúrese de que está utilizando la última versión del plugin y Kotatsu</string>
 </resources>

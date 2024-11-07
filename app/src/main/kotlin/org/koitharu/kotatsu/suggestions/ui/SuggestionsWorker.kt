@@ -31,8 +31,8 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.await
 import androidx.work.workDataOf
-import coil.ImageLoader
-import coil.request.ImageRequest
+import coil3.ImageLoader
+import coil3.request.ImageRequest
 import dagger.Reusable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -57,6 +57,7 @@ import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.awaitWorkInfosByTag
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.flatten
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.core.util.ext.sizeOrZero
@@ -257,7 +258,7 @@ class SuggestionsWorker @AssistedInject constructor(
 		val list = repository.getList(
 			offset = 0,
 			order = order,
-			filter = MangaListFilter(tags = setOfNotNull(tag))
+			filter = MangaListFilter(tags = setOfNotNull(tag)),
 		).asArrayList()
 		if (appSettings.isSuggestionsExcludeNsfw) {
 			list.removeAll { it.isNsfw }
@@ -296,7 +297,7 @@ class SuggestionsWorker @AssistedInject constructor(
 				coil.execute(
 					ImageRequest.Builder(applicationContext)
 						.data(manga.coverUrl)
-						.tag(manga.source)
+						.mangaSourceExtra(manga.source)
 						.build(),
 				).toBitmapOrNull(),
 			)

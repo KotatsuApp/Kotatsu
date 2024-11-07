@@ -12,8 +12,8 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
-import coil.ImageLoader
-import coil.request.ImageRequest
+import coil3.ImageLoader
+import coil3.request.ImageRequest
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -47,25 +48,21 @@ class AutoFixService : CoroutineIntentService() {
 		notificationManager = NotificationManagerCompat.from(applicationContext)
 	}
 
-	override suspend fun processIntent(startId: Int, intent: Intent) {
+	override suspend fun IntentJobContext.processIntent(intent: Intent) {
 		val ids = requireNotNull(intent.getLongArrayExtra(DATA_IDS))
-		startForeground(startId)
-		try {
-			for (mangaId in ids) {
-				val result = runCatchingCancellable {
-					autoFixUseCase.invoke(mangaId)
-				}
-				if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-					val notification = buildNotification(result)
-					notificationManager.notify(TAG, startId, notification)
-				}
+		startForeground(this)
+		for (mangaId in ids) {
+			val result = runCatchingCancellable {
+				autoFixUseCase.invoke(mangaId)
 			}
-		} finally {
-			ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+			if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+				val notification = buildNotification(result)
+				notificationManager.notify(TAG, startId, notification)
+			}
 		}
 	}
 
-	override fun onError(startId: Int, error: Throwable) {
+	override fun IntentJobContext.onError(error: Throwable) {
 		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
 			val notification = runBlocking { buildNotification(Result.failure(error)) }
 			notificationManager.notify(TAG, startId, notification)
@@ -73,7 +70,7 @@ class AutoFixService : CoroutineIntentService() {
 	}
 
 	@SuppressLint("InlinedApi")
-	private fun startForeground(startId: Int) {
+	private fun startForeground(jobContext: IntentJobContext) {
 		val title = applicationContext.getString(R.string.fixing_manga)
 		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_MIN)
 			.setName(title)
@@ -97,12 +94,11 @@ class AutoFixService : CoroutineIntentService() {
 			.addAction(
 				materialR.drawable.material_ic_clear_black_24dp,
 				applicationContext.getString(android.R.string.cancel),
-				getCancelIntent(startId),
+				jobContext.getCancelIntent(),
 			)
 			.build()
 
-		ServiceCompat.startForeground(
-			this,
+		jobContext.setForeground(
 			FOREGROUND_NOTIFICATION_ID,
 			notification,
 			ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,
@@ -121,7 +117,7 @@ class AutoFixService : CoroutineIntentService() {
 					coil.execute(
 						ImageRequest.Builder(applicationContext)
 							.data(replacement.coverUrl)
-							.tag(replacement.source)
+							.mangaSourceExtra(replacement.source)
 							.build(),
 					).toBitmapOrNull(),
 				)
@@ -165,13 +161,14 @@ class AutoFixService : CoroutineIntentService() {
 					} else {
 						error.getDisplayMessage(applicationContext.resources)
 					},
-				)
-				.setSmallIcon(android.R.drawable.stat_notify_error)
-				.addAction(
+				).setSmallIcon(android.R.drawable.stat_notify_error)
+			ErrorReporterReceiver.getPendingIntent(applicationContext, error)?.let { reportIntent ->
+				notification.addAction(
 					R.drawable.ic_alert_outline,
 					applicationContext.getString(R.string.report),
-					ErrorReporterReceiver.getPendingIntent(applicationContext, error),
+					reportIntent,
 				)
+			}
 		}
 		return notification.build()
 	}

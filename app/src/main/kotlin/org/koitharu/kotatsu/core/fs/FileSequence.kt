@@ -1,20 +1,31 @@
 package org.koitharu.kotatsu.core.fs
 
 import android.os.Build
-import org.koitharu.kotatsu.core.util.iterator.CloseableIterator
+import androidx.annotation.RequiresApi
+import org.koitharu.kotatsu.core.util.CloseableSequence
 import org.koitharu.kotatsu.core.util.iterator.MappingIterator
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
-class FileSequence(private val dir: File) : Sequence<File> {
+sealed interface FileSequence : CloseableSequence<File> {
 
-	override fun iterator(): Iterator<File> {
-		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val stream = Files.newDirectoryStream(dir.toPath())
-			CloseableIterator(MappingIterator(stream.iterator(), Path::toFile), stream)
-		} else {
-			dir.listFiles().orEmpty().iterator()
-		}
+	@RequiresApi(Build.VERSION_CODES.O)
+	class StreamImpl(dir: File) : FileSequence {
+
+		private val stream = Files.newDirectoryStream(dir.toPath())
+
+		override fun iterator(): Iterator<File> = MappingIterator(stream.iterator(), Path::toFile)
+
+		override fun close() = stream.close()
+	}
+
+	class ListImpl(dir: File) : FileSequence {
+
+		private val list = dir.listFiles().orEmpty()
+
+		override fun iterator(): Iterator<File> = list.iterator()
+
+		override fun close() = Unit
 	}
 }

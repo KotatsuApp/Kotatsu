@@ -31,7 +31,7 @@
     <string name="show_reading_indicators_summary">在歷史紀錄與最愛中顯示閱讀百分比</string>
     <string name="confirm_exit">再點擊一次返回鍵以退出</string>
     <string name="local_storage">本機儲存區</string>
-    <string name="reader_control_ltr_summary">點擊右側邊緣或按下右鍵，總是切換到下一頁。</string>
+    <string name="reader_control_ltr_summary">不要根據閱讀模式調整翻頁方向，例如，按右鍵總是切換到下一頁。此選項僅影響硬體輸入設備</string>
     <string name="text_unsaved_changes_prompt">儲存或放棄未儲存的變更？</string>
     <string name="import_completed_hint">您可以從儲存區中刪除原始檔案以節省空間</string>
     <string name="favourites">最愛</string>
@@ -181,7 +181,7 @@
     <string name="logout">登出</string>
     <string name="bookmark_remove">移除書籤</string>
     <string name="bookmarks">書籤</string>
-    <string name="use_fingerprint">使用指紋，如果可用</string>
+    <string name="use_fingerprint">若可用，請使用生物辨識</string>
     <string name="appwidget_shelf_description">您最愛的漫畫</string>
     <string name="appwidget_recent_description">您最近閱讀的漫畫</string>
     <string name="data_deletion">資料刪除</string>
@@ -639,4 +639,20 @@
     <string name="manga_fix_prompt">此功能將為選定的漫畫尋找替代來源。此任務將需要一些時間，並會在背景中進行</string>
     <string name="show_quick_filters_summary">提供依照特定參數過濾漫畫列表的功能</string>
     <string name="plugin_incompatible">不相容的外掛或內部錯誤。請確保您使用的是最新版本的外掛與 Kotatsu</string>
+    <string name="filter_search_warning">此來源不支援帶有過濾條件的搜尋。您的過濾條件已被清除</string>
+    <string name="text_empty_holder_secondary_filtered">沒有符合您所選過濾條件的漫畫</string>
+    <string name="too_many_requests_message_retry">請求過多。請在 %s 之後再試</string>
+    <string name="minutes_seconds_short">%1$d 分 %2$d 秒</string>
+    <string name="disable_nsfw_notifications">停用 NSFW 通知</string>
+    <string name="_new">新</string>
+    <string name="manga_with_downloaded_chapters">已下載章節的漫畫</string>
+    <string name="manga_replaced">漫畫「%1$s」（%2$s）已被「%3$s」（%4$s）取代</string>
+    <string name="invalid_server_address_message">無效的伺服器位址</string>
+    <string name="seconds_short">%d 秒</string>
+    <string name="disable_connectivity_check">停用連線檢查</string>
+    <string name="disable_nsfw_notifications_summary">不顯示有關 NSFW 漫畫更新的通知</string>
+    <string name="tracker_debug_info">檢查新章節日誌</string>
+    <string name="tracker_debug_info_summary">有關背景檢查新章節的偵錯資訊</string>
+    <string name="sources_disabled">來源已停用</string>
+    <string name="disable">停用</string>
 </resources>

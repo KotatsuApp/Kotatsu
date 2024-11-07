@@ -36,7 +36,7 @@
 		android:minHeight="62dp"
 		android:visibility="gone"
 		app:shapeAppearance="?shapeAppearanceCornerMedium"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.Corner.Top"
+		tools:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.Corner.Top"
 		tools:text="Enable"
 		tools:visibility="visible" />
 
@@ -48,7 +48,19 @@
 		android:minHeight="62dp"
 		android:visibility="gone"
 		app:shapeAppearance="?shapeAppearanceCornerMedium"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.Corner.Bottom"
+		tools:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.Corner.None"
+		tools:text="Ask every time"
+		tools:visibility="visible" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@android:id/button3"
+		style="@style/Widget.Material3.Button.TonalButton"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:minHeight="62dp"
+		android:visibility="gone"
+		app:shapeAppearance="?shapeAppearanceCornerMedium"
+		tools:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.Corner.Bottom"
 		tools:text="No thanks"
 		tools:visibility="visible" />
 

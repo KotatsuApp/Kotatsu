@@ -18,7 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.ImageLoader
+import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksActivity
@@ -26,7 +26,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.ui.BaseFragment
-import org.koitharu.kotatsu.core.ui.dialog.TwoButtonsAlertDialog
+import org.koitharu.kotatsu.core.ui.dialog.BigButtonsAlertDialog
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
@@ -250,7 +250,7 @@ class ExploreFragment :
 		val listener = DialogInterface.OnClickListener { _, which ->
 			viewModel.respondSuggestionTip(which == DialogInterface.BUTTON_POSITIVE)
 		}
-		TwoButtonsAlertDialog.Builder(requireContext())
+		BigButtonsAlertDialog.Builder(requireContext())
 			.setIcon(R.drawable.ic_suggestion)
 			.setTitle(R.string.suggestions_enable_prompt)
 			.setPositiveButton(R.string.enable, listener)

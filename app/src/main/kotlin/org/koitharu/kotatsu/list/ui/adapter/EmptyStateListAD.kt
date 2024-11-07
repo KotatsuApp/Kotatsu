@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest

@@ -26,4 +26,11 @@
 		android:layout_height="match_parent"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@+id/container_search"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:visibility="gone"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

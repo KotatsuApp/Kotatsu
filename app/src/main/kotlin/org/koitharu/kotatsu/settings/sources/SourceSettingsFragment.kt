@@ -7,6 +7,7 @@ import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.parser.EmptyMangaRepository
@@ -74,6 +75,12 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		viewModel.isEnabled.observe(viewLifecycleOwner) { enabled ->
 			findPreference<SwitchPreferenceCompat>(KEY_ENABLE)?.isChecked = enabled
 		}
+		viewModel.browserUrl.observe(viewLifecycleOwner) {
+			findPreference<Preference>(AppSettings.KEY_OPEN_BROWSER)?.run {
+				isVisible = it != null
+				summary = it
+			}
+		}
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(listView))
 	}
 
@@ -81,6 +88,18 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		return when (preference.key) {
 			KEY_AUTH -> {
 				startActivity(SourceAuthActivity.newIntent(preference.context, viewModel.source))
+				true
+			}
+
+			AppSettings.KEY_OPEN_BROWSER -> {
+				startActivity(
+					BrowserActivity.newIntent(
+						context = preference.context,
+						url = viewModel.browserUrl.value ?: return false,
+						source = viewModel.source,
+						title = viewModel.source.getTitle(preference.context),
+					),
+				)
 				true
 			}
 

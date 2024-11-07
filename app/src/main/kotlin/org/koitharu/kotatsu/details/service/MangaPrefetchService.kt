@@ -34,7 +34,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 	@Inject
 	lateinit var historyRepository: HistoryRepository
 
-	override suspend fun processIntent(startId: Int, intent: Intent) {
+	override suspend fun IntentJobContext.processIntent(intent: Intent) {
 		when (intent.action) {
 			ACTION_PREFETCH_DETAILS -> prefetchDetails(
 				manga = intent.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga
@@ -50,7 +50,7 @@ class MangaPrefetchService : CoroutineIntentService() {
 		}
 	}
 
-	override fun onError(startId: Int, error: Throwable) = Unit
+	override fun IntentJobContext.onError(error: Throwable) = Unit
 
 	private suspend fun prefetchDetails(manga: Manga) {
 		val source = mangaRepositoryFactory.create(manga.source)

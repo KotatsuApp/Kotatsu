@@ -1,10 +1,8 @@
 package org.koitharu.kotatsu.stats.ui.sheet
 
 import androidx.collection.IntList
-import androidx.collection.LongIntMap
 import androidx.collection.MutableIntList
 import androidx.collection.emptyIntList
-import androidx.collection.emptyLongIntMap
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +13,6 @@ import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.stats.data.StatsRepository
-import org.koitharu.kotatsu.stats.domain.StatsRecord
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

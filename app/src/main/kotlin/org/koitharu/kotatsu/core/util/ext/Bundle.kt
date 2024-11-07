@@ -14,10 +14,15 @@ import androidx.lifecycle.SavedStateHandle
 import java.io.Serializable
 import java.util.EnumSet
 
+
 // https://issuetracker.google.com/issues/240585930
 
 inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String): T? {
 	return BundleCompat.getParcelable(this, key, T::class.java)
+}
+
+inline fun <reified T : Parcelable> Bundle.requireParcelable(key: String): T = checkNotNull(getParcelableCompat(key)) {
+	"Parcelable of type \"${T::class.java.name}\" not found at \"$key\""
 }
 
 inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String): T? {
@@ -82,5 +87,26 @@ fun <E : Enum<E>> Parcel.readEnumSet(cls: Class<E>): Set<E>? {
 fun <T> SavedStateHandle.require(key: String): T {
 	return checkNotNull(get(key)) {
 		"Value $key not found in SavedStateHandle or has a wrong type"
+	}
+}
+
+fun Parcelable.marshall(): ByteArray {
+	val parcel = Parcel.obtain()
+	return try {
+		this.writeToParcel(parcel, 0)
+		parcel.marshall()
+	} finally {
+		parcel.recycle()
+	}
+}
+
+fun <T : Parcelable> Parcelable.Creator<T>.unmarshall(bytes: ByteArray): T {
+	val parcel = Parcel.obtain()
+	return try {
+		parcel.unmarshall(bytes, 0, bytes.size)
+		parcel.setDataPosition(0)
+		createFromParcel(parcel)
+	} finally {
+		parcel.recycle()
 	}
 }

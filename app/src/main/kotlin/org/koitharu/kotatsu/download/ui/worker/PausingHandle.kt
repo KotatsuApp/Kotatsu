@@ -53,7 +53,9 @@ class PausingHandle : AbstractCoroutineContextElement(PausingHandle) {
 		}
 	}
 
-	fun skipCurrentError(): Boolean = skipError.compareAndSet(expect = true, update = skipAllErrors)
+	fun skipAllErrors(): Boolean = skipAllErrors
+
+	fun skipCurrentError(): Boolean = skipError.compareAndSet(expect = true, update = false)
 
 	companion object : CoroutineContext.Key<PausingHandle> {
 

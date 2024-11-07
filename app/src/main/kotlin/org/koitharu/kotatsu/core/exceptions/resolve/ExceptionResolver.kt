@@ -6,7 +6,6 @@ import androidx.activity.result.ActivityResultCaller
 import androidx.annotation.StringRes
 import androidx.collection.MutableScatterMap
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -19,7 +18,8 @@ import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
-import org.koitharu.kotatsu.core.util.ext.findActivity
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
+import org.koitharu.kotatsu.core.util.ext.restartApplication
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -124,15 +124,16 @@ class ExceptionResolver @AssistedInject constructor(
 			Toast.makeText(ctx, R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
 			return
 		}
-		MaterialAlertDialogBuilder(ctx)
-			.setTitle(R.string.ignore_ssl_errors)
-			.setMessage(R.string.ignore_ssl_errors_summary)
-			.setPositiveButton(R.string.apply) { _, _ ->
+		buildAlertDialog(ctx) {
+			setTitle(R.string.ignore_ssl_errors)
+			setMessage(R.string.ignore_ssl_errors_summary)
+			setPositiveButton(R.string.apply) { _, _ ->
 				settings.isSSLBypassEnabled = true
-				Toast.makeText(ctx, R.string.settings_apply_restart_required, Toast.LENGTH_SHORT).show()
-				ctx.findActivity()?.finishAffinity()
-			}.setNegativeButton(android.R.string.cancel, null)
-			.show()
+				Toast.makeText(ctx, R.string.settings_apply_restart_required, Toast.LENGTH_LONG).show()
+				ctx.restartApplication()
+			}
+			setNegativeButton(android.R.string.cancel, null)
+		}.show()
 	}
 
 	private inline fun Host.withContext(block: Context.() -> Unit) {

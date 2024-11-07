@@ -12,7 +12,6 @@ import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.internal.userAgent
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.network.CommonHeaders
@@ -45,7 +44,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		}
 		val mangaSource = MangaSource(intent?.getStringExtra(EXTRA_SOURCE))
 		val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository
-		repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)
+		val userAgent = repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)
 		viewBinding.webView.configureForParser(userAgent)
 		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		viewBinding.webView.webViewClient = BrowserClient(this)

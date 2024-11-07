@@ -56,7 +56,7 @@
 	<string name="remove">Remove</string>
 	<string name="_s_deleted_from_local_storage">\"%s\" deleted from local storage</string>
 	<string name="save_page">Save page</string>
-	<string name="page_saved">Saved</string>
+	<string name="page_saved">Page saved</string>
 	<string name="share_image">Share image</string>
 	<string name="_import">Import</string>
 	<string name="delete">Delete</string>
@@ -396,7 +396,7 @@
 	<string name="enable">Enable</string>
 	<string name="no_thanks">No thanks</string>
 	<string name="cancel_all_downloads_confirm">All active downloads will be cancelled, partially downloaded data will be lost</string>
-	<string name="remove_completed_downloads_confirm">Your downloads history will be permanently deleted</string>
+	<string name="remove_completed_downloads_confirm">Your downloads history will be permanently deleted. No downloaded files will be affected</string>
 	<string name="text_downloads_list_holder">You don\'t have any downloads</string>
 	<string name="downloads_resumed">Downloads have been resumed</string>
 	<string name="downloads_paused">Downloads have been paused</string>
@@ -679,6 +679,7 @@
 	<string name="chapters_left">Chapters left</string>
 	<string name="external_source">External/plugin</string>
 	<string name="plugin_incompatible">Incompatible plugin or internal error. Make sure you are using the latest version of the plugin and Kotatsu</string>
+	<string name="plugin_incompatible_with_cause">Plugin error: %s\n Make sure you are using the latest version of the plugin and Kotatsu</string>
 	<string name="connection_ok">Connection is OK</string>
 	<string name="invalid_proxy_configuration">Invalid proxy configuration</string>
 	<string name="show_quick_filters">Show quick filters</string>
@@ -737,4 +738,28 @@
 	<string name="source_code">Source code</string>
 	<string name="user_manual">User manual</string>
 	<string name="telegram_group">Telegram group</string>
+	<string name="error_image_format">Unsupported image format: %s</string>
+	<string name="error_not_image">Invalid format: expected image but got %s</string>
+	<string name="start_download">Start download</string>
+	<string name="save_manga_confirm">Save selected manga? This may consume traffic and disk space</string>
+	<string name="save_manga">Save manga</string>
+	<string name="genre">Genre</string>
+	<string name="download_added">Download added</string>
+	<string name="more_options">More options</string>
+	<string name="destination_directory">Destination directory</string>
+	<string name="chapter_selection_hint">You can select chapters to download by long click on item in the chapter list.</string>
+	<!-- For chapters -->
+	<string name="chapters_all">All</string>
+	<string name="download_over_cellular">Downloading over cellular network</string>
+	<string name="download_cellular_confirm">Allow downloads over cellular network?</string>
+	<string name="dont_allow">Don\'t allow</string>
+	<string name="allow_always">Allow always</string>
+	<string name="allow_once">Allow once</string>
+	<string name="ask_every_time">Ask every time</string>
+	<string name="screen_orientation">Screen orientation</string>
+	<string name="portrait">Portrait</string>
+	<string name="landscape">Landscape</string>
+	<string name="breadcrumbs_separator" translatable="false"><![CDATA[" > "]]></string>
+	<string name="access_denied_403">Access denied (403)</string>
+	<string name="max_backups_count">Max number of backups</string>
 </resources>

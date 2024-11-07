@@ -10,8 +10,14 @@
 		app:showAsAction="never" />
 
 	<item
+		android:id="@+id/action_filter"
+		android:orderInCategory="30"
+		android:title="@string/filter"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_directories"
-		android:orderInCategory="96"
+		android:orderInCategory="80"
 		android:title="@string/directories"
 		app:showAsAction="never" />
 

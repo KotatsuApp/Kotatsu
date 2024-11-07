@@ -14,7 +14,7 @@ import androidx.core.net.toUri
 import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import coil.ImageLoader
+import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet

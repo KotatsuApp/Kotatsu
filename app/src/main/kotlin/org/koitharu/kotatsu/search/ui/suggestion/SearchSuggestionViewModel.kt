@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 import javax.inject.Inject
@@ -103,7 +104,7 @@ class SearchSuggestionViewModel @Inject constructor(
 		suggestionJob?.cancel()
 		suggestionJob = combine(
 			query.debounce(DEBOUNCE_TIMEOUT),
-			sourcesRepository.observeEnabledSources().map { it.toSet() },
+			sourcesRepository.observeEnabledSources().map { it.mapToSet { x -> x.name } },
 			settings.observeAsFlow(AppSettings.KEY_SEARCH_SUGGESTION_TYPES) { searchSuggestionTypes },
 			::Triple,
 		).mapLatest { (searchQuery, enabledSources, types) ->
@@ -116,7 +117,7 @@ class SearchSuggestionViewModel @Inject constructor(
 
 	private suspend fun buildSearchSuggestion(
 		searchQuery: String,
-		enabledSources: Set<MangaSource>,
+		enabledSources: Set<String>,
 		types: Set<SearchSuggestionType>,
 	): List<SearchSuggestionItem> = coroutineScope {
 		val queriesDeferred = if (SearchSuggestionType.QUERIES_RECENT in types) {
@@ -169,7 +170,7 @@ class SearchSuggestionViewModel @Inject constructor(
 			if (!mangaList.isNullOrEmpty()) {
 				add(SearchSuggestionItem.MangaList(mangaList))
 			}
-			sources?.mapTo(this) { SearchSuggestionItem.Source(it, it in enabledSources) }
+			sources?.mapTo(this) { SearchSuggestionItem.Source(it, it.name in enabledSources) }
 			queries?.mapTo(this) { SearchSuggestionItem.RecentQuery(it) }
 			authors?.mapTo(this) { SearchSuggestionItem.Author(it) }
 			hints?.mapTo(this) { SearchSuggestionItem.Hint(it) }

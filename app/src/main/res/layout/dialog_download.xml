@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:paddingBottom="?dialogPreferredPadding">
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:scrollIndicators="top|bottom"
+		tools:ignore="UnusedAttribute">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/textView_summary"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_small"
+				android:paddingHorizontal="@dimen/margin_normal"
+				android:textAppearance="?textAppearanceBody2"
+				tools:text="@tools:sample/lorem[15]" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
+				android:id="@+id/option_whole_manga"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_small"
+				android:checked="true"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:minHeight="?android:listPreferredItemHeightSmall"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				app:icon="?android:listChoiceIndicatorSingle"
+				app:title="@string/download_option_whole_manga"
+				tools:subtitle="@string/no_chapters" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
+				android:id="@+id/option_whole_branch"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:button="@drawable/ic_expand_more"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:minHeight="?android:listPreferredItemHeightSmall"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:visibility="gone"
+				app:icon="?android:listChoiceIndicatorSingle"
+				tools:subtitle="@string/no_chapters"
+				tools:title="@string/download_option_all_chapters"
+				tools:visibility="visible" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
+				android:id="@+id/option_first_chapters"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:button="@drawable/ic_expand_more"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:minHeight="?android:listPreferredItemHeightSmall"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:visibility="gone"
+				app:icon="?android:listChoiceIndicatorSingle"
+				tools:title="@string/download_option_first_n_chapters"
+				tools:visibility="visible" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
+				android:id="@+id/option_unread_chapters"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:button="@drawable/ic_expand_more"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:minHeight="?android:listPreferredItemHeightSmall"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:visibility="gone"
+				app:icon="?android:listChoiceIndicatorSingle"
+				tools:title="@string/download_option_next_unread_n_chapters"
+				tools:visibility="visible" />
+
+			<com.google.android.material.progressindicator.LinearProgressIndicator
+				android:id="@+id/progressBar"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_small"
+				android:text="@string/chapter_selection_hint"
+				android:textAppearance="?attr/textAppearanceBodySmall" />
+
+			<com.google.android.material.materialswitch.MaterialSwitch
+				android:id="@+id/switch_start"
+				android:layout_width="match_parent"
+				android:layout_height="?android:listPreferredItemHeightSmall"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:checked="true"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:ellipsize="end"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:singleLine="true"
+				android:text="@string/start_download"
+				android:textAppearance="?attr/textAppearanceButton"
+				android:textColor="?colorOnSurfaceVariant" />
+
+			<CheckedTextView
+				android:id="@+id/textView_more"
+				android:layout_width="match_parent"
+				android:layout_height="?android:listPreferredItemHeightSmall"
+				android:background="@drawable/list_selector"
+				android:checked="false"
+				android:drawableEnd="@drawable/ic_expand_collapse"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:ellipsize="end"
+				android:gravity="center_vertical"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:singleLine="true"
+				android:text="@string/more_options"
+				android:textAppearance="?attr/textAppearanceButton"
+				android:textColor="?colorOnSurfaceVariant" />
+
+			<TextView
+				android:id="@+id/textView_destination"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:paddingHorizontal="@dimen/margin_normal"
+				android:text="@string/destination_directory"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/card_destination"
+				style="?materialCardViewOutlinedStyle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:visibility="gone"
+				tools:visibility="visible">
+
+				<Spinner
+					android:id="@+id/spinner_destination"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:minHeight="@dimen/spinner_height"
+					android:paddingHorizontal="8dp" />
+
+			</com.google.android.material.card.MaterialCardView>
+
+			<TextView
+				android:id="@+id/textView_format"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:paddingHorizontal="@dimen/margin_normal"
+				android:text="@string/preferred_download_format"
+				android:textAppearance="?textAppearanceTitleSmall"
+				android:visibility="gone"
+				tools:visibility="visible" />
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/card_format"
+				style="?materialCardViewOutlinedStyle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:visibility="gone"
+				tools:visibility="visible">
+
+				<Spinner
+					android:id="@+id/spinner_format"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:entries="@array/download_formats"
+					android:minHeight="@dimen/spinner_height"
+					android:paddingHorizontal="8dp" />
+
+			</com.google.android.material.card.MaterialCardView>
+
+		</LinearLayout>
+
+	</ScrollView>
+
+	<LinearLayout
+		style="?buttonBarStyle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="?dialogPreferredPadding"
+		android:layout_marginTop="@dimen/margin_small"
+		android:gravity="end"
+		android:orientation="horizontal">
+
+		<Button
+			android:id="@+id/button_cancel"
+			style="?buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@android:string/cancel" />
+
+		<Button
+			android:id="@+id/button_confirm"
+			style="?buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/save" />
+
+	</LinearLayout>
+
+</LinearLayout>

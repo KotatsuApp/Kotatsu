@@ -55,7 +55,7 @@ import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.favourites.ui.container.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
-import org.koitharu.kotatsu.local.data.index.LocalMangaIndex
+import org.koitharu.kotatsu.local.ui.LocalIndexUpdateService
 import org.koitharu.kotatsu.local.ui.LocalStorageCleanupWorker
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
@@ -72,6 +72,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.about.AppUpdateActivity
+import org.koitharu.kotatsu.settings.backup.PeriodicalBackupService
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -352,7 +353,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				MangaPrefetchService.prefetchLast(this@MainActivity)
 				requestNotificationsPermission()
 			}
-			startService(Intent(this@MainActivity, LocalMangaIndex::class.java))
+			startService(Intent(this@MainActivity, LocalIndexUpdateService::class.java))
+			startService(Intent(this@MainActivity, PeriodicalBackupService::class.java))
 		}
 	}
 

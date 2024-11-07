@@ -15,7 +15,6 @@ import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.exceptions.BadBackupFormatException
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileInputStream
@@ -69,7 +68,7 @@ class AppBackupAgent : BackupAgent() {
 
 	@VisibleForTesting
 	fun createBackupFile(context: Context, repository: BackupRepository) = runBlocking {
-		BackupZipOutput(context).use { backup ->
+		BackupZipOutput.createTemp(context).use { backup ->
 			backup.put(repository.createIndex())
 			backup.put(repository.dumpHistory())
 			backup.put(repository.dumpCategories())

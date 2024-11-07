@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="@string/downloads"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<Preference
@@ -19,11 +20,18 @@
 		android:title="@string/preferred_download_format"
 		app:useSimpleSummaryProvider="true" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="downloads_wifi"
-		android:summary="@string/downloads_wifi_only_summary"
-		android:title="@string/downloads_wifi_only" />
+	<ListPreference
+		android:entries="@array/metered_network_options"
+		android:key="downloads_metered_network"
+		android:title="@string/download_over_cellular"
+		app:useSimpleSummaryProvider="true" />
+
+	<Preference
+		android:icon="@drawable/ic_info_outline"
+		android:key="tracker_notifications_info"
+		android:persistent="false"
+		android:selectable="false"
+		android:summary="@string/downloads_settings_info" />
 
 	<Preference
 		android:key="ignore_dose"
@@ -32,14 +40,6 @@
 		android:title="@string/disable_battery_optimization"
 		app:allowDividerAbove="true"
 		app:isPreferenceVisible="false" />
-
-	<Preference
-		android:icon="@drawable/ic_info_outline"
-		android:key="tracker_notifications_info"
-		android:persistent="false"
-		android:selectable="false"
-		android:summary="@string/downloads_settings_info"
-		app:allowDividerAbove="true" />
 
 	<PreferenceCategory android:title="@string/pages_saving">
 

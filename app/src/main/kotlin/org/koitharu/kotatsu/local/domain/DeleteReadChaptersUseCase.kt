@@ -10,18 +10,22 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.util.recoverCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
 
 class DeleteReadChaptersUseCase @Inject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
 ) {
 
@@ -68,8 +72,8 @@ class DeleteReadChaptersUseCase @Inject constructor(
 
 	private suspend fun getDeletionTask(manga: LocalManga): DeletionTask? {
 		val history = historyRepository.getOne(manga.manga) ?: return null
-		val chapters = manga.manga.chapters ?: localMangaRepository.getDetails(manga.manga).chapters
-		if (chapters.isNullOrEmpty()) {
+		val chapters = getAllChapters(manga)
+		if (chapters.isEmpty()) {
 			return null
 		}
 		val branch = (chapters.findById(history.chapterId) ?: return null).branch
@@ -88,6 +92,21 @@ class DeleteReadChaptersUseCase @Inject constructor(
 		val updated = localMangaRepository.getDetails(subject.manga)
 		localStorageChanges.emit(subject.copy(manga = updated))
 	}
+
+	private suspend fun getAllChapters(manga: LocalManga): List<MangaChapter> = runCatchingCancellable {
+		val remoteManga = checkNotNull(localMangaRepository.getRemoteManga(manga.manga))
+		checkNotNull(mangaRepositoryFactory.create(remoteManga.source).getDetails(remoteManga).chapters)
+	}.recoverCatchingCancellable {
+		checkNotNull(
+			manga.manga.chapters.let {
+				if (it.isNullOrEmpty()) {
+					localMangaRepository.getDetails(manga.manga).chapters
+				} else {
+					it
+				}
+			},
+		)
+	}.getOrDefault(manga.manga.chapters.orEmpty())
 
 	private class DeletionTask(
 		val manga: LocalManga,

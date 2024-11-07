@@ -5,7 +5,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import coil.ImageLoader
+import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter

@@ -24,7 +24,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
-import org.koitharu.kotatsu.core.util.ScreenOrientationHelper
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.showDistinct
@@ -33,6 +32,7 @@ import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
+import org.koitharu.kotatsu.reader.ui.ScreenOrientationHelper
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import javax.inject.Inject

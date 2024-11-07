@@ -19,7 +19,7 @@ import java.util.EnumMap
 class ReaderManager(
 	private val fragmentManager: FragmentManager,
 	private val container: FragmentContainerView,
-	private val settings: AppSettings,
+	settings: AppSettings,
 ) {
 
 	private val modeMap = EnumMap<ReaderMode, Class<out BaseReaderFragment<*>>>(ReaderMode::class.java)

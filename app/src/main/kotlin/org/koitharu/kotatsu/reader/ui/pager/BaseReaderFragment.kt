@@ -7,7 +7,6 @@ import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.prefs.ReaderAnimation
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
-import org.koitharu.kotatsu.core.util.ext.getParcelableCompat
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.reader.ui.ReaderState

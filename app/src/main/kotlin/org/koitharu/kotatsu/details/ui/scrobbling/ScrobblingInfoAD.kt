@@ -2,7 +2,7 @@ package org.koitharu.kotatsu.details.ui.scrobbling
 
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders

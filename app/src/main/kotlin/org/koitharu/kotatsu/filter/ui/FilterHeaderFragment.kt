@@ -16,7 +16,13 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentFilterHeaderBinding
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
 import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
+import org.koitharu.kotatsu.parsers.model.ContentRating
+import org.koitharu.kotatsu.parsers.model.ContentType
+import org.koitharu.kotatsu.parsers.model.Demographic
+import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.YEAR_UNKNOWN
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -55,6 +61,13 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 	override fun onChipCloseClick(chip: Chip, data: Any?) {
 		when (data) {
 			is String -> filter.setQuery(null)
+			is ContentRating -> filter.toggleContentRating(data, false)
+			is Demographic -> filter.toggleDemographic(data, false)
+			is ContentType -> filter.toggleContentType(data, false)
+			is MangaState -> filter.toggleState(data, false)
+			is Locale -> filter.setLocale(null)
+			is Int -> filter.setYear(YEAR_UNKNOWN)
+			is IntRange -> filter.setYearRange(YEAR_UNKNOWN, YEAR_UNKNOWN)
 		}
 	}
 

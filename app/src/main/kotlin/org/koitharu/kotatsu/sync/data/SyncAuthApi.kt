@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.network.BaseHttpClient
 import org.koitharu.kotatsu.core.util.ext.toRequestBody
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.parseJson
+import org.koitharu.kotatsu.parsers.util.parseRaw
 import org.koitharu.kotatsu.parsers.util.removeSurrounding
 import javax.inject.Inject
 
@@ -30,7 +31,7 @@ class SyncAuthApi @Inject constructor(
 			return response.parseJson().getString("token")
 		} else {
 			val code = response.code
-			val message = response.use { checkNotNull(it.body).string() }.removeSurrounding('"')
+			val message = response.parseRaw().removeSurrounding('"')
 			throw SyncApiException(message, code)
 		}
 	}

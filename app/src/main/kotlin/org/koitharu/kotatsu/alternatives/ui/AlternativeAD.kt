@@ -5,9 +5,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.transform.RoundedCornersTransformation
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.request.allowRgb565
+import coil3.request.crossfade
+import coil3.request.error
+import coil3.request.fallback
+import coil3.request.lifecycle
+import coil3.request.placeholder
+import coil3.request.transformations
+import coil3.transform.RoundedCornersTransformation
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getTitle
@@ -19,8 +26,9 @@ import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.mangaExtra
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
-import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.databinding.ItemMangaAlternativeBinding
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -74,7 +82,7 @@ fun alternativeAD(
 				.placeholder(R.drawable.ic_web)
 				.fallback(R.drawable.ic_web)
 				.error(R.drawable.ic_web)
-				.source(item.manga.source)
+				.mangaSourceExtra(item.manga.source)
 				.transformations(RoundedCornersTransformation(context.resources.getDimension(R.dimen.chip_icon_corner)))
 				.allowRgb565(true)
 				.enqueueWith(coil)
@@ -84,8 +92,7 @@ fun alternativeAD(
 			defaultPlaceholders(context)
 			transformations(TrimTransformation())
 			allowRgb565(true)
-			tag(item.manga)
-			source(item.manga.source)
+			mangaExtra(item.manga)
 			enqueueWith(coil)
 		}
 	}

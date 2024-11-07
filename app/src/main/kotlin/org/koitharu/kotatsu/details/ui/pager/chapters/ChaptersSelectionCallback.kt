@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
 import org.koitharu.kotatsu.core.ui.list.BaseListSelectionCallback
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.toCollection
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 
 class ChaptersSelectionCallback(
 	private val viewModel: ChaptersPagesViewModel,
+	private val commonAlertDialogs: CommonAlertDialogs,
 	recyclerView: RecyclerView,
 ) : BaseListSelectionCallback(recyclerView) {
 
@@ -58,8 +60,14 @@ class ChaptersSelectionCallback(
 	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.action_save -> {
-				viewModel.download(controller.snapshot())
+				val snapshot = controller.snapshot()
 				mode?.finish()
+				if (snapshot.isNotEmpty()) {
+					commonAlertDialogs.askForDownloadOverMeteredNetwork(
+						context = recyclerView.context,
+						onConfirmed = { viewModel.download(snapshot, it) },
+					)
+				}
 				true
 			}
 

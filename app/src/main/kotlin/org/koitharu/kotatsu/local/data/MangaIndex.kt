@@ -1,11 +1,17 @@
 package org.koitharu.kotatsu.local.data
 
 import androidx.annotation.WorkerThread
+import okio.FileSystem
+import okio.Path
+import okio.Path.Companion.toOkioPath
+import okio.buffer
+import org.jetbrains.annotations.Blocking
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -18,6 +24,7 @@ import org.koitharu.kotatsu.parsers.util.json.getIntOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.io.File
 
@@ -186,15 +193,28 @@ class MangaIndex(source: String?) {
 
 	companion object {
 
+		@Blocking
 		@WorkerThread
-		fun read(file: File): MangaIndex? {
-			if (file.exists() && file.canRead()) {
-				val text = file.readText()
-				if (text.length > 2) {
-					return MangaIndex(text)
+		fun read(fileSystem: FileSystem, path: Path): MangaIndex? = runCatchingCancellable {
+			if (!fileSystem.exists(path)) {
+				return@runCatchingCancellable null
+			}
+			val text = fileSystem.source(path).use {
+				it.buffer().use { buffer ->
+					buffer.readUtf8()
 				}
 			}
-			return null
-		}
+			if (text.length > 2) {
+				MangaIndex(text)
+			} else {
+				null
+			}
+		}.onFailure { e ->
+			e.printStackTraceDebug()
+		}.getOrNull()
+
+		@Blocking
+		@WorkerThread
+		fun read(file: File): MangaIndex? = read(FileSystem.SYSTEM, file.toOkioPath())
 	}
 }

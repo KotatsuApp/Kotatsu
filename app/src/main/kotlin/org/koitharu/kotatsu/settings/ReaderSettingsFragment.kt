@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.settings
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import androidx.preference.ListPreference
@@ -37,6 +38,15 @@ class ReaderSettingsFragment :
 				ReaderMode.WEBTOON.name,
 			)
 			setDefaultValueCompat(ReaderMode.STANDARD.name)
+		}
+		findPreference<ListPreference>(AppSettings.KEY_READER_ORIENTATION)?.run {
+			entryValues = arrayOf(
+				ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED.toString(),
+				ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR.toString(),
+				ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT.toString(),
+				ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE.toString(),
+			)
+			setDefaultValueCompat(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED.toString())
 		}
 		findPreference<ListPreference>(AppSettings.KEY_READER_BACKGROUND)?.run {
 			entryValues = ReaderBackground.entries.names()

@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.scrobbling.common.ui.config.adapter
 
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener

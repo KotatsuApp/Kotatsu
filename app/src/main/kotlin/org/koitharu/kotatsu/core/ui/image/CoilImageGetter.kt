@@ -4,10 +4,12 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.Html
 import androidx.annotation.WorkerThread
-import coil.ImageLoader
-import coil.executeBlocking
-import coil.request.ImageRequest
+import coil3.ImageLoader
+import coil3.executeBlocking
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.koitharu.kotatsu.core.util.ext.drawable
 import javax.inject.Inject
 
 class CoilImageGetter @Inject constructor(

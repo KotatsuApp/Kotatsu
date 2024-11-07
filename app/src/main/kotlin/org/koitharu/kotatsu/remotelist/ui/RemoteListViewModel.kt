@@ -21,10 +21,10 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.getCauseUrl
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
@@ -39,7 +39,6 @@ import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
-import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
 import javax.inject.Inject
 
@@ -68,9 +67,6 @@ open class RemoteListViewModel @Inject constructor(
 	private var loadingJob: Job? = null
 	private var randomJob: Job? = null
 
-	val browserUrl: String?
-		get() = (repository as? ParserMangaRepository)?.domain?.let { "https://$it" }
-
 	override val content = combine(
 		mangaList.map { it?.skipNsfwIfNeeded() },
 		observeListModeWithTriggers(),
@@ -82,7 +78,7 @@ open class RemoteListViewModel @Inject constructor(
 				list.isNullOrEmpty() && error != null -> add(
 					error.toErrorState(
 						canRetry = true,
-						secondaryAction = if (error !is NotFoundException && browserUrl != null) R.string.open_in_browser else 0,
+						secondaryAction = if (error.getCauseUrl().isNullOrEmpty()) 0 else R.string.open_in_browser,
 					),
 				)
 
@@ -170,7 +166,7 @@ open class RemoteListViewModel @Inject constructor(
 		icon = R.drawable.ic_empty_common,
 		textPrimary = R.string.nothing_found,
 		textSecondary = 0,
-		actionStringRes = if (canResetFilter) R.string.reset_filter else R.string.open_in_browser,
+		actionStringRes = if (canResetFilter) R.string.reset_filter else 0,
 	)
 
 	protected open suspend fun onBuildList(list: MutableList<ListModel>) = Unit

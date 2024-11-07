@@ -26,8 +26,10 @@ class ProgressResponseBody(
 	override fun contentType(): MediaType? = delegate.contentType()
 
 	override fun source(): BufferedSource {
-		return bufferedSource ?: ProgressSource(delegate.source(), contentLength(), progressState).buffer().also {
-			bufferedSource = it
+		return bufferedSource ?: synchronized(this) {
+			bufferedSource ?: ProgressSource(delegate.source(), contentLength(), progressState).buffer().also {
+				bufferedSource = it
+			}
 		}
 	}
 

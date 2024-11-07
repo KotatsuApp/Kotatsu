@@ -21,6 +21,7 @@
 		<attr name="android:valueTo" />
 		<attr name="android:stepSize" />
 		<attr name="tickVisible" />
+		<attr name="useSimpleSummaryProvider" />
 	</declare-styleable>
 
 	<declare-styleable name="ListItemTextView">
@@ -50,6 +51,8 @@
 		<attr name="icon" />
 		<attr name="titleTextAppearance" />
 		<attr name="subtitleTextAppearance" />
+		<attr name="android:checked" />
+		<attr name="android:button" />
 	</declare-styleable>
 
 	<declare-styleable name="ProgressDrawable">

@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.favourites.ui.categories.adapter
 
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
 import org.koitharu.kotatsu.core.ui.ReorderableListAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType

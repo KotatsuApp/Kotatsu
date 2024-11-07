@@ -32,6 +32,7 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 			isEnabled = viewModel.isUpdateSupported
 		}
 		findPreference<SwitchPreferenceCompat>(AppSettings.KEY_UPDATES_UNSTABLE)?.run {
+			isVisible = viewModel.isUpdateSupported
 			isEnabled = VersionId(BuildConfig.VERSION_NAME).isStable
 			if (!isEnabled) isChecked = true
 		}

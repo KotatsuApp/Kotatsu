@@ -6,7 +6,7 @@
 	tools:orientation="horizontal"
 	tools:parentTag="android.widget.LinearLayout">
 
-	<ImageView
+	<org.koitharu.kotatsu.core.ui.widgets.CheckableImageView
 		android:id="@+id/icon"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -15,9 +15,10 @@
 
 	<LinearLayout
 		android:id="@+id/layout_text"
-		android:layout_width="match_parent"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical"
+		android:layout_weight="1"
 		android:orientation="vertical"
 		android:paddingVertical="6dp">
 
@@ -35,4 +36,15 @@
 			tools:text="@tools:sample/lorem[12]" />
 
 	</LinearLayout>
+
+	<ImageView
+		android:id="@+id/button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+		android:background="?selectableItemBackgroundBorderless"
+		android:minWidth="?minTouchTargetSize"
+		android:minHeight="?minTouchTargetSize"
+		android:scaleType="center"
+		tools:src="@drawable/ic_expand_more" />
 </merge>

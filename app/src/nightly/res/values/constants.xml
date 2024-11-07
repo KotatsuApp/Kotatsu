@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="account_type_sync" translatable="false">org.kotatsu.nightly.sync</string>
+	<string name="sync_authority_history" translatable="false">org.koitharu.kotatsu.nightly.history</string>
+	<string name="sync_authority_favourites" translatable="false">org.koitharu.kotatsu.nightly.favourites</string>
+	<string name="github_updates_repo" translatable="false">KotatsuApp/Kotatsu-Nightly</string>
+</resources>

@@ -12,12 +12,13 @@ import androidx.core.app.NotificationCompat.VISIBILITY_SECRET
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
-import coil.ImageLoader
-import coil.request.ImageRequest
+import coil3.ImageLoader
+import coil3.request.ImageRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -67,7 +68,7 @@ class TrackerNotificationHelper @Inject constructor(
 				coil.execute(
 					ImageRequest.Builder(applicationContext)
 						.data(manga.coverUrl)
-						.tag(manga.source)
+						.mangaSourceExtra(manga.source)
 						.build(),
 				).toBitmapOrNull(),
 			)

@@ -5,10 +5,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okio.Closeable
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.zip.ZipOutput
 import java.io.File
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import java.util.zip.Deflater
 
@@ -27,20 +29,32 @@ class BackupZipOutput(val file: File) : Closeable {
 	override fun close() {
 		output.close()
 	}
-}
 
-const val DIR_BACKUPS = "backups"
+	companion object {
 
-suspend fun BackupZipOutput(context: Context): BackupZipOutput = runInterruptible(Dispatchers.IO) {
-	val dir = context.run {
-		getExternalFilesDir(DIR_BACKUPS) ?: File(filesDir, DIR_BACKUPS)
+		const val DIR_BACKUPS = "backups"
+		private val dateTimeFormat = SimpleDateFormat("yyyyMMdd-HHmm")
+
+		fun generateFileName(context: Context) = buildString {
+			append(context.getString(R.string.app_name).replace(' ', '_').lowercase(Locale.ROOT))
+			append('_')
+			append(dateTimeFormat.format(Date()))
+			append(".bk.zip")
+		}
+
+		fun parseBackupDateTime(fileName: String): Date? = try {
+			dateTimeFormat.parse(fileName.substringAfterLast('_').substringBefore('.'))
+		} catch (e: ParseException) {
+			e.printStackTraceDebug()
+			null
+		}
+
+		suspend fun createTemp(context: Context): BackupZipOutput = runInterruptible(Dispatchers.IO) {
+			val dir = context.run {
+				getExternalFilesDir(DIR_BACKUPS) ?: File(filesDir, DIR_BACKUPS)
+			}
+			dir.mkdirs()
+			BackupZipOutput(File(dir, generateFileName(context)))
+		}
 	}
-	dir.mkdirs()
-	val filename = buildString {
-		append(context.getString(R.string.app_name).replace(' ', '_').lowercase(Locale.ROOT))
-		append('_')
-		append(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
-		append(".bk.zip")
-	}
-	BackupZipOutput(File(dir, filename))
 }

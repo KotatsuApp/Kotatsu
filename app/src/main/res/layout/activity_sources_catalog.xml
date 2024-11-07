@@ -12,8 +12,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:fitsSystemWindows="true"
-		app:liftOnScrollColor="@null"
-		app:liftOnScroll="false">
+		app:liftOnScroll="false"
+		app:liftOnScrollColor="@null">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@id/toolbar"
@@ -50,6 +50,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:clipToPadding="false"
+		app:bubbleSize="normal"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 

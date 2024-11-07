@@ -1,10 +1,7 @@
 package org.koitharu.kotatsu.stats.data
 
-import androidx.collection.LongIntMap
-import androidx.collection.MutableLongIntMap
 import androidx.room.withTransaction
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -13,7 +10,6 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
-import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.stats.domain.StatsPeriod
 import org.koitharu.kotatsu.stats.domain.StatsRecord
 import java.util.NavigableMap

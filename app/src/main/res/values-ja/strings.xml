@@ -462,4 +462,5 @@
     <string name="reader_zoom_buttons_summary">右下にズームコントロールボタンを表示するかどうか</string>
     <string name="reader_zoom_buttons">ズームボタンを表示</string>
     <string name="zoom_out">ズームアウト</string>
+    <string name="retry">リトライ</string>
 </resources>

@@ -386,7 +386,7 @@
     <string name="suggestions_notifications_summary">Bazen manga öneri bildirimlerilerini göster</string>
     <string name="more">Daha fazla</string>
     <string name="cancel_all_downloads_confirm">Tüm aktif indirmeler iptal edilecek, kısmen indirilen veriler kaybolacak</string>
-    <string name="remove_completed_downloads_confirm">İndirme geçmişiniz tamamen silinecek</string>
+    <string name="remove_completed_downloads_confirm">İndirme geçmişiniz tamamen silinecek. İndirilen dosyalar etkilenmeyecektir</string>
     <string name="text_downloads_list_holder">Hiçbir indirmeniz yok</string>
     <string name="downloads_resumed">İndirmeler devam ettirildi</string>
     <string name="downloads_paused">İndirmeler durduruldu</string>
@@ -723,4 +723,23 @@
     <string name="user_manual">Kullanıcı kılavuzu</string>
     <string name="source_code">Kaynak kodu</string>
     <string name="telegram_group">Telegram grubu</string>
+    <string name="error_image_format">Desteklenmeyen resim biçimi: %s</string>
+    <string name="start_download">İndirmeye başla</string>
+    <string name="save_manga_confirm">Seçilen manga kaydedilsin mi? Bu veri kullanabilir ve disk alanı tüketebilir</string>
+    <string name="save_manga">Mangayı kaydet</string>
+    <string name="genre">Tür</string>
+    <string name="download_added">İndirme eklendi</string>
+    <string name="more_options">Daha fazla seçenek</string>
+    <string name="destination_directory">Hedef dizin</string>
+    <string name="chapter_selection_hint">Bölüm listesindeki bir ögeye uzun tıklayarak indirilecek bölümleri seçebilirsiniz.</string>
+    <string name="chapters_all">Tümü</string>
+    <string name="download_over_cellular">Hücresel ağ üzerinden indirme</string>
+    <string name="dont_allow">İzin verilmesin</string>
+    <string name="download_cellular_confirm">Hücresel ağ üzerinden indirmeye izin verilsin mi?</string>
+    <string name="allow_always">Her zaman izin verilsin</string>
+    <string name="allow_once">Bir kez izin verilsin</string>
+    <string name="ask_every_time">Her zaman sorulsun</string>
+    <string name="screen_orientation">Ekran yönü</string>
+    <string name="portrait">Dikey</string>
+    <string name="landscape">Yatay</string>
 </resources>

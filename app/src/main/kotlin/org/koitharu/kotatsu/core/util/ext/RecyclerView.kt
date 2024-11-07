@@ -37,13 +37,6 @@ val RecyclerView.visibleItemCount: Int
 		findLastVisibleItemPosition() - findFirstVisibleItemPosition()
 	} ?: 0
 
-fun RecyclerView.findCenterViewPosition(): Int {
-	val centerX = width / 2f
-	val centerY = height / 2f
-	val view = findChildViewUnder(centerX, centerY) ?: return RecyclerView.NO_POSITION
-	return getChildAdapterPosition(view)
-}
-
 fun <T> RecyclerView.ViewHolder.getItem(clazz: Class<T>): T? {
 	val rawItem = when (this) {
 		is AdapterDelegateViewBindingViewHolder<*, *> -> item

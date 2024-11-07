@@ -81,7 +81,7 @@ class ProxySettingsFragment : BasePreferenceFragment(R.string.proxy),
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean = when (preference.key) {
-		AppSettings.PROXY_TEST -> {
+		AppSettings.KEY_PROXY_TEST -> {
 			testConnection()
 			true
 		}
@@ -102,13 +102,13 @@ class ProxySettingsFragment : BasePreferenceFragment(R.string.proxy),
 		findPreference<PreferenceCategory>(AppSettings.KEY_PROXY_AUTH)?.isEnabled = isProxyEnabled
 		findPreference<Preference>(AppSettings.KEY_PROXY_LOGIN)?.isEnabled = isProxyEnabled
 		findPreference<Preference>(AppSettings.KEY_PROXY_PASSWORD)?.isEnabled = isProxyEnabled
-		findPreference<Preference>(AppSettings.PROXY_TEST)?.isEnabled = isProxyEnabled && testJob?.isActive != true
+		findPreference<Preference>(AppSettings.KEY_PROXY_TEST)?.isEnabled = isProxyEnabled && testJob?.isActive != true
 	}
 
 	private fun testConnection() {
 		testJob?.cancel()
 		testJob = viewLifecycleScope.launch {
-			val pref = findPreference<Preference>(AppSettings.PROXY_TEST)
+			val pref = findPreference<Preference>(AppSettings.KEY_PROXY_TEST)
 			pref?.run {
 				setSummary(R.string.loading_)
 				isEnabled = false

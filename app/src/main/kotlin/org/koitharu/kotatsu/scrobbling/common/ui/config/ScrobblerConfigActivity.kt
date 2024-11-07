@@ -7,7 +7,10 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import coil.ImageLoader
+import coil3.ImageLoader
+import coil3.request.error
+import coil3.request.fallback
+import coil3.request.placeholder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R

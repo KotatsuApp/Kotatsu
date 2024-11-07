@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.tracker.domain
 
-import coil.request.CachePolicy
+import coil3.request.CachePolicy
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.CachingMangaRepository

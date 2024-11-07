@@ -11,7 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import coil.ImageLoader
+import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
@@ -26,7 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
+import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
 import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
@@ -98,7 +98,8 @@ class SearchActivity :
 
 		viewModel.list.observe(this, adapter)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
-		viewModel.onDownloadStarted.observeEvent(this, DownloadStartedObserver(viewBinding.recyclerView))
+
+		DownloadDialogFragment.registerCallback(this, viewBinding.recyclerView)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -184,7 +185,7 @@ class SearchActivity :
 			}
 
 			R.id.action_save -> {
-				viewModel.download(collectSelectedItems())
+				DownloadDialogFragment.show(supportFragmentManager, collectSelectedItems())
 				mode?.finish()
 				true
 			}

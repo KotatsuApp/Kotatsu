@@ -18,10 +18,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.TABLE_SOURCES
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
+import org.koitharu.kotatsu.core.model.unwrap
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.lifecycleScope
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
+import org.koitharu.kotatsu.parsers.model.MangaParserSource
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import javax.inject.Inject
 
@@ -63,8 +66,8 @@ class SourcesListProducer @Inject constructor(
 	}
 
 	private suspend fun buildList(): List<SourceConfigItem> {
-		val enabledSources = repository.getEnabledSources()
-		val pinned = repository.getPinnedSources()
+		val enabledSources = repository.getEnabledSources().filter { it.unwrap() is MangaParserSource }
+		val pinned = repository.getPinnedSources().mapToSet { it.name }
 		val isNsfwDisabled = settings.isNsfwContentDisabled
 		val isReorderAvailable = settings.sourcesSortOrder == SourcesSortOrder.MANUAL
 		val withTip = isReorderAvailable && settings.isTipEnabled(TIP_REORDER)
@@ -79,7 +82,7 @@ class SourcesListProducer @Inject constructor(
 					isEnabled = it in enabledSet,
 					isDraggable = false,
 					isAvailable = !isNsfwDisabled || !it.isNsfw(),
-					isPinned = it in pinned,
+					isPinned = it.name in pinned,
 				)
 			}.ifEmpty {
 				listOf(SourceConfigItem.EmptySearchResult)
@@ -100,7 +103,7 @@ class SourcesListProducer @Inject constructor(
 					isEnabled = true,
 					isDraggable = isReorderAvailable,
 					isAvailable = false,
-					isPinned = it in pinned,
+					isPinned = it.name in pinned,
 				)
 			}
 		}

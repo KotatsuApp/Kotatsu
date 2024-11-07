@@ -4,7 +4,6 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Context
 import androidx.annotation.WorkerThread
-import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
@@ -30,11 +29,11 @@ class SyncSettings(
 	@set:WorkerThread
 	var syncURL: String
 		get() = account?.let {
-			val sync_url = accountManager.getUserData(it, KEY_SYNC_URL)
-			if ( !sync_url.startsWith("http://") && !sync_url.startsWith("https://") ) {
-				return "http://$sync_url"
+			val result = accountManager.getUserData(it, KEY_SYNC_URL)
+			if (!result.startsWith("http://") && !result.startsWith("https://")) {
+				return "http://$result"
 			}
-			return sync_url
+			return result
 		}.ifNullOrEmpty { defaultSyncUrl }
 		set(value) {
 			account?.let {

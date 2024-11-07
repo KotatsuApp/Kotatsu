@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.details.ui.mapChapters
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
+import org.koitharu.kotatsu.download.ui.worker.DownloadTask
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
@@ -163,13 +164,18 @@ abstract class ChaptersPagesViewModel(
 		}
 	}
 
-	fun download(chaptersIds: Set<Long>?) {
+	fun download(chaptersIds: Set<Long>?, allowMeteredNetwork: Boolean) {
 		launchJob(Dispatchers.Default) {
-			downloadScheduler.schedule(
-				manga = requireManga(),
-				chaptersIds = chaptersIds,
+			val task = DownloadTask(
+				mangaId = requireManga().id,
+				isPaused = false,
 				isSilent = false,
+				chaptersIds = chaptersIds?.toLongArray(),
+				destination = null,
+				format = null,
+				allowMeteredNetwork = allowMeteredNetwork,
 			)
+			downloadScheduler.schedule(setOf(task))
 			onDownloadStarted.call(Unit)
 		}
 	}

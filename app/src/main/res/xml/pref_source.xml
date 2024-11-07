@@ -18,4 +18,13 @@
 		android:summary="@string/download_slowdown_summary"
 		android:title="@string/download_slowdown" />
 
+	<Preference
+		android:icon="@drawable/ic_open_external"
+		android:key="open_browser"
+		android:order="500"
+		android:persistent="false"
+		android:title="@string/open_in_browser"
+		app:allowDividerAbove="true"
+		app:isPreferenceVisible="false" />
+
 </PreferenceScreen>

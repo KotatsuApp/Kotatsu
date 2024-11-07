@@ -8,6 +8,7 @@ import androidx.core.net.toUri
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.core.exceptions.IncompatiblePluginException
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Demographic
@@ -141,7 +142,7 @@ class ExternalPluginContentSource(
 	@Blocking
 	@WorkerThread
 	fun getPageUrl(url: String): String {
-		val uri = "content://${source.authority}/pages/0".toUri().buildUpon()
+		val uri = "content://${source.authority}/manga/pages/0".toUri().buildUpon()
 			.appendQueryParameter("url", url)
 			.build()
 		return contentResolver.query(uri, null, null, null, null)

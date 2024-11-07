@@ -23,7 +23,7 @@ class BackupViewModel @Inject constructor(
 
 	init {
 		launchLoadingJob {
-			val file = BackupZipOutput(context).use { backup ->
+			val file = BackupZipOutput.createTemp(context).use { backup ->
 				val step = 1f / 6f
 				backup.put(repository.createIndex())
 

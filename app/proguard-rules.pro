@@ -15,6 +15,7 @@
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
 -dontwarn com.google.j2objc.annotations.**
+-dontwarn coil3.PlatformContext
 
 -keep class org.koitharu.kotatsu.core.exceptions.* { *; }
 -keep class org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment

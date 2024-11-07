@@ -92,7 +92,7 @@ fun LongSet.toLongArray(): LongArray {
 	return result
 }
 
-fun LongSet.toSet(): Set<Long> = toCollection(ArraySet<Long>(size))
+fun LongSet.toSet(): Set<Long> = toCollection(ArraySet(size))
 
 fun <R : MutableCollection<Long>> LongSet.toCollection(out: R): R = out.also { result ->
 	forEach(result::add)

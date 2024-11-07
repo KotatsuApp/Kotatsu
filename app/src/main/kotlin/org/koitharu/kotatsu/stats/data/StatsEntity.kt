@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.stats.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import org.koitharu.kotatsu.core.db.entity.MangaEntity
 import org.koitharu.kotatsu.history.data.HistoryEntity
 
 @Entity(

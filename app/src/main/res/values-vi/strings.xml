@@ -194,7 +194,7 @@
     <string name="follow_system">Theo hệ thống</string>
     <string name="_s_deleted_from_local_storage">\"%s\" đã bị xoá khỏi bộ nhớ cục bộ</string>
     <string name="share_image">Chia sẻ hình ảnh</string>
-    <string name="page_saved">Đã lưu</string>
+    <string name="page_saved">Đã lưu trang này</string>
     <string name="text_file_not_supported">Vui lòng chọn tập tin ZIP hoặc CBZ.</string>
     <string name="error">Lỗi</string>
     <string name="_continue">Tiếp tục</string>
@@ -368,7 +368,7 @@
     <string name="cancel_all">Huỷ bỏ tất cả</string>
     <string name="downloads_wifi_only">Chỉ tải xuống qua Wi-Fi</string>
     <string name="downloads_wifi_only_summary">Ngừng tải xuống khi chuyển qua mạng dữ liệu</string>
-    <string name="remove_completed_downloads_confirm">Lịch sử tải xuống của bạn sẽ bị xoá vĩnh viễn</string>
+    <string name="remove_completed_downloads_confirm">Lịch sử tải xuống của bạn sẽ bị xoá vĩnh viễn. Các tệp đã tải về máy sẽ không bị xóa</string>
     <string name="address">Địa chỉ</string>
     <string name="invert_colors">Đảo màu</string>
     <string name="invalid_port_number">Cổng không hợp lệ</string>
@@ -377,7 +377,7 @@
     <string name="resume">Tiếp tục</string>
     <string name="clear_new_chapters_counters">Xoá thông tin về chương mới</string>
     <string name="source_disabled">Đã vô hiệu hoá nguồn truyện</string>
-    <string name="sync_host_description">Bạn có thể dùng một máy chủ đồng bộ hoá của bạn (tự host) hoặc máy chủ đồng bộ hoá mặc định. Đừng thay đổi địa chủ máy chủ nếu bạn không chắc chắn mình đang làm gì.</string>
+    <string name="sync_host_description">Bạn có thể dùng một máy chủ đồng bộ hoá của bạn (tự Host) hoặc máy chủ đồng bộ hoá mặc định. Đừng thay đổi địa chủ máy chủ nếu bạn không biết mình đang làm gì.</string>
     <string name="downloads_resumed">Tải xuống đã được tiếp tục</string>
     <string name="downloads_removed">Đã xoá tải xuống</string>
     <string name="more">Thêm</string>
@@ -393,7 +393,7 @@
     <string name="disable_battery_optimization_summary">Giúp kiểm tra chương mới trong khi chạy dưới nền dễ dàng hơn</string>
     <string name="show_on_shelf">Hiển thị trên kệ sách</string>
     <string name="mirror_switching">Tự động chuyển sang dự phòng</string>
-    <string name="mirror_switching_summary">Tự động chuyển tên miền sang máy chủ dự phòng (nếu có) nếu gặp lỗi</string>
+    <string name="mirror_switching_summary">Tự động chuyển sang tên miền dự phòng của nguồn đọc (nếu có) khi gặp lỗi</string>
     <string name="paused">Đã tạm dừng</string>
     <string name="images_proxy_title">Proxy tối ưu hình ảnh</string>
     <string name="images_procy_description">Sử dụng dịch vụ wsrv.nl để giảm dung lượng ảnh và tăng tốc quá trình tải ảnh nếu có thể</string>
@@ -635,7 +635,7 @@
     <string name="_new">Mới</string>
     <string name="all_languages">Tất cả các ngôn ngữ</string>
     <string name="screenshots_block_incognito">Chặn khi sử dụng chế độ ẩn danh</string>
-    <string name="image_server">Máy chủ hình ảnh đã thích</string>
+    <string name="image_server">Chất lượng hình ảnh</string>
     <string name="crop_pages">Cắt ảnh trang</string>
     <string name="pin">Ghim</string>
     <string name="unpin">Xóa ghim</string>
@@ -723,4 +723,24 @@
     <string name="user_manual">Hướng dẫn sử dụng</string>
     <string name="telegram_group">Nhóm Telegram</string>
     <string name="debug">Gỡ lỗi</string>
+    <string name="error_image_format">Định dạng hình ảnh không được hỗ trợ: %s</string>
+    <string name="save_manga">Lưu manga</string>
+    <string name="start_download">Bắt đầu tải về</string>
+    <string name="save_manga_confirm">Lưu manga đã chọn? Điều này sẽ tiêu tốn bộ nhớ của máy và dữ liệu mạng của bạn</string>
+    <string name="genre">Thể loại</string>
+    <string name="download_added">Đã thêm vào mục tải xuống</string>
+    <string name="more_options">Cài đặt nâng cao</string>
+    <string name="destination_directory">Thư mục đích</string>
+    <string name="chapter_selection_hint">Bạn có thể chọn tải về nhiều chương cùng lúc bằng cách ấn giữ các mục trong danh sách chương.</string>
+    <string name="chapters_all">Tất cả</string>
+    <string name="download_over_cellular">Đang tải xuống bằng mạng dữ liệu di động</string>
+    <string name="dont_allow">Không cho phép</string>
+    <string name="allow_always">Luôn cho phép</string>
+    <string name="download_cellular_confirm">Cho phép tải xuống bằng mạng dữ liệu di động?</string>
+    <string name="allow_once">Chỉ cho phép lần này</string>
+    <string name="ask_every_time">Luôn hỏi</string>
+    <string name="portrait">Dọc</string>
+    <string name="landscape">Ngang</string>
+    <string name="screen_orientation">Xoay hướng màn hình</string>
+    <string name="plugin_incompatible_with_cause">Lỗi Plugin: %s\nHãy đảm bảo rằng bạn đang sử dụng phiên bản mới nhất của Kotatsu / Đã cập nhật Plugin đó</string>
 </resources>

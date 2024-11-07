@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.transformWhile
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger

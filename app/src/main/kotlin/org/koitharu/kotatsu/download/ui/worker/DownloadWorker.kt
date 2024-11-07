@@ -71,8 +71,7 @@ import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.local.data.TempFileFilter
-import org.koitharu.kotatsu.local.data.index.LocalMangaIndex
-import org.koitharu.kotatsu.local.data.input.LocalMangaInput
+import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
 import org.koitharu.kotatsu.local.domain.MangaLock
 import org.koitharu.kotatsu.local.domain.model.LocalManga
@@ -81,6 +80,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import java.io.File
@@ -101,16 +101,14 @@ class DownloadWorker @AssistedInject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val settings: AppSettings,
 	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
+	private val slowdownDispatcher: DownloadSlowdownDispatcher,
 	private val imageProxyInterceptor: ImageProxyInterceptor,
 	notificationFactoryFactory: DownloadNotificationFactory.Factory,
 ) : CoroutineWorker(appContext, params) {
 
-	private val notificationFactory = notificationFactoryFactory.create(
-		uuid = params.id,
-		isSilent = params.inputData.getBoolean(IS_SILENT, false),
-	)
+	private val task = DownloadTask(params.inputData)
+	private val notificationFactory = notificationFactoryFactory.create(uuid = params.id, isSilent = task.isSilent)
 	private val notificationManager = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-	private val slowdownDispatcher = DownloadSlowdownDispatcher(mangaRepositoryFactory, SLOWDOWN_DELAY)
 
 	@Volatile
 	private var lastPublishedState: DownloadState? = null
@@ -122,14 +120,16 @@ class DownloadWorker @AssistedInject constructor(
 
 	override suspend fun doWork(): Result {
 		setForeground(getForegroundInfo())
-		val mangaId = inputData.getLong(MANGA_ID, 0L)
-		val manga = mangaDataRepository.findMangaById(mangaId) ?: return Result.failure()
+		val manga = mangaDataRepository.findMangaById(task.mangaId) ?: return Result.failure()
 		publishState(DownloadState(manga = manga, isIndeterminate = true).also { lastPublishedState = it })
-		val chaptersIds = inputData.getLongArray(CHAPTERS_IDS)?.takeUnless { it.isEmpty() }
 		val downloadedIds = getDoneChapters(manga)
 		return try {
-			withContext(PausingHandle()) {
-				downloadMangaImpl(manga, chaptersIds, downloadedIds)
+			val pausingHandle = PausingHandle()
+			if (task.isPaused) {
+				pausingHandle.pause()
+			}
+			withContext(pausingHandle) {
+				downloadMangaImpl(manga, task, downloadedIds)
 			}
 			Result.success(currentState.toWorkData())
 		} catch (e: CancellationException) {
@@ -170,7 +170,7 @@ class DownloadWorker @AssistedInject constructor(
 
 	private suspend fun downloadMangaImpl(
 		subject: Manga,
-		includedIds: LongArray?,
+		task: DownloadTask,
 		excludedIds: Set<Long>,
 	) {
 		var manga = subject
@@ -183,7 +183,7 @@ class DownloadWorker @AssistedInject constructor(
 				PausingReceiver.createIntentFilter(id),
 				ContextCompat.RECEIVER_NOT_EXPORTED,
 			)
-			val destination = localMangaRepository.getOutputDir(manga)
+			val destination = localMangaRepository.getOutputDir(manga, task.destination)
 			checkNotNull(destination) { applicationContext.getString(R.string.cannot_find_available_storage) }
 			var output: LocalMangaOutput? = null
 			try {
@@ -193,7 +193,11 @@ class DownloadWorker @AssistedInject constructor(
 				}
 				val repo = mangaRepositoryFactory.create(manga.source)
 				val mangaDetails = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
-				output = LocalMangaOutput.getOrCreate(destination, mangaDetails, settings.preferredDownloadFormat)
+				output = LocalMangaOutput.getOrCreate(
+					root = destination,
+					manga = mangaDetails,
+					format = task.format ?: settings.preferredDownloadFormat,
+				)
 				val coverUrl = mangaDetails.largeCoverUrl.ifNullOrEmpty { mangaDetails.coverUrl }
 				if (coverUrl.isNotEmpty()) {
 					downloadFile(coverUrl, destination, repo.source).let { file ->
@@ -201,7 +205,7 @@ class DownloadWorker @AssistedInject constructor(
 						file.deleteAwait()
 					}
 				}
-				val chapters = getChapters(mangaDetails, includedIds)
+				val chapters = getChapters(mangaDetails, task)
 				for ((chapterIndex, chapter) in chapters.withIndex()) {
 					checkIsPaused()
 					if (chaptersToSkip.remove(chapter.value.id)) {
@@ -258,7 +262,7 @@ class DownloadWorker @AssistedInject constructor(
 					}
 					if (output.flushChapter(chapter.value)) {
 						runCatchingCancellable {
-							localStorageChanges.emit(LocalMangaInput.of(output.rootFile).getManga())
+							localStorageChanges.emit(LocalMangaParser(output.rootFile).getManga(withDetails = false))
 						}.onFailure(Throwable::printStackTraceDebug)
 					}
 					publishState(currentState.copy(downloadedChapters = currentState.downloadedChapters + 1))
@@ -266,7 +270,7 @@ class DownloadWorker @AssistedInject constructor(
 				publishState(currentState.copy(isIndeterminate = true, eta = -1L, isStuck = false))
 				output.mergeWithExisting()
 				output.finish()
-				val localManga = LocalMangaInput.of(output.rootFile).getManga()
+				val localManga = LocalMangaParser(output.rootFile).getManga(withDetails = false)
 				localStorageChanges.emit(localManga)
 				publishState(currentState.copy(localManga = localManga, eta = -1L, isStuck = false))
 			} catch (e: Exception) {
@@ -307,6 +311,10 @@ class DownloadWorker @AssistedInject constructor(
 					DOWNLOAD_ERROR_DELAY
 				}
 				if (countDown <= 0 || retryDelay < 0 || retryDelay > MAX_RETRY_DELAY) {
+					val pausingHandle = PausingHandle.current()
+					if (pausingHandle.skipAllErrors()) {
+						return null
+					}
 					publishState(
 						currentState.copy(
 							isPaused = true,
@@ -317,7 +325,6 @@ class DownloadWorker @AssistedInject constructor(
 						),
 					)
 					countDown = MAX_FAILSAFE_ATTEMPTS
-					val pausingHandle = PausingHandle.current()
 					pausingHandle.pause()
 					try {
 						pausingHandle.awaitResumed()
@@ -359,7 +366,7 @@ class DownloadWorker @AssistedInject constructor(
 			.use { response ->
 				val file = File(destination, UUID.randomUUID().toString() + ".tmp")
 				try {
-					checkNotNull(response.body).use { body ->
+					response.requireBody().use { body ->
 						file.sink(append = false).buffer().use {
 							it.writeAllCancellable(body.source())
 						}
@@ -400,10 +407,10 @@ class DownloadWorker @AssistedInject constructor(
 
 	private fun getChapters(
 		manga: Manga,
-		includedIds: LongArray?,
+		task: DownloadTask,
 	): List<IndexedValue<MangaChapter>> {
 		val chapters = checkNotNull(manga.chapters) { "Chapters list must not be null" }
-		val chaptersIdsSet = includedIds?.toMutableSet()
+		val chaptersIdsSet = task.chaptersIds?.toMutableSet()
 		val result = ArrayList<IndexedValue<MangaChapter>>((chaptersIdsSet ?: chapters).size)
 		val counters = HashMap<String?, Int>()
 		for (chapter in chapters) {
@@ -416,7 +423,7 @@ class DownloadWorker @AssistedInject constructor(
 		}
 		if (chaptersIdsSet != null) {
 			check(chaptersIdsSet.isEmpty()) {
-				"${chaptersIdsSet.size} of ${includedIds.size} requested chapters not found in manga"
+				"${chaptersIdsSet.size} of ${task.chaptersIds.size} requested chapters not found in manga"
 			}
 		}
 		check(result.isNotEmpty()) { "Chapters list must not be empty" }
@@ -427,30 +434,7 @@ class DownloadWorker @AssistedInject constructor(
 	class Scheduler @Inject constructor(
 		@ApplicationContext private val context: Context,
 		private val workManager: WorkManager,
-		private val dataRepository: MangaDataRepository,
-		private val settings: AppSettings,
 	) {
-
-		suspend fun schedule(manga: Manga, chaptersIds: Collection<Long>?, isSilent: Boolean) {
-			dataRepository.storeManga(manga)
-			val data = Data.Builder()
-				.putLong(MANGA_ID, manga.id)
-				.putBoolean(IS_SILENT, isSilent)
-			if (!chaptersIds.isNullOrEmpty()) {
-				data.putLongArray(CHAPTERS_IDS, chaptersIds.toLongArray())
-			}
-			scheduleImpl(listOf(data.build()))
-		}
-
-		suspend fun schedule(manga: Collection<Manga>) {
-			val data = manga.map {
-				dataRepository.storeManga(it)
-				Data.Builder()
-					.putLong(MANGA_ID, it.id)
-					.build()
-			}
-			scheduleImpl(data)
-		}
 
 		fun observeWorks(): Flow<List<WorkInfo>> = workManager
 			.getWorkInfosByTagFlow(TAG)
@@ -464,8 +448,8 @@ class DownloadWorker @AssistedInject constructor(
 				.build()
 		}
 
-		suspend fun getInputChaptersIds(workId: UUID): LongArray? {
-			return workManager.getWorkInputData(workId)?.getLongArray(CHAPTERS_IDS)?.takeUnless { it.isEmpty() }
+		suspend fun getTask(workId: UUID): DownloadTask? {
+			return workManager.getWorkInputData(workId)?.let { DownloadTask(it) }
 		}
 
 		suspend fun cancel(id: UUID) {
@@ -507,8 +491,8 @@ class DownloadWorker @AssistedInject constructor(
 			workManager.deleteWorks(finishedWorks.mapToSet { it.id })
 		}
 
-		suspend fun updateConstraints() {
-			val constraints = createConstraints()
+		suspend fun updateConstraints(allowMeteredNetwork: Boolean) {
+			val constraints = createConstraints(allowMeteredNetwork)
 			val works = workManager.awaitWorkInfosByTag(TAG)
 			for (work in works) {
 				if (work.state.isFinished) {
@@ -523,26 +507,25 @@ class DownloadWorker @AssistedInject constructor(
 			}
 		}
 
-		private suspend fun scheduleImpl(data: Collection<Data>) {
-			if (data.isEmpty()) {
+		suspend fun schedule(tasks: Collection<DownloadTask>) {
+			if (tasks.isEmpty()) {
 				return
 			}
-			val constraints = createConstraints()
-			val requests = data.map { inputData ->
+			val requests = tasks.map { task ->
 				OneTimeWorkRequestBuilder<DownloadWorker>()
-					.setConstraints(constraints)
+					.setConstraints(createConstraints(task.allowMeteredNetwork))
 					.addTag(TAG)
 					.keepResultsForAtLeast(30, TimeUnit.DAYS)
 					.setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
-					.setInputData(inputData)
+					.setInputData(task.toData())
 					.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 					.build()
 			}
 			workManager.enqueue(requests).await()
 		}
 
-		private fun createConstraints() = Constraints.Builder()
-			.setRequiredNetworkType(if (settings.isDownloadsWiFiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
+		private fun createConstraints(allowMeteredNetwork: Boolean) = Constraints.Builder()
+			.setRequiredNetworkType(if (allowMeteredNetwork) NetworkType.CONNECTED else NetworkType.UNMETERED)
 			.build()
 	}
 
@@ -552,10 +535,6 @@ class DownloadWorker @AssistedInject constructor(
 		const val MAX_PAGES_PARALLELISM = 4
 		const val DOWNLOAD_ERROR_DELAY = 2_000L
 		const val MAX_RETRY_DELAY = 7_200_000L // 2 hours
-		const val SLOWDOWN_DELAY = 200L
-		const val MANGA_ID = "manga_id"
-		const val CHAPTERS_IDS = "chapters"
-		const val IS_SILENT = "silent"
 		const val TAG = "download"
 	}
 }

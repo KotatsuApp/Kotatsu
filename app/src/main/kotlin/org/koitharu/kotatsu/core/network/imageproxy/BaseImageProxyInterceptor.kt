@@ -2,12 +2,12 @@ package org.koitharu.kotatsu.core.network.imageproxy
 
 import android.util.Log
 import androidx.collection.ArraySet
-import coil.intercept.Interceptor
-import coil.network.HttpException
-import coil.request.ErrorResult
-import coil.request.ImageRequest
-import coil.request.ImageResult
-import coil.request.SuccessResult
+import coil3.intercept.Interceptor
+import coil3.network.HttpException
+import coil3.request.ErrorResult
+import coil3.request.ImageRequest
+import coil3.request.ImageResult
+import coil3.request.SuccessResult
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
@@ -35,14 +35,14 @@ abstract class BaseImageProxyInterceptor : ImageProxyInterceptor {
 			else -> null
 		}
 		if (url == null || !url.isHttpOrHttps || url.host in blacklist) {
-			return chain.proceed(request)
+			return chain.proceed()
 		}
 		val newRequest = onInterceptImageRequest(request, url)
-		return when (val result = chain.proceed(newRequest)) {
+		return when (val result = chain.withRequest(newRequest).proceed()) {
 			is SuccessResult -> result
 			is ErrorResult -> {
 				logDebug(result.throwable, newRequest.data)
-				chain.proceed(request).also {
+				chain.proceed().also {
 					if (it is SuccessResult && result.throwable.isBlockedByServer()) {
 						blacklist.add(url.host)
 					}

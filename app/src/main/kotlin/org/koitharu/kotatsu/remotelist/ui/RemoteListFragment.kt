@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.getCauseUrl
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
@@ -72,24 +73,23 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 		if (filterCoordinator.isFilterApplied) {
 			filterCoordinator.reset()
 		} else {
-			openInBrowser()
+			openInBrowser(null) // should never be called
 		}
 	}
 
 	override fun onSecondaryErrorActionClick(error: Throwable) {
-		openInBrowser()
+		openInBrowser(error.getCauseUrl())
 	}
 
-	private fun openInBrowser() {
-		val browserUrl = viewModel.browserUrl
-		if (browserUrl.isNullOrEmpty()) {
+	private fun openInBrowser(url: String?) {
+		if (url.isNullOrEmpty()) {
 			Snackbar.make(requireViewBinding().recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
 				.show()
 		} else {
 			startActivity(
 				BrowserActivity.newIntent(
 					requireContext(),
-					browserUrl,
+					url,
 					viewModel.source,
 					viewModel.source.getTitle(requireContext()),
 				),

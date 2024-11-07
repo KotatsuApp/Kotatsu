@@ -11,10 +11,9 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
-import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
-import coil.ImageLoader
-import coil.request.ImageRequest
+import coil3.ImageLoader
+import coil3.request.ImageRequest
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
@@ -22,6 +21,7 @@ import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
@@ -47,23 +47,19 @@ class ImportService : CoroutineIntentService() {
 		notificationManager = NotificationManagerCompat.from(applicationContext)
 	}
 
-	override suspend fun processIntent(startId: Int, intent: Intent) {
+	override suspend fun IntentJobContext.processIntent(intent: Intent) {
 		val uri = requireNotNull(intent.getStringExtra(DATA_URI)?.toUriOrNull()) { "No input uri" }
-		startForeground()
-		try {
-			val result = runCatchingCancellable {
-				importer.import(uri).manga
-			}
-			if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-				val notification = buildNotification(result)
-				notificationManager.notify(TAG, startId, notification)
-			}
-		} finally {
-			ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+		startForeground(this)
+		val result = runCatchingCancellable {
+			importer.import(uri).manga
+		}
+		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+			val notification = buildNotification(result)
+			notificationManager.notify(TAG, startId, notification)
 		}
 	}
 
-	override fun onError(startId: Int, error: Throwable) {
+	override fun IntentJobContext.onError(error: Throwable) {
 		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
 			val notification = runBlocking { buildNotification(Result.failure(error)) }
 			notificationManager.notify(TAG, startId, notification)
@@ -71,7 +67,7 @@ class ImportService : CoroutineIntentService() {
 	}
 
 	@SuppressLint("InlinedApi")
-	private fun startForeground() {
+	private fun startForeground(jobContext: IntentJobContext) {
 		val title = applicationContext.getString(R.string.importing_manga)
 		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
 			.setName(title)
@@ -94,8 +90,7 @@ class ImportService : CoroutineIntentService() {
 			.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 			.build()
 
-		ServiceCompat.startForeground(
-			this,
+		jobContext.setForeground(
 			FOREGROUND_NOTIFICATION_ID,
 			notification,
 			ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,
@@ -113,7 +108,7 @@ class ImportService : CoroutineIntentService() {
 				coil.execute(
 					ImageRequest.Builder(applicationContext)
 						.data(manga.coverUrl)
-						.tag(manga.source)
+						.mangaSourceExtra(manga.source)
 						.build(),
 				).toBitmapOrNull(),
 			)
@@ -139,11 +134,13 @@ class ImportService : CoroutineIntentService() {
 			notification.setContentTitle(applicationContext.getString(R.string.error_occurred))
 				.setContentText(error.getDisplayMessage(applicationContext.resources))
 				.setSmallIcon(android.R.drawable.stat_notify_error)
-				.addAction(
+			ErrorReporterReceiver.getPendingIntent(applicationContext, error)?.let { reportIntent ->
+				notification.addAction(
 					R.drawable.ic_alert_outline,
 					applicationContext.getString(R.string.report),
-					ErrorReporterReceiver.getPendingIntent(applicationContext, error),
+					reportIntent,
 				)
+			}
 		}
 		return notification.build()
 	}

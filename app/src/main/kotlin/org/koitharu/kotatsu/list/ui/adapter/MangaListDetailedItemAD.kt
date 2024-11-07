@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
+import coil3.request.allowRgb565
+import coil3.request.transformations
 import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
@@ -9,8 +11,8 @@ import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.mangaExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
-import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemMangaListDetailsBinding
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
@@ -40,8 +42,7 @@ fun mangaListDetailedItemAD(
 			defaultPlaceholders(context)
 			transformations(TrimTransformation())
 			allowRgb565(true)
-			tag(item.manga)
-			source(item.source)
+			mangaExtra(item.manga)
 			enqueueWith(coil)
 		}
 		binding.textViewTags.text = item.tags.joinToString(separator = ", ") { it.title ?: "" }

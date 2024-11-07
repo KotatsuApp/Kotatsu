@@ -3,7 +3,12 @@ package org.koitharu.kotatsu.explore.ui.adapter
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
+import coil3.request.allowRgb565
+import coil3.request.error
+import coil3.request.fallback
+import coil3.request.placeholder
+import coil3.request.transformations
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getSummary
@@ -18,10 +23,10 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setProgressIcon
-import org.koitharu.kotatsu.core.util.ext.source
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemExploreButtonsBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceGridBinding
@@ -94,7 +99,7 @@ fun recommendationMangaItemAD(
 			defaultPlaceholders(context)
 			allowRgb565(true)
 			transformations(TrimTransformation())
-			source(item.manga.source)
+			mangaSourceExtra(item.manga.source)
 			enqueueWith(coil)
 		}
 	}
@@ -128,7 +133,7 @@ fun exploreSourceListItemAD(
 			fallback(fallbackIcon)
 			placeholder(AnimatedFaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name))
 			error(fallbackIcon)
-			source(item.source)
+			mangaSourceExtra(item.source)
 			enqueueWith(coil)
 		}
 	}
@@ -160,7 +165,7 @@ fun exploreSourceGridItemAD(
 			fallback(fallbackIcon)
 			placeholder(AnimatedFaviconDrawable(context, R.style.FaviconDrawable_Large, item.source.name))
 			error(fallbackIcon)
-			source(item.source)
+			mangaSourceExtra(item.source)
 			enqueueWith(coil)
 		}
 	}

@@ -1,56 +1,38 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.net.Uri
-import androidx.core.net.toFile
-import okio.Source
-import okio.source
-import okio.use
-import org.jetbrains.annotations.Blocking
-import org.koitharu.kotatsu.local.data.util.withExtraCloseable
+import androidx.core.net.toUri
+import okio.Path
 import java.io.File
-import java.util.zip.ZipFile
 
-const val URI_SCHEME_FILE = "file"
 const val URI_SCHEME_ZIP = "file+zip"
+private const val URI_SCHEME_FILE = "file"
+private const val URI_SCHEME_HTTP = "http"
+private const val URI_SCHEME_HTTPS = "https"
+private const val URI_SCHEME_LEGACY_CBZ = "cbz"
+private const val URI_SCHEME_LEGACY_ZIP = "zip"
 
-@Blocking
-fun Uri.exists(): Boolean = when (scheme) {
-	URI_SCHEME_FILE -> toFile().exists()
-	URI_SCHEME_ZIP -> {
-		val file = File(requireNotNull(schemeSpecificPart))
-		file.exists() && ZipFile(file).use { it.getEntry(fragment) != null }
-	}
-
-	else -> unsupportedUri(this)
+fun Uri.isZipUri() = scheme.let {
+	it == URI_SCHEME_ZIP || it == URI_SCHEME_LEGACY_CBZ || it == URI_SCHEME_LEGACY_ZIP
 }
 
-@Blocking
-fun Uri.isTargetNotEmpty(): Boolean = when (scheme) {
-	URI_SCHEME_FILE -> toFile().isNotEmpty()
-	URI_SCHEME_ZIP -> {
-		val file = File(requireNotNull(schemeSpecificPart))
-		file.exists() && ZipFile(file).use { (it.getEntry(fragment)?.size ?: 0L) != 0L }
-	}
+fun Uri.isFileUri() = scheme == URI_SCHEME_FILE
 
-	else -> unsupportedUri(this)
+fun Uri.isNetworkUri() = scheme.let {
+	it == URI_SCHEME_HTTP || it == URI_SCHEME_HTTPS
 }
 
-@Blocking
-fun Uri.source(): Source = when (scheme) {
-	URI_SCHEME_FILE -> toFile().source()
-	URI_SCHEME_ZIP -> {
-		val zip = ZipFile(schemeSpecificPart)
-		val entry = zip.getEntry(fragment)
-		zip.getInputStreamOrClose(entry).source().withExtraCloseable(zip)
-	}
+fun File.toZipUri(entryPath: String): Uri = Uri.parse("$URI_SCHEME_ZIP://$absolutePath#$entryPath")
 
-	else -> unsupportedUri(this)
-}
-
-fun File.toZipUri(entryName: String): Uri = Uri.parse("$URI_SCHEME_ZIP://$absolutePath#$entryName")
+fun File.toZipUri(entryPath: Path?): Uri =
+	toZipUri(entryPath?.toString()?.removePrefix(Path.DIRECTORY_SEPARATOR).orEmpty())
 
 fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
 
-private fun unsupportedUri(uri: Uri): Nothing {
-	throw IllegalArgumentException("Bad uri $uri: only schemes $URI_SCHEME_FILE and $URI_SCHEME_ZIP are supported")
+fun File.toUri(fragment: String?): Uri = toUri().run {
+	if (fragment != null) {
+		buildUpon().fragment(fragment).build()
+	} else {
+		this
+	}
 }

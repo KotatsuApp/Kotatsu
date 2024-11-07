@@ -6,12 +6,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import okhttp3.internal.closeQuietly
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.zip.ZipOutput
 import org.koitharu.kotatsu.local.data.MangaIndex
-import org.koitharu.kotatsu.local.data.input.LocalMangaDirInput
+import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
@@ -90,12 +91,12 @@ class LocalMangaDirOutput(
 
 	override fun close() {
 		for (output in chaptersOutput.values) {
-			output.close()
+			output.closeQuietly()
 		}
 	}
 
 	suspend fun deleteChapters(ids: Set<Long>) = mutex.withLock {
-		val chapters = checkNotNull((index.getMangaInfo() ?: LocalMangaDirInput(rootFile).getManga().manga).chapters) {
+		val chapters = checkNotNull((index.getMangaInfo() ?: LocalMangaParser(rootFile).getManga(withDetails = true).manga).chapters) {
 			"No chapters found"
 		}.withIndex()
 		val victimsIds = ids.toMutableSet()
@@ -119,17 +120,28 @@ class LocalMangaDirOutput(
 	}
 
 	private suspend fun ZipOutput.flushAndFinish() = runInterruptible(Dispatchers.IO) {
-		finish()
-		close()
-		val resFile = File(file.absolutePath.removeSuffix(SUFFIX_TMP))
-		file.renameTo(resFile)
+		val e: Throwable? = try {
+			finish()
+			null
+		} catch (e: Throwable) {
+			e
+		} finally {
+			close()
+		}
+		if (e == null) {
+			val resFile = File(file.absolutePath.removeSuffix(SUFFIX_TMP))
+			file.renameTo(resFile)
+		} else {
+			file.delete()
+			throw e
+		}
 	}
 
 	private fun chapterFileName(chapter: IndexedValue<MangaChapter>): String {
 		index.getChapterFileName(chapter.value.id)?.let {
 			return it
 		}
-		val baseName = "${chapter.index}_${chapter.value.name.toFileNameSafe()}".take(18)
+		val baseName = "${chapter.index}_${chapter.value.name.toFileNameSafe()}".take(32)
 		var i = 0
 		while (true) {
 			val name = (if (i == 0) baseName else baseName + "_$i") + ".cbz"

@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.core.ui.image
 
 import android.graphics.drawable.Drawable
-import coil.target.GenericViewTarget
+import coil3.target.GenericViewTarget
 import com.google.android.material.chip.Chip
 
 class ChipIconTarget(override val view: Chip) : GenericViewTarget<Chip>() {

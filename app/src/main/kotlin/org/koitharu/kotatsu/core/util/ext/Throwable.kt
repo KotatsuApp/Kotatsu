@@ -3,8 +3,9 @@ package org.koitharu.kotatsu.core.util.ext
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
 import androidx.annotation.DrawableRes
-import coil.network.HttpException
+import coil3.network.HttpException
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
+import okhttp3.Response
 import okio.FileNotFoundException
 import okio.IOException
 import okio.ProtocolException
@@ -24,6 +25,7 @@ import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.io.NullOutputStream
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_LOCALE_GENRES_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_STATES_GENRES_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_MULTIPLE_GENRES_NOT_SUPPORTED
@@ -35,13 +37,20 @@ import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
 import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerAuthRequiredException
+import java.net.ConnectException
+import java.net.NoRouteToHostException
+import java.io.ObjectOutputStream
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.Locale
 
 private const val MSG_NO_SPACE_LEFT = "No space left on device"
 private const val IMAGE_FORMAT_NOT_SUPPORTED = "Image format not supported"
 
-fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
+fun Throwable.getDisplayMessage(resources: Resources): String = getDisplayMessageOrNull(resources)
+	?: resources.getString(R.string.error_occurred)
+
+private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = when (this) {
 	is ScrobblerAuthRequiredException -> resources.getString(
 		R.string.scrobbler_auth_required,
 		resources.getString(scrobbler.titleResId),
@@ -78,12 +87,28 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is ContentUnavailableException -> message
 
 	is ParseException -> shortMessage
+	is ConnectException,
 	is UnknownHostException,
+	is NoRouteToHostException,
 	is SocketTimeoutException -> resources.getString(R.string.network_error)
 
-	is ImageDecodeException -> resources.getString(R.string.error_corrupted_file)
+	is ImageDecodeException -> {
+		val type = format?.substringBefore('/')
+		val formatString = format.ifNullOrEmpty { resources.getString(R.string.unknown).lowercase(Locale.getDefault()) }
+		if (type.isNullOrEmpty() || type == "image") {
+			resources.getString(R.string.error_image_format, formatString)
+		} else {
+			resources.getString(R.string.error_not_image, formatString)
+		}
+	}
+
 	is NoDataReceivedException -> resources.getString(R.string.error_no_data_received)
-	is IncompatiblePluginException -> resources.getString(R.string.plugin_incompatible)
+	is IncompatiblePluginException -> {
+		cause?.getDisplayMessageOrNull(resources)?.let {
+			resources.getString(R.string.plugin_incompatible_with_cause, it)
+		} ?: resources.getString(R.string.plugin_incompatible)
+	}
+
 	is WrongPasswordException -> resources.getString(R.string.wrong_password)
 	is NotFoundException -> resources.getString(R.string.not_found_404)
 	is UnsupportedSourceException -> resources.getString(R.string.unsupported_source)
@@ -92,9 +117,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = when (this) {
 	is HttpStatusException -> getHttpDisplayMessage(statusCode, resources)
 
 	else -> getDisplayMessage(message, resources) ?: message
-}.ifNullOrEmpty {
-	resources.getString(R.string.error_occurred)
-}
+}.takeUnless { it.isNullOrBlank() }
 
 @DrawableRes
 fun Throwable.getDisplayIcon() = when (this) {
@@ -102,6 +125,8 @@ fun Throwable.getDisplayIcon() = when (this) {
 	is CloudFlareProtectedException -> R.drawable.ic_bot_large
 	is UnknownHostException,
 	is SocketTimeoutException,
+	is ConnectException,
+	is NoRouteToHostException,
 	is ProtocolException -> R.drawable.ic_plug_large
 
 	is CloudFlareBlockedException -> R.drawable.ic_denied_large
@@ -109,8 +134,21 @@ fun Throwable.getDisplayIcon() = when (this) {
 	else -> R.drawable.ic_error_large
 }
 
+fun Throwable.getCauseUrl(): String? = when (this) {
+	is ParseException -> url
+	is NotFoundException -> url
+	is TooManyRequestExceptions -> url
+	is CaughtException -> cause?.getCauseUrl()
+	is CloudFlareBlockedException -> url
+	is CloudFlareProtectedException -> url
+	is HttpStatusException -> url
+	is HttpException -> (response.delegate as? Response)?.request?.url?.toString()
+	else -> null
+}
+
 private fun getHttpDisplayMessage(statusCode: Int, resources: Resources): String? = when (statusCode) {
 	404 -> resources.getString(R.string.not_found_404)
+	403 -> resources.getString(R.string.access_denied_403)
 	in 500..599 -> resources.getString(R.string.server_error, statusCode)
 	else -> null
 }
@@ -143,6 +181,8 @@ fun Throwable.isReportable(): Boolean {
 		|| this is CloudFlareProtectedException
 		|| this is BadBackupFormatException
 		|| this is WrongPasswordException
+		|| this is TooManyRequestExceptions
+		|| this is HttpStatusException
 	) {
 		return false
 	}
@@ -165,3 +205,9 @@ fun Throwable.isWebViewUnavailable(): Boolean {
 
 @Suppress("FunctionName")
 fun NoSpaceLeftException() = IOException(MSG_NO_SPACE_LEFT)
+
+fun Throwable.isSerializable() = runCatching {
+	val oos = ObjectOutputStream(NullOutputStream())
+	oos.writeObject(this)
+	oos.flush()
+}.isSuccess

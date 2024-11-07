@@ -238,10 +238,6 @@
 
 	<style name="TextAppearance.Kotatsu.Menu" parent="TextAppearance.Material3.BodyLarge" />
 
-	<style name="TextAppearance.Kotatsu.SectionHeader" parent="TextAppearance.Material3.LabelLarge">
-		<item name="android:textColor">?android:attr/textColorSecondary</item>
-	</style>
-
 	<style name="TextAppearance.Kotatsu.GridTitle" parent="TextAppearance.Material3.TitleSmall" />
 
 	<style name="TextAppearance.Kotatsu.GridTitle.Small" parent="TextAppearance.Material3.TitleSmall">
@@ -268,6 +264,13 @@
 	<style name="ShapeAppearanceOverlay.Kotatsu.Circle" parent="">
 		<item name="cornerFamily">rounded</item>
 		<item name="cornerSize">50%</item>
+	</style>
+
+	<style name="ShapeAppearanceOverlay.Material3.Corner.None" parent="">
+		<item name="cornerSizeBottomLeft">0dp</item>
+		<item name="cornerSizeBottomRight">0dp</item>
+		<item name="cornerSizeTopLeft">0dp</item>
+		<item name="cornerSizeTopRight">0dp</item>
 	</style>
 
 	<!--Preferences-->

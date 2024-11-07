@@ -7,6 +7,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.isSerializable
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.exception.ParseException
 
@@ -33,7 +34,7 @@ class SnackbarErrorObserver(
 			}
 		} else if (value is ParseException) {
 			val fm = fragmentManager
-			if (fm != null) {
+			if (fm != null && value.isSerializable()) {
 				snackbar.setAction(R.string.details) {
 					ErrorDetailsDialog.show(fm, value, value.url)
 				}

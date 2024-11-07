@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
@@ -15,7 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.backup.DIR_BACKUPS
+import org.koitharu.kotatsu.core.backup.BackupZipOutput.Companion.DIR_BACKUPS
+import org.koitharu.kotatsu.core.backup.ExternalBackupStorage
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.resolveFile
@@ -36,7 +38,7 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 	ActivityResultCallback<Uri?> {
 
 	@Inject
-	lateinit var scheduler: PeriodicalBackupWorker.Scheduler
+	lateinit var backupStorage: ExternalBackupStorage
 
 	private val outputSelectCall = registerForActivityResult(
 		ActivityResultContracts.OpenDocumentTree(),
@@ -155,8 +157,9 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 		if (result != null) {
 			val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 			context?.contentResolver?.takePersistableUriPermission(result, takeFlags)
-			settings.periodicalBackupOutput = result
+			settings.periodicalBackupDirectory = result
 			bindOutputSummary()
+			bindLastBackupInfo()
 		}
 	}
 
@@ -164,7 +167,7 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 		val preference = findPreference<Preference>(AppSettings.KEY_BACKUP_PERIODICAL_OUTPUT) ?: return
 		viewLifecycleScope.launch {
 			preference.summary = withContext(Dispatchers.Default) {
-				val value = settings.periodicalBackupOutput
+				val value = settings.periodicalBackupDirectory
 				value?.toUserFriendlyString(preference.context) ?: preference.context.run {
 					getExternalFilesDir(DIR_BACKUPS) ?: File(filesDir, DIR_BACKUPS)
 				}.path
@@ -176,11 +179,13 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 		val preference = findPreference<Preference>(AppSettings.KEY_BACKUP_PERIODICAL_LAST) ?: return
 		viewLifecycleScope.launch {
 			val lastDate = withContext(Dispatchers.Default) {
-				scheduler.getLastSuccessfulBackup()
+				backupStorage.getLastBackupDate()
 			}
 			preference.summary = lastDate?.let {
-				val format = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.MEDIUM, SimpleDateFormat.SHORT)
-				preference.context.getString(R.string.last_successful_backup, format.format(it))
+				preference.context.getString(
+					R.string.last_successful_backup,
+					DateUtils.getRelativeTimeSpanString(it.time),
+				)
 			}
 			preference.isVisible = lastDate != null
 		}

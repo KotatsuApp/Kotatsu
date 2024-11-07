@@ -38,7 +38,7 @@ data class ReadingProgress(
 	companion object {
 
 		const val PROGRESS_NONE = -1f
-		const val PROGRESS_COMPLETED = 0.995f
+		const val PROGRESS_COMPLETED = 1f
 
 		fun isValid(percent: Float) = percent in 0f..1f
 

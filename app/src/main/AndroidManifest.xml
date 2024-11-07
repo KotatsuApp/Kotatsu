@@ -266,19 +266,26 @@
 			tools:node="merge" />
 		<service
 			android:name="org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService"
-			android:foregroundServiceType="dataSync" />
+			android:foregroundServiceType="dataSync"
+			android:label="@string/local_manga_processing" />
 		<service
-			android:name="org.koitharu.kotatsu.local.ui.ImportService"
-			android:foregroundServiceType="dataSync" />
+			android:name="org.koitharu.kotatsu.settings.backup.PeriodicalBackupService"
+			android:foregroundServiceType="dataSync"
+			android:label="@string/periodic_backups" />
 		<service
 			android:name="org.koitharu.kotatsu.alternatives.ui.AutoFixService"
-			android:foregroundServiceType="dataSync" />
-		<service android:name="org.koitharu.kotatsu.local.ui.LocalIndexUpdateService" />
+			android:foregroundServiceType="dataSync"
+			android:label="@string/fixing_manga" />
+		<service
+			android:name="org.koitharu.kotatsu.local.ui.LocalIndexUpdateService"
+			android:label="@string/local_manga_processing" />
 		<service
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"
+			android:label="@string/manga_shelf"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />
 		<service
 			android:name="org.koitharu.kotatsu.widget.recent.RecentWidgetService"
+			android:label="@string/recent_manga"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />
 		<service
 			android:name="org.koitharu.kotatsu.sync.ui.SyncAuthenticatorService"
@@ -315,7 +322,8 @@
 		</service>
 		<service
 			android:name="org.koitharu.kotatsu.details.service.MangaPrefetchService"
-			android:exported="false" />
+			android:exported="false"
+			android:label="@string/prefetch_content" />
 
 		<provider
 			android:name="org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider"

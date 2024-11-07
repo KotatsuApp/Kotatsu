@@ -9,7 +9,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
-import coil.ImageLoader
+import coil3.ImageLoader
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint

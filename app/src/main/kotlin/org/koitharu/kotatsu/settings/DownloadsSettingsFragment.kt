@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.DownloadFormat
-import org.koitharu.kotatsu.core.prefs.ReaderAnimation
+import org.koitharu.kotatsu.core.prefs.TriStateOption
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.resolveFile
@@ -55,6 +55,10 @@ class DownloadsSettingsFragment :
 			entryValues = DownloadFormat.entries.names()
 			setDefaultValueCompat(DownloadFormat.AUTOMATIC.name)
 		}
+		findPreference<ListPreference>(AppSettings.KEY_DOWNLOADS_METERED_NETWORK)?.run {
+			entryValues = TriStateOption.entries.names()
+			setDefaultValueCompat(TriStateOption.ASK.name)
+		}
 		dozeHelper.updatePreference()
 	}
 
@@ -81,7 +85,7 @@ class DownloadsSettingsFragment :
 				findPreference<Preference>(key)?.bindDirectoriesCount()
 			}
 
-			AppSettings.KEY_DOWNLOADS_WIFI -> {
+			AppSettings.KEY_DOWNLOADS_METERED_NETWORK -> {
 				updateDownloadsConstraints()
 			}
 
@@ -157,12 +161,17 @@ class DownloadsSettingsFragment :
 	}
 
 	private fun updateDownloadsConstraints() {
-		val preference = findPreference<Preference>(AppSettings.KEY_DOWNLOADS_WIFI)
+		val preference = findPreference<Preference>(AppSettings.KEY_DOWNLOADS_METERED_NETWORK)
 		viewLifecycleScope.launch {
 			try {
 				preference?.isEnabled = false
 				withContext(Dispatchers.Default) {
-					downloadsScheduler.updateConstraints()
+					val option = when (settings.allowDownloadOnMeteredNetwork) {
+						TriStateOption.ENABLED -> true
+						TriStateOption.ASK -> return@withContext
+						TriStateOption.DISABLED -> false
+					}
+					downloadsScheduler.updateConstraints(option)
 				}
 			} catch (e: Exception) {
 				e.printStackTraceDebug()

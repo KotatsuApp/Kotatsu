@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.tracker.ui.feed.adapter
 
 import androidx.lifecycle.LifecycleOwner
-import coil.ImageLoader
+import coil3.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseListAdapter

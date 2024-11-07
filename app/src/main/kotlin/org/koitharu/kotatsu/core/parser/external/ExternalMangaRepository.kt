@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import java.util.EnumSet
 
 class ExternalMangaRepository(
-	private val contentResolver: ContentResolver,
+	contentResolver: ContentResolver,
 	override val source: ExternalMangaSource,
 	cache: MemoryContentCache,
 ) : CachingMangaRepository(cache) {
@@ -42,7 +42,7 @@ class ExternalMangaRepository(
 
 	override var defaultSortOrder: SortOrder
 		get() = capabilities?.availableSortOrders?.firstOrNull() ?: SortOrder.ALPHABETICAL
-		set(value) = Unit
+		set(_) = Unit
 
 	override suspend fun getFilterOptions(): MangaListFilterOptions = filterOptions.get()
 

@@ -1,7 +1,7 @@
 package org.koitharu.kotatsu.details.ui.pager.pages
 
-import coil.key.Keyer
-import coil.request.Options
+import coil3.key.Keyer
+import coil3.request.Options
 import org.koitharu.kotatsu.parsers.model.MangaPage
 
 class MangaPageKeyer : Keyer<MangaPage> {
