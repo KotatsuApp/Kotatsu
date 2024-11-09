@@ -2,16 +2,18 @@ package org.koitharu.kotatsu.core.backup
 
 import android.content.Context
 import android.net.Uri
+import androidx.annotation.CheckResult
 import androidx.documentfile.provider.DocumentFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
-import okio.IOException
 import okio.buffer
 import okio.sink
 import okio.source
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
 import javax.inject.Inject
 
@@ -21,7 +23,7 @@ class ExternalBackupStorage @Inject constructor(
 ) {
 
 	suspend fun list(): List<BackupFile> = runInterruptible(Dispatchers.IO) {
-		getRoot().listFiles().mapNotNull {
+		getRootOrThrow().listFiles().mapNotNull {
 			if (it.isFile && it.canRead()) {
 				BackupFile(
 					uri = it.uri,
@@ -35,8 +37,14 @@ class ExternalBackupStorage @Inject constructor(
 		}.sortedDescending()
 	}
 
+	suspend fun listOrNull() = runCatchingCancellable {
+		list()
+	}.onFailure { e ->
+		e.printStackTraceDebug()
+	}.getOrNull()
+
 	suspend fun put(file: File): Uri = runInterruptible(Dispatchers.IO) {
-		val out = checkNotNull(getRoot().createFile("application/zip", file.nameWithoutExtension)) {
+		val out = checkNotNull(getRootOrThrow().createFile("application/zip", file.nameWithoutExtension)) {
 			"Cannot create target backup file"
 		}
 		checkNotNull(context.contentResolver.openOutputStream(out.uri, "wt")).sink().use { sink ->
@@ -47,25 +55,30 @@ class ExternalBackupStorage @Inject constructor(
 		out.uri
 	}
 
+	@CheckResult
 	suspend fun delete(victim: BackupFile) = runInterruptible(Dispatchers.IO) {
-		val df = checkNotNull(DocumentFile.fromSingleUri(context, victim.uri)) {
-			"${victim.uri} cannot be resolved to the DocumentFile"
-		}
-		if (!df.delete()) {
-			throw IOException("Cannot delete ${df.uri}")
-		}
+		val df = DocumentFile.fromSingleUri(context, victim.uri)
+		df != null && df.delete()
 	}
 
-	suspend fun getLastBackupDate() = list().maxByOrNull { it.dateTime }?.dateTime
+	suspend fun getLastBackupDate() = listOrNull()?.maxOfOrNull { it.dateTime }
 
-	suspend fun trim(maxCount: Int) {
-		list().drop(maxCount).forEach {
-			delete(it)
+	suspend fun trim(maxCount: Int): Boolean {
+		val list = listOrNull()
+		if (list == null || list.size <= maxCount) {
+			return false
 		}
+		var result = false
+		for (i in maxCount until list.size) {
+			if (delete(list[i])) {
+				result = true
+			}
+		}
+		return result
 	}
 
 	@Blocking
-	private fun getRoot(): DocumentFile {
+	private fun getRootOrThrow(): DocumentFile {
 		val uri = checkNotNull(settings.periodicalBackupDirectory) {
 			"Backup directory is not specified"
 		}
