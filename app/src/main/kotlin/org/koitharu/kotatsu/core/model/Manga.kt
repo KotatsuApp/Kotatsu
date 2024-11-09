@@ -88,6 +88,10 @@ fun Manga.findChapter(id: Long): MangaChapter? {
 	return chapters?.findById(id)
 }
 
+fun Manga.requireChapter(id: Long): MangaChapter = checkNotNull(findChapter(id)) {
+	"Chapter $id not found"
+}
+
 fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 	val ch = chapters
 	if (ch.isNullOrEmpty()) {

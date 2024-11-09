@@ -53,6 +53,7 @@ import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.zipWithPrevious
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.details.ui.pager.pages.PagesSavedObserver
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.reader.data.TapGridSettings
@@ -143,7 +144,7 @@ class ReaderActivity :
 			),
 		)
 		viewModel.readerMode.observe(this, Lifecycle.State.STARTED, this::onInitReader)
-		viewModel.onPageSaved.observeEvent(this, this::onPageSaved)
+		viewModel.onPageSaved.observeEvent(this, PagesSavedObserver(viewBinding.container))
 		viewModel.uiState.zipWithPrevious().observe(this, this::onUiStateChanged)
 		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
 		viewModel.content.observe(this) {
@@ -287,17 +288,6 @@ class ReaderActivity :
 
 	override fun onDoubleModeChanged(isEnabled: Boolean) {
 		readerManager.setDoubleReaderMode(isEnabled)
-	}
-
-	private fun onPageSaved(uri: Uri?) {
-		val snackbar = Snackbar.make(viewBinding.container, R.string.page_saved, Snackbar.LENGTH_LONG)
-		if (uri != null) {
-			snackbar.setAction(R.string.share) {
-				ShareHelper(this).shareImage(uri)
-			}
-		}
-		snackbar.setAnchorView(viewBinding.appbarBottom)
-		snackbar.show()
 	}
 
 	private fun setKeepScreenOn(isKeep: Boolean) {

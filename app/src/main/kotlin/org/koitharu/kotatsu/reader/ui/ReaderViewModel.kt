@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.findChapter
 import org.koitharu.kotatsu.core.model.getPreferredBranch
+import org.koitharu.kotatsu.core.model.requireChapter
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
@@ -111,7 +112,7 @@ class ReaderViewModel @Inject constructor(
 	}
 
 	val readerMode = MutableStateFlow<ReaderMode?>(null)
-	val onPageSaved = MutableEventFlow<Uri?>()
+	val onPageSaved = MutableEventFlow<Collection<Uri>>()
 	val onShowToast = MutableEventFlow<Int>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
@@ -261,8 +262,8 @@ class ReaderViewModel @Inject constructor(
 			val currentManga = manga.requireValue()
 			val task = PageSaveHelper.Task(
 				manga = currentManga,
-				chapter = checkNotNull(currentManga.findChapter(state.chapterId)),
-				pageNumber = state.page,
+				chapter = currentManga.requireChapter(state.chapterId),
+				pageNumber = state.page + 1,
 				page = checkNotNull(getCurrentPage()) { "Cannot find current page" },
 			)
 			val dest = pageSaveHelper.save(setOf(task))
