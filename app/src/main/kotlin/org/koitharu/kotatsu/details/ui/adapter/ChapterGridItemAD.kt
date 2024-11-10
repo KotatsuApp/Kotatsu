@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.details.ui.adapter
 import android.graphics.Typeface
 import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import org.koitharu.kotatsu.core.model.formatNumber
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
@@ -22,7 +21,7 @@ fun chapterGridItemAD(
 
 	bind { payloads ->
 		if (payloads.isEmpty()) {
-			binding.textViewTitle.text = item.chapter.formatNumber() ?: "?"
+			binding.textViewTitle.text = item.chapter.numberString() ?: "?"
 		}
 		binding.imageViewNew.isVisible = item.isNew
 		binding.imageViewCurrent.isVisible = item.isCurrent

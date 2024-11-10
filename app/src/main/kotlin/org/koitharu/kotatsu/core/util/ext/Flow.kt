@@ -17,7 +17,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.transformWhile
-import org.koitharu.kotatsu.parsers.util.SuspendLazy
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.suspendlazy.SuspendLazy
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -133,4 +134,4 @@ suspend fun <T : Any> Flow<T?>.firstNotNullOrNull(): T? = firstOrNull { x -> x !
 
 fun <T> Flow<Flow<T>>.flattenLatest() = flatMapLatest { it }
 
-fun <T> SuspendLazy<T>.asFlow() = flow { emit(tryGet()) }
+fun <T> SuspendLazy<T>.asFlow() = flow { emit(runCatchingCancellable { get() }) }

@@ -7,7 +7,6 @@ import androidx.core.net.toFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
-import org.koitharu.kotatsu.core.model.findChapter
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
@@ -40,7 +39,7 @@ class DetectReaderModeUseCase @Inject constructor(
 		if (!settings.isReaderModeDetectionEnabled || defaultMode == ReaderMode.WEBTOON) {
 			return defaultMode
 		}
-		val chapter = state?.let { manga.findChapter(it.chapterId) }
+		val chapter = state?.let { manga.findChapterById(it.chapterId) }
 			?: manga.chapters?.firstOrNull()
 			?: error("There are no chapters in this manga")
 		val repo = mangaRepositoryFactory.create(manga.source)

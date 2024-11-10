@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.details.domain
 
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.model.findChapter
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -33,8 +32,8 @@ class ProgressUpdateUseCase @Inject constructor(
 		} else {
 			seed
 		}
-		val chapter = details.findChapter(history.chapterId) ?: return PROGRESS_NONE
-		val chapters = details.getChapters(chapter.branch) ?: return PROGRESS_NONE
+		val chapter = details.findChapterById(history.chapterId) ?: return PROGRESS_NONE
+		val chapters = details.getChapters(chapter.branch)
 		val chaptersCount = chapters.size
 		if (chaptersCount == 0) {
 			return PROGRESS_NONE

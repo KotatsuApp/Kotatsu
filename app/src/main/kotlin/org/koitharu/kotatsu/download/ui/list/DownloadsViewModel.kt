@@ -22,7 +22,6 @@ import kotlinx.coroutines.plus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.formatNumber
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -308,7 +307,7 @@ class DownloadsViewModel @Inject constructor(
 			return chapters.mapNotNullTo(ArrayList(size)) {
 				if (chapterIds == null || it.id in chapterIds) {
 					DownloadChapter(
-						number = it.formatNumber(),
+						number = it.numberString(),
 						name = it.name,
 						isDownloaded = it.id in localChapters,
 					)

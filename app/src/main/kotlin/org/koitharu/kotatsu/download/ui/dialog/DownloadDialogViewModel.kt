@@ -29,9 +29,9 @@ import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
 import javax.inject.Inject
 
@@ -50,7 +50,7 @@ class DownloadDialogViewModel @Inject constructor(
 	val manga = savedStateHandle.require<Array<ParcelableManga>>(DownloadDialogFragment.ARG_MANGA).map {
 		it.manga
 	}
-	private val mangaDetails = SuspendLazy {
+	private val mangaDetails = suspendLazy {
 		coroutineScope {
 			manga.map { m ->
 				async { m.getDetails() }

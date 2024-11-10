@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.koitharu.kotatsu.core.model.findById
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -18,6 +17,7 @@ import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.util.findById
 import org.koitharu.kotatsu.parsers.util.recoverCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
@@ -77,8 +77,8 @@ class DeleteReadChaptersUseCase @Inject constructor(
 			return null
 		}
 		val branch = (chapters.findById(history.chapterId) ?: return null).branch
-		val filteredChapters = manga.manga.getChapters(branch)?.takeWhile { it.id != history.chapterId }
-		return if (filteredChapters.isNullOrEmpty()) {
+		val filteredChapters = manga.manga.getChapters(branch).takeWhile { it.id != history.chapterId }
+		return if (filteredChapters.isEmpty()) {
 			null
 		} else {
 			DeletionTask(

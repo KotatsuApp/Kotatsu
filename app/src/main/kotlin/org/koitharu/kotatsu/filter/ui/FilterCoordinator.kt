@@ -35,8 +35,8 @@ import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.model.YEAR_MIN
-import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.ifZero
+import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import java.util.Calendar
@@ -59,7 +59,7 @@ class FilterCoordinator @Inject constructor(
 	private val currentSortOrder = MutableStateFlow(repository.defaultSortOrder)
 
 	private val availableSortOrders = repository.sortOrders
-	private val filterOptions = SuspendLazy { repository.getFilterOptions() }
+	private val filterOptions = suspendLazy { repository.getFilterOptions() }
 	val capabilities = repository.filterCapabilities
 
 	val mangaSource: MangaSource

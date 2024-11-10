@@ -67,17 +67,14 @@ class PageSaveHelper @AssistedInject constructor(
 		}
 	}
 
-	suspend fun save(tasks: Set<Task>): Uri? = when (tasks.size) {
-		0 -> null
-		1 -> saveImpl(tasks.first())
-		else -> {
-			saveImpl(tasks)
-			null
-		}
+	suspend fun save(tasks: Collection<Task>): Collection<Uri> = when (tasks.size) {
+		0 -> emptySet()
+		1 -> setOf(saveImpl(tasks.first()))
+		else -> saveImpl(tasks)
 	}
 
 	private suspend fun saveImpl(task: Task): Uri {
-		val pageLoader = pageLoaderProvider.get()
+		val pageLoader = getPageLoader()
 		val pageUrl = pageLoader.getPageUrl(task.page).toUri()
 		val pageUri = pageLoader.loadPage(task.page, force = false)
 		val proposedName = task.getFileBaseName() + "." + getPageExtension(pageUrl, pageUri)
@@ -89,13 +86,14 @@ class PageSaveHelper @AssistedInject constructor(
 		return destination
 	}
 
-	private suspend fun saveImpl(tasks: Collection<Task>) {
-		val pageLoader = pageLoaderProvider.get()
+	private suspend fun saveImpl(tasks: Collection<Task>): Collection<Uri> {
+		val pageLoader = getPageLoader()
 		val destinationDir = getDefaultFileUri(null) ?: run {
 			val defaultUri = settings.getPagesSaveDir(context)?.uri
 			DocumentFile.fromTreeUri(context, pickDirectoryRequest.launchAndAwait(defaultUri))
 		} ?: throw IOException("Cannot get destination directory")
 
+		val result = ArrayList<Uri>(tasks.size)
 		for (task in tasks) {
 			val pageUrl = pageLoader.getPageUrl(task.page).toUri()
 			val pageUri = pageLoader.loadPage(task.page, force = false)
@@ -106,7 +104,9 @@ class PageSaveHelper @AssistedInject constructor(
 			}
 			val destination = destinationDir.createFile(mime, proposedName.substringBeforeLast('.'))
 			copyImpl(pageUri, destination?.uri ?: throw IOException("Cannot create destination file"))
+			result.add(destination.uri)
 		}
+		return result
 	}
 
 	private suspend fun getPageExtension(url: Uri, fileUri: Uri): String {
@@ -141,6 +141,10 @@ class PageSaveHelper @AssistedInject constructor(
 				continuation = null
 			}
 		}
+	}
+
+	private suspend fun getPageLoader() = withContext(Dispatchers.Main.immediate) {
+		pageLoaderProvider.get()
 	}
 
 	private fun getDefaultFileUri(proposedName: String?): DocumentFile? {

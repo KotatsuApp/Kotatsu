@@ -115,9 +115,9 @@ abstract class MangaListFragment :
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = listAdapter
-			checkNotNull(selectionController).attachToRecyclerView(binding.recyclerView)
+			checkNotNull(selectionController).attachToRecyclerView(this)
 			addItemDecoration(TypedListSpacingDecoration(context, false))
-			addOnScrollListener(paginationListener!!)
+			addOnScrollListener(checkNotNull(paginationListener))
 			fastScroller.setFastScrollListener(this@MangaListFragment)
 		}
 		with(binding.swipeRefreshLayout) {
