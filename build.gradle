@@ -4,10 +4,11 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath libs.gradle
-		classpath libs.kotlin.gradle.plugin
-		classpath libs.hilt.android.gradle.plugin
-		classpath libs.symbol.processing.gradle.plugin
+		// https://github.com/gradle/gradle/issues/16958
+		classpath "${libs.plugins.android.get()}"
+		classpath "${libs.plugins.kotlin.get()}"
+		classpath "${libs.plugins.hilt.get()}"
+		classpath "${libs.plugins.ksp.get()}"
 	}
 }
 

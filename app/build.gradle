@@ -18,8 +18,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 686
-		versionName = '7.7-a7'
+		versionCode = 687
+		versionName = '7.7-a8'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -121,21 +121,21 @@ dependencies {
 	implementation libs.kotlinx.coroutines.android
 	implementation libs.kotlinx.coroutines.guava
 
-	implementation libs.appcompat
-	implementation libs.core.ktx
-	implementation libs.activity.ktx
-	implementation libs.fragment.ktx
-	implementation libs.transition.ktx
-	implementation libs.collection.ktx
-	implementation libs.lifecycle.viewmodel.ktx
+	implementation libs.androidx.appcompat
+	implementation libs.androidx.core
+	implementation libs.androidx.activity
+	implementation libs.androidx.fragment
+	implementation libs.androidx.transition
+	implementation libs.androidx.collection
+	implementation libs.lifecycle.viewmodel
 	implementation libs.lifecycle.service
 	implementation libs.lifecycle.process
 	implementation libs.androidx.constraintlayout
 	implementation libs.androidx.swiperefreshlayout
 	implementation libs.androidx.recyclerview
 	implementation libs.androidx.viewpager2
-	implementation libs.androidx.preference.ktx
-	implementation libs.androidx.biometric.ktx
+	implementation libs.androidx.preference
+	implementation libs.androidx.biometric
 	implementation libs.material
 	implementation libs.androidx.lifecycle.common.java8
 	implementation libs.androidx.webkit
@@ -152,8 +152,8 @@ dependencies {
 	implementation libs.okhttp.dnsoverhttps
 	implementation libs.okio
 
-	implementation libs.adapterdelegates4.kotlin.dsl
-	implementation libs.adapterdelegates4.kotlin.dsl.viewbinding
+	implementation libs.adapterdelegates
+	implementation libs.adapterdelegates.viewbinding
 
 	implementation libs.hilt.android
 	kapt libs.hilt.compiler
@@ -165,9 +165,9 @@ dependencies {
 	implementation libs.coil.gif
 	implementation libs.coil.svg
 	implementation libs.avif.decoder
-	implementation libs.subsampling.scale.image.view
+	implementation libs.ssiv
 	implementation libs.disk.lru.cache
-	implementation libs.core
+	implementation libs.markwon
 
 	implementation libs.acra.http
 	implementation libs.acra.dialog
@@ -183,8 +183,8 @@ dependencies {
 
 	androidTestImplementation libs.androidx.runner
 	androidTestImplementation libs.androidx.rules
-	androidTestImplementation libs.androidx.core.ktx
-	androidTestImplementation libs.androidx.junit.ktx
+	androidTestImplementation libs.androidx.test.core
+	androidTestImplementation libs.androidx.junit
 
 	androidTestImplementation libs.kotlinx.coroutines.test
 
