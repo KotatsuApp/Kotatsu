@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
 import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.util.SuspendLazy
+import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import java.util.EnumSet
 
 class ExternalMangaRepository(
@@ -32,7 +32,7 @@ class ExternalMangaRepository(
 		}.getOrNull()
 	}
 
-	private val filterOptions = SuspendLazy(contentSource::getListFilterOptions)
+	private val filterOptions = suspendLazy(initializer = contentSource::getListFilterOptions)
 
 	override val sortOrders: Set<SortOrder>
 		get() = capabilities?.availableSortOrders ?: EnumSet.of(SortOrder.POPULARITY)

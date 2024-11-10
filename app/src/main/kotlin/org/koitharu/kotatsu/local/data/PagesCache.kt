@@ -22,8 +22,8 @@ import org.koitharu.kotatsu.core.util.ext.subdir
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.takeIfWriteable
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
-import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import java.io.File
 import java.util.UUID
 import javax.inject.Inject
@@ -32,13 +32,13 @@ import javax.inject.Singleton
 @Singleton
 class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 
-	private val cacheDir = SuspendLazy {
+	private val cacheDir = suspendLazy {
 		val dirs = context.externalCacheDirs + context.cacheDir
 		dirs.firstNotNullOf {
 			it?.subdir(CacheDir.PAGES.dir)?.takeIfWriteable()
 		}
 	}
-	private val lruCache = SuspendLazy {
+	private val lruCache = suspendLazy {
 		val dir = cacheDir.get()
 		val availableSize = (getAvailableSize() * 0.8).toLong()
 		val size = SIZE_DEFAULT.coerceAtMost(availableSize).coerceAtLeast(SIZE_MIN)

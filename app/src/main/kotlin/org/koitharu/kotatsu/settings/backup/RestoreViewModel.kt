@@ -16,7 +16,7 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
-import org.koitharu.kotatsu.parsers.util.SuspendLazy
+import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.Date
@@ -31,7 +31,7 @@ class RestoreViewModel @Inject constructor(
 	@ApplicationContext context: Context,
 ) : BaseViewModel() {
 
-	private val backupInput = SuspendLazy {
+	private val backupInput = suspendLazy {
 		val uri = savedStateHandle.get<String>(RestoreDialogFragment.ARG_FILE)
 			?.toUriOrNull() ?: throw FileNotFoundException()
 		val contentResolver = context.contentResolver

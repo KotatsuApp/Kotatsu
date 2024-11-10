@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.parser
 
+import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.koitharu.kotatsu.core.cache.MemoryContentCache
@@ -17,9 +18,9 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.util.SuspendLazy
 import org.koitharu.kotatsu.parsers.util.domain
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 
 class ParserMangaRepository(
 	private val parser: MangaParser,
@@ -27,7 +28,7 @@ class ParserMangaRepository(
 	cache: MemoryContentCache,
 ) : CachingMangaRepository(cache), Interceptor {
 
-	private val filterOptionsLazy = SuspendLazy {
+	private val filterOptionsLazy = suspendLazy(Dispatchers.Default) {
 		mirrorSwitchInterceptor.withMirrorSwitching {
 			parser.getFilterOptions()
 		}

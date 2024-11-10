@@ -8,7 +8,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.plus
-import org.koitharu.kotatsu.core.model.requireChapter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -90,7 +89,7 @@ class PagesViewModel @Inject constructor(
 			val tasks = pages.map {
 				PageSaveHelper.Task(
 					manga = manga,
-					chapter = manga.requireChapter(it.chapterId),
+					chapter = manga.requireChapterById(it.chapterId),
 					pageNumber = it.index + 1,
 					page = it.toMangaPage(),
 				)

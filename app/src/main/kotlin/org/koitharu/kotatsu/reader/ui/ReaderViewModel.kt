@@ -30,9 +30,7 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
-import org.koitharu.kotatsu.core.model.findChapter
 import org.koitharu.kotatsu.core.model.getPreferredBranch
-import org.koitharu.kotatsu.core.model.requireChapter
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaIntent
@@ -262,7 +260,7 @@ class ReaderViewModel @Inject constructor(
 			val currentManga = manga.requireValue()
 			val task = PageSaveHelper.Task(
 				manga = currentManga,
-				chapter = currentManga.requireChapter(state.chapterId),
+				chapter = currentManga.requireChapterById(state.chapterId),
 				pageNumber = state.page + 1,
 				page = checkNotNull(getCurrentPage()) { "Cannot find current page" },
 			)
@@ -498,7 +496,7 @@ class ReaderViewModel @Inject constructor(
 		val history = historyRepository.getOne(manga)
 		val preselectedBranch = selectedBranch.value
 		val result = if (history != null) {
-			if (preselectedBranch != null && preselectedBranch != manga.findChapter(history.chapterId)?.branch) {
+			if (preselectedBranch != null && preselectedBranch != manga.findChapterById(history.chapterId)?.branch) {
 				null
 			} else {
 				ReaderState(history)

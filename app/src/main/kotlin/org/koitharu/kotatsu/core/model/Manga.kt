@@ -17,7 +17,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaState
-import org.koitharu.kotatsu.parsers.util.formatSimple
+import org.koitharu.kotatsu.parsers.util.findById
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import com.google.android.material.R as materialR
 
@@ -28,8 +28,6 @@ fun Collection<Manga>.distinctById() = distinctBy { it.id }
 
 @JvmName("chaptersIds")
 fun Collection<MangaChapter>.ids() = mapToSet { it.id }
-
-fun Collection<MangaChapter>.findById(id: Long) = find { x -> x.id == id }
 
 fun Collection<ChapterListItem>.countChaptersByBranch(): Int {
 	if (size <= 1) {
@@ -84,14 +82,6 @@ val Demographic.titleResId: Int
 		Demographic.NONE -> R.string.none
 	}
 
-fun Manga.findChapter(id: Long): MangaChapter? {
-	return chapters?.findById(id)
-}
-
-fun Manga.requireChapter(id: Long): MangaChapter = checkNotNull(findChapter(id)) {
-	"Chapter $id not found"
-}
-
 fun Manga.getPreferredBranch(history: MangaHistory?): String? {
 	val ch = chapters
 	if (ch.isNullOrEmpty()) {
@@ -139,12 +129,6 @@ val Manga.appUrl: Uri
 		.appendQueryParameter("name", title)
 		.appendQueryParameter("url", url)
 		.build()
-
-fun MangaChapter.formatNumber(): String? = if (number > 0f) {
-	number.formatSimple()
-} else {
-	null
-}
 
 fun Manga.chaptersCount(): Int {
 	if (chapters.isNullOrEmpty()) {

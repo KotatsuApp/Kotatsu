@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.details.ui.model
 
 import android.text.format.DateUtils
 import org.jsoup.internal.StringUtil.StringJoiner
-import org.koitharu.kotatsu.core.model.formatNumber
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import kotlin.experimental.and
@@ -53,7 +52,7 @@ data class ChapterListItem(
 
 	private fun buildDescription(): String {
 		val joiner = StringJoiner(" • ")
-		chapter.formatNumber()?.let {
+		chapter.numberString()?.let {
 			joiner.add("#").append(it)
 		}
 		uploadDate?.let { date ->

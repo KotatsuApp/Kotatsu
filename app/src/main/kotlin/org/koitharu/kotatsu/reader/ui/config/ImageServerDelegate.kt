@@ -11,7 +11,8 @@ import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.mapToArray
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.SuspendLazy
+import org.koitharu.kotatsu.parsers.util.suspendlazy.getOrNull
+import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import kotlin.coroutines.resume
 
 class ImageServerDelegate(
@@ -19,30 +20,30 @@ class ImageServerDelegate(
 	private val mangaSource: MangaSource?,
 ) {
 
-	private val repositoryLazy = SuspendLazy {
+	private val repositoryLazy = suspendLazy {
 		mangaRepositoryFactory.create(checkNotNull(mangaSource)) as ParserMangaRepository
 	}
 
 	suspend fun isAvailable() = withContext(Dispatchers.Default) {
-		repositoryLazy.tryGet().map { repository ->
+		repositoryLazy.getOrNull()?.let { repository ->
 			repository.getConfigKeys().any { it is ConfigKey.PreferredImageServer }
-		}.getOrDefault(false)
+		} == true
 	}
 
 	suspend fun getValue(): String? = withContext(Dispatchers.Default) {
-		repositoryLazy.tryGet().map { repository ->
+		repositoryLazy.getOrNull()?.let { repository ->
 			val key = repository.getConfigKeys().firstNotNullOfOrNull { it as? ConfigKey.PreferredImageServer }
 			if (key != null) {
 				key.presetValues[repository.getConfig()[key]]
 			} else {
 				null
 			}
-		}.getOrNull()
+		}
 	}
 
 	suspend fun showDialog(context: Context): Boolean {
 		val repository = withContext(Dispatchers.Default) {
-			repositoryLazy.tryGet().getOrNull()
+			repositoryLazy.getOrNull()
 		} ?: return false
 		val key = repository.getConfigKeys().firstNotNullOfOrNull {
 			it as? ConfigKey.PreferredImageServer
