@@ -56,16 +56,14 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 		}
 		val checkApiButton = Preference(requireContext()).apply {
 			key = "check_api_working"
-			title = "Проверить работу API"
-			summary = "Нажмите для проверки работы Telegram Bot API"
+			title = context.getString(R.string.api_telegram_check)
+			summary = context.getString(R.string.api_check_desc)
 		}
 
 		checkApiButton.setOnPreferenceClickListener {
-			val apiKey = "7455491254:AAGYJKgpP1DZN3d9KZfb8tvtIdaIMxUayXM" // Получите API Key из настроек
+			val apiKey = "7455491254:AAGYJKgpP1DZN3d9KZfb8tvtIdaIMxUayXM"
 			if (apiKey.isNotEmpty()) {
 				checkTelegramBotApiKey(apiKey)
-			} else {
-				Toast.makeText(requireContext(), "Введите API Key в настройках!", Toast.LENGTH_SHORT).show()
 			}
 			true
 		}
@@ -84,14 +82,14 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 			override fun onResponse(call: Call, response: Response) {
 				requireActivity().runOnUiThread {
 					if (response.isSuccessful) {
-						sendMessageToTelegram(apiKey, "Kotatsu's backup in Telegram is working!!")
+						context?.let { sendMessageToTelegram(apiKey, it.getString(R.string.api_is_work)) }
 					}
-				}
+	}
 			}
 
 			override fun onFailure(call: Call, e: IOException) {
 				requireActivity().runOnUiThread {
-					Toast.makeText(requireContext(), "Network error! Check your Net", Toast.LENGTH_SHORT).show()
+					Toast.makeText(requireContext(), R.string.api_net_error, Toast.LENGTH_SHORT).show()
 				}
 			}
 		})
@@ -110,7 +108,7 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 	private fun sendMessageToTelegram(apiKey: String, message: String) {
 		val chatId = settings.telegramChatId
 		if (chatId.isNullOrEmpty()) {
-			Toast.makeText(requireContext(), "Chat ID is not set!", Toast.LENGTH_SHORT).show()
+			Toast.makeText(requireContext(), R.string.id_not_set, Toast.LENGTH_SHORT).show()
 			return
 		}
 
@@ -124,16 +122,16 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 			override fun onResponse(call: Call, response: Response) {
 				requireActivity().runOnUiThread {
 					if (response.isSuccessful) {
-						Toast.makeText(requireContext(), "Success! Check Telegram Bot", Toast.LENGTH_SHORT).show()
+						Toast.makeText(requireContext(), R.string.api_check_success, Toast.LENGTH_SHORT).show()
 					} else {
-						Toast.makeText(requireContext(), "OOPS! Something went wrong", Toast.LENGTH_SHORT).show()
+						Toast.makeText(requireContext(), R.string.api_check_error, Toast.LENGTH_SHORT).show()
 					}
 				}
 			}
 
 			override fun onFailure(call: Call, e: IOException) {
 				requireActivity().runOnUiThread {
-					Toast.makeText(requireContext(), "Network error!", Toast.LENGTH_SHORT).show()
+					Toast.makeText(requireContext(), R.string.api_error, Toast.LENGTH_SHORT).show()
 				}
 			}
 		})
