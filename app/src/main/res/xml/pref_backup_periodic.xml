@@ -24,7 +24,15 @@
 		android:title="@string/backup_frequency"
 		app:useSimpleSummaryProvider="true" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:dependency="backup_periodic"
+		android:key="backup_periodic_trim"
+		android:summary="@string/delete_old_backups_summary"
+		android:title="@string/delete_old_backups" />
+
 	<org.koitharu.kotatsu.settings.utils.SliderPreference
+		android:dependency="backup_periodic_trim"
 		android:key="backup_periodic_count"
 		android:stepSize="1"
 		android:title="@string/max_backups_count"

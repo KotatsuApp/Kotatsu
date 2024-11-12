@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.ArraySet
 import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
-import androidx.core.util.TimeUtils
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -476,7 +475,11 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = TimeUnit.DAYS.toMillis(prefs.getString(KEY_BACKUP_PERIODICAL_FREQUENCY, null)?.toLongOrNull() ?: 7L)
 
 	val periodicalBackupMaxCount: Int
-		get() = prefs.getInt(KEY_BACKUP_PERIODICAL_COUNT, 10)
+		get() = if (prefs.getBoolean(KEY_BACKUP_PERIODICAL_TRIM, true)) {
+			prefs.getInt(KEY_BACKUP_PERIODICAL_COUNT, 10)
+		} else {
+			Int.MAX_VALUE
+		}
 
 	var periodicalBackupDirectory: Uri?
 		get() = prefs.getString(KEY_BACKUP_PERIODICAL_OUTPUT, null)?.toUriOrNull()
@@ -626,6 +629,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_RESTORE = "restore"
 		const val KEY_BACKUP_PERIODICAL_ENABLED = "backup_periodic"
 		const val KEY_BACKUP_PERIODICAL_FREQUENCY = "backup_periodic_freq"
+		const val KEY_BACKUP_PERIODICAL_TRIM = "backup_periodic_trim"
 		const val KEY_BACKUP_PERIODICAL_COUNT = "backup_periodic_count"
 		const val KEY_BACKUP_PERIODICAL_OUTPUT = "backup_periodic_output"
 		const val KEY_BACKUP_PERIODICAL_LAST = "backup_periodic_last"

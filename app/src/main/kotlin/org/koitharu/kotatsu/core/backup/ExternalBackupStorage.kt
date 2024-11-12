@@ -64,6 +64,9 @@ class ExternalBackupStorage @Inject constructor(
 	suspend fun getLastBackupDate() = listOrNull()?.maxOfOrNull { it.dateTime }
 
 	suspend fun trim(maxCount: Int): Boolean {
+		if (maxCount == Int.MAX_VALUE) {
+			return false
+		}
 		val list = listOrNull()
 		if (list == null || list.size <= maxCount) {
 			return false

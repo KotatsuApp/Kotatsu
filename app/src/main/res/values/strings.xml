@@ -763,4 +763,6 @@
 	<string name="breadcrumbs_separator" translatable="false"><![CDATA[" > "]]></string>
 	<string name="access_denied_403">Access denied (403)</string>
 	<string name="max_backups_count">Max number of backups</string>
+	<string name="delete_old_backups">Delete old backups</string>
+	<string name="delete_old_backups_summary">Automatically delete old backup files to save storage space</string>
 </resources>

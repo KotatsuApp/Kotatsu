@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.isGone
 import androidx.core.view.updatePadding
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.slider.RangeSlider
@@ -356,5 +357,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		private const val TAG = "FilterSheet"
 
 		fun show(fm: FragmentManager) = FilterSheetFragment().showDistinct(fm, TAG)
+
+		fun isSupported(fragment: Fragment) = fragment.activity is FilterCoordinator.Owner
 	}
 }
