@@ -44,7 +44,7 @@ interface ChaptersSelectMacro {
 	) : ChaptersSelectMacro {
 
 		override fun getChaptersIds(mangaId: Long, chapters: List<MangaChapter>): Set<Long> {
-			val result = ArraySet<Long>(chaptersCount)
+			val result = ArraySet<Long>(minOf(chaptersCount, chapters.size))
 			for (c in chapters) {
 				if (c.branch == branch) {
 					result.add(c.id)
@@ -72,7 +72,7 @@ interface ChaptersSelectMacro {
 			val currentChapterId = currentChaptersIds.getOrDefault(mangaId, chapters.first().id)
 			var branch: String? = null
 			var isAdding = false
-			val result = ArraySet<Long>(chaptersCount)
+			val result = ArraySet<Long>(minOf(chaptersCount, chapters.size))
 			for (c in chapters) {
 				if (!isAdding) {
 					if (c.id == currentChapterId) {

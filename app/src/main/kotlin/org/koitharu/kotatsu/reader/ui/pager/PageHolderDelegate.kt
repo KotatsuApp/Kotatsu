@@ -1,9 +1,12 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
+import android.content.ComponentCallbacks2
+import android.content.res.Configuration
 import android.graphics.Rect
 import android.net.Uri
 import androidx.lifecycle.Observer
 import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
+import com.davemorrissey.labs.subscaleview.ImageSource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +37,7 @@ class PageHolderDelegate(
 	private val networkState: NetworkState,
 	private val exceptionResolver: ExceptionResolver,
 	private val isWebtoon: Boolean,
-) : DefaultOnImageEventListener, Observer<ReaderSettings> {
+) : DefaultOnImageEventListener, Observer<ReaderSettings>, ComponentCallbacks2 {
 
 	private val scope = loader.loaderScope + Dispatchers.Main.immediate
 	var state = State.EMPTY
@@ -99,7 +102,7 @@ class PageHolderDelegate(
 	fun reload() {
 		if (state == State.SHOWN) {
 			uri?.let {
-				callback.onImageReady(it, cachedBounds)
+				callback.onImageReady(it.toImageSource(cachedBounds))
 			}
 		}
 	}
@@ -135,6 +138,15 @@ class PageHolderDelegate(
 		callback.onConfigChanged()
 	}
 
+	override fun onConfigurationChanged(newConfig: Configuration) = Unit
+
+	@Suppress("OVERRIDE_DEPRECATION")
+	override fun onLowMemory() = Unit
+
+	override fun onTrimMemory(level: Int) {
+		callback.onTrimMemory()
+	}
+
 	private fun tryConvert(uri: Uri, e: Exception) {
 		val prevJob = job
 		job = scope.launch {
@@ -148,7 +160,7 @@ class PageHolderDelegate(
 					null
 				}
 				state = State.CONVERTED
-				callback.onImageReady(newUri, cachedBounds)
+				callback.onImageReady(newUri.toImageSource(cachedBounds))
 			} catch (ce: CancellationException) {
 				throw ce
 			} catch (e2: Throwable) {
@@ -181,7 +193,7 @@ class PageHolderDelegate(
 			} else {
 				null
 			}
-			callback.onImageReady(checkNotNull(uri), cachedBounds)
+			callback.onImageReady(checkNotNull(uri).toImageSource(cachedBounds))
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {
@@ -201,6 +213,15 @@ class PageHolderDelegate(
 		.onEach { callback.onProgressChanged((100 * it).toInt()) }
 		.launchIn(scope)
 
+	private fun Uri.toImageSource(bounds: Rect?): ImageSource {
+		val source = ImageSource.uri(this)
+		return if (bounds != null) {
+			source.region(bounds)
+		} else {
+			source
+		}
+	}
+
 	enum class State {
 		EMPTY, LOADING, LOADED, CONVERTING, CONVERTED, SHOWING, SHOWN, ERROR
 	}
@@ -211,7 +232,7 @@ class PageHolderDelegate(
 
 		fun onError(e: Throwable)
 
-		fun onImageReady(uri: Uri, bounds: Rect?)
+		fun onImageReady(source: ImageSource)
 
 		fun onImageShowing(settings: ReaderSettings)
 
@@ -220,5 +241,7 @@ class PageHolderDelegate(
 		fun onProgressChanged(progress: Int)
 
 		fun onConfigChanged()
+
+		fun onTrimMemory()
 	}
 }

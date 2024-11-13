@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
-import android.graphics.Rect
-import android.net.Uri
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
@@ -91,11 +89,7 @@ class WebtoonHolder(
 		}
 	}
 
-	override fun onImageReady(uri: Uri, bounds: Rect?) {
-		val source = ImageSource.Uri(uri)
-		if (bounds != null) {
-			source.region(bounds)
-		}
+	override fun onImageReady(source: ImageSource) {
 		binding.ssiv.setImage(source)
 	}
 
@@ -115,6 +109,10 @@ class WebtoonHolder(
 
 	override fun onImageShown() {
 		bindingInfo.progressBar.hide()
+	}
+
+	override fun onTrimMemory() {
+		// TODO
 	}
 
 	override fun onClick(v: View) {

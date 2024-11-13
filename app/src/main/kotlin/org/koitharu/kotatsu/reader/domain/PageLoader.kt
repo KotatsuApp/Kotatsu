@@ -164,7 +164,7 @@ class PageLoader @Inject constructor(
 	}
 
 	suspend fun getTrimmedBounds(uri: Uri): Rect? = runCatchingCancellable {
-		edgeDetector.getBounds(ImageSource.Uri(uri))
+		edgeDetector.getBounds(ImageSource.uri(uri))
 	}.onFailure { error ->
 		error.printStackTraceDebug()
 	}.getOrNull()

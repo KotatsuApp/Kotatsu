@@ -164,6 +164,10 @@ class HistoryRepository @Inject constructor(
 		db.getHistoryDao().deleteAfter(minDate)
 	}
 
+	suspend fun deleteNotFavorite() {
+		db.getHistoryDao().deleteNotFavorite()
+	}
+
 	suspend fun delete(ids: Collection<Long>): ReversibleHandle {
 		db.withTransaction {
 			for (id in ids) {

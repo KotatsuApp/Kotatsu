@@ -25,7 +25,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil3.ImageLoader
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
@@ -127,7 +127,7 @@ class DetailsActivity :
 	View.OnClickListener,
 	View.OnLongClickListener, PopupMenu.OnMenuItemClickListener, View.OnLayoutChangeListener,
 	ViewTreeObserver.OnDrawListener, ChipsView.OnChipClickListener, OnListItemClickListener<Bookmark>,
-	OnContextClickListenerCompat {
+	OnContextClickListenerCompat, SwipeRefreshLayout.OnRefreshListener {
 
 	@Inject
 	lateinit var shortcutManager: AppShortcutManager
@@ -165,6 +165,7 @@ class DetailsActivity :
 		viewBinding.infoLayout.chipSource.setOnClickListener(this)
 		viewBinding.infoLayout.chipSize.setOnClickListener(this)
 		viewBinding.textViewDescription.addOnLayoutChangeListener(this)
+		viewBinding.swipeRefreshLayout.setOnRefreshListener(this)
 		viewBinding.textViewDescription.viewTreeObserver.addOnDrawListener(this)
 		viewBinding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
 		viewBinding.chipsTags.onChipClickListener = this
@@ -349,6 +350,10 @@ class DetailsActivity :
 		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
 
+	override fun onRefresh() {
+		viewModel.reload()
+	}
+
 	override fun onDraw() {
 		viewBinding.run {
 			buttonDescriptionMore.isVisible = textViewDescription.maxLines == Int.MAX_VALUE ||
@@ -420,18 +425,7 @@ class DetailsActivity :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		val button = viewBinding.buttonDownload ?: return
-		if (isLoading) {
-			button.setImageDrawable(
-				CircularProgressDrawable(this).also {
-					it.setStyle(CircularProgressDrawable.LARGE)
-					it.setColorSchemeColors(getThemeColor(materialR.attr.colorControlNormal))
-					it.start()
-				},
-			)
-		} else {
-			button.setImageResource(R.drawable.ic_download)
-		}
+		viewBinding.swipeRefreshLayout.isRefreshing = isLoading
 	}
 
 	private fun onScrobblingInfoChanged(scrobblings: List<ScrobblingInfo>) {

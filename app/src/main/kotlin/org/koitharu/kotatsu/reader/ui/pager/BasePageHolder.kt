@@ -57,11 +57,21 @@ abstract class BasePageHolder<B : ViewBinding>(
 
 	protected abstract fun onBind(data: ReaderPage)
 
+	override fun onCreate() {
+		super.onCreate()
+		context.registerComponentCallbacks(delegate)
+	}
+
 	override fun onResume() {
 		super.onResume()
 		if (delegate.state == State.ERROR && !delegate.isLoading()) {
 			boundData?.let { delegate.retry(it.toMangaPage(), isFromUser = false) }
 		}
+	}
+
+	override fun onDestroy() {
+		context.unregisterComponentCallbacks(delegate)
+		super.onDestroy()
 	}
 
 	@CallSuper

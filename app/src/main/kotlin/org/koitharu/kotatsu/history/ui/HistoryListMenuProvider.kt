@@ -53,6 +53,7 @@ class HistoryListMenuProvider(
 				arrayOf(
 					context.getString(R.string.last_2_hours),
 					context.getString(R.string.today),
+					context.getString(R.string.not_in_favorites),
 					context.getString(R.string.clear_all_history),
 				),
 				selectionListener.selection,
@@ -61,13 +62,12 @@ class HistoryListMenuProvider(
 			setIcon(R.drawable.ic_delete_all)
 			setNegativeButton(android.R.string.cancel, null)
 			setPositiveButton(R.string.clear) { _, _ ->
-				val minDate = when (selectionListener.selection) {
-					0 -> Instant.now().minus(2, ChronoUnit.HOURS)
-					1 -> LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
-					2 -> Instant.EPOCH
-					else -> return@setPositiveButton
+				when (selectionListener.selection) {
+					0 -> viewModel.clearHistory(Instant.now().minus(2, ChronoUnit.HOURS))
+					1 -> viewModel.clearHistory(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())
+					2 -> viewModel.removeNotFavorite()
+					3 -> viewModel.clearHistory(null)
 				}
-				viewModel.clearHistory(minDate)
 			}
 		}.show()
 	}

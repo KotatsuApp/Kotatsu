@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
 import androidx.annotation.ColorInt
+import androidx.collection.LruCache
 import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
 import androidx.core.graphics.get
@@ -28,38 +29,46 @@ import kotlin.math.abs
 class EdgeDetector(private val context: Context) {
 
 	private val mutex = Mutex()
+	private val cache = LruCache<ImageSource, Rect>(CACHE_SIZE)
 
-	suspend fun getBounds(imageSource: ImageSource): Rect? = mutex.withLock {
-		withContext(Dispatchers.IO) {
-			val decoder = SkiaPooledImageRegionDecoder(Bitmap.Config.RGB_565)
-			try {
-				val size = runInterruptible {
-					decoder.init(context, imageSource)
-				}
-				val edges = coroutineScope {
-					listOf(
-						async { detectLeftRightEdge(decoder, size, isLeft = true) },
-						async { detectTopBottomEdge(decoder, size, isTop = true) },
-						async { detectLeftRightEdge(decoder, size, isLeft = false) },
-						async { detectTopBottomEdge(decoder, size, isTop = false) },
-					).awaitAll()
-				}
-				var hasEdges = false
-				for (edge in edges) {
-					if (edge > 0) {
-						hasEdges = true
-					} else if (edge < 0) {
-						return@withContext null
+	suspend fun getBounds(imageSource: ImageSource): Rect? {
+		cache[imageSource]?.let { rect ->
+			return if (rect.isEmpty) null else rect
+		}
+		return mutex.withLock {
+			withContext(Dispatchers.IO) {
+				val decoder = SkiaPooledImageRegionDecoder(Bitmap.Config.RGB_565)
+				try {
+					val size = runInterruptible {
+						decoder.init(context, imageSource)
 					}
+					val edges = coroutineScope {
+						listOf(
+							async { detectLeftRightEdge(decoder, size, isLeft = true) },
+							async { detectTopBottomEdge(decoder, size, isTop = true) },
+							async { detectLeftRightEdge(decoder, size, isLeft = false) },
+							async { detectTopBottomEdge(decoder, size, isTop = false) },
+						).awaitAll()
+					}
+					var hasEdges = false
+					for (edge in edges) {
+						if (edge > 0) {
+							hasEdges = true
+						} else if (edge < 0) {
+							return@withContext null
+						}
+					}
+					if (hasEdges) {
+						Rect(edges[0], edges[1], size.x - edges[2], size.y - edges[3])
+					} else {
+						null
+					}
+				} finally {
+					decoder.recycle()
 				}
-				if (hasEdges) {
-					Rect(edges[0], edges[1], size.x - edges[2], size.y - edges[3])
-				} else {
-					null
-				}
-			} finally {
-				decoder.recycle()
 			}
+		}.also {
+			cache.put(imageSource, it ?: EMPTY_RECT)
 		}
 	}
 
@@ -135,6 +144,8 @@ class EdgeDetector(private val context: Context) {
 
 		private const val BLOCK_SIZE = 100
 		private const val COLOR_TOLERANCE = 16
+		private const val CACHE_SIZE = 24
+		private val EMPTY_RECT = Rect(0, 0, 0, 0)
 
 		fun isColorTheSame(@ColorInt a: Int, @ColorInt b: Int, tolerance: Int): Boolean {
 			return abs(a.red - b.red) <= tolerance &&

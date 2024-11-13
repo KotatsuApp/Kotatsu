@@ -101,9 +101,9 @@ class HistoryListViewModel @Inject constructor(
 
 	override fun onRetry() = Unit
 
-	fun clearHistory(minDate: Instant) {
+	fun clearHistory(minDate: Instant?) {
 		launchJob(Dispatchers.Default) {
-			val stringRes = if (minDate <= Instant.EPOCH) {
+			val stringRes = if (minDate == null) {
 				repository.clear()
 				R.string.history_cleared
 			} else {
@@ -111,6 +111,13 @@ class HistoryListViewModel @Inject constructor(
 				R.string.removed_from_history
 			}
 			onActionDone.call(ReversibleAction(stringRes, null))
+		}
+	}
+
+	fun removeNotFavorite() {
+		launchJob(Dispatchers.Default) {
+			repository.deleteNotFavorite()
+			onActionDone.call(ReversibleAction(R.string.removed_from_history, null))
 		}
 	}
 

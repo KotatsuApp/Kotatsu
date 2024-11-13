@@ -31,361 +31,368 @@
 
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<androidx.core.widget.NestedScrollView
-		android:id="@+id/scrollView"
+	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+		android:id="@+id/swipeRefreshLayout"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:clipToPadding="false"
-		android:scrollIndicators="top"
-		android:scrollbars="vertical"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="@id/appbar"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/appbar">
 
-		<androidx.constraintlayout.widget.ConstraintLayout
+		<androidx.core.widget.NestedScrollView
+			android:id="@+id/scrollView"
 			android:layout_width="match_parent"
-			android:layout_height="match_parent">
+			android:layout_height="match_parent"
+			android:clipToPadding="false"
+			android:scrollIndicators="top"
+			android:scrollbars="vertical">
 
-			<com.google.android.material.imageview.ShapeableImageView
-				android:id="@+id/imageView_cover"
-				android:layout_width="0dp"
-				android:layout_height="0dp"
-				android:layout_marginStart="16dp"
-				android:layout_marginTop="16dp"
-				android:background="?colorSecondaryContainer"
-				android:foreground="?selectableItemBackground"
-				android:scaleType="centerCrop"
-				app:layout_constraintDimensionRatio="H,13:18"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintHorizontal_bias="0"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintWidth_percent="0.3"
-				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
-				tools:background="@tools:sample/backgrounds/scenic[5]"
-				tools:ignore="ContentDescription,UnusedAttribute" />
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
 
-			<TextView
-				android:id="@+id/textView_nsfw"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_margin="@dimen/card_indicator_offset"
-				android:background="@drawable/bg_chip"
-				android:backgroundTint="@color/warning"
-				android:gravity="center"
-				android:paddingHorizontal="4dp"
-				android:paddingVertical="2dp"
-				android:text="@string/nsfw"
-				android:textAlignment="center"
-				android:textAppearance="?textAppearanceLabelMedium"
-				android:textColor="?colorOnError"
-				app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
-				app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
+				<com.google.android.material.imageview.ShapeableImageView
+					android:id="@+id/imageView_cover"
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:layout_marginStart="16dp"
+					android:layout_marginTop="16dp"
+					android:background="?colorSecondaryContainer"
+					android:foreground="?selectableItemBackground"
+					android:scaleType="centerCrop"
+					app:layout_constraintDimensionRatio="H,13:18"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_bias="0"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintWidth_percent="0.3"
+					app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+					tools:background="@tools:sample/backgrounds/scenic[5]"
+					tools:ignore="ContentDescription,UnusedAttribute" />
 
-			<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
-				android:id="@+id/textView_title"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="16dp"
-				android:layout_marginTop="16dp"
-				android:layout_marginEnd="16dp"
-				android:ellipsize="end"
-				android:maxLines="5"
-				android:textAppearance="?attr/textAppearanceHeadlineSmall"
-				android:textIsSelectable="true"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toEndOf="@id/imageView_cover"
-				app:layout_constraintTop_toTopOf="parent"
-				tools:text="@tools:sample/lorem" />
+				<TextView
+					android:id="@+id/textView_nsfw"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_margin="@dimen/card_indicator_offset"
+					android:background="@drawable/bg_chip"
+					android:backgroundTint="@color/warning"
+					android:gravity="center"
+					android:paddingHorizontal="4dp"
+					android:paddingVertical="2dp"
+					android:text="@string/nsfw"
+					android:textAlignment="center"
+					android:textAppearance="?textAppearanceLabelMedium"
+					android:textColor="?colorOnError"
+					app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
+					app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
 
-			<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
-				android:id="@+id/textView_subtitle"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="16dp"
-				android:layout_marginTop="4dp"
-				android:layout_marginEnd="16dp"
-				android:ellipsize="end"
-				android:maxLines="3"
-				android:textAppearance="?attr/textAppearanceBodyMedium"
-				android:textIsSelectable="true"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toEndOf="@id/imageView_cover"
-				app:layout_constraintTop_toBottomOf="@id/textView_title"
-				tools:text="@tools:sample/lorem[12]" />
+				<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
+					android:id="@+id/textView_title"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:layout_marginTop="16dp"
+					android:layout_marginEnd="16dp"
+					android:ellipsize="end"
+					android:maxLines="5"
+					android:textAppearance="?attr/textAppearanceHeadlineSmall"
+					android:textIsSelectable="true"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toEndOf="@id/imageView_cover"
+					app:layout_constraintTop_toTopOf="parent"
+					tools:text="@tools:sample/lorem" />
 
-			<ImageView
-				android:id="@+id/imageView_state"
-				android:layout_width="0dp"
-				android:layout_height="0dp"
-				android:layout_marginVertical="0.5dp"
-				android:layout_marginStart="16dp"
-				app:layout_constraintBottom_toBottomOf="@id/textView_state"
-				app:layout_constraintDimensionRatio="1"
-				app:layout_constraintStart_toEndOf="@id/imageView_cover"
-				app:layout_constraintTop_toTopOf="@id/textView_state"
-				tools:src="@drawable/ic_state_ongoing" />
+				<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
+					android:id="@+id/textView_subtitle"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:layout_marginTop="4dp"
+					android:layout_marginEnd="16dp"
+					android:ellipsize="end"
+					android:maxLines="3"
+					android:textAppearance="?attr/textAppearanceBodyMedium"
+					android:textIsSelectable="true"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toEndOf="@id/imageView_cover"
+					app:layout_constraintTop_toBottomOf="@id/textView_title"
+					tools:text="@tools:sample/lorem[12]" />
 
-			<TextView
-				android:id="@+id/textView_state"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="4dp"
-				android:layout_marginTop="4dp"
-				android:layout_marginEnd="16dp"
-				android:drawablePadding="4dp"
-				android:gravity="center_vertical"
-				android:labelFor="@id/imageView_state"
-				android:singleLine="true"
-				android:textColor="?colorTertiary"
-				android:textStyle="bold"
-				app:drawableTint="?colorTertiary"
-				app:layout_constrainedWidth="true"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintHorizontal_bias="0"
-				app:layout_constraintStart_toEndOf="@id/imageView_state"
-				app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
-				tools:text="@string/state_ongoing" />
+				<ImageView
+					android:id="@+id/imageView_state"
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:layout_marginVertical="0.5dp"
+					android:layout_marginStart="16dp"
+					app:layout_constraintBottom_toBottomOf="@id/textView_state"
+					app:layout_constraintDimensionRatio="1"
+					app:layout_constraintStart_toEndOf="@id/imageView_cover"
+					app:layout_constraintTop_toTopOf="@id/textView_state"
+					tools:src="@drawable/ic_state_ongoing" />
 
-			<RatingBar
-				android:id="@+id/rating_bar"
-				style="?ratingBarStyleSmall"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="16dp"
-				android:layout_marginTop="4dp"
-				android:layout_marginEnd="16dp"
-				android:isIndicator="true"
-				android:max="1"
-				android:numStars="5"
-				android:stepSize="0.5"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintHorizontal_bias="0.0"
-				app:layout_constraintStart_toEndOf="@id/imageView_cover"
-				app:layout_constraintTop_toBottomOf="@id/textView_state"
-				tools:rating="4" />
+				<TextView
+					android:id="@+id/textView_state"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="4dp"
+					android:layout_marginTop="4dp"
+					android:layout_marginEnd="16dp"
+					android:drawablePadding="4dp"
+					android:gravity="center_vertical"
+					android:labelFor="@id/imageView_state"
+					android:singleLine="true"
+					android:textColor="?colorTertiary"
+					android:textStyle="bold"
+					app:drawableTint="?colorTertiary"
+					app:layout_constrainedWidth="true"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_bias="0"
+					app:layout_constraintStart_toEndOf="@id/imageView_state"
+					app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
+					tools:text="@string/state_ongoing" />
 
-			<androidx.constraintlayout.widget.Barrier
-				android:id="@+id/barrier_header"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				app:barrierDirection="bottom"
-				app:barrierMargin="@dimen/margin_normal"
-				app:constraint_referenced_ids="imageView_cover,rating_bar" />
+				<RatingBar
+					android:id="@+id/rating_bar"
+					style="?ratingBarStyleSmall"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:layout_marginTop="4dp"
+					android:layout_marginEnd="16dp"
+					android:isIndicator="true"
+					android:max="1"
+					android:numStars="5"
+					android:stepSize="0.5"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_bias="0.0"
+					app:layout_constraintStart_toEndOf="@id/imageView_cover"
+					app:layout_constraintTop_toBottomOf="@id/textView_state"
+					tools:rating="4" />
 
-			<include
-				android:id="@+id/info_layout"
-				layout="@layout/layout_details_chips"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/screen_padding"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/barrier_header" />
+				<androidx.constraintlayout.widget.Barrier
+					android:id="@+id/barrier_header"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					app:barrierDirection="bottom"
+					app:barrierMargin="@dimen/margin_normal"
+					app:constraint_referenced_ids="imageView_cover,rating_bar" />
 
-			<org.koitharu.kotatsu.core.ui.widgets.ProgressButton
-				android:id="@+id/button_read"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_gravity="end|center_vertical"
-				android:layout_marginHorizontal="@dimen/screen_padding"
-				android:layout_marginTop="@dimen/margin_normal"
-				android:foreground="?selectableItemBackground"
-				android:gravity="center"
-				android:paddingHorizontal="6dp"
-				android:paddingVertical="8dp"
-				android:textColor="?colorOnPrimaryContainer"
-				app:baseColor="?colorSecondaryContainer"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/info_layout"
-				app:progressColor="?colorPrimary"
-				app:subtitleTextAppearance="?textAppearanceBodySmall"
-				app:titleTextAppearance="?textAppearanceButton"
-				tools:max="100"
-				tools:progress="40"
-				tools:subtitle="12 chapters"
-				tools:title="@string/read" />
+				<include
+					android:id="@+id/info_layout"
+					layout="@layout/layout_details_chips"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="@dimen/screen_padding"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/barrier_header" />
 
-			<TextView
-				android:id="@+id/textView_description_title"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/margin_small"
-				android:layout_marginTop="@dimen/margin_normal"
-				android:gravity="center_vertical|start"
-				android:padding="@dimen/grid_spacing"
-				android:singleLine="true"
-				android:text="@string/description"
-				android:textAppearance="?textAppearanceTitleSmall"
-				app:layout_constraintEnd_toStartOf="@id/button_description_more"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/button_read" />
+				<org.koitharu.kotatsu.core.ui.widgets.ProgressButton
+					android:id="@+id/button_read"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_gravity="end|center_vertical"
+					android:layout_marginHorizontal="@dimen/screen_padding"
+					android:layout_marginTop="@dimen/margin_normal"
+					android:foreground="?selectableItemBackground"
+					android:gravity="center"
+					android:paddingHorizontal="6dp"
+					android:paddingVertical="8dp"
+					android:textColor="?colorOnPrimaryContainer"
+					app:baseColor="?colorSecondaryContainer"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/info_layout"
+					app:progressColor="?colorPrimary"
+					app:subtitleTextAppearance="?textAppearanceBodySmall"
+					app:titleTextAppearance="?textAppearanceButton"
+					tools:max="100"
+					tools:progress="40"
+					tools:subtitle="12 chapters"
+					tools:title="@string/read" />
 
-			<Button
-				android:id="@+id/button_description_more"
-				style="@style/Widget.Kotatsu.Button.More"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="8dp"
-				android:text="@string/more"
-				app:layout_constraintBaseline_toBaselineOf="@id/textView_description_title"
-				app:layout_constraintEnd_toEndOf="parent" />
+				<TextView
+					android:id="@+id/textView_description_title"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="@dimen/margin_small"
+					android:layout_marginTop="@dimen/margin_normal"
+					android:gravity="center_vertical|start"
+					android:padding="@dimen/grid_spacing"
+					android:singleLine="true"
+					android:text="@string/description"
+					android:textAppearance="?textAppearanceTitleSmall"
+					app:layout_constraintEnd_toStartOf="@id/button_description_more"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/button_read" />
 
-			<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
-				android:id="@+id/textView_description"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/margin_normal"
-				android:layout_marginTop="@dimen/margin_small"
-				android:layout_marginEnd="@dimen/margin_normal"
-				android:ellipsize="end"
-				android:lineSpacingMultiplier="1.2"
-				android:maxLines="@integer/details_description_lines"
-				android:textAppearance="?attr/textAppearanceBodyMedium"
-				android:textIsSelectable="true"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/textView_description_title"
-				tools:ignore="UnusedAttribute"
-				tools:text="@tools:sample/lorem/random" />
+				<Button
+					android:id="@+id/button_description_more"
+					style="@style/Widget.Kotatsu.Button.More"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="8dp"
+					android:text="@string/more"
+					app:layout_constraintBaseline_toBaselineOf="@id/textView_description_title"
+					app:layout_constraintEnd_toEndOf="parent" />
 
-			<org.koitharu.kotatsu.core.ui.widgets.ChipsView
-				android:id="@+id/chips_tags"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/screen_padding"
-				android:layout_marginTop="@dimen/margin_small"
-				app:chipSpacingHorizontal="6dp"
-				app:chipSpacingVertical="6dp"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/textView_description" />
+				<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
+					android:id="@+id/textView_description"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="@dimen/margin_normal"
+					android:layout_marginTop="@dimen/margin_small"
+					android:layout_marginEnd="@dimen/margin_normal"
+					android:ellipsize="end"
+					android:lineSpacingMultiplier="1.2"
+					android:maxLines="@integer/details_description_lines"
+					android:textAppearance="?attr/textAppearanceBodyMedium"
+					android:textIsSelectable="true"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/textView_description_title"
+					tools:ignore="UnusedAttribute"
+					tools:text="@tools:sample/lorem/random" />
 
-			<TextView
-				android:id="@+id/textView_scrobbling_title"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/margin_small"
-				android:layout_marginTop="@dimen/margin_normal"
-				android:layout_weight="1"
-				android:gravity="center_vertical|start"
-				android:padding="@dimen/grid_spacing"
-				android:singleLine="true"
-				android:text="@string/tracking"
-				android:textAppearance="?textAppearanceTitleSmall"
-				app:layout_constraintEnd_toStartOf="@id/button_scrobbling_more"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/chips_tags" />
+				<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+					android:id="@+id/chips_tags"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="@dimen/screen_padding"
+					android:layout_marginTop="@dimen/margin_small"
+					app:chipSpacingHorizontal="6dp"
+					app:chipSpacingVertical="6dp"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@+id/textView_description" />
 
-			<Button
-				android:id="@+id/button_scrobbling_more"
-				style="@style/Widget.Kotatsu.Button.More"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="8dp"
-				android:text="@string/manage"
-				app:layout_constraintBaseline_toBaselineOf="@id/textView_scrobbling_title"
-				app:layout_constraintEnd_toEndOf="parent" />
+				<TextView
+					android:id="@+id/textView_scrobbling_title"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="@dimen/margin_small"
+					android:layout_marginTop="@dimen/margin_normal"
+					android:layout_weight="1"
+					android:gravity="center_vertical|start"
+					android:padding="@dimen/grid_spacing"
+					android:singleLine="true"
+					android:text="@string/tracking"
+					android:textAppearance="?textAppearanceTitleSmall"
+					app:layout_constraintEnd_toStartOf="@id/button_scrobbling_more"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/chips_tags" />
 
-			<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/recyclerView_scrobbling"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="16dp"
-				android:layout_marginEnd="16dp"
-				android:layout_marginBottom="12dp"
-				android:nestedScrollingEnabled="false"
-				android:orientation="vertical"
-				android:overScrollMode="never"
-				android:scrollbars="none"
-				android:visibility="gone"
-				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/textView_scrobbling_title"
-				tools:itemCount="2"
-				tools:listitem="@layout/item_scrobbling_info"
-				tools:visibility="visible" />
+				<Button
+					android:id="@+id/button_scrobbling_more"
+					style="@style/Widget.Kotatsu.Button.More"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="8dp"
+					android:text="@string/manage"
+					app:layout_constraintBaseline_toBaselineOf="@id/textView_scrobbling_title"
+					app:layout_constraintEnd_toEndOf="parent" />
 
-			<com.google.android.material.progressindicator.LinearProgressIndicator
-				android:id="@+id/progressBar"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:indeterminate="true"
-				android:visibility="gone"
-				app:hideAnimationBehavior="outward"
-				app:layout_constraintBottom_toTopOf="parent"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toTopOf="parent"
-				app:showAnimationBehavior="inward"
-				app:trackCornerRadius="0dp"
-				tools:visibility="visible" />
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerView_scrobbling"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="16dp"
+					android:layout_marginEnd="16dp"
+					android:layout_marginBottom="12dp"
+					android:nestedScrollingEnabled="false"
+					android:orientation="vertical"
+					android:overScrollMode="never"
+					android:scrollbars="none"
+					android:visibility="gone"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/textView_scrobbling_title"
+					tools:itemCount="2"
+					tools:listitem="@layout/item_scrobbling_info"
+					tools:visibility="visible" />
 
-			<androidx.constraintlayout.widget.Group
-				android:id="@+id/group_scrobbling"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
-				app:constraint_referenced_ids="recyclerView_scrobbling,textView_scrobbling_title,button_scrobbling_more"
-				tools:visibility="visible" />
+				<com.google.android.material.progressindicator.LinearProgressIndicator
+					android:id="@+id/progressBar"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:indeterminate="true"
+					android:visibility="gone"
+					app:hideAnimationBehavior="outward"
+					app:layout_constraintBottom_toTopOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:showAnimationBehavior="inward"
+					app:trackCornerRadius="0dp"
+					tools:visibility="visible" />
 
-			<TextView
-				android:id="@+id/textView_related_title"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="@dimen/margin_small"
-				android:layout_marginTop="@dimen/margin_small"
-				android:layout_weight="1"
-				android:gravity="center_vertical|start"
-				android:padding="@dimen/grid_spacing"
-				android:singleLine="true"
-				android:text="@string/related_manga"
-				android:textAppearance="?textAppearanceTitleSmall"
-				app:layout_constraintEnd_toStartOf="@id/button_related_more"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/recyclerView_scrobbling" />
+				<androidx.constraintlayout.widget.Group
+					android:id="@+id/group_scrobbling"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					app:constraint_referenced_ids="recyclerView_scrobbling,textView_scrobbling_title,button_scrobbling_more"
+					tools:visibility="visible" />
 
-			<Button
-				android:id="@+id/button_related_more"
-				style="@style/Widget.Kotatsu.Button.More"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="8dp"
-				android:text="@string/show_all"
-				android:visibility="gone"
-				app:layout_constraintBaseline_toBaselineOf="@id/textView_related_title"
-				app:layout_constraintEnd_toEndOf="parent" />
+				<TextView
+					android:id="@+id/textView_related_title"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="@dimen/margin_small"
+					android:layout_marginTop="@dimen/margin_small"
+					android:layout_weight="1"
+					android:gravity="center_vertical|start"
+					android:padding="@dimen/grid_spacing"
+					android:singleLine="true"
+					android:text="@string/related_manga"
+					android:textAppearance="?textAppearanceTitleSmall"
+					app:layout_constraintEnd_toStartOf="@id/button_related_more"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/recyclerView_scrobbling" />
 
-			<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/recyclerView_related"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginBottom="6dp"
-				android:clipToPadding="false"
-				android:nestedScrollingEnabled="false"
-				android:orientation="horizontal"
-				android:paddingStart="12dp"
-				android:paddingEnd="12dp"
-				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/textView_related_title"
-				tools:listitem="@layout/item_manga_grid" />
+				<Button
+					android:id="@+id/button_related_more"
+					style="@style/Widget.Kotatsu.Button.More"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="8dp"
+					android:text="@string/show_all"
+					android:visibility="gone"
+					app:layout_constraintBaseline_toBaselineOf="@id/textView_related_title"
+					app:layout_constraintEnd_toEndOf="parent" />
 
-			<androidx.constraintlayout.widget.Group
-				android:id="@+id/group_related"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
-				app:constraint_referenced_ids="recyclerView_related,textView_related_title,button_related_more"
-				tools:visibility="visible" />
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerView_related"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="6dp"
+					android:clipToPadding="false"
+					android:nestedScrollingEnabled="false"
+					android:orientation="horizontal"
+					android:paddingStart="12dp"
+					android:paddingEnd="12dp"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/textView_related_title"
+					tools:listitem="@layout/item_manga_grid" />
 
-		</androidx.constraintlayout.widget.ConstraintLayout>
+				<androidx.constraintlayout.widget.Group
+					android:id="@+id/group_related"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					app:constraint_referenced_ids="recyclerView_related,textView_related_title,button_related_more"
+					tools:visibility="visible" />
 
-	</androidx.core.widget.NestedScrollView>
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</androidx.core.widget.NestedScrollView>
+
+	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 	<com.google.android.material.card.MaterialCardView
 		android:id="@+id/card_chapters"

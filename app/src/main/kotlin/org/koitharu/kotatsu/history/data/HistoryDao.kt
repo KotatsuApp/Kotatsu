@@ -122,6 +122,8 @@ abstract class HistoryDao : MangaQueryBuilder.ConditionCallback {
 
 	suspend fun deleteAfter(minDate: Long) = setDeletedAtAfter(minDate, System.currentTimeMillis())
 
+	suspend fun deleteNotFavorite() = setDeletedAtNotFavorite(System.currentTimeMillis())
+
 	suspend fun clear() = setDeletedAtAfter(0L, System.currentTimeMillis())
 
 	suspend fun update(entity: HistoryEntity) = update(
@@ -156,6 +158,9 @@ abstract class HistoryDao : MangaQueryBuilder.ConditionCallback {
 
 	@Query("UPDATE history SET deleted_at = :deletedAt WHERE created_at >= :minDate AND deleted_at = 0")
 	protected abstract suspend fun setDeletedAtAfter(minDate: Long, deletedAt: Long)
+
+	@Query("UPDATE history SET deleted_at = :deletedAt WHERE deleted_at = 0 AND NOT EXISTS(SELECT * FROM favourites WHERE history.manga_id = favourites.manga_id)")
+	protected abstract suspend fun setDeletedAtNotFavorite(deletedAt: Long)
 
 	@Transaction
 	@RawQuery(observedEntities = [HistoryEntity::class])
