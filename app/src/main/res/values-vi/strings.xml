@@ -99,7 +99,7 @@
     <string name="reader_mode_hint">Cấu hình được chọn sẽ được lưu lại cho truyện này</string>
     <string name="silent">Im lặng</string>
     <string name="captcha_required">Yêu cầu xác thực CAPTCHA</string>
-    <string name="captcha_solve">Đã xác thực</string>
+    <string name="captcha_solve">Xác thực</string>
     <string name="clear_cookies">Xoá cookies</string>
     <string name="check_for_new_chapters">Kiểm tra các chương mới</string>
     <string name="sign_in">Đăng nhập</string>
@@ -743,4 +743,10 @@
     <string name="landscape">Ngang</string>
     <string name="screen_orientation">Xoay hướng màn hình</string>
     <string name="plugin_incompatible_with_cause">Lỗi Plugin: %s\nHãy đảm bảo rằng bạn đang sử dụng phiên bản mới nhất của Kotatsu / Đã cập nhật Plugin đó</string>
+    <string name="error_not_image">Định dạng không hợp lệ: Hình ảnh nhận được là %s</string>
+    <string name="max_backups_count">Tối đa số lượng các bản sao lưu</string>
+    <string name="access_denied_403">Truy cập bị từ chối (Lỗi 403)</string>
+    <string name="pages_saved">Đã lưu trang</string>
+    <string name="delete_old_backups">Xóa bản sao lưu cũ</string>
+    <string name="delete_old_backups_summary">Tự động xóa các bản sao lưu cũ để tiết kiệm bộ nhớ của thiết bị</string>
 </resources>
