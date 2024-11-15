@@ -41,17 +41,17 @@
     <string name="pages">Sayfalar</string>
     <string name="clear">Temizle</string>
     <string name="remove">Kaldır</string>
-    <string name="_s_deleted_from_local_storage">“%s” yerel depolama alanından sil</string>
+    <string name="_s_deleted_from_local_storage">“%s” yerel depolamadan silindi</string>
     <string name="save_page">Sayfayı kaydet</string>
-    <string name="share_image">Resmi paylaş</string>
+    <string name="share_image">Görseli paylaş</string>
     <string name="popular">Popüler</string>
     <string name="details">Detaylar</string>
     <string name="settings">Ayarlar</string>
-    <string name="page_saved">Kaydedildi</string>
+    <string name="page_saved">Sayfa kaydedildi</string>
     <string name="error_occurred">Bir hata oluştu</string>
     <string name="remote_sources">Manga kaynakları</string>
     <string name="search_history_cleared">Temizlendi</string>
-    <string name="_continue">Devam</string>
+    <string name="_continue">Devam Et</string>
     <string name="not_available">Mevcut değil</string>
     <string name="favourites_category_empty">Boş kategori</string>
     <string name="remove_category">Kaldır</string>
@@ -742,4 +742,11 @@
     <string name="screen_orientation">Ekran yönü</string>
     <string name="portrait">Dikey</string>
     <string name="landscape">Yatay</string>
+    <string name="plugin_incompatible_with_cause">Eklenti hatası: %s\n Eklentinin ve Kotatsu\'nun son sürümünü kullandığınızdan emin olun</string>
+    <string name="error_not_image">Geçersiz biçim: görsel yerine %s alındı</string>
+    <string name="access_denied_403">Erişim reddedildi (403)</string>
+    <string name="max_backups_count">Maks yedek sayısı</string>
+    <string name="pages_saved">Sayfalar kaydedildi</string>
+    <string name="delete_old_backups">Eski yedekleri sil</string>
+    <string name="delete_old_backups_summary">Depolama kullanımını azaltmak için eski yedek dosyalarını otomatik olarak sil</string>
 </resources>
