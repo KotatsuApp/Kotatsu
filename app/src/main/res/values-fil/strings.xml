@@ -743,4 +743,7 @@
     <string name="portrait">Patayo (portrait)</string>
     <string name="landscape">Pahalang (landscape)</string>
     <string name="plugin_incompatible_with_cause">Plugin error: %s\n Tiyaking ginagamit mo ang pinakabagong bersyon ng plugin at Kotatsu</string>
+    <string name="error_not_image">Imbalidong pormat: inaasahang larawan ngunit nakakuha ng %s</string>
+    <string name="access_denied_403">Tinanggihan ang pag-access (403)</string>
+    <string name="max_backups_count">Pinakamataas na bilang ng mga backup</string>
 </resources>
