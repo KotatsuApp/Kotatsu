@@ -743,4 +743,7 @@
     <string name="allow_once">Разрешить один раз</string>
     <string name="ask_every_time">Спрашивать каждый раз</string>
     <string name="plugin_incompatible_with_cause">Ошибка плагина: %s\nУбедитесь, что вы используете последнюю версию плагина и Kotatsu</string>
+    <string name="error_not_image">Неверный формат: ожидалось изображение, но получено %s</string>
+    <string name="max_backups_count">Максимальное количество резервных копий</string>
+    <string name="access_denied_403">Доступ отклонён (403)</string>
 </resources>
