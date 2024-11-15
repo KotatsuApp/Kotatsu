@@ -13,15 +13,15 @@
     <string name="auth_required">Connectez-vous pour voir ce contenu</string>
     <string name="sign_in">Se connecter</string>
     <string name="reverse">Inverser</string>
-    <string name="check_for_new_chapters">À la recherche de nouveaux chapitres</string>
-    <string name="text_clear_updates_feed_prompt">Effacer définitivement l\'historique des mises à jour \?</string>
+    <string name="check_for_new_chapters">Vérifier la présence de nouveaux chapitres</string>
+    <string name="text_clear_updates_feed_prompt">Effacer définitivement l\'historique des mises à jour ?</string>
     <string name="clear_feed">Effacer le flux</string>
-    <string name="cookies_cleared">Tous les cookies ont été retirés</string>
+    <string name="cookies_cleared">Tous les cookies ont été supprimés</string>
     <string name="clear_cookies">Effacer les cookies</string>
     <string name="captcha_solve">Résoudre</string>
     <string name="captcha_required">CAPTCHA requis</string>
     <string name="silent">Silencieux</string>
-    <string name="reader_mode_hint">On se souviendra de la configuration choisie pour ce manga</string>
+    <string name="reader_mode_hint">La configuration choisie sera mémorisée pour ce manga</string>
     <string name="tap_to_try_again">Appuyez pour réessayer</string>
     <string name="today">Aujourd\'hui</string>
     <string name="group">Groupe</string>
@@ -122,7 +122,7 @@
     <string name="delete">Supprimer</string>
     <string name="_import">Importer</string>
     <string name="share_image">Partager l\'image</string>
-    <string name="page_saved">Sauvegardé</string>
+    <string name="page_saved">Page sauvegardée</string>
     <string name="save_page">Sauvegarder la page</string>
     <string name="_s_deleted_from_local_storage">« %s » supprimé du stockage local</string>
     <string name="remove">Retirer</string>
@@ -185,15 +185,15 @@
     <string name="state_finished">Terminé</string>
     <string name="state_ongoing">En cours</string>
     <string name="system_default">Par défaut</string>
-    <string name="exclude_nsfw_from_history">Exclure les mangas osés de l\'historique</string>
+    <string name="exclude_nsfw_from_history">Exclure les mangas explicites de l\'historique</string>
     <string name="show_pages_numbers">Pages numérotées</string>
     <string name="computing_">Calcul…</string>
-    <string name="screenshots_block_nsfw">Bloquer pour contenu sensible</string>
+    <string name="screenshots_block_nsfw">Bloquer le contenu explicite</string>
     <string name="screenshots_block_all">Toujours bloquer</string>
     <string name="screenshots_policy">Politique relative aux captures d\'écran</string>
     <string name="screenshots_allow">Autoriser</string>
     <string name="suggestions">Suggestions</string>
-    <string name="exclude_nsfw_from_suggestions">Ne pas suggérer de mangas osés</string>
+    <string name="exclude_nsfw_from_suggestions">Ne pas suggérer de mangas explicites</string>
     <string name="suggestions_enable">Activer les suggestions</string>
     <string name="suggestions_summary">Suggérer des mangas en fonction de vos préférences</string>
     <string name="suggestions_info">Toutes les données sont analysées localement sur cet appareil et ne sont jamais envoyées ailleurs.</string>
@@ -257,7 +257,7 @@
     <string name="status_reading">Lecture</string>
     <string name="show_reading_indicators">Afficher les indicateurs de progression de lecture</string>
     <string name="show_reading_indicators_summary">Afficher le pourcentage de lecture dans l\'historique et les favoris</string>
-    <string name="exclude_nsfw_from_history_summary">Les mangas marqués comme étant pour adultes ne seront jamais ajoutés à l\'historique et votre progression ne sera pas sauvegardée</string>
+    <string name="exclude_nsfw_from_history_summary">Les mangas marqués comme étant explicites ne seront jamais ajoutés à l\'historique et votre progression ne sera pas sauvegardée</string>
     <string name="clear_cookies_summary">Peut aider en cas de problème. Toutes les autorisations seront invalidées</string>
     <string name="show_all">Tout afficher</string>
     <string name="status_on_hold">En attente</string>
@@ -271,8 +271,7 @@
     <string name="not_found_404">Contenu non trouvé ou supprimé</string>
     <string name="manga_error_description_pattern">Détails de l\'erreur:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Essayez d\'&lt;a href=%2$s&gt;ouvrir le manga dans un navigateur web&lt;/a&gt; pour vous assurer qu\'il est disponible sur sa source&lt;br&gt;2. Assurez-vous que vous utilisez la &lt;a href=kotatsu://about&gt;dernière version de Kotatsu&lt;/a&gt;&lt;br&gt;3. Si elle est disponible, envoyez un rapport d\'erreur aux développeurs.</string>
     <string name="confirm_exit">Rappuyez sur Retour pour quitter</string>
-    <string name="categories_delete_confirm">Êtes-vous sûr·e de vouloir supprimer les catégories de favoris sélectionnées \?
-\nTous les mangas qui s\'y trouvent seront perdus et ceci ne peut pas être annulé.</string>
+    <string name="categories_delete_confirm">Êtes-vous sûr(e) de vouloir supprimer les catégories de favoris sélectionnées ?\nTous les mangas qui s\'y trouvent seront perdus et ceci ne peut pas être annulé.</string>
     <string name="exit_confirmation_summary">Appuyez deux fois sur la touche Retour pour quitter l\'appli</string>
     <string name="available">Disponible</string>
     <string name="exit_confirmation">Confirmation de sortie</string>
@@ -368,7 +367,7 @@
     <string name="downloads_wifi_only_summary">Arrêter le téléchargement lors du passage à un réseau mobile</string>
     <string name="sync_auth_hint">Vous pouvez vous connecter à un compte existant ou en créer un nouveau</string>
     <string name="server_address">Adresse du serveur</string>
-    <string name="sync_host_description">Vous pouvez utiliser un serveur de synchronisation autohébergé ou un serveur par défaut. Ne modifiez pas ce paramètre si vous n\'êtes pas sûr·e de ce que vous faites.</string>
+    <string name="sync_host_description">Vous pouvez utiliser un serveur de synchronisation autohébergé ou un serveur par défaut. Ne modifiez pas ce paramètre si vous n\'êtes pas sûr(e) de ce que vous faites.</string>
     <string name="remove_completed">Retrait terminé</string>
     <string name="enable">Activer</string>
     <string name="no_thanks">Non merci</string>
@@ -446,7 +445,7 @@
     <string name="languages">Langues</string>
     <string name="unknown">Inconnu</string>
     <string name="in_progress">En cours</string>
-    <string name="disable_nsfw">Désactiver NSFW</string>
+    <string name="disable_nsfw">Désactiver le contenu explicite</string>
     <string name="too_many_requests_message">Trop de requêtes. Réessayez plus tard</string>
     <string name="related_manga_summary">Afficher une liste de mangas connexes. Dans certains cas, elle peut être inexacte ou manquante</string>
     <string name="zoom_in">Agrandir</string>
@@ -495,7 +494,7 @@
     <string name="reader_optimize_summary">Réduire la qualité des pages hors écran pour utiliser moins de mémoire</string>
     <string name="source_enabled">Source activée</string>
     <string name="enhanced_colors">mode couleur 32-bit</string>
-    <string name="disable_nsfw_summary">Désactiver les sources pornographiques et masquer les mangas pour adultes de la liste si possible</string>
+    <string name="disable_nsfw_summary">Désactiver les sources explicites et masquer les mangas pour adultes de la liste si possible</string>
     <string name="speed_value">x%.1f</string>
     <string name="keep_screen_on_summary">Ne pas désactiver l\'écran pendant que vous lisez des mangas</string>
     <string name="no_manga_sources_catalog_text">Il n\'y a pas de sources disponibles dans cette section, ou tout cela aurait pu être ajouté.
@@ -526,9 +525,7 @@
     <string name="backup_date_">Date de sauvegarde : %s</string>
     <string name="by_name_reverse">Nom inversé</string>
     <string name="mark_as_completed">Marquer comme terminé</string>
-    <string name="mark_as_completed_prompt">Marquer le manga sélectionné comme terminé ?
-\n
-\nAttention : la progression actuelle sera perdue.</string>
+    <string name="mark_as_completed_prompt">Marquer le manga sélectionné comme terminé ?\n\nAttention : la progression actuelle sera perdue.</string>
     <string name="incognito_mode_hint">Votre progression de lecture ne sera pas sauvegardée</string>
     <string name="last_read">Dernier lu</string>
     <string name="vertical">Vertical</string>
@@ -577,7 +574,7 @@
     <string name="month">Mois</string>
     <string name="three_months">Trois mois</string>
     <string name="automatic">Automatique</string>
-    <string name="chapters_grid_view">Affichage en grille</string>
+    <string name="chapters_grid_view">Vue en grille</string>
     <string name="location">Emplacement</string>
     <string name="single_cbz_file">Fichier CBZ unique</string>
     <string name="multiple_cbz_files">Fichiers CBZ multiple</string>
@@ -589,7 +586,7 @@
     <string name="all_time">Tous les temps</string>
     <string name="day">Jour</string>
     <string name="empty_stats_text">Il n\'y a pas de statistiques pour la période sélectionné</string>
-    <string name="pages_read_s">Pages lues: %s</string>
+    <string name="pages_read_s">Pages lues : %s</string>
     <string name="alternatives">Alternatives</string>
     <string name="migrate">Migrer</string>
     <string name="migrate_confirmation">Le manga \"%1$s\" de \"%2$s\" sera remplacé par \"%3$s\" de \"%4$s\" dans votre historique et vos favoris (si présent)</string>
@@ -637,8 +634,8 @@
     <string name="sources_disabled">Sources désactivées</string>
     <string name="disable_connectivity_check">Désactiver la vérification de la connectivité</string>
     <string name="disable_connectivity_check_summary">Ignorez la vérification de la connectivité au cas où vous rencontreriez des problèmes (par exemple, passage en mode hors ligne alors que le réseau est connecté)</string>
-    <string name="disable_nsfw_notifications">Désactiver les notifications NSFW</string>
-    <string name="disable_nsfw_notifications_summary">Ne pas afficher les notifications concernant les mises à jour des mangas NSFW</string>
+    <string name="disable_nsfw_notifications">Désactiver les notifications de contenu explicite</string>
+    <string name="disable_nsfw_notifications_summary">Ne pas afficher les notifications concernant les mises à jour des mangas explicites</string>
     <string name="tracker_debug_info">Vérification du journal des nouveaux chapitres</string>
     <string name="tracker_debug_info_summary">Informations de débogage sur la vérification en arrière-plan des nouveaux chapitres</string>
     <string name="_new">Nouveaux</string>
@@ -669,8 +666,8 @@
     <string name="content_type_one_shot">One shot</string>
     <string name="screen_orientation">Orientation de l\'écran</string>
     <string name="content_type_doujinshi">Dōjinshi</string>
-    <string name="content_type_artist_cg">Graphiste</string>
-    <string name="content_type_game_cg">Jeu vidéo</string>
+    <string name="content_type_artist_cg">Artiste en infographie</string>
+    <string name="content_type_game_cg">Infographie de jeu</string>
     <string name="screenshots_block_incognito">Bloquer en mode incognito</string>
     <string name="debug">Déboguer</string>
     <string name="image_server">Serveur d\'images privilégié</string>
@@ -702,7 +699,7 @@
     <string name="no_fix_required">Pas de correction requise pour « %s »</string>
     <string name="no_alternatives_found">Aucune alternative trouvée pour « %s »</string>
     <string name="manga_replaced">Manga « %1$s » (%2$s) remplacé par « %3$s » (%4$s)</string>
-    <string name="external_source">Externe/greffon</string>
+    <string name="external_source">Externe/module d\'extension</string>
     <string name="start_download">Commencer à télécharger</string>
     <string name="save_manga_confirm">Enregistrer le manga sélectionné ? Ceci peut consommer des données et de l\'espace disque</string>
     <string name="save_manga">Enregistrer le manga</string>
@@ -713,7 +710,7 @@
     <string name="show_quick_filters">Afficher les filtres rapides</string>
     <string name="show_quick_filters_summary">Fournit la capacité de filtrer les listes de manga par certains paramètres</string>
     <string name="skip_all">Tout ignorer</string>
-    <string name="stuck">Coincé</string>
+    <string name="stuck">Bloqué</string>
     <string name="retry">Réessayer</string>
     <string name="too_many_requests_message_retry">Trop de demandes. Essayez encore après %s</string>
     <string name="not_in_favorites">Pas dans les favoris</string>
@@ -740,4 +737,13 @@
     <string name="allow_always">Toujours autoriser</string>
     <string name="allow_once">Autoriser une fois</string>
     <string name="ask_every_time">Demander à chaque fois</string>
+    <string name="plugin_incompatible_with_cause">Erreur du module d\'extension : %s\n- Assurez-vous que vous utilisez la dernière version du module d\'extension et de Kotatsu</string>
+    <string name="content_type_image_set">Collection d\'images</string>
+    <string name="error_not_image">Format invalide : une image était attendue mais a reçu %s</string>
+    <string name="access_denied_403">Accès refusé (403)</string>
+    <string name="max_backups_count">Nombre maximal de sauvegardes</string>
+    <string name="sfw">Contenu non explicite</string>
+    <string name="pages_saved">Pages sauvegardées</string>
+    <string name="delete_old_backups_summary">Suppression automatique des anciens fichiers de sauvegarde pour économiser de l\'espace de stockage</string>
+    <string name="delete_old_backups">Supprimer les anciennes sauvegardes</string>
 </resources>
