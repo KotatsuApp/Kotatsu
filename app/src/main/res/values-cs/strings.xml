@@ -203,7 +203,7 @@
     <string name="status_on_hold">Pozastaveno</string>
     <string name="status_dropped">Zahozeno</string>
     <string name="disable_all">Vypnout vše</string>
-    <string name="use_fingerprint">Pokud lze, použít otisk prstu</string>
+    <string name="use_fingerprint">Pokud lze, použijte otisk prstu</string>
     <string name="appwidget_shelf_description">Manga z vašich oblíbených</string>
     <string name="appwidget_recent_description">Vaše nedávno čtená manga</string>
     <string name="report">Hlášení</string>
@@ -251,7 +251,7 @@
     <string name="manga_error_description_pattern">Podrobnosti chyby:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Zkuste &lt;a href=%2$s&gt;otveřít mangu v prohlížeči&lt;/a&gt; abyste se ujistili že je dostupná na zdroji&lt;br&gt;2. Ujistěte se že používáte &lt;a href=kotatsu://about&gt;nejnovější verzi Kotatsu&lt;/a&gt;&lt;br&gt;3. Pokud je dostupná, pošlete hlášení o chybě vývojářům.</string>
     <string name="history_shortcuts">Zobrazovat zkratky nedávných mang</string>
     <string name="history_shortcuts_summary">Udělejte nedávné mangy dostupné dlouhým kliknutím na ikonu aplikace</string>
-    <string name="reader_control_ltr_summary">Kliknutím do pravého rohu nebo stisknutím pravého tlačítka vždy zobrazí následující stranu.</string>
+    <string name="reader_control_ltr_summary">Kliknutí do pravého rohu nebo stisknutí pravého tlačítka vždy zobrazí následující stranu.</string>
     <string name="reader_control_ltr">Ovládání ergonomické čtečky</string>
     <string name="color_correction">Korekce barev</string>
     <string name="brightness">Jas</string>
@@ -315,7 +315,7 @@
     <string name="enable">Zapnout</string>
     <string name="no_thanks">Ne, děkuji</string>
     <string name="cancel_all_downloads_confirm">Všechna aktivní stahování budou zrušena, částečně stažená data budou ztracena</string>
-    <string name="remove_completed_downloads_confirm">Vaše historie stahování bude permanentně odstraněna</string>
+    <string name="remove_completed_downloads_confirm">Historie stahování bude permanentně odstraněna. Žádné stažené soubory nebudou ovlivněny.</string>
     <string name="text_downloads_list_holder">Nemáte žádná stažení</string>
     <string name="downloads_resumed">Stahování bylo vráceno</string>
     <string name="downloads_paused">Stahování bylo pozastaveno</string>
@@ -366,7 +366,7 @@
     <string name="pages">Strany</string>
     <string name="clear">Vyčistit</string>
     <string name="save_page">Uložit stranu</string>
-    <string name="page_saved">Uloženo</string>
+    <string name="page_saved">Stránka uložena</string>
     <string name="operation_not_supported">Tato operace není podporována</string>
     <string name="search_on_s">Hledat na %s</string>
     <string name="internal_storage">Interní uložiště</string>
@@ -644,4 +644,14 @@
     <string name="disable_nsfw_notifications">Vypnout NSFW oznámení</string>
     <string name="tracker_debug_info">Log kontroly nových kapitol</string>
     <string name="tracker_debug_info_summary">Debug informace o kontrole nových kapitol na pozadí</string>
+    <string name="unstable_feature">Nestabilní funkce</string>
+    <string name="text_empty_holder_secondary_filtered">Žádné mangy pomocí vybraných filtrů nebyly nalezeny</string>
+    <string name="seconds_short">%d s</string>
+    <string name="source_pinned">Zdroj připnut</string>
+    <string name="pages_saved">Stránky uloženy</string>
+    <string name="invalid_server_address_message">Nesprávná adresa serveru</string>
+    <string name="pin">Pin kód</string>
+    <string name="unpin">Odepnout</string>
+    <string name="too_many_requests_message_retry">Server přetížen. Zkuste to za %s</string>
+    <string name="minutes_seconds_short">%1$d m %2$d s</string>
 </resources>
