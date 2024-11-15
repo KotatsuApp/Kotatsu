@@ -743,4 +743,10 @@
     <string name="landscape">Horizontal</string>
     <string name="portrait">Vertical</string>
     <string name="plugin_incompatible_with_cause">Error del plugin: %s\n Asegúrese de que está utilizando la última versión del plugin y Kotatsu</string>
+    <string name="access_denied_403">Acceso denegado (403)</string>
+    <string name="max_backups_count">Número máximo de copias de seguridad</string>
+    <string name="error_not_image">Formato no válido: se esperaba una imagen pero se obtuvo %s</string>
+    <string name="pages_saved">Páginas guardadas</string>
+    <string name="delete_old_backups_summary">Elimina automáticamente los archivos de copia de seguridad antiguos para ahorrar espacio de almacenamiento</string>
+    <string name="delete_old_backups">Eliminar copias de seguridad antiguas</string>
 </resources>
