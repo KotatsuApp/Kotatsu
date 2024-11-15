@@ -612,4 +612,20 @@
     <string name="unsupported_backup_message">Bitte wähle eine richtige Kotatsu-Backup-Datei aus</string>
     <string name="show_pages_thumbs_summary">Registerkarte \"Seiten\" auf dem Detailbildschirm aktivieren</string>
     <string name="error_no_data_received">Keine Daten vom Server erhalten</string>
+    <string name="last_used">Zuletzt verwendet</string>
+    <string name="hours_short">%d h</string>
+    <string name="minutes_short">%d m</string>
+    <string name="invalid_server_address_message">Ungültige Server-Addresse</string>
+    <string name="pages_saved">Seiten wurden gespeichert</string>
+    <string name="text_empty_holder_secondary_filtered">Es gibt keine Manga, die deinem Filter entsprechen.</string>
+    <string name="too_many_requests_message_retry">Zu viele Anfragen. Versuche es erneut in %s</string>
+    <string name="less_frequently">Seltener</string>
+    <string name="hours_minutes_short">%1$d h %2$d m</string>
+    <string name="show_updated">Zeige aktualisierte</string>
+    <string name="webtoon_gaps">Lücken im Webtoon Modus</string>
+    <string name="webtoon_gaps_summary">Vertikale Abstände zwischen den Seiten im Webtoon-Modus anzeigen</string>
+    <string name="more_frequently">Häufiger</string>
+    <string name="retry">Erneut versuchen</string>
+    <string name="seconds_short">%d s</string>
+    <string name="missing_storage_permission">Es gibt keine Berechtigung für den Zugriff auf Manga auf externem Speicher</string>
 </resources>
