@@ -95,7 +95,7 @@
     <string name="clear_network_cache">Избриши мрежну кеш меморију</string>
     <string name="password">Лозинка</string>
     <string name="show_in_grid_view">Прикажи као мрежу</string>
-    <string name="page_saved">Сачувано</string>
+    <string name="page_saved">Страница је сачувана</string>
     <string name="text_delete_local_manga">Трајно избриши \"%s\" са уређаја?</string>
     <string name="processing_">Обрада…</string>
     <string name="download_complete">Преузето</string>
@@ -742,4 +742,11 @@
     <string name="allow_always">Дозволи увек</string>
     <string name="allow_once">Дозволи једном</string>
     <string name="ask_every_time">Питај ме сваки пут</string>
+    <string name="pages_saved">Странице су сачуване</string>
+    <string name="plugin_incompatible_with_cause">Грешка додатка: %s\n. Провери да ли користиш најновију верзију додатка и Котатсу-а</string>
+    <string name="error_not_image">Неважећи формат: очекивана слика, али је добила %s</string>
+    <string name="max_backups_count">Највећи дозвољен број резервних копија</string>
+    <string name="access_denied_403">Приступ одбијен (403)</string>
+    <string name="delete_old_backups">Избриши старе резервне копије</string>
+    <string name="delete_old_backups_summary">Аутоматски избриши старе датотеке резервних копија да бис уштедео простор за складиштење</string>
 </resources>
