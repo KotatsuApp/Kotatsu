@@ -746,4 +746,7 @@
     <string name="max_backups_count">最大备份数</string>
     <string name="access_denied_403">拒绝访问 (403)</string>
     <string name="error_not_image">无效格式：预期是图片但得到了 %s</string>
+    <string name="pages_saved">图片已保存</string>
+    <string name="delete_old_backups">删除旧备份文件</string>
+    <string name="delete_old_backups_summary">自动删除旧备份文件以释放存储空间</string>
 </resources>
