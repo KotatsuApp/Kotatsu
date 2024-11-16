@@ -18,7 +18,9 @@ abstract class LifecycleAwareViewHolder(
 	private var isCurrent = false
 
 	init {
-		parentLifecycleOwner.lifecycle.addObserver(ParentLifecycleObserver())
+		itemView.post {
+			parentLifecycleOwner.lifecycle.addObserver(ParentLifecycleObserver())
+		}
 	}
 
 	fun setIsCurrent(value: Boolean) {

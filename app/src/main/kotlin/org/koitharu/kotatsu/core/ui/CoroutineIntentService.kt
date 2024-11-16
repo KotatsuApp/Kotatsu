@@ -107,13 +107,14 @@ abstract class CoroutineIntentService : BaseService() {
 				synchronized(this) {
 					if (cancelReceiver == null && !isStopped) {
 						val job = coroutineContext[Job] ?: return
-						cancelReceiver = CancelReceiver(job).also { receiver ->
+						CancelReceiver(job).let { receiver ->
 							ContextCompat.registerReceiver(
 								applicationContext,
 								receiver,
 								createIntentFilter(this@CoroutineIntentService, startId),
 								ContextCompat.RECEIVER_NOT_EXPORTED,
 							)
+							cancelReceiver = receiver
 						}
 					}
 				}

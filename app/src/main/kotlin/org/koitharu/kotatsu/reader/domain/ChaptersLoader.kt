@@ -7,6 +7,7 @@ import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import javax.inject.Inject
 
@@ -71,8 +72,8 @@ class ChaptersLoader @Inject constructor(
 		return chapterId in chapterPages
 	}
 
-	fun getPages(chapterId: Long): List<ReaderPage> {
-		return chapterPages.subList(chapterId)
+	fun getPages(chapterId: Long): List<MangaPage> = synchronized(chapterPages) {
+		return chapterPages.subList(chapterId).map { it.toMangaPage() }
 	}
 
 	fun getPagesCount(chapterId: Long): Int {

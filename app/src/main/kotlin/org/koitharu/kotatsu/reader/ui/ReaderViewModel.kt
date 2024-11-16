@@ -247,7 +247,7 @@ class ReaderViewModel @Inject constructor(
 
 	fun getCurrentChapterPages(): List<MangaPage>? {
 		val chapterId = readingState.value?.chapterId ?: return null
-		return chaptersLoader.getPages(chapterId).map { it.toMangaPage() }
+		return chaptersLoader.getPages(chapterId)
 	}
 
 	fun saveCurrentPage(
