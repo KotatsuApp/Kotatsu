@@ -664,4 +664,7 @@
     <string name="show_quick_filters">शीघ्र फिल्टर दिखाएं</string>
     <string name="invalid_proxy_configuration">अमान्य प्रॉक्सी विन्यास</string>
     <string name="show_quick_filters_summary">कुछ मापदंडों के आधार पर मंगा सूचियों को फिल्टर करने की क्षमता प्रदान करता है</string>
+    <string name="pages_saved">सहेजे गए पृष्ठ</string>
+    <string name="invalid_server_address_message">अमान्य सर्वर पता</string>
+    <string name="retry">पुनः प्रयत्न करें</string>
 </resources>
