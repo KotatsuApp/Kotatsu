@@ -433,6 +433,7 @@ class DownloadWorker @AssistedInject constructor(
 	@Reusable
 	class Scheduler @Inject constructor(
 		@ApplicationContext private val context: Context,
+		private val mangaDataRepository: MangaDataRepository,
 		private val workManager: WorkManager,
 	) {
 
@@ -507,11 +508,12 @@ class DownloadWorker @AssistedInject constructor(
 			}
 		}
 
-		suspend fun schedule(tasks: Collection<DownloadTask>) {
+		suspend fun schedule(tasks: Collection<Pair<Manga, DownloadTask>>) {
 			if (tasks.isEmpty()) {
 				return
 			}
-			val requests = tasks.map { task ->
+			val requests = tasks.map { (manga, task) ->
+				mangaDataRepository.storeManga(manga)
 				OneTimeWorkRequestBuilder<DownloadWorker>()
 					.setConstraints(createConstraints(task.allowMeteredNetwork))
 					.addTag(TAG)

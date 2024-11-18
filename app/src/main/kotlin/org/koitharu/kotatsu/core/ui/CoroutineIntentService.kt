@@ -93,7 +93,13 @@ abstract class CoroutineIntentService : BaseService() {
 
 		fun stop() {
 			synchronized(this) {
-				cancelReceiver?.let { unregisterReceiver(it) }
+				cancelReceiver?.let {
+					try {
+						unregisterReceiver(it)
+					} catch (e: IllegalArgumentException) {
+						e.printStackTraceDebug()
+					}
+				}
 				isStopped = true
 			}
 			if (isForeground) {

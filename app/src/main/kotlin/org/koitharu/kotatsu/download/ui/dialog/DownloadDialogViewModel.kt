@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.DownloadFormat
@@ -38,7 +37,6 @@ import javax.inject.Inject
 @HiltViewModel
 class DownloadDialogViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-	private val mangaDataRepository: MangaDataRepository,
 	private val scheduler: DownloadWorker.Scheduler,
 	private val localStorageManager: LocalStorageManager,
 	private val localMangaRepository: LocalMangaRepository,
@@ -94,8 +92,7 @@ class DownloadDialogViewModel @Inject constructor(
 		launchLoadingJob(Dispatchers.Default) {
 			val tasks = mangaDetails.get().map { m ->
 				val chapters = checkNotNull(m.chapters) { "Manga \"${m.title}\" cannot be loaded" }
-				mangaDataRepository.storeManga(m)
-				DownloadTask(
+				m to DownloadTask(
 					mangaId = m.id,
 					isPaused = !startNow,
 					isSilent = false,

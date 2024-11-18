@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.collection.ArraySet
 import androidx.core.view.postDelayed
 import androidx.fragment.app.viewModels
 import androidx.preference.ListPreference
@@ -15,6 +16,7 @@ import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
 import androidx.preference.forEach
+import androidx.preference.get
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,6 +56,7 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 	lateinit var activityRecreationHandle: ActivityRecreationHandle
 
 	private val viewModel: UserDataSettingsViewModel by viewModels()
+	private val loadingPrefs = HashSet<String>()
 
 	private val backupSelectCall = registerForActivityResult(
 		ActivityResultContracts.OpenDocument(),
@@ -106,8 +109,9 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 			pref.values = settings.searchSuggestionTypes.mapToSet { it.name }
 		}
 		viewModel.loadingKeys.observe(viewLifecycleOwner) { keys ->
-			preferenceScreen.forEach { pref ->
-				pref.isEnabled = pref.key !in keys
+			loadingPrefs.addAll(keys)
+			loadingPrefs.forEach { prefKey ->
+				findPreference<Preference>(prefKey)!!.isEnabled = prefKey !in keys
 			}
 		}
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(listView, this))

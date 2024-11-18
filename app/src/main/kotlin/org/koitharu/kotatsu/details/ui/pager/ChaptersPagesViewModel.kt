@@ -166,8 +166,9 @@ abstract class ChaptersPagesViewModel(
 
 	fun download(chaptersIds: Set<Long>?, allowMeteredNetwork: Boolean) {
 		launchJob(Dispatchers.Default) {
+			val manga = requireManga()
 			val task = DownloadTask(
-				mangaId = requireManga().id,
+				mangaId = manga.id,
 				isPaused = false,
 				isSilent = false,
 				chaptersIds = chaptersIds?.toLongArray(),
@@ -175,7 +176,7 @@ abstract class ChaptersPagesViewModel(
 				format = null,
 				allowMeteredNetwork = allowMeteredNetwork,
 			)
-			downloadScheduler.schedule(setOf(task))
+			downloadScheduler.schedule(setOf(manga to task))
 			onDownloadStarted.call(Unit)
 		}
 	}
