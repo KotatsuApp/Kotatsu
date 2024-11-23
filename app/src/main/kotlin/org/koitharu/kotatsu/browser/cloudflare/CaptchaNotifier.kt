@@ -44,7 +44,7 @@ class CaptchaNotifier(
 			.setContentTitle(channel.name)
 			.setPriority(NotificationCompat.PRIORITY_LOW)
 			.setDefaults(0)
-			.setSmallIcon(android.R.drawable.stat_notify_error)
+			.setSmallIcon(R.drawable.ic_bot)
 			.setGroup(GROUP_CAPTCHA)
 			.setAutoCancel(true)
 			.setVisibility(

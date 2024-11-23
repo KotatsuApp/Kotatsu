@@ -27,3 +27,4 @@
 -keep class org.acra.security.NoKeyStoreFactory { *; }
 -keep class org.acra.config.DefaultRetryPolicy { *; }
 -keep class org.acra.attachment.DefaultAttachmentProvider { *; }
+-keep class org.acra.sender.JobSenderService
