@@ -5,6 +5,7 @@ import androidx.collection.ArraySet
 import okhttp3.internal.closeQuietly
 import okio.Closeable
 import org.jetbrains.annotations.Blocking
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.withChildren
 import java.io.File
 import java.io.FileInputStream
@@ -13,6 +14,8 @@ import java.util.zip.Deflater
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 class ZipOutput(
 	val file: File,
@@ -21,6 +24,7 @@ class ZipOutput(
 
 	private val entryNames = ArraySet<String>()
 	private var cachedOutput: ZipOutputStream? = null
+	private var append: Boolean = false
 
 	@Blocking
 	fun put(name: String, file: File): Boolean = withOutput { output ->
@@ -77,7 +81,11 @@ class ZipOutput(
 
 	@Synchronized
 	override fun close() {
-		cachedOutput?.close()
+		try {
+			cachedOutput?.close()
+		} catch (e: NullPointerException) {
+			e.printStackTraceDebug()
+		}
 		cachedOutput = null
 	}
 
@@ -133,9 +141,21 @@ class ZipOutput(
 
 	@Synchronized
 	private fun <T> withOutput(block: (ZipOutputStream) -> T): T {
-		val output = cachedOutput ?: newOutput(append = false)
-		val res = block(output)
-		output.flush()
+		contract {
+			callsInPlace(block, InvocationKind.AT_LEAST_ONCE)
+		}
+		return try {
+			(cachedOutput ?: newOutput(append)).withOutputImpl(block).also {
+				append = true // after 1st success write
+			}
+		} catch (e: NullPointerException) { // probably NullPointerException: Deflater has been closed
+			newOutput(append).withOutputImpl(block)
+		}
+	}
+
+	private fun <T> ZipOutputStream.withOutputImpl(block: (ZipOutputStream) -> T): T {
+		val res = block(this)
+		flush()
 		return res
 	}
 
