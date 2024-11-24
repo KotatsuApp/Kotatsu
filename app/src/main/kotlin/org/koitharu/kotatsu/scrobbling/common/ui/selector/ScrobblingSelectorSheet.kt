@@ -60,7 +60,7 @@ class ScrobblingSelectorSheet :
 	lateinit var coil: ImageLoader
 
 	private var collapsibleActionViewCallback: CollapseActionViewCallback? = null
-
+	private var paginationScrollListener: PaginationScrollListener? = null
 	private val viewModel by viewModels<ScrobblingSelectorViewModel>()
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingSelectorBinding {
@@ -77,7 +77,11 @@ class ScrobblingSelectorSheet :
 			adapter = listAdapter
 			addItemDecoration(decoration)
 			addItemDecoration(TypedListSpacingDecoration(context, false))
-			addOnScrollListener(PaginationScrollListener(4, this@ScrobblingSelectorSheet))
+			addOnScrollListener(
+				PaginationScrollListener(4, this@ScrobblingSelectorSheet).also {
+					paginationScrollListener = it
+				},
+			)
 		}
 		binding.buttonDone.setOnClickListener(this)
 		initOptionsMenu()
@@ -112,6 +116,7 @@ class ScrobblingSelectorSheet :
 	override fun onDestroyView() {
 		super.onDestroyView()
 		collapsibleActionViewCallback = null
+		paginationScrollListener = null
 	}
 
 	override fun onCurrentListChanged(previousList: MutableList<ListModel>, currentList: MutableList<ListModel>) {
@@ -124,6 +129,7 @@ class ScrobblingSelectorSheet :
 				currentList.indexOfFirst { it is ScrobblerManga && it.id == selectedId }.coerceAtLeast(0)
 			}
 			rv.post(RecyclerViewScrollCallback(rv, target, if (target == 0) 0 else rv.height / 3))
+			paginationScrollListener?.postInvalidate(rv)
 		}
 	}
 

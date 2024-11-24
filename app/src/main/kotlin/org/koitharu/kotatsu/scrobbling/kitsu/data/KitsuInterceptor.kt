@@ -1,8 +1,14 @@
 package org.koitharu.kotatsu.scrobbling.kitsu.data
 
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Response
+import okhttp3.internal.closeQuietly
+import okio.IOException
 import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.parsers.util.mimeType
+import org.koitharu.kotatsu.parsers.util.parseHtml
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
 import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerAuthRequiredException
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
@@ -23,7 +29,16 @@ class KitsuInterceptor(private val storage: ScrobblerStorage) : Interceptor {
 		}
 		val response = chain.proceed(request.build())
 		if (!isAuthRequest && response.code == HttpURLConnection.HTTP_UNAUTHORIZED) {
+			response.closeQuietly()
 			throw ScrobblerAuthRequiredException(ScrobblerService.KITSU)
+		}
+		if (response.mimeType?.toMediaTypeOrNull()?.subtype == SUBTYPE_HTML) {
+			val message = runCatchingCancellable {
+				response.parseHtml().title().takeUnless { it.isEmpty() }
+			}.onFailure {
+				response.closeQuietly()
+			}.getOrNull() ?: "Invalid response (${response.code})"
+			throw IOException(message)
 		}
 		return response
 	}
@@ -31,5 +46,6 @@ class KitsuInterceptor(private val storage: ScrobblerStorage) : Interceptor {
 	companion object {
 
 		const val VND_JSON = "application/vnd.api+json"
+		const val SUBTYPE_HTML = "html"
 	}
 }

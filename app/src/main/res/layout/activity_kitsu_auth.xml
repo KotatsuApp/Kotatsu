@@ -56,12 +56,12 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:autofillHints="emailAddress"
+				android:hint="@string/email"
 				android:imeOptions="actionDone"
 				android:inputType="textEmailAddress"
 				android:maxLength="512"
 				android:singleLine="true"
-				android:textSize="16sp"
-				tools:hint="Email" />
+				android:textSize="16sp" />
 
 		</com.google.android.material.textfield.TextInputLayout>
 
@@ -83,12 +83,12 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:autofillHints="password"
+				android:hint="@string/password"
 				android:imeOptions="actionDone"
 				android:inputType="textPassword"
 				android:maxLength="512"
 				android:singleLine="true"
-				android:textSize="16sp"
-				tools:hint="Password" />
+				android:textSize="16sp" />
 
 		</com.google.android.material.textfield.TextInputLayout>
 

@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
@@ -59,7 +58,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 		get() = availableScrobblers[selectedScrobblerIndex.requireValue()]
 
 	val content: StateFlow<List<ListModel>> = combine(
-		scrobblerMangaList.map { it.distinctBy { x -> x.id } },
+		scrobblerMangaList,
 		listError,
 		hasNextPage,
 	) { list, error, isHasNextPage ->
@@ -127,14 +126,17 @@ class ScrobblingSelectorViewModel @Inject constructor(
 			runCatchingCancellable {
 				currentScrobbler.findManga(checkNotNull(searchQuery.value), offset)
 			}.onSuccess { list ->
-				if (!append) {
-					scrobblerMangaList.value = list
-				} else if (list.isNotEmpty()) {
-					scrobblerMangaList.value += list
-				}
-				hasNextPage.value = list.isNotEmpty()
+				val newList = (if (append) {
+					scrobblerMangaList.value + list
+				} else {
+					list
+				}).distinctBy { x -> x.id }
+				val changed = newList != scrobblerMangaList.value
+				scrobblerMangaList.value = newList
+				hasNextPage.value = changed && newList.isNotEmpty()
 			}.onFailure { error ->
 				error.printStackTraceDebug()
+				hasNextPage.value = false
 				listError.value = error
 			}
 		}
