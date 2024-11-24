@@ -402,7 +402,7 @@
 			android:value="@bool/com_samsung_android_icon_container_has_icon_container" />
 
 		<activity-alias
-			android:name="org.koitharu.kotatsu.details.ui.DetailsBYLinkActivity"
+			android:name="org.koitharu.kotatsu.details.ui.DetailsByLinkActivity"
 			android:exported="true"
 			android:targetActivity="org.koitharu.kotatsu.details.ui.DetailsActivity">
 

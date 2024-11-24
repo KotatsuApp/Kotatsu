@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import androidx.preference.TwoStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -50,11 +51,21 @@ class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) 
 				}
 			}
 		}
+		findPreference<TwoStatePreference>(AppSettings.KEY_HANDLE_LINKS)?.let { pref ->
+			viewModel.isLinksEnabled.observe(viewLifecycleOwner) {
+				pref.isChecked = it
+			}
+		}
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean = when (preference.key) {
 		AppSettings.KEY_SOURCES_CATALOG -> {
 			startActivity(Intent(preference.context, SourcesCatalogActivity::class.java))
+			true
+		}
+
+		AppSettings.KEY_HANDLE_LINKS -> {
+			viewModel.setLinksEnabled((preference as TwoStatePreference).isChecked)
 			true
 		}
 

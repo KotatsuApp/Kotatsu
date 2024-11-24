@@ -32,4 +32,11 @@
 		android:summary="@string/disable_nsfw_summary"
 		android:title="@string/disable_nsfw" />
 
+	<SwitchPreferenceCompat
+		android:key="handle_links"
+		android:persistent="false"
+		android:summary="@string/handle_links_summary"
+		android:title="@string/handle_links"
+		app:allowDividerAbove="true" />
+
 </androidx.preference.PreferenceScreen>
