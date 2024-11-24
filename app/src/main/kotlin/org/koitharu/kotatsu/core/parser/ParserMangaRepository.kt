@@ -79,7 +79,9 @@ class ParserMangaRepository(
 	}
 
 	override suspend fun getPageUrl(page: MangaPage): String = mirrorSwitchInterceptor.withMirrorSwitching {
-		parser.getPageUrl(page)
+		parser.getPageUrl(page).also { result ->
+			check(result.isNotEmpty()) { "Page url is empty" }
+		}
 	}
 
 	override suspend fun getFilterOptions(): MangaListFilterOptions = filterOptionsLazy.get()

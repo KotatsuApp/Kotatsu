@@ -58,7 +58,7 @@ class ErrorDetailsDialog : AlertDialogFragment<DialogErrorDetailsBinding>() {
 		if (exception.isReportable()) {
 			builder.setPositiveButton(R.string.report) { _, _ ->
 				dismiss()
-				exception.report()
+				exception.report(silent = true)
 			}
 		}
 		return builder

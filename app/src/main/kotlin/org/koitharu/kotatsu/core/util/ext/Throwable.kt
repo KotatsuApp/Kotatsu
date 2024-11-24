@@ -9,6 +9,7 @@ import okhttp3.Response
 import okio.FileNotFoundException
 import okio.IOException
 import okio.ProtocolException
+import org.acra.ktx.sendSilentlyWithAcra
 import org.acra.ktx.sendWithAcra
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.R
@@ -37,9 +38,9 @@ import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
 import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerAuthRequiredException
+import java.io.ObjectOutputStream
 import java.net.ConnectException
 import java.net.NoRouteToHostException
-import java.io.ObjectOutputStream
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.Locale
@@ -193,9 +194,13 @@ fun Throwable.isNetworkError(): Boolean {
 	return this is UnknownHostException || this is SocketTimeoutException
 }
 
-fun Throwable.report() {
-	val exception = CaughtException(this, "${javaClass.simpleName}($message)")
-	exception.sendWithAcra()
+fun Throwable.report(silent: Boolean = false) {
+	val exception = CaughtException(this)
+	if (silent) {
+		exception.sendSilentlyWithAcra()
+	} else {
+		exception.sendWithAcra()
+	}
 }
 
 fun Throwable.isWebViewUnavailable(): Boolean {

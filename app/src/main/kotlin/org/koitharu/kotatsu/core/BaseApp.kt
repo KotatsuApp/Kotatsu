@@ -78,6 +78,9 @@ open class BaseApp : Application(), Configuration.Provider {
 
 	override fun onCreate() {
 		super.onCreate()
+		if (ACRA.isACRASenderServiceProcess()) {
+			return
+		}
 		AppCompatDelegate.setDefaultNightMode(settings.theme)
 		AppCompatDelegate.setApplicationLocales(settings.appLocales)
 		// TLS 1.3 support for Android < 10
