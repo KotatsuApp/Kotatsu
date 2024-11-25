@@ -328,4 +328,10 @@
 		<item name="cornerSize">12dp</item>
 	</style>
 
+	<style name="FaviconDrawable.Chip">
+		<item name="strokeWidth">1px</item>
+		<item name="cornerSize">@dimen/chip_icon_corner</item>
+		<item name="drawableSize">@dimen/m3_chip_icon_size</item>
+	</style>
+
 </resources>

@@ -29,6 +29,8 @@ import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetChaptersPagesBinding
+import org.koitharu.kotatsu.details.ui.DetailsViewModel
+import org.koitharu.kotatsu.details.ui.ReadButtonDelegate
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import javax.inject.Inject
 
@@ -53,6 +55,9 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		val adapter = ChaptersPagesAdapter(this, settings.isPagesTabEnabled)
 		if (!adapter.isPagesTabEnabled) {
 			defaultTab = (defaultTab - 1).coerceAtLeast(TAB_CHAPTERS)
+		}
+		(viewModel as? DetailsViewModel)?.let { dvm ->
+			ReadButtonDelegate(binding.splitButtonRead, dvm).attach(viewLifecycleOwner)
 		}
 		binding.pager.offscreenPageLimit = adapter.itemCount
 		binding.pager.recyclerView?.isNestedScrollingEnabled = false
@@ -88,6 +93,8 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		val binding = viewBinding ?: return
 		val isActionModeStarted = actionModeDelegate?.isActionModeStarted == true
 		binding.toolbar.menuView?.isVisible = newState != STATE_COLLAPSED && !isActionModeStarted
+		binding.splitButtonRead.isVisible = newState == STATE_COLLAPSED && !isActionModeStarted
+			&& viewModel is DetailsViewModel
 	}
 
 	override fun onActionModeStarted(mode: ActionMode) {

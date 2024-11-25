@@ -34,7 +34,7 @@
 	<dimen name="chapter_grid_width">80dp</dimen>
 	<dimen name="side_card_offset">8dp</dimen>
 	<dimen name="webtoon_pages_gap">24dp</dimen>
-	<dimen name="details_bs_peek_height">92dp</dimen>
+	<dimen name="details_bs_peek_height">120dp</dimen>
 	<dimen name="spinner_height">56dp</dimen>
 
 	<dimen name="search_suggestions_manga_height">142dp</dimen>

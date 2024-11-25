@@ -13,9 +13,15 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.StyleRes
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.withClip
+import coil3.Image
+import coil3.asImage
+import coil3.getExtra
+import coil3.request.ImageRequest
 import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.util.KotatsuColors
+import org.koitharu.kotatsu.core.util.ext.mangaSourceKey
 
 open class FaviconDrawable(
 	context: Context,
@@ -29,6 +35,7 @@ open class FaviconDrawable(
 	private var colorStroke = Color.LTGRAY
 	private val letter = name.take(1).uppercase()
 	private var cornerSize = 0f
+	private var intrinsicSize = -1
 	private val textBounds = Rect()
 	private val tempRect = Rect()
 	private val boundsF = RectF()
@@ -40,6 +47,7 @@ open class FaviconDrawable(
 			colorStroke = getColor(R.styleable.FaviconFallbackDrawable_strokeColor, colorStroke)
 			cornerSize = getDimension(R.styleable.FaviconFallbackDrawable_cornerSize, cornerSize)
 			paint.strokeWidth = getDimension(R.styleable.FaviconFallbackDrawable_strokeWidth, 0f) * 2f
+			intrinsicSize = getDimensionPixelSize(R.styleable.FaviconFallbackDrawable_drawableSize, intrinsicSize)
 		}
 		paint.textAlign = Paint.Align.CENTER
 		paint.isFakeBoldText = true
@@ -75,6 +83,10 @@ open class FaviconDrawable(
 		paint.colorFilter = colorFilter
 	}
 
+	override fun getIntrinsicWidth(): Int = intrinsicSize
+
+	override fun getIntrinsicHeight(): Int = intrinsicSize
+
 	@Suppress("DeprecatedCallableAddReplaceWith")
 	@Deprecated("Deprecated in Java")
 	override fun getOpacity() = PixelFormat.TRANSPARENT
@@ -102,5 +114,17 @@ open class FaviconDrawable(
 		paint.textSize = testTextSize
 		paint.getTextBounds(text, 0, text.length, tempRect)
 		return testTextSize * width / tempRect.width()
+	}
+
+	class Factory(
+		@StyleRes private val styleResId: Int,
+	) : ((ImageRequest) -> Image?) {
+
+		override fun invoke(request: ImageRequest): Image? {
+			val source = request.getExtra(mangaSourceKey) ?: return null
+			val context = request.context
+			val title = source.getTitle(context)
+			return FaviconDrawable(context, styleResId, title).asImage()
+		}
 	}
 }

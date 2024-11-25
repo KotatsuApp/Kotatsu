@@ -6,11 +6,17 @@ import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import androidx.annotation.StyleRes
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import coil3.Image
+import coil3.asImage
+import coil3.getExtra
+import coil3.request.ImageRequest
 import com.google.android.material.animation.ArgbEvaluatorCompat
 import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.util.KotatsuColors
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
+import org.koitharu.kotatsu.core.util.ext.mangaSourceKey
 import kotlin.math.abs
 
 class AnimatedFaviconDrawable(
@@ -68,5 +74,17 @@ class AnimatedFaviconDrawable(
 		val fraction = abs((System.currentTimeMillis() % period) - ph) / ph.toFloat()
 		colorForeground = ArgbEvaluatorCompat.getInstance()
 			.evaluate(interpolator.getInterpolation(fraction), colorLow, colorHigh)
+	}
+
+	class Factory(
+		@StyleRes private val styleResId: Int,
+	) : ((ImageRequest) -> Image?) {
+
+		override fun invoke(request: ImageRequest): Image? {
+			val source = request.getExtra(mangaSourceKey) ?: return null
+			val context = request.context
+			val title = source.getTitle(context)
+			return AnimatedFaviconDrawable(context, styleResId, title).asImage()
+		}
 	}
 }

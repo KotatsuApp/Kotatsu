@@ -132,6 +132,7 @@
 		<attr name="strokeColor" />
 		<attr name="strokeWidth" />
 		<attr name="cornerSize" />
+		<attr name="drawableSize" />
 	</declare-styleable>
 
 	<declare-styleable name="NestedRecyclerView">
