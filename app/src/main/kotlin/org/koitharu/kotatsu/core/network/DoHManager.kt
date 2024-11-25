@@ -85,7 +85,7 @@ class DoHManager(
 			).build()
 
 		DoHProvider.ZERO_MS -> DnsOverHttps.Builder().client(bootstrapClient)
-			.url("https://2ca4h4crra.cloudflare-gateway.com/dns-query".toHttpUrl())
+			.url("https://0ms.dev/dns-query".toHttpUrl())
 			.resolvePublicAddresses(true)
 			.build()
 	}
