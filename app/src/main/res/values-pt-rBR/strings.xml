@@ -3,11 +3,11 @@
     <string name="read">Ler</string>
     <string name="you_have_not_favourites_yet">Você ainda não marcou alguma obra como favorita</string>
     <string name="local_storage">Armazenamento local</string>
-    <string name="favourites">Favoritas</string>
+    <string name="favourites">Favoritos</string>
     <string name="history">Histórico</string>
     <string name="error_occurred">Ocorreu um erro</string>
     <string name="network_error">Erro de rede</string>
-    <string name="details">Detalhado</string>
+    <string name="details">Detalhes</string>
     <string name="chapters">Capítulos</string>
     <string name="list">Lista</string>
     <string name="detailed_list">Lista detalhada</string>
@@ -32,7 +32,7 @@
     <string name="manga_downloading_">Baixando…</string>
     <string name="processing_">Processando…</string>
     <string name="download_complete">Baixado</string>
-    <string name="downloads">Transferências</string>
+    <string name="downloads">Baixados</string>
     <string name="computing_">Processando…</string>
     <string name="add_to_favourites">Favoritar obra</string>
     <string name="by_name">Nome</string>
@@ -73,7 +73,7 @@
     <string name="external_storage">Armazenamento externo</string>
     <string name="domain">Domínio</string>
     <string name="app_update_available">Uma nova versão do aplicativo está disponível</string>
-    <string name="open_in_browser">Abrir no navegador da web</string>
+    <string name="open_in_browser">Abrir no navegador</string>
     <string name="notifications">Notificações</string>
     <string name="new_chapters">Novos capítulos</string>
     <string name="download">Baixar</string>
@@ -99,7 +99,7 @@
     <string name="favourites_category_empty">Categoria vazia</string>
     <string name="read_later">Ler depois</string>
     <string name="updates">Atualizações</string>
-    <string name="search_results">Resultados encontrados</string>
+    <string name="search_results">Resultados da busca</string>
     <string name="new_version_s">Nova versão: %s</string>
     <string name="size_s">Tamanho: %s</string>
     <string name="clear_updates_feed">Limpar o fluxo de atualizações</string>
@@ -114,7 +114,7 @@
     <string name="repeat_password">Repita a senha</string>
     <string name="passwords_mismatch">Senhas incompatíveis</string>
     <string name="about">Sobre</string>
-    <string name="backup_information">Você pode criar um backup do seu histórico e favoritas e restaurá-lo</string>
+    <string name="backup_information">Você pode criar um backup do seu histórico e obras favoritas e restaurá-lo</string>
     <string name="just_now">Agora mesmo</string>
     <string name="yesterday">Ontem</string>
     <string name="long_ago">Há muito tempo</string>
@@ -129,7 +129,7 @@
     <string name="cookies_cleared">Todos os cookies foram removidos</string>
     <string name="clear_feed">Limpar fluxo</string>
     <string name="text_clear_updates_feed_prompt">Limpar todo o histórico de atualizações permanentemente\?</string>
-    <string name="check_for_new_chapters">Verificando se há novos capítulos</string>
+    <string name="check_for_new_chapters">Verificar se há novos capítulos</string>
     <string name="reverse">Reverter</string>
     <string name="sign_in">Entrar</string>
     <string name="auth_required">Faça login para ver este conteúdo</string>
@@ -180,7 +180,7 @@
     <string name="various_languages">Vários idiomas</string>
     <string name="operation_not_supported">Esta operação não é suportada</string>
     <string name="follow_system">Automático (segue o sistema)</string>
-    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d de %2$d em</string>
+    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d de %2$d habilitados</string>
     <string name="webtoon">Webtoon</string>
     <string name="switch_pages">Mudar páginas</string>
     <string name="clear_thumbs_cache">Limpar cache das miniaturas (capas, etc.)</string>
@@ -192,8 +192,8 @@
     <string name="black_dark_theme_summary">Consome menos bateria em telas AMOLED</string>
     <string name="create_backup">Criar backup de dados</string>
     <string name="text_local_holder_secondary">Salve algo do catálogo online ou importe de um arquivo.</string>
-    <string name="check_for_updates">Verificar se há atualização</string>
-    <string name="text_feed_holder">Novos capítulos da(s) obra(s) que você tá lendo serão mostrados aqui</string>
+    <string name="check_for_updates">Verificar se há atualizações</string>
+    <string name="text_feed_holder">Novos capítulos da(s) obra(s) que você lê serão mostrados aqui</string>
     <string name="app_version">Versão %s</string>
     <string name="zoom_mode_fit_width">Ajustar à largura</string>
     <string name="preparing_">Preparando…</string>
@@ -696,16 +696,41 @@
     <string name="manga_fix_prompt">Essa função encontrará fontes alternativas para o mangá selecionado. A tarefa levará algum tempo e será executada em segundo plano</string>
     <string name="manga_replaced">Mangá “%1$s” (%2$s) substituído por “%3$s” (%4$s)</string>
     <string name="no_alternatives_found">Não foi encontrado alternativas para “%s”</string>
-    <string name="pages_saved">Páginas Salvas</string>
-    <string name="text_empty_holder_secondary_filtered">Não foi possível encontrar Mangás com os filtros selecionado</string>
+    <string name="pages_saved">Páginas salvas</string>
+    <string name="text_empty_holder_secondary_filtered">Não existem obras que correspondam aos filtros selecionados</string>
     <string name="plugin_incompatible_with_cause">Plugin error: %s\n Verifique se você está usando a versão mais recente do plug-in e do Kotatsu</string>
     <string name="sort_order_desc">Descendente</string>
     <string name="download_new_chapters">Baixar novos capítulos</string>
-    <string name="retry">Retentativa</string>
+    <string name="retry">Retentar</string>
     <string name="connection_ok">Conexão OK</string>
     <string name="too_many_requests_message_retry">Muitas solicitações. Tente novamente depois de %s</string>
     <string name="unstable_feature">Recurso instável</string>
-    <string name="popular_in_hour">Popular agora</string>
+    <string name="popular_in_hour">Popular no momento</string>
     <string name="updated_long_ago">Atualizado há muito tempo</string>
     <string name="downloads_background">Downloads em segundo plano</string>
+    <string name="content_type_novel">Romance</string>
+    <string name="content_type_manhua">Manhua</string>
+    <string name="content_type_manhwa">Manhwa</string>
+    <string name="seconds_short">%d s</string>
+    <string name="minutes_seconds_short">%1$d m %2$d s</string>
+    <string name="unpopular">Impopular</string>
+    <string name="stuck">Preso</string>
+    <string name="not_in_favorites">Não está nos favoritos</string>
+    <string name="fixing_manga">Corrigindo o mangá</string>
+    <string name="fixed">Corrigido</string>
+    <string name="no_fix_required">Nenhuma correção necessária para \"%s\"</string>
+    <string name="handle_links_summary">Lidar com links de mangá de aplicações externas (ex: navegador). Você talvez precise habilitar isso manualmente nas configurações da aplicação</string>
+    <string name="demographic_kodomo">Kodomo</string>
+    <string name="content_type_one_shot">One shot</string>
+    <string name="handle_links">Lidar com links</string>
+    <string name="email">Email</string>
+    <string name="demographics">Demografia</string>
+    <string name="demographic_shounen">Shounen</string>
+    <string name="demographic_shoujo">Shoujo</string>
+    <string name="demographic_seinen">Seinen</string>
+    <string name="demographic_josei">Josei</string>
+    <string name="access_denied_403">Acesso negado (403)</string>
+    <string name="max_backups_count">Número máximo de backups</string>
+    <string name="delete_old_backups">Apagar backups antigos</string>
+    <string name="delete_old_backups_summary">Automaticamente apagar backups antigos para liberar espaço</string>
 </resources>
