@@ -749,4 +749,7 @@
     <string name="pages_saved">Đã lưu trang</string>
     <string name="delete_old_backups">Xóa bản sao lưu cũ</string>
     <string name="delete_old_backups_summary">Tự động xóa các bản sao lưu cũ để tiết kiệm bộ nhớ của thiết bị</string>
+    <string name="handle_links">Xử lí liên kết (Link)</string>
+    <string name="handle_links_summary">Xử lý các liên kết (Link) manga từ các ứng dụng bên ngoài (Ví dụ: trình duyệt web,...). Có thể bạn cũng cần phải bật thủ công trong cài đặt hệ thống</string>
+    <string name="email">E-mail</string>
 </resources>

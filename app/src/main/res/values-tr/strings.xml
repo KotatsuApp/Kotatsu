@@ -749,4 +749,7 @@
     <string name="pages_saved">Sayfalar kaydedildi</string>
     <string name="delete_old_backups">Eski yedekleri sil</string>
     <string name="delete_old_backups_summary">Depolama kullanımını azaltmak için eski yedek dosyalarını otomatik olarak sil</string>
+    <string name="email">E-posta</string>
+    <string name="handle_links">Bağlantıları aç</string>
+    <string name="handle_links_summary">Harici uygulamalardaki (örn. web tarayıcısı) manga bağlantılarını uygulamada açın. Uygulamanın sistem ayarlarından bunu aktifleştirmeniz gerekebilir</string>
 </resources>
