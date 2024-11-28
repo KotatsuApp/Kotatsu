@@ -749,4 +749,7 @@
     <string name="access_denied_403">Приступ одбијен (403)</string>
     <string name="delete_old_backups">Избриши старе резервне копије</string>
     <string name="delete_old_backups_summary">Аутоматски избриши старе датотеке резервних копија да бис уштедео простор за складиштење</string>
+    <string name="handle_links_summary">Руковање манга везама из спољних апликација (нпр. из прегледача). Можда ћеш морати да је омогућиш и ручно у системским поставкама апликације</string>
+    <string name="handle_links">Руковање везама</string>
+    <string name="email">Е-пошта</string>
 </resources>
