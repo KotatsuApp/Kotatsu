@@ -703,4 +703,9 @@
     <string name="download_new_chapters">Baixar novos capítulos</string>
     <string name="retry">Retentativa</string>
     <string name="connection_ok">Conexão OK</string>
+    <string name="too_many_requests_message_retry">Muitas solicitações. Tente novamente depois de %s</string>
+    <string name="unstable_feature">Recurso instável</string>
+    <string name="popular_in_hour">Popular agora</string>
+    <string name="updated_long_ago">Atualizado há muito tempo</string>
+    <string name="downloads_background">Downloads em segundo plano</string>
 </resources>
