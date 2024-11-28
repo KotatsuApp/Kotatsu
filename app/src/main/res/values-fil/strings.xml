@@ -751,4 +751,5 @@
     <string name="delete_old_backups_summary">Awtomatikong tanggalin ang mga lumang backup file upang makatipid ng storage space</string>
     <string name="handle_links">Pangasiwaan ang mga link</string>
     <string name="handle_links_summary">Pangasiwaan ang manga link mula sa mga panlabas na application (hal. web browser). Maaaring kailanganin mo rin itong manual na paganahin sa mga setting ng system ng aplikasyon</string>
+    <string name="email">Ang email</string>
 </resources>
