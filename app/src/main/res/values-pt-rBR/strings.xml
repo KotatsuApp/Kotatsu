@@ -50,7 +50,7 @@
     <string name="remove">Remover</string>
     <string name="_s_deleted_from_local_storage">“%s” excluído do armazenamento local</string>
     <string name="save_page">Salvar página</string>
-    <string name="page_saved">Salva</string>
+    <string name="page_saved">Página salva</string>
     <string name="share_image">Compartilhar imagem</string>
     <string name="_import">Importar</string>
     <string name="delete">Deletar</string>
@@ -315,7 +315,7 @@
     <string name="import_completed_hint">Você pode excluir o arquivo original do armazenamento para economizar espaço</string>
     <string name="import_will_start_soon">A importação começará em breve</string>
     <string name="history_shortcuts">Mostrar atalhos de obras recentes</string>
-    <string name="reader_control_ltr_summary">Tocar na borda direita ou pressionar a tecla direita sempre muda para a próxima página.</string>
+    <string name="reader_control_ltr_summary">Não ajustar a direção da troca de páginas para o modo leitor, ex: pressionar a \"tecla\" direita sempre muda para a próxima página. Essa opção apenas afeta dispositivos de entrada hardware</string>
     <string name="reader_control_ltr">Controle de leitura ergonômico</string>
     <string name="color_correction">Correção de cor</string>
     <string name="brightness">Brilho</string>
@@ -375,7 +375,7 @@
     <string name="more">Mais</string>
     <string name="enable">Permitir</string>
     <string name="no_thanks">Não, valeu</string>
-    <string name="remove_completed_downloads_confirm">Seu histórico de baixados será excluído permanentemente</string>
+    <string name="remove_completed_downloads_confirm">Seu histórico de baixados será excluído permanentemente. Nenhum arquivo baixado será afetado</string>
     <string name="text_downloads_list_holder">Você ainda não baixou nada</string>
     <string name="downloads_paused">\"Baixando foi pausado\"</string>
     <string name="downloads_removed">Os baixados foram removidos</string>
