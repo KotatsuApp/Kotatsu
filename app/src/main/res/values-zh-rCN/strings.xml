@@ -749,4 +749,6 @@
     <string name="pages_saved">图片已保存</string>
     <string name="delete_old_backups">删除旧备份文件</string>
     <string name="delete_old_backups_summary">自动删除旧备份文件以释放存储空间</string>
+    <string name="handle_links">处理链接</string>
+    <string name="handle_links_summary">处理来自外部程序的漫画链接（如 web 浏览器）。你可能需要在程序的系统设置中手动开启它</string>
 </resources>
