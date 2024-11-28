@@ -746,4 +746,9 @@
     <string name="error_not_image">Imbalidong pormat: inaasahang larawan ngunit nakakuha ng %s</string>
     <string name="access_denied_403">Tinanggihan ang pag-access (403)</string>
     <string name="max_backups_count">Pinakamataas na bilang ng mga backup</string>
+    <string name="pages_saved">Na-save na mga pahina</string>
+    <string name="delete_old_backups">Tanggalin ang mga lumang backup</string>
+    <string name="delete_old_backups_summary">Awtomatikong tanggalin ang mga lumang backup file upang makatipid ng storage space</string>
+    <string name="handle_links">Pangasiwaan ang mga link</string>
+    <string name="handle_links_summary">Pangasiwaan ang manga link mula sa mga panlabas na application (hal. web browser). Maaaring kailanganin mo rin itong manual na paganahin sa mga setting ng system ng aplikasyon</string>
 </resources>
