@@ -58,7 +58,7 @@ private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = w
 	)
 
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
-	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required)
+	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required_message)
 	is CloudFlareBlockedException -> resources.getString(R.string.blocked_by_server_message)
 	is ActivityNotFoundException,
 	is UnsupportedOperationException,

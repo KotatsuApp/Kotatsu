@@ -768,4 +768,5 @@
 	<string name="handle_links">Handle links</string>
 	<string name="handle_links_summary">Handle manga links from external applications (e.g. web browser). You may also need to enable it manually in the application\'s system settings</string>
 	<string name="email">Email</string>
+	<string name="captcha_required_message">This source requires solving a captcha to continue</string>
 </resources>
