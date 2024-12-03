@@ -14,15 +14,15 @@ coroutines = "1.9.0"
 desugar = "2.1.3"
 diskLruCache = "1.4"
 fragment = "1.8.5"
-gradle = "8.7.2"
+gradle = "8.7.3"
 guava = "33.3.1-android"
-hilt = "2.52"
+hilt = "2.53"
 hiltWork = "1.2.0"
 json = "20240303"
 junit = "4.13.2"
 junitKtx = "1.2.1"
-kotlin = "2.0.21"
-kspPlugin = "2.0.21-1.0.27"
+kotlin = "2.1.0"
+ksp = "2.1.0-1.0.29"
 leakcanary = "3.0-alpha-8"
 lifecycle = "2.8.7"
 markwon = "4.6.2"
@@ -42,7 +42,7 @@ transition = "1.5.1"
 viewpager2 = "1.1.0"
 webkit = "1.12.1"
 workRuntime = "2.10.0"
-workinspector = "5778dd1747"
+workinspector = "1.0"
 
 [libraries]
 acra-dialog = { module = "ch.acra:acra-dialog", version.ref = "acra" }
@@ -108,7 +108,7 @@ ssiv = { module = "com.github.KotatsuApp:subsampling-scale-image-view", version.
 workinspector = { module = "com.github.Koitharu:WorkInspector", version.ref = "workinspector" }
 
 [plugins]
-android = { id = "com.android.tools.build:gradle", version.ref = "gradle" }
-hilt = { id = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
-kotlin = { id = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "kspPlugin" }
+android-application = { id = "com.android.application", version.ref = "gradle" }
+kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
