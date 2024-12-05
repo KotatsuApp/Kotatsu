@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toListSorted
 import org.koitharu.kotatsu.local.data.MangaIndex
+import org.koitharu.kotatsu.local.data.hasZipExtension
 import org.koitharu.kotatsu.local.data.isZipArchive
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput.Companion.ENTRY_NAME_INDEX
 import org.koitharu.kotatsu.local.domain.model.LocalManga
@@ -94,10 +95,12 @@ class LocalMangaParser(private val uri: Uri) {
 				chapters = if (withDetails) {
 					val chapters = fileSystem.listRecursively(rootPath)
 						.mapNotNullTo(HashSet()) { path ->
-							if (path != coverEntry && fileSystem.isRegularFile(path) && mimeTypeMap.isImage(path)) {
-								path.parent
-							} else {
-								null
+							when {
+								path == coverEntry -> null
+								!fileSystem.isRegularFile(path) -> null
+								mimeTypeMap.isImage(path) -> path.parent
+								hasZipExtension(path.name) -> path
+								else -> null
 							}
 						}.sortedWith(compareBy(AlphanumComparator()) { x -> x.toString() })
 					chapters.mapIndexed { i, p ->
