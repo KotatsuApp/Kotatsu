@@ -203,7 +203,7 @@
     <string name="status_on_hold">Pozastaveno</string>
     <string name="status_dropped">Zahozeno</string>
     <string name="disable_all">Vypnout vše</string>
-    <string name="use_fingerprint">Pokud lze, použijte otisk prstu</string>
+    <string name="use_fingerprint">Pokud lze, použijte biometrii</string>
     <string name="appwidget_shelf_description">Manga z vašich oblíbených</string>
     <string name="appwidget_recent_description">Vaše nedávno čtená manga</string>
     <string name="report">Hlášení</string>
@@ -251,7 +251,7 @@
     <string name="manga_error_description_pattern">Podrobnosti chyby:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Zkuste &lt;a href=%2$s&gt;otveřít mangu v prohlížeči&lt;/a&gt; abyste se ujistili že je dostupná na zdroji&lt;br&gt;2. Ujistěte se že používáte &lt;a href=kotatsu://about&gt;nejnovější verzi Kotatsu&lt;/a&gt;&lt;br&gt;3. Pokud je dostupná, pošlete hlášení o chybě vývojářům.</string>
     <string name="history_shortcuts">Zobrazovat zkratky nedávných mang</string>
     <string name="history_shortcuts_summary">Udělejte nedávné mangy dostupné dlouhým kliknutím na ikonu aplikace</string>
-    <string name="reader_control_ltr_summary">Kliknutí do pravého rohu nebo stisknutí pravého tlačítka vždy zobrazí následující stranu.</string>
+    <string name="reader_control_ltr_summary">Neměň směr přepínání stránek v režimu čtení, například stisknutí pravé klávesy vždy přepne na další stránku. Tato volba ovlivňuje pouze hardwarová vstupní zařízení.</string>
     <string name="reader_control_ltr">Ovládání ergonomické čtečky</string>
     <string name="color_correction">Korekce barev</string>
     <string name="brightness">Jas</string>
@@ -654,4 +654,11 @@
     <string name="unpin">Odepnout</string>
     <string name="too_many_requests_message_retry">Server přetížen. Zkuste to za %s</string>
     <string name="minutes_seconds_short">%1$d m %2$d s</string>
+    <string name="invalid_proxy_configuration">Nesprávná proxy konfigurace</string>
+    <string name="plugin_incompatible_with_cause">Plugin error:%s\nUjisti se, že používáš poslední verzi Kotatsu a pluginu</string>
+    <string name="percent_left">Procent zbývá</string>
+    <string name="plugin_incompatible">Nekompatibilní plugin nebo vnitřní chyba. Ujistěte se, že používáte nejnovější verzi pluginu a aplikace Kotatsu.</string>
+    <string name="external_source">Externí zdroj/plugin</string>
+    <string name="retry">Opakovat</string>
+    <string name="connection_ok">Připojení je OK</string>
 </resources>
