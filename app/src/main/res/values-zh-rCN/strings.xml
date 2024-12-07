@@ -621,7 +621,7 @@
     <string name="show_updated">显示更新</string>
     <string name="webtoon_gaps_summary">在条漫模式下添加页与页之间的横向缝隙</string>
     <string name="webtoon_gaps">缝隙条漫模式</string>
-    <string name="pin_navigation_ui">置顶导航 UI</string>
+    <string name="pin_navigation_ui">固定导航 UI</string>
     <string name="frequency_of_check">自动检查更新频率</string>
     <string name="new_chapters_pattern">%1$s: %2$d</string>
     <string name="pin_navigation_ui_summary">当上下滑动时不隐藏导航栏和搜索框</string>
@@ -752,4 +752,5 @@
     <string name="handle_links">处理链接</string>
     <string name="handle_links_summary">处理来自外部程序的漫画链接（如 Web 浏览器）， 可能需要在程序的系统设置中手动开启</string>
     <string name="email">电子邮箱</string>
+    <string name="captcha_required_message">此图源需要通过验证以继续操作</string>
 </resources>

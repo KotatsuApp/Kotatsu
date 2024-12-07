@@ -50,7 +50,7 @@
     <string name="processing_">Przetwarzanie…</string>
     <string name="updated">Zaktualizowane</string>
     <string name="save_page">Zapisz stronę</string>
-    <string name="page_saved">Zapisano</string>
+    <string name="page_saved">Zapisano stronę</string>
     <string name="vibration">Wibracje</string>
     <string name="manga_shelf">Biblioteka</string>
     <string name="recent_manga">Ostatnie</string>
@@ -739,4 +739,18 @@
     <string name="allow_always">Zezwalaj zawsze</string>
     <string name="allow_once">Zezwól raz</string>
     <string name="ask_every_time">Pytaj za każdym razem</string>
+    <string name="pages_saved">Zapisane strony</string>
+    <string name="portrait">Portret</string>
+    <string name="access_denied_403">Odmowa dostępu (403)</string>
+    <string name="captcha_required_message">To źródło wymaga rozwiązania captcha, aby kontynuować</string>
+    <string name="handle_links">Obsługa linków</string>
+    <string name="email">E-mail</string>
+    <string name="max_backups_count">Maksymalna liczba kopii zapasowych</string>
+    <string name="delete_old_backups">Usuń stare kopie zapasowe</string>
+    <string name="delete_old_backups_summary">Automatycznie usuwaj stare pliki kopii zapasowych, aby zaoszczędzić miejsce na dysku</string>
+    <string name="plugin_incompatible_with_cause">Błąd wtyczki: %s\nUpewnij się, że używasz najnowszej wersji wtyczki i Kotatsu</string>
+    <string name="error_not_image">Błędny format: oczekiwany obraz, ale pobrano %s</string>
+    <string name="screen_orientation">Orientacja ekranu</string>
+    <string name="landscape">Poziomo</string>
+    <string name="handle_links_summary">Obsługuj linki do mangi z zewnętrznych aplikacji (np. przeglądarki internetowej). Może być również konieczne ręczne włączenie go w ustawieniach systemowych aplikacji</string>
 </resources>
