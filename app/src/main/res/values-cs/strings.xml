@@ -661,4 +661,14 @@
     <string name="external_source">Externí zdroj/plugin</string>
     <string name="retry">Opakovat</string>
     <string name="connection_ok">Připojení je OK</string>
+    <string name="recent_sources">Nedávné zdroje</string>
+    <string name="image_server">Preferovaný server pro média</string>
+    <string name="crop_pages">Oříznout stránky</string>
+    <string name="show_quick_filters">Zobrazit rychlé filtry</string>
+    <string name="source_unpinned">Zdroj odepnut</string>
+    <string name="sources_unpinned">Zdroje odepnuty</string>
+    <string name="sources_pinned">Zdroje připnuty</string>
+    <string name="percent_read">Procenta přečtených</string>
+    <string name="chapters_read">Kapitol přečtených</string>
+    <string name="chapters_left">Kapitol zbývajících</string>
 </resources>
