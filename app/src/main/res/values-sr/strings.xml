@@ -752,4 +752,5 @@
     <string name="handle_links_summary">Руковање манга везама из спољних апликација (нпр. из прегледача). Можда ћеш морати да је омогућиш и ручно у системским поставкама апликације</string>
     <string name="handle_links">Руковање везама</string>
     <string name="email">Е-пошта</string>
+    <string name="captcha_required_message">Овај извор захтева решавање CAPTCHA за наставак</string>
 </resources>
