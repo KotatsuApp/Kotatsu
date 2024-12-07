@@ -752,4 +752,5 @@
     <string name="email">Correo electrónico</string>
     <string name="handle_links">Gestionar enlaces</string>
     <string name="handle_links_summary">Gestionar enlaces de manga desde aplicaciones externas (por ejemplo, navegador web). También puede ser necesario habilitarlo manualmente en la configuración de la aplicación</string>
+    <string name="captcha_required_message">Esta fuente requiere resolver un captcha para continuar</string>
 </resources>
