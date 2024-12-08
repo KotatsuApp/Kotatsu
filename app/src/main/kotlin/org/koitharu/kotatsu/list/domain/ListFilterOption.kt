@@ -60,6 +60,20 @@ sealed interface ListFilterOption {
 			get() = name
 	}
 
+	data class Branch(
+		override val titleText: String?,
+	) : ListFilterOption {
+
+		override val titleResId: Int
+			get() = if (titleText == null) R.string.system_default else 0
+
+		override val iconResId: Int
+			get() = R.drawable.ic_language
+
+		override val groupKey: String
+			get() = "_branch"
+	}
+
 	data class Tag(
 		val tag: MangaTag
 	) : ListFilterOption {

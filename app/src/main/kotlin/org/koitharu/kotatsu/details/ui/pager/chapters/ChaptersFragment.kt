@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.ancestors
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -22,6 +24,7 @@ import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
@@ -34,6 +37,7 @@ import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.details.ui.withVolumeHeaders
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
@@ -45,7 +49,7 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
-	OnListItemClickListener<ChapterListItem> {
+	OnListItemClickListener<ChapterListItem>, ChipsView.OnChipClickListener {
 
 	private val viewModel by ChaptersPagesViewModel.ActivityVMLazy(this)
 
@@ -86,11 +90,13 @@ class ChaptersFragment :
 			adapter = chaptersAdapter
 			ChapterGridSpanHelper.attach(this)
 		}
+		binding.chipsFilter.onChipClickListener = this
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)
 		viewModel.chapters
 			.map { it.withVolumeHeaders(requireContext()) }
 			.flowOn(Dispatchers.Default)
 			.observe(viewLifecycleOwner, this::onChaptersChanged)
+		viewModel.quickFilter.observe(viewLifecycleOwner, this::onFilterChanged)
 		viewModel.isChaptersEmpty.observe(viewLifecycleOwner) {
 			binding.textViewHolder.isVisible = it
 		}
@@ -128,6 +134,11 @@ class ChaptersFragment :
 		return selectionController?.onItemContextClick(view, item.chapter.id) ?: false
 	}
 
+	override fun onChipClick(chip: Chip, data: Any?) {
+		if (data !is ListFilterOption.Branch) return
+		viewModel.setSelectedBranch(data.titleText)
+	}
+
 	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	private fun onChaptersChanged(list: List<ListModel>) {
@@ -145,6 +156,13 @@ class ChaptersFragment :
 			}
 		} else {
 			adapter.items = list
+		}
+	}
+
+	private fun onFilterChanged(list: List<ChipsView.ChipModel>) {
+		viewBinding?.chipsFilter?.run {
+			setChips(list)
+			isGone = list.isEmpty()
 		}
 	}
 

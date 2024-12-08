@@ -42,6 +42,7 @@ import coil3.size.Precision
 import coil3.size.Scale
 import coil3.transform.RoundedCornersTransformation
 import coil3.util.CoilUtils
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -167,6 +168,7 @@ class DetailsActivity :
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
 		viewBinding.containerBottomSheet?.let { sheet ->
 			onBackPressedDispatcher.addCallback(BottomSheetCollapseCallback(sheet))
+			BottomSheetBehavior.from(sheet).addBottomSheetCallback(DetailsBottomSheetCallback(viewBinding.swipeRefreshLayout))
 		}
 		TitleExpandListener(viewBinding.textViewTitle).attach()
 
