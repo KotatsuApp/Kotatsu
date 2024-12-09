@@ -753,4 +753,7 @@
     <string name="handle_links_summary">处理来自外部程序的漫画链接（如 Web 浏览器）， 可能需要在程序的系统设置中手动开启</string>
     <string name="email">电子邮箱</string>
     <string name="captcha_required_message">此图源需要通过验证以继续操作</string>
+    <string name="author">作者</string>
+    <string name="rating">评分</string>
+    <string name="source">来源</string>
 </resources>
