@@ -661,5 +661,5 @@
     <string name="invalid_server_address_message">mangatime.org</string>
     <string name="retry">حاول مجدداً</string>
     <string name="pages_saved">الصفحات المحفوظة</string>
-    <string name="too_many_requests_message_retry">هنالك الكثير من الطلبات. حاول مرة أخرى بعد% s</string>
+    <string name="too_many_requests_message_retry">هنالك الكثير من الطلبات. حاول مرة أخرى بعد%s</string>
 </resources>
