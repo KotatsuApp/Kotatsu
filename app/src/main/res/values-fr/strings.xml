@@ -750,4 +750,5 @@
     <string name="email">Courriel</string>
     <string name="handle_links_summary">Gérer les liens vers des mangas à partir d\'applications externes (par exemple, un navigateur web). Il se peut que vous deviez également l\'activer manuellement dans les paramètres système de l\'application</string>
     <string name="captcha_required_message">Cette source nécessite la résolution d\'un captcha pour continuer</string>
+    <string name="author">Auteur</string>
 </resources>
