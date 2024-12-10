@@ -28,7 +28,7 @@
     <string name="captcha_solve">开始验证</string>
     <string name="today">今天</string>
     <string name="clear_cookies">清除 Cookies</string>
-    <string name="new_sources_text">发现了新的可用漫画源</string>
+    <string name="new_sources_text">发现了新的可用图源</string>
     <string name="suggestions_summary">根据你的喜好推荐漫画</string>
     <string name="suggestions_info">所有数据都在本地分析，不会发送至任何地方</string>
     <string name="never">从不</string>
