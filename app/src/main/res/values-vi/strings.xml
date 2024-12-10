@@ -752,4 +752,8 @@
     <string name="handle_links">Xử lí liên kết (Link)</string>
     <string name="handle_links_summary">Xử lý các liên kết (Link) manga từ các ứng dụng bên ngoài (Ví dụ: trình duyệt web,...). Có thể bạn cũng cần phải bật thủ công trong cài đặt hệ thống</string>
     <string name="email">E-mail</string>
+    <string name="captcha_required_message">Nguồn đang yêu cầu xác thực CAPTCHA để có thể tiếp tục sử dụng</string>
+    <string name="author">Tác giả</string>
+    <string name="rating">Đánh giá</string>
+    <string name="source">Nguồn</string>
 </resources>
