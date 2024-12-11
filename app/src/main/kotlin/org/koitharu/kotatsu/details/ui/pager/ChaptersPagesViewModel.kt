@@ -61,7 +61,6 @@ abstract class ChaptersPagesViewModel(
 	val readingState = MutableStateFlow<ReaderState?>(null)
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
-	val onSelectChapter = MutableEventFlow<Long>()
 	val onDownloadStarted = MutableEventFlow<Unit>()
 	val onMangaRemoved = MutableEventFlow<Manga>()
 

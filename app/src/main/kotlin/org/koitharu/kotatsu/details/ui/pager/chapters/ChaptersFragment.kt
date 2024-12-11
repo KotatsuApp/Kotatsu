@@ -5,19 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.Insets
-import androidx.core.view.ancestors
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
@@ -30,7 +26,6 @@ import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentChaptersBinding
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersAdapter
 import org.koitharu.kotatsu.details.ui.adapter.ChaptersSelectionDecoration
@@ -100,7 +95,6 @@ class ChaptersFragment :
 		viewModel.isChaptersEmpty.observe(viewLifecycleOwner) {
 			binding.textViewHolder.isVisible = it
 		}
-		viewModel.onSelectChapter.observeEvent(viewLifecycleOwner, ::onSelectChapter)
 	}
 
 	override fun onDestroyView() {
@@ -127,11 +121,11 @@ class ChaptersFragment :
 	}
 
 	override fun onItemLongClick(item: ChapterListItem, view: View): Boolean {
-		return selectionController?.onItemLongClick(view, item.chapter.id) ?: false
+		return selectionController?.onItemLongClick(view, item.chapter.id) == true
 	}
 
 	override fun onItemContextClick(item: ChapterListItem, view: View): Boolean {
-		return selectionController?.onItemContextClick(view, item.chapter.id) ?: false
+		return selectionController?.onItemContextClick(view, item.chapter.id) == true
 	}
 
 	override fun onChipClick(chip: Chip, data: Any?) {
@@ -163,25 +157,6 @@ class ChaptersFragment :
 		viewBinding?.chipsFilter?.run {
 			setChips(list)
 			isGone = list.isEmpty()
-		}
-	}
-
-	private suspend fun onSelectChapter(chapterId: Long) {
-		if (!isResumed) {
-			view?.ancestors?.firstNotNullOfOrNull { it as? ViewPager2 }?.setCurrentItem(0, true)
-		}
-		val position = withContext(Dispatchers.Default) {
-			val predicate: (ListModel) -> Boolean = { x -> x is ChapterListItem && x.chapter.id == chapterId }
-			val items = chaptersAdapter?.observeItems()?.firstOrNull { it.any(predicate) }
-			items?.indexOfFirst(predicate) ?: -1
-		}
-		if (position >= 0) {
-			selectionController?.startSelection(chapterId)
-			val lm = (viewBinding?.recyclerViewChapters?.layoutManager as? LinearLayoutManager)
-			if (lm != null) {
-				val offset = resources.getDimensionPixelOffset(R.dimen.chapter_list_item_height)
-				lm.scrollToPositionWithOffset(position, offset)
-			}
 		}
 	}
 

@@ -112,12 +112,14 @@ class DetailsViewModel @Inject constructor(
 		history,
 		interactor.observeIncognitoMode(manga),
 	) { m, b, h, im ->
-		HistoryInfo(m, b, h, im)
-	}.stateIn(
-		scope = viewModelScope + Dispatchers.Default,
-		started = SharingStarted.Eagerly,
-		initialValue = HistoryInfo(null, null, null, false),
-	)
+		val estimatedTime = readingTimeUseCase.invoke(m, b, h)
+		HistoryInfo(m, b, h, im, estimatedTime)
+	}.withErrorHandling()
+		.stateIn(
+			scope = viewModelScope + Dispatchers.Default,
+			started = SharingStarted.Eagerly,
+			initialValue = HistoryInfo(null, null, null, false, null),
+		)
 
 	val localSize = mangaDetails
 		.map { it?.local }
@@ -170,14 +172,6 @@ class DetailsViewModel @Inject constructor(
 		}.sortedWith(BranchComparator())
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
-	val readingTime = combine(
-		mangaDetails,
-		selectedBranch,
-		history,
-	) { m, b, h ->
-		readingTimeUseCase.invoke(m, b, h)
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, null)
-
 	val selectedBranchValue: String?
 		get() = selectedBranch.value
 
@@ -220,14 +214,6 @@ class DetailsViewModel @Inject constructor(
 				mangaId = mangaId,
 			)
 		}
-	}
-
-	fun startChaptersSelection() {
-		val chapters = chapters.value
-		val chapter = chapters.find {
-			it.isUnread && !it.isDownloaded
-		} ?: chapters.firstOrNull() ?: return
-		onSelectChapter.call(chapter.chapter.id)
 	}
 
 	fun removeFromHistory() {

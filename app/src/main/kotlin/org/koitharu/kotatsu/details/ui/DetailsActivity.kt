@@ -2,15 +2,9 @@ package org.koitharu.kotatsu.details.ui
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.text.style.DynamicDrawableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.ImageSpan
-import android.text.style.RelativeSizeSpan
 import android.transition.TransitionManager
 import android.view.Gravity
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -19,8 +13,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
-import androidx.core.text.buildSpannedString
-import androidx.core.text.inSpans
 import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -79,7 +71,6 @@ import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.drawable
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.isTextTruncated
 import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
@@ -168,7 +159,8 @@ class DetailsActivity :
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
 		viewBinding.containerBottomSheet?.let { sheet ->
 			onBackPressedDispatcher.addCallback(BottomSheetCollapseCallback(sheet))
-			BottomSheetBehavior.from(sheet).addBottomSheetCallback(DetailsBottomSheetCallback(viewBinding.swipeRefreshLayout))
+			BottomSheetBehavior.from(sheet)
+				.addBottomSheetCallback(DetailsBottomSheetCallback(viewBinding.swipeRefreshLayout))
 		}
 		TitleExpandListener(viewBinding.textViewTitle).attach()
 
@@ -187,18 +179,14 @@ class DetailsActivity :
 		viewModel.scrobblingInfo.observe(this, ::onScrobblingInfoChanged)
 		viewModel.localSize.observe(this, ::onLocalSizeChanged)
 		viewModel.relatedManga.observe(this, ::onRelatedMangaChanged)
-		viewModel.readingTime.observe(this, ::onReadingTimeChanged)
-		// viewModel.selectedBranch.observe(this) {
-		// 	viewBinding.infoLayout?.chipBranch?.text = it.ifNullOrEmpty { getString(R.string.system_default) }
-		// }
 		viewModel.favouriteCategories.observe(this, ::onFavoritesChanged)
 		val menuInvalidator = MenuInvalidator(this)
 		viewModel.isStatsAvailable.observe(this, menuInvalidator)
 		viewModel.remoteManga.observe(this, menuInvalidator)
-		// viewModel.branches.observe(this) {
-		// 	viewBinding.infoLayout?.chipBranch?.isVisible = it.size > 1 || !it.firstOrNull()?.name.isNullOrEmpty()
-		// 	viewBinding.infoLayout?.chipBranch?.isCloseIconVisible = it.size > 1
-		// }
+		viewModel.branches.observe(this) {
+			infoBinding.textViewTranslation.textAndVisible = it.singleOrNull()?.name
+			infoBinding.textViewTranslationLabel.isVisible = infoBinding.textViewTranslation.isVisible
+		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
 		viewModel.onDownloadStarted
 			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
@@ -379,11 +367,6 @@ class DetailsActivity :
 		}
 	}
 
-	private fun onReadingTimeChanged(time: ReadingTime?) {
-		// TODO
-		// chip.textAndVisible = time?.formatShort(chip.resources)
-	}
-
 	private fun onLocalSizeChanged(size: Long) {
 		if (size == 0L) {
 			infoBinding.textViewLocal.isVisible = false
@@ -518,13 +501,14 @@ class DetailsActivity :
 	}
 
 	private fun onHistoryChanged(info: HistoryInfo, isLoading: Boolean) = with(infoBinding) {
-		textViewChapters.textAndVisible = when {
-			isLoading -> null
+		textViewChapters.textAndVisible = if (isLoading) {
+			null
+		} else when {
 			info.currentChapter >= 0 -> getString(R.string.chapter_d_of_d, info.currentChapter + 1, info.totalChapters)
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
 			info.totalChapters == -1 -> getString(R.string.error_occurred)
 			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
-		}
+		}.withEstimatedTime(info.estimatedTime)
 		textViewProgress.textAndVisible = if (info.percent <= 0f) {
 			null
 		} else {
@@ -539,53 +523,6 @@ class DetailsActivity :
 		progress.isVisible = info.history != null
 		// buttonRead.setProgress(info.percent.coerceIn(0f, 1f), !isFirstCall)
 		// buttonDownload?.isEnabled = info.isValid && info.canDownload
-	}
-
-	private fun showBranchPopupMenu(v: View) {
-		val branches = viewModel.branches.value
-		if (branches.size <= 1) {
-			return
-		}
-		val menu = PopupMenu(v.context, v)
-		for ((i, branch) in branches.withIndex()) {
-			val title = buildSpannedString {
-				if (branch.isCurrent) {
-					inSpans(
-						ImageSpan(
-							this@DetailsActivity,
-							R.drawable.ic_current_chapter,
-							DynamicDrawableSpan.ALIGN_BASELINE,
-						),
-					) {
-						append(' ')
-					}
-					append(' ')
-				}
-				append(branch.name ?: getString(R.string.system_default))
-				append(' ')
-				append(' ')
-				inSpans(
-					ForegroundColorSpan(
-						v.context.getThemeColor(
-							android.R.attr.textColorSecondary,
-							Color.LTGRAY,
-						),
-					),
-					RelativeSizeSpan(0.74f),
-				) {
-					append(branch.count.toString())
-				}
-			}
-			val item = menu.menu.add(R.id.group_branches, Menu.NONE, i, title)
-			item.isCheckable = true
-			item.isChecked = branch.isSelected
-		}
-		menu.menu.setGroupCheckable(R.id.group_branches, true, true)
-		menu.setOnMenuItemClickListener {
-			viewModel.setSelectedBranch(branches.getOrNull(it.order)?.name)
-			true
-		}
-		menu.show()
 	}
 
 	private fun openReader(isIncognitoMode: Boolean) {
@@ -636,6 +573,14 @@ class DetailsActivity :
 			request.defaultPlaceholders(this)
 		}
 		request.enqueueWith(coil)
+	}
+
+	private fun String.withEstimatedTime(time: ReadingTime?): String {
+		if (time == null) {
+			return this
+		}
+		val timeFormatted = time.formatShort(resources)
+		return getString(R.string.chapters_time_pattern, this, timeFormatted)
 	}
 
 	private class PrefetchObserver(

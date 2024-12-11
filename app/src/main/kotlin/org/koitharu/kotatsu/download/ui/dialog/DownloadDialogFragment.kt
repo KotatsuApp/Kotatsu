@@ -75,6 +75,7 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 		binding.buttonConfirm.setOnClickListener(this)
 		binding.textViewMore.setOnClickListener(this)
 
+		binding.textViewTip.isVisible = viewModel.manga.size == 1
 		binding.textViewSummary.text = viewModel.manga.joinToStringWithLimit(binding.root.context, 120) { it.title }
 
 		viewModel.isLoading.observe(viewLifecycleOwner, this::onLoadingStateChanged)

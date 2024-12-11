@@ -772,4 +772,6 @@
 	<string name="author">Author</string>
 	<string name="rating">Rating</string>
 	<string name="source">Source</string>
+	<string name="translation">Translation</string>
+	<string name="chapters_time_pattern" translatable="false">%1$s (%2$s)</string>
 </resources>

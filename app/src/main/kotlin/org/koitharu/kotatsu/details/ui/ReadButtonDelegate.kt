@@ -13,15 +13,20 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
+import androidx.core.view.MenuCompat
 import androidx.core.view.get
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialSplitButton
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.util.ext.findActivity
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
+import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 
 class ReadButtonDelegate(
@@ -46,10 +51,17 @@ class ReadButtonDelegate(
 		when (item.itemId) {
 			R.id.action_incognito -> openReader(isIncognitoMode = true)
 			R.id.action_forget -> viewModel.removeFromHistory()
-			else -> {
+			R.id.action_download -> DownloadDialogFragment.show(
+				fm = (context.findActivity() as? FragmentActivity)?.supportFragmentManager ?: return false,
+				manga = setOf(viewModel.getMangaOrNull() ?: return false),
+			)
+
+			Menu.NONE -> {
 				val branch = viewModel.branches.value.getOrNull(item.order) ?: return false
 				viewModel.setSelectedBranch(branch.name)
 			}
+
+			else -> return false
 		}
 		return true
 	}
@@ -67,16 +79,21 @@ class ReadButtonDelegate(
 	private fun showMenu() {
 		val menu = PopupMenu(context, buttonMenu)
 		menu.inflate(R.menu.popup_read)
-		menu.menu.setGroupDividerEnabled(true)
-		menu.menu.populateBranchList()
-		menu.menu.findItem(R.id.action_forget)?.isVisible = viewModel.historyInfo.value.run {
-			!isIncognitoMode && history != null
-		}
+		prepareMenu(menu.menu)
 		menu.setOnMenuItemClickListener(this)
 		menu.setForceShowIcon(true)
 		menu.setOnDismissListener(this)
 		buttonMenu.isChecked = true
 		menu.show()
+	}
+
+	private fun prepareMenu(menu: Menu) {
+		MenuCompat.setGroupDividerEnabled(menu, true)
+		menu.populateBranchList()
+		val history = viewModel.historyInfo.value
+		menu.findItem(R.id.action_incognito)?.isVisible = !history.isIncognitoMode
+		menu.findItem(R.id.action_forget)?.isVisible = history.history != null
+		menu.findItem(R.id.action_download)?.isVisible = viewModel.getMangaOrNull()?.isLocal == false
 	}
 
 	private fun openReader(isIncognitoMode: Boolean) {
