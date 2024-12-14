@@ -294,7 +294,7 @@
     <string name="confirm_exit">Притисни Назад поново да изађеш</string>
     <string name="scale_mode">Режим скалирања</string>
     <string name="advanced">Напредна</string>
-    <string name="only_using_wifi">Само на ВиФи-ју</string>
+    <string name="only_using_wifi">Само на ВиФи мрежи</string>
     <string name="sync_settings">Подешавања синхронизације</string>
     <string name="back">Назад</string>
     <string name="online_variant">Варијанта са мреже</string>
@@ -753,4 +753,8 @@
     <string name="handle_links">Руковање везама</string>
     <string name="email">Е-пошта</string>
     <string name="captcha_required_message">Овај извор захтева решавање CAPTCHA за наставак</string>
+    <string name="author">Аутор</string>
+    <string name="rating">Оцена</string>
+    <string name="source">Извор</string>
+    <string name="translation">Превод</string>
 </resources>
