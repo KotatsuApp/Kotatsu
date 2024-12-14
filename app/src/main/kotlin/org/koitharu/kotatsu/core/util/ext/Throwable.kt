@@ -41,11 +41,13 @@ import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerAuthRequiredExcept
 import java.io.ObjectOutputStream
 import java.net.ConnectException
 import java.net.NoRouteToHostException
+import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.Locale
 
 private const val MSG_NO_SPACE_LEFT = "No space left on device"
+private const val MSG_CONNECTION_RESET = "Connection reset"
 private const val IMAGE_FORMAT_NOT_SUPPORTED = "Image format not supported"
 
 fun Throwable.getDisplayMessage(resources: Resources): String = getDisplayMessageOrNull(resources)
@@ -117,7 +119,7 @@ private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = w
 	is HttpException -> getHttpDisplayMessage(response.code, resources)
 	is HttpStatusException -> getHttpDisplayMessage(statusCode, resources)
 
-	else -> getDisplayMessage(message, resources) ?: message
+	else -> mapDisplayMessage(message, resources) ?: message
 }.takeUnless { it.isNullOrBlank() }
 
 @DrawableRes
@@ -154,10 +156,11 @@ private fun getHttpDisplayMessage(statusCode: Int, resources: Resources): String
 	else -> null
 }
 
-private fun getDisplayMessage(msg: String?, resources: Resources): String? = when {
+private fun mapDisplayMessage(msg: String?, resources: Resources): String? = when {
 	msg.isNullOrEmpty() -> null
 	msg.contains(MSG_NO_SPACE_LEFT) -> resources.getString(R.string.error_no_space_left)
 	msg.contains(IMAGE_FORMAT_NOT_SUPPORTED) -> resources.getString(R.string.error_corrupted_file)
+	msg == MSG_CONNECTION_RESET -> resources.getString(R.string.error_connection_reset)
 	msg == FILTER_MULTIPLE_GENRES_NOT_SUPPORTED -> resources.getString(R.string.error_multiple_genres_not_supported)
 	msg == FILTER_MULTIPLE_STATES_NOT_SUPPORTED -> resources.getString(R.string.error_multiple_states_not_supported)
 	msg == SEARCH_NOT_SUPPORTED -> resources.getString(R.string.error_search_not_supported)
@@ -184,6 +187,7 @@ fun Throwable.isReportable(): Boolean {
 		|| this is WrongPasswordException
 		|| this is TooManyRequestExceptions
 		|| this is HttpStatusException
+		|| this is SocketException
 	) {
 		return false
 	}

@@ -777,4 +777,5 @@
 	<string name="show_slider">Show slider</string>
 	<!-- Button label, should be as short as possible -->
 	<string name="incognito">Incognito</string>
+	<string name="error_connection_reset">Connection reset by remote host</string>
 </resources>
