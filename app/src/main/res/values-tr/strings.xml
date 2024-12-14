@@ -753,4 +753,7 @@
     <string name="handle_links">Bağlantıları aç</string>
     <string name="handle_links_summary">Harici uygulamalardaki (örn. web tarayıcısı) manga bağlantılarını uygulamada açın. Uygulamanın sistem ayarlarından bunu aktifleştirmeniz gerekebilir</string>
     <string name="captcha_required_message">Bu kaynağın kullanılabilmesi için bir captcha çözülmesi gerekiyor</string>
+    <string name="author">Yazar</string>
+    <string name="rating">Puan</string>
+    <string name="source">Kaynak</string>
 </resources>
