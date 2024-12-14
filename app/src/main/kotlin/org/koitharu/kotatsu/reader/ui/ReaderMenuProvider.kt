@@ -9,14 +9,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
 import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
 
-class ReaderBottomMenuProvider(
+class ReaderMenuProvider(
 	private val activity: FragmentActivity,
 	private val readerManager: ReaderManager,
 	private val viewModel: ReaderViewModel,
 ) : MenuProvider {
 
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-		menuInflater.inflate(R.menu.opt_reader_bottom, menu)
+		menuInflater.inflate(R.menu.opt_reader, menu)
 		onPrepareMenu(menu) // fix, not called in toolbar
 	}
 

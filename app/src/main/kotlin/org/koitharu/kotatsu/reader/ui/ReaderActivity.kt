@@ -150,7 +150,7 @@ class ReaderActivity :
 		viewModel.content.observe(this) {
 			onLoadingStateChanged(viewModel.isLoading.value)
 		}
-		viewModel.isSliderVisible.observe(this, this::onSliderVisibilityChanged)
+		viewModel.isSliderVisible.observe(this) { updateSliderVisibility() }
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		val bottomMenuInvalidator = MenuInvalidator(viewBinding.toolbarBottom)
@@ -164,8 +164,7 @@ class ReaderActivity :
 		viewModel.isZoomControlsEnabled.observe(this) {
 			viewBinding.zoomControl.isVisible = it
 		}
-		addMenuProvider(ReaderTopMenuProvider(this, viewModel))
-		viewBinding.toolbarBottom.addMenuProvider(ReaderBottomMenuProvider(this, readerManager, viewModel))
+		viewBinding.toolbarBottom.addMenuProvider(ReaderMenuProvider(this, readerManager, viewModel))
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -320,13 +319,9 @@ class ReaderActivity :
 			viewBinding.appbarBottom?.isVisible = isUiVisible
 			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
 			viewBinding.infoBar.isTimeVisible = isFullscreen
-			viewBinding.floatingToolbar.isVisible = isUiVisible && viewModel.isSliderVisible.value
+			updateSliderVisibility()
 			systemUiController.setSystemUiVisible(isUiVisible || !isFullscreen)
 		}
-	}
-
-	private fun onSliderVisibilityChanged(isSliderVisible: Boolean) {
-		viewBinding.floatingToolbar.isVisible = isSliderVisible && viewBinding.appbarTop.isVisible
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
@@ -408,10 +403,14 @@ class ReaderActivity :
 		if (uiState.isSliderAvailable()) {
 			viewBinding.slider.valueTo = uiState.totalPages.toFloat() - 1
 			viewBinding.slider.setValueRounded(uiState.currentPage.toFloat())
-			viewBinding.slider.isVisible = true
-		} else {
-			viewBinding.slider.isVisible = false
 		}
+		updateSliderVisibility()
+	}
+
+	private fun updateSliderVisibility() {
+		viewBinding.floatingToolbar.isVisible = viewBinding.appbarTop.isVisible &&
+			viewModel.isSliderVisible.value &&
+			viewModel.uiState.value?.isSliderAvailable() == true
 	}
 
 	class IntentBuilder(context: Context) {

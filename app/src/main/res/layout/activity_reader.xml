@@ -66,7 +66,7 @@
 			android:id="@+id/toolbar_bottom"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			tools:menu="@menu/opt_reader_bottom" />
+			tools:menu="@menu/opt_reader" />
 
 	</com.google.android.material.card.MaterialCardView>
 
