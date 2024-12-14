@@ -43,14 +43,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 	private val connectivityManager = context.connectivityManager
-	private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-
-	var telegramChatId: String?
-		get() = preferences.getString("telegram_chat_id", null)
-		set(value) {
-			preferences.edit().putString("telegram_chat_id", value).apply()
-		}
 
 	var listMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.GRID)
@@ -497,6 +489,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getString(KEY_BACKUP_PERIODICAL_OUTPUT, null)?.toUriOrNull()
 		set(value) = prefs.edit { putString(KEY_BACKUP_PERIODICAL_OUTPUT, value?.toString()) }
 
+	val backupTelegramChatId: String?
+		get() = prefs.getString(KEY_BACKUP_TG_CHAT, null)
+
 	val isReadingTimeEstimationEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READING_TIME, true)
 
@@ -724,6 +719,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SEARCH_SUGGESTION_TYPES = "search_suggest_types"
 		const val KEY_SOURCES_VERSION = "sources_version"
 		const val KEY_QUICK_FILTER = "quick_filter"
+		const val KEY_BACKUP_TG_CHAT = "telegram_chat_id"
 
 		// keys for non-persistent preferences
 		const val KEY_APP_VERSION = "app_version"

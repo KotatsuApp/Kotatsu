@@ -7,12 +7,6 @@ import androidx.documentfile.provider.DocumentFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.asRequestBody
 import okio.buffer
 import okio.sink
 import okio.source
@@ -21,7 +15,6 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
-import java.io.IOException
 import javax.inject.Inject
 
 class ExternalBackupStorage @Inject constructor(
@@ -94,38 +87,5 @@ class ExternalBackupStorage @Inject constructor(
 		}
 		val root = DocumentFile.fromTreeUri(context, uri)
 		return checkNotNull(root) { "Cannot obtain DocumentFile from $uri" }
-	}
-}
-class TelegramBackupUploader @Inject constructor(private val settings: AppSettings) {
-
-	private val client = OkHttpClient()
-
-	suspend fun uploadBackupToTelegram(file: File) = withContext(Dispatchers.IO) {
-		val botToken = "7455491254:AAGYJKgpP1DZN3d9KZfb8tvtIdaIMxUayXM"
-		val chatId = settings.telegramChatId
-
-		if (botToken.isNullOrEmpty() || chatId.isNullOrEmpty()) {
-			throw IllegalStateException("Telegram API key or chat ID not set in settings.")
-		}
-
-		val mediaType = "application/zip".toMediaTypeOrNull()
-		val requestBody = file.asRequestBody(mediaType)
-
-		val multipartBody = MultipartBody.Builder()
-			.setType(MultipartBody.FORM)
-			.addFormDataPart("chat_id", chatId)
-			.addFormDataPart("document", file.name, requestBody)
-			.build()
-
-		val request = Request.Builder()
-			.url("https://api.telegram.org/bot$botToken/sendDocument")
-			.post(multipartBody)
-			.build()
-
-		client.newCall(request).execute().use { response ->
-			if (!response.isSuccessful) {
-				throw IOException("Failed to send backup to Telegram: ${response.message}")
-			}
-		}
 	}
 }

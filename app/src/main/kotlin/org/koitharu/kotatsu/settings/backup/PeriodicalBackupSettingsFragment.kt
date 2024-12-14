@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.documentfile.provider.DocumentFile
@@ -18,19 +17,13 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.backup.BackupZipOutput.Companion.DIR_BACKUPS
 import org.koitharu.kotatsu.core.backup.ExternalBackupStorage
+import org.koitharu.kotatsu.core.backup.TelegramBackupUploader
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.resolveFile
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
 import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -40,10 +33,10 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 	@Inject
 	lateinit var backupStorage: ExternalBackupStorage
 
-	private val outputSelectCall = registerForActivityResult(
-		ActivityResultContracts.OpenDocumentTree(),
-		this,
-	)
+	@Inject
+	lateinit var telegramBackupUploader: TelegramBackupUploader
+
+	private val outputSelectCall = registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), this)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_backup_periodic)
@@ -51,92 +44,10 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 		val openTelegramBotPreference = findPreference<Preference>("open_telegram_chat")
 
 		openTelegramBotPreference?.setOnPreferenceClickListener {
-			openTelegramBot("kotatsu_backup_bot")
+			telegramBackupUploader.openTelegramBot(it.context, "kotatsu_backup_bot")
 			true
 		}
-		val checkApiButton = Preference(requireContext()).apply {
-			key = "check_api_working"
-			title = context.getString(R.string.api_telegram_check)
-			summary = context.getString(R.string.api_check_desc)
-		}
-
-		checkApiButton.setOnPreferenceClickListener {
-			val apiKey = "7455491254:AAGYJKgpP1DZN3d9KZfb8tvtIdaIMxUayXM"
-			if (apiKey.isNotEmpty()) {
-				checkTelegramBotApiKey(apiKey)
-			}
-			true
-		}
-
-		preferenceScreen.addPreference(checkApiButton)
 	}
-	private fun checkTelegramBotApiKey(apiKey: String) {
-		val url = "https://api.telegram.org/bot$apiKey/getMe"
-
-		val client = OkHttpClient()
-		val request = Request.Builder()
-			.url(url)
-			.build()
-
-		client.newCall(request).enqueue(object : Callback {
-			override fun onResponse(call: Call, response: Response) {
-				requireActivity().runOnUiThread {
-					if (response.isSuccessful) {
-						context?.let { sendMessageToTelegram(apiKey, it.getString(R.string.api_is_work)) }
-					}
-	}
-			}
-
-			override fun onFailure(call: Call, e: IOException) {
-				requireActivity().runOnUiThread {
-					Toast.makeText(requireContext(), R.string.api_net_error, Toast.LENGTH_SHORT).show()
-				}
-			}
-		})
-	}
-	private fun openTelegramBot(botUsername: String) {
-		try {
-			val telegramIntent = Intent(Intent.ACTION_VIEW)
-			telegramIntent.data = Uri.parse("https://t.me/$botUsername")
-			telegramIntent.setPackage("org.telegram.messenger")
-			startActivity(telegramIntent)
-		} catch (e: Exception) {
-			val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/$botUsername"))
-			startActivity(browserIntent)
-		}
-	}
-	private fun sendMessageToTelegram(apiKey: String, message: String) {
-		val chatId = settings.telegramChatId
-		if (chatId.isNullOrEmpty()) {
-			Toast.makeText(requireContext(), R.string.id_not_set, Toast.LENGTH_SHORT).show()
-			return
-		}
-
-		val url = "https://api.telegram.org/bot$apiKey/sendMessage?chat_id=$chatId&text=$message"
-		val client = OkHttpClient()
-		val request = Request.Builder()
-			.url(url)
-			.build()
-
-		client.newCall(request).enqueue(object : Callback {
-			override fun onResponse(call: Call, response: Response) {
-				requireActivity().runOnUiThread {
-					if (response.isSuccessful) {
-						Toast.makeText(requireContext(), R.string.api_check_success, Toast.LENGTH_SHORT).show()
-					} else {
-						Toast.makeText(requireContext(), R.string.api_check_error, Toast.LENGTH_SHORT).show()
-					}
-				}
-			}
-
-			override fun onFailure(call: Call, e: IOException) {
-				requireActivity().runOnUiThread {
-					Toast.makeText(requireContext(), R.string.api_error, Toast.LENGTH_SHORT).show()
-				}
-			}
-		})
-	}
-
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
