@@ -778,4 +778,12 @@
 	<!-- Button label, should be as short as possible -->
 	<string name="incognito">Incognito</string>
 	<string name="error_connection_reset">Connection reset by remote host</string>
+	<string name="api_telegram_check">Check API work</string>
+	<string name="api_check_desc">Click to check the operation of the Telegram Bot API</string>
+	<string name="api_is_work">Kotatsu backup in Telegram is working!!</string>
+	<string name="api_net_error">Network error! Check your Net</string>
+	<string name="id_not_set">Chat ID is not set!</string>
+	<string name="api_check_success">Success! Check Telegram Bot</string>
+	<string name="api_check_error">OOPS! Something went wrong</string>
+	<string name="api_error">Network error!</string>
 </resources>
