@@ -134,7 +134,7 @@
     <string name="theme">Thème</string>
     <string name="filter">Filtre</string>
     <string name="sort_order">Ordre de tri</string>
-    <string name="by_rating">Évaluation</string>
+    <string name="by_rating">Note</string>
     <string name="newest">Le plus récent</string>
     <string name="updated">Mis à jour</string>
     <string name="popular">Populaire</string>
@@ -270,7 +270,7 @@
     <string name="select_range">Sélectionner une plage</string>
     <string name="not_found_404">Contenu non trouvé ou supprimé</string>
     <string name="manga_error_description_pattern">Détails de l\'erreur:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Essayez d\'&lt;a href=%2$s&gt;ouvrir le manga dans un navigateur web&lt;/a&gt; pour vous assurer qu\'il est disponible sur sa source&lt;br&gt;2. Assurez-vous que vous utilisez la &lt;a href=kotatsu://about&gt;dernière version de Kotatsu&lt;/a&gt;&lt;br&gt;3. Si elle est disponible, envoyez un rapport d\'erreur aux développeurs.</string>
-    <string name="confirm_exit">Rappuyez sur Retour pour quitter</string>
+    <string name="confirm_exit">Appuyez à nouveau sur Retour pour quitter</string>
     <string name="categories_delete_confirm">Êtes-vous sûr(e) de vouloir supprimer les catégories de favoris sélectionnées ?\nTous les mangas qui s\'y trouvent seront perdus et ceci ne peut pas être annulé.</string>
     <string name="exit_confirmation_summary">Appuyez deux fois sur la touche Retour pour quitter l\'appli</string>
     <string name="available">Disponible</string>
@@ -511,9 +511,9 @@
     <string name="sync_auth">Connectez-vous pour synchroniser le compte</string>
     <string name="skip">Passer</string>
     <string name="restore">Restaurer</string>
-    <string name="content_rating">Note du contenu</string>
+    <string name="content_rating">Classification du contenu</string>
     <string name="genres_exclude">Exclure les genres</string>
-    <string name="rating_safe">Sûr</string>
+    <string name="rating_safe">Tout public</string>
     <string name="rating_adult">Adulte</string>
     <string name="default_tab">Onglet par défaut</string>
     <string name="color_correction_apply_text">Ces paramètres peuvent être appliqué globalement ou uniquement au manga actuel. S\'il est activé globalement il ne remplacera les paramètres individuel.</string>
@@ -600,7 +600,7 @@
     <string name="show_pages_thumbs">Afficher les miniatures des pages</string>
     <string name="split_by_translations">Filtré par traductions</string>
     <string name="order_oldest">Le plus ancien</string>
-    <string name="long_ago_read">Lues il y a longtemps</string>
+    <string name="long_ago_read">Lu il y a longtemps</string>
     <string name="unread">Non lu</string>
     <string name="split_by_translations_summary">Afficher les chapitres avec des traductions différentes séparément, au lieu d\'une seule liste</string>
     <string name="enable_source">Activer la source</string>
@@ -750,4 +750,7 @@
     <string name="email">Courriel</string>
     <string name="handle_links_summary">Gérer les liens vers des mangas à partir d\'applications externes (par exemple, un navigateur web). Il se peut que vous deviez également l\'activer manuellement dans les paramètres système de l\'application</string>
     <string name="captcha_required_message">Cette source nécessite la résolution d\'un captcha pour continuer</string>
+    <string name="author">Auteur</string>
+    <string name="source">Source</string>
+    <string name="translation">Traduction</string>
 </resources>
