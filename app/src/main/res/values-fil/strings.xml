@@ -753,4 +753,6 @@
     <string name="handle_links_summary">Pangasiwaan ang manga link mula sa mga panlabas na application (hal. web browser). Maaaring kailanganin mo rin itong manual na paganahin sa mga setting ng system ng aplikasyon</string>
     <string name="email">Ang email</string>
     <string name="captcha_required_message">Ang source na ito ay kinakailang lutasin ang captcha para magpatuloy</string>
+    <string name="show_slider">Ipakita ang slider</string>
+    <string name="author">May-Akda</string>
 </resources>
