@@ -144,6 +144,12 @@
 		<item name="shapeAppearance">?shapeAppearanceCornerMedium</item>
 	</style>
 
+	<style name="Widget.Kotatsu.Slider.Wide" parent="Widget.Material3.Slider">
+		<item name="thumbHeight">48dp</item>
+		<item name="trackCornerSize">12dp</item>
+		<item name="trackHeight">40dp</item>
+	</style>
+
 	<style name="Widget.Kotatsu.RecyclerView" parent="">
 		<item name="android:scrollbarStyle">outsideOverlay</item>
 	</style>

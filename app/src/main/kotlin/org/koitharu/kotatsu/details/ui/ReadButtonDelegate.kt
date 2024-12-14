@@ -20,6 +20,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialSplitButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.findActivity
@@ -30,7 +31,7 @@ import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
 import org.koitharu.kotatsu.reader.ui.ReaderActivity
 
 class ReadButtonDelegate(
-	splitButton: MaterialSplitButton,
+	private val splitButton: MaterialSplitButton,
 	private val viewModel: DetailsViewModel,
 ) : View.OnClickListener, PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener {
 
@@ -73,7 +74,10 @@ class ReadButtonDelegate(
 	fun attach(lifecycleOwner: LifecycleOwner) {
 		buttonRead.setOnClickListener(this)
 		buttonMenu.setOnClickListener(this)
-		viewModel.historyInfo.observe(lifecycleOwner, this::onHistoryChanged)
+		combine(viewModel.isLoading, viewModel.historyInfo, ::Pair)
+			.observe(lifecycleOwner) { (isLoading, historyInfo) ->
+				onHistoryChanged(isLoading, historyInfo)
+			}
 	}
 
 	private fun showMenu() {
@@ -97,16 +101,15 @@ class ReadButtonDelegate(
 	}
 
 	private fun openReader(isIncognitoMode: Boolean) {
-		val detailsViewModel = viewModel as? DetailsViewModel ?: return
 		val manga = viewModel.manga.value ?: return
-		if (detailsViewModel.historyInfo.value.isChapterMissing) {
+		if (viewModel.historyInfo.value.isChapterMissing) {
 			Snackbar.make(buttonRead, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
 				.show() // TODO
 		} else {
 			context.startActivity(
 				ReaderActivity.IntentBuilder(context)
 					.manga(manga)
-					.branch(detailsViewModel.selectedBranchValue)
+					.branch(viewModel.selectedBranchValue)
 					.incognito(isIncognitoMode)
 					.build(),
 			)
@@ -116,9 +119,16 @@ class ReadButtonDelegate(
 		}
 	}
 
-	private fun onHistoryChanged(info: HistoryInfo) {
-		buttonRead.setText(if (info.canContinue) R.string._continue else R.string.read)
-		buttonRead.isEnabled = info.isValid
+	private fun onHistoryChanged(isLoading: Boolean, info: HistoryInfo) {
+		buttonRead.setText(
+			when {
+				isLoading -> R.string.loading_
+				info.isIncognitoMode -> R.string.incognito
+				info.canContinue -> R.string._continue
+				else -> R.string.read
+			},
+		)
+		splitButton.isEnabled = !isLoading && info.isValid
 	}
 
 	private fun Menu.populateBranchList() {

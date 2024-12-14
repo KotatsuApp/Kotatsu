@@ -131,6 +131,12 @@ class ReaderViewModel @Inject constructor(
 		valueProducer = { readerAnimation },
 	)
 
+	val isSliderVisible = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_READER_SLIDER,
+		valueProducer = { isReaderSliderEnabled },
+	)
+
 	val isInfoBarEnabled = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_READER_BAR,
@@ -211,6 +217,10 @@ class ReaderViewModel @Inject constructor(
 		getMangaOrNull()?.let {
 			statsCollector.onPause(it.id)
 		}
+	}
+
+	fun setSliderVisibility(visible: Boolean) {
+		settings.isReaderSliderEnabled = visible
 	}
 
 	fun switchMode(newMode: ReaderMode) {

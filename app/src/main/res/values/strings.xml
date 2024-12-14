@@ -774,4 +774,7 @@
 	<string name="source">Source</string>
 	<string name="translation">Translation</string>
 	<string name="chapters_time_pattern" translatable="false">%1$s (%2$s)</string>
+	<string name="show_slider">Show slider</string>
+	<!-- Button label, should be as short as possible -->
+	<string name="incognito">Incognito</string>
 </resources>

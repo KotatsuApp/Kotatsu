@@ -28,6 +28,15 @@ class ReaderBottomMenuProvider(
 				setIcon(if (viewModel.isPagesSheetEnabled.value) R.drawable.ic_grid else R.drawable.ic_list)
 			}
 		}
+		menu.findItem(R.id.action_bookmark)?.let { bookmarkItem ->
+			val hasPages = viewModel.content.value.pages.isNotEmpty()
+			bookmarkItem.isEnabled = hasPages
+			if (hasPages) {
+				val hasBookmark = viewModel.isBookmarkAdded.value
+				bookmarkItem.setTitle(if (hasBookmark) R.string.bookmark_remove else R.string.bookmark_add)
+				bookmarkItem.setIcon(if (hasBookmark) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark)
+			}
+		}
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -41,6 +50,20 @@ class ReaderBottomMenuProvider(
 				viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 				val currentMode = readerManager.currentMode ?: return false
 				ReaderConfigSheet.show(activity.supportFragmentManager, currentMode)
+				true
+			}
+
+			R.id.action_slider -> {
+				viewModel.setSliderVisibility(!viewModel.isSliderVisible.value)
+				true
+			}
+
+			R.id.action_bookmark -> {
+				if (viewModel.isBookmarkAdded.value) {
+					viewModel.removeBookmark()
+				} else {
+					viewModel.addBookmark()
+				}
 				true
 			}
 

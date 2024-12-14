@@ -59,22 +59,63 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
-				tools:menu="@menu/opt_reader_bottom">
-
-				<com.google.android.material.slider.Slider
-					android:id="@+id/slider"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:stepSize="1"
-					android:valueFrom="0"
-					app:labelBehavior="floating"
-					app:tickVisible="false" />
-
-			</com.google.android.material.appbar.MaterialToolbar>
+				tools:menu="@menu/opt_reader_bottom" />
 
 		</LinearLayout>
 
 	</com.google.android.material.appbar.AppBarLayout>
+
+	<com.google.android.material.floatingtoolbar.FloatingToolbarLayout
+		android:id="@+id/floating_toolbar"
+		style="@style/Widget.Material3.FloatingToolbar.Vertical.Vibrant"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end|center_vertical">
+
+		<RelativeLayout
+			android:id="@+id/floating_toolbar_child"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical">
+
+			<com.google.android.material.slider.Slider
+				android:id="@+id/slider"
+				android:layout_width="wrap_content"
+				android:layout_height="240dp"
+				android:layout_alignParentTop="true"
+				android:layout_centerHorizontal="true"
+				android:orientation="vertical"
+				android:stepSize="1.0"
+				android:valueFrom="0"
+				app:labelBehavior="floating"
+				tools:value="6"
+				tools:valueTo="20" />
+
+			<ImageButton
+				android:id="@+id/button_prev"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/slider"
+				android:layout_centerHorizontal="true"
+				android:background="?selectableItemBackgroundBorderless"
+				android:contentDescription="@string/prev_chapter"
+				android:padding="@dimen/margin_small"
+				android:src="@drawable/ic_prev" />
+
+			<ImageButton
+				android:id="@+id/button_next"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/button_prev"
+				android:layout_centerHorizontal="true"
+				android:background="?selectableItemBackgroundBorderless"
+				android:contentDescription="@string/next_chapter"
+				android:padding="@dimen/margin_small"
+				android:src="@drawable/ic_next" />
+
+		</RelativeLayout>
+
+	</com.google.android.material.floatingtoolbar.FloatingToolbarLayout>
 
 	<org.koitharu.kotatsu.reader.ui.ReaderToastView
 		android:id="@+id/toastView"

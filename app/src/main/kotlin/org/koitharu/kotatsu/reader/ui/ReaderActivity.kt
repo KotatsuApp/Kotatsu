@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.reader.ui
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.transition.Fade
 import android.transition.Slide
@@ -42,7 +41,6 @@ import org.koitharu.kotatsu.core.ui.BaseFullscreenActivity
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.IdlingDetector
-import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.hasGlobalPoint
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.isRtl
@@ -127,6 +125,8 @@ class ReaderActivity :
 		ReaderSliderListener(viewModel, this).attachToSlider(viewBinding.slider)
 		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
+		viewBinding.buttonPrev.setOnClickListener(controlDelegate)
+		viewBinding.buttonNext.setOnClickListener(controlDelegate)
 
 		viewModel.onError.observeEvent(
 			this,
@@ -150,10 +150,12 @@ class ReaderActivity :
 		viewModel.content.observe(this) {
 			onLoadingStateChanged(viewModel.isLoading.value)
 		}
+		viewModel.isSliderVisible.observe(this, this::onSliderVisibilityChanged)
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
-		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(this))
-		viewModel.isPagesSheetEnabled.observe(this, MenuInvalidator(viewBinding.toolbarBottom))
+		val bottomMenuInvalidator = MenuInvalidator(viewBinding.toolbarBottom)
+		viewModel.isBookmarkAdded.observe(this, bottomMenuInvalidator)
+		viewModel.isPagesSheetEnabled.observe(this, bottomMenuInvalidator)
 		viewModel.onShowToast.observeEvent(this) { msgId ->
 			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
 				.setAnchorView(viewBinding.appbarBottom)
@@ -243,7 +245,7 @@ class ReaderActivity :
 			false
 		} else {
 			val touchables = window.peekDecorView()?.touchables
-			touchables?.none { it.hasGlobalPoint(rawX, rawY) } ?: true
+			touchables?.none { it.hasGlobalPoint(rawX, rawY) } != false
 		}
 	}
 
@@ -307,6 +309,9 @@ class ReaderActivity :
 					.addTransition(Fade().addTarget(viewBinding.infoBar))
 				viewBinding.appbarBottom?.let { bottomBar ->
 					transition.addTransition(Slide(Gravity.BOTTOM).addTarget(bottomBar))
+					transition.addTransition(Slide(Gravity.BOTTOM).addTarget(viewBinding.floatingToolbar))
+				} ?: run {
+					transition.addTransition(Slide(Gravity.END).addTarget(viewBinding.floatingToolbar))
 				}
 				TransitionManager.beginDelayedTransition(viewBinding.root, transition)
 			}
@@ -315,8 +320,13 @@ class ReaderActivity :
 			viewBinding.appbarBottom?.isVisible = isUiVisible
 			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
 			viewBinding.infoBar.isTimeVisible = isFullscreen
+			viewBinding.floatingToolbar.isVisible = isUiVisible && viewModel.isSliderVisible.value
 			systemUiController.setSystemUiVisible(isUiVisible || !isFullscreen)
 		}
+	}
+
+	private fun onSliderVisibilityChanged(isSliderVisible: Boolean) {
+		viewBinding.floatingToolbar.isVisible = isSliderVisible && viewBinding.appbarTop.isVisible
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
@@ -357,7 +367,7 @@ class ReaderActivity :
 	}
 
 	override fun scrollBy(delta: Int, smooth: Boolean): Boolean {
-		return readerManager.currentReader?.scrollBy(delta, smooth) ?: false
+		return readerManager.currentReader?.scrollBy(delta, smooth) == true
 	}
 
 	override fun toggleUiVisibility() {

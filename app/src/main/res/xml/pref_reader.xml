@@ -121,11 +121,6 @@
 		android:title="@string/reader_info_bar"
 		app:allowDividerAbove="true" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="true"
-		android:key="reader_slider"
-		android:title="@string/reader_slider" />
-
 	<ListPreference
 		android:entries="@array/reader_backgrounds"
 		android:key="reader_background"

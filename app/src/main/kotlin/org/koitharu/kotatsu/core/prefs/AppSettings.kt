@@ -362,8 +362,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReaderBarEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_BAR, true)
 
-	val isReaderSliderEnabled: Boolean
+	var isReaderSliderEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READER_SLIDER, true)
+		set(value) = prefs.edit { putBoolean(KEY_READER_SLIDER, value) }
 
 	val isReaderKeepScreenOn: Boolean
 		get() = prefs.getBoolean(KEY_READER_SCREEN_ON, true)
