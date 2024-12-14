@@ -388,7 +388,7 @@ class ReaderActivity :
 		viewBinding.infoBar.update(uiState)
 		if (uiState == null) {
 			supportActionBar?.subtitle = null
-			viewBinding.slider.isVisible = false
+			updateSliderVisibility()
 			return
 		}
 		supportActionBar?.subtitle = when {
