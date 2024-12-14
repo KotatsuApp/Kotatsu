@@ -43,6 +43,14 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 	private val connectivityManager = context.connectivityManager
+	private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+
+	var telegramChatId: String?
+		get() = preferences.getString("telegram_chat_id", null)
+		set(value) {
+			preferences.edit().putString("telegram_chat_id", value).apply()
+		}
 
 	var listMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE, ListMode.GRID)

@@ -5,6 +5,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.backup.ExternalBackupStorage
+import org.koitharu.kotatsu.core.backup.TelegramBackupUploader
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import javax.inject.Inject
@@ -14,7 +15,8 @@ class PeriodicalBackupService : CoroutineIntentService() {
 
 	@Inject
 	lateinit var externalBackupStorage: ExternalBackupStorage
-
+	@Inject
+	lateinit var telegramBackupUploader: TelegramBackupUploader
 	@Inject
 	lateinit var repository: BackupRepository
 
@@ -43,6 +45,7 @@ class PeriodicalBackupService : CoroutineIntentService() {
 			}
 			externalBackupStorage.put(output.file)
 			externalBackupStorage.trim(settings.periodicalBackupMaxCount)
+			telegramBackupUploader.uploadBackupToTelegram(output.file)
 		} finally {
 			output.file.delete()
 		}

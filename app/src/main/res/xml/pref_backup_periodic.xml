@@ -50,4 +50,15 @@
 		app:allowDividerAbove="true"
 		app:isPreferenceVisible="false" />
 
+	<Preference
+		android:key="open_telegram_chat"
+		android:title="Open Telegram Bot"
+		android:summary="Press to open chat with Kotatsu Backup Bot" />
+	<EditTextPreference
+		android:key="telegram_chat_id"
+		android:title="Telegram Chat ID"
+		android:inputType="text"
+		android:defaultValue=""
+		android:summary="Enter the chat ID where backups should be sent" />
+
 </androidx.preference.PreferenceScreen>
