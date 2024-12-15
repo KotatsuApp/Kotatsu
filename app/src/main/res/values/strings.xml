@@ -783,4 +783,8 @@
 	<string name="backup_tg_id_not_set">Chat ID is not set</string>
 	<string name="telegram_chat_id">Telegram chat ID</string>
 	<string name="open_telegram_bot">Open the Telegram bot</string>
+	<string name="send_backups_telegram">Send backups in Telegram</string>
+	<string name="test_connection">Test connection</string>
+	<string name="telegram_chat_id_summary">Enter the chat ID where backups should be sent</string>
+	<string name="open_telegram_bot_summary">Press to open chat with Kotatsu Backup Bot</string>
 </resources>
