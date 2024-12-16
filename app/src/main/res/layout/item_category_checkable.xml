@@ -1,66 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/linearLayout"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:background="?selectableItemBackground"
-	android:gravity="center_vertical"
 	android:minHeight="?listPreferredItemHeightSmall"
-	android:paddingStart="?android:listPreferredItemPaddingStart"
-	android:paddingEnd="?android:listPreferredItemPaddingEnd"
-	tools:ignore="RtlSymmetry">
+	android:orientation="vertical"
+	android:paddingStart="?listPreferredItemPaddingStart"
+	android:paddingEnd="?listPreferredItemPaddingEnd">
 
-	<org.koitharu.kotatsu.core.ui.widgets.CheckableImageView
-		android:id="@+id/checkableImageView"
-		android:layout_width="wrap_content"
+	<com.google.android.material.checkbox.MaterialCheckBox
+		android:id="@+id/checkBox"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		app:srcCompat="?android:listChoiceIndicatorMultiple" />
+		android:clickable="false"
+		android:gravity="center_vertical"
+		tools:checkedState="indeterminate"
+		tools:text="@tools:sample/cities" />
 
-	<TextView
-		android:id="@+id/textView_title"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="?listPreferredItemPaddingStart"
-		android:ellipsize="end"
-		android:singleLine="true"
-		android:textAppearance="?attr/textAppearanceBodyMedium"
-		app:layout_constrainedWidth="true"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/imageView_tracker"
-		app:layout_constraintHorizontal_bias="0"
-		app:layout_constraintHorizontal_chainStyle="packed"
-		app:layout_constraintStart_toEndOf="@id/checkableImageView"
-		app:layout_constraintTop_toTopOf="parent"
-		tools:text="@tools:sample/lorem[1]" />
-
-	<ImageView
-		android:id="@+id/imageView_tracker"
-		android:layout_width="14dp"
-		android:layout_height="14dp"
-		android:layout_marginStart="4dp"
-		android:contentDescription="@string/check_for_new_chapters"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/imageView_hidden"
-		app:layout_constraintStart_toEndOf="@id/textView_title"
-		app:layout_constraintTop_toTopOf="parent"
-		app:srcCompat="@drawable/ic_notification" />
-
-	<ImageView
-		android:id="@+id/imageView_hidden"
-		android:layout_width="14dp"
-		android:layout_height="14dp"
-		android:layout_marginStart="4dp"
-		android:contentDescription="@string/show_on_shelf"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toEndOf="@id/imageView_tracker"
-		app:layout_constraintTop_toTopOf="parent"
-		app:srcCompat="@drawable/ic_eye_off" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

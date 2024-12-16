@@ -27,7 +27,7 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteDialog
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -179,7 +179,7 @@ class SearchActivity :
 			}
 
 			R.id.action_favourite -> {
-				FavoriteSheet.show(supportFragmentManager, collectSelectedItems())
+				FavoriteDialog.show(supportFragmentManager, collectSelectedItems())
 				mode?.finish()
 				true
 			}

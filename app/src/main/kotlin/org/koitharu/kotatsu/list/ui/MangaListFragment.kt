@@ -46,7 +46,7 @@ import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteDialog
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.QuickFilterListener
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
@@ -153,11 +153,11 @@ abstract class MangaListFragment :
 	}
 
 	override fun onItemLongClick(item: Manga, view: View): Boolean {
-		return selectionController?.onItemLongClick(view, item.id) ?: false
+		return selectionController?.onItemLongClick(view, item.id) == true
 	}
 
 	override fun onItemContextClick(item: Manga, view: View): Boolean {
-		return selectionController?.onItemContextClick(view, item.id) ?: false
+		return selectionController?.onItemContextClick(view, item.id) == true
 	}
 
 	override fun onReadClick(manga: Manga, view: View) {
@@ -317,7 +317,7 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_favourite -> {
-				FavoriteSheet.show(getChildFragmentManager(), selectedItems)
+				FavoriteDialog.show(getChildFragmentManager(), selectedItems)
 				mode?.finish()
 				true
 			}

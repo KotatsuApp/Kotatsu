@@ -94,7 +94,7 @@ import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
+import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteDialog
 import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
@@ -237,7 +237,7 @@ class DetailsActivity :
 
 			R.id.chip_favorite -> {
 				val manga = viewModel.manga.value ?: return
-				FavoriteSheet.show(supportFragmentManager, manga)
+				FavoriteDialog.show(supportFragmentManager, manga)
 			}
 
 			// R.id.chip_time -> {
