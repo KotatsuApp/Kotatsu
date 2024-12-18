@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.storage.StorageManager
 import android.provider.DocumentsContract
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.parsers.util.removeSuffix
 import java.io.File
 import java.lang.reflect.Array as ArrayReflect
@@ -80,7 +81,7 @@ private fun getVolumePathForAndroid11AndAbove(volumeId: String, context: Context
 private fun getVolumeIdFromTreeUri(treeUri: Uri): String? {
 	val docId = DocumentsContract.getTreeDocumentId(treeUri)
 	val split = docId.split(":".toRegex())
-	return split.firstOrNull()?.takeUnless { it.isEmpty() }
+	return split.firstOrNull()?.nullIfEmpty()
 }
 
 private fun getDocumentPathFromTreeUri(treeUri: Uri): String? {

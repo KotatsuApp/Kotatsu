@@ -10,6 +10,7 @@ import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.badge.ExperimentalBadgeUtils
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 
 @CheckResult
 fun View.bindBadge(badge: BadgeDrawable?, counter: Int): BadgeDrawable? {
@@ -34,7 +35,7 @@ private fun View.bindBadgeImpl(
 	if (counter > 0) {
 		badgeDrawable.number = counter
 	} else {
-		badgeDrawable.text = text?.takeUnless { it.isEmpty() }
+		badgeDrawable.text = text?.nullIfEmpty()
 	}
 	badgeDrawable.isVisible = true
 	badgeDrawable.align(this)
