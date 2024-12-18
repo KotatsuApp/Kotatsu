@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.model.YEAR_MIN
 import org.koitharu.kotatsu.parsers.util.ifZero
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
@@ -267,7 +268,7 @@ class FilterCoordinator @Inject constructor(
 	}
 
 	fun setQuery(value: String?) {
-		val newQuery = value?.trim()?.takeUnless { it.isEmpty() }
+		val newQuery = value?.trim()?.nullIfEmpty()
 		currentListFilter.update { oldValue ->
 			if (capabilities.isSearchWithFiltersSupported || newQuery == null) {
 				oldValue.copy(query = newQuery)

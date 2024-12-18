@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.setTextColorAttr
 import org.koitharu.kotatsu.databinding.ItemPageThumbBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import com.google.android.material.R as materialR
 
 fun pageThumbnailAD(
@@ -36,7 +37,7 @@ fun pageThumbnailAD(
 	AdapterDelegateClickListenerAdapter(this, clickListener).attach(itemView)
 
 	bind {
-		val data: Any = item.page.preview?.takeUnless { it.isEmpty() } ?: item.page.toMangaPage()
+		val data: Any = item.page.preview?.nullIfEmpty() ?: item.page.toMangaPage()
 		binding.imageViewThumb.newImageRequest(lifecycleOwner, data)?.run {
 			defaultPlaceholders(context)
 			size(thumbSize)

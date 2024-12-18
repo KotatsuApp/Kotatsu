@@ -38,6 +38,7 @@ import org.koitharu.kotatsu.databinding.ActivityColorFilterBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.format
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -137,7 +138,7 @@ class ColorFilterConfigActivity :
 	}
 
 	private fun loadPreview(page: MangaPage) {
-		val data: Any = page.preview?.takeUnless { it.isEmpty() } ?: page
+		val data: Any = page.preview?.nullIfEmpty() ?: page
 		ImageRequest.Builder(this@ColorFilterConfigActivity)
 			.data(data)
 			.scale(Scale.FILL)
