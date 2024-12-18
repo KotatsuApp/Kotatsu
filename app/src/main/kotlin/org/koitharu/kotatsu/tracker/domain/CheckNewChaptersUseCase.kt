@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.tracker.domain
 
+import android.util.Log
 import coil3.request.CachePolicy
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.CachingMangaRepository
@@ -11,6 +13,7 @@ import org.koitharu.kotatsu.core.util.ext.toInstantOrNull
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.findById
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import org.koitharu.kotatsu.tracker.domain.model.MangaUpdates
@@ -45,8 +48,9 @@ class CheckNewChaptersUseCase @Inject constructor(
 		runCatchingCancellable {
 			repository.updateTracks()
 			val details = getFullManga(manga)
-			val chapters = details.chapters ?: return@withLock
 			val track = repository.getTrackOrNull(manga) ?: return@withLock
+			val branch = checkNotNull(details.chapters?.findById(currentChapterId)).branch
+			val chapters = details.getChapters(branch)
 			val chapterIndex = chapters.indexOfFirst { x -> x.id == currentChapterId }
 			val lastNewChapterIndex = chapters.size - track.newChapters
 			val lastChapter = chapters.lastOrNull()
@@ -70,7 +74,7 @@ class CheckNewChaptersUseCase @Inject constructor(
 
 	private suspend fun invokeImpl(track: MangaTracking): MangaUpdates = runCatchingCancellable {
 		val details = getFullManga(track.manga)
-		compare(track, details, getBranch(details))
+		compare(track, details, getBranch(details, track.lastChapterId))
 	}.getOrElse { error ->
 		MangaUpdates.Failure(
 			manga = track.manga,
@@ -80,9 +84,17 @@ class CheckNewChaptersUseCase @Inject constructor(
 		repository.saveUpdates(updates)
 	}
 
-	private suspend fun getBranch(manga: Manga): String? {
-		val history = historyRepository.getOne(manga)
-		return manga.getPreferredBranch(history)
+	private suspend fun getBranch(manga: Manga, trackChapterId: Long): String? {
+		historyRepository.getOne(manga)?.let {
+			manga.chapters?.findById(it.chapterId)
+		}?.let {
+			return it.branch
+		}
+		manga.chapters?.findById(trackChapterId)?.let {
+			return it.branch
+		}
+		// fallback
+		return manga.getPreferredBranch(null)
 	}
 
 	private suspend fun getFullManga(manga: Manga): Manga = when {
@@ -111,25 +123,29 @@ class CheckNewChaptersUseCase @Inject constructor(
 	private fun compare(track: MangaTracking, manga: Manga, branch: String?): MangaUpdates.Success {
 		if (track.isEmpty()) {
 			// first check or manga was empty on last check
-			return MangaUpdates.Success(manga, emptyList(), isValid = false)
+			return MangaUpdates.Success(manga, branch, emptyList(), isValid = false)
 		}
 		val chapters = requireNotNull(manga.getChapters(branch))
+		if (BuildConfig.DEBUG && chapters.findById(track.lastChapterId) == null) {
+			Log.e("Tracker", "Chapter ${track.lastChapterId} not found")
+		}
 		val newChapters = chapters.takeLastWhile { x -> x.id != track.lastChapterId }
 		return when {
 			newChapters.isEmpty() -> {
 				MangaUpdates.Success(
 					manga = manga,
+					branch = branch,
 					newChapters = emptyList(),
 					isValid = chapters.lastOrNull()?.id == track.lastChapterId,
 				)
 			}
 
 			newChapters.size == chapters.size -> {
-				MangaUpdates.Success(manga, emptyList(), isValid = false)
+				MangaUpdates.Success(manga, branch, emptyList(), isValid = false)
 			}
 
 			else -> {
-				MangaUpdates.Success(manga, newChapters, isValid = true)
+				MangaUpdates.Success(manga, branch, newChapters, isValid = true)
 			}
 		}
 	}

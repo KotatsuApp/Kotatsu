@@ -216,7 +216,6 @@ class TrackingRepository @Inject constructor(
 	}
 
 	private fun TrackEntity.mergeWith(updates: MangaUpdates): TrackEntity {
-		val chapters = updates.manga.chapters.orEmpty()
 		return when (updates) {
 			is MangaUpdates.Failure -> TrackEntity(
 				mangaId = mangaId,
@@ -230,7 +229,7 @@ class TrackingRepository @Inject constructor(
 
 			is MangaUpdates.Success -> TrackEntity(
 				mangaId = mangaId,
-				lastChapterId = chapters.lastOrNull()?.id ?: NO_ID,
+				lastChapterId = updates.manga.getChapters(updates.branch).lastOrNull()?.id ?: NO_ID,
 				newChapters = if (updates.isValid) newChapters + updates.newChapters.size else 0,
 				lastCheckTime = System.currentTimeMillis(),
 				lastChapterDate = updates.lastChapterDate().ifZero { lastChapterDate },

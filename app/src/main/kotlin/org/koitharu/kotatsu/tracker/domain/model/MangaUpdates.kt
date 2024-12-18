@@ -11,6 +11,7 @@ sealed interface MangaUpdates {
 
 	data class Success(
 		override val manga: Manga,
+		val branch: String?,
 		val newChapters: List<MangaChapter>,
 		val isValid: Boolean,
 	) : MangaUpdates {
