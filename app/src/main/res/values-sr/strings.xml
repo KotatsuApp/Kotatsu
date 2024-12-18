@@ -757,4 +757,12 @@
     <string name="rating">Оцена</string>
     <string name="source">Извор</string>
     <string name="translation">Превод</string>
+    <string name="incognito">Инкогнито</string>
+    <string name="open_telegram_bot">Отвори Телеграм бот-а</string>
+    <string name="telegram_chat_id">Телеграм ИД за ћаскање</string>
+    <string name="backup_tg_id_not_set">ИД ћаскања није подешен</string>
+    <string name="error_connection_reset">Ресетовање везе од стране удаљеног домаћина</string>
+    <string name="backup_tg_check">Провери да ли API ради</string>
+    <string name="backup_tg_echo">Котатсу резервна копија у Телеграму ради!!</string>
+    <string name="show_slider">Прикажи клизач</string>
 </resources>
