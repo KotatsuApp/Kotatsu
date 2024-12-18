@@ -6,9 +6,9 @@ import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
-import org.koitharu.kotatsu.list.ui.config.ListConfigBottomSheet
 import org.koitharu.kotatsu.list.ui.config.ListConfigSection
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsFragment
 import org.koitharu.kotatsu.tracker.ui.updates.UpdatesFragment
@@ -30,7 +30,7 @@ class MangaListMenuProvider(
 				is UpdatesFragment -> ListConfigSection.Updated
 				else -> ListConfigSection.General
 			}
-			ListConfigBottomSheet.show(fragment.childFragmentManager, section)
+			fragment.router.showListConfigSheet(section)
 			true
 		}
 

@@ -1,9 +1,5 @@
 package org.koitharu.kotatsu.browser
 
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,17 +7,18 @@ import android.webkit.CookieManager
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
-import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -42,7 +39,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
-		val mangaSource = MangaSource(intent?.getStringExtra(EXTRA_SOURCE))
+		val mangaSource = MangaSource(intent?.getStringExtra(AppRouter.KEY_SOURCE))
 		val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository
 		val userAgent = repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)
 		viewBinding.webView.configureForParser(userAgent)
@@ -59,7 +56,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			finishAfterTransition()
 		} else {
 			onTitleChanged(
-				intent?.getStringExtra(EXTRA_TITLE) ?: getString(R.string.loading_),
+				intent?.getStringExtra(AppRouter.KEY_TITLE) ?: getString(R.string.loading_),
 				url,
 			)
 			viewBinding.webView.loadUrl(url)
@@ -80,14 +77,8 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		}
 
 		R.id.action_browser -> {
-			val url = viewBinding.webView.url?.toUriOrNull()
-			if (url != null) {
-				val intent = Intent(Intent.ACTION_VIEW)
-				intent.data = url
-				try {
-					startActivity(Intent.createChooser(intent, item.title))
-				} catch (_: ActivityNotFoundException) {
-				}
+			if (!router.openExternalBrowser(viewBinding.webView.url.orEmpty(), item.title)) {
+				Snackbar.make(viewBinding.webView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
 			}
 			true
 		}
@@ -135,18 +126,5 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 			right = insets.right,
 			bottom = insets.bottom,
 		)
-	}
-
-	companion object {
-
-		private const val EXTRA_TITLE = "title"
-		private const val EXTRA_SOURCE = "source"
-
-		fun newIntent(context: Context, url: String, source: MangaSource?, title: String?): Intent {
-			return Intent(context, BrowserActivity::class.java)
-				.setData(Uri.parse(url))
-				.putExtra(EXTRA_TITLE, title)
-				.putExtra(EXTRA_SOURCE, source?.name)
-		}
 	}
 }

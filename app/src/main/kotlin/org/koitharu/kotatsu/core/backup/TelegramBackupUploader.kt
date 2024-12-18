@@ -1,11 +1,7 @@
 package org.koitharu.kotatsu.core.backup
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.widget.Toast
-import androidx.annotation.UiContext
-import androidx.core.net.toUri
+import androidx.annotation.CheckResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,6 +13,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.network.BaseHttpClient
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.parsers.util.await
@@ -56,16 +53,11 @@ class TelegramBackupUploader @Inject constructor(
 		sendMessage(context.getString(R.string.backup_tg_echo))
 	}
 
-	@SuppressLint("UnsafeImplicitIntentLaunch")
-	fun openBotInApp(@UiContext context: Context): Boolean {
+	@CheckResult
+	fun openBotInApp(router: AppRouter): Boolean {
 		val botUsername = context.getString(R.string.tg_backup_bot_name)
-		return runCatching {
-			context.startActivity(Intent(Intent.ACTION_VIEW, "tg://resolve?domain=$botUsername".toUri()))
-		}.recoverCatching {
-			context.startActivity(Intent(Intent.ACTION_VIEW, "https://t.me/$botUsername".toUri()))
-		}.onFailure {
-			Toast.makeText(context, R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
-		}.isSuccess
+		return router.openExternalBrowser("tg://resolve?domain=$botUsername") ||
+			router.openExternalBrowser("https://t.me/$botUsername")
 	}
 
 	private suspend fun sendMessage(message: String) {

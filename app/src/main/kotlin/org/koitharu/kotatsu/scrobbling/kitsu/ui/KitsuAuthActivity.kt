@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.scrobbling.kitsu.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -55,6 +56,7 @@ class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(), View.OnClick
 			&& password.length >= 3
 	}
 
+	@SuppressLint("UnsafeImplicitIntentLaunch")
 	private fun continueAuth() {
 		val email = viewBinding.editEmail.text?.toString()?.trim().orEmpty()
 		val password = viewBinding.editPassword.text?.toString()?.trim().orEmpty()

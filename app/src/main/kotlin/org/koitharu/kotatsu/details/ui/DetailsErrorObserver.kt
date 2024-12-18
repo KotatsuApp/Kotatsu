@@ -5,7 +5,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.exceptions.resolve.ErrorObserver
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.isNetworkError
 import org.koitharu.kotatsu.core.util.ext.isSerializable
@@ -38,10 +37,10 @@ class DetailsErrorObserver(
 			}
 
 			value is ParseException -> {
-				val fm = fragmentManager
-				if (fm != null && value.isSerializable()) {
+				val router = router()
+				if (router != null && value.isSerializable()) {
 					snackbar.setAction(R.string.details) {
-						ErrorDetailsDialog.show(fm, value, value.url)
+						router.showErrorDialog(value)
 					}
 				}
 			}

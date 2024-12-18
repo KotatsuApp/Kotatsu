@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.search.ui
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -19,7 +17,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -28,7 +25,8 @@ import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaListFilter
-import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.util.ViewBadge
@@ -46,7 +44,6 @@ import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.isNullOrEmpty
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import kotlin.math.absoluteValue
 import com.google.android.material.R as materialR
@@ -69,8 +66,8 @@ class MangaListActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMangaListBinding.inflate(layoutInflater))
-		val filter = intent.getParcelableExtraCompat<ParcelableMangaListFilter>(EXTRA_FILTER)?.filter
-		source = MangaSource(intent.getStringExtra(EXTRA_SOURCE))
+		val filter = intent.getParcelableExtraCompat<ParcelableMangaListFilter>(AppRouter.KEY_FILTER)?.filter
+		source = MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		if (viewBinding.containerFilterHeader != null) {
 			viewBinding.appbar.addOnOffsetChangedListener(this)
@@ -104,13 +101,13 @@ class MangaListActivity :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_order -> FilterSheetFragment.show(supportFragmentManager)
+			R.id.button_order -> router.showFilterSheet()
 		}
 	}
 
 	fun showPreview(manga: Manga): Boolean = setSideFragment(
 		PreviewFragment::class.java,
-		bundleOf(MangaIntent.KEY_MANGA to ParcelableManga(manga)),
+		bundleOf(AppRouter.KEY_MANGA to ParcelableManga(manga)),
 	)
 
 	fun hidePreview() = setSideFragment(FilterSheetFragment::class.java, null)
@@ -192,22 +189,5 @@ class MangaListActivity :
 		override fun run() {
 			filterOwner.filterCoordinator.set(filter)
 		}
-	}
-
-	companion object {
-
-		private const val EXTRA_FILTER = "filter"
-		private const val EXTRA_SOURCE = "source"
-		private const val ACTION_MANGA_EXPLORE = "${BuildConfig.APPLICATION_ID}.action.EXPLORE_MANGA"
-
-		fun newIntent(context: Context, source: MangaSource, filter: MangaListFilter?): Intent =
-			Intent(context, MangaListActivity::class.java)
-				.setAction(ACTION_MANGA_EXPLORE)
-				.putExtra(EXTRA_SOURCE, source.name)
-				.apply {
-					if (!filter.isNullOrEmpty()) {
-						putExtra(EXTRA_FILTER, ParcelableMangaListFilter(filter))
-					}
-				}
 	}
 }

@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.search.ui.multi
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,6 +13,7 @@ import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
@@ -25,9 +24,6 @@ import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivitySearchBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteDialog
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
@@ -35,10 +31,7 @@ import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
-import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.multi.adapter.SearchAdapter
 import javax.inject.Inject
 
@@ -62,14 +55,8 @@ class SearchActivity :
 		setContentView(ActivitySearchBinding.inflate(layoutInflater))
 		title = viewModel.query
 
-		val itemCLickListener = OnListItemClickListener<SearchResultsListModel> { item, view ->
-			startActivity(
-				MangaListActivity.newIntent(
-					view.context,
-					item.source,
-					MangaListFilter(query = viewModel.query),
-				),
-			)
+		val itemClickListener = OnListItemClickListener<SearchResultsListModel> { item, view ->
+			router.openSearch(item.source, viewModel.query)
 		}
 		val sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = true)
 		val selectionDecoration = MangaSelectionDecoration(this)
@@ -83,7 +70,7 @@ class SearchActivity :
 			lifecycleOwner = this,
 			coil = coil,
 			listener = this,
-			itemClickListener = itemCLickListener,
+			itemClickListener = itemClickListener,
 			sizeResolver = sizeResolver,
 			selectionDecoration = selectionDecoration,
 		)
@@ -98,8 +85,6 @@ class SearchActivity :
 
 		viewModel.list.observe(this, adapter)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
-
-		DownloadDialogFragment.registerCallback(this, viewBinding.recyclerView)
 	}
 
 	override fun onWindowInsetsChanged(insets: Insets) {
@@ -114,8 +99,7 @@ class SearchActivity :
 
 	override fun onItemClick(item: Manga, view: View) {
 		if (!selectionController.onItemClick(item.id)) {
-			val intent = DetailsActivity.newIntent(this, item)
-			startActivity(intent)
+			router.openDetails(item)
 		}
 	}
 
@@ -129,15 +113,13 @@ class SearchActivity :
 
 	override fun onReadClick(manga: Manga, view: View) {
 		if (!selectionController.onItemClick(manga.id)) {
-			val intent = IntentBuilder(this).manga(manga).build()
-			startActivity(intent)
+			router.openReader(manga)
 		}
 	}
 
 	override fun onTagClick(manga: Manga, tag: MangaTag, view: View) {
 		if (!selectionController.onItemClick(manga.id)) {
-			val intent = MangaListActivity.newIntent(this, manga.source, MangaListFilter(tags = setOf(tag)))
-			startActivity(intent)
+			router.openList(tag)
 		}
 	}
 
@@ -179,13 +161,13 @@ class SearchActivity :
 			}
 
 			R.id.action_favourite -> {
-				FavoriteDialog.show(supportFragmentManager, collectSelectedItems())
+				router.showFavoriteDialog(collectSelectedItems())
 				mode?.finish()
 				true
 			}
 
 			R.id.action_save -> {
-				DownloadDialogFragment.show(supportFragmentManager, collectSelectedItems())
+				router.showDownloadDialog(collectSelectedItems(), viewBinding.recyclerView)
 				mode?.finish()
 				true
 			}
@@ -196,14 +178,5 @@ class SearchActivity :
 
 	private fun collectSelectedItems(): Set<Manga> {
 		return viewModel.getItems(selectionController.peekCheckedIds())
-	}
-
-	companion object {
-
-		const val EXTRA_QUERY = "query"
-
-		fun newIntent(context: Context, query: String) =
-			Intent(context, SearchActivity::class.java)
-				.putExtra(EXTRA_QUERY, query)
 	}
 }

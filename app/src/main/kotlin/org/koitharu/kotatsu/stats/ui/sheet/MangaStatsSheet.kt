@@ -5,20 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.collection.IntList
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.KotatsuColors
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetStatsMangaBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.stats.ui.views.BarChartView
 
@@ -46,7 +41,7 @@ class MangaStatsSheet : BaseAdaptiveSheet<SheetStatsMangaBinding>(), View.OnClic
 	}
 
 	override fun onClick(v: View) {
-		startActivity(DetailsActivity.newIntent(v.context, viewModel.manga))
+		router.openDetails(viewModel.manga)
 	}
 
 	private fun onStatsChanged(stats: IntList) {
@@ -65,18 +60,5 @@ class MangaStatsSheet : BaseAdaptiveSheet<SheetStatsMangaBinding>(), View.OnClic
 			)
 		}
 		chartView.setData(bars)
-	}
-
-	companion object {
-
-		const val ARG_MANGA = "manga"
-
-		private const val TAG = "MangaStatsSheet"
-
-		fun show(fm: FragmentManager, manga: Manga) {
-			MangaStatsSheet().withArgs(1) {
-				putParcelable(ARG_MANGA, ParcelableManga(manga))
-			}.showDistinct(fm, TAG)
-		}
 	}
 }

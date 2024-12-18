@@ -6,8 +6,7 @@ import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
-import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
+import org.koitharu.kotatsu.core.nav.router
 
 class ReaderMenuProvider(
 	private val activity: FragmentActivity,
@@ -42,14 +41,14 @@ class ReaderMenuProvider(
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		return when (menuItem.itemId) {
 			R.id.action_pages_thumbs -> {
-				ChaptersPagesSheet.show(activity.supportFragmentManager)
+				activity.router.showChapterPagesSheet()
 				true
 			}
 
 			R.id.action_options -> {
 				viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 				val currentMode = readerManager.currentMode ?: return false
-				ReaderConfigSheet.show(activity.supportFragmentManager, currentMode)
+				activity.router.showReaderConfigSheet(currentMode)
 				true
 			}
 

@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.details.ui
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.transition.TransitionManager
 import android.view.Gravity
@@ -50,10 +49,10 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.core.model.getTitle
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.titleResId
+import org.koitharu.kotatsu.core.nav.ReaderIntent
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.os.AppShortcutManager
-import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
@@ -78,7 +77,6 @@ import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
-import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
 import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
@@ -88,28 +86,18 @@ import org.koitharu.kotatsu.details.data.ReadingTime
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
-import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
-import org.koitharu.kotatsu.details.ui.related.RelatedMangaActivity
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
-import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteDialog
-import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
-import org.koitharu.kotatsu.local.ui.info.LocalInfoDialog
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
-import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
-import org.koitharu.kotatsu.search.ui.MangaListActivity
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.google.android.material.R as materialR
@@ -164,13 +152,14 @@ class DetailsActivity :
 		}
 		TitleExpandListener(viewBinding.textViewTitle).attach()
 
+		val appRouter = router
 		viewModel.mangaDetails.filterNotNull().observe(this, ::onMangaUpdated)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
 		viewModel.onError
-			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
+			.filterNot { appRouter.isChapterPagesSheetShown() }
 			.observeEvent(this, DetailsErrorObserver(this, viewModel, exceptionResolver))
 		viewModel.onActionDone
-			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
+			.filterNot { appRouter.isChapterPagesSheetShown() }
 			.observeEvent(this, ReversibleActionObserver(viewBinding.scrollView, null))
 		combine(viewModel.historyInfo, viewModel.isLoading, ::Pair).observe(this) {
 			onHistoryChanged(it.first, it.second)
@@ -189,10 +178,8 @@ class DetailsActivity :
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
 		viewModel.onDownloadStarted
-			.filterNot { ChaptersPagesSheet.isShown(supportFragmentManager) }
+			.filterNot { appRouter.isChapterPagesSheetShown() }
 			.observeEvent(this, DownloadStartedObserver(viewBinding.scrollView))
-
-		DownloadDialogFragment.registerCallback(this, viewBinding.scrollView)
 		menuProvider = DetailsMenuProvider(
 			activity = this,
 			viewModel = viewModel,
@@ -210,54 +197,30 @@ class DetailsActivity :
 
 			R.id.textView_author -> {
 				val manga = viewModel.manga.value ?: return
-				startActivity(
-					MangaListActivity.newIntent(
-						context = v.context,
-						source = manga.source,
-						filter = MangaListFilter(query = manga.author),
-					),
-				)
+				router.openSearch(manga.source, manga.author ?: return)
 			}
 
 			R.id.textView_source -> {
 				val manga = viewModel.manga.value ?: return
-				startActivity(
-					MangaListActivity.newIntent(
-						context = v.context,
-						source = manga.source,
-						filter = null,
-					),
-				)
+				router.openList(manga.source, null)
 			}
 
 			R.id.textView_local -> {
 				val manga = viewModel.manga.value ?: return
-				LocalInfoDialog.show(supportFragmentManager, manga)
+				router.showLocalInfoDialog(manga)
 			}
 
 			R.id.chip_favorite -> {
 				val manga = viewModel.manga.value ?: return
-				FavoriteDialog.show(supportFragmentManager, manga)
+				router.showFavoriteDialog(manga)
 			}
-
-			// R.id.chip_time -> {
-			// 	if (viewModel.isStatsAvailable.value) {
-			// 		val manga = viewModel.manga.value ?: return
-			// 		MangaStatsSheet.show(supportFragmentManager, manga)
-			// 	} else {
-			// 		// TODO
-			// 	}
-			// }
 
 			R.id.imageView_cover -> {
 				val manga = viewModel.manga.value ?: return
-				startActivity(
-					ImageActivity.newIntent(
-						v.context,
-						manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
-						manga.source,
-					),
-					scaleUpActivityOptionsOf(v),
+				router.openImage(
+					url = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
+					source = manga.source,
+					anchor = v,
 				)
 			}
 
@@ -273,12 +236,12 @@ class DetailsActivity :
 
 			R.id.button_scrobbling_more -> {
 				val manga = viewModel.manga.value ?: return
-				ScrobblingSelectorSheet.show(supportFragmentManager, manga, null)
+				router.showScrobblingSelectorSheet(manga, null)
 			}
 
 			R.id.button_related_more -> {
 				val manga = viewModel.manga.value ?: return
-				startActivity(RelatedMangaActivity.newIntent(v.context, manga))
+				router.openRelated(manga)
 			}
 		}
 	}
@@ -286,7 +249,7 @@ class DetailsActivity :
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag ?: return
 		// TODO dialog
-		startActivity(MangaListActivity.newIntent(this, tag.source, MangaListFilter(tags = setOf(tag))))
+		router.openList(tag)
 	}
 
 	override fun onContextClick(v: View): Boolean = onLongClick(v)
@@ -324,9 +287,7 @@ class DetailsActivity :
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
-		startActivity(
-			ReaderActivity.IntentBuilder(view.context).bookmark(item).incognito(true).build(),
-		)
+		router.openReader(ReaderIntent.Builder(view.context).bookmark(item).incognito(true).build())
 		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
 
@@ -393,7 +354,7 @@ class DetailsActivity :
 					coil, this,
 					StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),
 				) { item, view ->
-					startActivity(newIntent(view.context, item))
+					router.openDetails(item)
 				},
 			).also { rv.adapter = it }
 		adapter.items = related
@@ -410,7 +371,7 @@ class DetailsActivity :
 		if (adapter != null) {
 			adapter.items = scrobblings
 		} else {
-			adapter = ScrollingInfoAdapter(this, coil, supportFragmentManager)
+			adapter = ScrollingInfoAdapter(this, coil, router)
 			adapter.items = scrobblings
 			viewBinding.recyclerViewScrobbling.adapter = adapter
 			viewBinding.recyclerViewScrobbling.addItemDecoration(ScrobblingItemDecoration())
@@ -531,8 +492,8 @@ class DetailsActivity :
 			Snackbar.make(viewBinding.scrollView, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
 				.show()
 		} else {
-			startActivity(
-				ReaderActivity.IntentBuilder(this)
+			router.openReader(
+				ReaderIntent.Builder(this)
 					.manga(manga)
 					.branch(viewModel.selectedBranchValue)
 					.incognito(isIncognitoMode)
@@ -604,15 +565,5 @@ class DetailsActivity :
 	companion object {
 
 		private const val FAV_LABEL_LIMIT = 16
-
-		fun newIntent(context: Context, manga: Manga): Intent {
-			return Intent(context, DetailsActivity::class.java)
-				.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
-		}
-
-		fun newIntent(context: Context, mangaId: Long): Intent {
-			return Intent(context, DetailsActivity::class.java)
-				.putExtra(MangaIntent.KEY_ID, mangaId)
-		}
 	}
 }

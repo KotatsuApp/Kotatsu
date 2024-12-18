@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.bookmarks.ui
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
@@ -45,10 +43,5 @@ class AllBookmarksActivity :
 			left = insets.left,
 			right = insets.right,
 		)
-	}
-
-	companion object {
-
-		fun newIntent(context: Context) = Intent(context, AllBookmarksActivity::class.java)
 	}
 }

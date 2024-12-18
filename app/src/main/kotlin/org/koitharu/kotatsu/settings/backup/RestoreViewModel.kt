@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.core.backup.BackupEntry
 import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipInput
 import org.koitharu.kotatsu.core.backup.CompositeResult
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -32,7 +33,7 @@ class RestoreViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	private val backupInput = suspendLazy {
-		val uri = savedStateHandle.get<String>(RestoreDialogFragment.ARG_FILE)
+		val uri = savedStateHandle.get<String>(AppRouter.KEY_FILE)
 			?.toUriOrNull() ?: throw FileNotFoundException()
 		val contentResolver = context.contentResolver
 		runInterruptible(Dispatchers.IO) {

@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.browser.cloudflare
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +8,6 @@ import android.view.MenuItem
 import android.webkit.CookieManager
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.graphics.Insets
-import androidx.core.net.toUri
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -19,19 +17,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.yield
-import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.network.CommonHeaders
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -62,7 +58,7 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 			return
 		}
 		cfClient = CloudFlareClient(cookieJar, this, url)
-		viewBinding.webView.configureForParser(intent?.getStringExtra(ARG_UA))
+		viewBinding.webView.configureForParser(intent?.getStringExtra(AppRouter.KEY_USER_AGENT))
 		viewBinding.webView.webViewClient = cfClient
 		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView).also {
 			onBackPressedDispatcher.addCallback(it)
@@ -140,7 +136,7 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 
 	override fun onCheckPassed() {
 		pendingResult = RESULT_OK
-		val source = intent?.getStringExtra(ARG_SOURCE)
+		val source = intent?.getStringExtra(AppRouter.KEY_SOURCE)
 		if (source != null) {
 			CaptchaNotifier(this).dismiss(MangaSource(source))
 		}
@@ -182,38 +178,16 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 
 	class Contract : ActivityResultContract<CloudFlareProtectedException, Boolean>() {
 		override fun createIntent(context: Context, input: CloudFlareProtectedException): Intent {
-			return newIntent(context, input)
+			return AppRouter.cloudFlareResolveIntent(context, input)
 		}
 
 		override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
-			return resultCode == Activity.RESULT_OK
+			return resultCode == RESULT_OK
 		}
 	}
 
 	companion object {
 
 		const val TAG = "CloudFlareActivity"
-		private const val ARG_UA = "ua"
-		private const val ARG_SOURCE = "_source"
-
-		fun newIntent(context: Context, exception: CloudFlareProtectedException) = newIntent(
-			context = context,
-			url = exception.url,
-			source = exception.source,
-			headers = exception.headers,
-		)
-
-		private fun newIntent(
-			context: Context,
-			url: String,
-			source: MangaSource?,
-			headers: Headers?,
-		) = Intent(context, CloudFlareActivity::class.java).apply {
-			data = url.toUri()
-			putExtra(ARG_SOURCE, source?.name)
-			headers?.get(CommonHeaders.USER_AGENT)?.let {
-				putExtra(ARG_UA, it)
-			}
-		}
 	}
 }

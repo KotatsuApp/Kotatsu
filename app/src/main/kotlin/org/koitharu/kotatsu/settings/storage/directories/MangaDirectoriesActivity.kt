@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.settings.storage.directories
 
 import android.Manifest
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -96,10 +94,5 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 		viewBinding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
-	}
-
-	companion object {
-
-		fun newIntent(context: Context) = Intent(context, MangaDirectoriesActivity::class.java)
 	}
 }

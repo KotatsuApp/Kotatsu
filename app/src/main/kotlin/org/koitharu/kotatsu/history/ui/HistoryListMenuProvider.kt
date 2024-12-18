@@ -1,15 +1,14 @@
 package org.koitharu.kotatsu.history.ui
 
 import android.content.Context
-import android.content.Intent
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.dialog.RememberSelectionDialogListener
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
-import org.koitharu.kotatsu.stats.ui.StatsActivity
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -17,6 +16,7 @@ import java.time.temporal.ChronoUnit
 
 class HistoryListMenuProvider(
 	private val context: Context,
+	private val router: AppRouter,
 	private val viewModel: HistoryListViewModel,
 ) : MenuProvider {
 
@@ -37,7 +37,7 @@ class HistoryListMenuProvider(
 			}
 
 			R.id.action_stats -> {
-				context.startActivity(Intent(context, StatsActivity::class.java))
+				router.openStatistic()
 				true
 			}
 

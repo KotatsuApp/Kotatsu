@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
@@ -19,7 +18,6 @@ import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.DialogDirectorySelectBinding
 
@@ -79,13 +77,5 @@ class MangaDirectorySelectDialog : AlertDialogFragment<DialogDirectorySelectBind
 		if (!permissionRequestLauncher.tryLaunch(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 			Toast.makeText(context ?: return, R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
 		}
-	}
-
-	companion object {
-
-		private const val TAG = "MangaDirectorySelectDialog"
-
-		fun show(fm: FragmentManager) = MangaDirectorySelectDialog()
-			.showDistinct(fm, TAG)
 	}
 }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.call
@@ -37,7 +37,7 @@ class RelatedListViewModel @Inject constructor(
 	downloadScheduler: DownloadWorker.Scheduler,
 ) : MangaListViewModel(settings, downloadScheduler) {
 
-	private val seed = savedStateHandle.require<ParcelableManga>(MangaIntent.KEY_MANGA).manga
+	private val seed = savedStateHandle.require<ParcelableManga>(AppRouter.KEY_MANGA).manga
 	private val repository = mangaRepositoryFactory.create(seed.source)
 	private val mangaList = MutableStateFlow<List<Manga>?>(null)
 	private val listError = MutableStateFlow<Throwable?>(null)

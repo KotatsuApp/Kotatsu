@@ -12,8 +12,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.model.getTitle
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
@@ -22,12 +22,9 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
-import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.settings.SettingsActivity
 
 @AndroidEntryPoint
 class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
@@ -42,9 +39,7 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 		addMenuProvider(RemoteListMenuProvider())
 		addMenuProvider(MangaSearchMenuProvider(filterCoordinator, viewModel))
 		viewModel.isRandomLoading.observe(viewLifecycleOwner, MenuInvalidator(requireActivity()))
-		viewModel.onOpenManga.observeEvent(viewLifecycleOwner) {
-			startActivity(DetailsActivity.newIntent(binding.root.context, it))
-		}
+		viewModel.onOpenManga.observeEvent(viewLifecycleOwner) { router.openDetails(it) }
 		filterCoordinator.observe().distinctUntilChangedBy { it.listFilter.isEmpty() }
 			.drop(1)
 			.observe(viewLifecycleOwner) {
@@ -66,7 +61,7 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 	}
 
 	override fun onFilterClick(view: View?) {
-		FilterSheetFragment.show(getChildFragmentManager())
+		router.showFilterSheet()
 	}
 
 	override fun onEmptyActionClick() {
@@ -86,13 +81,10 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 			Snackbar.make(requireViewBinding().recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
 				.show()
 		} else {
-			startActivity(
-				BrowserActivity.newIntent(
-					requireContext(),
-					url,
-					viewModel.source,
-					viewModel.source.getTitle(requireContext()),
-				),
+			router.openBrowser(
+				url = url,
+				source = viewModel.source,
+				title = viewModel.source.getTitle(requireContext()),
 			)
 		}
 	}
@@ -105,7 +97,7 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 			R.id.action_source_settings -> {
-				startActivity(SettingsActivity.newSourceSettingsIntent(requireContext(), viewModel.source))
+				router.openSourceSettings(viewModel.source)
 				true
 			}
 

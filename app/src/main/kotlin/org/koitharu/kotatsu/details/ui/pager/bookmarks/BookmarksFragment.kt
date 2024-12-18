@@ -18,13 +18,15 @@ import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.BookmarksSelectionDecoration
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.ReaderIntent
+import org.koitharu.kotatsu.core.nav.dismissParentDialog
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
-import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -34,7 +36,6 @@ import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
-import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import javax.inject.Inject
 
@@ -124,21 +125,21 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 		if (listener != null && listener.onBookmarkSelected(item)) {
 			dismissParentDialog()
 		} else {
-			val intent = IntentBuilder(view.context)
+			val intent = ReaderIntent.Builder(view.context)
 				.manga(activityViewModel.getMangaOrNull() ?: return)
 				.bookmark(item)
 				.incognito(true)
 				.build()
-			startActivity(intent)
+			router.openReader(intent)
 		}
 	}
 
 	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
-		return selectionController?.onItemLongClick(view, item.pageId) ?: false
+		return selectionController?.onItemLongClick(view, item.pageId) == true
 	}
 
 	override fun onItemContextClick(item: Bookmark, view: View): Boolean {
-		return selectionController?.onItemContextClick(view, item.pageId) ?: false
+		return selectionController?.onItemContextClick(view, item.pageId) == true
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {

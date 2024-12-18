@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.core.ui
 
-import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.CallSuper
@@ -14,10 +12,8 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.preference.get
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
@@ -87,14 +83,6 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 
 	protected open fun setTitle(title: CharSequence?) {
 		(activity as? SettingsActivity)?.setSectionTitle(title)
-	}
-
-	protected fun startActivitySafe(intent: Intent): Boolean = try {
-		startActivity(intent)
-		true
-	} catch (_: ActivityNotFoundException) {
-		Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
-		false
 	}
 
 	private fun focusPreference(key: String) {

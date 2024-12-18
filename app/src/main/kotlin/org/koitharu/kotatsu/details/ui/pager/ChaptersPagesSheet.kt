@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior.Companion.STATE_COLLAPSED
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior.Companion.STATE_DRAGGING
@@ -26,8 +27,6 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
-import org.koitharu.kotatsu.core.util.ext.showDistinct
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetChaptersPagesBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.details.ui.ReadButtonDelegate
@@ -51,13 +50,13 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		disableFitToContents()
 
 		val args = arguments ?: Bundle.EMPTY
-		var defaultTab = args.getInt(ARG_TAB, settings.defaultDetailsTab)
+		var defaultTab = args.getInt(AppRouter.KEY_TAB, settings.defaultDetailsTab)
 		val adapter = ChaptersPagesAdapter(this, settings.isPagesTabEnabled)
 		if (!adapter.isPagesTabEnabled) {
 			defaultTab = (defaultTab - 1).coerceAtLeast(TAB_CHAPTERS)
 		}
 		(viewModel as? DetailsViewModel)?.let { dvm ->
-			ReadButtonDelegate(binding.splitButtonRead, dvm).attach(viewLifecycleOwner)
+			ReadButtonDelegate(binding.splitButtonRead, dvm, router).attach(viewLifecycleOwner)
 		}
 		binding.pager.offscreenPageLimit = adapter.itemCount
 		binding.pager.recyclerView?.isNestedScrollingEnabled = false
@@ -145,22 +144,5 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		const val TAB_CHAPTERS = 0
 		const val TAB_PAGES = 1
 		const val TAB_BOOKMARKS = 2
-		private const val ARG_TAB = "tag"
-		private const val TAG = "ChaptersPagesSheet"
-
-		fun show(fm: FragmentManager) {
-			ChaptersPagesSheet().showDistinct(fm, TAG)
-		}
-
-		fun show(fm: FragmentManager, defaultTab: Int) {
-			ChaptersPagesSheet().withArgs(1) {
-				putInt(ARG_TAB, defaultTab)
-			}.showDistinct(fm, TAG)
-		}
-
-		fun isShown(fm: FragmentManager): Boolean {
-			val sheet = fm.findFragmentByTag(TAG) as? ChaptersPagesSheet
-			return sheet?.dialog?.isShowing == true
-		}
 	}
 }

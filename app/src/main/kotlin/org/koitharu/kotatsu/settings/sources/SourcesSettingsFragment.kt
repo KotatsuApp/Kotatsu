@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.settings.sources
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -9,13 +8,13 @@ import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.parsers.util.names
-import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity
 
 @AndroidEntryPoint
 class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) {
@@ -60,7 +59,7 @@ class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) 
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean = when (preference.key) {
 		AppSettings.KEY_SOURCES_CATALOG -> {
-			startActivity(Intent(preference.context, SourcesCatalogActivity::class.java))
+			router.openSourcesCatalog()
 			true
 		}
 

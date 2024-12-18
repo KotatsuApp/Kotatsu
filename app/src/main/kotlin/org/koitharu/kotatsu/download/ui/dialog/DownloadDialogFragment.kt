@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.download.ui.dialog
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,17 +8,16 @@ import android.view.ViewGroup
 import android.widget.Spinner
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.DownloadFormat
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
@@ -27,17 +25,12 @@ import org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
 import org.koitharu.kotatsu.core.util.ext.findActivity
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
-import org.koitharu.kotatsu.core.util.ext.mapToArray
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
-import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.showOrHide
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.DialogDownloadBinding
-import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
 import javax.inject.Inject
@@ -325,7 +318,9 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 		}
 	}
 
-	private class SnackbarResultListener(private val host: View) : FragmentResultListener {
+	private class SnackbarResultListener(
+		private val host: View,
+	) : FragmentResultListener {
 
 		override fun onFragmentResult(requestKey: String, result: Bundle) {
 			val isStarted = result.getBoolean(ARG_STARTED, true)
@@ -337,8 +332,9 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 			(host.context.findActivity() as? BottomNavOwner)?.let {
 				snackbar.anchorView = it.bottomNav
 			}
-			snackbar.setAction(R.string.details) {
-				it.context.startActivity(Intent(it.context, DownloadsActivity::class.java))
+			val router = AppRouter.from(host)
+			if (router != null) {
+				snackbar.setAction(R.string.details) { router.openDownloads() }
 			}
 			snackbar.show()
 		}
@@ -346,28 +342,16 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 
 	companion object {
 
-		private const val TAG = "DownloadDialogFragment"
 		private const val RESULT_KEY = "DOWNLOAD_STARTED"
 		private const val ARG_STARTED = "started"
 		private const val KEY_CHECKED_OPTION = "checked_opt"
-		const val ARG_MANGA = "manga"
 
-		fun show(fm: FragmentManager, manga: Collection<Manga>) = DownloadDialogFragment().withArgs(1) {
-			putParcelableArray(ARG_MANGA, manga.mapToArray { ParcelableManga(it) })
-		}.showDistinct(fm, TAG)
+		fun registerCallback(
+			fm: FragmentManager,
+			lifecycleOwner: LifecycleOwner,
+			snackbarHost: View
+		) = fm.setFragmentResultListener(RESULT_KEY, lifecycleOwner, SnackbarResultListener(snackbarHost))
 
-		fun registerCallback(activity: FragmentActivity, snackbarHost: View) =
-			activity.supportFragmentManager.setFragmentResultListener(
-				RESULT_KEY,
-				activity,
-				SnackbarResultListener(snackbarHost),
-			)
-
-		fun registerCallback(fragment: Fragment, snackbarHost: View) =
-			fragment.childFragmentManager.setFragmentResultListener(
-				RESULT_KEY,
-				fragment.viewLifecycleOwner,
-				SnackbarResultListener(snackbarHost),
-			)
+		fun unregisterCallback(fm: FragmentManager) = fm.clearFragmentResultListener(RESULT_KEY)
 	}
 }

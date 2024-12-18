@@ -7,13 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.TextViewCompat
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.ui.widgets.SegmentedBarView
 import org.koitharu.kotatsu.core.util.FileSize
@@ -21,10 +19,7 @@ import org.koitharu.kotatsu.core.util.KotatsuColors
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setProgressIcon
-import org.koitharu.kotatsu.core.util.ext.showDistinct
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.DialogLocalInfoBinding
-import org.koitharu.kotatsu.parsers.model.Manga
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
@@ -107,17 +102,5 @@ class LocalInfoDialog : AlertDialogFragment<DialogLocalInfoBinding>(), View.OnCl
 			ColorStateList.valueOf(segment.color),
 		)
 		view.animateSegments(listOf(segment))
-	}
-
-	companion object {
-
-		const val ARG_MANGA = "manga"
-		private const val TAG = "LocalInfoDialog"
-
-		fun show(fm: FragmentManager, manga: Manga) {
-			LocalInfoDialog().withArgs(1) {
-				putParcelable(ARG_MANGA, ParcelableManga(manga))
-			}.showDistinct(fm, TAG)
-		}
 	}
 }

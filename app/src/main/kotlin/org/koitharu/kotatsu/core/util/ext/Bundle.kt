@@ -110,3 +110,5 @@ fun <T : Parcelable> Parcelable.Creator<T>.unmarshall(bytes: ByteArray): T {
 		parcel.recycle()
 	}
 }
+
+inline fun buildBundle(capacity: Int, block: Bundle.() -> Unit): Bundle = Bundle(capacity).apply(block)

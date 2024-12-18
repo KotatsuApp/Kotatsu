@@ -12,6 +12,7 @@ import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
@@ -20,7 +21,6 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import javax.inject.Inject
@@ -84,7 +84,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		if (selectionController.onItemClick(item.id.mostSignificantBits)) {
 			return
 		}
-		startActivity(DetailsActivity.newIntent(view.context, item.manga ?: return))
+		router.openDetails(item.manga ?: return)
 	}
 
 	override fun onItemLongClick(item: DownloadItemModel, view: View): Boolean {

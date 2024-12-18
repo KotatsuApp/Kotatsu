@@ -9,17 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.withCreationCallback
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.showDistinct
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetTagsBinding
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.model.TagCatalogItem
@@ -33,7 +31,7 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 			defaultViewModelCreationExtras.withCreationCallback<TagsCatalogViewModel.Factory> { factory ->
 				factory.create(
 					filter = (requireActivity() as FilterCoordinator.Owner).filterCoordinator,
-					isExcludeTag = requireArguments().getBoolean(ARG_EXCLUDE),
+					isExcludeTag = requireArguments().getBoolean(AppRouter.KEY_EXCLUDE),
 				)
 			}
 		},
@@ -88,15 +86,5 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 
 	override fun onStateChanged(sheet: View, newState: Int) {
 		viewBinding?.recyclerView?.isFastScrollerEnabled = newState == AdaptiveSheetBehavior.STATE_EXPANDED
-	}
-
-	companion object {
-
-		private const val TAG = "TagsCatalogSheet"
-		private const val ARG_EXCLUDE = "exclude"
-
-		fun show(fm: FragmentManager, isExcludeTag: Boolean) = TagsCatalogSheet().withArgs(1) {
-			putBoolean(ARG_EXCLUDE, isExcludeTag)
-		}.showDistinct(fm, TAG)
 	}
 }

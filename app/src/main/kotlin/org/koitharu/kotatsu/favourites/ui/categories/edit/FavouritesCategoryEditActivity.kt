@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui.categories.edit
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
@@ -68,8 +67,8 @@ class FavouritesCategoryEditActivity :
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		savedInstanceState.getSerializableCompat<ListSortOrder>(KEY_SORT_ORDER)?.let { 
-		    selectedSortOrder = it
+		savedInstanceState.getSerializableCompat<ListSortOrder>(KEY_SORT_ORDER)?.let {
+			selectedSortOrder = it
 		}
 	}
 
@@ -114,8 +113,8 @@ class FavouritesCategoryEditActivity :
 		selectedSortOrder = category?.order
 		val sortText = getString((category?.order ?: ListSortOrder.NEWEST).titleResId)
 		viewBinding.editSort.setText(sortText, false)
-		viewBinding.switchTracker.setChecked(category?.isTrackingEnabled ?: true, false)
-		viewBinding.switchShelf.setChecked(category?.isVisibleInLibrary ?: true, false)
+		viewBinding.switchTracker.setChecked(category?.isTrackingEnabled != false, false)
+		viewBinding.switchShelf.setChecked(category?.isVisibleInLibrary != false, false)
 	}
 
 	private fun onError(e: Throwable) {
@@ -162,13 +161,7 @@ class FavouritesCategoryEditActivity :
 
 	companion object {
 
-		const val EXTRA_ID = "id"
 		const val NO_ID = -1L
 		private const val KEY_SORT_ORDER = "sort"
-
-		fun newIntent(context: Context, id: Long = NO_ID): Intent {
-			return Intent(context, FavouritesCategoryEditActivity::class.java)
-				.putExtra(EXTRA_ID, id)
-		}
 	}
 }

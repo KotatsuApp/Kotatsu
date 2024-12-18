@@ -9,13 +9,12 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.isGone
 import androidx.core.view.updatePadding
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.titleResId
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
@@ -25,11 +24,9 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.setValuesRounded
-import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.databinding.SheetFilterBinding
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
-import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Demographic
@@ -88,10 +85,10 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		binding.sliderYear.addOnChangeListener(this::onSliderValueChange)
 		binding.sliderYearsRange.addOnChangeListener(this::onRangeSliderValueChange)
 		binding.layoutGenres.setOnMoreButtonClickListener {
-			TagsCatalogSheet.show(getChildFragmentManager(), isExcludeTag = false)
+			router.showTagsCatalogSheet(excludeMode = false)
 		}
 		binding.layoutGenresExclude.setOnMoreButtonClickListener {
-			TagsCatalogSheet.show(getChildFragmentManager(), isExcludeTag = true)
+			router.showTagsCatalogSheet(excludeMode = true)
 		}
 	}
 
@@ -153,7 +150,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			is ContentType -> filter.toggleContentType(data, !chip.isChecked)
 			is ContentRating -> filter.toggleContentRating(data, !chip.isChecked)
 			is Demographic -> filter.toggleDemographic(data, !chip.isChecked)
-			null -> TagsCatalogSheet.show(getChildFragmentManager(), chip.parentView?.id == R.id.chips_genresExclude)
+			null -> router.showTagsCatalogSheet(excludeMode = chip.parentView?.id == R.id.chips_genresExclude)
 		}
 	}
 
@@ -351,13 +348,4 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	}
 
 	private fun requireFilter() = (requireActivity() as FilterCoordinator.Owner).filterCoordinator
-
-	companion object {
-
-		private const val TAG = "FilterSheet"
-
-		fun show(fm: FragmentManager) = FilterSheetFragment().showDistinct(fm, TAG)
-
-		fun isSupported(fragment: Fragment) = fragment.activity is FilterCoordinator.Owner
-	}
 }

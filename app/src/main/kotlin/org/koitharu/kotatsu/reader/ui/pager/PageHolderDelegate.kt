@@ -80,7 +80,7 @@ class PageHolderDelegate(
 
 	fun showErrorDetails(url: String?) {
 		val e = error ?: return
-		exceptionResolver.showDetails(e, url)
+		exceptionResolver.showErrorDetails(e, url)
 	}
 
 	fun onAttachedToWindow() {

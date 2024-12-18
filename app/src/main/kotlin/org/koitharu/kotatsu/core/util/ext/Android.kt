@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.ActivityManager.MemoryInfo
-import android.app.ActivityOptions
 import android.app.LocaleConfig
 import android.content.ComponentName
 import android.content.Context
@@ -23,19 +22,17 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
-import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
-import android.view.View
 import android.view.ViewPropertyAnimator
 import android.view.Window
 import android.webkit.WebView
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.CheckResult
 import androidx.annotation.IntegerRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -86,12 +83,14 @@ suspend fun CoroutineWorker.trySetForeground(): Boolean = runCatchingCancellable
 	setForeground(info)
 }.isSuccess
 
+@CheckResult
 fun <I> ActivityResultLauncher<I>.resolve(context: Context, input: I): ResolveInfo? {
 	val pm = context.packageManager
 	val intent = contract.createIntent(context, input)
 	return pm.resolveActivity(intent, 0)
 }
 
+@CheckResult
 fun <I> ActivityResultLauncher<I>.tryLaunch(
 	input: I,
 	options: ActivityOptionsCompat? = null,
@@ -171,7 +170,7 @@ fun Context.getAnimationDuration(@IntegerRes resId: Int): Long {
 }
 
 fun Context.isLowRamDevice(): Boolean {
-	return activityManager?.isLowRamDevice ?: false
+	return activityManager?.isLowRamDevice == true
 }
 
 fun Context.isPowerSaveMode(): Boolean {
@@ -184,18 +183,6 @@ val Context.ramAvailable: Long
 		activityManager?.getMemoryInfo(result)
 		return result.availMem
 	}
-
-fun scaleUpActivityOptionsOf(view: View): Bundle? = if (view.context.isAnimationsEnabled) {
-	ActivityOptions.makeScaleUpAnimation(
-		view,
-		0,
-		0,
-		view.width,
-		view.height,
-	).toBundle()
-} else {
-	null
-}
 
 @SuppressLint("DiscouragedApi")
 fun Context.getLocalesConfig(): LocaleListCompat {

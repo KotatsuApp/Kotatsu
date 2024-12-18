@@ -9,23 +9,21 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isGone
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.titleResId
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.SheetWelcomeBinding
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
 import org.koitharu.kotatsu.parsers.model.ContentType
-import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -82,7 +80,7 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 
 	override fun onActivityResult(result: Uri?) {
 		if (result != null) {
-			RestoreDialogFragment.show(parentFragmentManager, result)
+			router.showBackupRestoreDialog(result)
 		}
 	}
 
@@ -110,18 +108,5 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 				)
 			},
 		)
-	}
-
-	companion object {
-
-		private const val TAG = "WelcomeSheet"
-
-		fun show(fm: FragmentManager) = WelcomeSheet().showDistinct(fm, TAG)
-
-		fun dismiss(fm: FragmentManager): Boolean {
-			val sheet = fm.findFragmentByTag(TAG) as? WelcomeSheet ?: return false
-			sheet.dismissAllowingStateLoss()
-			return true
-		}
 	}
 }

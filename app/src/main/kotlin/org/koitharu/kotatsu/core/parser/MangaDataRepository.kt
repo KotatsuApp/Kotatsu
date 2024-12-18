@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.nav.MangaIntent
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -45,8 +46,8 @@ class MangaDataRepository @Inject constructor(
 				entity.copy(
 					cfBrightness = colorFilter?.brightness ?: 0f,
 					cfContrast = colorFilter?.contrast ?: 0f,
-					cfInvert = colorFilter?.isInverted ?: false,
-					cfGrayscale = colorFilter?.isGrayscale ?: false,
+					cfInvert = colorFilter?.isInverted == true,
+					cfGrayscale = colorFilter?.isGrayscale == true,
 				),
 			)
 		}

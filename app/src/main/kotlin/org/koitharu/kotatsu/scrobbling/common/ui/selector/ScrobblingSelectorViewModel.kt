@@ -15,7 +15,7 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -41,7 +41,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 	private val historyRepository: HistoryRepository,
 ) : BaseViewModel() {
 
-	val manga = savedStateHandle.require<ParcelableManga>(MangaIntent.KEY_MANGA).manga
+	val manga = savedStateHandle.require<ParcelableManga>(AppRouter.KEY_MANGA).manga
 
 	val availableScrobblers = scrobblers.filter { it.isEnabled }
 

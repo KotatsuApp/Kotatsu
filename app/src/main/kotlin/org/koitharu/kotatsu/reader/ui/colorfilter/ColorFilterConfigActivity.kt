@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.reader.ui.colorfilter
 
-import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -23,8 +21,6 @@ import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPage
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
@@ -35,7 +31,6 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.databinding.ActivityColorFilterBinding
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
@@ -131,8 +126,8 @@ class ColorFilterConfigActivity :
 	private fun onColorFilterChanged(readerColorFilter: ReaderColorFilter?) {
 		viewBinding.sliderBrightness.setValueRounded(readerColorFilter?.brightness ?: 0f)
 		viewBinding.sliderContrast.setValueRounded(readerColorFilter?.contrast ?: 0f)
-		viewBinding.switchInvert.setChecked(readerColorFilter?.isInverted ?: false, false)
-		viewBinding.switchGrayscale.setChecked(readerColorFilter?.isGrayscale ?: false, false)
+		viewBinding.switchInvert.setChecked(readerColorFilter?.isInverted == true, false)
+		viewBinding.switchGrayscale.setChecked(readerColorFilter?.isGrayscale == true, false)
 		viewBinding.imageViewAfter.colorFilter = readerColorFilter?.toColorFilter()
 	}
 
@@ -167,16 +162,5 @@ class ColorFilterConfigActivity :
 			val percent = ((value + 1f) * 100).format(0)
 			return pattern.format(percent)
 		}
-	}
-
-	companion object {
-
-		const val EXTRA_PAGES = "pages"
-		const val EXTRA_MANGA = "manga_id"
-
-		fun newIntent(context: Context, manga: Manga, page: MangaPage) =
-			Intent(context, ColorFilterConfigActivity::class.java)
-				.putExtra(EXTRA_MANGA, ParcelableManga(manga))
-				.putExtra(EXTRA_PAGES, ParcelableMangaPage(page))
 	}
 }

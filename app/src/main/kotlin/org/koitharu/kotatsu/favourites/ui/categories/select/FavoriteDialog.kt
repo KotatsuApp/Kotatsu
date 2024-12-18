@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui.categories.select
 
 import android.content.DialogInterface
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -13,7 +12,6 @@ import android.widget.Toast
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import coil3.ImageLoader
 import coil3.request.allowRgb565
@@ -25,7 +23,7 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
@@ -38,20 +36,16 @@ import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.showDistinct
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetFavoriteCategoriesBinding
-import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
-import org.koitharu.kotatsu.parsers.model.Manga
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class FavoriteDialog : AlertDialogFragment<SheetFavoriteCategoriesBinding>(),
 	OnListItemClickListener<MangaCategoryItem>, DialogInterface.OnClickListener {
 
-	private val viewModel by viewModels<FavoriteSheetViewModel>()
+	private val viewModel by viewModels<FavoriteDialogViewModel>()
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -84,7 +78,7 @@ class FavoriteDialog : AlertDialogFragment<SheetFavoriteCategoriesBinding>(),
 	}
 
 	override fun onClick(dialog: DialogInterface?, which: Int) {
-		startActivity(Intent(context ?: return, FavouriteCategoriesActivity::class.java))
+		router.openFavoriteCategories()
 	}
 
 	private fun onError(e: Throwable) {
@@ -131,20 +125,5 @@ class FavoriteDialog : AlertDialogFragment<SheetFavoriteCategoriesBinding>(),
 				}
 			}
 		}
-	}
-
-	companion object {
-
-		private const val TAG = "FavoriteSheet"
-		const val KEY_MANGA_LIST = "manga_list"
-
-		fun show(fm: FragmentManager, manga: Manga) = show(fm, setOf(manga))
-
-		fun show(fm: FragmentManager, manga: Collection<Manga>) = FavoriteDialog().withArgs(1) {
-			putParcelableArrayList(
-				KEY_MANGA_LIST,
-				manga.mapTo(ArrayList(manga.size), ::ParcelableManga),
-			)
-		}.showDistinct(fm, TAG)
 	}
 }

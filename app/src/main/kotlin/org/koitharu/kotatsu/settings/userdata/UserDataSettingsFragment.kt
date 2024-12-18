@@ -8,21 +8,19 @@ import android.view.View
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.collection.ArraySet
 import androidx.core.view.postDelayed
 import androidx.fragment.app.viewModels
 import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
-import androidx.preference.forEach
-import androidx.preference.get
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy
@@ -38,8 +36,6 @@ import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.local.data.CacheDir
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.names
-import org.koitharu.kotatsu.settings.backup.BackupDialogFragment
-import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
 import org.koitharu.kotatsu.settings.protect.ProtectSetupActivity
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import javax.inject.Inject
@@ -163,7 +159,7 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 			}
 
 			AppSettings.KEY_BACKUP -> {
-				BackupDialogFragment.show(childFragmentManager)
+				router.showBackupCreateDialog()
 				true
 			}
 
@@ -215,7 +211,7 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 
 	override fun onActivityResult(result: Uri?) {
 		if (result != null) {
-			RestoreDialogFragment.show(childFragmentManager, result)
+			router.showBackupRestoreDialog(result)
 		}
 	}
 

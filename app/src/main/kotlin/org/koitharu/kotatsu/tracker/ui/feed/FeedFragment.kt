@@ -16,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.drop
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
@@ -25,7 +26,6 @@ import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentListBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
@@ -35,7 +35,6 @@ import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.tracker.ui.feed.adapter.FeedAdapter
-import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -105,8 +104,7 @@ class FeedFragment :
 	override fun onSecondaryButtonClick(tipView: TipView) = Unit
 
 	override fun onListHeaderClick(item: ListHeader, view: View) {
-		val context = view.context
-		context.startActivity(UpdatesActivity.newIntent(context))
+		router.openMangaUpdates()
 	}
 
 	private fun onFeedCleared() {
@@ -128,7 +126,7 @@ class FeedFragment :
 	}
 
 	override fun onItemClick(item: Manga, view: View) {
-		startActivity(DetailsActivity.newIntent(context ?: return, item))
+		router.openDetails(item)
 	}
 
 	override fun onReadClick(manga: Manga, view: View) = Unit

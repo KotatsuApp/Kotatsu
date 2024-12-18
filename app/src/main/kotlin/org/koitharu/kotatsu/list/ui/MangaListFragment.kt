@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.alternatives.ui.AutoFixService
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseFragment
@@ -44,9 +45,6 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentListBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteDialog
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.QuickFilterListener
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
@@ -60,9 +58,7 @@ import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import javax.inject.Inject
 
@@ -125,7 +121,6 @@ abstract class MangaListFragment :
 			isEnabled = isSwipeRefreshEnabled
 		}
 		addMenuProvider(MangaListMenuProvider(this))
-		DownloadDialogFragment.registerCallback(this, binding.recyclerView)
 
 		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
@@ -147,7 +142,7 @@ abstract class MangaListFragment :
 	override fun onItemClick(item: Manga, view: View) {
 		if (selectionController?.onItemClick(item.id) != true) {
 			if ((activity as? MangaListActivity)?.showPreview(item) != true) {
-				startActivity(DetailsActivity.newIntent(context ?: return, item))
+				router.openDetails(item)
 			}
 		}
 	}
@@ -162,16 +157,14 @@ abstract class MangaListFragment :
 
 	override fun onReadClick(manga: Manga, view: View) {
 		if (selectionController?.onItemClick(manga.id) != true) {
-			val intent = IntentBuilder(view.context).manga(manga).build()
-			startActivity(intent)
+			router.openReader(manga)
 		}
 	}
 
 	override fun onTagClick(manga: Manga, tag: MangaTag, view: View) {
 		if (selectionController?.onItemClick(manga.id) != true) {
 			// TODO dialog
-			val intent = MangaListActivity.newIntent(view.context, tag.source, MangaListFilter(tags = setOf(tag)))
-			startActivity(intent)
+			router.openList(tag)
 		}
 	}
 
@@ -317,13 +310,13 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_favourite -> {
-				FavoriteDialog.show(getChildFragmentManager(), selectedItems)
+				router.showFavoriteDialog(selectedItems)
 				mode?.finish()
 				true
 			}
 
 			R.id.action_save -> {
-				DownloadDialogFragment.show(childFragmentManager, selectedItems)
+				router.showDownloadDialog(selectedItems, viewBinding?.recyclerView)
 				mode?.finish()
 				true
 			}

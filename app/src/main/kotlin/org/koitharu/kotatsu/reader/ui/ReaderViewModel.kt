@@ -31,9 +31,10 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.getPreferredBranch
+import org.koitharu.kotatsu.core.nav.MangaIntent
+import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
-import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -104,8 +105,8 @@ class ReaderViewModel @Inject constructor(
 	private var stateChangeJob: Job? = null
 
 	init {
-		selectedBranch.value = savedStateHandle.get<String>(ReaderActivity.EXTRA_BRANCH)
-		readingState.value = savedStateHandle[ReaderActivity.EXTRA_STATE]
+		selectedBranch.value = savedStateHandle.get<String>(ReaderIntent.EXTRA_BRANCH)
+		readingState.value = savedStateHandle[ReaderIntent.EXTRA_STATE]
 		mangaDetails.value = intent.manga?.let { MangaDetails(it, null, null, false) }
 	}
 
@@ -114,7 +115,7 @@ class ReaderViewModel @Inject constructor(
 	val onShowToast = MutableEventFlow<Int>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
-	val incognitoMode = if (savedStateHandle.get<Boolean>(ReaderActivity.EXTRA_INCOGNITO) == true) {
+	val incognitoMode = if (savedStateHandle.get<Boolean>(ReaderIntent.EXTRA_INCOGNITO) == true) {
 		MutableStateFlow(true)
 	} else {
 		interactor.observeIncognitoMode(manga)
@@ -240,7 +241,7 @@ class ReaderViewModel @Inject constructor(
 	fun saveCurrentState(state: ReaderState? = null) {
 		if (state != null) {
 			readingState.value = state
-			savedStateHandle[ReaderActivity.EXTRA_STATE] = state
+			savedStateHandle[ReaderIntent.EXTRA_STATE] = state
 		}
 		if (incognitoMode.value) {
 			return

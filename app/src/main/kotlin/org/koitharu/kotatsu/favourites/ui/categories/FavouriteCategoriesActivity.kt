@@ -15,14 +15,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
-import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoriesAdapter
-import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -71,30 +70,28 @@ class FavouriteCategoriesActivity :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.fab_add -> startActivity(FavouritesCategoryEditActivity.newIntent(this))
+			R.id.fab_add -> router.openFavoriteCategoryCreate()
 		}
 	}
 
 	override fun onItemClick(item: FavouriteCategory?, view: View) {
 		if (item == null) {
 			if (selectionController.count == 0) {
-				startActivity(FavouritesActivity.newIntent(view.context))
+				router.openFavorites()
 			}
 			return
 		}
 		if (selectionController.onItemClick(item.id)) {
 			return
 		}
-		val intent = FavouritesActivity.newIntent(view.context, item)
-		startActivity(intent)
+		router.openFavorites(item)
 	}
 
 	override fun onEditClick(item: FavouriteCategory, view: View) {
 		if (selectionController.onItemClick(item.id)) {
 			return
 		}
-		val intent = FavouritesCategoryEditActivity.newIntent(view.context, item.id)
-		startActivity(intent)
+		router.openFavoriteCategoryEdit(item.id)
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory?, view: View): Boolean {

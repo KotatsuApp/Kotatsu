@@ -10,10 +10,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.backup.TelegramBackupUploader
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -51,16 +53,20 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
-		return when (preference.key) {
+		val result = when (preference.key) {
 			AppSettings.KEY_BACKUP_PERIODICAL_OUTPUT -> outputSelectCall.tryLaunch(null)
-			AppSettings.KEY_BACKUP_TG_OPEN -> telegramBackupUploader.openBotInApp(preference.context)
+			AppSettings.KEY_BACKUP_TG_OPEN -> telegramBackupUploader.openBotInApp(router)
 			AppSettings.KEY_BACKUP_TG_TEST -> {
 				viewModel.checkTelegram()
 				true
 			}
 
-			else -> super.onPreferenceTreeClick(preference)
+			else -> return super.onPreferenceTreeClick(preference)
 		}
+		if (!result) {
+			Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
+		}
+		return true
 	}
 
 	override fun onActivityResult(result: Uri?) {

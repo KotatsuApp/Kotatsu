@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.reader.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.transition.Fade
@@ -29,12 +28,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.exceptions.resolve.DialogErrorObserver
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.BaseFullscreenActivity
@@ -50,9 +47,7 @@ import org.koitharu.kotatsu.core.util.ext.postDelayed
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.zipWithPrevious
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.details.ui.pager.pages.PagesSavedObserver
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.reader.data.TapGridSettings
 import org.koitharu.kotatsu.reader.domain.TapGridArea
@@ -169,7 +164,7 @@ class ReaderActivity :
 
 	override fun getParentActivityIntent(): Intent? {
 		val manga = viewModel.getMangaOrNull() ?: return null
-		return DetailsActivity.newIntent(this, manga)
+		return AppRouter.detailsIntent(this, manga)
 	}
 
 	override fun onUserInteraction() {
@@ -358,7 +353,7 @@ class ReaderActivity :
 	override fun openMenu() {
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 		val currentMode = readerManager.currentMode ?: return
-		ReaderConfigSheet.show(supportFragmentManager, currentMode)
+		router.showReaderConfigSheet(currentMode)
 	}
 
 	override fun scrollBy(delta: Int, smooth: Boolean): Boolean {
@@ -413,50 +408,8 @@ class ReaderActivity :
 			viewModel.uiState.value?.isSliderAvailable() == true
 	}
 
-	class IntentBuilder(context: Context) {
-
-		private val intent = Intent(context, ReaderActivity::class.java)
-			.setAction(ACTION_MANGA_READ)
-
-		fun manga(manga: Manga) = apply {
-			intent.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
-		}
-
-		fun mangaId(mangaId: Long) = apply {
-			intent.putExtra(MangaIntent.KEY_ID, mangaId)
-		}
-
-		fun incognito(incognito: Boolean) = apply {
-			intent.putExtra(EXTRA_INCOGNITO, incognito)
-		}
-
-		fun branch(branch: String?) = apply {
-			intent.putExtra(EXTRA_BRANCH, branch)
-		}
-
-		fun state(state: ReaderState?) = apply {
-			intent.putExtra(EXTRA_STATE, state)
-		}
-
-		fun bookmark(bookmark: Bookmark) = manga(
-			bookmark.manga,
-		).state(
-			ReaderState(
-				chapterId = bookmark.chapterId,
-				page = bookmark.page,
-				scroll = bookmark.scroll,
-			),
-		)
-
-		fun build() = intent
-	}
-
 	companion object {
 
-		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
-		const val EXTRA_STATE = "state"
-		const val EXTRA_BRANCH = "branch"
-		const val EXTRA_INCOGNITO = "incognito"
 		private const val TOAST_DURATION = 1500L
 	}
 }

@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -28,13 +29,13 @@ import org.koitharu.kotatsu.list.ui.model.LoadingState
 import javax.inject.Inject
 
 @HiltViewModel
-class FavoriteSheetViewModel @Inject constructor(
+class FavoriteDialogViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val favouritesRepository: FavouritesRepository,
 	settings: AppSettings,
 ) : BaseViewModel() {
 
-	val manga = savedStateHandle.require<List<ParcelableManga>>(FavoriteDialog.KEY_MANGA_LIST).map {
+	val manga = savedStateHandle.require<List<ParcelableManga>>(AppRouter.KEY_MANGA_LIST).map {
 		it.manga
 	}
 

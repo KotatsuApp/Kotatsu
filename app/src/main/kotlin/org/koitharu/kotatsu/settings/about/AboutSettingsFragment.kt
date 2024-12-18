@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
-import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
@@ -15,6 +14,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
 import org.koitharu.kotatsu.core.github.VersionId
 import org.koitharu.kotatsu.core.github.isStable
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -87,15 +87,13 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 		}
 	}
 
-	private fun openLink(@StringRes url: Int, title: CharSequence?): Boolean {
-		val intent = Intent(Intent.ACTION_VIEW)
-		intent.data = getString(url).toUri()
-		return startActivitySafe(
-			if (title != null) {
-				Intent.createChooser(intent, title)
-			} else {
-				intent
-			},
-		)
+	private fun openLink(
+		@StringRes url: Int,
+		title: CharSequence?
+	): Boolean = if (router.openExternalBrowser(getString(url), title)) {
+		true
+	} else {
+		Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
+		false
 	}
 }

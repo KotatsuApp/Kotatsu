@@ -15,7 +15,6 @@ import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.core.view.MenuCompat
 import androidx.core.view.get
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialSplitButton
@@ -23,16 +22,16 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.isLocal
-import org.koitharu.kotatsu.core.util.ext.findActivity
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
-import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
 
 class ReadButtonDelegate(
 	private val splitButton: MaterialSplitButton,
 	private val viewModel: DetailsViewModel,
+	private val router: AppRouter,
 ) : View.OnClickListener, PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener {
 
 	private val buttonRead = splitButton[0] as MaterialButton
@@ -52,10 +51,12 @@ class ReadButtonDelegate(
 		when (item.itemId) {
 			R.id.action_incognito -> openReader(isIncognitoMode = true)
 			R.id.action_forget -> viewModel.removeFromHistory()
-			R.id.action_download -> DownloadDialogFragment.show(
-				fm = (context.findActivity() as? FragmentActivity)?.supportFragmentManager ?: return false,
-				manga = setOf(viewModel.getMangaOrNull() ?: return false),
-			)
+			R.id.action_download -> {
+				router.showDownloadDialog(
+					manga = setOf(viewModel.getMangaOrNull() ?: return false),
+					snackbarHost = splitButton,
+				)
+			}
 
 			Menu.NONE -> {
 				val branch = viewModel.branches.value.getOrNull(item.order) ?: return false
@@ -106,8 +107,8 @@ class ReadButtonDelegate(
 			Snackbar.make(buttonRead, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
 				.show() // TODO
 		} else {
-			context.startActivity(
-				ReaderActivity.IntentBuilder(context)
+			router.openReader(
+				ReaderIntent.Builder(context)
 					.manga(manga)
 					.branch(viewModel.selectedBranchValue)
 					.incognito(isIncognitoMode)

@@ -23,6 +23,8 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.model.getTitle
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -36,8 +38,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
-import org.koitharu.kotatsu.search.ui.MangaListActivity
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -155,9 +155,10 @@ class AppShortcutManager @Inject constructor(
 			.setIcon(icon)
 			.setLongLived(true)
 			.setIntent(
-				ReaderActivity.IntentBuilder(context)
+				ReaderIntent.Builder(context)
 					.mangaId(manga.id)
-					.build(),
+					.build()
+					.intent,
 			)
 			.build()
 	}
@@ -181,7 +182,7 @@ class AppShortcutManager @Inject constructor(
 			.setLongLabel(title)
 			.setIcon(icon)
 			.setLongLived(true)
-			.setIntent(MangaListActivity.newIntent(context, source, null))
+			.setIntent(AppRouter.listIntent(context, source, null))
 			.build()
 	}
 }

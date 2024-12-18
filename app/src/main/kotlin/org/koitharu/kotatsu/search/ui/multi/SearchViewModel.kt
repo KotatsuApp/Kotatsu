@@ -25,6 +25,7 @@ import kotlinx.coroutines.sync.withPermit
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -58,7 +59,7 @@ class SearchViewModel @Inject constructor(
 	private val favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
 
-	val query = savedStateHandle.get<String>(SearchActivity.EXTRA_QUERY).orEmpty()
+	val query = savedStateHandle.get<String>(AppRouter.KEY_QUERY).orEmpty()
 
 	private val retryCounter = MutableStateFlow(0)
 	private val listData = retryCounter.flatMapLatest {
