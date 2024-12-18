@@ -759,4 +759,10 @@
     <string name="translation">翻译</string>
     <string name="incognito">无痕</string>
     <string name="show_slider">显示滑块</string>
+    <string name="error_connection_reset">远程主机重置了连接</string>
+    <string name="backup_tg_echo">正在 Telegram 内进行 Kotatsu 备份</string>
+    <string name="backup_tg_check">检查 API 是否可用</string>
+    <string name="backup_tg_id_not_set">未设置聊天ID</string>
+    <string name="telegram_chat_id">Telegram 聊天ID</string>
+    <string name="open_telegram_bot">打开 Telegram 机器人</string>
 </resources>
