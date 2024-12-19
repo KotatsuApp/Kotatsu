@@ -753,4 +753,15 @@
     <string name="author">Auteur</string>
     <string name="source">Source</string>
     <string name="translation">Traduction</string>
+    <string name="backup_tg_check">Vérifier si l\'API fonctionne</string>
+    <string name="open_telegram_bot">Ouvrir le bot Telegram</string>
+    <string name="incognito">Mode Incognito</string>
+    <string name="telegram_chat_id">ID de chat Telegram</string>
+    <string name="backup_tg_echo">La sauvegarde de Kotatsu sur Telegram fonctionne !!</string>
+    <string name="test_connection">Tester la connexion</string>
+    <string name="open_telegram_bot_summary">Appuyez pour ouvrir le chat avec le bot de sauvegarde Kotatsu</string>
+    <string name="error_connection_reset">Connexion réinitialisée par l\'hôte distant</string>
+    <string name="backup_tg_id_not_set">L\'ID du chat n\'est pas défini</string>
+    <string name="telegram_chat_id_summary">Entrez l\'ID du chat où les sauvegardes doivent être envoyées</string>
+    <string name="send_backups_telegram">Envoyer les sauvegardes sur Telegram</string>
 </resources>
