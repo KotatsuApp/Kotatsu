@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.webkit.MimeTypeMap
+import androidx.annotation.RequiresApi
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -32,19 +33,21 @@ object BitmapDecoderCompat {
 	}
 
 	@Blocking
-	fun decode(stream: InputStream, type: MediaType?): Bitmap {
+	fun decode(stream: InputStream, type: MediaType?, isMutable: Boolean = false): Bitmap {
 		val format = type?.subtype
 		if (format == FORMAT_AVIF) {
 			return decodeAvif(stream.toByteBuffer())
 		}
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-			return checkBitmapNotNull(BitmapFactory.decodeStream(stream), format)
+			val opts = BitmapFactory.Options()
+			opts.inMutable = isMutable
+			return checkBitmapNotNull(BitmapFactory.decodeStream(stream, null, opts), format)
 		}
 		val byteBuffer = stream.toByteBuffer()
 		return if (AvifDecoder.isAvifImage(byteBuffer)) {
 			decodeAvif(byteBuffer)
 		} else {
-			ImageDecoder.decodeBitmap(ImageDecoder.createSource(byteBuffer))
+			ImageDecoder.decodeBitmap(ImageDecoder.createSource(byteBuffer), DecoderConfigListener(isMutable))
 		}
 	}
 
@@ -73,5 +76,19 @@ object BitmapDecoderCompat {
 			throw ImageDecodeException(null, FORMAT_AVIF)
 		}
 		return bitmap
+	}
+
+	@RequiresApi(Build.VERSION_CODES.P)
+	private class DecoderConfigListener(
+		private val isMutable: Boolean,
+	) : ImageDecoder.OnHeaderDecodedListener {
+
+		override fun onHeaderDecoded(
+			decoder: ImageDecoder,
+			info: ImageDecoder.ImageInfo,
+			source: ImageDecoder.Source
+		) {
+			decoder.isMutableRequired = isMutable
+		}
 	}
 }
