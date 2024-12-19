@@ -756,4 +756,5 @@
     <string name="author">Yazar</string>
     <string name="rating">Puan</string>
     <string name="source">Kaynak</string>
+    <string name="translation">Çeviri</string>
 </resources>
