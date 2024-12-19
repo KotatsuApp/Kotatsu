@@ -142,6 +142,7 @@ fun Throwable.getCauseUrl(): String? = when (this) {
 	is NotFoundException -> url
 	is TooManyRequestExceptions -> url
 	is CaughtException -> cause?.getCauseUrl()
+	is NoDataReceivedException -> url
 	is CloudFlareBlockedException -> url
 	is CloudFlareProtectedException -> url
 	is HttpStatusException -> url

@@ -3,5 +3,5 @@ package org.koitharu.kotatsu.core.exceptions
 import okio.IOException
 
 class NoDataReceivedException(
-	url: String,
+	val url: String,
 ) : IOException("No data has been received from $url")
