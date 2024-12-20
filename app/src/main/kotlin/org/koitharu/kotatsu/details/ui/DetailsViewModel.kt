@@ -226,14 +226,15 @@ class DetailsViewModel @Inject constructor(
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
 		detailsLoadUseCase.invoke(intent)
 			.onEachWhile {
-				if (it.allChapters.isEmpty()) {
-					return@onEachWhile false
+				if (it.allChapters.isNotEmpty()) {
+					val manga = it.toManga()
+					// find default branch
+					val hist = historyRepository.getOne(manga)
+					selectedBranch.value = manga.getPreferredBranch(hist)
+					true
+				} else {
+					false
 				}
-				val manga = it.toManga()
-				// find default branch
-				val hist = historyRepository.getOne(manga)
-				selectedBranch.value = manga.getPreferredBranch(hist)
-				true
 			}.collect {
 				mangaDetails.value = it
 			}

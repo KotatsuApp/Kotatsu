@@ -199,6 +199,7 @@ class FavouritesRepository @Inject constructor(
 				db.getFavouritesDao().deleteAll(id)
 				db.getFavouriteCategoriesDao().delete(id)
 			}
+			db.getChaptersDao().gc()
 		}
 	}
 
@@ -238,6 +239,7 @@ class FavouritesRepository @Inject constructor(
 			for (id in ids) {
 				db.getFavouritesDao().delete(mangaId = id)
 			}
+			db.getChaptersDao().gc()
 		}
 		return ReversibleHandle { recoverToFavourites(ids) }
 	}
@@ -247,6 +249,7 @@ class FavouritesRepository @Inject constructor(
 			for (id in ids) {
 				db.getFavouritesDao().delete(categoryId = categoryId, mangaId = id)
 			}
+			db.getChaptersDao().gc()
 		}
 		return ReversibleHandle { recoverToCategory(categoryId, ids) }
 	}

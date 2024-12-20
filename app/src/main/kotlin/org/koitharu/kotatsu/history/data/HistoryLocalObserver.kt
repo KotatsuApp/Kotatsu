@@ -24,7 +24,7 @@ class HistoryLocalObserver @Inject constructor(
 		limit: Int
 	) = db.getHistoryDao().observeAll(order, filterOptions, limit).mapToLocal()
 
-	override fun toManga(e: HistoryWithManga) = e.manga.toManga(e.tags.toMangaTags())
+	override fun toManga(e: HistoryWithManga) = e.manga.toManga(e.tags.toMangaTags(), null)
 
 	override fun toResult(e: HistoryWithManga, manga: Manga) = MangaWithHistory(
 		manga = manga,

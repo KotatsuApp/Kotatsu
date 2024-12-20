@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.db.entity
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -21,7 +22,7 @@ fun Collection<TagEntity>.toMangaTags() = mapToSet(TagEntity::toMangaTag)
 
 fun Collection<TagEntity>.toMangaTagsList() = map(TagEntity::toMangaTag)
 
-fun MangaEntity.toManga(tags: Set<MangaTag>) = Manga(
+fun MangaEntity.toManga(tags: Set<MangaTag>, chapters: List<ChapterEntity>?) = Manga(
 	id = this.id,
 	title = this.title,
 	altTitle = this.altTitle,
@@ -35,11 +36,26 @@ fun MangaEntity.toManga(tags: Set<MangaTag>) = Manga(
 	author = this.author,
 	source = MangaSource(this.source),
 	tags = tags,
+	chapters = chapters?.toMangaChapters(),
 )
 
-fun MangaWithTags.toManga() = manga.toManga(tags.toMangaTags())
+fun MangaWithTags.toManga(chapters: List<ChapterEntity>? = null) = manga.toManga(tags.toMangaTags(), chapters)
 
 fun Collection<MangaWithTags>.toMangaList() = map { it.toManga() }
+
+fun ChapterEntity.toMangaChapter() = MangaChapter(
+	id = chapterId,
+	name = name,
+	number = number,
+	volume = volume,
+	url = url,
+	scanlator = scanlator,
+	uploadDate = uploadDate,
+	branch = branch,
+	source = MangaSource(source),
+)
+
+fun Collection<ChapterEntity>.toMangaChapters() = map { it.toMangaChapter() }
 
 // Model to entity
 
@@ -66,6 +82,22 @@ fun MangaTag.toEntity() = TagEntity(
 )
 
 fun Collection<MangaTag>.toEntities() = map(MangaTag::toEntity)
+
+fun Iterable<IndexedValue<MangaChapter>>.toEntities(mangaId: Long) = map { (index, chapter) ->
+	ChapterEntity(
+		chapterId = chapter.id,
+		mangaId = mangaId,
+		name = chapter.name,
+		number = chapter.number,
+		volume = chapter.volume,
+		url = chapter.url,
+		scanlator = chapter.scanlator,
+		uploadDate = chapter.uploadDate,
+		branch = chapter.branch,
+		source = chapter.source.name,
+		index = index,
+	)
+}
 
 // Other
 

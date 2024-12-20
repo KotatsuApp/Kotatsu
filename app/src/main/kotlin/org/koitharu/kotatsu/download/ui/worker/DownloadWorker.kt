@@ -120,7 +120,7 @@ class DownloadWorker @AssistedInject constructor(
 
 	override suspend fun doWork(): Result {
 		setForeground(getForegroundInfo())
-		val manga = mangaDataRepository.findMangaById(task.mangaId) ?: return Result.failure()
+		val manga = mangaDataRepository.findMangaById(task.mangaId, withChapters = true) ?: return Result.failure()
 		publishState(DownloadState(manga = manga, isIndeterminate = true).also { lastPublishedState = it })
 		val downloadedIds = getDoneChapters(manga)
 		return try {

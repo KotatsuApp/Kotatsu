@@ -43,7 +43,14 @@ class DetailsLoadUseCase @Inject constructor(
 	operator fun invoke(intent: MangaIntent): Flow<MangaDetails> = channelFlow {
 		val manga = requireNotNull(mangaDataRepository.resolveIntent(intent)) {
 			"Cannot resolve intent $intent"
+		}.let { m ->
+			if (m.chapters.isNullOrEmpty()) {
+				getCachedDetails(m.id) ?: m
+			} else {
+				m
+			}
 		}
+		send(MangaDetails(manga, null, null, false))
 		val local = if (!manga.isLocal) {
 			async {
 				localMangaRepository.findSavedManga(manga)
@@ -51,9 +58,9 @@ class DetailsLoadUseCase @Inject constructor(
 		} else {
 			null
 		}
-		send(MangaDetails(manga, null, null, false))
 		try {
 			val details = getDetails(manga)
+			launch { mangaDataRepository.updateChapters(details) }
 			launch { updateTracker(details) }
 			send(
 				MangaDetails(
@@ -122,4 +129,8 @@ class DetailsLoadUseCase @Inject constructor(
 	}.onFailure { e ->
 		e.printStackTraceDebug()
 	}
+
+	private suspend fun getCachedDetails(mangaId: Long): Manga? = runCatchingCancellable {
+		mangaDataRepository.findMangaById(mangaId, withChapters = true)
+	}.getOrNull()
 }
