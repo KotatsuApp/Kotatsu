@@ -4,7 +4,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -13,6 +12,7 @@ import kotlinx.coroutines.runInterruptible
 import okhttp3.Cache
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import java.util.EnumMap
 import javax.inject.Inject
+import javax.inject.Provider
 
 @HiltViewModel
 class UserDataSettingsViewModel @Inject constructor(
@@ -37,6 +38,7 @@ class UserDataSettingsViewModel @Inject constructor(
 	private val cookieJar: MutableCookieJar,
 	private val settings: AppSettings,
 	private val deleteReadChaptersUseCase: DeleteReadChaptersUseCase,
+	private val mangaDataRepositoryProvider: Provider<MangaDataRepository>,
 ) : BaseViewModel() {
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
@@ -136,6 +138,21 @@ class UserDataSettingsViewModel @Inject constructor(
 			trackingRepository.clearLogs()
 			feedItemsCount.value = trackingRepository.getLogsCount()
 			onActionDone.call(ReversibleAction(R.string.updates_feed_cleared, null))
+		}
+	}
+
+	fun clearMangaData() {
+		launchJob(Dispatchers.Default) {
+			try {
+				loadingKeys.update { it + AppSettings.KEY_CLEAR_MANGA_DATA }
+				trackingRepository.gc()
+				val repository = mangaDataRepositoryProvider.get()
+				repository.cleanupLocalManga()
+				repository.cleanupDatabase()
+				onActionDone.call(ReversibleAction(R.string.updates_feed_cleared, null))
+			} finally {
+				loadingKeys.update { it - AppSettings.KEY_CLEAR_MANGA_DATA }
+			}
 		}
 	}
 

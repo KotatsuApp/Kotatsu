@@ -787,4 +787,6 @@
 	<string name="test_connection">Test connection</string>
 	<string name="telegram_chat_id_summary">Enter the chat ID where backups should be sent</string>
 	<string name="open_telegram_bot_summary">Press to open chat with Kotatsu Backup Bot</string>
+	<string name="clear_database">Clear database</string>
+	<string name="clear_database_summary">Delete information about manga that is not used</string>
 </resources>

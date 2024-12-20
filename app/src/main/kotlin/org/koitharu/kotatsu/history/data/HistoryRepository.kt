@@ -158,17 +158,17 @@ class HistoryRepository @Inject constructor(
 
 	suspend fun delete(manga: Manga) = db.withTransaction {
 		db.getHistoryDao().delete(manga.id)
-		mangaRepository.gcChapters()
+		mangaRepository.gcChaptersCache()
 	}
 
 	suspend fun deleteAfter(minDate: Long) = db.withTransaction {
 		db.getHistoryDao().deleteAfter(minDate)
-		mangaRepository.gcChapters()
+		mangaRepository.gcChaptersCache()
 	}
 
 	suspend fun deleteNotFavorite() = db.withTransaction {
 		db.getHistoryDao().deleteNotFavorite()
-		mangaRepository.gcChapters()
+		mangaRepository.gcChaptersCache()
 	}
 
 	suspend fun delete(ids: Collection<Long>): ReversibleHandle {
@@ -176,7 +176,7 @@ class HistoryRepository @Inject constructor(
 			for (id in ids) {
 				db.getHistoryDao().delete(id)
 			}
-			mangaRepository.gcChapters()
+			mangaRepository.gcChaptersCache()
 		}
 		return ReversibleHandle {
 			recover(ids)

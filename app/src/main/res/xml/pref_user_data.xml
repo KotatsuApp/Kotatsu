@@ -90,6 +90,12 @@
 			android:title="@string/clear_network_cache" />
 
 		<Preference
+			android:key="manga_data_clear"
+			android:persistent="false"
+			android:summary="@string/clear_database_summary"
+			android:title="@string/clear_database" />
+
+		<Preference
 			android:key="cookies_clear"
 			android:persistent="false"
 			android:summary="@string/clear_cookies_summary"

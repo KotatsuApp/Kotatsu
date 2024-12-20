@@ -107,7 +107,7 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 		viewModel.loadingKeys.observe(viewLifecycleOwner) { keys ->
 			loadingPrefs.addAll(keys)
 			loadingPrefs.forEach { prefKey ->
-				findPreference<Preference>(prefKey)!!.isEnabled = prefKey !in keys
+				findPreference<Preference>(prefKey)?.isEnabled = prefKey !in keys
 			}
 		}
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(listView, this))
@@ -150,6 +150,11 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 
 			AppSettings.KEY_CHAPTERS_CLEAR -> {
 				cleanupChapters()
+				true
+			}
+
+			AppSettings.KEY_CLEAR_MANGA_DATA -> {
+				viewModel.clearMangaData()
 				true
 			}
 
