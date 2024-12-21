@@ -110,7 +110,7 @@
     <string name="_continue">Jatka</string>
     <string name="switch_pages">Vaihda sivuja</string>
     <string name="reader_settings">Lukijan asetukset</string>
-    <string name="text_delete_local_manga">Haluatko todella poistaa ”%s” puhelimen paikallisesta tallennustilasta\?</string>
+    <string name="text_delete_local_manga">Haluatko todella poistaa ”%s” puhelimen paikallisesta tallennustilasta?</string>
     <string name="delete_manga">Poista manga</string>
     <string name="search_on_s">Hae kohteesta %s</string>
     <string name="grid_size">Ruudukon koko</string>
