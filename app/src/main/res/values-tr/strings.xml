@@ -757,4 +757,18 @@
     <string name="rating">Puan</string>
     <string name="source">Kaynak</string>
     <string name="translation">Çeviri</string>
+    <string name="show_slider">Kaydırıcıyı göster</string>
+    <string name="incognito">Gizli Mod</string>
+    <string name="error_connection_reset">Bağlantı ana bilgisayar tarafından sıfırlandı</string>
+    <string name="backup_tg_echo">Telegram Kotatsu yedeği çalışıyor!!</string>
+    <string name="telegram_chat_id">Telegram sohbet ID\'si</string>
+    <string name="open_telegram_bot">Telegram botunu aç</string>
+    <string name="clear_database">Veri tabanını temizle</string>
+    <string name="clear_database_summary">Kullanılmayan mangalar ile ilgili bilgileri silin</string>
+    <string name="backup_tg_check">API durumunu kontrol et</string>
+    <string name="backup_tg_id_not_set">Sohbet ID\'si ayarlanmadı</string>
+    <string name="send_backups_telegram">Yedekleri Telegram\'a gönder</string>
+    <string name="test_connection">Bağlantıyı test et</string>
+    <string name="telegram_chat_id_summary">Yedeklerin gönderileceği sohbetin ID\'sini girin</string>
+    <string name="open_telegram_bot_summary">Kotatsu Yedek Botu ile sohbeti açmak için dokunun</string>
 </resources>
