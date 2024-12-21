@@ -128,7 +128,7 @@
     <string name="delete">Избриши</string>
     <string name="search_history_cleared">Очишћено</string>
     <string name="_s_deleted_from_local_storage">\"%s\" избрисано из локалне меморије</string>
-    <string name="_import">Увоз</string>
+    <string name="_import">Увези</string>
     <string name="download">Преузми</string>
     <string name="share_s">Подели %s</string>
     <string name="domain">Домен</string>
@@ -152,7 +152,7 @@
     <string name="sync_host_description">Можеш да користиш послуживач за синхронизацију који се самостално хостује или подразумевани. Не мењај ово ако ниси сигуран шта радиш.</string>
     <string name="error_corrupted_file">Враћени су неважећи подаци или је датотека оштећена</string>
     <string name="all_favourites">Све омиљене</string>
-    <string name="email_enter_hint">Унесите своју адресу е-поште да бисте наставили</string>
+    <string name="email_enter_hint">Унеси своју адресу е-поште за наставак</string>
     <string name="pick_custom_directory">Изабери прилагођени директоријум</string>
     <string name="no_chapters">Нема поглавља</string>
     <string name="list_options">Листа опција</string>
@@ -226,7 +226,7 @@
     <string name="suggestions">Предлози</string>
     <string name="download_option_manual_selection">Изабери поглавља ручно</string>
     <string name="enhanced_colors_summary">Смањује траке, али може утицати на учинак</string>
-    <string name="importing_manga">Увоз манге</string>
+    <string name="importing_manga">Увези манге</string>
     <string name="enabled">Омогућено</string>
     <string name="pause">Заустави</string>
     <string name="clear_new_chapters_counters">Такође очисти информације о новим поглављима</string>
@@ -307,7 +307,7 @@
     <string name="other_cache">Други кеш</string>
     <string name="dns_over_https">DNS преко HTTPS-а</string>
     <string name="show_suspicious_content">Прикажи сумњив садржај</string>
-    <string name="sync_title">Синхронизујте своје податке</string>
+    <string name="sync_title">Синхронизуј своје податке</string>
     <string name="appwidget_shelf_description">Манга из ваших Омиљених</string>
     <string name="comics_archive_import_description">Можеш да изабереш једну или више .cbz или .zip датотека, свака датотека ће бити препозната као засебна манга.</string>
     <string name="downloads_paused">Преузимања су заустављена</string>
@@ -371,7 +371,7 @@
     <string name="sync">Синхронизација</string>
     <string name="search_chapters">Пронађи поглавље</string>
     <string name="exit_confirmation">Потврда изласка</string>
-    <string name="manual">По прилагођеном избору</string>
+    <string name="manual">Прилагођеном избору</string>
     <string name="comics_archive">Архива стрипова</string>
     <string name="more">Више</string>
     <string name="theme_name_asuka">Асука</string>
@@ -455,7 +455,7 @@
     <string name="never">Никада</string>
     <string name="text_unsaved_changes_prompt">Сачувај или одбаци несачуване промене?</string>
     <string name="state_paused">Заустављано</string>
-    <string name="folder_with_images">Фолдер са сликама</string>
+    <string name="folder_with_images">Фасцикла са сликама</string>
     <string name="cookies_cleared">Сви колачићи су уклоњени</string>
     <string name="disable_battery_optimization">Искључи оптимизацију батерије</string>
     <string name="status_planned">Планирано</string>
@@ -619,7 +619,7 @@
     <string name="fix">Поправи</string>
     <string name="show_updated">Прикажи ажурирано</string>
     <string name="webtoon_gaps_summary">Прикажи усправне празнине између страница у Вебтун режиму</string>
-    <string name="last_used">Последња кориштена</string>
+    <string name="last_used">Последњој кориштеној</string>
     <string name="webtoon_gaps">Празнине у режиму Вебтун-а</string>
     <string name="search_suggestions">Предлози за претрагу</string>
     <string name="recent_queries">Недавни упити</string>
@@ -757,4 +757,16 @@
     <string name="rating">Оцена</string>
     <string name="source">Извор</string>
     <string name="translation">Превод</string>
+    <string name="incognito">Инкогнито</string>
+    <string name="open_telegram_bot">Отвори Телеграм бот-а</string>
+    <string name="telegram_chat_id">Телеграм ИД за ћаскање</string>
+    <string name="backup_tg_id_not_set">ИД ћаскања није подешен</string>
+    <string name="error_connection_reset">Ресетовање везе од стране удаљеног домаћина</string>
+    <string name="backup_tg_check">Провери да ли API ради</string>
+    <string name="backup_tg_echo">Котатсу резервна копија у Телеграму ради!!</string>
+    <string name="show_slider">Прикажи клизач</string>
+    <string name="telegram_chat_id_summary">Унеси ИД ћаскања на који треба послати резервне копије</string>
+    <string name="send_backups_telegram">Пошаљи резервне копије у Телеграм</string>
+    <string name="test_connection">Провери везу</string>
+    <string name="open_telegram_bot_summary">Додирни да отвориш ћаскање са Котатсу Ботом за резервну копију</string>
 </resources>
