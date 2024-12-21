@@ -47,7 +47,7 @@
     <string name="app_update_available">En ny versjon av programmet er tilgjengelig</string>
     <string name="search_history_cleared">Tømt</string>
     <string name="clear_thumbs_cache">Tøm miniatyrbildehurtiglager</string>
-    <string name="text_delete_local_manga">Slett «%s» fra enheten for godt\?</string>
+    <string name="text_delete_local_manga">Slett «%s» fra enheten for godt?</string>
     <string name="webtoon">Nettserie</string>
     <string name="standard">Forvalg</string>
     <string name="clear_pages_cache">Tøm sidehurtiglager</string>
