@@ -759,4 +759,16 @@
     <string name="translation">Bản dịch</string>
     <string name="incognito">Ẩn danh</string>
     <string name="show_slider">Hiện thanh trượt</string>
+    <string name="backup_tg_echo">Tình trạng: Đang hoạt động tốt!</string>
+    <string name="backup_tg_check">Kiểm tra API</string>
+    <string name="backup_tg_id_not_set">Tình trạng: Chưa thiết lập Chat ID của Telegram</string>
+    <string name="telegram_chat_id">Chat ID của Telegram</string>
+    <string name="open_telegram_bot">Mở Bot Telegram</string>
+    <string name="error_connection_reset">Kết nối đã được đặt lại bởi máy chủ</string>
+    <string name="telegram_chat_id_summary">Nhập Chat ID từ Telegram của bạn, nơi mà Bot sẽ gửi bản sao lưu dữ liệu</string>
+    <string name="test_connection">Kiểm tra kết nối</string>
+    <string name="send_backups_telegram">Gửi bản sao lưu dữ liệu vào Telegram</string>
+    <string name="open_telegram_bot_summary">Ấn vào đây để mở đoạn Chat với Kotatsu Backup Bot (cần app Telegram)</string>
+    <string name="clear_database">Xoá database</string>
+    <string name="clear_database_summary">Xoá thông tin dữ liệu về manga chưa từng được sử dụng (cache)</string>
 </resources>
