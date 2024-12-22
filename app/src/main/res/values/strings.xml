@@ -779,7 +779,7 @@
 	<string name="incognito">Incognito</string>
 	<string name="error_connection_reset">Connection reset by remote host</string>
 	<string name="backup_tg_check">Check if API works</string>
-	<string name="backup_tg_echo">Kotatsu backup in Telegram is working!!</string>
+	<string name="backup_tg_echo">Test message</string>
 	<string name="backup_tg_id_not_set">Chat ID is not set</string>
 	<string name="telegram_chat_id">Telegram chat ID</string>
 	<string name="open_telegram_bot">Open the Telegram bot</string>

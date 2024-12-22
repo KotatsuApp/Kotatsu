@@ -3,8 +3,7 @@ package org.koitharu.kotatsu.core.backup
 import android.content.Context
 import androidx.annotation.CheckResult
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -31,7 +30,7 @@ class TelegramBackupUploader @Inject constructor(
 
 	private val botToken = context.getString(R.string.tg_backup_bot_token)
 
-	suspend fun uploadBackup(file: File) = withContext(Dispatchers.IO) {
+	suspend fun uploadBackup(file: File) {
 		val requestBody = file.asRequestBody("application/zip".toMediaTypeOrNull())
 		val multipartBody = MultipartBody.Builder()
 			.setType(MultipartBody.FORM)
@@ -39,7 +38,7 @@ class TelegramBackupUploader @Inject constructor(
 			.addFormDataPart("document", file.name, requestBody)
 			.build()
 		val request = Request.Builder()
-			.url("https://api.telegram.org/bot$botToken/sendDocument")
+			.url(urlOf("sendDocument").build())
 			.post(multipartBody)
 			.build()
 		client.newCall(request).await().consume()
@@ -47,7 +46,7 @@ class TelegramBackupUploader @Inject constructor(
 
 	suspend fun sendTestMessage() {
 		val request = Request.Builder()
-			.url("https://api.telegram.org/bot$botToken/getMe")
+			.url(urlOf("getMe").build())
 			.build()
 		client.newCall(request).await().consume()
 		sendMessage(context.getString(R.string.backup_tg_echo))
@@ -61,7 +60,10 @@ class TelegramBackupUploader @Inject constructor(
 	}
 
 	private suspend fun sendMessage(message: String) {
-		val url = "https://api.telegram.org/bot$botToken/sendMessage?chat_id=${requireChatId()}&text=$message"
+		val url = urlOf("sendMessage")
+			.addQueryParameter("chat_id", requireChatId())
+			.addQueryParameter("text", message)
+			.build()
 		val request = Request.Builder()
 			.url(url)
 			.build()
@@ -82,4 +84,10 @@ class TelegramBackupUploader @Inject constructor(
 			throw RuntimeException(jo.getStringOrNull("description"))
 		}
 	}
+
+	private fun urlOf(method: String) = HttpUrl.Builder()
+		.scheme("https")
+		.host("api.telegram.org")
+		.addPathSegment("bot$botToken")
+		.addPathSegment(method)
 }
