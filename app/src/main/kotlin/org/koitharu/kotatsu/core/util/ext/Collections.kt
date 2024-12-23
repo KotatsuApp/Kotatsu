@@ -108,3 +108,7 @@ fun <T, R> Collection<T>.mapSortedByCount(isDescending: Boolean = true, mapper: 
 	}
 	return sorted.map { it.first }
 }
+
+fun Collection<CharSequence?>.indexOfContains(element: CharSequence?, ignoreCase: Boolean): Int = indexOfFirst { x ->
+	(x == null && element == null) || (x != null && element != null && x.contains(element, ignoreCase))
+}

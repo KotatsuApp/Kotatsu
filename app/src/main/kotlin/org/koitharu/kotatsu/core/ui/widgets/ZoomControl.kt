@@ -4,14 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
+import com.google.android.material.button.MaterialButtonGroup
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.ViewZoomBinding
 
 class ZoomControl @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
-) : LinearLayout(context, attrs), View.OnClickListener {
+) : MaterialButtonGroup(context, attrs), View.OnClickListener {
 
 	private val binding = ViewZoomBinding.inflate(LayoutInflater.from(context), this)
 

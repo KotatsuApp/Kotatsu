@@ -6,19 +6,6 @@
 	tools:ignore="AlwaysShowAction">
 
 	<item
-		android:id="@+id/action_slider"
-		android:icon="@drawable/ic_move_horizontal"
-		android:title="@string/show_slider"
-		app:showAsAction="always" />
-
-	<item
-		android:id="@+id/action_bookmark"
-		android:enabled="false"
-		android:icon="@drawable/ic_bookmark"
-		android:title="@string/bookmark_add"
-		app:showAsAction="always" />
-
-	<item
 		android:id="@+id/action_pages_thumbs"
 		android:icon="@drawable/ic_grid"
 		android:title="@string/pages"

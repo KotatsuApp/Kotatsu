@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.util
 
 import androidx.core.os.LocaleListCompat
+import org.koitharu.kotatsu.core.util.ext.indexOfContains
 import org.koitharu.kotatsu.core.util.ext.iterator
 
 class LocaleStringComparator : Comparator<String?> {
@@ -14,7 +15,7 @@ class LocaleStringComparator : Comparator<String?> {
 			val set = HashSet<String?>(localeList.size() + 1)
 			set.add(null)
 			for (locale in localeList) {
-				val lang = locale.getDisplayLanguage(locale).lowercase()
+				val lang = locale.getDisplayLanguage(locale)
 				if (set.add(lang)) {
 					add(lang)
 				}
@@ -23,8 +24,8 @@ class LocaleStringComparator : Comparator<String?> {
 	}
 
 	override fun compare(a: String?, b: String?): Int {
-		val indexA = deviceLocales.indexOf(a?.lowercase())
-		val indexB = deviceLocales.indexOf(b?.lowercase())
+		val indexA = deviceLocales.indexOfContains(a, true)
+		val indexB = deviceLocales.indexOfContains(b, true)
 		return when {
 			indexA < 0 && indexB < 0 -> compareValues(a, b)
 			indexA < 0 -> 1

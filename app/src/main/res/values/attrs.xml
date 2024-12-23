@@ -141,6 +141,7 @@
 
 	<declare-styleable name="ChipsView">
 		<attr name="chipStyle" />
+		<attr name="chipIconVisible" />
 	</declare-styleable>
 
 	<declare-styleable name="ReaderInfoBarView">

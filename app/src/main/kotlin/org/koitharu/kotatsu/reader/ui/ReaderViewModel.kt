@@ -21,9 +21,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
@@ -132,12 +130,6 @@ class ReaderViewModel @Inject constructor(
 		valueProducer = { readerAnimation },
 	)
 
-	val isSliderVisible = settings.observeAsStateFlow(
-		scope = viewModelScope + Dispatchers.Default,
-		key = AppSettings.KEY_READER_SLIDER,
-		valueProducer = { isReaderSliderEnabled },
-	)
-
 	val isInfoBarEnabled = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_READER_BAR,
@@ -199,10 +191,6 @@ class ReaderViewModel @Inject constructor(
 
 	init {
 		loadImpl()
-		settings.observe()
-			.onEach { key ->
-				if (key == AppSettings.KEY_READER_SLIDER) notifyStateChanged()
-			}.launchIn(viewModelScope + Dispatchers.Default)
 		launchJob(Dispatchers.Default) {
 			val mangaId = manga.filterNotNull().first().id
 			appShortcutManager.notifyMangaOpened(mangaId)
@@ -218,10 +206,6 @@ class ReaderViewModel @Inject constructor(
 		getMangaOrNull()?.let {
 			statsCollector.onPause(it.id)
 		}
-	}
-
-	fun setSliderVisibility(visible: Boolean) {
-		settings.isReaderSliderEnabled = visible
 	}
 
 	fun switchMode(newMode: ReaderMode) {
@@ -459,7 +443,6 @@ class ReaderViewModel @Inject constructor(
 			chaptersTotal = m.chapters[chapter.branch].sizeOrZero(),
 			totalPages = chaptersLoader.getPagesCount(chapter.id),
 			currentPage = state.page,
-			isSliderEnabled = settings.isReaderSliderEnabled,
 			percent = computePercent(state.chapterId, state.page),
 			incognito = incognitoMode.value,
 		)

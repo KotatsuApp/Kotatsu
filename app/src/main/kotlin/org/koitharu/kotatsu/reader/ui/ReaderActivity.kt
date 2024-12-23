@@ -145,12 +145,10 @@ class ReaderActivity :
 		viewModel.content.observe(this) {
 			onLoadingStateChanged(viewModel.isLoading.value)
 		}
-		viewModel.isSliderVisible.observe(this) { updateSliderVisibility() }
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
-		val bottomMenuInvalidator = MenuInvalidator(viewBinding.toolbarBottom)
-		viewModel.isBookmarkAdded.observe(this, bottomMenuInvalidator)
-		viewModel.isPagesSheetEnabled.observe(this, bottomMenuInvalidator)
+		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(this))
+		viewModel.isPagesSheetEnabled.observe(this, MenuInvalidator(viewBinding.toolbarBottom))
 		viewModel.onShowToast.observeEvent(this) { msgId ->
 			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
 				.setAnchorView(viewBinding.appbarBottom)
@@ -159,7 +157,8 @@ class ReaderActivity :
 		viewModel.isZoomControlsEnabled.observe(this) {
 			viewBinding.zoomControl.isVisible = it
 		}
-		viewBinding.toolbarBottom.addMenuProvider(ReaderMenuProvider(this, readerManager, viewModel))
+		addMenuProvider(ReaderMenuTopProvider(viewModel))
+		viewBinding.toolbarBottom.addMenuProvider(ReaderMenuBottomProvider(this, readerManager, viewModel))
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -234,7 +233,7 @@ class ReaderActivity :
 			rawX >= viewBinding.root.width - gestureInsets.right ||
 			rawY >= viewBinding.root.height - gestureInsets.bottom ||
 			viewBinding.appbarTop.hasGlobalPoint(rawX, rawY) ||
-			viewBinding.appbarBottom?.hasGlobalPoint(rawX, rawY) == true
+			viewBinding.appbarBottom.hasGlobalPoint(rawX, rawY) == true
 		) {
 			false
 		} else {
@@ -301,20 +300,14 @@ class ReaderActivity :
 					.setOrdering(TransitionSet.ORDERING_TOGETHER)
 					.addTransition(Slide(Gravity.TOP).addTarget(viewBinding.appbarTop))
 					.addTransition(Fade().addTarget(viewBinding.infoBar))
-				viewBinding.appbarBottom?.let { bottomBar ->
-					transition.addTransition(Slide(Gravity.BOTTOM).addTarget(bottomBar))
-					transition.addTransition(Slide(Gravity.BOTTOM).addTarget(viewBinding.floatingToolbar))
-				} ?: run {
-					transition.addTransition(Slide(Gravity.END).addTarget(viewBinding.floatingToolbar))
-				}
+					.addTransition(Slide(Gravity.BOTTOM).addTarget(viewBinding.appbarBottom))
 				TransitionManager.beginDelayedTransition(viewBinding.root, transition)
 			}
 			val isFullscreen = settings.isReaderFullscreenEnabled
 			viewBinding.appbarTop.isVisible = isUiVisible
-			viewBinding.appbarBottom?.isVisible = isUiVisible
+			viewBinding.appbarBottom.isVisible = isUiVisible
 			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
 			viewBinding.infoBar.isTimeVisible = isFullscreen
-			updateSliderVisibility()
 			systemUiController.setSystemUiVisible(isUiVisible || !isFullscreen)
 		}
 	}
@@ -327,7 +320,7 @@ class ReaderActivity :
 			right = systemBars.right,
 			left = systemBars.left,
 		)
-		viewBinding.appbarBottom?.updateLayoutParams<MarginLayoutParams> {
+		viewBinding.appbarBottom.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = systemBars.bottom + topMargin
 			rightMargin = systemBars.right + topMargin
 			leftMargin = systemBars.left + topMargin
@@ -383,33 +376,31 @@ class ReaderActivity :
 		viewBinding.infoBar.update(uiState)
 		if (uiState == null) {
 			supportActionBar?.subtitle = null
-			updateSliderVisibility()
+			viewBinding.layoutSlider.isVisible = false
 			return
 		}
 		supportActionBar?.subtitle = when {
 			uiState.incognito -> getString(R.string.incognito_mode)
 			else -> uiState.chapterName
 		}
-		if (previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
-			if (!uiState.chapterName.isNullOrEmpty()) {
-				viewBinding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
-			}
+		if (uiState.chapterName != previous?.chapterName && !uiState.chapterName.isNullOrEmpty()) {
+			viewBinding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
 		}
 		if (uiState.isSliderAvailable()) {
 			viewBinding.slider.valueTo = uiState.totalPages.toFloat() - 1
 			viewBinding.slider.setValueRounded(uiState.currentPage.toFloat())
+		} else {
+			viewBinding.slider.valueTo = 1f
+			viewBinding.slider.value = 0f
 		}
-		updateSliderVisibility()
-	}
-
-	private fun updateSliderVisibility() {
-		viewBinding.floatingToolbar.isVisible = viewBinding.appbarTop.isVisible &&
-			viewModel.isSliderVisible.value &&
-			viewModel.uiState.value?.isSliderAvailable() == true
+		viewBinding.slider.isEnabled = uiState.isSliderAvailable()
+		viewBinding.buttonNext.isEnabled = uiState.hasNextChapter()
+		viewBinding.buttonPrev.isEnabled = uiState.hasPreviousChapter()
+		viewBinding.layoutSlider.isVisible = true
 	}
 
 	companion object {
 
-		private const val TOAST_DURATION = 1500L
+		private const val TOAST_DURATION = 2000L
 	}
 }

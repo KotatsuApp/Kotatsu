@@ -91,8 +91,8 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		}
 		val binding = viewBinding ?: return
 		val isActionModeStarted = actionModeDelegate?.isActionModeStarted == true
-		binding.toolbar.menuView?.isVisible = newState != STATE_COLLAPSED && !isActionModeStarted
-		binding.splitButtonRead.isVisible = newState == STATE_COLLAPSED && !isActionModeStarted
+		binding.toolbar.menuView?.isVisible = newState == STATE_EXPANDED && !isActionModeStarted
+		binding.splitButtonRead.isVisible = newState != STATE_EXPANDED && !isActionModeStarted
 			&& viewModel is DetailsViewModel
 	}
 
