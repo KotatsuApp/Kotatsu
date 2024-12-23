@@ -41,7 +41,7 @@
     <string name="pages">Sayfalar</string>
     <string name="clear">Temizle</string>
     <string name="remove">Kaldır</string>
-    <string name="_s_deleted_from_local_storage">“%s” yerel depolamadan silindi</string>
+    <string name="_s_deleted_from_local_storage">s yerel depolamadan silindi</string>
     <string name="save_page">Sayfayı kaydet</string>
     <string name="share_image">Görseli paylaş</string>
     <string name="popular">Popüler</string>
@@ -96,7 +96,7 @@
     <string name="read_later">Sonra oku</string>
     <string name="pages_animation">Sayfa animasyonu</string>
     <string name="cannot_find_available_storage">Kullanılabilir depolama alanı yok</string>
-    <string name="text_delete_local_manga">“%s” cihazdan kalıcı olarak silinsin mi?</string>
+    <string name="text_delete_local_manga">s cihazdan kalıcı olarak silinsin mi?</string>
     <string name="clear_search_history">Arama geçmişini temizle</string>
     <string name="text_empty_holder_primary">Burası biraz boş…</string>
     <string name="rotate_screen">Ekranı döndür</string>
@@ -756,4 +756,19 @@
     <string name="author">Yazar</string>
     <string name="rating">Puan</string>
     <string name="source">Kaynak</string>
+    <string name="translation">Çeviri</string>
+    <string name="show_slider">Kaydırıcıyı göster</string>
+    <string name="incognito">Gizli Mod</string>
+    <string name="error_connection_reset">Bağlantı ana bilgisayar tarafından sıfırlandı</string>
+    <string name="backup_tg_echo">Telegram Kotatsu yedeği çalışıyor!!</string>
+    <string name="telegram_chat_id">Telegram sohbet ID\'si</string>
+    <string name="open_telegram_bot">Telegram botunu aç</string>
+    <string name="clear_database">Veri tabanını temizle</string>
+    <string name="clear_database_summary">Kullanılmayan mangalar ile ilgili bilgileri silin</string>
+    <string name="backup_tg_check">API durumunu kontrol et</string>
+    <string name="backup_tg_id_not_set">Sohbet ID\'si ayarlanmadı</string>
+    <string name="send_backups_telegram">Yedekleri Telegram\'a gönder</string>
+    <string name="test_connection">Bağlantıyı test et</string>
+    <string name="telegram_chat_id_summary">Yedeklerin gönderileceği sohbetin ID\'sini girin</string>
+    <string name="open_telegram_bot_summary">Kotatsu Yedek Botu ile sohbeti açmak için dokunun</string>
 </resources>

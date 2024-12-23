@@ -609,7 +609,7 @@
     <string name="enable_source">开启图源</string>
     <string name="unsupported_source">不支持此漫画图源</string>
     <string name="show_pages_thumbs">显示页面缩略图</string>
-    <string name="show_pages_thumbs_summary">开启后会在漫画详情页显示“页面”标签栏</string>
+    <string name="show_pages_thumbs_summary">在漫画详情页显示“年龄”标签栏</string>
     <string name="error_no_data_received">未从服务器接收到任何数据</string>
     <string name="unsupported_backup_message">请选择正确的 Kotatsu 备份文件</string>
     <string name="minutes_short">%d 分</string>
@@ -759,4 +759,16 @@
     <string name="translation">翻译</string>
     <string name="incognito">无痕</string>
     <string name="show_slider">显示滑块</string>
+    <string name="error_connection_reset">远程主机重置了连接</string>
+    <string name="backup_tg_echo">正在 Telegram 内进行 Kotatsu 备份</string>
+    <string name="backup_tg_check">检查 API 是否可用</string>
+    <string name="backup_tg_id_not_set">未设置聊天ID</string>
+    <string name="telegram_chat_id">Telegram 聊天ID</string>
+    <string name="open_telegram_bot">打开 Telegram 机器人</string>
+    <string name="send_backups_telegram">用 Telegram 发送备份</string>
+    <string name="telegram_chat_id_summary">输入接收备份的 Telegram 聊天 ID</string>
+    <string name="test_connection">测试连接</string>
+    <string name="open_telegram_bot_summary">按下打开和 Kotasu Backup 机器人的聊天</string>
+    <string name="clear_database">清除数据库</string>
+    <string name="clear_database_summary">删除未使用的漫画信息</string>
 </resources>
