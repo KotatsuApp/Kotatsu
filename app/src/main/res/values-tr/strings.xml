@@ -760,7 +760,7 @@
     <string name="show_slider">Kaydırıcıyı göster</string>
     <string name="incognito">Gizli Mod</string>
     <string name="error_connection_reset">Bağlantı ana bilgisayar tarafından sıfırlandı</string>
-    <string name="backup_tg_echo">Telegram Kotatsu yedeği çalışıyor!!</string>
+    <string name="backup_tg_echo">Mesaj testi</string>
     <string name="telegram_chat_id">Telegram sohbet ID\'si</string>
     <string name="open_telegram_bot">Telegram botunu aç</string>
     <string name="clear_database">Veri tabanını temizle</string>
