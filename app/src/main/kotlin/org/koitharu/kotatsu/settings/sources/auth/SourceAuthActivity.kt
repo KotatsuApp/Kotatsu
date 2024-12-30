@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.webkit.CookieManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.graphics.Insets
@@ -67,7 +66,6 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		viewBinding.webView.configureForParser(repository.getRequestHeaders()[CommonHeaders.USER_AGENT])
-		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		viewBinding.webView.webViewClient = BrowserClient(this)
 		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)
 		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView)

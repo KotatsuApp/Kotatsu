@@ -11,13 +11,13 @@ collections = "1.4.5"
 conscrypt = "2.5.2"
 constraintlayout = "2.2.0"
 coreKtx = "1.15.0"
-coroutines = "1.9.0"
+coroutines = "1.10.1"
 desugar = "2.1.4"
 diskLruCache = "1.4"
 fragment = "1.8.5"
 gradle = "8.7.3"
 guava = "33.3.1-android"
-hilt = "2.53.1"
+hilt = "2.54"
 hiltWork = "1.2.0"
 json = "20240303"
 junit = "4.13.2"
@@ -31,14 +31,14 @@ material = "1.13.0-alpha09"
 moshi = "1.15.2"
 okhttp = "4.12.0"
 okio = "3.9.1"
-parsers = "2550b9cac1"
+parsers = "b1b04d2953"
 preference = "1.2.1"
 recyclerview = "1.3.2"
 room = "2.6.1"
-rules = "1.6.1"
-runner = "1.6.2"
 ssiv = "ba48c29803"
 swiperefreshlayout = "1.1.0"
+testRules = "1.6.1"
+testRunner = "1.6.2"
 transition = "1.5.1"
 viewpager2 = "1.1.0"
 webkit = "1.12.1"
@@ -67,10 +67,10 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
-androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
-androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
+androidx-rules = { module = "androidx.test:rules", version.ref = "testRules" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "testRunner" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
-androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "rules" }
+androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "testRules" }
 androidx-transition = { module = "androidx.transition:transition-ktx", version.ref = "transition" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }

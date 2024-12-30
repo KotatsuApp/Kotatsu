@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.browser
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.CookieManager
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -43,7 +42,6 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository
 		val userAgent = repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)
 		viewBinding.webView.configureForParser(userAgent)
-		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		viewBinding.webView.webViewClient = BrowserClient(this)
 		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)
 		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView)

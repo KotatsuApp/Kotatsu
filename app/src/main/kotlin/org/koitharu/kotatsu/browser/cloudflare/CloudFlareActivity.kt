@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.CookieManager
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.graphics.Insets
 import androidx.core.view.isInvisible
@@ -63,7 +62,6 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView).also {
 			onBackPressedDispatcher.addCallback(it)
 		}
-		CookieManager.getInstance().setAcceptThirdPartyCookies(viewBinding.webView, true)
 		if (savedInstanceState == null) {
 			onTitleChanged(getString(R.string.loading_), url)
 			viewBinding.webView.loadUrl(url)

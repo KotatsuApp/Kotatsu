@@ -26,6 +26,7 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.view.ViewPropertyAnimator
 import android.view.Window
+import android.webkit.CookieManager
 import android.webkit.WebView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.CheckResult
@@ -264,6 +265,9 @@ fun WebView.configureForParser(userAgentOverride: String?) = with(settings) {
 	if (userAgentOverride != null) {
 		userAgentString = userAgentOverride
 	}
+	val cookieManager = CookieManager.getInstance()
+	cookieManager.setAcceptCookie(true)
+	cookieManager.setAcceptThirdPartyCookies(this@configureForParser, true)
 }
 
 fun Context.restartApplication() {

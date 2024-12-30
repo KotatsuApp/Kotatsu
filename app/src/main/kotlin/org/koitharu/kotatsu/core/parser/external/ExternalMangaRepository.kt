@@ -42,7 +42,7 @@ class ExternalMangaRepository(
 
 	override var defaultSortOrder: SortOrder
 		get() = capabilities?.availableSortOrders?.firstOrNull() ?: SortOrder.ALPHABETICAL
-		set(_) = Unit
+		set(value) = Unit
 
 	override suspend fun getFilterOptions(): MangaListFilterOptions = filterOptions.get()
 
