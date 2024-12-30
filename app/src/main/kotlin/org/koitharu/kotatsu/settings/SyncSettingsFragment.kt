@@ -44,6 +44,6 @@ class SyncSettingsFragment : BasePreferenceFragment(R.string.sync_settings), Fra
 
 	private fun bindHostSummary() {
 		val preference = findPreference<Preference>(SyncSettings.KEY_SYNC_URL) ?: return
-		preference.summary = syncSettings.syncURL
+		preference.summary = syncSettings.syncUrl
 	}
 }

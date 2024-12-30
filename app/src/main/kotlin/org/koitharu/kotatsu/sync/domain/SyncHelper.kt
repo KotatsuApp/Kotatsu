@@ -59,7 +59,7 @@ class SyncHelper @AssistedInject constructor(
 		.addInterceptor(SyncInterceptor(context, account))
 		.build()
 	private val baseUrl: String by lazy {
-		settings.syncURL
+		settings.syncUrl
 	}
 	private val defaultGcPeriod: Long // gc period if sync enabled
 		get() = TimeUnit.DAYS.toMillis(4)
