@@ -163,8 +163,18 @@
 		<item name="scrollerOffset">@dimen/grid_spacing_outer</item>
 	</style>
 
-	<style name="Widget.Kotatsu.DotIndicator" parent="">
+	<style name="Widget.Kotatsu.DotIndicator" parent="" />
 
+	<style name="Widget.Kotatsu.BadgeView" parent="">
+		<item name="android:textColor">@macro/m3_comp_badge_large_label_text_color</item>
+		<item name="android:minWidth">@dimen/m3_badge_with_text_size</item>
+		<item name="android:minHeight">@dimen/m3_badge_with_text_size</item>
+		<item name="android:textAppearance">@macro/m3_comp_badge_large_label_text_type</item>
+		<item name="android:gravity">center</item>
+		<item name="shapeAppearance">@style/ShapeAppearance.M3.Comp.Badge.Shape</item>
+		<item name="backgroundColor">?attr/colorError</item>
+		<item name="android:elegantTextHeight">false</item>
+		<item name="singleLine">true</item>
 	</style>
 
 	<style name="Widget.Kotatsu.ListItemTextView" parent="">

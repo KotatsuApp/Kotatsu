@@ -10,6 +10,7 @@
 	<attr name="tipViewStyle" />
 	<attr name="progressButtonStyle" />
 	<attr name="dotIndicatorStyle" />
+	<attr name="badgeViewStyle" />
 
 	<!--CoverImageView attrs-->
 	<declare-styleable name="CoverImageView">
@@ -180,6 +181,13 @@
 	<declare-styleable name="FilterFieldLayout">
 		<attr name="title" />
 		<attr name="showMoreButton" format="boolean" />
+	</declare-styleable>
+
+	<declare-styleable name="BadgeView">
+		<attr name="shapeAppearance" />
+		<attr name="backgroundColor" />
+		<attr name="maxCharacterCount" />
+		<attr name="number" />
 	</declare-styleable>
 
 </resources>

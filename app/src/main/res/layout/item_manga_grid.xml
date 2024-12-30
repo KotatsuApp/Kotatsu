@@ -45,6 +45,17 @@
 			app:srcCompat="@drawable/ic_heart"
 			app:tint="?colorSurfaceBright" />
 
+		<org.koitharu.kotatsu.core.ui.widgets.BadgeView
+			android:id="@+id/badge"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top|end"
+			android:layout_margin="@dimen/margin_small"
+			android:visibility="gone"
+			app:maxCharacterCount="@integer/manga_badge_max_character_count"
+			tools:number="8"
+			tools:visibility="visible" />
+
 	</FrameLayout>
 
 	<TextView

@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import coil3.ImageLoader
 import coil3.request.allowRgb565
 import coil3.request.transformations
-import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
@@ -30,7 +29,6 @@ fun mangaGridItemAD(
 ) = adapterDelegateViewBinding<MangaGridModel, ListModel, ItemMangaGridBinding>(
 	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) },
 ) {
-	var badge: BadgeDrawable? = null
 
 	AdapterDelegateClickListenerAdapter(this, clickListener, MangaGridModel::manga).attach(itemView)
 	sizeResolver.attachToView(lifecycleOwner, itemView, binding.textViewTitle, binding.progressView)
@@ -47,6 +45,7 @@ fun mangaGridItemAD(
 			mangaExtra(item.manga)
 			enqueueWith(coil)
 		}
-		badge = itemView.bindBadge(badge, item.counter)
+		binding.badge.number = item.counter
+		binding.badge.isVisible = item.counter > 0
 	}
 }

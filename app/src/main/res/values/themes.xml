@@ -84,6 +84,7 @@
 		<item name="bottomSheetDragHandleStyle">@style/Widget.Kotatsu.BottomSheet.DragHandle</item>
 		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>
 		<item name="dotIndicatorStyle">@style/Widget.Kotatsu.DotIndicator</item>
+		<item name="badgeViewStyle">@style/Widget.Kotatsu.BadgeView</item>
 
 		<!-- Text appearance -->
 		<item name="actionMenuTextAppearance">@style/TextAppearance.Kotatsu.Menu</item>
