@@ -27,13 +27,9 @@ class SyncSettings(
 
 	@get:WorkerThread
 	@set:WorkerThread
-	var syncURL: String
+	var syncUrl: String
 		get() = account?.let {
-			val result = accountManager.getUserData(it, KEY_SYNC_URL)
-			if (!result.startsWith("http://") && !result.startsWith("https://")) {
-				return "http://$result"
-			}
-			return result
+			accountManager.getUserData(it, KEY_SYNC_URL)?.withHttpSchema()
 		}.ifNullOrEmpty { defaultSyncUrl }
 		set(value) {
 			account?.let {
@@ -42,6 +38,12 @@ class SyncSettings(
 		}
 
 	companion object {
+
+		private fun String.withHttpSchema(): String = if (!startsWith("http://") && !startsWith("https://")) {
+			"http://$this"
+		} else {
+			this
+		}
 
 		const val KEY_SYNC_URL = "host"
 	}
