@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.MangaSourceInfo
 import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.buildBundle
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -174,8 +175,9 @@ class SettingsActivity :
 	}
 
 	private fun navigateToPreference(item: SettingsItem) {
-		val args = Bundle(1)
-		args.putString(ARG_PREF_KEY, item.key)
+		val args = buildBundle(1) {
+			putString(ARG_PREF_KEY, item.key)
+		}
 		openFragment(item.fragmentClass, args, true)
 	}
 

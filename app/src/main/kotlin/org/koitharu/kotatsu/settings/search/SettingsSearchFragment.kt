@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.AsyncListDiffer.ListListener
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
@@ -17,7 +19,9 @@ import org.koitharu.kotatsu.databinding.FragmentSearchSuggestionBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 
 @AndroidEntryPoint
-class SettingsSearchFragment : BaseFragment<FragmentSearchSuggestionBinding>(), OnListItemClickListener<SettingsItem> {
+class SettingsSearchFragment : BaseFragment<FragmentSearchSuggestionBinding>(),
+	OnListItemClickListener<SettingsItem>,
+	ListListener<SettingsItem> {
 
 	private val viewModel: SettingsSearchViewModel by activityViewModels()
 
@@ -29,6 +33,7 @@ class SettingsSearchFragment : BaseFragment<FragmentSearchSuggestionBinding>(), 
 		super.onViewBindingCreated(binding, savedInstanceState)
 		val adapter = BaseListAdapter<SettingsItem>()
 			.addDelegate(ListItemType.NAV_ITEM, settingsItemAD(this))
+		adapter.addListListener(this)
 		binding.root.adapter = adapter
 		binding.root.setHasFixedSize(true)
 		viewModel.content.observe(viewLifecycleOwner, adapter)
@@ -45,4 +50,13 @@ class SettingsSearchFragment : BaseFragment<FragmentSearchSuggestionBinding>(), 
 	}
 
 	override fun onItemClick(item: SettingsItem, view: View) = viewModel.navigateToPreference(item)
+
+	override fun onCurrentListChanged(
+		previousList: List<SettingsItem?>,
+		currentList: List<SettingsItem?>
+	) {
+		if (currentList.size != previousList.size) {
+			(viewBinding?.root?.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(0, 0)
+		}
+	}
 }

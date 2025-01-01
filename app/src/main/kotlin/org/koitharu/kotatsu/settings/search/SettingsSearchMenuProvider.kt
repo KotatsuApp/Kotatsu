@@ -22,18 +22,20 @@ class SettingsSearchMenuProvider(
 
 	override fun onPrepareMenu(menu: Menu) {
 		super.onPrepareMenu(menu)
-		val currentQuery = viewModel.currentQuery
-		if (currentQuery.isNotEmpty()) {
+		if (viewModel.isSearchActive.value) {
 			val menuItem = menu.findItem(R.id.action_search)
 			menuItem.expandActionView()
 			val searchView = menuItem.actionView as SearchView
-			searchView.setQuery(currentQuery, false)
+			searchView.setQuery(viewModel.currentQuery, false)
 		}
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
 
-	override fun onMenuItemActionExpand(item: MenuItem): Boolean = true
+	override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+		viewModel.startSearch()
+		return true
+	}
 
 	override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
 		viewModel.discardSearch()
