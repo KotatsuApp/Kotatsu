@@ -175,6 +175,7 @@
 		<item name="backgroundColor">?attr/colorError</item>
 		<item name="android:elegantTextHeight">false</item>
 		<item name="singleLine">true</item>
+		<item name="android:outlineProvider">background</item>
 	</style>
 
 	<style name="Widget.Kotatsu.ListItemTextView" parent="">

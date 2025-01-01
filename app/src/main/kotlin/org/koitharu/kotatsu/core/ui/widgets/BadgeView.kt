@@ -26,7 +26,7 @@ class BadgeView @JvmOverloads constructor(
 		}
 
 	init {
-		context.withStyledAttributes(attrs, R.styleable.BadgeView) {
+		context.withStyledAttributes(attrs, R.styleable.BadgeView, R.attr.badgeViewStyle) {
 			maxCharacterCount = getInt(R.styleable.BadgeView_maxCharacterCount, maxCharacterCount)
 			number = getInt(R.styleable.BadgeView_number, number)
 			val shape = ShapeAppearanceModel.builder(
