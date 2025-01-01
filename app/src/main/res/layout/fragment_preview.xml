@@ -20,6 +20,7 @@
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="16dp"
 			android:background="?colorSecondaryContainer"
+			android:clipToOutline="true"
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
 			app:layout_constraintDimensionRatio="H,13:18"
