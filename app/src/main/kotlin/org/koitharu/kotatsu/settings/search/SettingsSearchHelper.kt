@@ -13,9 +13,12 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.settings.AppearanceSettingsFragment
 import org.koitharu.kotatsu.settings.DownloadsSettingsFragment
 import org.koitharu.kotatsu.settings.NetworkSettingsFragment
+import org.koitharu.kotatsu.settings.ProxySettingsFragment
 import org.koitharu.kotatsu.settings.ReaderSettingsFragment
 import org.koitharu.kotatsu.settings.ServicesSettingsFragment
+import org.koitharu.kotatsu.settings.SuggestionsSettingsFragment
 import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
+import org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
 import org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment
@@ -39,6 +42,30 @@ class SettingsSearchHelper @Inject constructor(
 		preferenceManager.inflateTo(result, R.xml.pref_tracker, emptyList(), TrackerSettingsFragment::class.java)
 		preferenceManager.inflateTo(result, R.xml.pref_services, emptyList(), ServicesSettingsFragment::class.java)
 		preferenceManager.inflateTo(result, R.xml.pref_about, emptyList(), AboutSettingsFragment::class.java)
+		preferenceManager.inflateTo(
+			result,
+			R.xml.pref_backup_periodic,
+			listOf(context.getString(R.string.data_and_privacy)),
+			PeriodicalBackupSettingsFragment::class.java,
+		)
+		preferenceManager.inflateTo(
+			result,
+			R.xml.pref_proxy,
+			listOf(context.getString(R.string.proxy)),
+			ProxySettingsFragment::class.java,
+		)
+		preferenceManager.inflateTo(
+			result,
+			R.xml.pref_suggestions,
+			listOf(context.getString(R.string.suggestions)),
+			SuggestionsSettingsFragment::class.java,
+		)
+		preferenceManager.inflateTo(
+			result,
+			R.xml.pref_sources,
+			listOf(context.getString(R.string.remote_sources)),
+			SourcesSettingsFragment::class.java,
+		)
 		return result
 	}
 
