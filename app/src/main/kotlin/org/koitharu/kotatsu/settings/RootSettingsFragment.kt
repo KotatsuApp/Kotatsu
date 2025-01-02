@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.settings
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
@@ -10,12 +11,16 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.settings.search.SettingsSearchMenuProvider
+import org.koitharu.kotatsu.settings.search.SettingsSearchViewModel
 
 @AndroidEntryPoint
 class RootSettingsFragment : BasePreferenceFragment(0) {
 
 	private val viewModel: RootSettingsViewModel by viewModels()
+	private val activityViewModel: SettingsSearchViewModel by activityViewModels()
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_root)
@@ -41,6 +46,8 @@ class RootSettingsFragment : BasePreferenceFragment(0) {
 				}
 			}
 		}
+		addMenuProvider(SettingsSearchMenuProvider(activityViewModel))
+		addMenuProvider(SettingsMenuProvider(view.context))
 	}
 
 	override fun setTitle(title: CharSequence?) {
