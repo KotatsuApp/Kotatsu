@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.sources
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -17,7 +18,8 @@ import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.parsers.util.names
 
 @AndroidEntryPoint
-class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) {
+class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources),
+	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private val viewModel by viewModels<SourcesSettingsViewModel>()
 
@@ -43,10 +45,10 @@ class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) 
 		}
 		findPreference<Preference>(AppSettings.KEY_SOURCES_CATALOG)?.let { pref ->
 			viewModel.availableSourcesCount.observe(viewLifecycleOwner) {
-				pref.summary = if (it >= 0) {
-					getString(R.string.available_d, it)
-				} else {
-					null
+				pref.summary = when {
+					it == 0 -> getString(R.string.all_sources_enabled)
+					it > 0 -> getString(R.string.available_d, it)
+					else -> null
 				}
 			}
 		}
@@ -55,6 +57,13 @@ class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) 
 				pref.isChecked = it
 			}
 		}
+		updateEnableAllDependencies()
+		settings.subscribe(this)
+	}
+
+	override fun onDestroyView() {
+		settings.unsubscribe(this)
+		super.onDestroyView()
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean = when (preference.key) {
@@ -69,5 +78,15 @@ class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) 
 		}
 
 		else -> super.onPreferenceTreeClick(preference)
+	}
+
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+		when (key) {
+			AppSettings.KEY_SOURCES_ENABLED_ALL -> updateEnableAllDependencies()
+		}
+	}
+
+	private fun updateEnableAllDependencies() {
+		findPreference<Preference>(AppSettings.KEY_SOURCES_CATALOG)?.isEnabled = !settings.isAllSourcesEnabled
 	}
 }

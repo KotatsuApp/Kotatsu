@@ -789,4 +789,7 @@
 	<string name="open_telegram_bot_summary">Press to open chat with Kotatsu Backup Bot</string>
 	<string name="clear_database">Clear database</string>
 	<string name="clear_database_summary">Delete information about manga that is not used</string>
+	<string name="enable_all_sources">Enable all manga sources</string>
+	<string name="enable_all_sources_summary">All available manga sources will be enabled permanently</string>
+	<string name="all_sources_enabled">All sources are enabled</string>
 </resources>

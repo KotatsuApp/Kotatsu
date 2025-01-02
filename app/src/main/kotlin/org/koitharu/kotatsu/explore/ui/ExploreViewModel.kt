@@ -7,7 +7,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
@@ -23,6 +22,7 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.explore.ui.model.ExploreButtons
@@ -52,6 +52,12 @@ class ExploreViewModel @Inject constructor(
 		key = AppSettings.KEY_SOURCES_GRID,
 		scope = viewModelScope + Dispatchers.IO,
 		valueProducer = { isSourcesGridMode },
+	)
+
+	val isAllSourcesEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.IO,
+		key = AppSettings.KEY_SOURCES_ENABLED_ALL,
+		valueProducer = { isAllSourcesEnabled },
 	)
 
 	private val isSuggestionsEnabled = settings.observeAsFlow(
@@ -137,9 +143,10 @@ class ExploreViewModel @Inject constructor(
 		getSuggestionFlow(),
 		isGrid,
 		isRandomLoading,
+		isAllSourcesEnabled,
 		sourcesRepository.observeHasNewSourcesForBadge(),
-	) { content, suggestions, grid, randomLoading, newSources ->
-		buildList(content, suggestions, grid, randomLoading, newSources)
+	) { content, suggestions, grid, randomLoading, allSourcesEnabled, newSources ->
+		buildList(content, suggestions, grid, randomLoading, allSourcesEnabled, newSources)
 	}.withErrorHandling()
 
 	private fun buildList(
@@ -147,6 +154,7 @@ class ExploreViewModel @Inject constructor(
 		recommendation: List<Manga>,
 		isGrid: Boolean,
 		randomLoading: Boolean,
+		allSourcesEnabled: Boolean,
 		hasNewSources: Boolean,
 	): List<ListModel> {
 		val result = ArrayList<ListModel>(sources.size + 3)
@@ -158,8 +166,8 @@ class ExploreViewModel @Inject constructor(
 		if (sources.isNotEmpty()) {
 			result += ListHeader(
 				textRes = R.string.remote_sources,
-				buttonTextRes = R.string.catalog,
-				badge = if (hasNewSources) "" else null,
+				buttonTextRes = if (allSourcesEnabled) R.string.manage else R.string.catalog,
+				badge = if (!allSourcesEnabled && hasNewSources) "" else null,
 			)
 			sources.mapTo(result) { MangaSourceItem(it, isGrid) }
 		} else {

@@ -70,6 +70,7 @@ class SourcesListProducer @Inject constructor(
 		val pinned = repository.getPinnedSources().mapToSet { it.name }
 		val isNsfwDisabled = settings.isNsfwContentDisabled
 		val isReorderAvailable = settings.sourcesSortOrder == SourcesSortOrder.MANUAL
+		val isDisableAvailable = !settings.isAllSourcesEnabled
 		val withTip = isReorderAvailable && settings.isTipEnabled(TIP_REORDER)
 		val enabledSet = enabledSources.toSet()
 		if (query.isNotEmpty()) {
@@ -83,6 +84,7 @@ class SourcesListProducer @Inject constructor(
 					isDraggable = false,
 					isAvailable = !isNsfwDisabled || !it.isNsfw(),
 					isPinned = it.name in pinned,
+					isDisableAvailable = isDisableAvailable,
 				)
 			}.ifEmpty {
 				listOf(SourceConfigItem.EmptySearchResult)
@@ -104,6 +106,7 @@ class SourcesListProducer @Inject constructor(
 					isDraggable = isReorderAvailable,
 					isAvailable = false,
 					isPinned = it.name in pinned,
+					isDisableAvailable = isDisableAvailable,
 				)
 			}
 		}

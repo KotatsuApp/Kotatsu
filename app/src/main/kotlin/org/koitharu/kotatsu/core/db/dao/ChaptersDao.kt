@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import org.koitharu.kotatsu.core.db.entity.ChapterEntity
@@ -24,6 +25,6 @@ abstract class ChaptersDao {
 		insert(entities)
 	}
 
-	@Insert
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	protected abstract suspend fun insert(entities: Collection<ChapterEntity>)
 }

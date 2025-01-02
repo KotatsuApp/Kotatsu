@@ -58,7 +58,7 @@ fun sourceConfigItemDelegate2(
 	bind {
 		binding.textViewTitle.text = item.source.getTitle(context)
 		binding.imageViewAdd.isGone = item.isEnabled || !item.isAvailable
-		binding.imageViewRemove.isVisible = item.isEnabled
+		binding.imageViewRemove.isVisible = item.isEnabled && item.isDisableAvailable
 		binding.imageViewMenu.isVisible = item.isEnabled
 		binding.textViewTitle.drawableStart = if (item.isPinned) iconPinned else null
 		binding.textViewDescription.text = item.source.getSummary(context)

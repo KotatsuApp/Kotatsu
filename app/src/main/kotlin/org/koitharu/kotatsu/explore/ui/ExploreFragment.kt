@@ -112,6 +112,8 @@ class ExploreFragment :
 	override fun onListHeaderClick(item: ListHeader, view: View) {
 		if (item.payload == R.id.nav_suggestions) {
 			router.openSuggestions()
+		} else if (viewModel.isAllSourcesEnabled.value) {
+			router.openManageSources()
 		} else {
 			router.openSourcesCatalog()
 		}
@@ -166,7 +168,8 @@ class ExploreFragment :
 		menu.findItem(R.id.action_shortcut).isVisible = isSingleSelection
 		menu.findItem(R.id.action_pin).isVisible = selectedSources.all { !it.isPinned }
 		menu.findItem(R.id.action_unpin).isVisible = selectedSources.all { it.isPinned }
-		menu.findItem(R.id.action_disable)?.isVisible = selectedSources.all { it.mangaSource is MangaParserSource }
+		menu.findItem(R.id.action_disable)?.isVisible = !viewModel.isAllSourcesEnabled.value &&
+			selectedSources.all { it.mangaSource is MangaParserSource }
 		menu.findItem(R.id.action_delete)?.isVisible = selectedSources.all { it.mangaSource is ExternalMangaSource }
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
