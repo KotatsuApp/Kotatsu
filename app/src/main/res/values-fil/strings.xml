@@ -771,4 +771,7 @@
     <string name="telegram_chat_id_summary">Ilagay ang chat ID kung saan dapat ipadala ang mga backup</string>
     <string name="rating">Kaurian</string>
     <string name="source">Pinagmulan</string>
+    <string name="enable_all_sources_summary">Lahat ng available na manga source ay permanenteng papaganahin</string>
+    <string name="all_sources_enabled">Lahat ng source ay napagana na</string>
+    <string name="enable_all_sources">Paganahin lahat ang mga manga source</string>
 </resources>
