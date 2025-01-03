@@ -755,4 +755,23 @@
     <string name="captcha_required_message">Ang source na ito ay kinakailang lutasin ang captcha para magpatuloy</string>
     <string name="show_slider">Ipakita ang slider</string>
     <string name="author">May-Akda</string>
+    <string name="error_connection_reset">I-reset ang koneksyon sa remote host</string>
+    <string name="incognito">Nagtatago</string>
+    <string name="backup_tg_check">I-check kung ang API ay gumagana</string>
+    <string name="backup_tg_echo">Mensaheng Pinasusubok</string>
+    <string name="backup_tg_id_not_set">Ang chat ID ay hindi nakatakda</string>
+    <string name="telegram_chat_id">Ang telegram chat ID</string>
+    <string name="open_telegram_bot">Buksan ang bot sa telegram</string>
+    <string name="clear_database">Palinawin ang database</string>
+    <string name="clear_database_summary">Tanggalin ang impormasyon tungkol sa manga na hindi ginamit</string>
+    <string name="send_backups_telegram">Magpadala ng mga backup sa Telegram</string>
+    <string name="test_connection">I-test ang koneksyon</string>
+    <string name="open_telegram_bot_summary">Pindutin para buksan ang pinag-usapan gamit ang Kotatsu Backup Bot</string>
+    <string name="translation">Pagsasalin</string>
+    <string name="telegram_chat_id_summary">Ilagay ang chat ID kung saan dapat ipadala ang mga backup</string>
+    <string name="rating">Kaurian</string>
+    <string name="source">Pinagmulan</string>
+    <string name="enable_all_sources_summary">Lahat ng available na manga source ay permanenteng papaganahin</string>
+    <string name="all_sources_enabled">Lahat ng source ay napagana na</string>
+    <string name="enable_all_sources">Paganahin lahat ang mga manga source</string>
 </resources>

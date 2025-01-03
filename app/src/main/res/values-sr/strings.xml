@@ -592,7 +592,7 @@
     <string name="migration_completed">Премештање је завршено</string>
     <string name="alternatives">Замене</string>
     <string name="migrate">Премести</string>
-    <string name="migrate_confirmation">Манга „%1$s“ из „%2$s“ ће бити замењена са „%3$s“ из „%4$s“ у вашој Историји и Омиљеним (ако постоји)</string>
+    <string name="migrate_confirmation">Манга 1$s из 2$s ће бити замењена са 3$s из 4$s у вашој Историји и Омиљеним (ако постоји)</string>
     <string name="delete_read_chapters_summary">Избриши поглавља која си већ прочитао из локалне меморије да би ослободио простор</string>
     <string name="delete_read_chapters_prompt">Ово ће трајно избрисати сва поглавља означена као прочитана из твог локалног складишта. Можеш их поново преузети касније, али увезена поглавља могу бити изгубљена заувек</string>
     <string name="long_ago_read">Давно прочитано</string>
@@ -610,7 +610,7 @@
     <string name="unsupported_source">Овај извор манге није подржан</string>
     <string name="show_pages_thumbs">Прикажи сличице страница</string>
     <string name="error_no_data_received">Никакви подаци нису примљени са послуживача</string>
-    <string name="show_pages_thumbs_summary">Омогући картицу „Странице“ на екрану са детаљима</string>
+    <string name="show_pages_thumbs_summary">Омогући картицу узраста на екрану са детаљима</string>
     <string name="unsupported_backup_message">Изабери одговарајућу Kotatsu датотеку резервне копије</string>
     <string name="hours_short">%d ч</string>
     <string name="hours_minutes_short">%1$d ч %2$d м</string>
@@ -689,10 +689,10 @@
     <string name="manga_with_downloaded_chapters">Манга са преузетим поглављима</string>
     <string name="fixing_manga">Поправљање манге</string>
     <string name="fixed">Успешно поправљено</string>
-    <string name="no_fix_required">Није потребна исправка за „%s“</string>
+    <string name="no_fix_required">Није потребна исправка за s\\</string>
     <string name="manga_fix_prompt">Ова функција ће пронаћи алтернативне изворе за изабрану мангу. Задатак ће потрајати и наставиће се у позадини</string>
-    <string name="manga_replaced">Манга „%1$s“ (%2$s) је замењена са „%3$s“ (%4$s)</string>
-    <string name="no_alternatives_found">Нису пронађене алтернативе за „%s“</string>
+    <string name="manga_replaced">Манга 1$s (%2$s) је замењена са 3$s (%4$s)</string>
+    <string name="no_alternatives_found">Нису пронађене алтернативе за s\\</string>
     <string name="content_type_novel">Роман</string>
     <string name="content_type_manhua">Манхуа</string>
     <string name="content_type_manhwa">Манхва</string>
@@ -763,10 +763,12 @@
     <string name="backup_tg_id_not_set">ИД ћаскања није подешен</string>
     <string name="error_connection_reset">Ресетовање везе од стране удаљеног домаћина</string>
     <string name="backup_tg_check">Провери да ли API ради</string>
-    <string name="backup_tg_echo">Котатсу резервна копија у Телеграму ради!!</string>
+    <string name="backup_tg_echo">Пробна порука</string>
     <string name="show_slider">Прикажи клизач</string>
     <string name="telegram_chat_id_summary">Унеси ИД ћаскања на који треба послати резервне копије</string>
     <string name="send_backups_telegram">Пошаљи резервне копије у Телеграм</string>
     <string name="test_connection">Провери везу</string>
     <string name="open_telegram_bot_summary">Додирни да отвориш ћаскање са Котатсу Ботом за резервну копију</string>
+    <string name="clear_database">Избриши базу података</string>
+    <string name="clear_database_summary">Избриши информације о Манги које се не користе</string>
 </resources>

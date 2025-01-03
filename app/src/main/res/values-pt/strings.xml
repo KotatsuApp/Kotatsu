@@ -768,4 +768,6 @@
     <string name="author">Autor</string>
     <string name="rating">Avaliação</string>
     <string name="source">Fonte</string>
+    <string name="clear_database">Limpar banco de dados</string>
+    <string name="clear_database_summary">Excluir informações sobre mangás que não são utilizadas</string>
 </resources>

@@ -697,7 +697,7 @@
     <string name="plugin_incompatible_with_cause">Erro de plugin: %s\n· Certifique-se de que você está usando a versão mais recente do plugin e Kotatsu</string>
     <string name="sort_order_desc">Descendente</string>
     <string name="download_new_chapters">Baixar novos capítulos</string>
-    <string name="retry">Retentar</string>
+    <string name="retry">Tentar novamente</string>
     <string name="connection_ok">Conexão OK</string>
     <string name="too_many_requests_message_retry">Muitas solicitações. Tente novamente depois de %s</string>
     <string name="unstable_feature">Recurso instável</string>
@@ -749,4 +749,22 @@
     <string name="ask_every_time">Sempre pergunte</string>
     <string name="download_over_cellular">Baixando pelos dados móveis</string>
     <string name="download_cellular_confirm">Permitir baixar pelos dados móveis?</string>
+    <string name="error_connection_reset">Redefinição de conexão pelo host remoto</string>
+    <string name="show_slider">Mostrar controle deslizante</string>
+    <string name="backup_tg_check">Verifique se a API funciona</string>
+    <string name="backup_tg_id_not_set">O ID do bate-papo não está definido</string>
+    <string name="telegram_chat_id">ID do bate-papo do telegram</string>
+    <string name="open_telegram_bot">Abra o bot do Telegram</string>
+    <string name="clear_database">Limpar banco de dados</string>
+    <string name="clear_database_summary">Excluir informações sobre mangás que não são utilizadas</string>
+    <string name="test_connection">Teste de conexão</string>
+    <string name="backup_tg_echo">Mensagem de teste</string>
+    <string name="translation">Tradução</string>
+    <string name="send_backups_telegram">Enviar backups no Telegram</string>
+    <string name="open_telegram_bot_summary">Pressione para abrir o chat com o Kotatsu Backup Bot</string>
+    <string name="incognito">Incógnito</string>
+    <string name="telegram_chat_id_summary">Insira o ID do chat para onde os backups devem ser enviados</string>
+    <string name="author">Autor</string>
+    <string name="rating">Avaliação</string>
+    <string name="source">Fonte</string>
 </resources>
