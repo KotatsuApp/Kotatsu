@@ -675,7 +675,7 @@
     <string name="by_date">Datum</string>
     <string name="popularity">Popularnost</string>
     <string name="updated_long_ago">Aktualizirano davno</string>
-    <string name="manga_replaced">Manga „%1$s” (%2$s) zamijenjen sa „%3$s” (%4$s)</string>
+    <string name="manga_replaced">Manga 1$s (%2$s) zamijenjen sa 3$s (%4$s)</string>
     <string name="downloads_background">Preuzimanja u pozadini</string>
     <string name="download_new_chapters">Preuzmi nova poglavlja</string>
     <string name="manga_with_downloaded_chapters">Manga s preuzetim poglavljima</string>
@@ -690,8 +690,8 @@
     <string name="demographic_kodomo">Kodomo</string>
     <string name="pages_saved">Stranice su spremljene</string>
     <string name="unstable_feature">Nestabilna funkcija</string>
-    <string name="no_fix_required">„%s” ne zahtijeva popravljanje</string>
-    <string name="no_alternatives_found">Za „%s” nisu pronađene alternative</string>
+    <string name="no_fix_required">s\\ ne zahtijeva popravljanje</string>
+    <string name="no_alternatives_found">Za s\\ nisu pronađene alternative</string>
     <string name="popular_in_hour">Popularno u ovom satu</string>
     <string name="popular_today">Popularno danas</string>
     <string name="popular_in_month">Popularno ovaj mjesec</string>
@@ -744,4 +744,24 @@
     <string name="fixed">Uspješno popravljeno</string>
     <string name="manga_fix_prompt">Ova funkcija pronalazi alternativne izvore za odabranu mangu. Zadatak će potrajati i odvijat će se u pozadini</string>
     <string name="destination_directory">Odredišni direktorij</string>
+    <string name="error_connection_reset">Udaljeni host je resetirao vezu</string>
+    <string name="show_slider">Prikaži klizač</string>
+    <string name="incognito">Inkognito</string>
+    <string name="backup_tg_echo">Probna poruka</string>
+    <string name="backup_tg_id_not_set">Chat ID nije postavljen</string>
+    <string name="backup_tg_check">Provjeri je li API radi</string>
+    <string name="open_telegram_bot">Otvori Telegram bot</string>
+    <string name="captcha_required_message">Ovaj izvor zahtijeva rješavanje captcha zadatka za nastavljanje</string>
+    <string name="email">E-mail</string>
+    <string name="clear_database">Izbriši bazu podataka</string>
+    <string name="clear_database_summary">Izbriši informacije o mangama koje se ne koriste</string>
+    <string name="test_connection">Provjeri vezu</string>
+    <string name="send_backups_telegram">Pošalji sigurnosne kopije u Telegram</string>
+    <string name="telegram_chat_id_summary">Upiši ID chata na koji treba slati sigurnosne kopije</string>
+    <string name="open_telegram_bot_summary">Pritisni za otvaranje chata s Kotatsu Backup Bot</string>
+    <string name="translation">Prijevod</string>
+    <string name="rating">Ocjena</string>
+    <string name="source">Izvor</string>
+    <string name="author">Autor</string>
+    <string name="telegram_chat_id">Telegram chat ID</string>
 </resources>
