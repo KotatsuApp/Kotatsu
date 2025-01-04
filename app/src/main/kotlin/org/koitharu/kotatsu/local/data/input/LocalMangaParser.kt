@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.local.data.input
 
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +17,10 @@ import okio.openZip
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.util.AlphanumComparator
+import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.URI_SCHEME_ZIP
 import org.koitharu.kotatsu.core.util.ext.isFileUri
+import org.koitharu.kotatsu.core.util.ext.isImage
 import org.koitharu.kotatsu.core.util.ext.isRegularFile
 import org.koitharu.kotatsu.core.util.ext.isZipUri
 import org.koitharu.kotatsu.core.util.ext.longHashCode
@@ -87,7 +88,6 @@ class LocalMangaParser(private val uri: Uri) {
 		} else {
 			val title = rootFile.nameWithoutExtension.replace("_", " ").toCamelCase()
 			val coverEntry = fileSystem.findFirstImage(rootPath)
-			val mimeTypeMap = MimeTypeMap.getSingleton()
 			Manga(
 				id = rootFile.absolutePath.longHashCode(),
 				title = title,
@@ -103,7 +103,7 @@ class LocalMangaParser(private val uri: Uri) {
 							when {
 								path == coverEntry -> null
 								!fileSystem.isRegularFile(path) -> null
-								mimeTypeMap.isImage(path) -> path.parent
+								path.isImage() -> path.parent
 								hasZipExtension(path.name) -> path
 								else -> null
 							}
@@ -157,10 +157,7 @@ class LocalMangaParser(private val uri: Uri) {
 			val pattern = index.getChapterNamesPattern(chapter)
 			entries.filter { x -> x.name.substringBefore('.').matches(pattern) }
 		} else {
-			val mimeTypeMap = MimeTypeMap.getSingleton()
-			entries.filter { x ->
-				mimeTypeMap.isImage(x) && x.parent == rootPath
-			}
+			entries.filter { x -> x.isImage() && x.parent == rootPath }
 		}.toListSorted(compareBy(AlphanumComparator()) { x -> x.toString() })
 			.map { x ->
 				val entryUri = chapterUri.child(x, resolve = true).toString()
@@ -218,21 +215,18 @@ class LocalMangaParser(private val uri: Uri) {
 			rootPath: Path,
 			recursive: Boolean
 		): Path? = runCatchingCancellable {
-			val mimeTypeMap = MimeTypeMap.getSingleton()
 			if (recursive) {
 				listRecursively(rootPath)
 			} else {
 				list(rootPath).asSequence()
-			}.filter { isRegularFile(it) && mimeTypeMap.isImage(it) }
+			}.filter { isRegularFile(it) && it.isImage() }
 				.toListSorted(compareBy(AlphanumComparator()) { x -> x.toString() })
 				.firstOrNull()
 		}.onFailure { e ->
 			e.printStackTraceDebug()
 		}.getOrNull()
 
-		private fun MimeTypeMap.isImage(path: Path): Boolean =
-			getMimeTypeFromExtension(path.name.substringAfterLast('.'))
-				?.startsWith("image/") == true
+		private fun Path.isImage(): Boolean = MimeTypes.getMimeTypeFromExtension(name)?.isImage == true
 
 		private fun Uri.resolve(): Uri = if (isFileUri()) {
 			val file = toFile()

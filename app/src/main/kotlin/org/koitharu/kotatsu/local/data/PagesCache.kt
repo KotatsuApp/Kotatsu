@@ -15,6 +15,8 @@ import okio.sink
 import okio.use
 import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
 import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.MimeTypes
+import org.koitharu.kotatsu.core.util.ext.MimeType
 import org.koitharu.kotatsu.core.util.ext.compressToPNG
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -59,7 +61,7 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		}
 	}
 
-	suspend fun put(url: String, source: Source, mimeType: String?): File = withContext(Dispatchers.IO) {
+	suspend fun put(url: String, source: Source, mimeType: MimeType?): File = withContext(Dispatchers.IO) {
 		val file = createBufferFile(url, mimeType)
 		try {
 			val bytes = file.sink(append = false).buffer().use {
@@ -78,7 +80,7 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 	}
 
 	suspend fun put(url: String, bitmap: Bitmap): File = withContext(Dispatchers.IO) {
-		val file = createBufferFile(url, "image/png")
+		val file = createBufferFile(url, MimeType("image/png"))
 		try {
 			bitmap.compressToPNG(file)
 			val cache = lruCache.get()
@@ -107,9 +109,8 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		it.printStackTraceDebug()
 	}.getOrDefault(SIZE_DEFAULT)
 
-	private suspend fun createBufferFile(url: String, mimeType: String?): File {
-		val ext = mimeType?.let { MimeTypeMap.getSingleton().getExtensionFromMimeType(it) }
-			?: MimeTypeMap.getFileExtensionFromUrl(url).ifNullOrEmpty { "dat" }
+	private suspend fun createBufferFile(url: String, mimeType: MimeType?): File {
+		val ext = MimeTypes.getExtension(mimeType) ?: MimeTypeMap.getFileExtensionFromUrl(url).ifNullOrEmpty { "dat" }
 		val cacheDir = cacheDir.get()
 		val rootDir = checkNotNull(cacheDir.parentFile) { "Cannot get parent for ${cacheDir.absolutePath}" }
 		val name = UUID.randomUUID().toString() + "." + ext

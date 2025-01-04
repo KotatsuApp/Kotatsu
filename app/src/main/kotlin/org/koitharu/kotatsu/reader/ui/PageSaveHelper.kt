@@ -1,9 +1,7 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
@@ -28,7 +26,9 @@ import okio.buffer
 import okio.openZip
 import okio.sink
 import okio.source
+import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.isFileUri
 import org.koitharu.kotatsu.core.util.ext.isZipUri
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
@@ -99,10 +99,10 @@ class PageSaveHelper @AssistedInject constructor(
 			val pageUri = pageLoader.loadPage(task.page, force = false)
 			val proposedName = task.getFileBaseName()
 			val ext = getPageExtension(pageUrl, pageUri)
-			val mime = requireNotNull(MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)) {
+			val mime = requireNotNull(MimeTypes.getMimeTypeFromExtension("_.$ext")) {
 				"Unknown type of $proposedName"
 			}
-			val destination = destinationDir.createFile(mime, proposedName.substringBeforeLast('.'))
+			val destination = destinationDir.createFile(mime.toString(), proposedName)
 			copyImpl(pageUri, destination?.uri ?: throw IOException("Cannot create destination file"))
 			result.add(destination.uri)
 		}
@@ -119,12 +119,7 @@ class PageSaveHelper @AssistedInject constructor(
 		) { "Invalid page url: $url" }
 		var extension = name.substringAfterLast('.', "")
 		if (extension.length !in 2..4) {
-			val mimeType = fileUri.toFileOrNull()?.let { file -> getImageMimeType(file) }
-			extension = if (mimeType != null) {
-				MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: EXTENSION_FALLBACK
-			} else {
-				EXTENSION_FALLBACK
-			}
+			extension = fileUri.toFileOrNull()?.let { file -> getImageExtension(file) } ?: EXTENSION_FALLBACK
 		}
 		return extension
 	}
@@ -155,8 +150,7 @@ class PageSaveHelper @AssistedInject constructor(
 		if (proposedName == null) {
 			return dir
 		} else {
-			val ext = proposedName.substringAfterLast('.', "")
-			val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext) ?: return null
+			val mime = MimeTypes.getMimeTypeFromExtension(proposedName)?.toString() ?: return null
 			return dir.createFile(mime, proposedName.substringBeforeLast('.'))
 		}
 	}
@@ -179,12 +173,8 @@ class PageSaveHelper @AssistedInject constructor(
 		}
 	}
 
-	private suspend fun getImageMimeType(file: File): String? = runInterruptible(Dispatchers.IO) {
-		val options = BitmapFactory.Options().apply {
-			inJustDecodeBounds = true
-		}
-		BitmapFactory.decodeFile(file.path, options)?.recycle()
-		options.outMimeType
+	private suspend fun getImageExtension(file: File): String? = runInterruptible(Dispatchers.IO) {
+		MimeTypes.getExtension(BitmapDecoderCompat.probeMimeType(file))
 	}
 
 	data class Task(

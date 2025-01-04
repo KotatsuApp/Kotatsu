@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.core.util.ext.URI_SCHEME_ZIP
 import org.koitharu.kotatsu.core.util.ext.cancelChildrenAndJoin
@@ -47,9 +48,9 @@ import org.koitharu.kotatsu.core.util.ext.isFileUri
 import org.koitharu.kotatsu.core.util.ext.isNotEmpty
 import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
 import org.koitharu.kotatsu.core.util.ext.isZipUri
-import org.koitharu.kotatsu.core.util.ext.mimeType
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
+import org.koitharu.kotatsu.core.util.ext.toMimeType
 import org.koitharu.kotatsu.core.util.ext.use
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
@@ -57,7 +58,6 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadSlowdownDispatcher
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.mimeType
 import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
@@ -66,7 +66,6 @@ import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipFile
 import javax.inject.Inject
-import kotlin.concurrent.Volatile
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
@@ -146,7 +145,7 @@ class PageLoader @Inject constructor(
 					val entry = zip.getEntry(uri.fragment)
 					context.ensureRamAtLeast(entry.size * 2)
 					zip.getInputStream(entry).use {
-						BitmapDecoderCompat.decode(it, entry.mimeType)
+						BitmapDecoderCompat.decode(it, MimeTypes.getMimeTypeFromExtension(entry.name))
 					}
 				}
 			}
@@ -250,7 +249,7 @@ class PageLoader @Inject constructor(
 				val request = createPageRequest(pageUrl, page.source)
 				imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
 					response.requireBody().withProgress(progress).use {
-						cache.put(pageUrl, it.source(), response.mimeType)
+						cache.put(pageUrl, it.source(), it.contentType()?.toMimeType())
 					}
 				}.toUri()
 			}
@@ -264,7 +263,7 @@ class PageLoader @Inject constructor(
 	private fun Deferred<Uri>.isValid(): Boolean {
 		return getCompletionResultOrNull()?.map { uri ->
 			uri.exists() && uri.isTargetNotEmpty()
-		}?.getOrDefault(false) ?: true
+		}?.getOrDefault(false) != false
 	}
 
 	private class InternalErrorHandler : AbstractCoroutineContextElement(CoroutineExceptionHandler),

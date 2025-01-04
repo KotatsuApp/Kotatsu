@@ -6,6 +6,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import okio.Closeable
 import org.koitharu.kotatsu.core.prefs.DownloadFormat
+import org.koitharu.kotatsu.core.util.ext.MimeType
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -20,9 +21,9 @@ sealed class LocalMangaOutput(
 
 	abstract suspend fun mergeWithExisting()
 
-	abstract suspend fun addCover(file: File, ext: String)
+	abstract suspend fun addCover(file: File, type: MimeType?)
 
-	abstract suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, ext: String)
+	abstract suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, type: MimeType?)
 
 	abstract suspend fun flushChapter(chapter: MangaChapter): Boolean
 

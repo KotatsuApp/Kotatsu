@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.details.ui.pager.pages
 
-import android.webkit.MimeTypeMap
 import androidx.core.net.toUri
 import coil3.ImageLoader
 import coil3.decode.DataSource
@@ -21,8 +20,10 @@ import okio.Path.Companion.toOkioPath
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.fetch
 import org.koitharu.kotatsu.core.util.ext.isNetworkUri
+import org.koitharu.kotatsu.core.util.ext.toMimeTypeOrNull
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.mimeType
@@ -47,7 +48,7 @@ class MangaPageFetcher(
 			pagesCache.get(pageUrl)?.let { file ->
 				return SourceFetchResult(
 					source = ImageSource(file.toOkioPath(), options.fileSystem),
-					mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension),
+					mimeType = MimeTypes.getMimeTypeFromExtension(file.name)?.toString(),
 					dataSource = DataSource.DISK,
 				)
 			}
@@ -67,13 +68,13 @@ class MangaPageFetcher(
 			if (!response.isSuccessful) {
 				throw HttpException(response.toNetworkResponse())
 			}
-			val mimeType = response.mimeType
+			val mimeType = response.mimeType?.toMimeTypeOrNull()
 			val file = response.requireBody().use {
 				pagesCache.put(pageUrl, it.source(), mimeType)
 			}
 			SourceFetchResult(
 				source = ImageSource(file.toOkioPath(), FileSystem.SYSTEM),
-				mimeType = mimeType,
+				mimeType = mimeType?.toString(),
 				dataSource = DataSource.NETWORK,
 			)
 		}

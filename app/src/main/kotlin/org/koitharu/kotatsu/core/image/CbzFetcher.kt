@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.core.image
 
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import coil3.ImageLoader
 import coil3.decode.DataSource
 import coil3.decode.ImageSource
@@ -12,6 +11,7 @@ import coil3.toAndroidUri
 import kotlinx.coroutines.runInterruptible
 import okio.Path.Companion.toPath
 import okio.openZip
+import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.isZipUri
 import coil3.Uri as CoilUri
 
@@ -25,7 +25,7 @@ class CbzFetcher(
 		val entryName = requireNotNull(uri.fragment)
 		SourceFetchResult(
 			source = ImageSource(entryName.toPath(), options.fileSystem.openZip(filePath)),
-			mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(entryName.substringAfterLast('.', "")),
+			mimeType = MimeTypes.getMimeTypeFromExtension(entryName)?.toString(),
 			dataSource = DataSource.DISK,
 		)
 	}

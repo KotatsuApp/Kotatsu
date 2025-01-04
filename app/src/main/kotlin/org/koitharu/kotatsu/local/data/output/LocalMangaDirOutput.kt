@@ -8,6 +8,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.internal.closeQuietly
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.util.MimeTypes
+import org.koitharu.kotatsu.core.util.ext.MimeType
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.zip.ZipOutput
@@ -35,10 +37,10 @@ class LocalMangaDirOutput(
 
 	override suspend fun mergeWithExisting() = Unit
 
-	override suspend fun addCover(file: File, ext: String) = mutex.withLock {
+	override suspend fun addCover(file: File, type: MimeType?) = mutex.withLock {
 		val name = buildString {
 			append("cover")
-			if (ext.isNotEmpty() && ext.length <= 4) {
+			MimeTypes.getExtension(type)?.let { ext ->
 				append('.')
 				append(ext)
 			}
@@ -50,14 +52,14 @@ class LocalMangaDirOutput(
 		flushIndex()
 	}
 
-	override suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, ext: String) =
+	override suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, type: MimeType?) =
 		mutex.withLock {
 			val output = chaptersOutput.getOrPut(chapter.value) {
 				ZipOutput(File(rootFile, chapterFileName(chapter) + SUFFIX_TMP))
 			}
 			val name = buildString {
 				append(FILENAME_PATTERN.format(chapter.value.branch.hashCode(), chapter.index + 1, pageNumber))
-				if (ext.isNotEmpty() && ext.length <= 4) {
+				MimeTypes.getExtension(type)?.let { ext ->
 					append('.')
 					append(ext)
 				}
@@ -96,7 +98,9 @@ class LocalMangaDirOutput(
 	}
 
 	suspend fun deleteChapters(ids: Set<Long>) = mutex.withLock {
-		val chapters = checkNotNull((index.getMangaInfo() ?: LocalMangaParser(rootFile).getManga(withDetails = true).manga).chapters) {
+		val chapters = checkNotNull(
+			(index.getMangaInfo() ?: LocalMangaParser(rootFile).getManga(withDetails = true).manga).chapters,
+		) {
 			"No chapters found"
 		}.withIndex()
 		val victimsIds = ids.toMutableSet()
