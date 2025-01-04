@@ -93,6 +93,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/margin_normal"
 		android:layout_marginEnd="@dimen/margin_normal"
+		android:drawablePadding="4dp"
 		android:singleLine="true"
 		android:textAppearance="?textAppearanceBodyMedium"
 		app:layout_constraintBaseline_toBaselineOf="@id/textView_translation_label"

@@ -59,6 +59,7 @@ import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.OnContextClickListenerCompat
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
+import org.koitharu.kotatsu.core.ui.image.TextDrawable
 import org.koitharu.kotatsu.core.ui.image.TextViewTarget
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.sheet.BottomSheetCollapseCallback
@@ -66,9 +67,11 @@ import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.LocaleUtils
 import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.drawable
+import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.isTextTruncated
@@ -173,7 +176,13 @@ class DetailsActivity :
 		viewModel.isStatsAvailable.observe(this, menuInvalidator)
 		viewModel.remoteManga.observe(this, menuInvalidator)
 		viewModel.branches.observe(this) {
-			infoBinding.textViewTranslation.textAndVisible = it.singleOrNull()?.name
+			val branch = it.singleOrNull()
+			infoBinding.textViewTranslation.textAndVisible = branch?.name
+			infoBinding.textViewTranslation.drawableStart = branch?.locale?.let {
+				LocaleUtils.getEmojiFlag(it)
+			}?.let {
+				TextDrawable.compound(infoBinding.textViewTranslation, it)
+			}
 			infoBinding.textViewTranslationLabel.isVisible = infoBinding.textViewTranslation.isVisible
 		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
@@ -193,8 +202,6 @@ class DetailsActivity :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			// R.id.chip_branch -> showBranchPopupMenu(v)
-
 			R.id.textView_author -> {
 				val manga = viewModel.manga.value ?: return
 				router.openSearch(manga.source, manga.author ?: return)
@@ -462,14 +469,19 @@ class DetailsActivity :
 	}
 
 	private fun onHistoryChanged(info: HistoryInfo, isLoading: Boolean) = with(infoBinding) {
-		textViewChapters.textAndVisible = if (isLoading) {
-			null
-		} else when {
-			info.currentChapter >= 0 -> getString(R.string.chapter_d_of_d, info.currentChapter + 1, info.totalChapters)
+		textViewChapters.text = when {
+			isLoading -> getString(R.string.loading_)
+			info.currentChapter >= 0 -> getString(
+				R.string.chapter_d_of_d,
+				info.currentChapter + 1,
+				info.totalChapters,
+			).withEstimatedTime(info.estimatedTime)
+
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
 			info.totalChapters == -1 -> getString(R.string.error_occurred)
 			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
-		}.withEstimatedTime(info.estimatedTime)
+				.withEstimatedTime(info.estimatedTime)
+		}
 		textViewProgress.textAndVisible = if (info.percent <= 0f) {
 			null
 		} else {
@@ -482,8 +494,6 @@ class DetailsActivity :
 		textViewProgressLabel.isVisible = info.history != null
 		textViewProgress.isVisible = info.history != null
 		progress.isVisible = info.history != null
-		// buttonRead.setProgress(info.percent.coerceIn(0f, 1f), !isFirstCall)
-		// buttonDownload?.isEnabled = info.isValid && info.canDownload
 	}
 
 	private fun openReader(isIncognitoMode: Boolean) {
