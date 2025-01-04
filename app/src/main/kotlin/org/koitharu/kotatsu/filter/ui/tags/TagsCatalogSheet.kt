@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.filter.ui.tags
 
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -17,14 +16,19 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
+import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.SheetTagsBinding
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.model.TagCatalogItem
 
 @AndroidEntryPoint
-class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickListener<TagCatalogItem>, TextWatcher,
-	AdaptiveSheetCallback, View.OnFocusChangeListener, TextView.OnEditorActionListener {
+class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(),
+	OnListItemClickListener<TagCatalogItem>,
+	DefaultTextWatcher,
+	AdaptiveSheetCallback,
+	View.OnFocusChangeListener,
+	TextView.OnEditorActionListener {
 
 	private val viewModel by viewModels<TagsCatalogViewModel>(
 		extrasProducer = {
@@ -74,10 +78,6 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(), OnListItemClickL
 			false
 		}
 	}
-
-	override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
 	override fun afterTextChanged(s: Editable?) {
 		val q = s?.toString().orEmpty()

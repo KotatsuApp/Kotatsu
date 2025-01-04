@@ -3,20 +3,20 @@ package org.koitharu.kotatsu.core.ui.image
 import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.Paint
-import android.graphics.PixelFormat
 import android.graphics.PointF
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
+import android.os.Build
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.graphics.PaintCompat
+import org.koitharu.kotatsu.core.util.ext.hasFocusStateSpecified
 
 class TextDrawable(
 	val text: String,
-) : Drawable() {
+) : PaintDrawable() {
 
-	private val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
+	override val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
 	private val textBounds = Rect()
 	private val textPoint = PointF()
 
@@ -41,20 +41,6 @@ class TextDrawable(
 		canvas.drawText(text, textPoint.x, textPoint.y, paint)
 	}
 
-	override fun setAlpha(alpha: Int) {
-		paint.alpha = alpha
-	}
-
-	override fun setColorFilter(colorFilter: ColorFilter?) {
-		paint.setColorFilter(colorFilter)
-	}
-
-	override fun getOpacity(): Int = when (paint.alpha) {
-		0 -> PixelFormat.TRANSPARENT
-		255 -> PixelFormat.OPAQUE
-		else -> PixelFormat.TRANSLUCENT
-	}
-
 	override fun onBoundsChange(bounds: Rect) {
 		textPoint.set(
 			bounds.exactCenterX() - textBounds.exactCenterX(),
@@ -66,16 +52,10 @@ class TextDrawable(
 
 	override fun getIntrinsicHeight(): Int = textBounds.height()
 
-	override fun setDither(dither: Boolean) {
-		paint.isDither = dither
-	}
-
 	override fun isStateful(): Boolean = textColor.isStateful
 
-	override fun hasFocusStateSpecified(): Boolean = textColor.getColorForState(
-		intArrayOf(android.R.attr.state_focused),
-		textColor.defaultColor,
-	) != textColor.defaultColor
+	@RequiresApi(Build.VERSION_CODES.S)
+	override fun hasFocusStateSpecified(): Boolean = textColor.hasFocusStateSpecified()
 
 	override fun onStateChange(state: IntArray): Boolean {
 		val prevColor = paint.color

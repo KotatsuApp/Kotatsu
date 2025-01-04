@@ -1,15 +1,15 @@
 package org.koitharu.kotatsu.core.ui.image
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.RectF
-import android.graphics.drawable.Drawable
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.StyleRes
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.withClip
@@ -21,18 +21,24 @@ import com.google.android.material.color.MaterialColors
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.util.KotatsuColors
+import org.koitharu.kotatsu.core.util.ext.hasFocusStateSpecified
 import org.koitharu.kotatsu.core.util.ext.mangaSourceKey
 
 open class FaviconDrawable(
 	context: Context,
 	@StyleRes styleResId: Int,
 	name: String,
-) : Drawable() {
+) : PaintDrawable() {
 
-	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-	protected var colorBackground = Color.WHITE
+	override val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
+	protected var currentBackgroundColor = Color.WHITE
+		private set
+	private var colorBackground: ColorStateList = ColorStateList.valueOf(currentBackgroundColor)
 	protected var colorForeground = Color.DKGRAY
-	private var colorStroke = Color.LTGRAY
+	protected var currentForegroundColor = Color.DKGRAY
+	protected var currentStrokeColor = Color.LTGRAY
+		private set
+	private var colorStroke: ColorStateList = ColorStateList.valueOf(currentStrokeColor)
 	private val letter = name.take(1).uppercase()
 	private var cornerSize = 0f
 	private var intrinsicSize = -1
@@ -43,15 +49,16 @@ open class FaviconDrawable(
 
 	init {
 		context.withStyledAttributes(styleResId, R.styleable.FaviconFallbackDrawable) {
-			colorBackground = getColor(R.styleable.FaviconFallbackDrawable_backgroundColor, colorBackground)
-			colorStroke = getColor(R.styleable.FaviconFallbackDrawable_strokeColor, colorStroke)
+			colorBackground = getColorStateList(R.styleable.FaviconFallbackDrawable_backgroundColor) ?: colorBackground
+			colorStroke = getColorStateList(R.styleable.FaviconFallbackDrawable_strokeColor) ?: colorStroke
 			cornerSize = getDimension(R.styleable.FaviconFallbackDrawable_cornerSize, cornerSize)
 			paint.strokeWidth = getDimension(R.styleable.FaviconFallbackDrawable_strokeWidth, 0f) * 2f
 			intrinsicSize = getDimensionPixelSize(R.styleable.FaviconFallbackDrawable_drawableSize, intrinsicSize)
 		}
 		paint.textAlign = Paint.Align.CENTER
 		paint.isFakeBoldText = true
-		colorForeground = MaterialColors.harmonize(KotatsuColors.random(name), colorBackground)
+		colorForeground = KotatsuColors.random(name)
+		currentForegroundColor = MaterialColors.harmonize(colorForeground, colorBackground.defaultColor)
 	}
 
 	override fun draw(canvas: Canvas) {
@@ -75,35 +82,42 @@ open class FaviconDrawable(
 		clipPath.close()
 	}
 
-	override fun setAlpha(alpha: Int) {
-		paint.alpha = alpha
-	}
-
-	override fun setColorFilter(colorFilter: ColorFilter?) {
-		paint.colorFilter = colorFilter
-	}
-
 	override fun getIntrinsicWidth(): Int = intrinsicSize
 
 	override fun getIntrinsicHeight(): Int = intrinsicSize
 
-	@Suppress("DeprecatedCallableAddReplaceWith")
-	@Deprecated("Deprecated in Java")
-	override fun getOpacity() = PixelFormat.TRANSPARENT
+	override fun isOpaque(): Boolean = cornerSize == 0f && colorBackground.isOpaque
+
+	override fun isStateful(): Boolean = colorStroke.isStateful || colorBackground.isStateful
+
+	@RequiresApi(Build.VERSION_CODES.S)
+	override fun hasFocusStateSpecified(): Boolean =
+		colorBackground.hasFocusStateSpecified() || colorStroke.hasFocusStateSpecified()
+
+	override fun onStateChange(state: IntArray): Boolean {
+		val prevStrokeColor = currentStrokeColor
+		val prevBackgroundColor = currentBackgroundColor
+		currentStrokeColor = colorStroke.getColorForState(state, colorStroke.defaultColor)
+		currentBackgroundColor = colorBackground.getColorForState(state, colorBackground.defaultColor)
+		if (currentBackgroundColor != prevBackgroundColor) {
+			currentForegroundColor = MaterialColors.harmonize(colorForeground, currentBackgroundColor)
+		}
+		return prevBackgroundColor != currentBackgroundColor || prevStrokeColor != currentStrokeColor
+	}
 
 	private fun doDraw(canvas: Canvas) {
 		// background
-		paint.color = colorBackground
+		paint.color = currentBackgroundColor
 		paint.style = Paint.Style.FILL
 		canvas.drawPaint(paint)
 		// letter
-		paint.color = colorForeground
+		paint.color = currentForegroundColor
 		val cx = (boundsF.left + boundsF.right) * 0.6f
 		val ty = boundsF.bottom * 0.7f + textBounds.height() * 0.5f - textBounds.bottom
 		canvas.drawText(letter, cx, ty, paint)
 		if (paint.strokeWidth > 0f) {
 			// stroke
-			paint.color = colorStroke
+			paint.color = currentStrokeColor
 			paint.style = Paint.Style.STROKE
 			canvas.drawPath(clipPath, paint)
 		}

@@ -2,13 +2,13 @@ package org.koitharu.kotatsu.core.util
 
 import android.content.Context
 import android.text.Editable
-import android.text.TextWatcher
 import android.widget.EditText
 import androidx.annotation.CallSuper
+import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import java.lang.ref.WeakReference
 
-abstract class EditTextValidator : TextWatcher {
+abstract class EditTextValidator : DefaultTextWatcher {
 
 	private var editTextRef: WeakReference<EditText>? = null
 
@@ -16,10 +16,6 @@ abstract class EditTextValidator : TextWatcher {
 		get() = checkNotNull(editTextRef?.get()?.context) {
 			"EditTextValidator is not attached to EditText"
 		}
-
-	override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
 	@CallSuper
 	override fun afterTextChanged(s: Editable?) {

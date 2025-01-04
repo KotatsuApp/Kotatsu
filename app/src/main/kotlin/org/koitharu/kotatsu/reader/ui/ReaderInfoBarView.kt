@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -19,12 +20,11 @@ import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
-import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.withScale
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
 import org.koitharu.kotatsu.core.util.ext.measureDimension
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.util.format
@@ -41,7 +41,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	@AttrRes defStyleAttr: Int = 0,
 ) : View(context, attrs, defStyleAttr) {
 
-	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+	private val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
 	private val textBounds = Rect()
 	private val timeFormat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
 	private val systemStateReceiver = SystemStateReceiver()
@@ -52,16 +52,16 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	private val insetRightFallback: Int
 	private val insetTopFallback: Int
 	private val insetCornerFallback = getSystemUiDimensionOffset("rounded_corner_content_padding")
-	private val colorText = ColorUtils.setAlphaComponent(
-		context.getThemeColor(materialR.attr.colorOnSurface, Color.BLACK),
-		200,
-	)
-	private val colorOutline = ColorUtils.setAlphaComponent(
-		context.getThemeColor(materialR.attr.colorSurface, Color.WHITE),
-		200,
-	)
+	private val colorText =
+		(context.getThemeColorStateList(materialR.attr.colorOnSurface)
+			?: ColorStateList.valueOf(Color.BLACK)).withAlpha(200)
+	private val colorOutline =
+		(context.getThemeColorStateList(materialR.attr.colorSurface)
+			?: ColorStateList.valueOf(Color.WHITE)).withAlpha(200)
 	private val batteryIcon = ContextCompat.getDrawable(context, R.drawable.ic_battery_outline)
 
+	private var currentTextColor: Int = Color.TRANSPARENT
+	private var currentOutlineColor: Int = Color.TRANSPARENT
 	private var timeText = timeFormat.format(LocalTime.now())
 	private var batteryText = ""
 	private var text: String = ""
@@ -169,6 +169,29 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		context.unregisterReceiver(systemStateReceiver)
 	}
 
+	override fun verifyDrawable(who: Drawable): Boolean {
+		return who == batteryIcon || super.verifyDrawable(who)
+	}
+
+	override fun jumpDrawablesToCurrentState() {
+		super.jumpDrawablesToCurrentState()
+		batteryIcon?.jumpToCurrentState()
+	}
+
+	override fun onCreateDrawableState(extraSpace: Int): IntArray? {
+		val iconState = batteryIcon?.state ?: return super.onCreateDrawableState(extraSpace)
+		return mergeDrawableStates(super.onCreateDrawableState(extraSpace + iconState.size), iconState)
+	}
+
+	override fun drawableStateChanged() {
+		currentTextColor = colorText.getColorForState(drawableState, colorText.defaultColor)
+		currentOutlineColor = colorOutline.getColorForState(drawableState, colorOutline.defaultColor)
+		super.drawableStateChanged()
+		if (batteryIcon != null && batteryIcon.isStateful && batteryIcon.setState(drawableState)) {
+			invalidateDrawable(batteryIcon)
+		}
+	}
+
 	fun update(state: ReaderUiState?) {
 		text = if (state != null) {
 			context.getString(
@@ -200,17 +223,17 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	}
 
 	private fun Canvas.drawTextOutline(text: String, x: Float, y: Float) {
-		paint.color = colorOutline
+		paint.color = currentOutlineColor
 		paint.style = Paint.Style.STROKE
 		drawText(text, x, y, paint)
-		paint.color = colorText
+		paint.color = currentTextColor
 		paint.style = Paint.Style.FILL
 		drawText(text, x, y, paint)
 	}
 
 	private fun Drawable.drawWithOutline(canvas: Canvas) {
 		var requiredScale = (bounds.width() + paint.strokeWidth * 2f) / bounds.width().toFloat()
-		setTint(colorOutline)
+		setTint(currentOutlineColor)
 		canvas.withScale(requiredScale, requiredScale, bounds.exactCenterX(), bounds.exactCenterY()) {
 			draw(canvas)
 		}
@@ -218,7 +241,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		canvas.withScale(requiredScale, requiredScale, bounds.exactCenterX(), bounds.exactCenterY()) {
 			draw(canvas)
 		}
-		setTint(colorText)
+		setTint(currentTextColor)
 		draw(canvas)
 	}
 

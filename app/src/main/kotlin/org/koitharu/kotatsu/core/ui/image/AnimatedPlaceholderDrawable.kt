@@ -41,13 +41,13 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 		// this.alpha = alpha FIXME coil's crossfade
 	}
 
-	override fun setColorFilter(colorFilter: ColorFilter?) = Unit
-
 	@Suppress("DeprecatedCallableAddReplaceWith")
 	@Deprecated("Deprecated in Java")
-	override fun getOpacity(): Int = PixelFormat.OPAQUE
+	override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
 	override fun getAlpha(): Int = 255
+
+	override fun setColorFilter(colorFilter: ColorFilter?) = Unit
 
 	override fun onTimeUpdate(animation: TimeAnimator?, totalTime: Long, deltaTime: Long) {
 		callback?.also {

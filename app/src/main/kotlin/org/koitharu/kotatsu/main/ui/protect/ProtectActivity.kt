@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -21,6 +20,7 @@ import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -32,7 +32,7 @@ import com.google.android.material.R as materialR
 class ProtectActivity :
 	BaseActivity<ActivityProtectBinding>(),
 	TextView.OnEditorActionListener,
-	TextWatcher,
+	DefaultTextWatcher,
 	View.OnClickListener {
 
 	private val viewModel by viewModels<ProtectViewModel>()
@@ -97,10 +97,6 @@ class ProtectActivity :
 			false
 		}
 	}
-
-	override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
 	override fun afterTextChanged(s: Editable?) {
 		viewBinding.layoutPassword.error = null

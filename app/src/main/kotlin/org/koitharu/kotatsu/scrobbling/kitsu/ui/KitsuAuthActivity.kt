@@ -4,16 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.core.graphics.Insets
 import androidx.core.net.toUri
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
 import org.koitharu.kotatsu.databinding.ActivityKitsuAuthBinding
 import org.koitharu.kotatsu.parsers.util.urlEncoded
 
-class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(), View.OnClickListener, TextWatcher {
+class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(), View.OnClickListener, DefaultTextWatcher {
 
 	private val regexEmail = Regex("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", RegexOption.IGNORE_CASE)
 
@@ -42,10 +42,6 @@ class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(), View.OnClick
 			R.id.button_done -> continueAuth()
 		}
 	}
-
-	override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
 	override fun afterTextChanged(s: Editable?) {
 		val email = viewBinding.editEmail.text?.toString()?.trim()

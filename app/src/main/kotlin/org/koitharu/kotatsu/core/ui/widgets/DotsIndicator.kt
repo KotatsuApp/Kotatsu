@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.ui.widgets
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -11,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import androidx.viewpager2.widget.ViewPager2
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
 import org.koitharu.kotatsu.core.util.ext.measureDimension
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.parsers.util.toIntUp
@@ -30,6 +31,7 @@ class DotsIndicator @JvmOverloads constructor(
 	private var smallDotAlpha = 0.6f
 	private var positionOffset: Float = 0f
 	private var position: Int = 0
+	private var dotsColor: ColorStateList = ColorStateList.valueOf(Color.DKGRAY)
 	private val inset = context.resources.resolveDp(1f)
 
 	var max: Int = 6
@@ -52,10 +54,10 @@ class DotsIndicator @JvmOverloads constructor(
 	init {
 		paint.style = Paint.Style.FILL
 		context.withStyledAttributes(attrs, R.styleable.DotsIndicator, defStyleAttr) {
-			paint.color = getColor(
-				R.styleable.DotsIndicator_dotColor,
-				context.getThemeColor(materialR.attr.colorOnBackground, Color.DKGRAY),
-			)
+			dotsColor = getColorStateList(R.styleable.DotsIndicator_dotColor)
+				?: context.getThemeColorStateList(materialR.attr.colorOnBackground)
+					?: dotsColor
+			paint.color = dotsColor.defaultColor
 			indicatorSize = getDimension(R.styleable.DotsIndicator_dotSize, indicatorSize)
 			dotSpacing = getDimension(R.styleable.DotsIndicator_dotSpacing, dotSpacing)
 			smallDotScale = getFloat(R.styleable.DotsIndicator_dotScale, smallDotScale).coerceIn(0f, 1f)
@@ -87,6 +89,13 @@ class DotsIndicator @JvmOverloads constructor(
 			canvas.drawCircle(x, y, radius * scale, paint)
 			x += spacing + dotSize
 		}
+	}
+
+	override fun drawableStateChanged() {
+		if (dotsColor.isStateful) {
+			paint.color = dotsColor.getColorForState(drawableState, dotsColor.defaultColor)
+		}
+		super.drawableStateChanged()
 	}
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
