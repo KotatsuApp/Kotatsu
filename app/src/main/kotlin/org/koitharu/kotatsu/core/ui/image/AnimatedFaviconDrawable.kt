@@ -33,7 +33,7 @@ class AnimatedFaviconDrawable(
 
 	init {
 		timeAnimator.setTimeListener(this)
-		updateColor()
+		onStateChange(state)
 	}
 
 	override fun draw(canvas: Canvas) {
@@ -44,11 +44,11 @@ class AnimatedFaviconDrawable(
 		super.draw(canvas)
 	}
 
-	override fun setAlpha(alpha: Int) = Unit
-
-	override fun getAlpha(): Int = 255
-
-	override fun isOpaque(): Boolean = false
+	// override fun setAlpha(alpha: Int) = Unit
+	//
+	// override fun getAlpha(): Int = 255
+	//
+	// override fun isOpaque(): Boolean = false
 
 	override fun onTimeUpdate(animation: TimeAnimator?, totalTime: Long, deltaTime: Long) {
 		callback?.also {

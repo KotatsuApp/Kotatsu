@@ -34,6 +34,7 @@ class TextDrawable(
 		}
 
 	init {
+		onStateChange(state)
 		measureTextBounds()
 	}
 

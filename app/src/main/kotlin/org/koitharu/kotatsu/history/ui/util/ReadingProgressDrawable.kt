@@ -76,6 +76,7 @@ class ReadingProgressDrawable(
 		paint.strokeWidth = ta.getDimension(R.styleable.ProgressDrawable_strokeWidth, 1f)
 		ta.recycle()
 		checkDrawable?.setTintList(textColor)
+		onStateChange(state)
 	}
 
 	override fun onBoundsChange(bounds: Rect) {

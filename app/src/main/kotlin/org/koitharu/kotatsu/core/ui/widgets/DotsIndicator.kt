@@ -57,7 +57,7 @@ class DotsIndicator @JvmOverloads constructor(
 			dotsColor = getColorStateList(R.styleable.DotsIndicator_dotColor)
 				?: context.getThemeColorStateList(materialR.attr.colorOnBackground)
 					?: dotsColor
-			paint.color = dotsColor.defaultColor
+			paint.color = dotsColor.getColorForState(drawableState, dotsColor.defaultColor)
 			indicatorSize = getDimension(R.styleable.DotsIndicator_dotSize, indicatorSize)
 			dotSpacing = getDimension(R.styleable.DotsIndicator_dotSpacing, dotSpacing)
 			smallDotScale = getFloat(R.styleable.DotsIndicator_dotScale, smallDotScale).coerceIn(0f, 1f)

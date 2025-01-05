@@ -7,6 +7,7 @@ import android.graphics.ColorFilter
 import android.graphics.PixelFormat
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
+import androidx.core.graphics.ColorUtils
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.animation.ArgbEvaluatorCompat
 import org.koitharu.kotatsu.R
@@ -23,6 +24,7 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 	private val interpolator = FastOutSlowInInterpolator()
 	private val period = context.getAnimationDuration(R.integer.config_longAnimTime) * 2
 	private val timeAnimator = TimeAnimator()
+	private var currentAlpha: Int = 255
 
 	init {
 		timeAnimator.setTimeListener(this)
@@ -38,14 +40,15 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 	}
 
 	override fun setAlpha(alpha: Int) {
-		// this.alpha = alpha FIXME coil's crossfade
+		currentAlpha = alpha
+		updateColor()
 	}
 
 	@Suppress("DeprecatedCallableAddReplaceWith")
 	@Deprecated("Deprecated in Java")
 	override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
-	override fun getAlpha(): Int = 255
+	override fun getAlpha(): Int = currentAlpha
 
 	override fun setColorFilter(colorFilter: ColorFilter?) = Unit
 
@@ -72,7 +75,10 @@ class AnimatedPlaceholderDrawable(context: Context) : Drawable(), Animatable, Ti
 		}
 		val ph = period / 2
 		val fraction = abs((System.currentTimeMillis() % period) - ph) / ph.toFloat()
-		currentColor = ArgbEvaluatorCompat.getInstance()
-			.evaluate(interpolator.getInterpolation(fraction), colorLow, colorHigh)
+		currentColor = ColorUtils.setAlphaComponent(
+			ArgbEvaluatorCompat.getInstance()
+				.evaluate(interpolator.getInterpolation(fraction), colorLow, colorHigh),
+			currentAlpha
+		)
 	}
 }

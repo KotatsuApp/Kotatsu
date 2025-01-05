@@ -59,6 +59,7 @@ open class FaviconDrawable(
 		paint.isFakeBoldText = true
 		colorForeground = KotatsuColors.random(name)
 		currentForegroundColor = MaterialColors.harmonize(colorForeground, colorBackground.defaultColor)
+		onStateChange(state)
 	}
 
 	override fun draw(canvas: Canvas) {
