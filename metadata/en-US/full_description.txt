@@ -12,7 +12,7 @@ Kotatsu is a free and open source manga reader for Android.
 - Tablet-optimized Material You UI
 - Standard and Webtoon-optimized reader
 - Notifications about new chapters with updates feed
-- Integration with manga tracking services: Shikimori, AniList, MyAnimeList
+- Integration with manga tracking services: Shikimori, AniList, MyAnimeList, Kitsu
 - Password/fingerprint protect access to the app
 - History and favourites synchronization across devices
 
