@@ -40,19 +40,19 @@
 ### In-App Screenshots
 
 <div align="center">
-    <img src="./.github/assets/1.png" alt="Mobile view" width="300"/>
-    <img src="./.github/assets/2.png" alt="Mobile view" width="300"/>
-    <img src="./.github/assets/3.png" alt="Mobile view" width="300"/>
-    <img src="./.github/assets/4.png" alt="Mobile view" width="300"/>
-    <img src="./.github/assets/5.png" alt="Mobile view" width="300"/>
-    <img src="./.github/assets/6.png" alt="Mobile view" width="300"/>
+    <img src="./.github/assets/1.png" alt="Mobile view" width="250"/>
+    <img src="./.github/assets/2.png" alt="Mobile view" width="250"/>
+    <img src="./.github/assets/3.png" alt="Mobile view" width="250"/>
+    <img src="./.github/assets/4.png" alt="Mobile view" width="250"/>
+    <img src="./.github/assets/5.png" alt="Mobile view" width="250"/>
+    <img src="./.github/assets/6.png" alt="Mobile view" width="250"/>
 </div>
 
 <br>
 
 <div align="center">
-    <img src="./.github/assets/7.png" alt="Tablet view" width="475"/>
-    <img src="./.github/assets/8.png" alt="Tablet view" width="475"/>
+    <img src="./.github/assets/7.png" alt="Tablet view" width="400"/>
+    <img src="./.github/assets/8.png" alt="Tablet view" width="400"/>
 </div>
 
 ### Localization
