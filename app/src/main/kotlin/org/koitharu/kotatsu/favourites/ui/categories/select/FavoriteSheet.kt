@@ -65,7 +65,7 @@ class FavoriteSheet : BaseAdaptiveSheet<SheetFavoriteCategoriesBinding>(), OnLis
 		fun show(fm: FragmentManager, manga: Collection<Manga>) = FavoriteSheet().withArgs(1) {
 			putParcelableArrayList(
 				KEY_MANGA_LIST,
-				manga.mapTo(ArrayList(manga.size), ::ParcelableManga),
+				manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it, withDescription = false) },
 			)
 		}.showDistinct(fm, TAG)
 	}

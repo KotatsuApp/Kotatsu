@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 @Parcelize
 data class ParcelableManga(
 	val manga: Manga,
+	private val withDescription: Boolean = true,
 ) : Parcelable {
 
 	companion object : Parceler<ParcelableManga> {
@@ -27,7 +28,7 @@ data class ParcelableManga(
 			ParcelCompat.writeBoolean(parcel, isNsfw)
 			parcel.writeString(coverUrl)
 			parcel.writeString(largeCoverUrl)
-			parcel.writeString(description)
+			parcel.writeString(description.takeIf { withDescription })
 			parcel.writeParcelable(ParcelableMangaTags(tags), flags)
 			parcel.writeSerializable(state)
 			parcel.writeString(author)
@@ -52,6 +53,7 @@ data class ParcelableManga(
 				chapters = null,
 				source = MangaSource(parcel.readString()),
 			),
+			withDescription = true,
 		)
 	}
 }
