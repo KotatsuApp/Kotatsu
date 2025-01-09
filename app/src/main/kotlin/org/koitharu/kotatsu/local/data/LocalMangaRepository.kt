@@ -152,7 +152,8 @@ class LocalMangaRepository @Inject constructor(
 			"Manga is not stored on local storage"
 		}.manga
 		LocalMangaUtil(subject).deleteChapters(ids)
-		localStorageChanges.emit(LocalManga(subject))
+		val updated = getDetails(subject)
+		localStorageChanges.emit(LocalManga(updated))
 	}
 
 	suspend fun getRemoteManga(localManga: Manga): Manga? {

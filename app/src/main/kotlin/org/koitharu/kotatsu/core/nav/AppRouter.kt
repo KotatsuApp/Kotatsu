@@ -298,7 +298,7 @@ class AppRouter private constructor(
 			DownloadDialogFragment.unregisterCallback(fm)
 		}
 		DownloadDialogFragment().withArgs(1) {
-			putParcelableArray(KEY_MANGA, manga.mapToArray { ParcelableManga(it) })
+			putParcelableArray(KEY_MANGA, manga.mapToArray { ParcelableManga(it, withDescription = false) })
 		}.showDistinct()
 	}
 
@@ -321,7 +321,7 @@ class AppRouter private constructor(
 		FavoriteDialog().withArgs(1) {
 			putParcelableArrayList(
 				KEY_MANGA_LIST,
-				manga.mapTo(ArrayList(manga.size), ::ParcelableManga),
+				manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it, withDescription = false) },
 			)
 		}.showDistinct()
 	}

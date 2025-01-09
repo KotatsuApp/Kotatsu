@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.util.ext.subdir
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.takeIfWriteable
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
+import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import java.io.File

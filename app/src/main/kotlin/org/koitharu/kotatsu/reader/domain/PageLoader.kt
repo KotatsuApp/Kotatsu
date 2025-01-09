@@ -184,11 +184,8 @@ class PageLoader @Inject constructor(
 		prefetchLock.withLock {
 			while (prefetchQueue.isNotEmpty()) {
 				val page = prefetchQueue.pollFirst() ?: return@launch
-				if (cache.get(page.url) == null) {
-					synchronized(tasks) {
-						tasks[page.id] = loadPageAsyncImpl(page, skipCache = false, isPrefetch = true)
-					}
-					return@launch
+				synchronized(tasks) {
+					tasks[page.id] = loadPageAsyncImpl(page, skipCache = false, isPrefetch = true)
 				}
 			}
 		}
@@ -201,12 +198,14 @@ class PageLoader @Inject constructor(
 	): ProgressDeferred<Uri, Float> {
 		val progress = MutableStateFlow(PROGRESS_UNDEFINED)
 		val deferred = loaderScope.async {
-			if (!skipCache) {
-				cache.get(page.url)?.let { return@async it.toUri() }
-			}
 			counter.incrementAndGet()
 			try {
-				loadPageImpl(page, progress, isPrefetch)
+				loadPageImpl(
+					page = page,
+					progress = progress,
+					isPrefetch = isPrefetch,
+					skipCache = skipCache,
+				)
 			} finally {
 				if (counter.decrementAndGet() == 0) {
 					onIdle()
@@ -230,9 +229,13 @@ class PageLoader @Inject constructor(
 		page: MangaPage,
 		progress: MutableStateFlow<Float>,
 		isPrefetch: Boolean,
+		skipCache: Boolean,
 	): Uri = semaphore.withPermit {
 		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url for $page" }
+		if (!skipCache) {
+			cache.get(pageUrl)?.let { return it.toUri() }
+		}
 		val uri = Uri.parse(pageUrl)
 		return when {
 			uri.isZipUri() -> if (uri.scheme == URI_SCHEME_ZIP) {

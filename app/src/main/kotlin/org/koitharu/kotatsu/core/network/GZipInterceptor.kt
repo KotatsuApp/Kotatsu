@@ -4,21 +4,23 @@ import okhttp3.Interceptor
 import okhttp3.MultipartBody
 import okhttp3.Response
 import okio.IOException
+import org.koitharu.kotatsu.core.exceptions.WrapperIOException
 import org.koitharu.kotatsu.core.network.CommonHeaders.CONTENT_ENCODING
 
 class GZipInterceptor : Interceptor {
 
-	override fun intercept(chain: Interceptor.Chain): Response {
+	override fun intercept(chain: Interceptor.Chain): Response = try {
 		val request = chain.request()
 		if (request.body is MultipartBody) {
-			return chain.proceed(request)
-		}
-		val newRequest = request.newBuilder()
-		newRequest.addHeader(CONTENT_ENCODING, "gzip")
-		return try {
+			chain.proceed(request)
+		} else {
+			val newRequest = request.newBuilder()
+			newRequest.addHeader(CONTENT_ENCODING, "gzip")
 			chain.proceed(newRequest.build())
-		} catch (e: NullPointerException) {
-			throw IOException(e)
 		}
+	} catch (e: IOException) {
+		throw e
+	} catch (e: Exception) {
+		throw WrapperIOException(e)
 	}
 }
