@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.exceptions.SyncApiException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
+import org.koitharu.kotatsu.core.exceptions.WrapperIOException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.io.NullOutputStream
@@ -54,6 +55,8 @@ fun Throwable.getDisplayMessage(resources: Resources): String = getDisplayMessag
 	?: resources.getString(R.string.error_occurred)
 
 private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = when (this) {
+	is CaughtException -> cause.getDisplayMessageOrNull(resources)
+	is WrapperIOException -> cause.getDisplayMessageOrNull(resources)
 	is ScrobblerAuthRequiredException -> resources.getString(
 		R.string.scrobbler_auth_required,
 		resources.getString(scrobbler.titleResId),
@@ -141,7 +144,8 @@ fun Throwable.getCauseUrl(): String? = when (this) {
 	is ParseException -> url
 	is NotFoundException -> url
 	is TooManyRequestExceptions -> url
-	is CaughtException -> cause?.getCauseUrl()
+	is CaughtException -> cause.getCauseUrl()
+	is WrapperIOException -> cause.getCauseUrl()
 	is NoDataReceivedException -> url
 	is CloudFlareBlockedException -> url
 	is CloudFlareProtectedException -> url
@@ -175,7 +179,10 @@ fun Throwable.isReportable(): Boolean {
 		return true
 	}
 	if (this is CaughtException) {
-		return cause?.isReportable() == true
+		return cause.isReportable()
+	}
+	if (this is WrapperIOException) {
+		return cause.isReportable()
 	}
 	if (ExceptionResolver.canResolve(this)) {
 		return false

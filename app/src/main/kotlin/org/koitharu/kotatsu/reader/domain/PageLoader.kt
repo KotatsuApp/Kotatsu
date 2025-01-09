@@ -184,7 +184,7 @@ class PageLoader @Inject constructor(
 		prefetchLock.withLock {
 			while (prefetchQueue.isNotEmpty()) {
 				val page = prefetchQueue.pollFirst() ?: return@launch
-				if (cache.get(page.url) == null) {
+				if (cache.get(page.url) == null) { // FIXME use pageUrl
 					synchronized(tasks) {
 						tasks[page.id] = loadPageAsyncImpl(page, skipCache = false, isPrefetch = true)
 					}
@@ -202,6 +202,7 @@ class PageLoader @Inject constructor(
 		val progress = MutableStateFlow(PROGRESS_UNDEFINED)
 		val deferred = loaderScope.async {
 			if (!skipCache) {
+				// FIXME use pageUrl
 				cache.get(page.url)?.let { return@async it.toUri() }
 			}
 			counter.incrementAndGet()

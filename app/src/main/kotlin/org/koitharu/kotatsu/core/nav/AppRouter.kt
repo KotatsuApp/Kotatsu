@@ -321,7 +321,7 @@ class AppRouter private constructor(
 		FavoriteDialog().withArgs(1) {
 			putParcelableArrayList(
 				KEY_MANGA_LIST,
-				manga.mapTo(ArrayList(manga.size), ::ParcelableManga),
+				manga.mapTo(ArrayList(manga.size), ::ParcelableManga), // FIXME use small manga info
 			)
 		}.showDistinct()
 	}

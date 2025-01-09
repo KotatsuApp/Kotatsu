@@ -35,7 +35,7 @@ class AppProxySelector(
 		if (type == Proxy.Type.DIRECT) {
 			return Proxy.NO_PROXY
 		}
-		if (address.isNullOrEmpty() || port == 0) {
+		if (address.isNullOrEmpty() || port < 0 || port > 0xFFFF) {
 			throw ProxyConfigException()
 		}
 		cachedProxy?.let {
