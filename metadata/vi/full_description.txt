@@ -1,10 +1,11 @@
-Kotatsu là một ứng dụng đọc truyện mã nguồn mở miễn phí cho Android
+Kotatsu là một ứng dụng đọc truyện mã nguồn mở miễn phí dành cho các thiết bị Android 5+
 
 
-**Các tính năng chính:**
+Các tính năng chính:
 
 
-- Có nhiều nguồn đọc Online đa dạng
+- Hỗ trợ 100% tiếng Việt, được phát triển và đóng góp bởi cộng đồng người Việt
+- Có nhiều nguồn đọc Online đa dạng, được cập nhật liên tục
 - Tìm kiếm manga với nhiều bộ lọc khác nhau (tên, thể loại,...)
 - Lưu lại manga vào lịch sử khi đọc / đánh dấu trang
 - Mục yêu thích được sắp xếp theo thứ tự do người dùng quản lí
