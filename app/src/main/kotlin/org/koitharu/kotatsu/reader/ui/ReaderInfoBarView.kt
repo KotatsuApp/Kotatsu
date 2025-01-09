@@ -209,6 +209,9 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	}
 
 	private fun Drawable.drawWithOutline(canvas: Canvas) {
+		if (bounds.isEmpty) {
+			return
+		}
 		var requiredScale = (bounds.width() + paint.strokeWidth * 2f) / bounds.width().toFloat()
 		setTint(colorOutline)
 		canvas.withScale(requiredScale, requiredScale, bounds.exactCenterX(), bounds.exactCenterY()) {

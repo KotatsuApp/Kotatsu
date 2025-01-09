@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- Disable predictive back due to crashes -->
+	<bool name="is_predictive_back_enabled">false</bool>
+</resources>
