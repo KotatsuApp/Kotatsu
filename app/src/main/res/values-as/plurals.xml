@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="chapters">
+        <item quantity="one">%1$d অধ্যায়</item>
+        <item quantity="other">%1$d অধ্যাযয়সমূহ</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="one">%1$d ঘণ্টা আগতে</item>
+        <item quantity="other">%1$d ঘণ্টা পূৰ্বে</item>
+    </plurals>
+    <plurals name="months_ago">
+        <item quantity="one">%1$d মাহ আগতে</item>
+        <item quantity="other">%1$d মাহ পূৰ্বে</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">%1$d ঘণ্টা</item>
+        <item quantity="other">%1$d ঘণ্টা</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d মিনিট</item>
+        <item quantity="other">%1$d মিনিট</item>
+    </plurals>
+    <plurals name="items">
+        <item quantity="one">%1$d বস্তু</item>
+        <item quantity="other">%1$d বস্তুসমূহ</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">%1$d দিন আগতে</item>
+        <item quantity="other">%1$d দিন পূৰ্বে</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="one">%1$d মিনিট আগতে</item>
+        <item quantity="other">%1$d মিনিট পূৰ্বে</item>
+    </plurals>
+    <plurals name="new_chapters">
+        <item quantity="one">%1$d নতুন অধ্যায়</item>
+        <item quantity="other">%1$d নতুন অধ্যাযয়সমূহ</item>
+    </plurals>
+</resources>
