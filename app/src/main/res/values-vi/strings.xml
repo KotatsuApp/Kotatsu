@@ -96,7 +96,7 @@
     <string name="backup_information">Bạn có thể tạo bản sao lưu lịch sử, danh sách yêu thích và khôi phục nó</string>
     <string name="just_now">Mới đây</string>
     <string name="yesterday">Hôm qua</string>
-    <string name="reader_mode_hint">Cấu hình được chọn sẽ được lưu lại cho truyện này</string>
+    <string name="reader_mode_hint">Cài đặt được chọn sẽ chỉ lưu lại cho truyện này</string>
     <string name="silent">Im lặng</string>
     <string name="captcha_required">Yêu cầu xác thực CAPTCHA</string>
     <string name="captcha_solve">Xác thực</string>
@@ -464,7 +464,7 @@
     <string name="reader_optimize">Giảm tiêu tốn bộ nhớ (beta)</string>
     <string name="reader_optimize_summary">Giảm chất lượng các trang chưa hiển thị để dùng ít bộ nhớ hơn</string>
     <string name="manage_sources">Nguồn manga</string>
-    <string name="available_d">Sẽ có sau: %1$d</string>
+    <string name="available_d">Hiện đang có sẵn: %1$d</string>
     <string name="genres_search_hint">Nhập tên thể loại</string>
     <string name="backup_date_">Ngày sao lưu: %s</string>
     <string name="color_correction_apply_text">Cài đặt có thể được áp dụng cho toàn bộ nguồn hoặc chỉ nguồn manga này. Nếu áp dụng cho toàn bộ, các nguồn đã cài đặt riêng không bị ảnh hưởng.</string>
@@ -661,7 +661,7 @@
     <string name="plugin_incompatible">Plugin bị lỗi hoặc không phù hợp. Hãy đảm bảo rằng bạn đang sử dụng phiên bản mới nhất của Kotatsu hoặc của Plugin đó</string>
     <string name="text_empty_holder_secondary_filtered">Không có bộ truyện nào phù hợp với bộ lọc của bạn ở đây ¯\\_(ツ)_/¯</string>
     <string name="connection_ok">Kết nối rất OK ¯\\_(ツ)_/¯</string>
-    <string name="invalid_proxy_configuration">Cấu hình Proxy này không hợp lệ</string>
+    <string name="invalid_proxy_configuration">Cài đặt Proxy này của bạn không hợp lệ</string>
     <string name="show_quick_filters">Hiện bộ lọc nhanh</string>
     <string name="show_quick_filters_summary">Cung cấp khả năng lọc danh sách Manga dựa vào dữ liệu cụ thể</string>
     <string name="invalid_server_address_message">Địa chỉ máy chủ này không hợp lệ</string>
@@ -759,16 +759,19 @@
     <string name="translation">Bản dịch</string>
     <string name="incognito">Ẩn danh</string>
     <string name="show_slider">Hiện thanh trượt</string>
-    <string name="backup_tg_echo">Tình trạng: Đang hoạt động tốt!</string>
+    <string name="backup_tg_echo">Tình trạng: 200 OK</string>
     <string name="backup_tg_check">Kiểm tra API</string>
-    <string name="backup_tg_id_not_set">Tình trạng: Chưa thiết lập Chat ID của Telegram</string>
+    <string name="backup_tg_id_not_set">Bạn chưa thiết lập Chat ID của Telegram</string>
     <string name="telegram_chat_id">Chat ID của Telegram</string>
     <string name="open_telegram_bot">Mở Bot Telegram</string>
     <string name="error_connection_reset">Kết nối đã được đặt lại bởi máy chủ</string>
-    <string name="telegram_chat_id_summary">Nhập Chat ID từ Telegram của bạn, nơi mà Bot sẽ gửi bản sao lưu dữ liệu</string>
+    <string name="telegram_chat_id_summary">Nhập Chat ID từ Telegram của bạn, nơi mà Bot sẽ gửi bản sao lưu dữ liệu của ứng dụng cho bạn</string>
     <string name="test_connection">Kiểm tra kết nối</string>
     <string name="send_backups_telegram">Gửi bản sao lưu dữ liệu vào Telegram</string>
-    <string name="open_telegram_bot_summary">Ấn vào đây để mở đoạn Chat với Kotatsu Backup Bot (cần app Telegram)</string>
-    <string name="clear_database">Xoá database</string>
+    <string name="open_telegram_bot_summary">Ấn vào đây để mở đoạn Chat với Kotatsu Backup Bot (cần cài đặt Telegram)</string>
+    <string name="clear_database">Xóa database</string>
     <string name="clear_database_summary">Xoá thông tin dữ liệu về manga chưa từng được sử dụng (cache)</string>
+    <string name="all_sources_enabled">Toàn bộ nguồn đọc đã được bật</string>
+    <string name="enable_all_sources_summary">Tất cả nguồn đọc / nguồn truyện mà App có sẵn sẽ được bật vĩnh viễn</string>
+    <string name="enable_all_sources">Bật toàn bộ nguồn đọc có sẵn</string>
 </resources>
