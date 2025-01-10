@@ -315,7 +315,7 @@
     <string name="enable">Zapnout</string>
     <string name="no_thanks">Ne, děkuji</string>
     <string name="cancel_all_downloads_confirm">Všechna aktivní stahování budou zrušena, částečně stažená data budou ztracena</string>
-    <string name="remove_completed_downloads_confirm">Historie stahování bude permanentně odstraněna. Žádné stažené soubory nebudou ovlivněny.</string>
+    <string name="remove_completed_downloads_confirm">Historie stahování bude permanentně odstraněna. Žádné stažené soubory nebudou ovlivněny</string>
     <string name="text_downloads_list_holder">Nemáte žádná stažení</string>
     <string name="downloads_resumed">Stahování bylo vráceno</string>
     <string name="downloads_paused">Stahování bylo pozastaveno</string>
