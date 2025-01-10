@@ -693,4 +693,5 @@
     <string name="any">Jakýkoliv</string>
     <string name="chapters_all">Všechny</string>
     <string name="ask_every_time">Vždy se zeptat</string>
+    <string name="sfw">SFW</string>
 </resources>
