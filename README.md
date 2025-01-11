@@ -82,7 +82,7 @@ please head over to the [Weblate project page](https://hosted.weblate.org/engage
     <source srcset="https://github-readme-stats.vercel.app/api/pin/?username=KotatsuApp&repo=Kotatsu-parsers&bg_color=0d1117&text_color=1976d2&title_color=1976d2&icon_color=0877d2&border_radius=10&description_lines_count=2&show_owner=true" media="(prefers-color-scheme: dark)">
     <img src="https://github-readme-stats.vercel.app/api/pin/?username=KotatsuApp&repo=Kotatsu-parsers&text_color=1976d2&title_color=1976d2&icon_color=0877d2&border_radius=10&description_lines_count=2&show_owner=true" alt="Kotatsu-parsers GitHub Repository">
   </picture>
-</a>
+</a><br></br>
 
 </br>
 
