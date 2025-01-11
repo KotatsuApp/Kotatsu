@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://kotatsu.app">
-    <img src="./.github/assets/vtuber.png" alt="Kotatsu Logo" title="Kotatsu" width="600"/>
+    <img src="./metadata/en-US/images/phoneScreenshots/vtuber.png" alt="Kotatsu Logo" title="Kotatsu" width="600"/>
 </a>
 
 # [Kotatsu](https://kotatsu.app)
@@ -40,19 +40,19 @@
 ### In-App Screenshots
 
 <div align="center">
-    <img src="./.github/assets/1.png" alt="Mobile view" width="250"/>
-    <img src="./.github/assets/2.png" alt="Mobile view" width="250"/>
-    <img src="./.github/assets/3.png" alt="Mobile view" width="250"/>
-    <img src="./.github/assets/4.png" alt="Mobile view" width="250"/>
-    <img src="./.github/assets/5.png" alt="Mobile view" width="250"/>
-    <img src="./.github/assets/6.png" alt="Mobile view" width="250"/>
+    <img src="./metadata/en-US/images/phoneScreenshots/1.png" alt="Mobile view" width="250"/>
+    <img src="./metadata/en-US/images/phoneScreenshots/2.png" alt="Mobile view" width="250"/>
+    <img src="./metadata/en-US/images/phoneScreenshots/3.png" alt="Mobile view" width="250"/>
+    <img src="./metadata/en-US/images/phoneScreenshots/4.png" alt="Mobile view" width="250"/>
+    <img src="./metadata/en-US/images/phoneScreenshots/5.png" alt="Mobile view" width="250"/>
+    <img src="./metadata/en-US/images/phoneScreenshots/6.png" alt="Mobile view" width="250"/>
 </div>
 
 <br>
 
 <div align="center">
-    <img src="./.github/assets/7.png" alt="Tablet view" width="400"/>
-    <img src="./.github/assets/8.png" alt="Tablet view" width="400"/>
+    <img src="./metadata/en-US/images/tenInchScreenshots/1.png" alt="Tablet view" width="400"/>
+    <img src="./metadata/en-US/images/tenInchScreenshots/2.png" alt="Tablet view" width="400"/>
 </div>
 
 ### Localization
