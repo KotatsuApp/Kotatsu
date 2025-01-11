@@ -24,16 +24,18 @@
 
 <div align="left">
 
-* Online [manga catalogues](https://github.com/KotatsuApp/kotatsu-parsers)
+* Online [manga catalogues](https://github.com/KotatsuApp/kotatsu-parsers) (with 1100+ manga sources)
 * Search manga by name, genres, and more filters
-* Reading history and bookmarks
 * Favorites organized by user-defined categories
-* Downloading manga and reading it offline. Third-party CBZ archives also supported!
-* Tablet-optimized Material UI
-* Standard and Webtoon-optimized customizable reader
-* Notifications about new chapters with updates feed
+* Reading history, bookmarks, and incognito mode support
+* Download manga and read it offline. Third-party CBZ archives are also supported
+* Clean and convenient Material You UI, optimized for phones, tablets, and desktop
+* Standard and Webtoon-optimized customizable reader, gesture support on reading interface
+* Notifications about new chapters with updates feed, manga recommendations (with filters)
 * Integration with manga tracking services: Shikimori, AniList, MyAnimeList, Kitsu
 * Password / fingerprint-protected access to the app
+* Automatically sync app data with other devices on the same account
+* Support for older devices running Android 5+
 
 </div>
 
