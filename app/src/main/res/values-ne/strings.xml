@@ -220,4 +220,13 @@
     <string name="manga_error_description_pattern">त्रुटि विवरण:&lt;br&gt; &lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt; 1. &lt;a href=%2$s&gt;वेब ब्राउजरमा मंगा खोल्ने&lt;/a&gt; प्रयास गर्नुहोस् कि यो यसको स्रोतमा उपलब्ध छ&lt;br&gt; 2. निश्चित गर्नुहोस् कि तपाइँ &lt;a href=kotatsu://about&gt;Kotatsu को नवीनतम संस्करण&lt;/a&gt; प्रयोग गर्दै हुनुहुन्छ&lt;br&gt; 3. यदि यो उपलब्ध छ भने, विकासकर्ताहरूलाई त्रुटि रिपोर्ट पठाउनुहोस्।</string>
     <string name="suggestions_excluded_genres">जानरा अलग गर्नु</string>
     <string name="suggestions_updating">सुझावहरू अपडेट गर्दै</string>
+    <string name="text_empty_holder_secondary_filtered">तपाईंले चयन गर्नुभएको फिल्टरसँग मिल्दो कुनै माङ्गा छैन</string>
+    <string name="download_slowdown">डाउनलोड ढिलो गरियो</string>
+    <string name="download_slowdown_summary">तपाईंको IP ठेगाना अवरुद्ध हुनबाट जोगिन मद्दत गर्दछ</string>
+    <string name="chapters_grid_view">ग्रिड भ्यू</string>
+    <string name="suggestions_excluded_genres_summary">विधाहरू निर्दिष्ट गर्नुहोस् जुन तपाईं सुझावहरूमा हेर्न चाहनुहुन्न</string>
+    <string name="text_delete_local_manga_batch">यन्त्रबाट चयन गरिएका वस्तुहरू स्थायी मेट्ने हो?</string>
+    <string name="local_manga_processing">मांगा प्रशोधन सेब गरियो</string>
+    <string name="removal_completed">हटाउने कार्य सम्पन्न भयो</string>
+    <string name="retry">पुन: प्रयास गर्नुहोस्</string>
 </resources>

@@ -251,7 +251,7 @@
     <string name="manga_error_description_pattern">Podrobnosti chyby:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Zkuste &lt;a href=%2$s&gt;otveřít mangu v prohlížeči&lt;/a&gt; abyste se ujistili že je dostupná na zdroji&lt;br&gt;2. Ujistěte se že používáte &lt;a href=kotatsu://about&gt;nejnovější verzi Kotatsu&lt;/a&gt;&lt;br&gt;3. Pokud je dostupná, pošlete hlášení o chybě vývojářům.</string>
     <string name="history_shortcuts">Zobrazovat zkratky nedávných mang</string>
     <string name="history_shortcuts_summary">Udělejte nedávné mangy dostupné dlouhým kliknutím na ikonu aplikace</string>
-    <string name="reader_control_ltr_summary">Neměň směr přepínání stránek v režimu čtení, například stisknutí pravé klávesy vždy přepne na další stránku. Tato volba ovlivňuje pouze hardwarová vstupní zařízení.</string>
+    <string name="reader_control_ltr_summary">Neměňte směr přepínání stránek v režimu čtení; například stisknutí šipky vpravo vždy přepne na další stránku. Tato volba ovlivňuje pouze hardwarová vstupní zařízení</string>
     <string name="reader_control_ltr">Ovládání ergonomické čtečky</string>
     <string name="color_correction">Korekce barev</string>
     <string name="brightness">Jas</string>
@@ -315,7 +315,7 @@
     <string name="enable">Zapnout</string>
     <string name="no_thanks">Ne, děkuji</string>
     <string name="cancel_all_downloads_confirm">Všechna aktivní stahování budou zrušena, částečně stažená data budou ztracena</string>
-    <string name="remove_completed_downloads_confirm">Historie stahování bude permanentně odstraněna. Žádné stažené soubory nebudou ovlivněny.</string>
+    <string name="remove_completed_downloads_confirm">Historie stahování bude permanentně odstraněna. Žádné stažené soubory nebudou ovlivněny</string>
     <string name="text_downloads_list_holder">Nemáte žádná stažení</string>
     <string name="downloads_resumed">Stahování bylo vráceno</string>
     <string name="downloads_paused">Stahování bylo pozastaveno</string>
@@ -654,13 +654,13 @@
     <string name="unpin">Odepnout</string>
     <string name="too_many_requests_message_retry">Server přetížen. Zkuste to za %s</string>
     <string name="minutes_seconds_short">%1$d m %2$d s</string>
-    <string name="invalid_proxy_configuration">Nesprávná proxy konfigurace</string>
-    <string name="plugin_incompatible_with_cause">Plugin error:%s\nUjisti se, že používáš poslední verzi Kotatsu a pluginu</string>
+    <string name="invalid_proxy_configuration">Nesprávná konfigurace proxy</string>
+    <string name="plugin_incompatible_with_cause">Plugin error:%s\n Ujistěte se, že používáte nejnovější verzi Kotatsu a pluginu</string>
     <string name="percent_left">Procent zbývá</string>
     <string name="plugin_incompatible">Nekompatibilní plugin nebo vnitřní chyba. Ujistěte se, že používáte nejnovější verzi pluginu a aplikace Kotatsu.</string>
     <string name="external_source">Externí zdroj/plugin</string>
     <string name="retry">Opakovat</string>
-    <string name="connection_ok">Připojení je OK</string>
+    <string name="connection_ok">Připojení je v pořádku</string>
     <string name="recent_sources">Nedávné zdroje</string>
     <string name="image_server">Preferovaný server pro média</string>
     <string name="crop_pages">Oříznout stránky</string>
@@ -671,4 +671,27 @@
     <string name="percent_read">Procenta přečtených</string>
     <string name="chapters_read">Kapitol přečtených</string>
     <string name="chapters_left">Kapitol zbývajících</string>
+    <string name="show_quick_filters_summary">Povolí možnost filtrovat seznamy mang určitými parametry</string>
+    <string name="unstable_feature_summary">Tato funkce je experimentální. Vytvořte si zálohu před tím, než ji zkusíte</string>
+    <string name="content_type_manhwa">Manhwa</string>
+    <string name="recently_added">Nedávno přidané</string>
+    <string name="popular_in_month">Populární tento měsíc</string>
+    <string name="popular_in_year">Populární tento rok</string>
+    <string name="original_language">Původní jazyk</string>
+    <string name="year">Rok</string>
+    <string name="demographic_josei">Josei</string>
+    <string name="content_type_manhua">Manhua</string>
+    <string name="added_long_ago">Přidáno před dlouhou dobou</string>
+    <string name="popular_in_hour">Populární tuto hodinu</string>
+    <string name="demographic_seinen">Seinen</string>
+    <string name="demographics">Země</string>
+    <string name="popular_today">Populární dnes</string>
+    <string name="popular_in_week">Populární tento týden</string>
+    <string name="demographic_shounen">Shounen</string>
+    <string name="demographic_shoujo">Shoujo</string>
+    <string name="years">Roky</string>
+    <string name="any">Jakýkoliv</string>
+    <string name="chapters_all">Všechny</string>
+    <string name="ask_every_time">Vždy se zeptat</string>
+    <string name="sfw">SFW</string>
 </resources>
