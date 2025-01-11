@@ -152,7 +152,8 @@ class ImportService : CoroutineIntentService() {
 		private const val CHANNEL_ID = "importing"
 		private const val FOREGROUND_NOTIFICATION_ID = 37
 
-		fun start(context: Context, uris: Iterable<Uri>): Boolean = try {
+		fun start(context: Context, uris: Collection<Uri>): Boolean = try {
+			require(uris.isNotEmpty())
 			for (uri in uris) {
 				val intent = Intent(context, ImportService::class.java)
 				intent.putExtra(DATA_URI, uri.toString())
