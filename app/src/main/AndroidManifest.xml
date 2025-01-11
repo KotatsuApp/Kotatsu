@@ -280,6 +280,10 @@
 			android:name="org.koitharu.kotatsu.local.ui.LocalIndexUpdateService"
 			android:label="@string/local_manga_processing" />
 		<service
+			android:name="org.koitharu.kotatsu.local.ui.ImportService"
+			android:foregroundServiceType="dataSync"
+			android:label="@string/importing_manga" />
+		<service
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetService"
 			android:label="@string/manga_shelf"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />
