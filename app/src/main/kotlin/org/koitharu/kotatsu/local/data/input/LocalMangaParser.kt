@@ -36,7 +36,6 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.parsers.util.toCamelCase
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import java.io.File
 
@@ -86,7 +85,7 @@ class LocalMangaParser(private val uri: Uri) {
 				},
 			)
 		} else {
-			val title = rootFile.nameWithoutExtension.replace("_", " ").toCamelCase()
+			val title = rootFile.name.fileNameToTitle()
 			val coverEntry = fileSystem.findFirstImage(rootPath)
 			Manga(
 				id = rootFile.absolutePath.longHashCode(),
@@ -116,7 +115,7 @@ class LocalMangaParser(private val uri: Uri) {
 						}.toString().removePrefix(Path.DIRECTORY_SEPARATOR)
 						MangaChapter(
 							id = "$i$s".longHashCode(),
-							name = s.ifEmpty { title },
+							name = s.fileNameToTitle().ifEmpty { title },
 							number = 0f,
 							volume = 0,
 							source = LocalMangaSource,
@@ -268,6 +267,10 @@ class LocalMangaParser(private val uri: Uri) {
 		} else {
 			Path.DIRECTORY_SEPARATOR + this
 		}.toPath()
+
+		private fun String.fileNameToTitle() = substringBeforeLast('.')
+			.replace('_', ' ')
+			.replaceFirstChar { it.uppercase() }
 
 		private fun Manga.copyInternal(
 			url: String = this.url,
