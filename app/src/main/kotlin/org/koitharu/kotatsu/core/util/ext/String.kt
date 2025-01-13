@@ -8,7 +8,7 @@ import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import java.util.UUID
 
-inline fun <C : CharSequence?> C?.ifNullOrEmpty(defaultValue: () -> C): C {
+inline fun <C : R, R : CharSequence?> C?.ifNullOrEmpty(defaultValue: () -> R): R {
 	return if (this.isNullOrEmpty()) defaultValue() else this
 }
 

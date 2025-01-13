@@ -274,7 +274,7 @@ class DetailsActivity :
 				startActivity(
 					ImageActivity.newIntent(
 						v.context,
-						manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
+						manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl } ?: return,
 						manga.source,
 					),
 					scaleUpActivityOptionsOf(v),

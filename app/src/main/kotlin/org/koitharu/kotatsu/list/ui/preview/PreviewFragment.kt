@@ -100,7 +100,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			R.id.imageView_cover -> startActivity(
 				ImageActivity.newIntent(
 					v.context,
-					manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
+					manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl } ?: return,
 					manga.source,
 				),
 				scaleUpActivityOptionsOf(v),

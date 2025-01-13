@@ -11,7 +11,7 @@ sealed class MangaListModel : ListModel {
 	abstract val id: Long
 	abstract val manga: Manga
 	abstract val title: String
-	abstract val coverUrl: String
+	abstract val coverUrl: String?
 	abstract val counter: Int
 	abstract val isFavorite: Boolean
 	abstract val progress: ReadingProgress?
