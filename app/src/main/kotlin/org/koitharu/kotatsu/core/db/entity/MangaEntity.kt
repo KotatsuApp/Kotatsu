@@ -14,7 +14,7 @@ data class MangaEntity(
 	@ColumnInfo(name = "url") val url: String,
 	@ColumnInfo(name = "public_url") val publicUrl: String,
 	@ColumnInfo(name = "rating") val rating: Float, // normalized value [0..1] or -1
-	@ColumnInfo(name = "nsfw") val isNsfw: Boolean,
+	@ColumnInfo(name = "nsfw") val isNsfw: Boolean, // TODO change to contentRating
 	@ColumnInfo(name = "cover_url") val coverUrl: String,
 	@ColumnInfo(name = "large_cover_url") val largeCoverUrl: String?,
 	@ColumnInfo(name = "state") val state: String?,

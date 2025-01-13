@@ -22,7 +22,7 @@ fun Collection<TagEntity>.toMangaTags() = mapToSet(TagEntity::toMangaTag)
 
 fun Collection<TagEntity>.toMangaTagsList() = map(TagEntity::toMangaTag)
 
-fun MangaEntity.toManga(tags: Set<MangaTag>, chapters: List<ChapterEntity>?) = Manga(
+fun MangaEntity.toManga(tags: Set<MangaTag>, chapters: List<ChapterEntity>?) = Manga( // TODO
 	id = this.id,
 	title = this.title,
 	altTitle = this.altTitle,
@@ -65,7 +65,7 @@ fun Manga.toEntity() = MangaEntity(
 	publicUrl = publicUrl,
 	source = source.name,
 	largeCoverUrl = largeCoverUrl,
-	coverUrl = coverUrl,
+	coverUrl = coverUrl.orEmpty(),
 	altTitle = altTitle,
 	rating = rating,
 	isNsfw = isNsfw,

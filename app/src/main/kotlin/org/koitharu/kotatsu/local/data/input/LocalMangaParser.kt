@@ -34,7 +34,6 @@ import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import java.io.File
@@ -61,7 +60,7 @@ class LocalMangaParser(private val uri: Uri) {
 		val mangaInfo = index?.getMangaInfo()
 		if (mangaInfo != null) {
 			val coverEntry: Path? = index.getCoverEntry()?.let { rootPath / it } ?: fileSystem.findFirstImage(rootPath)
-			mangaInfo.copyInternal(
+			mangaInfo.copy(
 				source = LocalMangaSource,
 				url = rootFile.toUri().toString(),
 				coverUrl = coverEntry?.let { uri.child(it, resolve = true).toString() }.orEmpty(),
@@ -72,7 +71,7 @@ class LocalMangaParser(private val uri: Uri) {
 						if (path != null && !fileSystem.exists(rootPath / path)) {
 							null
 						} else {
-							c.copyInternal(
+							c.copy(
 								url = path?.let {
 									uri.child(it, resolve = false).toString()
 								} ?: uri.toString(),
@@ -271,44 +270,5 @@ class LocalMangaParser(private val uri: Uri) {
 		private fun String.fileNameToTitle() = substringBeforeLast('.')
 			.replace('_', ' ')
 			.replaceFirstChar { it.uppercase() }
-
-		private fun Manga.copyInternal(
-			url: String = this.url,
-			coverUrl: String = this.coverUrl,
-			largeCoverUrl: String? = this.largeCoverUrl,
-			chapters: List<MangaChapter>? = this.chapters,
-			source: MangaSource = this.source,
-		): Manga = Manga(
-			id = id,
-			title = title,
-			altTitle = altTitle,
-			url = url,
-			publicUrl = publicUrl,
-			rating = rating,
-			isNsfw = isNsfw,
-			coverUrl = coverUrl,
-			tags = tags,
-			state = state,
-			author = author,
-			largeCoverUrl = largeCoverUrl,
-			description = description,
-			chapters = chapters,
-			source = source,
-		)
-
-		private fun MangaChapter.copyInternal(
-			url: String = this.url,
-			source: MangaSource = this.source,
-		) = MangaChapter(
-			id = id,
-			name = name,
-			number = number,
-			volume = volume,
-			url = url,
-			scanlator = scanlator,
-			uploadDate = uploadDate,
-			branch = branch,
-			source = source,
-		)
 	}
 }

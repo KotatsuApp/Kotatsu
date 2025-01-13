@@ -82,7 +82,7 @@ class ExternalPluginContentSource(
 			publicUrl = details.publicUrl.ifEmpty { manga.publicUrl },
 			rating = maxOf(details.rating, manga.rating),
 			isNsfw = details.isNsfw,
-			coverUrl = details.coverUrl.ifEmpty { manga.coverUrl },
+			coverUrl = details.coverUrl.ifNullOrEmpty { manga.coverUrl },
 			tags = details.tags + manga.tags,
 			state = details.state ?: manga.state,
 			author = details.author.ifNullOrEmpty { manga.author },

@@ -82,7 +82,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			)
 
 			R.id.imageView_cover -> router.openImage(
-				url = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
+				url = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl } ?: return,
 				source = manga.source,
 				anchor = v,
 			)

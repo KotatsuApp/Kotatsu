@@ -225,7 +225,7 @@ class DetailsActivity :
 			R.id.imageView_cover -> {
 				val manga = viewModel.manga.value ?: return
 				router.openImage(
-					url = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl },
+					url = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl } ?: return,
 					source = manga.source,
 					anchor = v,
 				)

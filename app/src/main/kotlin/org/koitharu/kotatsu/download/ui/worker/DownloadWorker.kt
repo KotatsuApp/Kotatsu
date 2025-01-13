@@ -204,7 +204,7 @@ class DownloadWorker @AssistedInject constructor(
 					format = task.format ?: settings.preferredDownloadFormat,
 				)
 				val coverUrl = mangaDetails.largeCoverUrl.ifNullOrEmpty { mangaDetails.coverUrl }
-				if (coverUrl.isNotEmpty()) {
+				if (!coverUrl.isNullOrEmpty()) {
 					downloadFile(coverUrl, destination, repo.source).let { file ->
 						output.addCover(file, getMediaType(coverUrl, file))
 						file.deleteAwait()

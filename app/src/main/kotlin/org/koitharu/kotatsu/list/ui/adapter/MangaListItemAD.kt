@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import coil3.ImageLoader
 import coil3.request.allowRgb565
 import coil3.request.transformations
-import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
