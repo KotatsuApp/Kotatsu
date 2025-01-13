@@ -209,6 +209,7 @@
 		<activity android:name="org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity" />
 		<activity
 			android:name="org.koitharu.kotatsu.sync.ui.SyncAuthActivity"
+			android:exported="true"
 			android:label="@string/sync" />
 		<activity
 			android:name="org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity"
