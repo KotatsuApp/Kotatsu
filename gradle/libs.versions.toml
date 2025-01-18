@@ -1,6 +1,6 @@
 [versions]
 acra = "5.12.0"
-activity = "1.9.3"
+activity = "1.10.0"
 adapterdelegates = "4.3.2"
 appcompat = "1.7.0"
 avifDecoder = "1.1.1.14d8e3c4"
@@ -17,9 +17,9 @@ diskLruCache = "1.4"
 fragment = "1.8.5"
 gradle = "8.8.0"
 guava = "33.3.1-android"
-hilt = "2.54"
-hiltWork = "1.2.0"
-json = "20240303"
+dagger = "2.55"
+hilt = "1.2.0"
+json = "20250107"
 junit = "4.13.2"
 junitKtx = "1.2.1"
 kotlin = "2.0.21"
@@ -30,10 +30,10 @@ markwon = "4.6.2"
 material = "1.13.0-alpha09"
 moshi = "1.15.2"
 okhttp = "4.12.0"
-okio = "3.9.1"
+okio = "3.10.2"
 parsers = "6abcdd8d4b"
 preference = "1.2.1"
-recyclerview = "1.3.2"
+recyclerview = "1.4.0"
 room = "2.6.1"
 ssiv = "ba48c29803"
 swiperefreshlayout = "1.1.0"
@@ -57,8 +57,8 @@ androidx-collection = { module = "androidx.collection:collection-ktx", version.r
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
-androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltWork" }
-androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt" }
 androidx-junit = { module = "androidx.test.ext:junit-ktx", version.ref = "junitKtx" }
 androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "lifecycle" }
 androidx-preference = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
@@ -84,10 +84,10 @@ conscrypt-android = { module = "org.conscrypt:conscrypt-android", version.ref = 
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 disk-lru-cache = { module = "com.github.solkin:disk-lru-cache", version.ref = "diskLruCache" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "dagger" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 json = { module = "org.json:json", version.ref = "json" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -112,4 +112,4 @@ workinspector = { module = "com.github.Koitharu:WorkInspector", version.ref = "w
 android-application = { id = "com.android.application", version.ref = "gradle" }
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
