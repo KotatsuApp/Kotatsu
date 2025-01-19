@@ -4,20 +4,7 @@ import androidx.collection.ArrayMap
 import androidx.collection.ArraySet
 import androidx.collection.LongSet
 import org.koitharu.kotatsu.BuildConfig
-import java.util.Collections
 import java.util.EnumSet
-
-inline fun <T> MutableSet(size: Int, init: (index: Int) -> T): MutableSet<T> {
-	val set = ArraySet<T>(size)
-	repeat(size) { index -> set.add(init(index)) }
-	return set
-}
-
-inline fun <T> Set(size: Int, init: (index: Int) -> T): Set<T> = when (size) {
-	0 -> emptySet()
-	1 -> Collections.singleton(init(0))
-	else -> MutableSet(size, init)
-}
 
 fun <T> Collection<T>.asArrayList(): ArrayList<T> = if (this is ArrayList<*>) {
 	this as ArrayList<T>
@@ -74,15 +61,6 @@ fun <T> Iterable<T>.sortedWithSafe(comparator: Comparator<in T>): List<T> = try 
 	} else {
 		toList()
 	}
-}
-
-fun Collection<*>?.sizeOrZero() = this?.size ?: 0
-
-@Suppress("UNCHECKED_CAST")
-inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
-	val result = arrayOfNulls<R>(size)
-	forEachIndexed { index, t -> result[index] = transform(t) }
-	return result as Array<R>
 }
 
 fun LongSet.toLongArray(): LongArray {

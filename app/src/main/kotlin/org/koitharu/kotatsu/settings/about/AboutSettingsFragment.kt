@@ -9,6 +9,7 @@ import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
@@ -29,10 +30,8 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 		addPreferencesFromResource(R.xml.pref_about)
 		findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.run {
 			title = getString(R.string.app_version, BuildConfig.VERSION_NAME)
-			isEnabled = viewModel.isUpdateSupported
 		}
 		findPreference<SwitchPreferenceCompat>(AppSettings.KEY_UPDATES_UNSTABLE)?.run {
-			isVisible = viewModel.isUpdateSupported
 			isEnabled = VersionId(BuildConfig.VERSION_NAME).isStable
 			if (!isEnabled) isChecked = true
 		}
@@ -40,9 +39,12 @@ class AboutSettingsFragment : BasePreferenceFragment(R.string.about) {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		viewModel.isLoading.observe(viewLifecycleOwner) {
-			findPreference<Preference>(AppSettings.KEY_APP_UPDATE)?.isEnabled = !it
-		}
+		combine(viewModel.isUpdateSupported, viewModel.isLoading, ::Pair)
+			.observe(viewLifecycleOwner) { (isUpdateSupported, isLoading) ->
+				findPreference<Preference>(AppSettings.KEY_UPDATES_UNSTABLE)?.isVisible = isUpdateSupported
+				findPreference<Preference>(AppSettings.KEY_APP_VERSION)?.isEnabled = isUpdateSupported && !isLoading
+
+			}
 		viewModel.onUpdateAvailable.observeEvent(viewLifecycleOwner, ::onUpdateAvailable)
 	}
 
