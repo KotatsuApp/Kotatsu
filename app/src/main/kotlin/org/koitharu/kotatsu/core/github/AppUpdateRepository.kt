@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.mapJSONNotNull
 import org.koitharu.kotatsu.parsers.util.parseJsonArray
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.suspendlazy.getOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -85,8 +86,8 @@ class AppUpdateRepository @Inject constructor(
 	}
 
 	@Suppress("KotlinConstantConditions")
-	fun isUpdateSupported(): Boolean {
-		return BuildConfig.BUILD_TYPE != BUILD_TYPE_RELEASE || appValidator.isOriginalApp
+	suspend fun isUpdateSupported(): Boolean {
+		return BuildConfig.BUILD_TYPE != BUILD_TYPE_RELEASE || appValidator.isOriginalApp.getOrNull() == true
 	}
 
 	suspend fun getCurrentVersionChangelog(): String? {
