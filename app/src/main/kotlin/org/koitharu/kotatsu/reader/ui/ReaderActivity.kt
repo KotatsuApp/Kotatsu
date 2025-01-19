@@ -154,6 +154,9 @@ class ReaderActivity :
 				.setAnchorView(viewBinding.appbarBottom)
 				.show()
 		}
+		viewModel.readerSettings.observe(this) {
+			viewBinding.infoBar.applyColorScheme(isBlackOnWhite = it.background.isLight(this))
+		}
 		viewModel.isZoomControlsEnabled.observe(this) {
 			viewBinding.zoomControl.isVisible = it
 		}

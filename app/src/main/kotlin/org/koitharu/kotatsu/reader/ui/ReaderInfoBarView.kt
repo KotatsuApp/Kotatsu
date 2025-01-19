@@ -20,11 +20,11 @@ import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
-import androidx.core.graphics.withScale
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
+import org.koitharu.kotatsu.core.util.ext.isNightMode
 import org.koitharu.kotatsu.core.util.ext.measureDimension
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.util.format
@@ -34,6 +34,8 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import com.google.android.material.R as materialR
 
+private const val ALPHA_TEXT = 200
+private const val ALPHA_BG = 180
 
 class ReaderInfoBarView @JvmOverloads constructor(
 	context: Context,
@@ -52,16 +54,16 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	private val insetRightFallback: Int
 	private val insetTopFallback: Int
 	private val insetCornerFallback = getSystemUiDimensionOffset("rounded_corner_content_padding")
-	private val colorText =
+	private var colorText =
 		(context.getThemeColorStateList(materialR.attr.colorOnSurface)
-			?: ColorStateList.valueOf(Color.BLACK)).withAlpha(200)
-	private val colorOutline =
+			?: ColorStateList.valueOf(Color.BLACK)).withAlpha(ALPHA_TEXT)
+	private var colorBackground =
 		(context.getThemeColorStateList(materialR.attr.colorSurface)
-			?: ColorStateList.valueOf(Color.WHITE)).withAlpha(200)
+			?: ColorStateList.valueOf(Color.WHITE)).withAlpha(ALPHA_BG)
 	private val batteryIcon = ContextCompat.getDrawable(context, R.drawable.ic_battery_outline)
 
 	private var currentTextColor: Int = Color.TRANSPARENT
-	private var currentOutlineColor: Int = Color.TRANSPARENT
+	private var currentBackgroundColor: Int = Color.TRANSPARENT
 	private var timeText = timeFormat.format(LocalTime.now())
 	private var batteryText = ""
 	private var text: String = ""
@@ -106,24 +108,28 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	override fun onDraw(canvas: Canvas) {
 		super.onDraw(canvas)
+		canvas.drawColor(currentBackgroundColor)
 		computeTextHeight()
 		val h = innerHeight.toFloat()
 		val ty = h / 2f + textBounds.height() / 2f - textBounds.bottom
 		paint.textAlign = Paint.Align.LEFT
-		canvas.drawTextOutline(
+		paint.color = currentTextColor
+		paint.style = Paint.Style.FILL
+		canvas.drawText(
 			text,
 			(paddingLeft + insetLeft).toFloat(),
 			paddingTop + insetTop + ty,
+			paint,
 		)
 		if (isTimeVisible) {
 			paint.textAlign = Paint.Align.RIGHT
 			var endX = (width - paddingRight - insetRight).toFloat()
-			canvas.drawTextOutline(timeText, endX, paddingTop + insetTop + ty)
+			canvas.drawText(timeText, endX, paddingTop + insetTop + ty, paint)
 			if (batteryText.isNotEmpty()) {
 				paint.getTextBounds(timeText, 0, timeText.length, textBounds)
 				endX -= textBounds.width()
 				endX -= h * 0.6f
-				canvas.drawTextOutline(batteryText, endX, paddingTop + insetTop + ty)
+				canvas.drawText(batteryText, endX, paddingTop + insetTop + ty, paint)
 				batteryIcon?.let {
 					paint.getTextBounds(batteryText, 0, batteryText.length, textBounds)
 					endX -= textBounds.width()
@@ -134,7 +140,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 						endX.toInt(),
 						(iconCenter + h / 2).toInt(),
 					)
-					it.drawWithOutline(canvas)
+					it.draw(canvas)
 				}
 			}
 		}
@@ -185,13 +191,25 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	override fun drawableStateChanged() {
 		currentTextColor = colorText.getColorForState(drawableState, colorText.defaultColor)
-		currentOutlineColor = colorOutline.getColorForState(drawableState, colorOutline.defaultColor)
+		currentBackgroundColor = colorBackground.getColorForState(drawableState, colorBackground.defaultColor)
 		super.drawableStateChanged()
 		if (batteryIcon != null && batteryIcon.isStateful && batteryIcon.setState(drawableState)) {
 			invalidateDrawable(batteryIcon)
 		}
 	}
 
+	fun applyColorScheme(isBlackOnWhite: Boolean) {
+		val isDarkTheme = resources.isNightMode
+		colorText = (context.getThemeColorStateList(
+			if (isBlackOnWhite != isDarkTheme) materialR.attr.colorOnSurface else materialR.attr.colorOnSurfaceInverse,
+		) ?: ColorStateList.valueOf(if (isBlackOnWhite) Color.BLACK else Color.WHITE)).withAlpha(ALPHA_TEXT)
+		colorBackground = (context.getThemeColorStateList(
+			if (isBlackOnWhite != isDarkTheme) materialR.attr.colorSurface else materialR.attr.colorSurfaceInverse,
+		) ?: ColorStateList.valueOf(if (isBlackOnWhite) Color.WHITE else Color.BLACK)).withAlpha(ALPHA_BG)
+		drawableStateChanged()
+	}
+
+	@SuppressLint("StringFormatMatches")
 	fun update(state: ReaderUiState?) {
 		text = if (state != null) {
 			context.getString(
@@ -220,32 +238,6 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		val str = text + batteryText + timeText
 		paint.getTextBounds(str, 0, str.length, textBounds)
 		return textBounds.height()
-	}
-
-	private fun Canvas.drawTextOutline(text: String, x: Float, y: Float) {
-		paint.color = currentOutlineColor
-		paint.style = Paint.Style.STROKE
-		drawText(text, x, y, paint)
-		paint.color = currentTextColor
-		paint.style = Paint.Style.FILL
-		drawText(text, x, y, paint)
-	}
-
-	private fun Drawable.drawWithOutline(canvas: Canvas) {
-		if (bounds.isEmpty) {
-			return
-		}
-		var requiredScale = (bounds.width() + paint.strokeWidth * 2f) / bounds.width().toFloat()
-		setTint(currentOutlineColor)
-		canvas.withScale(requiredScale, requiredScale, bounds.exactCenterX(), bounds.exactCenterY()) {
-			draw(canvas)
-		}
-		requiredScale = 1f / requiredScale
-		canvas.withScale(requiredScale, requiredScale, bounds.exactCenterX(), bounds.exactCenterY()) {
-			draw(canvas)
-		}
-		setTint(currentTextColor)
-		draw(canvas)
 	}
 
 	private fun updateCutoutInsets(insetsCompat: WindowInsetsCompat?) {
