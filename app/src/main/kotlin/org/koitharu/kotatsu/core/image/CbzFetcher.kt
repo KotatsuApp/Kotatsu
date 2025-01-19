@@ -23,8 +23,9 @@ class CbzFetcher(
 	override suspend fun fetch() = runInterruptible {
 		val filePath = uri.schemeSpecificPart.toPath()
 		val entryName = requireNotNull(uri.fragment)
+		val fs = options.fileSystem.openZip(filePath)
 		SourceFetchResult(
-			source = ImageSource(entryName.toPath(), options.fileSystem.openZip(filePath)),
+			source = ImageSource(entryName.toPath(), fs, closeable = fs),
 			mimeType = MimeTypes.getMimeTypeFromExtension(entryName)?.toString(),
 			dataSource = DataSource.DISK,
 		)

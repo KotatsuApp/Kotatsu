@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.URI_SCHEME_ZIP
+import org.koitharu.kotatsu.core.util.ext.isDirectory
 import org.koitharu.kotatsu.core.util.ext.isFileUri
 import org.koitharu.kotatsu.core.util.ext.isImage
 import org.koitharu.kotatsu.core.util.ext.isRegularFile
@@ -59,12 +60,13 @@ class LocalMangaParser(private val uri: Uri) {
 			val index = MangaIndex.read(fileSystem, rootPath / ENTRY_NAME_INDEX)
 			val mangaInfo = index?.getMangaInfo()
 			if (mangaInfo != null) {
-				val coverEntry: Path? =
-					index.getCoverEntry()?.let { rootPath / it } ?: fileSystem.findFirstImage(rootPath)
+				val coverEntry: Path? = index.getCoverEntry()?.let { rootPath / it }
 				mangaInfo.copy(
 					source = LocalMangaSource,
 					url = rootFile.toUri().toString(),
-					coverUrl = coverEntry?.let { uri.child(it, resolve = true).toString() },
+					coverUrl = coverEntry?.let {
+						uri.child(it, resolve = true).toString()
+					} ?: fileSystem.findFirstImageUri(rootPath)?.toString(),
 					largeCoverUrl = null,
 					chapters = if (withDetails) {
 						mangaInfo.chapters?.mapNotNull { c ->
@@ -86,19 +88,17 @@ class LocalMangaParser(private val uri: Uri) {
 				)
 			} else {
 				val title = rootFile.name.fileNameToTitle()
-				val coverEntry = fileSystem.findFirstImage(rootPath)
 				Manga(
 					id = rootFile.absolutePath.longHashCode(),
 					title = title,
 					url = rootFile.toUri().toString(),
 					publicUrl = rootFile.toUri().toString(),
 					source = LocalMangaSource,
-					coverUrl = coverEntry?.let { uri.child(it, resolve = true).toString() },
+					coverUrl = fileSystem.findFirstImageUri(rootPath)?.toString(),
 					chapters = if (withDetails) {
 						val chapters = fileSystem.listRecursively(rootPath)
 							.mapNotNullTo(HashSet()) { path ->
 								when {
-									path == coverEntry -> null
 									!fileSystem.isRegularFile(path) -> null
 									path.isImage() -> path.parent
 									hasZipExtension(path.name) -> path
@@ -171,20 +171,54 @@ class LocalMangaParser(private val uri: Uri) {
 	}
 
 	private fun Uri.child(path: Path, resolve: Boolean): Uri {
+		val file = toFile()
 		val builder = buildUpon()
-		if (isZipUri() || !resolve) {
+		val isZip = isZipUri() || file.isZipArchive
+		if (isZip) {
+			builder.scheme(URI_SCHEME_ZIP)
+		}
+		if (isZip || !resolve) {
 			builder.fragment(path.toString().removePrefix(Path.DIRECTORY_SEPARATOR))
 		} else {
-			val file = toFile()
-			if (file.isZipArchive) {
-				builder.fragment(path.toString().removePrefix(Path.DIRECTORY_SEPARATOR))
-				builder.scheme(URI_SCHEME_ZIP)
-			} else {
-				builder.appendEncodedPath(path.relativeTo(file.toOkioPath()).toString())
-			}
+			builder.appendEncodedPath(path.relativeTo(file.toOkioPath()).toString())
 		}
 		return builder.build()
 	}
+
+	private fun FileSystem.findFirstImageUri(
+		rootPath: Path,
+		recursive: Boolean = false
+	): Uri? = runCatchingCancellable {
+		val list = list(rootPath)
+		for (file in list.sortedWith(compareBy(AlphanumComparator()) { x -> x.name })) {
+			if (isRegularFile(file)) {
+				if (file.isImage()) {
+					return@runCatchingCancellable uri.child(file, resolve = true)
+				}
+				if (recursive && file.isZip()) {
+					openZip(file).use { zipFs ->
+						zipFs.findFirstImageUri(Path.DIRECTORY_SEPARATOR.toPath())?.let { subUri ->
+							val subPath = subUri.path.orEmpty().removePrefix(uri.path.orEmpty())
+								.replace(REGEX_PARENT_PATH_PREFIX, "")
+							return@runCatchingCancellable uri.child(file, resolve = true)
+								.child(subPath.toPath(), resolve = false)
+						}
+					}
+				}
+			} else if (recursive && isDirectory(file)) {
+				findFirstImageUri(file, true)?.let {
+					return@runCatchingCancellable it
+				}
+			}
+		}
+		if (recursive) {
+			null
+		} else {
+			findFirstImageUri(rootPath, recursive = true)
+		}
+	}.onFailure { e ->
+		e.printStackTraceDebug()
+	}.getOrNull()
 
 	private class FsAndPath(
 		val fileSystem: FileSystem,
@@ -204,6 +238,8 @@ class LocalMangaParser(private val uri: Uri) {
 	}
 
 	companion object {
+
+		private val REGEX_PARENT_PATH_PREFIX = Regex("^(/\\.\\.)+")
 
 		@Blocking
 		fun getOrNull(file: File): LocalMangaParser? = if ((file.isDirectory || file.isZipArchive) && file.canRead()) {
@@ -225,25 +261,9 @@ class LocalMangaParser(private val uri: Uri) {
 			}
 		}.flowOn(Dispatchers.Default).firstOrNull()
 
-		private fun FileSystem.findFirstImage(rootPath: Path) = findFirstImageImpl(rootPath, false)
-			?: findFirstImageImpl(rootPath, true)
-
-		private fun FileSystem.findFirstImageImpl(
-			rootPath: Path,
-			recursive: Boolean
-		): Path? = runCatchingCancellable {
-			if (recursive) {
-				listRecursively(rootPath)
-			} else {
-				list(rootPath).asSequence()
-			}.filter { isRegularFile(it) && it.isImage() }
-				.toListSorted(compareBy(AlphanumComparator()) { x -> x.toString() })
-				.firstOrNull()
-		}.onFailure { e ->
-			e.printStackTraceDebug()
-		}.getOrNull()
-
 		private fun Path.isImage(): Boolean = MimeTypes.getMimeTypeFromExtension(name)?.isImage == true
+
+		private fun Path.isZip(): Boolean = hasZipExtension(name)
 
 		private fun Uri.resolve(): Uri = if (isFileUri()) {
 			val file = toFile()
