@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.core.model.parcelable
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.core.os.ParcelCompat
 import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 import org.koitharu.kotatsu.core.model.MangaSource
@@ -25,7 +24,7 @@ data class ParcelableManga(
 			parcel.writeString(url)
 			parcel.writeString(publicUrl)
 			parcel.writeFloat(rating)
-			ParcelCompat.writeBoolean(parcel, isNsfw)
+			parcel.writeSerializable(contentRating)
 			parcel.writeString(coverUrl)
 			parcel.writeString(largeCoverUrl)
 			parcel.writeString(description.takeIf { withDescription })
@@ -43,8 +42,8 @@ data class ParcelableManga(
 				url = requireNotNull(parcel.readString()),
 				publicUrl = requireNotNull(parcel.readString()),
 				rating = parcel.readFloat(),
-				isNsfw = ParcelCompat.readBoolean(parcel),
-				coverUrl = requireNotNull(parcel.readString()),
+				contentRating = parcel.readSerializableCompat(),
+				coverUrl = parcel.readString(),
 				largeCoverUrl = parcel.readString(),
 				description = parcel.readString(),
 				tags = requireNotNull(parcel.readParcelableCompat<ParcelableMangaTags>()).tags,
