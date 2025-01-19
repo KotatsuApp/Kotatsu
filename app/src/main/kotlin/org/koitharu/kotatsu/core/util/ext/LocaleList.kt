@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.util.ext
 import android.content.Context
 import androidx.core.os.LocaleListCompat
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.parsers.util.Set
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.util.Locale
 

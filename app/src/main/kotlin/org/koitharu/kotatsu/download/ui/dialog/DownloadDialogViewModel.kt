@@ -21,7 +21,6 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
-import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.download.ui.worker.DownloadTask
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -30,6 +29,7 @@ import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.sizeOrZero
 import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
 import javax.inject.Inject

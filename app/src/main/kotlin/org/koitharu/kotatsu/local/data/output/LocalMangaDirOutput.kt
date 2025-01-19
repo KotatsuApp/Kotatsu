@@ -10,12 +10,12 @@ import okhttp3.internal.closeQuietly
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
+import org.koitharu.kotatsu.core.util.ext.toFileNameSafe
 import org.koitharu.kotatsu.core.zip.ZipOutput
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.parsers.util.toFileNameSafe
 import java.io.File
 
 class LocalMangaDirOutput(
@@ -96,7 +96,9 @@ class LocalMangaDirOutput(
 	}
 
 	suspend fun deleteChapters(ids: Set<Long>) = mutex.withLock {
-		val chapters = checkNotNull((index.getMangaInfo() ?: LocalMangaParser(rootFile).getManga(withDetails = true).manga).chapters) {
+		val chapters = checkNotNull(
+			(index.getMangaInfo() ?: LocalMangaParser(rootFile).getManga(withDetails = true).manga).chapters,
+		) {
 			"No chapters found"
 		}.withIndex()
 		val victimsIds = ids.toMutableSet()

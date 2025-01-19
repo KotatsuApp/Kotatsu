@@ -27,7 +27,6 @@ import org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
 import org.koitharu.kotatsu.core.util.ext.findActivity
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
-import org.koitharu.kotatsu.core.util.ext.mapToArray
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
@@ -39,6 +38,7 @@ import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.format
+import org.koitharu.kotatsu.parsers.util.mapToArray
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
 import javax.inject.Inject
 

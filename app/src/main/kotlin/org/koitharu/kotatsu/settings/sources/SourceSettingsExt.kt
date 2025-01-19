@@ -10,9 +10,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.EmptyMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
-import org.koitharu.kotatsu.core.util.ext.mapToArray
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.network.UserAgents
+import org.koitharu.kotatsu.parsers.util.mapToArray
 import org.koitharu.kotatsu.settings.utils.AutoCompleteTextViewPreference
 import org.koitharu.kotatsu.settings.utils.EditTextBindListener
 import org.koitharu.kotatsu.settings.utils.EditTextDefaultSummaryProvider
@@ -41,12 +41,10 @@ private fun PreferenceFragmentCompat.addPreferencesFromParserRepository(reposito
 					}
 				}.apply {
 					summaryProvider = EditTextDefaultSummaryProvider(key.defaultValue)
-					setOnBindEditTextListener(
-						EditTextBindListener(
-							inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_URI,
-							hint = key.defaultValue,
-							validator = DomainValidator(),
-						),
+					onBindEditTextListener = EditTextBindListener(
+						inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_URI,
+						hint = key.defaultValue,
+						validator = DomainValidator(),
 					)
 					setTitle(R.string.domain)
 					setDialogTitle(R.string.domain)
@@ -62,12 +60,10 @@ private fun PreferenceFragmentCompat.addPreferencesFromParserRepository(reposito
 						UserAgents.CHROME_DESKTOP,
 					)
 					summaryProvider = EditTextDefaultSummaryProvider(key.defaultValue)
-					setOnBindEditTextListener(
-						EditTextBindListener(
-							inputType = EditorInfo.TYPE_CLASS_TEXT,
-							hint = key.defaultValue,
-							validator = HeaderValidator(),
-						),
+					onBindEditTextListener = EditTextBindListener(
+						inputType = EditorInfo.TYPE_CLASS_TEXT,
+						hint = key.defaultValue,
+						validator = HeaderValidator(),
 					)
 					setTitle(R.string.user_agent)
 					setDialogTitle(R.string.user_agent)
@@ -119,6 +115,6 @@ private fun PreferenceFragmentCompat.addPreferencesFromEmptyRepository() {
 	preferenceScreen.addPreference(preference)
 }
 
-private fun Array<out String>.toStringArray(): Array<String> {
-	return Array(size) { i -> this[i] as? String ?: "" }
+private fun Array<out String?>.toStringArray(): Array<String> {
+	return Array(size) { i -> this[i].orEmpty() }
 }

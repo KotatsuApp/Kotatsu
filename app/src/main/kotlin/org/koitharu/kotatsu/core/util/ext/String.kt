@@ -2,24 +2,10 @@ package org.koitharu.kotatsu.core.util.ext
 
 import android.content.Context
 import android.database.DatabaseUtils
-import androidx.annotation.FloatRange
+import androidx.collection.arraySetOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.ellipsize
-import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import java.util.UUID
-
-inline fun <C : R, R : CharSequence?> C?.ifNullOrEmpty(defaultValue: () -> R): R {
-	return if (this.isNullOrEmpty()) defaultValue() else this
-}
-
-fun String.longHashCode(): Long {
-	var h = 1125899906842597L
-	val len: Int = this.length
-	for (i in 0 until len) {
-		h = 31 * h + this[i].code
-	}
-	return h
-}
 
 fun String.toUUIDOrNull(): UUID? = try {
 	UUID.fromString(this)
@@ -28,18 +14,34 @@ fun String.toUUIDOrNull(): UUID? = try {
 	null
 }
 
-fun String.digits() = filter { it.isDigit() }
-
-/**
- * @param threshold 0 = exact match
- */
-fun String.almostEquals(other: String, @FloatRange(from = 0.0) threshold: Float): Boolean {
-	if (threshold == 0f) {
-		return equals(other, ignoreCase = true)
+fun String.transliterate(skipMissing: Boolean): String {
+	val cyr = charArrayOf(
+		'а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п',
+		'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я', 'ё', 'ў',
+	)
+	val lat = arrayOf(
+		"a", "b", "v", "g", "d", "e", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p",
+		"r", "s", "t", "u", "f", "h", "ts", "ch", "sh", "sch", "", "i", "", "e", "ju", "ja", "jo", "w",
+	)
+	return buildString(length + 5) {
+		for (c in this@transliterate) {
+			val p = cyr.binarySearch(c.lowercaseChar())
+			if (p in lat.indices) {
+				if (c.isUpperCase()) {
+					append(lat[p].uppercase())
+				} else {
+					append(lat[p])
+				}
+			} else if (!skipMissing) {
+				append(c)
+			}
+		}
 	}
-	val diff = lowercase().levenshteinDistance(other.lowercase()) / ((length + other.length) / 2f)
-	return diff < threshold
 }
+
+fun String.toFileNameSafe(): String = this.transliterate(false)
+	.replace(Regex("[^a-z0-9_\\-]", arraySetOf(RegexOption.IGNORE_CASE)), " ")
+	.replace(Regex("\\s+"), "_")
 
 fun CharSequence.sanitize(): CharSequence {
 	return filterNot { c -> c.isReplacement() }
@@ -68,10 +70,11 @@ fun <T> Collection<T>.joinToStringWithLimit(context: Context, limit: Int, transf
 	}
 }
 
-@Deprecated("",
+@Deprecated(
+	"",
 	ReplaceWith(
 		"sqlEscapeString(this)",
-		"android.database.DatabaseUtils.sqlEscapeString"
-	)
+		"android.database.DatabaseUtils.sqlEscapeString",
+	),
 )
 fun String.sqlEscape(): String = DatabaseUtils.sqlEscapeString(this)

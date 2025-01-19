@@ -17,8 +17,8 @@ import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.exceptions.CloudFlareBlockedException
 import org.koitharu.kotatsu.core.util.ext.ensureSuccess
-import org.koitharu.kotatsu.core.util.ext.isHttpOrHttps
 import org.koitharu.kotatsu.parsers.util.await
+import org.koitharu.kotatsu.parsers.util.isHttpOrHttps
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.net.HttpURLConnection
 import java.util.Collections

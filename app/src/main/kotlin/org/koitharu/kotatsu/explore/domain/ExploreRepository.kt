@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.explore.domain
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.ext.almostEquals
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
@@ -11,6 +10,7 @@ import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.almostEquals
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.suggestions.domain.TagsBlacklist
 import javax.inject.Inject
@@ -77,7 +77,7 @@ class ExploreRepository @Inject constructor(
 		val list = repository.getList(
 			offset = 0,
 			order = order,
-			filter = MangaListFilter(tags = setOfNotNull(tag))
+			filter = MangaListFilter(tags = setOfNotNull(tag)),
 		).asArrayList()
 		if (settings.isSuggestionsExcludeNsfw) {
 			list.removeAll { it.isNsfw }

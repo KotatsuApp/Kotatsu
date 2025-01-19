@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.core.github
 
-import org.koitharu.kotatsu.core.util.ext.digits
+import org.koitharu.kotatsu.parsers.util.digits
 import java.util.Locale
 
 data class VersionId(

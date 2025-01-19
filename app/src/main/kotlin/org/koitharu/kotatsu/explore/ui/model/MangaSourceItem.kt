@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.explore.ui.model
 
 import org.koitharu.kotatsu.core.model.MangaSourceInfo
-import org.koitharu.kotatsu.core.util.ext.longHashCode
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.parsers.util.longHashCode
 
 data class MangaSourceItem(
 	val source: MangaSourceInfo,

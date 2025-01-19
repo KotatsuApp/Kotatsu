@@ -38,6 +38,7 @@ import org.koitharu.kotatsu.parsers.exception.ContentUnavailableException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerAuthRequiredException
 import java.io.ObjectOutputStream
 import java.net.ConnectException
