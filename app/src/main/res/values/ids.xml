@@ -2,8 +2,6 @@
 <resources>
 	<item name="toolbar" type="id" />
 	<item name="container" type="id" />
-	<item name="action_leaks" type="id" />
-	<item name="action_works" type="id" />
 	<item name="action_tracker" type="id" />
 	<item name="fast_scroller" type="id" />
 	<item name="group_branches" type="id" />
