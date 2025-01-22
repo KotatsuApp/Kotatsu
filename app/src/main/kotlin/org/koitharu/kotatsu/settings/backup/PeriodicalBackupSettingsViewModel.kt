@@ -7,15 +7,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.backup.BackupZipOutput.Companion.DIR_BACKUPS
 import org.koitharu.kotatsu.core.backup.ExternalBackupStorage
-import org.koitharu.kotatsu.core.backup.TelegramBackupUploader
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
-import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.resolveFile
 import java.io.File
 import java.util.Date
@@ -24,30 +21,16 @@ import javax.inject.Inject
 @HiltViewModel
 class PeriodicalBackupSettingsViewModel @Inject constructor(
 	private val settings: AppSettings,
-	private val telegramUploader: TelegramBackupUploader,
 	private val backupStorage: ExternalBackupStorage,
 	@ApplicationContext private val appContext: Context,
 ) : BaseViewModel() {
 
 	val lastBackupDate = MutableStateFlow<Date?>(null)
 	val backupsDirectory = MutableStateFlow<String?>("")
-	val isTelegramCheckLoading = MutableStateFlow(false)
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 
 	init {
 		updateSummaryData()
-	}
-
-	fun checkTelegram() {
-		launchJob(Dispatchers.Default) {
-			try {
-				isTelegramCheckLoading.value = true
-				telegramUploader.sendTestMessage()
-				onActionDone.call(ReversibleAction(R.string.connection_ok, null))
-			} finally {
-				isTelegramCheckLoading.value = false
-			}
-		}
 	}
 
 	fun updateSummaryData() {

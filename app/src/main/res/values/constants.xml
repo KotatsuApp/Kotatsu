@@ -20,8 +20,6 @@
 	<string name="acra_password" translatable="false">kgpuhoNJpSsQDCwu</string>
 	<string name="sync_authority_history" translatable="false">org.koitharu.kotatsu.history</string>
 	<string name="sync_authority_favourites" translatable="false">org.koitharu.kotatsu.favourites</string>
-	<string name="tg_backup_bot_token" translatable="false">7455491254:AAGYJKgpP1DZN3d9KZfb8tvtIdaIMxUayXM</string>
-	<string name="tg_backup_bot_name" translatable="false">kotatsu_backup_bot</string>
 	<string-array name="values_theme" translatable="false">
 		<item>-1</item>
 		<item>1</item>

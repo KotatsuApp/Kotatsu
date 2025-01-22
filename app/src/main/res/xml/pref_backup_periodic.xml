@@ -49,30 +49,4 @@
 		android:selectable="false"
 		app:isPreferenceVisible="false" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:dependency="backup_periodic"
-		android:key="backup_periodic_tg_enabled"
-		android:title="@string/send_backups_telegram"
-		app:allowDividerAbove="true" />
-
-	<EditTextPreference
-		android:dependency="backup_periodic_tg_enabled"
-		android:inputType="text"
-		android:key="backup_periodic_tg_chat_id"
-		android:title="@string/telegram_chat_id" />
-
-	<Preference
-		android:dependency="backup_periodic_tg_enabled"
-		android:key="backup_periodic_tg_open"
-		android:persistent="false"
-		android:summary="@string/open_telegram_bot_summary"
-		android:title="@string/open_telegram_bot" />
-
-	<Preference
-		android:dependency="backup_periodic_tg_enabled"
-		android:key="backup_periodic_tg_test"
-		android:persistent="false"
-		android:title="@string/test_connection" />
-
 </androidx.preference.PreferenceScreen>

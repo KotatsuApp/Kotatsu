@@ -490,12 +490,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getString(KEY_BACKUP_PERIODICAL_OUTPUT, null)?.toUriOrNull()
 		set(value) = prefs.edit { putString(KEY_BACKUP_PERIODICAL_OUTPUT, value?.toString()) }
 
-	val isBackupTelegramUploadEnabled: Boolean
-		get() = prefs.getBoolean(KEY_BACKUP_TG_ENABLED, false)
-
-	val backupTelegramChatId: String?
-		get() = prefs.getString(KEY_BACKUP_TG_CHAT, null)?.nullIfEmpty()
-
 	val isReadingTimeEstimationEnabled: Boolean
 		get() = prefs.getBoolean(KEY_READING_TIME, true)
 
@@ -723,8 +717,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SOURCES_VERSION = "sources_version"
 		const val KEY_SOURCES_ENABLED_ALL = "sources_enabled_all"
 		const val KEY_QUICK_FILTER = "quick_filter"
-		const val KEY_BACKUP_TG_ENABLED = "backup_periodic_tg_enabled"
-		const val KEY_BACKUP_TG_CHAT = "backup_periodic_tg_chat_id"
 
 		// keys for non-persistent preferences
 		const val KEY_APP_VERSION = "app_version"
@@ -738,8 +730,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PROXY_TEST = "proxy_test"
 		const val KEY_OPEN_BROWSER = "open_browser"
 		const val KEY_HANDLE_LINKS = "handle_links"
-		const val KEY_BACKUP_TG_OPEN = "backup_periodic_tg_open"
-		const val KEY_BACKUP_TG_TEST = "backup_periodic_tg_test"
 		const val KEY_CLEAR_MANGA_DATA = "manga_data_clear"
 
 		// old keys are for migration only
