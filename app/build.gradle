@@ -15,11 +15,24 @@ android {
 	namespace = 'org.koitharu.kotatsu'
 
 	defaultConfig {
+		def versionPropsFile = file('version.properties')
+		def Properties versionProps = new Properties()
+		versionProps.load(new FileInputStream(versionPropsFile))
+		if (System.getProperty('buildNumberIncrement') == 'true') {
+			def code = versionProps['build'].toInteger() + 1
+			versionProps['build'] = code.toString()
+			versionProps.store(versionPropsFile.newWriter(), null)
+		}
+		def code = versionProps['code'].toInteger()
+		def base = versionProps['base'].trim()
+		def build = versionProps['build'].toInteger()
+		def variant = versionProps['variant'].trim()
+
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 700
-		versionName = '7.7.8'
+		versionCode = code * 1000 + build
+		versionName = base + (build == 0 ? '' : '.' + build) + (variant == '' ? '' : '-') + variant
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
