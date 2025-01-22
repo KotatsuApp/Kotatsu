@@ -9,20 +9,14 @@ plugins {
 	id 'dagger.hilt.android.plugin'
 }
 
+def Properties versionProps = getVersionProps()
+
 android {
 	compileSdk = 35
 	buildToolsVersion = '35.0.0'
 	namespace = 'org.koitharu.kotatsu'
 
 	defaultConfig {
-		def versionPropsFile = file('version.properties')
-		def Properties versionProps = new Properties()
-		versionProps.load(new FileInputStream(versionPropsFile))
-		if (System.getProperty('buildNumberIncrement') == 'true') {
-			def code = versionProps['build'].toInteger() + 1
-			versionProps['build'] = code.toString()
-			versionProps.store(versionPropsFile.newWriter(), null)
-		}
 		def code = versionProps['code'].toInteger()
 		def base = versionProps['base'].trim()
 		def build = versionProps['build'].toInteger()
@@ -206,4 +200,23 @@ dependencies {
 
 	androidTestImplementation libs.hilt.android.testing
 	kaptAndroidTest libs.hilt.android.compiler
+}
+
+tasks.register('versionInfo') {
+	def base = versionProps['base'].trim()
+	def build = versionProps['build'].toInteger()
+	def variant = versionProps['variant'].trim()
+	println base + (build == 0 ? '' : '.' + build) + (variant == '' ? '' : '-') + variant
+}
+
+def getVersionProps() {
+	def versionPropsFile = file('version.properties')
+	def Properties versionProps = new Properties()
+	versionProps.load(new FileInputStream(versionPropsFile))
+	if (System.getProperty('buildNumberIncrement') == 'true') {
+		def code = versionProps['build'].toInteger() + 1
+		versionProps['build'] = code.toString()
+		versionProps.store(versionPropsFile.newWriter(), null)
+	}
+	return versionProps
 }

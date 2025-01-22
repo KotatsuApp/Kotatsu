@@ -1,0 +1,119 @@
+name: Checkout & Build App
+
+on:
+    schedule:
+        - cron: '0 0 * * *'
+    workflow_dispatch:
+
+jobs:
+    check:
+        runs-on: ubuntu-22.04
+        outputs:
+            should_build: ${{ steps.check-updates.outputs.has_changes }}
+        steps:
+            - name: Check for updates 🌏
+              id: check-updates
+              run: |
+                  last_run=$(curl -s "https://api.github.com/repos/${{ github.repository }}/actions/workflows/build.yml/runs?status=completed&per_page=1" | jq -r '.workflow_runs[0].created_at')
+                  kotatsu_updated=$(curl -s "https://api.github.com/repos/KotatsuApp/Kotatsu/commits?since=$last_run" | jq '. | length')
+                  parsers_updated=$(curl -s "https://api.github.com/repos/KotatsuApp/kotatsu-parsers/commits?since=$last_run" | jq '. | length')
+                  if [ "$kotatsu_updated" -gt "0" ] || [ "$parsers_updated" -gt "0" ]; then
+                    echo "has_changes=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "has_changes=false" >> $GITHUB_OUTPUT
+                  fi
+
+    build:
+        needs: check
+        if: needs.check.outputs.should_build == 'true'
+        runs-on: ubuntu-22.04
+        outputs:
+            new_tag: ${{ steps.tagger.outputs.new_tag }}
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  ref: base
+
+            - uses: actions/setup-java@v4
+              with:
+                  distribution: 'temurin'
+                  java-version: '17'
+                  cache: 'gradle'
+
+            - name: Setup Android SDK 💻
+              uses: android-actions/setup-android@v3
+
+            - name: Grant permissions 💻
+              run: chmod a+x gradlew
+
+            - name: Generate build number 📆
+              id: tagger
+              run: |
+                  echo "new_tag=$(./gradlew -q versionInfo)" >> $GITHUB_OUTPUT
+                  echo "formatted_date=$(date +'%Y/%m/%d')" >> $GITHUB_OUTPUT
+
+            - name: Building new APK 💻
+              run: >-
+                  ./gradlew assembleRelease
+                  -DbuildNumberIncrement=true
+                  -DparsersVersionOverride=$(curl -s https://api.github.com/repos/kotatsuapp/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
+
+            - name: Packaging new APK 💻
+              uses: ilharp/sign-android-release@v1
+              id: sign_app
+              with:
+                  releaseDir: app/build/outputs/apk/release
+                  signingKey: ${{ secrets.ANDROID_SIGNING_KEY }}
+                  keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
+                  keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+                  keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+                  buildToolsVersion: 35.0.0
+
+            - name: Prepare to Upload 🌏
+              run: |
+                  mv ${{steps.sign_app.outputs.signedFile}} app/build/outputs/apk/release/release.apk
+                  echo "SIGNED_APK=app/build/outputs/apk/release/release.apk" >> $GITHUB_ENV
+
+            - name: Get latest changes 📑
+              id: changelog
+              run: |
+                  CHANGELOG=$(cat CHANGELOG.txt)
+                  echo "content<<EOF" >> $GITHUB_OUTPUT
+                  echo "$CHANGELOG" >> $GITHUB_OUTPUT
+                  echo "EOF" >> $GITHUB_OUTPUT
+
+            - name: Create new GH Release + Uploading 🌏
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: v${{ steps.tagger.outputs.new_tag }}
+                  name: "Build ${{ steps.tagger.outputs.new_tag }}"
+                  body: |
+                      Automated build generated on ${{ steps.tagger.outputs.formatted_date }}
+                      
+                      ${{ steps.changelog.outputs.content }}
+                  files: ${{ env.SIGNED_APK }}
+                  prerelease: false
+
+    update:
+        needs: build
+        if: needs.check.outputs.should_build == 'true'
+        runs-on: ubuntu-22.04
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  ref: master
+                  fetch-depth: 0
+
+            - name: Commit 🌏
+              run: |
+                  git config --local user.email "autorelease@users.noreply.github.com"
+                  git config --local user.name "autorelease"
+                  if [[ -n $(git status -s) ]]; then
+                    git add README.md
+                    git commit -m "Automatic release v${{ needs.build.outputs.new_tag }}"
+                    git push origin master
+                  else
+                    echo "No changes to push!"
+                  fi
