@@ -128,7 +128,7 @@ class LocalMangaParser(private val uri: Uri) {
 					},
 					altTitle = null,
 					rating = -1f,
-					isNsfw = false,
+					contentRating = null,
 					tags = setOf(),
 					state = null,
 					author = null,
@@ -171,7 +171,7 @@ class LocalMangaParser(private val uri: Uri) {
 	}
 
 	private fun Uri.child(path: Path, resolve: Boolean): Uri {
-		val file = toFile()
+		val file = fileFromPath()
 		val builder = buildUpon()
 		val isZip = isZipUri() || file.isZipArchive
 		if (isZip) {
@@ -277,6 +277,8 @@ class LocalMangaParser(private val uri: Uri) {
 		} else {
 			this
 		}
+
+		private fun Uri.fileFromPath(): File = File(requireNotNull(path) { "Uri path is null: $this" })
 
 		@Blocking
 		private fun Uri.resolveFsAndPath(): FsAndPath {
