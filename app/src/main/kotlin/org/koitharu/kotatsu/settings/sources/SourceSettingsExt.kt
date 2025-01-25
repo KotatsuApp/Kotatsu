@@ -41,10 +41,12 @@ private fun PreferenceFragmentCompat.addPreferencesFromParserRepository(reposito
 					}
 				}.apply {
 					summaryProvider = EditTextDefaultSummaryProvider(key.defaultValue)
-					onBindEditTextListener = EditTextBindListener(
-						inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_URI,
-						hint = key.defaultValue,
-						validator = DomainValidator(),
+					setOnBindEditTextListener(
+						EditTextBindListener(
+							inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_URI,
+							hint = key.defaultValue,
+							validator = DomainValidator(),
+						),
 					)
 					setTitle(R.string.domain)
 					setDialogTitle(R.string.domain)
@@ -60,10 +62,12 @@ private fun PreferenceFragmentCompat.addPreferencesFromParserRepository(reposito
 						UserAgents.CHROME_DESKTOP,
 					)
 					summaryProvider = EditTextDefaultSummaryProvider(key.defaultValue)
-					onBindEditTextListener = EditTextBindListener(
-						inputType = EditorInfo.TYPE_CLASS_TEXT,
-						hint = key.defaultValue,
-						validator = HeaderValidator(),
+					setOnBindEditTextListener(
+						EditTextBindListener(
+							inputType = EditorInfo.TYPE_CLASS_TEXT,
+							hint = key.defaultValue,
+							validator = HeaderValidator(),
+						),
 					)
 					setTitle(R.string.user_agent)
 					setDialogTitle(R.string.user_agent)
