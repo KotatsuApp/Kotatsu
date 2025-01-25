@@ -62,7 +62,7 @@ class LocalMangaParser(private val uri: Uri) {
 			mangaInfo.copy(
 				source = LocalMangaSource,
 				url = rootFile.toUri().toString(),
-				coverUrl = coverEntry?.let { uri.child(it, resolve = true).toString() }.orEmpty(),
+				coverUrl = coverEntry?.let { uri.child(it, resolve = true).toString() },
 				largeCoverUrl = null,
 				chapters = if (withDetails) {
 					mangaInfo.chapters?.mapNotNull { c ->
@@ -92,9 +92,7 @@ class LocalMangaParser(private val uri: Uri) {
 				url = rootFile.toUri().toString(),
 				publicUrl = rootFile.toUri().toString(),
 				source = LocalMangaSource,
-				coverUrl = coverEntry?.let {
-					uri.child(it, resolve = true).toString()
-				}.orEmpty(),
+				coverUrl = coverEntry?.let { uri.child(it, resolve = true).toString() },
 				chapters = if (withDetails) {
 					val chapters = fileSystem.listRecursively(rootPath)
 						.mapNotNullTo(HashSet()) { path ->
