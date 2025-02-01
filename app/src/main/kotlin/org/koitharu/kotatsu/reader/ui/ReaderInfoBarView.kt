@@ -92,6 +92,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		insetLeftFallback = if (isRtl) insetEnd else insetStart
 		insetRightFallback = if (isRtl) insetStart else insetEnd
 		insetTopFallback = minOf(insetLeftFallback, insetRightFallback)
+		batteryIcon?.setTintList(colorText)
 	}
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -206,6 +207,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		colorBackground = (context.getThemeColorStateList(
 			if (isBlackOnWhite != isDarkTheme) materialR.attr.colorSurface else materialR.attr.colorSurfaceInverse,
 		) ?: ColorStateList.valueOf(if (isBlackOnWhite) Color.WHITE else Color.BLACK)).withAlpha(ALPHA_BG)
+		batteryIcon?.setTintList(colorText)
 		drawableStateChanged()
 	}
 
