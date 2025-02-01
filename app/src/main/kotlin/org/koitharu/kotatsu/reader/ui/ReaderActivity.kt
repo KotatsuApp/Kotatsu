@@ -146,6 +146,7 @@ class ReaderActivity :
 			onLoadingStateChanged(viewModel.isLoading.value)
 		}
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
+		viewModel.isInfoBarTransparent.observe(this) { viewBinding.infoBar.drawBackground = !it }
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(this))
 		viewModel.isPagesSheetEnabled.observe(this, MenuInvalidator(viewBinding.toolbarBottom))

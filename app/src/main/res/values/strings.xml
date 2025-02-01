@@ -792,4 +792,5 @@
 	<string name="enable_all_sources">Enable all manga sources</string>
 	<string name="enable_all_sources_summary">All available manga sources will be enabled permanently</string>
 	<string name="all_sources_enabled">All sources are enabled</string>
+	<string name="reader_info_bar_transparent">Transparent reader information bar</string>
 </resources>

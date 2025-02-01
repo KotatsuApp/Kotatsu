@@ -75,6 +75,12 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	private val innerWidth
 		get() = width - paddingLeft - paddingRight - insetLeft - insetRight
 
+	var drawBackground: Boolean = false
+		set(value) {
+			field = value
+			invalidate()
+		}
+
 	var isTimeVisible: Boolean = true
 		set(value) {
 			field = value
@@ -109,7 +115,9 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	override fun onDraw(canvas: Canvas) {
 		super.onDraw(canvas)
-		canvas.drawColor(currentBackgroundColor)
+		if (drawBackground) {
+			canvas.drawColor(currentBackgroundColor)
+		}
 		computeTextHeight()
 		val h = innerHeight.toFloat()
 		val ty = h / 2f + textBounds.height() / 2f - textBounds.bottom
