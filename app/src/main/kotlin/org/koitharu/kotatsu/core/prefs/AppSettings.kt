@@ -368,7 +368,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_READER_BAR, true)
 
 	val isReaderBarTransparent: Boolean
-		get() = prefs.getBoolean(KEY_READER_BAR, true)
+		get() = prefs.getBoolean(KEY_READER_BAR_TRANSPARENT, true)
 
 	val isReaderKeepScreenOn: Boolean
 		get() = prefs.getBoolean(KEY_READER_SCREEN_ON, true)
