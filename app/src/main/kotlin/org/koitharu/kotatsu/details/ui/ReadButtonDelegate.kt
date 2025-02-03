@@ -88,8 +88,12 @@ class ReadButtonDelegate(
 		menu.setOnMenuItemClickListener(this)
 		menu.setForceShowIcon(true)
 		menu.setOnDismissListener(this)
-		buttonMenu.isChecked = true
-		menu.show()
+		if (menu.menu.hasVisibleItems()) {
+			buttonMenu.isChecked = true
+			menu.show()
+		} else {
+			buttonMenu.isChecked = false
+		}
 	}
 
 	private fun prepareMenu(menu: Menu) {
