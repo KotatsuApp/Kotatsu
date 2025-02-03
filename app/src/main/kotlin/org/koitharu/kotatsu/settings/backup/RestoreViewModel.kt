@@ -10,14 +10,9 @@ import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.backup.BackupEntry
 import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipInput
-import org.koitharu.kotatsu.core.backup.CompositeResult
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseViewModel
-import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
-import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
-import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.Date
@@ -32,30 +27,28 @@ class RestoreViewModel @Inject constructor(
 	@ApplicationContext context: Context,
 ) : BaseViewModel() {
 
-	private val backupInput = suspendLazy {
-		val uri = savedStateHandle.get<String>(AppRouter.KEY_FILE)
-			?.toUriOrNull() ?: throw FileNotFoundException()
-		val contentResolver = context.contentResolver
-		runInterruptible(Dispatchers.IO) {
-			val tempFile = File.createTempFile("backup_", ".tmp")
-			(contentResolver.openInputStream(uri) ?: throw FileNotFoundException()).use { input ->
-				tempFile.outputStream().use { output ->
-					input.copyTo(output)
-				}
-			}
-			BackupZipInput.from(tempFile)
-		}
-	}
-
-	val progress = MutableStateFlow(-1f)
-	val onRestoreDone = MutableEventFlow<CompositeResult>()
+	val uri = savedStateHandle.get<String>(AppRouter.KEY_FILE)?.toUriOrNull()
+	private val contentResolver = context.contentResolver
 
 	val availableEntries = MutableStateFlow<List<BackupEntryModel>>(emptyList())
 	val backupDate = MutableStateFlow<Date?>(null)
 
 	init {
 		launchLoadingJob(Dispatchers.Default) {
-			val backup = backupInput.get()
+			loadBackupInfo()
+		}
+	}
+
+	private suspend fun loadBackupInfo() {
+		runInterruptible(Dispatchers.IO) {
+			val tempFile = File.createTempFile("backup_", ".tmp")
+			(uri?.let { contentResolver.openInputStream(it) } ?: throw FileNotFoundException()).use { input ->
+				tempFile.outputStream().use { output ->
+					input.copyTo(output)
+				}
+			}
+			BackupZipInput.from(tempFile)
+		}.use { backup ->
 			val entries = backup.entries()
 			availableEntries.value = BackupEntry.Name.entries.mapNotNull { entry ->
 				if (entry == BackupEntry.Name.INDEX || entry !in entries) {
@@ -71,15 +64,6 @@ class RestoreViewModel @Inject constructor(
 		}
 	}
 
-	override fun onCleared() {
-		super.onCleared()
-		runCatching {
-			backupInput.peek()?.closeAndDelete()
-		}.onFailure {
-			it.printStackTraceDebug()
-		}
-	}
-
 	fun onItemClick(item: BackupEntryModel) {
 		val map = availableEntries.value.associateByTo(EnumMap(BackupEntry.Name::class.java)) { it.name }
 		map[item.name] = item.copy(isChecked = !item.isChecked)
@@ -87,61 +71,10 @@ class RestoreViewModel @Inject constructor(
 		availableEntries.value = map.values.sortedBy { it.name.ordinal }
 	}
 
-	fun restore() {
-		launchLoadingJob {
-			val backup = backupInput.get()
-			val checkedItems = availableEntries.value.mapNotNullTo(EnumSet.noneOf(BackupEntry.Name::class.java)) {
-				if (it.isChecked) it.name else null
-			}
-			val result = CompositeResult()
-			val step = 1f / 6f
-
-			progress.value = 0f
-			if (BackupEntry.Name.HISTORY in checkedItems) {
-				backup.getEntry(BackupEntry.Name.HISTORY)?.let {
-					result += repository.restoreHistory(it)
-				}
-			}
-
-			progress.value += step
-			if (BackupEntry.Name.CATEGORIES in checkedItems) {
-				backup.getEntry(BackupEntry.Name.CATEGORIES)?.let {
-					result += repository.restoreCategories(it)
-				}
-			}
-
-			progress.value += step
-			if (BackupEntry.Name.FAVOURITES in checkedItems) {
-				backup.getEntry(BackupEntry.Name.FAVOURITES)?.let {
-					result += repository.restoreFavourites(it)
-				}
-			}
-
-			progress.value += step
-			if (BackupEntry.Name.BOOKMARKS in checkedItems) {
-				backup.getEntry(BackupEntry.Name.BOOKMARKS)?.let {
-					result += repository.restoreBookmarks(it)
-				}
-			}
-
-			progress.value += step
-			if (BackupEntry.Name.SOURCES in checkedItems) {
-				backup.getEntry(BackupEntry.Name.SOURCES)?.let {
-					result += repository.restoreSources(it)
-				}
-			}
-
-			progress.value += step
-			if (BackupEntry.Name.SETTINGS in checkedItems) {
-				backup.getEntry(BackupEntry.Name.SETTINGS)?.let {
-					result += repository.restoreSettings(it)
-				}
-			}
-
-			progress.value = 1f
-			onRestoreDone.call(result)
+	fun getCheckedEntries(): Set<BackupEntry.Name> = availableEntries.value
+		.mapNotNullTo(EnumSet.noneOf(BackupEntry.Name::class.java)) {
+			if (it.isChecked) it.name else null
 		}
-	}
 
 	/**
 	 * Check for inconsistent user selection

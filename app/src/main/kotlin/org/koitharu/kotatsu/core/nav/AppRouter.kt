@@ -54,6 +54,7 @@ import org.koitharu.kotatsu.list.ui.config.ListConfigBottomSheet
 import org.koitharu.kotatsu.list.ui.config.ListConfigSection
 import org.koitharu.kotatsu.local.ui.ImportDialogFragment
 import org.koitharu.kotatsu.local.ui.info.LocalInfoDialog
+import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.welcome.WelcomeSheet
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
@@ -512,6 +513,8 @@ class AppRouter private constructor(
 
 		fun suggestionsIntent(context: Context) = Intent(context, SuggestionsActivity::class.java)
 
+		fun homeIntent(context: Context) = Intent(context, MainActivity::class.java)
+
 		fun mangaUpdatesIntent(context: Context) = Intent(context, UpdatesActivity::class.java)
 
 		fun readerSettingsIntent(context: Context) =
@@ -561,9 +564,14 @@ class AppRouter private constructor(
 				.putExtra(KEY_SOURCE, source.name)
 		}
 
+		const val KEY_DATA = "data"
+		const val KEY_ENTRIES = "entries"
+		const val KEY_ERROR = "error"
 		const val KEY_EXCLUDE = "exclude"
+		const val KEY_FILE = "file"
 		const val KEY_FILTER = "filter"
 		const val KEY_ID = "id"
+		const val KEY_INDEX = "index"
 		const val KEY_LIST_SECTION = "list_section"
 		const val KEY_MANGA = "manga"
 		const val KEY_MANGA_LIST = "manga_list"
@@ -573,12 +581,8 @@ class AppRouter private constructor(
 		const val KEY_SOURCE = "source"
 		const val KEY_TAB = "tab"
 		const val KEY_TITLE = "title"
-		const val KEY_USER_AGENT = "user_agent"
 		const val KEY_URL = "url"
-		const val KEY_ERROR = "error"
-		const val KEY_FILE = "file"
-		const val KEY_INDEX = "index"
-		const val KEY_DATA = "data"
+		const val KEY_USER_AGENT = "user_agent"
 
 		const val ACTION_HISTORY = "${BuildConfig.APPLICATION_ID}.action.MANAGE_HISTORY"
 		const val ACTION_MANAGE_DOWNLOADS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_DOWNLOADS"

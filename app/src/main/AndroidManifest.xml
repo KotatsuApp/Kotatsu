@@ -281,6 +281,10 @@
 			android:name="org.koitharu.kotatsu.local.ui.LocalIndexUpdateService"
 			android:label="@string/local_manga_processing" />
 		<service
+			android:name="org.koitharu.kotatsu.settings.backup.RestoreService"
+			android:foregroundServiceType="dataSync"
+			android:label="@string/restore_backup" />
+		<service
 			android:name="org.koitharu.kotatsu.local.ui.ImportService"
 			android:foregroundServiceType="dataSync"
 			android:label="@string/importing_manga" />
