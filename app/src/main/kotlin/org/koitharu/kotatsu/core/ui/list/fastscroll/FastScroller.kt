@@ -162,7 +162,7 @@ class FastScroller @JvmOverloads constructor(
 
 	override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
 		super.onSizeChanged(w, h, oldW, oldH)
-		viewHeight = h
+		viewHeight = h - paddingTop - paddingBottom
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
