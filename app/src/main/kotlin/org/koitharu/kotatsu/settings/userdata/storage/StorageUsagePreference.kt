@@ -1,7 +1,8 @@
-package org.koitharu.kotatsu.settings.userdata
+package org.koitharu.kotatsu.settings.userdata.storage
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.AttributeSet
 import androidx.annotation.StringRes
 import androidx.core.widget.TextViewCompat
@@ -10,10 +11,9 @@ import androidx.preference.PreferenceViewHolder
 import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.widgets.SegmentedBarView
-import org.koitharu.kotatsu.core.util.KotatsuColors
 import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.KotatsuColors
 import org.koitharu.kotatsu.databinding.PreferenceMemoryUsageBinding
-import com.google.android.material.R as materialR
 
 class StorageUsagePreference @JvmOverloads constructor(
 	context: Context,
@@ -34,15 +34,15 @@ class StorageUsagePreference @JvmOverloads constructor(
 		val binding = PreferenceMemoryUsageBinding.bind(holder.itemView)
 		val storageSegment = SegmentedBarView.Segment(
 			usage?.savedManga?.percent ?: 0f,
-			KotatsuColors.segmentColor(context, materialR.attr.colorPrimary),
+			KotatsuColors.segmentColorRandom(context, Color.BLUE),
 		)
 		val pagesSegment = SegmentedBarView.Segment(
 			usage?.pagesCache?.percent ?: 0f,
-			KotatsuColors.segmentColor(context, materialR.attr.colorSecondary),
+			KotatsuColors.segmentColorRandom(context, Color.GREEN),
 		)
 		val otherSegment = SegmentedBarView.Segment(
 			usage?.otherCache?.percent ?: 0f,
-			KotatsuColors.segmentColor(context, materialR.attr.colorTertiary),
+			KotatsuColors.segmentColorRandom(context, Color.GRAY),
 		)
 
 		with(binding) {

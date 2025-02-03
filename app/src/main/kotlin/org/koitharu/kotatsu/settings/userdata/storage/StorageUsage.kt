@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings.userdata
+package org.koitharu.kotatsu.settings.userdata.storage
 
 data class StorageUsage(
 	val savedManga: Item,

@@ -745,6 +745,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_BACKUP_TG_OPEN = "backup_periodic_tg_open"
 		const val KEY_BACKUP_TG_TEST = "backup_periodic_tg_test"
 		const val KEY_CLEAR_MANGA_DATA = "manga_data_clear"
+		const val KEY_STORAGE_USAGE = "storage_usage"
 
 		// old keys are for migration only
 		private const val KEY_IMAGES_PROXY_OLD = "images_proxy"
