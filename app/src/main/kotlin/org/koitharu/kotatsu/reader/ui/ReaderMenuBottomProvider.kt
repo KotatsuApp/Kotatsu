@@ -9,11 +9,13 @@ import androidx.fragment.app.FragmentActivity
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.ReaderControl
+import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
 
 class ReaderMenuBottomProvider(
 	private val activity: FragmentActivity,
 	private val readerManager: ReaderManager,
 	private val screenOrientationHelper: ScreenOrientationHelper,
+	private val configCallback: ReaderConfigSheet.Callback,
 	private val viewModel: ReaderViewModel,
 ) : MenuProvider {
 
@@ -24,8 +26,8 @@ class ReaderMenuBottomProvider(
 
 	override fun onPrepareMenu(menu: Menu) {
 		val readerControls = viewModel.readerControls.value
-		val isPagesSheetEnabled = viewModel.content.value.pages.isNotEmpty() &&
-			ReaderControl.PAGES_SHEET in readerControls
+		val hasPages = viewModel.content.value.pages.isNotEmpty()
+		val isPagesSheetEnabled = hasPages && ReaderControl.PAGES_SHEET in readerControls
 		menu.findItem(R.id.action_pages_thumbs).run {
 			isVisible = isPagesSheetEnabled
 			if (isPagesSheetEnabled) {
@@ -47,12 +49,20 @@ class ReaderMenuBottomProvider(
 				}
 			}
 		}
+		menu.findItem(R.id.action_save_page)?.run {
+			isVisible = hasPages && ReaderControl.SAVE_PAGE in readerControls
+		}
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		return when (menuItem.itemId) {
 			R.id.action_screen_rotation -> {
 				toggleScreenRotation()
+				true
+			}
+
+			R.id.action_save_page -> {
+				configCallback.onSavePageClick()
 				true
 			}
 

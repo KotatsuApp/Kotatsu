@@ -166,7 +166,7 @@ class ReaderActivity :
 		}
 		addMenuProvider(ReaderMenuTopProvider(viewModel))
 		viewBinding.toolbarBottom.addMenuProvider(
-			ReaderMenuBottomProvider(this, readerManager, screenOrientationHelper, viewModel),
+			ReaderMenuBottomProvider(this, readerManager, screenOrientationHelper, this, viewModel),
 		)
 	}
 

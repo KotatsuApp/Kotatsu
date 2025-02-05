@@ -6,6 +6,14 @@
 	tools:ignore="AlwaysShowAction">
 
 	<item
+		android:id="@+id/action_save_page"
+		android:icon="@drawable/ic_save"
+		android:title="@string/save_page"
+		android:visible="false"
+		app:showAsAction="always"
+		tools:visible="true" />
+
+	<item
 		android:id="@+id/action_screen_rotation"
 		android:icon="@drawable/ic_screen_rotation"
 		android:title="@string/screen_orientation"

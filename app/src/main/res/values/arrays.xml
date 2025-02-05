@@ -130,5 +130,6 @@
 		<item>@string/pages_slider</item>
 		<item>@string/chapters_and_pages</item>
 		<item>@string/screen_orientation</item>
+		<item>@string/save_page</item>
 	</string-array>
 </resources>
