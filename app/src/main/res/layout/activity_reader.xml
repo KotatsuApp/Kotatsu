@@ -69,20 +69,19 @@
 			android:layout_height="wrap_content"
 			tools:menu="@menu/opt_reader_bottom">
 
-			<RelativeLayout
+			<LinearLayout
 				android:id="@+id/layout_slider"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center_vertical"
-				android:layout_marginEnd="2dp">
+				android:layout_marginEnd="2dp"
+				android:gravity="center_vertical|end">
 
 				<ImageButton
 					android:id="@+id/button_prev"
 					style="?actionButtonStyle"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_alignParentStart="true"
-					android:layout_centerVertical="true"
 					android:contentDescription="@string/prev_chapter"
 					android:src="@drawable/ic_prev"
 					android:tooltipText="@string/prev_chapter" />
@@ -91,9 +90,7 @@
 					android:id="@+id/slider"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
-					android:layout_centerVertical="true"
-					android:layout_toStartOf="@id/button_next"
-					android:layout_toEndOf="@id/button_prev"
+					android:layout_weight="1"
 					android:stepSize="1.0"
 					android:valueFrom="0"
 					app:labelBehavior="floating"
@@ -105,13 +102,11 @@
 					style="?actionButtonStyle"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_alignParentEnd="true"
-					android:layout_centerVertical="true"
 					android:contentDescription="@string/next_chapter"
 					android:src="@drawable/ic_next"
 					android:tooltipText="@string/next_chapter" />
 
-			</RelativeLayout>
+			</LinearLayout>
 
 		</com.google.android.material.appbar.MaterialToolbar>
 

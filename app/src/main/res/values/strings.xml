@@ -795,4 +795,7 @@
 	<string name="reader_info_bar_transparent">Transparent reader information bar</string>
 	<string name="backup_restored_background">The backup will be restored in the background</string>
 	<string name="restoring_backup">Restoring backup</string>
+	<string name="reader_controls_in_bottom_bar">Reader controls in bottom bar</string>
+	<string name="chapters_and_pages">Chapters and pages</string>
+	<string name="pages_slider">Page switch slider</string>
 </resources>

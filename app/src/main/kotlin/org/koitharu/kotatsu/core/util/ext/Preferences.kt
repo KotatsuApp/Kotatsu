@@ -2,11 +2,16 @@ package org.koitharu.kotatsu.core.util.ext
 
 import android.content.SharedPreferences
 import androidx.preference.ListPreference
+import androidx.preference.MultiSelectListPreference
 
 fun ListPreference.setDefaultValueCompat(defaultValue: String) {
 	if (value == null) {
 		value = defaultValue
 	}
+}
+
+fun MultiSelectListPreference.setDefaultValueCompat(defaultValue: Set<String>) {
+	setDefaultValue(defaultValue)
 }
 
 fun <E : Enum<E>> SharedPreferences.getEnumValue(key: String, enumClass: Class<E>): E? {

@@ -7,6 +7,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.nav.router
+import org.koitharu.kotatsu.core.prefs.ReaderControl
 
 class ReaderMenuBottomProvider(
 	private val activity: FragmentActivity,
@@ -20,10 +21,11 @@ class ReaderMenuBottomProvider(
 	}
 
 	override fun onPrepareMenu(menu: Menu) {
-		val hasPages = viewModel.content.value.pages.isNotEmpty()
+		val isPagesSheetEnabled = viewModel.content.value.pages.isNotEmpty() &&
+			ReaderControl.PAGES_SHEET in viewModel.readerControls.value
 		menu.findItem(R.id.action_pages_thumbs).run {
-			isVisible = hasPages
-			if (hasPages) {
+			isVisible = isPagesSheetEnabled
+			if (isPagesSheetEnabled) {
 				setIcon(if (viewModel.isPagesSheetEnabled.value) R.drawable.ic_grid else R.drawable.ic_list)
 			}
 		}
