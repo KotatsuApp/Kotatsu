@@ -13,6 +13,8 @@ object LocaleUtils {
 		val code = when (val c = locale.country.ifNullOrEmpty { locale.toLanguageTag() }.uppercase(Locale.ENGLISH)) {
 			"EN" -> "GB"
 			"JA" -> "JP"
+			"VI" -> "VN"
+			"ZH" -> "CN"
 			else -> c
 		}
 		val emoji = countryCodeToEmojiFlag(code)
