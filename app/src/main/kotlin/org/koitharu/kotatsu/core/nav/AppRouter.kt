@@ -428,10 +428,16 @@ class AppRouter private constructor(
 	}
 
 	fun closeWelcomeSheet(): Boolean {
-		val fm = fragment?.parentFragmentManager ?: activity?.supportFragmentManager ?: return false
-		val sheet = fm.findFragmentByTag(fragmentTag<WelcomeSheet>()) as? WelcomeSheet ?: return false
-		sheet.dismissAllowingStateLoss()
-		return true
+		val tag = fragmentTag<WelcomeSheet>()
+		val sheet = fragment?.findFragmentByTagRecursive(tag)
+			?: activity?.supportFragmentManager?.findFragmentByTag(tag)
+			?: return false
+		return if (sheet is WelcomeSheet) {
+			sheet.dismissAllowingStateLoss()
+			true
+		} else {
+			false
+		}
 	}
 
 	/** Private utils **/
@@ -476,6 +482,18 @@ class AppRouter private constructor(
 			this@AppRouter.getFragmentManager() ?: return,
 			javaClass.fragmentTag(),
 		)
+	}
+
+	private fun Fragment.findFragmentByTagRecursive(fragmentTag: String): Fragment? {
+		childFragmentManager.findFragmentByTag(fragmentTag)?.let {
+			return it
+		}
+		val parent = parentFragment
+		return if (parent != null) {
+			parent.findFragmentByTagRecursive(fragmentTag)
+		} else {
+			parentFragmentManager.findFragmentByTag(fragmentTag)
+		}
 	}
 
 	companion object {
