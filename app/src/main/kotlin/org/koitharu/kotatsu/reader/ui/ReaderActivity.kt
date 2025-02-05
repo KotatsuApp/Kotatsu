@@ -109,7 +109,6 @@ class ReaderActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderBinding.inflate(layoutInflater))
-		screenOrientationHelper.init(settings.readerScreenOrientation)
 		readerManager = ReaderManager(supportFragmentManager, viewBinding.container, settings)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = TapGridDispatcher(this, this)
@@ -151,7 +150,9 @@ class ReaderActivity :
 		viewModel.isInfoBarTransparent.observe(this) { viewBinding.infoBar.drawBackground = !it }
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(this))
-		viewModel.isPagesSheetEnabled.observe(this, MenuInvalidator(viewBinding.toolbarBottom))
+		val bottomMenuInvalidator = MenuInvalidator(viewBinding.toolbarBottom)
+		viewModel.isPagesSheetEnabled.observe(this, bottomMenuInvalidator)
+		screenOrientationHelper.observeAutoOrientation().observe(this, bottomMenuInvalidator)
 		viewModel.onShowToast.observeEvent(this) { msgId ->
 			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
 				.setAnchorView(viewBinding.appbarBottom)
@@ -164,7 +165,9 @@ class ReaderActivity :
 			viewBinding.zoomControl.isVisible = it
 		}
 		addMenuProvider(ReaderMenuTopProvider(viewModel))
-		viewBinding.toolbarBottom.addMenuProvider(ReaderMenuBottomProvider(this, readerManager, viewModel))
+		viewBinding.toolbarBottom.addMenuProvider(
+			ReaderMenuBottomProvider(this, readerManager, screenOrientationHelper, viewModel),
+		)
 	}
 
 	override fun getParentActivityIntent(): Intent? {

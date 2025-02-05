@@ -129,5 +129,6 @@
 		<item>@string/next_chapter</item>
 		<item>@string/pages_slider</item>
 		<item>@string/chapters_and_pages</item>
+		<item>@string/screen_orientation</item>
 	</string-array>
 </resources>

@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.prefs.ReaderControl
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.settings.utils.PercentSummaryProvider
@@ -45,7 +46,7 @@ class ReaderSettingsFragment :
 		}
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_CONTROLS)?.run {
 			entryValues = ReaderControl.entries.names()
-			setDefaultValueCompat(ReaderControl.entries.names().toSet())
+			setDefaultValueCompat(ReaderControl.DEFAULT.mapToSet { it.name })
 			summaryProvider = MultiSummaryProvider(R.string.none)
 		}
 		findPreference<ListPreference>(AppSettings.KEY_READER_BACKGROUND)?.run {

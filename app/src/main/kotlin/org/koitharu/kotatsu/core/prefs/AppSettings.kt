@@ -144,7 +144,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val readerControls: Set<ReaderControl>
 		get() = prefs.getStringSet(KEY_READER_CONTROLS, null)?.mapNotNullTo(EnumSet.noneOf(ReaderControl::class.java)) {
 			ReaderControl.entries.find(it)
-		} ?: EnumSet.allOf(ReaderControl::class.java)
+		} ?: ReaderControl.DEFAULT
 
 	val isOfflineCheckDisabled: Boolean
 		get() = prefs.getBoolean(KEY_OFFLINE_DISABLED, false)
