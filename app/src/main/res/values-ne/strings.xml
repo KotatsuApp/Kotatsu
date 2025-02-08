@@ -229,4 +229,13 @@
     <string name="local_manga_processing">मांगा प्रशोधन सेब गरियो</string>
     <string name="removal_completed">हटाउने कार्य सम्पन्न भयो</string>
     <string name="retry">पुन: प्रयास गर्नुहोस्</string>
+    <string name="back">पछाडि</string>
+    <string name="chapters_will_removed_background">अध्याय पृष्ठभूमिमा हटाइनेछ</string>
+    <string name="canceled">रद्द गरियो</string>
+    <string name="account_already_exists">खाता पहिल्यै अवस्थित छ</string>
+    <string name="sync">सिंक्रोनाइजेसन</string>
+    <string name="sync_title">आफ्नो डाटा सिंक गर्नुहोस्</string>
+    <string name="email_enter_hint">जारी राख्न आफ्नो इमेल प्रविष्ट गर्नुहोस्</string>
+    <string name="hide">लुकाउनुहोस्</string>
+    <string name="pages_saved">पृष्ठहरू सुरक्षित गरियो</string>
 </resources>
