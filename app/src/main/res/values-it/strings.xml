@@ -775,4 +775,11 @@
     <string name="enable_all_sources">Abilità tutte le fonti manga</string>
     <string name="enable_all_sources_summary">Tutte le fonti manga disponibili saranno abilitate permanentemente</string>
     <string name="reader_info_bar_transparent">Barra informazione del lettore trasparente</string>
+    <string name="restoring_backup">Ripristinando il backup</string>
+    <string name="backup_restored_background">Il backup verrà ripristinato in background</string>
+    <string name="reader_controls_in_bottom_bar">Controlli del lettore nella barra in basso</string>
+    <string name="screen_rotation_locked">Rotazione schermo bloccata</string>
+    <string name="screen_rotation_unlocked">Rotazione schermo sbloccata</string>
+    <string name="chapters_and_pages">Capitoli e pagine</string>
+    <string name="pages_slider">Slider di cambio pagina</string>
 </resources>
