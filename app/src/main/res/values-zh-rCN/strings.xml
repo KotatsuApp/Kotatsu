@@ -775,4 +775,6 @@
     <string name="all_sources_enabled">已启动所有漫画图源</string>
     <string name="enable_all_sources_summary">所有图源将会被启动</string>
     <string name="reader_info_bar_transparent">透明阅读器信息栏</string>
+    <string name="restoring_backup">正在恢复备份</string>
+    <string name="backup_restored_background">将在后台恢复备份</string>
 </resources>
