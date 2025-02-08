@@ -739,7 +739,7 @@
     <string name="content_type_one_shot">Um tiro</string>
     <string name="demographic_kodomo">Criança</string>
     <string name="backup_tg_check">Verifique se a API funciona</string>
-    <string name="backup_tg_echo">O backup do Kotatsu no Telegram está funcionando!!</string>
+    <string name="backup_tg_echo">Mensagem de teste</string>
     <string name="backup_tg_id_not_set">O ID do bate-papo não está definido</string>
     <string name="telegram_chat_id">ID do bate-papo do Telegram</string>
     <string name="open_telegram_bot">Abra o bot do Telegram</string>
@@ -773,4 +773,5 @@
     <string name="enable_all_sources">Ativar todas as fontes de manga</string>
     <string name="enable_all_sources_summary">Todas as fontes de manga seram ativadas permanentemente</string>
     <string name="all_sources_enabled">Todas as fontes estão ativas</string>
+    <string name="reader_info_bar_transparent">Barra de informações do leitor transparente</string>
 </resources>
