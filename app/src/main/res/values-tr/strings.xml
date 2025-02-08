@@ -774,4 +774,12 @@
     <string name="enable_all_sources">Bütün manga kaynaklarını etkinleştir</string>
     <string name="enable_all_sources_summary">Bütün kullanılabilir manga kaynakları kalıcı olarak etkinleştirilecektir</string>
     <string name="all_sources_enabled">Bütün kaynaklar etkinleştirildi</string>
+    <string name="reader_info_bar_transparent">Şeffaf bilgi çubuğu</string>
+    <string name="backup_restored_background">Yedek arka planda geri yüklenecektir</string>
+    <string name="restoring_backup">Yedek geri yükleniyor</string>
+    <string name="pages_slider">Sayfa değiştirme kaydırıcısı</string>
+    <string name="screen_rotation_locked">Ekran yönü kilitlendi</string>
+    <string name="screen_rotation_unlocked">Ekran yön kilidi açıldı</string>
+    <string name="reader_controls_in_bottom_bar">Alt çubukta okuyucu kontrolleri</string>
+    <string name="chapters_and_pages">Bölümler ve sayfalar</string>
 </resources>
