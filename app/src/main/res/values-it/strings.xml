@@ -774,4 +774,5 @@
     <string name="all_sources_enabled">Tutte le fonti sono abilitate</string>
     <string name="enable_all_sources">Abilità tutte le fonti manga</string>
     <string name="enable_all_sources_summary">Tutte le fonti manga disponibili saranno abilitate permanentemente</string>
+    <string name="reader_info_bar_transparent">Barra informazione del lettore trasparente</string>
 </resources>
