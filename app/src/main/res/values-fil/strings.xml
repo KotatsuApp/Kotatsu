@@ -27,8 +27,8 @@
     <string name="reader_settings">Mga setting sa reader</string>
     <string name="switch_pages">Magpalit ng (mga) pahina</string>
     <string name="_continue">Magpatuloy</string>
-    <string name="clear_thumbs_cache">I-clear ang cache ng mga thumbnail</string>
-    <string name="search_history_cleared">Na-clear</string>
+    <string name="clear_thumbs_cache">Linisin ang cache ng mga thumbnail</string>
+    <string name="search_history_cleared">Nalinisan na</string>
     <string name="app_update_available">Available ang isang bagong bersyon ng app</string>
     <string name="open_in_browser">Buksan sa web browser</string>
     <string name="notifications">Mga abiso</string>
@@ -50,8 +50,8 @@
     <string name="updates">Mga update</string>
     <string name="search_results">Mga resulta ng paghahanap</string>
     <string name="size_s">Laki: %s</string>
-    <string name="clear_updates_feed">I-clear ang feed ng mga update</string>
-    <string name="updates_feed_cleared">Na-clear</string>
+    <string name="clear_updates_feed">Linisin ang feed ng mga update</string>
+    <string name="updates_feed_cleared">Nalinisan na</string>
     <string name="update">Update</string>
     <string name="feed_will_update_soon">Ang pag update ng feed ay magsisimula sa lalong madaling panahon</string>
     <string name="track_sources">Maghanap ng mga update</string>
@@ -75,8 +75,8 @@
     <string name="today">Ngayong araw</string>
     <string name="tap_to_try_again">I-tap para subukang muli</string>
     <string name="captcha_solve">Lutasin</string>
-    <string name="cookies_cleared">Inalis ang lahat ng mga cookie</string>
-    <string name="clear_feed">I-clear ang feed</string>
+    <string name="cookies_cleared">Natanggal ang lahat ng mga cookie</string>
+    <string name="clear_feed">Linisin ang feed</string>
     <string name="check_for_new_chapters">Suriin ang mga bagong kabanata</string>
     <string name="sign_in">Mag-sign in</string>
     <string name="auth_required">Mag-sign in upang tingnan ang nilalamang ito</string>
@@ -133,12 +133,12 @@
     <string name="by_name">Pangalan</string>
     <string name="popular">Sikat</string>
     <string name="pages">Mga pahina</string>
-    <string name="clear_history">I-clear ang kasaysayan</string>
-    <string name="clear_search_history">I-clear ang kasaysayan ng paghahanap</string>
+    <string name="clear_history">Linisin ang kasaysayan</string>
+    <string name="clear_search_history">Linisin ang kasaysayan ng paghahanap</string>
     <string name="new_version_s">Bagong bersyon: %s</string>
     <string name="passwords_mismatch">Hindi tumutugma sa mga password</string>
-    <string name="clear_cookies">I-clear ang mga cookie</string>
-    <string name="clear_pages_cache">I-clear ang page cache</string>
+    <string name="clear_cookies">Linisin ang mga cookie</string>
+    <string name="clear_pages_cache">Linisin ang page cache</string>
     <string name="download">I-download</string>
     <string name="notifications_settings">Mga setting ng abiso</string>
     <string name="notification_sound">Tunog ng abiso</string>
@@ -171,7 +171,7 @@
     <string name="about_app_translation_summary">Isalin ang app na ito</string>
     <string name="auth_complete">Awtorisado na</string>
     <string name="captcha_required">Kinakailangan ang CAPTCHA</string>
-    <string name="text_clear_updates_feed_prompt">I-clear nang permanente ang lahat ng update history\?</string>
+    <string name="text_clear_updates_feed_prompt">Linisin nang permanente ang lahat ng update history?</string>
     <string name="protect_application_subtitle">Maglagay ng password para simulan ang app</string>
     <string name="tracker_warning">Ang ilang device ay may iba\'t ibang gawi ng system, na maaaring masira ang mga gawain sa background.</string>
     <string name="queued">Nakapila na</string>
@@ -193,7 +193,7 @@
     <string name="chapter_d_of_d">Kabanata %1$d ng %2$d</string>
     <string name="try_again">Subukan ulit</string>
     <string name="sort_order">Pag-aayos ng order</string>
-    <string name="clear">I-clear</string>
+    <string name="clear">Linisin</string>
     <string name="always">Lagi na lang</string>
     <string name="preload_pages">I-preload ang mga pahina</string>
     <string name="logged_in_as">Naka-log in bilang %s</string>
@@ -234,7 +234,7 @@
     <string name="show_reading_indicators_summary">Ipakita ang porsyento na nabasa sa kasaysayan at mga paborito</string>
     <string name="show_all">Ipakita lahat</string>
     <string name="select_range">Pumili ng saklaw</string>
-    <string name="clear_all_history">I-clear ang lahat ng kasaysayan</string>
+    <string name="clear_all_history">Linisin lahat ng kasaysayan</string>
     <string name="no_bookmarks_summary">Maaari kang lumikha ng bookmark habang nagbabasa ng manga</string>
     <string name="bookmarks_removed">Tinanggal ang mga bookmark</string>
     <string name="random">Random</string>
@@ -274,7 +274,7 @@
     <string name="error_no_space_left">Walang natitirang espasyo sa device</string>
     <string name="webtoon_zoom">Pag-zoom sa webtoon</string>
     <string name="server_error">Server side error (%1$d). Subukang muli mamaya</string>
-    <string name="clear_new_chapters_counters">I-clear din ang impormasyon tungkol sa mga bagong kabanata</string>
+    <string name="clear_new_chapters_counters">Linisan rin ang impormasyon tungkol sa mga bagong kabanata</string>
     <string name="prefetch_content">Preloading ng nilalaman</string>
     <string name="mark_as_current">Markahan bilang kasalukuyan</string>
     <string name="language">Wika</string>
@@ -296,7 +296,7 @@
     <string name="clear_cookies_summary">Maaaring makatulong sa kaso ng ilang mga isyu. Ang lahat ng pahintulot ay mawawalan ng bisa</string>
     <string name="invalid_domain_message">Imbalidong domain</string>
     <string name="last_2_hours">Huling 2 oras</string>
-    <string name="history_cleared">Nabura ang kasaysayan</string>
+    <string name="history_cleared">Nalinisan na ang kasaysayan</string>
     <string name="manage">Pamahalaan</string>
     <string name="no_bookmarks_yet">Wala pang bookmark</string>
     <string name="nsfw">18+</string>
@@ -411,7 +411,7 @@
     <string name="reader_info_bar_summary">Ipakita ang kasalukuyang oras at progreso ng pagbabasa sa tuktok ng screen</string>
     <string name="show_pages_numbers_summary">Ipakita ang mga numero ng pahina sa ibabang gilid</string>
     <string name="invalid_port_number">Imbalidong numero ng port</string>
-    <string name="clear_source_cookies_summary">I-clear ang mga cookie para sa tinukoy na domain lamang. Sa karamihan ng mga kaso, magpapawalang-bisa ang awtorisasyon</string>
+    <string name="clear_source_cookies_summary">Linisin ang mga cookie para sa tinukoy na domain lamang. Sa karamihan ng mga kaso, magpapawalang-bisa ang awtorisasyon</string>
     <string name="download_option_all_chapters">Lahat ng mga kabanata na may pagsasalin na %s</string>
     <string name="download_option_whole_manga">Ang buong manga</string>
     <string name="download_option_first_n_chapters">Unang %s</string>
@@ -577,12 +577,12 @@
     <string name="reading_stats">Statistika sa pagbabasa</string>
     <string name="less_than_minute">Wala pang isang minuto</string>
     <string name="statistics">Mga statistika</string>
-    <string name="clear_stats">I-clear ang statistika</string>
-    <string name="stats_cleared">Na-clear ang statistika</string>
+    <string name="clear_stats">Linisin ang statistika</string>
+    <string name="stats_cleared">Nalinisan na ang statistika</string>
     <string name="pages_read_s">Mga nabasang pahina: %s</string>
     <string name="other_manga">Ibang manga</string>
     <string name="day">Araw</string>
-    <string name="clear_stats_confirm">Gusto mo ba talagang i-clear ang lahat ng istatistika ng pagbabasa? Ang gawaing ito ay hindi pwedeng baguhin.</string>
+    <string name="clear_stats_confirm">Gusto mo ba talagang linisin ang lahat ng istatistika ng pagbabasa? Ang gawaing ito ay hindi pwedeng baguhin.</string>
     <string name="week">Linggo</string>
     <string name="all_time">Lahat ng oras</string>
     <string name="month">Buwan</string>
@@ -705,7 +705,7 @@
     <string name="year">Taon</string>
     <string name="years">Mga Taon</string>
     <string name="any">Kahit ano</string>
-    <string name="filter_search_warning">Ang source na ito ay hindi sinusuportahan ang paghahanap na may mga filter. Ang iyong mga filter ay na-clear</string>
+    <string name="filter_search_warning">Ang source na ito ay hindi sinusuportahan ang paghahanap na may mga filter. Ang iyong mga filter ay malilinisan</string>
     <string name="demographics">Demograpiko</string>
     <string name="content_type_image_set">Set ng mga imahe</string>
     <string name="debug">Mag-debug</string>
@@ -762,7 +762,7 @@
     <string name="backup_tg_id_not_set">Ang chat ID ay hindi nakatakda</string>
     <string name="telegram_chat_id">Ang telegram chat ID</string>
     <string name="open_telegram_bot">Buksan ang bot sa telegram</string>
-    <string name="clear_database">Palinawin ang database</string>
+    <string name="clear_database">Linisin ang database</string>
     <string name="clear_database_summary">Tanggalin ang impormasyon tungkol sa manga na hindi ginamit</string>
     <string name="send_backups_telegram">Magpadala ng mga backup sa Telegram</string>
     <string name="test_connection">I-test ang koneksyon</string>
@@ -774,4 +774,10 @@
     <string name="enable_all_sources_summary">Lahat ng available na manga source ay permanenteng papaganahin</string>
     <string name="all_sources_enabled">Lahat ng source ay napagana na</string>
     <string name="enable_all_sources">Paganahin lahat ang mga manga source</string>
+    <string name="screen_rotation_unlocked">Ang pag-ikot ng screen ay na-unlock</string>
+    <string name="backup_restored_background">Ini-restore ang backup sa background</string>
+    <string name="restoring_backup">Niri-restore ang backup</string>
+    <string name="reader_controls_in_bottom_bar">Mga kontrol ng reader sa bottom bar</string>
+    <string name="chapters_and_pages">Mga Kabanata at pahina</string>
+    <string name="screen_rotation_locked">Ang pag-ikot ng screen ay naka-lock</string>
 </resources>
