@@ -771,4 +771,6 @@
     <string name="enable_all_sources_summary">Toutes les sources de mangas disponibles seront activées de façon permanente</string>
     <string name="all_sources_enabled">Toutes les sources sont activées</string>
     <string name="enable_all_sources">Activer toutes les sources de mangas</string>
+    <string name="backup_restored_background">La sauvegarde sera restaurée en arrière-plan</string>
+    <string name="restoring_backup">Restauration de la sauvegarde</string>
 </resources>
