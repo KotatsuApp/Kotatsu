@@ -770,4 +770,7 @@
     <string name="source">Fonte</string>
     <string name="clear_database">Limpar banco de dados</string>
     <string name="clear_database_summary">Excluir informações sobre mangás que não são utilizadas</string>
+    <string name="enable_all_sources">Ativar todas as fontes de manga</string>
+    <string name="enable_all_sources_summary">Todas as fontes de manga seram ativadas permanentemente</string>
+    <string name="all_sources_enabled">Todas as fontes estão ativas</string>
 </resources>
