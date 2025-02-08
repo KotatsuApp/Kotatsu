@@ -243,7 +243,7 @@
     <string name="automatic_scroll">Automatické rolování</string>
     <string name="reader_info_pattern">Kap. %1$d/%2$d Str. %3$d/%4$d</string>
     <string name="reader_info_bar">Zobrazovat informační lištu v čtečce</string>
-    <string name="comics_archive">Archív komiksů</string>
+    <string name="comics_archive">Archiv komiksů</string>
     <string name="folder_with_images">Složka s obrázky</string>
     <string name="importing_manga">Importuji mangu</string>
     <string name="import_will_start_soon">Importování brzy začne</string>
@@ -295,7 +295,7 @@
     <string name="sources_reorder_tip">Klikněte a přidržte na předmětu pro přeskupení</string>
     <string name="user_agent">Záhlaví UserAgent</string>
     <string name="settings_apply_restart_required">Prosíme restartujte aplikaci pro aplikování těchto změn</string>
-    <string name="comics_archive_import_description">Můžete vybrat jeden nebo vícs .cbz nebo .zip souborů, každý soubor bude znám jako samostatná manga.</string>
+    <string name="comics_archive_import_description">Můžete vybrat jeden či více .cbz nebo .zip souborů, každý soubor bude brán jako samostatná manga.</string>
     <string name="show_on_shelf">Zobrazovat na poličce</string>
     <string name="sync_auth_hint">Můžete se přihlásit do již existujícího účtu nebo vytvořit nový</string>
     <string name="find_similar">Najít podobné</string>
@@ -307,7 +307,7 @@
     <string name="pause">Pozastavit</string>
     <string name="resume">Vrátit</string>
     <string name="paused">Pozastaveno</string>
-    <string name="remove_completed">Odstranění dokončeno</string>
+    <string name="remove_completed">Odstranit dokončené</string>
     <string name="downloads_wifi_only_summary">Zastavit stahování při měnění na mobilní data</string>
     <string name="suggestion_manga">Doporučení: %s</string>
     <string name="suggestions_notifications_summary">Občas zobrazit oznámení s navrženou mangou</string>
@@ -414,7 +414,7 @@
     <string name="random">Náhodné</string>
     <string name="import_completed">Importování dokončeno</string>
     <string name="import_completed_hint">Můžete odstranit originální soubor z uložiště abyste ušetřili místo</string>
-    <string name="folder_with_images_import_description">Můžete vybrat adresář s archivy nebo obrázky. Každý archiv (nebo podkategorie) bude znám jako kapitola.</string>
+    <string name="folder_with_images_import_description">Můžete vybrat adresář s archivy nebo obrázky. Každý archiv (nebo podkategorie) bude brán jako kapitola.</string>
     <string name="speed">Rychlost</string>
     <string name="downloads_wifi_only">Stahovat pouze přes Wi-Fi</string>
     <string name="sync_host_description">Můžete použít samostatně hostovaný synchronizační server nebo základní. Neměňte pokud si nejste jisti co děláte.</string>
@@ -538,7 +538,7 @@
     <string name="minutes_short">%d m</string>
     <string name="hours_minutes_short">%1$d h %2$d m</string>
     <string name="vertical">Svisle</string>
-    <string name="ask_for_dest_dir_every_time">Pokaždý se ptát na cílovou složku</string>
+    <string name="ask_for_dest_dir_every_time">Pokaždé se ptát na cílovou složku</string>
     <string name="show_menu">Zobrazit menu</string>
     <string name="mark_as_completed_prompt">Označit vybranou mangu jako kompletně přečtenou?
 \n
@@ -694,4 +694,13 @@
     <string name="chapters_all">Všechny</string>
     <string name="ask_every_time">Vždy se zeptat</string>
     <string name="sfw">SFW</string>
+    <string name="backup_tg_echo">Testovací zpráva</string>
+    <string name="content_type_novel">Román</string>
+    <string name="error_not_image">Neplatný formát: očekávan obrázek, ale získán %s</string>
+    <string name="telegram_chat_id_summary">Zadejte ID chatu, kam by měly být odeslány zálohy</string>
+    <string name="destination_directory">Cílový adresář</string>
+    <string name="manga_replaced">Manga \"%1$s\" (%2$s) nahrazena \"%3$s\" (%4$s)</string>
+    <string name="manga_fix_prompt">Tato funkce bude hledat alternativní zdroje pro vybranou mangu. Tento proces potrvá nějaký čas a bude pokračovat na pozadí</string>
+    <string name="enable_all_sources">Povolit všechny zdroje mang</string>
+    <string name="enable_all_sources_summary">Všechny dostupné zdroje mangy budou trvale povoleny</string>
 </resources>
