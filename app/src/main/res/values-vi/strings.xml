@@ -705,7 +705,7 @@
     <string name="popular_in_month">Nổi bật trong tháng</string>
     <string name="original_language">Ngôn ngữ gốc</string>
     <string name="year">Năm</string>
-    <string name="demographics">Nhân khẩu học</string>
+    <string name="demographics">Thể loại đối tượng</string>
     <string name="demographic_shounen">Shounen</string>
     <string name="demographic_shoujo">Shoujo</string>
     <string name="demographic_seinen">Seinen</string>
@@ -774,4 +774,12 @@
     <string name="all_sources_enabled">Toàn bộ nguồn đọc đã được bật</string>
     <string name="enable_all_sources_summary">Tất cả nguồn đọc / nguồn truyện mà App có sẵn sẽ được bật vĩnh viễn</string>
     <string name="enable_all_sources">Bật toàn bộ nguồn đọc có sẵn</string>
+    <string name="reader_info_bar_transparent">Làm trong suốt thanh trạng thái ở giao diện đọc truyện</string>
+    <string name="restoring_backup">Đang khôi phục sao lưu</string>
+    <string name="chapters_and_pages">Duyệt chương và trang đọc</string>
+    <string name="pages_slider">Thanh trượt chuyển trang</string>
+    <string name="screen_rotation_locked">Xoay màn hình đã được khóa lại</string>
+    <string name="screen_rotation_unlocked">Hướng xoay màn hình đã được mở khóa</string>
+    <string name="backup_restored_background">Quá trình khôi phục bản sao lưu này sẽ được thực hiện trong tiến trình nền (chạy ngầm)</string>
+    <string name="reader_controls_in_bottom_bar">Tùy chỉnh nút điều khiển ở thanh công cụ phía dưới giao diện đọc</string>
 </resources>
