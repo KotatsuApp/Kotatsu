@@ -771,4 +771,15 @@
     <string name="open_telegram_bot_summary">Додирни да отвориш ћаскање са Котатсу Ботом за резервну копију</string>
     <string name="clear_database">Избриши базу података</string>
     <string name="clear_database_summary">Избриши информације о Манги које се не користе</string>
+    <string name="enable_all_sources_summary">Сви доступни Манга извори биће трајно омогућени</string>
+    <string name="enable_all_sources">Омогући све Манга изворе</string>
+    <string name="all_sources_enabled">Сви извори су укључени</string>
+    <string name="backup_restored_background">Резервна копија ће бити враћена у позадини</string>
+    <string name="reader_info_bar_transparent">Провидна информативна трака читача</string>
+    <string name="reader_controls_in_bottom_bar">Управљач читача у доњој траци</string>
+    <string name="pages_slider">Клизач за пребацивање страница</string>
+    <string name="screen_rotation_locked">Окретање екрана је закључано</string>
+    <string name="screen_rotation_unlocked">Обртање екрана је откључано</string>
+    <string name="restoring_backup">Враћање резервне копије</string>
+    <string name="chapters_and_pages">Поглавља и странице</string>
 </resources>
