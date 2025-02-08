@@ -672,7 +672,6 @@
     <string name="show_quick_filters_summary">Memberikan kemampuan untuk memfilter daftar manga berdasarkan parameter tertentu</string>
     <string name="sfw">SFW</string>
     <string name="skip_all">Lewati semua</string>
-    <string name="stuck"></string>
     <string name="not_in_favorites">Tidak di favorit</string>
     <string name="plugin_incompatible">Plugin yang tidak kompatibel atau kesalahan internal. Pastikan Anda menggunakan versi terbaru dari plugin dan Kotatsu</string>
     <string name="updated_long_ago">Diperbarui sejak lama</string>
@@ -758,5 +757,4 @@
     <string name="chapter_selection_hint">Anda bisa memilih bab untuk diunduh dengan menekan lama item di dalam daftar bab.</string>
     <string name="rating">Nilai</string>
     <string name="source">Sumber</string>
-    <string name="plugin_incompatible_with_cause"></string>
 </resources>
