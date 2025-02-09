@@ -9,7 +9,7 @@
 	<dimen name="list_spacing_normal">8dp</dimen>
 	<dimen name="list_spacing_large">12dp</dimen>
 	<!-- Navigation -->
-	<dimen name="nav_bar_height_compact">62dp</dimen>
+	<dimen name="nav_bar_height_compact">0dp</dimen>
 
 	<dimen name="grid_spacing">8dp</dimen>
 	<dimen name="list_spacing">8dp</dimen>

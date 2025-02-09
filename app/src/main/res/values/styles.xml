@@ -14,18 +14,6 @@
 
 	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
 		<item name="labelVisibilityMode">labeled</item>
-		<item name="android:background">?attr/colorSurfaceContainer</item>
-		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
-		<item name="itemIconTint">@color/bottom_menu_active_item</item>
-	</style>
-
-	<style name="Widget.Kotatsu.BottomNavigationView.ColoredIndicators">
-		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
-		<item name="itemIconTint">@color/bottom_menu_active_item</item>
-	</style>
-
-	<style name="Widget.Kotatsu.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-		<item name="android:color">@color/bottom_menu_active_indicator</item>
 	</style>
 
 	<style name="Widget.Kotatsu.ActionMode" parent="Base.Widget.Material3.ActionMode">
