@@ -37,7 +37,7 @@ class MangaStatsSheet : BaseAdaptiveSheet<SheetStatsMangaBinding>(), View.OnClic
 		binding.chartView.barColor = KotatsuColors.ofManga(binding.root.context, viewModel.manga)
 		viewModel.stats.observe(viewLifecycleOwner, ::onStatsChanged)
 		viewModel.startDate.observe(viewLifecycleOwner) {
-			binding.textViewStart.textAndVisible = it?.format(resources)
+			binding.textViewStart.textAndVisible = it?.format(binding.root.context)
 		}
 		viewModel.totalPagesRead.observe(viewLifecycleOwner) {
 			binding.textViewPages.text = getString(R.string.pages_read_s, it.format())
