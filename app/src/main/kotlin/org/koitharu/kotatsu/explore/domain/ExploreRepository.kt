@@ -77,7 +77,7 @@ class ExploreRepository @Inject constructor(
 		val list = repository.getList(
 			offset = 0,
 			order = order,
-			filter = MangaListFilter(tags = setOfNotNull(tag))
+			filter = MangaListFilter(tags = setOfNotNull(tag)),
 		).asArrayList()
 		if (settings.isSuggestionsExcludeNsfw) {
 			list.removeAll { it.isNsfw }

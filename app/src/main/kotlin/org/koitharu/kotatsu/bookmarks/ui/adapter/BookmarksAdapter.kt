@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.list.ui.adapter.ListHeaderClickListener
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
+import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.listHeaderAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
@@ -25,6 +26,7 @@ class BookmarksAdapter(
 	init {
 		addDelegate(ListItemType.PAGE_THUMB, bookmarkLargeAD(coil, lifecycleOwner, clickListener))
 		addDelegate(ListItemType.HEADER, listHeaderAD(headerClickListener))
+		addDelegate(ListItemType.STATE_ERROR, errorStateListAD(null))
 		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
 		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
 		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, null))

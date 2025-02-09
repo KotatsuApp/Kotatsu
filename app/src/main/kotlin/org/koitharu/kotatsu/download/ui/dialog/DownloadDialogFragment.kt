@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.DialogDownloadBinding
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.util.format
+import org.koitharu.kotatsu.parsers.util.mapToArray
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
 import javax.inject.Inject
 

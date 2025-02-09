@@ -39,6 +39,7 @@ import org.koitharu.kotatsu.core.db.migrations.Migration20To21
 import org.koitharu.kotatsu.core.db.migrations.Migration21To22
 import org.koitharu.kotatsu.core.db.migrations.Migration22To23
 import org.koitharu.kotatsu.core.db.migrations.Migration23To24
+import org.koitharu.kotatsu.core.db.migrations.Migration24To23
 import org.koitharu.kotatsu.core.db.migrations.Migration2To3
 import org.koitharu.kotatsu.core.db.migrations.Migration3To4
 import org.koitharu.kotatsu.core.db.migrations.Migration4To5
@@ -134,6 +135,7 @@ fun getDatabaseMigrations(context: Context): Array<Migration> = arrayOf(
 	Migration21To22(),
 	Migration22To23(),
 	Migration23To24(),
+	Migration24To23(),
 )
 
 fun MangaDatabase(context: Context): MangaDatabase = Room
