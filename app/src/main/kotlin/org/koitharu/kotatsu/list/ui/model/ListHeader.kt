@@ -36,7 +36,7 @@ data class ListHeader private constructor(
 	fun getText(context: Context): CharSequence? = when (textRaw) {
 		is CharSequence -> textRaw
 		is Int -> if (textRaw != 0) context.getString(textRaw) else null
-		is DateTimeAgo -> textRaw.format(context.resources)
+		is DateTimeAgo -> textRaw.format(context)
 		else -> null
 	}
 
