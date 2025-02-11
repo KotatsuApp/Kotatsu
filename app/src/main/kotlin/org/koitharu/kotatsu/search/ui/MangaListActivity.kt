@@ -155,7 +155,6 @@ class MangaListActivity :
 			filter.observe().observe(this) { snapshot ->
 				chipSort.setTextAndVisible(snapshot.sortOrder.titleRes)
 				filterBadge.counter = if (snapshot.listFilter.hasNonSearchOptions()) 1 else 0
-				supportActionBar?.subtitle = snapshot.listFilter.query
 			}
 		} else {
 			filter.observe().map {

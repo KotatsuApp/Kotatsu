@@ -46,7 +46,7 @@ class HistoryListMenuProvider(
 	}
 
 	private fun showClearHistoryDialog() {
-		val selectionListener = RememberSelectionDialogListener(2)
+		val selectionListener = RememberSelectionDialogListener(1)
 		buildAlertDialog(context, isCentered = true) {
 			setTitle(R.string.clear_history)
 			setSingleChoiceItems(
