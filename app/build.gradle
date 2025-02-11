@@ -7,6 +7,7 @@ plugins {
 	id 'com.google.devtools.ksp'
 	id 'kotlin-parcelize'
 	id 'dagger.hilt.android.plugin'
+	id 'androidx.room'
 }
 
 android {
@@ -24,7 +25,6 @@ android {
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
 			arg('room.generateKotlin', 'true')
-			arg('room.schemaLocation', "$projectDir/schemas")
 		}
 		androidResources {
 			generateLocaleConfig true
@@ -76,6 +76,9 @@ android {
 			'-opt-in=coil3.annotation.ExperimentalCoilApi',
 			'-opt-in=coil3.annotation.InternalCoilApi',
 		]
+	}
+	room {
+		schemaDirectory "$projectDir/schemas"
 	}
 	lint {
 		abortOnError true

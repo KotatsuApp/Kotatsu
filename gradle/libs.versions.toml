@@ -5,7 +5,7 @@ adapterdelegates = "4.3.2"
 appcompat = "1.7.0"
 avifDecoder = "1.1.1.14d8e3c4"
 biometric = "1.2.0-alpha05"
-coil = "3.0.4"
+coil = "3.1.0"
 collections = "1.4.5"
 #noinspection GradleDependency - 2.5.3 cause crashes
 conscrypt = "2.5.2"
@@ -22,8 +22,8 @@ hilt = "1.2.0"
 json = "20250107"
 junit = "4.13.2"
 junitKtx = "1.2.1"
-kotlin = "2.0.21"
-ksp = "2.0.21-1.0.28"
+kotlin = "2.1.10"
+ksp = "2.1.10-1.0.29"
 leakcanary = "3.0-alpha-8"
 lifecycle = "2.8.7"
 markwon = "4.6.2"
@@ -113,3 +113,4 @@ android-application = { id = "com.android.application", version.ref = "gradle" }
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
+room = { id = "androidx.room", version.ref = "room" }
