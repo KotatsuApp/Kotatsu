@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContracts
 
+//FIXME: https://stackoverflow.com/questions/77555641/saf-no-activity-found-to-handle-intent-android-intent-action-open-document-tr
 class PickDirectoryContract : ActivityResultContracts.OpenDocumentTree() {
 
 	override fun createIntent(context: Context, input: Uri?): Intent {

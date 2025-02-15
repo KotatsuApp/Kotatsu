@@ -107,7 +107,7 @@ class UpdatesViewModel @Inject constructor(
 					prevHeader = header
 				}
 			}
-			result += mangaListMapper.toListModel(item.manga, mode)
+			result += mangaListMapper.toListModel(item.manga, mode, 0)
 		}
 		return result
 	}

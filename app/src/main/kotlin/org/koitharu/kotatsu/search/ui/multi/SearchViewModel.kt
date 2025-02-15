@@ -126,6 +126,7 @@ class SearchViewModel @Inject constructor(
 							mangaListMapper.toListModelList(
 								manga = repository.getList(offset = 0, null, MangaListFilter(query = q)),
 								mode = ListMode.GRID,
+								flags = 0,
 							)
 						}
 					}.fold(
@@ -161,7 +162,7 @@ class SearchViewModel @Inject constructor(
 						titleResId = R.string.history,
 						source = UnknownMangaSource,
 						hasMore = false,
-						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
+						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID, flags = 0),
 						error = null,
 					)
 				} else {
@@ -190,7 +191,7 @@ class SearchViewModel @Inject constructor(
 						titleResId = R.string.favourites,
 						source = UnknownMangaSource,
 						hasMore = false,
-						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
+						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID, flags = 0),
 						error = null,
 					)
 				} else {
@@ -219,7 +220,7 @@ class SearchViewModel @Inject constructor(
 						titleResId = 0,
 						source = LocalMangaSource,
 						hasMore = result.size > MIN_HAS_MORE_ITEMS,
-						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
+						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID,flags = 0),
 						error = null,
 					)
 				} else {

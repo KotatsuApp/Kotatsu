@@ -178,6 +178,11 @@
 		<attr name="android:progress" />
 	</declare-styleable>
 
+	<declare-styleable name="IconsView">
+		<attr name="iconSize" />
+		<attr name="iconSpacing" format="dimension" />
+	</declare-styleable>
+
 	<declare-styleable name="FilterFieldLayout">
 		<attr name="title" />
 		<attr name="showMoreButton" format="boolean" />

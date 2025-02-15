@@ -206,6 +206,7 @@ class ExploreViewModel @Inject constructor(
 			counter = 0,
 			progress = null,
 			isFavorite = false,
+			isSaved = false,
 		)
 	}
 
