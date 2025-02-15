@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.settings.storage
 
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ToastErrorObserver
+import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -26,7 +28,12 @@ class MangaDirectorySelectDialog : AlertDialogFragment<DialogDirectorySelectBind
 	OnListItemClickListener<DirectoryModel> {
 
 	private val viewModel: MangaDirectorySelectViewModel by viewModels()
-	private val pickFileTreeLauncher = registerForActivityResult(PickDirectoryContract()) {
+	private val pickFileTreeLauncher = OpenDocumentTreeHelper(
+		activityResultCaller = this,
+		flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+			or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+			or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION,
+	) {
 		if (it != null) viewModel.onCustomDirectoryPicked(it)
 	}
 	private val permissionRequestLauncher = registerForActivityResult(

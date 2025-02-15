@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.DialogImportBinding
@@ -25,7 +26,7 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 	private val importFileCall = registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) {
 		startImport(it)
 	}
-	private val importDirCall = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
+	private val importDirCall = OpenDocumentTreeHelper(this) {
 		startImport(listOfNotNull(it))
 	}
 

@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
@@ -27,6 +26,7 @@ import okio.openZip
 import okio.sink
 import okio.source
 import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
+import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.isFileUri
@@ -52,8 +52,7 @@ class PageSaveHelper @AssistedInject constructor(
 ) : ActivityResultCallback<Uri?> {
 
 	private val savePageRequest = activityResultCaller.registerForActivityResult(PageSaveContract(), this)
-	private val pickDirectoryRequest =
-		activityResultCaller.registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), this)
+	private val pickDirectoryRequest = OpenDocumentTreeHelper(activityResultCaller, this)
 
 	private var continuation: CancellableContinuation<Uri>? = null
 

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
@@ -16,6 +15,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.backup.TelegramBackupUploader
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.nav.router
+import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -34,7 +34,7 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 
 	private val viewModel by viewModels<PeriodicalBackupSettingsViewModel>()
 
-	private val outputSelectCall = registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), this)
+	private val outputSelectCall = OpenDocumentTreeHelper(this, this)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_backup_periodic)
@@ -60,6 +60,7 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 				viewModel.checkTelegram()
 				true
 			}
+
 			else -> return super.onPreferenceTreeClick(preference)
 		}
 		if (!result) {
