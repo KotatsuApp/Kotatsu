@@ -162,6 +162,6 @@ class LocalMangaDirOutput(
 
 	companion object {
 
-		private const val FILENAME_PATTERN = "%08d_%03d%03d"
+		private const val FILENAME_PATTERN = "%08d_%04d%04d"
 	}
 }

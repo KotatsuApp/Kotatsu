@@ -109,7 +109,7 @@ class MangaIndex(source: String?) {
 			jo.put(KEY_UPLOAD_DATE, chapter.value.uploadDate)
 			jo.put(KEY_SCANLATOR, chapter.value.scanlator)
 			jo.put(KEY_BRANCH, chapter.value.branch)
-			jo.put(KEY_ENTRIES, "%08d_%03d\\d{3}".format(chapter.value.branch.hashCode(), chapter.index + 1))
+			jo.put(KEY_ENTRIES, "%08d_%04d\\d{4}".format(chapter.value.branch.hashCode(), chapter.index + 1))
 			jo.put(KEY_FILE, filename)
 			chapters.put(chapter.value.id.toString(), jo)
 		}
