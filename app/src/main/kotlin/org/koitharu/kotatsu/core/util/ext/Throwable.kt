@@ -27,7 +27,6 @@ import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.exceptions.WrapperIOException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.io.NullOutputStream
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_LOCALE_GENRES_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_STATES_GENRES_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_MULTIPLE_GENRES_NOT_SUPPORTED
@@ -40,7 +39,6 @@ import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerAuthRequiredException
-import java.io.ObjectOutputStream
 import java.net.ConnectException
 import java.net.NoRouteToHostException
 import java.net.SocketException
@@ -223,9 +221,3 @@ fun Throwable.isWebViewUnavailable(): Boolean {
 
 @Suppress("FunctionName")
 fun NoSpaceLeftException() = IOException(MSG_NO_SPACE_LEFT)
-
-fun Throwable.isSerializable() = runCatching {
-	val oos = ObjectOutputStream(NullOutputStream())
-	oos.writeObject(this)
-	oos.flush()
-}.isSuccess

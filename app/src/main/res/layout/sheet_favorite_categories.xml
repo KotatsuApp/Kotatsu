@@ -1,30 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:orientation="vertical">
+	android:paddingTop="@dimen/margin_normal">
 
-	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
-		android:id="@+id/headerBar"
-		android:layout_width="match_parent"
+	<androidx.constraintlayout.widget.Guideline
+		android:id="@+id/guideline_start"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		app:layout_scrollFlags="noScroll"
-		app:title="@string/add_to_favourites" />
+		android:orientation="vertical"
+		app:layout_constraintGuide_begin="@dimen/margin_normal" />
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/imageView_cover3"
+		android:layout_width="0dp"
+		android:layout_height="64dp"
+		android:layout_marginStart="24dp"
+		android:layout_marginBottom="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
+		android:scaleType="centerCrop"
+		app:layout_constraintBottom_toBottomOf="@id/guideline"
+		app:layout_constraintDimensionRatio="W,13:18"
+		app:layout_constraintStart_toStartOf="@id/guideline_start"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:tintMode="src_atop"
+		tools:backgroundTint="#99FFFFFF"
+		tools:src="@tools:sample/backgrounds/scenic"
+		tools:tint="#99FFFFFF" />
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/imageView_cover2"
+		android:layout_width="0dp"
+		android:layout_height="64dp"
+		android:layout_marginStart="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
+		android:scaleType="centerCrop"
+		app:layout_constraintBottom_toBottomOf="@id/guideline"
+		app:layout_constraintDimensionRatio="W,13:18"
+		app:layout_constraintStart_toStartOf="@id/guideline_start"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:tintMode="src_atop"
+		tools:backgroundTint="#4DFFFFFF"
+		tools:src="@tools:sample/backgrounds/scenic"
+		tools:tint="#4DFFFFFF" />
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/imageView_cover1"
+		android:layout_width="0dp"
+		android:layout_height="64dp"
+		android:layout_marginTop="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
+		android:scaleType="centerCrop"
+		app:layout_constraintBottom_toBottomOf="@id/imageView_cover2"
+		app:layout_constraintDimensionRatio="W,13:18"
+		app:layout_constraintStart_toStartOf="@id/guideline_start"
+		app:layout_constraintTop_toTopOf="@id/imageView_cover2"
+		app:layout_goneMarginTop="0dp"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		tools:src="@tools:sample/backgrounds/scenic" />
+
+	<androidx.constraintlayout.widget.Barrier
+		android:id="@+id/barrier_covers"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:barrierDirection="end"
+		app:constraint_referenced_ids="imageView_cover1,imageView_cover2,imageView_cover3" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginEnd="@dimen/margin_normal"
+		android:ellipsize="end"
+		android:gravity="center_vertical|start"
+		android:textAppearance="?attr/textAppearanceBodyLarge"
+		app:layout_constraintBottom_toBottomOf="@id/guideline"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/barrier_covers"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:text="@tools:sample/lorem[22]" />
+
+	<androidx.constraintlayout.widget.Guideline
+		android:id="@+id/guideline"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		app:layout_constraintGuide_begin="92dp" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView_categories"
-		android:layout_width="match_parent"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="4dp"
 		android:clipToPadding="false"
 		android:orientation="vertical"
 		android:paddingBottom="@dimen/list_spacing"
 		android:scrollIndicators="top"
 		android:scrollbars="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/guideline"
 		tools:ignore="UnusedAttribute"
-		tools:listitem="@layout/item_checkable_new" />
+		tools:listitem="@layout/item_category_checkable" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,12 +6,13 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
-import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 
 class FavouriteTabPopupMenuProvider(
 	private val context: Context,
+	private val router: AppRouter,
 	private val viewModel: FavouritesContainerViewModel,
 	private val categoryId: Long
 ) : MenuProvider {
@@ -28,12 +29,8 @@ class FavouriteTabPopupMenuProvider(
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		when (menuItem.itemId) {
 			R.id.action_hide -> viewModel.hide(categoryId)
-			R.id.action_edit -> context.startActivity(
-				FavouritesCategoryEditActivity.newIntent(context, categoryId),
-			)
-
+			R.id.action_edit -> router.openFavoriteCategoryEdit(categoryId)
 			R.id.action_delete -> confirmDelete()
-
 			else -> return false
 		}
 		return true

@@ -13,5 +13,6 @@ data class MangaDetailedListModel(
 	override val counter: Int,
 	override val progress: ReadingProgress?,
 	override val isFavorite: Boolean,
+	override val isSaved: Boolean,
 	val tags: List<ChipsView.ChipModel>,
 ) : MangaListModel()

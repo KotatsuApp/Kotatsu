@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.core.ui.widgets
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.View.OnClickListener
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -34,7 +33,7 @@ import com.google.android.material.R as materialR
 class ChipsView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
-	defStyleAttr: Int = com.google.android.material.R.attr.chipGroupStyle,
+	defStyleAttr: Int = materialR.attr.chipGroupStyle,
 ) : ChipGroup(context, attrs, defStyleAttr) {
 
 	@Inject
@@ -49,6 +48,7 @@ class ChipsView @JvmOverloads constructor(
 		onChipCloseClickListener?.onChipCloseClick(chip, data) ?: onChipClickListener?.onChipClick(chip, data)
 	}
 	private val chipStyle: Int
+	private val iconsVisible: Boolean
 	var onChipClickListener: OnChipClickListener? = null
 		set(value) {
 			field = value
@@ -60,6 +60,7 @@ class ChipsView @JvmOverloads constructor(
 	init {
 		val ta = context.obtainStyledAttributes(attrs, R.styleable.ChipsView, defStyleAttr, 0)
 		chipStyle = ta.getResourceId(R.styleable.ChipsView_chipStyle, R.style.Widget_Kotatsu_Chip)
+		iconsVisible = ta.getBoolean(R.styleable.ChipsView_chipIconVisible, true)
 		ta.recycle()
 
 		if (isInEditMode) {
@@ -170,12 +171,7 @@ class ChipsView @JvmOverloads constructor(
 
 		private fun bindIcon(model: ChipModel) {
 			when {
-				model.isChecked -> {
-					imageRequest?.dispose()
-					imageRequest = null
-					chipIcon = null
-					isChipIconVisible = false
-				}
+				model.isChecked -> disposeIcon()
 
 				model.isLoading -> {
 					imageRequest?.dispose()
@@ -183,6 +179,8 @@ class ChipsView @JvmOverloads constructor(
 					isChipIconVisible = true
 					setProgressIcon()
 				}
+
+				!iconsVisible -> disposeIcon()
 
 				model.iconData != null -> {
 					val placeholder = model.icon.ifZero { materialR.drawable.navigation_empty_icon }
@@ -207,13 +205,15 @@ class ChipsView @JvmOverloads constructor(
 					isChipIconVisible = true
 				}
 
-				else -> {
-					imageRequest?.dispose()
-					imageRequest = null
-					chipIcon = null
-					isChipIconVisible = false
-				}
+				else -> disposeIcon()
 			}
+		}
+
+		private fun disposeIcon() {
+			imageRequest?.dispose()
+			imageRequest = null
+			chipIcon = null
+			isChipIconVisible = false
 		}
 	}
 

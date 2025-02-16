@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.scrobbling.common.ui.config
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -15,6 +14,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
@@ -24,9 +24,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.ActivityScrobblerConfigBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
-import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
@@ -84,9 +82,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	}
 
 	override fun onItemClick(item: ScrobblingInfo, view: View) {
-		startActivity(
-			DetailsActivity.newIntent(this, item.mangaId),
-		)
+		router.openDetails(item.mangaId)
 	}
 
 	override fun onClick(v: View) {
@@ -133,16 +129,9 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	}
 
 	companion object {
-
-		const val EXTRA_SERVICE_ID = "service"
-
 		const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
 		const val HOST_ANILIST_AUTH = "anilist-auth"
 		const val HOST_MAL_AUTH = "mal-auth"
 		const val HOST_KITSU_AUTH = "kitsu-auth"
-
-		fun newIntent(context: Context, service: ScrobblerService) =
-			Intent(context, ScrobblerConfigActivity::class.java)
-				.putExtra(EXTRA_SERVICE_ID, service.id)
 	}
 }

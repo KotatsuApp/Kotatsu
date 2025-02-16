@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.flowOf
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.util.ext.isWebViewUnavailable
@@ -159,7 +160,7 @@ abstract class BaseActivity<B : ViewBinding> :
 	override fun isNsfwContent(): Flow<Boolean> = flowOf(false)
 
 	private fun putDataToExtras(intent: Intent?) {
-		intent?.putExtra(EXTRA_DATA, intent.data)
+		intent?.putExtra(AppRouter.KEY_DATA, intent.data)
 	}
 
 	protected fun setContentViewWebViewSafe(viewBindingProducer: () -> B): Boolean {
@@ -178,9 +179,4 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	protected fun hasViewBinding() = ::viewBinding.isInitialized
-
-	companion object {
-
-		const val EXTRA_DATA = "data"
-	}
 }

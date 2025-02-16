@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
 import org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment
+import org.koitharu.kotatsu.settings.userdata.storage.StorageManageSettingsFragment
 import javax.inject.Inject
 
 @Reusable
@@ -38,6 +39,12 @@ class SettingsSearchHelper @Inject constructor(
 		preferenceManager.inflateTo(result, R.xml.pref_reader, emptyList(), ReaderSettingsFragment::class.java)
 		preferenceManager.inflateTo(result, R.xml.pref_network, emptyList(), NetworkSettingsFragment::class.java)
 		preferenceManager.inflateTo(result, R.xml.pref_user_data, emptyList(), UserDataSettingsFragment::class.java)
+		preferenceManager.inflateTo(
+			result,
+			R.xml.pref_storage,
+			listOf(context.getString(R.string.data_and_privacy)),
+			StorageManageSettingsFragment::class.java,
+		)
 		preferenceManager.inflateTo(result, R.xml.pref_downloads, emptyList(), DownloadsSettingsFragment::class.java)
 		preferenceManager.inflateTo(result, R.xml.pref_tracker, emptyList(), TrackerSettingsFragment::class.java)
 		preferenceManager.inflateTo(result, R.xml.pref_services, emptyList(), ServicesSettingsFragment::class.java)

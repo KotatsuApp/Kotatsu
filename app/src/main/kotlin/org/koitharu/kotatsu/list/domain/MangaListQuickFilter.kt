@@ -3,8 +3,8 @@ package org.koitharu.kotatsu.list.domain
 import androidx.collection.ArraySet
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.koitharu.kotatsu.core.model.toChipModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.list.ui.model.QuickFilter
 import org.koitharu.kotatsu.parsers.util.suspendlazy.getOrNull
 import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
@@ -52,14 +52,7 @@ abstract class MangaListQuickFilter(
 			return null
 		}
 		val availableOptions = availableFilterOptions.getOrNull()?.map { option ->
-			ChipsView.ChipModel(
-				title = option.titleText,
-				titleResId = option.titleResId,
-				icon = option.iconResId,
-				iconData = option.getIconData(),
-				isChecked = option in selectedOptions,
-				data = option,
-			)
+			option.toChipModel(isChecked = option in selectedOptions)
 		}.orEmpty()
 		return if (availableOptions.isNotEmpty()) {
 			QuickFilter(availableOptions)

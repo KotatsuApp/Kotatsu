@@ -14,6 +14,7 @@ import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -42,6 +43,8 @@ abstract class CoroutineIntentService : BaseService() {
 						intentJobContext.processIntent(intent)
 					}
 				}
+			} catch (e: CancellationException) {
+				throw e
 			} catch (e: Throwable) {
 				e.printStackTraceDebug()
 				intentJobContext.onError(e)

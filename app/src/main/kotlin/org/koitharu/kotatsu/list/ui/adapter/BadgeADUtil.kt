@@ -12,16 +12,19 @@ import com.google.android.material.badge.ExperimentalBadgeUtils
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 
+@Deprecated("")
 @CheckResult
 fun View.bindBadge(badge: BadgeDrawable?, counter: Int): BadgeDrawable? {
 	return bindBadgeImpl(badge, null, counter)
 }
 
+@Deprecated("")
 @CheckResult
 fun View.bindBadge(badge: BadgeDrawable?, text: String?): BadgeDrawable? {
 	return bindBadgeImpl(badge, text, 0)
 }
 
+@Deprecated("")
 fun View.clearBadge(badge: BadgeDrawable?) {
 	BadgeUtils.detachBadgeDrawable(badge, this)
 }

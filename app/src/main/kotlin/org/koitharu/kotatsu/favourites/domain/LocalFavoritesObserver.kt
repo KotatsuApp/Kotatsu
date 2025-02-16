@@ -32,7 +32,7 @@ class LocalFavoritesObserver @Inject constructor(
 		limit: Int
 	): Flow<List<Manga>> = db.getFavouritesDao().observeAll(categoryId, order, filterOptions, limit).mapToLocal()
 
-	override fun toManga(e: FavouriteManga) = e.manga.toManga(e.tags.toMangaTags())
+	override fun toManga(e: FavouriteManga) = e.manga.toManga(e.tags.toMangaTags(), null)
 
 	override fun toResult(e: FavouriteManga, manga: Manga) = manga
 }

@@ -82,10 +82,10 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:background="?selectableItemBackgroundBorderless"
-		android:contentDescription="@string/remove"
+		android:contentDescription="@string/disable"
 		android:padding="@dimen/margin_small"
 		android:scaleType="center"
-		android:src="@drawable/ic_delete"
-		android:tooltipText="@string/remove" />
+		android:src="@drawable/ic_disable"
+		android:tooltipText="@string/disable" />
 
 </LinearLayout>

@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil3.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
@@ -23,7 +25,13 @@ fun emptyStateListAD(
 	}
 
 	bind {
-		binding.icon.newImageRequest(lifecycleOwner, item.icon)?.enqueueWith(coil)
+		if (item.icon == 0) {
+			binding.icon.isVisible = false
+			binding.icon.disposeImageRequest()
+		} else {
+			binding.icon.isVisible = true
+			binding.icon.newImageRequest(lifecycleOwner, item.icon)?.enqueueWith(coil)
+		}
 		binding.textPrimary.setText(item.textPrimary)
 		binding.textSecondary.setTextAndVisible(item.textSecondary)
 		if (listener != null) {

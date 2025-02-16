@@ -148,7 +148,7 @@
     <string name="delete">Löschen</string>
     <string name="_import">Importieren</string>
     <string name="share_image">Bild teilen</string>
-    <string name="page_saved">Gespeichert</string>
+    <string name="page_saved">Seite gespeichert</string>
     <string name="save_page">Seite speichern</string>
     <string name="clear">Löschen</string>
     <string name="captcha_solve">Lösen</string>
@@ -628,4 +628,10 @@
     <string name="retry">Erneut versuchen</string>
     <string name="seconds_short">%d s</string>
     <string name="missing_storage_permission">Es gibt keine Berechtigung für den Zugriff auf Manga auf externem Speicher</string>
+    <string name="frequency_of_check">Häufigkeit der Überprüfung</string>
+    <string name="search_suggestions">Such Vorschläge</string>
+    <string name="fix">reparieren</string>
+    <string name="recent_queries">Kürzliche Suchen</string>
+    <string name="suggested_queries">Vorgeschlagene Suchen</string>
+    <string name="authors">Autoren</string>
 </resources>

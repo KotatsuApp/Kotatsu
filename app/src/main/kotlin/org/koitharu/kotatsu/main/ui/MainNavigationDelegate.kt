@@ -240,4 +240,9 @@ class MainNavigationDelegate(
 
 		fun onFragmentChanged(fragment: Fragment, fromUser: Boolean)
 	}
+
+	companion object {
+
+		const val MAX_ITEM_COUNT = 6
+	}
 }

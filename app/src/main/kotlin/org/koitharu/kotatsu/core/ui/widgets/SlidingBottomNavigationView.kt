@@ -77,6 +77,11 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 		}
 	}
 
+	override fun setMinimumHeight(minHeight: Int) {
+		super.setMinimumHeight(minHeight)
+		getChildAt(0)?.minimumHeight = minHeight
+	}
+
 	fun show() {
 		if (currentState == STATE_UP) {
 			return

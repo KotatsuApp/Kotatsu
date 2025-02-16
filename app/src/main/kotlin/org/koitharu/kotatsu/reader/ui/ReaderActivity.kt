@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.reader.ui
 
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.transition.Fade
 import android.transition.Slide
@@ -30,19 +28,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.exceptions.resolve.DialogErrorObserver
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ReaderControl
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.BaseFullscreenActivity
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.IdlingDetector
-import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.hasGlobalPoint
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.isRtl
@@ -52,9 +48,7 @@ import org.koitharu.kotatsu.core.util.ext.postDelayed
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.zipWithPrevious
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.details.ui.pager.pages.PagesSavedObserver
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.reader.data.TapGridSettings
 import org.koitharu.kotatsu.reader.domain.TapGridArea
@@ -115,7 +109,6 @@ class ReaderActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderBinding.inflate(layoutInflater))
-		screenOrientationHelper.init(settings.readerScreenOrientation)
 		readerManager = ReaderManager(supportFragmentManager, viewBinding.container, settings)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		touchHelper = TapGridDispatcher(this, this)
@@ -127,6 +120,8 @@ class ReaderActivity :
 		ReaderSliderListener(viewModel, this).attachToSlider(viewBinding.slider)
 		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
+		viewBinding.buttonPrev.setOnClickListener(controlDelegate)
+		viewBinding.buttonNext.setOnClickListener(controlDelegate)
 
 		viewModel.onError.observeEvent(
 			this,
@@ -150,25 +145,34 @@ class ReaderActivity :
 		viewModel.content.observe(this) {
 			onLoadingStateChanged(viewModel.isLoading.value)
 		}
+		viewModel.readerControls.observe(this, ::onReaderControlsChanged)
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
+		viewModel.isInfoBarTransparent.observe(this) { viewBinding.infoBar.drawBackground = !it }
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(this))
-		viewModel.isPagesSheetEnabled.observe(this, MenuInvalidator(viewBinding.toolbarBottom))
+		val bottomMenuInvalidator = MenuInvalidator(viewBinding.toolbarBottom)
+		viewModel.isPagesSheetEnabled.observe(this, bottomMenuInvalidator)
+		screenOrientationHelper.observeAutoOrientation().observe(this, bottomMenuInvalidator)
 		viewModel.onShowToast.observeEvent(this) { msgId ->
 			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
 				.setAnchorView(viewBinding.appbarBottom)
 				.show()
 		}
+		viewModel.readerSettings.observe(this) {
+			viewBinding.infoBar.applyColorScheme(isBlackOnWhite = it.background.isLight(this))
+		}
 		viewModel.isZoomControlsEnabled.observe(this) {
 			viewBinding.zoomControl.isVisible = it
 		}
-		addMenuProvider(ReaderTopMenuProvider(this, viewModel))
-		viewBinding.toolbarBottom.addMenuProvider(ReaderBottomMenuProvider(this, readerManager, viewModel))
+		addMenuProvider(ReaderMenuTopProvider(viewModel))
+		viewBinding.toolbarBottom.addMenuProvider(
+			ReaderMenuBottomProvider(this, readerManager, screenOrientationHelper, this, viewModel),
+		)
 	}
 
 	override fun getParentActivityIntent(): Intent? {
 		val manga = viewModel.getMangaOrNull() ?: return null
-		return DetailsActivity.newIntent(this, manga)
+		return AppRouter.detailsIntent(this, manga)
 	}
 
 	override fun onUserInteraction() {
@@ -238,12 +242,12 @@ class ReaderActivity :
 			rawX >= viewBinding.root.width - gestureInsets.right ||
 			rawY >= viewBinding.root.height - gestureInsets.bottom ||
 			viewBinding.appbarTop.hasGlobalPoint(rawX, rawY) ||
-			viewBinding.appbarBottom?.hasGlobalPoint(rawX, rawY) == true
+			viewBinding.appbarBottom.hasGlobalPoint(rawX, rawY) == true
 		) {
 			false
 		} else {
 			val touchables = window.peekDecorView()?.touchables
-			touchables?.none { it.hasGlobalPoint(rawX, rawY) } ?: true
+			touchables?.none { it.hasGlobalPoint(rawX, rawY) } != false
 		}
 	}
 
@@ -298,6 +302,13 @@ class ReaderActivity :
 		}
 	}
 
+	private fun onReaderControlsChanged(controls: Set<ReaderControl>) = with(viewBinding) {
+		buttonPrev.isVisible = ReaderControl.PREV_CHAPTER in controls
+		buttonNext.isVisible = ReaderControl.NEXT_CHAPTER in controls
+		slider.isVisible = ReaderControl.SLIDER in controls
+		toolbarBottom.invalidateMenu()
+	}
+
 	private fun setUiIsVisible(isUiVisible: Boolean) {
 		if (viewBinding.appbarTop.isVisible != isUiVisible) {
 			if (isAnimationsEnabled) {
@@ -305,14 +316,12 @@ class ReaderActivity :
 					.setOrdering(TransitionSet.ORDERING_TOGETHER)
 					.addTransition(Slide(Gravity.TOP).addTarget(viewBinding.appbarTop))
 					.addTransition(Fade().addTarget(viewBinding.infoBar))
-				viewBinding.appbarBottom?.let { bottomBar ->
-					transition.addTransition(Slide(Gravity.BOTTOM).addTarget(bottomBar))
-				}
+					.addTransition(Slide(Gravity.BOTTOM).addTarget(viewBinding.appbarBottom))
 				TransitionManager.beginDelayedTransition(viewBinding.root, transition)
 			}
 			val isFullscreen = settings.isReaderFullscreenEnabled
 			viewBinding.appbarTop.isVisible = isUiVisible
-			viewBinding.appbarBottom?.isVisible = isUiVisible
+			viewBinding.appbarBottom.isVisible = isUiVisible
 			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
 			viewBinding.infoBar.isTimeVisible = isFullscreen
 			systemUiController.setSystemUiVisible(isUiVisible || !isFullscreen)
@@ -327,7 +336,7 @@ class ReaderActivity :
 			right = systemBars.right,
 			left = systemBars.left,
 		)
-		viewBinding.appbarBottom?.updateLayoutParams<MarginLayoutParams> {
+		viewBinding.appbarBottom.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = systemBars.bottom + topMargin
 			rightMargin = systemBars.right + topMargin
 			leftMargin = systemBars.left + topMargin
@@ -353,11 +362,11 @@ class ReaderActivity :
 	override fun openMenu() {
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 		val currentMode = readerManager.currentMode ?: return
-		ReaderConfigSheet.show(supportFragmentManager, currentMode)
+		router.showReaderConfigSheet(currentMode)
 	}
 
 	override fun scrollBy(delta: Int, smooth: Boolean): Boolean {
-		return readerManager.currentReader?.scrollBy(delta, smooth) ?: false
+		return readerManager.currentReader?.scrollBy(delta, smooth) == true
 	}
 
 	override fun toggleUiVisibility() {
@@ -383,71 +392,31 @@ class ReaderActivity :
 		viewBinding.infoBar.update(uiState)
 		if (uiState == null) {
 			supportActionBar?.subtitle = null
-			viewBinding.slider.isVisible = false
+			viewBinding.layoutSlider.isVisible = false
 			return
 		}
 		supportActionBar?.subtitle = when {
 			uiState.incognito -> getString(R.string.incognito_mode)
 			else -> uiState.chapterName
 		}
-		if (previous?.chapterName != null && uiState.chapterName != previous.chapterName) {
-			if (!uiState.chapterName.isNullOrEmpty()) {
-				viewBinding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
-			}
+		if (uiState.chapterName != previous?.chapterName && !uiState.chapterName.isNullOrEmpty()) {
+			viewBinding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
 		}
 		if (uiState.isSliderAvailable()) {
 			viewBinding.slider.valueTo = uiState.totalPages.toFloat() - 1
 			viewBinding.slider.setValueRounded(uiState.currentPage.toFloat())
-			viewBinding.slider.isVisible = true
 		} else {
-			viewBinding.slider.isVisible = false
+			viewBinding.slider.valueTo = 1f
+			viewBinding.slider.value = 0f
 		}
-	}
-
-	class IntentBuilder(context: Context) {
-
-		private val intent = Intent(context, ReaderActivity::class.java)
-			.setAction(ACTION_MANGA_READ)
-
-		fun manga(manga: Manga) = apply {
-			intent.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
-		}
-
-		fun mangaId(mangaId: Long) = apply {
-			intent.putExtra(MangaIntent.KEY_ID, mangaId)
-		}
-
-		fun incognito(incognito: Boolean) = apply {
-			intent.putExtra(EXTRA_INCOGNITO, incognito)
-		}
-
-		fun branch(branch: String?) = apply {
-			intent.putExtra(EXTRA_BRANCH, branch)
-		}
-
-		fun state(state: ReaderState?) = apply {
-			intent.putExtra(EXTRA_STATE, state)
-		}
-
-		fun bookmark(bookmark: Bookmark) = manga(
-			bookmark.manga,
-		).state(
-			ReaderState(
-				chapterId = bookmark.chapterId,
-				page = bookmark.page,
-				scroll = bookmark.scroll,
-			),
-		)
-
-		fun build() = intent
+		viewBinding.slider.isEnabled = uiState.isSliderAvailable()
+		viewBinding.buttonNext.isEnabled = uiState.hasNextChapter()
+		viewBinding.buttonPrev.isEnabled = uiState.hasPreviousChapter()
+		viewBinding.layoutSlider.isVisible = true
 	}
 
 	companion object {
 
-		const val ACTION_MANGA_READ = "${BuildConfig.APPLICATION_ID}.action.READ_MANGA"
-		const val EXTRA_STATE = "state"
-		const val EXTRA_BRANCH = "branch"
-		const val EXTRA_INCOGNITO = "incognito"
-		private const val TOAST_DURATION = 1500L
+		private const val TOAST_DURATION = 2000L
 	}
 }

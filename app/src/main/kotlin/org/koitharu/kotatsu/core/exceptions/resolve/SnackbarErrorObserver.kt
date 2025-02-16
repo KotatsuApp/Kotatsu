@@ -5,7 +5,6 @@ import androidx.core.util.Consumer
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.isSerializable
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
@@ -33,10 +32,10 @@ class SnackbarErrorObserver(
 				resolve(value)
 			}
 		} else if (value is ParseException) {
-			val fm = fragmentManager
-			if (fm != null && value.isSerializable()) {
+			val router = router()
+			if (router != null && value.isSerializable()) {
 				snackbar.setAction(R.string.details) {
-					ErrorDetailsDialog.show(fm, value, value.url)
+					router.showErrorDialog(value)
 				}
 			}
 		}

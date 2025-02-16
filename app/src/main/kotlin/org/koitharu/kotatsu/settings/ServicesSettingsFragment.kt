@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.settings
 
 import android.accounts.AccountManager
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -12,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
@@ -20,11 +20,8 @@ import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.ui.ScrobblerAuthHelper
-import org.koitharu.kotatsu.scrobbling.common.ui.config.ScrobblerConfigActivity
 import org.koitharu.kotatsu.settings.utils.SplitSwitchPreference
-import org.koitharu.kotatsu.stats.ui.StatsActivity
 import org.koitharu.kotatsu.sync.domain.SyncController
-import org.koitharu.kotatsu.sync.ui.SyncSettingsIntent
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -41,7 +38,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 		addPreferencesFromResource(R.xml.pref_services)
 		findPreference<SplitSwitchPreference>(AppSettings.KEY_STATS_ENABLED)?.let {
 			it.onContainerClickListener = Preference.OnPreferenceClickListener {
-				it.context.startActivity(Intent(it.context, StatsActivity::class.java))
+				router.openStatistic()
 				true
 			}
 		}
@@ -105,7 +102,9 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 				if (account == null) {
 					am.addAccount(accountType, accountType, null, null, requireActivity(), null, null)
 				} else {
-					startActivitySafe(SyncSettingsIntent(account))
+					if (!router.openSystemSyncSettings(account)) {
+						Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
+					}
 				}
 				true
 			}
@@ -146,7 +145,7 @@ class ServicesSettingsFragment : BasePreferenceFragment(R.string.services),
 		if (!scrobblerAuthHelper.isAuthorized(scrobblerService)) {
 			confirmScrobblerAuth(scrobblerService)
 		} else {
-			startActivity(ScrobblerConfigActivity.newIntent(context ?: return, scrobblerService))
+			router.openScrobblerSettings(scrobblerService)
 		}
 	}
 

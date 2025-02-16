@@ -7,6 +7,7 @@ plugins {
 	id 'com.google.devtools.ksp'
 	id 'kotlin-parcelize'
 	id 'dagger.hilt.android.plugin'
+	id 'androidx.room'
 }
 
 android {
@@ -18,13 +19,12 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 702
-		versionName = '7.7.10'
+		versionCode = 1000
+		versionName = '8.0-a1'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
 			arg('room.generateKotlin', 'true')
-			arg('room.schemaLocation', "$projectDir/schemas")
 		}
 		androidResources {
 			generateLocaleConfig true
@@ -74,7 +74,11 @@ android {
 			'-opt-in=kotlinx.coroutines.FlowPreview',
 			'-opt-in=kotlin.contracts.ExperimentalContracts',
 			'-opt-in=coil3.annotation.ExperimentalCoilApi',
+			'-opt-in=coil3.annotation.InternalCoilApi',
 		]
+	}
+	room {
+		schemaDirectory "$projectDir/schemas"
 	}
 	lint {
 		abortOnError true

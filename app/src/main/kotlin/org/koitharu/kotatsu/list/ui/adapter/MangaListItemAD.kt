@@ -1,10 +1,10 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil3.ImageLoader
 import coil3.request.allowRgb565
 import coil3.request.transformations
-import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
@@ -26,7 +26,6 @@ fun mangaListItemAD(
 ) = adapterDelegateViewBinding<MangaCompactListModel, ListModel, ItemMangaListBinding>(
 	{ inflater, parent -> ItemMangaListBinding.inflate(inflater, parent, false) },
 ) {
-	var badge: BadgeDrawable? = null
 
 	AdapterDelegateClickListenerAdapter(this, clickListener, MangaCompactListModel::manga).attach(itemView)
 
@@ -40,6 +39,7 @@ fun mangaListItemAD(
 			mangaExtra(item.manga)
 			enqueueWith(coil)
 		}
-		badge = itemView.bindBadge(badge, item.counter)
+		binding.badge.number = item.counter
+		binding.badge.isVisible = item.counter > 0
 	}
 }

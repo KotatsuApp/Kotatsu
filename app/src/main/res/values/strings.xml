@@ -8,7 +8,7 @@
 	<string name="network_error">Network error</string>
 	<string name="details">Details</string>
 	<string name="chapters">Chapters</string>
-	<string name="list">List</string>
+	<string name="list">Liste</string>
 	<string name="detailed_list">Detailed list</string>
 	<string name="grid">Grid</string>
 	<string name="list_mode">List mode</string>
@@ -769,5 +769,35 @@
 	<string name="handle_links_summary">Handle manga links from external applications (e.g. web browser). You may also need to enable it manually in the application\'s system settings</string>
 	<string name="email">Email</string>
 	<string name="captcha_required_message">This source requires solving a captcha to continue</string>
+	<string name="author">Author</string>
+	<string name="rating">Rating</string>
+	<string name="source">Source</string>
+	<string name="translation">Translation</string>
+	<string name="chapters_time_pattern" translatable="false">%1$s (%2$s)</string>
+	<string name="show_slider">Show slider</string>
+	<!-- Button label, should be as short as possible -->
+	<string name="incognito">Incognito</string>
 	<string name="error_connection_reset">Connection reset by remote host</string>
+	<string name="backup_tg_check">Check if API works</string>
+	<string name="backup_tg_echo">Test message</string>
+	<string name="backup_tg_id_not_set">Chat ID is not set</string>
+	<string name="telegram_chat_id">Telegram chat ID</string>
+	<string name="open_telegram_bot">Open the Telegram bot</string>
+	<string name="send_backups_telegram">Send backups in Telegram</string>
+	<string name="test_connection">Test connection</string>
+	<string name="telegram_chat_id_summary">Enter the chat ID where backups should be sent</string>
+	<string name="open_telegram_bot_summary">Press to open chat with Kotatsu Backup Bot</string>
+	<string name="clear_database">Clear database</string>
+	<string name="clear_database_summary">Delete information about manga that is not used</string>
+	<string name="enable_all_sources">Enable all manga sources</string>
+	<string name="enable_all_sources_summary">All available manga sources will be enabled permanently</string>
+	<string name="all_sources_enabled">All sources are enabled</string>
+	<string name="reader_info_bar_transparent">Transparent reader information bar</string>
+	<string name="backup_restored_background">The backup will be restored in the background</string>
+	<string name="restoring_backup">Restoring backup</string>
+	<string name="reader_controls_in_bottom_bar">Reader controls in bottom bar</string>
+	<string name="chapters_and_pages">Chapters and pages</string>
+	<string name="pages_slider">Page switch slider</string>
+	<string name="screen_rotation_locked">Screen rotation has been locked</string>
+	<string name="screen_rotation_unlocked">Screen rotation has been unlocked</string>
 </resources>

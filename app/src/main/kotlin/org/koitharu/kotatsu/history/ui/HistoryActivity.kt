@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.history.ui
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
@@ -40,10 +38,5 @@ class HistoryActivity :
 			left = insets.left,
 			right = insets.right,
 		)
-	}
-
-	companion object {
-
-		fun newIntent(context: Context) = Intent(context, HistoryActivity::class.java)
 	}
 }

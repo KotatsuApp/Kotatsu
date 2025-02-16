@@ -29,8 +29,9 @@ class AutoFixUseCase @Inject constructor(
 ) {
 
 	suspend operator fun invoke(mangaId: Long): Pair<Manga, Manga?> {
-		val seed = checkNotNull(mangaDataRepository.findMangaById(mangaId)) { "Manga $mangaId not found" }
-			.getDetailsSafe()
+		val seed = checkNotNull(
+			mangaDataRepository.findMangaById(mangaId, withChapters = true),
+		) { "Manga $mangaId not found" }.getDetailsSafe()
 		if (seed.isHealthy()) {
 			return seed to null // no fix required
 		}

@@ -1,11 +1,14 @@
 package org.koitharu.kotatsu.core.util.ext
 
-import android.annotation.TargetApi
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.storage.StorageManager
 import android.provider.DocumentsContract
+import android.provider.OpenableColumns
+import androidx.annotation.RequiresApi
+import androidx.core.net.toFile
 import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.parsers.util.removeSuffix
 import java.io.File
@@ -30,6 +33,21 @@ fun Uri.resolveFile(context: Context): File? {
 		},
 	)
 }
+
+fun ContentResolver.getFileDisplayName(uri: Uri): String? = runCatching {
+	if (uri.isFileUri()) {
+		return@runCatching uri.toFile().name
+	}
+	query(uri, null, null, null, null)?.use { cursor ->
+		if (cursor.moveToFirst()) {
+			cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+		} else {
+			null
+		}
+	}
+}.onFailure { e ->
+	e.printStackTraceDebug()
+}.getOrNull()
 
 private fun getVolumePath(volumeId: String, context: Context): String? {
 	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -63,7 +81,7 @@ private fun getVolumePathBeforeAndroid11(volumeId: String, context: Context): St
 	it.printStackTraceDebug()
 }.getOrNull()
 
-@TargetApi(Build.VERSION_CODES.R)
+@RequiresApi(Build.VERSION_CODES.R)
 private fun getVolumePathForAndroid11AndAbove(volumeId: String, context: Context): String? = runCatching {
 	val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
 	storageManager.storageVolumes.firstNotNullOfOrNull { volume ->

@@ -144,7 +144,7 @@ class FavouritesListViewModel @Inject constructor(
 		}
 		val result = ArrayList<ListModel>(size + 1)
 		quickFilter.filterItem(filters)?.let(result::add)
-		mangaListMapper.toListModelList(result, this, mode)
+		mangaListMapper.toListModelList(result, this, mode, MangaListMapper.NO_FAVORITE)
 		return result
 	}
 

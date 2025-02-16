@@ -13,7 +13,7 @@ import org.koitharu.kotatsu.alternatives.domain.AlternativesUseCase
 import org.koitharu.kotatsu.alternatives.domain.MigrateUseCase
 import org.koitharu.kotatsu.core.model.chaptersCount
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -40,7 +40,7 @@ class AlternativesViewModel @Inject constructor(
 	private val settings: AppSettings,
 ) : BaseViewModel() {
 
-	val manga = savedStateHandle.require<ParcelableManga>(MangaIntent.KEY_MANGA).manga
+	val manga = savedStateHandle.require<ParcelableManga>(AppRouter.KEY_MANGA).manga
 
 	val onMigrated = MutableEventFlow<Manga>()
 	val content = MutableStateFlow<List<ListModel>>(listOf(LoadingState))

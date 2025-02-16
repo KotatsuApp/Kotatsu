@@ -22,6 +22,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.ReaderIntent
+import org.koitharu.kotatsu.core.nav.dismissParentDialog
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.BoundsScrollListener
@@ -29,7 +32,6 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
-import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -42,7 +44,6 @@ import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.ui.PageSaveHelper
-import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import org.koitharu.kotatsu.reader.ui.ReaderState
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
@@ -151,8 +152,8 @@ class PagesFragment :
 		if (listener != null && listener.onPageSelected(item.page)) {
 			dismissParentDialog()
 		} else {
-			startActivity(
-				IntentBuilder(view.context)
+			router.openReader(
+				ReaderIntent.Builder(view.context)
 					.manga(parentViewModel.getMangaOrNull() ?: return)
 					.state(ReaderState(item.page.chapterId, item.page.index, 0))
 					.build(),
@@ -161,11 +162,11 @@ class PagesFragment :
 	}
 
 	override fun onItemLongClick(item: PageThumbnail, view: View): Boolean {
-		return selectionController?.onItemLongClick(view, item.page.id) ?: false
+		return selectionController?.onItemLongClick(view, item.page.id) == true
 	}
 
 	override fun onItemContextClick(item: PageThumbnail, view: View): Boolean {
-		return selectionController?.onItemContextClick(view, item.page.id) ?: false
+		return selectionController?.onItemContextClick(view, item.page.id) == true
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {

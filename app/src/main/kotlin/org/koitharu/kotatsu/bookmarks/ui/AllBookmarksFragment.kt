@@ -20,6 +20,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.ReaderIntent
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
@@ -30,7 +32,6 @@ import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListHeaderClickListener
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
@@ -39,7 +40,6 @@ import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.reader.ui.ReaderActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -115,26 +115,26 @@ class AllBookmarksFragment :
 
 	override fun onItemClick(item: Bookmark, view: View) {
 		if (selectionController?.onItemClick(item.pageId) != true) {
-			val intent = ReaderActivity.IntentBuilder(view.context)
+			val intent = ReaderIntent.Builder(view.context)
 				.bookmark(item)
 				.incognito(true)
 				.build()
-			startActivity(intent)
+			router.openReader(intent)
 			Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 		}
 	}
 
 	override fun onListHeaderClick(item: ListHeader, view: View) {
 		val manga = item.payload as? Manga ?: return
-		startActivity(DetailsActivity.newIntent(view.context, manga))
+		router.openDetails(manga)
 	}
 
 	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
-		return selectionController?.onItemLongClick(view, item.pageId) ?: false
+		return selectionController?.onItemLongClick(view, item.pageId) == true
 	}
 
 	override fun onItemContextClick(item: Bookmark, view: View): Boolean {
-		return selectionController?.onItemContextClick(view, item.pageId) ?: false
+		return selectionController?.onItemContextClick(view, item.pageId) == true
 	}
 
 	override fun onRetryClick(error: Throwable) = Unit
@@ -207,17 +207,5 @@ class AllBookmarksFragment :
 			invalidateSpanGroupIndexCache()
 			invalidateSpanIndexCache()
 		}
-	}
-
-	companion object {
-
-		@Deprecated(
-			"",
-			ReplaceWith(
-				"BookmarksFragment()",
-				"org.koitharu.kotatsu.bookmarks.ui.BookmarksFragment",
-			),
-		)
-		fun newInstance() = AllBookmarksFragment()
 	}
 }

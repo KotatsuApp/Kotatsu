@@ -20,6 +20,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -187,11 +188,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 
 	private class PasswordTextWatcher(
 		private val button: Button,
-	) : TextWatcher {
-
-		override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-		override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+	) : DefaultTextWatcher {
 
 		override fun afterTextChanged(s: Editable?) {
 			val text = s?.toString()

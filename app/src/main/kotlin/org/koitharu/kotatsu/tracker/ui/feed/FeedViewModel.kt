@@ -151,7 +151,7 @@ class FeedViewModel @Inject constructor(
 					null
 				} else {
 					UpdatedMangaHeader(
-						mangaList.map { mangaListMapper.toGridModel(it.manga) },
+						mangaList.map { mangaListMapper.toGridModel(it.manga, 0) },
 					)
 				}
 			}

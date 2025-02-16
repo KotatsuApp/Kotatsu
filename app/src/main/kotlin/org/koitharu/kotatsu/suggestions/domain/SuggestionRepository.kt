@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.suggestions.data.SuggestionEntity
+import org.koitharu.kotatsu.suggestions.data.SuggestionWithManga
 import javax.inject.Inject
 
 class SuggestionRepository @Inject constructor(
@@ -23,25 +24,23 @@ class SuggestionRepository @Inject constructor(
 
 	fun observeAll(): Flow<List<Manga>> {
 		return db.getSuggestionDao().observeAll().mapItems {
-			it.manga.toManga(it.tags.toMangaTags())
+			it.toManga()
 		}
 	}
 
 	fun observeAll(limit: Int, filterOptions: Set<ListFilterOption>): Flow<List<Manga>> {
 		return db.getSuggestionDao().observeAll(limit, filterOptions).mapItems {
-			it.manga.toManga(it.tags.toMangaTags())
+			it.toManga()
 		}
 	}
 
 	suspend fun getRandom(): Manga? {
-		return db.getSuggestionDao().getRandom()?.let {
-			it.manga.toManga(it.tags.toMangaTags())
-		}
+		return db.getSuggestionDao().getRandom()?.toManga()
 	}
 
 	suspend fun getRandomList(limit: Int): List<Manga> {
 		return db.getSuggestionDao().getRandom(limit).map {
-			it.manga.toManga(it.tags.toMangaTags())
+			it.toManga()
 		}
 	}
 
@@ -80,4 +79,6 @@ class SuggestionRepository @Inject constructor(
 			}
 		}
 	}
+
+	private fun SuggestionWithManga.toManga() = manga.toManga(tags.toMangaTags(), null)
 }

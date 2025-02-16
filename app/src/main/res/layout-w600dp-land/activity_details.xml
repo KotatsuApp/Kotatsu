@@ -121,56 +121,17 @@
 					app:layout_constraintTop_toBottomOf="@id/textView_title"
 					tools:text="@tools:sample/lorem[12]" />
 
-				<ImageView
-					android:id="@+id/imageView_state"
-					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_marginVertical="0.5dp"
-					android:layout_marginStart="16dp"
-					app:layout_constraintBottom_toBottomOf="@id/textView_state"
-					app:layout_constraintDimensionRatio="1"
-					app:layout_constraintStart_toEndOf="@id/imageView_cover"
-					app:layout_constraintTop_toTopOf="@id/textView_state"
-					tools:src="@drawable/ic_state_ongoing" />
-
-				<TextView
-					android:id="@+id/textView_state"
+				<com.google.android.material.chip.Chip
+					android:id="@+id/chip_favorite"
+					style="@style/Widget.Kotatsu.Chip.Dropdown"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_marginStart="4dp"
-					android:layout_marginTop="4dp"
-					android:layout_marginEnd="16dp"
-					android:drawablePadding="4dp"
-					android:gravity="center_vertical"
-					android:labelFor="@id/imageView_state"
-					android:singleLine="true"
-					android:textColor="?colorTertiary"
-					android:textStyle="bold"
-					app:drawableTint="?colorTertiary"
-					app:layout_constrainedWidth="true"
-					app:layout_constraintEnd_toEndOf="parent"
-					app:layout_constraintHorizontal_bias="0"
-					app:layout_constraintStart_toEndOf="@id/imageView_state"
+					android:layout_marginStart="16dp"
+					android:layout_marginTop="8dp"
+					app:chipIcon="@drawable/ic_heart_outline"
+					app:layout_constraintStart_toEndOf="@id/imageView_cover"
 					app:layout_constraintTop_toBottomOf="@id/textView_subtitle"
-					tools:text="@string/state_ongoing" />
-
-				<RatingBar
-					android:id="@+id/rating_bar"
-					style="?ratingBarStyleSmall"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_marginStart="16dp"
-					android:layout_marginTop="4dp"
-					android:layout_marginEnd="16dp"
-					android:isIndicator="true"
-					android:max="1"
-					android:numStars="5"
-					android:stepSize="0.5"
-					app:layout_constraintEnd_toEndOf="parent"
-					app:layout_constraintHorizontal_bias="0.0"
-					app:layout_constraintStart_toEndOf="@id/imageView_cover"
-					app:layout_constraintTop_toBottomOf="@id/textView_state"
-					tools:rating="4" />
+					tools:text="@string/add_to_favourites" />
 
 				<androidx.constraintlayout.widget.Barrier
 					android:id="@+id/barrier_header"
@@ -178,41 +139,9 @@
 					android:layout_height="wrap_content"
 					app:barrierDirection="bottom"
 					app:barrierMargin="@dimen/margin_normal"
-					app:constraint_referenced_ids="imageView_cover,rating_bar" />
+					app:constraint_referenced_ids="imageView_cover,chip_favorite" />
 
-				<include
-					android:id="@+id/info_layout"
-					layout="@layout/layout_details_chips"
-					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/screen_padding"
-					app:layout_constraintEnd_toEndOf="parent"
-					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toBottomOf="@id/barrier_header" />
-
-				<org.koitharu.kotatsu.core.ui.widgets.ProgressButton
-					android:id="@+id/button_read"
-					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_gravity="end|center_vertical"
-					android:layout_marginHorizontal="@dimen/screen_padding"
-					android:layout_marginTop="@dimen/margin_normal"
-					android:foreground="?selectableItemBackground"
-					android:gravity="center"
-					android:paddingHorizontal="6dp"
-					android:paddingVertical="8dp"
-					android:textColor="?colorOnPrimaryContainer"
-					app:baseColor="?colorSecondaryContainer"
-					app:layout_constraintEnd_toEndOf="parent"
-					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toBottomOf="@id/info_layout"
-					app:progressColor="?colorPrimary"
-					app:subtitleTextAppearance="?textAppearanceBodySmall"
-					app:titleTextAppearance="?textAppearanceButton"
-					tools:max="100"
-					tools:progress="40"
-					tools:subtitle="12 chapters"
-					tools:title="@string/read" />
+				<include layout="@layout/layout_details_table" />
 
 				<TextView
 					android:id="@+id/textView_description_title"
@@ -227,7 +156,7 @@
 					android:textAppearance="?textAppearanceTitleSmall"
 					app:layout_constraintEnd_toStartOf="@id/button_description_more"
 					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toBottomOf="@id/button_read" />
+					app:layout_constraintTop_toBottomOf="@id/textView_progress_label" />
 
 				<Button
 					android:id="@+id/button_description_more"

@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import com.google.android.material.R as materialR
 
+@Deprecated("")
 class ProgressButton @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,

@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.favourites.ui.container
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,7 @@ import coil3.ImageLoader
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
@@ -29,7 +29,6 @@ import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.FragmentFavouritesContainerBinding
 import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
-import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -55,13 +54,13 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 		TabLayoutMediator(
 			binding.tabs,
 			binding.pager,
-			FavouritesTabConfigurationStrategy(pagerAdapter, viewModel),
+			FavouritesTabConfigurationStrategy(pagerAdapter, viewModel, router),
 		).attach()
 		binding.stubEmpty.setOnInflateListener(this)
 		actionModeDelegate.addListener(this)
 		viewModel.categories.observe(viewLifecycleOwner, pagerAdapter)
 		viewModel.isEmpty.observe(viewLifecycleOwner, ::onEmptyStateChanged)
-		addMenuProvider(FavouritesContainerMenuProvider(binding.root.context))
+		addMenuProvider(FavouritesContainerMenuProvider(router))
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.pager))
 	}
 
@@ -102,9 +101,7 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.button_retry -> startActivity(
-				Intent(v.context, FavouriteCategoriesActivity::class.java),
-			)
+			R.id.button_retry -> router.openFavoriteCategories()
 		}
 	}
 

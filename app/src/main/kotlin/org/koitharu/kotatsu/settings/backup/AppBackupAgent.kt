@@ -97,9 +97,9 @@ class AppBackupAgent : BackupAgent() {
 		}
 		try {
 			runBlocking {
-				backup.getEntry(BackupEntry.Name.HISTORY)?.let { repository.restoreHistory(it) }
+				backup.getEntry(BackupEntry.Name.HISTORY)?.let { repository.restoreHistory(it, null) }
 				backup.getEntry(BackupEntry.Name.CATEGORIES)?.let { repository.restoreCategories(it) }
-				backup.getEntry(BackupEntry.Name.FAVOURITES)?.let { repository.restoreFavourites(it) }
+				backup.getEntry(BackupEntry.Name.FAVOURITES)?.let { repository.restoreFavourites(it, null) }
 				backup.getEntry(BackupEntry.Name.BOOKMARKS)?.let { repository.restoreBookmarks(it) }
 				backup.getEntry(BackupEntry.Name.SOURCES)?.let { repository.restoreSources(it) }
 				backup.getEntry(BackupEntry.Name.SETTINGS)?.let { repository.restoreSettings(it) }

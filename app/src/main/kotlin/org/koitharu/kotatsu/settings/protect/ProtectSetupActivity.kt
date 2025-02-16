@@ -4,7 +4,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -18,6 +17,7 @@ import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivitySetupProtectBinding
@@ -27,7 +27,7 @@ private const val MIN_PASSWORD_LENGTH = 4
 @AndroidEntryPoint
 class ProtectSetupActivity :
 	BaseActivity<ActivitySetupProtectBinding>(),
-	TextWatcher,
+	DefaultTextWatcher,
 	View.OnClickListener,
 	TextView.OnEditorActionListener,
 	CompoundButton.OnCheckedChangeListener {
@@ -89,10 +89,6 @@ class ProtectSetupActivity :
 			false
 		}
 	}
-
-	override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
 	override fun afterTextChanged(s: Editable?) {
 		viewBinding.editPassword.error = null

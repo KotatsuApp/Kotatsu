@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.FragmentManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.DialogImportBinding
@@ -26,7 +26,7 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 	private val importFileCall = registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) {
 		startImport(it)
 	}
-	private val importDirCall = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
+	private val importDirCall = OpenDocumentTreeHelper(this) {
 		startImport(listOfNotNull(it))
 	}
 
@@ -73,12 +73,5 @@ class ImportDialogFragment : AlertDialogFragment<DialogImportBinding>(), View.On
 		}
 		Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
 		dismiss()
-	}
-
-	companion object {
-
-		private const val TAG = "ImportDialogFragment"
-
-		fun show(fm: FragmentManager) = ImportDialogFragment().show(fm, TAG)
 	}
 }

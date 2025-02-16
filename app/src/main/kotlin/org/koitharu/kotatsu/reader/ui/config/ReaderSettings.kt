@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ReaderBackground
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
@@ -33,6 +34,9 @@ class ReaderSettings(
 
 	val zoomMode: ZoomMode
 		get() = settings.zoomMode
+
+	val background: ReaderBackground
+		get() = settings.readerBackground
 
 	val colorFilter: ReaderColorFilter?
 		get() = colorFilterFlow.value?.takeUnless { it.isEmpty } ?: settings.readerColorFilter
@@ -51,8 +55,7 @@ class ReaderSettings(
 		get() = settings.isPagesNumbersEnabled
 
 	fun applyBackground(view: View) {
-		val bg = settings.readerBackground
-		view.background = bg.resolve(view.context)
+		view.background = background.resolve(view.context)
 	}
 
 	fun isPagesCropEnabled(isWebtoon: Boolean) = settings.isPagesCropEnabled(

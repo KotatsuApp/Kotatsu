@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -15,6 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
+import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.DownloadFormat
 import org.koitharu.kotatsu.core.prefs.TriStateOption
@@ -27,8 +28,6 @@ import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.parsers.util.names
-import org.koitharu.kotatsu.settings.storage.MangaDirectorySelectDialog
-import org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity
 import org.koitharu.kotatsu.settings.utils.DozeHelper
 import javax.inject.Inject
 
@@ -45,7 +44,7 @@ class DownloadsSettingsFragment :
 	@Inject
 	lateinit var downloadsScheduler: DownloadWorker.Scheduler
 
-	private val pickFileTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
+	private val pickFileTreeLauncher = OpenDocumentTreeHelper(this) {
 		if (it != null) onDirectoryPicked(it)
 	}
 
@@ -98,12 +97,12 @@ class DownloadsSettingsFragment :
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
 			AppSettings.KEY_LOCAL_STORAGE -> {
-				MangaDirectorySelectDialog.show(childFragmentManager)
+				router.showDirectorySelectDialog()
 				true
 			}
 
 			AppSettings.KEY_LOCAL_MANGA_DIRS -> {
-				startActivity(MangaDirectoriesActivity.newIntent(preference.context))
+				router.openDirectoriesSettings()
 				true
 			}
 

@@ -8,6 +8,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
@@ -27,7 +28,7 @@ class HistoryListFragment : MangaListFragment() {
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		RecyclerScrollKeeper(binding.recyclerView).attach()
-		addMenuProvider(HistoryListMenuProvider(binding.root.context, viewModel))
+		addMenuProvider(HistoryListMenuProvider(binding.root.context, router, viewModel))
 		viewModel.isStatsEnabled.observe(viewLifecycleOwner, MenuInvalidator(requireActivity()))
 	}
 

@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.getCauseUrl
@@ -36,6 +37,7 @@ import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -50,7 +52,7 @@ open class RemoteListViewModel @Inject constructor(
 	mangaRepositoryFactory: MangaRepository.Factory,
 	final override val filterCoordinator: FilterCoordinator,
 	settings: AppSettings,
-	mangaListMapper: MangaListMapper,
+	protected val mangaListMapper: MangaListMapper,
 	downloadScheduler: DownloadWorker.Scheduler,
 	private val exploreRepository: ExploreRepository,
 	sourcesRepository: MangaSourcesRepository,
@@ -85,7 +87,7 @@ open class RemoteListViewModel @Inject constructor(
 				list == null -> add(LoadingState)
 				list.isEmpty() -> add(createEmptyState(canResetFilter = filterCoordinator.isFilterApplied))
 				else -> {
-					mangaListMapper.toListModelList(this, list, mode)
+					mapMangaList(this, list, mode)
 					when {
 						error != null -> add(error.toErrorFooter())
 						hasNext -> add(LoadingFooter())
@@ -170,6 +172,12 @@ open class RemoteListViewModel @Inject constructor(
 	)
 
 	protected open suspend fun onBuildList(list: MutableList<ListModel>) = Unit
+
+	protected open suspend fun mapMangaList(
+		destination: MutableCollection<in ListModel>,
+		manga: Collection<Manga>,
+		mode: ListMode
+	) = mangaListMapper.toListModelList(destination, manga, mode, 0)
 
 	fun openRandom() {
 		if (randomJob?.isActive == true) {

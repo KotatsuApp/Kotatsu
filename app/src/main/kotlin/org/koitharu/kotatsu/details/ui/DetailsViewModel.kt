@@ -21,7 +21,7 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.getPreferredBranch
-import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.nav.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
@@ -112,12 +112,14 @@ class DetailsViewModel @Inject constructor(
 		history,
 		interactor.observeIncognitoMode(manga),
 	) { m, b, h, im ->
-		HistoryInfo(m, b, h, im)
-	}.stateIn(
-		scope = viewModelScope + Dispatchers.Default,
-		started = SharingStarted.Eagerly,
-		initialValue = HistoryInfo(null, null, null, false),
-	)
+		val estimatedTime = readingTimeUseCase.invoke(m, b, h)
+		HistoryInfo(m, b, h, im, estimatedTime)
+	}.withErrorHandling()
+		.stateIn(
+			scope = viewModelScope + Dispatchers.Default,
+			started = SharingStarted.Eagerly,
+			initialValue = HistoryInfo(null, null, null, false, null),
+		)
 
 	val localSize = mangaDetails
 		.map { it?.local }
@@ -144,6 +146,7 @@ class DetailsViewModel @Inject constructor(
 			mangaListMapper.toListModelList(
 				manga = relatedMangaUseCase(it).orEmpty(),
 				mode = ListMode.GRID,
+				flags = 0,
 			)
 		} else {
 			emptyList()
@@ -169,14 +172,6 @@ class DetailsViewModel @Inject constructor(
 			)
 		}.sortedWith(BranchComparator())
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
-
-	val readingTime = combine(
-		mangaDetails,
-		selectedBranch,
-		history,
-	) { m, b, h ->
-		readingTimeUseCase.invoke(m, b, h)
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, null)
 
 	val selectedBranchValue: String?
 		get() = selectedBranch.value
@@ -222,14 +217,6 @@ class DetailsViewModel @Inject constructor(
 		}
 	}
 
-	fun startChaptersSelection() {
-		val chapters = chapters.value
-		val chapter = chapters.find {
-			it.isUnread && !it.isDownloaded
-		} ?: chapters.firstOrNull() ?: return
-		onSelectChapter.call(chapter.chapter.id)
-	}
-
 	fun removeFromHistory() {
 		launchJob(Dispatchers.Default) {
 			val handle = historyRepository.delete(setOf(mangaId))
@@ -240,14 +227,15 @@ class DetailsViewModel @Inject constructor(
 	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
 		detailsLoadUseCase.invoke(intent)
 			.onEachWhile {
-				if (it.allChapters.isEmpty()) {
-					return@onEachWhile false
+				if (it.allChapters.isNotEmpty()) {
+					val manga = it.toManga()
+					// find default branch
+					val hist = historyRepository.getOne(manga)
+					selectedBranch.value = manga.getPreferredBranch(hist)
+					true
+				} else {
+					false
 				}
-				val manga = it.toManga()
-				// find default branch
-				val hist = historyRepository.getOne(manga)
-				selectedBranch.value = manga.getPreferredBranch(hist)
-				true
 			}.collect {
 				mangaDetails.value = it
 			}

@@ -13,10 +13,18 @@ import kotlin.math.absoluteValue
 object KotatsuColors {
 
 	@ColorInt
+	@Deprecated("")
 	fun segmentColor(context: Context, @AttrRes resId: Int): Int {
 		val colorHex = String.format("%06x", context.getThemeColor(resId))
 		val hue = getHue(colorHex)
 		val color = ColorUtils.HSLToColor(floatArrayOf(hue, 0.5f, 0.5f))
+		val backgroundColor = context.getThemeColor(R.attr.colorSurfaceContainerHigh)
+		return MaterialColors.harmonize(color, backgroundColor)
+	}
+
+	@ColorInt
+	fun segmentColorRandom(context: Context, seed: Any): Int {
+		val color = random(seed)
 		val backgroundColor = context.getThemeColor(R.attr.colorSurfaceContainerHigh)
 		return MaterialColors.harmonize(color, backgroundColor)
 	}

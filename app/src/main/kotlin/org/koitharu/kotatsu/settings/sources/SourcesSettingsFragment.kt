@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.settings.sources
 
-import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -9,16 +9,17 @@ import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.parsers.util.names
-import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity
 
 @AndroidEntryPoint
-class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) {
+class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources),
+	SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private val viewModel by viewModels<SourcesSettingsViewModel>()
 
@@ -44,10 +45,10 @@ class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) 
 		}
 		findPreference<Preference>(AppSettings.KEY_SOURCES_CATALOG)?.let { pref ->
 			viewModel.availableSourcesCount.observe(viewLifecycleOwner) {
-				pref.summary = if (it >= 0) {
-					getString(R.string.available_d, it)
-				} else {
-					null
+				pref.summary = when {
+					it == 0 -> getString(R.string.all_sources_enabled)
+					it > 0 -> getString(R.string.available_d, it)
+					else -> null
 				}
 			}
 		}
@@ -56,11 +57,18 @@ class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) 
 				pref.isChecked = it
 			}
 		}
+		updateEnableAllDependencies()
+		settings.subscribe(this)
+	}
+
+	override fun onDestroyView() {
+		settings.unsubscribe(this)
+		super.onDestroyView()
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean = when (preference.key) {
 		AppSettings.KEY_SOURCES_CATALOG -> {
-			startActivity(Intent(preference.context, SourcesCatalogActivity::class.java))
+			router.openSourcesCatalog()
 			true
 		}
 
@@ -70,5 +78,15 @@ class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources) 
 		}
 
 		else -> super.onPreferenceTreeClick(preference)
+	}
+
+	override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+		when (key) {
+			AppSettings.KEY_SOURCES_ENABLED_ALL -> updateEnableAllDependencies()
+		}
+	}
+
+	private fun updateEnableAllDependencies() {
+		findPreference<Preference>(AppSettings.KEY_SOURCES_CATALOG)?.isEnabled = !settings.isAllSourcesEnabled
 	}
 }

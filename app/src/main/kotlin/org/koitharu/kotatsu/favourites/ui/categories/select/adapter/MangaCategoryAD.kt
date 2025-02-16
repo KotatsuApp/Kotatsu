@@ -1,10 +1,10 @@
 package org.koitharu.kotatsu.favourites.ui.categories.select.adapter
 
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
+import androidx.core.text.buildSpannedString
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.appendIcon
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.databinding.ItemCategoryCheckableBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
@@ -21,11 +21,20 @@ fun mangaCategoryAD(
 	}
 
 	bind { payloads ->
-		binding.root.isEnabled = item.isEnabled
-		binding.checkableImageView.isEnabled = item.isEnabled
-		binding.checkableImageView.setChecked(item.isChecked, ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED in payloads)
-		binding.textViewTitle.text = item.category.title
-		binding.imageViewTracker.isVisible = item.category.isTrackingEnabled && item.isTrackerEnabled
-		binding.imageViewHidden.isGone = item.category.isVisibleInLibrary
+		binding.checkBox.checkedState = item.checkedState
+		if (ListModelDiffCallback.PAYLOAD_CHECKED_CHANGED !in payloads) {
+			binding.checkBox.text = buildSpannedString {
+				append(item.category.title)
+				if (item.isTrackerEnabled && item.category.isTrackingEnabled) {
+					append(' ')
+					appendIcon(binding.checkBox, R.drawable.ic_notification)
+				}
+				if (!item.category.isVisibleInLibrary) {
+					append(' ')
+					appendIcon(binding.checkBox, R.drawable.ic_eye_off)
+				}
+			}
+			binding.checkBox.jumpDrawablesToCurrentState()
+		}
 	}
 }

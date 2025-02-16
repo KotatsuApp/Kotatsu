@@ -92,18 +92,21 @@
 				android:layout_height="wrap_content" />
 
 			<TextView
+				android:id="@+id/textView_tip"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
-				android:layout_marginTop="@dimen/margin_small"
+				android:drawablePadding="@dimen/margin_small"
+				android:paddingHorizontal="@dimen/margin_normal"
+				android:paddingVertical="@dimen/margin_small"
 				android:text="@string/chapter_selection_hint"
-				android:textAppearance="?attr/textAppearanceBodySmall" />
+				android:textAppearance="?attr/textAppearanceBodySmall"
+				app:drawableStartCompat="@drawable/ic_tap" />
 
 			<com.google.android.material.materialswitch.MaterialSwitch
 				android:id="@+id/switch_start"
 				android:layout_width="match_parent"
 				android:layout_height="?android:listPreferredItemHeightSmall"
-				android:layout_marginTop="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_small"
 				android:checked="true"
 				android:drawablePadding="?android:listPreferredItemPaddingStart"
 				android:ellipsize="end"

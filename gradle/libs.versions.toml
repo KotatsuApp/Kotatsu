@@ -1,49 +1,49 @@
 [versions]
 acra = "5.12.0"
-activity = "1.9.3"
+activity = "1.10.0"
 adapterdelegates = "4.3.2"
 appcompat = "1.7.0"
 avifDecoder = "1.1.1.14d8e3c4"
 biometric = "1.2.0-alpha05"
-coil = "3.0.4"
+coil = "3.1.0"
 collections = "1.4.5"
 #noinspection GradleDependency - 2.5.3 cause crashes
 conscrypt = "2.5.2"
 constraintlayout = "2.2.0"
 coreKtx = "1.15.0"
-coroutines = "1.9.0"
-desugar = "2.1.3"
+coroutines = "1.10.1"
+desugar = "2.1.4"
 diskLruCache = "1.4"
 fragment = "1.8.5"
-gradle = "8.7.2"
+gradle = "8.8.0"
 guava = "33.3.1-android"
-hilt = "2.52"
-hiltWork = "1.2.0"
-json = "20240303"
+dagger = "2.55"
+hilt = "1.2.0"
+json = "20250107"
 junit = "4.13.2"
 junitKtx = "1.2.1"
-kotlin = "2.0.21"
-kspPlugin = "2.0.21-1.0.27"
+kotlin = "2.1.10"
+ksp = "2.1.10-1.0.29"
 leakcanary = "3.0-alpha-8"
 lifecycle = "2.8.7"
 markwon = "4.6.2"
-material = "1.12.0"
+material = "1.13.0-alpha10"
 moshi = "1.15.2"
 okhttp = "4.12.0"
-okio = "3.9.1"
-parsers = "794a737b6d"
+okio = "3.10.2"
+parsers = "198e859850"
 preference = "1.2.1"
-recyclerview = "1.3.2"
+recyclerview = "1.4.0"
 room = "2.6.1"
-rules = "1.6.1"
-runner = "1.6.2"
 ssiv = "ba48c29803"
 swiperefreshlayout = "1.1.0"
+testRules = "1.6.1"
+testRunner = "1.6.2"
 transition = "1.5.1"
 viewpager2 = "1.1.0"
 webkit = "1.12.1"
 workRuntime = "2.10.0"
-workinspector = "5778dd1747"
+workinspector = "1.2"
 
 [libraries]
 acra-dialog = { module = "ch.acra:acra-dialog", version.ref = "acra" }
@@ -57,8 +57,8 @@ androidx-collection = { module = "androidx.collection:collection-ktx", version.r
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
-androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltWork" }
-androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt" }
 androidx-junit = { module = "androidx.test.ext:junit-ktx", version.ref = "junitKtx" }
 androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "lifecycle" }
 androidx-preference = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
@@ -67,10 +67,10 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
-androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
-androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
+androidx-rules = { module = "androidx.test:rules", version.ref = "testRules" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "testRunner" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
-androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "rules" }
+androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "testRules" }
 androidx-transition = { module = "androidx.transition:transition-ktx", version.ref = "transition" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }
@@ -84,10 +84,10 @@ conscrypt-android = { module = "org.conscrypt:conscrypt-android", version.ref = 
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 disk-lru-cache = { module = "com.github.solkin:disk-lru-cache", version.ref = "diskLruCache" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "dagger" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 json = { module = "org.json:json", version.ref = "json" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -109,7 +109,8 @@ ssiv = { module = "com.github.KotatsuApp:subsampling-scale-image-view", version.
 workinspector = { module = "com.github.Koitharu:WorkInspector", version.ref = "workinspector" }
 
 [plugins]
-android = { id = "com.android.tools.build:gradle", version.ref = "gradle" }
-hilt = { id = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
-kotlin = { id = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "kspPlugin" }
+android-application = { id = "com.android.application", version.ref = "gradle" }
+kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
+room = { id = "androidx.room", version.ref = "room" }

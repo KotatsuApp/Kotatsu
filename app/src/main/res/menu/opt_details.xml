@@ -12,10 +12,11 @@
 
 	<item
 		android:id="@+id/action_save"
+		android:icon="@drawable/ic_download"
 		android:orderInCategory="40"
 		android:title="@string/download"
 		android:visible="false"
-		app:showAsAction="never" />
+		app:showAsAction="ifRoom" />
 
 	<item
 		android:id="@+id/action_delete"

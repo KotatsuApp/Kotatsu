@@ -17,6 +17,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
@@ -38,7 +39,7 @@ class CaptchaNotifier(
 			.build()
 		manager.createNotificationChannel(channel)
 
-		val intent = CloudFlareActivity.newIntent(context, exception)
+		val intent = AppRouter.cloudFlareResolveIntent(context, exception)
 			.setData(exception.url.toUri())
 		val notification = NotificationCompat.Builder(context, CHANNEL_ID)
 			.setContentTitle(channel.name)

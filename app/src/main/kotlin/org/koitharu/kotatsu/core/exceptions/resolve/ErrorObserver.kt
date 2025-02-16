@@ -4,6 +4,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
@@ -11,6 +12,7 @@ import androidx.lifecycle.coroutineScope
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.util.ext.findActivity
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 
@@ -33,6 +35,8 @@ abstract class ErrorObserver(
 		return resolver != null && ExceptionResolver.canResolve(error)
 	}
 
+	protected fun router() = fragment?.router ?: (activity as? FragmentActivity)?.router
+
 	private fun isAlive(): Boolean {
 		return when {
 			fragment != null -> fragment.view != null
@@ -44,7 +48,7 @@ abstract class ErrorObserver(
 	protected fun resolve(error: Throwable) {
 		if (isAlive()) {
 			lifecycleScope.launch {
-				val isResolved = resolver?.resolve(error) ?: false
+				val isResolved = resolver?.resolve(error) == true
 				if (isActive) {
 					onResolved?.accept(isResolved)
 				}

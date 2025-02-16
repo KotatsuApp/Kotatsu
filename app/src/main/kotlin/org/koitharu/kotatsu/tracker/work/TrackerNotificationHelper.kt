@@ -16,14 +16,13 @@ import coil3.ImageLoader
 import coil3.request.ImageRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 import javax.inject.Inject
 
 class TrackerNotificationHelper @Inject constructor(
@@ -81,7 +80,7 @@ class TrackerNotificationHelper @Inject constructor(
 			style.setSummaryText(manga.title)
 			style.setBigContentTitle(summary)
 			setStyle(style)
-			val intent = DetailsActivity.newIntent(applicationContext, manga)
+			val intent = AppRouter.detailsIntent(applicationContext, manga)
 			setContentIntent(
 				PendingIntentCompat.getActivity(
 					applicationContext,
@@ -126,7 +125,7 @@ class TrackerNotificationHelper @Inject constructor(
 			setNumber(newChaptersCount)
 			setGroup(GROUP_NEW_CHAPTERS)
 			setGroupSummary(true)
-			val intent = UpdatesActivity.newIntent(applicationContext)
+			val intent = AppRouter.mangaUpdatesIntent(applicationContext)
 			setContentIntent(
 				PendingIntentCompat.getActivity(
 					applicationContext,

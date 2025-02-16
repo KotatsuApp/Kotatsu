@@ -13,7 +13,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.koitharu.kotatsu.core.model.MangaSource
-import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -35,9 +35,9 @@ class ImageViewModel @Inject constructor(
 		launchLoadingJob(Dispatchers.Default) {
 			val request = ImageRequest.Builder(context)
 				.memoryCachePolicy(CachePolicy.READ_ONLY)
-				.data(savedStateHandle.require<Uri>(BaseActivity.EXTRA_DATA))
+				.data(savedStateHandle.require<Uri>(AppRouter.KEY_DATA))
 				.memoryCachePolicy(CachePolicy.DISABLED)
-				.mangaSourceExtra(MangaSource(savedStateHandle[ImageActivity.EXTRA_SOURCE]))
+				.mangaSourceExtra(MangaSource(savedStateHandle[AppRouter.KEY_SOURCE]))
 				.build()
 			val bitmap = coil.execute(request).getDrawableOrThrow().toBitmap()
 			runInterruptible(Dispatchers.IO) {

@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.alternatives.ui
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -13,8 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.getTitle
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
@@ -22,7 +19,6 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityAlternativesBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
@@ -30,8 +26,6 @@ import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaListFilter
-import org.koitharu.kotatsu.search.ui.MangaListActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -65,7 +59,7 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 		viewModel.content.observe(this, listAdapter)
 		viewModel.onMigrated.observeEvent(this) {
 			Toast.makeText(this, R.string.migration_completed, Toast.LENGTH_SHORT).show()
-			startActivity(DetailsActivity.newIntent(this, it))
+			router.openDetails(it)
 			finishAfterTransition()
 		}
 	}
@@ -82,16 +76,9 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 
 	override fun onItemClick(item: MangaAlternativeModel, view: View) {
 		when (view.id) {
-			R.id.chip_source -> startActivity(
-				MangaListActivity.newIntent(
-					this,
-					item.manga.source,
-					MangaListFilter(query = viewModel.manga.title),
-				),
-			)
-
+			R.id.chip_source -> router.openSearch(item.manga.source, viewModel.manga.title)
 			R.id.button_migrate -> confirmMigration(item.manga)
-			else -> startActivity(DetailsActivity.newIntent(this, item.manga))
+			else -> router.openDetails(item.manga)
 		}
 	}
 
@@ -113,11 +100,5 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 				viewModel.migrate(target)
 			}
 		}.show()
-	}
-
-	companion object {
-
-		fun newIntent(context: Context, manga: Manga) = Intent(context, AlternativesActivity::class.java)
-			.putExtra(MangaIntent.KEY_MANGA, ParcelableManga(manga))
 	}
 }

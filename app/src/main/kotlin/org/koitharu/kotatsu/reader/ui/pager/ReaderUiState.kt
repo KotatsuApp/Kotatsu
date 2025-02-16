@@ -10,10 +10,11 @@ data class ReaderUiState(
 	val totalPages: Int,
 	val percent: Float,
 	val incognito: Boolean,
-	private val isSliderEnabled: Boolean,
 ) {
 
-	fun isSliderAvailable(): Boolean {
-		return isSliderEnabled && totalPages > 1 && currentPage < totalPages
-	}
+	fun hasNextChapter(): Boolean = chapterNumber < chaptersTotal
+
+	fun hasPreviousChapter(): Boolean = chapterNumber > 1
+
+	fun isSliderAvailable(): Boolean = totalPages > 1 && currentPage < totalPages
 }

@@ -190,7 +190,7 @@ class HistoryListViewModel @Inject constructor(
 					prevHeader = header
 				}
 			}
-			result += mangaListMapper.toListModel(manga, mode)
+			result += mangaListMapper.toListModel(manga, mode, 0)
 		}
 		if (filters.isNotEmpty() && isEmpty) {
 			result += getEmptyState(hasFilters = true)

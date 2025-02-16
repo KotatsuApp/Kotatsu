@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.image.ui
 
-import android.content.Context
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -29,6 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.PopupMenuMediator
 import org.koitharu.kotatsu.core.util.ShareHelper
@@ -41,7 +40,6 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityImageBinding
 import org.koitharu.kotatsu.databinding.ItemErrorStateBinding
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
@@ -123,7 +121,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 			.memoryCachePolicy(CachePolicy.DISABLED)
 			.lifecycle(this)
 			.listener(this)
-			.mangaSourceExtra(MangaSource(intent.getStringExtra(EXTRA_SOURCE)))
+			.mangaSourceExtra(MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE)))
 			.target(SsivTarget(viewBinding.ssiv))
 			.enqueueWith(coil)
 	}
@@ -142,7 +140,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 			button.setImageDrawable(
 				CircularProgressDrawable(this).also {
 					it.setStyle(CircularProgressDrawable.LARGE)
-					it.setColorSchemeColors(getThemeColor(com.google.android.material.R.attr.colorControlNormal))
+					it.setColorSchemeColors(getThemeColor(materialR.attr.colorControlNormal))
 					it.start()
 				},
 			)
@@ -173,17 +171,6 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 			} else {
 				view.recycle()
 			}
-		}
-	}
-
-	companion object {
-
-		const val EXTRA_SOURCE = "source"
-
-		fun newIntent(context: Context, url: String, source: MangaSource?): Intent {
-			return Intent(context, ImageActivity::class.java)
-				.setData(Uri.parse(url))
-				.putExtra(EXTRA_SOURCE, source?.name)
 		}
 	}
 }

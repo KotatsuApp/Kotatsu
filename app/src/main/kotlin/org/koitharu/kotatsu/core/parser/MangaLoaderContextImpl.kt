@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitizeHeaderValue
 import org.koitharu.kotatsu.core.util.ext.toList
+import org.koitharu.kotatsu.core.util.ext.toMimeType
 import org.koitharu.kotatsu.core.util.ext.use
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.bitmap.Bitmap
@@ -78,13 +79,14 @@ class MangaLoaderContextImpl @Inject constructor(
 
 	override fun redrawImageResponse(response: Response, redraw: (image: Bitmap) -> Bitmap): Response {
 		return response.map { body ->
-			BitmapDecoderCompat.decode(body.byteStream(), body.contentType(), isMutable = true).use { bitmap ->
-				(redraw(BitmapWrapper.create(bitmap)) as BitmapWrapper).use { result ->
-					Buffer().also {
-						result.compressTo(it.outputStream())
-					}.asResponseBody("image/jpeg".toMediaType())
+			BitmapDecoderCompat.decode(body.byteStream(), body.contentType()?.toMimeType(), isMutable = true)
+				.use { bitmap ->
+					(redraw(BitmapWrapper.create(bitmap)) as BitmapWrapper).use { result ->
+						Buffer().also {
+							result.compressTo(it.outputStream())
+						}.asResponseBody("image/jpeg".toMediaType())
+					}
 				}
-			}
 		}
 	}
 

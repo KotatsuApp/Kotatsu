@@ -14,18 +14,6 @@
 
 	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
 		<item name="labelVisibilityMode">labeled</item>
-		<item name="android:background">?attr/colorSurfaceContainer</item>
-		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
-		<item name="itemIconTint">@color/bottom_menu_active_item</item>
-	</style>
-
-	<style name="Widget.Kotatsu.BottomNavigationView.ColoredIndicators">
-		<item name="itemActiveIndicatorStyle">@style/Widget.Kotatsu.BottomNavigationView.ActiveIndicator</item>
-		<item name="itemIconTint">@color/bottom_menu_active_item</item>
-	</style>
-
-	<style name="Widget.Kotatsu.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-		<item name="android:color">@color/bottom_menu_active_indicator</item>
 	</style>
 
 	<style name="Widget.Kotatsu.ActionMode" parent="Base.Widget.Material3.ActionMode">
@@ -144,6 +132,12 @@
 		<item name="shapeAppearance">?shapeAppearanceCornerMedium</item>
 	</style>
 
+	<style name="Widget.Kotatsu.Slider.Wide" parent="Widget.Material3.Slider">
+		<item name="thumbHeight">48dp</item>
+		<item name="trackCornerSize">12dp</item>
+		<item name="trackHeight">40dp</item>
+	</style>
+
 	<style name="Widget.Kotatsu.RecyclerView" parent="">
 		<item name="android:scrollbarStyle">outsideOverlay</item>
 	</style>
@@ -157,8 +151,19 @@
 		<item name="scrollerOffset">@dimen/grid_spacing_outer</item>
 	</style>
 
-	<style name="Widget.Kotatsu.DotIndicator" parent="">
+	<style name="Widget.Kotatsu.DotIndicator" parent="" />
 
+	<style name="Widget.Kotatsu.BadgeView" parent="">
+		<item name="android:textColor">@macro/m3_comp_badge_large_label_text_color</item>
+		<item name="android:minWidth">@dimen/m3_badge_with_text_size</item>
+		<item name="android:minHeight">@dimen/m3_badge_with_text_size</item>
+		<item name="android:textAppearance">@macro/m3_comp_badge_large_label_text_type</item>
+		<item name="android:gravity">center</item>
+		<item name="shapeAppearance">@style/ShapeAppearance.M3.Comp.Badge.Shape</item>
+		<item name="backgroundColor">?attr/colorError</item>
+		<item name="android:elegantTextHeight">false</item>
+		<item name="singleLine">true</item>
+		<item name="android:outlineProvider">background</item>
 	</style>
 
 	<style name="Widget.Kotatsu.ListItemTextView" parent="">
@@ -326,6 +331,12 @@
 	<style name="FaviconDrawable.Large">
 		<item name="strokeWidth">1dp</item>
 		<item name="cornerSize">12dp</item>
+	</style>
+
+	<style name="FaviconDrawable.Chip">
+		<item name="strokeWidth">1px</item>
+		<item name="cornerSize">@dimen/chip_icon_corner</item>
+		<item name="drawableSize">@dimen/m3_chip_icon_size</item>
 	</style>
 
 </resources>

@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
-import android.webkit.MimeTypeMap
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import java.io.File
 
@@ -15,8 +15,7 @@ class PageSaveContract : ActivityResultContracts.CreateDocument("image/*") {
 
 	override fun createIntent(context: Context, input: String): Intent {
 		val intent = super.createIntent(context, input.substringAfterLast(File.separatorChar))
-		intent.type = MimeTypeMap.getSingleton()
-			.getMimeTypeFromExtension(input.substringAfterLast('.')) ?: "image/*"
+		intent.type = MimeTypes.getMimeTypeFromExtension(input)?.toString() ?: "image/*"
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			val defaultUri = input.toUriOrNull()?.run {
 				path?.let { p ->

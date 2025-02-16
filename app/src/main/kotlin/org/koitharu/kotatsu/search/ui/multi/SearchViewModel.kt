@@ -25,6 +25,7 @@ import kotlinx.coroutines.sync.withPermit
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -58,7 +59,7 @@ class SearchViewModel @Inject constructor(
 	private val favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
 
-	val query = savedStateHandle.get<String>(SearchActivity.EXTRA_QUERY).orEmpty()
+	val query = savedStateHandle.get<String>(AppRouter.KEY_QUERY).orEmpty()
 
 	private val retryCounter = MutableStateFlow(0)
 	private val listData = retryCounter.flatMapLatest {
@@ -125,6 +126,7 @@ class SearchViewModel @Inject constructor(
 							mangaListMapper.toListModelList(
 								manga = repository.getList(offset = 0, null, MangaListFilter(query = q)),
 								mode = ListMode.GRID,
+								flags = 0,
 							)
 						}
 					}.fold(
@@ -160,7 +162,7 @@ class SearchViewModel @Inject constructor(
 						titleResId = R.string.history,
 						source = UnknownMangaSource,
 						hasMore = false,
-						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
+						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID, flags = 0),
 						error = null,
 					)
 				} else {
@@ -189,7 +191,7 @@ class SearchViewModel @Inject constructor(
 						titleResId = R.string.favourites,
 						source = UnknownMangaSource,
 						hasMore = false,
-						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
+						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID, flags = 0),
 						error = null,
 					)
 				} else {
@@ -218,7 +220,7 @@ class SearchViewModel @Inject constructor(
 						titleResId = 0,
 						source = LocalMangaSource,
 						hasMore = result.size > MIN_HAS_MORE_ITEMS,
-						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
+						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID,flags = 0),
 						error = null,
 					)
 				} else {

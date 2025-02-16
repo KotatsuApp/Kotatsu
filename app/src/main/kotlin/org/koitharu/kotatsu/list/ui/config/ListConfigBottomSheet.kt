@@ -8,7 +8,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
@@ -17,8 +16,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
-import org.koitharu.kotatsu.core.util.ext.showDistinct
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.core.util.progress.IntPercentLabelFormatter
 import org.koitharu.kotatsu.databinding.SheetListModeBinding
 
@@ -113,14 +110,4 @@ class ListConfigBottomSheet :
 	}
 
 	override fun onNothingSelected(parent: AdapterView<*>?) = Unit
-
-	companion object {
-
-		private const val TAG = "ListModeSelectDialog"
-		const val ARG_SECTION = "section"
-
-		fun show(fm: FragmentManager, section: ListConfigSection) = ListConfigBottomSheet().withArgs(1) {
-			putParcelable(ARG_SECTION, section)
-		}.showDistinct(fm, TAG)
-	}
 }

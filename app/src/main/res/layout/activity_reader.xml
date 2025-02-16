@@ -19,6 +19,7 @@
 		android:layout_gravity="bottom|end"
 		android:layout_margin="16dp"
 		android:orientation="vertical"
+		android:spacing="2dp"
 		android:visibility="gone"
 		app:layout_dodgeInsetEdges="bottom"
 		tools:visibility="visible" />
@@ -68,16 +69,44 @@
 			android:layout_height="wrap_content"
 			tools:menu="@menu/opt_reader_bottom">
 
-			<com.google.android.material.slider.Slider
-				android:id="@+id/slider"
+			<LinearLayout
+				android:id="@+id/layout_slider"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:stepSize="1.0"
-				android:valueFrom="0"
-				app:labelBehavior="floating"
-				app:tickVisible="true"
-				tools:value="6"
-				tools:valueTo="20" />
+				android:layout_gravity="center_vertical"
+				android:layout_marginEnd="2dp"
+				android:gravity="center_vertical|end">
+
+				<ImageButton
+					android:id="@+id/button_prev"
+					style="?actionButtonStyle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:contentDescription="@string/prev_chapter"
+					android:src="@drawable/ic_prev"
+					android:tooltipText="@string/prev_chapter" />
+
+				<com.google.android.material.slider.Slider
+					android:id="@+id/slider"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:stepSize="1.0"
+					android:valueFrom="0"
+					app:labelBehavior="floating"
+					tools:value="6"
+					tools:valueTo="20" />
+
+				<ImageButton
+					android:id="@+id/button_next"
+					style="?actionButtonStyle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:contentDescription="@string/next_chapter"
+					android:src="@drawable/ic_next"
+					android:tooltipText="@string/next_chapter" />
+
+			</LinearLayout>
 
 		</com.google.android.material.appbar.MaterialToolbar>
 
@@ -91,6 +120,7 @@
 		android:layout_marginBottom="20dp"
 		android:background="@drawable/bg_reader_indicator"
 		android:drawablePadding="6dp"
+		android:elevation="1000dp"
 		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceBodySmall"
 		android:theme="@style/ThemeOverlay.Material3.Dark"

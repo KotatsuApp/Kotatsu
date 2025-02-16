@@ -14,6 +14,7 @@ sealed class MangaListModel : ListModel {
 	abstract val coverUrl: String?
 	abstract val counter: Int
 	abstract val isFavorite: Boolean
+	abstract val isSaved: Boolean
 	abstract val progress: ReadingProgress?
 
 	val source: MangaSource
@@ -27,7 +28,9 @@ sealed class MangaListModel : ListModel {
 		previousState !is MangaListModel || previousState.manga != manga -> null
 
 		previousState.progress != progress -> PAYLOAD_PROGRESS_CHANGED
-		previousState.isFavorite != isFavorite || previousState.counter != counter -> PAYLOAD_ANYTHING_CHANGED
+		previousState.isFavorite != isFavorite ||
+			previousState.isSaved != isSaved ||
+			previousState.counter != counter -> PAYLOAD_ANYTHING_CHANGED
 
 		else -> null
 	}

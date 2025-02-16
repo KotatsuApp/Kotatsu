@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.parser.MangaIntent
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.require
@@ -42,7 +42,7 @@ class PreviewViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	val manga = MutableStateFlow(
-		savedStateHandle.require<ParcelableManga>(MangaIntent.KEY_MANGA).manga,
+		savedStateHandle.require<ParcelableManga>(AppRouter.KEY_MANGA).manga,
 	)
 
 	val footer = combine(

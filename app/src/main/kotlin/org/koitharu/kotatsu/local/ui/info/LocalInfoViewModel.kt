@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -25,7 +26,7 @@ class LocalInfoViewModel @Inject constructor(
 	private val deleteReadChaptersUseCase: DeleteReadChaptersUseCase,
 ) : BaseViewModel() {
 
-	private val manga = savedStateHandle.require<ParcelableManga>(LocalInfoDialog.ARG_MANGA).manga
+	private val manga = savedStateHandle.require<ParcelableManga>(AppRouter.KEY_MANGA).manga
 
 	val isCleaningUp = MutableStateFlow(false)
 	val onCleanedUp = MutableEventFlow<Pair<Int, Long>>()

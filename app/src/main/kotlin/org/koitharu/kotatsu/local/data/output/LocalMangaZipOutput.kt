@@ -7,6 +7,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.internal.closeQuietly
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.util.MimeTypes
+import org.koitharu.kotatsu.core.util.ext.MimeType
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.readText
 import org.koitharu.kotatsu.core.zip.ZipOutput
@@ -39,10 +41,10 @@ class LocalMangaZipOutput(
 		}
 	}
 
-	override suspend fun addCover(file: File, ext: String) = mutex.withLock {
+	override suspend fun addCover(file: File, type: MimeType?) = mutex.withLock {
 		val name = buildString {
 			append(FILENAME_PATTERN.format(0, 0, 0))
-			if (ext.isNotEmpty() && ext.length <= 4) {
+			MimeTypes.getExtension(type)?.let { ext ->
 				append('.')
 				append(ext)
 			}
@@ -53,11 +55,11 @@ class LocalMangaZipOutput(
 		index.setCoverEntry(name)
 	}
 
-	override suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, ext: String) =
+	override suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, type: MimeType?) =
 		mutex.withLock {
 			val name = buildString {
 				append(FILENAME_PATTERN.format(chapter.value.branch.hashCode(), chapter.index + 1, pageNumber))
-				if (ext.isNotEmpty() && ext.length <= 4) {
+				MimeTypes.getExtension(type)?.let { ext ->
 					append('.')
 					append(ext)
 				}

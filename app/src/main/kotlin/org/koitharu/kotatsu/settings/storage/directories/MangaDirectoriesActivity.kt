@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.settings.storage.directories
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +17,7 @@ import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -26,7 +26,6 @@ import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.ActivityMangaDirectoriesBinding
 import org.koitharu.kotatsu.settings.storage.DirectoryDiffCallback
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
-import org.koitharu.kotatsu.settings.storage.PickDirectoryContract
 import org.koitharu.kotatsu.settings.storage.RequestStorageManagerPermissionContract
 
 @AndroidEntryPoint
@@ -34,7 +33,12 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 	OnListItemClickListener<DirectoryModel>, View.OnClickListener {
 
 	private val viewModel: MangaDirectoriesViewModel by viewModels()
-	private val pickFileTreeLauncher = registerForActivityResult(PickDirectoryContract()) {
+	private val pickFileTreeLauncher = OpenDocumentTreeHelper(
+		activityResultCaller = this,
+		flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+			or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+			or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION,
+	) {
 		if (it != null) viewModel.onCustomDirectoryPicked(it)
 	}
 	private val permissionRequestLauncher = registerForActivityResult(
@@ -96,10 +100,5 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 		viewBinding.recyclerView.updatePadding(
 			bottom = insets.bottom,
 		)
-	}
-
-	companion object {
-
-		fun newIntent(context: Context) = Intent(context, MangaDirectoriesActivity::class.java)
 	}
 }

@@ -1,12 +1,11 @@
 package org.koitharu.kotatsu.download.ui.worker
 
-import android.content.Intent
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.util.ext.findActivity
-import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 
 class DownloadStartedObserver(
@@ -18,8 +17,9 @@ class DownloadStartedObserver(
 		(snackbarHost.context.findActivity() as? BottomNavOwner)?.let {
 			snackbar.anchorView = it.bottomNav
 		}
-		snackbar.setAction(R.string.details) {
-			it.context.startActivity(Intent(it.context, DownloadsActivity::class.java))
+		val router = AppRouter.from(snackbarHost)
+		if (router != null) {
+			snackbar.setAction(R.string.details) { router.openDownloads() }
 		}
 		snackbar.show()
 	}

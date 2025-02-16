@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 
-@ExposedCopyVisibility
 data class ListHeader private constructor(
 	private val textRaw: Any,
 	@StringRes val buttonTextRes: Int,
@@ -36,7 +35,7 @@ data class ListHeader private constructor(
 	fun getText(context: Context): CharSequence? = when (textRaw) {
 		is CharSequence -> textRaw
 		is Int -> if (textRaw != 0) context.getString(textRaw) else null
-		is DateTimeAgo -> textRaw.format(context.resources)
+		is DateTimeAgo -> textRaw.format(context)
 		else -> null
 	}
 

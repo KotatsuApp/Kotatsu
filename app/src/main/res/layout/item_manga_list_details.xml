@@ -3,9 +3,9 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:background="@drawable/custom_selectable_item_background"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
+	android:layout_height="wrap_content"
+	android:background="@drawable/custom_selectable_item_background">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
@@ -35,22 +35,22 @@
 		<LinearLayout
 			android:layout_width="0dp"
 			android:layout_height="match_parent"
+			android:layout_marginStart="16dp"
+			android:layout_marginEnd="12dp"
 			android:orientation="vertical"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@+id/imageView_cover"
-			app:layout_constraintTop_toTopOf="parent"
-			android:layout_marginStart="16dp"
-			android:layout_marginEnd="12dp">
+			app:layout_constraintTop_toTopOf="parent">
 
 			<TextView
 				android:id="@+id/textView_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:ellipsize="end"
-				app:lineHeight="18dp"
 				android:maxLines="3"
 				android:textAppearance="?attr/textAppearanceBodyLarge"
+				app:lineHeight="18dp"
 				tools:text="@tools:sample/lorem/random" />
 
 			<TextView
@@ -73,16 +73,28 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="4dp"
 				android:ellipsize="end"
-				app:lineHeight="14dp"
 				android:gravity="center_vertical"
 				android:maxLines="2"
 				android:textAppearance="?attr/textAppearanceBodySmall"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toEndOf="@+id/imageView_cover"
 				app:layout_constraintTop_toBottomOf="@+id/textView_author"
+				app:lineHeight="14dp"
 				tools:text="@tools:sample/lorem/random" />
 
 		</LinearLayout>
+
+		<org.koitharu.kotatsu.core.ui.widgets.BadgeView
+			android:id="@+id/badge"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/margin_small"
+			android:visibility="gone"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:maxCharacterCount="@integer/manga_badge_max_character_count"
+			tools:number="8"
+			tools:visibility="visible" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 

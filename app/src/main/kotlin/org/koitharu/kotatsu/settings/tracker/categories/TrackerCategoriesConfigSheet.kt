@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -36,12 +35,5 @@ class TrackerCategoriesConfigSheet :
 
 	override fun onItemClick(item: FavouriteCategory, view: View) {
 		viewModel.toggleItem(item)
-	}
-
-	companion object {
-
-		private const val TAG = "TrackerCategoriesConfigSheet"
-
-		fun show(fm: FragmentManager) = TrackerCategoriesConfigSheet().show(fm, TAG)
 	}
 }

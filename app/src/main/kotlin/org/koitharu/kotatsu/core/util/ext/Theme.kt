@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -11,6 +13,9 @@ import androidx.annotation.Px
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.use
 import androidx.core.graphics.ColorUtils
+
+val Resources.isNightMode: Boolean
+	get() = configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
 fun Context.getThemeDrawable(
 	@AttrRes resId: Int,

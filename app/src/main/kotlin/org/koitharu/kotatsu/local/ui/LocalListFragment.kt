@@ -16,6 +16,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ShareHelper
@@ -25,12 +26,10 @@ import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
-import org.koitharu.kotatsu.filter.ui.sheet.FilterSheetFragment
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.remotelist.ui.MangaSearchMenuProvider
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.settings.storage.RequestStorageManagerPermissionContract
-import org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity
 
 class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 
@@ -68,11 +67,11 @@ class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 	}
 
 	override fun onEmptyActionClick() {
-		ImportDialogFragment.show(getChildFragmentManager())
+		router.showImportDialog()
 	}
 
 	override fun onFilterClick(view: View?) {
-		FilterSheetFragment.show(getChildFragmentManager())
+		router.showFilterSheet()
 	}
 
 	override fun onPrimaryButtonClick(tipView: TipView) {
@@ -82,7 +81,7 @@ class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 	}
 
 	override fun onSecondaryButtonClick(tipView: TipView) {
-		startActivity(MangaDirectoriesActivity.newIntent(tipView.context))
+		router.openDirectoriesSettings()
 	}
 
 	override fun onScrolledToEnd() = viewModel.loadNextPage()

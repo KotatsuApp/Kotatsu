@@ -53,4 +53,16 @@
 		app:layout_constraintTop_toBottomOf="@+id/textView_title"
 		tools:text="@tools:sample/lorem/random" />
 
+	<org.koitharu.kotatsu.core.ui.widgets.BadgeView
+		android:id="@+id/badge"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/margin_small"
+		android:visibility="gone"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:maxCharacterCount="@integer/manga_badge_max_character_count"
+		tools:number="8"
+		tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
