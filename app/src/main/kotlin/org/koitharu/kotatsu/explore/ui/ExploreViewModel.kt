@@ -204,9 +204,6 @@ class ExploreViewModel @Inject constructor(
 			coverUrl = manga.coverUrl,
 			manga = manga,
 			counter = 0,
-			progress = null,
-			isFavorite = false,
-			isSaved = false,
 		)
 	}
 

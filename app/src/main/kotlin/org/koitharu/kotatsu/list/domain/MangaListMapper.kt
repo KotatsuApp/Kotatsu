@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.list.domain
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.annotation.ColorRes
 import androidx.annotation.IntDef
@@ -38,67 +39,29 @@ class MangaListMapper @Inject constructor(
 	suspend fun toListModelList(
 		manga: Collection<Manga>,
 		mode: ListMode,
-		@Flags flags: Int
-	): List<MangaListModel> = manga.map {
-		toListModel(it, mode, flags)
+		@Flags flags: Int = DEFAULTS,
+	): List<MangaListModel> {
+		val options = getOptions(flags)
+		return manga.map { toListModelImpl(it, mode, options) }
 	}
 
 	suspend fun toListModelList(
 		destination: MutableCollection<in MangaListModel>,
 		manga: Collection<Manga>,
 		mode: ListMode,
-		@Flags flags: Int,
+		@Flags flags: Int = DEFAULTS,
 	) {
+		val options = getOptions(flags)
 		manga.mapTo(destination) {
-			toListModel(it, mode, flags)
+			toListModelImpl(it, mode, options)
 		}
 	}
 
 	suspend fun toListModel(
 		manga: Manga,
 		mode: ListMode,
-		@Flags flags: Int
-	): MangaListModel = when (mode) {
-		ListMode.LIST -> toCompactListModel(manga, flags)
-		ListMode.DETAILED_LIST -> toDetailedListModel(manga, flags)
-		ListMode.GRID -> toGridModel(manga, flags)
-	}
-
-	suspend fun toCompactListModel(manga: Manga, @Flags flags: Int) = MangaCompactListModel(
-		id = manga.id,
-		title = manga.title,
-		subtitle = manga.tags.joinToString(", ") { it.title },
-		coverUrl = manga.coverUrl,
-		manga = manga,
-		counter = getCounter(manga.id, flags),
-		progress = getProgress(manga.id, flags),
-		isFavorite = isFavorite(manga.id, flags),
-		isSaved = isSaved(manga.id, flags),
-	)
-
-	suspend fun toDetailedListModel(manga: Manga, @Flags flags: Int) = MangaDetailedListModel(
-		id = manga.id,
-		title = manga.title,
-		subtitle = manga.altTitle,
-		coverUrl = manga.coverUrl,
-		manga = manga,
-		counter = getCounter(manga.id, flags),
-		progress = getProgress(manga.id, flags),
-		isFavorite = isFavorite(manga.id, flags),
-		isSaved = isSaved(manga.id, flags),
-		tags = mapTags(manga.tags),
-	)
-
-	suspend fun toGridModel(manga: Manga, @Flags flags: Int) = MangaGridModel(
-		id = manga.id,
-		title = manga.title,
-		coverUrl = manga.coverUrl,
-		manga = manga,
-		counter = getCounter(manga.id, flags),
-		progress = getProgress(manga.id, flags),
-		isFavorite = isFavorite(manga.id, flags),
-		isSaved = isSaved(manga.id, flags),
-	)
+		@Flags flags: Int = DEFAULTS,
+	): MangaListModel = toListModelImpl(manga, mode, getOptions(flags))
 
 	fun mapTags(tags: Collection<MangaTag>) = tags.map {
 		ChipsView.ChipModel(
@@ -108,7 +71,50 @@ class MangaListMapper @Inject constructor(
 		)
 	}
 
-	private suspend fun getCounter(mangaId: Long, @Flags flags: Int): Int {
+	private suspend fun toCompactListModel(manga: Manga, @Options options: Int) = MangaCompactListModel(
+		id = manga.id,
+		title = manga.title,
+		subtitle = manga.tags.joinToString(", ") { it.title },
+		coverUrl = manga.coverUrl,
+		manga = manga,
+		counter = getCounter(manga.id, options),
+	)
+
+	private suspend fun toDetailedListModel(manga: Manga, @Options options: Int) = MangaDetailedListModel(
+		id = manga.id,
+		title = manga.title,
+		subtitle = manga.altTitle,
+		coverUrl = manga.coverUrl,
+		manga = manga,
+		counter = getCounter(manga.id, options),
+		progress = getProgress(manga.id, options),
+		isFavorite = isFavorite(manga.id, options),
+		isSaved = isSaved(manga.id, options),
+		tags = mapTags(manga.tags),
+	)
+
+	private suspend fun toGridModel(manga: Manga, @Options options: Int) = MangaGridModel(
+		id = manga.id,
+		title = manga.title,
+		coverUrl = manga.coverUrl,
+		manga = manga,
+		counter = getCounter(manga.id, options),
+		progress = getProgress(manga.id, options),
+		isFavorite = isFavorite(manga.id, options),
+		isSaved = isSaved(manga.id, options),
+	)
+
+	private suspend fun toListModelImpl(
+		manga: Manga,
+		mode: ListMode,
+		@Options options: Int
+	): MangaListModel = when (mode) {
+		ListMode.LIST -> toCompactListModel(manga, options)
+		ListMode.DETAILED_LIST -> toDetailedListModel(manga, options)
+		ListMode.GRID -> toGridModel(manga, options)
+	}
+
+	private suspend fun getCounter(mangaId: Long, @Options options: Int): Int {
 		return if (settings.isTrackerEnabled) {
 			trackingRepository.getNewChaptersCount(mangaId)
 		} else {
@@ -116,20 +122,20 @@ class MangaListMapper @Inject constructor(
 		}
 	}
 
-	private suspend fun getProgress(mangaId: Long, @Flags flags: Int): ReadingProgress? {
-		return if (flags.hasNoFlag(NO_PROGRESS)) {
+	private suspend fun getProgress(mangaId: Long, @Options options: Int): ReadingProgress? {
+		return if (options.isBadgeEnabled(PROGRESS)) {
 			historyRepository.getProgress(mangaId, settings.progressIndicatorMode)
 		} else {
 			null
 		}
 	}
 
-	private suspend fun isFavorite(mangaId: Long, @Flags flags: Int): Boolean {
-		return flags.hasNoFlag(NO_FAVORITE) && favouritesRepository.isFavorite(mangaId)
+	private suspend fun isFavorite(mangaId: Long, @Options options: Int): Boolean {
+		return options.isBadgeEnabled(FAVORITE) && favouritesRepository.isFavorite(mangaId)
 	}
 
-	private suspend fun isSaved(mangaId: Long, @Flags flags: Int): Boolean {
-		return flags.hasNoFlag(NO_SAVED) && mangaId in localMangaIndex
+	private suspend fun isSaved(mangaId: Long, @Options options: Int): Boolean {
+		return options.isBadgeEnabled(SAVED) && mangaId in localMangaIndex
 	}
 
 	@ColorRes
@@ -154,17 +160,34 @@ class MangaListMapper @Inject constructor(
 			set
 		}
 
-	private fun Int.hasNoFlag(flag: Int) = this and flag == 0
+	private fun Int.isBadgeEnabled(@Options badge: Int) = this and badge == badge
 
+	@Options
+	@SuppressLint("WrongConstant")
+	private fun getOptions(@Flags flags: Int): Int {
+		var options = settings.getMangaListBadges() or PROGRESS
+		options = options and flags.inv()
+		return options
+	}
 
-	@IntDef(0, NO_SAVED, NO_PROGRESS, NO_FAVORITE)
+	@IntDef(DEFAULTS, NO_SAVED, NO_PROGRESS, NO_FAVORITE, flag = true)
 	@Retention(AnnotationRetention.SOURCE)
 	annotation class Flags
 
+	@IntDef(NONE, SAVED, FAVORITE, PROGRESS)
+	@Retention(AnnotationRetention.SOURCE)
+	private annotation class Options
+
 	companion object {
 
-		const val NO_SAVED = 1
-		const val NO_PROGRESS = 2
-		const val NO_FAVORITE = 4
+		private const val NONE = 0
+		private const val SAVED = 1
+		private const val PROGRESS = 2
+		private const val FAVORITE = 4
+
+		const val DEFAULTS = NONE
+		const val NO_SAVED = SAVED
+		const val NO_PROGRESS = PROGRESS
+		const val NO_FAVORITE = FAVORITE
 	}
 }

@@ -146,7 +146,6 @@ class DetailsViewModel @Inject constructor(
 			mangaListMapper.toListModelList(
 				manga = relatedMangaUseCase(it).orEmpty(),
 				mode = ListMode.GRID,
-				flags = 0,
 			)
 		} else {
 			emptyList()

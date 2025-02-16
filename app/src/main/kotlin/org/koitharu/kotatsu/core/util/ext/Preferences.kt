@@ -11,7 +11,7 @@ fun ListPreference.setDefaultValueCompat(defaultValue: String) {
 }
 
 fun MultiSelectListPreference.setDefaultValueCompat(defaultValue: Set<String>) {
-	setDefaultValue(defaultValue)
+	setDefaultValue(defaultValue) // FIXME not working
 }
 
 fun <E : Enum<E>> SharedPreferences.getEnumValue(key: String, enumClass: Class<E>): E? {

@@ -67,7 +67,7 @@ class SuggestionsViewModel @Inject constructor(
 
 			else -> buildList(list.size + 1) {
 				quickFilter.filterItem(filters)?.let(::add)
-				mangaListMapper.toListModelList(this, list, mode, 0)
+				mangaListMapper.toListModelList(this, list, mode)
 			}
 		}
 	}.onStart {

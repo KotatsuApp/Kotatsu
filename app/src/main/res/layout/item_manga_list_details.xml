@@ -32,9 +32,22 @@
 			app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 			app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
 
+		<org.koitharu.kotatsu.core.ui.widgets.IconsView
+			android:id="@+id/iconsView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/card_indicator_offset"
+			android:background="@drawable/bg_list_icons"
+			android:orientation="horizontal"
+			android:padding="4dp"
+			app:iconSize="14dp"
+			app:iconSpacing="4dp"
+			app:layout_constraintStart_toStartOf="@id/imageView_cover"
+			app:layout_constraintTop_toTopOf="@id/imageView_cover" />
+
 		<LinearLayout
 			android:layout_width="0dp"
-			android:layout_height="match_parent"
+			android:layout_height="0dp"
 			android:layout_marginStart="16dp"
 			android:layout_marginEnd="12dp"
 			android:orientation="vertical"

@@ -132,4 +132,8 @@
 		<item>@string/screen_orientation</item>
 		<item>@string/save_page</item>
 	</string-array>
+	<string-array name="list_badges" translatable="false">
+		<item>@string/favourites</item>
+		<item>@string/saved_manga</item>
+	</string-array>
 </resources>

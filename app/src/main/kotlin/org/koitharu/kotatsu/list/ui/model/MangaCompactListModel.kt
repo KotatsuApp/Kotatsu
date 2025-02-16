@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.list.ui.model
 
-import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.parsers.model.Manga
 
 data class MangaCompactListModel(
@@ -10,7 +9,4 @@ data class MangaCompactListModel(
 	override val coverUrl: String?,
 	override val manga: Manga,
 	override val counter: Int,
-	override val progress: ReadingProgress?,
-	override val isFavorite: Boolean,
-	override val isSaved: Boolean,
 ) : MangaListModel()

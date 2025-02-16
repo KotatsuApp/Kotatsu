@@ -16,10 +16,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
+import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.calculateTimeAgo
 import org.koitharu.kotatsu.core.util.ext.call
@@ -64,7 +66,7 @@ class FeedViewModel @Inject constructor(
 		valueProducer = { isFeedHeaderVisible },
 	)
 
-	val onFeedCleared = MutableEventFlow<Unit>()
+	val onActionDone = MutableEventFlow<ReversibleAction>()
 
 	@Suppress("USELESS_CAST")
 	val content = combine(
@@ -106,7 +108,7 @@ class FeedViewModel @Inject constructor(
 			if (clearCounters) {
 				repository.clearCounters()
 			}
-			onFeedCleared.call(Unit)
+			onActionDone.call(ReversibleAction(R.string.updates_feed_cleared, null))
 		}
 	}
 
@@ -151,7 +153,7 @@ class FeedViewModel @Inject constructor(
 					null
 				} else {
 					UpdatedMangaHeader(
-						mangaList.map { mangaListMapper.toGridModel(it.manga, 0) },
+						mangaList.map { mangaListMapper.toListModel(it.manga, ListMode.GRID) },
 					)
 				}
 			}

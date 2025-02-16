@@ -800,4 +800,5 @@
 	<string name="pages_slider">Page switch slider</string>
 	<string name="screen_rotation_locked">Screen rotation has been locked</string>
 	<string name="screen_rotation_unlocked">Screen rotation has been unlocked</string>
+	<string name="badges_in_lists">Badges in lists</string>
 </resources>

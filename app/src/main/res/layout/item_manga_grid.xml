@@ -38,13 +38,13 @@
 			android:id="@+id/iconsView"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_gravity="bottom|start"
-			android:layout_marginBottom="@dimen/card_indicator_offset"
+			android:layout_gravity="top|start"
+			android:layout_marginTop="@dimen/card_indicator_offset"
 			android:background="@drawable/bg_list_icons"
 			android:orientation="horizontal"
 			android:padding="4dp"
-			app:iconSize="12dp"
-			app:iconSpacing="2dp" />
+			app:iconSize="14dp"
+			app:iconSpacing="4dp" />
 
 		<org.koitharu.kotatsu.core.ui.widgets.BadgeView
 			android:id="@+id/badge"

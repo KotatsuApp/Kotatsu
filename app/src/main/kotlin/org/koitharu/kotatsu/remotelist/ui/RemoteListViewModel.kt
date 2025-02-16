@@ -37,7 +37,6 @@ import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -177,7 +176,7 @@ open class RemoteListViewModel @Inject constructor(
 		destination: MutableCollection<in ListModel>,
 		manga: Collection<Manga>,
 		mode: ListMode
-	) = mangaListMapper.toListModelList(destination, manga, mode, 0)
+	) = mangaListMapper.toListModelList(destination, manga, mode)
 
 	fun openRandom() {
 		if (randomJob?.isActive == true) {
