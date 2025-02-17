@@ -484,8 +484,10 @@ class DetailsActivity :
 		textViewProgress.textAndVisible = if (info.percent <= 0f) {
 			null
 		} else {
-			getString(R.string.percent_string_pattern, (info.percent * 100f).toInt().toString())
+			val displayPercent = if (info.percent >= 0.999999f) 100 else (info.percent * 100f).toInt()
+			getString(R.string.percent_string_pattern, displayPercent.toString())
 		}
+
 		progress.setProgressCompat(
 			(progress.max * info.percent.coerceIn(0f, 1f)).roundToInt(),
 			true,

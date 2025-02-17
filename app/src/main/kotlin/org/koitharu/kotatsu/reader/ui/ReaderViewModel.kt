@@ -473,15 +473,9 @@ class ReaderViewModel @Inject constructor(
 		if (chaptersCount == 0 || pagesCount == 0) {
 			return PROGRESS_NONE
 		}
-		val pagePercent = (pageIndex + 1).toFloat() / pagesCount
+		val pagePercent = (pageIndex + 1) / pagesCount.toFloat()
 		val ppc = 1f / chaptersCount
-		var progress = ppc * chapterIndex + ppc * pagePercent
-		
-		if (chapterIndex == chaptersCount - 1 && pageIndex + 1 == pagesCount) {
-			progress = 1.0f
-		}
-
-		return progress
+		return ppc * chapterIndex + ppc * pagePercent
 	}
 
 	private fun observeIsWebtoonZoomEnabled() = settings.observeAsFlow(
