@@ -268,7 +268,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		if (manga != null) {
 			AppRouter.detailsIntent(context, manga)
 		} else {
-			AppRouter.listIntent(context, LocalMangaSource, null)
+			AppRouter.listIntent(context, LocalMangaSource, null, null)
 		},
 		PendingIntent.FLAG_CANCEL_CURRENT,
 		false,

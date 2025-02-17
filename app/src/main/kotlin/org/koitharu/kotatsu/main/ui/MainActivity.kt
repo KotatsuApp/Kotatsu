@@ -15,6 +15,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
+import androidx.core.net.toUri
 import androidx.core.view.SoftwareKeyboardControllerCompat
 import androidx.core.view.children
 import androidx.core.view.inputmethod.EditorInfoCompat
@@ -41,6 +42,7 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.nav.router
+import org.koitharu.kotatsu.core.parser.MangaLinkResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.BaseActivity
@@ -61,6 +63,7 @@ import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.search.domain.SearchKind
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
@@ -246,11 +249,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		router.openDetails(manga)
 	}
 
-	override fun onQueryClick(query: String, submit: Boolean) {
+	override fun onQueryClick(query: String, kind: SearchKind, submit: Boolean) {
 		viewBinding.searchView.query = query
 		if (submit && query.isNotEmpty()) {
-			router.openSearch(query)
-			searchSuggestionViewModel.saveQuery(query)
+			if (kind == SearchKind.SIMPLE && MangaLinkResolver.isValidLink(query)) {
+				router.openDetails(query.toUri())
+			} else {
+				router.openSearch(query, kind)
+				if (kind != SearchKind.TAG) {
+					searchSuggestionViewModel.saveQuery(query)
+				}
+			}
 			viewBinding.searchView.post {
 				closeSearchCallback.handleOnBackPressed()
 			}
@@ -258,7 +267,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	override fun onTagClick(tag: MangaTag) {
-		router.openList(tag)
+		router.openSearch(tag.title, SearchKind.TAG)
 	}
 
 	override fun onQueryChanged(query: String) {
@@ -270,7 +279,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	override fun onSourceClick(source: MangaSource) {
-		router.openList(source, null)
+		router.openList(source, null, null)
 	}
 
 	override fun onSupportActionModeStarted(mode: ActionMode) {

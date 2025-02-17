@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.drawableEnd
 import org.koitharu.kotatsu.core.util.ext.drawableStart
+import org.koitharu.kotatsu.search.domain.SearchKind
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import com.google.android.material.R as materialR
 
@@ -66,7 +67,7 @@ class SearchEditText @JvmOverloads constructor(
 			&& query.isNotEmpty()
 		) {
 			cancelLongPress()
-			searchSuggestionListener?.onQueryClick(query, submit = true)
+			searchSuggestionListener?.onQueryClick(query, SearchKind.SIMPLE, submit = true)
 			clearFocus()
 			return true
 		}
@@ -76,7 +77,7 @@ class SearchEditText @JvmOverloads constructor(
 	override fun onEditorAction(actionCode: Int) {
 		super.onEditorAction(actionCode)
 		if (actionCode == EditorInfo.IME_ACTION_SEARCH) {
-			searchSuggestionListener?.onQueryClick(query, submit = true)
+			searchSuggestionListener?.onQueryClick(query, SearchKind.SIMPLE, submit = true)
 		}
 	}
 

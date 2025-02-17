@@ -209,7 +209,7 @@ class DetailsActivity :
 
 			R.id.textView_source -> {
 				val manga = viewModel.manga.value ?: return
-				router.openList(manga.source, null)
+				router.openList(manga.source, null, null)
 			}
 
 			R.id.textView_local -> {
@@ -255,8 +255,7 @@ class DetailsActivity :
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag ?: return
-		// TODO dialog
-		router.openList(tag)
+		router.showTagDialog(tag)
 	}
 
 	override fun onContextClick(v: View): Boolean = onLongClick(v)

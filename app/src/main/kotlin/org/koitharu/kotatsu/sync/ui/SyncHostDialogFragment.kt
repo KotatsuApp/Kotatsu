@@ -13,6 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.util.ext.isHttpUrl
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.PreferenceDialogAutocompletetextviewBinding
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
@@ -66,7 +67,7 @@ class SyncHostDialogFragment : AlertDialogFragment<PreferenceDialogAutocompletet
 			DialogInterface.BUTTON_POSITIVE -> {
 				val result = requireViewBinding().edit.text?.toString().orEmpty()
 				var scheme = ""
-				if (!result.startsWith("https://") && !result.startsWith("http://")) {
+				if (!result.isHttpUrl()) {
 					scheme = "http://"
 				}
 				syncSettings.syncUrl = "$scheme$result"

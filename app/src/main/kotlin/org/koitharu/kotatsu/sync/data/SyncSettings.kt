@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.annotation.WorkerThread
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.isHttpUrl
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import javax.inject.Inject
 
@@ -39,10 +40,10 @@ class SyncSettings(
 
 	companion object {
 
-		private fun String.withHttpSchema(): String = if (!startsWith("http://") && !startsWith("https://")) {
-			"http://$this"
-		} else {
+		private fun String.withHttpSchema(): String = if (isHttpUrl()) {
 			this
+		} else {
+			"http://$this"
 		}
 
 		const val KEY_SYNC_URL = "host"

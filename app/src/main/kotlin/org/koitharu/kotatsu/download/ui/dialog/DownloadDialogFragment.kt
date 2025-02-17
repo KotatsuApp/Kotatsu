@@ -18,9 +18,9 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.DownloadFormat
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
-import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
 import org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
 import org.koitharu.kotatsu.core.util.ext.findActivity
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
@@ -32,18 +32,13 @@ import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.DialogDownloadBinding
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
 import org.koitharu.kotatsu.parsers.util.format
-import org.koitharu.kotatsu.parsers.util.mapToArray
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), View.OnClickListener {
 
 	private val viewModel by viewModels<DownloadDialogViewModel>()
 	private var optionViews: Array<out TwoLinesItemView>? = null
-
-	@Inject
-	lateinit var commonAlertDialogs: CommonAlertDialogs
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?) =
 		DialogDownloadBinding.inflate(inflater, container, false)
@@ -104,10 +99,7 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_cancel -> dialog?.cancel()
-			R.id.button_confirm -> commonAlertDialogs.askForDownloadOverMeteredNetwork(
-				context = context ?: return,
-				onConfirmed = ::schedule,
-			)
+			R.id.button_confirm -> router.askForDownloadOverMeteredNetwork(::schedule)
 
 			R.id.textView_more -> {
 				val binding = viewBinding ?: return

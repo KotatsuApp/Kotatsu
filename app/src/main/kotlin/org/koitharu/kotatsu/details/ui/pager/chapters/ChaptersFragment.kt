@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.nav.dismissParentDialog
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseFragment
-import org.koitharu.kotatsu.core.ui.dialog.CommonAlertDialogs
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
@@ -39,7 +38,6 @@ import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import org.koitharu.kotatsu.reader.ui.ReaderState
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -48,9 +46,6 @@ class ChaptersFragment :
 	OnListItemClickListener<ChapterListItem>, ChipsView.OnChipClickListener {
 
 	private val viewModel by ChaptersPagesViewModel.ActivityVMLazy(this)
-
-	@Inject
-	lateinit var commonAlertDialogs: CommonAlertDialogs
 
 	private var chaptersAdapter: ChaptersAdapter? = null
 	private var selectionController: ListSelectionController? = null
@@ -67,7 +62,7 @@ class ChaptersFragment :
 			appCompatDelegate = checkNotNull(findAppCompatDelegate()),
 			decoration = ChaptersSelectionDecoration(binding.root.context),
 			registryOwner = this,
-			callback = ChaptersSelectionCallback(viewModel, commonAlertDialogs, binding.recyclerViewChapters),
+			callback = ChaptersSelectionCallback(viewModel, router, binding.recyclerViewChapters),
 		)
 		viewModel.isChaptersInGridView.observe(viewLifecycleOwner) { chaptersInGridView ->
 			binding.recyclerViewChapters.layoutManager = if (chaptersInGridView) {

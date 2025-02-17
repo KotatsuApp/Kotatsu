@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.search.domain.SearchKind
 import org.koitharu.kotatsu.search.ui.multi.adapter.SearchAdapter
 import javax.inject.Inject
 
@@ -53,10 +54,25 @@ class SearchActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySearchBinding.inflate(layoutInflater))
-		title = viewModel.query
+		title = when (viewModel.kind) {
+			SearchKind.SIMPLE,
+			SearchKind.TITLE -> viewModel.query
+
+			SearchKind.AUTHOR -> getString(
+				R.string.inline_preference_pattern,
+				getString(R.string.author),
+				viewModel.query,
+			)
+
+			SearchKind.TAG -> getString(R.string.inline_preference_pattern, getString(R.string.genre), viewModel.query)
+		}
 
 		val itemClickListener = OnListItemClickListener<SearchResultsListModel> { item, view ->
-			router.openSearch(item.source, viewModel.query)
+			if (item.listFilter == null) {
+				router.openSearch(item.source, viewModel.query)
+			} else {
+				router.openList(item.source, item.listFilter, item.sortOrder)
+			}
 		}
 		val sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = true)
 		val selectionDecoration = MangaSelectionDecoration(this)

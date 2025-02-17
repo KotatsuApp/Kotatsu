@@ -31,6 +31,7 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
@@ -44,6 +45,7 @@ import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import kotlin.math.absoluteValue
 import com.google.android.material.R as materialR
@@ -67,6 +69,7 @@ class MangaListActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMangaListBinding.inflate(layoutInflater))
 		val filter = intent.getParcelableExtraCompat<ParcelableMangaListFilter>(AppRouter.KEY_FILTER)?.filter
+		val sortOrder = intent.getSerializableExtraCompat<SortOrder>(AppRouter.KEY_SORT_ORDER)
 		source = MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		if (viewBinding.containerFilterHeader != null) {
@@ -74,7 +77,7 @@ class MangaListActivity :
 		}
 		viewBinding.buttonOrder?.setOnClickListener(this)
 		title = source.getTitle(this)
-		initList(source, filter)
+		initList(source, filter, sortOrder)
 	}
 
 	override fun isNsfwContent(): Flow<Boolean> = flowOf(source.isNsfw())
@@ -112,7 +115,7 @@ class MangaListActivity :
 
 	fun hidePreview() = setSideFragment(FilterSheetFragment::class.java, null)
 
-	private fun initList(source: MangaSource, filter: MangaListFilter?) {
+	private fun initList(source: MangaSource, filter: MangaListFilter?, sortOrder: SortOrder?) {
 		val fm = supportFragmentManager
 		val existingFragment = fm.findFragmentById(R.id.container)
 		if (existingFragment is FilterCoordinator.Owner) {
@@ -127,8 +130,8 @@ class MangaListActivity :
 				}
 				replace(R.id.container, fragment)
 				runOnCommit { initFilter(fragment) }
-				if (filter != null) {
-					runOnCommit(ApplyFilterRunnable(fragment, filter))
+				if (filter != null || sortOrder != null) {
+					runOnCommit(ApplyFilterRunnable(fragment, filter, sortOrder))
 				}
 			}
 		}
@@ -182,11 +185,17 @@ class MangaListActivity :
 
 	private class ApplyFilterRunnable(
 		private val filterOwner: FilterCoordinator.Owner,
-		private val filter: MangaListFilter,
+		private val filter: MangaListFilter?,
+		private val sortOrder: SortOrder?,
 	) : Runnable {
 
 		override fun run() {
-			filterOwner.filterCoordinator.set(filter)
+			if (sortOrder != null) {
+				filterOwner.filterCoordinator.setSortOrder(sortOrder)
+			}
+			if (filter != null) {
+				filterOwner.filterCoordinator.set(filter)
+			}
 		}
 	}
 }

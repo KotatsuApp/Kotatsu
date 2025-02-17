@@ -4,12 +4,14 @@ import android.accounts.Account
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.UiContext
 import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -17,7 +19,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.findFragment
 import androidx.lifecycle.LifecycleOwner
+import dagger.hilt.android.EntryPointAccessors
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.alternatives.ui.AlternativesActivity
 import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
@@ -25,13 +29,19 @@ import org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.MangaSourceInfo
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaListFilter
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPage
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.core.prefs.TriStateOption
+import org.koitharu.kotatsu.core.ui.dialog.BigButtonsAlertDialog
 import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
+import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.findActivity
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.core.util.ext.withArgs
@@ -61,6 +71,7 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.isNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.mapToArray
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
@@ -68,6 +79,7 @@ import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.ui.config.ScrobblerConfigActivity
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
+import org.koitharu.kotatsu.search.domain.SearchKind
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.multi.SearchActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
@@ -94,22 +106,27 @@ class AppRouter private constructor(
 
 	constructor(fragment: Fragment) : this(null, fragment)
 
-	/** Activities **/
-
-	fun openList(source: MangaSource, filter: MangaListFilter?) {
-		startActivity(listIntent(contextOrNull() ?: return, source, filter))
+	private val settings: AppSettings by lazy {
+		EntryPointAccessors.fromApplication<AppRouterEntryPoint>(checkNotNull(contextOrNull())).settings
 	}
 
-	fun openList(tag: MangaTag) = openList(tag.source, MangaListFilter(tags = setOf(tag)))
+	/** Activities **/
 
-	fun openSearch(query: String) {
+	fun openList(source: MangaSource, filter: MangaListFilter?, sortOrder: SortOrder?) {
+		startActivity(listIntent(contextOrNull() ?: return, source, filter, sortOrder))
+	}
+
+	fun openList(tag: MangaTag) = openList(tag.source, MangaListFilter(tags = setOf(tag)), null)
+
+	fun openSearch(query: String, kind: SearchKind = SearchKind.SIMPLE) {
 		startActivity(
 			Intent(contextOrNull() ?: return, SearchActivity::class.java)
-				.putExtra(KEY_QUERY, query),
+				.putExtra(KEY_QUERY, query)
+				.putExtra(KEY_KIND, kind),
 		)
 	}
 
-	fun openSearch(source: MangaSource, query: String) = openList(source, MangaListFilter(query = query))
+	fun openSearch(source: MangaSource, query: String) = openList(source, MangaListFilter(query = query), null)
 
 	fun openDetails(manga: Manga) {
 		startActivity(detailsIntent(contextOrNull() ?: return, manga))
@@ -117,6 +134,13 @@ class AppRouter private constructor(
 
 	fun openDetails(mangaId: Long) {
 		startActivity(detailsIntent(contextOrNull() ?: return, mangaId))
+	}
+
+	fun openDetails(link: Uri) {
+		startActivity(
+			Intent(contextOrNull() ?: return, DetailsActivity::class.java)
+				.setData(link),
+		)
 	}
 
 	fun openReader(manga: Manga, anchor: View? = null) {
@@ -327,6 +351,25 @@ class AppRouter private constructor(
 		}.showDistinct()
 	}
 
+	fun showTagDialog(tag: MangaTag) {
+		buildAlertDialog(contextOrNull() ?: return) {
+			setTitle(tag.title)
+			setItems(
+				arrayOf(
+					context.getString(R.string.search_on_s, tag.source.getTitle(context)),
+					context.getString(R.string.search_everywhere),
+				),
+			) { _, which ->
+				when (which) {
+					0 -> openList(tag)
+					1 -> openSearch(tag.title, SearchKind.TAG)
+				}
+			}
+			setNegativeButton(R.string.close, null)
+			setCancelable(true)
+		}.show()
+	}
+
 	fun showErrorDialog(error: Throwable, url: String? = null) {
 		ErrorDetailsDialog().withArgs(2) {
 			putSerializable(KEY_ERROR, error)
@@ -414,6 +457,45 @@ class AppRouter private constructor(
 		TrackerCategoriesConfigSheet().showDistinct()
 	}
 
+	fun askForDownloadOverMeteredNetwork(onConfirmed: (allow: Boolean) -> Unit) {
+		val context = contextOrNull() ?: return
+		when (settings.allowDownloadOnMeteredNetwork) {
+			TriStateOption.ENABLED -> onConfirmed(true)
+			TriStateOption.DISABLED -> onConfirmed(false)
+			TriStateOption.ASK -> {
+				if (!context.connectivityManager.isActiveNetworkMetered) {
+					onConfirmed(true)
+					return
+				}
+				val listener = DialogInterface.OnClickListener { _, which ->
+					when (which) {
+						DialogInterface.BUTTON_POSITIVE -> {
+							settings.allowDownloadOnMeteredNetwork = TriStateOption.ENABLED
+							onConfirmed(true)
+						}
+
+						DialogInterface.BUTTON_NEUTRAL -> {
+							onConfirmed(true)
+						}
+
+						DialogInterface.BUTTON_NEGATIVE -> {
+							settings.allowDownloadOnMeteredNetwork = TriStateOption.DISABLED
+							onConfirmed(false)
+						}
+					}
+				}
+				BigButtonsAlertDialog.Builder(context)
+					.setIcon(R.drawable.ic_network_cellular)
+					.setTitle(R.string.download_cellular_confirm)
+					.setPositiveButton(R.string.allow_always, listener)
+					.setNeutralButton(R.string.allow_once, listener)
+					.setNegativeButton(R.string.dont_allow, listener)
+					.create()
+					.show()
+			}
+		}
+	}
+
 	/** Public utils **/
 
 	fun isFilterSupported(): Boolean = when {
@@ -462,6 +544,7 @@ class AppRouter private constructor(
 		return fragment?.childFragmentManager ?: activity?.supportFragmentManager
 	}
 
+	@UiContext
 	private fun contextOrNull(): Context? = activity ?: fragment?.context
 
 	private fun getLifecycleOwner(): LifecycleOwner? = activity ?: fragment?.viewLifecycleOwner
@@ -510,13 +593,16 @@ class AppRouter private constructor(
 		fun detailsIntent(context: Context, mangaId: Long) = Intent(context, DetailsActivity::class.java)
 			.putExtra(KEY_ID, mangaId)
 
-		fun listIntent(context: Context, source: MangaSource, filter: MangaListFilter?): Intent =
+		fun listIntent(context: Context, source: MangaSource, filter: MangaListFilter?, sortOrder: SortOrder?): Intent =
 			Intent(context, MangaListActivity::class.java)
 				.setAction(ACTION_MANGA_EXPLORE)
 				.putExtra(KEY_SOURCE, source.name)
 				.apply {
 					if (!filter.isNullOrEmpty()) {
 						putExtra(KEY_FILTER, ParcelableMangaListFilter(filter))
+					}
+					if (sortOrder != null) {
+						putExtra(KEY_SORT_ORDER, sortOrder)
 					}
 				}
 
@@ -590,12 +676,14 @@ class AppRouter private constructor(
 		const val KEY_FILTER = "filter"
 		const val KEY_ID = "id"
 		const val KEY_INDEX = "index"
+		const val KEY_KIND = "kind"
 		const val KEY_LIST_SECTION = "list_section"
 		const val KEY_MANGA = "manga"
 		const val KEY_MANGA_LIST = "manga_list"
 		const val KEY_PAGES = "pages"
 		const val KEY_QUERY = "query"
 		const val KEY_READER_MODE = "reader_mode"
+		const val KEY_SORT_ORDER = "sort_order"
 		const val KEY_SOURCE = "source"
 		const val KEY_TAB = "tab"
 		const val KEY_TITLE = "title"

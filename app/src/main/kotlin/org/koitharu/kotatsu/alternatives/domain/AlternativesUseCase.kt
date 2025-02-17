@@ -10,25 +10,22 @@ import kotlinx.coroutines.sync.withPermit
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.util.almostEquals
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.search.domain.SearchKind
+import org.koitharu.kotatsu.search.domain.SearchV2Helper
 import javax.inject.Inject
 
 private const val MAX_PARALLELISM = 4
-private const val MATCH_THRESHOLD_DEFAULT = 0.2f
 
 class AlternativesUseCase @Inject constructor(
 	private val sourcesRepository: MangaSourcesRepository,
+	private val searchHelperFactory: SearchV2Helper.Factory,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 
-	suspend operator fun invoke(manga: Manga): Flow<Manga> = invoke(manga, MATCH_THRESHOLD_DEFAULT)
-
-	suspend operator fun invoke(manga: Manga, matchThreshold: Float): Flow<Manga> {
+	suspend operator fun invoke(manga: Manga): Flow<Manga> {
 		val sources = getSources(manga.source)
 		if (sources.isEmpty()) {
 			return emptyFlow()
@@ -36,21 +33,14 @@ class AlternativesUseCase @Inject constructor(
 		val semaphore = Semaphore(MAX_PARALLELISM)
 		return channelFlow {
 			for (source in sources) {
-				val repository = mangaRepositoryFactory.create(source)
-				if (!repository.filterCapabilities.isSearchSupported) {
-					continue
-				}
 				launch {
+					val searchHelper = searchHelperFactory.create(source)
 					val list = runCatchingCancellable {
 						semaphore.withPermit {
-							repository.getList(offset = 0, SortOrder.RELEVANCE, MangaListFilter(query = manga.title))
+							searchHelper(manga.title, SearchKind.TITLE)?.manga
 						}
-					}.getOrDefault(emptyList())
-					for (item in list) {
-						if (item.matches(manga, matchThreshold)) {
-							send(item)
-						}
-					}
+					}.getOrNull()
+					list?.forEach { send(it) }
 				}
 			}
 		}.map {
@@ -66,18 +56,6 @@ class AlternativesUseCase @Inject constructor(
 		result.sortByDescending { it.priority(ref) }
 		result.addAll(sourcesRepository.getDisabledSources().sortedByDescending { it.priority(ref) })
 		return result
-	}
-
-	private fun Manga.matches(ref: Manga, threshold: Float): Boolean {
-		return matchesTitles(title, ref.title, threshold) ||
-			matchesTitles(title, ref.altTitle, threshold) ||
-			matchesTitles(altTitle, ref.title, threshold) ||
-			matchesTitles(altTitle, ref.altTitle, threshold)
-
-	}
-
-	private fun matchesTitles(a: String?, b: String?, threshold: Float): Boolean {
-		return !a.isNullOrEmpty() && !b.isNullOrEmpty() && a.almostEquals(b, threshold)
 	}
 
 	private fun MangaSource.priority(ref: MangaSource): Int {

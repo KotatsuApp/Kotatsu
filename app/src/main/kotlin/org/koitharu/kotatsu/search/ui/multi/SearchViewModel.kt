@@ -26,7 +26,6 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.core.nav.AppRouter
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -43,6 +42,8 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.search.domain.SearchKind
+import org.koitharu.kotatsu.search.domain.SearchV2Helper
 import javax.inject.Inject
 
 private const val MAX_PARALLELISM = 4
@@ -52,7 +53,7 @@ private const val MIN_HAS_MORE_ITEMS = 8
 class SearchViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val mangaListMapper: MangaListMapper,
-	private val mangaRepositoryFactory: MangaRepository.Factory,
+	private val searchHelperFactory: SearchV2Helper.Factory,
 	private val sourcesRepository: MangaSourcesRepository,
 	private val historyRepository: HistoryRepository,
 	private val localMangaRepository: LocalMangaRepository,
@@ -60,6 +61,7 @@ class SearchViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	val query = savedStateHandle.get<String>(AppRouter.KEY_QUERY).orEmpty()
+	val kind = savedStateHandle.get<SearchKind>(AppRouter.KEY_KIND) ?: SearchKind.SIMPLE
 
 	private val retryCounter = MutableStateFlow(0)
 	private val listData = retryCounter.flatMapLatest {
@@ -115,35 +117,40 @@ class SearchViewModel @Inject constructor(
 			return@channelFlow
 		}
 		val semaphore = Semaphore(MAX_PARALLELISM)
-		sources.mapNotNull { source ->
-			val repository = mangaRepositoryFactory.create(source)
-			if (!repository.filterCapabilities.isSearchSupported) {
-				null
-			} else {
-				launch {
-					val item = runCatchingCancellable {
-						semaphore.withPermit {
-							mangaListMapper.toListModelList(
-								manga = repository.getList(offset = 0, null, MangaListFilter(query = q)),
+		sources.map { source ->
+			launch {
+				val item = runCatchingCancellable {
+					semaphore.withPermit {
+						val searchHelper = searchHelperFactory.create(source)
+						searchHelper(query, kind)
+					}
+				}.fold(
+					onSuccess = { result ->
+						if (result == null || result.manga.isEmpty()) {
+							null
+						} else {
+							val list = mangaListMapper.toListModelList(
+								manga = result.manga,
 								mode = ListMode.GRID,
 							)
+							SearchResultsListModel(
+								titleResId = 0,
+								source = source,
+								hasMore = list.size > MIN_HAS_MORE_ITEMS,
+								list = list,
+								error = null,
+								listFilter = result.listFilter,
+								sortOrder = result.sortOrder,
+							)
 						}
-					}.fold(
-						onSuccess = { list ->
-							if (list.isEmpty()) {
-								null
-							} else {
-								SearchResultsListModel(0, source, list.size > MIN_HAS_MORE_ITEMS, list, null)
-							}
-						},
-						onFailure = { error ->
-							error.printStackTraceDebug()
-							SearchResultsListModel(0, source, true, emptyList(), error)
-						},
-					)
-					if (item != null) {
-						send(item)
-					}
+					},
+					onFailure = { error ->
+						error.printStackTraceDebug()
+						SearchResultsListModel(0, source, null, null, true, emptyList(), error)
+					},
+				)
+				if (item != null) {
+					send(item)
 				}
 			}
 		}.joinAll()
@@ -163,6 +170,8 @@ class SearchViewModel @Inject constructor(
 						hasMore = false,
 						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
 						error = null,
+						listFilter = null,
+						sortOrder = null,
 					)
 				} else {
 					null
@@ -175,6 +184,8 @@ class SearchViewModel @Inject constructor(
 					hasMore = false,
 					list = emptyList(),
 					error = error,
+					listFilter = null,
+					sortOrder = null,
 				)
 			},
 		)
@@ -192,6 +203,8 @@ class SearchViewModel @Inject constructor(
 						hasMore = false,
 						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
 						error = null,
+						listFilter = null,
+						sortOrder = null,
 					)
 				} else {
 					null
@@ -204,6 +217,8 @@ class SearchViewModel @Inject constructor(
 					hasMore = false,
 					list = emptyList(),
 					error = error,
+					listFilter = null,
+					sortOrder = null,
 				)
 			},
 		)
@@ -221,6 +236,8 @@ class SearchViewModel @Inject constructor(
 						hasMore = result.size > MIN_HAS_MORE_ITEMS,
 						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
 						error = null,
+						listFilter = null,
+						sortOrder = null,
 					)
 				} else {
 					null
@@ -233,6 +250,8 @@ class SearchViewModel @Inject constructor(
 					hasMore = true,
 					list = emptyList(),
 					error = error,
+					listFilter = null,
+					sortOrder = null,
 				)
 			},
 		)

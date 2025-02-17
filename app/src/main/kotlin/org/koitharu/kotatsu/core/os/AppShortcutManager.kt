@@ -182,7 +182,7 @@ class AppShortcutManager @Inject constructor(
 			.setLongLabel(title)
 			.setIcon(icon)
 			.setLongLived(true)
-			.setIntent(AppRouter.listIntent(context, source, null))
+			.setIntent(AppRouter.listIntent(context, source, null, null))
 			.build()
 	}
 }
