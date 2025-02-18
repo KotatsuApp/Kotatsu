@@ -780,4 +780,5 @@
     <string name="reader_controls_in_bottom_bar">Mga kontrol ng reader sa bottom bar</string>
     <string name="chapters_and_pages">Mga Kabanata at pahina</string>
     <string name="screen_rotation_locked">Ang pag-ikot ng screen ay naka-lock</string>
+    <string name="pages_slider">Slider sa pagpalit ng pahina</string>
 </resources>
