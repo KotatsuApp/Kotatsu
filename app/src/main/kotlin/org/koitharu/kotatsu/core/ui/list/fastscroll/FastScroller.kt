@@ -11,7 +11,9 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.DimenRes
@@ -229,7 +231,8 @@ class FastScroller @JvmOverloads constructor(
 	 *
 	 * @param params The [ViewGroup.LayoutParams] for this view, cannot be null
 	 */
-	override fun setLayoutParams(params: LayoutParams) {
+	@Suppress("RemoveRedundantQualifierName")
+	override fun setLayoutParams(params: ViewGroup.LayoutParams) {
 		params.width = LayoutParams.WRAP_CONTENT
 		super.setLayoutParams(params)
 	}
