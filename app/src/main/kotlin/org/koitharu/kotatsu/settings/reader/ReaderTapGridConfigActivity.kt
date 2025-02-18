@@ -116,8 +116,7 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 			view.background = createBackground(actions?.tapAction)
 		}
 	}
-
-	@Suppress("IfThenToElvis") // lint bug
+ // lint bug
 	private fun TapAction?.getText(): String = if (this != null) {
 		getString(nameStringResId)
 	} else {

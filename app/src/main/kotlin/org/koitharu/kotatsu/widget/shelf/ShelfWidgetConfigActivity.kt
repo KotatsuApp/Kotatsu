@@ -67,7 +67,7 @@ class ShelfWidgetConfigActivity :
 				config.hasBackground = viewBinding.switchBackground.isChecked
 				updateWidget()
 				setResult(
-					Activity.RESULT_OK,
+					RESULT_OK,
 					Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, config.widgetId),
 				)
 				finish()

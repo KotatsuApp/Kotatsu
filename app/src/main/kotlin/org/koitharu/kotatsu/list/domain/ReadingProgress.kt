@@ -31,7 +31,7 @@ data class ReadingProgress(
 		CHAPTERS_LEFT -> totalChapters > 0 && percent in 0f..1f
 	}
 
-	fun isCompleted() = Companion.isCompleted(percent)
+	fun isCompleted() = isCompleted(percent)
 
 	fun isReversed() = mode == PERCENT_LEFT || mode == CHAPTERS_LEFT
 

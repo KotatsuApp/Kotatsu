@@ -63,7 +63,7 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 			.setAutoCancel(true)
 			.setContentIntent(ErrorReporterReceiver.getPendingIntent(applicationContext, error))
 			.build()
-		val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+		val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 		nm.notify(NOTIFICATION_ID + startId, notification)
 	}
 

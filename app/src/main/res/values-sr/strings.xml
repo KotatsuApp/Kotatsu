@@ -592,7 +592,7 @@
     <string name="migration_completed">Премештање је завршено</string>
     <string name="alternatives">Замене</string>
     <string name="migrate">Премести</string>
-    <string name="migrate_confirmation">Манга 1$s из 2$s ће бити замењена са 3$s из 4$s у вашој Историји и Омиљеним (ако постоји)</string>
+    <string name="migrate_confirmation">Манга %1$s из %2$s ће бити замењена са %3$s из %4$s у вашој Историји и Омиљеним (ако постоји)</string>
     <string name="delete_read_chapters_summary">Избриши поглавља која си већ прочитао из локалне меморије да би ослободио простор</string>
     <string name="delete_read_chapters_prompt">Ово ће трајно избрисати сва поглавља означена као прочитана из твог локалног складишта. Можеш их поново преузети касније, али увезена поглавља могу бити изгубљена заувек</string>
     <string name="long_ago_read">Давно прочитано</string>

@@ -15,7 +15,7 @@ class IconsView @JvmOverloads constructor(
 	attrs: AttributeSet? = null,
 ) : LinearLayout(context, attrs) {
 
-	private var iconSize = LinearLayout.LayoutParams.WRAP_CONTENT
+	private var iconSize = LayoutParams.WRAP_CONTENT
 	private var iconSpacing = 0
 
 	val iconsCount: Int

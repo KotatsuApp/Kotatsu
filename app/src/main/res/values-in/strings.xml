@@ -770,6 +770,5 @@
     <string name="handle_links">Menangani tautan</string>
     <string name="handle_links_summary">Menangani tautan manga dari aplikasi eksternal (misalnya browser web). Anda mungkin juga perlu mengaktifkannya secara manual di pengaturan sistem aplikasi.</string>
     <string name="any">Setiap</string>
-    <string name="plugin_incompatible_with_cause">Daftar</string>
     <string name="author">Pengarang</string>
 </resources>

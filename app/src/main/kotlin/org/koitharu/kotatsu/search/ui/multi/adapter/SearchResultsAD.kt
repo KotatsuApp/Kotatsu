@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.search.ui.multi.adapter
 
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import coil3.ImageLoader
@@ -46,7 +45,6 @@ fun searchResultsAD(
 
 	bind {
 		binding.textViewTitle.text = item.getTitle(context)
-		binding.buttonMore.isVisible = item.hasMore
 		adapter.items = item.list
 		adapter.notifyDataSetChanged()
 		binding.recyclerView.isGone = item.list.isEmpty()

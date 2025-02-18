@@ -690,8 +690,8 @@
     <string name="demographic_kodomo">Kodomo</string>
     <string name="pages_saved">Stranice su spremljene</string>
     <string name="unstable_feature">Nestabilna funkcija</string>
-    <string name="no_fix_required">s\\ ne zahtijeva popravljanje</string>
-    <string name="no_alternatives_found">Za s\\ nisu pronađene alternative</string>
+    <string name="no_fix_required">%s ne zahtijeva popravljanje</string>
+    <string name="no_alternatives_found">Za %s nisu pronađene alternative</string>
     <string name="popular_in_hour">Popularno u ovom satu</string>
     <string name="popular_today">Popularno danas</string>
     <string name="popular_in_month">Popularno ovaj mjesec</string>

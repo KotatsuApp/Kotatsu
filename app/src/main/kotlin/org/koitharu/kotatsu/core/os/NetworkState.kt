@@ -69,7 +69,7 @@ class NetworkState(
 				return true
 			}
 			return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				activeNetwork?.let { isOnline(it) } ?: false
+				activeNetwork?.let { isOnline(it) } == true
 			} else {
 				@Suppress("DEPRECATION")
 				activeNetworkInfo?.isConnected == true

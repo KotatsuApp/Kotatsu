@@ -229,7 +229,7 @@ class FastScroller @JvmOverloads constructor(
 	 *
 	 * @param params The [ViewGroup.LayoutParams] for this view, cannot be null
 	 */
-	override fun setLayoutParams(params: ViewGroup.LayoutParams) {
+	override fun setLayoutParams(params: LayoutParams) {
 		params.width = LayoutParams.WRAP_CONTENT
 		super.setLayoutParams(params)
 	}
@@ -529,7 +529,7 @@ class FastScroller @JvmOverloads constructor(
 
 	private fun findValidParent(view: View): ViewGroup? = view.ancestors.firstNotNullOfOrNull { p ->
 		if (p is FrameLayout || p is ConstraintLayout || p is CoordinatorLayout || p is RelativeLayout) {
-			p as ViewGroup
+			p
 		} else {
 			null
 		}

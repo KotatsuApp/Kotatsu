@@ -552,7 +552,7 @@
     <string name="periodic_backups_enable">அவ்வப்போது காப்புப்பிரதிகளை இயக்கவும்</string>
     <string name="backups_output_directory">காப்புப்பிரதிகள் வெளியீட்டு அடைவு</string>
     <string name="last_successful_backup">கடைசி வெற்றிகரமான காப்புப்பிரதி: %s</string>
-    <string name="speed_value">எக்ச்%.1 எஃப்</string>
+    <string name="speed_value">எக்ச்%.1f எஃப்</string>
     <string name="content_type_manga">மங்கா</string>
     <string name="content_type_hentai">என்டாய்</string>
     <string name="content_type_comics">காமிக்ச்</string>
@@ -709,7 +709,7 @@
     <string name="downloads_background">பின்னணி பதிவிறக்கங்கள்</string>
     <string name="download_new_chapters">புதிய அத்தியாயங்களைப் பதிவிறக்கவும்</string>
     <string name="manga_with_downloaded_chapters">பதிவிறக்கம் செய்யப்பட்ட அத்தியாயங்களுடன் மங்கா</string>
-    <string name="manga_replaced">மங்கா \"%1$s\" (%2$s) \"%3$s\" (%4 $ S) உடன் மாற்றப்பட்டது</string>
+    <string name="manga_replaced">மங்கா \"%1$s\" (%2$s) \"%3$s\" (%4$s) உடன் மாற்றப்பட்டது</string>
     <string name="fixing_manga">மங்காவை சரிசெய்தல்</string>
     <string name="fixed">வெற்றிகரமாக சரி செய்யப்பட்டது</string>
     <string name="no_fix_required">\"%s\" க்கு பிழைத்திருத்தம் தேவையில்லை</string>

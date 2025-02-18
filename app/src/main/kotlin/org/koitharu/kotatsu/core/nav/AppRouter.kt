@@ -610,7 +610,7 @@ class AppRouter private constructor(
 			Intent(context, CloudFlareActivity::class.java).apply {
 				data = exception.url.toUri()
 				putExtra(KEY_SOURCE, exception.source?.name)
-				exception.headers.get(CommonHeaders.USER_AGENT)?.let {
+				exception.headers[CommonHeaders.USER_AGENT]?.let {
 					putExtra(KEY_USER_AGENT, it)
 				}
 			}

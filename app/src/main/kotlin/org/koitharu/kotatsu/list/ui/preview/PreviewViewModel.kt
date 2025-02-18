@@ -54,7 +54,7 @@ class PreviewViewModel @Inject constructor(
 			return@combine null
 		}
 		val b = m.getPreferredBranch(history)
-		val chapters = m.getChapters(b).orEmpty()
+		val chapters = m.getChapters(b)
 		FooterInfo(
 			percent = history?.percent ?: PROGRESS_NONE,
 			currentChapter = history?.chapterId?.let {
