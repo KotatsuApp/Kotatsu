@@ -75,7 +75,7 @@
     <string name="size_s">Kích thước: %s</string>
     <string name="rotate_screen">Xoay màn hình</string>
     <string name="feed_will_update_soon">Cập nhật danh sách sẽ bắt đầu sớm</string>
-    <string name="track_sources">Tìm kiếm bản cập nhật mới</string>
+    <string name="track_sources">Kiểm tra tập / chương truyện mới từ</string>
     <string name="dont_check">Không kiểm tra</string>
     <string name="enter_password">Nhập mật khẩu</string>
     <string name="protect_application_summary">Hỏi mật khẩu khi khởi động Kotatsu</string>
@@ -307,7 +307,7 @@
     <string name="automatic_scroll">Tự động cuộn</string>
     <string name="import_will_start_soon">Quá trình nhập sẽ bắt đầu sớm</string>
     <string name="reader_info_bar">Hiện thanh thông tin truyện trong trình đọc</string>
-    <string name="folder_with_images">Thư mục với hình ảnh</string>
+    <string name="folder_with_images">Từ thư mục chứa hình ảnh / dữ liệu truyện</string>
     <string name="import_completed">Nhập hoàn tất</string>
     <string name="import_completed_hint">Bạn có thể xoá file gốc khỏi bộ nhớ để tiết kiệm dung lượng</string>
     <string name="reset">Đặt lại</string>
@@ -396,7 +396,7 @@
     <string name="mirror_switching_summary">Tự động chuyển sang tên miền dự phòng của nguồn đọc (nếu có) khi gặp lỗi</string>
     <string name="paused">Đã tạm dừng</string>
     <string name="images_proxy_title">Proxy tối ưu hình ảnh</string>
-    <string name="images_procy_description">Sử dụng dịch vụ wsrv.nl để giảm dung lượng ảnh và tăng tốc quá trình tải ảnh nếu có thể</string>
+    <string name="images_procy_description">Sử dụng dịch vụ wsrv.nl để giảm dung lượng ảnh và tăng tốc quá trình tải ảnh nếu khả thi</string>
     <string name="restore_summary">Khôi phục từ bản sao lưu đã được tạo trước đó</string>
     <string name="reader_info_bar_summary">Hiển thị thời gian hiện tại và tiến trình đọc ở góc bên trên màn hình</string>
     <string name="download_option_whole_manga">Toàn bộ truyện</string>
@@ -422,7 +422,7 @@
     <string name="allow_unstable_updates_summary">Nhận thông báo về các bản dựng không ổn định</string>
     <string name="related_manga">Truyện tranh liên quan</string>
     <string name="suggestions_wifi_only_summary">Không cập nhật đề xuất bằng kết nối mạng có đo lường</string>
-    <string name="comics_archive">Kho lưu trữ truyện tranh</string>
+    <string name="comics_archive">Từ tệp đã nén dữ liệu truyện</string>
     <string name="folder_with_images_import_description">Bạn có thể chọn một thư mục để làm kho lưu trữ / hình ảnh. Mỗi kho lưu trữ (hoặc thư mục con) sẽ được coi là một chương.</string>
     <string name="voice_search">Tìm kiếm bằng giọng nói</string>
     <string name="reader_control_ltr">Điều khiển trình đọc tiện dụng</string>
@@ -460,7 +460,7 @@
     <string name="content_type_manga">Manga</string>
     <string name="content_type_hentai">Hentai</string>
     <string name="content_type_comics">Comics</string>
-    <string name="disable_nsfw_summary">Tắt các nguồn NSFW và ẩn các manga người lớn từ danh sách nếu có thể</string>
+    <string name="disable_nsfw_summary">Tắt các nguồn NSFW và ẩn các manga người lớn từ danh sách (nếu khả thi)</string>
     <string name="reader_optimize">Giảm tiêu tốn bộ nhớ (beta)</string>
     <string name="reader_optimize_summary">Giảm chất lượng các trang chưa hiển thị để dùng ít bộ nhớ hơn</string>
     <string name="manage_sources">Nguồn manga</string>
@@ -547,9 +547,7 @@
     <string name="rating_safe">An toàn</string>
     <string name="default_tab">Tab mặc định</string>
     <string name="mark_as_completed">Đánh dấu đã hoàn thành</string>
-    <string name="mark_as_completed_prompt">Đánh dấu manga đã chọn là Đã đọc?
-\n
-\nCảnh báo: Tiến trình đọc hiện tại sẽ bị mất.</string>
+    <string name="mark_as_completed_prompt">Đánh dấu manga đã chọn là manga đã đọc xong? \n \nCảnh báo: Tiến trình đọc hiện tại của bạn sẽ bị xoá và sẽ được đánh dấu là đã hoàn thành.</string>
     <string name="next_chapter">Chương tiếp theo</string>
     <string name="prev_page">Trang trước</string>
     <string name="next_page">Trang tiếp theo</string>
@@ -782,4 +780,7 @@
     <string name="screen_rotation_unlocked">Hướng xoay màn hình đã được mở khóa</string>
     <string name="backup_restored_background">Quá trình khôi phục bản sao lưu này sẽ được thực hiện trong tiến trình nền (chạy ngầm)</string>
     <string name="reader_controls_in_bottom_bar">Tùy chỉnh nút điều khiển ở thanh công cụ phía dưới giao diện đọc</string>
+    <string name="badges_in_lists">Hiển thị biểu tượng trong thư viện</string>
+    <string name="simple">Đơn giản</string>
+    <string name="search_everywhere">Tìm kiếm ở bất cứ đâu</string>
 </resources>
