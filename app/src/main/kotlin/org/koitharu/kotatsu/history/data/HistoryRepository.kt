@@ -154,10 +154,11 @@ class HistoryRepository @Inject constructor(
 
 	suspend fun getProgress(mangaId: Long, mode: ProgressIndicatorMode): ReadingProgress? {
 		val entity = db.getHistoryDao().find(mangaId) ?: return null
+		val fixedPercent = if (entity.percent >= 0.999999f) 1f else entity.percent
 		return ReadingProgress(
-			percent = entity.percent,
+			percent = fixedPercent,
 			totalChapters = entity.chaptersCount,
-			mode = mode,
+			mode = mode
 		).takeIf { it.isValid() }
 	}
 
