@@ -803,4 +803,5 @@
 	<string name="badges_in_lists">Badges in lists</string>
 	<string name="search_everywhere">Search everywhere</string>
 	<string name="simple">Simple</string>
+	<string name="global_search">Global search</string>
 </resources>

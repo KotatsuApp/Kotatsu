@@ -15,7 +15,6 @@ data class SearchResultsListModel(
 	val source: MangaSource,
 	val listFilter: MangaListFilter?,
 	val sortOrder: SortOrder?,
-	val hasMore: Boolean,
 	val list: List<MangaListModel>,
 	val error: Throwable?,
 ) : ListModel {

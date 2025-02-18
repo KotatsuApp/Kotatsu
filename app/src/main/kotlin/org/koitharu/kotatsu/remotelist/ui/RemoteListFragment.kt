@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.list.ui.MangaListFragment
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.search.domain.SearchKind
 
 @AndroidEntryPoint
 class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
@@ -69,6 +70,15 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 			filterCoordinator.reset()
 		} else {
 			openInBrowser(null) // should never be called
+		}
+	}
+
+	override fun onFooterButtonClick() {
+		val filter = filterCoordinator.snapshot().listFilter
+		when {
+			!filter.query.isNullOrEmpty() -> router.openSearch(filter.query.orEmpty(), SearchKind.SIMPLE)
+			!filter.author.isNullOrEmpty() -> router.openSearch(filter.author.orEmpty(), SearchKind.AUTHOR)
+			filter.tags.size == 1 -> router.openSearch(filter.tags.singleOrNull()?.title.orEmpty(), SearchKind.TAG)
 		}
 	}
 

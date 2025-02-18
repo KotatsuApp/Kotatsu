@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
+import org.koitharu.kotatsu.list.ui.model.ButtonFooter
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
@@ -90,6 +91,7 @@ open class RemoteListViewModel @Inject constructor(
 					when {
 						error != null -> add(error.toErrorFooter())
 						hasNext -> add(LoadingFooter())
+						else -> getFooter()?.let(::add)
 					}
 				}
 			}
@@ -177,6 +179,18 @@ open class RemoteListViewModel @Inject constructor(
 		manga: Collection<Manga>,
 		mode: ListMode
 	) = mangaListMapper.toListModelList(destination, manga, mode)
+
+	protected open fun getFooter(): ButtonFooter? {
+		val filter = filterCoordinator.snapshot().listFilter
+		val hasQuery = !filter.query.isNullOrEmpty()
+		val hasAuthor = !filter.author.isNullOrEmpty()
+		val isOneTag = filter.tags.size == 1
+		return if ((hasQuery xor isOneTag xor hasAuthor) && !(hasQuery && isOneTag && hasAuthor)) {
+			ButtonFooter(R.string.global_search)
+		} else {
+			null
+		}
+	}
 
 	fun openRandom() {
 		if (randomJob?.isActive == true) {

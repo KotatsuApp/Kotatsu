@@ -38,8 +38,15 @@ class SearchV2Helper @AssistedInject constructor(
 
 	private suspend fun MangaRepository.getFilter(query: String, kind: SearchKind): MangaListFilter? = when (kind) {
 		SearchKind.SIMPLE,
-		SearchKind.TITLE,
-		SearchKind.AUTHOR -> if (filterCapabilities.isSearchSupported) { // TODO author support
+		SearchKind.TITLE -> if (filterCapabilities.isSearchSupported) {
+			MangaListFilter(query = query)
+		} else {
+			null
+		}
+
+		SearchKind.AUTHOR -> if (filterCapabilities.isAuthorSearchSupported) {
+			MangaListFilter(author = query)
+		} else if (filterCapabilities.isSearchSupported) {
 			MangaListFilter(query = query)
 		} else {
 			null

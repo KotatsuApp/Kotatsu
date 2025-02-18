@@ -44,7 +44,6 @@ import org.koitharu.kotatsu.search.domain.SearchV2Helper
 import javax.inject.Inject
 
 private const val MAX_PARALLELISM = 4
-private const val MIN_HAS_MORE_ITEMS = 8
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
@@ -132,7 +131,6 @@ class SearchViewModel @Inject constructor(
 							SearchResultsListModel(
 								titleResId = 0,
 								source = source,
-								hasMore = list.size > MIN_HAS_MORE_ITEMS,
 								list = list,
 								error = null,
 								listFilter = result.listFilter,
@@ -142,7 +140,7 @@ class SearchViewModel @Inject constructor(
 					},
 					onFailure = { error ->
 						error.printStackTraceDebug()
-						SearchResultsListModel(0, source, null, null, true, emptyList(), error)
+						SearchResultsListModel(0, source, null, null, emptyList(), error)
 					},
 				)
 				if (item != null) {
@@ -163,7 +161,6 @@ class SearchViewModel @Inject constructor(
 					SearchResultsListModel(
 						titleResId = R.string.history,
 						source = UnknownMangaSource,
-						hasMore = false,
 						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
 						error = null,
 						listFilter = null,
@@ -177,7 +174,6 @@ class SearchViewModel @Inject constructor(
 				SearchResultsListModel(
 					titleResId = R.string.history,
 					source = UnknownMangaSource,
-					hasMore = false,
 					list = emptyList(),
 					error = error,
 					listFilter = null,
@@ -196,7 +192,6 @@ class SearchViewModel @Inject constructor(
 					SearchResultsListModel(
 						titleResId = R.string.favourites,
 						source = UnknownMangaSource,
-						hasMore = false,
 						list = mangaListMapper.toListModelList(
 							manga = result,
 							mode = ListMode.GRID,
@@ -214,7 +209,6 @@ class SearchViewModel @Inject constructor(
 				SearchResultsListModel(
 					titleResId = R.string.favourites,
 					source = UnknownMangaSource,
-					hasMore = false,
 					list = emptyList(),
 					error = error,
 					listFilter = null,
@@ -233,7 +227,6 @@ class SearchViewModel @Inject constructor(
 					SearchResultsListModel(
 						titleResId = 0,
 						source = LocalMangaSource,
-						hasMore = result.manga.size > MIN_HAS_MORE_ITEMS,
 						list = mangaListMapper.toListModelList(
 							manga = result.manga,
 							mode = ListMode.GRID,
@@ -251,7 +244,6 @@ class SearchViewModel @Inject constructor(
 				SearchResultsListModel(
 					titleResId = 0,
 					source = LocalMangaSource,
-					hasMore = true,
 					list = emptyList(),
 					error = error,
 					listFilter = null,

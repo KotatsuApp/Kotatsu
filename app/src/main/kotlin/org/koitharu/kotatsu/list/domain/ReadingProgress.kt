@@ -39,9 +39,10 @@ data class ReadingProgress(
 
 		const val PROGRESS_NONE = -1f
 		const val PROGRESS_COMPLETED = 1f
+		private const val PROGRESS_COMPLETED_THRESHOLD = 0.99999f
 
 		fun isValid(percent: Float) = percent in 0f..1f
 
-		fun isCompleted(percent: Float) = percent >= PROGRESS_COMPLETED
+		fun isCompleted(percent: Float) = percent >= PROGRESS_COMPLETED_THRESHOLD
 	}
 }

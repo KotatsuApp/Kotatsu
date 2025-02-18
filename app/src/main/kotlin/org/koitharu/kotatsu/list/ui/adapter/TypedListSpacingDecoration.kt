@@ -54,6 +54,7 @@ class TypedListSpacingDecoration(
 
 			ListItemType.FOOTER_LOADING,
 			ListItemType.FOOTER_ERROR,
+			ListItemType.FOOTER_BUTTON,
 			ListItemType.STATE_LOADING,
 			ListItemType.STATE_ERROR,
 			ListItemType.STATE_EMPTY,

@@ -23,6 +23,19 @@
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 			tools:src="@tools:sample/backgrounds/scenic" />
 
+		<org.koitharu.kotatsu.core.ui.widgets.IconsView
+			android:id="@+id/iconsView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:background="@drawable/bg_list_icons"
+			android:orientation="horizontal"
+			android:padding="4dp"
+			app:iconSize="14dp"
+			app:iconSpacing="4dp"
+			app:layout_constraintStart_toStartOf="@id/imageView_cover"
+			app:layout_constraintTop_toTopOf="@id/imageView_cover" />
+
 		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 			android:id="@+id/progressView"
 			android:layout_width="@dimen/card_indicator_size"

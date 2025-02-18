@@ -60,7 +60,11 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 
 	override fun onChipCloseClick(chip: Chip, data: Any?) {
 		when (data) {
-			is String -> filter.setQuery(null)
+			is String -> if (data == filter.snapshot().listFilter.author) {
+				filter.setAuthor(null)
+			} else {
+				filter.setQuery(null)
+			}
 			is ContentRating -> filter.toggleContentRating(data, false)
 			is Demographic -> filter.toggleDemographic(data, false)
 			is ContentType -> filter.toggleContentType(data, false)

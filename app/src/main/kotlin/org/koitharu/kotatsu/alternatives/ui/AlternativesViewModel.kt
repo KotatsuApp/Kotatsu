@@ -15,17 +15,17 @@ import org.koitharu.kotatsu.core.model.chaptersCount
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
-import org.koitharu.kotatsu.history.data.HistoryRepository
-import org.koitharu.kotatsu.list.domain.ReadingProgress
+import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
+import org.koitharu.kotatsu.list.ui.model.MangaGridModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
@@ -36,8 +36,7 @@ class AlternativesViewModel @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val alternativesUseCase: AlternativesUseCase,
 	private val migrateUseCase: MigrateUseCase,
-	private val historyRepository: HistoryRepository,
-	private val settings: AppSettings,
+	private val mangaListMapper: MangaListMapper,
 ) : BaseViewModel() {
 
 	val manga = savedStateHandle.require<ParcelableManga>(AppRouter.KEY_MANGA).manga
@@ -55,8 +54,7 @@ class AlternativesViewModel @Inject constructor(
 			alternativesUseCase(ref)
 				.map {
 					MangaAlternativeModel(
-						manga = it,
-						progress = getProgress(it.id),
+						mangaModel = mangaListMapper.toListModel(it, ListMode.GRID) as MangaGridModel,
 						referenceChapters = refCount,
 					)
 				}.runningFold<MangaAlternativeModel, List<ListModel>>(listOf(LoadingState)) { acc, item ->
@@ -87,9 +85,5 @@ class AlternativesViewModel @Inject constructor(
 			migrateUseCase(manga, target)
 			onMigrated.call(target)
 		}
-	}
-
-	private suspend fun getProgress(mangaId: Long): ReadingProgress? {
-		return historyRepository.getProgress(mangaId, settings.progressIndicatorMode)
 	}
 }

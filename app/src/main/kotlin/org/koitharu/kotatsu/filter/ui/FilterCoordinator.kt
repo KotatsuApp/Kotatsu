@@ -287,6 +287,15 @@ class FilterCoordinator @Inject constructor(
 		}
 	}
 
+	fun setAuthor(value: String?) {
+		currentListFilter.update { oldValue ->
+			oldValue.copy(
+				author = value,
+				query = oldValue.takeQueryIfSupported(),
+			)
+		}
+	}
+
 	fun setOriginalLocale(value: Locale?) {
 		currentListFilter.update { oldValue ->
 			oldValue.copy(

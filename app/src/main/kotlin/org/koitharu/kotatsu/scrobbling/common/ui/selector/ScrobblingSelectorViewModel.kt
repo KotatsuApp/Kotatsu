@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
@@ -159,7 +160,7 @@ class ScrobblingSelectorViewModel @Inject constructor(
 				rating = prevInfo?.rating ?: 0f,
 				status = prevInfo?.status ?: when {
 					history == null -> ScrobblingStatus.PLANNED
-					history.percent == 1f -> ScrobblingStatus.COMPLETED
+					ReadingProgress.isCompleted(history.percent) -> ScrobblingStatus.COMPLETED
 					else -> ScrobblingStatus.READING
 				},
 				comment = prevInfo?.comment,

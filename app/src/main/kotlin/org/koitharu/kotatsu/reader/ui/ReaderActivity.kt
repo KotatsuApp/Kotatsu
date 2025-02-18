@@ -14,6 +14,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
+import androidx.core.view.MenuHost
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
@@ -98,6 +99,9 @@ class ReaderActivity :
 			scrollTimer.isEnabled = value
 		}
 
+	private val secondaryMenuHost: MenuHost
+		get() = viewBinding.toolbarBottom ?: this
+
 	private lateinit var scrollTimer: ScrollTimer
 	private lateinit var pageSaveHelper: PageSaveHelper
 	private lateinit var touchHelper: TapGridDispatcher
@@ -150,7 +154,7 @@ class ReaderActivity :
 		viewModel.isInfoBarTransparent.observe(this) { viewBinding.infoBar.drawBackground = !it }
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(this))
-		val bottomMenuInvalidator = MenuInvalidator(viewBinding.toolbarBottom)
+		val bottomMenuInvalidator = MenuInvalidator(secondaryMenuHost)
 		viewModel.isPagesSheetEnabled.observe(this, bottomMenuInvalidator)
 		screenOrientationHelper.observeAutoOrientation().observe(this, bottomMenuInvalidator)
 		viewModel.onShowToast.observeEvent(this) { msgId ->
@@ -165,7 +169,7 @@ class ReaderActivity :
 			viewBinding.zoomControl.isVisible = it
 		}
 		addMenuProvider(ReaderMenuTopProvider(viewModel))
-		viewBinding.toolbarBottom.addMenuProvider(
+		secondaryMenuHost.addMenuProvider(
 			ReaderMenuBottomProvider(this, readerManager, screenOrientationHelper, this, viewModel),
 		)
 	}
@@ -221,7 +225,7 @@ class ReaderActivity :
 		} else {
 			viewBinding.toastView.hide()
 		}
-		viewBinding.toolbarBottom.invalidateMenu()
+		secondaryMenuHost.invalidateMenu()
 		invalidateOptionsMenu()
 	}
 
@@ -242,7 +246,7 @@ class ReaderActivity :
 			rawX >= viewBinding.root.width - gestureInsets.right ||
 			rawY >= viewBinding.root.height - gestureInsets.bottom ||
 			viewBinding.appbarTop.hasGlobalPoint(rawX, rawY) ||
-			viewBinding.appbarBottom.hasGlobalPoint(rawX, rawY) == true
+			viewBinding.appbarBottom?.hasGlobalPoint(rawX, rawY) == true
 		) {
 			false
 		} else {
@@ -306,7 +310,7 @@ class ReaderActivity :
 		buttonPrev.isVisible = ReaderControl.PREV_CHAPTER in controls
 		buttonNext.isVisible = ReaderControl.NEXT_CHAPTER in controls
 		slider.isVisible = ReaderControl.SLIDER in controls
-		toolbarBottom.invalidateMenu()
+		secondaryMenuHost.invalidateMenu()
 	}
 
 	private fun setUiIsVisible(isUiVisible: Boolean) {
@@ -321,7 +325,7 @@ class ReaderActivity :
 			}
 			val isFullscreen = settings.isReaderFullscreenEnabled
 			viewBinding.appbarTop.isVisible = isUiVisible
-			viewBinding.appbarBottom.isVisible = isUiVisible
+			viewBinding.appbarBottom?.isVisible = isUiVisible
 			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
 			viewBinding.infoBar.isTimeVisible = isFullscreen
 			systemUiController.setSystemUiVisible(isUiVisible || !isFullscreen)
@@ -336,7 +340,7 @@ class ReaderActivity :
 			right = systemBars.right,
 			left = systemBars.left,
 		)
-		viewBinding.appbarBottom.updateLayoutParams<MarginLayoutParams> {
+		viewBinding.appbarBottom?.updateLayoutParams<MarginLayoutParams> {
 			bottomMargin = systemBars.bottom + topMargin
 			rightMargin = systemBars.right + topMargin
 			leftMargin = systemBars.left + topMargin

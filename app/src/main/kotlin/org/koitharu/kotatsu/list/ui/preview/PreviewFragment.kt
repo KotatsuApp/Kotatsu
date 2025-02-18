@@ -121,20 +121,14 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 	private fun onFooterUpdated(footer: PreviewViewModel.FooterInfo?) {
 		with(requireViewBinding()) {
 			buttonRead.isEnabled = footer != null
-			buttonRead.setTitle(if (footer?.isInProgress() == true) R.string._continue else R.string.read)
-			buttonRead.subtitle = when {
-				footer == null -> getString(R.string.loading_)
-				footer.isIncognito -> getString(R.string.incognito_mode)
-				footer.currentChapter >= 0 -> getString(
-					R.string.chapter_d_of_d,
-					footer.currentChapter + 1,
-					footer.totalChapters,
-				)
-
-				footer.totalChapters == 0 -> getString(R.string.no_chapters)
-				else -> resources.getQuantityString(R.plurals.chapters, footer.totalChapters, footer.totalChapters)
-			}
-			buttonRead.setProgress(footer?.percent?.coerceIn(0f, 1f) ?: 0f, true)
+			buttonRead.setText(
+				when {
+					footer == null -> R.string.loading_
+					footer.isIncognito == true -> R.string.incognito
+					footer.isInProgress() == true -> R.string._continue
+					else -> R.string.read
+				},
+			)
 		}
 	}
 

@@ -92,6 +92,7 @@ import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import org.koitharu.kotatsu.list.domain.MangaListMapper
+import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -101,6 +102,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
+import org.koitharu.kotatsu.search.domain.SearchKind
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.google.android.material.R as materialR
@@ -203,8 +205,8 @@ class DetailsActivity :
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.textView_author -> {
-				val manga = viewModel.manga.value ?: return
-				router.openSearch(manga.source, manga.author ?: return)
+				val author = viewModel.manga.value?.author ?: return
+				router.openSearch(author, SearchKind.AUTHOR)
 			}
 
 			R.id.textView_source -> {
@@ -484,7 +486,7 @@ class DetailsActivity :
 		textViewProgress.textAndVisible = if (info.percent <= 0f) {
 			null
 		} else {
-			val displayPercent = if (info.percent >= 0.999999f) 100 else (info.percent * 100f).toInt()
+			val displayPercent = if (ReadingProgress.isCompleted(info.percent)) 100 else (info.percent * 100f).toInt()
 			getString(R.string.percent_string_pattern, displayPercent.toString())
 		}
 

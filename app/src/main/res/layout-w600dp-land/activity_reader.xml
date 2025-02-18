@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@+id/container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		tools:background="@color/grey" />
+
+	<org.koitharu.kotatsu.core.ui.widgets.ZoomControl
+		android:id="@+id/zoomControl"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|end"
+		android:layout_margin="16dp"
+		android:orientation="vertical"
+		android:spacing="2dp"
+		android:visibility="gone"
+		app:layout_dodgeInsetEdges="bottom"
+		tools:visibility="visible" />
+
+	<org.koitharu.kotatsu.reader.ui.ReaderInfoBarView
+		android:id="@+id/infoBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top"
+		android:padding="6dp"
+		android:textSize="12sp"
+		android:visibility="gone"
+		tools:visibility="visible" />
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appbar_top"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:elevation="@dimen/m3_card_elevated_elevation"
+		app:elevation="@dimen/m3_card_elevated_elevation"
+		app:liftOnScroll="false">
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:elevation="@dimen/m3_card_elevated_elevation"
+			app:elevation="@dimen/m3_card_elevated_elevation"
+			app:popupTheme="@style/ThemeOverlay.Kotatsu"
+			tools:menu="@menu/opt_reader_top">
+
+			<LinearLayout
+				android:id="@+id/layout_slider"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical|end"
+				android:layout_marginEnd="2dp"
+				android:gravity="center_vertical|end">
+
+				<ImageButton
+					android:id="@+id/button_prev"
+					style="?actionButtonStyle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:contentDescription="@string/prev_chapter"
+					android:src="@drawable/ic_prev"
+					android:tooltipText="@string/prev_chapter" />
+
+				<com.google.android.material.slider.Slider
+					android:id="@+id/slider"
+					android:layout_width="260dp"
+					android:layout_height="wrap_content"
+					android:stepSize="1.0"
+					android:valueFrom="0"
+					app:labelBehavior="floating"
+					tools:value="6"
+					tools:valueTo="20" />
+
+				<ImageButton
+					android:id="@+id/button_next"
+					style="?actionButtonStyle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:contentDescription="@string/next_chapter"
+					android:src="@drawable/ic_next"
+					android:tooltipText="@string/next_chapter" />
+
+			</LinearLayout>
+
+		</com.google.android.material.appbar.MaterialToolbar>
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<org.koitharu.kotatsu.reader.ui.ReaderToastView
+		android:id="@+id/toastView"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|center_horizontal"
+		android:layout_marginBottom="20dp"
+		android:background="@drawable/bg_reader_indicator"
+		android:drawablePadding="6dp"
+		android:elevation="1000dp"
+		android:singleLine="true"
+		android:textAppearance="?attr/textAppearanceBodySmall"
+		android:theme="@style/ThemeOverlay.Material3.Dark"
+		app:layout_dodgeInsetEdges="bottom"
+		tools:text="@string/loading_" />
+
+	<LinearLayout
+		android:id="@+id/layout_loading"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:background="@drawable/bg_card"
+		android:backgroundTint="?colorSurfaceContainer"
+		android:gravity="center_horizontal"
+		android:orientation="vertical"
+		android:outlineProvider="background"
+		android:padding="@dimen/screen_padding">
+
+		<com.google.android.material.progressindicator.CircularProgressIndicator
+			android:id="@+id/progressBar"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:indeterminate="true" />
+
+		<TextView
+			android:id="@+id/textView_loading"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:text="@string/loading_"
+			android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+	</LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
