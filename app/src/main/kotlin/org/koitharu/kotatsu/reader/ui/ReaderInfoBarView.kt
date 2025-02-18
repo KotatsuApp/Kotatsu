@@ -20,6 +20,8 @@ import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
+import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.withScale
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.koitharu.kotatsu.R
@@ -64,6 +66,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 
 	private var currentTextColor: Int = Color.TRANSPARENT
 	private var currentBackgroundColor: Int = Color.TRANSPARENT
+	private var currentOutlineColor: Int = Color.TRANSPARENT
 	private var timeText = timeFormat.format(LocalTime.now())
 	private var batteryText = ""
 	private var text: String = ""
@@ -124,21 +127,28 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		paint.textAlign = Paint.Align.LEFT
 		paint.color = currentTextColor
 		paint.style = Paint.Style.FILL
-		canvas.drawText(
-			text,
-			(paddingLeft + insetLeft).toFloat(),
-			paddingTop + insetTop + ty,
-			paint,
-		)
+		if (drawBackground) {
+			canvas.drawText(text, (paddingLeft + insetLeft).toFloat(), paddingTop + insetTop + ty, paint)
+		} else {
+			canvas.drawTextOutline(text, (paddingLeft + insetLeft).toFloat(), paddingTop + insetTop + ty)
+		}
 		if (isTimeVisible) {
 			paint.textAlign = Paint.Align.RIGHT
 			var endX = (width - paddingRight - insetRight).toFloat()
-			canvas.drawText(timeText, endX, paddingTop + insetTop + ty, paint)
+			if (drawBackground) {
+				canvas.drawText(timeText, endX, paddingTop + insetTop + ty, paint)
+			} else {
+				canvas.drawTextOutline(timeText, endX, paddingTop + insetTop + ty)
+			}
 			if (batteryText.isNotEmpty()) {
 				paint.getTextBounds(timeText, 0, timeText.length, textBounds)
 				endX -= textBounds.width()
 				endX -= h * 0.6f
-				canvas.drawText(batteryText, endX, paddingTop + insetTop + ty, paint)
+				if (drawBackground) {
+					canvas.drawText(batteryText, endX, paddingTop + insetTop + ty, paint)
+				} else {
+					canvas.drawTextOutline(batteryText, endX, paddingTop + insetTop + ty)
+				}
 				batteryIcon?.let {
 					paint.getTextBounds(batteryText, 0, batteryText.length, textBounds)
 					endX -= textBounds.width()
@@ -149,7 +159,11 @@ class ReaderInfoBarView @JvmOverloads constructor(
 						endX.toInt(),
 						(iconCenter + h / 2).toInt(),
 					)
-					it.draw(canvas)
+					if (drawBackground) {
+						it.draw(canvas)
+					} else {
+						it.drawWithOutline(canvas)
+					}
 				}
 			}
 		}
@@ -201,6 +215,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	override fun drawableStateChanged() {
 		currentTextColor = colorText.getColorForState(drawableState, colorText.defaultColor)
 		currentBackgroundColor = colorBackground.getColorForState(drawableState, colorBackground.defaultColor)
+		currentOutlineColor = ColorUtils.setAlphaComponent(currentBackgroundColor, Color.alpha(currentTextColor))
 		super.drawableStateChanged()
 		if (batteryIcon != null && batteryIcon.isStateful && batteryIcon.setState(drawableState)) {
 			invalidateDrawable(batteryIcon)
@@ -276,6 +291,32 @@ class ReaderInfoBarView @JvmOverloads constructor(
 				}
 			}
 		}
+	}
+
+	private fun Canvas.drawTextOutline(text: String, x: Float, y: Float) {
+		paint.color = currentOutlineColor
+		paint.style = Paint.Style.STROKE
+		drawText(text, x, y, paint)
+		paint.color = currentTextColor
+		paint.style = Paint.Style.FILL
+		drawText(text, x, y, paint)
+	}
+
+	private fun Drawable.drawWithOutline(canvas: Canvas) {
+		if (bounds.isEmpty) {
+			return
+		}
+		var requiredScale = (bounds.width() + paint.strokeWidth * 2f) / bounds.width().toFloat()
+		setTint(currentOutlineColor)
+		canvas.withScale(requiredScale, requiredScale, bounds.exactCenterX(), bounds.exactCenterY()) {
+			draw(canvas)
+		}
+		requiredScale = 1f / requiredScale
+		canvas.withScale(requiredScale, requiredScale, bounds.exactCenterX(), bounds.exactCenterY()) {
+			draw(canvas)
+		}
+		setTint(currentTextColor)
+		draw(canvas)
 	}
 
 	private inner class SystemStateReceiver : BroadcastReceiver() {
