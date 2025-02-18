@@ -774,4 +774,10 @@
     <string name="enable_all_sources_summary">Todas as fontes de manga seram ativadas permanentemente</string>
     <string name="all_sources_enabled">Todas as fontes estão ativas</string>
     <string name="reader_info_bar_transparent">Barra de informações do leitor transparente</string>
+    <string name="backup_restored_background">O backup será restaurado em segundo plano</string>
+    <string name="restoring_backup">Restaurando backup</string>
+    <string name="reader_controls_in_bottom_bar">Controles do leitor na barra inferior</string>
+    <string name="chapters_and_pages">Capítulos e páginas</string>
+    <string name="screen_rotation_locked">A rotação da tela foi bloqueada</string>
+    <string name="screen_rotation_unlocked">A rotação da tela foi desbloqueada</string>
 </resources>
