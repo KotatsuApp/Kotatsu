@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:id="@+id/action_search_kind"
+		android:icon="@drawable/ic_filter_menu"
+		android:orderInCategory="0"
+		android:title="@string/type"
+		app:showAsAction="ifRoom">
+
+		<menu>
+
+			<group
+				android:id="@+id/group_search_kind"
+				android:checkableBehavior="single">
+
+				<item
+					android:id="@+id/action_kind_simple"
+					android:title="@string/simple" />
+
+				<item
+					android:id="@+id/action_kind_title"
+					android:title="@string/name" />
+
+				<item
+					android:id="@+id/action_kind_author"
+					android:title="@string/author" />
+
+				<item
+					android:id="@+id/action_kind_tag"
+					android:title="@string/genre" />
+
+			</group>
+		</menu>
+
+	</item>
+
+</menu>
