@@ -778,7 +778,8 @@
     <string name="restoring_backup">正在恢复备份</string>
     <string name="backup_restored_background">将在后台恢复备份</string>
     <string name="pages_slider">页面切换滑动条</string>
-    <string name="screen_rotation_locked">已锁定屏幕方向</string>
-    <string name="screen_rotation_unlocked">已解锁屏幕方向</string>
+    <string name="screen_rotation_locked">屏幕方向已锁定</string>
+    <string name="screen_rotation_unlocked">屏幕方向已解锁</string>
     <string name="chapters_and_pages">章节与页面</string>
+    <string name="reader_controls_in_bottom_bar">阅读器底部控制栏</string>
 </resources>
