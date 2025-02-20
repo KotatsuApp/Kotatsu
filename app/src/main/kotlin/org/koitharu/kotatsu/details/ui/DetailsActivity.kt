@@ -152,8 +152,9 @@ class DetailsActivity :
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
 		viewBinding.containerBottomSheet?.let { sheet ->
 			onBackPressedDispatcher.addCallback(BottomSheetCollapseCallback(sheet))
-			BottomSheetBehavior.from(sheet)
-				.addBottomSheetCallback(DetailsBottomSheetCallback(viewBinding.swipeRefreshLayout))
+			BottomSheetBehavior.from(sheet).addBottomSheetCallback(
+				DetailsBottomSheetCallback(viewBinding.swipeRefreshLayout, checkNotNull(viewBinding.navbarDim)),
+			)
 		}
 		TitleExpandListener(viewBinding.textViewTitle).attach()
 
