@@ -1,12 +1,14 @@
 package org.koitharu.kotatsu.search.ui.multi.adapter
 
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import coil3.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
@@ -45,6 +47,7 @@ fun searchResultsAD(
 
 	bind {
 		binding.textViewTitle.text = item.getTitle(context)
+		binding.buttonMore.isVisible = item.source !== UnknownMangaSource
 		adapter.items = item.list
 		adapter.notifyDataSetChanged()
 		binding.recyclerView.isGone = item.list.isEmpty()
