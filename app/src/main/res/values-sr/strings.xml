@@ -782,4 +782,8 @@
     <string name="screen_rotation_unlocked">Обртање екрана је откључано</string>
     <string name="restoring_backup">Враћање резервне копије</string>
     <string name="chapters_and_pages">Поглавља и странице</string>
+    <string name="simple">Једноставно</string>
+    <string name="global_search">Глобална претрага</string>
+    <string name="search_everywhere">Тражи свуда</string>
+    <string name="badges_in_lists">Значке у листама</string>
 </resources>
