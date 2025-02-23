@@ -75,14 +75,14 @@
     <string name="size_s">Kích thước: %s</string>
     <string name="rotate_screen">Xoay màn hình</string>
     <string name="feed_will_update_soon">Cập nhật danh sách sẽ bắt đầu sớm</string>
-    <string name="track_sources">Kiểm tra tập / chương truyện mới từ</string>
+    <string name="track_sources">Kiểm tra tập / chương truyện mới</string>
     <string name="dont_check">Không kiểm tra</string>
     <string name="enter_password">Nhập mật khẩu</string>
     <string name="protect_application_summary">Hỏi mật khẩu khi khởi động Kotatsu</string>
     <string name="repeat_password">Nhập lại mật khẩu</string>
     <string name="about">Giới thiệu</string>
     <string name="app_version">Phiên bản %s</string>
-    <string name="check_for_updates">Kiểm tra cập nhật</string>
+    <string name="check_for_updates">Chạm để kiểm tra bản cập nhật mới</string>
     <string name="no_update_available">Không có bản cập nhật</string>
     <string name="right_to_left">Phải sang trái</string>
     <string name="create_category">Danh mục mới</string>
@@ -783,4 +783,5 @@
     <string name="badges_in_lists">Hiển thị biểu tượng trong thư viện</string>
     <string name="simple">Đơn giản</string>
     <string name="search_everywhere">Tìm kiếm ở bất cứ đâu</string>
+    <string name="global_search">Tìm kiếm chung</string>
 </resources>
