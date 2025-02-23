@@ -781,4 +781,7 @@
     <string name="chapters_and_pages">Mga Kabanata at pahina</string>
     <string name="screen_rotation_locked">Ang pag-ikot ng screen ay naka-lock</string>
     <string name="pages_slider">Slider sa pagpalit ng pahina</string>
+    <string name="global_search">Global na paghahanap</string>
+    <string name="search_everywhere">Maghanap kahit saan</string>
+    <string name="badges_in_lists">Mga badge sa listahan</string>
 </resources>

@@ -782,4 +782,8 @@
     <string name="screen_rotation_unlocked">Rotazione schermo sbloccata</string>
     <string name="chapters_and_pages">Capitoli e pagine</string>
     <string name="pages_slider">Slider di cambio pagina</string>
+    <string name="simple">Semplice</string>
+    <string name="search_everywhere">Cerca ovunque</string>
+    <string name="badges_in_lists">Badge in elenchi</string>
+    <string name="global_search">Ricerca globale</string>
 </resources>
