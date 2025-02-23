@@ -13,19 +13,16 @@ import android.content.Context.POWER_SERVICE
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.OperationApplicationException
-import android.content.SharedPreferences
 import android.content.SyncResult
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.content.pm.ResolveInfo
 import android.database.SQLException
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.ViewPropertyAnimator
-import android.view.Window
 import android.webkit.CookieManager
 import android.webkit.WebView
 import androidx.activity.result.ActivityResultLauncher
@@ -37,7 +34,6 @@ import androidx.appcompat.app.AppCompatDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.ColorUtils
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -46,15 +42,8 @@ import androidx.lifecycle.coroutineScope
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import androidx.work.CoroutineWorker
-import com.google.android.material.elevation.ElevationOverlayProvider
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import okio.IOException
@@ -68,7 +57,6 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.File
 import kotlin.math.roundToLong
-import com.google.android.material.R as materialR
 
 val Context.activityManager: ActivityManager?
 	get() = getSystemService(ACTIVITY_SERVICE) as? ActivityManager
@@ -100,25 +88,6 @@ fun <I> ActivityResultLauncher<I>.tryLaunch(
 }.onFailure { e ->
 	e.printStackTraceDebug()
 }.isSuccess
-
-fun SharedPreferences.observe(): Flow<String?> = callbackFlow {
-	val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-		trySendBlocking(key)
-	}
-	registerOnSharedPreferenceChangeListener(listener)
-	awaitClose {
-		unregisterOnSharedPreferenceChangeListener(listener)
-	}
-}
-
-fun <T> SharedPreferences.observe(key: String, valueProducer: suspend () -> T): Flow<T> = flow {
-	emit(valueProducer())
-	observe().collect { upstreamKey ->
-		if (upstreamKey == key) {
-			emit(valueProducer())
-		}
-	}
-}.distinctUntilChanged()
 
 fun Lifecycle.postDelayed(delay: Long, runnable: Runnable) {
 	coroutineScope.launch {

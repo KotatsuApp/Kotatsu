@@ -43,6 +43,7 @@ class PeriodicalBackupService : CoroutineIntentService() {
 				backup.put(repository.dumpBookmarks())
 				backup.put(repository.dumpSources())
 				backup.put(repository.dumpSettings())
+				backup.put(repository.dumpReaderGridSettings())
 				backup.finish()
 			}
 			externalBackupStorage.put(output.file)

@@ -82,6 +82,7 @@
 		android:layout_marginEnd="@dimen/margin_normal"
 		android:ellipsize="end"
 		android:gravity="center_vertical|start"
+		android:maxLines="3"
 		android:textAppearance="?attr/textAppearanceBodyLarge"
 		app:layout_constraintBottom_toBottomOf="@id/guideline"
 		app:layout_constraintEnd_toEndOf="parent"

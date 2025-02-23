@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.progress.Progress
 import java.io.File
 import javax.inject.Inject
 
@@ -18,35 +19,37 @@ class BackupViewModel @Inject constructor(
 	@ApplicationContext context: Context,
 ) : BaseViewModel() {
 
-	val progress = MutableStateFlow(-1f)
+	val progress = MutableStateFlow(Progress.INDETERMINATE)
 	val onBackupDone = MutableEventFlow<File>()
 
 	init {
 		launchLoadingJob {
 			val file = BackupZipOutput.createTemp(context).use { backup ->
-				val step = 1f / 6f
+				progress.value = Progress(0, 7)
 				backup.put(repository.createIndex())
 
-				progress.value = 0f
 				backup.put(repository.dumpHistory())
+				progress.value = progress.value.inc()
 
-				progress.value += step
 				backup.put(repository.dumpCategories())
+				progress.value = progress.value.inc()
 
-				progress.value += step
 				backup.put(repository.dumpFavourites())
+				progress.value = progress.value.inc()
 
-				progress.value += step
 				backup.put(repository.dumpBookmarks())
+				progress.value = progress.value.inc()
 
-				progress.value += step
 				backup.put(repository.dumpSources())
+				progress.value = progress.value.inc()
 
-				progress.value += step
 				backup.put(repository.dumpSettings())
+				progress.value = progress.value.inc()
+
+				backup.put(repository.dumpReaderGridSettings())
+				progress.value = progress.value.inc()
 
 				backup.finish()
-				progress.value = 1f
 				backup.file
 			}
 			onBackupDone.call(file)

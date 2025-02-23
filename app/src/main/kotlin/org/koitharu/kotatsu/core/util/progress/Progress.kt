@@ -14,6 +14,9 @@ data class Progress(
 	val isFull: Boolean
 		get() = progress == total
 
+	val isIndeterminate: Boolean
+		get() = total < 0
+
 	override fun compareTo(other: Progress): Int = if (total == other.total) {
 		progress.compareTo(other.progress)
 	} else {
@@ -44,4 +47,9 @@ data class Progress(
 	)
 
 	fun percentSting() = (percent * 100f).toInt().toString()
+
+	companion object {
+
+		val INDETERMINATE = Progress(0, -1)
+	}
 }

@@ -16,10 +16,10 @@ import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
+import org.koitharu.kotatsu.core.util.progress.Progress
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import java.io.File
 import java.io.FileOutputStream
-import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
@@ -68,13 +68,14 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 		dismiss()
 	}
 
-	private fun onProgressChanged(value: Float) {
+	private fun onProgressChanged(value: Progress) {
 		with(requireViewBinding().progressBar) {
 			isVisible = true
 			val wasIndeterminate = isIndeterminate
-			isIndeterminate = value < 0
-			if (value >= 0) {
-				setProgressCompat((value * max).roundToInt(), !wasIndeterminate)
+			isIndeterminate = value.isIndeterminate
+			if (!value.isIndeterminate) {
+				max = value.total
+				setProgressCompat(value.progress, !wasIndeterminate)
 			}
 		}
 	}

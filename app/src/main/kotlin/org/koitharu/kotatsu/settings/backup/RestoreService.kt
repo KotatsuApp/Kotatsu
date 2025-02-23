@@ -164,6 +164,15 @@ class RestoreService : CoroutineIntentService() {
 
 		notify()
 
+		if (BackupEntry.Name.SETTINGS_READER_GRID in entries) {
+			input.getEntry(BackupEntry.Name.SETTINGS_READER_GRID)?.let {
+				result += repository.restoreReaderGridSettings(it)
+			}
+			progress++
+		}
+
+		notify()
+
 		return result
 	}
 

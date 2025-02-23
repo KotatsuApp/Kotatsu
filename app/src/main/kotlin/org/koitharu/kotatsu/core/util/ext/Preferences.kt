@@ -1,8 +1,16 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.content.SharedPreferences
+import androidx.collection.ArraySet
 import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
+import org.json.JSONArray
 
 fun ListPreference.setDefaultValueCompat(defaultValue: String) {
 	if (value == null) {
@@ -27,4 +35,45 @@ fun <E : Enum<E>> SharedPreferences.getEnumValue(key: String, defaultValue: E): 
 
 fun <E : Enum<E>> SharedPreferences.Editor.putEnumValue(key: String, value: E?) {
 	putString(key, value?.name)
+}
+
+fun SharedPreferences.observe(): Flow<String?> = callbackFlow {
+	val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+		trySendBlocking(key)
+	}
+	registerOnSharedPreferenceChangeListener(listener)
+	awaitClose {
+		unregisterOnSharedPreferenceChangeListener(listener)
+	}
+}
+
+fun <T> SharedPreferences.observe(key: String, valueProducer: suspend () -> T): Flow<T> = flow {
+	emit(valueProducer())
+	observe().collect { upstreamKey ->
+		if (upstreamKey == key) {
+			emit(valueProducer())
+		}
+	}
+}.distinctUntilChanged()
+
+fun SharedPreferences.Editor.putAll(values: Map<String, *>) {
+	values.forEach { e ->
+		when (val v = e.value) {
+			is Boolean -> putBoolean(e.key, v)
+			is Int -> putInt(e.key, v)
+			is Long -> putLong(e.key, v)
+			is Float -> putFloat(e.key, v)
+			is String -> putString(e.key, v)
+			is JSONArray -> putStringSet(e.key, v.toStringSet())
+		}
+	}
+}
+
+private fun JSONArray.toStringSet(): Set<String> {
+	val len = length()
+	val result = ArraySet<String>(len)
+	for (i in 0 until len) {
+		result.add(getString(i))
+	}
+	return result
 }

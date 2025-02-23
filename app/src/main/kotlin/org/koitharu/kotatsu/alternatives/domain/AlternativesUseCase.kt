@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.alternatives.domain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -40,13 +39,16 @@ class AlternativesUseCase @Inject constructor(
 							searchHelper(manga.title, SearchKind.TITLE)?.manga
 						}
 					}.getOrNull()
-					list?.forEach { send(it) }
+					list?.forEach {
+						launch {
+							val details = runCatchingCancellable {
+								mangaRepositoryFactory.create(it.source).getDetails(it)
+							}.getOrDefault(it)
+							send(details)
+						}
+					}
 				}
 			}
-		}.map {
-			runCatchingCancellable {
-				mangaRepositoryFactory.create(it.source).getDetails(it)
-			}.getOrDefault(it)
 		}
 	}
 

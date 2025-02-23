@@ -15,13 +15,13 @@ import androidx.core.os.LocaleListCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.json.JSONArray
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.getEnumValue
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.putAll
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
@@ -569,20 +569,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	fun getAllValues(): Map<String, *> = prefs.all
 
-	fun upsertAll(m: Map<String, *>) {
-		prefs.edit {
-			m.forEach { e ->
-				when (val v = e.value) {
-					is Boolean -> putBoolean(e.key, v)
-					is Int -> putInt(e.key, v)
-					is Long -> putLong(e.key, v)
-					is Float -> putFloat(e.key, v)
-					is String -> putString(e.key, v)
-					is JSONArray -> putStringSet(e.key, v.toStringSet())
-				}
-			}
-		}
-	}
+	fun upsertAll(m: Map<String, *>) = prefs.edit { putAll(m) }
 
 	private fun isBackgroundNetworkRestricted(): Boolean {
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -590,15 +577,6 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		} else {
 			false
 		}
-	}
-
-	private fun JSONArray.toStringSet(): Set<String> {
-		val len = length()
-		val result = ArraySet<String>(len)
-		for (i in 0 until len) {
-			result.add(getString(i))
-		}
-		return result
 	}
 
 	companion object {

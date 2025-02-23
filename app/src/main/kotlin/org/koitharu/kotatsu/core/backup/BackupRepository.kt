@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.parsers.util.json.asTypedList
 import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.reader.data.TapGridSettings
 import java.util.Date
 import javax.inject.Inject
 
@@ -20,6 +21,7 @@ private const val PAGE_SIZE = 10
 class BackupRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val settings: AppSettings,
+	private val tapGridSettings: TapGridSettings,
 ) {
 
 	suspend fun dumpHistory(): BackupEntry {
@@ -100,6 +102,14 @@ class BackupRepository @Inject constructor(
 		settingsDump.remove(AppSettings.KEY_PROXY_PASSWORD)
 		settingsDump.remove(AppSettings.KEY_PROXY_LOGIN)
 		settingsDump.remove(AppSettings.KEY_INCOGNITO_MODE)
+		val json = JsonSerializer(settingsDump).toJson()
+		entry.data.put(json)
+		return entry
+	}
+
+	fun dumpReaderGridSettings(): BackupEntry {
+		val entry = BackupEntry(BackupEntry.Name.SETTINGS_READER_GRID, JSONArray())
+		val settingsDump = tapGridSettings.getAllValues()
 		val json = JsonSerializer(settingsDump).toJson()
 		entry.data.put(json)
 		return entry
@@ -225,6 +235,16 @@ class BackupRepository @Inject constructor(
 		for (item in entry.data.asTypedList<JSONObject>()) {
 			result += runCatchingCancellable {
 				settings.upsertAll(JsonDeserializer(item).toMap())
+			}
+		}
+		return result
+	}
+
+	fun restoreReaderGridSettings(entry: BackupEntry): CompositeResult {
+		val result = CompositeResult()
+		for (item in entry.data.asTypedList<JSONObject>()) {
+			result += runCatchingCancellable {
+				tapGridSettings.upsertAll(JsonDeserializer(item).toMap())
 			}
 		}
 		return result
