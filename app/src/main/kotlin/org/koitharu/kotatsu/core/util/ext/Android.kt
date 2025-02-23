@@ -139,23 +139,6 @@ fun SyncResult.onError(error: Throwable) {
 	error.printStackTraceDebug()
 }
 
-fun Window.setNavigationBarTransparentCompat(context: Context, elevation: Float, alphaFactor: Float = 0.7f) {
-	navigationBarColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-		!context.getSystemBoolean("config_navBarNeedsScrim", true)
-	) {
-		Color.TRANSPARENT
-	} else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
-		val baseColor = context.getThemeColor(android.R.attr.navigationBarColor)
-		ColorUtils.setAlphaComponent(baseColor, (Color.alpha(baseColor) * alphaFactor).toInt())
-	} else {
-		// Set navbar scrim 70% of navigationBarColor
-		ElevationOverlayProvider(context).compositeOverlayIfNeeded(
-			context.getThemeColor(materialR.attr.colorSurfaceContainer, alphaFactor),
-			elevation,
-		)
-	}
-}
-
 val Context.animatorDurationScale: Float
 	get() = Settings.Global.getFloat(this.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
 
