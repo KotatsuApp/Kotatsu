@@ -1,8 +1,11 @@
 package org.koitharu.kotatsu.settings.backup
 
+import android.content.ContentResolver
 import android.content.Context
+import android.net.Uri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipOutput
@@ -11,6 +14,7 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.progress.Progress
 import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,9 +25,13 @@ class BackupViewModel @Inject constructor(
 
 	val progress = MutableStateFlow(Progress.INDETERMINATE)
 	val onBackupDone = MutableEventFlow<File>()
+	val onBackupSaved = MutableEventFlow<Unit>()
+
+	private val contentResolver: ContentResolver = context.contentResolver
+	private var backupFile: File? = null
 
 	init {
-		launchLoadingJob {
+		launchLoadingJob(Dispatchers.Default) {
 			val file = BackupZipOutput.createTemp(context).use { backup ->
 				progress.value = Progress(0, 7)
 				backup.put(repository.createIndex())
@@ -52,7 +60,20 @@ class BackupViewModel @Inject constructor(
 				backup.finish()
 				backup.file
 			}
+			backupFile = file
 			onBackupDone.call(file)
+		}
+	}
+
+	fun saveBackup(output: Uri) {
+		launchLoadingJob(Dispatchers.Default) {
+			val file = checkNotNull(backupFile)
+			contentResolver.openFileDescriptor(output, "w")?.use { fd ->
+				FileOutputStream(fd.fileDescriptor).use {
+					it.write(file.readBytes())
+				}
+			}
+			onBackupSaved.call(Unit)
 		}
 	}
 }

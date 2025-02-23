@@ -56,6 +56,7 @@ import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.File
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 val Context.activityManager: ActivityManager?
@@ -227,4 +228,22 @@ fun Context.restartApplication() {
 	val intent = Intent.makeRestartActivityTask(ComponentName(this, MainActivity::class.java))
 	startActivity(intent)
 	activity?.finishAndRemoveTask()
+}
+
+internal inline fun <R> PowerManager?.withPartialWakeLock(tag: String, body: (PowerManager.WakeLock?) -> R): R {
+	val wakeLock = newPartialWakeLock(tag)
+	return try {
+		wakeLock?.acquire(TimeUnit.HOURS.toMillis(1))
+		body(wakeLock)
+	} finally {
+		wakeLock?.release()
+	}
+}
+
+private fun PowerManager?.newPartialWakeLock(tag: String): PowerManager.WakeLock? {
+	return if (this != null && isWakeLockLevelSupported(PowerManager.PARTIAL_WAKE_LOCK)) {
+		newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, tag)
+	} else {
+		null
+	}
 }

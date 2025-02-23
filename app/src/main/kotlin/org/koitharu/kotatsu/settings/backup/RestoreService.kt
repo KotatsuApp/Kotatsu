@@ -26,8 +26,10 @@ import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getFileDisplayName
+import org.koitharu.kotatsu.core.util.ext.powerManager
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
+import org.koitharu.kotatsu.core.util.ext.withPartialWakeLock
 import org.koitharu.kotatsu.core.util.progress.Progress
 import org.koitharu.kotatsu.parsers.util.mapToArray
 import org.koitharu.kotatsu.parsers.util.nullIfEmpty
@@ -59,20 +61,22 @@ class RestoreService : CoroutineIntentService() {
 		if (entries.isNullOrEmpty()) {
 			throw IllegalArgumentException("No entries specified")
 		}
-		val result = runInterruptible(Dispatchers.IO) {
-			val tempFile = File.createTempFile("backup_", ".tmp")
-			(contentResolver.openInputStream(uri) ?: throw FileNotFoundException()).use { input ->
-				tempFile.outputStream().use { output ->
-					input.copyTo(output)
+		powerManager.withPartialWakeLock(TAG) {
+			val result = runInterruptible(Dispatchers.IO) {
+				val tempFile = File.createTempFile("backup_", ".tmp")
+				(contentResolver.openInputStream(uri) ?: throw FileNotFoundException()).use { input ->
+					tempFile.outputStream().use { output ->
+						input.copyTo(output)
+					}
 				}
+				BackupZipInput.from(tempFile)
+			}.use { backupInput ->
+				restoreImpl(displayName, backupInput, entries)
 			}
-			BackupZipInput.from(tempFile)
-		}.use { backupInput ->
-			restoreImpl(displayName, backupInput, entries)
-		}
-		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-			val notification = buildNotification(displayName, result)
-			notificationManager.notify(TAG, startId, notification)
+			if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+				val notification = buildNotification(displayName, result)
+				notificationManager.notify(TAG, startId, notification)
+			}
 		}
 	}
 

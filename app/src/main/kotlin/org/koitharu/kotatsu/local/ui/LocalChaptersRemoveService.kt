@@ -17,6 +17,8 @@ import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
+import org.koitharu.kotatsu.core.util.ext.powerManager
+import org.koitharu.kotatsu.core.util.ext.withPartialWakeLock
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.model.LocalManga
@@ -44,12 +46,14 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 	}
 
 	override suspend fun IntentJobContext.processIntent(intent: Intent) {
+		startForeground(this)
 		val manga = intent.getParcelableExtraCompat<ParcelableManga>(EXTRA_MANGA)?.manga ?: return
 		val chaptersIds = intent.getLongArrayExtra(EXTRA_CHAPTERS_IDS)?.toSet() ?: return
-		startForeground(this)
-		val mangaWithChapters = localMangaRepository.getDetails(manga)
-		localMangaRepository.deleteChapters(mangaWithChapters, chaptersIds)
-		localStorageChanges.emit(LocalManga(localMangaRepository.getDetails(manga)))
+		powerManager.withPartialWakeLock(TAG) {
+			val mangaWithChapters = localMangaRepository.getDetails(manga)
+			localMangaRepository.deleteChapters(mangaWithChapters, chaptersIds)
+			localStorageChanges.emit(LocalManga(localMangaRepository.getDetails(manga)))
+		}
 	}
 
 	override fun IntentJobContext.onError(error: Throwable) {
@@ -103,6 +107,8 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 
 		private const val EXTRA_MANGA = "manga"
 		private const val EXTRA_CHAPTERS_IDS = "chapters_ids"
+
+		private const val TAG = CHANNEL_ID
 
 		fun start(context: Context, manga: Manga, chaptersIds: Collection<Long>) {
 			if (chaptersIds.isEmpty()) {

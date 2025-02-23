@@ -24,8 +24,10 @@ import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
+import org.koitharu.kotatsu.core.util.ext.powerManager
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
+import org.koitharu.kotatsu.core.util.ext.withPartialWakeLock
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
@@ -51,12 +53,14 @@ class AutoFixService : CoroutineIntentService() {
 		val ids = requireNotNull(intent.getLongArrayExtra(DATA_IDS))
 		startForeground(this)
 		for (mangaId in ids) {
-			val result = runCatchingCancellable {
-				autoFixUseCase.invoke(mangaId)
-			}
-			if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-				val notification = buildNotification(result)
-				notificationManager.notify(TAG, startId, notification)
+			powerManager.withPartialWakeLock(TAG) {
+				val result = runCatchingCancellable {
+					autoFixUseCase.invoke(mangaId)
+				}
+				if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+					val notification = buildNotification(result)
+					notificationManager.notify(TAG, startId, notification)
+				}
 			}
 		}
 	}
