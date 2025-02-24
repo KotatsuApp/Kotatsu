@@ -322,7 +322,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
-		android:background="@color/bg_dim_bottomsheet"
+		android:background="?colorSurfaceContainerLow"
 		android:elevation="9dp"
 		tools:layout_height="10dp" />
 

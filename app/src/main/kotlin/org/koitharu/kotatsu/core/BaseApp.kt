@@ -83,7 +83,6 @@ open class BaseApp : Application(), Configuration.Provider {
 			return
 		}
 		AppCompatDelegate.setDefaultNightMode(settings.theme)
-		AppCompatDelegate.setApplicationLocales(settings.appLocales)
 		// TLS 1.3 support for Android < 10
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 			Security.insertProviderAt(Conscrypt.newProvider(), 1)
