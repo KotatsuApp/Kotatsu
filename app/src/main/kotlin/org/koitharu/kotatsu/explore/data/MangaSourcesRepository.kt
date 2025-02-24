@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.dao.MangaSourcesDao
 import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
@@ -42,7 +43,7 @@ import javax.inject.Singleton
 
 @Singleton
 class MangaSourcesRepository @Inject constructor(
-	@ApplicationContext private val context: Context,
+	@LocalizedAppContext private val context: Context,
 	private val db: MangaDatabase,
 	private val settings: AppSettings,
 ) {

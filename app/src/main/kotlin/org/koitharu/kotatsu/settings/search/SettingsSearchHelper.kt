@@ -10,6 +10,7 @@ import androidx.preference.get
 import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.settings.AppearanceSettingsFragment
 import org.koitharu.kotatsu.settings.DownloadsSettingsFragment
 import org.koitharu.kotatsu.settings.NetworkSettingsFragment
@@ -28,7 +29,7 @@ import javax.inject.Inject
 @Reusable
 @SuppressLint("RestrictedApi")
 class SettingsSearchHelper @Inject constructor(
-	@ApplicationContext private val context: Context,
+	@LocalizedAppContext private val context: Context,
 ) {
 
 	fun inflatePreferences(): List<SettingsItem> {

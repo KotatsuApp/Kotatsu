@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.SearchRecentSuggestions
 import android.text.Html
 import androidx.collection.arraySetOf
+import androidx.core.content.ContextCompat
 import androidx.room.InvalidationTracker
 import androidx.work.WorkManager
 import coil3.ImageLoader
@@ -75,6 +76,12 @@ interface AppModule {
 	fun bindImageGetter(coilImageGetter: CoilImageGetter): Html.ImageGetter
 
 	companion object {
+
+		@Provides
+		@LocalizedAppContext
+		fun provideLocalizedContext(
+			@ApplicationContext context: Context,
+		): Context = ContextCompat.getContextForLanguage(context)
 
 		@Provides
 		@Singleton

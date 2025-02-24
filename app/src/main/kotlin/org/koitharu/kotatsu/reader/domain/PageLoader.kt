@@ -28,6 +28,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.use
 import org.jetbrains.annotations.Blocking
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.MangaHttpClient
@@ -71,7 +72,7 @@ import kotlin.coroutines.CoroutineContext
 
 @ActivityRetainedScoped
 class PageLoader @Inject constructor(
-	@ApplicationContext private val context: Context,
+	@LocalizedAppContext private val context: Context,
 	lifecycle: ActivityRetainedLifecycle,
 	@MangaHttpClient private val okHttp: OkHttpClient,
 	private val cache: PagesCache,

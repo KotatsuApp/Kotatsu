@@ -16,6 +16,7 @@ import coil3.ImageLoader
 import coil3.request.ImageRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
@@ -26,7 +27,7 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import javax.inject.Inject
 
 class TrackerNotificationHelper @Inject constructor(
-	@ApplicationContext private val applicationContext: Context,
+	@LocalizedAppContext private val applicationContext: Context,
 	private val settings: AppSettings,
 	private val coil: ImageLoader,
 ) {

@@ -19,11 +19,11 @@ import coil3.size.Scale
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ErrorReporterReceiver
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
@@ -43,7 +43,7 @@ private const val CHANNEL_ID_SILENT = "download_bg"
 private const val GROUP_ID = "downloads"
 
 class DownloadNotificationFactory @AssistedInject constructor(
-	@ApplicationContext private val context: Context,
+	@LocalizedAppContext private val context: Context,
 	private val workManager: WorkManager,
 	private val coil: ImageLoader,
 	@Assisted private val uuid: UUID,

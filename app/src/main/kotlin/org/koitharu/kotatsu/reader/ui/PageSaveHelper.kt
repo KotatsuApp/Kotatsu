@@ -25,6 +25,7 @@ import okio.buffer
 import okio.openZip
 import okio.sink
 import okio.source
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
 import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -46,7 +47,7 @@ import kotlin.coroutines.resume
 
 class PageSaveHelper @AssistedInject constructor(
 	@Assisted activityResultCaller: ActivityResultCaller,
-	@ApplicationContext private val context: Context,
+	@LocalizedAppContext private val context: Context,
 	private val settings: AppSettings,
 	private val pageLoaderProvider: Provider<PageLoader>,
 ) : ActivityResultCallback<Uri?> {
