@@ -774,4 +774,16 @@
     <string name="rating">Рейтинг</string>
     <string name="author">Автор</string>
     <string name="handle_links_summary">Обработка ссылок на мангу из внешних приложений (например, веб-браузера). Вам также может потребоваться включить его вручную в системных настройках приложения</string>
+    <string name="backup_restored_background">Резервная копия будет восстановлена в фоновом режиме</string>
+    <string name="restoring_backup">Восстановление резервной копии</string>
+    <string name="reader_info_bar_transparent">Прозрачная информационная панель чтения</string>
+    <string name="simple">Простой</string>
+    <string name="reader_controls_in_bottom_bar">Элементы управления чтением на нижней панели</string>
+    <string name="chapters_and_pages">Главы и страницы</string>
+    <string name="pages_slider">Ползунок переключения страниц</string>
+    <string name="screen_rotation_locked">Поворот экрана был заблокирован</string>
+    <string name="screen_rotation_unlocked">Поворот экрана был разблокирован</string>
+    <string name="global_search">Глобальный поиск</string>
+    <string name="search_everywhere">Поиск повсюду</string>
+    <string name="badges_in_lists">Значки в списках</string>
 </resources>

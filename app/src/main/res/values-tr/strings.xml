@@ -782,4 +782,8 @@
     <string name="screen_rotation_unlocked">Ekran yön kilidi açıldı</string>
     <string name="reader_controls_in_bottom_bar">Alt çubukta okuyucu kontrolleri</string>
     <string name="chapters_and_pages">Bölümler ve sayfalar</string>
+    <string name="simple">Basit</string>
+    <string name="global_search">Genel arama</string>
+    <string name="search_everywhere">Her yerde ara</string>
+    <string name="badges_in_lists">Listelerde rozetler</string>
 </resources>
