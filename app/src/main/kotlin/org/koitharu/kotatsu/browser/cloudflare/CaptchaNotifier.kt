@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.parsers.model.MangaSource
 
@@ -27,6 +28,9 @@ class CaptchaNotifier(
 
 	fun notify(exception: CloudFlareProtectedException) {
 		if (!context.checkNotificationPermission(CHANNEL_ID)) {
+			return
+		}
+		if (exception.source != null && SourceSettings(context, exception.source).isCaptchaNotificationsDisabled) {
 			return
 		}
 		val manager = NotificationManagerCompat.from(context)
