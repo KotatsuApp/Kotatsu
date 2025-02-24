@@ -29,14 +29,22 @@
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
 			app:layout_constraintDimensionRatio="H,13:18"
-			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/barrier_rating"
 			app:layout_constraintHorizontal_bias="0"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/headerBar"
-			app:layout_constraintWidth_percent="0.3"
+			app:layout_constraintWidth_max="146dp"
+			app:layout_constraintWidth_min="40dp"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 			tools:background="@tools:sample/backgrounds/scenic"
 			tools:ignore="ContentDescription,UnusedAttribute" />
+
+		<androidx.constraintlayout.widget.Barrier
+			android:id="@+id/barrier_rating"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			app:barrierDirection="left"
+			app:constraint_referenced_ids="ratingBar" />
 
 		<ImageView
 			android:id="@+id/imageView_logo"
@@ -92,8 +100,8 @@
 			app:layout_constraintHorizontal_bias="0"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toBottomOf="@id/textView_title"
-			tools:rating="3.5"
-			tools:text="@tools:sample/lorem[12]" />
+			app:layout_constraintVertical_bias="0"
+			tools:rating="3.5" />
 
 		<Spinner
 			android:id="@+id/spinner_status"
