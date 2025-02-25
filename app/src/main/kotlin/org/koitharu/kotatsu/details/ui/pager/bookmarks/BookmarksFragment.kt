@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
+import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import coil3.ImageLoader
@@ -115,7 +116,13 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 		super.onDestroyView()
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
+	override fun onWindowInsetsChanged(insets: Insets) {
+		with (viewBinding ?: return) {
+			recyclerView.updatePadding(
+				bottom = insets.bottom
+			)
+		}
+	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
 		if (selectionController?.onItemClick(item.pageId) == true) {

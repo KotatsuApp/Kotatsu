@@ -6,6 +6,7 @@ import androidx.annotation.DrawableRes
 import coil3.network.HttpException
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
 import okhttp3.Response
+import okhttp3.internal.http2.StreamResetException
 import okio.FileNotFoundException
 import okio.IOException
 import okio.ProtocolException
@@ -195,7 +196,6 @@ fun Throwable.isReportable(): Boolean {
 		|| this is WrongPasswordException
 		|| this is TooManyRequestExceptions
 		|| this is HttpStatusException
-		|| this is SocketException
 	) {
 		return false
 	}
@@ -203,7 +203,10 @@ fun Throwable.isReportable(): Boolean {
 }
 
 fun Throwable.isNetworkError(): Boolean {
-	return this is UnknownHostException || this is SocketTimeoutException
+	return this is UnknownHostException
+		|| this is SocketTimeoutException
+		|| this is StreamResetException
+		|| this is SocketException
 }
 
 fun Throwable.report(silent: Boolean = false) {

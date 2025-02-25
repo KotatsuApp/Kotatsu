@@ -315,6 +315,7 @@
 		app:behavior_hideable="false"
 		app:behavior_peekHeight="@dimen/details_bs_peek_height"
 		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+		app:paddingBottomSystemWindowInsets="false"
 		tools:layout="@layout/sheet_chapters_pages" />
 
 	<org.koitharu.kotatsu.core.ui.widgets.WindowInsetHolder

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -129,7 +130,13 @@ class ChaptersFragment :
 		viewModel.setSelectedBranch(data.titleText)
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
+	override fun onWindowInsetsChanged(insets: Insets) {
+		with (viewBinding ?: return) {
+			recyclerViewChapters.updatePadding(
+				bottom = insets.bottom
+			)
+		}
+	}
 
 	private fun onChaptersChanged(list: List<ListModel>) {
 		val adapter = chaptersAdapter ?: return

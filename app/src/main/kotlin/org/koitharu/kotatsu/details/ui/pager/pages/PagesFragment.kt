@@ -12,6 +12,7 @@ import androidx.collection.ArraySet
 import androidx.core.graphics.Insets
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -142,7 +143,13 @@ class PagesFragment :
 		super.onDestroyView()
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
+	override fun onWindowInsetsChanged(insets: Insets) {
+		with (viewBinding ?: return) {
+			recyclerView.updatePadding(
+				bottom = insets.bottom
+			)
+		}
+	}
 
 	override fun onItemClick(item: PageThumbnail, view: View) {
 		if (selectionController?.onItemClick(item.page.id) == true) {
