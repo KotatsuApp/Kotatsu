@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.ui.widgets.TwoLinesItemView
 import org.koitharu.kotatsu.core.util.ext.findActivity
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -169,7 +170,7 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 		with(viewBinding ?: return) {
 			// Whole manga
 			optionWholeManga.subtitle = if (options.wholeManga.chaptersCount > 0) {
-				resources.getQuantityString(
+				resources.getQuantityStringSafe(
 					R.plurals.chapters,
 					options.wholeManga.chaptersCount,
 					options.wholeManga.chaptersCount,
@@ -185,7 +186,7 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 					it.selectedBranch,
 				)
 				optionWholeBranch.subtitle = if (it.chaptersCount > 0) {
-					resources.getQuantityString(
+					resources.getQuantityStringSafe(
 						R.plurals.chapters,
 						it.chaptersCount,
 						it.chaptersCount,
@@ -199,7 +200,7 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 			options.firstChapters?.let {
 				optionFirstChapters.title = resources.getString(
 					R.string.download_option_first_n_chapters,
-					resources.getQuantityString(
+					resources.getQuantityStringSafe(
 						R.plurals.chapters,
 						it.chaptersCount,
 						it.chaptersCount,
@@ -215,7 +216,7 @@ class DownloadDialogFragment : AlertDialogFragment<DialogDownloadBinding>(), Vie
 				} else {
 					resources.getString(
 						R.string.download_option_next_unread_n_chapters,
-						resources.getQuantityString(
+						resources.getQuantityStringSafe(
 							R.plurals.chapters,
 							it.chaptersCount,
 							it.chaptersCount,

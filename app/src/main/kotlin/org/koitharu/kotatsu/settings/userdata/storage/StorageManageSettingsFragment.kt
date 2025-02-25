@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.local.data.CacheDir
@@ -38,7 +39,7 @@ class StorageManageSettingsFragment : BasePreferenceFragment(R.string.storage_us
 				pref.summary = if (it < 0) {
 					view.context.getString(R.string.loading_)
 				} else {
-					pref.context.resources.getQuantityString(R.plurals.items, it, it)
+					pref.context.resources.getQuantityStringSafe(R.plurals.items, it, it)
 				}
 			}
 		}
@@ -47,7 +48,7 @@ class StorageManageSettingsFragment : BasePreferenceFragment(R.string.storage_us
 				pref.summary = if (it < 0) {
 					view.context.getString(R.string.loading_)
 				} else {
-					pref.context.resources.getQuantityString(R.plurals.items, it, it)
+					pref.context.resources.getQuantityStringSafe(R.plurals.items, it, it)
 				}
 			}
 		}
@@ -118,7 +119,7 @@ class StorageManageSettingsFragment : BasePreferenceFragment(R.string.storage_us
 		} else {
 			c.getString(
 				R.string.chapters_deleted_pattern,
-				c.resources.getQuantityString(R.plurals.chapters, result.first, result.first),
+				c.resources.getQuantityStringSafe(R.plurals.chapters, result.first, result.first),
 				FileSize.BYTES.format(c, result.second),
 			)
 		}

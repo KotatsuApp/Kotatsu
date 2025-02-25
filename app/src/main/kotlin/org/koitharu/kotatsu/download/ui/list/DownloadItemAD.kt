@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -161,7 +162,7 @@ fun downloadItemAD(
 				binding.progressBar.isEnabled = true
 				binding.textViewPercent.isVisible = false
 				if (item.chaptersDownloaded > 0) {
-					binding.textViewDetails.text = context.resources.getQuantityString(
+					binding.textViewDetails.text = context.resources.getQuantityStringSafe(
 						R.plurals.chapters,
 						item.chaptersDownloaded,
 						item.chaptersDownloaded,

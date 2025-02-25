@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.settings.search.SettingsSearchMenuProvider
 import org.koitharu.kotatsu.settings.search.SettingsSearchViewModel
@@ -42,7 +43,7 @@ class RootSettingsFragment : BasePreferenceFragment(0) {
 				pref.summary = if (it >= 0) {
 					getString(R.string.enabled_d_of_d, it, total)
 				} else {
-					resources.getQuantityString(R.plurals.items, total, total)
+					resources.getQuantityStringSafe(R.plurals.items, total, total)
 				}
 			}
 		}

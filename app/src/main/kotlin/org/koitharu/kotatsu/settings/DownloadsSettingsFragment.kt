@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.DownloadFormat
 import org.koitharu.kotatsu.core.prefs.TriStateOption
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.resolveFile
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
@@ -145,7 +146,7 @@ class DownloadsSettingsFragment :
 	private fun Preference.bindDirectoriesCount() {
 		viewLifecycleScope.launch {
 			val dirs = storageManager.getReadableDirs().size
-			summary = resources.getQuantityString(R.plurals.items, dirs, dirs)
+			summary = resources.getQuantityStringSafe(R.plurals.items, dirs, dirs)
 		}
 	}
 

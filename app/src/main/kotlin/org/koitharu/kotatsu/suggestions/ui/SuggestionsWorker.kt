@@ -58,6 +58,7 @@ import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.awaitWorkInfosByTag
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.flatten
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitize
@@ -311,7 +312,7 @@ class SuggestionsWorker @AssistedInject constructor(
 						appendLine()
 						bold {
 							append(
-								applicationContext.resources.getQuantityString(
+								applicationContext.resources.getQuantityStringSafe(
 									R.plurals.chapters,
 									chaptersCount,
 									chaptersCount,

@@ -14,12 +14,12 @@ import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
 import coil3.ImageLoader
 import coil3.request.ImageRequest
-import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -55,7 +55,7 @@ class TrackerNotificationHelper @Inject constructor(
 		}
 		val id = manga.url.hashCode()
 		val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-		val summary = applicationContext.resources.getQuantityString(
+		val summary = applicationContext.resources.getQuantityStringSafe(
 			R.plurals.new_chapters,
 			newChapters.size,
 			newChapters.size,
@@ -107,7 +107,7 @@ class TrackerNotificationHelper @Inject constructor(
 		val newChaptersCount = notifications.sumOf { it.newChapters }
 		val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
 		with(builder) {
-			val title = applicationContext.resources.getQuantityString(
+			val title = applicationContext.resources.getQuantityStringSafe(
 				R.plurals.new_chapters,
 				newChaptersCount,
 				newChaptersCount,

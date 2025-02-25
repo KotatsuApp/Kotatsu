@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
@@ -37,7 +38,7 @@ class SourcesSettingsFragment : BasePreferenceFragment(R.string.remote_sources),
 		findPreference<Preference>(AppSettings.KEY_REMOTE_SOURCES)?.let { pref ->
 			viewModel.enabledSourcesCount.observe(viewLifecycleOwner) {
 				pref.summary = if (it >= 0) {
-					resources.getQuantityString(R.plurals.items, it, it)
+					resources.getQuantityStringSafe(R.plurals.items, it, it)
 				} else {
 					null
 				}

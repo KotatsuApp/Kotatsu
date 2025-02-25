@@ -73,6 +73,7 @@ import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.drawable
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.isTextTruncated
 import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
@@ -477,7 +478,7 @@ class DetailsActivity :
 
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
 			info.totalChapters == -1 -> getString(R.string.error_occurred)
-			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
+			else -> resources.getQuantityStringSafe(R.plurals.chapters, info.totalChapters, info.totalChapters)
 				.withEstimatedTime(info.estimatedTime)
 		}
 		textViewProgress.textAndVisible = if (info.percent <= 0f) {

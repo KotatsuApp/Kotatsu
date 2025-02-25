@@ -12,6 +12,7 @@ import okio.ProtocolException
 import org.acra.ktx.sendSilentlyWithAcra
 import org.acra.ktx.sendWithAcra
 import org.jsoup.HttpStatusException
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.BadBackupFormatException
 import org.koitharu.kotatsu.core.exceptions.CaughtException
@@ -207,10 +208,10 @@ fun Throwable.isNetworkError(): Boolean {
 
 fun Throwable.report(silent: Boolean = false) {
 	val exception = CaughtException(this)
-	if (silent) {
-		exception.sendSilentlyWithAcra()
-	} else {
+	if (!silent) {
 		exception.sendWithAcra()
+	} else if (!BuildConfig.DEBUG) {
+		exception.sendSilentlyWithAcra()
 	}
 }
 

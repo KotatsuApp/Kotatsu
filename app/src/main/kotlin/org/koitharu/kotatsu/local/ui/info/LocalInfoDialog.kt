@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.ui.widgets.SegmentedBarView
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.KotatsuColors
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setProgressIcon
@@ -73,7 +74,7 @@ class LocalInfoDialog : AlertDialogFragment<DialogLocalInfoBinding>(), View.OnCl
 		} else {
 			c.getString(
 				R.string.chapters_deleted_pattern,
-				c.resources.getQuantityString(R.plurals.chapters, result.first, result.first),
+				c.resources.getQuantityStringSafe(R.plurals.chapters, result.first, result.first),
 				FileSize.BYTES.format(c, result.second),
 			)
 		}
