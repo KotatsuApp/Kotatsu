@@ -782,4 +782,7 @@
     <string name="screen_rotation_unlocked">屏幕方向已解锁</string>
     <string name="chapters_and_pages">章节与页面</string>
     <string name="reader_controls_in_bottom_bar">阅读器底部控制栏</string>
+    <string name="disable_captcha_notifications">关闭验证码通知</string>
+    <string name="disable_captcha_notifications_summary">开启后将不会在本图源收到需要通过验证码的通知，但会导致后台进程出现异常 (章节更新和推荐漫画等)</string>
+    <string name="global_search">全局搜索</string>
 </resources>
