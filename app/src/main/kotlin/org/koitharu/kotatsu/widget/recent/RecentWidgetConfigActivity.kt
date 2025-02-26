@@ -3,13 +3,13 @@ package org.koitharu.kotatsu.widget.recent
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.databinding.ActivityAppwidgetRecentBinding
 import com.google.android.material.R as materialR
 
@@ -28,6 +28,7 @@ class RecentWidgetConfigActivity :
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		viewBinding.buttonDone.setOnClickListener(this)
+		viewBinding.root.consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM or Gravity.TOP)
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
 			AppWidgetManager.INVALID_APPWIDGET_ID,
@@ -52,15 +53,6 @@ class RecentWidgetConfigActivity :
 				finish()
 			}
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			bottom = insets.bottom,
-			top = insets.top,
-		)
 	}
 
 	private fun updateWidget() {

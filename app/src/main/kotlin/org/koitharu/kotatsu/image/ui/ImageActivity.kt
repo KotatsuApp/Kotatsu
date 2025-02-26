@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -31,6 +33,7 @@ import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.PopupMenuMediator
 import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getDisplayIcon
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
@@ -38,13 +41,17 @@ import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.start
 import org.koitharu.kotatsu.databinding.ActivityImageBinding
 import org.koitharu.kotatsu.databinding.ItemErrorStateBinding
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
-class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listener, View.OnClickListener {
+class ImageActivity : BaseActivity<ActivityImageBinding>(),
+	ImageRequest.Listener,
+	OnApplyWindowInsetsListener,
+	View.OnClickListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -56,6 +63,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityImageBinding.inflate(layoutInflater))
+		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		viewBinding.buttonBack.setOnClickListener(this)
 		viewBinding.buttonMenu.setOnClickListener(this)
 		val imageUrl = requireNotNull(intent.data)
@@ -70,19 +78,6 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.root, null))
 		viewModel.onImageSaved.observeEvent(this, ::onImageSaved)
 		loadImage(imageUrl)
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.buttonBack.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = insets.top + bottomMargin
-			leftMargin = insets.left + bottomMargin
-			rightMargin = insets.right + bottomMargin
-		}
-		viewBinding.buttonMenu.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = insets.top + bottomMargin
-			leftMargin = insets.left + bottomMargin
-			rightMargin = insets.right + bottomMargin
-		}
 	}
 
 	override fun onClick(v: View) {
@@ -113,6 +108,19 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(), ImageRequest.Listene
 	override fun onSuccess(request: ImageRequest, result: SuccessResult) {
 		viewBinding.progressBar.hide()
 		(errorBinding?.root ?: viewBinding.stubError).isVisible = false
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		viewBinding.buttonMenu.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			marginEnd = barsInsets.end(v)
+			topMargin = barsInsets.top
+		}
+		viewBinding.buttonBack.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			marginStart = barsInsets.start(v)
+			topMargin = barsInsets.top
+		}
+		return insets
 	}
 
 	private fun loadImage(url: Uri?) {

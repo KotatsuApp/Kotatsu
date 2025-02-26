@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -30,7 +33,7 @@ import org.koitharu.kotatsu.settings.storage.RequestStorageManagerPermissionCont
 
 @AndroidEntryPoint
 class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>(),
-	OnListItemClickListener<DirectoryModel>, View.OnClickListener {
+	OnListItemClickListener<DirectoryModel>, View.OnClickListener, OnApplyWindowInsetsListener {
 
 	private val viewModel: MangaDirectoriesViewModel by viewModels()
 	private val pickFileTreeLauncher = OpenDocumentTreeHelper(
@@ -61,6 +64,7 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMangaDirectoriesBinding.inflate(layoutInflater))
+		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val adapter = AsyncListDifferDelegationAdapter(DirectoryDiffCallback(), directoryConfigAD(this))
 		viewBinding.recyclerView.adapter = adapter
@@ -87,18 +91,22 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 		}
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			rightMargin = topMargin + insets.right
-			leftMargin = topMargin + insets.left
-			bottomMargin = topMargin + insets.bottom
+			rightMargin = topMargin + barsInsets.right
+			leftMargin = topMargin + barsInsets.left
+			bottomMargin = topMargin + barsInsets.bottom
 		}
 		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
+			left = barsInsets.left,
+			right = barsInsets.right,
 		)
 		viewBinding.recyclerView.updatePadding(
-			bottom = insets.bottom,
+			bottom = barsInsets.bottom,
 		)
+		return WindowInsetsCompat.Builder(insets)
+			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
+			.build()
 	}
 }

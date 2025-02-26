@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.filter.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,8 +47,6 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 			.observe(viewLifecycleOwner, ::onDataChanged)
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
-
 	override fun onChipClick(chip: Chip, data: Any?) {
 		when (data) {
 			is MangaTag -> filter.toggleTag(data, !chip.isChecked)
@@ -65,6 +62,7 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 			} else {
 				filter.setQuery(null)
 			}
+
 			is ContentRating -> filter.toggleContentRating(data, false)
 			is Demographic -> filter.toggleDemographic(data, false)
 			is ContentType -> filter.toggleContentType(data, false)

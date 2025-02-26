@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.bookmarks.ui
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -9,9 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.view.ActionMode
-import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import coil3.ImageLoader
@@ -28,6 +26,7 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -86,6 +85,7 @@ class AllBookmarksFragment :
 		)
 		val spanSizeLookup = SpanSizeLookup()
 		with(binding.recyclerView) {
+			consumeInsetsAsPadding(Gravity.BOTTOM or Gravity.START or Gravity.END)
 			setHasFixedSize(true)
 			val spanResolver = GridSpanResolver(resources)
 			addItemDecoration(TypedListSpacingDecoration(context, false))
@@ -174,16 +174,6 @@ class AllBookmarksFragment :
 			}
 
 			else -> false
-		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val rv = requireViewBinding().recyclerView
-		rv.updatePadding(
-			bottom = insets.bottom + rv.paddingTop,
-		)
-		rv.fastScroller.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			bottomMargin = insets.bottom
 		}
 	}
 

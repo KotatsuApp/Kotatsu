@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
-import androidx.core.graphics.Insets
 import androidx.core.net.toUri
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
@@ -24,16 +23,6 @@ class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(), View.OnClick
 		viewBinding.buttonDone.setOnClickListener(this)
 		viewBinding.editEmail.addTextChangedListener(this)
 		viewBinding.editPassword.addTextChangedListener(this)
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		viewBinding.root.setPadding(
-			basePadding + insets.left,
-			basePadding + insets.top,
-			basePadding + insets.right,
-			basePadding + insets.bottom,
-		)
 	}
 
 	override fun onClick(v: View) {

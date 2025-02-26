@@ -16,6 +16,7 @@ import androidx.activity.viewModels
 import androidx.core.graphics.Insets
 import androidx.core.view.MenuHost
 import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -122,10 +123,10 @@ class ReaderActivity :
 		viewBinding.slider.setLabelFormatter(PageLabelFormatter())
 		viewBinding.zoomControl.listener = this
 		ReaderSliderListener(viewModel, this).attachToSlider(viewBinding.slider)
-		insetsDelegate.interceptingWindowInsetsListener = this
 		idlingDetector.bindToLifecycle(this)
 		viewBinding.buttonPrev.setOnClickListener(controlDelegate)
 		viewBinding.buttonNext.setOnClickListener(controlDelegate)
+		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 
 		viewModel.onError.observeEvent(
 			this,
@@ -352,8 +353,6 @@ class ReaderActivity :
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
 			.build()
 	}
-
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun switchPageBy(delta: Int) {
 		readerManager.currentReader?.switchPageBy(delta)

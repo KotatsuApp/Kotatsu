@@ -1,11 +1,10 @@
 package org.koitharu.kotatsu.alternatives.ui
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -16,6 +15,7 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityAlternativesBinding
@@ -50,6 +50,7 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 			.addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
 			.addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
 		with(viewBinding.recyclerView) {
+			consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 			setHasFixedSize(true)
 			addItemDecoration(TypedListSpacingDecoration(context, addHorizontalPadding = false))
 			adapter = listAdapter
@@ -62,16 +63,6 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 			router.openDetails(it)
 			finishAfterTransition()
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.recyclerView.updatePadding(
-			bottom = insets.bottom + viewBinding.recyclerView.paddingTop,
-		)
 	}
 
 	override fun onItemClick(item: MangaAlternativeModel, view: View) {

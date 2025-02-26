@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.graphics.Insets
 import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -88,8 +87,6 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			)
 		}
 	}
-
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag ?: return

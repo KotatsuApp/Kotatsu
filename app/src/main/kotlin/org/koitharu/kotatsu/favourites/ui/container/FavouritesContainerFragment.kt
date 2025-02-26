@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
 import androidx.appcompat.view.ActionMode
-import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import coil3.ImageLoader
 import com.google.android.material.tabs.TabLayoutMediator
@@ -67,13 +65,6 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 	override fun onDestroyView() {
 		actionModeDelegate.removeListener(this)
 		super.onDestroyView()
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding?.tabs?.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
 	}
 
 	override fun onActionModeStarted(mode: ActionMode) {

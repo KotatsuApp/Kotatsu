@@ -2,12 +2,14 @@ package org.koitharu.kotatsu.search.ui
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup.MarginLayoutParams
-import androidx.core.graphics.Insets
+import android.view.ViewGroup
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.os.bundleOf
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
+import androidx.core.view.updatePaddingRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
@@ -30,11 +32,14 @@ import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.util.ViewBadge
+import org.koitharu.kotatsu.core.util.ext.consumeRelative
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
+import org.koitharu.kotatsu.core.util.ext.start
 import org.koitharu.kotatsu.databinding.ActivityMangaListBinding
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.filter.ui.FilterHeaderFragment
@@ -53,7 +58,10 @@ import com.google.android.material.R as materialR
 @AndroidEntryPoint
 class MangaListActivity :
 	BaseActivity<ActivityMangaListBinding>(),
-	AppBarOwner, View.OnClickListener, FilterCoordinator.Owner, AppBarLayout.OnOffsetChangedListener {
+	AppBarOwner, View.OnClickListener,
+	FilterCoordinator.Owner,
+	OnApplyWindowInsetsListener,
+	AppBarLayout.OnOffsetChangedListener {
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
@@ -74,6 +82,8 @@ class MangaListActivity :
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		if (viewBinding.containerFilterHeader != null) {
 			viewBinding.appbar.addOnOffsetChangedListener(this)
+		} else {
+			ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		}
 		viewBinding.buttonOrder?.setOnClickListener(this)
 		title = source.getTitle(this)
@@ -82,17 +92,6 @@ class MangaListActivity :
 
 	override fun isNsfwContent(): Flow<Boolean> = flowOf(source.isNsfw())
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.cardSide?.updateLayoutParams<MarginLayoutParams> {
-			bottomMargin = marginStart + insets.bottom
-			topMargin = marginStart + insets.top
-		}
-	}
-
 	override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
 		val container = viewBinding.containerFilterHeader ?: return
 		container.background = if (verticalOffset.absoluteValue < appBarLayout.totalScrollRange) {
@@ -100,6 +99,31 @@ class MangaListActivity :
 		} else {
 			viewBinding.collapsingToolbarLayout?.contentScrim
 		}
+	}
+
+	/**
+	 * Only for landscape
+	 */
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		viewBinding.cardSide?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			marginEnd = barsInsets.end(v) + resources.getDimensionPixelOffset(R.dimen.side_card_offset)
+			topMargin = barsInsets.top + resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer_double)
+			bottomMargin = barsInsets.bottom + resources.getDimensionPixelOffset(R.dimen.side_card_offset)
+		}
+		viewBinding.appbar.updatePaddingRelative(
+			top = barsInsets.top,
+			start = barsInsets.start(v),
+		)
+		return WindowInsetsCompat.Builder(insets)
+			.setInsets(
+				WindowInsetsCompat.Type.systemBars(),
+				barsInsets.consumeRelative(
+					v,
+					top = true,
+					end = true,
+				),
+			).build()
 	}
 
 	override fun onClick(v: View) {

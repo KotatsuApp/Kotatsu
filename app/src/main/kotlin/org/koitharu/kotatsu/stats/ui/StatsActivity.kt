@@ -8,7 +8,6 @@ import android.view.ViewStub
 import android.widget.CompoundButton
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -88,8 +87,6 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 			adapter.emit(it)
 		}
 	}
-
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun onClick(v: View) {
 		when (v.id) {

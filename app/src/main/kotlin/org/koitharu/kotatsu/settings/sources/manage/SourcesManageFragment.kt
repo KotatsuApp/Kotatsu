@@ -1,15 +1,14 @@
 package org.koitharu.kotatsu.settings.sources.manage
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
-import androidx.core.graphics.Insets
 import androidx.core.view.MenuProvider
-import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +23,7 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -72,6 +72,7 @@ class SourcesManageFragment :
 		sourcesAdapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
+			consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 			adapter = sourcesAdapter
 			reorderHelper = ItemTouchHelper(SourcesReorderCallback()).also {
 				it.attachToRecyclerView(this)
@@ -94,14 +95,6 @@ class SourcesManageFragment :
 		sourcesAdapter = null
 		reorderHelper = null
 		super.onDestroyView()
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		requireViewBinding().recyclerView.updatePadding(
-			bottom = insets.bottom,
-			left = insets.left,
-			right = insets.right,
-		)
 	}
 
 	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) {

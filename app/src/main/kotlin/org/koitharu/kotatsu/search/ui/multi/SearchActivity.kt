@@ -1,14 +1,13 @@
 package org.koitharu.kotatsu.search.ui.multi
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -20,6 +19,7 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.invalidateNestedItemDecorations
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -91,6 +91,7 @@ class SearchActivity :
 			selectionDecoration = selectionDecoration,
 		)
 		viewBinding.recyclerView.adapter = adapter
+		viewBinding.recyclerView.consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 		viewBinding.recyclerView.setHasFixedSize(true)
 		viewBinding.recyclerView.addItemDecoration(TypedListSpacingDecoration(this, true))
 
@@ -103,16 +104,6 @@ class SearchActivity :
 
 		viewModel.list.observe(this, adapter)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.recyclerView.updatePadding(
-			bottom = insets.bottom + viewBinding.recyclerView.paddingTop,
-		)
 	}
 
 	override fun onItemClick(item: Manga, view: View) {

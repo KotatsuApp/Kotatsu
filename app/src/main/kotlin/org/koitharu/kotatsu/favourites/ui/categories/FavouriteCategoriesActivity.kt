@@ -1,13 +1,10 @@
 package org.koitharu.kotatsu.favourites.ui.categories
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
-import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import coil3.ImageLoader
@@ -18,6 +15,7 @@ import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
@@ -55,6 +53,7 @@ class FavouriteCategoriesActivity :
 			callback = CategoriesSelectionCallback(viewBinding.recyclerView, viewModel),
 		)
 		selectionController.attachToRecyclerView(viewBinding.recyclerView)
+		viewBinding.recyclerView.consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 		viewBinding.recyclerView.setHasFixedSize(true)
 		viewBinding.recyclerView.adapter = adapter
 		viewBinding.recyclerView.addItemDecoration(TypedListSpacingDecoration(this, false))
@@ -126,21 +125,6 @@ class FavouriteCategoriesActivity :
 	override fun onRetryClick(error: Throwable) = Unit
 
 	override fun onEmptyActionClick() = Unit
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			rightMargin = topMargin + insets.right
-			leftMargin = topMargin + insets.left
-			bottomMargin = topMargin + insets.bottom
-		}
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.recyclerView.updatePadding(
-			bottom = insets.bottom + viewBinding.recyclerView.paddingTop,
-		)
-	}
 
 	private suspend fun onCategoriesChanged(categories: List<ListModel>) {
 		adapter.emit(categories)

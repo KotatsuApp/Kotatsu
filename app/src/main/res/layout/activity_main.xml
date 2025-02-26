@@ -20,7 +20,7 @@
 		android:layout_height="wrap_content"
 		android:clipToPadding="false"
 		android:fitsSystemWindows="false"
-		android:paddingHorizontal="16dp"
+		android:paddingHorizontal="@dimen/margin_normal"
 		android:stateListAnimator="@null"
 		app:liftOnScroll="false"
 		app:liftOnScrollColor="@null">
@@ -37,8 +37,8 @@
 			android:id="@+id/toolbar_card"
 			android:layout_width="match_parent"
 			android:layout_height="56dp"
-			android:layout_marginTop="16dp"
-			android:layout_marginBottom="8dp"
+			android:layout_marginTop="@dimen/margin_normal"
+			android:layout_marginBottom="@dimen/margin_small"
 			android:background="@drawable/search_bar_background"
 			android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"
 			app:layout_scrollFlags="scroll|enterAlways|snap">

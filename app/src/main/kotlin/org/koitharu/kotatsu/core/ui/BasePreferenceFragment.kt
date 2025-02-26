@@ -2,11 +2,9 @@ package org.koitharu.kotatsu.core.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
-import androidx.annotation.CallSuper
 import androidx.annotation.StringRes
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
@@ -17,7 +15,7 @@ import dagger.hilt.android.EntryPointAccessors
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
-import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.getThemeDrawable
 import org.koitharu.kotatsu.core.util.ext.parentView
@@ -28,7 +26,6 @@ import com.google.android.material.R as materialR
 @AndroidEntryPoint
 abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	PreferenceFragmentCompat(),
-	WindowInsetsDelegate.WindowInsetsListener,
 	RecyclerViewOwner,
 	ExceptionResolver.Host {
 
@@ -37,9 +34,6 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 
 	@Inject
 	lateinit var settings: AppSettings
-
-	@JvmField
-	protected val insetsDelegate = WindowInsetsDelegate()
 
 	override val recyclerView: RecyclerView
 		get() = listView
@@ -55,14 +49,7 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 		val themedContext = (view.parentView ?: view).context
 		view.setBackgroundColor(themedContext.getThemeColor(android.R.attr.colorBackground))
 		listView.clipToPadding = false
-		insetsDelegate.onViewCreated(view)
-		insetsDelegate.addInsetsListener(this)
-	}
-
-	override fun onDestroyView() {
-		insetsDelegate.removeInsetsListener(this)
-		insetsDelegate.onDestroyView()
-		super.onDestroyView()
+		listView.consumeInsetsAsPadding(Gravity.BOTTOM or Gravity.START or Gravity.END)
 	}
 
 	override fun onResume() {
@@ -72,13 +59,6 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 			focusPreference(it)
 			arguments?.remove(SettingsActivity.ARG_PREF_KEY)
 		}
-	}
-
-	@CallSuper
-	override fun onWindowInsetsChanged(insets: Insets) {
-		listView.updatePadding(
-			bottom = insets.bottom,
-		)
 	}
 
 	protected open fun setTitle(title: CharSequence?) {

@@ -15,7 +15,6 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.AuthenticationCallback
-import androidx.core.graphics.Insets
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -69,16 +68,6 @@ class ProtectActivity :
 		if (!canUseBiometric) {
 			viewBinding.editPassword.requestFocus()
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		viewBinding.root.setPadding(
-			basePadding + insets.left,
-			basePadding + insets.top,
-			basePadding + insets.right,
-			basePadding + insets.bottom,
-		)
 	}
 
 	override fun onClick(v: View) {

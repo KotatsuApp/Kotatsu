@@ -2,12 +2,8 @@ package org.koitharu.kotatsu.settings
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentTransaction
@@ -84,16 +80,6 @@ class SettingsActivity :
 			isFromRoot = caller is RootSettingsFragment,
 		)
 		return true
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.textViewHeader?.updateLayoutParams<MarginLayoutParams> {
-			topMargin = screenPadding + insets.top
-		}
 	}
 
 	fun setSectionTitle(title: CharSequence?) {

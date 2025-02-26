@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.Insets
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -44,7 +46,9 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
-	OnListItemClickListener<ChapterListItem>, ChipsView.OnChipClickListener {
+	OnListItemClickListener<ChapterListItem>,
+	OnApplyWindowInsetsListener,
+	ChipsView.OnChipClickListener {
 
 	private val viewModel by ChaptersPagesViewModel.ActivityVMLazy(this)
 
@@ -74,6 +78,7 @@ class ChaptersFragment :
 				LinearLayoutManager(context)
 			}
 		}
+		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 		with(binding.recyclerViewChapters) {
 			addItemDecoration(TypedListSpacingDecoration(context, true))
 			checkNotNull(selectionController).attachToRecyclerView(this)
@@ -130,12 +135,23 @@ class ChaptersFragment :
 		viewModel.setSelectedBranch(data.titleText)
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		with (viewBinding ?: return) {
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		viewBinding?.run {
+			val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 			recyclerViewChapters.updatePadding(
-				bottom = insets.bottom
+				left = bars.left,
+				right = bars.right,
+				bottom = bars.bottom,
+			)
+			chipsFilter.updatePadding(
+				left = bars.left,
+				right = bars.right,
 			)
 		}
+		return WindowInsetsCompat.CONSUMED
 	}
 
 	private fun onChaptersChanged(list: List<ListModel>) {

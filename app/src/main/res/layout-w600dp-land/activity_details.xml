@@ -50,7 +50,8 @@
 
 			<androidx.constraintlayout.widget.ConstraintLayout
 				android:layout_width="match_parent"
-				android:layout_height="match_parent">
+				android:layout_height="match_parent"
+				android:paddingBottom="@dimen/margin_normal">
 
 				<com.google.android.material.imageview.ShapeableImageView
 					android:id="@+id/imageView_cover"
@@ -328,7 +329,7 @@
 		android:id="@+id/card_chapters"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:layout_marginTop="2dp"
+		android:layout_marginTop="@dimen/grid_spacing_outer"
 		android:layout_marginEnd="@dimen/side_card_offset"
 		android:layout_marginBottom="@dimen/side_card_offset"
 		app:layout_constraintBottom_toBottomOf="parent"

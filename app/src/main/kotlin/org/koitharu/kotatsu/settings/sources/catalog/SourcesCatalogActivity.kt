@@ -1,14 +1,13 @@
 package org.koitharu.kotatsu.settings.sources.catalog
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
@@ -24,6 +23,7 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView.ChipModel
 import org.koitharu.kotatsu.core.util.LocaleComparator
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -53,6 +53,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val sourcesAdapter = SourcesCatalogAdapter(this, coil, this)
 		with(viewBinding.recyclerView) {
+			consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 			setHasFixedSize(true)
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = sourcesAdapter
@@ -68,16 +69,6 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			updateFilers(it.first, it.second, it.third)
 		}
 		addMenuProvider(SourcesCatalogMenuProvider(this, viewModel, this))
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.recyclerView.updatePadding(
-			bottom = insets.bottom,
-		)
 	}
 
 	override fun onChipClick(chip: Chip, data: Any?) {

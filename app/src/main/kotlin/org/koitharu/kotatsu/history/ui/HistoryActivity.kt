@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.history.ui
 
 import android.os.Bundle
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,12 +29,5 @@ class HistoryActivity :
 				replace(R.id.container, fragment)
 			}
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
 	}
 }

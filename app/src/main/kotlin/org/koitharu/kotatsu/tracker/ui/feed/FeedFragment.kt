@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -77,13 +75,6 @@ class FeedFragment :
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 		viewModel.isRunning.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val rv = requireViewBinding().recyclerView
-		rv.updatePadding(
-			bottom = insets.bottom + rv.paddingTop,
-		)
 	}
 
 	override fun onRefresh() {

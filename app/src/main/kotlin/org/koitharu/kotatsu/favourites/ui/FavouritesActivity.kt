@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui
 
 import android.os.Bundle
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -31,12 +29,5 @@ class FavouritesActivity : BaseActivity<ActivityContainerBinding>() {
 				replace(R.id.container, fragment)
 			}
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
 	}
 }

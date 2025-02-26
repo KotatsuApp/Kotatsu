@@ -1,24 +1,24 @@
 package org.koitharu.kotatsu.settings.reader
 
 import android.content.DialogInterface
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.Insets
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
-import androidx.core.view.updatePadding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.findKeyByValue
 import org.koitharu.kotatsu.core.util.ext.getThemeDrawable
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -39,6 +39,7 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderTapActionsBinding.inflate(layoutInflater))
+		viewBinding.root.consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM or Gravity.TOP)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		controls[TapGridArea.TOP_LEFT] = viewBinding.textViewTopLeft
 		controls[TapGridArea.TOP_CENTER] = viewBinding.textViewTopCenter
@@ -79,15 +80,6 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 		}
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			top = insets.top,
-			right = insets.right,
-			bottom = insets.bottom,
-		)
-	}
-
 	override fun onClick(v: View) {
 		val area = controls.findKeyByValue(v) ?: return
 		showActionSelector(area, isLongTap = false)
@@ -116,7 +108,8 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 			view.background = createBackground(actions?.tapAction)
 		}
 	}
- // lint bug
+
+	// lint bug
 	private fun TapAction?.getText(): String = if (this != null) {
 		getString(nameStringResId)
 	} else {
@@ -157,7 +150,7 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 		return if (action == null) {
 			ripple
 		} else {
-			LayerDrawable(arrayOf(ripple, ColorDrawable(ColorUtils.setAlphaComponent(action.color, 40))))
+			LayerDrawable(arrayOf(ripple, ColorUtils.setAlphaComponent(action.color, 40).toDrawable()))
 		}
 	}
 }

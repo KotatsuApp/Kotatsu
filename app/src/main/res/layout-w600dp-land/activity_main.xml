@@ -34,18 +34,17 @@
 			android:layout_height="wrap_content"
 			android:clipToPadding="false"
 			android:fitsSystemWindows="false"
-			android:paddingLeft="16dp"
-			android:paddingRight="16dp"
+			android:paddingHorizontal="@dimen/margin_normal"
 			android:stateListAnimator="@null"
-			app:liftOnScrollColor="@null"
-			app:liftOnScroll="false">
+			app:liftOnScroll="false"
+			app:liftOnScrollColor="@null">
 
 			<org.koitharu.kotatsu.core.ui.widgets.WindowInsetHolder
 				android:id="@+id/insetsHolder"
-				android:fitsSystemWindows="true"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_gravity="top"
+				android:fitsSystemWindows="true"
 				app:layout_scrollFlags="scroll|enterAlways|snap" />
 
 			<FrameLayout

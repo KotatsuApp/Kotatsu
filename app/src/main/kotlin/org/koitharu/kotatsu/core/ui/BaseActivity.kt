@@ -8,13 +8,13 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import dagger.hilt.android.EntryPointAccessors
@@ -25,15 +25,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
-import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.util.ext.isWebViewUnavailable
 import org.koitharu.kotatsu.main.ui.protect.ScreenshotPolicyHelper
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
 	ExceptionResolver.Host,
-	ScreenshotPolicyHelper.ContentContainer,
-	WindowInsetsDelegate.WindowInsetsListener {
+	ScreenshotPolicyHelper.ContentContainer {
 
 	private var isAmoledTheme = false
 
@@ -42,9 +40,6 @@ abstract class BaseActivity<B : ViewBinding> :
 
 	protected lateinit var exceptionResolver: ExceptionResolver
 		private set
-
-	@JvmField
-	protected val insetsDelegate = WindowInsetsDelegate()
 
 	@JvmField
 	val actionModeDelegate = ActionModeDelegate()
@@ -68,10 +63,8 @@ abstract class BaseActivity<B : ViewBinding> :
 		}
 		putDataToExtras(intent)
 		exceptionResolver = entryPoint.exceptionResolverFactory.create(this)
+		enableEdgeToEdge()
 		super.onCreate(savedInstanceState)
-		WindowCompat.setDecorFitsSystemWindows(window, false)
-		insetsDelegate.handleImeInsets = true
-		insetsDelegate.addInsetsListener(this)
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -105,7 +98,6 @@ abstract class BaseActivity<B : ViewBinding> :
 		super.setContentView(binding.root)
 		val toolbar = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)
 		toolbar?.let(this::setSupportActionBar)
-		insetsDelegate.onViewCreated(binding.root)
 	}
 
 	override fun onSupportNavigateUp(): Boolean {

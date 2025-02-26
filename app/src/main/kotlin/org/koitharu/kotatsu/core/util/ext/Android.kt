@@ -6,6 +6,8 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.ActivityManager.MemoryInfo
 import android.app.LocaleConfig
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
@@ -246,4 +248,9 @@ private fun PowerManager?.newPartialWakeLock(tag: String): PowerManager.WakeLock
 	} else {
 		null
 	}
+}
+
+fun Context.copyToClipboard(label: String, content: String) {
+	val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager ?: return
+	clipboardManager.setPrimaryClip(ClipData.newPlainText(label, content))
 }

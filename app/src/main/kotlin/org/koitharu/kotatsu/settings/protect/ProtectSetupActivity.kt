@@ -11,7 +11,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,16 +55,6 @@ class ProtectSetupActivity :
 		viewModel.onClearText.observeEvent(this) {
 			viewBinding.editPassword.text?.clear()
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		viewBinding.root.setPadding(
-			basePadding + insets.left,
-			basePadding + insets.top,
-			basePadding + insets.right,
-			basePadding + insets.bottom,
-		)
 	}
 
 	override fun onClick(v: View) {

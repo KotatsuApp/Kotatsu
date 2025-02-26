@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserCallback
@@ -123,11 +121,6 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 
 	override fun onHistoryChanged() {
 		onBackPressedCallback.onHistoryChanged()
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.appbar.updatePadding(top = insets.top)
-		viewBinding.webView.updatePadding(bottom = insets.bottom)
 	}
 
 	class Contract : ActivityResultContract<MangaSource, Boolean>() {

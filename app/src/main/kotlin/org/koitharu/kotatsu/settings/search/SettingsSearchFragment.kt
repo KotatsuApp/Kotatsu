@@ -4,13 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.AsyncListDiffer.ListListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
@@ -37,16 +34,6 @@ class SettingsSearchFragment : BaseFragment<FragmentSearchSuggestionBinding>(),
 		binding.root.adapter = adapter
 		binding.root.setHasFixedSize(true)
 		viewModel.content.observe(viewLifecycleOwner, adapter)
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val extraPadding = resources.getDimensionPixelOffset(R.dimen.list_spacing)
-		requireViewBinding().root.updatePadding(
-			top = extraPadding,
-			right = insets.right,
-			left = insets.left,
-			bottom = insets.bottom,
-		)
 	}
 
 	override fun onItemClick(item: SettingsItem, view: View) = viewModel.navigateToPreference(item)

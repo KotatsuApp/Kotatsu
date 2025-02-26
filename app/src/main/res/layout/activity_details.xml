@@ -43,7 +43,7 @@
 			<androidx.constraintlayout.widget.ConstraintLayout
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:paddingBottom="@dimen/details_bs_peek_height">
+				android:paddingBottom="@dimen/margin_normal">
 
 				<com.google.android.material.imageview.ShapeableImageView
 					android:id="@+id/imageView_cover"

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,8 +13,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +32,7 @@ import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.util.SpanSizeResolver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -79,6 +79,7 @@ class ExploreFragment :
 			callback = this,
 		)
 		with(binding.recyclerView) {
+			consumeInsetsAsPadding(Gravity.BOTTOM or Gravity.START or Gravity.END)
 			adapter = exploreAdapter
 			setHasFixedSize(true)
 			SpanSizeResolver(this, resources.getDimensionPixelSize(R.dimen.explore_grid_width)).attach()
@@ -100,13 +101,6 @@ class ExploreFragment :
 		super.onDestroyView()
 		sourceSelectionController = null
 		exploreAdapter = null
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val rv = requireViewBinding().recyclerView
-		rv.updatePadding(
-			bottom = insets.bottom + rv.paddingTop,
-		)
 	}
 
 	override fun onListHeaderClick(item: ListHeader, view: View) {

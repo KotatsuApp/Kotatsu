@@ -1,19 +1,16 @@
 package org.koitharu.kotatsu.list.ui
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.annotation.CallSuper
 import androidx.appcompat.view.ActionMode
 import androidx.collection.ArraySet
-import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil3.ImageLoader
@@ -38,11 +35,10 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
-import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.domain.ListFilterOption
@@ -55,7 +51,6 @@ import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
-import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -109,6 +104,7 @@ abstract class MangaListFragment :
 		)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
+			consumeInsetsAsPadding(Gravity.START or Gravity.BOTTOM or Gravity.END)
 			setHasFixedSize(true)
 			adapter = listAdapter
 			checkNotNull(selectionController).attachToRecyclerView(this)
@@ -210,24 +206,6 @@ abstract class MangaListFragment :
 			listener = this,
 			sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = false),
 		)
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val rv = requireViewBinding().recyclerView
-		rv.updatePadding(
-			bottom = insets.bottom + rv.paddingTop,
-		)
-		rv.fastScroller.updateLayoutParams<MarginLayoutParams> {
-			bottomMargin = insets.bottom
-		}
-		if (activity is MainActivity) {
-			val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
-			requireViewBinding().swipeRefreshLayout.setProgressViewOffset(
-				true,
-				headerHeight + resources.resolveDp(-72),
-				headerHeight + resources.resolveDp(10),
-			)
-		}
 	}
 
 	override fun onFilterOptionClick(option: ListFilterOption) {

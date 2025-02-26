@@ -6,8 +6,10 @@ import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.Checkable
+import androidx.annotation.GravityInt
 import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.core.view.isVisible
@@ -22,6 +24,8 @@ import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import com.google.android.material.tabs.TabLayout
 import org.koitharu.kotatsu.core.ui.OnContextClickListenerCompat
+import org.koitharu.kotatsu.core.ui.util.InsetsToMarginsListener
+import org.koitharu.kotatsu.core.ui.util.InsetsToPaddingListener
 import kotlin.math.roundToInt
 
 fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
@@ -182,3 +186,13 @@ fun Chip.setProgressIcon() {
 	chipIcon = progressDrawable
 	progressDrawable.start()
 }
+
+fun View.consumeInsetsAsPadding(@GravityInt sides: Int) = ViewCompat.setOnApplyWindowInsetsListener(
+	this,
+	InsetsToPaddingListener(sides),
+)
+
+fun View.consumeInsetsAsMargins(@GravityInt sides: Int) = ViewCompat.setOnApplyWindowInsetsListener(
+	this,
+	InsetsToMarginsListener(sides),
+)

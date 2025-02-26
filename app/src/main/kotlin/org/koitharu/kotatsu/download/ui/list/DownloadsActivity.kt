@@ -1,14 +1,13 @@
 package org.koitharu.kotatsu.download.ui.list
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -18,6 +17,7 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
@@ -52,6 +52,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 			callback = this,
 		)
 		with(viewBinding.recyclerView) {
+			consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 			setHasFixedSize(true)
 			addItemDecoration(decoration)
 			adapter = downloadsAdapter
@@ -65,19 +66,6 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		viewModel.hasActiveWorks.observe(this, menuInvalidator)
 		viewModel.hasPausedWorks.observe(this, menuInvalidator)
 		viewModel.hasCancellableWorks.observe(this, menuInvalidator)
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val rv = viewBinding.recyclerView
-		rv.updatePadding(
-			left = insets.left + rv.paddingTop,
-			right = insets.right + rv.paddingTop,
-			bottom = insets.bottom,
-		)
-		viewBinding.toolbar.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
 	}
 
 	override fun onItemClick(item: DownloadItemModel, view: View) {

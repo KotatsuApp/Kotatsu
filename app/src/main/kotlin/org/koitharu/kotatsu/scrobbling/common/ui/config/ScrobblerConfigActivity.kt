@@ -2,10 +2,9 @@ package org.koitharu.kotatsu.scrobbling.common.ui.config
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import coil3.request.error
 import coil3.request.fallback
@@ -17,6 +16,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
@@ -48,6 +48,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 
 		val listAdapter = ScrobblingMangaAdapter(this, coil, this)
 		with(viewBinding.recyclerView) {
+			consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 			adapter = listAdapter
 			setHasFixedSize(true)
 			val decoration = TypedListSpacingDecoration(context, false)
@@ -70,15 +71,6 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		super.onNewIntent(intent)
 		setIntent(intent)
 		processIntent(intent)
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val rv = viewBinding.recyclerView
-		rv.updatePadding(
-			left = insets.left + rv.paddingTop,
-			right = insets.right + rv.paddingTop,
-			bottom = insets.bottom + rv.paddingTop,
-		)
 	}
 
 	override fun onItemClick(item: ScrobblingInfo, view: View) {

@@ -1,11 +1,10 @@
 package org.koitharu.kotatsu.browser
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -17,6 +16,7 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -42,6 +42,7 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 		val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository
 		val userAgent = repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)
 		viewBinding.webView.configureForParser(userAgent)
+		viewBinding.webView.consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 		viewBinding.webView.webViewClient = BrowserClient(this)
 		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)
 		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView)
@@ -113,16 +114,5 @@ class BrowserActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback 
 
 	override fun onHistoryChanged() {
 		onBackPressedCallback.onHistoryChanged()
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.appbar.updatePadding(
-			top = insets.top,
-		)
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			bottom = insets.bottom,
-		)
 	}
 }

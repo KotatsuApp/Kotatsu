@@ -4,12 +4,8 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import coil3.request.ImageRequest
 import coil3.request.bitmapConfig
@@ -96,19 +92,6 @@ class ColorFilterConfigActivity :
 		when (v.id) {
 			R.id.button_done -> showSaveConfirmation()
 			R.id.button_reset -> viewModel.reset()
-		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.scrollView.updatePadding(
-			bottom = insets.bottom,
-		)
-		viewBinding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = insets.top
 		}
 	}
 
