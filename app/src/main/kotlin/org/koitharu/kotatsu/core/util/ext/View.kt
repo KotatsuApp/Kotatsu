@@ -9,10 +9,13 @@ import android.widget.Checkable
 import androidx.annotation.GravityInt
 import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -70,6 +73,11 @@ val ViewPager2.recyclerView: RecyclerView?
 
 fun ViewPager2.findCurrentViewHolder(): ViewHolder? {
 	return recyclerView?.findViewHolderForAdapterPosition(currentItem)
+}
+
+fun FragmentManager.findCurrentPagerFragment(pager: ViewPager2): Fragment? {
+	val currentId = pager.adapter?.getItemId(pager.currentItem) ?: pager.currentItem
+	return findFragmentByTag("f$currentId")
 }
 
 fun View.resetTransformations() {
@@ -187,12 +195,18 @@ fun Chip.setProgressIcon() {
 	progressDrawable.start()
 }
 
+private fun View.marginsSnapshot(): Insets = (layoutParams as? ViewGroup.MarginLayoutParams)?.let { lp ->
+	Insets.of(lp.leftMargin, lp.topMargin, lp.rightMargin, lp.bottomMargin)
+} ?: Insets.NONE
+
+private fun View.paddingSnapshot(): Insets = Insets.of(paddingLeft, paddingTop, paddingRight, paddingBottom)
+
 fun View.consumeInsetsAsPadding(@GravityInt sides: Int) = ViewCompat.setOnApplyWindowInsetsListener(
 	this,
-	InsetsToPaddingListener(sides),
+	InsetsToPaddingListener(sides, paddingSnapshot()),
 )
 
 fun View.consumeInsetsAsMargins(@GravityInt sides: Int) = ViewCompat.setOnApplyWindowInsetsListener(
 	this,
-	InsetsToMarginsListener(sides),
+	InsetsToMarginsListener(sides, marginsSnapshot()),
 )

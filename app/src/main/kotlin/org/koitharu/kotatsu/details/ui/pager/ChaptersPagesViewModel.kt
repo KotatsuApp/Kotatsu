@@ -71,6 +71,10 @@ abstract class ChaptersPagesViewModel(
 		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
+	val coverUrl = mangaDetails.map { x -> x?.coverUrl }
+		.withErrorHandling()
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
+
 	val isChaptersReversed = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_REVERSE_CHAPTERS,

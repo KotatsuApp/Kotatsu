@@ -35,7 +35,7 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	@Inject
 	lateinit var settings: AppSettings
 
-	override val recyclerView: RecyclerView
+	override val recyclerView: RecyclerView?
 		get() = listView
 
 	override fun onAttach(context: Context) {

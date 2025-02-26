@@ -394,7 +394,7 @@ class ReaderViewModel @Inject constructor(
 
 	private fun loadImpl() {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			val details = detailsLoadUseCase.invoke(intent).first { x -> x.isLoaded }
+			val details = detailsLoadUseCase.invoke(intent, force = false).first { x -> x.isLoaded }
 			mangaDetails.value = details
 			chaptersLoader.init(details)
 			val manga = details.toManga()

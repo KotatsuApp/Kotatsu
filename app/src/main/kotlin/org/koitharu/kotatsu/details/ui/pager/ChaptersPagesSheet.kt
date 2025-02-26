@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.core.view.isVisible
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
@@ -20,13 +21,16 @@ import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
+import org.koitharu.kotatsu.core.util.ext.findCurrentPagerFragment
 import org.koitharu.kotatsu.core.util.ext.menuView
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
+import org.koitharu.kotatsu.core.util.ext.smoothScrollToTop
 import org.koitharu.kotatsu.databinding.SheetChaptersPagesBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.details.ui.ReadButtonDelegate
@@ -34,7 +38,10 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), ActionModeListener, AdaptiveSheetCallback {
+class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(),
+	TabLayout.OnTabSelectedListener,
+	ActionModeListener,
+	AdaptiveSheetCallback {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -63,6 +70,7 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		binding.pager.adapter = adapter
 		binding.pager.doOnPageChanged(::onPageChanged)
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
+		binding.tabs.addOnTabSelectedListener(this)
 		binding.pager.setCurrentItem(defaultTab, false)
 		binding.tabs.isVisible = adapter.itemCount > 1
 
@@ -107,6 +115,17 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		unlock()
 		val state = behavior?.state ?: STATE_EXPANDED
 		viewBinding?.toolbar?.menuView?.isVisible = state != STATE_COLLAPSED
+	}
+
+	override fun onTabSelected(tab: TabLayout.Tab?) = Unit
+
+	override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
+
+	override fun onTabReselected(tab: TabLayout.Tab?) {
+		val f = childFragmentManager.findCurrentPagerFragment(
+			viewBinding?.pager ?: return,
+		) as? RecyclerViewOwner ?: return
+		f.recyclerView?.smoothScrollToTop()
 	}
 
 	override fun expandAndLock() {

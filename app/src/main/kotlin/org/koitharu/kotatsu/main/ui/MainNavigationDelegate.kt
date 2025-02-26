@@ -26,8 +26,7 @@ import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
-import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
-import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
+import org.koitharu.kotatsu.core.util.ext.smoothScrollToTop
 import org.koitharu.kotatsu.explore.ui.ExploreFragment
 import org.koitharu.kotatsu.favourites.ui.container.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
@@ -64,15 +63,8 @@ class MainNavigationDelegate(
 
 	override fun onNavigationItemReselected(item: MenuItem) {
 		val fragment = fragmentManager.findFragmentByTag(TAG_PRIMARY)
-		if (fragment == null || fragment !is RecyclerViewOwner || fragment.view == null) {
-			return
-		}
-		val recyclerView = fragment.recyclerView
-		if (recyclerView.context.isAnimationsEnabled) {
-			recyclerView.smoothScrollToPosition(0)
-		} else {
-			recyclerView.firstVisibleItemPosition = 0
-		}
+		val recyclerView = (fragment as? RecyclerViewOwner)?.recyclerView ?: return
+		recyclerView.smoothScrollToTop()
 	}
 
 	override fun handleOnBackPressed() {

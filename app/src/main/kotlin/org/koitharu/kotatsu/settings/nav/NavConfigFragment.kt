@@ -32,8 +32,8 @@ class NavConfigFragment : BaseFragment<FragmentSettingsSourcesBinding>(), Recycl
 	private var reorderHelper: ItemTouchHelper? = null
 	private val viewModel by viewModels<NavConfigViewModel>()
 
-	override val recyclerView: RecyclerView
-		get() = requireViewBinding().recyclerView
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,

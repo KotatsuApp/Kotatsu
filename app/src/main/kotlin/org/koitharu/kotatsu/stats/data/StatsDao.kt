@@ -40,6 +40,7 @@ abstract class StatsDao {
 		favouriteCategories: Set<Long>
 	): Map<MangaEntity, Long> {
 		val conditions = ArrayList<String>()
+		conditions.add("(SELECT deleted_at FROM history WHERE history.manga_id = stats.manga_id) = 0")
 		conditions.add("stats.started_at >= $fromDate")
 		if (favouriteCategories.isNotEmpty()) {
 			val ids = favouriteCategories.joinToString(",")

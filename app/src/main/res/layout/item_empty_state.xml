@@ -37,6 +37,7 @@
 
 	<Button
 		android:id="@+id/button_retry"
+		style="?materialButtonTonalStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/margin_normal"

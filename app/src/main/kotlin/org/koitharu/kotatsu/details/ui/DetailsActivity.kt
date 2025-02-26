@@ -111,7 +111,6 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
-import org.koitharu.kotatsu.search.domain.SearchKind
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.google.android.material.R as materialR
@@ -171,6 +170,7 @@ class DetailsActivity :
 
 		val appRouter = router
 		viewModel.mangaDetails.filterNotNull().observe(this, ::onMangaUpdated)
+		viewModel.coverUrl.observe(this, ::loadCover)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
 		viewModel.onError
 			.filterNot { appRouter.isChapterPagesSheetShown() }
@@ -217,8 +217,9 @@ class DetailsActivity :
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.textView_author -> {
-				val author = viewModel.manga.value?.author ?: return
-				router.openSearch(author, SearchKind.AUTHOR)
+				val manga = viewModel.manga.value
+				val author = manga?.author ?: return
+				router.showAuthorDialog(author, manga.source)
 			}
 
 			R.id.textView_source -> {
@@ -239,7 +240,7 @@ class DetailsActivity :
 			R.id.imageView_cover -> {
 				val manga = viewModel.manga.value ?: return
 				router.openImage(
-					url = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl } ?: return,
+					url = viewModel.coverUrl.value ?: return,
 					source = manga.source,
 					anchor = v,
 				)
@@ -443,7 +444,6 @@ class DetailsActivity :
 
 	private fun onMangaUpdated(details: MangaDetails) {
 		val manga = details.toManga()
-		loadCover(manga)
 		with(viewBinding) {
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
@@ -560,8 +560,7 @@ class DetailsActivity :
 		viewBinding.chipsTags.setChips(listMapper.mapTags(manga.tags))
 	}
 
-	private fun loadCover(manga: Manga) {
-		val imageUrl = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }
+	private fun loadCover(imageUrl: String?) {
 		val lastResult = CoilUtils.result(viewBinding.imageViewCover)
 		if (lastResult is SuccessResult && lastResult.request.data == imageUrl) {
 			return
@@ -571,10 +570,9 @@ class DetailsActivity :
 			.size(CoverSizeResolver(viewBinding.imageViewCover))
 			.scale(Scale.FILL)
 			.data(imageUrl)
-			.mangaSourceExtra(manga.source)
+			.mangaSourceExtra(viewModel.getMangaOrNull()?.source)
 			.crossfade(this)
 			.lifecycle(this)
-			.placeholderMemoryCacheKey(manga.coverUrl)
 		val previousDrawable = lastResult?.drawable
 		if (previousDrawable != null) {
 			request.fallback(previousDrawable)

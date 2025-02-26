@@ -56,8 +56,8 @@ class SourcesManageFragment :
 	private var sourcesAdapter: SourceConfigAdapter? = null
 	private val viewModel by viewModels<SourcesManageViewModel>()
 
-	override val recyclerView: RecyclerView
-		get() = requireViewBinding().recyclerView
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,

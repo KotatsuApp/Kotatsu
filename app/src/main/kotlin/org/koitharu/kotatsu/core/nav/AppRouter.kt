@@ -370,6 +370,25 @@ class AppRouter private constructor(
 		}.show()
 	}
 
+	fun showAuthorDialog(author: String, source: MangaSource) {
+		buildAlertDialog(contextOrNull() ?: return) {
+			setTitle(author)
+			setItems(
+				arrayOf(
+					context.getString(R.string.search_on_s, source.getTitle(context)),
+					context.getString(R.string.search_everywhere),
+				),
+			) { _, which ->
+				when (which) {
+					0 -> openList(source, MangaListFilter(author = author), null)
+					1 -> openSearch(author, SearchKind.AUTHOR)
+				}
+			}
+			setNegativeButton(R.string.close, null)
+			setCancelable(true)
+		}.show()
+	}
+
 	fun showErrorDialog(error: Throwable, url: String? = null) {
 		ErrorDetailsDialog().withArgs(2) {
 			putSerializable(KEY_ERROR, error)

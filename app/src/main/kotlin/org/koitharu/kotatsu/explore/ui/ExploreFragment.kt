@@ -60,8 +60,8 @@ class ExploreFragment :
 	private var exploreAdapter: ExploreAdapter? = null
 	private var sourceSelectionController: ListSelectionController? = null
 
-	override val recyclerView: RecyclerView
-		get() = requireViewBinding().recyclerView
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentExploreBinding {
 		return FragmentExploreBinding.inflate(inflater, container, false)

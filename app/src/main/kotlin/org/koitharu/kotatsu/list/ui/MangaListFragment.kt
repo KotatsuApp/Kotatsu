@@ -12,6 +12,7 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.view.ActionMode
 import androidx.collection.ArraySet
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +32,7 @@ import org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ShareHelper
@@ -62,6 +64,7 @@ abstract class MangaListFragment :
 	BaseFragment<FragmentListBinding>(),
 	PaginationScrollListener.Callback,
 	MangaListListener,
+	RecyclerViewOwner,
 	SwipeRefreshLayout.OnRefreshListener,
 	ListSelectionController.Callback,
 	FastScroller.FastScrollListener {
@@ -86,6 +89,9 @@ abstract class MangaListFragment :
 
 	protected val selectedItems: Set<Manga>
 		get() = collectSelectedItems()
+
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -159,8 +165,7 @@ abstract class MangaListFragment :
 
 	override fun onTagClick(manga: Manga, tag: MangaTag, view: View) {
 		if (selectionController?.onItemClick(manga.id) != true) {
-			// TODO dialog
-			router.openList(tag)
+			router.showTagDialog(tag)
 		}
 	}
 

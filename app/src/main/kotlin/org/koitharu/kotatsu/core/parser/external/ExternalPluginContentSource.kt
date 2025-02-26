@@ -252,7 +252,7 @@ class ExternalPluginContentSource(
 		publicUrl = getString(COLUMN_PUBLIC_URL),
 		rating = getFloat(COLUMN_RATING),
 		isNsfw = getBooleanOrDefault(COLUMN_IS_NSFW, false),
-		coverUrl = getString(COLUMN_COVER_URL),
+		coverUrl = getStringOrNull(COLUMN_COVER_URL),
 		tags = getStringOrNull(COLUMN_TAGS)?.split(':')?.mapNotNullToSet {
 			val parts = it.splitTwoParts('=') ?: return@mapNotNullToSet null
 			MangaTag(key = parts.first, title = parts.second, source = source)

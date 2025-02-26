@@ -218,7 +218,7 @@ class MangaListActivity :
 				filterOwner.filterCoordinator.setSortOrder(sortOrder)
 			}
 			if (filter != null) {
-				filterOwner.filterCoordinator.set(filter)
+				filterOwner.filterCoordinator.setAdjusted(filter)
 			}
 		}
 	}

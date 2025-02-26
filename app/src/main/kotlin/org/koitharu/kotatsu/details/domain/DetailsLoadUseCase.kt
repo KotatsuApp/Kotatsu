@@ -6,6 +6,7 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import androidx.core.text.getSpans
 import androidx.core.text.parseAsHtml
+import coil3.request.CachePolicy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,7 @@ import kotlinx.coroutines.runInterruptible
 import okio.IOException
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.nav.MangaIntent
+import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.ext.peek
@@ -40,7 +42,7 @@ class DetailsLoadUseCase @Inject constructor(
 	private val newChaptersUseCaseProvider: Provider<CheckNewChaptersUseCase>,
 ) {
 
-	operator fun invoke(intent: MangaIntent): Flow<MangaDetails> = channelFlow {
+	operator fun invoke(intent: MangaIntent, force: Boolean): Flow<MangaDetails> = channelFlow {
 		val manga = requireNotNull(mangaDataRepository.resolveIntent(intent)) {
 			"Cannot resolve intent $intent"
 		}.let { m ->
@@ -59,7 +61,7 @@ class DetailsLoadUseCase @Inject constructor(
 			null
 		}
 		try {
-			val details = getDetails(manga)
+			val details = getDetails(manga, force)
 			launch { mangaDataRepository.updateChapters(details) }
 			launch { updateTracker(details) }
 			send(
@@ -92,9 +94,13 @@ class DetailsLoadUseCase @Inject constructor(
 		}
 	}
 
-	private suspend fun getDetails(seed: Manga) = runCatchingCancellable {
+	private suspend fun getDetails(seed: Manga, force: Boolean) = runCatchingCancellable {
 		val repository = mangaRepositoryFactory.create(seed.source)
-		repository.getDetails(seed)
+		if (repository is CachingMangaRepository) {
+			repository.getDetails(seed, if (force) CachePolicy.WRITE_ONLY else CachePolicy.ENABLED)
+		} else {
+			repository.getDetails(seed)
+		}
 	}.recoverNotNull { e ->
 		if (e is NotFoundException) {
 			recoverUseCase(seed)

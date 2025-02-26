@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
@@ -43,6 +45,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 	OnListItemClickListener<Bookmark>,
+	RecyclerViewOwner,
 	ListSelectionController.Callback {
 
 	private val activityViewModel by ChaptersPagesViewModel.ActivityVMLazy(this)
@@ -53,6 +56,9 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 
 	@Inject
 	lateinit var settings: AppSettings
+
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	private var bookmarksAdapter: BookmarksAdapter? = null
 	private var spanResolver: GridSpanResolver? = null

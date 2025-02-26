@@ -6,6 +6,7 @@ import android.accounts.AccountManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -20,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -40,6 +42,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySyncAuthBinding.inflate(layoutInflater))
+		viewBinding.root.consumeInsetsAsPadding(Gravity.FILL)
 		accountAuthenticatorResponse =
 			intent.getParcelableExtraCompat(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)
 		accountAuthenticatorResponse?.onRequestContinued()

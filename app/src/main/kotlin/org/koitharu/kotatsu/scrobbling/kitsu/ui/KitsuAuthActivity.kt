@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.view.Gravity
 import android.view.View
 import androidx.core.net.toUri
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.databinding.ActivityKitsuAuthBinding
 import org.koitharu.kotatsu.parsers.util.urlEncoded
 
@@ -19,6 +21,7 @@ class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(), View.OnClick
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityKitsuAuthBinding.inflate(layoutInflater))
+		viewBinding.root.consumeInsetsAsPadding(Gravity.FILL)
 		viewBinding.buttonCancel.setOnClickListener(this)
 		viewBinding.buttonDone.setOnClickListener(this)
 		viewBinding.editEmail.addTextChangedListener(this)

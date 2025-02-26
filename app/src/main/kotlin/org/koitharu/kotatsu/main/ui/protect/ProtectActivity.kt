@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -20,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -41,6 +43,7 @@ class ProtectActivity :
 		super.onCreate(savedInstanceState)
 		window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 		setContentView(ActivityProtectBinding.inflate(layoutInflater))
+		viewBinding.root.consumeInsetsAsPadding(Gravity.FILL)
 		viewBinding.editPassword.setOnEditorActionListener(this)
 		viewBinding.editPassword.addTextChangedListener(this)
 		viewBinding.buttonNext.setOnClickListener(this)

@@ -176,7 +176,7 @@ class DetailsViewModel @Inject constructor(
 		get() = selectedBranch.value
 
 	init {
-		loadingJob = doLoad()
+		loadingJob = doLoad(force = false)
 		launchJob(Dispatchers.Default) {
 			val manga = mangaDetails.firstOrNull { !it?.chapters.isNullOrEmpty() } ?: return@launchJob
 			val h = history.firstOrNull()
@@ -192,7 +192,7 @@ class DetailsViewModel @Inject constructor(
 
 	fun reload() {
 		loadingJob.cancel()
-		loadingJob = doLoad()
+		loadingJob = doLoad(force = true)
 	}
 
 	fun updateScrobbling(index: Int, rating: Float, status: ScrobblingStatus?) {
@@ -223,8 +223,8 @@ class DetailsViewModel @Inject constructor(
 		}
 	}
 
-	private fun doLoad() = launchLoadingJob(Dispatchers.Default) {
-		detailsLoadUseCase.invoke(intent)
+	private fun doLoad(force: Boolean) = launchLoadingJob(Dispatchers.Default) {
+		detailsLoadUseCase.invoke(intent, force)
 			.onEachWhile {
 				if (it.allChapters.isNotEmpty()) {
 					val manga = it.toManga()

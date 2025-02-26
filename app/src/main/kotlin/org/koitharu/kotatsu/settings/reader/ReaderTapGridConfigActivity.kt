@@ -39,7 +39,7 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderTapActionsBinding.inflate(layoutInflater))
-		viewBinding.root.consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM or Gravity.TOP)
+		viewBinding.root.consumeInsetsAsPadding(Gravity.FILL)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		controls[TapGridArea.TOP_LEFT] = viewBinding.textViewTopLeft
 		controls[TapGridArea.TOP_CENTER] = viewBinding.textViewTopCenter

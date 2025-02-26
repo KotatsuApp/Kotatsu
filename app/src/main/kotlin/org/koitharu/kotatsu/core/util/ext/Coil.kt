@@ -1,10 +1,10 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.LifecycleOwner
 import coil3.Extras
 import coil3.ImageLoader
@@ -116,8 +116,8 @@ fun ImageRequest.Builder.defaultPlaceholders(context: Context): ImageRequest.Bui
 		0.25f,
 	)
 	return placeholder(AnimatedPlaceholderDrawable(context))
-		.fallback(ColorDrawable(context.getThemeColor(materialR.attr.colorSurfaceContainer)))
-		.error(ColorDrawable(errorColor))
+		.fallback(context.getThemeColor(materialR.attr.colorSurfaceContainer).toDrawable())
+		.error(errorColor.toDrawable())
 }
 
 private fun ImageView.ScaleType.toCoilScale(): Scale = if (this == ImageView.ScaleType.CENTER_CROP) {

@@ -38,9 +38,4 @@ class UpdatesFragment : MangaListFragment() {
 			else -> super.onActionItemClicked(controller, mode, item)
 		}
 	}
-
-	companion object {
-
-		fun newInstance() = UpdatesFragment()
-	}
 }

@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
@@ -38,12 +39,17 @@ import javax.inject.Inject
 class FeedFragment :
 	BaseFragment<FragmentListBinding>(),
 	PaginationScrollListener.Callback,
-	MangaListListener, SwipeRefreshLayout.OnRefreshListener {
+	RecyclerViewOwner,
+	MangaListListener,
+	SwipeRefreshLayout.OnRefreshListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
 
 	private val viewModel by viewModels<FeedViewModel>()
+
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,

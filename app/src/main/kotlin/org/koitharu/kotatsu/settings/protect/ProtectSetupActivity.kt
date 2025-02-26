@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -17,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivitySetupProtectBinding
@@ -37,6 +39,7 @@ class ProtectSetupActivity :
 		super.onCreate(savedInstanceState)
 		window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 		setContentView(ActivitySetupProtectBinding.inflate(layoutInflater))
+		viewBinding.root.consumeInsetsAsPadding(Gravity.FILL)
 		viewBinding.editPassword.addTextChangedListener(this)
 		viewBinding.editPassword.setOnEditorActionListener(this)
 		viewBinding.buttonNext.setOnClickListener(this)

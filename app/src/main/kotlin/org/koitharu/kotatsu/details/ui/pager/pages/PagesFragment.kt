@@ -31,6 +31,7 @@ import org.koitharu.kotatsu.core.ui.list.BoundsScrollListener
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
@@ -55,6 +56,7 @@ import kotlin.math.roundToInt
 class PagesFragment :
 	BaseFragment<FragmentPagesBinding>(),
 	OnListItemClickListener<PageThumbnail>,
+	RecyclerViewOwner,
 	ListSelectionController.Callback {
 
 	@Inject
@@ -76,6 +78,9 @@ class PagesFragment :
 	private var selectionController: ListSelectionController? = null
 
 	private val spanSizeLookup = SpanSizeLookup()
+
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
