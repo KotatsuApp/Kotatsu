@@ -784,4 +784,6 @@
     <string name="simple">Đơn giản</string>
     <string name="search_everywhere">Tìm kiếm ở bất cứ đâu</string>
     <string name="global_search">Tìm kiếm chung</string>
+    <string name="disable_captcha_notifications">Tắt thông báo về Captcha</string>
+    <string name="disable_captcha_notifications_summary">Bạn sẽ không nhận được thông báo về việc giải CAPTCHA cho nguồn này nhưng điều này cũng có thể dẫn đến việc phá vỡ quá trình hoạt động nền đối với nguồn này (như kiểm tra chương / tập truyện mới, đưa ra gợi ý,...)</string>
 </resources>
