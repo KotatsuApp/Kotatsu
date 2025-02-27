@@ -7,7 +7,6 @@
 	<string name="url_user_manual" translatable="false">https://kotatsu.app/manuals/guides/getting-started/</string>
 	<string name="url_error_report" translatable="false">https://bugs.kotatsu.app/report</string>
 	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
-	<string name="sync_url_default" translatable="false">https://sync.kotatsu.app</string>
 	<string name="github_updates_repo" translatable="false">KotatsuApp/Kotatsu</string>
 	<string name="shikimori_clientId" translatable="false">Mw6F0tPEOgyV7F9U9Twg50Q8SndMY7hzIOfXg0AX_XU</string>
 	<string name="shikimori_clientSecret" translatable="false">euBMt1GGRSDpVIFQVPxZrO7Kh6X4gWyv0dABuj4B-M8</string>
@@ -45,9 +44,9 @@
 		<item>1</item>
 	</string-array>
 	<string-array name="sync_url_list" translatable="false">
-		<item>@string/sync_url_default</item>
 		<item>https://moe.shirizu.org</item>
-		<item>http://dragonx943.id.vn:8080</item>
+		<item>https://sync.kotatsu.app</item>
+		<item>http://dragonx943.id.vn</item>
 		<item>http://86.57.183.214:8081</item>
 	</string-array>
 	<string-array name="values_proxy_types" translatable="false">

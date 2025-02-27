@@ -24,7 +24,7 @@ class SyncSettings(
 	)
 
 	private val accountManager = AccountManager.get(context)
-	private val defaultSyncUrl = context.getString(R.string.sync_url_default)
+	private val defaultSyncUrl = context.resources.getStringArray(R.array.sync_url_list).first()
 
 	@get:WorkerThread
 	@set:WorkerThread

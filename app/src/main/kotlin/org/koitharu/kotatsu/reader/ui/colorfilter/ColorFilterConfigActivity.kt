@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.reader.ui.colorfilter
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.widget.CompoundButton
 import androidx.activity.viewModels
@@ -18,6 +19,7 @@ import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.indicator
@@ -52,6 +54,7 @@ class ColorFilterConfigActivity :
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
+		viewBinding.root.consumeInsetsAsPadding(Gravity.FILL)
 		viewBinding.sliderBrightness.addOnChangeListener(this)
 		viewBinding.sliderContrast.addOnChangeListener(this)
 		val formatter = PercentLabelFormatter(resources)
