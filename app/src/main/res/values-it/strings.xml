@@ -786,4 +786,6 @@
     <string name="search_everywhere">Cerca ovunque</string>
     <string name="badges_in_lists">Badge in elenchi</string>
     <string name="global_search">Ricerca globale</string>
+    <string name="disable_captcha_notifications">Disabilita notifiche captcha</string>
+    <string name="disable_captcha_notifications_summary">Non riceverai notifiche sulla risoluzione dei CAPTCHA per questa fonte, ma ciò potrebbe interrompere le operazioni in background (controllo di nuovi capitoli, ottenimento di raccomandazioni, ecc.)</string>
 </resources>
