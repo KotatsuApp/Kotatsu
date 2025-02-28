@@ -11,6 +11,7 @@ import androidx.core.content.IntentCompat
 import androidx.core.os.BundleCompat
 import androidx.core.os.ParcelCompat
 import androidx.lifecycle.SavedStateHandle
+import org.koitharu.kotatsu.parsers.util.toArraySet
 import java.io.Serializable
 import java.util.EnumSet
 
@@ -82,6 +83,14 @@ fun <E : Enum<E>> Parcel.readEnumSet(cls: Class<E>): Set<E>? {
 		set.add(enumValues[e])
 	}
 	return set
+}
+
+fun Parcel.writeStringSet(set: Set<String>?) {
+	writeStringArray(set?.toTypedArray().orEmpty())
+}
+
+fun Parcel.readStringSet(): Set<String> {
+	return this.createStringArray()?.toArraySet().orEmpty()
 }
 
 fun <T> SavedStateHandle.require(key: String): T {

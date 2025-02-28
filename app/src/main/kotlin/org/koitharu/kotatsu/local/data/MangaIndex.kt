@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.parsers.util.json.getIntOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
+import org.koitharu.kotatsu.parsers.util.json.toStringSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.io.File
@@ -38,10 +39,12 @@ class MangaIndex(source: String?) {
 		require(!manga.isLocal) { "Local manga information cannot be stored" }
 		json.put(KEY_ID, manga.id)
 		json.put(KEY_TITLE, manga.title)
-		json.put(KEY_TITLE_ALT, manga.altTitle)
+		json.put(KEY_TITLE_ALT, manga.altTitle) // for backward compatibility
+		json.put(KEY_ALT_TITLES, JSONArray(manga.altTitles))
 		json.put(KEY_URL, manga.url)
 		json.put(KEY_PUBLIC_URL, manga.publicUrl)
-		json.put(KEY_AUTHOR, manga.author)
+		json.put(KEY_AUTHOR, manga.author) // for backward compatibility
+		json.put(KEY_AUTHORS, JSONArray(manga.authors))
 		json.put(KEY_COVER, manga.coverUrl)
 		json.put(KEY_DESCRIPTION, manga.description)
 		json.put(KEY_RATING, manga.rating)
@@ -73,10 +76,12 @@ class MangaIndex(source: String?) {
 		Manga(
 			id = json.getLong(KEY_ID),
 			title = json.getString(KEY_TITLE),
-			altTitle = json.getStringOrNull(KEY_TITLE_ALT),
+			altTitles = json.optJSONArray(KEY_ALT_TITLES)?.toStringSet()
+				?: setOfNotNull(json.getStringOrNull(KEY_TITLE_ALT)),
 			url = json.getString(KEY_URL),
 			publicUrl = json.getStringOrNull(KEY_PUBLIC_URL).orEmpty(),
-			author = json.getStringOrNull(KEY_AUTHOR),
+			authors = json.optJSONArray(KEY_AUTHORS)?.toStringSet()
+				?: setOfNotNull(json.getStringOrNull(KEY_AUTHOR)),
 			largeCoverUrl = json.getStringOrNull(KEY_COVER_LARGE),
 			source = source,
 			rating = json.getFloatOrDefault(KEY_RATING, RATING_UNKNOWN),
@@ -198,9 +203,11 @@ class MangaIndex(source: String?) {
 		private const val KEY_ID = "id"
 		private const val KEY_TITLE = "title"
 		private const val KEY_TITLE_ALT = "title_alt"
+		private const val KEY_ALT_TITLES = "alt_titles"
 		private const val KEY_URL = "url"
 		private const val KEY_PUBLIC_URL = "public_url"
 		private const val KEY_AUTHOR = "author"
+		private const val KEY_AUTHORS = "authors"
 		private const val KEY_COVER = "cover"
 		private const val KEY_DESCRIPTION = "description"
 		private const val KEY_RATING = "rating"

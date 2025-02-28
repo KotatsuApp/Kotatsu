@@ -126,12 +126,12 @@ class LocalMangaParser(private val uri: Uri) {
 					} else {
 						null
 					},
-					altTitle = null,
+					altTitles = emptySet(),
 					rating = -1f,
 					contentRating = null,
-					tags = setOf(),
+					tags = emptySet(),
 					state = null,
-					author = null,
+					authors = emptySet(),
 					largeCoverUrl = null,
 					description = null,
 				)

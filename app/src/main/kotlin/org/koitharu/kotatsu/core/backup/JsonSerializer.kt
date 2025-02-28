@@ -58,15 +58,16 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 		JSONObject().apply {
 			put("id", e.id)
 			put("title", e.title)
-			put("alt_title", e.altTitle)
+			put("alt_title", e.altTitles)
 			put("url", e.url)
 			put("public_url", e.publicUrl)
 			put("rating", e.rating)
 			put("nsfw", e.isNsfw)
+			put("content_rating", e.contentRating)
 			put("cover_url", e.coverUrl)
 			put("large_cover_url", e.largeCoverUrl)
 			put("state", e.state)
-			put("author", e.author)
+			put("author", e.authors)
 			put("source", e.source)
 		},
 	)

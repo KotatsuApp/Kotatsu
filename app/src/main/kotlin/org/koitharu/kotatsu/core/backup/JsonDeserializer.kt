@@ -28,15 +28,16 @@ class JsonDeserializer(private val json: JSONObject) {
 	fun toMangaEntity() = MangaEntity(
 		id = json.getLong("id"),
 		title = json.getString("title"),
-		altTitle = json.getStringOrNull("alt_title"),
+		altTitles = json.getStringOrNull("alt_title"),
 		url = json.getString("url"),
 		publicUrl = json.getStringOrNull("public_url").orEmpty(),
 		rating = json.getDouble("rating").toFloat(),
 		isNsfw = json.getBooleanOrDefault("nsfw", false),
+		contentRating = json.getStringOrNull("content_rating"),
 		coverUrl = json.getString("cover_url"),
 		largeCoverUrl = json.getStringOrNull("large_cover_url"),
 		state = json.getStringOrNull("state"),
-		author = json.getStringOrNull("author"),
+		authors = json.getStringOrNull("author"),
 		source = json.getString("source"),
 	)
 
