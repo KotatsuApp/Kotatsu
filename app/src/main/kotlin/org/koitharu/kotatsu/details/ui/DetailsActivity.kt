@@ -446,7 +446,7 @@ class DetailsActivity :
 		val manga = details.toManga()
 		with(viewBinding) {
 			textViewTitle.text = manga.title
-			textViewSubtitle.textAndVisible = manga.altTitle
+			textViewSubtitle.textAndVisible = manga.altTitles.joinToString("\n")
 			textViewNsfw.isVisible = manga.isNsfw
 			textViewDescription.text = details.description.ifNullOrEmpty { getString(R.string.no_description) }
 		}
@@ -561,6 +561,7 @@ class DetailsActivity :
 	}
 
 	private fun loadCover(imageUrl: String?) {
+		viewBinding.imageViewCover.isEnabled = !imageUrl.isNullOrEmpty()
 		val lastResult = CoilUtils.result(viewBinding.imageViewCover)
 		if (lastResult is SuccessResult && lastResult.request.data == imageUrl) {
 			return

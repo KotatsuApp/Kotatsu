@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.userdata.storage
 
+import coil3.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -35,6 +36,7 @@ class StorageManageSettingsViewModel @Inject constructor(
 	private val cookieJar: MutableCookieJar,
 	private val deleteReadChaptersUseCase: DeleteReadChaptersUseCase,
 	private val mangaDataRepositoryProvider: Provider<MangaDataRepository>,
+	private val coil: ImageLoader,
 ) : BaseViewModel() {
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
@@ -78,6 +80,9 @@ class StorageManageSettingsViewModel @Inject constructor(
 				storageManager.clearCache(cache)
 				checkNotNull(cacheSizes[cache]).value = storageManager.computeCacheSize(cache)
 				loadStorageUsage()
+				if (cache == CacheDir.THUMBS || cache == CacheDir.FAVICONS) {
+					coil.memoryCache?.clear()
+				}
 			} finally {
 				loadingKeys.update { it - key }
 			}
