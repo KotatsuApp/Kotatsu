@@ -229,7 +229,7 @@ class ExternalPluginContentSource(
 					do {
 						result += MangaChapter(
 							id = cursor.getLong(COLUMN_ID),
-							name = cursor.getString(COLUMN_NAME),
+							title = cursor.getStringOrNull(COLUMN_NAME),
 							number = cursor.getFloatOrDefault(COLUMN_NUMBER, 0f),
 							volume = cursor.getIntOrDefault(COLUMN_VOLUME, 0),
 							url = cursor.getString(COLUMN_URL),

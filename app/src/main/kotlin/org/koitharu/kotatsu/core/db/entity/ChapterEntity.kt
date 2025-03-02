@@ -20,7 +20,7 @@ import org.koitharu.kotatsu.core.db.TABLE_CHAPTERS
 data class ChapterEntity(
 	@ColumnInfo(name = "chapter_id") val chapterId: Long,
 	@ColumnInfo(name = "manga_id") val mangaId: Long,
-	@ColumnInfo(name = "name") val name: String,
+	@ColumnInfo(name = "name") val title: String,
 	@ColumnInfo(name = "number") val number: Float,
 	@ColumnInfo(name = "volume") val volume: Int,
 	@ColumnInfo(name = "url") val url: String,

@@ -806,4 +806,7 @@
 	<string name="global_search">Global search</string>
 	<string name="disable_captcha_notifications">Disable captcha notifications</string>
 	<string name="disable_captcha_notifications_summary">You will not receive notifications about solving CAPTCHA for this source but this can lead to breaking background operations (checking for new chapters, obtaining recommendations, etc)</string>
+	<string name="chapter_volume_number">Vol %1$s Chapter %2$s</string>
+	<string name="chapter_number">Chapter %s</string>
+	<string name="unnamed_chapter">Unnamed chapter</string>
 </resources>

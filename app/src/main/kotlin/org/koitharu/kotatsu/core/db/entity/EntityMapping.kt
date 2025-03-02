@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.longHashCode
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.parsers.util.toArraySet
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 
@@ -50,7 +51,7 @@ fun Collection<MangaWithTags>.toMangaList() = map { it.toManga() }
 
 fun ChapterEntity.toMangaChapter() = MangaChapter(
 	id = chapterId,
-	name = name,
+	title = title.nullIfEmpty(),
 	number = number,
 	volume = volume,
 	url = url,
@@ -93,7 +94,7 @@ fun Iterable<IndexedValue<MangaChapter>>.toEntities(mangaId: Long) = map { (inde
 	ChapterEntity(
 		chapterId = chapter.id,
 		mangaId = mangaId,
-		name = chapter.name,
+		title = chapter.title.orEmpty(),
 		number = chapter.number,
 		volume = chapter.volume,
 		url = chapter.url,

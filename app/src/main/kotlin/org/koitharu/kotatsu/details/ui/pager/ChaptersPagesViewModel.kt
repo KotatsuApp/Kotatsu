@@ -216,9 +216,7 @@ abstract class ChaptersPagesViewModel(
 		if (query.isEmpty() || this.isEmpty()) {
 			return this
 		}
-		return filter {
-			it.chapter.name.contains(query, ignoreCase = true)
-		}
+		return filter { it.contains(query) }
 	}
 
 	private suspend fun onDownloadComplete(downloadedManga: LocalManga?) {

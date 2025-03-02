@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import java.io.File
 
 class LocalMangaDirOutput(
@@ -145,7 +146,16 @@ class LocalMangaDirOutput(
 		index.getChapterFileName(chapter.value.id)?.let {
 			return it
 		}
-		val baseName = "${chapter.index}_${chapter.value.name.toFileNameSafe()}".take(32)
+		val baseName = buildString {
+			append(chapter.index)
+			chapter.value.title?.nullIfEmpty()?.let {
+				append('_')
+				append(it.toFileNameSafe())
+			}
+			if (length > 32) {
+				deleteRange(31, lastIndex)
+			}
+		}
 		var i = 0
 		while (true) {
 			val name = (if (i == 0) baseName else baseName + "_$i") + ".cbz"

@@ -27,6 +27,7 @@ import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
 import org.koitharu.kotatsu.parsers.util.json.toStringSet
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.io.File
@@ -110,7 +111,7 @@ class MangaIndex(source: String?) {
 			jo.put(KEY_NUMBER, chapter.value.number)
 			jo.put(KEY_VOLUME, chapter.value.volume)
 			jo.put(KEY_URL, chapter.value.url)
-			jo.put(KEY_NAME, chapter.value.name)
+			jo.put(KEY_NAME, chapter.value.title.orEmpty())
 			jo.put(KEY_UPLOAD_DATE, chapter.value.uploadDate)
 			jo.put(KEY_SCANLATOR, chapter.value.scanlator)
 			jo.put(KEY_BRANCH, chapter.value.branch)
@@ -178,7 +179,7 @@ class MangaIndex(source: String?) {
 			chapters.add(
 				MangaChapter(
 					id = k.toLong(),
-					name = v.getString(KEY_NAME),
+					title = v.getStringOrNull(KEY_NAME),
 					url = v.getString(KEY_URL),
 					number = v.getFloatOrDefault(KEY_NUMBER, 0f),
 					volume = v.getIntOrDefault(KEY_VOLUME, 0),

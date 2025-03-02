@@ -16,6 +16,7 @@ import coil3.ImageLoader
 import coil3.request.ImageRequest
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.LocalizedAppContext
+import org.koitharu.kotatsu.core.model.getLocalizedTitle
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
@@ -76,7 +77,7 @@ class TrackerNotificationHelper @Inject constructor(
 			setGroup(GROUP_NEW_CHAPTERS)
 			val style = NotificationCompat.InboxStyle(this)
 			for (chapter in newChapters) {
-				style.addLine(chapter.name)
+				style.addLine(chapter.getLocalizedTitle(applicationContext.resources))
 			}
 			style.setSummaryText(manga.title)
 			style.setBigContentTitle(summary)
@@ -190,7 +191,6 @@ class TrackerNotificationHelper @Inject constructor(
 		const val TAG = "tracker"
 
 		private const val LEGACY_CHANNELS_GROUP_ID = "trackers"
-		private const val LEGACY_CHANNEL_ID_PREFIX = "track_fav_"
 		private const val LEGACY_CHANNEL_ID_HISTORY = "track_history"
 		private const val LEGACY_CHANNEL_ID = "tracking"
 	}

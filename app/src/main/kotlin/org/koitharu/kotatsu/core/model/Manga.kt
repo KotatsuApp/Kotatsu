@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.core.model
 
+import android.content.res.Resources
 import android.net.Uri
 import android.text.SpannableStringBuilder
 import androidx.annotation.DrawableRes
@@ -166,5 +167,20 @@ private fun SpannableStringBuilder.appendTagsSummary(filter: MangaListFilter) {
 		strikeThrough {
 			filter.tagsExclude.joinTo(this) { it.title }
 		}
+	}
+}
+
+fun MangaChapter.getLocalizedTitle(resources: Resources): String {
+	title?.let {
+		if (it.isNotBlank()) {
+			return it
+		}
+	}
+	val num = numberString()
+	val vol = volumeString()
+	return when {
+		num != null && vol != null -> resources.getString(R.string.chapter_volume_number, vol, num)
+		num != null -> resources.getString(R.string.chapter_number, num)
+		else -> resources.getString(R.string.unnamed_chapter) // TODO fallback to manga title + index
 	}
 }

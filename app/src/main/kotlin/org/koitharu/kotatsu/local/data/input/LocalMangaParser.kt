@@ -113,7 +113,7 @@ class LocalMangaParser(private val uri: Uri) {
 							}.toString().removePrefix(Path.DIRECTORY_SEPARATOR)
 							MangaChapter(
 								id = "$i$s".longHashCode(),
-								name = s.fileNameToTitle().ifEmpty { title },
+								title = null,
 								number = 0f,
 								volume = 0,
 								source = LocalMangaSource,
