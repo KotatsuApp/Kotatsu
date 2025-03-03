@@ -69,7 +69,6 @@ data class ChapterListItem(
 		}
 	}
 
-
 	private fun buildDescription(): String {
 		val joiner = StringJoiner(" • ")
 		chapter.numberString()?.let {

@@ -111,6 +111,10 @@
 		<item name="android:minHeight">42dp</item>
 	</style>
 
+	<style name="Widget.Kotatsu.IconButton.Action" parent="Widget.Material3.Button.IconButton">
+		<item name="iconTint">?colorControlNormal</item>
+	</style>
+
 	<style name="Widget.Kotatsu.ToggleButton" parent="Widget.Material3.Button.OutlinedButton">
 		<item name="android:checkable">true</item>
 		<item name="android:textAlignment">textStart</item>

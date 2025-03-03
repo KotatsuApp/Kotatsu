@@ -33,7 +33,7 @@ data class MangaDetails(
 
 	val coverUrl: String?
 		get() = manga.largeCoverUrl
-			.ifNullOrEmpty { manga.largeCoverUrl }
+			.ifNullOrEmpty { manga.coverUrl }
 			.ifNullOrEmpty { localManga?.manga?.coverUrl }
 			?.nullIfEmpty()
 

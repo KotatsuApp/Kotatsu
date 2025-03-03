@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -43,7 +42,6 @@ import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
 import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
-import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet.Companion.TAB_PAGES
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -120,8 +118,6 @@ class ReaderViewModel @Inject constructor(
 			.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 	}
 
-	val isPagesSheetEnabled = observeIsPagesSheetEnabled()
-
 	val content = MutableStateFlow(ReaderContent(emptyList(), null))
 
 	val pageAnimation = settings.observeAsStateFlow(
@@ -134,12 +130,6 @@ class ReaderViewModel @Inject constructor(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_READER_BAR,
 		valueProducer = { isReaderBarEnabled },
-	)
-
-	val readerControls = settings.observeAsStateFlow(
-		scope = viewModelScope + Dispatchers.Default,
-		key = AppSettings.KEY_READER_CONTROLS,
-		valueProducer = { readerControls },
 	)
 
 	val isInfoBarTransparent = settings.observeAsStateFlow(
@@ -449,9 +439,8 @@ class ReaderViewModel @Inject constructor(
 		val chapterIndex = m.chapters[chapter.branch]?.indexOfFirst { it.id == chapter.id } ?: -1
 		val newState = ReaderUiState(
 			mangaName = m.toManga().title,
-			branch = chapter.branch,
-			chapterName = chapter.name,
-			chapterNumber = chapterIndex + 1,
+			chapter = chapter,
+			chapterIndex = chapterIndex,
 			chaptersTotal = m.chapters[chapter.branch].sizeOrZero(),
 			totalPages = chaptersLoader.getPagesCount(chapter.id),
 			currentPage = state.page,
@@ -492,11 +481,6 @@ class ReaderViewModel @Inject constructor(
 		key = AppSettings.KEY_READER_ZOOM_BUTTONS,
 		valueProducer = { isReaderZoomButtonsEnabled },
 	)
-
-	private fun observeIsPagesSheetEnabled() = settings.observe()
-		.filter { it == AppSettings.KEY_PAGES_TAB || it == AppSettings.KEY_DETAILS_TAB || it == AppSettings.KEY_DETAILS_LAST_TAB }
-		.map { settings.defaultDetailsTab == TAB_PAGES }
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.defaultDetailsTab == TAB_PAGES)
 
 	private suspend fun getStateFromIntent(manga: Manga): ReaderState {
 		val history = historyRepository.getOne(manga)

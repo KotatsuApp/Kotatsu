@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.reader.data.TapGridSettings
 import org.koitharu.kotatsu.reader.domain.TapGridArea
 import org.koitharu.kotatsu.reader.ui.tapgrid.TapAction
+import kotlin.math.sign
 
 class ReaderControlDelegate(
 	resources: Resources,
@@ -43,77 +44,48 @@ class ReaderControlDelegate(
 		processAction(action)
 	}
 
-	fun onKeyDown(keyCode: Int): Boolean = when (keyCode) {
+	fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+		when (keyCode) {
+			KeyEvent.KEYCODE_NAVIGATE_NEXT,
+			KeyEvent.KEYCODE_SPACE -> switchBy(1, event, false)
 
-		KeyEvent.KEYCODE_R -> {
-			listener.switchPageBy(1)
-			true
-		}
+			KeyEvent.KEYCODE_PAGE_DOWN -> switchBy(1, event, false)
 
-		KeyEvent.KEYCODE_L -> {
-			listener.switchPageBy(-1)
-			true
-		}
 
-		KeyEvent.KEYCODE_VOLUME_UP -> if (settings.isReaderVolumeButtonsEnabled) {
-			listener.switchPageBy(-1)
-			true
-		} else {
-			false
-		}
+			KeyEvent.KEYCODE_NAVIGATE_PREVIOUS -> switchBy(-1, event, false)
+			KeyEvent.KEYCODE_PAGE_UP -> switchBy(-1, event, false)
 
-		KeyEvent.KEYCODE_VOLUME_DOWN -> if (settings.isReaderVolumeButtonsEnabled) {
-			listener.switchPageBy(1)
-			true
-		} else {
-			false
-		}
+			KeyEvent.KEYCODE_R -> switchBy(1, null, false)
 
-		KeyEvent.KEYCODE_SPACE,
-		KeyEvent.KEYCODE_PAGE_DOWN,
-			-> {
-			listener.switchPageBy(1)
-			true
-		}
+			KeyEvent.KEYCODE_L -> switchBy(-1, null, false)
 
-		KeyEvent.KEYCODE_DPAD_RIGHT -> {
-			listener.switchPageBy(if (isReaderTapsReversed()) -1 else 1)
-			true
-		}
-
-		KeyEvent.KEYCODE_PAGE_UP,
-			-> {
-			listener.switchPageBy(-1)
-			true
-		}
-
-		KeyEvent.KEYCODE_DPAD_LEFT -> {
-			listener.switchPageBy(if (isReaderTapsReversed()) 1 else -1)
-			true
-		}
-
-		KeyEvent.KEYCODE_DPAD_CENTER -> {
-			listener.toggleUiVisibility()
-			true
-		}
-
-		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_UP,
-		KeyEvent.KEYCODE_DPAD_UP -> {
-			if (!listener.scrollBy(-minScrollDelta, smooth = true)) {
-				listener.switchPageBy(-1)
+			KeyEvent.KEYCODE_VOLUME_UP -> if (settings.isReaderVolumeButtonsEnabled) {
+				switchBy(-1, event, false)
+			} else {
+				return false
 			}
-			true
-		}
 
-		KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN,
-		KeyEvent.KEYCODE_DPAD_DOWN -> {
-			if (!listener.scrollBy(minScrollDelta, smooth = true)) {
-				listener.switchPageBy(1)
+			KeyEvent.KEYCODE_VOLUME_DOWN -> if (settings.isReaderVolumeButtonsEnabled) {
+				switchBy(1, event, false)
+			} else {
+				return false
 			}
-			true
-		}
 
-		else -> false
+			KeyEvent.KEYCODE_DPAD_RIGHT -> switchByRelative(-1, event)
+
+			KeyEvent.KEYCODE_DPAD_LEFT -> switchByRelative(1, event)
+
+			KeyEvent.KEYCODE_DPAD_CENTER -> listener.toggleUiVisibility()
+
+			KeyEvent.KEYCODE_SYSTEM_NAVIGATION_UP,
+			KeyEvent.KEYCODE_DPAD_UP -> switchBy(-1, event, true)
+
+			KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN,
+			KeyEvent.KEYCODE_DPAD_DOWN -> switchBy(1, event, true)
+
+			else -> return false
+		}
+		return true
 	}
 
 	fun onKeyUp(keyCode: Int, @Suppress("UNUSED_PARAMETER") event: KeyEvent?): Boolean {
@@ -136,11 +108,29 @@ class ReaderControlDelegate(
 		return settings.isReaderControlAlwaysLTR && listener.readerMode == ReaderMode.REVERSED
 	}
 
+	private fun switchBy(delta: Int, event: KeyEvent?, scroll: Boolean) {
+		if (event?.isCtrlPressed == true) {
+			listener.switchChapterBy(delta)
+		} else if (scroll) {
+			if (!listener.scrollBy(minScrollDelta * delta.sign, smooth = true)) {
+				listener.switchPageBy(delta)
+			}
+		} else {
+			listener.switchPageBy(delta)
+		}
+	}
+
+	private fun switchByRelative(delta: Int, event: KeyEvent?) {
+		return switchBy(if (isReaderTapsReversed()) -delta else delta, event, scroll = false)
+	}
+
 	interface OnInteractionListener {
 
 		val readerMode: ReaderMode?
 
 		fun switchPageBy(delta: Int)
+
+		fun switchPageTo(index: Int)
 
 		fun switchChapterBy(delta: Int)
 
@@ -149,6 +139,10 @@ class ReaderControlDelegate(
 		fun toggleUiVisibility()
 
 		fun openMenu()
+
+		fun onSavePageClick()
+
+		fun toggleScreenOrientation()
 
 		fun isReaderResumed(): Boolean
 	}

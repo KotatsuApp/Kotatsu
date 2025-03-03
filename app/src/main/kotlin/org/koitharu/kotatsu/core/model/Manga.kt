@@ -170,7 +170,7 @@ private fun SpannableStringBuilder.appendTagsSummary(filter: MangaListFilter) {
 	}
 }
 
-fun MangaChapter.getLocalizedTitle(resources: Resources): String {
+fun MangaChapter.getLocalizedTitle(resources: Resources, index: Int = -1): String {
 	title?.let {
 		if (it.isNotBlank()) {
 			return it
@@ -181,6 +181,12 @@ fun MangaChapter.getLocalizedTitle(resources: Resources): String {
 	return when {
 		num != null && vol != null -> resources.getString(R.string.chapter_volume_number, vol, num)
 		num != null -> resources.getString(R.string.chapter_number, num)
-		else -> resources.getString(R.string.unnamed_chapter) // TODO fallback to manga title + index
+		index > 0 -> resources.getString(
+			R.string.chapters_time_pattern,
+			resources.getString(R.string.unnamed_chapter),
+			index.toString(),
+		)
+
+		else -> resources.getString(R.string.unnamed_chapter)
 	}
 }

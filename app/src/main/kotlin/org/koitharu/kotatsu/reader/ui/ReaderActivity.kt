@@ -10,11 +10,10 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup.MarginLayoutParams
+import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
-import androidx.core.view.MenuHost
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -35,7 +34,6 @@ import org.koitharu.kotatsu.core.exceptions.resolve.DialogErrorObserver
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.prefs.ReaderControl
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.BaseFullscreenActivity
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
@@ -43,11 +41,9 @@ import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.IdlingDetector
 import org.koitharu.kotatsu.core.util.ext.hasGlobalPoint
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
-import org.koitharu.kotatsu.core.util.ext.isRtl
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.postDelayed
-import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.zipWithPrevious
 import org.koitharu.kotatsu.databinding.ActivityReaderBinding
 import org.koitharu.kotatsu.details.ui.pager.pages.PagesSavedObserver
@@ -100,9 +96,6 @@ class ReaderActivity :
 			scrollTimer.isEnabled = value
 		}
 
-	private val secondaryMenuHost: MenuHost
-		get() = viewBinding.toolbarBottom ?: this
-
 	private lateinit var scrollTimer: ScrollTimer
 	private lateinit var pageSaveHelper: PageSaveHelper
 	private lateinit var touchHelper: TapGridDispatcher
@@ -120,13 +113,11 @@ class ReaderActivity :
 		scrollTimer = scrollTimerFactory.create(this, this)
 		pageSaveHelper = pageSaveHelperFactory.create(this)
 		controlDelegate = ReaderControlDelegate(resources, settings, tapGridSettings, this)
-		viewBinding.slider.setLabelFormatter(PageLabelFormatter())
 		viewBinding.zoomControl.listener = this
-		ReaderSliderListener(viewModel, this).attachToSlider(viewBinding.slider)
+		viewBinding.actionsView.listener = this
 		idlingDetector.bindToLifecycle(this)
-		viewBinding.buttonPrev.setOnClickListener(controlDelegate)
-		viewBinding.buttonNext.setOnClickListener(controlDelegate)
 		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
+		screenOrientationHelper.applySettings()
 
 		viewModel.onError.observeEvent(
 			this,
@@ -150,17 +141,13 @@ class ReaderActivity :
 		viewModel.content.observe(this) {
 			onLoadingStateChanged(viewModel.isLoading.value)
 		}
-		viewModel.readerControls.observe(this, ::onReaderControlsChanged)
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
 		viewModel.isInfoBarTransparent.observe(this) { viewBinding.infoBar.drawBackground = !it }
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(this))
-		val bottomMenuInvalidator = MenuInvalidator(secondaryMenuHost)
-		viewModel.isPagesSheetEnabled.observe(this, bottomMenuInvalidator)
-		screenOrientationHelper.observeAutoOrientation().observe(this, bottomMenuInvalidator)
 		viewModel.onShowToast.observeEvent(this) { msgId ->
 			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
-				.setAnchorView(viewBinding.appbarBottom)
+				.setAnchorView(viewBinding.toolbarDocked)
 				.show()
 		}
 		viewModel.readerSettings.observe(this) {
@@ -169,10 +156,7 @@ class ReaderActivity :
 		viewModel.isZoomControlsEnabled.observe(this) {
 			viewBinding.zoomControl.isVisible = it
 		}
-		addMenuProvider(ReaderMenuTopProvider(viewModel))
-		secondaryMenuHost.addMenuProvider(
-			ReaderMenuBottomProvider(this, readerManager, screenOrientationHelper, this, viewModel),
-		)
+		addMenuProvider(ReaderMenuProvider(viewModel))
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -215,7 +199,7 @@ class ReaderActivity :
 		if (viewBinding.appbarTop.isVisible) {
 			lifecycle.postDelayed(TimeUnit.SECONDS.toMillis(1), hideUiRunnable)
 		}
-		viewBinding.slider.isRtl = mode == ReaderMode.REVERSED
+		viewBinding.actionsView.setSliderReversed(mode == ReaderMode.REVERSED)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -226,7 +210,6 @@ class ReaderActivity :
 		} else {
 			viewBinding.toastView.hide()
 		}
-		secondaryMenuHost.invalidateMenu()
 		invalidateOptionsMenu()
 	}
 
@@ -247,7 +230,7 @@ class ReaderActivity :
 			rawX >= viewBinding.root.width - gestureInsets.right ||
 			rawY >= viewBinding.root.height - gestureInsets.bottom ||
 			viewBinding.appbarTop.hasGlobalPoint(rawX, rawY) ||
-			viewBinding.appbarBottom?.hasGlobalPoint(rawX, rawY) == true
+			viewBinding.toolbarDocked?.hasGlobalPoint(rawX, rawY) == true
 		) {
 			false
 		} else {
@@ -263,7 +246,7 @@ class ReaderActivity :
 	}
 
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-		return controlDelegate.onKeyDown(keyCode) || super.onKeyDown(keyCode, event)
+		return controlDelegate.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
 	}
 
 	override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
@@ -307,13 +290,6 @@ class ReaderActivity :
 		}
 	}
 
-	private fun onReaderControlsChanged(controls: Set<ReaderControl>) = with(viewBinding) {
-		buttonPrev.isVisible = ReaderControl.PREV_CHAPTER in controls
-		buttonNext.isVisible = ReaderControl.NEXT_CHAPTER in controls
-		slider.isVisible = ReaderControl.SLIDER in controls
-		secondaryMenuHost.invalidateMenu()
-	}
-
 	private fun setUiIsVisible(isUiVisible: Boolean) {
 		if (viewBinding.appbarTop.isVisible != isUiVisible) {
 			if (isAnimationsEnabled) {
@@ -321,12 +297,12 @@ class ReaderActivity :
 					.setOrdering(TransitionSet.ORDERING_TOGETHER)
 					.addTransition(Slide(Gravity.TOP).addTarget(viewBinding.appbarTop))
 					.addTransition(Fade().addTarget(viewBinding.infoBar))
-					.addTransition(Slide(Gravity.BOTTOM).addTarget(viewBinding.appbarBottom))
+					.addTransition(Slide(Gravity.BOTTOM).addTarget(viewBinding.toolbarDocked))
 				TransitionManager.beginDelayedTransition(viewBinding.root, transition)
 			}
 			val isFullscreen = settings.isReaderFullscreenEnabled
 			viewBinding.appbarTop.isVisible = isUiVisible
-			viewBinding.appbarBottom?.isVisible = isUiVisible
+			viewBinding.toolbarDocked?.isVisible = isUiVisible
 			viewBinding.infoBar.isGone = isUiVisible || (!viewModel.isInfoBarEnabled.value)
 			viewBinding.infoBar.isTimeVisible = isFullscreen
 			systemUiController.setSystemUiVisible(isUiVisible || !isFullscreen)
@@ -341,10 +317,12 @@ class ReaderActivity :
 			right = systemBars.right,
 			left = systemBars.left,
 		)
-		viewBinding.appbarBottom?.updateLayoutParams<MarginLayoutParams> {
-			bottomMargin = systemBars.bottom + topMargin
-			rightMargin = systemBars.right + topMargin
-			leftMargin = systemBars.left + topMargin
+		if (viewBinding.toolbarDocked != null) {
+			viewBinding.actionsView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				bottomMargin = systemBars.bottom
+				rightMargin = systemBars.right
+				leftMargin = systemBars.left
+			}
 		}
 		viewBinding.infoBar.updatePadding(
 			top = systemBars.top,
@@ -385,6 +363,28 @@ class ReaderActivity :
 		viewModel.saveCurrentPage(pageSaveHelper)
 	}
 
+	override fun toggleScreenOrientation() {
+		if (screenOrientationHelper.toggleScreenOrientation()) {
+			Snackbar.make(
+				viewBinding.container,
+				if (screenOrientationHelper.isLocked) {
+					R.string.screen_rotation_locked
+				} else {
+					R.string.screen_rotation_unlocked
+				},
+				Snackbar.LENGTH_SHORT,
+			).setAnchorView(viewBinding.toolbarDocked)
+				.show()
+		}
+	}
+
+	override fun switchPageTo(index: Int) {
+		val pages = viewModel.getCurrentChapterPages()
+		val page = pages?.getOrNull(index) ?: return
+		val chapterId = viewModel.getCurrentState()?.chapterId ?: return
+		onPageSelected(ReaderPage(page, index, chapterId))
+	}
+
 	private fun onReaderBarChanged(isBarEnabled: Boolean) {
 		viewBinding.infoBar.isVisible = isBarEnabled && viewBinding.appbarTop.isGone
 	}
@@ -395,27 +395,29 @@ class ReaderActivity :
 		viewBinding.infoBar.update(uiState)
 		if (uiState == null) {
 			supportActionBar?.subtitle = null
-			viewBinding.layoutSlider.isVisible = false
+			viewBinding.actionsView.setSliderValue(0, 1)
+			viewBinding.actionsView.isSliderEnabled = false
 			return
 		}
+		val chapterTitle = uiState.getChapterTitle(resources)
 		supportActionBar?.subtitle = when {
 			uiState.incognito -> getString(R.string.incognito_mode)
-			else -> uiState.chapterName
+			else -> chapterTitle
 		}
-		if (uiState.chapterName != previous?.chapterName && !uiState.chapterName.isNullOrEmpty()) {
-			viewBinding.toastView.showTemporary(uiState.chapterName, TOAST_DURATION)
+		if (chapterTitle != previous?.getChapterTitle(resources) && chapterTitle.isNotEmpty()) {
+			viewBinding.toastView.showTemporary(chapterTitle, TOAST_DURATION)
 		}
 		if (uiState.isSliderAvailable()) {
-			viewBinding.slider.valueTo = uiState.totalPages.toFloat() - 1
-			viewBinding.slider.setValueRounded(uiState.currentPage.toFloat())
+			viewBinding.actionsView.setSliderValue(
+				value = uiState.currentPage,
+				max = uiState.totalPages - 1,
+			)
 		} else {
-			viewBinding.slider.valueTo = 1f
-			viewBinding.slider.value = 0f
+			viewBinding.actionsView.setSliderValue(0, 1)
 		}
-		viewBinding.slider.isEnabled = uiState.isSliderAvailable()
-		viewBinding.buttonNext.isEnabled = uiState.hasNextChapter()
-		viewBinding.buttonPrev.isEnabled = uiState.hasPreviousChapter()
-		viewBinding.layoutSlider.isVisible = true
+		viewBinding.actionsView.isSliderEnabled = uiState.isSliderAvailable()
+		viewBinding.actionsView.isNextEnabled = uiState.hasNextChapter()
+		viewBinding.actionsView.isPrevEnabled = uiState.hasPreviousChapter()
 	}
 
 	companion object {
