@@ -809,4 +809,5 @@
 	<string name="chapter_volume_number">Vol %1$s Chapter %2$s</string>
 	<string name="chapter_number">Chapter %s</string>
 	<string name="unnamed_chapter">Unnamed chapter</string>
+	<string name="search_disabled_sources">Search through disabled sources</string>
 </resources>

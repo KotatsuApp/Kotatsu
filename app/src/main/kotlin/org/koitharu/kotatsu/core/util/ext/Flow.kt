@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.os.SystemClock
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -135,3 +136,9 @@ suspend fun <T : Any> Flow<T?>.firstNotNullOrNull(): T? = firstOrNull { x -> x !
 fun <T> Flow<Flow<T>>.flattenLatest() = flatMapLatest { it }
 
 fun <T> SuspendLazy<T>.asFlow() = flow { emit(runCatchingCancellable { get() }) }
+
+suspend fun <T> SendChannel<T>.sendNotNull(item: T?) {
+	if (item != null) {
+		send(item)
+	}
+}

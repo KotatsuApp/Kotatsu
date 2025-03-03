@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import okio.FileNotFoundException
 import org.koitharu.kotatsu.core.backup.BackupRepository
 import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -67,7 +68,7 @@ class BackupViewModel @Inject constructor(
 
 	fun saveBackup(output: Uri) {
 		launchLoadingJob(Dispatchers.Default) {
-			val file = checkNotNull(backupFile)
+			val file = backupFile ?: throw FileNotFoundException()
 			contentResolver.openFileDescriptor(output, "w")?.use { fd ->
 				FileOutputStream(fd.fileDescriptor).use {
 					it.write(file.readBytes())

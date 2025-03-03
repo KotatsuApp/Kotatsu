@@ -3,8 +3,10 @@ package org.koitharu.kotatsu.search.domain
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
@@ -20,9 +22,13 @@ class SearchV2Helper @AssistedInject constructor(
 	@Assisted private val source: MangaSource,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val dataRepository: MangaDataRepository,
+	private val settings: AppSettings,
 ) {
 
 	suspend operator fun invoke(query: String, kind: SearchKind): SearchResults? {
+		if (settings.isNsfwContentDisabled && source.isNsfw()) {
+			return null
+		}
 		val repository = mangaRepositoryFactory.create(source)
 		val listFilter = repository.getFilter(query, kind) ?: return null
 		val sortOrder = repository.getSortOrder(kind)
@@ -68,6 +74,9 @@ class SearchV2Helper @AssistedInject constructor(
 	}
 
 	private fun MutableList<Manga>.postFilter(query: String, kind: SearchKind) {
+		if (settings.isNsfwContentDisabled) {
+			removeAll { it.isNsfw }
+		}
 		when (kind) {
 			SearchKind.TITLE -> retainAll { m ->
 				m.matches(query, MATCH_THRESHOLD_DEFAULT)
