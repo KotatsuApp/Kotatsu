@@ -810,4 +810,8 @@
 	<string name="chapter_number">Chapter %s</string>
 	<string name="unnamed_chapter">Unnamed chapter</string>
 	<string name="search_disabled_sources">Search through disabled sources</string>
+	<string name="error_details">Error details</string>
+	<string name="error_disclaimer_manga">Try to open manga in a web browser to ensure it is available on its source.</string>
+	<string name="error_disclaimer_app_outdated">It looks like your version of Kotatsu is out of date. Please install the latest version to get all available fixes.</string>
+	<string name="error_disclaimer_report">You can submit a bug report to the developers. This will help us investigate and fix the issue.</string>
 </resources>

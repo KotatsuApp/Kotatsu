@@ -13,12 +13,35 @@
 		android:paddingTop="@dimen/margin_normal">
 
 		<TextView
-			android:id="@+id/textView_message"
-			style="@style/MaterialAlertDialog.Material3.Body.Text"
+			android:id="@+id/textView_summary"
+			style="?textAppearanceBodyMedium"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:linksClickable="true"
-			tools:text="@tools:sample/lorem[20]" />
+			tools:text="@tools:sample/lorem[14]" />
+
+		<TextView
+			android:id="@+id/textView_browser"
+			style="?textAppearanceBodySmall"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:text="@string/error_disclaimer_manga" />
+
+		<Button
+			android:id="@+id/button_browser"
+			style="?materialButtonTonalStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="6dp"
+			android:text="@string/open_in_browser" />
+
+		<TextView
+			android:id="@+id/textView_description"
+			style="?textAppearanceBodySmall"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			tools:text="@string/error_disclaimer_report" />
 
 	</LinearLayout>
 

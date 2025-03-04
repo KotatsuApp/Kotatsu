@@ -43,6 +43,9 @@ class AppUpdateRepository @Inject constructor(
 		append("/releases?page=1&per_page=10")
 	}
 
+	val isUpdateAvailable: Boolean
+		get() = availableUpdate.value != null
+
 	fun observeAvailableUpdate() = availableUpdate.asStateFlow()
 
 	suspend fun getAvailableVersions(): List<AppVersion> {
