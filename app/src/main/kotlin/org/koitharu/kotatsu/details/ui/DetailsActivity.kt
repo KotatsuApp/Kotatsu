@@ -4,13 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import android.transition.TransitionManager
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
@@ -38,7 +36,6 @@ import coil3.transform.RoundedCornersTransformation
 import coil3.util.CoilUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -59,7 +56,6 @@ import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
-import org.koitharu.kotatsu.core.ui.OnContextClickListenerCompat
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
@@ -119,9 +115,9 @@ import com.google.android.material.R as materialR
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
 	View.OnClickListener, OnApplyWindowInsetsListener,
-	View.OnLongClickListener, PopupMenu.OnMenuItemClickListener, View.OnLayoutChangeListener,
-	ViewTreeObserver.OnDrawListener, ChipsView.OnChipClickListener, OnListItemClickListener<Bookmark>,
-	OnContextClickListenerCompat, SwipeRefreshLayout.OnRefreshListener {
+	View.OnLayoutChangeListener, ViewTreeObserver.OnDrawListener,
+	ChipsView.OnChipClickListener, OnListItemClickListener<Bookmark>,
+	SwipeRefreshLayout.OnRefreshListener {
 
 	@Inject
 	lateinit var shortcutManager: AppShortcutManager
@@ -282,40 +278,6 @@ class DetailsActivity :
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag ?: return
 		router.showTagDialog(tag)
-	}
-
-	override fun onContextClick(v: View): Boolean = onLongClick(v)
-
-	override fun onLongClick(v: View): Boolean = when (v.id) {
-		R.id.button_read -> {
-			val menu = PopupMenu(v.context, v)
-			menu.inflate(R.menu.popup_read)
-			menu.menu.findItem(R.id.action_forget)?.isVisible = viewModel.historyInfo.value.run {
-				!isIncognitoMode && history != null
-			}
-			menu.setOnMenuItemClickListener(this)
-			menu.setForceShowIcon(true)
-			menu.show()
-			true
-		}
-
-		else -> false
-	}
-
-	override fun onMenuItemClick(item: MenuItem): Boolean {
-		return when (item.itemId) {
-			R.id.action_incognito -> {
-				openReader(isIncognitoMode = true)
-				true
-			}
-
-			R.id.action_forget -> {
-				viewModel.removeFromHistory()
-				true
-			}
-
-			else -> false
-		}
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
@@ -534,25 +496,6 @@ class DetailsActivity :
 		textViewProgressLabel.isVisible = info.history != null
 		textViewProgress.isVisible = info.history != null
 		progress.isVisible = info.history != null
-	}
-
-	private fun openReader(isIncognitoMode: Boolean) {
-		val manga = viewModel.manga.value ?: return
-		if (viewModel.historyInfo.value.isChapterMissing) {
-			Snackbar.make(viewBinding.scrollView, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
-				.show()
-		} else {
-			router.openReader(
-				ReaderIntent.Builder(this)
-					.manga(manga)
-					.branch(viewModel.selectedBranchValue)
-					.incognito(isIncognitoMode)
-					.build(),
-			)
-			if (isIncognitoMode) {
-				Toast.makeText(this, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
-			}
-		}
 	}
 
 	private fun bindTags(manga: Manga) {

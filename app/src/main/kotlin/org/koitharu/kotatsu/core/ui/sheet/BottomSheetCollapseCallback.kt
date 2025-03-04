@@ -21,19 +21,12 @@ class BottomSheetCollapseCallback(
 			object : BottomSheetBehavior.BottomSheetCallback() {
 
 				@SuppressLint("SwitchIntDef")
-				override fun onStateChanged(view: View, state: Int) {
-					when (state) {
-						STATE_EXPANDED,
-						STATE_HALF_EXPANDED -> isEnabled = true
-
-						STATE_COLLAPSED,
-						STATE_HIDDEN -> isEnabled = false
-					}
-				}
+				override fun onStateChanged(view: View, state: Int) = onStateChanged(state)
 
 				override fun onSlide(p0: View, p1: Float) = Unit
 			},
 		)
+		onStateChanged(behavior.state)
 	}
 
 	override fun handleOnBackPressed() = behavior.handleBackInvoked()
@@ -43,4 +36,14 @@ class BottomSheetCollapseCallback(
 	override fun handleOnBackProgressed(backEvent: BackEventCompat) = behavior.updateBackProgress(backEvent)
 
 	override fun handleOnBackStarted(backEvent: BackEventCompat) = behavior.startBackProgress(backEvent)
+
+	private fun onStateChanged(state: Int) {
+		when (state) {
+			STATE_EXPANDED,
+			STATE_HALF_EXPANDED -> isEnabled = true
+
+			STATE_COLLAPSED,
+			STATE_HIDDEN -> isEnabled = false
+		}
+	}
 }

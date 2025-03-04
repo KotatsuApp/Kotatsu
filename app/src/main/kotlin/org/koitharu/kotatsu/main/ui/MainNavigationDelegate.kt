@@ -97,6 +97,15 @@ class MainNavigationDelegate(
 		setCounter(item.id, counter)
 	}
 
+	fun syncSelectedItem() {
+		val fragment = primaryFragment ?: return
+		onFragmentChanged(fragment, fromUser = false)
+		val itemId = getItemId(fragment)
+		if (navBar.selectedItemId != itemId) {
+			navBar.selectedItemId = itemId
+		}
+	}
+
 	private fun setCounter(@IdRes id: Int, counter: Int) {
 		if (counter == 0) {
 			navBar.getBadge(id)?.isVisible = false

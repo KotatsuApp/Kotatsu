@@ -150,6 +150,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
 		adjustSearchUI(isSearchOpened(), animate = false)
+		navigationDelegate.syncSelectedItem()
 	}
 
 	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
