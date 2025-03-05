@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<style name="Base.V31.Kotatsu" parent="Base.V27.Kotatsu">
-		<item name="android:windowSplashScreenAnimatedIcon">@drawable/avd_splash</item>
-		<item name="android:windowSplashScreenAnimationDuration">@integer/splash_screen_duration</item>
-		<item name="android:windowSplashScreenBackground">@color/m3_sys_color_dynamic_dark_surface</item>
+	<style name="SplashTheme" parent="Theme.SplashScreen">
+		<item name="windowSplashScreenAnimatedIcon">@drawable/avd_splash</item>
+		<item name="windowSplashScreenAnimationDuration">@integer/splash_screen_duration</item>
+		<item name="windowSplashScreenBackground">@color/m3_sys_color_dynamic_dark_surface</item>
+		<item name="postSplashScreenTheme">@style/Theme.Kotatsu</item>
 	</style>
 
 	<!-- From ThemeOverlay.Material3.DynamicColors.Dark -->

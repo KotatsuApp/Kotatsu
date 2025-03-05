@@ -35,6 +35,7 @@ parsers = "77a5216ebf"
 preference = "1.2.1"
 recyclerview = "1.4.0"
 room = "2.6.1"
+splashscreen = "1.0.1"
 ssiv = "ba48c29803"
 swiperefreshlayout = "1.1.0"
 testRules = "1.6.1"
@@ -56,6 +57,7 @@ androidx-biometric = { module = "androidx.biometric:biometric-ktx", version.ref 
 androidx-collection = { module = "androidx.collection:collection-ktx", version.ref = "collections" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
 androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt" }
