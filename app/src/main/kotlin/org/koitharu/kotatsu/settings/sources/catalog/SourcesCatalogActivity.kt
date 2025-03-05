@@ -1,13 +1,17 @@
 package org.koitharu.kotatsu.settings.sources.catalog
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
+import androidx.core.graphics.Insets
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
@@ -23,7 +27,6 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView.ChipModel
 import org.koitharu.kotatsu.core.util.LocaleComparator
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -37,7 +40,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	OnListItemClickListener<SourceCatalogItem.Source>,
-	AppBarOwner, MenuItem.OnActionExpandListener, ChipsView.OnChipClickListener {
+	OnApplyWindowInsetsListener,
+	AppBarOwner,
+	MenuItem.OnActionExpandListener,
+	ChipsView.OnChipClickListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -51,9 +57,9 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySourcesCatalogBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		val sourcesAdapter = SourcesCatalogAdapter(this, coil, this)
 		with(viewBinding.recyclerView) {
-			consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 			setHasFixedSize(true)
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 			adapter = sourcesAdapter
@@ -69,6 +75,23 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			updateFilers(it.first, it.second, it.third)
 		}
 		addMenuProvider(SourcesCatalogMenuProvider(this, viewModel, this))
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		viewBinding.recyclerView.updatePadding(
+			left = bars.left,
+			right = bars.right,
+			bottom = bars.bottom,
+		)
+		viewBinding.appbar.updatePadding(
+			left = bars.left,
+			right = bars.right,
+			top = bars.top,
+		)
+		return return WindowInsetsCompat.Builder(insets)
+			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
+			.build()
 	}
 
 	override fun onChipClick(chip: Chip, data: Any?) {

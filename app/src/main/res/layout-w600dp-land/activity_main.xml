@@ -12,10 +12,14 @@
 		android:id="@+id/navRail"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
+		android:fitsSystemWindows="false"
 		app:elevation="1dp"
 		app:headerLayout="@layout/navigation_rail_fab"
 		app:labelVisibilityMode="labeled"
-		app:layout_constraintStart_toStartOf="parent" />
+		app:layout_constraintStart_toStartOf="parent"
+		app:paddingBottomSystemWindowInsets="false"
+		app:paddingStartSystemWindowInsets="false"
+		app:paddingTopSystemWindowInsets="false" />
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"

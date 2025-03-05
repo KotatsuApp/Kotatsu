@@ -25,6 +25,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.core.view.updatePaddingRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
@@ -224,9 +225,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				barsInsets.start(v)
 			}
 		}
+		viewBinding.bottomNav?.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			bottom = barsInsets.bottom,
+		)
 		return viewBinding.navRail?.let { navRail ->
 			navRail.updateLayoutParams<MarginLayoutParams> {
 				marginStart = barsInsets.start(v)
+				topMargin = barsInsets.top
+				bottomMargin = barsInsets.bottom
 			}
 			WindowInsetsCompat.Builder(insets)
 				.setInsets(WindowInsetsCompat.Type.systemBars(), barsInsets.consumeRelative(v, start = true))

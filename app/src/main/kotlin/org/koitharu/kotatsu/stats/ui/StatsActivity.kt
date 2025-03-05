@@ -4,12 +4,19 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewStub
 import android.widget.CompoundButton
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.graphics.Insets
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.AsyncListDiffer
 import coil3.ImageLoader
 import com.google.android.material.chip.Chip
@@ -24,12 +31,14 @@ import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.KotatsuColors
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.showOrHide
+import org.koitharu.kotatsu.core.util.ext.start
 import org.koitharu.kotatsu.databinding.ActivityStatsBinding
 import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
@@ -41,10 +50,13 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class StatsActivity : BaseActivity<ActivityStatsBinding>(),
+	OnApplyWindowInsetsListener,
 	OnListItemClickListener<Manga>,
 	PieChartView.OnSegmentClickListener,
 	AsyncListDiffer.ListListener<StatsRecord>,
-	ViewStub.OnInflateListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+	ViewStub.OnInflateListener,
+	View.OnClickListener,
+	CompoundButton.OnCheckedChangeListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -55,6 +67,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityStatsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		val adapter = BaseListAdapter<StatsRecord>()
 			.addDelegate(ListItemType.FEED, statsAD(this))
 			.addListListener(this)
@@ -86,6 +99,39 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 			)
 			adapter.emit(it)
 		}
+	}
+
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		val isTablet = viewBinding.guidelineCenter != null
+		viewBinding.appbar.updatePaddingRelative(
+			start = bars.start(v),
+			top = bars.top,
+			end = if (isTablet) 0 else bars.end(v),
+		)
+		val badgePadding = resources.getDimensionPixelOffset(R.dimen.list_spacing_large)
+		viewBinding.scrollViewChips.updatePaddingRelative(
+			start = badgePadding + if (isTablet) 0 else bars.start(v),
+			end = badgePadding + bars.end(v),
+			top = if (isTablet) bars.top else 0,
+		)
+		viewBinding.recyclerView.updatePaddingRelative(
+			start = if (isTablet) 0 else bars.start(v),
+			end = bars.end(v),
+			bottom = bars.bottom,
+		)
+		viewBinding.chart.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			val baseMargin = topMargin
+			bottomMargin = if (isTablet) baseMargin + bars.bottom else baseMargin
+			marginStart = baseMargin + bars.start(v)
+			marginEnd = if (isTablet) baseMargin else baseMargin + bars.end(v)
+		}
+		return return WindowInsetsCompat.Builder(insets)
+			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
+			.build()
 	}
 
 	override fun onClick(v: View) {

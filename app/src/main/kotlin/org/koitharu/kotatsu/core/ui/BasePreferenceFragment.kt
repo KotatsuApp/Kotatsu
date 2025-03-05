@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.core.view.ancestors
+import androidx.fragment.app.FragmentContainerView
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
@@ -12,6 +14,7 @@ import androidx.preference.get
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
@@ -49,7 +52,12 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 		val themedContext = (view.parentView ?: view).context
 		view.setBackgroundColor(themedContext.getThemeColor(android.R.attr.colorBackground))
 		listView.clipToPadding = false
-		listView.consumeInsetsAsPadding(Gravity.BOTTOM or Gravity.START or Gravity.END)
+		val insetsEdges = Gravity.BOTTOM or when {
+			!resources.getBoolean(R.bool.is_tablet) -> Gravity.FILL_HORIZONTAL
+			isMaster() -> Gravity.START
+			else -> Gravity.END
+		}
+		listView.consumeInsetsAsPadding(insetsEdges)
 	}
 
 	override fun onResume() {
@@ -90,5 +98,10 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 			}
 		}
 		return -1
+	}
+
+	private fun isMaster(): Boolean {
+		val container = view?.ancestors?.firstNotNullOfOrNull { it as? FragmentContainerView } ?: return false
+		return container.id == R.id.container_master
 	}
 }

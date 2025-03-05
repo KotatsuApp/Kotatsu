@@ -11,7 +11,7 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:elevation="0dp"
-		android:fitsSystemWindows="true"
+		android:fitsSystemWindows="false"
 		app:elevation="0dp"
 		app:layout_constraintEnd_toEndOf="@id/container_master"
 		app:layout_constraintStart_toStartOf="parent"

@@ -28,11 +28,12 @@
 	<HorizontalScrollView
 		android:id="@+id/scrollView_chips"
 		android:layout_width="0dp"
-		android:layout_height="wrap_content"
+		android:layout_height="0dp"
 		android:clipToPadding="false"
 		android:paddingHorizontal="12dp"
 		android:scrollIndicators="start"
 		android:scrollbars="none"
+		app:layout_constraintBottom_toBottomOf="@id/appbar"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/guideline_center"
 		app:layout_constraintTop_toTopOf="parent">
@@ -40,7 +41,8 @@
 		<com.google.android.material.chip.ChipGroup
 			android:id="@+id/layout_chips"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content">
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical">
 
 			<com.google.android.material.chip.Chip
 				android:id="@+id/chip_period"

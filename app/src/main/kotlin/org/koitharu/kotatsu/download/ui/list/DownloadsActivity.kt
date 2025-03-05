@@ -1,13 +1,17 @@
 package org.koitharu.kotatsu.download.ui.list
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
+import androidx.core.graphics.Insets
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -17,7 +21,6 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
@@ -28,6 +31,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	DownloadItemListener,
+	OnApplyWindowInsetsListener,
 	ListSelectionController.Callback {
 
 	@Inject
@@ -43,6 +47,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		val downloadsAdapter = DownloadsAdapter(this, coil, this)
 		val decoration = TypedListSpacingDecoration(this, false)
 		selectionController = ListSelectionController(
@@ -52,7 +57,6 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 			callback = this,
 		)
 		with(viewBinding.recyclerView) {
-			consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 			setHasFixedSize(true)
 			addItemDecoration(decoration)
 			adapter = downloadsAdapter
@@ -66,6 +70,23 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		viewModel.hasActiveWorks.observe(this, menuInvalidator)
 		viewModel.hasPausedWorks.observe(this, menuInvalidator)
 		viewModel.hasCancellableWorks.observe(this, menuInvalidator)
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		viewBinding.recyclerView.updatePadding(
+			left = bars.left,
+			right = bars.right,
+			bottom = bars.bottom,
+		)
+		viewBinding.appbar.updatePadding(
+			left = bars.left,
+			right = bars.right,
+			top = bars.top,
+		)
+		return return WindowInsetsCompat.Builder(insets)
+			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
+			.build()
 	}
 
 	override fun onItemClick(item: DownloadItemModel, view: View) {

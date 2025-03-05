@@ -2,8 +2,15 @@ package org.koitharu.kotatsu.settings
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePaddingRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentTransaction
@@ -17,8 +24,10 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.buildBundle
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.start
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
@@ -36,6 +45,7 @@ import org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment
 @AndroidEntryPoint
 class SettingsActivity :
 	BaseActivity<ActivitySettingsBinding>(),
+	OnApplyWindowInsetsListener,
 	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
 	AppBarOwner {
 
@@ -45,14 +55,12 @@ class SettingsActivity :
 	private val isMasterDetails
 		get() = viewBinding.containerMaster != null
 
-	private var screenPadding = 0
-
 	private val viewModel: SettingsSearchViewModel by viewModels()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySettingsBinding.inflate(layoutInflater))
-		screenPadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
+		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val fm = supportFragmentManager
 		val currentFragment = fm.findFragmentById(R.id.container)
@@ -67,6 +75,21 @@ class SettingsActivity :
 		}
 		viewModel.isSearchActive.observe(this, ::toggleSearchMode)
 		viewModel.onNavigateToPreference.observeEvent(this, ::navigateToPreference)
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		val isTablet = viewBinding.containerMaster != null
+		viewBinding.appbar.updatePaddingRelative(
+			start = bars.start(v),
+			top = bars.top,
+			end = if (isTablet) 0 else bars.end(v),
+		)
+		viewBinding.textViewHeader?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			marginEnd = bars.end(v)
+			topMargin = bars.top
+		}
+		return insets
 	}
 
 	override fun onPreferenceStartFragment(
