@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import dagger.hilt.android.EntryPointAccessors
@@ -31,6 +33,7 @@ import org.koitharu.kotatsu.main.ui.protect.ScreenshotPolicyHelper
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
 	ExceptionResolver.Host,
+	OnApplyWindowInsetsListener,
 	ScreenshotPolicyHelper.ContentContainer {
 
 	private var isAmoledTheme = false
@@ -78,16 +81,10 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	@Deprecated("Use ViewBinding", level = DeprecationLevel.ERROR)
-	override fun setContentView(layoutResID: Int) {
-		super.setContentView(layoutResID)
-		setupToolbar()
-	}
+	override fun setContentView(layoutResID: Int) = throw UnsupportedOperationException()
 
 	@Deprecated("Use ViewBinding", level = DeprecationLevel.ERROR)
-	override fun setContentView(view: View?) {
-		super.setContentView(view)
-		setupToolbar()
-	}
+	override fun setContentView(view: View?) = throw UnsupportedOperationException()
 
 	override fun getContext() = this
 
@@ -96,6 +93,7 @@ abstract class BaseActivity<B : ViewBinding> :
 	protected fun setContentView(binding: B) {
 		this.viewBinding = binding
 		super.setContentView(binding.root)
+		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 		val toolbar = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)
 		toolbar?.let(this::setSupportActionBar)
 	}
@@ -123,10 +121,6 @@ abstract class BaseActivity<B : ViewBinding> :
 			}
 		}
 		return super.onKeyDown(keyCode, event)
-	}
-
-	private fun setupToolbar() {
-		(findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
 	}
 
 	protected fun isDarkAmoledTheme(): Boolean {

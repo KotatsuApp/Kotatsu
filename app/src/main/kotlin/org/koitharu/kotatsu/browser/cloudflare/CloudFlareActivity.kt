@@ -3,12 +3,14 @@ package org.koitharu.kotatsu.browser.cloudflare
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +27,7 @@ import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAll
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 import javax.inject.Inject
@@ -58,7 +60,6 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		}
 		cfClient = CloudFlareClient(cookieJar, this, url)
 		viewBinding.webView.configureForParser(intent?.getStringExtra(AppRouter.KEY_USER_AGENT))
-		viewBinding.webView.consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 		viewBinding.webView.webViewClient = cfClient
 		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView).also {
 			onBackPressedDispatcher.addCallback(it)
@@ -67,6 +68,25 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 			onTitleChanged(getString(R.string.loading_), url)
 			viewBinding.webView.loadUrl(url)
 		}
+	}
+
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		val type = WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime()
+		val barsInsets = insets.getInsets(type)
+		viewBinding.webView.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			bottom = barsInsets.bottom,
+		)
+		viewBinding.appbar.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			top = barsInsets.top,
+		)
+		return insets.consumeAll(type)
 	}
 
 	override fun onDestroy() {

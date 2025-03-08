@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.list.ui
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -11,6 +10,7 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.appcompat.view.ActionMode
 import androidx.collection.ArraySet
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -37,7 +37,7 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAll
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -110,7 +110,6 @@ abstract class MangaListFragment :
 		)
 		paginationListener = PaginationScrollListener(4, this)
 		with(binding.recyclerView) {
-			consumeInsetsAsPadding(Gravity.START or Gravity.BOTTOM or Gravity.END)
 			setHasFixedSize(true)
 			adapter = listAdapter
 			checkNotNull(selectionController).attachToRecyclerView(this)
@@ -130,6 +129,19 @@ abstract class MangaListFragment :
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		val barsInsets = insets.getInsets(typeMask)
+		val basePadding = v.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
+		viewBinding?.recyclerView?.setPadding(
+			left = barsInsets.left + basePadding,
+			top = basePadding,
+			right = barsInsets.right + basePadding,
+			bottom = barsInsets.bottom + basePadding,
+		)
+		return insets.consumeAll(typeMask)
 	}
 
 	override fun onDestroyView() {

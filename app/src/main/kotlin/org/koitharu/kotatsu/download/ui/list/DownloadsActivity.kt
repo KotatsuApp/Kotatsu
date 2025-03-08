@@ -8,8 +8,6 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import coil3.ImageLoader
@@ -31,7 +29,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	DownloadItemListener,
-	OnApplyWindowInsetsListener,
 	ListSelectionController.Callback {
 
 	@Inject
@@ -47,7 +44,6 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		val downloadsAdapter = DownloadsAdapter(this, coil, this)
 		val decoration = TypedListSpacingDecoration(this, false)
 		selectionController = ListSelectionController(

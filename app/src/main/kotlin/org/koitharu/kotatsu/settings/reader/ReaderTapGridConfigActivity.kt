@@ -4,7 +4,6 @@ import android.content.DialogInterface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -14,14 +13,16 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.findKeyByValue
 import org.koitharu.kotatsu.core.util.ext.getThemeDrawable
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityReaderTapActionsBinding
 import org.koitharu.kotatsu.reader.domain.TapGridArea
 import org.koitharu.kotatsu.reader.ui.tapgrid.TapAction
@@ -39,7 +40,6 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderTapActionsBinding.inflate(layoutInflater))
-		viewBinding.root.consumeInsetsAsPadding(Gravity.FILL)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		controls[TapGridArea.TOP_LEFT] = viewBinding.textViewTopLeft
 		controls[TapGridArea.TOP_CENTER] = viewBinding.textViewTopCenter
@@ -57,6 +57,17 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 		}
 
 		viewModel.content.observe(this, ::onContentChanged)
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		viewBinding.root.setPadding(
+			barsInsets.left,
+			barsInsets.top,
+			barsInsets.right,
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -10,6 +10,8 @@ import android.widget.RatingBar
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.text.method.LinkMovementMethodCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import coil3.ImageLoader
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +20,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
+import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
@@ -80,6 +83,15 @@ class ScrobblingInfoSheet :
 		super.onDestroyView()
 		menu = null
 	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		viewBinding?.root?.updatePadding(
+			bottom = insets.getInsets(typeMask).bottom,
+		)
+		return insets.consume(v, typeMask, bottom = true)
+	}
+
 
 	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 		viewModel.updateScrobbling(

@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -25,6 +27,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
+import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
@@ -121,6 +124,14 @@ class ReaderConfigSheet :
 		findParentCallback(Callback::class.java)?.run {
 			binding.switchScrollTimer.isChecked = isAutoScrollEnabled
 		}
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		viewBinding?.scrollView?.updatePadding(
+			bottom = insets.getInsets(typeMask).bottom,
+		)
+		return insets.consume(v, typeMask, bottom = true)
 	}
 
 	override fun onClick(v: View) {

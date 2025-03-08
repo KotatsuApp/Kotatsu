@@ -36,6 +36,13 @@
 
 	<style name="ThemeOverlay.Kotatsu.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
 		<item name="android:windowAnimationStyle">@style/Animation.Kotatsu.BottomSheetDialog</item>
+		<item name="bottomSheetStyle">@style/Widget.Kotatsu.BottomSheet.Modal</item>
+	</style>
+
+	<style name="ThemeOverlay.Kotatsu.SideSheetDialog" parent="ThemeOverlay.Material3.SideSheetDialog" />
+
+	<style name="Widget.Kotatsu.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
+		<item name="paddingBottomSystemWindowInsets">false</item>
 	</style>
 
 	<style name="Widget.Kotatsu.BottomSheet.DragHandle" parent="Widget.Material3.BottomSheet.DragHandle">

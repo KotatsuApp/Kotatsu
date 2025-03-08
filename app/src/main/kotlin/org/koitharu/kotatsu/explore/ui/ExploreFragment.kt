@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -13,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,10 +32,11 @@ import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.util.SpanSizeResolver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.FragmentExploreBinding
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreAdapter
 import org.koitharu.kotatsu.explore.ui.adapter.ExploreListEventListener
@@ -79,7 +80,6 @@ class ExploreFragment :
 			callback = this,
 		)
 		with(binding.recyclerView) {
-			consumeInsetsAsPadding(Gravity.BOTTOM or Gravity.START or Gravity.END)
 			adapter = exploreAdapter
 			setHasFixedSize(true)
 			SpanSizeResolver(this, resources.getDimensionPixelSize(R.dimen.explore_grid_width)).attach()
@@ -95,6 +95,18 @@ class ExploreFragment :
 		viewModel.onShowSuggestionsTip.observeEvent(viewLifecycleOwner) {
 			showSuggestionsTip()
 		}
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val basePadding = v.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
+		viewBinding?.recyclerView?.setPadding(
+			/* left = */ barsInsets.left + basePadding,
+			/* top = */ basePadding,
+			/* right = */ barsInsets.right + basePadding,
+			/* bottom = */ barsInsets.bottom + basePadding,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onDestroyView() {

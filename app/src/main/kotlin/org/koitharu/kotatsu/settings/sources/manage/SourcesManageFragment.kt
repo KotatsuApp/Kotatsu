@@ -1,14 +1,15 @@
 package org.koitharu.kotatsu.settings.sources.manage
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -23,10 +24,14 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
+import org.koitharu.kotatsu.core.util.ext.container
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.start
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
@@ -72,7 +77,6 @@ class SourcesManageFragment :
 		sourcesAdapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
-			consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 			adapter = sourcesAdapter
 			reorderHelper = ItemTouchHelper(SourcesReorderCallback()).also {
 				it.attachToRecyclerView(this)
@@ -84,6 +88,19 @@ class SourcesManageFragment :
 			ReversibleActionObserver(binding.recyclerView),
 		)
 		addMenuProvider(SourcesMenuProvider())
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val isTablet = !resources.getBoolean(R.bool.is_tablet)
+		val isMaster = container?.id == R.id.container_master
+		v.setPaddingRelative(
+			if (isTablet && !isMaster) 0 else barsInsets.start(v),
+			0,
+			if (isTablet && isMaster) 0 else barsInsets.end(v),
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onResume() {

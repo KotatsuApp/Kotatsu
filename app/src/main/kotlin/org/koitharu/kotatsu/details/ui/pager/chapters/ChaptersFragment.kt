@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -49,7 +47,6 @@ import kotlin.math.roundToInt
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
 	OnListItemClickListener<ChapterListItem>,
-	OnApplyWindowInsetsListener,
 	RecyclerViewOwner,
 	ChipsView.OnChipClickListener {
 
@@ -84,7 +81,6 @@ class ChaptersFragment :
 				LinearLayoutManager(context)
 			}
 		}
-		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 		with(binding.recyclerViewChapters) {
 			addItemDecoration(TypedListSpacingDecoration(context, true))
 			checkNotNull(selectionController).attachToRecyclerView(this)

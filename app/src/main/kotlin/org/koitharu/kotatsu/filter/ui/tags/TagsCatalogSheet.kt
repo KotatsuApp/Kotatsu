@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.withCreationCallback
@@ -17,6 +18,7 @@ import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
+import org.koitharu.kotatsu.core.util.ext.consumeAll
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.SheetTagsBinding
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
@@ -57,6 +59,18 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(),
 		viewModel.content.observe(viewLifecycleOwner, adapter)
 		addSheetCallback(this, viewLifecycleOwner)
 		disableFitToContents()
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeBask = WindowInsetsCompat.Type.systemBars()
+		val barsInsets = insets.getInsets(typeBask)
+		viewBinding?.recyclerView?.setPadding(
+			barsInsets.left,
+			barsInsets.top,
+			barsInsets.right,
+			barsInsets.bottom,
+		)
+		return insets.consumeAll(typeBask)
 	}
 
 	override fun onItemClick(item: TagCatalogItem, view: View) {

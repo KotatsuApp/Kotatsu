@@ -2,10 +2,6 @@ package org.koitharu.kotatsu.reader.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.transition.Fade
-import android.transition.Slide
-import android.transition.TransitionManager
-import android.transition.TransitionSet
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -14,8 +10,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.graphics.Insets
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -23,6 +17,10 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.transition.Fade
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -63,7 +61,6 @@ class ReaderActivity :
 	TapGridDispatcher.OnGridTouchListener,
 	ReaderConfigSheet.Callback,
 	ReaderControlDelegate.OnInteractionListener,
-	OnApplyWindowInsetsListener,
 	ReaderNavigationCallback,
 	IdlingDetector.Callback,
 	ZoomControl.ZoomControlListener {
@@ -116,7 +113,6 @@ class ReaderActivity :
 		viewBinding.zoomControl.listener = this
 		viewBinding.actionsView.listener = this
 		idlingDetector.bindToLifecycle(this)
-		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		screenOrientationHelper.applySettings()
 
 		viewModel.onError.observeEvent(
@@ -297,7 +293,9 @@ class ReaderActivity :
 					.setOrdering(TransitionSet.ORDERING_TOGETHER)
 					.addTransition(Slide(Gravity.TOP).addTarget(viewBinding.appbarTop))
 					.addTransition(Fade().addTarget(viewBinding.infoBar))
-					.addTransition(Slide(Gravity.BOTTOM).addTarget(viewBinding.toolbarDocked))
+				viewBinding.toolbarDocked?.let {
+					transition.addTransition(Slide(Gravity.BOTTOM).addTarget(it))
+				}
 				TransitionManager.beginDelayedTransition(viewBinding.root, transition)
 			}
 			val isFullscreen = settings.isReaderFullscreenEnabled

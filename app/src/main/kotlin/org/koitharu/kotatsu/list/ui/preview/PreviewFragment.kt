@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.text.method.LinkMovementMethodCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import coil3.ImageLoader
@@ -67,6 +68,8 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 		viewModel.tagsChips.observe(viewLifecycleOwner, ::onTagsChipsChanged)
 		viewModel.description.observe(viewLifecycleOwner, ::onDescriptionChanged)
 	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat = insets
 
 	override fun onClick(v: View) {
 		val manga = viewModel.manga.value

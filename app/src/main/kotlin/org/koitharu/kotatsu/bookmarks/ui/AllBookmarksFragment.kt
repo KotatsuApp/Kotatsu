@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.bookmarks.ui
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.view.ActionMode
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import coil3.ImageLoader
@@ -26,10 +26,11 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.FragmentListSimpleBinding
 import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListHeaderClickListener
@@ -85,7 +86,6 @@ class AllBookmarksFragment :
 		)
 		val spanSizeLookup = SpanSizeLookup()
 		with(binding.recyclerView) {
-			consumeInsetsAsPadding(Gravity.BOTTOM or Gravity.START or Gravity.END)
 			setHasFixedSize(true)
 			val spanResolver = GridSpanResolver(resources)
 			addItemDecoration(TypedListSpacingDecoration(context, false))
@@ -105,6 +105,18 @@ class AllBookmarksFragment :
 			SnackbarErrorObserver(binding.recyclerView, this),
 		)
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val basePadding = resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
+		viewBinding?.recyclerView?.setPadding(
+			barsInsets.left + basePadding,
+			barsInsets.top + basePadding,
+			barsInsets.right + basePadding,
+			barsInsets.bottom + basePadding,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onDestroyView() {

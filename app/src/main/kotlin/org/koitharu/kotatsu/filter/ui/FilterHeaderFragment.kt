@@ -2,7 +2,9 @@ package org.koitharu.kotatsu.filter.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,6 +48,8 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 			.flowOn(Dispatchers.Default)
 			.observe(viewLifecycleOwner, ::onDataChanged)
 	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat = insets
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		when (data) {

@@ -3,18 +3,20 @@ package org.koitharu.kotatsu.widget.shelf
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityAppwidgetShelfBinding
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
@@ -40,7 +42,6 @@ class ShelfWidgetConfigActivity :
 		}
 		adapter = CategorySelectAdapter(this)
 		viewBinding.recyclerView.adapter = adapter
-		viewBinding.recyclerView.consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 		viewBinding.buttonDone.setOnClickListener(this)
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -56,6 +57,21 @@ class ShelfWidgetConfigActivity :
 
 		viewModel.content.observe(this, adapter)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		viewBinding.recyclerView.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			bottom = barsInsets.bottom,
+		)
+		viewBinding.appbar.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			top = barsInsets.top,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onClick(v: View) {

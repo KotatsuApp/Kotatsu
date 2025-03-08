@@ -2,7 +2,9 @@ package org.koitharu.kotatsu.core.util.ext
 
 import android.os.Bundle
 import androidx.core.view.MenuProvider
+import androidx.core.view.ancestors
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 
@@ -29,3 +31,8 @@ tailrec fun <T> Fragment.findParentCallback(cls: Class<T>): T? {
 		else -> parent.findParentCallback(cls)
 	}
 }
+
+val Fragment.container: FragmentContainerView?
+	get() = view?.ancestors?.firstNotNullOfOrNull {
+		it as? FragmentContainerView // TODO check if direct parent
+	}

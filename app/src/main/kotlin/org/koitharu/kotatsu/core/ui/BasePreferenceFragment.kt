@@ -2,11 +2,11 @@ package org.koitharu.kotatsu.core.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import androidx.annotation.StringRes
-import androidx.core.view.ancestors
-import androidx.fragment.app.FragmentContainerView
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
@@ -18,10 +18,14 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
+import org.koitharu.kotatsu.core.util.ext.container
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.getThemeDrawable
 import org.koitharu.kotatsu.core.util.ext.parentView
+import org.koitharu.kotatsu.core.util.ext.start
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.settings.SettingsActivity
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -29,6 +33,7 @@ import com.google.android.material.R as materialR
 @AndroidEntryPoint
 abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 	PreferenceFragmentCompat(),
+	OnApplyWindowInsetsListener,
 	RecyclerViewOwner,
 	ExceptionResolver.Host {
 
@@ -49,15 +54,23 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		ViewCompat.setOnApplyWindowInsetsListener(view, this)
 		val themedContext = (view.parentView ?: view).context
 		view.setBackgroundColor(themedContext.getThemeColor(android.R.attr.colorBackground))
 		listView.clipToPadding = false
-		val insetsEdges = Gravity.BOTTOM or when {
-			!resources.getBoolean(R.bool.is_tablet) -> Gravity.FILL_HORIZONTAL
-			isMaster() -> Gravity.START
-			else -> Gravity.END
-		}
-		listView.consumeInsetsAsPadding(insetsEdges)
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val isTablet = !resources.getBoolean(R.bool.is_tablet)
+		val isMaster = container?.id == R.id.container_master
+		listView.setPaddingRelative(
+			if (isTablet && !isMaster) 0 else barsInsets.start(v),
+			0,
+			if (isTablet && isMaster) 0 else barsInsets.end(v),
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onResume() {
@@ -98,10 +111,5 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 			}
 		}
 		return -1
-	}
-
-	private fun isMaster(): Boolean {
-		val container = view?.ancestors?.firstNotNullOfOrNull { it as? FragmentContainerView } ?: return false
-		return container.id == R.id.container_master
 	}
 }

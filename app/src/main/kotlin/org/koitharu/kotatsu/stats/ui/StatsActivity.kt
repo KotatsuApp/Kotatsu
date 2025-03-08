@@ -10,8 +10,6 @@ import android.widget.CompoundButton
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -50,7 +48,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class StatsActivity : BaseActivity<ActivityStatsBinding>(),
-	OnApplyWindowInsetsListener,
 	OnListItemClickListener<Manga>,
 	PieChartView.OnSegmentClickListener,
 	AsyncListDiffer.ListListener<StatsRecord>,
@@ -67,7 +64,6 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityStatsBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		val adapter = BaseListAdapter<StatsRecord>()
 			.addDelegate(ListItemType.FEED, statsAD(this))
 			.addListListener(this)

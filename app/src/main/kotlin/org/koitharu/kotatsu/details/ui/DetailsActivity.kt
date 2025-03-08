@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.details.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +9,6 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.text.method.LinkMovementMethodCompat
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -19,6 +16,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.core.view.updatePaddingRelative
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.transition.TransitionManager
 import coil3.ImageLoader
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
@@ -68,7 +66,7 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.LocaleUtils
-import org.koitharu.kotatsu.core.util.ext.consumeRelative
+import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.copyToClipboard
 import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
@@ -77,6 +75,7 @@ import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.isTextTruncated
 import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
@@ -114,7 +113,7 @@ import com.google.android.material.R as materialR
 @AndroidEntryPoint
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
-	View.OnClickListener, OnApplyWindowInsetsListener,
+	View.OnClickListener,
 	View.OnLayoutChangeListener, ViewTreeObserver.OnDrawListener,
 	ChipsView.OnChipClickListener, OnListItemClickListener<Bookmark>,
 	SwipeRefreshLayout.OnRefreshListener {
@@ -162,7 +161,6 @@ class DetailsActivity :
 				DetailsBottomSheetCallback(viewBinding.swipeRefreshLayout, checkNotNull(viewBinding.navbarDim)),
 			)
 		}
-		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 
 		val appRouter = router
 		viewModel.mangaDetails.filterNotNull().observe(this, ::onMangaUpdated)
@@ -244,7 +242,11 @@ class DetailsActivity :
 
 			R.id.button_description_more -> {
 				val tv = viewBinding.textViewDescription
-				TransitionManager.beginDelayedTransition(tv.parentView)
+				if (tv.context.isAnimationsEnabled) {
+					tv.parentView?.let {
+						TransitionManager.beginDelayedTransition(it)
+					}
+				}
 				if (tv.maxLines in 1 until Integer.MAX_VALUE) {
 					tv.maxLines = Integer.MAX_VALUE
 				} else {
@@ -319,7 +321,8 @@ class DetailsActivity :
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		val barsInsets = insets.getInsets(typeMask)
 		if (viewBinding.cardChapters != null) {
 			// landscape
 			viewBinding.cardChapters?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
@@ -334,12 +337,11 @@ class DetailsActivity :
 			viewBinding.appbar.updatePaddingRelative(
 				start = barsInsets.start(v),
 			)
-			return WindowInsetsCompat.Builder(insets)
-				.setInsets(
-					WindowInsetsCompat.Type.systemBars(),
-					barsInsets.consumeRelative(v, end = true, bottom = true),
-				).build()
+			return insets.consume(v, typeMask, bottom = true, end = true)
 		} else {
+			viewBinding.navbarDim?.updateLayoutParams {
+				height = barsInsets.bottom
+			}
 			return insets
 		}
 	}

@@ -15,9 +15,7 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.SoftwareKeyboardControllerCompat
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import androidx.core.view.inputmethod.EditorInfoCompat
@@ -25,7 +23,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
-import androidx.core.view.updatePaddingRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
@@ -53,7 +50,7 @@ import org.koitharu.kotatsu.core.ui.util.FadingAppbarMediator
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.OptionsMenuBadgeHelper
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
-import org.koitharu.kotatsu.core.util.ext.consumeRelative
+import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -84,7 +81,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	View.OnClickListener,
 	View.OnFocusChangeListener,
 	SearchSuggestionListener,
-	OnApplyWindowInsetsListener,
 	MainNavigationDelegate.OnFragmentChangedListener,
 	View.OnLayoutChangeListener {
 
@@ -107,7 +103,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMainBinding.inflate(layoutInflater))
-		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 
 		with(viewBinding.searchView) {
 			onFocusChangeListener = this@MainActivity
@@ -216,7 +211,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		val barsInsets = insets.getInsets(typeMask)
 		viewBinding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
 			marginEnd = barsInsets.end(v)
 			marginStart = if (viewBinding.navRail != null) {
@@ -230,16 +226,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			right = barsInsets.right,
 			bottom = barsInsets.bottom,
 		)
-		return viewBinding.navRail?.let { navRail ->
-			navRail.updateLayoutParams<MarginLayoutParams> {
-				marginStart = barsInsets.start(v)
-				topMargin = barsInsets.top
-				bottomMargin = barsInsets.bottom
-			}
-			WindowInsetsCompat.Builder(insets)
-				.setInsets(WindowInsetsCompat.Type.systemBars(), barsInsets.consumeRelative(v, start = true))
-				.build()
-		} ?: insets
+		viewBinding.navRail?.updateLayoutParams<MarginLayoutParams> {
+			marginStart = barsInsets.start(v)
+			topMargin = barsInsets.top
+			bottomMargin = barsInsets.bottom
+		}
+		return insets.consume(v, typeMask, start = viewBinding.navRail != null)
 	}
 
 	override fun onLayoutChange(

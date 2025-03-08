@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.consumeAll
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentListBinding
@@ -81,6 +83,19 @@ class FeedFragment :
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 		viewModel.isRunning.observe(viewLifecycleOwner, this::onIsTrackerRunningChanged)
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		val barsInsets = insets.getInsets(typeMask)
+		val basePadding = v.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
+		viewBinding?.recyclerView?.setPadding(
+			left = barsInsets.left + basePadding,
+			top = basePadding,
+			right = barsInsets.right + basePadding,
+			bottom = barsInsets.bottom + basePadding,
+		)
+		return insets.consumeAll(typeMask)
 	}
 
 	override fun onRefresh() {

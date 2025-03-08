@@ -318,7 +318,7 @@
 		app:paddingBottomSystemWindowInsets="false"
 		tools:layout="@layout/sheet_chapters_pages" />
 
-	<org.koitharu.kotatsu.core.ui.widgets.WindowInsetHolder
+	<View
 		android:id="@+id/navbarDim"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

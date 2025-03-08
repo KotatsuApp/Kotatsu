@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -45,7 +43,6 @@ import org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment
 @AndroidEntryPoint
 class SettingsActivity :
 	BaseActivity<ActivitySettingsBinding>(),
-	OnApplyWindowInsetsListener,
 	PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
 	AppBarOwner {
 
@@ -60,7 +57,6 @@ class SettingsActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySettingsBinding.inflate(layoutInflater))
-		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val fm = supportFragmentManager
 		val currentFragment = fm.findFragmentById(R.id.container)

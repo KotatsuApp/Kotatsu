@@ -2,9 +2,10 @@ package org.koitharu.kotatsu.scrobbling.common.ui.config
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import coil3.request.error
 import coil3.request.fallback
@@ -16,13 +17,14 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.showOrHide
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityScrobblerConfigBinding
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
@@ -48,7 +50,6 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 
 		val listAdapter = ScrobblingMangaAdapter(this, coil, this)
 		with(viewBinding.recyclerView) {
-			consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 			adapter = listAdapter
 			setHasFixedSize(true)
 			val decoration = TypedListSpacingDecoration(context, false)
@@ -71,6 +72,23 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		super.onNewIntent(intent)
 		setIntent(intent)
 		processIntent(intent)
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val basePadding = v.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
+		viewBinding.appbar.updatePadding(
+			top = barsInsets.top,
+			left = barsInsets.left,
+			right = barsInsets.right,
+		)
+		viewBinding.recyclerView.setPadding(
+			barsInsets.left + basePadding,
+			barsInsets.top + basePadding,
+			barsInsets.right + basePadding,
+			barsInsets.bottom + basePadding,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onItemClick(item: ScrobblingInfo, view: View) {

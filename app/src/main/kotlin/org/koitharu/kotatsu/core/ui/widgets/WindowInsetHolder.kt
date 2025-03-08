@@ -10,6 +10,8 @@ import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowInsetsCompat
+import org.koitharu.kotatsu.core.util.ext.end
+import org.koitharu.kotatsu.core.util.ext.start
 
 class WindowInsetHolder @JvmOverloads constructor(
 	context: Context,
@@ -24,9 +26,9 @@ class WindowInsetHolder @JvmOverloads constructor(
 		val barsInsets = WindowInsetsCompat.toWindowInsetsCompat(insets, this)
 			.getInsets(WindowInsetsCompat.Type.systemBars())
 		val gravity = getLayoutGravity()
-		val newWidth = when (gravity and Gravity.HORIZONTAL_GRAVITY_MASK) {
-			Gravity.LEFT -> barsInsets.left
-			Gravity.RIGHT -> barsInsets.right
+		val newWidth = when (gravity and Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK) {
+			Gravity.START -> barsInsets.start(this)
+			Gravity.END -> barsInsets.end(this)
 			else -> 0
 		}
 		val newHeight = when (gravity and Gravity.VERTICAL_GRAVITY_MASK) {

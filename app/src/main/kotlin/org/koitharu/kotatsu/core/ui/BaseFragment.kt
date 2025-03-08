@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import dagger.hilt.android.EntryPointAccessors
@@ -12,6 +14,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
 
 abstract class BaseFragment<B : ViewBinding> :
+	OnApplyWindowInsetsListener,
 	Fragment(),
 	ExceptionResolver.Host {
 
@@ -42,6 +45,7 @@ abstract class BaseFragment<B : ViewBinding> :
 
 	final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		ViewCompat.setOnApplyWindowInsetsListener(view, this)
 		onViewBindingCreated(requireViewBinding(), savedInstanceState)
 	}
 

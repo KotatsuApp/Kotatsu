@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView.NO_ID
@@ -22,6 +24,7 @@ import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.util.CollapseActionViewCallback
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -112,6 +115,15 @@ class ScrobblingSelectorSheet :
 		super.onDestroyView()
 		collapsibleActionViewCallback = null
 		paginationScrollListener = null
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		val basePadding = v.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
+		viewBinding?.recyclerView?.updatePadding(
+			bottom = basePadding + insets.getInsets(typeMask).bottom,
+		)
+		return insets.consume(v, typeMask, bottom = true)
 	}
 
 	override fun onCurrentListChanged(previousList: MutableList<ListModel>, currentList: MutableList<ListModel>) {

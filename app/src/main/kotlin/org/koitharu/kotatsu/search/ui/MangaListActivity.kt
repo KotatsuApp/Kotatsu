@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.os.bundleOf
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePaddingRelative
@@ -32,7 +30,7 @@ import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.util.ViewBadge
-import org.koitharu.kotatsu.core.util.ext.consumeRelative
+import org.koitharu.kotatsu.core.util.ext.consumeSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.getSerializableExtraCompat
@@ -60,7 +58,6 @@ class MangaListActivity :
 	BaseActivity<ActivityMangaListBinding>(),
 	AppBarOwner, View.OnClickListener,
 	FilterCoordinator.Owner,
-	OnApplyWindowInsetsListener,
 	AppBarLayout.OnOffsetChangedListener {
 
 	override val appBar: AppBarLayout
@@ -82,8 +79,6 @@ class MangaListActivity :
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		if (viewBinding.containerFilterHeader != null) {
 			viewBinding.appbar.addOnOffsetChangedListener(this)
-		} else {
-			ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		}
 		viewBinding.buttonOrder?.setOnClickListener(this)
 		title = source.getTitle(this)
@@ -113,17 +108,10 @@ class MangaListActivity :
 		}
 		viewBinding.appbar.updatePaddingRelative(
 			top = barsInsets.top,
+			end = if (viewBinding.cardSide == null) barsInsets.end(v) else 0,
 			start = barsInsets.start(v),
 		)
-		return WindowInsetsCompat.Builder(insets)
-			.setInsets(
-				WindowInsetsCompat.Type.systemBars(),
-				barsInsets.consumeRelative(
-					v,
-					top = true,
-					end = true,
-				),
-			).build()
+		return insets.consumeSystemBarsInsets(v, top = true, end = true)
 	}
 
 	override fun onClick(v: View) {

@@ -8,9 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -23,6 +20,7 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
@@ -33,7 +31,7 @@ import org.koitharu.kotatsu.settings.storage.RequestStorageManagerPermissionCont
 
 @AndroidEntryPoint
 class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>(),
-	OnListItemClickListener<DirectoryModel>, View.OnClickListener, OnApplyWindowInsetsListener {
+	OnListItemClickListener<DirectoryModel>, View.OnClickListener {
 
 	private val viewModel: MangaDirectoriesViewModel by viewModels()
 	private val pickFileTreeLauncher = OpenDocumentTreeHelper(
@@ -64,7 +62,6 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMangaDirectoriesBinding.inflate(layoutInflater))
-		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		val adapter = AsyncListDifferDelegationAdapter(DirectoryDiffCallback(), directoryConfigAD(this))
 		viewBinding.recyclerView.adapter = adapter
@@ -105,8 +102,6 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 		viewBinding.recyclerView.updatePadding(
 			bottom = barsInsets.bottom,
 		)
-		return WindowInsetsCompat.Builder(insets)
-			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
-			.build()
+		return insets.consumeAllSystemBarsInsets()
 	}
 }

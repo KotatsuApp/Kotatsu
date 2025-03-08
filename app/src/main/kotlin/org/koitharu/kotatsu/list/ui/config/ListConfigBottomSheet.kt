@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
@@ -15,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
+import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.progress.IntPercentLabelFormatter
 import org.koitharu.kotatsu.databinding.SheetListModeBinding
@@ -71,6 +74,14 @@ class ListConfigBottomSheet :
 			binding.spinnerOrder.onItemSelectedListener = this
 			binding.cardOrder.isVisible = true
 		}
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		viewBinding?.scrollView?.updatePadding(
+			bottom = insets.getInsets(typeMask).bottom,
+		)
+		return insets.consume(v, typeMask, bottom = true)
 	}
 
 	override fun onButtonChecked(group: MaterialButtonToggleGroup?, checkedId: Int, isChecked: Boolean) {

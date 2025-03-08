@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -33,6 +31,7 @@ import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.PopupMenuMediator
 import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.util.ext.consumeAll
 import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getDisplayIcon
@@ -50,7 +49,6 @@ import com.google.android.material.R as materialR
 @AndroidEntryPoint
 class ImageActivity : BaseActivity<ActivityImageBinding>(),
 	ImageRequest.Listener,
-	OnApplyWindowInsetsListener,
 	View.OnClickListener {
 
 	@Inject
@@ -63,7 +61,6 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityImageBinding.inflate(layoutInflater))
-		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		viewBinding.buttonBack.setOnClickListener(this)
 		viewBinding.buttonMenu.setOnClickListener(this)
 		val imageUrl = requireNotNull(intent.data)
@@ -111,16 +108,18 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		val barsInsets = insets.getInsets(typeMask)
+		val baseMargin = v.resources.getDimensionPixelOffset(R.dimen.screen_padding)
 		viewBinding.buttonMenu.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			marginEnd = barsInsets.end(v)
-			topMargin = barsInsets.top
+			marginEnd = barsInsets.end(v) + baseMargin
+			topMargin = barsInsets.top + baseMargin
 		}
 		viewBinding.buttonBack.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			marginStart = barsInsets.start(v)
-			topMargin = barsInsets.top
+			marginStart = barsInsets.start(v) + baseMargin
+			topMargin = barsInsets.top + baseMargin
 		}
-		return insets
+		return insets.consumeAll(typeMask)
 	}
 
 	private fun loadImage(url: Uri?) {

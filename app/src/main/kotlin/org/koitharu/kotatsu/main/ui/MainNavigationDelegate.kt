@@ -58,13 +58,16 @@ class MainNavigationDelegate(
 	}
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean {
-		return onNavigationItemSelected(item.itemId)
+		return if (onNavigationItemSelected(item.itemId)) {
+			item.isChecked = true
+			true
+		} else {
+			false
+		}
 	}
 
 	override fun onNavigationItemReselected(item: MenuItem) {
-		val fragment = fragmentManager.findFragmentByTag(TAG_PRIMARY)
-		val recyclerView = (fragment as? RecyclerViewOwner)?.recyclerView ?: return
-		recyclerView.smoothScrollToTop()
+		onNavigationItemReselected()
 	}
 
 	override fun handleOnBackPressed() {
@@ -137,19 +140,22 @@ class MainNavigationDelegate(
 	}
 
 	private fun onNavigationItemSelected(@IdRes itemId: Int): Boolean {
-		return setPrimaryFragment(
-			when (itemId) {
-				R.id.nav_history -> HistoryListFragment::class.java
-				R.id.nav_favorites -> FavouritesContainerFragment::class.java
-				R.id.nav_explore -> ExploreFragment::class.java
-				R.id.nav_feed -> FeedFragment::class.java
-				R.id.nav_local -> LocalListFragment::class.java
-				R.id.nav_suggestions -> SuggestionsFragment::class.java
-				R.id.nav_bookmarks -> AllBookmarksFragment::class.java
-				R.id.nav_updated -> UpdatesFragment::class.java
-				else -> return false
-			},
-		)
+		val newFragment = when (itemId) {
+			R.id.nav_history -> HistoryListFragment::class.java
+			R.id.nav_favorites -> FavouritesContainerFragment::class.java
+			R.id.nav_explore -> ExploreFragment::class.java
+			R.id.nav_feed -> FeedFragment::class.java
+			R.id.nav_local -> LocalListFragment::class.java
+			R.id.nav_suggestions -> SuggestionsFragment::class.java
+			R.id.nav_bookmarks -> AllBookmarksFragment::class.java
+			R.id.nav_updated -> UpdatesFragment::class.java
+			else -> return false
+		}
+		if (!setPrimaryFragment(newFragment)) {
+			// probably already selected
+			onNavigationItemReselected()
+		}
+		return true
 	}
 
 	private fun getItemId(fragment: Fragment) = when (fragment) {
@@ -176,6 +182,11 @@ class MainNavigationDelegate(
 			.runOnCommit { onFragmentChanged(fragment, fromUser = true) }
 			.commit()
 		return true
+	}
+
+	private fun onNavigationItemReselected() {
+		val recyclerView = (primaryFragment as? RecyclerViewOwner)?.recyclerView ?: return
+		recyclerView.smoothScrollToTop()
 	}
 
 	private fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {

@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.details.ui.pager.pages
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.collection.ArraySet
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -33,7 +33,7 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAll
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -118,7 +118,6 @@ class PagesFragment :
 			clickListener = this@PagesFragment,
 		)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged) // before rv initialization
-		binding.recyclerView.consumeInsetsAsPadding(Gravity.START or Gravity.BOTTOM or Gravity.END)
 		with(binding.recyclerView) {
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 			checkNotNull(selectionController).attachToRecyclerView(this)
@@ -148,6 +147,18 @@ class PagesFragment :
 		selectionController = null
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeBask = WindowInsetsCompat.Type.systemBars()
+		val barsInsets = insets.getInsets(typeBask)
+		viewBinding?.recyclerView?.setPadding(
+			barsInsets.left,
+			barsInsets.top,
+			barsInsets.right,
+			barsInsets.bottom,
+		)
+		return insets.consumeAll(typeBask)
 	}
 
 	override fun onItemClick(item: PageThumbnail, view: View) {

@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserCallback
@@ -21,6 +24,7 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
+import org.koitharu.kotatsu.core.util.ext.consumeAll
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
@@ -82,6 +86,25 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 	override fun onDestroy() {
 		super.onDestroy()
 		viewBinding.webView.destroy()
+	}
+
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		val type = WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime()
+		val barsInsets = insets.getInsets(type)
+		viewBinding.webView.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			bottom = barsInsets.bottom,
+		)
+		viewBinding.appbar.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			top = barsInsets.top,
+		)
+		return insets.consumeAll(type)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

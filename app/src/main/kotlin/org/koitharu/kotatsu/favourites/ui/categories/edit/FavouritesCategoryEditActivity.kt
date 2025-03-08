@@ -8,18 +8,21 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Filter
 import androidx.activity.viewModels
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getSerializableCompat
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityCategoryEditBinding
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import com.google.android.material.R as materialR
@@ -54,6 +57,20 @@ class FavouritesCategoryEditActivity :
 		viewModel.isTrackerEnabled.observe(this) {
 			viewBinding.switchTracker.isVisible = it
 		}
+	}
+
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		viewBinding.root.setPadding(
+			barsInsets.left,
+			barsInsets.top,
+			barsInsets.right,
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {

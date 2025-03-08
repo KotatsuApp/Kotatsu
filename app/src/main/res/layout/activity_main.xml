@@ -37,7 +37,7 @@
 			android:id="@+id/toolbar_card"
 			android:layout_width="match_parent"
 			android:layout_height="56dp"
-			android:layout_marginTop="@dimen/margin_normal"
+			android:layout_marginTop="@dimen/margin_small"
 			android:layout_marginBottom="@dimen/margin_small"
 			android:background="@drawable/search_bar_background"
 			android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"

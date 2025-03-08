@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
 import androidx.appcompat.view.ActionMode
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -76,6 +77,8 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 		actionModeDelegate.removeListener(this)
 		super.onDestroyView()
 	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat = insets
 
 	override fun onActionModeStarted(mode: ActionMode) {
 		viewBinding?.run {

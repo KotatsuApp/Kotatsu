@@ -8,8 +8,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
-import androidx.core.view.OnApplyWindowInsetsListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import coil3.ImageLoader
@@ -40,7 +38,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	OnListItemClickListener<SourceCatalogItem.Source>,
-	OnApplyWindowInsetsListener,
 	AppBarOwner,
 	MenuItem.OnActionExpandListener,
 	ChipsView.OnChipClickListener {
@@ -57,7 +54,6 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySourcesCatalogBinding.inflate(layoutInflater))
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 		val sourcesAdapter = SourcesCatalogAdapter(this, coil, this)
 		with(viewBinding.recyclerView) {
 			setHasFixedSize(true)

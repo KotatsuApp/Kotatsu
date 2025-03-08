@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.transition.TransitionManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +27,7 @@ import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
 import org.koitharu.kotatsu.core.util.ext.findCurrentPagerFragment
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.menuView
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -95,12 +98,17 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(),
 		}
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat = insets
+
 	override fun onStateChanged(sheet: View, newState: Int) {
 		if (newState == STATE_DRAGGING || newState == STATE_SETTLING) {
 			return
 		}
 		val binding = viewBinding ?: return
 		val isActionModeStarted = actionModeDelegate?.isActionModeStarted == true
+		if (sheet.context.isAnimationsEnabled) {
+			TransitionManager.beginDelayedTransition(binding.toolbar)
+		}
 		binding.toolbar.menuView?.isVisible = newState == STATE_EXPANDED && !isActionModeStarted
 		binding.splitButtonRead.isVisible = newState != STATE_EXPANDED && !isActionModeStarted
 			&& viewModel is DetailsViewModel

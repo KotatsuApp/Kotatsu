@@ -3,11 +3,10 @@ package org.koitharu.kotatsu.details.ui
 import android.view.View
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import org.koitharu.kotatsu.core.ui.widgets.WindowInsetHolder
 
 class DetailsBottomSheetCallback(
 	private val swipeRefreshLayout: SwipeRefreshLayout,
-	private val navbarDimView: WindowInsetHolder,
+	private val navbarDimView: View,
 ) : BottomSheetBehavior.BottomSheetCallback() {
 
 	override fun onStateChanged(bottomSheet: View, newState: Int) {

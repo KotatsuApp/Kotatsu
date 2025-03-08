@@ -6,12 +6,12 @@ import android.accounts.AccountManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentResultListener
 import androidx.transition.Fade
@@ -21,11 +21,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivitySyncAuthBinding
 import org.koitharu.kotatsu.sync.data.SyncSettings
 import org.koitharu.kotatsu.sync.domain.SyncAuthResult
@@ -42,7 +43,6 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySyncAuthBinding.inflate(layoutInflater))
-		viewBinding.root.consumeInsetsAsPadding(Gravity.FILL)
 		accountAuthenticatorResponse =
 			intent.getParcelableExtraCompat(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)
 		accountAuthenticatorResponse?.onRequestContinued()
@@ -66,6 +66,18 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 
 		supportFragmentManager.setFragmentResultListener(SyncHostDialogFragment.REQUEST_KEY, this, this)
 		pageBackCallback.update()
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
+		viewBinding.root.setPadding(
+			barsInsets.left + basePadding,
+			barsInsets.top + basePadding,
+			barsInsets.right + basePadding,
+			barsInsets.bottom + basePadding,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onClick(v: View) {
