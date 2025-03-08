@@ -341,7 +341,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		viewBinding.fab?.isEnabled = !isLoading
+		val fab = viewBinding.fab ?: viewBinding.navRail?.headerView ?: return
+		fab.isEnabled = !isLoading
 	}
 
 	private fun onResumeEnabledChanged(isEnabled: Boolean) {

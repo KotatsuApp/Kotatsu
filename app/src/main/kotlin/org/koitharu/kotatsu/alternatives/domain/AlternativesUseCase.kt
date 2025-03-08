@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
@@ -14,6 +15,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.search.domain.SearchKind
 import org.koitharu.kotatsu.search.domain.SearchV2Helper
+import java.util.Locale
 import javax.inject.Inject
 
 private const val MAX_PARALLELISM = 4
@@ -24,8 +26,8 @@ class AlternativesUseCase @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) {
 
-	suspend operator fun invoke(manga: Manga): Flow<Manga> {
-		val sources = getSources(manga.source)
+	suspend operator fun invoke(manga: Manga, throughDisabledSources: Boolean): Flow<Manga> {
+		val sources = getSources(manga.source, throughDisabledSources)
 		if (sources.isEmpty()) {
 			return emptyFlow()
 		}
@@ -39,12 +41,14 @@ class AlternativesUseCase @Inject constructor(
 							searchHelper(manga.title, SearchKind.TITLE)?.manga
 						}
 					}.getOrNull()
-					list?.forEach {
-						launch {
-							val details = runCatchingCancellable {
-								mangaRepositoryFactory.create(it.source).getDetails(it)
-							}.getOrDefault(it)
-							send(details)
+					list?.forEach { m ->
+						if (m.id != manga.id) {
+							launch {
+								val details = runCatchingCancellable {
+									mangaRepositoryFactory.create(m.source).getDetails(m)
+								}.getOrDefault(m)
+								send(details)
+							}
 						}
 					}
 				}
@@ -52,19 +56,23 @@ class AlternativesUseCase @Inject constructor(
 		}
 	}
 
-	private suspend fun getSources(ref: MangaSource): List<MangaSource> {
-		val result = ArrayList<MangaSource>(MangaParserSource.entries.size - 2)
-		result.addAll(sourcesRepository.getEnabledSources())
-		result.sortByDescending { it.priority(ref) }
-		result.addAll(sourcesRepository.getDisabledSources().sortedByDescending { it.priority(ref) })
-		return result
-	}
+	private suspend fun getSources(ref: MangaSource, disabled: Boolean): List<MangaSource> = if (disabled) {
+		sourcesRepository.getDisabledSources()
+	} else {
+		sourcesRepository.getEnabledSources()
+	}.sortedByDescending { it.priority(ref) }
 
 	private fun MangaSource.priority(ref: MangaSource): Int {
 		var res = 0
 		if (this is MangaParserSource && ref is MangaParserSource) {
-			if (locale == ref.locale) res += 2
-			if (contentType == ref.contentType) res++
+			if (locale == ref.locale) {
+				res += 4
+			} else if (locale.toLocale() == Locale.getDefault()) {
+				res += 2
+			}
+			if (contentType == ref.contentType) {
+				res++
+			}
 		}
 		return res
 	}

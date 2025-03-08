@@ -22,7 +22,9 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityAlternativesBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
+import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
+import org.koitharu.kotatsu.list.ui.adapter.buttonFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingStateAD
@@ -32,6 +34,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
+	ListStateHolderListener,
 	OnListItemClickListener<MangaAlternativeModel> {
 
 	@Inject
@@ -51,6 +54,7 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 			.addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, this, null))
 			.addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
 			.addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
+			.addDelegate(ListItemType.FOOTER_BUTTON, buttonFooterAD(this))
 		with(viewBinding.recyclerView) {
 			setHasFixedSize(true)
 			addItemDecoration(TypedListSpacingDecoration(context, addHorizontalPadding = false))
@@ -58,7 +62,7 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 		}
 
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
-		viewModel.content.observe(this, listAdapter)
+		viewModel.list.observe(this, listAdapter)
 		viewModel.onMigrated.observeEvent(this) {
 			Toast.makeText(this, R.string.migration_completed, Toast.LENGTH_SHORT).show()
 			router.openDetails(it)
@@ -91,6 +95,12 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 			else -> router.openDetails(item.manga)
 		}
 	}
+
+	override fun onRetryClick(error: Throwable) = viewModel.retry()
+
+	override fun onEmptyActionClick() = Unit
+
+	override fun onFooterButtonClick() = viewModel.continueSearch()
 
 	private fun confirmMigration(target: Manga) {
 		buildAlertDialog(this, isCentered = true) {
