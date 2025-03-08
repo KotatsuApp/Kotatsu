@@ -1,30 +1,26 @@
 package org.koitharu.kotatsu.settings.sources.auth
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.browser.BaseBrowserActivity
 import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
-import org.koitharu.kotatsu.browser.ProgressChromeClient
-import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
-import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
-import org.koitharu.kotatsu.core.util.ext.consumeAll
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
@@ -34,15 +30,13 @@ import javax.inject.Inject
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
-class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallback {
+class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 
 	@Inject
 	lateinit var mangaRepositoryFactory: MangaRepository.Factory
 
-	private lateinit var onBackPressedCallback: WebViewBackPressedCallback
 	private lateinit var authProvider: MangaParserAuthProvider
 
-	@SuppressLint("SetJavaScriptEnabled")
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
@@ -68,43 +62,22 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
 		}
 		viewBinding.webView.configureForParser(repository.getRequestHeaders()[CommonHeaders.USER_AGENT])
-		viewBinding.webView.webViewClient = BrowserClient(this)
-		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)
-		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView)
-		onBackPressedDispatcher.addCallback(onBackPressedCallback)
-		if (savedInstanceState != null) {
-			return
+		viewBinding.webView.webViewClient = BrowserClient(proxyProvider, this)
+		lifecycleScope.launch {
+			try {
+				proxyProvider.applyWebViewConfig()
+			} catch (e: Exception) {
+				Snackbar.make(viewBinding.webView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+			}
+			if (savedInstanceState == null) {
+				val url = authProvider.authUrl
+				onTitleChanged(
+					source.title,
+					getString(R.string.loading_),
+				)
+				viewBinding.webView.loadUrl(url)
+			}
 		}
-		val url = authProvider.authUrl
-		onTitleChanged(
-			source.title,
-			getString(R.string.loading_),
-		)
-		viewBinding.webView.loadUrl(url)
-	}
-
-	override fun onDestroy() {
-		super.onDestroy()
-		viewBinding.webView.destroy()
-	}
-
-	override fun onApplyWindowInsets(
-		v: View,
-		insets: WindowInsetsCompat
-	): WindowInsetsCompat {
-		val type = WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime()
-		val barsInsets = insets.getInsets(type)
-		viewBinding.webView.updatePadding(
-			left = barsInsets.left,
-			right = barsInsets.right,
-			bottom = barsInsets.bottom,
-		)
-		viewBinding.appbar.updatePadding(
-			left = barsInsets.left,
-			right = barsInsets.right,
-			top = barsInsets.top,
-		)
-		return insets.consumeAll(type)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -118,32 +91,13 @@ class SourceAuthActivity : BaseActivity<ActivityBrowserBinding>(), BrowserCallba
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun onPause() {
-		viewBinding.webView.onPause()
-		super.onPause()
-	}
-
-	override fun onResume() {
-		super.onResume()
-		viewBinding.webView.onResume()
-	}
-
 	override fun onLoadingStateChanged(isLoading: Boolean) {
-		viewBinding.progressBar.isVisible = isLoading
+		super.onLoadingStateChanged(isLoading)
 		if (!isLoading && authProvider.isAuthorized) {
 			Toast.makeText(this, R.string.auth_complete, Toast.LENGTH_SHORT).show()
 			setResult(RESULT_OK)
 			finishAfterTransition()
 		}
-	}
-
-	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {
-		this.title = title
-		supportActionBar?.subtitle = subtitle
-	}
-
-	override fun onHistoryChanged() {
-		onBackPressedCallback.onHistoryChanged()
 	}
 
 	class Contract : ActivityResultContract<MangaSource, Boolean>() {

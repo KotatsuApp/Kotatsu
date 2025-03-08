@@ -4,15 +4,17 @@ import android.graphics.Bitmap
 import android.webkit.WebView
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
+import org.koitharu.kotatsu.core.network.proxy.ProxyProvider
 import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 
 private const val LOOP_COUNTER = 3
 
 class CloudFlareClient(
+	proxyProvider: ProxyProvider,
 	private val cookieJar: MutableCookieJar,
 	private val callback: CloudFlareCallback,
 	private val targetUrl: String,
-) : BrowserClient(callback) {
+) : BrowserClient(proxyProvider, callback) {
 
 	private val oldClearance = getClearance()
 	private var counter = 0
@@ -22,7 +24,7 @@ class CloudFlareClient(
 		checkClearance()
 	}
 
-	override fun onPageCommitVisible(view: WebView, url: String?) {
+	override fun onPageCommitVisible(view: WebView, url: String) {
 		super.onPageCommitVisible(view, url)
 		callback.onPageLoaded()
 	}

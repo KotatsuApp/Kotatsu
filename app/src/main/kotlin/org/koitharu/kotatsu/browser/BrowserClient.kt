@@ -2,9 +2,13 @@ package org.koitharu.kotatsu.browser
 
 import android.graphics.Bitmap
 import android.webkit.WebView
-import android.webkit.WebViewClient
+import androidx.webkit.WebViewClientCompat
+import org.koitharu.kotatsu.core.network.proxy.ProxyProvider
 
-open class BrowserClient(private val callback: BrowserCallback) : WebViewClient() {
+open class BrowserClient(
+	private val proxyProvider: ProxyProvider,
+	private val callback: BrowserCallback
+) : WebViewClientCompat() {
 
 	override fun onPageFinished(webView: WebView, url: String) {
 		super.onPageFinished(webView, url)
@@ -16,7 +20,7 @@ open class BrowserClient(private val callback: BrowserCallback) : WebViewClient(
 		callback.onLoadingStateChanged(isLoading = true)
 	}
 
-	override fun onPageCommitVisible(view: WebView, url: String?) {
+	override fun onPageCommitVisible(view: WebView, url: String) {
 		super.onPageCommitVisible(view, url)
 		callback.onTitleChanged(view.title.orEmpty(), url)
 	}

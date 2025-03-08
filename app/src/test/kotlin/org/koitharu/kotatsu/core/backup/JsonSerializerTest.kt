@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.history.data.HistoryEntity
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -33,15 +34,16 @@ class JsonSerializerTest {
 		val entity = MangaEntity(
 			id = 231,
 			title = "Lorem Ipsum",
-			altTitle = "Lorem Ispum 2",
+			altTitles = "Lorem Ispum 2",
 			url = "erw",
 			publicUrl = "hthth",
 			rating = 0.78f,
 			isNsfw = true,
+			contentRating = ContentRating.ADULT.name,
 			coverUrl = "5345",
 			largeCoverUrl = null,
 			state = MangaState.FINISHED.name,
-			author = "RERE",
+			authors = "RERE",
 			source = MangaParserSource.DUMMY.name,
 		)
 		val json = JsonSerializer(entity).toJson()
