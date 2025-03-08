@@ -46,7 +46,7 @@
 	<string-array name="sync_url_list" translatable="false">
 		<item>https://moe.shirizu.org</item>
 		<item>https://sync.kotatsu.app</item>
-		<item>http://dragonx943.id.vn</item>
+		<item>http://54.254.71.100</item>
 		<item>http://86.57.183.214:8081</item>
 	</string-array>
 	<string-array name="values_proxy_types" translatable="false">
