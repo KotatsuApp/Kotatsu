@@ -353,6 +353,7 @@ class AppRouter private constructor(
 
 	fun showTagDialog(tag: MangaTag) {
 		buildAlertDialog(contextOrNull() ?: return) {
+			setIcon(R.drawable.ic_tag)
 			setTitle(tag.title)
 			setItems(
 				arrayOf(
@@ -372,6 +373,7 @@ class AppRouter private constructor(
 
 	fun showAuthorDialog(author: String, source: MangaSource) {
 		buildAlertDialog(contextOrNull() ?: return) {
+			setIcon(R.drawable.ic_user)
 			setTitle(author)
 			setItems(
 				arrayOf(

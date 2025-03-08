@@ -88,12 +88,12 @@ class FeedFragment :
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
 		val typeMask = WindowInsetsCompat.Type.systemBars()
 		val barsInsets = insets.getInsets(typeMask)
-		val basePadding = v.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
+		val paddingVertical = resources.getDimensionPixelSize(R.dimen.list_spacing_normal)
 		viewBinding?.recyclerView?.setPadding(
-			left = barsInsets.left + basePadding,
-			top = basePadding,
-			right = barsInsets.right + basePadding,
-			bottom = barsInsets.bottom + basePadding,
+			left = barsInsets.left,
+			top = paddingVertical,
+			right = barsInsets.right,
+			bottom = barsInsets.bottom + paddingVertical,
 		)
 		return insets.consumeAll(typeMask)
 	}

@@ -82,8 +82,10 @@
 		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceBodySmall"
 		android:theme="@style/ThemeOverlay.Material3.Dark"
+		android:visibility="gone"
 		app:layout_dodgeInsetEdges="bottom"
-		tools:text="@string/loading_" />
+		tools:text="@string/loading_"
+		tools:visibility="visible" />
 
 	<LinearLayout
 		android:id="@+id/layout_loading"

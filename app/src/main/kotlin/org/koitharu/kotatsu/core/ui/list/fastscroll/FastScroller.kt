@@ -29,6 +29,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.ancestors
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
@@ -245,8 +246,8 @@ class FastScroller @JvmOverloads constructor(
 	 */
 	fun setLayoutParams(viewGroup: ViewGroup) {
 		val recyclerViewId = recyclerView?.id ?: NO_ID
-		val marginTop = resources.getDimensionPixelSize(R.dimen.fastscroll_scrollbar_margin_top)
-		val marginBottom = resources.getDimensionPixelSize(R.dimen.fastscroll_scrollbar_margin_bottom)
+		val offsetTop = resources.getDimensionPixelSize(R.dimen.fastscroll_scrollbar_margin_top)
+		val offsetBottom = resources.getDimensionPixelSize(R.dimen.fastscroll_scrollbar_margin_bottom)
 
 		require(recyclerViewId != NO_ID) { "RecyclerView must have a view ID" }
 
@@ -263,31 +264,43 @@ class FastScroller @JvmOverloads constructor(
 					applyTo(viewGroup)
 				}
 
-				layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+				updateLayoutParams<ConstraintLayout.LayoutParams> {
 					height = 0
-					setMargins(offset, marginTop, offset, marginBottom)
+					marginStart = offset
+					marginEnd = offset
+					topMargin = offsetTop
+					bottomMargin = offsetBottom
 				}
 			}
 
-			is CoordinatorLayout -> layoutParams = (layoutParams as CoordinatorLayout.LayoutParams).apply {
+			is CoordinatorLayout -> updateLayoutParams<CoordinatorLayout.LayoutParams> {
 				height = LayoutParams.MATCH_PARENT
 				anchorGravity = GravityCompat.END
 				anchorId = recyclerViewId
-				setMargins(offset, marginTop, offset, marginBottom)
+				marginStart = offset
+				marginEnd = offset
+				topMargin = offsetTop
+				bottomMargin = offsetBottom
 			}
 
-			is FrameLayout -> layoutParams = (layoutParams as FrameLayout.LayoutParams).apply {
+			is FrameLayout -> updateLayoutParams<FrameLayout.LayoutParams> {
 				height = LayoutParams.MATCH_PARENT
 				gravity = GravityCompat.END
-				setMargins(offset, marginTop, offset, marginBottom)
+				marginStart = offset
+				marginEnd = offset
+				topMargin = offsetTop
+				bottomMargin = offsetBottom
 			}
 
-			is RelativeLayout -> layoutParams = (layoutParams as RelativeLayout.LayoutParams).apply {
+			is RelativeLayout -> updateLayoutParams<RelativeLayout.LayoutParams> {
 				height = 0
 				addRule(RelativeLayout.ALIGN_TOP, recyclerViewId)
 				addRule(RelativeLayout.ALIGN_BOTTOM, recyclerViewId)
 				addRule(RelativeLayout.ALIGN_END, recyclerViewId)
-				setMargins(offset, marginTop, offset, marginBottom)
+				marginStart = offset
+				marginEnd = offset
+				topMargin = offsetTop
+				bottomMargin = offsetBottom
 			}
 
 			else -> throw IllegalArgumentException("Parent ViewGroup must be a ConstraintLayout, CoordinatorLayout, FrameLayout, or RelativeLayout")

@@ -40,7 +40,8 @@
 				app:tabIndicatorGravity="stretch"
 				app:tabInlineLabel="true"
 				app:tabMinWidth="0dp"
-				app:tabMode="scrollable" />
+				app:tabMode="scrollable"
+				app:tabUnboundedRipple="true" />
 
 			<com.google.android.material.button.MaterialSplitButton
 				android:id="@+id/split_button_read"

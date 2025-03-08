@@ -16,6 +16,8 @@ class FavouritesTabConfigurationStrategy(
 		val item = adapter.getItem(position)
 		tab.text = item.title ?: tab.view.context.getString(R.string.all_favourites)
 		tab.tag = item
-		PopupMenuMediator(FavouriteTabPopupMenuProvider(tab.view.context, router, viewModel, item.id)).attach(tab.view)
+		PopupMenuMediator(
+			FavouriteTabPopupMenuProvider(tab.view.context, router, viewModel, item.id)
+		).attach(tab.view)
 	}
 }
