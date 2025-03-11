@@ -5,20 +5,16 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.core.content.pm.ShortcutManagerCompat
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.LocalMangaSource
-import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.os.AppShortcutManager
-import org.koitharu.kotatsu.core.util.ShareHelper
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 
 class DetailsMenuProvider(
 	private val activity: FragmentActivity,
@@ -47,23 +43,16 @@ class DetailsMenuProvider(
 		val manga = viewModel.getMangaOrNull() ?: return false
 		when (menuItem.itemId) {
 			R.id.action_share -> {
-				val shareHelper = ShareHelper(activity)
-				if (manga.isLocal) {
-					shareHelper.shareCbz(listOf(manga.url.toUri().toFile()))
-				} else {
-					shareHelper.shareMangaLink(manga)
-				}
+				activity.router.showShareDialog(manga)
 			}
 
 			R.id.action_delete -> {
-				MaterialAlertDialogBuilder(activity)
-					.setTitle(R.string.delete_manga)
-					.setMessage(activity.getString(R.string.text_delete_local_manga, manga.title))
-					.setPositiveButton(R.string.delete) { _, _ ->
-						viewModel.deleteLocal()
-					}
-					.setNegativeButton(android.R.string.cancel, null)
-					.show()
+				buildAlertDialog(activity) {
+					setTitle(R.string.delete_manga)
+					setMessage(activity.getString(R.string.text_delete_local_manga, manga.title))
+					setPositiveButton(R.string.delete) { _, _ -> viewModel.deleteLocal() }
+					setNegativeButton(android.R.string.cancel, null)
+				}.show()
 			}
 
 			R.id.action_save -> {

@@ -12,6 +12,8 @@ import android.provider.Settings
 import android.view.View
 import androidx.annotation.CheckResult
 import androidx.annotation.UiContext
+import androidx.core.app.ShareCompat
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -29,7 +31,10 @@ import org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.MangaSourceInfo
+import org.koitharu.kotatsu.core.model.appUrl
 import org.koitharu.kotatsu.core.model.getTitle
+import org.koitharu.kotatsu.core.model.isBroken
+import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaListFilter
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPage
@@ -43,6 +48,8 @@ import org.koitharu.kotatsu.core.ui.dialog.ErrorDetailsDialog
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.findActivity
+import org.koitharu.kotatsu.core.util.ext.getThemeDrawable
+import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -72,6 +79,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.ellipsize
 import org.koitharu.kotatsu.parsers.util.isNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.mapToArray
 import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
@@ -96,6 +104,8 @@ import org.koitharu.kotatsu.stats.ui.StatsActivity
 import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
+import java.io.File
+import com.google.android.material.R as materialR
 
 class AppRouter private constructor(
 	private val activity: FragmentActivity?,
@@ -391,6 +401,37 @@ class AppRouter private constructor(
 		}.show()
 	}
 
+	fun showShareDialog(manga: Manga) {
+		if (manga.isBroken) {
+			return
+		}
+		if (manga.isLocal) {
+			manga.url.toUri().toFileOrNull()?.let {
+				shareFile(it)
+			}
+			return
+		}
+		buildAlertDialog(contextOrNull() ?: return) {
+			setIcon(context.getThemeDrawable(materialR.attr.actionModeShareDrawable))
+			setTitle(R.string.share)
+			setItems(
+				arrayOf(
+					context.getString(R.string.link_to_manga_in_app),
+					context.getString(R.string.link_to_manga_on_s, manga.source.getTitle(context)),
+				),
+			) { _, which ->
+				val link = when (which) {
+					0 -> manga.appUrl.toString()
+					1 -> manga.publicUrl
+					else -> return@setItems
+				}
+				shareLink(link, manga.title)
+			}
+			setNegativeButton(android.R.string.cancel, null)
+			setCancelable(true)
+		}.show()
+	}
+
 	fun showErrorDialog(error: Throwable, url: String? = null) {
 		ErrorDetailsDialog().withArgs(2) {
 			putSerializable(KEY_ERROR, error)
@@ -565,6 +606,25 @@ class AppRouter private constructor(
 		return fragment?.childFragmentManager ?: activity?.supportFragmentManager
 	}
 
+	private fun shareLink(link: String, title: String) {
+		val context = contextOrNull() ?: return
+		ShareCompat.IntentBuilder(context)
+			.setText(link)
+			.setType(TYPE_TEXT)
+			.setChooserTitle(context.getString(R.string.share_s, title.ellipsize(12)))
+			.startChooser()
+	}
+
+	private fun shareFile(file: File) { // TODO directory sharing support
+		val context = contextOrNull() ?: return
+		val intentBuilder = ShareCompat.IntentBuilder(context)
+			.setType(TYPE_CBZ)
+		val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", file)
+		intentBuilder.addStream(uri)
+		intentBuilder.setChooserTitle(context.getString(R.string.share_s, file.name))
+		intentBuilder.startChooser()
+	}
+
 	@UiContext
 	private fun contextOrNull(): Context? = activity ?: fragment?.context
 
@@ -725,6 +785,10 @@ class AppRouter private constructor(
 		private const val ACCOUNT_KEY = "account"
 		private const val ACTION_ACCOUNT_SYNC_SETTINGS = "android.settings.ACCOUNT_SYNC_SETTINGS"
 		private const val EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":settings:show_fragment_args"
+
+		private const val TYPE_TEXT = "text/plain"
+		private const val TYPE_IMAGE = "image/*"
+		private const val TYPE_CBZ = "application/x-cbz"
 
 		private fun Class<out Fragment>.fragmentTag() = name // TODO
 

@@ -814,4 +814,6 @@
 	<string name="error_disclaimer_manga">Try to open manga in a web browser to ensure it is available on its source.</string>
 	<string name="error_disclaimer_app_outdated">It looks like your version of Kotatsu is out of date. Please install the latest version to get all available fixes.</string>
 	<string name="error_disclaimer_report">You can submit a bug report to the developers. This will help us investigate and fix the issue.</string>
+	<string name="link_to_manga_on_s">Link to manga on %s</string>
+	<string name="link_to_manga_in_app">Link to manga in Kotatsu</string>
 </resources>

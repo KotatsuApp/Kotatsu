@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.collection.MutableObjectIntMap
+import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.strikeThrough
@@ -125,7 +126,8 @@ val Manga.isBroken: Boolean
 	get() = source == UnknownMangaSource
 
 val Manga.appUrl: Uri
-	get() = Uri.parse("https://kotatsu.app/manga").buildUpon()
+	get() = "https://kotatsu.app/manga".toUri()
+		.buildUpon()
 		.appendQueryParameter("source", source.name)
 		.appendQueryParameter("name", title)
 		.appendQueryParameter("url", url)
