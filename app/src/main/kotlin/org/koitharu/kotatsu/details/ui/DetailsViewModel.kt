@@ -152,6 +152,10 @@ class DetailsViewModel @Inject constructor(
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, emptyList())
 
+	val tags = manga.mapLatest {
+		mangaListMapper.mapTags(it?.tags.orEmpty())
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
+
 	val branches: StateFlow<List<MangaBranch>> = combine(
 		mangaDetails,
 		selectedBranch,

@@ -6,6 +6,7 @@ import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import coil3.ImageLoader
 import coil3.request.Disposable
@@ -125,6 +126,9 @@ class ChipsView @JvmOverloads constructor(
 		private var model: ChipModel? = null
 		private var imageRequest: Disposable? = null
 
+		private val defaultStrokeColor = chipStrokeColor
+		private val defaultTextColor = textColors
+
 		init {
 			val drawable = ChipDrawable.createFromAttributes(context, null, 0, chipStyle)
 			setChipDrawable(drawable)
@@ -153,6 +157,14 @@ class ChipsView @JvmOverloads constructor(
 			} else {
 				isChecked = false
 				isCheckable = false
+			}
+			if (model.tint == 0) {
+				chipStrokeColor = defaultStrokeColor
+				setTextColor(defaultTextColor)
+			} else {
+				val tint = ContextCompat.getColorStateList(context, model.tint)
+				chipStrokeColor = tint
+				setTextColor(tint)
 			}
 			bindIcon(model)
 			isCheckedIconVisible = model.isChecked

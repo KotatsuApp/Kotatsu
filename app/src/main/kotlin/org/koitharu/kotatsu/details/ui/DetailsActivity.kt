@@ -94,7 +94,6 @@ import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrobblingItemDecoration
 import org.koitharu.kotatsu.details.ui.scrobbling.ScrollingInfoAdapter
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
-import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
@@ -123,9 +122,6 @@ class DetailsActivity :
 
 	@Inject
 	lateinit var coil: ImageLoader
-
-	@Inject
-	lateinit var listMapper: MangaListMapper
 
 	private val viewModel: DetailsViewModel by viewModels()
 	private lateinit var menuProvider: DetailsMenuProvider
@@ -184,6 +180,7 @@ class DetailsActivity :
 		val menuInvalidator = MenuInvalidator(this)
 		viewModel.isStatsAvailable.observe(this, menuInvalidator)
 		viewModel.remoteManga.observe(this, menuInvalidator)
+		viewModel.tags.observe(this, ::onTagsChanged)
 		viewModel.branches.observe(this) {
 			val branch = it.singleOrNull()
 			infoBinding.textViewTranslation.textAndVisible = branch?.name
@@ -457,7 +454,6 @@ class DetailsActivity :
 				.allowRgb565(true)
 				.enqueueWith(coil)
 		}
-		bindTags(manga)
 		title = manga.title
 		invalidateOptionsMenu()
 	}
@@ -501,9 +497,9 @@ class DetailsActivity :
 		progress.isVisible = info.history != null
 	}
 
-	private fun bindTags(manga: Manga) {
-		viewBinding.chipsTags.isVisible = manga.tags.isNotEmpty()
-		viewBinding.chipsTags.setChips(listMapper.mapTags(manga.tags))
+	private fun onTagsChanged(tags: Collection<ChipsView.ChipModel>) {
+		viewBinding.chipsTags.isVisible = tags.isNotEmpty()
+		viewBinding.chipsTags.setChips(tags)
 	}
 
 	private fun loadCover(imageUrl: String?) {
