@@ -675,7 +675,7 @@
     <string name="by_date">Datum</string>
     <string name="popularity">Popularnost</string>
     <string name="updated_long_ago">Aktualizirano davno</string>
-    <string name="manga_replaced">Manga 1$s (%2$s) zamijenjen sa 3$s (%4$s)</string>
+    <string name="manga_replaced">Manga „%1$s” (%2$s) zamijenjen sa „%3$s” (%4$s)</string>
     <string name="downloads_background">Preuzimanja u pozadini</string>
     <string name="download_new_chapters">Preuzmi nova poglavlja</string>
     <string name="manga_with_downloaded_chapters">Manga s preuzetim poglavljima</string>
@@ -764,4 +764,23 @@
     <string name="source">Izvor</string>
     <string name="author">Autor</string>
     <string name="telegram_chat_id">Telegram chat ID</string>
+    <string name="backup_restored_background">Sigurnosna kopija će se obnoviti u pozadini</string>
+    <string name="restoring_backup">Obnavljanje sigurnosne kopije</string>
+    <string name="disable_captcha_notifications_summary">Nećeš primati obavijesti o rješavanju CAPTCHA za ovaj izvor, ali to može prouzročiti prekid pozadinskih operacija (provjeravanje novih poglavlja, dobivanje preporuka itd.)</string>
+    <string name="reader_info_bar_transparent">Transparentna traka s informacijama čitača</string>
+    <string name="enable_all_sources">Aktiviraj sve manga izvore</string>
+    <string name="enable_all_sources_summary">Svi manga izvori će biti trajno aktivirani</string>
+    <string name="all_sources_enabled">Svi izvori su aktivirani</string>
+    <string name="handle_links">Barataj poveznicama</string>
+    <string name="handle_links_summary">Barataj manga poveznicama iz eksternih aplikacija (npr. web preglednik). Možda ćeš to također morati ručno aktivirati u postavkama sustava aplikacije</string>
+    <string name="simple">Jednostavno</string>
+    <string name="reader_controls_in_bottom_bar">Kontrole čitača u donjoj traci</string>
+    <string name="chapters_and_pages">Poglavlja i stranice</string>
+    <string name="pages_slider">Klizač za listanje stranica</string>
+    <string name="screen_rotation_locked">Okretanje ekrana je zaključano</string>
+    <string name="screen_rotation_unlocked">Okretanje ekrana je otključano</string>
+    <string name="disable_captcha_notifications">Deaktiviraj Captcha obavijesti</string>
+    <string name="global_search">Globalna pretraga</string>
+    <string name="search_everywhere">Traži svuda</string>
+    <string name="badges_in_lists">Značke u popisima</string>
 </resources>
