@@ -786,4 +786,6 @@
     <string name="global_search">Глобална претрага</string>
     <string name="search_everywhere">Тражи свуда</string>
     <string name="badges_in_lists">Значке у листама</string>
+    <string name="disable_captcha_notifications">Онемогући Цаптцха обавештења</string>
+    <string name="disable_captcha_notifications_summary">Нећете добијати обавештења о решавању ЦАПТЦХА за овај извор, али то може довести до прекида позадинских операција (проверавање нових поглавља, добијање препорука итд.)</string>
 </resources>
