@@ -784,4 +784,16 @@
     <string name="simple">Đơn giản</string>
     <string name="search_everywhere">Tìm kiếm ở bất cứ đâu</string>
     <string name="global_search">Tìm kiếm chung</string>
+    <string name="disable_captcha_notifications">Tắt thông báo về Captcha</string>
+    <string name="disable_captcha_notifications_summary">Bạn sẽ không nhận được thông báo về việc giải CAPTCHA cho nguồn này nhưng điều này cũng có thể dẫn đến việc phá vỡ quá trình hoạt động nền đối với nguồn này (như kiểm tra chương / tập truyện mới, đưa ra gợi ý,...)</string>
+    <string name="error_details">Chi tiết lỗi</string>
+    <string name="error_disclaimer_report">Bạn có thể báo cáo lỗi cho các nhà phát triển của Kotatsu. Nó sẽ rất hữu ích để các nhà phát triển có thể tìm ra và xử lý lỗi đó ở các phiên bản kế tiếp.</string>
+    <string name="error_disclaimer_app_outdated">Có vẻ như bạn đang sử dụng một phiên bản \"siêu cấp cổ đại\" của Kotatsu. Hãy cập nhật / cài đặt phiên bản mới nhất để nhận được các bản vá lỗi cho Kotatsu.</string>
+    <string name="error_disclaimer_manga">Hãy đảm bảo rằng truyện này vẫn xuất hiện ở nguồn đọc đó bằng cách tìm và mở nó trên trình duyệt Web của bạn ¯\\_(ツ)_/¯.</string>
+    <string name="search_disabled_sources">Tìm kiếm với những nguồn đang bị vô hiệu hóa</string>
+    <string name="chapter_volume_number">Vol %1$s Chương %2$s</string>
+    <string name="chapter_number">Chương %s</string>
+    <string name="unnamed_chapter">Chương không có tên</string>
+    <string name="link_to_manga_in_app">Liên kết manga trên Kotatsu</string>
+    <string name="link_to_manga_on_s">Liên kết manga với nguồn %s</string>
 </resources>
