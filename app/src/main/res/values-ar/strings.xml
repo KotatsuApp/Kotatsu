@@ -7,7 +7,7 @@
     <string name="list_mode">وضع القائمة</string>
     <string name="settings">الإعدادات</string>
     <string name="remote_sources">مصادر المانجا</string>
-    <string name="chapters">فصول</string>
+    <string name="chapters">الفصول</string>
     <string name="favourites">المُفضلة</string>
     <string name="network_error">‌خطاء في الشبكة</string>
     <string name="loading_">جار التحميل…</string>
@@ -659,7 +659,7 @@
     <string name="external_source">خارجي/إضافي</string>
     <string name="plugin_incompatible">مكون إضافي غير متوافق أو خطأ داخلي. تأكد من استخدام أحدث إصدار من المكون الإضافي وKotatsu</string>
     <string name="invalid_server_address_message">عنوان الخادم غير صالح</string>
-    <string name="retry">العربية‎‍‌‎‌‎‍‌‏‎‍‌‎‏‪‫‬‭‮‎‎</string>
+    <string name="retry">‮حاول مجددا</string>
     <string name="pages_saved">الصفحات المحفوظة</string>
     <string name="too_many_requests_message_retry">هنالك الكثير من الطلبات. حاول مرة أخرى بعد%s</string>
     <string name="scrobbler_auth_required">تسجيل الدخول إلى %s للمتابعة</string>
@@ -771,4 +771,28 @@
     <string name="rating">التقييم</string>
     <string name="source">المصدر</string>
     <string name="enable_all_sources">تمكين جميع المصادر</string>
+    <string name="error_details">تفاصيل الخطأ</string>
+    <string name="error_disclaimer_manga">حاول فتح المانجا في متصفح الويب للتأكد من توفرها في مصدرها.</string>
+    <string name="error_disclaimer_report">يمكنك إرسال تقرير عن الأخطاء إلى المطورين. سيساعدنا هذا في التحقق من المشكلة وإصلاحها.</string>
+    <string name="restoring_backup">استعادة النسخة الاحتياطية</string>
+    <string name="search_disabled_sources">البحث في المصادر المعطلة</string>
+    <string name="reader_info_bar_transparent">شريط معلومات القارئ الشفاف</string>
+    <string name="chapter_volume_number">المجلد %1$s الفصل %2$s</string>
+    <string name="chapter_number">الفصل %s</string>
+    <string name="unnamed_chapter">فصل غير مسمى</string>
+    <string name="simple">بسيط</string>
+    <string name="reader_controls_in_bottom_bar">ادوات التحكم بالقارئ في الشريط السفلي</string>
+    <string name="chapters_and_pages">الفصول و الصفحات</string>
+    <string name="pages_slider">شريط تمرير الصفحة</string>
+    <string name="screen_rotation_locked">تم ايقاف دوران الشاشة</string>
+    <string name="screen_rotation_unlocked">تم تشغيل دوران الشاشة</string>
+    <string name="link_to_manga_on_s">رابط المانغا على %s</string>
+    <string name="link_to_manga_in_app">رابط المانغا في Kotatsu</string>
+    <string name="backup_restored_background">سوف يتم استعادة النسخة الاحتياطية في الخلفية</string>
+    <string name="error_disclaimer_app_outdated">يبدو أن إصدار Kotatsu الخاص بك قديم. يرجى تثبيت أحدث إصدار للحصول على جميع الإصلاحات المتاحة.</string>
+    <string name="disable_captcha_notifications">تعطيل اشعارات captcha</string>
+    <string name="disable_captcha_notifications_summary">لن تتلقى إشعارات حول حل CAPTCHA لهذا المصدر ولكن هذا قد يؤدي إلى تعطيل العمليات الخلفية (التحقق من وجود فصول جديدة، الحصول على توصيات، وما إلى ذلك...)</string>
+    <string name="global_search">البحث العالمي</string>
+    <string name="search_everywhere">البحث في كل مكان</string>
+    <string name="badges_in_lists">الشارات في القوائم</string>
 </resources>
