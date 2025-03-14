@@ -772,4 +772,6 @@
     <string name="any">Setiap</string>
     <string name="author">Pengarang</string>
     <string name="plugin_incompatible_with_cause">Pastikan Anda menggunakan plugin dan Kotatsu versi terbaru</string>
+    <string name="restoring_backup">Memulihkan Cadangan</string>
+    <string name="backup_restored_background">Pencadangan akan dipulihkan di latar belakang</string>
 </resources>
