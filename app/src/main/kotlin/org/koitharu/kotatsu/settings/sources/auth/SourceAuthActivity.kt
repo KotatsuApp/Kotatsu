@@ -27,7 +27,6 @@ import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.settings.sources.SourceSettingsFragment.Companion.EXTRA_SOURCE
 import javax.inject.Inject
-import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
@@ -57,10 +56,7 @@ class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 			finishAfterTransition()
 			return
 		}
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
-		}
+		setDisplayHomeAsUp(true, true)
 		viewBinding.webView.configureForParser(repository.getRequestHeaders()[CommonHeaders.USER_AGENT])
 		viewBinding.webView.webViewClient = BrowserClient(proxyProvider, this)
 		lifecycleScope.launch {

@@ -131,10 +131,8 @@ class DetailsActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDetailsBinding.inflate(layoutInflater))
 		infoBinding = LayoutDetailsTableBinding.bind(viewBinding.root)
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setDisplayShowTitleEnabled(false)
-		}
+		setDisplayHomeAsUp(true, false)
+		supportActionBar?.setDisplayShowTitleEnabled(false)
 		viewBinding.chipFavorite.setOnClickListener(this)
 		infoBinding.textViewLocal.setOnClickListener(this)
 		infoBinding.textViewAuthor.setOnClickListener(this)

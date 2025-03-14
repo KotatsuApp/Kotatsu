@@ -55,6 +55,7 @@ class StorageManageSettingsFragment : BasePreferenceFragment(R.string.storage_us
 		findPreference<StorageUsagePreference>(AppSettings.KEY_STORAGE_USAGE)?.let { pref ->
 			viewModel.storageUsage.observe(viewLifecycleOwner, pref)
 		}
+		findPreference<Preference>(AppSettings.KEY_WEBVIEW_CLEAR)?.isVisible = viewModel.isBrowserDataCleanupEnabled
 
 		viewModel.loadingKeys.observe(viewLifecycleOwner) { keys ->
 			loadingPrefs.addAll(keys)
@@ -98,6 +99,10 @@ class StorageManageSettingsFragment : BasePreferenceFragment(R.string.storage_us
 			true
 		}
 
+		AppSettings.KEY_WEBVIEW_CLEAR -> {
+			viewModel.clearBrowserData()
+			true
+		}
 
 		AppSettings.KEY_CLEAR_MANGA_DATA -> {
 			viewModel.clearMangaData()

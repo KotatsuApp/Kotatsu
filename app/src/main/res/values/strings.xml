@@ -816,4 +816,6 @@
 	<string name="error_disclaimer_report">You can submit a bug report to the developers. This will help us investigate and fix the issue.</string>
 	<string name="link_to_manga_on_s">Link to manga on %s</string>
 	<string name="link_to_manga_in_app">Link to manga in Kotatsu</string>
+	<string name="clear_browser_data">Clear browser data</string>
+	<string name="clear_browser_data_summary">Clear browser data such as cache and cookies. Warning: Authorization in manga sources may become invalid</string>
 </resources>

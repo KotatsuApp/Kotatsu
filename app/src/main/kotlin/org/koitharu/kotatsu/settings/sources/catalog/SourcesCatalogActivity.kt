@@ -53,7 +53,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySourcesCatalogBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		setDisplayHomeAsUp(true, false)
 		val sourcesAdapter = SourcesCatalogAdapter(this, coil, this)
 		with(viewBinding.recyclerView) {
 			setHasFixedSize(true)

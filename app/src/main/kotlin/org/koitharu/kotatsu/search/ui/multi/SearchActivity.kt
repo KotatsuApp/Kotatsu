@@ -96,10 +96,8 @@ class SearchActivity :
 		viewBinding.recyclerView.setHasFixedSize(true)
 		viewBinding.recyclerView.addItemDecoration(TypedListSpacingDecoration(this, true))
 
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setSubtitle(R.string.search_results)
-		}
+		setDisplayHomeAsUp(true, false)
+		supportActionBar?.setSubtitle(R.string.search_results)
 
 		addMenuProvider(SearchKindMenuProvider(this, viewModel.query, viewModel.kind))
 

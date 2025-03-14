@@ -1,5 +1,9 @@
 package org.koitharu.kotatsu.settings.userdata.storage
 
+import android.annotation.SuppressLint
+import android.webkit.WebStorage
+import androidx.webkit.WebStorageCompat
+import androidx.webkit.WebViewFeature
 import coil3.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +30,8 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import java.util.EnumMap
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @HiltViewModel
 class StorageManageSettingsViewModel @Inject constructor(
@@ -49,6 +55,9 @@ class StorageManageSettingsViewModel @Inject constructor(
 	val storageUsage = MutableStateFlow<StorageUsage?>(null)
 
 	val onChaptersCleanedUp = MutableEventFlow<Pair<Int, Long>>()
+
+	val isBrowserDataCleanupEnabled: Boolean
+		get() = WebViewFeature.isFeatureSupported(WebViewFeature.DELETE_BROWSING_DATA)
 
 	private var storageUsageJob: Job? = null
 
@@ -120,11 +129,34 @@ class StorageManageSettingsViewModel @Inject constructor(
 		}
 	}
 
+	@SuppressLint("RequiresFeature")
+	fun clearBrowserData() {
+		launchJob {
+			try {
+				loadingKeys.update { it + AppSettings.KEY_WEBVIEW_CLEAR }
+				val storage = WebStorage.getInstance()
+				suspendCoroutine { cont ->
+					WebStorageCompat.deleteBrowsingData(storage) {
+						cont.resume(Unit)
+					}
+				}
+				onActionDone.call(ReversibleAction(R.string.updates_feed_cleared, null))
+			} finally {
+				loadingKeys.update { it - AppSettings.KEY_WEBVIEW_CLEAR }
+			}
+		}
+	}
+
 	fun clearUpdatesFeed() {
 		launchJob(Dispatchers.Default) {
-			trackingRepository.clearLogs()
-			feedItemsCount.value = trackingRepository.getLogsCount()
-			onActionDone.call(ReversibleAction(R.string.updates_feed_cleared, null))
+			try {
+				loadingKeys.update { it + AppSettings.KEY_UPDATES_FEED_CLEAR }
+				trackingRepository.clearLogs()
+				feedItemsCount.value = trackingRepository.getLogsCount()
+				onActionDone.call(ReversibleAction(R.string.updates_feed_cleared, null))
+			} finally {
+				loadingKeys.update { it - AppSettings.KEY_UPDATES_FEED_CLEAR }
+			}
 		}
 	}
 

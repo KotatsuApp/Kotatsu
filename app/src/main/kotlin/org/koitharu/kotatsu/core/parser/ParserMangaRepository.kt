@@ -18,7 +18,6 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.util.domain
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 
@@ -58,13 +57,7 @@ class ParserMangaRepository(
 	val domains: Array<out String>
 		get() = parser.configKeyDomain.presetValues
 
-	override fun intercept(chain: Interceptor.Chain): Response {
-		return if (parser is Interceptor) {
-			parser.intercept(chain)
-		} else {
-			chain.proceed(chain.request())
-		}
-	}
+	override fun intercept(chain: Interceptor.Chain): Response = parser.intercept(chain)
 
 	override suspend fun getList(offset: Int, order: SortOrder?, filter: MangaListFilter?): List<Manga> {
 		return mirrorSwitchInterceptor.withMirrorSwitching {
@@ -96,7 +89,7 @@ class ParserMangaRepository(
 		parser.getDetails(manga)
 	}
 
-	fun getAuthProvider(): MangaParserAuthProvider? = parser as? MangaParserAuthProvider
+	fun getAuthProvider(): MangaParserAuthProvider? = parser.authorizationProvider
 
 	fun getRequestHeaders() = parser.getRequestHeaders()
 

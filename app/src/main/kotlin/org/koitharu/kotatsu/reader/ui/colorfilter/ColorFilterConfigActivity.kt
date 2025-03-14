@@ -35,7 +35,6 @@ import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import javax.inject.Inject
-import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ColorFilterConfigActivity :
@@ -51,10 +50,7 @@ class ColorFilterConfigActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityColorFilterBinding.inflate(layoutInflater))
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
-		}
+		setDisplayHomeAsUp(true, true)
 		viewBinding.sliderBrightness.addOnChangeListener(this)
 		viewBinding.sliderContrast.addOnChangeListener(this)
 		val formatter = PercentLabelFormatter(resources)

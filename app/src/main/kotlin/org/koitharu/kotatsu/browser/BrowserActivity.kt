@@ -18,7 +18,6 @@ import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import javax.inject.Inject
-import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class BrowserActivity : BaseBrowserActivity() {
@@ -28,10 +27,7 @@ class BrowserActivity : BaseBrowserActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
-		}
+		setDisplayHomeAsUp(true, true)
 		val mangaSource = MangaSource(intent?.getStringExtra(AppRouter.KEY_SOURCE))
 		val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository
 		val userAgent = repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)

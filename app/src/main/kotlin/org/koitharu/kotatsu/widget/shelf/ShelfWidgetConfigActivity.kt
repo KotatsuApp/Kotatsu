@@ -20,7 +20,6 @@ import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityAppwidgetShelfBinding
 import org.koitharu.kotatsu.widget.shelf.adapter.CategorySelectAdapter
 import org.koitharu.kotatsu.widget.shelf.model.CategoryItem
-import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ShelfWidgetConfigActivity :
@@ -36,10 +35,7 @@ class ShelfWidgetConfigActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityAppwidgetShelfBinding.inflate(layoutInflater))
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
-		}
+		setDisplayHomeAsUp(true, true)
 		adapter = CategorySelectAdapter(this)
 		viewBinding.recyclerView.adapter = adapter
 		viewBinding.buttonDone.setOnClickListener(this)

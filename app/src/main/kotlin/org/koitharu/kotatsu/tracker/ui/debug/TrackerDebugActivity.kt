@@ -30,7 +30,7 @@ class TrackerDebugActivity : BaseActivity<ActivityTrackerDebugBinding>(), OnList
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityTrackerDebugBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		setDisplayHomeAsUp(true, false)
 		val tracksAdapter = BaseListAdapter<TrackDebugItem>()
 			.addDelegate(ListItemType.FEED, trackDebugAD(this, coil, this))
 		with(viewBinding.recyclerView) {

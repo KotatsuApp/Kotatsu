@@ -133,7 +133,7 @@ class AppShortcutManager @Inject constructor(
 		}
 	}
 
-	private suspend fun buildShortcutInfo(manga: Manga): ShortcutInfoCompat {
+	private suspend fun buildShortcutInfo(manga: Manga): ShortcutInfoCompat = withContext(Dispatchers.Default) {
 		val icon = runCatchingCancellable {
 			coil.execute(
 				ImageRequest.Builder(context)
@@ -149,7 +149,7 @@ class AppShortcutManager @Inject constructor(
 			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) },
 		)
 		mangaRepository.storeManga(manga)
-		return ShortcutInfoCompat.Builder(context, manga.id.toString())
+		ShortcutInfoCompat.Builder(context, manga.id.toString())
 			.setShortLabel(manga.title)
 			.setLongLabel(manga.title)
 			.setIcon(icon)
@@ -159,8 +159,7 @@ class AppShortcutManager @Inject constructor(
 					.mangaId(manga.id)
 					.build()
 					.intent,
-			)
-			.build()
+			).build()
 	}
 
 	private suspend fun buildShortcutInfo(source: MangaSource): ShortcutInfoCompat = withContext(Dispatchers.Default) {

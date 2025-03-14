@@ -749,6 +749,12 @@ class AppRouter private constructor(
 				.putExtra(KEY_SOURCE, source.name)
 		}
 
+		fun isShareSupported(manga: Manga): Boolean = when {
+			manga.isBroken -> false
+			manga.isLocal -> manga.url.toUri().toFileOrNull() != null
+			else -> true
+		}
+
 		const val KEY_DATA = "data"
 		const val KEY_ENTRIES = "entries"
 		const val KEY_ERROR = "error"

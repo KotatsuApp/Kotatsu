@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.cache
 
-import androidx.collection.LruCache
+import androidx.collection.SieveCache
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import java.util.concurrent.TimeUnit
 import org.koitharu.kotatsu.core.cache.MemoryContentCache.Key as CacheKey
 
@@ -8,11 +9,9 @@ class ExpiringLruCache<T>(
 	val maxSize: Int,
 	private val lifetime: Long,
 	private val timeUnit: TimeUnit,
-) : Iterable<CacheKey> {
+) {
 
-	private val cache = LruCache<CacheKey, ExpiringValue<T>>(maxSize)
-
-	override fun iterator(): Iterator<CacheKey> = cache.snapshot().keys.iterator()
+	private val cache = SieveCache<CacheKey, ExpiringValue<T>>(maxSize)
 
 	operator fun get(key: CacheKey): T? {
 		val value = cache[key] ?: return null
@@ -36,5 +35,9 @@ class ExpiringLruCache<T>(
 
 	fun remove(key: CacheKey) {
 		cache.remove(key)
+	}
+
+	fun removeAll(source: MangaSource) {
+		cache.removeIf { key, _ -> key.source == source }
 	}
 }

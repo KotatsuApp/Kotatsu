@@ -46,7 +46,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityScrobblerConfigBinding.inflate(layoutInflater))
 		setTitle(viewModel.titleResId)
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		setDisplayHomeAsUp(true, false)
 
 		val listAdapter = ScrobblingMangaAdapter(this, coil, this)
 		with(viewBinding.recyclerView) {

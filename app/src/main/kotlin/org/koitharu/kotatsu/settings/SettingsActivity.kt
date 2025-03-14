@@ -57,7 +57,7 @@ class SettingsActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySettingsBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		setDisplayHomeAsUp(true, false)
 		val fm = supportFragmentManager
 		val currentFragment = fm.findFragmentById(R.id.container)
 		if (currentFragment == null || (isMasterDetails && currentFragment is RootSettingsFragment)) {

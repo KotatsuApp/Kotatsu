@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
 import androidx.annotation.ColorInt
-import androidx.collection.LruCache
+import androidx.collection.SieveCache
 import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
 import androidx.core.graphics.get
@@ -29,7 +29,7 @@ import kotlin.math.abs
 class EdgeDetector(private val context: Context) {
 
 	private val mutex = Mutex()
-	private val cache = LruCache<ImageSource, Rect>(CACHE_SIZE)
+	private val cache = SieveCache<ImageSource, Rect>(CACHE_SIZE)
 
 	suspend fun getBounds(imageSource: ImageSource): Rect? {
 		cache[imageSource]?.let { rect ->

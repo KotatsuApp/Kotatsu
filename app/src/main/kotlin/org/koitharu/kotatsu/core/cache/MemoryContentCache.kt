@@ -81,11 +81,7 @@ class MemoryContentCache @Inject constructor(application: Application) : Compone
 	}
 
 	private fun clearCache(cache: ExpiringLruCache<*>, source: MangaSource) {
-		cache.forEach { key ->
-			if (key.source == source) {
-				cache.remove(key)
-			}
-		}
+		cache.removeAll(source)
 	}
 
 	data class Key(

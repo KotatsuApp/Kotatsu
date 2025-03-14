@@ -50,6 +50,12 @@
 		android:title="@string/clear_cookies" />
 
 	<Preference
+		android:key="webview_clear"
+		android:persistent="false"
+		android:summary="@string/clear_browser_data_summary"
+		android:title="@string/clear_browser_data" />
+
+	<Preference
 		android:key="chapters_clear"
 		android:persistent="false"
 		android:summary="@string/delete_read_chapters_summary"

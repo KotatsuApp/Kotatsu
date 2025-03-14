@@ -25,7 +25,6 @@ import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityCategoryEditBinding
 import org.koitharu.kotatsu.list.domain.ListSortOrder
-import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class FavouritesCategoryEditActivity :
@@ -41,10 +40,7 @@ class FavouritesCategoryEditActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoryEditBinding.inflate(layoutInflater))
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
-		}
+		setDisplayHomeAsUp(true, true)
 		initSortSpinner()
 		viewBinding.buttonDone.setOnClickListener(this)
 		viewBinding.editName.addTextChangedListener(this)

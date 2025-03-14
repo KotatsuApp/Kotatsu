@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.core.util.ext.isWebViewUnavailable
 import org.koitharu.kotatsu.main.ui.protect.ScreenshotPolicyHelper
+import com.google.android.material.R as materialR
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
@@ -96,6 +97,15 @@ abstract class BaseActivity<B : ViewBinding> :
 		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 		val toolbar = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)
 		toolbar?.let(this::setSupportActionBar)
+	}
+
+	protected fun setDisplayHomeAsUp(isEnabled: Boolean, showUpAsClose: Boolean) {
+		supportActionBar?.run {
+			setDisplayHomeAsUpEnabled(isEnabled)
+			if (showUpAsClose) {
+				setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
+			}
+		}
 	}
 
 	override fun onSupportNavigateUp(): Boolean {

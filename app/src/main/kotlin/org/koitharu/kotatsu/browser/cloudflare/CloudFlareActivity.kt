@@ -26,7 +26,6 @@ import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 import javax.inject.Inject
-import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
@@ -40,10 +39,7 @@ class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
-		}
+		setDisplayHomeAsUp(true, true)
 		val url = intent?.dataString
 		if (url.isNullOrEmpty()) {
 			finishAfterTransition()

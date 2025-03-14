@@ -122,8 +122,9 @@ class ProxySettingsFragment : BasePreferenceFragment(R.string.proxy),
 						.get()
 						.url("http://neverssl.com")
 						.build()
-					val response = okHttpClient.newCall(request).await()
-					check(response.isSuccessful) { response.message }
+					okHttpClient.newCall(request).await().use { response ->
+						check(response.isSuccessful) { response.message }
+					}
 				}
 				showTestResult(null)
 			} catch (e: CancellationException) {

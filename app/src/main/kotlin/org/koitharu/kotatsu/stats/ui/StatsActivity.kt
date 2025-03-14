@@ -63,7 +63,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityStatsBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		setDisplayHomeAsUp(true, false)
 		val adapter = BaseListAdapter<StatsRecord>()
 			.addDelegate(ListItemType.FEED, statsAD(this))
 			.addListListener(this)

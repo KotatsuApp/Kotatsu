@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
@@ -23,12 +24,16 @@ class DetailsMenuProvider(
 	private val appShortcutManager: AppShortcutManager,
 ) : MenuProvider {
 
+	private val router: AppRouter
+		get() = activity.router
+
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 		menuInflater.inflate(R.menu.opt_details, menu)
 	}
 
 	override fun onPrepareMenu(menu: Menu) {
 		val manga = viewModel.manga.value
+		menu.findItem(R.id.action_share).isVisible = manga != null && AppRouter.isShareSupported(manga)
 		menu.findItem(R.id.action_save).isVisible = manga?.source != null && manga.source != LocalMangaSource
 		menu.findItem(R.id.action_delete).isVisible = manga?.source == LocalMangaSource
 		menu.findItem(R.id.action_browser).isVisible = manga?.source != LocalMangaSource
@@ -43,7 +48,7 @@ class DetailsMenuProvider(
 		val manga = viewModel.getMangaOrNull() ?: return false
 		when (menuItem.itemId) {
 			R.id.action_share -> {
-				activity.router.showShareDialog(manga)
+				router.showShareDialog(manga)
 			}
 
 			R.id.action_delete -> {
@@ -56,31 +61,31 @@ class DetailsMenuProvider(
 			}
 
 			R.id.action_save -> {
-				activity.router.showDownloadDialog(manga, snackbarHost)
+				router.showDownloadDialog(manga, snackbarHost)
 			}
 
 			R.id.action_browser -> {
-				activity.router.openBrowser(url = manga.publicUrl, source = manga.source, title = manga.title)
+				router.openBrowser(url = manga.publicUrl, source = manga.source, title = manga.title)
 			}
 
 			R.id.action_online -> {
-				activity.router.openDetails(manga)
+				router.openDetails(manga)
 			}
 
 			R.id.action_related -> {
-				activity.router.openSearch(manga.title)
+				router.openSearch(manga.title)
 			}
 
 			R.id.action_alternatives -> {
-				activity.router.openAlternatives(manga)
+				router.openAlternatives(manga)
 			}
 
 			R.id.action_stats -> {
-				activity.router.showStatisticSheet(manga)
+				router.showStatisticSheet(manga)
 			}
 
 			R.id.action_scrobbling -> {
-				activity.router.showScrobblingSelectorSheet(manga, null)
+				router.showScrobblingSelectorSheet(manga, null)
 			}
 
 			R.id.action_shortcut -> {
