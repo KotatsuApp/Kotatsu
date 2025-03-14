@@ -782,4 +782,14 @@
     <string name="dont_allow">Nepovolit</string>
     <string name="scrobbler_auth_intro">Přihlaste se do %s a nastavte integraci. To vám umožní sledovat postup a stav čtení mangy</string>
     <string name="telegram_chat_id">Telegram chat ID</string>
+    <string name="error_disclaimer_report">Můžete poslat hlášení o chybě vývojářům. Tímto nám pomůžete vyřešit tento problém.</string>
+    <string name="search_disabled_sources">Vyhledat ve vypnutých zdrojích</string>
+    <string name="chapter_volume_number">Svazek %1$s Kapitola %2$s</string>
+    <string name="chapter_number">Kapitola %s</string>
+    <string name="unnamed_chapter">Nepojmenovaná kapitola</string>
+    <string name="error_details">Detaily o chybě</string>
+    <string name="error_disclaimer_manga">Zkuste otevřít mangu ve webovém prohlížeči, abyste zjistliti jestli je dostupná.</string>
+    <string name="error_disclaimer_app_outdated">Vypadá to, že vaše verze Kotatsu je zastaralá. Prosíme, nainstalujte nejnovější verzi pro získání všech dostupných oprav chyb.</string>
+    <string name="disable_captcha_notifications">Vypnout oznámení o captcha</string>
+    <string name="disable_captcha_notifications_summary">Nebudete dostávat oznámení o řešení CAPTCHA pro tento zdroj, ale to může vést k rozbití operací na pozadí (hledání nových kapitol, získávání doporučení atd)</string>
 </resources>
