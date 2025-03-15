@@ -8,6 +8,8 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
+import org.koitharu.kotatsu.core.util.ext.isReadable
+import org.koitharu.kotatsu.core.util.ext.isWriteable
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
 import java.io.File
@@ -69,7 +71,7 @@ class MangaDirectoriesViewModel @Inject constructor(
 						titleRes = 0,
 						file = dir,
 						isChecked = dir == downloadDir,
-						isAvailable = dir.canRead() && dir.canWrite(),
+						isAvailable = dir.isReadable() && dir.isWriteable(),
 						isRemovable = false,
 					)
 				}
@@ -79,7 +81,7 @@ class MangaDirectoriesViewModel @Inject constructor(
 						titleRes = 0,
 						file = dir,
 						isChecked = dir == downloadDir,
-						isAvailable = dir.canRead() && dir.canWrite(),
+						isAvailable = dir.isReadable() && dir.isWriteable(),
 						isRemovable = true,
 					)
 				}

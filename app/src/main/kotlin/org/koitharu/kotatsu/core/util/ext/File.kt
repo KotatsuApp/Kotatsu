@@ -28,9 +28,9 @@ fun File.subdir(name: String) = File(this, name).also {
 	if (!it.exists()) it.mkdirs()
 }
 
-fun File.takeIfReadable() = takeIf { it.exists() && it.canRead() }
+fun File.takeIfReadable() = takeIf { it.isReadable() }
 
-fun File.takeIfWriteable() = takeIf { it.exists() && it.canWrite() }
+fun File.takeIfWriteable() = takeIf { it.isWriteable() }
 
 fun File.isNotEmpty() = length() != 0L
 
@@ -110,3 +110,11 @@ fun File.walkCompat(includeDirectories: Boolean): Sequence<File> = if (Build.VER
 
 val File.normalizedExtension: String?
 	get() = MimeTypes.getNormalizedExtension(name)
+
+fun File.isReadable() = runCatching {
+	canRead()
+}.getOrDefault(false)
+
+fun File.isWriteable() = runCatching {
+	canWrite()
+}.getOrDefault(false)
