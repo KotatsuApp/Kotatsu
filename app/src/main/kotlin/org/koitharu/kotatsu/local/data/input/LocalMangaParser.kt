@@ -37,6 +37,7 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.longHashCode
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.io.File
 
 /**
@@ -113,7 +114,7 @@ class LocalMangaParser(private val uri: Uri) {
 							}.toString().removePrefix(Path.DIRECTORY_SEPARATOR)
 							MangaChapter(
 								id = "$i$s".longHashCode(),
-								title = null,
+								title = p.userFriendlyName(),
 								number = 0f,
 								volume = 0,
 								source = LocalMangaSource,
@@ -219,6 +220,10 @@ class LocalMangaParser(private val uri: Uri) {
 	}.onFailure { e ->
 		e.printStackTraceDebug()
 	}.getOrNull()
+
+	private fun Path.userFriendlyName(): String = name.substringBeforeLast('.')
+		.replace('_', ' ')
+		.toTitleCase()
 
 	private class FsAndPath(
 		val fileSystem: FileSystem,
