@@ -784,4 +784,14 @@
     <string name="global_search">Global na paghahanap</string>
     <string name="search_everywhere">Maghanap kahit saan</string>
     <string name="badges_in_lists">Mga badge sa listahan</string>
+    <string name="disable_captcha_notifications">I-disable ang mga abiso ng captcha</string>
+    <string name="disable_captcha_notifications_summary">Hindi ka makakatanggap ng mga abiso tungkol sa paglutas ng CAPTCHA para sa source na ito ngunit maaari itong humantong sa pagsira sa mga operasyon sa background (pagsusuri ng mga bagong kabanata, pagkuha ng mga rekomendasyon, atbp)</string>
+    <string name="error_details">Detaye ng error</string>
+    <string name="error_disclaimer_manga">Subukang buksan ang manga sa isang web browser upang matiyak na available ito sa source.</string>
+    <string name="search_disabled_sources">Maghanap sa pamamagitan ng mga hindi pinaganang source</string>
+    <string name="chapter_volume_number">Vol %1$s Kabanata %2$s</string>
+    <string name="chapter_number">Kabanata %s</string>
+    <string name="unnamed_chapter">Walang pangalan na kabanata</string>
+    <string name="error_disclaimer_app_outdated">Mukhang luma na ang bersyon mo ng Kotatsu. Mangyaring i-install ang pinakabagong bersyon upang makuha ang lahat ng magagamit na mga pag-aayos.</string>
+    <string name="error_disclaimer_report">Maaari kang magsumite ng ulat ng bug sa mga developer. Makakatulong ito sa amin na magsiyasat at ayusin ang isyu.</string>
 </resources>

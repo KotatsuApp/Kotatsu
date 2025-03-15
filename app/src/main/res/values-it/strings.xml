@@ -786,4 +786,16 @@
     <string name="search_everywhere">Cerca ovunque</string>
     <string name="badges_in_lists">Badge in elenchi</string>
     <string name="global_search">Ricerca globale</string>
+    <string name="disable_captcha_notifications">Disabilita notifiche captcha</string>
+    <string name="disable_captcha_notifications_summary">Non riceverai notifiche sulla risoluzione dei CAPTCHA per questa fonte, ma ciò potrebbe interrompere le operazioni in background (controllo di nuovi capitoli, ottenimento di raccomandazioni, ecc.)</string>
+    <string name="chapter_volume_number">Vol %1$s Capitolo %2$s</string>
+    <string name="search_disabled_sources">Ricerca tra le fonti disabilitate</string>
+    <string name="chapter_number">Capitolo %s</string>
+    <string name="unnamed_chapter">Capitolo senza nome</string>
+    <string name="error_details">Dettagli errore</string>
+    <string name="error_disclaimer_manga">Prova ad aprire il manga nel browser web per verificare che sia disponibile nella sua fonte.</string>
+    <string name="error_disclaimer_app_outdated">Sembra che la tua versione di Kotatsu non sia aggiornata. Installa l\'ultima versione per ottenere tutte le correzioni disponibili.</string>
+    <string name="error_disclaimer_report">Puoi inviare una segnalazione di bug agli sviluppatori. Questo ci aiuterà a indagare e a risolvere il problema.</string>
+    <string name="link_to_manga_on_s">Link al manga su %s</string>
+    <string name="link_to_manga_in_app">Link al manga su Kotatsu</string>
 </resources>

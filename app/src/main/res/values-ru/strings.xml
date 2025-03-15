@@ -786,4 +786,14 @@
     <string name="global_search">Глобальный поиск</string>
     <string name="search_everywhere">Поиск повсюду</string>
     <string name="badges_in_lists">Значки в списках</string>
+    <string name="error_details">Подробности ошибки</string>
+    <string name="error_disclaimer_app_outdated">Похоже, что Ваша версия Kotatsu устарела. Пожалуйста, установите последнюю версию, чтобы получить все доступные исправления.</string>
+    <string name="error_disclaimer_report">Вы можете отправить отчёт об ошибке разработчикам. Это поможет нам исправить проблему.</string>
+    <string name="search_disabled_sources">Поиск по отключенным источникам</string>
+    <string name="chapter_volume_number">Том %1$s Глава %2$s</string>
+    <string name="chapter_number">Глава %s</string>
+    <string name="unnamed_chapter">Безымянная глава</string>
+    <string name="error_disclaimer_manga">Попробуйте открыть мангу в браузере, чтобы убедиться, что она доступна в источнике.</string>
+    <string name="disable_captcha_notifications">Отключить уведомления о CAPTCHA</string>
+    <string name="disable_captcha_notifications_summary">Вы не будете получать уведомления о прохождении CAPTCHA для этого источника, но это может привести к тому, что фоновые операции перестанут работать (проверка новых глав, обновление рекомендаций и т. д.)</string>
 </resources>

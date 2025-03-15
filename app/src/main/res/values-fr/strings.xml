@@ -773,4 +773,26 @@
     <string name="enable_all_sources">Activer toutes les sources de mangas</string>
     <string name="backup_restored_background">La sauvegarde sera restaurée en arrière-plan</string>
     <string name="restoring_backup">Restauration de la sauvegarde</string>
+    <string name="error_details">Détails de l\'erreur</string>
+    <string name="error_disclaimer_manga">Essayez d\'ouvrir le manga dans un navigateur Web pour vous assurer qu\'il est disponible sur sa source.</string>
+    <string name="error_disclaimer_app_outdated">Il semble que votre version de Kotatsu soit obsolète. Veuillez installer la dernière version pour obtenir tous les correctifs disponibles.</string>
+    <string name="error_disclaimer_report">Vous pouvez envoyer un rapport des erreurs aux développeurs. Cela nous aidera à enquêter sur le problème et à le résoudre.</string>
+    <string name="search_disabled_sources">Rechercher dans les sources désactivées</string>
+    <string name="reader_info_bar_transparent">Barre d\'informations transparente pour le lecteur</string>
+    <string name="chapter_volume_number">Vol %1$s chapitre %2$s</string>
+    <string name="chapter_number">Chapitre %s</string>
+    <string name="unnamed_chapter">Chapitre sans nom</string>
+    <string name="reader_controls_in_bottom_bar">Commandes du lecteur dans la barre inférieure</string>
+    <string name="chapters_and_pages">Chapitres et pages</string>
+    <string name="pages_slider">Curseur de changement de page</string>
+    <string name="screen_rotation_locked">La rotation de l\'écran a été verrouillée</string>
+    <string name="screen_rotation_unlocked">La rotation de l\'écran a été déverrouillée</string>
+    <string name="link_to_manga_on_s">Lien vers le manga sur %s</string>
+    <string name="link_to_manga_in_app">Lien vers le manga dans Kotatsu</string>
+    <string name="simple">Simple</string>
+    <string name="disable_captcha_notifications">Désactiver les notifications captcha</string>
+    <string name="disable_captcha_notifications_summary">Vous ne recevrez pas de notifications concernant la résolution du CAPTCHA pour cette source, mais cela peut entraîner l\'interruption des opérations en arrière-plan (vérification de nouveaux chapitres, obtention de recommandations, etc)</string>
+    <string name="global_search">Recherche globale</string>
+    <string name="search_everywhere">Chercher partout</string>
+    <string name="badges_in_lists">Badges dans les listes</string>
 </resources>

@@ -53,7 +53,7 @@
     <string name="nothing_found">结果为空</string>
     <string name="history_is_empty">暂无历史记录</string>
     <string name="read">阅读</string>
-    <string name="you_have_not_favourites_yet">暂无漫画收藏</string>
+    <string name="you_have_not_favourites_yet">暂无收藏漫画</string>
     <string name="add_to_favourites">收藏此漫画</string>
     <string name="add_new_category">添加新分类</string>
     <string name="add">添加</string>
@@ -314,7 +314,7 @@
     <string name="feed">更新</string>
     <string name="memory_usage_pattern">%1$s - %2$s</string>
     <string name="not_found_404">没有章节或已被删除</string>
-    <string name="reader_control_ltr_summary">不修改翻页方向到已经设置的阅读模式，例：按下右键总是翻到下一页，此设置只对硬件设备有效</string>
+    <string name="reader_control_ltr_summary">不修改翻页方向到已经设置的阅读模式（例：按下右键总是翻到下一页，此设置只对硬件设备有效）</string>
     <string name="reader_control_ltr">简易操作</string>
     <string name="history_shortcuts_summary">长按应用图标显示最近阅读的漫画</string>
     <string name="history_shortcuts">显示最近阅读漫画的快捷方式</string>
@@ -357,7 +357,7 @@
     <string name="allow_unstable_updates_summary">接收测试版本的更新通知</string>
     <string name="download_started">下载已开始</string>
     <string name="user_agent">UserAgent 标识</string>
-    <string name="settings_apply_restart_required">重启程序后更改</string>
+    <string name="settings_apply_restart_required">重启程序后生效</string>
     <string name="sources_reorder_tip">点击并按住项目排序</string>
     <string name="got_it">知道了</string>
     <string name="speed">速度</string>
@@ -419,7 +419,7 @@
     <string name="username">用户名</string>
     <string name="download_option_all_unread_b">所有未读章节 (%s)</string>
     <string name="authorization_optional">授权 (可选)</string>
-    <string name="download_option_first_n_chapters">前%s</string>
+    <string name="download_option_first_n_chapters">前 %s</string>
     <string name="downloaded">下载进度</string>
     <string name="download_option_next_unread_n_chapters">后续未读的 %s</string>
     <string name="images_procy_description">尽可能使用 wsrv.nl 代理服务减少流量使用并加快图片加载</string>
@@ -444,7 +444,7 @@
     <string name="directories">目录</string>
     <string name="manage_categories">分类管理</string>
     <string name="color_light">浅色</string>
-    <string name="search_hint">输入漫画标题、分类或图源名称</string>
+    <string name="search_hint">输入漫画标题、风格或图源名称</string>
     <string name="main_screen_sections">主页底部导航栏</string>
     <string name="advanced">高级</string>
     <string name="color_dark">深色</string>
@@ -500,7 +500,7 @@
     <string name="skip">跳过</string>
     <string name="backup_date_">备份日期：%s</string>
     <string name="content_rating">内容分级</string>
-    <string name="genres_exclude">屏蔽分类</string>
+    <string name="genres_exclude">风格屏蔽</string>
     <string name="rating_safe">全年龄</string>
     <string name="rating_suggestive">R15</string>
     <string name="rating_adult">R18</string>
@@ -518,16 +518,16 @@
     <string name="available_d">%1$d 个可用</string>
     <string name="disable_nsfw_summary">关闭含有成人内容的图源并尽可能从列表中隐藏成人漫画</string>
     <string name="speed_value">x%.1f</string>
-    <string name="error_filter_locale_genre_not_supported">此图源不支持同时按分类和区域筛选</string>
-    <string name="error_filter_states_genre_not_supported">此图源不支持同时按分类和状态筛选</string>
-    <string name="genres_search_hint">开始输入分类名称</string>
+    <string name="error_filter_locale_genre_not_supported">此图源不支持同时按风格和区域筛选</string>
+    <string name="error_filter_states_genre_not_supported">此图源不支持同时按风格和状态筛选</string>
+    <string name="genres_search_hint">请输入风格名称</string>
     <string name="state_paused">休刊中</string>
     <string name="reader_optimize">降低内存占用 (测试)</string>
     <string name="reader_optimize_summary">降低当前画面外的页面质量以减少内存占用</string>
     <string name="disable_battery_optimization_summary_downloads">也许能帮助解决下载过程中的相关问题</string>
     <string name="error_search_not_supported">此图源不支持搜索</string>
     <string name="state">状态</string>
-    <string name="error_multiple_genres_not_supported">此图源不支持按多个分类筛选</string>
+    <string name="error_multiple_genres_not_supported">此图源不支持按多个风格筛选</string>
     <string name="error_multiple_states_not_supported">此图源不支持按多个状态筛选</string>
     <string name="by_relevance">关联</string>
     <string name="mark_as_completed">标记为已读</string>
@@ -595,7 +595,7 @@
     <string name="delete_read_chapters_summary">从本地设备中删除已读章节来释放存储空间</string>
     <string name="alternatives">漫画换源</string>
     <string name="manga_migration">即将换源</string>
-    <string name="migration_completed">换源完成</string>
+    <string name="migration_completed">换源成功</string>
     <string name="chapters_grid_view">切换为网格视图</string>
     <string name="delete_read_chapters_prompt">将会删除所有储存在本地并被标记为已读的章节，可之后再重新下载，但已导入的章节将永久丢失</string>
     <string name="delete_read_chapters_auto">自动删除已读章节</string>
@@ -644,7 +644,7 @@
     <string name="_new">最新</string>
     <string name="screenshots_block_incognito">开启无痕模式时禁止</string>
     <string name="all_languages">所有语言</string>
-    <string name="image_server">图片服务器偏好</string>
+    <string name="image_server">图片质量</string>
     <string name="crop_pages">裁剪页面</string>
     <string name="pin">置顶</string>
     <string name="unpin">取消置顶</string>
@@ -734,7 +734,7 @@
     <string name="chapter_selection_hint">可在章节列表长按选择章节下载。</string>
     <string name="chapters_all">全部</string>
     <string name="allow_always">总是允许</string>
-    <string name="download_over_cellular">数据流量下载</string>
+    <string name="download_over_cellular">使用数据流量下载</string>
     <string name="allow_once">允许一次</string>
     <string name="ask_every_time">每次询问</string>
     <string name="dont_allow">拒绝</string>
@@ -774,7 +774,7 @@
     <string name="enable_all_sources">开启所有漫画图源</string>
     <string name="all_sources_enabled">已启动所有漫画图源</string>
     <string name="enable_all_sources_summary">所有图源将会被启动</string>
-    <string name="reader_info_bar_transparent">透明阅读器信息栏</string>
+    <string name="reader_info_bar_transparent">顶部信息栏透明</string>
     <string name="restoring_backup">正在恢复备份</string>
     <string name="backup_restored_background">将在后台恢复备份</string>
     <string name="pages_slider">页面切换滑动条</string>
@@ -782,4 +782,16 @@
     <string name="screen_rotation_unlocked">屏幕方向已解锁</string>
     <string name="chapters_and_pages">章节与页面</string>
     <string name="reader_controls_in_bottom_bar">阅读器底部控制栏</string>
+    <string name="disable_captcha_notifications">关闭验证码通知</string>
+    <string name="disable_captcha_notifications_summary">开启后将不会在本图源收到需要通过验证码的通知，但会导致后台进程出现异常 (章节更新和推荐漫画等)</string>
+    <string name="global_search">全局搜索</string>
+    <string name="badges_in_lists">显示列表小图标</string>
+    <string name="chapter_volume_number">第 %1$s 卷 第 %2$s 章</string>
+    <string name="chapter_number">第 %s 章</string>
+    <string name="unnamed_chapter">未命名章节</string>
+    <string name="search_disabled_sources">同样在已关闭的图源中搜索</string>
+    <string name="error_details">错误详细信息</string>
+    <string name="error_disclaimer_manga">将以在浏览器中打开漫画的方式检查漫画在图源中是否能正常打开</string>
+    <string name="error_disclaimer_report">可向开发者提交错误报告，将会帮助我们定位并修复错误</string>
+    <string name="error_disclaimer_app_outdated">你的 Kotatsu 版本过旧，请下载最新版本以修复问题</string>
 </resources>

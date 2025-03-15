@@ -366,7 +366,7 @@
     <string name="sync_settings">Eşitleme ayarları</string>
     <string name="server_address">Sunucu adresi</string>
     <string name="sync_host_description">Kendi eşitleme sunucunuzu veya varsayılan bir sunucuyu kullanabilirsiniz. Ne yaptığınızdan emin değilseniz bunu değiştirmeyin.</string>
-    <string name="mirror_switching_summary">Yedek bağlantılar mevcutsa hatalarda manga kaynakları için bağlantıları otomatik olarak değiştir</string>
+    <string name="mirror_switching_summary">Hata durumlarında manga kaynakları için yedek bağlantılar mevcutsa otomatik olarak bu bağlantıları kullan</string>
     <string name="downloads_wifi_only_summary">Mobil ağa geçerken indirmeyi durdur</string>
     <string name="remove_completed">Bitirilenleri kaldır</string>
     <string name="cancel_all">Hepsini iptal et</string>
@@ -786,4 +786,16 @@
     <string name="global_search">Genel arama</string>
     <string name="search_everywhere">Her yerde ara</string>
     <string name="badges_in_lists">Listelerde rozetler</string>
+    <string name="disable_captcha_notifications">Captcha bildirimlerini kapat</string>
+    <string name="disable_captcha_notifications_summary">Bu kaynak için CAPTCHA doğrulaması bildirimleri almayacaksınız ancak bu, arka plan işlemlerinin çalışmamasına neden olabilir (yeni bölümleri kontrol etme, önerileri alma vb.)</string>
+    <string name="chapter_volume_number">Cilt %1$s Bölüm %2$s</string>
+    <string name="chapter_number">Bölüm %s</string>
+    <string name="unnamed_chapter">İsimsiz bölüm</string>
+    <string name="search_disabled_sources">Devre dışı bırakılmış kaynaklarda ara</string>
+    <string name="error_details">Hata ayrıntıları</string>
+    <string name="error_disclaimer_app_outdated">Kullandığınız Kotatsu versiyonu güncel değil gibi görünüyor. Bütün hata düzeltmelerini almak için lütfen en son sürümü indirin.</string>
+    <string name="error_disclaimer_manga">Manganın kaynakta var olduğundan emin olmak için bir tarayıcıda açmayı deneyin.</string>
+    <string name="error_disclaimer_report">Geliştiricilere bir hata bildiriminde bulunabilirsiniz. Sorunu araştırmamıza ve çözmemize yardımcı olacaktır.</string>
+    <string name="link_to_manga_on_s">%s üzerinde manganın bağlantısı</string>
+    <string name="link_to_manga_in_app">Kotatsu üzerinde manganın bağlantısı</string>
 </resources>
