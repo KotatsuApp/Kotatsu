@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
@@ -26,7 +27,7 @@ class FavouritesContainerAdapter(fragment: Fragment) : FragmentStateAdapter(frag
 	override fun getItemCount(): Int = differ.currentList.size
 
 	override fun getItemId(position: Int): Long {
-		return differ.currentList[position].id
+		return differ.currentList.getOrNull(position)?.id ?: RecyclerView.NO_ID
 	}
 
 	override fun containsItem(itemId: Long): Boolean {
