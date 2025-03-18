@@ -569,7 +569,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	fun getAllValues(): Map<String, *> = prefs.all
 
-	fun upsertAll(m: Map<String, *>) = prefs.edit { putAll(m) }
+	fun upsertAll(m: Map<String, *>) = prefs.edit {
+		clear()
+		putAll(m)
+	}
 
 	private fun isBackgroundNetworkRestricted(): Boolean {
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

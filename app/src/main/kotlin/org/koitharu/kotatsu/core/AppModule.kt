@@ -99,7 +99,7 @@ interface AppModule {
 		@Provides
 		@Singleton
 		fun provideCoil(
-			@ApplicationContext context: Context,
+			@LocalizedAppContext context: Context,
 			@MangaHttpClient okHttpClientProvider: Provider<OkHttpClient>,
 			mangaRepositoryFactory: MangaRepository.Factory,
 			imageProxyInterceptor: ImageProxyInterceptor,

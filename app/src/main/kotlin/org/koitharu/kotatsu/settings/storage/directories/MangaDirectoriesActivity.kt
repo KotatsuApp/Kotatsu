@@ -95,11 +95,14 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 			leftMargin = topMargin + barsInsets.left
 			bottomMargin = topMargin + barsInsets.bottom
 		}
-		viewBinding.root.updatePadding(
+		viewBinding.appbar.updatePadding(
 			left = barsInsets.left,
 			right = barsInsets.right,
+			top = barsInsets.top,
 		)
 		viewBinding.recyclerView.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
 			bottom = barsInsets.bottom,
 		)
 		return insets.consumeAllSystemBarsInsets()
