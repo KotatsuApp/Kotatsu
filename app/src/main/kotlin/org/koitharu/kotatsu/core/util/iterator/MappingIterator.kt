@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.core.util.iterator
 
-import org.koitharu.kotatsu.R
-
 class MappingIterator<T, R>(
 	private val upstream: Iterator<T>,
 	private val mapper: (T) -> R,

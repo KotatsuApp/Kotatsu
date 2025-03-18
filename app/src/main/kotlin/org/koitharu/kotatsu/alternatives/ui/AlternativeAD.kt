@@ -4,6 +4,7 @@ import android.text.style.ForegroundColorSpan
 import androidx.core.content.ContextCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import coil3.ImageLoader
 import coil3.request.ImageRequest
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.mangaExtra
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
@@ -51,10 +53,22 @@ fun alternativeAD(
 	binding.chipSource.setOnClickListener(clickListener)
 
 	bind { payloads ->
-		binding.textViewTitle.text = item.manga.title
+		binding.textViewTitle.text = item.mangaModel.title
+		with(binding.iconsView) {
+			clearIcons()
+			if (item.mangaModel.isSaved) addIcon(R.drawable.ic_storage)
+			if (item.mangaModel.isFavorite) addIcon(R.drawable.ic_heart_outline)
+			isVisible = iconsCount > 0
+		}
 		binding.textViewSubtitle.text = buildSpannedString {
 			if (item.chaptersCount > 0) {
-				append(context.resources.getQuantityString(R.plurals.chapters, item.chaptersCount, item.chaptersCount))
+				append(
+					context.resources.getQuantityStringSafe(
+						R.plurals.chapters,
+						item.chaptersCount,
+						item.chaptersCount,
+					),
+				)
 			} else {
 				append(context.getString(R.string.no_chapters))
 			}
@@ -70,7 +84,10 @@ fun alternativeAD(
 				}
 			}
 		}
-		binding.progressView.setProgress(item.progress, ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads)
+		binding.progressView.setProgress(
+			item.mangaModel.progress,
+			ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads,
+		)
 		binding.chipSource.also { chip ->
 			chip.text = item.manga.source.getTitle(chip.context)
 			ImageRequest.Builder(context)

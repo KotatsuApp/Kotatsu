@@ -17,7 +17,7 @@ data class ParcelableChapter(
 		override fun create(parcel: Parcel) = ParcelableChapter(
 			MangaChapter(
 				id = parcel.readLong(),
-				name = parcel.readString().orEmpty(),
+				title = parcel.readString(),
 				number = parcel.readFloat(),
 				volume = parcel.readInt(),
 				url = parcel.readString().orEmpty(),
@@ -30,7 +30,7 @@ data class ParcelableChapter(
 
 		override fun ParcelableChapter.write(parcel: Parcel, flags: Int) = with(chapter) {
 			parcel.writeLong(id)
-			parcel.writeString(name)
+			parcel.writeString(title)
 			parcel.writeFloat(number)
 			parcel.writeInt(volume)
 			parcel.writeString(url)

@@ -11,6 +11,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -66,6 +68,11 @@ val ViewPager2.recyclerView: RecyclerView?
 
 fun ViewPager2.findCurrentViewHolder(): ViewHolder? {
 	return recyclerView?.findViewHolderForAdapterPosition(currentItem)
+}
+
+fun FragmentManager.findCurrentPagerFragment(pager: ViewPager2): Fragment? {
+	val currentId = pager.adapter?.getItemId(pager.currentItem) ?: pager.currentItem
+	return findFragmentByTag("f$currentId")
 }
 
 fun View.resetTransformations() {

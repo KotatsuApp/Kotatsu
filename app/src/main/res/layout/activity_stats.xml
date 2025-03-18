@@ -11,7 +11,7 @@
 		android:id="@+id/appbar"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:fitsSystemWindows="true"
+		android:fitsSystemWindows="false"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">

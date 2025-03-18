@@ -15,6 +15,7 @@ private const val TYPE_TEXT = "text/plain"
 private const val TYPE_IMAGE = "image/*"
 private const val TYPE_CBZ = "application/x-cbz"
 
+@Deprecated("")
 class ShareHelper(private val context: Context) {
 
 	fun shareMangaLink(manga: Manga) {

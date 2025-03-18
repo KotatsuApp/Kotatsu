@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.tracker.data
 
+import androidx.annotation.IntDef
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -24,9 +25,14 @@ class TrackEntity(
 	@ColumnInfo(name = "chapters_new") val newChapters: Int,
 	@ColumnInfo(name = "last_check_time") val lastCheckTime: Long,
 	@ColumnInfo(name = "last_chapter_date") val lastChapterDate: Long,
+	@TrackerResult
 	@ColumnInfo(name = "last_result") val lastResult: Int,
 	@ColumnInfo(name = "last_error") val lastError: String?,
 ) {
+
+	@IntDef(RESULT_NONE, RESULT_HAS_UPDATE, RESULT_NO_UPDATE, RESULT_FAILED, RESULT_EXTERNAL_MODIFICATION)
+	@Retention(AnnotationRetention.SOURCE)
+	annotation class TrackerResult
 
 	companion object {
 

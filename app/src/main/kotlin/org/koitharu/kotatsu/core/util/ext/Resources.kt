@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.util.ext
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import androidx.annotation.PluralsRes
 import androidx.annotation.Px
 import androidx.core.util.TypedValueCompat
 import kotlin.math.roundToInt
@@ -24,4 +25,12 @@ fun Context.getSystemBoolean(resName: String, fallback: Boolean): Boolean {
 	} else {
 		fallback
 	}
+}
+
+fun Resources.getQuantityStringSafe(@PluralsRes resId: Int, quantity: Int, vararg formatArgs: Any): String = try {
+	getQuantityString(resId, quantity, *formatArgs)
+} catch (e: Resources.NotFoundException) {
+	e.report(silent = true)
+	e.printStackTraceDebug()
+	formatArgs.firstOrNull()?.toString() ?: quantity.toString()
 }

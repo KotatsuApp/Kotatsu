@@ -18,14 +18,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ErrorReporterReceiver
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
+import org.koitharu.kotatsu.core.util.ext.powerManager
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
-import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.core.util.ext.withPartialWakeLock
 import org.koitharu.kotatsu.local.data.importer.SingleMangaImporter
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -50,12 +52,14 @@ class ImportService : CoroutineIntentService() {
 	override suspend fun IntentJobContext.processIntent(intent: Intent) {
 		val uri = requireNotNull(intent.getStringExtra(DATA_URI)?.toUriOrNull()) { "No input uri" }
 		startForeground(this)
-		val result = runCatchingCancellable {
-			importer.import(uri).manga
-		}
-		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-			val notification = buildNotification(result)
-			notificationManager.notify(TAG, startId, notification)
+		powerManager.withPartialWakeLock(TAG) {
+			val result = runCatchingCancellable {
+				importer.import(uri).manga
+			}
+			if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+				val notification = buildNotification(result)
+				notificationManager.notify(TAG, startId, notification)
+			}
 		}
 	}
 
@@ -113,7 +117,7 @@ class ImportService : CoroutineIntentService() {
 				).toBitmapOrNull(),
 			)
 			notification.setSubText(manga.title)
-			val intent = DetailsActivity.newIntent(applicationContext, manga)
+			val intent = AppRouter.detailsIntent(applicationContext, manga)
 			notification.setContentIntent(
 				PendingIntentCompat.getActivity(
 					applicationContext,

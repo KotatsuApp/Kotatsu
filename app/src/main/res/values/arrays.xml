@@ -124,4 +124,16 @@
 		<item>@string/portrait</item>
 		<item>@string/landscape</item>
 	</string-array>
+	<string-array name="reader_controls" translatable="false">
+		<item>@string/prev_chapter</item>
+		<item>@string/next_chapter</item>
+		<item>@string/pages_slider</item>
+		<item>@string/chapters_and_pages</item>
+		<item>@string/screen_orientation</item>
+		<item>@string/save_page</item>
+	</string-array>
+	<string-array name="list_badges" translatable="false">
+		<item>@string/favourites</item>
+		<item>@string/saved_manga</item>
+	</string-array>
 </resources>

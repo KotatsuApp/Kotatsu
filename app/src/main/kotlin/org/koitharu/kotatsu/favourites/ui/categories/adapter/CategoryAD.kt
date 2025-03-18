@@ -24,6 +24,7 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
@@ -79,7 +80,7 @@ fun categoryAD(
 		binding.textViewSubtitle.text = if (item.mangaCount == 0) {
 			getString(R.string.empty)
 		} else {
-			context.resources.getQuantityString(
+			context.resources.getQuantityStringSafe(
 				R.plurals.items,
 				item.mangaCount,
 				item.mangaCount,
@@ -139,7 +140,7 @@ fun allCategoriesAD(
 		binding.textViewSubtitle.text = if (item.mangaCount == 0) {
 			getString(R.string.empty)
 		} else {
-			context.resources.getQuantityString(
+			context.resources.getQuantityStringSafe(
 				R.plurals.items,
 				item.mangaCount,
 				item.mangaCount,

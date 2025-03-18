@@ -73,6 +73,10 @@ class LocalMangaIndex @Inject constructor(
 		}.getOrNull()
 	}
 
+	suspend operator fun contains(mangaId: Long): Boolean {
+		return db.getLocalMangaIndexDao().findPath(mangaId) != null
+	}
+
 	suspend fun put(manga: LocalManga) = mutex.withLock {
 		db.withTransaction {
 			upsert(manga)

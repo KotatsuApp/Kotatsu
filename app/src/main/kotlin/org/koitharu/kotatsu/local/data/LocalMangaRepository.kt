@@ -17,7 +17,9 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
+import org.koitharu.kotatsu.core.util.ext.isWriteable
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.takeIfWriteable
 import org.koitharu.kotatsu.core.util.ext.withChildren
 import org.koitharu.kotatsu.local.data.index.LocalMangaIndex
 import org.koitharu.kotatsu.local.data.input.LocalMangaParser
@@ -203,7 +205,7 @@ class LocalMangaRepository @Inject constructor(
 	override suspend fun getRelated(seed: Manga): List<Manga> = emptyList()
 
 	suspend fun getOutputDir(manga: Manga, fallback: File?): File? {
-		val defaultDir = fallback ?: storageManager.getDefaultWriteableDir()
+		val defaultDir = fallback?.takeIfWriteable() ?: storageManager.getDefaultWriteableDir()
 		if (defaultDir != null && LocalMangaOutput.get(defaultDir, manga) != null) {
 			return defaultDir
 		}

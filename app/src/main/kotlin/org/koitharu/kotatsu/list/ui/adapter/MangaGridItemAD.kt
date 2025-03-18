@@ -5,8 +5,8 @@ import androidx.lifecycle.LifecycleOwner
 import coil3.ImageLoader
 import coil3.request.allowRgb565
 import coil3.request.transformations
-import com.google.android.material.badge.BadgeDrawable
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
@@ -30,7 +30,6 @@ fun mangaGridItemAD(
 ) = adapterDelegateViewBinding<MangaGridModel, ListModel, ItemMangaGridBinding>(
 	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) },
 ) {
-	var badge: BadgeDrawable? = null
 
 	AdapterDelegateClickListenerAdapter(this, clickListener, MangaGridModel::manga).attach(itemView)
 	sizeResolver.attachToView(lifecycleOwner, itemView, binding.textViewTitle, binding.progressView)
@@ -38,7 +37,12 @@ fun mangaGridItemAD(
 	bind { payloads ->
 		binding.textViewTitle.text = item.title
 		binding.progressView.setProgress(item.progress, PAYLOAD_PROGRESS_CHANGED in payloads)
-		binding.imageViewFavorite.isVisible = item.isFavorite
+		with(binding.iconsView) {
+			clearIcons()
+			if (item.isSaved) addIcon(R.drawable.ic_storage)
+			if (item.isFavorite) addIcon(R.drawable.ic_heart_outline)
+			isVisible = iconsCount > 0
+		}
 		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
 			size(CoverSizeResolver(binding.imageViewCover))
 			defaultPlaceholders(context)
@@ -47,6 +51,7 @@ fun mangaGridItemAD(
 			mangaExtra(item.manga)
 			enqueueWith(coil)
 		}
-		badge = itemView.bindBadge(badge, item.counter)
+		binding.badge.number = item.counter
+		binding.badge.isVisible = item.counter > 0
 	}
 }

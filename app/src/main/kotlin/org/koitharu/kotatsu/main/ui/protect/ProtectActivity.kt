@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -16,15 +15,18 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.AuthenticationCallback
-import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityProtectBinding
 import com.google.android.material.R as materialR
 
@@ -32,7 +34,7 @@ import com.google.android.material.R as materialR
 class ProtectActivity :
 	BaseActivity<ActivityProtectBinding>(),
 	TextView.OnEditorActionListener,
-	TextWatcher,
+	DefaultTextWatcher,
 	View.OnClickListener {
 
 	private val viewModel by viewModels<ProtectViewModel>()
@@ -62,6 +64,18 @@ class ProtectActivity :
 		}
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
+		viewBinding.root.setPadding(
+			barsInsets.left + basePadding,
+			barsInsets.top + basePadding,
+			barsInsets.right + basePadding,
+			barsInsets.bottom + basePadding,
+		)
+		return insets.consumeAllSystemBarsInsets()
+	}
+
 	override fun onStart() {
 		super.onStart()
 		canUseBiometric = useFingerprint()
@@ -69,16 +83,6 @@ class ProtectActivity :
 		if (!canUseBiometric) {
 			viewBinding.editPassword.requestFocus()
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		viewBinding.root.setPadding(
-			basePadding + insets.left,
-			basePadding + insets.top,
-			basePadding + insets.right,
-			basePadding + insets.bottom,
-		)
 	}
 
 	override fun onClick(v: View) {
@@ -97,10 +101,6 @@ class ProtectActivity :
 			false
 		}
 	}
-
-	override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
 	override fun afterTextChanged(s: Editable?) {
 		viewBinding.layoutPassword.error = null

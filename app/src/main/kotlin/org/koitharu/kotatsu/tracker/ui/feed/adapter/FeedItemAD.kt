@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.databinding.ItemFeedBinding
@@ -37,7 +38,7 @@ fun feedItemAD(
 			enqueueWith(coil)
 		}
 		binding.textViewTitle.text = item.title
-		binding.textViewSummary.text = context.resources.getQuantityString(
+		binding.textViewSummary.text = context.resources.getQuantityStringSafe(
 			R.plurals.new_chapters,
 			item.count,
 			item.count,

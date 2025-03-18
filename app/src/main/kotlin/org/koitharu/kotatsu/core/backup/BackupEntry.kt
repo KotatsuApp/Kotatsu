@@ -16,6 +16,7 @@ class BackupEntry(
 		CATEGORIES("categories"),
 		FAVOURITES("favourites"),
 		SETTINGS("settings"),
+		SETTINGS_READER_GRID("reader_grid"),
 		BOOKMARKS("bookmarks"),
 		SOURCES("sources"),
 	}

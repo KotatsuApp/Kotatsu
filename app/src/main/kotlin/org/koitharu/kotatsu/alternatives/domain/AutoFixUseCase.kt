@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.model.chaptersCount
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
+import org.koitharu.kotatsu.core.util.ext.concat
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.util.concurrent.TimeUnit
@@ -29,12 +30,14 @@ class AutoFixUseCase @Inject constructor(
 ) {
 
 	suspend operator fun invoke(mangaId: Long): Pair<Manga, Manga?> {
-		val seed = checkNotNull(mangaDataRepository.findMangaById(mangaId)) { "Manga $mangaId not found" }
-			.getDetailsSafe()
+		val seed = checkNotNull(
+			mangaDataRepository.findMangaById(mangaId, withChapters = true),
+		) { "Manga $mangaId not found" }.getDetailsSafe()
 		if (seed.isHealthy()) {
 			return seed to null // no fix required
 		}
-		val replacement = alternativesUseCase(seed, matchThreshold = 0.02f)
+		val replacement = alternativesUseCase(seed, throughDisabledSources = false)
+			.concat(alternativesUseCase(seed, throughDisabledSources = true))
 			.filter { it.isHealthy() }
 			.runningFold<Manga, Manga?>(null) { best, candidate ->
 				if (best == null || best < candidate) {

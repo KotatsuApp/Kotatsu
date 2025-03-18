@@ -1,7 +1,9 @@
 package org.koitharu.kotatsu.details.ui.model
 
+import android.content.res.Resources
 import android.text.format.DateUtils
 import org.jsoup.internal.StringUtil.StringJoiner
+import org.koitharu.kotatsu.core.model.getLocalizedTitle
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import kotlin.experimental.and
@@ -10,6 +12,8 @@ data class ChapterListItem(
 	val chapter: MangaChapter,
 	val flags: Byte,
 ) : ListModel {
+
+	private var cachedTitle: String? = null
 
 	var description: String? = null
 		private set
@@ -49,6 +53,21 @@ data class ChapterListItem(
 
 	val isGrid: Boolean
 		get() = hasFlag(FLAG_GRID)
+
+	operator fun contains(query: String): Boolean = with(chapter) {
+		title?.contains(query, ignoreCase = true) == true
+			|| numberString()?.contains(query) == true
+			|| volumeString()?.contains(query) == true
+	}
+
+	fun getTitle(resources: Resources): String {
+		cachedTitle?.let {
+			return it
+		}
+		return chapter.getLocalizedTitle(resources).also {
+			cachedTitle = it
+		}
+	}
 
 	private fun buildDescription(): String {
 		val joiner = StringJoiner(" • ")

@@ -7,4 +7,6 @@ interface ListStateHolderListener {
 	fun onSecondaryErrorActionClick(error: Throwable) = Unit
 
 	fun onEmptyActionClick()
+
+	fun onFooterButtonClick() = Unit
 }

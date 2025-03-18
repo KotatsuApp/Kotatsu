@@ -2,17 +2,17 @@ package org.koitharu.kotatsu.search.ui.suggestion
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.VoiceInputContract
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentSearchSuggestionBinding
 import org.koitharu.kotatsu.search.ui.suggestion.adapter.SearchSuggestionAdapter
@@ -53,14 +53,15 @@ class SearchSuggestionFragment :
 			.attachToRecyclerView(binding.root)
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val extraPadding = resources.getDimensionPixelOffset(R.dimen.list_spacing)
-		requireViewBinding().root.updatePadding(
-			top = extraPadding,
-			right = insets.right,
-			left = insets.left,
-			bottom = insets.bottom,
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.ime() or WindowInsetsCompat.Type.systemBars())
+		v.setPadding(
+			barsInsets.left,
+			0,
+			barsInsets.right,
+			barsInsets.bottom,
 		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onRemoveQuery(query: String) {
@@ -70,17 +71,5 @@ class SearchSuggestionFragment :
 	override fun onResume() {
 		super.onResume()
 		viewModel.onResume()
-	}
-
-	companion object {
-
-		@Deprecated(
-			"",
-			ReplaceWith(
-				"SearchSuggestionFragment()",
-				"org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment",
-			),
-		)
-		fun newInstance() = SearchSuggestionFragment()
 	}
 }

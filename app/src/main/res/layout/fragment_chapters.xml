@@ -1,15 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
+	<HorizontalScrollView
+		android:id="@+id/scrollView_filter"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentEnd="true"
+		android:clipChildren="false"
+		android:clipToPadding="false"
+		android:paddingHorizontal="@dimen/list_spacing"
+		android:scrollbars="none">
+
+		<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+			android:id="@+id/chips_filter"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:clipChildren="false"
+			android:clipToPadding="false"
+			android:paddingTop="2dp"
+			android:paddingBottom="6dp"
+			app:chipIconVisible="false"
+			app:chipStyle="@style/Widget.Kotatsu.Chip.Filter"
+			app:singleLine="true" />
+
+	</HorizontalScrollView>
+
 	<org.koitharu.kotatsu.core.ui.list.fastscroll.FastScrollRecyclerView
 		android:id="@+id/recyclerView_chapters"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_alignWithParentIfMissing="true"
+		android:layout_below="@id/scrollView_filter"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentBottom="true"
 		android:clipToPadding="false"
 		android:orientation="vertical"
 		android:scrollIndicators="top"
@@ -21,7 +51,7 @@
 		android:id="@+id/progressBar"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="center"
+		android:layout_centerInParent="true"
 		android:indeterminate="true"
 		android:visibility="gone"
 		tools:visibility="visible" />
@@ -30,7 +60,7 @@
 		android:id="@+id/textView_holder"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="center"
+		android:layout_centerInParent="true"
 		android:layout_marginStart="@dimen/margin_normal"
 		android:layout_marginTop="@dimen/margin_normal"
 		android:layout_marginEnd="@dimen/margin_normal"
@@ -42,4 +72,4 @@
 		android:visibility="gone"
 		tools:visibility="visible" />
 
-</FrameLayout>
+</RelativeLayout>

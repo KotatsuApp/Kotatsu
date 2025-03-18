@@ -135,6 +135,16 @@ class FilterHeaderProducer @Inject constructor(
 				),
 			)
 		}
+		if (!snapshot.author.isNullOrEmpty()) {
+			result.addFirst(
+				ChipsView.ChipModel(
+					title = snapshot.author,
+					icon = R.drawable.ic_user,
+					isCloseable = true,
+					data = snapshot.author,
+				),
+			)
+		}
 		val hasTags = result.any { it.data is MangaTag }
 		if (hasTags) {
 			result.addLast(moreTagsChip())

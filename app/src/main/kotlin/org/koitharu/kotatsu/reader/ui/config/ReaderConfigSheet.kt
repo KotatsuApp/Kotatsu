@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -19,22 +20,21 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
+import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.ScreenOrientationHelper
-import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
-import org.koitharu.kotatsu.settings.SettingsActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -64,7 +64,7 @@ class ReaderConfigSheet :
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		mode = arguments?.getInt(ARG_MODE)
+		mode = arguments?.getInt(AppRouter.KEY_READER_MODE)
 			?.let { ReaderMode.valueOf(it) }
 			?: ReaderMode.STANDARD
 		imageServerDelegate = ImageServerDelegate(
@@ -126,10 +126,18 @@ class ReaderConfigSheet :
 		}
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		viewBinding?.scrollView?.updatePadding(
+			bottom = insets.getInsets(typeMask).bottom,
+		)
+		return insets.consume(v, typeMask, bottom = true)
+	}
+
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_settings -> {
-				startActivity(SettingsActivity.newReaderSettingsIntent(v.context))
+				router.openReaderSettings()
 				dismissAllowingStateLoss()
 			}
 
@@ -145,7 +153,7 @@ class ReaderConfigSheet :
 			R.id.button_color_filter -> {
 				val page = viewModel.getCurrentPage() ?: return
 				val manga = viewModel.getMangaOrNull() ?: return
-				startActivity(ColorFilterConfigActivity.newIntent(v.context, manga, page))
+				router.openColorFilterConfig(manga, page)
 			}
 
 			R.id.button_image_server -> viewLifecycleScope.launch {
@@ -242,15 +250,5 @@ class ReaderConfigSheet :
 		fun onDoubleModeChanged(isEnabled: Boolean)
 
 		fun onSavePageClick()
-	}
-
-	companion object {
-
-		private const val TAG = "ReaderConfigBottomSheet"
-		private const val ARG_MODE = "mode"
-
-		fun show(fm: FragmentManager, mode: ReaderMode) = ReaderConfigSheet().withArgs(1) {
-			putInt(ARG_MODE, mode.id)
-		}.showDistinct(fm, TAG)
 	}
 }

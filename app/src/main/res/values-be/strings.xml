@@ -743,4 +743,5 @@
     <string name="ask_every_time">Пытацца кожны раз</string>
     <string name="screen_orientation">Арыентацыя экрана</string>
     <string name="portrait">Партрэтная</string>
+    <string name="pages_saved">Старонкі захоўваюцца</string>
 </resources>

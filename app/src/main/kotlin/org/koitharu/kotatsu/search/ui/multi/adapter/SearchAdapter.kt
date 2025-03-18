@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
+import org.koitharu.kotatsu.list.ui.adapter.buttonFooterAD
 import org.koitharu.kotatsu.list.ui.adapter.emptyStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.errorStateListAD
 import org.koitharu.kotatsu.list.ui.adapter.loadingFooterAD
@@ -45,6 +46,7 @@ class SearchAdapter(
 		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
 		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listener))
 		addDelegate(ListItemType.STATE_ERROR, errorStateListAD(listener))
+		addDelegate(ListItemType.FOOTER_BUTTON, buttonFooterAD(listener))
 	}
 
 	override fun getSectionText(context: Context, position: Int): CharSequence? {

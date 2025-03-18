@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.core.zip
 
 import androidx.annotation.WorkerThread
 import androidx.collection.ArraySet
-import okhttp3.internal.closeQuietly
 import okio.Closeable
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -14,8 +13,6 @@ import java.util.zip.Deflater
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 class ZipOutput(
 	val file: File,
@@ -81,11 +78,7 @@ class ZipOutput(
 
 	@Synchronized
 	override fun close() {
-		try {
-			cachedOutput?.close()
-		} catch (e: NullPointerException) {
-			e.printStackTraceDebug()
-		}
+		cachedOutput?.closeSafe()
 		cachedOutput = null
 	}
 
@@ -141,14 +134,12 @@ class ZipOutput(
 
 	@Synchronized
 	private fun <T> withOutput(block: (ZipOutputStream) -> T): T {
-		contract {
-			callsInPlace(block, InvocationKind.AT_LEAST_ONCE)
-		}
 		return try {
 			(cachedOutput ?: newOutput(append)).withOutputImpl(block).also {
 				append = true // after 1st success write
 			}
 		} catch (e: NullPointerException) { // probably NullPointerException: Deflater has been closed
+			e.printStackTraceDebug()
 			newOutput(append).withOutputImpl(block)
 		}
 	}
@@ -161,7 +152,16 @@ class ZipOutput(
 
 	private fun newOutput(append: Boolean) = ZipOutputStream(FileOutputStream(file, append)).also {
 		it.setLevel(compressionLevel)
-		cachedOutput?.closeQuietly()
+		cachedOutput?.closeSafe()
 		cachedOutput = it
+	}
+
+	private fun Closeable.closeSafe() {
+		try {
+			cachedOutput?.close()
+		} catch (e: NullPointerException) {
+			// Don't throw the "Deflater has been closed" exception
+			e.printStackTraceDebug()
+		}
 	}
 }

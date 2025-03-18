@@ -12,4 +12,9 @@
 		android:icon="@drawable/ic_delete"
 		android:title="@string/remove_from_history" />
 
+	<item
+		android:id="@+id/action_download"
+		android:icon="@drawable/ic_download"
+		android:title="@string/download" />
+
 </menu>

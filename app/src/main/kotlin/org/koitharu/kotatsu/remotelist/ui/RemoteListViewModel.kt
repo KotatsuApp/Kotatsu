@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.getCauseUrl
@@ -32,6 +33,7 @@ import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
+import org.koitharu.kotatsu.list.ui.model.ButtonFooter
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
@@ -50,7 +52,7 @@ open class RemoteListViewModel @Inject constructor(
 	mangaRepositoryFactory: MangaRepository.Factory,
 	final override val filterCoordinator: FilterCoordinator,
 	settings: AppSettings,
-	mangaListMapper: MangaListMapper,
+	protected val mangaListMapper: MangaListMapper,
 	downloadScheduler: DownloadWorker.Scheduler,
 	private val exploreRepository: ExploreRepository,
 	sourcesRepository: MangaSourcesRepository,
@@ -85,10 +87,11 @@ open class RemoteListViewModel @Inject constructor(
 				list == null -> add(LoadingState)
 				list.isEmpty() -> add(createEmptyState(canResetFilter = filterCoordinator.isFilterApplied))
 				else -> {
-					mangaListMapper.toListModelList(this, list, mode)
+					mapMangaList(this, list, mode)
 					when {
 						error != null -> add(error.toErrorFooter())
 						hasNext -> add(LoadingFooter())
+						else -> getFooter()?.let(::add)
 					}
 				}
 			}
@@ -170,6 +173,24 @@ open class RemoteListViewModel @Inject constructor(
 	)
 
 	protected open suspend fun onBuildList(list: MutableList<ListModel>) = Unit
+
+	protected open suspend fun mapMangaList(
+		destination: MutableCollection<in ListModel>,
+		manga: Collection<Manga>,
+		mode: ListMode
+	) = mangaListMapper.toListModelList(destination, manga, mode)
+
+	protected open fun getFooter(): ButtonFooter? {
+		val filter = filterCoordinator.snapshot().listFilter
+		val hasQuery = !filter.query.isNullOrEmpty()
+		val hasAuthor = !filter.author.isNullOrEmpty()
+		val isOneTag = filter.tags.size == 1
+		return if ((hasQuery xor isOneTag xor hasAuthor) && !(hasQuery && isOneTag && hasAuthor)) {
+			ButtonFooter(R.string.global_search)
+		} else {
+			null
+		}
+	}
 
 	fun openRandom() {
 		if (randomJob?.isActive == true) {

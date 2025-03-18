@@ -6,12 +6,15 @@ import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.model.SortOrder
 
 data class SearchResultsListModel(
 	@StringRes val titleResId: Int,
 	val source: MangaSource,
-	val hasMore: Boolean,
+	val listFilter: MangaListFilter?,
+	val sortOrder: SortOrder?,
 	val list: List<MangaListModel>,
 	val error: Throwable?,
 ) : ListModel {

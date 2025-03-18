@@ -267,6 +267,25 @@ class FilterCoordinator @Inject constructor(
 		currentListFilter.value = value
 	}
 
+	fun setAdjusted(value: MangaListFilter) {
+		var newFilter = value
+		if (!newFilter.author.isNullOrEmpty() && !capabilities.isAuthorSearchSupported) {
+			newFilter = newFilter.copy(
+				query = newFilter.author,
+				author = null,
+			)
+		}
+		if (!capabilities.isSearchSupported && !newFilter.query.isNullOrEmpty()) {
+			newFilter = newFilter.copy(
+				query = null,
+			)
+		}
+		if (!newFilter.query.isNullOrEmpty() && !newFilter.hasNonSearchOptions() && !capabilities.isSearchWithFiltersSupported) {
+			newFilter = MangaListFilter(query = newFilter.query)
+		}
+		set(newFilter)
+	}
+
 	fun setQuery(value: String?) {
 		val newQuery = value?.trim()?.nullIfEmpty()
 		currentListFilter.update { oldValue ->
@@ -282,6 +301,15 @@ class FilterCoordinator @Inject constructor(
 		currentListFilter.update { oldValue ->
 			oldValue.copy(
 				locale = value,
+				query = oldValue.takeQueryIfSupported(),
+			)
+		}
+	}
+
+	fun setAuthor(value: String?) {
+		currentListFilter.update { oldValue ->
+			oldValue.copy(
+				author = value,
 				query = oldValue.takeQueryIfSupported(),
 			)
 		}

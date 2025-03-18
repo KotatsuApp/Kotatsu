@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.core.util.ext.withArgs
@@ -90,10 +91,9 @@ class FavouritesListFragment : MangaListFragment(), PopupMenu.OnMenuItemClickLis
 	companion object {
 
 		const val NO_ID = 0L
-		const val ARG_CATEGORY_ID = "category_id"
 
 		fun newInstance(categoryId: Long) = FavouritesListFragment().withArgs(1) {
-			putLong(ARG_CATEGORY_ID, categoryId)
+			putLong(AppRouter.KEY_ID, categoryId)
 		}
 	}
 }

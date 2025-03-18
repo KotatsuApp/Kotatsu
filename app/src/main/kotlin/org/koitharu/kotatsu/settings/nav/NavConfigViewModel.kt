@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.main.ui.MainActivity
+import org.koitharu.kotatsu.main.ui.MainNavigationDelegate
 import org.koitharu.kotatsu.parsers.util.move
 import org.koitharu.kotatsu.settings.nav.model.NavItemAddModel
 import org.koitharu.kotatsu.settings.nav.model.NavItemConfigModel
@@ -38,7 +39,7 @@ class NavConfigViewModel @Inject constructor(
 				NavItemConfigModel(it, getUnavailabilityHint(it))
 			}
 			if (size < NavItem.entries.size) {
-				add(NavItemAddModel(size < 5))
+				add(NavItemAddModel(size < MainNavigationDelegate.MAX_ITEM_COUNT))
 			}
 		}
 	}.stateIn(

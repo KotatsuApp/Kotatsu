@@ -34,16 +34,28 @@
 			android:layout_gravity="bottom|end"
 			android:layout_margin="@dimen/card_indicator_offset" />
 
-		<ImageView
-			android:id="@+id/imageView_favorite"
-			android:layout_width="@dimen/card_indicator_size"
-			android:layout_height="@dimen/card_indicator_size"
-			android:layout_gravity="bottom|start"
-			android:layout_margin="@dimen/card_indicator_offset"
-			android:contentDescription="@string/favourites"
-			android:scaleType="centerInside"
-			app:srcCompat="@drawable/ic_heart"
-			app:tint="?colorSurfaceBright" />
+		<org.koitharu.kotatsu.core.ui.widgets.IconsView
+			android:id="@+id/iconsView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top|start"
+			android:layout_marginTop="10dp"
+			android:background="@drawable/bg_list_icons"
+			android:orientation="horizontal"
+			android:padding="4dp"
+			app:iconSize="14dp"
+			app:iconSpacing="4dp" />
+
+		<org.koitharu.kotatsu.core.ui.widgets.BadgeView
+			android:id="@+id/badge"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top|end"
+			android:layout_margin="@dimen/margin_small"
+			android:visibility="gone"
+			app:maxCharacterCount="@integer/manga_badge_max_character_count"
+			tools:number="8"
+			tools:visibility="visible" />
 
 	</FrameLayout>
 

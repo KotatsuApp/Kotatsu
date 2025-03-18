@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.details.data
 
 import android.content.res.Resources
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 
 data class ReadingTime(
 	val minutes: Int,
@@ -11,12 +12,12 @@ data class ReadingTime(
 
 	fun format(resources: Resources): String = when {
 		hours == 0 && minutes == 0 -> resources.getString(R.string.less_than_minute)
-		hours == 0 -> resources.getQuantityString(R.plurals.minutes, minutes, minutes)
-		minutes == 0 -> resources.getQuantityString(R.plurals.hours, hours, hours)
+		hours == 0 -> resources.getQuantityStringSafe(R.plurals.minutes, minutes, minutes)
+		minutes == 0 -> resources.getQuantityStringSafe(R.plurals.hours, hours, hours)
 		else -> resources.getString(
 			R.string.remaining_time_pattern,
-			resources.getQuantityString(R.plurals.hours, hours, hours),
-			resources.getQuantityString(R.plurals.minutes, minutes, minutes),
+			resources.getQuantityStringSafe(R.plurals.hours, hours, hours),
+			resources.getQuantityStringSafe(R.plurals.minutes, minutes, minutes),
 		)
 	}
 

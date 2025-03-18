@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.tracker
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -14,15 +15,16 @@ import androidx.fragment.app.viewModels
 import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.TrackerDownloadStrategy
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.parsers.util.names
-import org.koitharu.kotatsu.settings.tracker.categories.TrackerCategoriesConfigSheet
 import org.koitharu.kotatsu.settings.utils.DozeHelper
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.tracker.ui.debug.TrackerDebugActivity
@@ -108,7 +110,7 @@ class TrackerSettingsFragment :
 			}
 
 			AppSettings.KEY_TRACK_CATEGORIES -> {
-				TrackerCategoriesConfigSheet.show(childFragmentManager)
+				router.showTrackerCategoriesConfigSheet()
 				true
 			}
 
@@ -146,5 +148,13 @@ class TrackerSettingsFragment :
 		pref.summary = count?.let {
 			getString(R.string.enabled_d_of_d, count[0], count[1])
 		}
+	}
+
+	private fun startActivitySafe(intent: Intent): Boolean = try {
+		startActivity(intent)
+		true
+	} catch (_: ActivityNotFoundException) {
+		Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
+		false
 	}
 }

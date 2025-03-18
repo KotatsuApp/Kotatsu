@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
+import org.koitharu.kotatsu.search.domain.SearchKind
 import javax.inject.Inject
 
 @Reusable
@@ -43,9 +44,17 @@ class FavouritesRepository @Inject constructor(
 		return entities.toMangaList()
 	}
 
-	suspend fun search(query: String, limit: Int): List<Manga> {
-		val entities = db.getFavouritesDao().search("%$query%", limit)
-		return entities.toMangaList().sortedBy { it.title.levenshteinDistance(query) }
+	suspend fun search(query: String, kind: SearchKind, limit: Int): List<Manga> {
+		val dao = db.getFavouritesDao()
+		val q = "%$query%"
+		val entities = when (kind) {
+			SearchKind.SIMPLE,
+			SearchKind.TITLE -> dao.searchByTitle(q, limit).sortedBy { it.manga.title.levenshteinDistance(query) }
+
+			SearchKind.AUTHOR -> dao.searchByAuthor(q, limit)
+			SearchKind.TAG -> dao.searchByTag(q, limit)
+		}
+		return entities.toMangaList()
 	}
 
 	fun observeAll(order: ListSortOrder, filterOptions: Set<ListFilterOption>, limit: Int): Flow<List<Manga>> {
@@ -199,6 +208,7 @@ class FavouritesRepository @Inject constructor(
 				db.getFavouritesDao().deleteAll(id)
 				db.getFavouriteCategoriesDao().delete(id)
 			}
+			db.getChaptersDao().gc()
 		}
 	}
 
@@ -238,6 +248,7 @@ class FavouritesRepository @Inject constructor(
 			for (id in ids) {
 				db.getFavouritesDao().delete(mangaId = id)
 			}
+			db.getChaptersDao().gc()
 		}
 		return ReversibleHandle { recoverToFavourites(ids) }
 	}
@@ -247,6 +258,7 @@ class FavouritesRepository @Inject constructor(
 			for (id in ids) {
 				db.getFavouritesDao().delete(categoryId = categoryId, mangaId = id)
 			}
+			db.getChaptersDao().gc()
 		}
 		return ReversibleHandle { recoverToCategory(categoryId, ids) }
 	}

@@ -6,6 +6,7 @@ import dagger.Reusable
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.core.model.isNsfw
+import org.koitharu.kotatsu.core.util.ext.isHttpUrl
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -109,4 +110,11 @@ class MangaLinkResolver @Inject constructor(
 		chapters = null,
 		source = source,
 	)
+
+	companion object {
+
+		fun isValidLink(str: String): Boolean {
+			return str.isHttpUrl() || str.startsWith("kotatsu://", ignoreCase = true)
+		}
+	}
 }

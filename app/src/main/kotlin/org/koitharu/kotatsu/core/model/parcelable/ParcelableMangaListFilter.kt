@@ -30,6 +30,7 @@ object MangaListFilterParceler : Parceler<MangaListFilter> {
 		parcel.writeInt(year)
 		parcel.writeInt(yearFrom)
 		parcel.writeInt(yearTo)
+		parcel.writeString(author)
 	}
 
 	override fun create(parcel: Parcel) = MangaListFilter(
@@ -45,6 +46,7 @@ object MangaListFilterParceler : Parceler<MangaListFilter> {
 		year = parcel.readInt(),
 		yearFrom = parcel.readInt(),
 		yearTo = parcel.readInt(),
+		author = parcel.readString(),
 	)
 }
 

@@ -289,7 +289,7 @@ class DownloadsViewModel @Inject constructor(
 		}
 		return cacheMutex.withLock {
 			mangaCache.getOrElse(mangaId) {
-				mangaDataRepository.findMangaById(mangaId)?.also {
+				mangaDataRepository.findMangaById(mangaId, withChapters = true)?.also {
 					mangaCache[mangaId] = it
 				} ?: return null
 			}

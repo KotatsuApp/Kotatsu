@@ -11,6 +11,7 @@ import androidx.core.content.IntentCompat
 import androidx.core.os.BundleCompat
 import androidx.core.os.ParcelCompat
 import androidx.lifecycle.SavedStateHandle
+import org.koitharu.kotatsu.parsers.util.toArraySet
 import java.io.Serializable
 import java.util.EnumSet
 
@@ -84,6 +85,14 @@ fun <E : Enum<E>> Parcel.readEnumSet(cls: Class<E>): Set<E>? {
 	return set
 }
 
+fun Parcel.writeStringSet(set: Set<String>?) {
+	writeStringArray(set?.toTypedArray().orEmpty())
+}
+
+fun Parcel.readStringSet(): Set<String> {
+	return this.createStringArray()?.toArraySet().orEmpty()
+}
+
 fun <T> SavedStateHandle.require(key: String): T {
 	return checkNotNull(get(key)) {
 		"Value $key not found in SavedStateHandle or has a wrong type"
@@ -110,3 +119,5 @@ fun <T : Parcelable> Parcelable.Creator<T>.unmarshall(bytes: ByteArray): T {
 		parcel.recycle()
 	}
 }
+
+inline fun buildBundle(capacity: Int, block: Bundle.() -> Unit): Bundle = Bundle(capacity).apply(block)

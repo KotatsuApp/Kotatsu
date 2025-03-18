@@ -2,10 +2,10 @@ package org.koitharu.kotatsu.favourites.ui.categories
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
-import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -15,14 +15,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityCategoriesBinding
-import org.koitharu.kotatsu.favourites.ui.FavouritesActivity
 import org.koitharu.kotatsu.favourites.ui.categories.adapter.CategoriesAdapter
-import org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity
 import org.koitharu.kotatsu.list.ui.adapter.ListStateHolderListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -47,7 +49,7 @@ class FavouriteCategoriesActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		setDisplayHomeAsUp(true, false)
 		adapter = CategoriesAdapter(coil, this, this, this)
 		selectionController = ListSelectionController(
 			appCompatDelegate = delegate,
@@ -69,32 +71,52 @@ class FavouriteCategoriesActivity :
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))
 	}
 
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		viewBinding.recyclerView.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			bottom = barsInsets.bottom,
+		)
+		viewBinding.appbar.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			top = barsInsets.top,
+		)
+		viewBinding.fabAdd.updateLayoutParams<MarginLayoutParams> {
+			marginEnd = topMargin + barsInsets.end(v)
+			bottomMargin = topMargin + barsInsets.bottom
+		}
+		return insets.consumeAllSystemBarsInsets()
+	}
+
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.fab_add -> startActivity(FavouritesCategoryEditActivity.newIntent(this))
+			R.id.fab_add -> router.openFavoriteCategoryCreate()
 		}
 	}
 
 	override fun onItemClick(item: FavouriteCategory?, view: View) {
 		if (item == null) {
 			if (selectionController.count == 0) {
-				startActivity(FavouritesActivity.newIntent(view.context))
+				router.openFavorites()
 			}
 			return
 		}
 		if (selectionController.onItemClick(item.id)) {
 			return
 		}
-		val intent = FavouritesActivity.newIntent(view.context, item)
-		startActivity(intent)
+		router.openFavorites(item)
 	}
 
 	override fun onEditClick(item: FavouriteCategory, view: View) {
 		if (selectionController.onItemClick(item.id)) {
 			return
 		}
-		val intent = FavouritesCategoryEditActivity.newIntent(view.context, item.id)
-		startActivity(intent)
+		router.openFavoriteCategoryEdit(item.id)
 	}
 
 	override fun onItemLongClick(item: FavouriteCategory?, view: View): Boolean {
@@ -129,21 +151,6 @@ class FavouriteCategoriesActivity :
 	override fun onRetryClick(error: Throwable) = Unit
 
 	override fun onEmptyActionClick() = Unit
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			rightMargin = topMargin + insets.right
-			leftMargin = topMargin + insets.left
-			bottomMargin = topMargin + insets.bottom
-		}
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.recyclerView.updatePadding(
-			bottom = insets.bottom + viewBinding.recyclerView.paddingTop,
-		)
-	}
 
 	private suspend fun onCategoriesChanged(categories: List<ListModel>) {
 		adapter.emit(categories)

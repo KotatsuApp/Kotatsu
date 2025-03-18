@@ -58,6 +58,7 @@
 		<item name="android:itemTextAppearance">@style/TextAppearance.Widget.Menu</item>
 		<item name="alertDialogTheme">@style/ThemeOverlay.Kotatsu.AlertDialog</item>
 		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
+		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Kotatsu.SideSheetDialog</item>
 		<item name="textAppearanceButton">@style/TextAppearance.Kotatsu.Button</item>
 		<item name="android:buttonStyle">?attr/borderlessButtonStyle</item>
 		<item name="android:backgroundDimAmount">0.32</item>
@@ -70,7 +71,7 @@
 		<item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
 		<item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>
 		<item name="appBarLayoutStyle">@style/Widget.Kotatsu.AppBarLayout</item>
-		<item name="bottomNavigationStyle">@style/Widget.Kotatsu.BottomNavigationView.ColoredIndicators</item>
+		<item name="bottomNavigationStyle">@style/Widget.Kotatsu.BottomNavigationView</item>
 		<item name="tabStyle">@style/Widget.Kotatsu.Tabs</item>
 		<item name="materialCardViewStyle">@style/Widget.Kotatsu.CardView.Filled</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
@@ -84,6 +85,7 @@
 		<item name="bottomSheetDragHandleStyle">@style/Widget.Kotatsu.BottomSheet.DragHandle</item>
 		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>
 		<item name="dotIndicatorStyle">@style/Widget.Kotatsu.DotIndicator</item>
+		<item name="badgeViewStyle">@style/Widget.Kotatsu.BadgeView</item>
 
 		<!-- Text appearance -->
 		<item name="actionMenuTextAppearance">@style/TextAppearance.Kotatsu.Menu</item>

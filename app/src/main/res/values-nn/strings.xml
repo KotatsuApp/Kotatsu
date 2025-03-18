@@ -37,7 +37,7 @@
     <string name="webtoon">Nettserie</string>
     <string name="grid_size">Rutenettstorleik</string>
     <string name="delete_manga">Slett mangaen</string>
-    <string name="text_delete_local_manga">Slett «%s» ifrå eininga\?</string>
+    <string name="text_delete_local_manga">Slett «%s» ifrå eininga?</string>
     <string name="reader_settings">Lesing</string>
     <string name="switch_pages">Bla med</string>
     <string name="_continue">Hald fram</string>

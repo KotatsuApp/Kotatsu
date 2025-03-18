@@ -14,20 +14,21 @@ import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
 import coil3.ImageLoader
 import coil3.request.ImageRequest
-import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.LocalizedAppContext
+import org.koitharu.kotatsu.core.model.getLocalizedTitle
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 import javax.inject.Inject
 
 class TrackerNotificationHelper @Inject constructor(
-	@ApplicationContext private val applicationContext: Context,
+	@LocalizedAppContext private val applicationContext: Context,
 	private val settings: AppSettings,
 	private val coil: ImageLoader,
 ) {
@@ -55,7 +56,7 @@ class TrackerNotificationHelper @Inject constructor(
 		}
 		val id = manga.url.hashCode()
 		val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-		val summary = applicationContext.resources.getQuantityString(
+		val summary = applicationContext.resources.getQuantityStringSafe(
 			R.plurals.new_chapters,
 			newChapters.size,
 			newChapters.size,
@@ -76,12 +77,12 @@ class TrackerNotificationHelper @Inject constructor(
 			setGroup(GROUP_NEW_CHAPTERS)
 			val style = NotificationCompat.InboxStyle(this)
 			for (chapter in newChapters) {
-				style.addLine(chapter.name)
+				style.addLine(chapter.getLocalizedTitle(applicationContext.resources))
 			}
 			style.setSummaryText(manga.title)
 			style.setBigContentTitle(summary)
 			setStyle(style)
-			val intent = DetailsActivity.newIntent(applicationContext, manga)
+			val intent = AppRouter.detailsIntent(applicationContext, manga)
 			setContentIntent(
 				PendingIntentCompat.getActivity(
 					applicationContext,
@@ -107,7 +108,7 @@ class TrackerNotificationHelper @Inject constructor(
 		val newChaptersCount = notifications.sumOf { it.newChapters }
 		val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
 		with(builder) {
-			val title = applicationContext.resources.getQuantityString(
+			val title = applicationContext.resources.getQuantityStringSafe(
 				R.plurals.new_chapters,
 				newChaptersCount,
 				newChaptersCount,
@@ -126,7 +127,7 @@ class TrackerNotificationHelper @Inject constructor(
 			setNumber(newChaptersCount)
 			setGroup(GROUP_NEW_CHAPTERS)
 			setGroupSummary(true)
-			val intent = UpdatesActivity.newIntent(applicationContext)
+			val intent = AppRouter.mangaUpdatesIntent(applicationContext)
 			setContentIntent(
 				PendingIntentCompat.getActivity(
 					applicationContext,
@@ -190,7 +191,6 @@ class TrackerNotificationHelper @Inject constructor(
 		const val TAG = "tracker"
 
 		private const val LEGACY_CHANNELS_GROUP_ID = "trackers"
-		private const val LEGACY_CHANNEL_ID_PREFIX = "track_fav_"
 		private const val LEGACY_CHANNEL_ID_HISTORY = "track_history"
 		private const val LEGACY_CHANNEL_ID = "tracking"
 	}

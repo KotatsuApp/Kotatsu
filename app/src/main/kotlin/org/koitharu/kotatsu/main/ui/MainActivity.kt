@@ -14,8 +14,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.Insets
+import androidx.core.net.toUri
 import androidx.core.view.SoftwareKeyboardControllerCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.isInvisible
@@ -40,6 +41,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.router
+import org.koitharu.kotatsu.core.parser.MangaLinkResolver
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.BaseActivity
@@ -47,31 +50,26 @@ import org.koitharu.kotatsu.core.ui.util.FadingAppbarMediator
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.util.OptionsMenuBadgeHelper
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
+import org.koitharu.kotatsu.core.util.ext.consume
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
+import org.koitharu.kotatsu.core.util.ext.start
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.favourites.ui.container.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
 import org.koitharu.kotatsu.local.ui.LocalIndexUpdateService
 import org.koitharu.kotatsu.local.ui.LocalStorageCleanupWorker
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
-import org.koitharu.kotatsu.main.ui.welcome.WelcomeSheet
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
-import org.koitharu.kotatsu.search.ui.MangaListActivity
-import org.koitharu.kotatsu.search.ui.multi.SearchActivity
+import org.koitharu.kotatsu.search.domain.SearchKind
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionFragment
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
-import org.koitharu.kotatsu.settings.SettingsActivity
-import org.koitharu.kotatsu.settings.about.AppUpdateActivity
 import org.koitharu.kotatsu.settings.backup.PeriodicalBackupService
 import javax.inject.Inject
 import com.google.android.material.R as materialR
@@ -81,8 +79,10 @@ private const val TAG_SEARCH = "search"
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNavOwner,
 	View.OnClickListener,
-	View.OnFocusChangeListener, SearchSuggestionListener,
-	MainNavigationDelegate.OnFragmentChangedListener, View.OnLayoutChangeListener {
+	View.OnFocusChangeListener,
+	SearchSuggestionListener,
+	MainNavigationDelegate.OnFragmentChangedListener,
+	View.OnLayoutChangeListener {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -137,9 +137,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		viewModel.isResumeEnabled.observe(this, this::onResumeEnabledChanged)
 		viewModel.feedCounter.observe(this, ::onFeedCounterChanged)
 		viewModel.appUpdate.observe(this, MenuInvalidator(this))
-		viewModel.onFirstStart.observeEvent(this) {
-			WelcomeSheet.show(supportFragmentManager)
-		}
+		viewModel.onFirstStart.observeEvent(this) { router.showWelcomeSheet() }
 		viewModel.isBottomNavPinned.observe(this, ::setNavbarPinned)
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 		viewBinding.bottomNav?.addOnLayoutChangeListener(this)
@@ -148,6 +146,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
 		adjustSearchUI(isSearchOpened(), animate = false)
+		navigationDelegate.syncSelectedItem()
 	}
 
 	override fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
@@ -188,7 +187,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		}
 
 		R.id.action_settings -> {
-			startActivity(SettingsActivity.newIntent(this))
+			router.openSettings()
 			true
 		}
 
@@ -198,7 +197,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		}
 
 		R.id.action_app_update -> {
-			startActivity(Intent(this, AppUpdateActivity::class.java))
+			router.openAppUpdate()
 			true
 		}
 
@@ -211,12 +210,28 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		}
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		val barsInsets = insets.getInsets(typeMask)
+		viewBinding.toolbarCard.updateLayoutParams<MarginLayoutParams> {
+			marginEnd = barsInsets.end(v)
+			marginStart = if (viewBinding.navRail != null) {
+				0
+			} else {
+				barsInsets.start(v)
+			}
+		}
+		viewBinding.bottomNav?.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			bottom = barsInsets.bottom,
 		)
-		viewBinding.bottomNav?.updatePadding(bottom = insets.bottom)
+		viewBinding.navRail?.updateLayoutParams<MarginLayoutParams> {
+			marginStart = barsInsets.start(v)
+			topMargin = barsInsets.top
+			bottomMargin = barsInsets.bottom
+		}
+		return insets.consume(v, typeMask, start = viewBinding.navRail != null)
 	}
 
 	override fun onLayoutChange(
@@ -241,7 +256,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			if (fragment == null) {
 				supportFragmentManager.commit {
 					setReorderingAllowed(true)
-					add(R.id.container, SearchSuggestionFragment.newInstance(), TAG_SEARCH)
+					add(R.id.container, SearchSuggestionFragment(), TAG_SEARCH)
 					navigationDelegate.primaryFragment?.let {
 						setMaxLifecycle(it, Lifecycle.State.STARTED)
 					}
@@ -253,14 +268,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	override fun onMangaClick(manga: Manga) {
-		startActivity(DetailsActivity.newIntent(this, manga))
+		router.openDetails(manga)
 	}
 
-	override fun onQueryClick(query: String, submit: Boolean) {
+	override fun onQueryClick(query: String, kind: SearchKind, submit: Boolean) {
 		viewBinding.searchView.query = query
 		if (submit && query.isNotEmpty()) {
-			startActivity(SearchActivity.newIntent(this, query))
-			searchSuggestionViewModel.saveQuery(query)
+			if (kind == SearchKind.SIMPLE && MangaLinkResolver.isValidLink(query)) {
+				router.openDetails(query.toUri())
+			} else {
+				router.openSearch(query, kind)
+				if (kind != SearchKind.TAG) {
+					searchSuggestionViewModel.saveQuery(query)
+				}
+			}
 			viewBinding.searchView.post {
 				closeSearchCallback.handleOnBackPressed()
 			}
@@ -268,7 +289,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	override fun onTagClick(tag: MangaTag) {
-		startActivity(MangaListActivity.newIntent(this, tag.source, MangaListFilter(tags = setOf(tag))))
+		router.openSearch(tag.title, SearchKind.TAG)
 	}
 
 	override fun onQueryChanged(query: String) {
@@ -280,8 +301,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	override fun onSourceClick(source: MangaSource) {
-		val intent = MangaListActivity.newIntent(this, source, null)
-		startActivity(intent)
+		router.openList(source, null, null)
 	}
 
 	override fun onSupportActionModeStarted(mode: ActionMode) {
@@ -302,10 +322,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 	private fun onOpenReader(manga: Manga) {
 		val fab = viewBinding.fab ?: viewBinding.navRail?.headerView
-		val options = fab?.let {
-			scaleUpActivityOptionsOf(it)
-		}
-		startActivity(IntentBuilder(this).manga(manga).build(), options)
+		router.openReader(manga, fab)
 	}
 
 	private fun onFeedCounterChanged(counter: Int) {
@@ -324,7 +341,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		viewBinding.fab?.isEnabled = !isLoading
+		val fab = viewBinding.fab ?: viewBinding.navRail?.headerView ?: return
+		fab.isEnabled = !isLoading
 	}
 
 	private fun onResumeEnabledChanged(isEnabled: Boolean) {

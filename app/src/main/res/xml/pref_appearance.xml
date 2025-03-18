@@ -51,6 +51,13 @@
 			android:title="@string/show_reading_indicators"
 			app:useSimpleSummaryProvider="true" />
 
+		<MultiSelectListPreference
+			android:defaultValue="@array/values_list_badges"
+			android:entries="@array/list_badges"
+			android:entryValues="@array/values_list_badges"
+			android:key="manga_list_badges"
+			android:title="@string/badges_in_lists" />
+
 	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/details">

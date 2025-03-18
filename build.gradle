@@ -1,27 +1,7 @@
-buildscript {
-	repositories {
-		google()
-		mavenCentral()
-	}
-	dependencies {
-		// https://github.com/gradle/gradle/issues/16958
-		classpath "${libs.plugins.android.get()}"
-		classpath "${libs.plugins.kotlin.get()}"
-		classpath "${libs.plugins.hilt.get()}"
-		classpath "${libs.plugins.ksp.get()}"
-	}
-}
-
-allprojects {
-	repositories {
-		google()
-		mavenCentral()
-		maven {
-			url 'https://jitpack.io'
-		}
-	}
-}
-
-tasks.register('clean', Delete) {
-	delete rootProject.layout.buildDirectory
+plugins {
+	alias(libs.plugins.android.application) apply false
+	alias(libs.plugins.kotlin) apply false
+	alias(libs.plugins.hilt) apply false
+	alias(libs.plugins.ksp) apply false
+	alias(libs.plugins.room) apply false
 }

@@ -4,6 +4,8 @@ import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.reader.data.filterChapters
 
 data class MangaDetails(
@@ -28,6 +30,12 @@ data class MangaDetails(
 
 	val local: LocalManga?
 		get() = localManga ?: if (manga.isLocal) LocalManga(manga) else null
+
+	val coverUrl: String?
+		get() = manga.largeCoverUrl
+			.ifNullOrEmpty { manga.coverUrl }
+			.ifNullOrEmpty { localManga?.manga?.coverUrl }
+			?.nullIfEmpty()
 
 	fun toManga() = manga
 

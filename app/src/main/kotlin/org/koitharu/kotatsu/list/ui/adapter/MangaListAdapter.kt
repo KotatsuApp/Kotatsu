@@ -27,5 +27,6 @@ open class MangaListAdapter(
 		addDelegate(ListItemType.QUICK_FILTER, quickFilterAD(listener))
 		addDelegate(ListItemType.TIP, tipAD(listener))
 		addDelegate(ListItemType.INFO, infoAD())
+		addDelegate(ListItemType.FOOTER_BUTTON, buttonFooterAD(listener))
 	}
 }

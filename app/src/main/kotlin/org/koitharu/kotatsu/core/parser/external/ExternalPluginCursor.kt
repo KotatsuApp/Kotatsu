@@ -20,7 +20,7 @@ class ExternalPluginCursor(private val source: ExternalMangaSource, cursor: Curs
 		return when {
 			columnIndex < 0 -> null
 			isNull(columnIndex) -> null
-			else -> getString(columnIndex)
+			else -> getString(columnIndex).takeUnless { it == "null" }
 		}
 	}
 

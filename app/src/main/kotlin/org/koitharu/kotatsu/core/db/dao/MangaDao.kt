@@ -20,6 +20,9 @@ abstract class MangaDao {
 	@Query("SELECT * FROM manga WHERE manga_id = :id")
 	abstract suspend fun find(id: Long): MangaWithTags?
 
+	@Query("SELECT EXISTS(SELECT * FROM manga WHERE manga_id = :id)")
+	abstract suspend operator fun contains(id: Long): Boolean
+
 	@Transaction
 	@Query("SELECT * FROM manga WHERE public_url = :publicUrl")
 	abstract suspend fun findByPublicUrl(publicUrl: String): MangaWithTags?
@@ -54,6 +57,19 @@ abstract class MangaDao {
 	@Transaction
 	@Delete
 	abstract suspend fun delete(subjects: Collection<MangaEntity>)
+
+	@Query(
+		"""
+		DELETE FROM manga WHERE NOT EXISTS(SELECT * FROM history WHERE history.manga_id == manga.manga_id) 
+			AND NOT EXISTS(SELECT * FROM favourites WHERE favourites.manga_id == manga.manga_id)
+			AND NOT EXISTS(SELECT * FROM bookmarks WHERE bookmarks.manga_id == manga.manga_id)
+			AND NOT EXISTS(SELECT * FROM suggestions WHERE suggestions.manga_id == manga.manga_id)
+			AND NOT EXISTS(SELECT * FROM scrobblings WHERE scrobblings.manga_id == manga.manga_id)
+			AND NOT EXISTS(SELECT * FROM local_index WHERE local_index.manga_id == manga.manga_id)
+			AND manga.manga_id NOT IN (:idsToKeep)
+		""",
+	)
+	abstract suspend fun cleanup(idsToKeep: Set<Long>)
 
 	@Transaction
 	open suspend fun upsert(manga: MangaEntity, tags: Iterable<TagEntity>? = null) {

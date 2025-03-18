@@ -1,12 +1,15 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.os.SystemClock
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -17,6 +20,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.transformWhile
+import kotlinx.coroutines.flow.update
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.suspendlazy.SuspendLazy
 import java.util.concurrent.TimeUnit
@@ -135,3 +139,18 @@ suspend fun <T : Any> Flow<T?>.firstNotNullOrNull(): T? = firstOrNull { x -> x !
 fun <T> Flow<Flow<T>>.flattenLatest() = flatMapLatest { it }
 
 fun <T> SuspendLazy<T>.asFlow() = flow { emit(runCatchingCancellable { get() }) }
+
+suspend fun <T> SendChannel<T>.sendNotNull(item: T?) {
+	if (item != null) {
+		send(item)
+	}
+}
+
+fun <T> MutableStateFlow<List<T>>.append(item: T) {
+	update { list -> list + item }
+}
+
+fun <T> Flow<T>.concat(other: Flow<T>) = flow {
+	emitAll(this@concat)
+	emitAll(other)
+}

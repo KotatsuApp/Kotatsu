@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.list.ui.config
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -21,7 +22,7 @@ class ListConfigViewModel @Inject constructor(
 	private val favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
 
-	val section = savedStateHandle.require<ListConfigSection>(ListConfigBottomSheet.ARG_SECTION)
+	val section = savedStateHandle.require<ListConfigSection>(AppRouter.KEY_LIST_SECTION)
 
 	var listMode: ListMode
 		get() = when (section) {

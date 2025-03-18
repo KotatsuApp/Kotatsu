@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.backup.BackupZipOutput
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.exceptions.BadBackupFormatException
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.reader.data.TapGridSettings
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileInputStream
@@ -38,7 +39,14 @@ class AppBackupAgent : BackupAgent() {
 	override fun onFullBackup(data: FullBackupDataOutput) {
 		super.onFullBackup(data)
 		val file =
-			createBackupFile(this, BackupRepository(MangaDatabase(applicationContext), AppSettings(applicationContext)))
+			createBackupFile(
+				this,
+				BackupRepository(
+					MangaDatabase(context = applicationContext),
+					AppSettings(applicationContext),
+					TapGridSettings(applicationContext),
+				),
+			)
 		try {
 			fullBackupFile(file, data)
 		} finally {
@@ -58,7 +66,11 @@ class AppBackupAgent : BackupAgent() {
 			restoreBackupFile(
 				data.fileDescriptor,
 				size,
-				BackupRepository(MangaDatabase(applicationContext), AppSettings(applicationContext)),
+				BackupRepository(
+					db = MangaDatabase(applicationContext),
+					settings = AppSettings(applicationContext),
+					tapGridSettings = TapGridSettings(applicationContext),
+				),
 			)
 			destination.delete()
 		} else {
@@ -76,6 +88,7 @@ class AppBackupAgent : BackupAgent() {
 			backup.put(repository.dumpBookmarks())
 			backup.put(repository.dumpSources())
 			backup.put(repository.dumpSettings())
+			backup.put(repository.dumpReaderGridSettings())
 			backup.finish()
 			backup.file
 		}
@@ -97,12 +110,13 @@ class AppBackupAgent : BackupAgent() {
 		}
 		try {
 			runBlocking {
-				backup.getEntry(BackupEntry.Name.HISTORY)?.let { repository.restoreHistory(it) }
+				backup.getEntry(BackupEntry.Name.HISTORY)?.let { repository.restoreHistory(it, null) }
 				backup.getEntry(BackupEntry.Name.CATEGORIES)?.let { repository.restoreCategories(it) }
-				backup.getEntry(BackupEntry.Name.FAVOURITES)?.let { repository.restoreFavourites(it) }
+				backup.getEntry(BackupEntry.Name.FAVOURITES)?.let { repository.restoreFavourites(it, null) }
 				backup.getEntry(BackupEntry.Name.BOOKMARKS)?.let { repository.restoreBookmarks(it) }
 				backup.getEntry(BackupEntry.Name.SOURCES)?.let { repository.restoreSources(it) }
 				backup.getEntry(BackupEntry.Name.SETTINGS)?.let { repository.restoreSettings(it) }
+				backup.getEntry(BackupEntry.Name.SETTINGS_READER_GRID)?.let { repository.restoreReaderGridSettings(it) }
 			}
 		} finally {
 			backup.close()

@@ -2,20 +2,21 @@ package org.koitharu.kotatsu.filter.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentFilterHeaderBinding
 import org.koitharu.kotatsu.filter.ui.model.FilterHeaderModel
-import org.koitharu.kotatsu.filter.ui.tags.TagsCatalogSheet
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Demographic
@@ -48,19 +49,24 @@ class FilterHeaderFragment : BaseFragment<FragmentFilterHeaderBinding>(), ChipsV
 			.observe(viewLifecycleOwner, ::onDataChanged)
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat = insets
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		when (data) {
 			is MangaTag -> filter.toggleTag(data, !chip.isChecked)
 			is String -> Unit
-			null -> TagsCatalogSheet.show(parentFragmentManager, isExcludeTag = false)
+			null -> router.showTagsCatalogSheet(excludeMode = false)
 		}
 	}
 
 	override fun onChipCloseClick(chip: Chip, data: Any?) {
 		when (data) {
-			is String -> filter.setQuery(null)
+			is String -> if (data == filter.snapshot().listFilter.author) {
+				filter.setAuthor(null)
+			} else {
+				filter.setQuery(null)
+			}
+
 			is ContentRating -> filter.toggleContentRating(data, false)
 			is Demographic -> filter.toggleDemographic(data, false)
 			is ContentType -> filter.toggleContentType(data, false)

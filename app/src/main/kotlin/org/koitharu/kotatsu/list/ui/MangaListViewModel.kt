@@ -66,6 +66,7 @@ abstract class MangaListViewModel(
 			key == AppSettings.KEY_PROGRESS_INDICATORS
 				|| key == AppSettings.KEY_TRACKER_ENABLED
 				|| key == AppSettings.KEY_QUICK_FILTER
+				|| key == AppSettings.KEY_MANGA_LIST_BADGES
 		}.onStart { emit("") },
 	) { mode, _ ->
 		mode

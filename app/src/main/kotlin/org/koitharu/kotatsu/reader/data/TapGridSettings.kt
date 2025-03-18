@@ -3,16 +3,19 @@ package org.koitharu.kotatsu.reader.data
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import org.koitharu.kotatsu.core.util.ext.getEnumValue
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.putAll
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.reader.domain.TapGridArea
 import org.koitharu.kotatsu.reader.ui.tapgrid.TapAction
 import javax.inject.Inject
 
+@Reusable
 class TapGridSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -42,6 +45,13 @@ class TapGridSettings @Inject constructor(@ApplicationContext context: Context) 
 	}
 
 	fun observe() = prefs.observe().flowOn(Dispatchers.IO)
+
+	fun getAllValues(): Map<String, *> = prefs.all
+
+	fun upsertAll(m: Map<String, *>) = prefs.edit {
+		clear()
+		putAll(m)
+	}
 
 	private fun initPrefs(withDefaultValues: Boolean) {
 		prefs.edit {

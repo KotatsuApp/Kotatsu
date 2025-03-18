@@ -5,39 +5,28 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:parentTag="android.widget.LinearLayout">
+	tools:orientation="vertical"
+	tools:parentTag="com.google.android.material.button.MaterialButtonGroup">
 
-	<com.google.android.material.imageview.ShapeableImageView
+	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_zoom_in"
-		android:layout_width="?minTouchTargetSize"
-		android:layout_height="?minTouchTargetSize"
-		android:layout_margin="4dp"
-		android:alpha="0.8"
-		android:background="@drawable/bg_circle_button"
+		style="@style/Widget.Material3.Button.IconButton.Outlined"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:contentDescription="@string/zoom_in"
-		android:padding="1dp"
-		android:scaleType="centerInside"
-		android:src="@drawable/ic_zoom_in"
 		android:tooltipText="@string/zoom_in"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Circle"
-		app:strokeColor="?colorOutline"
-		app:strokeWidth="1dp" />
+		app:backgroundTint="@color/bg_floating_button"
+		app:icon="@drawable/ic_zoom_in" />
 
-	<com.google.android.material.imageview.ShapeableImageView
+	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_zoom_out"
-		android:layout_width="?minTouchTargetSize"
-		android:layout_height="?minTouchTargetSize"
-		android:layout_margin="4dp"
-		android:alpha="0.8"
-		android:background="@drawable/bg_circle_button"
+		style="@style/Widget.Material3.Button.IconButton.Outlined"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:contentDescription="@string/zoom_out"
-		android:padding="1dp"
-		android:scaleType="centerInside"
-		android:src="@drawable/ic_zoom_out"
 		android:tooltipText="@string/zoom_out"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Circle"
-		app:strokeColor="?colorOutline"
-		app:strokeWidth="1dp" />
+		app:backgroundTint="@color/bg_floating_button"
+		app:icon="@drawable/ic_zoom_out" />
 
 
 </merge>

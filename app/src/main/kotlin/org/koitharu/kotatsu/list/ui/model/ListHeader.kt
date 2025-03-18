@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.annotation.StringRes
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
 
-@ExposedCopyVisibility
 data class ListHeader private constructor(
 	private val textRaw: Any,
 	@StringRes val buttonTextRes: Int,

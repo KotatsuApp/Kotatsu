@@ -1,32 +1,28 @@
 package org.koitharu.kotatsu.settings.backup
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.backup.CompositeResult
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.DialogRestoreBinding
-import org.koitharu.kotatsu.main.ui.welcome.WelcomeSheet
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
-import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnListItemClickListener<BackupEntryModel>,
@@ -46,8 +42,6 @@ class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnLis
 		binding.buttonCancel.setOnClickListener(this)
 		binding.buttonRestore.setOnClickListener(this)
 		viewModel.availableEntries.observe(viewLifecycleOwner, adapter)
-		viewModel.progress.observe(viewLifecycleOwner, this::onProgressChanged)
-		viewModel.onRestoreDone.observeEvent(viewLifecycleOwner, this::onRestoreDone)
 		viewModel.onError.observeEvent(viewLifecycleOwner, this::onError)
 		combine(
 			viewModel.isLoading,
@@ -66,7 +60,15 @@ class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnLis
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_cancel -> dismiss()
-			R.id.button_restore -> viewModel.restore()
+			R.id.button_restore -> {
+				if (startRestoreService()) {
+					Toast.makeText(v.context, R.string.backup_restored_background, Toast.LENGTH_SHORT).show()
+					router.closeWelcomeSheet()
+					dismiss()
+				} else {
+					Toast.makeText(v.context, R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
+				}
+			}
 		}
 	}
 
@@ -90,6 +92,14 @@ class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnLis
 		}
 	}
 
+	private fun startRestoreService(): Boolean {
+		return RestoreService.start(
+			context ?: return false,
+			viewModel.uri ?: return false,
+			viewModel.getCheckedEntries(),
+		)
+	}
+
 	private fun Date.formatBackupDate(): String {
 		return getString(
 			R.string.backup_date_,
@@ -104,60 +114,5 @@ class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnLis
 			.setMessage(e.getDisplayMessage(resources))
 			.show()
 		dismiss()
-	}
-
-	private fun onProgressChanged(value: Float) {
-		with(requireViewBinding().progressBar) {
-			isVisible = true
-			val wasIndeterminate = isIndeterminate
-			isIndeterminate = value < 0
-			if (value >= 0) {
-				setProgressCompat((value * max).roundToInt(), !wasIndeterminate)
-			}
-		}
-	}
-
-	private fun onRestoreDone(result: CompositeResult) {
-		val builder = MaterialAlertDialogBuilder(context ?: return)
-		when {
-			result.isEmpty -> {
-				builder.setTitle(R.string.data_not_restored)
-					.setMessage(R.string.data_not_restored_text)
-			}
-
-			result.isAllSuccess -> {
-				builder.setTitle(R.string.data_restored)
-					.setMessage(R.string.data_restored_success)
-			}
-
-			result.isAllFailed -> builder.setTitle(R.string.error)
-				.setMessage(
-					result.failures.map {
-						it.getDisplayMessage(resources)
-					}.distinct().joinToString("\n"),
-				)
-
-			else -> builder.setTitle(R.string.data_restored)
-				.setMessage(R.string.data_restored_with_errors)
-		}
-		builder.setPositiveButton(android.R.string.ok, null)
-			.show()
-		if (!result.isEmpty && !result.isAllFailed) {
-			WelcomeSheet.dismiss(parentFragmentManager)
-		}
-		dismiss()
-	}
-
-
-	companion object {
-
-		const val ARG_FILE = "file"
-		private const val TAG = "RestoreDialogFragment"
-
-		fun show(fm: FragmentManager, uri: Uri) {
-			RestoreDialogFragment().withArgs(1) {
-				putString(ARG_FILE, uri.toString())
-			}.show(fm, TAG)
-		}
 	}
 }

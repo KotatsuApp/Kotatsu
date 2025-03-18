@@ -5,8 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +18,12 @@ import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.dialog.setRecyclerViewList
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
+import org.koitharu.kotatsu.core.util.ext.container
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.start
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -34,8 +38,8 @@ class NavConfigFragment : BaseFragment<FragmentSettingsSourcesBinding>(), Recycl
 	private var reorderHelper: ItemTouchHelper? = null
 	private val viewModel by viewModels<NavConfigViewModel>()
 
-	override val recyclerView: RecyclerView
-		get() = requireViewBinding().recyclerView
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -62,6 +66,19 @@ class NavConfigFragment : BaseFragment<FragmentSettingsSourcesBinding>(), Recycl
 		viewModel.content.observe(viewLifecycleOwner, navConfigAdapter)
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val isTablet = !resources.getBoolean(R.bool.is_tablet)
+		val isMaster = container?.id == R.id.container_master
+		v.setPaddingRelative(
+			if (isTablet && !isMaster) 0 else barsInsets.start(v),
+			0,
+			if (isTablet && isMaster) 0 else barsInsets.end(v),
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
+	}
+
 	override fun onResume() {
 		super.onResume()
 		activity?.setTitle(R.string.main_screen_sections)
@@ -70,14 +87,6 @@ class NavConfigFragment : BaseFragment<FragmentSettingsSourcesBinding>(), Recycl
 	override fun onDestroyView() {
 		reorderHelper = null
 		super.onDestroyView()
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		requireViewBinding().recyclerView.updatePadding(
-			bottom = insets.bottom,
-			left = insets.left,
-			right = insets.right,
-		)
 	}
 
 	override fun onClick(v: View) {

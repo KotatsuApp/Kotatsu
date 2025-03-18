@@ -67,7 +67,7 @@ fun MangaDetails.mapChapters(
 	return result
 }
 
-fun List<ChapterListItem>.withVolumeHeaders(context: Context): List<ListModel> {
+fun List<ChapterListItem>.withVolumeHeaders(context: Context): MutableList<ListModel> {
 	var prevVolume = 0
 	val result = ArrayList<ListModel>((size * 1.4).toInt())
 	for (item in this) {

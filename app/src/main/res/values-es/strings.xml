@@ -753,4 +753,20 @@
     <string name="handle_links">Gestionar enlaces</string>
     <string name="handle_links_summary">Gestionar enlaces de manga desde aplicaciones externas (por ejemplo, navegador web). También puede ser necesario habilitarlo manualmente en la configuración de la aplicación</string>
     <string name="captcha_required_message">Esta fuente requiere resolver un captcha para continuar</string>
+    <string name="incognito">Incógnito</string>
+    <string name="telegram_chat_id">Identificación del chat de Telegram</string>
+    <string name="backup_tg_echo">¡La copia de seguridad de Kotatsu en Telegram está funcionando!</string>
+    <string name="backup_tg_id_not_set">El ID del chat no está configurado</string>
+    <string name="backup_tg_check">Comprueba si la API funciona</string>
+    <string name="error_connection_reset">Conexión restablecida por el host remoto</string>
+    <string name="show_slider">Mostrar control deslizante</string>
+    <string name="open_telegram_bot">Abre el bot de Telegram</string>
+    <string name="translation">Traducción</string>
+    <string name="author">Autor</string>
+    <string name="rating">Calificación</string>
+    <string name="source">Fuente</string>
+    <string name="test_connection">Prueba de la conexión</string>
+    <string name="open_telegram_bot_summary">Presione para abrir el chat con Kotatsu Backup Bot</string>
+    <string name="send_backups_telegram">Enviar copias de seguridad por Telegram</string>
+    <string name="telegram_chat_id_summary">Ingrese el ID del chat donde se deben enviar las copias de seguridad</string>
 </resources>

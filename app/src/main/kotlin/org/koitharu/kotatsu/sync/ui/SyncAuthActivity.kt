@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentResultListener
 import androidx.transition.Fade
@@ -20,10 +20,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivitySyncAuthBinding
 import org.koitharu.kotatsu.sync.data.SyncSettings
 import org.koitharu.kotatsu.sync.domain.SyncAuthResult
@@ -65,14 +68,16 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		pageBackCallback.update()
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
 		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
 		viewBinding.root.setPadding(
-			basePadding + insets.left,
-			basePadding + insets.top,
-			basePadding + insets.right,
-			basePadding + insets.bottom,
+			barsInsets.left + basePadding,
+			barsInsets.top + basePadding,
+			barsInsets.right + basePadding,
+			barsInsets.bottom + basePadding,
 		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onClick(v: View) {
@@ -187,11 +192,7 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 
 	private class PasswordTextWatcher(
 		private val button: Button,
-	) : TextWatcher {
-
-		override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-		override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+	) : DefaultTextWatcher {
 
 		override fun afterTextChanged(s: Editable?) {
 			val text = s?.toString()

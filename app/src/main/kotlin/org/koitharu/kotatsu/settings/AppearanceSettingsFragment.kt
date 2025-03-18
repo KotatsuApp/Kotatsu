@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
+import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.utils.ActivityListPreference
+import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.settings.utils.PercentSummaryProvider
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import javax.inject.Inject
@@ -63,6 +65,9 @@ class AppearanceSettingsFragment :
 			}
 			setDefaultValueCompat("")
 		}
+		findPreference<MultiSelectListPreference>(AppSettings.KEY_MANGA_LIST_BADGES)?.run {
+			summaryProvider = MultiSummaryProvider(R.string.none)
+		}
 		bindNavSummary()
 	}
 
@@ -84,7 +89,7 @@ class AppearanceSettingsFragment :
 
 			AppSettings.KEY_COLOR_THEME,
 			AppSettings.KEY_THEME_AMOLED,
-			-> {
+				-> {
 				postRestart()
 			}
 

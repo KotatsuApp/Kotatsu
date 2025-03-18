@@ -31,6 +31,7 @@ import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.domain.QuickFilterListener
+import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.InfoModel
@@ -207,10 +208,10 @@ class HistoryListViewModel @Inject constructor(
 
 		ListSortOrder.UNREAD,
 		ListSortOrder.PROGRESS -> ListHeader(
-			when (percent) {
-				1f -> R.string.status_completed
-				in 0f..0.01f -> R.string.status_planned
-				in 0f..1f -> R.string.status_reading
+			when {
+				ReadingProgress.isCompleted(percent) -> R.string.status_completed
+				percent in 0f..0.01f -> R.string.status_planned
+				percent in 0f..1f -> R.string.status_reading
 				else -> R.string.unknown
 			},
 		)

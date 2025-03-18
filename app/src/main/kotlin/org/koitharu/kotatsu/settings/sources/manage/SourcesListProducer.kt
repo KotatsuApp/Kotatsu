@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.db.TABLE_SOURCES
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
@@ -31,7 +32,7 @@ import javax.inject.Inject
 @ViewModelScoped
 class SourcesListProducer @Inject constructor(
 	lifecycle: ViewModelLifecycle,
-	@ApplicationContext private val context: Context,
+	@LocalizedAppContext private val context: Context,
 	private val repository: MangaSourcesRepository,
 	private val settings: AppSettings,
 ) : InvalidationTracker.Observer(TABLE_SOURCES) {
@@ -70,6 +71,7 @@ class SourcesListProducer @Inject constructor(
 		val pinned = repository.getPinnedSources().mapToSet { it.name }
 		val isNsfwDisabled = settings.isNsfwContentDisabled
 		val isReorderAvailable = settings.sourcesSortOrder == SourcesSortOrder.MANUAL
+		val isDisableAvailable = !settings.isAllSourcesEnabled
 		val withTip = isReorderAvailable && settings.isTipEnabled(TIP_REORDER)
 		val enabledSet = enabledSources.toSet()
 		if (query.isNotEmpty()) {
@@ -83,6 +85,7 @@ class SourcesListProducer @Inject constructor(
 					isDraggable = false,
 					isAvailable = !isNsfwDisabled || !it.isNsfw(),
 					isPinned = it.name in pinned,
+					isDisableAvailable = isDisableAvailable,
 				)
 			}.ifEmpty {
 				listOf(SourceConfigItem.EmptySearchResult)
@@ -104,6 +107,7 @@ class SourcesListProducer @Inject constructor(
 					isDraggable = isReorderAvailable,
 					isAvailable = false,
 					isPinned = it.name in pinned,
+					isDisableAvailable = isDisableAvailable,
 				)
 			}
 		}

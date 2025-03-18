@@ -10,6 +10,7 @@ import androidx.preference.get
 import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.settings.AppearanceSettingsFragment
 import org.koitharu.kotatsu.settings.DownloadsSettingsFragment
 import org.koitharu.kotatsu.settings.NetworkSettingsFragment
@@ -22,12 +23,13 @@ import org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
 import org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment
+import org.koitharu.kotatsu.settings.userdata.storage.StorageManageSettingsFragment
 import javax.inject.Inject
 
 @Reusable
 @SuppressLint("RestrictedApi")
 class SettingsSearchHelper @Inject constructor(
-	@ApplicationContext private val context: Context,
+	@LocalizedAppContext private val context: Context,
 ) {
 
 	fun inflatePreferences(): List<SettingsItem> {
@@ -38,6 +40,12 @@ class SettingsSearchHelper @Inject constructor(
 		preferenceManager.inflateTo(result, R.xml.pref_reader, emptyList(), ReaderSettingsFragment::class.java)
 		preferenceManager.inflateTo(result, R.xml.pref_network, emptyList(), NetworkSettingsFragment::class.java)
 		preferenceManager.inflateTo(result, R.xml.pref_user_data, emptyList(), UserDataSettingsFragment::class.java)
+		preferenceManager.inflateTo(
+			result,
+			R.xml.pref_storage,
+			listOf(context.getString(R.string.data_and_privacy)),
+			StorageManageSettingsFragment::class.java,
+		)
 		preferenceManager.inflateTo(result, R.xml.pref_downloads, emptyList(), DownloadsSettingsFragment::class.java)
 		preferenceManager.inflateTo(result, R.xml.pref_tracker, emptyList(), TrackerSettingsFragment::class.java)
 		preferenceManager.inflateTo(result, R.xml.pref_services, emptyList(), ServicesSettingsFragment::class.java)

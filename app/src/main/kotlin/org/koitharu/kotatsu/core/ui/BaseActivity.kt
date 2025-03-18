@@ -1,18 +1,22 @@
 package org.koitharu.kotatsu.core.ui
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.view.WindowCompat
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import dagger.hilt.android.EntryPointAccessors
@@ -21,16 +25,17 @@ import kotlinx.coroutines.flow.flowOf
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
-import org.koitharu.kotatsu.core.ui.util.WindowInsetsDelegate
 import org.koitharu.kotatsu.core.util.ext.isWebViewUnavailable
 import org.koitharu.kotatsu.main.ui.protect.ScreenshotPolicyHelper
+import com.google.android.material.R as materialR
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
 	ExceptionResolver.Host,
-	ScreenshotPolicyHelper.ContentContainer,
-	WindowInsetsDelegate.WindowInsetsListener {
+	OnApplyWindowInsetsListener,
+	ScreenshotPolicyHelper.ContentContainer {
 
 	private var isAmoledTheme = false
 
@@ -41,15 +46,19 @@ abstract class BaseActivity<B : ViewBinding> :
 		private set
 
 	@JvmField
-	protected val insetsDelegate = WindowInsetsDelegate()
-
-	@JvmField
 	val actionModeDelegate = ActionModeDelegate()
 
-	private var defaultStatusBarColor = Color.TRANSPARENT
+	private lateinit var entryPoint: BaseActivityEntryPoint
+
+	override fun attachBaseContext(newBase: Context) {
+		entryPoint = EntryPointAccessors.fromApplication<BaseActivityEntryPoint>(newBase.applicationContext)
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+			AppCompatDelegate.setApplicationLocales(entryPoint.settings.appLocales)
+		}
+		super.attachBaseContext(newBase)
+	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-		val entryPoint = EntryPointAccessors.fromApplication<BaseActivityEntryPoint>(this)
 		val settings = entryPoint.settings
 		isAmoledTheme = settings.isAmoledTheme
 		setTheme(settings.colorScheme.styleResId)
@@ -58,10 +67,8 @@ abstract class BaseActivity<B : ViewBinding> :
 		}
 		putDataToExtras(intent)
 		exceptionResolver = entryPoint.exceptionResolverFactory.create(this)
+		enableEdgeToEdge()
 		super.onCreate(savedInstanceState)
-		WindowCompat.setDecorFitsSystemWindows(window, false)
-		insetsDelegate.handleImeInsets = true
-		insetsDelegate.addInsetsListener(this)
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -75,16 +82,10 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	@Deprecated("Use ViewBinding", level = DeprecationLevel.ERROR)
-	override fun setContentView(layoutResID: Int) {
-		super.setContentView(layoutResID)
-		setupToolbar()
-	}
+	override fun setContentView(layoutResID: Int) = throw UnsupportedOperationException()
 
 	@Deprecated("Use ViewBinding", level = DeprecationLevel.ERROR)
-	override fun setContentView(view: View?) {
-		super.setContentView(view)
-		setupToolbar()
-	}
+	override fun setContentView(view: View?) = throw UnsupportedOperationException()
 
 	override fun getContext() = this
 
@@ -93,9 +94,18 @@ abstract class BaseActivity<B : ViewBinding> :
 	protected fun setContentView(binding: B) {
 		this.viewBinding = binding
 		super.setContentView(binding.root)
+		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 		val toolbar = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)
 		toolbar?.let(this::setSupportActionBar)
-		insetsDelegate.onViewCreated(binding.root)
+	}
+
+	protected fun setDisplayHomeAsUp(isEnabled: Boolean, showUpAsClose: Boolean) {
+		supportActionBar?.run {
+			setDisplayHomeAsUpEnabled(isEnabled)
+			if (showUpAsClose) {
+				setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
+			}
+		}
 	}
 
 	override fun onSupportNavigateUp(): Boolean {
@@ -121,10 +131,6 @@ abstract class BaseActivity<B : ViewBinding> :
 			}
 		}
 		return super.onKeyDown(keyCode, event)
-	}
-
-	private fun setupToolbar() {
-		(findViewById<View>(R.id.toolbar) as? Toolbar)?.let(this::setSupportActionBar)
 	}
 
 	protected fun isDarkAmoledTheme(): Boolean {
@@ -159,7 +165,7 @@ abstract class BaseActivity<B : ViewBinding> :
 	override fun isNsfwContent(): Flow<Boolean> = flowOf(false)
 
 	private fun putDataToExtras(intent: Intent?) {
-		intent?.putExtra(EXTRA_DATA, intent.data)
+		intent?.putExtra(AppRouter.KEY_DATA, intent.data)
 	}
 
 	protected fun setContentViewWebViewSafe(viewBindingProducer: () -> B): Boolean {
@@ -178,9 +184,4 @@ abstract class BaseActivity<B : ViewBinding> :
 	}
 
 	protected fun hasViewBinding() = ::viewBinding.isInitialized
-
-	companion object {
-
-		const val EXTRA_DATA = "data"
-	}
 }

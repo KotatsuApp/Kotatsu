@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.isWriteable
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import javax.inject.Inject
 
@@ -41,7 +42,7 @@ class MangaDirectorySelectViewModel @Inject constructor(
 			val dir = requireNotNull(storageManager.resolveUri(uri)) {
 				"Cannot resolve file name of \"$uri\""
 			}
-			if (!dir.canWrite()) {
+			if (!dir.isWriteable()) {
 				throw AccessDeniedException(dir)
 			}
 			if (dir !in storageManager.getApplicationStorageDirs()) {

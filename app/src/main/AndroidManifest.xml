@@ -49,6 +49,7 @@
 		android:enableOnBackInvokedCallback="@bool/is_predictive_back_enabled"
 		android:fullBackupContent="@xml/backup_content"
 		android:fullBackupOnly="true"
+		android:hasFragileUserData="true"
 		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name"
 		android:largeHeap="true"
@@ -280,6 +281,10 @@
 		<service
 			android:name="org.koitharu.kotatsu.local.ui.LocalIndexUpdateService"
 			android:label="@string/local_manga_processing" />
+		<service
+			android:name="org.koitharu.kotatsu.settings.backup.RestoreService"
+			android:foregroundServiceType="dataSync"
+			android:label="@string/restore_backup" />
 		<service
 			android:name="org.koitharu.kotatsu.local.ui.ImportService"
 			android:foregroundServiceType="dataSync"

@@ -1,10 +1,12 @@
 package org.koitharu.kotatsu.core.model
 
+import android.content.res.Resources
 import android.net.Uri
 import android.text.SpannableStringBuilder
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.collection.MutableObjectIntMap
+import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.strikeThrough
@@ -124,7 +126,8 @@ val Manga.isBroken: Boolean
 	get() = source == UnknownMangaSource
 
 val Manga.appUrl: Uri
-	get() = Uri.parse("https://kotatsu.app/manga").buildUpon()
+	get() = "https://kotatsu.app/manga".toUri()
+		.buildUpon()
 		.appendQueryParameter("source", source.name)
 		.appendQueryParameter("name", title)
 		.appendQueryParameter("url", url)
@@ -166,5 +169,26 @@ private fun SpannableStringBuilder.appendTagsSummary(filter: MangaListFilter) {
 		strikeThrough {
 			filter.tagsExclude.joinTo(this) { it.title }
 		}
+	}
+}
+
+fun MangaChapter.getLocalizedTitle(resources: Resources, index: Int = -1): String {
+	title?.let {
+		if (it.isNotBlank()) {
+			return it
+		}
+	}
+	val num = numberString()
+	val vol = volumeString()
+	return when {
+		num != null && vol != null -> resources.getString(R.string.chapter_volume_number, vol, num)
+		num != null -> resources.getString(R.string.chapter_number, num)
+		index > 0 -> resources.getString(
+			R.string.chapters_time_pattern,
+			resources.getString(R.string.unnamed_chapter),
+			index.toString(),
+		)
+
+		else -> resources.getString(R.string.unnamed_chapter)
 	}
 }

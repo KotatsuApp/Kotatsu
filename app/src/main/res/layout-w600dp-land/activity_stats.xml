@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appbar"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:fitsSystemWindows="true"
+		app:layout_constraintEnd_toStartOf="@id/guideline_center"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			app:layout_scrollFlags="noScroll"
+			tools:title="@string/reading_stats" />
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<HorizontalScrollView
+		android:id="@+id/scrollView_chips"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:clipToPadding="false"
+		android:paddingHorizontal="12dp"
+		android:scrollIndicators="start"
+		android:scrollbars="none"
+		app:layout_constraintBottom_toBottomOf="@id/appbar"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/guideline_center"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<com.google.android.material.chip.ChipGroup
+			android:id="@+id/layout_chips"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical">
+
+			<com.google.android.material.chip.Chip
+				android:id="@+id/chip_period"
+				style="@style/Widget.Kotatsu.Chip.Dropdown"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/week"
+				app:chipIcon="@drawable/ic_history" />
+
+		</com.google.android.material.chip.ChipGroup>
+
+	</HorizontalScrollView>
+
+	<com.google.android.material.progressindicator.LinearProgressIndicator
+		android:id="@+id/progressBar"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:indeterminate="true"
+		android:visibility="gone"
+		app:hideAnimationBehavior="outward"
+		app:layout_constraintBottom_toBottomOf="@id/appbar"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar"
+		app:showAnimationBehavior="inward"
+		app:trackCornerRadius="0dp"
+		tools:visibility="visible" />
+
+	<org.koitharu.kotatsu.stats.ui.views.PieChartView
+		android:id="@+id/chart"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_margin="24dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintDimensionRatio="1"
+		app:layout_constraintEnd_toStartOf="@id/guideline_center"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recyclerView"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:overScrollMode="ifContentScrolls"
+		android:scrollbars="vertical"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/guideline_center"
+		app:layout_constraintTop_toBottomOf="@id/appbar"
+		tools:itemCount="4"
+		tools:listitem="@layout/item_stats" />
+
+	<ViewStub
+		android:id="@+id/stub_empty"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout="@layout/item_empty_state"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/appbar"
+		tools:visibility="visible" />
+
+	<androidx.constraintlayout.widget.Guideline
+		android:id="@+id/guideline_center"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		app:layout_constraintGuide_percent="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

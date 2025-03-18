@@ -4,5 +4,5 @@ import androidx.recyclerview.widget.RecyclerView
 
 interface RecyclerViewOwner {
 
-	val recyclerView: RecyclerView
+	val recyclerView: RecyclerView?
 }

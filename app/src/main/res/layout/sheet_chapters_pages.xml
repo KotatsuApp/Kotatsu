@@ -17,16 +17,57 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
 
-		<com.google.android.material.tabs.TabLayout
-			android:id="@+id/tabs"
-			style="@style/Widget.Material3.TabLayout.Secondary"
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_gravity="start"
-			android:background="@null"
-			app:tabGravity="start"
-			app:tabMode="scrollable"
-			app:tabUnboundedRipple="false" />
+			android:layout_marginEnd="8dp"
+			android:baselineAligned="false"
+			android:orientation="horizontal">
+
+			<com.google.android.material.tabs.TabLayout
+				android:id="@+id/tabs"
+				style="@style/Widget.Material3.TabLayout.Secondary"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_gravity="start|center_vertical"
+				android:layout_weight="1"
+				android:background="@null"
+				app:tabGravity="start"
+				app:tabIndicator="@drawable/bg_tab_pill"
+				app:tabIndicatorAnimationMode="fade"
+				app:tabIndicatorColor="?colorSurfaceDim"
+				app:tabIndicatorFullWidth="true"
+				app:tabIndicatorGravity="stretch"
+				app:tabInlineLabel="true"
+				app:tabMinWidth="0dp"
+				app:tabMode="scrollable"
+				app:tabUnboundedRipple="true" />
+
+			<com.google.android.material.button.MaterialSplitButton
+				android:id="@+id/split_button_read"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="end|center_vertical">
+
+				<Button
+					android:id="@+id/button_read"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/read" />
+
+				<Button
+					android:id="@+id/button_read_menu"
+					style="?attr/materialSplitButtonIconFilledStyle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center"
+					android:minWidth="48dp"
+					app:icon="@drawable/m3_split_button_chevron_avd"
+					app:toggleCheckedStateOnClick="false" />
+
+			</com.google.android.material.button.MaterialSplitButton>
+
+		</LinearLayout>
 
 	</com.google.android.material.appbar.MaterialToolbar>
 

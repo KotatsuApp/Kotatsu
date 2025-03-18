@@ -47,7 +47,7 @@ class FilterFieldLayout @JvmOverloads constructor(
 		if (!isInitialized) {
 			return
 		}
-		assert(child.id != View.NO_ID)
+		assert(child.id != NO_ID)
 		val lp = (child.layoutParams as? LayoutParams) ?: (generateDefaultLayoutParams() as LayoutParams)
 		lp.alignWithParent = true
 		lp.width = 0

@@ -137,7 +137,7 @@ class PagesViewModel @Inject constructor(
 				this += PageThumbnail(
 					isCurrent = readerState?.let {
 						page.chapterId == it.chapterId && page.index == it.page
-					} ?: false,
+					} == true,
 					page = page,
 				)
 			}

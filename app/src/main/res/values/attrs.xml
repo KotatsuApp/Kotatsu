@@ -10,6 +10,7 @@
 	<attr name="tipViewStyle" />
 	<attr name="progressButtonStyle" />
 	<attr name="dotIndicatorStyle" />
+	<attr name="badgeViewStyle" />
 
 	<!--CoverImageView attrs-->
 	<declare-styleable name="CoverImageView">
@@ -132,6 +133,7 @@
 		<attr name="strokeColor" />
 		<attr name="strokeWidth" />
 		<attr name="cornerSize" />
+		<attr name="drawableSize" />
 	</declare-styleable>
 
 	<declare-styleable name="NestedRecyclerView">
@@ -140,6 +142,7 @@
 
 	<declare-styleable name="ChipsView">
 		<attr name="chipStyle" />
+		<attr name="chipIconVisible" />
 	</declare-styleable>
 
 	<declare-styleable name="ReaderInfoBarView">
@@ -175,9 +178,21 @@
 		<attr name="android:progress" />
 	</declare-styleable>
 
+	<declare-styleable name="IconsView">
+		<attr name="iconSize" />
+		<attr name="iconSpacing" format="dimension" />
+	</declare-styleable>
+
 	<declare-styleable name="FilterFieldLayout">
 		<attr name="title" />
 		<attr name="showMoreButton" format="boolean" />
+	</declare-styleable>
+
+	<declare-styleable name="BadgeView">
+		<attr name="shapeAppearance" />
+		<attr name="backgroundColor" />
+		<attr name="maxCharacterCount" />
+		<attr name="number" />
 	</declare-styleable>
 
 </resources>

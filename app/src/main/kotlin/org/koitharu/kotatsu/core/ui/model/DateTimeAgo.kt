@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.ui.model
 import android.content.Context
 import android.text.format.DateUtils
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.toMillis
 import java.time.LocalDate
 
@@ -22,7 +23,7 @@ sealed class DateTimeAgo {
 
 	data class MinutesAgo(val minutes: Int) : DateTimeAgo() {
 		override fun format(context: Context): String {
-			return context.resources.getQuantityString(
+			return context.resources.getQuantityStringSafe(
 				R.plurals.minutes_ago,
 				minutes,
 				minutes,
@@ -34,7 +35,7 @@ sealed class DateTimeAgo {
 
 	data class HoursAgo(val hours: Int) : DateTimeAgo() {
 		override fun format(context: Context): String {
-			return context.resources.getQuantityString(
+			return context.resources.getQuantityStringSafe(
 				R.plurals.hours_ago,
 				hours,
 				hours,
@@ -66,7 +67,7 @@ sealed class DateTimeAgo {
 
 	data class DaysAgo(val days: Int) : DateTimeAgo() {
 		override fun format(context: Context): String {
-			return context.resources.getQuantityString(R.plurals.days_ago, days, days)
+			return context.resources.getQuantityStringSafe(R.plurals.days_ago, days, days)
 		}
 
 		override fun toString() = "days_ago_$days"
@@ -77,7 +78,7 @@ sealed class DateTimeAgo {
 			return if (months == 0) {
 				context.getString(R.string.this_month)
 			} else {
-				context.resources.getQuantityString(
+				context.resources.getQuantityStringSafe(
 					R.plurals.months_ago,
 					months,
 					months,

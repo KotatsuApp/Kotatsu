@@ -31,6 +31,7 @@ class FavouritesContainerViewModel @Inject constructor(
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 
 	private val categoriesStateFlow = favouritesRepository.observeCategoriesForLibrary()
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	val categories = combine(

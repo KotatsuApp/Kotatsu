@@ -24,6 +24,12 @@
 		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="reader_zoom_buttons"
+		android:summary="@string/reader_zoom_buttons_summary"
+		android:title="@string/reader_zoom_buttons" />
+
+	<SwitchPreferenceCompat
 		android:defaultValue="true"
 		android:key="webtoon_zoom"
 		android:summary="@string/webtoon_zoom_summary"
@@ -41,22 +47,21 @@
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
-		android:key="reader_zoom_buttons"
-		android:summary="@string/reader_zoom_buttons_summary"
-		android:title="@string/reader_zoom_buttons" />
-
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
 		android:key="webtoon_gaps"
 		android:summary="@string/webtoon_gaps_summary"
 		android:title="@string/webtoon_gaps" />
+
+	<MultiSelectListPreference
+		android:entries="@array/reader_controls"
+		android:key="reader_controls"
+		android:title="@string/reader_controls_in_bottom_bar"
+		app:allowDividerAbove="true" />
 
 	<Preference
 		android:key="reader_tap_actions"
 		android:persistent="false"
 		android:summary="@string/reader_actions_summary"
-		android:title="@string/reader_actions"
-		app:allowDividerAbove="true" />
+		android:title="@string/reader_actions" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
@@ -123,20 +128,22 @@
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
-		android:key="reader_slider"
-		android:title="@string/reader_slider" />
+		android:dependency="reader_bar"
+		android:key="reader_bar_transparent"
+		android:title="@string/reader_info_bar_transparent" />
 
 	<ListPreference
 		android:entries="@array/reader_backgrounds"
 		android:key="reader_background"
 		android:title="@string/background"
+		app:allowDividerAbove="true"
 		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:key="pages_numbers"
 		android:summary="@string/show_pages_numbers_summary"
-		android:title="@string/show_pages_numbers" />x
+		android:title="@string/show_pages_numbers" />
 
 	<ListPreference
 		android:defaultValue="2"

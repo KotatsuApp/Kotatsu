@@ -7,15 +7,13 @@ import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
 import android.provider.OpenableColumns
-import android.webkit.MimeTypeMap
 import androidx.core.database.getStringOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.fs.FileSequence
+import org.koitharu.kotatsu.core.util.MimeTypes
 import java.io.BufferedReader
 import java.io.File
 import java.nio.file.attribute.BasicFileAttributes
@@ -30,9 +28,9 @@ fun File.subdir(name: String) = File(this, name).also {
 	if (!it.exists()) it.mkdirs()
 }
 
-fun File.takeIfReadable() = takeIf { it.exists() && it.canRead() }
+fun File.takeIfReadable() = takeIf { it.isReadable() }
 
-fun File.takeIfWriteable() = takeIf { it.exists() && it.canWrite() }
+fun File.takeIfWriteable() = takeIf { it.isWriteable() }
 
 fun File.isNotEmpty() = length() != 0L
 
@@ -40,12 +38,6 @@ fun File.isNotEmpty() = length() != 0L
 fun ZipFile.readText(entry: ZipEntry) = getInputStream(entry).use { output ->
 	output.bufferedReader().use(BufferedReader::readText)
 }
-
-val ZipEntry.mimeType: MediaType?
-	get() {
-		val ext = name.substringAfterLast('.')
-		return MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)?.toMediaTypeOrNull()
-	}
 
 fun File.getStorageName(context: Context): String = runCatching {
 	val manager = context.getSystemService(Context.STORAGE_SERVICE) as StorageManager
@@ -115,3 +107,14 @@ fun File.walkCompat(includeDirectories: Boolean): Sequence<File> = if (Build.VER
 	val walk = walk()
 	if (includeDirectories) walk else walk.filter { it.isFile }
 }
+
+val File.normalizedExtension: String?
+	get() = MimeTypes.getNormalizedExtension(name)
+
+fun File.isReadable() = runCatching {
+	canRead()
+}.getOrDefault(false)
+
+fun File.isWriteable() = runCatching {
+	canWrite()
+}.getOrDefault(false)

@@ -6,12 +6,14 @@ import androidx.annotation.DrawableRes
 import coil3.network.HttpException
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
 import okhttp3.Response
+import okhttp3.internal.http2.StreamResetException
 import okio.FileNotFoundException
 import okio.IOException
 import okio.ProtocolException
 import org.acra.ktx.sendSilentlyWithAcra
 import org.acra.ktx.sendWithAcra
 import org.jsoup.HttpStatusException
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.BadBackupFormatException
 import org.koitharu.kotatsu.core.exceptions.CaughtException
@@ -27,7 +29,6 @@ import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.exceptions.WrapperIOException
 import org.koitharu.kotatsu.core.exceptions.WrongPasswordException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
-import org.koitharu.kotatsu.core.io.NullOutputStream
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_LOCALE_GENRES_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_BOTH_STATES_GENRES_NOT_SUPPORTED
 import org.koitharu.kotatsu.parsers.ErrorMessages.FILTER_MULTIPLE_GENRES_NOT_SUPPORTED
@@ -40,7 +41,7 @@ import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerAuthRequiredException
-import java.io.ObjectOutputStream
+import java.io.File
 import java.net.ConnectException
 import java.net.NoRouteToHostException
 import java.net.SocketException
@@ -51,6 +52,8 @@ import java.util.Locale
 private const val MSG_NO_SPACE_LEFT = "No space left on device"
 private const val MSG_CONNECTION_RESET = "Connection reset"
 private const val IMAGE_FORMAT_NOT_SUPPORTED = "Image format not supported"
+
+private val FNFE_MESSAGE_REGEX = Regex("^(/[^\\s:]+)?.+?\\s([A-Z]{2,6})?\\s.+$")
 
 fun Throwable.getDisplayMessage(resources: Resources): String = getDisplayMessageOrNull(resources)
 	?: resources.getString(R.string.error_occurred)
@@ -86,7 +89,7 @@ private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = w
 
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is BadBackupFormatException -> resources.getString(R.string.unsupported_backup_message)
-	is FileNotFoundException -> resources.getString(R.string.file_not_found)
+	is FileNotFoundException -> parseMessage(resources) ?: message
 	is AccessDeniedException -> resources.getString(R.string.no_access_to_file)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
 	is ProxyConfigException -> resources.getString(R.string.invalid_proxy_configuration)
@@ -196,7 +199,6 @@ fun Throwable.isReportable(): Boolean {
 		|| this is WrongPasswordException
 		|| this is TooManyRequestExceptions
 		|| this is HttpStatusException
-		|| this is SocketException
 	) {
 		return false
 	}
@@ -204,15 +206,18 @@ fun Throwable.isReportable(): Boolean {
 }
 
 fun Throwable.isNetworkError(): Boolean {
-	return this is UnknownHostException || this is SocketTimeoutException
+	return this is UnknownHostException
+		|| this is SocketTimeoutException
+		|| this is StreamResetException
+		|| this is SocketException
 }
 
 fun Throwable.report(silent: Boolean = false) {
 	val exception = CaughtException(this)
-	if (silent) {
-		exception.sendSilentlyWithAcra()
-	} else {
+	if (!silent) {
 		exception.sendWithAcra()
+	} else if (!BuildConfig.DEBUG) {
+		exception.sendSilentlyWithAcra()
 	}
 }
 
@@ -224,8 +229,34 @@ fun Throwable.isWebViewUnavailable(): Boolean {
 @Suppress("FunctionName")
 fun NoSpaceLeftException() = IOException(MSG_NO_SPACE_LEFT)
 
-fun Throwable.isSerializable() = runCatching {
-	val oos = ObjectOutputStream(NullOutputStream())
-	oos.writeObject(this)
-	oos.flush()
-}.isSuccess
+fun FileNotFoundException.getFile(): File? {
+	val groups = FNFE_MESSAGE_REGEX.matchEntire(message ?: return null)?.groupValues ?: return null
+	return groups.getOrNull(1)?.let { File(it) }
+}
+
+fun FileNotFoundException.parseMessage(resources: Resources): String? {
+	/*
+	Examples:
+	/storage/0000-0000/Android/media/d1f08350-0c25-460b-8f50-008e49de3873.jpg.tmp: open failed: EROFS (Read-only file system)
+	 /storage/emulated/0/Android/data/org.koitharu.kotatsu/cache/pages/fe06e192fa371e55918980f7a24c91ea.jpg: open failed: ENOENT (No such file or directory)
+	 /storage/0000-0000/Android/data/org.koitharu.kotatsu/files/manga/e57d3af4-216e-48b2-8432-1541d58eea1e.tmp (I/O error)
+	 */
+	val groups = FNFE_MESSAGE_REGEX.matchEntire(message ?: return null)?.groupValues ?: return null
+	val path = groups.getOrNull(1)
+	val error = groups.getOrNull(2)
+	val baseMessageIs = when (error) {
+		"EROFS" -> R.string.no_write_permission_to_file
+		"ENOENT" -> R.string.file_not_found
+		else -> return null
+	}
+	return if (path.isNullOrEmpty()) {
+		resources.getString(baseMessageIs)
+	} else {
+		resources.getString(
+			R.string.inline_preference_pattern,
+			resources.getString(baseMessageIs),
+			path,
+		)
+	}
+}
+

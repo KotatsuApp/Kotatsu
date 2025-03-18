@@ -1,15 +1,18 @@
 package org.koitharu.kotatsu.core.backup
 
 import androidx.room.withTransaction
+import kotlinx.coroutines.flow.FlowCollector
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.progress.Progress
 import org.koitharu.kotatsu.parsers.util.json.asTypedList
 import org.koitharu.kotatsu.parsers.util.json.getLongOrDefault
 import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.reader.data.TapGridSettings
 import java.util.Date
 import javax.inject.Inject
 
@@ -18,6 +21,7 @@ private const val PAGE_SIZE = 10
 class BackupRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val settings: AppSettings,
+	private val tapGridSettings: TapGridSettings,
 ) {
 
 	suspend fun dumpHistory(): BackupEntry {
@@ -103,6 +107,14 @@ class BackupRepository @Inject constructor(
 		return entry
 	}
 
+	fun dumpReaderGridSettings(): BackupEntry {
+		val entry = BackupEntry(BackupEntry.Name.SETTINGS_READER_GRID, JSONArray())
+		val settingsDump = tapGridSettings.getAllValues()
+		val json = JsonSerializer(settingsDump).toJson()
+		entry.data.put(json)
+		return entry
+	}
+
 	suspend fun dumpSources(): BackupEntry {
 		val entry = BackupEntry(BackupEntry.Name.SOURCES, JSONArray())
 		val all = db.getSourcesDao().findAll()
@@ -128,9 +140,11 @@ class BackupRepository @Inject constructor(
 		return if (timestamp == 0L) null else Date(timestamp)
 	}
 
-	suspend fun restoreHistory(entry: BackupEntry): CompositeResult {
+	suspend fun restoreHistory(entry: BackupEntry, outProgress: FlowCollector<Progress>?): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data.asTypedList<JSONObject>()) {
+		val list = entry.data.asTypedList<JSONObject>()
+		outProgress?.emit(Progress(progress = 0, total = list.size))
+		for ((index, item) in list.withIndex()) {
 			val mangaJson = item.getJSONObject("manga")
 			val manga = JsonDeserializer(mangaJson).toMangaEntity()
 			val tags = mangaJson.getJSONArray("tags").mapJSON {
@@ -144,6 +158,7 @@ class BackupRepository @Inject constructor(
 					db.getHistoryDao().upsert(history)
 				}
 			}
+			outProgress?.emit(Progress(progress = index, total = list.size))
 		}
 		return result
 	}
@@ -159,9 +174,11 @@ class BackupRepository @Inject constructor(
 		return result
 	}
 
-	suspend fun restoreFavourites(entry: BackupEntry): CompositeResult {
+	suspend fun restoreFavourites(entry: BackupEntry, outProgress: FlowCollector<Progress>?): CompositeResult {
 		val result = CompositeResult()
-		for (item in entry.data.asTypedList<JSONObject>()) {
+		val list = entry.data.asTypedList<JSONObject>()
+		outProgress?.emit(Progress(progress = 0, total = list.size))
+		for ((index, item) in list.withIndex()) {
 			val mangaJson = item.getJSONObject("manga")
 			val manga = JsonDeserializer(mangaJson).toMangaEntity()
 			val tags = mangaJson.getJSONArray("tags").mapJSON {
@@ -175,6 +192,7 @@ class BackupRepository @Inject constructor(
 					db.getFavouritesDao().upsert(favourite)
 				}
 			}
+			outProgress?.emit(Progress(progress = index, total = list.size))
 		}
 		return result
 	}
@@ -217,6 +235,16 @@ class BackupRepository @Inject constructor(
 		for (item in entry.data.asTypedList<JSONObject>()) {
 			result += runCatchingCancellable {
 				settings.upsertAll(JsonDeserializer(item).toMap())
+			}
+		}
+		return result
+	}
+
+	fun restoreReaderGridSettings(entry: BackupEntry): CompositeResult {
+		val result = CompositeResult()
+		for (item in entry.data.asTypedList<JSONObject>()) {
+			result += runCatchingCancellable {
+				tapGridSettings.upsertAll(JsonDeserializer(item).toMap())
 			}
 		}
 		return result

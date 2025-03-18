@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.settings.storage.directories
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -18,15 +17,16 @@ import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.ActivityMangaDirectoriesBinding
 import org.koitharu.kotatsu.settings.storage.DirectoryDiffCallback
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
-import org.koitharu.kotatsu.settings.storage.PickDirectoryContract
 import org.koitharu.kotatsu.settings.storage.RequestStorageManagerPermissionContract
 
 @AndroidEntryPoint
@@ -34,7 +34,12 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 	OnListItemClickListener<DirectoryModel>, View.OnClickListener {
 
 	private val viewModel: MangaDirectoriesViewModel by viewModels()
-	private val pickFileTreeLauncher = registerForActivityResult(PickDirectoryContract()) {
+	private val pickFileTreeLauncher = OpenDocumentTreeHelper(
+		activityResultCaller = this,
+		flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+			or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+			or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION,
+	) {
 		if (it != null) viewModel.onCustomDirectoryPicked(it)
 	}
 	private val permissionRequestLauncher = registerForActivityResult(
@@ -57,7 +62,7 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMangaDirectoriesBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		setDisplayHomeAsUp(true, false)
 		val adapter = AsyncListDifferDelegationAdapter(DirectoryDiffCallback(), directoryConfigAD(this))
 		viewBinding.recyclerView.adapter = adapter
 		viewBinding.fabAdd.setOnClickListener(this)
@@ -83,23 +88,23 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 		}
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 		viewBinding.fabAdd.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			rightMargin = topMargin + insets.right
-			leftMargin = topMargin + insets.left
-			bottomMargin = topMargin + insets.bottom
+			rightMargin = topMargin + barsInsets.right
+			leftMargin = topMargin + barsInsets.left
+			bottomMargin = topMargin + barsInsets.bottom
 		}
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
+		viewBinding.appbar.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+			top = barsInsets.top,
 		)
 		viewBinding.recyclerView.updatePadding(
-			bottom = insets.bottom,
+			left = barsInsets.left,
+			right = barsInsets.right,
+			bottom = barsInsets.bottom,
 		)
-	}
-
-	companion object {
-
-		fun newIntent(context: Context) = Intent(context, MangaDirectoriesActivity::class.java)
+		return insets.consumeAllSystemBarsInsets()
 	}
 }
