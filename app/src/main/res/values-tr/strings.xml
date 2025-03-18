@@ -798,4 +798,7 @@
     <string name="error_disclaimer_report">Geliştiricilere bir hata bildiriminde bulunabilirsiniz. Sorunu araştırmamıza ve çözmemize yardımcı olacaktır.</string>
     <string name="link_to_manga_on_s">%s üzerinde manganın bağlantısı</string>
     <string name="link_to_manga_in_app">Kotatsu üzerinde manganın bağlantısı</string>
+    <string name="clear_browser_data">Tarayıcı geçmişini temizle</string>
+    <string name="clear_browser_data_summary">Önbellek ve çerezler gibi tarayıcı verilerini temizleyin. Uyarı: Manga kaynakları için yapılan doğrulamalar geçersiz kalabilir</string>
+    <string name="no_write_permission_to_file">Dosya yazma izni yok</string>
 </resources>
