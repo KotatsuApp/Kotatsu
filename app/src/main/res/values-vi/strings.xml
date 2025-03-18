@@ -796,4 +796,7 @@
     <string name="unnamed_chapter">Chương không có tên</string>
     <string name="link_to_manga_in_app">Liên kết manga trên Kotatsu</string>
     <string name="link_to_manga_on_s">Liên kết manga với nguồn %s</string>
+    <string name="clear_browser_data">Xóa dữ liệu của trình duyệt</string>
+    <string name="clear_browser_data_summary">Điều này sẽ xóa những dữ liệu như cache và cookies. Lưu ý: Xác thực (đăng nhập) đối với nguồn đọc có thể sẽ không còn hợp lệ nữa</string>
+    <string name="no_write_permission_to_file">Không có quyền để ghi một tệp tin mới</string>
 </resources>

@@ -795,4 +795,6 @@
     <string name="global_search">Recherche globale</string>
     <string name="search_everywhere">Chercher partout</string>
     <string name="badges_in_lists">Badges dans les listes</string>
+    <string name="no_write_permission_to_file">N\'a pas la permission d\'écrire un fichier</string>
+    <string name="clear_browser_data">Effacer les données du navigateur</string>
 </resources>

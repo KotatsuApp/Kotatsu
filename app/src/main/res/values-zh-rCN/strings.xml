@@ -794,4 +794,7 @@
     <string name="error_disclaimer_manga">将以在浏览器中打开漫画的方式检查漫画在图源中是否能正常打开</string>
     <string name="error_disclaimer_report">可向开发者提交错误报告，将会帮助我们定位并修复错误</string>
     <string name="error_disclaimer_app_outdated">你的 Kotatsu 版本过旧，请下载最新版本以修复问题</string>
+    <string name="clear_browser_data">清除浏览器数据</string>
+    <string name="no_write_permission_to_file">写入文件权限被禁止</string>
+    <string name="clear_browser_data_summary">点击后清除浏览器（如缓存、Cookies）数据，警告：图源授权可能变为无效</string>
 </resources>
