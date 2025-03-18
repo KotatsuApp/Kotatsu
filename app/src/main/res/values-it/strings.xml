@@ -798,4 +798,7 @@
     <string name="error_disclaimer_report">Puoi inviare una segnalazione di bug agli sviluppatori. Questo ci aiuterà a indagare e a risolvere il problema.</string>
     <string name="link_to_manga_on_s">Link al manga su %s</string>
     <string name="link_to_manga_in_app">Link al manga su Kotatsu</string>
+    <string name="clear_browser_data_summary">Pulisci i dati del browser, come la cache e i cookie. Attenzione: l\'autorizzazione nelle fonti manga potrebbe diventare non valida</string>
+    <string name="clear_browser_data">Pulisci dati del browser</string>
+    <string name="no_write_permission_to_file">Non ha l\'autorizzazione a scrivere un file</string>
 </resources>
