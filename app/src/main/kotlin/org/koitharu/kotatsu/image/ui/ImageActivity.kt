@@ -11,21 +11,20 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import coil3.Image
 import coil3.ImageLoader
-import coil3.asDrawable
 import coil3.request.CachePolicy
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.lifecycle
-import coil3.target.ViewTarget
+import coil3.target.GenericViewTarget
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.image.CoilMemoryCacheKey
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseActivity
@@ -36,6 +35,7 @@ import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getDisplayIcon
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -63,7 +63,6 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 		setContentView(ActivityImageBinding.inflate(layoutInflater))
 		viewBinding.buttonBack.setOnClickListener(this)
 		viewBinding.buttonMenu.setOnClickListener(this)
-		val imageUrl = requireNotNull(intent.data)
 
 		val menuProvider = ImageMenuProvider(
 			activity = this,
@@ -74,14 +73,14 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.root, null))
 		viewModel.onImageSaved.observeEvent(this, ::onImageSaved)
-		loadImage(imageUrl)
+		loadImage()
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_back -> dispatchNavigateUp()
 			R.id.button_menu -> menuMediator.onLongClick(v)
-			else -> loadImage(intent.data)
+			else -> loadImage()
 		}
 	}
 
@@ -122,10 +121,11 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 		return insets.consumeAll(typeMask)
 	}
 
-	private fun loadImage(url: Uri?) {
+	private fun loadImage() {
 		ImageRequest.Builder(this)
-			.data(url)
-			.memoryCachePolicy(CachePolicy.DISABLED)
+			.data(intent.data)
+			.memoryCacheKey(intent.getParcelableExtraCompat<CoilMemoryCacheKey>(AppRouter.KEY_PREVIEW)?.data)
+			.memoryCachePolicy(CachePolicy.READ_ONLY)
 			.lifecycle(this)
 			.listener(this)
 			.mangaSourceExtra(MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE)))
@@ -158,11 +158,13 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 
 	private class SsivTarget(
 		override val view: SubsamplingScaleImageView,
-	) : ViewTarget<SubsamplingScaleImageView> {
+	) : GenericViewTarget<SubsamplingScaleImageView>() {
 
-		override fun onError(error: Image?) = setDrawable(error?.asDrawable(view.resources))
-
-		override fun onSuccess(result: Image) = setDrawable(result.asDrawable(view.resources))
+		override var drawable: Drawable? = null
+			set(value) {
+				field = value
+				setImageDrawable(value)
+			}
 
 		override fun equals(other: Any?): Boolean {
 			return (this === other) || (other is SsivTarget && view == other.view)
@@ -172,7 +174,7 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 
 		override fun toString() = "SsivTarget(view=$view)"
 
-		private fun setDrawable(drawable: Drawable?) {
+		private fun setImageDrawable(drawable: Drawable?) {
 			if (drawable != null) {
 				view.setImage(ImageSource.bitmap(drawable.toBitmap()))
 			} else {

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.details.data
 
+import org.koitharu.kotatsu.core.model.getLocale
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -7,6 +8,7 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.reader.data.filterChapters
+import java.util.Locale
 
 data class MangaDetails(
 	private val manga: Manga,
@@ -39,6 +41,13 @@ data class MangaDetails(
 
 	fun toManga() = manga
 
+	fun getLocale(): Locale? {
+		findAppropriateLocale(chapters.keys.singleOrNull())?.let {
+			return it
+		}
+		return manga.source.getLocale()
+	}
+
 	fun filterChapters(branch: String?) = MangaDetails(
 		manga = manga.filterChapters(branch),
 		localManga = localManga?.run {
@@ -68,5 +77,17 @@ data class MangaDetails(
 			result.addAll(localMap.values)
 		}
 		return result
+	}
+
+	private fun findAppropriateLocale(name: String?): Locale? {
+		if (name.isNullOrEmpty()) {
+			return null
+		}
+		return Locale.getAvailableLocales().find { lc ->
+			name.contains(lc.getDisplayName(lc), ignoreCase = true) ||
+				name.contains(lc.getDisplayName(Locale.ENGLISH), ignoreCase = true) ||
+				name.contains(lc.getDisplayLanguage(lc), ignoreCase = true) ||
+				name.contains(lc.getDisplayLanguage(Locale.ENGLISH), ignoreCase = true)
+		}
 	}
 }

@@ -20,7 +20,7 @@ abstract class BaseBrowserActivity : BaseActivity<ActivityBrowserBinding>(), Bro
 
 	private lateinit var onBackPressedCallback: WebViewBackPressedCallback
 
-	final override fun onCreate(savedInstanceState: Bundle?) {
+	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
 			return

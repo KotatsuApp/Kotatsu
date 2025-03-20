@@ -215,6 +215,7 @@
 	<string name="preload_pages">Preload pages</string>
 	<string name="logged_in_as">Logged in as %s</string>
 	<string name="nsfw">18+</string>
+	<string name="nsfw_16">16+</string>
 	<string name="various_languages">Various languages</string>
 	<string name="search_chapters">Find chapter</string>
 	<string name="chapters_empty">No chapters in this manga</string>

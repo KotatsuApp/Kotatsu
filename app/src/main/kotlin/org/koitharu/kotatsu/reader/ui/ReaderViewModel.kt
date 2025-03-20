@@ -50,6 +50,7 @@ import org.koitharu.kotatsu.list.domain.ReadingProgress.Companion.PROGRESS_NONE
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
@@ -177,7 +178,7 @@ class ReaderViewModel @Inject constructor(
 		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null),
 	)
 
-	val isMangaNsfw = manga.map { it?.isNsfw == true }
+	val isMangaNsfw = manga.map { it?.contentRating == ContentRating.ADULT }
 
 	val isBookmarkAdded = readingState.flatMapLatest { state ->
 		val manga = mangaDetails.value?.toManga()

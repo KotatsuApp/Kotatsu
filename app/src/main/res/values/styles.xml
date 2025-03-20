@@ -229,6 +229,18 @@
 		<item name="android:textAppearance">?textAppearanceLabelMedium</item>
 	</style>
 
+	<style name="Widget.Kotatsu.TextView.Badge" parent="Widget.MaterialComponents.TextView">
+		<item name="android:background">@drawable/bg_chip</item>
+		<item name="android:gravity">center</item>
+		<item name="android:textAlignment">center</item>
+		<item name="android:paddingStart">4dp</item>
+		<item name="android:paddingEnd">4dp</item>
+		<item name="android:paddingTop">2dp</item>
+		<item name="android:paddingBottom">2dp</item>
+		<item name="android:textAppearance">?textAppearanceLabelMedium</item>
+		<item name="android:textColor">?colorOnBackground</item>
+	</style>
+
 	<style name="ThemeOverlay.Kotatsu.MainToolbar" parent="">
 		<item name="colorControlHighlight">@color/selector_overlay</item>
 	</style>

@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.image.CoilMemoryCacheKey
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.MangaSourceInfo
 import org.koitharu.kotatsu.core.model.appUrl
@@ -180,11 +181,12 @@ class AppRouter private constructor(
 		)
 	}
 
-	fun openImage(url: String, source: MangaSource?, anchor: View? = null) {
+	fun openImage(url: String, source: MangaSource?, anchor: View? = null, preview: CoilMemoryCacheKey? = null) {
 		startActivity(
 			Intent(contextOrNull(), ImageActivity::class.java)
 				.setData(url.toUri())
-				.putExtra(KEY_SOURCE, source?.name),
+				.putExtra(KEY_SOURCE, source?.name)
+				.putExtra(KEY_PREVIEW, preview),
 			anchor?.let { scaleUpActivityOptionsOf(it) },
 		)
 	}
@@ -768,6 +770,7 @@ class AppRouter private constructor(
 		const val KEY_MANGA = "manga"
 		const val KEY_MANGA_LIST = "manga_list"
 		const val KEY_PAGES = "pages"
+		const val KEY_PREVIEW = "preview"
 		const val KEY_QUERY = "query"
 		const val KEY_READER_MODE = "reader_mode"
 		const val KEY_SORT_ORDER = "sort_order"

@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
+import org.koitharu.kotatsu.core.image.CoilMemoryCacheKey
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
@@ -100,10 +101,12 @@ import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.nullIfEmpty
+import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -179,16 +182,6 @@ class DetailsActivity :
 		viewModel.isStatsAvailable.observe(this, menuInvalidator)
 		viewModel.remoteManga.observe(this, menuInvalidator)
 		viewModel.tags.observe(this, ::onTagsChanged)
-		viewModel.branches.observe(this) {
-			val branch = it.singleOrNull()
-			infoBinding.textViewTranslation.textAndVisible = branch?.name
-			infoBinding.textViewTranslation.drawableStart = branch?.locale?.let {
-				LocaleUtils.getEmojiFlag(it)
-			}?.let {
-				TextDrawable.compound(infoBinding.textViewTranslation, it)
-			}
-			infoBinding.textViewTranslationLabel.isVisible = infoBinding.textViewTranslation.isVisible
-		}
 		viewModel.chapters.observe(this, PrefetchObserver(this))
 		viewModel.onDownloadStarted
 			.filterNot { appRouter.isChapterPagesSheetShown() }
@@ -202,7 +195,7 @@ class DetailsActivity :
 		addMenuProvider(menuProvider)
 	}
 
-	override fun isNsfwContent(): Flow<Boolean> = viewModel.manga.map { it?.isNsfw == true }
+	override fun isNsfwContent(): Flow<Boolean> = viewModel.manga.map { it?.contentRating == ContentRating.ADULT }
 
 	override fun onClick(v: View) {
 		when (v.id) {
@@ -232,6 +225,7 @@ class DetailsActivity :
 				router.openImage(
 					url = viewModel.coverUrl.value ?: return,
 					source = manga.source,
+					preview = CoilMemoryCacheKey.from(viewBinding.imageViewCover),
 					anchor = v,
 				)
 			}
@@ -407,10 +401,20 @@ class DetailsActivity :
 		with(viewBinding) {
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitles.joinToString("\n")
-			textViewNsfw.isVisible = manga.isNsfw
+			textViewNsfw16.isVisible = manga.contentRating == ContentRating.SUGGESTIVE
+			textViewNsfw18.isVisible = manga.contentRating == ContentRating.ADULT
 			textViewDescription.text = details.description.ifNullOrEmpty { getString(R.string.no_description) }
 		}
 		with(infoBinding) {
+			val translation = details.getLocale()
+			infoBinding.textViewTranslation.textAndVisible = translation?.getDisplayLanguage(translation)
+				?.toTitleCase(translation)
+			infoBinding.textViewTranslation.drawableStart = translation?.let {
+				LocaleUtils.getEmojiFlag(it)
+			}?.let {
+				TextDrawable.compound(infoBinding.textViewTranslation, it)
+			}
+			infoBinding.textViewTranslationLabel.isVisible = infoBinding.textViewTranslation.isVisible
 			textViewAuthor.textAndVisible = manga.author
 			textViewAuthorLabel.isVisible = textViewAuthor.isVisible
 			if (manga.hasRating) {

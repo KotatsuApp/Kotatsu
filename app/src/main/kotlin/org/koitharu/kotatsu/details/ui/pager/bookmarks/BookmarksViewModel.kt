@@ -71,7 +71,7 @@ class BookmarksViewModel @Inject constructor(
 			if (b.isNullOrEmpty()) {
 				continue
 			}
-			result += ListHeader(chapter.name)
+			result += ListHeader(chapter)
 			result.addAll(b)
 		}
 		if (result.isEmpty()) {

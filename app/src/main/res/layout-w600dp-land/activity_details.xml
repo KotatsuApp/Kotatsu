@@ -74,19 +74,27 @@
 					tools:ignore="ContentDescription,UnusedAttribute" />
 
 				<TextView
-					android:id="@+id/textView_nsfw"
+					android:id="@+id/textView_nsfw_16"
+					style="@style/Widget.Kotatsu.TextView.Badge"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_margin="@dimen/card_indicator_offset"
-					android:background="@drawable/bg_chip"
-					android:backgroundTint="@color/warning"
-					android:gravity="center"
-					android:paddingHorizontal="4dp"
-					android:paddingVertical="2dp"
+					android:backgroundTint="@color/nsfw_16"
+					android:text="@string/nsfw_16"
+					android:visibility="gone"
+					app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
+					app:layout_constraintEnd_toEndOf="@id/imageView_cover"
+					tools:visibility="visible" />
+
+				<TextView
+					android:id="@+id/textView_nsfw_18"
+					style="@style/Widget.Kotatsu.TextView.Badge"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_margin="@dimen/card_indicator_offset"
+					android:backgroundTint="@color/nsfw_18"
 					android:text="@string/nsfw"
-					android:textAlignment="center"
-					android:textAppearance="?textAppearanceLabelMedium"
-					android:textColor="?colorOnError"
+					android:visibility="gone"
 					app:layout_constraintBottom_toBottomOf="@id/imageView_cover"
 					app:layout_constraintEnd_toEndOf="@id/imageView_cover" />
 

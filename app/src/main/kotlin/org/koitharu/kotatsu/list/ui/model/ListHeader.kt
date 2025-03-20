@@ -2,8 +2,11 @@ package org.koitharu.kotatsu.list.ui.model
 
 import android.content.Context
 import androidx.annotation.StringRes
+import org.koitharu.kotatsu.core.model.getLocalizedTitle
 import org.koitharu.kotatsu.core.ui.model.DateTimeAgo
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 
+@ConsistentCopyVisibility
 data class ListHeader private constructor(
 	private val textRaw: Any,
 	@StringRes val buttonTextRes: Int,
@@ -26,6 +29,13 @@ data class ListHeader private constructor(
 	) : this(textRaw = textRes, buttonTextRes, payload, badge)
 
 	constructor(
+		chapter: MangaChapter,
+		@StringRes buttonTextRes: Int = 0,
+		payload: Any? = null,
+		badge: String? = null,
+	) : this(textRaw = chapter, buttonTextRes, payload, badge)
+
+	constructor(
 		dateTimeAgo: DateTimeAgo,
 		@StringRes buttonTextRes: Int = 0,
 		payload: Any? = null,
@@ -36,6 +46,7 @@ data class ListHeader private constructor(
 		is CharSequence -> textRaw
 		is Int -> if (textRaw != 0) context.getString(textRaw) else null
 		is DateTimeAgo -> textRaw.format(context)
+		is MangaChapter -> textRaw.getLocalizedTitle(context.resources)
 		else -> null
 	}
 

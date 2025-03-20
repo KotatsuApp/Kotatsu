@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.toLocale
+import org.koitharu.kotatsu.core.util.ext.toLocaleOrNull
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -80,7 +81,7 @@ tailrec fun MangaSource.unwrap(): MangaSource = if (this is MangaSourceInfo) {
 	this
 }
 
-fun MangaSource.getLocale(): Locale? = (unwrap() as? MangaParserSource)?.locale?.toLocale()
+fun MangaSource.getLocale(): Locale? = (unwrap() as? MangaParserSource)?.locale?.toLocaleOrNull()
 
 fun MangaSource.getSummary(context: Context): String? = when (val source = unwrap()) {
 	is MangaParserSource -> {

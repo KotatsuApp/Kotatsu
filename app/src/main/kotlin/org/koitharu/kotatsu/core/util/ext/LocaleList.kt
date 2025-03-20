@@ -21,7 +21,13 @@ inline fun <T> LocaleListCompat.mapToSet(block: (Locale) -> T): Set<T> {
 
 fun LocaleListCompat.getOrThrow(index: Int) = get(index) ?: throw NoSuchElementException()
 
-fun String.toLocale() = Locale(this)
+fun String.toLocale(): Locale = Locale.forLanguageTag(this)
+
+fun String.toLocaleOrNull() = if (isEmpty()) {
+	null
+} else {
+	toLocale().takeUnless { it.displayName == this }
+}
 
 fun Locale?.getDisplayName(context: Context): String = when (this) {
 	null -> context.getString(R.string.all_languages)
