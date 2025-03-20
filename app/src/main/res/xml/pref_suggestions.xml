@@ -20,6 +20,13 @@
 	<SwitchPreferenceCompat
 		android:defaultValue="false"
 		android:dependency="suggestions"
+		android:key="suggestions_disabled_sources"
+		android:summary="@string/suggestions_disabled_sources_summary"
+		android:title="@string/include_disabled_sources" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:dependency="suggestions"
 		android:key="suggestions_notifications"
 		android:summary="@string/suggestions_notifications_summary"
 		android:title="@string/notifications_enable" />
@@ -35,6 +42,7 @@
 		android:defaultValue="false"
 		android:dependency="suggestions"
 		android:key="suggestions_exclude_nsfw"
+		android:summary="@string/exclude_nsfw_from_suggestions_summary"
 		android:title="@string/exclude_nsfw_from_suggestions" />
 
 	<Preference

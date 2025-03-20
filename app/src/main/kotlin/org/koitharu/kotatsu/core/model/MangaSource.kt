@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.splitTwoParts
+import java.util.Locale
 import com.google.android.material.R as materialR
 
 data object LocalMangaSource : MangaSource {
@@ -78,6 +79,8 @@ tailrec fun MangaSource.unwrap(): MangaSource = if (this is MangaSourceInfo) {
 } else {
 	this
 }
+
+fun MangaSource.getLocale(): Locale? = (unwrap() as? MangaParserSource)?.locale?.toLocale()
 
 fun MangaSource.getSummary(context: Context): String? = when (val source = unwrap()) {
 	is MangaParserSource -> {

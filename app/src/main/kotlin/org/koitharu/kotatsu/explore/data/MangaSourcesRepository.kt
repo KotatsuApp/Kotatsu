@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
 import androidx.room.withTransaction
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -354,7 +353,7 @@ class MangaSourcesRepository @Inject constructor(
 			.conflate()
 	}
 
-	private fun getExternalSources() = context.packageManager.queryIntentContentProviders(
+	fun getExternalSources(): List<ExternalMangaSource> = context.packageManager.queryIntentContentProviders(
 		Intent("app.kotatsu.parser.PROVIDE_MANGA"), 0,
 	).map { resolveInfo ->
 		ExternalMangaSource(

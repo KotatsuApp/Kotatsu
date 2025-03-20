@@ -48,11 +48,13 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.distinctById
+import org.koitharu.kotatsu.core.model.getLocale
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.awaitWorkInfosByTag
@@ -179,7 +181,7 @@ class SuggestionsWorker @AssistedInject constructor(
 			historyRepository.getList(0, 20) +
 				favouritesRepository.getLastManga(20)
 			).distinctById()
-		val sources = sourcesRepository.getEnabledSources()
+		val sources = getSources()
 		if (seed.isEmpty() || sources.isEmpty()) {
 			return 0
 		}
@@ -188,7 +190,7 @@ class SuggestionsWorker @AssistedInject constructor(
 
 		val semaphore = Semaphore(MAX_PARALLELISM)
 		val producer = channelFlow {
-			for (it in sources.shuffled()) {
+			for (it in sources) {
 				if (it.isNsfw() && (appSettings.isSuggestionsExcludeNsfw || appSettings.isNsfwContentDisabled)) {
 					continue
 				}
@@ -241,6 +243,18 @@ class SuggestionsWorker @AssistedInject constructor(
 			}
 		}
 		return suggestions.size
+	}
+
+	private suspend fun getSources(): List<MangaSource> {
+		if (appSettings.isSuggestionsIncludeDisabledSources) {
+			val result = sourcesRepository.allMangaSources.toMutableList<MangaSource>()
+			result.addAll(sourcesRepository.getExternalSources())
+			result.shuffle()
+			result.sortWith(compareBy(nullsLast(LocaleComparator())) { it.getLocale() })
+			return result
+		} else {
+			return sourcesRepository.getEnabledSources().shuffled()
+		}
 	}
 
 	private suspend fun getList(

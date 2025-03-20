@@ -819,4 +819,7 @@
 	<string name="clear_browser_data">Clear browser data</string>
 	<string name="clear_browser_data_summary">Clear browser data such as cache and cookies. Warning: Authorization in manga sources may become invalid</string>
 	<string name="no_write_permission_to_file">Does not have permission to write a file</string>
+	<string name="exclude_nsfw_from_suggestions_summary">Adult manga will not be shown in suggestions. This option may work inaccurate with some sources</string>
+	<string name="include_disabled_sources">Include disabled sources</string>
+	<string name="suggestions_disabled_sources_summary">Show suggestions from all manga sources, including disabled ones</string>
 </resources>
