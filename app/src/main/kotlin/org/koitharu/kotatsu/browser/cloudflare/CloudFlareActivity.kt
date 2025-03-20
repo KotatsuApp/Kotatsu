@@ -37,8 +37,7 @@ class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 
 	private lateinit var cfClient: CloudFlareClient
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
+	override fun onCreate2(savedInstanceState: Bundle?) {
 		setDisplayHomeAsUp(true, true)
 		val url = intent?.dataString
 		if (url.isNullOrEmpty()) {

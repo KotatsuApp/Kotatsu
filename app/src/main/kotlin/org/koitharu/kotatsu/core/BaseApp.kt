@@ -102,6 +102,9 @@ open class BaseApp : Application(), Configuration.Provider {
 
 	override fun attachBaseContext(base: Context) {
 		super.attachBaseContext(base)
+		if (ACRA.isACRASenderServiceProcess()) {
+			return
+		}
 		initAcra {
 			buildConfigClass = BuildConfig::class.java
 			reportFormat = StringFormat.JSON

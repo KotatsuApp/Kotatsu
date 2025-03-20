@@ -20,7 +20,7 @@ abstract class BaseBrowserActivity : BaseActivity<ActivityBrowserBinding>(), Bro
 
 	private lateinit var onBackPressedCallback: WebViewBackPressedCallback
 
-	override fun onCreate(savedInstanceState: Bundle?) {
+	final override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
 			return
@@ -28,7 +28,10 @@ abstract class BaseBrowserActivity : BaseActivity<ActivityBrowserBinding>(), Bro
 		viewBinding.webView.webChromeClient = ProgressChromeClient(viewBinding.progressBar)
 		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView)
 		onBackPressedDispatcher.addCallback(onBackPressedCallback)
+		onCreate2(savedInstanceState)
 	}
+
+	protected abstract fun onCreate2(savedInstanceState: Bundle?)
 
 	override fun onApplyWindowInsets(
 		v: View,

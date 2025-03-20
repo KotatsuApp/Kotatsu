@@ -25,8 +25,7 @@ class BrowserActivity : BaseBrowserActivity() {
 	@Inject
 	lateinit var mangaRepositoryFactory: MangaRepository.Factory
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
+	override fun onCreate2(savedInstanceState: Bundle?) {
 		setDisplayHomeAsUp(true, true)
 		val mangaSource = MangaSource(intent?.getStringExtra(AppRouter.KEY_SOURCE))
 		val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository

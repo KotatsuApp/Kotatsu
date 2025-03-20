@@ -21,7 +21,6 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
-import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -36,11 +35,7 @@ class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 
 	private lateinit var authProvider: MangaParserAuthProvider
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
-			return
-		}
+	override fun onCreate2(savedInstanceState: Bundle?) {
 		val source = MangaSource(intent?.getStringExtra(EXTRA_SOURCE))
 		if (source !is MangaParserSource) {
 			finishAfterTransition()
