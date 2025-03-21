@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.core.util.ext
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import android.os.Build
 import androidx.annotation.PluralsRes
 import androidx.annotation.Px
 import androidx.core.util.TypedValueCompat
@@ -30,7 +31,10 @@ fun Context.getSystemBoolean(resName: String, fallback: Boolean): Boolean {
 fun Resources.getQuantityStringSafe(@PluralsRes resId: Int, quantity: Int, vararg formatArgs: Any): String = try {
 	getQuantityString(resId, quantity, *formatArgs)
 } catch (e: Resources.NotFoundException) {
-	e.report(silent = true)
-	e.printStackTraceDebug()
-	formatArgs.firstOrNull()?.toString() ?: quantity.toString()
+	if (Build.VERSION.SDK_INT == Build.VERSION_CODES.VANILLA_ICE_CREAM) { // known issue
+		e.printStackTraceDebug()
+		formatArgs.firstOrNull()?.toString() ?: quantity.toString()
+	} else {
+		throw e
+	}
 }
