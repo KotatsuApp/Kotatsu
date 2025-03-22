@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="items">
-        <item quantity="one">%1$d টি আইটেম</item>
-        <item quantity="other">%1$d টি আইটেম</item>
+        <item quantity="one">%1$d item</item>
+        <item quantity="other">%1$d items</item>
     </plurals>
     <plurals name="new_chapters">
         <item quantity="one">%1$d টি নতুন পর্ব</item>
@@ -27,5 +27,13 @@
     <plurals name="minutes_ago">
         <item quantity="one">মাত্র %1$d মিনিট আগে</item>
         <item quantity="other">%1$d মিনিট আগে</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">%1$d hour</item>
+        <item quantity="other">%1$d hours</item>
     </plurals>
 </resources>

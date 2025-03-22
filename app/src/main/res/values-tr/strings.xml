@@ -801,4 +801,8 @@
     <string name="clear_browser_data">Tarayıcı geçmişini temizle</string>
     <string name="clear_browser_data_summary">Önbellek ve çerezler gibi tarayıcı verilerini temizleyin. Uyarı: Manga kaynakları için yapılan doğrulamalar geçersiz kalabilir</string>
     <string name="no_write_permission_to_file">Dosya yazma izni yok</string>
+    <string name="suggestions_disabled_sources_summary">Tüm manga kaynaklarından önerileri göster, devre dışı olanlar dahil</string>
+    <string name="exclude_nsfw_from_suggestions_summary">Yetişkin mangaları önerilerde gösterilmeyecektir. Bu seçenek her kaynak için doğru çalışmayabilir</string>
+    <string name="nsfw_16">16+</string>
+    <string name="include_disabled_sources">Devre dışı bırakılmış kaynakları dahil et</string>
 </resources>

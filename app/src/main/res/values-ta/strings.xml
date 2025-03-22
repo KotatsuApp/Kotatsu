@@ -122,8 +122,8 @@
     <string name="stuck">சிக்கிக்கொண்டது</string>
     <string name="not_in_favorites">பிடித்தவைகளில் இல்லை</string>
     <string name="content_type_image_set">பட தொகுப்பு</string>
-    <string name="content_type_artist_cg">கலைஞர் சி.சி.</string>
-    <string name="content_type_game_cg">விளையாட்டு சி.சி.</string>
+    <string name="content_type_artist_cg">கலைஞர் சி.ஜி</string>
+    <string name="content_type_game_cg">விளையாட்டு சி.ஜி</string>
     <string name="debug">பிழைத்திருத்தம்</string>
     <string name="source_code">மூலக் குறியீடு</string>
     <string name="user_manual">பயனர் கையேடு</string>
@@ -141,7 +141,7 @@
     <string name="chapter_selection_hint">அத்தியாய பட்டியலில் உள்ள உருப்படியை நீண்ட சொடுக்கு செய்வதன் மூலம் பதிவிறக்கம் செய்ய அத்தியாயங்களைத் தேர்ந்தெடுக்கலாம்.</string>
     <string name="download_over_cellular">செல்லுலார் நெட்வொர்க்கில் பதிவிறக்குகிறது</string>
     <string name="color_correction">வண்ண திருத்தம்</string>
-    <string name="brightness">ஒளி</string>
+    <string name="brightness">பிரகாசம்</string>
     <string name="reset">மீட்டமை</string>
     <string name="network_unavailable">பிணையம் கிடைக்கவில்லை</string>
     <string name="compact">கச்சிதமான</string>
@@ -162,7 +162,7 @@
     <string name="error_occurred">பிழை ஏற்பட்டது</string>
     <string name="network_error">பிணைய பிழை</string>
     <string name="details">விவரங்கள்</string>
-    <string name="chapters">பாடங்கள்</string>
+    <string name="chapters">அத்தியாயங்கள்</string>
     <string name="list">பட்டியல்</string>
     <string name="detailed_list">விரிவான பட்டியல்</string>
     <string name="text_local_holder_primary">முதலில் எதையாவது சேமிக்கவும்</string>
@@ -400,14 +400,14 @@
     <string name="incognito_mode">மறைநிலை பயன்முறை</string>
     <string name="no_chapters">அத்தியாயங்கள் இல்லை</string>
     <string name="automatic_scroll">தானியங்கி சுருள்</string>
-    <string name="reader_info_pattern">Ch %1$d/ டி pg</string>
+    <string name="reader_info_pattern">ச %1$d/%2$d பஜி.%3$d/%4$d</string>
     <string name="reader_info_bar">வாசகரில் செய்தி பட்டியைக் காட்டு</string>
     <string name="comics_archive">காமிக்ச் காப்பகம்</string>
     <string name="folder_with_images">படங்களுடன் கோப்புறை</string>
     <string name="importing_manga">மங்காவை இறக்குமதி செய்கிறது</string>
     <string name="import_completed">இறக்குமதி முடிந்தது</string>
     <string name="import_completed_hint">இடத்தை சேமிக்க நீங்கள் அசல் கோப்பை சேமிப்பகத்திலிருந்து நீக்கலாம்</string>
-    <string name="manga_error_description_pattern">பிழை விவரங்கள்: &lt;br&gt; &lt;tt&gt;%1$s &lt;/tt&gt; &lt;br&gt; &lt;br&gt; 1. ஒரு வலை உலாவியில் மங்காவைத் திறக்க &lt;a href =%2$s&gt; ஐத் திறக்க முயற்சிக்கவும் &lt;/a&gt; அதன் மூலத்தில் கிடைக்கிறது &lt;br&gt; 2. நீங்கள் &lt;a href = kotatsu: // பற்றி&gt; கோட்டாட்சுவின் அண்மைக் கால பதிப்பு &lt;/a&gt; &lt;br&gt; 3 ஐப் பயன்படுத்துகிறீர்கள் என்பதை உறுதிப்படுத்திக் கொள்ளுங்கள். இது கிடைத்தால், டெவலப்பர்களுக்கு பிழை அறிக்கையை அனுப்பவும்.</string>
+    <string name="manga_error_description_pattern">பிழை விவரங்கள்:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. &lt;a href=%2$s&gt;மங்காவை இணைய உலாவியில் திறக்க முயற்சிக்கவும்&lt;/a&gt;, அது அதன் மூலத்தில் கிடைப்பதை உறுதிசெய்யவும்&lt;br&gt;2. நீங்கள் &lt;a href=kotatsu://about&gt;Kotatsu இன் சமீபத்திய பதிப்பைப் பயன்படுத்துகிறீர்கள் என்பதை உறுதிப்படுத்திக் கொள்ளுங்கள்&lt;/a&gt;&lt;br&gt;3. அது கிடைத்தால், டெவலப்பர்களுக்கு பிழை அறிக்கையை அனுப்பவும்.</string>
     <string name="history_shortcuts">அண்மைக் கால மங்கா குறுக்குவழிகளைக் காட்டு</string>
     <string name="reader_control_ltr_summary">பக்க மாறுதல் திசையை வாசகர் பயன்முறையில் சரிசெய்ய வேண்டாம், இ. g. சரியான விசையை அழுத்துவது எப்போதும் அடுத்த பக்கத்திற்கு மாறுகிறது. இந்த விருப்பம் வன்பொருள் உள்ளீட்டு சாதனங்களை மட்டுமே பாதிக்கிறது</string>
     <string name="reader_control_ltr">பணிச்சூழலியல் வாசகர் கட்டுப்பாடு</string>
@@ -488,7 +488,7 @@
     <string name="download_option_all_chapters">மொழிபெயர்ப்பு %s உடன் அனைத்து அத்தியாயங்களும்</string>
     <string name="download_option_whole_manga">முழு மங்கா</string>
     <string name="download_option_first_n_chapters">முதல் %s</string>
-    <string name="restore">மீட்டமை</string>
+    <string name="restore">மீட்டெடுக்கவும்</string>
     <string name="download_option_all_unread_b">படிக்காத அனைத்து அத்தியாயங்களும் (%s)</string>
     <string name="download_option_manual_selection">அத்தியாயங்களை கைமுறையாகத் தேர்ந்தெடுக்கவும்</string>
     <string name="pick_custom_directory">தனிப்பயன் கோப்பகத்தைத் தேர்ந்தெடுங்கள்</string>
@@ -532,7 +532,7 @@
     <string name="zoom_out">சிறிதாக்கு</string>
     <string name="zoom_in">பெரிதாக்கு</string>
     <string name="reader_zoom_buttons">சூம் பொத்தான்களைக் காட்டு</string>
-    <string name="reader_zoom_buttons_summary">கீழ் வலது மூலையில் சூம் கட்டுப்பாட்டு பொத்தான்களைக் காட்டலாமா?</string>
+    <string name="reader_zoom_buttons_summary">கீழ் வலது மூலையில் ஜூம் கட்டுப்பாட்டு பொத்தான்களைக் காட்ட வேண்டுமா</string>
     <string name="keep_screen_on">திரையை தொடர்ந்து வைத்திருங்கள்</string>
     <string name="keep_screen_on_summary">நீங்கள் மங்காவைப் படிக்கும்போது திரையை அணைக்க வேண்டாம்</string>
     <string name="state_abandoned">கைவிடப்பட்டது</string>
@@ -634,7 +634,7 @@
     <string name="pages_read_s">பக்கங்கள் படிக்க: %s</string>
     <string name="alternatives">மாற்று</string>
     <string name="migrate">இடம்பெயர்வு</string>
-    <string name="migrate_confirmation">\"%2$s\" இலிருந்து \"%1$s\" உங்கள் வரலாறு மற்றும் பிடித்தவைகளில் \"%4 $ S\" இலிருந்து \"%3$s\" உடன் மாற்றப்படும் (இருந்தால்)</string>
+    <string name="migrate_confirmation">\"%2$s\" இலிருந்து மங்கா \"%1$s\" உங்கள் வரலாறு மற்றும் பிடித்தவைகளில் (இருந்தால்) \"%4$s\" இலிருந்து \"%3$s\" உடன் மாற்றப்படும்</string>
     <string name="manga_migration">மங்கா இடம்பெயர்வு</string>
     <string name="migration_completed">இடம்பெயர்வு முடிந்தது</string>
     <string name="delete_read_chapters">வாசிப்பு அத்தியாயங்களை நீக்கு</string>
@@ -687,7 +687,7 @@
     <string name="screenshots_block_incognito">மறைநிலை பயன்முறையில் இருக்கும்போது தடுக்கவும்</string>
     <string name="crop_pages">பயிர் பக்கங்கள்</string>
     <string name="pin">முள்</string>
-    <string name="unpin">Unpin</string>
+    <string name="unpin">அன்பின்</string>
     <string name="source_pinned">மூல பின்</string>
     <string name="source_unpinned">சான்று இணைக்கப்படாதது</string>
     <string name="sources_unpinned">ஆதாரங்கள் இணைக்கப்படாதவை</string>
@@ -765,4 +765,31 @@
     <string name="enable_all_sources">அனைத்து மங்கா ஆதாரங்களையும் இயக்கவும்</string>
     <string name="enable_all_sources_summary">கிடைக்கக்கூடிய அனைத்து மங்கா ஆதாரங்களும் நிரந்தரமாக இயக்கப்படும்</string>
     <string name="demographic_kodomo">கோடோமோ</string>
+    <string name="clear_browser_data">உலாவி தரவை அழிக்கவும்</string>
+    <string name="clear_browser_data_summary">கேச் மற்றும் குக்கீகள் போன்ற உலாவி தரவை அழிக்கவும். எச்சரிக்கை: மாங்கா மூலங்களில் அங்கீகாரம் செல்லாததாக மாறக்கூடும்</string>
+    <string name="error_details">பிழை விவரங்கள்</string>
+    <string name="no_write_permission_to_file">கோப்பை எழுத அனுமதி இல்லை</string>
+    <string name="restoring_backup">காப்புப்பிரதியை மீட்டமைக்கிறது</string>
+    <string name="search_disabled_sources">முடக்கப்பட்ட ஆதாரங்கள் மூலம் தேடுங்கள்</string>
+    <string name="reader_info_bar_transparent">வெளிப்படையான வாசகர் தகவல் பட்டி</string>
+    <string name="chapter_volume_number">தொகுதி %1$s அத்தியாயம் %2$s</string>
+    <string name="chapter_number">அத்தியாயம் %s</string>
+    <string name="unnamed_chapter">பெயரிடப்படாத அத்தியாயம்</string>
+    <string name="simple">எளிமையானது</string>
+    <string name="reader_controls_in_bottom_bar">கீழ் பட்டியில் வாசகர் கட்டுப்பாடுகள்</string>
+    <string name="chapters_and_pages">அத்தியாயங்கள் மற்றும் பக்கங்கள்</string>
+    <string name="pages_slider">பக்க சுவிட்ச் ஸ்லைடர்</string>
+    <string name="screen_rotation_locked">திரை சுழற்சி பூட்டப்பட்டுள்ளது</string>
+    <string name="screen_rotation_unlocked">திரைச் சுழற்சி திறக்கப்பட்டது</string>
+    <string name="disable_captcha_notifications">கேப்ட்சா அறிவிப்புகளை முடக்கு</string>
+    <string name="disable_captcha_notifications_summary">இந்த மூலத்திற்கான CAPTCHA ஐத் தீர்ப்பது குறித்த அறிவிப்புகளை நீங்கள் பெறமாட்டீர்கள், ஆனால் இது பின்னணி செயல்பாடுகளை சீர்குலைக்க வழிவகுக்கும் (புதிய அத்தியாயங்களைச் சரிபார்த்தல், பரிந்துரைகளைப் பெறுதல் போன்றவை)</string>
+    <string name="global_search">உலகளாவிய தேடல்</string>
+    <string name="badges_in_lists">பட்டியல்களில் பேட்ஜ்கள்</string>
+    <string name="link_to_manga_in_app">மை மற்றும் மாங்கா கொட்டாச்சு</string>
+    <string name="backup_restored_background">காப்புப்பிரதி பின்னணியில் மீட்டமைக்கப்படும்</string>
+    <string name="error_disclaimer_manga">மங்கா அதன் மூலத்தில் கிடைப்பதை உறுதிசெய்ய, இணைய உலாவியில் அதைத் திறக்க முயற்சிக்கவும்.</string>
+    <string name="error_disclaimer_app_outdated">உங்கள் Kotatsu பதிப்பு காலாவதியானது போல் தெரிகிறது. கிடைக்கக்கூடிய அனைத்து திருத்தங்களையும் பெற சமீபத்திய பதிப்பை நிறுவவும்.</string>
+    <string name="link_to_manga_on_s">மங்காவிற்கான இணைப்பு இயக்கப்பட்டது %s</string>
+    <string name="search_everywhere">எல்லா இடங்களிலும் தேடுங்கள்</string>
+    <string name="error_disclaimer_report">நீங்கள் டெவலப்பர்களிடம் பிழை அறிக்கையைச் சமர்ப்பிக்கலாம். இது சிக்கலை ஆராய்ந்து சரிசெய்ய எங்களுக்கு உதவும்.</string>
 </resources>

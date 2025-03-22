@@ -797,4 +797,8 @@
     <string name="clear_browser_data">清除浏览器数据</string>
     <string name="no_write_permission_to_file">写入文件权限被禁止</string>
     <string name="clear_browser_data_summary">点击后清除浏览器（如缓存、Cookies）数据，警告：图源授权可能变为无效</string>
+    <string name="nsfw_16">R15</string>
+    <string name="exclude_nsfw_from_suggestions_summary">搜索建议中将不会出现成人漫画，此选项可能对某些图源不生效</string>
+    <string name="include_disabled_sources">包括已关闭图源</string>
+    <string name="suggestions_disabled_sources_summary">在搜索建议中显示所有图源，包括已关闭图源</string>
 </resources>
