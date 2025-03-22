@@ -89,11 +89,15 @@ open class PageHolder(
 		}
 	}
 
+	override fun onPreviewReady(source: ImageSource) {
+		binding.ssiv.setImage(source)
+	}
+
 	override fun onImageReady(source: ImageSource) {
 		binding.ssiv.setImage(source)
 	}
 
-	override fun onImageShowing(settings: ReaderSettings) {
+	override fun onImageShowing(settings: ReaderSettings, isPreview: Boolean) {
 		binding.ssiv.maxScale = 2f * maxOf(
 			binding.ssiv.width / binding.ssiv.sWidth.toFloat(),
 			binding.ssiv.height / binding.ssiv.sHeight.toFloat(),

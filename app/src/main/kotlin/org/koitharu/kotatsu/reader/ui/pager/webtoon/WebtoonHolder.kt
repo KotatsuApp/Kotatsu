@@ -89,11 +89,13 @@ class WebtoonHolder(
 		}
 	}
 
+	override fun onPreviewReady(source: ImageSource) = Unit
+
 	override fun onImageReady(source: ImageSource) {
 		binding.ssiv.setImage(source)
 	}
 
-	override fun onImageShowing(settings: ReaderSettings) {
+	override fun onImageShowing(settings: ReaderSettings, isPreview: Boolean) {
 		binding.ssiv.colorFilter = settings.colorFilter?.toColorFilter()
 		with(binding.ssiv) {
 			scrollTo(

@@ -3,10 +3,12 @@ package org.koitharu.kotatsu.details.ui.pager.pages
 import androidx.lifecycle.LifecycleOwner
 import coil3.ImageLoader
 import coil3.request.allowRgb565
+import coil3.request.transformations
 import coil3.size.Scale
 import coil3.size.Size
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
@@ -43,6 +45,7 @@ fun pageThumbnailAD(
 			size(thumbSize)
 			scale(Scale.FILL)
 			allowRgb565(true)
+			transformations(TrimTransformation())
 			decodeRegion(0)
 			mangaSourceExtra(item.page.source)
 			enqueueWith(coil)

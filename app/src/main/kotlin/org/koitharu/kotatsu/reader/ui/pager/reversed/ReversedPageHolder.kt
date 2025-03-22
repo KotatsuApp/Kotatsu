@@ -27,7 +27,7 @@ class ReversedPageHolder(
 			.gravity = Gravity.START or Gravity.BOTTOM
 	}
 
-	override fun onImageShowing(settings: ReaderSettings) {
+	override fun onImageShowing(settings: ReaderSettings, isPreview: Boolean) {
 		with(binding.ssiv) {
 			maxScale = 2f * maxOf(
 				width / sWidth.toFloat(),

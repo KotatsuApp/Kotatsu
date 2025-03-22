@@ -11,7 +11,9 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:indeterminate="true"
-		android:max="100" />
+		android:max="100"
+		app:hideAnimationBehavior="escape"
+		app:showAnimationBehavior="outward" />
 
 	<LinearLayout
 		android:id="@+id/layout_error"

@@ -35,7 +35,7 @@ class DoublePageHolder(
 			.gravity = (if (isEven) Gravity.START else Gravity.END) or Gravity.BOTTOM
 	}
 
-	override fun onImageShowing(settings: ReaderSettings) {
+	override fun onImageShowing(settings: ReaderSettings, isPreview: Boolean) {
 		with(binding.ssiv) {
 			maxScale = 2f * maxOf(
 				width / sWidth.toFloat(),
