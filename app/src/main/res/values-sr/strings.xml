@@ -779,7 +779,7 @@
     <string name="reader_controls_in_bottom_bar">Управљач читача у доњој траци</string>
     <string name="pages_slider">Клизач за пребацивање страница</string>
     <string name="screen_rotation_locked">Окретање екрана је закључано</string>
-    <string name="screen_rotation_unlocked">Обртање екрана је откључано</string>
+    <string name="screen_rotation_unlocked">Окретање екрана је откључано</string>
     <string name="restoring_backup">Враћање резервне копије</string>
     <string name="chapters_and_pages">Поглавља и странице</string>
     <string name="simple">Једноставно</string>
@@ -788,4 +788,15 @@
     <string name="badges_in_lists">Значке у листама</string>
     <string name="disable_captcha_notifications">Онемогући Цаптцха обавештења</string>
     <string name="disable_captcha_notifications_summary">Нећете добијати обавештења о решавању ЦАПТЦХА за овај извор, али то може довести до прекида позадинских операција (проверавање нових поглавља, добијање препорука итд.)</string>
+    <string name="error_details">Детаљи грешке</string>
+    <string name="nsfw_16">16+</string>
+    <string name="error_disclaimer_report">Можеш послати извештај о грешкама нашим програмерима. Ово ће нам помоћи да истражимо и исправимо грешку.</string>
+    <string name="clear_browser_data">Избриши податке из прегледача</string>
+    <string name="search_disabled_sources">Претражи из онемогућених извора</string>
+    <string name="unnamed_chapter">Неименовано поглавље</string>
+    <string name="chapter_number">Поглавље %s</string>
+    <string name="error_disclaimer_manga">Пробај да отвориш Мангу у мрежном прегледачу да би се уверио да је доступна из извора.</string>
+    <string name="error_disclaimer_app_outdated">Изгледа да је твоја верзија Котатсу-а застарела. Молим инсталирај најновију верзију да би добио све доступне исправке.</string>
+    <string name="link_to_manga_on_s">Повезница до Манге на %s</string>
+    <string name="link_to_manga_in_app">Повезница до Манге у Котатсу</string>
 </resources>
