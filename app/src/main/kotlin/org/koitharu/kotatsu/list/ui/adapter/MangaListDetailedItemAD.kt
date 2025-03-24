@@ -32,7 +32,7 @@ fun mangaListDetailedItemAD(
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title
-		binding.textViewAuthor.textAndVisible = item.manga.author
+		binding.textViewAuthor.textAndVisible = item.manga.authors.joinToString(", ")
 		binding.progressView.setProgress(
 			value = item.progress,
 			animate = ListModelDiffCallback.PAYLOAD_PROGRESS_CHANGED in payloads,

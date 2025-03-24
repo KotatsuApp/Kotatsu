@@ -2,12 +2,15 @@ package org.koitharu.kotatsu.details.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.text.SpannedString
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.text.buildSpannedString
+import androidx.core.text.inSpans
 import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
@@ -118,7 +121,7 @@ class DetailsActivity :
 	View.OnClickListener,
 	View.OnLayoutChangeListener, ViewTreeObserver.OnDrawListener,
 	ChipsView.OnChipClickListener, OnListItemClickListener<Bookmark>,
-	SwipeRefreshLayout.OnRefreshListener {
+	SwipeRefreshLayout.OnRefreshListener, AuthorSpan.OnAuthorClickListener {
 
 	@Inject
 	lateinit var shortcutManager: AppShortcutManager
@@ -138,7 +141,6 @@ class DetailsActivity :
 		supportActionBar?.setDisplayShowTitleEnabled(false)
 		viewBinding.chipFavorite.setOnClickListener(this)
 		infoBinding.textViewLocal.setOnClickListener(this)
-		infoBinding.textViewAuthor.setOnClickListener(this)
 		infoBinding.textViewSource.setOnClickListener(this)
 		viewBinding.imageViewCover.setOnClickListener(this)
 		viewBinding.textViewTitle.setOnClickListener(this)
@@ -148,6 +150,7 @@ class DetailsActivity :
 		viewBinding.textViewDescription.addOnLayoutChangeListener(this)
 		viewBinding.swipeRefreshLayout.setOnRefreshListener(this)
 		viewBinding.textViewDescription.viewTreeObserver.addOnDrawListener(this)
+		infoBinding.textViewAuthor.movementMethod = LinkMovementMethodCompat.getInstance()
 		viewBinding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
 		viewBinding.chipsTags.onChipClickListener = this
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
@@ -199,29 +202,23 @@ class DetailsActivity :
 
 	override fun onClick(v: View) {
 		when (v.id) {
-			R.id.textView_author -> {
-				val manga = viewModel.manga.value
-				val author = manga?.author ?: return
-				router.showAuthorDialog(author, manga.source)
-			}
-
 			R.id.textView_source -> {
-				val manga = viewModel.manga.value ?: return
+				val manga = viewModel.getMangaOrNull() ?: return
 				router.openList(manga.source, null, null)
 			}
 
 			R.id.textView_local -> {
-				val manga = viewModel.manga.value ?: return
+				val manga = viewModel.getMangaOrNull() ?: return
 				router.showLocalInfoDialog(manga)
 			}
 
 			R.id.chip_favorite -> {
-				val manga = viewModel.manga.value ?: return
+				val manga = viewModel.getMangaOrNull() ?: return
 				router.showFavoriteDialog(manga)
 			}
 
 			R.id.imageView_cover -> {
-				val manga = viewModel.manga.value ?: return
+				val manga = viewModel.getMangaOrNull() ?: return
 				router.openImage(
 					url = viewModel.coverUrl.value ?: return,
 					source = manga.source,
@@ -245,17 +242,17 @@ class DetailsActivity :
 			}
 
 			R.id.button_scrobbling_more -> {
-				val manga = viewModel.manga.value ?: return
+				val manga = viewModel.getMangaOrNull() ?: return
 				router.showScrobblingSelectorSheet(manga, null)
 			}
 
 			R.id.button_related_more -> {
-				val manga = viewModel.manga.value ?: return
+				val manga = viewModel.getMangaOrNull() ?: return
 				router.openRelated(manga)
 			}
 
 			R.id.textView_title -> {
-				val title = viewModel.manga.value?.title?.nullIfEmpty() ?: return
+				val title = viewModel.getMangaOrNull()?.title?.nullIfEmpty() ?: return
 				buildAlertDialog(this) {
 					setMessage(title)
 					setNegativeButton(R.string.close, null)
@@ -265,6 +262,10 @@ class DetailsActivity :
 				}.show()
 			}
 		}
+	}
+
+	override fun onAuthorClick(author: String) {
+		router.showAuthorDialog(author, viewModel.getMangaOrNull()?.source ?: return)
 	}
 
 	override fun onChipClick(chip: Chip, data: Any?) {
@@ -415,7 +416,7 @@ class DetailsActivity :
 				TextDrawable.compound(infoBinding.textViewTranslation, it)
 			}
 			infoBinding.textViewTranslationLabel.isVisible = infoBinding.textViewTranslation.isVisible
-			textViewAuthor.textAndVisible = manga.author
+			textViewAuthor.textAndVisible = manga.getAuthorsString()
 			textViewAuthorLabel.isVisible = textViewAuthor.isVisible
 			if (manga.hasRating) {
 				ratingBarRating.rating = manga.rating * ratingBarRating.numStars
@@ -535,6 +536,24 @@ class DetailsActivity :
 		}
 		val timeFormatted = time.formatShort(resources)
 		return getString(R.string.chapters_time_pattern, this, timeFormatted)
+	}
+
+	private fun Manga.getAuthorsString(): SpannedString? {
+		if (authors.isEmpty()) {
+			return null
+		}
+		return buildSpannedString {
+			authors.forEach { a ->
+				if (a.isNotEmpty()) {
+					if (isNotEmpty()) {
+						append(", ")
+					}
+					inSpans(AuthorSpan(this@DetailsActivity)) {
+						append(a)
+					}
+				}
+			}
+		}.nullIfEmpty()
 	}
 
 	private class PrefetchObserver(

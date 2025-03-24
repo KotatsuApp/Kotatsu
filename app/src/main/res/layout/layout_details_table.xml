@@ -64,11 +64,8 @@
 		android:id="@+id/textView_author"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginStart="12dp"
-		android:layout_marginEnd="12dp"
-		android:background="@drawable/custom_selectable_item_background"
-		android:padding="4dp"
-		android:singleLine="true"
+		android:layout_marginStart="16dp"
+		android:layout_marginEnd="16dp"
 		android:textAppearance="?textAppearanceBodyMedium"
 		app:layout_constrainedWidth="true"
 		app:layout_constraintBaseline_toBaselineOf="@id/textView_author_label"
@@ -87,7 +84,7 @@
 		android:text="@string/translation"
 		android:textAppearance="?textAppearanceTitleSmall"
 		app:layout_constraintStart_toStartOf="@id/card_details"
-		app:layout_constraintTop_toBottomOf="@id/textView_author_label" />
+		app:layout_constraintTop_toBottomOf="@id/textView_author" />
 
 	<TextView
 		android:id="@+id/textView_translation"

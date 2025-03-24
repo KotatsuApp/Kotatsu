@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.ext.contains
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
@@ -83,7 +84,7 @@ class SearchV2Helper @AssistedInject constructor(
 			}
 
 			SearchKind.AUTHOR -> retainAll { m ->
-				m.author.isNullOrEmpty() || m.author.equals(query, ignoreCase = true)
+				m.authors.isEmpty() || m.authors.contains(query, ignoreCase = true)
 			}
 
 			SearchKind.SIMPLE, // no filtering expected
@@ -99,7 +100,7 @@ class SearchV2Helper @AssistedInject constructor(
 			}
 
 			SearchKind.AUTHOR -> sortByDescending { m ->
-				m.author?.equals(query, ignoreCase = true) == true
+				m.authors.contains(query, ignoreCase = true)
 			}
 
 			SearchKind.TAG -> sortByDescending { m ->

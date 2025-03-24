@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.local.domain.model
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import org.koitharu.kotatsu.core.util.ext.contains
 import org.koitharu.kotatsu.core.util.ext.creationTime
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -26,8 +27,8 @@ data class LocalManga(
 
 	fun isMatchesQuery(query: String): Boolean {
 		return manga.title.contains(query, ignoreCase = true) ||
-			manga.altTitle?.contains(query, ignoreCase = true) == true ||
-			manga.author?.contains(query, ignoreCase = true) == true
+			manga.altTitles.contains(query, ignoreCase = true) ||
+			manga.authors.contains(query, ignoreCase = true)
 	}
 
 	fun containsTags(tags: Collection<String>): Boolean {
