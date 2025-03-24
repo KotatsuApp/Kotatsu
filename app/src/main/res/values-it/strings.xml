@@ -714,7 +714,7 @@
     <string name="telegram_group">Gruppo Telegram</string>
     <string name="screen_orientation">Orientamento schermo</string>
     <string name="chapters_all">Tutti</string>
-    <string name="save_manga_confirm">Salvare il manga selezionato? Potrebbe utilizzare traffico dati e spazio nella memoria interna.</string>
+    <string name="save_manga_confirm">Salvare il manga selezionato? Potrebbe utilizzare traffico dati e spazio nella memoria interna</string>
     <string name="error_not_image">Formato non valido: prevista un\'immagine ma ricevuto %s</string>
     <string name="download_added">Download aggiunto</string>
     <string name="more_options">Più opzioni</string>
