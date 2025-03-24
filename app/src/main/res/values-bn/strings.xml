@@ -13,8 +13,8 @@
     <string name="open_in_browser">ব্রাউজারে খুলুন</string>
     <string name="error_occurred">কিছু একটা সমস্যা হয়েছে</string>
     <string name="details">খুঁটিনাটি</string>
-    <string name="chapters">পর্ব সমূহ</string>
-    <string name="list">Liste</string>
+    <string name="chapters">অধ্যায়</string>
+    <string name="list">তালিকা</string>
     <string name="detailed_list">পুঙ্খানুপুঙ্খ তালিকা</string>
     <string name="grid">গ্রিড</string>
     <string name="settings">সেটিং সমূহ</string>
@@ -158,5 +158,22 @@
     <string name="zoom_mode_fit_width">Fit to width</string>
     <string name="zoom_mode_keep_start">Keep at start</string>
     <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d of %2$d on</string>
-    <string name="retry">Retry</string>
+    <string name="retry">পুনরায় চেষ্টা করুন</string>
+    <string name="color_theme">কালার স্কিম</string>
+    <string name="content_type_novel">উপন্যাস</string>
+    <string name="content_type_manhua">মানহুয়া</string>
+    <string name="prefetch_content">কন্টেন্ট প্রিলোড হচ্ছে</string>
+    <string name="mark_as_current">বর্তমান হিসেবে চিহ্নিত করুন</string>
+    <string name="compact">কম্প্যাক্ট</string>
+    <string name="show_in_grid_view">গ্রিড ভিউতে দেখান</string>
+    <string name="language">ভাষা</string>
+    <string name="share_logs">লগ শেয়ার করুন</string>
+    <string name="enable_logging">লগিং সক্ষম করুন</string>
+    <string name="show_suspicious_content">সন্দেহজনক কন্টেন্ট দেখান</string>
+    <string name="source_disabled">উৎস অক্ষম করা হয়েছে</string>
+    <string name="delete_old_backups">পুরনো ব্যাকআপ মুছে ফেলুন</string>
+    <string name="enable_logging_summary">ডিবাগের উদ্দেশ্যে কিছু অ্যাকশন রেকর্ড করুন। আপনি কী করছেন তা নিশ্চিত না হলে এটি চালু করবেন না</string>
+    <string name="theme_name_dynamic">ডাইনামিক</string>
+    <string name="theme_name_miku">মিকু</string>
+    <string name="data_not_restored">ডেটা পুনরুদ্ধার করা হয়নি</string>
 </resources>
