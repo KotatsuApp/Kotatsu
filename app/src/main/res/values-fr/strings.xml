@@ -797,4 +797,9 @@
     <string name="badges_in_lists">Badges dans les listes</string>
     <string name="no_write_permission_to_file">N\'a pas la permission d\'écrire un fichier</string>
     <string name="clear_browser_data">Effacer les données du navigateur</string>
+    <string name="clear_browser_data_summary">Efface les données du navigateur telles que le cache et les cookies. Avertissement : l\'autorisation sur les sources de mangas peut devenir invalide</string>
+    <string name="include_disabled_sources">Inclure les sources désactivées</string>
+    <string name="nsfw_16">16+</string>
+    <string name="exclude_nsfw_from_suggestions_summary">Les mangas pour adultes ne seront pas affichés dans les suggestions. Cette option peut fonctionner de manière inexacte avec certaines sources</string>
+    <string name="suggestions_disabled_sources_summary">Afficher les suggestions de toutes les sources de mangas, y compris celles désactivées</string>
 </resources>
