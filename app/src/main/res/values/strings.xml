@@ -295,7 +295,7 @@
 	<string name="no_manga_sources">No manga sources</string>
 	<string name="no_manga_sources_text">Enable manga sources to read manga online</string>
 	<string name="random">Random</string>
-	<string name="categories_delete_confirm">Are you sure you want to delete the selected favorite categories?\nAll manga in it will be lost and this cannot be undone.</string>
+	<string name="categories_delete_confirm">Are you sure you want to delete the selected favourite categories?\nAll manga in it will be lost and this cannot be undone.</string>
 	<string name="reorder">Reorder</string>
 	<string name="empty">Empty</string>
 	<string name="explore">Explore</string>
@@ -603,7 +603,7 @@
 	<string name="pages_read_s">Pages read: %s</string>
 	<string name="alternatives">Alternatives</string>
 	<string name="migrate">Migrate</string>
-	<string name="migrate_confirmation">Manga \"%1$s\" from \"%2$s\" will be replaced with \"%3$s\" from \"%4$s\" in your history and favorites (if present)</string>
+	<string name="migrate_confirmation">Manga \"%1$s\" from \"%2$s\" will be replaced with \"%3$s\" from \"%4$s\" in your history and favourites (if present)</string>
 	<string name="manga_migration">Manga migration</string>
 	<string name="migration_completed">Migration completed</string>
 	<string name="delete_read_chapters">Delete read chapters</string>
@@ -689,7 +689,7 @@
 	<string name="sfw">SFW</string>
 	<string name="skip_all">Skip all</string>
 	<string name="stuck">Stuck</string>
-	<string name="not_in_favorites">Not in favoites</string>
+	<string name="not_in_favorites">Not in favourites</string>
 	<string name="updated_long_ago">Updated long ago</string>
 	<string name="unpopular">Unpopular</string>
 	<string name="low_rating">Low rating</string>
