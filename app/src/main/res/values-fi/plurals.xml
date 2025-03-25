@@ -24,4 +24,8 @@
         <item quantity="one">%1$d päivä sitten</item>
         <item quantity="other">%1$d päivää sitten</item>
     </plurals>
+    <plurals name="months_ago">
+        <item quantity="one">%1$d kuukausi sitten</item>
+        <item quantity="other">%1$d kuukausia sitten</item>
+    </plurals>
 </resources>

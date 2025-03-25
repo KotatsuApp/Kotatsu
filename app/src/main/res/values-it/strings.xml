@@ -714,7 +714,7 @@
     <string name="telegram_group">Gruppo Telegram</string>
     <string name="screen_orientation">Orientamento schermo</string>
     <string name="chapters_all">Tutti</string>
-    <string name="save_manga_confirm">Salvare il manga selezionato? Potrebbe utilizzare traffico dati e spazio nella memoria interna.</string>
+    <string name="save_manga_confirm">Salvare il manga selezionato? Potrebbe utilizzare traffico dati e spazio nella memoria interna</string>
     <string name="error_not_image">Formato non valido: prevista un\'immagine ma ricevuto %s</string>
     <string name="download_added">Download aggiunto</string>
     <string name="more_options">Più opzioni</string>
@@ -801,4 +801,8 @@
     <string name="clear_browser_data_summary">Pulisci i dati del browser, come la cache e i cookie. Attenzione: l\'autorizzazione nelle fonti manga potrebbe diventare non valida</string>
     <string name="clear_browser_data">Pulisci dati del browser</string>
     <string name="no_write_permission_to_file">Non ha l\'autorizzazione a scrivere un file</string>
+    <string name="nsfw_16">16+</string>
+    <string name="include_disabled_sources">Includi fonti disabilitate</string>
+    <string name="suggestions_disabled_sources_summary">Mostra suggerimenti da tutte le fonti manga, incluse quelle disabilite</string>
+    <string name="exclude_nsfw_from_suggestions_summary">I manga per adulti non verranno mostrati nei suggerimenti. Questa opzione potrebbe non funzionare accuratamente con alcune fonti</string>
 </resources>
