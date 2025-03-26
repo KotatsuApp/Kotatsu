@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.view.MenuProvider
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import leakcanary.LeakCanary
 import org.koitharu.kotatsu.KotatsuApp
 import org.koitharu.kotatsu.R
@@ -24,6 +25,7 @@ class SettingsMenuProvider(
 	override fun onPrepareMenu(menu: Menu) {
 		super.onPrepareMenu(menu)
 		menu.findItem(R.id.action_leakcanary).isChecked = application.isLeakCanaryEnabled
+		menu.findItem(R.id.action_ssiv_debug).isChecked = SubsamplingScaleImageView.isDebug
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
@@ -41,6 +43,13 @@ class SettingsMenuProvider(
 			val checked = !menuItem.isChecked
 			menuItem.isChecked = checked
 			application.isLeakCanaryEnabled = checked
+			true
+		}
+
+		R.id.action_ssiv_debug -> {
+			val checked = !menuItem.isChecked
+			menuItem.isChecked = checked
+			SubsamplingScaleImageView.isDebug = checked
 			true
 		}
 
