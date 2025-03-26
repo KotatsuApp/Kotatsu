@@ -301,7 +301,6 @@ class DetailsActivity :
 		oldBottom: Int
 	) {
 		with(viewBinding) {
-			buttonDescriptionMore.isVisible = textViewDescription.isTextTruncated
 			containerBottomSheet?.let { sheet ->
 				val peekHeight = BottomSheetBehavior.from(sheet).peekHeight
 				if (scrollView.paddingBottom != peekHeight) {

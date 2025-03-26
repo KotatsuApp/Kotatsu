@@ -47,7 +47,9 @@
 				android:id="@+id/split_button_read"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_gravity="end|center_vertical">
+				android:layout_gravity="end|center_vertical"
+				android:paddingTop="0dp"
+				android:paddingBottom="0dp">
 
 				<Button
 					android:id="@+id/button_read"
