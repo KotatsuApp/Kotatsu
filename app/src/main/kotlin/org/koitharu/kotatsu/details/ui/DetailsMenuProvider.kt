@@ -69,7 +69,7 @@ class DetailsMenuProvider(
 			}
 
 			R.id.action_online -> {
-				router.openDetails(manga)
+				router.openDetails(viewModel.remoteManga.value ?: return false)
 			}
 
 			R.id.action_related -> {
