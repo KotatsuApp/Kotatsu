@@ -139,7 +139,7 @@
     <string name="search_results">搜索结果</string>
     <string name="new_version_s">新版本：%s</string>
     <string name="clear_updates_feed">清除漫画更新记录</string>
-    <string name="updates_feed_cleared">更新记录已清除</string>
+    <string name="updates_feed_cleared">清除完毕</string>
     <string name="rotate_screen">旋转屏幕</string>
     <string name="update">开始更新</string>
     <string name="feed_will_update_soon">即将开始更新漫画</string>
@@ -773,7 +773,7 @@
     <string name="enable_all_sources">开启所有漫画图源</string>
     <string name="all_sources_enabled">已启动所有漫画图源</string>
     <string name="enable_all_sources_summary">所有图源将会被启动</string>
-    <string name="reader_info_bar_transparent">顶部信息栏透明</string>
+    <string name="reader_info_bar_transparent">透明阅读状态栏</string>
     <string name="restoring_backup">正在恢复备份</string>
     <string name="backup_restored_background">将在后台恢复备份</string>
     <string name="pages_slider">页面切换滑动条</string>
@@ -800,4 +800,5 @@
     <string name="exclude_nsfw_from_suggestions_summary">搜索建议中将不会出现成人漫画，此选项可能对某些图源不生效</string>
     <string name="include_disabled_sources">包括已关闭图源</string>
     <string name="suggestions_disabled_sources_summary">在搜索建议中显示所有图源，包括已关闭图源</string>
+    <string name="simple">默认</string>
 </resources>
