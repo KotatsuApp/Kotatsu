@@ -318,8 +318,7 @@
     <string name="status_reading">Nagbabasa</string>
     <string name="pages_cache">Cache ng mga pahina</string>
     <string name="bookmarks">Mga bookmark</string>
-    <string name="categories_delete_confirm">Sigurado ka bang gusto mong tanggalin ang mga napiling paboritong kategorya\?
-\nAng lahat ng manga sa loob nito ay mawawala at hindi na ito mababawi.</string>
+    <string name="categories_delete_confirm">Sigurado ka bang gusto mong tanggalin ang mga napiling paboritong kategorya? \nAng lahat ng manga sa loob nito ay mawawala at hindi na ito mababawi.</string>
     <string name="bookmark_added">Idinagdag ang bookmark</string>
     <string name="detect_reader_mode_summary">Awtomatikong matukoy kung ang manga ay webtoon</string>
     <string name="disable_battery_optimization">Di paganahin ang pag-optimize ng baterya</string>

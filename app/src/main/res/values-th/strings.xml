@@ -344,8 +344,7 @@
     <string name="no_manga_sources">ไม่พบแหล่งมังงะ</string>
     <string name="frequency_twice_per_month">สองครั้งต่อเดือน</string>
     <string name="keep_screen_on">เปิดหน้าจอไว้ตลอด</string>
-    <string name="categories_delete_confirm">คุณแน่ใจหรือไม่ว่าต้องการลบหมวดหมู่รายการโปรดที่เลือก
-\nมังงะทั้งหมดในนั้นจะหายไปและไม่สามารถยกเลิกได้</string>
+    <string name="categories_delete_confirm">คุณแน่ใจหรือไม่ว่าต้องการลบหมวดหมู่รายการโปรดที่เลือก \nมังงะทั้งหมดในนั้นจะหายไปและไม่สามารถยกเลิกได้</string>
     <string name="frequency_once_per_month">เดือนละครั้ง</string>
     <string name="no_manga_sources_text">เปิดใช้งานแหล่งมังงะเพื่ออ่านมังงะออนไลน์</string>
     <string name="enhanced_colors">โหมดสี 32 บิต</string>

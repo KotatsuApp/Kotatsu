@@ -343,8 +343,7 @@
     <string name="error_search_not_supported">Овај извор манге не подржава претрагу</string>
     <string name="suggestions_wifi_only_summary">Немој ажурирати предлоге користећи ограничене мрежне везе</string>
     <string name="webtoon_zoom_summary">Дозволи покрете увећања у webtoon режиму</string>
-    <string name="categories_delete_confirm">Да ли сте сигуран да желиш да избришеш изабране омиљене категорије?
-\nСва манга у њој ће бити изгубљена и ово се не може поништити.</string>
+    <string name="categories_delete_confirm">Да ли сте сигуран да желиш да избришеш изабране омиљене категорије? \nСва манга у њој ће бити изгубљена и ово се не може поништити.</string>
     <string name="frequency_once_per_month">Једном месечно</string>
     <string name="logged_in_as">Пријављен као %s</string>
     <string name="suggestions_info">Сви подаци се анализирају само локално на овом уређају и никада се нигде не шаљу.</string>

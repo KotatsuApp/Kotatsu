@@ -151,8 +151,7 @@
     <string name="report">Báo cáo</string>
     <string name="show_reading_indicators">Hiển thị thanh tiến độ đọc</string>
     <string name="no_bookmarks_yet">Chưa có đánh dấu nào</string>
-    <string name="categories_delete_confirm">Bạn có chắc muốn xoá danh mục yêu thích đã chọn không\?
-\nToàn bộ truyện trong mục sẽ bị mất và không thể khôi phục.</string>
+    <string name="categories_delete_confirm">Bạn có chắc muốn xoá danh mục yêu thích đã chọn không? \nToàn bộ truyện trong mục sẽ bị mất và không thể khôi phục.</string>
     <string name="bookmarks_removed">Đã xóa dấu trang</string>
     <string name="no_manga_sources">Không có nguồn truyện nào</string>
     <string name="exit_confirmation">Xác nhận thoát</string>

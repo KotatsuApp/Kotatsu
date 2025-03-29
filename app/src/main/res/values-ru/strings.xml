@@ -298,8 +298,7 @@
     <string name="canceled">Отменено</string>
     <string name="clear_all_history">Очистить всю историю</string>
     <string name="last_2_hours">Последние 2 часа</string>
-    <string name="categories_delete_confirm">Вы уверены, что хотите удалить выбранные категории избранного\?
-\nВся манга в них будет потеряна и это не может быть отменено.</string>
+    <string name="categories_delete_confirm">Вы уверены, что хотите удалить выбранные категории избранного? \nВся манга в них будет потеряна и это не может быть отменено.</string>
     <string name="pages_cache">Кэш страниц</string>
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="storage_usage">Использование хранилища</string>

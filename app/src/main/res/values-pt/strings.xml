@@ -264,8 +264,7 @@
     <string name="show_all">Mostrar tudo</string>
     <string name="clear_all_history">Apagar todo o histórico</string>
     <string name="last_2_hours">Últimas 2 horas</string>
-    <string name="categories_delete_confirm">Tem certeza de que deseja excluir as categorias favoritas selecionadas\?
-\nTodos os mangás serão perdidos e isso não poderá ser desfeito.</string>
+    <string name="categories_delete_confirm">Tem certeza de que deseja excluir as categorias favoritas selecionadas? \nTodos os mangás serão perdidos e isso não poderá ser desfeito.</string>
     <string name="reorder">Reorganizar</string>
     <string name="empty">Vazio</string>
     <string name="explore">Explorar</string>

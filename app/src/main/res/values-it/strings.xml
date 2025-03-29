@@ -328,8 +328,7 @@
     <string name="history_shortcuts">Mostra i collegamenti ai manga recenti</string>
     <string name="reader_control_ltr">Controllo ergonomico del lettore</string>
     <string name="brightness">Luminosità</string>
-    <string name="categories_delete_confirm">Sei sicuro/a di voler eliminare le categorie preferite selezionate\?
-\n Tutti i manga in esso contenuti andranno persi e questo non può essere annullato.</string>
+    <string name="categories_delete_confirm">Sei sicuro/a di voler eliminare le categorie preferite selezionate? \n Tutti i manga in esso contenuti andranno persi e questo non può essere annullato.</string>
     <string name="history_shortcuts_summary">Rendere disponibili i manga recenti premendo a lungo sull\'icona dell\'applicazione</string>
     <string name="reader_info_bar">Mostra la barra delle informazioni nel lettore</string>
     <string name="manga_error_description_pattern">Dettagli dell\'errore:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Prova ad &lt;a href=%2$s&gt;aprire il manga in un browser web&lt;/a&gt; per assicurarsi che sia disponibile sulla sua fonte&lt;br&gt;2. Controllare di stare usando la &lt;a href=kotatsu://about&gt;versione più recente di Kotatsu&lt;/a&gt;&lt;br&gt;3. Se è disponibile, inviare una segnalazione di errore agli sviluppatori.</string>

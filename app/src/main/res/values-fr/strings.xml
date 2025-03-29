@@ -271,7 +271,7 @@
     <string name="not_found_404">Contenu non trouvé ou supprimé</string>
     <string name="manga_error_description_pattern">Détails de l\'erreur:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Essayez d\'&lt;a href=%2$s&gt;ouvrir le manga dans un navigateur web&lt;/a&gt; pour vous assurer qu\'il est disponible sur sa source&lt;br&gt;2. Assurez-vous que vous utilisez la &lt;a href=kotatsu://about&gt;dernière version de Kotatsu&lt;/a&gt;&lt;br&gt;3. Si elle est disponible, envoyez un rapport d\'erreur aux développeurs.</string>
     <string name="confirm_exit">Appuyez à nouveau sur Retour pour quitter</string>
-    <string name="categories_delete_confirm">Êtes-vous sûr(e) de vouloir supprimer les catégories de favoris sélectionnées ?\nTous les mangas qui s\'y trouvent seront perdus et ceci ne peut pas être annulé.</string>
+    <string name="categories_delete_confirm">Êtes-vous sûr(e) de vouloir supprimer les catégories de favoris sélectionnées ?\nTous les mangas qui s\'y trouvent seront perdus et ceci ne peut pas être annulé.</string>
     <string name="exit_confirmation_summary">Appuyez deux fois sur la touche Retour pour quitter l\'appli</string>
     <string name="available">Disponible</string>
     <string name="exit_confirmation">Confirmation de sortie</string>

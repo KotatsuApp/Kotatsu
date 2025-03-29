@@ -229,8 +229,7 @@
     <string name="no_manga_sources">Nema izvora mange</string>
     <string name="no_manga_sources_text">Omogućite izvore mange za čitanje mange na mreži</string>
     <string name="random">Nasumično</string>
-    <string name="categories_delete_confirm">Jeste li sigurni da želite izbrisati odabrane omiljene kategorije?
-\nSve mange u njoj bit će izgubljene i to se ne može poništiti.</string>
+    <string name="categories_delete_confirm">Jeste li sigurni da želite izbrisati odabrane omiljene kategorije? \nSve mange u njoj bit će izgubljene i to se ne može poništiti.</string>
     <string name="reader_info_pattern">Poglavlje %1$d/%2$d Stranica %3$d/%4$d</string>
     <string name="reader_info_bar">Prikaži informacijsku traku u čitaču</string>
     <string name="comics_archive">Arhiva stripova</string>

@@ -310,8 +310,7 @@
     <string name="clear_cookies_summary">Może pomóc w przypadku niektórych problemów. Wszystkie autoryzacje zostaną unieważnione</string>
     <string name="no_manga_sources">Brak źródeł mang</string>
     <string name="no_manga_sources_text">Włącz źródła mang do czytania mang online</string>
-    <string name="categories_delete_confirm">Czy na pewno chcesz usunąć wybrane ulubione kategorie\?
-\nWszystkie w nich mangi zostaną usunięte i nie będzie można tego cofnąć.</string>
+    <string name="categories_delete_confirm">Czy na pewno chcesz usunąć wybrane ulubione kategorie? \nWszystkie w nich mangi zostaną usunięte i nie będzie można tego cofnąć.</string>
     <string name="confirm_exit">Naciśnij ponownie Wstecz, aby wyjść</string>
     <string name="exit_confirmation_summary">Naciśnij dwukrotnie przycisk Wstecz, aby wyjść z aplikacji</string>
     <string name="not_found_404">Treść nie została znaleziona lub została usunięta</string>

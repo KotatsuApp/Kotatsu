@@ -283,8 +283,7 @@
     <string name="no_manga_sources">暂无图源</string>
     <string name="no_manga_sources_text">开启一个图源即可在线阅读漫画</string>
     <string name="random">随机</string>
-    <string name="categories_delete_confirm">确定删除选中分类？
-\n该分类中的所有漫画将丢失且无法恢复。</string>
+    <string name="categories_delete_confirm">确定删除选中分类？ \n该分类中的所有漫画将丢失且无法恢复。</string>
     <string name="reorder">重新排序</string>
     <string name="empty">分类为空</string>
     <string name="explore">浏览</string>

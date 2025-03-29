@@ -221,8 +221,7 @@
     <string name="bookmarks_removed">Záložky odstraněny</string>
     <string name="no_manga_sources">Žádné zdroje mang</string>
     <string name="no_manga_sources_text">Zapnout zdroje mang pro čtení online</string>
-    <string name="categories_delete_confirm">Jste si jisti že chcete smazat zvolené oblíbené kategorie\?
-\nVšechny mangy v ní budou ztraceny a nelze jej vrátit zpět.</string>
+    <string name="categories_delete_confirm">Jste si jisti že chcete smazat zvolené oblíbené kategorie? \nVšechny mangy v ní budou ztraceny a nelze jej vrátit zpět.</string>
     <string name="reorder">Přeskupit</string>
     <string name="empty">Prázdné</string>
     <string name="explore">Prozkoumat</string>
