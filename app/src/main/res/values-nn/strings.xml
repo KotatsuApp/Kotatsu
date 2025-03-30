@@ -283,8 +283,7 @@
     <string name="show_reading_indicators">Vis leseframgang</string>
     <string name="appwidget_shelf_description">Mangaar du likar</string>
     <string name="exclude_nsfw_from_history_summary">Mangaar merkte med vakse innhald vert ikkje lagde til i historikken din, og framgangen din vert ikkje spart</string>
-    <string name="categories_delete_confirm">Slett dei valde hopane\?
-\nDu kan ikkje angre. Alle mangaane inni vert tekne ut av likerlista.</string>
+    <string name="categories_delete_confirm">Slett dei valde hopane? \nDu kan ikkje angre. Alle mangaane inni vert tekne ut av likerlista.</string>
     <string name="options">Oppsett</string>
     <string name="last_2_hours">Dei siste to timane</string>
     <string name="manage">Handsam</string>

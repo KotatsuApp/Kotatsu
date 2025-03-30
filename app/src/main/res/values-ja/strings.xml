@@ -271,8 +271,7 @@
     <string name="not_found_404">コンテンツが見つからない、または削除された</string>
     <string name="manage">管理</string>
     <string name="random">ランダム</string>
-    <string name="categories_delete_confirm">選択したお気に入りカテゴリを本当に削除してもよいですか？
-\nその中にあるマンガはすべて失われ、元に戻すことはできません。</string>
+    <string name="categories_delete_confirm">選択したお気に入りカテゴリを本当に削除してもよいですか？ \nその中にあるマンガはすべて失われ、元に戻すことはできません。</string>
     <string name="empty">空</string>
     <string name="explore">探索</string>
     <string name="exit_confirmation_summary">アプリを終了するには、戻るを2回押してください</string>

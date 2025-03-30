@@ -293,8 +293,7 @@
     <string name="exit_confirmation">Çıkış doğrulaması</string>
     <string name="comics_archive">Çizgi roman arşivi</string>
     <string name="manga_error_description_pattern">Hata ayrıntıları:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Kaynağında bulunduğundan emin olmak için &lt;a href=%2$s&gt;mangayı bir web tarayıcısında açmayı&lt;/a&gt; deneyin&lt;br&gt;2. &lt;a href=kotatsu://about&gt;Kotatsu\'nun en son sürümünü&lt;/a&gt;&lt;br&gt;3 kullandığınızdan emin olun. Varsa, geliştiricilere bir hata raporu gönderin.</string>
-    <string name="categories_delete_confirm">Seçilen favori kategorileri silmek istediğinizden emin misiniz\?
-\nİçindeki tüm mangalar kaybolur ve bu işlem geri alınamaz.</string>
+    <string name="categories_delete_confirm">Seçilen favori kategorileri silmek istediğinizden emin misiniz? \nİçindeki tüm mangalar kaybolur ve bu işlem geri alınamaz.</string>
     <string name="reorder">Yeniden sırala</string>
     <string name="pages_cache">Sayfa önbelleği</string>
     <string name="other_cache">Diğer önbellekler</string>

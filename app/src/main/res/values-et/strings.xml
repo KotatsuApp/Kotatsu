@@ -210,8 +210,7 @@
     <string name="text_file_not_supported">Vali kas ZIP või CBZ fail.</string>
     <string name="download">Lae alla</string>
     <string name="chapter_is_missing">See peatükk puudub</string>
-    <string name="categories_delete_confirm">Kas sa oled kindel, et tahad kustutada valitud lemmikud kategooriad?
-\nKõik manga nende sees kaob ja seda tagasi ei saa.</string>
+    <string name="categories_delete_confirm">Kas sa oled kindel, et tahad kustutada valitud lemmikud kategooriad? \nKõik manga nende sees kaob ja seda tagasi ei saa.</string>
     <string name="logged_in_as">Logitud sisse kui %s</string>
     <string name="suggestions_info">Kõik andmed analüüsitakse ainult lokaalselt selles seadmes ja neid ei saadeta kunagi kuhugi.</string>
     <string name="reader_info_pattern">Pt. %1$d/%2$d Lk. %3$d/%4$d</string>

@@ -269,8 +269,7 @@
     <string name="no_bookmarks_summary">만화를 읽는 도중 북마크를 추가할 수 있습니다</string>
     <string name="bookmarks_removed">북마크 제거됨</string>
     <string name="no_manga_sources_text">만화를 읽기 위해 만화 소스 사이트를 활성화 하세요</string>
-    <string name="categories_delete_confirm">정말 선택된 즐겨 찾는 카테고리를 삭제하시겠습니까\?
-\n해당 카테고리의 모든 만화가 손실되며 취소할 수 없습니다.</string>
+    <string name="categories_delete_confirm">정말 선택된 즐겨 찾는 카테고리를 삭제하시겠습니까? \n해당 카테고리의 모든 만화가 손실되며 취소할 수 없습니다.</string>
     <string name="empty">비어있음</string>
     <string name="confirm_exit">뒤로가기 버튼을 다시 눌러 나가기</string>
     <string name="exit_confirmation_summary">뒤로가기 버튼을 두 번 눌러 앱을 종료할 수 있습니다</string>

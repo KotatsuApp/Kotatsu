@@ -14,8 +14,8 @@
     <string name="close">Đóng</string>
     <string name="nothing_found">Không tìm thấy kết quả</string>
     <string name="history_is_empty">Chưa có lịch sử</string>
-    <string name="you_have_not_favourites_yet">Chưa có truyện yêu thích nào</string>
-    <string name="add_to_favourites">Thêm vào yêu thích</string>
+    <string name="you_have_not_favourites_yet">Chưa có mục yêu thích nào</string>
+    <string name="add_to_favourites">Thêm vào mục yêu thích</string>
     <string name="add">Thêm</string>
     <string name="create_shortcut">Tạo lối tắt…</string>
     <string name="share_s">Chia sẻ %s</string>
@@ -93,7 +93,7 @@
     <string name="black_dark_theme">Nền đen</string>
     <string name="backup_restore">Sao lưu và khôi phục</string>
     <string name="preparing_">Đang chuẩn bị…</string>
-    <string name="backup_information">Bạn có thể tạo bản sao lưu lịch sử, danh sách yêu thích và khôi phục nó</string>
+    <string name="backup_information">Bạn có thể tạo bản sao lưu lịch sử, danh mục yêu thích và khôi phục nó sau này</string>
     <string name="just_now">Mới đây</string>
     <string name="yesterday">Hôm qua</string>
     <string name="reader_mode_hint">Cài đặt được chọn sẽ chỉ lưu lại cho truyện này</string>
@@ -151,8 +151,7 @@
     <string name="report">Báo cáo</string>
     <string name="show_reading_indicators">Hiển thị thanh tiến độ đọc</string>
     <string name="no_bookmarks_yet">Chưa có đánh dấu nào</string>
-    <string name="categories_delete_confirm">Bạn có chắc muốn xoá danh mục yêu thích đã chọn không\?
-\nToàn bộ truyện trong mục sẽ bị mất và không thể khôi phục.</string>
+    <string name="categories_delete_confirm">Bạn có chắc muốn xoá danh mục yêu thích đã chọn không? \nToàn bộ truyện trong mục sẽ bị mất và không thể khôi phục.</string>
     <string name="bookmarks_removed">Đã xóa dấu trang</string>
     <string name="no_manga_sources">Không có nguồn truyện nào</string>
     <string name="exit_confirmation">Xác nhận thoát</string>
@@ -201,7 +200,7 @@
     <string name="recent_manga">Gần đây</string>
     <string name="screenshots_allow">Cho phép</string>
     <string name="suggestions_info">Tất cả dữ liệu chỉ được phân tích cục bộ trên thiết bị này và không bao giờ gửi đi nơi nào khác.</string>
-    <string name="all_favourites">Tất cả truyện yêu thích</string>
+    <string name="all_favourites">Tất cả danh mục yêu thích</string>
     <string name="new_version_s">Phiên bản mới: %s</string>
     <string name="clear_updates_feed">Xoá danh sách cập nhật</string>
     <string name="updates_feed_cleared">Đã xoá</string>
@@ -257,8 +256,8 @@
     <string name="screenshots_block_nsfw">Chặn trên các truyện NSFW</string>
     <string name="name">Tên</string>
     <string name="edit_category">Chỉnh sửa danh sách</string>
-    <string name="show_reading_indicators_summary">Hiện phần trăm đã đọc trong lịch sử và yêu thích</string>
-    <string name="empty_favourite_categories">Không có mục yêu thích nào</string>
+    <string name="show_reading_indicators_summary">Hiện phần trăm đã đọc trong lịch sử và danh mục yêu thích</string>
+    <string name="empty_favourite_categories">Không có danh mục yêu thích nào</string>
     <string name="bookmark_remove">Xoá đánh dấu trang</string>
     <string name="bookmark_removed">Đánh dấu đã được xoá</string>
     <string name="saved_manga">Truyện đã lưu</string>
@@ -292,14 +291,14 @@
     <string name="crash_text">Có gì đó không đúng. Vui lòng gửi một báo cáo lỗi cho các nhà phát triển để giúp chúng tôi sửa nó.</string>
     <string name="status_on_hold">Tạm ngưng</string>
     <string name="status_dropped">Đã ngưng</string>
-    <string name="appwidget_shelf_description">Truyện từ các mục yêu thích của bạn</string>
+    <string name="appwidget_shelf_description">Manga từ các mục yêu thích của bạn</string>
     <string name="disable_all">Tắt tất cả</string>
     <string name="status_completed">Đã hoàn thành</string>
     <string name="clear_cookies_summary">Có thể giúp ích trong trường hợp có vấn đề. Mọi uỷ quyền sẽ bị vô hiệu hoá</string>
     <string name="manage">Quản lý</string>
     <string name="use_fingerprint">Sử dụng vân tay / sinh trắc học (nếu có)</string>
     <string name="data_deletion">Xoá dữ liệu</string>
-    <string name="removed_from_favourites">Đã xoá khỏi yêu thích</string>
+    <string name="removed_from_favourites">Đã xoá khỏi danh mục yêu thích</string>
     <string name="error_no_space_left">Không đủ dung lượng lưu trữ trên thiết bị</string>
     <string name="options">Tuỳ chọn</string>
     <string name="not_found_404">Nội dung không khả dụng hoặc đã bị loại bỏ</string>
@@ -799,4 +798,8 @@
     <string name="clear_browser_data">Xóa dữ liệu của trình duyệt</string>
     <string name="clear_browser_data_summary">Điều này sẽ xóa những dữ liệu như cache và cookies. Lưu ý: Xác thực (đăng nhập) đối với nguồn đọc có thể sẽ không còn hợp lệ nữa</string>
     <string name="no_write_permission_to_file">Không có quyền để ghi một tệp tin mới</string>
+    <string name="exclude_nsfw_from_suggestions_summary">Gợi ý về manga người lớn sẽ được ẩn đi. Tùy chọn này có thể không hoạt động chuẩn với một số nguồn</string>
+    <string name="include_disabled_sources">Bao gồm các nguồn đã bị vô hiệu hoá</string>
+    <string name="suggestions_disabled_sources_summary">Hiện gợi ý từ tất cả các nguồn đọc, bao gồm cả những nguồn đã bị vô hiệu hoá</string>
+    <string name="nsfw_16">16+</string>
 </resources>

@@ -368,8 +368,7 @@
     <string name="show_reading_indicators_summary">A haladás (százalékosan) megjelenítése az előzményekben és kedvencekben</string>
     <string name="exclude_nsfw_from_history_summary">A NSFW jelzésű mangák soha nem kerülnek hozzáadásra az előzményekhez, és a haladásod nem lesz mentve</string>
     <string name="clear_cookies_summary">Segíthet néhány probléma esetén. Minden hitelesítés érvényét veszti</string>
-    <string name="categories_delete_confirm">Biztosan törölni szeretnéd a kiválasztott kedvenc kategóriákat?
-\nMinden mangája elveszik, és ez nem visszavonható.</string>
+    <string name="categories_delete_confirm">Biztosan törölni szeretnéd a kiválasztott kedvenc kategóriákat? \nMinden mangája elveszik, és ez nem visszavonható.</string>
     <string name="history_shortcuts">Aktuális manga hivatkozásai megjelenítése</string>
     <string name="history_shortcuts_summary">Tedd elérhetővé a legújabb mangákat az alkalmazás ikonjának hosszú megnyomásával</string>
     <string name="network_unavailable_hint">Kapcsold be a Wi-Fi-t vagy a mobilhálózatot, hogy online olvashass mangát</string>

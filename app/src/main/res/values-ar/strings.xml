@@ -320,8 +320,7 @@
     <string name="no_chapters">لا توجد فصول</string>
     <string name="allow_unstable_updates">السماح بالتحديثات غير مستقرة</string>
     <string name="allow_unstable_updates_summary">تلقي إشعارات حول الإصدارات الغير مستقرة</string>
-    <string name="categories_delete_confirm">هل أنت متأكد أنك تريد حذف قوائم المُفضلة المحددة
-\n؟ سيتم فقدان جميع المانجا فيها ولا يمكن التراجع عن هذا.</string>
+    <string name="categories_delete_confirm">هل أنت متأكد أنك تريد حذف قوائم المُفضلة المحددة \n؟ سيتم فقدان جميع المانجا فيها ولا يمكن التراجع عن هذا.</string>
     <string name="pages_cache">بيانات التخزين المؤقت للصفحات</string>
     <string name="not_found_404">المحتوى غير موجود أو تمت إزالته</string>
     <string name="comics_archive_import_description">يمكنك اختيار ملف أو أكثر بتنسيق cbz أو zip ، سيتم التعرف على كل ملف على أنه مانغا منفصلة.</string>
