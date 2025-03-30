@@ -39,6 +39,12 @@
 		android:title="@string/disable_nsfw" />
 
 	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="tags_warnings"
+		android:summary="@string/tags_warnings_summary"
+		android:title="@string/tags_warnings" />
+
+	<SwitchPreferenceCompat
 		android:key="handle_links"
 		android:persistent="false"
 		android:summary="@string/handle_links_summary"

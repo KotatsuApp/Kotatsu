@@ -140,7 +140,7 @@ class MangaListMapper @Inject constructor(
 
 	@ColorRes
 	private fun getTagTint(tag: MangaTag): Int {
-		return if (tag.title.lowercase() in dict) {
+		return if (settings.isTagsWarningsEnabled && tag.title.lowercase() in dict) {
 			R.color.warning
 		} else {
 			0
@@ -148,7 +148,7 @@ class MangaListMapper @Inject constructor(
 	}
 
 	private fun readTagsDict(context: Context): ScatterSet<String> =
-		context.resources.openRawResource(R.raw.tags_redlist).use {
+		context.resources.openRawResource(R.raw.tags_warnlist).use {
 			val set = MutableScatterSet<String>()
 			it.bufferedReader().forEachLine { x ->
 				val line = x.trim()
