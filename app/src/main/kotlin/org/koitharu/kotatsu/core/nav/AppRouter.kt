@@ -589,8 +589,11 @@ class AppRouter private constructor(
 	/** Private utils **/
 
 	private fun startActivity(intent: Intent, options: Bundle? = null) {
-		fragment?.startActivity(intent, options)
-			?: activity?.startActivity(intent, options)
+		fragment?.also {
+			if (it.host != null) {
+				it.startActivity(intent, options)
+			}
+		} ?: activity?.startActivity(intent, options)
 	}
 
 	private fun startActivitySafe(intent: Intent): Boolean = try {
