@@ -27,7 +27,7 @@ import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ItemEmptyHintBinding
 import org.koitharu.kotatsu.databinding.ItemSourceCatalogBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 fun sourceCatalogItemSourceAD(
 	coil: ImageLoader,
@@ -46,7 +46,7 @@ fun sourceCatalogItemSourceAD(
 		listener.onItemClick(item, v)
 	}
 	val basePadding = context.getThemeDimensionPixelOffset(
-		materialR.attr.listPreferredItemPaddingEnd,
+		appcompatR.attr.listPreferredItemPaddingEnd,
 		binding.root.paddingStart,
 	)
 	binding.root.updatePaddingRelative(

@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import androidx.appcompat.R as appcompatR
 import com.google.android.material.R as materialR
 
 class DownloadsSelectionDecoration(context: Context) : AbstractSelectionItemDecoration() {
@@ -23,7 +24,7 @@ class DownloadsSelectionDecoration(context: Context) : AbstractSelectionItemDeco
 	private val checkIcon = ContextCompat.getDrawable(context, materialR.drawable.ic_mtrl_checked_circle)
 	private val iconOffset = context.resources.getDimensionPixelOffset(R.dimen.card_indicator_offset)
 	private val iconSize = context.resources.getDimensionPixelOffset(R.dimen.card_indicator_size)
-	private val strokeColor = context.getThemeColor(materialR.attr.colorPrimary, Color.RED)
+	private val strokeColor = context.getThemeColor(appcompatR.attr.colorPrimary, Color.RED)
 	private val fillColor = ColorUtils.setAlphaComponent(
 		ColorUtils.blendARGB(strokeColor, context.getThemeColor(materialR.attr.colorSurface), 0.8f),
 		0x74,

@@ -27,7 +27,7 @@ import org.koitharu.kotatsu.databinding.ActivityReaderTapActionsBinding
 import org.koitharu.kotatsu.reader.domain.TapGridArea
 import org.koitharu.kotatsu.reader.ui.tapgrid.TapAction
 import java.util.EnumMap
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding>(), View.OnClickListener,
@@ -157,7 +157,7 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 	}
 
 	private fun createBackground(action: TapAction?): Drawable? {
-		val ripple = getThemeDrawable(materialR.attr.selectableItemBackground)
+		val ripple = getThemeDrawable(appcompatR.attr.selectableItemBackground)
 		return if (action == null) {
 			ripple
 		} else {

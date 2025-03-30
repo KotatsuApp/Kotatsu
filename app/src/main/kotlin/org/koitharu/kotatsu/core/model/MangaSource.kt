@@ -24,7 +24,7 @@ import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.splitTwoParts
 import java.util.Locale
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 data object LocalMangaSource : MangaSource {
 	override val name = "LOCAL"
@@ -103,7 +103,7 @@ fun MangaSource.getTitle(context: Context): String = when (val source = unwrap()
 }
 
 fun SpannableStringBuilder.appendNsfwLabel(context: Context) = inSpans(
-	ForegroundColorSpan(context.getThemeColor(materialR.attr.colorError, Color.RED)),
+	ForegroundColorSpan(context.getThemeColor(appcompatR.attr.colorError, Color.RED)),
 	RelativeSizeSpan(0.74f),
 	SuperscriptSpan(),
 ) {

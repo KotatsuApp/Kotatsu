@@ -16,7 +16,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
 import java.util.UUID
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 data class DownloadItemModel(
 	val id: UUID,
@@ -62,7 +62,7 @@ data class DownloadItemModel(
 	fun getErrorMessage(context: Context): CharSequence? = if (error != null) {
 		buildSpannedString {
 			bold {
-				color(context.getThemeColor(materialR.attr.colorError, Color.RED)) {
+				color(context.getThemeColor(appcompatR.attr.colorError, Color.RED)) {
 					append(error)
 				}
 			}
@@ -72,7 +72,7 @@ data class DownloadItemModel(
 	}
 
 	override fun compareTo(other: DownloadItemModel): Int {
-		return timestamp.compareTo(other.timestamp)
+		return timestamp compareTo other.timestamp
 	}
 
 	override fun areItemsTheSame(other: ListModel): Boolean {

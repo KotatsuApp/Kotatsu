@@ -14,12 +14,13 @@ import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.explore.ui.model.MangaSourceItem
+import androidx.appcompat.R as appcompatR
 import com.google.android.material.R as materialR
 
 class SourceSelectionDecoration(context: Context) : AbstractSelectionItemDecoration() {
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-	private val strokeColor = context.getThemeColor(materialR.attr.colorPrimary, Color.RED)
+	private val strokeColor = context.getThemeColor(appcompatR.attr.colorPrimary, Color.RED)
 	private val fillColor = ColorUtils.setAlphaComponent(
 		ColorUtils.blendARGB(strokeColor, context.getThemeColor(materialR.attr.colorSurface), 0.8f),
 		0x74,

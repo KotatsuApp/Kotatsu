@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import javax.inject.Inject
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 class FilterHeaderProducer @Inject constructor(
 	private val searchRepository: MangaSearchRepository,
@@ -129,7 +129,7 @@ class FilterHeaderProducer @Inject constructor(
 			result.addFirst(
 				ChipsView.ChipModel(
 					title = snapshot.query,
-					icon = materialR.drawable.abc_ic_search_api_material,
+					icon = appcompatR.drawable.abc_ic_search_api_material,
 					isCloseable = true,
 					data = snapshot.query,
 				),

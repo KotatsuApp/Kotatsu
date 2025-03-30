@@ -44,7 +44,7 @@ import org.koitharu.kotatsu.core.util.ext.start
 import org.koitharu.kotatsu.databinding.ActivityImageBinding
 import org.koitharu.kotatsu.databinding.ItemErrorStateBinding
 import javax.inject.Inject
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class ImageActivity : BaseActivity<ActivityImageBinding>(),
@@ -147,12 +147,12 @@ class ImageActivity : BaseActivity<ActivityImageBinding>(),
 			button.setImageDrawable(
 				CircularProgressDrawable(this).also {
 					it.setStyle(CircularProgressDrawable.LARGE)
-					it.setColorSchemeColors(getThemeColor(materialR.attr.colorControlNormal))
+					it.setColorSchemeColors(getThemeColor(appcompatR.attr.colorControlNormal))
 					it.start()
 				},
 			)
 		} else {
-			button.setImageResource(materialR.drawable.abc_ic_menu_overflow_material)
+			button.setImageResource(appcompatR.drawable.abc_ic_menu_overflow_material)
 		}
 	}
 

@@ -31,7 +31,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
 import javax.inject.Inject
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
@@ -114,7 +114,7 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	private fun onUserChanged(user: ScrobblerUser?) {
 		if (user == null) {
 			viewBinding.imageViewAvatar.disposeImageRequest()
-			viewBinding.imageViewAvatar.setImageResource(materialR.drawable.abc_ic_menu_overflow_material)
+			viewBinding.imageViewAvatar.setImageResource(appcompatR.drawable.abc_ic_menu_overflow_material)
 			return
 		}
 		viewBinding.imageViewAvatar.newImageRequest(this, user.avatar)

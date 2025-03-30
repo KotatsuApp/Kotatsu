@@ -21,7 +21,7 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setProgressIcon
 import org.koitharu.kotatsu.databinding.DialogLocalInfoBinding
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class LocalInfoDialog : AlertDialogFragment<DialogLocalInfoBinding>(), View.OnClickListener {
@@ -86,7 +86,7 @@ class LocalInfoDialog : AlertDialogFragment<DialogLocalInfoBinding>(), View.OnCl
 		val total = size + available
 		val segment = SegmentedBarView.Segment(
 			percent = (size.toDouble() / total.toDouble()).toFloat(),
-			color = KotatsuColors.segmentColor(view.context, materialR.attr.colorPrimary),
+			color = KotatsuColors.segmentColor(view.context, appcompatR.attr.colorPrimary),
 		)
 		requireViewBinding().labelUsed.text = view.context.getString(
 			R.string.memory_usage_pattern,

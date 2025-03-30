@@ -106,7 +106,7 @@ import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
 import org.koitharu.kotatsu.suggestions.ui.SuggestionsActivity
 import org.koitharu.kotatsu.tracker.ui.updates.UpdatesActivity
 import java.io.File
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 class AppRouter private constructor(
 	private val activity: FragmentActivity?,
@@ -414,7 +414,7 @@ class AppRouter private constructor(
 			return
 		}
 		buildAlertDialog(contextOrNull() ?: return) {
-			setIcon(context.getThemeDrawable(materialR.attr.actionModeShareDrawable))
+			setIcon(context.getThemeDrawable(appcompatR.attr.actionModeShareDrawable))
 			setTitle(R.string.share)
 			setItems(
 				arrayOf(

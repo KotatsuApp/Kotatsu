@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.parsers.util.replaceWith
 import org.koitharu.kotatsu.parsers.util.toIntUp
 import kotlin.math.roundToInt
 import kotlin.random.Random
+import androidx.appcompat.R as appcompatR
 import com.google.android.material.R as materialR
 
 class BarChartView @JvmOverloads constructor(
@@ -38,7 +39,7 @@ class BarChartView @JvmOverloads constructor(
 	private val chartBounds = RectF()
 
 	@ColorInt
-	var barColor: Int = context.getThemeColor(materialR.attr.colorAccent)
+	var barColor: Int = context.getThemeColor(appcompatR.attr.colorAccent)
 		set(value) {
 			field = value
 			invalidate()

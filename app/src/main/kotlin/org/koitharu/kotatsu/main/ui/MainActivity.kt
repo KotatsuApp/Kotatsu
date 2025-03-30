@@ -429,9 +429,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		supportActionBar?.apply {
 			setHomeAsUpIndicator(
 				if (isOpened) {
-					materialR.drawable.abc_ic_ab_back_material
+					materialR.drawable.ic_arrow_back_black_24
 				} else {
-					materialR.drawable.abc_ic_search_api_material
+					materialR.drawable.ic_search_black_24
 				},
 			)
 			setHomeActionContentDescription(

@@ -20,7 +20,7 @@ import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.databinding.ItemTrackDebugBinding
 import org.koitharu.kotatsu.tracker.data.TrackEntity
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 fun trackDebugAD(
 	lifecycleOwner: LifecycleOwner,
@@ -58,7 +58,7 @@ fun trackDebugAD(
 			if (item.lastResult == TrackEntity.RESULT_FAILED) {
 				append(" - ")
 				bold {
-					color(context.getThemeColor(materialR.attr.colorError, Color.RED)) {
+					color(context.getThemeColor(appcompatR.attr.colorError, Color.RED)) {
 						append(item.lastError ?: getString(R.string.error))
 					}
 				}

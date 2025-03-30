@@ -103,7 +103,7 @@ abstract class BaseActivity<B : ViewBinding> :
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(isEnabled)
 			if (showUpAsClose) {
-				setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
+				setHomeAsUpIndicator(materialR.drawable.ic_clear_black_24)
 			}
 		}
 	}

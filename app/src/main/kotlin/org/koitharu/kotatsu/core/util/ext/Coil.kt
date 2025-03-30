@@ -34,6 +34,7 @@ import org.koitharu.kotatsu.core.ui.image.AnimatedPlaceholderDrawable
 import org.koitharu.kotatsu.core.util.progress.ImageRequestIndicatorListener
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import androidx.appcompat.R as appcompatR
 import com.google.android.material.R as materialR
 
 fun ImageView.newImageRequest(lifecycleOwner: LifecycleOwner, data: Any?): ImageRequest.Builder? {
@@ -112,7 +113,7 @@ fun ImageRequest.Builder.bookmarkExtra(bookmark: Bookmark): ImageRequest.Builder
 fun ImageRequest.Builder.defaultPlaceholders(context: Context): ImageRequest.Builder {
 	val errorColor = ColorUtils.blendARGB(
 		context.getThemeColor(materialR.attr.colorErrorContainer),
-		context.getThemeColor(materialR.attr.colorBackgroundFloating),
+		context.getThemeColor(appcompatR.attr.colorBackgroundFloating),
 		0.25f,
 	)
 	return placeholder(AnimatedPlaceholderDrawable(context))

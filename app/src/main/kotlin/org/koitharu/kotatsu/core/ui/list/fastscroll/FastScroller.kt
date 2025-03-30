@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.isLayoutReversed
 import org.koitharu.kotatsu.databinding.FastScrollerBinding
 import kotlin.math.roundToInt
+import androidx.appcompat.R as appcompatR
 import com.google.android.material.R as materialR
 
 private const val SCROLLBAR_HIDE_DELAY = 1000L
@@ -132,7 +133,7 @@ class FastScroller @JvmOverloads constructor(
 		clipChildren = false
 		orientation = HORIZONTAL
 
-		@ColorInt var bubbleColor = context.getThemeColor(materialR.attr.colorControlNormal, Color.DKGRAY)
+		@ColorInt var bubbleColor = context.getThemeColor(appcompatR.attr.colorControlNormal, Color.DKGRAY)
 		@ColorInt var handleColor = bubbleColor
 		@ColorInt var trackColor = context.getThemeColor(materialR.attr.colorOutline, Color.LTGRAY)
 		@ColorInt var textColor = context.getThemeColor(android.R.attr.textColorPrimaryInverse, Color.WHITE)
