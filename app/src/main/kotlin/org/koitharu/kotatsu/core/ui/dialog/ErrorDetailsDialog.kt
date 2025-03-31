@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.util.ext.copyToClipboard
 import org.koitharu.kotatsu.core.util.ext.getCauseUrl
+import org.koitharu.kotatsu.core.util.ext.isHttpUrl
 import org.koitharu.kotatsu.core.util.ext.isReportable
 import org.koitharu.kotatsu.core.util.ext.report
 import org.koitharu.kotatsu.core.util.ext.requireSerializable
@@ -43,7 +44,7 @@ class ErrorDetailsDialog : AlertDialogFragment<DialogErrorDetailsBinding>(), Vie
 		super.onViewBindingCreated(binding, savedInstanceState)
 		binding.buttonBrowser.setOnClickListener(this)
 		binding.textViewSummary.text = exception.message
-		val isUrlAvailable = !exception.getCauseUrl().isNullOrEmpty()
+		val isUrlAvailable = exception.getCauseUrl()?.isHttpUrl() == true
 		binding.buttonBrowser.isVisible = isUrlAvailable
 		binding.textViewBrowser.isVisible = isUrlAvailable
 		binding.textViewDescription.setTextAndVisible(

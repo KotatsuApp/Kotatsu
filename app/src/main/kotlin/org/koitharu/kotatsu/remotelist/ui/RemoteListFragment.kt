@@ -18,6 +18,7 @@ import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.getCauseUrl
+import org.koitharu.kotatsu.core.util.ext.isHttpUrl
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
@@ -87,15 +88,15 @@ class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
 	}
 
 	private fun openInBrowser(url: String?) {
-		if (url.isNullOrEmpty()) {
-			Snackbar.make(requireViewBinding().recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
-				.show()
-		} else {
+		if (url?.isHttpUrl() == true) {
 			router.openBrowser(
 				url = url,
 				source = viewModel.source,
 				title = viewModel.source.getTitle(requireContext()),
 			)
+		} else {
+			Snackbar.make(requireViewBinding().recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
+				.show()
 		}
 	}
 

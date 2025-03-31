@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
+import org.koitharu.kotatsu.core.util.ext.isHttpUrl
 import org.koitharu.kotatsu.core.util.ext.restartApplication
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
@@ -163,7 +164,7 @@ class ExceptionResolver @AssistedInject constructor(
 			is ScrobblerAuthRequiredException,
 			is AuthRequiredException -> R.string.sign_in
 
-			is NotFoundException -> if (e.url.isNotEmpty()) R.string.open_in_browser else 0
+			is NotFoundException -> if (e.url.isHttpUrl()) R.string.open_in_browser else 0
 			is UnsupportedSourceException -> if (e.manga != null) R.string.alternatives else 0
 			is SSLException,
 			is CertPathValidatorException -> R.string.fix
