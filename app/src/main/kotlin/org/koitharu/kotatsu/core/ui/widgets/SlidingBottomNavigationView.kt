@@ -3,10 +3,12 @@ package org.koitharu.kotatsu.core.ui.widgets
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.TimeInterpolator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.ViewPropertyAnimator
 import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
@@ -15,9 +17,11 @@ import androidx.core.view.isVisible
 import androidx.customview.view.AbsSavedState
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import com.google.android.material.navigation.NavigationBarView
 import org.koitharu.kotatsu.core.util.ext.applySystemAnimatorScale
 import org.koitharu.kotatsu.core.util.ext.measureHeight
+import kotlin.math.max
 import com.google.android.material.R as materialR
 
 private const val STATE_DOWN = 1
@@ -26,12 +30,14 @@ private const val STATE_UP = 2
 private const val SLIDE_UP_ANIMATION_DURATION = 225L
 private const val SLIDE_DOWN_ANIMATION_DURATION = 175L
 
+private const val MAX_ITEM_COUNT = 6
+
 class SlidingBottomNavigationView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	@AttrRes defStyleAttr: Int = materialR.attr.bottomNavigationStyle,
 	@StyleRes defStyleRes: Int = materialR.style.Widget_Design_BottomNavigationView,
-) : BottomNavigationView(context, attrs, defStyleAttr, defStyleRes),
+) : NavigationBarView(context, attrs, defStyleAttr, defStyleRes),
 	CoordinatorLayout.AttachedBehavior {
 
 	private var currentAnimator: ViewPropertyAnimator? = null
@@ -54,6 +60,49 @@ class SlidingBottomNavigationView @JvmOverloads constructor(
 	override fun getBehavior(): CoordinatorLayout.Behavior<*> {
 		return behavior
 	}
+
+	/** From BottomNavigationView **/
+
+	@SuppressLint("ClickableViewAccessibility")
+	override fun onTouchEvent(event: MotionEvent): Boolean {
+		super.onTouchEvent(event)
+		// Consume all events to avoid views under the BottomNavigationView from receiving touch events.
+		return true
+	}
+
+	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+		val minHeightSpec = makeMinHeightSpec(heightMeasureSpec)
+		super.onMeasure(widthMeasureSpec, minHeightSpec)
+		if (MeasureSpec.getMode(heightMeasureSpec) != MeasureSpec.EXACTLY) {
+			setMeasuredDimension(
+				measuredWidth,
+				max(
+					measuredHeight,
+					suggestedMinimumHeight + paddingTop + paddingBottom,
+				),
+			)
+		}
+	}
+
+	private fun makeMinHeightSpec(measureSpec: Int): Int {
+		var minHeight = suggestedMinimumHeight
+		if (MeasureSpec.getMode(measureSpec) != MeasureSpec.EXACTLY && minHeight > 0) {
+			minHeight += paddingTop + paddingBottom
+
+			return MeasureSpec.makeMeasureSpec(
+				max(MeasureSpec.getSize(measureSpec), minHeight), MeasureSpec.AT_MOST,
+			)
+		}
+
+		return measureSpec
+	}
+
+	override fun getMaxItemCount(): Int = MAX_ITEM_COUNT
+
+	@SuppressLint("RestrictedApi")
+	override fun createNavigationBarMenuView(context: Context) = BottomNavigationMenuView(context)
+
+	/** End **/
 
 	override fun onSaveInstanceState(): Parcelable {
 		val superState = super.onSaveInstanceState()
