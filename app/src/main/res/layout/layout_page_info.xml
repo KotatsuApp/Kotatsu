@@ -5,15 +5,26 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:parentTag="android.widget.FrameLayout">
 
-	<com.google.android.material.progressindicator.CircularProgressIndicator
+	<com.google.android.material.progressindicator.LinearProgressIndicator
 		android:id="@+id/progressBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top"
+		android:indeterminate="true"
+		android:visibility="gone"
+		app:hideAnimationBehavior="escape"
+		app:trackCornerRadius="0dp"
+		tools:visibility="visible" />
+
+	<TextView
+		android:id="@+id/textView_status"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
-		android:indeterminate="true"
-		android:max="100"
-		app:hideAnimationBehavior="escape"
-		app:showAnimationBehavior="none" />
+		android:layout_marginHorizontal="60dp"
+		android:gravity="center"
+		android:textAppearance="?textAppearanceBodyLarge"
+		tools:text="72%" />
 
 	<LinearLayout
 		android:id="@+id/layout_error"
@@ -22,10 +33,12 @@
 		android:layout_gravity="center"
 		android:layout_marginStart="60dp"
 		android:layout_marginEnd="60dp"
+		android:background="@drawable/bg_card"
 		android:gravity="center_horizontal"
 		android:orientation="vertical"
+		android:padding="@dimen/screen_padding"
 		android:visibility="gone"
-		tools:visibility="visible">
+		tools:visibility="gone">
 
 		<TextView
 			android:id="@+id/textView_error"

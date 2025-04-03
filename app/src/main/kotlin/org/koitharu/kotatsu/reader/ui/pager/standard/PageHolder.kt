@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.core.util.ext.isSerializable
+import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ItemPageBinding
 import org.koitharu.kotatsu.parsers.util.ifZero
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -78,14 +79,17 @@ open class PageHolder(
 		bindingInfo.layoutError.isVisible = false
 		bindingInfo.progressBar.show()
 		binding.ssiv.recycle()
+		bindingInfo.textViewStatus.setTextAndVisible(R.string.loading_)
 	}
 
 	override fun onProgressChanged(progress: Int) {
 		if (progress in 0..100) {
 			bindingInfo.progressBar.isIndeterminate = false
 			bindingInfo.progressBar.setProgressCompat(progress, true)
+			bindingInfo.textViewStatus.text = context.getString(R.string.percent_string_pattern, progress.toString())
 		} else {
 			bindingInfo.progressBar.isIndeterminate = true
+			bindingInfo.textViewStatus.setText(R.string.loading_)
 		}
 	}
 
@@ -137,8 +141,11 @@ open class PageHolder(
 		}
 	}
 
-	override fun onImageShown() {
-		bindingInfo.progressBar.hide()
+	override fun onImageShown(isPreview: Boolean) {
+		if (!isPreview) {
+			bindingInfo.progressBar.hide()
+		}
+		bindingInfo.textViewStatus.isVisible = false
 	}
 
 	override fun onTrimMemory() {

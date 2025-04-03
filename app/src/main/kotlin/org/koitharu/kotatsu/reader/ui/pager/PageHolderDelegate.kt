@@ -120,7 +120,9 @@ class PageHolderDelegate(
 		if (state >= State.LOADED) {
 			state = State.SHOWN
 			error = null
-			callback.onImageShown()
+			callback.onImageShown(isPreview = false)
+		} else if (state == State.LOADING_WITH_PREVIEW) {
+			callback.onImageShown(isPreview = true)
 		}
 	}
 
@@ -185,9 +187,9 @@ class PageHolderDelegate(
 		state = State.LOADING
 		error = null
 		callback.onLoadingStarted()
-		launch {
-			val preview = loader.loadPreview(data) ?: return@launch
-			if (state == State.LOADING) {
+		val previewJob = launch {
+			val preview = loader.loadPreview(data)
+			if (preview != null && state == State.LOADING) {
 				state = State.LOADING_WITH_PREVIEW
 				callback.onPreviewReady(preview)
 			}
@@ -199,6 +201,7 @@ class PageHolderDelegate(
 			val progressObserver = observeProgress(this, task.progressAsFlow())
 			val file = task.await()
 			progressObserver.cancelAndJoin()
+			previewJob.cancel()
 			uri = file
 			state = State.LOADED
 			cachedBounds = if (readerSettings.isPagesCropEnabled(isWebtoon)) {
@@ -251,7 +254,7 @@ class PageHolderDelegate(
 
 		fun onImageShowing(settings: ReaderSettings, isPreview: Boolean)
 
-		fun onImageShown()
+		fun onImageShown(isPreview: Boolean)
 
 		fun onProgressChanged(progress: Int)
 

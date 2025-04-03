@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.util.GoneOnInvisibleListener
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.isSerializable
+import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
 import org.koitharu.kotatsu.parsers.util.ifZero
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -78,14 +79,17 @@ class WebtoonHolder(
 		bindingInfo.layoutError.isVisible = false
 		bindingInfo.progressBar.show()
 		binding.ssiv.recycle()
+		bindingInfo.textViewStatus.setTextAndVisible(R.string.loading_)
 	}
 
 	override fun onProgressChanged(progress: Int) {
 		if (progress in 0..100) {
 			bindingInfo.progressBar.isIndeterminate = false
 			bindingInfo.progressBar.setProgressCompat(progress, true)
+			bindingInfo.textViewStatus.text = context.getString(R.string.percent_string_pattern, progress.toString())
 		} else {
 			bindingInfo.progressBar.isIndeterminate = true
+			bindingInfo.textViewStatus.setText(R.string.loading_)
 		}
 	}
 
@@ -109,8 +113,9 @@ class WebtoonHolder(
 		}
 	}
 
-	override fun onImageShown() {
+	override fun onImageShown(isPreview: Boolean) {
 		bindingInfo.progressBar.hide()
+		bindingInfo.textViewStatus.isVisible = false
 	}
 
 	override fun onTrimMemory() {
