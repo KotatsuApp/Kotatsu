@@ -802,4 +802,6 @@
     <string name="include_disabled_sources">Bao gồm các nguồn đã bị vô hiệu hoá</string>
     <string name="suggestions_disabled_sources_summary">Hiện gợi ý từ tất cả các nguồn đọc, bao gồm cả những nguồn đã bị vô hiệu hoá</string>
     <string name="nsfw_16">16+</string>
+    <string name="tags_warnings">Highlight những thể loại không an toàn</string>
+    <string name="tags_warnings_summary">Highlight những thể loại mà nó không thực sự phù hợp với hầu hết người đọc (mọi lứa tuổi)</string>
 </resources>

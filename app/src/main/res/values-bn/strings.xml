@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="favourites">পছন্দের গুলো</string>
-    <string name="history">ইতিহাস</string>
+    <string name="favourites">পছন্দের</string>
+    <string name="history">সম্প্রতি দেখা</string>
     <string name="local_storage">লোকাল স্টোরেজ</string>
     <string name="_continue">চালিয়ে যান</string>
     <string name="clear_thumbs_cache">থাম্বনেইল ক্যাচ সাফ করুন</string>
@@ -12,20 +12,20 @@
     <string name="app_update_available">অ্যাপের নতুন ভার্সন পাওয়া গেছে</string>
     <string name="open_in_browser">ব্রাউজারে খুলুন</string>
     <string name="error_occurred">কিছু একটা সমস্যা হয়েছে</string>
-    <string name="details">খুঁটিনাটি</string>
-    <string name="chapters">অধ্যায়</string>
+    <string name="details">বিস্তারিত</string>
+    <string name="chapters">চ্যাপ্টার</string>
     <string name="list">তালিকা</string>
-    <string name="detailed_list">পুঙ্খানুপুঙ্খ তালিকা</string>
+    <string name="detailed_list">বিস্তারিত তালিকা</string>
     <string name="grid">গ্রিড</string>
-    <string name="settings">সেটিং সমূহ</string>
+    <string name="settings">সেটিংস</string>
     <string name="loading_">লোড হচ্ছে…</string>
     <string name="close">বন্ধ</string>
-    <string name="try_again">আবারো চেষ্টা করুন</string>
+    <string name="try_again">আবার চেষ্টা করুন</string>
     <string name="clear_history">ইতিহাস মুছুন</string>
     <string name="computing_">প্রস্তুত হচ্ছে…</string>
-    <string name="chapter_d_of_d">%2$d টির মধ্যে %1$d তম পর্ব</string>
+    <string name="chapter_d_of_d">%2$d এর্ %1$d তম অধ্যায়</string>
     <string name="nothing_found">কিছু পাওয়া যায়নি</string>
-    <string name="history_is_empty">কোনো ইতিহাস লেখা হয়নি</string>
+    <string name="history_is_empty">কোনো ইতিহাস নেই</string>
     <string name="read">পড়ুন</string>
     <string name="add_to_favourites">পছন্দ করুন</string>
     <string name="text_file_not_supported">একটি ZIP অথবা CBZ ফাইল নিন</string>
@@ -38,7 +38,7 @@
     <string name="operation_not_supported">এই কাজটি করা সম্ভব নয়</string>
     <string name="switch_pages">পেজ পাল্টান</string>
     <string name="search_history_cleared">সাফ করা হয়েছে</string>
-    <string name="network_error">নেটওয়ার্কে সমস্যা</string>
+    <string name="network_error">নেটওয়ার্কে ত্রুটি</string>
     <string name="remote_sources">মানগা সোর্স সমূহ</string>
     <string name="you_have_not_favourites_yet">এখনো কিছু পছন্দ হয়নি</string>
     <string name="add_new_category">নতুন বিভাগ</string>
@@ -176,4 +176,7 @@
     <string name="theme_name_dynamic">ডাইনামিক</string>
     <string name="theme_name_miku">মিকু</string>
     <string name="data_not_restored">ডেটা পুনরুদ্ধার করা হয়নি</string>
+    <string name="incognito_mode_hint">আপনার পড়ার অগ্রগতি সেভ হবে না</string>
+    <string name="volume_">আওয়াজ%d</string>
+    <string name="volume_unknown">অজানা ভলিউম</string>
 </resources>

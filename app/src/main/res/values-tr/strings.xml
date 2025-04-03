@@ -16,7 +16,7 @@
     <string name="nothing_found">Hiçbir şey bulunamadı</string>
     <string name="history_is_empty">Geçmiş yok</string>
     <string name="read">Oku</string>
-    <string name="you_have_not_favourites_yet">Henüz favorileriniz yok</string>
+    <string name="you_have_not_favourites_yet">Henüz favoriniz yok</string>
     <string name="add_to_favourites">Favorilere ekle</string>
     <string name="add_new_category">Yeni kategori</string>
     <string name="add">Ekle</string>
@@ -804,4 +804,6 @@
     <string name="exclude_nsfw_from_suggestions_summary">Yetişkin mangaları önerilerde gösterilmeyecektir. Bu seçenek her kaynak için doğru çalışmayabilir</string>
     <string name="nsfw_16">16+</string>
     <string name="include_disabled_sources">Devre dışı bırakılmış kaynakları dahil et</string>
+    <string name="tags_warnings">Riskli türleri işaretle</string>
+    <string name="tags_warnings_summary">Çoğu kullanıcılar için uygunsuz olabilecek türleri işaretle</string>
 </resources>

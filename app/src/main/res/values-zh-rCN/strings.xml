@@ -801,4 +801,6 @@
     <string name="include_disabled_sources">包括已关闭图源</string>
     <string name="suggestions_disabled_sources_summary">在搜索建议中显示所有图源，包括已关闭图源</string>
     <string name="simple">默认</string>
+    <string name="tags_warnings">高亮敏感风格</string>
+    <string name="tags_warnings_summary">将可能会对大部分用户不友善的风格高亮</string>
 </resources>

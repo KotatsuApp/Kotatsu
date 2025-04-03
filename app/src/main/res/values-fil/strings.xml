@@ -671,7 +671,7 @@
     <string name="seconds_short">s %d</string>
     <string name="minutes_seconds_short">%1$d m %2$d s</string>
     <string name="sfw">SFW</string>
-    <string name="not_in_favorites">Wala sa paborito mo</string>
+    <string name="not_in_favorites">Wala sa mga paborito</string>
     <string name="unpopular">Hindi sikat</string>
     <string name="low_rating">Mababa ang rating</string>
     <string name="sort_order_asc">Pataas</string>
@@ -793,4 +793,16 @@
     <string name="unnamed_chapter">Walang pangalan na kabanata</string>
     <string name="error_disclaimer_app_outdated">Mukhang luma na ang bersyon mo ng Kotatsu. Mangyaring i-install ang pinakabagong bersyon upang makuha ang lahat ng magagamit na mga pag-aayos.</string>
     <string name="error_disclaimer_report">Maaari kang magsumite ng ulat ng bug sa mga developer. Makakatulong ito sa amin na magsiyasat at ayusin ang isyu.</string>
+    <string name="tags_warnings">I-highlight ang mga mapanganib na genre</string>
+    <string name="nsfw_16">16+</string>
+    <string name="clear_browser_data">Linisin ang data ng browser</string>
+    <string name="no_write_permission_to_file">Walang pahintulot na magsulat ng file</string>
+    <string name="exclude_nsfw_from_suggestions_summary">Ang manga pang-matanda ay hindi ipapakita sa mga mungkahi. Maaaring gumana nang hindi tumpak ang opsyong ito sa ilang source</string>
+    <string name="include_disabled_sources">Isama ang mga hindi pinagana na source</string>
+    <string name="suggestions_disabled_sources_summary">Magpakita ng mga mungkahi mula sa lahat ng manga source, kabilang ang mga hindi napagana</string>
+    <string name="tags_warnings_summary">I-highlight ang mga genre na maaaring hindi naaangkop para sa karamihan ng mga user</string>
+    <string name="link_to_manga_in_app">Link sa manga sa Kotatsu</string>
+    <string name="simple">Pinasimple</string>
+    <string name="link_to_manga_on_s">Link sa manga sa %s</string>
+    <string name="clear_browser_data_summary">Linisin ang data ng browser tulad ng cache at mga cookie. Babala: Ang awtorisasyon sa mga source ng manga ay maaaring maging di-balido</string>
 </resources>
