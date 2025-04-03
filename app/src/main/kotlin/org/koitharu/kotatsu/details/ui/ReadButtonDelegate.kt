@@ -125,15 +125,16 @@ class ReadButtonDelegate(
 	}
 
 	private fun onHistoryChanged(isLoading: Boolean, info: HistoryInfo) {
+		val isChaptersLoading = isLoading && (info.totalChapters <= 0 || info.isChapterMissing)
 		buttonRead.setText(
 			when {
-				isLoading -> R.string.loading_
+				isChaptersLoading -> R.string.loading_
 				info.isIncognitoMode -> R.string.incognito
 				info.canContinue -> R.string._continue
 				else -> R.string.read
 			},
 		)
-		splitButton.isEnabled = !isLoading && info.isValid
+		splitButton.isEnabled = !isChaptersLoading && info.isValid
 	}
 
 	private fun Menu.populateBranchList() {
