@@ -19,7 +19,7 @@
     <string name="history_is_empty">Zatím žádná historie</string>
     <string name="read">Číst</string>
     <string name="you_have_not_favourites_yet">Zatím žádné oblíbené</string>
-    <string name="add_to_favourites">Oblíbit toto</string>
+    <string name="add_to_favourites">Přidat do oblíbených</string>
     <string name="add">Přidat</string>
     <string name="share">Sdílet</string>
     <string name="create_shortcut">Vytvořit zkratku…</string>
@@ -791,4 +791,15 @@
     <string name="error_disclaimer_app_outdated">Vypadá to, že vaše verze Kotatsu je zastaralá. Prosíme, nainstalujte nejnovější verzi pro získání všech dostupných oprav chyb.</string>
     <string name="disable_captcha_notifications">Vypnout oznámení o captcha</string>
     <string name="disable_captcha_notifications_summary">Nebudete dostávat oznámení o řešení CAPTCHA pro tento zdroj, ale to může vést k rozbití operací na pozadí (hledání nových kapitol, získávání doporučení atd)</string>
+    <string name="tags_warnings">Zvýraznit nebezpečné žánry</string>
+    <string name="tags_warnings_summary">Zvýraznit žánry, které mohou být nevhodné pro většinu uživatelů</string>
+    <string name="nsfw_16">16+</string>
+    <string name="link_to_manga_in_app">Odkaz na mangau v Kotatsu</string>
+    <string name="clear_browser_data">Vyčistit data prohlížeče</string>
+    <string name="exclude_nsfw_from_suggestions_summary">Dospělá manga nebude zobrazena v návrzích. Tato funkce může být nepřesná s některými zdroji</string>
+    <string name="include_disabled_sources">Zahrnout vypnuté zdroje</string>
+    <string name="suggestions_disabled_sources_summary">Zobrazit návrhy ze všech zdrojů mangy, včetně vypnutých</string>
+    <string name="clear_browser_data_summary">Vyčistit data prohlížeče, např. cache a cookies. Upozornění: Všude budete odhlášeni a budte muset znovu řešit captcha</string>
+    <string name="global_search">Globální vyhledávání</string>
+    <string name="search_everywhere">Hledat všude</string>
 </resources>
