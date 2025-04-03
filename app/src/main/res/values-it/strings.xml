@@ -249,7 +249,7 @@
     <string name="send">Invia</string>
     <string name="disable_all">Disabilita tutto</string>
     <string name="use_fingerprint">Usa le impronte digitali se disponibili</string>
-    <string name="appwidget_shelf_description">Manga dai preferiti</string>
+    <string name="appwidget_shelf_description">Manga dai tuoi preferiti</string>
     <string name="appwidget_recent_description">I manga letti di recente</string>
     <string name="report">Segnala</string>
     <string name="tracking">Monitoraggio</string>
@@ -669,7 +669,7 @@
     <string name="too_many_requests_message_retry">Troppe richieste. Riprova dopo %s</string>
     <string name="skip_all">Salta tutto</string>
     <string name="stuck">Bloccato</string>
-    <string name="not_in_favorites">Non nei preferiti</string>
+    <string name="not_in_favorites">Non presente nei preferiti</string>
     <string name="plugin_incompatible">Plugin incompatibile o errore interno. Assicurati di utilizzare l\'ultima versione del plugin e di Kotatsu</string>
     <string name="updated_long_ago">Aggiornato molto tempo fa</string>
     <string name="unpopular">Impopolare</string>
@@ -804,4 +804,6 @@
     <string name="include_disabled_sources">Includi fonti disabilitate</string>
     <string name="suggestions_disabled_sources_summary">Mostra suggerimenti da tutte le fonti manga, incluse quelle disabilite</string>
     <string name="exclude_nsfw_from_suggestions_summary">I manga per adulti non verranno mostrati nei suggerimenti. Questa opzione potrebbe non funzionare accuratamente con alcune fonti</string>
+    <string name="tags_warnings">Evidenzia i generi pericolosi</string>
+    <string name="tags_warnings_summary">Evidenzia i generi che potrebbero essere inappropriati per la maggior parte degli utenti</string>
 </resources>
