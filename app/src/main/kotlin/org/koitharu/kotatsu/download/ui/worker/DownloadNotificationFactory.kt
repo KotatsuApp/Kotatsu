@@ -36,7 +36,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.util.UUID
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 private const val CHANNEL_ID_DEFAULT = "download"
 private const val CHANNEL_ID_SILENT = "download_bg"
@@ -70,7 +70,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 
 	private val actionCancel by lazy {
 		NotificationCompat.Action(
-			materialR.drawable.material_ic_clear_black_24dp,
+			appcompatR.drawable.abc_ic_clear_material,
 			context.getString(android.R.string.cancel),
 			workManager.createCancelPendingIntent(uuid),
 		)

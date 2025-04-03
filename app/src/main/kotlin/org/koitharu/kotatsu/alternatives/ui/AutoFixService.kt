@@ -31,7 +31,7 @@ import org.koitharu.kotatsu.core.util.ext.withPartialWakeLock
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class AutoFixService : CoroutineIntentService() {
@@ -95,7 +95,7 @@ class AutoFixService : CoroutineIntentService() {
 			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
 			.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 			.addAction(
-				materialR.drawable.material_ic_clear_black_24dp,
+				appcompatR.drawable.abc_ic_clear_material,
 				applicationContext.getString(android.R.string.cancel),
 				jobContext.getCancelIntent(),
 			)

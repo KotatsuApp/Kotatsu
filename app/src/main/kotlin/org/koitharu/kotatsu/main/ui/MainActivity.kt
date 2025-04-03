@@ -72,7 +72,7 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.settings.backup.PeriodicalBackupService
 import javax.inject.Inject
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 private const val TAG_SEARCH = "search"
 
@@ -231,6 +231,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			topMargin = barsInsets.top
 			bottomMargin = barsInsets.bottom
 		}
+		updateContainerBottomMargin()
 		return insets.consume(v, typeMask, start = viewBinding.navRail != null)
 	}
 
@@ -429,9 +430,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		supportActionBar?.apply {
 			setHomeAsUpIndicator(
 				if (isOpened) {
-					materialR.drawable.ic_arrow_back_black_24
+					appcompatR.drawable.abc_ic_ab_back_material
 				} else {
-					materialR.drawable.ic_search_black_24
+					appcompatR.drawable.abc_ic_search_api_material
 				},
 			)
 			setHomeActionContentDescription(

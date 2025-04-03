@@ -86,7 +86,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.random.Random
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @HiltWorker
 class SuggestionsWorker @AssistedInject constructor(
@@ -137,7 +137,7 @@ class SuggestionsWorker @AssistedInject constructor(
 					false,
 				),
 			).addAction(
-				materialR.drawable.material_ic_clear_black_24dp,
+				appcompatR.drawable.abc_ic_clear_material,
 				applicationContext.getString(android.R.string.cancel),
 				workManager.createCancelPendingIntent(id),
 			)

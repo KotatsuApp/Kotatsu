@@ -70,7 +70,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @HiltWorker
 class TrackWorker @AssistedInject constructor(
@@ -215,7 +215,7 @@ class TrackWorker @AssistedInject constructor(
 			),
 		)
 		addAction(
-			materialR.drawable.material_ic_clear_black_24dp,
+			appcompatR.drawable.abc_ic_clear_material,
 			applicationContext.getString(android.R.string.cancel),
 			workManager.createCancelPendingIntent(id),
 		)

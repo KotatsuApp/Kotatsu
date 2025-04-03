@@ -29,7 +29,7 @@ import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
 import org.koitharu.kotatsu.core.util.ext.isWebViewUnavailable
 import org.koitharu.kotatsu.main.ui.protect.ScreenshotPolicyHelper
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
@@ -103,7 +103,7 @@ abstract class BaseActivity<B : ViewBinding> :
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(isEnabled)
 			if (showUpAsClose) {
-				setHomeAsUpIndicator(materialR.drawable.ic_clear_black_24)
+				setHomeAsUpIndicator(appcompatR.drawable.abc_ic_clear_material)
 			}
 		}
 	}

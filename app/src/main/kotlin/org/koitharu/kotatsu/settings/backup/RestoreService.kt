@@ -37,7 +37,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.util.EnumSet
 import javax.inject.Inject
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class RestoreService : CoroutineIntentService() {
@@ -219,7 +219,7 @@ class RestoreService : CoroutineIntentService() {
 			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
 			.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 			.addAction(
-				materialR.drawable.material_ic_clear_black_24dp,
+				appcompatR.drawable.abc_ic_clear_material,
 				applicationContext.getString(android.R.string.cancel),
 				getCancelIntent(),
 			).build()
