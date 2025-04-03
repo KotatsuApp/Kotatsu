@@ -95,7 +95,7 @@
     <string name="cannot_find_available_storage">Sem espaço de armazenamento disponível</string>
     <string name="other_storage">Outro armazenamento</string>
     <string name="done">Feito</string>
-    <string name="all_favourites">Todas as favoritas</string>
+    <string name="all_favourites">Todos os favoritos</string>
     <string name="favourites_category_empty">Categoria vazia</string>
     <string name="read_later">Ler depois</string>
     <string name="updates">Atualizações</string>
@@ -158,7 +158,7 @@
     <string name="show_pages_numbers">Páginas numeradas</string>
     <string name="screenshots_policy">Política de capturas de tela</string>
     <string name="screenshots_allow">Permitir</string>
-    <string name="screenshots_block_nsfw">Bloquear no NSFW</string>
+    <string name="screenshots_block_nsfw">Bloquear conteúdo NSFW</string>
     <string name="screenshots_block_all">Nunca permitir</string>
     <string name="suggestions">Sugestões</string>
     <string name="suggestions_enable">Ativar sugestões</string>
@@ -269,7 +269,7 @@
     <string name="clear_cookies_summary">Pode ajudar em caso de problemas. Todas as autorizações serão invalidadas</string>
     <string name="show_reading_indicators">Mostrar indicadores de progresso de leitura</string>
     <string name="data_deletion">Exclusão de dados</string>
-    <string name="show_reading_indicators_summary">Mostrar porcentagem lida no histórico e em favoritas</string>
+    <string name="show_reading_indicators_summary">Mostrar porcentagem de leitura no histórico e nos favoritos</string>
     <string name="exclude_nsfw_from_history_summary">Obras marcadas como NSFW nunca serão adicionadas ao histórico e seu progresso não será salvo</string>
     <string name="show_all">Mostrar tudo</string>
     <string name="clear_all_history">Limpar todo o histórico</string>
@@ -300,7 +300,7 @@
     <string name="other_cache">Outro cache</string>
     <string name="storage_usage">Uso do armazenamento</string>
     <string name="available">Disponível</string>
-    <string name="removed_from_favourites">Removida das favoritas</string>
+    <string name="removed_from_favourites">Removido dos favoritos</string>
     <string name="options">Opções</string>
     <string name="incognito_mode">Modo anônimo</string>
     <string name="automatic_scroll">Rolagem automática</string>
@@ -590,7 +590,7 @@
     <string name="chapters_grid_view">Exibição em grade</string>
     <string name="alternatives">Alternativas</string>
     <string name="manga_migration">Migração de obra</string>
-    <string name="migration_completed">Migração completada</string>
+    <string name="migration_completed">Migração concluída</string>
     <string name="chapters_deleted_pattern">%1$s removido, %2$s limpo</string>
     <string name="delete_read_chapters">Apagar capítulos lidos</string>
     <string name="delete_read_chapters_summary">Apagar capítulos lidos do armazenamento local para liberar espaço</string>
@@ -617,8 +617,8 @@
     <string name="show_updated">Mostrar atualização</string>
     <string name="disable_connectivity_check">Desativar a verificação de conectividade</string>
     <string name="disable_connectivity_check_summary">Ignore a verificação de conectividade caso tenha problemas com ela (por exemplo, entrar no modo off-line mesmo que a rede esteja conectada)</string>
-    <string name="webtoon_gaps">Lacunas no modo webtoon</string>
-    <string name="webtoon_gaps_summary">Mostrar lacunas verticais entre as páginas no modo webtoon</string>
+    <string name="webtoon_gaps">Lacunas no modo Webtoon</string>
+    <string name="webtoon_gaps_summary">Mostrar lacunas verticais entre as páginas no modo Webtoon</string>
     <string name="authors">Autores</string>
     <string name="ignore_ssl_errors_summary">Você pode desativar a verificação de certificados SSL caso tenha problemas relacionados a SSL ao acessar recursos de rede. Isso pode afetar sua segurança. É necessário reiniciar o aplicativo após alterar essa configuração.</string>
     <string name="search_suggestions">Sugestões de pesquisa</string>
@@ -633,7 +633,7 @@
     <string name="new_chapters_pattern">%1$s: %2$d</string>
     <string name="pin_navigation_ui">Fixar interface de navegação</string>
     <string name="pin_navigation_ui_summary">Não esconder barra de navegação e visualização de pesquisa ao rolar</string>
-    <string name="_new">Novo</string>
+    <string name="_new">Novos</string>
     <string name="all_languages">Todas os idiomas</string>
     <string name="screenshots_block_incognito">Bloquear no modo de navegação anônima</string>
     <string name="image_server">Servidor de imagem preferido</string>
@@ -711,7 +711,7 @@
     <string name="minutes_seconds_short">%1$d min %2$d s</string>
     <string name="unpopular">Impopular</string>
     <string name="stuck">Preso</string>
-    <string name="not_in_favorites">Não está nas favoritas</string>
+    <string name="not_in_favorites">Não está nos favoritos</string>
     <string name="fixing_manga">Corrigindo a obra</string>
     <string name="fixed">Corrigida</string>
     <string name="no_fix_required">Nenhuma correção necessária para \"%s\"</string>
@@ -768,7 +768,7 @@
     <string name="rating">Avaliação</string>
     <string name="source">Fonte</string>
     <string name="restoring_backup">Restaurando backup</string>
-    <string name="error_disclaimer_manga">Tente abrir o manga em um navegador para ter certeza de que o mesmo está disponível na fonte</string>
+    <string name="error_disclaimer_manga">Tente abrir o manga em um navegador para ter certeza de que o mesmo está disponível na fonte.</string>
     <string name="error_disclaimer_app_outdated">Parece que a sua versão do Kotatsu está desatualizada. Por favor instale a última versão para obter todos as correções disponíveis.</string>
     <string name="search_everywhere">Pesquise em todos os lugares</string>
     <string name="clear_browser_data">Limpar dados do navegador</string>
@@ -797,4 +797,10 @@
     <string name="disable_captcha_notifications_summary">Você não receberá notificações sobre solucionar CAPTCHA para essa fonte, mas isso pode causar falha em operações de segundo plano (checagem de novos capítulos, obtenção de recomendações, etc)</string>
     <string name="global_search">Pesquisa global</string>
     <string name="badges_in_lists">Emblemas em listas</string>
+    <string name="tags_warnings">Destacar gêneros perigosos</string>
+    <string name="tags_warnings_summary">Destacar gêneros que podem ser inapropriados para a maioria dos usuários</string>
+    <string name="nsfw_16">+16</string>
+    <string name="exclude_nsfw_from_suggestions_summary">Mangás adultos não serão exibidos nas sugestões. Essa opção pode funcionar de forma imprecisa com algumas fontes</string>
+    <string name="include_disabled_sources">Incluir fontes desabilitadas</string>
+    <string name="suggestions_disabled_sources_summary">Mostrar sugestões de todas as fontes de mangá, incluindo as desabilitadas</string>
 </resources>
