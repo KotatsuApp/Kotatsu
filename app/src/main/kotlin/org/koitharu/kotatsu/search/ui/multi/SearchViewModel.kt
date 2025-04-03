@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -67,7 +68,7 @@ class SearchViewModel @Inject constructor(
 
 	val list: StateFlow<List<ListModel>> = combine(
 		results,
-		isLoading,
+		isLoading.dropWhile { !it },
 		includeDisabledSources,
 	) { list, loading, includeDisabled ->
 		when {

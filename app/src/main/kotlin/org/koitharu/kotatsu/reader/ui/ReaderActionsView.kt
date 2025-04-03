@@ -127,8 +127,10 @@ class ReaderActionsView @JvmOverloads constructor(
 	}
 
 	override fun onStartTrackingTouch(slider: Slider) {
-		isSliderChanged = false
-		isSliderTracking = true
+		if (!isSliderTracking) {
+			isSliderChanged = false
+			isSliderTracking = true
+		}
 	}
 
 	override fun onStopTrackingTouch(slider: Slider) {
