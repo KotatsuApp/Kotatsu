@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.HttpUrl
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -32,7 +33,7 @@ class SourceSettingsViewModel @Inject constructor(
 	private val mangaSourcesRepository: MangaSourcesRepository,
 ) : BaseViewModel(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-	val source = MangaSource(savedStateHandle.get<String>(SourceSettingsFragment.EXTRA_SOURCE))
+	val source = MangaSource(savedStateHandle.get<String>(AppRouter.KEY_SOURCE))
 	val repository = mangaRepositoryFactory.create(source)
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()

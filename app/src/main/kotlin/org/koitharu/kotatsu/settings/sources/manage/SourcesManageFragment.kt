@@ -17,6 +17,7 @@ import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -117,7 +118,7 @@ class SourcesManageFragment :
 	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) {
 		(activity as? SettingsActivity)?.openFragment(
 			fragmentClass = SourceSettingsFragment::class.java,
-			args = Bundle(1).apply { putString(SourceSettingsFragment.EXTRA_SOURCE, item.source.name) },
+			args = Bundle(1).apply { putString(AppRouter.KEY_SOURCE, item.source.name) },
 			isFromRoot = false,
 		)
 	}

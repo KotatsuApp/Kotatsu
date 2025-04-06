@@ -8,30 +8,19 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
-import org.koitharu.kotatsu.core.network.CommonHeaders
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
-import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import javax.inject.Inject
+import org.koitharu.kotatsu.parsers.model.MangaSource
 
 @AndroidEntryPoint
 class BrowserActivity : BaseBrowserActivity() {
 
-	@Inject
-	lateinit var mangaRepositoryFactory: MangaRepository.Factory
-
-	override fun onCreate2(savedInstanceState: Bundle?) {
-		setDisplayHomeAsUp(true, true)
-		val mangaSource = MangaSource(intent?.getStringExtra(AppRouter.KEY_SOURCE))
-		val repository = mangaRepositoryFactory.create(mangaSource) as? ParserMangaRepository
-		val userAgent = repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)
-		viewBinding.webView.configureForParser(userAgent)
-		viewBinding.webView.webViewClient = BrowserClient(proxyProvider, this)
+	override fun onCreate2(savedInstanceState: Bundle?, source: MangaSource, repository: ParserMangaRepository?) {
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
+		viewBinding.webView.webViewClient = BrowserClient(this)
 		lifecycleScope.launch {
 			try {
 				proxyProvider.applyWebViewConfig()

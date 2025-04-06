@@ -14,46 +14,34 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BaseBrowserActivity
 import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
-import org.koitharu.kotatsu.core.model.MangaSource
+import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.nav.AppRouter
-import org.koitharu.kotatsu.core.network.CommonHeaders
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
-import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
-import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.settings.sources.SourceSettingsFragment.Companion.EXTRA_SOURCE
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 
-	@Inject
-	lateinit var mangaRepositoryFactory: MangaRepository.Factory
-
 	private lateinit var authProvider: MangaParserAuthProvider
 
-	override fun onCreate2(savedInstanceState: Bundle?) {
-		val source = MangaSource(intent?.getStringExtra(EXTRA_SOURCE))
-		if (source !is MangaParserSource) {
+	override fun onCreate2(savedInstanceState: Bundle?, source: MangaSource, repository: ParserMangaRepository?) {
+		if (repository == null) {
 			finishAfterTransition()
 			return
 		}
-		val repository = mangaRepositoryFactory.create(source) as? ParserMangaRepository
-		authProvider = (repository)?.getAuthProvider() ?: run {
+		authProvider = repository.getAuthProvider() ?: run {
 			Toast.makeText(
 				this,
-				getString(R.string.auth_not_supported_by, source.title),
+				getString(R.string.auth_not_supported_by, source.getTitle(this)),
 				Toast.LENGTH_SHORT,
 			).show()
 			finishAfterTransition()
 			return
 		}
-		setDisplayHomeAsUp(true, true)
-		viewBinding.webView.configureForParser(repository.getRequestHeaders()[CommonHeaders.USER_AGENT])
-		viewBinding.webView.webViewClient = BrowserClient(proxyProvider, this)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
+		viewBinding.webView.webViewClient = BrowserClient(this)
 		lifecycleScope.launch {
 			try {
 				proxyProvider.applyWebViewConfig()
@@ -63,7 +51,7 @@ class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 			if (savedInstanceState == null) {
 				val url = authProvider.authUrl
 				onTitleChanged(
-					source.title,
+					source.getTitle(this@SourceAuthActivity),
 					getString(R.string.loading_),
 				)
 				viewBinding.webView.loadUrl(url)
@@ -92,13 +80,10 @@ class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 	}
 
 	class Contract : ActivityResultContract<MangaSource, Boolean>() {
-		override fun createIntent(context: Context, input: MangaSource): Intent {
-			return AppRouter.sourceAuthIntent(context, input)
-		}
 
-		override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
-			return resultCode == RESULT_OK
-		}
+		override fun createIntent(context: Context, input: MangaSource) = AppRouter.sourceAuthIntent(context, input)
+
+		override fun parseResult(resultCode: Int, intent: Intent?) = resultCode == RESULT_OK
 	}
 
 	companion object {

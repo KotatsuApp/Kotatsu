@@ -3,10 +3,8 @@ package org.koitharu.kotatsu.browser
 import android.graphics.Bitmap
 import android.webkit.WebView
 import androidx.webkit.WebViewClientCompat
-import org.koitharu.kotatsu.core.network.proxy.ProxyProvider
 
 open class BrowserClient(
-	private val proxyProvider: ProxyProvider,
 	private val callback: BrowserCallback
 ) : WebViewClientCompat() {
 

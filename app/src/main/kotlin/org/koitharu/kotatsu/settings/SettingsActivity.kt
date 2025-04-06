@@ -34,7 +34,6 @@ import org.koitharu.kotatsu.settings.search.SettingsItem
 import org.koitharu.kotatsu.settings.search.SettingsSearchFragment
 import org.koitharu.kotatsu.settings.search.SettingsSearchViewModel
 import org.koitharu.kotatsu.settings.sources.SourceSettingsFragment
-import org.koitharu.kotatsu.settings.sources.SourceSettingsFragment.Companion.EXTRA_SOURCE
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.settings.sources.manage.SourcesManageFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
@@ -57,7 +56,7 @@ class SettingsActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySettingsBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, false)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		val fm = supportFragmentManager
 		val currentFragment = fm.findFragmentById(R.id.container)
 		if (currentFragment == null || (isMasterDetails && currentFragment is RootSettingsFragment)) {
@@ -151,7 +150,7 @@ class SettingsActivity :
 			AppRouter.ACTION_PROXY -> ProxySettingsFragment()
 			AppRouter.ACTION_MANAGE_DOWNLOADS -> DownloadsSettingsFragment()
 			AppRouter.ACTION_SOURCE -> SourceSettingsFragment.newInstance(
-				MangaSource(intent.getStringExtra(EXTRA_SOURCE)),
+				MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE)),
 			)
 
 			AppRouter.ACTION_MANAGE_SOURCES -> SourcesManageFragment()

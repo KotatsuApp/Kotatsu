@@ -22,9 +22,11 @@ import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
-import org.koitharu.kotatsu.core.util.ext.configureForParser
+import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,15 +39,14 @@ class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 
 	private lateinit var cfClient: CloudFlareClient
 
-	override fun onCreate2(savedInstanceState: Bundle?) {
-		setDisplayHomeAsUp(true, true)
+	override fun onCreate2(savedInstanceState: Bundle?, source: MangaSource, repository: ParserMangaRepository?) {
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
 		val url = intent?.dataString
 		if (url.isNullOrEmpty()) {
 			finishAfterTransition()
 			return
 		}
-		cfClient = CloudFlareClient(proxyProvider, cookieJar, this, url)
-		viewBinding.webView.configureForParser(intent?.getStringExtra(AppRouter.KEY_USER_AGENT))
+		cfClient = CloudFlareClient(cookieJar, this, url)
 		viewBinding.webView.webViewClient = cfClient
 		lifecycleScope.launch {
 			try {
@@ -106,8 +107,7 @@ class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 
 	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {
 		setTitle(title)
-		supportActionBar?.subtitle =
-			subtitle?.toString()?.toHttpUrlOrNull()?.topPrivateDomain() ?: subtitle
+		supportActionBar?.subtitle = subtitle?.toString()?.toHttpUrlOrNull()?.host.ifNullOrEmpty { subtitle }
 	}
 
 	private fun restartCheck() {
