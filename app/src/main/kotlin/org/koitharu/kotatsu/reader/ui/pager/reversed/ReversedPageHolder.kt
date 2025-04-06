@@ -17,17 +17,24 @@ class ReversedPageHolder(
 	owner: LifecycleOwner,
 	binding: ItemPageBinding,
 	loader: PageLoader,
-	settings: ReaderSettings,
+	readerSettingsProducer: ReaderSettings.Producer,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
-) : PageHolder(owner, binding, loader, settings, networkState, exceptionResolver) {
+) : PageHolder(
+	owner = owner,
+	binding = binding,
+	loader = loader,
+	readerSettingsProducer = readerSettingsProducer,
+	networkState = networkState,
+	exceptionResolver = exceptionResolver,
+) {
 
 	init {
 		(binding.textViewNumber.layoutParams as FrameLayout.LayoutParams)
 			.gravity = Gravity.START or Gravity.BOTTOM
 	}
 
-	override fun onImageShowing(settings: ReaderSettings, isPreview: Boolean) {
+	override fun onReady() {
 		with(binding.ssiv) {
 			maxScale = 2f * maxOf(
 				width / sWidth.toFloat(),

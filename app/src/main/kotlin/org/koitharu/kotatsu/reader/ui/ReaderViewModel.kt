@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
@@ -85,6 +86,7 @@ class ReaderViewModel @Inject constructor(
 	interactor: DetailsInteractor,
 	deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	downloadScheduler: DownloadWorker.Scheduler,
+	readerSettingsProducerFactory: ReaderSettings.Producer.Factory,
 ) : ChaptersPagesViewModel(
 	settings = settings,
 	interactor = interactor,
@@ -170,12 +172,8 @@ class ReaderViewModel @Inject constructor(
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
 
-	val readerSettings = ReaderSettings(
-		parentScope = viewModelScope,
-		settings = settings,
-		colorFilterFlow = manga.flatMapLatest {
-			if (it == null) flowOf(null) else dataRepository.observeColorFilter(it.id)
-		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null),
+	val readerSettingsProducer = readerSettingsProducerFactory.create(
+		manga.mapNotNull { it?.id },
 	)
 
 	val isMangaNsfw = manga.map { it?.contentRating == ContentRating.ADULT }

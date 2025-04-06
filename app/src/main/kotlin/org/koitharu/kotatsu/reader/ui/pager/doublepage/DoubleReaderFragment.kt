@@ -90,7 +90,7 @@ open class DoubleReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding
 	override fun onCreateAdapter() = DoublePagesAdapter(
 		lifecycleOwner = viewLifecycleOwner,
 		loader = pageLoader,
-		settings = viewModel.readerSettings,
+		readerSettingsProducer = viewModel.readerSettingsProducer,
 		networkState = networkState,
 		exceptionResolver = exceptionResolver,
 	)

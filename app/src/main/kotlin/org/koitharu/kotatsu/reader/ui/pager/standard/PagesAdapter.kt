@@ -13,22 +13,27 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 class PagesAdapter(
 	private val lifecycleOwner: LifecycleOwner,
 	loader: PageLoader,
-	settings: ReaderSettings,
+	readerSettingsProducer: ReaderSettings.Producer,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
-) : BaseReaderAdapter<PageHolder>(loader, settings, networkState, exceptionResolver) {
+) : BaseReaderAdapter<PageHolder>(
+	loader = loader,
+	readerSettingsProducer = readerSettingsProducer,
+	networkState = networkState,
+	exceptionResolver = exceptionResolver,
+) {
 
 	override fun onCreateViewHolder(
 		parent: ViewGroup,
 		loader: PageLoader,
-		settings: ReaderSettings,
+		readerSettingsProducer: ReaderSettings.Producer,
 		networkState: NetworkState,
 		exceptionResolver: ExceptionResolver,
 	) = PageHolder(
 		owner = lifecycleOwner,
 		binding = ItemPageBinding.inflate(LayoutInflater.from(parent.context), parent, false),
 		loader = loader,
-		settings = settings,
+		readerSettingsProducer = readerSettingsProducer,
 		networkState = networkState,
 		exceptionResolver = exceptionResolver,
 	)

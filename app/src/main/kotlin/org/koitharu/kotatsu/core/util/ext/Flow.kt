@@ -61,6 +61,8 @@ inline fun <T, R> Flow<List<T>>.mapItems(crossinline transform: (T) -> R): Flow<
 	return map { list -> list.map(transform) }
 }
 
+fun <T> Flow<T>.throttle(timeoutMillis: Long): Flow<T> = throttle { timeoutMillis }
+
 fun <T> Flow<T>.throttle(timeoutMillis: (T) -> Long): Flow<T> {
 	var lastEmittedAt = 0L
 	return transformLatest { value ->

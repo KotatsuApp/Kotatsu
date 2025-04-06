@@ -13,15 +13,15 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 class WebtoonAdapter(
 	private val lifecycleOwner: LifecycleOwner,
 	loader: PageLoader,
-	settings: ReaderSettings,
+	readerSettingsProducer: ReaderSettings.Producer,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
-) : BaseReaderAdapter<WebtoonHolder>(loader, settings, networkState, exceptionResolver) {
+) : BaseReaderAdapter<WebtoonHolder>(loader, readerSettingsProducer, networkState, exceptionResolver) {
 
 	override fun onCreateViewHolder(
 		parent: ViewGroup,
 		loader: PageLoader,
-		settings: ReaderSettings,
+		readerSettingsProducer: ReaderSettings.Producer,
 		networkState: NetworkState,
 		exceptionResolver: ExceptionResolver,
 	) = WebtoonHolder(
@@ -32,7 +32,7 @@ class WebtoonAdapter(
 			false,
 		),
 		loader = loader,
-		settings = settings,
+		readerSettingsProducer = readerSettingsProducer,
 		networkState = networkState,
 		exceptionResolver = exceptionResolver,
 	)

@@ -67,7 +67,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 				rv.addItemDecoration(WebtoonGapsDecoration())
 			}
 		}
-		viewModel.readerSettings.observe(viewLifecycleOwner) {
+		viewModel.readerSettingsProducer.observe(viewLifecycleOwner) {
 			it.applyBackground(binding.root)
 		}
 	}
@@ -81,7 +81,7 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 	override fun onCreateAdapter() = WebtoonAdapter(
 		lifecycleOwner = viewLifecycleOwner,
 		loader = pageLoader,
-		settings = viewModel.readerSettings,
+		readerSettingsProducer = viewModel.readerSettingsProducer,
 		networkState = networkState,
 		exceptionResolver = exceptionResolver,
 	)

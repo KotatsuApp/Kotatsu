@@ -105,7 +105,7 @@ class ReaderActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderBinding.inflate(layoutInflater))
 		readerManager = ReaderManager(supportFragmentManager, viewBinding.container, settings)
-		setDisplayHomeAsUp(true, false)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		touchHelper = TapGridDispatcher(this, this)
 		scrollTimer = scrollTimerFactory.create(this, this)
 		pageSaveHelper = pageSaveHelperFactory.create(this)
@@ -146,7 +146,7 @@ class ReaderActivity :
 				.setAnchorView(viewBinding.toolbarDocked)
 				.show()
 		}
-		viewModel.readerSettings.observe(this) {
+		viewModel.readerSettingsProducer.observe(this) {
 			viewBinding.infoBar.applyColorScheme(isBlackOnWhite = it.background.isLight(this))
 		}
 		viewModel.isZoomControlsEnabled.observe(this) {

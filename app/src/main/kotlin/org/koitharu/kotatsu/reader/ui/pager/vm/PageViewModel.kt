@@ -1,10 +1,10 @@
-package org.koitharu.kotatsu.reader.ui.pager
+package org.koitharu.kotatsu.reader.ui.pager.vm
 
 import android.content.ComponentCallbacks2
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.net.Uri
-import androidx.lifecycle.Observer
+import androidx.annotation.WorkerThread
 import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
 import com.davemorrissey.labs.subscaleview.ImageSource
 import kotlinx.coroutines.CancellationException
@@ -14,41 +14,38 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import kotlinx.coroutines.withContext
+import okio.IOException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.core.util.ext.toFileOrNull
+import org.koitharu.kotatsu.core.util.ext.throttle
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
-import java.io.IOException
 
-class PageHolderDelegate(
+class PageViewModel(
 	private val loader: PageLoader,
-	private val readerSettings: ReaderSettings,
-	private val callback: Callback,
+	val settingsProducer: ReaderSettings.Producer,
 	private val networkState: NetworkState,
 	private val exceptionResolver: ExceptionResolver,
 	private val isWebtoon: Boolean,
-) : DefaultOnImageEventListener, Observer<ReaderSettings>, ComponentCallbacks2 {
+) : DefaultOnImageEventListener, ComponentCallbacks2 {
 
 	private val scope = loader.loaderScope + Dispatchers.Main.immediate
-	var state = State.EMPTY
-		private set
 	private var job: Job? = null
-	private var uri: Uri? = null
 	private var cachedBounds: Rect? = null
-	private var error: Throwable? = null
+
+	val state = MutableStateFlow<PageState>(PageState.Empty)
 
 	init {
 		scope.launch(Dispatchers.Main) { // the same as post() -- wait until child fields init
-			callback.onConfigChanged()
+			// callback.onConfigChanged()
 		}
 	}
 
@@ -56,7 +53,7 @@ class PageHolderDelegate(
 
 	fun onBind(page: MangaPage) {
 		val prevJob = job
-		job = scope.launch {
+		job = scope.launch(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			doLoad(page, force = false)
 		}
@@ -66,8 +63,8 @@ class PageHolderDelegate(
 		val prevJob = job
 		job = scope.launch {
 			prevJob?.cancelAndJoin()
-			val e = error
-			if (e != null && ExceptionResolver.canResolve(e)) {
+			val e = (state.value as? PageState.Error)?.error
+			if (e != null && ExceptionResolver.Companion.canResolve(e)) {
 				if (!isFromUser) {
 					return@launch
 				}
@@ -78,75 +75,38 @@ class PageHolderDelegate(
 	}
 
 	fun showErrorDetails(url: String?) {
-		val e = error ?: return
+		val e = (state.value as? PageState.Error)?.error ?: return
 		exceptionResolver.showErrorDetails(e, url)
 	}
 
-	fun onAttachedToWindow() {
-		readerSettings.observeForever(this)
-	}
-
-	fun onDetachedFromWindow() {
-		readerSettings.removeObserver(this)
-	}
-
 	fun onRecycle() {
-		state = State.EMPTY
-		uri = null
+		state.value = PageState.Empty
 		cachedBounds = null
-		error = null
 		job?.cancel()
 	}
 
-	fun reload() {
-		if (state == State.SHOWN) {
-			uri?.let {
-				callback.onImageReady(it.toImageSource(cachedBounds))
-			}
-		}
-	}
-
-	override fun onReady() {
-		if (state >= State.LOADED) {
-			state = State.SHOWING
-			error = null
-			callback.onImageShowing(readerSettings, isPreview = false)
-		} else if (state == State.LOADING_WITH_PREVIEW) {
-			callback.onImageShowing(readerSettings, isPreview = true)
-		}
-	}
-
 	override fun onImageLoaded() {
-		if (state >= State.LOADED) {
-			state = State.SHOWN
-			error = null
-			callback.onImageShown(isPreview = false)
-		} else if (state == State.LOADING_WITH_PREVIEW) {
-			callback.onImageShown(isPreview = true)
+		state.update {
+			if (it is PageState.Loaded) PageState.Shown(it.source, it.isConverted) else it
 		}
 	}
 
 	override fun onImageLoadError(e: Throwable) {
 		e.printStackTraceDebug()
-		if (state < State.LOADED) {
-			// ignore preview error
-			return
-		}
-		val uri = this.uri
-		error = e
-		if (state == State.LOADED && e is IOException && uri != null && uri.toFileOrNull()?.exists() != false) {
-			tryConvert(uri, e)
-		} else {
-			state = State.ERROR
-			callback.onError(e)
-		}
-	}
 
-	override fun onChanged(value: ReaderSettings) {
-		if (state == State.SHOWN) {
-			callback.onImageShowing(readerSettings, isPreview = false)
+		state.update { currentState ->
+			if (currentState is PageState.Loaded) {
+				val uri = (currentState.source as? ImageSource.Uri)?.uri
+				if (!currentState.isConverted && uri != null && e is IOException) {
+					tryConvert(uri, e)
+					PageState.Converting()
+				} else {
+					PageState.Error(e)
+				}
+			} else {
+				currentState
+			}
 		}
-		callback.onConfigChanged()
 	}
 
 	override fun onConfigurationChanged(newConfig: Configuration) = Unit
@@ -155,68 +115,58 @@ class PageHolderDelegate(
 	override fun onLowMemory() = Unit
 
 	override fun onTrimMemory(level: Int) {
-		callback.onTrimMemory()
+		// callback.onTrimMemory()
 	}
 
 	private fun tryConvert(uri: Uri, e: Exception) {
 		val prevJob = job
 		job = scope.launch {
 			prevJob?.join()
-			state = State.CONVERTING
+			state.value = PageState.Converting()
 			try {
 				val newUri = loader.convertBimap(uri)
-				cachedBounds = if (readerSettings.isPagesCropEnabled(isWebtoon)) {
+				cachedBounds = if (settingsProducer.value.isPagesCropEnabled(isWebtoon)) {
 					loader.getTrimmedBounds(newUri)
 				} else {
 					null
 				}
-				state = State.CONVERTED
-				callback.onImageReady(newUri.toImageSource(cachedBounds))
+				state.value = PageState.Loaded(uri.toImageSource(cachedBounds), isConverted = true)
 			} catch (ce: CancellationException) {
 				throw ce
 			} catch (e2: Throwable) {
 				e2.printStackTrace()
 				e.addSuppressed(e2)
-				state = State.ERROR
-				callback.onError(e)
+				state.value = PageState.Error(e)
 			}
 		}
 	}
 
+	@WorkerThread
 	private suspend fun doLoad(data: MangaPage, force: Boolean) = coroutineScope {
-		state = State.LOADING
-		error = null
-		callback.onLoadingStarted()
+		state.value = PageState.Loading(null/* TODO */, -1)
 		val previewJob = launch {
-			val preview = loader.loadPreview(data)
-			if (preview != null && state == State.LOADING) {
-				state = State.LOADING_WITH_PREVIEW
-				callback.onPreviewReady(preview)
+			val preview = loader.loadPreview(data) ?: return@launch
+			state.update {
+				if (it is PageState.Loading) it.copy(preview = preview) else it
 			}
 		}
 		try {
-			val task = withContext(Dispatchers.Default) {
-				loader.loadPageAsync(data, force)
-			}
+			val task = loader.loadPageAsync(data, force)
 			val progressObserver = observeProgress(this, task.progressAsFlow())
-			val file = task.await()
+			val uri = task.await()
 			progressObserver.cancelAndJoin()
 			previewJob.cancel()
-			uri = file
-			state = State.LOADED
-			cachedBounds = if (readerSettings.isPagesCropEnabled(isWebtoon)) {
-				loader.getTrimmedBounds(checkNotNull(uri))
+			cachedBounds = if (settingsProducer.value.isPagesCropEnabled(isWebtoon)) {
+				loader.getTrimmedBounds(uri)
 			} else {
 				null
 			}
-			callback.onImageReady(checkNotNull(uri).toImageSource(cachedBounds))
+			state.value = PageState.Loaded(uri.toImageSource(cachedBounds), isConverted = false)
 		} catch (e: CancellationException) {
 			throw e
 		} catch (e: Throwable) {
 			e.printStackTraceDebug()
-			state = State.ERROR
-			error = e
-			callback.onError(e)
+			state.value = PageState.Error(e)
 			if (e is IOException && !networkState.value) {
 				networkState.awaitForConnection()
 				retry(data, isFromUser = false)
@@ -225,9 +175,17 @@ class PageHolderDelegate(
 	}
 
 	private fun observeProgress(scope: CoroutineScope, progress: Flow<Float>) = progress
-		.debounce(250)
-		.onEach { callback.onProgressChanged((100 * it).toInt()) }
-		.launchIn(scope)
+		.throttle(250)
+		.onEach {
+			val progressValue = (100 * it).toInt()
+			state.update { currentState ->
+				if (currentState is PageState.Loading) {
+					currentState.copy(progress = progressValue)
+				} else {
+					currentState
+				}
+			}
+		}.launchIn(scope)
 
 	private fun Uri.toImageSource(bounds: Rect?): ImageSource {
 		val source = ImageSource.uri(this)
@@ -236,30 +194,5 @@ class PageHolderDelegate(
 		} else {
 			source
 		}
-	}
-
-	enum class State {
-		EMPTY, LOADING, LOADING_WITH_PREVIEW, LOADED, CONVERTING, CONVERTED, SHOWING, SHOWN, ERROR
-	}
-
-	interface Callback {
-
-		fun onLoadingStarted()
-
-		fun onError(e: Throwable)
-
-		fun onPreviewReady(source: ImageSource)
-
-		fun onImageReady(source: ImageSource)
-
-		fun onImageShowing(settings: ReaderSettings, isPreview: Boolean)
-
-		fun onImageShown(isPreview: Boolean)
-
-		fun onProgressChanged(progress: Int)
-
-		fun onConfigChanged()
-
-		fun onTrimMemory()
 	}
 }

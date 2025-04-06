@@ -2,23 +2,15 @@ package org.koitharu.kotatsu.reader.ui.pager.standard
 
 import android.annotation.SuppressLint
 import android.graphics.PointF
-import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
-import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
-import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
-import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
-import org.koitharu.kotatsu.core.util.ext.isSerializable
-import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.ItemPageBinding
-import org.koitharu.kotatsu.parsers.util.ifZero
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
@@ -28,37 +20,25 @@ open class PageHolder(
 	owner: LifecycleOwner,
 	binding: ItemPageBinding,
 	loader: PageLoader,
-	settings: ReaderSettings,
+	readerSettingsProducer: ReaderSettings.Producer,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
-) : BasePageHolder<ItemPageBinding>(binding, loader, settings, networkState, exceptionResolver, owner),
-	View.OnClickListener,
+) : BasePageHolder<ItemPageBinding>(
+	binding = binding,
+	loader = loader,
+	readerSettingsProducer = readerSettingsProducer,
+	networkState = networkState,
+	exceptionResolver = exceptionResolver,
+	lifecycleOwner = owner,
+),
 	ZoomControl.ZoomControlListener {
 
-	init {
-		binding.ssiv.bindToLifecycle(owner)
-		binding.ssiv.isEagerLoadingEnabled = !context.isLowRamDevice()
-		binding.ssiv.addOnImageEventListener(delegate)
-		@Suppress("LeakingThis")
-		bindingInfo.buttonRetry.setOnClickListener(this)
-		@Suppress("LeakingThis")
-		bindingInfo.buttonErrorDetails.setOnClickListener(this)
-	}
+	override val ssiv = binding.ssiv
 
-	override fun onResume() {
-		super.onResume()
-		binding.ssiv.applyDownSampling(isForeground = true)
-	}
-
-	override fun onPause() {
-		super.onPause()
-		binding.ssiv.applyDownSampling(isForeground = false)
-	}
-
-	override fun onConfigChanged() {
-		super.onConfigChanged()
+	override fun onConfigChanged(settings: ReaderSettings) {
+		super.onConfigChanged(settings)
 		if (settings.applyBitmapConfig(binding.ssiv)) {
-			delegate.reload()
+			reloadImage()
 		}
 		binding.ssiv.applyDownSampling(isResumed())
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
@@ -66,7 +46,7 @@ open class PageHolder(
 
 	@SuppressLint("SetTextI18n")
 	override fun onBind(data: ReaderPage) {
-		delegate.onBind(data.toMangaPage())
+		super.onBind(data)
 		binding.textViewNumber.text = (data.index + 1).toString()
 	}
 
@@ -75,33 +55,7 @@ open class PageHolder(
 		binding.ssiv.recycle()
 	}
 
-	override fun onLoadingStarted() {
-		bindingInfo.layoutError.isVisible = false
-		bindingInfo.progressBar.show()
-		binding.ssiv.recycle()
-		bindingInfo.textViewStatus.setTextAndVisible(R.string.loading_)
-	}
-
-	override fun onProgressChanged(progress: Int) {
-		if (progress in 0..100) {
-			bindingInfo.progressBar.isIndeterminate = false
-			bindingInfo.progressBar.setProgressCompat(progress, true)
-			bindingInfo.textViewStatus.text = context.getString(R.string.percent_string_pattern, progress.toString())
-		} else {
-			bindingInfo.progressBar.isIndeterminate = true
-			bindingInfo.textViewStatus.setText(R.string.loading_)
-		}
-	}
-
-	override fun onPreviewReady(source: ImageSource) {
-		binding.ssiv.setImage(source)
-	}
-
-	override fun onImageReady(source: ImageSource) {
-		binding.ssiv.setImage(source)
-	}
-
-	override fun onImageShowing(settings: ReaderSettings, isPreview: Boolean) {
+	override fun onReady() {
 		binding.ssiv.maxScale = 2f * maxOf(
 			binding.ssiv.width / binding.ssiv.sWidth.toFloat(),
 			binding.ssiv.height / binding.ssiv.sHeight.toFloat(),
@@ -139,34 +93,6 @@ open class PageHolder(
 				)
 			}
 		}
-	}
-
-	override fun onImageShown(isPreview: Boolean) {
-		if (!isPreview) {
-			bindingInfo.progressBar.hide()
-		}
-		bindingInfo.textViewStatus.isVisible = false
-	}
-
-	override fun onTrimMemory() {
-		// TODO https://developer.android.com/topic/performance/memory
-	}
-
-	final override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return, isFromUser = true)
-			R.id.button_error_details -> delegate.showErrorDetails(boundData?.url)
-		}
-	}
-
-	override fun onError(e: Throwable) {
-		bindingInfo.textViewError.text = e.getDisplayMessage(context.resources)
-		bindingInfo.buttonRetry.setText(
-			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again },
-		)
-		bindingInfo.buttonErrorDetails.isVisible = e.isSerializable()
-		bindingInfo.layoutError.isVisible = true
-		bindingInfo.progressBar.hide()
 	}
 
 	override fun onZoomIn() {
