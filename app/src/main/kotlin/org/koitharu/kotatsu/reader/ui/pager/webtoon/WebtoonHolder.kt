@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
+import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
-import org.koitharu.kotatsu.core.util.GoneOnInvisibleListener
 import org.koitharu.kotatsu.databinding.ItemPageWebtoonBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
@@ -28,29 +28,9 @@ class WebtoonHolder(
 	override val ssiv = binding.ssiv
 
 	private var scrollToRestore = 0
-	private val goneOnInvisibleListener = GoneOnInvisibleListener(bindingInfo.progressBar)
 
-	override fun onConfigChanged(settings: ReaderSettings) {
-		super.onConfigChanged(settings)
-		if (settings.applyBitmapConfig(binding.ssiv)) {
-			reloadImage()
-		}
-		binding.ssiv.applyDownSampling(isResumed())
-	}
-
-	override fun onRecycled() {
-		super.onRecycled()
-		binding.ssiv.recycle()
-	}
-
-	override fun onAttachedToWindow() {
-		super.onAttachedToWindow()
-		goneOnInvisibleListener.attach()
-	}
-
-	override fun onDetachedFromWindow() {
-		super.onDetachedFromWindow()
-		goneOnInvisibleListener.detach()
+	init {
+		bindingInfo.progressBar.setVisibilityAfterHide(View.GONE)
 	}
 
 	override fun onReady() {

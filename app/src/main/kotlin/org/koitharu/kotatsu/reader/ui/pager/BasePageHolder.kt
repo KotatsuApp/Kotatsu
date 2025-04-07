@@ -1,6 +1,9 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
+import android.content.ComponentCallbacks2
+import android.content.ComponentCallbacks2.TRIM_MEMORY_COMPLETE
 import android.content.Context
+import android.content.res.Configuration
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.core.view.isGone
@@ -21,7 +24,6 @@ import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.core.util.ext.isSerializable
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.LayoutPageInfoBinding
 import org.koitharu.kotatsu.parsers.util.ifZero
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -37,7 +39,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
 	lifecycleOwner: LifecycleOwner,
-) : LifecycleAwareViewHolder(binding.root, lifecycleOwner), DefaultOnImageEventListener {
+) : LifecycleAwareViewHolder(binding.root, lifecycleOwner), DefaultOnImageEventListener, ComponentCallbacks2 {
 
 	protected val viewModel = PageViewModel(
 		loader = loader,
@@ -82,9 +84,12 @@ abstract class BasePageHolder<B : ViewBinding>(
 	@CallSuper
 	protected open fun onConfigChanged(settings: ReaderSettings) {
 		settings.applyBackground(itemView)
-		if (viewModel.state.value is PageState.Shown) {
+		if (settings.applyBitmapConfig(ssiv)) {
+			reloadImage()
+		} else if (viewModel.state.value is PageState.Shown) {
 			onReady()
 		}
+		ssiv.applyDownSampling(isResumed())
 	}
 
 	fun reloadImage() {
@@ -103,7 +108,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 
 	override fun onCreate() {
 		super.onCreate()
-		context.registerComponentCallbacks(viewModel)
+		context.registerComponentCallbacks(this)
 		viewModel.state.observe(this, ::onStateChanged)
 		viewModel.settingsProducer.observe(this, ::onConfigChanged)
 	}
@@ -122,7 +127,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 	}
 
 	override fun onDestroy() {
-		context.unregisterComponentCallbacks(viewModel)
+		context.unregisterComponentCallbacks(this)
 		super.onDestroy()
 	}
 
@@ -136,9 +141,18 @@ abstract class BasePageHolder<B : ViewBinding>(
 		ssiv.recycle()
 	}
 
+	override fun onTrimMemory(level: Int) {
+		// TODO
+	}
+
+	override fun onConfigurationChanged(newConfig: Configuration) = Unit
+
+	@Deprecated("Deprecated in Java")
+	final override fun onLowMemory() = onTrimMemory(TRIM_MEMORY_COMPLETE)
+
 	protected open fun onStateChanged(state: PageState) {
 		bindingInfo.layoutError.isVisible = state is PageState.Error
-		bindingInfo.progressBar.showOrHide(!state.isFinalState())
+		bindingInfo.progressBar.isGone = state.isFinalState()
 		bindingInfo.textViewStatus.isGone = state.isFinalState()
 		val progress = (state as? PageState.Loading)?.progress ?: -1
 		if (progress in 0..100) {

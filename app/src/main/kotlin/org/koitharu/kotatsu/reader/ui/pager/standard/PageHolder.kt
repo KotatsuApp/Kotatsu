@@ -30,17 +30,12 @@ open class PageHolder(
 	networkState = networkState,
 	exceptionResolver = exceptionResolver,
 	lifecycleOwner = owner,
-),
-	ZoomControl.ZoomControlListener {
+), ZoomControl.ZoomControlListener {
 
 	override val ssiv = binding.ssiv
 
 	override fun onConfigChanged(settings: ReaderSettings) {
 		super.onConfigChanged(settings)
-		if (settings.applyBitmapConfig(binding.ssiv)) {
-			reloadImage()
-		}
-		binding.ssiv.applyDownSampling(isResumed())
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}
 
@@ -48,11 +43,6 @@ open class PageHolder(
 	override fun onBind(data: ReaderPage) {
 		super.onBind(data)
 		binding.textViewNumber.text = (data.index + 1).toString()
-	}
-
-	override fun onRecycled() {
-		super.onRecycled()
-		binding.ssiv.recycle()
 	}
 
 	override fun onReady() {

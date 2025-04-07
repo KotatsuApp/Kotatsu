@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.reader.ui.pager.vm
 
-import android.content.ComponentCallbacks2
-import android.content.res.Configuration
 import android.graphics.Rect
 import android.net.Uri
 import androidx.annotation.WorkerThread
@@ -20,6 +18,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.withContext
 import okio.IOException
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -35,19 +34,13 @@ class PageViewModel(
 	private val networkState: NetworkState,
 	private val exceptionResolver: ExceptionResolver,
 	private val isWebtoon: Boolean,
-) : DefaultOnImageEventListener, ComponentCallbacks2 {
+) : DefaultOnImageEventListener {
 
 	private val scope = loader.loaderScope + Dispatchers.Main.immediate
 	private var job: Job? = null
 	private var cachedBounds: Rect? = null
 
 	val state = MutableStateFlow<PageState>(PageState.Empty)
-
-	init {
-		scope.launch(Dispatchers.Main) { // the same as post() -- wait until child fields init
-			// callback.onConfigChanged()
-		}
-	}
 
 	fun isLoading() = job?.isActive == true
 
@@ -64,13 +57,14 @@ class PageViewModel(
 		job = scope.launch {
 			prevJob?.cancelAndJoin()
 			val e = (state.value as? PageState.Error)?.error
-			if (e != null && ExceptionResolver.Companion.canResolve(e)) {
-				if (!isFromUser) {
-					return@launch
+			if (e != null && ExceptionResolver.canResolve(e)) {
+				if (isFromUser) {
+					exceptionResolver.resolve(e)
 				}
-				exceptionResolver.resolve(e)
 			}
-			doLoad(page, force = true)
+			withContext(Dispatchers.Default) {
+				doLoad(page, force = true)
+			}
 		}
 	}
 
@@ -86,8 +80,12 @@ class PageViewModel(
 	}
 
 	override fun onImageLoaded() {
-		state.update {
-			if (it is PageState.Loaded) PageState.Shown(it.source, it.isConverted) else it
+		state.update { currentState ->
+			if (currentState is PageState.Loaded) {
+				PageState.Shown(currentState.source, currentState.isConverted)
+			} else {
+				currentState
+			}
 		}
 	}
 
@@ -109,18 +107,9 @@ class PageViewModel(
 		}
 	}
 
-	override fun onConfigurationChanged(newConfig: Configuration) = Unit
-
-	@Suppress("OVERRIDE_DEPRECATION")
-	override fun onLowMemory() = Unit
-
-	override fun onTrimMemory(level: Int) {
-		// callback.onTrimMemory()
-	}
-
 	private fun tryConvert(uri: Uri, e: Exception) {
 		val prevJob = job
-		job = scope.launch {
+		job = scope.launch(Dispatchers.Default) {
 			prevJob?.join()
 			state.value = PageState.Converting()
 			try {
@@ -143,7 +132,7 @@ class PageViewModel(
 
 	@WorkerThread
 	private suspend fun doLoad(data: MangaPage, force: Boolean) = coroutineScope {
-		state.value = PageState.Loading(null/* TODO */, -1)
+		state.value = PageState.Loading(null, -1)
 		val previewJob = launch {
 			val preview = loader.loadPreview(data) ?: return@launch
 			state.update {
