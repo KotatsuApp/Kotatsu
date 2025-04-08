@@ -2,10 +2,23 @@ package org.koitharu.kotatsu.reader.ui.pager.standard
 
 import android.annotation.SuppressLint
 import android.graphics.PointF
+import android.os.Build
+import android.view.Gravity
+import android.view.RoundedCorner
+import android.view.View
+import android.view.WindowInsets
 import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
+import androidx.annotation.RequiresApi
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.setMargins
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.os.NetworkState
@@ -30,9 +43,25 @@ open class PageHolder(
 	networkState = networkState,
 	exceptionResolver = exceptionResolver,
 	lifecycleOwner = owner,
-), ZoomControl.ZoomControlListener {
+), ZoomControl.ZoomControlListener, OnApplyWindowInsetsListener {
 
 	override val ssiv = binding.ssiv
+
+	init {
+		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
+	}
+
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			insets.toWindowInsets()?.let {
+				applyRoundedCorners(it)
+			}
+		}
+		return insets
+	}
 
 	override fun onConfigChanged(settings: ReaderSettings) {
 		super.onConfigChanged(settings)
@@ -91,6 +120,29 @@ open class PageHolder(
 
 	override fun onZoomOut() {
 		scaleBy(0.8f)
+	}
+
+	@SuppressLint("RtlHardcoded")
+	@RequiresApi(Build.VERSION_CODES.S)
+	protected open fun applyRoundedCorners(insets: WindowInsets) {
+		binding.textViewNumber.updateLayoutParams<FrameLayout.LayoutParams> {
+			val baseMargin = context.resources.getDimensionPixelOffset(R.dimen.margin_small)
+			val absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection)
+			val corner = when {
+				absoluteGravity and Gravity.LEFT == Gravity.LEFT -> {
+					insets.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT)
+				}
+
+				absoluteGravity and Gravity.RIGHT == Gravity.RIGHT -> {
+					insets.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT)
+				}
+
+				else -> {
+					null
+				}
+			}
+			setMargins(baseMargin + (corner?.radius ?: 0))
+		}
 	}
 
 	private fun scaleBy(factor: Float) {

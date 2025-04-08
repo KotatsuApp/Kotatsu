@@ -20,7 +20,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="end|bottom"
-		android:layout_margin="8dp"
+		android:layout_margin="@dimen/margin_small"
 		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceBodyMedium"
 		android:textColor="?android:textColorTertiary"
