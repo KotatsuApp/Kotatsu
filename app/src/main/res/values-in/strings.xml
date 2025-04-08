@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="local_storage">Penyimpanan lokal</string>
-    <string name="favourites">Favorit</string>
+    <string name="favourites">Banyak disukai</string>
     <string name="history">Riwayat</string>
     <string name="error_occurred">Terjadi kesalahan</string>
     <string name="network_error">Kesalahan jaringan</string>
@@ -18,7 +18,7 @@
     <string name="nothing_found">Tidak ditemukan</string>
     <string name="history_is_empty">Riwayat kosong</string>
     <string name="read">Baca</string>
-    <string name="you_have_not_favourites_yet">Belum ada favorit</string>
+    <string name="you_have_not_favourites_yet">Belum ada yang disukai</string>
     <string name="add_to_favourites">Buat favorit</string>
     <string name="add_new_category">Kategori baru</string>
     <string name="add">Tambah</string>
@@ -66,7 +66,7 @@
     <string name="reader_settings">Pengaturan pembaca</string>
     <string name="switch_pages">Ganti halaman</string>
     <string name="chapters">Bab</string>
-    <string name="list">Daftari</string>
+    <string name="list">Daftar</string>
     <string name="detailed_list">Daftar rinci</string>
     <string name="webtoon">Webtoon</string>
     <string name="read_mode">Mode baca</string>
@@ -204,7 +204,7 @@
     <string name="create_category">Kategori baru</string>
     <string name="light_indicator">Indikator LED</string>
     <string name="vibration">Getaran</string>
-    <string name="favourites_categories">Kategori favorit</string>
+    <string name="favourites_categories">Kategori disukai</string>
     <string name="remove_category">Hapus</string>
     <string name="clear_updates_feed">Bersihkan aliran pembaruan</string>
     <string name="right_to_left">Kanan-ke-kiri</string>

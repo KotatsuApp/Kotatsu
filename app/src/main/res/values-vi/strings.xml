@@ -17,7 +17,7 @@
     <string name="you_have_not_favourites_yet">Chưa có mục yêu thích nào</string>
     <string name="add_to_favourites">Thêm vào mục yêu thích</string>
     <string name="add">Thêm</string>
-    <string name="create_shortcut">Tạo lối tắt…</string>
+    <string name="create_shortcut">Tạo lối tắt</string>
     <string name="share_s">Chia sẻ %s</string>
     <string name="search_manga">Tìm kiếm manga</string>
     <string name="manga_downloading_">Đang tải xuống…</string>
@@ -450,7 +450,7 @@
     <string name="suggest_new_sources_summary">Hiện cửa sổ bật các nguồn mới sau khi cập nhật ứng dụng</string>
     <string name="by_relevance">Liên quan</string>
     <string name="periodic_backups">Sao lưu định kì</string>
-    <string name="online_variant">Biến thể trên mạng</string>
+    <string name="online_variant">Xem chi tiết với nguồn</string>
     <string name="frequency_once_per_week">Một lần mỗi tuần</string>
     <string name="frequency_twice_per_month">Hai lần mỗi tháng</string>
     <string name="categories">Thể loại</string>
