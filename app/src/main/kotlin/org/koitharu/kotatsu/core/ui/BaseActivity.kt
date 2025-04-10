@@ -3,11 +3,13 @@ package org.koitharu.kotatsu.core.ui
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
+import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
@@ -67,7 +69,7 @@ abstract class BaseActivity<B : ViewBinding> :
 		}
 		putDataToExtras(intent)
 		exceptionResolver = entryPoint.exceptionResolverFactory.create(this)
-		enableEdgeToEdge()
+		enableEdgeToEdgeNoContrast()
 		super.onCreate(savedInstanceState)
 	}
 
@@ -97,6 +99,17 @@ abstract class BaseActivity<B : ViewBinding> :
 		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 		val toolbar = (binding.root.findViewById<View>(R.id.toolbar) as? Toolbar)
 		toolbar?.let(this::setSupportActionBar)
+	}
+
+	private fun enableEdgeToEdgeNoContrast() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			enableEdgeToEdge(
+				navigationBarStyle = SystemBarStyle.auto(
+					Color.TRANSPARENT, Color.TRANSPARENT
+				)
+			)
+			window.isNavigationBarContrastEnforced = false
+		}
 	}
 
 	protected fun setDisplayHomeAsUp(isEnabled: Boolean, showUpAsClose: Boolean) {
