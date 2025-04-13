@@ -3,7 +3,9 @@ package org.koitharu.kotatsu.reader.domain
 import android.content.Context
 import android.graphics.Rect
 import android.net.Uri
+import android.util.Log
 import androidx.annotation.AnyThread
+import androidx.annotation.CheckResult
 import androidx.collection.LongSparseArray
 import androidx.collection.set
 import androidx.core.net.toFile
@@ -30,7 +32,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.use
@@ -184,9 +185,10 @@ class PageLoader @Inject constructor(
 		return loadPageAsync(page, force).await()
 	}
 
+	@CheckResult
 	suspend fun convertBimap(uri: Uri): Uri = convertLock.withLock {
 		if (uri.isZipUri()) {
-			val bitmap = runInterruptible(Dispatchers.IO) {
+			runInterruptible(Dispatchers.IO) {
 				ZipFile(uri.schemeSpecificPart).use { zip ->
 					val entry = zip.getEntry(uri.fragment)
 					context.ensureRamAtLeast(entry.size * 2)
@@ -194,8 +196,9 @@ class PageLoader @Inject constructor(
 						BitmapDecoderCompat.decode(it, MimeTypes.getMimeTypeFromExtension(entry.name))
 					}
 				}
+			}.use { image ->
+				cache.put(uri.toString(), image).toUri()
 			}
-			cache.put(uri.toString(), bitmap).toUri()
 		} else {
 			val file = uri.toFile()
 			runInterruptible(Dispatchers.IO) {

@@ -119,7 +119,7 @@ class PageViewModel(
 				} else {
 					null
 				}
-				state.value = PageState.Loaded(uri.toImageSource(cachedBounds), isConverted = true)
+				state.value = PageState.Loaded(newUri.toImageSource(cachedBounds), isConverted = true)
 			} catch (ce: CancellationException) {
 				throw ce
 			} catch (e2: Throwable) {

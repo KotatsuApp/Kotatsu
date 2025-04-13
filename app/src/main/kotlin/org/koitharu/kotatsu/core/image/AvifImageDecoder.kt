@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.image
 
 import android.graphics.Bitmap
+import androidx.core.graphics.createBitmap
 import coil3.ImageLoader
 import coil3.asImage
 import coil3.decode.DecodeResult
@@ -32,7 +33,7 @@ class AvifImageDecoder(
 			)
 		}
 		val config = if (info.depth == 8 || info.alphaPresent) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565
-		val bitmap = Bitmap.createBitmap(info.width, info.height, config)
+		val bitmap = createBitmap(info.width, info.height, config)
 		if (!AvifDecoder.decode(bytes, bytes.remaining(), bitmap)) {
 			bitmap.recycle()
 			throw ImageDecodeException(null, "avif")

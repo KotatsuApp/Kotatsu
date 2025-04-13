@@ -2,15 +2,19 @@ package org.koitharu.kotatsu.core.image
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.BitmapRegionDecoder
 import android.graphics.ImageDecoder
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.createBitmap
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
+import okio.IOException
 import org.aomedia.avif.android.AvifDecoder
 import org.aomedia.avif.android.AvifDecoder.Info
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.MimeType
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toByteBuffer
 import org.koitharu.kotatsu.core.util.ext.toMimeTypeOrNull
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -52,6 +56,19 @@ object BitmapDecoderCompat {
 	}
 
 	@Blocking
+	fun createRegionDecoder(inoutStream: InputStream): BitmapRegionDecoder? = try {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			BitmapRegionDecoder.newInstance(inoutStream)
+		} else {
+			@Suppress("DEPRECATION")
+			BitmapRegionDecoder.newInstance(inoutStream, false)
+		}
+	} catch (e: IOException) {
+		e.printStackTraceDebug()
+		null
+	}
+
+	@Blocking
 	fun probeMimeType(file: File): MimeType? {
 		return MimeTypes.probeMimeType(file) ?: detectBitmapType(file)
 	}
@@ -62,7 +79,7 @@ object BitmapDecoderCompat {
 			inJustDecodeBounds = true
 		}
 		BitmapFactory.decodeFile(file.path, options)?.recycle()
-		return options.outMimeType?.toMimeTypeOrNull()
+		options.outMimeType?.toMimeTypeOrNull()
 	}.getOrNull()
 
 	private fun checkBitmapNotNull(bitmap: Bitmap?, format: String?): Bitmap =
@@ -78,7 +95,7 @@ object BitmapDecoderCompat {
 			)
 		}
 		val config = if (info.depth == 8 || info.alphaPresent) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565
-		val bitmap = Bitmap.createBitmap(info.width, info.height, config)
+		val bitmap = createBitmap(info.width, info.height, config)
 		if (!AvifDecoder.decode(bytes, bytes.remaining(), bitmap)) {
 			bitmap.recycle()
 			throw ImageDecodeException(null, FORMAT_AVIF)
