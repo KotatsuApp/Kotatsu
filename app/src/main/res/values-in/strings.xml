@@ -803,4 +803,6 @@
     <string name="global_search">"Pencarian  global"</string>
     <string name="search_everywhere">Cari dimana saja</string>
     <string name="badges_in_lists">Lencana dalam daftar</string>
+    <string name="tags_warnings">tandai genre berbahaya</string>
+    <string name="tags_warnings_summary">Tandai genre yang mungkin tidak pantas untuk sebagian besar pengguna</string>
 </resources>
