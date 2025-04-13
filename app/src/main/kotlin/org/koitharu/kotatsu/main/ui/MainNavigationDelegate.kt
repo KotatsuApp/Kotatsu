@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.transition.MaterialFadeThrough
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +25,7 @@ import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
+import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
 import org.koitharu.kotatsu.core.util.ext.smoothScrollToTop
 import org.koitharu.kotatsu.explore.ui.ExploreFragment
 import org.koitharu.kotatsu.favourites.ui.container.FavouritesContainerFragment
@@ -232,7 +232,7 @@ class MainNavigationDelegate(
 	}
 
 	private fun setNavbarIsLabeled(value: Boolean) {
-		if (navBar is BottomNavigationView) {
+		if (navBar is SlidingBottomNavigationView) {
 			navBar.minimumHeight = navBar.resources.getDimensionPixelSize(
 				if (value) {
 					materialR.dimen.m3_bottom_nav_min_height
