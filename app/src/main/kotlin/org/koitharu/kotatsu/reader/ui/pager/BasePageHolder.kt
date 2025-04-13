@@ -181,7 +181,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 			}
 
 			is PageState.Loaded -> {
-				bindingInfo.textViewStatus.setText(R.string.processing_)
+				bindingInfo.textViewStatus.setText(R.string.preparing_)
 				ssiv.setImage(state.source)
 			}
 

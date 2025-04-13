@@ -19,7 +19,7 @@
 			android:id="@+id/progressBar"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginBottom="@dimen/badge_offset"
+			android:layout_marginBottom="8dp"
 			android:indeterminate="true"
 			android:visibility="gone"
 			tools:visibility="visible" />
@@ -29,7 +29,9 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
+			android:background="@drawable/bg_rounded_transparency"
 			android:gravity="center"
+			android:padding="4dp"
 			android:textAppearance="?textAppearanceBodyLarge"
 			tools:text="72%" />
 	</LinearLayout>
