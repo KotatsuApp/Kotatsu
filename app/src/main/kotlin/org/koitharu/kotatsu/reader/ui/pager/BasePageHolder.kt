@@ -152,8 +152,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 
 	protected open fun onStateChanged(state: PageState) {
 		bindingInfo.layoutError.isVisible = state is PageState.Error
-		bindingInfo.progressBar.isGone = state.isFinalState()
-		bindingInfo.textViewStatus.isGone = state.isFinalState()
+		bindingInfo.layoutProgress.isGone = state.isFinalState()
 		val progress = (state as? PageState.Loading)?.progress ?: -1
 		if (progress in 0..100) {
 			bindingInfo.progressBar.isIndeterminate = false

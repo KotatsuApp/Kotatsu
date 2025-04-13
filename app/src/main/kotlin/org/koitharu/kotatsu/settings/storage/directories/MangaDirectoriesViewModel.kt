@@ -36,9 +36,7 @@ class MangaDirectoriesViewModel @Inject constructor(
 		launchLoadingJob(Dispatchers.Default) {
 			loadingJob?.cancelAndJoin()
 			storageManager.takePermissions(uri)
-			val dir = requireNotNull(storageManager.resolveUri(uri)) {
-				"Cannot resolve file name of \"$uri\""
-			}
+			val dir = storageManager.resolveUri(uri)
 			if (!dir.canRead()) {
 				throw AccessDeniedException(dir)
 			}

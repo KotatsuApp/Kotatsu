@@ -825,4 +825,5 @@
 	<string name="suggestions_disabled_sources_summary">Show suggestions from all manga sources, including disabled ones</string>
 	<string name="tags_warnings">Highlight dangerous genres</string>
 	<string name="tags_warnings_summary">Highlight genres that may be inappropriate for most users</string>
+	<string name="error_non_file_uri">The selected path cannot be used because it does not denote a file or directory</string>
 </resources>

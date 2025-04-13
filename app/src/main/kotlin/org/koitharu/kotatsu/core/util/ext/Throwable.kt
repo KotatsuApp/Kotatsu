@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.IncompatiblePluginException
 import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
+import org.koitharu.kotatsu.core.exceptions.NonFileUriException
 import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.exceptions.SyncApiException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
@@ -91,6 +92,7 @@ private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = w
 	is BadBackupFormatException -> resources.getString(R.string.unsupported_backup_message)
 	is FileNotFoundException -> parseMessage(resources) ?: message
 	is AccessDeniedException -> resources.getString(R.string.no_access_to_file)
+	is NonFileUriException -> resources.getString(R.string.error_non_file_uri)
 	is EmptyHistoryException -> resources.getString(R.string.history_is_empty)
 	is ProxyConfigException -> resources.getString(R.string.invalid_proxy_configuration)
 	is SyncApiException,

@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import okhttp3.Cache
+import org.koitharu.kotatsu.core.exceptions.NonFileUriException
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.getStorageName
@@ -92,11 +93,11 @@ class LocalStorageManager @Inject constructor(
 		getAvailableStorageDirs()
 	}
 
-	suspend fun resolveUri(uri: Uri): File? = runInterruptible(Dispatchers.IO) {
+	suspend fun resolveUri(uri: Uri): File = runInterruptible(Dispatchers.IO) {
 		if (uri.isFileUri()) {
 			uri.toFile()
 		} else {
-			uri.resolveFile(context)
+			uri.resolveFile(context) ?: throw NonFileUriException(uri)
 		}
 	}
 
