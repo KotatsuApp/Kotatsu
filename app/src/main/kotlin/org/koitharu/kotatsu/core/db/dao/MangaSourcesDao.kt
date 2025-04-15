@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
+import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 
 @Dao
 abstract class MangaSourcesDao {
@@ -76,6 +77,7 @@ abstract class MangaSourcesDao {
 				addedIn = BuildConfig.VERSION_CODE,
 				lastUsedAt = 0,
 				isPinned = false,
+				cfState = CloudFlareHelper.PROTECTION_NOT_DETECTED,
 			)
 			upsert(entity)
 		}

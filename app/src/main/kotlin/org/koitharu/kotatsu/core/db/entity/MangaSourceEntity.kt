@@ -17,4 +17,5 @@ data class MangaSourceEntity(
 	@ColumnInfo(name = "added_in") val addedIn: Int,
 	@ColumnInfo(name = "used_at") val lastUsedAt: Long,
 	@ColumnInfo(name = "pinned") val isPinned: Boolean,
+	@ColumnInfo(name = "cf_state") val cfState: Int,
 )

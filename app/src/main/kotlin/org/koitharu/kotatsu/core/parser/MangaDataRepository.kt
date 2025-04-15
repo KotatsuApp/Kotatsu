@@ -161,5 +161,8 @@ class MangaDataRepository @Inject constructor(
 		cfContrast = 0f,
 		cfInvert = false,
 		cfGrayscale = false,
+		titleOverride = null,
+		coverUrlOverride = null,
+		contentRatingOverride = null,
 	)
 }

@@ -237,6 +237,7 @@ class FavouritesRepository @Inject constructor(
 					createdAt = System.currentTimeMillis(),
 					sortKey = 0,
 					deletedAt = 0L,
+					isPinned = false,
 				)
 				db.getFavouritesDao().insert(entity)
 			}

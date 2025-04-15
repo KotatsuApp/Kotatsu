@@ -32,6 +32,7 @@ import org.koitharu.kotatsu.core.util.ext.flattenLatest
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.util.Collections
@@ -268,6 +269,7 @@ class MangaSourcesRepository @Inject constructor(
 				addedIn = BuildConfig.VERSION_CODE,
 				lastUsedAt = 0,
 				isPinned = false,
+				cfState = CloudFlareHelper.PROTECTION_NOT_DETECTED,
 			)
 		}
 		dao.insertIfAbsent(entities)

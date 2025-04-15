@@ -86,6 +86,7 @@ fun MangaTag.toEntity() = TagEntity(
 	key = key,
 	source = source.name,
 	id = "${key}_${source.name}".longHashCode(),
+	isPinned = false, // for future use
 )
 
 fun Collection<MangaTag>.toEntities() = map(MangaTag::toEntity)

@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.favourites.data.FavouriteCategoryEntity
 import org.koitharu.kotatsu.favourites.data.FavouriteEntity
 import org.koitharu.kotatsu.history.data.HistoryEntity
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 import org.koitharu.kotatsu.parsers.util.json.getBooleanOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getFloatOrDefault
 import org.koitharu.kotatsu.parsers.util.json.getIntOrDefault
@@ -23,6 +24,7 @@ class JsonDeserializer(private val json: JSONObject) {
 		sortKey = json.getIntOrDefault("sort_key", 0),
 		createdAt = json.getLong("created_at"),
 		deletedAt = 0L,
+		isPinned = json.getBooleanOrDefault("pinned", false),
 	)
 
 	fun toMangaEntity() = MangaEntity(
@@ -46,6 +48,7 @@ class JsonDeserializer(private val json: JSONObject) {
 		title = json.getString("title"),
 		key = json.getString("key"),
 		source = json.getString("source"),
+		isPinned = json.getBooleanOrDefault("pinned", false),
 	)
 
 	fun toHistoryEntity() = HistoryEntity(
@@ -89,6 +92,7 @@ class JsonDeserializer(private val json: JSONObject) {
 		addedIn = json.getIntOrDefault("added_in", 0),
 		lastUsedAt = json.getLongOrDefault("used_at", 0L),
 		isPinned = json.getBooleanOrDefault("pinned", false),
+		cfState = json.getIntOrDefault("cf_state", CloudFlareHelper.PROTECTION_NOT_DETECTED),
 	)
 
 	fun toMap(): Map<String, Any?> {

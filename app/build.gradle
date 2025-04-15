@@ -3,7 +3,6 @@ import java.time.LocalDateTime
 plugins {
 	id 'com.android.application'
 	id 'kotlin-android'
-	id 'kotlin-kapt'
 	id 'com.google.devtools.ksp'
 	id 'kotlin-parcelize'
 	id 'dagger.hilt.android.plugin'
@@ -162,9 +161,9 @@ dependencies {
 	implementation libs.adapterdelegates.viewbinding
 
 	implementation libs.hilt.android
-	kapt libs.hilt.compiler
+	ksp libs.hilt.compiler
 	implementation libs.androidx.hilt.work
-	kapt libs.androidx.hilt.compiler
+	ksp libs.androidx.hilt.compiler
 
 	implementation libs.coil.core
 	implementation libs.coil.network
@@ -198,5 +197,5 @@ dependencies {
 	androidTestImplementation libs.moshi.kotlin
 
 	androidTestImplementation libs.hilt.android.testing
-	kaptAndroidTest libs.hilt.android.compiler
+	kspAndroidTest libs.hilt.android.compiler
 }

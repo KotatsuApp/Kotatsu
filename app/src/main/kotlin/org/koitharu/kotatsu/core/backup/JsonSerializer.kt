@@ -17,6 +17,7 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("category_id", e.categoryId)
 			put("sort_key", e.sortKey)
 			put("created_at", e.createdAt)
+			put("pinned", e.isPinned)
 		},
 	)
 
@@ -51,6 +52,7 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("title", e.title)
 			put("key", e.key)
 			put("source", e.source)
+			put("pinned", e.isPinned)
 		},
 	)
 
@@ -93,6 +95,7 @@ class JsonSerializer private constructor(private val json: JSONObject) {
 			put("added_in", e.addedIn)
 			put("used_at", e.lastUsedAt)
 			put("pinned", e.isPinned)
+			put("cf_state", e.cfState)
 		},
 	)
 
