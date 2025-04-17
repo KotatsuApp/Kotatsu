@@ -16,7 +16,7 @@
 
 * **Recommended:** Download and install APK from [GitHub Releases](https://github.com/KotatsuApp/Kotatsu/releases/latest). Application has a built-in self-updating feature.
 * Get it on [F-Droid](https://f-droid.org/packages/org.koitharu.kotatsu). The F-Droid build may be a bit outdated and some fixes might be missing.
-* Also [nightly builds](https://github.com/KotatsuApp/Kotatsu-nightly/releases) are available (very unstable, use at your own risk).
+* Also [nightly builds](https://github.com/KotatsuApp/Kotatsu-nightly/releases) are available (Unstable, use at your own risk). Application has a built-in self-updating feature.
 
 </div>
 
@@ -24,7 +24,7 @@
 
 <div align="left">
 
-* Online [manga catalogues](https://github.com/KotatsuApp/kotatsu-parsers) (with 1100+ manga sources)
+* Online [manga catalogues](https://github.com/KotatsuApp/kotatsu-parsers) (with 1200+ manga sources)
 * Search manga by name, genres, and more filters
 * Favorites organized by user-defined categories
 * Reading history, bookmarks, and incognito mode support
