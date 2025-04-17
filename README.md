@@ -16,7 +16,7 @@
 
 * **Recommended:** Download and install APK from [GitHub Releases](https://github.com/KotatsuApp/Kotatsu/releases/latest). Application has a built-in self-updating feature.
 * Get it on [F-Droid](https://f-droid.org/packages/org.koitharu.kotatsu). The F-Droid build may be a bit outdated and some fixes might be missing.
-* Also [nightly builds](https://github.com/KotatsuApp/Kotatsu-nightly/releases) are available (very unstable, use at your own risk).
+* Also [nightly builds](https://github.com/KotatsuApp/Kotatsu-nightly/releases) are available (Unstable, use at your own risk). Application has a built-in self-updating feature.
 
 </div>
 
@@ -24,18 +24,18 @@
 
 <div align="left">
 
-* Online [manga catalogues](https://github.com/KotatsuApp/kotatsu-parsers) (with 1100+ manga sources)
-* Search manga by name, genres, and more filters
+* Online [manga catalogues](https://github.com/KotatsuApp/kotatsu-parsers) (with 1200+ manga sources)
+* Search manga by name, genres and more filters
 * Favorites organized by user-defined categories
-* Reading history, bookmarks, and incognito mode support
+* Reading history, bookmarks and incognito mode support
 * Download manga and read it offline. Third-party CBZ archives are also supported
-* Clean and convenient Material You UI, optimized for phones, tablets, and desktop
+* Clean and convenient Material You UI, optimized for phones, tablets and desktop
 * Standard and Webtoon-optimized customizable reader, gesture support on reading interface
 * Notifications about new chapters with updates feed, manga recommendations (with filters)
 * Integration with manga tracking services: Shikimori, AniList, MyAnimeList, Kitsu
 * Password / fingerprint-protected access to the app
 * Automatically sync app data with other devices on the same account
-* Support for older devices running Android 5+
+* Support for older devices running Android 5.0+
 
 </div>
 
@@ -87,6 +87,16 @@ please head over to the [Weblate project page](https://hosted.weblate.org/engage
 </br>
 
 **📌 Pull requests are welcome, if you want: See [CONTRIBUTING.md](https://github.com/KotatsuApp/Kotatsu/blob/devel/CONTRIBUTING.md) for the guidelines**
+
+### Certificate fingerprints
+
+```plaintext
+2C:19:C7:E8:07:61:2B:8E:94:51:1B:FD:72:67:07:64:5D:C2:58:AE
+```
+
+```plaintext
+67:E1:51:00:BB:80:93:01:78:3E:DC:B6:34:8F:A3:BB:F8:30:34:D9:1E:62:86:8A:91:05:3D:BD:70:DB:3F:18
+```
 
 ### License
 
