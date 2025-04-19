@@ -806,4 +806,5 @@
     <string name="exclude_nsfw_from_suggestions_summary">I manga per adulti non verranno mostrati nei suggerimenti. Questa opzione potrebbe non funzionare accuratamente con alcune fonti</string>
     <string name="tags_warnings">Evidenzia i generi pericolosi</string>
     <string name="tags_warnings_summary">Evidenzia i generi che potrebbero essere inappropriati per la maggior parte degli utenti</string>
+    <string name="error_non_file_uri">Il percorso selezionato non può essere utilizzato perché non rappresenta un file o una cartella</string>
 </resources>
