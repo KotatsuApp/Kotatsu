@@ -27,17 +27,17 @@ abstract class TracksDao : MangaQueryBuilder.ConditionCallback {
 	@Query("SELECT * FROM tracks WHERE manga_id = :mangaId")
 	abstract suspend fun find(mangaId: Long): TrackEntity?
 
-	@Query("SELECT chapters_new FROM tracks WHERE manga_id = :mangaId")
-	abstract suspend fun findNewChapters(mangaId: Long): Int?
+	@Query("SELECT IFNULL(chapters_new,0) FROM tracks WHERE manga_id = :mangaId")
+	abstract suspend fun findNewChapters(mangaId: Long): Int
 
 	@Query("SELECT COUNT(*) FROM tracks")
 	abstract suspend fun getTracksCount(): Int
 
-	@Query("SELECT chapters_new FROM tracks")
-	abstract fun observeNewChapters(): Flow<List<Int>>
+	@Query("SELECT COUNT(*) FROM tracks WHERE chapters_new > 0")
+	abstract fun observeUpdateMangaCount(): Flow<Int>
 
-	@Query("SELECT chapters_new FROM tracks WHERE manga_id = :mangaId")
-	abstract fun observeNewChapters(mangaId: Long): Flow<Int?>
+	@Query("SELECT IFNULL(chapters_new, 0) FROM tracks WHERE manga_id = :mangaId")
+	abstract fun observeNewChapters(mangaId: Long): Flow<Int>
 
 	@Transaction
 	@Query("SELECT * FROM tracks WHERE chapters_new > 0 ORDER BY last_chapter_date DESC")
