@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
@@ -13,7 +14,6 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
-import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
@@ -36,22 +36,22 @@ class LocalListViewModel @Inject constructor(
 	mangaRepositoryFactory: MangaRepository.Factory,
 	filterCoordinator: FilterCoordinator,
 	private val settings: AppSettings,
-	downloadScheduler: DownloadWorker.Scheduler,
 	mangaListMapper: MangaListMapper,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	exploreRepository: ExploreRepository,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 	private val localStorageManager: LocalStorageManager,
 	sourcesRepository: MangaSourcesRepository,
+	mangaDataRepository: MangaDataRepository,
 ) : RemoteListViewModel(
-	savedStateHandle,
-	mangaRepositoryFactory,
-	filterCoordinator,
-	settings,
-	mangaListMapper,
-	downloadScheduler,
-	exploreRepository,
-	sourcesRepository,
+	savedStateHandle = savedStateHandle,
+	mangaRepositoryFactory = mangaRepositoryFactory,
+	filterCoordinator = filterCoordinator,
+	settings = settings,
+	mangaListMapper = mangaListMapper,
+	exploreRepository = exploreRepository,
+	sourcesRepository = sourcesRepository,
+	mangaDataRepository = mangaDataRepository,
 ), SharedPreferences.OnSharedPreferenceChangeListener {
 
 	val onMangaRemoved = MutableEventFlow<Unit>()

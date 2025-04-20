@@ -93,7 +93,7 @@ class FavouritesCategoryEditActivity :
 	}
 
 	override fun afterTextChanged(s: Editable?) {
-		viewBinding.buttonDone.isEnabled = !s.isNullOrBlank()
+		viewBinding.buttonDone.isEnabled = !s.isNullOrBlank() && !viewModel.isLoading.value
 	}
 
 	override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -119,6 +119,7 @@ class FavouritesCategoryEditActivity :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
+		viewBinding.buttonDone.isEnabled = !isLoading && !viewBinding.editName.text.isNullOrBlank()
 		viewBinding.editSort.isEnabled = !isLoading
 		viewBinding.editName.isEnabled = !isLoading
 		viewBinding.switchTracker.isEnabled = !isLoading

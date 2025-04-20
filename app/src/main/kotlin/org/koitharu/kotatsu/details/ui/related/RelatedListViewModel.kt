@@ -14,12 +14,12 @@ import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.require
-import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.domain.MangaListMapper
 import org.koitharu.kotatsu.list.ui.MangaListViewModel
 import org.koitharu.kotatsu.list.ui.model.EmptyState
@@ -34,8 +34,8 @@ class RelatedListViewModel @Inject constructor(
 	mangaRepositoryFactory: MangaRepository.Factory,
 	settings: AppSettings,
 	private val mangaListMapper: MangaListMapper,
-	downloadScheduler: DownloadWorker.Scheduler,
-) : MangaListViewModel(settings, downloadScheduler) {
+	mangaDataRepository: MangaDataRepository,
+) : MangaListViewModel(settings, mangaDataRepository) {
 
 	private val seed = savedStateHandle.require<ParcelableManga>(AppRouter.KEY_MANGA).manga
 	private val repository = mangaRepositoryFactory.create(seed.source)

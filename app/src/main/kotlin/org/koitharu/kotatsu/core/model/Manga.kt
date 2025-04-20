@@ -11,6 +11,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.strikeThrough
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.model.MangaOverride
 import org.koitharu.kotatsu.core.util.ext.iterator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.parsers.model.ContentRating
@@ -20,6 +21,7 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.util.findById
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import com.google.android.material.R as materialR
 
@@ -191,4 +193,15 @@ fun MangaChapter.getLocalizedTitle(resources: Resources, index: Int = -1): Strin
 
 		else -> resources.getString(R.string.unnamed_chapter)
 	}
+}
+
+fun Manga.withOverride(override: MangaOverride?) = if (override != null) {
+	copy(
+		title = override.title.ifNullOrEmpty { title },
+		coverUrl = override.coverUrl.ifNullOrEmpty { coverUrl },
+		largeCoverUrl = override.coverUrl.ifNullOrEmpty { largeCoverUrl },
+		contentRating = override.contentRating ?: contentRating,
+	)
+} else {
+	this
 }

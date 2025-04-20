@@ -2,6 +2,8 @@ package org.koitharu.kotatsu.details.data
 
 import org.koitharu.kotatsu.core.model.getLocale
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.model.withOverride
+import org.koitharu.kotatsu.core.ui.model.MangaOverride
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -13,6 +15,7 @@ import java.util.Locale
 data class MangaDetails(
 	private val manga: Manga,
 	private val localManga: LocalManga?,
+	private val override: MangaOverride?,
 	val description: CharSequence?,
 	val isLoaded: Boolean,
 ) {
@@ -34,12 +37,13 @@ data class MangaDetails(
 		get() = localManga ?: if (manga.isLocal) LocalManga(manga) else null
 
 	val coverUrl: String?
-		get() = manga.largeCoverUrl
+		get() = override?.coverUrl
+			.ifNullOrEmpty { manga.largeCoverUrl }
 			.ifNullOrEmpty { manga.coverUrl }
 			.ifNullOrEmpty { localManga?.manga?.coverUrl }
 			?.nullIfEmpty()
 
-	fun toManga() = manga
+	fun toManga() = manga.withOverride(override)
 
 	fun getLocale(): Locale? {
 		findAppropriateLocale(chapters.keys.singleOrNull())?.let {
@@ -48,13 +52,11 @@ data class MangaDetails(
 		return manga.source.getLocale()
 	}
 
-	fun filterChapters(branch: String?) = MangaDetails(
+	fun filterChapters(branch: String?) = copy(
 		manga = manga.filterChapters(branch),
 		localManga = localManga?.run {
 			copy(manga = manga.filterChapters(branch))
 		},
-		description = description,
-		isLoaded = isLoaded,
 	)
 
 	private fun mergeChapters(): List<MangaChapter> {

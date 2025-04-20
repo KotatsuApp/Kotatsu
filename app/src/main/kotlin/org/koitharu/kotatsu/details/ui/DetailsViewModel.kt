@@ -87,7 +87,7 @@ class DetailsViewModel @Inject constructor(
 	val mangaId = intent.mangaId
 
 	init {
-		mangaDetails.value = intent.manga?.let { MangaDetails(it, null, null, false) }
+		mangaDetails.value = intent.manga?.let { MangaDetails(it, null, null, null, false) }
 	}
 
 	val history = historyRepository.observeOne(mangaId)

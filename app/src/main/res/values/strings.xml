@@ -826,4 +826,9 @@
 	<string name="tags_warnings">Highlight dangerous genres</string>
 	<string name="tags_warnings_summary">Highlight genres that may be inappropriate for most users</string>
 	<string name="error_non_file_uri">The selected path cannot be used because it does not denote a file or directory</string>
+	<string name="manga_override_hint">These changes will affect how manga is displayed in the app</string>
+	<string name="use_default_cover">Use default cover</string>
+	<string name="pick_manga_page">Pick manga page</string>
+	<string name="pick_custom_file">Pick custom file</string>
+	<string name="change_cover">Change cover</string>
 </resources>

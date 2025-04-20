@@ -275,8 +275,10 @@ abstract class MangaListFragment :
 	@CallSuper
 	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode?, menu: Menu): Boolean {
 		val hasNoLocal = selectedItems.none { it.isLocal }
+		val isSingleSelection = controller.count == 1
 		menu.findItem(R.id.action_save)?.isVisible = hasNoLocal
 		menu.findItem(R.id.action_fix)?.isVisible = hasNoLocal
+		menu.findItem(R.id.action_edit_override)?.isVisible = isSingleSelection
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
 
@@ -312,6 +314,12 @@ abstract class MangaListFragment :
 
 			R.id.action_save -> {
 				router.showDownloadDialog(selectedItems, viewBinding?.recyclerView)
+				mode?.finish()
+				true
+			}
+
+			R.id.action_edit_override -> {
+				router.openMangaOverrideConfig(selectedItems.singleOrNull() ?: return false)
 				mode?.finish()
 				true
 			}

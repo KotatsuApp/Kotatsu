@@ -106,7 +106,7 @@ class ReaderViewModel @Inject constructor(
 	init {
 		selectedBranch.value = savedStateHandle.get<String>(ReaderIntent.EXTRA_BRANCH)
 		readingState.value = savedStateHandle[ReaderIntent.EXTRA_STATE]
-		mangaDetails.value = intent.manga?.let { MangaDetails(it, null, null, false) }
+		mangaDetails.value = intent.manga?.let { MangaDetails(it, null, null, null, false) }
 	}
 
 	val readerMode = MutableStateFlow<ReaderMode?>(null)

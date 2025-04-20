@@ -52,7 +52,16 @@ class DetailsLoadUseCase @Inject constructor(
 				m
 			}
 		}
-		send(MangaDetails(manga, null, null, false))
+		val override = mangaDataRepository.getOverride(manga.id)
+		send(
+			MangaDetails(
+				manga = manga,
+				localManga = null,
+				override = override,
+				description = null,
+				isLoaded = false,
+			),
+		)
 		val local = if (!manga.isLocal) {
 			async {
 				localMangaRepository.findSavedManga(manga)
@@ -66,28 +75,31 @@ class DetailsLoadUseCase @Inject constructor(
 			launch { updateTracker(details) }
 			send(
 				MangaDetails(
-					details,
-					local?.peek(),
-					details.description?.parseAsHtml(withImages = false)?.trim(),
-					false,
+					manga = details,
+					localManga = local?.peek(),
+					override = override,
+					description = details.description?.parseAsHtml(withImages = false)?.trim(),
+					isLoaded = false,
 				),
 			)
 			send(
 				MangaDetails(
-					details,
-					local?.await(),
-					details.description?.parseAsHtml(withImages = true)?.trim(),
-					true,
+					manga = details,
+					localManga = local?.await(),
+					override = override,
+					description = details.description?.parseAsHtml(withImages = true)?.trim(),
+					isLoaded = true,
 				),
 			)
 		} catch (e: IOException) {
 			local?.await()?.manga?.also { localManga ->
 				send(
 					MangaDetails(
-						localManga,
-						null,
-						localManga.description?.parseAsHtml(withImages = false)?.trim(),
-						true,
+						manga = localManga,
+						localManga = null,
+						override = override,
+						description = localManga.description?.parseAsHtml(withImages = false)?.trim(),
+						isLoaded = true,
 					),
 				)
 			} ?: close(e)

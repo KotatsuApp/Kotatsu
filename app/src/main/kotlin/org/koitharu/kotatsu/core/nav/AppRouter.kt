@@ -95,6 +95,7 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.about.AppUpdateActivity
 import org.koitharu.kotatsu.settings.backup.BackupDialogFragment
 import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
+import org.koitharu.kotatsu.settings.override.OverrideConfigActivity
 import org.koitharu.kotatsu.settings.reader.ReaderTapGridConfigActivity
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity
@@ -247,6 +248,12 @@ class AppRouter private constructor(
 
 	fun openMangaUpdates() {
 		startActivity(mangaUpdatesIntent(contextOrNull() ?: return))
+	}
+
+	fun openMangaOverrideConfig(manga: Manga) {
+		val intent = Intent(contextOrNull() ?: return, OverrideConfigActivity::class.java)
+			.putExtra(KEY_MANGA, ParcelableManga(manga, withDescription = false))
+		startActivity(intent)
 	}
 
 	fun openSettings() = startActivity(SettingsActivity::class.java)

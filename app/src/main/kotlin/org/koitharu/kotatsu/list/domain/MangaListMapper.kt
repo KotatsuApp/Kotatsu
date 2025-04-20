@@ -6,10 +6,13 @@ import androidx.annotation.ColorRes
 import androidx.annotation.IntDef
 import androidx.collection.MutableScatterSet
 import androidx.collection.ScatterSet
+import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.ui.model.MangaOverride
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -20,11 +23,11 @@ import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.local.data.index.LocalMangaIndex
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@Reusable
 class MangaListMapper @Inject constructor(
 	@ApplicationContext context: Context,
 	private val settings: AppSettings,
@@ -32,6 +35,7 @@ class MangaListMapper @Inject constructor(
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
 	private val localMangaIndex: LocalMangaIndex,
+	private val dataRepository: MangaDataRepository,
 ) {
 
 	private val dict by lazy { readTagsDict(context) }
@@ -40,9 +44,13 @@ class MangaListMapper @Inject constructor(
 		manga: Collection<Manga>,
 		mode: ListMode,
 		@Flags flags: Int = DEFAULTS,
-	): List<MangaListModel> {
-		val options = getOptions(flags)
-		return manga.map { toListModelImpl(it, mode, options) }
+	): List<MangaListModel> = ArrayList<MangaListModel>(manga.size).apply {
+		toListModelList(
+			destination = this,
+			manga = manga,
+			mode = mode,
+			flags = flags,
+		)
 	}
 
 	suspend fun toListModelList(
@@ -52,8 +60,9 @@ class MangaListMapper @Inject constructor(
 		@Flags flags: Int = DEFAULTS,
 	) {
 		val options = getOptions(flags)
+		val overrides = dataRepository.getOverrides()
 		manga.mapTo(destination) {
-			toListModelImpl(it, mode, options)
+			toListModelImpl(it, mode, options, overrides[it.id])
 		}
 	}
 
@@ -61,7 +70,12 @@ class MangaListMapper @Inject constructor(
 		manga: Manga,
 		mode: ListMode,
 		@Flags flags: Int = DEFAULTS,
-	): MangaListModel = toListModelImpl(manga, mode, getOptions(flags))
+	): MangaListModel = toListModelImpl(
+		manga = manga,
+		mode = mode,
+		options = getOptions(flags),
+		override = dataRepository.getOverride(manga.id),
+	)
 
 	fun mapTags(tags: Collection<MangaTag>) = tags.map {
 		ChipsView.ChipModel(
@@ -71,20 +85,28 @@ class MangaListMapper @Inject constructor(
 		)
 	}
 
-	private suspend fun toCompactListModel(manga: Manga, @Options options: Int) = MangaCompactListModel(
+	private suspend fun toCompactListModel(
+		manga: Manga,
+		@Options options: Int,
+		override: MangaOverride?,
+	) = MangaCompactListModel(
 		id = manga.id,
-		title = manga.title,
+		title = override?.title.ifNullOrEmpty { manga.title },
 		subtitle = manga.tags.joinToString(", ") { it.title },
-		coverUrl = manga.coverUrl,
+		coverUrl = override?.coverUrl.ifNullOrEmpty { manga.coverUrl },
 		manga = manga,
 		counter = getCounter(manga.id, options),
 	)
 
-	private suspend fun toDetailedListModel(manga: Manga, @Options options: Int) = MangaDetailedListModel(
+	private suspend fun toDetailedListModel(
+		manga: Manga,
+		@Options options: Int,
+		override: MangaOverride?,
+	) = MangaDetailedListModel(
 		id = manga.id,
-		title = manga.title,
-		subtitle = manga.altTitle,
-		coverUrl = manga.coverUrl,
+		title = override?.title.ifNullOrEmpty { manga.title },
+		subtitle = manga.altTitles.firstOrNull(),
+		coverUrl = override?.coverUrl.ifNullOrEmpty { manga.coverUrl },
 		manga = manga,
 		counter = getCounter(manga.id, options),
 		progress = getProgress(manga.id, options),
@@ -93,10 +115,14 @@ class MangaListMapper @Inject constructor(
 		tags = mapTags(manga.tags),
 	)
 
-	private suspend fun toGridModel(manga: Manga, @Options options: Int) = MangaGridModel(
+	private suspend fun toGridModel(
+		manga: Manga,
+		@Options options: Int,
+		override: MangaOverride?
+	) = MangaGridModel(
 		id = manga.id,
-		title = manga.title,
-		coverUrl = manga.coverUrl,
+		title = override?.title.ifNullOrEmpty { manga.title },
+		coverUrl = override?.coverUrl.ifNullOrEmpty { manga.coverUrl },
 		manga = manga,
 		counter = getCounter(manga.id, options),
 		progress = getProgress(manga.id, options),
@@ -107,11 +133,12 @@ class MangaListMapper @Inject constructor(
 	private suspend fun toListModelImpl(
 		manga: Manga,
 		mode: ListMode,
-		@Options options: Int
+		@Options options: Int,
+		override: MangaOverride?,
 	): MangaListModel = when (mode) {
-		ListMode.LIST -> toCompactListModel(manga, options)
-		ListMode.DETAILED_LIST -> toDetailedListModel(manga, options)
-		ListMode.GRID -> toGridModel(manga, options)
+		ListMode.LIST -> toCompactListModel(manga, options, override)
+		ListMode.DETAILED_LIST -> toDetailedListModel(manga, options, override)
+		ListMode.GRID -> toGridModel(manga, options, override)
 	}
 
 	private suspend fun getCounter(mangaId: Long, @Options options: Int): Int {

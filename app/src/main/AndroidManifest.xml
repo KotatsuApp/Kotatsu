@@ -209,6 +209,9 @@
 		<activity android:name="org.koitharu.kotatsu.image.ui.ImageActivity" />
 		<activity android:name="org.koitharu.kotatsu.favourites.ui.categories.edit.FavouritesCategoryEditActivity" />
 		<activity
+			android:name="org.koitharu.kotatsu.settings.override.OverrideConfigActivity"
+			android:label="@string/edit" />
+		<activity
 			android:name="org.koitharu.kotatsu.sync.ui.SyncAuthActivity"
 			android:exported="true"
 			android:label="@string/sync" />
