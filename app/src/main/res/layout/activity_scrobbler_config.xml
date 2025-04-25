@@ -26,7 +26,7 @@
 				android:layout_height="?attr/actionBarSize"
 				app:layout_collapseMode="pin">
 
-				<com.google.android.material.imageview.ShapeableImageView
+				<org.koitharu.kotatsu.core.image.CoilImageView
 					android:id="@+id/imageView_avatar"
 					android:layout_width="28dp"
 					android:layout_height="28dp"
@@ -35,6 +35,9 @@
 					android:background="?selectableItemBackgroundBorderless"
 					android:padding="1dp"
 					android:scaleType="centerCrop"
+					app:errorDrawable="@drawable/ic_shortcut_default"
+					app:fallbackDrawable="@drawable/ic_shortcut_default"
+					app:placeholderDrawable="@drawable/bg_badge_empty"
 					app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Circle"
 					app:strokeColor="?colorOutline"
 					app:strokeWidth="1dp"

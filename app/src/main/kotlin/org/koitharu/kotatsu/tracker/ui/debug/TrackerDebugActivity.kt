@@ -32,7 +32,7 @@ class TrackerDebugActivity : BaseActivity<ActivityTrackerDebugBinding>(), OnList
 		setContentView(ActivityTrackerDebugBinding.inflate(layoutInflater))
 		setDisplayHomeAsUp(true, false)
 		val tracksAdapter = BaseListAdapter<TrackDebugItem>()
-			.addDelegate(ListItemType.FEED, trackDebugAD(this, coil, this))
+			.addDelegate(ListItemType.FEED, trackDebugAD(this))
 		with(viewBinding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = tracksAdapter

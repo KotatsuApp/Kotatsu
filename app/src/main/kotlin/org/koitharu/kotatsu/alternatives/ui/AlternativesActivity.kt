@@ -51,7 +51,7 @@ class AlternativesActivity : BaseActivity<ActivityAlternativesBinding>(),
 		}
 		val listAdapter = BaseListAdapter<ListModel>()
 			.addDelegate(ListItemType.MANGA_LIST_DETAILED, alternativeAD(coil, this, this))
-			.addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, this, null))
+			.addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(null))
 			.addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
 			.addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
 			.addDelegate(ListItemType.FOOTER_BUTTON, buttonFooterAD(this))

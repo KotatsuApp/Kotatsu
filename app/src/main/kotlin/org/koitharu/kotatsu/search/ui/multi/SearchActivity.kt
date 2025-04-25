@@ -76,7 +76,7 @@ class SearchActivity :
 				router.openList(item.source, item.listFilter, item.sortOrder)
 			}
 		}
-		val sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = true)
+		val sizeResolver = DynamicItemSizeResolver(resources, this, settings, adjustWidth = true)
 		val selectionDecoration = MangaSelectionDecoration(this)
 		selectionController = ListSelectionController(
 			appCompatDelegate = delegate,

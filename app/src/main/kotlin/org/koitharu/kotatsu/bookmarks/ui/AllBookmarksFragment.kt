@@ -12,7 +12,6 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
@@ -51,9 +50,6 @@ class AllBookmarksFragment :
 	FastScroller.FastScrollListener, ListHeaderClickListener {
 
 	@Inject
-	lateinit var coil: ImageLoader
-
-	@Inject
 	lateinit var settings: AppSettings
 
 	private val viewModel by viewModels<AllBookmarksViewModel>()
@@ -79,8 +75,6 @@ class AllBookmarksFragment :
 			callback = this,
 		)
 		bookmarksAdapter = BookmarksAdapter(
-			lifecycleOwner = viewLifecycleOwner,
-			coil = coil,
 			clickListener = this,
 			headerClickListener = this,
 		)

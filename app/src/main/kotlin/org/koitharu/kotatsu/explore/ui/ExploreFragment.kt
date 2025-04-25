@@ -17,7 +17,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
@@ -45,7 +44,6 @@ import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ExploreFragment :
@@ -53,9 +51,6 @@ class ExploreFragment :
 	RecyclerViewOwner,
 	ExploreListEventListener,
 	OnListItemClickListener<MangaSourceItem>, ListSelectionController.Callback {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	private val viewModel by viewModels<ExploreViewModel>()
 	private var exploreAdapter: ExploreAdapter? = null
@@ -70,7 +65,7 @@ class ExploreFragment :
 
 	override fun onViewBindingCreated(binding: FragmentExploreBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		exploreAdapter = ExploreAdapter(coil, viewLifecycleOwner, this, this) { manga, view ->
+		exploreAdapter = ExploreAdapter(this, this) { manga, view ->
 			router.openDetails(manga)
 		}
 		sourceSelectionController = ListSelectionController(

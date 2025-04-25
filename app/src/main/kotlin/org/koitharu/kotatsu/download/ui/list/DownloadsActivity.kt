@@ -44,7 +44,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
 		setDisplayHomeAsUp(true, false)
-		val downloadsAdapter = DownloadsAdapter(this, coil, this)
+		val downloadsAdapter = DownloadsAdapter(this, this)
 		val decoration = TypedListSpacingDecoration(this, false)
 		selectionController = ListSelectionController(
 			appCompatDelegate = delegate,

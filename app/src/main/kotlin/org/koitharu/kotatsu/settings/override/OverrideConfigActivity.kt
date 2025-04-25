@@ -9,23 +9,15 @@ import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import coil3.ImageLoader
-import coil3.request.ImageRequest
-import coil3.request.lifecycle
-import coil3.request.target
-import coil3.size.Scale
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.model.MangaOverride
 import org.koitharu.kotatsu.core.util.ext.consumeAll
-import org.koitharu.kotatsu.core.util.ext.crossfade
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
-import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
@@ -107,15 +99,7 @@ class OverrideConfigActivity : BaseActivity<ActivityOverrideEditBinding>(), View
 
 	private fun onDataChanged(data: Pair<Manga, MangaOverride>) {
 		val (manga, override) = data
-		ImageRequest.Builder(this)
-			.target(viewBinding.imageViewCover)
-			.size(CoverSizeResolver(viewBinding.imageViewCover))
-			.scale(Scale.FILL)
-			.data(override.coverUrl.ifNullOrEmpty { manga.coverUrl })
-			.mangaSourceExtra(manga.source)
-			.crossfade(this)
-			.lifecycle(this)
-			.enqueueWith(coil)
+		viewBinding.imageViewCover.setImageAsync(override.coverUrl.ifNullOrEmpty { manga.coverUrl }, manga)
 		viewBinding.layoutName.placeholderText = manga.title
 		if (viewBinding.editName.tag == null) {
 			viewBinding.editName.setText(override.title)

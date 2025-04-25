@@ -86,6 +86,7 @@
 		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>
 		<item name="dotIndicatorStyle">@style/Widget.Kotatsu.DotIndicator</item>
 		<item name="badgeViewStyle">@style/Widget.Kotatsu.BadgeView</item>
+		<item name="coverImageViewStyle">@style/Widget.Kotatsu.ImageView.Cover</item>
 
 		<!-- Text appearance -->
 		<item name="actionMenuTextAppearance">@style/TextAppearance.Kotatsu.Menu</item>

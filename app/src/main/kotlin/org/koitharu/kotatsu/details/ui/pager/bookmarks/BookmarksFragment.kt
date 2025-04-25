@@ -12,7 +12,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
@@ -53,9 +52,6 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 	private val viewModel by viewModels<BookmarksViewModel>()
 
 	@Inject
-	lateinit var coil: ImageLoader
-
-	@Inject
 	lateinit var settings: AppSettings
 
 	override val recyclerView: RecyclerView?
@@ -89,8 +85,6 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 			callback = this,
 		)
 		bookmarksAdapter = BookmarksAdapter(
-			coil = coil,
-			lifecycleOwner = viewLifecycleOwner,
 			clickListener = this@BookmarksFragment,
 			headerClickListener = null,
 		)

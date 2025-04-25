@@ -1,20 +1,10 @@
 package org.koitharu.kotatsu.list.ui.adapter
 
 import androidx.core.view.isVisible
-import androidx.lifecycle.LifecycleOwner
-import coil3.ImageLoader
-import coil3.request.allowRgb565
-import coil3.request.transformations
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
-import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.mangaExtra
-import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.databinding.ItemMangaGridBinding
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback.Companion.PAYLOAD_PROGRESS_CHANGED
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -23,8 +13,6 @@ import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 
 fun mangaGridItemAD(
-	coil: ImageLoader,
-	lifecycleOwner: LifecycleOwner,
 	sizeResolver: ItemSizeResolver,
 	clickListener: OnListItemClickListener<Manga>,
 ) = adapterDelegateViewBinding<MangaGridModel, ListModel, ItemMangaGridBinding>(
@@ -32,7 +20,7 @@ fun mangaGridItemAD(
 ) {
 
 	AdapterDelegateClickListenerAdapter(this, clickListener, MangaGridModel::manga).attach(itemView)
-	sizeResolver.attachToView(lifecycleOwner, itemView, binding.textViewTitle, binding.progressView)
+	sizeResolver.attachToView(itemView, binding.textViewTitle, binding.progressView)
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title
@@ -43,14 +31,7 @@ fun mangaGridItemAD(
 			if (item.isFavorite) addIcon(R.drawable.ic_heart_outline)
 			isVisible = iconsCount > 0
 		}
-		binding.imageViewCover.newImageRequest(lifecycleOwner, item.coverUrl)?.run {
-			size(CoverSizeResolver(binding.imageViewCover))
-			defaultPlaceholders(context)
-			transformations(TrimTransformation())
-			allowRgb565(true)
-			mangaExtra(item.manga)
-			enqueueWith(coil)
-		}
+		binding.imageViewCover.setImageAsync(item.coverUrl, item.manga)
 		binding.badge.number = item.counter
 		binding.badge.isVisible = item.counter > 0
 	}

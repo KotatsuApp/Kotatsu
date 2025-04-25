@@ -50,7 +50,7 @@ class FavouriteCategoriesActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
 		setDisplayHomeAsUp(true, false)
-		adapter = CategoriesAdapter(coil, this, this, this)
+		adapter = CategoriesAdapter(this, this)
 		selectionController = ListSelectionController(
 			appCompatDelegate = delegate,
 			decoration = CategoriesSelectionDecoration(this),

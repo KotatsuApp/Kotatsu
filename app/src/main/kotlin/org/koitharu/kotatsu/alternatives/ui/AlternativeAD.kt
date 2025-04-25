@@ -21,16 +21,11 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.image.ChipIconTarget
-import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
-import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
-import org.koitharu.kotatsu.core.util.ext.mangaExtra
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
-import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.databinding.ItemMangaAlternativeBinding
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -104,13 +99,6 @@ fun alternativeAD(
 				.allowRgb565(true)
 				.enqueueWith(coil)
 		}
-		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.run {
-			size(CoverSizeResolver(binding.imageViewCover))
-			defaultPlaceholders(context)
-			transformations(TrimTransformation())
-			allowRgb565(true)
-			mangaExtra(item.manga)
-			enqueueWith(coil)
-		}
+		binding.imageViewCover.setImageAsync(item.manga.coverUrl, item.manga)
 	}
 }

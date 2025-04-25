@@ -13,13 +13,12 @@
 		android:layout_height="match_parent"
 		android:paddingBottom="12dp">
 
-		<com.google.android.material.imageview.ShapeableImageView
+		<org.koitharu.kotatsu.image.ui.CoverImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="64dp"
 			android:layout_height="64dp"
 			android:layout_marginStart="12dp"
 			android:layout_marginTop="12dp"
-			android:scaleType="centerCrop"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Medium"

@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
-import androidx.lifecycle.LifecycleOwner
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 
@@ -16,7 +15,6 @@ class StaticItemSizeResolver(
 	private var textAppearanceResId = R.style.TextAppearance_Kotatsu_GridTitle
 
 	override fun attachToView(
-		lifecycleOwner: LifecycleOwner,
 		view: View,
 		textView: TextView?,
 		progressView: ReadingProgressView?

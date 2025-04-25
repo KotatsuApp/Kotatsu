@@ -30,8 +30,6 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.KotatsuColors
 import org.koitharu.kotatsu.core.util.ext.end
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
@@ -125,7 +123,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 			marginStart = baseMargin + bars.start(v)
 			marginEnd = if (isTablet) baseMargin else baseMargin + bars.end(v)
 		}
-		return return WindowInsetsCompat.Builder(insets)
+		return WindowInsetsCompat.Builder(insets)
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
 			.build()
 	}
@@ -177,7 +175,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 
 	override fun onInflate(stub: ViewStub?, inflated: View) {
 		val stubBinding = ItemEmptyStateBinding.bind(inflated)
-		stubBinding.icon.newImageRequest(this, R.drawable.ic_empty_history)?.enqueueWith(coil)
+		stubBinding.icon.setImageAsync(R.drawable.ic_empty_history)
 		stubBinding.textPrimary.setText(R.string.text_empty_holder_primary)
 		stubBinding.textSecondary.setTextAndVisible(R.string.empty_stats_text)
 		stubBinding.buttonRetry.isVisible = false

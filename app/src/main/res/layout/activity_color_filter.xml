@@ -38,12 +38,14 @@
 			android:orientation="vertical"
 			android:padding="@dimen/margin_normal">
 
-			<com.google.android.material.imageview.ShapeableImageView
+			<org.koitharu.kotatsu.image.ui.CoverImageView
 				android:id="@+id/imageView_before"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
 				android:padding="2dp"
 				android:scaleType="centerCrop"
+				app:allowRgb565="false"
+				app:decodeRegion="true"
 				app:layout_constraintDimensionRatio="W,14:9"
 				app:layout_constraintEnd_toStartOf="@id/imageView_arrow"
 				app:layout_constraintStart_toStartOf="parent"

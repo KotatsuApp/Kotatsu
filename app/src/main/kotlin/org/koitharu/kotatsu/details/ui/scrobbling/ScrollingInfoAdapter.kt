@@ -13,6 +13,6 @@ class ScrollingInfoAdapter(
 ) : BaseListAdapter<ListModel>() {
 
 	init {
-		delegatesManager.addDelegate(scrobblingInfoAD(lifecycleOwner, coil, router))
+		delegatesManager.addDelegate(scrobblingInfoAD(router))
 	}
 }

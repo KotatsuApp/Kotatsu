@@ -241,6 +241,14 @@
 		<item name="android:textColor">?colorOnBackground</item>
 	</style>
 
+	<style name="Widget.Kotatsu.ImageView.Cover" parent="Widget.MaterialComponents.ShapeableImageView">
+		<item name="aspectRationHeight">18</item>
+		<item name="aspectRationWidth">13</item>
+		<item name="android:scaleType">centerCrop</item>
+		<item name="allowRgb565">true</item>
+		<item name="trimImage">true</item>
+	</style>
+
 	<style name="ThemeOverlay.Kotatsu.MainToolbar" parent="">
 		<item name="colorControlHighlight">@color/selector_overlay</item>
 	</style>

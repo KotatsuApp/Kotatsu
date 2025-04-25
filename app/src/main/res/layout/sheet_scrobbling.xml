@@ -21,7 +21,7 @@
 			app:layout_constraintTop_toTopOf="parent"
 			app:title="@string/tracking" />
 
-		<com.google.android.material.imageview.ShapeableImageView
+		<org.koitharu.kotatsu.image.ui.CoverImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="0dp"
 			android:layout_height="0dp"

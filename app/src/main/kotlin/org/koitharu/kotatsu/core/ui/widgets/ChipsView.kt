@@ -8,6 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import coil3.ImageLoader
 import coil3.request.Disposable
 import coil3.request.ImageRequest
@@ -15,6 +16,7 @@ import coil3.request.allowRgb565
 import coil3.request.crossfade
 import coil3.request.error
 import coil3.request.fallback
+import coil3.request.lifecycle
 import coil3.request.placeholder
 import coil3.request.transformations
 import coil3.transform.RoundedCornersTransformation
@@ -203,6 +205,7 @@ class ChipsView @JvmOverloads constructor(
 						.target(ChipIconTarget(this))
 						.placeholder(placeholder)
 						.fallback(placeholder)
+						.lifecycle(this@ChipsView.findViewTreeLifecycleOwner())
 						.error(placeholder)
 						.transformations(RoundedCornersTransformation(resources.getDimension(R.dimen.chip_icon_corner)))
 						.allowRgb565(true)

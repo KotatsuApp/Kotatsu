@@ -11,10 +11,30 @@
 	<attr name="progressButtonStyle" />
 	<attr name="dotIndicatorStyle" />
 	<attr name="badgeViewStyle" />
+	<attr name="coverImageViewStyle" />
 
-	<!--CoverImageView attrs-->
+	<declare-styleable name="CoilImageView">
+		<attr name="allowRgb565" format="boolean" />
+		<attr name="useExistingDrawable" format="boolean" />
+		<attr name="decodeRegion" format="boolean" />
+		<attr name="placeholderDrawable" format="reference" />
+		<attr name="errorDrawable" format="reference" />
+		<attr name="fallbackDrawable" format="reference" />
+		<attr name="crossfadeEnabled" format="boolean" />
+	</declare-styleable>
+
 	<declare-styleable name="CoverImageView">
-		<attr name="android:orientation" />
+		<attr name="aspectRationHeight" format="integer" />
+		<attr name="aspectRationWidth" format="integer" />
+		<attr name="trimImage" format="boolean" />
+	</declare-styleable>
+
+	<declare-styleable name="CoverStackView">
+		<attr name="coverSize" format="dimension" />
+	</declare-styleable>
+
+	<declare-styleable name="FaviconView">
+		<attr name="iconStyle" format="reference" />
 	</declare-styleable>
 
 	<declare-styleable name="SliderPreference">

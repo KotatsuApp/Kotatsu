@@ -10,7 +10,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.graphics.Insets
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import coil3.ImageLoader
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +32,6 @@ import org.koitharu.kotatsu.databinding.ActivitySourcesCatalogBinding
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.ContentType
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
@@ -41,9 +39,6 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	AppBarOwner,
 	MenuItem.OnActionExpandListener,
 	ChipsView.OnChipClickListener {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	override val appBar: AppBarLayout
 		get() = viewBinding.appbar
@@ -53,8 +48,8 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivitySourcesCatalogBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, false)
-		val sourcesAdapter = SourcesCatalogAdapter(this, coil, this)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
+		val sourcesAdapter = SourcesCatalogAdapter(this)
 		with(viewBinding.recyclerView) {
 			setHasFixedSize(true)
 			addItemDecoration(TypedListSpacingDecoration(context, false))
@@ -85,7 +80,7 @@ class SourcesCatalogActivity : BaseActivity<ActivitySourcesCatalogBinding>(),
 			right = bars.right,
 			top = bars.top,
 		)
-		return return WindowInsetsCompat.Builder(insets)
+		return WindowInsetsCompat.Builder(insets)
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
 			.build()
 	}

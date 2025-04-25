@@ -1,18 +1,17 @@
 package org.koitharu.kotatsu.reader.ui.colorfilter
 
 import android.content.res.Resources
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
+import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
 import coil3.ImageLoader
+import coil3.asDrawable
+import coil3.request.ErrorResult
 import coil3.request.ImageRequest
-import coil3.request.bitmapConfig
-import coil3.request.error
-import coil3.size.Scale
-import coil3.size.ViewSizeResolver
+import coil3.request.SuccessResult
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
@@ -20,19 +19,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
-import org.koitharu.kotatsu.core.util.ext.decodeRegion
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.indicator
-import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
+import org.koitharu.kotatsu.core.util.progress.ImageRequestIndicatorListener
 import org.koitharu.kotatsu.databinding.ActivityColorFilterBinding
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.format
-import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import javax.inject.Inject
 
@@ -50,7 +45,7 @@ class ColorFilterConfigActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityColorFilterBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, true)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
 		viewBinding.sliderBrightness.addOnChangeListener(this)
 		viewBinding.sliderContrast.addOnChangeListener(this)
 		val formatter = PercentLabelFormatter(resources)
@@ -128,19 +123,17 @@ class ColorFilterConfigActivity :
 		viewBinding.imageViewAfter.colorFilter = readerColorFilter?.toColorFilter()
 	}
 
-	private fun loadPreview(page: MangaPage) {
-		val data: Any = page.preview?.nullIfEmpty() ?: page
-		ImageRequest.Builder(this@ColorFilterConfigActivity)
-			.data(data)
-			.scale(Scale.FILL)
-			.decodeRegion()
-			.mangaSourceExtra(page.source)
-			.bitmapConfig(if (viewModel.is32BitColorsEnabled) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565)
-			.indicator(listOf(viewBinding.progressBefore, viewBinding.progressAfter))
-			.error(R.drawable.ic_error_placeholder)
-			.size(ViewSizeResolver(viewBinding.imageViewBefore))
-			.target(DoubleViewTarget(viewBinding.imageViewBefore, viewBinding.imageViewAfter))
-			.enqueueWith(coil)
+	private fun loadPreview(page: MangaPage) = with(viewBinding.imageViewBefore) {
+		addImageRequestListener(
+			ImageRequestIndicatorListener(
+				listOf(
+					viewBinding.progressBefore,
+					viewBinding.progressAfter,
+				),
+			),
+		)
+		addImageRequestListener(ShadowImageListener(viewBinding.imageViewAfter))
+		setImageAsync(page)
 	}
 
 	private fun onLoadingChanged(isLoading: Boolean) {
@@ -158,6 +151,26 @@ class ColorFilterConfigActivity :
 		override fun getFormattedValue(value: Float): String {
 			val percent = ((value + 1f) * 100).format(0)
 			return pattern.format(percent)
+		}
+	}
+
+	private class ShadowImageListener(
+		private val imageView: ImageView
+	) : ImageRequest.Listener {
+
+		override fun onError(request: ImageRequest, result: ErrorResult) {
+			super.onError(request, result)
+			imageView.setImageDrawable(result.image?.asDrawable(imageView.resources))
+		}
+
+		override fun onStart(request: ImageRequest) {
+			super.onStart(request)
+			imageView.setImageDrawable(request.placeholder()?.asDrawable(imageView.resources))
+		}
+
+		override fun onSuccess(request: ImageRequest, result: SuccessResult) {
+			super.onSuccess(request, result)
+			imageView.setImageDrawable(result.image.asDrawable(imageView.resources))
 		}
 	}
 }

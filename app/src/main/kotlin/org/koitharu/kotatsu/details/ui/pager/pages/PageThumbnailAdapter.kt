@@ -17,7 +17,7 @@ class PageThumbnailAdapter(
 ) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
-		addDelegate(ListItemType.PAGE_THUMB, pageThumbnailAD(coil, lifecycleOwner, clickListener))
+		addDelegate(ListItemType.PAGE_THUMB, pageThumbnailAD(clickListener))
 		addDelegate(ListItemType.HEADER, listHeaderAD(null))
 	}
 

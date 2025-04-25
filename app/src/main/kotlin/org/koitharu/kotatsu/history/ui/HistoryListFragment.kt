@@ -73,9 +73,7 @@ class HistoryListFragment : MangaListFragment() {
 	}
 
 	override fun onCreateAdapter() = HistoryListAdapter(
-		coil,
-		viewLifecycleOwner,
 		this,
-		DynamicItemSizeResolver(resources, settings, adjustWidth = false),
+		DynamicItemSizeResolver(resources, viewLifecycleOwner, settings, adjustWidth = false),
 	)
 }

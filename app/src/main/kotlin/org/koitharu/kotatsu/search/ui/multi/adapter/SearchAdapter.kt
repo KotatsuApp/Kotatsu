@@ -34,8 +34,6 @@ class SearchAdapter(
 			ListItemType.MANGA_NESTED_GROUP,
 			searchResultsAD(
 				sharedPool = pool,
-				lifecycleOwner = lifecycleOwner,
-				coil = coil,
 				sizeResolver = sizeResolver,
 				selectionDecoration = selectionDecoration,
 				listener = listener,
@@ -44,7 +42,7 @@ class SearchAdapter(
 		)
 		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
 		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
-		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listener))
+		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(listener))
 		addDelegate(ListItemType.STATE_ERROR, errorStateListAD(listener))
 		addDelegate(ListItemType.FOOTER_BUTTON, buttonFooterAD(listener))
 	}

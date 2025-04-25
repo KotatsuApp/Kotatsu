@@ -12,7 +12,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
-import coil3.ImageLoader
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -22,9 +21,7 @@ import org.koitharu.kotatsu.core.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
 import org.koitharu.kotatsu.core.util.ext.findCurrentPagerFragment
-import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.recyclerView
@@ -32,7 +29,6 @@ import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.FragmentFavouritesContainerBinding
 import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBinding>(),
@@ -40,9 +36,6 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 	RecyclerViewOwner,
 	ViewStub.OnInflateListener,
 	View.OnClickListener {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	private val viewModel: FavouritesContainerViewModel by viewModels()
 
@@ -96,7 +89,7 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 
 	override fun onInflate(stub: ViewStub?, inflated: View) {
 		val stubBinding = ItemEmptyStateBinding.bind(inflated)
-		stubBinding.icon.newImageRequest(viewLifecycleOwner, R.drawable.ic_empty_favourites)?.enqueueWith(coil)
+		stubBinding.icon.setImageAsync(R.drawable.ic_empty_favourites)
 		stubBinding.textPrimary.setText(R.string.text_empty_holder_primary)
 		stubBinding.textSecondary.setTextAndVisible(R.string.empty_favourite_categories)
 		stubBinding.buttonRetry.setTextAndVisible(R.string.manage)

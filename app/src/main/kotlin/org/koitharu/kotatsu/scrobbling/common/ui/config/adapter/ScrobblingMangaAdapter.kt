@@ -17,7 +17,7 @@ class ScrobblingMangaAdapter(
 
 	init {
 		addDelegate(ListItemType.HEADER, scrobblingHeaderAD())
-		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, null))
-		addDelegate(ListItemType.MANGA_SCROBBLING, scrobblingMangaAD(clickListener, coil, lifecycleOwner))
+		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(null))
+		addDelegate(ListItemType.MANGA_SCROBBLING, scrobblingMangaAD(clickListener))
 	}
 }

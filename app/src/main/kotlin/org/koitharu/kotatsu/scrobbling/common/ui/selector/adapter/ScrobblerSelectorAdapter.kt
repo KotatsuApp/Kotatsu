@@ -20,7 +20,7 @@ class ScrobblerSelectorAdapter(
 
 	init {
 		addDelegate(ListItemType.STATE_LOADING, loadingStateAD())
-		addDelegate(ListItemType.MANGA_SCROBBLING, scrobblingMangaAD(lifecycleOwner, coil, clickListener))
+		addDelegate(ListItemType.MANGA_SCROBBLING, scrobblingMangaAD(clickListener))
 		addDelegate(ListItemType.FOOTER_LOADING, loadingFooterAD())
 		addDelegate(ListItemType.HINT_EMPTY, scrobblerHintAD(stateHolderListener))
 	}

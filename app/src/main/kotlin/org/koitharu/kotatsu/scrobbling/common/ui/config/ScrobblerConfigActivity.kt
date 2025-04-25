@@ -7,9 +7,6 @@ import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import coil3.ImageLoader
-import coil3.request.error
-import coil3.request.fallback
-import coil3.request.placeholder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -18,9 +15,6 @@ import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.showOrHide
@@ -113,15 +107,11 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 
 	private fun onUserChanged(user: ScrobblerUser?) {
 		if (user == null) {
-			viewBinding.imageViewAvatar.disposeImageRequest()
+			viewBinding.imageViewAvatar.disposeImage()
 			viewBinding.imageViewAvatar.setImageResource(appcompatR.drawable.abc_ic_menu_overflow_material)
 			return
 		}
-		viewBinding.imageViewAvatar.newImageRequest(this, user.avatar)
-			?.placeholder(R.drawable.bg_badge_empty)
-			?.fallback(R.drawable.ic_shortcut_default)
-			?.error(R.drawable.ic_shortcut_default)
-			?.enqueueWith(coil)
+		viewBinding.imageViewAvatar.setImageAsync(user.avatar)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {

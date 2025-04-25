@@ -218,10 +218,8 @@ abstract class MangaListFragment :
 
 	protected open fun onCreateAdapter(): MangaListAdapter {
 		return MangaListAdapter(
-			coil = coil,
-			lifecycleOwner = viewLifecycleOwner,
 			listener = this,
-			sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = false),
+			sizeResolver = DynamicItemSizeResolver(resources, viewLifecycleOwner, settings, adjustWidth = false),
 		)
 	}
 

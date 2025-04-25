@@ -9,12 +9,11 @@
 	app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
 	tools:layout_width="140dp">
 
-	<org.koitharu.kotatsu.core.ui.widgets.CoverImageView
+	<org.koitharu.kotatsu.image.ui.CoverImageView
 		android:id="@+id/imageView_thumb"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
-		android:scaleType="centerCrop"
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 		tools:ignore="ContentDescription"
 		tools:src="@tools:sample/backgrounds/scenic[5]" />

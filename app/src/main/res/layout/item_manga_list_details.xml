@@ -11,17 +11,19 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<com.google.android.material.imageview.ShapeableImageView
+		<org.koitharu.kotatsu.image.ui.CoverImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="0dp"
 			android:layout_height="118dp"
 			android:background="?colorSurfaceContainer"
-			android:scaleType="centerCrop"
+			app:aspectRationHeight="0"
+			app:aspectRationWidth="0"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintDimensionRatio="2:3"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Medium"
+			app:trimImage="true"
 			tools:src="@tools:sample/backgrounds/scenic" />
 
 		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView

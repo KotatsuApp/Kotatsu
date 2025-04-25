@@ -76,6 +76,7 @@ fun Context.getThemeResId(
 	it.getResourceId(0, fallback)
 }
 
+@Deprecated("")
 fun TypedArray.getDrawableCompat(context: Context, index: Int): Drawable? {
 	val resId = getResourceId(index, 0)
 	return if (resId != 0) ContextCompat.getDrawable(context, resId) else null

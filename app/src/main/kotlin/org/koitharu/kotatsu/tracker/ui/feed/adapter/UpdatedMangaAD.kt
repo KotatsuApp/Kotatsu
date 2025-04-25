@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.tracker.ui.feed.adapter
 
-import androidx.lifecycle.LifecycleOwner
-import coil3.ImageLoader
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
@@ -17,8 +15,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.ui.feed.model.UpdatedMangaHeader
 
 fun updatedMangaAD(
-	lifecycleOwner: LifecycleOwner,
-	coil: ImageLoader,
 	sizeResolver: ItemSizeResolver,
 	listener: OnListItemClickListener<Manga>,
 	headerClickListener: ListHeaderClickListener,
@@ -27,7 +23,7 @@ fun updatedMangaAD(
 ) {
 
 	val adapter = BaseListAdapter<ListModel>()
-		.addDelegate(ListItemType.MANGA_GRID, mangaGridItemAD(coil, lifecycleOwner, sizeResolver, listener))
+		.addDelegate(ListItemType.MANGA_GRID, mangaGridItemAD(sizeResolver, listener))
 	binding.recyclerView.adapter = adapter
 	binding.buttonMore.setOnClickListener { v ->
 		headerClickListener.onListHeaderClick(ListHeader(0, payload = item), v)

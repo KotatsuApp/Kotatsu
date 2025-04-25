@@ -2,29 +2,14 @@ package org.koitharu.kotatsu.explore.ui.adapter
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
-import coil3.ImageLoader
-import coil3.request.allowRgb565
-import coil3.request.error
-import coil3.request.fallback
-import coil3.request.placeholder
-import coil3.request.transformations
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getSummary
 import org.koitharu.kotatsu.core.model.getTitle
-import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
-import org.koitharu.kotatsu.core.ui.image.AnimatedFaviconDrawable
-import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
-import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.drawableStart
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
-import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setProgressIcon
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
@@ -63,15 +48,13 @@ fun exploreButtonsAD(
 }
 
 fun exploreRecommendationItemAD(
-	coil: ImageLoader,
 	itemClickListener: OnListItemClickListener<Manga>,
-	lifecycleOwner: LifecycleOwner,
 ) = adapterDelegateViewBinding<RecommendationsItem, ListModel, ItemRecommendationBinding>(
 	{ layoutInflater, parent -> ItemRecommendationBinding.inflate(layoutInflater, parent, false) },
 ) {
 
 	val adapter = BaseListAdapter<MangaCompactListModel>()
-		.addDelegate(ListItemType.MANGA_LIST, recommendationMangaItemAD(coil, itemClickListener, lifecycleOwner))
+		.addDelegate(ListItemType.MANGA_LIST, recommendationMangaItemAD(itemClickListener))
 	binding.pager.adapter = adapter
 	binding.pager.recyclerView?.isNestedScrollingEnabled = false
 	binding.dots.bindToViewPager(binding.pager)
@@ -82,9 +65,7 @@ fun exploreRecommendationItemAD(
 }
 
 fun recommendationMangaItemAD(
-	coil: ImageLoader,
 	itemClickListener: OnListItemClickListener<Manga>,
-	lifecycleOwner: LifecycleOwner,
 ) = adapterDelegateViewBinding<MangaCompactListModel, MangaCompactListModel, ItemRecommendationMangaBinding>(
 	{ layoutInflater, parent -> ItemRecommendationMangaBinding.inflate(layoutInflater, parent, false) },
 ) {
@@ -95,21 +76,13 @@ fun recommendationMangaItemAD(
 	bind {
 		binding.textViewTitle.text = item.manga.title
 		binding.textViewSubtitle.textAndVisible = item.subtitle
-		binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga.coverUrl)?.run {
-			defaultPlaceholders(context)
-			allowRgb565(true)
-			transformations(TrimTransformation())
-			mangaSourceExtra(item.manga.source)
-			enqueueWith(coil)
-		}
+		binding.imageViewCover.setImageAsync(item.manga.coverUrl, item.manga.source)
 	}
 }
 
 
 fun exploreSourceListItemAD(
-	coil: ImageLoader,
 	listener: OnListItemClickListener<MangaSourceItem>,
-	lifecycleOwner: LifecycleOwner,
 ) = adapterDelegateViewBinding<MangaSourceItem, ListModel, ItemExploreSourceListBinding>(
 	{ layoutInflater, parent ->
 		ItemExploreSourceListBinding.inflate(
@@ -128,21 +101,12 @@ fun exploreSourceListItemAD(
 		binding.textViewTitle.text = item.source.getTitle(context)
 		binding.textViewTitle.drawableStart = if (item.source.isPinned) iconPinned else null
 		binding.textViewSubtitle.text = item.source.getSummary(context)
-		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name)
-		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
-			fallback(fallbackIcon)
-			placeholder(AnimatedFaviconDrawable(context, R.style.FaviconDrawable_Small, item.source.name))
-			error(fallbackIcon)
-			mangaSourceExtra(item.source)
-			enqueueWith(coil)
-		}
+		binding.imageViewIcon.setImageAsync(item.source)
 	}
 }
 
 fun exploreSourceGridItemAD(
-	coil: ImageLoader,
 	listener: OnListItemClickListener<MangaSourceItem>,
-	lifecycleOwner: LifecycleOwner,
 ) = adapterDelegateViewBinding<MangaSourceItem, ListModel, ItemExploreSourceGridBinding>(
 	{ layoutInflater, parent ->
 		ItemExploreSourceGridBinding.inflate(
@@ -160,13 +124,6 @@ fun exploreSourceGridItemAD(
 	bind {
 		binding.textViewTitle.text = item.source.getTitle(context)
 		binding.textViewTitle.drawableStart = if (item.source.isPinned) iconPinned else null
-		val fallbackIcon = FaviconDrawable(context, R.style.FaviconDrawable_Large, item.source.name)
-		binding.imageViewIcon.newImageRequest(lifecycleOwner, item.source.faviconUri())?.run {
-			fallback(fallbackIcon)
-			placeholder(AnimatedFaviconDrawable(context, R.style.FaviconDrawable_Large, item.source.name))
-			error(fallbackIcon)
-			mangaSourceExtra(item.source)
-			enqueueWith(coil)
-		}
+		binding.imageViewIcon.setImageAsync(item.source)
 	}
 }

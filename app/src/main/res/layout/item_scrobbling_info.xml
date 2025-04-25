@@ -46,9 +46,9 @@
 			style="?ratingBarStyleSmall"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginStart="6dp"
 			android:isIndicator="true"
 			android:max="1"
-			android:layout_marginStart="6dp"
 			android:numStars="5"
 			app:layout_constraintBottom_toBottomOf="@id/textView_status"
 			app:layout_constraintStart_toEndOf="@id/textView_status"
@@ -66,7 +66,7 @@
 			app:layout_constraintTop_toBottomOf="@id/textView_title"
 			tools:text="Reading" />
 
-		<ImageView
+		<org.koitharu.kotatsu.image.ui.CoverImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="0dp"
 			android:layout_height="0dp"

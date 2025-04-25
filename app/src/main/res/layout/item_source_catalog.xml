@@ -12,13 +12,14 @@
 	android:paddingStart="?listPreferredItemPaddingStart"
 	tools:ignore="RtlSymmetry">
 
-	<com.google.android.material.imageview.ShapeableImageView
+	<org.koitharu.kotatsu.core.ui.image.FaviconView
 		android:id="@+id/imageView_icon"
 		android:layout_width="32dp"
 		android:layout_height="32dp"
 		android:background="?colorControlHighlight"
 		android:labelFor="@id/textView_title"
 		android:scaleType="fitCenter"
+		app:iconStyle="@style/FaviconDrawable.Small"
 		app:shapeAppearance="?shapeAppearanceCornerSmall"
 		tools:src="@tools:sample/avatars" />
 

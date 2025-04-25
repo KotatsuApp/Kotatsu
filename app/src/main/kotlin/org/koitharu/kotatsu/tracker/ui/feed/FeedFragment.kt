@@ -61,7 +61,7 @@ class FeedFragment :
 	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		val sizeResolver = StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width))
-		val feedAdapter = FeedAdapter(coil, viewLifecycleOwner, this, sizeResolver) { item, v ->
+		val feedAdapter = FeedAdapter(this, sizeResolver) { item, v ->
 			viewModel.onItemClick(item)
 			onItemClick(item.manga, v)
 		}

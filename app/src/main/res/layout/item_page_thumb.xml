@@ -8,11 +8,13 @@
 	android:layout_height="wrap_content"
 	app:cardBackgroundColor="?colorBackgroundFloating">
 
-	<org.koitharu.kotatsu.core.ui.widgets.CoverImageView
+	<org.koitharu.kotatsu.image.ui.CoverImageView
 		android:id="@+id/imageView_thumb"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:scaleType="centerCrop"
+		app:decodeRegion="true"
+		app:trimImage="true"
 		tools:src="@drawable/ic_placeholder" />
 
 	<TextView

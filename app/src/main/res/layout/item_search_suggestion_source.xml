@@ -11,12 +11,13 @@
 	android:orientation="horizontal"
 	android:paddingVertical="@dimen/margin_small">
 
-	<com.google.android.material.imageview.ShapeableImageView
+	<org.koitharu.kotatsu.core.ui.image.FaviconView
 		android:id="@+id/imageView_cover"
 		android:layout_width="32dp"
 		android:layout_height="32dp"
 		android:layout_marginStart="?listPreferredItemPaddingStart"
 		android:scaleType="centerCrop"
+		app:iconStyle="@style/FaviconDrawable.Small"
 		app:shapeAppearance="?shapeAppearanceCornerSmall"
 		tools:src="@tools:sample/backgrounds/scenic" />
 

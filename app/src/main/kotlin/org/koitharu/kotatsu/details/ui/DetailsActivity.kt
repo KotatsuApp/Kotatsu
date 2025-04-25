@@ -22,19 +22,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.TransitionManager
 import coil3.ImageLoader
 import coil3.request.ImageRequest
-import coil3.request.SuccessResult
 import coil3.request.allowRgb565
 import coil3.request.crossfade
-import coil3.request.error
-import coil3.request.fallback
 import coil3.request.lifecycle
-import coil3.request.placeholder
-import coil3.request.target
 import coil3.request.transformations
 import coil3.size.Precision
-import coil3.size.Scale
 import coil3.transform.RoundedCornersTransformation
-import coil3.util.CoilUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,7 +52,6 @@ import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
-import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.image.TextDrawable
 import org.koitharu.kotatsu.core.ui.image.TextViewTarget
@@ -72,9 +64,6 @@ import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.LocaleUtils
 import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.copyToClipboard
-import org.koitharu.kotatsu.core.util.ext.crossfade
-import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
-import org.koitharu.kotatsu.core.util.ext.drawable
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
@@ -369,8 +358,7 @@ class DetailsActivity :
 			.addDelegate(
 				ListItemType.MANGA_GRID,
 				mangaGridItemAD(
-					coil, this,
-					StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),
+					sizeResolver = StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),
 				) { item, view ->
 					router.openDetails(item)
 				},
@@ -505,28 +493,7 @@ class DetailsActivity :
 	}
 
 	private fun loadCover(imageUrl: String?) {
-		viewBinding.imageViewCover.isEnabled = !imageUrl.isNullOrEmpty()
-		val lastResult = CoilUtils.result(viewBinding.imageViewCover)
-		if (lastResult is SuccessResult && lastResult.request.data == imageUrl) {
-			return
-		}
-		val request = ImageRequest.Builder(this)
-			.target(viewBinding.imageViewCover)
-			.size(CoverSizeResolver(viewBinding.imageViewCover))
-			.scale(Scale.FILL)
-			.data(imageUrl)
-			.mangaSourceExtra(viewModel.getMangaOrNull()?.source)
-			.crossfade(this)
-			.lifecycle(this)
-		val previousDrawable = lastResult?.drawable
-		if (previousDrawable != null) {
-			request.fallback(previousDrawable)
-				.placeholder(previousDrawable)
-				.error(previousDrawable)
-		} else {
-			request.defaultPlaceholders(this)
-		}
-		request.enqueueWith(coil)
+		viewBinding.imageViewCover.setImageAsync(imageUrl, viewModel.getMangaOrNull())
 	}
 
 	private fun String.withEstimatedTime(time: ReadingTime?): String {
