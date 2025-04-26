@@ -16,7 +16,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.AsyncListDiffer
-import coil3.ImageLoader
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,7 +41,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.stats.domain.StatsPeriod
 import org.koitharu.kotatsu.stats.domain.StatsRecord
 import org.koitharu.kotatsu.stats.ui.views.PieChartView
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class StatsActivity : BaseActivity<ActivityStatsBinding>(),
@@ -53,15 +51,12 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 	View.OnClickListener,
 	CompoundButton.OnCheckedChangeListener {
 
-	@Inject
-	lateinit var coil: ImageLoader
-
 	private val viewModel: StatsViewModel by viewModels()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityStatsBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, false)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		val adapter = BaseListAdapter<StatsRecord>()
 			.addDelegate(ListItemType.FEED, statsAD(this))
 			.addListListener(this)

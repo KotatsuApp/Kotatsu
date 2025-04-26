@@ -31,6 +31,7 @@
 
 	<declare-styleable name="CoverStackView">
 		<attr name="coverSize" format="dimension" />
+		<attr name="hideEmptyViews" format="boolean" />
 	</declare-styleable>
 
 	<declare-styleable name="FaviconView">

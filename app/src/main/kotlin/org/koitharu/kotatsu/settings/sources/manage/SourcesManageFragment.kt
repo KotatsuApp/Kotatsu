@@ -13,7 +13,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
@@ -50,9 +49,6 @@ class SourcesManageFragment :
 	RecyclerViewOwner {
 
 	@Inject
-	lateinit var coil: ImageLoader
-
-	@Inject
 	lateinit var settings: AppSettings
 
 	@Inject
@@ -75,7 +71,7 @@ class SourcesManageFragment :
 		savedInstanceState: Bundle?,
 	) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		sourcesAdapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
+		sourcesAdapter = SourceConfigAdapter(this)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = sourcesAdapter

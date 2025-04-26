@@ -66,10 +66,6 @@ class HistoryRepository @Inject constructor(
 		return entities.toMangaList()
 	}
 
-	suspend fun getCount(): Int {
-		return db.getHistoryDao().getCount()
-	}
-
 	suspend fun getLastOrNull(): Manga? {
 		val entity = db.getHistoryDao().findAll(0, 1).firstOrNull() ?: return null
 		return entity.toManga()
@@ -116,12 +112,6 @@ class HistoryRepository @Inject constructor(
 		}
 	}
 
-	fun observeHasItems(): Flow<Boolean> {
-		return db.getHistoryDao().observeCount()
-			.map { it > 0 }
-			.distinctUntilChanged()
-	}
-
 	suspend fun addOrUpdate(manga: Manga, chapterId: Long, page: Int, scroll: Int, percent: Float, force: Boolean) {
 		if (!force && shouldSkip(manga)) {
 			return
@@ -158,7 +148,7 @@ class HistoryRepository @Inject constructor(
 		return ReadingProgress(
 			percent = fixedPercent,
 			totalChapters = entity.chaptersCount,
-			mode = mode
+			mode = mode,
 		).takeIf { it.isValid() }
 	}
 

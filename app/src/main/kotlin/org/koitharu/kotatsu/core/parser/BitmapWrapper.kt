@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.parser
 
 import android.graphics.Canvas
+import androidx.core.graphics.createBitmap
 import org.koitharu.kotatsu.parsers.bitmap.Bitmap
 import org.koitharu.kotatsu.parsers.bitmap.Rect
 import java.io.OutputStream
@@ -35,7 +36,7 @@ class BitmapWrapper private constructor(
 	companion object {
 
 		fun create(width: Int, height: Int) = BitmapWrapper(
-			AndroidBitmap.createBitmap(width, height, AndroidBitmap.Config.ARGB_8888),
+			createBitmap(width, height, AndroidBitmap.Config.ARGB_8888),
 		)
 
 		fun create(bitmap: AndroidBitmap) = BitmapWrapper(

@@ -35,7 +35,6 @@ fun calculateTimeAgo(instant: Instant, showMonths: Boolean = false): DateTimeAgo
 	}
 }
 
-@Suppress("KotlinConstantConditions")
 fun Long.toInstantOrNull() = if (this == 0L) null else Instant.ofEpochMilli(this)
 
 fun Resources.formatDurationShort(millis: Long): String? {

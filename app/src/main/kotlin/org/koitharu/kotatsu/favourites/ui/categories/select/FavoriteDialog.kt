@@ -18,12 +18,12 @@ import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.databinding.SheetFavoriteCategoriesBinding
+import org.koitharu.kotatsu.databinding.DialogFavoriteBinding
 import org.koitharu.kotatsu.favourites.ui.categories.select.adapter.MangaCategoriesAdapter
 import org.koitharu.kotatsu.favourites.ui.categories.select.model.MangaCategoryItem
 
 @AndroidEntryPoint
-class FavoriteDialog : AlertDialogFragment<SheetFavoriteCategoriesBinding>(),
+class FavoriteDialog : AlertDialogFragment<DialogFavoriteBinding>(),
 	OnListItemClickListener<MangaCategoryItem>, DialogInterface.OnClickListener {
 
 	private val viewModel by viewModels<FavoriteDialogViewModel>()
@@ -31,7 +31,7 @@ class FavoriteDialog : AlertDialogFragment<SheetFavoriteCategoriesBinding>(),
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
-	) = SheetFavoriteCategoriesBinding.inflate(inflater, container, false)
+	) = DialogFavoriteBinding.inflate(inflater, container, false)
 
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
 		return super.onBuildDialog(builder)
@@ -40,7 +40,7 @@ class FavoriteDialog : AlertDialogFragment<SheetFavoriteCategoriesBinding>(),
 	}
 
 	override fun onViewBindingCreated(
-		binding: SheetFavoriteCategoriesBinding,
+		binding: DialogFavoriteBinding,
 		savedInstanceState: Bundle?,
 	) {
 		super.onViewBindingCreated(binding, savedInstanceState)

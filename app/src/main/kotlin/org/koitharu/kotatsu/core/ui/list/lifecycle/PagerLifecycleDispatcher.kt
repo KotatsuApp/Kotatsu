@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.ui.list.lifecycle
 
 import android.view.View
 import androidx.core.view.children
+import androidx.core.view.isEmpty
 import androidx.viewpager2.widget.ViewPager2
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 
@@ -28,7 +29,7 @@ class PagerLifecycleDispatcher(
 		pendingUpdate = null
 		var hasResumedItem = false
 		val rv = pager.recyclerView ?: return
-		if (rv.childCount == 0) {
+		if (rv.isEmpty()) {
 			return
 		}
 		for (child in rv.children) {

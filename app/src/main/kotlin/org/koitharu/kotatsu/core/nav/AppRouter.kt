@@ -675,7 +675,7 @@ class AppRouter private constructor(
 	companion object {
 
 		fun from(view: View): AppRouter? = runCatching {
-			AppRouter(view.findFragment<Fragment>())
+			AppRouter(view.findFragment())
 		}.getOrElse {
 			(view.context.findActivity() as? FragmentActivity)?.let(::AppRouter)
 		}

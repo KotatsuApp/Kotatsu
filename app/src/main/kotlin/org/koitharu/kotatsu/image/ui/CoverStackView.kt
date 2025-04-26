@@ -9,6 +9,7 @@ import androidx.annotation.Px
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.children
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.ImageViewCompat
@@ -33,10 +34,12 @@ class CoverStackView @JvmOverloads constructor(
 		binding.imageViewCover2,
 		binding.imageViewCover3,
 	)
-	private var hideEmptyView: Boolean = true
+	private var hideEmptyView: Boolean = false
 
 	init {
 		context.withStyledAttributes(attrs, R.styleable.CoverStackView, defStyleAttr) {
+			hideEmptyView = getBoolean(R.styleable.CoverStackView_hideEmptyViews, hideEmptyView)
+			children.forEach { it.isGone = hideEmptyView }
 			val coverSize = getDimension(R.styleable.CoverStackView_coverSize, 0f)
 			if (coverSize > 0f) {
 				setCoverSize(coverSize)

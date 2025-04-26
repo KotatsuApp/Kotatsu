@@ -12,7 +12,6 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView.NO_ID
-import coil3.ImageLoader
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -40,7 +39,6 @@ import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerManga
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.adapter.ScrobblerMangaSelectionDecoration
 import org.koitharu.kotatsu.scrobbling.common.ui.selector.adapter.ScrobblerSelectorAdapter
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ScrobblingSelectorSheet :
@@ -54,9 +52,6 @@ class ScrobblingSelectorSheet :
 	ListStateHolderListener,
 	AsyncListDiffer.ListListener<ListModel> {
 
-	@Inject
-	lateinit var coil: ImageLoader
-
 	private var collapsibleActionViewCallback: CollapseActionViewCallback? = null
 	private var paginationScrollListener: PaginationScrollListener? = null
 	private val viewModel by viewModels<ScrobblingSelectorViewModel>()
@@ -68,7 +63,7 @@ class ScrobblingSelectorSheet :
 	override fun onViewBindingCreated(binding: SheetScrobblingSelectorBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		disableFitToContents()
-		val listAdapter = ScrobblerSelectorAdapter(viewLifecycleOwner, coil, this, this)
+		val listAdapter = ScrobblerSelectorAdapter(this, this)
 		listAdapter.addListListener(this)
 		val decoration = ScrobblerMangaSelectionDecoration(binding.root.context)
 		with(binding.recyclerView) {

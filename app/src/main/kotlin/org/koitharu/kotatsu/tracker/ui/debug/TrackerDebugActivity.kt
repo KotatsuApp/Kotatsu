@@ -5,7 +5,6 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
@@ -17,20 +16,16 @@ import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityTrackerDebugBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class TrackerDebugActivity : BaseActivity<ActivityTrackerDebugBinding>(), OnListItemClickListener<TrackDebugItem> {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	private val viewModel by viewModels<TrackerDebugViewModel>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityTrackerDebugBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, false)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		val tracksAdapter = BaseListAdapter<TrackDebugItem>()
 			.addDelegate(ListItemType.FEED, trackDebugAD(this))
 		with(viewBinding.recyclerView) {

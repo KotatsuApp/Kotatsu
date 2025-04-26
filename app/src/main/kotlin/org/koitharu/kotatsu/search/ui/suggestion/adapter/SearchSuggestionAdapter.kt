@@ -1,7 +1,5 @@
 package org.koitharu.kotatsu.search.ui.suggestion.adapter
 
-import androidx.lifecycle.LifecycleOwner
-import coil3.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
@@ -9,8 +7,6 @@ import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 const val SEARCH_SUGGESTION_ITEM_TYPE_QUERY = 0
 
 class SearchSuggestionAdapter(
-	coil: ImageLoader,
-	lifecycleOwner: LifecycleOwner,
 	listener: SearchSuggestionListener,
 ) : BaseListAdapter<SearchSuggestionItem>() {
 

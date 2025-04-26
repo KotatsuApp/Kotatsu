@@ -40,7 +40,7 @@ class FavouritesCategoryEditActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoryEditBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, true)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
 		initSortSpinner()
 		viewBinding.buttonDone.setOnClickListener(this)
 		viewBinding.editName.addTextChangedListener(this)

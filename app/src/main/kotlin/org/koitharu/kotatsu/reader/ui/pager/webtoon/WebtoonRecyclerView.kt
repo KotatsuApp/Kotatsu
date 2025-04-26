@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.core.view.forEach
+import androidx.core.view.isEmpty
+import androidx.core.view.isNotEmpty
 import androidx.core.view.iterator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +35,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 
 	override fun startNestedScroll(axes: Int) = startNestedScroll(axes, TYPE_TOUCH)
 
-	override fun startNestedScroll(axes: Int, type: Int): Boolean = childCount != 0
+	override fun startNestedScroll(axes: Int, type: Int): Boolean = isNotEmpty()
 
 	override fun dispatchNestedPreScroll(
 		dx: Int,
@@ -59,7 +61,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 	}
 
 	private fun consumeVerticalScroll(dy: Int): Int {
-		if (childCount == 0) {
+		if (isEmpty()) {
 			return 0
 		}
 		when {
@@ -123,7 +125,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 		}
 	}
 
-	 fun updateChildrenScroll() {
+	fun updateChildrenScroll() {
 		if (isFixingScroll) {
 			return
 		}

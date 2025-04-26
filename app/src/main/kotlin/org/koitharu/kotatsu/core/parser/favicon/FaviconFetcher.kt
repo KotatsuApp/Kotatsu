@@ -2,11 +2,11 @@ package org.koitharu.kotatsu.core.parser.favicon
 
 import android.graphics.Color
 import android.graphics.drawable.AdaptiveIconDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
+import coil3.ColorImage
 import coil3.ImageLoader
 import coil3.asImage
 import coil3.decode.DataSource
@@ -45,7 +45,7 @@ class FaviconFetcher(
 			is ParserMangaRepository -> fetchParserFavicon(repo)
 			is ExternalMangaRepository -> fetchPluginIcon(repo)
 			is EmptyMangaRepository -> ImageFetchResult(
-				image = ColorDrawable(Color.WHITE).asImage(),
+				image = ColorImage(Color.WHITE),
 				isSampled = false,
 				dataSource = DataSource.MEMORY,
 			)

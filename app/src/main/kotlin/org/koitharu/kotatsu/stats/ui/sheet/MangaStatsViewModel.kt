@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.stats.ui.sheet
 
-import androidx.collection.IntList
 import androidx.collection.MutableIntList
 import androidx.collection.emptyIntList
 import androidx.lifecycle.SavedStateHandle
@@ -26,7 +25,7 @@ class MangaStatsViewModel @Inject constructor(
 
 	val manga = savedStateHandle.require<ParcelableManga>(AppRouter.KEY_MANGA).manga
 
-	val stats = MutableStateFlow<IntList>(emptyIntList())
+	val stats = MutableStateFlow(emptyIntList())
 	val startDate = MutableStateFlow<DateTimeAgo?>(null)
 	val totalPagesRead = MutableStateFlow(0)
 

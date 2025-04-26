@@ -5,9 +5,9 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.widget.RemoteViews
 import androidx.core.app.PendingIntentCompat
+import androidx.core.net.toUri
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
@@ -34,7 +34,7 @@ class ShelfWidgetProvider : BaseAppWidgetProvider() {
 		}
 		val adapter = Intent(context, ShelfWidgetService::class.java)
 		adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, config.widgetId)
-		adapter.data = Uri.parse(adapter.toUri(Intent.URI_INTENT_SCHEME))
+		adapter.data = adapter.toUri(Intent.URI_INTENT_SCHEME).toUri()
 		views.setRemoteAdapter(R.id.gridView, adapter)
 		val intent = Intent(context, ReaderActivity::class.java)
 		intent.action = ReaderIntent.ACTION_MANGA_READ

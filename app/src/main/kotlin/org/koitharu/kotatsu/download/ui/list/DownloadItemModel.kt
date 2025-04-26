@@ -7,7 +7,6 @@ import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.color
 import androidx.work.WorkInfo
-import coil3.memory.MemoryCache
 import kotlinx.coroutines.flow.StateFlow
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
@@ -34,8 +33,6 @@ data class DownloadItemModel(
 	val isExpanded: Boolean,
 	val chapters: StateFlow<List<DownloadChapter>?>,
 ) : ListModel, Comparable<DownloadItemModel> {
-
-	val coverCacheKey = MemoryCache.Key(manga?.coverUrl.orEmpty(), mapOf("dl" to "1"))
 
 	val percent: Float
 		get() = if (max > 0) progress / max.toFloat() else 0f

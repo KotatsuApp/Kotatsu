@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.favourites.ui
 
 import android.os.Bundle
-import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.FragmentContainerActivity
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment

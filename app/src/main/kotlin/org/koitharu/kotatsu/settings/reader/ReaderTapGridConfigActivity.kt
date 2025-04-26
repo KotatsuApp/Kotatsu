@@ -40,7 +40,7 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderTapActionsBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, false)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		controls[TapGridArea.TOP_LEFT] = viewBinding.textViewTopLeft
 		controls[TapGridArea.TOP_CENTER] = viewBinding.textViewTopCenter
 		controls[TapGridArea.TOP_RIGHT] = viewBinding.textViewTopRight

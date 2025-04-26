@@ -43,7 +43,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, false)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		val downloadsAdapter = DownloadsAdapter(this, this)
 		val decoration = TypedListSpacingDecoration(this, false)
 		selectionController = ListSelectionController(
@@ -80,7 +80,7 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 			right = bars.right,
 			top = bars.top,
 		)
-		return return WindowInsetsCompat.Builder(insets)
+		return WindowInsetsCompat.Builder(insets)
 			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
 			.build()
 	}

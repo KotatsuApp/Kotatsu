@@ -64,7 +64,7 @@
 		app:fabSize="normal"
 		app:layout_anchor="@id/recyclerView"
 		app:layout_anchorGravity="bottom|end"
-		app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+		app:layout_behavior="com.google.android.material.behavior.HideViewOnScrollBehavior"
 		app:layout_dodgeInsetEdges="bottom" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

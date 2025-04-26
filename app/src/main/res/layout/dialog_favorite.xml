@@ -13,6 +13,7 @@
 		android:layout_height="@dimen/category_covers_height"
 		android:layout_marginStart="@dimen/screen_padding"
 		app:coverSize="3.4dp"
+		app:hideEmptyViews="true"
 		app:layout_constraintDimensionRatio="13:18"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />

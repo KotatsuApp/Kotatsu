@@ -126,7 +126,7 @@ class DetailsActivity :
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDetailsBinding.inflate(layoutInflater))
 		infoBinding = LayoutDetailsTableBinding.bind(viewBinding.root)
-		setDisplayHomeAsUp(true, false)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		supportActionBar?.setDisplayShowTitleEnabled(false)
 		viewBinding.chipFavorite.setOnClickListener(this)
 		infoBinding.textViewLocal.setOnClickListener(this)
@@ -377,7 +377,7 @@ class DetailsActivity :
 		if (adapter != null) {
 			adapter.items = scrobblings
 		} else {
-			adapter = ScrollingInfoAdapter(this, coil, router)
+			adapter = ScrollingInfoAdapter(router)
 			adapter.items = scrobblings
 			viewBinding.recyclerViewScrobbling.adapter = adapter
 			viewBinding.recyclerViewScrobbling.addItemDecoration(ScrobblingItemDecoration())

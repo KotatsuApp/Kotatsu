@@ -8,7 +8,6 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import coil3.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNotNull
@@ -24,7 +23,6 @@ import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.ActivityOverrideEditBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
-import javax.inject.Inject
 import androidx.appcompat.R as appcompatR
 import com.google.android.material.R as materialR
 
@@ -41,9 +39,6 @@ class OverrideConfigActivity : BaseActivity<ActivityOverrideEditBinding>(), View
 			viewModel.updateCover(uri.toString())
 		}
 	}
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

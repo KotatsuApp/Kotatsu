@@ -3,7 +3,7 @@ package org.koitharu.kotatsu.scrobbling.common.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import org.koitharu.kotatsu.scrobbling.common.domain.ScrobblerRepositoryMap
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
@@ -31,7 +31,7 @@ class ScrobblerAuthHelper @Inject constructor(
 		} else {
 			val repository = repositoriesMap[scrobbler]
 			val intent = Intent(Intent.ACTION_VIEW)
-			intent.data = Uri.parse(repository.oauthUrl)
+			intent.data = repository.oauthUrl.toUri()
 			context.startActivity(intent)
 		}
 	}

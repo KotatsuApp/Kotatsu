@@ -7,7 +7,7 @@ import java.io.InputStreamReader
 
 object RomCompat {
 
-	val isMiui = suspendLazy<Boolean>(Dispatchers.IO) {
+	val isMiui = suspendLazy(Dispatchers.IO) {
 		getProp("ro.miui.ui.version.name").isNotEmpty()
 	}
 

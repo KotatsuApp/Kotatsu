@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.search.ui.multi.adapter
 
+import android.annotation.SuppressLint
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
@@ -20,6 +21,7 @@ import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.search.ui.multi.SearchResultsListModel
 
+@SuppressLint("NotifyDataSetChanged")
 fun searchResultsAD(
 	sharedPool: RecycledViewPool,
 	sizeResolver: ItemSizeResolver,

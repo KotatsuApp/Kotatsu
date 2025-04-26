@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.reader.domain
 import android.content.Context
 import android.graphics.Rect
 import android.net.Uri
-import android.util.Log
 import androidx.annotation.AnyThread
 import androidx.annotation.CheckResult
 import androidx.collection.LongSparseArray

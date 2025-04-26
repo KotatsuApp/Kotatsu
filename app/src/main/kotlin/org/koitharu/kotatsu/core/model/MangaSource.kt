@@ -1,13 +1,9 @@
 package org.koitharu.kotatsu.core.model
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
-import android.text.style.RelativeSizeSpan
-import android.text.style.SuperscriptSpan
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -16,7 +12,6 @@ import androidx.core.text.inSpans
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.toLocale
 import org.koitharu.kotatsu.core.util.ext.toLocaleOrNull
 import org.koitharu.kotatsu.parsers.model.ContentType
@@ -24,7 +19,6 @@ import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.splitTwoParts
 import java.util.Locale
-import androidx.appcompat.R as appcompatR
 
 data object LocalMangaSource : MangaSource {
 	override val name = "LOCAL"
@@ -100,14 +94,6 @@ fun MangaSource.getTitle(context: Context): String = when (val source = unwrap()
 	LocalMangaSource -> context.getString(R.string.local_storage)
 	is ExternalMangaSource -> source.resolveName(context)
 	else -> context.getString(R.string.unknown)
-}
-
-fun SpannableStringBuilder.appendNsfwLabel(context: Context) = inSpans(
-	ForegroundColorSpan(context.getThemeColor(appcompatR.attr.colorError, Color.RED)),
-	RelativeSizeSpan(0.74f),
-	SuperscriptSpan(),
-) {
-	append(context.getString(R.string.nsfw))
 }
 
 fun SpannableStringBuilder.appendIcon(textView: TextView, @DrawableRes resId: Int): SpannableStringBuilder {

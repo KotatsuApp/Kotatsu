@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
 import org.koitharu.kotatsu.R
 
@@ -82,7 +83,7 @@ class IconsView @JvmOverloads constructor(
 	private fun addImageView() = ImageView(context).also {
 		it.scaleType = ImageView.ScaleType.FIT_CENTER
 		val lp = LayoutParams(iconSize, iconSize)
-		if (childCount != 0) {
+		if (isNotEmpty()) {
 			lp.marginStart = iconSpacing
 		}
 		addView(it, lp)

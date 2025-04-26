@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.main.ui.welcome
 import android.content.Context
 import androidx.core.os.ConfigurationCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

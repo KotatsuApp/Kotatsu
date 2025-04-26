@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
-import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.os.VoiceInputContract
 import org.koitharu.kotatsu.core.ui.BaseFragment
@@ -16,15 +15,11 @@ import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.FragmentSearchSuggestionBinding
 import org.koitharu.kotatsu.search.ui.suggestion.adapter.SearchSuggestionAdapter
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchSuggestionFragment :
 	BaseFragment<FragmentSearchSuggestionBinding>(),
 	SearchSuggestionItemCallback.SuggestionItemListener {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	private val viewModel by activityViewModels<SearchSuggestionViewModel>()
 	private val voiceInputLauncher = registerForActivityResult(VoiceInputContract()) { result ->
@@ -41,8 +36,6 @@ class SearchSuggestionFragment :
 	override fun onViewBindingCreated(binding: FragmentSearchSuggestionBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
 		val adapter = SearchSuggestionAdapter(
-			coil = coil,
-			lifecycleOwner = viewLifecycleOwner,
 			listener = requireActivity() as SearchSuggestionListener,
 		)
 		addMenuProvider(SearchSuggestionMenuProvider(binding.root.context, voiceInputLauncher, viewModel))

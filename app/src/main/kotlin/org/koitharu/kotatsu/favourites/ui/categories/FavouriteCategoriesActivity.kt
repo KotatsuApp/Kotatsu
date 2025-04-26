@@ -49,7 +49,7 @@ class FavouriteCategoriesActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoriesBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, false)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		adapter = CategoriesAdapter(this, this)
 		selectionController = ListSelectionController(
 			appCompatDelegate = delegate,

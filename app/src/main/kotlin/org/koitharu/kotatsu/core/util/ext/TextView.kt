@@ -2,17 +2,17 @@ package org.koitharu.kotatsu.core.util.ext
 
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.view.View
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import androidx.core.content.res.use
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 
 var TextView.textAndVisible: CharSequence?
-	get() = text?.takeIf { visibility == View.VISIBLE }
+	get() = text?.takeIf { isVisible }
 	set(value) {
 		text = value
 		isGone = value.isNullOrEmpty()

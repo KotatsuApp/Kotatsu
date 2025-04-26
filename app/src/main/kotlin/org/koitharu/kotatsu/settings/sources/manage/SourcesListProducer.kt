@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.settings.sources.manage
 import android.content.Context
 import androidx.room.InvalidationTracker
 import dagger.hilt.android.ViewModelLifecycle
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin

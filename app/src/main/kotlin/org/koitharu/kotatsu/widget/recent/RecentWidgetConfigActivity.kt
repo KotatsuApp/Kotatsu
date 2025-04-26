@@ -23,7 +23,7 @@ class RecentWidgetConfigActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityAppwidgetRecentBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, true)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
 		viewBinding.buttonDone.setOnClickListener(this)
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,

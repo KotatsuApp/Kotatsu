@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.HorizontalScrollView
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
 import androidx.core.view.updatePaddingRelative
 import androidx.customview.view.AbsSavedState
@@ -55,7 +56,7 @@ class ThemeChooserPreference @JvmOverloads constructor(
 			val context = ContextThemeWrapper(context, theme.styleResId)
 			val item =
 				ItemColorSchemeBinding.inflate(LayoutInflater.from(context), binding.linear, false)
-			if (binding.linear.childCount == 0) {
+			if (binding.linear.isEmpty()) {
 				item.root.updatePaddingRelative(start = 0)
 			}
 			val isSelected = theme == currentValue

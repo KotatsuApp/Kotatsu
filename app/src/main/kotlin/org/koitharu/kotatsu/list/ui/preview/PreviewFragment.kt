@@ -9,7 +9,6 @@ import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import coil3.ImageLoader
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -24,13 +23,9 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.search.ui.MangaListActivity
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickListener, ChipsView.OnChipClickListener {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	private val viewModel: PreviewViewModel by viewModels()
 
@@ -64,9 +59,9 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			R.id.button_open -> router.openDetails(manga)
 			R.id.button_read -> router.openReader(manga)
 
-			R.id.textView_author -> router.openSearch(
+			R.id.textView_author -> router.showAuthorDialog(
+				author = manga.authors.firstOrNull() ?: return,
 				source = manga.source,
-				query = manga.author ?: return,
 			)
 
 			R.id.imageView_cover -> router.openImage(
@@ -93,8 +88,8 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			// Main
 			loadCover(manga)
 			textViewTitle.text = manga.title
-			textViewSubtitle.textAndVisible = manga.altTitle
-			textViewAuthor.textAndVisible = manga.author
+			textViewSubtitle.textAndVisible = manga.altTitles.firstOrNull()
+			textViewAuthor.textAndVisible = manga.authors.firstOrNull()
 			if (manga.hasRating) {
 				ratingBar.rating = manga.rating * ratingBar.numStars
 				ratingBar.isVisible = true
@@ -110,8 +105,8 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 			buttonRead.setText(
 				when {
 					footer == null -> R.string.loading_
-					footer.isIncognito == true -> R.string.incognito
-					footer.isInProgress() == true -> R.string._continue
+					footer.isIncognito -> R.string.incognito
+					footer.isInProgress() -> R.string._continue
 					else -> R.string.read
 				},
 			)

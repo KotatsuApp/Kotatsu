@@ -33,9 +33,6 @@ class ColorFilterConfigViewModel @Inject constructor(
 	val isChanged: Boolean
 		get() = colorFilter.value != initialColorFilter
 
-	val is32BitColorsEnabled: Boolean
-		get() = settings.is32BitColorsEnabled
-
 	init {
 		launchLoadingJob {
 			initialColorFilter = mangaDataRepository.getColorFilter(manga.id) ?: settings.readerColorFilter

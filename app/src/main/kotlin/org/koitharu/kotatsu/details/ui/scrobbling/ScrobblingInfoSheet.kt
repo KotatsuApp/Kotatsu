@@ -13,7 +13,6 @@ import androidx.core.text.method.LinkMovementMethodCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
-import coil3.ImageLoader
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -29,7 +28,6 @@ import org.koitharu.kotatsu.databinding.SheetScrobblingBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ScrobblingInfoSheet :
@@ -41,9 +39,6 @@ class ScrobblingInfoSheet :
 
 	private val viewModel by activityViewModels<DetailsViewModel>()
 	private var scrobblerIndex: Int = -1
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	private var menu: PopupMenu? = null
 

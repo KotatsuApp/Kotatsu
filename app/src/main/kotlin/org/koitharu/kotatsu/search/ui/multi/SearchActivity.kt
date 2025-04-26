@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
@@ -43,9 +42,6 @@ class SearchActivity :
 	BaseActivity<ActivitySearchBinding>(),
 	MangaListListener,
 	ListSelectionController.Callback {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -85,8 +81,6 @@ class SearchActivity :
 			callback = this,
 		)
 		val adapter = SearchAdapter(
-			lifecycleOwner = this,
-			coil = coil,
 			listener = this,
 			itemClickListener = itemClickListener,
 			sizeResolver = sizeResolver,
@@ -96,7 +90,7 @@ class SearchActivity :
 		viewBinding.recyclerView.setHasFixedSize(true)
 		viewBinding.recyclerView.addItemDecoration(TypedListSpacingDecoration(this, true))
 
-		setDisplayHomeAsUp(true, false)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		supportActionBar?.setSubtitle(R.string.search_results)
 
 		addMenuProvider(SearchKindMenuProvider(this, viewModel.query, viewModel.kind))

@@ -1,9 +1,7 @@
 package org.koitharu.kotatsu.search.ui.multi.adapter
 
 import android.content.Context
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
-import coil3.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
@@ -20,8 +18,6 @@ import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 import org.koitharu.kotatsu.search.ui.multi.SearchResultsListModel
 
 class SearchAdapter(
-	lifecycleOwner: LifecycleOwner,
-	coil: ImageLoader,
 	listener: MangaListListener,
 	itemClickListener: OnListItemClickListener<SearchResultsListModel>,
 	sizeResolver: ItemSizeResolver,

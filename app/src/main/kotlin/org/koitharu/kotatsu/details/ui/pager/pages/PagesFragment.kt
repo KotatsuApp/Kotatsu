@@ -15,7 +15,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -58,9 +57,6 @@ class PagesFragment :
 	OnListItemClickListener<PageThumbnail>,
 	RecyclerViewOwner,
 	ListSelectionController.Callback {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -113,8 +109,6 @@ class PagesFragment :
 			callback = this,
 		)
 		thumbnailsAdapter = PageThumbnailAdapter(
-			coil = coil,
-			lifecycleOwner = viewLifecycleOwner,
 			clickListener = this@PagesFragment,
 		)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged) // before rv initialization

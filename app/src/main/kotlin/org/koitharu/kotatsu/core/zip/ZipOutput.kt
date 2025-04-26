@@ -158,7 +158,7 @@ class ZipOutput(
 
 	private fun Closeable.closeSafe() {
 		try {
-			cachedOutput?.close()
+			close()
 		} catch (e: NullPointerException) {
 			// Don't throw the "Deflater has been closed" exception
 			e.printStackTraceDebug()

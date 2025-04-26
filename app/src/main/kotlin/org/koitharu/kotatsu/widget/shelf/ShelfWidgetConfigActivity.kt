@@ -35,7 +35,7 @@ class ShelfWidgetConfigActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityAppwidgetShelfBinding.inflate(layoutInflater))
-		setDisplayHomeAsUp(true, true)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
 		adapter = CategorySelectAdapter(this)
 		viewBinding.recyclerView.adapter = adapter
 		viewBinding.buttonDone.setOnClickListener(this)

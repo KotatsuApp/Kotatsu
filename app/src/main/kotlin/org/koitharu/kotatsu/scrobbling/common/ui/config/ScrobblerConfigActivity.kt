@@ -6,7 +6,6 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import coil3.ImageLoader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -24,15 +23,11 @@ import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
-import javax.inject.Inject
 import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	OnListItemClickListener<ScrobblingInfo>, View.OnClickListener {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	private val viewModel: ScrobblerConfigViewModel by viewModels()
 
@@ -40,9 +35,9 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityScrobblerConfigBinding.inflate(layoutInflater))
 		setTitle(viewModel.titleResId)
-		setDisplayHomeAsUp(true, false)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 
-		val listAdapter = ScrobblingMangaAdapter(this, coil, this)
+		val listAdapter = ScrobblingMangaAdapter(this)
 		with(viewBinding.recyclerView) {
 			adapter = listAdapter
 			setHasFixedSize(true)
