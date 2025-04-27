@@ -6,7 +6,6 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toEntities
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
-import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.db.entity.toMangaTagsList
 import org.koitharu.kotatsu.core.model.toMangaSources
 import org.koitharu.kotatsu.core.util.ext.mapItems
@@ -32,10 +31,6 @@ class SuggestionRepository @Inject constructor(
 		return db.getSuggestionDao().observeAll(limit, filterOptions).mapItems {
 			it.toManga()
 		}
-	}
-
-	suspend fun getRandom(): Manga? {
-		return db.getSuggestionDao().getRandom()?.toManga()
 	}
 
 	suspend fun getRandomList(limit: Int): List<Manga> {
@@ -80,5 +75,5 @@ class SuggestionRepository @Inject constructor(
 		}
 	}
 
-	private fun SuggestionWithManga.toManga() = manga.toManga(tags.toMangaTags(), null)
+	private fun SuggestionWithManga.toManga() = manga.toManga(emptySet(), null)
 }

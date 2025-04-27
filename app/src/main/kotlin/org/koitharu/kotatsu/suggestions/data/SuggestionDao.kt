@@ -11,6 +11,7 @@ import androidx.room.Update
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import org.koitharu.kotatsu.core.db.MangaQueryBuilder
+import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 import org.koitharu.kotatsu.core.db.entity.TagEntity
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 
@@ -33,12 +34,10 @@ abstract class SuggestionDao : MangaQueryBuilder.ConditionCallback {
 	)
 
 	@Transaction
-	@Query("SELECT * FROM suggestions ORDER BY RANDOM() LIMIT 1")
-	abstract suspend fun getRandom(): SuggestionWithManga?
-
-	@Transaction
-	@Query("SELECT * FROM suggestions ORDER BY RANDOM() LIMIT :limit")
-	abstract suspend fun getRandom(limit: Int): List<SuggestionWithManga>
+	open suspend fun getRandom(limit: Int): List<MangaWithTags> {
+		val ids = getRandomIds(limit)
+		return getByIds(ids)
+	}
 
 	@Query("SELECT COUNT(*) FROM suggestions")
 	abstract suspend fun count(): Int
@@ -68,6 +67,12 @@ abstract class SuggestionDao : MangaQueryBuilder.ConditionCallback {
 		}
 	}
 
+	@Query("SELECT * FROM manga WHERE manga_id IN (:ids)")
+	protected abstract suspend fun getByIds(ids: LongArray): List<MangaWithTags>
+
+	@Query("SELECT manga_id FROM suggestions ORDER BY RANDOM() LIMIT :limit")
+	protected abstract suspend fun getRandomIds(limit: Int): LongArray
+
 	@Transaction
 	@RawQuery(observedEntities = [SuggestionEntity::class])
 	protected abstract fun observeAllImpl(query: SupportSQLiteQuery): Flow<List<SuggestionWithManga>>
@@ -75,7 +80,12 @@ abstract class SuggestionDao : MangaQueryBuilder.ConditionCallback {
 	override fun getCondition(option: ListFilterOption): String? = when (option) {
 		ListFilterOption.Macro.NSFW -> "(SELECT nsfw FROM manga WHERE manga.manga_id = suggestions.manga_id) = 1"
 		is ListFilterOption.Tag -> "EXISTS(SELECT * FROM manga_tags WHERE manga_tags.manga_id = suggestions.manga_id AND tag_id = ${option.tagId})"
-		is ListFilterOption.Source -> "(SELECT source FROM manga WHERE manga.manga_id = suggestions.manga_id) = ${sqlEscapeString(option.mangaSource.name)}"
+		is ListFilterOption.Source -> "(SELECT source FROM manga WHERE manga.manga_id = suggestions.manga_id) = ${
+			sqlEscapeString(
+				option.mangaSource.name,
+			)
+		}"
+
 		else -> null
 	}
 }

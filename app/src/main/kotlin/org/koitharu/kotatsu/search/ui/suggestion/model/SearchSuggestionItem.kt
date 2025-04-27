@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.search.ui.suggestion.model
 
+import androidx.annotation.StringRes
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
@@ -92,5 +93,16 @@ sealed interface SearchSuggestionItem : ListModel {
 		override fun getChangePayload(previousState: ListModel): Any {
 			return ListModelDiffCallback.PAYLOAD_NESTED_LIST_CHANGED
 		}
+	}
+
+	data class Text(
+		@StringRes val textResId: Int,
+		val error: Throwable?,
+	) : SearchSuggestionItem {
+
+		override fun areItemsTheSame(other: ListModel): Boolean = other is Text
+			&& textResId == other.textResId
+			&& error?.javaClass == other.error?.javaClass
+			&& error?.message == other.error?.message
 	}
 }

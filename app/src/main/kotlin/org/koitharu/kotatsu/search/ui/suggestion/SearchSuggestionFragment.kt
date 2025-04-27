@@ -8,11 +8,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import dagger.hilt.android.AndroidEntryPoint
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.os.VoiceInputContract
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
-import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
+import org.koitharu.kotatsu.core.util.ext.consumeAll
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.FragmentSearchSuggestionBinding
 import org.koitharu.kotatsu.search.ui.suggestion.adapter.SearchSuggestionAdapter
 
@@ -42,19 +44,16 @@ class SearchSuggestionFragment :
 		binding.root.adapter = adapter
 		binding.root.setHasFixedSize(true)
 		viewModel.suggestion.observe(viewLifecycleOwner, adapter)
+		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.root, this))
 		ItemTouchHelper(SearchSuggestionItemCallback(this))
 			.attachToRecyclerView(binding.root)
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
-		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.ime() or WindowInsetsCompat.Type.systemBars())
-		v.setPadding(
-			barsInsets.left,
-			0,
-			barsInsets.right,
-			barsInsets.bottom,
-		)
-		return insets.consumeAllSystemBarsInsets()
+		val typeMask = WindowInsetsCompat.Type.ime() or WindowInsetsCompat.Type.systemBars()
+		val barsInsets = insets.getInsets(typeMask)
+		v.setPadding(barsInsets.left, 0, barsInsets.right, barsInsets.bottom)
+		return insets.consumeAll(typeMask)
 	}
 
 	override fun onRemoveQuery(query: String) {
