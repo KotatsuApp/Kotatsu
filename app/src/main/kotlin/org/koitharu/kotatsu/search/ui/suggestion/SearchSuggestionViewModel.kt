@@ -21,11 +21,12 @@ import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu.parsers.util.sizeOrZero
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 import javax.inject.Inject
@@ -87,7 +88,7 @@ class SearchSuggestionViewModel @Inject constructor(
 	}
 
 	fun onResume() {
-		if (invalidateOnResume) {
+		if (invalidateOnResume || suggestionJob?.isActive != true) {
 			invalidateOnResume = false
 			setupSuggestion()
 		}
@@ -120,62 +121,114 @@ class SearchSuggestionViewModel @Inject constructor(
 		enabledSources: Set<String>,
 		types: Set<SearchSuggestionType>,
 	): List<SearchSuggestionItem> = coroutineScope {
-		val queriesDeferred = if (SearchSuggestionType.QUERIES_RECENT in types) {
-			async { repository.getQuerySuggestion(searchQuery, MAX_QUERY_ITEMS) }
+		listOfNotNull(
+			if (SearchSuggestionType.GENRES in types) {
+				async { getTags(searchQuery) }
+			} else {
+				null
+			},
+			if (SearchSuggestionType.MANGA in types) {
+				async { getManga(searchQuery) }
+			} else {
+				null
+			},
+			if (SearchSuggestionType.QUERIES_RECENT in types) {
+				async { getRecentQueries(searchQuery) }
+			} else {
+				null
+			},
+			if (SearchSuggestionType.QUERIES_SUGGEST in types) {
+				async { getQueryHints(searchQuery) }
+			} else {
+				null
+			},
+			if (SearchSuggestionType.SOURCES in types) {
+				async { getSources(searchQuery, enabledSources) }
+			} else {
+				null
+			},
+			if (SearchSuggestionType.RECENT_SOURCES in types) {
+				async { getRecentSources(searchQuery) }
+			} else {
+				null
+			},
+			if (SearchSuggestionType.AUTHORS in types) {
+				async {
+					getAuthors(searchQuery)
+				}
+			} else {
+				null
+			},
+		).flatMap { it.await() }
+	}
+
+	private suspend fun getAuthors(searchQuery: String): List<SearchSuggestionItem> = runCatchingCancellable {
+		repository.getAuthorsSuggestion(searchQuery, MAX_AUTHORS_ITEMS)
+			.map { SearchSuggestionItem.Author(it) }
+	}.getOrElse { e ->
+		e.printStackTraceDebug()
+		listOf(SearchSuggestionItem.Text(0, e))
+	}
+
+	private suspend fun getQueryHints(searchQuery: String): List<SearchSuggestionItem> = runCatchingCancellable {
+		repository.getQueryHintSuggestion(searchQuery, MAX_HINTS_ITEMS)
+			.map { SearchSuggestionItem.Hint(it) }
+	}.getOrElse { e ->
+		e.printStackTraceDebug()
+		listOf(SearchSuggestionItem.Text(0, e))
+	}
+
+	private suspend fun getRecentQueries(searchQuery: String): List<SearchSuggestionItem> = runCatchingCancellable {
+		repository.getQuerySuggestion(searchQuery, MAX_QUERY_ITEMS)
+			.map { SearchSuggestionItem.RecentQuery(it) }
+	}.getOrElse { e ->
+		e.printStackTraceDebug()
+		listOf(SearchSuggestionItem.Text(0, e))
+	}
+
+	private suspend fun getTags(searchQuery: String): List<SearchSuggestionItem> = runCatchingCancellable {
+		val tags = repository.getTagsSuggestion(searchQuery, MAX_TAGS_ITEMS, null)
+		if (tags.isEmpty()) {
+			emptyList()
 		} else {
-			null
+			listOf(SearchSuggestionItem.Tags(mapTags(tags)))
 		}
-		val hintsDeferred = if (SearchSuggestionType.QUERIES_SUGGEST in types) {
-			async { repository.getQueryHintSuggestion(searchQuery, MAX_HINTS_ITEMS) }
+	}.getOrElse { e ->
+		e.printStackTraceDebug()
+		listOf(SearchSuggestionItem.Text(0, e))
+	}
+
+	private suspend fun getManga(searchQuery: String): List<SearchSuggestionItem> = runCatchingCancellable {
+		val manga = repository.getMangaSuggestion(searchQuery, MAX_MANGA_ITEMS, null)
+		if (manga.isEmpty()) {
+			emptyList()
 		} else {
-			null
+			listOf(SearchSuggestionItem.MangaList(manga))
 		}
-		val authorsDeferred = if (SearchSuggestionType.AUTHORS in types) {
-			async { repository.getAuthorsSuggestion(searchQuery, MAX_AUTHORS_ITEMS) }
-		} else {
-			null
-		}
-		val tagsDeferred = if (SearchSuggestionType.GENRES in types) {
-			async { repository.getTagsSuggestion(searchQuery, MAX_TAGS_ITEMS, null) }
-		} else {
-			null
-		}
-		val mangaDeferred = if (SearchSuggestionType.MANGA in types) {
-			async { repository.getMangaSuggestion(searchQuery, MAX_MANGA_ITEMS, null) }
-		} else {
-			null
-		}
-		val sources = if (SearchSuggestionType.SOURCES in types) {
+	}.getOrElse { e ->
+		e.printStackTraceDebug()
+		listOf(SearchSuggestionItem.Text(0, e))
+	}
+
+	private suspend fun getSources(searchQuery: String, enabledSources: Set<String>): List<SearchSuggestionItem> =
+		runCatchingCancellable {
 			repository.getSourcesSuggestion(searchQuery, MAX_SOURCES_ITEMS)
-		} else {
-			null
-		}
-		val sourcesTipsDeferred = if (searchQuery.isEmpty() && SearchSuggestionType.RECENT_SOURCES in types) {
-			async { repository.getSourcesSuggestion(MAX_SOURCES_TIPS_ITEMS) }
-		} else {
-			null
+				.map { SearchSuggestionItem.Source(it, it.name in enabledSources) }
+		}.getOrElse { e ->
+			e.printStackTraceDebug()
+			listOf(SearchSuggestionItem.Text(0, e))
 		}
 
-		val tags = tagsDeferred?.await()
-		val mangaList = mangaDeferred?.await()
-		val queries = queriesDeferred?.await()
-		val hints = hintsDeferred?.await()
-		val authors = authorsDeferred?.await()
-		val sourcesTips = sourcesTipsDeferred?.await()
-
-		buildList(queries.sizeOrZero() + sources.sizeOrZero() + authors.sizeOrZero() + hints.sizeOrZero() + 2) {
-			if (!tags.isNullOrEmpty()) {
-				add(SearchSuggestionItem.Tags(mapTags(tags)))
-			}
-			if (!mangaList.isNullOrEmpty()) {
-				add(SearchSuggestionItem.MangaList(mangaList))
-			}
-			sources?.mapTo(this) { SearchSuggestionItem.Source(it, it.name in enabledSources) }
-			queries?.mapTo(this) { SearchSuggestionItem.RecentQuery(it) }
-			authors?.mapTo(this) { SearchSuggestionItem.Author(it) }
-			hints?.mapTo(this) { SearchSuggestionItem.Hint(it) }
-			sourcesTips?.mapTo(this) { SearchSuggestionItem.SourceTip(it) }
+	private suspend fun getRecentSources(searchQuery: String): List<SearchSuggestionItem> = if (searchQuery.isEmpty()) {
+		runCatchingCancellable {
+			repository.getSourcesSuggestion(MAX_SOURCES_TIPS_ITEMS)
+				.map { SearchSuggestionItem.SourceTip(it) }
+		}.getOrElse { e ->
+			e.printStackTraceDebug()
+			listOf(SearchSuggestionItem.Text(0, e))
 		}
+	} else {
+		emptyList()
 	}
 
 	private fun mapTags(tags: List<MangaTag>): List<ChipsView.ChipModel> = tags.map { tag ->
