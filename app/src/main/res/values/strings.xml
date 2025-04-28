@@ -831,4 +831,5 @@
 	<string name="pick_manga_page">Pick manga page</string>
 	<string name="pick_custom_file">Pick custom file</string>
 	<string name="change_cover">Change cover</string>
+	<string name="page_switch_timer">The page will switch every ~%d seconds</string>
 </resources>

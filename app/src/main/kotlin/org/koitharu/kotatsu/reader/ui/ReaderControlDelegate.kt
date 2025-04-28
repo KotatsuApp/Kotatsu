@@ -142,6 +142,8 @@ class ReaderControlDelegate(
 
 		fun onSavePageClick()
 
+		fun onScrollTimerClick()
+
 		fun toggleScreenOrientation()
 
 		fun isReaderResumed(): Boolean

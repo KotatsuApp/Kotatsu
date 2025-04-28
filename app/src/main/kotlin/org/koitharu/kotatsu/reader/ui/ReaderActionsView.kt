@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderControl
+import org.koitharu.kotatsu.core.util.ext.hasVisibleChildren
 import org.koitharu.kotatsu.core.util.ext.isRtl
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.databinding.LayoutReaderActionsBinding
@@ -83,6 +84,7 @@ class ReaderActionsView @JvmOverloads constructor(
 		binding.buttonOptions.initAction()
 		binding.buttonScreenRotation.initAction()
 		binding.buttonPagesThumbs.initAction()
+		binding.buttonTimer.initAction()
 		binding.slider.setLabelFormatter(PageLabelFormatter())
 		binding.slider.addOnChangeListener(this)
 		binding.slider.addOnSliderTouchListener(this)
@@ -110,6 +112,7 @@ class ReaderActionsView @JvmOverloads constructor(
 			R.id.button_prev -> listener?.switchChapterBy(-1)
 			R.id.button_next -> listener?.switchChapterBy(1)
 			R.id.button_save -> listener?.onSavePageClick()
+			R.id.button_timer -> listener?.onScrollTimerClick()
 			R.id.button_pages_thumbs -> AppRouter.from(this)?.showChapterPagesSheet()
 			R.id.button_screen_rotation -> listener?.toggleScreenOrientation()
 			R.id.button_options -> listener?.openMenu()
@@ -158,6 +161,12 @@ class ReaderActionsView @JvmOverloads constructor(
 		binding.slider.isRtl = reversed != isRtl
 	}
 
+	fun setTimerActive(isActive: Boolean) {
+		binding.buttonTimer.setIconResource(
+			if (isActive) R.drawable.ic_timer_run else R.drawable.ic_timer,
+		)
+	}
+
 	private fun updateControlsVisibility() {
 		val controls = settings.readerControls
 		binding.buttonPrev.isVisible = ReaderControl.PREV_CHAPTER in controls
@@ -165,6 +174,7 @@ class ReaderActionsView @JvmOverloads constructor(
 		binding.buttonPagesThumbs.isVisible = ReaderControl.PAGES_SHEET in controls
 		binding.buttonScreenRotation.isVisible = ReaderControl.SCREEN_ROTATION in controls
 		binding.buttonSave.isVisible = ReaderControl.SAVE_PAGE in controls
+		binding.buttonTimer.isVisible = ReaderControl.TIMER in controls
 		binding.slider.isVisible = ReaderControl.SLIDER in controls
 		adjustLayoutParams()
 	}
@@ -185,6 +195,7 @@ class ReaderActionsView @JvmOverloads constructor(
 		repeat(childCount) { i ->
 			val child = getChildAt(i)
 			if (child is FrameLayout) {
+				child.isVisible = child.hasVisibleChildren
 				child.updateLayoutParams<LayoutParams> {
 					width = if (isSliderVisible) LayoutParams.WRAP_CONTENT else 0
 					weight = if (isSliderVisible) 0f else 1f

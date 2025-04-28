@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.reader.ui
 
+import android.content.res.Resources
+import android.os.SystemClock
 import android.view.MotionEvent
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -10,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -19,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.core.util.ext.resolveDp
 import kotlin.math.roundToLong
 
 private const val MAX_DELAY = 8L
@@ -27,6 +31,7 @@ private const val INTERACTION_SKIP_MS = 2_000L
 private const val SPEED_FACTOR_DELTA = 0.02f
 
 class ScrollTimer @AssistedInject constructor(
+	@Assisted resources: Resources,
 	@Assisted private val listener: ReaderControlDelegate.OnInteractionListener,
 	@Assisted lifecycleOwner: LifecycleOwner,
 	settings: AppSettings,
@@ -35,17 +40,15 @@ class ScrollTimer @AssistedInject constructor(
 	private val coroutineScope = lifecycleOwner.lifecycleScope
 	private var job: Job? = null
 	private var delayMs: Long = 10L
-	private var pageSwitchDelay: Long = 100L
+	var pageSwitchDelay: Long = 100L
+		private set
 	private var resumeAt = 0L
 	private var isTouchDown = MutableStateFlow(false)
+	private val isRunning = MutableStateFlow(false)
+	private val scrollDelta = resources.resolveDp(2)
 
-	var isEnabled: Boolean = false
-		set(value) {
-			if (field != value) {
-				field = value
-				restartJob()
-			}
-		}
+	val isActive: StateFlow<Boolean>
+		get() = isRunning
 
 	init {
 		settings.observeAsFlow(AppSettings.KEY_READER_AUTOSCROLL_SPEED) {
@@ -56,8 +59,15 @@ class ScrollTimer @AssistedInject constructor(
 			}.launchIn(coroutineScope)
 	}
 
+	fun setActive(value: Boolean) {
+		if (isRunning.value != value) {
+			isRunning.value = value
+			restartJob()
+		}
+	}
+
 	fun onUserInteraction() {
-		resumeAt = System.currentTimeMillis() + INTERACTION_SKIP_MS
+		resumeAt = SystemClock.elapsedRealtime() + INTERACTION_SKIP_MS
 	}
 
 	fun onTouchEvent(event: MotionEvent) {
@@ -90,7 +100,7 @@ class ScrollTimer @AssistedInject constructor(
 	private fun restartJob() {
 		job?.cancel()
 		resumeAt = 0L
-		if (!isEnabled || delayMs == 0L) {
+		if (!isRunning.value || delayMs == 0L) {
 			job = null
 			return
 		}
@@ -114,7 +124,7 @@ class ScrollTimer @AssistedInject constructor(
 				if (!listener.isReaderResumed()) {
 					continue
 				}
-				if (!listener.scrollBy(1, false)) {
+				if (!listener.scrollBy(scrollDelta, false)) {
 					accumulator += delayMs
 				}
 				if (accumulator >= pageSwitchDelay) {
@@ -126,12 +136,12 @@ class ScrollTimer @AssistedInject constructor(
 	}
 
 	private fun isPaused(): Boolean {
-		return isTouchDown.value || resumeAt > System.currentTimeMillis()
+		return isTouchDown.value || resumeAt > SystemClock.elapsedRealtime()
 	}
 
 	private suspend fun delayUntilResumed() {
 		while (isPaused()) {
-			val delayTime = resumeAt - System.currentTimeMillis()
+			val delayTime = resumeAt - SystemClock.elapsedRealtime()
 			if (delayTime > 0) {
 				delay(delayTime)
 			} else {
@@ -145,6 +155,7 @@ class ScrollTimer @AssistedInject constructor(
 	interface Factory {
 
 		fun create(
+			resources: Resources,
 			lifecycleOwner: LifecycleOwner,
 			listener: ReaderControlDelegate.OnInteractionListener,
 		): ScrollTimer

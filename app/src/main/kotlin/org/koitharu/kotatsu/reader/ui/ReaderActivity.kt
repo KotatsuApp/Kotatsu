@@ -87,12 +87,6 @@ class ReaderActivity :
 	override val readerMode: ReaderMode?
 		get() = readerManager.currentMode
 
-	override var isAutoScrollEnabled: Boolean
-		get() = scrollTimer.isEnabled
-		set(value) {
-			scrollTimer.isEnabled = value
-		}
-
 	private lateinit var scrollTimer: ScrollTimer
 	private lateinit var pageSaveHelper: PageSaveHelper
 	private lateinit var touchHelper: TapGridDispatcher
@@ -107,13 +101,15 @@ class ReaderActivity :
 		readerManager = ReaderManager(supportFragmentManager, viewBinding.container, settings)
 		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		touchHelper = TapGridDispatcher(this, this)
-		scrollTimer = scrollTimerFactory.create(this, this)
+		scrollTimer = scrollTimerFactory.create(resources, this, this)
 		pageSaveHelper = pageSaveHelperFactory.create(this)
 		controlDelegate = ReaderControlDelegate(resources, settings, tapGridSettings, this)
 		viewBinding.zoomControl.listener = this
 		viewBinding.actionsView.listener = this
 		idlingDetector.bindToLifecycle(this)
 		screenOrientationHelper.applySettings()
+		scrollTimer.isActive.observe(this) { viewBinding.actionsView.setTimerActive(it) }
+		viewBinding.timerControl.attach(scrollTimer, this)
 
 		viewModel.onError.observeEvent(
 			this,
@@ -162,7 +158,9 @@ class ReaderActivity :
 
 	override fun onUserInteraction() {
 		super.onUserInteraction()
-		scrollTimer.onUserInteraction()
+		if (!viewBinding.timerControl.isVisible) {
+			scrollTimer.onUserInteraction()
+		}
 		idlingDetector.onUserInteraction()
 	}
 
@@ -196,6 +194,7 @@ class ReaderActivity :
 			lifecycle.postDelayed(TimeUnit.SECONDS.toMillis(1), hideUiRunnable)
 		}
 		viewBinding.actionsView.setSliderReversed(mode == ReaderMode.REVERSED)
+		viewBinding.timerControl.onReaderModeChanged(mode)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -237,7 +236,9 @@ class ReaderActivity :
 
 	override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
 		touchHelper.dispatchTouchEvent(ev)
-		scrollTimer.onTouchEvent(ev)
+		if (!viewBinding.timerControl.hasGlobalPoint(ev.rawX.toInt(), ev.rawY.toInt())) {
+			scrollTimer.onTouchEvent(ev)
+		}
 		return super.dispatchTouchEvent(ev)
 	}
 
@@ -272,6 +273,7 @@ class ReaderActivity :
 	override fun onReaderModeChanged(mode: ReaderMode) {
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 		viewModel.switchMode(mode)
+		viewBinding.timerControl.onReaderModeChanged(mode)
 	}
 
 	override fun onDoubleModeChanged(isEnabled: Boolean) {
@@ -359,6 +361,10 @@ class ReaderActivity :
 
 	override fun onSavePageClick() {
 		viewModel.saveCurrentPage(pageSaveHelper)
+	}
+
+	override fun onScrollTimerClick() {
+		viewBinding.timerControl.showOrHide()
 	}
 
 	override fun toggleScreenOrientation() {

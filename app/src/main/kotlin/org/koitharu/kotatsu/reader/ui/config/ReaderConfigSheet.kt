@@ -10,26 +10,20 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButtonToggleGroup
-import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
-import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -42,7 +36,6 @@ class ReaderConfigSheet :
 	BaseAdaptiveSheet<SheetReaderConfigBinding>(),
 	View.OnClickListener,
 	MaterialButtonToggleGroup.OnButtonCheckedListener,
-	Slider.OnChangeListener,
 	CompoundButton.OnCheckedChangeListener {
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
@@ -99,8 +92,7 @@ class ReaderConfigSheet :
 		binding.buttonSettings.setOnClickListener(this)
 		binding.buttonImageServer.setOnClickListener(this)
 		binding.buttonColorFilter.setOnClickListener(this)
-		binding.sliderTimer.addOnChangeListener(this)
-		binding.switchScrollTimer.setOnCheckedChangeListener(this)
+		binding.buttonScrollTimer.setOnClickListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
 
 		viewLifecycleScope.launch {
@@ -109,20 +101,6 @@ class ReaderConfigSheet :
 				bindImageServerTitle()
 			}
 			binding.buttonImageServer.isVisible = isAvailable
-		}
-
-		settings.observeAsStateFlow(
-			scope = lifecycleScope + Dispatchers.Default,
-			key = AppSettings.KEY_READER_AUTOSCROLL_SPEED,
-			valueProducer = { readerAutoscrollSpeed },
-		).observe(viewLifecycleOwner) {
-			binding.sliderTimer.value = it.coerceIn(
-				binding.sliderTimer.valueFrom,
-				binding.sliderTimer.valueTo,
-			)
-		}
-		findParentCallback(Callback::class.java)?.run {
-			binding.switchScrollTimer.isChecked = isAutoScrollEnabled
 		}
 	}
 
@@ -138,6 +116,11 @@ class ReaderConfigSheet :
 		when (v.id) {
 			R.id.button_settings -> {
 				router.openReaderSettings()
+				dismissAllowingStateLoss()
+			}
+
+			R.id.button_scroll_timer -> {
+				findParentCallback(Callback::class.java)?.onScrollTimerClick() ?: return
 				dismissAllowingStateLoss()
 			}
 
@@ -168,12 +151,6 @@ class ReaderConfigSheet :
 
 	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
 		when (buttonView.id) {
-			R.id.switch_scroll_timer -> {
-				findParentCallback(Callback::class.java)?.isAutoScrollEnabled = isChecked
-				requireViewBinding().layoutTimer.isVisible = isChecked
-				requireViewBinding().sliderTimer.isVisible = isChecked
-			}
-
 			R.id.switch_screen_lock_rotation -> {
 				orientationHelper.isLocked = isChecked
 			}
@@ -208,13 +185,6 @@ class ReaderConfigSheet :
 		mode = newMode
 	}
 
-	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
-		if (fromUser) {
-			settings.readerAutoscrollSpeed = value
-		}
-		(viewBinding ?: return).labelTimerValue.text = getString(R.string.speed_value, value * 10f)
-	}
-
 	private fun observeScreenOrientation() {
 		orientationHelper.observeAutoOrientation()
 			.onEach {
@@ -243,12 +213,12 @@ class ReaderConfigSheet :
 
 	interface Callback {
 
-		var isAutoScrollEnabled: Boolean
-
 		fun onReaderModeChanged(mode: ReaderMode)
 
 		fun onDoubleModeChanged(isEnabled: Boolean)
 
 		fun onSavePageClick()
+
+		fun onScrollTimerClick()
 	}
 }

@@ -146,60 +146,16 @@
 				android:textColor="?colorOnSurfaceVariant"
 				app:drawableStartCompat="@drawable/ic_split_horizontal" />
 
-			<com.google.android.material.materialswitch.MaterialSwitch
-				android:id="@+id/switch_scroll_timer"
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+				android:id="@+id/button_scroll_timer"
 				android:layout_width="match_parent"
 				android:layout_height="?android:listPreferredItemHeightSmall"
 				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:ellipsize="end"
 				android:paddingStart="?android:listPreferredItemPaddingStart"
 				android:paddingEnd="?android:listPreferredItemPaddingEnd"
-				android:singleLine="true"
 				android:text="@string/automatic_scroll"
 				android:textAppearance="?attr/textAppearanceButton"
-				android:textColor="?colorOnSurfaceVariant"
 				app:drawableStartCompat="@drawable/ic_timer" />
-
-			<LinearLayout
-				android:id="@+id/layout_timer"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
-				android:layout_marginTop="@dimen/margin_normal"
-				android:textAppearance="?textAppearanceTitleSmall"
-				android:visibility="gone"
-				tools:visibility="visible">
-
-				<TextView
-					android:id="@+id/label_timer"
-					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="@string/speed"
-					android:textAppearance="?attr/textAppearanceTitleSmall" />
-
-				<TextView
-					android:id="@+id/label_timer_value"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_marginStart="@dimen/margin_small"
-					android:textAppearance="?attr/textAppearanceBodySmall"
-					tools:text="x0.5" />
-
-			</LinearLayout>
-
-			<org.koitharu.kotatsu.core.ui.widgets.CubicSlider
-				android:id="@+id/slider_timer"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
-				android:contentDescription="@string/automatic_scroll"
-				android:labelFor="@id/switch_scroll_timer"
-				android:valueFrom="0.2"
-				android:valueTo="0.9"
-				android:visibility="gone"
-				app:labelBehavior="gone"
-				tools:visibility="visible" />
 
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_color_filter"

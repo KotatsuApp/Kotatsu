@@ -10,6 +10,7 @@ import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.core.view.descendants
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,9 @@ fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 	getGlobalVisibleRect(rect)
 	return rect.contains(x, y)
 }
+
+val ViewGroup.hasVisibleChildren: Boolean
+	get() = children.any { it.isVisible }
 
 fun View.measureHeight(): Int {
 	val vh = height

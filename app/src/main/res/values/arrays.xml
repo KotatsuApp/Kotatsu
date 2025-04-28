@@ -131,6 +131,7 @@
 		<item>@string/chapters_and_pages</item>
 		<item>@string/screen_orientation</item>
 		<item>@string/save_page</item>
+		<item>@string/automatic_scroll</item>
 	</string-array>
 	<string-array name="list_badges" translatable="false">
 		<item>@string/favourites</item>

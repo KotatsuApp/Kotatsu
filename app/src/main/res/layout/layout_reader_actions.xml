@@ -47,7 +47,7 @@
 	</FrameLayout>
 
 	<FrameLayout
-		android:layout_width="0dp"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content">
 
 		<com.google.android.material.button.MaterialButton
@@ -57,6 +57,19 @@
 			android:layout_height="wrap_content"
 			android:contentDescription="@string/save_page"
 			app:icon="@drawable/ic_save" />
+	</FrameLayout>
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_timer"
+			style="@style/Widget.Kotatsu.IconButton.Action"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:contentDescription="@string/save_page"
+			app:icon="@drawable/ic_timer" />
 	</FrameLayout>
 
 	<FrameLayout
