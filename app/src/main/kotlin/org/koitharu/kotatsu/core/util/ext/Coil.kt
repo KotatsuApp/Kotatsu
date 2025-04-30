@@ -1,10 +1,13 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.graphics.drawable.Drawable
+import androidx.annotation.CheckResult
 import coil3.Extras
 import coil3.ImageLoader
 import coil3.asDrawable
+import coil3.decode.ImageSource
 import coil3.fetch.FetchResult
+import coil3.fetch.SourceFetchResult
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import coil3.request.ImageResult
@@ -12,6 +15,7 @@ import coil3.request.Options
 import coil3.request.SuccessResult
 import coil3.request.bitmapConfig
 import coil3.toBitmap
+import okio.buffer
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.image.RegionBitmapDecoder
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -67,3 +71,14 @@ suspend fun ImageLoader.fetch(data: Any, options: Options): FetchResult? {
 val mangaKey = Extras.Key<Manga?>(null)
 val bookmarkKey = Extras.Key<Bookmark?>(null)
 val mangaSourceKey = Extras.Key<MangaSource?>(null)
+
+@CheckResult
+fun SourceFetchResult.copyWithNewSource(): SourceFetchResult = SourceFetchResult(
+	source = ImageSource(
+		source = source.fileSystem.source(source.file()).buffer(),
+		fileSystem = source.fileSystem,
+		metadata = source.metadata,
+	),
+	mimeType = mimeType,
+	dataSource = dataSource,
+)

@@ -13,7 +13,7 @@ import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
 import kotlinx.coroutines.runInterruptible
 import org.aomedia.avif.android.AvifDecoder
 import org.aomedia.avif.android.AvifDecoder.Info
-import org.koitharu.kotatsu.core.util.ext.toByteBuffer
+import org.koitharu.kotatsu.core.util.ext.readByteBuffer
 
 class AvifImageDecoder(
 	private val source: ImageSource,
@@ -21,9 +21,7 @@ class AvifImageDecoder(
 ) : Decoder {
 
 	override suspend fun decode(): DecodeResult = runInterruptible {
-		val bytes = source.source().use {
-			it.inputStream().toByteBuffer()
-		}
+		val bytes = source.source().readByteBuffer()
 		val info = Info()
 		if (!AvifDecoder.getInfo(bytes, bytes.remaining(), info)) {
 			throw ImageDecodeException(
