@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
@@ -37,6 +38,7 @@ import org.koitharu.kotatsu.core.ui.BaseFullscreenActivity
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.IdlingDetector
+import org.koitharu.kotatsu.core.util.ext.getThemeDimensionPixelOffset
 import org.koitharu.kotatsu.core.util.ext.hasGlobalPoint
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -54,6 +56,7 @@ import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
 import org.koitharu.kotatsu.reader.ui.tapgrid.TapGridDispatcher
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class ReaderActivity :
@@ -110,6 +113,11 @@ class ReaderActivity :
 		screenOrientationHelper.applySettings()
 		scrollTimer.isActive.observe(this) { viewBinding.actionsView.setTimerActive(it) }
 		viewBinding.timerControl.attach(scrollTimer, this)
+		if (resources.getBoolean(R.bool.is_tablet)) {
+			viewBinding.timerControl.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+				topMargin = marginEnd + getThemeDimensionPixelOffset(appcompatR.attr.actionBarSize)
+			}
+		}
 
 		viewModel.onError.observeEvent(
 			this,

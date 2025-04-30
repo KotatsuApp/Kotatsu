@@ -38,12 +38,13 @@
 		android:id="@+id/timerControl"
 		android:layout_width="320dp"
 		android:layout_height="wrap_content"
-		android:layout_gravity="top|end"
 		android:layout_margin="@dimen/screen_padding"
 		android:background="@drawable/bg_card"
-		android:elevation="@dimen/m3_card_elevated_elevation"
+		android:elevation="4dp"
 		android:visibility="gone"
-		app:layout_dodgeInsetEdges="top" />
+		app:layout_anchor="@id/appbar_top"
+		app:layout_anchorGravity="bottom|end"
+		tools:visibility="visible" />
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appbar_top"

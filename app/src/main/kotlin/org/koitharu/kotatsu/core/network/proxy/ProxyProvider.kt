@@ -11,6 +11,7 @@ import okhttp3.Credentials
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import okio.IOException
 import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -39,7 +40,7 @@ class ProxyProvider @Inject constructor(
 			return listOf(getProxy())
 		}
 
-		override fun connectFailed(uri: URI?, sa: SocketAddress?, ioe: okio.IOException?) {
+		override fun connectFailed(uri: URI?, sa: SocketAddress?, ioe: IOException?) {
 			ioe?.printStackTraceDebug()
 		}
 	}
@@ -80,8 +81,8 @@ class ProxyProvider @Inject constructor(
 					append(settings.proxyPort)
 				}
 				if (settings.proxyType == Proxy.Type.SOCKS) {
-					System.setProperty("java.net.socks.username", settings.proxyLogin);
-					System.setProperty("java.net.socks.password", settings.proxyPassword);
+					System.setProperty("java.net.socks.username", settings.proxyLogin)
+					System.setProperty("java.net.socks.password", settings.proxyPassword)
 				}
 				val proxyConfig = ProxyConfig.Builder()
 					.addProxyRule(url)
