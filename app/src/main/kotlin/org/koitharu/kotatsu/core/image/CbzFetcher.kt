@@ -25,7 +25,7 @@ class CbzFetcher(
 		val entryName = requireNotNull(uri.fragment)
 		val fs = options.fileSystem.openZip(filePath)
 		SourceFetchResult(
-			source = ImageSource(entryName.toPath(), fs, closeable = fs),
+			source = ImageSource(entryName.toPath(), fs),
 			mimeType = MimeTypes.getMimeTypeFromExtension(entryName)?.toString(),
 			dataSource = DataSource.DISK,
 		)

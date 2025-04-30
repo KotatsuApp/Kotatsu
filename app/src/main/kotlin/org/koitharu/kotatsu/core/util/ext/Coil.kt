@@ -6,10 +6,13 @@ import android.widget.ImageView
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.LifecycleOwner
+import androidx.annotation.CheckResult
 import coil3.Extras
 import coil3.ImageLoader
 import coil3.asDrawable
+import coil3.decode.ImageSource
 import coil3.fetch.FetchResult
+import coil3.fetch.SourceFetchResult
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import coil3.request.ImageResult
@@ -28,6 +31,7 @@ import coil3.toBitmap
 import coil3.util.CoilUtils
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import org.koitharu.kotatsu.R
+import okio.buffer
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.image.RegionBitmapDecoder
 import org.koitharu.kotatsu.core.ui.image.AnimatedPlaceholderDrawable
@@ -163,3 +167,14 @@ private class CompositeImageRequestListener(
 val mangaKey = Extras.Key<Manga?>(null)
 val bookmarkKey = Extras.Key<Bookmark?>(null)
 val mangaSourceKey = Extras.Key<MangaSource?>(null)
+
+@CheckResult
+fun SourceFetchResult.copyWithNewSource(): SourceFetchResult = SourceFetchResult(
+	source = ImageSource(
+		source = source.fileSystem.source(source.file()).buffer(),
+		fileSystem = source.fileSystem,
+		metadata = source.metadata,
+	),
+	mimeType = mimeType,
+	dataSource = dataSource,
+)

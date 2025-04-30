@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import okio.BufferedSink
+import okio.BufferedSource
 import okio.FileSystem
 import okio.IOException
 import okio.Path
@@ -30,6 +31,14 @@ suspend fun BufferedSink.writeAllCancellable(source: Source) = withContext(Dispa
 	writeAll(source.cancellable())
 }
 
+fun BufferedSource.readByteBuffer(): ByteBuffer {
+	val bytes = readByteArray()
+	return ByteBuffer.allocateDirect(bytes.size)
+		.put(bytes)
+		.rewind() as ByteBuffer
+}
+
+@Deprecated("")
 fun InputStream.toByteBuffer(): ByteBuffer {
 	val outStream = ByteArrayOutputStream(available())
 	copyTo(outStream)

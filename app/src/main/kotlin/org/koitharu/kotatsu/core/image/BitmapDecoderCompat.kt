@@ -9,12 +9,15 @@ import androidx.annotation.RequiresApi
 import androidx.core.graphics.createBitmap
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
 import okio.IOException
+import okio.buffer
+import okio.source
 import org.aomedia.avif.android.AvifDecoder
 import org.aomedia.avif.android.AvifDecoder.Info
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.MimeType
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.readByteBuffer
 import org.koitharu.kotatsu.core.util.ext.toByteBuffer
 import org.koitharu.kotatsu.core.util.ext.toMimeTypeOrNull
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -28,7 +31,7 @@ object BitmapDecoderCompat {
 
 	@Blocking
 	fun decode(file: File): Bitmap = when (val format = probeMimeType(file)?.subtype) {
-		FORMAT_AVIF -> file.inputStream().use { decodeAvif(it.toByteBuffer()) }
+		FORMAT_AVIF -> file.source().buffer().use { decodeAvif(it.readByteBuffer()) }
 		else -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 			ImageDecoder.decodeBitmap(ImageDecoder.createSource(file))
 		} else {
