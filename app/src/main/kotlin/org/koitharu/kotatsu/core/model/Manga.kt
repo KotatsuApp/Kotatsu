@@ -149,6 +149,8 @@ fun Manga.chaptersCount(): Int {
 	return max
 }
 
+fun Manga.isNsfw(): Boolean = contentRating == ContentRating.ADULT || source.isNsfw()
+
 fun MangaListFilter.getSummary() = buildSpannedString {
 	if (!query.isNullOrEmpty()) {
 		append(query)

@@ -7,7 +7,7 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
+import androidx.core.app.NotificationCompat.VISIBILITY_PRIVATE
 import androidx.core.app.NotificationCompat.VISIBILITY_SECRET
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
@@ -17,12 +17,14 @@ import coil3.request.ImageRequest
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.model.getLocalizedTitle
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import javax.inject.Inject
@@ -51,7 +53,7 @@ class TrackerNotificationHelper @Inject constructor(
 		if (newChapters.isEmpty() || !applicationContext.checkNotificationPermission(CHANNEL_ID)) {
 			return null
 		}
-		if (manga.isNsfw && (settings.isTrackerNsfwDisabled || settings.isNsfwContentDisabled)) {
+		if (manga.isNsfw() && (settings.isTrackerNsfwDisabled || settings.isNsfwContentDisabled)) {
 			return null
 		}
 		val id = manga.url.hashCode()
@@ -92,7 +94,7 @@ class TrackerNotificationHelper @Inject constructor(
 					false,
 				),
 			)
-			setVisibility(if (manga.isNsfw) VISIBILITY_SECRET else VISIBILITY_PUBLIC)
+			setVisibility(if (manga.isNsfw()) VISIBILITY_SECRET else VISIBILITY_PRIVATE)
 			setShortcutId(manga.id.toString())
 			applyCommonSettings(this)
 		}
@@ -127,6 +129,13 @@ class TrackerNotificationHelper @Inject constructor(
 			setNumber(newChaptersCount)
 			setGroup(GROUP_NEW_CHAPTERS)
 			setGroupSummary(true)
+			setVisibility(
+				if (notifications.any { it.manga.isNsfw() }) {
+					VISIBILITY_SECRET
+				} else {
+					VISIBILITY_PRIVATE
+				},
+			)
 			val intent = AppRouter.mangaUpdatesIntent(applicationContext)
 			setContentIntent(
 				PendingIntentCompat.getActivity(

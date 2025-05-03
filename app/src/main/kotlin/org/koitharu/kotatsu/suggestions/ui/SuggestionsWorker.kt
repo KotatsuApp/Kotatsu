@@ -352,7 +352,7 @@ class SuggestionsWorker @AssistedInject constructor(
 			)
 			setAutoCancel(true)
 			setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
-			setVisibility(if (manga.isNsfw) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PUBLIC)
+			setVisibility(if (manga.isNsfw()) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PRIVATE)
 			setShortcutId(manga.id.toString())
 			priority = NotificationCompat.PRIORITY_DEFAULT
 
