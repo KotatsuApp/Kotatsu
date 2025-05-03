@@ -25,6 +25,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.core.util.ext.isReportable
@@ -140,10 +141,10 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		builder.setSubText(null)
 		builder.setShowWhen(false)
 		builder.setVisibility(
-			if (state != null && state.manga.isNsfw) {
-				NotificationCompat.VISIBILITY_PRIVATE
+			if (state != null && state.manga.isNsfw()) {
+				NotificationCompat.VISIBILITY_SECRET
 			} else {
-				NotificationCompat.VISIBILITY_PUBLIC
+				NotificationCompat.VISIBILITY_PRIVATE
 			},
 		)
 		when {

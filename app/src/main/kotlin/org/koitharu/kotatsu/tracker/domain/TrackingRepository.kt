@@ -5,7 +5,6 @@ import androidx.room.withTransaction
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toManga
@@ -39,16 +38,16 @@ class TrackingRepository @Inject constructor(
 	private var isGcCalled = AtomicBoolean(false)
 
 	suspend fun getNewChaptersCount(mangaId: Long): Int {
-		return db.getTracksDao().findNewChapters(mangaId) ?: 0
+		return db.getTracksDao().findNewChapters(mangaId)
 	}
 
 	fun observeNewChaptersCount(mangaId: Long): Flow<Int> {
-		return db.getTracksDao().observeNewChapters(mangaId).map { it ?: 0 }
+		return db.getTracksDao().observeNewChapters(mangaId)
 	}
 
 	@Deprecated("")
 	fun observeUpdatedMangaCount(): Flow<Int> {
-		return db.getTracksDao().observeNewChapters().map { list -> list.count { it > 0 } }
+		return db.getTracksDao().observeUpdateMangaCount()
 			.onStart { gcIfNotCalled() }
 	}
 

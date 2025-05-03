@@ -28,7 +28,7 @@ class BackupRepository @Inject constructor(
 		var offset = 0
 		val entry = BackupEntry(BackupEntry.Name.HISTORY, JSONArray())
 		while (true) {
-			val history = db.getHistoryDao().findAll(offset, PAGE_SIZE)
+			val history = db.getHistoryDao().findAll(offset = offset, limit = PAGE_SIZE)
 			if (history.isEmpty()) {
 				break
 			}
@@ -59,7 +59,7 @@ class BackupRepository @Inject constructor(
 		var offset = 0
 		val entry = BackupEntry(BackupEntry.Name.FAVOURITES, JSONArray())
 		while (true) {
-			val favourites = db.getFavouritesDao().findAllRaw(offset, PAGE_SIZE)
+			val favourites = db.getFavouritesDao().findAllRaw(offset = offset, limit = PAGE_SIZE)
 			if (favourites.isEmpty()) {
 				break
 			}
@@ -78,19 +78,26 @@ class BackupRepository @Inject constructor(
 	}
 
 	suspend fun dumpBookmarks(): BackupEntry {
+		var offset = 0
 		val entry = BackupEntry(BackupEntry.Name.BOOKMARKS, JSONArray())
-		val all = db.getBookmarksDao().findAll()
-		for ((m, b) in all) {
-			val json = JSONObject()
-			val manga = JsonSerializer(m.manga).toJson()
-			json.put("manga", manga)
-			val tags = JSONArray()
-			m.tags.forEach { tags.put(JsonSerializer(it).toJson()) }
-			json.put("tags", tags)
-			val bookmarks = JSONArray()
-			b.forEach { bookmarks.put(JsonSerializer(it).toJson()) }
-			json.put("bookmarks", bookmarks)
-			entry.data.put(json)
+		while (true) {
+			val bookmarks = db.getBookmarksDao().findAll(offset = offset, limit = PAGE_SIZE)
+			if (bookmarks.isEmpty()) {
+				break
+			}
+			offset += bookmarks.size
+			for ((m, b) in bookmarks) {
+				val json = JSONObject()
+				val manga = JsonSerializer(m.manga).toJson()
+				json.put("manga", manga)
+				val tags = JSONArray()
+				m.tags.forEach { tags.put(JsonSerializer(it).toJson()) }
+				json.put("tags", tags)
+				val bookmarks = JSONArray()
+				b.forEach { bookmarks.put(JsonSerializer(it).toJson()) }
+				json.put("bookmarks", bookmarks)
+				entry.data.put(json)
+			}
 		}
 		return entry
 	}

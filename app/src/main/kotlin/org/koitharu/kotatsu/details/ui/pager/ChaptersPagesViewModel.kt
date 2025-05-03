@@ -100,7 +100,11 @@ abstract class ChaptersPagesViewModel(
 	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
 	val bookmarks = mangaDetails.flatMapLatest {
-		if (it != null) bookmarksRepository.observeBookmarks(it.toManga()) else flowOf(emptyList())
+		if (it != null) {
+			bookmarksRepository.observeBookmarks(it.toManga()).withErrorHandling()
+		} else {
+			flowOf(emptyList())
+		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, emptyList())
 
 	val chapters = combine(
