@@ -25,7 +25,7 @@ class HistoryListQuickFilter @Inject constructor(
 		add(ListFilterOption.Macro.COMPLETED)
 		add(ListFilterOption.Macro.FAVORITE)
 		add(ListFilterOption.NOT_FAVORITE)
-		if (!settings.isNsfwContentDisabled && !settings.isHistoryExcludeNsfw) {
+		if (!settings.isNsfwContentDisabled) {
 			add(ListFilterOption.Macro.NSFW)
 		}
 		repository.getPopularTags(3).mapTo(this) {

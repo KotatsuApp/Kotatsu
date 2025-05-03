@@ -27,8 +27,8 @@ value class ReaderIntent private constructor(
 			intent.putExtra(AppRouter.KEY_ID, mangaId)
 		}
 
-		fun incognito(incognito: Boolean) = apply {
-			intent.putExtra(EXTRA_INCOGNITO, incognito)
+		fun incognito() = apply {
+			intent.putExtra(EXTRA_INCOGNITO, true)
 		}
 
 		fun branch(branch: String?) = apply {

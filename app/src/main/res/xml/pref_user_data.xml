@@ -17,10 +17,11 @@
 		android:title="@string/screenshots_policy"
 		app:useSimpleSummaryProvider="true" />
 
-	<SwitchPreferenceCompat
-		android:key="history_exclude_nsfw"
-		android:summary="@string/exclude_nsfw_from_history_summary"
-		android:title="@string/exclude_nsfw_from_history" />
+	<ListPreference
+		android:entries="@array/incognito_nsfw_options"
+		android:key="incognito_nsfw"
+		android:title="@string/incognito_for_nsfw"
+		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"

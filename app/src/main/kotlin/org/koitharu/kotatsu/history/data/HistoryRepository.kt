@@ -201,13 +201,11 @@ class HistoryRepository @Inject constructor(
 		return db.getHistoryDao().findPopularSources(limit).toMangaSources()
 	}
 
-	fun shouldSkip(manga: Manga): Boolean {
-		return ((manga.source.isNsfw() || manga.isNsfw) && settings.isHistoryExcludeNsfw) || settings.isIncognitoModeEnabled
-	}
+	fun shouldSkip(manga: Manga): Boolean = settings.isIncognitoModeEnabled(manga.isNsfw())
 
 	fun observeShouldSkip(manga: Manga): Flow<Boolean> {
 		return settings.observe()
-			.filter { key -> key == AppSettings.KEY_INCOGNITO_MODE || key == AppSettings.KEY_HISTORY_EXCLUDE_NSFW }
+			.filter { key -> key == AppSettings.KEY_INCOGNITO_MODE || key == AppSettings.KEY_INCOGNITO_NSFW }
 			.onStart { emit("") }
 			.map { shouldSkip(manga) }
 			.distinctUntilChanged()

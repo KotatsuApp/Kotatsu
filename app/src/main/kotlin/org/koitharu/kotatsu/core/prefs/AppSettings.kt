@@ -214,8 +214,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val progressIndicatorMode: ProgressIndicatorMode
 		get() = prefs.getEnumValue(KEY_PROGRESS_INDICATORS, ProgressIndicatorMode.PERCENT_READ)
 
-	val isHistoryExcludeNsfw: Boolean
-		get() = prefs.getBoolean(KEY_HISTORY_EXCLUDE_NSFW, false)
+	var incognitoModeForNsfw: TriStateOption
+		get() = prefs.getEnumValue(KEY_INCOGNITO_NSFW, TriStateOption.ASK)
+		set(value) = prefs.edit { putEnumValue(KEY_INCOGNITO_NSFW, value) }
 
 	var isIncognitoModeEnabled: Boolean
 		get() = prefs.getBoolean(KEY_INCOGNITO_MODE, false)
@@ -545,6 +546,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		prefs.edit { putStringSet(KEY_TIPS_CLOSED, closedTips + tip) }
 	}
 
+	fun isIncognitoModeEnabled(isNsfw: Boolean): Boolean {
+		return isIncognitoModeEnabled || (isNsfw && incognitoModeForNsfw == TriStateOption.ENABLED)
+	}
+
 	fun getPagesSaveDir(context: Context): DocumentFile? =
 		prefs.getString(KEY_PAGES_SAVE_DIR, null)?.toUriOrNull()?.let {
 			DocumentFile.fromTreeUri(context, it)?.takeIf { it.canWrite() }
@@ -656,7 +661,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PROGRESS_INDICATORS = "progress_indicators"
 		const val KEY_REVERSE_CHAPTERS = "reverse_chapters"
 		const val KEY_GRID_VIEW_CHAPTERS = "grid_view_chapters"
-		const val KEY_HISTORY_EXCLUDE_NSFW = "history_exclude_nsfw"
+		const val KEY_INCOGNITO_NSFW = "incognito_nsfw"
 		const val KEY_PAGES_NUMBERS = "pages_numbers"
 		const val KEY_SCREENSHOTS_POLICY = "screenshots_policy"
 		const val KEY_PAGES_PRELOAD = "pages_preload"

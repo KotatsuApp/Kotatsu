@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.reader.ui
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
@@ -35,6 +36,8 @@ import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.BaseFullscreenActivity
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
+import org.koitharu.kotatsu.core.ui.dialog.setCheckbox
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.core.util.IdlingDetector
@@ -145,6 +148,7 @@ class ReaderActivity :
 		viewModel.isInfoBarTransparent.observe(this) { viewBinding.infoBar.drawBackground = !it }
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
 		viewModel.isBookmarkAdded.observe(this, MenuInvalidator(this))
+		viewModel.onAskNsfwIncognito.observeEvent(this) { askForIncognitoMode() }
 		viewModel.onShowToast.observeEvent(this) { msgId ->
 			Snackbar.make(viewBinding.container, msgId, Snackbar.LENGTH_SHORT)
 				.setAnchorView(viewBinding.toolbarDocked)
@@ -430,6 +434,30 @@ class ReaderActivity :
 		viewBinding.actionsView.isSliderEnabled = uiState.isSliderAvailable()
 		viewBinding.actionsView.isNextEnabled = uiState.hasNextChapter()
 		viewBinding.actionsView.isPrevEnabled = uiState.hasPreviousChapter()
+	}
+
+	private fun askForIncognitoMode() {
+		buildAlertDialog(this, isCentered = true) {
+			var dontAskAgain = false
+			val listener = DialogInterface.OnClickListener { _, which ->
+				if (which == DialogInterface.BUTTON_NEUTRAL) {
+					finishAfterTransition()
+				} else {
+					viewModel.setIncognitoMode(which == DialogInterface.BUTTON_POSITIVE, dontAskAgain)
+				}
+			}
+			setCheckbox(R.string.dont_ask_again, dontAskAgain) { _, isChecked ->
+				dontAskAgain = isChecked
+			}
+			setIcon(R.drawable.ic_incognito)
+			setTitle(R.string.incognito_mode)
+			setMessage(R.string.incognito_mode_hint_nsfw)
+			setPositiveButton(R.string.incognito, listener)
+			setNegativeButton(R.string.disable, listener)
+			setNeutralButton(android.R.string.cancel, listener)
+			setOnCancelListener { finishAfterTransition() }
+			setCancelable(true)
+		}.show()
 	}
 
 	companion object {

@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy
 import org.koitharu.kotatsu.core.prefs.SearchSuggestionType
+import org.koitharu.kotatsu.core.prefs.TriStateOption
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -57,6 +58,10 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 		findPreference<ListPreference>(AppSettings.KEY_SCREENSHOTS_POLICY)?.run {
 			entryValues = ScreenshotsPolicy.entries.names()
 			setDefaultValueCompat(ScreenshotsPolicy.ALLOW.name)
+		}
+		findPreference<ListPreference>(AppSettings.KEY_INCOGNITO_NSFW)?.run {
+			entryValues = TriStateOption.entries.names()
+			setDefaultValueCompat(TriStateOption.ASK.name)
 		}
 	}
 

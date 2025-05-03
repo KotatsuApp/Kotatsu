@@ -35,10 +35,12 @@ import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.core.prefs.TriStateOption
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.firstNotNull
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
@@ -112,14 +114,10 @@ class ReaderViewModel @Inject constructor(
 	val readerMode = MutableStateFlow<ReaderMode?>(null)
 	val onPageSaved = MutableEventFlow<Collection<Uri>>()
 	val onShowToast = MutableEventFlow<Int>()
+	val onAskNsfwIncognito = MutableEventFlow<Unit>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
-	val incognitoMode = if (savedStateHandle.get<Boolean>(ReaderIntent.EXTRA_INCOGNITO) == true) {
-		MutableStateFlow(true)
-	} else {
-		interactor.observeIncognitoMode(manga)
-			.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
-	}
+	val isIncognitoMode = MutableStateFlow(savedStateHandle.get<Boolean>(ReaderIntent.EXTRA_INCOGNITO))
 
 	val content = MutableStateFlow(ReaderContent(emptyList(), null))
 
@@ -191,10 +189,13 @@ class ReaderViewModel @Inject constructor(
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
 	init {
+		initIncognitoMode()
 		loadImpl()
 		launchJob(Dispatchers.Default) {
 			val mangaId = manga.filterNotNull().first().id
-			appShortcutManager.notifyMangaOpened(mangaId)
+			if (!isIncognitoMode.firstNotNull()) {
+				appShortcutManager.notifyMangaOpened(mangaId)
+			}
 		}
 	}
 
@@ -228,7 +229,7 @@ class ReaderViewModel @Inject constructor(
 			readingState.value = state
 			savedStateHandle[ReaderIntent.EXTRA_STATE] = state
 		}
-		if (incognitoMode.value) {
+		if (isIncognitoMode.value != false) {
 			return
 		}
 		val readerState = state ?: readingState.value ?: return
@@ -381,6 +382,13 @@ class ReaderViewModel @Inject constructor(
 		}
 	}
 
+	fun setIncognitoMode(value: Boolean, dontAskAgain: Boolean) {
+		isIncognitoMode.value = value
+		if (dontAskAgain) {
+			settings.incognitoModeForNsfw = if (value) TriStateOption.ENABLED else TriStateOption.DISABLED
+		}
+	}
+
 	private fun loadImpl() {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			val details = detailsLoadUseCase.invoke(intent, force = false).first { x -> x.isLoaded }
@@ -399,7 +407,7 @@ class ReaderViewModel @Inject constructor(
 
 			chaptersLoader.loadSingleChapter(requireNotNull(readingState.value).chapterId)
 			// save state
-			if (!incognitoMode.value) {
+			if (!isIncognitoMode.firstNotNull()) {
 				readingState.value?.let {
 					val percent = computePercent(it.chapterId, it.page)
 					historyUpdateUseCase.invoke(manga, it, percent)
@@ -444,10 +452,10 @@ class ReaderViewModel @Inject constructor(
 			totalPages = chaptersLoader.getPagesCount(chapter.id),
 			currentPage = state.page,
 			percent = computePercent(state.chapterId, state.page),
-			incognito = incognitoMode.value,
+			incognito = isIncognitoMode.value == true,
 		)
 		uiState.value = newState
-		if (!incognitoMode.value) {
+		if (isIncognitoMode.value == false) {
 			statsCollector.onStateChanged(m.id, state)
 		}
 	}
@@ -480,6 +488,26 @@ class ReaderViewModel @Inject constructor(
 		key = AppSettings.KEY_READER_ZOOM_BUTTONS,
 		valueProducer = { isReaderZoomButtonsEnabled },
 	)
+
+	private fun initIncognitoMode() {
+		if (isIncognitoMode.value != null) {
+			return
+		}
+		launchJob(Dispatchers.Default) {
+			interactor.observeIncognitoMode(manga)
+				.collect {
+					when (it) {
+						TriStateOption.ENABLED -> isIncognitoMode.value = true
+						TriStateOption.ASK -> {
+							onAskNsfwIncognito.call(Unit)
+							return@collect
+						}
+
+						TriStateOption.DISABLED -> isIncognitoMode.value = false
+					}
+				}
+		}
+	}
 
 	private suspend fun getStateFromIntent(manga: Manga): ReaderState {
 		val history = historyRepository.getOne(manga)

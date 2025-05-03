@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.core.nav.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.prefs.TriStateOption
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.computeSize
@@ -63,7 +64,7 @@ class DetailsViewModel @Inject constructor(
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
 	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
 	downloadScheduler: DownloadWorker.Scheduler,
-	private val interactor: DetailsInteractor,
+	interactor: DetailsInteractor,
 	savedStateHandle: SavedStateHandle,
 	deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	private val relatedMangaUseCase: RelatedMangaUseCase,
@@ -113,7 +114,7 @@ class DetailsViewModel @Inject constructor(
 		interactor.observeIncognitoMode(manga),
 	) { m, b, h, im ->
 		val estimatedTime = readingTimeUseCase.invoke(m, b, h)
-		HistoryInfo(m, b, h, im, estimatedTime)
+		HistoryInfo(m, b, h, im == TriStateOption.ENABLED, estimatedTime)
 	}.withErrorHandling()
 		.stateIn(
 			scope = viewModelScope + Dispatchers.Default,

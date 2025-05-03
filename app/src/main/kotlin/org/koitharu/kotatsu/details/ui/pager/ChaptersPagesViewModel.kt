@@ -49,7 +49,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 
 abstract class ChaptersPagesViewModel(
 	@JvmField protected val settings: AppSettings,
-	private val interactor: DetailsInteractor,
+	@JvmField protected val interactor: DetailsInteractor,
 	private val bookmarksRepository: BookmarksRepository,
 	private val historyRepository: HistoryRepository,
 	private val downloadScheduler: DownloadWorker.Scheduler,

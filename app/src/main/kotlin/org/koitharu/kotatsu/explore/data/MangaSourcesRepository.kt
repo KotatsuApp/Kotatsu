@@ -288,7 +288,7 @@ class MangaSourcesRepository @Inject constructor(
 	}
 
 	suspend fun trackUsage(source: MangaSource) {
-		if (!settings.isIncognitoModeEnabled && !(settings.isHistoryExcludeNsfw && source.isNsfw())) {
+		if (!settings.isIncognitoModeEnabled(source.isNsfw())) {
 			dao.setLastUsed(source.name, System.currentTimeMillis())
 		}
 	}

@@ -123,7 +123,7 @@ class AllBookmarksFragment :
 		if (selectionController?.onItemClick(item.pageId) != true) {
 			val intent = ReaderIntent.Builder(view.context)
 				.bookmark(item)
-				.incognito(true)
+				.incognito()
 				.build()
 			router.openReader(intent)
 			Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()

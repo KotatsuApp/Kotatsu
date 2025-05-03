@@ -832,4 +832,7 @@
 	<string name="pick_custom_file">Pick custom file</string>
 	<string name="change_cover">Change cover</string>
 	<string name="page_switch_timer">The page will switch every ~%d seconds</string>
+	<string name="dont_ask_again">Don\'t ask again</string>
+	<string name="incognito_mode_hint_nsfw">This manga may contain adult content. Do you want to use incognito mode?</string>
+	<string name="incognito_for_nsfw">Incognito mode for NSFW manga</string>
 </resources>

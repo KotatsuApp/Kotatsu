@@ -263,7 +263,7 @@ class DetailsActivity :
 	}
 
 	override fun onItemClick(item: Bookmark, view: View) {
-		router.openReader(ReaderIntent.Builder(view.context).bookmark(item).incognito(true).build())
+		router.openReader(ReaderIntent.Builder(view.context).bookmark(item).incognito().build())
 		Toast.makeText(view.context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 	}
 

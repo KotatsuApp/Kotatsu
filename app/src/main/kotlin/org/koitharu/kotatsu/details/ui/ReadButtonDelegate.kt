@@ -111,13 +111,13 @@ class ReadButtonDelegate(
 			Snackbar.make(buttonRead, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
 				.show() // TODO
 		} else {
-			router.openReader(
-				ReaderIntent.Builder(context)
-					.manga(manga)
-					.branch(viewModel.selectedBranchValue)
-					.incognito(isIncognitoMode)
-					.build(),
-			)
+			val intentBuilder = ReaderIntent.Builder(context)
+				.manga(manga)
+				.branch(viewModel.selectedBranchValue)
+			if (isIncognitoMode) {
+				intentBuilder.incognito()
+			}
+			router.openReader(intentBuilder.build())
 			if (isIncognitoMode) {
 				Toast.makeText(context, R.string.incognito_mode, Toast.LENGTH_SHORT).show()
 			}
