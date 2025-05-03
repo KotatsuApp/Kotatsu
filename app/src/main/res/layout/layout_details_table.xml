@@ -12,7 +12,6 @@
 		android:layout_height="0dp"
 		android:layout_marginHorizontal="@dimen/screen_padding"
 		android:layout_marginBottom="-12dp"
-		app:cardBackgroundColor="?colorBackgroundFloating"
 		app:layout_constraintBottom_toBottomOf="@id/textView_progress_label"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
@@ -230,7 +229,7 @@
 
 	<com.google.android.material.progressindicator.LinearProgressIndicator
 		android:id="@+id/progress"
-		style="@style/Widget.Material3.LinearProgressIndicator"
+		style="?linearProgressIndicatorStyle"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/margin_normal"
@@ -242,6 +241,7 @@
 		app:layout_constraintEnd_toStartOf="@id/textView_progress"
 		app:layout_constraintStart_toEndOf="@id/barrier_table"
 		app:layout_constraintTop_toTopOf="@id/textView_progress_label"
+		app:trackColor="?android:colorBackground"
 		tools:progress="12" />
 
 	<TextView
