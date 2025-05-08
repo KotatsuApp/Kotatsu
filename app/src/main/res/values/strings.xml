@@ -353,6 +353,7 @@
 	<string name="enable_logging_summary">Record some actions for debug purposes. Don\'t turn it on if you\'re not sure what you\'re doing</string>
 	<string name="show_suspicious_content">Show suspicious content</string>
 	<string name="theme_name_dynamic">Dynamic</string>
+	<string name="theme_name_dynamic_v2">Dynamic V2</string>
 	<string name="color_theme">Color scheme</string>
 	<string name="show_in_grid_view">Show in grid view</string>
 	<string name="theme_name_miku">Miku</string>

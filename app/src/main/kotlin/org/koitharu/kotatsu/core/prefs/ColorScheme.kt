@@ -13,14 +13,15 @@ enum class ColorScheme(
 	@StringRes val titleResId: Int,
 ) {
 
-	DEFAULT(R.style.Theme_Kotatsu, R.string.system_default),
-	MONET(R.style.Theme_Kotatsu_Monet, R.string.theme_name_dynamic),
-	MIKU(R.style.Theme_Kotatsu_Miku, R.string.theme_name_miku),
-	RENA(R.style.Theme_Kotatsu_Asuka, R.string.theme_name_asuka),
-	FROG(R.style.Theme_Kotatsu_Mion, R.string.theme_name_mion),
-	BLUEBERRY(R.style.Theme_Kotatsu_Rikka, R.string.theme_name_rikka),
-	NAME2(R.style.Theme_Kotatsu_Sakura, R.string.theme_name_sakura),
-	MAMIMI(R.style.Theme_Kotatsu_Mamimi, R.string.theme_name_mamimi),
+	DEFAULT(R.style.ThemeOverlay_Kotatsu, R.string.system_default),
+	MONET(R.style.ThemeOverlay_Kotatsu_Monet, R.string.theme_name_dynamic),
+	EXPRESSIVE(R.style.ThemeOverlay_Kotatsu_Expressive, R.string.theme_name_dynamic_v2),
+	MIKU(R.style.ThemeOverlay_Kotatsu_Miku, R.string.theme_name_miku),
+	RENA(R.style.ThemeOverlay_Kotatsu_Asuka, R.string.theme_name_asuka),
+	FROG(R.style.ThemeOverlay_Kotatsu_Mion, R.string.theme_name_mion),
+	BLUEBERRY(R.style.ThemeOverlay_Kotatsu_Rikka, R.string.theme_name_rikka),
+	NAME2(R.style.ThemeOverlay_Kotatsu_Sakura, R.string.theme_name_sakura),
+	MAMIMI(R.style.ThemeOverlay_Kotatsu_Mamimi, R.string.theme_name_mamimi),
 	KANADE(R.style.Theme_Kotatsu_Kanade, R.string.theme_name_kanade)
 	;
 

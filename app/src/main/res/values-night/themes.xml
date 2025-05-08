@@ -10,4 +10,7 @@
 		<item name="android:colorBackground">@color/background_amoled</item>
 	</style>
 
+	<!-- Monet theme only support S+ -->
+	<style name="ThemeOverlay.Kotatsu.Monet" parent="ThemeOverlay.Material3.DynamicColors.Dark" />
+
 </resources>

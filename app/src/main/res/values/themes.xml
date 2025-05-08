@@ -100,12 +100,19 @@
 	<!--== Default Theme ==-->
 	<style name="Theme.Kotatsu" parent="Base.Theme.Kotatsu" />
 
-	<!-- Monet theme only support S+ -->
-	<style name="Theme.Kotatsu.Monet" />
-
+	<!-- Base ThemeOverlay -->
 	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Light" />
 
+	<!-- Monet theme only support S+ -->
+	<style name="ThemeOverlay.Kotatsu.Monet" parent="ThemeOverlay.Material3.DynamicColors.Light" />
+
+	<!-- Expressive Monet theme (Light variant) -->
+	<style name="ThemeOverlay.Kotatsu.Expressive" parent="Theme.Material3Expressive.DynamicColors.DayNight.NoActionBar" />
+
+	<!-- Changes only for night -->
 	<style name="ThemeOverlay.Kotatsu.Amoled" parent="" />
+
+	<!-- App Widgets -->
 
 	<style name="Theme.Kotatsu.AppWidgetContainer" parent="@style/Theme.MaterialComponents.Light">
 		<item name="android:colorBackground">@color/kotatsu_background</item>
