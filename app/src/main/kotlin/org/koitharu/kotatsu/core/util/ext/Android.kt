@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.core.util.ext
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.ActivityManager.MemoryInfo
@@ -53,6 +52,7 @@ import okio.use
 import org.json.JSONException
 import org.jsoup.internal.StringUtil.StringJoiner
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.xmlpull.v1.XmlPullParser
@@ -140,7 +140,6 @@ val Context.ramAvailable: Long
 		return result.availMem
 	}
 
-@SuppressLint("DiscouragedApi")
 fun Context.getLocalesConfig(): LocaleListCompat {
 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 		LocaleConfig(this).supportedLocales?.let {
@@ -149,8 +148,7 @@ fun Context.getLocalesConfig(): LocaleListCompat {
 	}
 	val tagsList = StringJoiner(",")
 	try {
-		val resId = resources.getIdentifier("_generated_res_locale_config", "xml", packageName)
-		val xpp: XmlPullParser = resources.getXml(resId)
+		val xpp: XmlPullParser = resources.getXml(R.xml.locales_config)
 		while (xpp.eventType != XmlPullParser.END_DOCUMENT) {
 			if (xpp.eventType == XmlPullParser.START_TAG) {
 				if (xpp.name == "locale") {
