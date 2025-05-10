@@ -26,7 +26,7 @@
     <string name="add">Додај</string>
     <string name="save">Сачувај</string>
     <string name="share">Подели</string>
-    <string name="create_shortcut">Направи пречицу…</string>
+    <string name="create_shortcut">Направи пречицу</string>
     <string name="invalid_port_number">Неважећи број порта</string>
     <string name="search_manga">Претражи мангу</string>
     <string name="by_name">Имену</string>
@@ -688,10 +688,10 @@
     <string name="manga_with_downloaded_chapters">Манга са преузетим поглављима</string>
     <string name="fixing_manga">Поправљање манге</string>
     <string name="fixed">Успешно поправљено</string>
-    <string name="no_fix_required">Није потребна исправка за s\\</string>
+    <string name="no_fix_required">Није потребна исправка за \"%s\"</string>
     <string name="manga_fix_prompt">Ова функција ће пронаћи алтернативне изворе за изабрану мангу. Задатак ће потрајати и наставиће се у позадини</string>
-    <string name="manga_replaced">Манга 1$s (%2$s) је замењена са 3$s (%4$s)</string>
-    <string name="no_alternatives_found">Нису пронађене алтернативе за s\\</string>
+    <string name="manga_replaced">Манга \"%1$s\" (%2$s) је замењена са \"%3$s\" (%4$s)</string>
+    <string name="no_alternatives_found">Нису пронађене алтернативе за \"%s\"</string>
     <string name="content_type_novel">Роман</string>
     <string name="content_type_manhua">Манхуа</string>
     <string name="content_type_manhwa">Манхва</string>
@@ -756,11 +756,11 @@
     <string name="rating">Оцена</string>
     <string name="source">Извор</string>
     <string name="translation">Превод</string>
-    <string name="incognito">Инкогнито</string>
+    <string name="incognito">Тајно</string>
     <string name="open_telegram_bot">Отвори Телеграм бот-а</string>
     <string name="telegram_chat_id">Телеграм ИД за ћаскање</string>
     <string name="backup_tg_id_not_set">ИД ћаскања није подешен</string>
-    <string name="error_connection_reset">Ресетовање везе од стране удаљеног домаћина</string>
+    <string name="error_connection_reset">Веза је ресетована од стране удаљеног домаћина</string>
     <string name="backup_tg_check">Провери да ли API ради</string>
     <string name="backup_tg_echo">Пробна порука</string>
     <string name="show_slider">Прикажи клизач</string>
@@ -774,8 +774,8 @@
     <string name="enable_all_sources">Омогући све Манга изворе</string>
     <string name="all_sources_enabled">Сви извори су укључени</string>
     <string name="backup_restored_background">Резервна копија ће бити враћена у позадини</string>
-    <string name="reader_info_bar_transparent">Провидна информативна трака читача</string>
-    <string name="reader_controls_in_bottom_bar">Управљач читача у доњој траци</string>
+    <string name="reader_info_bar_transparent">Провидна трака са информацијама о читаоцу</string>
+    <string name="reader_controls_in_bottom_bar">Управљање читачем у доњој траци</string>
     <string name="pages_slider">Клизач за пребацивање страница</string>
     <string name="screen_rotation_locked">Окретање екрана је закључано</string>
     <string name="screen_rotation_unlocked">Окретање екрана је откључано</string>
@@ -796,6 +796,15 @@
     <string name="chapter_number">Поглавље %s</string>
     <string name="error_disclaimer_manga">Пробај да отвориш Мангу у мрежном прегледачу да би се уверио да је доступна из извора.</string>
     <string name="error_disclaimer_app_outdated">Изгледа да је твоја верзија Котатсу-а застарела. Молим инсталирај најновију верзију да би добио све доступне исправке.</string>
-    <string name="link_to_manga_on_s">Повезница до Манге на %s</string>
+    <string name="link_to_manga_on_s">Веза до Манге на %s</string>
     <string name="link_to_manga_in_app">Повезница до Манге у Котатсу</string>
+    <string name="tags_warnings">Означи опасне жанрове</string>
+    <string name="tags_warnings_summary">Означи жанрове који могу бити неприкладни за већину корисника</string>
+    <string name="no_write_permission_to_file">Нема дозволу за писање датотеке</string>
+    <string name="clear_browser_data_summary">Избриши податке претраживача као што су кеш меморија и колачићи. Упозорење: Овлашћења у манга изворима могу постати неважећа</string>
+    <string name="include_disabled_sources">Обухвати онемогућене изворе</string>
+    <string name="suggestions_disabled_sources_summary">Прикажи предлоге из свих извора манге, обухватајући и оне онемогућене</string>
+    <string name="chapter_volume_number">Том %1$s Поглавље %2$s</string>
+    <string name="exclude_nsfw_from_suggestions_summary">Манга за одрасле неће бити приказана у предлозима. Ова опција може радити нетачно са неким изворима</string>
+    <string name="error_non_file_uri">Изабрана путања не може да се користи јер не представља датотеку или директоријум</string>
 </resources>
