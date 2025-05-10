@@ -11,6 +11,7 @@
 		android:id="@+id/tabs"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:background="@null"
 		app:tabGravity="start"
 		app:tabMode="scrollable" />
 

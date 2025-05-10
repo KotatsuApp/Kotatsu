@@ -18,9 +18,9 @@ class SyncSettings(
 	@Inject
 	constructor(@ApplicationContext context: Context) : this(
 		context,
-		AccountManager.get(context)
-			.getAccountsByType(context.getString(R.string.account_type_sync))
-			.firstOrNull(),
+		AccountManager.get(context)?.getAccountsByType(
+			context.getString(R.string.account_type_sync),
+		)?.firstOrNull(),
 	)
 
 	private val accountManager = AccountManager.get(context)

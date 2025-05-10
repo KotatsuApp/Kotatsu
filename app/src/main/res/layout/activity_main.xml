@@ -18,10 +18,13 @@
 		android:id="@+id/appbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:background="@null"
 		android:clipToPadding="false"
+		android:elevation="0dp"
 		android:fitsSystemWindows="false"
 		android:paddingHorizontal="@dimen/margin_normal"
 		android:stateListAnimator="@null"
+		app:elevation="0dp"
 		app:liftOnScroll="false"
 		app:liftOnScrollColor="@null">
 
@@ -48,6 +51,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginEnd="6dp"
+				android:background="@null"
 				android:focusable="true"
 				android:focusableInTouchMode="true"
 				app:collapseIcon="@null"
