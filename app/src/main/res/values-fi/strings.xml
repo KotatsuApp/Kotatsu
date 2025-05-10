@@ -164,7 +164,7 @@
     <string name="close">Sulje</string>
     <string name="chapter_d_of_d">Luku %1$d / %2$d</string>
     <string name="loading_">Ladataan…</string>
-    <string name="remote_sources">Kaukolähteet</string>
+    <string name="remote_sources">Mangalähteet</string>
     <string name="settings">Asetukset</string>
     <string name="list_mode">Luettelotila</string>
     <string name="grid">Ruudukko</string>
@@ -259,4 +259,5 @@
     <string name="show_all">Näytä kaikki</string>
     <string name="select_range">Valitse alue</string>
     <string name="not_found_404">Sisältöä ei löydy tai se on poistettu</string>
+    <string name="retry">Yritä uudelleen</string>
 </resources>
