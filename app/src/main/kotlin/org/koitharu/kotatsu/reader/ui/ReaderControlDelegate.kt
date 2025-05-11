@@ -71,9 +71,9 @@ class ReaderControlDelegate(
 				return false
 			}
 
-			KeyEvent.KEYCODE_DPAD_RIGHT -> switchByRelative(-1, event)
+			KeyEvent.KEYCODE_DPAD_RIGHT -> switchByRelative(1, event)
 
-			KeyEvent.KEYCODE_DPAD_LEFT -> switchByRelative(1, event)
+			KeyEvent.KEYCODE_DPAD_LEFT -> switchByRelative(-1, event)
 
 			KeyEvent.KEYCODE_DPAD_CENTER -> listener.toggleUiVisibility()
 
