@@ -12,8 +12,10 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.InteractiveActionRequiredException
 import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.nav.AppRouter
@@ -43,6 +45,9 @@ class ExceptionResolver @AssistedInject constructor(
 ) {
 	private val continuations = MutableScatterMap<String, Continuation<Boolean>>(1)
 
+	private val browserActionContract = host.registerForActivityResult(BrowserActivity.Contract()) {
+		handleActivityResult(BrowserActivity.TAG, true)
+	}
 	private val sourceAuthContract = host.registerForActivityResult(SourceAuthActivity.Contract()) {
 		handleActivityResult(SourceAuthActivity.TAG, it)
 	}
@@ -62,6 +67,8 @@ class ExceptionResolver @AssistedInject constructor(
 			showSslErrorDialog()
 			false
 		}
+
+		is InteractiveActionRequiredException -> resolveBrowserAction(e)
 
 		is ProxyConfigException -> {
 			host.router()?.openProxySettings()
@@ -91,6 +98,13 @@ class ExceptionResolver @AssistedInject constructor(
 		}
 
 		else -> false
+	}
+
+	private suspend fun resolveBrowserAction(
+		e: InteractiveActionRequiredException
+	): Boolean = suspendCoroutine { cont ->
+		continuations[BrowserActivity.TAG] = cont
+		browserActionContract.launch(e)
 	}
 
 	private suspend fun resolveCF(e: CloudFlareProtectedException): Boolean = suspendCoroutine { cont ->
@@ -170,6 +184,8 @@ class ExceptionResolver @AssistedInject constructor(
 			is CertPathValidatorException -> R.string.fix
 
 			is ProxyConfigException -> R.string.settings
+
+			is InteractiveActionRequiredException -> R.string._continue
 
 			else -> 0
 		}

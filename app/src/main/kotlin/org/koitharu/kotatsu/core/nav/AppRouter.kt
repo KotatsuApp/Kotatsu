@@ -207,12 +207,7 @@ class AppRouter private constructor(
 	fun openDirectoriesSettings() = startActivity(MangaDirectoriesActivity::class.java)
 
 	fun openBrowser(url: String, source: MangaSource?, title: String?) {
-		startActivity(
-			Intent(contextOrNull() ?: return, BrowserActivity::class.java)
-				.setData(url.toUri())
-				.putExtra(KEY_TITLE, title)
-				.putExtra(KEY_SOURCE, source?.name),
-		)
+		startActivity(browserIntent(contextOrNull() ?: return, url, source, title))
 	}
 
 	fun openColorFilterConfig(manga: Manga, page: MangaPage) {
@@ -707,6 +702,16 @@ class AppRouter private constructor(
 					putExtra(KEY_USER_AGENT, it)
 				}
 			}
+
+		fun browserIntent(
+			context: Context,
+			url: String,
+			source: MangaSource?,
+			title: String?
+		): Intent = Intent(context, BrowserActivity::class.java)
+			.setData(url.toUri())
+			.putExtra(KEY_TITLE, title)
+			.putExtra(KEY_SOURCE, source?.name)
 
 		fun suggestionsIntent(context: Context) = Intent(context, SuggestionsActivity::class.java)
 

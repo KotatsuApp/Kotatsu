@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.core.exceptions.CloudFlareBlockedException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.exceptions.IncompatiblePluginException
+import org.koitharu.kotatsu.core.exceptions.InteractiveActionRequiredException
 import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
 import org.koitharu.kotatsu.core.exceptions.NonFileUriException
 import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
@@ -68,6 +69,7 @@ private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = w
 	)
 
 	is AuthRequiredException -> resources.getString(R.string.auth_required)
+	is InteractiveActionRequiredException -> resources.getString(R.string.additional_action_required)
 	is CloudFlareProtectedException -> resources.getString(R.string.captcha_required_message)
 	is CloudFlareBlockedException -> resources.getString(R.string.blocked_by_server_message)
 	is ActivityNotFoundException,
@@ -132,7 +134,7 @@ private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = w
 }.takeUnless { it.isNullOrBlank() }
 
 @DrawableRes
-fun Throwable.getDisplayIcon() = when (this) {
+fun Throwable.getDisplayIcon(): Int = when (this) {
 	is AuthRequiredException -> R.drawable.ic_auth_key_large
 	is CloudFlareProtectedException -> R.drawable.ic_bot_large
 	is UnknownHostException,
@@ -143,6 +145,7 @@ fun Throwable.getDisplayIcon() = when (this) {
 
 	is CloudFlareBlockedException -> R.drawable.ic_denied_large
 
+	is InteractiveActionRequiredException -> R.drawable.ic_interaction_large
 	else -> R.drawable.ic_error_large
 }
 
@@ -155,6 +158,7 @@ fun Throwable.getCauseUrl(): String? = when (this) {
 	is NoDataReceivedException -> url
 	is CloudFlareBlockedException -> url
 	is CloudFlareProtectedException -> url
+	is InteractiveActionRequiredException -> url
 	is HttpStatusException -> url
 	is HttpException -> (response.delegate as? Response)?.request?.url?.toString()
 	else -> null

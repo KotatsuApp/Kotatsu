@@ -1,13 +1,17 @@
 package org.koitharu.kotatsu.browser
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.exceptions.InteractiveActionRequiredException
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
@@ -64,5 +68,24 @@ class BrowserActivity : BaseBrowserActivity() {
 		}
 
 		else -> super.onOptionsItemSelected(item)
+	}
+
+	class Contract : ActivityResultContract<InteractiveActionRequiredException, Unit>() {
+		override fun createIntent(
+			context: Context,
+			input: InteractiveActionRequiredException
+		): Intent = AppRouter.browserIntent(
+			context = context,
+			url = input.url,
+			source = input.source,
+			title = null,
+		)
+
+		override fun parseResult(resultCode: Int, intent: Intent?): Unit = Unit
+	}
+
+	companion object {
+
+		const val TAG = "BrowserActivity"
 	}
 }

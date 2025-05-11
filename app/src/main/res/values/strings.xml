@@ -836,4 +836,5 @@
 	<string name="dont_ask_again">Don\'t ask again</string>
 	<string name="incognito_mode_hint_nsfw">This manga may contain adult content. Do you want to use incognito mode?</string>
 	<string name="incognito_for_nsfw">Incognito mode for NSFW manga</string>
+	<string name="additional_action_required">Additional action is required</string>
 </resources>
