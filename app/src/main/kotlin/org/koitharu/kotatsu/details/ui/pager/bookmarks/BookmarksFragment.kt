@@ -39,6 +39,7 @@ import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
+import org.koitharu.kotatsu.reader.ui.PageSaveHelper
 import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import javax.inject.Inject
 
@@ -54,9 +55,13 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 	@Inject
 	lateinit var settings: AppSettings
 
+	@Inject
+	lateinit var pageSaveHelperFactory: PageSaveHelper.Factory
+
 	override val recyclerView: RecyclerView?
 		get() = viewBinding?.recyclerView
 
+	private lateinit var pageSaveHelper: PageSaveHelper
 	private var bookmarksAdapter: BookmarksAdapter? = null
 	private var spanResolver: GridSpanResolver? = null
 	private var selectionController: ListSelectionController? = null
@@ -68,6 +73,7 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		pageSaveHelper = pageSaveHelperFactory.create(this)
 		activityViewModel.mangaDetails.observe(this, viewModel)
 	}
 
@@ -176,6 +182,12 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 			R.id.action_remove -> {
 				val ids = selectionController?.snapshot() ?: return false
 				viewModel.removeBookmarks(ids)
+				mode?.finish()
+				true
+			}
+
+			R.id.action_save -> {
+				viewModel.savePages(pageSaveHelper, selectionController?.snapshot() ?: return false)
 				mode?.finish()
 				true
 			}

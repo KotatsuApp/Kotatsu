@@ -257,7 +257,7 @@ class ReaderViewModel @Inject constructor(
 			val currentManga = manga.requireValue()
 			val task = PageSaveHelper.Task(
 				manga = currentManga,
-				chapter = currentManga.requireChapterById(state.chapterId),
+				chapterId = state.chapterId,
 				pageNumber = state.page + 1,
 				page = checkNotNull(getCurrentPage()) { "Cannot find current page" },
 			)

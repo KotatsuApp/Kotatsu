@@ -39,6 +39,7 @@ import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.reader.ui.PageSaveHelper
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,9 +53,18 @@ class AllBookmarksFragment :
 	@Inject
 	lateinit var settings: AppSettings
 
+	@Inject
+	lateinit var pageSaveHelperFactory: PageSaveHelper.Factory
+
+	private lateinit var pageSaveHelper: PageSaveHelper
 	private val viewModel by viewModels<AllBookmarksViewModel>()
 	private var bookmarksAdapter: BookmarksAdapter? = null
 	private var selectionController: ListSelectionController? = null
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		pageSaveHelper = pageSaveHelperFactory.create(this)
+	}
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -175,6 +185,12 @@ class AllBookmarksFragment :
 			R.id.action_remove -> {
 				val ids = selectionController?.snapshot() ?: return false
 				viewModel.removeBookmarks(ids)
+				mode?.finish()
+				true
+			}
+
+			R.id.action_save -> {
+				viewModel.savePages(pageSaveHelper, selectionController?.snapshot() ?: return false)
 				mode?.finish()
 				true
 			}

@@ -89,7 +89,7 @@ class PagesViewModel @Inject constructor(
 			val tasks = pages.map {
 				PageSaveHelper.Task(
 					manga = manga,
-					chapter = manga.requireChapterById(it.chapterId),
+					chapterId = it.chapterId,
 					pageNumber = it.index + 1,
 					page = it.toMangaPage(),
 				)
