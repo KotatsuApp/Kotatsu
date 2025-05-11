@@ -1,26 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-	<!--Toolbars-->
-
-	<style name="Widget.Kotatsu.CollapsingToolbar" parent="@style/Widget.Material3.CollapsingToolbar.Medium">
-		<item name="contentScrim">?attr/colorSurfaceContainer</item>
-	</style>
-
-	<style name="Widget.Kotatsu.AppBarLayout" parent="@style/Widget.Material3.AppBarLayout">
-		<item name="android:background">?android:attr/colorBackground</item>
-	</style>
-
-	<!--Navigation Views-->
-
-	<style name="Widget.Kotatsu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
-		<item name="labelVisibilityMode">labeled</item>
-	</style>
-
-	<style name="Widget.Kotatsu.ActionMode" parent="Base.Widget.Material3.ActionMode">
-		<!--<item name="titleTextStyle">@style/TextAppearance.Kotatsu.ActionBar.Title</item>-->
-		<item name="theme">@style/ThemeOverlay.Kotatsu.ActionMode</item>
-	</style>
-
 	<!--AlertDialog-->
 
 	<style name="ThemeOverlay.Kotatsu.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
@@ -62,23 +41,6 @@
 	</style>
 
 	<!-- Widget styles -->
-
-	<style name="Widget.Kotatsu.CardView.Outlined" parent="@style/Widget.Material3.CardView.Outlined">
-		<item name="strokeColor">?attr/colorSecondary</item>
-		<item name="cardBackgroundColor">?attr/colorSurfaceContainerLow</item>
-	</style>
-
-	<style name="Widget.Kotatsu.CardView.Filled" parent="Widget.Material3.CardView.Filled">
-		<item name="shapeAppearance">?attr/shapeAppearanceCornerExtraLarge</item>
-	</style>
-
-	<style name="Widget.Kotatsu.Tabs" parent="@style/Widget.Material3.TabLayout">
-		<item name="android:background">@drawable/tabs_background</item>
-		<item name="tabGravity">center</item>
-		<item name="tabInlineLabel">true</item>
-		<item name="tabMinWidth">75dp</item>
-		<item name="tabMode">scrollable</item>
-	</style>
 
 	<style name="Widget.Kotatsu.SearchView" parent="@style/Widget.AppCompat.SearchView">
 		<item name="iconifiedByDefault">false</item>
@@ -181,6 +143,7 @@
 		<item name="android:insetLeft">6dp</item>
 		<item name="android:insetTop">2dp</item>
 		<item name="android:insetBottom">2dp</item>
+		<item name="android:textAppearance">?textAppearanceListItem</item>
 	</style>
 
 	<style name="Widget.Kotatsu.TwoLinesItemView" parent="">
@@ -210,7 +173,6 @@
 		<item name="android:insetTop">2dp</item>
 		<item name="android:insetBottom">2dp</item>
 		<item name="android:gravity">start|center_vertical</item>
-		<item name="android:textAppearance">?textAppearanceButton</item>
 		<item name="backgroundTint">?attr/colorSurfaceContainerHigh</item>
 		<!-- Hack. Removing shadow. For AMOLED -->
 		<item name="android:outlineProvider">none</item>
@@ -262,11 +224,7 @@
 		<item name="android:textColor">?attr/colorOnBackground</item>
 	</style>
 
-	<style name="TextAppearance.Kotatsu.Button" parent="TextAppearance.Material3.TitleSmall" />
-
 	<style name="TextAppearance.Kotatsu.Preference.Secondary" parent="TextAppearance.Material3.BodySmall" />
-
-	<style name="TextAppearance.Kotatsu.Menu" parent="TextAppearance.Material3.BodyLarge" />
 
 	<style name="TextAppearance.Kotatsu.GridTitle" parent="TextAppearance.Material3.TitleSmall" />
 

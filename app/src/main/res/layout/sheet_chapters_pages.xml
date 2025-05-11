@@ -26,7 +26,7 @@
 
 			<com.google.android.material.tabs.TabLayout
 				android:id="@+id/tabs"
-				style="@style/Widget.Material3.TabLayout.Secondary"
+				style="?tabSecondaryStyle"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_gravity="start|center_vertical"

@@ -68,7 +68,7 @@
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_cancel"
-		style="@style/Widget.Material3.Button.OutlinedButton"
+		style="?materialButtonOutlinedStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@android:string/cancel"
@@ -77,7 +77,6 @@
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_update"
-		style="@style/Widget.Material3.Button.TonalButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:enabled="false"

@@ -47,7 +47,7 @@
 
 	<com.google.android.material.textfield.TextInputLayout
 		android:id="@+id/layout_email"
-		style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+		style="?textInputOutlinedStyle"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="30dp"
@@ -73,7 +73,7 @@
 
 	<Button
 		android:id="@+id/button_cancel"
-		style="@style/Widget.Material3.Button.OutlinedButton"
+		style="?materialButtonOutlinedStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@android:string/cancel"
@@ -82,7 +82,6 @@
 
 	<Button
 		android:id="@+id/button_next"
-		style="@style/Widget.Material3.Button.TonalButton"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:enabled="false"
@@ -104,7 +103,7 @@
 
 	<com.google.android.material.textfield.TextInputLayout
 		android:id="@+id/layout_password"
-		style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+		style="?textInputOutlinedStyle"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="30dp"
@@ -131,7 +130,7 @@
 
 	<Button
 		android:id="@+id/button_back"
-		style="@style/Widget.Material3.Button.OutlinedButton"
+		style="?materialButtonOutlinedStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/back"
@@ -140,7 +139,6 @@
 
 	<Button
 		android:id="@+id/button_done"
-		style="@style/Widget.Material3.Button.TonalButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:enabled="false"

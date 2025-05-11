@@ -57,7 +57,7 @@
 			android:drawablePadding="12dp"
 			android:gravity="center_horizontal"
 			android:textAlignment="center"
-			android:textAppearance="@style/TextAppearance.AppCompat.Small"
+			android:textAppearance="?textAppearanceBodyMedium"
 			app:drawableTopCompat="@drawable/ic_error_large"
 			tools:text="@tools:sample/lorem[6]" />
 

@@ -10,7 +10,7 @@
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_zoom_in"
-		style="@style/Widget.Material3.Button.IconButton.Outlined"
+		style="?materialIconButtonOutlinedStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:contentDescription="@string/zoom_in"
@@ -20,13 +20,12 @@
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/button_zoom_out"
-		style="@style/Widget.Material3.Button.IconButton.Outlined"
+		style="?materialIconButtonOutlinedStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:contentDescription="@string/zoom_out"
 		android:tooltipText="@string/zoom_out"
 		app:backgroundTint="@color/bg_floating_button"
 		app:icon="@drawable/ic_zoom_out" />
-
 
 </merge>

@@ -41,7 +41,6 @@
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_primary"
-			style="@style/Widget.Material3.Button.UnelevatedButton"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
@@ -51,7 +50,7 @@
 
 		<Button
 			android:id="@+id/button_secondary"
-			style="@style/Widget.Material3.Button.TonalButton"
+			style="?materialButtonTonalStyle"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"

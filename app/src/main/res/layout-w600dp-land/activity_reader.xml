@@ -60,7 +60,6 @@
 			android:layout_height="wrap_content"
 			android:elevation="@dimen/m3_card_elevated_elevation"
 			app:elevation="@dimen/m3_card_elevated_elevation"
-			app:popupTheme="@style/ThemeOverlay.Kotatsu"
 			tools:menu="@menu/opt_reader">
 
 			<org.koitharu.kotatsu.reader.ui.ReaderActionsView

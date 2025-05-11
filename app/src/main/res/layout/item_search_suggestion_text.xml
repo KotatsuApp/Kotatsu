@@ -8,7 +8,7 @@
 	android:paddingVertical="@dimen/margin_small"
 	android:paddingStart="?listPreferredItemPaddingStart"
 	android:paddingEnd="?listPreferredItemPaddingEnd"
-	android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+	android:textAppearance="?textAppearanceBodySmall"
 	android:textColor="?android:textColorSecondary"
 	tools:drawableStart="@drawable/ic_error_small"
 	tools:text="@string/error_corrupted_file" />

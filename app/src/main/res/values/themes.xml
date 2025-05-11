@@ -4,9 +4,6 @@
 	<!-- Base application theme. -->
 	<style name="Base.Theme.Kotatsu" parent="Theme.Material3.DayNight.NoActionBar">
 
-		<!-- Disallow 'Force dark theme' -->
-		<item name="android:forceDarkAllowed" tools:targetApi="Q">false</item>
-
 		<!-- Theme Colors -->
 		<item name="colorPrimary">@color/kotatsu_primary</item>
 		<item name="colorPrimaryContainer">@color/kotatsu_primaryContainer</item>
@@ -41,60 +38,42 @@
 		<item name="colorOnErrorContainer">@color/onErrorContainer</item>
 		<item name="colorOutline">@color/kotatsu_outline</item>
 		<item name="colorOutlineVariant">@color/kotatsu_outline</item>
+		<!--<item name="android:divider">@color/kotatsu_outline</item>-->
 
-		<item name="android:divider">@color/kotatsu_outline</item>
+		<!-- Drawables (icons) -->
+		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
+		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
 
-		<!-- Handles RTL text -->
-		<item name="android:textAlignment">gravity</item>
-		<item name="android:textDirection">locale</item>
-
-		<!-- Themes -->
+		<!-- Base attributes -->
 		<item name="android:windowLightStatusBar" tools:targetApi="M">@bool/light_status_bar</item>
 		<item name="android:statusBarColor">@color/dim</item>
 		<item name="android:navigationBarColor">@color/surface_amoled</item>
 		<item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@null</item>
 		<item name="android:enforceNavigationBarContrast" tools:targetApi="Q">false</item>
 		<item name="android:enforceStatusBarContrast" tools:targetApi="Q">false</item>
-		<item name="android:itemTextAppearance">@style/TextAppearance.Widget.Menu</item>
+		<item name="windowActionModeOverlay">true</item>
+
+		<!-- System components styles -->
 		<item name="alertDialogTheme">@style/ThemeOverlay.Kotatsu.AlertDialog</item>
 		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
 		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Kotatsu.SideSheetDialog</item>
-		<item name="textAppearanceButton">@style/TextAppearance.Kotatsu.Button</item>
-		<item name="android:buttonStyle">?attr/borderlessButtonStyle</item>
-		<item name="android:backgroundDimAmount">0.32</item>
-		<item name="windowActionModeOverlay">true</item>
-		<item name="actionBarPopupTheme">@style/Widget.Material3.PopupMenu.ListPopupWindow</item>
-		<item name="actionModeStyle">@style/Widget.Kotatsu.ActionMode</item>
-		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
-		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
-		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
-		<item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
-		<item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>
-		<item name="appBarLayoutStyle">@style/Widget.Kotatsu.AppBarLayout</item>
-		<item name="bottomNavigationStyle">@style/Widget.Kotatsu.BottomNavigationView</item>
-		<item name="tabStyle">@style/Widget.Kotatsu.Tabs</item>
-		<item name="materialCardViewStyle">@style/Widget.Kotatsu.CardView.Filled</item>
+		<item name="textInputStyle">?textInputOutlinedStyle</item>
+		<!--<item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>-->
+		<item name="materialCardViewStyle">?materialCardViewFilledStyle</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
-		<item name="fastScrollerStyle">@style/Widget.Kotatsu.FastScroller</item>
-		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
-		<item name="materialSwitchStyle">@style/Widget.Material3.CompoundButton.MaterialSwitch</item>
+		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>
 		<item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.M3</item>
-		<item name="collapsingToolbarLayoutStyle">@style/Widget.Kotatsu.CollapsingToolbar</item>
 		<item name="circularProgressIndicatorStyle">@style/Widget.Kotatsu.CircularProgressIndicator</item>
 		<item name="linearProgressIndicatorStyle">@style/Widget.Kotatsu.LinearProgressIndicator</item>
 		<item name="bottomSheetDragHandleStyle">@style/Widget.Kotatsu.BottomSheet.DragHandle</item>
-		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>
+		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
+
+		<!-- Custom views -->
+		<item name="fastScrollerStyle">@style/Widget.Kotatsu.FastScroller</item>
+		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
 		<item name="dotIndicatorStyle">@style/Widget.Kotatsu.DotIndicator</item>
 		<item name="badgeViewStyle">@style/Widget.Kotatsu.BadgeView</item>
 		<item name="coverImageViewStyle">@style/Widget.Kotatsu.ImageView.Cover</item>
-
-		<!-- Text appearance -->
-		<item name="actionMenuTextAppearance">@style/TextAppearance.Kotatsu.Menu</item>
-		<item name="android:textAppearanceListItem">?attr/textAppearanceBodyLarge</item>
-		<item name="android:textAppearanceListItemSecondary">
-			@style/TextAppearance.Kotatsu.Preference.Secondary
-		</item>
-
 	</style>
 
 	<!--== Default Theme ==-->
@@ -106,8 +85,13 @@
 	<!-- Monet theme only support S+ -->
 	<style name="ThemeOverlay.Kotatsu.Monet" parent="ThemeOverlay.Material3.DynamicColors.Light" />
 
-	<!-- Expressive Monet theme (Light variant) -->
-	<style name="ThemeOverlay.Kotatsu.Expressive" parent="Theme.Material3Expressive.DynamicColors.DayNight.NoActionBar" />
+	<!-- Expressive Monet theme -->
+	<style name="ThemeOverlay.Kotatsu.Expressive" parent="Theme.Material3Expressive.DynamicColors.DayNight.NoActionBar">
+		<item name="windowActionModeOverlay">true</item>
+		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
+		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Kotatsu.SideSheetDialog</item>
+
+	</style>
 
 	<!-- Changes only for night -->
 	<style name="ThemeOverlay.Kotatsu.Amoled" parent="" />
