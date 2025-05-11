@@ -44,5 +44,11 @@ data class ReadingProgress(
 		fun isValid(percent: Float) = percent in 0f..1f
 
 		fun isCompleted(percent: Float) = percent >= PROGRESS_COMPLETED_THRESHOLD
+
+		fun percentToString(percent: Float): String = if (isValid(percent)) {
+			if (isCompleted(percent)) "100" else (percent * 100f).toInt().toString()
+		} else {
+			"0"
+		}
 	}
 }

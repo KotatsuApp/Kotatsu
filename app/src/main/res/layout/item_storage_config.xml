@@ -40,8 +40,8 @@
 
 	</LinearLayout>
 
-	<ImageView
-		android:id="@+id/imageView_remove"
+	<ImageButton
+		android:id="@+id/button_remove"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:background="?selectableItemBackgroundBorderless"

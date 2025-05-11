@@ -13,6 +13,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -253,13 +254,13 @@ class ReaderActionsView @JvmOverloads constructor(
 	private fun Button.initAction() {
 		setOnClickListener(this@ReaderActionsView)
 		setOnLongClickListener(this@ReaderActionsView)
-		ViewCompat.setTooltipText(this, contentDescription)
+		TooltipCompat.setTooltipText(this, contentDescription)
 	}
 
 	private fun Button.setTitle(@StringRes titleResId: Int) {
 		val text = resources.getString(titleResId)
 		contentDescription = text
-		ViewCompat.setTooltipText(this, text)
+		TooltipCompat.setTooltipText(this, text)
 	}
 
 	private fun isAutoRotationEnabled(): Boolean = Settings.System.getInt(

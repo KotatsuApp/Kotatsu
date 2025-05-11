@@ -58,7 +58,6 @@
 		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
 		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Kotatsu.SideSheetDialog</item>
 		<item name="textInputStyle">?textInputOutlinedStyle</item>
-		<!--<item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>-->
 		<item name="materialCardViewStyle">?materialCardViewFilledStyle</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
 		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>

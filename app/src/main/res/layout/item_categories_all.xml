@@ -54,7 +54,7 @@
 		app:layout_constraintVertical_chainStyle="packed"
 		tools:text="@tools:sample/lorem[1]" />
 
-	<ImageView
+	<ImageButton
 		android:id="@+id/imageView_visible"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

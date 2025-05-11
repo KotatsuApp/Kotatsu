@@ -1,7 +1,10 @@
 package org.koitharu.kotatsu.explore.ui.adapter
 
 import android.view.View
+import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
+import androidx.core.text.bold
+import androidx.core.text.buildSpannedString
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.getSummary
@@ -122,7 +125,18 @@ fun exploreSourceGridItemAD(
 	val iconPinned = ContextCompat.getDrawable(context, R.drawable.ic_pin_small)
 
 	bind {
-		binding.textViewTitle.text = item.source.getTitle(context)
+		val title = item.source.getTitle(context)
+		TooltipCompat.setTooltipText(
+			itemView,
+			buildSpannedString {
+				bold {
+					append(title)
+				}
+				appendLine()
+				append(item.source.getSummary(context))
+			},
+		)
+		binding.textViewTitle.text = title
 		binding.textViewTitle.drawableStart = if (item.source.isPinned) iconPinned else null
 		binding.imageViewIcon.setImageAsync(item.source)
 	}

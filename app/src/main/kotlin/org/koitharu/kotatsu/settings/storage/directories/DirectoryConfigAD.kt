@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.settings.storage.directories
 
+import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -16,13 +17,14 @@ fun directoryConfigAD(
 	{ layoutInflater, parent -> ItemStorageConfigBinding.inflate(layoutInflater, parent, false) },
 ) {
 
-	binding.imageViewRemove.setOnClickListener { v -> clickListener.onItemClick(item, v) }
+	binding.buttonRemove.setOnClickListener { v -> clickListener.onItemClick(item, v) }
+	TooltipCompat.setTooltipText(binding.buttonRemove, binding.buttonRemove.contentDescription)
 
 	bind {
 		binding.textViewTitle.text = item.title ?: getString(item.titleRes)
 		binding.textViewSubtitle.textAndVisible = item.file?.absolutePath
-		binding.imageViewRemove.isVisible = item.isRemovable
-		binding.imageViewRemove.isEnabled = !item.isChecked
+		binding.buttonRemove.isVisible = item.isRemovable
+		binding.buttonRemove.isEnabled = !item.isChecked
 		binding.textViewTitle.drawableStart = if (!item.isAvailable) {
 			ContextCompat.getDrawable(context, R.drawable.ic_alert_outline)?.apply {
 				setTint(ContextCompat.getColor(context, R.color.warning))
