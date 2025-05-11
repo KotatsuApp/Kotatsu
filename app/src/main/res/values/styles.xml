@@ -144,6 +144,10 @@
 		<item name="android:insetTop">2dp</item>
 		<item name="android:insetBottom">2dp</item>
 		<item name="android:textAppearance">?textAppearanceListItem</item>
+		<item name="android:minHeight">?android:listPreferredItemHeightSmall</item>
+		<item name="android:drawablePadding">?android:listPreferredItemPaddingStart</item>
+		<item name="android:paddingStart">?android:listPreferredItemPaddingStart</item>
+		<item name="android:paddingEnd">?android:listPreferredItemPaddingEnd</item>
 	</style>
 
 	<style name="Widget.Kotatsu.TwoLinesItemView" parent="">
@@ -155,7 +159,7 @@
 		<item name="android:insetBottom">2dp</item>
 		<item name="android:orientation">horizontal</item>
 		<item name="android:textColor">@color/list_item_text_color</item>
-		<item name="titleTextAppearance">?attr/textAppearanceButton</item>
+		<item name="titleTextAppearance">?attr/textAppearanceTitleSmall</item>
 		<item name="subtitleTextAppearance">?attr/textAppearanceBodySmall</item>
 	</style>
 
@@ -264,7 +268,6 @@
 	<!--Preferences-->
 
 	<style name="PreferenceThemeOverlay.Kotatsu">
-		<item name="preferenceCategoryTitleTextAppearance">?attr/textAppearanceBodyMedium</item>
 		<item name="singleLineTitle">false</item>
 	</style>
 

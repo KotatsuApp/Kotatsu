@@ -64,7 +64,7 @@
 					android:layout_height="wrap_content"
 					android:gravity="center"
 					android:minWidth="48dp"
-					app:icon="@drawable/m3_split_button_chevron_avd"
+					app:icon="?expandCollapseIndicator"
 					app:toggleCheckedStateOnClick="false" />
 
 			</com.google.android.material.button.MaterialSplitButton>

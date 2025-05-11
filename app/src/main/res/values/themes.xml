@@ -38,11 +38,11 @@
 		<item name="colorOnErrorContainer">@color/onErrorContainer</item>
 		<item name="colorOutline">@color/kotatsu_outline</item>
 		<item name="colorOutlineVariant">@color/kotatsu_outline</item>
-		<!--<item name="android:divider">@color/kotatsu_outline</item>-->
 
 		<!-- Drawables (icons) -->
 		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
 		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
+		<item name="expandCollapseIndicator">@drawable/m3_split_button_chevron_avd</item>
 
 		<!-- Base attributes -->
 		<item name="android:windowLightStatusBar" tools:targetApi="M">@bool/light_status_bar</item>
@@ -57,8 +57,6 @@
 		<item name="alertDialogTheme">@style/ThemeOverlay.Kotatsu.AlertDialog</item>
 		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
 		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Kotatsu.SideSheetDialog</item>
-		<item name="textInputStyle">?textInputOutlinedStyle</item>
-		<item name="materialCardViewStyle">?materialCardViewFilledStyle</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
 		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>
 		<item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.M3</item>
@@ -85,11 +83,8 @@
 	<style name="ThemeOverlay.Kotatsu.Monet" parent="ThemeOverlay.Material3.DynamicColors.Light" />
 
 	<!-- Expressive Monet theme -->
-	<style name="ThemeOverlay.Kotatsu.Expressive" parent="Theme.Material3Expressive.DynamicColors.DayNight.NoActionBar">
-		<item name="windowActionModeOverlay">true</item>
-		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
-		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Kotatsu.SideSheetDialog</item>
-
+	<style name="ThemeOverlay.Kotatsu.Expressive" parent="ThemeOverlay.Material3Expressive.DynamicColors.DayNight">
+		<!-- TODO -->
 	</style>
 
 	<!-- Changes only for night -->
