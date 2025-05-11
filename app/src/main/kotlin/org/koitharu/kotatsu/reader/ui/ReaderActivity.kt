@@ -114,6 +114,7 @@ class ReaderActivity :
 		viewBinding.actionsView.listener = this
 		idlingDetector.bindToLifecycle(this)
 		screenOrientationHelper.applySettings()
+		viewModel.isBookmarkAdded.observe(this) { viewBinding.actionsView.isBookmarkAdded = it }
 		scrollTimer.isActive.observe(this) { viewBinding.actionsView.setTimerActive(it) }
 		viewBinding.timerControl.attach(scrollTimer, this)
 		if (resources.getBoolean(R.bool.is_tablet)) {
@@ -371,12 +372,20 @@ class ReaderActivity :
 		return reader.isResumed && supportFragmentManager.fragments.lastOrNull() === reader
 	}
 
+	override fun onBookmarkClick() {
+		viewModel.toggleBookmark()
+	}
+
 	override fun onSavePageClick() {
 		viewModel.saveCurrentPage(pageSaveHelper)
 	}
 
-	override fun onScrollTimerClick() {
-		viewBinding.timerControl.showOrHide()
+	override fun onScrollTimerClick(isLongClick: Boolean) {
+		if (isLongClick) {
+			scrollTimer.setActive(!scrollTimer.isActive.value)
+		} else {
+			viewBinding.timerControl.showOrHide()
+		}
 	}
 
 	override fun toggleScreenOrientation() {

@@ -14,26 +14,10 @@ class ReaderMenuProvider(
 		menuInflater.inflate(R.menu.opt_reader, menu)
 	}
 
-	override fun onPrepareMenu(menu: Menu) {
-		menu.findItem(R.id.action_bookmark)?.let { bookmarkItem ->
-			val hasPages = viewModel.content.value.pages.isNotEmpty()
-			bookmarkItem.isEnabled = hasPages
-			if (hasPages) {
-				val hasBookmark = viewModel.isBookmarkAdded.value
-				bookmarkItem.setTitle(if (hasBookmark) R.string.bookmark_remove else R.string.bookmark_add)
-				bookmarkItem.setIcon(if (hasBookmark) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark)
-			}
-		}
-	}
-
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		return when (menuItem.itemId) {
-			R.id.action_bookmark -> {
-				if (viewModel.isBookmarkAdded.value) {
-					viewModel.removeBookmark()
-				} else {
-					viewModel.addBookmark()
-				}
+			R.id.action_info -> {
+				// TODO
 				true
 			}
 

@@ -138,11 +138,13 @@ class ReaderControlDelegate(
 
 		fun toggleUiVisibility()
 
+		fun onBookmarkClick()
+
 		fun openMenu()
 
 		fun onSavePageClick()
 
-		fun onScrollTimerClick()
+		fun onScrollTimerClick(isLongClick: Boolean)
 
 		fun toggleScreenOrientation()
 

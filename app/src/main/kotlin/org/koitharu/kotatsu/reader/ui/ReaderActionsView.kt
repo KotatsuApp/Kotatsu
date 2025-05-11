@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.hasVisibleChildren
 import org.koitharu.kotatsu.core.util.ext.isRtl
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.databinding.LayoutReaderActionsBinding
+import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet.Companion.TAB_PAGES
 import org.koitharu.kotatsu.reader.ui.ReaderControlDelegate.OnInteractionListener
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class ReaderActionsView @JvmOverloads constructor(
 	View.OnClickListener,
 	SharedPreferences.OnSharedPreferenceChangeListener,
 	Slider.OnChangeListener,
-	Slider.OnSliderTouchListener {
+	Slider.OnSliderTouchListener, View.OnLongClickListener {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -73,6 +74,14 @@ class ReaderActionsView @JvmOverloads constructor(
 			binding.buttonPrev.isEnabled = value
 		}
 
+	var isBookmarkAdded: Boolean = false
+		set(value) {
+			if (field != value) {
+				field = value
+				updateBookmarkButton()
+			}
+		}
+
 	var listener: OnInteractionListener? = null
 
 	init {
@@ -85,6 +94,7 @@ class ReaderActionsView @JvmOverloads constructor(
 		binding.buttonScreenRotation.initAction()
 		binding.buttonPagesThumbs.initAction()
 		binding.buttonTimer.initAction()
+		binding.buttonBookmark.initAction()
 		binding.slider.setLabelFormatter(PageLabelFormatter())
 		binding.slider.addOnChangeListener(this)
 		binding.slider.addOnSliderTouchListener(this)
@@ -112,12 +122,21 @@ class ReaderActionsView @JvmOverloads constructor(
 			R.id.button_prev -> listener?.switchChapterBy(-1)
 			R.id.button_next -> listener?.switchChapterBy(1)
 			R.id.button_save -> listener?.onSavePageClick()
-			R.id.button_timer -> listener?.onScrollTimerClick()
+			R.id.button_timer -> listener?.onScrollTimerClick(isLongClick = false)
 			R.id.button_pages_thumbs -> AppRouter.from(this)?.showChapterPagesSheet()
 			R.id.button_screen_rotation -> listener?.toggleScreenOrientation()
 			R.id.button_options -> listener?.openMenu()
+			R.id.button_bookmark -> listener?.onBookmarkClick()
 		}
 	}
+
+	override fun onLongClick(v: View): Boolean = when (v.id) {
+		R.id.button_bookmark -> AppRouter.from(this)
+			?.showChapterPagesSheet(ChaptersPagesSheet.TAB_BOOKMARKS)
+		R.id.button_timer -> listener?.onScrollTimerClick(isLongClick = true)
+		R.id.button_options -> AppRouter.from(this)?.openReaderSettings()
+		else -> null
+	} != null
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
 		if (fromUser) {
@@ -175,6 +194,7 @@ class ReaderActionsView @JvmOverloads constructor(
 		binding.buttonScreenRotation.isVisible = ReaderControl.SCREEN_ROTATION in controls
 		binding.buttonSave.isVisible = ReaderControl.SAVE_PAGE in controls
 		binding.buttonTimer.isVisible = ReaderControl.TIMER in controls
+		binding.buttonBookmark.isVisible = ReaderControl.BOOKMARK in controls
 		binding.slider.isVisible = ReaderControl.SLIDER in controls
 		adjustLayoutParams()
 	}
@@ -187,6 +207,16 @@ class ReaderActionsView @JvmOverloads constructor(
 		)
 		button.setTitle(
 			if (isPagesMode) R.string.pages else R.string.chapters,
+		)
+	}
+
+	private fun updateBookmarkButton() {
+		val button = binding.buttonBookmark
+		button.setIconResource(
+			if (isBookmarkAdded) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark,
+		)
+		button.setTitle(
+			if (isBookmarkAdded) R.string.bookmark_remove else R.string.bookmark_add,
 		)
 	}
 
@@ -222,6 +252,7 @@ class ReaderActionsView @JvmOverloads constructor(
 
 	private fun Button.initAction() {
 		setOnClickListener(this@ReaderActionsView)
+		setOnLongClickListener(this@ReaderActionsView)
 		ViewCompat.setTooltipText(this, contentDescription)
 	}
 

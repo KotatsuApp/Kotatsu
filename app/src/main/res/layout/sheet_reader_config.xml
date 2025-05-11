@@ -38,32 +38,27 @@
 				app:drawableStartCompat="@drawable/ic_save" />
 
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
-				android:id="@+id/button_screen_rotate"
+				android:id="@+id/button_bookmark"
 				android:layout_width="match_parent"
 				android:layout_height="?android:listPreferredItemHeightSmall"
 				android:drawablePadding="?android:listPreferredItemPaddingStart"
 				android:paddingStart="?android:listPreferredItemPaddingStart"
 				android:paddingEnd="?android:listPreferredItemPaddingEnd"
-				android:text="@string/rotate_screen"
+				android:text="@string/bookmark_add"
 				android:textAppearance="?attr/textAppearanceButton"
-				android:visibility="gone"
-				app:drawableStartCompat="@drawable/ic_screen_rotation"
-				tools:visibility="visible" />
+				app:drawableStartCompat="@drawable/ic_bookmark" />
 
-			<com.google.android.material.materialswitch.MaterialSwitch
-				android:id="@+id/switch_screen_lock_rotation"
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+				android:id="@+id/button_image_server"
 				android:layout_width="match_parent"
 				android:layout_height="?android:listPreferredItemHeightSmall"
 				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:ellipsize="end"
 				android:paddingStart="?android:listPreferredItemPaddingStart"
 				android:paddingEnd="?android:listPreferredItemPaddingEnd"
-				android:singleLine="true"
-				android:text="@string/lock_screen_rotation"
+				android:text="@string/image_server"
 				android:textAppearance="?attr/textAppearanceButton"
-				android:textColor="?colorOnSurfaceVariant"
 				android:visibility="gone"
-				app:drawableStartCompat="@drawable/ic_screen_rotation_lock"
+				app:drawableStartCompat="@drawable/ic_images"
 				tools:visibility="visible" />
 
 			<TextView
@@ -137,14 +132,41 @@
 				android:layout_height="?android:listPreferredItemHeightSmall"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:ellipsize="end"
 				android:paddingStart="?android:listPreferredItemPaddingStart"
 				android:paddingEnd="?android:listPreferredItemPaddingEnd"
-				android:singleLine="true"
 				android:text="@string/use_two_pages_landscape"
 				android:textAppearance="?attr/textAppearanceButton"
 				android:textColor="?colorOnSurfaceVariant"
 				app:drawableStartCompat="@drawable/ic_split_horizontal" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+				android:id="@+id/button_screen_rotate"
+				android:layout_width="match_parent"
+				android:layout_height="?android:listPreferredItemHeightSmall"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:text="@string/rotate_screen"
+				android:textAppearance="?attr/textAppearanceButton"
+				android:visibility="gone"
+				app:drawableStartCompat="@drawable/ic_screen_rotation"
+				tools:visibility="visible" />
+
+			<com.google.android.material.materialswitch.MaterialSwitch
+				android:id="@+id/switch_screen_lock_rotation"
+				android:layout_width="match_parent"
+				android:layout_height="?android:listPreferredItemHeightSmall"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:ellipsize="end"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:singleLine="true"
+				android:text="@string/lock_screen_rotation"
+				android:textAppearance="?attr/textAppearanceButton"
+				android:textColor="?colorOnSurfaceVariant"
+				android:visibility="gone"
+				app:drawableStartCompat="@drawable/ic_screen_rotation_lock"
+				tools:visibility="visible" />
 
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_scroll_timer"
@@ -167,19 +189,6 @@
 				android:text="@string/color_correction"
 				android:textAppearance="?attr/textAppearanceButton"
 				app:drawableStartCompat="@drawable/ic_appearance" />
-
-			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
-				android:id="@+id/button_image_server"
-				android:layout_width="match_parent"
-				android:layout_height="?android:listPreferredItemHeightSmall"
-				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:paddingStart="?android:listPreferredItemPaddingStart"
-				android:paddingEnd="?android:listPreferredItemPaddingEnd"
-				android:text="@string/image_server"
-				android:textAppearance="?attr/textAppearanceButton"
-				android:visibility="gone"
-				app:drawableStartCompat="@drawable/ic_images"
-				tools:visibility="visible" />
 
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_settings"

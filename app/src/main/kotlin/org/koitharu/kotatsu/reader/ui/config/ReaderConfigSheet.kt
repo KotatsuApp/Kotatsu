@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CompoundButton
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.children
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -24,6 +26,7 @@ import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
+import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -93,7 +96,15 @@ class ReaderConfigSheet :
 		binding.buttonImageServer.setOnClickListener(this)
 		binding.buttonColorFilter.setOnClickListener(this)
 		binding.buttonScrollTimer.setOnClickListener(this)
+		binding.buttonBookmark.setOnClickListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
+
+		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
+			binding.buttonBookmark.setText(if (it) R.string.bookmark_remove else R.string.bookmark_add)
+			binding.buttonBookmark.setCompoundDrawablesRelativeWithIntrinsicBounds(
+				if (it) R.drawable.ic_bookmark_checked else R.drawable.ic_bookmark, 0, 0, 0,
+			)
+		}
 
 		viewLifecycleScope.launch {
 			val isAvailable = imageServerDelegate.isAvailable()
@@ -120,7 +131,7 @@ class ReaderConfigSheet :
 			}
 
 			R.id.button_scroll_timer -> {
-				findParentCallback(Callback::class.java)?.onScrollTimerClick() ?: return
+				findParentCallback(Callback::class.java)?.onScrollTimerClick(false) ?: return
 				dismissAllowingStateLoss()
 			}
 
@@ -131,6 +142,10 @@ class ReaderConfigSheet :
 
 			R.id.button_screen_rotate -> {
 				orientationHelper.isLandscape = !orientationHelper.isLandscape
+			}
+
+			R.id.button_bookmark -> {
+				viewModel.toggleBookmark()
 			}
 
 			R.id.button_color_filter -> {
@@ -219,6 +234,8 @@ class ReaderConfigSheet :
 
 		fun onSavePageClick()
 
-		fun onScrollTimerClick()
+		fun onScrollTimerClick(isLongClick: Boolean)
+
+		fun onBookmarkClick()
 	}
 }

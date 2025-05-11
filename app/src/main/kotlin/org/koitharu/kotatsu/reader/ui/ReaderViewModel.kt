@@ -346,39 +346,32 @@ class ReaderViewModel @Inject constructor(
 		}
 	}
 
-	fun addBookmark() {
+	fun toggleBookmark() {
 		if (bookmarkJob?.isActive == true) {
 			return
 		}
 		bookmarkJob = launchJob(Dispatchers.Default) {
 			loadingJob?.join()
-			val state = checkNotNull(readingState.value)
-			val page = checkNotNull(getCurrentPage()) { "Page not found" }
-			val bookmark = Bookmark(
-				manga = requireManga(),
-				pageId = page.id,
-				chapterId = state.chapterId,
-				page = state.page,
-				scroll = state.scroll,
-				imageUrl = page.preview.ifNullOrEmpty { page.url },
-				createdAt = Instant.now(),
-				percent = computePercent(state.chapterId, state.page),
-			)
-			bookmarksRepository.addBookmark(bookmark)
-			onShowToast.call(R.string.bookmark_added)
-		}
-	}
-
-	fun removeBookmark() {
-		if (bookmarkJob?.isActive == true) {
-			return
-		}
-		bookmarkJob = launchJob {
-			loadingJob?.join()
-			val manga = requireManga()
 			val state = checkNotNull(getCurrentState())
-			bookmarksRepository.removeBookmark(manga.id, state.chapterId, state.page)
-			onShowToast.call(R.string.bookmark_removed)
+			if (isBookmarkAdded.value) {
+				val manga = requireManga()
+				bookmarksRepository.removeBookmark(manga.id, state.chapterId, state.page)
+				onShowToast.call(R.string.bookmark_removed)
+			} else {
+				val page = checkNotNull(getCurrentPage()) { "Page not found" }
+				val bookmark = Bookmark(
+					manga = requireManga(),
+					pageId = page.id,
+					chapterId = state.chapterId,
+					page = state.page,
+					scroll = state.scroll,
+					imageUrl = page.preview.ifNullOrEmpty { page.url },
+					createdAt = Instant.now(),
+					percent = computePercent(state.chapterId, state.page),
+				)
+				bookmarksRepository.addBookmark(bookmark)
+				onShowToast.call(R.string.bookmark_added)
+			}
 		}
 	}
 
