@@ -1,12 +1,17 @@
 package org.koitharu.kotatsu.core.ui.widgets
 
 import android.content.Context
+import android.graphics.Color
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.text.buildSpannedString
+import androidx.core.text.inSpans
 import androidx.core.view.children
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import coil3.ImageLoader
@@ -27,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.image.ChipIconTarget
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.setProgressIcon
 import org.koitharu.kotatsu.parsers.util.ifZero
 import javax.inject.Inject
@@ -116,6 +122,7 @@ class ChipsView @JvmOverloads constructor(
 		@DrawableRes val icon: Int = 0,
 		val iconData: Any? = null,
 		@ColorRes val tint: Int = 0,
+		val counter: Int = 0,
 		val isChecked: Boolean = false,
 		val isLoading: Boolean = false,
 		val isDropdown: Boolean = false,
@@ -147,7 +154,28 @@ class ChipsView @JvmOverloads constructor(
 			}
 			this.model = model
 
-			if (model.titleResId == 0) {
+			if (model.counter > 0) {
+				text = buildSpannedString {
+					if (model.titleResId == 0) {
+						append(model.title)
+					} else {
+						append(context.getString(model.titleResId))
+					}
+					append(' ')
+					append(' ')
+					inSpans(
+						ForegroundColorSpan(
+							context.getThemeColor(
+								android.R.attr.textColorSecondary,
+								Color.LTGRAY,
+							),
+						),
+						RelativeSizeSpan(0.74f),
+					) {
+						append(model.counter.toString())
+					}
+				}
+			} else if (model.titleResId == 0) {
 				text = model.title
 			} else {
 				setText(model.titleResId)

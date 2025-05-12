@@ -62,6 +62,7 @@ sealed interface ListFilterOption {
 
 	data class Branch(
 		override val titleText: String?,
+		val chaptersCount: Int,
 	) : ListFilterOption {
 
 		override val titleResId: Int

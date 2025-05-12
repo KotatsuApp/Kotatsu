@@ -134,9 +134,14 @@ abstract class ChaptersPagesViewModel(
 		mangaDetails,
 		selectedBranch,
 	) { details, branch ->
-		val branches = details?.chapters?.keys?.sortedWithSafe(LocaleStringComparator()).orEmpty()
+		val branches = details?.chapters?.toList()?.sortedWithSafe(
+			compareBy(LocaleStringComparator()) { it.first },
+		).orEmpty()
 		if (branches.size > 1) {
-			branches.map { ListFilterOption.Branch(it).toChipModel(it == branch) }
+			branches.map {
+				val option = ListFilterOption.Branch(titleText = it.first, chaptersCount = it.second.size)
+				option.toChipModel(isChecked = it.first == branch)
+			}
 		} else {
 			emptyList()
 		}
