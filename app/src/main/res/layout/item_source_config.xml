@@ -55,7 +55,7 @@
 
 	</LinearLayout>
 
-	<ImageView
+	<ImageButton
 		android:id="@+id/imageView_menu"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
 		android:tooltipText="@string/more"
 		app:tint="?colorControlNormal" />
 
-	<ImageView
+	<ImageButton
 		android:id="@+id/imageView_add"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
 		android:src="@drawable/ic_add"
 		android:tooltipText="@string/add" />
 
-	<ImageView
+	<ImageButton
 		android:id="@+id/imageView_remove"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

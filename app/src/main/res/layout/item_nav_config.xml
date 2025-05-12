@@ -29,7 +29,7 @@
 			tools:drawableStart="@drawable/ic_explore_selector"
 			tools:text="@string/explore" />
 
-		<ImageView
+		<ImageButton
 			android:id="@+id/imageView_remove"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -37,7 +37,8 @@
 			android:contentDescription="@string/remove"
 			android:padding="@dimen/margin_small"
 			android:scaleType="center"
-			android:src="@drawable/ic_delete" />
+			android:src="@drawable/ic_delete"
+			android:tooltipText="@string/remove" />
 
 		<ImageView
 			android:id="@+id/imageView_reorder"
@@ -46,8 +47,10 @@
 			android:background="?selectableItemBackgroundBorderless"
 			android:contentDescription="@string/reorder"
 			android:padding="@dimen/margin_small"
+			android:pointerIcon="grab"
 			android:scaleType="center"
-			android:src="@drawable/ic_reorder_handle" />
+			android:src="@drawable/ic_reorder_handle"
+			android:tooltipText="@string/reorder" />
 
 	</LinearLayout>
 

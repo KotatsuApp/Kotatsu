@@ -88,7 +88,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:elegantTextHeight="false"
-		android:ellipsize="middle"
+		android:ellipsize="end"
 		android:paddingTop="4dp"
 		android:singleLine="true"
 		android:textAppearance="?attr/textAppearanceTitleSmall"

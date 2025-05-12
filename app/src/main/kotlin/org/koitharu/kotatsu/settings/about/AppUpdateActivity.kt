@@ -10,12 +10,15 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
@@ -91,12 +94,15 @@ class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClick
 		insets: WindowInsetsCompat
 	): WindowInsetsCompat {
 		val barsInsets = insets.systemBarsInsets
-		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		viewBinding.root.setPadding(
-			barsInsets.left + basePadding,
-			barsInsets.top + basePadding,
-			barsInsets.right + basePadding,
-			barsInsets.bottom + basePadding,
+		viewBinding.root.updatePadding(top = barsInsets.top)
+		viewBinding.dockedToolbarChild.updateLayoutParams<MarginLayoutParams> {
+			leftMargin = barsInsets.left
+			rightMargin = barsInsets.right
+			bottomMargin = barsInsets.bottom
+		}
+		viewBinding.scrollView.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
 		)
 		return insets.consumeAllSystemBarsInsets()
 	}

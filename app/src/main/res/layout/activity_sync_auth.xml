@@ -28,6 +28,7 @@
 		android:layout_height="wrap_content"
 		android:background="?selectableItemBackgroundBorderless"
 		android:contentDescription="@string/settings"
+		android:tooltipText="@string/settings"
 		android:padding="4dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintTop_toTopOf="parent"

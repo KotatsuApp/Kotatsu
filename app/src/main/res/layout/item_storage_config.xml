@@ -47,6 +47,7 @@
 		android:background="?selectableItemBackgroundBorderless"
 		android:contentDescription="@string/remove"
 		android:padding="?listPreferredItemPaddingEnd"
+		android:tooltipText="@string/remove"
 		app:srcCompat="@drawable/ic_delete" />
 
 </LinearLayout>

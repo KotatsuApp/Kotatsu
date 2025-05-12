@@ -1,94 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:padding="@dimen/screen_padding">
+	android:orientation="vertical">
 
 	<TextView
 		android:id="@+id/textView_title"
-		android:layout_width="0dp"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
-		android:drawablePadding="16dp"
+		android:layout_marginHorizontal="@dimen/screen_padding"
+		android:layout_marginTop="24dp"
+		android:drawablePadding="@dimen/screen_padding"
 		android:gravity="center_horizontal"
 		android:text="@string/app_update_available"
 		android:textAppearance="?textAppearanceHeadline5"
 		app:drawableTint="?colorPrimary"
-		app:drawableTopCompat="@drawable/ic_app_update"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+		app:drawableTopCompat="@drawable/ic_app_update" />
 
 	<com.google.android.material.progressindicator.LinearProgressIndicator
 		android:id="@+id/progressBar"
-		android:layout_width="0dp"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="@dimen/screen_padding"
 		android:layout_marginTop="@dimen/screen_padding"
 		android:max="100"
 		android:visibility="gone"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textView_title"
 		tools:visibility="visible" />
 
 	<TextView
 		android:id="@+id/textView_error"
-		android:layout_width="0dp"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="@dimen/screen_padding"
 		android:layout_marginTop="8dp"
 		android:textColor="?colorError"
 		android:visibility="gone"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/progressBar"
 		tools:text="@string/error_corrupted_file"
 		tools:visibility="visible" />
 
 	<ScrollView
 		android:id="@+id/scrollView"
-		android:layout_width="0dp"
+		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_marginVertical="@dimen/screen_padding"
-		app:layout_constraintBottom_toTopOf="@id/barrier"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textView_error">
+		android:layout_marginTop="@dimen/screen_padding"
+		android:layout_weight="1">
 
 		<TextView
 			android:id="@+id/textView_content"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:paddingHorizontal="@dimen/screen_padding"
+			android:paddingBottom="@dimen/screen_padding"
 			android:textAppearance="?textAppearanceBodyMedium"
 			tools:text="@tools:sample/lorem/random" />
 
 	</ScrollView>
 
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/button_cancel"
-		style="?materialButtonOutlinedStyle"
-		android:layout_width="wrap_content"
+	<com.google.android.material.dockedtoolbar.DockedToolbarLayout
+		android:id="@+id/docked_toolbar"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@android:string/cancel"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent" />
+		android:fitsSystemWindows="false">
 
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/button_update"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:enabled="false"
-		android:text="@string/update"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent" />
+		<FrameLayout
+			android:id="@+id/docked_toolbar_child"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/m3_comp_toolbar_docked_container_height">
 
-	<androidx.constraintlayout.widget.Barrier
-		android:id="@+id/barrier"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:barrierDirection="top"
-		app:constraint_referenced_ids="button_cancel,button_update" />
+			<Button
+				android:id="@+id/button_cancel"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical|start"
+				android:text="@android:string/cancel" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+			<Button
+				android:id="@+id/button_update"
+				style="?materialButtonTonalStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical|end"
+				android:enabled="false"
+				android:text="@string/update" />
+
+		</FrameLayout>
+	</com.google.android.material.dockedtoolbar.DockedToolbarLayout>
+
+</LinearLayout>
