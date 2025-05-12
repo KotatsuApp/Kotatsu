@@ -26,72 +26,9 @@ android {
 			arg('room.generateKotlin', 'true')
 		}
 		androidResources {
+			// https://issuetracker.google.com/issues/408030127
 			generateLocaleConfig false
 		}
-		resourceConfigurations += [
-			"en",
-			"ab",
-			"ar",
-			"arq",
-			"as",
-			"be",
-			"bn",
-			"ca",
-			"cs",
-			"de",
-			"el",
-			"en-rGB",
-			"enm",
-			"es",
-			"et",
-			"eu",
-			"fa",
-			"fi",
-			"fil",
-			"fr",
-			"frp",
-			"gu",
-			"hi",
-			"hr",
-			"hu",
-			"in",
-			"it",
-			"iw",
-			"ja",
-			"kk",
-			"km",
-			"ko",
-			"lt",
-			"lv",
-			"lzh",
-			"ml",
-			"ms",
-			"my",
-			"nb-rNO",
-			"ne",
-			"nn",
-			"or",
-			"pa",
-			"pa-rPK",
-			"pl",
-			"pt",
-			"pt-rBR",
-			"ro",
-			"ru",
-			"si",
-			"sr",
-			"sv",
-			"ta",
-			"th",
-			"tr",
-			"uk",
-			"vi",
-			"zh-rCN",
-			"zh-rTW",
-			// Specific BCP 47 locales
-			"b+zh+Hans+MO",
-			"b+zh+Hant+MO"
-		]
 	}
 	buildTypes {
 		debug {
