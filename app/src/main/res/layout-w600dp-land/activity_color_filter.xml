@@ -134,7 +134,7 @@
 				android:layout_height="wrap_content"
 				android:layout_marginStart="@dimen/margin_normal"
 				android:layout_marginTop="4dp"
-				android:text="@string/invert_colors"
+				android:text="@string/grayscale"
 				android:textAppearance="?textAppearanceTitleMedium"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toEndOf="@id/guideline_vertical"
