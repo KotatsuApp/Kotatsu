@@ -84,7 +84,17 @@
 
 	<!-- Expressive Monet theme -->
 	<style name="ThemeOverlay.Kotatsu.Expressive" parent="ThemeOverlay.Material3Expressive.DynamicColors.DayNight">
-		<!-- TODO -->
+		<item name="materialButtonStyle">@style/Widget.Material3Expressive.Button</item>
+		<item name="materialButtonOutlinedStyle">@style/Widget.Material3Expressive.Button.OutlinedButton</item>
+		<item name="materialButtonTonalStyle">@style/Widget.Material3Expressive.Button.TonalButton</item>
+		<item name="borderlessButtonStyle">@style/Widget.Material3Expressive.Button.TextButton</item>
+		<item name="materialButtonElevatedStyle">@style/Widget.Material3Expressive.Button.ElevatedButton</item>
+		<item name="materialIconButtonFilledStyle">@style/Widget.Material3Expressive.Button.IconButton.Filled</item>
+		<item name="materialIconButtonFilledTonalStyle">@style/Widget.Material3Expressive.Button.IconButton.Tonal</item>
+		<item name="materialIconButtonOutlinedStyle">@style/Widget.Material3Expressive.Button.IconButton.Outlined</item>
+		<item name="materialIconButtonStyle">@style/Widget.Material3Expressive.Button.IconButton</item>
+		<item name="floatingToolbarStyle">@style/Widget.Material3.FloatingToolbar.Vibrant</item>
+		<item name="dockedToolbarStyle">@style/Widget.Material3.DockedToolbar.Vibrant</item>
 	</style>
 
 	<!-- Changes only for night -->
