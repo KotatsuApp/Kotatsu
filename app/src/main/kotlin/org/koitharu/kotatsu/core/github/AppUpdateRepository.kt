@@ -93,12 +93,6 @@ class AppUpdateRepository @Inject constructor(
 		return BuildConfig.BUILD_TYPE != BUILD_TYPE_RELEASE || appValidator.isOriginalApp.getOrNull() == true
 	}
 
-	suspend fun getCurrentVersionChangelog(): String? {
-		val currentVersion = VersionId(BuildConfig.VERSION_NAME)
-		val available = getAvailableVersions()
-		return available.find { x -> x.versionId == currentVersion }?.description
-	}
-
 	private inline fun JSONArray.find(predicate: (JSONObject) -> Boolean): JSONObject? {
 		val size = length()
 		for (i in 0 until size) {

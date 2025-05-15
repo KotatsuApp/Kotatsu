@@ -838,4 +838,6 @@
 	<string name="incognito_for_nsfw">Incognito mode for NSFW manga</string>
 	<string name="additional_action_required">Additional action is required</string>
 	<string name="hide_from_main_screen">Hide from main screen</string>
+	<string name="changelog">Changelog</string>
+	<string name="changelog_summary">Changes history for recently released versions</string>
 </resources>
