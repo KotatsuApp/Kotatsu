@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="local_storage">ကိုယ်ပိုင်သိုလှောင်မှု</string>
+    <string name="favourites">အနှစ်သက်ဆုံး</string>
+    <string name="history">မှတ်တမ်း</string>
+    <string name="error_occurred">အမှားတစ်ခု ဖြစ်ပေါ်ခဲ့သည်</string>
+    <string name="network_error">အင်တာနက် ပြဿနာ</string>
+    <string name="details">အသေးစိတ်များ</string>
+    <string name="chapters">အပိုင်းများ</string>
+    <string name="detailed_list">အသေးစိတ်စာရင်း</string>
+    <string name="grid">ဂရစ်</string>
+    <string name="list_mode">စာရင်းမုဒ်</string>
+    <string name="settings">စက်တင်များ</string>
+    <string name="remote_sources">မန်ဂါရင်းမြစ်များ</string>
+    <string name="loading_">စောင့်ဆိုင်းပါ…</string>
+    <string name="computing_">တွက်ချက်နေသည်…</string>
+    <string name="chapter_d_of_d">%2$d ရဲ့ အခန်း %1$d</string>
+    <string name="close">ပိတ်မည်</string>
+    <string name="try_again">ပြန်လည်ကြိုးစားပါ</string>
+    <string name="retry">ထပ်မံကြိုးစားပါ</string>
+    <string name="clear_history">မှတ်တန်းများဖျက်မည်</string>
+    <string name="nothing_found">ဘာမှရှာမတွေ့ပါ</string>
+    <string name="history_is_empty">ဘာမှတ်တန်းမှမရှိသေး</string>
+    <string name="read">ဖတ်မည်</string>
+    <string name="add_to_favourites">အကြိုက်ဆုံးအဖြစ်မှတ်</string>
+    <string name="add_new_category">အမျိုးအစားအသစ်</string>
+    <string name="add">ထည့်မည်</string>
+    <string name="save">သိမ်းမည်</string>
+    <string name="share">မျှဝေ</string>
+    <string name="create_shortcut">Shortcut ဖန်တီး</string>
+    <string name="share_s">%s ကို မျှဝေ</string>
+    <string name="search">ရှာဖွေ</string>
+    <string name="search_manga">Manga ကိုရှာမည်</string>
+    <string name="manga_downloading_">Donwload လုပ်နေ…</string>
+</resources>
