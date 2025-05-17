@@ -628,7 +628,7 @@
     <string name="less_frequently">低频</string>
     <string name="authors">作者</string>
     <string name="search_suggestions">搜索建议</string>
-    <string name="suggested_queries">建议搜索</string>
+    <string name="suggested_queries">查询建议</string>
     <string name="recent_queries">最近搜索</string>
     <string name="blocked_by_server_message">你的访问已被服务器拦截，请尝试使用不同的网络连接访问（如VPN代理等）</string>
     <string name="disable">关闭</string>
@@ -644,7 +644,7 @@
     <string name="screenshots_block_incognito">开启无痕模式时禁止</string>
     <string name="all_languages">所有语言</string>
     <string name="image_server">图片质量</string>
-    <string name="crop_pages">裁剪页面</string>
+    <string name="crop_pages">页面裁切</string>
     <string name="pin">置顶</string>
     <string name="unpin">取消置顶</string>
     <string name="source_pinned">图源已置顶</string>
@@ -788,7 +788,7 @@
     <string name="chapter_volume_number">第 %1$s 卷 第 %2$s 章</string>
     <string name="chapter_number">第 %s 章</string>
     <string name="unnamed_chapter">未命名章节</string>
-    <string name="search_disabled_sources">同样在已关闭的图源中搜索</string>
+    <string name="search_disabled_sources">在已关闭的图源中搜索</string>
     <string name="error_details">错误详细信息</string>
     <string name="error_disclaimer_manga">将以在浏览器中打开漫画的方式检查漫画在图源中是否能正常打开</string>
     <string name="error_disclaimer_report">可向开发者提交错误报告，将会帮助我们定位并修复错误</string>
@@ -803,4 +803,18 @@
     <string name="simple">默认</string>
     <string name="tags_warnings">高亮敏感风格</string>
     <string name="tags_warnings_summary">将可能会对大部分用户不友善的风格高亮</string>
+    <string name="error_non_file_uri">选择的路径无法保存因其无法表示一个文件或存储目录</string>
+    <string name="link_to_manga_on_s">在 %s 上连接漫画</string>
+    <string name="link_to_manga_in_app">在 Kotatsu 上连接漫画</string>
+    <string name="manga_override_hint">这些设置将影响漫画在应用内的显示</string>
+    <string name="pick_custom_file">使用自定义封面</string>
+    <string name="change_cover">更改封面</string>
+    <string name="use_default_cover">使用默认封面</string>
+    <string name="pick_manga_page">使用漫画页面</string>
+    <string name="page_switch_timer">本页将在每 %d 秒切换到下一页</string>
+    <string name="incognito_for_nsfw">R18无痕模式</string>
+    <string name="incognito_mode_hint_nsfw">此漫画可能包含成人内容，需要打开无痕模式继续浏览吗？</string>
+    <string name="dont_ask_again">不再询问</string>
+    <string name="theme_name_dynamic_v2">动态 V2</string>
+    <string name="hide_from_main_screen">从主页面中隐藏</string>
 </resources>
