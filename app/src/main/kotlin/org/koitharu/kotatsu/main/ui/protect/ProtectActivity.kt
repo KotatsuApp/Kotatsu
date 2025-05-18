@@ -10,11 +10,14 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.biometric.AuthenticationRequest
+import androidx.biometric.AuthenticationRequest.Biometric
+import androidx.biometric.AuthenticationResult
+import androidx.biometric.AuthenticationResultCallback
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
-import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricPrompt.AuthenticationCallback
+import androidx.biometric.registerForAuthenticationResult
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,10 +38,13 @@ class ProtectActivity :
 	BaseActivity<ActivityProtectBinding>(),
 	TextView.OnEditorActionListener,
 	DefaultTextWatcher,
-	View.OnClickListener {
+	View.OnClickListener,
+	AuthenticationResultCallback {
 
 	private val viewModel by viewModels<ProtectViewModel>()
 	private var canUseBiometric = false
+
+	private val biometricPrompt = registerForAuthenticationResult(resultCallback = this)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -108,6 +114,12 @@ class ProtectActivity :
 		updateEndIcon()
 	}
 
+	override fun onAuthResult(result: AuthenticationResult) {
+		if (result.isSuccess()) {
+			viewModel.unlock()
+		}
+	}
+
 	private fun onError(e: Throwable) {
 		viewBinding.layoutPassword.error = e.getDisplayMessage(resources)
 	}
@@ -123,14 +135,15 @@ class ProtectActivity :
 		if (BiometricManager.from(this).canAuthenticate(BIOMETRIC_WEAK) != BIOMETRIC_SUCCESS) {
 			return false
 		}
-		val prompt = BiometricPrompt(this, BiometricCallback())
-		val promptInfo = BiometricPrompt.PromptInfo.Builder()
-			.setAllowedAuthenticators(BIOMETRIC_WEAK)
-			.setTitle(getString(R.string.app_name))
-			.setConfirmationRequired(false)
-			.setNegativeButtonText(getString(android.R.string.cancel))
-			.build()
-		prompt.authenticate(promptInfo)
+		val request = AuthenticationRequest.biometricRequest(
+			title = getString(R.string.app_name),
+			authFallback = Biometric.Fallback.NegativeButton(getString(android.R.string.cancel)),
+			init = {
+				setMinStrength(Biometric.Strength.Class2)
+				setIsConfirmationRequired(false)
+			},
+		)
+		biometricPrompt.launch(request)
 		return true
 	}
 
@@ -149,13 +162,6 @@ class ProtectActivity :
 			setEndIconDrawable(0)
 			endIconContentDescription = null
 			endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
-		}
-	}
-
-	private inner class BiometricCallback : AuthenticationCallback() {
-		override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-			super.onAuthenticationSucceeded(result)
-			viewModel.unlock()
 		}
 	}
 

@@ -76,8 +76,9 @@ android {
 			'-opt-in=kotlin.contracts.ExperimentalContracts',
 			'-opt-in=coil3.annotation.ExperimentalCoilApi',
 			'-opt-in=coil3.annotation.InternalCoilApi',
+			'-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi',
 			'-Xjspecify-annotations=strict',
-			'-Xtype-enhancement-improvements-strict-mode',
+			'-Xtype-enhancement-improvements-strict-mode'
 		]
 	}
 	room {
@@ -101,13 +102,6 @@ android {
 				output.versionCodeOverride = now.format("yyMMdd").toInteger()
 				output.versionNameOverride = 'N' + now.format("yyyyMMdd")
 			}
-		}
-	}
-}
-afterEvaluate {
-	compileDebugKotlin {
-		kotlinOptions {
-			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
 		}
 	}
 }
@@ -138,6 +132,7 @@ dependencies {
 	implementation libs.lifecycle.service
 	implementation libs.lifecycle.process
 	implementation libs.androidx.constraintlayout
+	implementation libs.androidx.documentfile
 	implementation libs.androidx.swiperefreshlayout
 	implementation libs.androidx.recyclerview
 	implementation libs.androidx.viewpager2

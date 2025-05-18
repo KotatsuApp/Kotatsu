@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -120,6 +119,7 @@ class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClick
 			viewBinding.textViewContent.setText(R.string.loading_)
 			return
 		}
+		val markwon = Markwon.create(this)
 		val message = withContext(Dispatchers.Default) {
 			buildSpannedString {
 				append(getString(R.string.new_version_s, version.name))
@@ -127,10 +127,10 @@ class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClick
 				append(getString(R.string.size_s, FileSize.BYTES.format(this@AppUpdateActivity, version.apkSize)))
 				appendLine()
 				appendLine()
-				append(Markwon.create(this@AppUpdateActivity).toMarkdown(version.description))
+				append(markwon.toMarkdown(version.description))
 			}
 		}
-		viewBinding.textViewContent.setText(message, TextView.BufferType.SPANNABLE)
+		markwon.setParsedMarkdown(viewBinding.textViewContent, message)
 	}
 
 	private fun doUpdate() {

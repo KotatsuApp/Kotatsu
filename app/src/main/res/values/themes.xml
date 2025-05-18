@@ -84,17 +84,64 @@
 
 	<!-- Expressive Monet theme -->
 	<style name="ThemeOverlay.Kotatsu.Expressive" parent="ThemeOverlay.Material3Expressive.DynamicColors.DayNight">
+		<item name="alertDialogTheme">@style/ThemeOverlay.Material3Expressive.Dialog.Alert</item>
+		<item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3Expressive.MaterialAlertDialog</item>
+
+		<item name="appBarLayoutStyle">@style/Widget.Material3Expressive.AppBarLayout</item>
+		<item name="collapsingToolbarLayoutStyle">@style/Widget.Material3Expressive.CollapsingToolbar</item>
+		<item name="collapsingToolbarLayoutMediumStyle">@style/Widget.Material3Expressive.CollapsingToolbar.Medium
+		</item>
+		<item name="collapsingToolbarLayoutLargeStyle">@style/Widget.Material3Expressive.CollapsingToolbar.Large</item>
+
+		<item name="materialSearchBarStyle">@style/Widget.Material3Expressive.SearchBar</item>
+
+		<item name="floatingActionButtonStyle">@style/Widget.Material3Expressive.FloatingActionButton</item>
+		<item name="floatingActionButtonMediumStyle">@style/Widget.Material3Expressive.FloatingActionButton.Medium
+		</item>
+		<item name="floatingActionButtonLargeStyle">@style/Widget.Material3Expressive.FloatingActionButton.Large</item>
+
+		<item name="extendedFloatingActionButtonSmallStyle">
+			@style/Widget.Material3Expressive.ExtendedFloatingActionButton.Small
+		</item>
+		<item name="extendedFloatingActionButtonMediumStyle">
+			@style/Widget.Material3Expressive.ExtendedFloatingActionButton.Medium
+		</item>
+		<item name="extendedFloatingActionButtonLargeStyle">
+			@style/Widget.Material3Expressive.ExtendedFloatingActionButton.Large
+		</item>
+
 		<item name="materialButtonStyle">@style/Widget.Material3Expressive.Button</item>
-		<item name="materialButtonOutlinedStyle">@style/Widget.Material3Expressive.Button.OutlinedButton</item>
 		<item name="materialButtonTonalStyle">@style/Widget.Material3Expressive.Button.TonalButton</item>
-		<item name="borderlessButtonStyle">@style/Widget.Material3Expressive.Button.TextButton</item>
+		<item name="materialButtonOutlinedStyle">@style/Widget.Material3Expressive.Button.OutlinedButton</item>
 		<item name="materialButtonElevatedStyle">@style/Widget.Material3Expressive.Button.ElevatedButton</item>
+		<item name="borderlessButtonStyle">@style/Widget.Material3Expressive.Button.TextButton</item>
+		<item name="buttonBarButtonStyle">@style/Widget.Material3Expressive.Button.TextButton.Dialog</item>
+		<item name="snackbarButtonStyle">@style/Widget.Material3Expressive.Button.TextButton.Snackbar</item>
+		<item name="materialIconButtonStyle">@style/Widget.Material3Expressive.Button.IconButton.Standard</item>
+		<item name="materialIconButtonOutlinedStyle">@style/Widget.Material3Expressive.Button.IconButton.Outlined</item>
 		<item name="materialIconButtonFilledStyle">@style/Widget.Material3Expressive.Button.IconButton.Filled</item>
 		<item name="materialIconButtonFilledTonalStyle">@style/Widget.Material3Expressive.Button.IconButton.Tonal</item>
-		<item name="materialIconButtonOutlinedStyle">@style/Widget.Material3Expressive.Button.IconButton.Outlined</item>
-		<item name="materialIconButtonStyle">@style/Widget.Material3Expressive.Button.IconButton</item>
-		<item name="floatingToolbarStyle">@style/Widget.Material3.FloatingToolbar.Vibrant</item>
-		<item name="dockedToolbarStyle">@style/Widget.Material3.DockedToolbar.Vibrant</item>
+
+		<item name="materialButtonGroupStyle">@style/Widget.Material3Expressive.MaterialButtonGroup</item>
+		<item name="materialButtonToggleGroupStyle">@style/Widget.Material3Expressive.MaterialButtonToggleGroup</item>
+
+		<item name="bottomNavigationStyle">@style/Widget.Material3Expressive.BottomNavigationView</item>
+		<item name="navigationRailStyle">@style/Widget.Material3Expressive.NavigationRailView</item>
+
+		<item name="toolbarStyle">@style/Widget.Material3Expressive.Toolbar</item>
+		<item name="toolbarSurfaceStyle">@style/Widget.Material3Expressive.Toolbar.Surface</item>
+
+		<item name="linearProgressIndicatorStyle">@style/Widget.Material3Expressive.LinearProgressIndicator</item>
+		<item name="circularProgressIndicatorStyle">@style/Widget.Material3Expressive.CircularProgressIndicator</item>
+
+		<item name="sliderStyle">@style/Widget.Material3Expressive.Slider.Xsmall</item>
+
+		<item name="collapsingToolbarLayoutMediumSize">@dimen/m3_comp_app_bar_medium_flexible_container_height</item>
+		<item name="collapsingToolbarLayoutLargeSize">@dimen/m3_comp_app_bar_large_flexible_container_height</item>
+
+		<item name="actionBarSize">@dimen/m3_comp_app_bar_small_container_height</item>
+
+		<item name="dynamicColorThemeOverlay">@style/ThemeOverlay.Material3Expressive.DynamicColors.DayNight</item>
 	</style>
 
 	<!-- Changes only for night -->

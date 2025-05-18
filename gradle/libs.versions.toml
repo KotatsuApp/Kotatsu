@@ -4,34 +4,35 @@ activity = "1.10.1"
 adapterdelegates = "4.3.2"
 appcompat = "1.7.0"
 avifDecoder = "1.1.1.14d8e3c4"
-biometric = "1.2.0-alpha05"
-coil = "3.1.0"
+biometric = "1.4.0-alpha03"
+coil = "3.2.0"
 collections = "1.5.0"
 #noinspection NewerVersionAvailable,GradleDependency - 2.5.3 cause crashes
 conscrypt = "2.5.2"
 constraintlayout = "2.2.1"
 coreKtx = "1.16.0"
 coroutines = "1.10.2"
+dagger = "2.56.2"
 desugar = "2.1.5"
 diskLruCache = "1.5"
+documentfile = "1.1.0"
 fragment = "1.8.6"
 gradle = "8.10.0"
 guava = "33.4.8-android"
-dagger = "2.56.2"
 hilt = "1.2.0"
-json = "20250107"
+json = "20250517"
 junit = "4.13.2"
 junitKtx = "1.2.1"
-kotlin = "2.1.20"
-ksp = "2.1.20-2.0.0"
+kotlin = "2.1.21"
+ksp = "2.1.21-2.0.1"
 leakcanary = "3.0-alpha-8"
 lifecycle = "2.9.0"
 markwon = "4.6.2"
-material = "1.13.0-alpha13"
+material = "1.14.0-alpha01"
 moshi = "1.15.2"
 okhttp = "4.12.0"
 okio = "3.11.0"
-parsers = "9408b9ba1b"
+parsers = "276349e23c"
 preference = "1.2.1"
 recyclerview = "1.4.0"
 room = "2.7.1"
@@ -52,10 +53,11 @@ adapterdelegates = { module = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl",
 adapterdelegates-viewbinding = { module = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding", version.ref = "adapterdelegates" }
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-androidx-biometric = { module = "androidx.biometric:biometric-ktx", version.ref = "biometric" }
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 androidx-collection = { module = "androidx.collection:collection-ktx", version.ref = "collections" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "documentfile" }
 androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt" }
