@@ -20,7 +20,7 @@ enum class ColorScheme(
 	RENA(R.style.ThemeOverlay_Kotatsu_Asuka, R.string.theme_name_asuka),
 	FROG(R.style.ThemeOverlay_Kotatsu_Mion, R.string.theme_name_mion),
 	BLUEBERRY(R.style.ThemeOverlay_Kotatsu_Rikka, R.string.theme_name_rikka),
-	NAME2(R.style.ThemeOverlay_Kotatsu_Sakura, R.string.theme_name_sakura),
+	SAKURA(R.style.ThemeOverlay_Kotatsu_Sakura, R.string.theme_name_sakura),
 	MAMIMI(R.style.ThemeOverlay_Kotatsu_Mamimi, R.string.theme_name_mamimi),
 	KANADE(R.style.Theme_Kotatsu_Kanade, R.string.theme_name_kanade)
 	;
@@ -38,6 +38,7 @@ enum class ColorScheme(
 			val list = ColorScheme.entries.toMutableList()
 			if (!DynamicColors.isDynamicColorAvailable()) {
 				list.remove(MONET)
+				list.remove(EXPRESSIVE)
 			}
 			return list
 		}
