@@ -19,12 +19,12 @@
     <string name="history_is_empty">Riwayat kosong</string>
     <string name="read">Baca</string>
     <string name="you_have_not_favourites_yet">Belum ada yang disukai</string>
-    <string name="add_to_favourites">Buat favorit</string>
+    <string name="add_to_favourites">Favoritkan ini</string>
     <string name="add_new_category">Kategori baru</string>
     <string name="add">Tambah</string>
     <string name="save">Simpan</string>
     <string name="share">Bagikan</string>
-    <string name="create_shortcut">Buat pintasan…</string>
+    <string name="create_shortcut">Buat pintasan</string>
     <string name="share_s">Bagikan %s</string>
     <string name="search">Cari</string>
     <string name="search_manga">Cari manga</string>
@@ -95,7 +95,7 @@
     <string name="cannot_find_available_storage">Tidak ada penyimpanan yang tersedia</string>
     <string name="other_storage">Penyimpanan lain</string>
     <string name="done">Selesai</string>
-    <string name="all_favourites">Semua favorit</string>
+    <string name="all_favourites">Semua kesukaan</string>
     <string name="favourites_category_empty">Kategori kosong</string>
     <string name="read_later">Baca nanti</string>
     <string name="updates">Pembaruan</string>
@@ -115,7 +115,7 @@
     <string name="data_restored">Dipulihkan</string>
     <string name="data_restored_success">Semua data dipulihkan</string>
     <string name="data_restored_with_errors">Data berhasil dipulihkan, tapi ada kesalahan</string>
-    <string name="backup_information">Anda dapat membuat cadangan riwayat dan favorit Anda dan memulihkannya</string>
+    <string name="backup_information">Anda dapat membuat cadangan riwayat dan favorit dan memulihkannya</string>
     <string name="just_now">Baru saja</string>
     <string name="long_ago">Lawas</string>
     <string name="group">Kelompok</string>
@@ -190,7 +190,7 @@
     <string name="name">Nama</string>
     <string name="edit">Sunting</string>
     <string name="edit_category">Sunting kategori</string>
-    <string name="empty_favourite_categories">Tidak ada kategori favorit</string>
+    <string name="empty_favourite_categories">Tidak ada kategori kesukaan</string>
     <string name="bookmark_add">Tambah markah</string>
     <string name="bookmark_remove">Hapus markah</string>
     <string name="bookmarks">Markah</string>
@@ -267,7 +267,7 @@
     <string name="clear_all_history">Hapus semua riwayat</string>
     <string name="options">Pilihan</string>
     <string name="import_completed">Impor selesai</string>
-    <string name="removed_from_favourites">Dihapus dari favorit</string>
+    <string name="removed_from_favourites">Dihapus dari kesukaan</string>
     <string name="import_will_start_soon">Impor akan segera dimulai</string>
     <string name="not_found_404">Konten tidak ditemukan atau dihapus</string>
     <string name="exit_confirmation_summary">Tekan Kembali dua kali untuk keluar dari aplikasi</string>
@@ -289,7 +289,7 @@
     <string name="text_unsaved_changes_prompt">Simpan atau buang perubahan yang belum disimpan?</string>
     <string name="discard">Buang</string>
     <string name="use_fingerprint">Gunakan biometrik jika tersedia</string>
-    <string name="appwidget_shelf_description">Manga dari favorit Anda</string>
+    <string name="appwidget_shelf_description">Manga dari kesukaan Anda</string>
     <string name="appwidget_recent_description">Manga yang baru-baru ini Anda baca</string>
     <string name="data_deletion">Penghapusan data</string>
     <string name="account_already_exists">Akun sudah ada</string>
@@ -335,7 +335,7 @@
     <string name="allow_unstable_updates_summary">Terima notifikasi tentang build yang tidak stabil</string>
     <string name="download_started">Unduhan dimulai</string>
     <string name="show_reading_indicators">Tampilkan indikator progres membaca</string>
-    <string name="show_reading_indicators_summary">Tampilkan persentase baca dalam riwayat dan favorit</string>
+    <string name="show_reading_indicators_summary">Tampilkan persentase baca di riwayat dan favorit</string>
     <string name="language">Bahasa</string>
     <string name="text_search_holder_secondary">Cobalah untuk memformulasi ulang kueri.</string>
     <string name="zoom_mode_keep_start">Tetap di awal</string>
@@ -486,7 +486,7 @@
     <string name="sources_catalog">Sumber katalog</string>
     <string name="rating_safe">Aman</string>
     <string name="content_type_manga">Manga</string>
-    <string name="content_type_hentai">Hentai</string>
+    <string name="content_type_hentai">Dewasa</string>
     <string name="error_filter_states_genre_not_supported">Filter berdasarkan genre dan status tidak didukung untuk sumber ini</string>
     <string name="error_filter_locale_genre_not_supported">Filter bedasarkan genre dan lokal tidak didukung oleh sumber ini</string>
     <string name="content_type_comics">Komik</string>
@@ -672,7 +672,7 @@
     <string name="show_quick_filters_summary">Memberikan kemampuan untuk memfilter daftar manga berdasarkan parameter tertentu</string>
     <string name="sfw">SFW</string>
     <string name="skip_all">Lewati semua</string>
-    <string name="not_in_favorites">Tidak di favorit</string>
+    <string name="not_in_favorites">Tidak di kesukaan</string>
     <string name="plugin_incompatible">Plugin yang tidak kompatibel atau kesalahan internal. Pastikan Anda menggunakan versi terbaru dari plugin dan Kotatsu</string>
     <string name="updated_long_ago">Diperbarui sejak lama</string>
     <string name="unpopular">Tidak populer</string>
@@ -764,14 +764,14 @@
     <string name="incognito">Mode Penyamaran</string>
     <string name="demographic_kodomo">Anak</string>
     <string name="content_type_one_shot">Satu tembakan</string>
-    <string name="content_type_doujinshi">Doujinshi</string>
+    <string name="content_type_doujinshi">Komik independen</string>
     <string name="content_type_artist_cg">Artis CG</string>
     <string name="reader_info_bar_transparent">Bilah informasi pembaca transparan</string>
     <string name="handle_links">Tangani Tautan</string>
-    <string name="handle_links_summary">Menangani tautan manga dari aplikasi eksternal (misalnya browser web). Anda mungkin juga perlu mengaktifkannya secara manual di pengaturan sistem aplikasi.</string>
+    <string name="handle_links_summary">Menangani tautan manga dari aplikasi eksternal (misalnya browser web). Anda mungkin juga perlu mengaktifkannya secara manual di pengaturan sistem aplikasi</string>
     <string name="any">Setiap</string>
     <string name="author">Pengarang</string>
-    <string name="plugin_incompatible_with_cause">Pastikan Anda menggunakan plugin dan Kotatsu versi terbaru</string>
+    <string name="plugin_incompatible_with_cause">Kesalahan plugin: %s\n.Pastikan Anda menggunakan plugin dan Kotatsu versi terbaru</string>
     <string name="restoring_backup">Memulihkan Cadangan</string>
     <string name="backup_restored_background">Pencadangan akan dipulihkan di latar belakang</string>
     <string name="clear_browser_data">Hapus data peramban</string>
@@ -800,9 +800,10 @@
     <string name="suggestions_disabled_sources_summary">Tampilkan saran dari semua sumber manga, termasuk yang dinonaktifkan</string>
     <string name="disable_captcha_notifications">Nonaktifkan notifikasi captcha</string>
     <string name="disable_captcha_notifications_summary">Anda tidak akan menerima pemberitahuan tentang penyelesaian CAPTCHA untuk sumber ini, tetapi hal ini dapat menyebabkan penghentian operasi latar belakang (memeriksa bab baru, memperoleh rekomendasi, dll.)</string>
-    <string name="global_search">"Pencarian  global"</string>
+    <string name="global_search">Pencarian global</string>
     <string name="search_everywhere">Cari dimana saja</string>
     <string name="badges_in_lists">Lencana dalam daftar</string>
     <string name="tags_warnings">tandai genre berbahaya</string>
     <string name="tags_warnings_summary">Tandai genre yang mungkin tidak pantas untuk sebagian besar pengguna</string>
+    <string name="error_non_file_uri">Jalur yang dipilih tidak dapat digunakan karena tidak menunjukkan berkas atau direktori</string>
 </resources>
