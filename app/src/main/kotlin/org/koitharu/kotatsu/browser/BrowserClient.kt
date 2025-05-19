@@ -2,11 +2,15 @@ package org.koitharu.kotatsu.browser
 
 import android.graphics.Bitmap
 import android.webkit.WebView
-import androidx.webkit.WebViewClientCompat
+import android.webkit.WebViewClient
 
 open class BrowserClient(
 	private val callback: BrowserCallback
-) : WebViewClientCompat() {
+) : WebViewClient() {
+
+	/**
+	 * https://stackoverflow.com/questions/57414530/illegalstateexception-reasonphrase-cant-be-empty-with-android-webview
+	 */
 
 	override fun onPageFinished(webView: WebView, url: String) {
 		super.onPageFinished(webView, url)
