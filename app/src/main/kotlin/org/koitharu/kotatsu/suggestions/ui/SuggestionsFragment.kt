@@ -8,11 +8,11 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.list.ui.MangaListFragment
-import org.koitharu.kotatsu.settings.SettingsActivity
 
 class SuggestionsFragment : MangaListFragment() {
 
@@ -59,7 +59,7 @@ class SuggestionsFragment : MangaListFragment() {
 			}
 
 			R.id.action_settings_suggestions -> {
-				startActivity(SettingsActivity.newSuggestionsSettingsIntent(requireContext()))
+				router.openSuggestionsSettings()
 				true
 			}
 

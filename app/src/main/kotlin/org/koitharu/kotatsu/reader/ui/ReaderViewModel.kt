@@ -15,15 +15,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
@@ -31,22 +29,22 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.getPreferredBranch
+import org.koitharu.kotatsu.core.nav.MangaIntent
+import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
-import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.core.prefs.TriStateOption
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
-import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
+import org.koitharu.kotatsu.core.util.ext.firstNotNull
 import org.koitharu.kotatsu.core.util.ext.requireValue
-import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
 import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
-import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet.Companion.TAB_PAGES
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -55,8 +53,11 @@ import org.koitharu.kotatsu.list.domain.ReadingProgress.Companion.PROGRESS_NONE
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
+import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
+import org.koitharu.kotatsu.parsers.util.sizeOrZero
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
 import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
 import org.koitharu.kotatsu.reader.domain.PageLoader
@@ -87,6 +88,7 @@ class ReaderViewModel @Inject constructor(
 	interactor: DetailsInteractor,
 	deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	downloadScheduler: DownloadWorker.Scheduler,
+	readerSettingsProducerFactory: ReaderSettings.Producer.Factory,
 ) : ChaptersPagesViewModel(
 	settings = settings,
 	interactor = interactor,
@@ -104,24 +106,18 @@ class ReaderViewModel @Inject constructor(
 	private var stateChangeJob: Job? = null
 
 	init {
-		selectedBranch.value = savedStateHandle.get<String>(ReaderActivity.EXTRA_BRANCH)
-		readingState.value = savedStateHandle[ReaderActivity.EXTRA_STATE]
-		mangaDetails.value = intent.manga?.let { MangaDetails(it, null, null, false) }
+		selectedBranch.value = savedStateHandle.get<String>(ReaderIntent.EXTRA_BRANCH)
+		readingState.value = savedStateHandle[ReaderIntent.EXTRA_STATE]
+		mangaDetails.value = intent.manga?.let { MangaDetails(it, null, null, null, false) }
 	}
 
 	val readerMode = MutableStateFlow<ReaderMode?>(null)
 	val onPageSaved = MutableEventFlow<Collection<Uri>>()
 	val onShowToast = MutableEventFlow<Int>()
+	val onAskNsfwIncognito = MutableEventFlow<Unit>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
-	val incognitoMode = if (savedStateHandle.get<Boolean>(ReaderActivity.EXTRA_INCOGNITO) == true) {
-		MutableStateFlow(true)
-	} else {
-		interactor.observeIncognitoMode(manga)
-			.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
-	}
-
-	val isPagesSheetEnabled = observeIsPagesSheetEnabled()
+	val isIncognitoMode = MutableStateFlow(savedStateHandle.get<Boolean>(ReaderIntent.EXTRA_INCOGNITO))
 
 	val content = MutableStateFlow(ReaderContent(emptyList(), null))
 
@@ -135,6 +131,12 @@ class ReaderViewModel @Inject constructor(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_READER_BAR,
 		valueProducer = { isReaderBarEnabled },
+	)
+
+	val isInfoBarTransparent = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_READER_BAR_TRANSPARENT,
+		valueProducer = { isReaderBarTransparent },
 	)
 
 	val isKeepScreenOnEnabled = settings.observeAsStateFlow(
@@ -168,15 +170,11 @@ class ReaderViewModel @Inject constructor(
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
 
-	val readerSettings = ReaderSettings(
-		parentScope = viewModelScope,
-		settings = settings,
-		colorFilterFlow = manga.flatMapLatest {
-			if (it == null) flowOf(null) else dataRepository.observeColorFilter(it.id)
-		}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null),
+	val readerSettingsProducer = readerSettingsProducerFactory.create(
+		manga.mapNotNull { it?.id },
 	)
 
-	val isMangaNsfw = manga.map { it?.isNsfw == true }
+	val isMangaNsfw = manga.map { it?.contentRating == ContentRating.ADULT }
 
 	val isBookmarkAdded = readingState.flatMapLatest { state ->
 		val manga = mangaDetails.value?.toManga()
@@ -191,14 +189,13 @@ class ReaderViewModel @Inject constructor(
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
 
 	init {
+		initIncognitoMode()
 		loadImpl()
-		settings.observe()
-			.onEach { key ->
-				if (key == AppSettings.KEY_READER_SLIDER) notifyStateChanged()
-			}.launchIn(viewModelScope + Dispatchers.Default)
 		launchJob(Dispatchers.Default) {
 			val mangaId = manga.filterNotNull().first().id
-			appShortcutManager.notifyMangaOpened(mangaId)
+			if (!isIncognitoMode.firstNotNull()) {
+				appShortcutManager.notifyMangaOpened(mangaId)
+			}
 		}
 	}
 
@@ -230,9 +227,9 @@ class ReaderViewModel @Inject constructor(
 	fun saveCurrentState(state: ReaderState? = null) {
 		if (state != null) {
 			readingState.value = state
-			savedStateHandle[ReaderActivity.EXTRA_STATE] = state
+			savedStateHandle[ReaderIntent.EXTRA_STATE] = state
 		}
-		if (incognitoMode.value) {
+		if (isIncognitoMode.value != false) {
 			return
 		}
 		val readerState = state ?: readingState.value ?: return
@@ -260,7 +257,7 @@ class ReaderViewModel @Inject constructor(
 			val currentManga = manga.requireValue()
 			val task = PageSaveHelper.Task(
 				manga = currentManga,
-				chapter = currentManga.requireChapterById(state.chapterId),
+				chapterId = state.chapterId,
 				pageNumber = state.page + 1,
 				page = checkNotNull(getCurrentPage()) { "Cannot find current page" },
 			)
@@ -349,45 +346,45 @@ class ReaderViewModel @Inject constructor(
 		}
 	}
 
-	fun addBookmark() {
+	fun toggleBookmark() {
 		if (bookmarkJob?.isActive == true) {
 			return
 		}
 		bookmarkJob = launchJob(Dispatchers.Default) {
 			loadingJob?.join()
-			val state = checkNotNull(readingState.value)
-			val page = checkNotNull(getCurrentPage()) { "Page not found" }
-			val bookmark = Bookmark(
-				manga = requireManga(),
-				pageId = page.id,
-				chapterId = state.chapterId,
-				page = state.page,
-				scroll = state.scroll,
-				imageUrl = page.preview.ifNullOrEmpty { page.url },
-				createdAt = Instant.now(),
-				percent = computePercent(state.chapterId, state.page),
-			)
-			bookmarksRepository.addBookmark(bookmark)
-			onShowToast.call(R.string.bookmark_added)
+			val state = checkNotNull(getCurrentState())
+			if (isBookmarkAdded.value) {
+				val manga = requireManga()
+				bookmarksRepository.removeBookmark(manga.id, state.chapterId, state.page)
+				onShowToast.call(R.string.bookmark_removed)
+			} else {
+				val page = checkNotNull(getCurrentPage()) { "Page not found" }
+				val bookmark = Bookmark(
+					manga = requireManga(),
+					pageId = page.id,
+					chapterId = state.chapterId,
+					page = state.page,
+					scroll = state.scroll,
+					imageUrl = page.preview.ifNullOrEmpty { page.url },
+					createdAt = Instant.now(),
+					percent = computePercent(state.chapterId, state.page),
+				)
+				bookmarksRepository.addBookmark(bookmark)
+				onShowToast.call(R.string.bookmark_added)
+			}
 		}
 	}
 
-	fun removeBookmark() {
-		if (bookmarkJob?.isActive == true) {
-			return
-		}
-		bookmarkJob = launchJob {
-			loadingJob?.join()
-			val manga = requireManga()
-			val state = checkNotNull(getCurrentState())
-			bookmarksRepository.removeBookmark(manga.id, state.chapterId, state.page)
-			onShowToast.call(R.string.bookmark_removed)
+	fun setIncognitoMode(value: Boolean, dontAskAgain: Boolean) {
+		isIncognitoMode.value = value
+		if (dontAskAgain) {
+			settings.incognitoModeForNsfw = if (value) TriStateOption.ENABLED else TriStateOption.DISABLED
 		}
 	}
 
 	private fun loadImpl() {
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			val details = detailsLoadUseCase.invoke(intent).first { x -> x.isLoaded }
+			val details = detailsLoadUseCase.invoke(intent, force = false).first { x -> x.isLoaded }
 			mangaDetails.value = details
 			chaptersLoader.init(details)
 			val manga = details.toManga()
@@ -403,7 +400,7 @@ class ReaderViewModel @Inject constructor(
 
 			chaptersLoader.loadSingleChapter(requireNotNull(readingState.value).chapterId)
 			// save state
-			if (!incognitoMode.value) {
+			if (!isIncognitoMode.firstNotNull()) {
 				readingState.value?.let {
 					val percent = computePercent(it.chapterId, it.page)
 					historyUpdateUseCase.invoke(manga, it, percent)
@@ -442,18 +439,16 @@ class ReaderViewModel @Inject constructor(
 		val chapterIndex = m.chapters[chapter.branch]?.indexOfFirst { it.id == chapter.id } ?: -1
 		val newState = ReaderUiState(
 			mangaName = m.toManga().title,
-			branch = chapter.branch,
-			chapterName = chapter.name,
-			chapterNumber = chapterIndex + 1,
+			chapter = chapter,
+			chapterIndex = chapterIndex,
 			chaptersTotal = m.chapters[chapter.branch].sizeOrZero(),
 			totalPages = chaptersLoader.getPagesCount(chapter.id),
 			currentPage = state.page,
-			isSliderEnabled = settings.isReaderSliderEnabled,
 			percent = computePercent(state.chapterId, state.page),
-			incognito = incognitoMode.value,
+			incognito = isIncognitoMode.value == true,
 		)
 		uiState.value = newState
-		if (!incognitoMode.value) {
+		if (isIncognitoMode.value == false) {
 			statsCollector.onStateChanged(m.id, state)
 		}
 	}
@@ -487,10 +482,25 @@ class ReaderViewModel @Inject constructor(
 		valueProducer = { isReaderZoomButtonsEnabled },
 	)
 
-	private fun observeIsPagesSheetEnabled() = settings.observe()
-		.filter { it == AppSettings.KEY_PAGES_TAB || it == AppSettings.KEY_DETAILS_TAB || it == AppSettings.KEY_DETAILS_LAST_TAB }
-		.map { settings.defaultDetailsTab == TAB_PAGES }
-		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.defaultDetailsTab == TAB_PAGES)
+	private fun initIncognitoMode() {
+		if (isIncognitoMode.value != null) {
+			return
+		}
+		launchJob(Dispatchers.Default) {
+			interactor.observeIncognitoMode(manga)
+				.collect {
+					when (it) {
+						TriStateOption.ENABLED -> isIncognitoMode.value = true
+						TriStateOption.ASK -> {
+							onAskNsfwIncognito.call(Unit)
+							return@collect
+						}
+
+						TriStateOption.DISABLED -> isIncognitoMode.value = false
+					}
+				}
+		}
+	}
 
 	private suspend fun getStateFromIntent(manga: Manga): ReaderState {
 		val history = historyRepository.getOne(manga)

@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.core.util.ext.setThemeTextAppearance
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ViewFilterFieldBinding
 import java.util.LinkedList
+import androidx.appcompat.R as appcompatR
 import com.google.android.material.R as materialR
 
 class FilterFieldLayout @JvmOverloads constructor(
@@ -47,7 +48,7 @@ class FilterFieldLayout @JvmOverloads constructor(
 		if (!isInitialized) {
 			return
 		}
-		assert(child.id != View.NO_ID)
+		assert(child.id != NO_ID)
 		val lp = (child.layoutParams as? LayoutParams) ?: (generateDefaultLayoutParams() as LayoutParams)
 		lp.alignWithParent = true
 		lp.width = 0
@@ -100,7 +101,7 @@ class FilterFieldLayout @JvmOverloads constructor(
 		label.drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_error_small)
 		TextViewCompat.setCompoundDrawableTintList(
 			label,
-			context.getThemeColorStateList(materialR.attr.colorControlNormal),
+			context.getThemeColorStateList(appcompatR.attr.colorControlNormal),
 		)
 		addView(label)
 		errorView = label

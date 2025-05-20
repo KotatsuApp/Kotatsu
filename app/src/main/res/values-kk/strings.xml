@@ -398,8 +398,7 @@
     <string name="invalid_port_number">Порттың нөмірі қате</string>
     <string name="suggestions_wifi_only_summary">Шектеулі желі қосылымы болса ұсынысты жаңартпау</string>
     <string name="webtoon_zoom_summary">Уебтүн режімінде ұлғайту ымына рұқсат ету</string>
-    <string name="categories_delete_confirm">Таңдаулы санатты шынымен жойғыңыз келе ме\?
-\nІшіндегі бар маңга жойылады, сосын оны қайтарып ала алмайсыз.</string>
+    <string name="categories_delete_confirm">Таңдаулы санатты шынымен жойғыңыз келе ме? \nІшіндегі бар маңга жойылады, сосын оны қайтарып ала алмайсыз.</string>
     <string name="frequency_once_per_month">Ай сайын</string>
     <string name="reader_info_pattern">%1$d/%2$d-тарау %3$d/%4$d-бет</string>
     <string name="contrast">Көреғарлық</string>

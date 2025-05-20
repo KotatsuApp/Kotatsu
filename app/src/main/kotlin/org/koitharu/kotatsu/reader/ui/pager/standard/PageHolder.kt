@@ -2,22 +2,28 @@ package org.koitharu.kotatsu.reader.ui.pager.standard
 
 import android.annotation.SuppressLint
 import android.graphics.PointF
+import android.os.Build
+import android.view.Gravity
+import android.view.RoundedCorner
 import android.view.View
+import android.view.WindowInsets
 import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
+import androidx.annotation.RequiresApi
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.setMargins
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
-import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
-import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
-import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
-import org.koitharu.kotatsu.core.util.ext.isSerializable
 import org.koitharu.kotatsu.databinding.ItemPageBinding
-import org.koitharu.kotatsu.parsers.util.ifZero
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.BasePageHolder
@@ -27,73 +33,48 @@ open class PageHolder(
 	owner: LifecycleOwner,
 	binding: ItemPageBinding,
 	loader: PageLoader,
-	settings: ReaderSettings,
+	readerSettingsProducer: ReaderSettings.Producer,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
-) : BasePageHolder<ItemPageBinding>(binding, loader, settings, networkState, exceptionResolver, owner),
-	View.OnClickListener,
-	ZoomControl.ZoomControlListener {
+) : BasePageHolder<ItemPageBinding>(
+	binding = binding,
+	loader = loader,
+	readerSettingsProducer = readerSettingsProducer,
+	networkState = networkState,
+	exceptionResolver = exceptionResolver,
+	lifecycleOwner = owner,
+), ZoomControl.ZoomControlListener, OnApplyWindowInsetsListener {
+
+	override val ssiv = binding.ssiv
 
 	init {
-		binding.ssiv.bindToLifecycle(owner)
-		binding.ssiv.isEagerLoadingEnabled = !context.isLowRamDevice()
-		binding.ssiv.addOnImageEventListener(delegate)
-		@Suppress("LeakingThis")
-		bindingInfo.buttonRetry.setOnClickListener(this)
-		@Suppress("LeakingThis")
-		bindingInfo.buttonErrorDetails.setOnClickListener(this)
+		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 	}
 
-	override fun onResume() {
-		super.onResume()
-		binding.ssiv.applyDownSampling(isForeground = true)
-	}
-
-	override fun onPause() {
-		super.onPause()
-		binding.ssiv.applyDownSampling(isForeground = false)
-	}
-
-	override fun onConfigChanged() {
-		super.onConfigChanged()
-		if (settings.applyBitmapConfig(binding.ssiv)) {
-			delegate.reload()
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			insets.toWindowInsets()?.let {
+				applyRoundedCorners(it)
+			}
 		}
-		binding.ssiv.applyDownSampling(isResumed())
+		return insets
+	}
+
+	override fun onConfigChanged(settings: ReaderSettings) {
+		super.onConfigChanged(settings)
 		binding.textViewNumber.isVisible = settings.isPagesNumbersEnabled
 	}
 
 	@SuppressLint("SetTextI18n")
 	override fun onBind(data: ReaderPage) {
-		delegate.onBind(data.toMangaPage())
+		super.onBind(data)
 		binding.textViewNumber.text = (data.index + 1).toString()
 	}
 
-	override fun onRecycled() {
-		super.onRecycled()
-		binding.ssiv.recycle()
-	}
-
-	override fun onLoadingStarted() {
-		bindingInfo.layoutError.isVisible = false
-		bindingInfo.progressBar.show()
-		binding.ssiv.recycle()
-	}
-
-	override fun onProgressChanged(progress: Int) {
-		if (progress in 0..100) {
-			bindingInfo.progressBar.isIndeterminate = false
-			bindingInfo.progressBar.setProgressCompat(progress, true)
-		} else {
-			bindingInfo.progressBar.isIndeterminate = true
-		}
-	}
-
-	override fun onImageReady(source: ImageSource) {
-		binding.ssiv.setImage(source)
-	}
-
-	override fun onImageShowing(settings: ReaderSettings) {
+	override fun onReady() {
 		binding.ssiv.maxScale = 2f * maxOf(
 			binding.ssiv.width / binding.ssiv.sWidth.toFloat(),
 			binding.ssiv.height / binding.ssiv.sHeight.toFloat(),
@@ -133,37 +114,35 @@ open class PageHolder(
 		}
 	}
 
-	override fun onImageShown() {
-		bindingInfo.progressBar.hide()
-	}
-
-	override fun onTrimMemory() {
-		// TODO https://developer.android.com/topic/performance/memory
-	}
-
-	final override fun onClick(v: View) {
-		when (v.id) {
-			R.id.button_retry -> delegate.retry(boundData?.toMangaPage() ?: return, isFromUser = true)
-			R.id.button_error_details -> delegate.showErrorDetails(boundData?.url)
-		}
-	}
-
-	override fun onError(e: Throwable) {
-		bindingInfo.textViewError.text = e.getDisplayMessage(context.resources)
-		bindingInfo.buttonRetry.setText(
-			ExceptionResolver.getResolveStringId(e).ifZero { R.string.try_again },
-		)
-		bindingInfo.buttonErrorDetails.isVisible = e.isSerializable()
-		bindingInfo.layoutError.isVisible = true
-		bindingInfo.progressBar.hide()
-	}
-
 	override fun onZoomIn() {
 		scaleBy(1.2f)
 	}
 
 	override fun onZoomOut() {
 		scaleBy(0.8f)
+	}
+
+	@SuppressLint("RtlHardcoded")
+	@RequiresApi(Build.VERSION_CODES.S)
+	protected open fun applyRoundedCorners(insets: WindowInsets) {
+		binding.textViewNumber.updateLayoutParams<FrameLayout.LayoutParams> {
+			val baseMargin = context.resources.getDimensionPixelOffset(R.dimen.margin_small)
+			val absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection)
+			val corner = when {
+				absoluteGravity and Gravity.LEFT == Gravity.LEFT -> {
+					insets.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT)
+				}
+
+				absoluteGravity and Gravity.RIGHT == Gravity.RIGHT -> {
+					insets.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT)
+				}
+
+				else -> {
+					null
+				}
+			}
+			setMargins(baseMargin + (corner?.radius ?: 0))
+		}
 	}
 
 	private fun scaleBy(factor: Float) {

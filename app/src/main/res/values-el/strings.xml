@@ -443,8 +443,7 @@
 \n
 \nΠροσοχή: η πρόοδος σου θα χαθεί.</string>
     <string name="disable_battery_optimization_summary_downloads">Ενδέχεται να βοηθήσει με την εκκίνηση της λήψης αν αντιμετωπίζεις προβλήματα σχετικά με αυτήν</string>
-    <string name="categories_delete_confirm">Είσαι σίγουρος πως θες να διαγράψεις τις επιλεγμένες αγαπημένες κατηγορίες;
-\nΌλα τα manga που ανήκουν σε αυτές θα χαθούν, και αυτό είναι μη αναστρέψιμο.</string>
+    <string name="categories_delete_confirm">Είσαι σίγουρος πως θες να διαγράψεις τις επιλεγμένες αγαπημένες κατηγορίες; \nΌλα τα manga που ανήκουν σε αυτές θα χαθούν, και αυτό είναι μη αναστρέψιμο.</string>
     <string name="downloads_resumed">Οι λήψεις έχουν ξαναξεκινήσει</string>
     <string name="downloads_paused">Οι λήψεις παύθηκαν</string>
     <string name="remove_completed_downloads_confirm">Το ιστορικό λήψεων σου θα διαγραφεί</string>

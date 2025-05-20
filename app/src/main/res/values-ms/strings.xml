@@ -215,8 +215,7 @@
     <string name="no_manga_sources">Tiada sumber manga</string>
     <string name="no_manga_sources_text">Bolehkan sumber manga untuk membaca manga di dalam talian</string>
     <string name="random">Rawak</string>
-    <string name="categories_delete_confirm">Adakah anda pasti anda mahu membuang kategori kegemaran yang dipilih?
-\nSemua manga di dalamnya akan hilang dan ini tidak boleh diundur semula.</string>
+    <string name="categories_delete_confirm">Adakah anda pasti anda mahu membuang kategori kegemaran yang dipilih? \nSemua manga di dalamnya akan hilang dan ini tidak boleh diundur semula.</string>
     <string name="reorder">Susun semula</string>
     <string name="empty">Kosong</string>
     <string name="explore">Jelajah</string>

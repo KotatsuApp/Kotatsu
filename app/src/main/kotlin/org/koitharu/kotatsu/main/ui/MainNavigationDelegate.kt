@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.transition.MaterialFadeThrough
 import kotlinx.coroutines.Dispatchers
@@ -26,8 +25,8 @@ import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
-import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
-import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
+import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
+import org.koitharu.kotatsu.core.util.ext.smoothScrollToTop
 import org.koitharu.kotatsu.explore.ui.ExploreFragment
 import org.koitharu.kotatsu.favourites.ui.container.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
@@ -59,20 +58,16 @@ class MainNavigationDelegate(
 	}
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean {
-		return onNavigationItemSelected(item.itemId)
+		return if (onNavigationItemSelected(item.itemId)) {
+			item.isChecked = true
+			true
+		} else {
+			false
+		}
 	}
 
 	override fun onNavigationItemReselected(item: MenuItem) {
-		val fragment = fragmentManager.findFragmentByTag(TAG_PRIMARY)
-		if (fragment == null || fragment !is RecyclerViewOwner || fragment.view == null) {
-			return
-		}
-		val recyclerView = fragment.recyclerView
-		if (recyclerView.context.isAnimationsEnabled) {
-			recyclerView.smoothScrollToPosition(0)
-		} else {
-			recyclerView.firstVisibleItemPosition = 0
-		}
+		onNavigationItemReselected()
 	}
 
 	override fun handleOnBackPressed() {
@@ -103,6 +98,15 @@ class MainNavigationDelegate(
 
 	fun setCounter(item: NavItem, counter: Int) {
 		setCounter(item.id, counter)
+	}
+
+	fun syncSelectedItem() {
+		val fragment = primaryFragment ?: return
+		onFragmentChanged(fragment, fromUser = false)
+		val itemId = getItemId(fragment)
+		if (navBar.selectedItemId != itemId) {
+			navBar.selectedItemId = itemId
+		}
 	}
 
 	private fun setCounter(@IdRes id: Int, counter: Int) {
@@ -136,19 +140,22 @@ class MainNavigationDelegate(
 	}
 
 	private fun onNavigationItemSelected(@IdRes itemId: Int): Boolean {
-		return setPrimaryFragment(
-			when (itemId) {
-				R.id.nav_history -> HistoryListFragment::class.java
-				R.id.nav_favorites -> FavouritesContainerFragment::class.java
-				R.id.nav_explore -> ExploreFragment::class.java
-				R.id.nav_feed -> FeedFragment::class.java
-				R.id.nav_local -> LocalListFragment::class.java
-				R.id.nav_suggestions -> SuggestionsFragment::class.java
-				R.id.nav_bookmarks -> AllBookmarksFragment::class.java
-				R.id.nav_updated -> UpdatesFragment::class.java
-				else -> return false
-			},
-		)
+		val newFragment = when (itemId) {
+			R.id.nav_history -> HistoryListFragment::class.java
+			R.id.nav_favorites -> FavouritesContainerFragment::class.java
+			R.id.nav_explore -> ExploreFragment::class.java
+			R.id.nav_feed -> FeedFragment::class.java
+			R.id.nav_local -> LocalListFragment::class.java
+			R.id.nav_suggestions -> SuggestionsFragment::class.java
+			R.id.nav_bookmarks -> AllBookmarksFragment::class.java
+			R.id.nav_updated -> UpdatesFragment::class.java
+			else -> return false
+		}
+		if (!setPrimaryFragment(newFragment)) {
+			// probably already selected
+			onNavigationItemReselected()
+		}
+		return true
 	}
 
 	private fun getItemId(fragment: Fragment) = when (fragment) {
@@ -175,6 +182,11 @@ class MainNavigationDelegate(
 			.runOnCommit { onFragmentChanged(fragment, fromUser = true) }
 			.commit()
 		return true
+	}
+
+	private fun onNavigationItemReselected() {
+		val recyclerView = (primaryFragment as? RecyclerViewOwner)?.recyclerView ?: return
+		recyclerView.smoothScrollToTop()
 	}
 
 	private fun onFragmentChanged(fragment: Fragment, fromUser: Boolean) {
@@ -220,7 +232,7 @@ class MainNavigationDelegate(
 	}
 
 	private fun setNavbarIsLabeled(value: Boolean) {
-		if (navBar is BottomNavigationView) {
+		if (navBar is SlidingBottomNavigationView) {
 			navBar.minimumHeight = navBar.resources.getDimensionPixelSize(
 				if (value) {
 					materialR.dimen.m3_bottom_nav_min_height
@@ -239,5 +251,10 @@ class MainNavigationDelegate(
 	interface OnFragmentChangedListener {
 
 		fun onFragmentChanged(fragment: Fragment, fromUser: Boolean)
+	}
+
+	companion object {
+
+		const val MAX_ITEM_COUNT = 6
 	}
 }

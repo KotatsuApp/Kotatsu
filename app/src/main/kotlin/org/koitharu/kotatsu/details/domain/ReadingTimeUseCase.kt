@@ -15,7 +15,7 @@ class ReadingTimeUseCase @Inject constructor(
 	private val statsRepository: StatsRepository,
 ) {
 
-	suspend fun invoke(manga: MangaDetails?, branch: String?, history: MangaHistory?): ReadingTime? {
+	suspend operator fun invoke(manga: MangaDetails?, branch: String?, history: MangaHistory?): ReadingTime? {
 		if (!settings.isReadingTimeEstimationEnabled) {
 			return null
 		}

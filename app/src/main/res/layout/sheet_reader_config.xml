@@ -14,8 +14,10 @@
 		app:title="@string/options" />
 
 	<androidx.core.widget.NestedScrollView
+		android:id="@+id/scrollView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:clipToPadding="false"
 		android:scrollIndicators="top">
 
 		<LinearLayout
@@ -27,41 +29,25 @@
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_save_page"
 				android:layout_width="match_parent"
-				android:layout_height="?android:listPreferredItemHeightSmall"
-				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:paddingStart="?android:listPreferredItemPaddingStart"
-				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:layout_height="wrap_content"
 				android:text="@string/save_page"
-				android:textAppearance="?attr/textAppearanceButton"
 				app:drawableStartCompat="@drawable/ic_save" />
 
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
-				android:id="@+id/button_screen_rotate"
+				android:id="@+id/button_bookmark"
 				android:layout_width="match_parent"
-				android:layout_height="?android:listPreferredItemHeightSmall"
-				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:paddingStart="?android:listPreferredItemPaddingStart"
-				android:paddingEnd="?android:listPreferredItemPaddingEnd"
-				android:text="@string/rotate_screen"
-				android:textAppearance="?attr/textAppearanceButton"
-				android:visibility="gone"
-				app:drawableStartCompat="@drawable/ic_screen_rotation"
-				tools:visibility="visible" />
+				android:layout_height="wrap_content"
+				android:text="@string/bookmark_add"
+				app:drawableStartCompat="@drawable/ic_bookmark" />
 
-			<com.google.android.material.materialswitch.MaterialSwitch
-				android:id="@+id/switch_screen_lock_rotation"
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+				android:id="@+id/button_image_server"
 				android:layout_width="match_parent"
-				android:layout_height="?android:listPreferredItemHeightSmall"
-				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:ellipsize="end"
-				android:paddingStart="?android:listPreferredItemPaddingStart"
-				android:paddingEnd="?android:listPreferredItemPaddingEnd"
-				android:singleLine="true"
-				android:text="@string/lock_screen_rotation"
-				android:textAppearance="?attr/textAppearanceButton"
-				android:textColor="?colorOnSurfaceVariant"
+				android:layout_height="wrap_content"
+				android:drawableEnd="@drawable/ic_expand_more_22px"
+				android:text="@string/image_server"
 				android:visibility="gone"
-				app:drawableStartCompat="@drawable/ic_screen_rotation_lock"
+				app:drawableStartCompat="@drawable/ic_images"
 				tools:visibility="visible" />
 
 			<TextView
@@ -132,106 +118,62 @@
 			<com.google.android.material.materialswitch.MaterialSwitch
 				android:id="@+id/switch_double_reader"
 				android:layout_width="match_parent"
-				android:layout_height="?android:listPreferredItemHeightSmall"
+				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_normal"
 				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:ellipsize="end"
+				android:minHeight="?android:listPreferredItemHeightSmall"
 				android:paddingStart="?android:listPreferredItemPaddingStart"
 				android:paddingEnd="?android:listPreferredItemPaddingEnd"
-				android:singleLine="true"
 				android:text="@string/use_two_pages_landscape"
-				android:textAppearance="?attr/textAppearanceButton"
+				android:textAppearance="?textAppearanceListItem"
 				android:textColor="?colorOnSurfaceVariant"
 				app:drawableStartCompat="@drawable/ic_split_horizontal" />
 
-			<com.google.android.material.materialswitch.MaterialSwitch
-				android:id="@+id/switch_scroll_timer"
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+				android:id="@+id/button_screen_rotate"
 				android:layout_width="match_parent"
-				android:layout_height="?android:listPreferredItemHeightSmall"
+				android:layout_height="wrap_content"
+				android:text="@string/rotate_screen"
+				android:visibility="gone"
+				app:drawableStartCompat="@drawable/ic_screen_rotation"
+				tools:visibility="visible" />
+
+			<com.google.android.material.materialswitch.MaterialSwitch
+				android:id="@+id/switch_screen_lock_rotation"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
 				android:drawablePadding="?android:listPreferredItemPaddingStart"
 				android:ellipsize="end"
+				android:minHeight="?android:listPreferredItemHeightSmall"
 				android:paddingStart="?android:listPreferredItemPaddingStart"
 				android:paddingEnd="?android:listPreferredItemPaddingEnd"
 				android:singleLine="true"
-				android:text="@string/automatic_scroll"
-				android:textAppearance="?attr/textAppearanceButton"
+				android:text="@string/lock_screen_rotation"
+				android:textAppearance="?textAppearanceListItem"
 				android:textColor="?colorOnSurfaceVariant"
-				app:drawableStartCompat="@drawable/ic_timer" />
-
-			<LinearLayout
-				android:id="@+id/layout_timer"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
-				android:layout_marginTop="@dimen/margin_normal"
-				android:textAppearance="?textAppearanceTitleSmall"
 				android:visibility="gone"
-				tools:visibility="visible">
-
-				<TextView
-					android:id="@+id/label_timer"
-					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="@string/speed"
-					android:textAppearance="?attr/textAppearanceTitleSmall" />
-
-				<TextView
-					android:id="@+id/label_timer_value"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_marginStart="@dimen/margin_small"
-					android:textAppearance="?attr/textAppearanceBodySmall"
-					tools:text="x0.5" />
-
-			</LinearLayout>
-
-			<org.koitharu.kotatsu.core.ui.widgets.CubicSlider
-				android:id="@+id/slider_timer"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="@dimen/margin_normal"
-				android:contentDescription="@string/automatic_scroll"
-				android:labelFor="@id/switch_scroll_timer"
-				android:valueFrom="0.2"
-				android:valueTo="0.9"
-				android:visibility="gone"
-				app:labelBehavior="gone"
+				app:drawableStartCompat="@drawable/ic_screen_rotation_lock"
 				tools:visibility="visible" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+				android:id="@+id/button_scroll_timer"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/automatic_scroll"
+				app:drawableStartCompat="@drawable/ic_timer" />
 
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_color_filter"
 				android:layout_width="match_parent"
-				android:layout_height="?android:listPreferredItemHeightSmall"
-				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:paddingStart="?android:listPreferredItemPaddingStart"
-				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:layout_height="wrap_content"
 				android:text="@string/color_correction"
-				android:textAppearance="?attr/textAppearanceButton"
 				app:drawableStartCompat="@drawable/ic_appearance" />
-
-			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
-				android:id="@+id/button_image_server"
-				android:layout_width="match_parent"
-				android:layout_height="?android:listPreferredItemHeightSmall"
-				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:paddingStart="?android:listPreferredItemPaddingStart"
-				android:paddingEnd="?android:listPreferredItemPaddingEnd"
-				android:text="@string/image_server"
-				android:textAppearance="?attr/textAppearanceButton"
-				android:visibility="gone"
-				app:drawableStartCompat="@drawable/ic_images"
-				tools:visibility="visible" />
 
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_settings"
 				android:layout_width="match_parent"
-				android:layout_height="?android:listPreferredItemHeightSmall"
-				android:drawablePadding="?android:listPreferredItemPaddingStart"
-				android:paddingStart="?android:listPreferredItemPaddingStart"
-				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:layout_height="wrap_content"
 				android:text="@string/settings"
-				android:textAppearance="?attr/textAppearanceButton"
 				app:drawableStartCompat="@drawable/ic_settings" />
 
 		</LinearLayout>

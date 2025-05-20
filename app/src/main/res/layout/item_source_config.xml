@@ -13,13 +13,14 @@
 	android:paddingStart="?listPreferredItemPaddingStart"
 	android:paddingEnd="?listPreferredItemPaddingEnd">
 
-	<com.google.android.material.imageview.ShapeableImageView
+	<org.koitharu.kotatsu.core.ui.image.FaviconView
 		android:id="@+id/imageView_icon"
 		android:layout_width="32dp"
 		android:layout_height="32dp"
 		android:background="?colorControlHighlight"
 		android:labelFor="@id/textView_title"
 		android:scaleType="fitCenter"
+		app:iconStyle="@style/FaviconDrawable.Small"
 		app:shapeAppearance="?shapeAppearanceCornerSmall"
 		tools:src="@tools:sample/avatars" />
 
@@ -54,7 +55,7 @@
 
 	</LinearLayout>
 
-	<ImageView
+	<ImageButton
 		android:id="@+id/imageView_menu"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -66,7 +67,7 @@
 		android:tooltipText="@string/more"
 		app:tint="?colorControlNormal" />
 
-	<ImageView
+	<ImageButton
 		android:id="@+id/imageView_add"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -77,15 +78,15 @@
 		android:src="@drawable/ic_add"
 		android:tooltipText="@string/add" />
 
-	<ImageView
+	<ImageButton
 		android:id="@+id/imageView_remove"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:background="?selectableItemBackgroundBorderless"
-		android:contentDescription="@string/remove"
+		android:contentDescription="@string/disable"
 		android:padding="@dimen/margin_small"
 		android:scaleType="center"
-		android:src="@drawable/ic_delete"
-		android:tooltipText="@string/remove" />
+		android:src="@drawable/ic_disable"
+		android:tooltipText="@string/disable" />
 
 </LinearLayout>

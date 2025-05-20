@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.settings.reader
 
 import android.content.DialogInterface
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
@@ -11,22 +10,24 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.Insets
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
-import androidx.core.view.updatePadding
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.findKeyByValue
 import org.koitharu.kotatsu.core.util.ext.getThemeDrawable
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityReaderTapActionsBinding
 import org.koitharu.kotatsu.reader.domain.TapGridArea
 import org.koitharu.kotatsu.reader.ui.tapgrid.TapAction
 import java.util.EnumMap
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding>(), View.OnClickListener,
@@ -39,7 +40,7 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderTapActionsBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		controls[TapGridArea.TOP_LEFT] = viewBinding.textViewTopLeft
 		controls[TapGridArea.TOP_CENTER] = viewBinding.textViewTopCenter
 		controls[TapGridArea.TOP_RIGHT] = viewBinding.textViewTopRight
@@ -56,6 +57,17 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 		}
 
 		viewModel.content.observe(this, ::onContentChanged)
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		viewBinding.root.setPadding(
+			barsInsets.left,
+			barsInsets.top,
+			barsInsets.right,
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -77,15 +89,6 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 
 			else -> super.onOptionsItemSelected(item)
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			top = insets.top,
-			right = insets.right,
-			bottom = insets.bottom,
-		)
 	}
 
 	override fun onClick(v: View) {
@@ -117,7 +120,7 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 		}
 	}
 
-	@Suppress("IfThenToElvis") // lint bug
+	// lint bug
 	private fun TapAction?.getText(): String = if (this != null) {
 		getString(nameStringResId)
 	} else {
@@ -154,11 +157,11 @@ class ReaderTapGridConfigActivity : BaseActivity<ActivityReaderTapActionsBinding
 	}
 
 	private fun createBackground(action: TapAction?): Drawable? {
-		val ripple = getThemeDrawable(materialR.attr.selectableItemBackground)
+		val ripple = getThemeDrawable(appcompatR.attr.selectableItemBackground)
 		return if (action == null) {
 			ripple
 		} else {
-			LayerDrawable(arrayOf(ripple, ColorDrawable(ColorUtils.setAlphaComponent(action.color, 40))))
+			LayerDrawable(arrayOf(ripple, ColorUtils.setAlphaComponent(action.color, 40).toDrawable()))
 		}
 	}
 }

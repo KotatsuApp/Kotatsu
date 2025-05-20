@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import androidx.preference.ListPreference
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 
+@Suppress("unused")
 class ActivityListPreference : ListPreference {
 
 	var activityIntent: Intent? = null

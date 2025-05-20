@@ -22,7 +22,7 @@ class SyncAuthViewModel @Inject constructor(
 
 	val onAccountAlreadyExists = MutableEventFlow<Unit>()
 	val onTokenObtained = MutableEventFlow<SyncAuthResult>()
-	val syncURL = MutableStateFlow(context.getString(R.string.sync_url_default))
+	val syncURL = MutableStateFlow(context.resources.getStringArray(R.array.sync_url_list).first())
 
 	init {
 		launchJob(Dispatchers.Default) {

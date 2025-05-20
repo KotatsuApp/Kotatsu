@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<!-- Colored themes -->
-	<style name="Theme.Kotatsu.Miku">
+	<style name="ThemeOverlay.Kotatsu.Miku">
 		<item name="colorPrimary">#50DBCF</item>
 		<item name="colorPrimaryContainer">#00504A</item>
 		<item name="colorOnPrimary">#003733</item>
@@ -38,7 +38,7 @@
 		<item name="colorOutlineVariant">#3F4947</item>
 	</style>
 
-	<style name="Theme.Kotatsu.Asuka">
+	<style name="ThemeOverlay.Kotatsu.Asuka">
 		<item name="colorPrimary">#FFB3AF</item>
 		<item name="colorPrimaryContainer">#930018</item>
 		<item name="colorOnPrimary">#68000E</item>
@@ -75,7 +75,7 @@
 		<item name="colorOutlineVariant">#534342</item>
 	</style>
 
-	<style name="Theme.Kotatsu.Mion">
+	<style name="ThemeOverlay.Kotatsu.Mion">
 		<item name="colorPrimary">#70DBA8</item>
 		<item name="colorPrimaryContainer">#005236</item>
 		<item name="colorOnPrimary">#003824</item>
@@ -112,7 +112,7 @@
 		<item name="colorOutlineVariant">#404943</item>
 	</style>
 
-	<style name="Theme.Kotatsu.Rikka">
+	<style name="ThemeOverlay.Kotatsu.Rikka">
 		<item name="colorPrimary">#FFB3B6</item>
 		<item name="colorPrimaryContainer">#7D2933</item>
 		<item name="colorOnPrimary">#5F121E</item>
@@ -149,7 +149,7 @@
 		<item name="colorOutlineVariant">#524343</item>
 	</style>
 
-	<style name="Theme.Kotatsu.Sakura">
+	<style name="ThemeOverlay.Kotatsu.Sakura">
 		<item name="colorPrimary">#B2EBFF</item>
 		<item name="colorPrimaryContainer">#004E5E</item>
 		<item name="colorOnPrimary">#001F27</item>
@@ -186,7 +186,7 @@
 		<item name="colorOutlineVariant">#40484B</item>
 	</style>
 
-	<style name="Theme.Kotatsu.Mamimi">
+	<style name="ThemeOverlay.Kotatsu.Mamimi">
 		<item name="colorPrimary">#FFB2B7</item>
 		<item name="colorPrimaryContainer">#7D2935</item>
 		<item name="colorOnPrimary">#5F1220</item>

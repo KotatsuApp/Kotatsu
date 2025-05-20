@@ -4,7 +4,13 @@ import android.graphics.Bitmap
 import android.webkit.WebView
 import android.webkit.WebViewClient
 
-open class BrowserClient(private val callback: BrowserCallback) : WebViewClient() {
+open class BrowserClient(
+	private val callback: BrowserCallback
+) : WebViewClient() {
+
+	/**
+	 * https://stackoverflow.com/questions/57414530/illegalstateexception-reasonphrase-cant-be-empty-with-android-webview
+	 */
 
 	override fun onPageFinished(webView: WebView, url: String) {
 		super.onPageFinished(webView, url)
@@ -16,7 +22,7 @@ open class BrowserClient(private val callback: BrowserCallback) : WebViewClient(
 		callback.onLoadingStateChanged(isLoading = true)
 	}
 
-	override fun onPageCommitVisible(view: WebView, url: String?) {
+	override fun onPageCommitVisible(view: WebView, url: String) {
 		super.onPageCommitVisible(view, url)
 		callback.onTitleChanged(view.title.orEmpty(), url)
 	}

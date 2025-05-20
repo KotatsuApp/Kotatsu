@@ -1,33 +1,30 @@
 package org.koitharu.kotatsu.favourites.ui.categories.edit
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Filter
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getSerializableCompat
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityCategoryEditBinding
 import org.koitharu.kotatsu.list.domain.ListSortOrder
-import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class FavouritesCategoryEditActivity :
@@ -43,10 +40,7 @@ class FavouritesCategoryEditActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityCategoryEditBinding.inflate(layoutInflater))
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
-		}
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
 		initSortSpinner()
 		viewBinding.buttonDone.setOnClickListener(this)
 		viewBinding.editName.addTextChangedListener(this)
@@ -61,6 +55,20 @@ class FavouritesCategoryEditActivity :
 		}
 	}
 
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		viewBinding.root.setPadding(
+			barsInsets.left,
+			barsInsets.top,
+			barsInsets.right,
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
+	}
+
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
 		outState.putSerializable(KEY_SORT_ORDER, selectedSortOrder)
@@ -68,8 +76,8 @@ class FavouritesCategoryEditActivity :
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		savedInstanceState.getSerializableCompat<ListSortOrder>(KEY_SORT_ORDER)?.let { 
-		    selectedSortOrder = it
+		savedInstanceState.getSerializableCompat<ListSortOrder>(KEY_SORT_ORDER)?.let {
+			selectedSortOrder = it
 		}
 	}
 
@@ -85,20 +93,7 @@ class FavouritesCategoryEditActivity :
 	}
 
 	override fun afterTextChanged(s: Editable?) {
-		viewBinding.buttonDone.isEnabled = !s.isNullOrBlank()
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.scrollView.updatePadding(
-			bottom = insets.bottom,
-		)
-		viewBinding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = insets.top
-		}
+		viewBinding.buttonDone.isEnabled = !s.isNullOrBlank() && !viewModel.isLoading.value
 	}
 
 	override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -114,8 +109,8 @@ class FavouritesCategoryEditActivity :
 		selectedSortOrder = category?.order
 		val sortText = getString((category?.order ?: ListSortOrder.NEWEST).titleResId)
 		viewBinding.editSort.setText(sortText, false)
-		viewBinding.switchTracker.setChecked(category?.isTrackingEnabled ?: true, false)
-		viewBinding.switchShelf.setChecked(category?.isVisibleInLibrary ?: true, false)
+		viewBinding.switchTracker.setChecked(category?.isTrackingEnabled != false, false)
+		viewBinding.switchShelf.setChecked(category?.isVisibleInLibrary != false, false)
 	}
 
 	private fun onError(e: Throwable) {
@@ -124,6 +119,7 @@ class FavouritesCategoryEditActivity :
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
+		viewBinding.buttonDone.isEnabled = !isLoading && !viewBinding.editName.text.isNullOrBlank()
 		viewBinding.editSort.isEnabled = !isLoading
 		viewBinding.editName.isEnabled = !isLoading
 		viewBinding.switchTracker.isEnabled = !isLoading
@@ -162,13 +158,7 @@ class FavouritesCategoryEditActivity :
 
 	companion object {
 
-		const val EXTRA_ID = "id"
 		const val NO_ID = -1L
 		private const val KEY_SORT_ORDER = "sort"
-
-		fun newIntent(context: Context, id: Long = NO_ID): Intent {
-			return Intent(context, FavouritesCategoryEditActivity::class.java)
-				.putExtra(EXTRA_ID, id)
-		}
 	}
 }

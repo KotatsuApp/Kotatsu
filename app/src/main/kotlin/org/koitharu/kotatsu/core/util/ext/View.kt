@@ -11,6 +11,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -32,6 +34,9 @@ fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
 	getGlobalVisibleRect(rect)
 	return rect.contains(x, y)
 }
+
+val ViewGroup.hasVisibleChildren: Boolean
+	get() = children.any { it.isVisible }
 
 fun View.measureHeight(): Int {
 	val vh = height
@@ -66,6 +71,11 @@ val ViewPager2.recyclerView: RecyclerView?
 
 fun ViewPager2.findCurrentViewHolder(): ViewHolder? {
 	return recyclerView?.findViewHolderForAdapterPosition(currentItem)
+}
+
+fun FragmentManager.findCurrentPagerFragment(pager: ViewPager2): Fragment? {
+	val currentId = pager.adapter?.getItemId(pager.currentItem) ?: pager.currentItem
+	return findFragmentByTag("f$currentId")
 }
 
 fun View.resetTransformations() {
@@ -148,9 +158,9 @@ fun TabLayout.setTabsEnabled(enabled: Boolean) {
 
 fun BaseProgressIndicator<*>.showOrHide(value: Boolean) {
 	if (value) {
-		if (!isVisible) show()
+		show()
 	} else {
-		if (isVisible) hide()
+		hide()
 	}
 }
 

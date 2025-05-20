@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -17,14 +18,13 @@ import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
-import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 
 abstract class MangaListViewModel(
 	private val settings: AppSettings,
-	private val downloadScheduler: DownloadWorker.Scheduler,
+	private val mangaDataRepository: MangaDataRepository,
 ) : BaseViewModel() {
 
 	abstract val content: StateFlow<List<ListModel>>
@@ -62,12 +62,14 @@ abstract class MangaListViewModel(
 
 	protected fun observeListModeWithTriggers(): Flow<ListMode> = combine(
 		listMode,
+		mangaDataRepository.observeOverridesTrigger(emitInitialState = true),
 		settings.observe().filter { key ->
 			key == AppSettings.KEY_PROGRESS_INDICATORS
 				|| key == AppSettings.KEY_TRACKER_ENABLED
 				|| key == AppSettings.KEY_QUICK_FILTER
+				|| key == AppSettings.KEY_MANGA_LIST_BADGES
 		}.onStart { emit("") },
-	) { mode, _ ->
+	) { mode, _, _ ->
 		mode
 	}
 }

@@ -1,14 +1,17 @@
 package org.koitharu.kotatsu.core.model
 
+import android.content.res.Resources
 import android.net.Uri
 import android.text.SpannableStringBuilder
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.collection.MutableObjectIntMap
+import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.strikeThrough
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.ui.model.MangaOverride
 import org.koitharu.kotatsu.core.util.ext.iterator
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.parsers.model.ContentRating
@@ -18,6 +21,7 @@ import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.util.findById
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import com.google.android.material.R as materialR
 
@@ -124,7 +128,8 @@ val Manga.isBroken: Boolean
 	get() = source == UnknownMangaSource
 
 val Manga.appUrl: Uri
-	get() = Uri.parse("https://kotatsu.app/manga").buildUpon()
+	get() = "https://kotatsu.app/manga".toUri()
+		.buildUpon()
 		.appendQueryParameter("source", source.name)
 		.appendQueryParameter("name", title)
 		.appendQueryParameter("url", url)
@@ -145,6 +150,8 @@ fun Manga.chaptersCount(): Int {
 	}
 	return max
 }
+
+fun Manga.isNsfw(): Boolean = contentRating == ContentRating.ADULT || source.isNsfw()
 
 fun MangaListFilter.getSummary() = buildSpannedString {
 	if (!query.isNullOrEmpty()) {
@@ -167,4 +174,36 @@ private fun SpannableStringBuilder.appendTagsSummary(filter: MangaListFilter) {
 			filter.tagsExclude.joinTo(this) { it.title }
 		}
 	}
+}
+
+fun MangaChapter.getLocalizedTitle(resources: Resources, index: Int = -1): String {
+	title?.let {
+		if (it.isNotBlank()) {
+			return it
+		}
+	}
+	val num = numberString()
+	val vol = volumeString()
+	return when {
+		num != null && vol != null -> resources.getString(R.string.chapter_volume_number, vol, num)
+		num != null -> resources.getString(R.string.chapter_number, num)
+		index > 0 -> resources.getString(
+			R.string.chapters_time_pattern,
+			resources.getString(R.string.unnamed_chapter),
+			index.toString(),
+		)
+
+		else -> resources.getString(R.string.unnamed_chapter)
+	}
+}
+
+fun Manga.withOverride(override: MangaOverride?) = if (override != null) {
+	copy(
+		title = override.title.ifNullOrEmpty { title },
+		coverUrl = override.coverUrl.ifNullOrEmpty { coverUrl },
+		largeCoverUrl = override.coverUrl.ifNullOrEmpty { largeCoverUrl },
+		contentRating = override.contentRating ?: contentRating,
+	)
+} else {
+	this
 }

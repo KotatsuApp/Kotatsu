@@ -8,7 +8,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.measureHeight
@@ -16,7 +16,7 @@ import org.koitharu.kotatsu.core.util.ext.measureHeight
 class HideBottomNavigationOnScrollBehavior @JvmOverloads constructor(
 	context: Context? = null,
 	attrs: AttributeSet? = null,
-) : CoordinatorLayout.Behavior<BottomNavigationView>(context, attrs) {
+) : CoordinatorLayout.Behavior<NavigationBarView>(context, attrs) {
 
 	@ViewCompat.NestedScrollType
 	private var lastStartedType: Int = 0
@@ -34,13 +34,13 @@ class HideBottomNavigationOnScrollBehavior @JvmOverloads constructor(
 			}
 		}
 
-	override fun layoutDependsOn(parent: CoordinatorLayout, child: BottomNavigationView, dependency: View): Boolean {
+	override fun layoutDependsOn(parent: CoordinatorLayout, child: NavigationBarView, dependency: View): Boolean {
 		return dependency is AppBarLayout
 	}
 
 	override fun onDependentViewChanged(
 		parent: CoordinatorLayout,
-		child: BottomNavigationView,
+		child: NavigationBarView,
 		dependency: View,
 	): Boolean {
 		val appBarSize = dependency.measureHeight()
@@ -54,7 +54,7 @@ class HideBottomNavigationOnScrollBehavior @JvmOverloads constructor(
 
 	override fun onStartNestedScroll(
 		coordinatorLayout: CoordinatorLayout,
-		child: BottomNavigationView,
+		child: NavigationBarView,
 		directTargetChild: View,
 		target: View,
 		axes: Int,
@@ -70,7 +70,7 @@ class HideBottomNavigationOnScrollBehavior @JvmOverloads constructor(
 
 	override fun onNestedPreScroll(
 		coordinatorLayout: CoordinatorLayout,
-		child: BottomNavigationView,
+		child: NavigationBarView,
 		target: View,
 		dx: Int,
 		dy: Int,
@@ -85,7 +85,7 @@ class HideBottomNavigationOnScrollBehavior @JvmOverloads constructor(
 
 	override fun onStopNestedScroll(
 		coordinatorLayout: CoordinatorLayout,
-		child: BottomNavigationView,
+		child: NavigationBarView,
 		target: View,
 		type: Int,
 	) {
@@ -94,7 +94,7 @@ class HideBottomNavigationOnScrollBehavior @JvmOverloads constructor(
 		}
 	}
 
-	private fun animateBottomNavigationVisibility(child: BottomNavigationView, isVisible: Boolean) {
+	private fun animateBottomNavigationVisibility(child: NavigationBarView, isVisible: Boolean) {
 		offsetAnimator?.cancel()
 		offsetAnimator = ValueAnimator().apply {
 			interpolator = DecelerateInterpolator()

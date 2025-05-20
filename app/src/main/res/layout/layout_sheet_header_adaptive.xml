@@ -38,13 +38,14 @@
 			android:textAppearance="?textAppearanceBodyLarge"
 			tools:text="@string/filter" />
 
-		<ImageView
+		<ImageButton
 			android:id="@+id/sh_button_close"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="8dp"
 			android:background="?selectableItemBackgroundBorderless"
 			android:contentDescription="@string/close"
+			android:tooltipText="@string/close"
 			android:padding="16dp"
 			app:srcCompat="?actionModeCloseDrawable"
 			app:tint="?colorControlActivated" />

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/card_details"
+		style="?materialCardViewFilledStyle"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_marginHorizontal="@dimen/screen_padding"
+		android:layout_marginBottom="-12dp"
+		app:layout_constraintBottom_toBottomOf="@id/textView_progress_label"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/barrier_header" />
+
+	<TextView
+		android:id="@+id/textView_source_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="12dp"
+		android:singleLine="true"
+		android:text="@string/source"
+		android:textAppearance="?textAppearanceTitleSmall"
+		app:layout_constraintStart_toStartOf="@id/card_details"
+		app:layout_constraintTop_toBottomOf="@id/barrier_header" />
+
+	<TextView
+		android:id="@+id/textView_source"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginEnd="12dp"
+		android:background="@drawable/custom_selectable_item_background"
+		android:drawablePadding="4dp"
+		android:padding="4dp"
+		android:pointerIcon="hand"
+		android:singleLine="true"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_constrainedWidth="true"
+		app:layout_constraintBaseline_toBaselineOf="@id/textView_source_label"
+		app:layout_constraintEnd_toEndOf="@id/card_details"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintStart_toEndOf="@id/barrier_table"
+		tools:text="MangaSource" />
+
+	<TextView
+		android:id="@+id/textView_author_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="8dp"
+		android:singleLine="true"
+		android:text="@string/author"
+		android:textAppearance="?textAppearanceTitleSmall"
+		app:layout_constraintStart_toStartOf="@id/card_details"
+		app:layout_constraintTop_toBottomOf="@id/textView_source_label" />
+
+	<TextView
+		android:id="@+id/textView_author"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginEnd="16dp"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_constrainedWidth="true"
+		app:layout_constraintBaseline_toBaselineOf="@id/textView_author_label"
+		app:layout_constraintEnd_toEndOf="@id/card_details"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintStart_toEndOf="@id/barrier_table"
+		tools:text="Author name" />
+
+	<TextView
+		android:id="@+id/textView_translation_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="8dp"
+		android:singleLine="true"
+		android:text="@string/translation"
+		android:textAppearance="?textAppearanceTitleSmall"
+		app:layout_constraintStart_toStartOf="@id/card_details"
+		app:layout_constraintTop_toBottomOf="@id/textView_author" />
+
+	<TextView
+		android:id="@+id/textView_translation"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginEnd="@dimen/margin_normal"
+		android:drawablePadding="4dp"
+		android:singleLine="true"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_constrainedWidth="true"
+		app:layout_constraintBaseline_toBaselineOf="@id/textView_translation_label"
+		app:layout_constraintEnd_toEndOf="@id/card_details"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintStart_toEndOf="@id/barrier_table"
+		tools:text="English" />
+
+	<TextView
+		android:id="@+id/textView_rating_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="8dp"
+		android:singleLine="true"
+		android:text="@string/rating"
+		android:textAppearance="?textAppearanceTitleSmall"
+		app:layout_constraintStart_toStartOf="@id/card_details"
+		app:layout_constraintTop_toBottomOf="@id/textView_translation_label" />
+
+	<RatingBar
+		android:id="@+id/ratingBar_rating"
+		style="?ratingBarStyleSmall"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginEnd="@dimen/screen_padding"
+		android:isIndicator="true"
+		android:max="1"
+		android:numStars="5"
+		android:stepSize="0.5"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_constraintBottom_toBottomOf="@id/textView_rating_label"
+		app:layout_constraintEnd_toEndOf="@id/card_details"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintStart_toEndOf="@id/barrier_table"
+		app:layout_constraintTop_toTopOf="@id/textView_rating_label"
+		tools:text="Author name" />
+
+	<TextView
+		android:id="@+id/textView_state_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="8dp"
+		android:singleLine="true"
+		android:text="@string/state"
+		android:textAppearance="?textAppearanceTitleSmall"
+		app:layout_constraintStart_toStartOf="@id/card_details"
+		app:layout_constraintTop_toBottomOf="@id/textView_rating_label" />
+
+	<TextView
+		android:id="@+id/textView_state"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginEnd="@dimen/screen_padding"
+		android:singleLine="true"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_constrainedWidth="true"
+		app:layout_constraintBaseline_toBaselineOf="@id/textView_state_label"
+		app:layout_constraintEnd_toEndOf="@id/card_details"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintStart_toEndOf="@id/barrier_table"
+		tools:text="Ongoing" />
+
+	<TextView
+		android:id="@+id/textView_chapters_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="8dp"
+		android:singleLine="true"
+		android:text="@string/chapters"
+		android:textAppearance="?textAppearanceTitleSmall"
+		app:layout_constraintStart_toStartOf="@id/card_details"
+		app:layout_constraintTop_toBottomOf="@id/textView_state_label" />
+
+	<TextView
+		android:id="@+id/textView_chapters"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginEnd="@dimen/screen_padding"
+		android:singleLine="true"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_constrainedWidth="true"
+		app:layout_constraintBaseline_toBaselineOf="@id/textView_chapters_label"
+		app:layout_constraintEnd_toEndOf="@id/card_details"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintStart_toEndOf="@id/barrier_table"
+		tools:text="10 of 50" />
+
+	<TextView
+		android:id="@+id/textView_local_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="8dp"
+		android:singleLine="true"
+		android:text="@string/on_device"
+		android:textAppearance="?textAppearanceTitleSmall"
+		app:layout_constraintStart_toStartOf="@id/card_details"
+		app:layout_constraintTop_toBottomOf="@id/textView_chapters_label" />
+
+	<TextView
+		android:id="@+id/textView_local"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginEnd="12dp"
+		android:background="@drawable/custom_selectable_item_background"
+		android:padding="4dp"
+		android:singleLine="true"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_constrainedWidth="true"
+		app:layout_constraintBaseline_toBaselineOf="@id/textView_local_label"
+		app:layout_constraintEnd_toEndOf="@id/card_details"
+		app:layout_constraintHorizontal_bias="0"
+		app:layout_constraintStart_toEndOf="@id/barrier_table"
+		tools:text="25 Mb" />
+
+	<TextView
+		android:id="@+id/textView_progress_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="8dp"
+		android:singleLine="true"
+		android:text="@string/progress"
+		android:textAppearance="?textAppearanceTitleSmall"
+		app:layout_constraintStart_toStartOf="@id/card_details"
+		app:layout_constraintTop_toBottomOf="@id/textView_local_label" />
+
+	<com.google.android.material.progressindicator.LinearProgressIndicator
+		android:id="@+id/progress"
+		style="?linearProgressIndicatorStyle"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginEnd="12dp"
+		android:indeterminate="false"
+		android:max="100"
+		android:visibility="visible"
+		app:layout_constraintBottom_toBottomOf="@id/textView_progress_label"
+		app:layout_constraintEnd_toStartOf="@id/textView_progress"
+		app:layout_constraintStart_toEndOf="@id/barrier_table"
+		app:layout_constraintTop_toTopOf="@id/textView_progress_label"
+		app:trackColor="?android:colorBackground"
+		tools:progress="12" />
+
+	<TextView
+		android:id="@+id/textView_progress"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="@dimen/screen_padding"
+		android:singleLine="true"
+		android:textAppearance="?textAppearanceBodyMedium"
+		app:layout_constraintBaseline_toBaselineOf="@id/textView_progress_label"
+		app:layout_constraintEnd_toEndOf="@id/card_details"
+		tools:text="40%" />
+
+	<androidx.constraintlayout.widget.Barrier
+		android:id="@+id/barrier_table"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		app:barrierDirection="end"
+		app:constraint_referenced_ids="textView_source_label,textView_author_label,textView_rating_label,textView_state_label,textView_progress_label,textView_chapters_label,textView_local_label,textView_translation_label" />
+
+</merge>

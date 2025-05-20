@@ -15,6 +15,7 @@ import kotlin.math.roundToInt
 
 class DynamicItemSizeResolver(
 	resources: Resources,
+	private val lifecycleOwner: LifecycleOwner,
 	private val settings: AppSettings,
 	private val adjustWidth: Boolean,
 ) : ItemSizeResolver {
@@ -27,7 +28,6 @@ class DynamicItemSizeResolver(
 		get() = (gridWidth * scaleFactor).roundToInt()
 
 	override fun attachToView(
-		lifecycleOwner: LifecycleOwner,
 		view: View,
 		textView: TextView?,
 		progressView: ReadingProgressView?

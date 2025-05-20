@@ -5,25 +5,50 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:parentTag="android.widget.FrameLayout">
 
-	<com.google.android.material.progressindicator.CircularProgressIndicator
-		android:id="@+id/progressBar"
+	<LinearLayout
+		android:id="@+id/layout_progress"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
-		android:indeterminate="true"
-		android:max="100" />
+		android:gravity="center_horizontal"
+		android:orientation="vertical"
+		android:visibility="gone"
+		tools:visibility="visible">
+
+		<com.google.android.material.progressindicator.CircularProgressIndicator
+			android:id="@+id/progressBar"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="8dp"
+			android:indeterminate="true"
+			android:visibility="gone"
+			tools:visibility="visible" />
+
+		<TextView
+			android:id="@+id/textView_status"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:background="@drawable/bg_rounded_transparency"
+			android:gravity="center"
+			android:padding="4dp"
+			android:textAppearance="?textAppearanceBodyLarge"
+			tools:text="72%" />
+	</LinearLayout>
 
 	<LinearLayout
 		android:id="@+id/layout_error"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
-		android:layout_marginStart="60dp"
-		android:layout_marginEnd="60dp"
+		android:layout_marginStart="56dp"
+		android:layout_marginEnd="56dp"
+		android:background="@drawable/bg_card"
 		android:gravity="center_horizontal"
 		android:orientation="vertical"
+		android:padding="@dimen/screen_padding"
 		android:visibility="gone"
-		tools:visibility="visible">
+		tools:visibility="gone">
 
 		<TextView
 			android:id="@+id/textView_error"
@@ -32,13 +57,13 @@
 			android:drawablePadding="12dp"
 			android:gravity="center_horizontal"
 			android:textAlignment="center"
-			android:textAppearance="@style/TextAppearance.AppCompat.Small"
+			android:textAppearance="?textAppearanceBodyMedium"
 			app:drawableTopCompat="@drawable/ic_error_large"
 			tools:text="@tools:sample/lorem[6]" />
 
 		<Button
 			android:id="@+id/button_retry"
-			style="@style/Widget.Material3.Button.TonalButton"
+			style="?materialButtonTonalStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"
@@ -46,7 +71,7 @@
 
 		<Button
 			android:id="@+id/button_error_details"
-			style="@style/Widget.Material3.Button.TextButton"
+			style="?borderlessButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/details" />

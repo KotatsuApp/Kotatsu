@@ -8,49 +8,60 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
-import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import coil3.ImageLoader
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.ui.BookmarksSelectionDecoration
 import org.koitharu.kotatsu.bookmarks.ui.adapter.BookmarksAdapter
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.ReaderIntent
+import org.koitharu.kotatsu.core.nav.dismissParentDialog
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
-import org.koitharu.kotatsu.core.util.ext.dismissParentDialog
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.FragmentMangaBookmarksBinding
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
-import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
+import org.koitharu.kotatsu.reader.ui.PageSaveHelper
 import org.koitharu.kotatsu.reader.ui.ReaderNavigationCallback
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
-	OnListItemClickListener<Bookmark>, ListSelectionController.Callback {
+	OnListItemClickListener<Bookmark>,
+	RecyclerViewOwner,
+	ListSelectionController.Callback {
 
 	private val activityViewModel by ChaptersPagesViewModel.ActivityVMLazy(this)
 	private val viewModel by viewModels<BookmarksViewModel>()
 
 	@Inject
-	lateinit var coil: ImageLoader
-
-	@Inject
 	lateinit var settings: AppSettings
 
+	@Inject
+	lateinit var pageSaveHelperFactory: PageSaveHelper.Factory
+
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
+
+	private lateinit var pageSaveHelper: PageSaveHelper
 	private var bookmarksAdapter: BookmarksAdapter? = null
 	private var spanResolver: GridSpanResolver? = null
 	private var selectionController: ListSelectionController? = null
@@ -62,6 +73,7 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		pageSaveHelper = pageSaveHelperFactory.create(this)
 		activityViewModel.mangaDetails.observe(this, viewModel)
 	}
 
@@ -79,8 +91,6 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 			callback = this,
 		)
 		bookmarksAdapter = BookmarksAdapter(
-			coil = coil,
-			lifecycleOwner = viewLifecycleOwner,
 			clickListener = this@BookmarksFragment,
 			headerClickListener = null,
 		)
@@ -106,6 +116,17 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		viewBinding?.recyclerView?.setPadding(
+			barsInsets.left,
+			barsInsets.top,
+			barsInsets.right,
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
+	}
+
 	override fun onDestroyView() {
 		spanResolver = null
 		bookmarksAdapter = null
@@ -113,8 +134,6 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
 	}
-
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun onItemClick(item: Bookmark, view: View) {
 		if (selectionController?.onItemClick(item.pageId) == true) {
@@ -124,21 +143,21 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 		if (listener != null && listener.onBookmarkSelected(item)) {
 			dismissParentDialog()
 		} else {
-			val intent = IntentBuilder(view.context)
+			val intent = ReaderIntent.Builder(view.context)
 				.manga(activityViewModel.getMangaOrNull() ?: return)
 				.bookmark(item)
-				.incognito(true)
+				.incognito()
 				.build()
-			startActivity(intent)
+			router.openReader(intent)
 		}
 	}
 
 	override fun onItemLongClick(item: Bookmark, view: View): Boolean {
-		return selectionController?.onItemLongClick(view, item.pageId) ?: false
+		return selectionController?.onItemLongClick(view, item.pageId) == true
 	}
 
 	override fun onItemContextClick(item: Bookmark, view: View): Boolean {
-		return selectionController?.onItemContextClick(view, item.pageId) ?: false
+		return selectionController?.onItemContextClick(view, item.pageId) == true
 	}
 
 	override fun onSelectionChanged(controller: ListSelectionController, count: Int) {
@@ -163,6 +182,12 @@ class BookmarksFragment : BaseFragment<FragmentMangaBookmarksBinding>(),
 			R.id.action_remove -> {
 				val ids = selectionController?.snapshot() ?: return false
 				viewModel.removeBookmarks(ids)
+				mode?.finish()
+				true
+			}
+
+			R.id.action_save -> {
+				viewModel.savePages(pageSaveHelper, selectionController?.snapshot() ?: return false)
 				mode?.finish()
 				true
 			}

@@ -4,9 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import org.koitharu.kotatsu.core.db.TABLE_PREFERENCES
 
 @Entity(
-	tableName = "preferences",
+	tableName = TABLE_PREFERENCES,
 	foreignKeys = [
 		ForeignKey(
 			entity = MangaEntity::class,
@@ -25,4 +26,7 @@ data class MangaPrefsEntity(
 	@ColumnInfo(name = "cf_contrast") val cfContrast: Float,
 	@ColumnInfo(name = "cf_invert") val cfInvert: Boolean,
 	@ColumnInfo(name = "cf_grayscale") val cfGrayscale: Boolean,
+	@ColumnInfo(name = "title_override") val titleOverride: String?,
+	@ColumnInfo(name = "cover_override") val coverUrlOverride: String?,
+	@ColumnInfo(name = "content_rating_override") val contentRatingOverride: String?,
 )

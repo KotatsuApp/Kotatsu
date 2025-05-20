@@ -1,18 +1,17 @@
 package org.koitharu.kotatsu.widget.recent
 
-import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.core.graphics.Insets
-import androidx.core.view.updatePadding
+import androidx.core.view.WindowInsetsCompat
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppWidgetConfig
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityAppwidgetRecentBinding
-import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class RecentWidgetConfigActivity :
@@ -24,10 +23,7 @@ class RecentWidgetConfigActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityAppwidgetRecentBinding.inflate(layoutInflater))
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
-		}
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
 		viewBinding.buttonDone.setOnClickListener(this)
 		val appWidgetId = intent?.getIntExtra(
 			AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -41,27 +37,29 @@ class RecentWidgetConfigActivity :
 		viewBinding.switchBackground.isChecked = config.hasBackground
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		viewBinding.root.setPadding(
+			barsInsets.left,
+			barsInsets.top,
+			barsInsets.right,
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
+	}
+
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_done -> {
 				config.hasBackground = viewBinding.switchBackground.isChecked
 				updateWidget()
 				setResult(
-					Activity.RESULT_OK,
+					RESULT_OK,
 					Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, config.widgetId),
 				)
 				finish()
 			}
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-			bottom = insets.bottom,
-			top = insets.top,
-		)
 	}
 
 	private fun updateWidget() {

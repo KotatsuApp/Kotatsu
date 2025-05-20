@@ -4,13 +4,20 @@ import android.content.Context
 import android.graphics.Rect
 import android.net.Uri
 import androidx.annotation.AnyThread
+import androidx.annotation.CheckResult
 import androidx.collection.LongSparseArray
 import androidx.collection.set
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import coil3.BitmapImage
+import coil3.Image
+import coil3.ImageLoader
+import coil3.memory.MemoryCache
+import coil3.request.ImageRequest
+import coil3.request.transformations
+import coil3.toBitmap
 import com.davemorrissey.labs.subscaleview.ImageSource
 import dagger.hilt.android.ActivityRetainedLifecycle
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Deferred
@@ -28,6 +35,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.use
 import org.jetbrains.annotations.Blocking
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.MangaHttpClient
@@ -35,8 +43,9 @@ import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.util.FileSize
-import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
+import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.URI_SCHEME_ZIP
 import org.koitharu.kotatsu.core.util.ext.cancelChildrenAndJoin
 import org.koitharu.kotatsu.core.util.ext.compressToPNG
@@ -47,9 +56,11 @@ import org.koitharu.kotatsu.core.util.ext.isFileUri
 import org.koitharu.kotatsu.core.util.ext.isNotEmpty
 import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
 import org.koitharu.kotatsu.core.util.ext.isZipUri
-import org.koitharu.kotatsu.core.util.ext.mimeType
+import org.koitharu.kotatsu.core.util.ext.lifecycleScope
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
+import org.koitharu.kotatsu.core.util.ext.toMimeType
 import org.koitharu.kotatsu.core.util.ext.use
 import org.koitharu.kotatsu.core.util.ext.withProgress
 import org.koitharu.kotatsu.core.util.progress.ProgressDeferred
@@ -57,7 +68,6 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadSlowdownDispatcher
 import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.mimeType
 import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
@@ -66,23 +76,23 @@ import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipFile
 import javax.inject.Inject
-import kotlin.concurrent.Volatile
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
 @ActivityRetainedScoped
 class PageLoader @Inject constructor(
-	@ApplicationContext private val context: Context,
+	@LocalizedAppContext private val context: Context,
 	lifecycle: ActivityRetainedLifecycle,
 	@MangaHttpClient private val okHttp: OkHttpClient,
 	private val cache: PagesCache,
+	private val coil: ImageLoader,
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val imageProxyInterceptor: ImageProxyInterceptor,
 	private val downloadSlowdownDispatcher: DownloadSlowdownDispatcher,
 ) {
 
-	val loaderScope = RetainedLifecycleCoroutineScope(lifecycle) + InternalErrorHandler() + Dispatchers.Default
+	val loaderScope = lifecycle.lifecycleScope + InternalErrorHandler() + Dispatchers.Default
 
 	private val tasks = LongSparseArray<ProgressDeferred<Uri, Float>>()
 	private val semaphore = Semaphore(3)
@@ -121,6 +131,41 @@ class PageLoader @Inject constructor(
 		}
 	}
 
+	suspend fun loadPreview(page: MangaPage): ImageSource? {
+		val preview = page.preview
+		if (preview.isNullOrEmpty()) {
+			return null
+		}
+		val request = ImageRequest.Builder(context)
+			.data(preview)
+			.mangaSourceExtra(page.source)
+			.transformations(TrimTransformation())
+			.build()
+		return coil.execute(request).image?.toImageSource()
+	}
+
+	fun peekPreviewSource(preview: String?): ImageSource? {
+		if (preview.isNullOrEmpty()) {
+			return null
+		}
+		coil.memoryCache?.let { cache ->
+			val key = MemoryCache.Key(preview)
+			cache[key]?.image?.let {
+				return if (it is BitmapImage) {
+					ImageSource.cachedBitmap(it.toBitmap())
+				} else {
+					ImageSource.bitmap(it.toBitmap())
+				}
+			}
+		}
+		coil.diskCache?.let { cache ->
+			cache.openSnapshot(preview)?.use { snapshot ->
+				return ImageSource.file(snapshot.data.toFile())
+			}
+		}
+		return null
+	}
+
 	fun loadPageAsync(page: MangaPage, force: Boolean): ProgressDeferred<Uri, Float> {
 		var task = tasks[page.id]?.takeIf { it.isValid() }
 		if (force) {
@@ -139,18 +184,20 @@ class PageLoader @Inject constructor(
 		return loadPageAsync(page, force).await()
 	}
 
+	@CheckResult
 	suspend fun convertBimap(uri: Uri): Uri = convertLock.withLock {
 		if (uri.isZipUri()) {
-			val bitmap = runInterruptible(Dispatchers.IO) {
+			runInterruptible(Dispatchers.IO) {
 				ZipFile(uri.schemeSpecificPart).use { zip ->
 					val entry = zip.getEntry(uri.fragment)
 					context.ensureRamAtLeast(entry.size * 2)
 					zip.getInputStream(entry).use {
-						BitmapDecoderCompat.decode(it, entry.mimeType)
+						BitmapDecoderCompat.decode(it, MimeTypes.getMimeTypeFromExtension(entry.name))
 					}
 				}
+			}.use { image ->
+				cache.put(uri.toString(), image).toUri()
 			}
-			cache.put(uri.toString(), bitmap).toUri()
 		} else {
 			val file = uri.toFile()
 			runInterruptible(Dispatchers.IO) {
@@ -185,11 +232,8 @@ class PageLoader @Inject constructor(
 		prefetchLock.withLock {
 			while (prefetchQueue.isNotEmpty()) {
 				val page = prefetchQueue.pollFirst() ?: return@launch
-				if (cache.get(page.url) == null) {
-					synchronized(tasks) {
-						tasks[page.id] = loadPageAsyncImpl(page, skipCache = false, isPrefetch = true)
-					}
-					return@launch
+				synchronized(tasks) {
+					tasks[page.id] = loadPageAsyncImpl(page, skipCache = false, isPrefetch = true)
 				}
 			}
 		}
@@ -202,12 +246,14 @@ class PageLoader @Inject constructor(
 	): ProgressDeferred<Uri, Float> {
 		val progress = MutableStateFlow(PROGRESS_UNDEFINED)
 		val deferred = loaderScope.async {
-			if (!skipCache) {
-				cache.get(page.url)?.let { return@async it.toUri() }
-			}
 			counter.incrementAndGet()
 			try {
-				loadPageImpl(page, progress, isPrefetch)
+				loadPageImpl(
+					page = page,
+					progress = progress,
+					isPrefetch = isPrefetch,
+					skipCache = skipCache,
+				)
 			} finally {
 				if (counter.decrementAndGet() == 0) {
 					onIdle()
@@ -231,10 +277,14 @@ class PageLoader @Inject constructor(
 		page: MangaPage,
 		progress: MutableStateFlow<Float>,
 		isPrefetch: Boolean,
+		skipCache: Boolean,
 	): Uri = semaphore.withPermit {
 		val pageUrl = getPageUrl(page)
 		check(pageUrl.isNotBlank()) { "Cannot obtain full image url for $page" }
-		val uri = Uri.parse(pageUrl)
+		if (!skipCache) {
+			cache.get(pageUrl)?.let { return it.toUri() }
+		}
+		val uri = pageUrl.toUri()
 		return when {
 			uri.isZipUri() -> if (uri.scheme == URI_SCHEME_ZIP) {
 				uri
@@ -250,7 +300,7 @@ class PageLoader @Inject constructor(
 				val request = createPageRequest(pageUrl, page.source)
 				imageProxyInterceptor.interceptPageRequest(request, okHttp).ensureSuccess().use { response ->
 					response.requireBody().withProgress(progress).use {
-						cache.put(pageUrl, it.source(), response.mimeType)
+						cache.put(pageUrl, it.source(), it.contentType()?.toMimeType())
 					}
 				}.toUri()
 			}
@@ -261,10 +311,16 @@ class PageLoader @Inject constructor(
 		return context.ramAvailable <= FileSize.MEGABYTES.convert(PREFETCH_MIN_RAM_MB, FileSize.BYTES)
 	}
 
+	private fun Image.toImageSource(): ImageSource = if (this is BitmapImage) {
+		ImageSource.cachedBitmap(toBitmap())
+	} else {
+		ImageSource.bitmap(toBitmap())
+	}
+
 	private fun Deferred<Uri>.isValid(): Boolean {
 		return getCompletionResultOrNull()?.map { uri ->
 			uri.exists() && uri.isTargetNotEmpty()
-		}?.getOrDefault(false) ?: true
+		}?.getOrDefault(false) != false
 	}
 
 	private class InternalErrorHandler : AbstractCoroutineContextElement(CoroutineExceptionHandler),

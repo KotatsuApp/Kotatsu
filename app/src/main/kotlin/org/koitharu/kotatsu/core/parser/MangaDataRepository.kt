@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.core.parser
 
+import androidx.collection.LongObjectMap
+import androidx.collection.MutableLongObjectMap
 import androidx.core.net.toUri
 import androidx.room.withTransaction
 import dagger.Reusable
@@ -7,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.db.TABLE_PREFERENCES
+import org.koitharu.kotatsu.core.db.entity.ContentRating
 import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
 import org.koitharu.kotatsu.core.db.entity.toEntities
 import org.koitharu.kotatsu.core.db.entity.toEntity
@@ -14,11 +18,15 @@ import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.nav.MangaIntent
+import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.ReaderMode
+import org.koitharu.kotatsu.core.ui.model.MangaOverride
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import javax.inject.Inject
 import javax.inject.Provider
@@ -27,6 +35,7 @@ import javax.inject.Provider
 class MangaDataRepository @Inject constructor(
 	private val db: MangaDatabase,
 	private val resolverProvider: Provider<MangaLinkResolver>,
+	private val appShortcutManagerProvider: Provider<AppShortcutManager>,
 ) {
 
 	suspend fun saveReaderMode(manga: Manga, mode: ReaderMode) {
@@ -45,8 +54,8 @@ class MangaDataRepository @Inject constructor(
 				entity.copy(
 					cfBrightness = colorFilter?.brightness ?: 0f,
 					cfContrast = colorFilter?.contrast ?: 0f,
-					cfInvert = colorFilter?.isInverted ?: false,
-					cfGrayscale = colorFilter?.isGrayscale ?: false,
+					cfInvert = colorFilter?.isInverted == true,
+					cfGrayscale = colorFilter?.isGrayscale == true,
 				),
 			)
 		}
@@ -64,14 +73,46 @@ class MangaDataRepository @Inject constructor(
 		return db.getPreferencesDao().find(mangaId)?.getColorFilterOrNull()
 	}
 
+	suspend fun getOverride(mangaId: Long): MangaOverride? {
+		return db.getPreferencesDao().find(mangaId)?.getOverrideOrNull()
+	}
+
+	suspend fun getOverrides(): LongObjectMap<MangaOverride> {
+		val entities = db.getPreferencesDao().getOverrides()
+		val map = MutableLongObjectMap<MangaOverride>(entities.size)
+		for (entity in entities) {
+			map[entity.mangaId] = entity.getOverrideOrNull() ?: continue
+		}
+		return map
+	}
+
+	suspend fun setOverride(mangaId: Long, override: MangaOverride?) {
+		db.withTransaction {
+			val dao = db.getPreferencesDao()
+			val entity = dao.find(mangaId) ?: newEntity(mangaId)
+			dao.upsert(
+				entity.copy(
+					titleOverride = override?.title?.nullIfEmpty(),
+					coverUrlOverride = override?.coverUrl?.nullIfEmpty(),
+					contentRatingOverride = override?.contentRating?.name,
+				),
+			)
+		}
+	}
+
 	fun observeColorFilter(mangaId: Long): Flow<ReaderColorFilter?> {
 		return db.getPreferencesDao().observe(mangaId)
 			.map { it?.getColorFilterOrNull() }
 			.distinctUntilChanged()
 	}
 
-	suspend fun findMangaById(mangaId: Long): Manga? {
-		return db.getMangaDao().find(mangaId)?.toManga()
+	suspend fun findMangaById(mangaId: Long, withChapters: Boolean): Manga? {
+		val chapters = if (withChapters) {
+			db.getChaptersDao().findAll(mangaId).takeUnless { it.isEmpty() }
+		} else {
+			null
+		}
+		return db.getMangaDao().find(mangaId)?.toManga(chapters)
 	}
 
 	suspend fun findMangaByPublicUrl(publicUrl: String): Manga? {
@@ -80,7 +121,7 @@ class MangaDataRepository @Inject constructor(
 
 	suspend fun resolveIntent(intent: MangaIntent): Manga? = when {
 		intent.manga != null -> intent.manga
-		intent.mangaId != 0L -> findMangaById(intent.mangaId)
+		intent.mangaId != 0L -> findMangaById(intent.mangaId, true)
 		intent.uri != null -> resolverProvider.get().resolve(intent.uri)
 		else -> null
 	}
@@ -97,8 +138,24 @@ class MangaDataRepository @Inject constructor(
 				val tags = manga.tags.toEntities()
 				db.getTagsDao().upsert(tags)
 				db.getMangaDao().upsert(manga.toEntity(), tags)
+				if (!manga.isLocal) {
+					manga.chapters?.let { chapters ->
+						db.getChaptersDao().replaceAll(manga.id, chapters.withIndex().toEntities(manga.id))
+					}
+				}
 			}
 		}
+	}
+
+	suspend fun updateChapters(manga: Manga) {
+		val chapters = manga.chapters
+		if (!chapters.isNullOrEmpty() && manga.id in db.getMangaDao()) {
+			db.getChaptersDao().replaceAll(manga.id, chapters.withIndex().toEntities(manga.id))
+		}
+	}
+
+	suspend fun gcChaptersCache() {
+		db.getChaptersDao().gc()
 	}
 
 	suspend fun findTags(source: MangaSource): Set<MangaTag> {
@@ -114,11 +171,36 @@ class MangaDataRepository @Inject constructor(
 		}
 	}
 
+	suspend fun cleanupDatabase() {
+		db.withTransaction {
+			gcChaptersCache()
+			val idsFromShortcuts = appShortcutManagerProvider.get().getMangaShortcuts()
+			db.getMangaDao().cleanup(idsFromShortcuts)
+		}
+	}
+
+	fun observeOverridesTrigger(emitInitialState: Boolean) = db.invalidationTracker.createFlow(
+		tables = arrayOf(TABLE_PREFERENCES),
+		emitInitialState = emitInitialState,
+	)
+
 	private fun MangaPrefsEntity.getColorFilterOrNull(): ReaderColorFilter? {
 		return if (cfBrightness != 0f || cfContrast != 0f || cfInvert || cfGrayscale) {
 			ReaderColorFilter(cfBrightness, cfContrast, cfInvert, cfGrayscale)
 		} else {
 			null
+		}
+	}
+
+	private fun MangaPrefsEntity.getOverrideOrNull(): MangaOverride? {
+		return if (titleOverride.isNullOrEmpty() && coverUrlOverride.isNullOrEmpty() && contentRatingOverride.isNullOrEmpty()) {
+			null
+		} else {
+			MangaOverride(
+				coverUrl = coverUrlOverride?.nullIfEmpty(),
+				title = titleOverride?.nullIfEmpty(),
+				contentRating = ContentRating(contentRatingOverride),
+			)
 		}
 	}
 
@@ -129,5 +211,8 @@ class MangaDataRepository @Inject constructor(
 		cfContrast = 0f,
 		cfInvert = false,
 		cfGrayscale = false,
+		titleOverride = null,
+		coverUrlOverride = null,
+		contentRatingOverride = null,
 	)
 }

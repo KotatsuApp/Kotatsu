@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+	<attr name="expandCollapseIndicator" format="reference" />
+
 	<attr name="sliderPreferenceStyle" />
 	<attr name="multiAutoCompleteTextViewPreferenceStyle" />
 	<attr name="autoCompleteTextViewPreferenceStyle" />
@@ -10,10 +12,32 @@
 	<attr name="tipViewStyle" />
 	<attr name="progressButtonStyle" />
 	<attr name="dotIndicatorStyle" />
+	<attr name="badgeViewStyle" />
+	<attr name="coverImageViewStyle" />
 
-	<!--CoverImageView attrs-->
+	<declare-styleable name="CoilImageView">
+		<attr name="allowRgb565" format="boolean" />
+		<attr name="useExistingDrawable" format="boolean" />
+		<attr name="decodeRegion" format="boolean" />
+		<attr name="placeholderDrawable" format="reference" />
+		<attr name="errorDrawable" format="reference" />
+		<attr name="fallbackDrawable" format="reference" />
+		<attr name="crossfadeEnabled" format="boolean" />
+	</declare-styleable>
+
 	<declare-styleable name="CoverImageView">
-		<attr name="android:orientation" />
+		<attr name="aspectRationHeight" format="integer" />
+		<attr name="aspectRationWidth" format="integer" />
+		<attr name="trimImage" format="boolean" />
+	</declare-styleable>
+
+	<declare-styleable name="CoverStackView">
+		<attr name="coverSize" format="dimension" />
+		<attr name="hideEmptyViews" format="boolean" />
+	</declare-styleable>
+
+	<declare-styleable name="FaviconView">
+		<attr name="iconStyle" format="reference" />
 	</declare-styleable>
 
 	<declare-styleable name="SliderPreference">
@@ -132,6 +156,7 @@
 		<attr name="strokeColor" />
 		<attr name="strokeWidth" />
 		<attr name="cornerSize" />
+		<attr name="drawableSize" />
 	</declare-styleable>
 
 	<declare-styleable name="NestedRecyclerView">
@@ -140,6 +165,7 @@
 
 	<declare-styleable name="ChipsView">
 		<attr name="chipStyle" />
+		<attr name="chipIconVisible" />
 	</declare-styleable>
 
 	<declare-styleable name="ReaderInfoBarView">
@@ -175,9 +201,21 @@
 		<attr name="android:progress" />
 	</declare-styleable>
 
+	<declare-styleable name="IconsView">
+		<attr name="iconSize" />
+		<attr name="iconSpacing" format="dimension" />
+	</declare-styleable>
+
 	<declare-styleable name="FilterFieldLayout">
 		<attr name="title" />
 		<attr name="showMoreButton" format="boolean" />
+	</declare-styleable>
+
+	<declare-styleable name="BadgeView">
+		<attr name="shapeAppearance" />
+		<attr name="backgroundColor" />
+		<attr name="maxCharacterCount" />
+		<attr name="number" />
 	</declare-styleable>
 
 </resources>

@@ -34,6 +34,12 @@
 		app:showAsAction="ifRoom|withText" />
 
 	<item
+		android:id="@+id/action_edit_override"
+		android:icon="@drawable/ic_edit"
+		android:title="@string/edit"
+		app:showAsAction="ifRoom|withText" />
+
+	<item
 		android:id="@+id/action_mark_current"
 		android:icon="@drawable/ic_eye_check"
 		android:title="@string/mark_as_completed"

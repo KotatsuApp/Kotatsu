@@ -13,22 +13,22 @@ import org.koitharu.kotatsu.reader.ui.pager.BaseReaderAdapter
 class DoublePagesAdapter(
 	private val lifecycleOwner: LifecycleOwner,
 	loader: PageLoader,
-	settings: ReaderSettings,
+	readerSettingsProducer: ReaderSettings.Producer,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
-) : BaseReaderAdapter<DoublePageHolder>(loader, settings, networkState, exceptionResolver) {
+) : BaseReaderAdapter<DoublePageHolder>(loader, readerSettingsProducer, networkState, exceptionResolver) {
 
 	override fun onCreateViewHolder(
 		parent: ViewGroup,
 		loader: PageLoader,
-		settings: ReaderSettings,
+		readerSettingsProducer: ReaderSettings.Producer,
 		networkState: NetworkState,
 		exceptionResolver: ExceptionResolver,
 	) = DoublePageHolder(
 		owner = lifecycleOwner,
 		binding = ItemPageBinding.inflate(LayoutInflater.from(parent.context), parent, false),
 		loader = loader,
-		settings = settings,
+		readerSettingsProducer = readerSettingsProducer,
 		networkState = networkState,
 		exceptionResolver = exceptionResolver,
 	)

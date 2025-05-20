@@ -4,13 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import androidx.core.content.edit
 import org.koitharu.kotatsu.core.util.ext.getEnumValue
-import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.sanitizeHeaderValue
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.settings.utils.validation.DomainValidator
 
 class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig {
@@ -23,6 +24,9 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 
 	val isSlowdownEnabled: Boolean
 		get() = prefs.getBoolean(KEY_SLOWDOWN, false)
+
+	val isCaptchaNotificationsDisabled: Boolean
+		get() = prefs.getBoolean(KEY_NO_CAPTCHA, false)
 
 	@Suppress("UNCHECKED_CAST")
 	override fun <T> get(key: ConfigKey<T>): T {
@@ -38,7 +42,7 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 
 			is ConfigKey.ShowSuspiciousContent -> prefs.getBoolean(key.key, key.defaultValue)
 			is ConfigKey.SplitByTranslations -> prefs.getBoolean(key.key, key.defaultValue)
-			is ConfigKey.PreferredImageServer -> prefs.getString(key.key, key.defaultValue)?.takeUnless(String::isEmpty)
+			is ConfigKey.PreferredImageServer -> prefs.getString(key.key, key.defaultValue)?.nullIfEmpty()
 		} as T
 	}
 
@@ -64,5 +68,6 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 
 		const val KEY_SORT_ORDER = "sort_order"
 		const val KEY_SLOWDOWN = "slowdown"
+		const val KEY_NO_CAPTCHA = "no_captcha"
 	}
 }

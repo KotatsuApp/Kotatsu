@@ -1,44 +1,33 @@
 package org.koitharu.kotatsu.scrobbling.common.ui.config
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import coil3.ImageLoader
-import coil3.request.error
-import coil3.request.fallback
-import coil3.request.placeholder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
-import org.koitharu.kotatsu.core.util.ext.disposeImageRequest
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.showOrHide
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityScrobblerConfigBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
-import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.ui.config.adapter.ScrobblingMangaAdapter
-import javax.inject.Inject
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	OnListItemClickListener<ScrobblingInfo>, View.OnClickListener {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	private val viewModel: ScrobblerConfigViewModel by viewModels()
 
@@ -46,9 +35,9 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityScrobblerConfigBinding.inflate(layoutInflater))
 		setTitle(viewModel.titleResId)
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 
-		val listAdapter = ScrobblingMangaAdapter(this, coil, this)
+		val listAdapter = ScrobblingMangaAdapter(this)
 		with(viewBinding.recyclerView) {
 			adapter = listAdapter
 			setHasFixedSize(true)
@@ -74,19 +63,25 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 		processIntent(intent)
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val rv = viewBinding.recyclerView
-		rv.updatePadding(
-			left = insets.left + rv.paddingTop,
-			right = insets.right + rv.paddingTop,
-			bottom = insets.bottom + rv.paddingTop,
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val basePadding = v.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
+		viewBinding.appbar.updatePadding(
+			top = barsInsets.top,
+			left = barsInsets.left,
+			right = barsInsets.right,
 		)
+		viewBinding.recyclerView.setPadding(
+			barsInsets.left + basePadding,
+			barsInsets.top + basePadding,
+			barsInsets.right + basePadding,
+			barsInsets.bottom + basePadding,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onItemClick(item: ScrobblingInfo, view: View) {
-		startActivity(
-			DetailsActivity.newIntent(this, item.mangaId),
-		)
+		router.openDetails(item.mangaId)
 	}
 
 	override fun onClick(v: View) {
@@ -107,15 +102,11 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 
 	private fun onUserChanged(user: ScrobblerUser?) {
 		if (user == null) {
-			viewBinding.imageViewAvatar.disposeImageRequest()
-			viewBinding.imageViewAvatar.setImageResource(materialR.drawable.abc_ic_menu_overflow_material)
+			viewBinding.imageViewAvatar.disposeImage()
+			viewBinding.imageViewAvatar.setImageResource(appcompatR.drawable.abc_ic_menu_overflow_material)
 			return
 		}
-		viewBinding.imageViewAvatar.newImageRequest(this, user.avatar)
-			?.placeholder(R.drawable.bg_badge_empty)
-			?.fallback(R.drawable.ic_shortcut_default)
-			?.error(R.drawable.ic_shortcut_default)
-			?.enqueueWith(coil)
+		viewBinding.imageViewAvatar.setImageAsync(user.avatar)
 	}
 
 	private fun onLoadingStateChanged(isLoading: Boolean) {
@@ -133,16 +124,9 @@ class ScrobblerConfigActivity : BaseActivity<ActivityScrobblerConfigBinding>(),
 	}
 
 	companion object {
-
-		const val EXTRA_SERVICE_ID = "service"
-
 		const val HOST_SHIKIMORI_AUTH = "shikimori-auth"
 		const val HOST_ANILIST_AUTH = "anilist-auth"
 		const val HOST_MAL_AUTH = "mal-auth"
 		const val HOST_KITSU_AUTH = "kitsu-auth"
-
-		fun newIntent(context: Context, service: ScrobblerService) =
-			Intent(context, ScrobblerConfigActivity::class.java)
-				.putExtra(EXTRA_SERVICE_ID, service.id)
 	}
 }

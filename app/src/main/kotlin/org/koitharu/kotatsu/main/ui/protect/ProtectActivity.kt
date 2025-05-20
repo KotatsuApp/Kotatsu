@@ -4,27 +4,32 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.biometric.AuthenticationRequest
+import androidx.biometric.AuthenticationRequest.Biometric
+import androidx.biometric.AuthenticationResult
+import androidx.biometric.AuthenticationResultCallback
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
-import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricPrompt.AuthenticationCallback
-import androidx.core.graphics.Insets
+import androidx.biometric.registerForAuthenticationResult
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getParcelableExtraCompat
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.databinding.ActivityProtectBinding
 import com.google.android.material.R as materialR
 
@@ -32,11 +37,14 @@ import com.google.android.material.R as materialR
 class ProtectActivity :
 	BaseActivity<ActivityProtectBinding>(),
 	TextView.OnEditorActionListener,
-	TextWatcher,
-	View.OnClickListener {
+	DefaultTextWatcher,
+	View.OnClickListener,
+	AuthenticationResultCallback {
 
 	private val viewModel by viewModels<ProtectViewModel>()
 	private var canUseBiometric = false
+
+	private val biometricPrompt = registerForAuthenticationResult(resultCallback = this)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -62,6 +70,18 @@ class ProtectActivity :
 		}
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
+		viewBinding.root.setPadding(
+			barsInsets.left + basePadding,
+			barsInsets.top + basePadding,
+			barsInsets.right + basePadding,
+			barsInsets.bottom + basePadding,
+		)
+		return insets.consumeAllSystemBarsInsets()
+	}
+
 	override fun onStart() {
 		super.onStart()
 		canUseBiometric = useFingerprint()
@@ -69,16 +89,6 @@ class ProtectActivity :
 		if (!canUseBiometric) {
 			viewBinding.editPassword.requestFocus()
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		viewBinding.root.setPadding(
-			basePadding + insets.left,
-			basePadding + insets.top,
-			basePadding + insets.right,
-			basePadding + insets.bottom,
-		)
 	}
 
 	override fun onClick(v: View) {
@@ -98,14 +108,16 @@ class ProtectActivity :
 		}
 	}
 
-	override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-	override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
-
 	override fun afterTextChanged(s: Editable?) {
 		viewBinding.layoutPassword.error = null
 		viewBinding.buttonNext.isEnabled = !s.isNullOrEmpty()
 		updateEndIcon()
+	}
+
+	override fun onAuthResult(result: AuthenticationResult) {
+		if (result.isSuccess()) {
+			viewModel.unlock()
+		}
 	}
 
 	private fun onError(e: Throwable) {
@@ -123,14 +135,15 @@ class ProtectActivity :
 		if (BiometricManager.from(this).canAuthenticate(BIOMETRIC_WEAK) != BIOMETRIC_SUCCESS) {
 			return false
 		}
-		val prompt = BiometricPrompt(this, BiometricCallback())
-		val promptInfo = BiometricPrompt.PromptInfo.Builder()
-			.setAllowedAuthenticators(BIOMETRIC_WEAK)
-			.setTitle(getString(R.string.app_name))
-			.setConfirmationRequired(false)
-			.setNegativeButtonText(getString(android.R.string.cancel))
-			.build()
-		prompt.authenticate(promptInfo)
+		val request = AuthenticationRequest.biometricRequest(
+			title = getString(R.string.app_name),
+			authFallback = Biometric.Fallback.NegativeButton(getString(android.R.string.cancel)),
+			init = {
+				setMinStrength(Biometric.Strength.Class2)
+				setIsConfirmationRequired(false)
+			},
+		)
+		biometricPrompt.launch(request)
 		return true
 	}
 
@@ -149,13 +162,6 @@ class ProtectActivity :
 			setEndIconDrawable(0)
 			endIconContentDescription = null
 			endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
-		}
-	}
-
-	private inner class BiometricCallback : AuthenticationCallback() {
-		override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-			super.onAuthenticationSucceeded(result)
-			viewModel.unlock()
 		}
 	}
 

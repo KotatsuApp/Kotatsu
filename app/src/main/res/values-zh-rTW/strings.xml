@@ -280,8 +280,7 @@
     <string name="bookmarks_removed">書籤已移除</string>
     <string name="no_manga_sources">沒有漫畫來源</string>
     <string name="random">隨機</string>
-    <string name="categories_delete_confirm">您是否確定要刪除選取的最愛分類\?
-\n所有的漫畫將會遺失且無法復原。</string>
+    <string name="categories_delete_confirm">您是否確定要刪除選取的最愛分類? \n所有的漫畫將會遺失且無法復原。</string>
     <string name="other_cache">其他快取</string>
     <string name="storage_usage">儲存區使用</string>
     <string name="importing_manga">正在匯入漫畫</string>

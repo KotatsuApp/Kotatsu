@@ -1,28 +1,28 @@
 package org.koitharu.kotatsu.settings.backup
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.documentfile.provider.DocumentFile
+import androidx.fragment.app.viewModels
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.backup.BackupZipOutput.Companion.DIR_BACKUPS
-import org.koitharu.kotatsu.core.backup.ExternalBackupStorage
+import org.koitharu.kotatsu.core.backup.TelegramBackupUploader
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.router
+import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
-import org.koitharu.kotatsu.core.util.ext.resolveFile
+import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
-import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
-import java.io.File
+import org.koitharu.kotatsu.settings.utils.EditTextFallbackSummaryProvider
+import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -30,28 +30,43 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 	ActivityResultCallback<Uri?> {
 
 	@Inject
-	lateinit var backupStorage: ExternalBackupStorage
+	lateinit var telegramBackupUploader: TelegramBackupUploader
 
-	private val outputSelectCall = registerForActivityResult(
-		ActivityResultContracts.OpenDocumentTree(),
-		this,
-	)
+	private val viewModel by viewModels<PeriodicalBackupSettingsViewModel>()
+
+	private val outputSelectCall = OpenDocumentTreeHelper(this, this)
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_backup_periodic)
+		findPreference<EditTextPreference>(AppSettings.KEY_BACKUP_TG_CHAT)?.summaryProvider =
+			EditTextFallbackSummaryProvider(R.string.telegram_chat_id_summary)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		bindOutputSummary()
-		bindLastBackupInfo()
+		viewModel.lastBackupDate.observe(viewLifecycleOwner, ::bindLastBackupInfo)
+		viewModel.backupsDirectory.observe(viewLifecycleOwner, ::bindOutputSummary)
+		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(listView, this))
+		viewModel.isTelegramCheckLoading.observe(viewLifecycleOwner) {
+			findPreference<Preference>(AppSettings.KEY_BACKUP_TG_TEST)?.isEnabled = !it
+		}
 	}
 
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
-		return when (preference.key) {
+		val result = when (preference.key) {
 			AppSettings.KEY_BACKUP_PERIODICAL_OUTPUT -> outputSelectCall.tryLaunch(null)
-			else -> super.onPreferenceTreeClick(preference)
+			AppSettings.KEY_BACKUP_TG_OPEN -> telegramBackupUploader.openBotInApp(router)
+			AppSettings.KEY_BACKUP_TG_TEST -> {
+				viewModel.checkTelegram()
+				true
+			}
+
+			else -> return super.onPreferenceTreeClick(preference)
 		}
+		if (!result) {
+			Snackbar.make(listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
+		}
+		return true
 	}
 
 	override fun onActivityResult(result: Uri?) {
@@ -59,44 +74,28 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 			val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 			context?.contentResolver?.takePersistableUriPermission(result, takeFlags)
 			settings.periodicalBackupDirectory = result
-			bindOutputSummary()
-			bindLastBackupInfo()
+			viewModel.updateSummaryData()
 		}
 	}
 
-	private fun bindOutputSummary() {
+	private fun bindOutputSummary(path: String?) {
 		val preference = findPreference<Preference>(AppSettings.KEY_BACKUP_PERIODICAL_OUTPUT) ?: return
-		viewLifecycleScope.launch {
-			preference.summary = withContext(Dispatchers.Default) {
-				val value = settings.periodicalBackupDirectory
-				value?.toUserFriendlyString(preference.context) ?: preference.context.run {
-					getExternalFilesDir(DIR_BACKUPS) ?: File(filesDir, DIR_BACKUPS)
-				}.path
-			}
+		preference.summary = when (path) {
+			null -> getString(R.string.invalid_value_message)
+			"" -> null
+			else -> path
 		}
 	}
 
-	private fun bindLastBackupInfo() {
+	private fun bindLastBackupInfo(lastBackupDate: Date?) {
 		val preference = findPreference<Preference>(AppSettings.KEY_BACKUP_PERIODICAL_LAST) ?: return
-		viewLifecycleScope.launch {
-			val lastDate = withContext(Dispatchers.Default) {
-				backupStorage.getLastBackupDate()
-			}
-			preference.summary = lastDate?.let {
-				preference.context.getString(
-					R.string.last_successful_backup,
-					DateUtils.getRelativeTimeSpanString(it.time),
-				)
-			}
-			preference.isVisible = lastDate != null
+		preference.summary = lastBackupDate?.let {
+			preference.context.getString(
+				R.string.last_successful_backup,
+				DateUtils.getRelativeTimeSpanString(it.time),
+			)
 		}
-	}
-
-	private fun Uri.toUserFriendlyString(context: Context): String {
-		val df = DocumentFile.fromTreeUri(context, this)
-		if (df?.canWrite() != true) {
-			return context.getString(R.string.invalid_value_message)
-		}
-		return resolveFile(context)?.path ?: toString()
+		preference.isVisible = lastBackupDate != null
 	}
 }
+

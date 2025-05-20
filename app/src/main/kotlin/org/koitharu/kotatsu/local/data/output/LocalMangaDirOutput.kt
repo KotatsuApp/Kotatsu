@@ -8,14 +8,17 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.internal.closeQuietly
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.util.MimeTypes
+import org.koitharu.kotatsu.core.util.ext.MimeType
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
+import org.koitharu.kotatsu.core.util.ext.toFileNameSafe
 import org.koitharu.kotatsu.core.zip.ZipOutput
 import org.koitharu.kotatsu.local.data.MangaIndex
 import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.parsers.util.toFileNameSafe
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import java.io.File
 
 class LocalMangaDirOutput(
@@ -35,10 +38,10 @@ class LocalMangaDirOutput(
 
 	override suspend fun mergeWithExisting() = Unit
 
-	override suspend fun addCover(file: File, ext: String) = mutex.withLock {
+	override suspend fun addCover(file: File, type: MimeType?) = mutex.withLock {
 		val name = buildString {
 			append("cover")
-			if (ext.isNotEmpty() && ext.length <= 4) {
+			MimeTypes.getExtension(type)?.let { ext ->
 				append('.')
 				append(ext)
 			}
@@ -50,14 +53,14 @@ class LocalMangaDirOutput(
 		flushIndex()
 	}
 
-	override suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, ext: String) =
+	override suspend fun addPage(chapter: IndexedValue<MangaChapter>, file: File, pageNumber: Int, type: MimeType?) =
 		mutex.withLock {
 			val output = chaptersOutput.getOrPut(chapter.value) {
 				ZipOutput(File(rootFile, chapterFileName(chapter) + SUFFIX_TMP))
 			}
 			val name = buildString {
 				append(FILENAME_PATTERN.format(chapter.value.branch.hashCode(), chapter.index + 1, pageNumber))
-				if (ext.isNotEmpty() && ext.length <= 4) {
+				MimeTypes.getExtension(type)?.let { ext ->
 					append('.')
 					append(ext)
 				}
@@ -96,7 +99,9 @@ class LocalMangaDirOutput(
 	}
 
 	suspend fun deleteChapters(ids: Set<Long>) = mutex.withLock {
-		val chapters = checkNotNull((index.getMangaInfo() ?: LocalMangaParser(rootFile).getManga(withDetails = true).manga).chapters) {
+		val chapters = checkNotNull(
+			(index.getMangaInfo() ?: LocalMangaParser(rootFile).getManga(withDetails = true).manga).chapters,
+		) {
 			"No chapters found"
 		}.withIndex()
 		val victimsIds = ids.toMutableSet()
@@ -141,7 +146,16 @@ class LocalMangaDirOutput(
 		index.getChapterFileName(chapter.value.id)?.let {
 			return it
 		}
-		val baseName = "${chapter.index}_${chapter.value.name.toFileNameSafe()}".take(32)
+		val baseName = buildString {
+			append(chapter.index)
+			chapter.value.title?.nullIfEmpty()?.let {
+				append('_')
+				append(it.toFileNameSafe())
+			}
+			if (length > 32) {
+				deleteRange(31, lastIndex)
+			}
+		}
 		var i = 0
 		while (true) {
 			val name = (if (i == 0) baseName else baseName + "_$i") + ".cbz"
@@ -158,6 +172,6 @@ class LocalMangaDirOutput(
 
 	companion object {
 
-		private const val FILENAME_PATTERN = "%08d_%03d%03d"
+		private const val FILENAME_PATTERN = "%08d_%04d%04d"
 	}
 }

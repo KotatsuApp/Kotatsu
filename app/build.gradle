@@ -3,10 +3,10 @@ import java.time.LocalDateTime
 plugins {
 	id 'com.android.application'
 	id 'kotlin-android'
-	id 'kotlin-kapt'
 	id 'com.google.devtools.ksp'
 	id 'kotlin-parcelize'
 	id 'dagger.hilt.android.plugin'
+	id 'androidx.room'
 }
 
 android {
@@ -18,16 +18,16 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 35
-		versionCode = 691
-		versionName = '7.7-rc1'
+		versionCode = 1013
+		versionName = '8.1.7'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
 			arg('room.generateKotlin', 'true')
-			arg('room.schemaLocation', "$projectDir/schemas")
 		}
 		androidResources {
-			generateLocaleConfig true
+			// https://issuetracker.google.com/issues/408030127
+			generateLocaleConfig false
 		}
 	}
 	buildTypes {
@@ -71,10 +71,18 @@ android {
 			'-opt-in=kotlin.ExperimentalStdlibApi',
 			'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
 			'-opt-in=kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi',
+			'-opt-in=kotlinx.coroutines.InternalForInheritanceCoroutinesApi',
 			'-opt-in=kotlinx.coroutines.FlowPreview',
 			'-opt-in=kotlin.contracts.ExperimentalContracts',
 			'-opt-in=coil3.annotation.ExperimentalCoilApi',
+			'-opt-in=coil3.annotation.InternalCoilApi',
+			'-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi',
+			'-Xjspecify-annotations=strict',
+			'-Xtype-enhancement-improvements-strict-mode'
 		]
+	}
+	room {
+		schemaDirectory "$projectDir/schemas"
 	}
 	lint {
 		abortOnError true
@@ -94,13 +102,6 @@ android {
 				output.versionCodeOverride = now.format("yyMMdd").toInteger()
 				output.versionNameOverride = 'N' + now.format("yyyyMMdd")
 			}
-		}
-	}
-}
-afterEvaluate {
-	compileDebugKotlin {
-		kotlinOptions {
-			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
 		}
 	}
 }
@@ -131,6 +132,7 @@ dependencies {
 	implementation libs.lifecycle.service
 	implementation libs.lifecycle.process
 	implementation libs.androidx.constraintlayout
+	implementation libs.androidx.documentfile
 	implementation libs.androidx.swiperefreshlayout
 	implementation libs.androidx.recyclerview
 	implementation libs.androidx.viewpager2
@@ -156,9 +158,9 @@ dependencies {
 	implementation libs.adapterdelegates.viewbinding
 
 	implementation libs.hilt.android
-	kapt libs.hilt.compiler
+	ksp libs.hilt.compiler
 	implementation libs.androidx.hilt.work
-	kapt libs.androidx.hilt.compiler
+	ksp libs.androidx.hilt.compiler
 
 	implementation libs.coil.core
 	implementation libs.coil.network
@@ -192,5 +194,5 @@ dependencies {
 	androidTestImplementation libs.moshi.kotlin
 
 	androidTestImplementation libs.hilt.android.testing
-	kaptAndroidTest libs.hilt.android.compiler
+	kspAndroidTest libs.hilt.android.compiler
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.annotation.StringRes
+import androidx.annotation.UiContext
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +18,7 @@ import org.koitharu.kotatsu.databinding.DialogCheckboxBinding
 import com.google.android.material.R as materialR
 
 inline fun buildAlertDialog(
-	context: Context,
+	@UiContext context: Context,
 	isCentered: Boolean = false,
 	block: MaterialAlertDialogBuilder.() -> Unit,
 ): AlertDialog = MaterialAlertDialogBuilder(

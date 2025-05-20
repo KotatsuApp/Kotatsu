@@ -4,37 +4,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CompoundButton
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.children
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButtonToggleGroup
-import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderMode
-import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
+import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
-import org.koitharu.kotatsu.core.util.ext.showDistinct
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 import org.koitharu.kotatsu.reader.ui.ScreenOrientationHelper
-import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity
-import org.koitharu.kotatsu.settings.SettingsActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -42,7 +39,6 @@ class ReaderConfigSheet :
 	BaseAdaptiveSheet<SheetReaderConfigBinding>(),
 	View.OnClickListener,
 	MaterialButtonToggleGroup.OnButtonCheckedListener,
-	Slider.OnChangeListener,
 	CompoundButton.OnCheckedChangeListener {
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
@@ -64,7 +60,7 @@ class ReaderConfigSheet :
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		mode = arguments?.getInt(ARG_MODE)
+		mode = arguments?.getInt(AppRouter.KEY_READER_MODE)
 			?.let { ReaderMode.valueOf(it) }
 			?: ReaderMode.STANDARD
 		imageServerDelegate = ImageServerDelegate(
@@ -99,9 +95,16 @@ class ReaderConfigSheet :
 		binding.buttonSettings.setOnClickListener(this)
 		binding.buttonImageServer.setOnClickListener(this)
 		binding.buttonColorFilter.setOnClickListener(this)
-		binding.sliderTimer.addOnChangeListener(this)
-		binding.switchScrollTimer.setOnCheckedChangeListener(this)
+		binding.buttonScrollTimer.setOnClickListener(this)
+		binding.buttonBookmark.setOnClickListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
+
+		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
+			binding.buttonBookmark.setText(if (it) R.string.bookmark_remove else R.string.bookmark_add)
+			binding.buttonBookmark.setCompoundDrawablesRelativeWithIntrinsicBounds(
+				if (it) R.drawable.ic_bookmark_checked else R.drawable.ic_bookmark, 0, 0, 0,
+			)
+		}
 
 		viewLifecycleScope.launch {
 			val isAvailable = imageServerDelegate.isAvailable()
@@ -110,26 +113,25 @@ class ReaderConfigSheet :
 			}
 			binding.buttonImageServer.isVisible = isAvailable
 		}
+	}
 
-		settings.observeAsStateFlow(
-			scope = lifecycleScope + Dispatchers.Default,
-			key = AppSettings.KEY_READER_AUTOSCROLL_SPEED,
-			valueProducer = { readerAutoscrollSpeed },
-		).observe(viewLifecycleOwner) {
-			binding.sliderTimer.value = it.coerceIn(
-				binding.sliderTimer.valueFrom,
-				binding.sliderTimer.valueTo,
-			)
-		}
-		findParentCallback(Callback::class.java)?.run {
-			binding.switchScrollTimer.isChecked = isAutoScrollEnabled
-		}
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		viewBinding?.scrollView?.updatePadding(
+			bottom = insets.getInsets(typeMask).bottom,
+		)
+		return insets.consume(v, typeMask, bottom = true)
 	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_settings -> {
-				startActivity(SettingsActivity.newReaderSettingsIntent(v.context))
+				router.openReaderSettings()
+				dismissAllowingStateLoss()
+			}
+
+			R.id.button_scroll_timer -> {
+				findParentCallback(Callback::class.java)?.onScrollTimerClick(false) ?: return
 				dismissAllowingStateLoss()
 			}
 
@@ -142,10 +144,14 @@ class ReaderConfigSheet :
 				orientationHelper.isLandscape = !orientationHelper.isLandscape
 			}
 
+			R.id.button_bookmark -> {
+				viewModel.toggleBookmark()
+			}
+
 			R.id.button_color_filter -> {
 				val page = viewModel.getCurrentPage() ?: return
 				val manga = viewModel.getMangaOrNull() ?: return
-				startActivity(ColorFilterConfigActivity.newIntent(v.context, manga, page))
+				router.openColorFilterConfig(manga, page)
 			}
 
 			R.id.button_image_server -> viewLifecycleScope.launch {
@@ -160,12 +166,6 @@ class ReaderConfigSheet :
 
 	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
 		when (buttonView.id) {
-			R.id.switch_scroll_timer -> {
-				findParentCallback(Callback::class.java)?.isAutoScrollEnabled = isChecked
-				requireViewBinding().layoutTimer.isVisible = isChecked
-				requireViewBinding().sliderTimer.isVisible = isChecked
-			}
-
 			R.id.switch_screen_lock_rotation -> {
 				orientationHelper.isLocked = isChecked
 			}
@@ -200,13 +200,6 @@ class ReaderConfigSheet :
 		mode = newMode
 	}
 
-	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
-		if (fromUser) {
-			settings.readerAutoscrollSpeed = value
-		}
-		(viewBinding ?: return).labelTimerValue.text = getString(R.string.speed_value, value * 10f)
-	}
-
 	private fun observeScreenOrientation() {
 		orientationHelper.observeAutoOrientation()
 			.onEach {
@@ -235,22 +228,14 @@ class ReaderConfigSheet :
 
 	interface Callback {
 
-		var isAutoScrollEnabled: Boolean
-
 		fun onReaderModeChanged(mode: ReaderMode)
 
 		fun onDoubleModeChanged(isEnabled: Boolean)
 
 		fun onSavePageClick()
-	}
 
-	companion object {
+		fun onScrollTimerClick(isLongClick: Boolean)
 
-		private const val TAG = "ReaderConfigBottomSheet"
-		private const val ARG_MODE = "mode"
-
-		fun show(fm: FragmentManager, mode: ReaderMode) = ReaderConfigSheet().withArgs(1) {
-			putInt(ARG_MODE, mode.id)
-		}.showDistinct(fm, TAG)
+		fun onBookmarkClick()
 	}
 }

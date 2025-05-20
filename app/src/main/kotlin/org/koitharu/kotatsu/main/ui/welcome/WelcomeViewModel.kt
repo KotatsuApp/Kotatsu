@@ -3,10 +3,10 @@ package org.koitharu.kotatsu.main.ui.welcome
 import android.content.Context
 import androidx.core.os.ConfigurationCompat
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.mapSortedByCount
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
 	private val repository: MangaSourcesRepository,
-	@ApplicationContext context: Context,
+	@LocalizedAppContext context: Context,
 ) : BaseViewModel() {
 
 	private val allSources = repository.allMangaSources

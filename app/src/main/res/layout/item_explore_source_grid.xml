@@ -12,7 +12,7 @@
 	android:padding="@dimen/list_spacing"
 	tools:layout_width="120dp">
 
-	<com.google.android.material.imageview.ShapeableImageView
+	<org.koitharu.kotatsu.core.ui.image.FaviconView
 		android:id="@+id/imageView_icon"
 		android:layout_width="72dp"
 		android:layout_height="72dp"
@@ -20,10 +20,10 @@
 		android:labelFor="@id/textView_title"
 		android:padding="1dp"
 		android:scaleType="fitCenter"
+		app:iconStyle="@style/FaviconDrawable.Large"
 		app:shapeAppearance="?shapeAppearanceCornerMedium"
 		app:strokeColor="?colorOutline"
-		app:strokeWidth="1dp"
-		tools:src="@tools:sample/avatars" />
+		app:strokeWidth="1dp" />
 
 	<TextView
 		android:id="@+id/textView_title"

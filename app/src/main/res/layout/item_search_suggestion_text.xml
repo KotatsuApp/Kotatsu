@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:drawablePadding="@dimen/screen_padding"
+	android:paddingVertical="@dimen/margin_small"
+	android:paddingStart="?listPreferredItemPaddingStart"
+	android:paddingEnd="?listPreferredItemPaddingEnd"
+	android:textAppearance="?textAppearanceBodySmall"
+	android:textColor="?android:textColorSecondary"
+	tools:drawableStart="@drawable/ic_error_small"
+	tools:text="@string/error_corrupted_file" />

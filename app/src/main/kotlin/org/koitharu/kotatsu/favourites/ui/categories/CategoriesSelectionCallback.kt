@@ -46,16 +46,6 @@ class CategoriesSelectionCallback(
 
 	override fun onActionItemClicked(controller: ListSelectionController, mode: ActionMode?, item: MenuItem): Boolean {
 		return when (item.itemId) {
-			/*R.id.action_view -> {
-				val id = controller.peekCheckedIds().singleOrNull() ?: return false
-				val context = recyclerView.context
-				val category = viewModel.getCategory(id) ?: return false
-				val intent = FavouritesActivity.newIntent(context, category)
-				context.startActivity(intent)
-				mode.finish()
-				true
-			}*/
-
 			R.id.action_show -> {
 				viewModel.setIsVisible(controller.snapshot(), true)
 				mode?.finish()

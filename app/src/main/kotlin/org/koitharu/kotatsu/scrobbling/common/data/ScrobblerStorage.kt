@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.scrobbling.common.data
 import android.content.Context
 import androidx.core.content.edit
 import org.jsoup.internal.StringUtil.StringJoiner
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerService
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblerUser
 
@@ -31,7 +32,7 @@ class ScrobblerStorage(context: Context, service: ScrobblerService) {
 			ScrobblerUser(
 				id = lines[0].toLong(),
 				nickname = lines[1],
-				avatar = lines[2].takeUnless(String::isEmpty),
+				avatar = lines[2].nullIfEmpty(),
 				service = ScrobblerService.valueOf(lines[3]),
 			)
 		}

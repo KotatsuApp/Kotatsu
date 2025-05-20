@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
-import android.webkit.MimeTypeMap
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
@@ -25,6 +24,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
@@ -42,6 +43,7 @@ import okio.buffer
 import okio.sink
 import okio.use
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.network.MangaHttpClient
@@ -49,7 +51,9 @@ import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.Throttler
+import org.koitharu.kotatsu.core.util.ext.MimeType
 import org.koitharu.kotatsu.core.util.ext.awaitFinishedWorkInfosByTag
 import org.koitharu.kotatsu.core.util.ext.awaitUpdateWork
 import org.koitharu.kotatsu.core.util.ext.awaitWorkInfosByTag
@@ -60,8 +64,8 @@ import org.koitharu.kotatsu.core.util.ext.ensureSuccess
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getWorkInputData
 import org.koitharu.kotatsu.core.util.ext.getWorkSpec
-import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.toMimeType
 import org.koitharu.kotatsu.core.util.ext.withTicker
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.core.util.progress.RealtimeEtaEstimator
@@ -79,6 +83,7 @@ import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -120,7 +125,7 @@ class DownloadWorker @AssistedInject constructor(
 
 	override suspend fun doWork(): Result {
 		setForeground(getForegroundInfo())
-		val manga = mangaDataRepository.findMangaById(task.mangaId) ?: return Result.failure()
+		val manga = mangaDataRepository.findMangaById(task.mangaId, withChapters = true) ?: return Result.failure()
 		publishState(DownloadState(manga = manga, isIndeterminate = true).also { lastPublishedState = it })
 		val downloadedIds = getDoneChapters(manga)
 		return try {
@@ -132,7 +137,7 @@ class DownloadWorker @AssistedInject constructor(
 				downloadMangaImpl(manga, task, downloadedIds)
 			}
 			Result.success(currentState.toWorkData())
-		} catch (e: CancellationException) {
+		} catch (_: CancellationException) {
 			withContext(NonCancellable) {
 				val notification = notificationFactory.create(currentState.copy(isStopped = true))
 				notificationManager.notify(id.hashCode(), notification)
@@ -199,9 +204,9 @@ class DownloadWorker @AssistedInject constructor(
 					format = task.format ?: settings.preferredDownloadFormat,
 				)
 				val coverUrl = mangaDetails.largeCoverUrl.ifNullOrEmpty { mangaDetails.coverUrl }
-				if (coverUrl.isNotEmpty()) {
+				if (!coverUrl.isNullOrEmpty()) {
 					downloadFile(coverUrl, destination, repo.source).let { file ->
-						output.addCover(file, MimeTypeMap.getFileExtensionFromUrl(coverUrl))
+						output.addCover(file, getMediaType(coverUrl, file))
 						file.deleteAwait()
 					}
 				}
@@ -230,7 +235,7 @@ class DownloadWorker @AssistedInject constructor(
 											chapter = chapter,
 											file = file,
 											pageNumber = pageIndex,
-											ext = MimeTypeMap.getFileExtensionFromUrl(url),
+											type = getMediaType(url, file),
 										)
 										if (file.extension == "tmp") {
 											file.deleteAwait()
@@ -354,6 +359,13 @@ class DownloadWorker @AssistedInject constructor(
 		}
 	}
 
+	private suspend fun getMediaType(url: String, file: File): MimeType? = runInterruptible(Dispatchers.IO) {
+		BitmapDecoderCompat.probeMimeType(file)?.let {
+			return@runInterruptible it
+		}
+		MimeTypes.getMimeTypeFromUrl(url)
+	}
+
 	private suspend fun downloadFile(
 		url: String,
 		destination: File,
@@ -364,18 +376,29 @@ class DownloadWorker @AssistedInject constructor(
 		return imageProxyInterceptor.interceptPageRequest(request, okHttp)
 			.ensureSuccess()
 			.use { response ->
-				val file = File(destination, UUID.randomUUID().toString() + ".tmp")
+				var file: File? = null
 				try {
 					response.requireBody().use { body ->
+						file = File(
+							destination,
+							buildString {
+								append(UUID.randomUUID().toString())
+								MimeTypes.getExtension(body.contentType()?.toMimeType())?.let { ext ->
+									append('.')
+									append(ext)
+								}
+								append(".tmp")
+							},
+						)
 						file.sink(append = false).buffer().use {
 							it.writeAllCancellable(body.source())
 						}
 					}
 				} catch (e: CancellationException) {
-					file.delete()
+					file?.delete()
 					throw e
 				}
-				file
+				checkNotNull(file)
 			}
 	}
 

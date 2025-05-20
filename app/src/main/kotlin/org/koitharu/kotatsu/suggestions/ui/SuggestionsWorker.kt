@@ -48,23 +48,25 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.distinctById
+import org.koitharu.kotatsu.core.model.getLocale
 import org.koitharu.kotatsu.core.model.isNsfw
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.ext.almostEquals
+import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.awaitUniqueWorkInfoByName
 import org.koitharu.kotatsu.core.util.ext.awaitWorkInfosByTag
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.flatten
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.sanitize
-import org.koitharu.kotatsu.core.util.ext.sizeOrZero
 import org.koitharu.kotatsu.core.util.ext.takeMostFrequent
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
 import org.koitharu.kotatsu.core.util.ext.trySetForeground
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
 import org.koitharu.kotatsu.history.data.HistoryRepository
@@ -73,9 +75,9 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.util.almostEquals
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
-import org.koitharu.kotatsu.settings.SettingsActivity
+import org.koitharu.kotatsu.parsers.util.sizeOrZero
 import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import org.koitharu.kotatsu.suggestions.domain.MangaSuggestion
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
@@ -84,7 +86,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.random.Random
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @HiltWorker
 class SuggestionsWorker @AssistedInject constructor(
@@ -130,12 +132,12 @@ class SuggestionsWorker @AssistedInject constructor(
 				PendingIntentCompat.getActivity(
 					applicationContext,
 					0,
-					SettingsActivity.newSuggestionsSettingsIntent(applicationContext),
+					AppRouter.suggestionsSettingsIntent(applicationContext),
 					0,
 					false,
 				),
 			).addAction(
-				materialR.drawable.material_ic_clear_black_24dp,
+				appcompatR.drawable.abc_ic_clear_material,
 				applicationContext.getString(android.R.string.cancel),
 				workManager.createCancelPendingIntent(id),
 			)
@@ -179,7 +181,7 @@ class SuggestionsWorker @AssistedInject constructor(
 			historyRepository.getList(0, 20) +
 				favouritesRepository.getLastManga(20)
 			).distinctById()
-		val sources = sourcesRepository.getEnabledSources()
+		val sources = getSources()
 		if (seed.isEmpty() || sources.isEmpty()) {
 			return 0
 		}
@@ -188,7 +190,7 @@ class SuggestionsWorker @AssistedInject constructor(
 
 		val semaphore = Semaphore(MAX_PARALLELISM)
 		val producer = channelFlow {
-			for (it in sources.shuffled()) {
+			for (it in sources) {
 				if (it.isNsfw() && (appSettings.isSuggestionsExcludeNsfw || appSettings.isNsfwContentDisabled)) {
 					continue
 				}
@@ -241,6 +243,18 @@ class SuggestionsWorker @AssistedInject constructor(
 			}
 		}
 		return suggestions.size
+	}
+
+	private suspend fun getSources(): List<MangaSource> {
+		if (appSettings.isSuggestionsIncludeDisabledSources) {
+			val result = sourcesRepository.allMangaSources.toMutableList<MangaSource>()
+			result.addAll(sourcesRepository.getExternalSources())
+			result.shuffle()
+			result.sortWith(compareBy(nullsLast(LocaleComparator())) { it.getLocale() })
+			return result
+		} else {
+			return sourcesRepository.getEnabledSources().shuffled()
+		}
 	}
 
 	private suspend fun getList(
@@ -312,7 +326,7 @@ class SuggestionsWorker @AssistedInject constructor(
 						appendLine()
 						bold {
 							append(
-								applicationContext.resources.getQuantityString(
+								applicationContext.resources.getQuantityStringSafe(
 									R.plurals.chapters,
 									chaptersCount,
 									chaptersCount,
@@ -326,7 +340,7 @@ class SuggestionsWorker @AssistedInject constructor(
 				style.setBigContentTitle(title)
 				setStyle(style)
 			}
-			val intent = DetailsActivity.newIntent(applicationContext, manga)
+			val intent = AppRouter.detailsIntent(applicationContext, manga)
 			setContentIntent(
 				PendingIntentCompat.getActivity(
 					applicationContext,
@@ -338,7 +352,7 @@ class SuggestionsWorker @AssistedInject constructor(
 			)
 			setAutoCancel(true)
 			setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
-			setVisibility(if (manga.isNsfw) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PUBLIC)
+			setVisibility(if (manga.isNsfw()) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PRIVATE)
 			setShortcutId(manga.id.toString())
 			priority = NotificationCompat.PRIORITY_DEFAULT
 
@@ -348,7 +362,7 @@ class SuggestionsWorker @AssistedInject constructor(
 				PendingIntentCompat.getActivity(
 					applicationContext,
 					id + 2,
-					IntentBuilder(applicationContext).manga(manga).build(),
+					ReaderIntent.Builder(applicationContext).manga(manga).build().intent,
 					0,
 					false,
 				),
@@ -360,7 +374,7 @@ class SuggestionsWorker @AssistedInject constructor(
 				PendingIntentCompat.getActivity(
 					applicationContext,
 					0,
-					SuggestionsActivity.newIntent(applicationContext),
+					AppRouter.suggestionsIntent(applicationContext),
 					0,
 					false,
 				),

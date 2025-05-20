@@ -6,6 +6,7 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import androidx.core.text.getSpans
 import androidx.core.text.parseAsHtml
+import coil3.request.CachePolicy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -14,8 +15,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import okio.IOException
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.nav.MangaIntent
+import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
-import org.koitharu.kotatsu.core.parser.MangaIntent
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.ext.peek
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -40,10 +42,26 @@ class DetailsLoadUseCase @Inject constructor(
 	private val newChaptersUseCaseProvider: Provider<CheckNewChaptersUseCase>,
 ) {
 
-	operator fun invoke(intent: MangaIntent): Flow<MangaDetails> = channelFlow {
+	operator fun invoke(intent: MangaIntent, force: Boolean): Flow<MangaDetails> = channelFlow {
 		val manga = requireNotNull(mangaDataRepository.resolveIntent(intent)) {
 			"Cannot resolve intent $intent"
+		}.let { m ->
+			if (m.chapters.isNullOrEmpty()) {
+				getCachedDetails(m.id) ?: m
+			} else {
+				m
+			}
 		}
+		val override = mangaDataRepository.getOverride(manga.id)
+		send(
+			MangaDetails(
+				manga = manga,
+				localManga = null,
+				override = override,
+				description = null,
+				isLoaded = false,
+			),
+		)
 		val local = if (!manga.isLocal) {
 			async {
 				localMangaRepository.findSavedManga(manga)
@@ -51,43 +69,50 @@ class DetailsLoadUseCase @Inject constructor(
 		} else {
 			null
 		}
-		send(MangaDetails(manga, null, null, false))
 		try {
-			val details = getDetails(manga)
+			val details = getDetails(manga, force)
+			launch { mangaDataRepository.updateChapters(details) }
 			launch { updateTracker(details) }
 			send(
 				MangaDetails(
-					details,
-					local?.peek(),
-					details.description?.parseAsHtml(withImages = false)?.trim(),
-					false,
+					manga = details,
+					localManga = local?.peek(),
+					override = override,
+					description = details.description?.parseAsHtml(withImages = false)?.trim(),
+					isLoaded = false,
 				),
 			)
 			send(
 				MangaDetails(
-					details,
-					local?.await(),
-					details.description?.parseAsHtml(withImages = true)?.trim(),
-					true,
+					manga = details,
+					localManga = local?.await(),
+					override = override,
+					description = details.description?.parseAsHtml(withImages = true)?.trim(),
+					isLoaded = true,
 				),
 			)
 		} catch (e: IOException) {
 			local?.await()?.manga?.also { localManga ->
 				send(
 					MangaDetails(
-						localManga,
-						null,
-						localManga.description?.parseAsHtml(withImages = false)?.trim(),
-						true,
+						manga = localManga,
+						localManga = null,
+						override = override,
+						description = localManga.description?.parseAsHtml(withImages = false)?.trim(),
+						isLoaded = true,
 					),
 				)
 			} ?: close(e)
 		}
 	}
 
-	private suspend fun getDetails(seed: Manga) = runCatchingCancellable {
+	private suspend fun getDetails(seed: Manga, force: Boolean) = runCatchingCancellable {
 		val repository = mangaRepositoryFactory.create(seed.source)
-		repository.getDetails(seed)
+		if (repository is CachingMangaRepository) {
+			repository.getDetails(seed, if (force) CachePolicy.WRITE_ONLY else CachePolicy.ENABLED)
+		} else {
+			repository.getDetails(seed)
+		}
 	}.recoverNotNull { e ->
 		if (e is NotFoundException) {
 			recoverUseCase(seed)
@@ -122,4 +147,8 @@ class DetailsLoadUseCase @Inject constructor(
 	}.onFailure { e ->
 		e.printStackTraceDebug()
 	}
+
+	private suspend fun getCachedDetails(mangaId: Long): Manga? = runCatchingCancellable {
+		mangaDataRepository.findMangaById(mangaId, withChapters = true)
+	}.getOrNull()
 }

@@ -8,10 +8,12 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.view.ActionMode
 import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.RecyclerScrollKeeper
@@ -20,7 +22,6 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.databinding.ActivityDownloadsBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import javax.inject.Inject
@@ -42,8 +43,8 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityDownloadsBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		val downloadsAdapter = DownloadsAdapter(this, coil, this)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
+		val downloadsAdapter = DownloadsAdapter(this, this)
 		val decoration = TypedListSpacingDecoration(this, false)
 		selectionController = ListSelectionController(
 			appCompatDelegate = delegate,
@@ -67,24 +68,28 @@ class DownloadsActivity : BaseActivity<ActivityDownloadsBinding>(),
 		viewModel.hasCancellableWorks.observe(this, menuInvalidator)
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val rv = viewBinding.recyclerView
-		rv.updatePadding(
-			left = insets.left + rv.paddingTop,
-			right = insets.right + rv.paddingTop,
-			bottom = insets.bottom,
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		viewBinding.recyclerView.updatePadding(
+			left = bars.left,
+			right = bars.right,
+			bottom = bars.bottom,
 		)
-		viewBinding.toolbar.updatePadding(
-			left = insets.left,
-			right = insets.right,
+		viewBinding.appbar.updatePadding(
+			left = bars.left,
+			right = bars.right,
+			top = bars.top,
 		)
+		return WindowInsetsCompat.Builder(insets)
+			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
+			.build()
 	}
 
 	override fun onItemClick(item: DownloadItemModel, view: View) {
 		if (selectionController.onItemClick(item.id.mostSignificantBits)) {
 			return
 		}
-		startActivity(DetailsActivity.newIntent(view.context, item.manga ?: return))
+		router.openDetails(item.manga ?: return)
 	}
 
 	override fun onItemLongClick(item: DownloadItemModel, view: View): Boolean {

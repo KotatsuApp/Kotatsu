@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.local.data
 
-import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +17,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.ext.deleteAwait
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.takeIfWriteable
 import org.koitharu.kotatsu.core.util.ext.withChildren
 import org.koitharu.kotatsu.local.data.index.LocalMangaIndex
 import org.koitharu.kotatsu.local.data.input.LocalMangaParser
@@ -43,6 +43,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val MAX_PARALLELISM = 4
+private const val FILENAME_SKIP = ".notamanga"
 
 @Singleton
 class LocalMangaRepository @Inject constructor(
@@ -138,7 +139,7 @@ class LocalMangaRepository @Inject constructor(
 	}
 
 	suspend fun delete(manga: Manga): Boolean {
-		val file = Uri.parse(manga.url).toFile()
+		val file = manga.url.toUri().toFile()
 		val result = file.deleteAwait()
 		if (result) {
 			localMangaIndex.delete(manga.id)
@@ -152,7 +153,8 @@ class LocalMangaRepository @Inject constructor(
 			"Manga is not stored on local storage"
 		}.manga
 		LocalMangaUtil(subject).deleteChapters(ids)
-		localStorageChanges.emit(LocalManga(subject))
+		val updated = getDetails(subject)
+		localStorageChanges.emit(LocalManga(updated))
 	}
 
 	suspend fun getRemoteManga(localManga: Manga): Manga? {
@@ -202,7 +204,7 @@ class LocalMangaRepository @Inject constructor(
 	override suspend fun getRelated(seed: Manga): List<Manga> = emptyList()
 
 	suspend fun getOutputDir(manga: Manga, fallback: File?): File? {
-		val defaultDir = fallback ?: storageManager.getDefaultWriteableDir()
+		val defaultDir = fallback?.takeIfWriteable() ?: storageManager.getDefaultWriteableDir()
 		if (defaultDir != null && LocalMangaOutput.get(defaultDir, manga) != null) {
 			return defaultDir
 		}
@@ -253,8 +255,10 @@ class LocalMangaRepository @Inject constructor(
 	private suspend fun getAllFiles() = storageManager.getReadableDirs()
 		.asSequence()
 		.flatMap { dir ->
-			dir.withChildren { children -> children.filterNot { it.isHidden }.toList() }
+			dir.withChildren { children -> children.filterNot { it.isHidden || it.shouldSkip() }.toList() }
 		}
 
 	private fun Collection<LocalManga>.unwrap(): List<Manga> = map { it.manga }
+
+	private fun File.shouldSkip(): Boolean = isDirectory && File(this, FILENAME_SKIP).exists()
 }

@@ -1,7 +1,8 @@
 package org.koitharu.kotatsu.reader.ui.pager
 
 import android.os.Bundle
-import androidx.core.graphics.Insets
+import android.view.View
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import org.koitharu.kotatsu.core.prefs.ReaderAnimation
@@ -32,6 +33,8 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>(), ZoomCont
 		}
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat = insets
+
 	override fun onPause() {
 		super.onPause()
 		viewModel.saveCurrentState(getCurrentState())
@@ -50,8 +53,6 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>(), ZoomCont
 	protected fun isAnimationEnabled(): Boolean {
 		return context?.isAnimationsEnabled == true && viewModel.pageAnimation.value != ReaderAnimation.NONE
 	}
-
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	abstract fun switchPageBy(delta: Int)
 

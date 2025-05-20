@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPage
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
@@ -13,7 +14,6 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
-import org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity.Companion.EXTRA_MANGA
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,18 +23,15 @@ class ColorFilterConfigViewModel @Inject constructor(
 	private val mangaDataRepository: MangaDataRepository,
 ) : BaseViewModel() {
 
-	private val manga = savedStateHandle.require<ParcelableManga>(EXTRA_MANGA).manga
+	private val manga = savedStateHandle.require<ParcelableManga>(AppRouter.KEY_MANGA).manga
 
 	private var initialColorFilter: ReaderColorFilter? = null
 	val colorFilter = MutableStateFlow<ReaderColorFilter?>(null)
 	val onDismiss = MutableEventFlow<Unit>()
-	val preview = savedStateHandle.require<ParcelableMangaPage>(ColorFilterConfigActivity.EXTRA_PAGES).page
+	val preview = savedStateHandle.require<ParcelableMangaPage>(AppRouter.KEY_PAGES).page
 
 	val isChanged: Boolean
 		get() = colorFilter.value != initialColorFilter
-
-	val is32BitColorsEnabled: Boolean
-		get() = settings.is32BitColorsEnabled
 
 	init {
 		launchLoadingJob {

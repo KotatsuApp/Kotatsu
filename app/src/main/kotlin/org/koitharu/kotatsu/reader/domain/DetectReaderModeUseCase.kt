@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.reader.domain
 
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.util.Size
 import androidx.core.net.toFile
+import androidx.core.net.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import okhttp3.OkHttpClient
@@ -62,7 +62,7 @@ class DetectReaderModeUseCase @Inject constructor(
 		val pageIndex = (pages.size * 0.3).roundToInt()
 		val page = requireNotNull(pages.getOrNull(pageIndex)) { "No pages" }
 		val url = repository.getPageUrl(page)
-		val uri = Uri.parse(url)
+		val uri = url.toUri()
 
 		val size = when {
 			uri.isZipUri() -> runInterruptible(Dispatchers.IO) {

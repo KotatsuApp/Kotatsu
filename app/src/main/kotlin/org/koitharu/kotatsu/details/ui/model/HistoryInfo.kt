@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.details.ui.model
 
 import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.details.data.MangaDetails
+import org.koitharu.kotatsu.details.data.ReadingTime
 
 data class HistoryInfo(
 	val totalChapters: Int,
@@ -10,6 +11,7 @@ data class HistoryInfo(
 	val isIncognitoMode: Boolean,
 	val isChapterMissing: Boolean,
 	val canDownload: Boolean,
+	val estimatedTime: ReadingTime?,
 ) {
 	val isValid: Boolean
 		get() = totalChapters >= 0
@@ -29,7 +31,8 @@ fun HistoryInfo(
 	manga: MangaDetails?,
 	branch: String?,
 	history: MangaHistory?,
-	isIncognitoMode: Boolean
+	isIncognitoMode: Boolean,
+	estimatedTime: ReadingTime?,
 ): HistoryInfo {
 	val chapters = if (manga?.chapters?.isEmpty() == true) {
 		emptyList()
@@ -48,5 +51,6 @@ fun HistoryInfo(
 		isIncognitoMode = isIncognitoMode,
 		isChapterMissing = history != null && manga?.isLoaded == true && manga.allChapters.none { it.id == history.chapterId },
 		canDownload = manga?.isLocal == false,
+		estimatedTime = estimatedTime,
 	)
 }

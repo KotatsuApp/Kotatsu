@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	style="@style/Widget.Material3.CardView.Filled"
+	style="?materialCardViewFilledStyle"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:layout_marginHorizontal="16dp"
@@ -32,7 +32,7 @@
 				android:id="@android:id/title"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+				android:textAppearance="?textAppearanceTitleLarge"
 				android:textSize="20sp"
 				tools:text="Title" />
 
@@ -43,7 +43,7 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="start"
 				android:maxLines="10"
-				android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+				android:textAppearance="?textAppearanceTitleSmall"
 				tools:text="Subtitle" />
 
 		</LinearLayout>

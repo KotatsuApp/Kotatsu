@@ -15,10 +15,13 @@
 	<color name="blue_primary">#1976D2</color>
 	<color name="grey">#424242</color>
 	<color name="dim">#99000000</color>
+	<color name="dim2">#C8FFFFFF</color>
 	<color name="warning">#E65100</color>
 	<color name="launcher_background">#FFFFFF</color>
 	<color name="common_green">#388E3C</color>
 	<color name="common_red">#D32F2F</color>
+	<color name="nsfw_18">#FF8A65</color>
+	<color name="nsfw_16">#FFD54F</color>
 
 	<!-- Color schemes colors -->
 	<color name="background_miku">#F7FAF8</color>

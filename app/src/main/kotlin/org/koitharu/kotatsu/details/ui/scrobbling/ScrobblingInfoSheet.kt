@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.details.ui.scrobbling
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -10,30 +9,25 @@ import android.widget.AdapterView
 import android.widget.RatingBar
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.net.toUri
 import androidx.core.text.method.LinkMovementMethodCompat
-import androidx.fragment.app.FragmentManager
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
-import coil3.ImageLoader
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
-import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
-import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.sanitize
-import org.koitharu.kotatsu.core.util.ext.scaleUpActivityOptionsOf
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.SheetScrobblingBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
-import org.koitharu.kotatsu.image.ui.ImageActivity
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
-import org.koitharu.kotatsu.scrobbling.common.ui.selector.ScrobblingSelectorSheet
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ScrobblingInfoSheet :
@@ -46,14 +40,11 @@ class ScrobblingInfoSheet :
 	private val viewModel by activityViewModels<DetailsViewModel>()
 	private var scrobblerIndex: Int = -1
 
-	@Inject
-	lateinit var coil: ImageLoader
-
 	private var menu: PopupMenu? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		scrobblerIndex = requireArguments().getInt(ARG_INDEX, scrobblerIndex)
+		scrobblerIndex = requireArguments().getInt(AppRouter.KEY_INDEX, scrobblerIndex)
 	}
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): SheetScrobblingBinding {
@@ -85,6 +76,15 @@ class ScrobblingInfoSheet :
 		menu = null
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		viewBinding?.root?.updatePadding(
+			bottom = insets.getInsets(typeMask).bottom,
+		)
+		return insets.consume(v, typeMask, bottom = true)
+	}
+
+
 	override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 		viewModel.updateScrobbling(
 			index = scrobblerIndex,
@@ -108,11 +108,11 @@ class ScrobblingInfoSheet :
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_menu -> menu?.show()
-			R.id.imageView_cover -> {
-				val coverUrl = viewModel.scrobblingInfo.value.getOrNull(scrobblerIndex)?.coverUrl ?: return
-				val options = scaleUpActivityOptionsOf(v)
-				startActivity(ImageActivity.newIntent(v.context, coverUrl, null), options)
-			}
+			R.id.imageView_cover -> router.openImage(
+				url = viewModel.scrobblingInfo.value.getOrNull(scrobblerIndex)?.coverUrl ?: return,
+				source = null,
+				anchor = v,
+			)
 		}
 	}
 
@@ -129,20 +129,20 @@ class ScrobblingInfoSheet :
 		binding.spinnerStatus.setSelection(scrobbling.status?.ordinal ?: -1)
 		binding.imageViewLogo.contentDescription = getString(scrobbling.scrobbler.titleResId)
 		binding.imageViewLogo.setImageResource(scrobbling.scrobbler.iconResId)
-		binding.imageViewCover.newImageRequest(viewLifecycleOwner, scrobbling.coverUrl)?.apply {
-			defaultPlaceholders(binding.imageViewCover.context)
-			enqueueWith(coil)
-		}
+		binding.imageViewCover.setImageAsync(scrobbling.coverUrl)
 	}
 
 	override fun onMenuItemClick(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.action_browser -> {
 				val url = viewModel.scrobblingInfo.value.getOrNull(scrobblerIndex)?.externalUrl ?: return false
-				val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-				startActivity(
-					Intent.createChooser(intent, getString(R.string.open_in_browser)),
-				)
+				if (!router.openExternalBrowser(url, getString(R.string.open_in_browser))) {
+					Snackbar.make(
+						viewBinding?.textViewDescription ?: return false,
+						R.string.operation_not_supported,
+						Snackbar.LENGTH_SHORT,
+					).show()
+				}
 			}
 
 			R.id.action_unregister -> {
@@ -153,20 +153,10 @@ class ScrobblingInfoSheet :
 			R.id.action_edit -> {
 				val manga = viewModel.manga.value ?: return false
 				val scrobblerService = viewModel.scrobblingInfo.value.getOrNull(scrobblerIndex)?.scrobbler
-				ScrobblingSelectorSheet.show(parentFragmentManager, manga, scrobblerService)
+				router.showScrobblingSelectorSheet(manga, scrobblerService)
 				dismiss()
 			}
 		}
 		return true
-	}
-
-	companion object {
-
-		private const val TAG = "ScrobblingInfoBottomSheet"
-		private const val ARG_INDEX = "index"
-
-		fun show(fm: FragmentManager, index: Int) = ScrobblingInfoSheet().withArgs(1) {
-			putInt(ARG_INDEX, index)
-		}.show(fm, TAG)
 	}
 }

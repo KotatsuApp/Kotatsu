@@ -15,8 +15,10 @@
 		app:title="@string/list_options" />
 
 	<androidx.core.widget.NestedScrollView
+		android:id="@+id/scrollView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:clipToPadding="false"
 		android:scrollIndicators="top"
 		android:scrollbars="vertical">
 
@@ -141,7 +143,7 @@
 				android:paddingEnd="?android:listPreferredItemPaddingEnd"
 				android:singleLine="true"
 				android:text="@string/group"
-				android:textAppearance="?attr/textAppearanceButton"
+				android:textAppearance="?attr/textAppearanceListItem"
 				android:textColor="?colorOnSurfaceVariant"
 				android:visibility="gone"
 				app:drawableStartCompat="@drawable/ic_list_group"

@@ -20,6 +20,7 @@ data class BackupEntryModel(
 			BackupEntry.Name.CATEGORIES -> R.string.favourites_categories
 			BackupEntry.Name.FAVOURITES -> R.string.favourites
 			BackupEntry.Name.SETTINGS -> R.string.settings
+			BackupEntry.Name.SETTINGS_READER_GRID -> R.string.reader_actions
 			BackupEntry.Name.BOOKMARKS -> R.string.bookmarks
 			BackupEntry.Name.SOURCES -> R.string.remote_sources
 		}

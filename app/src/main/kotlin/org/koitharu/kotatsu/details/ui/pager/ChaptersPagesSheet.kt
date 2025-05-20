@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior.Companion.STATE_COLLAPSED
 import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetBehavior.Companion.STATE_DRAGGING
@@ -19,21 +22,27 @@ import org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetCallback
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.util.ActionModeListener
 import org.koitharu.kotatsu.core.ui.util.MenuInvalidator
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.doOnPageChanged
+import org.koitharu.kotatsu.core.util.ext.findCurrentPagerFragment
 import org.koitharu.kotatsu.core.util.ext.menuView
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
-import org.koitharu.kotatsu.core.util.ext.showDistinct
-import org.koitharu.kotatsu.core.util.ext.withArgs
+import org.koitharu.kotatsu.core.util.ext.smoothScrollToTop
 import org.koitharu.kotatsu.databinding.SheetChaptersPagesBinding
+import org.koitharu.kotatsu.details.ui.DetailsViewModel
+import org.koitharu.kotatsu.details.ui.ReadButtonDelegate
 import org.koitharu.kotatsu.download.ui.worker.DownloadStartedObserver
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), ActionModeListener, AdaptiveSheetCallback {
+class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(),
+	TabLayout.OnTabSelectedListener,
+	ActionModeListener,
+	AdaptiveSheetCallback {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -49,16 +58,20 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		disableFitToContents()
 
 		val args = arguments ?: Bundle.EMPTY
-		var defaultTab = args.getInt(ARG_TAB, settings.defaultDetailsTab)
+		var defaultTab = args.getInt(AppRouter.KEY_TAB, settings.defaultDetailsTab)
 		val adapter = ChaptersPagesAdapter(this, settings.isPagesTabEnabled)
 		if (!adapter.isPagesTabEnabled) {
 			defaultTab = (defaultTab - 1).coerceAtLeast(TAB_CHAPTERS)
+		}
+		(viewModel as? DetailsViewModel)?.let { dvm ->
+			ReadButtonDelegate(binding.splitButtonRead, dvm, router).attach(viewLifecycleOwner)
 		}
 		binding.pager.offscreenPageLimit = adapter.itemCount
 		binding.pager.recyclerView?.isNestedScrollingEnabled = false
 		binding.pager.adapter = adapter
 		binding.pager.doOnPageChanged(::onPageChanged)
 		TabLayoutMediator(binding.tabs, binding.pager, adapter).attach()
+		binding.tabs.addOnTabSelectedListener(this)
 		binding.pager.setCurrentItem(defaultTab, false)
 		binding.tabs.isVisible = adapter.itemCount > 1
 
@@ -78,8 +91,12 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 			viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.pager, this))
 			viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.pager, null))
 			viewModel.onDownloadStarted.observeEvent(viewLifecycleOwner, DownloadStartedObserver(binding.pager))
+		} else {
+			PeekHeightController(arrayOf(binding.headerBar, binding.toolbar)).attach()
 		}
 	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat = insets
 
 	override fun onStateChanged(sheet: View, newState: Int) {
 		if (newState == STATE_DRAGGING || newState == STATE_SETTLING) {
@@ -87,7 +104,9 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		}
 		val binding = viewBinding ?: return
 		val isActionModeStarted = actionModeDelegate?.isActionModeStarted == true
-		binding.toolbar.menuView?.isVisible = newState != STATE_COLLAPSED && !isActionModeStarted
+		binding.toolbar.menuView?.isVisible = newState == STATE_EXPANDED && !isActionModeStarted
+		binding.splitButtonRead.isVisible = newState != STATE_EXPANDED && !isActionModeStarted
+			&& viewModel is DetailsViewModel
 	}
 
 	override fun onActionModeStarted(mode: ActionMode) {
@@ -99,6 +118,17 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		unlock()
 		val state = behavior?.state ?: STATE_EXPANDED
 		viewBinding?.toolbar?.menuView?.isVisible = state != STATE_COLLAPSED
+	}
+
+	override fun onTabSelected(tab: TabLayout.Tab?) = Unit
+
+	override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
+
+	override fun onTabReselected(tab: TabLayout.Tab?) {
+		val f = childFragmentManager.findCurrentPagerFragment(
+			viewBinding?.pager ?: return,
+		) as? RecyclerViewOwner ?: return
+		f.recyclerView?.smoothScrollToTop()
 	}
 
 	override fun expandAndLock() {
@@ -138,22 +168,5 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(), Actio
 		const val TAB_CHAPTERS = 0
 		const val TAB_PAGES = 1
 		const val TAB_BOOKMARKS = 2
-		private const val ARG_TAB = "tag"
-		private const val TAG = "ChaptersPagesSheet"
-
-		fun show(fm: FragmentManager) {
-			ChaptersPagesSheet().showDistinct(fm, TAG)
-		}
-
-		fun show(fm: FragmentManager, defaultTab: Int) {
-			ChaptersPagesSheet().withArgs(1) {
-				putInt(ARG_TAB, defaultTab)
-			}.showDistinct(fm, TAG)
-		}
-
-		fun isShown(fm: FragmentManager): Boolean {
-			val sheet = fm.findFragmentByTag(TAG) as? ChaptersPagesSheet
-			return sheet?.dialog?.isShowing == true
-		}
 	}
 }

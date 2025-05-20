@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="favourites">Favourites</string>
+    <string name="you_have_not_favourites_yet">No favourites yet</string>
+    <string name="add_to_favourites">Favourite this</string>
+    <string name="favourites_categories">Favourite categories</string>
+    <string name="all_favourites">All favourites</string>
+    <string name="backup_information">You can create backup of your history and favourites and restore it</string>
+    <string name="empty_favourite_categories">No favourite categories</string>
+    <string name="appwidget_shelf_description">Manga from your favourites</string>
+    <string name="show_reading_indicators_summary">Show percentage read in history and favourites</string>
+    <string name="categories_delete_confirm">Are you sure you want to delete the selected favourite categories?\nAll manga in it will be lost and this cannot be undone.</string>
+    <string name="removed_from_favourites">Removed from favourites</string>
+    <string name="migrate_confirmation">Manga \"%1$s\" from \"%2$s\" will be replaced with \"%3$s\" from \"%4$s\" in your history and favourites (if present)</string>
+    <string name="not_in_favorites">Not in favourites</string>
+</resources>

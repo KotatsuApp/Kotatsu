@@ -7,8 +7,6 @@ import androidx.collection.ArraySet
 import androidx.core.net.toUri
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.core.exceptions.IncompatiblePluginException
-import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
-import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Demographic
@@ -22,6 +20,7 @@ import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.find
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.splitTwoParts
 import java.util.EnumSet
@@ -82,7 +81,7 @@ class ExternalPluginContentSource(
 			publicUrl = details.publicUrl.ifEmpty { manga.publicUrl },
 			rating = maxOf(details.rating, manga.rating),
 			isNsfw = details.isNsfw,
-			coverUrl = details.coverUrl.ifEmpty { manga.coverUrl },
+			coverUrl = details.coverUrl.ifNullOrEmpty { manga.coverUrl },
 			tags = details.tags + manga.tags,
 			state = details.state ?: manga.state,
 			author = details.author.ifNullOrEmpty { manga.author },
@@ -230,7 +229,7 @@ class ExternalPluginContentSource(
 					do {
 						result += MangaChapter(
 							id = cursor.getLong(COLUMN_ID),
-							name = cursor.getString(COLUMN_NAME),
+							title = cursor.getStringOrNull(COLUMN_NAME),
 							number = cursor.getFloatOrDefault(COLUMN_NUMBER, 0f),
 							volume = cursor.getIntOrDefault(COLUMN_VOLUME, 0),
 							url = cursor.getString(COLUMN_URL),
@@ -253,7 +252,7 @@ class ExternalPluginContentSource(
 		publicUrl = getString(COLUMN_PUBLIC_URL),
 		rating = getFloat(COLUMN_RATING),
 		isNsfw = getBooleanOrDefault(COLUMN_IS_NSFW, false),
-		coverUrl = getString(COLUMN_COVER_URL),
+		coverUrl = getStringOrNull(COLUMN_COVER_URL),
 		tags = getStringOrNull(COLUMN_TAGS)?.split(':')?.mapNotNullToSet {
 			val parts = it.splitTwoParts('=') ?: return@mapNotNullToSet null
 			MangaTag(key = parts.first, title = parts.second, source = source)

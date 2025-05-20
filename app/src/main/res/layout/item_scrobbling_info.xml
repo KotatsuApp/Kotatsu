@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	style="@style/Widget.Material3.CardView.Outlined"
+	style="?materialCardViewOutlinedStyle"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content">
 
@@ -33,7 +33,7 @@
 			android:layout_marginHorizontal="16dp"
 			android:layout_toEndOf="@id/imageView_cover"
 			android:singleLine="true"
-			android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+			android:textAppearance="?textAppearanceTitleSmall"
 			app:layout_constraintBottom_toTopOf="@id/textView_status"
 			app:layout_constraintEnd_toStartOf="@id/imageView_cover"
 			app:layout_constraintStart_toEndOf="@id/imageView_icon"
@@ -46,9 +46,9 @@
 			style="?ratingBarStyleSmall"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginStart="6dp"
 			android:isIndicator="true"
 			android:max="1"
-			android:layout_marginStart="6dp"
 			android:numStars="5"
 			app:layout_constraintBottom_toBottomOf="@id/textView_status"
 			app:layout_constraintStart_toEndOf="@id/textView_status"
@@ -60,13 +60,13 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="4dp"
-			android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+			android:textAppearance="?textAppearanceBody1"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_icon"
 			app:layout_constraintTop_toBottomOf="@id/textView_title"
 			tools:text="Reading" />
 
-		<ImageView
+		<org.koitharu.kotatsu.image.ui.CoverImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="0dp"
 			android:layout_height="0dp"

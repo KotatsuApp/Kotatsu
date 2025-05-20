@@ -22,12 +22,12 @@ fun Uri.isNetworkUri() = scheme.let {
 	it == URI_SCHEME_HTTP || it == URI_SCHEME_HTTPS
 }
 
-fun File.toZipUri(entryPath: String): Uri = Uri.parse("$URI_SCHEME_ZIP://$absolutePath#$entryPath")
+fun File.toZipUri(entryPath: String): Uri = "$URI_SCHEME_ZIP://$absolutePath#$entryPath".toUri()
 
 fun File.toZipUri(entryPath: Path?): Uri =
 	toZipUri(entryPath?.toString()?.removePrefix(Path.DIRECTORY_SEPARATOR).orEmpty())
 
-fun String.toUriOrNull() = if (isEmpty()) null else Uri.parse(this)
+fun String.toUriOrNull() = if (isEmpty()) null else this.toUri()
 
 fun File.toUri(fragment: String?): Uri = toUri().run {
 	if (fragment != null) {

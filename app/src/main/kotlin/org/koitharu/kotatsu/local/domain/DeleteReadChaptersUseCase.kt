@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.local.domain
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.fold
@@ -13,7 +12,6 @@ import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
-import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -26,7 +24,6 @@ class DeleteReadChaptersUseCase @Inject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val historyRepository: HistoryRepository,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
-	@LocalStorageChanges private val localStorageChanges: MutableSharedFlow<LocalManga?>,
 ) {
 
 	suspend operator fun invoke(manga: Manga): Int {
@@ -37,7 +34,6 @@ class DeleteReadChaptersUseCase @Inject constructor(
 		}
 		val task = getDeletionTask(localManga) ?: return 0
 		localMangaRepository.deleteChapters(task.manga.manga, task.chaptersIds)
-		emitUpdate(localManga)
 		return task.chaptersIds.size
 	}
 
@@ -62,7 +58,6 @@ class DeleteReadChaptersUseCase @Inject constructor(
 		}.buffer().map {
 			runCatchingCancellable {
 				localMangaRepository.deleteChapters(it.manga.manga, it.chaptersIds)
-				emitUpdate(it.manga)
 				it.chaptersIds.size
 			}.onFailure {
 				it.printStackTraceDebug()
@@ -86,11 +81,6 @@ class DeleteReadChaptersUseCase @Inject constructor(
 				chaptersIds = filteredChapters.ids(),
 			)
 		}
-	}
-
-	private suspend fun emitUpdate(subject: LocalManga) {
-		val updated = localMangaRepository.getDetails(subject.manga)
-		localStorageChanges.emit(subject.copy(manga = updated))
 	}
 
 	private suspend fun getAllChapters(manga: LocalManga): List<MangaChapter> = runCatchingCancellable {

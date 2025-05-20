@@ -142,7 +142,7 @@ abstract class BasePagerReaderFragment : BaseReaderFragment<FragmentReaderPagerB
 	override fun onCreateAdapter(): BaseReaderAdapter<*> = PagesAdapter(
 		lifecycleOwner = viewLifecycleOwner,
 		loader = pageLoader,
-		settings = viewModel.readerSettings,
+		readerSettingsProducer = viewModel.readerSettingsProducer,
 		networkState = networkState,
 		exceptionResolver = exceptionResolver,
 	)

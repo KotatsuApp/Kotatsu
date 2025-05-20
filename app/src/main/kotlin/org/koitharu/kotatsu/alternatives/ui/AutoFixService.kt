@@ -10,7 +10,6 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
-import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import coil3.ImageLoader
 import coil3.request.ImageRequest
@@ -20,17 +19,19 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.alternatives.domain.AutoFixUseCase
 import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.model.getTitle
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
+import org.koitharu.kotatsu.core.util.ext.powerManager
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toBitmapOrNull
-import org.koitharu.kotatsu.details.ui.DetailsActivity
+import org.koitharu.kotatsu.core.util.ext.withPartialWakeLock
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @AndroidEntryPoint
 class AutoFixService : CoroutineIntentService() {
@@ -52,12 +53,14 @@ class AutoFixService : CoroutineIntentService() {
 		val ids = requireNotNull(intent.getLongArrayExtra(DATA_IDS))
 		startForeground(this)
 		for (mangaId in ids) {
-			val result = runCatchingCancellable {
-				autoFixUseCase.invoke(mangaId)
-			}
-			if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-				val notification = buildNotification(result)
-				notificationManager.notify(TAG, startId, notification)
+			powerManager.withPartialWakeLock(TAG) {
+				val result = runCatchingCancellable {
+					autoFixUseCase.invoke(mangaId)
+				}
+				if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+					val notification = buildNotification(result)
+					notificationManager.notify(TAG, startId, notification)
+				}
 			}
 		}
 	}
@@ -92,7 +95,7 @@ class AutoFixService : CoroutineIntentService() {
 			.setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
 			.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 			.addAction(
-				materialR.drawable.material_ic_clear_black_24dp,
+				appcompatR.drawable.abc_ic_clear_material,
 				applicationContext.getString(android.R.string.cancel),
 				jobContext.getCancelIntent(),
 			)
@@ -122,7 +125,7 @@ class AutoFixService : CoroutineIntentService() {
 					).toBitmapOrNull(),
 				)
 				notification.setSubText(replacement.title)
-				val intent = DetailsActivity.newIntent(applicationContext, replacement)
+				val intent = AppRouter.detailsIntent(applicationContext, replacement)
 				notification.setContentIntent(
 					PendingIntentCompat.getActivity(
 						applicationContext,

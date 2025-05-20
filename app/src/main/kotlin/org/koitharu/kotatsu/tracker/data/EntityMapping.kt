@@ -10,7 +10,7 @@ fun TrackLogWithManga.toTrackingLogItem(): TrackingLogItem {
 	return TrackingLogItem(
 		id = trackLog.id,
 		chapters = chaptersList,
-		manga = manga.toManga(tags.toMangaTags()),
+		manga = manga.toManga(tags.toMangaTags(), null),
 		createdAt = Instant.ofEpochMilli(trackLog.createdAt),
 		isNew = trackLog.isUnread,
 	)

@@ -52,7 +52,7 @@ abstract class FavouriteCategoriesDao {
 	@Query("SELECT MAX(sort_key) FROM favourite_categories WHERE deleted_at = 0")
 	protected abstract suspend fun getMaxSortKey(): Int?
 
-	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH) // for the new_chapters column
+	@SuppressWarnings(RoomWarnings.QUERY_MISMATCH) // for the new_chapters column
 	@Query("SELECT favourite_categories.*, (SELECT SUM(chapters_new) FROM tracks WHERE tracks.manga_id IN (SELECT manga_id FROM favourites WHERE favourites.category_id = favourite_categories.category_id)) AS new_chapters FROM favourite_categories WHERE track = 1 AND show_in_lib = 1 AND deleted_at = 0 AND new_chapters > 0 ORDER BY new_chapters DESC LIMIT :limit")
 	abstract suspend fun getMostUpdatedCategories(limit: Int): List<FavouriteCategoryEntity>
 

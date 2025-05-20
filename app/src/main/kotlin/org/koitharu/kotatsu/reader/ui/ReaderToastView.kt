@@ -1,22 +1,27 @@
 package org.koitharu.kotatsu.reader.ui
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import androidx.annotation.StringRes
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.transition.Fade
-import androidx.transition.Slide
-import androidx.transition.TransitionManager
-import androidx.transition.TransitionSet
 import com.google.android.material.textview.MaterialTextView
+import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
+import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
 
 class ReaderToastView @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	defStyleAttr: Int = 0,
 ) : MaterialTextView(context, attrs, defStyleAttr) {
+
+	private var currentAnimator: ViewPropertyAnimator? = null
 
 	private var hideRunnable = Runnable {
 		hide()
@@ -25,8 +30,7 @@ class ReaderToastView @JvmOverloads constructor(
 	fun show(message: CharSequence) {
 		removeCallbacks(hideRunnable)
 		text = message
-		setupTransition()
-		isVisible = true
+		showImpl()
 	}
 
 	fun show(@StringRes messageId: Int) {
@@ -40,8 +44,7 @@ class ReaderToastView @JvmOverloads constructor(
 
 	fun hide() {
 		removeCallbacks(hideRunnable)
-		setupTransition()
-		isVisible = false
+		hideImpl()
 	}
 
 	override fun onDetachedFromWindow() {
@@ -49,13 +52,41 @@ class ReaderToastView @JvmOverloads constructor(
 		super.onDetachedFromWindow()
 	}
 
-	private fun setupTransition() {
-		val parentView = parent as? ViewGroup ?: return
-		val transition = TransitionSet()
-			.setOrdering(TransitionSet.ORDERING_TOGETHER)
-			.addTarget(this)
-			.addTransition(Slide(Gravity.BOTTOM))
-			.addTransition(Fade())
-		TransitionManager.beginDelayedTransition(parentView, transition)
+	private fun showImpl() {
+		currentAnimator?.cancel()
+		clearAnimation()
+		if (!context.isAnimationsEnabled) {
+			currentAnimator = null
+			isVisible = true
+			return
+		}
+		alpha = 0f
+		isVisible = true
+		currentAnimator = animate()
+			.alpha(1f)
+			.setInterpolator(DecelerateInterpolator())
+			.setDuration(context.getAnimationDuration(R.integer.config_shorterAnimTime))
+			.setListener(null)
+	}
+
+	private fun hideImpl() {
+		currentAnimator?.cancel()
+		clearAnimation()
+		if (!context.isAnimationsEnabled) {
+			currentAnimator = null
+			isGone = true
+			return
+		}
+		currentAnimator = animate()
+			.alpha(0f)
+			.setInterpolator(AccelerateInterpolator())
+			.setDuration(context.getAnimationDuration(R.integer.config_shorterAnimTime))
+			.setListener(
+				object : AnimatorListenerAdapter() {
+					override fun onAnimationEnd(animation: Animator) {
+						isGone = true
+					}
+				},
+			)
 	}
 }

@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.view.ActionMode
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -29,7 +31,9 @@ import org.koitharu.kotatsu.core.ui.BaseActivityEntryPoint
 import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
 import com.google.android.material.R as materialR
 
-abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment(), ExceptionResolver.Host {
+abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment(),
+	OnApplyWindowInsetsListener,
+	ExceptionResolver.Host {
 
 	private var waitingForDismissAllowingStateLoss = false
 	private var isFitToContentsDisabled = false
@@ -74,6 +78,7 @@ abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment(), E
 
 	final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		ViewCompat.setOnApplyWindowInsetsListener(view, this)
 		val binding = requireViewBinding()
 		if (actionModeDelegate == null) {
 			actionModeDelegate = (activity as? BaseActivity<*>)?.actionModeDelegate

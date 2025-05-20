@@ -1,23 +1,24 @@
 package org.koitharu.kotatsu.core.model
 
 import android.content.Context
-import android.graphics.Color
+import android.os.Build
 import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
-import android.text.style.SuperscriptSpan
+import android.text.style.ImageSpan
+import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.text.inSpans
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.toLocale
+import org.koitharu.kotatsu.core.util.ext.toLocaleOrNull
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.splitTwoParts
-import com.google.android.material.R as materialR
+import java.util.Locale
 
 data object LocalMangaSource : MangaSource {
 	override val name = "LOCAL"
@@ -74,6 +75,8 @@ tailrec fun MangaSource.unwrap(): MangaSource = if (this is MangaSourceInfo) {
 	this
 }
 
+fun MangaSource.getLocale(): Locale? = (unwrap() as? MangaParserSource)?.locale?.toLocaleOrNull()
+
 fun MangaSource.getSummary(context: Context): String? = when (val source = unwrap()) {
 	is MangaParserSource -> {
 		val type = context.getString(source.contentType.titleResId)
@@ -93,10 +96,15 @@ fun MangaSource.getTitle(context: Context): String = when (val source = unwrap()
 	else -> context.getString(R.string.unknown)
 }
 
-fun SpannableStringBuilder.appendNsfwLabel(context: Context) = inSpans(
-	ForegroundColorSpan(context.getThemeColor(materialR.attr.colorError, Color.RED)),
-	RelativeSizeSpan(0.74f),
-	SuperscriptSpan(),
-) {
-	append(context.getString(R.string.nsfw))
+fun SpannableStringBuilder.appendIcon(textView: TextView, @DrawableRes resId: Int): SpannableStringBuilder {
+	val icon = ContextCompat.getDrawable(textView.context, resId) ?: return this
+	icon.setTintList(textView.textColors)
+	val size = textView.lineHeight
+	icon.setBounds(0, 0, size, size)
+	val alignment = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+		ImageSpan.ALIGN_CENTER
+	} else {
+		ImageSpan.ALIGN_BOTTOM
+	}
+	return inSpans(ImageSpan(icon, alignment)) { append(' ') }
 }

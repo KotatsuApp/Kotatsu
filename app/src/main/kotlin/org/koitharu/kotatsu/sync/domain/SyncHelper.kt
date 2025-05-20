@@ -9,10 +9,10 @@ import android.content.OperationApplicationException
 import android.content.SyncResult
 import android.content.SyncStats
 import android.database.Cursor
-import android.net.Uri
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.core.content.contentValuesOf
+import androidx.core.net.toUri
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -59,7 +59,7 @@ class SyncHelper @AssistedInject constructor(
 		.addInterceptor(SyncInterceptor(context, account))
 		.build()
 	private val baseUrl: String by lazy {
-		settings.syncURL
+		settings.syncUrl
 	}
 	private val defaultGcPeriod: Long // gc period if sync enabled
 		get() = TimeUnit.DAYS.toMillis(4)
@@ -288,7 +288,7 @@ class SyncHelper @AssistedInject constructor(
 			?: throw OperationApplicationException("Query failed: $uri")
 	}
 
-	private fun uri(authority: String, table: String) = Uri.parse("content://$authority/$table")
+	private fun uri(authority: String, table: String) = "content://$authority/$table".toUri()
 
 	private fun JSONObject.removeJSONObject(name: String) = remove(name) as JSONObject
 

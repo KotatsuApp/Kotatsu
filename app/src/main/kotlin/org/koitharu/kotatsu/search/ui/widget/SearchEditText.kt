@@ -21,20 +21,21 @@ import androidx.core.content.ContextCompat
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.drawableEnd
 import org.koitharu.kotatsu.core.util.ext.drawableStart
+import org.koitharu.kotatsu.search.domain.SearchKind
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 private const val DRAWABLE_END = 2
 
 class SearchEditText @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
-	@AttrRes defStyleAttr: Int = materialR.attr.editTextStyle,
+	@AttrRes defStyleAttr: Int = appcompatR.attr.editTextStyle,
 ) : AppCompatEditText(context, attrs, defStyleAttr) {
 
 	var searchSuggestionListener: SearchSuggestionListener? = null
 	private val clearIcon =
-		ContextCompat.getDrawable(context, materialR.drawable.abc_ic_clear_material)
+		ContextCompat.getDrawable(context, appcompatR.drawable.abc_ic_clear_material)
 	private var isEmpty = text.isNullOrEmpty()
 
 	init {
@@ -66,7 +67,7 @@ class SearchEditText @JvmOverloads constructor(
 			&& query.isNotEmpty()
 		) {
 			cancelLongPress()
-			searchSuggestionListener?.onQueryClick(query, submit = true)
+			searchSuggestionListener?.onQueryClick(query, SearchKind.SIMPLE, submit = true)
 			clearFocus()
 			return true
 		}
@@ -76,7 +77,7 @@ class SearchEditText @JvmOverloads constructor(
 	override fun onEditorAction(actionCode: Int) {
 		super.onEditorAction(actionCode)
 		if (actionCode == EditorInfo.IME_ACTION_SEARCH) {
-			searchSuggestionListener?.onQueryClick(query, submit = true)
+			searchSuggestionListener?.onQueryClick(query, SearchKind.SIMPLE, submit = true)
 		}
 	}
 

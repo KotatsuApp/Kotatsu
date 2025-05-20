@@ -21,6 +21,7 @@ import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.mapJSONNotNull
 import org.koitharu.kotatsu.parsers.util.parseJsonArray
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.suspendlazy.getOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,6 +42,9 @@ class AppUpdateRepository @Inject constructor(
 		append(context.getString(R.string.github_updates_repo))
 		append("/releases?page=1&per_page=10")
 	}
+
+	val isUpdateAvailable: Boolean
+		get() = availableUpdate.value != null
 
 	fun observeAvailableUpdate() = availableUpdate.asStateFlow()
 
@@ -85,14 +89,8 @@ class AppUpdateRepository @Inject constructor(
 	}
 
 	@Suppress("KotlinConstantConditions")
-	fun isUpdateSupported(): Boolean {
-		return BuildConfig.BUILD_TYPE != BUILD_TYPE_RELEASE || appValidator.isOriginalApp
-	}
-
-	suspend fun getCurrentVersionChangelog(): String? {
-		val currentVersion = VersionId(BuildConfig.VERSION_NAME)
-		val available = getAvailableVersions()
-		return available.find { x -> x.versionId == currentVersion }?.description
+	suspend fun isUpdateSupported(): Boolean {
+		return BuildConfig.BUILD_TYPE != BUILD_TYPE_RELEASE || appValidator.isOriginalApp.getOrNull() == true
 	}
 
 	private inline fun JSONArray.find(predicate: (JSONObject) -> Boolean): JSONObject? {

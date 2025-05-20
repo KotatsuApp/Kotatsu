@@ -10,10 +10,10 @@ import androidx.room.Upsert
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
-import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
+import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 
 @Dao
 abstract class MangaSourcesDao {
@@ -61,21 +61,11 @@ abstract class MangaSourcesDao {
 	@Query("SELECT * FROM sources WHERE pinned = 1")
 	abstract suspend fun findAllPinned(): List<MangaSourceEntity>
 
-	fun observeEnabled(order: SourcesSortOrder): Flow<List<MangaSourceEntity>> {
-		val orderBy = getOrderBy(order)
+	fun observeAll(enabledOnly: Boolean, order: SourcesSortOrder): Flow<List<MangaSourceEntity>> =
+		observeImpl(getQuery(enabledOnly, order))
 
-		@Language("RoomSql")
-		val query = SimpleSQLiteQuery("SELECT * FROM sources WHERE enabled = 1 ORDER BY pinned DESC, $orderBy")
-		return observeImpl(query)
-	}
-
-	suspend fun findAllEnabled(order: SourcesSortOrder): List<MangaSourceEntity> {
-		val orderBy = getOrderBy(order)
-
-		@Language("RoomSql")
-		val query = SimpleSQLiteQuery("SELECT * FROM sources WHERE enabled = 1 ORDER BY pinned DESC, $orderBy")
-		return findAllImpl(query)
-	}
+	suspend fun findAll(enabledOnly: Boolean, order: SourcesSortOrder): List<MangaSourceEntity> =
+		findAllImpl(getQuery(enabledOnly, order))
 
 	@Transaction
 	open suspend fun setEnabled(source: String, isEnabled: Boolean) {
@@ -87,6 +77,7 @@ abstract class MangaSourcesDao {
 				addedIn = BuildConfig.VERSION_CODE,
 				lastUsedAt = 0,
 				isPinned = false,
+				cfState = CloudFlareHelper.PROTECTION_NOT_DETECTED,
 			)
 			upsert(entity)
 		}
@@ -100,6 +91,17 @@ abstract class MangaSourcesDao {
 
 	@RawQuery
 	protected abstract suspend fun findAllImpl(query: SupportSQLiteQuery): List<MangaSourceEntity>
+
+	private fun getQuery(enabledOnly: Boolean, order: SourcesSortOrder) = SimpleSQLiteQuery(
+		buildString {
+			append("SELECT * FROM sources ")
+			if (enabledOnly) {
+				append("WHERE enabled = 1 ")
+			}
+			append("ORDER BY pinned DESC, ")
+			append(getOrderBy(order))
+		},
+	)
 
 	private fun getOrderBy(order: SourcesSortOrder) = when (order) {
 		SourcesSortOrder.ALPHABETIC -> "source ASC"

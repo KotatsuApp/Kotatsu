@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:background="@drawable/bg_card"
+	tools:layout_height="wrap_content"
+	tools:layout_margin="@dimen/screen_padding"
+	tools:layout_width="match_parent"
+	tools:paddingBottom="@dimen/margin_normal"
+	tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:minHeight="?minTouchTargetSize"
+		android:paddingHorizontal="@dimen/margin_normal"
+		android:text="@string/automatic_scroll"
+		android:textAppearance="?textAppearanceTitleMedium"
+		app:layout_constraintEnd_toStartOf="@id/button_close"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<ImageButton
+		android:id="@+id/button_close"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="?selectableItemBackgroundBorderless"
+		android:contentDescription="@string/close"
+		android:minWidth="?minTouchTargetSize"
+		android:minHeight="?minTouchTargetSize"
+		android:src="?actionModeCloseDrawable"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<com.google.android.material.materialswitch.MaterialSwitch
+		android:id="@+id/switch_scroll_timer"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="@dimen/margin_normal"
+		android:ellipsize="end"
+		android:singleLine="true"
+		android:text="@string/enable"
+		android:textAppearance="?attr/textAppearanceTitleSmall"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/textView_title" />
+
+	<TextView
+		android:id="@+id/label_timer"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:text="@string/speed"
+		android:textAppearance="?attr/textAppearanceTitleSmall"
+		app:layout_constraintBottom_toBottomOf="@id/slider_timer"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="@id/slider_timer" />
+
+	<org.koitharu.kotatsu.core.ui.widgets.CubicSlider
+		android:id="@+id/slider_timer"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="@dimen/margin_normal"
+		android:contentDescription="@string/speed"
+		android:labelFor="@id/switch_scroll_timer"
+		android:valueFrom="0.001"
+		android:valueTo="0.9"
+		app:labelBehavior="floating"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/label_timer"
+		app:layout_constraintTop_toBottomOf="@id/switch_scroll_timer" />
+
+	<TextView
+		android:id="@+id/textView_description"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="@dimen/margin_normal"
+		android:layout_marginTop="@dimen/margin_small"
+		android:textAppearance="?textAppearanceBodySmall"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/slider_timer"
+		tools:text="@string/page_switch_timer" />
+</merge>

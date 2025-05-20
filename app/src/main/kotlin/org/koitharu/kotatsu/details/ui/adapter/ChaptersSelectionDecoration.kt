@@ -15,16 +15,17 @@ import org.koitharu.kotatsu.core.ui.list.decor.AbstractSelectionItemDecoration
 import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
+import androidx.appcompat.R as appcompatR
 import com.google.android.material.R as materialR
 
 class ChaptersSelectionDecoration(context: Context) : AbstractSelectionItemDecoration() {
 
 	private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-	private val radius = context.resources.getDimension(materialR.dimen.abc_control_corner_material)
+	private val radius = context.resources.getDimension(appcompatR.dimen.abc_control_corner_material)
 	private val checkIcon = ContextCompat.getDrawable(context, materialR.drawable.ic_mtrl_checked_circle)
 	private val iconOffset = context.resources.getDimensionPixelOffset(R.dimen.chapter_check_offset)
 	private val iconSize = context.resources.getDimensionPixelOffset(R.dimen.chapter_check_size)
-	private val strokeColor = context.getThemeColor(materialR.attr.colorPrimary, Color.RED)
+	private val strokeColor = context.getThemeColor(appcompatR.attr.colorPrimary, Color.RED)
 	private val fillColor = ColorUtils.setAlphaComponent(
 		ColorUtils.blendARGB(strokeColor, context.getThemeColor(materialR.attr.colorSurface), 0.8f),
 		0x74,
@@ -32,7 +33,7 @@ class ChaptersSelectionDecoration(context: Context) : AbstractSelectionItemDecor
 
 	init {
 		paint.color = ColorUtils.setAlphaComponent(
-			context.getThemeColor(materialR.attr.colorPrimary, Color.DKGRAY),
+			context.getThemeColor(appcompatR.attr.colorPrimary, Color.DKGRAY),
 			98,
 		)
 		paint.style = Paint.Style.FILL

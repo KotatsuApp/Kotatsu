@@ -5,5 +5,5 @@
 	android:layout_height="wrap_content"
 	android:padding="12dp"
 	android:text="@string/nothing_found"
-	android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+	android:textAppearance="?textAppearanceBody1"
 	android:textColor="?android:textColorSecondary" />

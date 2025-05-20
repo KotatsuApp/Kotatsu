@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<com.google.android.material.appbar.MaterialToolbar
+		android:id="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize">
+
+		<Button
+			android:id="@+id/button_done"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:layout_marginHorizontal="@dimen/toolbar_button_margin"
+			android:text="@string/save" />
+
+	</com.google.android.material.appbar.MaterialToolbar>
+
+	<ScrollView
+		android:id="@+id/scrollView"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:clipToPadding="false"
+		android:overScrollMode="ifContentScrolls">
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingBottom="@dimen/screen_padding">
+
+			<org.koitharu.kotatsu.image.ui.CoverImageView
+				android:id="@+id/imageView_cover"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:layout_marginStart="16dp"
+				android:layout_marginTop="16dp"
+				android:background="?colorSecondaryContainer"
+				android:clipToOutline="true"
+				android:foreground="?selectableItemBackground"
+				android:scaleType="centerCrop"
+				app:layout_constraintDimensionRatio="H,13:18"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintWidth_percent="0.3"
+				app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+				tools:background="@tools:sample/backgrounds/scenic[5]"
+				tools:ignore="ContentDescription,UnusedAttribute" />
+
+			<TextView
+				android:id="@+id/textView_cover_title"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/screen_padding"
+				android:paddingHorizontal="@dimen/margin_small"
+				android:text="@string/change_cover"
+				android:textAppearance="?textAppearanceTitleSmall"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/imageView_cover"
+				app:layout_constraintTop_toTopOf="@id/imageView_cover" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+				android:id="@+id/button_pick_file"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="4dp"
+				android:text="@string/pick_custom_file"
+				app:drawableStartCompat="@drawable/ic_folder_file"
+				app:layout_constraintEnd_toEndOf="@id/textView_cover_title"
+				app:layout_constraintStart_toStartOf="@id/textView_cover_title"
+				app:layout_constraintTop_toBottomOf="@id/textView_cover_title" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+				android:id="@+id/button_pick_page"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:text="@string/pick_manga_page"
+				android:visibility="gone"
+				app:drawableStartCompat="@drawable/ic_grid"
+				app:layout_constraintEnd_toEndOf="@id/textView_cover_title"
+				app:layout_constraintStart_toStartOf="@id/textView_cover_title"
+				app:layout_constraintTop_toBottomOf="@id/button_pick_file" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+				android:id="@+id/button_reset_cover"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:text="@string/use_default_cover"
+				app:drawableStartCompat="@drawable/ic_revert"
+				app:layout_constraintEnd_toEndOf="@id/textView_cover_title"
+				app:layout_constraintStart_toStartOf="@id/textView_cover_title"
+				app:layout_constraintTop_toBottomOf="@id/button_pick_page" />
+
+			<androidx.constraintlayout.widget.Barrier
+				android:id="@+id/barrier_cover"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				app:barrierDirection="bottom"
+				app:constraint_referenced_ids="imageView_cover,button_reset_cover" />
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/layout_name"
+				style="?textInputOutlinedStyle"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/screen_padding"
+				android:layout_marginTop="@dimen/margin_normal"
+				app:endIconContentDescription="@string/reset"
+				app:endIconDrawable="@drawable/ic_revert"
+				app:endIconMode="custom"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/barrier_cover">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/edit_name"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:hint="@string/name"
+					android:imeOptions="actionDone"
+					android:inputType="textCapSentences"
+					android:maxLength="120"
+					tools:text="@tools:sample/lorem[3]" />
+
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<TextView
+				android:id="@+id/textView_tip"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_normal"
+				android:text="@string/manga_override_hint"
+				android:textAppearance="?attr/textAppearanceBodySmall"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/layout_name" />
+
+			<TextView
+				android:id="@+id/textView_error"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/screen_padding"
+				android:layout_marginTop="@dimen/margin_small"
+				android:textColor="?colorError"
+				android:visibility="gone"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/textView_tip"
+				tools:text="@tools:sample/lorem[4]"
+				tools:visibility="visible" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</ScrollView>
+
+</LinearLayout>

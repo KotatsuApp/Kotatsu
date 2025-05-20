@@ -30,7 +30,7 @@
 		android:strokeWidth="1"
 		android:strokeColor="?colorOnSurface" />
 	<path
-		android:fillColor="?colorSurface"
+		android:fillColor="?android:colorBackground"
 		android:pathData="M31.54,84.88l0,60.92a4.52,4.52 0,0 0,0.4 2.28,4.66 4.66,0 0,0 1.52,1.37c12.43,8.11 17.64,12.94 30.07,21.05 1.28,0.83 4.49,3.75 6,4 6,1 8.09,2.19 9.57,2.38 16.52,2.14 32.76,2.57 49.43,2.62 0,-22 0.44,-43.4 0.45,-65.43a1.69,1.69 0,0 0,-0.2 -1,1.79 1.79,0 0,0 -1.43,-0.55l-45.25,-2.78a40.24,40.24 0,0 1,-9.35 -1.31,37.7 37.7,0 0,1 -7,-3.19A284.06,284.06 0,0 1,32.57 83.87" />
 	<path
 		android:fillColor="?colorOnSurface"

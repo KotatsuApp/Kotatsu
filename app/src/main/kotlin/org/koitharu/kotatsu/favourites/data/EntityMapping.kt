@@ -16,6 +16,6 @@ fun FavouriteCategoryEntity.toFavouriteCategory(id: Long = categoryId.toLong()) 
 	isVisibleInLibrary = isVisibleInLibrary,
 )
 
-fun FavouriteManga.toManga() = manga.toManga(tags.toMangaTags())
+fun FavouriteManga.toManga() = manga.toManga(tags.toMangaTags(), null)
 
 fun Collection<FavouriteManga>.toMangaList() = map { it.toManga() }

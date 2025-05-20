@@ -17,10 +17,17 @@ class DoublePageHolder(
 	owner: LifecycleOwner,
 	binding: ItemPageBinding,
 	loader: PageLoader,
-	settings: ReaderSettings,
+	readerSettingsProducer: ReaderSettings.Producer,
 	networkState: NetworkState,
 	exceptionResolver: ExceptionResolver,
-) : PageHolder(owner, binding, loader, settings, networkState, exceptionResolver) {
+) : PageHolder(
+	owner = owner,
+	binding = binding,
+	loader = loader,
+	readerSettingsProducer = readerSettingsProducer,
+	networkState = networkState,
+	exceptionResolver = exceptionResolver,
+) {
 
 	private val isEven: Boolean
 		get() = bindingAdapterPosition and 1 == 0
@@ -35,7 +42,7 @@ class DoublePageHolder(
 			.gravity = (if (isEven) Gravity.START else Gravity.END) or Gravity.BOTTOM
 	}
 
-	override fun onImageShowing(settings: ReaderSettings) {
+	override fun onReady() {
 		with(binding.ssiv) {
 			maxScale = 2f * maxOf(
 				width / sWidth.toFloat(),

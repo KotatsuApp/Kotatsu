@@ -25,13 +25,21 @@ class ChaptersPagesAdapter(
 	}
 
 	override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
-		tab.setText(
+		tab.setIcon(
 			when (position) {
-				0 -> R.string.chapters
-				1 -> if (isPagesTabEnabled) R.string.pages else R.string.bookmarks
-				2 -> R.string.bookmarks
+				0 -> R.drawable.ic_list
+				1 -> if (isPagesTabEnabled) R.drawable.ic_grid else R.drawable.ic_bookmark
+				2 -> R.drawable.ic_bookmark
 				else -> 0
 			},
 		)
+		// tab.setText(
+		// 	when (position) {
+		// 		0 -> R.string.chapters
+		// 		1 -> if (isPagesTabEnabled) R.string.pages else R.string.bookmarks
+		// 		2 -> R.string.bookmarks
+		// 		else -> 0
+		// 	},
+		// )
 	}
 }

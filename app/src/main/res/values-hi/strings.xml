@@ -542,8 +542,7 @@
     <string name="allow_unstable_updates">अस्थिर अद्यतन की अनुमति दें</string>
     <string name="nothing_here">यहां कुछ नहीं है</string>
     <string name="allow_unstable_updates_summary">अस्थिर बिल्ड के बारे में सूचनाएं प्राप्त करें</string>
-    <string name="categories_delete_confirm">क्या आप वाकई चयनित पसंदीदा श्रेणियां मिटाना चाहते हैं?
-\nइसमें मौजूद सारा मंगा नष्ट हो जाएगा और इसे पूर्ववत नहीं किया जा सकता।</string>
+    <string name="categories_delete_confirm">क्या आप वाकई चयनित पसंदीदा श्रेणियां मिटाना चाहते हैं? \nइसमें मौजूद सारा मंगा नष्ट हो जाएगा और इसे पूर्ववत नहीं किया जा सकता।</string>
     <string name="manga_error_description_pattern">त्रुटि विवरण:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1। यह सुनिश्चित करने के लिए कि यह अपने स्रोत पर उपलब्ध है &lt;a href=%2$s&gt;मंगा को वेब ब्राउज़र में खोलने का प्रयास करें&lt;/a&gt;&lt;br&gt;2। सुनिश्चित करें कि आप &lt;a href=kotatsu://about&gt;Kotatsu के नवीनतम संस्करण&lt;/a&gt;&lt;br&gt;3 का उपयोग कर रहे हैं। यदि यह उपलब्ध है, तो डेवलपर्स को एक त्रुटि रिपोर्ट भेजें।</string>
     <string name="folder_with_images_import_description">आप अभिलेखों या छवियों वाली एक निर्देशिका का चयन कर सकते हैं। प्रत्येक संग्रह (या उपनिर्देशिका) को एक अध्याय के रूप में पहचाना जाएगा।</string>
     <string name="images_procy_description">यदि संभव हो तो ट्रैफिक उपयोग को कम करने और छवि लोडिंग को तेज़ करने के लिए wsrv.nl सेवा का उपयोग करें</string>

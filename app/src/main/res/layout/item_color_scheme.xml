@@ -8,7 +8,7 @@
 	android:background="?selectableItemBackground"
 	android:orientation="vertical"
 	android:padding="6dp"
-	tools:theme="@style/Theme.Kotatsu.Miku">
+	tools:theme="@style/ThemeOverlay.Kotatsu.Miku">
 
 	<com.google.android.material.card.MaterialCardView
 		android:id="@+id/card"

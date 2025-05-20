@@ -11,7 +11,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
 
-		<ImageView
+		<org.koitharu.kotatsu.core.image.CoilImageView
 			android:id="@+id/icon"
 			android:layout_width="120dp"
 			android:layout_height="120dp"
@@ -46,7 +46,7 @@
 
 		<Button
 			android:id="@+id/button_retry"
-			style="@style/Widget.Material3.Button.TonalButton"
+			style="?materialButtonTonalStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/margin_small"

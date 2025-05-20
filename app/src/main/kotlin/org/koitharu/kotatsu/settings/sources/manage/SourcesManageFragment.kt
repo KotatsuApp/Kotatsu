@@ -1,32 +1,37 @@
 package org.koitharu.kotatsu.settings.sources.manage
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
-import androidx.core.graphics.Insets
 import androidx.core.view.MenuProvider
-import androidx.core.view.updatePadding
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
+import org.koitharu.kotatsu.core.util.ext.container
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.getItem
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.start
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentSettingsSourcesBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
@@ -34,7 +39,6 @@ import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.sources.SourceSettingsFragment
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigAdapter
 import org.koitharu.kotatsu.settings.sources.adapter.SourceConfigListener
-import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity
 import org.koitharu.kotatsu.settings.sources.model.SourceConfigItem
 import javax.inject.Inject
 
@@ -43,9 +47,6 @@ class SourcesManageFragment :
 	BaseFragment<FragmentSettingsSourcesBinding>(),
 	SourceConfigListener,
 	RecyclerViewOwner {
-
-	@Inject
-	lateinit var coil: ImageLoader
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -57,8 +58,8 @@ class SourcesManageFragment :
 	private var sourcesAdapter: SourceConfigAdapter? = null
 	private val viewModel by viewModels<SourcesManageViewModel>()
 
-	override val recyclerView: RecyclerView
-		get() = requireViewBinding().recyclerView
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -70,7 +71,7 @@ class SourcesManageFragment :
 		savedInstanceState: Bundle?,
 	) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		sourcesAdapter = SourceConfigAdapter(this, coil, viewLifecycleOwner)
+		sourcesAdapter = SourceConfigAdapter(this)
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = sourcesAdapter
@@ -86,6 +87,19 @@ class SourcesManageFragment :
 		addMenuProvider(SourcesMenuProvider())
 	}
 
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		val isTablet = !resources.getBoolean(R.bool.is_tablet)
+		val isMaster = container?.id == R.id.container_master
+		v.setPaddingRelative(
+			if (isTablet && !isMaster) 0 else barsInsets.start(v),
+			0,
+			if (isTablet && isMaster) 0 else barsInsets.end(v),
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
+	}
+
 	override fun onResume() {
 		super.onResume()
 		activity?.setTitle(R.string.manage_sources)
@@ -97,18 +111,10 @@ class SourcesManageFragment :
 		super.onDestroyView()
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		requireViewBinding().recyclerView.updatePadding(
-			bottom = insets.bottom,
-			left = insets.left,
-			right = insets.right,
-		)
-	}
-
 	override fun onItemSettingsClick(item: SourceConfigItem.SourceItem) {
 		(activity as? SettingsActivity)?.openFragment(
 			fragmentClass = SourceSettingsFragment::class.java,
-			args = Bundle(1).apply { putString(SourceSettingsFragment.EXTRA_SOURCE, item.source.name) },
+			args = Bundle(1).apply { putString(AppRouter.KEY_SOURCE, item.source.name) },
 			isFromRoot = false,
 		)
 	}
@@ -152,7 +158,7 @@ class SourcesManageFragment :
 
 		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
 			R.id.action_catalog -> {
-				startActivity(Intent(context, SourcesCatalogActivity::class.java))
+				router.openSourcesCatalog()
 				true
 			}
 
@@ -172,6 +178,8 @@ class SourcesManageFragment :
 		override fun onPrepareMenu(menu: Menu) {
 			super.onPrepareMenu(menu)
 			menu.findItem(R.id.action_no_nsfw).isChecked = settings.isNsfwContentDisabled
+			menu.findItem(R.id.action_disable_all).isVisible = !settings.isAllSourcesEnabled
+			menu.findItem(R.id.action_catalog).isVisible = !settings.isAllSourcesEnabled
 		}
 
 		override fun onMenuItemActionExpand(item: MenuItem): Boolean {

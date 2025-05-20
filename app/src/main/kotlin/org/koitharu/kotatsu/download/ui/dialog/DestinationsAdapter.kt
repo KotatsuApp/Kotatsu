@@ -33,7 +33,7 @@ class DestinationsAdapter(context: Context, dataset: List<DirectoryModel>) :
 		val item = getItem(position) ?: return view
 		val binding =
 			view.tag as? ItemStorageConfigBinding ?: ItemStorageConfigBinding.bind(view).also { view.tag = it }
-		binding.imageViewRemove.isVisible = false
+		binding.buttonRemove.isVisible = false
 		binding.textViewTitle.text = item.title ?: view.context.getString(item.titleRes)
 		binding.textViewSubtitle.textAndVisible = item.file?.path
 		return view

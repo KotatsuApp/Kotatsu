@@ -12,10 +12,14 @@
 		android:id="@+id/navRail"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
+		android:fitsSystemWindows="false"
 		app:elevation="1dp"
 		app:headerLayout="@layout/navigation_rail_fab"
 		app:labelVisibilityMode="labeled"
-		app:layout_constraintStart_toStartOf="parent" />
+		app:layout_constraintStart_toStartOf="parent"
+		app:paddingBottomSystemWindowInsets="false"
+		app:paddingStartSystemWindowInsets="false"
+		app:paddingTopSystemWindowInsets="false" />
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"
@@ -32,20 +36,22 @@
 			android:id="@+id/appbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:background="@null"
 			android:clipToPadding="false"
+			android:elevation="0dp"
 			android:fitsSystemWindows="false"
-			android:paddingLeft="16dp"
-			android:paddingRight="16dp"
+			android:paddingHorizontal="@dimen/margin_normal"
 			android:stateListAnimator="@null"
-			app:liftOnScrollColor="@null"
-			app:liftOnScroll="false">
+			app:elevation="0dp"
+			app:liftOnScroll="false"
+			app:liftOnScrollColor="@null">
 
 			<org.koitharu.kotatsu.core.ui.widgets.WindowInsetHolder
 				android:id="@+id/insetsHolder"
-				android:fitsSystemWindows="true"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_gravity="top"
+				android:fitsSystemWindows="true"
 				app:layout_scrollFlags="scroll|enterAlways|snap" />
 
 			<FrameLayout
@@ -62,6 +68,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:layout_marginEnd="6dp"
+					android:background="@null"
 					android:focusable="true"
 					android:focusableInTouchMode="true"
 					app:contentInsetStartWithNavigation="0dp"

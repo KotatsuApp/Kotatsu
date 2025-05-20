@@ -22,6 +22,7 @@
 		android:contentDescription="@string/back"
 		android:elevation="@dimen/m3_sys_elevation_level1"
 		android:scaleType="center"
+		android:tooltipText="@string/back"
 		app:srcCompat="?homeAsUpIndicator" />
 
 	<ImageButton
@@ -31,9 +32,10 @@
 		android:layout_gravity="end"
 		android:layout_margin="@dimen/screen_padding"
 		android:background="@drawable/bg_circle_button"
-		android:contentDescription="@string/back"
+		android:contentDescription="@string/show_menu"
 		android:elevation="@dimen/m3_sys_elevation_level1"
 		android:scaleType="center"
+		android:tooltipText="@string/show_menu"
 		app:srcCompat="@drawable/abc_ic_menu_overflow_material" />
 
 	<com.google.android.material.progressindicator.CircularProgressIndicator

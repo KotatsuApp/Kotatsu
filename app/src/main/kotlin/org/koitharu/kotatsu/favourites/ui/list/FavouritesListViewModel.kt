@@ -16,16 +16,16 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.flattenLatest
-import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.favourites.domain.FavoritesListQuickFilter
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository
-import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.ARG_CATEGORY_ID
 import org.koitharu.kotatsu.favourites.ui.list.FavouritesListFragment.Companion.NO_ID
 import org.koitharu.kotatsu.history.domain.MarkAsReadUseCase
 import org.koitharu.kotatsu.list.domain.ListFilterOption
@@ -51,10 +51,10 @@ class FavouritesListViewModel @Inject constructor(
 	private val markAsReadUseCase: MarkAsReadUseCase,
 	quickFilterFactory: FavoritesListQuickFilter.Factory,
 	settings: AppSettings,
-	downloadScheduler: DownloadWorker.Scheduler,
-) : MangaListViewModel(settings, downloadScheduler), QuickFilterListener {
+	mangaDataRepository: MangaDataRepository,
+) : MangaListViewModel(settings, mangaDataRepository), QuickFilterListener {
 
-	val categoryId: Long = savedStateHandle[ARG_CATEGORY_ID] ?: NO_ID
+	val categoryId: Long = savedStateHandle[AppRouter.KEY_ID] ?: NO_ID
 	private val quickFilter = quickFilterFactory.create(categoryId)
 	private val refreshTrigger = MutableStateFlow(Any())
 	private val limit = MutableStateFlow(PAGE_SIZE)
@@ -92,7 +92,8 @@ class FavouritesListViewModel @Inject constructor(
 
 	override fun onRetry() = Unit
 
-	override fun setFilterOption(option: ListFilterOption, isApplied: Boolean) = quickFilter.setFilterOption(option, isApplied)
+	override fun setFilterOption(option: ListFilterOption, isApplied: Boolean) =
+		quickFilter.setFilterOption(option, isApplied)
 
 	override fun toggleFilterOption(option: ListFilterOption) = quickFilter.toggleFilterOption(option)
 
@@ -144,7 +145,7 @@ class FavouritesListViewModel @Inject constructor(
 		}
 		val result = ArrayList<ListModel>(size + 1)
 		quickFilter.filterItem(filters)?.let(result::add)
-		mangaListMapper.toListModelList(result, this, mode)
+		mangaListMapper.toListModelList(result, this, mode, MangaListMapper.NO_FAVORITE)
 		return result
 	}
 

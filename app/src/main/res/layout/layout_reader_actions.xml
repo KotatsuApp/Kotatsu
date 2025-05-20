@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:layout_height="wrap_content"
+	tools:layout_width="match_parent"
+	tools:orientation="horizontal"
+	tools:parentTag="android.widget.LinearLayout"
+	tools:style="?dockedToolbarStyle">
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_prev"
+			style="?materialIconButtonStyle"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_gravity="center"
+			android:contentDescription="@string/prev_chapter"
+			app:icon="@drawable/ic_prev" />
+	</FrameLayout>
+
+	<com.google.android.material.slider.Slider
+		android:id="@+id/slider"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:stepSize="1.0"
+		android:valueFrom="0"
+		android:visibility="visible"
+		app:labelBehavior="floating"
+		tools:value="6"
+		tools:valueTo="20" />
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_next"
+			style="?materialIconButtonStyle"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_gravity="center"
+			android:contentDescription="@string/next_chapter"
+			app:icon="@drawable/ic_next" />
+	</FrameLayout>
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_save"
+			style="?materialIconButtonStyle"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_gravity="center"
+			android:contentDescription="@string/save_page"
+			app:icon="@drawable/ic_save" />
+	</FrameLayout>
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_timer"
+			style="?materialIconButtonStyle"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_gravity="center"
+			android:contentDescription="@string/automatic_scroll"
+			app:icon="@drawable/ic_timer" />
+	</FrameLayout>
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_screen_rotation"
+			style="?materialIconButtonStyle"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_gravity="center"
+			android:contentDescription="@string/screen_orientation"
+			app:icon="@drawable/ic_screen_rotation" />
+	</FrameLayout>
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_bookmark"
+			style="?materialIconButtonStyle"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_gravity="center"
+			android:contentDescription="@string/bookmark_add"
+			app:icon="@drawable/ic_bookmark" />
+	</FrameLayout>
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_pages_thumbs"
+			style="?materialIconButtonStyle"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_gravity="center"
+			android:contentDescription="@string/pages"
+			app:icon="@drawable/ic_grid" />
+	</FrameLayout>
+
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_options"
+			style="?materialIconButtonStyle"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_gravity="center"
+			android:contentDescription="@string/options"
+			app:icon="@drawable/abc_ic_menu_overflow_material" />
+	</FrameLayout>
+
+</merge>

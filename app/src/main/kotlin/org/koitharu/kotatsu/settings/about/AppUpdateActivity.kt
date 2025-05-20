@@ -10,13 +10,15 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.Insets
-import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.Dispatchers
@@ -24,14 +26,17 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.github.AppVersion
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.FileSize
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.showOrHide
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityAppUpdateBinding
 
@@ -83,21 +88,29 @@ class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClick
 		super.onDestroy()
 	}
 
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		viewBinding.root.updatePadding(top = barsInsets.top)
+		viewBinding.dockedToolbarChild.updateLayoutParams<MarginLayoutParams> {
+			leftMargin = barsInsets.left
+			rightMargin = barsInsets.right
+			bottomMargin = barsInsets.bottom
+		}
+		viewBinding.scrollView.updatePadding(
+			left = barsInsets.left,
+			right = barsInsets.right,
+		)
+		return insets.consumeAllSystemBarsInsets()
+	}
+
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_cancel -> finishAfterTransition()
 			R.id.button_update -> doUpdate()
 		}
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		viewBinding.root.setPadding(
-			basePadding + insets.left,
-			basePadding + insets.top,
-			basePadding + insets.right,
-			basePadding + insets.bottom,
-		)
 	}
 
 	private suspend fun onNextVersionChanged(version: AppVersion?) {
@@ -106,6 +119,7 @@ class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClick
 			viewBinding.textViewContent.setText(R.string.loading_)
 			return
 		}
+		val markwon = Markwon.create(this)
 		val message = withContext(Dispatchers.Default) {
 			buildSpannedString {
 				append(getString(R.string.new_version_s, version.name))
@@ -113,10 +127,10 @@ class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClick
 				append(getString(R.string.size_s, FileSize.BYTES.format(this@AppUpdateActivity, version.apkSize)))
 				appendLine()
 				appendLine()
-				append(Markwon.create(this@AppUpdateActivity).toMarkdown(version.description))
+				append(markwon.toMarkdown(version.description))
 			}
 		}
-		viewBinding.textViewContent.setText(message, TextView.BufferType.SPANNABLE)
+		markwon.setParsedMarkdown(viewBinding.textViewContent, message)
 	}
 
 	private fun doUpdate() {
@@ -137,8 +151,9 @@ class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClick
 
 	private fun openInBrowser() {
 		val latestVersion = viewModel.nextVersion.value ?: return
-		val intent = Intent(Intent.ACTION_VIEW, latestVersion.url.toUri())
-		startActivity(Intent.createChooser(intent, getString(R.string.open_in_browser)))
+		if (!router.openExternalBrowser(latestVersion.url, getString(R.string.open_in_browser))) {
+			Snackbar.make(viewBinding.scrollView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
+		}
 	}
 
 	private fun onProgressChanged(value: Pair<Boolean, Float>) {

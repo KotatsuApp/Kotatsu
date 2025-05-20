@@ -15,7 +15,7 @@ import kotlin.coroutines.suspendCoroutine
 @Suppress("LeakingThis")
 abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	private val loader: PageLoader,
-	private val readerSettings: ReaderSettings,
+	private val readerSettingsProducer: ReaderSettings.Producer,
 	private val networkState: NetworkState,
 	private val exceptionResolver: ExceptionResolver,
 ) : RecyclerView.Adapter<H>() {
@@ -58,7 +58,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	final override fun onCreateViewHolder(
 		parent: ViewGroup,
 		viewType: Int,
-	): H = onCreateViewHolder(parent, loader, readerSettings, networkState, exceptionResolver)
+	): H = onCreateViewHolder(parent, loader, readerSettingsProducer, networkState, exceptionResolver)
 
 	suspend fun setItems(items: List<ReaderPage>) = suspendCoroutine { cont ->
 		differ.submitList(items) {
@@ -69,7 +69,7 @@ abstract class BaseReaderAdapter<H : BasePageHolder<*>>(
 	protected abstract fun onCreateViewHolder(
 		parent: ViewGroup,
 		loader: PageLoader,
-		settings: ReaderSettings,
+		readerSettingsProducer: ReaderSettings.Producer,
 		networkState: NetworkState,
 		exceptionResolver: ExceptionResolver,
 	): H

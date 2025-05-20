@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<style name="Theme.Kotatsu.Miku" />
+	<style name="ThemeOverlay.Kotatsu.Miku" />
 
-	<style name="Theme.Kotatsu.Asuka" />
+	<style name="ThemeOverlay.Kotatsu.Asuka" />
 
-	<style name="Theme.Kotatsu.Mion" />
+	<style name="ThemeOverlay.Kotatsu.Mion" />
 
-	<style name="Theme.Kotatsu.Rikka" />
+	<style name="ThemeOverlay.Kotatsu.Rikka" />
 
-	<style name="Theme.Kotatsu.Sakura" />
+	<style name="ThemeOverlay.Kotatsu.Sakura" />
 
-	<style name="Theme.Kotatsu.Mamimi" />
+	<style name="ThemeOverlay.Kotatsu.Mamimi" />
 </resources>

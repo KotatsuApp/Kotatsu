@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="minutes">
+        <item quantity="one">%1$d மணித்துளி</item>
+        <item quantity="other">%1$d நிமிடங்கள்</item>
+    </plurals>
+    <plurals name="items">
+        <item quantity="one">%1$d உருப்படி</item>
+        <item quantity="other">%1$d உருப்படிகள்</item>
+    </plurals>
+    <plurals name="new_chapters">
+        <item quantity="one">%1$d புதிய அத்தியாயம்</item>
+        <item quantity="other">%1$d புதிய அத்தியாயங்கள்</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="one">%1$d அத்தியாயம்</item>
+        <item quantity="other">%1$d அத்தியாயங்கள்</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="one">%1$d மணித்துளி முன்பு</item>
+        <item quantity="other">%1$d நிமிடங்களுக்கு முன்பு</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="one">%1$d மணி நேரத்திற்கு முன்பு</item>
+        <item quantity="other">%1$d மணி நேரத்திற்கு முன்பு</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">%1$d நாள் முன்பு</item>
+        <item quantity="other">%1$d சில நாட்களுக்கு முன்பு</item>
+    </plurals>
+    <plurals name="months_ago">
+        <item quantity="one">%1$d மாதத்திற்கு முன்பு</item>
+        <item quantity="other">%1$d மாதங்களுக்கு முன்பு</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">%1$d மணி</item>
+        <item quantity="other">%1$d மணிநேரம்</item>
+    </plurals>
+</resources>

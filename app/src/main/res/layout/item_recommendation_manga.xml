@@ -8,7 +8,7 @@
 	android:background="@drawable/list_selector"
 	tools:layout_height="@dimen/recommendation_item_height">
 
-	<com.google.android.material.imageview.ShapeableImageView
+	<org.koitharu.kotatsu.image.ui.CoverImageView
 		android:id="@+id/imageView_cover"
 		android:layout_width="40dp"
 		android:layout_height="40dp"

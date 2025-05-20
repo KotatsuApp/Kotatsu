@@ -7,14 +7,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.annotation.CallSuper
 import androidx.appcompat.view.ActionMode
 import androidx.collection.ArraySet
-import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil3.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +22,7 @@ import org.koitharu.kotatsu.alternatives.ui.AutoFixService
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.isLocal
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.ui.BaseFragment
@@ -33,20 +32,17 @@ import org.koitharu.kotatsu.core.ui.list.FitHeightLinearLayoutManager
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.PaginationScrollListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.TipView
 import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
+import org.koitharu.kotatsu.core.util.ext.consumeAll
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
-import org.koitharu.kotatsu.core.util.ext.measureHeight
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
-import org.koitharu.kotatsu.core.util.ext.resolveDp
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
 import org.koitharu.kotatsu.databinding.FragmentListBinding
-import org.koitharu.kotatsu.details.ui.DetailsActivity
-import org.koitharu.kotatsu.download.ui.dialog.DownloadDialogFragment
-import org.koitharu.kotatsu.favourites.ui.categories.select.FavoriteSheet
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.QuickFilterListener
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
@@ -57,12 +53,9 @@ import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
-import org.koitharu.kotatsu.main.ui.MainActivity
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.reader.ui.ReaderActivity.IntentBuilder
 import org.koitharu.kotatsu.search.ui.MangaListActivity
 import javax.inject.Inject
 
@@ -71,6 +64,7 @@ abstract class MangaListFragment :
 	BaseFragment<FragmentListBinding>(),
 	PaginationScrollListener.Callback,
 	MangaListListener,
+	RecyclerViewOwner,
 	SwipeRefreshLayout.OnRefreshListener,
 	ListSelectionController.Callback,
 	FastScroller.FastScrollListener {
@@ -95,6 +89,9 @@ abstract class MangaListFragment :
 
 	protected val selectedItems: Set<Manga>
 		get() = collectSelectedItems()
+
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -125,7 +122,6 @@ abstract class MangaListFragment :
 			isEnabled = isSwipeRefreshEnabled
 		}
 		addMenuProvider(MangaListMenuProvider(this))
-		DownloadDialogFragment.registerCallback(this, binding.recyclerView)
 
 		viewModel.listMode.observe(viewLifecycleOwner, ::onListModeChanged)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged)
@@ -133,6 +129,19 @@ abstract class MangaListFragment :
 		viewModel.content.observe(viewLifecycleOwner, ::onListChanged)
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
 		viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.recyclerView))
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		val barsInsets = insets.getInsets(typeMask)
+		val basePadding = v.resources.getDimensionPixelOffset(R.dimen.list_spacing_normal)
+		viewBinding?.recyclerView?.setPadding(
+			left = barsInsets.left + basePadding,
+			top = basePadding,
+			right = barsInsets.right + basePadding,
+			bottom = barsInsets.bottom + basePadding,
+		)
+		return insets.consumeAll(typeMask)
 	}
 
 	override fun onDestroyView() {
@@ -147,31 +156,28 @@ abstract class MangaListFragment :
 	override fun onItemClick(item: Manga, view: View) {
 		if (selectionController?.onItemClick(item.id) != true) {
 			if ((activity as? MangaListActivity)?.showPreview(item) != true) {
-				startActivity(DetailsActivity.newIntent(context ?: return, item))
+				router.openDetails(item)
 			}
 		}
 	}
 
 	override fun onItemLongClick(item: Manga, view: View): Boolean {
-		return selectionController?.onItemLongClick(view, item.id) ?: false
+		return selectionController?.onItemLongClick(view, item.id) == true
 	}
 
 	override fun onItemContextClick(item: Manga, view: View): Boolean {
-		return selectionController?.onItemContextClick(view, item.id) ?: false
+		return selectionController?.onItemContextClick(view, item.id) == true
 	}
 
 	override fun onReadClick(manga: Manga, view: View) {
 		if (selectionController?.onItemClick(manga.id) != true) {
-			val intent = IntentBuilder(view.context).manga(manga).build()
-			startActivity(intent)
+			router.openReader(manga)
 		}
 	}
 
 	override fun onTagClick(manga: Manga, tag: MangaTag, view: View) {
 		if (selectionController?.onItemClick(manga.id) != true) {
-			// TODO dialog
-			val intent = MangaListActivity.newIntent(view.context, tag.source, MangaListFilter(tags = setOf(tag)))
-			startActivity(intent)
+			router.showTagDialog(tag)
 		}
 	}
 
@@ -212,29 +218,9 @@ abstract class MangaListFragment :
 
 	protected open fun onCreateAdapter(): MangaListAdapter {
 		return MangaListAdapter(
-			coil = coil,
-			lifecycleOwner = viewLifecycleOwner,
 			listener = this,
-			sizeResolver = DynamicItemSizeResolver(resources, settings, adjustWidth = false),
+			sizeResolver = DynamicItemSizeResolver(resources, viewLifecycleOwner, settings, adjustWidth = false),
 		)
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		val rv = requireViewBinding().recyclerView
-		rv.updatePadding(
-			bottom = insets.bottom + rv.paddingTop,
-		)
-		rv.fastScroller.updateLayoutParams<MarginLayoutParams> {
-			bottomMargin = insets.bottom
-		}
-		if (activity is MainActivity) {
-			val headerHeight = (activity as? AppBarOwner)?.appBar?.measureHeight() ?: insets.top
-			requireViewBinding().swipeRefreshLayout.setProgressViewOffset(
-				true,
-				headerHeight + resources.resolveDp(-72),
-				headerHeight + resources.resolveDp(10),
-			)
-		}
 	}
 
 	override fun onFilterOptionClick(option: ListFilterOption) {
@@ -287,8 +273,10 @@ abstract class MangaListFragment :
 	@CallSuper
 	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode?, menu: Menu): Boolean {
 		val hasNoLocal = selectedItems.none { it.isLocal }
+		val isSingleSelection = controller.count == 1
 		menu.findItem(R.id.action_save)?.isVisible = hasNoLocal
 		menu.findItem(R.id.action_fix)?.isVisible = hasNoLocal
+		menu.findItem(R.id.action_edit_override)?.isVisible = isSingleSelection
 		return super.onPrepareActionMode(controller, mode, menu)
 	}
 
@@ -317,13 +305,19 @@ abstract class MangaListFragment :
 			}
 
 			R.id.action_favourite -> {
-				FavoriteSheet.show(getChildFragmentManager(), selectedItems)
+				router.showFavoriteDialog(selectedItems)
 				mode?.finish()
 				true
 			}
 
 			R.id.action_save -> {
-				DownloadDialogFragment.show(childFragmentManager, selectedItems)
+				router.showDownloadDialog(selectedItems, viewBinding?.recyclerView)
+				mode?.finish()
+				true
+			}
+
+			R.id.action_edit_override -> {
+				router.openMangaOverrideConfig(selectedItems.singleOrNull() ?: return false)
 				mode?.finish()
 				true
 			}

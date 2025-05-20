@@ -12,4 +12,5 @@ data class TagEntity(
 	@ColumnInfo(name = "title") val title: String,
 	@ColumnInfo(name = "key") val key: String,
 	@ColumnInfo(name = "source") val source: String,
+	@ColumnInfo(name = "pinned") val isPinned: Boolean,
 )

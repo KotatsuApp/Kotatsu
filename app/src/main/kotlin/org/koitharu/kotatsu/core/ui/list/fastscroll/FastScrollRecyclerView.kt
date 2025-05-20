@@ -37,8 +37,8 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 	init {
 		fastScroller.id = R.id.fast_scroller
 		fastScroller.layoutParams = ViewGroup.LayoutParams(
-			ViewGroup.LayoutParams.WRAP_CONTENT,
-			ViewGroup.LayoutParams.MATCH_PARENT,
+			LayoutParams.WRAP_CONTENT,
+			LayoutParams.MATCH_PARENT,
 		)
 	}
 

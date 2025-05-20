@@ -7,22 +7,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
-import coil3.ImageLoader
-import coil3.request.SuccessResult
-import coil3.request.allowRgb565
-import coil3.request.transformations
-import coil3.util.CoilUtils
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
-import org.koitharu.kotatsu.core.ui.image.TrimTransformation
-import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
-import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemDownloadBinding
 import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
@@ -34,7 +25,6 @@ import org.koitharu.kotatsu.parsers.util.format
 
 fun downloadItemAD(
 	lifecycleOwner: LifecycleOwner,
-	coil: ImageLoader,
 	listener: DownloadItemListener,
 ) = adapterDelegateViewBinding<DownloadItemModel, ListModel, ItemDownloadBinding>(
 	{ inflater, parent -> ItemDownloadBinding.inflate(inflater, parent, false) },
@@ -88,16 +78,7 @@ fun downloadItemAD(
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.manga?.title ?: getString(R.string.unknown)
-		if ((CoilUtils.result(binding.imageViewCover) as? SuccessResult)?.memoryCacheKey != item.coverCacheKey) {
-			binding.imageViewCover.newImageRequest(lifecycleOwner, item.manga?.coverUrl)?.apply {
-				defaultPlaceholders(context)
-				allowRgb565(true)
-				transformations(TrimTransformation())
-				memoryCacheKey(item.coverCacheKey)
-				mangaSourceExtra(item.manga?.source)
-				enqueueWith(coil)
-			}
-		}
+		binding.imageViewCover.setImageAsync(item.manga?.coverUrl, item.manga)
 		if (chaptersJob == null || payloads.isEmpty()) {
 			chaptersJob?.cancel()
 			chaptersJob = lifecycleOwner.lifecycleScope.launch(start = CoroutineStart.UNDISPATCHED) {
@@ -161,7 +142,7 @@ fun downloadItemAD(
 				binding.progressBar.isEnabled = true
 				binding.textViewPercent.isVisible = false
 				if (item.chaptersDownloaded > 0) {
-					binding.textViewDetails.text = context.resources.getQuantityString(
+					binding.textViewDetails.text = context.resources.getQuantityStringSafe(
 						R.plurals.chapters,
 						item.chaptersDownloaded,
 						item.chaptersDownloaded,

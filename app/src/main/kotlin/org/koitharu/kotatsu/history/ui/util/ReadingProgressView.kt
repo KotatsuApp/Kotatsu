@@ -43,8 +43,8 @@ class ReadingProgressView @JvmOverloads constructor(
 					null,
 					NONE -> ""
 
-					PERCENT_READ -> percentPattern.format((value.percent * 100f).toInt().toString())
-					PERCENT_LEFT -> "-" + percentPattern.format((value.percentLeft * 100f).toInt().toString())
+					PERCENT_READ -> percentPattern.format(ReadingProgress.percentToString(value.percent))
+					PERCENT_LEFT -> "-" + percentPattern.format(ReadingProgress.percentToString(value.percentLeft))
 
 					CHAPTERS_READ -> value.chapters.toString()
 					CHAPTERS_LEFT -> "-" + value.chaptersLeft.toString()

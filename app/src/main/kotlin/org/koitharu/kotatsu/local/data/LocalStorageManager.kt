@@ -18,11 +18,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import okhttp3.Cache
+import org.koitharu.kotatsu.core.exceptions.NonFileUriException
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.computeSize
 import org.koitharu.kotatsu.core.util.ext.getStorageName
 import org.koitharu.kotatsu.core.util.ext.isFileUri
+import org.koitharu.kotatsu.core.util.ext.isReadable
+import org.koitharu.kotatsu.core.util.ext.isWriteable
 import org.koitharu.kotatsu.core.util.ext.resolveFile
+import org.koitharu.kotatsu.core.util.ext.takeIfWriteable
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import java.io.File
 import javax.inject.Inject
@@ -81,19 +85,19 @@ class LocalStorageManager @Inject constructor(
 	}
 
 	suspend fun getDefaultWriteableDir(): File? = runInterruptible(Dispatchers.IO) {
-		val preferredDir = settings.mangaStorageDir?.takeIf { it.isWriteable() }
-		preferredDir ?: getFallbackStorageDir()?.takeIf { it.isWriteable() }
+		val preferredDir = settings.mangaStorageDir?.takeIfWriteable()
+		preferredDir ?: getFallbackStorageDir()?.takeIfWriteable()
 	}
 
 	suspend fun getApplicationStorageDirs(): Set<File> = runInterruptible(Dispatchers.IO) {
 		getAvailableStorageDirs()
 	}
 
-	suspend fun resolveUri(uri: Uri): File? = runInterruptible(Dispatchers.IO) {
+	suspend fun resolveUri(uri: Uri): File = runInterruptible(Dispatchers.IO) {
 		if (uri.isFileUri()) {
 			uri.toFile()
 		} else {
-			uri.resolveFile(context)
+			uri.resolveFile(context) ?: throw NonFileUriException(uri)
 		}
 	}
 
@@ -184,12 +188,4 @@ class LocalStorageManager @Inject constructor(
 			CACHE_SIZE_MIN
 		}
 	}
-
-	private fun File.isReadable() = runCatching {
-		canRead()
-	}.getOrDefault(false)
-
-	private fun File.isWriteable() = runCatching {
-		canWrite()
-	}.getOrDefault(false)
 }

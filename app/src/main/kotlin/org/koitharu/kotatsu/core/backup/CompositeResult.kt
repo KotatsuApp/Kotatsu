@@ -27,6 +27,10 @@ class CompositeResult {
 		}
 	}
 
+	operator fun plusAssign(error: Throwable) {
+		errors.add(error)
+	}
+
 	operator fun plusAssign(other: CompositeResult) {
 		this.successCount += other.successCount
 		this.errors += other.errors

@@ -26,7 +26,15 @@ abstract class HistoryDao : MangaQueryBuilder.ConditionCallback {
 
 	@Transaction
 	@Query("SELECT manga.* FROM history LEFT JOIN manga ON manga.manga_id = history.manga_id WHERE history.deleted_at = 0 AND (manga.title LIKE :query OR manga.alt_title LIKE :query) LIMIT :limit")
-	abstract suspend fun search(query: String, limit: Int): List<MangaWithTags>
+	abstract suspend fun searchByTitle(query: String, limit: Int): List<MangaWithTags>
+
+	@Transaction
+	@Query("SELECT manga.* FROM history LEFT JOIN manga ON manga.manga_id = history.manga_id WHERE history.deleted_at = 0 AND (manga.author LIKE :query) LIMIT :limit")
+	abstract suspend fun searchByAuthor(query: String, limit: Int): List<MangaWithTags>
+
+	@Transaction
+	@Query("SELECT manga.* FROM history LEFT JOIN manga ON manga.manga_id = history.manga_id WHERE history.deleted_at = 0 AND EXISTS(SELECT 1 FROM tags LEFT JOIN manga_tags ON manga_tags.tag_id = tags.tag_id WHERE manga_tags.manga_id = manga.manga_id AND tags.title LIKE :query) LIMIT :limit")
+	abstract suspend fun searchByTag(query: String, limit: Int): List<MangaWithTags>
 
 	@Transaction
 	@Query("SELECT * FROM history WHERE deleted_at = 0 ORDER BY updated_at DESC")

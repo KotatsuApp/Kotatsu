@@ -43,6 +43,7 @@ class ProxySettingsFragment : BasePreferenceFragment(R.string.proxy),
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_proxy)
+		@Suppress("UsePropertyAccessSyntax")
 		findPreference<EditTextPreference>(AppSettings.KEY_PROXY_ADDRESS)?.setOnBindEditTextListener(
 			EditTextBindListener(
 				inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_URI,
@@ -50,6 +51,7 @@ class ProxySettingsFragment : BasePreferenceFragment(R.string.proxy),
 				validator = DomainValidator(),
 			),
 		)
+		@Suppress("UsePropertyAccessSyntax")
 		findPreference<EditTextPreference>(AppSettings.KEY_PROXY_PORT)?.setOnBindEditTextListener(
 			EditTextBindListener(
 				inputType = EditorInfo.TYPE_CLASS_NUMBER,
@@ -58,6 +60,7 @@ class ProxySettingsFragment : BasePreferenceFragment(R.string.proxy),
 			),
 		)
 		findPreference<EditTextPreference>(AppSettings.KEY_PROXY_PASSWORD)?.let { pref ->
+			@Suppress("UsePropertyAccessSyntax")
 			pref.setOnBindEditTextListener(
 				EditTextBindListener(
 					inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_PASSWORD,
@@ -119,8 +122,9 @@ class ProxySettingsFragment : BasePreferenceFragment(R.string.proxy),
 						.get()
 						.url("http://neverssl.com")
 						.build()
-					val response = okHttpClient.newCall(request).await()
-					check(response.isSuccessful) { response.message }
+					okHttpClient.newCall(request).await().use { response ->
+						check(response.isSuccessful) { response.message }
+					}
 				}
 				showTestResult(null)
 			} catch (e: CancellationException) {

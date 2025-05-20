@@ -275,8 +275,7 @@
     <string name="clear_all_history">Ачысціць усю гісторыю</string>
     <string name="history_cleared">Гісторыя ачышчана</string>
     <string name="incognito_mode">Рэжым інкогніта</string>
-    <string name="categories_delete_confirm">Вы ўпэўнены, што хочаце выдаліць выбраныя абраныя катэгорыі?
-\nУся манга ў ім будзе страчана, і гэта нельга будзе адрабіць.</string>
+    <string name="categories_delete_confirm">Вы ўпэўнены, што хочаце выдаліць выбраныя абраныя катэгорыі? \nУся манга ў ім будзе страчана, і гэта нельга будзе адрабіць.</string>
     <string name="no_bookmarks_summary">Вы можаце стварыць закладку падчас чытання мангі</string>
     <string name="saved_manga">Захаваная манга</string>
     <string name="theme_name_mamimi">Мамімі</string>
@@ -743,4 +742,5 @@
     <string name="ask_every_time">Пытацца кожны раз</string>
     <string name="screen_orientation">Арыентацыя экрана</string>
     <string name="portrait">Партрэтная</string>
+    <string name="pages_saved">Старонкі захоўваюцца</string>
 </resources>

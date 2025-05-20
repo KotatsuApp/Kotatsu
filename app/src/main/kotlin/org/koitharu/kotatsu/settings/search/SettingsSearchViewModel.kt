@@ -18,30 +18,43 @@ class SettingsSearchViewModel @Inject constructor(
 	private val searchHelper: SettingsSearchHelper,
 ) : BaseViewModel() {
 
-	private val query = MutableStateFlow("")
+	private val query = MutableStateFlow<String?>(null)
 	private val allSettings by lazy {
 		searchHelper.inflatePreferences()
 	}
 
 	val content = query.map { q ->
-		allSettings.filter { it.title.contains(q, ignoreCase = true) }
+		if (q == null) {
+			emptyList()
+		} else {
+			allSettings.filter { it.title.contains(q, ignoreCase = true) }
+		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, emptyList())
 
 	val isSearchActive = query.map {
-		it.isNotEmpty()
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, false)
+		it != null
+	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, query.value != null)
 
 	val onNavigateToPreference = MutableEventFlow<SettingsItem>()
 	val currentQuery: String
-		get() = query.value
+		get() = query.value.orEmpty()
 
 	fun onQueryChanged(value: String) {
-		query.value = value
+		if (query.value != null) {
+			query.value = value
+		}
 	}
 
-	fun discardSearch() = onQueryChanged("")
+	fun discardSearch() {
+		query.value = null
+	}
+
+	fun startSearch() {
+		query.value = query.value.orEmpty()
+	}
 
 	fun navigateToPreference(item: SettingsItem) {
+		discardSearch()
 		onNavigateToPreference.call(item)
 	}
 }

@@ -10,9 +10,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.parser.EmptyMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
-import org.koitharu.kotatsu.core.util.ext.mapToArray
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.network.UserAgents
+import org.koitharu.kotatsu.parsers.util.mapToArray
 import org.koitharu.kotatsu.settings.utils.AutoCompleteTextViewPreference
 import org.koitharu.kotatsu.settings.utils.EditTextBindListener
 import org.koitharu.kotatsu.settings.utils.EditTextDefaultSummaryProvider
@@ -119,6 +119,6 @@ private fun PreferenceFragmentCompat.addPreferencesFromEmptyRepository() {
 	preferenceScreen.addPreference(preference)
 }
 
-private fun Array<out String>.toStringArray(): Array<String> {
-	return Array(size) { i -> this[i] as? String ?: "" }
+private fun Array<out String?>.toStringArray(): Array<String> {
+	return Array(size) { i -> this[i].orEmpty() }
 }

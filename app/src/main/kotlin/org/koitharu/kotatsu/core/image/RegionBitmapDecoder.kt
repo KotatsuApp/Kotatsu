@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.core.image
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build
 import coil3.Extras
@@ -11,7 +10,6 @@ import coil3.asImage
 import coil3.decode.DecodeResult
 import coil3.decode.DecodeUtils
 import coil3.decode.Decoder
-import coil3.decode.ImageSource
 import coil3.fetch.SourceFetchResult
 import coil3.getExtra
 import coil3.request.Options
@@ -25,24 +23,37 @@ import coil3.size.Scale
 import coil3.size.Size
 import coil3.size.isOriginal
 import coil3.size.pxOrElse
-import kotlinx.coroutines.runInterruptible
+import org.koitharu.kotatsu.core.util.ext.copyWithNewSource
 import kotlin.math.roundToInt
 
 class RegionBitmapDecoder(
-	private val source: ImageSource,
+	private val fetchResult: SourceFetchResult,
 	private val options: Options,
+	private val imageLoader: ImageLoader,
 ) : Decoder {
 
-	override suspend fun decode(): DecodeResult = runInterruptible {
-		val regionDecoder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-			BitmapRegionDecoder.newInstance(source.source().inputStream())
-		} else {
-			@Suppress("DEPRECATION")
-			BitmapRegionDecoder.newInstance(source.source().inputStream(), false)
+	override suspend fun decode(): DecodeResult? {
+		val regionDecoder = BitmapDecoderCompat.createRegionDecoder(fetchResult.source.source().inputStream())
+		if (regionDecoder == null) {
+			val revivedFetchResult = fetchResult.copyWithNewSource()
+			return try {
+				val fallbackDecoder = imageLoader.components.newDecoder(
+					result = revivedFetchResult,
+					options = options,
+					imageLoader = imageLoader,
+					startIndex = 0,
+				)?.first
+				if (fallbackDecoder == null || fallbackDecoder is RegionBitmapDecoder) {
+					null
+				} else {
+					fallbackDecoder.decode()
+				}
+			} finally {
+				revivedFetchResult.source.close()
+			}
 		}
-		checkNotNull(regionDecoder)
 		val bitmapOptions = BitmapFactory.Options()
-		try {
+		return try {
 			val rect = bitmapOptions.configureScale(regionDecoder.width, regionDecoder.height)
 			bitmapOptions.configureConfig()
 			val bitmap = regionDecoder.decodeRegion(rect, bitmapOptions)
@@ -149,7 +160,7 @@ class RegionBitmapDecoder(
 			result: SourceFetchResult,
 			options: Options,
 			imageLoader: ImageLoader
-		): Decoder = RegionBitmapDecoder(result.source, options)
+		): Decoder = RegionBitmapDecoder(result, options, imageLoader)
 
 		override fun equals(other: Any?) = other is Factory
 

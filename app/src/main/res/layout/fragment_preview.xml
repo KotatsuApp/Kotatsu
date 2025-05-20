@@ -6,20 +6,21 @@
 	android:id="@+id/scrollView"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:background="@macro/m3_comp_filled_card_container_color">
+	tools:background="?colorBackgroundFloating">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:paddingBottom="?actionBarSize">
 
-		<com.google.android.material.imageview.ShapeableImageView
+		<org.koitharu.kotatsu.image.ui.CoverImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="0dp"
 			android:layout_height="0dp"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="16dp"
 			android:background="?colorSecondaryContainer"
+			android:clipToOutline="true"
 			android:foreground="?selectableItemBackground"
 			android:scaleType="centerCrop"
 			app:layout_constraintDimensionRatio="H,13:18"
@@ -29,6 +30,7 @@
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintWidth_percent="0.3"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
+			app:useExistingDrawable="true"
 			tools:background="@tools:sample/backgrounds/scenic[5]"
 			tools:ignore="ContentDescription,UnusedAttribute" />
 
@@ -121,50 +123,38 @@
 			app:barrierMargin="8dp"
 			app:constraint_referenced_ids="imageView_cover,rating_bar" />
 
-		<org.koitharu.kotatsu.core.ui.widgets.ProgressButton
+		<Button
 			android:id="@+id/button_read"
+			style="?materialButtonStyle"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="@dimen/margin_normal"
 			android:layout_marginEnd="12dp"
-			android:foreground="?selectableItemBackground"
-			android:gravity="center"
-			android:paddingHorizontal="6dp"
-			android:paddingVertical="8dp"
-			app:baseColor="@color/m3_chip_background_color"
 			app:layout_constraintEnd_toStartOf="@id/button_open"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/barrier_header"
-			app:progressColor="?colorControlNormal"
-			app:subtitleTextAppearance="?textAppearanceBodySmall"
-			app:titleTextAppearance="?textAppearanceButton"
-			tools:max="100"
-			tools:progress="40"
-			tools:subtitle="12 chapters"
-			tools:title="@string/read" />
+			tools:text="@string/read" />
 
-		<ImageView
+		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_open"
+			style="?materialIconButtonStyle"
 			android:layout_width="0dp"
 			android:layout_height="0dp"
 			android:layout_marginEnd="16dp"
-			android:background="@drawable/bg_circle_button"
-			android:backgroundTint="@color/m3_chip_background_color"
 			android:contentDescription="@string/details"
-			android:scaleType="centerInside"
+			app:icon="@drawable/ic_expand"
 			app:layout_constraintBottom_toBottomOf="@id/button_read"
 			app:layout_constraintDimensionRatio="1"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toTopOf="@id/button_read"
-			app:srcCompat="@drawable/ic_expand" />
+			app:layout_constraintTop_toTopOf="@id/button_read" />
 
 		<org.koitharu.kotatsu.core.ui.widgets.ChipsView
 			android:id="@+id/chips_tags"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="@dimen/margin_normal"
 			android:layout_marginHorizontal="@dimen/screen_padding"
+			android:layout_marginTop="@dimen/margin_normal"
 			app:chipSpacingHorizontal="6dp"
 			app:chipSpacingVertical="6dp"
 			app:layout_constraintEnd_toEndOf="parent"

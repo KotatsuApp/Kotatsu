@@ -13,13 +13,12 @@
 		android:layout_height="match_parent"
 		android:paddingBottom="12dp">
 
-		<com.google.android.material.imageview.ShapeableImageView
+		<org.koitharu.kotatsu.image.ui.CoverImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="64dp"
 			android:layout_height="64dp"
 			android:layout_marginStart="12dp"
 			android:layout_marginTop="12dp"
-			android:scaleType="centerCrop"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Medium"
@@ -46,13 +45,16 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:background="?selectableItemBackgroundBorderless"
+			android:contentDescription="@string/details"
 			android:minWidth="?minTouchTargetSize"
 			android:minHeight="?minTouchTargetSize"
+			android:pointerIcon="hand"
 			android:scaleType="center"
+			android:tooltipText="@string/details"
 			android:visibility="gone"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:srcCompat="@drawable/ic_expand_collapse"
+			app:srcCompat="@drawable/m3_split_button_chevron_avd"
 			app:tint="?colorControlActivated"
 			tools:visibility="visible" />
 

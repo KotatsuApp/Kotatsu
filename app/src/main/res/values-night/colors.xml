@@ -9,6 +9,9 @@
 	<color name="launcher_background">#222222</color>
 	<color name="common_green">#81C784</color>
 	<color name="common_red">#E57373</color>
+	<color name="dim2">#C8000000</color>
+	<color name="nsfw_18">#BF360C</color>
+	<color name="nsfw_16">#FF6F00</color>
 
 	<!-- Color schemes colors -->
 	<color name="background_miku">#191C1C</color>

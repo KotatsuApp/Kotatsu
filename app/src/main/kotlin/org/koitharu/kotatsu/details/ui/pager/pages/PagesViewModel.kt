@@ -89,7 +89,7 @@ class PagesViewModel @Inject constructor(
 			val tasks = pages.map {
 				PageSaveHelper.Task(
 					manga = manga,
-					chapter = manga.requireChapterById(it.chapterId),
+					chapterId = it.chapterId,
 					pageNumber = it.index + 1,
 					page = it.toMangaPage(),
 				)
@@ -130,14 +130,14 @@ class PagesViewModel @Inject constructor(
 			for (page in snapshot) {
 				if (page.chapterId != previousChapterId) {
 					chaptersLoader.peekChapter(page.chapterId)?.let {
-						add(ListHeader(it.name))
+						add(ListHeader(it))
 					}
 					previousChapterId = page.chapterId
 				}
 				this += PageThumbnail(
 					isCurrent = readerState?.let {
 						page.chapterId == it.chapterId && page.index == it.page
-					} ?: false,
+					} == true,
 					page = page,
 				)
 			}

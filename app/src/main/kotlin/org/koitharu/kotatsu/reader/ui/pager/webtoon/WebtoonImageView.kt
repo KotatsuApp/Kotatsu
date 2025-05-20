@@ -132,7 +132,7 @@ class WebtoonImageView @JvmOverloads constructor(
 		val paint = debugPaint ?: Paint(Paint.ANTI_ALIAS_FLAG).apply {
 			color = android.graphics.Color.RED
 			strokeWidth = context.resources.resolveDp(2f)
-			textAlign = android.graphics.Paint.Align.LEFT
+			textAlign = Paint.Align.LEFT
 			textSize = context.resources.resolveDp(14f)
 			debugPaint = this
 		}

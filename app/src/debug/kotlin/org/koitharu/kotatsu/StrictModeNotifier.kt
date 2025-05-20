@@ -55,7 +55,7 @@ class StrictModeNotifier(
 		.setContentIntent(
 			PendingIntentCompat.getActivity(
 				context,
-				0,
+				violation.hashCode(),
 				ShareHelper(context).getShareTextIntent(violation.stackTraceToString()),
 				0,
 				false,

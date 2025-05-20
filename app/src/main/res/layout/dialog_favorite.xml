@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:paddingTop="@dimen/margin_normal">
+
+	<org.koitharu.kotatsu.image.ui.CoverStackView
+		android:id="@+id/coversStack"
+		android:layout_width="0dp"
+		android:layout_height="@dimen/category_covers_height"
+		android:layout_marginStart="@dimen/screen_padding"
+		app:coverSize="3.4dp"
+		app:hideEmptyViews="true"
+		app:layout_constraintDimensionRatio="13:18"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<TextView
+		android:id="@+id/textView_title"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_marginStart="@dimen/margin_normal"
+		android:layout_marginEnd="@dimen/margin_normal"
+		android:ellipsize="end"
+		android:gravity="center_vertical|start"
+		android:maxLines="3"
+		android:textAppearance="?attr/textAppearanceBodyLarge"
+		app:layout_constraintBottom_toBottomOf="@id/coversStack"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/coversStack"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:text="@tools:sample/lorem[22]" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recyclerView_categories"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="4dp"
+		android:clipToPadding="false"
+		android:orientation="vertical"
+		android:paddingBottom="@dimen/list_spacing"
+		android:scrollIndicators="top"
+		android:scrollbars="vertical"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		app:layout_constrainedHeight="true"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/coversStack"
+		tools:ignore="UnusedAttribute"
+		tools:listitem="@layout/item_category_checkable" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

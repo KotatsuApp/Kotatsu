@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.os.PatternMatcher
 import androidx.core.app.PendingIntentCompat
+import androidx.core.net.toUri
 import org.koitharu.kotatsu.core.util.ext.toUUIDOrNull
 import java.util.UUID
 
@@ -81,7 +81,7 @@ class PausingReceiver(
 			)
 
 		private fun createIntent(context: Context, id: UUID, action: String) = Intent(action)
-			.setData(Uri.parse("$SCHEME://$id"))
+			.setData("$SCHEME://$id".toUri())
 			.setPackage(context.packageName)
 			.putExtra(EXTRA_UUID, id.toString())
 	}

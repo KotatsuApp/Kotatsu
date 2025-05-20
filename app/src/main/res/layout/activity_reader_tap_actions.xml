@@ -145,7 +145,7 @@
 		<View
 			android:layout_width="1dp"
 			android:layout_height="0dp"
-			android:background="?android:divider"
+			android:background="?colorOutline"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="@id/guideline_right"
 			app:layout_constraintStart_toStartOf="@id/guideline_right"
@@ -154,7 +154,7 @@
 		<View
 			android:layout_width="1dp"
 			android:layout_height="0dp"
-			android:background="?android:divider"
+			android:background="?colorOutline"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="@id/guideline_left"
 			app:layout_constraintStart_toStartOf="@id/guideline_left"
@@ -163,7 +163,7 @@
 		<View
 			android:layout_width="0dp"
 			android:layout_height="1dp"
-			android:background="?android:divider"
+			android:background="?colorOutline"
 			app:layout_constraintBottom_toBottomOf="@id/guideline_top"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
@@ -172,7 +172,7 @@
 		<View
 			android:layout_width="0dp"
 			android:layout_height="1dp"
-			android:background="?android:divider"
+			android:background="?colorOutline"
 			app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
@@ -181,7 +181,7 @@
 		<View
 			android:layout_width="0dp"
 			android:layout_height="1dp"
-			android:background="?android:divider"
+			android:background="?colorOutline"
 			app:layout_constraintBottom_toTopOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"

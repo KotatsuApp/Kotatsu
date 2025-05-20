@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/scrollView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<org.koitharu.kotatsu.core.ui.widgets.SelectableTextView
+			android:id="@+id/textView_content"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="@dimen/screen_padding"
+			android:textAppearance="?textAppearanceBodyMedium"
+			android:textIsSelectable="true"
+			tools:text="@tools:sample/lorem/random" />
+
+	</androidx.core.widget.NestedScrollView>
+
+	<com.google.android.material.progressindicator.LinearProgressIndicator
+		android:id="@+id/progressBar"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:layout_gravity="top"
+		android:indeterminate="true"
+		app:hideAnimationBehavior="escape" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

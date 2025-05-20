@@ -10,11 +10,11 @@ import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.util.ext.bookmarkKey
-import org.koitharu.kotatsu.core.util.ext.ifNullOrEmpty
 import org.koitharu.kotatsu.core.util.ext.mangaKey
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.findById
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.util.Collections
 import javax.inject.Inject
@@ -32,17 +32,17 @@ class CoverRestoreInterceptor @Inject constructor(
 		val result = chain.proceed()
 		if (result is ErrorResult && result.throwable.shouldRestore()) {
 			request.extras[mangaKey]?.let {
-				if (restoreManga(it)) {
-					return chain.withRequest(request.newBuilder().build()).proceed()
+				return if (restoreManga(it)) {
+					chain.withRequest(request.newBuilder().build()).proceed()
 				} else {
-					return result
+					result
 				}
 			}
 			request.extras[bookmarkKey]?.let {
-				if (restoreBookmark(it)) {
-					return chain.withRequest(request.newBuilder().build()).proceed()
+				return if (restoreBookmark(it)) {
+					chain.withRequest(request.newBuilder().build()).proceed()
 				} else {
-					return result
+					result
 				}
 			}
 		}
@@ -66,7 +66,7 @@ class CoverRestoreInterceptor @Inject constructor(
 	}
 
 	private suspend fun restoreMangaImpl(manga: Manga): Boolean {
-		if (dataRepository.findMangaById(manga.id) == null || manga.isLocal) {
+		if (dataRepository.findMangaById(manga.id, withChapters = false) == null || manga.isLocal) {
 			return false
 		}
 		val repo = repositoryFactory.create(manga.source)

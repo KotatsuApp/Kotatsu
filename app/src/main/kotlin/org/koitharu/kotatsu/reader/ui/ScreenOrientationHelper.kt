@@ -13,10 +13,14 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onStart
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import javax.inject.Inject
 
 @ActivityScoped
-class ScreenOrientationHelper @Inject constructor(private val activity: Activity) {
+class ScreenOrientationHelper @Inject constructor(
+	private val activity: Activity,
+	private val settings: AppSettings,
+) {
 
 	val isAutoRotationEnabled: Boolean
 		get() = Settings.System.getInt(
@@ -45,10 +49,10 @@ class ScreenOrientationHelper @Inject constructor(private val activity: Activity
 			}
 		}
 
-	fun init(orientation: Int) {
+	fun applySettings() {
 		if (activity.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
 			// https://developer.android.com/reference/android/R.attr.html#screenOrientation
-			activity.requestedOrientation = orientation
+			activity.requestedOrientation = settings.readerScreenOrientation
 		}
 	}
 
@@ -68,4 +72,13 @@ class ScreenOrientationHelper @Inject constructor(private val activity: Activity
 		emit(isAutoRotationEnabled)
 	}.distinctUntilChanged()
 		.conflate()
+
+	fun toggleScreenOrientation(): Boolean = if (isAutoRotationEnabled) {
+		val newValue = !isLocked
+		isLocked = newValue
+		true
+	} else {
+		isLandscape = !isLandscape
+		false
+	}
 }

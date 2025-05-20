@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
@@ -9,12 +10,13 @@
 	android:paddingHorizontal="32dp"
 	android:paddingBottom="?actionBarSize">
 
-	<ImageView
+	<org.koitharu.kotatsu.core.image.CoilImageView
 		android:id="@+id/icon"
 		android:layout_width="192dp"
 		android:layout_height="192dp"
 		android:contentDescription="@null"
 		android:scaleType="fitCenter"
+		app:crossfadeEnabled="false"
 		tools:src="@drawable/ic_empty_favourites" />
 
 	<TextView
@@ -37,6 +39,7 @@
 
 	<Button
 		android:id="@+id/button_retry"
+		style="?materialButtonTonalStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/margin_normal"

@@ -19,32 +19,32 @@ import coil3.size.Scale
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ErrorReporterReceiver
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.model.LocalMangaSource
+import org.koitharu.kotatsu.core.model.isNsfw
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.core.util.ext.isReportable
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.details.ui.DetailsActivity
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.download.ui.list.DownloadsActivity
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.search.ui.MangaListActivity
 import java.util.UUID
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 private const val CHANNEL_ID_DEFAULT = "download"
 private const val CHANNEL_ID_SILENT = "download_bg"
 private const val GROUP_ID = "downloads"
 
 class DownloadNotificationFactory @AssistedInject constructor(
-	@ApplicationContext private val context: Context,
+	@LocalizedAppContext private val context: Context,
 	private val workManager: WorkManager,
 	private val coil: ImageLoader,
 	@Assisted private val uuid: UUID,
@@ -71,7 +71,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 
 	private val actionCancel by lazy {
 		NotificationCompat.Action(
-			materialR.drawable.material_ic_clear_black_24dp,
+			appcompatR.drawable.abc_ic_clear_material,
 			context.getString(android.R.string.cancel),
 			workManager.createCancelPendingIntent(uuid),
 		)
@@ -141,10 +141,10 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		builder.setSubText(null)
 		builder.setShowWhen(false)
 		builder.setVisibility(
-			if (state != null && state.manga.isNsfw) {
-				NotificationCompat.VISIBILITY_PRIVATE
+			if (state != null && state.manga.isNsfw()) {
+				NotificationCompat.VISIBILITY_SECRET
 			} else {
-				NotificationCompat.VISIBILITY_PUBLIC
+				NotificationCompat.VISIBILITY_PRIVATE
 			},
 		)
 		when {
@@ -267,9 +267,9 @@ class DownloadNotificationFactory @AssistedInject constructor(
 		context,
 		manga.hashCode(),
 		if (manga != null) {
-			DetailsActivity.newIntent(context, manga)
+			AppRouter.detailsIntent(context, manga)
 		} else {
-			MangaListActivity.newIntent(context, LocalMangaSource, null)
+			AppRouter.listIntent(context, LocalMangaSource, null, null)
 		},
 		PendingIntent.FLAG_CANCEL_CURRENT,
 		false,

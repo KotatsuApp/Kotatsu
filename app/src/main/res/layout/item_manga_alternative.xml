@@ -11,17 +11,29 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<com.google.android.material.imageview.ShapeableImageView
+		<org.koitharu.kotatsu.image.ui.CoverImageView
 			android:id="@+id/imageView_cover"
 			android:layout_width="98dp"
 			android:layout_height="0dp"
 			android:background="?colorSurfaceContainer"
-			android:scaleType="centerCrop"
 			app:layout_constraintDimensionRatio="13:18"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover"
 			tools:src="@tools:sample/backgrounds/scenic" />
+
+		<org.koitharu.kotatsu.core.ui.widgets.IconsView
+			android:id="@+id/iconsView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:background="@drawable/bg_list_icons"
+			android:orientation="horizontal"
+			android:padding="4dp"
+			app:iconSize="14dp"
+			app:iconSpacing="4dp"
+			app:layout_constraintStart_toStartOf="@id/imageView_cover"
+			app:layout_constraintTop_toTopOf="@id/imageView_cover" />
 
 		<org.koitharu.kotatsu.history.ui.util.ReadingProgressView
 			android:id="@+id/progressView"
@@ -77,7 +89,7 @@
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/button_migrate"
-			style="@style/Widget.Material3.Button.TonalButton"
+			style="?materialButtonTonalStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="12dp"

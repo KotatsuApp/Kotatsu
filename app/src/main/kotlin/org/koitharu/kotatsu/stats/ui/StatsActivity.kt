@@ -4,58 +4,59 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewStub
 import android.widget.CompoundButton
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.graphics.Insets
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.AsyncListDiffer
-import coil3.ImageLoader
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.FavouriteCategory
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.KotatsuColors
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.newImageRequest
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.showOrHide
+import org.koitharu.kotatsu.core.util.ext.start
 import org.koitharu.kotatsu.databinding.ActivityStatsBinding
 import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.stats.domain.StatsPeriod
 import org.koitharu.kotatsu.stats.domain.StatsRecord
-import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
 import org.koitharu.kotatsu.stats.ui.views.PieChartView
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 	OnListItemClickListener<Manga>,
 	PieChartView.OnSegmentClickListener,
 	AsyncListDiffer.ListListener<StatsRecord>,
-	ViewStub.OnInflateListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-
-	@Inject
-	lateinit var coil: ImageLoader
+	ViewStub.OnInflateListener,
+	View.OnClickListener,
+	CompoundButton.OnCheckedChangeListener {
 
 	private val viewModel: StatsViewModel by viewModels()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityStatsBinding.inflate(layoutInflater))
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		val adapter = BaseListAdapter<StatsRecord>()
 			.addDelegate(ListItemType.FEED, statsAD(this))
 			.addListListener(this)
@@ -89,7 +90,38 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 		}
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		val isTablet = viewBinding.guidelineCenter != null
+		viewBinding.appbar.updatePaddingRelative(
+			start = bars.start(v),
+			top = bars.top,
+			end = if (isTablet) 0 else bars.end(v),
+		)
+		val badgePadding = resources.getDimensionPixelOffset(R.dimen.list_spacing_large)
+		viewBinding.scrollViewChips.updatePaddingRelative(
+			start = badgePadding + if (isTablet) 0 else bars.start(v),
+			end = badgePadding + bars.end(v),
+			top = if (isTablet) bars.top else 0,
+		)
+		viewBinding.recyclerView.updatePaddingRelative(
+			start = if (isTablet) 0 else bars.start(v),
+			end = bars.end(v),
+			bottom = bars.bottom,
+		)
+		viewBinding.chart.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			val baseMargin = topMargin
+			bottomMargin = if (isTablet) baseMargin + bars.bottom else baseMargin
+			marginStart = baseMargin + bars.start(v)
+			marginEnd = if (isTablet) baseMargin else baseMargin + bars.end(v)
+		}
+		return WindowInsetsCompat.Builder(insets)
+			.setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
+			.build()
+	}
 
 	override fun onClick(v: View) {
 		when (v.id) {
@@ -103,7 +135,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 	}
 
 	override fun onItemClick(item: Manga, view: View) {
-		MangaStatsSheet.show(supportFragmentManager, item)
+		router.showStatisticSheet(item)
 	}
 
 	override fun onSegmentClick(view: PieChartView, segment: PieChartView.Segment) {
@@ -138,7 +170,7 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 
 	override fun onInflate(stub: ViewStub?, inflated: View) {
 		val stubBinding = ItemEmptyStateBinding.bind(inflated)
-		stubBinding.icon.newImageRequest(this, R.drawable.ic_empty_history)?.enqueueWith(coil)
+		stubBinding.icon.setImageAsync(R.drawable.ic_empty_history)
 		stubBinding.textPrimary.setText(R.string.text_empty_holder_primary)
 		stubBinding.textSecondary.setTextAndVisible(R.string.empty_stats_text)
 		stubBinding.buttonRetry.isVisible = false

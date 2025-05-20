@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ui.BaseActivity
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -100,11 +100,11 @@ class ScrobblerConfigViewModel @Inject constructor(
 	private fun getScrobblerService(
 		savedStateHandle: SavedStateHandle,
 	): ScrobblerService {
-		val serviceId = savedStateHandle.get<Int>(ScrobblerConfigActivity.EXTRA_SERVICE_ID) ?: 0
+		val serviceId = savedStateHandle.get<Int>(AppRouter.KEY_ID) ?: 0
 		if (serviceId != 0) {
 			return ScrobblerService.entries.first { it.id == serviceId }
 		}
-		val uri = savedStateHandle.require<Uri>(BaseActivity.EXTRA_DATA)
+		val uri = savedStateHandle.require<Uri>(AppRouter.KEY_DATA)
 		return when (uri.host) {
 			ScrobblerConfigActivity.HOST_SHIKIMORI_AUTH -> ScrobblerService.SHIKIMORI
 			ScrobblerConfigActivity.HOST_ANILIST_AUTH -> ScrobblerService.ANILIST

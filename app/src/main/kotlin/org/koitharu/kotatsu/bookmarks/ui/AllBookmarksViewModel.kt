@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.reader.ui.PageSaveHelper
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,6 +54,23 @@ class AllBookmarksViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			val handle = repository.removeBookmarks(ids)
 			onActionDone.call(ReversibleAction(R.string.bookmarks_removed, handle))
+		}
+	}
+
+	fun savePages(pageSaveHelper: PageSaveHelper, ids: Set<Long>) {
+		launchLoadingJob(Dispatchers.Default) {
+			val tasks = content.value.mapNotNull {
+				if (it !is Bookmark || it.pageId !in ids) return@mapNotNull null
+				PageSaveHelper.Task(
+					manga = it.manga,
+					chapterId = it.chapterId,
+					pageNumber = it.page + 1,
+					page = it.toMangaPage(),
+				)
+			}
+			val dest = pageSaveHelper.save(tasks)
+			val msg = if (dest.size == 1) R.string.page_saved else R.string.pages_saved
+			onActionDone.call(ReversibleAction(msg, null))
 		}
 	}
 

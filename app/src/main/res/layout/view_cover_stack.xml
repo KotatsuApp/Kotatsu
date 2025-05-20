@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:parentTag="org.koitharu.kotatsu.core.ui.widgets.StackLayout">
+
+	<org.koitharu.kotatsu.image.ui.CoverImageView
+		android:id="@+id/imageView_cover3"
+		android:layout_width="wrap_content"
+		android:layout_height="64dp"
+		android:layout_marginStart="24dp"
+		android:layout_marginBottom="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
+		android:scaleType="centerCrop"
+		app:fallbackDrawable="@android:color/transparent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:tintMode="src_atop"
+		tools:backgroundTint="#99FFFFFF"
+		tools:src="@tools:sample/backgrounds/scenic"
+		tools:tint="#99FFFFFF" />
+
+	<org.koitharu.kotatsu.image.ui.CoverImageView
+		android:id="@+id/imageView_cover2"
+		android:layout_width="wrap_content"
+		android:layout_height="64dp"
+		android:layout_marginStart="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
+		android:scaleType="centerCrop"
+		app:fallbackDrawable="@android:color/transparent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		app:tintMode="src_atop"
+		tools:backgroundTint="#4DFFFFFF"
+		tools:src="@tools:sample/backgrounds/scenic"
+		tools:tint="#4DFFFFFF" />
+
+	<org.koitharu.kotatsu.image.ui.CoverImageView
+		android:id="@+id/imageView_cover1"
+		android:layout_width="wrap_content"
+		android:layout_height="64dp"
+		android:layout_marginTop="12dp"
+		android:background="?attr/colorSecondaryContainer"
+		android:backgroundTintMode="src_atop"
+		android:scaleType="centerCrop"
+		app:fallbackDrawable="@android:color/transparent"
+		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Kotatsu.Cover.Small"
+		tools:src="@tools:sample/backgrounds/scenic" />
+
+</merge>

@@ -21,12 +21,14 @@ import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
+import org.koitharu.kotatsu.core.util.ext.requireValue
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.reader.ui.PageSaveHelper
 import javax.inject.Inject
 
 @HiltViewModel
@@ -62,6 +64,24 @@ class BookmarksViewModel @Inject constructor(
 		}
 	}
 
+	fun savePages(pageSaveHelper: PageSaveHelper, ids: Set<Long>) {
+		launchLoadingJob(Dispatchers.Default) {
+			val m = manga.requireValue()
+			val tasks = content.value.mapNotNull {
+				if (it !is Bookmark || it.pageId !in ids) return@mapNotNull null
+				PageSaveHelper.Task(
+					manga = m,
+					chapterId = it.chapterId,
+					pageNumber = it.page + 1,
+					page = it.toMangaPage(),
+				)
+			}
+			val dest = pageSaveHelper.save(tasks)
+			val msg = if (dest.size == 1) R.string.page_saved else R.string.pages_saved
+			onActionDone.call(ReversibleAction(msg, null))
+		}
+	}
+
 	private fun mapList(manga: Manga, bookmarks: List<Bookmark>): List<ListModel>? {
 		val chapters = manga.chapters ?: return null
 		val bookmarksMap = bookmarks.groupBy { it.chapterId }
@@ -71,7 +91,7 @@ class BookmarksViewModel @Inject constructor(
 			if (b.isNullOrEmpty()) {
 				continue
 			}
-			result += ListHeader(chapter.name)
+			result += ListHeader(chapter)
 			result.addAll(b)
 		}
 		if (result.isEmpty()) {

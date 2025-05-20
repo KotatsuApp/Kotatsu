@@ -7,9 +7,10 @@ import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.getTitle
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.parser.EmptyMangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -20,7 +21,6 @@ import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import java.io.File
 
 @AndroidEntryPoint
@@ -43,7 +43,7 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		val isValidSource = viewModel.repository !is EmptyMangaRepository
 
 		findPreference<SwitchPreferenceCompat>(KEY_ENABLE)?.run {
-			isVisible = isValidSource
+			isVisible = isValidSource && !settings.isAllSourcesEnabled
 			onPreferenceChangeListener = this@SourceSettingsFragment
 		}
 		findPreference<Preference>(KEY_AUTH)?.run {
@@ -87,18 +87,15 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
 			KEY_AUTH -> {
-				startActivity(SourceAuthActivity.newIntent(preference.context, viewModel.source))
+				router.openSourceAuth(viewModel.source)
 				true
 			}
 
 			AppSettings.KEY_OPEN_BROWSER -> {
-				startActivity(
-					BrowserActivity.newIntent(
-						context = preference.context,
-						url = viewModel.browserUrl.value ?: return false,
-						source = viewModel.source,
-						title = viewModel.source.getTitle(preference.context),
-					),
+				router.openBrowser(
+					url = viewModel.browserUrl.value ?: return false,
+					source = viewModel.source,
+					title = viewModel.source.getTitle(preference.context),
 				)
 				true
 			}
@@ -125,10 +122,8 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		private const val KEY_AUTH = "auth"
 		private const val KEY_ENABLE = "enable"
 
-		const val EXTRA_SOURCE = "source"
-
 		fun newInstance(source: MangaSource) = SourceSettingsFragment().withArgs(1) {
-			putString(EXTRA_SOURCE, source.name)
+			putString(AppRouter.KEY_SOURCE, source.name)
 		}
 	}
 }

@@ -1,33 +1,39 @@
 package org.koitharu.kotatsu.core.ui.dialog
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
-import androidx.core.text.htmlEncode
-import androidx.core.text.method.LinkMovementMethodCompat
-import androidx.core.text.parseAsHtml
-import androidx.fragment.app.FragmentManager
+import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.github.AppUpdateRepository
+import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.AlertDialogFragment
+import org.koitharu.kotatsu.core.util.ext.copyToClipboard
+import org.koitharu.kotatsu.core.util.ext.getCauseUrl
+import org.koitharu.kotatsu.core.util.ext.isHttpUrl
 import org.koitharu.kotatsu.core.util.ext.isReportable
 import org.koitharu.kotatsu.core.util.ext.report
 import org.koitharu.kotatsu.core.util.ext.requireSerializable
-import org.koitharu.kotatsu.core.util.ext.withArgs
+import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.DialogErrorDetailsBinding
+import javax.inject.Inject
 
-class ErrorDetailsDialog : AlertDialogFragment<DialogErrorDetailsBinding>() {
+@AndroidEntryPoint
+class ErrorDetailsDialog : AlertDialogFragment<DialogErrorDetailsBinding>(), View.OnClickListener {
 
 	private lateinit var exception: Throwable
+
+	@Inject
+	lateinit var appUpdateRepository: AppUpdateRepository
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		val args = requireArguments()
-		exception = args.requireSerializable(ARG_ERROR)
+		exception = args.requireSerializable(AppRouter.KEY_ERROR)
 	}
 
 	override fun onCreateViewBinding(inflater: LayoutInflater, container: ViewGroup?): DialogErrorDetailsBinding {
@@ -36,51 +42,50 @@ class ErrorDetailsDialog : AlertDialogFragment<DialogErrorDetailsBinding>() {
 
 	override fun onViewBindingCreated(binding: DialogErrorDetailsBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		with(binding.textViewMessage) {
-			movementMethod = LinkMovementMethodCompat.getInstance()
-			text = context.getString(
-				R.string.manga_error_description_pattern,
-				exception.message?.htmlEncode().orEmpty(),
-				arguments?.getString(ARG_URL),
-			).parseAsHtml(HtmlCompat.FROM_HTML_MODE_LEGACY)
-		}
+		binding.buttonBrowser.setOnClickListener(this)
+		binding.textViewSummary.text = exception.message
+		val isUrlAvailable = exception.getCauseUrl()?.isHttpUrl() == true
+		binding.buttonBrowser.isVisible = isUrlAvailable
+		binding.textViewBrowser.isVisible = isUrlAvailable
+		binding.textViewDescription.setTextAndVisible(
+			if (appUpdateRepository.isUpdateAvailable) {
+				R.string.error_disclaimer_app_outdated
+			} else if (exception.isReportable()) {
+				R.string.error_disclaimer_report
+			} else {
+				0
+			},
+		)
 	}
 
 	@Suppress("NAME_SHADOWING")
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
 		val builder = super.onBuildDialog(builder)
 			.setCancelable(true)
-			.setNegativeButton(android.R.string.cancel, null)
-			.setTitle(R.string.error_occurred)
+			.setNegativeButton(R.string.close, null)
+			.setTitle(R.string.error_details)
 			.setNeutralButton(androidx.preference.R.string.copy) { _, _ ->
-				copyToClipboard()
+				context?.copyToClipboard(getString(R.string.error), exception.stackTraceToString())
 			}
-		if (exception.isReportable()) {
-			builder.setPositiveButton(R.string.report) { _, _ ->
+		if (appUpdateRepository.isUpdateAvailable) {
+			builder.setPositiveButton(R.string.update) { _, _ ->
+				router.openAppUpdate()
 				dismiss()
+			}
+		} else if (exception.isReportable()) {
+			builder.setPositiveButton(R.string.report) { _, _ ->
 				exception.report(silent = true)
+				dismiss()
 			}
 		}
 		return builder
 	}
 
-	private fun copyToClipboard() {
-		val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
-			?: return
-		clipboardManager.setPrimaryClip(
-			ClipData.newPlainText(getString(R.string.error), exception.stackTraceToString()),
+	override fun onClick(v: View) {
+		router.openBrowser(
+			url = exception.getCauseUrl() ?: return,
+			source = null,
+			title = null,
 		)
-	}
-
-	companion object {
-
-		private const val TAG = "ErrorDetailsDialog"
-		private const val ARG_ERROR = "error"
-		private const val ARG_URL = "url"
-
-		fun show(fm: FragmentManager, error: Throwable, url: String?) = ErrorDetailsDialog().withArgs(2) {
-			putSerializable(ARG_ERROR, error)
-			putString(ARG_URL, url)
-		}.show(fm, TAG)
 	}
 }

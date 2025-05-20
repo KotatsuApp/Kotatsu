@@ -4,4 +4,8 @@
         <item quantity="one">%1$d ഒരു പുതിയ അദ്ധ്യായം</item>
         <item quantity="other">%1$d ഒരുപാട് പുതിയ അധ്യായങ്ങൾ</item>
     </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d മിനിറ്റ്</item>
+        <item quantity="other">%1$d മിനിറ്റ്</item>
+    </plurals>
 </resources>

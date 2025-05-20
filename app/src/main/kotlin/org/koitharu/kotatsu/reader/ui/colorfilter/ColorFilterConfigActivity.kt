@@ -1,46 +1,35 @@
 package org.koitharu.kotatsu.reader.ui.colorfilter
 
-import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.ImageView
 import androidx.activity.viewModels
-import androidx.core.graphics.Insets
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
+import androidx.core.view.WindowInsetsCompat
 import coil3.ImageLoader
+import coil3.asDrawable
+import coil3.request.ErrorResult
 import coil3.request.ImageRequest
-import coil3.request.bitmapConfig
-import coil3.request.error
-import coil3.size.Scale
-import coil3.size.ViewSizeResolver
+import coil3.request.SuccessResult
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
-import org.koitharu.kotatsu.core.model.parcelable.ParcelableMangaPage
 import org.koitharu.kotatsu.core.ui.BaseActivity
-import org.koitharu.kotatsu.core.util.ext.decodeRegion
-import org.koitharu.kotatsu.core.util.ext.enqueueWith
-import org.koitharu.kotatsu.core.util.ext.indicator
-import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
+import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.setChecked
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
+import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
+import org.koitharu.kotatsu.core.util.progress.ImageRequestIndicatorListener
 import org.koitharu.kotatsu.databinding.ActivityColorFilterBinding
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.format
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import javax.inject.Inject
-import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
 class ColorFilterConfigActivity :
@@ -56,10 +45,7 @@ class ColorFilterConfigActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityColorFilterBinding.inflate(layoutInflater))
-		supportActionBar?.run {
-			setDisplayHomeAsUpEnabled(true)
-			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
-		}
+		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
 		viewBinding.sliderBrightness.addOnChangeListener(this)
 		viewBinding.sliderContrast.addOnChangeListener(this)
 		val formatter = PercentLabelFormatter(resources)
@@ -78,6 +64,20 @@ class ColorFilterConfigActivity :
 			finishAfterTransition()
 		}
 		loadPreview(viewModel.preview)
+	}
+
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		val barsInsets = insets.systemBarsInsets
+		viewBinding.root.setPadding(
+			barsInsets.left,
+			barsInsets.top,
+			barsInsets.right,
+			barsInsets.bottom,
+		)
+		return insets.consumeAllSystemBarsInsets()
 	}
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
@@ -103,19 +103,6 @@ class ColorFilterConfigActivity :
 		}
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.scrollView.updatePadding(
-			bottom = insets.bottom,
-		)
-		viewBinding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-			topMargin = insets.top
-		}
-	}
-
 	fun showSaveConfirmation() {
 		MaterialAlertDialogBuilder(this)
 			.setTitle(R.string.apply)
@@ -131,24 +118,22 @@ class ColorFilterConfigActivity :
 	private fun onColorFilterChanged(readerColorFilter: ReaderColorFilter?) {
 		viewBinding.sliderBrightness.setValueRounded(readerColorFilter?.brightness ?: 0f)
 		viewBinding.sliderContrast.setValueRounded(readerColorFilter?.contrast ?: 0f)
-		viewBinding.switchInvert.setChecked(readerColorFilter?.isInverted ?: false, false)
-		viewBinding.switchGrayscale.setChecked(readerColorFilter?.isGrayscale ?: false, false)
+		viewBinding.switchInvert.setChecked(readerColorFilter?.isInverted == true, false)
+		viewBinding.switchGrayscale.setChecked(readerColorFilter?.isGrayscale == true, false)
 		viewBinding.imageViewAfter.colorFilter = readerColorFilter?.toColorFilter()
 	}
 
-	private fun loadPreview(page: MangaPage) {
-		val data: Any = page.preview?.takeUnless { it.isEmpty() } ?: page
-		ImageRequest.Builder(this@ColorFilterConfigActivity)
-			.data(data)
-			.scale(Scale.FILL)
-			.decodeRegion()
-			.mangaSourceExtra(page.source)
-			.bitmapConfig(if (viewModel.is32BitColorsEnabled) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565)
-			.indicator(listOf(viewBinding.progressBefore, viewBinding.progressAfter))
-			.error(R.drawable.ic_error_placeholder)
-			.size(ViewSizeResolver(viewBinding.imageViewBefore))
-			.target(DoubleViewTarget(viewBinding.imageViewBefore, viewBinding.imageViewAfter))
-			.enqueueWith(coil)
+	private fun loadPreview(page: MangaPage) = with(viewBinding.imageViewBefore) {
+		addImageRequestListener(
+			ImageRequestIndicatorListener(
+				listOf(
+					viewBinding.progressBefore,
+					viewBinding.progressAfter,
+				),
+			),
+		)
+		addImageRequestListener(ShadowImageListener(viewBinding.imageViewAfter))
+		setImageAsync(page)
 	}
 
 	private fun onLoadingChanged(isLoading: Boolean) {
@@ -169,14 +154,23 @@ class ColorFilterConfigActivity :
 		}
 	}
 
-	companion object {
+	private class ShadowImageListener(
+		private val imageView: ImageView
+	) : ImageRequest.Listener {
 
-		const val EXTRA_PAGES = "pages"
-		const val EXTRA_MANGA = "manga_id"
+		override fun onError(request: ImageRequest, result: ErrorResult) {
+			super.onError(request, result)
+			imageView.setImageDrawable(result.image?.asDrawable(imageView.resources))
+		}
 
-		fun newIntent(context: Context, manga: Manga, page: MangaPage) =
-			Intent(context, ColorFilterConfigActivity::class.java)
-				.putExtra(EXTRA_MANGA, ParcelableManga(manga))
-				.putExtra(EXTRA_PAGES, ParcelableMangaPage(page))
+		override fun onStart(request: ImageRequest) {
+			super.onStart(request)
+			imageView.setImageDrawable(request.placeholder()?.asDrawable(imageView.resources))
+		}
+
+		override fun onSuccess(request: ImageRequest, result: SuccessResult) {
+			super.onSuccess(request, result)
+			imageView.setImageDrawable(result.image.asDrawable(imageView.resources))
+		}
 	}
 }

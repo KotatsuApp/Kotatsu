@@ -30,7 +30,7 @@ class WidgetUpdater @Inject constructor(
 	private fun updateWidgets(cls: Class<*>) {
 		val intent = Intent(context, cls)
 		intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-		val ids = AppWidgetManager.getInstance(context)
+		val ids = (AppWidgetManager.getInstance(context) ?: return)
 			.getAppWidgetIds(ComponentName(context, cls))
 		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
 		context.sendBroadcast(intent)

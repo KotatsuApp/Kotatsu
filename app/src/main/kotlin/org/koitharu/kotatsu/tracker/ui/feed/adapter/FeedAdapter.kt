@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu.tracker.ui.feed.adapter
 
 import android.content.Context
-import androidx.lifecycle.LifecycleOwner
-import coil3.ImageLoader
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.list.fastscroll.FastScroller
@@ -20,20 +18,16 @@ import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
 import org.koitharu.kotatsu.tracker.ui.feed.model.FeedItem
 
 class FeedAdapter(
-	coil: ImageLoader,
-	lifecycleOwner: LifecycleOwner,
 	listener: MangaListListener,
 	sizeResolver: ItemSizeResolver,
 	feedClickListener: OnListItemClickListener<FeedItem>,
 ) : BaseListAdapter<ListModel>(), FastScroller.SectionIndexer {
 
 	init {
-		addDelegate(ListItemType.FEED, feedItemAD(coil, lifecycleOwner, feedClickListener))
+		addDelegate(ListItemType.FEED, feedItemAD(feedClickListener))
 		addDelegate(
 			ListItemType.MANGA_NESTED_GROUP,
 			updatedMangaAD(
-				lifecycleOwner = lifecycleOwner,
-				coil = coil,
 				sizeResolver = sizeResolver,
 				listener = listener,
 				headerClickListener = listener,
@@ -44,7 +38,7 @@ class FeedAdapter(
 		addDelegate(ListItemType.FOOTER_ERROR, errorFooterAD(listener))
 		addDelegate(ListItemType.STATE_ERROR, errorStateListAD(listener))
 		addDelegate(ListItemType.HEADER, listHeaderAD(listener))
-		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(coil, lifecycleOwner, listener))
+		addDelegate(ListItemType.STATE_EMPTY, emptyStateListAD(listener))
 		addDelegate(ListItemType.QUICK_FILTER, quickFilterAD(listener))
 	}
 

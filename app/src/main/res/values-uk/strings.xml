@@ -279,8 +279,7 @@
     <string name="no_manga_sources">Немає джерел манґи</string>
     <string name="no_manga_sources_text">Увімкніть джерела манґи, щоб читати онлайн</string>
     <string name="random">Випадкова</string>
-    <string name="categories_delete_confirm">Ви впевнені, що бажаєте видалити вибрані улюблені категорії\?
-\nУсю манґу в них буде втрачено, і це неможливо скасувати.</string>
+    <string name="categories_delete_confirm">Ви впевнені, що бажаєте видалити вибрані улюблені категорії? \nУсю манґу в них буде втрачено, і це неможливо скасувати.</string>
     <string name="reorder">Впорядкувати</string>
     <string name="empty">Порожньо</string>
     <string name="explore">Огляд</string>

@@ -46,6 +46,7 @@ import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.ids
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.TrackerDownloadStrategy
 import org.koitharu.kotatsu.core.prefs.TriStateOption
@@ -59,7 +60,6 @@ import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.toIntUp
-import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.work.PeriodicWorkScheduler
 import org.koitharu.kotatsu.tracker.domain.CheckNewChaptersUseCase
 import org.koitharu.kotatsu.tracker.domain.GetTracksUseCase
@@ -70,7 +70,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 @HiltWorker
 class TrackWorker @AssistedInject constructor(
@@ -209,13 +209,13 @@ class TrackWorker @AssistedInject constructor(
 			PendingIntentCompat.getActivity(
 				applicationContext,
 				0,
-				SettingsActivity.newTrackerSettingsIntent(applicationContext),
+				AppRouter.trackerSettingsIntent(applicationContext),
 				0,
 				false,
 			),
 		)
 		addAction(
-			materialR.drawable.material_ic_clear_black_24dp,
+			appcompatR.drawable.abc_ic_clear_material,
 			applicationContext.getString(android.R.string.cancel),
 			workManager.createCancelPendingIntent(id),
 		)

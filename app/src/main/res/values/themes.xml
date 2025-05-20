@@ -4,9 +4,6 @@
 	<!-- Base application theme. -->
 	<style name="Base.Theme.Kotatsu" parent="Theme.Material3.DayNight.NoActionBar">
 
-		<!-- Disallow 'Force dark theme' -->
-		<item name="android:forceDarkAllowed" tools:targetApi="Q">false</item>
-
 		<!-- Theme Colors -->
 		<item name="colorPrimary">@color/kotatsu_primary</item>
 		<item name="colorPrimaryContainer">@color/kotatsu_primaryContainer</item>
@@ -42,67 +39,115 @@
 		<item name="colorOutline">@color/kotatsu_outline</item>
 		<item name="colorOutlineVariant">@color/kotatsu_outline</item>
 
-		<item name="android:divider">@color/kotatsu_outline</item>
+		<!-- Drawables (icons) -->
+		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
+		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
+		<item name="expandCollapseIndicator">@drawable/m3_split_button_chevron_avd</item>
 
-		<!-- Handles RTL text -->
-		<item name="android:textAlignment">gravity</item>
-		<item name="android:textDirection">locale</item>
-
-		<!-- Themes -->
+		<!-- Base attributes -->
 		<item name="android:windowLightStatusBar" tools:targetApi="M">@bool/light_status_bar</item>
 		<item name="android:statusBarColor">@color/dim</item>
 		<item name="android:navigationBarColor">@color/surface_amoled</item>
 		<item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@null</item>
 		<item name="android:enforceNavigationBarContrast" tools:targetApi="Q">false</item>
 		<item name="android:enforceStatusBarContrast" tools:targetApi="Q">false</item>
-		<item name="android:itemTextAppearance">@style/TextAppearance.Widget.Menu</item>
+		<item name="windowActionModeOverlay">true</item>
+
+		<!-- System components styles -->
 		<item name="alertDialogTheme">@style/ThemeOverlay.Kotatsu.AlertDialog</item>
 		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
-		<item name="textAppearanceButton">@style/TextAppearance.Kotatsu.Button</item>
-		<item name="android:buttonStyle">?attr/borderlessButtonStyle</item>
-		<item name="android:backgroundDimAmount">0.32</item>
-		<item name="windowActionModeOverlay">true</item>
-		<item name="actionBarPopupTheme">@style/Widget.Material3.PopupMenu.ListPopupWindow</item>
-		<item name="actionModeStyle">@style/Widget.Kotatsu.ActionMode</item>
-		<item name="actionModeCloseDrawable">@drawable/abc_ic_clear_material</item>
-		<item name="actionModeWebSearchDrawable">@drawable/abc_ic_search_api_material</item>
-		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
-		<item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
-		<item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>
-		<item name="appBarLayoutStyle">@style/Widget.Kotatsu.AppBarLayout</item>
-		<item name="bottomNavigationStyle">@style/Widget.Kotatsu.BottomNavigationView.ColoredIndicators</item>
-		<item name="tabStyle">@style/Widget.Kotatsu.Tabs</item>
-		<item name="materialCardViewStyle">@style/Widget.Kotatsu.CardView.Filled</item>
+		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Kotatsu.SideSheetDialog</item>
 		<item name="recyclerViewStyle">@style/Widget.Kotatsu.RecyclerView</item>
-		<item name="fastScrollerStyle">@style/Widget.Kotatsu.FastScroller</item>
-		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
-		<item name="materialSwitchStyle">@style/Widget.Material3.CompoundButton.MaterialSwitch</item>
+		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>
 		<item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.M3</item>
-		<item name="collapsingToolbarLayoutStyle">@style/Widget.Kotatsu.CollapsingToolbar</item>
 		<item name="circularProgressIndicatorStyle">@style/Widget.Kotatsu.CircularProgressIndicator</item>
 		<item name="linearProgressIndicatorStyle">@style/Widget.Kotatsu.LinearProgressIndicator</item>
 		<item name="bottomSheetDragHandleStyle">@style/Widget.Kotatsu.BottomSheet.DragHandle</item>
-		<item name="android:dropDownSpinnerStyle">@style/Widget.Kotatsu.Spinner.DropDown</item>
+		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
+
+		<!-- Custom views -->
+		<item name="fastScrollerStyle">@style/Widget.Kotatsu.FastScroller</item>
+		<item name="listItemTextViewStyle">@style/Widget.Kotatsu.ListItemTextView</item>
 		<item name="dotIndicatorStyle">@style/Widget.Kotatsu.DotIndicator</item>
-
-		<!-- Text appearance -->
-		<item name="actionMenuTextAppearance">@style/TextAppearance.Kotatsu.Menu</item>
-		<item name="android:textAppearanceListItem">?attr/textAppearanceBodyLarge</item>
-		<item name="android:textAppearanceListItemSecondary">
-			@style/TextAppearance.Kotatsu.Preference.Secondary
-		</item>
-
+		<item name="badgeViewStyle">@style/Widget.Kotatsu.BadgeView</item>
+		<item name="coverImageViewStyle">@style/Widget.Kotatsu.ImageView.Cover</item>
 	</style>
 
 	<!--== Default Theme ==-->
 	<style name="Theme.Kotatsu" parent="Base.Theme.Kotatsu" />
 
-	<!-- Monet theme only support S+ -->
-	<style name="Theme.Kotatsu.Monet" />
-
+	<!-- Base ThemeOverlay -->
 	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Light" />
 
+	<!-- Monet theme only support S+ -->
+	<style name="ThemeOverlay.Kotatsu.Monet" parent="ThemeOverlay.Material3.DynamicColors.Light" />
+
+	<!-- Expressive Monet theme -->
+	<style name="ThemeOverlay.Kotatsu.Expressive" parent="ThemeOverlay.Material3Expressive.DynamicColors.DayNight">
+		<item name="alertDialogTheme">@style/ThemeOverlay.Material3Expressive.Dialog.Alert</item>
+		<item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3Expressive.MaterialAlertDialog</item>
+
+		<item name="appBarLayoutStyle">@style/Widget.Material3Expressive.AppBarLayout</item>
+		<item name="collapsingToolbarLayoutStyle">@style/Widget.Material3Expressive.CollapsingToolbar</item>
+		<item name="collapsingToolbarLayoutMediumStyle">@style/Widget.Material3Expressive.CollapsingToolbar.Medium
+		</item>
+		<item name="collapsingToolbarLayoutLargeStyle">@style/Widget.Material3Expressive.CollapsingToolbar.Large</item>
+
+		<item name="materialSearchBarStyle">@style/Widget.Material3Expressive.SearchBar</item>
+
+		<item name="floatingActionButtonStyle">@style/Widget.Material3Expressive.FloatingActionButton</item>
+		<item name="floatingActionButtonMediumStyle">@style/Widget.Material3Expressive.FloatingActionButton.Medium
+		</item>
+		<item name="floatingActionButtonLargeStyle">@style/Widget.Material3Expressive.FloatingActionButton.Large</item>
+
+		<item name="extendedFloatingActionButtonSmallStyle">
+			@style/Widget.Material3Expressive.ExtendedFloatingActionButton.Small
+		</item>
+		<item name="extendedFloatingActionButtonMediumStyle">
+			@style/Widget.Material3Expressive.ExtendedFloatingActionButton.Medium
+		</item>
+		<item name="extendedFloatingActionButtonLargeStyle">
+			@style/Widget.Material3Expressive.ExtendedFloatingActionButton.Large
+		</item>
+
+		<item name="materialButtonStyle">@style/Widget.Material3Expressive.Button</item>
+		<item name="materialButtonTonalStyle">@style/Widget.Material3Expressive.Button.TonalButton</item>
+		<item name="materialButtonOutlinedStyle">@style/Widget.Material3Expressive.Button.OutlinedButton</item>
+		<item name="materialButtonElevatedStyle">@style/Widget.Material3Expressive.Button.ElevatedButton</item>
+		<item name="borderlessButtonStyle">@style/Widget.Material3Expressive.Button.TextButton</item>
+		<item name="buttonBarButtonStyle">@style/Widget.Material3Expressive.Button.TextButton.Dialog</item>
+		<item name="snackbarButtonStyle">@style/Widget.Material3Expressive.Button.TextButton.Snackbar</item>
+		<item name="materialIconButtonStyle">@style/Widget.Material3Expressive.Button.IconButton.Standard</item>
+		<item name="materialIconButtonOutlinedStyle">@style/Widget.Material3Expressive.Button.IconButton.Outlined</item>
+		<item name="materialIconButtonFilledStyle">@style/Widget.Material3Expressive.Button.IconButton.Filled</item>
+		<item name="materialIconButtonFilledTonalStyle">@style/Widget.Material3Expressive.Button.IconButton.Tonal</item>
+
+		<item name="materialButtonGroupStyle">@style/Widget.Material3Expressive.MaterialButtonGroup</item>
+		<item name="materialButtonToggleGroupStyle">@style/Widget.Material3Expressive.MaterialButtonToggleGroup</item>
+
+		<item name="bottomNavigationStyle">@style/Widget.Material3Expressive.BottomNavigationView</item>
+		<item name="navigationRailStyle">@style/Widget.Material3Expressive.NavigationRailView</item>
+
+		<item name="toolbarStyle">@style/Widget.Material3Expressive.Toolbar</item>
+		<item name="toolbarSurfaceStyle">@style/Widget.Material3Expressive.Toolbar.Surface</item>
+
+		<item name="linearProgressIndicatorStyle">@style/Widget.Material3Expressive.LinearProgressIndicator</item>
+		<item name="circularProgressIndicatorStyle">@style/Widget.Material3Expressive.CircularProgressIndicator</item>
+
+		<item name="sliderStyle">@style/Widget.Material3Expressive.Slider.Xsmall</item>
+
+		<item name="collapsingToolbarLayoutMediumSize">@dimen/m3_comp_app_bar_medium_flexible_container_height</item>
+		<item name="collapsingToolbarLayoutLargeSize">@dimen/m3_comp_app_bar_large_flexible_container_height</item>
+
+		<item name="actionBarSize">@dimen/m3_comp_app_bar_small_container_height</item>
+
+		<item name="dynamicColorThemeOverlay">@style/ThemeOverlay.Material3Expressive.DynamicColors.DayNight</item>
+	</style>
+
+	<!-- Changes only for night -->
 	<style name="ThemeOverlay.Kotatsu.Amoled" parent="" />
+
+	<!-- App Widgets -->
 
 	<style name="Theme.Kotatsu.AppWidgetContainer" parent="@style/Theme.MaterialComponents.Light">
 		<item name="android:colorBackground">@color/kotatsu_background</item>

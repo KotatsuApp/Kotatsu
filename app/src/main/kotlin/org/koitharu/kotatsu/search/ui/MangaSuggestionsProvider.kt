@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.SearchRecentSuggestionsProvider
 import android.net.Uri
 import android.provider.SearchRecentSuggestions
+import androidx.core.net.toUri
 import org.koitharu.kotatsu.BuildConfig
 
 class MangaSuggestionsProvider : SearchRecentSuggestionsProvider() {
@@ -29,6 +30,6 @@ class MangaSuggestionsProvider : SearchRecentSuggestionsProvider() {
 			.appendPath(SearchManager.SUGGEST_URI_PATH_QUERY)
 			.build()
 
-		val URI: Uri = Uri.parse("content://$AUTHORITY/suggestions")
+		val URI: Uri = "content://$AUTHORITY/suggestions".toUri()
 	}
 }

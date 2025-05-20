@@ -24,13 +24,13 @@
 		android:layout_marginVertical="18dp"
 		android:gravity="center_horizontal"
 		android:textAlignment="center"
-		android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+		android:textAppearance="?textAppearanceLabelLarge"
 		android:textSize="18sp"
 		tools:text="@string/suggestions_summary" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@android:id/button1"
-		style="@style/Widget.Material3.Button.TonalButton"
+		style="?materialButtonTonalStyle"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:minHeight="62dp"
@@ -42,7 +42,7 @@
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@android:id/button2"
-		style="@style/Widget.Material3.Button.TonalButton"
+		style="?materialButtonTonalStyle"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:minHeight="62dp"
@@ -54,7 +54,7 @@
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@android:id/button3"
-		style="@style/Widget.Material3.Button.TonalButton"
+		style="?materialButtonTonalStyle"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:minHeight="62dp"

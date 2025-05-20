@@ -26,14 +26,16 @@
 			android:id="@+id/title"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			tools:text="@tools:sample/cities" />
+			tools:text="@tools:sample/cities"
+			tools:textAppearance="?textAppearanceListItem" />
 
 		<TextView
 			android:id="@+id/subtitle"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="2dp"
-			tools:text="@tools:sample/lorem[12]" />
+			tools:text="@tools:sample/lorem[12]"
+			tools:textAppearance="?textAppearanceBodySmall" />
 
 	</LinearLayout>
 
@@ -46,5 +48,5 @@
 		android:minWidth="?minTouchTargetSize"
 		android:minHeight="?minTouchTargetSize"
 		android:scaleType="center"
-		tools:src="@drawable/ic_expand_more" />
+		tools:src="?expandCollapseIndicator" />
 </merge>

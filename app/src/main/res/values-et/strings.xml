@@ -210,8 +210,7 @@
     <string name="text_file_not_supported">Vali kas ZIP või CBZ fail.</string>
     <string name="download">Lae alla</string>
     <string name="chapter_is_missing">See peatükk puudub</string>
-    <string name="categories_delete_confirm">Kas sa oled kindel, et tahad kustutada valitud lemmikud kategooriad?
-\nKõik manga nende sees kaob ja seda tagasi ei saa.</string>
+    <string name="categories_delete_confirm">Kas sa oled kindel, et tahad kustutada valitud lemmikud kategooriad? \nKõik manga nende sees kaob ja seda tagasi ei saa.</string>
     <string name="logged_in_as">Logitud sisse kui %s</string>
     <string name="suggestions_info">Kõik andmed analüüsitakse ainult lokaalselt selles seadmes ja neid ei saadeta kunagi kuhugi.</string>
     <string name="reader_info_pattern">Pt. %1$d/%2$d Lk. %3$d/%4$d</string>
@@ -385,7 +384,7 @@
     <string name="removed_from_favourites">Eemaldatud lemmikutest</string>
     <string name="bookmarks">Järjehoidja</string>
     <string name="show_all">Näita kõik</string>
-    <string name="page_saved">Salvestatud</string>
+    <string name="page_saved">Leht on salvestatud</string>
     <string name="today">Täna</string>
     <string name="empty_favourite_categories">Pole lemmikkategooriaid</string>
     <string name="invalid_domain_message">Kehtetu domeen</string>
@@ -399,7 +398,7 @@
     <string name="password">Parool</string>
     <string name="data_and_privacy">Andmed ja privaatsus</string>
     <string name="invalid_value_message">Kehtetu väärtus</string>
-    <string name="downloads_cancelled">Allalaadimised on peatatud</string>
+    <string name="downloads_cancelled">Allalaadimised on katkestatud</string>
     <string name="web_view_unavailable">WebView ei ole saadaval: kontrollige kas WebView pakkuja on installitud</string>
     <string name="port">Port</string>
     <string name="type">Tüüp</string>
@@ -407,7 +406,7 @@
     <string name="username">Kasutaja nimi</string>
     <string name="authorization_optional">Autoriseerimine (valikuline)</string>
     <string name="downloads_paused">Allalaadimised on pausil</string>
-    <string name="cancel_all_downloads_confirm">Kõik pooleliolevad allalaadimised peatatakse ja poolenisti allalaaditud sisu kustutatakse</string>
+    <string name="cancel_all_downloads_confirm">Kõik pooleliolevad allalaadimised katkestatakse ja poolenisti allalaaditud sisu kustutatakse</string>
     <string name="text_downloads_list_holder">Sul pole midagi allalaetud</string>
     <string name="invalid_port_number">Vigane pordi number</string>
     <string name="webtoon_zoom_summary">Luba sisse suumimis liigutusi webtooni moodis</string>
@@ -516,4 +515,28 @@
     <string name="this_manga">See manga</string>
     <string name="sources_catalog">Andmeallikate kataloog</string>
     <string name="backup_date_">Varukoopia kuupäev: %s</string>
+    <string name="content_rating">Hinnang sisule</string>
+    <string name="pages_saved">Lehed on salvestatud</string>
+    <string name="state">Olek</string>
+    <string name="remove_from_history">Eemalda ajaloost</string>
+    <string name="reading_stats">Lugemise statistika</string>
+    <string name="state_paused">Peatatud</string>
+    <string name="clear_stats">Kustuta statistika</string>
+    <string name="stats_cleared">Statistika on kustutatud</string>
+    <string name="statistics">Statistika</string>
+    <string name="reader_optimize">Vähenda mälukasutust (beeta)</string>
+    <string name="fullscreen_mode">Täisekraanivaade</string>
+    <string name="reader_fullscreen_summary">Peida süsteemi oleku- ja liikumisribad</string>
+    <string name="available_d">Saadaval: %1$d</string>
+    <string name="reader_optimize_summary">Mälukasutuse vähendamiseks alanda lehtede kuvamise kvaliteeti</string>
+    <string name="genres_exclude">Välista žanrid</string>
+    <string name="reading_time_estimation">Näita hinnangulist lugemiseks kuluvat aega</string>
+    <string name="clear_stats_confirm">Kas sa kindlasti soovid statistikat kustutada? Seda tegevust ei saa tagasi pöörata.</string>
+    <string name="chapters_and_pages">Peatükid ja lehed</string>
+    <string name="pages_slider">Lehevahetuse liugurlüliti</string>
+    <string name="screen_rotation_locked">Ekraani pööramise võimalus on lukustatud</string>
+    <string name="screen_rotation_unlocked">Ekraani pööramise võimaluse lukustatus on eemaldatud</string>
+    <string name="default_tab">Vaikimisi vahekaart</string>
+    <string name="reading_time_estimation_summary">Ajahinnang ei pruugi olla täpne</string>
+    <string name="catalog">Kataloog</string>
 </resources>

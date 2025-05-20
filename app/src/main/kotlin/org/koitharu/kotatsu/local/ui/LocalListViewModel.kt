@@ -6,13 +6,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
+import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
-import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
@@ -25,6 +26,7 @@ import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
 import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
+import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.remotelist.ui.RemoteListViewModel
 import javax.inject.Inject
 
@@ -34,22 +36,22 @@ class LocalListViewModel @Inject constructor(
 	mangaRepositoryFactory: MangaRepository.Factory,
 	filterCoordinator: FilterCoordinator,
 	private val settings: AppSettings,
-	downloadScheduler: DownloadWorker.Scheduler,
 	mangaListMapper: MangaListMapper,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	exploreRepository: ExploreRepository,
 	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 	private val localStorageManager: LocalStorageManager,
 	sourcesRepository: MangaSourcesRepository,
+	mangaDataRepository: MangaDataRepository,
 ) : RemoteListViewModel(
-	savedStateHandle,
-	mangaRepositoryFactory,
-	filterCoordinator,
-	settings,
-	mangaListMapper,
-	downloadScheduler,
-	exploreRepository,
-	sourcesRepository,
+	savedStateHandle = savedStateHandle,
+	mangaRepositoryFactory = mangaRepositoryFactory,
+	filterCoordinator = filterCoordinator,
+	settings = settings,
+	mangaListMapper = mangaListMapper,
+	exploreRepository = exploreRepository,
+	sourcesRepository = sourcesRepository,
+	mangaDataRepository = mangaDataRepository,
 ), SharedPreferences.OnSharedPreferenceChangeListener {
 
 	val onMangaRemoved = MutableEventFlow<Unit>()
@@ -106,6 +108,12 @@ class LocalListViewModel @Inject constructor(
 			onMangaRemoved.call(Unit)
 		}
 	}
+
+	override suspend fun mapMangaList(
+		destination: MutableCollection<in ListModel>,
+		manga: Collection<Manga>,
+		mode: ListMode
+	) = mangaListMapper.toListModelList(destination, manga, mode, MangaListMapper.NO_SAVED)
 
 	override fun createEmptyState(canResetFilter: Boolean): EmptyState = if (canResetFilter) {
 		super.createEmptyState(true)

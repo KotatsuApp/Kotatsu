@@ -21,11 +21,12 @@ class TrackerDebugViewModel @Inject constructor(
 
 	val content = db.getTracksDao().observeAll()
 		.map { it.toUiList() }
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	private fun List<TrackWithManga>.toUiList(): List<TrackDebugItem> = map {
 		TrackDebugItem(
-			manga = it.manga.toManga(emptySet()),
+			manga = it.manga.toManga(emptySet(), null),
 			lastChapterId = it.track.lastChapterId,
 			newChapters = it.track.newChapters,
 			lastCheckTime = it.track.lastCheckTime.toInstantOrNull(),

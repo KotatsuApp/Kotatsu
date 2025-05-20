@@ -1,9 +1,9 @@
 package org.koitharu.kotatsu.tracker.domain.model
 
-import org.koitharu.kotatsu.core.util.ext.ifZero
 import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.util.ifZero
 
 sealed interface MangaUpdates {
 
@@ -11,6 +11,7 @@ sealed interface MangaUpdates {
 
 	data class Success(
 		override val manga: Manga,
+		val branch: String?,
 		val newChapters: List<MangaChapter>,
 		val isValid: Boolean,
 	) : MangaUpdates {

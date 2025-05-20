@@ -7,7 +7,6 @@ import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.color
 import androidx.work.WorkInfo
-import coil3.memory.MemoryCache
 import kotlinx.coroutines.flow.StateFlow
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
@@ -16,7 +15,7 @@ import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
 import java.util.UUID
-import com.google.android.material.R as materialR
+import androidx.appcompat.R as appcompatR
 
 data class DownloadItemModel(
 	val id: UUID,
@@ -34,8 +33,6 @@ data class DownloadItemModel(
 	val isExpanded: Boolean,
 	val chapters: StateFlow<List<DownloadChapter>?>,
 ) : ListModel, Comparable<DownloadItemModel> {
-
-	val coverCacheKey = MemoryCache.Key(manga?.coverUrl.orEmpty(), mapOf("dl" to "1"))
 
 	val percent: Float
 		get() = if (max > 0) progress / max.toFloat() else 0f
@@ -62,7 +59,7 @@ data class DownloadItemModel(
 	fun getErrorMessage(context: Context): CharSequence? = if (error != null) {
 		buildSpannedString {
 			bold {
-				color(context.getThemeColor(materialR.attr.colorError, Color.RED)) {
+				color(context.getThemeColor(appcompatR.attr.colorError, Color.RED)) {
 					append(error)
 				}
 			}
@@ -72,7 +69,7 @@ data class DownloadItemModel(
 	}
 
 	override fun compareTo(other: DownloadItemModel): Int {
-		return timestamp.compareTo(other.timestamp)
+		return timestamp compareTo other.timestamp
 	}
 
 	override fun areItemsTheSame(other: ListModel): Boolean {

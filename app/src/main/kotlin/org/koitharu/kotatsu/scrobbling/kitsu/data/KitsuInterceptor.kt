@@ -7,6 +7,7 @@ import okhttp3.internal.closeQuietly
 import okio.IOException
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.parsers.util.mimeType
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.parsers.util.parseHtml
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.scrobbling.common.data.ScrobblerStorage
@@ -34,7 +35,7 @@ class KitsuInterceptor(private val storage: ScrobblerStorage) : Interceptor {
 		}
 		if (response.mimeType?.toMediaTypeOrNull()?.subtype == SUBTYPE_HTML) {
 			val message = runCatchingCancellable {
-				response.parseHtml().title().takeUnless { it.isEmpty() }
+				response.parseHtml().title().nullIfEmpty()
 			}.onFailure {
 				response.closeQuietly()
 			}.getOrNull() ?: "Invalid response (${response.code})"

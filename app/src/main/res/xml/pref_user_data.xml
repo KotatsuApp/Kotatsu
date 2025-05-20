@@ -17,10 +17,11 @@
 		android:title="@string/screenshots_policy"
 		app:useSimpleSummaryProvider="true" />
 
-	<SwitchPreferenceCompat
-		android:key="history_exclude_nsfw"
-		android:summary="@string/exclude_nsfw_from_history_summary"
-		android:title="@string/exclude_nsfw_from_history" />
+	<ListPreference
+		android:entries="@array/incognito_nsfw_options"
+		android:key="incognito_nsfw"
+		android:title="@string/incognito_for_nsfw"
+		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
@@ -46,7 +47,7 @@
 			android:summary="@string/restore_summary"
 			android:title="@string/restore_backup" />
 
-		<Preference
+		<PreferenceScreen
 			android:fragment="org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment"
 			android:key="backup_periodic"
 			android:persistent="false"
@@ -54,59 +55,10 @@
 
 	</PreferenceCategory>
 
-	<PreferenceCategory android:title="@string/storage_usage">
-
-		<org.koitharu.kotatsu.settings.userdata.StorageUsagePreference android:key="storage_usage" />
-
-		<Preference
-			android:key="search_history_clear"
-			android:persistent="false"
-			android:summary="@string/loading_"
-			android:title="@string/clear_search_history"
-			app:allowDividerAbove="true" />
-
-		<Preference
-			android:key="updates_feed_clear"
-			android:persistent="false"
-			android:summary="@string/loading_"
-			android:title="@string/clear_updates_feed" />
-
-		<Preference
-			android:key="thumbs_cache_clear"
-			android:persistent="false"
-			android:summary="@string/computing_"
-			android:title="@string/clear_thumbs_cache" />
-
-		<Preference
-			android:key="pages_cache_clear"
-			android:persistent="false"
-			android:summary="@string/computing_"
-			android:title="@string/clear_pages_cache" />
-
-		<Preference
-			android:key="http_cache_clear"
-			android:persistent="false"
-			android:summary="@string/loading_"
-			android:title="@string/clear_network_cache" />
-
-		<Preference
-			android:key="cookies_clear"
-			android:persistent="false"
-			android:summary="@string/clear_cookies_summary"
-			android:title="@string/clear_cookies" />
-
-		<Preference
-			android:key="chapters_clear"
-			android:persistent="false"
-			android:summary="@string/delete_read_chapters_summary"
-			android:title="@string/delete_read_chapters" />
-
-		<SwitchPreferenceCompat
-			android:defaultValue="false"
-			android:key="chapters_clear_auto"
-			android:summary="@string/runs_on_app_start"
-			android:title="@string/delete_read_chapters_auto" />
-
-	</PreferenceCategory>
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.userdata.storage.StorageManageSettingsFragment"
+		android:key="storage_usage"
+		android:title="@string/storage_usage"
+		app:allowDividerAbove="true" />
 
 </PreferenceScreen>

@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.list.ui.model.ErrorFooter
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 fun errorFooterAD(
-	listener: MangaListListener?,
+	listener: ListStateHolderListener?,
 ) = adapterDelegateViewBinding<ErrorFooter, ListModel, ItemErrorFooterBinding>(
 	{ inflater, parent -> ItemErrorFooterBinding.inflate(inflater, parent, false) },
 ) {

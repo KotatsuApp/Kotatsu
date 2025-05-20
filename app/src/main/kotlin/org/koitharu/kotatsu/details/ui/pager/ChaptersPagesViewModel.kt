@@ -19,14 +19,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.plus
 import okio.FileNotFoundException
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
+import org.koitharu.kotatsu.core.model.toChipModel
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
+import org.koitharu.kotatsu.core.util.LocaleStringComparator
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.combine
 import org.koitharu.kotatsu.core.util.ext.requireValue
+import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.details.domain.DetailsInteractor
 import org.koitharu.kotatsu.details.ui.DetailsActivity
@@ -36,6 +39,7 @@ import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.download.ui.worker.DownloadTask
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -45,7 +49,7 @@ import org.koitharu.kotatsu.reader.ui.ReaderViewModel
 
 abstract class ChaptersPagesViewModel(
 	@JvmField protected val settings: AppSettings,
-	private val interactor: DetailsInteractor,
+	@JvmField protected val interactor: DetailsInteractor,
 	private val bookmarksRepository: BookmarksRepository,
 	private val historyRepository: HistoryRepository,
 	private val downloadScheduler: DownloadWorker.Scheduler,
@@ -57,7 +61,6 @@ abstract class ChaptersPagesViewModel(
 	val readingState = MutableStateFlow<ReaderState?>(null)
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
-	val onSelectChapter = MutableEventFlow<Long>()
 	val onDownloadStarted = MutableEventFlow<Unit>()
 	val onMangaRemoved = MutableEventFlow<Manga>()
 
@@ -65,6 +68,10 @@ abstract class ChaptersPagesViewModel(
 	val selectedBranch = MutableStateFlow<String?>(null)
 
 	val manga = mangaDetails.map { x -> x?.toManga() }
+		.withErrorHandling()
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
+
+	val coverUrl = mangaDetails.map { x -> x?.coverUrl }
 		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
@@ -93,7 +100,11 @@ abstract class ChaptersPagesViewModel(
 	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
 	val bookmarks = mangaDetails.flatMapLatest {
-		if (it != null) bookmarksRepository.observeBookmarks(it.toManga()) else flowOf(emptyList())
+		if (it != null) {
+			bookmarksRepository.observeBookmarks(it.toManga()).withErrorHandling()
+		} else {
+			flowOf(emptyList())
+		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, emptyList())
 
 	val chapters = combine(
@@ -118,6 +129,23 @@ abstract class ChaptersPagesViewModel(
 	) { list, reversed, query ->
 		(if (reversed) list.asReversed() else list).filterSearch(query)
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
+
+	val quickFilter = combine(
+		mangaDetails,
+		selectedBranch,
+	) { details, branch ->
+		val branches = details?.chapters?.toList()?.sortedWithSafe(
+			compareBy(LocaleStringComparator()) { it.first },
+		).orEmpty()
+		if (branches.size > 1) {
+			branches.map {
+				val option = ListFilterOption.Branch(titleText = it.first, chaptersCount = it.second.size)
+				option.toChipModel(isChecked = it.first == branch)
+			}
+		} else {
+			emptyList()
+		}
+	}
 
 	init {
 		launchJob(Dispatchers.Default) {
@@ -197,9 +225,7 @@ abstract class ChaptersPagesViewModel(
 		if (query.isEmpty() || this.isEmpty()) {
 			return this
 		}
-		return filter {
-			it.chapter.name.contains(query, ignoreCase = true)
-		}
+		return filter { it.contains(query) }
 	}
 
 	private suspend fun onDownloadComplete(downloadedManga: LocalManga?) {
