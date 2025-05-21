@@ -46,8 +46,10 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:background="?selectableItemBackgroundBorderless"
+					android:contentDescription="@string/details"
 					android:minWidth="?minTouchTargetSize"
 					android:minHeight="?minTouchTargetSize"
+					android:tooltipText="@string/details"
 					app:srcCompat="@drawable/ic_open_external" />
 
 			</LinearLayout>

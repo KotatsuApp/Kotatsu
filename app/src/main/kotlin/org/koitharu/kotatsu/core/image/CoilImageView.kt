@@ -114,20 +114,6 @@ open class CoilImageView @JvmOverloads constructor(
 			.build(),
 	)
 
-	@Deprecated("Use more specific overrides instead")
-	fun setImageAsync(request: ImageRequest) = enqueueRequest(
-		request.newBuilder()
-			.lifecycle(request.lifecycle ?: findViewTreeLifecycleOwner()?.lifecycle)
-			.target(this)
-			.size(
-				if (request.sizeResolver == SizeResolver.ORIGINAL) {
-					ViewSizeResolver(this)
-				} else {
-					request.sizeResolver
-				},
-			).build(),
-	)
-
 	fun disposeImage() {
 		CoilUtils.dispose(this)
 		currentRequest = null
