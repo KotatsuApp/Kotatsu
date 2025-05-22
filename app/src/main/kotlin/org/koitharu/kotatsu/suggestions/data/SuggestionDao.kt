@@ -34,6 +34,10 @@ abstract class SuggestionDao : MangaQueryBuilder.ConditionCallback {
 	)
 
 	@Transaction
+	@Query("SELECT manga.* FROM suggestions LEFT JOIN manga ON manga.manga_id = suggestions.manga_id ORDER BY relevance DESC LIMIT :limit")
+	abstract suspend fun getTopManga(limit: Int): List<MangaWithTags>
+
+	@Transaction
 	open suspend fun getRandom(limit: Int): List<MangaWithTags> {
 		val ids = getRandomIds(limit)
 		return getByIds(ids)

@@ -3,17 +3,16 @@ package org.koitharu.kotatsu.search.ui.suggestion
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.SearchSuggestionType
@@ -48,8 +47,7 @@ class SearchSuggestionViewModel @Inject constructor(
 ) : BaseViewModel() {
 
 	private val query = MutableStateFlow("")
-	private var suggestionJob: Job? = null
-	private var invalidateOnResume = false
+	private val invalidationTrigger = MutableStateFlow(0)
 
 	val isIncognitoModeEnabled = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
@@ -57,11 +55,19 @@ class SearchSuggestionViewModel @Inject constructor(
 		valueProducer = { isIncognitoModeEnabled },
 	)
 
-	val suggestion = MutableStateFlow<List<SearchSuggestionItem>>(emptyList())
-
-	init {
-		setupSuggestion()
-	}
+	val suggestion: Flow<List<SearchSuggestionItem>> = combine(
+		query.debounce(DEBOUNCE_TIMEOUT),
+		sourcesRepository.observeEnabledSources().map { it.mapToSet { x -> x.name } },
+		settings.observeAsFlow(AppSettings.KEY_SEARCH_SUGGESTION_TYPES) { searchSuggestionTypes },
+		invalidationTrigger,
+	)
+	{ a, b, c, _ ->
+		Triple(a, b, c)
+	}.mapLatest { (searchQuery, enabledSources, types) ->
+		buildSearchSuggestion(searchQuery, enabledSources, types)
+	}.distinctUntilChanged()
+		.withErrorHandling()
+		.flowOn(Dispatchers.Default)
 
 	fun onQueryChanged(newQuery: String) {
 		query.value = newQuery
@@ -70,14 +76,14 @@ class SearchSuggestionViewModel @Inject constructor(
 	fun saveQuery(query: String) {
 		if (!settings.isIncognitoModeEnabled) {
 			repository.saveSearchQuery(query)
+			invalidationTrigger.value++
 		}
-		invalidateOnResume = true
 	}
 
 	fun clearSearchHistory() {
 		launchJob(Dispatchers.Default) {
 			repository.clearSearchHistory()
-			setupSuggestion()
+			invalidationTrigger.value++
 		}
 	}
 
@@ -87,33 +93,11 @@ class SearchSuggestionViewModel @Inject constructor(
 		}
 	}
 
-	fun onResume() {
-		if (invalidateOnResume || suggestionJob?.isActive != true) {
-			invalidateOnResume = false
-			setupSuggestion()
-		}
-	}
-
 	fun deleteQuery(query: String) {
 		launchJob(Dispatchers.Default) {
 			repository.deleteSearchQuery(query)
-			setupSuggestion()
+			invalidationTrigger.value++
 		}
-	}
-
-	private fun setupSuggestion() {
-		suggestionJob?.cancel()
-		suggestionJob = combine(
-			query.debounce(DEBOUNCE_TIMEOUT),
-			sourcesRepository.observeEnabledSources().map { it.mapToSet { x -> x.name } },
-			settings.observeAsFlow(AppSettings.KEY_SEARCH_SUGGESTION_TYPES) { searchSuggestionTypes },
-			::Triple,
-		).mapLatest { (searchQuery, enabledSources, types) ->
-			buildSearchSuggestion(searchQuery, enabledSources, types)
-		}.distinctUntilChanged()
-			.onEach {
-				suggestion.value = it
-			}.withErrorHandling().launchIn(viewModelScope + Dispatchers.Default)
 	}
 
 	private suspend fun buildSearchSuggestion(
@@ -210,7 +194,7 @@ class SearchSuggestionViewModel @Inject constructor(
 		listOf(SearchSuggestionItem.Text(0, e))
 	}
 
-	private suspend fun getSources(searchQuery: String, enabledSources: Set<String>): List<SearchSuggestionItem> =
+	private fun getSources(searchQuery: String, enabledSources: Set<String>): List<SearchSuggestionItem> =
 		runCatchingCancellable {
 			repository.getSourcesSuggestion(searchQuery, MAX_SOURCES_ITEMS)
 				.map { SearchSuggestionItem.Source(it, it.name in enabledSources) }

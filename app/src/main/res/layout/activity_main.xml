@@ -22,7 +22,6 @@
 		android:clipToPadding="false"
 		android:elevation="0dp"
 		android:fitsSystemWindows="false"
-		android:paddingHorizontal="@dimen/margin_normal"
 		android:stateListAnimator="@null"
 		app:elevation="0dp"
 		app:liftOnScroll="false"
@@ -36,48 +35,32 @@
 			android:fitsSystemWindows="true"
 			app:layout_scrollFlags="scroll|enterAlways|snap" />
 
-		<FrameLayout
-			android:id="@+id/toolbar_card"
+		<com.google.android.material.search.SearchBar
+			android:id="@+id/search_bar"
 			android:layout_width="match_parent"
-			android:layout_height="56dp"
-			android:layout_marginTop="@dimen/margin_small"
-			android:layout_marginBottom="@dimen/margin_small"
-			android:background="@drawable/search_bar_background"
-			android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"
-			app:layout_scrollFlags="scroll|enterAlways|snap">
-
-			<com.google.android.material.appbar.MaterialToolbar
-				android:id="@id/toolbar"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="6dp"
-				android:background="@null"
-				android:focusable="true"
-				android:focusableInTouchMode="true"
-				app:collapseIcon="@null"
-				app:contentInsetStartWithNavigation="0dp"
-				app:navigationContentDescription="@string/search"
-				app:navigationIcon="?attr/actionModeWebSearchDrawable">
-
-				<org.koitharu.kotatsu.search.ui.widget.SearchEditText
-					android:id="@+id/searchView"
-					style="@style/Widget.Kotatsu.SearchView"
-					android:layout_width="match_parent"
-					android:layout_height="match_parent"
-					android:layout_marginEnd="8dp"
-					android:background="@null"
-					android:gravity="center_vertical"
-					android:hint="@string/search_manga"
-					android:imeOptions="actionSearch"
-					android:importantForAutofill="no"
-					android:singleLine="true"
-					tools:drawableEnd="@drawable/abc_ic_clear_material" />
-
-			</com.google.android.material.appbar.MaterialToolbar>
-
-		</FrameLayout>
+			android:layout_height="wrap_content"
+			android:hint="@string/search_manga"
+			app:layout_scrollFlags="scroll|enterAlways|snap" />
 
 	</com.google.android.material.appbar.AppBarLayout>
+
+	<com.google.android.material.search.SearchView
+		android:id="@+id/search_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:hint="@string/search_hint"
+		app:layout_anchor="@id/search_bar">
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/recyclerView_search"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:clipToPadding="false"
+			android:orientation="vertical"
+			android:scrollbars="vertical"
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+	</com.google.android.material.search.SearchView>
 
 	<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 		android:id="@+id/fab"

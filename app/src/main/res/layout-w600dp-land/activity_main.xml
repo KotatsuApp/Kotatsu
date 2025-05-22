@@ -19,7 +19,8 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:paddingBottomSystemWindowInsets="false"
 		app:paddingStartSystemWindowInsets="false"
-		app:paddingTopSystemWindowInsets="false" />
+		app:paddingTopSystemWindowInsets="false"
+		app:scrollingEnabled="true" />
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"
@@ -40,7 +41,6 @@
 			android:clipToPadding="false"
 			android:elevation="0dp"
 			android:fitsSystemWindows="false"
-			android:paddingHorizontal="@dimen/margin_normal"
 			android:stateListAnimator="@null"
 			app:elevation="0dp"
 			app:liftOnScroll="false"
@@ -55,45 +55,41 @@
 				app:layout_scrollFlags="scroll|enterAlways|snap" />
 
 			<FrameLayout
-				android:id="@+id/toolbar_card"
+				android:id="@+id/layout_search"
 				android:layout_width="match_parent"
-				android:layout_height="56dp"
-				android:layout_marginVertical="8dp"
-				android:background="@drawable/search_bar_background"
-				android:theme="@style/ThemeOverlay.Kotatsu.MainToolbar"
+				android:layout_height="wrap_content"
 				app:layout_scrollFlags="scroll|enterAlways|snap">
 
-				<com.google.android.material.appbar.MaterialToolbar
-					android:id="@id/toolbar"
+				<com.google.android.material.search.SearchBar
+					android:id="@+id/search_bar"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_marginEnd="6dp"
-					android:background="@null"
-					android:focusable="true"
-					android:focusableInTouchMode="true"
-					app:contentInsetStartWithNavigation="0dp"
-					app:navigationContentDescription="@string/search"
-					app:navigationIcon="?attr/actionModeWebSearchDrawable">
-
-					<org.koitharu.kotatsu.search.ui.widget.SearchEditText
-						android:id="@+id/searchView"
-						style="@style/Widget.Kotatsu.SearchView"
-						android:layout_width="match_parent"
-						android:layout_height="match_parent"
-						android:layout_marginEnd="8dp"
-						android:background="@null"
-						android:gravity="center_vertical"
-						android:hint="@string/search_manga"
-						android:imeOptions="actionSearch|flagNoFullscreen"
-						android:importantForAutofill="no"
-						android:singleLine="true"
-						tools:drawableEnd="@drawable/abc_ic_clear_material" />
-
-				</com.google.android.material.appbar.MaterialToolbar>
+					android:layout_gravity="center_vertical|end"
+					android:hint="@string/search_manga"
+					app:adaptiveMaxWidthEnabled="true" />
 
 			</FrameLayout>
 
 		</com.google.android.material.appbar.AppBarLayout>
+
+		<com.google.android.material.search.SearchView
+			android:id="@+id/search_view"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:layout_gravity="end"
+			android:hint="@string/search_hint"
+			app:layout_anchor="@id/search_bar">
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/recyclerView_search"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:clipToPadding="false"
+				android:orientation="vertical"
+				android:scrollbars="vertical"
+				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+		</com.google.android.material.search.SearchView>
 
 	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 

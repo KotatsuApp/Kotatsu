@@ -55,7 +55,7 @@ sealed interface SearchSuggestionItem : ListModel {
 			get() = source.isNsfw()
 
 		override fun areItemsTheSame(other: ListModel): Boolean {
-			return other is Source && other.source == source
+			return other is Source && other.source.name == source.name
 		}
 
 		override fun getChangePayload(previousState: ListModel): Any? {
@@ -78,7 +78,7 @@ sealed interface SearchSuggestionItem : ListModel {
 			get() = source.isNsfw()
 
 		override fun areItemsTheSame(other: ListModel): Boolean {
-			return other is Source && other.source == source
+			return other is SourceTip && other.source.name == source.name
 		}
 	}
 

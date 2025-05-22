@@ -10,7 +10,6 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
 import org.koitharu.kotatsu.core.db.entity.toMangaTag
@@ -35,18 +34,16 @@ class MangaSearchRepository @Inject constructor(
 	private val settings: AppSettings,
 ) {
 
-	suspend fun getMangaSuggestion(query: String, limit: Int, source: MangaSource?): List<Manga> {
-		return when {
-			query.isEmpty() -> db.getSuggestionDao().getRandom(limit).map { MangaWithTags(it.manga, emptyList()) }
-			source != null -> db.getMangaDao().searchByTitle("%$query%", source.name, limit)
-			else -> db.getMangaDao().searchByTitle("%$query%", limit)
-		}.let {
-			if (settings.isNsfwContentDisabled) it.filterNot { x -> x.manga.isNsfw } else it
-		}.map {
-			it.toManga()
-		}.sortedBy { x ->
-			x.title.levenshteinDistance(query)
-		}
+	suspend fun getMangaSuggestion(query: String, limit: Int, source: MangaSource?): List<Manga> = when {
+		query.isEmpty() -> db.getSuggestionDao().getTopManga(limit)
+		source != null -> db.getMangaDao().searchByTitle("%$query%", source.name, limit)
+		else -> db.getMangaDao().searchByTitle("%$query%", limit)
+	}.let {
+		if (settings.isNsfwContentDisabled) it.filterNot { x -> x.manga.isNsfw } else it
+	}.map {
+		it.toManga()
+	}.sortedBy { x ->
+		x.title.levenshteinDistance(query)
 	}
 
 	suspend fun getQuerySuggestion(

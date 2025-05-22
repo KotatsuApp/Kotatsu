@@ -11,6 +11,7 @@ import org.koitharu.kotatsu.core.exceptions.EmptyHistoryException
 import org.koitharu.kotatsu.core.github.AppUpdateRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
+import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
@@ -53,6 +54,12 @@ class MainViewModel @Inject constructor(
 	) {
 		isNavBarPinned
 	}.flowOn(Dispatchers.Default)
+
+	val isIncognitoModeEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_INCOGNITO_MODE,
+		valueProducer = { isIncognitoModeEnabled },
+	)
 
 	init {
 		launchJob {
