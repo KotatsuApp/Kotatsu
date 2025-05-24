@@ -141,7 +141,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 		viewBinding.bottomNav?.addOnLayoutChangeListener(this)
 		viewBinding.searchView.addTransitionListener(this)
-		initSearchSuggestions()
+		initSearch()
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -351,7 +351,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		viewBinding.recyclerViewSearch.setPadding(barsInsets.left, 0, barsInsets.right, barsInsets.bottom)
 	}
 
-	private fun initSearchSuggestions() {
+	private fun initSearch() {
 		val listener = SearchSuggestionListenerImpl(router, viewBinding.searchView, searchSuggestionViewModel)
 		val adapter = SearchSuggestionAdapter(listener)
 		viewBinding.searchView.toolbar.addMenuProvider(
@@ -359,6 +359,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		)
 		viewBinding.searchView.editText.addTextChangedListener(listener)
 		viewBinding.recyclerViewSearch.adapter = adapter
+		viewBinding.searchView.editText.setOnEditorActionListener(listener)
 
 		viewBinding.searchView.observeState()
 			.map { it >= SearchView.TransitionState.SHOWING }

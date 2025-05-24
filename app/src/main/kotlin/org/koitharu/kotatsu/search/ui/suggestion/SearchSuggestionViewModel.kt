@@ -30,7 +30,7 @@ import org.koitharu.kotatsu.search.domain.MangaSearchRepository
 import org.koitharu.kotatsu.search.ui.suggestion.model.SearchSuggestionItem
 import javax.inject.Inject
 
-private const val DEBOUNCE_TIMEOUT = 500L
+private const val DEBOUNCE_TIMEOUT = 300L
 private const val MAX_MANGA_ITEMS = 12
 private const val MAX_QUERY_ITEMS = 16
 private const val MAX_HINTS_ITEMS = 3

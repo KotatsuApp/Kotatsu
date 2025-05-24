@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.search.ui.suggestion
 
 import android.text.Editable
+import android.view.KeyEvent
+import android.widget.TextView
 import androidx.core.net.toUri
 import com.google.android.material.search.SearchView
 import org.koitharu.kotatsu.core.nav.AppRouter
@@ -30,6 +32,7 @@ class SearchSuggestionListenerImpl(
 					viewModel.saveQuery(query)
 				}
 			}
+			searchView.hide()
 		} else {
 			searchView.setText(query)
 		}
@@ -53,5 +56,18 @@ class SearchSuggestionListenerImpl(
 
 	override fun afterTextChanged(s: Editable?) {
 		viewModel.onQueryChanged(s?.toString().orEmpty())
+	}
+
+	override fun onEditorAction(
+		v: TextView?,
+		actionId: Int,
+		event: KeyEvent?
+	): Boolean {
+		val query = v?.text?.toString()
+		if (query.isNullOrEmpty()) {
+			return false
+		}
+		onQueryClick(query, SearchKind.SIMPLE, true)
+		return true
 	}
 }
