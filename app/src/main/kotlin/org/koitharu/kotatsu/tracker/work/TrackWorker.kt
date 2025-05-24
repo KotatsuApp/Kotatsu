@@ -42,9 +42,9 @@ import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.db.MangaDatabase
-import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.CloudFlareException
+import org.koitharu.kotatsu.core.exceptions.resolve.CaptchaHandler
 import org.koitharu.kotatsu.core.model.ids
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -76,6 +76,7 @@ import androidx.appcompat.R as appcompatR
 class TrackWorker @AssistedInject constructor(
 	@Assisted context: Context,
 	@Assisted workerParams: WorkerParameters,
+	private val captchaHandler: CaptchaHandler,
 	private val notificationHelper: TrackerNotificationHelper,
 	private val settings: AppSettings,
 	private val getTracksUseCase: GetTracksUseCase,
@@ -151,8 +152,8 @@ class TrackWorker @AssistedInject constructor(
 			when (it) {
 				is MangaUpdates.Failure -> {
 					val e = it.error
-					if (e is CloudFlareProtectedException) {
-						CaptchaNotifier(applicationContext).notify(e)
+					if (e is CloudFlareException) {
+						captchaHandler.handle(e)
 					}
 				}
 

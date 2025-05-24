@@ -7,7 +7,9 @@ import android.os.Build
 import androidx.annotation.PluralsRes
 import androidx.annotation.Px
 import androidx.core.util.TypedValueCompat
+import coil3.size.Size
 import kotlin.math.roundToInt
+import androidx.core.R as androidxR
 
 @Px
 fun Resources.resolveDp(dp: Int) = resolveDp(dp.toFloat()).roundToInt()
@@ -38,3 +40,8 @@ fun Resources.getQuantityStringSafe(@PluralsRes resId: Int, quantity: Int, varar
 		throw e
 	}
 }
+
+fun Resources.getNotificationIconSize() = Size(
+	getDimensionPixelSize(androidxR.dimen.compat_notification_large_icon_max_width),
+	getDimensionPixelSize(androidxR.dimen.compat_notification_large_icon_max_height),
+)

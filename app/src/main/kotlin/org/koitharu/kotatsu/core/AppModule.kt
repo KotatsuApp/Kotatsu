@@ -31,8 +31,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.exceptions.resolve.CaptchaHandler
 import org.koitharu.kotatsu.core.image.AvifImageDecoder
 import org.koitharu.kotatsu.core.image.CbzFetcher
 import org.koitharu.kotatsu.core.image.MangaSourceHeaderInterceptor
@@ -106,6 +106,7 @@ interface AppModule {
 			pageFetcherFactory: MangaPageFetcher.Factory,
 			coverRestoreInterceptor: CoverRestoreInterceptor,
 			networkStateProvider: Provider<NetworkState>,
+			captchaHandler: CaptchaHandler,
 		): ImageLoader {
 			val diskCacheFactory = {
 				val rootDir = context.externalCacheDir ?: context.cacheDir
@@ -121,7 +122,7 @@ interface AppModule {
 				.diskCache(diskCacheFactory)
 				.logger(if (BuildConfig.DEBUG) DebugLogger() else null)
 				.allowRgb565(context.isLowRamDevice())
-				.eventListener(CaptchaNotifier(context))
+				.eventListener(captchaHandler)
 				.components {
 					add(
 						OkHttpNetworkFetcherFactory(

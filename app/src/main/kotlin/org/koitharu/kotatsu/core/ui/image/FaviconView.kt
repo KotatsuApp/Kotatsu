@@ -10,7 +10,7 @@ import coil3.asImage
 import coil3.request.Disposable
 import coil3.request.ImageRequest
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier.Companion.ignoreCaptchaErrors
+import org.koitharu.kotatsu.core.exceptions.resolve.CaptchaHandler.Companion.ignoreCaptchaErrors
 import org.koitharu.kotatsu.core.image.CoilImageView
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled

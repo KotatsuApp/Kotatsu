@@ -19,14 +19,17 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BaseBrowserActivity
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.resolve.CaptchaHandler
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -36,6 +39,9 @@ class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 
 	@Inject
 	lateinit var cookieJar: MutableCookieJar
+
+	@Inject
+	lateinit var captchaHandler: CaptchaHandler
 
 	private lateinit var cfClient: CloudFlareClient
 
@@ -98,11 +104,17 @@ class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 
 	override fun onCheckPassed() {
 		pendingResult = RESULT_OK
-		val source = intent?.getStringExtra(AppRouter.KEY_SOURCE)
-		if (source != null) {
-			CaptchaNotifier(this).dismiss(MangaSource(source))
+		lifecycleScope.launch {
+			val source = intent?.getStringExtra(AppRouter.KEY_SOURCE)
+			if (source != null) {
+				runCatchingCancellable {
+					captchaHandler.discard(MangaSource(source))
+				}.onFailure {
+					it.printStackTraceDebug()
+				}
+			}
+			finishAfterTransition()
 		}
-		finishAfterTransition()
 	}
 
 	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {

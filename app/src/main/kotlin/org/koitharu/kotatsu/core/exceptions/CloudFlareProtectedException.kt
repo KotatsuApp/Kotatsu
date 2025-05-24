@@ -1,11 +1,15 @@
 package org.koitharu.kotatsu.core.exceptions
 
 import okhttp3.Headers
-import okio.IOException
+import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 
 class CloudFlareProtectedException(
-	val url: String,
-	val source: MangaSource?,
+	override val url: String,
+	source: MangaSource?,
 	@Transient val headers: Headers,
-) : IOException("Protected by CloudFlare")
+) : CloudFlareException("Protected by CloudFlare", CloudFlareHelper.PROTECTION_CAPTCHA) {
+
+	override val source: MangaSource = source ?: UnknownMangaSource
+}

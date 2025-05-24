@@ -45,8 +45,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.browser.cloudflare.CaptchaNotifier
+import org.koitharu.kotatsu.core.exceptions.CloudFlareException
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.resolve.CaptchaHandler
 import org.koitharu.kotatsu.core.model.distinctById
 import org.koitharu.kotatsu.core.model.getLocale
 import org.koitharu.kotatsu.core.model.isNsfw
@@ -97,6 +98,7 @@ class SuggestionsWorker @AssistedInject constructor(
 	private val historyRepository: HistoryRepository,
 	private val favouritesRepository: FavouritesRepository,
 	private val appSettings: AppSettings,
+	private val captchaHandler: CaptchaHandler,
 	private val workManager: WorkManager,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val sourcesRepository: MangaSourcesRepository,
@@ -283,8 +285,8 @@ class SuggestionsWorker @AssistedInject constructor(
 		list.shuffle()
 		list.take(MAX_SOURCE_RESULTS)
 	}.onFailure { e ->
-		if (e is CloudFlareProtectedException) {
-			CaptchaNotifier(applicationContext).notify(e)
+		if (e is CloudFlareException) {
+			captchaHandler.handle(e)
 		}
 		e.printStackTraceDebug()
 	}.getOrDefault(emptyList())

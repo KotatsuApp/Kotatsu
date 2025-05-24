@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.core.db.entity.MangaSourceEntity
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
+import org.koitharu.kotatsu.parsers.network.CloudFlareHelper.PROTECTION_CAPTCHA
 
 @Dao
 abstract class MangaSourcesDao {
@@ -51,6 +52,9 @@ abstract class MangaSourcesDao {
 	@Query("UPDATE sources SET pinned = :isPinned WHERE source = :source")
 	abstract suspend fun setPinned(source: String, isPinned: Boolean)
 
+	@Query("UPDATE sources SET cf_state = :state WHERE source = :source")
+	abstract suspend fun setCfState(source: String, state: Int)
+
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	@Transaction
 	abstract suspend fun insertIfAbsent(entries: Collection<MangaSourceEntity>)
@@ -60,6 +64,9 @@ abstract class MangaSourcesDao {
 
 	@Query("SELECT * FROM sources WHERE pinned = 1")
 	abstract suspend fun findAllPinned(): List<MangaSourceEntity>
+
+	@Query("SELECT * FROM sources WHERE cf_state = $PROTECTION_CAPTCHA")
+	abstract suspend fun findAllCaptchaRequired(): List<MangaSourceEntity>
 
 	fun observeAll(enabledOnly: Boolean, order: SourcesSortOrder): Flow<List<MangaSourceEntity>> =
 		observeImpl(getQuery(enabledOnly, order))

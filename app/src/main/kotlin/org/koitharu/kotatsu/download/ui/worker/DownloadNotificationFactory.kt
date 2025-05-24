@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
+import org.koitharu.kotatsu.core.util.ext.getNotificationIconSize
 import org.koitharu.kotatsu.core.util.ext.isReportable
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -51,16 +52,10 @@ class DownloadNotificationFactory @AssistedInject constructor(
 	@Assisted val isSilent: Boolean,
 ) {
 
-	private val covers = HashMap<Manga, Drawable>()
+	private val covers = HashMap<Manga, Drawable>() // TODO cache
 	private val builder = NotificationCompat.Builder(context, if (isSilent) CHANNEL_ID_SILENT else CHANNEL_ID_DEFAULT)
 	private val mutex = Mutex()
 
-	private val coverWidth = context.resources.getDimensionPixelSize(
-		androidx.core.R.dimen.compat_notification_large_icon_max_width,
-	)
-	private val coverHeight = context.resources.getDimensionPixelSize(
-		androidx.core.R.dimen.compat_notification_large_icon_max_height,
-	)
 	private val queueIntent = PendingIntentCompat.getActivity(
 		context,
 		0,
@@ -282,7 +277,7 @@ class DownloadNotificationFactory @AssistedInject constructor(
 					.data(manga.coverUrl)
 					.allowHardware(false)
 					.mangaSourceExtra(manga.source)
-					.size(coverWidth, coverHeight)
+					.size(context.resources.getNotificationIconSize())
 					.scale(Scale.FILL)
 					.build(),
 			).getDrawableOrThrow()
