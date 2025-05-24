@@ -146,13 +146,13 @@
     <string name="search_manga">Rechercher un manga</string>
     <string name="search">Rechercher</string>
     <string name="share_s">Partager %s</string>
-    <string name="create_shortcut">Créer un raccourci…</string>
+    <string name="create_shortcut">Créer un raccourci</string>
     <string name="share">Partager</string>
     <string name="save">Enregistrer</string>
     <string name="add">Ajouter</string>
     <string name="add_new_category">Nouvelle catégorie</string>
     <string name="add_to_favourites">Ajouter aux favoris</string>
-    <string name="you_have_not_favourites_yet">Aucun favori pour le moment</string>
+    <string name="you_have_not_favourites_yet">Aucun favoris pour le moment</string>
     <string name="read">Lire</string>
     <string name="history_is_empty">Pas encore d\'historique</string>
     <string name="nothing_found">Rien n\'a été trouvé</string>
@@ -250,7 +250,7 @@
     <string name="disable_all">Tout désactiver</string>
     <string name="use_fingerprint">Utiliser la biométrie si elle est disponible</string>
     <string name="appwidget_recent_description">Vos mangas récemment lus</string>
-    <string name="appwidget_shelf_description">Les mangas de vos favoris</string>
+    <string name="appwidget_shelf_description">Vos mangas favoris</string>
     <string name="report">Signaler</string>
     <string name="tracking">Suivi</string>
     <string name="status_planned">Planifié</string>
@@ -278,7 +278,7 @@
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="feed">Flux</string>
     <string name="importing_manga">Importation de mangas</string>
-    <string name="removed_from_favourites">Retiré des favoris</string>
+    <string name="removed_from_favourites">Supprimé des favoris</string>
     <string name="clear_all_history">Effacer tout l\'historique</string>
     <string name="last_2_hours">Les 2 dernières heures</string>
     <string name="history_cleared">Historique effacé</string>
@@ -802,4 +802,19 @@
     <string name="nsfw_16">16+</string>
     <string name="exclude_nsfw_from_suggestions_summary">Les mangas pour adultes ne seront pas affichés dans les suggestions. Cette option peut fonctionner de manière inexacte avec certaines sources</string>
     <string name="suggestions_disabled_sources_summary">Afficher les suggestions de toutes les sources de mangas, y compris celles désactivées</string>
+    <string name="tags_warnings">Mettre en évidence les genres dangereux</string>
+    <string name="incognito_mode_hint_nsfw">Ce manga peut contenir du contenu réservé aux adultes. Voulez-vous utiliser le mode navigation privée ?</string>
+    <string name="incognito_for_nsfw">Mode navigation privée pour les mangas NSFW</string>
+    <string name="dont_ask_again">Ne plus demander</string>
+    <string name="hide_from_main_screen">Masquer de l\'écran principal</string>
+    <string name="changelog">Journal des modifications</string>
+    <string name="pick_manga_page">Choisissez une page de manga</string>
+    <string name="manga_override_hint">Ces changements affecteront la façon dont les mangas sont affichés dans l\'application</string>
+    <string name="tags_warnings_summary">Mettre en évidence les genres qui peuvent être inappropriés pour la plupart des utilisateurs</string>
+    <string name="change_cover">Changer la couverture</string>
+    <string name="changelog_summary">Historique des modifications pour les versions récemment publiées</string>
+    <string name="use_default_cover">Utiliser la couverture par défaut</string>
+    <string name="additional_action_required">Des mesures supplémentaires sont nécessaires</string>
+    <string name="page_switch_timer">La page changera toutes les ~%d secondes</string>
+    <string name="error_non_file_uri">Le chemin sélectionné ne peut pas être utilisé car il ne désigne pas un fichier ou un répertoire</string>
 </resources>
