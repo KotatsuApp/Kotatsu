@@ -817,4 +817,6 @@
     <string name="additional_action_required">Des mesures supplémentaires sont nécessaires</string>
     <string name="page_switch_timer">La page changera toutes les ~%d secondes</string>
     <string name="error_non_file_uri">Le chemin sélectionné ne peut pas être utilisé car il ne désigne pas un fichier ou un répertoire</string>
+    <string name="pick_custom_file">Choisir un fichier personnalisé</string>
+    <string name="theme_name_expressive">Expressif (Test)</string>
 </resources>
