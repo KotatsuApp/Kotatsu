@@ -747,7 +747,7 @@
     <string name="access_denied_403">Доступ отклонён (403)</string>
     <string name="pages_saved">Страницы сохранены</string>
     <string name="delete_old_backups">Удалить старые резервные копии</string>
-    <string name="delete_old_backups_summary">Автоматически удалять старые резервные копии чтобы освободить место для данных</string>
+    <string name="delete_old_backups_summary">Автоматически удалять старые резервные копии, чтобы освободить место для данных</string>
     <string name="error_connection_reset">Сброс соединения удалённым хостом</string>
     <string name="show_slider">Показать слайдер</string>
     <string name="incognito">Инкогнито</string>
@@ -801,12 +801,20 @@
     <string name="no_write_permission_to_file">Нет прав на запись в файл</string>
     <string name="link_to_manga_on_s">Ссылка на мангу на %s</string>
     <string name="exclude_nsfw_from_suggestions_summary">Взрослая манга не будет отображаться в рекомендациях. Эта опция может не работать с некоторыми источниками</string>
-    <string name="include_disabled_sources">Включить отключенные источники</string>
-    <string name="suggestions_disabled_sources_summary">Отображать рекомендации из всех источников манги, включая отключенные</string>
+    <string name="include_disabled_sources">Включить отключённые источники</string>
+    <string name="suggestions_disabled_sources_summary">Отображать рекомендации из всех источников манги, включая отключённые</string>
     <string name="link_to_manga_in_app">Ссылка на мангу в Kotatsu</string>
     <string name="nsfw_16">16+</string>
     <string name="clear_browser_data_summary">Удалить данные встроенного браузера, такие как кэш и куки. Внимание: авторизация в источниках манги может быть потеряна</string>
     <string name="error_non_file_uri">Выбранный путь не может быть использован, поскольку он не обозначает файл или каталог</string>
     <string name="manga_override_hint">Эти изменения будут влиять на то, как манга отображается в приложении</string>
     <string name="change_cover">Изменить обложку</string>
+    <string name="incognito_mode_hint_nsfw">Эта манга может содержать контент для взрослых. Хотите использовать режим инкогнито?</string>
+    <string name="dont_ask_again">Больше не спрашивать</string>
+    <string name="incognito_for_nsfw">Режим инкогнито для NSFW-манги</string>
+    <string name="use_default_cover">Использовать обложку по умолчанию</string>
+    <string name="pick_manga_page">Выбрать страницу манги</string>
+    <string name="pick_custom_file">Выбрать пользовательский файл</string>
+    <string name="page_switch_timer">Страница будет меняться каждые ~%d секунд</string>
+    <string name="theme_name_dynamic_v2">Динамическая V2</string>
 </resources>
