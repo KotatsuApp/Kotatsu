@@ -25,7 +25,7 @@
     <string name="add">Adicionar</string>
     <string name="save">Salvar</string>
     <string name="share">Compartilhar</string>
-    <string name="create_shortcut">Criar atalho…</string>
+    <string name="create_shortcut">Criar atalho</string>
     <string name="share_s">Compartilhar %s</string>
     <string name="search">Procurar</string>
     <string name="search_manga">Procurar obra</string>
@@ -803,4 +803,15 @@
     <string name="exclude_nsfw_from_suggestions_summary">Mangás adultos não serão exibidos nas sugestões. Essa opção pode funcionar de forma imprecisa com algumas fontes</string>
     <string name="include_disabled_sources">Incluir fontes desabilitadas</string>
     <string name="suggestions_disabled_sources_summary">Mostrar sugestões de todas as fontes de mangá, incluindo as desabilitadas</string>
+    <string name="theme_name_dynamic_v2">Dinâmico V2</string>
+    <string name="manga_override_hint">Essas mudanças afetarão como o mangá é exibido no aplicativo</string>
+    <string name="use_default_cover">Usar a capa padrão</string>
+    <string name="pick_manga_page">Escolha a página do mangá</string>
+    <string name="change_cover">Mudar a capa</string>
+    <string name="incognito_for_nsfw">Modo incógnito para mangá NSFW</string>
+    <string name="dont_ask_again">Não pergunte novamente</string>
+    <string name="incognito_mode_hint_nsfw">Este mangá pode conter conteúdo adulto. Você quer usar o modo incógnito?</string>
+    <string name="pick_custom_file">Escolha o arquivo personalizado</string>
+    <string name="page_switch_timer">A página mudará a cada ~%d segundos</string>
+    <string name="error_non_file_uri">O caminho selecionado não pode ser usado porque não denota um arquivo ou diretório</string>
 </resources>
