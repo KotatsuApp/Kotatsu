@@ -806,4 +806,20 @@
     <string name="exclude_nsfw_from_suggestions_summary">I manga per adulti non verranno mostrati nei suggerimenti. Questa opzione potrebbe non funzionare accuratamente con alcune fonti</string>
     <string name="tags_warnings">Evidenzia i generi pericolosi</string>
     <string name="tags_warnings_summary">Evidenzia i generi che potrebbero essere inappropriati per la maggior parte degli utenti</string>
+    <string name="error_non_file_uri">Il percorso selezionato non può essere utilizzato perché non rappresenta un file o una cartella</string>
+    <string name="use_default_cover">Usa copertina predefinita</string>
+    <string name="manga_override_hint">Queste modifiche influenzeranno il modo in cui i manga vengono visualizzati nell\'app</string>
+    <string name="pick_manga_page">Scegli pagina manga</string>
+    <string name="pick_custom_file">Scegli file personalizzato</string>
+    <string name="change_cover">Cambia copertina</string>
+    <string name="page_switch_timer">La pagina cambierà ogni ~%d secondi</string>
+    <string name="incognito_for_nsfw">Modalità incognito per manga NSFW</string>
+    <string name="dont_ask_again">Non chiedere più</string>
+    <string name="incognito_mode_hint_nsfw">Questo manga potrebbe contenere contenuti per adulti. Vuoi utilizzare la modalità incognito?</string>
+    <string name="theme_name_dynamic_v2">Dinamico V2</string>
+    <string name="additional_action_required">È necessaria un\'azione aggiuntiva</string>
+    <string name="theme_name_expressive">Espressivo (Test)</string>
+    <string name="hide_from_main_screen">Nascondi dalla schermata principale</string>
+    <string name="changelog">Changelog</string>
+    <string name="changelog_summary">Cronologia delle modifiche delle versioni rilasciate di recente</string>
 </resources>
