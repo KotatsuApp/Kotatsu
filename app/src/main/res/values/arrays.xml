@@ -36,12 +36,12 @@
 		<item>Google</item>
 		<item>CloudFlare</item>
 		<item>AdGuard</item>
-		<item>0ms</item>
+		<item>v.recipes</item>
 	</string-array>
 	<string-array name="image_proxies" translatable="false">
 		<item>@string/none</item>
 		<item>wsrv.nl</item>
-		<item>0ms.dev</item>
+		<item>v.recipes</item>
 	</string-array>
 	<string-array name="reader_modes" translatable="false">
 		<item>@string/standard</item>

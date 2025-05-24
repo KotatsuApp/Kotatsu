@@ -84,8 +84,8 @@ class DoHManager(
 				),
 			).build()
 
-		DoHProvider.ZERO_MS -> DnsOverHttps.Builder().client(bootstrapClient)
-			.url("https://0ms.dev/dns-query".toHttpUrl())
+		DoHProvider.VRECIPES -> DnsOverHttps.Builder().client(bootstrapClient)
+			.url("https://v.recipes/dns-query".toHttpUrl())
 			.resolvePublicAddresses(true)
 			.build()
 	}
