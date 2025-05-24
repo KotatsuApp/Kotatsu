@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filterNotNull
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.model.getTitle
@@ -49,13 +50,15 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		findPreference<Preference>(KEY_AUTH)?.run {
 			val authProvider = (viewModel.repository as? ParserMangaRepository)?.getAuthProvider()
 			isVisible = authProvider != null
-			isEnabled = authProvider?.isAuthorized == false
 		}
 		findPreference<Preference>(SourceSettings.KEY_SLOWDOWN)?.isVisible = isValidSource
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		viewModel.isAuthorized.filterNotNull().observe(viewLifecycleOwner) { isAuthorized ->
+			findPreference<Preference>(KEY_AUTH)?.isEnabled = !isAuthorized
+		}
 		viewModel.username.observe(viewLifecycleOwner) { username ->
 			findPreference<Preference>(KEY_AUTH)?.summary = username?.let {
 				getString(R.string.logged_in_as, it)
