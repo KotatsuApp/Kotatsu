@@ -807,4 +807,6 @@
     <string name="nsfw_16">16+</string>
     <string name="clear_browser_data_summary">Удалить данные встроенного браузера, такие как кэш и куки. Внимание: авторизация в источниках манги может быть потеряна</string>
     <string name="error_non_file_uri">Выбранный путь не может быть использован, поскольку он не обозначает файл или каталог</string>
+    <string name="manga_override_hint">Эти изменения будут влиять на то, как манга отображается в приложении</string>
+    <string name="change_cover">Изменить обложку</string>
 </resources>
