@@ -28,4 +28,12 @@
         <item quantity="one">%1$d kuukausi sitten</item>
         <item quantity="other">%1$d kuukausia sitten</item>
     </plurals>
+    <plurals name="hours">
+        <item quantity="one">%1$d tunti</item>
+        <item quantity="other">%1$d tuntia</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d minuutti</item>
+        <item quantity="other">%1$d minuuttia</item>
+    </plurals>
 </resources>
