@@ -4,6 +4,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<Preference
+		android:enabled="false"
 		android:key="auth"
 		android:order="100"
 		android:persistent="false"

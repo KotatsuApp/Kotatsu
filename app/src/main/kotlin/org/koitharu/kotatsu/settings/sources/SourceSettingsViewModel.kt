@@ -38,6 +38,7 @@ class SourceSettingsViewModel @Inject constructor(
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 	val username = MutableStateFlow<String?>(null)
+	val isAuthorized = MutableStateFlow<Boolean?>(null)
 	val browserUrl = MutableStateFlow<String?>(null)
 	val isEnabled = mangaSourcesRepository.observeIsEnabled(source)
 	private var usernameLoadJob: Job? = null
@@ -103,6 +104,8 @@ class SourceSettingsViewModel @Inject constructor(
 		launchLoadingJob(Dispatchers.Default) {
 			try {
 				username.value = null
+				isAuthorized.value = null
+				isAuthorized.value = authProvider?.isAuthorized()
 				username.value = authProvider?.getUsername()
 			} catch (_: AuthRequiredException) {
 			}

@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BaseBrowserActivity
@@ -20,11 +21,14 @@ import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 
 @AndroidEntryPoint
 class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 
 	private lateinit var authProvider: MangaParserAuthProvider
+
+	private var authCheckJob: Job? = null
 
 	override fun onCreate2(savedInstanceState: Bundle?, source: MangaSource, repository: ParserMangaRepository?) {
 		if (repository == null) {
@@ -72,10 +76,20 @@ class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 
 	override fun onLoadingStateChanged(isLoading: Boolean) {
 		super.onLoadingStateChanged(isLoading)
-		if (!isLoading && authProvider.isAuthorized) {
-			Toast.makeText(this, R.string.auth_complete, Toast.LENGTH_SHORT).show()
-			setResult(RESULT_OK)
-			finishAfterTransition()
+		if (isLoading) {
+			return
+		}
+		val prevJob = authCheckJob
+		authCheckJob = lifecycleScope.launch {
+			prevJob?.join()
+			val isAuthorized = runCatchingCancellable {
+				authProvider.isAuthorized()
+			}.getOrDefault(false)
+			if (isAuthorized) {
+				Toast.makeText(this@SourceAuthActivity, R.string.auth_complete, Toast.LENGTH_SHORT).show()
+				setResult(RESULT_OK)
+				finishAfterTransition()
+			}
 		}
 	}
 

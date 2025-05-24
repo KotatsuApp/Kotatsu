@@ -215,6 +215,7 @@ fun WebView.configureForParser(userAgentOverride: String?) = with(settings) {
 		WebViewCompat.setAudioMuted(this@configureForParser, true)
 	}
 	databaseEnabled = true
+	allowContentAccess = false
 	if (userAgentOverride != null) {
 		userAgentString = userAgentOverride
 	}

@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.core.exceptions.InteractiveActionRequiredException
 import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
+import org.koitharu.kotatsu.core.network.webview.ContinuationResumeWebViewClient
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.util.ext.configureForParser
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -51,9 +52,23 @@ class MangaLoaderContextImpl @Inject constructor(
 	private var webViewCached: WeakReference<WebView>? = null
 	private val webViewUserAgent by lazy { obtainWebViewUserAgent() }
 
+	@Deprecated("Provide a base url")
 	@SuppressLint("SetJavaScriptEnabled")
 	override suspend fun evaluateJs(script: String): String? = withContext(Dispatchers.Main.immediate) {
 		val webView = obtainWebView()
+		suspendCoroutine { cont ->
+			webView.evaluateJavascript(script) { result ->
+				cont.resume(result?.takeUnless { it == "null" })
+			}
+		}
+	}
+
+	override suspend fun evaluateJs(baseUrl: String, script: String): String? = withContext(Dispatchers.Main.immediate) {
+		val webView = obtainWebView()
+		suspendCoroutine { cont ->
+			webView.webViewClient = ContinuationResumeWebViewClient(cont)
+			webView.loadDataWithBaseURL(baseUrl, " ", "text/html", null, null)
+		}
 		suspendCoroutine { cont ->
 			webView.evaluateJavascript(script) { result ->
 				cont.resume(result?.takeUnless { it == "null" })

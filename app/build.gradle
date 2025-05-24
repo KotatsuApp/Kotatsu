@@ -76,7 +76,6 @@ android {
 			'-opt-in=kotlin.contracts.ExperimentalContracts',
 			'-opt-in=coil3.annotation.ExperimentalCoilApi',
 			'-opt-in=coil3.annotation.InternalCoilApi',
-			'-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi',
 			'-Xjspecify-annotations=strict',
 			'-Xtype-enhancement-improvements-strict-mode'
 		]
