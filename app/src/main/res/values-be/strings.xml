@@ -52,7 +52,7 @@
     <string name="_s_deleted_from_local_storage">«%s» выдалены з лакальнага сховішча</string>
     <string name="save_page">Захаваць старонку</string>
     <string name="page_saved">Старонка захавана</string>
-    <string name="share_image">Падзяліцца выявай</string>
+    <string name="share_image">Абагуліць відарыс</string>
     <string name="_import">Імпарт</string>
     <string name="delete">Выдаліць</string>
     <string name="operation_not_supported">Аперацыя не падтрымліваецца</string>
@@ -331,7 +331,7 @@
     <string name="reader_info_pattern">Разд. %1$d/%2$d Стар. %3$d/%4$d</string>
     <string name="reader_info_bar">Паказаць інфармацыйную панэль у праграме чытання</string>
     <string name="comics_archive">Архіў коміксаў</string>
-    <string name="folder_with_images">Тэчка з малюнкамі</string>
+    <string name="folder_with_images">Папка з відарысамі</string>
     <string name="importing_manga">Імпарт мангі</string>
     <string name="import_completed">Імпарт завершаны</string>
     <string name="last_2_hours">Апошнія 2 гадзіны</string>
@@ -360,7 +360,7 @@
     <string name="got_it">Зразумеў</string>
     <string name="sources_reorder_tip">Націсніце і ўтрымлівайце элемент, каб змяніць іх парадак</string>
     <string name="comics_archive_import_description">Вы можаце выбраць адзін або некалькі файлаў .cbz або .zip, кожны файл будзе распазнаны як асобная манга.</string>
-    <string name="folder_with_images_import_description">Вы можаце выбраць каталог з архівамі або выявамі. Кожны архіў (ці падкаталог) будзе прызнаны раздзелам.</string>
+    <string name="folder_with_images_import_description">Вы можаце выбраць каталог з архівамі або відарысамі. Кожны архіў (або падкаталог) будзе прызнаны раздзелам.</string>
     <string name="speed">Хуткасць</string>
     <string name="show_on_shelf">Паказаць на паліцы</string>
     <string name="find_similar">Знайсці падобныя</string>
@@ -399,11 +399,11 @@
     <string name="clear_network_cache">Ачысціць сеткавы кэш</string>
     <string name="invalid_value_message">Няправільнае значэнне</string>
     <string name="downloaded">Спампавана</string>
-    <string name="images_proxy_title">Проксі для аптымізацыі малюнкаў</string>
+    <string name="images_proxy_title">Проксі для аптымізацыі відарысаў</string>
     <string name="username">Імя карыстальніка</string>
     <string name="invalid_port_number">Няправільны нумар порта</string>
     <string name="authorization_optional">Аўтарызацыя (неабавязкова)</string>
-    <string name="images_procy_description">Выкарыстоўвайце службу wsrv.nl, каб паменшыць выкарыстанне трафіку і паскорыць загрузку малюнкаў, калі гэта магчыма</string>
+    <string name="images_procy_description">Калі гэта магчыма, выкарыстоўваць службу wsrv.nl, каб паменшыць выкарыстанне трафіку і паскорыць загрузку відарысаў</string>
     <string name="password">Пароль</string>
     <string name="invert_colors">Інвертаваць колеры</string>
     <string name="show_pages_numbers_summary">Паказаць нумары старонак у ніжнім куце</string>
@@ -643,7 +643,7 @@
     <string name="_new">Новае</string>
     <string name="all_languages">Усе мовы</string>
     <string name="screenshots_block_incognito">Блакіраваць у рэжыме інкогніта</string>
-    <string name="image_server">Сервер малюнкаў</string>
+    <string name="image_server">Сервер відарысаў</string>
     <string name="pin">Замацаваць</string>
     <string name="unpin">Адмацаваць</string>
     <string name="source_unpinned">Крыніца адмацавана</string>
@@ -715,14 +715,14 @@
     <string name="no_alternatives_found">Альтэрнатывы для «%s» не знойдзены</string>
     <string name="manga_fix_prompt">Гэтая функцыя знойдзе альтэрнатыўныя крыніцы для абранай мангі. Задача зойме некаторы час і будзе выконвацца ў фонавым рэжыме</string>
     <string name="content_type_doujinshi">Дадзінсі</string>
-    <string name="content_type_image_set">Набор малюнкаў</string>
+    <string name="content_type_image_set">Набор відарысаў</string>
     <string name="content_type_artist_cg">Мастак CG</string>
     <string name="content_type_game_cg">Гульнявая CG</string>
     <string name="debug">Адладка</string>
     <string name="source_code">Зыходны код</string>
     <string name="user_manual">Кіраўніцтва карыстальніка</string>
     <string name="telegram_group">Група ў Telegram</string>
-    <string name="error_image_format">Непадтрымліваемы фармат малюнка: %s</string>
+    <string name="error_image_format">Фармат відарыса не падтрымліваецца: %s</string>
     <string name="start_download">Пачаць загрузку</string>
     <string name="save_manga_confirm">Захаваць выбраную мангу? Гэта можа заняць трафік і месца на дыску</string>
     <string name="save_manga">Захаваць мангу</string>
@@ -742,5 +742,6 @@
     <string name="ask_every_time">Пытацца кожны раз</string>
     <string name="screen_orientation">Арыентацыя экрана</string>
     <string name="portrait">Партрэтная</string>
-    <string name="pages_saved">Старонкі захоўваюцца</string>
+    <string name="pages_saved">Старонкі захаваны</string>
+    <string name="error_not_image">Няправільны фармат: чакаўся відарыс, але атрыманы %s</string>
 </resources>
