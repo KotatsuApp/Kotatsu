@@ -22,7 +22,7 @@
         <item quantity="other">%1$d လအကြာက</item>
     </plurals>
     <plurals name="hours">
-        <item quantity="other">%1$d နာရီ</item>
+        <item quantity="other">%1$d နာရီအကြာက</item>
     </plurals>
     <plurals name="minutes">
         <item quantity="other">%1$d မိနစ်</item>
