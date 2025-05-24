@@ -373,7 +373,7 @@
     <string name="got_it">Anladım</string>
     <string name="sources_reorder_tip">Yeniden sıralamak için bir öğeye dokunun ve basılı tutun</string>
     <string name="comics_archive_import_description">Bir veya daha fazla .cbz veya .zip dosyası seçebilirsiniz, her dosya ayrı bir manga olarak tanınacaktır.</string>
-    <string name="folder_with_images_import_description">Arşivler veya resimler içeren bir dizin seçebilirsiniz. Her arşiv (veya alt dizin) bir bölüm olarak tanınacaktır.</string>
+    <string name="folder_with_images_import_description">Arşivler veya resimler içeren bir konum seçebilirsiniz. Her arşiv (veya alt konum) bir bölüm olarak tanınacaktır.</string>
     <string name="speed">Hız</string>
     <string name="show_on_shelf">Rafta Göster</string>
     <string name="sync_auth_hint">Mevcut bir hesapta oturum açabilir veya yeni bir hesap oluşturabilirsiniz</string>
@@ -418,7 +418,7 @@
     <string name="download_option_all_unread">Tüm okunmamış bölümler</string>
     <string name="progress">İlerleme</string>
     <string name="error_corrupted_file">Geçersiz veri alındı veya dosya bozuk</string>
-    <string name="pick_custom_directory">Özel dizini seçin</string>
+    <string name="pick_custom_directory">Özel konum seçin</string>
     <string name="related_manga_summary">İlgili mangaların bir listesini göster. Bazı durumlarda yanlış veya eksik olabilir</string>
     <string name="reader_zoom_buttons_summary">Sağ alt köşede yakınlaştırma kontrol düğmelerini gösterir</string>
     <string name="tracker_wifi_only_summary">Tarifeli ağ bağlantılarını kullanarak yeni bölümleri kontrol etmeyin</string>
@@ -435,8 +435,8 @@
     <string name="enhanced_colors_summary">Çizgileşmeyi azaltır, ancak performansı etkileyebilir</string>
     <string name="items_limit_exceeded">Daha fazla öğe eklenemez</string>
     <string name="data_not_restored">Veri geri yüklemedi</string>
-    <string name="directories">Dizinler</string>
-    <string name="local_manga_directories">Yerel manga dizinleri</string>
+    <string name="directories">Konumlar</string>
+    <string name="local_manga_directories">Yerel manga konumları</string>
     <string name="manage_categories">Kategorileri yönet</string>
     <string name="color_light">Açık</string>
     <string name="search_hint">Manga başlığı girin, tür veya kaynak adı</string>
@@ -454,7 +454,7 @@
     <string name="suggestions_wifi_only_summary">Tarifeli bağlantılarını kullanarak önerileri güncellemeyin</string>
     <string name="enhanced_colors">32-bit renk modu</string>
     <string name="background">Arkaplan</string>
-    <string name="no_access_to_file">Bu dosya veya dizine erişme izniniz yok</string>
+    <string name="no_access_to_file">Bu dosyaya veya konuma erişim izniniz yok</string>
     <string name="zoom_out">Uzaklaştır</string>
     <string name="keep_screen_on_summary">Manga okurken ekranı kapatmayın</string>
     <string name="download_option_next_unread_n_chapters">Sonraki okunmamış %s</string>
@@ -480,7 +480,7 @@
     <string name="periodic_backups">Zamanlı yedekleme</string>
     <string name="frequency_twice_per_month">Ayda 2 kere</string>
     <string name="frequency_once_per_month">Ayda 1 kere</string>
-    <string name="backups_output_directory">Yedekleme dizini</string>
+    <string name="backups_output_directory">Yedekleme konumu</string>
     <string name="speed_value">x%.1f</string>
     <string name="last_successful_backup">Son başarılı yedekleme: %s</string>
     <string name="sources_catalog">Kaynak kataloğu</string>
@@ -565,7 +565,7 @@
     <string name="reading_time_estimation_summary">Süre tahmin değeri yanlış olabilir</string>
     <string name="show_labels_in_navbar">Gezinme çubuğunda etiketleri göster</string>
     <string name="pages_saving">Sayfalar kaydediliyor</string>
-    <string name="ask_for_dest_dir_every_time">Her seferinde hedef dizini sor</string>
+    <string name="ask_for_dest_dir_every_time">Hedef konumu her zaman sor</string>
     <string name="default_page_save_dir">Varsayılan sayfa kaydetme konumu</string>
     <string name="remove_from_history">Geçmişten kaldır</string>
     <string name="location">Konum</string>
@@ -729,7 +729,7 @@
     <string name="genre">Tür</string>
     <string name="download_added">İndirme eklendi</string>
     <string name="more_options">Daha fazla seçenek</string>
-    <string name="destination_directory">Hedef dizin</string>
+    <string name="destination_directory">Hedef konum</string>
     <string name="chapter_selection_hint">Bölüm listesindeki bir ögeye uzun tıklayarak indirilecek bölümleri seçebilirsiniz.</string>
     <string name="chapters_all">Tümü</string>
     <string name="download_over_cellular">Hücresel ağ üzerinden indirme</string>
@@ -806,4 +806,20 @@
     <string name="include_disabled_sources">Devre dışı bırakılmış kaynakları dahil et</string>
     <string name="tags_warnings">Riskli türleri işaretle</string>
     <string name="tags_warnings_summary">Çoğu kullanıcılar için uygunsuz olabilecek türleri işaretle</string>
+    <string name="error_non_file_uri">Seçilen yol herhangi bir dosyaya ya da konuma ulaşmadığı için kullanılamıyor</string>
+    <string name="use_default_cover">Varsayılan kapağı kullan</string>
+    <string name="pick_custom_file">Özel dosya seç</string>
+    <string name="change_cover">Kapağı değiştir</string>
+    <string name="pick_manga_page">Manga sayfası seç</string>
+    <string name="manga_override_hint">Bu değişiklikler mangaların uygulamada nasıl göründüğünü etkileyecektir</string>
+    <string name="page_switch_timer">Sayfa ~%d saniyede bir değişecektir</string>
+    <string name="dont_ask_again">Tekrar sorma</string>
+    <string name="incognito_mode_hint_nsfw">Bu manga yetişkin içeriği içerebilir. Gizli modu kullanmak ister misiniz?</string>
+    <string name="incognito_for_nsfw">NSFW mangaları için gizli mod</string>
+    <string name="theme_name_dynamic_v2">Dinamik V2</string>
+    <string name="additional_action_required">Ek işlemler gerekli</string>
+    <string name="theme_name_expressive">İfadesel (Test)</string>
+    <string name="hide_from_main_screen">Ana ekrandan gizle</string>
+    <string name="changelog">Değişim kaydı</string>
+    <string name="changelog_summary">Yeni yayınlanan versiyonlar için değişikliklerin kaydı</string>
 </resources>
