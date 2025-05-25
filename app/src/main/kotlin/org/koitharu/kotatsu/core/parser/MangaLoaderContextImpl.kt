@@ -9,7 +9,10 @@ import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -34,6 +37,7 @@ import org.koitharu.kotatsu.parsers.network.UserAgents
 import org.koitharu.kotatsu.parsers.util.map
 import java.lang.ref.WeakReference
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
@@ -49,27 +53,28 @@ class MangaLoaderContextImpl @Inject constructor(
 
 	private var webViewCached: WeakReference<WebView>? = null
 	private val webViewUserAgent by lazy { obtainWebViewUserAgent() }
+	private val jsMutex = Mutex()
+	private val jsTimeout = TimeUnit.SECONDS.toMillis(4)
 
 	@Deprecated("Provide a base url")
 	@SuppressLint("SetJavaScriptEnabled")
-	override suspend fun evaluateJs(script: String): String? = withContext(Dispatchers.Main.immediate) {
-		val webView = obtainWebView()
-		suspendCoroutine { cont ->
-			webView.evaluateJavascript(script) { result ->
-				cont.resume(result?.takeUnless { it == "null" })
-			}
-		}
-	}
+	override suspend fun evaluateJs(script: String): String? = evaluateJs("", script)
 
-	override suspend fun evaluateJs(baseUrl: String, script: String): String? = withContext(Dispatchers.Main.immediate) {
-		val webView = obtainWebView()
-		suspendCoroutine { cont ->
-			webView.webViewClient = ContinuationResumeWebViewClient(cont)
-			webView.loadDataWithBaseURL(baseUrl, " ", "text/html", null, null)
-		}
-		suspendCoroutine { cont ->
-			webView.evaluateJavascript(script) { result ->
-				cont.resume(result?.takeUnless { it == "null" })
+	override suspend fun evaluateJs(baseUrl: String, script: String): String? = withTimeout(jsTimeout) {
+		jsMutex.withLock {
+			withContext(Dispatchers.Main.immediate) {
+				val webView = obtainWebView()
+				if (baseUrl.isNotEmpty()) {
+					suspendCoroutine { cont ->
+						webView.webViewClient = ContinuationResumeWebViewClient(cont)
+						webView.loadDataWithBaseURL(baseUrl, " ", "text/html", null, null)
+					}
+				}
+				suspendCoroutine { cont ->
+					webView.evaluateJavascript(script) { result ->
+						cont.resume(result?.takeUnless { it == "null" })
+					}
+				}
 			}
 		}
 	}
