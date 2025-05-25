@@ -4,18 +4,21 @@ import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.FlowCollector
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.util.ext.findActivity
+import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
+import org.koitharu.kotatsu.main.ui.owners.BottomSheetOwner
 
 class ReversibleActionObserver(
 	private val snackbarHost: View,
-	private val snackbarAnchor: View? = null,
 ) : FlowCollector<ReversibleAction> {
 
 	override suspend fun emit(value: ReversibleAction) {
 		val handle = value.handle
 		val length = if (handle == null) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
 		val snackbar = Snackbar.make(snackbarHost, value.stringResId, length)
-		if (snackbarAnchor?.isShown == true) {
-			snackbar.anchorView = snackbarAnchor
+		when (val activity = snackbarHost.context.findActivity()) {
+			is BottomNavOwner -> snackbar.anchorView = activity.bottomNav
+			is BottomSheetOwner -> snackbar.anchorView = activity.bottomSheet
 		}
 		if (handle != null) {
 			snackbar.setAction(R.string.undo) { handle.reverseAsync() }
