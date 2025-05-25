@@ -45,7 +45,7 @@ class SourceAuthActivity : BaseBrowserActivity(), BrowserCallback {
 			return
 		}
 		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = true)
-		viewBinding.webView.webViewClient = BrowserClient(this)
+		viewBinding.webView.webViewClient = BrowserClient(this, adBlock)
 		lifecycleScope.launch {
 			try {
 				proxyProvider.applyWebViewConfig()

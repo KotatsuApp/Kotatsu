@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.webkit.WebView
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
+import org.koitharu.kotatsu.core.network.webview.adblock.AdBlock
 import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 
 private const val LOOP_COUNTER = 3
@@ -11,8 +12,9 @@ private const val LOOP_COUNTER = 3
 class CloudFlareClient(
 	private val cookieJar: MutableCookieJar,
 	private val callback: CloudFlareCallback,
+	adBlock: AdBlock,
 	private val targetUrl: String,
-) : BrowserClient(callback) {
+) : BrowserClient(callback, adBlock) {
 
 	private val oldClearance = getClearance()
 	private var counter = 0

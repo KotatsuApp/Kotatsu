@@ -16,8 +16,12 @@ object CommonHeaders {
 	const val CACHE_CONTROL = "Cache-Control"
 	const val PROXY_AUTHORIZATION = "Proxy-Authorization"
 	const val RETRY_AFTER = "Retry-After"
+	const val LAST_MODIFIED = "Last-Modified"
+	const val IF_MODIFIED_SINCE = "If-Modified-Since"
 	const val MANGA_SOURCE = "X-Manga-Source"
 
 	val CACHE_CONTROL_NO_STORE: CacheControl
 		get() = CacheControl.Builder().noStore().build()
+
+	const val DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
 }

@@ -2,8 +2,8 @@
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:title="@string/network"
-	xmlns:tools="http://schemas.android.com/tools">
+	xmlns:tools="http://schemas.android.com/tools"
+	android:title="@string/network">
 
 	<ListPreference
 		android:defaultValue="0"
@@ -33,6 +33,12 @@
 		android:key="doh"
 		android:title="@string/dns_over_https"
 		app:useSimpleSummaryProvider="true" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="adblock"
+		android:summary="@string/adblock_summary"
+		android:title="@string/adblock" />
 
 	<ListPreference
 		android:defaultValue="-1"

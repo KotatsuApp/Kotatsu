@@ -1,11 +1,17 @@
 package org.koitharu.kotatsu.browser
 
 import android.graphics.Bitmap
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.annotation.WorkerThread
+import org.koitharu.kotatsu.core.network.webview.adblock.AdBlock
+import java.io.ByteArrayInputStream
 
 open class BrowserClient(
-	private val callback: BrowserCallback
+	private val callback: BrowserCallback,
+	private val adBlock: AdBlock,
 ) : WebViewClient() {
 
 	/**
@@ -31,4 +37,29 @@ open class BrowserClient(
 		super.doUpdateVisitedHistory(view, url, isReload)
 		callback.onHistoryChanged()
 	}
+
+	@WorkerThread
+	@Deprecated("Deprecated in Java")
+	override fun shouldInterceptRequest(
+		view: WebView?,
+		url: String?
+	): WebResourceResponse? = if (url.isNullOrEmpty() || adBlock.shouldLoadUrl(url, view?.url)) {
+		super.shouldInterceptRequest(view, url)
+	} else {
+		emptyResponse()
+	}
+
+	@WorkerThread
+	override fun shouldInterceptRequest(
+		view: WebView?,
+		request: WebResourceRequest?
+	): WebResourceResponse? = if (request == null || adBlock.shouldLoadUrl(request.url.toString(), view?.url)) {
+		view?.originalUrl
+		super.shouldInterceptRequest(view, request)
+	} else {
+		emptyResponse()
+	}
+
+	private fun emptyResponse(): WebResourceResponse =
+		WebResourceResponse("text/plain", "utf-8", ByteArrayInputStream(byteArrayOf()))
 }
