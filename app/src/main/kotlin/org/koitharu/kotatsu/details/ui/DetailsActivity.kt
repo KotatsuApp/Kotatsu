@@ -13,7 +13,6 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.core.text.method.LinkMovementMethodCompat
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -96,6 +95,7 @@ import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
+import org.koitharu.kotatsu.main.ui.owners.BottomSheetOwner
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -111,9 +111,13 @@ import com.google.android.material.R as materialR
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
 	View.OnClickListener,
-	View.OnLayoutChangeListener, ViewTreeObserver.OnDrawListener,
-	ChipsView.OnChipClickListener, OnListItemClickListener<Bookmark>,
-	SwipeRefreshLayout.OnRefreshListener, AuthorSpan.OnAuthorClickListener {
+	View.OnLayoutChangeListener,
+	ViewTreeObserver.OnDrawListener,
+	ChipsView.OnChipClickListener,
+	OnListItemClickListener<Bookmark>,
+	SwipeRefreshLayout.OnRefreshListener,
+	AuthorSpan.OnAuthorClickListener,
+	BottomSheetOwner {
 
 	@Inject
 	lateinit var shortcutManager: AppShortcutManager
@@ -124,6 +128,9 @@ class DetailsActivity :
 	private val viewModel: DetailsViewModel by viewModels()
 	private lateinit var menuProvider: DetailsMenuProvider
 	private lateinit var infoBinding: LayoutDetailsTableBinding
+
+	override val bottomSheet: View?
+		get() = viewBinding.containerBottomSheet
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -164,7 +171,7 @@ class DetailsActivity :
 			.observeEvent(this, DetailsErrorObserver(this, viewModel, exceptionResolver))
 		viewModel.onActionDone
 			.filterNot { appRouter.isChapterPagesSheetShown() }
-			.observeEvent(this, ReversibleActionObserver(viewBinding.scrollView, null))
+			.observeEvent(this, ReversibleActionObserver(viewBinding.scrollView))
 		combine(viewModel.historyInfo, viewModel.isLoading, ::Pair).observe(this) {
 			onHistoryChanged(it.first, it.second)
 		}

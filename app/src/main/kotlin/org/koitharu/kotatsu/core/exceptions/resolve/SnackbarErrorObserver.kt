@@ -8,6 +8,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.isSerializable
 import org.koitharu.kotatsu.main.ui.owners.BottomNavOwner
+import org.koitharu.kotatsu.main.ui.owners.BottomSheetOwner
 import org.koitharu.kotatsu.parsers.exception.ParseException
 
 class SnackbarErrorObserver(
@@ -24,8 +25,9 @@ class SnackbarErrorObserver(
 
 	override suspend fun emit(value: Throwable) {
 		val snackbar = Snackbar.make(host, value.getDisplayMessage(host.context.resources), Snackbar.LENGTH_SHORT)
-		if (activity is BottomNavOwner) {
-			snackbar.anchorView = activity.bottomNav
+		when (activity) {
+			is BottomNavOwner -> snackbar.anchorView = activity.bottomNav
+			is BottomSheetOwner -> snackbar.anchorView = activity.bottomSheet
 		}
 		if (canResolve(value)) {
 			snackbar.setAction(ExceptionResolver.getResolveStringId(value)) {

@@ -89,7 +89,7 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(),
 		viewModel.newChaptersCount.observe(viewLifecycleOwner, ::onNewChaptersChanged)
 		if (dialog != null) {
 			viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.pager, this))
-			viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.pager, null))
+			viewModel.onActionDone.observeEvent(viewLifecycleOwner, ReversibleActionObserver(binding.pager))
 			viewModel.onDownloadStarted.observeEvent(viewLifecycleOwner, DownloadStartedObserver(binding.pager))
 		} else {
 			PeekHeightController(arrayOf(binding.headerBar, binding.toolbar)).attach()
