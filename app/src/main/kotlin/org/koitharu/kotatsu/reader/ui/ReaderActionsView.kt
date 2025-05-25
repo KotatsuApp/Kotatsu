@@ -12,9 +12,7 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.AttrRes
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.TooltipCompat
-import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.google.android.material.slider.Slider
@@ -25,6 +23,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ReaderControl
 import org.koitharu.kotatsu.core.util.ext.hasVisibleChildren
 import org.koitharu.kotatsu.core.util.ext.isRtl
+import org.koitharu.kotatsu.core.util.ext.setContentDescriptionAndTooltip
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.databinding.LayoutReaderActionsBinding
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
@@ -134,6 +133,7 @@ class ReaderActionsView @JvmOverloads constructor(
 	override fun onLongClick(v: View): Boolean = when (v.id) {
 		R.id.button_bookmark -> AppRouter.from(this)
 			?.showChapterPagesSheet(ChaptersPagesSheet.TAB_BOOKMARKS)
+
 		R.id.button_timer -> listener?.onScrollTimerClick(isLongClick = true)
 		R.id.button_options -> AppRouter.from(this)?.openReaderSettings()
 		else -> null
@@ -206,7 +206,7 @@ class ReaderActionsView @JvmOverloads constructor(
 		button.setIconResource(
 			if (isPagesMode) R.drawable.ic_grid else R.drawable.ic_list,
 		)
-		button.setTitle(
+		button.setContentDescriptionAndTooltip(
 			if (isPagesMode) R.string.pages else R.string.chapters,
 		)
 	}
@@ -216,7 +216,7 @@ class ReaderActionsView @JvmOverloads constructor(
 		button.setIconResource(
 			if (isBookmarkAdded) R.drawable.ic_bookmark_added else R.drawable.ic_bookmark,
 		)
-		button.setTitle(
+		button.setContentDescriptionAndTooltip(
 			if (isBookmarkAdded) R.string.bookmark_remove else R.string.bookmark_add,
 		)
 	}
@@ -240,12 +240,12 @@ class ReaderActionsView @JvmOverloads constructor(
 		when {
 			!button.isVisible -> return
 			isAutoRotationEnabled() -> {
-				button.setTitle(R.string.lock_screen_rotation)
+				button.setContentDescriptionAndTooltip(R.string.lock_screen_rotation)
 				button.setIconResource(R.drawable.ic_screen_rotation_lock)
 			}
 
 			else -> {
-				button.setTitle(R.string.rotate_screen)
+				button.setContentDescriptionAndTooltip(R.string.rotate_screen)
 				button.setIconResource(R.drawable.ic_screen_rotation)
 			}
 		}
@@ -255,12 +255,6 @@ class ReaderActionsView @JvmOverloads constructor(
 		setOnClickListener(this@ReaderActionsView)
 		setOnLongClickListener(this@ReaderActionsView)
 		TooltipCompat.setTooltipText(this, contentDescription)
-	}
-
-	private fun Button.setTitle(@StringRes titleResId: Int) {
-		val text = resources.getString(titleResId)
-		contentDescription = text
-		TooltipCompat.setTooltipText(this, text)
 	}
 
 	private fun isAutoRotationEnabled(): Boolean = Settings.System.getInt(

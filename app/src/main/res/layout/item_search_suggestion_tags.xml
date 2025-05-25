@@ -14,6 +14,7 @@
 		android:id="@+id/chips_genres"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:clipChildren="false"
 		android:paddingTop="6dp"
 		android:paddingBottom="12dp"
 		app:singleLine="true" />

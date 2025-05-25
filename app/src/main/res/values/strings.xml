@@ -840,4 +840,6 @@
 	<string name="hide_from_main_screen">Hide from main screen</string>
 	<string name="changelog">Changelog</string>
 	<string name="changelog_summary">Changes history for recently released versions</string>
+	<string name="collapse">Collapse</string>
+	<string name="expand">Expand</string>
 </resources>

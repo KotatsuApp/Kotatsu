@@ -34,23 +34,21 @@
 			android:gravity="center_vertical"
 			android:singleLine="true"
 			android:textAppearance="?attr/textAppearanceTitleSmall"
-			app:layout_constraintEnd_toStartOf="@id/imageView_expand"
+			app:layout_constraintEnd_toStartOf="@id/button_expand"
 			app:layout_constraintStart_toEndOf="@id/imageView_cover"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_goneMarginEnd="12dp"
 			tools:text="@tools:sample/lorem" />
 
-		<org.koitharu.kotatsu.core.ui.widgets.CheckableImageView
-			android:id="@+id/imageView_expand"
+		<org.koitharu.kotatsu.core.ui.widgets.CheckableImageButton
+			android:id="@+id/button_expand"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:background="?selectableItemBackgroundBorderless"
-			android:contentDescription="@string/details"
+			android:contentDescription="@string/expand"
 			android:minWidth="?minTouchTargetSize"
 			android:minHeight="?minTouchTargetSize"
-			android:pointerIcon="hand"
 			android:scaleType="center"
-			android:tooltipText="@string/details"
 			android:visibility="gone"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
@@ -63,7 +61,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			app:barrierDirection="bottom"
-			app:constraint_referenced_ids="imageView_cover,textView_status,imageView_expand,textView_details" />
+			app:constraint_referenced_ids="imageView_cover,textView_status,button_expand,textView_details" />
 
 		<com.google.android.material.progressindicator.LinearProgressIndicator
 			android:id="@+id/progressBar"

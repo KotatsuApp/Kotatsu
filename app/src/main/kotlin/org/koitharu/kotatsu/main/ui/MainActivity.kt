@@ -120,6 +120,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		)
 		navigationDelegate.addOnFragmentChangedListener(this)
 		navigationDelegate.onCreate(this, savedInstanceState)
+		viewBinding.textViewTitle?.let { tv ->
+			navigationDelegate.observeTitle().observe(this) { tv.text = it }
+		}
 
 		addMenuProvider(MainMenuProvider(router, viewModel))
 
@@ -409,7 +412,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		}
 	}
 
-	private fun SearchView.observeState() = callbackFlow<SearchView.TransitionState> {
+	private fun SearchView.observeState() = callbackFlow {
 		val listener = SearchView.TransitionListener { _, _, state ->
 			trySendBlocking(state)
 		}

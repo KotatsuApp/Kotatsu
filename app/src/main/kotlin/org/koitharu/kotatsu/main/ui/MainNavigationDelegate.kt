@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.main.ui
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.core.view.isEmpty
@@ -13,11 +14,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.navigationrail.NavigationRailView
 import com.google.android.material.transition.MaterialFadeThrough
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
@@ -26,7 +32,9 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
+import org.koitharu.kotatsu.core.util.ext.setContentDescriptionAndTooltip
 import org.koitharu.kotatsu.core.util.ext.smoothScrollToTop
+import org.koitharu.kotatsu.databinding.NavigationRailFabBinding
 import org.koitharu.kotatsu.explore.ui.ExploreFragment
 import org.koitharu.kotatsu.favourites.ui.container.FavouritesContainerFragment
 import org.koitharu.kotatsu.history.ui.HistoryListFragment
@@ -45,9 +53,12 @@ class MainNavigationDelegate(
 	private val settings: AppSettings,
 ) : OnBackPressedCallback(false),
 	NavigationBarView.OnItemSelectedListener,
-	NavigationBarView.OnItemReselectedListener {
+	NavigationBarView.OnItemReselectedListener, View.OnClickListener {
 
 	private val listeners = LinkedList<OnFragmentChangedListener>()
+	private val navRailHeader = (navBar as? NavigationRailView)?.headerView?.let {
+		NavigationRailFabBinding.bind(it)
+	}
 
 	val primaryFragment: Fragment?
 		get() = fragmentManager.findFragmentByTag(TAG_PRIMARY)
@@ -55,6 +66,14 @@ class MainNavigationDelegate(
 	init {
 		navBar.setOnItemSelectedListener(this)
 		navBar.setOnItemReselectedListener(this)
+		navRailHeader?.run {
+			val horizontalPadding = (navBar as NavigationRailView).itemActiveIndicatorExpandedMarginHorizontal
+			root.setPadding(horizontalPadding, 0, horizontalPadding, 0)
+			buttonExpand.setOnClickListener(this@MainNavigationDelegate)
+			buttonExpand.setContentDescriptionAndTooltip(R.string.expand)
+			railFab.isExtended = false
+			railFab.isAnimationEnabled = false
+		}
 	}
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -68,6 +87,30 @@ class MainNavigationDelegate(
 
 	override fun onNavigationItemReselected(item: MenuItem) {
 		onNavigationItemReselected()
+	}
+
+	override fun onClick(v: View) {
+		when (v.id) {
+			R.id.button_expand -> {
+				if (navBar is NavigationRailView) {
+					if (navBar.isExpanded) {
+						navBar.collapse()
+						navRailHeader?.run {
+							railFab.shrink()
+							buttonExpand.setImageResource(R.drawable.ic_drawer_menu)
+							buttonExpand.setContentDescriptionAndTooltip(R.string.expand)
+						}
+					} else {
+						navBar.expand()
+						navRailHeader?.run {
+							railFab.extend()
+							buttonExpand.setImageResource(R.drawable.ic_drawer_menu_open)
+							buttonExpand.setContentDescriptionAndTooltip(R.string.collapse)
+						}
+					}
+				}
+			}
+		}
 	}
 
 	override fun handleOnBackPressed() {
@@ -94,6 +137,16 @@ class MainNavigationDelegate(
 			}
 			onNavigationItemSelected(itemId)
 		}
+	}
+
+	fun observeTitle() = callbackFlow {
+		val listener = OnFragmentChangedListener { f, _ ->
+			trySendBlocking(getItemId(f))
+		}
+		addOnFragmentChangedListener(listener)
+		awaitClose { removeOnFragmentChangedListener(listener) }
+	}.map {
+		navBar.menu.findItem(it)?.title
 	}
 
 	fun setCounter(item: NavItem, counter: Int) {
@@ -248,7 +301,7 @@ class MainNavigationDelegate(
 		}
 	}
 
-	interface OnFragmentChangedListener {
+	fun interface OnFragmentChangedListener {
 
 		fun onFragmentChanged(fragment: Fragment, fromUser: Boolean)
 	}

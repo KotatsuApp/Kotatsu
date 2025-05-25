@@ -6,8 +6,10 @@ import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.Checkable
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.children
 import androidx.core.view.descendants
 import androidx.core.view.isVisible
@@ -191,4 +193,10 @@ fun Chip.setProgressIcon() {
 	progressDrawable.setColorSchemeColors(currentTextColor)
 	chipIcon = progressDrawable
 	progressDrawable.start()
+}
+
+fun View.setContentDescriptionAndTooltip(@StringRes resId: Int) {
+	val text = resources.getString(resId)
+	contentDescription = text
+	TooltipCompat.setTooltipText(this, text)
 }

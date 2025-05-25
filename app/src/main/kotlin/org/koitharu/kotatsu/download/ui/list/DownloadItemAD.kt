@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
+import org.koitharu.kotatsu.core.util.ext.setContentDescriptionAndTooltip
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemDownloadBinding
 import org.koitharu.kotatsu.download.ui.list.chapters.DownloadChapter
@@ -41,7 +42,7 @@ fun downloadItemAD(
 				R.id.button_skip -> listener.onSkipClick(item)
 				R.id.button_skip_all -> listener.onSkipAllClick(item)
 				R.id.button_pause -> listener.onPauseClick(item)
-				R.id.imageView_expand -> listener.onExpandClick(item)
+				R.id.button_expand -> listener.onExpandClick(item)
 				else -> listener.onItemClick(item, v)
 			}
 		}
@@ -59,7 +60,7 @@ fun downloadItemAD(
 	binding.buttonResume.setOnClickListener(clickListener)
 	binding.buttonSkip.setOnClickListener(clickListener)
 	binding.buttonSkipAll.setOnClickListener(clickListener)
-	binding.imageViewExpand.setOnClickListener(clickListener)
+	binding.buttonExpand.setOnClickListener(clickListener)
 	itemView.setOnClickListener(clickListener)
 	itemView.setOnLongClickListener(clickListener)
 
@@ -83,7 +84,7 @@ fun downloadItemAD(
 			chaptersJob?.cancel()
 			chaptersJob = lifecycleOwner.lifecycleScope.launch(start = CoroutineStart.UNDISPATCHED) {
 				item.chapters.collect { chapters ->
-					binding.imageViewExpand.isGone = chapters.isNullOrEmpty()
+					binding.buttonExpand.isGone = chapters.isNullOrEmpty()
 					chaptersAdapter.emit(chapters)
 					scrollToCurrentChapter()
 				}
@@ -93,7 +94,8 @@ fun downloadItemAD(
 				scrollToCurrentChapter()
 			}
 		}
-		binding.imageViewExpand.isChecked = item.isExpanded
+		binding.buttonExpand.isChecked = item.isExpanded
+		binding.buttonExpand.setContentDescriptionAndTooltip(if (item.isExpanded) R.string.collapse else R.string.expand)
 		binding.recyclerViewChapters.isVisible = item.isExpanded
 		when (item.workState) {
 			WorkInfo.State.ENQUEUED,

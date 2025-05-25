@@ -12,6 +12,7 @@
 		android:id="@+id/navRail"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
+		android:clipToPadding="false"
 		android:fitsSystemWindows="false"
 		app:elevation="1dp"
 		app:headerLayout="@layout/navigation_rail_fab"
@@ -59,6 +60,16 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				app:layout_scrollFlags="scroll|enterAlways|snap">
+
+				<TextView
+					android:id="@+id/textView_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_vertical|start"
+					android:paddingStart="@dimen/screen_padding"
+					android:textAppearance="?textAppearanceTitleLarge"
+					tools:ignore="RtlSymmetry"
+					tools:text="@string/history" />
 
 				<com.google.android.material.search.SearchBar
 					android:id="@+id/search_bar"
