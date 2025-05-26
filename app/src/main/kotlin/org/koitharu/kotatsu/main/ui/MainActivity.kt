@@ -288,11 +288,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 			withResumed {
 				MangaPrefetchService.prefetchLast(this@MainActivity)
 				requestNotificationsPermission()
-			}
-			startService(Intent(this@MainActivity, LocalIndexUpdateService::class.java))
-			startService(Intent(this@MainActivity, PeriodicalBackupService::class.java))
-			if (settings.isAdBlockEnabled) {
-				startService(Intent(this@MainActivity, AdListUpdateService::class.java))
+				startService(Intent(this@MainActivity, LocalIndexUpdateService::class.java))
+				startService(Intent(this@MainActivity, PeriodicalBackupService::class.java))
+				if (settings.isAdBlockEnabled) {
+					startService(Intent(this@MainActivity, AdListUpdateService::class.java))
+				}
 			}
 		}
 	}
