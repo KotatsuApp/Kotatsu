@@ -122,7 +122,7 @@
     <string name="add">Idagdag</string>
     <string name="save">I-save</string>
     <string name="share">Ibahagi</string>
-    <string name="create_shortcut">Lumikha ng shortcut…</string>
+    <string name="create_shortcut">Lumikha ng shortcut</string>
     <string name="share_s">Ibahagi sa %s</string>
     <string name="search">Maghanap</string>
     <string name="search_manga">Maghanap ng manga</string>
@@ -805,4 +805,5 @@
     <string name="simple">Pinasimple</string>
     <string name="link_to_manga_on_s">Link sa manga sa %s</string>
     <string name="clear_browser_data_summary">Linisin ang data ng browser tulad ng cache at mga cookie. Babala: Ang awtorisasyon sa mga source ng manga ay maaaring maging di-balido</string>
+    <string name="error_non_file_uri">Hindi magagamit ang napiling path dahil hindi ito nagsasaad ng file o directory</string>
 </resources>
