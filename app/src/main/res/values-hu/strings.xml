@@ -617,4 +617,26 @@
     <string name="screenshots_block_incognito">Blokkold inkognitó módban</string>
     <string name="crop_pages">Lap kivágása</string>
     <string name="image_server">Előnyben részesített kiszolgáló</string>
+    <string name="last_used">Legutóbb használt</string>
+    <string name="nsfw_16">16+</string>
+    <string name="more_frequently">Gyakrabban</string>
+    <string name="frequency_of_check">Az ellenőrzés gyakorisága</string>
+    <string name="pin_navigation_ui_summary">Ne rejtse el a navigációs sávot és a keresési nézetet görgetéskor</string>
+    <string name="pages_saved">Mentett oldalak</string>
+    <string name="text_empty_holder_secondary_filtered">Nincsenek az általad kiválasztott szűrőknek megfelelő mangák</string>
+    <string name="too_many_requests_message_retry">Túl sok lekérés. Próbálja újra %s után</string>
+    <string name="seconds_short">%d mp</string>
+    <string name="minutes_seconds_short">%1$d p %2$d mp</string>
+    <string name="missing_storage_permission">Nincs engedély a külső tárhelyen lévő mangákhoz való hozzáférésre</string>
+    <string name="show_updated">Frissített megjelenítése</string>
+    <string name="invalid_server_address_message">Érvénytelen kiszolgáló cím</string>
+    <string name="migrate_confirmation">A „%1$s” mangát a „%2$s”-ből a „%3$s” mangát a „%4$s”-ből a „%2$s” mangával fogja helyettesíteni az előzményekben és a kedvencekben (ha van ilyen)</string>
+    <string name="webtoon_gaps_summary">Függőleges hézagok megjelenítése az oldalak között webtoon módban</string>
+    <string name="webtoon_gaps">Hézagok a webtoon módban</string>
+    <string name="retry">Újra</string>
+    <string name="fix">Javítás</string>
+    <string name="pin_navigation_ui">Pin navigációs UI</string>
+    <string name="search_suggestions">Keresési javaslatok</string>
+    <string name="recent_queries">Legutóbbi lekérdezések</string>
+    <string name="less_frequently">Ritkábban</string>
 </resources>
