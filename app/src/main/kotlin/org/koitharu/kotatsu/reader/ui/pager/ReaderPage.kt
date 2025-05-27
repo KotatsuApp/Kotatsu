@@ -33,4 +33,8 @@ data class ReaderPage(
 		preview = preview,
 		source = source,
 	)
+
+	suspend fun getBitmap(): android.graphics.Bitmap? {
+		// Implementation for getting the bitmap
+	}
 }

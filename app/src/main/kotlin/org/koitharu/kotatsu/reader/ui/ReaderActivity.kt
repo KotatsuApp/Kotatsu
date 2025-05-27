@@ -86,9 +86,13 @@ class ReaderActivity :
 	@Inject
 	lateinit var screenOrientationHelper: ScreenOrientationHelper
 
+	@Inject
+	lateinit var translationCoordinator: TranslationCoordinator
+
 	private val idlingDetector = IdlingDetector(TimeUnit.SECONDS.toMillis(10), this)
 
 	private val viewModel: ReaderViewModel by viewModels()
+	private val translationViewModel: TranslationViewModel by viewModels()
 
 	override val readerMode: ReaderMode?
 		get() = readerManager.currentMode
@@ -162,6 +166,48 @@ class ReaderActivity :
 			viewBinding.zoomControl.isVisible = it
 		}
 		addMenuProvider(ReaderMenuProvider(viewModel))
+
+		setupTranslationObserver()
+	}
+
+	private fun setupTranslationObserver() {
+		lifecycleScope.launch {
+			translationViewModel.translationState.collect { state ->
+				when (state) {
+					is TranslationState.TextDetected -> {
+						val detectedTexts = translationViewModel.detectedTexts.value
+						if (detectedTexts.isNotEmpty()) {
+							TranslationBottomSheet.newInstance(detectedTexts.joinToString("\n") { it.text })
+								.show(supportFragmentManager, "translation")
+						}
+					}
+					is TranslationState.Translated -> {
+						translationViewModel.currentTranslation.value?.let { translation ->
+							showTranslation(translation)
+						}
+					}
+					is TranslationState.Error -> {
+						showError(state.message)
+					}
+					else -> {}
+				}
+			}
+		}
+	}
+
+	fun startTextRecognition() {
+		val currentPage = readerManager.currentReader?.getCurrentPage() ?: return
+		currentPage.getBitmap()?.let { bitmap ->
+			translationViewModel.detectText(bitmap)
+		}
+	}
+
+	private fun showTranslation(translation: String) {
+		Snackbar.make(viewBinding.root, translation, Snackbar.LENGTH_LONG).show()
+	}
+
+	private fun showError(message: String) {
+		Snackbar.make(viewBinding.root, message, Snackbar.LENGTH_SHORT).show()
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -467,6 +513,16 @@ class ReaderActivity :
 			setOnCancelListener { finishAfterTransition() }
 			setCancelable(true)
 		}.show()
+	}
+
+	override fun onMenuItemSelected(itemId: Int): Boolean {
+		return when (itemId) {
+			R.id.action_translate -> {
+				startTextRecognition()
+				true
+			}
+			else -> super.onMenuItemSelected(itemId)
+		}
 	}
 
 	companion object {

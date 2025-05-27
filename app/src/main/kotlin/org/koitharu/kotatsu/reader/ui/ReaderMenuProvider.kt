@@ -12,6 +12,7 @@ class ReaderMenuProvider(
 
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 		menuInflater.inflate(R.menu.opt_reader, menu)
+		menuInflater.inflate(R.menu.reader_translate, menu)
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -20,7 +21,10 @@ class ReaderMenuProvider(
 				// TODO
 				true
 			}
-
+			R.id.action_translate -> {
+				(menuItem.actionView?.context as? ReaderActivity)?.startTextRecognition()
+				true
+			}
 			else -> false
 		}
 	}

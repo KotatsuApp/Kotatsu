@@ -844,4 +844,14 @@
 	<string name="expand">Expand</string>
 	<string name="adblock">Block ads in browser</string>
 	<string name="adblock_summary">Block advertisement in the built-in browser (beta)</string>
+	<string name="translate_text">Translate Text</string>
+	<string name="translate_offline">Translate Offline</string>
+	<string name="translate_online">Translate Online</string>
+	<string name="translation_error">Translation error</string>
+	<string name="downloading_language_model">Downloading language model…</string>
+	<string name="model_download_success">Language model downloaded successfully</string>
+	<string name="model_download_failed">Failed to download language model</string>
+	<string name="detecting_text">Detecting text…</string>
+	<string name="text_detection_failed">Failed to detect text</string>
+	<string name="translation_in_progress">Translating…</string>
 </resources>

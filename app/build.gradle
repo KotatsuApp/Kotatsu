@@ -194,4 +194,9 @@ dependencies {
 
 	androidTestImplementation libs.hilt.android.testing
 	kspAndroidTest libs.hilt.android.compiler
+
+	implementation libs.mlkit.text.recognition
+	implementation libs.mlkit.translate
+	implementation libs.mlkit.language
+	implementation libs.mlkit.text.recognition.japanese
 }
