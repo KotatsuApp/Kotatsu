@@ -10,7 +10,7 @@
     <string name="settings">Cài đặt</string>
     <string name="remote_sources">Nguồn truyện</string>
     <string name="list_mode">Chế độ hiển thị</string>
-    <string name="chapter_d_of_d">Chương %1$d trên %2$d</string>
+    <string name="chapter_d_of_d">Chương %1$d / %2$d</string>
     <string name="close">Đóng</string>
     <string name="nothing_found">Không tìm thấy kết quả</string>
     <string name="history_is_empty">Chưa có lịch sử</string>
@@ -403,7 +403,7 @@
     <string name="no_access_to_file">Bạn không có quyền truy cập vào tập tin hoặc thư mục này</string>
     <string name="local_manga_directories">Thư mục truyện tên thiết bị</string>
     <string name="pick_custom_directory">Chọn thư mục tuỳ chỉnh</string>
-    <string name="reader_info_pattern">Chương. %1$d/%2$d Trang. %3$d/%4$d</string>
+    <string name="reader_info_pattern">Chương %1$d/%2$d - Trang %3$d/%4$d</string>
     <string name="memory_usage_pattern">%s - %s</string>
     <string name="web_view_unavailable">WebView hiện không có sẵn: Kiểm tra xem ứng dụng WebView được cài chưa</string>
     <string name="manga_error_description_pattern">Chi tiết lỗi: &lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Hãy thử &lt;a href=%2$s&gt;mở manga trong trình duyệt web&lt;/a&gt; để đảm bảo rằng manga này có trong nguồn&lt;br&gt;2. Hãy chắc chắn rằng bạn đang dùng &lt;a href=kotatsu://about&gt;bản mới nhất của Kotatsu&lt;/a&gt;&lt;br&gt;3. Nếu đã đáp ứng các yêu cầu trên, gửi báo cáo lỗi lên nhà phát triển.</string>
@@ -550,8 +550,8 @@
     <string name="next_chapter">Chương tiếp theo</string>
     <string name="prev_page">Trang trước</string>
     <string name="next_page">Trang tiếp theo</string>
-    <string name="reader_actions">Hành động của người đọc</string>
-    <string name="reader_actions_summary">Chỉnh sửa các hành động cho các phần chạm của màn hình</string>
+    <string name="reader_actions">Thay đổi cử chỉ của người dùng trên giao diện đọc</string>
+    <string name="reader_actions_summary">Chỉnh sửa các hành động / cử chỉ cho các phần chạm của màn hình đọc</string>
     <string name="switch_pages_volume_buttons">Bật nút âm lượng</string>
     <string name="tap_action">Chạm</string>
     <string name="long_tap_action">Nhấn giữ</string>
@@ -804,4 +804,22 @@
     <string name="nsfw_16">16+</string>
     <string name="tags_warnings">Highlight những thể loại không an toàn</string>
     <string name="tags_warnings_summary">Highlight những thể loại mà nó không thực sự phù hợp với hầu hết người đọc (mọi lứa tuổi)</string>
+    <string name="manga_override_hint">Những thay đổi này sẽ ảnh hưởng đến cách bạn trang trí / trình bày truyện trong ứng dụng</string>
+    <string name="pick_manga_page">Chọn trang có trong manga làm ảnh bìa của truyện</string>
+    <string name="change_cover">Sửa ảnh bìa truyện</string>
+    <string name="use_default_cover">Sử dụng ảnh bìa truyện mặc định</string>
+    <string name="pick_custom_file">Chọn ảnh từ máy làm ảnh bìa của truyện</string>
+    <string name="error_non_file_uri">Không thể sử dụng đường dẫn này vì nó không tồn tại hoặc không phải là 1 tệp / đường dẫn xác định</string>
+    <string name="page_switch_timer">Trang truyện sẽ được chuyển sau mỗi %d giây (ước tính)</string>
+    <string name="dont_ask_again">Không hỏi lại lần nữa</string>
+    <string name="incognito_for_nsfw">Bật chế độ ẩn danh đối với truyện tranh người lớn</string>
+    <string name="incognito_mode_hint_nsfw">Truyện này có thể có chứa nội dung dành cho người lớn. Bạn có muốn sử dụng chế độ ẩn danh không?</string>
+    <string name="theme_name_dynamic_v2">Động v2</string>
+    <string name="theme_name_expressive">Expressive (Thử nghiệm)</string>
+    <string name="additional_action_required">Bắt buộc cần có hành động bổ sung</string>
+    <string name="hide_from_main_screen">Ẩn khỏi giao diện màn hình chính</string>
+    <string name="changelog">Ghi chú cập nhật</string>
+    <string name="changelog_summary">Xem lại các bản ghi về các tính năng đã được sửa đổi / thêm vào trong các phiên bản trước đây</string>
+    <string name="expand">Mở rộng</string>
+    <string name="collapse">Thu gọn</string>
 </resources>
