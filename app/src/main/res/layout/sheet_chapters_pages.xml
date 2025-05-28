@@ -53,17 +53,17 @@
 
 				<Button
 					android:id="@+id/button_read"
+					style="?materialSplitButtonLeadingFilledStyle"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="@string/read" />
 
 				<Button
 					android:id="@+id/button_read_menu"
-					style="?attr/materialSplitButtonIconFilledStyle"
+					style="?materialSplitButtonIconFilledStyle"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:gravity="center"
-					android:minWidth="48dp"
+					android:contentDescription="@string/show_menu"
 					app:icon="?expandCollapseIndicator"
 					app:toggleCheckedStateOnClick="false" />
 
