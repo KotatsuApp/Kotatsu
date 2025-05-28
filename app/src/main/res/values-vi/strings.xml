@@ -820,4 +820,6 @@
     <string name="hide_from_main_screen">Ẩn khỏi giao diện màn hình chính</string>
     <string name="changelog">Ghi chú cập nhật</string>
     <string name="changelog_summary">Xem lại các bản ghi về các tính năng đã được sửa đổi / thêm vào trong các phiên bản trước đây</string>
+    <string name="expand">Mở rộng</string>
+    <string name="collapse">Thu gọn</string>
 </resources>

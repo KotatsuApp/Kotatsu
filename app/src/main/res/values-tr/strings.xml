@@ -822,4 +822,8 @@
     <string name="hide_from_main_screen">Ana ekrandan gizle</string>
     <string name="changelog">Değişim kaydı</string>
     <string name="changelog_summary">Yeni yayınlanan versiyonlar için değişikliklerin kaydı</string>
+    <string name="collapse">Küçült</string>
+    <string name="expand">Genişlet</string>
+    <string name="adblock">Tarayıcıda reklamları engelle</string>
+    <string name="adblock_summary">Dahili tarayıcıda reklamları engelle (beta)</string>
 </resources>
