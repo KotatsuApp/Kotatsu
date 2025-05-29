@@ -822,4 +822,6 @@
     <string name="changelog_summary">Xem lại các bản ghi về các tính năng đã được sửa đổi / thêm vào trong các phiên bản trước đây</string>
     <string name="expand">Mở rộng</string>
     <string name="collapse">Thu gọn</string>
+    <string name="adblock">Chặn quảng cáo trong trình duyệt (Webview)</string>
+    <string name="adblock_summary">Chặn những quảng cáo xuất hiện trong trình duyệt Webview của hệ thống khi duyệt (Beta)</string>
 </resources>
