@@ -7,7 +7,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
+import org.koitharu.kotatsu.core.db.TABLE_FAVOURITE_CATEGORIES
 import org.koitharu.kotatsu.core.db.entity.toEntities
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toMangaList
@@ -106,20 +109,24 @@ class FavouritesRepository @Inject constructor(
 	}
 
 	fun observeCategoriesWithCovers(): Flow<Map<FavouriteCategory, List<Cover>>> {
-		return db.getFavouriteCategoriesDao().observeAll()
-			.map {
-				db.withTransaction {
-					val res = LinkedHashMap<FavouriteCategory, List<Cover>>()
-					for (entity in it) {
-						val cat = entity.toFavouriteCategory()
-						res[cat] = db.getFavouritesDao().findCovers(
-							categoryId = cat.id,
-							order = cat.order,
-						)
-					}
-					res
+		return db.invalidationTracker.createFlow(
+			TABLE_FAVOURITES,
+			TABLE_FAVOURITE_CATEGORIES,
+			emitInitialState = true,
+		).mapLatest {
+			db.withTransaction {
+				val categories = db.getFavouriteCategoriesDao().findAll()
+				val res = LinkedHashMap<FavouriteCategory, List<Cover>>(categories.size)
+				for (entity in categories) {
+					val cat = entity.toFavouriteCategory()
+					res[cat] = db.getFavouritesDao().findCovers(
+						categoryId = cat.id,
+						order = cat.order,
+					)
 				}
+				res
 			}
+		}.distinctUntilChanged()
 	}
 
 	suspend fun getAllFavoritesCovers(order: ListSortOrder, limit: Int): List<Cover> {
