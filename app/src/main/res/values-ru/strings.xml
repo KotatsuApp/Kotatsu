@@ -816,5 +816,4 @@
     <string name="pick_manga_page">Выбрать страницу манги</string>
     <string name="pick_custom_file">Выбрать пользовательский файл</string>
     <string name="page_switch_timer">Страница будет меняться каждые ~%d секунд</string>
-    <string name="theme_name_dynamic_v2">Динамическая V2</string>
 </resources>

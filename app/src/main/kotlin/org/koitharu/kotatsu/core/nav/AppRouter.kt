@@ -677,9 +677,11 @@ class AppRouter private constructor(
 
 		fun detailsIntent(context: Context, manga: Manga) = Intent(context, DetailsActivity::class.java)
 			.putExtra(KEY_MANGA, ParcelableManga(manga))
+			.setData(shortMangaUrl(manga.id))
 
 		fun detailsIntent(context: Context, mangaId: Long) = Intent(context, DetailsActivity::class.java)
 			.putExtra(KEY_ID, mangaId)
+			.setData(shortMangaUrl(mangaId))
 
 		fun listIntent(context: Context, source: MangaSource, filter: MangaListFilter?, sortOrder: SortOrder?): Intent =
 			Intent(context, MangaListActivity::class.java)
@@ -697,7 +699,7 @@ class AppRouter private constructor(
 		fun cloudFlareResolveIntent(context: Context, exception: CloudFlareProtectedException): Intent =
 			Intent(context, CloudFlareActivity::class.java).apply {
 				data = exception.url.toUri()
-				putExtra(KEY_SOURCE, exception.source?.name)
+				putExtra(KEY_SOURCE, exception.source.name)
 				exception.headers[CommonHeaders.USER_AGENT]?.let {
 					putExtra(KEY_USER_AGENT, it)
 				}
@@ -771,6 +773,12 @@ class AppRouter private constructor(
 			manga.isLocal -> manga.url.toUri().toFileOrNull() != null
 			else -> true
 		}
+
+		private fun shortMangaUrl(mangaId: Long) = Uri.Builder()
+			.scheme("kotatsu")
+			.path("manga")
+			.appendQueryParameter("id", mangaId.toString())
+			.build()
 
 		const val KEY_DATA = "data"
 		const val KEY_ENTRIES = "entries"

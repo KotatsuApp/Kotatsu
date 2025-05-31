@@ -67,7 +67,7 @@ class MainNavigationDelegate(
 		navBar.setOnItemSelectedListener(this)
 		navBar.setOnItemReselectedListener(this)
 		navRailHeader?.run {
-			val horizontalPadding = (navBar as NavigationRailView).itemActiveIndicatorExpandedMarginHorizontal
+			val horizontalPadding = (navBar as NavigationRailView).itemActiveIndicatorMarginHorizontal
 			root.setPadding(horizontalPadding, 0, horizontalPadding, 0)
 			buttonExpand.setOnClickListener(this@MainNavigationDelegate)
 			buttonExpand.setContentDescriptionAndTooltip(R.string.expand)
@@ -99,6 +99,8 @@ class MainNavigationDelegate(
 							railFab.shrink()
 							buttonExpand.setImageResource(R.drawable.ic_drawer_menu)
 							buttonExpand.setContentDescriptionAndTooltip(R.string.expand)
+							val horizontalPadding = navBar.itemActiveIndicatorMarginHorizontal
+							root.setPadding(horizontalPadding, 0, horizontalPadding, 0)
 						}
 					} else {
 						navBar.expand()
@@ -106,6 +108,8 @@ class MainNavigationDelegate(
 							railFab.extend()
 							buttonExpand.setImageResource(R.drawable.ic_drawer_menu_open)
 							buttonExpand.setContentDescriptionAndTooltip(R.string.collapse)
+							val horizontalPadding = navBar.itemActiveIndicatorExpandedMarginHorizontal
+							root.setPadding(horizontalPadding, 0, horizontalPadding, 0)
 						}
 					}
 				}

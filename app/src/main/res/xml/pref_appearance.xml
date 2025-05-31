@@ -64,6 +64,11 @@
 
 		<SwitchPreferenceCompat
 			android:defaultValue="true"
+			android:key="description_collapse"
+			android:title="@string/collapse_long_description" />
+
+		<SwitchPreferenceCompat
+			android:defaultValue="true"
 			android:key="pages_tab"
 			android:summary="@string/show_pages_thumbs_summary"
 			android:title="@string/show_pages_thumbs" />

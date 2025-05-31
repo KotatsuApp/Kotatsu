@@ -816,7 +816,6 @@
     <string name="dont_ask_again">Tekrar sorma</string>
     <string name="incognito_mode_hint_nsfw">Bu manga yetişkin içeriği içerebilir. Gizli modu kullanmak ister misiniz?</string>
     <string name="incognito_for_nsfw">NSFW mangaları için gizli mod</string>
-    <string name="theme_name_dynamic_v2">Dinamik V2</string>
     <string name="additional_action_required">Ek işlemler gerekli</string>
     <string name="theme_name_expressive">İfadesel (Test)</string>
     <string name="hide_from_main_screen">Ana ekrandan gizle</string>
