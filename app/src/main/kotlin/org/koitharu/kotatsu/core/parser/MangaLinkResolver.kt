@@ -35,6 +35,10 @@ class MangaLinkResolver @Inject constructor(
 
 	private suspend fun resolveAppLink(uri: Uri): Manga? {
 		require(uri.pathSegments.singleOrNull() == "manga") { "Invalid url" }
+		uri.getQueryParameter("id")?.let { mangaId ->
+			// short url
+			return dataRepository.findMangaById(mangaId.toLong(), withChapters = false)
+		}
 		val sourceName = requireNotNull(uri.getQueryParameter("source")) { "Source is not specified" }
 		val source = MangaSource(sourceName)
 		require(source != UnknownMangaSource) { "Manga source $sourceName is not supported" }
