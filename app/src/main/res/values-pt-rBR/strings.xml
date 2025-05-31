@@ -803,7 +803,6 @@
     <string name="exclude_nsfw_from_suggestions_summary">Mangás adultos não serão exibidos nas sugestões. Essa opção pode funcionar de forma imprecisa com algumas fontes</string>
     <string name="include_disabled_sources">Incluir fontes desabilitadas</string>
     <string name="suggestions_disabled_sources_summary">Mostrar sugestões de todas as fontes de mangá, incluindo as desabilitadas</string>
-    <string name="theme_name_dynamic_v2">Dinâmico V2</string>
     <string name="manga_override_hint">Essas mudanças afetarão como o mangá é exibido no aplicativo</string>
     <string name="use_default_cover">Usar a capa padrão</string>
     <string name="pick_manga_page">Escolha a página do mangá</string>

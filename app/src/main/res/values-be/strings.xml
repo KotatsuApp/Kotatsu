@@ -810,7 +810,6 @@
     <string name="error_disclaimer_report">Вы можаце адправіць справаздачу аб памылцы распрацоўшчыкам. Гэта дапаможа нам выправіць праблему.</string>
     <string name="error_disclaimer_app_outdated">Падобна, што Ваша версія Kotatsu састарэлая. Калі ласка, усталюйце апошнюю версію, каб атрымаць усе даступныя выпраўленні.</string>
     <string name="exclude_nsfw_from_suggestions_summary">Дарослая манга не будзе адлюстроўвацца ў рэкамендацыях. Гэтая опцыя можа не працаваць з некаторымі крыніцамі</string>
-    <string name="theme_name_dynamic_v2">Дынамічная V2</string>
     <string name="disable_captcha_notifications_summary">Вы не будзеце атрымліваць апавяшчэнняў аб рашэнні CAPTCHA для гэтай крыніцы, але гэта можа прывесці да парушэння фонавых аперацый (праверкі новых раздзелаў, атрымання рэкамендацый і г.д.)</string>
     <string name="error_disclaimer_manga">Паспрабуйце адкрыць мангу ў браўзэры, каб пераканацца, што яна даступная ў крыніцы.</string>
     <string name="manga_override_hint">Гэтыя змены будуць уплываць на тое, як манга адлюстроўваецца ў праграме</string>

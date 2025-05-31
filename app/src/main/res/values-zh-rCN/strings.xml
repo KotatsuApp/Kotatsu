@@ -815,6 +815,5 @@
     <string name="incognito_for_nsfw">R18无痕模式</string>
     <string name="incognito_mode_hint_nsfw">此漫画可能包含成人内容，需要打开无痕模式继续浏览吗？</string>
     <string name="dont_ask_again">不再询问</string>
-    <string name="theme_name_dynamic_v2">动态 V2</string>
     <string name="hide_from_main_screen">从主页面中隐藏</string>
 </resources>
