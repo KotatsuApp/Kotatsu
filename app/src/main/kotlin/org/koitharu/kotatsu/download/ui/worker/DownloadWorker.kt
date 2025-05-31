@@ -526,6 +526,7 @@ class DownloadWorker @AssistedInject constructor(
 					.setConstraints(constraints)
 					.addTag(TAG)
 					.setId(work.id)
+					.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 					.build()
 				workManager.awaitUpdateWork(request)
 			}
