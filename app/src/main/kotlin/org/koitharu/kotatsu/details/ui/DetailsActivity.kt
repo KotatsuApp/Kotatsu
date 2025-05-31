@@ -51,6 +51,7 @@ import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
@@ -125,6 +126,9 @@ class DetailsActivity :
 	@Inject
 	lateinit var coil: ImageLoader
 
+	@Inject
+	lateinit var settings: AppSettings
+
 	private val viewModel: DetailsViewModel by viewModels()
 	private lateinit var menuProvider: DetailsMenuProvider
 	private lateinit var infoBinding: LayoutDetailsTableBinding
@@ -153,6 +157,9 @@ class DetailsActivity :
 		viewBinding.textViewDescription.movementMethod = LinkMovementMethodCompat.getInstance()
 		viewBinding.chipsTags.onChipClickListener = this
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
+		if (settings.isDescriptionExpanded) {
+			viewBinding.textViewDescription.maxLines = Int.MAX_VALUE - 1
+		}
 		viewBinding.containerBottomSheet?.let { sheet ->
 			sheet.setOnClickListener(this)
 			sheet.addOnLayoutChangeListener(this)

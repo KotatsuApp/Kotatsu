@@ -93,6 +93,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isQuickFilterEnabled: Boolean
 		get() = prefs.getBoolean(KEY_QUICK_FILTER, true)
 
+	val isDescriptionExpanded: Boolean
+		get() = !prefs.getBoolean(KEY_COLLAPSE_DESCRIPTION, true)
+
 	var historyListMode: ListMode
 		get() = prefs.getEnumValue(KEY_LIST_MODE_HISTORY, listMode)
 		set(value) = prefs.edit { putEnumValue(KEY_LIST_MODE_HISTORY, value) }
@@ -741,6 +744,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_SOURCES_VERSION = "sources_version"
 		const val KEY_SOURCES_ENABLED_ALL = "sources_enabled_all"
 		const val KEY_QUICK_FILTER = "quick_filter"
+		const val KEY_COLLAPSE_DESCRIPTION = "description_collapse"
 		const val KEY_BACKUP_TG_ENABLED = "backup_periodic_tg_enabled"
 		const val KEY_BACKUP_TG_CHAT = "backup_periodic_tg_chat_id"
 		const val KEY_MANGA_LIST_BADGES = "manga_list_badges"
