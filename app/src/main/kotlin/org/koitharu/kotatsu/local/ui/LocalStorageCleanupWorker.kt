@@ -52,6 +52,7 @@ class LocalStorageCleanupWorker @AssistedInject constructor(
 				.setConstraints(constraints)
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.MINUTES)
+				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 				.build()
 			WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.KEEP, request).await()
 		}
