@@ -415,7 +415,6 @@ class SuggestionsWorker @AssistedInject constructor(
 				.setConstraints(createConstraints())
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 1, TimeUnit.HOURS)
-				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 				.build()
 			workManager
 				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)

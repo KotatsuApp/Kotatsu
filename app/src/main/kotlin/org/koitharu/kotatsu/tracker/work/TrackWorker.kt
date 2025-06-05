@@ -289,7 +289,6 @@ class TrackWorker @AssistedInject constructor(
 				.setConstraints(constraints)
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.MINUTES)
-				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 				.build()
 			workManager
 				.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)
