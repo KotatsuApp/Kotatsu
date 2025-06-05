@@ -451,6 +451,7 @@ class SuggestionsWorker @AssistedInject constructor(
 
 		private fun createConstraints() = Constraints.Builder()
 			.setRequiredNetworkType(if (settings.isSuggestionsWiFiOnly) NetworkType.UNMETERED else NetworkType.CONNECTED)
+			.setRequiresBatteryNotLow(true)
 			.build()
 	}
 

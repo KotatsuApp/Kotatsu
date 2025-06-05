@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.local.ui
 import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
@@ -45,7 +46,11 @@ class LocalStorageCleanupWorker @AssistedInject constructor(
 		private const val TAG = "cleanup"
 
 		suspend fun enqueue(context: Context) {
+			val constraints = Constraints.Builder()
+				.setRequiresBatteryNotLow(true)
+				.build()
 			val request = OneTimeWorkRequestBuilder<LocalStorageCleanupWorker>()
+				.setConstraints(constraints)
 				.addTag(TAG)
 				.setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.MINUTES)
 				.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
