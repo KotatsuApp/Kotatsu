@@ -35,7 +35,6 @@ import org.koitharu.kotatsu.core.util.ext.toFileNameSafe
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import java.io.File
@@ -70,6 +69,16 @@ class PageSaveHelper @AssistedInject constructor(
 		0 -> emptySet()
 		1 -> setOf(saveImpl(tasks.first()))
 		else -> saveImpl(tasks)
+	}
+
+	suspend fun saveToTempFile(task: Task): File {
+		val pageLoader = getPageLoader()
+		val pageUrl = pageLoader.getPageUrl(task.page).toUri()
+		val pageUri = pageLoader.loadPage(task.page, force = false)
+		val proposedName = task.getFileBaseName() + "." + getPageExtension(pageUrl, pageUri)
+		val destination = File(checkNotNull(context.getExternalFilesDir(TEMP_DIR)), proposedName)
+		copyImpl(pageUri, destination.toUri())
+		return destination
 	}
 
 	private suspend fun saveImpl(task: Task): Uri {
@@ -206,5 +215,6 @@ class PageSaveHelper @AssistedInject constructor(
 
 		private const val MAX_BASENAME_LENGTH = 12
 		private const val EXTENSION_FALLBACK = "png"
+		private const val TEMP_DIR = "pages"
 	}
 }

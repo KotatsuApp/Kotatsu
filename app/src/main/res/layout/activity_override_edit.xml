@@ -83,7 +83,6 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:text="@string/pick_manga_page"
-				android:visibility="gone"
 				app:drawableStartCompat="@drawable/ic_grid"
 				app:layout_constraintEnd_toEndOf="@id/textView_cover_title"
 				app:layout_constraintStart_toStartOf="@id/textView_cover_title"

@@ -20,6 +20,14 @@ data class MangaDetails(
 	val isLoaded: Boolean,
 ) {
 
+	constructor(manga: Manga) : this(
+		manga = manga,
+		localManga = null,
+		override = null,
+		description = null,
+		isLoaded = false,
+	)
+
 	val id: Long
 		get() = manga.id
 

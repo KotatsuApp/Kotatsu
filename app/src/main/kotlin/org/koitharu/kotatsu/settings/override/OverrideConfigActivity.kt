@@ -1,10 +1,11 @@
 package org.koitharu.kotatsu.settings.override
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -16,29 +17,23 @@ import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.MangaOverride
 import org.koitharu.kotatsu.core.util.ext.consumeAll
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
-import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.ActivityOverrideEditBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
-import androidx.appcompat.R as appcompatR
+import org.koitharu.kotatsu.picker.ui.PageImagePickContract
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
-class OverrideConfigActivity : BaseActivity<ActivityOverrideEditBinding>(), View.OnClickListener {
+class OverrideConfigActivity : BaseActivity<ActivityOverrideEditBinding>(), View.OnClickListener,
+	ActivityResultCallback<Uri?> {
 
 	private val viewModel: OverrideConfigViewModel by viewModels()
 
-	private val pickCoverFileLauncher = registerForActivityResult(
-		PickVisualMedia(),
-	) { uri ->
-		if (uri != null) {
-			contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-			viewModel.updateCover(uri.toString())
-		}
-	}
+	private val pickCoverFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument(), this)
+	private val pickPageLauncher = registerForActivityResult(PageImagePickContract(), this)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -67,6 +62,15 @@ class OverrideConfigActivity : BaseActivity<ActivityOverrideEditBinding>(), View
 		return insets.consumeAll(typeMask)
 	}
 
+	override fun onActivityResult(result: Uri?) {
+		if (result != null) {
+			if (result.host?.startsWith(packageName) != true) {
+				contentResolver.takePersistableUriPermission(result, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+			}
+			viewModel.updateCover(result.toString())
+		}
+	}
+
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_done -> viewModel.save(
@@ -77,17 +81,18 @@ class OverrideConfigActivity : BaseActivity<ActivityOverrideEditBinding>(), View
 
 			R.id.button_reset_cover -> viewModel.updateCover(null)
 			R.id.button_pick_file -> {
-				val request = PickVisualMediaRequest.Builder()
-					.setMediaType(PickVisualMedia.ImageOnly)
-					.setAccentColor(getThemeColor(appcompatR.attr.colorAccent).toLong())
-					.build()
-				if (!pickCoverFileLauncher.tryLaunch(request)) {
+				if (!pickCoverFileLauncher.tryLaunch(arrayOf("image/*"))) {
 					Snackbar.make(
 						viewBinding.imageViewCover,
 						R.string.operation_not_supported,
 						Snackbar.LENGTH_SHORT,
 					).show()
 				}
+			}
+
+			R.id.button_pick_page -> {
+				val manga = viewModel.data.value?.first
+				pickPageLauncher.launch(manga)
 			}
 		}
 	}
