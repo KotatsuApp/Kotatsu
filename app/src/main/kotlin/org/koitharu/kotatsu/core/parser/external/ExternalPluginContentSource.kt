@@ -22,6 +22,7 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.find
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.parsers.util.splitTwoParts
 import java.util.EnumSet
 import java.util.Locale
@@ -76,15 +77,15 @@ class ExternalPluginContentSource(
 		return Manga(
 			id = manga.id,
 			title = details.title.ifBlank { manga.title },
-			altTitle = details.altTitle.ifNullOrEmpty { manga.altTitle },
+			altTitles = details.altTitles.ifEmpty { manga.altTitles },
 			url = details.url.ifEmpty { manga.url },
 			publicUrl = details.publicUrl.ifEmpty { manga.publicUrl },
 			rating = maxOf(details.rating, manga.rating),
-			isNsfw = details.isNsfw,
+			contentRating = details.contentRating,
 			coverUrl = details.coverUrl.ifNullOrEmpty { manga.coverUrl },
 			tags = details.tags + manga.tags,
 			state = details.state ?: manga.state,
-			author = details.author.ifNullOrEmpty { manga.author },
+			authors = details.authors.ifEmpty { manga.authors },
 			largeCoverUrl = details.largeCoverUrl.ifNullOrEmpty { manga.largeCoverUrl },
 			description = details.description.ifNullOrEmpty { manga.description },
 			chapters = chapters,
@@ -247,18 +248,24 @@ class ExternalPluginContentSource(
 	private fun ExternalPluginCursor.getManga() = Manga(
 		id = getLong(COLUMN_ID),
 		title = getString(COLUMN_TITLE),
-		altTitle = getStringOrNull(COLUMN_ALT_TITLE),
+		altTitles = setOfNotNull(getStringOrNull(COLUMN_ALT_TITLE)),
 		url = getString(COLUMN_URL),
 		publicUrl = getString(COLUMN_PUBLIC_URL),
 		rating = getFloat(COLUMN_RATING),
-		isNsfw = getBooleanOrDefault(COLUMN_IS_NSFW, false),
+		contentRating = if (getBooleanOrDefault(COLUMN_IS_NSFW, false)) {
+			ContentRating.ADULT
+		} else {
+			null
+		},
 		coverUrl = getStringOrNull(COLUMN_COVER_URL),
 		tags = getStringOrNull(COLUMN_TAGS)?.split(':')?.mapNotNullToSet {
 			val parts = it.splitTwoParts('=') ?: return@mapNotNullToSet null
 			MangaTag(key = parts.first, title = parts.second, source = source)
 		}.orEmpty(),
 		state = getStringOrNull(COLUMN_STATE)?.let { MangaState.entries.find(it) },
-		author = getStringOrNull(COLUMN_AUTHOR),
+		authors = getStringOrNull(COLUMN_AUTHOR)?.split(',')?.mapNotNullToSet {
+			it.trim().nullIfEmpty()
+		}.orEmpty(),
 		largeCoverUrl = getStringOrNull(COLUMN_LARGE_COVER_URL),
 		description = getStringOrNull(COLUMN_DESCRIPTION),
 		chapters = emptyList(),
