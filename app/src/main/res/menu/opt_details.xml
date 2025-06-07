@@ -26,6 +26,12 @@
 		app:showAsAction="never" />
 
 	<item
+		android:id="@+id/action_edit_override"
+		android:orderInCategory="40"
+		android:title="@string/edit"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_scrobbling"
 		android:orderInCategory="50"
 		android:title="@string/tracking"

@@ -45,7 +45,7 @@ class OverrideConfigActivity : BaseActivity<ActivityOverrideEditBinding>(), View
 		viewBinding.buttonResetCover.setOnClickListener(this)
 		viewBinding.layoutName.setEndIconOnClickListener(this)
 		viewModel.data.filterNotNull().observe(this, ::onDataChanged)
-		viewModel.onSaved.observeEvent(this) { finishAfterTransition() }
+		viewModel.onSaved.observeEvent(this) { onDataSaved() }
 		viewModel.isLoading.observe(this, ::onLoadingStateChanged)
 		viewModel.onError.observeEvent(this, ::onError)
 	}
@@ -119,5 +119,10 @@ class OverrideConfigActivity : BaseActivity<ActivityOverrideEditBinding>(), View
 		if (isLoading) {
 			viewBinding.textViewError.isVisible = false
 		}
+	}
+
+	private fun onDataSaved() {
+		setResult(RESULT_OK)
+		finish()
 	}
 }

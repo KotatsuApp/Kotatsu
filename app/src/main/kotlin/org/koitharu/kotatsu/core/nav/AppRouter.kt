@@ -246,8 +246,7 @@ class AppRouter private constructor(
 	}
 
 	fun openMangaOverrideConfig(manga: Manga) {
-		val intent = Intent(contextOrNull() ?: return, OverrideConfigActivity::class.java)
-			.putExtra(KEY_MANGA, ParcelableManga(manga, withDescription = false))
+		val intent = overrideEditIntent(contextOrNull() ?: return, manga)
 		startActivity(intent)
 	}
 
@@ -767,6 +766,10 @@ class AppRouter private constructor(
 			return Intent(context, SourceAuthActivity::class.java)
 				.putExtra(KEY_SOURCE, source.name)
 		}
+
+		fun overrideEditIntent(context: Context, manga: Manga): Intent =
+			Intent(context, OverrideConfigActivity::class.java)
+				.putExtra(KEY_MANGA, ParcelableManga(manga, withDescription = false))
 
 		fun isShareSupported(manga: Manga): Boolean = when {
 			manga.isBroken -> false

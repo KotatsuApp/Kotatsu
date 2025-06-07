@@ -1,9 +1,13 @@
 package org.koitharu.kotatsu.details.ui
 
+import android.app.Activity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
@@ -23,7 +27,12 @@ class DetailsMenuProvider(
 	private val viewModel: DetailsViewModel,
 	private val snackbarHost: View,
 	private val appShortcutManager: AppShortcutManager,
-) : MenuProvider {
+) : MenuProvider, ActivityResultCallback<ActivityResult> {
+
+	private val activityForResultLauncher = activity.registerForActivityResult(
+		ActivityResultContracts.StartActivityForResult(),
+		this,
+	)
 
 	private val router: AppRouter
 		get() = activity.router
@@ -98,8 +107,19 @@ class DetailsMenuProvider(
 				}
 			}
 
+			R.id.action_edit_override -> {
+				val intent = AppRouter.overrideEditIntent(activity, manga)
+				activityForResultLauncher.launch(intent)
+			}
+
 			else -> return false
 		}
 		return true
+	}
+
+	override fun onActivityResult(result: ActivityResult) {
+		if (result.resultCode == Activity.RESULT_OK) {
+			viewModel.reload()
+		}
 	}
 }
