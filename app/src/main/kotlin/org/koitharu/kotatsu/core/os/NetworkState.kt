@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.os
 
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
+import android.net.ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
@@ -41,6 +42,17 @@ class NetworkState(
 	override fun onInactive() {
 		connectivityManager.unregisterNetworkCallback(callback)
 	}
+
+	fun isMetered(): Boolean {
+		return connectivityManager.isActiveNetworkMetered
+	}
+
+	fun isDataSaverEnabled(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+		&& connectivityManager.restrictBackgroundStatus == RESTRICT_BACKGROUND_STATUS_ENABLED
+
+	fun isRestricted() = isMetered() && isDataSaverEnabled()
+
+	fun isOfflineOrRestricted() = !isOnline() || isRestricted()
 
 	suspend fun awaitForConnection() {
 		if (value) {

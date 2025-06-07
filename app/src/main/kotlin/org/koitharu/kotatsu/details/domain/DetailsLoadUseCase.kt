@@ -16,6 +16,7 @@ import kotlinx.coroutines.runInterruptible
 import okio.IOException
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.nav.MangaIntent
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
@@ -40,17 +41,12 @@ class DetailsLoadUseCase @Inject constructor(
 	private val recoverUseCase: RecoverMangaUseCase,
 	private val imageGetter: Html.ImageGetter,
 	private val newChaptersUseCaseProvider: Provider<CheckNewChaptersUseCase>,
+	private val networkState: NetworkState,
 ) {
 
 	operator fun invoke(intent: MangaIntent, force: Boolean): Flow<MangaDetails> = channelFlow {
-		val manga = requireNotNull(mangaDataRepository.resolveIntent(intent)) {
+		val manga = requireNotNull(mangaDataRepository.resolveIntent(intent, withChapters = true)) {
 			"Cannot resolve intent $intent"
-		}.let { m ->
-			if (m.chapters.isNullOrEmpty()) {
-				getCachedDetails(m.id) ?: m
-			} else {
-				m
-			}
 		}
 		val override = mangaDataRepository.getOverride(manga.id)
 		send(
@@ -68,6 +64,22 @@ class DetailsLoadUseCase @Inject constructor(
 			}
 		} else {
 			null
+		}
+		if (!force && networkState.isOfflineOrRestricted()) {
+			// try to avoid loading if has saved manga
+			val localManga = local?.await()
+			if (manga.isLocal || localManga != null) {
+				send(
+					MangaDetails(
+						manga = manga,
+						localManga = localManga,
+						override = override,
+						description = manga.description?.parseAsHtml(withImages = true)?.trim(),
+						isLoaded = true,
+					),
+				)
+				return@channelFlow
+			}
 		}
 		try {
 			val details = getDetails(manga, force)
@@ -147,8 +159,4 @@ class DetailsLoadUseCase @Inject constructor(
 	}.onFailure { e ->
 		e.printStackTraceDebug()
 	}
-
-	private suspend fun getCachedDetails(mangaId: Long): Manga? = runCatchingCancellable {
-		mangaDataRepository.findMangaById(mangaId, withChapters = true)
-	}.getOrNull()
 }
