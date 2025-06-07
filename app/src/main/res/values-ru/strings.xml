@@ -816,4 +816,14 @@
     <string name="pick_manga_page">Выбрать страницу манги</string>
     <string name="pick_custom_file">Выбрать пользовательский файл</string>
     <string name="page_switch_timer">Страница будет меняться каждые ~%d секунд</string>
+    <string name="expand">Расширять</string>
+    <string name="theme_name_expressive">Выразительный (Тест)</string>
+    <string name="additional_action_required">Требуются дополнительные действия</string>
+    <string name="hide_from_main_screen">Скрыть с главного экрана</string>
+    <string name="collapse_long_description">Свернуть длинное описание</string>
+    <string name="adblock_summary">Блокировка рекламы во встроенном браузере (бета)</string>
+    <string name="adblock">Блокировать рекламу в браузере</string>
+    <string name="collapse">Свёртывание</string>
+    <string name="changelog">Журнал изменений</string>
+    <string name="changelog_summary">История изменений для недавно выпущенных версий</string>
 </resources>
