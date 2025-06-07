@@ -81,4 +81,5 @@
 	<dimen name="badge_offset">12dp</dimen>
 
 	<dimen name="chip_icon_corner">3dp</dimen>
+	<dimen name="read_button_min_width">92dp</dimen>
 </resources>

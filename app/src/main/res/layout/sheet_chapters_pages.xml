@@ -56,6 +56,7 @@
 					style="?materialSplitButtonLeadingFilledStyle"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					android:minWidth="@dimen/read_button_min_width"
 					android:text="@string/read" />
 
 				<Button
