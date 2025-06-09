@@ -7,6 +7,7 @@ plugins {
 	id 'kotlin-parcelize'
 	id 'dagger.hilt.android.plugin'
 	id 'androidx.room'
+	id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 android {
@@ -152,6 +153,7 @@ dependencies {
 	implementation libs.okhttp.tls
 	implementation libs.okhttp.dnsoverhttps
 	implementation libs.okio
+	implementation libs.kotlinx.serialization.json
 
 	implementation libs.adapterdelegates
 	implementation libs.adapterdelegates.viewbinding

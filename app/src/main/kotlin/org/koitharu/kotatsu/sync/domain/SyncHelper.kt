@@ -11,16 +11,20 @@ import android.content.SyncStats
 import android.database.Cursor
 import android.util.Log
 import androidx.annotation.WorkerThread
-import androidx.core.content.contentValuesOf
 import androidx.core.net.toUri
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.json.JSONArray
-import org.json.JSONObject
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import okhttp3.internal.closeQuietly
+import okio.IOException
+import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
@@ -30,19 +34,22 @@ import org.koitharu.kotatsu.core.db.TABLE_MANGA
 import org.koitharu.kotatsu.core.db.TABLE_MANGA_TAGS
 import org.koitharu.kotatsu.core.db.TABLE_TAGS
 import org.koitharu.kotatsu.core.network.BaseHttpClient
-import org.koitharu.kotatsu.core.util.ext.parseJsonOrNull
+import org.koitharu.kotatsu.core.util.ext.buildContentValues
+import org.koitharu.kotatsu.core.util.ext.map
+import org.koitharu.kotatsu.core.util.ext.mapToSet
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.core.util.ext.toContentValues
-import org.koitharu.kotatsu.core.util.ext.toJson
-import org.koitharu.kotatsu.core.util.ext.toRequestBody
-import org.koitharu.kotatsu.parsers.util.json.mapJSONTo
 import org.koitharu.kotatsu.sync.data.SyncAuthApi
 import org.koitharu.kotatsu.sync.data.SyncAuthenticator
 import org.koitharu.kotatsu.sync.data.SyncInterceptor
 import org.koitharu.kotatsu.sync.data.SyncSettings
+import org.koitharu.kotatsu.sync.data.model.FavouriteCategorySyncDto
+import org.koitharu.kotatsu.sync.data.model.FavouriteSyncDto
+import org.koitharu.kotatsu.sync.data.model.HistorySyncDto
+import org.koitharu.kotatsu.sync.data.model.MangaSyncDto
+import org.koitharu.kotatsu.sync.data.model.MangaTagSyncDto
+import org.koitharu.kotatsu.sync.data.model.SyncDto
+import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
-
-private const val FIELD_TIMESTAMP = "timestamp"
 
 class SyncHelper @AssistedInject constructor(
 	@ApplicationContext context: Context,
@@ -54,6 +61,7 @@ class SyncHelper @AssistedInject constructor(
 
 	private val authorityHistory = context.getString(R.string.sync_authority_history)
 	private val authorityFavourites = context.getString(R.string.sync_authority_favourites)
+	private val mediaTypeJson = "application/json".toMediaType()
 	private val httpClient = baseHttpClient.newBuilder()
 		.authenticator(SyncAuthenticator(context, account, settings, SyncAuthApi(OkHttpClient())))
 		.addInterceptor(SyncInterceptor(context, account))
@@ -66,20 +74,26 @@ class SyncHelper @AssistedInject constructor(
 
 	@WorkerThread
 	fun syncFavourites(stats: SyncStats) {
-		val data = JSONObject()
-		data.put(TABLE_FAVOURITE_CATEGORIES, getFavouriteCategories())
-		data.put(TABLE_FAVOURITES, getFavourites())
-		data.put(FIELD_TIMESTAMP, System.currentTimeMillis())
+		val payload = Json.encodeToString(
+			SyncDto(
+				history = null,
+				favourites = getFavourites(),
+				categories = getFavouriteCategories(),
+				timestamp = System.currentTimeMillis(),
+			),
+		)
 		val request = Request.Builder()
 			.url("$baseUrl/resource/$TABLE_FAVOURITES")
-			.post(data.toRequestBody())
+			.post(payload.toRequestBody(mediaTypeJson))
 			.build()
-		val response = httpClient.newCall(request).execute().parseJsonOrNull()
-		if (response != null) {
-			val categoriesResult = upsertFavouriteCategories(response.getJSONArray(TABLE_FAVOURITE_CATEGORIES))
+		val response = httpClient.newCall(request).execute().parseDtoOrNull()
+		response?.categories?.let { categories ->
+			val categoriesResult = upsertFavouriteCategories(categories)
 			stats.numDeletes += categoriesResult.first().count?.toLong() ?: 0L
 			stats.numInserts += categoriesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
-			val favouritesResult = upsertFavourites(response.getJSONArray(TABLE_FAVOURITES))
+		}
+		response?.favourites?.let { favourites ->
+			val favouritesResult = upsertFavourites(favourites)
 			stats.numDeletes += favouritesResult.first().count?.toLong() ?: 0L
 			stats.numInserts += favouritesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
 			stats.numEntries += stats.numInserts + stats.numDeletes
@@ -87,20 +101,24 @@ class SyncHelper @AssistedInject constructor(
 		gcFavourites()
 	}
 
+	@Blocking
 	@WorkerThread
 	fun syncHistory(stats: SyncStats) {
-		val data = JSONObject()
-		data.put(TABLE_HISTORY, getHistory())
-		data.put(FIELD_TIMESTAMP, System.currentTimeMillis())
+		val payload = Json.encodeToString(
+			SyncDto(
+				history = getHistory(),
+				favourites = null,
+				categories = null,
+				timestamp = System.currentTimeMillis(),
+			),
+		)
 		val request = Request.Builder()
 			.url("$baseUrl/resource/$TABLE_HISTORY")
-			.post(data.toRequestBody())
+			.post(payload.toRequestBody(mediaTypeJson))
 			.build()
-		val response = httpClient.newCall(request).execute().parseJsonOrNull()
-		if (response != null) {
-			val result = upsertHistory(
-				json = response.getJSONArray(TABLE_HISTORY),
-			)
+		val response = httpClient.newCall(request).execute().parseDtoOrNull()
+		response?.history?.let { history ->
+			val result = upsertHistory(history)
 			stats.numDeletes += result.first().count?.toLong() ?: 0L
 			stats.numInserts += result.drop(1).sumOf { it.count?.toLong() ?: 0L }
 			stats.numEntries += stats.numInserts + stats.numDeletes
@@ -118,140 +136,119 @@ class SyncHelper @AssistedInject constructor(
 		}
 	}
 
-	private fun upsertHistory(json: JSONArray): Array<ContentProviderResult> {
+	private fun upsertHistory(history: List<HistorySyncDto>): Array<ContentProviderResult> {
 		val uri = uri(authorityHistory, TABLE_HISTORY)
 		val operations = ArrayList<ContentProviderOperation>()
-		json.mapJSONTo(operations) { jo ->
-			operations.addAll(upsertManga(jo.removeJSONObject("manga"), authorityHistory))
+		history.mapTo(operations) {
+			operations.addAll(upsertManga(it.manga, authorityHistory))
 			ContentProviderOperation.newInsert(uri)
-				.withValues(jo.toContentValues())
+				.withValues(it.toContentValues())
 				.build()
 		}
 		return provider.applyBatch(operations)
 	}
 
-	private fun upsertFavouriteCategories(json: JSONArray): Array<ContentProviderResult> {
+	private fun upsertFavouriteCategories(categories: List<FavouriteCategorySyncDto>): Array<ContentProviderResult> {
 		val uri = uri(authorityFavourites, TABLE_FAVOURITE_CATEGORIES)
 		val operations = ArrayList<ContentProviderOperation>()
-		json.mapJSONTo(operations) { jo ->
+		categories.mapTo(operations) {
 			ContentProviderOperation.newInsert(uri)
-				.withValues(jo.toContentValues())
+				.withValues(it.toContentValues())
 				.build()
 		}
 		return provider.applyBatch(operations)
 	}
 
-	private fun upsertFavourites(json: JSONArray): Array<ContentProviderResult> {
+	private fun upsertFavourites(favourites: List<FavouriteSyncDto>): Array<ContentProviderResult> {
 		val uri = uri(authorityFavourites, TABLE_FAVOURITES)
 		val operations = ArrayList<ContentProviderOperation>()
-		json.mapJSONTo(operations) { jo ->
-			operations.addAll(upsertManga(jo.removeJSONObject("manga"), authorityFavourites))
+		favourites.mapTo(operations) {
+			operations.addAll(upsertManga(it.manga, authorityFavourites))
 			ContentProviderOperation.newInsert(uri)
-				.withValues(jo.toContentValues())
+				.withValues(it.toContentValues())
 				.build()
 		}
 		return provider.applyBatch(operations)
 	}
 
-	private fun upsertManga(json: JSONObject, authority: String): List<ContentProviderOperation> {
-		val tags = json.removeJSONArray(TABLE_TAGS)
-		val result = ArrayList<ContentProviderOperation>(tags.length() * 2 + 1)
-		for (i in 0 until tags.length()) {
-			val tag = tags.getJSONObject(i)
+	private fun upsertManga(manga: MangaSyncDto, authority: String): List<ContentProviderOperation> {
+		val tags = manga.tags
+		val result = ArrayList<ContentProviderOperation>(tags.size * 2 + 1)
+		for (tag in tags) {
 			result += ContentProviderOperation.newInsert(uri(authority, TABLE_TAGS))
 				.withValues(tag.toContentValues())
 				.build()
 			result += ContentProviderOperation.newInsert(uri(authority, TABLE_MANGA_TAGS))
 				.withValues(
-					contentValuesOf(
-						"manga_id" to json.getLong("manga_id"),
-						"tag_id" to tag.getLong("tag_id"),
-					),
+					buildContentValues(2) {
+						put("manga_id", manga.id)
+						put("tag_id", tag.id)
+					},
 				).build()
 		}
 		result.add(
 			0,
 			ContentProviderOperation.newInsert(uri(authority, TABLE_MANGA))
-				.withValues(json.toContentValues())
+				.withValues(manga.toContentValues())
 				.build(),
 		)
 		return result
 	}
 
-	private fun getHistory(): JSONArray {
+	private fun getHistory(): List<HistorySyncDto> {
 		return provider.query(authorityHistory, TABLE_HISTORY).use { cursor ->
-			val json = JSONArray()
+			val result = ArrayList<HistorySyncDto>(cursor.count)
 			if (cursor.moveToFirst()) {
 				do {
-					val jo = cursor.toJson()
-					jo.put("manga", getManga(authorityHistory, jo.getLong("manga_id")))
-					json.put(jo)
+					val mangaId = cursor.getLong(cursor.getColumnIndexOrThrow("manga_id"))
+					result.add(HistorySyncDto(cursor, getManga(authorityHistory, mangaId)))
 				} while (cursor.moveToNext())
 			}
-			json
+			result
 		}
 	}
 
-	private fun getFavourites(): JSONArray {
-		return provider.query(authorityFavourites, TABLE_FAVOURITES).use { cursor ->
-			val json = JSONArray()
-			if (cursor.moveToFirst()) {
-				do {
-					val jo = cursor.toJson()
-					jo.put("manga", getManga(authorityFavourites, jo.getLong("manga_id")))
-					json.put(jo)
-				} while (cursor.moveToNext())
-			}
-			json
+	private fun getFavourites(): List<FavouriteSyncDto> {
+		return provider.query(authorityFavourites, TABLE_FAVOURITES).map { cursor ->
+			val manga = getManga(authorityFavourites, cursor.getLong(cursor.getColumnIndexOrThrow("manga_id")))
+			FavouriteSyncDto(cursor, manga)
 		}
 	}
 
-	private fun getFavouriteCategories(): JSONArray {
-		return provider.query(authorityFavourites, TABLE_FAVOURITE_CATEGORIES).use { cursor ->
-			val json = JSONArray()
-			if (cursor.moveToFirst()) {
-				do {
-					json.put(cursor.toJson())
-				} while (cursor.moveToNext())
-			}
-			json
+	private fun getFavouriteCategories(): List<FavouriteCategorySyncDto> =
+		provider.query(authorityFavourites, TABLE_FAVOURITE_CATEGORIES).map { cursor ->
+			FavouriteCategorySyncDto(cursor)
 		}
+
+	private fun getManga(authority: String, id: Long): MangaSyncDto {
+		val tags = requireNotNull(
+			provider.query(
+				uri(authority, TABLE_MANGA_TAGS),
+				arrayOf("tag_id"),
+				"manga_id = ?",
+				arrayOf(id.toString()),
+				null,
+			)?.mapToSet {
+				val tagId = it.getLong(it.getColumnIndexOrThrow("tag_id"))
+				getTag(authority, tagId)
+			},
+		)
+		return requireNotNull(
+			provider.query(
+				uri(authority, TABLE_MANGA),
+				null,
+				"manga_id = ?",
+				arrayOf(id.toString()),
+				null,
+			)?.use { cursor ->
+				cursor.moveToFirst()
+				MangaSyncDto(cursor, tags)
+			},
+		)
 	}
 
-	private fun getManga(authority: String, id: Long): JSONObject {
-		val manga = provider.query(
-			uri(authority, TABLE_MANGA),
-			null,
-			"manga_id = ?",
-			arrayOf(id.toString()),
-			null,
-		)?.use { cursor ->
-			cursor.moveToFirst()
-			cursor.toJson()
-		}
-		requireNotNull(manga)
-		val tags = provider.query(
-			uri(authority, TABLE_MANGA_TAGS),
-			arrayOf("tag_id"),
-			"manga_id = ?",
-			arrayOf(id.toString()),
-			null,
-		)?.use { cursor ->
-			val json = JSONArray()
-			if (cursor.moveToFirst()) {
-				do {
-					val tagId = cursor.getLong(0)
-					json.put(getTag(authority, tagId))
-				} while (cursor.moveToNext())
-			}
-			json
-		}
-		manga.put("tags", requireNotNull(tags))
-		return manga
-	}
-
-	private fun getTag(authority: String, tagId: Long): JSONObject {
-		val tag = provider.query(
+	private fun getTag(authority: String, tagId: Long): MangaTagSyncDto = requireNotNull(
+		provider.query(
 			uri(authority, TABLE_TAGS),
 			null,
 			"tag_id = ?",
@@ -259,13 +256,12 @@ class SyncHelper @AssistedInject constructor(
 			null,
 		)?.use { cursor ->
 			if (cursor.moveToFirst()) {
-				cursor.toJson()
+				MangaTagSyncDto(cursor)
 			} else {
 				null
 			}
-		}
-		return requireNotNull(tag)
-	}
+		},
+	)
 
 	private fun gcFavourites() {
 		val deletedAt = System.currentTimeMillis() - defaultGcPeriod
@@ -290,9 +286,17 @@ class SyncHelper @AssistedInject constructor(
 
 	private fun uri(authority: String, table: String) = "content://$authority/$table".toUri()
 
-	private fun JSONObject.removeJSONObject(name: String) = remove(name) as JSONObject
-
-	private fun JSONObject.removeJSONArray(name: String) = remove(name) as JSONArray
+	private fun Response.parseDtoOrNull(): SyncDto? {
+		return try {
+			when {
+				!isSuccessful -> throw IOException(body?.string())
+				code == HttpURLConnection.HTTP_NO_CONTENT -> null
+				else -> Json.decodeFromString<SyncDto>(body?.string() ?: return null)
+			}
+		} finally {
+			closeQuietly()
+		}
+	}
 
 	@AssistedFactory
 	interface Factory {
