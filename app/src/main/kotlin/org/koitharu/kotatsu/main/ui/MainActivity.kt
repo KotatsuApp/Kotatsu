@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.backups.ui.periodical.PeriodicalBackupService
 import org.koitharu.kotatsu.browser.AdListUpdateService
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.nav.router
@@ -73,7 +74,6 @@ import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListenerImpl
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionMenuProvider
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionViewModel
 import org.koitharu.kotatsu.search.ui.suggestion.adapter.SearchSuggestionAdapter
-import org.koitharu.kotatsu.settings.backup.PeriodicalBackupService
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 

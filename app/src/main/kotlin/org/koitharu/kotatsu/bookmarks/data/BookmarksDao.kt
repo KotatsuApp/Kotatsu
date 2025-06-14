@@ -6,7 +6,10 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.isActive
 import org.koitharu.kotatsu.core.db.entity.MangaWithTags
 
 @Dao
@@ -47,4 +50,17 @@ abstract class BookmarksDao {
 
 	@Upsert
 	abstract suspend fun upsert(bookmarks: Collection<BookmarkEntity>)
+
+	fun dump(): Flow<Pair<MangaWithTags, List<BookmarkEntity>>> = flow {
+		val window = 4
+		var offset = 0
+		while (currentCoroutineContext().isActive) {
+			val list = findAll(offset, window)
+			if (list.isEmpty()) {
+				break
+			}
+			offset += window
+			list.forEach { emit(it.key to it.value) }
+		}
+	}
 }

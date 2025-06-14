@@ -9,6 +9,7 @@ import androidx.preference.PreferenceScreen
 import androidx.preference.get
 import dagger.Reusable
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.backups.ui.periodical.PeriodicalBackupSettingsFragment
 import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.settings.AppearanceSettingsFragment
 import org.koitharu.kotatsu.settings.DownloadsSettingsFragment
@@ -18,7 +19,6 @@ import org.koitharu.kotatsu.settings.ReaderSettingsFragment
 import org.koitharu.kotatsu.settings.ServicesSettingsFragment
 import org.koitharu.kotatsu.settings.SuggestionsSettingsFragment
 import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
-import org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
 import org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment

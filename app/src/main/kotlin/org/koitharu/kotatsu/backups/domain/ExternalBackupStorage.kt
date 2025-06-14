@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.core.backup
+package org.koitharu.kotatsu.backups.domain
 
 import android.content.Context
 import android.net.Uri
@@ -28,7 +28,7 @@ class ExternalBackupStorage @Inject constructor(
 				BackupFile(
 					uri = it.uri,
 					dateTime = it.name?.let { fileName ->
-						BackupZipOutput.parseBackupDateTime(fileName)
+						BackupUtils.parseBackupDateTime(fileName)
 					} ?: return@mapNotNull null,
 				)
 			} else {
@@ -44,7 +44,12 @@ class ExternalBackupStorage @Inject constructor(
 	}.getOrNull()
 
 	suspend fun put(file: File): Uri = runInterruptible(Dispatchers.IO) {
-		val out = checkNotNull(getRootOrThrow().createFile("application/zip", file.nameWithoutExtension)) {
+		val out = checkNotNull(
+			getRootOrThrow().createFile(
+				"application/zip",
+				file.nameWithoutExtension,
+			),
+		) {
 			"Cannot create target backup file"
 		}
 		checkNotNull(context.contentResolver.openOutputStream(out.uri, "wt")).sink().use { sink ->

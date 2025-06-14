@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings.backup
+package org.koitharu.kotatsu.backups.ui.restore
 
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
@@ -8,18 +8,18 @@ import org.koitharu.kotatsu.databinding.ItemCheckableMultipleBinding
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback.Companion.PAYLOAD_CHECKED_CHANGED
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 
-class BackupEntriesAdapter(
-	clickListener: OnListItemClickListener<BackupEntryModel>,
-) : BaseListAdapter<BackupEntryModel>() {
+class BackupSectionsAdapter(
+	clickListener: OnListItemClickListener<BackupSectionModel>,
+) : BaseListAdapter<BackupSectionModel>() {
 
 	init {
-		addDelegate(ListItemType.NAV_ITEM, backupEntryAD(clickListener))
+		addDelegate(ListItemType.NAV_ITEM, backupSectionAD(clickListener))
 	}
 }
 
-private fun backupEntryAD(
-	clickListener: OnListItemClickListener<BackupEntryModel>,
-) = adapterDelegateViewBinding<BackupEntryModel, BackupEntryModel, ItemCheckableMultipleBinding>(
+private fun backupSectionAD(
+	clickListener: OnListItemClickListener<BackupSectionModel>,
+) = adapterDelegateViewBinding<BackupSectionModel, BackupSectionModel, ItemCheckableMultipleBinding>(
 	{ layoutInflater, parent -> ItemCheckableMultipleBinding.inflate(layoutInflater, parent, false) },
 ) {
 

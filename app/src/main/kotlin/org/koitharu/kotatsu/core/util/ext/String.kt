@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.collection.arraySetOf
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.parsers.util.ellipsize
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import java.util.UUID
 
 fun String.toUUIDOrNull(): UUID? = try {
@@ -70,3 +71,10 @@ fun <T> Collection<T>.joinToStringWithLimit(context: Context, limit: Int, transf
 }
 
 fun String.isHttpUrl() = startsWith("https://", ignoreCase = true) || startsWith("http://", ignoreCase = true)
+
+fun concatStrings(context: Context, a: String?, b: String?): String? = when {
+	a.isNullOrEmpty() && b.isNullOrEmpty() -> null
+	a.isNullOrEmpty() -> b?.nullIfEmpty()
+	b.isNullOrEmpty() -> a.nullIfEmpty()
+	else -> context.getString(R.string.download_summary_pattern, a, b)
+}

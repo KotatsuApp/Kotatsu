@@ -10,7 +10,10 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.isActive
 import org.intellij.lang.annotations.Language
 import org.koitharu.kotatsu.core.db.MangaQueryBuilder
 import org.koitharu.kotatsu.core.db.TABLE_FAVOURITES
@@ -139,6 +142,19 @@ abstract class FavouritesDao : MangaQueryBuilder.ConditionCallback {
 
 	@Query("SELECT manga.source AS count FROM favourites LEFT JOIN manga ON manga.manga_id = favourites.manga_id WHERE favourites.category_id = :categoryId GROUP BY manga.source ORDER BY COUNT(manga.source) DESC LIMIT :limit")
 	abstract suspend fun findPopularSources(categoryId: Long, limit: Int): List<String>
+
+	fun dump(): Flow<FavouriteManga> = flow {
+		val window = 10
+		var offset = 0
+		while (currentCoroutineContext().isActive) {
+			val list = findAllRaw(offset, window)
+			if (list.isEmpty()) {
+				break
+			}
+			offset += window
+			list.forEach { emit(it) }
+		}
+	}
 
 	/** INSERT **/
 

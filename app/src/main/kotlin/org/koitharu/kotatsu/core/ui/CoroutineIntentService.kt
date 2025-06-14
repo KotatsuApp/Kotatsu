@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -22,7 +23,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import kotlin.coroutines.CoroutineContext
 
 abstract class CoroutineIntentService : BaseService() {
 
@@ -35,7 +35,7 @@ abstract class CoroutineIntentService : BaseService() {
 	}
 
 	private fun launchCoroutine(intent: Intent?, startId: Int) = lifecycleScope.launch {
-		val intentJobContext = IntentJobContextImpl(startId, coroutineContext)
+		val intentJobContext = IntentJobContextImpl(startId, this)
 		mutex.withLock {
 			try {
 				if (intent != null) {
@@ -60,7 +60,7 @@ abstract class CoroutineIntentService : BaseService() {
 	@AnyThread
 	protected abstract fun IntentJobContext.onError(error: Throwable)
 
-	interface IntentJobContext {
+	interface IntentJobContext : CoroutineScope {
 
 		val startId: Int
 
@@ -71,8 +71,8 @@ abstract class CoroutineIntentService : BaseService() {
 
 	protected inner class IntentJobContextImpl(
 		override val startId: Int,
-		private val coroutineContext: CoroutineContext,
-	) : IntentJobContext {
+		private val scope: CoroutineScope,
+	) : IntentJobContext, CoroutineScope by scope {
 
 		private var cancelReceiver: CancelReceiver? = null
 		private var isStopped = false

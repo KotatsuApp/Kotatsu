@@ -15,6 +15,8 @@ import androidx.preference.TwoStatePreference
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.backups.domain.BackupUtils
+import org.koitharu.kotatsu.backups.ui.backup.BackupService
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.os.AppShortcutManager
@@ -48,6 +50,18 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 		ActivityResultContracts.OpenDocument(),
 		this,
 	)
+
+	private val backupCreateCall = registerForActivityResult(
+		ActivityResultContracts.CreateDocument("application/zip"),
+	) { uri ->
+		if (uri != null) {
+			if (!BackupService.start(requireContext(), uri)) {
+				Snackbar.make(
+					listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
+				).show()
+			}
+		}
+	}
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_user_data)
@@ -95,7 +109,11 @@ class UserDataSettingsFragment : BasePreferenceFragment(R.string.data_and_privac
 	override fun onPreferenceTreeClick(preference: Preference): Boolean {
 		return when (preference.key) {
 			AppSettings.KEY_BACKUP -> {
-				router.showBackupCreateDialog()
+				if (!backupCreateCall.tryLaunch(BackupUtils.generateFileName(preference.context))) {
+					Snackbar.make(
+						listView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT,
+					).show()
+				}
 				true
 			}
 

@@ -20,7 +20,7 @@
 -keep class org.koitharu.kotatsu.core.exceptions.* { *; }
 -keep class org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment
 -keep class org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy { *; }
--keep class org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment { *; }
+-keep class org.koitharu.kotatsu.backups.ui.periodical.PeriodicalBackupSettingsFragment { *; }
 -keep class org.jsoup.parser.Tag
 -keep class org.jsoup.internal.StringUtil
 

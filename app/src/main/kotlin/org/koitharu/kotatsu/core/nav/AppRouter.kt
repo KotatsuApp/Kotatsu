@@ -25,6 +25,8 @@ import dagger.hilt.android.EntryPointAccessors
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.alternatives.ui.AlternativesActivity
+import org.koitharu.kotatsu.backups.ui.backup.BackupDialogFragment
+import org.koitharu.kotatsu.backups.ui.restore.RestoreDialogFragment
 import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksActivity
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity
@@ -93,8 +95,6 @@ import org.koitharu.kotatsu.search.ui.MangaListActivity
 import org.koitharu.kotatsu.search.ui.multi.SearchActivity
 import org.koitharu.kotatsu.settings.SettingsActivity
 import org.koitharu.kotatsu.settings.about.AppUpdateActivity
-import org.koitharu.kotatsu.settings.backup.BackupDialogFragment
-import org.koitharu.kotatsu.settings.backup.RestoreDialogFragment
 import org.koitharu.kotatsu.settings.override.OverrideConfigActivity
 import org.koitharu.kotatsu.settings.reader.ReaderTapGridConfigActivity
 import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
@@ -448,8 +448,10 @@ class AppRouter private constructor(
 		}.show()
 	}
 
-	fun showBackupCreateDialog() {
-		BackupDialogFragment().show()
+	fun createBackup(destination: Uri) {
+		BackupDialogFragment().withArgs(1) {
+			putParcelable(KEY_DATA, destination)
+		}.showDistinct()
 	}
 
 	fun showImportDialog() {

@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.core.backup
+package org.koitharu.kotatsu.backups.ui.periodical
 
 import android.content.Context
 import androidx.annotation.CheckResult
@@ -33,7 +33,7 @@ class TelegramBackupUploader @Inject constructor(
 	suspend fun uploadBackup(file: File) {
 		val requestBody = file.asRequestBody("application/zip".toMediaTypeOrNull())
 		val multipartBody = MultipartBody.Builder()
-			.setType(MultipartBody.FORM)
+			.setType(MultipartBody.Companion.FORM)
 			.addFormDataPart("chat_id", requireChatId())
 			.addFormDataPart("document", file.name, requestBody)
 			.build()

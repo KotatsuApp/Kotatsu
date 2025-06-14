@@ -1,13 +1,13 @@
-package org.koitharu.kotatsu.settings.backup
+package org.koitharu.kotatsu.backups.ui.periodical
 
 import android.content.Intent
 import dagger.hilt.android.AndroidEntryPoint
-import org.koitharu.kotatsu.core.backup.BackupRepository
-import org.koitharu.kotatsu.core.backup.BackupZipOutput
-import org.koitharu.kotatsu.core.backup.ExternalBackupStorage
-import org.koitharu.kotatsu.core.backup.TelegramBackupUploader
+import org.koitharu.kotatsu.backups.data.BackupRepository
+import org.koitharu.kotatsu.backups.domain.BackupUtils
+import org.koitharu.kotatsu.backups.domain.ExternalBackupStorage
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
+import java.util.zip.ZipOutputStream
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,26 +33,18 @@ class PeriodicalBackupService : CoroutineIntentService() {
 		if (lastBackupDate != null && lastBackupDate.time + settings.periodicalBackupFrequencyMillis > System.currentTimeMillis()) {
 			return
 		}
-		val output = BackupZipOutput.createTemp(applicationContext)
+		val output = BackupUtils.createTempFile(applicationContext)
 		try {
-			output.use { backup ->
-				backup.put(repository.createIndex())
-				backup.put(repository.dumpHistory())
-				backup.put(repository.dumpCategories())
-				backup.put(repository.dumpFavourites())
-				backup.put(repository.dumpBookmarks())
-				backup.put(repository.dumpSources())
-				backup.put(repository.dumpSettings())
-				backup.put(repository.dumpReaderGridSettings())
-				backup.finish()
+			ZipOutputStream(output.outputStream()).use {
+				repository.createBackup(it, null)
 			}
-			externalBackupStorage.put(output.file)
+			externalBackupStorage.put(output)
 			externalBackupStorage.trim(settings.periodicalBackupMaxCount)
 			if (settings.isBackupTelegramUploadEnabled) {
-				telegramBackupUploader.uploadBackup(output.file)
+				telegramBackupUploader.uploadBackup(output)
 			}
 		} finally {
-			output.file.delete()
+			output.delete()
 		}
 	}
 

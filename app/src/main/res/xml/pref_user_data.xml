@@ -48,7 +48,7 @@
 			android:title="@string/restore_backup" />
 
 		<PreferenceScreen
-			android:fragment="org.koitharu.kotatsu.settings.backup.PeriodicalBackupSettingsFragment"
+			android:fragment="org.koitharu.kotatsu.backups.ui.periodical.PeriodicalBackupSettingsFragment"
 			android:key="backup_periodic"
 			android:persistent="false"
 			android:title="@string/periodic_backups" />

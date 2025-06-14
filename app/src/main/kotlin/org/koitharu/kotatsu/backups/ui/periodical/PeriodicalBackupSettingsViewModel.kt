@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings.backup
+package org.koitharu.kotatsu.backups.ui.periodical
 
 import android.content.Context
 import android.net.Uri
@@ -8,16 +8,14 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.backup.BackupZipOutput.Companion.DIR_BACKUPS
-import org.koitharu.kotatsu.core.backup.ExternalBackupStorage
-import org.koitharu.kotatsu.core.backup.TelegramBackupUploader
+import org.koitharu.kotatsu.backups.domain.BackupUtils
+import org.koitharu.kotatsu.backups.domain.ExternalBackupStorage
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.resolveFile
-import java.io.File
 import java.util.Date
 import javax.inject.Inject
 
@@ -60,7 +58,7 @@ class PeriodicalBackupSettingsViewModel @Inject constructor(
 		backupsDirectory.value = if (dir != null) {
 			dir.toUserFriendlyString()
 		} else {
-			(appContext.getExternalFilesDir(DIR_BACKUPS) ?: File(appContext.filesDir, DIR_BACKUPS)).path
+			BackupUtils.getAppBackupDir(appContext).path
 		}
 	}
 

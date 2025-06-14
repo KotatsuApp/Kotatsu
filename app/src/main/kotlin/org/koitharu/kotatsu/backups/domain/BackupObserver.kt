@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings.backup
+package org.koitharu.kotatsu.backups.domain
 
 import android.app.backup.BackupManager
 import android.content.Context
@@ -13,7 +13,13 @@ import javax.inject.Singleton
 @Singleton
 class BackupObserver @Inject constructor(
 	@ApplicationContext context: Context,
-) : InvalidationTracker.Observer(arrayOf(TABLE_HISTORY, TABLE_FAVOURITES, TABLE_FAVOURITE_CATEGORIES)) {
+) : InvalidationTracker.Observer(
+	arrayOf(
+		TABLE_HISTORY,
+		TABLE_FAVOURITES,
+		TABLE_FAVOURITE_CATEGORIES,
+	),
+) {
 
 	private val backupManager = BackupManager(context)
 

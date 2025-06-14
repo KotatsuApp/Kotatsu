@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.BuildConfig
+import org.koitharu.kotatsu.backups.domain.BackupObserver
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.exceptions.resolve.CaptchaHandler
 import org.koitharu.kotatsu.core.image.AvifImageDecoder
@@ -59,7 +60,6 @@ import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
 import org.koitharu.kotatsu.main.ui.protect.ScreenshotPolicyHelper
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider
-import org.koitharu.kotatsu.settings.backup.BackupObserver
 import org.koitharu.kotatsu.sync.domain.SyncController
 import org.koitharu.kotatsu.widget.WidgetUpdater
 import javax.inject.Provider

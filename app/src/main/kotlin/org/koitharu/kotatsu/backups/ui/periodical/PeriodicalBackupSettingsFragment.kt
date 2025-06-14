@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings.backup
+package org.koitharu.kotatsu.backups.ui.periodical
 
 import android.content.Intent
 import android.net.Uri
@@ -12,7 +12,6 @@ import androidx.preference.Preference
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.backup.TelegramBackupUploader
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper

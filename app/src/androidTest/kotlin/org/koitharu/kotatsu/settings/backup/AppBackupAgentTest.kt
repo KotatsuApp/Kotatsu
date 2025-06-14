@@ -15,7 +15,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koitharu.kotatsu.SampleData
-import org.koitharu.kotatsu.core.backup.BackupRepository
+import org.koitharu.kotatsu.backups.data.BackupRepository
+import org.koitharu.kotatsu.backups.domain.AppBackupAgent
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toMangaTags
 import org.koitharu.kotatsu.favourites.domain.FavouritesRepository

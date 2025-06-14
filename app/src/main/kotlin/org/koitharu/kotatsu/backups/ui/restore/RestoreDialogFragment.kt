@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.settings.backup
+package org.koitharu.kotatsu.backups.ui.restore
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 @AndroidEntryPoint
-class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnListItemClickListener<BackupEntryModel>,
+class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnListItemClickListener<BackupSectionModel>,
 	View.OnClickListener {
 
 	private val viewModel: RestoreViewModel by viewModels()
@@ -37,7 +37,7 @@ class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnLis
 
 	override fun onViewBindingCreated(binding: DialogRestoreBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		val adapter = BackupEntriesAdapter(this)
+		val adapter = BackupSectionsAdapter(this)
 		binding.recyclerView.adapter = adapter
 		binding.buttonCancel.setOnClickListener(this)
 		binding.buttonRestore.setOnClickListener(this)
@@ -72,11 +72,11 @@ class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnLis
 		}
 	}
 
-	override fun onItemClick(item: BackupEntryModel, view: View) {
+	override fun onItemClick(item: BackupSectionModel, view: View) {
 		viewModel.onItemClick(item)
 	}
 
-	private fun onLoadingChanged(value: Triple<Boolean, List<BackupEntryModel>, Date?>) {
+	private fun onLoadingChanged(value: Triple<Boolean, List<BackupSectionModel>, Date?>) {
 		val (isLoading, entries, backupDate) = value
 		val hasEntries = entries.isNotEmpty()
 		with(requireViewBinding()) {
@@ -96,7 +96,7 @@ class RestoreDialogFragment : AlertDialogFragment<DialogRestoreBinding>(), OnLis
 		return RestoreService.start(
 			context ?: return false,
 			viewModel.uri ?: return false,
-			viewModel.getCheckedEntries(),
+			viewModel.getCheckedSections(),
 		)
 	}
 

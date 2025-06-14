@@ -8,7 +8,10 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.sqlite.db.SupportSQLiteQuery
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.isActive
 import org.koitharu.kotatsu.core.db.MangaQueryBuilder
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.db.entity.MangaWithTags
@@ -104,6 +107,19 @@ abstract class HistoryDao : MangaQueryBuilder.ConditionCallback {
 
 	@Query("SELECT percent FROM history WHERE manga_id = :id AND deleted_at = 0")
 	abstract suspend fun findProgress(id: Long): Float?
+
+	fun dump(): Flow<HistoryWithManga> = flow {
+		val window = 10
+		var offset = 0
+		while (currentCoroutineContext().isActive) {
+			val list = findAll(offset, window)
+			if (list.isEmpty()) {
+				break
+			}
+			offset += window
+			list.forEach { emit(it) }
+		}
+	}
 
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	abstract suspend fun insert(entity: HistoryEntity): Long

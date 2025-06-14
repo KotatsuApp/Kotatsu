@@ -77,6 +77,7 @@ android {
 			'-opt-in=kotlin.contracts.ExperimentalContracts',
 			'-opt-in=coil3.annotation.ExperimentalCoilApi',
 			'-opt-in=coil3.annotation.InternalCoilApi',
+			'-opt-in=kotlinx.serialization.ExperimentalSerializationApi',
 			'-Xjspecify-annotations=strict',
 			'-Xtype-enhancement-improvements-strict-mode'
 		]
