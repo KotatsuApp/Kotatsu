@@ -8,8 +8,6 @@ import android.content.pm.ServiceInfo
 import android.net.Uri
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationCompat
-import androidx.core.app.PendingIntentCompat
-import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancelAndJoin
@@ -37,6 +35,7 @@ import androidx.appcompat.R as appcompatR
 class RestoreService : BaseBackupRestoreService() {
 
 	override val notificationTag = TAG
+	override val isRestoreService = true
 
 	@Inject
 	lateinit var repository: BackupRepository
@@ -62,13 +61,11 @@ class RestoreService : BaseBackupRestoreService() {
 			} else {
 				null
 			}
-			ZipInputStream(contentResolver.openInputStream(source)).use { input ->
+			val result = ZipInputStream(contentResolver.openInputStream(source)).use { input ->
 				repository.restoreBackup(input, sections, progress)
 			}
 			progressUpdateJob?.cancelAndJoin()
-			if (checkNotificationPermission(CHANNEL_ID)) {
-				notificationManager.notify(notificationTag, startId, createResultNotification(source))
-			}
+			showResultNotification(source, result)
 		}
 	}
 
@@ -99,31 +96,6 @@ class RestoreService : BaseBackupRestoreService() {
 				applicationContext.getString(android.R.string.cancel),
 				getCancelIntent(),
 			).build()
-	}
-
-	private fun createResultNotification(uri: Uri): Notification {
-		val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-			.setPriority(NotificationCompat.PRIORITY_HIGH)
-			.setDefaults(0)
-			.setSilent(true)
-			.setAutoCancel(true)
-			.setContentText(getString(R.string.backup_saved))
-			.setSmallIcon(R.drawable.ic_stat_done)
-		val shareIntent = ShareCompat.IntentBuilder(this)
-			.setStream(uri)
-			.setType(contentResolver.getType(uri) ?: "application/zip")
-			.setChooserTitle(R.string.share_backup)
-			.createChooserIntent()
-		notification.setContentIntent(
-			PendingIntentCompat.getActivity(
-				applicationContext,
-				0,
-				shareIntent,
-				0,
-				false,
-			),
-		)
-		return notification.build()
 	}
 
 	companion object {

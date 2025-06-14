@@ -20,7 +20,7 @@ class BookmarkBackup(
 		@SerialName("chapter_id") val chapterId: Long,
 		@SerialName("page") val page: Int,
 		@SerialName("scroll") val scroll: Int,
-		@SerialName("image") val imageUrl: String,
+		@SerialName("image_url") val imageUrl: String,
 		@SerialName("created_at") val createdAt: Long,
 		@SerialName("percent") val percent: Float,
 	) {

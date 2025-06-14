@@ -8,8 +8,6 @@ import android.content.pm.ServiceInfo
 import android.net.Uri
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationCompat
-import androidx.core.app.PendingIntentCompat
-import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancelAndJoin
@@ -19,6 +17,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.backups.data.BackupRepository
 import org.koitharu.kotatsu.backups.ui.BaseBackupRestoreService
 import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.util.CompositeResult
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
 import org.koitharu.kotatsu.core.util.ext.powerManager
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
@@ -35,6 +34,7 @@ import androidx.appcompat.R as appcompatR
 class BackupService : BaseBackupRestoreService() {
 
 	override val notificationTag = TAG
+	override val isRestoreService = false
 
 	@Inject
 	lateinit var repository: BackupRepository
@@ -63,9 +63,7 @@ class BackupService : BaseBackupRestoreService() {
 			}
 			progressUpdateJob?.cancelAndJoin()
 			contentResolver.notifyChange(destination, null)
-			if (checkNotificationPermission(CHANNEL_ID)) {
-				notificationManager.notify(notificationTag, startId, createResultNotification(destination))
-			}
+			showResultNotification(destination, CompositeResult.success())
 		}
 	}
 
@@ -96,31 +94,6 @@ class BackupService : BaseBackupRestoreService() {
 				applicationContext.getString(android.R.string.cancel),
 				getCancelIntent(),
 			).build()
-	}
-
-	private fun createResultNotification(uri: Uri): Notification {
-		val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-			.setPriority(NotificationCompat.PRIORITY_HIGH)
-			.setDefaults(0)
-			.setSilent(true)
-			.setAutoCancel(true)
-			.setContentText(getString(R.string.backup_saved))
-			.setSmallIcon(R.drawable.ic_stat_done)
-		val shareIntent = ShareCompat.IntentBuilder(this)
-			.setStream(uri)
-			.setType(contentResolver.getType(uri) ?: "application/zip")
-			.setChooserTitle(R.string.share_backup)
-			.createChooserIntent()
-		notification.setContentIntent(
-			PendingIntentCompat.getActivity(
-				applicationContext,
-				0,
-				shareIntent,
-				0,
-				false,
-			),
-		)
-		return notification.build()
 	}
 
 	companion object {
