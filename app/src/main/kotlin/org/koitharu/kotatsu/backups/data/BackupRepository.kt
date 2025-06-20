@@ -19,6 +19,7 @@ import kotlinx.serialization.json.encodeToStream
 import kotlinx.serialization.serializer
 import org.json.JSONArray
 import org.json.JSONObject
+import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.backups.data.model.BackupIndex
 import org.koitharu.kotatsu.backups.data.model.BookmarkBackup
 import org.koitharu.kotatsu.backups.data.model.CategoryBackup
@@ -45,6 +46,15 @@ class BackupRepository @Inject constructor(
 	private val settings: AppSettings,
 	private val tapGridSettings: TapGridSettings,
 ) {
+
+	private val json = Json {
+		allowSpecialFloatingPointValues = true
+		coerceInputValues = true
+		ignoreUnknownKeys = true
+		prettyPrint = BuildConfig.DEBUG
+		prettyPrintIndent = "\t"
+		useAlternativeNames = false
+	}
 
 	suspend fun createBackup(
 		output: ZipOutputStream,
@@ -181,13 +191,13 @@ class BackupRepository @Inject constructor(
 			if (index > 0) {
 				write(",")
 			}
-			Json.encodeToStream(serializer, value, this)
+			json.encodeToStream(serializer, value, this)
 		}
 	}
 
 	private fun <T> InputStream.readJsonArray(
 		serializer: DeserializationStrategy<T>,
-	): Sequence<T> = Json.decodeToSequence(this, serializer, DecodeSequenceMode.ARRAY_WRAPPED)
+	): Sequence<T> = json.decodeToSequence(this, serializer, DecodeSequenceMode.ARRAY_WRAPPED)
 
 	private fun InputStream.readMap(): Map<String, Any?> {
 		val jo = JSONArray(readString()).getJSONObject(0)
