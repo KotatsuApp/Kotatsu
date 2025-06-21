@@ -823,4 +823,7 @@
     <string name="collapse">Thu gọn</string>
     <string name="adblock">Chặn quảng cáo trong trình duyệt (Webview)</string>
     <string name="adblock_summary">Chặn những quảng cáo xuất hiện trong trình duyệt Webview của hệ thống khi duyệt (Beta)</string>
+    <string name="collapse_long_description">Thu gọn đoạn mô tả dài</string>
+    <string name="creating_backup">Đang tạo sao lưu</string>
+    <string name="share_backup">Chia sẻ dữ liệu đã sao lưu</string>
 </resources>
