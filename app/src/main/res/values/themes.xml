@@ -64,6 +64,8 @@
 		<item name="linearProgressIndicatorStyle">@style/Widget.Kotatsu.LinearProgressIndicator</item>
 		<item name="bottomSheetDragHandleStyle">@style/Widget.Kotatsu.BottomSheet.DragHandle</item>
 		<item name="preferenceTheme">@style/PreferenceThemeOverlay.Kotatsu</item>
+		<!-- Fix crash in A15 -->
+		<item name="actionButtonStyle">@style/Widget.AppCompat.ActionButton</item>
 
 		<!-- Custom views -->
 		<item name="fastScrollerStyle">@style/Widget.Kotatsu.FastScroller</item>
