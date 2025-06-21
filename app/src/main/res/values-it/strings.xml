@@ -825,4 +825,7 @@
     <string name="adblock_summary">Blocca pubblicità nel browser incorporato (beta)</string>
     <string name="adblock">Blocca pubblicità nel browser</string>
     <string name="expand">Espandi</string>
+    <string name="collapse_long_description">Comprimi descrizione lunga</string>
+    <string name="share_backup">Condividi backup</string>
+    <string name="creating_backup">Creazione del backup</string>
 </resources>
