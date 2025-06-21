@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.backups.data
 
 import androidx.collection.ArrayMap
 import androidx.room.withTransaction
+import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.asFlow
@@ -19,7 +20,6 @@ import kotlinx.serialization.json.encodeToStream
 import kotlinx.serialization.serializer
 import org.json.JSONArray
 import org.json.JSONObject
-import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.backups.data.model.BackupIndex
 import org.koitharu.kotatsu.backups.data.model.BookmarkBackup
 import org.koitharu.kotatsu.backups.data.model.CategoryBackup
@@ -41,6 +41,7 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import javax.inject.Inject
 
+@Reusable
 class BackupRepository @Inject constructor(
 	private val database: MangaDatabase,
 	private val settings: AppSettings,
@@ -51,14 +52,12 @@ class BackupRepository @Inject constructor(
 		allowSpecialFloatingPointValues = true
 		coerceInputValues = true
 		ignoreUnknownKeys = true
-		prettyPrint = BuildConfig.DEBUG
-		prettyPrintIndent = "\t"
 		useAlternativeNames = false
 	}
 
 	suspend fun createBackup(
 		output: ZipOutputStream,
-		progress: FlowCollector<Progress>?
+		progress: FlowCollector<Progress>?,
 	) {
 		progress?.emit(Progress.INDETERMINATE)
 		var commonProgress = Progress(0, BackupSection.entries.size)
@@ -119,7 +118,7 @@ class BackupRepository @Inject constructor(
 	suspend fun restoreBackup(
 		input: ZipInputStream,
 		sections: Set<BackupSection>,
-		progress: FlowCollector<Progress>?
+		progress: FlowCollector<Progress>?,
 	): CompositeResult {
 		progress?.emit(Progress.INDETERMINATE)
 		var commonProgress = Progress(0, sections.size)
