@@ -825,4 +825,7 @@
     <string name="expand">Genişlet</string>
     <string name="adblock">Tarayıcıda reklamları engelle</string>
     <string name="adblock_summary">Dahili tarayıcıda reklamları engelle (beta)</string>
+    <string name="collapse_long_description">Uzun açıklamayı küçült</string>
+    <string name="creating_backup">Yedek oluşturuluyor</string>
+    <string name="share_backup">Yedeği paylaş</string>
 </resources>
