@@ -92,7 +92,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginHorizontal="16dp"
-				android:stepSize="5"
 				android:valueFrom="50"
 				android:valueTo="150"
 				android:visibility="gone"
