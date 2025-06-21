@@ -168,10 +168,24 @@ fun MangaListFilter.getSummary() = buildSpannedString {
 }
 
 private fun SpannableStringBuilder.appendTagsSummary(filter: MangaListFilter) {
-	filter.tags.joinTo(this) { it.title }
-	if (filter.tagsExclude.isNotEmpty()) {
+	var isFirst = true
+	val separator = ", "
+	for (tag in filter.tags) {
+		if (isFirst) {
+			isFirst = false
+		} else {
+			append(separator)
+		}
+		append(tag.title)
+	}
+	for (tag in filter.tagsExclude) {
+		if (isFirst) {
+			isFirst = false
+		} else {
+			append(separator)
+		}
 		strikeThrough {
-			filter.tagsExclude.joinTo(this) { it.title }
+			append(tag.title)
 		}
 	}
 }
