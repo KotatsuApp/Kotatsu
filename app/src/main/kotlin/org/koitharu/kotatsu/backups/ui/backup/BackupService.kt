@@ -6,13 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.net.Uri
+import android.widget.Toast
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.backups.data.BackupRepository
 import org.koitharu.kotatsu.backups.ui.BaseBackupRestoreService
@@ -64,6 +67,9 @@ class BackupService : BaseBackupRestoreService() {
 			progressUpdateJob?.cancelAndJoin()
 			contentResolver.notifyChange(destination, null)
 			showResultNotification(destination, CompositeResult.success())
+			withContext(Dispatchers.Main) {
+				Toast.makeText(this@BackupService, R.string.backup_saved, Toast.LENGTH_SHORT).show()
+			}
 		}
 	}
 

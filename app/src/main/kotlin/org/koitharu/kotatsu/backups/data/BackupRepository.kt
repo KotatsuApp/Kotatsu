@@ -51,6 +51,7 @@ class BackupRepository @Inject constructor(
 	private val json = Json {
 		allowSpecialFloatingPointValues = true
 		coerceInputValues = true
+		encodeDefaults = true
 		ignoreUnknownKeys = true
 		useAlternativeNames = false
 	}
