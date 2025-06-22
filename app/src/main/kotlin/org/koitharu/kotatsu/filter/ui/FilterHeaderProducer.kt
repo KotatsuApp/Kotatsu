@@ -27,7 +27,7 @@ class FilterHeaderProducer @Inject constructor(
 				capabilities = filterCoordinator.capabilities,
 				tagsProperty = tags,
 				snapshot = snapshot.listFilter,
-				limit = 8,
+				limit = 12,
 			)
 			FilterHeaderModel(
 				chips = chipList,
@@ -147,13 +147,13 @@ class FilterHeaderProducer @Inject constructor(
 		}
 		val hasTags = result.any { it.data is MangaTag }
 		if (hasTags) {
-			result.addLast(moreTagsChip())
+			result.addFirst(moreTagsChip())
 		}
 		return result
 	}
 
 	private fun moreTagsChip() = ChipsView.ChipModel(
-		titleResId = R.string.more,
-		isDropdown = true,
+		titleResId = R.string.genres,
+		icon = R.drawable.ic_drawer_menu_open,
 	)
 }
