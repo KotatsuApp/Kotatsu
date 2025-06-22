@@ -106,6 +106,9 @@ class KitsuRepository(
 				altName = titles.drop(1).joinToString(),
 				cover = attrs.getJSONObject("posterImage").getStringOrNull("small").orEmpty(),
 				url = "$BASE_WEB_URL/manga/${attrs.getString("slug")}",
+				isBestMatch = titles.any {
+					it.equals(query, ignoreCase = true)
+				}
 			)
 		}
 	}

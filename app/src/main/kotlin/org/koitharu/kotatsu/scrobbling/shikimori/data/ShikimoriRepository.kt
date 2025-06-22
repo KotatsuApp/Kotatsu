@@ -104,7 +104,7 @@ class ShikimoriRepository @Inject constructor(
 			.build()
 		val request = Request.Builder().url(url).get().build()
 		val response = okHttp.newCall(request).await().parseJsonArray()
-		val list = response.mapJSON { ScrobblerManga(it) }
+		val list = response.mapJSON { ScrobblerManga(it, query) }
 		return if (pageOffset != 0) list.drop(pageOffset) else list
 	}
 
@@ -195,12 +195,14 @@ class ShikimoriRepository @Inject constructor(
 		db.getScrobblingDao().upsert(entity)
 	}
 
-	private fun ScrobblerManga(json: JSONObject) = ScrobblerManga(
+	private fun ScrobblerManga(json: JSONObject, sourceTitle: String) = ScrobblerManga(
 		id = json.getLong("id"),
 		name = json.getString("name"),
 		altName = json.getStringOrNull("russian"),
 		cover = json.getJSONObject("image").getString("preview").toAbsoluteUrl(DOMAIN),
 		url = json.getString("url").toAbsoluteUrl(DOMAIN),
+		isBestMatch = sourceTitle.equals(json.getString("name"), ignoreCase = true)
+			|| json.getStringOrNull("russian")?.equals(sourceTitle, ignoreCase = true) == true
 	)
 
 	private fun ScrobblerMangaInfo(json: JSONObject) = ScrobblerMangaInfo(

@@ -16,7 +16,9 @@
 	<com.google.android.material.appbar.MaterialToolbar
 		android:id="@+id/toolbar"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		app:contentInsetStart="0dp"
+		tools:menu="@menu/opt_search">
 
 		<RelativeLayout
 			android:layout_width="match_parent"
@@ -27,20 +29,25 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_alignParentStart="true"
+				android:layout_centerVertical="true"
 				android:layout_toStartOf="@id/button_done"
 				android:background="@android:color/transparent"
+				android:clipToPadding="false"
+				android:paddingStart="@dimen/list_spacing"
 				android:scrollIndicators="start|end"
 				app:tabGravity="start"
 				app:tabMode="scrollable"
-				tools:ignore="UnusedAttribute" />
+				tools:ignore="RtlSymmetry,UnusedAttribute" />
 
 			<com.google.android.material.button.MaterialButton
 				android:id="@+id/button_done"
+				style="?materialIconButtonFilledStyle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_alignParentEnd="true"
+				android:layout_centerVertical="true"
 				android:layout_marginHorizontal="@dimen/toolbar_button_margin"
-				android:text="@string/done" />
+				app:icon="@drawable/ic_check" />
 
 		</RelativeLayout>
 

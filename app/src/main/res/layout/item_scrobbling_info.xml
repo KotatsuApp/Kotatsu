@@ -60,6 +60,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="16dp"
 			android:layout_marginTop="4dp"
+			android:singleLine="true"
 			android:textAppearance="?textAppearanceBody1"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintStart_toEndOf="@id/imageView_icon"

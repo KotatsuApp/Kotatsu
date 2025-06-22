@@ -94,7 +94,7 @@ class ScrobblingSelectorSheet :
 			if (isLoading) {
 				binding.buttonDone.setProgressIcon()
 			} else {
-				binding.buttonDone.icon = null
+				binding.buttonDone.setIconResource(R.drawable.ic_check)
 			}
 			binding.tabs.setTabsEnabled(!isLoading)
 		}

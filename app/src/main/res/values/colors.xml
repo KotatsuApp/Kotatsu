@@ -20,6 +20,7 @@
 	<color name="launcher_background">#FFFFFF</color>
 	<color name="common_green">#388E3C</color>
 	<color name="common_red">#D32F2F</color>
+	<color name="common_yellow">#FBC02D</color>
 	<color name="nsfw_18">#FF8A65</color>
 	<color name="nsfw_16">#FFD54F</color>
 

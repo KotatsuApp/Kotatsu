@@ -5,15 +5,14 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical"
-	android:padding="@dimen/screen_padding">
+	android:orientation="vertical">
 
 	<TextView
 		android:id="@+id/textView_title"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="8dp"
-		android:drawablePadding="16dp"
+		android:drawablePadding="@dimen/screen_padding"
 		android:gravity="center_horizontal"
 		android:text="@string/kitsu"
 		android:textAppearance="?textAppearanceHeadline5"
@@ -23,108 +22,98 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
-	<RelativeLayout
+	<TextView
+		android:id="@+id/textView_subtitle"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="wrap_content"
+		android:layout_marginTop="12dp"
+		android:gravity="center_horizontal"
+		android:text="@string/email_password_enter_hint"
+		android:textAppearance="?textAppearanceSubtitle1" />
 
-		<TextView
-			android:id="@+id/textView_subtitle"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_alignParentStart="true"
-			android:layout_alignParentTop="true"
-			android:layout_alignParentEnd="true"
-			android:layout_marginTop="12dp"
-			android:gravity="center_horizontal"
-			android:text="@string/email_password_enter_hint"
-			android:textAppearance="?textAppearanceSubtitle1" />
-
-		<com.google.android.material.textfield.TextInputLayout
-			android:id="@+id/layout_email"
-			style="?textInputOutlinedStyle"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_below="@id/textView_subtitle"
-			android:layout_alignParentStart="true"
-			android:layout_alignParentEnd="true"
-			android:layout_marginTop="30dp"
-			app:errorIconDrawable="@null"
-			app:hintEnabled="false">
-
-			<com.google.android.material.textfield.TextInputEditText
-				android:id="@+id/edit_email"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:autofillHints="emailAddress"
-				android:hint="@string/email"
-				android:imeOptions="actionDone"
-				android:inputType="textEmailAddress"
-				android:maxLength="512"
-				android:singleLine="true"
-				android:textSize="16sp" />
-
-		</com.google.android.material.textfield.TextInputLayout>
-
-		<com.google.android.material.textfield.TextInputLayout
-			android:id="@+id/layout_password"
-			style="?textInputOutlinedStyle"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_below="@id/layout_email"
-			android:layout_alignParentStart="true"
-			android:layout_alignParentEnd="true"
-			android:layout_marginTop="8dp"
-			app:endIconMode="password_toggle"
-			app:errorIconDrawable="@null"
-			app:hintEnabled="false">
-
-			<com.google.android.material.textfield.TextInputEditText
-				android:id="@+id/edit_password"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:autofillHints="password"
-				android:hint="@string/password"
-				android:imeOptions="actionDone"
-				android:inputType="textPassword"
-				android:maxLength="512"
-				android:singleLine="true"
-				android:textSize="16sp" />
-
-		</com.google.android.material.textfield.TextInputLayout>
-
-		<Button
-			android:id="@+id/button_cancel"
-			style="?materialButtonOutlinedStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentStart="true"
-			android:layout_alignParentBottom="true"
-			android:text="@android:string/cancel" />
-
-		<Button
-			android:id="@+id/button_done"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentEnd="true"
-			android:layout_alignParentBottom="true"
-			android:enabled="false"
-			android:text="@string/done"
-			tools:ignore="RelativeOverlap" />
-
-	</RelativeLayout>
-
-	<FrameLayout
-		android:id="@+id/layout_progress"
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/layout_email"
+		style="?textInputOutlinedStyle"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:visibility="gone">
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="@dimen/screen_padding"
+		android:layout_marginTop="30dp"
+		app:errorIconDrawable="@null"
+		app:hintEnabled="false">
 
-		<com.google.android.material.progressindicator.CircularProgressIndicator
-			android:layout_width="wrap_content"
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/edit_email"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:indeterminate="true" />
+			android:autofillHints="emailAddress"
+			android:hint="@string/email"
+			android:imeOptions="actionNext"
+			android:inputType="textEmailAddress"
+			android:maxLength="512"
+			android:singleLine="true"
+			android:textSize="16sp" />
 
-	</FrameLayout>
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/layout_password"
+		style="?textInputOutlinedStyle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="@dimen/screen_padding"
+		android:layout_marginTop="8dp"
+		app:endIconMode="password_toggle"
+		app:errorIconDrawable="@null"
+		app:hintEnabled="false">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/edit_password"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:autofillHints="password"
+			android:hint="@string/password"
+			android:imeOptions="actionDone"
+			android:inputType="textPassword"
+			android:maxLength="512"
+			android:singleLine="true"
+			android:textSize="16sp" />
+
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:visibility="invisible" />
+
+	<com.google.android.material.dockedtoolbar.DockedToolbarLayout
+		android:id="@+id/docked_toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:fitsSystemWindows="false">
+
+		<FrameLayout
+			android:id="@+id/docked_toolbar_child"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/m3_comp_toolbar_docked_container_height">
+
+			<Button
+				android:id="@+id/button_cancel"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical|start"
+				android:text="@android:string/cancel" />
+
+			<Button
+				android:id="@+id/button_done"
+				style="?materialButtonTonalStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical|end"
+				android:enabled="false"
+				android:text="@string/_continue" />
+
+		</FrameLayout>
+	</com.google.android.material.dockedtoolbar.DockedToolbarLayout>
 
 </LinearLayout>

@@ -99,7 +99,7 @@ class MALRepository @Inject constructor(
 		val response = okHttp.newCall(request).await().parseJson()
 		check(response.has("data")) { "Invalid response: \"$response\"" }
 		val data = response.getJSONArray("data")
-		return data.mapJSONNotNull { jsonToManga(it) }
+		return data.mapJSONNotNull { jsonToManga(it, query) }
 	}
 
 	override suspend fun getMangaInfo(id: Long): ScrobblerMangaInfo {
@@ -183,18 +183,17 @@ class MALRepository @Inject constructor(
 		storage.clear()
 	}
 
-	private fun jsonToManga(json: JSONObject): ScrobblerManga? {
-		for (i in 0 until json.length()) {
-			val node = json.getJSONObject("node")
-			return ScrobblerManga(
-				id = node.getLong("id"),
-				name = node.getString("title"),
-				altName = null,
-				cover = node.getJSONObject("main_picture").getString("large"),
-				url = "$BASE_WEB_URL/manga/${node.getLong("id")}",
-			)
-		}
-		return null
+	private fun jsonToManga(json: JSONObject, sourceTitle: String): ScrobblerManga? {
+		val node = json.getJSONObject("node")
+		val title = node.getString("title")
+		return ScrobblerManga(
+			id = node.getLong("id"),
+			name = title,
+			altName = null,
+			cover = node.optJSONObject("main_picture")?.getStringOrNull("large"),
+			url = "$BASE_WEB_URL/manga/${node.getLong("id")}",
+			isBestMatch = title.equals(sourceTitle, ignoreCase = true),
+		)
 	}
 
 	private fun ScrobblerMangaInfo(json: JSONObject) = ScrobblerMangaInfo(

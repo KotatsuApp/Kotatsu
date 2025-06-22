@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.scrobbling.common.ui.selector.adapter
 
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemMangaListBinding
@@ -18,6 +19,8 @@ fun scrobblingMangaAD(
 
 	bind {
 		binding.textViewTitle.text = item.name
+		val endIcon = if (item.isBestMatch) R.drawable.ic_star_small else 0
+		binding.textViewTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, endIcon, 0)
 		binding.textViewSubtitle.textAndVisible = item.altName
 		binding.imageViewCover.setImageAsync(item.cover, null)
 	}

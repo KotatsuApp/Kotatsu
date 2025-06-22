@@ -4,18 +4,25 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
+import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
-import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
-import org.koitharu.kotatsu.core.util.ext.systemBarsInsets
+import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.databinding.ActivityKitsuAuthBinding
 import org.koitharu.kotatsu.parsers.util.urlEncoded
 
-class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(), View.OnClickListener, DefaultTextWatcher {
+class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(),
+	View.OnClickListener,
+	DefaultTextWatcher,
+	TextView.OnEditorActionListener {
 
 	private val regexEmail = Regex("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", RegexOption.IGNORE_CASE)
 
@@ -25,22 +32,33 @@ class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(), View.OnClick
 		viewBinding.buttonCancel.setOnClickListener(this)
 		viewBinding.buttonDone.setOnClickListener(this)
 		viewBinding.editEmail.addTextChangedListener(this)
+		viewBinding.editEmail.setOnEditorActionListener(this)
 		viewBinding.editPassword.addTextChangedListener(this)
+		viewBinding.editPassword.setOnEditorActionListener(this)
 	}
 
 	override fun onApplyWindowInsets(
 		v: View,
 		insets: WindowInsetsCompat
 	): WindowInsetsCompat {
-		val barsInsets = insets.systemBarsInsets
-		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		viewBinding.root.setPadding(
-			barsInsets.left + basePadding,
-			barsInsets.top + basePadding,
-			barsInsets.right + basePadding,
-			barsInsets.bottom + basePadding,
-		)
-		return insets.consumeAllSystemBarsInsets()
+		val typeMask = WindowInsetsCompat.Type.systemBars()
+		val screenPadding = v.resources.getDimensionPixelOffset(R.dimen.screen_padding)
+		val barsInsets = insets.getInsets(typeMask)
+		viewBinding.root.updatePadding(top = barsInsets.top)
+		viewBinding.dockedToolbarChild.updateLayoutParams<MarginLayoutParams> {
+			leftMargin = barsInsets.left
+			rightMargin = barsInsets.right
+			bottomMargin = barsInsets.bottom
+		}
+		viewBinding.layoutEmail.updateLayoutParams<MarginLayoutParams> {
+			leftMargin = barsInsets.left + screenPadding
+			rightMargin = barsInsets.right + screenPadding
+		}
+		viewBinding.layoutPassword.updateLayoutParams<MarginLayoutParams> {
+			leftMargin = barsInsets.left + screenPadding
+			rightMargin = barsInsets.right + screenPadding
+		}
+		return insets.consume(v, typeMask)
 	}
 
 	override fun onClick(v: View) {
@@ -48,6 +66,28 @@ class KitsuAuthActivity : BaseActivity<ActivityKitsuAuthBinding>(), View.OnClick
 			R.id.button_cancel -> finish()
 			R.id.button_done -> continueAuth()
 		}
+	}
+
+	override fun onEditorAction(
+		v: TextView,
+		actionId: Int,
+		event: KeyEvent?
+	): Boolean = when (v.id) {
+		R.id.edit_email -> {
+			viewBinding.editPassword.requestFocus()
+			true
+		}
+
+		R.id.edit_password -> {
+			if (viewBinding.buttonDone.isEnabled) {
+				continueAuth()
+				true
+			} else {
+				false
+			}
+		}
+
+		else -> false
 	}
 
 	override fun afterTextChanged(s: Editable?) {

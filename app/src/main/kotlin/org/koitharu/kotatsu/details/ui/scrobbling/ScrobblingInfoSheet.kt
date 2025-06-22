@@ -153,7 +153,7 @@ class ScrobblingInfoSheet :
 			R.id.action_edit -> {
 				val manga = viewModel.manga.value ?: return false
 				val scrobblerService = viewModel.scrobblingInfo.value.getOrNull(scrobblerIndex)?.scrobbler
-				router.showScrobblingSelectorSheet(manga, scrobblerService)
+				activity?.router?.showScrobblingSelectorSheet(manga, scrobblerService)
 				dismiss()
 			}
 		}

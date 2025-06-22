@@ -133,7 +133,7 @@ class AniListRepository @Inject constructor(
 		""",
 		)
 		val data = response.getJSONObject("data").getJSONObject("Page").getJSONArray("media")
-		return data.mapJSON { ScrobblerManga(it) }
+		return data.mapJSON { ScrobblerManga(it, query) }
 	}
 
 	override suspend fun createRate(mangaId: Long, scrobblerMangaId: Long) {
@@ -225,7 +225,7 @@ class AniListRepository @Inject constructor(
 		db.getScrobblingDao().upsert(entity)
 	}
 
-	private fun ScrobblerManga(json: JSONObject): ScrobblerManga {
+	private fun ScrobblerManga(json: JSONObject, sourceTitle: String): ScrobblerManga {
 		val title = json.getJSONObject("title")
 		return ScrobblerManga(
 			id = json.getLong("id"),
@@ -233,6 +233,14 @@ class AniListRepository @Inject constructor(
 			altName = title.getStringOrNull("native"),
 			cover = json.getJSONObject("coverImage").getString("medium"),
 			url = json.getString("siteUrl"),
+			isBestMatch = sourceTitle.let {
+				title.keys().forEach { key ->
+					if (title.getStringOrNull(key)?.equals(it, ignoreCase = true) == true) {
+						return@let true
+					}
+				}
+				false
+			},
 		)
 	}
 

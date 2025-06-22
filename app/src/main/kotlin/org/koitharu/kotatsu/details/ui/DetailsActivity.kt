@@ -248,8 +248,10 @@ class DetailsActivity :
 			}
 
 			R.id.button_scrobbling_more -> {
-				val manga = viewModel.getMangaOrNull() ?: return
-				router.showScrobblingSelectorSheet(manga, null)
+				router.showScrobblingSelectorSheet(
+					manga = viewModel.getMangaOrNull() ?: return,
+					scrobblerService = viewModel.scrobblingInfo.value.firstOrNull()?.scrobbler
+				)
 			}
 
 			R.id.button_related_more -> {

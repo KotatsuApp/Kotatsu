@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.scrobbling.common.domain.model
 
+import org.koitharu.kotatsu.list.ui.ListModelDiffCallback
 import org.koitharu.kotatsu.list.ui.model.ListModel
 
 data class ScrobblingInfo(
@@ -18,5 +19,11 @@ data class ScrobblingInfo(
 
 	override fun areItemsTheSame(other: ListModel): Boolean {
 		return other is ScrobblingInfo && other.scrobbler == scrobbler
+	}
+
+	override fun getChangePayload(previousState: ListModel): Any? = when {
+		previousState !is ScrobblingInfo -> null
+		previousState.status != status || previousState.rating != rating -> ListModelDiffCallback.PAYLOAD_ANYTHING_CHANGED
+		else -> super.getChangePayload(previousState)
 	}
 }
