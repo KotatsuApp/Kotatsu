@@ -15,12 +15,12 @@ import coil3.request.ImageRequest
 import coil3.request.transformations
 import coil3.size.Scale
 import coil3.size.Size
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.db.TABLE_HISTORY
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.nav.AppRouter
@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import javax.inject.Inject
@@ -43,7 +44,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AppShortcutManager @Inject constructor(
-	@ApplicationContext private val context: Context,
+	@LocalizedAppContext private val context: Context,
 	private val coil: ImageLoader,
 	private val historyRepository: HistoryRepository,
 	private val mangaRepository: MangaDataRepository,
@@ -149,9 +150,14 @@ class AppShortcutManager @Inject constructor(
 			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) },
 		)
 		mangaRepository.storeManga(manga)
+		val title = manga.title.ifEmpty {
+			manga.altTitles.firstOrNull()
+		}.ifNullOrEmpty {
+			context.getString(R.string.unknown)
+		}
 		ShortcutInfoCompat.Builder(context, manga.id.toString())
-			.setShortLabel(manga.title)
-			.setLongLabel(manga.title)
+			.setShortLabel(title)
+			.setLongLabel(title)
 			.setIcon(icon)
 			.setLongLived(true)
 			.setIntent(
