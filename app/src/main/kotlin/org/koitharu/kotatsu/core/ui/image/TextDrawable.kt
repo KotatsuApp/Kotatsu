@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.core.ui.image
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
@@ -8,8 +10,11 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.os.Build
 import android.widget.TextView
+import androidx.annotation.AttrRes
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.PaintCompat
+import com.google.android.material.resources.TextAppearance
+import org.koitharu.kotatsu.core.util.ext.getThemeResId
 import org.koitharu.kotatsu.core.util.ext.hasFocusStateSpecified
 
 class TextDrawable(
@@ -70,6 +75,17 @@ class TextDrawable(
 	}
 
 	companion object {
+
+		@SuppressLint("RestrictedApi")
+		fun create(context: Context, text: String, @AttrRes textAppearanceAttr: Int): TextDrawable {
+			val drawable = TextDrawable(text)
+			val textAppearance = TextAppearance(context, context.getThemeResId(textAppearanceAttr, androidx.appcompat.R.style.TextAppearance_AppCompat))
+			drawable.textSize = textAppearance.textSize
+			drawable.textColor = textAppearance.textColor ?: drawable.textColor
+			drawable.paint.typeface = textAppearance.getFont(context)
+			drawable.paint.letterSpacing = textAppearance.letterSpacing
+			return drawable
+		}
 
 		fun compound(textView: TextView, text: String): TextDrawable? {
 			val drawable = TextDrawable(text)

@@ -1,23 +1,32 @@
 package org.koitharu.kotatsu.image.ui
 
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import androidx.annotation.AttrRes
+import androidx.annotation.RequiresApi
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toDrawable
+import coil3.network.HttpException
+import coil3.request.ErrorResult
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
 import coil3.request.transformations
 import coil3.size.Dimension
 import coil3.size.Size
 import coil3.size.ViewSizeResolver
 import kotlinx.coroutines.suspendCancellableCoroutine
+import okio.FileNotFoundException
+import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.core.image.CoilImageView
 import org.koitharu.kotatsu.core.ui.image.AnimatedPlaceholderDrawable
+import org.koitharu.kotatsu.core.ui.image.TextDrawable
 import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.util.ext.bookmarkExtra
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
@@ -65,6 +74,9 @@ class CoverImageView @JvmOverloads constructor(
 		}
 		if (fallbackDrawable == null) {
 			fallbackDrawable = context.getThemeColor(materialR.attr.colorSurfaceContainer).toDrawable()
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			addImageRequestListener(ErrorForegroundListener())
 		}
 	}
 
@@ -146,6 +158,39 @@ class CoverImageView @JvmOverloads constructor(
 		}
 		if (hasAspectRatio) {
 			size(CoverSizeResolver(this@CoverImageView))
+		}
+	}
+
+	@RequiresApi(Build.VERSION_CODES.M)
+	private inner class ErrorForegroundListener : ImageRequest.Listener {
+
+		override fun onSuccess(request: ImageRequest, result: SuccessResult) {
+			super.onSuccess(request, result)
+			foreground = null
+		}
+
+		override fun onCancel(request: ImageRequest) {
+			super.onCancel(request)
+			foreground = null
+		}
+
+		override fun onStart(request: ImageRequest) {
+			super.onStart(request)
+			foreground = null
+		}
+
+		override fun onError(request: ImageRequest, result: ErrorResult) {
+			super.onError(request, result)
+			foreground = result.throwable.getShortMessage()?.let { text ->
+				TextDrawable.create(context, text, materialR.attr.textAppearanceTitleSmall)
+			}
+		}
+
+		private fun Throwable.getShortMessage(): String? = when (this) {
+			is HttpException -> response.code.toString()
+			is HttpStatusException -> statusCode.toString()
+			is FileNotFoundException -> "404"
+			else -> cause?.getShortMessage()
 		}
 	}
 
