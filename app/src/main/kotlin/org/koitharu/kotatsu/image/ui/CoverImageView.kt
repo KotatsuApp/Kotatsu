@@ -34,10 +34,10 @@ import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.mangaExtra
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.favourites.domain.model.Cover
+import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import kotlin.coroutines.resume
 import androidx.appcompat.R as appcompatR
@@ -103,14 +103,14 @@ class CoverImageView @JvmOverloads constructor(
 
 	fun setImageAsync(page: ReaderPage) = enqueueRequest(
 		newRequestBuilder()
-			.data(page.preview?.nullIfEmpty() ?: page.toMangaPage())
+			.data(page.toMangaPage())
 			.mangaSourceExtra(page.source)
 			.build(),
 	)
 
 	fun setImageAsync(page: MangaPage) = enqueueRequest(
 		newRequestBuilder()
-			.data(page.preview?.nullIfEmpty() ?: page)
+			.data(page)
 			.mangaSourceExtra(page.source)
 			.build(),
 	)
@@ -146,7 +146,7 @@ class CoverImageView @JvmOverloads constructor(
 		bookmark: Bookmark
 	) = enqueueRequest(
 		newRequestBuilder()
-			.data(bookmark.imageLoadData)
+			.data(bookmark.toMangaPage())
 			.decodeRegion(bookmark.scroll)
 			.bookmarkExtra(bookmark)
 			.build(),
@@ -190,6 +190,7 @@ class CoverImageView @JvmOverloads constructor(
 			is HttpException -> response.code.toString()
 			is HttpStatusException -> statusCode.toString()
 			is FileNotFoundException -> "404"
+			is ParseException -> "</>"
 			else -> cause?.getShortMessage()
 		}
 	}

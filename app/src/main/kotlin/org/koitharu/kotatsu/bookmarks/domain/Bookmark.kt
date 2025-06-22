@@ -1,7 +1,8 @@
 package org.koitharu.kotatsu.bookmarks.domain
 
+import org.koitharu.kotatsu.core.util.MimeTypes
+import org.koitharu.kotatsu.core.util.ext.isImage
 import org.koitharu.kotatsu.list.ui.model.ListModel
-import org.koitharu.kotatsu.local.data.hasImageExtension
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import java.time.Instant
@@ -17,9 +18,6 @@ data class Bookmark(
 	val percent: Float,
 ) : ListModel {
 
-	val imageLoadData: Any
-		get() = if (isImageUrlDirect()) imageUrl else toMangaPage()
-
 	override fun areItemsTheSame(other: ListModel): Boolean {
 		return other is Bookmark &&
 			manga.id == other.manga.id &&
@@ -30,11 +28,9 @@ data class Bookmark(
 	fun toMangaPage() = MangaPage(
 		id = pageId,
 		url = imageUrl,
-		preview = null,
+		preview = imageUrl.takeIf {
+			MimeTypes.getMimeTypeFromUrl(it)?.isImage == true
+		},
 		source = manga.source,
 	)
-
-	private fun isImageUrlDirect(): Boolean {
-		return hasImageExtension(imageUrl)
-	}
 }

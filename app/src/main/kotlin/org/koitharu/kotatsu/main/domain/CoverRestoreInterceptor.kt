@@ -31,15 +31,15 @@ class CoverRestoreInterceptor @Inject constructor(
 		val request = chain.request
 		val result = chain.proceed()
 		if (result is ErrorResult && result.throwable.shouldRestore()) {
-			request.extras[mangaKey]?.let {
-				return if (restoreManga(it)) {
+			request.extras[bookmarkKey]?.let {
+				return if (restoreBookmark(it)) {
 					chain.withRequest(request.newBuilder().build()).proceed()
 				} else {
 					result
 				}
 			}
-			request.extras[bookmarkKey]?.let {
-				return if (restoreBookmark(it)) {
+			request.extras[mangaKey]?.let {
+				return if (restoreManga(it)) {
 					chain.withRequest(request.newBuilder().build()).proceed()
 				} else {
 					result

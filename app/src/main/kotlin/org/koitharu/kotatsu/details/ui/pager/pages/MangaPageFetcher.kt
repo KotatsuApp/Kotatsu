@@ -28,6 +28,7 @@ import org.koitharu.kotatsu.local.data.PagesCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.mimeType
 import org.koitharu.kotatsu.parsers.util.requireBody
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import javax.inject.Inject
 
@@ -42,6 +43,13 @@ class MangaPageFetcher(
 ) : Fetcher {
 
 	override suspend fun fetch(): FetchResult? {
+		if (!page.preview.isNullOrEmpty()) {
+			runCatchingCancellable {
+				imageLoader.fetch(checkNotNull(page.preview), options)
+			}.onSuccess {
+				return it
+			}
+		}
 		val repo = mangaRepositoryFactory.create(page.source)
 		val pageUrl = repo.getPageUrl(page)
 		if (options.diskCachePolicy.readEnabled) {
