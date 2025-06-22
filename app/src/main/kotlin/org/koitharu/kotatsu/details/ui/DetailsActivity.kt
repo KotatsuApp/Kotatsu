@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.details.ui
 
+import android.app.assist.AssistContent
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.text.SpannedString
 import android.view.Gravity
@@ -80,6 +82,7 @@ import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.core.util.ext.start
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
+import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.databinding.LayoutDetailsTableBinding
 import org.koitharu.kotatsu.details.data.MangaDetails
@@ -202,6 +205,13 @@ class DetailsActivity :
 			appShortcutManager = shortcutManager,
 		)
 		addMenuProvider(menuProvider)
+	}
+
+	override fun onProvideAssistContent(outContent: AssistContent) {
+		super.onProvideAssistContent(outContent)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			viewModel.getMangaOrNull()?.publicUrl?.toUriOrNull()?.let { outContent.webUri = it }
+		}
 	}
 
 	override fun isNsfwContent(): Flow<Boolean> = viewModel.manga.map { it?.contentRating == ContentRating.ADULT }
