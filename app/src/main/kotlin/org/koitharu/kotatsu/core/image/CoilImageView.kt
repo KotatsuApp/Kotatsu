@@ -7,6 +7,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.withStyledAttributes
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import coil3.ImageLoader
 import coil3.asImage
 import coil3.request.Disposable
@@ -25,10 +26,14 @@ import coil3.size.ViewSizeResolver
 import coil3.util.CoilUtils
 import com.google.android.material.imageview.ShapeableImageView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
 import org.koitharu.kotatsu.core.util.ext.getAnimationDuration
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
+import org.koitharu.kotatsu.core.util.ext.isNetworkError
 import java.util.LinkedList
 import javax.inject.Inject
 
@@ -42,6 +47,9 @@ open class CoilImageView @JvmOverloads constructor(
 	@Inject
 	lateinit var coil: ImageLoader
 
+	@Inject
+	lateinit var networkState: NetworkState
+
 	var allowRgb565: Boolean = false
 	var useExistingDrawable: Boolean = false
 	var decodeRegion: Boolean = false
@@ -54,8 +62,12 @@ open class CoilImageView @JvmOverloads constructor(
 
 	private var currentRequest: Disposable? = null
 	private var currentImageData: Any = NullRequestData
+	private var networkWaitingJob: Job? = null
 
 	private var listeners: MutableList<ImageRequest.Listener>? = null
+
+	val isFailed: Boolean
+		get() = CoilUtils.result(this) is ErrorResult
 
 	init {
 		context.withStyledAttributes(attrs, R.styleable.CoilImageView, defStyleAttr) {
@@ -81,6 +93,9 @@ open class CoilImageView @JvmOverloads constructor(
 	override fun onError(request: ImageRequest, result: ErrorResult) {
 		super.onError(request, result)
 		listeners?.forEach { it.onError(request, result) }
+		if (result.throwable.isNetworkError()) {
+			waitForNetwork()
+		}
 	}
 
 	override fun onStart(request: ImageRequest) {
@@ -115,17 +130,27 @@ open class CoilImageView @JvmOverloads constructor(
 	)
 
 	fun disposeImage() {
+		networkWaitingJob?.cancel()
+		networkWaitingJob = null
 		CoilUtils.dispose(this)
 		currentRequest = null
 		currentImageData = NullRequestData
 		setImageDrawable(null)
 	}
 
-	protected fun enqueueRequest(request: ImageRequest): Disposable {
+	fun reload() {
+		CoilUtils.result(this)?.let { result ->
+			enqueueRequest(result.request, force = true)
+		}
+	}
+
+	protected fun enqueueRequest(request: ImageRequest, force: Boolean = false): Disposable {
 		val previous = currentRequest
-		if (currentImageData == request.data && previous?.job?.isCancelled == false) {
+		if (!force && currentImageData == request.data && previous?.job?.isCancelled == false && !isFailed) {
 			return previous
 		}
+		networkWaitingJob?.cancel()
+		networkWaitingJob = null
 		currentImageData = request.data
 		return coil.enqueue(request).also { currentRequest = it }
 	}
@@ -174,5 +199,18 @@ open class CoilImageView @JvmOverloads constructor(
 		Scale.FILL
 	} else {
 		Scale.FIT
+	}
+
+	private fun waitForNetwork() {
+		if (networkWaitingJob?.isActive == true || networkState.isOnline()) {
+			return
+		}
+		networkWaitingJob?.cancel()
+		networkWaitingJob = findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
+			networkState.awaitForConnection()
+			if (isFailed) {
+				reload()
+			}
+		}
 	}
 }
