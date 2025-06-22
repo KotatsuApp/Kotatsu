@@ -21,10 +21,12 @@ value class ReaderIntent private constructor(
 
 		fun manga(manga: Manga) = apply {
 			intent.putExtra(AppRouter.KEY_MANGA, ParcelableManga(manga))
+			intent.setData(AppRouter.shortMangaUrl(manga.id))
 		}
 
 		fun mangaId(mangaId: Long) = apply {
 			intent.putExtra(AppRouter.KEY_ID, mangaId)
+			intent.setData(AppRouter.shortMangaUrl(mangaId))
 		}
 
 		fun incognito() = apply {

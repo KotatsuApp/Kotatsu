@@ -225,6 +225,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_INCOGNITO_MODE, false)
 		set(value) = prefs.edit { putBoolean(KEY_INCOGNITO_MODE, value) }
 
+	val isReaderMultiTaskEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READER_MULTITASK, false)
+
 	var isChaptersReverse: Boolean
 		get() = prefs.getBoolean(KEY_REVERSE_CHAPTERS, false)
 		set(value) = prefs.edit { putBoolean(KEY_REVERSE_CHAPTERS, value) }
@@ -688,6 +691,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_DOH = "doh"
 		const val KEY_EXIT_CONFIRM = "exit_confirm"
 		const val KEY_INCOGNITO_MODE = "incognito"
+		const val KEY_READER_MULTITASK = "reader_multitask"
 		const val KEY_SYNC = "sync"
 		const val KEY_SYNC_SETTINGS = "sync_settings"
 		const val KEY_READER_BAR = "reader_bar"

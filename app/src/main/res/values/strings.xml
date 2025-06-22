@@ -847,4 +847,6 @@
 	<string name="collapse_long_description">Collapse long description</string>
 	<string name="creating_backup">Creating backup</string>
 	<string name="share_backup">Share backup</string>
+	<string name="reader_multitask">Open reader in a separate task</string>
+	<string name="reader_multitask_summary">Allows you to keep multiple readers with different manga open at the same time</string>
 </resources>

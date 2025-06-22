@@ -165,7 +165,11 @@ class AppRouter private constructor(
 	}
 
 	fun openReader(intent: ReaderIntent, anchor: View? = null) {
-		startActivity(intent.intent, anchor?.let { view -> scaleUpActivityOptionsOf(view) })
+		val activityIntent = intent.intent
+		if (settings.isReaderMultiTaskEnabled && activityIntent.data != null) {
+			activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+		}
+		startActivity(activityIntent, anchor?.let { view -> scaleUpActivityOptionsOf(view) })
 	}
 
 	fun openAlternatives(manga: Manga) {
@@ -779,7 +783,7 @@ class AppRouter private constructor(
 			else -> true
 		}
 
-		private fun shortMangaUrl(mangaId: Long) = Uri.Builder()
+		fun shortMangaUrl(mangaId: Long) = Uri.Builder()
 			.scheme("kotatsu")
 			.path("manga")
 			.appendQueryParameter("id", mangaId.toString())
