@@ -25,7 +25,7 @@ import org.koitharu.kotatsu.core.prefs.observeAsFlow
 import org.koitharu.kotatsu.core.util.ext.resolveDp
 import kotlin.math.roundToLong
 
-private const val MAX_DELAY = 8L
+private const val MAX_DELAY = 32L
 private const val MAX_SWITCH_DELAY = 10_000L
 private const val INTERACTION_SKIP_MS = 2_000L
 private const val SPEED_FACTOR_DELTA = 0.02f
@@ -45,7 +45,7 @@ class ScrollTimer @AssistedInject constructor(
 	private var resumeAt = 0L
 	private var isTouchDown = MutableStateFlow(false)
 	private val isRunning = MutableStateFlow(false)
-	private val scrollDelta = resources.resolveDp(2)
+	private val scrollDelta = resources.resolveDp(1)
 
 	val isActive: StateFlow<Boolean>
 		get() = isRunning
@@ -88,7 +88,7 @@ class ScrollTimer @AssistedInject constructor(
 			delayMs = 0L
 			pageSwitchDelay = 0L
 		} else {
-			val speedFactor = 1 - speed
+			val speedFactor = 1f - speed
 			delayMs = (MAX_DELAY * speedFactor).roundToLong()
 			pageSwitchDelay = (MAX_SWITCH_DELAY * speedFactor).roundToLong()
 		}

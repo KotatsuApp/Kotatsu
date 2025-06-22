@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.parentView
 import org.koitharu.kotatsu.databinding.ViewScrollTimerBinding
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class ScrollTimerControlView @JvmOverloads constructor(
@@ -36,6 +37,8 @@ class ScrollTimerControlView @JvmOverloads constructor(
 
 	@Inject
 	lateinit var settings: AppSettings
+
+	var onVisibilityChangeListener: OnVisibilityChangeListener? = null
 
 	private val binding = ViewScrollTimerBinding.inflate(LayoutInflater.from(context), this)
 
@@ -63,10 +66,12 @@ class ScrollTimerControlView @JvmOverloads constructor(
 			key = AppSettings.KEY_READER_AUTOSCROLL_SPEED,
 			valueProducer = { readerAutoscrollSpeed },
 		).observe(lifecycleOwner) {
-			binding.sliderTimer.value = it.coerceIn(
-				binding.sliderTimer.valueFrom,
-				binding.sliderTimer.valueTo,
-			)
+			if (abs(it - binding.sliderTimer.value) > 0.0001) {
+				binding.sliderTimer.value = it.coerceIn(
+					binding.sliderTimer.valueFrom,
+					binding.sliderTimer.valueTo,
+				)
+			}
 		}
 		updateDescription()
 	}
@@ -83,9 +88,10 @@ class ScrollTimerControlView @JvmOverloads constructor(
 	}
 
 	override fun getFormattedValue(value: Float): String {
-		// val minValue = binding.sliderTimer.valueFrom
-		// val maxValue = binding.sliderTimer.valueTo
-		return labelPattern.format(value * 10f)
+		val valueFrom = binding.sliderTimer.valueFrom
+		val valueTo = binding.sliderTimer.valueTo
+		val percent = (value - valueFrom) / (valueTo - valueFrom)
+		return labelPattern.format(0.1 + percent * 10) // just something to display
 	}
 
 	override fun onValueChange(
@@ -101,6 +107,11 @@ class ScrollTimerControlView @JvmOverloads constructor(
 
 	override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
 		scrollTimer?.setActive(isChecked)
+	}
+
+	override fun setVisibility(visibility: Int) {
+		super.setVisibility(visibility)
+		onVisibilityChangeListener?.onVisibilityChanged(this, visibility)
 	}
 
 	fun show() {
@@ -138,5 +149,10 @@ class ScrollTimerControlView @JvmOverloads constructor(
 			)
 			binding.textViewDescription.isVisible = true
 		}
+	}
+
+	fun interface OnVisibilityChangeListener {
+
+		fun onVisibilityChanged(v: View, visibility: Int)
 	}
 }
