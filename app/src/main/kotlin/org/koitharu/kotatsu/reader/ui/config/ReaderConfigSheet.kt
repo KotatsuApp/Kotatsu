@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.CompoundButton
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.children
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -87,7 +85,7 @@ class ReaderConfigSheet :
 		binding.buttonWebtoon.isChecked = mode == ReaderMode.WEBTOON
 		binding.buttonVertical.isChecked = mode == ReaderMode.VERTICAL
 		binding.switchDoubleReader.isChecked = settings.isReaderDoubleOnLandscape
-		binding.switchDoubleReader.isEnabled = mode == ReaderMode.STANDARD
+		binding.switchDoubleReader.isEnabled = mode == ReaderMode.STANDARD || mode == ReaderMode.REVERSED
 
 		binding.checkableGroup.addOnButtonCheckedListener(this)
 		binding.buttonSavePage.setOnClickListener(this)
