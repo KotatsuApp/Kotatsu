@@ -15,6 +15,7 @@ object LocaleUtils {
 			"JA" -> "JP"
 			"VI" -> "VN"
 			"ZH" -> "CN"
+			"AR" -> "SA"
 			else -> c
 		}
 		val emoji = countryCodeToEmojiFlag(code)
