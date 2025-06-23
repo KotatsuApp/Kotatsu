@@ -119,7 +119,7 @@ class LocalMangaRepository @Inject constructor(
 			SortOrder.ALPHABETICAL -> list.sortWith(compareBy(AlphanumComparator()) { x -> x.manga.title })
 			SortOrder.RATING -> list.sortByDescending { it.manga.rating }
 			SortOrder.NEWEST,
-			SortOrder.UPDATED -> list.sortByDescending { it.createdAt }
+			SortOrder.UPDATED -> list.sortWith(compareBy({ -it.createdAt }, { it.manga.id }))
 
 			else -> Unit
 		}
