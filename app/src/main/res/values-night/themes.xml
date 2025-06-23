@@ -6,11 +6,10 @@
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu.Amoled" parent="">
-		<item name="colorSurface">@color/surface_amoled</item>
+		<item name="colorSurface">@color/background_amoled</item>
 		<item name="android:colorBackground">@color/background_amoled</item>
 		<item name="android:windowBackground">@color/background_amoled</item>
 		<item name="colorBackgroundFloating">@color/background_amoled</item>
-		<item name="colorSurfaceContainerHigh">@color/background_amoled</item>
 	</style>
 
 	<!-- Monet theme only support S+ -->
