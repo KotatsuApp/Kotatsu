@@ -29,6 +29,7 @@ import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.model.titleRes
+import org.koitharu.kotatsu.core.ui.util.FadingAppbarMediator
 import org.koitharu.kotatsu.core.util.ViewBadge
 import org.koitharu.kotatsu.core.util.ext.consumeSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.end
@@ -73,6 +74,9 @@ class MangaListActivity :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMangaListBinding.inflate(layoutInflater))
+		viewBinding.collapsingToolbarLayout?.let { collapsingToolbarLayout ->
+			FadingAppbarMediator(viewBinding.appbar, collapsingToolbarLayout).bind()
+		}
 		val filter = intent.getParcelableExtraCompat<ParcelableMangaListFilter>(AppRouter.KEY_FILTER)?.filter
 		val sortOrder = intent.getSerializableExtraCompat<SortOrder>(AppRouter.KEY_SORT_ORDER)
 		source = MangaSource(intent.getStringExtra(AppRouter.KEY_SOURCE))

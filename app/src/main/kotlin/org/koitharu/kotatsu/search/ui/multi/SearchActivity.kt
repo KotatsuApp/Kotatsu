@@ -101,16 +101,16 @@ class SearchActivity :
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
 		val barsInsets = insets.systemBarsInsets
-		viewBinding.appbar.updatePadding(
+		viewBinding.toolbar.updatePadding(
 			top = barsInsets.top,
 			left = barsInsets.left,
 			right = barsInsets.right,
 		)
 		viewBinding.recyclerView.setPadding(
-			barsInsets.left,
-			barsInsets.top,
-			barsInsets.right,
-			barsInsets.bottom,
+			left = barsInsets.left,
+			top = 0,
+			right = barsInsets.right,
+			bottom = barsInsets.bottom,
 		)
 		return insets.consumeAllSystemBarsInsets()
 	}

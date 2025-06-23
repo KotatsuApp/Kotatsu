@@ -17,7 +17,7 @@
 			style="?attr/collapsingToolbarLayoutMediumStyle"
 			android:layout_width="match_parent"
 			android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
-			app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+			app:layout_scrollFlags="scroll|enterAlways"
 			app:toolbarId="@id/toolbar">
 
 			<LinearLayout
@@ -54,7 +54,7 @@
 			android:id="@+id/container_filter_header"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:layout_scrollFlags="scroll|exitUntilCollapsed"
+			app:layout_scrollFlags="noScroll"
 			tools:layout="@layout/fragment_filter_header" />
 
 	</com.google.android.material.appbar.AppBarLayout>
