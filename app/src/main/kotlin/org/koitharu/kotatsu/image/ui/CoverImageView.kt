@@ -24,6 +24,8 @@ import okio.FileNotFoundException
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
 import org.koitharu.kotatsu.core.image.CoilImageView
 import org.koitharu.kotatsu.core.ui.image.AnimatedPlaceholderDrawable
 import org.koitharu.kotatsu.core.ui.image.TextDrawable
@@ -34,7 +36,9 @@ import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import org.koitharu.kotatsu.core.util.ext.mangaExtra
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.favourites.domain.model.Cover
+import org.koitharu.kotatsu.parsers.exception.ContentUnavailableException
 import org.koitharu.kotatsu.parsers.exception.ParseException
+import org.koitharu.kotatsu.parsers.exception.TooManyRequestExceptions
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
@@ -189,8 +193,12 @@ class CoverImageView @JvmOverloads constructor(
 		private fun Throwable.getShortMessage(): String? = when (this) {
 			is HttpException -> response.code.toString()
 			is HttpStatusException -> statusCode.toString()
+			is ContentUnavailableException,
 			is FileNotFoundException -> "404"
+			is TooManyRequestExceptions -> "429"
 			is ParseException -> "</>"
+			is UnsupportedSourceException -> "X"
+			is CloudFlareProtectedException -> "?"
 			else -> cause?.getShortMessage()
 		}
 	}
