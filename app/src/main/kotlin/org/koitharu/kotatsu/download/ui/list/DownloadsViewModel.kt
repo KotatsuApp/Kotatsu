@@ -67,7 +67,8 @@ class DownloadsViewModel @Inject constructor(
 		expanded,
 	) { list, exp ->
 		list.toDownloadsList(exp)
-	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
+	}.withErrorHandling()
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	val onActionDone = MutableEventFlow<ReversibleAction>()
 
