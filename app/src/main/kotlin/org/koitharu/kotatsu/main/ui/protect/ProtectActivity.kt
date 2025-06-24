@@ -19,8 +19,11 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.biometric.registerForAuthenticationResult
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withResumed
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.util.DefaultTextWatcher
@@ -68,6 +71,15 @@ class ProtectActivity :
 			startActivity(intent)
 			finishAfterTransition()
 		}
+		lifecycleScope.launch {
+			withResumed {
+				canUseBiometric = useFingerprint()
+				updateEndIcon()
+				if (!canUseBiometric) {
+					viewBinding.editPassword.requestFocus()
+				}
+			}
+		}
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
@@ -80,15 +92,6 @@ class ProtectActivity :
 			barsInsets.bottom + basePadding,
 		)
 		return insets.consumeAllSystemBarsInsets()
-	}
-
-	override fun onStart() {
-		super.onStart()
-		canUseBiometric = useFingerprint()
-		updateEndIcon()
-		if (!canUseBiometric) {
-			viewBinding.editPassword.requestFocus()
-		}
 	}
 
 	override fun onClick(v: View) {
