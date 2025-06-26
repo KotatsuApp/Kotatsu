@@ -3,6 +3,7 @@
 
 	<style name="ThemeOverlay.Kotatsu" parent="ThemeOverlay.Material3.Dark">
 		<item name="android:navigationBarColor">@android:color/transparent</item>
+		<item name="android:windowBackground">?android:colorBackground</item>
 	</style>
 
 	<style name="ThemeOverlay.Kotatsu.Amoled" parent="">

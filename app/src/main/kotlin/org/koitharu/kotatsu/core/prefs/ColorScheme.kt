@@ -13,7 +13,7 @@ enum class ColorScheme(
 	@StringRes val titleResId: Int,
 ) {
 
-	DEFAULT(R.style.ThemeOverlay_Kotatsu, R.string.system_default),
+	DEFAULT(R.style.ThemeOverlay_Kotatsu_Totoro, R.string.theme_name_totoro),
 	MONET(R.style.ThemeOverlay_Kotatsu_Monet, R.string.theme_name_dynamic),
 	EXPRESSIVE(R.style.ThemeOverlay_Kotatsu_Expressive, R.string.theme_name_expressive),
 	MIKU(R.style.ThemeOverlay_Kotatsu_Miku, R.string.theme_name_miku),
@@ -22,7 +22,8 @@ enum class ColorScheme(
 	BLUEBERRY(R.style.ThemeOverlay_Kotatsu_Rikka, R.string.theme_name_rikka),
 	SAKURA(R.style.ThemeOverlay_Kotatsu_Sakura, R.string.theme_name_sakura),
 	MAMIMI(R.style.ThemeOverlay_Kotatsu_Mamimi, R.string.theme_name_mamimi),
-	KANADE(R.style.Theme_Kotatsu_Kanade, R.string.theme_name_kanade)
+	KANADE(R.style.ThemeOverlay_Kotatsu_Kanade, R.string.theme_name_kanade),
+	ITSUKA(R.style.ThemeOverlay_Kotatsu_Itsuka, R.string.theme_name_itsuka),
 	;
 
 	companion object {

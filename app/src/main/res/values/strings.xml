@@ -849,4 +849,6 @@
 	<string name="share_backup">Share backup</string>
 	<string name="reader_multitask">Open reader in a separate task</string>
 	<string name="reader_multitask_summary">Allows you to keep multiple readers with different manga open at the same time</string>
+	<string name="theme_name_itsuka">Itsuka</string>
+	<string name="theme_name_totoro">Totoro</string>
 </resources>
