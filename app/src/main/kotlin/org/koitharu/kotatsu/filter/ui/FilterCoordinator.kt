@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -435,6 +436,8 @@ class FilterCoordinator @Inject constructor(
 		} else {
 			options.map { result }
 		}
+	}.catch {
+		emit(Result.failure(it))
 	}
 
 	private fun getBottomTags(limit: Int): Flow<Result<List<MangaTag>>> = combine(
@@ -452,6 +455,8 @@ class FilterCoordinator @Inject constructor(
 		} else {
 			options.map { result }
 		}
+	}.catch {
+		emit(Result.failure(it))
 	}
 
 	private fun <T> List<T>.addFirstDistinct(other: Collection<T>): List<T> {
