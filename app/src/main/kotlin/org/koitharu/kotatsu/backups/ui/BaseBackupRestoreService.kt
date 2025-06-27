@@ -84,13 +84,9 @@ abstract class BaseBackupRestoreService : CoroutineIntentService() {
 					.setBigText(title, message)
 					.setSmallIcon(android.R.drawable.stat_notify_error)
 				result.failures.firstNotNullOfOrNull { error ->
-					ErrorReporterReceiver.getPendingIntent(applicationContext, error)
-				}?.let { reportIntent ->
-					notification.addAction(
-						R.drawable.ic_alert_outline,
-						applicationContext.getString(R.string.report),
-						reportIntent,
-					)
+					ErrorReporterReceiver.getNotificationAction(applicationContext, error, startId, notificationTag)
+				}?.let { action ->
+					notification.addAction(action)
 				}
 			}
 

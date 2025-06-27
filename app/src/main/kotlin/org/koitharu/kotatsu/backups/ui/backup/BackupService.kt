@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.documentfile.provider.DocumentFile
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
@@ -61,8 +62,17 @@ class BackupService : BaseBackupRestoreService() {
 			} else {
 				null
 			}
-			ZipOutputStream(contentResolver.openOutputStream(destination)).use { output ->
-				repository.createBackup(output, progress)
+			try {
+				ZipOutputStream(contentResolver.openOutputStream(destination)).use { output ->
+					repository.createBackup(output, progress)
+				}
+			} catch (e: Throwable) {
+				try {
+					DocumentFile.fromSingleUri(applicationContext, destination)?.delete()
+				} catch (e2: Throwable) {
+					e.addSuppressed(e2)
+				}
+				throw e
 			}
 			progressUpdateJob?.cancelAndJoin()
 			contentResolver.notifyChange(destination, null)

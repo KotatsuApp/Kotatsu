@@ -18,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ErrorReporterReceiver
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
@@ -57,7 +58,7 @@ class ImportService : CoroutineIntentService() {
 				importer.import(uri).manga
 			}
 			if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-				val notification = buildNotification(result)
+				val notification = buildNotification(startId, result)
 				notificationManager.notify(TAG, startId, notification)
 			}
 		}
@@ -65,7 +66,7 @@ class ImportService : CoroutineIntentService() {
 
 	override fun IntentJobContext.onError(error: Throwable) {
 		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-			val notification = runBlocking { buildNotification(Result.failure(error)) }
+			val notification = runBlocking { buildNotification(startId, Result.failure(error)) }
 			notificationManager.notify(TAG, startId, notification)
 		}
 	}
@@ -101,7 +102,7 @@ class ImportService : CoroutineIntentService() {
 		)
 	}
 
-	private suspend fun buildNotification(result: Result<Manga>): Notification {
+	private suspend fun buildNotification(startId: Int, result: Result<Manga>): Notification {
 		val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 			.setDefaults(0)
@@ -127,7 +128,7 @@ class ImportService : CoroutineIntentService() {
 					false,
 				),
 			).setVisibility(
-				if (manga.isNsfw) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PUBLIC,
+				if (manga.isNsfw()) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PUBLIC,
 			)
 			notification.setContentTitle(applicationContext.getString(R.string.import_completed))
 				.setContentText(applicationContext.getString(R.string.import_completed_hint))
@@ -138,12 +139,13 @@ class ImportService : CoroutineIntentService() {
 			notification.setContentTitle(applicationContext.getString(R.string.error_occurred))
 				.setContentText(error.getDisplayMessage(applicationContext.resources))
 				.setSmallIcon(android.R.drawable.stat_notify_error)
-			ErrorReporterReceiver.getPendingIntent(applicationContext, error)?.let { reportIntent ->
-				notification.addAction(
-					R.drawable.ic_alert_outline,
-					applicationContext.getString(R.string.report),
-					reportIntent,
-				)
+			ErrorReporterReceiver.getNotificationAction(
+				context = applicationContext,
+				e = error,
+				notificationId = startId,
+				notificationTag = TAG,
+			)?.let { action ->
+				notification.addAction(action)
 			}
 		}
 		return notification.build()

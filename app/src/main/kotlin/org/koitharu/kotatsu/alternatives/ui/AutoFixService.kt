@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.alternatives.domain.AutoFixUseCase
 import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.model.getTitle
+import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
@@ -58,7 +59,7 @@ class AutoFixService : CoroutineIntentService() {
 					autoFixUseCase.invoke(mangaId)
 				}
 				if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-					val notification = buildNotification(result)
+					val notification = buildNotification(startId, result)
 					notificationManager.notify(TAG, startId, notification)
 				}
 			}
@@ -67,7 +68,7 @@ class AutoFixService : CoroutineIntentService() {
 
 	override fun IntentJobContext.onError(error: Throwable) {
 		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
-			val notification = runBlocking { buildNotification(Result.failure(error)) }
+			val notification = runBlocking { buildNotification(startId, Result.failure(error)) }
 			notificationManager.notify(TAG, startId, notification)
 		}
 	}
@@ -108,7 +109,7 @@ class AutoFixService : CoroutineIntentService() {
 		)
 	}
 
-	private suspend fun buildNotification(result: Result<Pair<Manga, Manga?>>): Notification {
+	private suspend fun buildNotification(startId: Int, result: Result<Pair<Manga, Manga?>>): Notification {
 		val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 			.setDefaults(0)
@@ -135,7 +136,11 @@ class AutoFixService : CoroutineIntentService() {
 						false,
 					),
 				).setVisibility(
-					if (replacement.isNsfw) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PUBLIC,
+					if (replacement.isNsfw()) {
+						NotificationCompat.VISIBILITY_SECRET
+					} else {
+						NotificationCompat.VISIBILITY_PUBLIC
+					},
 				)
 				notification
 					.setContentTitle(applicationContext.getString(R.string.fixed))
@@ -165,12 +170,13 @@ class AutoFixService : CoroutineIntentService() {
 						error.getDisplayMessage(applicationContext.resources)
 					},
 				).setSmallIcon(android.R.drawable.stat_notify_error)
-			ErrorReporterReceiver.getPendingIntent(applicationContext, error)?.let { reportIntent ->
-				notification.addAction(
-					R.drawable.ic_alert_outline,
-					applicationContext.getString(R.string.report),
-					reportIntent,
-				)
+			ErrorReporterReceiver.getNotificationAction(
+				context = applicationContext,
+				e = error,
+				notificationId = startId,
+				notificationTag = TAG,
+			)?.let { action ->
+				notification.addAction(action)
 			}
 		}
 		return notification.build()

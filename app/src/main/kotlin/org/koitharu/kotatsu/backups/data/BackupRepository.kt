@@ -183,8 +183,10 @@ class BackupRepository @Inject constructor(
 		data.onStart {
 			putNextEntry(ZipEntry(section.entryName))
 			write("[")
-		}.onCompletion {
-			write("]")
+		}.onCompletion { error ->
+			if (error == null) {
+				write("]")
+			}
 			closeEntry()
 			flush()
 		}.collectIndexed { index, value ->
