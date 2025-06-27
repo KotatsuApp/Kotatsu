@@ -818,4 +818,18 @@
     <string name="page_switch_timer">Strona będzie się przełączać co ~%d Sekund</string>
     <string name="error_non_file_uri">Wybrana ścieżka nie może być użyta, ponieważ nie oznacza pliku ani katalogu</string>
     <string name="badges_in_lists">Plakietki na listach</string>
+    <string name="collapse">Zwiń</string>
+    <string name="expand">Rozwiń</string>
+    <string name="adblock">Blokuj reklamy w przeglądarce</string>
+    <string name="adblock_summary">Blokuj reklamy we wbudowanej przeglądarce (beta)</string>
+    <string name="creating_backup">Tworzenie kopii zapasowej</string>
+    <string name="collapse_long_description">Zwiń długi opis</string>
+    <string name="changelog">Lista zmian</string>
+    <string name="changelog_summary">Historia zmian dla ostatnio wydanych wersji</string>
+    <string name="reader_multitask_summary">Pozwala na jednoczesne trzymanie wielu czytelników z różnymi mangami otwartymi</string>
+    <string name="share_backup">Udostępnianie kopii zapasowej</string>
+    <string name="reader_multitask">Otwórz czytnik w osobnym zadaniu</string>
+    <string name="hide_from_main_screen">Ukryj na ekranie głównym</string>
+    <string name="theme_name_itsuka">Itsuka</string>
+    <string name="theme_name_totoro">Totoro</string>
 </resources>
