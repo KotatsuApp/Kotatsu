@@ -22,7 +22,7 @@
     <string name="add_to_favourites">Přidat do oblíbených</string>
     <string name="add">Přidat</string>
     <string name="share">Sdílet</string>
-    <string name="create_shortcut">Vytvořit zkratku…</string>
+    <string name="create_shortcut">Vytvořit zkratku</string>
     <string name="share_s">Sdílet %s</string>
     <string name="processing_">Zpracovávání…</string>
     <string name="download_complete">Staženo</string>
@@ -802,4 +802,14 @@
     <string name="clear_browser_data_summary">Vyčistit data prohlížeče, např. cache a cookies. Upozornění: Všude budete odhlášeni a budte muset znovu řešit captcha</string>
     <string name="global_search">Globální vyhledávání</string>
     <string name="search_everywhere">Hledat všude</string>
+    <string name="expand">Rozbalit</string>
+    <string name="collapse">Sbalit</string>
+    <string name="adblock">Blokuje reklamy v prohlížeči</string>
+    <string name="adblock_summary">Blokuje reklamy ve vestavěném prohlížeči (beta)</string>
+    <string name="manga_override_hint">Tyto změny ovlivní způsob, jakým se manga v aplikaci zobrazuje</string>
+    <string name="dont_ask_again">Neptat se znovu</string>
+    <string name="share_backup">Sdílet zálohu</string>
+    <string name="creating_backup">Vytváření kopie</string>
+    <string name="collapse_long_description">Sbalit dlouhý popis</string>
+    <string name="changelog">Seznam změn</string>
 </resources>
