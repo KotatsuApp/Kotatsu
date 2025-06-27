@@ -825,4 +825,9 @@
     <string name="expand">Genişlet</string>
     <string name="adblock">Tarayıcıda reklamları engelle</string>
     <string name="adblock_summary">Dahili tarayıcıda reklamları engelle (beta)</string>
+    <string name="collapse_long_description">Uzun açıklamayı küçült</string>
+    <string name="creating_backup">Yedek oluşturuluyor</string>
+    <string name="share_backup">Yedeği paylaş</string>
+    <string name="reader_multitask">Okuyucuyu başka bir görevde aç</string>
+    <string name="reader_multitask_summary">Aynı anda farklı okuyucularda farklı mangaları açmanızı sağlar</string>
 </resources>
