@@ -823,4 +823,6 @@
     <string name="changelog">Histórico de alterações</string>
     <string name="changelog_summary">Histórico de alterações das últimas versões</string>
     <string name="expand">Expandir</string>
+    <string name="creating_backup">Criando o backup</string>
+    <string name="share_backup">Compartilhar backup</string>
 </resources>
