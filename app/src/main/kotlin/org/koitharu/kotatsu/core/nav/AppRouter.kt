@@ -52,6 +52,7 @@ import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.findActivity
 import org.koitharu.kotatsu.core.util.ext.getThemeDrawable
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.core.util.ext.withArgs
@@ -614,9 +615,11 @@ class AppRouter private constructor(
 		startActivity(Intent(contextOrNull() ?: return, activityClass))
 	}
 
-	private fun getFragmentManager(): FragmentManager? {
-		return fragment?.childFragmentManager ?: activity?.supportFragmentManager
-	}
+	private fun getFragmentManager(): FragmentManager? = runCatching {
+		fragment?.childFragmentManager ?: activity?.supportFragmentManager
+	}.onFailure { exception ->
+		exception.printStackTraceDebug()
+	}.getOrNull()
 
 	private fun shareLink(link: String, title: String) {
 		val context = contextOrNull() ?: return

@@ -7,6 +7,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import org.koitharu.kotatsu.core.util.ext.isAnimationsEnabled
+import org.koitharu.kotatsu.core.util.ext.isOnScreen
 
 inline val FragmentActivity.router: AppRouter
 	get() = AppRouter(this)
@@ -26,14 +27,15 @@ tailrec fun Fragment.dismissParentDialog(): Boolean {
 	}
 }
 
-fun scaleUpActivityOptionsOf(view: View): Bundle? = if (view.context.isAnimationsEnabled) {
-	ActivityOptions.makeScaleUpAnimation(
-		view,
-		0,
-		0,
-		view.width,
-		view.height,
+fun scaleUpActivityOptionsOf(view: View): Bundle? {
+	if (!view.context.isAnimationsEnabled || !view.isOnScreen()) {
+		return null
+	}
+	return ActivityOptions.makeScaleUpAnimation(
+		/* source = */ view,
+		/* startX = */ 0,
+		/* startY = */ 0,
+		/* width = */ view.width,
+		/* height = */ view.height,
 	).toBundle()
-} else {
-	null
 }
