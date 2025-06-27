@@ -29,7 +29,7 @@
     <string name="add_new_category">नई श्रेणी</string>
     <string name="clear_history">इतिहास साफ करें</string>
     <string name="share">साझा करें</string>
-    <string name="create_shortcut">शॉर्टकट बनाएं…</string>
+    <string name="create_shortcut">शॉर्टकट बनाएं</string>
     <string name="share_s">%s साझा करें</string>
     <string name="search">खोजें</string>
     <string name="search_manga">मंगा खोजें</string>
@@ -209,7 +209,7 @@
     <string name="send">भेजें</string>
     <string name="disable_all">सब अक्षम करें</string>
     <string name="use_fingerprint">यदि उपलब्ध हो तो बायोमेट्रिक का उपयोग करें</string>
-    <string name="appwidget_shelf_description">आपके पसंदीदा में से मंगा</string>
+    <string name="appwidget_shelf_description">आपके पसंदीदा में से मांगा</string>
     <string name="appwidget_recent_description">आपके हालिया पढ़ें मंगा</string>
     <string name="report">रिपोर्ट</string>
     <string name="status_planned">योजना बनाई</string>
@@ -290,7 +290,7 @@
     <string name="enable">सक्षम</string>
     <string name="no_thanks">जी नहीं, धन्यवाद</string>
     <string name="cancel_all_downloads_confirm">सभी सक्रिय डाउनलोड रद्द कर दिए जाएंगे, आंशिक रूप से डाउनलोड किया गया डेटा खो जाएगा</string>
-    <string name="remove_completed_downloads_confirm">आपका डाउनलोड इतिहास स्थायी रूप से हटा दिया जाएगा</string>
+    <string name="remove_completed_downloads_confirm">आपका डाउनलोड इतिहास स्थायी रूप से हटा दिया जाएगा। कोई भी डाउनलोड की गई फ़ाइल प्रभावित नहीं होगी।</string>
     <string name="text_downloads_list_holder">आपके पास कोई डाउनलोड नहीं है</string>
     <string name="downloads_resumed">डाउनलोड फिर से शुरू कर दिए गए हैं</string>
     <string name="downloads_paused">डाउनलोड रोक दिए गए हैं</string>
@@ -666,4 +666,6 @@
     <string name="pages_saved">सहेजे गए पृष्ठ</string>
     <string name="invalid_server_address_message">अमान्य सर्वर पता</string>
     <string name="retry">पुनः प्रयत्न करें</string>
+    <string name="nsfw_16">१६+</string>
+    <string name="too_many_requests_message_retry">बहुत अधिक अनुरोध. %s बाद में फिर से प्रयास करें</string>
 </resources>
