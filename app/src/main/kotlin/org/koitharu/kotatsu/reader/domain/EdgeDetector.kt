@@ -111,7 +111,6 @@ class EdgeDetector(private val context: Context) {
 				val blockHeight = min(BLOCK_SIZE / sampleSize, bitmapHeight - bitmapY)
 				
 				if (blockWidth > 0 && blockHeight > 0) {
-					// Read pixels directly from the full bitmap
 					bitmap.getPixels(blockPixels, 0, blockWidth, bitmapX, bitmapY, blockWidth, blockHeight)
 					
 					for (ii in 0 until minOf(blockWidth, dd / sampleSize)) {
@@ -162,7 +161,6 @@ class EdgeDetector(private val context: Context) {
 				val blockHeight = min(BLOCK_SIZE / sampleSize, bitmapHeight - bitmapY)
 				
 				if (blockWidth > 0 && blockHeight > 0) {
-					// Read pixels directly from the full bitmap
 					bitmap.getPixels(blockPixels, 0, blockWidth, bitmapX, bitmapY, blockWidth, blockHeight)
 					
 					for (jj in 0 until minOf(blockHeight, dd / sampleSize)) {
