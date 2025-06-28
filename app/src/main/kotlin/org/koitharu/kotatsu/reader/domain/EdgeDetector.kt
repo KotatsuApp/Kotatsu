@@ -47,7 +47,6 @@ class EdgeDetector(private val context: Context) {
 					val scaleFactor = calculateScaleFactor(size)
 					val sampleSize = (1f / scaleFactor).toInt().coerceAtLeast(1)
 					
-					// CRITICAL CHANGE: Decode entire image once instead of regions
 					val fullBitmap = decoder.decodeRegion(
 						Rect(0, 0, size.x, size.y), 
 						sampleSize
@@ -56,10 +55,10 @@ class EdgeDetector(private val context: Context) {
 					try {
 						val edges = coroutineScope {
 							listOf(
-								async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = true) },
-								async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = true) },
-								async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = false) },
-								async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = false) },
+							async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = true) },
+							async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = true) },
+							async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = false) },
+							async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = false) },
 							).awaitAll()
 						}
 						var hasEdges = false
