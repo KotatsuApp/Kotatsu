@@ -8,10 +8,6 @@ import androidx.core.content.edit
 import androidx.fragment.app.strictmode.FragmentStrictMode
 import leakcanary.LeakCanary
 import org.koitharu.kotatsu.core.BaseApp
-import org.koitharu.kotatsu.local.data.LocalMangaRepository
-import org.koitharu.kotatsu.local.data.PagesCache
-import org.koitharu.kotatsu.parsers.MangaLoaderContext
-import org.koitharu.kotatsu.reader.domain.PageLoader
 
 class KotatsuApp : BaseApp() {
 
@@ -62,10 +58,6 @@ class KotatsuApp : BaseApp() {
 				detectLeakedRegistrationObjects()
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) detectContentUriWithoutPermission()
 				detectFileUriExposure()
-				setClassInstanceLimit(LocalMangaRepository::class.java, 1)
-				setClassInstanceLimit(PagesCache::class.java, 1)
-				setClassInstanceLimit(MangaLoaderContext::class.java, 1)
-				setClassInstanceLimit(PageLoader::class.java, 1)
 				penaltyLog()
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && notifier != null) {
 					penaltyListener(notifier.executor, notifier)
