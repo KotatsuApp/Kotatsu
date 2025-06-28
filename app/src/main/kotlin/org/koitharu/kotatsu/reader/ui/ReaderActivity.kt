@@ -109,7 +109,7 @@ class ReaderActivity :
 		setContentView(ActivityReaderBinding.inflate(layoutInflater))
 		readerManager = ReaderManager(supportFragmentManager, viewBinding.container, settings)
 		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
-		touchHelper = TapGridDispatcher(this, this)
+		touchHelper = TapGridDispatcher(viewBinding.root, this)
 		scrollTimer = scrollTimerFactory.create(resources, this, this)
 		pageSaveHelper = pageSaveHelperFactory.create(this)
 		controlDelegate = ReaderControlDelegate(resources, settings, tapGridSettings, this)

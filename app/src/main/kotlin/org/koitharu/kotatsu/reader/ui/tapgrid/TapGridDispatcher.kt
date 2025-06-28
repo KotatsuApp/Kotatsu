@@ -1,19 +1,17 @@
 package org.koitharu.kotatsu.reader.ui.tapgrid
 
-import android.content.Context
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.View
 import org.koitharu.kotatsu.reader.domain.TapGridArea
 import kotlin.math.roundToInt
 
 class TapGridDispatcher(
-	context: Context,
+	private val rootView: View,
 	private val listener: OnGridTouchListener,
 ) : GestureDetector.SimpleOnGestureListener() {
 
-	private val detector = GestureDetector(context, this)
-	private val width = context.resources.displayMetrics.widthPixels
-	private val height = context.resources.displayMetrics.heightPixels
+	private val detector = GestureDetector(rootView.context, this)
 	private var isDispatching = false
 
 	init {
@@ -49,6 +47,11 @@ class TapGridDispatcher(
 	}
 
 	private fun getArea(x: Float, y: Float): TapGridArea? {
+		val width = rootView.width
+		val height = rootView.height
+		if (height <= 0 || width <= 0) {
+			return null
+		}
 		val xIndex = (x * 2f / width).roundToInt()
 		val yIndex = (y * 2f / height).roundToInt()
 		val area = when (xIndex) {
