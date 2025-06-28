@@ -90,7 +90,7 @@ class EdgeDetector(private val context: Context) {
 		var width = size.x
 		val rectCount = size.x / BLOCK_SIZE
 		val maxRect = rectCount / 3
-		val blockPixels = IntArray(BLOCK_SIZE * BLOCK_SIZE) // Pixel buffer for bulk reading
+		val blockPixels = IntArray(BLOCK_SIZE * BLOCK_SIZE)
 		
 		val bitmapWidth = bitmap.width
 		val bitmapHeight = bitmap.height
@@ -141,7 +141,7 @@ class EdgeDetector(private val context: Context) {
 		var height = size.y
 		val rectCount = size.y / BLOCK_SIZE
 		val maxRect = rectCount / 3
-		val blockPixels = IntArray(BLOCK_SIZE * BLOCK_SIZE) // Pixel buffer for bulk reading
+		val blockPixels = IntArray(BLOCK_SIZE * BLOCK_SIZE)
 		
 		val bitmapWidth = bitmap.width
 		val bitmapHeight = bitmap.height
