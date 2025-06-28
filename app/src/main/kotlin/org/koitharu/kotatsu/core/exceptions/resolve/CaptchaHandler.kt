@@ -77,7 +77,7 @@ class CaptchaHandler @Inject constructor(
 				override fun onReceive(context: Context?, intent: Intent?) {
 					val sourceName = intent?.getStringExtra(AppRouter.KEY_SOURCE) ?: return
 					goAsync {
-						discard(MangaSource(sourceName))
+						handleException(MangaSource(sourceName), exception = null, notify = false)
 					}
 				}
 			},
@@ -86,10 +86,10 @@ class CaptchaHandler @Inject constructor(
 		)
 	}
 
-	suspend fun handle(exception: CloudFlareException): Boolean = handleException(exception.source, exception)
+	suspend fun handle(exception: CloudFlareException): Boolean = handleException(exception.source, exception, true)
 
 	suspend fun discard(source: MangaSource) {
-		handleException(source, null)
+		handleException(source, null, true)
 	}
 
 	override fun onError(request: ImageRequest, result: ErrorResult) {
@@ -98,23 +98,25 @@ class CaptchaHandler @Inject constructor(
 		if (e is CloudFlareException && request.extras[ignoreCaptchaKey] != true) {
 			val scope = request.lifecycle?.coroutineScope ?: processLifecycleScope
 			scope.launch {
-				handleException(e.source, e)
+				handleException(e.source, e, true)
 			}
 		}
 	}
 
 	private suspend fun handleException(
 		source: MangaSource,
-		exception: CloudFlareException?
+		exception: CloudFlareException?,
+		notify: Boolean
 	): Boolean = withContext(Dispatchers.Default) {
 		if (source == UnknownMangaSource) {
 			return@withContext false
 		}
 		mutex.withLock {
+			var removedException: CloudFlareProtectedException? = null
 			if (exception is CloudFlareProtectedException) {
 				exceptionMap[source] = exception
 			} else {
-				exceptionMap.remove(source)
+				removedException = exceptionMap.remove(source)
 			}
 			val dao = databaseProvider.get().getSourcesDao()
 			dao.setCfState(source.name, exception?.state ?: CloudFlareHelper.PROTECTION_NOT_DETECTED)
@@ -126,7 +128,10 @@ class CaptchaHandler @Inject constructor(
 			}.mapNotNull {
 				exceptionMap[it]
 			}
-			if (exceptions.isNotEmpty() && context.checkNotificationPermission(CHANNEL_ID)) {
+			if (notify && context.checkNotificationPermission(CHANNEL_ID)) {
+				if (removedException != null) {
+					NotificationManagerCompat.from(context).cancel(TAG, removedException.source.hashCode())
+				}
 				notify(exceptions)
 			}
 		}
