@@ -93,11 +93,9 @@ interface NetworkModule {
 		fun provideMangaHttpClient(
 			@BaseHttpClient baseClient: OkHttpClient,
 			commonHeadersInterceptor: CommonHeadersInterceptor,
-			mirrorSwitchInterceptor: MirrorSwitchInterceptor,
 		): OkHttpClient = baseClient.newBuilder().apply {
 			addNetworkInterceptor(CacheLimitInterceptor())
 			addInterceptor(commonHeadersInterceptor)
-			addInterceptor(mirrorSwitchInterceptor)
 		}.build()
 
 	}

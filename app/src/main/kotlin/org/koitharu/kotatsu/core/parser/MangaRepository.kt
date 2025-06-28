@@ -8,7 +8,6 @@ import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.MangaSourceInfo
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
-import org.koitharu.kotatsu.core.network.MirrorSwitchInterceptor
 import org.koitharu.kotatsu.core.parser.external.ExternalMangaRepository
 import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
@@ -25,7 +24,6 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.set
 
 interface MangaRepository {
 
@@ -60,7 +58,7 @@ interface MangaRepository {
 		private val localMangaRepository: LocalMangaRepository,
 		private val loaderContext: MangaLoaderContext,
 		private val contentCache: MemoryContentCache,
-		private val mirrorSwitchInterceptor: MirrorSwitchInterceptor,
+		private val mirrorSwitcher: MirrorSwitcher,
 	) {
 
 		private val cache = ArrayMap<MangaSource, WeakReference<MangaRepository>>()
@@ -89,7 +87,7 @@ interface MangaRepository {
 			is MangaParserSource -> ParserMangaRepository(
 				parser = MangaParser(source, loaderContext),
 				cache = contentCache,
-				mirrorSwitchInterceptor = mirrorSwitchInterceptor,
+				mirrorSwitcher = mirrorSwitcher,
 			)
 
 			is ExternalMangaSource -> if (source.isAvailable(context)) {

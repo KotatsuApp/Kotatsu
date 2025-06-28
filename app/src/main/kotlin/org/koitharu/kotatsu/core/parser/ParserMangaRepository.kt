@@ -4,11 +4,14 @@ import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.koitharu.kotatsu.core.cache.MemoryContentCache
-import org.koitharu.kotatsu.core.network.MirrorSwitchInterceptor
+import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.InteractiveActionRequiredException
+import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.MangaParserAuthProvider
 import org.koitharu.kotatsu.parsers.config.ConfigKey
+import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.model.Favicons
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
@@ -23,12 +26,12 @@ import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 
 class ParserMangaRepository(
 	private val parser: MangaParser,
-	private val mirrorSwitchInterceptor: MirrorSwitchInterceptor,
+	private val mirrorSwitcher: MirrorSwitcher,
 	cache: MemoryContentCache,
 ) : CachingMangaRepository(cache), Interceptor {
 
 	private val filterOptionsLazy = suspendLazy(Dispatchers.Default) {
-		mirrorSwitchInterceptor.withMirrorSwitching {
+		withMirrors {
 			parser.getFilterOptions()
 		}
 	}
@@ -60,18 +63,18 @@ class ParserMangaRepository(
 	override fun intercept(chain: Interceptor.Chain): Response = parser.intercept(chain)
 
 	override suspend fun getList(offset: Int, order: SortOrder?, filter: MangaListFilter?): List<Manga> {
-		return mirrorSwitchInterceptor.withMirrorSwitching {
+		return withMirrors {
 			parser.getList(offset, order ?: defaultSortOrder, filter ?: MangaListFilter.EMPTY)
 		}
 	}
 
 	override suspend fun getPagesImpl(
 		chapter: MangaChapter
-	): List<MangaPage> = mirrorSwitchInterceptor.withMirrorSwitching {
+	): List<MangaPage> = withMirrors {
 		parser.getPages(chapter)
 	}
 
-	override suspend fun getPageUrl(page: MangaPage): String = mirrorSwitchInterceptor.withMirrorSwitching {
+	override suspend fun getPageUrl(page: MangaPage): String = withMirrors {
 		parser.getPageUrl(page).also { result ->
 			check(result.isNotEmpty()) { "Page url is empty" }
 		}
@@ -79,13 +82,13 @@ class ParserMangaRepository(
 
 	override suspend fun getFilterOptions(): MangaListFilterOptions = filterOptionsLazy.get()
 
-	suspend fun getFavicons(): Favicons = mirrorSwitchInterceptor.withMirrorSwitching {
+	suspend fun getFavicons(): Favicons = withMirrors {
 		parser.getFavicons()
 	}
 
 	override suspend fun getRelatedMangaImpl(seed: Manga): List<Manga> = parser.getRelatedManga(seed)
 
-	override suspend fun getDetailsImpl(manga: Manga): Manga = mirrorSwitchInterceptor.withMirrorSwitching {
+	override suspend fun getDetailsImpl(manga: Manga): Manga = withMirrors {
 		parser.getDetails(manga)
 	}
 
@@ -107,31 +110,34 @@ class ParserMangaRepository(
 
 	fun getConfig() = parser.config as SourceSettings
 
-	private suspend fun <R> MirrorSwitchInterceptor.withMirrorSwitching(block: suspend () -> R): R {
-		if (!isEnabled) {
+	private suspend fun <T : Any> withMirrors(block: suspend () -> T): T {
+		if (!mirrorSwitcher.isEnabled) {
 			return block()
 		}
-		val initialMirror = domain
-		val result = runCatchingCancellable {
-			block()
+		val initialResult = runCatchingCancellable { block() }
+		if (initialResult.isValidResult()) {
+			return initialResult.getOrThrow()
 		}
-		if (result.isValidResult()) {
-			return result.getOrThrow()
-		}
-		return if (trySwitchMirror(this@ParserMangaRepository)) {
-			val newResult = runCatchingCancellable {
-				block()
-			}
-			if (newResult.isValidResult()) {
-				return newResult.getOrThrow()
-			} else {
-				rollback(this@ParserMangaRepository, initialMirror)
-				return result.getOrThrow()
-			}
-		} else {
-			result.getOrThrow()
-		}
+		val newResult = mirrorSwitcher.trySwitchMirror(this, block)
+		return newResult ?: initialResult.getOrThrow()
 	}
 
-	private fun Result<*>.isValidResult() = isSuccess && (getOrNull() as? Collection<*>)?.isEmpty() != true
+	private fun Result<Any>.isValidResult() = fold(
+		onSuccess = {
+			when (it) {
+				is Collection<*> -> it.isNotEmpty()
+				else -> true
+			}
+		},
+		onFailure = {
+			when (it.cause) {
+				is CloudFlareProtectedException,
+				is AuthRequiredException,
+				is InteractiveActionRequiredException,
+				is ProxyConfigException -> true
+
+				else -> false
+			}
+		},
+	)
 }
