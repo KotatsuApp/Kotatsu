@@ -25,6 +25,8 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.util.SynchronizedSieveCache
 import org.koitharu.kotatsu.core.util.ext.use
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class EdgeDetector(private val context: Context) {
 
@@ -42,26 +44,38 @@ class EdgeDetector(private val context: Context) {
 					val size = runInterruptible {
 						decoder.init(context, imageSource)
 					}
-					val edges = coroutineScope {
-						listOf(
-							async { detectLeftRightEdge(decoder, size, isLeft = true) },
-							async { detectTopBottomEdge(decoder, size, isTop = true) },
-							async { detectLeftRightEdge(decoder, size, isLeft = false) },
-							async { detectTopBottomEdge(decoder, size, isTop = false) },
-						).awaitAll()
-					}
-					var hasEdges = false
-					for (edge in edges) {
-						if (edge > 0) {
-							hasEdges = true
-						} else if (edge < 0) {
-							return@withContext null
+					val scaleFactor = calculateScaleFactor(size)
+					val sampleSize = (1f / scaleFactor).toInt().coerceAtLeast(1)
+					
+					val fullBitmap = decoder.decodeRegion(
+						Rect(0, 0, size.x, size.y), 
+						sampleSize
+					)
+					
+					try {
+						val edges = coroutineScope {
+							listOf(
+							async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = true) },
+							async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = true) },
+							async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = false) },
+							async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = false) },
+							).awaitAll()
 						}
-					}
-					if (hasEdges) {
-						Rect(edges[0], edges[1], size.x - edges[2], size.y - edges[3])
-					} else {
-						null
+						var hasEdges = false
+						for (edge in edges) {
+							if (edge > 0) {
+								hasEdges = true
+							} else if (edge < 0) {
+								return@withContext null
+							}
+						}
+						if (hasEdges) {
+							Rect(edges[0], edges[1], size.x - edges[2], size.y - edges[3])
+						} else {
+							null
+						}
+					} finally {
+						fullBitmap.recycle()
 					}
 				} finally {
 					decoder.recycle()
@@ -72,10 +86,15 @@ class EdgeDetector(private val context: Context) {
 		}
 	}
 
-	private fun detectLeftRightEdge(decoder: ImageRegionDecoder, size: Point, isLeft: Boolean): Int {
+	private fun detectLeftRightEdge(bitmap: Bitmap, size: Point, sampleSize: Int, isLeft: Boolean): Int {
 		var width = size.x
 		val rectCount = size.x / BLOCK_SIZE
 		val maxRect = rectCount / 3
+		val blockPixels = IntArray(BLOCK_SIZE * BLOCK_SIZE)
+		
+		val bitmapWidth = bitmap.width
+		val bitmapHeight = bitmap.height
+		
 		for (i in 0 until rectCount) {
 			if (i > maxRect) {
 				return -1
@@ -83,13 +102,24 @@ class EdgeDetector(private val context: Context) {
 			var dd = BLOCK_SIZE
 			for (j in 0 until size.y / BLOCK_SIZE) {
 				val regionX = if (isLeft) i * BLOCK_SIZE else size.x - (i + 1) * BLOCK_SIZE
-				decoder.decodeRegion(region(regionX, j * BLOCK_SIZE), 1).use { bitmap ->
-					for (ii in 0 until minOf(BLOCK_SIZE, dd)) {
-						for (jj in 0 until BLOCK_SIZE) {
-							val bi = if (isLeft) ii else BLOCK_SIZE - ii - 1
-							if (bitmap[bi, jj].isNotWhite()) {
-								width = minOf(width, BLOCK_SIZE * i + ii)
-								dd--
+				val regionY = j * BLOCK_SIZE
+				
+				// Convert to bitmap coordinates
+				val bitmapX = regionX / sampleSize
+				val bitmapY = regionY / sampleSize
+				val blockWidth = min(BLOCK_SIZE / sampleSize, bitmapWidth - bitmapX)
+				val blockHeight = min(BLOCK_SIZE / sampleSize, bitmapHeight - bitmapY)
+				
+				if (blockWidth > 0 && blockHeight > 0) {
+					bitmap.getPixels(blockPixels, 0, blockWidth, bitmapX, bitmapY, blockWidth, blockHeight)
+					
+					for (ii in 0 until minOf(blockWidth, dd / sampleSize)) {
+						for (jj in 0 until blockHeight) {
+							val bi = if (isLeft) ii else blockWidth - ii - 1
+							val pixel = blockPixels[jj * blockWidth + bi]
+							if (pixel.isNotWhite()) {
+								width = minOf(width, BLOCK_SIZE * i + ii * sampleSize)
+								dd -= sampleSize
 								break
 							}
 						}
@@ -106,24 +136,40 @@ class EdgeDetector(private val context: Context) {
 		return width
 	}
 
-	private fun detectTopBottomEdge(decoder: ImageRegionDecoder, size: Point, isTop: Boolean): Int {
+	private fun detectTopBottomEdge(bitmap: Bitmap, size: Point, sampleSize: Int, isTop: Boolean): Int {
 		var height = size.y
 		val rectCount = size.y / BLOCK_SIZE
 		val maxRect = rectCount / 3
+		val blockPixels = IntArray(BLOCK_SIZE * BLOCK_SIZE)
+		
+		val bitmapWidth = bitmap.width
+		val bitmapHeight = bitmap.height
+		
 		for (j in 0 until rectCount) {
 			if (j > maxRect) {
 				return -1
 			}
 			var dd = BLOCK_SIZE
 			for (i in 0 until size.x / BLOCK_SIZE) {
+				val regionX = i * BLOCK_SIZE
 				val regionY = if (isTop) j * BLOCK_SIZE else size.y - (j + 1) * BLOCK_SIZE
-				decoder.decodeRegion(region(i * BLOCK_SIZE, regionY), 1).use { bitmap ->
-					for (jj in 0 until minOf(BLOCK_SIZE, dd)) {
-						for (ii in 0 until BLOCK_SIZE) {
-							val bj = if (isTop) jj else BLOCK_SIZE - jj - 1
-							if (bitmap[ii, bj].isNotWhite()) {
-								height = minOf(height, BLOCK_SIZE * j + jj)
-								dd--
+				
+				// Convert to bitmap coordinates
+				val bitmapX = regionX / sampleSize
+				val bitmapY = regionY / sampleSize
+				val blockWidth = min(BLOCK_SIZE / sampleSize, bitmapWidth - bitmapX)
+				val blockHeight = min(BLOCK_SIZE / sampleSize, bitmapHeight - bitmapY)
+				
+				if (blockWidth > 0 && blockHeight > 0) {
+					bitmap.getPixels(blockPixels, 0, blockWidth, bitmapX, bitmapY, blockWidth, blockHeight)
+					
+					for (jj in 0 until minOf(blockHeight, dd / sampleSize)) {
+						for (ii in 0 until blockWidth) {
+							val bj = if (isTop) jj else blockHeight - jj - 1
+							val pixel = blockPixels[bj * blockWidth + ii]
+							if (pixel.isNotWhite()) {
+								height = minOf(height, BLOCK_SIZE * j + jj * sampleSize)
+								dd -= sampleSize
 								break
 							}
 						}
@@ -138,6 +184,20 @@ class EdgeDetector(private val context: Context) {
 			}
 		}
 		return height
+	}
+
+	/**
+	 * Calculate scale factor for performance optimization.
+	 * Large images can be downscaled for edge detection without losing accuracy.
+	 */
+	private fun calculateScaleFactor(size: Point): Float {
+		val maxDimension = max(size.x, size.y)
+		return when {
+			maxDimension <= 1024 -> 1.0f
+			maxDimension <= 2048 -> 0.75f
+			maxDimension <= 4096 -> 0.5f
+			else -> 0.25f
+		}
 	}
 
 	companion object {
