@@ -54,6 +54,7 @@
 		<item name="windowActionModeOverlay">true</item>
 
 		<!-- System components styles -->
+		<item name="android:alertDialogTheme">@style/ThemeOverlay.Kotatsu.AlertDialog</item>
 		<item name="alertDialogTheme">@style/ThemeOverlay.Kotatsu.AlertDialog</item>
 		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Kotatsu.BottomSheetDialog</item>
 		<item name="sideSheetDialogTheme">@style/ThemeOverlay.Kotatsu.SideSheetDialog</item>
