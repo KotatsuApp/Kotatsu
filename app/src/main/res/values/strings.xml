@@ -566,7 +566,7 @@
 	<string name="switch_pages_volume_buttons">Enable volume buttons</string>
 	<string name="switch_pages_volume_buttons_summary">Use volume buttons for switching pages</string>
 	<string name="reader_navigation_inverted">Invert navigation controls</string>
-	<string name="reader_navigation_inverted_summary">Swap the direction of volume button and screen tap navigation (left becomes right, right becomes left)</string>
+	<string name="reader_navigation_inverted_summary">Swap the direction of volume button and hardware key navigation (left becomes right, right becomes left)</string>
 	<string name="tap_action">Tap action</string>
 	<string name="long_tap_action">Long tap action</string>
 	<string name="none">None</string>

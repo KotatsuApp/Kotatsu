@@ -95,10 +95,10 @@ class ReaderControlDelegate(
 
 	private fun processAction(action: TapAction) {
 		when (action) {
-			TapAction.PAGE_NEXT -> listener.switchPageBy(if (settings.isReaderNavigationInverted) -1 else 1)
-			TapAction.PAGE_PREV -> listener.switchPageBy(if (settings.isReaderNavigationInverted) 1 else -1)
-			TapAction.CHAPTER_NEXT -> listener.switchChapterBy(if (settings.isReaderNavigationInverted) -1 else 1)
-			TapAction.CHAPTER_PREV -> listener.switchChapterBy(if (settings.isReaderNavigationInverted) 1 else -1)
+			TapAction.PAGE_NEXT -> listener.switchPageBy(1)
+			TapAction.PAGE_PREV -> listener.switchPageBy(-1)
+			TapAction.CHAPTER_NEXT -> listener.switchChapterBy(1)
+			TapAction.CHAPTER_PREV -> listener.switchChapterBy(-1)
 			TapAction.TOGGLE_UI -> listener.toggleUiVisibility()
 			TapAction.SHOW_MENU -> listener.openMenu()
 		}
