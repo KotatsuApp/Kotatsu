@@ -756,7 +756,7 @@
     <string name="rating">评分</string>
     <string name="source">来源</string>
     <string name="translation">翻译</string>
-    <string name="incognito">无痕</string>
+    <string name="incognito">无痕阅读</string>
     <string name="show_slider">显示滑块</string>
     <string name="error_connection_reset">远程主机重置了连接</string>
     <string name="backup_tg_echo">测试消息</string>
@@ -812,8 +812,22 @@
     <string name="use_default_cover">使用默认封面</string>
     <string name="pick_manga_page">使用漫画页面</string>
     <string name="page_switch_timer">本页将在每 %d 秒切换到下一页</string>
-    <string name="incognito_for_nsfw">R18无痕模式</string>
+    <string name="incognito_for_nsfw">成人漫画无痕模式</string>
     <string name="incognito_mode_hint_nsfw">此漫画可能包含成人内容，需要打开无痕模式继续浏览吗？</string>
     <string name="dont_ask_again">不再询问</string>
     <string name="hide_from_main_screen">从主页面中隐藏</string>
+    <string name="collapse">折叠</string>
+    <string name="expand">展开</string>
+    <string name="adblock">屏蔽广告</string>
+    <string name="adblock_summary">屏蔽内置浏览器内显示的广告 (实验性)</string>
+    <string name="theme_name_expressive">印象 (实验性)</string>
+    <string name="collapse_long_description">折叠过长简介</string>
+    <string name="changelog_summary">最近已发布版本的更新日志</string>
+    <string name="changelog">更新日志</string>
+    <string name="share_backup">分享备份</string>
+    <string name="creating_backup">创建备份中</string>
+    <string name="reader_multitask">以独立窗口打开阅读器</string>
+    <string name="reader_multitask_summary">允许阅读不同漫画时打开多个同时共存的阅读器</string>
+    <string name="theme_name_itsuka">Itsuka</string>
+    <string name="theme_name_totoro">Totoro</string>
 </resources>
