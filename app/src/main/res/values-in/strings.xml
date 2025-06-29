@@ -806,4 +806,10 @@
     <string name="tags_warnings">tandai genre berbahaya</string>
     <string name="tags_warnings_summary">Tandai genre yang mungkin tidak pantas untuk sebagian besar pengguna</string>
     <string name="error_non_file_uri">Jalur yang dipilih tidak dapat digunakan karena tidak menunjukkan berkas atau direktori</string>
+    <string name="use_default_cover">gunakan penutup default</string>
+    <string name="pick_manga_page">Indonesian</string>
+    <string name="pick_custom_file">Indonesian</string>
+    <string name="change_cover">Indonesian</string>
+    <string name="theme_name_expressive">Indonesian</string>
+    <string name="page_switch_timer">Indonesian</string>
 </resources>
