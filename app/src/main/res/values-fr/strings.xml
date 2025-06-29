@@ -826,4 +826,8 @@
     <string name="share_backup">Partager la sauvegarde</string>
     <string name="creating_backup">Création de sauvegarde</string>
     <string name="collapse_long_description">Réduire la description longue</string>
+    <string name="reader_multitask_summary">Permet de garder plusieurs lecteurs avec différents mangas ouverts en même temps</string>
+    <string name="theme_name_itsuka">Itsuka</string>
+    <string name="theme_name_totoro">Totoro</string>
+    <string name="reader_multitask">Ouvrir le lecteur dans une tâche séparée</string>
 </resources>
