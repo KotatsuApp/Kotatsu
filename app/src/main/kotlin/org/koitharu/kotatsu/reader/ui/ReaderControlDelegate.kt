@@ -60,28 +60,28 @@ class ReaderControlDelegate(
 			KeyEvent.KEYCODE_L -> switchBy(-1, null, false)
 
 			KeyEvent.KEYCODE_VOLUME_UP -> if (settings.isReaderVolumeButtonsEnabled) {
-				switchBy(-1, event, false)
+				switchBy(if (settings.isReaderNavigationInverted) 1 else -1, event, false)
 			} else {
 				return false
 			}
 
 			KeyEvent.KEYCODE_VOLUME_DOWN -> if (settings.isReaderVolumeButtonsEnabled) {
-				switchBy(1, event, false)
+				switchBy(if (settings.isReaderNavigationInverted) -1 else 1, event, false)
 			} else {
 				return false
 			}
 
-			KeyEvent.KEYCODE_DPAD_RIGHT -> switchByRelative(1, event)
+			KeyEvent.KEYCODE_DPAD_RIGHT -> switchByRelative(if (settings.isReaderNavigationInverted) -1 else 1, event)
 
-			KeyEvent.KEYCODE_DPAD_LEFT -> switchByRelative(-1, event)
+			KeyEvent.KEYCODE_DPAD_LEFT -> switchByRelative(if (settings.isReaderNavigationInverted) 1 else -1, event)
 
 			KeyEvent.KEYCODE_DPAD_CENTER -> listener.toggleUiVisibility()
 
 			KeyEvent.KEYCODE_SYSTEM_NAVIGATION_UP,
-			KeyEvent.KEYCODE_DPAD_UP -> switchBy(-1, event, true)
+			KeyEvent.KEYCODE_DPAD_UP -> switchBy(if (settings.isReaderNavigationInverted) 1 else -1, event, true)
 
 			KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN,
-			KeyEvent.KEYCODE_DPAD_DOWN -> switchBy(1, event, true)
+			KeyEvent.KEYCODE_DPAD_DOWN -> switchBy(if (settings.isReaderNavigationInverted) -1 else 1, event, true)
 
 			else -> return false
 		}
@@ -95,10 +95,10 @@ class ReaderControlDelegate(
 
 	private fun processAction(action: TapAction) {
 		when (action) {
-			TapAction.PAGE_NEXT -> listener.switchPageBy(1)
-			TapAction.PAGE_PREV -> listener.switchPageBy(-1)
-			TapAction.CHAPTER_NEXT -> listener.switchChapterBy(1)
-			TapAction.CHAPTER_PREV -> listener.switchChapterBy(-1)
+			TapAction.PAGE_NEXT -> listener.switchPageBy(if (settings.isReaderNavigationInverted) -1 else 1)
+			TapAction.PAGE_PREV -> listener.switchPageBy(if (settings.isReaderNavigationInverted) 1 else -1)
+			TapAction.CHAPTER_NEXT -> listener.switchChapterBy(if (settings.isReaderNavigationInverted) -1 else 1)
+			TapAction.CHAPTER_PREV -> listener.switchChapterBy(if (settings.isReaderNavigationInverted) 1 else -1)
 			TapAction.TOGGLE_UI -> listener.toggleUiVisibility()
 			TapAction.SHOW_MENU -> listener.openMenu()
 		}
