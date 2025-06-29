@@ -75,6 +75,12 @@
 		android:summary="@string/switch_pages_volume_buttons_summary"
 		android:title="@string/switch_pages_volume_buttons" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="reader_navigation_inverted"
+		android:summary="@string/reader_navigation_inverted_summary"
+		android:title="@string/reader_navigation_inverted" />
+
 	<ListPreference
 		android:entries="@array/reader_animation"
 		android:key="reader_animation2"
