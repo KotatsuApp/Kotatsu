@@ -826,4 +826,10 @@
     <string name="collapse_long_description">Thu gọn đoạn mô tả dài</string>
     <string name="creating_backup">Đang tạo sao lưu</string>
     <string name="share_backup">Chia sẻ dữ liệu đã sao lưu</string>
+    <string name="reader_multitask">Mở trình đọc sang 1 tác vụ riêng biệt</string>
+    <string name="reader_multitask_summary">Tách trình đọc thành 1 tác vụ riêng biệt sẽ cho bạn khả năng mở và đọc nhiều truyện cùng một lúc (tốt hơn với máy tính bảng, Chrome OS và các giả lập Android cho phép mở đa cửa sổ trên máy tính như WSA,...)</string>
+    <string name="theme_name_itsuka">Itsuka</string>
+    <string name="theme_name_totoro">Totoro</string>
+    <string name="reader_navigation_inverted">Đảo ngược phím điều khiển hướng đọc</string>
+    <string name="reader_navigation_inverted_summary">Đảo ngược hướng của các phím điều khiển để đọc truyện như nút tăng / giảm âm lượng, D-pad (lên / xuống / trái / phải)</string>
 </resources>
