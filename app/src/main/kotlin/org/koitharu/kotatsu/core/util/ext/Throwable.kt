@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.util.ext
 
 import android.content.ActivityNotFoundException
 import android.content.res.Resources
+import android.database.sqlite.SQLiteFullException
 import androidx.annotation.DrawableRes
 import coil3.network.HttpException
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
@@ -91,6 +92,7 @@ private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = w
 		}
 	}
 
+	is SQLiteFullException -> resources.getString(R.string.error_no_space_left)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is BadBackupFormatException -> resources.getString(R.string.unsupported_backup_message)
 	is FileNotFoundException -> parseMessage(resources) ?: message

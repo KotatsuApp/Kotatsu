@@ -127,7 +127,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 		addMenuProvider(MainMenuProvider(router, viewModel))
 
-		onBackPressedDispatcher.addCallback(ExitCallback(this, viewBinding.container))
+		val exitCallback = ExitCallback(this, viewBinding.container)
+		onBackPressedDispatcher.addCallback(exitCallback)
 		onBackPressedDispatcher.addCallback(navigationDelegate)
 
 		if (savedInstanceState == null) {
@@ -145,6 +146,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		searchSuggestionViewModel.isIncognitoModeEnabled.observe(this, this::onIncognitoModeChanged)
 		viewBinding.bottomNav?.addOnLayoutChangeListener(this)
 		viewBinding.searchView.addTransitionListener(this)
+		viewBinding.searchView.addTransitionListener(exitCallback)
 		initSearch()
 	}
 
