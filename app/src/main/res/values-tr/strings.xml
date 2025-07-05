@@ -830,4 +830,8 @@
     <string name="share_backup">Yedeği paylaş</string>
     <string name="reader_multitask">Okuyucuyu başka bir görevde aç</string>
     <string name="reader_multitask_summary">Aynı anda farklı okuyucularda farklı mangaları açmanızı sağlar</string>
+    <string name="theme_name_itsuka">İtsuka</string>
+    <string name="theme_name_totoro">Totoro</string>
+    <string name="reader_navigation_inverted">Navigasyon kontrollerini ters çevir</string>
+    <string name="reader_navigation_inverted_summary">Ses tuşlarının yönlerini değiştir ve donanımsal yön tuşlarını yer değiştir (sol/yukarı/aşağı/sağ)</string>
 </resources>
