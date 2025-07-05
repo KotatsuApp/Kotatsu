@@ -827,4 +827,10 @@
     <string name="changelog">Журнал изменений</string>
     <string name="changelog_summary">История изменений для недавно выпущенных версий</string>
     <string name="reader_navigation_inverted">Инвертировать элементы управления навигацией</string>
+    <string name="creating_backup">Создание резервной копии</string>
+    <string name="share_backup">Поделиться резервной копией</string>
+    <string name="reader_multitask">Открывать читалку как отдельную задачу</string>
+    <string name="theme_name_itsuka">Ицука</string>
+    <string name="theme_name_totoro">Тоторо</string>
+    <string name="book_effect">Желтоватый фон (фильтр синего)</string>
 </resources>
