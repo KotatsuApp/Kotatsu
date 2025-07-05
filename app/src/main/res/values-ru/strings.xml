@@ -826,4 +826,5 @@
     <string name="collapse">Свёртывание</string>
     <string name="changelog">Журнал изменений</string>
     <string name="changelog_summary">История изменений для недавно выпущенных версий</string>
+    <string name="reader_navigation_inverted">Инвертировать элементы управления навигацией</string>
 </resources>
