@@ -827,4 +827,10 @@
     <string name="manga_override_hint">Perubahan ini akan memengaruhi cara manga ditampilkan di aplikasi</string>
     <string name="additional_action_required">Tindakan tambahan diperlukan</string>
     <string name="adblock_summary">Blokir iklan di browser bawaan (beta)</string>
+    <string name="theme_name_totoro">Totoro</string>
+    <string name="theme_name_itsuka">Itsuka</string>
+    <string name="reader_multitask">Open reader in a separate task</string>
+    <string name="collapse">Collapse</string>
+    <string name="reader_navigation_inverted_summary">Swap the direction of volume button and directional hardware key navigation (left/up/down/right)</string>
+    <string name="reader_navigation_inverted">Invert navigation controls</string>
 </resources>
