@@ -27,7 +27,7 @@
     <string name="add">Añadir</string>
     <string name="save">Guardar</string>
     <string name="share">Compartir</string>
-    <string name="create_shortcut">Crear acceso directo…</string>
+    <string name="create_shortcut">Crear acceso directo</string>
     <string name="share_s">Compartir %s</string>
     <string name="search">Buscar</string>
     <string name="search_manga">Buscar manga</string>
@@ -769,4 +769,10 @@
     <string name="send_backups_telegram">Enviar copias de seguridad por Telegram</string>
     <string name="telegram_chat_id_summary">Ingrese el ID del chat donde se deben enviar las copias de seguridad</string>
     <string name="nsfw_16">16+</string>
+    <string name="use_default_cover">Usar portada por defecto</string>
+    <string name="pick_custom_file">Elegir archivo personalizado</string>
+    <string name="change_cover">Cambiar portada</string>
+    <string name="page_switch_timer">La página cambiará cada ~%d segundos</string>
+    <string name="dont_ask_again">No volver a preguntar</string>
+    <string name="incognito_mode_hint_nsfw">Este manga puede contener contenido adulto. ¿Quieres usar el modo incógnito?</string>
 </resources>
