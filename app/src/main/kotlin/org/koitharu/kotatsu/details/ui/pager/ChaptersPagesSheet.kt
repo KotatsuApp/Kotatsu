@@ -30,7 +30,6 @@ import org.koitharu.kotatsu.core.util.ext.menuView
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.recyclerView
-import org.koitharu.kotatsu.core.util.ext.setTabsEnabled
 import org.koitharu.kotatsu.core.util.ext.smoothScrollToTop
 import org.koitharu.kotatsu.databinding.SheetChaptersPagesBinding
 import org.koitharu.kotatsu.details.ui.DetailsViewModel
@@ -144,7 +143,11 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(),
 	private fun adjustLockState() {
 		viewBinding?.run {
 			pager.isUserInputEnabled = !isLocked
-			tabs.setTabsEnabled(!isLocked)
+			tabs.visibility = when {
+				(pager.adapter?.itemCount ?: 0) <= 1 -> View.GONE
+				isLocked -> View.INVISIBLE
+				else -> View.VISIBLE
+			}
 		}
 	}
 
