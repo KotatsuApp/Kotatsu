@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.reader.domain
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 
@@ -8,10 +10,11 @@ data class ReaderColorFilter(
 	val contrast: Float,
 	val isInverted: Boolean,
 	val isGrayscale: Boolean,
+	val isBookBackground: Boolean,
 ) {
 
 	val isEmpty: Boolean
-		get() = !isGrayscale && !isInverted && brightness == 0f && contrast == 0f
+		get() = !isGrayscale && !isInverted && !isBookBackground && brightness == 0f && contrast == 0f
 
 	fun toColorFilter(): ColorMatrixColorFilter {
 		val cm = ColorMatrix()
@@ -23,7 +26,17 @@ data class ReaderColorFilter(
 		}
 		cm.setBrightness(brightness)
 		cm.setContrast(contrast)
+		if (isBookBackground) {
+			cm.addBookEffect()
+		}
 		return ColorMatrixColorFilter(cm)
+	}
+
+	fun getBackgroundTint(): ColorStateList? = if (isBookBackground) {
+		val color = Color.rgb(255, 255, (255 * BOOK_BLUE_FACTOR).toInt())
+		ColorStateList.valueOf(color)
+	} else {
+		null
 	}
 
 	private fun ColorMatrix.setBrightness(brightness: Float) {
@@ -60,13 +73,26 @@ data class ReaderColorFilter(
 		setSaturation(0f)
 	}
 
+	private fun ColorMatrix.addBookEffect() {
+		val removeBlueMatrix = floatArrayOf(
+			1f, 0f, 0f, 0f, 0f,
+			0f, 1f, 0f, 0f, 0f,
+			0f, 0f, BOOK_BLUE_FACTOR, 0f, 0f,
+			0f, 0f, 0f, 1f, 0f,
+		)
+		postConcat(ColorMatrix(removeBlueMatrix))
+	}
+
 	companion object {
+
+		private const val BOOK_BLUE_FACTOR = 0.92f
 
 		val EMPTY = ReaderColorFilter(
 			brightness = 0.0f,
 			contrast = 0.0f,
 			isInverted = false,
 			isGrayscale = false,
+			isBookBackground = false,
 		)
 	}
 }

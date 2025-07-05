@@ -401,19 +401,29 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	var readerColorFilter: ReaderColorFilter?
 		get() = runCatching {
-			val brightness = prefs.getFloat(KEY_CF_BRIGHTNESS, ReaderColorFilter.EMPTY.brightness)
-			val contrast = prefs.getFloat(KEY_CF_CONTRAST, ReaderColorFilter.EMPTY.contrast)
-			val inverted = prefs.getBoolean(KEY_CF_INVERTED, ReaderColorFilter.EMPTY.isInverted)
-			val grayscale = prefs.getBoolean(KEY_CF_GRAYSCALE, ReaderColorFilter.EMPTY.isGrayscale)
-			ReaderColorFilter(brightness, contrast, inverted, grayscale).takeUnless { it.isEmpty }
+			ReaderColorFilter(
+				brightness = prefs.getFloat(KEY_CF_BRIGHTNESS, ReaderColorFilter.EMPTY.brightness),
+				contrast = prefs.getFloat(KEY_CF_CONTRAST, ReaderColorFilter.EMPTY.contrast),
+				isInverted = prefs.getBoolean(KEY_CF_INVERTED, ReaderColorFilter.EMPTY.isInverted),
+				isGrayscale = prefs.getBoolean(KEY_CF_GRAYSCALE, ReaderColorFilter.EMPTY.isGrayscale),
+				isBookBackground = prefs.getBoolean(KEY_CF_BOOK, ReaderColorFilter.EMPTY.isBookBackground),
+			).takeUnless { it.isEmpty }
 		}.getOrNull()
 		set(value) {
 			prefs.edit {
-				val cf = value ?: ReaderColorFilter.EMPTY
-				putFloat(KEY_CF_BRIGHTNESS, cf.brightness)
-				putFloat(KEY_CF_CONTRAST, cf.contrast)
-				putBoolean(KEY_CF_INVERTED, cf.isInverted)
-				putBoolean(KEY_CF_GRAYSCALE, cf.isGrayscale)
+				if (value != null) {
+					putFloat(KEY_CF_BRIGHTNESS, value.brightness)
+					putFloat(KEY_CF_CONTRAST, value.contrast)
+					putBoolean(KEY_CF_INVERTED, value.isInverted)
+					putBoolean(KEY_CF_GRAYSCALE, value.isGrayscale)
+					putBoolean(KEY_CF_BOOK, value.isBookBackground)
+				} else {
+					remove(KEY_CF_BRIGHTNESS)
+					remove(KEY_CF_CONTRAST)
+					remove(KEY_CF_INVERTED)
+					remove(KEY_CF_GRAYSCALE)
+					remove(KEY_CF_BOOK)
+				}
 			}
 		}
 
@@ -740,6 +750,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_CF_CONTRAST = "cf_contrast"
 		const val KEY_CF_INVERTED = "cf_inverted"
 		const val KEY_CF_GRAYSCALE = "cf_grayscale"
+		const val KEY_CF_BOOK = "cf_book"
 		const val KEY_PAGES_TAB = "pages_tab"
 		const val KEY_DETAILS_TAB = "details_tab"
 		const val KEY_DETAILS_LAST_TAB = "details_last_tab"

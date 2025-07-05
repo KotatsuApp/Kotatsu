@@ -57,6 +57,11 @@ data class ReaderSettings(
 
 	fun applyBackground(view: View) {
 		view.background = background.resolve(view.context)
+		view.backgroundTintList = if (background.isLight(view.context)) {
+			colorFilter?.getBackgroundTint()
+		} else {
+			null
+		}
 	}
 
 	fun isPagesCropEnabled(isWebtoon: Boolean) = if (isWebtoon) {

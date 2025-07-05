@@ -191,6 +191,18 @@
 				app:layout_constraintStart_toEndOf="@id/guideline_vertical"
 				app:layout_constraintTop_toBottomOf="@id/textView_contrast" />
 
+			<com.google.android.material.materialswitch.MaterialSwitch
+				android:id="@+id/switch_book"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/margin_normal"
+				android:layout_marginTop="8dp"
+				android:text="@string/book_effect"
+				android:textAppearance="?textAppearanceTitleMedium"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+				app:layout_constraintTop_toBottomOf="@id/slider_contrast" />
+
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
 	</ScrollView>

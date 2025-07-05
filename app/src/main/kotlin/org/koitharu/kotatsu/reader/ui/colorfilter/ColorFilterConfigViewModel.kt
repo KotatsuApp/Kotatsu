@@ -56,6 +56,10 @@ class ColorFilterConfigViewModel @Inject constructor(
 		updateColorFilter { it.copy(isGrayscale = grayscale) }
 	}
 
+	fun setBookEffect(book: Boolean) {
+		updateColorFilter { it.copy(isBookBackground = book) }
+	}
+
 	fun reset() {
 		colorFilter.value = null
 	}

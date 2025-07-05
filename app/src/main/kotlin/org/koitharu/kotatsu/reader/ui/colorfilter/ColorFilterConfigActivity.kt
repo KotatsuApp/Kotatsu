@@ -53,6 +53,7 @@ class ColorFilterConfigActivity :
 		viewBinding.sliderBrightness.setLabelFormatter(formatter)
 		viewBinding.switchInvert.setOnCheckedChangeListener(this)
 		viewBinding.switchGrayscale.setOnCheckedChangeListener(this)
+		viewBinding.switchBook.setOnCheckedChangeListener(this)
 		viewBinding.buttonDone.setOnClickListener(this)
 		viewBinding.buttonReset.setOnClickListener(this)
 
@@ -93,6 +94,7 @@ class ColorFilterConfigActivity :
 		when (buttonView.id) {
 			R.id.switch_invert -> viewModel.setInversion(isChecked)
 			R.id.switch_grayscale -> viewModel.setGrayscale(isChecked)
+			R.id.switch_book -> viewModel.setBookEffect(isChecked)
 		}
 	}
 
@@ -120,6 +122,7 @@ class ColorFilterConfigActivity :
 		viewBinding.sliderContrast.setValueRounded(readerColorFilter?.contrast ?: 0f)
 		viewBinding.switchInvert.setChecked(readerColorFilter?.isInverted == true, false)
 		viewBinding.switchGrayscale.setChecked(readerColorFilter?.isGrayscale == true, false)
+		viewBinding.switchBook.setChecked(readerColorFilter?.isBookBackground == true, false)
 		viewBinding.imageViewAfter.colorFilter = readerColorFilter?.toColorFilter()
 	}
 
