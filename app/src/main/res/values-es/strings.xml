@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="local_storage">Dispositivo</string>
-    <string name="favourites">itos</string>
+    <string name="favourites">Favoritos</string>
     <string name="history">Historial</string>
     <string name="error_occurred">Ocurrió un error</string>
     <string name="network_error">Error en la red</string>
