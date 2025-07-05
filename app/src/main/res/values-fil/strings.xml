@@ -826,4 +826,5 @@
     <string name="collapse_long_description">Itago ang mahabang paglalarawan</string>
     <string name="creating_backup">Ginagawa ang backup</string>
     <string name="share_backup">I-share ang backup</string>
+    <string name="reader_navigation_inverted">Baliktarin ang mga na kontrol sa nabigasyon</string>
 </resources>
