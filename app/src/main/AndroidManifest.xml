@@ -405,6 +405,13 @@
 		</provider>
 
 		<receiver
+			android:name="org.koitharu.kotatsu.core.exceptions.resolve.CaptchaHandler$DiscardReceiver"
+			android:exported="false">
+			<intent-filter>
+				<action android:name="org.koitharu.kotatsu.CAPTCHA_DISCARD" />
+			</intent-filter>
+		</receiver>
+		<receiver
 			android:name="org.koitharu.kotatsu.widget.shelf.ShelfWidgetProvider"
 			android:exported="true"
 			android:label="@string/manga_shelf">

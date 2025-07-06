@@ -5,7 +5,6 @@ import android.app.Notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.provider.Settings
 import androidx.annotation.RequiresPermission
@@ -14,7 +13,6 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.coroutineScope
 import coil3.EventListener
@@ -26,6 +24,7 @@ import coil3.request.allowConversionToBitmap
 import coil3.request.allowHardware
 import coil3.request.lifecycle
 import coil3.size.Scale
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -69,22 +68,6 @@ class CaptchaHandler @Inject constructor(
 
 	private val exceptionMap = MutableScatterMap<MangaSource, CloudFlareProtectedException>()
 	private val mutex = Mutex()
-
-	init {
-		ContextCompat.registerReceiver(
-			context,
-			object : BroadcastReceiver() {
-				override fun onReceive(context: Context?, intent: Intent?) {
-					val sourceName = intent?.getStringExtra(AppRouter.KEY_SOURCE) ?: return
-					goAsync {
-						handleException(MangaSource(sourceName), exception = null, notify = false)
-					}
-				}
-			},
-			IntentFilter().apply { addAction(ACTION_DISCARD) },
-			ContextCompat.RECEIVER_NOT_EXPORTED,
-		)
-	}
 
 	suspend fun handle(exception: CloudFlareException): Boolean = handleException(exception.source, exception, true)
 
@@ -250,6 +233,20 @@ class CaptchaHandler @Inject constructor(
 	}.onFailure {
 		it.printStackTraceDebug()
 	}.getOrNull()
+
+	@AndroidEntryPoint
+	class DiscardReceiver : BroadcastReceiver() {
+
+		@Inject
+		lateinit var captchaHandler: CaptchaHandler
+
+		override fun onReceive(context: Context?, intent: Intent?) {
+			val sourceName = intent?.getStringExtra(AppRouter.KEY_SOURCE) ?: return
+			goAsync {
+				captchaHandler.handleException(MangaSource(sourceName), exception = null, notify = false)
+			}
+		}
+	}
 
 	companion object {
 
