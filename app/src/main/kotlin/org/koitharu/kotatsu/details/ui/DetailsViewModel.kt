@@ -182,7 +182,7 @@ class DetailsViewModel @Inject constructor(
 
 	init {
 		loadingJob = doLoad(force = false)
-		launchJob(Dispatchers.Default) {
+		launchJob(Dispatchers.Default + SkipErrors) {
 			val manga = mangaDetails.firstOrNull { !it?.chapters.isNullOrEmpty() } ?: return@launchJob
 			val h = history.firstOrNull()
 			if (h != null) {

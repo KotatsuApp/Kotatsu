@@ -13,6 +13,7 @@ constraintlayout = "2.2.1"
 coreKtx = "1.16.0"
 coroutines = "1.10.2"
 dagger = "2.56.2"
+decoroutinator = "2.5.4"
 desugar = "2.1.5"
 diskLruCache = "1.5"
 documentfile = "1.1.0"
@@ -119,3 +120,4 @@ kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serizliation = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+decoroutinator = { id = "dev.reformator.stacktracedecoroutinator", version.ref = "decoroutinator" }
