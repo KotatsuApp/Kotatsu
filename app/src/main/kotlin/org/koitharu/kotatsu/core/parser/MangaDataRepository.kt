@@ -185,7 +185,7 @@ class MangaDataRepository @Inject constructor(
 		emitInitialState = emitInitialState,
 	)
 
-	private suspend fun Manga.withCachedChaptersIfNeeded(flag: Boolean): Manga = if (flag && chapters.isNullOrEmpty()) {
+	private suspend fun Manga.withCachedChaptersIfNeeded(flag: Boolean): Manga = if (flag && !isLocal && chapters.isNullOrEmpty()) {
 		val cachedChapters = db.getChaptersDao().findAll(id)
 		if (cachedChapters.isEmpty()) {
 			this

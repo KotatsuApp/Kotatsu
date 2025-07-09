@@ -58,17 +58,26 @@ class DetailsLoadUseCase @Inject constructor(
 				isLoaded = false,
 			),
 		)
-		val local = if (!manga.isLocal) {
-			async {
-				localMangaRepository.findSavedManga(manga)
-			}
-		} else {
-			null
+		if (manga.isLocal) {
+			val details = getDetails(manga, force)
+			send(
+				MangaDetails(
+					manga = details,
+					localManga = null,
+					override = override,
+					description = details.description?.parseAsHtml(withImages = false)?.trim(),
+					isLoaded = true,
+				),
+			)
+			return@channelFlow
+		}
+		val local = async {
+			localMangaRepository.findSavedManga(manga)
 		}
 		if (!force && networkState.isOfflineOrRestricted()) {
 			// try to avoid loading if has saved manga
-			val localManga = local?.await()
-			if (manga.isLocal || localManga != null) {
+			val localManga = local.await()
+			if (localManga != null) {
 				send(
 					MangaDetails(
 						manga = manga,
@@ -88,7 +97,7 @@ class DetailsLoadUseCase @Inject constructor(
 			send(
 				MangaDetails(
 					manga = details,
-					localManga = local?.peek(),
+					localManga = local.peek(),
 					override = override,
 					description = details.description?.parseAsHtml(withImages = false)?.trim(),
 					isLoaded = false,
@@ -97,14 +106,14 @@ class DetailsLoadUseCase @Inject constructor(
 			send(
 				MangaDetails(
 					manga = details,
-					localManga = local?.await(),
+					localManga = local.await(),
 					override = override,
 					description = details.description?.parseAsHtml(withImages = true)?.trim(),
 					isLoaded = true,
 				),
 			)
 		} catch (e: IOException) {
-			local?.await()?.manga?.also { localManga ->
+			local.await()?.manga?.also { localManga ->
 				send(
 					MangaDetails(
 						manga = localManga,

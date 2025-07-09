@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.network
 
-import android.util.Log
 import dagger.Lazy
 import okhttp3.Headers
 import okhttp3.Interceptor
@@ -36,7 +35,8 @@ class CommonHeadersInterceptor @Inject constructor(
 			mangaRepositoryFactoryLazy.get().create(source) as? ParserMangaRepository
 		} else {
 			if (BuildConfig.DEBUG && source == null) {
-				Log.w("Http", "Request without source tag: ${request.url}")
+				IllegalArgumentException("Request without source tag: ${request.url}")
+					.printStackTrace()
 			}
 			null
 		}
