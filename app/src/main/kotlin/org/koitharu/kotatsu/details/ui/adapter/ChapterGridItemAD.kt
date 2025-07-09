@@ -1,12 +1,12 @@
 package org.koitharu.kotatsu.details.ui.adapter
 
 import android.graphics.Typeface
-import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.getThemeColorStateList
+import org.koitharu.kotatsu.core.util.ext.setTooltipCompat
 import org.koitharu.kotatsu.databinding.ItemChapterGridBinding
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -23,7 +23,7 @@ fun chapterGridItemAD(
 	bind { payloads ->
 		if (payloads.isEmpty()) {
 			binding.textViewTitle.text = item.chapter.numberString() ?: "?"
-			TooltipCompat.setTooltipText(itemView, item.chapter.title)
+			itemView.setTooltipCompat(item.chapter.title)
 		}
 		binding.imageViewNew.isVisible = item.isNew
 		binding.imageViewCurrent.isVisible = item.isCurrent

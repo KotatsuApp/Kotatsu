@@ -1,12 +1,12 @@
 package org.koitharu.kotatsu.settings.storage.directories
 
-import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.drawableStart
+import org.koitharu.kotatsu.core.util.ext.setTooltipCompat
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemStorageConfigBinding
 import org.koitharu.kotatsu.settings.storage.DirectoryModel
@@ -18,7 +18,7 @@ fun directoryConfigAD(
 ) {
 
 	binding.buttonRemove.setOnClickListener { v -> clickListener.onItemClick(item, v) }
-	TooltipCompat.setTooltipText(binding.buttonRemove, binding.buttonRemove.contentDescription)
+	binding.buttonRemove.setTooltipCompat(binding.buttonRemove.contentDescription)
 
 	bind {
 		binding.textViewTitle.text = item.title ?: getString(item.titleRes)

@@ -5,6 +5,7 @@ import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.core.ui.list.AdapterDelegateClickListenerAdapter
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.util.ext.setTooltipCompat
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemMangaListBinding
 import org.koitharu.kotatsu.list.ui.model.ListModel
@@ -20,7 +21,7 @@ fun mangaListItemAD(
 	AdapterDelegateClickListenerAdapter(this, clickListener, MangaCompactListModel::manga).attach(itemView)
 
 	bind {
-		TooltipCompat.setTooltipText(itemView, item.getSummary(context))
+		itemView.setTooltipCompat(item.getSummary(context))
 		binding.textViewTitle.text = item.title
 		binding.textViewSubtitle.textAndVisible = item.subtitle
 		binding.imageViewCover.setImageAsync(item.coverUrl, item.manga)

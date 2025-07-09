@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.util.ext.drawableStart
 import org.koitharu.kotatsu.core.util.ext.recyclerView
 import org.koitharu.kotatsu.core.util.ext.setProgressIcon
+import org.koitharu.kotatsu.core.util.ext.setTooltipCompat
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ItemExploreButtonsBinding
 import org.koitharu.kotatsu.databinding.ItemExploreSourceGridBinding
@@ -126,8 +127,7 @@ fun exploreSourceGridItemAD(
 
 	bind {
 		val title = item.source.getTitle(context)
-		TooltipCompat.setTooltipText(
-			itemView,
+		itemView.setTooltipCompat(
 			buildSpannedString {
 				bold {
 					append(title)

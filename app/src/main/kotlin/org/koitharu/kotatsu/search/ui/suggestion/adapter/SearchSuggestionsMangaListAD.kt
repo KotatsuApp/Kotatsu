@@ -10,6 +10,7 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.core.util.ext.setTooltipCompat
 import org.koitharu.kotatsu.databinding.ItemSearchSuggestionMangaGridBinding
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.search.ui.suggestion.SearchSuggestionListener
@@ -47,7 +48,7 @@ private fun searchSuggestionMangaGridAD(
 	}
 
 	bind {
-		TooltipCompat.setTooltipText(itemView, item.title)
+		itemView.setTooltipCompat(item.title)
 		binding.imageViewCover.setImageAsync(item.coverUrl, item.source)
 		binding.textViewTitle.text = item.title
 	}

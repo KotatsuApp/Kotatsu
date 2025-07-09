@@ -175,6 +175,14 @@ fun View.setOnContextClickListenerCompat(listener: OnContextClickListenerCompat)
 	}
 }
 
+fun View.setTooltipCompat(tooltip: CharSequence?) {
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+		tooltipText = tooltip
+	} else if (!isLongClickable) { // don't use TooltipCompat if has a LongClickListener
+		TooltipCompat.setTooltipText(this, tooltip)
+	}
+}
+
 val Toolbar.menuView: ActionMenuView?
 	get() {
 		menu // to call ensureMenu()
@@ -201,7 +209,7 @@ fun Chip.setProgressIcon() {
 fun View.setContentDescriptionAndTooltip(@StringRes resId: Int) {
 	val text = resources.getString(resId)
 	contentDescription = text
-	TooltipCompat.setTooltipText(this, text)
+	setTooltipCompat(text)
 }
 
 fun View.getWindowBounds(): Rect {

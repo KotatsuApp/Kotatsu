@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.core.prefs.ReaderControl
 import org.koitharu.kotatsu.core.util.ext.hasVisibleChildren
 import org.koitharu.kotatsu.core.util.ext.isRtl
 import org.koitharu.kotatsu.core.util.ext.setContentDescriptionAndTooltip
+import org.koitharu.kotatsu.core.util.ext.setTooltipCompat
 import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.databinding.LayoutReaderActionsBinding
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesSheet
@@ -254,7 +255,7 @@ class ReaderActionsView @JvmOverloads constructor(
 	private fun Button.initAction() {
 		setOnClickListener(this@ReaderActionsView)
 		setOnLongClickListener(this@ReaderActionsView)
-		TooltipCompat.setTooltipText(this, contentDescription)
+		setTooltipCompat(contentDescription)
 	}
 
 	private fun isAutoRotationEnabled(): Boolean = Settings.System.getInt(
