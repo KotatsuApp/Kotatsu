@@ -351,11 +351,11 @@ class ReaderActivity :
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
 		gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
 		val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-		viewBinding.appbarTop.updatePadding(
-			top = systemBars.top,
-			right = systemBars.right,
-			left = systemBars.left,
-		)
+		viewBinding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+			topMargin = systemBars.top
+			rightMargin = systemBars.right
+			leftMargin = systemBars.left
+		}
 		if (viewBinding.toolbarDocked != null) {
 			viewBinding.actionsView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
 				bottomMargin = systemBars.bottom
