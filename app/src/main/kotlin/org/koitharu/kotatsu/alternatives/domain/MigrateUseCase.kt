@@ -30,21 +30,19 @@ constructor(
 		oldManga: Manga,
 		newManga: Manga,
 	) {
-		val oldDetails =
-			if (oldManga.chapters.isNullOrEmpty()) {
-				runCatchingCancellable {
-					mangaRepositoryFactory.create(oldManga.source).getDetails(oldManga)
-				}.getOrDefault(oldManga)
-			} else {
-				oldManga
-			}
-		val newDetails =
-			if (newManga.chapters.isNullOrEmpty()) {
-				mangaRepositoryFactory.create(newManga.source).getDetails(newManga)
-			} else {
-				newManga
-			}
-		mangaDataRepository.storeManga(newDetails)
+		val oldDetails = if (oldManga.chapters.isNullOrEmpty()) {
+			runCatchingCancellable {
+				mangaRepositoryFactory.create(oldManga.source).getDetails(oldManga)
+			}.getOrDefault(oldManga)
+		} else {
+			oldManga
+		}
+		val newDetails = if (newManga.chapters.isNullOrEmpty()) {
+			mangaRepositoryFactory.create(newManga.source).getDetails(newManga)
+		} else {
+			newManga
+		}
+		mangaDataRepository.storeManga(newDetails, replaceExisting = true)
 		database.withTransaction {
 			// replace favorites
 			val favoritesDao = database.getFavouritesDao()
@@ -101,11 +99,11 @@ constructor(
 					mangaId = newDetails.id,
 					rating = prevInfo.rating,
 					status =
-					prevInfo.status ?: when {
-						newHistory == null -> ScrobblingStatus.PLANNED
-						newHistory.percent == 1f -> ScrobblingStatus.COMPLETED
-						else -> ScrobblingStatus.READING
-					},
+						prevInfo.status ?: when {
+							newHistory == null -> ScrobblingStatus.PLANNED
+							newHistory.percent == 1f -> ScrobblingStatus.COMPLETED
+							else -> ScrobblingStatus.READING
+						},
 					comment = prevInfo.comment,
 				)
 				if (newHistory != null) {

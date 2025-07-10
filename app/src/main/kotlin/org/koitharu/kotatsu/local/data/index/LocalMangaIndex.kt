@@ -97,7 +97,7 @@ class LocalMangaIndex @Inject constructor(
 	}
 
 	private suspend fun upsert(manga: LocalManga) {
-		mangaDataRepository.storeManga(manga.manga)
+		mangaDataRepository.storeManga(manga.manga, replaceExisting = true)
 		db.getLocalMangaIndexDao().upsert(manga.toEntity())
 	}
 

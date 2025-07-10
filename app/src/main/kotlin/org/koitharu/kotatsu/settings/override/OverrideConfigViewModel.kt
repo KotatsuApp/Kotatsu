@@ -37,7 +37,7 @@ class OverrideConfigViewModel @Inject constructor(
 			val override = checkNotNull(data.value).second.copy(
 				title = title,
 			)
-			dataRepository.setOverride(manga.id, override)
+			dataRepository.setOverride(manga, override)
 			onSaved.call(Unit)
 		}
 	}

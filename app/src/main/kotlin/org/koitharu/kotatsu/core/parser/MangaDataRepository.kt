@@ -41,7 +41,7 @@ class MangaDataRepository @Inject constructor(
 
 	suspend fun saveReaderMode(manga: Manga, mode: ReaderMode) {
 		db.withTransaction {
-			storeManga(manga)
+			storeManga(manga, replaceExisting = false)
 			val entity = db.getPreferencesDao().find(manga.id) ?: newEntity(manga.id)
 			db.getPreferencesDao().upsert(entity.copy(mode = mode.id))
 		}
@@ -49,7 +49,7 @@ class MangaDataRepository @Inject constructor(
 
 	suspend fun saveColorFilter(manga: Manga, colorFilter: ReaderColorFilter?) {
 		db.withTransaction {
-			storeManga(manga)
+			storeManga(manga, replaceExisting = false)
 			val entity = db.getPreferencesDao().find(manga.id) ?: newEntity(manga.id)
 			db.getPreferencesDao().upsert(
 				entity.copy(
@@ -87,10 +87,11 @@ class MangaDataRepository @Inject constructor(
 		return map
 	}
 
-	suspend fun setOverride(mangaId: Long, override: MangaOverride?) {
+	suspend fun setOverride(manga: Manga, override: MangaOverride?) {
 		db.withTransaction {
+			storeManga(manga, replaceExisting = false)
 			val dao = db.getPreferencesDao()
-			val entity = dao.find(mangaId) ?: newEntity(mangaId)
+			val entity = dao.find(manga.id) ?: newEntity(manga.id)
 			dao.upsert(
 				entity.copy(
 					titleOverride = override?.title?.nullIfEmpty(),
@@ -127,7 +128,10 @@ class MangaDataRepository @Inject constructor(
 		else -> null
 	}
 
-	suspend fun storeManga(manga: Manga) {
+	suspend fun storeManga(manga: Manga, replaceExisting: Boolean) {
+		if (!replaceExisting && db.getMangaDao().find(manga.id) != null) {
+			return
+		}
 		db.withTransaction {
 			// avoid storing local manga if remote one is already stored
 			val existing = if (manga.isLocal) {

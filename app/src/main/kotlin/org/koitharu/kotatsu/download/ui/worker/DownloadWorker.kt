@@ -537,7 +537,7 @@ class DownloadWorker @AssistedInject constructor(
 				return
 			}
 			val requests = tasks.map { (manga, task) ->
-				mangaDataRepository.storeManga(manga)
+				mangaDataRepository.storeManga(manga, replaceExisting = true)
 				OneTimeWorkRequestBuilder<DownloadWorker>()
 					.setConstraints(createConstraints(task.allowMeteredNetwork))
 					.addTag(TAG)

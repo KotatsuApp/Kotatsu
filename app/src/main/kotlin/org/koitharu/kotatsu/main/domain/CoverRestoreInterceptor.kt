@@ -72,7 +72,7 @@ class CoverRestoreInterceptor @Inject constructor(
 		val repo = repositoryFactory.create(manga.source)
 		val fixed = repo.find(manga) ?: return false
 		return if (fixed != manga) {
-			dataRepository.storeManga(fixed)
+			dataRepository.storeManga(fixed, replaceExisting = true)
 			fixed.coverUrl != manga.coverUrl
 		} else {
 			false

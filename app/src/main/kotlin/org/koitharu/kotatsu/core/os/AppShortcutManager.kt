@@ -149,7 +149,7 @@ class AppShortcutManager @Inject constructor(
 			onSuccess = { IconCompat.createWithAdaptiveBitmap(it) },
 			onFailure = { IconCompat.createWithResource(context, R.drawable.ic_shortcut_default) },
 		)
-		mangaRepository.storeManga(manga)
+		mangaRepository.storeManga(manga, replaceExisting = true)
 		val title = manga.title.ifEmpty {
 			manga.altTitles.firstOrNull()
 		}.ifNullOrEmpty {

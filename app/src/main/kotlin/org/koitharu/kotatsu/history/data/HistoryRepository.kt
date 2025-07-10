@@ -118,7 +118,7 @@ class HistoryRepository @Inject constructor(
 		}
 		assert(manga.chapters != null)
 		db.withTransaction {
-			mangaRepository.storeManga(manga)
+			mangaRepository.storeManga(manga, replaceExisting = true)
 			val branch = manga.chapters?.findById(chapterId)?.branch
 			db.getHistoryDao().upsert(
 				HistoryEntity(
