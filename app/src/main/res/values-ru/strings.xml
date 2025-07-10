@@ -331,7 +331,7 @@
     <string name="clear_new_chapters_counters">Также очистить информацию о новых главах</string>
     <string name="server_error">Внутренняя ошибка сервера (%1$d). Повторите попытку позже</string>
     <string name="compact">Компактный</string>
-    <string name="source_disabled">Источник отключен</string>
+    <string name="source_disabled">Источник отключён</string>
     <string name="prefetch_content">Предварительная загрузка содержимого</string>
     <string name="mark_as_current">Пометить как текущую</string>
     <string name="language">Язык</string>
@@ -492,7 +492,7 @@
     <string name="manage_sources">Управление источниками</string>
     <string name="no_manga_sources_found">Не найдено доступных источников по вашему запросу</string>
     <string name="manual">Вручную</string>
-    <string name="source_enabled">Источник включен</string>
+    <string name="source_enabled">Источник включён</string>
     <string name="disable_nsfw_summary">Отключить NSFW источники и скрывать мангу для взрослых в списках, если это возможно</string>
     <string name="no_manga_sources_catalog_text">В этом разделе нет доступных источников, или все они могли быть уже добавлены.
 \nСледите за обновлениями</string>
@@ -788,7 +788,7 @@
     <string name="error_details">Подробности ошибки</string>
     <string name="error_disclaimer_app_outdated">Похоже, что Ваша версия Kotatsu устарела. Пожалуйста, установите последнюю версию, чтобы получить все доступные исправления.</string>
     <string name="error_disclaimer_report">Вы можете отправить отчёт об ошибке разработчикам. Это поможет нам исправить проблему.</string>
-    <string name="search_disabled_sources">Поиск по отключенным источникам</string>
+    <string name="search_disabled_sources">Поиск по отключённым источникам</string>
     <string name="chapter_volume_number">Том %1$s Глава %2$s</string>
     <string name="chapter_number">Глава %s</string>
     <string name="unnamed_chapter">Безымянная глава</string>
@@ -833,4 +833,6 @@
     <string name="theme_name_itsuka">Ицука</string>
     <string name="theme_name_totoro">Тоторо</string>
     <string name="book_effect">Желтоватый фон (фильтр синего)</string>
+    <string name="reader_navigation_inverted_summary">Поменять местами направление кнопки регулировки громкости и аппаратной клавиши навигации (влево/вверх/вниз/вправо)</string>
+    <string name="reader_multitask_summary">Позволяет держать открытыми несколько читалок с разной мангой одновременно</string>
 </resources>
