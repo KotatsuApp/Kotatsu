@@ -776,4 +776,12 @@
     <string name="dont_ask_again">No volver a preguntar</string>
     <string name="incognito_mode_hint_nsfw">Este manga puede contener contenido adulto. ¿Quieres usar el modo incógnito?</string>
     <string name="expand">Expandir</string>
+    <string name="enable_all_sources_summary">Todas las fuentes de manga disponibles se habilitarán permanentemente</string>
+    <string name="all_sources_enabled">Todas las fuentes están habilitadas</string>
+    <string name="backup_restored_background">La copia de seguridad se restaurará en segundo plano</string>
+    <string name="restoring_backup">Restaurando copia de seguridad</string>
+    <string name="screen_rotation_locked">La rotación de pantalla ha sido bloqueada</string>
+    <string name="screen_rotation_unlocked">La rotación de pantalla se ha desbloqueado</string>
+    <string name="simple">Simple</string>
+    <string name="global_search">Búsqueda global</string>
 </resources>
