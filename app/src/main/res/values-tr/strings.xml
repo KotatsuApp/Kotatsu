@@ -834,4 +834,5 @@
     <string name="theme_name_totoro">Totoro</string>
     <string name="reader_navigation_inverted">Navigasyon kontrollerini ters çevir</string>
     <string name="reader_navigation_inverted_summary">Ses tuşlarının yönlerini değiştir ve donanımsal yön tuşlarını yer değiştir (sol/yukarı/aşağı/sağ)</string>
+    <string name="book_effect">Sarımsı arkaplan (mavi filtre)</string>
 </resources>
