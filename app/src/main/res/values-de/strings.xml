@@ -633,4 +633,22 @@
     <string name="recent_queries">Kürzliche Suchen</string>
     <string name="suggested_queries">Vorgeschlagene Suchen</string>
     <string name="authors">Autoren</string>
+    <string name="nsfw_16">16+</string>
+    <string name="blocked_by_server_message">Du wurdest vom Server blockiert. Versuche, eine andere Netzwerkverbindung zu benutzen (VPN, Proxy, etc.)</string>
+    <string name="disable">Deaktivieren</string>
+    <string name="sources_disabled">Quellen deaktiviert</string>
+    <string name="disable_nsfw_notifications">Deaktiviere NSFW Benachrichtigungen</string>
+    <string name="disable_nsfw_notifications_summary">Zeige keine Benachrichtigungen bezüglich NSFW Manga updates</string>
+    <string name="_new">Neues</string>
+    <string name="all_languages">Alle Sprachen</string>
+    <string name="screenshots_block_incognito">Blockieren, wenn im Inkognito-Modus</string>
+    <string name="image_server">Bevorzugter Server</string>
+    <string name="pin">Pinnen</string>
+    <string name="unpin">Entpinnen</string>
+    <string name="source_pinned">Quelle gepinnt</string>
+    <string name="percent_read">Prozent gelesen</string>
+    <string name="percent_left">Prozent übrig</string>
+    <string name="chapters_read">Kapitel gelesen</string>
+    <string name="chapters_left">Kapitel übrig</string>
+    <string name="plugin_incompatible">Inkompatibles Plugin oder Interner Fehler. Stelle sicher, dass du die letzte Version von Kotatsu und die des Plugins verwendest</string>
 </resources>
