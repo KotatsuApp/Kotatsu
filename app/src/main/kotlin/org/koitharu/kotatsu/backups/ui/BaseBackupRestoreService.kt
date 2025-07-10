@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.backups.ui
 
+import android.content.Context
 import android.net.Uri
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
@@ -27,22 +28,11 @@ abstract class BaseBackupRestoreService : CoroutineIntentService() {
 	override fun onCreate() {
 		super.onCreate()
 		notificationManager = NotificationManagerCompat.from(applicationContext)
-		createNotificationChannel()
+		createNotificationChannel(this)
 	}
 
 	override fun IntentJobContext.onError(error: Throwable) {
 		showResultNotification(null, CompositeResult.failure(error))
-	}
-
-	private fun createNotificationChannel() {
-		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH)
-			.setName(getString(R.string.backup_restore))
-			.setShowBadge(true)
-			.setVibrationEnabled(false)
-			.setSound(null, null)
-			.setLightsEnabled(false)
-			.build()
-		notificationManager.createNotificationChannel(channel)
 	}
 
 	protected fun IntentJobContext.showResultNotification(
@@ -128,8 +118,19 @@ abstract class BaseBackupRestoreService : CoroutineIntentService() {
 			.setBigContentTitle(title),
 	)
 
-	protected companion object {
+	companion object {
 
 		const val CHANNEL_ID = "backup_restore"
+
+		fun createNotificationChannel(context: Context) {
+			val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH)
+				.setName(context.getString(R.string.backup_restore))
+				.setShowBadge(true)
+				.setVibrationEnabled(false)
+				.setSound(null, null)
+				.setLightsEnabled(false)
+				.build()
+			NotificationManagerCompat.from(context).createNotificationChannel(channel)
+		}
 	}
 }

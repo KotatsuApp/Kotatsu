@@ -741,6 +741,10 @@ class AppRouter private constructor(
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_TRACKER)
 
+		fun periodicBackupSettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_PERIODIC_BACKUP)
+
 		fun proxySettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_PROXY)
@@ -825,6 +829,7 @@ class AppRouter private constructor(
 		const val ACTION_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES"
 		const val ACTION_SUGGESTIONS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SUGGESTIONS"
 		const val ACTION_TRACKER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_TRACKER"
+		const val ACTION_PERIODIC_BACKUP = "${BuildConfig.APPLICATION_ID}.action.MANAGE_PERIODIC_BACKUP"
 
 		private const val ACCOUNT_KEY = "account"
 		private const val ACTION_ACCOUNT_SYNC_SETTINGS = "android.settings.ACCOUNT_SYNC_SETTINGS"

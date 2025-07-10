@@ -13,7 +13,6 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityOptionsCompat
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 
 // https://stackoverflow.com/questions/77555641/saf-no-activity-found-to-handle-intent-android-intent-action-open-document-tr
 class OpenDocumentTreeHelper(
@@ -28,38 +27,42 @@ class OpenDocumentTreeHelper(
 		callback,
 	)
 
-	private val pickFileTreeLauncherQ = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-		activityResultCaller.registerForActivityResult(OpenDocumentTreeContractQ(flags), callback)
+	private val pickFileTreeLauncherPrimaryStorage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+		activityResultCaller.registerForActivityResult(OpenDocumentTreeContractPrimaryStorage(flags), callback)
 	} else {
 		null
 	}
-	private val pickFileTreeLauncherLegacy = activityResultCaller.registerForActivityResult(
-		contract = OpenDocumentTreeContractLegacy(flags),
+	private val pickFileTreeLauncherDefault = activityResultCaller.registerForActivityResult(
+		contract = OpenDocumentTreeContractDefault(flags),
 		callback = callback,
 	)
 
 	override fun launch(input: Uri?, options: ActivityOptionsCompat?) {
-		if (pickFileTreeLauncherQ == null) {
-			pickFileTreeLauncherLegacy.launch(input, options)
-			return
-		}
 		try {
-			pickFileTreeLauncherQ.launch(input, options)
+			pickFileTreeLauncherDefault.launch(input, options)
 		} catch (e: Exception) {
-			e.printStackTraceDebug()
-			pickFileTreeLauncherLegacy.launch(input, options)
+			if (pickFileTreeLauncherPrimaryStorage != null) {
+				try {
+					pickFileTreeLauncherPrimaryStorage.launch(input, options)
+				} catch (e2: Exception) {
+					e.addSuppressed(e2)
+					throw e
+				}
+			} else {
+				throw e
+			}
 		}
 	}
 
 	override fun unregister() {
-		pickFileTreeLauncherQ?.unregister()
-		pickFileTreeLauncherLegacy.unregister()
+		pickFileTreeLauncherPrimaryStorage?.unregister()
+		pickFileTreeLauncherDefault.unregister()
 	}
 
 	override val contract: ActivityResultContract<Uri?, *>
-		get() = pickFileTreeLauncherQ?.contract ?: pickFileTreeLauncherLegacy.contract
+		get() = pickFileTreeLauncherPrimaryStorage?.contract ?: pickFileTreeLauncherDefault.contract
 
-	private open class OpenDocumentTreeContractLegacy(
+	private open class OpenDocumentTreeContractDefault(
 		private val flags: Int,
 	) : ActivityResultContracts.OpenDocumentTree() {
 
@@ -71,9 +74,9 @@ class OpenDocumentTreeHelper(
 	}
 
 	@RequiresApi(Build.VERSION_CODES.Q)
-	private class OpenDocumentTreeContractQ(
+	private class OpenDocumentTreeContractPrimaryStorage(
 		private val flags: Int,
-	) : OpenDocumentTreeContractLegacy(flags) {
+	) : OpenDocumentTreeContractDefault(flags) {
 
 		override fun createIntent(context: Context, input: Uri?): Intent {
 			val intent = (context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager)

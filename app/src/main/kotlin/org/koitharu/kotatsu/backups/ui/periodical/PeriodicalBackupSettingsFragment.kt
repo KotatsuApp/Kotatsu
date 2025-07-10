@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import androidx.activity.result.ActivityResultCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
@@ -83,6 +84,13 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 			null -> getString(R.string.invalid_value_message)
 			"" -> null
 			else -> path
+		}
+		preference.icon = if (path == null) {
+			ContextCompat.getDrawable(preference.context, R.drawable.ic_alert_outline)?.also {
+				it.setTint(ContextCompat.getColor(preference.context, R.color.warning))
+			}
+		} else {
+			null
 		}
 	}
 
