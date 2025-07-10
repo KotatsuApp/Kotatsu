@@ -827,4 +827,8 @@
     <string name="creating_backup">Ginagawa ang backup</string>
     <string name="share_backup">I-share ang backup</string>
     <string name="reader_navigation_inverted">Baliktarin ang mga na kontrol sa nabigasyon</string>
+    <string name="reader_navigation_inverted_summary">Baliktarin ang direksyon ng volume button at ang nabigasyon ng directional hardware key (kaliwa/tass/baba/kanan)</string>
+    <string name="reader_multitask">Buksan ang reader sa isang hiwalay na gawain</string>
+    <string name="reader_multitask_summary">Binibigyang-daan kang panatilihing bukas ang maraming reader na may magkakaibang manga nang sabay-sabay</string>
+    <string name="book_effect">Mala-dilaw na background (asul na filter)</string>
 </resources>
