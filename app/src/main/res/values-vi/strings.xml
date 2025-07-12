@@ -10,7 +10,7 @@
     <string name="settings">Cài đặt</string>
     <string name="remote_sources">Nguồn truyện</string>
     <string name="list_mode">Chế độ hiển thị</string>
-    <string name="chapter_d_of_d">Chương %1$d / %2$d</string>
+    <string name="chapter_d_of_d">%1$d / %2$d</string>
     <string name="close">Đóng</string>
     <string name="nothing_found">Không tìm thấy kết quả</string>
     <string name="history_is_empty">Chưa có lịch sử</string>
@@ -52,7 +52,7 @@
     <string name="app_update_available">Đã có phiên bản mới của ứng dụng</string>
     <string name="open_in_browser">Mở trong trình duyệt web</string>
     <string name="notifications">Thông báo</string>
-    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d trên %2$d đang bật</string>
+    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d trên %2$d nguồn đang được kích hoạt</string>
     <string name="new_chapters">Chương mới</string>
     <string name="download">Tải xuống</string>
     <string name="notification_sound">Âm thanh thông báo</string>
@@ -128,7 +128,7 @@
     <string name="chapters_empty">Không có chương nào trong truyện này</string>
     <string name="appearance">Giao diện</string>
     <string name="suggestions_updating">Đang cập nhật gợi ý</string>
-    <string name="suggestions_excluded_genres">Loại trừ thể loại</string>
+    <string name="suggestions_excluded_genres">Lọc bỏ những thể loại</string>
     <string name="suggestions_excluded_genres_summary">Liệt kê những thể loại mà bạn không muốn thấy trong phần gợi ý</string>
     <string name="back">Quay lại</string>
     <string name="download_slowdown_summary">Giúp tránh việc ip của bạn bị chặn</string>
@@ -238,7 +238,7 @@
     <string name="text_empty_holder_primary">Không có gì ở đây…</string>
     <string name="notifications_settings">Cài đặt thông báo</string>
     <string name="text_search_holder_secondary">Hãy thử lại với từ khoá khác.</string>
-    <string name="text_history_holder_primary">Những gì bạn đã đọc sẽ được hiển thị ở đây</string>
+    <string name="text_history_holder_primary">Những gì bạn đã đọc sẽ được hiển thị ở đây ツ</string>
     <string name="text_local_holder_secondary">Tải xuống từ nguồn online hoặc nhập từ tập tin.</string>
     <string name="text_suggestion_holder">Bắt đầu đọc truyện và bạn sẽ nhận được những gợi ý cá nhân hoá</string>
     <string name="detect_reader_mode">Tự động phát hiện chế độ đọc</string>
@@ -383,7 +383,7 @@
     <string name="no_thanks">Không, cảm ơn</string>
     <string name="download_option_all_chapters">Số chương đã được dịch %s</string>
     <string name="auth_not_supported_by">Đăng nhập trên %s không được hỗ trợ</string>
-    <string name="logged_in_as">Đăng nhập với tư cách %s</string>
+    <string name="logged_in_as">Đang đăng nhập với tư cách là %s</string>
     <string name="removal_completed">Xoá hoàn thành</string>
     <string name="download_slowdown">Làm chậm tải xuống</string>
     <string name="local_manga_processing">Xử lý các truyện được lưu</string>
