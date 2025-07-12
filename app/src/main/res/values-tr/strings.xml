@@ -835,4 +835,6 @@
     <string name="reader_navigation_inverted">Navigasyon kontrollerini ters çevir</string>
     <string name="reader_navigation_inverted_summary">Ses tuşlarının yönlerini değiştir ve donanımsal yön tuşlarını yer değiştir (sol/yukarı/aşağı/sağ)</string>
     <string name="book_effect">Sarımsı arkaplan (mavi filtre)</string>
+    <string name="local_storage_cleanup">Yerel depolama temizliği</string>
+    <string name="packup_creation_failed">Yedek oluşturma başarısız oldu</string>
 </resources>
