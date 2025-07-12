@@ -56,7 +56,9 @@ class KotatsuApp : BaseApp() {
 				detectLeakedSqlLiteObjects()
 				detectLeakedClosableObjects()
 				detectLeakedRegistrationObjects()
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) detectContentUriWithoutPermission()
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					detectContentUriWithoutPermission()
+				}
 				detectFileUriExposure()
 				penaltyLog()
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && notifier != null) {

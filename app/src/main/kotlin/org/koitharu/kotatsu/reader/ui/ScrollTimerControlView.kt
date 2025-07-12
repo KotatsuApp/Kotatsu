@@ -105,7 +105,7 @@ class ScrollTimerControlView @JvmOverloads constructor(
 		updateDescription()
 	}
 
-	override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
 		scrollTimer?.setActive(isChecked)
 	}
 

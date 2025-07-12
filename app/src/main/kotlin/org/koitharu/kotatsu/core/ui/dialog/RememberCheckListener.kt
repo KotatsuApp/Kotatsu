@@ -10,7 +10,7 @@ class RememberCheckListener(
 	var isChecked: Boolean = initialValue
 		private set
 
-	override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
 		this.isChecked = isChecked
 	}
 }

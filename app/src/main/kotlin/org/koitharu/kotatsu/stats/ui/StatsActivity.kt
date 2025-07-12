@@ -129,8 +129,8 @@ class StatsActivity : BaseActivity<ActivityStatsBinding>(),
 		}
 	}
 
-	override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-		val category = buttonView?.tag as? FavouriteCategory ?: return
+	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
+		val category = buttonView.tag as? FavouriteCategory ?: return
 		viewModel.setCategoryChecked(category, isChecked)
 	}
 

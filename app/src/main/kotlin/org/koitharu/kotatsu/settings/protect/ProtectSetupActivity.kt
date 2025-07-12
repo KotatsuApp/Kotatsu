@@ -81,7 +81,7 @@ class ProtectSetupActivity :
 		}
 	}
 
-	override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
 		viewModel.setBiometricEnabled(isChecked)
 	}
 
