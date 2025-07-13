@@ -23,7 +23,7 @@ class WebtoonImageView @JvmOverloads constructor(
 
 	override fun onDraw(canvas: Canvas) {
 		super.onDraw(canvas)
-		if (isDebug) {
+		if (isDebugDrawingEnabled) {
 			drawDebug(canvas)
 		}
 	}

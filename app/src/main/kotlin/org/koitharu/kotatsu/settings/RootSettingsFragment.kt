@@ -25,6 +25,7 @@ class RootSettingsFragment : BasePreferenceFragment(0) {
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_root)
+		addPreferencesFromResource(R.xml.pref_root_debug)
 		bindPreferenceSummary("appearance", R.string.theme, R.string.list_mode, R.string.language)
 		bindPreferenceSummary("reader", R.string.read_mode, R.string.scale_mode, R.string.switch_pages)
 		bindPreferenceSummary("network", R.string.proxy, R.string.dns_over_https, R.string.prefetch_content)
@@ -48,7 +49,6 @@ class RootSettingsFragment : BasePreferenceFragment(0) {
 			}
 		}
 		addMenuProvider(SettingsSearchMenuProvider(activityViewModel))
-		addMenuProvider(SettingsMenuProvider(view.context))
 	}
 
 	override fun setTitle(title: CharSequence?) {

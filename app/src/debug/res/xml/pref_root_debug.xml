@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<PreferenceScreen
+		android:fragment="org.koitharu.kotatsu.settings.DebugSettingsFragment"
+		android:icon="@drawable/ic_debug"
+		android:key="debug"
+		android:title="@string/debug" />
+
+</androidx.preference.PreferenceScreen>
