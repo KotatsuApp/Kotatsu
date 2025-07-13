@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.list.ui.model
 
+import org.koitharu.kotatsu.core.ui.model.MangaOverride
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.list.domain.ReadingProgress
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback.Companion.PAYLOAD_ANYTHING_CHANGED
@@ -7,11 +8,9 @@ import org.koitharu.kotatsu.list.ui.ListModelDiffCallback.Companion.PAYLOAD_PROG
 import org.koitharu.kotatsu.parsers.model.Manga
 
 data class MangaDetailedListModel(
-	override val id: Long,
-	override val title: String,
-	val subtitle: String?,
-	override val coverUrl: String?,
 	override val manga: Manga,
+	override val override: MangaOverride?,
+	val subtitle: String?,
 	override val counter: Int,
 	val progress: ReadingProgress?,
 	val isFavorite: Boolean,

@@ -16,7 +16,8 @@ fun mangaListDetailedItemAD(
 	{ inflater, parent -> ItemMangaListDetailsBinding.inflate(inflater, parent, false) },
 ) {
 
-	AdapterDelegateClickListenerAdapter(this, clickListener, MangaDetailedListModel::manga).attach(itemView)
+	AdapterDelegateClickListenerAdapter(this, clickListener)
+		.attach(itemView)
 
 	bind { payloads ->
 		binding.textViewTitle.text = item.title

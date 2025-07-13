@@ -38,7 +38,6 @@ import org.koitharu.kotatsu.tracker.domain.UpdatesListQuickFilter
 import org.koitharu.kotatsu.tracker.domain.model.TrackingLogItem
 import org.koitharu.kotatsu.tracker.ui.feed.model.FeedItem
 import org.koitharu.kotatsu.tracker.ui.feed.model.UpdatedMangaHeader
-import org.koitharu.kotatsu.tracker.ui.feed.model.toFeedItem
 import org.koitharu.kotatsu.tracker.work.TrackWorker
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -132,7 +131,7 @@ class FeedViewModel @Inject constructor(
 		}
 	}
 
-	private fun List<TrackingLogItem>.mapListTo(destination: MutableList<ListModel>) {
+	private suspend fun List<TrackingLogItem>.mapListTo(destination: MutableList<ListModel>) {
 		var prevDate: DateTimeAgo? = null
 		for (item in this) {
 			val date = calculateTimeAgo(item.createdAt)
@@ -144,7 +143,7 @@ class FeedViewModel @Inject constructor(
 				}
 			}
 			prevDate = date
-			destination += item.toFeedItem()
+			destination += mangaListMapper.toFeedItem(item)
 		}
 	}
 

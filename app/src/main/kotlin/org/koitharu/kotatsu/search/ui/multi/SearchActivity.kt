@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.MangaListListener
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
 import org.koitharu.kotatsu.list.ui.model.ListHeader
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.DynamicItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
@@ -115,17 +116,17 @@ class SearchActivity :
 		return insets.consumeAllSystemBarsInsets()
 	}
 
-	override fun onItemClick(item: Manga, view: View) {
+	override fun onItemClick(item: MangaListModel, view: View) {
 		if (!selectionController.onItemClick(item.id)) {
-			router.openDetails(item)
+			router.openDetails(item.toMangaWithOverride())
 		}
 	}
 
-	override fun onItemLongClick(item: Manga, view: View): Boolean {
+	override fun onItemLongClick(item: MangaListModel, view: View): Boolean {
 		return selectionController.onItemLongClick(view, item.id)
 	}
 
-	override fun onItemContextClick(item: Manga, view: View): Boolean {
+	override fun onItemContextClick(item: MangaListModel, view: View): Boolean {
 		return selectionController.onItemContextClick(view, item.id)
 	}
 

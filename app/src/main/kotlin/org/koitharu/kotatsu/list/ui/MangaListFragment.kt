@@ -153,19 +153,20 @@ abstract class MangaListFragment :
 		super.onDestroyView()
 	}
 
-	override fun onItemClick(item: Manga, view: View) {
+	override fun onItemClick(item: MangaListModel, view: View) {
 		if (selectionController?.onItemClick(item.id) != true) {
-			if ((activity as? MangaListActivity)?.showPreview(item) != true) {
-				router.openDetails(item)
+			val manga = item.toMangaWithOverride()
+			if ((activity as? MangaListActivity)?.showPreview(manga) != true) {
+				router.openDetails(manga)
 			}
 		}
 	}
 
-	override fun onItemLongClick(item: Manga, view: View): Boolean {
+	override fun onItemLongClick(item: MangaListModel, view: View): Boolean {
 		return selectionController?.onItemLongClick(view, item.id) == true
 	}
 
-	override fun onItemContextClick(item: Manga, view: View): Boolean {
+	override fun onItemContextClick(item: MangaListModel, view: View): Boolean {
 		return selectionController?.onItemContextClick(view, item.id) == true
 	}
 

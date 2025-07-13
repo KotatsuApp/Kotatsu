@@ -17,8 +17,8 @@ import org.koitharu.kotatsu.databinding.ItemListGroupBinding
 import org.koitharu.kotatsu.list.ui.MangaSelectionDecoration
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.search.ui.multi.SearchResultsListModel
 
 @SuppressLint("NotifyDataSetChanged")
@@ -26,7 +26,7 @@ fun searchResultsAD(
 	sharedPool: RecycledViewPool,
 	sizeResolver: ItemSizeResolver,
 	selectionDecoration: MangaSelectionDecoration,
-	listener: OnListItemClickListener<Manga>,
+	listener: OnListItemClickListener<MangaListModel>,
 	itemClickListener: OnListItemClickListener<SearchResultsListModel>,
 ) = adapterDelegateViewBinding<SearchResultsListModel, ListModel, ItemListGroupBinding>(
 	{ layoutInflater, parent -> ItemListGroupBinding.inflate(layoutInflater, parent, false) },

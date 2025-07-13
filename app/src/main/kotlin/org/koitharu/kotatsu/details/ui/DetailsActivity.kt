@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.widget.TooltipCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.core.text.method.LinkMovementMethodCompat
@@ -261,7 +260,7 @@ class DetailsActivity :
 			R.id.button_scrobbling_more -> {
 				router.showScrobblingSelectorSheet(
 					manga = viewModel.getMangaOrNull() ?: return,
-					scrobblerService = viewModel.scrobblingInfo.value.firstOrNull()?.scrobbler
+					scrobblerService = viewModel.scrobblingInfo.value.firstOrNull()?.scrobbler,
 				)
 			}
 
@@ -390,7 +389,7 @@ class DetailsActivity :
 				mangaGridItemAD(
 					sizeResolver = StaticItemSizeResolver(resources.getDimensionPixelSize(R.dimen.smaller_grid_width)),
 				) { item, view ->
-					router.openDetails(item)
+					router.openDetails(item.toMangaWithOverride())
 				},
 			).also { rv.adapter = it }
 		adapter.items = related

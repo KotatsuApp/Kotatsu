@@ -198,11 +198,9 @@ class ExploreViewModel @Inject constructor(
 
 	private fun List<Manga>.toRecommendationList() = map { manga ->
 		MangaCompactListModel(
-			id = manga.id,
-			title = manga.title,
-			subtitle = manga.tags.joinToString { it.title },
-			coverUrl = manga.coverUrl,
 			manga = manga,
+			override = null,
+			subtitle = manga.tags.joinToString { it.title },
 			counter = 0,
 		)
 	}

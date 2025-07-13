@@ -10,17 +10,17 @@ import org.koitharu.kotatsu.databinding.ItemMangaGridBinding
 import org.koitharu.kotatsu.list.ui.ListModelDiffCallback.Companion.PAYLOAD_PROGRESS_CHANGED
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaGridModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
-import org.koitharu.kotatsu.parsers.model.Manga
 
 fun mangaGridItemAD(
 	sizeResolver: ItemSizeResolver,
-	clickListener: OnListItemClickListener<Manga>,
+	clickListener: OnListItemClickListener<MangaListModel>,
 ) = adapterDelegateViewBinding<MangaGridModel, ListModel, ItemMangaGridBinding>(
 	{ inflater, parent -> ItemMangaGridBinding.inflate(inflater, parent, false) },
 ) {
 
-	AdapterDelegateClickListenerAdapter(this, clickListener, MangaGridModel::manga).attach(itemView)
+	AdapterDelegateClickListenerAdapter(this, clickListener).attach(itemView)
 	sizeResolver.attachToView(itemView, binding.textViewTitle, binding.progressView)
 
 	bind { payloads ->

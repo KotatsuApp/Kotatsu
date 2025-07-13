@@ -10,13 +10,13 @@ import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.mangaGridItemAD
 import org.koitharu.kotatsu.list.ui.model.ListHeader
 import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.list.ui.model.MangaListModel
 import org.koitharu.kotatsu.list.ui.size.ItemSizeResolver
-import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.tracker.ui.feed.model.UpdatedMangaHeader
 
 fun updatedMangaAD(
 	sizeResolver: ItemSizeResolver,
-	listener: OnListItemClickListener<Manga>,
+	listener: OnListItemClickListener<MangaListModel>,
 	headerClickListener: ListHeaderClickListener,
 ) = adapterDelegateViewBinding<UpdatedMangaHeader, ListModel, ItemListGroupBinding>(
 	{ layoutInflater, parent -> ItemListGroupBinding.inflate(layoutInflater, parent, false) },
