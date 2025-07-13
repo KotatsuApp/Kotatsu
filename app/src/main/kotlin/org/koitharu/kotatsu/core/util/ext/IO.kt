@@ -1,5 +1,8 @@
 package org.koitharu.kotatsu.core.util.ext
 
+import android.content.ContentResolver
+import android.net.Uri
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
@@ -12,6 +15,7 @@ import okio.FileSystem
 import okio.IOException
 import okio.Path
 import okio.Source
+import okio.source
 import org.koitharu.kotatsu.core.util.CancellableSource
 import org.koitharu.kotatsu.core.util.progress.ProgressResponseBody
 import java.io.ByteArrayOutputStream
@@ -57,3 +61,8 @@ fun FileSystem.isRegularFile(path: Path) = try {
 } catch (_: IOException) {
 	false
 }
+
+@CheckResult
+fun ContentResolver.openSource(uri: Uri): Source = checkNotNull(openInputStream(uri)) {
+	"Cannot open input stream from $uri"
+}.source()

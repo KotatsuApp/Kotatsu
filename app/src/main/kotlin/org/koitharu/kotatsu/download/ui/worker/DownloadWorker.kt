@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
@@ -64,8 +65,11 @@ import org.koitharu.kotatsu.core.util.ext.ensureSuccess
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getWorkInputData
 import org.koitharu.kotatsu.core.util.ext.getWorkSpec
+import org.koitharu.kotatsu.core.util.ext.openSource
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.core.util.ext.toMimeType
+import org.koitharu.kotatsu.core.util.ext.toMimeTypeOrNull
 import org.koitharu.kotatsu.core.util.ext.withTicker
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.core.util.progress.RealtimeEtaEstimator
@@ -371,6 +375,25 @@ class DownloadWorker @AssistedInject constructor(
 		destination: File,
 		source: MangaSource,
 	): File {
+		if (url.startsWith("content:", ignoreCase = true) || url.startsWith("file:", ignoreCase = true)) {
+			val uri = url.toUri()
+			val cr = applicationContext.contentResolver
+			val ext = uri.toFileOrNull()?.let {
+				MimeTypes.getNormalizedExtension(it.name)
+			} ?: cr.getType(uri)?.toMimeTypeOrNull()?.let { MimeTypes.getExtension(it) }
+			val file = destination.createTempFile(ext)
+			try {
+				cr.openSource(uri).use { input ->
+					file.sink(append = false).buffer().use {
+						it.writeAllCancellable(input)
+					}
+				}
+			} catch (e: Exception) {
+				file.delete()
+				throw e
+			}
+			return file
+		}
 		val request = PageLoader.createPageRequest(url, source)
 		slowdownDispatcher.delay(source)
 		return imageProxyInterceptor.interceptPageRequest(request, okHttp)
@@ -379,28 +402,32 @@ class DownloadWorker @AssistedInject constructor(
 				var file: File? = null
 				try {
 					response.requireBody().use { body ->
-						file = File(
-							destination,
-							buildString {
-								append(UUID.randomUUID().toString())
-								MimeTypes.getExtension(body.contentType()?.toMimeType())?.let { ext ->
-									append('.')
-									append(ext)
-								}
-								append(".tmp")
-							},
+						file = destination.createTempFile(
+							ext = MimeTypes.getExtension(body.contentType()?.toMimeType())
 						)
 						file.sink(append = false).buffer().use {
 							it.writeAllCancellable(body.source())
 						}
 					}
-				} catch (e: CancellationException) {
+				} catch (e: Exception) {
 					file?.delete()
 					throw e
 				}
 				checkNotNull(file)
 			}
 	}
+
+	private fun File.createTempFile(ext: String?) = File(
+		this,
+		buildString {
+			append(UUID.randomUUID().toString())
+			if (!ext.isNullOrEmpty()) {
+				append('.')
+				append(ext)
+			}
+			append(".tmp")
+		},
+	)
 
 	private suspend fun publishState(state: DownloadState) {
 		val previousState = currentState

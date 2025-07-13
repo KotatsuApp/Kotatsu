@@ -11,8 +11,8 @@ import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.sink
-import okio.source
 import org.koitharu.kotatsu.core.exceptions.UnsupportedFileException
+import org.koitharu.kotatsu.core.util.ext.openSource
 import org.koitharu.kotatsu.core.util.ext.resolveName
 import org.koitharu.kotatsu.core.util.ext.writeAllCancellable
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
@@ -51,12 +51,12 @@ class SingleMangaImporter @Inject constructor(
 		}
 		val dest = File(getOutputDir(), name)
 		runInterruptible {
-			contentResolver.openInputStream(uri)
-		}?.use { source ->
+			contentResolver.openSource(uri)
+		}.use { source ->
 			dest.sink().buffer().use { output ->
-				output.writeAllCancellable(source.source())
+				output.writeAllCancellable(source)
 			}
-		} ?: throw IOException("Cannot open input stream: $uri")
+		}
 		LocalMangaParser(dest).getManga(withDetails = false)
 	}
 
@@ -80,7 +80,7 @@ class SingleMangaImporter @Inject constructor(
 				docFile.copyTo(subDir)
 			}
 		} else {
-			inputStream().source().use { input ->
+			source().use { input ->
 				File(destDir, requireName()).sink().buffer().use { output ->
 					output.writeAllCancellable(input)
 				}
@@ -92,8 +92,8 @@ class SingleMangaImporter @Inject constructor(
 		return storageManager.getDefaultWriteableDir() ?: throw IOException("External files dir unavailable")
 	}
 
-	private suspend fun DocumentFile.inputStream() = runInterruptible(Dispatchers.IO) {
-		contentResolver.openInputStream(uri) ?: throw IOException("Cannot open input stream: $uri")
+	private suspend fun DocumentFile.source() = runInterruptible(Dispatchers.IO) {
+		contentResolver.openSource(uri)
 	}
 
 	private fun DocumentFile.requireName(): String {
