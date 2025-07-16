@@ -23,6 +23,10 @@
 		android:summary="@string/black_dark_theme_summary"
 		android:title="@string/black_dark_theme" />
 
+	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
+		android:key="app_locale"
+		android:title="@string/language" />
+
 	<PreferenceCategory android:title="@string/manga_list">
 
 		<ListPreference
@@ -84,31 +88,36 @@
 
 	</PreferenceCategory>
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.nav.NavConfigFragment"
-		android:key="nav_main"
-		android:title="@string/main_screen_sections"
-		app:allowDividerAbove="true" />
+	<PreferenceCategory android:title="@string/main_screen">
 
-	<SwitchPreferenceCompat
-		android:defaultValue="true"
-		android:key="nav_labels"
-		android:title="@string/show_labels_in_navbar" />
+		<PreferenceScreen
+			android:fragment="org.koitharu.kotatsu.settings.nav.NavConfigFragment"
+			android:key="nav_main"
+			android:title="@string/main_screen_sections" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="nav_pinned"
-		android:summary="@string/pin_navigation_ui_summary"
-		android:title="@string/pin_navigation_ui" />
+		<SwitchPreferenceCompat
+			android:defaultValue="true"
+			android:key="main_fab"
+			android:summary="@string/main_screen_fab_summary"
+			android:title="@string/main_screen_fab" />
 
-	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
-		android:key="app_locale"
-		android:title="@string/language" />
+		<SwitchPreferenceCompat
+			android:defaultValue="true"
+			android:key="nav_labels"
+			android:title="@string/show_labels_in_navbar" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="exit_confirm"
-		android:summary="@string/exit_confirmation_summary"
-		android:title="@string/exit_confirmation" />
+		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="nav_pinned"
+			android:summary="@string/pin_navigation_ui_summary"
+			android:title="@string/pin_navigation_ui" />
+
+		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="exit_confirm"
+			android:summary="@string/exit_confirmation_summary"
+			android:title="@string/exit_confirmation" />
+
+	</PreferenceCategory>
 
 </PreferenceScreen>

@@ -15,12 +15,17 @@ import androidx.core.os.LocaleListCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.model.ZoomMode
 import org.koitharu.kotatsu.core.network.DoHProvider
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.getEnumValue
-import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.observeChanges
 import org.koitharu.kotatsu.core.util.ext.putAll
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
@@ -81,6 +86,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	val isNavBarPinned: Boolean
 		get() = prefs.getBoolean(KEY_NAV_PINNED, false)
+
+	val isMainFabEnabled: Boolean
+		get() = prefs.getBoolean(KEY_MAIN_FAB, true)
 
 	var gridSize: Int
 		get() = prefs.getInt(KEY_GRID_SIZE, 100)
@@ -598,7 +606,12 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		prefs.unregisterOnSharedPreferenceChangeListener(listener)
 	}
 
-	fun observe() = prefs.observe()
+	fun observeChanges() = prefs.observeChanges()
+
+	fun observe(vararg keys: String): Flow<String?> = prefs.observeChanges()
+		.filter { key -> key == null || key in keys }
+		.onStart { emit(null) }
+		.flowOn(Dispatchers.IO)
 
 	fun getAllValues(): Map<String, *> = prefs.all
 
@@ -743,6 +756,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_NAV_MAIN = "nav_main"
 		const val KEY_NAV_LABELS = "nav_labels"
 		const val KEY_NAV_PINNED = "nav_pinned"
+		const val KEY_MAIN_FAB = "main_fab"
 		const val KEY_32BIT_COLOR = "enhanced_colors"
 		const val KEY_SOURCES_ORDER = "sources_sort_order"
 		const val KEY_SOURCES_CATALOG = "sources_catalog"

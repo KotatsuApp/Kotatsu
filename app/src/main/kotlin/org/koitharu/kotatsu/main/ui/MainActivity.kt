@@ -320,6 +320,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		topFragment: Fragment? = navigationDelegate.primaryFragment,
 		isSearchOpened: Boolean = viewBinding.searchView.isShowing,
 	) {
+		navigationDelegate.navRailHeader?.railFab?.isVisible = isResumeEnabled
 		val fab = viewBinding.fab ?: return
 		if (isResumeEnabled && !actionModeDelegate.isActionModeStarted && !isSearchOpened && topFragment is HistoryListFragment) {
 			if (!fab.isVisible) {

@@ -45,7 +45,7 @@ class SourcesListProducer @Inject constructor(
 	}
 
 	init {
-		settings.observe()
+		settings.observeChanges()
 			.filter { it == AppSettings.KEY_TIPS_CLOSED || it == AppSettings.KEY_DISABLE_NSFW }
 			.flowOn(Dispatchers.Default)
 			.onEach { onInvalidated(emptySet()) }

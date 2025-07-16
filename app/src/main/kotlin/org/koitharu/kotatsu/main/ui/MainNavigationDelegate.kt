@@ -16,16 +16,12 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigationrail.NavigationRailView
 import com.google.android.material.transition.MaterialFadeThrough
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksFragment
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -56,7 +52,7 @@ class MainNavigationDelegate(
 	NavigationBarView.OnItemReselectedListener, View.OnClickListener {
 
 	private val listeners = LinkedList<OnFragmentChangedListener>()
-	private val navRailHeader = (navBar as? NavigationRailView)?.headerView?.let {
+	val navRailHeader = (navBar as? NavigationRailView)?.headerView?.let {
 		NavigationRailFabBinding.bind(it)
 	}
 
@@ -267,12 +263,7 @@ class MainNavigationDelegate(
 	}
 
 	private fun observeSettings(lifecycleOwner: LifecycleOwner) {
-		settings.observe()
-			.filter { x ->
-				x == AppSettings.KEY_TRACKER_ENABLED || x == AppSettings.KEY_SUGGESTIONS || x == AppSettings.KEY_NAV_LABELS
-			}
-			.onStart { emit("") }
-			.flowOn(Dispatchers.IO)
+		settings.observe(AppSettings.KEY_TRACKER_ENABLED, AppSettings.KEY_SUGGESTIONS, AppSettings.KEY_NAV_LABELS)
 			.onEach {
 				setItemVisibility(R.id.nav_suggestions, settings.isSuggestionsEnabled)
 				setItemVisibility(R.id.nav_feed, settings.isTrackerEnabled)

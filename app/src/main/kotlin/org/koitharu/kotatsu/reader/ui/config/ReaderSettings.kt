@@ -122,7 +122,7 @@ data class ReaderSettings(
 		private suspend fun observeImpl() {
 			combine(
 				mangaId.flatMapLatest { mangaDataRepository.observeColorFilter(it) },
-				settings.observe().filter { x -> x == null || x in settingsKeys }.onStart { emit(null) },
+				settings.observeChanges().filter { x -> x == null || x in settingsKeys }.onStart { emit(null) },
 			) { mangaCf, settingsKey ->
 				ReaderSettings(settings, mangaCf)
 			}.collect {

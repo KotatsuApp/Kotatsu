@@ -856,4 +856,7 @@
 	<string name="book_effect">Yellowish background (blue filter)</string>
 	<string name="local_storage_cleanup">Local storage cleanup</string>
 	<string name="packup_creation_failed">Failed to create backup</string>
+	<string name="main_screen">Main screen</string>
+	<string name="main_screen_fab">Show floating Continue button</string>
+	<string name="main_screen_fab_summary">Allows to continue reading in a one click. This button will not appear in incognito mode or when the history is empty</string>
 </resources>

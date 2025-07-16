@@ -63,7 +63,7 @@ abstract class MangaListViewModel(
 	protected fun observeListModeWithTriggers(): Flow<ListMode> = combine(
 		listMode,
 		mangaDataRepository.observeOverridesTrigger(emitInitialState = true),
-		settings.observe().filter { key ->
+		settings.observeChanges().filter { key ->
 			key == AppSettings.KEY_PROGRESS_INDICATORS
 				|| key == AppSettings.KEY_TRACKER_ENABLED
 				|| key == AppSettings.KEY_QUICK_FILTER

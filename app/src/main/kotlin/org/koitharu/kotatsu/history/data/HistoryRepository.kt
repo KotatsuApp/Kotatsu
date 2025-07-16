@@ -4,9 +4,7 @@ import androidx.room.withTransaction
 import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.toEntity
 import org.koitharu.kotatsu.core.db.entity.toManga
@@ -204,9 +202,7 @@ class HistoryRepository @Inject constructor(
 	fun shouldSkip(manga: Manga): Boolean = settings.isIncognitoModeEnabled(manga.isNsfw())
 
 	fun observeShouldSkip(manga: Manga): Flow<Boolean> {
-		return settings.observe()
-			.filter { key -> key == AppSettings.KEY_INCOGNITO_MODE || key == AppSettings.KEY_INCOGNITO_NSFW }
-			.onStart { emit("") }
+		return settings.observe(AppSettings.KEY_INCOGNITO_MODE, AppSettings.KEY_INCOGNITO_NSFW)
 			.map { shouldSkip(manga) }
 			.distinctUntilChanged()
 	}

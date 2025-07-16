@@ -20,7 +20,7 @@ class ReaderTapGridConfigViewModel @Inject constructor(
 	private val tapGridSettings: TapGridSettings,
 ) : BaseViewModel() {
 
-	val content = tapGridSettings.observe()
+	val content = tapGridSettings.observeChanges()
 		.onStart { emit(null) }
 		.map { getData() }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyMap())

@@ -37,7 +37,7 @@ fun <E : Enum<E>> SharedPreferences.Editor.putEnumValue(key: String, value: E?) 
 	putString(key, value?.name)
 }
 
-fun SharedPreferences.observe(): Flow<String?> = callbackFlow {
+fun SharedPreferences.observeChanges(): Flow<String?> = callbackFlow {
 	val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
 		trySendBlocking(key)
 	}
@@ -49,7 +49,7 @@ fun SharedPreferences.observe(): Flow<String?> = callbackFlow {
 
 fun <T> SharedPreferences.observe(key: String, valueProducer: suspend () -> T): Flow<T> = flow {
 	emit(valueProducer())
-	observe().collect { upstreamKey ->
+	observeChanges().collect { upstreamKey ->
 		if (upstreamKey == key) {
 			emit(valueProducer())
 		}
