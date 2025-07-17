@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<org.koitharu.kotatsu.settings.utils.SplitSwitchPreference
+		android:id="@+id/action_leakcanary"
+		android:defaultValue="false"
+		android:key="leak_canary"
+		android:title="LeakCanary"
+		android:summary="@string/may_affect_performance"
+		app:key="debug.leak_canary" />
+
+</androidx.preference.PreferenceScreen>

@@ -52,6 +52,7 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.Locale
+import java.util.zip.ZipException
 
 private const val MSG_NO_SPACE_LEFT = "No space left on device"
 private const val MSG_CONNECTION_RESET = "Connection reset"
@@ -92,6 +93,7 @@ private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = w
 		}
 	}
 
+	is ZipException -> resources.getString(R.string.error_corrupted_zip, this.message.orEmpty())
 	is SQLiteFullException -> resources.getString(R.string.error_no_space_left)
 	is UnsupportedFileException -> resources.getString(R.string.text_file_not_supported)
 	is BadBackupFormatException -> resources.getString(R.string.unsupported_backup_message)

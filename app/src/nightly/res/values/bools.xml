@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+	<bool name="leak_canary_add_launcher_icon" tools:node="replace">false</bool>
+	<bool name="leak_canary_allow_in_non_debuggable_build">true</bool>
+</resources>
