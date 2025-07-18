@@ -1,0 +1,16 @@
+name: Trigger Site Update
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  trigger-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send repository_dispatch to site-repo
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.SITE_REPO_TOKEN }}
+          repository: KotatsuApp/website
+          event-type: app-release
