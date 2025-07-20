@@ -6,12 +6,12 @@ import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.core.AbstractMangaParser
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
+import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
 import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.model.search.MangaSearchQuery
-import org.koitharu.kotatsu.parsers.model.search.MangaSearchQueryCapabilities
 import java.util.EnumSet
 
 /**
@@ -25,14 +25,18 @@ class DummyParser(context: MangaLoaderContext) : AbstractMangaParser(context, Ma
 	override val availableSortOrders: Set<SortOrder>
 		get() = EnumSet.allOf(SortOrder::class.java)
 
-	override val searchQueryCapabilities: MangaSearchQueryCapabilities
-		get() = MangaSearchQueryCapabilities()
+	override val filterCapabilities: MangaListFilterCapabilities
+		get() = MangaListFilterCapabilities()
 
 	override suspend fun getDetails(manga: Manga): Manga = stub(manga)
 
 	override suspend fun getFilterOptions(): MangaListFilterOptions = stub(null)
 
-	override suspend fun getList(query: MangaSearchQuery): List<Manga> = stub(null)
+	override suspend fun getList(
+		offset: Int,
+		order: SortOrder,
+		filter: MangaListFilter
+	): List<Manga> = stub(null)
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> = stub(null)
 
