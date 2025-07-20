@@ -517,6 +517,12 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val is32BitColorsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_32BIT_COLOR, false)
 
+	val isDiscordRpcEnabled: Boolean
+		get() = prefs.getBoolean(KEY_DISCORD_RPC, false)
+
+	val discordToken: String?
+		get() = prefs.getString(KEY_DISCORD_TOKEN, null)?.trim()?.nullIfEmpty()
+
 	val isPeriodicalBackupEnabled: Boolean
 		get() = prefs.getBoolean(KEY_BACKUP_PERIODICAL_ENABLED, false)
 
@@ -782,6 +788,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_BACKUP_TG_CHAT = "backup_periodic_tg_chat_id"
 		const val KEY_MANGA_LIST_BADGES = "manga_list_badges"
 		const val KEY_TAGS_WARNINGS = "tags_warnings"
+		const val KEY_DISCORD_RPC = "discord_rpc"
+		const val KEY_DISCORD_TOKEN = "discord_token"
 
 		// keys for non-persistent preferences
 		const val KEY_APP_VERSION = "app_version"

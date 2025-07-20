@@ -149,6 +149,7 @@ class SettingsActivity :
 			AppRouter.ACTION_TRACKER -> TrackerSettingsFragment()
 			AppRouter.ACTION_PERIODIC_BACKUP -> PeriodicalBackupSettingsFragment()
 			AppRouter.ACTION_SOURCES -> SourcesSettingsFragment()
+			AppRouter.ACTION_MANAGE_DISCORD -> DiscordSettingsFragment()
 			AppRouter.ACTION_PROXY -> ProxySettingsFragment()
 			AppRouter.ACTION_MANAGE_DOWNLOADS -> DownloadsSettingsFragment()
 			AppRouter.ACTION_SOURCE -> SourceSettingsFragment.newInstance(

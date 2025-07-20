@@ -190,6 +190,11 @@ class ReaderActivity :
 		viewModel.onPause()
 	}
 
+	override fun onStop() {
+		super.onStop()
+		viewModel.onStop()
+	}
+
 	override fun onProvideAssistContent(outContent: AssistContent) {
 		super.onProvideAssistContent(outContent)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -201,6 +206,7 @@ class ReaderActivity :
 
 	override fun onIdle() {
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
+		viewModel.onIdle()
 	}
 
 	override fun onVisibilityChanged(v: View, visibility: Int) {

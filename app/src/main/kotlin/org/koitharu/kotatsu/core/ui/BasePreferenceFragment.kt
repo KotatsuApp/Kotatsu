@@ -1,9 +1,11 @@
 package org.koitharu.kotatsu.core.ui
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -84,6 +86,12 @@ abstract class BasePreferenceFragment(@StringRes private val titleId: Int) :
 
 	protected open fun setTitle(title: CharSequence?) {
 		(activity as? SettingsActivity)?.setSectionTitle(title)
+	}
+
+	protected fun getWarningIcon(): Drawable? = context?.let { ctx ->
+		ContextCompat.getDrawable(ctx, R.drawable.ic_alert_outline)?.also {
+			it.setTint(ContextCompat.getColor(ctx, R.color.warning))
+		}
 	}
 
 	private fun focusPreference(key: String) {
