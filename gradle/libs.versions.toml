@@ -24,6 +24,7 @@ hilt = "1.2.0"
 json = "20250517"
 junit = "4.13.2"
 junitKtx = "1.2.1"
+kizzyrpc = "ad8f2e32eb"
 kotlin = "2.1.21"
 ksp = "2.1.21-2.0.1"
 leakcanary = "3.0-alpha-8"
@@ -94,6 +95,7 @@ hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", vers
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 json = { module = "org.json:json", version.ref = "json" }
 junit = { module = "junit:junit", version.ref = "junit" }
+kizzyrpc = { module = "com.github.dead8309:KizzyRPC", version.ref = "kizzyrpc" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutines" }

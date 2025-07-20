@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.DialogErrorObserver
+import org.koitharu.kotatsu.core.model.appUrl
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -56,6 +57,7 @@ import org.koitharu.kotatsu.details.ui.pager.pages.PagesSavedObserver
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.reader.data.TapGridSettings
 import org.koitharu.kotatsu.reader.domain.TapGridArea
+import org.koitharu.kotatsu.reader.service.DiscordRPCService
 import org.koitharu.kotatsu.reader.ui.config.ReaderConfigSheet
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderUiState
@@ -170,6 +172,23 @@ class ReaderActivity :
 			viewBinding.zoomControl.isVisible = it
 		}
 		addMenuProvider(ReaderMenuProvider(viewModel))
+
+		viewModel.uiState.observe(this) { state ->
+			if (state != null) {
+				if (!state.incognito) {
+					startRpcService()
+					updateDiscordPresence(state)
+				} else {
+					stopRpcService()
+				}
+			}
+		}
+
+		settings.observe(AppSettings.KEY_DISCORD_RPC_ENABLED, AppSettings.KEY_DISCORD_TOKEN).observe(this) {
+			if (!settings.isDiscordRpcEnabled) {
+				stopRpcService()
+			}
+		}
 	}
 
 	override fun getParentActivityIntent(): Intent? {
@@ -188,6 +207,7 @@ class ReaderActivity :
 	override fun onPause() {
 		super.onPause()
 		viewModel.onPause()
+		stopService(Intent(this, DiscordRPCService::class.java))
 	}
 
 	override fun onProvideAssistContent(outContent: AssistContent) {
@@ -200,7 +220,13 @@ class ReaderActivity :
 	override fun isNsfwContent(): Flow<Boolean> = viewModel.isMangaNsfw
 
 	override fun onIdle() {
+		stopService(Intent(this, DiscordRPCService::class.java))
 		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		stopService(Intent(this, DiscordRPCService::class.java))
 	}
 
 	override fun onVisibilityChanged(v: View, visibility: Int) {
@@ -488,7 +514,11 @@ class ReaderActivity :
 			var dontAskAgain = false
 			val listener = DialogInterface.OnClickListener { _, which ->
 				if (which == DialogInterface.BUTTON_NEUTRAL) {
+					stopService(Intent(this@ReaderActivity, DiscordRPCService::class.java))
 					finishAfterTransition()
+				} else if (which == DialogInterface.BUTTON_POSITIVE) {
+					stopService(Intent(this@ReaderActivity, DiscordRPCService::class.java))
+					viewModel.setIncognitoMode(true, dontAskAgain)
 				} else {
 					viewModel.setIncognitoMode(which == DialogInterface.BUTTON_POSITIVE, dontAskAgain)
 				}
@@ -502,9 +532,58 @@ class ReaderActivity :
 			setPositiveButton(R.string.incognito, listener)
 			setNegativeButton(R.string.disable, listener)
 			setNeutralButton(android.R.string.cancel, listener)
-			setOnCancelListener { finishAfterTransition() }
+			setOnCancelListener {
+				stopService(Intent(this@ReaderActivity, DiscordRPCService::class.java))
+				finishAfterTransition()
+			}
 			setCancelable(true)
 		}.show()
+	}
+
+	private fun startRpcService() {
+		if (!settings.isDiscordRpcEnabled) {
+			return
+		}
+
+		val token = settings.discordToken
+		if (token.isNullOrBlank()) {
+			return
+		}
+
+		Intent(this, DiscordRPCService::class.java).apply {
+			action = DiscordRPCService.START_RPC_ACTION
+			putExtra("TOKEN", token)
+		}.also { startService(it) }
+	}
+
+	private fun stopRpcService() {
+		Intent(this, DiscordRPCService::class.java).apply {
+			action = DiscordRPCService.STOP_RPC_ACTION
+		}.also { startService(it) }
+
+		stopService(Intent(this, DiscordRPCService::class.java))
+	}
+
+	private fun updateDiscordPresence(state: ReaderUiState) {
+		if (!settings.isDiscordRpcEnabled) {
+			return
+		}
+
+		val token = settings.discordToken
+		if (token.isNullOrBlank()) {
+			return
+		}
+
+		Intent(this, DiscordRPCService::class.java).apply {
+			action = DiscordRPCService.UPDATE_RPC_ACTION
+			putExtra(DiscordRPCService.EXTRA_MANGA_TITLE, state.mangaName)
+			putExtra(DiscordRPCService.EXTRA_CHAPTER_NUMBER, state.chapterNumber)
+			putExtra(DiscordRPCService.EXTRA_CURRENT_PAGE, state.currentPage+1)
+			putExtra(DiscordRPCService.EXTRA_TOTAL_PAGES, state.totalPages)
+			putExtra(DiscordRPCService.EXTRA_MANGA_LINK, viewModel.getMangaOrNull()?.publicUrl ?: viewModel.getMangaOrNull()?.url)
+			putExtra(DiscordRPCService.EXTRA_MANGA_APP_URL, viewModel.getMangaOrNull()?.appUrl?.toString())
+			putExtra("TOKEN", token)
+		}.also { startService(it) }
 	}
 
 	companion object {

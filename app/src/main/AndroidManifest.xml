@@ -368,6 +368,11 @@
 			android:name="org.koitharu.kotatsu.browser.AdListUpdateService"
 			android:exported="false" />
 
+		<service
+			android:name=".reader.service.DiscordRPCService"
+			android:enabled="true"
+			android:exported="false" />
+
 		<provider
 			android:name="org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider"
 			android:authorities="${applicationId}.MangaSuggestionsProvider"

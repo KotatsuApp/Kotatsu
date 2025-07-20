@@ -555,6 +555,20 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isAutoLocalChaptersCleanupEnabled: Boolean
 		get() = prefs.getBoolean(KEY_CHAPTERS_CLEAR_AUTO, false)
 
+	var discordToken: String?
+		get() = prefs.getString(KEY_DISCORD_TOKEN, null)?.ifBlank { null }
+		set(value) = prefs.edit {
+			if (value.isNullOrBlank()) {
+				remove(KEY_DISCORD_TOKEN)
+			} else {
+				putString(KEY_DISCORD_TOKEN, value.trim())
+			}
+		}
+
+	var isDiscordRpcEnabled: Boolean
+		get() = prefs.getBoolean(KEY_DISCORD_RPC_ENABLED, false) && !discordToken.isNullOrBlank()
+		set(value) = prefs.edit { putBoolean(KEY_DISCORD_RPC_ENABLED, value) }
+
 	fun isPagesCropEnabled(mode: ReaderMode): Boolean {
 		val rawValue = prefs.getStringSet(KEY_READER_CROP, emptySet())
 		if (rawValue.isNullOrEmpty()) {
@@ -782,6 +796,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_BACKUP_TG_CHAT = "backup_periodic_tg_chat_id"
 		const val KEY_MANGA_LIST_BADGES = "manga_list_badges"
 		const val KEY_TAGS_WARNINGS = "tags_warnings"
+		const val KEY_DISCORD_TOKEN = "discord_token"
+		const val KEY_DISCORD_RPC_ENABLED = "discord_rpc_enabled"
 
 		// keys for non-persistent preferences
 		const val KEY_APP_VERSION = "app_version"

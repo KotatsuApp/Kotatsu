@@ -65,4 +65,24 @@
 
 	</PreferenceCategory>
 
+	<PreferenceCategory android:title="@string/discord">
+
+		<SwitchPreferenceCompat
+			android:defaultValue="false"
+			android:key="discord_rpc_enabled"
+			android:title="@string/discord_rpc"
+			android:summary="@string/discord_rpc_summary"
+			app:icon="@drawable/ic_discord" />
+
+		<EditTextPreference
+			android:dependency="discord_rpc_enabled"
+			android:key="discord_token"
+			android:title="@string/discord_token"
+			android:summary="@string/discord_token_summary"
+			android:hint="@string/discord_token_hint"
+			app:icon="@drawable/ic_key"
+			app:iconSpaceReserved="false" />
+
+	</PreferenceCategory>
+
 </PreferenceScreen>
