@@ -71,7 +71,7 @@ class DiscordRPCService : Service() {
 						start = System.currentTimeMillis()
 					),
 					assets = Assets(
-						largeImage = "mp:attachments/1282576939831529473/1395673260481318953/DokiTest.png?ex=687b4d83&is=6879fc03&hm=f48faaaa8fa4b840cac741c83d8be3feb06dbe963107ffb38064fc33225f0616&=&format=webp&quality=lossless&width=256&height=256",
+						largeImage = "mp:attachments/1396092865544716390/1396123149921419465/Kotatsu.png?ex=687d9941&is=687c47c1&hm=61da2b66445adaea18ad16cc2c7f829d1c97f0622beec332f123a56f4d294820&=&format=webp&quality=lossless&width=256&height=256",
 						largeText = "Reading manga on Kotatsu - A manga reader app",
 						smallText = "Reading $mangaTitle",
 						smallImage = "mp:attachments/1282576939831529473/1395712714415800392/button.png?ex=687b7242&is=687a20c2&hm=828ad97537c94128504402b43512523fe30801d534a48258f80c6fd29fda67c2&=&format=webp&quality=lossless",
