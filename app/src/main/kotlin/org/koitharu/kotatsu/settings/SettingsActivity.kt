@@ -31,6 +31,7 @@ import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivitySettingsBinding
 import org.koitharu.kotatsu.main.ui.owners.AppBarOwner
 import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
+import org.koitharu.kotatsu.settings.discord.DiscordSettingsFragment
 import org.koitharu.kotatsu.settings.search.SettingsItem
 import org.koitharu.kotatsu.settings.search.SettingsSearchFragment
 import org.koitharu.kotatsu.settings.search.SettingsSearchViewModel

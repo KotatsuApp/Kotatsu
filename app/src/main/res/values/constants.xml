@@ -22,6 +22,7 @@
 	<string name="tg_backup_bot_token" translatable="false">7455491254:AAHq5AJmizJJpVqFgx16pEAO4g0AX8V6NTY</string>
 	<string name="tg_backup_bot_name" translatable="false">kotatsu_backup_bot</string>
 	<string name="discord_app_id" translatable="false">1395464028611940393</string>
+	<string name="app_icon_url" translatable="false">https://raw.githubusercontent.com/KotatsuApp/Kotatsu/refs/heads/devel/metadata/en-US/icon.png</string>
 	<string-array name="values_theme" translatable="false">
 		<item>-1</item>
 		<item>1</item>
