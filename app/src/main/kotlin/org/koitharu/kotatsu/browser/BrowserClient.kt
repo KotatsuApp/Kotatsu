@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.browser
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Looper
 import android.webkit.WebResourceRequest
@@ -15,7 +16,7 @@ import java.io.ByteArrayInputStream
 
 open class BrowserClient(
 	private val callback: BrowserCallback,
-	private val adBlock: AdBlock,
+	private val adBlock: AdBlock?,
 ) : WebViewClient() {
 
 	/**
@@ -47,7 +48,7 @@ open class BrowserClient(
 	override fun shouldInterceptRequest(
 		view: WebView?,
 		url: String?
-	): WebResourceResponse? = if (url.isNullOrEmpty() || adBlock.shouldLoadUrl(url, view?.getUrlSafe())) {
+	): WebResourceResponse? = if (url.isNullOrEmpty() || adBlock?.shouldLoadUrl(url, view?.getUrlSafe()) ?: true) {
 		super.shouldInterceptRequest(view, url)
 	} else {
 		emptyResponse()
@@ -57,15 +58,17 @@ open class BrowserClient(
 	override fun shouldInterceptRequest(
 		view: WebView?,
 		request: WebResourceRequest?
-	): WebResourceResponse? = if (request == null || adBlock.shouldLoadUrl(request.url.toString(), view?.getUrlSafe())) {
-		super.shouldInterceptRequest(view, request)
-	} else {
-		emptyResponse()
-	}
+	): WebResourceResponse? =
+		if (request == null || adBlock?.shouldLoadUrl(request.url.toString(), view?.getUrlSafe()) ?: true) {
+			super.shouldInterceptRequest(view, request)
+		} else {
+			emptyResponse()
+		}
 
 	private fun emptyResponse(): WebResourceResponse =
 		WebResourceResponse("text/plain", "utf-8", ByteArrayInputStream(byteArrayOf()))
 
+	@SuppressLint("WrongThread")
 	@AnyThread
 	private fun WebView.getUrlSafe(): String? = if (Looper.myLooper() == Looper.getMainLooper()) {
 		url

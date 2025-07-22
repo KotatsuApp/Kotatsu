@@ -45,24 +45,36 @@
 
 		<Preference
 			android:key="anilist"
+			android:summary="@string/loading_"
 			android:title="@string/anilist"
 			app:icon="@drawable/ic_anilist" />
 
 		<Preference
 			android:key="kitsu"
+			android:summary="@string/loading_"
 			android:title="@string/kitsu"
 			app:icon="@drawable/ic_kitsu" />
 
 		<Preference
 			android:key="mal"
+			android:summary="@string/loading_"
 			android:title="@string/mal"
 			app:icon="@drawable/ic_mal" />
 
 		<Preference
 			android:key="shikimori"
+			android:summary="@string/loading_"
 			android:title="@string/shikimori"
 			app:icon="@drawable/ic_shikimori" />
 
 	</PreferenceCategory>
+
+	<Preference
+		android:fragment="org.koitharu.kotatsu.settings.discord.DiscordSettingsFragment"
+		android:key="discord_rpc"
+		android:summary="@string/discord_rpc_summary"
+		android:title="@string/discord_rpc"
+		app:allowDividerAbove="true"
+		app:icon="@drawable/ic_discord" />
 
 </PreferenceScreen>

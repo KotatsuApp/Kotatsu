@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="discord_rpc"
+		android:layout="@layout/preference_toggle_header"
+		android:title="@string/discord_rpc" />
+
+	<EditTextPreference
+		android:dependency="discord_rpc"
+		android:key="discord_token"
+		android:summary="@string/discord_token_summary"
+		android:title="@string/discord_token" />
+
+	<SwitchPreferenceCompat
+		android:dependency="discord_rpc"
+		android:key="discord_rpc_skip_nsfw"
+		android:summary="@string/rpc_skip_nsfw_summary"
+		android:title="@string/disable_nsfw" />
+
+</androidx.preference.PreferenceScreen>
