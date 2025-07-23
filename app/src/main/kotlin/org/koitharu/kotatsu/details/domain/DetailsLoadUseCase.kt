@@ -9,30 +9,33 @@ import androidx.core.text.parseAsHtml
 import coil3.request.CachePolicy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.runInterruptible
-import okio.IOException
 import org.koitharu.kotatsu.core.model.isLocal
 import org.koitharu.kotatsu.core.nav.MangaIntent
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.util.ext.peek
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
+import org.koitharu.kotatsu.core.ui.model.MangaOverride
 import org.koitharu.kotatsu.core.util.ext.sanitize
 import org.koitharu.kotatsu.details.data.MangaDetails
 import org.koitharu.kotatsu.explore.domain.RecoverMangaUseCase
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.parsers.util.recoverNotNull
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.tracker.domain.CheckNewChaptersUseCase
 import javax.inject.Inject
-import javax.inject.Provider
 
 class DetailsLoadUseCase @Inject constructor(
 	private val mangaDataRepository: MangaDataRepository,
@@ -40,91 +43,115 @@ class DetailsLoadUseCase @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val recoverUseCase: RecoverMangaUseCase,
 	private val imageGetter: Html.ImageGetter,
-	private val newChaptersUseCaseProvider: Provider<CheckNewChaptersUseCase>,
 	private val networkState: NetworkState,
 ) {
 
-	operator fun invoke(intent: MangaIntent, force: Boolean): Flow<MangaDetails> = channelFlow {
+	operator fun invoke(intent: MangaIntent, force: Boolean): Flow<MangaDetails> = flow {
 		val manga = requireNotNull(mangaDataRepository.resolveIntent(intent, withChapters = true)) {
 			"Cannot resolve intent $intent"
 		}
 		val override = mangaDataRepository.getOverride(manga.id)
-		send(
+		emit(
 			MangaDetails(
 				manga = manga,
 				localManga = null,
 				override = override,
-				description = null,
+				description = manga.description?.parseAsHtml(withImages = false),
 				isLoaded = false,
 			),
 		)
 		if (manga.isLocal) {
-			val details = getDetails(manga, force)
-			send(
+			loadLocal(manga, override, force)
+		} else {
+			loadRemote(manga, override, force)
+		}
+	}.distinctUntilChanged()
+		.buffer(Channel.UNLIMITED)
+		.flowOn(Dispatchers.Default)
+
+	/**
+	 * Load local manga + try to load the linked remote one if network is not restricted
+	 * Suppress any network errors
+	 */
+	private suspend fun FlowCollector<MangaDetails>.loadLocal(manga: Manga, override: MangaOverride?, force: Boolean) {
+		val skipNetworkLoad = !force && networkState.isOfflineOrRestricted()
+		val localDetails = localMangaRepository.getDetails(manga)
+		emit(
+			MangaDetails(
+				manga = localDetails,
+				localManga = null,
+				override = override,
+				description = localDetails.description?.parseAsHtml(withImages = false),
+				isLoaded = skipNetworkLoad,
+			),
+		)
+		if (skipNetworkLoad) {
+			return
+		}
+		val remoteManga = localMangaRepository.getRemoteManga(manga)
+		if (remoteManga == null) {
+			emit(
 				MangaDetails(
-					manga = details,
+					manga = localDetails,
 					localManga = null,
 					override = override,
-					description = details.description?.parseAsHtml(withImages = false)?.trim(),
+					description = localDetails.description?.parseAsHtml(withImages = true),
 					isLoaded = true,
 				),
 			)
-			return@channelFlow
-		}
-		val local = async {
-			localMangaRepository.findSavedManga(manga)
-		}
-		if (!force && networkState.isOfflineOrRestricted()) {
-			// try to avoid loading if has saved manga
-			val localManga = local.await()
-			if (localManga != null) {
-				send(
-					MangaDetails(
-						manga = manga,
-						localManga = localManga,
-						override = override,
-						description = manga.description?.parseAsHtml(withImages = true)?.trim(),
-						isLoaded = true,
-					),
-				)
-				return@channelFlow
+		} else {
+			val remoteDetails = getDetails(remoteManga, force).getOrNull()
+			emit(
+				MangaDetails(
+					manga = remoteDetails ?: remoteManga,
+					localManga = LocalManga(localDetails),
+					override = override,
+					description = (remoteDetails ?: localDetails).description?.parseAsHtml(withImages = true),
+					isLoaded = true,
+				),
+			)
+			if (remoteDetails != null) {
+				mangaDataRepository.updateChapters(remoteDetails)
 			}
 		}
-		try {
-			val details = getDetails(manga, force)
-			launch { mangaDataRepository.updateChapters(details) }
-			launch { updateTracker(details) }
-			send(
+	}
+
+	/**
+	 * Load remote manga + saved one if available
+	 * Throw network errors after loading local manga only
+	 */
+	private suspend fun FlowCollector<MangaDetails>.loadRemote(
+		manga: Manga,
+		override: MangaOverride?,
+		force: Boolean
+	) = coroutineScope {
+		val remoteDeferred = async {
+			getDetails(manga, force)
+		}
+		val localManga = localMangaRepository.findSavedManga(manga, withDetails = true)
+		if (localManga != null) {
+			emit(
 				MangaDetails(
-					manga = details,
-					localManga = local.peek(),
+					manga = manga,
+					localManga = localManga,
 					override = override,
-					description = details.description?.parseAsHtml(withImages = false)?.trim(),
+					description = localManga.manga.description?.parseAsHtml(withImages = true),
 					isLoaded = false,
 				),
 			)
-			send(
-				MangaDetails(
-					manga = details,
-					localManga = local.await(),
-					override = override,
-					description = details.description?.parseAsHtml(withImages = true)?.trim(),
-					isLoaded = true,
-				),
-			)
-		} catch (e: IOException) {
-			local.await()?.manga?.also { localManga ->
-				send(
-					MangaDetails(
-						manga = localManga,
-						localManga = null,
-						override = override,
-						description = localManga.description?.parseAsHtml(withImages = false)?.trim(),
-						isLoaded = true,
-					),
-				)
-			} ?: close(e)
 		}
+		val remoteDetails = remoteDeferred.await().getOrThrow()
+		emit(
+			MangaDetails(
+				manga = remoteDetails,
+				localManga = localManga,
+				override = override,
+				description = (remoteDetails.description
+					?: localManga?.manga?.description)?.parseAsHtml(withImages = true),
+				isLoaded = true,
+			),
+		)
+		mangaDataRepository.updateChapters(remoteDetails)
 	}
 
 	private suspend fun getDetails(seed: Manga, force: Boolean) = runCatchingCancellable {
@@ -140,19 +167,17 @@ class DetailsLoadUseCase @Inject constructor(
 		} else {
 			null
 		}
-	}.getOrThrow()
-
-	private suspend fun String.parseAsHtml(withImages: Boolean): CharSequence? {
-		return if (withImages) {
-			runInterruptible(Dispatchers.IO) {
-				parseAsHtml(imageGetter = imageGetter)
-			}.filterSpans()
-		} else {
-			runInterruptible(Dispatchers.Default) {
-				parseAsHtml()
-			}.filterSpans().sanitize()
-		}.takeUnless { it.isBlank() }
 	}
+
+	private suspend fun String.parseAsHtml(withImages: Boolean): CharSequence? = if (withImages) {
+		runInterruptible(Dispatchers.IO) {
+			parseAsHtml(imageGetter = imageGetter)
+		}.filterSpans()
+	} else {
+		runInterruptible(Dispatchers.Default) {
+			parseAsHtml()
+		}.filterSpans().sanitize()
+	}.trim().nullIfEmpty()
 
 	private fun Spanned.filterSpans(): Spanned {
 		val spannable = SpannableString.valueOf(this)
@@ -161,11 +186,5 @@ class DetailsLoadUseCase @Inject constructor(
 			spannable.removeSpan(span)
 		}
 		return spannable
-	}
-
-	private suspend fun updateTracker(details: Manga) = runCatchingCancellable {
-		newChaptersUseCaseProvider.get()(details)
-	}.onFailure { e ->
-		e.printStackTraceDebug()
 	}
 }

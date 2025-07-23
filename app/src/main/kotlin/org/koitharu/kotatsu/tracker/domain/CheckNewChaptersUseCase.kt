@@ -33,7 +33,7 @@ class CheckNewChaptersUseCase @Inject constructor(
 
 	suspend operator fun invoke(manga: Manga): MangaUpdates = mutex.withLock(manga.id) {
 		repository.updateTracks()
-		val tracking = repository.getTrackOrNull(manga) ?: return MangaUpdates.Failure(
+		val tracking = repository.getTrackOrNull(manga) ?: return@withLock MangaUpdates.Failure(
 			manga = manga,
 			error = null,
 		)

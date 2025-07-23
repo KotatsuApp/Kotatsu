@@ -12,7 +12,6 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.AttrRes
-import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.google.android.material.slider.Slider
@@ -50,7 +49,9 @@ class ReaderActionsView @JvmOverloads constructor(
 	private val binding = LayoutReaderActionsBinding.inflate(LayoutInflater.from(context), this)
 	private val rotationObserver = object : ContentObserver(handler) {
 		override fun onChange(selfChange: Boolean) {
-			updateRotationButton()
+			post {
+				updateRotationButton()
+			}
 		}
 	}
 	private var isSliderChanged = false

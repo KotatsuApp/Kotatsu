@@ -29,10 +29,15 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.DialogErrorObserver
+import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.prefs.AppSettings
@@ -133,7 +138,7 @@ class ReaderActivity :
 			}
 		}
 
-		viewModel.onError.observeEvent(
+		viewModel.onLoadingError.observeEvent(
 			this,
 			DialogErrorObserver(
 				host = viewBinding.container,
@@ -148,13 +153,24 @@ class ReaderActivity :
 				},
 			),
 		)
+		viewModel.onError.observeEvent(
+			this,
+			SnackbarErrorObserver(
+				host = viewBinding.container,
+				fragment = null,
+				resolver = exceptionResolver,
+				onResolved = null,
+			),
+		)
 		viewModel.readerMode.observe(this, Lifecycle.State.STARTED, this::onInitReader)
 		viewModel.onPageSaved.observeEvent(this, PagesSavedObserver(viewBinding.container))
 		viewModel.uiState.zipWithPrevious().observe(this, this::onUiStateChanged)
-		viewModel.isLoading.observe(this, this::onLoadingStateChanged)
-		viewModel.content.observe(this) {
-			onLoadingStateChanged(viewModel.isLoading.value)
-		}
+		combine(
+			viewModel.isLoading,
+			viewModel.content.map { it.pages.isNotEmpty() }.distinctUntilChanged(),
+			::Pair,
+		).flowOn(Dispatchers.Default)
+			.observe(this, this::onLoadingStateChanged)
 		viewModel.isKeepScreenOnEnabled.observe(this, this::setKeepScreenOn)
 		viewModel.isInfoBarTransparent.observe(this) { viewBinding.infoBar.drawBackground = !it }
 		viewModel.isInfoBarEnabled.observe(this, ::onReaderBarChanged)
@@ -243,9 +259,14 @@ class ReaderActivity :
 		viewBinding.timerControl.onReaderModeChanged(mode)
 	}
 
-	private fun onLoadingStateChanged(isLoading: Boolean) {
-		val hasPages = viewModel.content.value.pages.isNotEmpty()
-		viewBinding.layoutLoading.isVisible = isLoading && !hasPages
+	private fun onLoadingStateChanged(value: Pair<Boolean, Boolean>) {
+		val (isLoading, hasPages) = value
+		val showLoadingLayout = isLoading && !hasPages
+		if (viewBinding.layoutLoading.isVisible != showLoadingLayout) {
+			val transition = Fade().addTarget(viewBinding.layoutLoading)
+			TransitionManager.beginDelayedTransition(viewBinding.root, transition)
+			viewBinding.layoutLoading.isVisible = showLoadingLayout
+		}
 		if (isLoading && hasPages) {
 			viewBinding.toastView.show(R.string.loading_)
 		} else {

@@ -17,6 +17,7 @@ data class MangaDetails(
 	private val localManga: LocalManga?,
 	private val override: MangaOverride?,
 	val description: CharSequence?,
+	@Deprecated("Caller should decide if manga is loaded enough by itself")
 	val isLoaded: Boolean,
 ) {
 
@@ -31,12 +32,11 @@ data class MangaDetails(
 	val id: Long
 		get() = manga.id
 
-	val chapters: Map<String?, List<MangaChapter>> = manga.chapters?.groupBy { it.branch }.orEmpty()
-
-	val branches: Set<String?>
-		get() = chapters.keys
-
 	val allChapters: List<MangaChapter> by lazy { mergeChapters() }
+
+	val chapters: Map<String?, List<MangaChapter>> by lazy {
+		allChapters.groupBy { it.branch }
+	}
 
 	val isLocal
 		get() = manga.isLocal
@@ -51,7 +51,22 @@ data class MangaDetails(
 			.ifNullOrEmpty { localManga?.manga?.coverUrl }
 			?.nullIfEmpty()
 
-	fun toManga() = manga.withOverride(override)
+	private val mergedManga by lazy {
+		if (localManga == null) {
+			// fast path
+			manga.withOverride(override)
+		} else {
+			manga.copy(
+				title = override?.title.ifNullOrEmpty { manga.title },
+				coverUrl = override?.coverUrl.ifNullOrEmpty { manga.coverUrl },
+				largeCoverUrl = override?.coverUrl.ifNullOrEmpty { manga.largeCoverUrl },
+				contentRating = override?.contentRating ?: manga.contentRating,
+				chapters = allChapters,
+			)
+		}
+	}
+
+	fun toManga() = mergedManga
 
 	fun getLocale(): Locale? {
 		findAppropriateLocale(chapters.keys.singleOrNull())?.let {

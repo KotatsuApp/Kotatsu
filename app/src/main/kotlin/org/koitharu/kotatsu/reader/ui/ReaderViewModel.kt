@@ -1,12 +1,14 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.net.Uri
+import android.util.Log
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -57,6 +59,7 @@ import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.sizeOrZero
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
 import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
@@ -108,13 +111,12 @@ class ReaderViewModel @Inject constructor(
 	private var stateChangeJob: Job? = null
 
 	init {
-		selectedBranch.value = savedStateHandle.get<String>(ReaderIntent.EXTRA_BRANCH)
-		readingState.value = savedStateHandle[ReaderIntent.EXTRA_STATE]
 		mangaDetails.value = intent.manga?.let { MangaDetails(it) }
 	}
 
 	val readerMode = MutableStateFlow<ReaderMode?>(null)
 	val onPageSaved = MutableEventFlow<Collection<Uri>>()
+	val onLoadingError = MutableEventFlow<Throwable>()
 	val onShowToast = MutableEventFlow<Int>()
 	val onAskNsfwIncognito = MutableEventFlow<Unit>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
@@ -393,31 +395,56 @@ class ReaderViewModel @Inject constructor(
 	}
 
 	private fun loadImpl() {
-		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			val details = detailsLoadUseCase.invoke(intent, force = false).first { x -> x.isLoaded }
-			mangaDetails.value = details
-			chaptersLoader.init(details)
-			val manga = details.toManga()
-			// obtain state
-			if (readingState.value == null) {
-				readingState.value = getStateFromIntent(manga)
-			}
-			val mode = detectReaderModeUseCase.invoke(manga, readingState.value)
-			val branch = chaptersLoader.peekChapter(readingState.value?.chapterId ?: 0L)?.branch
-			selectedBranch.value = branch
-			mangaDetails.value = details.filterChapters(branch)
-			readerMode.value = mode
+		loadingJob = launchLoadingJob(Dispatchers.Default + EventExceptionHandler(onLoadingError)) {
+			val exception = try {
+				detailsLoadUseCase(intent, force = false)
+					.collect { details ->
+						if (mangaDetails.value == null) {
+							mangaDetails.value = details
+						}
+						chaptersLoader.init(details)
+						val manga = details.toManga()
+						// obtain state
+						if (readingState.value == null) {
+							val newState = getStateFromIntent(manga)
+							if (newState == null) {
+								return@collect // manga not loaded yet if cannot get state
+							}
+							readingState.value = newState
+							val mode = runCatchingCancellable {
+								detectReaderModeUseCase(manga, newState)
+							}.getOrDefault(settings.defaultReaderMode)
+							val branch = chaptersLoader.peekChapter(newState.chapterId)?.branch
+							selectedBranch.value = branch
+							readerMode.value = mode
+							chaptersLoader.loadSingleChapter(newState.chapterId)
+						}
+						mangaDetails.value = details.filterChapters(selectedBranch.value)
 
-			chaptersLoader.loadSingleChapter(requireNotNull(readingState.value).chapterId)
-			// save state
-			if (!isIncognitoMode.firstNotNull()) {
-				readingState.value?.let {
-					val percent = computePercent(it.chapterId, it.page)
-					historyUpdateUseCase.invoke(manga, it, percent)
-				}
+						// save state
+						if (!isIncognitoMode.firstNotNull()) {
+							readingState.value?.let {
+								val percent = computePercent(it.chapterId, it.page)
+								historyUpdateUseCase(manga, it, percent)
+							}
+						}
+						notifyStateChanged()
+						content.value = ReaderContent(chaptersLoader.snapshot(), readingState.value)
+					}
+				null // no errors
+			} catch (e: CancellationException) {
+				throw e
+			} catch (e: Exception) {
+				e
 			}
-			notifyStateChanged()
-			content.value = ReaderContent(chaptersLoader.snapshot(), readingState.value)
+			if (readingState.value == null) {
+				onLoadingError.call(
+					exception ?: IllegalStateException("Unable to load manga. This should never happen. Please report"),
+				)
+			} else if (exception != null) {
+				// manga has been loaded but error occurred
+				errorEvent.call(exception)
+			}
 		}
 	}
 
@@ -513,18 +540,40 @@ class ReaderViewModel @Inject constructor(
 		}
 	}
 
-	private suspend fun getStateFromIntent(manga: Manga): ReaderState {
-		val history = historyRepository.getOne(manga)
-		val preselectedBranch = selectedBranch.value
-		val result = if (history != null) {
-			if (preselectedBranch != null && preselectedBranch != manga.findChapterById(history.chapterId)?.branch) {
+	private suspend fun getStateFromIntent(manga: Manga): ReaderState? {
+		// check if we have at least some chapters loaded
+		if (manga.chapters.isNullOrEmpty()) {
+			return null
+		}
+		// specific state is requested
+		val requestedState: ReaderState? = savedStateHandle[ReaderIntent.EXTRA_STATE]
+		if (requestedState != null) {
+			return if (manga.findChapterById(requestedState.chapterId) != null) {
+				requestedState
+			} else {
 				null
+			}
+		}
+
+		val requestedBranch: String? = savedStateHandle[ReaderIntent.EXTRA_BRANCH]
+		// continue reading
+		val history = historyRepository.getOne(manga)
+		if (history != null) {
+			val chapter = manga.findChapterById(history.chapterId) ?: return null
+			// specified branch is requested
+			return if (ReaderIntent.EXTRA_BRANCH in savedStateHandle) {
+				if (chapter.branch == requestedBranch) {
+					ReaderState(history)
+				} else {
+					ReaderState(manga, requestedBranch)
+				}
 			} else {
 				ReaderState(history)
 			}
-		} else {
-			null
 		}
-		return result ?: ReaderState(manga, preselectedBranch ?: manga.getPreferredBranch(null))
+
+		// start from beginning
+		val preferredBranch = requestedBranch ?: manga.getPreferredBranch(null)
+		return ReaderState(manga, preferredBranch)
 	}
 }

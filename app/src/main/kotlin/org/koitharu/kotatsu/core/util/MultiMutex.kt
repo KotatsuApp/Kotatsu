@@ -1,53 +1,30 @@
 package org.koitharu.kotatsu.core.util
 
-import androidx.collection.ArrayMap
+import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.sync.Mutex
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-open class MultiMutex<T : Any> : Set<T> {
+open class MultiMutex<T : Any> {
 
-	private val delegates = ArrayMap<T, Mutex>()
+	private val delegates = ConcurrentHashMap<T, Mutex>()
 
-	override val size: Int
-		get() = delegates.size
+	@VisibleForTesting
+	val size: Int
+		get() = delegates.count { it.value.isLocked }
 
-	override fun contains(element: T): Boolean = synchronized(delegates) {
-		delegates.containsKey(element)
-	}
+	fun isNotEmpty() = delegates.any { it.value.isLocked }
 
-	override fun containsAll(elements: Collection<T>): Boolean = synchronized(delegates) {
-		elements.all { x -> delegates.containsKey(x) }
-	}
-
-	override fun isEmpty(): Boolean = delegates.isEmpty()
-
-	override fun iterator(): Iterator<T> = synchronized(delegates) {
-		delegates.keys.toList()
-	}.iterator()
-
-	fun isLocked(element: T): Boolean = synchronized(delegates) {
-		delegates[element]?.isLocked == true
-	}
-
-	fun tryLock(element: T): Boolean {
-		val mutex = synchronized(delegates) {
-			delegates.getOrPut(element, ::Mutex)
-		}
-		return mutex.tryLock()
-	}
+	fun isEmpty() = delegates.none { it.value.isLocked }
 
 	suspend fun lock(element: T) {
-		val mutex = synchronized(delegates) {
-			delegates.getOrPut(element, ::Mutex)
-		}
+		val mutex = delegates.computeIfAbsent(element) { Mutex() }
 		mutex.lock()
 	}
 
 	fun unlock(element: T) {
-		synchronized(delegates) {
-			delegates.remove(element)?.unlock()
-		}
+		delegates[element]?.unlock()
 	}
 
 	suspend inline fun <R> withLock(element: T, block: () -> R): R {
