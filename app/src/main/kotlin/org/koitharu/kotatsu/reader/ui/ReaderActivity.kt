@@ -72,7 +72,9 @@ class ReaderActivity :
 	ReaderControlDelegate.OnInteractionListener,
 	ReaderNavigationCallback,
 	IdlingDetector.Callback,
-	ZoomControl.ZoomControlListener, View.OnClickListener, ScrollTimerControlView.OnVisibilityChangeListener {
+	ZoomControl.ZoomControlListener,
+	View.OnClickListener,
+	ScrollTimerControlView.OnVisibilityChangeListener {
 
 	@Inject
 	lateinit var settings: AppSettings
@@ -480,6 +482,7 @@ class ReaderActivity :
 	private fun updateScrollTimerButton() {
 		val button = viewBinding.buttonTimer ?: return
 		val isButtonVisible = scrollTimer.isActive.value
+			&& settings.isReaderAutoscrollFabVisible
 			&& !viewBinding.appbarTop.isVisible
 			&& !viewBinding.timerControl.isVisible
 		if (button.isVisible != isButtonVisible) {

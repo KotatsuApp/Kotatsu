@@ -873,4 +873,5 @@
 	<string name="read_on_s">Read on %s</string>
 	<string name="rpc_skip_nsfw_summary">Do not use RPC for adult content</string>
 	<string name="invalid_token">Invalid token: %s</string>
+	<string name="show_floating_control_button">Show floating control button</string>
 </resources>

@@ -502,6 +502,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			)
 		}
 
+	var isReaderAutoscrollFabVisible: Boolean
+		get() = prefs.getBoolean(KEY_READER_AUTOSCROLL_FAB, true)
+		set(value) = prefs.edit { putBoolean(KEY_READER_AUTOSCROLL_FAB, value) }
+
 	val isPagesPreloadEnabled: Boolean
 		get() {
 			if (isBackgroundNetworkRestricted()) {
@@ -751,6 +755,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_TIPS_CLOSED = "tips_closed"
 		const val KEY_SSL_BYPASS = "ssl_bypass"
 		const val KEY_READER_AUTOSCROLL_SPEED = "as_speed"
+		const val KEY_READER_AUTOSCROLL_FAB = "as_fab"
 		const val KEY_MIRROR_SWITCHING = "mirror_switching"
 		const val KEY_PROXY = "proxy"
 		const val KEY_PROXY_TYPE = "proxy_type_2"

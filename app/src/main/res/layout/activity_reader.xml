@@ -19,8 +19,6 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom|end"
 		android:layout_margin="16dp"
-		android:contentDescription="@string/page_switch_timer"
-		android:tooltipText="@string/page_switch_timer"
 		app:backgroundTint="@color/bg_floating_button"
 		app:icon="@drawable/ic_timelapse"
 		app:layout_insetEdge="bottom" />

@@ -7,6 +7,7 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.core.view.isEmpty
+import androidx.core.view.isVisible
 import androidx.core.view.iterator
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
@@ -89,25 +90,7 @@ class MainNavigationDelegate(
 		when (v.id) {
 			R.id.button_expand -> {
 				if (navBar is NavigationRailView) {
-					if (navBar.isExpanded) {
-						navBar.collapse()
-						navRailHeader?.run {
-							railFab.shrink()
-							buttonExpand.setImageResource(R.drawable.ic_drawer_menu)
-							buttonExpand.setContentDescriptionAndTooltip(R.string.expand)
-							val horizontalPadding = navBar.itemActiveIndicatorMarginHorizontal
-							root.setPadding(horizontalPadding, 0, horizontalPadding, 0)
-						}
-					} else {
-						navBar.expand()
-						navRailHeader?.run {
-							railFab.extend()
-							buttonExpand.setImageResource(R.drawable.ic_drawer_menu_open)
-							buttonExpand.setContentDescriptionAndTooltip(R.string.collapse)
-							val horizontalPadding = navBar.itemActiveIndicatorExpandedMarginHorizontal
-							root.setPadding(horizontalPadding, 0, horizontalPadding, 0)
-						}
-					}
+					setNavbarIsExpanded(!navBar.isExpanded)
 				}
 			}
 		}
@@ -289,10 +272,39 @@ class MainNavigationDelegate(
 				},
 			)
 		}
+		navRailHeader?.buttonExpand?.isVisible = value
+		if (!value) {
+			setNavbarIsExpanded(false)
+		}
 		navBar.labelVisibilityMode = if (value) {
 			NavigationBarView.LABEL_VISIBILITY_LABELED
 		} else {
 			NavigationBarView.LABEL_VISIBILITY_UNLABELED
+		}
+	}
+
+	private fun setNavbarIsExpanded(value: Boolean) {
+		if (navBar !is NavigationRailView) {
+			return
+		}
+		if (value) {
+			navBar.expand()
+			navRailHeader?.run {
+				railFab.extend()
+				buttonExpand.setImageResource(R.drawable.ic_drawer_menu_open)
+				buttonExpand.setContentDescriptionAndTooltip(R.string.collapse)
+				val horizontalPadding = navBar.itemActiveIndicatorExpandedMarginHorizontal
+				root.setPadding(horizontalPadding, 0, horizontalPadding, 0)
+			}
+		} else {
+			navBar.collapse()
+			navRailHeader?.run {
+				railFab.shrink()
+				buttonExpand.setImageResource(R.drawable.ic_drawer_menu)
+				buttonExpand.setContentDescriptionAndTooltip(R.string.expand)
+				val horizontalPadding = navBar.itemActiveIndicatorMarginHorizontal
+				root.setPadding(horizontalPadding, 0, horizontalPadding, 0)
+			}
 		}
 	}
 

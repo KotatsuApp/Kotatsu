@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -49,8 +50,10 @@ class ScrollTimerControlView @JvmOverloads constructor(
 	init {
 		binding.switchScrollTimer.setOnCheckedChangeListener(this)
 		binding.sliderTimer.addOnChangeListener(this)
+		binding.buttonFab.setOnClickListener(this)
 		binding.sliderTimer.setLabelFormatter(this)
 		binding.buttonClose.setOnClickListener(this)
+		binding.buttonFab.isGone = resources.getBoolean(R.bool.is_tablet)
 		setPadding(0, 0, 0, context.resources.getDimensionPixelOffset(R.dimen.margin_normal))
 	}
 
@@ -73,6 +76,13 @@ class ScrollTimerControlView @JvmOverloads constructor(
 				)
 			}
 		}
+		settings.observeAsStateFlow(
+			scope = lifecycleOwner.lifecycleScope + Dispatchers.Default,
+			key = AppSettings.KEY_READER_AUTOSCROLL_FAB,
+			valueProducer = { isReaderAutoscrollFabVisible },
+		).observe(lifecycleOwner) {
+			binding.buttonFab.isChecked = it
+		}
 		updateDescription()
 	}
 
@@ -84,6 +94,7 @@ class ScrollTimerControlView @JvmOverloads constructor(
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.button_close -> hide()
+			R.id.button_fab -> settings.isReaderAutoscrollFabVisible = !settings.isReaderAutoscrollFabVisible
 		}
 	}
 

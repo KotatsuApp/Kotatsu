@@ -84,4 +84,22 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/slider_timer"
 		tools:text="@string/page_switch_timer" />
+
+	<CheckedTextView
+		android:id="@+id/button_fab"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_small"
+		android:background="?selectableItemBackground"
+		android:drawableEnd="?android:listChoiceIndicatorMultiple"
+		android:gravity="center_vertical"
+		android:paddingHorizontal="@dimen/margin_normal"
+		android:paddingVertical="4dp"
+		android:singleLine="true"
+		android:text="@string/show_floating_control_button"
+		android:textAppearance="?attr/textAppearanceTitleSmall"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/textView_description" />
+
 </merge>
