@@ -17,7 +17,6 @@ data class MangaDetails(
 	private val localManga: LocalManga?,
 	private val override: MangaOverride?,
 	val description: CharSequence?,
-	@Deprecated("Caller should decide if manga is loaded enough by itself")
 	val isLoaded: Boolean,
 ) {
 

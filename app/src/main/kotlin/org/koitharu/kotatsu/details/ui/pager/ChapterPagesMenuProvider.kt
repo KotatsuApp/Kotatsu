@@ -9,6 +9,7 @@ import androidx.core.view.MenuProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
+import com.google.android.material.slider.TickVisibilityMode
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
@@ -41,6 +42,10 @@ class ChapterPagesMenuProvider(
 				menu.findItem(R.id.action_search)?.isVisible = viewModel.isChaptersEmpty.value == false
 				menu.findItem(R.id.action_reversed)?.isChecked = viewModel.isChaptersReversed.value == true
 				menu.findItem(R.id.action_grid_view)?.isChecked = viewModel.isChaptersInGridView.value == true
+				menu.findItem(R.id.action_downloaded)?.let { menuItem ->
+					menuItem.isVisible = viewModel.mangaDetails.value?.local != null
+					menuItem.isChecked = viewModel.isDownloadedOnly.value == true
+				}
 			}
 
 			TAB_PAGES, TAB_BOOKMARKS -> {
@@ -61,6 +66,11 @@ class ChapterPagesMenuProvider(
 
 		R.id.action_grid_view -> {
 			viewModel.setChaptersInGridView(!menuItem.isChecked)
+			true
+		}
+
+		R.id.action_downloaded -> {
+			viewModel.isDownloadedOnly.value = !menuItem.isChecked
 			true
 		}
 
@@ -110,7 +120,7 @@ class ChapterPagesMenuProvider(
 		valueFrom = 50f
 		valueTo = 150f
 		stepSize = 5f
-		isTickVisible = false
+		tickVisibilityMode = TickVisibilityMode.TICK_VISIBILITY_HIDDEN
 		labelBehavior = LabelFormatter.LABEL_FLOATING
 		setLabelFormatter(IntPercentLabelFormatter(context))
 		setValueRounded(settings.gridSizePages.toFloat())

@@ -87,6 +87,8 @@ abstract class ChaptersPagesViewModel(
 		valueProducer = { isChaptersGridView },
 	)
 
+	val isDownloadedOnly = MutableStateFlow(false)
+
 	val newChaptersCount = mangaDetails.flatMapLatest { d ->
 		if (d?.isLocal == false) {
 			interactor.observeNewChapters(d.id)
@@ -115,13 +117,15 @@ abstract class ChaptersPagesViewModel(
 			newChaptersCount,
 			bookmarks,
 			isChaptersInGridView,
-		) { manga, currentChapterId, branch, news, bookmarks, grid ->
+			isDownloadedOnly,
+		) { manga, currentChapterId, branch, news, bookmarks, grid, downloadedOnly ->
 			manga?.mapChapters(
-				currentChapterId,
-				news,
-				branch,
-				bookmarks,
-				grid,
+				currentChapterId = currentChapterId,
+				newCount = news,
+				branch = branch,
+				bookmarks = bookmarks,
+				isGrid = grid,
+				isDownloadedOnly = downloadedOnly,
 			).orEmpty()
 		},
 		isChaptersReversed,

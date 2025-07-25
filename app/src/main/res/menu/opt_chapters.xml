@@ -12,6 +12,13 @@
 		app:showAsAction="ifRoom|collapseActionView" />
 
 	<item
+		android:id="@+id/action_downloaded"
+		android:checkable="true"
+		android:orderInCategory="18"
+		android:title="@string/on_device"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_reversed"
 		android:checkable="true"
 		android:orderInCategory="20"
