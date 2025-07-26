@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteFullException
 import androidx.annotation.DrawableRes
 import coil3.network.HttpException
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecodeException
+import kotlinx.coroutines.CancellationException
 import okhttp3.Response
 import okhttp3.internal.http2.StreamResetException
 import okio.FileNotFoundException
@@ -64,6 +65,7 @@ fun Throwable.getDisplayMessage(resources: Resources): String = getDisplayMessag
 	?: resources.getString(R.string.error_occurred)
 
 private fun Throwable.getDisplayMessageOrNull(resources: Resources): String? = when (this) {
+	is CancellationException -> cause?.getDisplayMessageOrNull(resources) ?: message
 	is CaughtException -> cause.getDisplayMessageOrNull(resources)
 	is WrapperIOException -> cause.getDisplayMessageOrNull(resources)
 	is ScrobblerAuthRequiredException -> resources.getString(

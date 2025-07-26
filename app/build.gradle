@@ -8,6 +8,8 @@ plugins {
 	id 'dagger.hilt.android.plugin'
 	id 'androidx.room'
 	id 'org.jetbrains.kotlin.plugin.serialization'
+	// enable if needed
+	// id 'dev.reformator.stacktracedecoroutinator'
 }
 
 android {

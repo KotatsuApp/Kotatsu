@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.net.Uri
-import android.util.Log
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
@@ -396,7 +395,8 @@ class ReaderViewModel @Inject constructor(
 
 	private fun loadImpl() {
 		loadingJob = launchLoadingJob(Dispatchers.Default + EventExceptionHandler(onLoadingError)) {
-			val exception = try {
+			var exception: Exception? = null
+			try {
 				detailsLoadUseCase(intent, force = false)
 					.collect { details ->
 						if (mangaDetails.value == null) {
@@ -417,7 +417,13 @@ class ReaderViewModel @Inject constructor(
 							val branch = chaptersLoader.peekChapter(newState.chapterId)?.branch
 							selectedBranch.value = branch
 							readerMode.value = mode
-							chaptersLoader.loadSingleChapter(newState.chapterId)
+							try {
+								chaptersLoader.loadSingleChapter(newState.chapterId)
+							} catch (e: Exception) {
+								readingState.value = null // try next time
+								exception = e.mergeWith(exception)
+								return@collect
+							}
 						}
 						mangaDetails.value = details.filterChapters(selectedBranch.value)
 
@@ -431,19 +437,18 @@ class ReaderViewModel @Inject constructor(
 						notifyStateChanged()
 						content.value = ReaderContent(chaptersLoader.snapshot(), readingState.value)
 					}
-				null // no errors
 			} catch (e: CancellationException) {
 				throw e
 			} catch (e: Exception) {
-				e
+				exception = e.mergeWith(exception)
 			}
 			if (readingState.value == null) {
 				onLoadingError.call(
 					exception ?: IllegalStateException("Unable to load manga. This should never happen. Please report"),
 				)
-			} else if (exception != null) {
+			} else exception?.let { e ->
 				// manga has been loaded but error occurred
-				errorEvent.call(exception)
+				errorEvent.call(e)
 			}
 		}
 	}
@@ -575,5 +580,12 @@ class ReaderViewModel @Inject constructor(
 		// start from beginning
 		val preferredBranch = requestedBranch ?: manga.getPreferredBranch(null)
 		return ReaderState(manga, preferredBranch)
+	}
+
+	private fun Exception.mergeWith(other: Exception?): Exception = if (other == null) {
+		this
+	} else {
+		other.addSuppressed(this)
+		other
 	}
 }

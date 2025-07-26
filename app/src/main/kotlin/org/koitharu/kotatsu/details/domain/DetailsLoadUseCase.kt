@@ -9,11 +9,9 @@ import androidx.core.text.parseAsHtml
 import coil3.request.CachePolicy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -66,7 +64,6 @@ class DetailsLoadUseCase @Inject constructor(
 			loadRemote(manga, override, force)
 		}
 	}.distinctUntilChanged()
-		.buffer(Channel.UNLIMITED)
 		.flowOn(Dispatchers.Default)
 
 	/**

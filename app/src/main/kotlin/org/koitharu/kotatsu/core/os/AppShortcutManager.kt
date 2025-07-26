@@ -173,6 +173,7 @@ class AppShortcutManager @Inject constructor(
 			coil.execute(
 				ImageRequest.Builder(context)
 					.data(source.faviconUri())
+					.mangaSourceExtra(source)
 					.size(iconSize)
 					.scale(Scale.FIT)
 					.build(),
