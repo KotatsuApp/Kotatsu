@@ -55,6 +55,7 @@ val MangaState.titleResId: Int
 		MangaState.ABANDONED -> R.string.state_abandoned
 		MangaState.PAUSED -> R.string.state_paused
 		MangaState.UPCOMING -> R.string.state_upcoming
+		MangaState.RESTRICTED -> R.string.unavailable
 	}
 
 @get:DrawableRes
@@ -65,6 +66,7 @@ val MangaState.iconResId: Int
 		MangaState.ABANDONED -> R.drawable.ic_state_abandoned
 		MangaState.PAUSED -> R.drawable.ic_action_pause
 		MangaState.UPCOMING -> materialR.drawable.ic_clock_black_24dp
+		MangaState.RESTRICTED -> R.drawable.ic_disable
 	}
 
 @get:StringRes
