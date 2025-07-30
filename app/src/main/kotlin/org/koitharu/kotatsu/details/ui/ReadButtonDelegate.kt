@@ -106,7 +106,7 @@ class ReadButtonDelegate(
 	}
 
 	private fun openReader(isIncognitoMode: Boolean) {
-		val manga = viewModel.manga.value ?: return
+		val manga = viewModel.getMangaOrNull() ?: return
 		if (viewModel.historyInfo.value.isChapterMissing) {
 			Snackbar.make(buttonRead, R.string.chapter_is_missing, Snackbar.LENGTH_SHORT)
 				.show() // TODO

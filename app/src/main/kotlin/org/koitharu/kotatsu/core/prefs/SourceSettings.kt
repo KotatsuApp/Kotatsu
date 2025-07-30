@@ -66,8 +66,9 @@ class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig 
 
 	companion object {
 
-		const val KEY_SORT_ORDER = "sort_order"
-		const val KEY_SLOWDOWN = "slowdown"
+		const val KEY_DOMAIN = "domain"
 		const val KEY_NO_CAPTCHA = "no_captcha"
+		const val KEY_SLOWDOWN = "slowdown"
+		const val KEY_SORT_ORDER = "sort_order"
 	}
 }

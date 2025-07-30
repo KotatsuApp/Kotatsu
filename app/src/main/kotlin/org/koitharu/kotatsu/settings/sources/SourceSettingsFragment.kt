@@ -2,7 +2,10 @@ package org.koitharu.kotatsu.settings.sources
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
+import androidx.preference.EditTextPreference
+import androidx.preference.EditTextPreferenceDialogFragmentCompat
 import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import dagger.hilt.android.AndroidEntryPoint
@@ -112,12 +115,52 @@ class SourceSettingsFragment : BasePreferenceFragment(0), Preference.OnPreferenc
 		}
 	}
 
+	override fun onDisplayPreferenceDialog(preference: Preference) {
+		if (preference.key == SourceSettings.KEY_DOMAIN) {
+			if (parentFragmentManager.findFragmentByTag(DomainDialogFragment.DIALOG_FRAGMENT_TAG) != null) {
+				return
+			}
+			val f = DomainDialogFragment.newInstance(preference.key)
+			@Suppress("DEPRECATION")
+			f.setTargetFragment(this, 0)
+			f.show(parentFragmentManager, DomainDialogFragment.DIALOG_FRAGMENT_TAG)
+			return
+		}
+		super.onDisplayPreferenceDialog(preference)
+	}
+
 	override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
 		when (preference.key) {
 			KEY_ENABLE -> viewModel.setEnabled(newValue == true)
 			else -> return false
 		}
 		return true
+	}
+
+	class DomainDialogFragment : EditTextPreferenceDialogFragmentCompat() {
+
+		override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
+			super.onPrepareDialogBuilder(builder)
+			builder.setNeutralButton(R.string.reset) { _, _ ->
+				resetValue()
+			}
+		}
+
+		private fun resetValue() {
+			val editTextPreference = preference as EditTextPreference
+			if (editTextPreference.callChangeListener("")) {
+				editTextPreference.text = ""
+			}
+		}
+
+		companion object {
+
+			const val DIALOG_FRAGMENT_TAG: String = "androidx.preference.PreferenceFragment.DIALOG"
+
+			fun newInstance(key: String) = DomainDialogFragment().withArgs(1) {
+				putString(ARG_KEY, key)
+			}
+		}
 	}
 
 	companion object {

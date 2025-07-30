@@ -14,7 +14,6 @@ import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
 import org.koitharu.kotatsu.core.parser.CachingMangaRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
@@ -69,7 +68,7 @@ class SourceSettingsViewModel @Inject constructor(
 			}
 		}
 		if (repository is ParserMangaRepository) {
-			if (key == AppSettings.KEY_OPEN_BROWSER) {
+			if (key == SourceSettings.KEY_DOMAIN) {
 				browserUrl.value = "https://${repository.domain}"
 			}
 		}
