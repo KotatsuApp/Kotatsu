@@ -39,7 +39,7 @@ class ChapterPagesMenuProvider(
 					setOnActionExpandListener(this@ChapterPagesMenuProvider)
 					(actionView as? SearchView)?.setupChaptersSearchView()
 				}
-				menu.findItem(R.id.action_search)?.isVisible = viewModel.isChaptersEmpty.value == false
+				menu.findItem(R.id.action_search)?.isVisible = viewModel.emptyReason.value == null
 				menu.findItem(R.id.action_reversed)?.isChecked = viewModel.isChaptersReversed.value == true
 				menu.findItem(R.id.action_grid_view)?.isChecked = viewModel.isChaptersInGridView.value == true
 				menu.findItem(R.id.action_downloaded)?.let { menuItem ->

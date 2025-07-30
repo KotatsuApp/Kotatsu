@@ -104,14 +104,14 @@ class CaptchaHandler @Inject constructor(
 			val dao = databaseProvider.get().getSourcesDao()
 			dao.setCfState(source.name, exception?.state ?: CloudFlareHelper.PROTECTION_NOT_DETECTED)
 
-			val exceptions = dao.findAllCaptchaRequired().mapNotNull {
-				it.source.toMangaSourceOrNull()
-			}.filterNot {
-				SourceSettings(context, it).isCaptchaNotificationsDisabled
-			}.mapNotNull {
-				exceptionMap[it]
-			}
 			if (notify && context.checkNotificationPermission(CHANNEL_ID)) {
+				val exceptions = dao.findAllCaptchaRequired().mapNotNull {
+					it.source.toMangaSourceOrNull()
+				}.filterNot {
+					SourceSettings(context, it).isCaptchaNotificationsDisabled
+				}.mapNotNull {
+					exceptionMap[it]
+				}
 				if (removedException != null) {
 					NotificationManagerCompat.from(context).cancel(TAG, removedException.source.hashCode())
 				}

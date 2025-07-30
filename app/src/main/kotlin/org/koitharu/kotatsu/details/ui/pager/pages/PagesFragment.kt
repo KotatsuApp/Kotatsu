@@ -11,7 +11,6 @@ import androidx.appcompat.view.ActionMode
 import androidx.collection.ArraySet
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,9 +36,11 @@ import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.core.util.ext.showOrHide
 import org.koitharu.kotatsu.databinding.FragmentPagesBinding
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
+import org.koitharu.kotatsu.details.ui.pager.EmptyMangaReason
 import org.koitharu.kotatsu.list.ui.GridSpanResolver
 import org.koitharu.kotatsu.list.ui.adapter.ListItemType
 import org.koitharu.kotatsu.list.ui.adapter.TypedListSpacingDecoration
@@ -125,11 +126,18 @@ class PagesFragment :
 				it.spanCount = checkNotNull(spanResolver).spanCount
 			}
 		}
-		parentViewModel.isChaptersEmpty.observe(viewLifecycleOwner, ::onNoChaptersChanged)
+		parentViewModel.emptyReason.observe(viewLifecycleOwner, ::onNoChaptersChanged)
 		viewModel.thumbnails.observe(viewLifecycleOwner, ::onThumbnailsChanged)
 		viewModel.onPageSaved.observeEvent(this, PagesSavedObserver(binding.recyclerView))
 		viewModel.onError.observeEvent(viewLifecycleOwner, SnackbarErrorObserver(binding.recyclerView, this))
-		viewModel.isLoading.observe(viewLifecycleOwner) { binding.progressBar.showOrHide(it) }
+		combine(
+			viewModel.isLoading,
+			viewModel.thumbnails,
+		) { loading, content ->
+			loading && content.isEmpty()
+		}.observe(viewLifecycleOwner) {
+			binding.progressBar.showOrHide(it)
+		}
 		viewModel.isLoadingUp.observe(viewLifecycleOwner) { binding.progressBarTop.showOrHide(it) }
 		viewModel.isLoadingDown.observe(viewLifecycleOwner) { binding.progressBarBottom.showOrHide(it) }
 	}
@@ -237,10 +245,10 @@ class PagesFragment :
 		spanResolver?.setGridSize(scale, requireViewBinding().recyclerView)
 	}
 
-	private fun onNoChaptersChanged(isNoChapters: Boolean) {
+	private fun onNoChaptersChanged(reason: EmptyMangaReason?) {
 		with(viewBinding ?: return) {
-			textViewHolder.isVisible = isNoChapters
-			recyclerView.isInvisible = isNoChapters
+			textViewHolder.setTextAndVisible(reason?.msgResId ?: 0)
+			recyclerView.isInvisible = reason != null
 		}
 	}
 

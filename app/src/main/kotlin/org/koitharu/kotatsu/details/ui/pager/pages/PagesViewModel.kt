@@ -5,8 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.observeAsStateFlow
@@ -47,16 +48,15 @@ class PagesViewModel @Inject constructor(
 	)
 
 	init {
-		loadingJob = launchLoadingJob(Dispatchers.Default) {
-			val firstState = state.firstNotNull()
-			doInit(firstState)
-			launchJob(Dispatchers.Default) {
-				state.collectLatest {
-					if (it != null) {
+		launchJob(Dispatchers.Default) {
+			state.filterNotNull()
+				.collect {
+					val prevJob = loadingJob
+					loadingJob = launchLoadingJob(Dispatchers.Default) {
+						prevJob?.cancelAndJoin()
 						doInit(it)
 					}
 				}
-			}
 		}
 	}
 
