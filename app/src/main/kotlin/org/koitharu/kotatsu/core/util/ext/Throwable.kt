@@ -172,8 +172,9 @@ fun Throwable.getCauseUrl(): String? = when (this) {
 }
 
 private fun getHttpDisplayMessage(statusCode: Int, resources: Resources): String? = when (statusCode) {
-	404 -> resources.getString(R.string.not_found_404)
-	403 -> resources.getString(R.string.access_denied_403)
+	HttpURLConnection.HTTP_NOT_FOUND -> resources.getString(R.string.not_found_404)
+	HttpURLConnection.HTTP_FORBIDDEN -> resources.getString(R.string.access_denied_403)
+	HttpURLConnection.HTTP_GATEWAY_TIMEOUT -> resources.getString(R.string.network_unavailable)
 	in 500..599 -> resources.getString(R.string.server_error, statusCode)
 	else -> null
 }

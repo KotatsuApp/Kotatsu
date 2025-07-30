@@ -1,13 +1,16 @@
 package org.koitharu.kotatsu.image.ui
 
 import android.content.Context
+import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import androidx.annotation.AttrRes
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toDrawable
@@ -33,6 +36,7 @@ import org.koitharu.kotatsu.core.ui.image.TrimTransformation
 import org.koitharu.kotatsu.core.util.ext.bookmarkExtra
 import org.koitharu.kotatsu.core.util.ext.decodeRegion
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
+import org.koitharu.kotatsu.core.util.ext.isNetworkError
 import org.koitharu.kotatsu.core.util.ext.mangaExtra
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.favourites.domain.model.Cover
@@ -185,8 +189,17 @@ class CoverImageView @JvmOverloads constructor(
 
 		override fun onError(request: ImageRequest, result: ErrorResult) {
 			super.onError(request, result)
-			foreground = result.throwable.getShortMessage()?.let { text ->
-				TextDrawable.create(context, text, materialR.attr.textAppearanceTitleSmall)
+			foreground = if (result.throwable.isNetworkError()) {
+				ContextCompat.getDrawable(context, R.drawable.ic_offline)?.let {
+					LayerDrawable(arrayOf(it)).apply {
+						setLayerGravity(0, Gravity.CENTER)
+						setTint(ContextCompat.getColor(context, R.color.dim_lite))
+					}
+				}
+			} else {
+				result.throwable.getShortMessage()?.let { text ->
+					TextDrawable.create(context, text, materialR.attr.textAppearanceTitleSmall)
+				}
 			}
 		}
 
