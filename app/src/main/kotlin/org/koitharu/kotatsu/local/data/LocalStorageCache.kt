@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.os.StatFs
 import android.webkit.MimeTypeMap
 import com.tomclaw.cache.DiskLruCache
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
@@ -14,7 +13,6 @@ import okio.buffer
 import okio.sink
 import okio.use
 import org.koitharu.kotatsu.core.exceptions.NoDataReceivedException
-import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.MimeType
 import org.koitharu.kotatsu.core.util.ext.compressToPNG
@@ -28,22 +26,24 @@ import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import java.io.File
 import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class PagesCache @Inject constructor(@ApplicationContext context: Context) {
+class LocalStorageCache(
+	context: Context,
+	private val dir: CacheDir,
+	private val defaultSize: Long,
+	private val minSize: Long,
+) {
 
 	private val cacheDir = suspendLazy {
 		val dirs = context.externalCacheDirs + context.cacheDir
 		dirs.firstNotNullOf {
-			it?.subdir(CacheDir.PAGES.dir)?.takeIfWriteable()
+			it?.subdir(dir.dir)?.takeIfWriteable()
 		}
 	}
 	private val lruCache = suspendLazy {
 		val dir = cacheDir.get()
 		val availableSize = (getAvailableSize() * 0.8).toLong()
-		val size = SIZE_DEFAULT.coerceAtMost(availableSize).coerceAtLeast(SIZE_MIN)
+		val size = defaultSize.coerceAtMost(availableSize).coerceAtLeast(minSize)
 		runCatchingCancellable {
 			DiskLruCache.create(dir, size)
 		}.recoverCatching { error ->
@@ -54,14 +54,14 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		}.getOrThrow()
 	}
 
-	suspend fun get(url: String): File? = withContext(Dispatchers.IO) {
+	suspend operator fun get(url: String): File? = withContext(Dispatchers.IO) {
 		val cache = lruCache.get()
 		runInterruptible {
 			cache.get(url)?.takeIfReadable()
 		}
 	}
 
-	suspend fun put(url: String, source: Source, mimeType: MimeType?): File = withContext(Dispatchers.IO) {
+	suspend operator fun set(url: String, source: Source, mimeType: MimeType?): File = withContext(Dispatchers.IO) {
 		val file = createBufferFile(url, mimeType)
 		try {
 			val bytes = file.sink(append = false).buffer().use {
@@ -79,7 +79,7 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		}
 	}
 
-	suspend fun put(url: String, bitmap: Bitmap): File = withContext(Dispatchers.IO) {
+	suspend operator fun set(url: String, bitmap: Bitmap): File = withContext(Dispatchers.IO) {
 		val file = createBufferFile(url, MimeType("image/png"))
 		try {
 			bitmap.compressToPNG(file)
@@ -107,7 +107,7 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		}
 	}.onFailure {
 		it.printStackTraceDebug()
-	}.getOrDefault(SIZE_DEFAULT)
+	}.getOrDefault(defaultSize)
 
 	private suspend fun createBufferFile(url: String, mimeType: MimeType?): File {
 		val ext = MimeTypes.getExtension(mimeType) ?: MimeTypeMap.getFileExtensionFromUrl(url).ifNullOrEmpty { "dat" }
@@ -115,14 +115,5 @@ class PagesCache @Inject constructor(@ApplicationContext context: Context) {
 		val rootDir = checkNotNull(cacheDir.parentFile) { "Cannot get parent for ${cacheDir.absolutePath}" }
 		val name = UUID.randomUUID().toString() + "." + ext
 		return File(rootDir, name)
-	}
-
-	private companion object {
-
-		val SIZE_MIN
-			get() = FileSize.MEGABYTES.convert(20, FileSize.BYTES)
-
-		val SIZE_DEFAULT
-			get() = FileSize.MEGABYTES.convert(200, FileSize.BYTES)
 	}
 }

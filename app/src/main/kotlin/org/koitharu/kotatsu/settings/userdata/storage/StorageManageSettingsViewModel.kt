@@ -82,16 +82,18 @@ class StorageManageSettingsViewModel @Inject constructor(
 		loadStorageUsage()
 	}
 
-	fun clearCache(key: String, cache: CacheDir) {
+	fun clearCache(key: String, vararg caches: CacheDir) {
 		launchJob(Dispatchers.Default) {
 			try {
 				loadingKeys.update { it + key }
-				storageManager.clearCache(cache)
-				checkNotNull(cacheSizes[cache]).value = storageManager.computeCacheSize(cache)
-				loadStorageUsage()
-				if (cache == CacheDir.THUMBS || cache == CacheDir.FAVICONS) {
-					coil.memoryCache?.clear()
+				for (cache in caches) {
+					storageManager.clearCache(cache)
+					checkNotNull(cacheSizes[cache]).value = storageManager.computeCacheSize(cache)
+					if (cache == CacheDir.THUMBS) {
+						coil.memoryCache?.clear()
+					}
 				}
+				loadStorageUsage()
 			} finally {
 				loadingKeys.update { it - key }
 			}

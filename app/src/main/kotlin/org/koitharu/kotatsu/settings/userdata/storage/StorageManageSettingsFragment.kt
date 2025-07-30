@@ -85,7 +85,7 @@ class StorageManageSettingsFragment : BasePreferenceFragment(R.string.storage_us
 		}
 
 		AppSettings.KEY_THUMBS_CACHE_CLEAR -> {
-			viewModel.clearCache(preference.key, CacheDir.THUMBS)
+			viewModel.clearCache(preference.key, CacheDir.THUMBS, CacheDir.FAVICONS)
 			true
 		}
 

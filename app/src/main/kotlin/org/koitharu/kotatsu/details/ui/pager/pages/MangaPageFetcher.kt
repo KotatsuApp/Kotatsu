@@ -24,7 +24,8 @@ import org.koitharu.kotatsu.core.util.MimeTypes
 import org.koitharu.kotatsu.core.util.ext.fetch
 import org.koitharu.kotatsu.core.util.ext.isNetworkUri
 import org.koitharu.kotatsu.core.util.ext.toMimeTypeOrNull
-import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.local.data.LocalStorageCache
+import org.koitharu.kotatsu.local.data.PageCache
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.mimeType
 import org.koitharu.kotatsu.parsers.util.requireBody
@@ -34,7 +35,7 @@ import javax.inject.Inject
 
 class MangaPageFetcher(
 	private val okHttpClient: OkHttpClient,
-	private val pagesCache: PagesCache,
+	private val pagesCache: LocalStorageCache,
 	private val options: Options,
 	private val page: MangaPage,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
@@ -53,7 +54,7 @@ class MangaPageFetcher(
 		val repo = mangaRepositoryFactory.create(page.source)
 		val pageUrl = repo.getPageUrl(page)
 		if (options.diskCachePolicy.readEnabled) {
-			pagesCache.get(pageUrl)?.let { file ->
+			pagesCache[pageUrl]?.let { file ->
 				return SourceFetchResult(
 					source = ImageSource(file.toOkioPath(), options.fileSystem),
 					mimeType = MimeTypes.getMimeTypeFromExtension(file.name)?.toString(),
@@ -78,7 +79,7 @@ class MangaPageFetcher(
 			}
 			val mimeType = response.mimeType?.toMimeTypeOrNull()
 			val file = response.requireBody().use {
-				pagesCache.put(pageUrl, it.source(), mimeType)
+				pagesCache.set(pageUrl, it.source(), mimeType)
 			}
 			SourceFetchResult(
 				source = ImageSource(file.toOkioPath(), FileSystem.SYSTEM),
@@ -107,7 +108,7 @@ class MangaPageFetcher(
 
 	class Factory @Inject constructor(
 		@MangaHttpClient private val okHttpClient: OkHttpClient,
-		private val pagesCache: PagesCache,
+		@PageCache private val pagesCache: LocalStorageCache,
 		private val mangaRepositoryFactory: MangaRepository.Factory,
 		private val imageProxyInterceptor: ImageProxyInterceptor,
 	) : Fetcher.Factory<MangaPage> {

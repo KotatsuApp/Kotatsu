@@ -42,18 +42,21 @@ import org.koitharu.kotatsu.core.network.imageproxy.ImageProxyInterceptor
 import org.koitharu.kotatsu.core.os.AppShortcutManager
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.favicon.FaviconFetcher
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.image.CoilImageGetter
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.util.AcraScreenLogger
+import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.ext.connectivityManager
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.details.ui.pager.pages.MangaPageFetcher
 import org.koitharu.kotatsu.details.ui.pager.pages.MangaPageKeyer
 import org.koitharu.kotatsu.local.data.CacheDir
+import org.koitharu.kotatsu.local.data.FaviconCache
+import org.koitharu.kotatsu.local.data.LocalStorageCache
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
+import org.koitharu.kotatsu.local.data.PageCache
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.main.domain.CoverRestoreInterceptor
 import org.koitharu.kotatsu.main.ui.protect.AppProtectHelper
@@ -101,7 +104,7 @@ interface AppModule {
 		fun provideCoil(
 			@LocalizedAppContext context: Context,
 			@MangaHttpClient okHttpClientProvider: Provider<OkHttpClient>,
-			mangaRepositoryFactory: MangaRepository.Factory,
+			faviconFetcherFactory: FaviconFetcher.Factory,
 			imageProxyInterceptor: ImageProxyInterceptor,
 			pageFetcherFactory: MangaPageFetcher.Factory,
 			coverRestoreInterceptor: CoverRestoreInterceptor,
@@ -138,7 +141,7 @@ interface AppModule {
 					add(SvgDecoder.Factory())
 					add(CbzFetcher.Factory())
 					add(AvifImageDecoder.Factory())
-					add(FaviconFetcher.Factory(mangaRepositoryFactory))
+					add(faviconFetcherFactory)
 					add(MangaPageKeyer())
 					add(pageFetcherFactory)
 					add(imageProxyInterceptor)
@@ -195,5 +198,29 @@ interface AppModule {
 		fun provideWorkManager(
 			@ApplicationContext context: Context,
 		): WorkManager = WorkManager.getInstance(context)
+
+		@Provides
+		@Singleton
+		@PageCache
+		fun providePageCache(
+			@ApplicationContext context: Context,
+		) = LocalStorageCache(
+			context = context,
+			dir = CacheDir.PAGES,
+			defaultSize = FileSize.MEGABYTES.convert(200, FileSize.BYTES),
+			minSize = FileSize.MEGABYTES.convert(20, FileSize.BYTES),
+		)
+
+		@Provides
+		@Singleton
+		@FaviconCache
+		fun provideFaviconCache(
+			@ApplicationContext context: Context,
+		) = LocalStorageCache(
+			context = context,
+			dir = CacheDir.FAVICONS,
+			defaultSize = FileSize.MEGABYTES.convert(8, FileSize.BYTES),
+			minSize = FileSize.MEGABYTES.convert(2, FileSize.BYTES),
+		)
 	}
 }

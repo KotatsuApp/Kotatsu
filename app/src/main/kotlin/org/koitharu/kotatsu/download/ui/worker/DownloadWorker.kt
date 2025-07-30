@@ -76,8 +76,9 @@ import org.koitharu.kotatsu.core.util.progress.RealtimeEtaEstimator
 import org.koitharu.kotatsu.download.domain.DownloadProgress
 import org.koitharu.kotatsu.download.domain.DownloadState
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
+import org.koitharu.kotatsu.local.data.LocalStorageCache
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
-import org.koitharu.kotatsu.local.data.PagesCache
+import org.koitharu.kotatsu.local.data.PageCache
 import org.koitharu.kotatsu.local.data.TempFileFilter
 import org.koitharu.kotatsu.local.data.input.LocalMangaParser
 import org.koitharu.kotatsu.local.data.output.LocalMangaOutput
@@ -103,7 +104,7 @@ class DownloadWorker @AssistedInject constructor(
 	@Assisted appContext: Context,
 	@Assisted params: WorkerParameters,
 	@MangaHttpClient private val okHttp: OkHttpClient,
-	private val cache: PagesCache,
+	@PageCache private val cache: LocalStorageCache,
 	private val localMangaRepository: LocalMangaRepository,
 	private val mangaLock: MangaLock,
 	private val mangaDataRepository: MangaDataRepository,
@@ -233,7 +234,7 @@ class DownloadWorker @AssistedInject constructor(
 								semaphore.withPermit {
 									runFailsafe {
 										val url = repo.getPageUrl(page)
-										val file = cache.get(url)
+										val file = cache[url]
 											?: downloadFile(url, destination, repo.source)
 										output.addPage(
 											chapter = chapter,
