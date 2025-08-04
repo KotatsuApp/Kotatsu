@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="local_storage">محل ذخیره سازی</string>
-    <string name="favourites">موارد دلخواه</string>
+    <string name="favourites">پسندیده‌ها</string>
     <string name="history">تاریخچه</string>
     <string name="error_occurred">خطایی رخ داده است</string>
     <string name="network_error">خطای اتصال به شبکه</string>
@@ -33,7 +33,7 @@
     <string name="add_to_favourites">افزودن به مورد علاقه ها</string>
     <string name="page_saved">ذخیره شد</string>
     <string name="manga_save_location">پوشه ی دانلودها</string>
-    <string name="list">لیست</string>
+    <string name="list">فهرست</string>
     <string name="detailed_list">لیست با جزئیات</string>
     <string name="try_again">مجدد امتحان کنید</string>
     <string name="add_new_category">دسته بندی جدید</string>
