@@ -851,4 +851,5 @@
     <string name="read_on_s">Lire sur %s</string>
     <string name="rpc_skip_nsfw_summary">Ne pas utiliser la présence enrichie pour du contenu adulte</string>
     <string name="invalid_token">Jeton invalide : %s</string>
+    <string name="show_floating_control_button">Kotatsu</string>
 </resources>
