@@ -851,5 +851,9 @@
     <string name="read_on_s">Lire sur %s</string>
     <string name="rpc_skip_nsfw_summary">Ne pas utiliser la présence enrichie pour du contenu adulte</string>
     <string name="invalid_token">Jeton invalide : %s</string>
-    <string name="show_floating_control_button">Kotatsu</string>
+    <string name="show_floating_control_button">Afficher le bouton de commande flottant</string>
+    <string name="unavailable">Non disponible</string>
+    <string name="manga_restricted_description">Ce manga n’est pas disponible à la lecture sur cette source. Essaie de le chercher dans d’autres sources ou ouvre-le dans un navigateur pour plus d’informations</string>
+    <string name="no_chapters_in_manga">Ce manga ne contient aucun chapitre</string>
+    <string name="chapters_load_failed">Échec du chargement de la liste des chapitres</string>
 </resources>
