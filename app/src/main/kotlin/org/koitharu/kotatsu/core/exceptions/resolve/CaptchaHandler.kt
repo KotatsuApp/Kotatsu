@@ -225,6 +225,7 @@ class CaptchaHandler @Inject constructor(
 				.data(source.faviconUri())
 				.allowHardware(false)
 				.allowConversionToBitmap(true)
+				.ignoreCaptchaErrors()
 				.mangaSourceExtra(source)
 				.size(context.resources.getNotificationIconSize())
 				.scale(Scale.FILL)
