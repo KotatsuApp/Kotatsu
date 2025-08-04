@@ -833,4 +833,7 @@
     <string name="theme_name_totoro">Totoro</string>
     <string name="reader_navigation_inverted">https://hosted.weblate.org/translate/kotatsu/strings/pt/?checksum=b84ea9f18b9b4dde</string>
     <string name="reader_navigation_inverted_summary">https://hosted.weblate.org/translate/kotatsu/strings/pt/?checksum=b84ea9f18b9b4dde</string>
+    <string name="book_effect">Fundo amarelaso (filtro de luz azul)</string>
+    <string name="local_storage_cleanup">Limpeza do armazenamento local</string>
+    <string name="packup_creation_failed">Falha ao criar backup</string>
 </resources>
