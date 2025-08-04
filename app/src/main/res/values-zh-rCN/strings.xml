@@ -616,7 +616,7 @@
     <string name="hours_minutes_short">%1$d 时 %2$d 分</string>
     <string name="fix">修复</string>
     <string name="missing_storage_permission">无访问外部存储漫画权限</string>
-    <string name="last_used">上次使用</string>
+    <string name="last_used">上次打开</string>
     <string name="show_updated">显示更新</string>
     <string name="webtoon_gaps_summary">在条漫模式下添加页与页之间的横向缝隙</string>
     <string name="webtoon_gaps">缝隙条漫模式</string>
@@ -830,4 +830,28 @@
     <string name="reader_multitask_summary">允许阅读不同漫画时打开多个同时共存的阅读器</string>
     <string name="theme_name_itsuka">Itsuka</string>
     <string name="theme_name_totoro">Totoro</string>
+    <string name="main_screen">主页</string>
+    <string name="main_screen_fab">显示浮动继续阅读按钮</string>
+    <string name="main_screen_fab_summary">仅需点击一次按钮即可允许继续阅读，这个按钮将不会在无痕模式或没有阅读历史时出现</string>
+    <string name="local_storage_cleanup">清理本地存储</string>
+    <string name="packup_creation_failed">创建备份文件失败</string>
+    <string name="reader_navigation_inverted">反转导航控制栏</string>
+    <string name="reader_navigation_inverted_summary">将音量键和硬件设备方向键的导航方向交换 (左/上/下/右)</string>
+    <string name="error_corrupted_zip">损坏的 ZIP 文件 (%s)</string>
+    <string name="discord_rpc">绑定 Discord 状态</string>
+    <string name="discord_token">Discord Token</string>
+    <string name="discord_token_summary">在这里输入你的 Discord Token 来绑定 Discord 状态</string>
+    <string name="discord_token_description">输入你的 Discord Token 或者点击 %s 打开内置浏览器获取 Token</string>
+    <string name="discord_token_hint">在这里复制你的 Discord Token</string>
+    <string name="discord_rpc_summary">在 Discord 个人信息栏内显示你的阅读状态</string>
+    <string name="obtain">获取</string>
+    <string name="discord_rpc_description">正在 Kotatsu - 一个漫画阅读软件上阅读漫画</string>
+    <string name="reading_s">正在阅读 %s</string>
+    <string name="rpc_skip_nsfw_summary">阅读成人内容时不在 Discord 上显示阅读状态</string>
+    <string name="invalid_token">非法Token：%s</string>
+    <string name="show_floating_control_button">显示浮动控制按钮</string>
+    <string name="unavailable">不可用</string>
+    <string name="no_chapters_in_manga">没有找到此漫画的任何章节</string>
+    <string name="chapters_load_failed">加载章节列表失败</string>
+    <string name="manga_restricted_description">此漫画在图源中无法阅读，尝试在别的图源中搜索此漫画或打开内置浏览器获取更多信息</string>
 </resources>
