@@ -575,7 +575,7 @@ class AppRouter private constructor(
 	/** Public utils **/
 
 	fun isFilterSupported(): Boolean = when {
-		fragment != null -> fragment.activity is FilterCoordinator.Owner
+		fragment != null -> FilterCoordinator.find(fragment) != null
 		activity != null -> activity is FilterCoordinator.Owner
 		else -> false
 	}
@@ -812,6 +812,7 @@ class AppRouter private constructor(
 		const val KEY_FILTER = "filter"
 		const val KEY_ID = "id"
 		const val KEY_INDEX = "index"
+		const val KEY_IS_BOTTOMTAB = "is_btab"
 		const val KEY_KIND = "kind"
 		const val KEY_LIST_SECTION = "list_section"
 		const val KEY_MANGA = "manga"

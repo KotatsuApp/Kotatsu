@@ -55,7 +55,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 				binding.scrollView.scrollIndicators = 0
 			}
 		}
-		val filter = requireFilter()
+		val filter = FilterCoordinator.require(this)
 		filter.sortOrder.observe(viewLifecycleOwner, this::onSortOrderChanged)
 		filter.locale.observe(viewLifecycleOwner, this::onLocaleChanged)
 		filter.originalLocale.observe(viewLifecycleOwner, this::onOriginalLocaleChanged)
@@ -103,7 +103,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	}
 
 	override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-		val filter = requireFilter()
+		val filter = FilterCoordinator.require(this)
 		when (parent.id) {
 			R.id.spinner_order -> filter.setSortOrder(filter.sortOrder.value.availableItems[position])
 			R.id.spinner_locale -> filter.setLocale(filter.locale.value.availableItems[position])
@@ -118,7 +118,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 			return
 		}
 		val intValue = value.toInt()
-		val filter = requireFilter()
+		val filter = FilterCoordinator.require(this)
 		when (slider.id) {
 			R.id.slider_year -> filter.setYear(
 				if (intValue <= slider.valueFrom.toIntUp()) {
@@ -134,7 +134,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		if (!fromUser) {
 			return
 		}
-		val filter = requireFilter()
+		val filter = FilterCoordinator.require(this)
 		when (slider.id) {
 			R.id.slider_yearsRange -> filter.setYearRange(
 				valueFrom = slider.values.firstOrNull()?.let {
@@ -148,7 +148,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 	}
 
 	override fun onChipClick(chip: Chip, data: Any?) {
-		val filter = requireFilter()
+		val filter = FilterCoordinator.require(this)
 		when (data) {
 			is MangaState -> filter.toggleState(data, !chip.isChecked)
 			is MangaTag -> if (chip.parentView?.id == R.id.chips_genresExclude) {
@@ -356,6 +356,4 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		)
 		b.sliderYearsRange.setValuesRounded(currentValueFrom, currentValueTo)
 	}
-
-	private fun requireFilter() = (requireActivity() as FilterCoordinator.Owner).filterCoordinator
 }

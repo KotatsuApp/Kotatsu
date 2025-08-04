@@ -36,7 +36,7 @@ class TagsCatalogSheet : BaseAdaptiveSheet<SheetTagsBinding>(),
 		extrasProducer = {
 			defaultViewModelCreationExtras.withCreationCallback<TagsCatalogViewModel.Factory> { factory ->
 				factory.create(
-					filter = (requireActivity() as FilterCoordinator.Owner).filterCoordinator,
+					filter = FilterCoordinator.require(this),
 					isExcludeTag = requireArguments().getBoolean(AppRouter.KEY_EXCLUDE),
 				)
 			}

@@ -6,10 +6,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.toChipModel
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
+import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
@@ -17,10 +20,13 @@ import org.koitharu.kotatsu.core.util.ext.toUriOrNull
 import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
 import org.koitharu.kotatsu.explore.domain.ExploreRepository
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
+import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.domain.MangaListMapper
+import org.koitharu.kotatsu.list.domain.QuickFilterListener
 import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.MangaListModel
+import org.koitharu.kotatsu.list.ui.model.QuickFilter
 import org.koitharu.kotatsu.list.ui.model.TipModel
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.LocalStorageManager
@@ -52,9 +58,10 @@ class LocalListViewModel @Inject constructor(
 	exploreRepository = exploreRepository,
 	sourcesRepository = sourcesRepository,
 	mangaDataRepository = mangaDataRepository,
-), SharedPreferences.OnSharedPreferenceChangeListener {
+), SharedPreferences.OnSharedPreferenceChangeListener, QuickFilterListener {
 
 	val onMangaRemoved = MutableEventFlow<Unit>()
+	private val showInlineFilter: Boolean = savedStateHandle[AppRouter.KEY_IS_BOTTOMTAB] ?: false
 
 	init {
 		launchJob(Dispatchers.Default) {
@@ -68,28 +75,48 @@ class LocalListViewModel @Inject constructor(
 
 	override suspend fun onBuildList(list: MutableList<ListModel>) {
 		super.onBuildList(list)
-		if (localStorageManager.hasExternalStoragePermission(isReadOnly = true)) {
-			return
-		}
-		for (item in list) {
-			if (item !is MangaListModel) {
-				continue
+		if (showInlineFilter) {
+			createFilterHeader(maxCount = 16)?.let {
+				list.add(0, it)
 			}
-			val file = item.manga.url.toUriOrNull()?.toFileOrNull() ?: continue
-			if (localStorageManager.isOnExternalStorage(file)) {
-				val tip = TipModel(
-					key = "permission",
-					title = R.string.external_storage,
-					text = R.string.missing_storage_permission,
-					icon = R.drawable.ic_storage,
-					primaryButtonText = R.string.fix,
-					secondaryButtonText = R.string.settings,
-				)
-				list.add(0, tip)
-				return
+		}
+		if (!localStorageManager.hasExternalStoragePermission(isReadOnly = true)) {
+			for (item in list) {
+				if (item !is MangaListModel) {
+					continue
+				}
+				val file = item.manga.url.toUriOrNull()?.toFileOrNull() ?: continue
+				if (localStorageManager.isOnExternalStorage(file)) {
+					val tip = TipModel(
+						key = "permission",
+						title = R.string.external_storage,
+						text = R.string.missing_storage_permission,
+						icon = R.drawable.ic_storage,
+						primaryButtonText = R.string.fix,
+						secondaryButtonText = R.string.settings,
+					)
+					list.add(0, tip)
+					return
+				}
 			}
 		}
 	}
+
+	override fun setFilterOption(option: ListFilterOption, isApplied: Boolean) {
+		if (option is ListFilterOption.Tag) {
+			filterCoordinator.toggleTag(option.tag, isApplied)
+		}
+	}
+
+	override fun toggleFilterOption(option: ListFilterOption) {
+		if (option is ListFilterOption.Tag) {
+			val tag = option.tag
+			val isSelected = tag in filterCoordinator.snapshot().listFilter.tags
+			filterCoordinator.toggleTag(option.tag, !isSelected)
+		}
+	}
+
+	override fun clearFilter() = filterCoordinator.reset()
 
 	override fun onCleared() {
 		settings.unsubscribe(this)
@@ -124,5 +151,27 @@ class LocalListViewModel @Inject constructor(
 			textSecondary = R.string.text_local_holder_secondary,
 			actionStringRes = R.string._import,
 		)
+	}
+
+	private suspend fun createFilterHeader(maxCount: Int): QuickFilter? {
+		val appliedTags = filterCoordinator.snapshot().listFilter.tags
+		val availableTags = repository.getFilterOptions().availableTags
+		if (appliedTags.isEmpty() && availableTags.size < 3) {
+			return null
+		}
+		val result = ArrayList<ChipsView.ChipModel>(minOf(availableTags.size, maxCount))
+		appliedTags.mapTo(result) { tag ->
+			ListFilterOption.Tag(tag).toChipModel(isChecked = true)
+		}
+		for (tag in availableTags) {
+			if (result.size >= maxCount) {
+				break
+			}
+			if (tag in appliedTags) {
+				continue
+			}
+			result.add(ListFilterOption.Tag(tag).toChipModel(isChecked = false))
+		}
+		return QuickFilter(result)
 	}
 }

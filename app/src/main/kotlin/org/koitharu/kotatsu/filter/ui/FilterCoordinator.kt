@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.filter.ui
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.ViewModelLifecycle
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -489,9 +490,27 @@ class FilterCoordinator @Inject constructor(
 		val filterCoordinator: FilterCoordinator
 	}
 
-	private companion object {
+	companion object {
 
-		const val TAGS_LIMIT = 12
-		val MAX_YEAR = Calendar.getInstance()[Calendar.YEAR] + 1
-	}
+		private const val TAGS_LIMIT = 12
+		private val MAX_YEAR = Calendar.getInstance()[Calendar.YEAR] + 1
+
+		fun find(fragment: Fragment): FilterCoordinator? {
+			(fragment.activity as? Owner)?.let {
+				return it.filterCoordinator
+			}
+			var f = fragment
+			while (true) {
+				(f as? Owner)?.let {
+					return it.filterCoordinator
+				}
+				f = f.parentFragment ?: break
+			}
+			return null
+		}
+
+		fun require(fragment: Fragment): FilterCoordinator {
+			return find(fragment) ?: throw IllegalStateException("FilterCoordinator cannot be found")
+		}
+ 	}
 }

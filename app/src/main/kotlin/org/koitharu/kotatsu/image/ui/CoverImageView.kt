@@ -189,7 +189,7 @@ class CoverImageView @JvmOverloads constructor(
 
 		override fun onError(request: ImageRequest, result: ErrorResult) {
 			super.onError(request, result)
-			foreground = if (result.throwable.isNetworkError()) {
+			foreground = if (result.throwable.isNetworkError() && !networkState.isOnline()) {
 				ContextCompat.getDrawable(context, R.drawable.ic_offline)?.let {
 					LayerDrawable(arrayOf(it)).apply {
 						setLayerGravity(0, Gravity.CENTER)

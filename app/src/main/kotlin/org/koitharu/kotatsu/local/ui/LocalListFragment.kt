@@ -23,7 +23,6 @@ import org.koitharu.kotatsu.core.util.ShareHelper
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
-import org.koitharu.kotatsu.core.util.ext.withArgs
 import org.koitharu.kotatsu.databinding.FragmentListBinding
 import org.koitharu.kotatsu.filter.ui.FilterCoordinator
 import org.koitharu.kotatsu.list.ui.MangaListFragment
@@ -45,13 +44,14 @@ class LocalListFragment : MangaListFragment(), FilterCoordinator.Owner {
 		}
 	}
 
-	init {
-		withArgs(1) {
-			putString(
-				RemoteListFragment.ARG_SOURCE,
-				LocalMangaSource.name,
-			) // required by FilterCoordinator
-		}
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		val args = arguments ?: Bundle(1)
+		args.putString(
+			RemoteListFragment.ARG_SOURCE,
+			LocalMangaSource.name,
+		) // required by FilterCoordinator
+		arguments = args
 	}
 
 	override val viewModel by viewModels<LocalListViewModel>()

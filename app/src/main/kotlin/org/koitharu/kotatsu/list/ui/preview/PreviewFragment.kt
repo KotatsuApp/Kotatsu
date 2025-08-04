@@ -74,7 +74,7 @@ class PreviewFragment : BaseFragment<FragmentPreviewBinding>(), View.OnClickList
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		val tag = data as? MangaTag ?: return
-		val filter = (activity as? FilterCoordinator.Owner)?.filterCoordinator
+		val filter = FilterCoordinator.find(this)
 		if (filter == null) {
 			router.openList(tag)
 		} else {

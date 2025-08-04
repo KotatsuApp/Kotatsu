@@ -25,10 +25,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.ui.AllBookmarksFragment
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.NavItem
 import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.widgets.SlidingBottomNavigationView
+import org.koitharu.kotatsu.core.util.ext.buildBundle
 import org.koitharu.kotatsu.core.util.ext.setContentDescriptionAndTooltip
 import org.koitharu.kotatsu.core.util.ext.smoothScrollToTop
 import org.koitharu.kotatsu.databinding.NavigationRailFabBinding
@@ -211,10 +213,13 @@ class MainNavigationDelegate(
 			return false
 		}
 		val fragment = instantiateFragment(fragmentClass)
+		val args = buildBundle(1) {
+			putBoolean(AppRouter.KEY_IS_BOTTOMTAB, true)
+		}
 		fragment.enterTransition = MaterialFadeThrough()
 		fragmentManager.beginTransaction()
 			.setReorderingAllowed(true)
-			.replace(R.id.container, fragmentClass, null, TAG_PRIMARY)
+			.replace(R.id.container, fragmentClass, args, TAG_PRIMARY)
 			.runOnCommit { onFragmentChanged(fragment, fromUser = true) }
 			.commit()
 		return true
