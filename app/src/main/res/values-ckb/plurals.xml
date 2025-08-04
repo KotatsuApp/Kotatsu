@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="items">
+        <item quantity="one">%1$d شت</item>
+        <item quantity="other">%1$d شت</item>
+    </plurals>
+    <plurals name="new_chapters">
+        <item quantity="one">%1$d بەشی نوێ</item>
+        <item quantity="other">%1$d بەشی نوێ</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="one">%1$d بەش</item>
+        <item quantity="other">%1$d بەش</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="one">%1$d خولەک لەمەوبەر</item>
+        <item quantity="other">%1$d خولەک لەمەوبەر</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="one">%1$d کاتژمێر لەمەوبەر</item>
+        <item quantity="other">%1$d کاتژمێر لەمەوبەر</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">%1$d ڕۆژ لەمەوبەر</item>
+        <item quantity="other">%1$d ڕۆژ لەمەوبەر</item>
+    </plurals>
+</resources>
