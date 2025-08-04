@@ -49,7 +49,7 @@
     <string name="text_empty_holder_primary">Hier ist es etwas leer…</string>
     <string name="processing_">Verarbeiten…</string>
     <string name="manga_downloading_">Herunterladen…</string>
-    <string name="create_shortcut">Verknüpfung erstellen…</string>
+    <string name="create_shortcut">Verknüpfung erstellen</string>
     <string name="loading_">Laden…</string>
     <string name="text_delete_local_manga">„%s“ Unwiderruflich vom Gerät löschen?</string>
     <string name="_s_deleted_from_local_storage">„%s“ aus lokalem Speicher gelöscht</string>
@@ -111,7 +111,7 @@
     <string name="pages_animation">Seitenanimation</string>
     <string name="recent_manga">Neueste Manga</string>
     <string name="manga_shelf">Regal</string>
-    <string name="text_local_holder_secondary">Speichern aus einem Online-Katalog oder importieren aus einer Datei.</string>
+    <string name="text_local_holder_secondary">Speichere etwas aus einem Online-Katalog oder importiere es aus einer Datei.</string>
     <string name="text_local_holder_primary">Speichere erst etwas</string>
     <string name="text_history_holder_secondary">Finde etwas zu lesen in der Rubrik „Erkunden“</string>
     <string name="text_search_holder_secondary">Versuche, die Anfrage umzuformulieren.</string>
@@ -616,7 +616,7 @@
     <string name="minutes_short">%d m</string>
     <string name="invalid_server_address_message">Ungültige Server-Addresse</string>
     <string name="pages_saved">Seiten wurden gespeichert</string>
-    <string name="text_empty_holder_secondary_filtered">Es gibt keine Manga, die deinem Filter entsprechen.</string>
+    <string name="text_empty_holder_secondary_filtered">Es gibt keine Manga, die deinen Filtern entsprechen.</string>
     <string name="too_many_requests_message_retry">Zu viele Anfragen. Versuche es erneut in %s</string>
     <string name="less_frequently">Seltener</string>
     <string name="hours_minutes_short">%1$d h %2$d m</string>
@@ -651,4 +651,6 @@
     <string name="chapters_read">Kapitel gelesen</string>
     <string name="chapters_left">Kapitel übrig</string>
     <string name="plugin_incompatible">Inkompatibles Plugin oder Interner Fehler. Stelle sicher, dass du die letzte Version von Kotatsu und die des Plugins verwendest</string>
+    <string name="reader_navigation_inverted">Steuerung umkehren</string>
+    <string name="minutes_seconds_short">%1$d m %2$d s</string>
 </resources>
