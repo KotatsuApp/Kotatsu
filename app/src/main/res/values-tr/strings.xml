@@ -837,4 +837,8 @@
     <string name="book_effect">Sarımsı arkaplan (mavi filtre)</string>
     <string name="local_storage_cleanup">Yerel depolama temizliği</string>
     <string name="packup_creation_failed">Yedek oluşturma başarısız oldu</string>
+    <string name="main_screen">Ana ekran</string>
+    <string name="main_screen_fab">Yüzen Devam Et butonunu göster</string>
+    <string name="main_screen_fab_summary">Tek bir tıklamayla okumaya devam ettirir. Bu buton gizli moddayken veya geçmiş açık değilken gözükmeyecek</string>
+    <string name="error_corrupted_zip">Bozuk ZIP arşivi (%s)</string>
 </resources>
