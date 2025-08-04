@@ -52,7 +52,7 @@
     <string name="app_update_available">Đã có phiên bản mới của ứng dụng</string>
     <string name="open_in_browser">Mở trong trình duyệt web</string>
     <string name="notifications">Thông báo</string>
-    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">%1$d trên %2$d đang bật</string>
+    <string name="enabled_d_of_d" tools:ignore="PluralsCandidate">Đã bật %1$d trong số %2$d nguồn</string>
     <string name="new_chapters">Chương mới</string>
     <string name="download">Tải xuống</string>
     <string name="notification_sound">Âm thanh thông báo</string>
@@ -128,7 +128,7 @@
     <string name="chapters_empty">Không có chương nào trong truyện này</string>
     <string name="appearance">Giao diện</string>
     <string name="suggestions_updating">Đang cập nhật gợi ý</string>
-    <string name="suggestions_excluded_genres">Loại trừ thể loại</string>
+    <string name="suggestions_excluded_genres">Lọc bỏ những thể loại</string>
     <string name="suggestions_excluded_genres_summary">Liệt kê những thể loại mà bạn không muốn thấy trong phần gợi ý</string>
     <string name="back">Quay lại</string>
     <string name="download_slowdown_summary">Giúp tránh việc ip của bạn bị chặn</string>
@@ -238,7 +238,7 @@
     <string name="text_empty_holder_primary">Không có gì ở đây…</string>
     <string name="notifications_settings">Cài đặt thông báo</string>
     <string name="text_search_holder_secondary">Hãy thử lại với từ khoá khác.</string>
-    <string name="text_history_holder_primary">Những gì bạn đã đọc sẽ được hiển thị ở đây</string>
+    <string name="text_history_holder_primary">Những gì bạn đã đọc sẽ được hiển thị ở đây ツ</string>
     <string name="text_local_holder_secondary">Tải xuống từ nguồn online hoặc nhập từ tập tin.</string>
     <string name="text_suggestion_holder">Bắt đầu đọc truyện và bạn sẽ nhận được những gợi ý cá nhân hoá</string>
     <string name="detect_reader_mode">Tự động phát hiện chế độ đọc</string>
@@ -383,7 +383,7 @@
     <string name="no_thanks">Không, cảm ơn</string>
     <string name="download_option_all_chapters">Số chương đã được dịch %s</string>
     <string name="auth_not_supported_by">Đăng nhập trên %s không được hỗ trợ</string>
-    <string name="logged_in_as">Đăng nhập với tư cách %s</string>
+    <string name="logged_in_as">Đang đăng nhập với tư cách là %s</string>
     <string name="removal_completed">Xoá hoàn thành</string>
     <string name="download_slowdown">Làm chậm tải xuống</string>
     <string name="local_manga_processing">Xử lý các truyện được lưu</string>
@@ -499,7 +499,7 @@
     <string name="show">Xem</string>
     <string name="captcha_required_summary">%s yêu cầu giải captcha để hoạt động bình thường</string>
     <string name="in_progress">Đang tiến hành</string>
-    <string name="disable_nsfw">Tắt NSFW</string>
+    <string name="disable_nsfw">Vô hiệu hóa đối với NSFW</string>
     <string name="advanced">Nâng cao</string>
     <string name="error_corrupted_file">Dữ liệu trả lại không hợp lệ hoặc file đã bị hỏng</string>
     <string name="related_manga_summary">Hiển thị danh sách manga có liên quan. Đôi khi có thể không có hoặc không liên quan</string>
@@ -835,4 +835,20 @@
     <string name="book_effect">Làm dịu ánh màu xanh của ảnh (chuyển sang màu vàng)</string>
     <string name="local_storage_cleanup">Dọn dẹp bộ nhớ lưu trữ cục bộ</string>
     <string name="packup_creation_failed">Tạo bản sao lưu dữ liệu thất bại</string>
+    <string name="main_screen">Màn hình chính</string>
+    <string name="main_screen_fab">Hiện nút \"Tiếp tục\" nổi ở màn hình chính</string>
+    <string name="main_screen_fab_summary">Nút này cho phép bạn đọc tiếp truyện gần nhất trong lịch sử đọc chỉ với 1 chạm. Nút này sẽ không xuất hiện nếu bạn đang dùng chế độ ẩn danh hoặc khi lịch sử đọc rỗng</string>
+    <string name="error_corrupted_zip">Tệp lưu trữ ZIP đã bị hỏng (%s)</string>
+    <string name="discord_rpc">Tích hợp Discord Rich Presence (Discord RPC)</string>
+    <string name="discord_token">Token của Discord</string>
+    <string name="discord_token_summary">Nhập Token vào để kích hoạt Discord Rich Presence</string>
+    <string name="discord_token_description">Nhập Token do Discord gán hoặc %s tại đây để Kotatsu tự động trích xuất Token của bạn từ trình duyệt</string>
+    <string name="discord_token_hint">Dán Token của bạn tại đây</string>
+    <string name="discord_rpc_summary">Hiển thị tiến trình đọc truyện của bạn trên Discord</string>
+    <string name="obtain">Đã nhận được</string>
+    <string name="discord_rpc_description">Đang đọc trên Kotatsu - Ứng dụng đọc truyện mã nguồn mở miễn phí</string>
+    <string name="reading_s">Hiện đang đọc: %s</string>
+    <string name="read_on_s">Đọc trên %s</string>
+    <string name="rpc_skip_nsfw_summary">Không tự động kích hoạt Discord Rich Presence đối với truyện người lớn</string>
+    <string name="invalid_token">Token không hợp lệ: %s</string>
 </resources>
