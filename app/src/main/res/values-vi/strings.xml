@@ -542,7 +542,7 @@
     <string name="sync_auth">Đăng nhập vào tài khoản đồng bộ</string>
     <string name="by_name_reverse">Theo tên (ngược)</string>
     <string name="content_rating">Đánh giá</string>
-    <string name="state_upcoming">Tiếp theo</string>
+    <string name="state_upcoming">Sắp ra mắt</string>
     <string name="rating_safe">An toàn</string>
     <string name="default_tab">Tab mặc định</string>
     <string name="mark_as_completed">Đánh dấu đã hoàn thành</string>
@@ -852,4 +852,8 @@
     <string name="rpc_skip_nsfw_summary">Không tự động kích hoạt Discord Rich Presence đối với truyện người lớn</string>
     <string name="invalid_token">Token không hợp lệ: %s</string>
     <string name="show_floating_control_button">Hiển thị nút điều khiển nổi</string>
+    <string name="unavailable">Không có sẵn</string>
+    <string name="manga_restricted_description">Truyện này không có sẵn trên nguồn này. Hãy thử tìm kiếm truyện này với nguồn đọc khác hoặc mở nó trong trình duyệt để biết thêm chi tiết</string>
+    <string name="no_chapters_in_manga">Truyện này không có sẵn chương nào cả ツ</string>
+    <string name="chapters_load_failed">Không thể tải danh sách chương hiện có</string>
 </resources>
