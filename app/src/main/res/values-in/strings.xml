@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="local_storage">Penyimpanan lokal</string>
-    <string name="favourites">Favorite</string>
+    <string name="favourites">Disukai</string>
     <string name="history">Riwayat</string>
     <string name="error_occurred">Terjadi kesalahan</string>
     <string name="network_error">Kesalahan jaringan</string>
@@ -839,4 +839,11 @@
     <string name="error_corrupted_zip">Arsip ZIP rusak (%s)</string>
     <string name="main_screen_fab_summary">Memungkinkan untuk melanjutkan membaca dengan satu klik. Tombol ini tidak akan ditampilkan dalam mode privat atau saat riwayat kosong</string>
     <string name="local_storage_cleanup">Pembersihan penyimpanan lokal</string>
+    <string name="collapse">Sembunyikan</string>
+    <string name="discord_rpc">Status Aktivitas Discord</string>
+    <string name="discord_token">Token Discord</string>
+    <string name="discord_token_summary">Masukkan Token Discord Anda untuk mengaktifkan status aktivitas</string>
+    <string name="discord_token_description">Masukkan Token Discord Anda atau klik %s untuk mendapatkannya melalui browser</string>
+    <string name="discord_token_hint">Tempelkan Token Discord Anda di sini</string>
+    <string name="discord_rpc_summary">Tampilkan status membaca Anda di Discord</string>
 </resources>
