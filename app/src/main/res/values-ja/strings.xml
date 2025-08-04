@@ -462,4 +462,14 @@
     <string name="reader_zoom_buttons">ズームボタンを表示</string>
     <string name="zoom_out">ズームアウト</string>
     <string name="retry">リトライ</string>
+    <string name="open_telegram_bot">Telegramボットを開く</string>
+    <string name="send_backups_telegram">Telegramにバックアップを送信</string>
+    <string name="test_connection">テスト接続</string>
+    <string name="telegram_chat_id_summary">バックアップを送信するチャットIDを入力してください</string>
+    <string name="open_telegram_bot_summary">タップしてKotatsuバックアップボットを開く</string>
+    <string name="clear_database">データベース消去</string>
+    <string name="clear_database_summary">使われていないマンガの情報を削除する</string>
+    <string name="enable_all_sources">すべての漫画ソースを有効にする</string>
+    <string name="enable_all_sources_summary">利用可能なすべての漫画ソースを永久に有効にする</string>
+    <string name="all_sources_enabled">すべてのソースが有効</string>
 </resources>
