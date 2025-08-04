@@ -833,4 +833,22 @@
     <string name="reader_navigation_inverted">Inverser les commandes de navigation</string>
     <string name="reader_navigation_inverted_summary">Inverser le sens des boutons de volume et des touches directionnelles matérielles (gauche/haut/bas/droite)</string>
     <string name="book_effect">Fond jaunâtre (filtre bleu)</string>
+    <string name="local_storage_cleanup">Nettoyage du stockage local</string>
+    <string name="packup_creation_failed">Échec de la création de la sauvegarde</string>
+    <string name="main_screen">Écran principal</string>
+    <string name="main_screen_fab">Afficher le bouton flottant Continuer</string>
+    <string name="main_screen_fab_summary">Permet de continuer la lecture en un clic. Ce bouton n’apparaîtra pas en mode navigation privée ou lorsque l’historique est vide</string>
+    <string name="error_corrupted_zip">Archive ZIP corrompue (%s)</string>
+    <string name="discord_rpc">Présence enrichie Discord</string>
+    <string name="discord_token">Jeton Discord</string>
+    <string name="discord_token_summary">Entre ton jeton Discord pour activer la présence enrichie</string>
+    <string name="discord_token_description">Entre ton jeton Discord ou clique sur %s pour l’obtenir via le navigateur</string>
+    <string name="discord_token_hint">Colle ton jeton Discord ici</string>
+    <string name="discord_rpc_summary">Affiche ton statut de lecture sur Discord</string>
+    <string name="obtain">Obtenir</string>
+    <string name="discord_rpc_description">Lecture de manga sur Kotatsu – une application de lecture de manga</string>
+    <string name="reading_s">Lecture de %s</string>
+    <string name="read_on_s">Lire sur %s</string>
+    <string name="rpc_skip_nsfw_summary">Ne pas utiliser la présence enrichie pour du contenu adulte</string>
+    <string name="invalid_token">Jeton invalide : %s</string>
 </resources>
