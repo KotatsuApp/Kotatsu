@@ -775,7 +775,7 @@
     <string name="all_sources_enabled">Сви извори су укључени</string>
     <string name="backup_restored_background">Резервна копија ће бити враћена у позадини</string>
     <string name="reader_info_bar_transparent">Провидна трака са информацијама о читаоцу</string>
-    <string name="reader_controls_in_bottom_bar">Управљање читачем у доњој траци</string>
+    <string name="reader_controls_in_bottom_bar">Контроле читача у доњој траци</string>
     <string name="pages_slider">Клизач за пребацивање страница</string>
     <string name="screen_rotation_locked">Окретање екрана је закључано</string>
     <string name="screen_rotation_unlocked">Окретање екрана је откључано</string>
@@ -818,4 +818,23 @@
     <string name="pick_custom_file">Изабери прилагођену датотеку</string>
     <string name="change_cover">Промени корице</string>
     <string name="page_switch_timer">Страница ће се мењати сваких ~%d секунди</string>
+    <string name="reader_navigation_inverted_summary">Замените смер дугмета за јачину звука и смерне навигације помоћу хардверских типки (лево/горе/доле/десно)</string>
+    <string name="hide_from_main_screen">Сакриј са главног екрана</string>
+    <string name="changelog">Дневник промена</string>
+    <string name="changelog_summary">Историја промена за недавно објављене верзије</string>
+    <string name="collapse">Склопи</string>
+    <string name="expand">Прошири</string>
+    <string name="adblock">Блокирај огласе у прегледачу</string>
+    <string name="adblock_summary">Блокирај рекламе у уграђеном прегледачу (бета)</string>
+    <string name="collapse_long_description">Склопи дугачак опис</string>
+    <string name="creating_backup">Прављење резервне копије</string>
+    <string name="share_backup">Дели резервну копију</string>
+    <string name="reader_multitask">Отвори читач у посебном задатку</string>
+    <string name="reader_multitask_summary">Омогућава вам да истовремено држите више отворених читача са различитим мангама</string>
+    <string name="theme_name_itsuka">Итсука</string>
+    <string name="theme_name_totoro">Тоторо</string>
+    <string name="book_effect">Жућкаста позадина (плави филтер)</string>
+    <string name="local_storage_cleanup">Чишћење локалне меморије</string>
+    <string name="packup_creation_failed">Није успело креирање резервне копије</string>
+    <string name="reader_navigation_inverted">Обрни контроле навигације</string>
 </resources>
