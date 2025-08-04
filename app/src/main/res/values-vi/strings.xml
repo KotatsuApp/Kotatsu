@@ -851,4 +851,5 @@
     <string name="read_on_s">Đọc trên %s</string>
     <string name="rpc_skip_nsfw_summary">Không tự động kích hoạt Discord Rich Presence đối với truyện người lớn</string>
     <string name="invalid_token">Token không hợp lệ: %s</string>
+    <string name="show_floating_control_button">Hiển thị nút điều khiển nổi</string>
 </resources>
