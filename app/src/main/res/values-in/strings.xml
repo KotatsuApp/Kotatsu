@@ -811,7 +811,7 @@
     <string name="pick_custom_file">Indonesian</string>
     <string name="change_cover">Indonesian</string>
     <string name="theme_name_expressive">Indonesian</string>
-    <string name="page_switch_timer">Indonesian</string>
+    <string name="page_switch_timer">Halaman akan berganti setiap ~%d detik</string>
     <string name="expand">Memperluas</string>
     <string name="adblock">Blokir iklan di browser</string>
     <string name="dont_ask_again">Jangan bertanya lagi</string>
@@ -829,8 +829,15 @@
     <string name="adblock_summary">Blokir iklan di browser bawaan (beta)</string>
     <string name="theme_name_totoro">Totoro</string>
     <string name="theme_name_itsuka">Itsuka</string>
-    <string name="reader_multitask">Open reader in a separate task</string>
-    <string name="collapse">Collapse</string>
-    <string name="reader_navigation_inverted_summary">Swap the direction of volume button and directional hardware key navigation (left/up/down/right)</string>
-    <string name="reader_navigation_inverted">Invert navigation controls</string>
+    <string name="reader_multitask">Buka pembaca secara terpisah</string>
+    <string name="collapse"></string>
+    <string name="reader_navigation_inverted_summary">Tukar arah tombol volume dan tombol arah navigasi perangkat keras (kiri/atas/bawah/kanan)</string>
+    <string name="reader_navigation_inverted">Balik kontrol navigasi</string>
+    <string name="book_effect">Latar belakang kekuning-kuningan (filter biru)</string>
+    <string name="packup_creation_failed">Gagal membuat cadangan</string>
+    <string name="main_screen">Layar utama</string>
+    <string name="main_screen_fab">Tampilkan tombol Lanjutkan mengambang</string>
+    <string name="error_corrupted_zip">Arsip ZIP rusak (%s)</string>
+    <string name="main_screen_fab_summary">Memungkinkan untuk melanjutkan membaca dengan satu klik. Tombol ini tidak akan ditampilkan dalam mode privat atau saat riwayat kosong</string>
+    <string name="local_storage_cleanup">Pembersihan penyimpanan lokal</string>
 </resources>
