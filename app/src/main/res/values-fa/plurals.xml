@@ -29,11 +29,11 @@
         <item quantity="other">%1$d ماه قبل</item>
     </plurals>
     <plurals name="minutes">
-        <item quantity="one">دقیقه</item>
-        <item quantity="other">دقیقه</item>
+        <item quantity="one">%1$d دقیقه</item>
+        <item quantity="other">%1$d دقیقه</item>
     </plurals>
     <plurals name="hours">
-        <item quantity="one">ساعت</item>
-        <item quantity="other">ساعت</item>
+        <item quantity="one">%1$d ساعت</item>
+        <item quantity="other">%1$d ساعت</item>
     </plurals>
 </resources>
