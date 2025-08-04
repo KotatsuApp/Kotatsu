@@ -21,8 +21,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 21
 		targetSdk = 36
-		versionCode = 1023
-		versionName = '9.0.1'
+		versionCode = 1024
+		versionName = '9.1'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -32,6 +32,12 @@ android {
 			// https://issuetracker.google.com/issues/408030127
 			generateLocaleConfig false
 		}
+		def localProperties = new Properties()
+		def localPropertiesFile = rootProject.file('local.properties')
+		if (localPropertiesFile.exists()) {
+			localProperties.load(new FileInputStream(localPropertiesFile))
+		}
+		resValue 'string', 'tg_backup_bot_token', localProperties.getProperty('tg_backup_bot_token', '')
 	}
 	buildTypes {
 		debug {

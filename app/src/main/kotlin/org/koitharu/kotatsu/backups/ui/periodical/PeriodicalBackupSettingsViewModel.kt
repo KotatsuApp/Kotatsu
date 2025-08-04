@@ -27,6 +27,9 @@ class PeriodicalBackupSettingsViewModel @Inject constructor(
 	@ApplicationContext private val appContext: Context,
 ) : BaseViewModel() {
 
+	val isTelegramAvailable
+		get() = telegramUploader.isAvailable
+
 	val lastBackupDate = MutableStateFlow<Date?>(null)
 	val backupsDirectory = MutableStateFlow<String?>("")
 	val isTelegramCheckLoading = MutableStateFlow(false)

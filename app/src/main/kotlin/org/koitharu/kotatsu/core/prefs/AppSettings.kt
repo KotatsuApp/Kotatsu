@@ -812,6 +812,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_PROXY_TEST = "proxy_test"
 		const val KEY_OPEN_BROWSER = "open_browser"
 		const val KEY_HANDLE_LINKS = "handle_links"
+		const val KEY_BACKUP_TG = "backup_periodic_tg"
 		const val KEY_BACKUP_TG_OPEN = "backup_periodic_tg_open"
 		const val KEY_BACKUP_TG_TEST = "backup_periodic_tg_test"
 		const val KEY_CLEAR_MANGA_DATA = "manga_data_clear"

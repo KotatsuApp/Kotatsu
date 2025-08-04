@@ -49,7 +49,7 @@ class PeriodicalBackupService : CoroutineIntentService() {
 			}
 			externalBackupStorage.put(output)
 			externalBackupStorage.trim(settings.periodicalBackupMaxCount)
-			if (settings.isBackupTelegramUploadEnabled) {
+			if (settings.isBackupTelegramUploadEnabled && telegramBackupUploader.isAvailable) {
 				telegramBackupUploader.uploadBackup(output)
 			}
 		} finally {

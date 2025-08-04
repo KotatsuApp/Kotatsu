@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.fragment.app.viewModels
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
@@ -37,6 +38,7 @@ class PeriodicalBackupSettingsFragment : BasePreferenceFragment(R.string.periodi
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_backup_periodic)
+		findPreference<PreferenceCategory>(AppSettings.KEY_BACKUP_TG)?.isVisible = viewModel.isTelegramAvailable
 		findPreference<EditTextPreference>(AppSettings.KEY_BACKUP_TG_CHAT)?.summaryProvider =
 			EditTextFallbackSummaryProvider(R.string.telegram_chat_id_summary)
 	}
