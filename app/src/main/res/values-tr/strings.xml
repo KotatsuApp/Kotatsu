@@ -841,4 +841,21 @@
     <string name="main_screen_fab">Yüzen Devam Et butonunu göster</string>
     <string name="main_screen_fab_summary">Tek bir tıklamayla okumaya devam ettirir. Bu buton gizli moddayken veya geçmiş açık değilken gözükmeyecek</string>
     <string name="error_corrupted_zip">Bozuk ZIP arşivi (%s)</string>
+    <string name="discord_rpc">Discord Etkinlik Durumu</string>
+    <string name="discord_token">Discord Token</string>
+    <string name="discord_token_summary">Etkinlik Durumu\'nu kullanabilmek için Discord Token\'inizi girin</string>
+    <string name="discord_token_description">Discord Token\'inizi girin ya da Token\'i tarayıcıdan almak için buraya tıklayın: %s</string>
+    <string name="discord_token_hint">Discord Token\'inizi buraya yapıştırın</string>
+    <string name="discord_rpc_summary">Okuma durumunu Discord\'da göster</string>
+    <string name="obtain">Al</string>
+    <string name="discord_rpc_description">Kotatsu\'da manga okuyor - manga okumak için bir uygulama</string>
+    <string name="reading_s">%s okuyor</string>
+    <string name="read_on_s">%s üzerinde oku</string>
+    <string name="rpc_skip_nsfw_summary">Yetişkin içerik için Etkinlik Durumu\'nu kullanma</string>
+    <string name="invalid_token">Geçersiz Token: %s</string>
+    <string name="show_floating_control_button">Kayan kontrol butonunu göster</string>
+    <string name="unavailable">Mevcut değil</string>
+    <string name="manga_restricted_description">Bu manga, okumak için bu kaynakta mevcut değil. Başka kaynaklarda aramayı ya da daha fazla bilgi için tarayıcıda açmayı deneyin</string>
+    <string name="no_chapters_in_manga">Bu manga bölüm içermiyor</string>
+    <string name="chapters_load_failed">Bölüm listesi yüklenemedi</string>
 </resources>
