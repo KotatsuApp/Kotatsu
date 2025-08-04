@@ -830,7 +830,6 @@
     <string name="theme_name_totoro">Totoro</string>
     <string name="theme_name_itsuka">Itsuka</string>
     <string name="reader_multitask">Buka pembaca secara terpisah</string>
-    <string name="collapse"></string>
     <string name="reader_navigation_inverted_summary">Tukar arah tombol volume dan tombol arah navigasi perangkat keras (kiri/atas/bawah/kanan)</string>
     <string name="reader_navigation_inverted">Balik kontrol navigasi</string>
     <string name="book_effect">Latar belakang kekuning-kuningan (filter biru)</string>
