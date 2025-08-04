@@ -831,4 +831,26 @@
     <string name="reader_multitask">Buksan ang reader sa isang hiwalay na gawain</string>
     <string name="reader_multitask_summary">Binibigyang-daan kang panatilihing bukas ang maraming reader na may magkakaibang manga nang sabay-sabay</string>
     <string name="book_effect">Mala-dilaw na background (asul na filter)</string>
+    <string name="unavailable">Di-available</string>
+    <string name="show_floating_control_button">Ipakita ang lumulutang na control button</string>
+    <string name="invalid_token">Imbalidong token: %s</string>
+    <string name="rpc_skip_nsfw_summary">Huwag gamitin ang RPC para sa pangmatandang content</string>
+    <string name="read_on_s">Basahin sa %s</string>
+    <string name="reading_s">Binabasa ng %s</string>
+    <string name="discord_rpc_description">Bumamasa ng manga sa Kotatsu - isang manga reader app</string>
+    <string name="obtain">Kumuha</string>
+    <string name="discord_rpc_summary">Ipakita ng status ng pagbabasa sa Discord</string>
+    <string name="discord_token_hint">I-paste ang Discord Token dito</string>
+    <string name="discord_token_description">Ilagay ang iyong Discord Token o i-click ang %s para makuha ito gamit ang browser</string>
+    <string name="discord_token_summary">Ilagay ang iyong Discord Token para mapagana ang Rich Presence</string>
+    <string name="error_corrupted_zip">Na-corrupt na ZIP archive (%s)</string>
+    <string name="main_screen_fab_summary">Pinapayagan na magpatuloy sa pagbabasa sa isang click. Ang button na ito ay hindi lilitaw sa incognito na mode o kung walang laman ang kasaysayan</string>
+    <string name="main_screen_fab">Ipakita ang lumulutang na Magpatuloy na button</string>
+    <string name="main_screen">Main na screen</string>
+    <string name="packup_creation_failed">Bigong malikha ang backup</string>
+    <string name="local_storage_cleanup">Paglilinis ng lokal na storage</string>
+    <string name="changelog">Mga pagbabago</string>
+    <string name="manga_restricted_description">Ang manga na ito ay hindi magagamit na basahin sa source na ito. Subukang hanapin ito sa ibang mga source o buksan ito sa isang browser para sa higit pang impormasyon</string>
+    <string name="no_chapters_in_manga">Ang manga na ito ay walang anumang mga kabanata</string>
+    <string name="chapters_load_failed">Nabigong i-load ang listahan ng kabanata</string>
 </resources>
