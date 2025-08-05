@@ -31,8 +31,8 @@ open class MultiMutex<T : Any> {
 		contract {
 			callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 		}
+		lock(element)
 		return try {
-			lock(element)
 			block()
 		} finally {
 			unlock(element)
