@@ -183,6 +183,8 @@ fun View.setTooltipCompat(tooltip: CharSequence?) {
 	}
 }
 
+fun View.setTooltipCompat(@StringRes tooltipResId: Int) = setTooltipCompat(context.getString(tooltipResId))
+
 val Toolbar.menuView: ActionMenuView?
 	get() {
 		menu // to call ensureMenu()

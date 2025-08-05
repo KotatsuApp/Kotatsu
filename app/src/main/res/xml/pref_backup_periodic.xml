@@ -51,17 +51,16 @@
 		app:isPreferenceVisible="false" />
 
 	<PreferenceCategory
+		android:key="backup_periodic_tg"
 		android:title="@string/telegram_integration"
 		app:isPreferenceVisible="false"
-		android:key="backup_periodic_tg"
 		tools:isPreferenceVisible="true">
 
 		<SwitchPreferenceCompat
 			android:defaultValue="false"
 			android:dependency="backup_periodic"
 			android:key="backup_periodic_tg_enabled"
-			android:title="@string/send_backups_telegram"
-			app:allowDividerAbove="true" />
+			android:title="@string/send_backups_telegram" />
 
 		<EditTextPreference
 			android:dependency="backup_periodic_tg_enabled"

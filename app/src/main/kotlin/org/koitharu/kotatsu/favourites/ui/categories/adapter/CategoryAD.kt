@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
+import org.koitharu.kotatsu.core.util.ext.setTooltipCompat
 import org.koitharu.kotatsu.databinding.ItemCategoriesAllBinding
 import org.koitharu.kotatsu.databinding.ItemCategoryBinding
 import org.koitharu.kotatsu.favourites.ui.categories.FavouriteCategoriesListListener
@@ -89,6 +90,13 @@ fun allCategoriesAD(
 				R.drawable.ic_eye
 			} else {
 				R.drawable.ic_eye_off
+			},
+		)
+		binding.imageViewVisible.setTooltipCompat(
+			if (item.isVisible) {
+				R.string.hide
+			} else {
+				R.string.show
 			},
 		)
 		binding.coversView.setCoversAsync(item.covers)
