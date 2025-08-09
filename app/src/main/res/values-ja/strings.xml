@@ -22,11 +22,11 @@
     <string name="history_is_empty">まだ履歴はありません</string>
     <string name="read">読む</string>
     <string name="you_have_not_favourites_yet">お気に入りの本はありません</string>
-    <string name="add_to_favourites">お気に入り</string>
+    <string name="add_to_favourites">お気に入りに追加</string>
     <string name="add_new_category">新しいカテゴリー</string>
     <string name="add">追加</string>
     <string name="save">保存</string>
-    <string name="create_shortcut">ショートカットを作成…</string>
+    <string name="create_shortcut">ショートカットを作成</string>
     <string name="share_s">%s を共有する</string>
     <string name="manga_downloading_">ダウンロード中…</string>
     <string name="processing_">処理中…</string>
@@ -305,7 +305,7 @@
     <string name="incognito_mode">シークレットモード</string>
     <string name="folder_with_images">画像を含むフォルダ</string>
     <string name="import_will_start_soon">まもなくインポートが開始されます</string>
-    <string name="removed_from_favourites">お気に入りから削除</string>
+    <string name="removed_from_favourites">お気に入りから削除されました</string>
     <string name="options">オプション</string>
     <string name="import_completed_hint">ストレージから元のファイルを削除して、容量を節約することができます</string>
     <string name="reader_info_pattern">Ch.%1$d/%2$d Pg.%3$d/%4$d</string>
@@ -472,4 +472,6 @@
     <string name="enable_all_sources">すべての漫画ソースを有効にする</string>
     <string name="enable_all_sources_summary">利用可能なすべての漫画ソースを永久に有効にする</string>
     <string name="all_sources_enabled">すべてのソースが有効</string>
+    <string name="automatic">自動</string>
+    <string name="invalid_server_address_message">無効なサーバーアドレス</string>
 </resources>
