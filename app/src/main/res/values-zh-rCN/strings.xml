@@ -854,4 +854,5 @@
     <string name="no_chapters_in_manga">没有找到此漫画的任何章节</string>
     <string name="chapters_load_failed">加载章节列表失败</string>
     <string name="manga_restricted_description">此漫画在图源中无法阅读，尝试在别的图源中搜索此漫画或打开内置浏览器获取更多信息</string>
+    <string name="telegram_integration">Telegram集成</string>
 </resources>

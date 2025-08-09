@@ -44,12 +44,12 @@
     <string name="nothing_found">Ništa nije pronađeno</string>
     <string name="read">Čitaj</string>
     <string name="you_have_not_favourites_yet">Još nema favorita</string>
-    <string name="add_to_favourites">Označite ovo kao favorit</string>
+    <string name="add_to_favourites">Dodaj u favorite</string>
     <string name="add_new_category">Nova kategorija</string>
     <string name="add">Dodaj</string>
     <string name="save">Sačuvaj</string>
     <string name="share">Podijeli</string>
-    <string name="create_shortcut">Napravi prečicu…</string>
+    <string name="create_shortcut">Napravi prečicu</string>
     <string name="share_s">Podijeli %s</string>
     <string name="search">Pretraži</string>
     <string name="search_manga">Pretraži mangu</string>
@@ -266,7 +266,7 @@
     <string name="enable_logging">Omogući bilježenje</string>
     <string name="enable_logging_summary">Snimite neke radnje u svrhu otklanjanja pogrešaka. Nemojte ga uključivati ako niste sigurni što radite</string>
     <string name="show_suspicious_content">Prikaži sumnjiv sadržaj</string>
-    <string name="theme_name_dynamic">Dinamičan</string>
+    <string name="theme_name_dynamic">Dinamična</string>
     <string name="color_theme">Shema boja</string>
     <string name="show_in_grid_view">Prikaži u mrežnom prikazu</string>
     <string name="theme_name_miku">Miku</string>
@@ -474,7 +474,7 @@
     <string name="file_not_found">Datoteka nije pronađena</string>
     <string name="data_restored_success">Svi podaci su vraćeni</string>
     <string name="data_restored_with_errors">Podaci su vraćeni, ali ima grešaka</string>
-    <string name="backup_information">Možete stvoriti sigurnosnu kopiju svoje povijesti i favorita i vratiti je</string>
+    <string name="backup_information">Možete stvoriti sigurnosnu kopiju svoje povijesti i favorita i obnoviti je</string>
     <string name="yesterday">Jučer</string>
     <string name="long_ago">Davno</string>
     <string name="data_restored">Vraćeno</string>
@@ -782,4 +782,13 @@
     <string name="global_search">Globalna pretraga</string>
     <string name="search_everywhere">Traži svuda</string>
     <string name="badges_in_lists">Značke u popisima</string>
+    <string name="nsfw_16">16+</string>
+    <string name="theme_name_expressive">Ekspresivna (test)</string>
+    <string name="chapter_volume_number">Svezak %1$s Poglavlje %2$s</string>
+    <string name="chapter_number">Poglavlje %s</string>
+    <string name="unnamed_chapter">Neimenovano poglavlje</string>
+    <string name="search_disabled_sources">Pretraži deaktivirane izvore</string>
+    <string name="error_details">Detalji greške</string>
+    <string name="error_disclaimer_manga">Pokušaj otvoriti manga u web pregledniku kako bi provjerio/la je li dostupan na izvornom mjestu.</string>
+    <string name="error_disclaimer_app_outdated">Izgleda da je tvoja Kotatsu verzija zastarjela. Instaliraj najnoviju verziju za dobivanje svih dostupnih ispravki.</string>
 </resources>

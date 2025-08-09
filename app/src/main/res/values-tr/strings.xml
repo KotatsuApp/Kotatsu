@@ -858,4 +858,5 @@
     <string name="manga_restricted_description">Bu manga, okumak için bu kaynakta mevcut değil. Başka kaynaklarda aramayı ya da daha fazla bilgi için tarayıcıda açmayı deneyin</string>
     <string name="no_chapters_in_manga">Bu manga bölüm içermiyor</string>
     <string name="chapters_load_failed">Bölüm listesi yüklenemedi</string>
+    <string name="telegram_integration">Telegram entegrasyonu</string>
 </resources>
