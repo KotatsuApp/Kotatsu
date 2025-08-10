@@ -17,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.alternatives.domain.AutoFixUseCase
+import org.koitharu.kotatsu.alternatives.domain.AutoFixUseCase.NoAlternativesException
 import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
@@ -47,7 +48,7 @@ class AutoFixService : CoroutineIntentService() {
 
 	override fun onCreate() {
 		super.onCreate()
-		notificationManager = NotificationManagerCompat.from(applicationContext)
+		notificationManager = NotificationManagerCompat.from(this)
 	}
 
 	override suspend fun IntentJobContext.processIntent(intent: Intent) {
@@ -58,7 +59,7 @@ class AutoFixService : CoroutineIntentService() {
 				val result = runCatchingCancellable {
 					autoFixUseCase.invoke(mangaId)
 				}
-				if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+				if (checkNotificationPermission(CHANNEL_ID)) {
 					val notification = buildNotification(startId, result)
 					notificationManager.notify(TAG, startId, notification)
 				}
@@ -67,7 +68,7 @@ class AutoFixService : CoroutineIntentService() {
 	}
 
 	override fun IntentJobContext.onError(error: Throwable) {
-		if (applicationContext.checkNotificationPermission(CHANNEL_ID)) {
+		if (checkNotificationPermission(CHANNEL_ID)) {
 			val notification = runBlocking { buildNotification(startId, Result.failure(error)) }
 			notificationManager.notify(TAG, startId, notification)
 		}
@@ -75,7 +76,7 @@ class AutoFixService : CoroutineIntentService() {
 
 	@SuppressLint("InlinedApi")
 	private fun startForeground(jobContext: IntentJobContext) {
-		val title = applicationContext.getString(R.string.fixing_manga)
+		val title = getString(R.string.fixing_manga)
 		val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_MIN)
 			.setName(title)
 			.setShowBadge(false)
@@ -85,7 +86,7 @@ class AutoFixService : CoroutineIntentService() {
 			.build()
 		notificationManager.createNotificationChannel(channel)
 
-		val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+		val notification = NotificationCompat.Builder(this, CHANNEL_ID)
 			.setContentTitle(title)
 			.setPriority(NotificationCompat.PRIORITY_MIN)
 			.setDefaults(0)
@@ -97,7 +98,7 @@ class AutoFixService : CoroutineIntentService() {
 			.setCategory(NotificationCompat.CATEGORY_PROGRESS)
 			.addAction(
 				appcompatR.drawable.abc_ic_clear_material,
-				applicationContext.getString(android.R.string.cancel),
+				getString(android.R.string.cancel),
 				jobContext.getCancelIntent(),
 			)
 			.build()
@@ -110,7 +111,7 @@ class AutoFixService : CoroutineIntentService() {
 	}
 
 	private suspend fun buildNotification(startId: Int, result: Result<Pair<Manga, Manga?>>): Notification {
-		val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+		val notification = NotificationCompat.Builder(this, CHANNEL_ID)
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 			.setDefaults(0)
 			.setSilent(true)
@@ -119,17 +120,17 @@ class AutoFixService : CoroutineIntentService() {
 			if (replacement != null) {
 				notification.setLargeIcon(
 					coil.execute(
-						ImageRequest.Builder(applicationContext)
+						ImageRequest.Builder(this)
 							.data(replacement.coverUrl)
 							.mangaSourceExtra(replacement.source)
 							.build(),
 					).toBitmapOrNull(),
 				)
 				notification.setSubText(replacement.title)
-				val intent = AppRouter.detailsIntent(applicationContext, replacement)
+				val intent = AppRouter.detailsIntent(this, replacement)
 				notification.setContentIntent(
 					PendingIntentCompat.getActivity(
-						applicationContext,
+						this,
 						replacement.id.toInt(),
 						intent,
 						PendingIntent.FLAG_UPDATE_CURRENT,
@@ -143,35 +144,35 @@ class AutoFixService : CoroutineIntentService() {
 					},
 				)
 				notification
-					.setContentTitle(applicationContext.getString(R.string.fixed))
+					.setContentTitle(getString(R.string.fixed))
 					.setContentText(
-						applicationContext.getString(
+						getString(
 							R.string.manga_replaced,
 							seed.title,
-							seed.source.getTitle(applicationContext),
+							seed.source.getTitle(this),
 							replacement.title,
-							replacement.source.getTitle(applicationContext),
+							replacement.source.getTitle(this),
 						),
 					)
 					.setSmallIcon(R.drawable.ic_stat_done)
 			} else {
 				notification
-					.setContentTitle(applicationContext.getString(R.string.fixing_manga))
-					.setContentText(applicationContext.getString(R.string.no_fix_required, seed.title))
+					.setContentTitle(getString(R.string.fixing_manga))
+					.setContentText(getString(R.string.no_fix_required, seed.title))
 					.setSmallIcon(android.R.drawable.stat_sys_warning)
 			}
 		}.onFailure { error ->
 			notification
-				.setContentTitle(applicationContext.getString(R.string.error_occurred))
+				.setContentTitle(getString(R.string.error_occurred))
 				.setContentText(
-					if (error is AutoFixUseCase.NoAlternativesException) {
-						applicationContext.getString(R.string.no_alternatives_found, error.seed.manga.title)
+					if (error is NoAlternativesException) {
+						getString(R.string.no_alternatives_found, error.seed.manga.title)
 					} else {
-						error.getDisplayMessage(applicationContext.resources)
+						error.getDisplayMessage(resources)
 					},
 				).setSmallIcon(android.R.drawable.stat_notify_error)
 			ErrorReporterReceiver.getNotificationAction(
-				context = applicationContext,
+				context = this,
 				e = error,
 				notificationId = startId,
 				notificationTag = TAG,

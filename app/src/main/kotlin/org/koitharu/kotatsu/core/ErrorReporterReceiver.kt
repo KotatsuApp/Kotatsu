@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.BadParcelableException
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
@@ -65,7 +64,7 @@ class ErrorReporterReceiver : BroadcastReceiver() {
 			e: Throwable,
 			notificationId: Int,
 			notificationTag: String?,
-		): PendingIntent? = try {
+		): PendingIntent? = runCatching {
 			val intent = Intent(context, ErrorReporterReceiver::class.java)
 			intent.setAction(ACTION_REPORT)
 			intent.setData("err://${e.hashCode()}".toUri())
@@ -73,9 +72,9 @@ class ErrorReporterReceiver : BroadcastReceiver() {
 			intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId)
 			intent.putExtra(EXTRA_NOTIFICATION_TAG, notificationTag)
 			PendingIntentCompat.getBroadcast(context, 0, intent, 0, false)
-		} catch (e: BadParcelableException) {
+		}.onFailure { e ->
+			// probably cannot write exception as serializable
 			e.printStackTraceDebug()
-			null
-		}
+		}.getOrNull()
 	}
 }
