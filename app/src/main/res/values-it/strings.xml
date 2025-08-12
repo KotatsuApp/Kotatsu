@@ -50,7 +50,7 @@
     <string name="detailed_list">Elenco dettagliato</string>
     <string name="text_delete_local_manga">Vuoi davvero eliminare \" %s\" dalla memoria locale del tuo dispositivo?</string>
     <string name="_s_deleted_from_local_storage">\"%s\" eliminato dall\'archiviazione locale</string>
-    <string name="list">Liste</string>
+    <string name="list">Lista</string>
     <string name="chapters">Capitoli</string>
     <string name="details">Dettagli</string>
     <string name="network_error">Errore di connessione</string>
@@ -318,7 +318,7 @@
     <string name="importing_manga">Importazione di manga</string>
     <string name="import_will_start_soon">L\'importazione inizierà presto</string>
     <string name="feed">Flusso</string>
-    <string name="reader_control_ltr_summary">Non variare il cambio pagina</string>
+    <string name="reader_control_ltr_summary">Non adeguare la direzione dello sfoglio alla modalità di lettura impostata. Ad esempio: premere la freccia destra passerà sempre alla pagina seguente. Questa impostazione ha effetto solo sui dispositivi di input hardware</string>
     <string name="contrast">Contrasto</string>
     <string name="reset">Ripristina</string>
     <string name="reader_slider">Mostra il cursore di cambio pagina</string>
@@ -543,7 +543,7 @@
     <string name="last_read">Ultima lettura</string>
     <string name="reading_time_estimation_summary">Il tempo di lettura stimato potrebbe essere inaccurato</string>
     <string name="reading_time_estimation">Mostra il tempo di lettura stimato</string>
-    <string name="email_password_enter_hint">Inserisci la tua email e password per continuare</string>
+    <string name="email_password_enter_hint">Inserisci email e password per continuare</string>
     <string name="show_menu">Mostra menu</string>
     <string name="switch_pages_volume_buttons_summary">Usa i pulsanti del volume per cambiare pagine</string>
     <string name="tap_action">Azioni tap</string>
@@ -566,7 +566,7 @@
     <string name="toggle_ui">Mostra/nascondi UI</string>
     <string name="next_chapter">Prossimo capitolo</string>
     <string name="prev_page">Pagina precedente</string>
-    <string name="next_page">Prossima pagina</string>
+    <string name="next_page">Pagina successiva</string>
     <string name="reader_actions">Azioni del lettore</string>
     <string name="switch_pages_volume_buttons">Abilita pulsanti del volume</string>
     <string name="reader_fullscreen_summary">Nascondi le barre di stato e di notifica</string>
@@ -647,10 +647,10 @@
     <string name="chapters_read">Capitoli letti</string>
     <string name="chapters_left">Capitoli rimasti</string>
     <string name="default_webtoon_zoom_out">Riduzione dello zoom Webtoon predefinito</string>
-    <string name="crop_pages">Taglia pagina</string>
+    <string name="crop_pages">Ritaglia le pagine</string>
     <string name="unpin">Rimuovi</string>
-    <string name="source_unpinned">Fonte sbloccata</string>
-    <string name="sources_unpinned">Fonti Sbloccate</string>
+    <string name="source_unpinned">Fonte rimossa</string>
+    <string name="sources_unpinned">Fonti rimosse</string>
     <string name="tracker_debug_info_summary">Informazioni di debug sui controlli in background per i nuovi capitoli</string>
     <string name="location">Posizione</string>
     <string name="chapters_deleted_pattern">Rimosso %1$s, cancellato %2$s</string>
@@ -858,4 +858,5 @@
     <string name="manga_restricted_description">Questo manga non è disponibile per la lettura da questa fonte. Prova a cercarlo in altre fonti o aprilo in un browser per maggiori informazioni</string>
     <string name="no_chapters_in_manga">Questo manga non contiene capitoli</string>
     <string name="telegram_integration">Integrazione con Telegram</string>
+    <string name="chapters_load_failed">Errore nel caricamento della lista dei capitoli</string>
 </resources>
