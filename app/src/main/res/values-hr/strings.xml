@@ -44,12 +44,12 @@
     <string name="nothing_found">Ništa nije pronađeno</string>
     <string name="read">Čitaj</string>
     <string name="you_have_not_favourites_yet">Još nema favorita</string>
-    <string name="add_to_favourites">Označite ovo kao favorit</string>
+    <string name="add_to_favourites">Dodaj u favorite</string>
     <string name="add_new_category">Nova kategorija</string>
     <string name="add">Dodaj</string>
     <string name="save">Sačuvaj</string>
     <string name="share">Podijeli</string>
-    <string name="create_shortcut">Napravi prečicu…</string>
+    <string name="create_shortcut">Napravi prečicu</string>
     <string name="share_s">Podijeli %s</string>
     <string name="search">Pretraži</string>
     <string name="search_manga">Pretraži mangu</string>
@@ -266,7 +266,7 @@
     <string name="enable_logging">Omogući bilježenje</string>
     <string name="enable_logging_summary">Snimite neke radnje u svrhu otklanjanja pogrešaka. Nemojte ga uključivati ako niste sigurni što radite</string>
     <string name="show_suspicious_content">Prikaži sumnjiv sadržaj</string>
-    <string name="theme_name_dynamic">Dinamičan</string>
+    <string name="theme_name_dynamic">Dinamična</string>
     <string name="color_theme">Shema boja</string>
     <string name="show_in_grid_view">Prikaži u mrežnom prikazu</string>
     <string name="theme_name_miku">Miku</string>
@@ -474,7 +474,7 @@
     <string name="file_not_found">Datoteka nije pronađena</string>
     <string name="data_restored_success">Svi podaci su vraćeni</string>
     <string name="data_restored_with_errors">Podaci su vraćeni, ali ima grešaka</string>
-    <string name="backup_information">Možete stvoriti sigurnosnu kopiju svoje povijesti i favorita i vratiti je</string>
+    <string name="backup_information">Možete stvoriti sigurnosnu kopiju svoje povijesti i favorita i obnoviti je</string>
     <string name="yesterday">Jučer</string>
     <string name="long_ago">Davno</string>
     <string name="data_restored">Vraćeno</string>
@@ -782,4 +782,24 @@
     <string name="global_search">Globalna pretraga</string>
     <string name="search_everywhere">Traži svuda</string>
     <string name="badges_in_lists">Značke u popisima</string>
+    <string name="nsfw_16">16+</string>
+    <string name="theme_name_expressive">Ekspresivna (test)</string>
+    <string name="chapter_volume_number">Svezak %1$s Poglavlje %2$s</string>
+    <string name="chapter_number">Poglavlje %s</string>
+    <string name="unnamed_chapter">Neimenovano poglavlje</string>
+    <string name="search_disabled_sources">Pretraži deaktivirane izvore</string>
+    <string name="error_details">Detalji greške</string>
+    <string name="error_disclaimer_manga">Pokušaj otvoriti manga u web pregledniku kako bi provjerio/la je li dostupan na izvornom mjestu.</string>
+    <string name="error_disclaimer_app_outdated">Izgleda da je tvoja Kotatsu verzija zastarjela. Instaliraj najnoviju verziju za dobivanje svih dostupnih ispravki.</string>
+    <string name="link_to_manga_in_app">Poveznica na manga u Kotatsu</string>
+    <string name="link_to_manga_on_s">Poveznica na manga na %s</string>
+    <string name="error_disclaimer_report">Pošalji izvještaj o grešci programerima. To će nam pomoći da istražimo i ispravimo problem.</string>
+    <string name="clear_browser_data">Izbriši podatke iz preglednika</string>
+    <string name="clear_browser_data_summary">Izbriši podatke iz preglednika poput predmemorije i kolačića. Upozorenje: Autorizacija na izvorima mange može postati nevažeća</string>
+    <string name="no_write_permission_to_file">Nema dozvolu za pisanje u datoteku</string>
+    <string name="exclude_nsfw_from_suggestions_summary">Manga za odrasle se neće prikazivati u prijedlozima. Ova opcija možda neće točno funkcionirati s nekim izvorima</string>
+    <string name="include_disabled_sources">Uključi deaktivirane izvore</string>
+    <string name="suggestions_disabled_sources_summary">Prikaži prijedloge iz svih izvora mange, uključujući deaktivirane</string>
+    <string name="tags_warnings">Istakni opasne žanrove</string>
+    <string name="tags_warnings_summary">Istakni žanrove koji bi mogli biti neprikladni za većinu korisnika</string>
 </resources>
