@@ -856,4 +856,5 @@
     <string name="manga_restricted_description">Ce manga n’est pas disponible à la lecture sur cette source. Essaie de le chercher dans d’autres sources ou ouvre-le dans un navigateur pour plus d’informations</string>
     <string name="no_chapters_in_manga">Ce manga ne contient aucun chapitre</string>
     <string name="chapters_load_failed">Échec du chargement de la liste des chapitres</string>
+    <string name="telegram_integration">Intégration Telegram</string>
 </resources>
