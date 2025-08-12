@@ -647,10 +647,10 @@
     <string name="chapters_read">Capitoli letti</string>
     <string name="chapters_left">Capitoli rimasti</string>
     <string name="default_webtoon_zoom_out">Riduzione dello zoom Webtoon predefinito</string>
-    <string name="crop_pages">Ritagliare le pagine</string>
-    <string name="unpin">Sblocca</string>
-    <string name="source_unpinned">Fonte non individuata</string>
-    <string name="sources_unpinned">Fonti non individuate</string>
+    <string name="crop_pages">Taglia pagina</string>
+    <string name="unpin">Rimuovi</string>
+    <string name="source_unpinned">Fonte sbloccata</string>
+    <string name="sources_unpinned">Fonti Sbloccate</string>
     <string name="tracker_debug_info_summary">Informazioni di debug sui controlli in background per i nuovi capitoli</string>
     <string name="location">Posizione</string>
     <string name="chapters_deleted_pattern">Rimosso %1$s, cancellato %2$s</string>
