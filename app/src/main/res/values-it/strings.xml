@@ -857,4 +857,5 @@
     <string name="unavailable">Non disponibile</string>
     <string name="manga_restricted_description">Questo manga non è disponibile per la lettura da questa fonte. Prova a cercarlo in altre fonti o aprilo in un browser per maggiori informazioni</string>
     <string name="no_chapters_in_manga">Questo manga non contiene capitoli</string>
+    <string name="telegram_integration">Integrazione con Telegram</string>
 </resources>
