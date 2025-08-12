@@ -65,7 +65,7 @@
     <string name="app_update_available">Uma nova versão do app está disponível</string>
     <string name="open_in_browser">Abrir no navegador da web</string>
     <string name="notifications">Notificações</string>
-    <string name="new_chapters">Capítulos novos</string>
+    <string name="new_chapters">Novos capítulos</string>
     <string name="download">Download</string>
     <string name="notifications_settings">Configurações das notificações</string>
     <string name="light_indicator">Indicador LED</string>
@@ -330,7 +330,7 @@
     <string name="import_will_start_soon">A importação começará em breve</string>
     <string name="feed">Fluxo</string>
     <string name="manga_error_description_pattern">Detalhes do erro:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Tente &lt;a href=%2$s&gt;abra a página do mangá em um navegador da web&lt;/a&gt; para garantir que o mesmo esteja disponível em sua fonte&lt;br&gt;2. Se estiver disponível, envie um relatório de erro para os desenvolvedores.</string>
-    <string name="reader_control_ltr_summary">Tocar a borda direita ou pressionar a tecla direita, sempre mudará para a próxima página.</string>
+    <string name="reader_control_ltr_summary">Não ajustar a direção da mudança de página no modo de editor, por exemplo, pressionar a tecla direita muda sempre para a página seguinte. Esta opção só afeta os dispositivos de hardware de entrada</string>
     <string name="reader_control_ltr">Controle ergonômico do leitor</string>
     <string name="discard">Descartar</string>
     <string name="language">Idioma</string>
@@ -836,4 +836,7 @@
     <string name="book_effect">Fundo amarelaso (filtro de luz azul)</string>
     <string name="local_storage_cleanup">Limpeza do armazenamento local</string>
     <string name="packup_creation_failed">Falha ao criar backup</string>
+    <string name="main_screen">Ecrã principal</string>
+    <string name="main_screen_fab">Mostrar botão flutuante \"Continuar\"</string>
+    <string name="discord_token">Código do Discord</string>
 </resources>
