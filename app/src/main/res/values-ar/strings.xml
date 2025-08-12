@@ -794,4 +794,17 @@
     <string name="global_search">البحث العالمي</string>
     <string name="search_everywhere">البحث في كل مكان</string>
     <string name="badges_in_lists">الشارات في القوائم</string>
+    <string name="nsfw_16">16+</string>
+    <string name="reader_navigation_inverted">عكس التنقل اثناء التصفح</string>
+    <string name="reader_navigation_inverted_summary">عكس اتجاه زر التحكم في الصوت ومفتاح التنقل الاتجاهي في الأجهزة (يسار/أعلى/أسفل/يمين)</string>
+    <string name="clear_browser_data">مسح بيانات المتصفح</string>
+    <string name="clear_browser_data_summary">مسح بيانات المتصفح، مثل ذاكرة التخزين المؤقت وملفات تعريف الارتباط. تحذير: قد يصبح التفويض في مصادر المانجا غير صالح.</string>
+    <string name="no_write_permission_to_file">ليس لديك صلاحية لكتابة ملف.</string>
+    <string name="exclude_nsfw_from_suggestions_summary">لن تظهر المانغا المخصصة للبالغين في الاقتراحات. قد لا يعمل هذا الخيار بدقة مع بعض المصادر.</string>
+    <string name="include_disabled_sources">"شمل المصادر  المعطلة."</string>
+    <string name="suggestions_disabled_sources_summary">"اضهار الاقتراحات من كل مصادر المانقا  شامل المعطلين."</string>
+    <string name="tags_warnings">­ابراز التصنيفات الخطيرة</string>
+    <string name="tags_warnings_summary">ابراز التصنيفات التي قد تكون غير مناسبة لغالبية المستخدين.</string>
+    <string name="error_non_file_uri">لا يمكن استخدام المسار المحدد لأنه لا يشير إلى ملف أو دليل.</string>
+    <string name="manga_override_hint">ستؤثر هذه التغييرات على كيفية عرض المانجا في التطبيق.</string>
 </resources>
