@@ -5,18 +5,20 @@ import android.accounts.AccountAuthenticatorResponse
 import android.accounts.AccountManager
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentResultListener
-import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BaseActivity
@@ -31,12 +33,19 @@ import org.koitharu.kotatsu.databinding.ActivitySyncAuthBinding
 import org.koitharu.kotatsu.sync.data.SyncSettings
 import org.koitharu.kotatsu.sync.domain.SyncAuthResult
 
+private const val PAGE_EMAIL = 0
+private const val PAGE_PASSWORD = 1
+private const val PASSWORD_MIN_LENGTH = 4
+
 @AndroidEntryPoint
-class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickListener, FragmentResultListener {
+class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickListener, FragmentResultListener,
+	DefaultTextWatcher {
 
 	private var accountAuthenticatorResponse: AccountAuthenticatorResponse? = null
 	private var resultBundle: Bundle? = null
 	private val pageBackCallback = PageBackCallback()
+
+	private val regexEmail = Regex("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", RegexOption.IGNORE_CASE)
 
 	private val viewModel by viewModels<SyncAuthViewModel>()
 
@@ -46,14 +55,11 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		accountAuthenticatorResponse =
 			intent.getParcelableExtraCompat(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)
 		accountAuthenticatorResponse?.onRequestContinued()
-		viewBinding.buttonCancel.setOnClickListener(this)
 		viewBinding.buttonNext.setOnClickListener(this)
 		viewBinding.buttonBack.setOnClickListener(this)
-		viewBinding.buttonDone.setOnClickListener(this)
-		viewBinding.layoutProgress.setOnClickListener(this)
 		viewBinding.buttonSettings.setOnClickListener(this)
-		viewBinding.editEmail.addTextChangedListener(EmailTextWatcher(viewBinding.buttonNext))
-		viewBinding.editPassword.addTextChangedListener(PasswordTextWatcher(viewBinding.buttonDone))
+		viewBinding.editEmail.addTextChangedListener(this)
+		viewBinding.editPassword.addTextChangedListener(this)
 
 		onBackPressedDispatcher.addCallback(pageBackCallback)
 
@@ -65,17 +71,25 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		}
 
 		supportFragmentManager.setFragmentResultListener(SyncHostDialogFragment.REQUEST_KEY, this, this)
-		pageBackCallback.update()
+		if (savedInstanceState == null) {
+			setPage(PAGE_EMAIL)
+		} else {
+			pageBackCallback.update()
+		}
 	}
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
 		val barsInsets = insets.systemBarsInsets
-		val basePadding = resources.getDimensionPixelOffset(R.dimen.screen_padding)
-		viewBinding.root.setPadding(
-			barsInsets.left + basePadding,
-			barsInsets.top + basePadding,
-			barsInsets.right + basePadding,
-			barsInsets.bottom + basePadding,
+		viewBinding.root.updatePadding(top = barsInsets.top)
+		viewBinding.dockedToolbarChild.updateLayoutParams<MarginLayoutParams> {
+			leftMargin = barsInsets.left
+			rightMargin = barsInsets.right
+			bottomMargin = barsInsets.bottom
+		}
+		val basePadding = viewBinding.layoutContent.paddingBottom
+		viewBinding.layoutContent.updatePadding(
+			left = barsInsets.left + basePadding,
+			right = barsInsets.right + basePadding,
 		)
 		return insets.consumeAllSystemBarsInsets()
 	}
@@ -88,22 +102,18 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 			}
 
 			R.id.button_next -> {
-				viewBinding.groupLogin.isVisible = false
-				viewBinding.groupPassword.isVisible = true
-				pageBackCallback.update()
+				setPage(PAGE_PASSWORD)
 				viewBinding.editPassword.requestFocus()
 			}
 
 			R.id.button_back -> {
-				viewBinding.groupPassword.isVisible = false
-				viewBinding.groupLogin.isVisible = true
-				pageBackCallback.update()
+				setPage(PAGE_EMAIL)
 				viewBinding.editEmail.requestFocus()
 			}
 
 			R.id.button_done -> {
 				viewModel.obtainToken(
-					email = viewBinding.editEmail.text.toString(),
+					email = viewBinding.editEmail.text.toString().trim(),
 					password = viewBinding.editPassword.text.toString(),
 				)
 			}
@@ -128,12 +138,39 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		super.finish()
 	}
 
+	override fun afterTextChanged(s: Editable?) {
+		val isLoading = viewModel.isLoading.value
+		val email = viewBinding.editEmail.text?.trim()?.toString()
+		val password = viewBinding.editPassword.text?.toString()
+		viewBinding.buttonNext.isEnabled = !isLoading && !email.isNullOrEmpty() && regexEmail.matches(email)
+		viewBinding.buttonDone.isEnabled = !isLoading && password != null && password.length >= PASSWORD_MIN_LENGTH
+	}
+
 	private fun onLoadingStateChanged(isLoading: Boolean) {
-		if (isLoading == viewBinding.layoutProgress.isVisible) {
-			return
+		with(viewBinding) {
+			progressBar.isInvisible = !isLoading
+			editEmail.isEnabled = !isLoading
+			editPassword.isEnabled = !isLoading
 		}
-		TransitionManager.beginDelayedTransition(viewBinding.root, Fade())
-		viewBinding.layoutProgress.isVisible = isLoading
+		afterTextChanged(null)
+		pageBackCallback.update()
+	}
+
+	private fun setPage(page: Int) {
+		with(viewBinding) {
+			val currentPage = if (layoutEmail.isVisible) PAGE_EMAIL else PAGE_PASSWORD
+			if (currentPage != page) {
+				val transition = MaterialSharedAxis(MaterialSharedAxis.X, page > currentPage)
+				TransitionManager.beginDelayedTransition(layoutContent, transition)
+			}
+			buttonNext.isVisible = page == PAGE_EMAIL
+			buttonBack.isVisible = page == PAGE_PASSWORD
+			buttonSettings.isVisible = page == PAGE_EMAIL
+			buttonDone.isVisible = page == PAGE_PASSWORD
+			buttonCancel.isVisible = page == PAGE_EMAIL
+			layoutEmail.isVisible = page == PAGE_EMAIL
+			layoutPassword.isVisible = page == PAGE_PASSWORD
+		}
 		pageBackCallback.update()
 	}
 
@@ -174,43 +211,16 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		super.finishAfterTransition()
 	}
 
-	private class EmailTextWatcher(
-		private val button: Button,
-	) : TextWatcher {
-
-		private val regexEmail = Regex("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", RegexOption.IGNORE_CASE)
-
-		override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-
-		override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
-
-		override fun afterTextChanged(s: Editable?) {
-			val text = s?.toString()
-			button.isEnabled = !text.isNullOrEmpty() && regexEmail.matches(text)
-		}
-	}
-
-	private class PasswordTextWatcher(
-		private val button: Button,
-	) : DefaultTextWatcher {
-
-		override fun afterTextChanged(s: Editable?) {
-			val text = s?.toString()
-			button.isEnabled = text != null && text.length >= 4
-		}
-	}
-
 	private inner class PageBackCallback : OnBackPressedCallback(false) {
 
 		override fun handleOnBackPressed() {
-			viewBinding.groupLogin.isVisible = true
-			viewBinding.groupPassword.isVisible = false
+			setPage(PAGE_EMAIL)
 			viewBinding.editEmail.requestFocus()
 			update()
 		}
 
 		fun update() {
-			isEnabled = !viewBinding.layoutProgress.isVisible && viewBinding.groupPassword.isVisible
+			isEnabled = !viewBinding.progressBar.isVisible && viewBinding.editPassword.isVisible
 		}
 	}
 }

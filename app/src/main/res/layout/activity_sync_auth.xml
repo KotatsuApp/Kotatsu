@@ -1,227 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical"
-	android:padding="@dimen/screen_padding">
+	android:orientation="vertical">
 
 	<TextView
 		android:id="@+id/textView_title"
-		android:layout_width="0dp"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:drawablePadding="16dp"
+		android:layout_marginHorizontal="@dimen/screen_padding"
+		android:layout_marginTop="24dp"
+		android:drawablePadding="@dimen/screen_padding"
 		android:gravity="center_horizontal"
 		android:text="@string/sync_title"
 		android:textAppearance="?textAppearanceHeadline5"
 		app:drawableTint="?colorPrimary"
-		app:drawableTopCompat="@drawable/ic_sync"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+		app:drawableTopCompat="@drawable/ic_sync" />
 
-	<ImageButton
-		android:id="@+id/button_settings"
-		android:layout_width="wrap_content"
+	<com.google.android.material.progressindicator.LinearProgressIndicator
+		android:id="@+id/progressBar"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="?selectableItemBackgroundBorderless"
-		android:contentDescription="@string/settings"
-		android:tooltipText="@string/settings"
-		android:padding="4dp"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		app:srcCompat="@drawable/ic_settings" />
+		android:layout_marginHorizontal="@dimen/screen_padding"
+		android:layout_marginTop="@dimen/screen_padding"
+		android:max="100"
+		android:visibility="invisible" />
 
-	<TextView
-		android:id="@+id/textView_subtitle"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="12dp"
-		android:gravity="center_horizontal"
-		android:text="@string/email_enter_hint"
-		android:textAppearance="?textAppearanceSubtitle1"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textView_title" />
+	<ScrollView
+		android:id="@+id/scrollView"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1">
 
-	<com.google.android.material.textfield.TextInputLayout
-		android:id="@+id/layout_email"
-		style="?textInputOutlinedStyle"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="30dp"
-		app:errorIconDrawable="@null"
-		app:helperText="@string/sync_auth_hint"
-		app:hintEnabled="false"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textView_subtitle">
-
-		<com.google.android.material.textfield.TextInputEditText
-			android:id="@+id/edit_email"
+		<LinearLayout
+			android:id="@+id/layout_content"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:autofillHints="username"
-			android:imeOptions="actionDone"
-			android:inputType="textEmailAddress"
-			android:singleLine="true"
-			android:textSize="16sp"
-			tools:text="test@mail.com" />
+			android:orientation="vertical"
+			android:paddingHorizontal="@dimen/screen_padding"
+			android:paddingBottom="@dimen/screen_padding">
 
-	</com.google.android.material.textfield.TextInputLayout>
+			<TextView
+				android:id="@+id/textView_subtitle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/sync_auth_hint"
+				android:textAppearance="?textAppearanceBodySmall" />
 
-	<Button
-		android:id="@+id/button_cancel"
-		style="?materialButtonOutlinedStyle"
-		android:layout_width="wrap_content"
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/layout_email"
+				style="?textInputOutlinedStyle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="30dp"
+				app:errorIconDrawable="@null">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/edit_email"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:autofillHints="username"
+					android:hint="@string/email"
+					android:imeOptions="actionDone"
+					android:inputType="textEmailAddress"
+					android:singleLine="true"
+					android:textSize="16sp" />
+
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/layout_password"
+				style="?textInputOutlinedStyle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="30dp"
+				app:endIconMode="password_toggle"
+				app:errorIconDrawable="@null">
+
+				<com.google.android.material.textfield.TextInputEditText
+					android:id="@+id/edit_password"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:autofillHints="password"
+					android:hint="@string/password"
+					android:imeOptions="actionDone"
+					android:inputType="textPassword"
+					android:maxLength="24"
+					android:singleLine="true"
+					android:textSize="16sp" />
+
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<Button
+				android:id="@+id/button_settings"
+				style="?borderlessButtonStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="4dp"
+				android:text="@string/settings" />
+
+		</LinearLayout>
+
+	</ScrollView>
+
+	<com.google.android.material.dockedtoolbar.DockedToolbarLayout
+		android:id="@+id/docked_toolbar"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@android:string/cancel"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent" />
+		android:fitsSystemWindows="false">
 
-	<Button
-		android:id="@+id/button_next"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:enabled="false"
-		android:text="@string/next"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent" />
-
-	<TextView
-		android:id="@+id/textView_subtitle_2"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="12dp"
-		android:gravity="center_horizontal"
-		android:text="@string/enter_password"
-		android:textAppearance="?textAppearanceSubtitle1"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textView_title" />
-
-	<com.google.android.material.textfield.TextInputLayout
-		android:id="@+id/layout_password"
-		style="?textInputOutlinedStyle"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="30dp"
-		app:endIconMode="password_toggle"
-		app:errorIconDrawable="@null"
-		app:hintEnabled="false"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textView_subtitle_2">
-
-		<com.google.android.material.textfield.TextInputEditText
-			android:id="@+id/edit_password"
+		<FrameLayout
+			android:id="@+id/docked_toolbar_child"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:autofillHints="password"
-			android:imeOptions="actionDone"
-			android:inputType="textPassword"
-			android:maxLength="24"
-			android:singleLine="true"
-			android:textSize="16sp"
-			tools:text="qwerty" />
+			android:layout_height="@dimen/m3_comp_toolbar_docked_container_height">
 
-	</com.google.android.material.textfield.TextInputLayout>
+			<Button
+				android:id="@+id/button_cancel"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical|start"
+				android:text="@android:string/cancel" />
 
-	<Button
-		android:id="@+id/button_back"
-		style="?materialButtonOutlinedStyle"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/back"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintStart_toStartOf="parent" />
+			<Button
+				android:id="@+id/button_back"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical|start"
+				android:text="@string/back"
+				android:visibility="gone" />
 
-	<Button
-		android:id="@+id/button_done"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:enabled="false"
-		android:text="@string/done"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent" />
+			<Button
+				android:id="@+id/button_next"
+				style="?materialButtonTonalStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical|end"
+				android:enabled="false"
+				android:text="@string/next" />
 
-	<androidx.constraintlayout.widget.Group
-		android:id="@+id/group_login"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:constraint_referenced_ids="textView_subtitle,button_cancel,button_next,layout_email" />
+			<Button
+				android:id="@+id/button_done"
+				style="?materialButtonTonalStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical|end"
+				android:enabled="false"
+				android:text="@string/done"
+				android:visibility="gone" />
 
-	<androidx.constraintlayout.widget.Group
-		android:id="@+id/group_password"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:visibility="gone"
-		app:constraint_referenced_ids="textView_subtitle_2,button_back,button_done,layout_password" />
+		</FrameLayout>
+	</com.google.android.material.dockedtoolbar.DockedToolbarLayout>
 
-	<androidx.constraintlayout.widget.Barrier
-		android:id="@+id/barrier_input"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:barrierDirection="bottom"
-		app:constraint_referenced_ids="layout_email,layout_password" />
-
-	<View
-		android:id="@+id/view_line"
-		android:layout_width="4dp"
-		android:layout_height="0dp"
-		android:background="@drawable/bg_chip"
-		android:backgroundTint="?colorError"
-		app:layout_constraintBottom_toBottomOf="@id/textView_hint_body"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="@id/textView_hint_title" />
-
-	<TextView
-		android:id="@+id/textView_hint_title"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="12dp"
-		android:layout_marginTop="32dp"
-		android:drawablePadding="10dp"
-		android:gravity="center_vertical"
-		android:text="@string/unstable_feature"
-		android:textAppearance="?textAppearanceTitleMedium"
-		app:drawableStartCompat="@drawable/ic_alert_outline"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toEndOf="@id/view_line"
-		app:layout_constraintTop_toBottomOf="@id/barrier_input" />
-
-	<TextView
-		android:id="@+id/textView_hint_body"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
-		android:paddingBottom="6dp"
-		android:text="@string/unstable_feature_summary"
-		android:textAppearance="?textAppearanceBodyMedium"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="@id/textView_hint_title"
-		app:layout_constraintTop_toBottomOf="@id/textView_hint_title" />
-
-	<FrameLayout
-		android:id="@+id/layout_progress"
-		android:layout_width="0dp"
-		android:layout_height="0dp"
-		android:background="?android:windowBackground"
-		android:visibility="gone"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textView_title">
-
-		<com.google.android.material.progressindicator.CircularProgressIndicator
-			android:id="@+id/circularProgressIndicator"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:indeterminate="true" />
-
-	</FrameLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
