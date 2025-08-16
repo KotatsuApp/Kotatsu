@@ -129,6 +129,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 
 		val exitCallback = ExitCallback(this, viewBinding.container)
 		onBackPressedDispatcher.addCallback(exitCallback)
+		val searchViewCollapseHandler = SearchViewCollapseHandlerCallback(viewBinding.searchView)
+		onBackPressedDispatcher.addCallback(this, searchViewCollapseHandler)
 		onBackPressedDispatcher.addCallback(navigationDelegate)
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
