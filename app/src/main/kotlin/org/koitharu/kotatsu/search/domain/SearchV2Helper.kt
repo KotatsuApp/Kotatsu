@@ -76,7 +76,7 @@ class SearchV2Helper @AssistedInject constructor(
 
 	private fun MutableList<Manga>.postFilter(query: String, kind: SearchKind) {
 		if (settings.isNsfwContentDisabled) {
-			removeAll { it.isNsfw }
+			removeAll { it.isNsfw() }
 		}
 		when (kind) {
 			SearchKind.TITLE -> retainAll { m ->

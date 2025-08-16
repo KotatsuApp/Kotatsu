@@ -35,7 +35,7 @@ class ExploreRepository @Inject constructor(
 			val details = runCatchingCancellable {
 				mangaRepositoryFactory.create(manga.source).getDetails(manga)
 			}.getOrNull() ?: continue
-			if ((settings.isSuggestionsExcludeNsfw && details.isNsfw) || details in tagsBlacklist) {
+			if ((settings.isSuggestionsExcludeNsfw && details.isNsfw()) || details in tagsBlacklist) {
 				continue
 			}
 			return details
@@ -55,7 +55,7 @@ class ExploreRepository @Inject constructor(
 			val details = runCatchingCancellable {
 				mangaRepositoryFactory.create(manga.source).getDetails(manga)
 			}.getOrNull() ?: continue
-			if ((skipNsfw && details.isNsfw) || details in tagsBlacklist) {
+			if ((skipNsfw && details.isNsfw()) || details in tagsBlacklist) {
 				continue
 			}
 			return details
@@ -80,7 +80,7 @@ class ExploreRepository @Inject constructor(
 			filter = MangaListFilter(tags = setOfNotNull(tag)),
 		).asArrayList()
 		if (settings.isSuggestionsExcludeNsfw) {
-			list.removeAll { it.isNsfw }
+			list.removeAll { it.isNsfw() }
 		}
 		if (blacklist.isNotEmpty()) {
 			list.removeAll { manga -> manga in blacklist }

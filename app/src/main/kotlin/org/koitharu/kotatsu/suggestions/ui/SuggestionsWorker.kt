@@ -229,7 +229,7 @@ class SuggestionsWorker @AssistedInject constructor(
 					if (details.rating > 0 && details.rating < RATING_MIN) {
 						continue
 					}
-					if (details.isNsfw && (appSettings.isSuggestionsExcludeNsfw || appSettings.isNsfwContentDisabled)) {
+					if (details.isNsfw() && (appSettings.isSuggestionsExcludeNsfw || appSettings.isNsfwContentDisabled)) {
 						continue
 					}
 					if (details in tagsBlacklist) {
@@ -277,7 +277,7 @@ class SuggestionsWorker @AssistedInject constructor(
 			filter = MangaListFilter(tags = setOfNotNull(tag)),
 		).asArrayList()
 		if (appSettings.isSuggestionsExcludeNsfw) {
-			list.removeAll { it.isNsfw }
+			list.removeAll { it.isNsfw() }
 		}
 		if (blacklist.isNotEmpty()) {
 			list.removeAll { manga -> manga in blacklist }
