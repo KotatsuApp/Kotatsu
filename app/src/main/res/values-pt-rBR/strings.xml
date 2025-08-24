@@ -838,4 +838,22 @@
     <string name="main_screen_fab">Mostrar botão Continuar flutuante</string>
     <string name="main_screen_fab_summary">Permite continuar a leitura com um clique. Este botão não aparecerá no modo anônimo ou quando o histórico estiver vazio</string>
     <string name="error_corrupted_zip">Arquivo ZIP corrompido (%s)</string>
+    <string name="discord_token_hint">Cole seu Token do Discord aqui</string>
+    <string name="discord_rpc_summary">Mostra seu status de leitura no Discord</string>
+    <string name="obtain">Obtenha</string>
+    <string name="discord_rpc_description">Lendo mangá no Kotatsu - um aplicativo de leitura de mangá</string>
+    <string name="reading_s">Lendo %s</string>
+    <string name="rpc_skip_nsfw_summary">Não usar RPC para conteúdo adulto</string>
+    <string name="invalid_token">Token inválido: %s</string>
+    <string name="show_floating_control_button">Mostrar botão de controle flutuante</string>
+    <string name="unavailable">Indisponível</string>
+    <string name="manga_restricted_description">Este mangá não está disponível para leitura nessa fonte. Tente pesquisar por ele em outras fontes ou abrir em um navegador para mais informação</string>
+    <string name="no_chapters_in_manga">Este mangá não contém nenhum capítulo</string>
+    <string name="chapters_load_failed">Falha ao carregar lista de capítulos</string>
+    <string name="telegram_integration">Integração com Telegram</string>
+    <string name="discord_token">Token do Discord</string>
+    <string name="discord_token_summary">Insira seu Token do Discord para habilitar a Rich Presence</string>
+    <string name="discord_rpc">Discord Rich Presence</string>
+    <string name="discord_token_description">Insira seu Token do Discord ou clique em %s para obtê-lo usando o navegador</string>
+    <string name="read_on_s">Leia em %s</string>
 </resources>
