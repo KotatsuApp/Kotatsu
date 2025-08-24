@@ -794,7 +794,7 @@
     <string name="unnamed_chapter">Безіменний розділ</string>
     <string name="search_disabled_sources">Пошук за відключеними джерелами</string>
     <string name="error_details">Подробиці помилки</string>
-    <string name="book_effect">Жовтуватий фон (фільтр синього)</string>
+    <string name="book_effect">Жовтуватий фон (синій фільтр)</string>
     <string name="theme_name_totoro">Тоторо</string>
     <string name="theme_name_itsuka">Іцука</string>
     <string name="reader_multitask_summary">Дозволяє тримати відкритими кілька читалок із різною манґою одночасно</string>
@@ -804,7 +804,7 @@
     <string name="collapse_long_description">Згорнути довгий опис</string>
     <string name="adblock_summary">Блокування реклами у вбудованому браузері (бета)</string>
     <string name="adblock">Блокувати рекламу у браузері</string>
-    <string name="expand">Розширити</string>
+    <string name="expand">Розгорнути</string>
     <string name="collapse">Згорнути</string>
     <string name="changelog_summary">Історія змін для нещодавно випущених версій</string>
     <string name="changelog">Журнал змін</string>
@@ -841,21 +841,22 @@
     <string name="main_screen_fab">Показати плаваючу кнопку «Продовжити»</string>
     <string name="main_screen_fab_summary">Дозволяє продовжити читання одним кліком. Ця кнопка не з\'являється в режимі інкогніто або коли історія порожня</string>
     <string name="error_corrupted_zip">Пошкоджений архів ZIP (%s)</string>
-    <string name="discord_rpc">Discord Rich Presence</string>
+    <string name="discord_rpc">Багатий на присутність у Discord</string>
     <string name="discord_token">Токен Discord</string>
     <string name="discord_token_summary">Введіть свій токен Discord, щоб увімкнути Rich Presence</string>
     <string name="discord_token_description">Введіть свій Discord токен або натисніть %s, щоб отримати його за допомогою браузера</string>
     <string name="discord_token_hint">Вставте тут свій токен Discord</string>
-    <string name="discord_rpc_summary">Показувати свій статус читання в Discord</string>
+    <string name="discord_rpc_summary">Покажіть свій статус читання в Discord</string>
     <string name="obtain">Отримати</string>
     <string name="discord_rpc_description">Читання манги на Kotatsu - програма для читання манґи</string>
     <string name="reading_s">Читання %s</string>
     <string name="read_on_s">Читати на %s</string>
-    <string name="rpc_skip_nsfw_summary">Не використовувати RPC для контенту для дорослих</string>
+    <string name="rpc_skip_nsfw_summary">Не використовуйте RPC для контенту для дорослих</string>
     <string name="invalid_token">Недійсний токен: %s</string>
     <string name="show_floating_control_button">Показати плаваючу кнопку керування</string>
     <string name="unavailable">Недоступно</string>
     <string name="manga_restricted_description">Ця манга недоступна для читання в цьому джерелі. Спробуйте знайти її в інших джерелах або відкрити в браузері, щоб отримати додаткову інформацію</string>
     <string name="no_chapters_in_manga">Ця манга не містить жодних розділів</string>
     <string name="chapters_load_failed">Не вдалося завантажити список розділів</string>
+    <string name="telegram_integration">Інтеграція з Telegram</string>
 </resources>
