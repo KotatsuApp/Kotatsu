@@ -166,7 +166,7 @@
     <string name="network_unavailable">Không có mạng</string>
     <string name="network_unavailable_hint">Bật wifi hoặc dữ liệu di động để đọc truyện trực tuyến</string>
     <string name="prefetch_content">Tải trước nội dung</string>
-    <string name="mark_as_current">Đánh dấu hiện tại</string>
+    <string name="mark_as_current">Đánh dấu là hiện tại đã đọc xong</string>
     <string name="enable_logging_summary">Lưu một số thông tin cho mục đích gỡ lỗi. Đừng bật nó nếu bạn không biết mình đang làm gì</string>
     <string name="show_suspicious_content">Hiển thị nội dung khả nghi</string>
     <string name="theme_name_dynamic">Động</string>
