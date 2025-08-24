@@ -112,6 +112,10 @@ class ReaderViewModel @Inject constructor(
 	private var pageSaveJob: Job? = null
 	private var bookmarkJob: Job? = null
 	private var stateChangeJob: Job? = null
+	
+	// Track chapter transition state for toast timing
+	private var lastReadChapterId: Long? = null
+	private var lastReadBranch: String? = null
 
 	init {
 		mangaDetails.value = intent.manga?.let { MangaDetails(it) }
@@ -317,29 +321,44 @@ class ReaderViewModel @Inject constructor(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			val prevState = readingState.requireValue()
-			val newChapterId = if (delta != 0) {
-				val mangaDetailsValue = mangaDetails.requireValue()
-				val allChapters = mangaDetailsValue.allChapters
-				var index = allChapters.indexOfFirst { x -> x.id == prevState.chapterId }
-				if (index < 0) {
-					return@launchLoadingJob
-				}
-
-				// Simple chapter switching - ChaptersLoader will handle fallback logic
-				index += delta
-				(allChapters.getOrNull(index) ?: return@launchLoadingJob).id
+			
+			if (delta == 0) {
+				// No change, just reload current chapter
+				content.value = ReaderContent(emptyList(), null)
+				chaptersLoader.loadSingleChapter(prevState.chapterId)
+				val newState = ReaderState(
+					chapterId = prevState.chapterId,
+					page = prevState.page,
+					scroll = prevState.scroll,
+				)
+				content.value = ReaderContent(chaptersLoader.snapshot(), newState)
+				saveCurrentState(newState)
 			} else {
-				prevState.chapterId
+				// Use fallback-aware chapter navigation for next/previous buttons
+				// This ensures consistent behavior with automatic navigation (swiping)
+				val mangaDetailsValue = mangaDetails.requireValue()
+				val isNext = delta > 0
+				
+				content.value = ReaderContent(emptyList(), null)
+				chaptersLoader.loadPrevNextChapter(mangaDetailsValue, prevState.chapterId, isNext)
+				
+				// The chapter loaded by loadPrevNextChapter might be different due to fallback
+				// Find the actual loaded chapter to update our state
+				val snapshot = chaptersLoader.snapshot()
+				val newChapterId = if (isNext) {
+					snapshot.lastOrNull()?.chapterId ?: prevState.chapterId
+				} else {
+					snapshot.firstOrNull()?.chapterId ?: prevState.chapterId
+				}
+				
+				val newState = ReaderState(
+					chapterId = newChapterId,
+					page = 0,
+					scroll = 0,
+				)
+				content.value = ReaderContent(snapshot, newState)
+				saveCurrentState(newState)
 			}
-			content.value = ReaderContent(emptyList(), null)
-			chaptersLoader.loadSingleChapter(newChapterId)
-			val newState = ReaderState(
-				chapterId = newChapterId,
-				page = if (delta == 0) prevState.page else 0,
-				scroll = if (delta == 0) prevState.scroll else 0,
-			)
-			content.value = ReaderContent(chaptersLoader.snapshot(), newState)
-			saveCurrentState(newState)
 		}
 	}
 
@@ -423,12 +442,8 @@ class ReaderViewModel @Inject constructor(
 						}
 						chaptersLoader.init(details)
 						
-						// Set up navigation event callback for branch change and gap notifications
-						chaptersLoader.setNavigationEventCallback { event ->
-							event.message?.let { message ->
-								onTranslationSwitched.call(message)
-							}
-						}
+						// Note: Navigation event callback is set up in init() for consistent handling
+						// We don't show toasts here as this would trigger during preloading
 						
 						val manga = details.toManga()
 						// obtain state
@@ -510,6 +525,22 @@ class ReaderViewModel @Inject constructor(
 		val currentBranch = chapter.branch
 		val (chapterIndex, chaptersTotal) = chaptersLoader.getChapterIndexInBranch(chapter.id) ?: (0 to 0)
 		
+		// Check if user has actually transitioned to a different chapter and show toast if branch changed
+		val chapterChanged = lastReadChapterId != null && lastReadChapterId != chapter.id
+		if (chapterChanged && lastReadBranch != null && lastReadBranch != currentBranch) {
+			// User has moved to a chapter in a different branch - show toast
+			val message = if (currentBranch != null) {
+				"Switched to \"$currentBranch\" translation"
+			} else {
+				"Switched to different translation"
+			}
+			onTranslationSwitched.call(message)
+		}
+		
+		// Update tracking variables for next transition
+		lastReadChapterId = chapter.id
+		lastReadBranch = currentBranch
+		
 		// Sync selected branch if fallback occurred
 		if (selectedBranch.value != currentBranch) {
 			selectedBranch.value = currentBranch
@@ -548,6 +579,7 @@ class ReaderViewModel @Inject constructor(
 		val ppc = 1f / chaptersCount
 		return ppc * chapterIndex + ppc * pagePercent
 	}
+
 
 	private fun observeIsWebtoonZoomEnabled() = settings.observeAsFlow(
 		key = AppSettings.KEY_WEBTOON_ZOOM,
@@ -626,12 +658,12 @@ class ReaderViewModel @Inject constructor(
 	 */
 	private fun handleChapterNavigationEvent(event: ChapterNavigationEvent) {
 		// If fallback occurred with a branch change, immediately update selected branch and save state
+		// Note: We don't show toast here as this is called during preloading
+		// Toast will be shown in notifyStateChanged when user actually starts reading the chapter
 		if (event.wasFallback && event.newBranch != null && event.newBranch != selectedBranch.value) {
 			selectedBranch.value = event.newBranch
 			// Immediately save current state to persist the branch change in history
 			saveCurrentState()
-			// Show notification to user about translation switch
-			onTranslationSwitched.call(event.newBranch)
 		}
 	}
 
