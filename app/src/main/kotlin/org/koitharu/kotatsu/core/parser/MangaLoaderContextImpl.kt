@@ -3,15 +3,10 @@ package org.koitharu.kotatsu.core.parser
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Base64
-import android.webkit.WebView
-import androidx.annotation.MainThread
 import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -22,11 +17,8 @@ import org.koitharu.kotatsu.core.exceptions.InteractiveActionRequiredException
 import org.koitharu.kotatsu.core.image.BitmapDecoderCompat
 import org.koitharu.kotatsu.core.network.MangaHttpClient
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
-import org.koitharu.kotatsu.core.network.webview.ContinuationResumeWebViewClient
+import org.koitharu.kotatsu.core.network.webview.WebViewExecutor
 import org.koitharu.kotatsu.core.prefs.SourceSettings
-import org.koitharu.kotatsu.core.util.ext.configureForParser
-import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
-import org.koitharu.kotatsu.core.util.ext.sanitizeHeaderValue
 import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.core.util.ext.toMimeType
 import org.koitharu.kotatsu.core.util.ext.use
@@ -37,25 +29,21 @@ import org.koitharu.kotatsu.parsers.config.MangaSourceConfig
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.network.UserAgents
 import org.koitharu.kotatsu.parsers.util.map
-import java.lang.ref.WeakReference
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 @Singleton
 class MangaLoaderContextImpl @Inject constructor(
 	@MangaHttpClient override val httpClient: OkHttpClient,
 	override val cookieJar: MutableCookieJar,
 	@ApplicationContext private val androidContext: Context,
+	private val webViewExecutor: WebViewExecutor,
 ) : MangaLoaderContext() {
 
-	private var webViewCached: WeakReference<WebView>? = null
 	private val webViewUserAgent by lazy { obtainWebViewUserAgent() }
-	private val jsMutex = Mutex()
 	private val jsTimeout = TimeUnit.SECONDS.toMillis(4)
 
 	@Deprecated("Provide a base url")
@@ -63,22 +51,7 @@ class MangaLoaderContextImpl @Inject constructor(
 	override suspend fun evaluateJs(script: String): String? = evaluateJs("", script)
 
 	override suspend fun evaluateJs(baseUrl: String, script: String): String? = withTimeout(jsTimeout) {
-		jsMutex.withLock {
-			withContext(Dispatchers.Main.immediate) {
-				val webView = obtainWebView()
-				if (baseUrl.isNotEmpty()) {
-					suspendCoroutine { cont ->
-						webView.webViewClient = ContinuationResumeWebViewClient(cont)
-						webView.loadDataWithBaseURL(baseUrl, " ", "text/html", null, null)
-					}
-				}
-				suspendCoroutine { cont ->
-					webView.evaluateJavascript(script) { result ->
-						cont.resume(result?.takeUnless { it == "null" })
-					}
-				}
-			}
-		}
+		webViewExecutor.evaluateJs(baseUrl, script)
 	}
 
 	override fun getDefaultUserAgent(): String = webViewUserAgent
@@ -119,27 +92,14 @@ class MangaLoaderContextImpl @Inject constructor(
 
 	override fun createBitmap(width: Int, height: Int): Bitmap = BitmapWrapper.create(width, height)
 
-	@MainThread
-	private fun obtainWebView(): WebView = webViewCached?.get() ?: WebView(androidContext).also {
-		it.configureForParser(null)
-		webViewCached = WeakReference(it)
-	}
-
 	private fun obtainWebViewUserAgent(): String {
 		val mainDispatcher = Dispatchers.Main.immediate
 		return if (!mainDispatcher.isDispatchNeeded(EmptyCoroutineContext)) {
-			obtainWebViewUserAgentImpl()
+			webViewExecutor.getDefaultUserAgent()
 		} else {
 			runBlocking(mainDispatcher) {
-				obtainWebViewUserAgentImpl()
+				webViewExecutor.getDefaultUserAgent()
 			}
-		}
+		} ?: UserAgents.FIREFOX_MOBILE
 	}
-
-	@MainThread
-	private fun obtainWebViewUserAgentImpl() = runCatching {
-		obtainWebView().settings.userAgentString.sanitizeHeaderValue()
-	}.onFailure { e ->
-		e.printStackTraceDebug()
-	}.getOrDefault(UserAgents.FIREFOX_MOBILE)
 }
