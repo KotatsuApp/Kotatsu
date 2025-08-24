@@ -407,6 +407,12 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isReaderKeepScreenOn: Boolean
 		get() = prefs.getBoolean(KEY_READER_SCREEN_ON, true)
 
+	val isTranslationFallbackEnabled: Boolean
+		get() = prefs.getBoolean(KEY_TRANSLATION_FALLBACK_ENABLED, true)
+
+	val isTranslationNotificationsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_TRANSLATION_SHOW_NOTIFICATIONS, true)
+
 	var readerColorFilter: ReaderColorFilter?
 		get() = runCatching {
 			ReaderColorFilter(
@@ -800,6 +806,8 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_DISCORD_RPC = "discord_rpc"
 		const val KEY_DISCORD_RPC_SKIP_NSFW = "discord_rpc_skip_nsfw"
 		const val KEY_DISCORD_TOKEN = "discord_token"
+		const val KEY_TRANSLATION_FALLBACK_ENABLED = "translation_fallback_enabled"
+		const val KEY_TRANSLATION_SHOW_NOTIFICATIONS = "translation_show_notifications"
 
 		// keys for non-persistent preferences
 		const val KEY_APP_VERSION = "app_version"

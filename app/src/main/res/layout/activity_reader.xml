@@ -109,6 +109,19 @@
 		tools:text="@string/loading_"
 		tools:visibility="visible" />
 
+	<org.koitharu.kotatsu.reader.ui.TranslationIndicatorView
+		android:id="@+id/translationIndicator"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top|center_horizontal"
+		android:layout_marginTop="60dp"
+		android:background="@drawable/bg_reader_indicator"
+		android:elevation="1000dp"
+		android:theme="@style/ThemeOverlay.Material3.Dark"
+		android:visibility="gone"
+		tools:text="@string/translation_switched_to"
+		tools:visibility="visible" />
+
 	<LinearLayout
 		android:id="@+id/layout_loading"
 		android:layout_width="wrap_content"

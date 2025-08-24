@@ -32,6 +32,12 @@
 		app:showAsAction="never" />
 
 	<item
+		android:id="@+id/action_translation_settings"
+		android:orderInCategory="45"
+		android:title="@string/translation_settings"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_scrobbling"
 		android:orderInCategory="50"
 		android:title="@string/tracking"

@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.getPreferredBranch
+import org.koitharu.kotatsu.reader.domain.TranslationFallbackManager
 import org.koitharu.kotatsu.core.nav.MangaIntent
 import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.os.AppShortcutManager
@@ -56,6 +57,7 @@ import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -79,7 +81,7 @@ class ReaderViewModel @Inject constructor(
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val bookmarksRepository: BookmarksRepository,
-	settings: AppSettings,
+	private val readerSettings: AppSettings,
 	private val pageLoader: PageLoader,
 	private val chaptersLoader: ChaptersLoader,
 	private val appShortcutManager: AppShortcutManager,
@@ -88,13 +90,14 @@ class ReaderViewModel @Inject constructor(
 	private val detectReaderModeUseCase: DetectReaderModeUseCase,
 	private val statsCollector: StatsCollector,
 	private val discordRpc: DiscordRpc,
+	private val translationFallbackManager: TranslationFallbackManager,
 	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
 	interactor: DetailsInteractor,
 	deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	downloadScheduler: DownloadWorker.Scheduler,
 	readerSettingsProducerFactory: ReaderSettings.Producer.Factory,
 ) : ChaptersPagesViewModel(
-	settings = settings,
+	settings = readerSettings,
 	interactor = interactor,
 	bookmarksRepository = bookmarksRepository,
 	historyRepository = historyRepository,
@@ -118,6 +121,7 @@ class ReaderViewModel @Inject constructor(
 	val onLoadingError = MutableEventFlow<Throwable>()
 	val onShowToast = MutableEventFlow<Int>()
 	val onAskNsfwIncognito = MutableEventFlow<Unit>()
+	val onTranslationSwitched = MutableEventFlow<String>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
 	val isIncognitoMode = MutableStateFlow(savedStateHandle.get<Boolean>(ReaderIntent.EXTRA_INCOGNITO))
@@ -289,6 +293,14 @@ class ReaderViewModel @Inject constructor(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			content.value = ReaderContent(emptyList(), null)
+			
+			// Check if we need to reload manga details to get the target chapter
+			if (chaptersLoader.peekChapter(id) == null) {
+				// Chapter not in cache, reload details to ensure we have all branches
+				val details = detailsLoadUseCase(intent, force = false).first()
+				chaptersLoader.init(details)
+			}
+			
 			chaptersLoader.loadSingleChapter(id)
 			val newState = ReaderState(id, page, 0)
 			content.value = ReaderContent(chaptersLoader.snapshot(), newState)
@@ -296,17 +308,21 @@ class ReaderViewModel @Inject constructor(
 		}
 	}
 
+
 	fun switchChapterBy(delta: Int) {
 		val prevJob = loadingJob
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			val prevState = readingState.requireValue()
 			val newChapterId = if (delta != 0) {
-				val allChapters = mangaDetails.requireValue().allChapters
+				val mangaDetailsValue = mangaDetails.requireValue()
+				val allChapters = mangaDetailsValue.allChapters
 				var index = allChapters.indexOfFirst { x -> x.id == prevState.chapterId }
 				if (index < 0) {
 					return@launchLoadingJob
 				}
+
+				// Simple chapter switching - ChaptersLoader will handle fallback logic
 				index += delta
 				(allChapters.getOrNull(index) ?: return@launchLoadingJob).id
 			} else {
@@ -403,6 +419,14 @@ class ReaderViewModel @Inject constructor(
 							mangaDetails.value = details
 						}
 						chaptersLoader.init(details)
+						
+						// Set up navigation event callback for branch change and gap notifications
+						chaptersLoader.setNavigationEventCallback { event ->
+							event.message?.let { message ->
+								onTranslationSwitched.call(message)
+							}
+						}
+						
 						val manga = details.toManga()
 						// obtain state
 						if (readingState.value == null) {
@@ -580,6 +604,12 @@ class ReaderViewModel @Inject constructor(
 		// start from beginning
 		val preferredBranch = requestedBranch ?: manga.getPreferredBranch(null)
 		return ReaderState(manga, preferredBranch)
+	}
+
+	override fun onCleared() {
+		super.onCleared()
+		// Clean up callback to prevent memory leaks
+		chaptersLoader.clearNavigationEventCallback()
 	}
 
 	private fun Exception.mergeWith(other: Exception?): Exception = if (other == null) {

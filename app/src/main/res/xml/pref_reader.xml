@@ -165,4 +165,30 @@
 		android:title="@string/preload_pages"
 		app:useSimpleSummaryProvider="true" />
 
+	<PreferenceCategory
+		android:title="@string/translation_preferences"
+		app:allowDividerAbove="true">
+
+		<SwitchPreferenceCompat
+			android:defaultValue="true"
+			android:key="translation_fallback_enabled"
+			android:summary="@string/translation_fallback_global_summary"
+			android:title="@string/translation_fallback_global" />
+
+		<SwitchPreferenceCompat
+			android:defaultValue="true"
+			android:dependency="translation_fallback_enabled"
+			android:key="translation_show_notifications"
+			android:summary="@string/translation_show_notifications_summary"
+			android:title="@string/translation_show_notifications" />
+
+		<Preference
+			android:key="translation_help"
+			android:persistent="false"
+			android:summary="@string/translation_help_summary"
+			android:title="@string/translation_help"
+			android:dependency="translation_fallback_enabled" />
+
+	</PreferenceCategory>
+
 </PreferenceScreen>

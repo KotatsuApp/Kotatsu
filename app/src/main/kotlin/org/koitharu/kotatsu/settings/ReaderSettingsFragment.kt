@@ -23,6 +23,7 @@ import org.koitharu.kotatsu.parsers.util.names
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.settings.utils.PercentSummaryProvider
 import org.koitharu.kotatsu.settings.utils.SliderPreference
+import androidx.preference.EditTextPreference
 
 @AndroidEntryPoint
 class ReaderSettingsFragment :
