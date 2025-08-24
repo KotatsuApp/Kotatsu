@@ -510,4 +510,7 @@
     <string name="reader_optimize">کاهش مصرف حافظه (آزمایشی)</string>
     <string name="reader_optimize_summary">کاهش کیفیت صفحات خارج از صفحه برای استفاده کمتر از حافظه</string>
     <string name="state">حالت</string>
+    <string name="downloads_resumed">بارگیری‌ها ازسر گرفته شده‌اند</string>
+    <string name="downloads_cancelled">بارگیری‌ها لغو شده‌اند</string>
+    <string name="suggestions_enable_prompt">آیا می‌خواهید پیشنهادهای مانگای شخصی شده دریافت کنید؟</string>
 </resources>
