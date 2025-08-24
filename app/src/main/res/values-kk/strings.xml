@@ -31,7 +31,7 @@
     <string name="add">Қосу</string>
     <string name="save">Сақтау</string>
     <string name="share">Бөлісу</string>
-    <string name="create_shortcut">Таңбаша жасау…</string>
+    <string name="create_shortcut">Таңбаша жасау</string>
     <string name="share_s">%s бөлісу</string>
     <string name="search">Іздеу</string>
     <string name="manga_downloading_">Жүктеліп жатыр…</string>
@@ -53,7 +53,7 @@
     <string name="remove">Жою</string>
     <string name="_s_deleted_from_local_storage">«%s» құрылғыдан жойылды</string>
     <string name="save_page">Бетті сақтау</string>
-    <string name="page_saved">Сақталды</string>
+    <string name="page_saved">Бет сақталды</string>
     <string name="share_image">Суретті бөлісу</string>
     <string name="_import">Импорт</string>
     <string name="no_description">Сипаттамасы жоқ</string>
@@ -79,7 +79,7 @@
     <string name="notification_sound">Мәлімдеме дыбысы</string>
     <string name="light_indicator">LED индикаттау</string>
     <string name="vibration">Діріл</string>
-    <string name="favourites_categories">Таңдаулы санаттар</string>
+    <string name="favourites_categories">Таңдаулы санаты</string>
     <string name="remove_category">Жою</string>
     <string name="text_empty_holder_primary">Мына жер бос екен…</string>
     <string name="text_history_holder_primary">Бұ жерде оқығаныңыз тұрады</string>
@@ -257,7 +257,7 @@
     <string name="hide">Жасыру</string>
     <string name="exclude_nsfw_from_history_summary">ҰЯТСЫЗ деген маңганы оқығаныңыз тарихыңызда сақталмайды</string>
     <string name="show_reading_indicators_summary">Таңдаулы мен тарихта оқылған туынды пайызын көрсету</string>
-    <string name="use_fingerprint">Қолжетімді болса саусақ ізін қолдану</string>
+    <string name="use_fingerprint">Қолжетімді болса биометрика қолдану</string>
     <string name="onboard_text">Маңганы қай тілде оқығыңыз келетінін таңдаңыз. Кейінірек баптауда өзгертіп ала аласыз.</string>
     <string name="suggestions_updating">Ұсынысты жаңарту</string>
     <string name="percent_string_pattern">%%%1$s</string>
@@ -537,4 +537,8 @@
     <string name="reader_actions">Оқымадағы әрекет</string>
     <string name="sync_auth">Синхрондау тіркелгісіне кіру</string>
     <string name="config_reset_confirm">Әдепкі баптауға қайтайық па? Әрекетті қайтаруға болмайды.</string>
+    <string name="retry">Қайталау</string>
+    <string name="pages_saved">Беттер сақталды</string>
+    <string name="text_empty_holder_secondary_filtered">Сүзіп алғаныңызға сай маңга жоқ</string>
+    <string name="nsfw_16">16+</string>
 </resources>
