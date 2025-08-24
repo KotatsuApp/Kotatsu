@@ -18,7 +18,9 @@ data class ChapterNavigationEvent(
 	val message: String?,
 	val hasChapterGap: Boolean = false,
 	val previousChapterNumber: Float? = null,
-	val nextChapterNumber: Float? = null
+	val nextChapterNumber: Float? = null,
+	val newBranch: String? = null,  // Target branch for fallback
+	val oldBranch: String? = null,  // Original branch before fallback
 )
 
 @ViewModelScoped
@@ -93,7 +95,7 @@ class ChaptersLoader @Inject constructor(
 					// Use the specific chapter ID from the fallback result
 					val fallbackChapter = completeManga.allChapters.find { it.id == fallbackResult.chapterId }
 					
-					// Emit navigation event for UI notifications
+					// Emit navigation event for UI notifications including branch change
 					if (fallbackResult.wasFallback || fallbackResult.hasChapterGap) {
 						try {
 							val event = ChapterNavigationEvent(
@@ -101,7 +103,9 @@ class ChaptersLoader @Inject constructor(
 								message = fallbackResult.fallbackReason,
 								hasChapterGap = fallbackResult.hasChapterGap,
 								previousChapterNumber = fallbackResult.previousChapterNumber,
-								nextChapterNumber = fallbackResult.nextChapterNumber
+								nextChapterNumber = fallbackResult.nextChapterNumber,
+								newBranch = fallbackResult.branch,
+								oldBranch = currentBranch
 							)
 							navigationEventCallback?.invoke(event)
 						} catch (e: Exception) {
@@ -115,7 +119,9 @@ class ChaptersLoader @Inject constructor(
 					try {
 						val event = ChapterNavigationEvent(
 							wasFallback = false,
-							message = "No more chapters available"
+							message = "No more chapters available",
+							newBranch = null,
+							oldBranch = currentBranch
 						)
 						navigationEventCallback?.invoke(event)
 					} catch (e: Exception) {
@@ -129,7 +135,9 @@ class ChaptersLoader @Inject constructor(
 				try {
 					val event = ChapterNavigationEvent(
 						wasFallback = false,
-						message = "Translation fallback unavailable"
+						message = "Translation fallback unavailable",
+						newBranch = null,
+						oldBranch = currentBranch
 					)
 					navigationEventCallback?.invoke(event)
 				} catch (callbackError: Exception) {
@@ -215,6 +223,37 @@ class ChaptersLoader @Inject constructor(
 	}
 
 	fun snapshot() = chapterPages.toList()
+
+	/**
+	 * Get all chapters for a specific branch from the complete manga data
+	 */
+	fun getChaptersByBranch(branch: String?): List<MangaChapter>? {
+		return currentManga?.allChapters?.filter { it.branch == branch }?.sortedBy { it.number }
+	}
+
+	/**
+	 * Get the count of chapters in a specific branch
+	 */
+	fun getChaptersCount(branch: String?): Int {
+		return currentManga?.allChapters?.count { it.branch == branch } ?: 0
+	}
+
+	/**
+	 * Get all available branches from the complete manga data
+	 */
+	fun getAllBranches(): Set<String?> {
+		return currentManga?.allChapters?.map { it.branch }?.toSet() ?: emptySet()
+	}
+
+	/**
+	 * Find the index of a specific chapter within its branch
+	 */
+	fun getChapterIndexInBranch(chapterId: Long): Pair<Int, Int>? {
+		val chapter = chapters[chapterId] ?: return null
+		val branchChapters = getChaptersByBranch(chapter.branch) ?: return null
+		val index = branchChapters.indexOfFirst { it.id == chapterId }
+		return if (index >= 0) index to branchChapters.size else null
+	}
 
 	private suspend fun loadChapter(chapterId: Long): List<ReaderPage> {
 		val chapter = chapters[chapterId] 

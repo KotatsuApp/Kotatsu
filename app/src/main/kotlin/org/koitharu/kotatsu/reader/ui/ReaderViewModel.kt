@@ -63,6 +63,7 @@ import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.sizeOrZero
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
+import org.koitharu.kotatsu.reader.domain.ChapterNavigationEvent
 import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
@@ -204,6 +205,8 @@ class ReaderViewModel @Inject constructor(
 				appShortcutManager.notifyMangaOpened(mangaId)
 			}
 		}
+		// Set up navigation event callback for immediate branch synchronization
+		chaptersLoader.setNavigationEventCallback(::handleChapterNavigationEvent)
 	}
 
 	fun reload() {
@@ -502,12 +505,24 @@ class ReaderViewModel @Inject constructor(
 		val state = getCurrentState() ?: return
 		val chapter = chaptersLoader.peekChapter(state.chapterId) ?: return
 		val m = mangaDetails.value ?: return
-		val chapterIndex = m.chapters[chapter.branch]?.indexOfFirst { it.id == chapter.id } ?: -1
+		
+		// Simple and reliable chapter counting using ChaptersLoader data
+		val currentBranch = chapter.branch
+		val (chapterIndex, chaptersTotal) = chaptersLoader.getChapterIndexInBranch(chapter.id) ?: (0 to 0)
+		
+		// Sync selected branch if fallback occurred
+		if (selectedBranch.value != currentBranch) {
+			selectedBranch.value = currentBranch
+			// Immediately save the current state to persist the branch change
+			// This ensures the history reflects the new branch for getPreferredBranch()
+			saveCurrentState(state)
+		}
+		
 		val newState = ReaderUiState(
 			mangaName = m.toManga().title,
 			chapter = chapter,
 			chapterIndex = chapterIndex,
-			chaptersTotal = m.chapters[chapter.branch].sizeOrZero(),
+			chaptersTotal = chaptersTotal,
 			totalPages = chaptersLoader.getPagesCount(chapter.id),
 			currentPage = state.page,
 			percent = computePercent(state.chapterId, state.page),
@@ -521,14 +536,14 @@ class ReaderViewModel @Inject constructor(
 	}
 
 	private fun computePercent(chapterId: Long, pageIndex: Int): Float {
-		val branch = chaptersLoader.peekChapter(chapterId)?.branch
-		val chapters = mangaDetails.value?.chapters?.get(branch) ?: return PROGRESS_NONE
-		val chaptersCount = chapters.size
-		val chapterIndex = chapters.indexOfFirst { x -> x.id == chapterId }
+		// Simple and reliable progress calculation using ChaptersLoader data
+		val (chapterIndex, chaptersCount) = chaptersLoader.getChapterIndexInBranch(chapterId) ?: return PROGRESS_NONE
 		val pagesCount = chaptersLoader.getPagesCount(chapterId)
+		
 		if (chaptersCount == 0 || pagesCount == 0) {
 			return PROGRESS_NONE
 		}
+		
 		val pagePercent = (pageIndex + 1) / pagesCount.toFloat()
 		val ppc = 1f / chaptersCount
 		return ppc * chapterIndex + ppc * pagePercent
@@ -604,6 +619,20 @@ class ReaderViewModel @Inject constructor(
 		// start from beginning
 		val preferredBranch = requestedBranch ?: manga.getPreferredBranch(null)
 		return ReaderState(manga, preferredBranch)
+	}
+
+	/**
+	 * Handle navigation events from ChaptersLoader, particularly for immediate branch synchronization
+	 */
+	private fun handleChapterNavigationEvent(event: ChapterNavigationEvent) {
+		// If fallback occurred with a branch change, immediately update selected branch and save state
+		if (event.wasFallback && event.newBranch != null && event.newBranch != selectedBranch.value) {
+			selectedBranch.value = event.newBranch
+			// Immediately save current state to persist the branch change in history
+			saveCurrentState()
+			// Show notification to user about translation switch
+			onTranslationSwitched.call(event.newBranch)
+		}
 	}
 
 	override fun onCleared() {

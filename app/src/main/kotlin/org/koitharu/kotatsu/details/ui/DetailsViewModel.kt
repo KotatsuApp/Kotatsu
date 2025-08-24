@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -25,6 +26,7 @@ import org.koitharu.kotatsu.core.nav.MangaIntent
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.ListMode
 import org.koitharu.kotatsu.core.prefs.TriStateOption
+import org.koitharu.kotatsu.core.model.MangaHistory
 import org.koitharu.kotatsu.core.ui.util.ReversibleAction
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.computeSize
@@ -37,8 +39,13 @@ import org.koitharu.kotatsu.details.domain.ProgressUpdateUseCase
 import org.koitharu.kotatsu.details.domain.ReadingTimeUseCase
 import org.koitharu.kotatsu.details.domain.RelatedMangaUseCase
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
+import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
+import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
+import org.koitharu.kotatsu.list.ui.model.ListModel
+import org.koitharu.kotatsu.core.model.toChipModel
+import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.list.domain.MangaListMapper
@@ -94,6 +101,8 @@ class DetailsViewModel @Inject constructor(
 	val history = historyRepository.observeOne(mangaId)
 		.onEach { h ->
 			readingState.value = h?.let(::ReaderState)
+			// Update selected branch when history changes (e.g., returning from reader after fallback)
+			refreshSelectedBranch(h)
 		}.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
@@ -228,6 +237,7 @@ class DetailsViewModel @Inject constructor(
 		}
 	}
 
+
 	private fun doLoad(force: Boolean) = launchLoadingJob(Dispatchers.Default) {
 		detailsLoadUseCase.invoke(intent, force)
 			.onEachWhile {
@@ -256,5 +266,16 @@ class DetailsViewModel @Inject constructor(
 			errorEvent.call(IllegalStateException("Scrobbler [$index] is not available"))
 		}
 		return scrobbler
+	}
+
+	/**
+	 * Refresh selected branch based on current history (e.g., after returning from reader)
+	 */
+	private fun refreshSelectedBranch(history: MangaHistory?) {
+		val manga = mangaDetails.value?.toManga() ?: return
+		val preferredBranch = manga.getPreferredBranch(history)
+		if (preferredBranch != selectedBranch.value) {
+			selectedBranch.value = preferredBranch
+		}
 	}
 }
