@@ -839,4 +839,23 @@
     <string name="main_screen">Ecrã principal</string>
     <string name="main_screen_fab">Mostrar botão flutuante \"Continuar\"</string>
     <string name="discord_token">Código do Discord</string>
+    <string name="main_screen_fab_summary">Permite que continue lendo em um clique. Esse botão não irá aparecer no modo incógnito or quando o histórico estiver vazio</string>
+    <string name="error_corrupted_zip">Arquivo ZIP corrompido (%s)</string>
+    <string name="discord_rpc">Rich Presence do Discord</string>
+    <string name="discord_token_summary">Entre seu Token do Discord para habilitar Rich Presence</string>
+    <string name="discord_token_description">Entre seu Token do Discord ou clique %s para obtê-lo pelo navegador</string>
+    <string name="discord_token_hint">Cole seu Token do Discord aqui</string>
+    <string name="discord_rpc_summary">Mostrar seu estado de leitura no Discord</string>
+    <string name="obtain">Obter</string>
+    <string name="discord_rpc_description">Lendo manga no Kotatsu - um app leitor de manga</string>
+    <string name="reading_s">Lendo %s</string>
+    <string name="read_on_s">Lendo em %s</string>
+    <string name="rpc_skip_nsfw_summary">Não use RPC para conteúdo adulto</string>
+    <string name="invalid_token">Token inválido: %s</string>
+    <string name="show_floating_control_button">Mostrar botão de controle flutuante</string>
+    <string name="unavailable">Indisponível</string>
+    <string name="manga_restricted_description">Esse manga não está disponível para leitura nessa fonte. Tente pesquisá-lo em outras fontes ou abra-o no navegador para mais informação</string>
+    <string name="no_chapters_in_manga">Esse manga não contém capítulos</string>
+    <string name="chapters_load_failed">Falha ao carregar lista de capítulos</string>
+    <string name="telegram_integration">Integração Telegram</string>
 </resources>
