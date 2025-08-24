@@ -53,6 +53,9 @@ class ExternalPluginContentSource(
 		filter.states.forEach { uri.appendQueryParameter("state", it.name) }
 		filter.locale?.let { uri.appendQueryParameter("locale", it.language) }
 		filter.contentRating.forEach { uri.appendQueryParameter("content_rating", it.name) }
+		if (!filter.author.isNullOrEmpty()) {
+			uri.appendQueryParameter("author", filter.author)
+		}
 		if (!filter.query.isNullOrEmpty()) {
 			uri.appendQueryParameter("query", filter.query)
 		}
@@ -196,6 +199,7 @@ class ExternalPluginContentSource(
 							isYearSupported = cursor.getBooleanOrDefault(COLUMN_YEAR, false),
 							isYearRangeSupported = cursor.getBooleanOrDefault(COLUMN_YEAR_RANGE, false),
 							isOriginalLocaleSupported = cursor.getBooleanOrDefault(COLUMN_ORIGINAL_LOCALE, false),
+							isAuthorSearchSupported = cursor.getBooleanOrDefault(COLUMN_AUTHOR, false),
 						),
 					)
 				} else {
