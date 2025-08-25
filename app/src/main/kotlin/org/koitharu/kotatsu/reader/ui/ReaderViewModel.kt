@@ -439,9 +439,7 @@ class ReaderViewModel @Inject constructor(
 			try {
 				detailsLoadUseCase(intent, force = false)
 					.collect { details ->
-						if (mangaDetails.value == null) {
-							mangaDetails.value = details
-						}
+						mangaDetails.value = details
 						chaptersLoader.init(details)
 						
 						// Note: Navigation event callback is set up in init() for consistent handling
@@ -474,7 +472,7 @@ class ReaderViewModel @Inject constructor(
 								return@collect
 							}
 						}
-						mangaDetails.value = details.filterChapters(selectedBranch.value)
+						mangaDetails.value = details
 
 						// save state
 						if (!isIncognitoMode.firstNotNull()) {
@@ -507,8 +505,26 @@ class ReaderViewModel @Inject constructor(
 		val prevJob = loadingJob
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.join()
+			val currentChapter = chaptersLoader.peekChapter(currentId)
+			val beforeSnapshot = chaptersLoader.snapshot()
+			
 			chaptersLoader.loadPrevNextChapter(mangaDetails.requireValue(), currentId, isNext)
-			content.value = ReaderContent(chaptersLoader.snapshot(), null)
+			val afterSnapshot = chaptersLoader.snapshot()
+			
+			// Prevent looping: check if we navigated to a chapter with significantly different number
+			if (isNext && currentChapter != null && beforeSnapshot.isNotEmpty() && afterSnapshot.isNotEmpty()) {
+				val currentChapterNumber = currentChapter.number
+				val newChapter = if (isNext) afterSnapshot.lastOrNull() else afterSnapshot.firstOrNull()
+				val newChapterNumber = newChapter?.let { chaptersLoader.peekChapter(it.chapterId)?.number }
+				
+				// If navigating forward but the new chapter number is much lower, it's likely a loop
+				if (newChapterNumber != null && currentChapterNumber > 1.0f && newChapterNumber < currentChapterNumber - 5.0f) {
+					// Don't update content to prevent looping back to earlier chapters
+					return@launchLoadingJob
+				}
+			}
+			
+			content.value = ReaderContent(afterSnapshot, null)
 		}
 	}
 
@@ -565,6 +581,8 @@ class ReaderViewModel @Inject constructor(
 			currentPage = state.page,
 			percent = computePercent(state.chapterId, state.page),
 			incognito = isIncognitoMode.value == true,
+			hasFallbackNext = hasFallbackAwareNextChapter(state.chapterId),
+			hasFallbackPrevious = hasFallbackAwarePreviousChapter(state.chapterId),
 		)
 		uiState.value = newState
 		if (isIncognitoMode.value == false) {
@@ -678,6 +696,36 @@ class ReaderViewModel @Inject constructor(
 		super.onCleared()
 		// Clean up callback to prevent memory leaks
 		chaptersLoader.clearNavigationEventCallback()
+	}
+
+	/**
+	 * Check if next chapter is available either in current branch or through fallback
+	 * Uses a lightweight approach by checking if there are higher-numbered chapters in any branch
+	 */
+	private fun hasFallbackAwareNextChapter(currentChapterId: Long): Boolean {
+		val manga = mangaDetails.value?.toManga() ?: return false
+		val currentChapter = chaptersLoader.peekChapter(currentChapterId) ?: return false
+		val currentNumber = currentChapter.number
+		
+		// Check if there are any chapters with higher numbers in any branch
+		return manga.chapters?.any { chapter ->
+			chapter.number > currentNumber
+		} ?: false
+	}
+	
+	/**
+	 * Check if previous chapter is available either in current branch or through fallback
+	 * Uses a lightweight approach by checking if there are lower-numbered chapters in any branch
+	 */
+	private fun hasFallbackAwarePreviousChapter(currentChapterId: Long): Boolean {
+		val manga = mangaDetails.value?.toManga() ?: return false
+		val currentChapter = chaptersLoader.peekChapter(currentChapterId) ?: return false
+		val currentNumber = currentChapter.number
+		
+		// Check if there are any chapters with lower numbers in any branch
+		return manga.chapters?.any { chapter ->
+			chapter.number < currentNumber
+		} ?: false
 	}
 
 	private fun Exception.mergeWith(other: Exception?): Exception = if (other == null) {

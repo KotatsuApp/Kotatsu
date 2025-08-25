@@ -13,14 +13,16 @@ data class ReaderUiState(
 	val totalPages: Int,
 	val percent: Float,
 	val incognito: Boolean,
+	val hasFallbackNext: Boolean = false,
+	val hasFallbackPrevious: Boolean = false,
 ) {
 
 	val chapterNumber: Int
 		get() = chapterIndex + 1
 
-	fun hasNextChapter(): Boolean = chapterNumber < chaptersTotal
+	fun hasNextChapter(): Boolean = chapterNumber < chaptersTotal || hasFallbackNext
 
-	fun hasPreviousChapter(): Boolean = chapterIndex > 0
+	fun hasPreviousChapter(): Boolean = chapterIndex > 0 || hasFallbackPrevious
 
 	fun isSliderAvailable(): Boolean = totalPages > 1 && currentPage < totalPages
 

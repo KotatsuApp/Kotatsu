@@ -26,7 +26,7 @@ fun chapterListItemAD(
 
 	bind {
 		binding.textViewTitle.text = item.chapter.name
-		binding.textViewDescription.textAndVisible = item.chapter.scanlator
+		binding.textViewDescription.textAndVisible = item.description
 		when {
 			item.isCurrent -> {
 				binding.textViewTitle.drawableStart = ContextCompat.getDrawable(context, R.drawable.ic_current_chapter)

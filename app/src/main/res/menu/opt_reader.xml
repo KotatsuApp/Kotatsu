@@ -10,4 +10,10 @@
 		android:visible="false"
 		app:showAsAction="always" />
 
+	<item
+		android:id="@+id/action_translation_settings"
+		android:icon="@drawable/ic_language"
+		android:title="@string/translation_settings"
+		app:showAsAction="never" />
+
 </menu>

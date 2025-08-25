@@ -68,9 +68,9 @@ class TranslationPreferencesRepository @Inject constructor(
 		
 		val chapters = manga.chapters
 		if (!chapters.isNullOrEmpty()) {
-			// Get all available branches from chapters
+			// Get all available branches from chapters (including null for default branch)
 			val allBranches = chapters
-				.mapNotNull { it.branch }
+				.map { it.branch ?: "" } // Convert null to empty string for default branch
 				.distinct() // Preserve original order, remove duplicates
 			
 			// Find missing branches that don't have preferences yet

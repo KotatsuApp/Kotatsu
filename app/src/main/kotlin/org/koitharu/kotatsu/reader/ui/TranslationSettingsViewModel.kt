@@ -48,9 +48,14 @@ class TranslationSettingsViewModel @Inject constructor(
 		launchJob {
 			// Load complete manga details with chapters
 			detailsLoadUseCase(intent, force = false).collect { mangaDetails ->
-				val fullManga = mangaDetails.toManga()
-				val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(fullManga)
-				_preferences.value = prefs
+				// Ensure we have loaded chapters before proceeding
+				if (mangaDetails.isLoaded && mangaDetails.allChapters.isNotEmpty()) {
+					// Create manga with ALL chapters (not filtered by branch)
+					val baseManga = mangaDetails.toManga()
+					val fullManga = baseManga.copy(chapters = mangaDetails.allChapters)
+					val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(fullManga)
+					_preferences.value = prefs
+				}
 			}
 		}
 	}
