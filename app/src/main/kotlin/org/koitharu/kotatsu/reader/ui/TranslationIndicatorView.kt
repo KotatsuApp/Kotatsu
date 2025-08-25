@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.ui
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
@@ -35,10 +36,39 @@ class TranslationIndicatorView @JvmOverloads constructor(
 	}
 
 	fun showNavigationMessage(message: String) {
-		show(message)
+		// Check if this is a gap notification (contains "Skipped")
+		if (message.contains("Skipped", ignoreCase = true)) {
+			showGapWarning(message)
+		} else {
+			show(message)
+		}
+	}
+	
+	private fun showGapWarning(message: String) {
+		// Use reddish background for gap warnings
+		val drawable = GradientDrawable().apply {
+			shape = GradientDrawable.RECTANGLE
+			setColor(0xFFD32F2F.toInt()) // Material Design red 700
+			cornerRadius = 12f // 12dp corner radius
+		}
+		background = drawable
+		text = message
+		visibility = View.VISIBLE
+		animate()
+			.alpha(1f)
+			.setDuration(200)
+			.withEndAction {
+				// Keep gap warnings visible longer (4 seconds)
+				postDelayed({
+					hide()
+				}, 4000)
+			}
+			.start()
 	}
 
 	private fun show(message: String) {
+		// Restore original background for normal messages
+		setBackgroundResource(R.drawable.bg_reader_indicator)
 		text = message
 		visibility = View.VISIBLE
 		animate()

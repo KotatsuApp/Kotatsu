@@ -325,10 +325,17 @@ class TranslationFallbackManager @Inject constructor(
 	 * Creates a user-friendly gap message for missing chapters
 	 */
 	private fun createGapMessage(fromNumber: Float, toNumber: Float): String {
-		val startMissing = kotlin.math.ceil(fromNumber.toDouble()).toInt()
-		val endMissing = kotlin.math.floor(toNumber.toDouble()).toInt() - 1
+		// Ensure we're always calculating the range correctly regardless of direction
+		val lowerNumber = kotlin.math.min(fromNumber, toNumber)
+		val higherNumber = kotlin.math.max(fromNumber, toNumber)
 		
-		return if (startMissing == endMissing) {
+		val startMissing = kotlin.math.ceil(lowerNumber.toDouble()).toInt() + 1
+		val endMissing = kotlin.math.floor(higherNumber.toDouble()).toInt() - 1
+		
+		// Only show gap message if there are actually missing chapters
+		return if (startMissing > endMissing) {
+			"No chapters skipped" // This shouldn't happen with proper gap detection
+		} else if (startMissing == endMissing) {
 			"Skipped chapter $startMissing"
 		} else {
 			"Skipped chapters ($startMissing to $endMissing)"

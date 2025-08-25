@@ -548,16 +548,41 @@ class ReaderViewModel @Inject constructor(
 		val currentBranch = chapter.branch
 		val (chapterIndex, chaptersTotal) = chaptersLoader.getChapterIndexInBranch(chapter.id) ?: (0 to 0)
 		
-		// Check if user has actually transitioned to a different chapter and show toast if branch changed
+		// Check if user has actually transitioned to a different chapter and show notifications
 		val chapterChanged = lastReadChapterId != null && lastReadChapterId != chapter.id
-		if (chapterChanged && lastReadBranch != null && lastReadBranch != currentBranch) {
-			// User has moved to a chapter in a different branch - show toast
-			val message = if (currentBranch != null) {
-				"Switched to \"$currentBranch\" translation"
-			} else {
-				"Switched to different translation"
+		if (chapterChanged) {
+			val previousChapter = lastReadChapterId?.let { chaptersLoader.peekChapter(it) }
+			var gapMessage: String? = null
+			var switchMessage: String? = null
+			
+			// Check for chapter number gaps
+			if (previousChapter != null) {
+				val hasGap = hasSignificantGap(previousChapter.number, chapter.number)
+				if (hasGap) {
+					gapMessage = createGapMessage(previousChapter.number, chapter.number)
+				}
 			}
-			onTranslationSwitched.call(message)
+			
+			// Check for branch changes
+			if (lastReadBranch != null && lastReadBranch != currentBranch) {
+				switchMessage = if (currentBranch != null) {
+					"Switched to \"$currentBranch\""
+				} else {
+					"Switched to different translation"
+				}
+			}
+			
+			// Show combined or individual messages
+			val notificationMessage = when {
+				gapMessage != null && switchMessage != null -> "$switchMessage • $gapMessage"
+				gapMessage != null -> gapMessage
+				switchMessage != null -> switchMessage
+				else -> null
+			}
+			
+			if (notificationMessage != null) {
+				onTranslationSwitched.call(notificationMessage)
+			}
 		}
 		
 		// Update tracking variables for next transition
@@ -683,12 +708,54 @@ class ReaderViewModel @Inject constructor(
 	 */
 	private fun handleChapterNavigationEvent(event: ChapterNavigationEvent) {
 		// If fallback occurred with a branch change, immediately update selected branch and save state
-		// Note: We don't show toast here as this is called during preloading
-		// Toast will be shown in notifyStateChanged when user actually starts reading the chapter
 		if (event.wasFallback && event.newBranch != null && event.newBranch != selectedBranch.value) {
 			selectedBranch.value = event.newBranch
 			// Immediately save current state to persist the branch change in history
 			saveCurrentState()
+		}
+		
+		// Handle gap and fallback notifications
+		if ((event.hasChapterGap || event.wasFallback) && event.message != null) {
+			// Use the pre-formatted message from TranslationFallbackManager
+			onTranslationSwitched.call(event.message)
+		}
+	}
+
+	/**
+	 * Determines if there's a significant gap between two chapter numbers.
+	 */
+	private fun hasSignificantGap(fromNumber: Float, toNumber: Float): Boolean {
+		val difference = kotlin.math.abs(toNumber - fromNumber)
+		
+		// If the difference is less than 1.0, there's no gap (handles decimals like 40.5 -> 41.0)
+		if (difference < 1.0f) return false
+		
+		// If the difference is exactly 1.0 (or very close due to floating point), it's adjacent
+		if (kotlin.math.abs(difference - 1.0f) < 0.1f) return false
+		
+		// For larger differences, consider it a gap if we're skipping whole numbers
+		val wholeDifference = kotlin.math.floor(difference)
+		return wholeDifference >= 1.0
+	}
+
+	/**
+	 * Creates a user-friendly gap message for missing chapters
+	 */
+	private fun createGapMessage(fromNumber: Float, toNumber: Float): String {
+		// Ensure we're always calculating the range correctly regardless of direction
+		val lowerNumber = kotlin.math.min(fromNumber, toNumber)
+		val higherNumber = kotlin.math.max(fromNumber, toNumber)
+		
+		val startMissing = kotlin.math.ceil(lowerNumber.toDouble()).toInt() + 1
+		val endMissing = kotlin.math.floor(higherNumber.toDouble()).toInt() - 1
+		
+		// Only show gap message if there are actually missing chapters
+		return if (startMissing > endMissing) {
+			"No chapters skipped" // This shouldn't happen with proper gap detection
+		} else if (startMissing == endMissing) {
+			"Skipped chapter $startMissing"
+		} else {
+			"Skipped chapters ($startMissing to $endMissing)"
 		}
 	}
 
