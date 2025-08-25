@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.names
+import org.koitharu.kotatsu.settings.utils.MinimumSelectionMultiSelectPreference
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.settings.utils.PercentSummaryProvider
 import org.koitharu.kotatsu.settings.utils.SliderPreference
@@ -66,7 +67,7 @@ class ReaderSettingsFragment :
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_CROP)?.run {
 			summaryProvider = MultiSummaryProvider(R.string.disabled)
 		}
-		findPreference<MultiSelectListPreference>(AppSettings.KEY_DEFAULT_TRANSLATION_LANGUAGES)?.run {
+		findPreference<MinimumSelectionMultiSelectPreference>(AppSettings.KEY_DEFAULT_TRANSLATION_LANGUAGES)?.run {
 			val availableLanguages = LanguageDetectionUtils.getAvailableLanguages()
 			entries = availableLanguages.values.toTypedArray()
 			entryValues = availableLanguages.keys.toTypedArray()
@@ -75,6 +76,8 @@ class ReaderSettingsFragment :
 			defaultLanguages.add("en") // Always include English
 			setDefaultValueCompat(defaultLanguages)
 			summaryProvider = MultiSummaryProvider(R.string.none)
+			// Set English as fallback when user tries to deselect all
+			fallbackValue = "en"
 		}
 		findPreference<SliderPreference>(AppSettings.KEY_WEBTOON_ZOOM_OUT)?.summaryProvider = PercentSummaryProvider()
 		updateReaderModeDependency()

@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.core.util.ext.putAll
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
+import org.koitharu.kotatsu.core.util.LanguageDetectionUtils
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -414,8 +415,31 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_TRANSLATION_SHOW_NOTIFICATIONS, true)
 
 	var defaultTranslationLanguages: Set<String>
-		get() = prefs.getStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, emptySet()).orEmpty()
-		set(value) = prefs.edit { putStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, value) }
+		get() {
+			val stored = prefs.getStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, null)
+			return if (stored == null) {
+				// First time access - initialize with English + system languages
+				val defaultLanguages = LanguageDetectionUtils.getPreferredSystemLanguages().toMutableSet()
+				defaultLanguages.add("en") // Always include English
+				// Persist the default value immediately
+				prefs.edit { putStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, defaultLanguages) }
+				defaultLanguages
+			} else {
+				val result = stored.orEmpty()
+				// Ensure never empty - fallback to English
+				if (result.isEmpty()) {
+					val fallback = setOf("en")
+					prefs.edit { putStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, fallback) }
+					fallback
+				} else {
+					result
+				}
+			}
+		}
+		set(value) {
+			val safeValue = if (value.isEmpty()) setOf("en") else value
+			prefs.edit { putStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, safeValue) }
+		}
 
 	var readerColorFilter: ReaderColorFilter?
 		get() = runCatching {
