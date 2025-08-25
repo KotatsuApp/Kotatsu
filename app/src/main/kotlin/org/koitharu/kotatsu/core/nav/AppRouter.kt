@@ -102,6 +102,7 @@ import org.koitharu.kotatsu.settings.sources.auth.SourceAuthActivity
 import org.koitharu.kotatsu.settings.sources.catalog.SourcesCatalogActivity
 import org.koitharu.kotatsu.settings.storage.MangaDirectorySelectDialog
 import org.koitharu.kotatsu.settings.storage.directories.MangaDirectoriesActivity
+import org.koitharu.kotatsu.reader.ui.TranslationSettingsActivity
 import org.koitharu.kotatsu.settings.tracker.categories.TrackerCategoriesConfigSheet
 import org.koitharu.kotatsu.stats.ui.StatsActivity
 import org.koitharu.kotatsu.stats.ui.sheet.MangaStatsSheet
@@ -286,6 +287,10 @@ class AppRouter private constructor(
 	}
 
 	fun openReaderTapGridSettings() = startActivity(ReaderTapGridConfigActivity::class.java)
+
+	fun openTranslationSettings(manga: Manga) {
+		startActivity(translationSettingsIntent(contextOrNull() ?: return, manga))
+	}
 
 	fun openScrobblerSettings(scrobbler: ScrobblerService) {
 		startActivity(
@@ -790,6 +795,10 @@ class AppRouter private constructor(
 
 		fun overrideEditIntent(context: Context, manga: Manga): Intent =
 			Intent(context, OverrideConfigActivity::class.java)
+				.putExtra(KEY_MANGA, ParcelableManga(manga, withDescription = false))
+
+		fun translationSettingsIntent(context: Context, manga: Manga): Intent =
+			Intent(context, TranslationSettingsActivity::class.java)
 				.putExtra(KEY_MANGA, ParcelableManga(manga, withDescription = false))
 
 		fun isShareSupported(manga: Manga): Boolean = when {

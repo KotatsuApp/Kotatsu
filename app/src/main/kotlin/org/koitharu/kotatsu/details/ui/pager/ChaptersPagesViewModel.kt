@@ -38,6 +38,7 @@ import org.koitharu.kotatsu.details.ui.DetailsViewModel
 import org.koitharu.kotatsu.details.ui.mapChapters
 import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.download.ui.worker.DownloadTask
+import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.download.ui.worker.DownloadWorker
 import org.koitharu.kotatsu.history.data.HistoryRepository
 import org.koitharu.kotatsu.list.domain.ListFilterOption
@@ -66,7 +67,7 @@ abstract class ChaptersPagesViewModel(
 	val onDownloadStarted = MutableEventFlow<Unit>()
 	val onMangaRemoved = MutableEventFlow<Manga>()
 
-	private val chaptersQuery = MutableStateFlow("")
+	protected val chaptersQuery = MutableStateFlow("")
 	val selectedBranch = MutableStateFlow<String?>(null)
 
 	val manga = mangaDetails.map { x -> x?.toManga() }
@@ -121,7 +122,7 @@ abstract class ChaptersPagesViewModel(
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Lazily, emptyList())
 
-	val chapters = combine(
+	val chapters: StateFlow<List<ListModel>> = combine(
 		combine(
 			mangaDetails,
 			readingState.map { it?.chapterId ?: 0L }.distinctUntilChanged(),
@@ -143,7 +144,7 @@ abstract class ChaptersPagesViewModel(
 		isChaptersReversed,
 		chaptersQuery,
 	) { list, reversed, query ->
-		(if (reversed) list.asReversed() else list).filterSearch(query)
+		(if (reversed) list.asReversed() else list).filterSearch(query) as List<ListModel>
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	val quickFilter = combine(
@@ -237,7 +238,7 @@ abstract class ChaptersPagesViewModel(
 		}
 	}
 
-	private fun List<ChapterListItem>.filterSearch(query: String): List<ChapterListItem> {
+	protected fun List<ChapterListItem>.filterSearch(query: String): List<ChapterListItem> {
 		if (query.isEmpty() || this.isEmpty()) {
 			return this
 		}

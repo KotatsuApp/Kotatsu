@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.core.ui.list.BaseListSelectionCallback
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.util.ext.toCollection
 import org.koitharu.kotatsu.core.util.ext.toSet
+import org.koitharu.kotatsu.details.ui.model.ChapterListItem
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
 import org.koitharu.kotatsu.local.ui.LocalChaptersRemoveService
 
@@ -33,7 +34,7 @@ class ChaptersSelectionCallback(
 
 	override fun onPrepareActionMode(controller: ListSelectionController, mode: ActionMode?, menu: Menu): Boolean {
 		val selectedIds = controller.peekCheckedIds()
-		val allItems = viewModel.chapters.value
+		val allItems = viewModel.chapters.value.filterIsInstance<ChapterListItem>()
 		val items = allItems.withIndex().filter { it.value.chapter.id in selectedIds }
 		var canSave = true
 		var canDelete = true
@@ -90,7 +91,7 @@ class ChaptersSelectionCallback(
 			}
 
 			R.id.action_select_range -> {
-				val items = viewModel.chapters.value
+				val items = viewModel.chapters.value.filterIsInstance<ChapterListItem>()
 				val ids = controller.peekCheckedIds().toCollection(HashSet())
 				val buffer = HashSet<Long>()
 				var isAdding = false
@@ -110,7 +111,7 @@ class ChaptersSelectionCallback(
 			}
 
 			R.id.action_select_all -> {
-				val ids = viewModel.chapters.value.map {
+				val ids = viewModel.chapters.value.filterIsInstance<ChapterListItem>().map {
 					it.chapter.id
 				}
 				controller.addAll(ids)

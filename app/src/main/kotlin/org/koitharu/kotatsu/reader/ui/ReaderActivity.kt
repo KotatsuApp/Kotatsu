@@ -181,6 +181,9 @@ class ReaderActivity :
 				.setAnchorView(viewBinding.toolbarDocked)
 				.show()
 		}
+		viewModel.onTranslationSwitched.observeEvent(this) { message ->
+			viewBinding.translationIndicator?.showNavigationMessage(message)
+		}
 		viewModel.readerSettingsProducer.observe(this) {
 			viewBinding.infoBar.applyColorScheme(isBlackOnWhite = it.background.isLight(this))
 		}

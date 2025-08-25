@@ -100,10 +100,14 @@ class PagesViewModel @Inject constructor(
 	}
 
 	private suspend fun doInit(state: State) {
+		// Ensure ChaptersLoader is properly initialized
+		// This is safe to call multiple times - it will only initialize if needed
 		chaptersLoader.init(state.details)
+		
 		val initialChapterId = state.readerState?.chapterId?.takeIf {
 			chaptersLoader.peekChapter(it) != null
 		} ?: state.details.allChapters.firstOrNull()?.id ?: return
+		
 		if (!chaptersLoader.hasPages(initialChapterId)) {
 			chaptersLoader.loadSingleChapter(initialChapterId)
 		}

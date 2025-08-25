@@ -135,6 +135,7 @@ class ChaptersFragment :
 
 	override fun onChipClick(chip: Chip, data: Any?) {
 		if (data !is ListFilterOption.Branch) return
+		
 		viewModel.setSelectedBranch(data.titleText)
 	}
 
