@@ -81,7 +81,7 @@ class TranslationFallbackManager @Inject constructor(
 		// Find the immediate next chapter (including decimals like 40.5, 41.7)
 
 		// Check if decimal chapters should be skipped for this manga
-		val mangaPrefs = database.getPreferencesDao().find(manga.id)
+		val mangaPrefs = runCatching { database.getPreferencesDao().find(manga.id) }.getOrNull()
 		val skipDecimalChapters = mangaPrefs?.skipDecimalChapters ?: false
 		
 		// First pass: Find the chronologically immediate next/previous chapter across all branches

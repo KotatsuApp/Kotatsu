@@ -31,6 +31,7 @@ import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.getPreferredBranch
 import org.koitharu.kotatsu.reader.domain.TranslationFallbackManager
+import org.koitharu.kotatsu.reader.domain.AutoTranslationConfigManager
 import org.koitharu.kotatsu.core.nav.MangaIntent
 import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.os.AppShortcutManager
@@ -92,6 +93,7 @@ class ReaderViewModel @Inject constructor(
 	private val statsCollector: StatsCollector,
 	private val discordRpc: DiscordRpc,
 	private val translationFallbackManager: TranslationFallbackManager,
+	private val autoTranslationConfigManager: AutoTranslationConfigManager,
 	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
 	interactor: DetailsInteractor,
 	deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
@@ -446,6 +448,11 @@ class ReaderViewModel @Inject constructor(
 						// We don't show toasts here as this would trigger during preloading
 						
 						val manga = details.toManga()
+						
+						// Auto-configure translation preferences based on global settings
+						// Only applies if settings have changed since last application
+						autoTranslationConfigManager.autoConfigureIfNeeded(manga)
+						
 						// obtain state
 						if (readingState.value == null) {
 							val newState = getStateFromIntent(manga)

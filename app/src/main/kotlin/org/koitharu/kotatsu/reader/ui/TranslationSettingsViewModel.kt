@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
 import org.koitharu.kotatsu.reader.data.TranslationPreferencesRepository
 import org.koitharu.kotatsu.reader.domain.MangaTranslationPreference
 import org.koitharu.kotatsu.reader.domain.TranslationFallbackManager
+import org.koitharu.kotatsu.core.util.LanguageDetectionUtils
 import javax.inject.Inject
 
 @HiltViewModel
@@ -91,17 +92,82 @@ class TranslationSettingsViewModel @Inject constructor(
 		}
 	}
 
+	/**
+	 * Apply default language preferences based on global settings
+	 */
+	fun applyDefaultLanguages() {
+		launchJob {
+			val defaultLanguages = appSettings.defaultTranslationLanguages
+			if (defaultLanguages.isEmpty()) return@launchJob
+			
+			val currentPreferences = _preferences.value
+			val updatedPreferences = currentPreferences.map { preference ->
+				val branchLanguage = LanguageDetectionUtils.detectLanguageFromBranch(preference.branch)
+				val shouldBeEnabled = branchLanguage != null && branchLanguage in defaultLanguages
+				
+				preference.copy(isEnabled = shouldBeEnabled)
+			}.sortedWith { a, b ->
+				// Sort enabled preferences first, then by priority
+				when {
+					a.isEnabled && !b.isEnabled -> -1
+					!a.isEnabled && b.isEnabled -> 1
+					else -> a.priority.compareTo(b.priority)
+				}
+			}.mapIndexed { index, preference ->
+				preference.copy(priority = index)
+			}
+			
+			_preferences.value = updatedPreferences
+			translationPreferencesRepository.setPreferences(manga.id, updatedPreferences)
+		}
+	}
+
+	/**
+	 * Check if preferences should be auto-configured
+	 * Now applies every time settings are opened if global language settings are available
+	 */
+	fun shouldAutoApplyDefaults(): Boolean {
+		val defaultLanguages = appSettings.defaultTranslationLanguages
+		
+		// Auto-apply if user has set default languages in global settings
+		// This will happen every time they open translation settings
+		return defaultLanguages.isNotEmpty()
+	}
+
+	/**
+	 * Check if current preferences match the global default languages
+	 */
+	private fun preferencesMatchDefaults(): Boolean {
+		val preferences = _preferences.value
+		val defaultLanguages = appSettings.defaultTranslationLanguages
+		
+		if (defaultLanguages.isEmpty()) return false
+		
+		// Check if enabled preferences match default languages
+		val enabledLanguages = preferences
+			.filter { it.isEnabled }
+			.mapNotNull { LanguageDetectionUtils.detectLanguageFromBranch(it.branch) }
+			.toSet()
+			
+		return enabledLanguages == defaultLanguages
+	}
+
 	private fun loadSkipDecimalChapters() {
 		launchJob {
-			val prefs = database.getPreferencesDao().find(manga.id)
+			val prefs = runCatching { database.getPreferencesDao().find(manga.id) }.getOrNull()
 			_skipDecimalChapters.value = prefs?.skipDecimalChapters ?: false
 		}
 	}
 
 	fun setSkipDecimalChapters(skip: Boolean) {
 		viewModelScope.launch {
-			val existingPrefs = database.getPreferencesDao().find(manga.id) ?: newMangaPrefsEntity(manga.id)
-			database.getPreferencesDao().upsert(existingPrefs.copy(skipDecimalChapters = skip))
+			val existingPrefs = runCatching { 
+				database.getPreferencesDao().find(manga.id) 
+			}.getOrNull() ?: newMangaPrefsEntity(manga.id)
+			
+			runCatching {
+				database.getPreferencesDao().upsert(existingPrefs.copy(skipDecimalChapters = skip))
+			}
 			_skipDecimalChapters.value = skip
 		}
 	}

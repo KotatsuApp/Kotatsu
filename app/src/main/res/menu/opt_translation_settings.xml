@@ -4,6 +4,18 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
+		android:id="@+id/action_global_settings"
+		android:orderInCategory="30"
+		android:title="@string/global_translation_settings"
+		app:showAsAction="never" />
+
+	<item
+		android:id="@+id/action_apply_default_languages"
+		android:orderInCategory="40"
+		android:title="@string/apply_default_languages"
+		app:showAsAction="never" />
+
+	<item
 		android:id="@+id/action_reset_defaults"
 		android:orderInCategory="50"
 		android:title="@string/reset_to_defaults"

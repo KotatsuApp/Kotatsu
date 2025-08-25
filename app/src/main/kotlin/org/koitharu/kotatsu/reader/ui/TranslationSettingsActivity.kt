@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import androidx.lifecycle.lifecycleScope
@@ -85,6 +86,15 @@ class TranslationSettingsActivity : BaseActivity<ActivityTranslationSettingsBind
 		return when (item.itemId) {
 			android.R.id.home -> {
 				finish()
+				true
+			}
+			R.id.action_global_settings -> {
+				// Navigate to reader settings translation section
+				router.openReaderSettings()
+				true
+			}
+			R.id.action_apply_default_languages -> {
+				viewModel.applyDefaultLanguages()
 				true
 			}
 			R.id.action_reset_defaults -> {

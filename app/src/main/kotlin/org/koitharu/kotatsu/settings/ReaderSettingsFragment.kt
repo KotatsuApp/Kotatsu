@@ -24,6 +24,7 @@ import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.settings.utils.PercentSummaryProvider
 import org.koitharu.kotatsu.settings.utils.SliderPreference
 import androidx.preference.EditTextPreference
+import org.koitharu.kotatsu.core.util.LanguageDetectionUtils
 
 @AndroidEntryPoint
 class ReaderSettingsFragment :
@@ -64,6 +65,16 @@ class ReaderSettingsFragment :
 		}
 		findPreference<MultiSelectListPreference>(AppSettings.KEY_READER_CROP)?.run {
 			summaryProvider = MultiSummaryProvider(R.string.disabled)
+		}
+		findPreference<MultiSelectListPreference>(AppSettings.KEY_DEFAULT_TRANSLATION_LANGUAGES)?.run {
+			val availableLanguages = LanguageDetectionUtils.getAvailableLanguages()
+			entries = availableLanguages.values.toTypedArray()
+			entryValues = availableLanguages.keys.toTypedArray()
+			// Default to English + user's system languages
+			val defaultLanguages = LanguageDetectionUtils.getPreferredSystemLanguages().toMutableSet()
+			defaultLanguages.add("en") // Always include English
+			setDefaultValueCompat(defaultLanguages)
+			summaryProvider = MultiSummaryProvider(R.string.none)
 		}
 		findPreference<SliderPreference>(AppSettings.KEY_WEBTOON_ZOOM_OUT)?.summaryProvider = PercentSummaryProvider()
 		updateReaderModeDependency()

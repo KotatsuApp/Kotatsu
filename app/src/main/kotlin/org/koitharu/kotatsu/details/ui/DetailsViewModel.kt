@@ -61,6 +61,7 @@ import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingStatus
 import org.koitharu.kotatsu.stats.data.StatsRepository
+import org.koitharu.kotatsu.reader.domain.AutoTranslationConfigManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -80,6 +81,7 @@ class DetailsViewModel @Inject constructor(
 	private val progressUpdateUseCase: ProgressUpdateUseCase,
 	private val readingTimeUseCase: ReadingTimeUseCase,
 	statsRepository: StatsRepository,
+	private val autoTranslationConfigManager: AutoTranslationConfigManager,
 ) : ChaptersPagesViewModel(
 	settings = settings,
 	interactor = interactor,
@@ -243,6 +245,11 @@ class DetailsViewModel @Inject constructor(
 			.onEachWhile {
 				if (it.allChapters.isNotEmpty()) {
 					val manga = it.toManga()
+					
+					// Auto-configure translation preferences based on global settings
+					// Only applies if settings have changed since last application
+					autoTranslationConfigManager.autoConfigureIfNeeded(manga)
+					
 					// find default branch
 					val hist = historyRepository.getOne(manga)
 					selectedBranch.value = manga.getPreferredBranch(hist)

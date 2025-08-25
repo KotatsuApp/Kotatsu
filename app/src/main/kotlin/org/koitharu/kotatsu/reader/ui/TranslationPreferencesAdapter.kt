@@ -55,8 +55,12 @@ class TranslationPreferencesAdapter(
 			
 			// Show enabled/disabled state
 			binding.checkboxEnabled.isChecked = item.isEnabled
-			binding.checkboxEnabled.setOnCheckedChangeListener { _, isChecked ->
-				clickListener.onItemClick(item.copy(isEnabled = isChecked), binding.root)
+			// Remove direct checkbox listener to prevent double-triggering
+			// All interactions should go through card click for consistent behavior
+			binding.checkboxEnabled.setOnCheckedChangeListener(null)
+			binding.checkboxEnabled.setOnClickListener {
+				// Delegate to card click for consistent behavior
+				binding.root.performClick()
 			}
 
 			// Show last used indicator

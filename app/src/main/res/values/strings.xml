@@ -823,6 +823,10 @@
 	<string name="no_translations_available">No translations available</string>
 	<string name="recently_used">Recently used</string>
 	<string name="default_translation">Default</string>
+	<string name="default_translation_languages">Default Languages</string>
+	<string name="default_translation_languages_summary">Automatically enable these languages when opening translation settings</string>
+	<string name="apply_default_languages">Apply Default Languages</string>
+	<string name="global_translation_settings">Global Translation Settings</string>
 	<string name="reset_to_defaults">Reset to defaults</string>
 	<string name="pages_slider">Page switch slider</string>
 	<string name="screen_rotation_locked">Screen rotation has been locked</string>

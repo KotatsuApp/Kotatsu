@@ -182,6 +182,12 @@
 			android:summary="@string/translation_show_notifications_summary"
 			android:title="@string/translation_show_notifications" />
 
+		<MultiSelectListPreference
+			android:key="default_translation_languages"
+			android:title="@string/default_translation_languages"
+			android:summary="@string/default_translation_languages_summary"
+			android:dependency="translation_fallback_enabled" />
+
 		<Preference
 			android:key="translation_help"
 			android:persistent="false"

@@ -413,6 +413,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isTranslationNotificationsEnabled: Boolean
 		get() = prefs.getBoolean(KEY_TRANSLATION_SHOW_NOTIFICATIONS, true)
 
+	var defaultTranslationLanguages: Set<String>
+		get() = prefs.getStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, emptySet()).orEmpty()
+		set(value) = prefs.edit { putStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, value) }
+
 	var readerColorFilter: ReaderColorFilter?
 		get() = runCatching {
 			ReaderColorFilter(
@@ -808,6 +812,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_DISCORD_TOKEN = "discord_token"
 		const val KEY_TRANSLATION_FALLBACK_ENABLED = "translation_fallback_enabled"
 		const val KEY_TRANSLATION_SHOW_NOTIFICATIONS = "translation_show_notifications"
+		const val KEY_DEFAULT_TRANSLATION_LANGUAGES = "default_translation_languages"
 
 		// keys for non-persistent preferences
 		const val KEY_APP_VERSION = "app_version"
