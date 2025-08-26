@@ -78,12 +78,10 @@ class TranslationSettingsViewModel @Inject constructor(
 				val branches = manga.chapters?.mapNotNull { it.branch }?.distinct() ?: emptyList()
 				Log.d(TAG, "DEBUG: Available branches from existing chapters: $branches")
 				
-				// Apply default language settings first like DetailsViewModel and ReaderViewModel do
-				Log.d(TAG, "DEBUG: Auto-configuring translation preferences based on global settings")
-				autoTranslationConfigManager.autoConfigureIfNeeded(manga)
-				
-				val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(manga)
-				Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences after auto-configuration")
+				// Generate preferences with built-in default language logic (avoiding potential database issues)
+				Log.d(TAG, "DEBUG: Generating preferences with built-in default language logic")
+				val prefs = generatePreferencesFromChapters(manga)
+				Log.d(TAG, "DEBUG: Generated ${prefs.size} preferences with default language logic applied")
 				prefs.forEach { pref ->
 					Log.d(TAG, "DEBUG: Fast Path Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
 				}
@@ -99,18 +97,10 @@ class TranslationSettingsViewModel @Inject constructor(
 					val branches = mangaWithCachedChapters.chapters?.mapNotNull { it.branch }?.distinct() ?: emptyList()
 					Log.d(TAG, "DEBUG: Cached branches: $branches")
 					
-					// Use manual preference generation to avoid database issues
-					Log.d(TAG, "DEBUG: Generating preferences manually from cached chapters")
-					val prefs = generatePreferencesFromChapters(mangaWithCachedChapters)
-					Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences from cached data")
-					
-					// Apply default language settings like DetailsViewModel and ReaderViewModel do
-					Log.d(TAG, "DEBUG: Auto-configuring translation preferences based on global settings")
-					autoTranslationConfigManager.autoConfigureIfNeeded(mangaWithCachedChapters)
-					
-					// Reload preferences after auto-configuration
+					// Generate preferences with built-in default language logic
+					Log.d(TAG, "DEBUG: Generating preferences manually from cached chapters with default language logic")
 					val finalPrefs = generatePreferencesFromChapters(mangaWithCachedChapters)
-					Log.d(TAG, "DEBUG: Final ${finalPrefs.size} preferences after auto-configuration:")
+					Log.d(TAG, "DEBUG: Final ${finalPrefs.size} preferences with default language logic applied:")
 					finalPrefs.forEach { pref ->
 						Log.d(TAG, "DEBUG: Final Cached Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
 					}
@@ -136,19 +126,11 @@ class TranslationSettingsViewModel @Inject constructor(
 						val branches = loadedDetails.allChapters.mapNotNull { it.branch }.distinct()
 						Log.d(TAG, "DEBUG: Strategy 2 SUCCESS - DetailsLoadUseCase branches: $branches")
 						
-						// Generate preferences directly from chapter data to avoid database constraints
+						// Generate preferences with built-in default language logic
 						val fullManga = loadedDetails.toManga()
-						Log.d(TAG, "DEBUG: Generating preferences manually to avoid foreign key issues")
-						val prefs = generatePreferencesFromChapters(fullManga)
-						Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences manually")
-						
-						// Apply default language settings like DetailsViewModel and ReaderViewModel do
-						Log.d(TAG, "DEBUG: Auto-configuring translation preferences based on global settings")
-						autoTranslationConfigManager.autoConfigureIfNeeded(fullManga)
-						
-						// Reload preferences after auto-configuration
+						Log.d(TAG, "DEBUG: Generating preferences manually with built-in default language logic")
 						val finalPrefs = generatePreferencesFromChapters(fullManga)
-						Log.d(TAG, "DEBUG: Final ${finalPrefs.size} preferences after auto-configuration:")
+						Log.d(TAG, "DEBUG: Final ${finalPrefs.size} preferences with default language logic applied:")
 						finalPrefs.forEach { pref ->
 							Log.d(TAG, "DEBUG: Final Network Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
 						}
@@ -310,23 +292,51 @@ class TranslationSettingsViewModel @Inject constructor(
 			emptyList()
 		}
 
+		// Get default languages and apply the same logic as AutoTranslationConfigManager
+		val defaultLanguages = appSettings.defaultTranslationLanguages
+		Log.d(TAG, "DEBUG: generatePreferencesFromChapters - Default languages: $defaultLanguages")
+		
 		// Create preferences for each branch with proper priority assignment
 		val sortedBranches = branchCounts.keys.sortedWith(compareBy<String?> { it == null }.thenBy { it }) // null last, then alphabetical
 		val preferences = sortedBranches.mapIndexed { index, branch ->
 			// Check if we have existing preference for this branch
 			val existingPref = existingPrefs.find { it.branch == branch }
 			
+			// Detect language for this branch using the same logic as AutoTranslationConfigManager
+			val branchLanguage = LanguageDetectionUtils.detectLanguageFromBranch(branch ?: "")
+			val shouldBeEnabled = if (defaultLanguages.isNotEmpty()) {
+				// Apply default language logic: enable only if language matches default languages
+				branchLanguage != null && branchLanguage in defaultLanguages
+			} else {
+				// No default languages set, use existing preference or default to enabled
+				existingPref?.isEnabled ?: true
+			}
+			
+			Log.d(TAG, "DEBUG: Branch '$branch' -> language='$branchLanguage', shouldBeEnabled=$shouldBeEnabled")
+			
 			MangaTranslationPreference(
 				branch = branch ?: "",
-				priority = existingPref?.priority ?: index, // Use index for consistent ordering
-				isEnabled = existingPref?.isEnabled ?: true, // Default to enabled
+				priority = existingPref?.priority ?: index, // Use index for initial ordering
+				isEnabled = shouldBeEnabled,
 				lastUsed = existingPref?.lastUsed,
 				chapterCount = branchCounts[branch] ?: 0
 			)
-		}.sortedBy { it.priority }
+		}
+		
+		// Apply the same sorting logic as AutoTranslationConfigManager:
+		// Sort enabled preferences first, then by priority, then update priorities
+		val sortedPrefs = preferences.sortedWith { a, b ->
+			when {
+				a.isEnabled && !b.isEnabled -> -1
+				!a.isEnabled && b.isEnabled -> 1
+				else -> a.priority.compareTo(b.priority)
+			}
+		}.mapIndexed { index, preference ->
+			preference.copy(priority = index)
+		}
 
-		Log.d(TAG, "DEBUG: generatePreferencesFromChapters - Created ${preferences.size} preferences")
-		return preferences
+		Log.d(TAG, "DEBUG: generatePreferencesFromChapters - Created ${sortedPrefs.size} preferences with proper sorting")
+		return sortedPrefs
 	}
 
 	/**
