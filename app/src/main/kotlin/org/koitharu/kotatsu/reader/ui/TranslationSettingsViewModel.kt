@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
 import org.koitharu.kotatsu.reader.data.TranslationPreferencesRepository
+import org.koitharu.kotatsu.reader.domain.AutoTranslationConfigManager
 import org.koitharu.kotatsu.reader.domain.MangaTranslationPreference
 import org.koitharu.kotatsu.reader.domain.TranslationFallbackManager
 import org.koitharu.kotatsu.core.util.LanguageDetectionUtils
@@ -31,6 +32,7 @@ class TranslationSettingsViewModel @Inject constructor(
 	private val appSettings: AppSettings,
 	private val detailsLoadUseCase: DetailsLoadUseCase,
 	private val database: MangaDatabase,
+	private val autoTranslationConfigManager: AutoTranslationConfigManager,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -75,10 +77,15 @@ class TranslationSettingsViewModel @Inject constructor(
 				Log.d(TAG, "DEBUG: Using fast path - manga already has chapters")
 				val branches = manga.chapters?.mapNotNull { it.branch }?.distinct() ?: emptyList()
 				Log.d(TAG, "DEBUG: Available branches from existing chapters: $branches")
+				
+				// Apply default language settings first like DetailsViewModel and ReaderViewModel do
+				Log.d(TAG, "DEBUG: Auto-configuring translation preferences based on global settings")
+				autoTranslationConfigManager.autoConfigureIfNeeded(manga)
+				
 				val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(manga)
-				Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences")
+				Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences after auto-configuration")
 				prefs.forEach { pref ->
-					Log.d(TAG, "DEBUG: Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
+					Log.d(TAG, "DEBUG: Fast Path Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
 				}
 				_preferences.value = prefs
 			} else {
@@ -96,10 +103,18 @@ class TranslationSettingsViewModel @Inject constructor(
 					Log.d(TAG, "DEBUG: Generating preferences manually from cached chapters")
 					val prefs = generatePreferencesFromChapters(mangaWithCachedChapters)
 					Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences from cached data")
-					prefs.forEach { pref ->
-						Log.d(TAG, "DEBUG: Cached Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
+					
+					// Apply default language settings like DetailsViewModel and ReaderViewModel do
+					Log.d(TAG, "DEBUG: Auto-configuring translation preferences based on global settings")
+					autoTranslationConfigManager.autoConfigureIfNeeded(mangaWithCachedChapters)
+					
+					// Reload preferences after auto-configuration
+					val finalPrefs = generatePreferencesFromChapters(mangaWithCachedChapters)
+					Log.d(TAG, "DEBUG: Final ${finalPrefs.size} preferences after auto-configuration:")
+					finalPrefs.forEach { pref ->
+						Log.d(TAG, "DEBUG: Final Cached Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
 					}
-					_preferences.value = prefs
+					_preferences.value = finalPrefs
 					return@launchJob
 				}
 				Log.d(TAG, "DEBUG: Strategy 1 FAILED - No cached chapters found")
@@ -126,10 +141,18 @@ class TranslationSettingsViewModel @Inject constructor(
 						Log.d(TAG, "DEBUG: Generating preferences manually to avoid foreign key issues")
 						val prefs = generatePreferencesFromChapters(fullManga)
 						Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences manually")
-						prefs.forEach { pref ->
-							Log.d(TAG, "DEBUG: Manual Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
+						
+						// Apply default language settings like DetailsViewModel and ReaderViewModel do
+						Log.d(TAG, "DEBUG: Auto-configuring translation preferences based on global settings")
+						autoTranslationConfigManager.autoConfigureIfNeeded(fullManga)
+						
+						// Reload preferences after auto-configuration
+						val finalPrefs = generatePreferencesFromChapters(fullManga)
+						Log.d(TAG, "DEBUG: Final ${finalPrefs.size} preferences after auto-configuration:")
+						finalPrefs.forEach { pref ->
+							Log.d(TAG, "DEBUG: Final Network Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
 						}
-						_preferences.value = prefs
+						_preferences.value = finalPrefs
 						return@launchJob
 					} else {
 						Log.d(TAG, "DEBUG: Strategy 2 FAILED - DetailsLoadUseCase returned no chapters")
