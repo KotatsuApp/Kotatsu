@@ -295,10 +295,10 @@ class TranslationSettingsViewModel @Inject constructor(
 			
 			MangaTranslationPreference(
 				branch = branch ?: "",
-				isEnabled = existingPref?.isEnabled ?: true, // Default to enabled
 				priority = existingPref?.priority ?: index, // Use index for consistent ordering
-				chapterCount = branchCounts[branch] ?: 0,
-				lastUsedAt = existingPref?.lastUsedAt ?: 0L
+				isEnabled = existingPref?.isEnabled ?: true, // Default to enabled
+				lastUsed = existingPref?.lastUsed,
+				chapterCount = branchCounts[branch] ?: 0
 			)
 		}.sortedBy { it.priority }
 
