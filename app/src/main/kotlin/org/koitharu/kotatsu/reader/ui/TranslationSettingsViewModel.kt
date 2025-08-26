@@ -11,7 +11,6 @@ import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
 import org.koitharu.kotatsu.core.db.entity.toMangaChapters
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.MangaIntent
-import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
@@ -31,7 +30,6 @@ class TranslationSettingsViewModel @Inject constructor(
 	private val appSettings: AppSettings,
 	private val detailsLoadUseCase: DetailsLoadUseCase,
 	private val database: MangaDatabase,
-	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -102,30 +100,36 @@ class TranslationSettingsViewModel @Inject constructor(
 				}
 				Log.d(TAG, "DEBUG: Strategy 1 FAILED - No cached chapters found")
 				
-				// Strategy 2: Fetch fresh data from network/source
-				Log.d(TAG, "DEBUG: Strategy 2 - Fetching fresh data from network/source")
+				// Strategy 2: Use DetailsLoadUseCase with force=true (same as ReaderViewModel)
+				Log.d(TAG, "DEBUG: Strategy 2 - Using DetailsLoadUseCase with force=true like ReaderViewModel")
 				try {
-					val repository = mangaRepositoryFactory.create(manga.source)
-					Log.d(TAG, "DEBUG: Created repository for source: ${manga.source}")
-					val fullManga = repository.getDetails(manga)
-					Log.d(TAG, "DEBUG: Network fetch completed - chapters: ${fullManga.chapters?.size ?: 0}")
+					// Create manga-only intent to force proper database loading (like ReaderViewModel does)
+					val mangaOnlyIntent = MangaIntent.of(manga)
+					Log.d(TAG, "DEBUG: Created manga-only intent for proper DetailsLoadUseCase flow")
 					
-					if (!fullManga.chapters.isNullOrEmpty()) {
-						val branches = fullManga.chapters?.mapNotNull { it.branch }?.distinct() ?: emptyList()
-						Log.d(TAG, "DEBUG: Strategy 2 SUCCESS - Network branches: $branches")
-						val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(fullManga)
-						Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences from network data")
-						prefs.forEach { pref ->
-							Log.d(TAG, "DEBUG: Network Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
+					detailsLoadUseCase(mangaOnlyIntent, force = true).collect { mangaDetails ->
+						Log.d(TAG, "DEBUG: DetailsLoadUseCase flow - isLoaded=${mangaDetails.isLoaded}, chapters=${mangaDetails.allChapters.size}")
+						
+						if (mangaDetails.isLoaded && mangaDetails.allChapters.isNotEmpty()) {
+							val branches = mangaDetails.allChapters.mapNotNull { it.branch }.distinct()
+							Log.d(TAG, "DEBUG: Strategy 2 SUCCESS - DetailsLoadUseCase branches: $branches")
+							
+							// Use the proper manga from DetailsLoadUseCase (includes all database storage)
+							val fullManga = mangaDetails.toManga()
+							val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(fullManga)
+							Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences from DetailsLoadUseCase")
+							prefs.forEach { pref ->
+								Log.d(TAG, "DEBUG: DetailsLoadUseCase Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
+							}
+							_preferences.value = prefs
+							return@launchJob
+						} else {
+							Log.d(TAG, "DEBUG: DetailsLoadUseCase still loading or no chapters found")
 						}
-						_preferences.value = prefs
-						return@launchJob
-					} else {
-						Log.d(TAG, "DEBUG: Strategy 2 FAILED - Network returned manga with no chapters")
 					}
 				} catch (e: Exception) {
-					// Network fetch failed, fall through to empty state
-					Log.e(TAG, "DEBUG: Strategy 2 EXCEPTION - Network fetch failed: ${e.message}", e)
+					// DetailsLoadUseCase failed, fall through to empty state
+					Log.e(TAG, "DEBUG: Strategy 2 EXCEPTION - DetailsLoadUseCase failed: ${e.message}", e)
 				}
 				
 				// Strategy 3: If all else fails, show empty list
