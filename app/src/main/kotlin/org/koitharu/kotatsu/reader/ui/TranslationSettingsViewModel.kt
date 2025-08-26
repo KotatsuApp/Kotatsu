@@ -20,6 +20,7 @@ import org.koitharu.kotatsu.reader.domain.MangaTranslationPreference
 import org.koitharu.kotatsu.reader.domain.TranslationFallbackManager
 import org.koitharu.kotatsu.core.util.LanguageDetectionUtils
 import org.koitharu.kotatsu.parsers.model.Manga
+import android.util.Log
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,6 +36,10 @@ class TranslationSettingsViewModel @Inject constructor(
 
 	private val intent = MangaIntent(savedStateHandle)
 	val manga = intent.manga ?: throw IllegalArgumentException("Manga is required")
+	
+	companion object {
+		private const val TAG = "TranslationSettingsVM"
+	}
 
 	private val _preferences = MutableStateFlow<List<MangaTranslationPreference>>(emptyList())
 	val preferences = _preferences.asStateFlow()
@@ -45,46 +50,89 @@ class TranslationSettingsViewModel @Inject constructor(
 	val isGlobalFallbackEnabled = appSettings.isTranslationFallbackEnabled
 
 	init {
+		Log.d(TAG, "DEBUG: TranslationSettingsViewModel init() - Starting initialization")
+		Log.d(TAG, "DEBUG: Initial manga state - id=${manga.id}, title='${manga.title}', source=${manga.source}")
+		Log.d(TAG, "DEBUG: Initial manga chapters count: ${manga.chapters?.size ?: 0}")
+		Log.d(TAG, "DEBUG: Initial manga chapters branches: ${manga.chapters?.mapNotNull { it.branch }?.distinct() ?: emptyList()}")
 		loadPreferences()
 		loadSkipDecimalChapters()
+		Log.d(TAG, "DEBUG: TranslationSettingsViewModel init() - Initialization completed")
 	}
 
 	private fun loadPreferences() {
 		launchJob {
+			Log.d(TAG, "DEBUG: loadPreferences() started")
+			Log.d(TAG, "DEBUG: manga.id = ${manga.id}")
+			Log.d(TAG, "DEBUG: manga.title = ${manga.title}")
+			Log.d(TAG, "DEBUG: manga.source = ${manga.source}")
+			
 			// Check if manga already has chapters
 			val hasChapters = manga.chapters?.isNotEmpty() == true
+			Log.d(TAG, "DEBUG: manga.chapters size = ${manga.chapters?.size ?: 0}")
+			Log.d(TAG, "DEBUG: hasChapters = $hasChapters")
 			
 			if (hasChapters) {
 				// Fast path: manga already has chapters, use them directly
+				Log.d(TAG, "DEBUG: Using fast path - manga already has chapters")
+				val branches = manga.chapters?.mapNotNull { it.branch }?.distinct() ?: emptyList()
+				Log.d(TAG, "DEBUG: Available branches from existing chapters: $branches")
 				val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(manga)
+				Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences")
+				prefs.forEach { pref ->
+					Log.d(TAG, "DEBUG: Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
+				}
 				_preferences.value = prefs
 			} else {
 				// Manga has no chapters (common when coming from details via ParcelableManga)
-				// Try multiple fallback strategies
+				Log.d(TAG, "DEBUG: Manga has no chapters, trying fallback strategies")
 				
 				// Strategy 1: Try loading from database first
+				Log.d(TAG, "DEBUG: Strategy 1 - Attempting to load cached chapters from database")
 				loadMangaWithCachedChapters()?.let { mangaWithCachedChapters ->
+					Log.d(TAG, "DEBUG: Strategy 1 SUCCESS - Found cached chapters: ${mangaWithCachedChapters.chapters?.size ?: 0}")
+					val branches = mangaWithCachedChapters.chapters?.mapNotNull { it.branch }?.distinct() ?: emptyList()
+					Log.d(TAG, "DEBUG: Cached branches: $branches")
 					val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(mangaWithCachedChapters)
+					Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences from cached data")
+					prefs.forEach { pref ->
+						Log.d(TAG, "DEBUG: Cached Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
+					}
 					_preferences.value = prefs
 					return@launchJob
 				}
+				Log.d(TAG, "DEBUG: Strategy 1 FAILED - No cached chapters found")
 				
 				// Strategy 2: Fetch fresh data from network/source
+				Log.d(TAG, "DEBUG: Strategy 2 - Fetching fresh data from network/source")
 				try {
 					val repository = mangaRepositoryFactory.create(manga.source)
+					Log.d(TAG, "DEBUG: Created repository for source: ${manga.source}")
 					val fullManga = repository.getDetails(manga)
+					Log.d(TAG, "DEBUG: Network fetch completed - chapters: ${fullManga.chapters?.size ?: 0}")
+					
 					if (!fullManga.chapters.isNullOrEmpty()) {
+						val branches = fullManga.chapters?.mapNotNull { it.branch }?.distinct() ?: emptyList()
+						Log.d(TAG, "DEBUG: Strategy 2 SUCCESS - Network branches: $branches")
 						val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(fullManga)
+						Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences from network data")
+						prefs.forEach { pref ->
+							Log.d(TAG, "DEBUG: Network Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
+						}
 						_preferences.value = prefs
 						return@launchJob
+					} else {
+						Log.d(TAG, "DEBUG: Strategy 2 FAILED - Network returned manga with no chapters")
 					}
 				} catch (e: Exception) {
 					// Network fetch failed, fall through to empty state
+					Log.e(TAG, "DEBUG: Strategy 2 EXCEPTION - Network fetch failed: ${e.message}", e)
 				}
 				
 				// Strategy 3: If all else fails, show empty list
+				Log.d(TAG, "DEBUG: Strategy 3 - All strategies failed, showing empty list")
 				_preferences.value = emptyList()
 			}
+			Log.d(TAG, "DEBUG: loadPreferences() completed")
 		}
 	}
 
@@ -211,13 +259,21 @@ class TranslationSettingsViewModel @Inject constructor(
 	 */
 	private suspend fun loadMangaWithCachedChapters(): Manga? {
 		return try {
+			Log.d(TAG, "DEBUG: loadMangaWithCachedChapters() - Querying database for manga.id=${manga.id}")
 			val cachedChapters = database.getChaptersDao().findAll(manga.id)
+			Log.d(TAG, "DEBUG: loadMangaWithCachedChapters() - Found ${cachedChapters.size} cached chapters in database")
+			
 			if (cachedChapters.isNotEmpty()) {
-				manga.copy(chapters = cachedChapters.toMangaChapters())
+				val mangaChapters = cachedChapters.toMangaChapters()
+				val branches = mangaChapters.mapNotNull { it.branch }.distinct()
+				Log.d(TAG, "DEBUG: loadMangaWithCachedChapters() - Converting to ${mangaChapters.size} MangaChapters with branches: $branches")
+				manga.copy(chapters = mangaChapters)
 			} else {
+				Log.d(TAG, "DEBUG: loadMangaWithCachedChapters() - No cached chapters found, returning null")
 				null
 			}
 		} catch (e: Exception) {
+			Log.e(TAG, "DEBUG: loadMangaWithCachedChapters() - Exception occurred: ${e.message}", e)
 			null
 		}
 	}
