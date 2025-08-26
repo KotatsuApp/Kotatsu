@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
@@ -90,7 +91,10 @@ class TranslationSettingsViewModel @Inject constructor(
 					Log.d(TAG, "DEBUG: Strategy 1 SUCCESS - Found cached chapters: ${mangaWithCachedChapters.chapters?.size ?: 0}")
 					val branches = mangaWithCachedChapters.chapters?.mapNotNull { it.branch }?.distinct() ?: emptyList()
 					Log.d(TAG, "DEBUG: Cached branches: $branches")
-					val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(mangaWithCachedChapters)
+					
+					// Use manual preference generation to avoid database issues
+					Log.d(TAG, "DEBUG: Generating preferences manually from cached chapters")
+					val prefs = generatePreferencesFromChapters(mangaWithCachedChapters)
 					Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences from cached data")
 					prefs.forEach { pref ->
 						Log.d(TAG, "DEBUG: Cached Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
@@ -107,25 +111,28 @@ class TranslationSettingsViewModel @Inject constructor(
 					val mangaOnlyIntent = MangaIntent.of(manga)
 					Log.d(TAG, "DEBUG: Created manga-only intent for proper DetailsLoadUseCase flow")
 					
-					detailsLoadUseCase(mangaOnlyIntent, force = true).collect { mangaDetails ->
-						Log.d(TAG, "DEBUG: DetailsLoadUseCase flow - isLoaded=${mangaDetails.isLoaded}, chapters=${mangaDetails.allChapters.size}")
+					// Use firstOrNull to get the loaded result and break out of collect
+					val loadedDetails = detailsLoadUseCase(mangaOnlyIntent, force = true)
+						.first { it.isLoaded }
+					
+					Log.d(TAG, "DEBUG: DetailsLoadUseCase completed - isLoaded=${loadedDetails.isLoaded}, chapters=${loadedDetails.allChapters.size}")
+					
+					if (loadedDetails.allChapters.isNotEmpty()) {
+						val branches = loadedDetails.allChapters.mapNotNull { it.branch }.distinct()
+						Log.d(TAG, "DEBUG: Strategy 2 SUCCESS - DetailsLoadUseCase branches: $branches")
 						
-						if (mangaDetails.isLoaded && mangaDetails.allChapters.isNotEmpty()) {
-							val branches = mangaDetails.allChapters.mapNotNull { it.branch }.distinct()
-							Log.d(TAG, "DEBUG: Strategy 2 SUCCESS - DetailsLoadUseCase branches: $branches")
-							
-							// Use the proper manga from DetailsLoadUseCase (includes all database storage)
-							val fullManga = mangaDetails.toManga()
-							val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(fullManga)
-							Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences from DetailsLoadUseCase")
-							prefs.forEach { pref ->
-								Log.d(TAG, "DEBUG: DetailsLoadUseCase Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
-							}
-							_preferences.value = prefs
-							return@launchJob
-						} else {
-							Log.d(TAG, "DEBUG: DetailsLoadUseCase still loading or no chapters found")
+						// Generate preferences directly from chapter data to avoid database constraints
+						val fullManga = loadedDetails.toManga()
+						Log.d(TAG, "DEBUG: Generating preferences manually to avoid foreign key issues")
+						val prefs = generatePreferencesFromChapters(fullManga)
+						Log.d(TAG, "DEBUG: Generated ${prefs.size} translation preferences manually")
+						prefs.forEach { pref ->
+							Log.d(TAG, "DEBUG: Manual Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
 						}
+						_preferences.value = prefs
+						return@launchJob
+					} else {
+						Log.d(TAG, "DEBUG: Strategy 2 FAILED - DetailsLoadUseCase returned no chapters")
 					}
 				} catch (e: Exception) {
 					// DetailsLoadUseCase failed, fall through to empty state
@@ -255,6 +262,48 @@ class TranslationSettingsViewModel @Inject constructor(
 			}
 			_skipDecimalChapters.value = skip
 		}
+	}
+
+	/**
+	 * Generate translation preferences directly from chapters without database dependencies
+	 * This avoids foreign key constraint issues when manga isn't properly stored yet
+	 */
+	private suspend fun generatePreferencesFromChapters(manga: Manga): List<MangaTranslationPreference> {
+		val chapters = manga.chapters
+		if (chapters.isNullOrEmpty()) {
+			Log.d(TAG, "DEBUG: generatePreferencesFromChapters - No chapters available")
+			return emptyList()
+		}
+
+		// Group chapters by branch and count them
+		val branchCounts = chapters.groupBy { it.branch }.mapValues { it.value.size }
+		Log.d(TAG, "DEBUG: generatePreferencesFromChapters - Branch counts: $branchCounts")
+
+		// Try to get existing preferences from database (might fail due to foreign key issues)
+		val existingPrefs = try {
+			translationPreferencesRepository.getPreferences(manga.id)
+		} catch (e: Exception) {
+			Log.d(TAG, "DEBUG: generatePreferencesFromChapters - Failed to load existing prefs, using defaults: ${e.message}")
+			emptyList()
+		}
+
+		// Create preferences for each branch with proper priority assignment
+		val sortedBranches = branchCounts.keys.sortedWith(compareBy<String?> { it == null }.thenBy { it }) // null last, then alphabetical
+		val preferences = sortedBranches.mapIndexed { index, branch ->
+			// Check if we have existing preference for this branch
+			val existingPref = existingPrefs.find { it.branch == branch }
+			
+			MangaTranslationPreference(
+				branch = branch ?: "",
+				isEnabled = existingPref?.isEnabled ?: true, // Default to enabled
+				priority = existingPref?.priority ?: index, // Use index for consistent ordering
+				chapterCount = branchCounts[branch] ?: 0,
+				lastUsedAt = existingPref?.lastUsedAt ?: 0L
+			)
+		}.sortedBy { it.priority }
+
+		Log.d(TAG, "DEBUG: generatePreferencesFromChapters - Created ${preferences.size} preferences")
+		return preferences
 	}
 
 	/**
