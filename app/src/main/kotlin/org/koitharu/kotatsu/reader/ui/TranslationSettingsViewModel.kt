@@ -9,7 +9,9 @@ import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
 import org.koitharu.kotatsu.core.db.entity.toMangaChapters
+import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.MangaIntent
+import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
@@ -17,6 +19,7 @@ import org.koitharu.kotatsu.reader.data.TranslationPreferencesRepository
 import org.koitharu.kotatsu.reader.domain.MangaTranslationPreference
 import org.koitharu.kotatsu.reader.domain.TranslationFallbackManager
 import org.koitharu.kotatsu.core.util.LanguageDetectionUtils
+import org.koitharu.kotatsu.parsers.model.Manga
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +30,7 @@ class TranslationSettingsViewModel @Inject constructor(
 	private val appSettings: AppSettings,
 	private val detailsLoadUseCase: DetailsLoadUseCase,
 	private val database: MangaDatabase,
+	private val mangaRepositoryFactory: MangaRepository.Factory,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -50,22 +54,36 @@ class TranslationSettingsViewModel @Inject constructor(
 			// Check if manga already has chapters
 			val hasChapters = manga.chapters?.isNotEmpty() == true
 			
-			// Force reload if manga has no chapters (happens when coming from details page via ParcelableManga)
-			val shouldForceReload = !hasChapters
-			
-			// Load complete manga details with chapters
-			detailsLoadUseCase(intent, force = shouldForceReload).collect { mangaDetails ->
-				// Ensure we have loaded chapters before proceeding
-				if (mangaDetails.isLoaded && mangaDetails.allChapters.isNotEmpty()) {
-					// Create manga with ALL chapters (not filtered by branch)
-					val baseManga = mangaDetails.toManga()
-					val fullManga = baseManga.copy(chapters = mangaDetails.allChapters)
-					val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(fullManga)
+			if (hasChapters) {
+				// Fast path: manga already has chapters, use them directly
+				val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(manga)
+				_preferences.value = prefs
+			} else {
+				// Manga has no chapters (common when coming from details via ParcelableManga)
+				// Try multiple fallback strategies
+				
+				// Strategy 1: Try loading from database first
+				loadMangaWithCachedChapters()?.let { mangaWithCachedChapters ->
+					val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(mangaWithCachedChapters)
 					_preferences.value = prefs
-				} else if (mangaDetails.isLoaded && mangaDetails.allChapters.isEmpty()) {
-					// Fallback: Try loading chapters directly from database if available
-					loadPreferencesFromCachedChapters()
+					return@launchJob
 				}
+				
+				// Strategy 2: Fetch fresh data from network/source
+				try {
+					val repository = mangaRepositoryFactory.create(manga.source)
+					val fullManga = repository.getDetails(manga)
+					if (!fullManga.chapters.isNullOrEmpty()) {
+						val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(fullManga)
+						_preferences.value = prefs
+						return@launchJob
+					}
+				} catch (e: Exception) {
+					// Network fetch failed, fall through to empty state
+				}
+				
+				// Strategy 3: If all else fails, show empty list
+				_preferences.value = emptyList()
 			}
 		}
 	}
@@ -188,20 +206,19 @@ class TranslationSettingsViewModel @Inject constructor(
 	}
 
 	/**
-	 * Fallback method to load preferences from cached chapters when network loading fails
+	 * Attempts to load manga with chapters from cached database chapters
+	 * Returns null if no cached chapters are available
 	 */
-	private suspend fun loadPreferencesFromCachedChapters() {
-		try {
-			// Try to load cached chapters directly from database
+	private suspend fun loadMangaWithCachedChapters(): Manga? {
+		return try {
 			val cachedChapters = database.getChaptersDao().findAll(manga.id)
 			if (cachedChapters.isNotEmpty()) {
-				val fullManga = manga.copy(chapters = cachedChapters.toMangaChapters())
-				val prefs = translationFallbackManager.getAvailableTranslationsWithPreferences(fullManga)
-				_preferences.value = prefs
+				manga.copy(chapters = cachedChapters.toMangaChapters())
+			} else {
+				null
 			}
 		} catch (e: Exception) {
-			// If all else fails, just ensure preferences list is empty rather than stuck loading
-			_preferences.value = emptyList()
+			null
 		}
 	}
 
