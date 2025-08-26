@@ -2,6 +2,11 @@ package org.koitharu.kotatsu.reader.ui
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
@@ -15,6 +20,8 @@ class TranslationIndicatorView @JvmOverloads constructor(
 	defStyleAttr: Int = 0,
 ) : MaterialTextView(context, attrs, defStyleAttr) {
 
+	var onTranslationSettingsClick: (() -> Unit)? = null
+
 	init {
 		gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
 		setBackgroundResource(R.drawable.bg_reader_indicator)
@@ -24,6 +31,9 @@ class TranslationIndicatorView @JvmOverloads constructor(
 		// Make it less intrusive by using smaller text
 		textSize = 14f
 		setTextColor(ContextCompat.getColor(context, android.R.color.white))
+		
+		// Enable link movement for clickable spans
+		movementMethod = LinkMovementMethod.getInstance()
 	}
 
 	fun showTranslationSwitch(translationName: String) {
@@ -39,6 +49,10 @@ class TranslationIndicatorView @JvmOverloads constructor(
 		// Check if this is a gap notification (contains "Skipped")
 		if (message.contains("Skipped", ignoreCase = true)) {
 			showGapWarning(message)
+		} else if (message.contains("|SHOW_SETTINGS_LINK")) {
+			// This is a translation switch - show with question mark link
+			val cleanMessage = message.replace("|SHOW_SETTINGS_LINK", "")
+			showTranslationSwitchWithSettings(cleanMessage)
 		} else {
 			show(message)
 		}
@@ -66,6 +80,55 @@ class TranslationIndicatorView @JvmOverloads constructor(
 			.start()
 	}
 
+	private fun showTranslationSwitchWithSettings(message: String) {
+		// Restore original background for normal messages
+		setBackgroundResource(R.drawable.bg_reader_indicator)
+		
+		// Create spannable text with question mark link
+		val spannableText = SpannableStringBuilder("$message ")
+		val questionMark = "?"
+		val startIndex = spannableText.length
+		spannableText.append(questionMark)
+		val endIndex = spannableText.length
+		
+		// Create clickable span for question mark
+		val clickableSpan = object : ClickableSpan() {
+			override fun onClick(widget: View) {
+				onTranslationSettingsClick?.invoke()
+			}
+		}
+		
+		// Apply blue color and clickable behavior to question mark
+		spannableText.setSpan(
+			clickableSpan,
+			startIndex,
+			endIndex,
+			Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+		)
+		
+		// Make question mark blue
+		val blueColor = ContextCompat.getColor(context, android.R.color.holo_blue_light)
+		spannableText.setSpan(
+			ForegroundColorSpan(blueColor),
+			startIndex,
+			endIndex,
+			Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+		)
+		
+		text = spannableText
+		visibility = View.VISIBLE
+		animate()
+			.alpha(1f)
+			.setDuration(200)
+			.withEndAction {
+				// Auto-hide after 3 seconds
+				postDelayed({
+					hide()
+				}, 3000)
+			}
+			.start()
+	}
+	
 	private fun show(message: String) {
 		// Restore original background for normal messages
 		setBackgroundResource(R.drawable.bg_reader_indicator)

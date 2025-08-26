@@ -809,6 +809,7 @@
 	<string name="translation_help">How to configure per-manga preferences</string>
 	<string name="translation_help_summary">Go to any manga → ⋮ menu → Translation Settings to set priorities for that manga</string>
 	<string name="translation_settings">Translation Settings</string>
+	<string name="translation_settings_description">Set the priority order for automatic translation fallback. When a chapter is missing in your preferred translation, the app will automatically try the next available translation in this order.</string>
 	<string name="translation_switched_to">Switched to: %s</string>
 	<string name="translation_no_fallback">No alternative translation available</string>
 	<string name="translation_priority_order">Translation Priority Order</string>

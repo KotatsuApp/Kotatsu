@@ -116,6 +116,11 @@ class TranslationSettingsActivity : BaseActivity<ActivityTranslationSettingsBind
 
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
 		val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		// Apply top padding to AppBarLayout for status bar
+		viewBinding.toolbar.parent?.let { appBar ->
+			(appBar as? View)?.updatePadding(top = bars.top)
+		}
+		// Apply side and bottom padding to RecyclerView
 		viewBinding.recyclerView.updatePadding(
 			left = bars.left,
 			right = bars.right,

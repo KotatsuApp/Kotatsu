@@ -576,7 +576,7 @@ class ReaderViewModel @Inject constructor(
 			val notificationMessage = when {
 				gapMessage != null && switchMessage != null -> "$switchMessage • $gapMessage"
 				gapMessage != null -> gapMessage
-				switchMessage != null -> switchMessage
+				switchMessage != null -> "$switchMessage|SHOW_SETTINGS_LINK"  // Special marker for UI
 				else -> null
 			}
 			
@@ -714,11 +714,7 @@ class ReaderViewModel @Inject constructor(
 			saveCurrentState()
 		}
 		
-		// Handle gap and fallback notifications
-		if ((event.hasChapterGap || event.wasFallback) && event.message != null) {
-			// Use the pre-formatted message from TranslationFallbackManager
-			onTranslationSwitched.call(event.message)
-		}
+		// Let notifyStateChanged handle all notifications (gaps and branch switches)
 	}
 
 	/**

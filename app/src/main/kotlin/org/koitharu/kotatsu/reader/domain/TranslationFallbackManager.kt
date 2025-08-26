@@ -136,14 +136,8 @@ class TranslationFallbackManager @Inject constructor(
 			// Check for chapter number gap - improved logic for decimal chapters
 			val hasGap = currentChapter != null && hasSignificantGap(currentChapter.number, bestNextChapter.number)
 			
-			var reason: String? = null
-			if (wasFallback) {
-				reason = "Switched to preferred translation: $bestNextBranch"
-			}
-			if (hasGap && currentChapter != null) {
-				val gapMessage = createGapMessage(currentChapter.number, bestNextChapter.number)
-				reason = if (reason != null) "$reason • $gapMessage" else gapMessage
-			}
+			// Reason is handled by ReaderViewModel.notifyStateChanged()
+			val reason: String? = null
 			
 			return FallbackResult(
 				branch = bestNextBranch, 
@@ -169,14 +163,8 @@ class TranslationFallbackManager @Inject constructor(
 					// Check for chapter number gap
 					val hasGap = currentChapter != null && hasSignificantGap(currentChapter.number, continuationChapter.number)
 					
-					var reason: String? = null
-					if (wasFallback) {
-						reason = "Switched to preferred translation: $branchName"
-					}
-					if (hasGap && currentChapter != null) {
-						val gapMessage = createGapMessage(currentChapter.number, continuationChapter.number)
-						reason = if (reason != null) "$reason • $gapMessage" else gapMessage
-					}
+					// Reason is handled by ReaderViewModel.notifyStateChanged()
+					val reason: String? = null
 					
 					return FallbackResult(
 						branch = branchName, 
