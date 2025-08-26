@@ -145,6 +145,14 @@ class AutoTranslationConfigManager @Inject constructor(
     }
 
     /**
+     * Mark current global settings as applied for a manga to prevent auto-reconfiguration
+     * Should be called when user manually changes preferences
+     */
+    suspend fun markSettingsAsApplied(mangaId: Long, defaultLanguages: Set<String>) {
+        storeLastAppliedSettings(mangaId, defaultLanguages)
+    }
+
+    /**
      * Helper to get manga from ID - this might need to be injected differently
      * depending on how the app architecture works
      */

@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
 import org.koitharu.kotatsu.core.db.entity.toMangaChapters
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.nav.MangaIntent
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.BaseViewModel
 import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
@@ -33,6 +34,7 @@ class TranslationSettingsViewModel @Inject constructor(
 	private val detailsLoadUseCase: DetailsLoadUseCase,
 	private val database: MangaDatabase,
 	private val autoTranslationConfigManager: AutoTranslationConfigManager,
+	private val mangaDataRepository: MangaDataRepository,
 ) : BaseViewModel() {
 
 	private val intent = MangaIntent(savedStateHandle)
@@ -49,6 +51,10 @@ class TranslationSettingsViewModel @Inject constructor(
 	val skipDecimalChapters = _skipDecimalChapters.asStateFlow()
 
 	val isGlobalFallbackEnabled = appSettings.isTranslationFallbackEnabled
+	
+	// Track whether we're using manual preferences and store the full manga with chapters
+	private var usingManualPreferences = false
+	private var mangaWithChapters: Manga? = null
 
 	init {
 		Log.d(TAG, "DEBUG: TranslationSettingsViewModel init() - Starting initialization")
@@ -85,6 +91,8 @@ class TranslationSettingsViewModel @Inject constructor(
 				prefs.forEach { pref ->
 					Log.d(TAG, "DEBUG: Fast Path Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
 				}
+				usingManualPreferences = true
+				mangaWithChapters = manga
 				_preferences.value = prefs
 			} else {
 				// Manga has no chapters (common when coming from details via ParcelableManga)
@@ -97,13 +105,50 @@ class TranslationSettingsViewModel @Inject constructor(
 					val branches = mangaWithCachedChapters.chapters?.mapNotNull { it.branch }?.distinct() ?: emptyList()
 					Log.d(TAG, "DEBUG: Cached branches: $branches")
 					
-					// Generate preferences with built-in default language logic
-					Log.d(TAG, "DEBUG: Generating preferences manually from cached chapters with default language logic")
+					// First, try to load existing saved preferences from database
+					Log.d(TAG, "DEBUG: Strategy 1 - Checking for existing saved preferences in database")
+					val savedPrefs = try {
+						translationPreferencesRepository.getPreferences(manga.id)
+					} catch (e: Exception) {
+						Log.d(TAG, "DEBUG: Strategy 1 - Failed to load saved preferences: ${e.message}")
+						emptyList()
+					}
+					
+					if (savedPrefs.isNotEmpty()) {
+						Log.d(TAG, "DEBUG: Strategy 1 - Found ${savedPrefs.size} saved preferences in database:")
+						savedPrefs.forEach { pref ->
+							Log.d(TAG, "DEBUG: Saved Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}")
+						}
+						
+						// Calculate chapter counts from cached chapters
+						val branchCounts = mangaWithCachedChapters.chapters?.groupBy { it.branch }?.mapValues { it.value.size } ?: emptyMap()
+						Log.d(TAG, "DEBUG: Strategy 1 - Calculated branch counts: $branchCounts")
+						
+						// Merge saved preferences with chapter counts
+						val prefsWithCounts = savedPrefs.map { savedPref ->
+							savedPref.copy(chapterCount = branchCounts[savedPref.branch] ?: 0)
+						}
+						
+						Log.d(TAG, "DEBUG: Strategy 1 - Merged preferences with counts:")
+						prefsWithCounts.forEach { pref ->
+							Log.d(TAG, "DEBUG: Final Saved Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
+						}
+						
+						// Use saved preferences with chapter counts (normal database mode)
+						usingManualPreferences = false
+						_preferences.value = prefsWithCounts
+						return@launchJob
+					}
+					
+					// No saved preferences found, generate new ones with default language logic
+					Log.d(TAG, "DEBUG: Strategy 1 - No saved preferences found, generating with default language logic")
 					val finalPrefs = generatePreferencesFromChapters(mangaWithCachedChapters)
 					Log.d(TAG, "DEBUG: Final ${finalPrefs.size} preferences with default language logic applied:")
 					finalPrefs.forEach { pref ->
 						Log.d(TAG, "DEBUG: Final Cached Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
 					}
+					usingManualPreferences = true
+					mangaWithChapters = mangaWithCachedChapters
 					_preferences.value = finalPrefs
 					return@launchJob
 				}
@@ -126,14 +171,51 @@ class TranslationSettingsViewModel @Inject constructor(
 						val branches = loadedDetails.allChapters.mapNotNull { it.branch }.distinct()
 						Log.d(TAG, "DEBUG: Strategy 2 SUCCESS - DetailsLoadUseCase branches: $branches")
 						
-						// Generate preferences with built-in default language logic
+						// First, try to load existing saved preferences from database
+						Log.d(TAG, "DEBUG: Strategy 2 - Checking for existing saved preferences in database")
+						val savedPrefs = try {
+							translationPreferencesRepository.getPreferences(manga.id)
+						} catch (e: Exception) {
+							Log.d(TAG, "DEBUG: Strategy 2 - Failed to load saved preferences: ${e.message}")
+							emptyList()
+						}
+						
+						if (savedPrefs.isNotEmpty()) {
+							Log.d(TAG, "DEBUG: Strategy 2 - Found ${savedPrefs.size} saved preferences in database:")
+							savedPrefs.forEach { pref ->
+								Log.d(TAG, "DEBUG: Saved Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}")
+							}
+							
+							// Calculate chapter counts from loaded chapters
+							val branchCounts = loadedDetails.allChapters.groupBy { it.branch }.mapValues { it.value.size }
+							Log.d(TAG, "DEBUG: Strategy 2 - Calculated branch counts: $branchCounts")
+							
+							// Merge saved preferences with chapter counts
+							val prefsWithCounts = savedPrefs.map { savedPref ->
+								savedPref.copy(chapterCount = branchCounts[savedPref.branch] ?: 0)
+							}
+							
+							Log.d(TAG, "DEBUG: Strategy 2 - Merged preferences with counts:")
+							prefsWithCounts.forEach { pref ->
+								Log.d(TAG, "DEBUG: Final Saved Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
+							}
+							
+							// Use saved preferences with chapter counts (normal database mode)
+							usingManualPreferences = false
+							_preferences.value = prefsWithCounts
+							return@launchJob
+						}
+						
+						// No saved preferences found, generate new ones with default language logic
 						val fullManga = loadedDetails.toManga()
-						Log.d(TAG, "DEBUG: Generating preferences manually with built-in default language logic")
+						Log.d(TAG, "DEBUG: Strategy 2 - No saved preferences found, generating with default language logic")
 						val finalPrefs = generatePreferencesFromChapters(fullManga)
 						Log.d(TAG, "DEBUG: Final ${finalPrefs.size} preferences with default language logic applied:")
 						finalPrefs.forEach { pref ->
 							Log.d(TAG, "DEBUG: Final Network Pref - branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}, count=${pref.chapterCount}")
 						}
+						usingManualPreferences = true
+						mangaWithChapters = fullManga
 						_preferences.value = finalPrefs
 						return@launchJob
 					} else {
@@ -160,8 +242,22 @@ class TranslationSettingsViewModel @Inject constructor(
 			}
 			_preferences.value = updatedPreferences
 			
-			// Save to database
-			translationPreferencesRepository.setPreferences(manga.id, updatedPreferences)
+			try {
+				// If using manual preferences, store manga in database first to satisfy foreign key
+				if (usingManualPreferences) {
+					ensureMangaStoredInDatabase()
+				}
+				// Now save preferences to database
+				translationPreferencesRepository.setPreferences(manga.id, updatedPreferences)
+				
+				// Update the "last applied settings" so AutoTranslationConfigManager doesn't overwrite our changes
+				val currentDefaults = appSettings.defaultTranslationLanguages  
+				Log.d(TAG, "DEBUG: updatePreferencesOrder - Updating last applied settings to prevent auto-reset: $currentDefaults")
+				autoTranslationConfigManager.markSettingsAsApplied(manga.id, currentDefaults)
+			} catch (e: Exception) {
+				Log.e(TAG, "Failed to save preference order to database", e)
+				// Continue with UI update even if database save fails
+			}
 		}
 	}
 
@@ -176,15 +272,46 @@ class TranslationSettingsViewModel @Inject constructor(
 			}
 			_preferences.value = updatedPreferences
 			
-			// Save to database
-			translationPreferencesRepository.setPreferences(manga.id, updatedPreferences)
+			try {
+				// If using manual preferences, store manga in database first to satisfy foreign key
+				if (usingManualPreferences) {
+					Log.d(TAG, "DEBUG: togglePreferenceEnabled - Using manual preferences, storing manga first")
+					ensureMangaStoredInDatabase()
+				}
+				// Now save preferences to database
+				Log.d(TAG, "DEBUG: togglePreferenceEnabled - Saving ${updatedPreferences.size} preferences to database")
+				updatedPreferences.forEachIndexed { index, pref ->
+					Log.d(TAG, "DEBUG: togglePreferenceEnabled - Pref $index: branch='${pref.branch}', enabled=${pref.isEnabled}, priority=${pref.priority}")
+				}
+				translationPreferencesRepository.setPreferences(manga.id, updatedPreferences)
+				Log.d(TAG, "DEBUG: togglePreferenceEnabled - Successfully saved preferences to database")
+				
+				// Update the "last applied settings" so AutoTranslationConfigManager doesn't overwrite our changes
+				val currentDefaults = appSettings.defaultTranslationLanguages  
+				Log.d(TAG, "DEBUG: togglePreferenceEnabled - Updating last applied settings to prevent auto-reset: $currentDefaults")
+				autoTranslationConfigManager.markSettingsAsApplied(manga.id, currentDefaults)
+			
+			} catch (e: Exception) {
+				Log.e(TAG, "Failed to save preference toggle to database", e)
+				// Continue with UI update even if database save fails
+			}
 		}
 	}
 
 	fun resetToDefaults() {
 		launchJob {
-			// Delete all preferences for this manga and reload
-			translationPreferencesRepository.deletePreferences(manga.id)
+			// Only delete from database if we're not using manual preferences
+			if (!usingManualPreferences) {
+				try {
+					translationPreferencesRepository.deletePreferences(manga.id)
+				} catch (e: Exception) {
+					Log.e(TAG, "Failed to delete preferences from database", e)
+					// Continue with reload even if database delete fails
+				}
+			}
+			// Reset the flags and reload
+			usingManualPreferences = false
+			mangaWithChapters = null
 			loadPreferences()
 		}
 	}
@@ -278,7 +405,11 @@ class TranslationSettingsViewModel @Inject constructor(
 		
 		// Clean and normalize the branch name for better matching
 		val cleanBranch = branch.trim()
-		val branchLower = cleanBranch.lowercase()
+		
+		// Remove bracketed content (source/scanlation group names) before detection
+		val withoutBrackets = cleanBranch.replace(Regex("""\([^)]*\)|\[[^\]]*\]|\{[^}]*\}"""), "").trim()
+		
+		val branchLower = withoutBrackets.lowercase()
 		
 		// Multi-pass detection system
 		
@@ -311,22 +442,45 @@ class TranslationSettingsViewModel @Inject constructor(
 	}
 	
 	private fun findISOLanguageCode(branchLower: String): String? {
-		// Extract potential ISO codes from branch
-		val isoPattern = Regex("""(?:^|\W)([a-z]{2}(?:-[A-Z]{2})?)(?:\W|$)""")
+		// Extract potential ISO codes from branch with stricter word boundaries
+		val isoPattern = Regex("""\b([a-z]{2})(?:-[a-z]{2})?\b""")
 		val matches = isoPattern.findAll(branchLower)
 		
 		val validLanguages = setOf(
 			"en", "ja", "ko", "zh", "es", "fr", "de", "it", "pt", "ru", "ar", "th", "vi", "id", "tr", "hi", "bn", "fa", "he", "pl", "uk", "cs", "sk", "hu", "ro", "bg", "hr", "sr", "sl", "lv", "lt", "et", "fi", "sv", "no", "da", "nl", "ms", "tl", "mr", "gu", "te", "kn", "ta", "ml", "ur", "ne", "si", "my", "km", "lo", "ka", "am", "sw", "zu", "af", "eu", "ca", "gl", "cy", "ga", "mt", "is", "fo", "lb", "rm"
 		)
 		
+		// Prioritize matches that are more likely to be language codes
+		val potentialMatches = mutableListOf<String>()
+		
 		for (match in matches) {
-			val code = match.groupValues[1].substring(0, 2) // Get just the language part
+			val code = match.groupValues[1]
 			if (code in validLanguages) {
-				return code
+				// Skip matches that are likely part of words rather than language codes
+				val startIndex = match.range.first
+				val endIndex = match.range.last
+				
+				// Check context to avoid false positives
+				val isPartOfWord = when {
+					// Check if it's surrounded by non-space characters (part of a word)
+					startIndex > 0 && branchLower[startIndex - 1].isLetter() -> true
+					endIndex < branchLower.length - 1 && branchLower[endIndex + 1].isLetter() -> true
+					// Common false positives: prepositions and common words
+					code == "on" && branchLower.contains("on ") -> true
+					code == "in" && branchLower.contains("in ") -> true
+					code == "is" && branchLower.contains("is ") -> true
+					code == "of" && branchLower.contains("of ") -> true
+					else -> false
+				}
+				
+				if (!isPartOfWord) {
+					potentialMatches.add(code)
+				}
 			}
 		}
 		
-		return null
+		// Return the first valid match
+		return potentialMatches.firstOrNull()
 	}
 	
 	private fun findLanguageByCountry(branchLower: String): String? {
@@ -648,4 +802,40 @@ class TranslationSettingsViewModel @Inject constructor(
 		contentRatingOverride = null,
 		skipDecimalChapters = false
 	)
+	
+	/**
+	 * Ensure manga is stored in database so preferences can be saved
+	 */
+	private suspend fun ensureMangaStoredInDatabase() {
+		val fullManga = mangaWithChapters ?: return
+		try {
+			Log.d(TAG, "DEBUG: ensureMangaStoredInDatabase - manga.id=${fullManga.id}")
+			Log.d(TAG, "DEBUG: ensureMangaStoredInDatabase - manga.title='${fullManga.title}'")
+			Log.d(TAG, "DEBUG: ensureMangaStoredInDatabase - manga.source=${fullManga.source}")
+			Log.d(TAG, "DEBUG: ensureMangaStoredInDatabase - chapters=${fullManga.chapters?.size ?: 0}")
+			
+			// Check if manga already exists in database
+			val existingManga = database.getMangaDao().find(fullManga.id)
+			Log.d(TAG, "DEBUG: ensureMangaStoredInDatabase - existing manga in DB: ${existingManga != null}")
+			
+			if (existingManga != null) {
+				Log.d(TAG, "DEBUG: ensureMangaStoredInDatabase - Manga already exists, using replaceExisting=true")
+				mangaDataRepository.storeManga(fullManga, replaceExisting = true)
+			} else {
+				Log.d(TAG, "DEBUG: ensureMangaStoredInDatabase - Manga doesn't exist, storing with replaceExisting=false")
+				mangaDataRepository.storeManga(fullManga, replaceExisting = false)
+			}
+			
+			// Verify it was stored
+			val afterStorage = database.getMangaDao().find(fullManga.id)
+			Log.d(TAG, "DEBUG: ensureMangaStoredInDatabase - After storage, manga exists: ${afterStorage != null}")
+			
+			Log.d(TAG, "DEBUG: Successfully stored manga in database")
+			// Once manga is stored, we can treat preferences normally
+			usingManualPreferences = false
+		} catch (e: Exception) {
+			Log.e(TAG, "Failed to store manga in database", e)
+			throw e
+		}
+	}
 }
