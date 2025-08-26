@@ -270,6 +270,29 @@ class TranslationSettingsViewModel @Inject constructor(
 	}
 
 	/**
+	 * Fixed language detection that handles common issues in LanguageDetectionUtils
+	 */
+	private fun detectLanguageFromBranchFixed(branch: String): String? {
+		if (branch.isBlank()) return null
+		
+		// First try the original detection
+		val originalResult = LanguageDetectionUtils.detectLanguageFromBranch(branch)
+		
+		// Fix common detection issues
+		val branchLower = branch.lowercase()
+		
+		// Handle cases where LanguageDetectionUtils fails
+		return when {
+			// Indonesian: "Indonesia" should map to "id" but LanguageDetectionUtils only has "indonesian" -> "id"
+			branchLower.contains("indonesia") && !branchLower.contains("indonesian") -> "id"
+			// Vietnamese: handle "Tiếng Việt" and variations
+			branchLower.contains("tiếng việt") || branchLower.contains("vietnamese") || branchLower.contains("việt") -> "vi"
+			// Add other common fixes here as needed
+			else -> originalResult
+		}
+	}
+
+	/**
 	 * Generate translation preferences directly from chapters without database dependencies
 	 * This avoids foreign key constraint issues when manga isn't properly stored yet
 	 */
@@ -303,7 +326,8 @@ class TranslationSettingsViewModel @Inject constructor(
 			val existingPref = existingPrefs.find { it.branch == branch }
 			
 			// Detect language for this branch using the same logic as AutoTranslationConfigManager
-			val branchLanguage = LanguageDetectionUtils.detectLanguageFromBranch(branch ?: "")
+			// with a fix for common detection issues
+			val branchLanguage = detectLanguageFromBranchFixed(branch ?: "")
 			val shouldBeEnabled = if (defaultLanguages.isNotEmpty()) {
 				// Apply default language logic: enable only if language matches default languages
 				branchLanguage != null && branchLanguage in defaultLanguages
