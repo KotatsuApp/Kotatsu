@@ -57,6 +57,8 @@ class SyncAuthActivity : BaseActivity<ActivitySyncAuthBinding>(), View.OnClickLi
 		accountAuthenticatorResponse?.onRequestContinued()
 		viewBinding.buttonNext.setOnClickListener(this)
 		viewBinding.buttonBack.setOnClickListener(this)
+		viewBinding.buttonCancel.setOnClickListener(this)
+		viewBinding.buttonDone.setOnClickListener(this)
 		viewBinding.buttonSettings.setOnClickListener(this)
 		viewBinding.editEmail.addTextChangedListener(this)
 		viewBinding.editPassword.addTextChangedListener(this)
