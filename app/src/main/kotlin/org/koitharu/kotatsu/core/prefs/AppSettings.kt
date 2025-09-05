@@ -138,6 +138,13 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_READER_DOUBLE_PAGES, false)
 		set(value) = prefs.edit { putBoolean(KEY_READER_DOUBLE_PAGES, value) }
 
+	val readerDoublePagesSensitivity: Float
+		get() = prefs.getFloat(KEY_READER_DOUBLE_PAGES_SENSITIVITY, 12f) / 10f
+
+	fun setReaderDoublePagesSensitivity(value: Float) {
+		prefs.edit { putFloat(KEY_READER_DOUBLE_PAGES_SENSITIVITY, value) }
+	}
+
 	val readerScreenOrientation: Int
 		get() = prefs.getString(KEY_READER_ORIENTATION, null)?.toIntOrNull()
 			?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -669,6 +676,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_REMOTE_SOURCES = "remote_sources"
 		const val KEY_LOCAL_STORAGE = "local_storage"
 		const val KEY_READER_DOUBLE_PAGES = "reader_double_pages"
+		const val KEY_READER_DOUBLE_PAGES_SENSITIVITY = "reader_double_pages_sensitivity"
 		const val KEY_READER_ZOOM_BUTTONS = "reader_zoom_buttons"
 		const val KEY_READER_CONTROL_LTR = "reader_taps_ltr"
 		const val KEY_READER_NAVIGATION_INVERTED = "reader_navigation_inverted"
