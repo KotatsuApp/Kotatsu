@@ -86,9 +86,9 @@ class WebtoonImageView @JvmOverloads constructor(
 				desiredWidth = sWidth
 				desiredHeight = sHeight
 			} else if (resizeHeight) {
-				desiredHeight = (sHeight.toDouble() / sWidth.toDouble() * desiredWidth).roundToInt()
+				desiredHeight = (sHeight.toDouble() / sWidth.toDouble() * desiredWidth).toInt()
 			} else if (resizeWidth) {
-				desiredWidth = (sWidth.toDouble() / sHeight.toDouble() * desiredHeight).roundToInt()
+				desiredWidth = (sWidth.toDouble() / sHeight.toDouble() * desiredHeight).toInt()
 			}
 		}
 		desiredWidth = desiredWidth.coerceAtLeast(suggestedMinimumWidth)
