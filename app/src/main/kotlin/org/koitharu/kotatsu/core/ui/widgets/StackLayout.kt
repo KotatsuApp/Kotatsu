@@ -22,7 +22,7 @@ open class StackLayout @JvmOverloads constructor(
 		val h = b - t - paddingTop - paddingBottom
 		visibleChildren.clear()
 		children.filterNotTo(visibleChildren) { it.isGone }
-		if (w <= 0 || h <= 0 || visibleChildren.isEmpty) {
+		if (w <= 0 || h <= 0 || visibleChildren.isEmpty()) {
 			return
 		}
 		val xStep = w / (visibleChildren.size + 1)

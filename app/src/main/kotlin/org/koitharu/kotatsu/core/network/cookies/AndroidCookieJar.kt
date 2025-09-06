@@ -5,7 +5,6 @@ import androidx.annotation.WorkerThread
 import androidx.core.util.Predicate
 import okhttp3.Cookie
 import okhttp3.HttpUrl
-import org.koitharu.kotatsu.parsers.util.newBuilder
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
