@@ -186,6 +186,7 @@ class ListSelectionController(
 
 		override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
 			if (event == Lifecycle.Event.ON_CREATE) {
+				source.lifecycle.removeObserver(this)
 				val registry = registryOwner.savedStateRegistry
 				registry.registerSavedStateProvider(PROVIDER_NAME, this@ListSelectionController)
 				val state = registry.consumeRestoredStateForKey(PROVIDER_NAME)
