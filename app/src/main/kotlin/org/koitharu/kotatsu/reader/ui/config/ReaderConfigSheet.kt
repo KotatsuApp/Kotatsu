@@ -95,6 +95,7 @@ class ReaderConfigSheet :
 		binding.buttonColorFilter.setOnClickListener(this)
 		binding.buttonScrollTimer.setOnClickListener(this)
 		binding.buttonBookmark.setOnClickListener(this)
+		binding.buttonTranslationSettings.setOnClickListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
 
 		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
@@ -150,6 +151,12 @@ class ReaderConfigSheet :
 				val page = viewModel.getCurrentPage() ?: return
 				val manga = viewModel.getMangaOrNull() ?: return
 				router.openColorFilterConfig(manga, page)
+			}
+
+			R.id.button_translation_settings -> {
+				val manga = viewModel.getMangaOrNull() ?: return
+				router.openTranslationSettings(manga)
+				dismissAllowingStateLoss()
 			}
 
 			R.id.button_image_server -> viewLifecycleScope.launch {
