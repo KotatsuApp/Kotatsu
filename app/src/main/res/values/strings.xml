@@ -572,6 +572,7 @@
 	<string name="none">None</string>
 	<string name="config_reset_confirm">Reset settings to default values? This action cannot be undone.</string>
 	<string name="use_two_pages_landscape">Use two pages layout on landscape orientation (beta)</string>
+	<string name="two_page_scroll_sensitivity">Two-Page Scroll Sensitivity</string>
 	<string name="default_webtoon_zoom_out">Default webtoon zoom out</string>
 	<string name="fullscreen_mode">Fullscreen mode</string>
 	<string name="reader_fullscreen_summary">Hide system status and navigation bars</string>

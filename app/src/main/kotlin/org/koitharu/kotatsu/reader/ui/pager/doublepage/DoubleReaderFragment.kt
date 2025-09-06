@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.os.NetworkState
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.list.lifecycle.RecyclerViewLifecycleDispatcher
 import org.koitharu.kotatsu.core.util.ext.firstVisibleItemPosition
 import org.koitharu.kotatsu.databinding.FragmentReaderDoubleBinding
@@ -33,6 +34,9 @@ open class DoubleReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding
 	@Inject
 	lateinit var pageLoader: PageLoader
 
+	@Inject
+	lateinit var settings: AppSettings
+
 	private var recyclerLifecycleDispatcher: RecyclerViewLifecycleDispatcher? = null
 
 	override fun onCreateViewBinding(
@@ -51,7 +55,7 @@ open class DoubleReaderFragment : BaseReaderFragment<FragmentReaderDoubleBinding
 				addOnScrollListener(it)
 			}
 			addOnScrollListener(PageScrollListener())
-			DoublePageSnapHelper().attachToRecyclerView(this)
+			DoublePageSnapHelper(settings).attachToRecyclerView(this)
 		}
 	}
 

@@ -129,6 +129,24 @@
 				android:textColor="?colorOnSurfaceVariant"
 				app:drawableStartCompat="@drawable/ic_split_horizontal" />
 
+			<TextView
+				android:id="@+id/text_sensitivity"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_small"
+				android:text="@string/two_page_scroll_sensitivity"
+				android:textAppearance="@style/TextAppearance.Kotatsu.GridTitle" />
+
+			<SeekBar
+				android:id="@+id/seekbar_sensitivity"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="@dimen/margin_normal"
+				android:layout_marginTop="@dimen/margin_small"
+				android:max="100"
+				tools:progress="50" />
+
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_screen_rotate"
 				android:layout_width="match_parent"
