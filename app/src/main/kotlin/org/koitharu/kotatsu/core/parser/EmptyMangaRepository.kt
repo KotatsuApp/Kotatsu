@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import java.util.EnumSet
 
-class EmptyMangaRepository(override val source: MangaSource) : MangaRepository {
+open class EmptyMangaRepository(override val source: MangaSource) : MangaRepository {
 
 	override val sortOrders: Set<SortOrder>
 		get() = EnumSet.allOf(SortOrder::class.java)

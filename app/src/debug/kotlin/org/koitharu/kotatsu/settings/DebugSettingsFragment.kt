@@ -5,6 +5,8 @@ import androidx.preference.Preference
 import leakcanary.LeakCanary
 import org.koitharu.kotatsu.KotatsuApp
 import org.koitharu.kotatsu.R
+import org.koitharu.kotatsu.core.model.TestMangaSource
+import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
 import org.koitharu.kotatsu.settings.utils.SplitSwitchPreference
 import org.koitharu.workinspector.WorkInspector
@@ -35,6 +37,11 @@ class DebugSettingsFragment : BasePreferenceFragment(R.string.debug), Preference
 			true
 		}
 
+		KEY_TEST_PARSER -> {
+			router.openList(TestMangaSource, null, null)
+			true
+		}
+
 		else -> super.onPreferenceTreeClick(preference)
 	}
 
@@ -60,5 +67,6 @@ class DebugSettingsFragment : BasePreferenceFragment(R.string.debug), Preference
 
 		const val KEY_LEAK_CANARY = "leak_canary"
 		const val KEY_WORK_INSPECTOR = "work_inspector"
+		const val KEY_TEST_PARSER = "test_parser"
 	}
 }

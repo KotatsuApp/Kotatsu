@@ -28,11 +28,15 @@ data object UnknownMangaSource : MangaSource {
 	override val name = "UNKNOWN"
 }
 
+data object TestMangaSource : MangaSource {
+	override val name = "TEST"
+}
+
 fun MangaSource(name: String?): MangaSource {
 	when (name ?: return UnknownMangaSource) {
 		UnknownMangaSource.name -> return UnknownMangaSource
-
 		LocalMangaSource.name -> return LocalMangaSource
+		TestMangaSource.name -> return TestMangaSource
 	}
 	if (name.startsWith("content:")) {
 		val parts = name.substringAfter(':').splitTwoParts('/') ?: return UnknownMangaSource
@@ -92,6 +96,7 @@ fun MangaSource.getSummary(context: Context): String? = when (val source = unwra
 fun MangaSource.getTitle(context: Context): String = when (val source = unwrap()) {
 	is MangaParserSource -> source.title
 	LocalMangaSource -> context.getString(R.string.local_storage)
+	TestMangaSource -> context.getString(R.string.test_parser)
 	is ExternalMangaSource -> source.resolveName(context)
 	else -> context.getString(R.string.unknown)
 }

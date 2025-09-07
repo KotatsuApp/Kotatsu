@@ -7,6 +7,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import org.koitharu.kotatsu.core.cache.MemoryContentCache
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.MangaSourceInfo
+import org.koitharu.kotatsu.core.model.TestMangaSource
 import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.core.parser.external.ExternalMangaRepository
 import org.koitharu.kotatsu.core.parser.external.ExternalMangaSource
@@ -85,9 +86,14 @@ interface MangaRepository {
 
 		private fun createRepository(source: MangaSource): MangaRepository? = when (source) {
 			is MangaParserSource -> ParserMangaRepository(
-				parser = MangaParser(source, loaderContext),
+				parser = loaderContext.newParserInstance(source),
 				cache = contentCache,
 				mirrorSwitcher = mirrorSwitcher,
+			)
+
+			TestMangaSource -> TestMangaRepository(
+				loaderContext = loaderContext,
+				cache = contentCache,
 			)
 
 			is ExternalMangaSource -> if (source.isAvailable(context)) {

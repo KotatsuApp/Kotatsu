@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<org.koitharu.kotatsu.settings.utils.SplitSwitchPreference
-		android:id="@+id/action_leakcanary"
 		android:key="leak_canary"
 		android:persistent="false"
 		android:title="LeakCanary" />
 
 	<Preference
-		android:id="@+id/action_works"
 		android:key="work_inspector"
 		android:persistent="false"
 		android:title="@string/wi_lib_name" />
+
+	<Preference
+		android:key="test_parser"
+		android:persistent="false"
+		android:title="@string/test_parser"
+		app:allowDividerAbove="true" />
+
 
 </androidx.preference.PreferenceScreen>
