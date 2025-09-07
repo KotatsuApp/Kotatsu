@@ -4,7 +4,6 @@
 	<bool name="light_status_bar">true</bool>
 	<bool name="light_navigation_bar">false</bool>
 	<bool name="com_samsung_android_icon_container_has_icon_container">true</bool>
-	<bool name="is_color_themes_available">false</bool>
 	<bool name="is_sync_enabled">true</bool>
 	<bool name="is_predictive_back_enabled">true</bool>
 </resources>

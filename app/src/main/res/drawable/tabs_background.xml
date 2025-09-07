@@ -4,7 +4,7 @@
 	<item>
 		<shape
 			android:shape="rectangle">
-			<solid android:color="@color/kotatsu_surfaceVariant"/>
+			<solid android:color="?attr/colorSurfaceVariant"/>
 		</shape>
 	</item>
 	<!-- ..., then draws a rectangle with the container color to cover the area not for the divider. -->
@@ -12,7 +12,7 @@
 		android:bottom="1dp">
 		<shape
 			android:shape="rectangle">
-			<solid android:color="@color/kotatsu_background"/>
+			<solid android:color="?android:attr/colorBackground"/>
 		</shape>
 	</item>
 </layer-list>

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-	<!-- https://stackoverflow.com/questions/54685474/theme-attributes-in-color-selector-for-api-22 -->
-	<item android:alpha="0.27" android:color="@color/kotatsu_onSurface" />
+	<item android:alpha="0.27" android:color="?attr/colorOnSurface" />
 </selector>

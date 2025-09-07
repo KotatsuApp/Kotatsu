@@ -6,8 +6,7 @@
 
 	<org.koitharu.kotatsu.settings.utils.ThemeChooserPreference
 		android:key="color_theme"
-		android:title="@string/color_theme"
-		app:isPreferenceVisible="@bool/is_color_themes_available" />
+		android:title="@string/color_theme" />
 
 	<ListPreference
 		android:defaultValue="-1"
