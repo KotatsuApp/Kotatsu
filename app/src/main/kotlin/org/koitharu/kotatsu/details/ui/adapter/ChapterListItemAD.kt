@@ -25,7 +25,7 @@ fun chapterListItemAD(
 	AdapterDelegateClickListenerAdapter(this, clickListener).attach(itemView)
 
 	bind {
-		binding.textViewTitle.text = item.chapter.name
+		binding.textViewTitle.text = item.getTitle(context.resources)
 		binding.textViewDescription.textAndVisible = item.description
 		when {
 			item.isCurrent -> {

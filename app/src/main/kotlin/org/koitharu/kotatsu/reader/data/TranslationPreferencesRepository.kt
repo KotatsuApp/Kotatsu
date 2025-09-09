@@ -64,7 +64,7 @@ class TranslationPreferencesRepository @Inject constructor(
 	suspend fun initializeDefaultPreferences(manga: Manga) {
 		val mangaId = manga.id
 		val existingPrefs = dao.getPreferences(mangaId)
-		val existingBranches = existingPrefs.map { it.branch }.toSet()
+		val existingBranches = existingPrefs.mapToSet { it.branch }
 		
 		val chapters = manga.chapters
 		if (!chapters.isNullOrEmpty()) {

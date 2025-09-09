@@ -1,8 +1,8 @@
 package org.koitharu.kotatsu.reader.domain
 
-import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.koitharu.kotatsu.core.db.MangaDatabase
+import org.koitharu.kotatsu.core.db.entity.MangaPrefsEntity
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.LanguageDetectionUtils
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -19,12 +19,9 @@ class AutoTranslationConfigManager @Inject constructor(
     private val appSettings: AppSettings,
     private val translationPreferencesRepository: TranslationPreferencesRepository,
     private val translationFallbackManager: TranslationFallbackManager,
+    private val database: MangaDatabase,
     @ApplicationContext private val context: android.content.Context,
 ) {
-    
-    private val prefs: SharedPreferences by lazy { 
-        PreferenceManager.getDefaultSharedPreferences(context) 
-    }
 
     /**
      * Automatically configure translation preferences for a manga based on global settings
@@ -92,10 +89,15 @@ class AutoTranslationConfigManager @Inject constructor(
      */
     private suspend fun storeLastAppliedSettings(mangaId: Long, defaultLanguages: Set<String>) {
         try {
-            // Store as comma-separated string in shared preferences or database
             val settingsString = defaultLanguages.sorted().joinToString(",")
-            // Using shared preferences to store with manga-specific key
-            prefs.edit().putString("last_applied_langs_$mangaId", settingsString).apply()
+            
+            // Get existing preferences or create new one
+            val existingPrefs = database.getPreferencesDao().find(mangaId) ?: newMangaPrefsEntity(mangaId)
+            
+            // Update with new last applied languages
+            database.getPreferencesDao().upsert(
+                existingPrefs.copy(lastAppliedTranslationLanguages = settingsString)
+            )
         } catch (e: Exception) {
             // Ignore storage errors
         }
@@ -106,7 +108,7 @@ class AutoTranslationConfigManager @Inject constructor(
      */
     private suspend fun getLastAppliedSettings(mangaId: Long): Set<String> {
         return try {
-            val settingsString = prefs.getString("last_applied_langs_$mangaId", null)
+            val settingsString = database.getPreferencesDao().find(mangaId)?.lastAppliedTranslationLanguages
             if (settingsString.isNullOrEmpty()) {
                 emptySet()
             } else {
@@ -161,4 +163,22 @@ class AutoTranslationConfigManager @Inject constructor(
         // Might need to inject a repository or use case for this
         return null
     }
+    
+    /**
+     * Create a new MangaPrefsEntity with default values
+     */
+    private fun newMangaPrefsEntity(mangaId: Long) = MangaPrefsEntity(
+        mangaId = mangaId,
+        mode = 0,
+        cfBrightness = 0f,
+        cfContrast = 0f,
+        cfInvert = false,
+        cfGrayscale = false,
+        cfBookEffect = false,
+        titleOverride = null,
+        coverUrlOverride = null,
+        contentRatingOverride = null,
+        skipDecimalChapters = false,
+        lastAppliedTranslationLanguages = null
+    )
 }

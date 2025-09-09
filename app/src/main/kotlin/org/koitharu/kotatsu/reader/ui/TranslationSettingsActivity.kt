@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.databinding.ActivityTranslationSettingsBinding
 import org.koitharu.kotatsu.reader.domain.MangaTranslationPreference
+import org.koitharu.kotatsu.reader.ui.translations.TranslationPreferenceItemTouchCallback
 
 @AndroidEntryPoint
 class TranslationSettingsActivity : BaseActivity<ActivityTranslationSettingsBinding>(),

@@ -1,8 +1,9 @@
-package org.koitharu.kotatsu.reader.ui
+package org.koitharu.kotatsu.reader.ui.translations
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.koitharu.kotatsu.reader.domain.MangaTranslationPreference
+import org.koitharu.kotatsu.reader.ui.TranslationPreferencesAdapter
 
 class TranslationPreferenceItemTouchCallback(
 	private val adapter: TranslationPreferencesAdapter,

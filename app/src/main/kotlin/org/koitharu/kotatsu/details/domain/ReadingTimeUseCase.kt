@@ -22,7 +22,7 @@ class ReadingTimeUseCase @Inject constructor(
 		
 		val chapters = manga?.chapters?.get(branch)
 		
-		val chapterCount = chapters?.size ?: 0
+		val chapterCount = chapters.sizeOrZero()
 		if (chapterCount == 0) {
 			return null
 		}

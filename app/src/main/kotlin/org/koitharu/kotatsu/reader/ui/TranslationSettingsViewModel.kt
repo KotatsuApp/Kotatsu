@@ -370,28 +370,25 @@ class TranslationSettingsViewModel @Inject constructor(
 		// Check if enabled preferences match default languages
 		val enabledLanguages = preferences
 			.filter { it.isEnabled }
-			.mapNotNull { LanguageDetectionUtils.detectLanguageFromBranch(it.branch) }
-			.toSet()
+			.mapNotNullToSet { LanguageDetectionUtils.detectLanguageFromBranch(it.branch) }
 			
 		return enabledLanguages == defaultLanguages
 	}
 
 	private fun loadSkipDecimalChapters() {
 		launchJob {
-			val prefs = runCatching { database.getPreferencesDao().find(manga.id) }.getOrNull()
+			val prefs = runCatchingCancellable { database.getPreferencesDao().find(manga.id) }.getOrNull()
 			_skipDecimalChapters.value = prefs?.skipDecimalChapters ?: false
 		}
 	}
 
 	fun setSkipDecimalChapters(skip: Boolean) {
 		viewModelScope.launch {
-			val existingPrefs = runCatching { 
+			val existingPrefs = runCatchingCancellable { 
 				database.getPreferencesDao().find(manga.id) 
 			}.getOrNull() ?: newMangaPrefsEntity(manga.id)
 			
-			runCatching {
-				database.getPreferencesDao().upsert(existingPrefs.copy(skipDecimalChapters = skip))
-			}
+			database.getPreferencesDao().upsert(existingPrefs.copy(skipDecimalChapters = skip))
 			_skipDecimalChapters.value = skip
 		}
 	}
@@ -800,7 +797,8 @@ class TranslationSettingsViewModel @Inject constructor(
 		titleOverride = null,
 		coverUrlOverride = null,
 		contentRatingOverride = null,
-		skipDecimalChapters = false
+		skipDecimalChapters = false,
+		lastAppliedTranslationLanguages = null
 	)
 	
 	/**

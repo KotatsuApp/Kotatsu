@@ -54,7 +54,7 @@ class DetailsMenuProvider(
 		menu.findItem(R.id.action_stats).isVisible = viewModel.isStatsAvailable.value
 		menu.findItem(R.id.action_translation_settings).isVisible = manga?.let { 
 			val chapters = it.chapters
-			!chapters.isNullOrEmpty() && chapters.mapNotNull { ch -> ch.branch }.toSet().size > 1
+			!chapters.isNullOrEmpty() && chapters.mapNotNullToSet { ch -> ch.branch }.size > 1
 		} == true
 	}
 

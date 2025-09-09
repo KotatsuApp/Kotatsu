@@ -203,7 +203,7 @@ class ChaptersLoader @Inject constructor(
 	): MangaChapter? {
 		if (targetBranch == null) return null
 		
-		val currentChapter = allChapters.find { it.id == currentChapterId }
+		val currentChapter = allChapters.findById(currentChapterId)
 		val branchChapters = allChapters.filter { it.branch == targetBranch }.sortedBy { it.number }
 		
 		if (currentChapter == null || branchChapters.isEmpty()) {
@@ -228,21 +228,21 @@ class ChaptersLoader @Inject constructor(
 	 * Get all chapters for a specific branch from the complete manga data
 	 */
 	fun getChaptersByBranch(branch: String?): List<MangaChapter>? {
-		return currentManga?.allChapters?.filter { it.branch == branch }?.sortedBy { it.number }
+		return currentManga?.chapters?.get(branch)?.sortedBy { it.number }
 	}
 
 	/**
 	 * Get the count of chapters in a specific branch
 	 */
 	fun getChaptersCount(branch: String?): Int {
-		return currentManga?.allChapters?.count { it.branch == branch } ?: 0
+		return currentManga?.chapters?.get(branch).sizeOrZero()
 	}
 
 	/**
 	 * Get all available branches from the complete manga data
 	 */
 	fun getAllBranches(): Set<String?> {
-		return currentManga?.allChapters?.map { it.branch }?.toSet() ?: emptySet()
+		return currentManga?.chapters?.keys.orEmpty()
 	}
 
 	/**

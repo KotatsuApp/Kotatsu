@@ -215,7 +215,7 @@ class TranslationFallbackManager @Inject constructor(
 		targetBranch: String,
 		direction: Int
 	): MangaChapter? {
-		val currentChapter = chapters.find { it.id == currentChapterId }
+		val currentChapter = chapters.findById(currentChapterId)
 		val branchChapters = chapters.filter { it.branch == targetBranch }.sortedBy { it.number }
 		
 		if (currentChapter == null || branchChapters.isEmpty()) {
@@ -295,6 +295,11 @@ class TranslationFallbackManager @Inject constructor(
 	 * - 40.0 -> 45.0 (gap of 4 chapters)
 	 */
 	private fun hasSignificantGap(fromNumber: Float, toNumber: Float): Boolean {
+		// Handle edge cases with zero chapter numbers
+		if (fromNumber == 0f || toNumber == 0f) {
+			return false // Don't consider transitions to/from chapter 0 as gaps
+		}
+		
 		val difference = abs(toNumber - fromNumber)
 		
 		// If the difference is less than 1.0, there's no gap (handles decimals like 40.5 -> 41.0)

@@ -562,7 +562,7 @@ class DetailsActivity :
 			if (value.isNullOrEmpty()) {
 				return
 			}
-			val chapterItems = value.filterIsInstance<org.koitharu.kotatsu.details.ui.model.ChapterListItem>()
+			val chapterItems = value.filterIsInstance<ChapterListItem>()
 			if (chapterItems.isEmpty()) {
 				return
 			}
