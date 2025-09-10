@@ -427,6 +427,10 @@
 	<string name="data_and_privacy">Data and privacy</string>
 	<string name="restore_summary">Restore previously created backup</string>
 	<string name="webtoon_zoom_summary">Allow zoom in gesture in webtoon mode</string>
+	<string name="pull_to_prev_chapter">Release to open previous chapter</string>
+	<string name="pull_to_next_chapter">Release to open next chapter</string>
+	<string name="pull_top_no_prev">No previous chapter</string>
+	<string name="pull_bottom_no_next">No next chapter</string>
 	<string name="reader_info_bar_summary">Show the current time and reading progress at the top of the screen</string>
 	<string name="show_pages_numbers_summary">Show page numbers in bottom corner</string>
 	<string name="clear_source_cookies_summary">Clear cookies for specified domain only. In most cases will invalidate authorization</string>
@@ -644,6 +648,8 @@
 	<string name="show_updated">Show updated</string>
 	<string name="webtoon_gaps">Gaps in webtoon mode</string>
 	<string name="webtoon_gaps_summary">Show vertical gaps between pages in webtoon mode</string>
+	<string name="enable_pull_gesture_title">Enable pull gesture</string>
+	<string name="enable_pull_gesture_summary">Use pull gesture to switch chapters in webtoon</string>
 	<string name="less_frequently">Less frequently</string>
 	<string name="more_frequently">More frequently</string>
 	<string name="frequency_of_check">Frequency of check</string>

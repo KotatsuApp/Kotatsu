@@ -1,8 +1,10 @@
 package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
 import android.content.Context
+import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
+import android.widget.EdgeEffect
 import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.core.view.forEach
 import androidx.core.view.isEmpty
@@ -22,6 +24,71 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 	private val scrollDispatcher = WebtoonScrollDispatcher()
 	private val detachedViews = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
 	private var isFixingScroll = false
+
+	var isPullGestureEnabled: Boolean = false
+	var pullThreshold: Float = 0.3f
+	private var pullProgressTop: Float = 0f
+	private var pullProgressBottom: Float = 0f
+	private var pullListener: OnPullGestureListener? = null
+
+	init {
+		setEdgeEffectFactory(object : EdgeEffectFactory() {
+			override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
+				return object : EdgeEffect(view.context) {
+					override fun onPull(deltaDistance: Float) {
+						val sign = if (direction == DIRECTION_TOP) 1f else if (direction == DIRECTION_BOTTOM) 1f else 0f
+						if (sign != 0f) onPull(deltaDistance, 0.5f)
+					}
+
+					override fun onPull(deltaDistance: Float, displacement: Float) {
+						if (!isPullGestureEnabled) return
+						if (direction == DIRECTION_TOP) {
+							pullProgressTop = (pullProgressTop + deltaDistance).coerceAtLeast(0f)
+							pullListener?.onPullProgressTop(pullProgressTop / pullThreshold)
+						} else if (direction == DIRECTION_BOTTOM) {
+							pullProgressBottom = (pullProgressBottom + deltaDistance).coerceAtLeast(0f)
+							pullListener?.onPullProgressBottom(pullProgressBottom / pullThreshold)
+						}
+					}
+
+					override fun onRelease() {
+						if (!isPullGestureEnabled) {
+							pullProgressTop = 0f
+							pullProgressBottom = 0f
+							return
+						}
+						var triggered = false
+						if (direction == DIRECTION_TOP) {
+							if (pullProgressTop >= pullThreshold) {
+								pullListener?.onPullTriggeredTop()
+								triggered = true
+							}
+							pullProgressTop = 0f
+							pullListener?.onPullProgressTop(0f)
+						} else if (direction == DIRECTION_BOTTOM) {
+							if (pullProgressBottom >= pullThreshold) {
+								pullListener?.onPullTriggeredBottom()
+								triggered = true
+							}
+							pullProgressBottom = 0f
+							pullListener?.onPullProgressBottom(0f)
+						}
+						if (!triggered) {
+							pullListener?.onPullCancelled()
+						}
+					}
+
+					override fun draw(canvas: Canvas?): Boolean {
+						return false
+					}
+				}
+			}
+		})
+	}
+
+	fun setOnPullGestureListener(listener: OnPullGestureListener?) {
+		pullListener = listener
+	}
 
 	override fun onChildDetachedFromWindow(child: View) {
 		super.onChildDetachedFromWindow(child)
@@ -187,5 +254,13 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 			firstVisiblePosition: Int,
 			lastVisiblePosition: Int,
 		)
+	}
+
+	interface OnPullGestureListener {
+		fun onPullProgressTop(progress: Float)
+		fun onPullProgressBottom(progress: Float)
+		fun onPullTriggeredTop()
+		fun onPullTriggeredBottom()
+		fun onPullCancelled()
 	}
 }

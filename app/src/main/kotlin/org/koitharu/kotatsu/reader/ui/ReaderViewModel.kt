@@ -157,6 +157,12 @@ class ReaderViewModel @Inject constructor(
 		valueProducer = { isWebtoonGapsEnabled },
 	)
 
+	val isWebtoonPullGestureEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_WEBTOON_PULL_GESTURE,
+		valueProducer = { isWebtoonPullGestureEnabled },
+	)
+
 	val defaultWebtoonZoomOut = observeIsWebtoonZoomEnabled().flatMapLatest {
 		if (it) {
 			observeWebtoonZoomOut()
@@ -345,11 +351,14 @@ class ReaderViewModel @Inject constructor(
 				return@launchJob
 			}
 			ensureActive()
-			if (upperPos >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
-				loadPrevNextChapter(pages.last().chapterId, isNext = true)
-			}
-			if (lowerPos <= BOUNDS_PAGE_OFFSET) {
-				loadPrevNextChapter(pages.first().chapterId, isNext = false)
+			val autoLoadAllowed = readerMode.value != ReaderMode.WEBTOON || !isWebtoonPullGestureEnabled.value
+			if (autoLoadAllowed) {
+				if (upperPos >= pages.lastIndex - BOUNDS_PAGE_OFFSET) {
+					loadPrevNextChapter(pages.last().chapterId, isNext = true)
+				}
+				if (lowerPos <= BOUNDS_PAGE_OFFSET) {
+					loadPrevNextChapter(pages.first().chapterId, isNext = false)
+				}
 			}
 			if (pageLoader.isPrefetchApplicable()) {
 				pageLoader.prefetch(pages.trySublist(upperPos + 1, upperPos + PREFETCH_LIMIT))
