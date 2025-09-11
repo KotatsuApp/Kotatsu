@@ -49,6 +49,12 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		super.onViewBindingCreated(binding, savedInstanceState)
 		var canGoPrev = true
 		var canGoNext = true
+		viewModel.readerUiTopOffset.observe(viewLifecycleOwner) { top ->
+			binding.feedbackTop.translationY = top.toFloat()
+		}
+		viewModel.readerUiBottomOffset.observe(viewLifecycleOwner) { bottom ->
+			binding.feedbackBottom.translationY = -bottom.toFloat()
+		}
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = readerAdapter
@@ -59,17 +65,17 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 			setOnPullGestureListener(object : WebtoonRecyclerView.OnPullGestureListener {
 				override fun onPullProgressTop(progress: Float) {
 					if (canGoPrev) {
-						binding.feedbackTop.setText(R.string.pull_to_prev_chapter)
+						setFeedbackText(binding.feedbackTop, getString(R.string.pull_to_prev_chapter))
 					} else {
-						binding.feedbackTop.setText(R.string.pull_top_no_prev)
+						setFeedbackText(binding.feedbackTop, getString(R.string.pull_top_no_prev))
 					}
 					updateFeedback(binding.feedbackTop, progress)
 				}
 				override fun onPullProgressBottom(progress: Float) {
 					if (canGoNext) {
-						binding.feedbackBottom.setText(R.string.pull_to_next_chapter)
+						setFeedbackText(binding.feedbackBottom, getString(R.string.pull_to_next_chapter))
 					} else {
-						binding.feedbackBottom.setText(R.string.pull_bottom_no_next)
+						setFeedbackText(binding.feedbackBottom, getString(R.string.pull_bottom_no_next))
 					}
 					updateFeedback(binding.feedbackBottom, progress)
 				}
@@ -240,4 +246,14 @@ private fun updateFeedback(tv: TextView, progress: Float) {
 
 private fun fadeOut(tv: TextView) {
 	tv.animate().alpha(0f).setDuration(150L).start()
+}
+
+private fun setFeedbackText(tv: TextView, text: CharSequence) {
+	if (tv.alpha <= 0f && text.isNotEmpty()) {
+		tv.alpha = 0f
+		tv.text = text
+		tv.animate().alpha(1f).setDuration(120L).start()
+	} else {
+		tv.text = text
+	}
 }
