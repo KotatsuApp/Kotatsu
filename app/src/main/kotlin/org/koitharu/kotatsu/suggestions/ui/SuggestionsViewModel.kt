@@ -24,6 +24,9 @@ import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.suggestions.domain.SuggestionRepository
 import org.koitharu.kotatsu.suggestions.domain.SuggestionsListQuickFilter
 import javax.inject.Inject
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
+import org.koitharu.kotatsu.local.domain.model.LocalManga
+import kotlinx.coroutines.flow.SharedFlow
 
 @HiltViewModel
 class SuggestionsViewModel @Inject constructor(
@@ -33,7 +36,8 @@ class SuggestionsViewModel @Inject constructor(
 	private val quickFilter: SuggestionsListQuickFilter,
 	private val suggestionsScheduler: SuggestionsWorker.Scheduler,
 	mangaDataRepository: MangaDataRepository,
-) : MangaListViewModel(settings, mangaDataRepository), QuickFilterListener by quickFilter {
+	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
+) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges), QuickFilterListener by quickFilter {
 
 	override val listMode = settings.observeAsFlow(AppSettings.KEY_LIST_MODE_SUGGESTIONS) { suggestionsListMode }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, settings.suggestionsListMode)

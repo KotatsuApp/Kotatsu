@@ -3,10 +3,12 @@ package org.koitharu.kotatsu.list.ui
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.plus
@@ -22,10 +24,13 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.list.domain.ListFilterOption
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 
 abstract class MangaListViewModel(
 	private val settings: AppSettings,
 	private val mangaDataRepository: MangaDataRepository,
+	@param:LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 ) : BaseViewModel() {
 
 	abstract val content: StateFlow<List<ListModel>>
@@ -63,7 +68,11 @@ abstract class MangaListViewModel(
 
 	protected fun observeListModeWithTriggers(): Flow<ListMode> = combine(
 		listMode,
-		mangaDataRepository.observeOverridesTrigger(emitInitialState = true),
+		merge(
+			mangaDataRepository.observeOverridesTrigger(emitInitialState = true),
+			mangaDataRepository.observeFavoritesTrigger(emitInitialState = true),
+			localStorageChanges.onStart { emit(null) },
+		),
 		settings.observeChanges().filter { key ->
 			key == AppSettings.KEY_PROGRESS_INDICATORS
 				|| key == AppSettings.KEY_TRACKER_ENABLED

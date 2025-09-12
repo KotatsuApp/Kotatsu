@@ -43,6 +43,9 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
+import org.koitharu.kotatsu.local.domain.model.LocalManga
+import kotlinx.coroutines.flow.SharedFlow
 
 private const val PAGE_SIZE = 16
 
@@ -54,7 +57,8 @@ class HistoryListViewModel @Inject constructor(
 	private val markAsReadUseCase: MarkAsReadUseCase,
 	private val quickFilter: HistoryListQuickFilter,
 	mangaDataRepository: MangaDataRepository,
-) : MangaListViewModel(settings, mangaDataRepository), QuickFilterListener by quickFilter {
+	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
+) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges), QuickFilterListener by quickFilter {
 
 	private val sortOrder: StateFlow<ListSortOrder> = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.IO,

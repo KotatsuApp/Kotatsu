@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -40,6 +41,8 @@ import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
 import org.koitharu.kotatsu.list.ui.model.toErrorFooter
 import org.koitharu.kotatsu.list.ui.model.toErrorState
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
+import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.sizeOrZero
 import javax.inject.Inject
@@ -55,8 +58,9 @@ open class RemoteListViewModel @Inject constructor(
 	protected val mangaListMapper: MangaListMapper,
 	private val exploreRepository: ExploreRepository,
 	sourcesRepository: MangaSourcesRepository,
-	mangaDataRepository: MangaDataRepository
-) : MangaListViewModel(settings, mangaDataRepository), FilterCoordinator.Owner {
+	mangaDataRepository: MangaDataRepository,
+	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>
+) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges), FilterCoordinator.Owner {
 
 	val source = MangaSource(savedStateHandle[RemoteListFragment.ARG_SOURCE])
 	val isRandomLoading = MutableStateFlow(false)

@@ -45,7 +45,7 @@ class LocalListViewModel @Inject constructor(
 	mangaListMapper: MangaListMapper,
 	private val deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	exploreRepository: ExploreRepository,
-	@LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
+	@param:LocalStorageChanges private val localStorageChanges: SharedFlow<LocalManga?>,
 	private val localStorageManager: LocalStorageManager,
 	sourcesRepository: MangaSourcesRepository,
 	mangaDataRepository: MangaDataRepository,
@@ -58,6 +58,7 @@ class LocalListViewModel @Inject constructor(
 	exploreRepository = exploreRepository,
 	sourcesRepository = sourcesRepository,
 	mangaDataRepository = mangaDataRepository,
+	localStorageChanges = localStorageChanges,
 ), SharedPreferences.OnSharedPreferenceChangeListener, QuickFilterListener {
 
 	val onMangaRemoved = MutableEventFlow<Unit>()

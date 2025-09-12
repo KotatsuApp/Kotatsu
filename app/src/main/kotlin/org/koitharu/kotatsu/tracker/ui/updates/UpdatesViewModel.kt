@@ -31,6 +31,9 @@ import org.koitharu.kotatsu.tracker.domain.TrackingRepository
 import org.koitharu.kotatsu.tracker.domain.UpdatesListQuickFilter
 import org.koitharu.kotatsu.tracker.domain.model.MangaTracking
 import javax.inject.Inject
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
+import org.koitharu.kotatsu.local.domain.model.LocalManga
+import kotlinx.coroutines.flow.SharedFlow
 
 @HiltViewModel
 class UpdatesViewModel @Inject constructor(
@@ -39,7 +42,8 @@ class UpdatesViewModel @Inject constructor(
 	private val mangaListMapper: MangaListMapper,
 	private val quickFilter: UpdatesListQuickFilter,
 	mangaDataRepository: MangaDataRepository,
-) : MangaListViewModel(settings, mangaDataRepository), QuickFilterListener by quickFilter {
+	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
+) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges), QuickFilterListener by quickFilter {
 
 	override val content = combine(
 		quickFilter.appliedOptions.flatMapLatest { filterOptions ->

@@ -40,6 +40,9 @@ import org.koitharu.kotatsu.list.ui.model.toErrorState
 import org.koitharu.kotatsu.parsers.model.Manga
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+import org.koitharu.kotatsu.local.data.LocalStorageChanges
+import org.koitharu.kotatsu.local.domain.model.LocalManga
+import kotlinx.coroutines.flow.SharedFlow
 
 private const val PAGE_SIZE = 16
 
@@ -52,7 +55,8 @@ class FavouritesListViewModel @Inject constructor(
 	quickFilterFactory: FavoritesListQuickFilter.Factory,
 	settings: AppSettings,
 	mangaDataRepository: MangaDataRepository,
-) : MangaListViewModel(settings, mangaDataRepository), QuickFilterListener {
+	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
+) : MangaListViewModel(settings, mangaDataRepository, localStorageChanges), QuickFilterListener {
 
 	val categoryId: Long = savedStateHandle[AppRouter.KEY_ID] ?: NO_ID
 	private val quickFilter = quickFilterFactory.create(categoryId)
