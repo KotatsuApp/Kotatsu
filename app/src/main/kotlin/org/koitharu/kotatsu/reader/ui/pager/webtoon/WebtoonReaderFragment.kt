@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,6 +47,14 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 
 	override fun onViewBindingCreated(binding: FragmentReaderWebtoonBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
+		var canGoPrev = true
+		var canGoNext = true
+		viewModel.readerUiTopOffset.observe(viewLifecycleOwner) { top ->
+			binding.feedbackTop.translationY = top.toFloat()
+		}
+		viewModel.readerUiBottomOffset.observe(viewLifecycleOwner) { bottom ->
+			binding.feedbackBottom.translationY = -bottom.toFloat()
+		}
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = readerAdapter
@@ -53,6 +62,40 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 			recyclerLifecycleDispatcher = RecyclerViewLifecycleDispatcher().also {
 				addOnScrollListener(it)
 			}
+			setOnPullGestureListener(object : WebtoonRecyclerView.OnPullGestureListener {
+				override fun onPullProgressTop(progress: Float) {
+					if (canGoPrev) {
+						setFeedbackText(binding.feedbackTop, getString(R.string.pull_to_prev_chapter))
+					} else {
+						setFeedbackText(binding.feedbackTop, getString(R.string.pull_top_no_prev))
+					}
+					updateFeedback(binding.feedbackTop, progress)
+				}
+				override fun onPullProgressBottom(progress: Float) {
+					if (canGoNext) {
+						setFeedbackText(binding.feedbackBottom, getString(R.string.pull_to_next_chapter))
+					} else {
+						setFeedbackText(binding.feedbackBottom, getString(R.string.pull_bottom_no_next))
+					}
+					updateFeedback(binding.feedbackBottom, progress)
+				}
+				override fun onPullTriggeredTop() {
+					fadeOut(binding.feedbackTop)
+					if (canGoPrev) {
+						viewModel.switchChapterBy(-1)
+					}
+				}
+				override fun onPullTriggeredBottom() {
+					fadeOut(binding.feedbackBottom)
+					if (canGoNext) {
+						viewModel.switchChapterBy(1)
+					}
+				}
+				override fun onPullCancelled() {
+					fadeOut(binding.feedbackTop)
+					fadeOut(binding.feedbackBottom)
+				}
+			})
 		}
 		viewModel.isWebtoonZooEnabled.observe(viewLifecycleOwner) {
 			binding.frame.isZoomEnable = it
@@ -69,6 +112,21 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		}
 		viewModel.readerSettingsProducer.observe(viewLifecycleOwner) {
 			it.applyBackground(binding.root)
+		}
+		viewModel.readerMode.observe(viewLifecycleOwner) { mode ->
+			binding.recyclerView.isPullGestureEnabled = (mode == org.koitharu.kotatsu.core.prefs.ReaderMode.WEBTOON) && viewModel.isWebtoonPullGestureEnabled.value
+		}
+		viewModel.isWebtoonPullGestureEnabled.observe(viewLifecycleOwner) { enabled ->
+			binding.recyclerView.isPullGestureEnabled = (viewModel.readerMode.value == org.koitharu.kotatsu.core.prefs.ReaderMode.WEBTOON) && enabled
+		}
+		viewModel.uiState.observe(viewLifecycleOwner) { state ->
+			if (state != null) {
+				canGoPrev = state.chapterIndex > 0
+				canGoNext = state.chapterIndex < state.chaptersTotal - 1
+			} else {
+				canGoPrev = true
+				canGoNext = true
+			}
 		}
 	}
 
@@ -176,5 +234,26 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		}
 		val view = findChildViewUnder(centerX, centerY) ?: return RecyclerView.NO_POSITION
 		return getChildAdapterPosition(view)
+	}
+}
+
+private fun updateFeedback(tv: TextView, progress: Float) {
+	val clamped = progress.coerceIn(0f, 1.2f)
+	tv.alpha = clamped.coerceAtMost(1f)
+	tv.scaleX = 0.9f + 0.1f * clamped.coerceAtMost(1f)
+	tv.scaleY = tv.scaleX
+}
+
+private fun fadeOut(tv: TextView) {
+	tv.animate().alpha(0f).setDuration(150L).start()
+}
+
+private fun setFeedbackText(tv: TextView, text: CharSequence) {
+	if (tv.alpha <= 0f && text.isNotEmpty()) {
+		tv.alpha = 0f
+		tv.text = text
+		tv.animate().alpha(1f).setDuration(120L).start()
+	} else {
+		tv.text = text
 	}
 }

@@ -16,4 +16,30 @@
 		android:orientation="vertical"
 		app:layoutManager="org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonLayoutManager" />
 
+	<org.koitharu.kotatsu.reader.ui.ReaderToastView
+		android:id="@+id/feedbackTop"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top"
+		android:gravity="center"
+		android:padding="16dp"
+		android:alpha="0"
+		android:text="@string/pull_to_prev_chapter"
+		android:textAppearance="?textAppearanceBodyLarge"
+		android:background="@drawable/bg_reader_indicator"
+		android:theme="@style/ThemeOverlay.Material3.Dark" />
+
+	<org.koitharu.kotatsu.reader.ui.ReaderToastView
+		android:id="@+id/feedbackBottom"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		android:gravity="center"
+		android:padding="16dp"
+		android:alpha="0"
+		android:text="@string/pull_to_next_chapter"
+		android:textAppearance="?textAppearanceBodyLarge"
+		android:background="@drawable/bg_reader_indicator"
+		android:theme="@style/ThemeOverlay.Material3.Dark" />
+
 </org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonScalingFrame>
