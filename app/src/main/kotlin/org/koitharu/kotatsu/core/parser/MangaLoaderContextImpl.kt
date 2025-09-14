@@ -5,8 +5,6 @@ import android.content.Context
 import android.util.Base64
 import androidx.core.os.LocaleListCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -33,7 +31,6 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
 
 @Singleton
 class MangaLoaderContextImpl @Inject constructor(
@@ -43,7 +40,6 @@ class MangaLoaderContextImpl @Inject constructor(
 	private val webViewExecutor: WebViewExecutor,
 ) : MangaLoaderContext() {
 
-	private val webViewUserAgent by lazy { obtainWebViewUserAgent() }
 	private val jsTimeout = TimeUnit.SECONDS.toMillis(4)
 
 	@Deprecated("Provide a base url")
@@ -54,7 +50,7 @@ class MangaLoaderContextImpl @Inject constructor(
 		webViewExecutor.evaluateJs(baseUrl, script)
 	}
 
-	override fun getDefaultUserAgent(): String = webViewUserAgent
+	override fun getDefaultUserAgent(): String = webViewExecutor.defaultUserAgent ?: UserAgents.FIREFOX_MOBILE
 
 	override fun getConfig(source: MangaSource): MangaSourceConfig {
 		return SourceSettings(androidContext, source)
@@ -91,15 +87,4 @@ class MangaLoaderContextImpl @Inject constructor(
 	}
 
 	override fun createBitmap(width: Int, height: Int): Bitmap = BitmapWrapper.create(width, height)
-
-	private fun obtainWebViewUserAgent(): String {
-		val mainDispatcher = Dispatchers.Main.immediate
-		return if (!mainDispatcher.isDispatchNeeded(EmptyCoroutineContext)) {
-			webViewExecutor.getDefaultUserAgent()
-		} else {
-			runBlocking(mainDispatcher) {
-				webViewExecutor.getDefaultUserAgent()
-			}
-		} ?: UserAgents.FIREFOX_MOBILE
-	}
 }

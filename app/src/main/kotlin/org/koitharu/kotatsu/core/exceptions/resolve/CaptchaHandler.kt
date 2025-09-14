@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import androidx.annotation.CheckResult
 import androidx.annotation.RequiresPermission
 import androidx.collection.MutableScatterMap
 import androidx.core.app.NotificationChannelCompat
@@ -43,6 +44,7 @@ import org.koitharu.kotatsu.core.model.UnknownMangaSource
 import org.koitharu.kotatsu.core.model.getTitle
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.nav.AppRouter
+import org.koitharu.kotatsu.core.network.webview.WebViewExecutor
 import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.prefs.SourceSettings
 import org.koitharu.kotatsu.core.util.ext.checkNotificationPermission
@@ -65,11 +67,13 @@ class CaptchaHandler @Inject constructor(
 	@LocalizedAppContext private val context: Context,
 	private val databaseProvider: Provider<MangaDatabase>,
 	private val coilProvider: Provider<ImageLoader>,
+	private val webViewExecutor: WebViewExecutor,
 ) : EventListener() {
 
 	private val exceptionMap = MutableScatterMap<MangaSource, CloudFlareProtectedException>()
 	private val mutex = Mutex()
 
+	@CheckResult
 	suspend fun handle(exception: CloudFlareException): Boolean = handleException(exception.source, exception, true)
 
 	suspend fun discard(source: MangaSource) {
@@ -79,10 +83,18 @@ class CaptchaHandler @Inject constructor(
 	override fun onError(request: ImageRequest, result: ErrorResult) {
 		super.onError(request, result)
 		val e = result.throwable
-		if (e is CloudFlareException && request.extras[ignoreCaptchaKey] != true) {
+		if (e is CloudFlareException) {
 			val scope = request.lifecycle?.coroutineScope ?: processLifecycleScope
 			scope.launch {
-				handleException(e.source, e, true)
+				if (
+					handleException(
+						source = e.source,
+						exception = e,
+						notify = request.extras[suppressCaptchaKey] != true,
+					)
+				) {
+					coilProvider.get().enqueue(request) // TODO check if ok
+				}
 			}
 		}
 	}
@@ -90,10 +102,13 @@ class CaptchaHandler @Inject constructor(
 	private suspend fun handleException(
 		source: MangaSource,
 		exception: CloudFlareException?,
-		notify: Boolean
+		notify: Boolean,
 	): Boolean = withContext(Dispatchers.Default) {
 		if (source == UnknownMangaSource) {
 			return@withContext false
+		}
+		if (exception != null && webViewExecutor.tryResolveCaptcha(exception, RESOLVE_TIMEOUT)) {
+			return@withContext true
 		}
 		mutex.withLock {
 			var removedException: CloudFlareProtectedException? = null
@@ -119,7 +134,7 @@ class CaptchaHandler @Inject constructor(
 				notify(exceptions)
 			}
 		}
-		true
+		false
 	}
 
 	@RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
@@ -234,7 +249,7 @@ class CaptchaHandler @Inject constructor(
 				.data(source.faviconUri())
 				.allowHardware(false)
 				.allowConversionToBitmap(true)
-				.ignoreCaptchaErrors()
+				.suppressCaptchaErrors()
 				.mangaSourceExtra(source)
 				.size(context.resources.getNotificationIconSize())
 				.scale(Scale.FILL)
@@ -260,11 +275,11 @@ class CaptchaHandler @Inject constructor(
 
 	companion object {
 
-		fun ImageRequest.Builder.ignoreCaptchaErrors() = apply {
-			extras[ignoreCaptchaKey] = true
+		fun ImageRequest.Builder.suppressCaptchaErrors() = apply {
+			extras[suppressCaptchaKey] = true
 		}
 
-		val ignoreCaptchaKey = Extras.Key(false)
+		private val suppressCaptchaKey = Extras.Key(false)
 
 		private const val CHANNEL_ID = "captcha"
 		private const val TAG = CHANNEL_ID
@@ -272,5 +287,6 @@ class CaptchaHandler @Inject constructor(
 		private const val GROUP_NOTIFICATION_ID = 34
 		private const val SETTINGS_ACTION_CODE = 3
 		private const val ACTION_DISCARD = "org.koitharu.kotatsu.CAPTCHA_DISCARD"
+		private const val RESOLVE_TIMEOUT = 20_000L
 	}
 }

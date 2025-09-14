@@ -87,6 +87,7 @@ android {
 			'-opt-in=coil3.annotation.InternalCoilApi',
 			'-opt-in=kotlinx.serialization.ExperimentalSerializationApi',
 			'-Xjspecify-annotations=strict',
+			'-Xannotation-default-target=first-only',
 			'-Xtype-enhancement-improvements-strict-mode'
 		]
 	}

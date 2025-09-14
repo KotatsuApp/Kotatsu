@@ -5,11 +5,15 @@ import android.webkit.WebViewClient
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
-class ContinuationResumeWebViewClient(
+open class ContinuationResumeWebViewClient(
 	private val continuation: Continuation<Unit>,
 ) : WebViewClient() {
 
 	override fun onPageFinished(view: WebView?, url: String?) {
+		resumeContinuation(view)
+	}
+
+	protected fun resumeContinuation(view: WebView?) {
 		view?.webViewClient = WebViewClient() // reset to default
 		continuation.resume(Unit)
 	}
