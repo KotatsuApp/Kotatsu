@@ -202,7 +202,7 @@ class DownloadWorker @AssistedInject constructor(
 						?: error("Cannot obtain remote manga instance")
 				}
 				val repo = mangaRepositoryFactory.create(manga.source)
-				val mangaDetails = if (manga.chapters.isNullOrEmpty()) repo.getDetails(manga) else manga
+				val mangaDetails = if (manga.chapters.isNullOrEmpty() || manga.description.isNullOrEmpty()) repo.getDetails(manga) else manga
 				output = LocalMangaOutput.getOrCreate(
 					root = destination,
 					manga = mangaDetails,
