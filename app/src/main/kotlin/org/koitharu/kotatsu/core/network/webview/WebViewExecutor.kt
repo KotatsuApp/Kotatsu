@@ -25,6 +25,7 @@ import java.lang.ref.WeakReference
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -77,7 +78,7 @@ class WebViewExecutor @Inject constructor(
 									continuation = cont,
 								)
 								cont.invokeOnCancellation {
-									webView.stopLoading()
+									webView.stopLoadingAsync()
 								}
 								webView.loadUrl(exception.url)
 							}
@@ -114,5 +115,11 @@ class WebViewExecutor @Inject constructor(
 	private fun MangaSource.getUserAgent(): String? {
 		val repository = mangaRepositoryFactoryProvider.get().create(this) as? ParserMangaRepository
 		return repository?.getRequestHeaders()?.get(CommonHeaders.USER_AGENT)
+	}
+
+	private fun WebView.stopLoadingAsync() {
+		Dispatchers.Main.dispatch(EmptyCoroutineContext) {
+			stopLoading()
+		}
 	}
 }
