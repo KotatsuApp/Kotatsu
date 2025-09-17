@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.core.network.webview
 
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import kotlinx.coroutines.CancellableContinuation
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
@@ -14,7 +15,9 @@ open class ContinuationResumeWebViewClient(
 	}
 
 	protected fun resumeContinuation(view: WebView?) {
-		view?.webViewClient = WebViewClient() // reset to default
-		continuation.resume(Unit)
+		if (continuation !is CancellableContinuation || continuation.isActive) {
+			view?.webViewClient = WebViewClient() // reset to default
+			continuation.resume(Unit)
+		}
 	}
 }
