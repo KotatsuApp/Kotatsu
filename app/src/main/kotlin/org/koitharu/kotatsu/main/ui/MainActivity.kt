@@ -131,7 +131,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		onBackPressedDispatcher.addCallback(exitCallback)
 		onBackPressedDispatcher.addCallback(navigationDelegate)
 
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 			val legacySearchCallback = SearchViewLegacyBackCallback(viewBinding.searchView)
 			viewBinding.searchView.addTransitionListener(legacySearchCallback)
 			onBackPressedDispatcher.addCallback(legacySearchCallback)
