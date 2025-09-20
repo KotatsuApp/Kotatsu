@@ -8,8 +8,7 @@
 	public static void checkParameterIsNotNull(...);
 	public static void checkNotNullParameter(...);
 }
--keep public class ** extends org.koitharu.kotatsu.core.ui.BaseFragment
--keep class org.koitharu.kotatsu.core.db.entity.* { *; }
+
 -dontwarn okhttp3.internal.platform.**
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
