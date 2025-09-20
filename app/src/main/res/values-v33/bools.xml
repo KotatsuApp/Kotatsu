@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<bool name="com_samsung_android_icon_container_has_icon_container">false</bool>
+	<bool name="is_predictive_back_enabled">true</bool>
 </resources>
