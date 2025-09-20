@@ -83,9 +83,7 @@ class CoverImageView @JvmOverloads constructor(
 		if (fallbackDrawable == null) {
 			fallbackDrawable = context.getThemeColor(materialR.attr.colorSurfaceContainer).toDrawable()
 		}
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			addImageRequestListener(ErrorForegroundListener())
-		}
+		addImageRequestListener(ErrorForegroundListener())
 	}
 
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -169,7 +167,6 @@ class CoverImageView @JvmOverloads constructor(
 		}
 	}
 
-	@RequiresApi(Build.VERSION_CODES.M)
 	private inner class ErrorForegroundListener : ImageRequest.Listener {
 
 		override fun onSuccess(request: ImageRequest, result: SuccessResult) {

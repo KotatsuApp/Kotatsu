@@ -2,17 +2,16 @@ package org.koitharu.kotatsu.core.ui.list
 
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.View.OnContextClickListener
 import android.view.View.OnLongClickListener
 import androidx.core.util.Function
 import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateViewBindingViewHolder
-import org.koitharu.kotatsu.core.ui.OnContextClickListenerCompat
-import org.koitharu.kotatsu.core.util.ext.setOnContextClickListenerCompat
 
 class AdapterDelegateClickListenerAdapter<I, O>(
 	private val adapterDelegate: AdapterDelegateViewBindingViewHolder<out I, *>,
 	private val clickListener: OnListItemClickListener<O>,
 	private val itemMapper: Function<I, O>,
-) : OnClickListener, OnLongClickListener, OnContextClickListenerCompat {
+) : OnClickListener, OnLongClickListener, OnContextClickListener {
 
 	override fun onClick(v: View) {
 		clickListener.onItemClick(mappedItem(), v)
@@ -33,7 +32,7 @@ class AdapterDelegateClickListenerAdapter<I, O>(
 	fun attach(itemView: View) {
 		itemView.setOnClickListener(this)
 		itemView.setOnLongClickListener(this)
-		itemView.setOnContextClickListenerCompat(this)
+		itemView.setOnContextClickListener(this)
 	}
 
 	companion object {

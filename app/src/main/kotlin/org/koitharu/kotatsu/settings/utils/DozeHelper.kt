@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,10 +32,6 @@ class DozeHelper(
 	}
 
 	fun startIgnoreDoseActivity(): Boolean {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-			Snackbar.make(fragment.listView ?: return false, R.string.operation_not_supported, Snackbar.LENGTH_SHORT).show()
-			return false
-		}
 		val context = fragment.context ?: return false
 		val packageName = context.packageName
 		val powerManager = context.powerManager ?: return false
@@ -58,9 +53,6 @@ class DozeHelper(
 	}
 
 	private fun isDozeIgnoreAvailable(): Boolean {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-			return false
-		}
 		val context = fragment.context ?: return false
 		val packageName = context.packageName
 		val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager

@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.core.ui.util
 
 import android.graphics.Color
-import android.os.Build
 import android.view.ViewGroup
 import android.view.Window
 import androidx.activity.OnBackPressedCallback
@@ -14,7 +13,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.util.ext.getThemeColor
 import com.google.android.material.R as materialR
 
@@ -37,14 +35,10 @@ class ActionModeDelegate : OnBackPressedCallback(false) {
 		listeners?.forEach { it.onActionModeStarted(mode) }
 		if (window != null) {
 			val ctx = window.context
-			val actionModeColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				ColorUtils.compositeColors(
-					ContextCompat.getColor(ctx, materialR.color.m3_appbar_overlay_color),
-					ctx.getThemeColor(materialR.attr.colorSurface),
-				)
-			} else {
-				ContextCompat.getColor(ctx, R.color.kotatsu_surface)
-			}
+			val actionModeColor = ColorUtils.compositeColors(
+				ContextCompat.getColor(ctx, materialR.color.m3_appbar_overlay_color),
+				ctx.getThemeColor(materialR.attr.colorSurface),
+			)
 			defaultStatusBarColor = window.statusBarColor
 			window.statusBarColor = actionModeColor
 			val insets = ViewCompat.getRootWindowInsets(window.decorView)

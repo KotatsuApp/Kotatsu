@@ -51,9 +51,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 		super.onViewBindingCreated(binding, savedInstanceState)
 		if (dialog == null) {
 			binding.layoutBody.updatePadding(top = binding.layoutBody.paddingBottom)
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				binding.scrollView.scrollIndicators = 0
-			}
+			binding.scrollView.scrollIndicators = 0
 		}
 		val filter = FilterCoordinator.require(this)
 		filter.sortOrder.observe(viewLifecycleOwner, this::onSortOrderChanged)

@@ -209,9 +209,7 @@ class DetailsActivity :
 
 	override fun onProvideAssistContent(outContent: AssistContent) {
 		super.onProvideAssistContent(outContent)
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			viewModel.getMangaOrNull()?.publicUrl?.toUriOrNull()?.let { outContent.webUri = it }
-		}
+		viewModel.getMangaOrNull()?.publicUrl?.toUriOrNull()?.let { outContent.webUri = it }
 	}
 
 	override fun isNsfwContent(): Flow<Boolean> = viewModel.manga.map { it?.contentRating == ContentRating.ADULT }
