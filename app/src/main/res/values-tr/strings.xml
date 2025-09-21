@@ -859,4 +859,11 @@
     <string name="no_chapters_in_manga">Bu manga bölüm içermiyor</string>
     <string name="chapters_load_failed">Bölüm listesi yüklenemedi</string>
     <string name="telegram_integration">Telegram entegrasyonu</string>
+    <string name="test_parser">Manga kaynağını test et</string>
+    <string name="pull_to_prev_chapter">Önceki bölümü açmak için bırakın</string>
+    <string name="pull_to_next_chapter">Sıradaki bölümü açmak için bırakın</string>
+    <string name="pull_top_no_prev">Önceki bölüm yok</string>
+    <string name="pull_bottom_no_next">Sonraki bölüm yok</string>
+    <string name="enable_pull_gesture_title">Çekme hareketini etkinleştir</string>
+    <string name="enable_pull_gesture_summary">Webtoon modunda bölüm değiştirmek için çekme hareketi kullan</string>
 </resources>
