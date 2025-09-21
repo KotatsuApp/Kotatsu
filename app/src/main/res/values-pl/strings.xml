@@ -832,4 +832,12 @@
     <string name="hide_from_main_screen">Ukryj na ekranie głównym</string>
     <string name="theme_name_itsuka">Itsuka</string>
     <string name="theme_name_totoro">Totoro</string>
+    <string name="book_effect">Żółtawe tło (niebieski filtr)</string>
+    <string name="packup_creation_failed">Nie udało się stworzyć kopii zapasowej</string>
+    <string name="main_screen">Ekran główny</string>
+    <string name="main_screen_fab_summary">Pozwala wznowić czytanie jednym kliknięciem. Ten przycisk nie będzie pojawiał się w trybie inkognito, albo kiedy historia będzie pusta</string>
+    <string name="unavailable">Niedostępne</string>
+    <string name="no_chapters_in_manga">Ta manga nie zawiera żadnych rozdziałów</string>
+    <string name="chapters_load_failed">Nie udało się załadować listy rozdziałów</string>
+    <string name="telegram_integration">Integracja z Telegramem</string>
 </resources>
