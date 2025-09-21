@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="items">
-        <item quantity="other">”%1$d butir</item>
+        <item quantity="other">%1$d glintir</item>
     </plurals>
     <plurals name="new_chapters">
-        <item quantity="other">%1$d Jilid Baru</item>
+        <item quantity="other">%1$d bagéan</item>
     </plurals>
     <plurals name="chapters">
-        <item quantity="other">%1$d Jilid</item>
+        <item quantity="other">%1$d bagéyan</item>
     </plurals>
     <plurals name="minutes_ago">
-        <item quantity="other">%1$d menit yang lalu</item>
+        <item quantity="other">%1$d waktu kepungkur</item>
     </plurals>
     <plurals name="hours_ago">
-        <item quantity="other">%1$d jam yang lalu</item>
+        <item quantity="other">%1$d jam kepungkur</item>
     </plurals>
     <plurals name="days_ago">
-        <item quantity="other">%1$d hari yang lalu</item>
+        <item quantity="other">%1$d dinten ingkang rumiyin</item>
     </plurals>
     <plurals name="months_ago">
-        <item quantity="other">%1$d bulan yang lalu</item>
+        <item quantity="other">%1$d sasi ingkang rumiyin</item>
     </plurals>
     <plurals name="hours">
-        <item quantity="other">%1$d jam</item>
+        <item quantity="other">%1$d tabuh</item>
     </plurals>
     <plurals name="minutes">
         <item quantity="other">%1$d menit</item>
