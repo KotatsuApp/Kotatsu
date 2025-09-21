@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="hours">
+        <item quantity="one">%1$d 𐍈𐌴𐌹𐌻𐌰</item>
+        <item quantity="other">%1$d 𐍈𐌴𐌹𐌻𐍉𐍃</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d 𐌼𐌹𐌽𐌿𐍄𐌿𐍃</item>
+        <item quantity="other">%1$d 𐌼𐌹𐌽𐌿𐍄𐌾𐌿𐍃</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">𐍆𐌰𐌿𐍂𐌰 %1$d 𐌳𐌰𐌲</item>
+        <item quantity="other">𐍆𐌰𐌿𐍂𐌰 %1$d 𐌳𐌰𐌲𐌰𐌽𐍃</item>
+    </plurals>
+    <plurals name="months_ago">
+        <item quantity="one">𐍆𐌰𐌿𐍂𐌰 𐌼𐌴𐌽𐍉𐌸 %1$d</item>
+        <item quantity="other">𐍆𐌰𐌿𐍂𐌰 𐌼𐌴𐌽𐍉𐌸𐌿𐌼 %1$d</item>
+    </plurals>
+</resources>
