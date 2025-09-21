@@ -2,6 +2,7 @@
 <org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonScalingFrame
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/frame"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
@@ -16,30 +17,36 @@
 		android:orientation="vertical"
 		app:layoutManager="org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonLayoutManager" />
 
-	<org.koitharu.kotatsu.reader.ui.ReaderToastView
+	<TextView
 		android:id="@+id/feedbackTop"
-		android:layout_width="match_parent"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="top"
-		android:gravity="center"
-		android:padding="16dp"
+		android:layout_gravity="top|center_horizontal"
+		android:layout_margin="@dimen/screen_padding"
 		android:alpha="0"
+		android:background="@drawable/bg_reader_indicator"
+		android:gravity="center"
+		android:paddingHorizontal="@dimen/margin_normal"
+		android:paddingVertical="@dimen/margin_small"
 		android:text="@string/pull_to_prev_chapter"
 		android:textAppearance="?textAppearanceBodyLarge"
-		android:background="@drawable/bg_reader_indicator"
-		android:theme="@style/ThemeOverlay.Material3.Dark" />
+		android:theme="@style/ThemeOverlay.Material3.Dark"
+		tools:alpha="1" />
 
-	<org.koitharu.kotatsu.reader.ui.ReaderToastView
+	<TextView
 		android:id="@+id/feedbackBottom"
-		android:layout_width="match_parent"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="bottom"
-		android:gravity="center"
-		android:padding="16dp"
+		android:layout_gravity="bottom|center_horizontal"
+		android:layout_margin="@dimen/screen_padding"
 		android:alpha="0"
+		android:background="@drawable/bg_reader_indicator"
+		android:gravity="center"
+		android:paddingHorizontal="@dimen/margin_normal"
+		android:paddingVertical="@dimen/margin_small"
 		android:text="@string/pull_to_next_chapter"
 		android:textAppearance="?textAppearanceBodyLarge"
-		android:background="@drawable/bg_reader_indicator"
-		android:theme="@style/ThemeOverlay.Material3.Dark" />
+		android:theme="@style/ThemeOverlay.Material3.Dark"
+		tools:alpha="1" />
 
 </org.koitharu.kotatsu.reader.ui.pager.webtoon.WebtoonScalingFrame>

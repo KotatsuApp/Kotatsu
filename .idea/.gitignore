@@ -3,3 +3,5 @@
 /workspace.xml
 /migrations.xml
 /runConfigurations.xml
+/appInsightsSettings.xml
+/kotlinCodeInsightSettings.xml
