@@ -120,9 +120,6 @@ class ReaderViewModel @Inject constructor(
 	val onAskNsfwIncognito = MutableEventFlow<Unit>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
-	val readerUiTopOffset = MutableStateFlow(0)
-	val readerUiBottomOffset = MutableStateFlow(0)
-
 	val isIncognitoMode = MutableStateFlow(savedStateHandle.get<Boolean>(ReaderIntent.EXTRA_INCOGNITO))
 
 	val content = MutableStateFlow(ReaderContent(emptyList(), null))
@@ -228,11 +225,6 @@ class ReaderViewModel @Inject constructor(
 
 	fun onIdle() {
 		discordRpc.setIdle()
-	}
-
-	fun setReaderUiOffsets(top: Int, bottom: Int) {
-		readerUiTopOffset.value = top
-		readerUiBottomOffset.value = bottom
 	}
 
 	fun switchMode(newMode: ReaderMode) {

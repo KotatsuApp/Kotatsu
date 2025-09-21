@@ -2,9 +2,13 @@ package org.koitharu.kotatsu.reader.ui.pager.webtoon
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,12 +54,6 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 
 	override fun onViewBindingCreated(binding: FragmentReaderWebtoonBinding, savedInstanceState: Bundle?) {
 		super.onViewBindingCreated(binding, savedInstanceState)
-		viewModel.readerUiTopOffset.observe(viewLifecycleOwner) { top ->
-			binding.feedbackTop.translationY = top.toFloat()
-		}
-		viewModel.readerUiBottomOffset.observe(viewLifecycleOwner) { bottom ->
-			binding.feedbackBottom.translationY = -bottom.toFloat()
-		}
 		with(binding.recyclerView) {
 			setHasFixedSize(true)
 			adapter = readerAdapter
@@ -99,6 +97,19 @@ class WebtoonReaderFragment : BaseReaderFragment<FragmentReaderWebtoonBinding>()
 		recyclerLifecycleDispatcher = null
 		requireViewBinding().recyclerView.adapter = null
 		super.onDestroyView()
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val offsetInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		viewBinding?.apply {
+			feedbackTop.updateLayoutParams<MarginLayoutParams> {
+				topMargin = bottomMargin + offsetInsets.top
+			}
+			feedbackBottom.updateLayoutParams<MarginLayoutParams> {
+				bottomMargin = topMargin + offsetInsets.bottom
+			}
+		}
+		return super.onApplyWindowInsets(v, insets)
 	}
 
 	override fun onCreateAdapter() = WebtoonAdapter(
