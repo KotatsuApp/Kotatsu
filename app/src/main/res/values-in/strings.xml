@@ -859,4 +859,10 @@
     <string name="reading_s">Membaca %s</string>
     <string name="read_on_s">Baca terus %s</string>
     <string name="obtain">Memperoleh</string>
+    <string name="pull_to_prev_chapter">Lepas untuk membuka bab sebelumnya</string>
+    <string name="pull_to_next_chapter">Lepas untuk membuka bab selanjutnya</string>
+    <string name="pull_top_no_prev">Tidak ada bab sebelumnya</string>
+    <string name="pull_bottom_no_next">Tidak ada bab berikutnya</string>
+    <string name="enable_pull_gesture_title">Aktifkan gerakan tarik</string>
+    <string name="enable_pull_gesture_summary">Gunakan gerakan tarik untuk pindah bab di webtoon</string>
 </resources>
