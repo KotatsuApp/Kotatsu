@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="history">𐍃𐍀𐌹𐌻𐌻</string>
+    <string name="error_occurred">𐌰𐌹𐍂𐌶𐌴𐌹 𐍅𐌰𐍂𐌸</string>
+    <string name="remote_sources">𐌼𐌰𐌲𐌲𐌹𐌽𐍃 𐌱𐍂𐌿𐌽𐌽𐌰𐌽𐍃</string>
+    <string name="computing_">𐍂𐌰𐌷𐌽𐌾𐌰𐌳𐌰…</string>
+    <string name="read">𐌰𐌽𐌰𐌺𐌿𐌽𐌽𐌰𐌽</string>
+    <string name="share_s">%s 𐌳𐌰𐌹𐌻𐌾𐌰𐌽</string>
+    <string name="search">𐍃𐍉𐌺𐌾𐌰𐌽</string>
+    <string name="search_manga">𐌼𐌰𐌲𐌲𐌰 𐍃𐍉𐌺𐌾𐌰𐌽</string>
+</resources>
