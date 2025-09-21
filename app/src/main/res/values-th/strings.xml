@@ -443,4 +443,6 @@
     <string name="ask_every_time">ถามทุกครั้ง</string>
     <string name="allow_always">อนุญาตเสมอ</string>
     <string name="dont_allow">ไม่อนุญาต</string>
+    <string name="pages_saved">บันทึกแล้ว</string>
+    <string name="clear_thumbs_cache">ล้างแคชรูปย่อ</string>
 </resources>
