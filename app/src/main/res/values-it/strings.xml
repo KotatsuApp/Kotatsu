@@ -859,4 +859,11 @@
     <string name="no_chapters_in_manga">Questo manga non contiene capitoli</string>
     <string name="telegram_integration">Integrazione con Telegram</string>
     <string name="chapters_load_failed">Errore nel caricamento della lista dei capitoli</string>
+    <string name="test_parser">Testa fonte manga</string>
+    <string name="pull_to_prev_chapter">Rilascia per aprire il capitolo precedente</string>
+    <string name="pull_to_next_chapter">Rilascia per aprire il capitolo successivo</string>
+    <string name="pull_top_no_prev">Nessun capitolo precedente</string>
+    <string name="pull_bottom_no_next">Nessun capitolo successivo</string>
+    <string name="enable_pull_gesture_title">Abilita gesto di scorrimento</string>
+    <string name="enable_pull_gesture_summary">Abilita gesto di scorrimento per cambiare capitolo in webtoon</string>
 </resources>
