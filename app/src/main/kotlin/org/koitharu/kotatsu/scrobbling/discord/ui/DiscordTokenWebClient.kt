@@ -6,7 +6,7 @@ import org.koitharu.kotatsu.browser.BrowserCallback
 import org.koitharu.kotatsu.browser.BrowserClient
 import org.koitharu.kotatsu.parsers.util.removeSurrounding
 
-class DiscordTokenWebClient(private val callback: Callback) : BrowserClient(callback, null) {
+class DiscordTokenWebClient(private val callback: Callback) : BrowserClient(callback) {
 
 	override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
 		super.onPageStarted(view, url, favicon)

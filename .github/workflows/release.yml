@@ -1,0 +1,94 @@
+name: Release
+
+on:
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    build:
+
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Set up JDK 21
+              uses: actions/setup-java@v4
+              with:
+                  java-version: '21'
+                  distribution: 'temurin'
+
+            - name: Grant execute permission for gradlew
+              run: chmod +x gradlew
+
+            - name: Restore playstore.keystore.jks
+              run: echo $KEYSTORE_FILE | base64 -d > app/playstore.keystore.jks
+
+            - name: List project files
+              run: |
+                echo "Listing contents of the project directory:"
+                ls -al /home/runner/work/kotatsu/kotatsu
+                echo "Listing contents of the app directory:"
+                ls -al /home/runner/work/kotatsu/kotatsu/app
+
+            - name: Build release APK
+              run: ./gradlew bundleRelease -PSIGNING_KEY_ALIAS=$SIGNING_KEY_ALIAS -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD -PKEYSTORE_FILE=app/playstore.keystore.jks -PSIGNING_KEY_PASSWORD=$SIGNING_KEY_PASSWORD
+
+            - name: Upload Release APK
+              uses: actions/upload-artifact@v4
+              with:
+                name: release-apk
+                path: app/build/outputs/apk/release/app-release.apk
+
+            - name: Create a Release
+              uses: elgohr/Github-Release-Action@v5
+              env:
+                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                title: Release
+                
+            - name: Get Previous Release
+              id: previous-release
+              uses: cardinalby/git-get-release-action@v1
+              env:
+                GITHUB_TOKEN: ${{ github.token }}
+              with:
+                latest: true
+
+            - name: Generate Release Notes
+              id: generate-release-notes
+              uses: actions/github-script@v7
+              with:
+                github-token: ${{ github.token }}
+                result-encoding: string
+                script: |
+                  const { data } = await github.rest.repos.generateReleaseNotes({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    tag_name: 'v${{ inputs.version }}',
+                    target_commitish: '${{ github.sha }}',
+                    previous_tag_name: '${{ steps.previous-release.outputs.tag_name }}',
+                  })
+                  return data.body
+
+            - name: Create release
+              uses: ncipollo/release-action@v1
+              with:
+                artifacts: _artifacts/Sonarr.*
+                commit: ${{ github.sha }}
+                generateReleaseNotes: false
+                body: ${{ steps.generate-release-notes.outputs.result }}
+                name: ${{ inputs.version }}
+                skipIfReleaseExists: true
+                tag: v${{ inputs.version }}

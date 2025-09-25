@@ -368,9 +368,6 @@
 			android:name="org.koitharu.kotatsu.details.service.MangaPrefetchService"
 			android:exported="false"
 			android:label="@string/prefetch_content" />
-		<service
-			android:name="org.koitharu.kotatsu.browser.AdListUpdateService"
-			android:exported="false" />
 
 		<provider
 			android:name="org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider"

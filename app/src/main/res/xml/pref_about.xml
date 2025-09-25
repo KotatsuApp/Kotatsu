@@ -35,16 +35,5 @@
 		android:summary="@string/url_github"
 		android:title="@string/source_code" />
 
-	<Preference
-		android:key="about_app_translation"
-		android:persistent="false"
-		android:summary="@string/url_weblate"
-		android:title="@string/about_app_translation_summary" />
-
-	<Preference
-		android:key="about_telegram"
-		android:persistent="false"
-		android:summary="@string/url_telegram_web"
-		android:title="@string/telegram_group" />
 
 </PreferenceScreen>
