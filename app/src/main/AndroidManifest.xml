@@ -106,6 +106,7 @@
 		</activity>
 		<activity
 			android:name="org.koitharu.kotatsu.reader.ui.ReaderActivity"
+			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
 			android:exported="true">
 			<intent-filter>
 				<action android:name="${applicationId}.action.READ_MANGA" />
