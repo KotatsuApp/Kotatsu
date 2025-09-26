@@ -10,6 +10,9 @@ import org.koitharu.kotatsu.core.nav.ReaderIntent
  * Test to verify that reader state is properly preserved during orientation changes.
  * This test validates the fix for the issue where the reader would jump back to the
  * original "Continue" position when the device orientation changes.
+ * 
+ * The primary fix is adding android:configChanges to prevent activity recreation,
+ * but these tests validate the secondary fix of proper state persistence.
  */
 class ReaderViewModelOrientationTest {
 
