@@ -140,6 +140,7 @@ class DetailsViewModel @Inject constructor(
 		get() = scrobblers.any { it.isEnabled }
 
 	val scrobblingInfo: StateFlow<List<ScrobblingInfo>> = interactor.observeScrobblingInfo(mangaId)
+		.withErrorHandling()
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
 	val relatedManga: StateFlow<List<MangaListModel>> = manga.mapLatest {
