@@ -3,7 +3,6 @@ package org.koitharu.kotatsu.reader.ui
 import android.app.assist.AssistContent
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
@@ -212,13 +211,6 @@ class ReaderActivity :
 	override fun onStop() {
 		super.onStop()
 		viewModel.onStop()
-	}
-
-	override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
-		super.onConfigurationChanged(newConfig)
-		// Save current reader state when configuration changes (e.g., orientation change)
-		// to ensure reading position is preserved
-		viewModel.saveCurrentState(readerManager.currentReader?.getCurrentState())
 	}
 
 	override fun onProvideAssistContent(outContent: AssistContent) {

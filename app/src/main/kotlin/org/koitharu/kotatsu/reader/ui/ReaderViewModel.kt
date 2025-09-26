@@ -350,13 +350,8 @@ class ReaderViewModel @Inject constructor(
 			}
 			val centerPos = (lowerPos + upperPos) / 2
 			pages.getOrNull(centerPos)?.let { page ->
-				val newState = readingState.value?.copy(chapterId = page.chapterId, page = page.index)
-				if (newState != null) {
-					readingState.value = newState
-					// Update savedStateHandle to preserve reading position during activity recreation
-					// (e.g., orientation changes). This ensures that the current reading position
-					// is maintained instead of falling back to the original "Continue" position.
-					savedStateHandle[ReaderIntent.EXTRA_STATE] = newState
+				readingState.update { cs ->
+					cs?.copy(chapterId = page.chapterId, page = page.index)
 				}
 			}
 			notifyStateChanged()
