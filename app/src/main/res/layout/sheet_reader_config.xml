@@ -141,7 +141,7 @@
 				android:text="@string/enable_pull_gesture_title"
 				android:textAppearance="?textAppearanceListItem"
 				android:textColor="?colorOnSurfaceVariant"
-				app:drawableStartCompat="@drawable/ic_gesture" />
+				app:drawableStartCompat="@drawable/ic_gesture_vertical" />
 
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_screen_rotate"

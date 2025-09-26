@@ -28,12 +28,20 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 	private var isFixingScroll = false
 
 	var isPullGestureEnabled: Boolean = false
+		set(value) {
+			if (field != value) {
+				field = value
+				setEdgeEffectFactory(
+					if (value) {
+						PullEffect.Factory()
+					} else {
+						EdgeEffectFactory()
+					},
+				)
+			}
+		}
 	var pullThreshold: Float = 0.3f
 	private var pullListener: OnPullGestureListener? = null
-
-	init {
-		setEdgeEffectFactory(PullEffect.Factory())
-	}
 
 	fun setOnPullGestureListener(listener: OnPullGestureListener?) {
 		pullListener = listener
@@ -248,7 +256,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 
 			override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
 				val pullListener = (view as? WebtoonRecyclerView)?.pullListener
-				return if (pullListener != null && view.isPullGestureEnabled) {
+				return if (pullListener != null) {
 					PullEffect(view, direction, view.pullThreshold, pullListener)
 				} else {
 					super.createEdgeEffect(view, direction)
