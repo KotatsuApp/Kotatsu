@@ -353,6 +353,12 @@ class ReaderViewModel @Inject constructor(
 				readingState.update { cs ->
 					cs?.copy(chapterId = page.chapterId, page = page.index)
 				}
+				// Update savedStateHandle to preserve reading position during activity recreation
+				// (e.g., orientation changes). This ensures that the current reading position
+				// is maintained instead of falling back to the original "Continue" position.
+				readingState.value?.let { currentState ->
+					savedStateHandle[ReaderIntent.EXTRA_STATE] = currentState
+				}
 			}
 			notifyStateChanged()
 			if (pages.isEmpty() || loadingJob?.isActive == true) {
