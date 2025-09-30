@@ -7,7 +7,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -47,7 +46,7 @@ class ScrobblerConfigViewModel @Inject constructor(
 	val content = scrobbler.observeAllScrobblingInfo()
 		.onStart { loadingCounter.increment() }
 		.onFirst { loadingCounter.decrement() }
-		.catch { errorEvent.call(it) }
+		.withErrorHandling()
 		.map { buildContentList(it) }
 		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, emptyList())
 
