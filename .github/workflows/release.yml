@@ -105,5 +105,5 @@ jobs:
               with:
                 upload_url: ${{ steps.create_release.outputs.upload_url }}
                 asset_path: ${{ steps.releaseApk.outputs.apkfile }}
-                asset_name: OpenCalc_v${{ env.VERSION }}.${{ github.run_number }}.apk
+                asset_name: Kotatsu_v${{ env.VERSION }}.${{ github.run_number }}.apk
                 asset_content_type: application/zip
