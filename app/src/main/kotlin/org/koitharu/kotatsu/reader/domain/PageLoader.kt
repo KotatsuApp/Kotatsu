@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu.reader.domain
 
-import android.content.Context
+import android.content.Context`r`nimport android.graphics.Bitmap`r`nimport android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.net.Uri
 import androidx.annotation.AnyThread
@@ -57,7 +57,7 @@ import org.koitharu.kotatsu.core.util.ext.isNotEmpty
 import org.koitharu.kotatsu.core.util.ext.isPowerSaveMode
 import org.koitharu.kotatsu.core.util.ext.isZipUri
 import org.koitharu.kotatsu.core.util.ext.lifecycleScope
-import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
+import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra`r`nimport org.koitharu.kotatsu.reader.domain.panel.BitmapPanelImage`r`nimport org.koitharu.kotatsu.reader.domain.panel.PanelDetectionRequest`r`nimport org.koitharu.kotatsu.reader.domain.panel.Panel`r`nimport org.koitharu.kotatsu.reader.domain.panel.PanelDetectionResult`r`nimport org.koitharu.kotatsu.reader.domain.panel.PanelDetector`r`nimport org.koitharu.kotatsu.reader.domain.panel.PanelFlow
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.ramAvailable
 import org.koitharu.kotatsu.core.util.ext.toMimeType
@@ -71,7 +71,7 @@ import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.requireBody
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
-import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
+import org.koitharu.kotatsu.reader.ui.pager.ReaderPage`r`nimport kotlin.math.max
 import java.io.File
 import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
@@ -90,8 +90,7 @@ class PageLoader @Inject constructor(
 	private val settings: AppSettings,
 	private val mangaRepositoryFactory: MangaRepository.Factory,
 	private val imageProxyInterceptor: ImageProxyInterceptor,
-	private val downloadSlowdownDispatcher: DownloadSlowdownDispatcher,
-) {
+	private val downloadSlowdownDispatcher: DownloadSlowdownDispatcher,`r`n	private val panelDetector: PanelDetector,`r`n) {
 
 	val loaderScope = lifecycle.lifecycleScope + InternalErrorHandler() + Dispatchers.Default
 
@@ -106,6 +105,8 @@ class PageLoader @Inject constructor(
 	private val counter = AtomicInteger(0)
 	private var prefetchQueueLimit = PREFETCH_LIMIT_DEFAULT // TODO adaptive
 	private val edgeDetector = EdgeDetector(context)
+	private val panelCache = LongSparseArray<PanelDetectionResult>()
+	private val panelCacheLock = Any()
 
 	fun isPrefetchApplicable(): Boolean {
 		return repository is CachingMangaRepository
@@ -245,6 +246,10 @@ class PageLoader @Inject constructor(
 		skipCache: Boolean,
 		isPrefetch: Boolean,
 	): ProgressDeferred<Uri, Float> {
+		synchronized(panelCacheLock) {
+			panelCache.remove(page.id)
+		}
+
 		val progress = MutableStateFlow(PROGRESS_UNDEFINED)
 		val deferred = loaderScope.async {
 			counter.incrementAndGet()
@@ -332,10 +337,142 @@ class PageLoader @Inject constructor(
 		}
 	}
 
-	companion object {
+	
+	suspend fun detectPanels(
+		page: MangaPage,
+		pageIndex: Int,
+		uri: Uri,
+		flow: PanelFlow,
+		isDoublePage: Boolean,
+		maxPanels: Int = PanelDetectionRequest.DEFAULT_MAX_PANELS,
+		minPanelAreaRatio: Float = PanelDetectionRequest.DEFAULT_MIN_PANEL_AREA_RATIO,
+	): PanelDetectionResult? {
+		val cached = synchronized(panelCacheLock) {
+			panelCache[page.id]
+		}
+		val baseResult = if (cached != null) {
+			cached
+		} else {
+			val bitmap = decodePanelBitmap(uri) ?: return null
+			try {
+				val request = PanelDetectionRequest(
+					image = BitmapPanelImage(bitmap),
+					pageIndex = pageIndex,
+					isDoublePage = isDoublePage,
+					preferredFlow = PanelFlow.LeftToRight,
+					maxPanels = maxPanels,
+					minPanelAreaRatio = minPanelAreaRatio,
+				)
+				runCatching { panelDetector.detect(request) }.getOrNull()?.also { result ->
+					synchronized(panelCacheLock) {
+						panelCache[page.id] = result
+					}
+				}
+			} finally {
+				bitmap.recycle()
+			}
+		}
+		return baseResult?.let { reorderPanels(it, flow) }
+	}
+
+	private fun reorderPanels(result: PanelDetectionResult, flow: PanelFlow): PanelDetectionResult {
+		if (result.primary.flow == flow) {
+			return result
+		}
+		val comparator = panelComparator(flow)
+		val primary = result.primary.copy(
+			panels = result.primary.panels.sortedWith(comparator),
+			flow = flow,
+		)
+		val alternatives = result.alternatives.map { sequence ->
+			if (sequence.flow == flow) {
+				sequence
+			} else {
+				sequence.copy(
+					panels = sequence.panels.sortedWith(comparator),
+					flow = flow,
+				)
+			}
+		}
+		return result.copy(primary = primary, alternatives = alternatives)
+	}
+
+	private fun panelComparator(flow: PanelFlow): Comparator<Panel> = when (flow) {
+		PanelFlow.LeftToRight -> Comparator { a, b ->
+			val row = a.bounds.top.compareTo(b.bounds.top)
+			if (row != 0) row else a.bounds.left.compareTo(b.bounds.left)
+		}
+		PanelFlow.RightToLeft -> Comparator { a, b ->
+			val row = a.bounds.top.compareTo(b.bounds.top)
+			if (row != 0) row else b.bounds.left.compareTo(a.bounds.left)
+		}
+		PanelFlow.TopToBottom -> Comparator { a, b ->
+			val column = a.bounds.left.compareTo(b.bounds.left)
+			if (column != 0) column else a.bounds.top.compareTo(b.bounds.top)
+		}
+	}
+
+	private suspend fun decodePanelBitmap(uri: Uri, maxDimension: Int = PANEL_MAX_DIMENSION): Bitmap? = runInterruptible(Dispatchers.IO) {
+		when {
+			uri.isFileUri() -> decodeFileSampled(uri.toFile(), maxDimension)
+			uri.isZipUri() -> decodeZipSampled(uri, maxDimension)
+			else -> null
+		}
+	}
+
+	private fun decodeFileSampled(file: File, maxDimension: Int): Bitmap? {
+		val options = BitmapFactory.Options().apply {
+			inJustDecodeBounds = true
+		}
+		BitmapFactory.decodeFile(file.absolutePath, options)
+		if (options.outWidth <= 0 || options.outHeight <= 0) {
+			return null
+		}
+		options.inSampleSize = calculateInSampleSize(options, maxDimension)
+		options.inJustDecodeBounds = false
+		options.inPreferredConfig = Bitmap.Config.RGB_565
+		return BitmapFactory.decodeFile(file.absolutePath, options)
+	}
+
+	private fun decodeZipSampled(uri: Uri, maxDimension: Int): Bitmap? {
+		val archivePath = uri.schemeSpecificPart ?: return null
+		val entryName = uri.fragment ?: return null
+		val boundsOptions = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+		ZipFile(archivePath).use { zip ->
+			val entry = zip.getEntry(entryName) ?: return null
+			zip.getInputStream(entry).use { stream ->
+				BitmapFactory.decodeStream(stream, null, boundsOptions)
+			}
+			if (boundsOptions.outWidth <= 0 || boundsOptions.outHeight <= 0) {
+				return null
+			}
+			val decodeOptions = BitmapFactory.Options().apply {
+				inSampleSize = calculateInSampleSize(boundsOptions, maxDimension)
+				inPreferredConfig = Bitmap.Config.RGB_565
+			}
+			zip.getInputStream(entry).use { stream ->
+				return BitmapFactory.decodeStream(stream, null, decodeOptions)
+			}
+		}
+	}
+
+	private fun calculateInSampleSize(options: BitmapFactory.Options, maxDimension: Int): Int {
+		var inSampleSize = 1
+		val width = options.outWidth
+		val height = options.outHeight
+		if (height <= 0 || width <= 0) {
+			return inSampleSize
+		}
+		while (max(height / inSampleSize, width / inSampleSize) > maxDimension) {
+			inSampleSize *= 2
+		}
+		return inSampleSize
+	}
+companion object {
 
 		private const val PROGRESS_UNDEFINED = -1f
 		private const val PREFETCH_LIMIT_DEFAULT = 6
+		private const val PANEL_MAX_DIMENSION = 1600
 		private const val PREFETCH_MIN_RAM_MB = 80L
 
 		fun createPageRequest(pageUrl: String, mangaSource: MangaSource) = Request.Builder()
@@ -370,3 +507,13 @@ class PageLoader @Inject constructor(
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+

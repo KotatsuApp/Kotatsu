@@ -28,6 +28,18 @@
 		android:key="reader_zoom_buttons"
 		android:summary="@string/reader_zoom_buttons_summary"
 		android:title="@string/reader_zoom_buttons" />
+	<SwitchPreferenceCompat
+		android:defaultValue="false"
+		android:key="reader_panel_mode"
+		android:summary="@string/reader_panel_mode_summary"
+		android:title="@string/reader_panel_mode" />
+
+	<Preference
+		android:key="reader_panel_mode_settings"
+		android:title="@string/reader_panel_mode_settings"
+		app:dependency="reader_panel_mode"
+		app:fragment="org.koitharu.kotatsu.settings.ReaderPanelSettingsFragment"
+		app:summary="@string/reader_panel_mode_settings_summary"/>
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"

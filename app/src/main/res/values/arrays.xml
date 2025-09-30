@@ -143,4 +143,32 @@
 		<item>@string/ask_every_time</item>
 		<item>@string/disable</item>
 	</string-array>
+
+	<!-- Panel View: Scan Type -->
+	<string-array name="panel_scan_type_entries" translatable="false">
+		<item>Regular</item>
+		<item>Irregular</item>
+		<item>Four Quadrants</item>
+		<item>Webtoon</item>
+	</string-array>
+
+	<string-array name="panel_scan_type_values" translatable="false">
+		<item>regular</item>
+		<item>irregular</item>
+		<item>four_quadrants</item>
+		<item>webtoon</item>
+	</string-array>
+
+	<!-- Panel View: Reading Order -->
+	<string-array name="panel_reading_order_entries" translatable="false">
+		<item>Standard Mode (Left to Right)</item>
+		<item>Manga Mode (Right to Left)</item>
+		<item>4-Koma Mode (Top to Bottom, Right to Left)</item>
+	</string-array>
+
+	<string-array name="panel_reading_order_values" translatable="false">
+		<item>standard</item>
+		<item>manga</item>
+		<item>4_koma</item>
+	</string-array>
 </resources>

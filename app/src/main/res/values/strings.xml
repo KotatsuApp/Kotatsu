@@ -479,6 +479,10 @@
 	<string name="zoom_in">Zoom in</string>
 	<string name="reader_zoom_buttons">Show zoom buttons</string>
 	<string name="reader_zoom_buttons_summary">Whether to show zoom control buttons in the bottom right corner</string>
+	<string name="reader_panel_mode">Panel view</string>
+	<string name="reader_panel_mode_summary">Automatically zoom to detected panels while reading</string>
+	<string name="reader_panel_mode_settings">Panel view settings</string>
+	<string name="reader_panel_mode_settings_summary">Configure panel detection and reading experience</string>
 	<string name="keep_screen_on">Keep screen on</string>
 	<string name="keep_screen_on_summary">Do not turn the screen off while you\'re reading manga</string>
 	<string name="state_abandoned">Dropped</string>

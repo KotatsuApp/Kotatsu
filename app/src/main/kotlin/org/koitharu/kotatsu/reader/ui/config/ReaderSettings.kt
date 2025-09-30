@@ -27,7 +27,7 @@ import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.util.MediatorStateFlow
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
-import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
+import org.koitharu.kotatsu.reader.domain.ReaderColorFilter\r\nimport org.koitharu.kotatsu.reader.domain.panel.PanelPreferences\r\nimport org.koitharu.kotatsu.reader.domain.panel.PanelReadingOrder\r\nimport org.koitharu.kotatsu.reader.domain.panel.PanelScanMode
 
 data class ReaderSettings(
 	val zoomMode: ZoomMode,
@@ -38,6 +38,8 @@ data class ReaderSettings(
 	val isPagesNumbersEnabled: Boolean,
 	val isPagesCropEnabledStandard: Boolean,
 	val isPagesCropEnabledWebtoon: Boolean,
+	val isPanelViewEnabled: Boolean,
+	val isDoublePagesOnLandscape: Boolean,
 ) {
 
 	private constructor(settings: AppSettings, colorFilterOverride: ReaderColorFilter?) : this(
@@ -53,6 +55,8 @@ data class ReaderSettings(
 		isPagesNumbersEnabled = settings.isPagesNumbersEnabled,
 		isPagesCropEnabledStandard = settings.isPagesCropEnabled(ReaderMode.STANDARD),
 		isPagesCropEnabledWebtoon = settings.isPagesCropEnabled(ReaderMode.WEBTOON),
+		isPanelViewEnabled = settings.isReaderPanelModeEnabled,
+		isDoublePagesOnLandscape = settings.isReaderDoubleOnLandscape,
 	)
 
 	fun applyBackground(view: View) {
@@ -102,6 +106,8 @@ data class ReaderSettings(
 			AppSettings.KEY_CF_BRIGHTNESS,
 			AppSettings.KEY_CF_INVERTED,
 			AppSettings.KEY_CF_GRAYSCALE,
+			AppSettings.KEY_READER_DOUBLE_PAGES,
+			AppSettings.KEY_READER_PANEL_MODE,
 			AppSettings.KEY_READER_CROP,
 		)
 		private var job: Job? = null
@@ -137,3 +143,12 @@ data class ReaderSettings(
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

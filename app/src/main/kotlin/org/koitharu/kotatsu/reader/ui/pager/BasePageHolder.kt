@@ -4,7 +4,7 @@ import android.content.ComponentCallbacks2
 import android.content.ComponentCallbacks2.TRIM_MEMORY_COMPLETE
 import android.content.Context
 import android.content.res.Configuration
-import android.view.View
+import android.view.View`r`nimport android.graphics.RectF
 import androidx.annotation.CallSuper
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers`r`nimport kotlinx.coroutines.Job`r`nimport kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
@@ -26,7 +26,7 @@ import org.koitharu.kotatsu.core.util.ext.isSerializable
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.databinding.LayoutPageInfoBinding
 import org.koitharu.kotatsu.parsers.util.ifZero
-import org.koitharu.kotatsu.reader.domain.PageLoader
+import org.koitharu.kotatsu.reader.domain.PageLoader`r`nimport org.koitharu.kotatsu.reader.domain.panel.Panel`r`nimport org.koitharu.kotatsu.reader.ui.panel.PanelHighlightListener`r`nimport org.koitharu.kotatsu.reader.ui.panel.PanelHighlightOverlay`r`nimport org.koitharu.kotatsu.reader.ui.panel.PanelZoomConfig`r`nimport org.koitharu.kotatsu.reader.ui.panel.PanelZoomController
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
 import org.koitharu.kotatsu.reader.ui.pager.vm.PageState
 import org.koitharu.kotatsu.reader.ui.pager.vm.PageViewModel
@@ -51,6 +51,18 @@ abstract class BasePageHolder<B : ViewBinding>(
 	protected val bindingInfo = LayoutPageInfoBinding.bind(binding.root)
 	protected abstract val ssiv: SubsamplingScaleImageView
 
+	private var panelController: PanelZoomController? = null
+	private var panelCollectionJob: Job? = null
+	private val panelHighlightListener = object : PanelHighlightListener {
+		override fun onPanelFocused(panel: Panel, viewRect: RectF) {
+			panelOverlay()?.show(viewRect)
+		}
+
+		override fun onPanelCleared() {
+			panelOverlay()?.hide()
+		}
+	}
+
 	protected val settings: ReaderSettings
 		get() = viewModel.settingsProducer.value
 
@@ -70,7 +82,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 		val clickListener = View.OnClickListener { v ->
 			when (v.id) {
 				R.id.button_retry -> viewModel.retry(
-					page = boundData?.toMangaPage() ?: return@OnClickListener,
+					boundData ?: return@OnClickListener,
 					isFromUser = true,
 				)
 
@@ -90,6 +102,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 			onReady()
 		}
 		ssiv.applyDownSampling(isResumed())
+		configurePanelMode(settings)
 	}
 
 	fun reloadImage() {
@@ -99,7 +112,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 
 	fun bind(data: ReaderPage) {
 		boundData = data
-		viewModel.onBind(data.toMangaPage())
+		viewModel.onBind(data)
 		onBind(data)
 	}
 
@@ -117,7 +130,7 @@ abstract class BasePageHolder<B : ViewBinding>(
 		super.onResume()
 		ssiv.applyDownSampling(isForeground = true)
 		if (viewModel.state.value is PageState.Error && !viewModel.isLoading()) {
-			boundData?.let { viewModel.retry(it.toMangaPage(), isFromUser = false) }
+			boundData?.let { viewModel.retry(it, isFromUser = false) }
 		}
 	}
 
@@ -204,3 +217,12 @@ abstract class BasePageHolder<B : ViewBinding>(
 		}
 	}
 }
+
+
+
+
+
+
+
+
+

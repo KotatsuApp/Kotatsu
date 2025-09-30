@@ -95,6 +95,8 @@ class ReaderConfigSheet :
 		binding.buttonColorFilter.setOnClickListener(this)
 		binding.buttonScrollTimer.setOnClickListener(this)
 		binding.buttonBookmark.setOnClickListener(this)
+		binding.switchPanelMode.isChecked = settings.isReaderPanelModeEnabled
+		binding.switchPanelMode.setOnCheckedChangeListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
 
 		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
@@ -163,10 +165,21 @@ class ReaderConfigSheet :
 	}
 
 	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-		when (buttonView.id) {
-			R.id.switch_screen_lock_rotation -> {
-				orientationHelper.isLocked = isChecked
-			}
+	when (buttonView.id) {
+		R.id.switch_screen_lock_rotation -> {
+			orientationHelper.isLocked = isChecked
+		}
+
+		R.id.switch_double_reader -> {
+			settings.isReaderDoubleOnLandscape = isChecked
+			findParentCallback(Callback::class.java)?.onDoubleModeChanged(isChecked)
+		}
+
+		R.id.switch_panel_mode -> {
+			settings.isReaderPanelModeEnabled = isChecked
+		}
+	}
+}
 
 			R.id.switch_double_reader -> {
 				settings.isReaderDoubleOnLandscape = isChecked
@@ -237,3 +250,12 @@ class ReaderConfigSheet :
 		fun onBookmarkClick()
 	}
 }
+
+
+
+
+
+
+
+
+

@@ -13,8 +13,7 @@ import androidx.collection.ArraySet
 import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
-import dagger.hilt.android.qualifiers.ApplicationContext
+import androidx.preference.PreferenceManager\r\nimport dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
@@ -37,6 +36,8 @@ import org.koitharu.kotatsu.parsers.util.find
 import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.nullIfEmpty
+import org.koitharu.kotatsu.reader.domain.panel.PanelReadingOrder
+import org.koitharu.kotatsu.reader.domain.panel.PanelScanMode
 import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
 import java.io.File
 import java.net.Proxy
@@ -137,6 +138,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	var isReaderDoubleOnLandscape: Boolean
 		get() = prefs.getBoolean(KEY_READER_DOUBLE_PAGES, false)
 		set(value) = prefs.edit { putBoolean(KEY_READER_DOUBLE_PAGES, value) }
+
+	var isReaderPanelModeEnabled: Boolean
+		get() = prefs.getBoolean(KEY_READER_PANEL_MODE, false)
+		set(value) = prefs.edit { putBoolean(KEY_READER_PANEL_MODE, value) }
 
 	val readerScreenOrientation: Int
 		get() = prefs.getString(KEY_READER_ORIENTATION, null)?.toIntOrNull()
@@ -569,6 +574,38 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isAutoLocalChaptersCleanupEnabled: Boolean
 		get() = prefs.getBoolean(KEY_CHAPTERS_CLEAR_AUTO, false)
 
+	// region Panel View Settings
+	val isPanelDisableFrame: Boolean
+		get() = prefs.getBoolean(KEY_PANEL_DISABLE_FRAME, false)
+
+	val isPanelInlineFrames: Boolean
+		get() = prefs.getBoolean(KEY_PANEL_INLINE_FRAMES, false)
+
+	val panelScanType: PanelScanMode
+		get() = prefs.getEnumValue(KEY_PANEL_SCAN_TYPE, PanelScanMode.REGULAR)
+
+	val panelReadingOrder: PanelReadingOrder
+		get() = prefs.getEnumValue(KEY_PANEL_READING_ORDER, PanelReadingOrder.MANGA)
+
+	val isPanelAutoSwitchScan: Boolean
+		get() {
+			// "enabled by default in Manga Mode"
+			val defaultValue = panelReadingOrder == PanelReadingOrder.MANGA
+			return prefs.getBoolean(KEY_PANEL_AUTO_SWITCH_SCAN, defaultValue)
+		}
+
+	val isPanelFitToWidth: Boolean
+		get() = prefs.getBoolean(KEY_PANEL_FIT_TO_WIDTH, false)
+
+	val isPanelPanBound: Boolean
+		get() = prefs.getBoolean(KEY_PANEL_PAN_BOUND, true)
+
+	@get:FloatRange(from = 0.0, to = 1.0)
+	val panelBorderOpacity: Float
+		get() = (prefs.getInt(KEY_PANEL_BORDER_OPACITY, 50).coerceIn(0, 100)) / 100f
+
+	// endregion
+
 	fun isPagesCropEnabled(mode: ReaderMode): Boolean {
 		val rawValue = prefs.getStringSet(KEY_READER_CROP, emptySet())
 		if (rawValue.isNullOrEmpty()) {
@@ -669,6 +706,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_REMOTE_SOURCES = "remote_sources"
 		const val KEY_LOCAL_STORAGE = "local_storage"
 		const val KEY_READER_DOUBLE_PAGES = "reader_double_pages"
+		const val KEY_READER_PANEL_MODE = "reader_panel_mode"
 		const val KEY_READER_ZOOM_BUTTONS = "reader_zoom_buttons"
 		const val KEY_READER_CONTROL_LTR = "reader_taps_ltr"
 		const val KEY_READER_NAVIGATION_INVERTED = "reader_navigation_inverted"
@@ -800,6 +838,16 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_DISCORD_RPC = "discord_rpc"
 		const val KEY_DISCORD_RPC_SKIP_NSFW = "discord_rpc_skip_nsfw"
 		const val KEY_DISCORD_TOKEN = "discord_token"
+
+		// Panel View Settings
+		const val KEY_PANEL_DISABLE_FRAME = "pref_panel_disable_frame"
+		const val KEY_PANEL_INLINE_FRAMES = "pref_panel_inline_frames"
+		const val KEY_PANEL_SCAN_TYPE = "pref_panel_scan_type"
+		const val KEY_PANEL_READING_ORDER = "pref_panel_reading_order"
+		const val KEY_PANEL_AUTO_SWITCH_SCAN = "pref_panel_auto_switch_scan"
+		const val KEY_PANEL_FIT_TO_WIDTH = "pref_panel_fit_to_width"
+		const val KEY_PANEL_PAN_BOUND = "pref_panel_pan_bound"
+		const val KEY_PANEL_BORDER_OPACITY = "pref_panel_border_opacity"
 
 		// keys for non-persistent preferences
 		const val KEY_APP_VERSION = "app_version"

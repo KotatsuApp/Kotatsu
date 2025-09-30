@@ -21,6 +21,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.exceptions.resolve.ExceptionResolver
 import org.koitharu.kotatsu.core.model.ZoomMode
+import org.koitharu.kotatsu.reader.ui.panel.PanelHighlightOverlay
 import org.koitharu.kotatsu.core.os.NetworkState
 import org.koitharu.kotatsu.core.ui.widgets.ZoomControl
 import org.koitharu.kotatsu.databinding.ItemPageBinding
@@ -156,3 +157,4 @@ open class PageHolder(
 		}
 	}
 }
+

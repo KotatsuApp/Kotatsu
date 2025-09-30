@@ -45,6 +45,8 @@ import org.koitharu.kotatsu.core.parser.MangaLoaderContextImpl
 import org.koitharu.kotatsu.core.parser.favicon.FaviconFetcher
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.image.CoilImageGetter
+import org.koitharu.kotatsu.reader.domain.panel.AdaptivePanelDetector
+import org.koitharu.kotatsu.reader.domain.panel.PanelDetector
 import org.koitharu.kotatsu.core.ui.util.ActivityRecreationHandle
 import org.koitharu.kotatsu.core.util.AcraScreenLogger
 import org.koitharu.kotatsu.core.util.FileSize
@@ -201,6 +203,10 @@ interface AppModule {
 
 		@Provides
 		@Singleton
+		fun providePanelDetector(): PanelDetector = AdaptivePanelDetector()
+
+		@Provides
+		@Singleton
 		@PageCache
 		fun providePageCache(
 			@ApplicationContext context: Context,
@@ -224,3 +230,4 @@ interface AppModule {
 		)
 	}
 }
+

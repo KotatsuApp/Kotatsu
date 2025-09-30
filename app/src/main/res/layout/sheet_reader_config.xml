@@ -129,6 +129,19 @@
 				android:textColor="?colorOnSurfaceVariant"
 				app:drawableStartCompat="@drawable/ic_split_horizontal" />
 
+			<com.google.android.material.materialswitch.MaterialSwitch
+				android:id="@+id/switch_panel_mode"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_small"
+				android:drawablePadding="?android:listPreferredItemPaddingStart"
+				android:minHeight="?android:listPreferredItemHeightSmall"
+				android:paddingStart="?android:listPreferredItemPaddingStart"
+				android:paddingEnd="?android:listPreferredItemPaddingEnd"
+				android:text="@string/reader_panel_mode"
+				android:textAppearance="?textAppearanceListItem"
+				android:textColor="?colorOnSurfaceVariant"
+				app:drawableStartCompat="@drawable/ic_grid" />
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_screen_rotate"
 				android:layout_width="match_parent"
@@ -180,3 +193,4 @@
 
 	</androidx.core.widget.NestedScrollView>
 </LinearLayout>
+

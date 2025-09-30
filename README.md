@@ -31,6 +31,7 @@
 * Download manga and read it offline. Third-party CBZ archives are also supported
 * Clean and convenient Material You UI, optimized for phones, tablets and desktop
 * Standard and Webtoon-optimized customizable reader, gesture support on reading interface
+* Advanced Panel View mode for a guided, frame-by-frame reading experience
 * Notifications about new chapters with updates feed, manga recommendations (with filters)
 * Integration with manga tracking services: Shikimori, AniList, MyAnimeList, Kitsu
 * Password / fingerprint-protected access to the app

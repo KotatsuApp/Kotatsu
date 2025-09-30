@@ -15,6 +15,13 @@
 		app:doubleTapZoomStyle="center"
 		app:restoreStrategy="deferred" />
 
+	<org.koitharu.kotatsu.reader.ui.panel.PanelHighlightOverlay
+		android:id="@+id/panel_overlay"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:clickable="false"
+		android:importantForAccessibility="no"
+		android:visibility="gone" />
 	<TextView
 		android:id="@+id/textView_number"
 		android:layout_width="wrap_content"
@@ -29,3 +36,4 @@
 	<include layout="@layout/layout_page_info" />
 
 </FrameLayout>
+
