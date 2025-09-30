@@ -1,70 +1,74 @@
 name: Release
 
 on:
-    pull_request:
-        branches:
-            - main
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - main
+  workflow_dispatch: # Manual trigge
+
+env:
+  VERSION: '9.2.0'
 
 jobs:
     build:
-
+        name: Release
         runs-on: ubuntu-latest
-        permissions:
-            contents: read
 
         env:
-          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
-            - name: Set up JDK 21
+            - name: Set up JDK 17
               uses: actions/setup-java@v4
               with:
-                  java-version: '21'
+                  java-version: '17'
                   distribution: 'temurin'
+
+            - name: Cache Gradle
+              uses: actions/cache@v3
+              with:
+                path: |
+                  ~/.gradle/caches
+                  ~/.gradle/wrapper
+                key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                restore-keys: |
+                  ${{ runner.os }}-gradle
 
             - name: Grant execute permission for gradlew
               run: chmod +x gradlew
 
-            - name: Restore playstore.keystore.jks
-              run: echo $KEYSTORE_FILE | base64 -d > app/playstore.keystore.jks
+            - name: Run Unit Tests
+              run: ./gradlew testDebugUnitTest --no-daemon
 
-            - name: List project files
-              run: |
-                echo "Listing contents of the project directory:"
-                ls -al /home/runner/work/kotatsu/kotatsu
-                echo "Listing contents of the app directory:"
-                ls -al /home/runner/work/kotatsu/kotatsu/app
+            - name: Run Lint
+              run: ./gradlew lint
+   
+            - name: Bump Version
+              uses: chkfung/android-version-actions@v1.1
+              with:
+                gradlePath: app/build.gradle
+                versionCode: ${{ github.run_number }}
+                versionName: v${{ env.VERSION }}.${{ github.run_number }}
 
             - name: Build release APK
-              run: ./gradlew bundleRelease -PSIGNING_KEY_ALIAS=$SIGNING_KEY_ALIAS -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD -PKEYSTORE_FILE=app/playstore.keystore.jks -PSIGNING_KEY_PASSWORD=$SIGNING_KEY_PASSWORD
+              run: ./gradlew assembleRelease -PSIGNING_KEY_ALIAS=$SIGNING_KEY_ALIAS -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD -PKEYSTORE_FILE=app/key -PSIGNING_KEY_PASSWORD=$SIGNING_KEY_PASSWORD
+            
+            - name: Get release file apk path
+              id: releaseApk
+              run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
 
             - name: Upload Release APK
               uses: actions/upload-artifact@v4
               with:
                 name: release-apk
-                path: app/build/outputs/apk/release/app-release.apk
-
-            - name: Create a Release
-              uses: elgohr/Github-Release-Action@v5
-              env:
-                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                title: Release
-                
-            - name: Get Previous Release
-              id: previous-release
-              uses: cardinalby/git-get-release-action@v1
-              env:
-                GITHUB_TOKEN: ${{ github.token }}
-              with:
-                latest: true
+                path: ${{ steps.releaseApk.outputs.apkfile }}
 
             - name: Generate Release Notes
               id: generate-release-notes
@@ -76,19 +80,30 @@ jobs:
                   const { data } = await github.rest.repos.generateReleaseNotes({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
-                    tag_name: 'v${{ inputs.version }}',
+                    tag_name: 'v${{ env.VERSION }}.${{ github.run_number }}',
                     target_commitish: '${{ github.sha }}',
                     previous_tag_name: '${{ steps.previous-release.outputs.tag_name }}',
                   })
                   return data.body
 
             - name: Create release
-              uses: ncipollo/release-action@v1
+              id: create_release
+              uses: actions/create-release@v1
               with:
-                artifacts: _artifacts/Sonarr.*
-                commit: ${{ github.sha }}
-                generateReleaseNotes: false
-                body: ${{ steps.generate-release-notes.outputs.result }}
-                name: ${{ inputs.version }}
-                skipIfReleaseExists: true
-                tag: v${{ inputs.version }}
+                release_name: v${{ env.VERSION }}.${{ github.run_number }}
+                tag_name: v${{ env.VERSION }}.${{ github.run_number }}
+                draft: false
+                prerelease: false
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Upload Release APK
+              id: upload_release_asset
+              uses: actions/upload-release-asset@v1.0.1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                upload_url: ${{ steps.create_release.outputs.upload_url }}
+                asset_path: ${{ steps.releaseApk.outputs.apkfile }}
+                asset_name: OpenCalc_v${{ env.VERSION }}.${{ github.run_number }}.apk
+                asset_content_type: application/zip
