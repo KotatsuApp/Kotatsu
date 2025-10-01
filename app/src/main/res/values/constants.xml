@@ -12,8 +12,6 @@
 	<string name="mal_clientId" translatable="false">6cd8e6349e9a36bc1fc1ab97703c9fd1</string>
 	<string name="kitsu_clientId" translatable="false">dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd</string>
 	<string name="kitsu_clientSecret" translatable="false">54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151</string>
-	<string name="acra_login" translatable="false">zPALLBPdpn5mnCB4</string>
-	<string name="acra_password" translatable="false">kgpuhoNJpSsQDCwu</string>
 	<string name="sync_authority_history" translatable="false">org.koitharu.kotatsu.history</string>
 	<string name="sync_authority_favourites" translatable="false">org.koitharu.kotatsu.favourites</string>
 	<string name="tg_backup_bot_name" translatable="false">kotatsu_backup_bot</string>
