@@ -1,5 +1,4 @@
 [versions]
-acra = "5.12.0"
 activity = "1.11.0"
 adapterdelegates = "4.3.2"
 appcompat = "1.7.1"
@@ -51,8 +50,6 @@ workRuntime = "2.10.4"
 workinspector = "1.2"
 
 [libraries]
-acra-dialog = { module = "ch.acra:acra-dialog", version.ref = "acra" }
-acra-http = { module = "ch.acra:acra-http", version.ref = "acra" }
 adapterdelegates = { module = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl", version.ref = "adapterdelegates" }
 adapterdelegates-viewbinding = { module = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding", version.ref = "adapterdelegates" }
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
