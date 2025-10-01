@@ -15,19 +15,17 @@ enum class PanelScanMode {
     REGULAR,
     IRREGULAR,
     FOUR_QUADRANTS,
-    WEBTOON
+    WEBTOON,
 }
 
 enum class PanelReadingOrder {
     STANDARD,
     MANGA,
     KOMA4;
-/*
+
     fun toPanelFlow(): PanelFlow = when (this) {
-        STANDARD -> PanelFlow.LeftToRight
-        MANGA -> PanelFlow.RightToLeft
-        KOMA4 -> PanelFlow.TopToBottom
+        STANDARD -> PanelFlow.LeftToRight,
+        MANGA -> PanelFlow.RightToLeft,
+        KOMA4 -> PanelFlow.TopToBottom,
     }
 }
-
- */

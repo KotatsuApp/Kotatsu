@@ -48,7 +48,9 @@ open class PageHolder(
 
 	override val ssiv = binding.ssiv
 
-	init {
+    override fun panelOverlay(): PanelHighlightOverlay? = binding.panelOverlay
+
+    init {
 		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 	}
 
@@ -157,4 +159,8 @@ open class PageHolder(
 		}
 	}
 }
+
+
+
+
 

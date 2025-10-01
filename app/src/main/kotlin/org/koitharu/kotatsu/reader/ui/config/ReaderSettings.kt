@@ -27,128 +27,141 @@ import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.util.MediatorStateFlow
 import org.koitharu.kotatsu.core.util.ext.isLowRamDevice
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
-import org.koitharu.kotatsu.reader.domain.ReaderColorFilter\r\nimport org.koitharu.kotatsu.reader.domain.panel.PanelPreferences\r\nimport org.koitharu.kotatsu.reader.domain.panel.PanelReadingOrder\r\nimport org.koitharu.kotatsu.reader.domain.panel.PanelScanMode
+import org.koitharu.kotatsu.reader.domain.ReaderColorFilter
+import org.koitharu.kotatsu.reader.domain.panel.PanelPreferences
+import org.koitharu.kotatsu.reader.domain.panel.PanelReadingOrder
+import org.koitharu.kotatsu.reader.domain.panel.PanelScanMode
 
 data class ReaderSettings(
-	val zoomMode: ZoomMode,
-	val background: ReaderBackground,
-	val colorFilter: ReaderColorFilter?,
-	val isReaderOptimizationEnabled: Boolean,
-	val bitmapConfig: Bitmap.Config,
-	val isPagesNumbersEnabled: Boolean,
-	val isPagesCropEnabledStandard: Boolean,
-	val isPagesCropEnabledWebtoon: Boolean,
-	val isPanelViewEnabled: Boolean,
-	val isDoublePagesOnLandscape: Boolean,
+    val zoomMode: ZoomMode,
+    val background: ReaderBackground,
+    val colorFilter: ReaderColorFilter?,
+    val isReaderOptimizationEnabled: Boolean,
+    val bitmapConfig: Bitmap.Config,
+    val isPagesNumbersEnabled: Boolean,
+    val isPagesCropEnabledStandard: Boolean,
+    val isPagesCropEnabledWebtoon: Boolean,
+    val isPanelViewEnabled: Boolean,
+    val panelPreferences: PanelPreferences,
+    val isDoublePagesOnLandscape: Boolean,
 ) {
 
-	private constructor(settings: AppSettings, colorFilterOverride: ReaderColorFilter?) : this(
-		zoomMode = settings.zoomMode,
-		background = settings.readerBackground,
-		colorFilter = colorFilterOverride?.takeUnless { it.isEmpty } ?: settings.readerColorFilter,
-		isReaderOptimizationEnabled = settings.isReaderOptimizationEnabled,
-		bitmapConfig = if (settings.is32BitColorsEnabled) {
-			Bitmap.Config.ARGB_8888
-		} else {
-			Bitmap.Config.RGB_565
-		},
-		isPagesNumbersEnabled = settings.isPagesNumbersEnabled,
-		isPagesCropEnabledStandard = settings.isPagesCropEnabled(ReaderMode.STANDARD),
-		isPagesCropEnabledWebtoon = settings.isPagesCropEnabled(ReaderMode.WEBTOON),
-		isPanelViewEnabled = settings.isReaderPanelModeEnabled,
-		isDoublePagesOnLandscape = settings.isReaderDoubleOnLandscape,
-	)
+    private constructor(settings: AppSettings, colorFilterOverride: ReaderColorFilter?) : this(
+        zoomMode = settings.zoomMode,
+        background = settings.readerBackground,
+        colorFilter = colorFilterOverride?.takeUnless { it.isEmpty } ?: settings.readerColorFilter,
+        isReaderOptimizationEnabled = settings.isReaderOptimizationEnabled,
+        bitmapConfig = if (settings.is32BitColorsEnabled) {
+            Bitmap.Config.ARGB_8888
+        } else {
+            Bitmap.Config.RGB_565
+        },
+        isPagesNumbersEnabled = settings.isPagesNumbersEnabled,
+        isPagesCropEnabledStandard = settings.isPagesCropEnabled(ReaderMode.STANDARD),
+        isPagesCropEnabledWebtoon = settings.isPagesCropEnabled(ReaderMode.WEBTOON),
+        isPanelViewEnabled = settings.isReaderPanelModeEnabled,
+        panelPreferences = PanelPreferences(
+            disableFrame = settings.isPanelDisableFrame,
+            inlineFrames = settings.isPanelInlineFrames,
+            scanType = settings.panelScanType,
+            readingOrder = settings.panelReadingOrder,
+            autoSwitchScan = settings.isPanelAutoSwitchScan,
+            fitToWidth = settings.isPanelFitToWidth,
+            panBound = settings.isPanelPanBound,
+            borderOpacity = settings.panelBorderOpacity,
+        ),
+        isDoublePagesOnLandscape = settings.isReaderDoubleOnLandscape,
+    )
 
-	fun applyBackground(view: View) {
-		view.background = background.resolve(view.context)
-		view.backgroundTintList = if (background.isLight(view.context)) {
-			colorFilter?.getBackgroundTint()
-		} else {
-			null
-		}
-	}
+    fun applyBackground(view: View) {
+        view.background = background.resolve(view.context)
+        view.backgroundTintList = if (background.isLight(view.context)) {
+            colorFilter?.getBackgroundTint()
+        } else {
+            null
+        }
+    }
 
-	fun isPagesCropEnabled(isWebtoon: Boolean) = if (isWebtoon) {
-		isPagesCropEnabledWebtoon
-	} else {
-		isPagesCropEnabledStandard
-	}
+    fun isPagesCropEnabled(isWebtoon: Boolean) = if (isWebtoon) {
+        isPagesCropEnabledWebtoon
+    } else {
+        isPagesCropEnabledStandard
+    }
 
-	@CheckResult
-	fun applyBitmapConfig(ssiv: SubsamplingScaleImageView): Boolean {
-		val config = bitmapConfig
-		return if (ssiv.regionDecoderFactory.bitmapConfig != config) {
-			ssiv.regionDecoderFactory = if (ssiv.context.isLowRamDevice()) {
-				SkiaImageRegionDecoder.Factory(config)
-			} else {
-				SkiaPooledImageRegionDecoder.Factory(config)
-			}
-			ssiv.bitmapDecoderFactory = SkiaImageDecoder.Factory(config)
-			true
-		} else {
-			false
-		}
-	}
+    @CheckResult
+    fun applyBitmapConfig(ssiv: SubsamplingScaleImageView): Boolean {
+        val config = bitmapConfig
+        return if (ssiv.regionDecoderFactory.bitmapConfig != config) {
+            ssiv.regionDecoderFactory = if (ssiv.context.isLowRamDevice()) {
+                SkiaImageRegionDecoder.Factory(config)
+            } else {
+                SkiaPooledImageRegionDecoder.Factory(config)
+            }
+            ssiv.bitmapDecoderFactory = SkiaImageDecoder.Factory(config)
+            true
+        } else {
+            false
+        }
+    }
 
-	class Producer @AssistedInject constructor(
-		@Assisted private val mangaId: Flow<Long>,
-		private val settings: AppSettings,
-		private val mangaDataRepository: MangaDataRepository,
-	) : MediatorStateFlow<ReaderSettings>(ReaderSettings(settings, null)) {
+    class Producer @AssistedInject constructor(
+        @Assisted private val mangaId: Flow<Long>,
+        private val settings: AppSettings,
+        private val mangaDataRepository: MangaDataRepository,
+    ) : MediatorStateFlow<ReaderSettings>(ReaderSettings(settings, null)) {
 
-		private val settingsKeys = scatterSetOf(
-			AppSettings.KEY_ZOOM_MODE,
-			AppSettings.KEY_PAGES_NUMBERS,
-			AppSettings.KEY_READER_BACKGROUND,
-			AppSettings.KEY_32BIT_COLOR,
-			AppSettings.KEY_READER_OPTIMIZE,
-			AppSettings.KEY_CF_CONTRAST,
-			AppSettings.KEY_CF_BRIGHTNESS,
-			AppSettings.KEY_CF_INVERTED,
-			AppSettings.KEY_CF_GRAYSCALE,
-			AppSettings.KEY_READER_DOUBLE_PAGES,
-			AppSettings.KEY_READER_PANEL_MODE,
-			AppSettings.KEY_READER_CROP,
-		)
-		private var job: Job? = null
+        private val settingsKeys = scatterSetOf(
+            AppSettings.KEY_ZOOM_MODE,
+            AppSettings.KEY_PAGES_NUMBERS,
+            AppSettings.KEY_READER_BACKGROUND,
+            AppSettings.KEY_32BIT_COLOR,
+            AppSettings.KEY_READER_OPTIMIZE,
+            AppSettings.KEY_CF_CONTRAST,
+            AppSettings.KEY_CF_BRIGHTNESS,
+            AppSettings.KEY_CF_INVERTED,
+            AppSettings.KEY_CF_GRAYSCALE,
+            AppSettings.KEY_READER_DOUBLE_PAGES,
+            AppSettings.KEY_READER_PANEL_MODE,
+            AppSettings.KEY_PANEL_DISABLE_FRAME,
+            AppSettings.KEY_PANEL_INLINE_FRAMES,
+            AppSettings.KEY_PANEL_SCAN_TYPE,
+            AppSettings.KEY_PANEL_READING_ORDER,
+            AppSettings.KEY_PANEL_AUTO_SWITCH_SCAN,
+            AppSettings.KEY_PANEL_FIT_TO_WIDTH,
+            AppSettings.KEY_PANEL_PAN_BOUND,
+            AppSettings.KEY_PANEL_BORDER_OPACITY,
+            AppSettings.KEY_READER_CROP,
+        )
+        private var job: Job? = null
 
-		override fun onActive() {
-			assert(job?.isActive != true)
-			job?.cancel()
-			job = processLifecycleScope.launch(Dispatchers.Default) {
-				observeImpl()
-			}
-		}
+        override fun onActive() {
+            assert(job?.isActive != true)
+            job?.cancel()
+            job = processLifecycleScope.launch(Dispatchers.Default) {
+                observeImpl()
+            }
+        }
 
-		override fun onInactive() {
-			job?.cancel()
-			job = null
-		}
+        override fun onInactive() {
+            job?.cancel()
+            job = null
+        }
 
-		private suspend fun observeImpl() {
-			combine(
-				mangaId.flatMapLatest { mangaDataRepository.observeColorFilter(it) },
-				settings.observeChanges().filter { x -> x == null || x in settingsKeys }.onStart { emit(null) },
-			) { mangaCf, settingsKey ->
-				ReaderSettings(settings, mangaCf)
-			}.collect {
-				publishValue(it)
-			}
-		}
+        private suspend fun observeImpl() {
+            combine(
+                mangaId.flatMapLatest { mangaDataRepository.observeColorFilter(it) },
+                settings.observeChanges().filter { x -> x == null || x in settingsKeys }.onStart { emit(null) },
+            ) { mangaCf, _ ->
+                ReaderSettings(settings, mangaCf)
+            }.collect {
+                publishValue(it)
+            }
+        }
 
-		@AssistedFactory
-		interface Factory {
+        @AssistedFactory
+        interface Factory {
 
-			fun create(mangaId: Flow<Long>): Producer
-		}
-	}
+            fun create(mangaId: Flow<Long>): Producer
+        }
+    }
 }
-
-
-
-
-
-
-
-
-

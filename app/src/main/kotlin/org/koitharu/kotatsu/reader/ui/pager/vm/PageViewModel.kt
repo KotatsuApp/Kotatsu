@@ -195,7 +195,7 @@ class PageViewModel(
 				page = page.toMangaPage(),
 				pageIndex = page.index,
 				uri = uri,
-				flow = PanelFlow.LeftToRight,
+				flow = settings.panelPreferences.readingOrder.toPanelFlow(),
 				isDoublePage = settings.isDoublePagesOnLandscape,
 			)
 			_panelState.value = result
@@ -224,6 +224,10 @@ class PageViewModel(
 		}
 	}
 }
+
+
+
+
 
 
 

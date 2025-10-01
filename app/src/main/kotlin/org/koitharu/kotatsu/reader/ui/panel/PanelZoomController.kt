@@ -20,7 +20,7 @@ import kotlin.math.min
 class PanelZoomController(
     private val imageView: SubsamplingScaleImageView,
     private val highlighter: PanelHighlightListener? = null,
-    private val config: PanelZoomConfig = PanelZoomConfig()
+    private val config: PanelZoomConfig = PanelZoomConfig(),
 ) {
 
     private var currentSequence: PanelSequence? = null
@@ -37,6 +37,7 @@ class PanelZoomController(
 
     fun dispose() {
         imageView.viewTreeObserver.removeOnGlobalLayoutListener(readinessListener)
+        clearHighlight()
     }
 
     @MainThread
@@ -44,11 +45,18 @@ class PanelZoomController(
         currentSequence = result?.primary
         currentIndex = -1
         pendingIndex = null
+        if (currentSequence?.panels.isNullOrEmpty()) {
+            clearHighlight()
+        }
     }
 
     @MainThread
     fun focus(panelIndex: Int, animate: Boolean = true) {
         val sequence = currentSequence ?: return
+        if (sequence.panels.isEmpty()) {
+            clearHighlight()
+            return
+        }
         val panel = sequence.panels.getOrNull(panelIndex) ?: return
         if (!imageViewReady()) {
             pendingIndex = panelIndex
@@ -134,15 +142,20 @@ class PanelZoomController(
             panel.bounds.left.toFloat(),
             panel.bounds.top.toFloat(),
             panel.bounds.right.toFloat(),
-            panel.bounds.bottom.toFloat()
+            panel.bounds.bottom.toFloat(),
         )
         imageView.sourceToViewRect(sourceRect, viewRect)
         listener.onPanelFocused(panel, viewRect)
+    }
+
+    private fun clearHighlight() {
+        highlighter?.onPanelCleared()
     }
 }
 
 interface PanelHighlightListener {
     fun onPanelFocused(panel: Panel, viewRect: RectF)
+    fun onPanelCleared()
 }
 
 data class PanelZoomConfig(
@@ -150,8 +163,5 @@ data class PanelZoomConfig(
     val scaleMultiplier: Float = 1.05f,
     val animationDurationMs: Long = 220,
     val minScale: Float? = null,
-    val maxScale: Float? = null
+    val maxScale: Float? = null,
 )
-
-
-
