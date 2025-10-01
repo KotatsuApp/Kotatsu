@@ -5,6 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.core.view.isVisible
+import com.google.android.material.button.MaterialButtonToggleGroup.OnButtonCheckedListener
+import com.google.android.material.slider.Slider
+import org.koitharu.kotatsu.reader.domain.panel.PanelReadingOrder
+import org.koitharu.kotatsu.reader.domain.panel.PanelScanMode
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -55,6 +60,8 @@ class ReaderConfigSheet :
 
 	@Inject
 	lateinit var settings: AppSettings
+
+	private var suppressPanelUpdates = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -250,6 +257,8 @@ class ReaderConfigSheet :
 		fun onBookmarkClick()
 	}
 }
+
+
 
 
 

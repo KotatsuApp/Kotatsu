@@ -483,6 +483,34 @@
 	<string name="reader_panel_mode_summary">Automatically zoom to detected panels while reading</string>
 	<string name="reader_panel_mode_settings">Panel view settings</string>
 	<string name="reader_panel_mode_settings_summary">Configure panel detection and reading experience</string>
+	<string name="panel_settings_category">Panel view settings</string>
+	<string name="panel_disable_frame">Disable frame detection</string>
+	<string name="panel_disable_frame_summary">Ignore detected panel borders and show the full page.</string>
+	<string name="panel_inline_frames">Inline frame detection</string>
+	<string name="panel_inline_frames_summary">Search for panels even when pages have no clear frame boundaries.</string>
+	<string name="panel_scan_mode">Scan type</string>
+	<string name="panel_scan_regular">Regular</string>
+	<string name="panel_scan_irregular">Irregular</string>
+	<string name="panel_scan_quadrants">Four quadrants</string>
+	<string name="panel_scan_webtoon">Webtoon</string>
+	<string name="panel_reading_order">Reading order</string>
+	<string name="panel_reading_standard">Standard</string>
+	<string name="panel_reading_manga">Manga</string>
+	<string name="panel_reading_koma4">4-koma</string>
+	<string name="panel_auto_switch_irregular">Auto-switch to irregular scan</string>
+	<string name="panel_auto_switch_irregular_summary">Retry with the irregular scan type when no panels are found.</string>
+	<string name="panel_fit_to_width">Fit panels to width</string>
+	<string name="panel_fit_to_width_summary">Scale panels so they fill the available width.</string>
+	<string name="panel_pan_bound">Bound panel panning</string>
+	<string name="panel_pan_bound_summary">Limit panning so the focused panel remains inside the viewport.</string>
+	<string name="panel_border_opacity">Panel border opacity</string>
+	<string name="panel_border_opacity_summary">Adjust the highlight opacity used when focusing panels.</string>
+
+	<string name="panel_settings_disabled_summary">Enable Panel view mode to configure these options.</string>
+	<string name="panel_group_frame_detection">Frame detection</string>
+	<string name="panel_group_scan_type">Scan type</string>
+	<string name="panel_group_reading_order">Reading order</string>
+	<string name="panel_group_enhancements">Panel view enhancements</string>
 	<string name="keep_screen_on">Keep screen on</string>
 	<string name="keep_screen_on_summary">Do not turn the screen off while you\'re reading manga</string>
 	<string name="state_abandoned">Dropped</string>
@@ -884,3 +912,4 @@
 	<string name="chapters_load_failed">Failed to load chapter list</string>
 	<string name="telegram_integration">Telegram integration</string>
 </resources>
+

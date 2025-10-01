@@ -144,31 +144,28 @@
 		<item>@string/disable</item>
 	</string-array>
 
-	<!-- Panel View: Scan Type -->
-	<string-array name="panel_scan_type_entries" translatable="false">
-		<item>Regular</item>
-		<item>Irregular</item>
-		<item>Four Quadrants</item>
-		<item>Webtoon</item>
+	<string-array name="panel_scan_mode_entries" translatable="false">
+		<item>@string/panel_scan_regular</item>
+		<item>@string/panel_scan_irregular</item>
+		<item>@string/panel_scan_quadrants</item>
+		<item>@string/panel_scan_webtoon</item>
 	</string-array>
-
-	<string-array name="panel_scan_type_values" translatable="false">
-		<item>regular</item>
-		<item>irregular</item>
-		<item>four_quadrants</item>
-		<item>webtoon</item>
+	<string-array name="panel_scan_mode_values" translatable="false">
+		<item>REGULAR</item>
+		<item>IRREGULAR</item>
+		<item>QUADRANTS</item>
+		<item>WEBTOON</item>
 	</string-array>
-
-	<!-- Panel View: Reading Order -->
 	<string-array name="panel_reading_order_entries" translatable="false">
-		<item>Standard Mode (Left to Right)</item>
-		<item>Manga Mode (Right to Left)</item>
-		<item>4-Koma Mode (Top to Bottom, Right to Left)</item>
+		<item>@string/panel_reading_standard</item>
+		<item>@string/panel_reading_manga</item>
+		<item>@string/panel_reading_koma4</item>
 	</string-array>
-
 	<string-array name="panel_reading_order_values" translatable="false">
-		<item>standard</item>
-		<item>manga</item>
-		<item>4_koma</item>
+		<item>STANDARD</item>
+		<item>MANGA</item>
+		<item>KOMA4</item>
 	</string-array>
 </resources>
+
+

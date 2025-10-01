@@ -575,34 +575,41 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_CHAPTERS_CLEAR_AUTO, false)
 
 	// region Panel View Settings
-	val isPanelDisableFrame: Boolean
+	var isPanelDisableFrame: Boolean
 		get() = prefs.getBoolean(KEY_PANEL_DISABLE_FRAME, false)
+		set(value) = prefs.edit { putBoolean(KEY_PANEL_DISABLE_FRAME, value) }
 
-	val isPanelInlineFrames: Boolean
+	var isPanelInlineFrames: Boolean
 		get() = prefs.getBoolean(KEY_PANEL_INLINE_FRAMES, false)
+		set(value) = prefs.edit { putBoolean(KEY_PANEL_INLINE_FRAMES, value) }
 
-	val panelScanType: PanelScanMode
+	var panelScanType: PanelScanMode
 		get() = prefs.getEnumValue(KEY_PANEL_SCAN_TYPE, PanelScanMode.REGULAR)
+		set(value) = prefs.edit { putEnumValue(KEY_PANEL_SCAN_TYPE, value) }
 
-	val panelReadingOrder: PanelReadingOrder
+	var panelReadingOrder: PanelReadingOrder
 		get() = prefs.getEnumValue(KEY_PANEL_READING_ORDER, PanelReadingOrder.MANGA)
+		set(value) = prefs.edit { putEnumValue(KEY_PANEL_READING_ORDER, value) }
 
-	val isPanelAutoSwitchScan: Boolean
+	var isPanelAutoSwitchScan: Boolean
 		get() {
 			// "enabled by default in Manga Mode"
 			val defaultValue = panelReadingOrder == PanelReadingOrder.MANGA
 			return prefs.getBoolean(KEY_PANEL_AUTO_SWITCH_SCAN, defaultValue)
 		}
 
-	val isPanelFitToWidth: Boolean
+	var isPanelFitToWidth: Boolean
 		get() = prefs.getBoolean(KEY_PANEL_FIT_TO_WIDTH, false)
+		set(value) = prefs.edit { putBoolean(KEY_PANEL_FIT_TO_WIDTH, value) }
 
-	val isPanelPanBound: Boolean
+	var isPanelPanBound: Boolean
 		get() = prefs.getBoolean(KEY_PANEL_PAN_BOUND, true)
+		set(value) = prefs.edit { putBoolean(KEY_PANEL_PAN_BOUND, value) }
 
 	@get:FloatRange(from = 0.0, to = 1.0)
-	val panelBorderOpacity: Float
+	var panelBorderOpacity: Float
 		get() = (prefs.getInt(KEY_PANEL_BORDER_OPACITY, 50).coerceIn(0, 100)) / 100f
+		set(value) = prefs.edit { putInt(KEY_PANEL_BORDER_OPACITY, (value * 100).toInt().coerceIn(0, 100)) }
 
 	// endregion
 

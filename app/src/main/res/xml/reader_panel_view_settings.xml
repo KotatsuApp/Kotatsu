@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        android:key="panel_settings_disabled_info"
+        android:title="@string/reader_panel_mode_settings"
+        android:summary="@string/panel_settings_disabled_summary"
+        android:icon="@drawable/ic_alert_outline"
+        android:selectable="false"
+        app:iconSpaceReserved="false" />
+
+    <PreferenceCategory
+        android:key="panel_group_frame_detection"
+        android:title="@string/panel_group_frame_detection">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_panel_disable_frame"
+            android:summary="@string/panel_disable_frame_summary"
+            android:title="@string/panel_disable_frame"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_panel_inline_frames"
+            android:summary="@string/panel_inline_frames_summary"
+            android:title="@string/panel_inline_frames"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="panel_group_scan_type"
+        android:title="@string/panel_group_scan_type">
+
+        <ListPreference
+            android:entries="@array/panel_scan_mode_entries"
+            android:entryValues="@array/panel_scan_mode_values"
+            android:key="pref_panel_scan_type"
+            android:title="@string/panel_scan_mode"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="panel_group_reading_order"
+        android:title="@string/panel_group_reading_order">
+
+        <ListPreference
+            android:entries="@array/panel_reading_order_entries"
+            android:entryValues="@array/panel_reading_order_values"
+            android:key="pref_panel_reading_order"
+            android:title="@string/panel_reading_order"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            android:key="pref_panel_auto_switch_scan"
+            android:summary="@string/panel_auto_switch_irregular_summary"
+            android:title="@string/panel_auto_switch_irregular"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="panel_group_enhancements"
+        android:title="@string/panel_group_enhancements">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_panel_fit_to_width"
+            android:summary="@string/panel_fit_to_width_summary"
+            android:title="@string/panel_fit_to_width"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_panel_pan_bound"
+            android:summary="@string/panel_pan_bound_summary"
+            android:title="@string/panel_pan_bound"
+            app:iconSpaceReserved="false" />
+
+        <org.koitharu.kotatsu.settings.utils.SliderPreference
+            android:key="pref_panel_border_opacity"
+            android:title="@string/panel_border_opacity"
+            android:valueFrom="0"
+            android:valueTo="100"
+            android:stepSize="5"
+            app:defaultValue="50"
+            app:iconSpaceReserved="false"
+            app:tickVisible="true" />
+    </PreferenceCategory>
+</PreferenceScreen>
