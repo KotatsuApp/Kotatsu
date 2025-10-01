@@ -22,7 +22,7 @@ android {
 		minSdk = 23
 		targetSdk = 36
 		versionCode = 1030
-		versionName = '9.2.0.1'
+		versionName = '9.2.0.6'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -119,11 +119,11 @@ dependencies {
 	def parsersVersion = libs.versions.parsers.get()
 	if (System.properties.containsKey('parsersVersionOverride')) {
 		// usage:
-		// -DparsersVersionOverride=$(curl -s https://api.github.com/repos/kotatsuapp/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
+		// -DparsersVersionOverride=$(curl -s https://api.github.com/repos/vtorres-t/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
 		parsersVersion = System.getProperty('parsersVersionOverride')
 	}
 	//noinspection UseTomlInstead
-	implementation("com.github.KotatsuApp:kotatsu-parsers:$parsersVersion") {
+	implementation("com.github.vtorres-t:kotatsu-parsers:$parsersVersion") {
 		exclude group: 'org.json', module: 'json'
 	}
 
