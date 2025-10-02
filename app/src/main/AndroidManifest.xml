@@ -433,13 +433,6 @@
 				android:name="android.appwidget.provider"
 				android:resource="@xml/widget_recent" />
 		</receiver>
-		<receiver
-			android:name="org.koitharu.kotatsu.core.ErrorReporterReceiver"
-			android:exported="false">
-			<intent-filter>
-				<action android:name="${applicationId}.action.REPORT_ERROR" />
-			</intent-filter>
-		</receiver>
 
 		<meta-data
 			android:name="android.webkit.WebView.EnableSafeBrowsing"

@@ -10,7 +10,6 @@ import org.koitharu.kotatsu.backups.data.BackupRepository
 import org.koitharu.kotatsu.backups.domain.BackupUtils
 import org.koitharu.kotatsu.backups.domain.ExternalBackupStorage
 import org.koitharu.kotatsu.backups.ui.BaseBackupRestoreService
-import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
@@ -82,9 +81,7 @@ class PeriodicalBackupService : CoroutineIntentService() {
 					.setSummaryText(getString(R.string.packup_creation_failed))
 					.setBigContentTitle(title),
 			)
-		ErrorReporterReceiver.getNotificationAction(applicationContext, error, startId, TAG)?.let { action ->
-			notification.addAction(action)
-		}
+
 		notification.setContentIntent(
 			PendingIntentCompat.getActivity(
 				applicationContext,

@@ -18,7 +18,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
 
 val processLifecycleScope: CoroutineScope
-	get() = ProcessLifecycleOwner.get().lifecycleScope + AcraCoroutineErrorHandler()
+	get() = ProcessLifecycleOwner.get().lifecycleScope
 
 val RetainedLifecycle.lifecycleScope: RetainedLifecycleCoroutineScope
 	inline get() = RetainedLifecycleCoroutineScope(this)
