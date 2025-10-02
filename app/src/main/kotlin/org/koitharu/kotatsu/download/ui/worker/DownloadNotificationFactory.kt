@@ -22,14 +22,12 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.LocalizedAppContext
 import org.koitharu.kotatsu.core.model.LocalMangaSource
 import org.koitharu.kotatsu.core.model.isNsfw
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.util.ext.getDrawableOrThrow
 import org.koitharu.kotatsu.core.util.ext.getNotificationIconSize
-import org.koitharu.kotatsu.core.util.ext.isReportable
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.download.domain.DownloadState
@@ -209,17 +207,6 @@ class DownloadNotificationFactory @AssistedInject constructor(
 				builder.setShowWhen(true)
 				builder.setWhen(System.currentTimeMillis())
 				builder.setStyle(NotificationCompat.BigTextStyle().bigText(state.errorMessage))
-				if (state.error.isReportable()) {
-					ErrorReporterReceiver.getPendingIntent(context, state.error)?.let { reportIntent ->
-						builder.addAction(
-							NotificationCompat.Action(
-								0,
-								context.getString(R.string.report),
-								reportIntent,
-							),
-						)
-					}
-				}
 			}
 
 			else -> {

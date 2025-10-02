@@ -15,8 +15,6 @@ import org.koitharu.kotatsu.core.ui.AlertDialogFragment
 import org.koitharu.kotatsu.core.util.ext.copyToClipboard
 import org.koitharu.kotatsu.core.util.ext.getCauseUrl
 import org.koitharu.kotatsu.core.util.ext.isHttpUrl
-import org.koitharu.kotatsu.core.util.ext.isReportable
-import org.koitharu.kotatsu.core.util.ext.report
 import org.koitharu.kotatsu.core.util.ext.requireSerializable
 import org.koitharu.kotatsu.core.util.ext.setTextAndVisible
 import org.koitharu.kotatsu.databinding.DialogErrorDetailsBinding
@@ -50,8 +48,6 @@ class ErrorDetailsDialog : AlertDialogFragment<DialogErrorDetailsBinding>(), Vie
 		binding.textViewDescription.setTextAndVisible(
 			if (appUpdateRepository.isUpdateAvailable) {
 				R.string.error_disclaimer_app_outdated
-			} else if (exception.isReportable()) {
-				R.string.error_disclaimer_report
 			} else {
 				0
 			},
@@ -70,11 +66,6 @@ class ErrorDetailsDialog : AlertDialogFragment<DialogErrorDetailsBinding>(), Vie
 		if (appUpdateRepository.isUpdateAvailable) {
 			builder.setPositiveButton(R.string.update) { _, _ ->
 				router.openAppUpdate()
-				dismiss()
-			}
-		} else if (exception.isReportable()) {
-			builder.setPositiveButton(R.string.report) { _, _ ->
-				exception.report(silent = true)
 				dismiss()
 			}
 		}
