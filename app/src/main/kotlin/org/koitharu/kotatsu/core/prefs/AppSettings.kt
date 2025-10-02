@@ -597,6 +597,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			val defaultValue = panelReadingOrder == PanelReadingOrder.MANGA
 			return prefs.getBoolean(KEY_PANEL_AUTO_SWITCH_SCAN, defaultValue)
 		}
+		set(value) = prefs.edit { putBoolean(KEY_PANEL_AUTO_SWITCH_SCAN, value) }
 
 	var isPanelFitToWidth: Boolean
 		get() = prefs.getBoolean(KEY_PANEL_FIT_TO_WIDTH, false)
@@ -882,3 +883,4 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		private const val READER_CROP_WEBTOON = 2
 	}
 }
+

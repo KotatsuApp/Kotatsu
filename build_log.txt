@@ -1,0 +1,70 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:clean
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:dataBindingMergeDependencyArtifactsDebug
+> Task :app:generateDebugResValues
+> Task :app:generateDebugResources
+
+> Task :app:mergeDebugResources
+C:\GitHub\Kotatsu\app\src\main\res\values-hu\strings.xml:587:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-pt\strings.xml:587:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-in\strings.xml:612:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-ar\strings.xml:528:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-kk\strings.xml:428:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-cs\strings.xml:570:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-el\strings.xml:410:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-ja\strings.xml:385:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\Users\mee_o\.gradle\caches\8.13\transforms\8c259aa0fbd8ce2b8b84275dd240786e\transformed\material-1.14.0-alpha03\res\values-ko\values-ko.xml:42:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\Users\mee_o\.gradle\caches\8.13\transforms\8c259aa0fbd8ce2b8b84275dd240786e\transformed\material-1.14.0-alpha03\res\values-ms\values-ms.xml:42:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-th\strings.xml:438:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-zh-rTW\strings.xml:594:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-be\strings.xml:593:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-ru\strings.xml:592:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-uk\strings.xml:590:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-et\strings.xml:485:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-vi\strings.xml:491:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-de\strings.xml:587:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-nn\strings.xml:378:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+C:\GitHub\Kotatsu\app\src\main\res\values-fr\strings.xml:590:4: Multiple substitutions specified in non-positional format of string resource string/memory_usage_pattern. Did you mean to add the formatted="false" attribute?
+
+> Task :app:packageDebugResources
+> Task :app:generateDebugBuildConfig
+> Task :app:mapDebugSourceSetPaths
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:checkDebugAarMetadata
+
+> Task :app:processDebugMainManifest
+C:\GitHub\Kotatsu\app\src\main\AndroidManifest.xml:404:4-407:27 Warning:
+	meta-data#androidx.work.WorkManagerInitializer was tagged at AndroidManifest.xml:404 to remove other declarations but no other declaration present
+C:\GitHub\Kotatsu\app\src\main\AndroidManifest.xml Warning:
+	provider#org.acra.attachment.AcraContentProvider@android:authorities was tagged at AndroidManifest.xml:0 to replace other declarations but no other declaration present
+
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugManifest
+> Task :app:dataBindingGenBaseClassesDebug
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:processDebugManifestForPackage
+> Task :app:desugarDebugFileDependencies
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeLibDexDebug
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libavif_android.so, libconscrypt_jni.so. Run with --info option to learn more.
+
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:processDebugResources
+Terminate batch job (Y/N)? Terminate batch job (Y/N)? Terminate batch job (Y/N)? Terminate batch job (Y/N)? Terminate batch job (Y/N)? Terminate batch job (Y/N)? Terminate batch job (Y/N)? 

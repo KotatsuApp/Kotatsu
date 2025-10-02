@@ -188,13 +188,6 @@ class ReaderConfigSheet :
 	}
 }
 
-			R.id.switch_double_reader -> {
-				settings.isReaderDoubleOnLandscape = isChecked
-				findParentCallback(Callback::class.java)?.onDoubleModeChanged(isChecked)
-			}
-		}
-	}
-
 	override fun onButtonChecked(
 		group: MaterialButtonToggleGroup?,
 		checkedId: Int,

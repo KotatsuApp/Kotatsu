@@ -1,93 +1,197 @@
 package org.koitharu.kotatsu.settings
 
 import android.os.Bundle
+import android.view.View
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import org.koitharu.kotatsu.core.prefs.AppSettings
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
-import org.koitharu.kotatsu.settings.utils.SliderPreference
-import org.koitharu.kotatsu.reader.domain.panel.PanelScanMode
+import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
+import org.koitharu.kotatsu.parsers.util.names
+import org.koitharu.kotatsu.reader.domain.panel.PanelPreferences
 import org.koitharu.kotatsu.reader.domain.panel.PanelReadingOrder
+import org.koitharu.kotatsu.reader.domain.panel.PanelScanMode
+import org.koitharu.kotatsu.reader.domain.panel.PanelSettingsRepository
+import org.koitharu.kotatsu.settings.utils.PercentSummaryProvider
+import org.koitharu.kotatsu.settings.utils.SliderPreference
 
 @AndroidEntryPoint
-class ReaderPanelSettingsFragment : BasePreferenceFragment() {
+class ReaderPanelSettingsFragment : BasePreferenceFragment(R.string.panel_settings_category) {
 
     @Inject
-    lateinit var settings: AppSettings
+    lateinit var panelSettings: PanelSettingsRepository
 
-    private lateinit var settings: AppSettings
+    private var isPanelModeEnabled = false
+    private var latestPreferences: PanelPreferences? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(org.koitharu.kotatsu.R.xml.reader_panel_view_settings, rootKey)
-
+        setPreferencesFromResource(R.xml.reader_panel_view_settings, rootKey)
         setupPreferences()
-        updateEnabledState()
+        ensureAutoSwitchDefault()
+
+        val initialPanelEnabled = panelSettings.isPanelViewEnabled()
+        val initialPreferences = panelSettings.getPreferences()
+        latestPreferences = initialPreferences
+        updatePanelModeVisibility(initialPanelEnabled)
+        applyPreferenceState(initialPreferences)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    panelSettings.panelViewEnabledFlow.collect { enabled ->
+                        updatePanelModeVisibility(enabled)
+                        latestPreferences?.let { applyPreferenceState(it) }
+                    }
+                }
+                launch {
+                    panelSettings.preferencesFlow.collect { prefs ->
+                        applyPreferenceState(prefs)
+                    }
+                }
+            }
+        }
     }
 
     private fun setupPreferences() {
-        findPreference<SwitchPreferenceCompat>("pref_panel_disable_frame")?.setOnPreferenceChangeListener { _, newValue ->
-            settings.isPanelDisableFrame = newValue as Boolean
-            updateFramePreferences(newValue)
+        findPreference<Preference>(PREF_PANEL_DISABLED_INFO)?.icon = getWarningIcon()
+
+        findPreference<SwitchPreferenceCompat>(PREF_DISABLE_FRAME)?.setOnPreferenceChangeListener { _, newValue ->
+            val disable = newValue as? Boolean ?: return@setOnPreferenceChangeListener false
+            panelSettings.updateDisableFrame(disable)
             true
         }
 
-        findPreference<ListPreference>("pref_panel_scan_type")?.let { pref ->
-            pref.setOnPreferenceChangeListener { _, newValue ->
-                settings.panelScanType = PanelScanMode.valueOf(newValue.toString())
-                updateEnabledState()
+        findPreference<SwitchPreferenceCompat>(PREF_INLINE_FRAMES)?.setOnPreferenceChangeListener { _, newValue ->
+            panelSettings.updateInlineFrames(newValue as Boolean)
+            true
+        }
+
+        findPreference<ListPreference>(PREF_SCAN_TYPE)?.apply {
+            entryValues = PanelScanMode.entries.names()
+            setDefaultValueCompat(PanelScanMode.REGULAR.name)
+            setOnPreferenceChangeListener { _, newValue ->
+                panelSettings.updateScanType(PanelScanMode.valueOf(newValue.toString()))
                 true
             }
         }
 
-        findPreference<ListPreference>("pref_panel_reading_order")?.let { pref ->
-            pref.setOnPreferenceChangeListener { _, newValue ->
-                settings.panelReadingOrder = PanelReadingOrder.valueOf(newValue.toString())
+        findPreference<ListPreference>(PREF_READING_ORDER)?.apply {
+            entryValues = PanelReadingOrder.entries.names()
+            setDefaultValueCompat(PanelReadingOrder.MANGA.name)
+            setOnPreferenceChangeListener { _, newValue ->
+                val order = PanelReadingOrder.valueOf(newValue.toString())
+                panelSettings.updateReadingOrder(order)
+                if (order == PanelReadingOrder.MANGA) {
+                    panelSettings.updateAutoSwitchScan(true)
+                }
                 true
             }
         }
 
-        findPreference<SwitchPreferenceCompat>("pref_panel_auto_switch_scan")?.let { pref ->
-            pref.setOnPreferenceChangeListener { _, newValue ->
-                settings.isPanelAutoSwitchScan = newValue as Boolean
+        findPreference<SwitchPreferenceCompat>(PREF_AUTO_SWITCH)?.apply {
+            summary = getString(R.string.panel_auto_switch_irregular_summary)
+            setOnPreferenceChangeListener { _, newValue ->
+                panelSettings.updateAutoSwitchScan(newValue as Boolean)
                 true
             }
         }
 
-        findPreference<SwitchPreferenceCompat>("pref_panel_fit_to_width")?.let { pref ->
-            pref.setOnPreferenceChangeListener { _, newValue ->
-                settings.isPanelFitToWidth = newValue as Boolean
-                true
-            }
+        findPreference<SwitchPreferenceCompat>(PREF_FIT_TO_WIDTH)?.setOnPreferenceChangeListener { _, newValue ->
+            panelSettings.updateFitToWidth(newValue as Boolean)
+            true
         }
 
-        findPreference<SwitchPreferenceCompat>("pref_panel_pan_bound")?.let { pref ->
-            pref.setOnPreferenceChangeListener { _, newValue ->
-                settings.isPanelPanBound = newValue as Boolean
-                true
-            }
+        findPreference<SwitchPreferenceCompat>(PREF_PAN_BOUND)?.setOnPreferenceChangeListener { _, newValue ->
+            panelSettings.updatePanBound(newValue as Boolean)
+            true
         }
 
-        findPreference<SliderPreference>("pref_panel_border_opacity")?.let { pref ->
-            pref.setOnPreferenceChangeListener { _, newValue ->
-                settings.panelBorderOpacity = newValue as Float
+        findPreference<SliderPreference>(PREF_BORDER_OPACITY)?.apply {
+            summaryProvider = PercentSummaryProvider()
+            setOnPreferenceChangeListener { _, newValue ->
+                val percent = (newValue as Int).coerceIn(0, 100)
+                panelSettings.updateBorderOpacity(percent / 100f)
                 true
             }
         }
     }
 
-    private fun updateFramePreferences(isDisabled: Boolean) {
-        findPreference<Preference>("pref_panel_inline_frames")?.isEnabled = !isDisabled
-        updateEnabledState()
+    private fun ensureAutoSwitchDefault() {
+        val prefs = preferenceManager.sharedPreferences ?: return
+        if (!prefs.contains(PREF_AUTO_SWITCH)) {
+            val defaultValue = panelSettings.getPreferences().readingOrder == PanelReadingOrder.MANGA
+            prefs.edit().putBoolean(PREF_AUTO_SWITCH, defaultValue).apply()
+            findPreference<SwitchPreferenceCompat>(PREF_AUTO_SWITCH)?.isChecked = defaultValue
+        }
     }
 
-    private fun updateEnabledState() {
-        val isDisabled = settings.isPanelDisableFrame
-        findPreference<Preference>("pref_panel_inline_frames")?.isEnabled = !isDisabled
-        findPreference<Preference>("panel_group_scan_type")?.isEnabled = !isDisabled
-        findPreference<Preference>("panel_group_reading_order")?.isEnabled = !isDisabled
-        findPreference<Preference>("panel_group_enhancements")?.isEnabled = !isDisabled
+    private fun updatePanelModeVisibility(isEnabled: Boolean) {
+        isPanelModeEnabled = isEnabled
+        findPreference<Preference>(PREF_PANEL_DISABLED_INFO)?.apply {
+            icon = icon ?: getWarningIcon()
+            isVisible = !isEnabled
+        }
+        PANEL_SECTION_KEYS.forEach { key ->
+            findPreference<Preference>(key)?.isVisible = isEnabled
+        }
+    }
+
+    private fun applyPreferenceState(preferences: PanelPreferences) {
+        latestPreferences = preferences
+
+        val detectionEnabled = isPanelModeEnabled && !preferences.disableFrame
+        findPreference<Preference>(PREF_INLINE_FRAMES)?.isEnabled = detectionEnabled
+
+        ADVANCED_SECTION_KEYS.forEach { key ->
+            findPreference<Preference>(key)?.isEnabled = detectionEnabled
+        }
+
+        updateAutoSwitchAvailability(preferences)
+    }
+
+    private fun updateAutoSwitchAvailability(preferences: PanelPreferences?) {
+        val autoSwitchPref = findPreference<SwitchPreferenceCompat>(PREF_AUTO_SWITCH) ?: return
+        if (preferences == null) {
+            autoSwitchPref.isEnabled = false
+            return
+        }
+        val canConfigure = isPanelModeEnabled && !preferences.disableFrame && preferences.scanType == PanelScanMode.REGULAR
+        autoSwitchPref.isEnabled = canConfigure
+    }
+
+    companion object {
+        private const val PREF_DISABLE_FRAME = "pref_panel_disable_frame"
+        private const val PREF_INLINE_FRAMES = "pref_panel_inline_frames"
+        private const val PREF_SCAN_TYPE = "pref_panel_scan_type"
+        private const val PREF_READING_ORDER = "pref_panel_reading_order"
+        private const val PREF_AUTO_SWITCH = "pref_panel_auto_switch_scan"
+        private const val PREF_FIT_TO_WIDTH = "pref_panel_fit_to_width"
+        private const val PREF_PAN_BOUND = "pref_panel_pan_bound"
+        private const val PREF_BORDER_OPACITY = "pref_panel_border_opacity"
+        private const val PREF_PANEL_DISABLED_INFO = "panel_settings_disabled_info"
+
+        private val PANEL_SECTION_KEYS = arrayOf(
+            "panel_group_frame_detection",
+            "panel_group_scan_type",
+            "panel_group_reading_order",
+            "panel_group_enhancements",
+        )
+
+        private val ADVANCED_SECTION_KEYS = arrayOf(
+            "panel_group_scan_type",
+            "panel_group_reading_order",
+            "panel_group_enhancements",
+        )
     }
 }
