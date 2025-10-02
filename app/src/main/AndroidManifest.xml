@@ -51,7 +51,6 @@
 		android:backupAgent="org.koitharu.kotatsu.backups.domain.AppBackupAgent"
 		android:dataExtractionRules="@xml/backup_rules"
 		android:enableOnBackInvokedCallback="@bool/is_predictive_back_enabled"
-		android:extractNativeLibs="true"
 		android:fullBackupContent="@xml/backup_content"
 		android:fullBackupOnly="true"
 		android:hasFragileUserData="true"

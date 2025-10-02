@@ -47,6 +47,7 @@ android {
 			minifyEnabled true
 			shrinkResources true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+			signingConfig signingConfigs.debug
 		}
 		nightly {
 			initWith release
@@ -60,9 +61,11 @@ android {
 	packagingOptions {
 		resources {
 			excludes += [
-				'META-INF/README.md',
-				'META-INF/NOTICE.md'
+				'META-INF/README.md'
 			]
+		}
+		jniLibs {
+			useLegacyPackaging true
 		}
 	}
 	sourceSets {
@@ -112,6 +115,15 @@ android {
 				output.versionCodeOverride = now.format("yyMMdd").toInteger()
 				output.versionNameOverride = 'N' + now.format("yyyyMMdd")
 			}
+		}
+	}
+	splits {
+		abi {
+			enable true
+			reset()
+			//noinspection ChromeOsAbiSupport
+			include 'arm64-v8a', 'x86_64'
+			universalApk false
 		}
 	}
 }
