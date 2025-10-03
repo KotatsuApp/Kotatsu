@@ -61,14 +61,24 @@ jobs:
               run: ./gradlew assembleRelease -PSIGNING_KEY_ALIAS=$SIGNING_KEY_ALIAS -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD -PKEYSTORE_FILE=app/key -PSIGNING_KEY_PASSWORD=$SIGNING_KEY_PASSWORD
             
             - name: Get release file apk path
-              id: releaseApk
-              run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+              id: releaseApkArm64v8
+              run: echo "apkfileArm64v8=$(find app/build/outputs/apk/release/app-arm64-v8a-release.apk)" >> $GITHUB_OUTPUT
 
-            - name: Upload Release APK
+            - name: Get release file apk path
+              id: releaseApkArmeabiv7a
+              run: echo "apkfileArmeabiv7a=$(find app/build/outputs/apk/release/app-armeabi-v7a-release.apk)" >> $GITHUB_OUTPUT
+
+            - name: Upload Release APK Arm64v8
               uses: actions/upload-artifact@v4
               with:
-                name: release-apk
-                path: ${{ steps.releaseApk.outputs.apkfile }}
+                name: release-apk-Arm64v8
+                path: ${{ steps.releaseApkArm64v8.outputs.apkfileArm64v8 }}
+
+            - name: Upload Release APK Armeabiv7a
+              uses: actions/upload-artifact@v4
+              with:
+                name: release-apk-Armeabiv7a
+                path: ${{ steps.releaseApkArmeabiv7a.outputs.apkfileArmeabiv7a }}
 
             - name: Generate Release Notes
               id: generate-release-notes
@@ -97,13 +107,24 @@ jobs:
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Upload Release APK
-              id: upload_release_asset
+            - name: Upload Release APK Arm64v8c
+              id: upload_release_asset_Arm64v8c
               uses: actions/upload-release-asset@v1.0.1
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                 upload_url: ${{ steps.create_release.outputs.upload_url }}
-                asset_path: ${{ steps.releaseApk.outputs.apkfile }}
-                asset_name: Kotatsu_v${{ env.VERSION }}.${{ github.run_number }}.apk
+                asset_path: ${{ steps.releaseApkArm64v8.outputs.apkfileArm64v8 }}
+                asset_name: Kotatsu_arm64v8_v${{ env.VERSION }}.${{ github.run_number }}.apk
+                asset_content_type: application/zip
+
+            - name: Upload Release APK Armeabiv7a
+              id: upload_release_asset_Armeabiv7a
+              uses: actions/upload-release-asset@v1.0.1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                upload_url: ${{ steps.create_release.outputs.upload_url }}
+                asset_path: ${{ steps.releaseApkArmeabiv7a.outputs.apkfilArmeabiv7a }}
+                asset_name: Kotatsu_armeabiv7a_v${{ env.VERSION }}.${{ github.run_number }}.apk
                 asset_content_type: application/zip
