@@ -125,6 +125,6 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                 upload_url: ${{ steps.create_release.outputs.upload_url }}
-                asset_path: ${{ steps.releaseApkArmeabiv7a.outputs.apkfilArmeabiv7a }}
+                asset_path: ${{ steps.releaseApkArmeabiv7a.outputs.apkfileArmeabiv7a }}
                 asset_name: Kotatsu_armeabiv7a_v${{ env.VERSION }}.${{ github.run_number }}.apk
                 asset_content_type: application/zip
