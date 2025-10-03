@@ -71,23 +71,22 @@ android {
 		sourceCompatibility JavaVersion.VERSION_11
 		targetCompatibility JavaVersion.VERSION_11
 	}
-	kotlin {
-		compileOptions {
-			freeCompilerArgs += [
-				'-opt-in=kotlin.ExperimentalStdlibApi',
-				'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
-				'-opt-in=kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi',
-				'-opt-in=kotlinx.coroutines.InternalForInheritanceCoroutinesApi',
-				'-opt-in=kotlinx.coroutines.FlowPreview',
-				'-opt-in=kotlin.contracts.ExperimentalContracts',
-				'-opt-in=coil3.annotation.ExperimentalCoilApi',
-				'-opt-in=coil3.annotation.InternalCoilApi',
-				'-opt-in=kotlinx.serialization.ExperimentalSerializationApi',
-				'-Xjspecify-annotations=strict',
-				'-Xannotation-default-target=first-only',
-				'-Xtype-enhancement-improvements-strict-mode'
-			]
-		}
+	kotlinOptions {
+		jvmTarget = JavaVersion.VERSION_11.toString()
+		freeCompilerArgs += [
+			'-opt-in=kotlin.ExperimentalStdlibApi',
+			'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+			'-opt-in=kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi',
+			'-opt-in=kotlinx.coroutines.InternalForInheritanceCoroutinesApi',
+			'-opt-in=kotlinx.coroutines.FlowPreview',
+			'-opt-in=kotlin.contracts.ExperimentalContracts',
+			'-opt-in=coil3.annotation.ExperimentalCoilApi',
+			'-opt-in=coil3.annotation.InternalCoilApi',
+			'-opt-in=kotlinx.serialization.ExperimentalSerializationApi',
+			'-Xjspecify-annotations=strict',
+			'-Xannotation-default-target=first-only',
+			'-Xtype-enhancement-improvements-strict-mode'
+		]
 	}
 	room {
 		schemaDirectory "$projectDir/schemas"
@@ -99,10 +98,8 @@ android {
 	testOptions {
 		unitTests.includeAndroidResources true
 		unitTests.returnDefaultValues false
-		kotlin {
-			compileOptions {
+		kotlinOptions {
 				freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
-			}
 		}
 	}
 	splits {
