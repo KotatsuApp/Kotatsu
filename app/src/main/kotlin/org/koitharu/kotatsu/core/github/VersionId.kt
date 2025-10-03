@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.core.github
 
-import org.koitharu.kotatsu.parsers.util.digits
 import java.util.Locale
 
 data class VersionId(
@@ -44,16 +43,6 @@ val VersionId.isStable: Boolean
 	get() = variantType.isEmpty()
 
 fun VersionId(versionName: String): VersionId {
-	if (versionName.startsWith('n', ignoreCase = true)) {
-		// Nightly build
-		return VersionId(
-			major = 0,
-			minor = 0,
-			build = versionName.digits().toIntOrNull() ?: 0,
-			variantType = "n",
-			variantNumber = 0,
-		)
-	}
 	val parts = versionName.substringBeforeLast('-').split('.')
 	val variant = versionName.substringAfterLast('-', "")
 	return VersionId(

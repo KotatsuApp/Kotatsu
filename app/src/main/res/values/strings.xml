@@ -366,8 +366,6 @@
 	<string name="nothing_here">There is nothing here</string>
 	<string name="scrobbling_empty_hint">To track reading progress, select Menu → Track on the manga details screen.</string>
 	<string name="services">Services</string>
-	<string name="allow_unstable_updates">Allow unstable updates</string>
-	<string name="allow_unstable_updates_summary">Receive notifications about unstable builds</string>
 	<string name="download_started">Download started</string>
 	<string name="got_it">Got it</string>
 	<string name="sources_reorder_tip">Tap and hold on an item to reorder them</string>

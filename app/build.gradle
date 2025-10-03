@@ -8,8 +8,6 @@ plugins {
 	id 'dagger.hilt.android.plugin'
 	id 'androidx.room'
 	id 'org.jetbrains.kotlin.plugin.serialization'
-	// enable if needed
-	// id 'dev.reformator.stacktracedecoroutinator'
 }
 
 android {
@@ -22,7 +20,7 @@ android {
 		minSdk = 23
 		targetSdk = 36
 		versionCode = 1030
-		versionName = '9.2.0.9'
+		versionName = '9.2.0.11'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -48,10 +46,6 @@ android {
 			shrinkResources true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 			signingConfig signingConfigs.debug
-		}
-		nightly {
-			initWith release
-			applicationIdSuffix = '.nightly'
 		}
 	}
 	buildFeatures {
@@ -105,16 +99,7 @@ android {
 		unitTests.includeAndroidResources true
 		unitTests.returnDefaultValues false
 		kotlinOptions {
-			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
-		}
-	}
-	applicationVariants.configureEach { variant ->
-		if (variant.name == 'nightly') {
-			variant.outputs.each { output ->
-				def now = LocalDateTime.now()
-				output.versionCodeOverride = now.format("yyMMdd").toInteger()
-				output.versionNameOverride = 'N' + now.format("yyyyMMdd")
-			}
+				freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
 		}
 	}
 	splits {
@@ -130,8 +115,6 @@ android {
 dependencies {
 	def parsersVersion = libs.versions.parsers.get()
 	if (System.properties.containsKey('parsersVersionOverride')) {
-		// usage:
-		// -DparsersVersionOverride=$(curl -s https://api.github.com/repos/vtorres-t/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
 		parsersVersion = System.getProperty('parsersVersionOverride')
 	}
 	//noinspection UseTomlInstead
@@ -198,7 +181,6 @@ dependencies {
 	implementation libs.conscrypt.android
 
 	debugImplementation libs.leakcanary.android
-	nightlyImplementation libs.leakcanary.android
 	debugImplementation libs.workinspector
 
 	testImplementation libs.junit
