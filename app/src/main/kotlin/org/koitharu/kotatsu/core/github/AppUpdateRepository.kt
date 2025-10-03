@@ -14,7 +14,6 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.BaseHttpClient
 import org.koitharu.kotatsu.core.os.AppValidator
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.util.await
@@ -31,7 +30,6 @@ private const val BUILD_TYPE_RELEASE = "release"
 @Singleton
 class AppUpdateRepository @Inject constructor(
 	private val appValidator: AppValidator,
-	private val settings: AppSettings,
 	@BaseHttpClient private val okHttp: OkHttpClient,
 	@ApplicationContext context: Context,
 ) {
@@ -76,7 +74,7 @@ class AppUpdateRepository @Inject constructor(
 			val currentVersion = VersionId(BuildConfig.VERSION_NAME)
 			val available = getAvailableVersions().asArrayList()
 			available.sortBy { it.versionId }
-			if (currentVersion.isStable && !settings.isUnstableUpdatesAllowed) {
+			if (currentVersion.isStable) {
 				available.retainAll { it.versionId.isStable }
 			}
 			available.maxByOrNull { it.versionId }
