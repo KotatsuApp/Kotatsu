@@ -75,7 +75,7 @@ android {
 	}
 	kotlin {
 		compileOptions {
-			jvmTarget = JavaVersion.VERSION_11.toString()
+			jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
 			freeCompilerArgs += [
 				'-opt-in=kotlin.ExperimentalStdlibApi',
 				'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
