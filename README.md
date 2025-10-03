@@ -6,17 +6,16 @@
 
 # [Kotatsu](https://kotatsu.app)
 
-**[Kotatsu](https://github.com/KotatsuApp/Kotatsu) is a free and open-source manga reader for Android with built-in online content sources.**
+**[Kotatsu](https://github.com/vtorres-t/Kotatsu) is a free and open-source manga reader for Android with built-in online content sources.**
 
-![Downloads count](https://img.shields.io/github/downloads/KotatsuApp/Kotatsu/total?color=1976d2) ![Latest Stable version](https://img.shields.io/github/v/release/KotatsuApp/Kotatsu?color=2596be&label=latest) ![Android 6.0](https://img.shields.io/badge/android-6.0+-brightgreen) [![Sources count](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FKotatsuApp%2Fkotatsu-parsers%2Frefs%2Fheads%2Fmaster%2F.github%2Fsummary.yaml&query=total&label=manga%20sources&color=%23E9321C)](https://github.com/KotatsuApp/kotatsu-parsers) [![weblate](https://hosted.weblate.org/widgets/kotatsu/-/strings/svg-badge.svg)](https://hosted.weblate.org/engage/kotatsu/) [![Discord](https://img.shields.io/discord/898363402467045416?color=5865f2&label=discord)](https://discord.gg/NNJ5RgVBC5) [![Telegram](https://img.shields.io/badge/chat-telegram-60ACFF?)](https://t.me/kotatsuapp) [![License](https://img.shields.io/github/license/KotatsuApp/Kotatsu)](https://github.com/KotatsuApp/Kotatsu/blob/devel/LICENSE)
+![Downloads count](https://img.shields.io/github/downloads/vtorres-t/Kotatsu/total?color=1976d2) ![Latest Stable version](https://img.shields.io/github/v/release/vtorres-t/Kotatsu?color=2596be&label=latest) ![Android 6.0](https://img.shields.io/badge/android-6.0+-brightgreen) [![Sources count](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvtorres-t%2Fkotatsu-parsers%2Frefs%2Fheads%2Fmaster%2F.github%2Fsummary.yaml&query=total&label=manga%20sources&color=%23E9321C)](https://github.com/vtorres-t/kotatsu-parsers) [![License](https://img.shields.io/github/license/KotatsuApp/Kotatsu)](https://github.com/vtorres-t/Kotatsu/blob/devel/LICENSE)
+</div>
 
 ### Download
 
 <div align="left">
 
-* **Recommended:** Download and install APK from [GitHub Releases](https://github.com/KotatsuApp/Kotatsu/releases/latest). Application has a built-in self-updating feature.
-* Get it on [F-Droid](https://f-droid.org/packages/org.koitharu.kotatsu). The F-Droid build may be a bit outdated and some fixes might be missing.
-* Also [nightly builds](https://github.com/KotatsuApp/Kotatsu-nightly/releases) are available (Unstable, use at your own risk). Application has a built-in self-updating feature.
+* **Recommended:** Download and install APK from [GitHub Releases](https://github.com/vtorres-t/Kotatsu/releases/latest). Application has a built-in self-updating feature.
 
 </div>
 
@@ -24,7 +23,7 @@
 
 <div align="left">
 
-* Online [manga catalogues](https://github.com/KotatsuApp/kotatsu-parsers) (with 1200+ manga sources)
+* Online [manga catalogues](https://github.com/vtorres-t/kotatsu-parsers) (with 1200+ manga sources)
 * Search manga by name, genres and more filters
 * Favorites organized by user-defined categories
 * Reading history, bookmarks and incognito mode support
@@ -61,20 +60,20 @@
 
 <br>
 
-<a href="https://github.com/KotatsuApp/Kotatsu">
+<a href="https://github.com/vtorres-t/Kotatsu">
   <picture>
-    <source srcset="https://github-readme-stats.vercel.app/api/pin/?username=KotatsuApp&repo=Kotatsu&bg_color=0d1117&text_color=1976d2&title_color=1976d2&icon_color=0877d2&border_radius=10&description_lines_count=2&show_owner=true" media="(prefers-color-scheme: dark)">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=KotatsuApp&repo=Kotatsu&text_color=1976d2&title_color=1976d2&icon_color=0877d2&border_radius=10&description_lines_count=2&show_owner=true" alt="Kotatsu GitHub Repository">
+    <source srcset="https://github-readme-stats.vercel.app/api/pin/?username=vtorres-t&repo=Kotatsu&bg_color=0d1117&text_color=1976d2&title_color=1976d2&icon_color=0877d2&border_radius=10&description_lines_count=2&show_owner=true" media="(prefers-color-scheme: dark)">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=vtorres-t&repo=Kotatsu&text_color=1976d2&title_color=1976d2&icon_color=0877d2&border_radius=10&description_lines_count=2&show_owner=true" alt="Kotatsu GitHub Repository">
   </picture>
 </a>
-<a href="https://github.com/KotatsuApp/Kotatsu-parsers">
+<a href="https://github.com/vtorres-t/Kotatsu-parsers">
   <picture>
-    <source srcset="https://github-readme-stats.vercel.app/api/pin/?username=KotatsuApp&repo=Kotatsu-parsers&bg_color=0d1117&text_color=1976d2&title_color=1976d2&icon_color=0877d2&border_radius=10&description_lines_count=2&show_owner=true" media="(prefers-color-scheme: dark)">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=KotatsuApp&repo=Kotatsu-parsers&text_color=1976d2&title_color=1976d2&icon_color=0877d2&border_radius=10&description_lines_count=2&show_owner=true" alt="Kotatsu-parsers GitHub Repository">
+    <source srcset="https://github-readme-stats.vercel.app/api/pin/?username=vtorres-t&repo=Kotatsu-parsers&bg_color=0d1117&text_color=1976d2&title_color=1976d2&icon_color=0877d2&border_radius=10&description_lines_count=2&show_owner=true" media="(prefers-color-scheme: dark)">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=vtorres-t&repo=Kotatsu-parsers&text_color=1976d2&title_color=1976d2&icon_color=0877d2&border_radius=10&description_lines_count=2&show_owner=true" alt="Kotatsu-parsers GitHub Repository">
   </picture>
-</a><br></br>
+</a><br>
 
-</br>
+<br>
 
 
 ### License

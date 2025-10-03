@@ -49,10 +49,6 @@ android {
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 			signingConfig signingConfigs.debug
 		}
-		nightly {
-			initWith release
-			applicationIdSuffix = '.nightly'
-		}
 	}
 	buildFeatures {
 		viewBinding true
@@ -77,22 +73,24 @@ android {
 		sourceCompatibility JavaVersion.VERSION_11
 		targetCompatibility JavaVersion.VERSION_11
 	}
-	kotlinOptions {
-		jvmTarget = JavaVersion.VERSION_11.toString()
-		freeCompilerArgs += [
-			'-opt-in=kotlin.ExperimentalStdlibApi',
-			'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
-			'-opt-in=kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi',
-			'-opt-in=kotlinx.coroutines.InternalForInheritanceCoroutinesApi',
-			'-opt-in=kotlinx.coroutines.FlowPreview',
-			'-opt-in=kotlin.contracts.ExperimentalContracts',
-			'-opt-in=coil3.annotation.ExperimentalCoilApi',
-			'-opt-in=coil3.annotation.InternalCoilApi',
-			'-opt-in=kotlinx.serialization.ExperimentalSerializationApi',
-			'-Xjspecify-annotations=strict',
-			'-Xannotation-default-target=first-only',
-			'-Xtype-enhancement-improvements-strict-mode'
-		]
+	kotlin {
+		compileOptions {
+			jvmTarget = JavaVersion.VERSION_11.toString()
+			freeCompilerArgs += [
+				'-opt-in=kotlin.ExperimentalStdlibApi',
+				'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+				'-opt-in=kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi',
+				'-opt-in=kotlinx.coroutines.InternalForInheritanceCoroutinesApi',
+				'-opt-in=kotlinx.coroutines.FlowPreview',
+				'-opt-in=kotlin.contracts.ExperimentalContracts',
+				'-opt-in=coil3.annotation.ExperimentalCoilApi',
+				'-opt-in=coil3.annotation.InternalCoilApi',
+				'-opt-in=kotlinx.serialization.ExperimentalSerializationApi',
+				'-Xjspecify-annotations=strict',
+				'-Xannotation-default-target=first-only',
+				'-Xtype-enhancement-improvements-strict-mode'
+			]
+		}
 	}
 	room {
 		schemaDirectory "$projectDir/schemas"
@@ -104,16 +102,9 @@ android {
 	testOptions {
 		unitTests.includeAndroidResources true
 		unitTests.returnDefaultValues false
-		kotlinOptions {
-			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
-		}
-	}
-	applicationVariants.configureEach { variant ->
-		if (variant.name == 'nightly') {
-			variant.outputs.each { output ->
-				def now = LocalDateTime.now()
-				output.versionCodeOverride = now.format("yyMMdd").toInteger()
-				output.versionNameOverride = 'N' + now.format("yyyyMMdd")
+		kotlin {
+			compileOptions {
+				freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
 			}
 		}
 	}
@@ -130,8 +121,6 @@ android {
 dependencies {
 	def parsersVersion = libs.versions.parsers.get()
 	if (System.properties.containsKey('parsersVersionOverride')) {
-		// usage:
-		// -DparsersVersionOverride=$(curl -s https://api.github.com/repos/vtorres-t/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
 		parsersVersion = System.getProperty('parsersVersionOverride')
 	}
 	//noinspection UseTomlInstead
@@ -198,7 +187,6 @@ dependencies {
 	implementation libs.conscrypt.android
 
 	debugImplementation libs.leakcanary.android
-	nightlyImplementation libs.leakcanary.android
 	debugImplementation libs.workinspector
 
 	testImplementation libs.junit
