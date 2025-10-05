@@ -61,7 +61,7 @@ class SourcesCatalogViewModel @Inject constructor(
 		appliedFilter,
 		db.invalidationTrackerFlow(TABLE_SOURCES),
 	) { q, f, _ ->
-		buildSourcesList(f, q)
+		buildSourcesList(f, q, settings.isBrokenSourcesDisabled)
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
 	init {
@@ -102,11 +102,11 @@ class SourcesCatalogViewModel @Inject constructor(
 		appliedFilter.value = appliedFilter.value.copy(isNewOnly = value)
 	}
 
-	private suspend fun buildSourcesList(filter: SourcesCatalogFilter, query: String?): List<SourceCatalogItem> {
+	private suspend fun buildSourcesList(filter: SourcesCatalogFilter, query: String?, isBrokenSourcesDisabled: Boolean): List<SourceCatalogItem> {
 		val sources = repository.queryParserSources(
 			isDisabledOnly = true,
 			isNewOnly = filter.isNewOnly,
-			excludeBroken = false,
+			excludeBroken = isBrokenSourcesDisabled,
 			types = filter.types,
 			query = query,
 			locale = filter.locale,

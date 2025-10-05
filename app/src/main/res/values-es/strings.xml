@@ -443,6 +443,7 @@
     <string name="suggestions_wifi_only_summary">No actualices las sugerencias utilizando conexiones de red medidas</string>
     <string name="unknown">Desconocido</string>
     <string name="in_progress">En proceso</string>
+	<string name="disable_broken_sources">Desactivar fuentes rotas</string>
     <string name="disable_nsfw">Desactivar NSFW</string>
     <string name="too_many_requests_message">Demasiadas solicitudes. Vuelve a intentarlo más tarde</string>
     <string name="related_manga_summary">Muestra una lista de mangas relacionados. En algunos casos puede ser inexacta o faltar</string>

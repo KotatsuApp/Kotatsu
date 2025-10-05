@@ -464,6 +464,7 @@
 	<string name="languages">Languages</string>
 	<string name="unknown">Unknown</string>
 	<string name="in_progress">In progress</string>
+	<string name="disable_broken_sources">Disable broken sources</string>
 	<string name="disable_nsfw">Disable NSFW</string>
 	<string name="too_many_requests_message">Too many requests. Try again later</string>
 	<string name="too_many_requests_message_retry">Too many requests. Try again after %s</string>

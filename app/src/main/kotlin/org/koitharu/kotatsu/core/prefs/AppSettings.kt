@@ -123,6 +123,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_DISABLE_NSFW, false)
 		set(value) = prefs.edit { putBoolean(KEY_DISABLE_NSFW, value) }
 
+	var isBrokenSourcesDisabled: Boolean
+		get() = prefs.getBoolean(KEY_DISABLE_BROKEN, true)
+		set(value) = prefs.edit { putBoolean(KEY_DISABLE_BROKEN, value) }
+
 	var appLocales: LocaleListCompat
 		get() {
 			val raw = prefs.getString(KEY_APP_LOCALE, null)
@@ -763,6 +767,7 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_IMAGES_PROXY = "images_proxy_2"
 		const val KEY_LOCAL_MANGA_DIRS = "local_manga_dirs"
 		const val KEY_DISABLE_NSFW = "no_nsfw"
+		const val KEY_DISABLE_BROKEN = "no_broken_sources"
 		const val KEY_RELATED_MANGA = "related_manga"
 		const val KEY_NAV_MAIN = "nav_main"
 		const val KEY_NAV_LABELS = "nav_labels"
