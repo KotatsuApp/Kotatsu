@@ -61,10 +61,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 			?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
 	val colorScheme: ColorScheme
-		get() = prefs.getEnumValue(KEY_COLOR_THEME, ColorScheme.default)
+		get() = prefs.getEnumValue(KEY_COLOR_THEME, ColorScheme.EXPRESSIVE)
 
 	val isAmoledTheme: Boolean
-		get() = prefs.getBoolean(KEY_THEME_AMOLED, false)
+		get() = prefs.getBoolean(KEY_THEME_AMOLED, true)
 
 	var mainNavItems: List<NavItem>
 		get() {
