@@ -37,6 +37,13 @@ android {
 		}
 		resValue 'string', 'tg_backup_bot_token', localProperties.getProperty('tg_backup_bot_token', '')
 	}
+
+	signingConfigs {
+		release {
+			storeFile file("key")
+		}
+
+	}
 	buildTypes {
 		debug {
 			applicationIdSuffix = '.debug'
