@@ -46,7 +46,7 @@ testRunner = "1.7.0"
 transition = "1.6.0"
 viewpager2 = "1.1.0"
 webkit = "1.14.0"
-workRuntime = "2.10.5"
+workRuntime = "2.10.4"
 workinspector = "1.2"
 
 [libraries]

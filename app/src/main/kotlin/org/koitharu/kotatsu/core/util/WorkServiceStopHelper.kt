@@ -40,7 +40,8 @@ class WorkServiceStopHelper(
 
 	@SuppressLint("RestrictedApi")
 	private fun stopWorkerService() {
-		SystemForegroundService.getInstance()?.stop()
+		SystemForegroundService.getInstance()
+			?.stop()
 	}
 }
 
