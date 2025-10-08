@@ -853,4 +853,10 @@
     <string name="manga_restricted_description">Ang manga na ito ay hindi magagamit na basahin sa source na ito. Subukang hanapin ito sa ibang mga source o buksan ito sa isang browser para sa higit pang impormasyon</string>
     <string name="no_chapters_in_manga">Ang manga na ito ay walang anumang mga kabanata</string>
     <string name="chapters_load_failed">Nabigong i-load ang listahan ng kabanata</string>
+    <string name="pull_to_prev_chapter">Bitawan upang mabuksan ang nakaraang kabanata</string>
+    <string name="pull_to_next_chapter">Bitawan upang mabuksan ang susunod na kabanata</string>
+    <string name="pull_top_no_prev">Walang nakaraang kabanata</string>
+    <string name="pull_bottom_no_next">Walang susunod na kabanata</string>
+    <string name="enable_pull_gesture_title">Paganahin ang paghila na gesture</string>
+    <string name="enable_pull_gesture_summary">Gamitin ang paghila na gesture para makapagpalit ng kabanata sa webtoon</string>
 </resources>
