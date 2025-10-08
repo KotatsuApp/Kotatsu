@@ -4,7 +4,7 @@
         <item quantity="other">”%1$d butir</item>
     </plurals>
     <plurals name="new_chapters">
-        <item quantity="other">%1$d Jilid Baru</item>
+        <item quantity="other">%1$d Sub-bab Baru</item>
     </plurals>
     <plurals name="chapters">
         <item quantity="other">%1$d Jilid</item>
