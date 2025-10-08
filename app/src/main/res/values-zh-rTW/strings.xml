@@ -316,7 +316,7 @@
     <string name="download_option_all_unread_b">所有未讀章節 (%s)</string>
     <string name="downloads">下載</string>
     <string name="save_page">儲存頁面</string>
-    <string name="page_saved">已儲存</string>
+    <string name="page_saved">頁面已儲存</string>
     <string name="read_mode">閱讀模式</string>
     <string name="grid_size">網格大小</string>
     <string name="reader_settings">閱讀設定</string>
@@ -654,4 +654,11 @@
     <string name="tracker_debug_info_summary">有關背景檢查新章節的偵錯資訊</string>
     <string name="sources_disabled">來源已停用</string>
     <string name="disable">停用</string>
+    <string name="pages_saved">圖片已儲存</string>
+    <string name="scrobbler_auth_required">登入%s以繼續</string>
+    <string name="unstable_feature">不穩定的功能</string>
+    <string name="downloads_background">背景下載</string>
+    <string name="download_new_chapters">下載新的漫畫章節</string>
+    <string name="enable_all_sources">啟用所有漫畫來源</string>
+    <string name="all_sources_enabled">所有漫畫來源已啟用</string>
 </resources>
