@@ -1,8 +1,6 @@
 <div align="center">
 
-<a href="https://kotatsu.app">
-    <img src="./.github/assets/vtuber.png" alt="Kotatsu Logo" title="Kotatsu" width="600"/>
-</a>
+<img src="./.github/assets/vtuber.png" alt="Kotatsu Logo" title="Kotatsu" width="600"/>
 
 # [Kotatsu](https://kotatsu.app)
 

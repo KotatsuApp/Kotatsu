@@ -58,7 +58,7 @@ jobs:
                 versionName: v${{ env.VERSION }}.${{ github.run_number }}
 
             - name: Build release APK
-              run: ./gradlew assembleRelease -PSIGNING_KEY_ALIAS=$SIGNING_KEY_ALIAS -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD -PKEYSTORE_FILE=./key -PSIGNING_KEY_PASSWORD=$SIGNING_KEY_PASSWORD
+              run: ./gradlew assembleRelease -PSIGNING_KEY_ALIAS=$SIGNING_KEY_ALIAS -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD -PKEYSTORE_FILE=./app/key -PSIGNING_KEY_PASSWORD=$SIGNING_KEY_PASSWORD
             
             - name: Get release file apk path
               id: releaseApkArm64v8

@@ -2,7 +2,6 @@
 <resources>
 	<string name="url_github" translatable="false">https://github.com/vtorres-t/Kotatsu</string>
 	<string name="url_user_manual" translatable="false">https://kotatsu.app/manuals/guides/getting-started/</string>
-	<string name="url_error_report" translatable="false">https://bugs.kotatsu.app/report</string>
 	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
 	<string name="github_updates_repo" translatable="false">vtorres-t/Kotatsu</string>
 	<string name="shikimori_clientId" translatable="false">Mw6F0tPEOgyV7F9U9Twg50Q8SndMY7hzIOfXg0AX_XU</string>
