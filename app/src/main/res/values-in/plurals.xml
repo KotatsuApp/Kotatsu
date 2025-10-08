@@ -7,7 +7,7 @@
         <item quantity="other">%1$d Sub-bab Baru</item>
     </plurals>
     <plurals name="chapters">
-        <item quantity="other">%1$d Jilid</item>
+        <item quantity="other">%1$d bab</item>
     </plurals>
     <plurals name="minutes_ago">
         <item quantity="other">%1$d menit yang lalu</item>
