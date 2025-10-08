@@ -326,7 +326,7 @@
     <string name="manga_error_description_pattern">Детаљи о грешци:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Покушај да &lt;a href=%2$s&gt;отвориш мангу у веб прегледачу&lt;/a&gt; да би био сигуран да је доступна на извору&lt;br&gt;2. Увери се да користите &lt;a href=kotatsu://about&gt;latest version of Kotatsu&gt;најновију верзију Котатсу-а&lt;/a&gt;&lt;br&gt;3. Ако је доступно, пошаљи извештај о грешци програмерима.</string>
     <string name="state_abandoned">Напуштен</string>
     <string name="zoom_mode_fit_height">Уклопи по висини</string>
-    <string name="not_available">Недоступно</string>
+    <string name="not_available">Није доступно</string>
     <string name="history_shortcuts_summary">Учини недавну мангу доступном дугим притиском на икону апликације</string>
     <string name="automatic_scroll">Самостално померање</string>
     <string name="download_option_first_n_chapters">Првих %s</string>
@@ -837,4 +837,33 @@
     <string name="local_storage_cleanup">Чишћење локалне меморије</string>
     <string name="packup_creation_failed">Није успело креирање резервне копије</string>
     <string name="reader_navigation_inverted">Обрни контроле навигације</string>
+    <string name="pull_to_prev_chapter">Отпусти да би отворио претходно поглавље</string>
+    <string name="pull_to_next_chapter">Отпусти да би отворио следеће поглавље</string>
+    <string name="pull_top_no_prev">Нема претходног поглавља</string>
+    <string name="pull_bottom_no_next">Нема следећег поглавља</string>
+    <string name="enable_pull_gesture_title">Омогући покрет повлачења</string>
+    <string name="enable_pull_gesture_summary">Користи покрет повлачења да би пребацивао поглавља у webtoon-у</string>
+    <string name="main_screen">Главни екран</string>
+    <string name="main_screen_fab">Прикажи плутајуће дугме Настави</string>
+    <string name="main_screen_fab_summary">Омогућава наставак читања једним додиром. Ово дугме се неће појавити у режиму „Без чувања“ или када је историја празна</string>
+    <string name="error_corrupted_zip">Оштећена ZIP архива (%s)</string>
+    <string name="discord_rpc">Присуство богато Discord-ом</string>
+    <string name="discord_token">Discord Токен</string>
+    <string name="discord_token_summary">Унеси свој Discord Токен да би омогућио Rich Presence</string>
+    <string name="discord_token_description">Унеси свој Discord Токен или додирни на %s да би га добио помоћу прегледача</string>
+    <string name="discord_token_hint">Налепи свој Discord Токен овде</string>
+    <string name="discord_rpc_summary">Прикажи свој статус читања на Дискорду</string>
+    <string name="obtain">Добиј</string>
+    <string name="discord_rpc_description">Читање манге на Котатсу - апликацији за читање манги</string>
+    <string name="reading_s">Читам %s</string>
+    <string name="read_on_s">Читај на %s</string>
+    <string name="rpc_skip_nsfw_summary">Не користи RPC за садржај за одрасле</string>
+    <string name="invalid_token">Неважећи токен: %s</string>
+    <string name="show_floating_control_button">Прикажи плутајуће дугме за контролу</string>
+    <string name="unavailable">Недоступно</string>
+    <string name="manga_restricted_description">Ова манга није доступна за читање у овом извору. Покушај да је потражиш у другим изворима или је отвори у прегледачу за више информација</string>
+    <string name="no_chapters_in_manga">Ова манга не садржи ниједно поглавље</string>
+    <string name="chapters_load_failed">Учитавање листе поглавља није успело</string>
+    <string name="telegram_integration">Интеграција Телеграма</string>
+    <string name="test_parser">Извор тест манге</string>
 </resources>
