@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="items">
+        <item quantity="one">%1$d అంశం</item>
+        <item quantity="other">%1$d అంశాలు</item>
+    </plurals>
+    <plurals name="new_chapters">
+        <item quantity="one">%1$d కొత్త అధ్యాయం</item>
+        <item quantity="other">%1$d కొత్త అధ్యాయాలు</item>
+    </plurals>
+    <plurals name="chapters">
+        <item quantity="one">%1$d అధ్యాయం</item>
+        <item quantity="other">%1$d అధ్యాయాలు</item>
+    </plurals>
+    <plurals name="minutes_ago">
+        <item quantity="one">%1$d నిమిషం క్రితం</item>
+        <item quantity="other">%1$d నిమిషాల క్రితం</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="one">%1$d గంట క్రితం</item>
+        <item quantity="other">%1$d గంటల క్రితం</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">%1$d రోజు క్రితం</item>
+        <item quantity="other">%1$d రోజుల క్రితం</item>
+    </plurals>
+    <plurals name="months_ago">
+        <item quantity="one">%1$d నెల క్రితం</item>
+        <item quantity="other">%1$d నెలల క్రితం</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">%1$d గంట</item>
+        <item quantity="other">%1$d గంటలు</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%1$d నిమిషం</item>
+        <item quantity="other">%1$d నిమిషాలు</item>
+    </plurals>
+</resources>
