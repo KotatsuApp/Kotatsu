@@ -61,7 +61,9 @@ class LocalMangaParser(private val uri: Uri) {
 			val index = MangaIndex.read(fileSystem, rootPath / ENTRY_NAME_INDEX)
 			val mangaInfo = index?.getMangaInfo()
 			if (mangaInfo != null) {
-				val coverEntry: Path? = index.getCoverEntry()?.let { rootPath / it }
+				val coverEntry: Path? = index.getCoverEntry()?.let { rootPath / it }?.takeIf {
+					fileSystem.exists(it)
+				}
 				mangaInfo.copy(
 					source = LocalMangaSource,
 					url = rootFile.toUri().toString(),
