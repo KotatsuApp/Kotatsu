@@ -225,6 +225,9 @@
 			android:name="org.koitharu.kotatsu.reader.ui.colorfilter.ColorFilterConfigActivity"
 			android:label="@string/color_correction" />
 		<activity
+			android:name="org.koitharu.kotatsu.reader.ui.TranslationSettingsActivity"
+			android:label="@string/translation_settings" />
+		<activity
 			android:name="org.koitharu.kotatsu.scrobbling.common.ui.config.ScrobblerConfigActivity"
 			android:exported="true"
 			android:label="@string/settings"

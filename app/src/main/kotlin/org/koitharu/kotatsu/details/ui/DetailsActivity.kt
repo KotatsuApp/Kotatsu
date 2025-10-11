@@ -552,17 +552,21 @@ class DetailsActivity :
 
 	private class PrefetchObserver(
 		private val context: Context,
-	) : FlowCollector<List<ChapterListItem>?> {
+	) : FlowCollector<List<ListModel>?> {
 
 		private var isCalled = false
 
-		override suspend fun emit(value: List<ChapterListItem>?) {
+		override suspend fun emit(value: List<ListModel>?) {
 			if (value.isNullOrEmpty()) {
+				return
+			}
+			val chapterItems = value.filterIsInstance<ChapterListItem>()
+			if (chapterItems.isEmpty()) {
 				return
 			}
 			if (!isCalled) {
 				isCalled = true
-				val item = value.find { it.isCurrent } ?: value.first()
+				val item = chapterItems.find { it.isCurrent } ?: chapterItems.first()
 				MangaPrefetchService.prefetchPages(context, item.chapter)
 			}
 		}

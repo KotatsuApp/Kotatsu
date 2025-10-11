@@ -184,6 +184,13 @@
 				app:drawableStartCompat="@drawable/ic_appearance" />
 
 			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
+				android:id="@+id/button_translation_settings"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/translation_settings"
+				app:drawableStartCompat="@drawable/ic_language" />
+
+			<org.koitharu.kotatsu.core.ui.widgets.ListItemTextView
 				android:id="@+id/button_settings"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

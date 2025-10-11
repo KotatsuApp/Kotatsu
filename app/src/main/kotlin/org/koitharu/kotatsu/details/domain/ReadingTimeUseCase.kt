@@ -19,13 +19,17 @@ class ReadingTimeUseCase @Inject constructor(
 		if (!settings.isReadingTimeEstimationEnabled) {
 			return null
 		}
+		
 		val chapters = manga?.chapters?.get(branch)
-		if (chapters.isNullOrEmpty()) {
+		
+		val chapterCount = chapters.sizeOrZero()
+		if (chapterCount == 0) {
 			return null
 		}
-		val isOnHistoryBranch = history != null && chapters.findById(history.chapterId) != null
+		
+		val isOnHistoryBranch = history != null && chapters?.findById(history.chapterId) != null
 		// Impossible task, I guess. Good luck on this.
-		var averageTimeSec: Int = 20 /* pages */ * getSecondsPerPage(manga.id) * chapters.size
+		var averageTimeSec: Int = 20 /* pages */ * getSecondsPerPage(manga?.id ?: 0L) * chapterCount
 		if (isOnHistoryBranch) {
 			averageTimeSec = (averageTimeSec * (1f - checkNotNull(history).percent)).roundToInt()
 		}

@@ -52,6 +52,10 @@ class DetailsMenuProvider(
 		menu.findItem(R.id.action_scrobbling).isVisible = viewModel.isScrobblingAvailable
 		menu.findItem(R.id.action_online).isVisible = viewModel.remoteManga.value != null
 		menu.findItem(R.id.action_stats).isVisible = viewModel.isStatsAvailable.value
+		menu.findItem(R.id.action_translation_settings).isVisible = manga?.let { 
+			val chapters = it.chapters
+			!chapters.isNullOrEmpty() && chapters.mapNotNullToSet { ch -> ch.branch }.size > 1
+		} == true
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -110,6 +114,10 @@ class DetailsMenuProvider(
 			R.id.action_edit_override -> {
 				val intent = AppRouter.overrideEditIntent(activity, manga)
 				activityForResultLauncher.launch(intent)
+			}
+
+			R.id.action_translation_settings -> {
+				router.openTranslationSettings(manga)
 			}
 
 			else -> return false

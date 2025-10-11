@@ -30,6 +30,8 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.bookmarks.domain.Bookmark
 import org.koitharu.kotatsu.bookmarks.domain.BookmarksRepository
 import org.koitharu.kotatsu.core.model.getPreferredBranch
+import org.koitharu.kotatsu.reader.domain.TranslationFallbackManager
+import org.koitharu.kotatsu.reader.domain.AutoTranslationConfigManager
 import org.koitharu.kotatsu.core.nav.MangaIntent
 import org.koitharu.kotatsu.core.nav.ReaderIntent
 import org.koitharu.kotatsu.core.os.AppShortcutManager
@@ -56,11 +58,13 @@ import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.parsers.util.sizeOrZero
 import org.koitharu.kotatsu.reader.domain.ChaptersLoader
+import org.koitharu.kotatsu.reader.domain.ChapterNavigationEvent
 import org.koitharu.kotatsu.reader.domain.DetectReaderModeUseCase
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.config.ReaderSettings
@@ -79,7 +83,7 @@ class ReaderViewModel @Inject constructor(
 	private val dataRepository: MangaDataRepository,
 	private val historyRepository: HistoryRepository,
 	private val bookmarksRepository: BookmarksRepository,
-	settings: AppSettings,
+	private val readerSettings: AppSettings,
 	private val pageLoader: PageLoader,
 	private val chaptersLoader: ChaptersLoader,
 	private val appShortcutManager: AppShortcutManager,
@@ -88,13 +92,15 @@ class ReaderViewModel @Inject constructor(
 	private val detectReaderModeUseCase: DetectReaderModeUseCase,
 	private val statsCollector: StatsCollector,
 	private val discordRpc: DiscordRpc,
+	private val translationFallbackManager: TranslationFallbackManager,
+	private val autoTranslationConfigManager: AutoTranslationConfigManager,
 	@LocalStorageChanges localStorageChanges: SharedFlow<LocalManga?>,
 	interactor: DetailsInteractor,
 	deleteLocalMangaUseCase: DeleteLocalMangaUseCase,
 	downloadScheduler: DownloadWorker.Scheduler,
 	readerSettingsProducerFactory: ReaderSettings.Producer.Factory,
 ) : ChaptersPagesViewModel(
-	settings = settings,
+	settings = readerSettings,
 	interactor = interactor,
 	bookmarksRepository = bookmarksRepository,
 	historyRepository = historyRepository,
@@ -108,6 +114,10 @@ class ReaderViewModel @Inject constructor(
 	private var pageSaveJob: Job? = null
 	private var bookmarkJob: Job? = null
 	private var stateChangeJob: Job? = null
+	
+	// Track chapter transition state for toast timing
+	private var lastReadChapterId: Long? = null
+	private var lastReadBranch: String? = null
 
 	init {
 		mangaDetails.value = intent.manga?.let { MangaDetails(it) }
@@ -118,6 +128,7 @@ class ReaderViewModel @Inject constructor(
 	val onLoadingError = MutableEventFlow<Throwable>()
 	val onShowToast = MutableEventFlow<Int>()
 	val onAskNsfwIncognito = MutableEventFlow<Unit>()
+	val onTranslationSwitched = MutableEventFlow<String>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
 	val isIncognitoMode = MutableStateFlow(savedStateHandle.get<Boolean>(ReaderIntent.EXTRA_INCOGNITO))
@@ -206,6 +217,8 @@ class ReaderViewModel @Inject constructor(
 				appShortcutManager.notifyMangaOpened(mangaId)
 			}
 		}
+		// Set up navigation event callback for immediate branch synchronization
+		chaptersLoader.setNavigationEventCallback(::handleChapterNavigationEvent)
 	}
 
 	fun reload() {
@@ -295,6 +308,14 @@ class ReaderViewModel @Inject constructor(
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			content.value = ReaderContent(emptyList(), null)
+			
+			// Check if we need to reload manga details to get the target chapter
+			if (chaptersLoader.peekChapter(id) == null) {
+				// Chapter not in cache, reload details to ensure we have all branches
+				val details = detailsLoadUseCase(intent, force = false).first()
+				chaptersLoader.init(details)
+			}
+			
 			chaptersLoader.loadSingleChapter(id)
 			val newState = ReaderState(id, page, 0)
 			content.value = ReaderContent(chaptersLoader.snapshot(), newState)
@@ -302,31 +323,50 @@ class ReaderViewModel @Inject constructor(
 		}
 	}
 
+
 	fun switchChapterBy(delta: Int) {
 		val prevJob = loadingJob
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.cancelAndJoin()
 			val prevState = readingState.requireValue()
-			val newChapterId = if (delta != 0) {
-				val allChapters = mangaDetails.requireValue().allChapters
-				var index = allChapters.indexOfFirst { x -> x.id == prevState.chapterId }
-				if (index < 0) {
-					return@launchLoadingJob
-				}
-				index += delta
-				(allChapters.getOrNull(index) ?: return@launchLoadingJob).id
+			
+			if (delta == 0) {
+				// No change, just reload current chapter
+				content.value = ReaderContent(emptyList(), null)
+				chaptersLoader.loadSingleChapter(prevState.chapterId)
+				val newState = ReaderState(
+					chapterId = prevState.chapterId,
+					page = prevState.page,
+					scroll = prevState.scroll,
+				)
+				content.value = ReaderContent(chaptersLoader.snapshot(), newState)
+				saveCurrentState(newState)
 			} else {
-				prevState.chapterId
+				// Use fallback-aware chapter navigation for next/previous buttons
+				// This ensures consistent behavior with automatic navigation (swiping)
+				val mangaDetailsValue = mangaDetails.requireValue()
+				val isNext = delta > 0
+				
+				content.value = ReaderContent(emptyList(), null)
+				chaptersLoader.loadPrevNextChapter(mangaDetailsValue, prevState.chapterId, isNext)
+				
+				// The chapter loaded by loadPrevNextChapter might be different due to fallback
+				// Find the actual loaded chapter to update our state
+				val snapshot = chaptersLoader.snapshot()
+				val newChapterId = if (isNext) {
+					snapshot.lastOrNull()?.chapterId ?: prevState.chapterId
+				} else {
+					snapshot.firstOrNull()?.chapterId ?: prevState.chapterId
+				}
+				
+				val newState = ReaderState(
+					chapterId = newChapterId,
+					page = 0,
+					scroll = 0,
+				)
+				content.value = ReaderContent(snapshot, newState)
+				saveCurrentState(newState)
 			}
-			content.value = ReaderContent(emptyList(), null)
-			chaptersLoader.loadSingleChapter(newChapterId)
-			val newState = ReaderState(
-				chapterId = newChapterId,
-				page = if (delta == 0) prevState.page else 0,
-				scroll = if (delta == 0) prevState.scroll else 0,
-			)
-			content.value = ReaderContent(chaptersLoader.snapshot(), newState)
-			saveCurrentState(newState)
 		}
 	}
 
@@ -408,11 +448,18 @@ class ReaderViewModel @Inject constructor(
 			try {
 				detailsLoadUseCase(intent, force = false)
 					.collect { details ->
-						if (mangaDetails.value == null) {
-							mangaDetails.value = details
-						}
+						mangaDetails.value = details
 						chaptersLoader.init(details)
+						
+						// Note: Navigation event callback is set up in init() for consistent handling
+						// We don't show toasts here as this would trigger during preloading
+						
 						val manga = details.toManga()
+						
+						// Auto-configure translation preferences based on global settings
+						// Only applies if settings have changed since last application
+						autoTranslationConfigManager.autoConfigureIfNeeded(manga)
+						
 						// obtain state
 						if (readingState.value == null) {
 							val newState = getStateFromIntent(manga)
@@ -434,7 +481,7 @@ class ReaderViewModel @Inject constructor(
 								return@collect
 							}
 						}
-						mangaDetails.value = details.filterChapters(selectedBranch.value)
+						mangaDetails.value = details
 
 						// save state
 						if (!isIncognitoMode.firstNotNull()) {
@@ -467,8 +514,26 @@ class ReaderViewModel @Inject constructor(
 		val prevJob = loadingJob
 		loadingJob = launchLoadingJob(Dispatchers.Default) {
 			prevJob?.join()
+			val currentChapter = chaptersLoader.peekChapter(currentId)
+			val beforeSnapshot = chaptersLoader.snapshot()
+			
 			chaptersLoader.loadPrevNextChapter(mangaDetails.requireValue(), currentId, isNext)
-			content.value = ReaderContent(chaptersLoader.snapshot(), null)
+			val afterSnapshot = chaptersLoader.snapshot()
+			
+			// Prevent looping: check if we navigated to a chapter with significantly different number
+			if (isNext && currentChapter != null && beforeSnapshot.isNotEmpty() && afterSnapshot.isNotEmpty()) {
+				val currentChapterNumber = currentChapter.number
+				val newChapter = if (isNext) afterSnapshot.lastOrNull() else afterSnapshot.firstOrNull()
+				val newChapterNumber = newChapter?.let { chaptersLoader.peekChapter(it.chapterId)?.number }
+				
+				// If navigating forward but the new chapter number is much lower, it's likely a loop
+				if (newChapterNumber != null && currentChapterNumber > 1.0f && newChapterNumber < currentChapterNumber - 5.0f) {
+					// Don't update content to prevent looping back to earlier chapters
+					return@launchLoadingJob
+				}
+			}
+			
+			content.value = ReaderContent(afterSnapshot, null)
 		}
 	}
 
@@ -487,16 +552,71 @@ class ReaderViewModel @Inject constructor(
 		val state = getCurrentState() ?: return
 		val chapter = chaptersLoader.peekChapter(state.chapterId) ?: return
 		val m = mangaDetails.value ?: return
-		val chapterIndex = m.chapters[chapter.branch]?.indexOfFirst { it.id == chapter.id } ?: -1
+		
+		// Simple and reliable chapter counting using ChaptersLoader data
+		val currentBranch = chapter.branch
+		val (chapterIndex, chaptersTotal) = chaptersLoader.getChapterIndexInBranch(chapter.id) ?: (0 to 0)
+		
+		// Check if user has actually transitioned to a different chapter and show notifications
+		val chapterChanged = lastReadChapterId != null && lastReadChapterId != chapter.id
+		if (chapterChanged) {
+			val previousChapter = lastReadChapterId?.let { chaptersLoader.peekChapter(it) }
+			var gapMessage: String? = null
+			var switchMessage: String? = null
+			
+			// Check for chapter number gaps
+			if (previousChapter != null) {
+				val hasGap = hasSignificantGap(previousChapter.number, chapter.number)
+				if (hasGap) {
+					gapMessage = createGapMessage(previousChapter.number, chapter.number)
+				}
+			}
+			
+			// Check for branch changes
+			if (lastReadBranch != null && lastReadBranch != currentBranch) {
+				switchMessage = if (currentBranch != null) {
+					"Switched to \"$currentBranch\""
+				} else {
+					"Switched to different translation"
+				}
+			}
+			
+			// Show combined or individual messages
+			val notificationMessage = when {
+				gapMessage != null && switchMessage != null -> "$switchMessage • $gapMessage"
+				gapMessage != null -> gapMessage
+				switchMessage != null -> "$switchMessage|SHOW_SETTINGS_LINK"  // Special marker for UI
+				else -> null
+			}
+			
+			if (notificationMessage != null) {
+				onTranslationSwitched.call(notificationMessage)
+			}
+		}
+		
+		// Update tracking variables for next transition
+		lastReadChapterId = chapter.id
+		lastReadBranch = currentBranch
+		
+		// Sync selected branch if fallback occurred
+		if (selectedBranch.value != currentBranch) {
+			selectedBranch.value = currentBranch
+			// Immediately save the current state to persist the branch change
+			// This ensures the history reflects the new branch for getPreferredBranch()
+			saveCurrentState(state)
+		}
+		
 		val newState = ReaderUiState(
 			mangaName = m.toManga().title,
 			chapter = chapter,
 			chapterIndex = chapterIndex,
-			chaptersTotal = m.chapters[chapter.branch].sizeOrZero(),
+			chaptersTotal = chaptersTotal,
 			totalPages = chaptersLoader.getPagesCount(chapter.id),
 			currentPage = state.page,
 			percent = computePercent(state.chapterId, state.page),
 			incognito = isIncognitoMode.value == true,
+			hasFallbackNext = hasFallbackAwareNextChapter(state.chapterId),
+			hasFallbackPrevious = hasFallbackAwarePreviousChapter(state.chapterId),
 		)
 		uiState.value = newState
 		if (isIncognitoMode.value == false) {
@@ -506,18 +626,19 @@ class ReaderViewModel @Inject constructor(
 	}
 
 	private fun computePercent(chapterId: Long, pageIndex: Int): Float {
-		val branch = chaptersLoader.peekChapter(chapterId)?.branch
-		val chapters = mangaDetails.value?.chapters?.get(branch) ?: return PROGRESS_NONE
-		val chaptersCount = chapters.size
-		val chapterIndex = chapters.indexOfFirst { x -> x.id == chapterId }
+		// Simple and reliable progress calculation using ChaptersLoader data
+		val (chapterIndex, chaptersCount) = chaptersLoader.getChapterIndexInBranch(chapterId) ?: return PROGRESS_NONE
 		val pagesCount = chaptersLoader.getPagesCount(chapterId)
+		
 		if (chaptersCount == 0 || pagesCount == 0) {
 			return PROGRESS_NONE
 		}
+		
 		val pagePercent = (pageIndex + 1) / pagesCount.toFloat()
 		val ppc = 1f / chaptersCount
 		return ppc * chapterIndex + ppc * pagePercent
 	}
+
 
 	private fun observeIsWebtoonZoomEnabled() = settings.observeAsFlow(
 		key = AppSettings.KEY_WEBTOON_ZOOM,
@@ -589,6 +710,94 @@ class ReaderViewModel @Inject constructor(
 		// start from beginning
 		val preferredBranch = requestedBranch ?: manga.getPreferredBranch(null)
 		return ReaderState(manga, preferredBranch)
+	}
+
+	/**
+	 * Handle navigation events from ChaptersLoader, particularly for immediate branch synchronization
+	 */
+	private fun handleChapterNavigationEvent(event: ChapterNavigationEvent) {
+		// If fallback occurred with a branch change, immediately update selected branch and save state
+		if (event.wasFallback && event.newBranch != null && event.newBranch != selectedBranch.value) {
+			selectedBranch.value = event.newBranch
+			// Immediately save current state to persist the branch change in history
+			saveCurrentState()
+		}
+		
+		// Let notifyStateChanged handle all notifications (gaps and branch switches)
+	}
+
+	/**
+	 * Determines if there's a significant gap between two chapter numbers.
+	 */
+	private fun hasSignificantGap(fromNumber: Float, toNumber: Float): Boolean {
+		val difference = kotlin.math.abs(toNumber - fromNumber)
+		
+		// If the difference is less than 1.0, there's no gap (handles decimals like 40.5 -> 41.0)
+		if (difference < 1.0f) return false
+		
+		// If the difference is exactly 1.0 (or very close due to floating point), it's adjacent
+		if (kotlin.math.abs(difference - 1.0f) < 0.1f) return false
+		
+		// For larger differences, consider it a gap if we're skipping whole numbers
+		val wholeDifference = kotlin.math.floor(difference)
+		return wholeDifference >= 1.0
+	}
+
+	/**
+	 * Creates a user-friendly gap message for missing chapters
+	 */
+	private fun createGapMessage(fromNumber: Float, toNumber: Float): String {
+		// Ensure we're always calculating the range correctly regardless of direction
+		val lowerNumber = kotlin.math.min(fromNumber, toNumber)
+		val higherNumber = kotlin.math.max(fromNumber, toNumber)
+		
+		val startMissing = kotlin.math.ceil(lowerNumber.toDouble()).toInt() + 1
+		val endMissing = kotlin.math.floor(higherNumber.toDouble()).toInt() - 1
+		
+		// Only show gap message if there are actually missing chapters
+		return if (startMissing > endMissing) {
+			"No chapters skipped" // This shouldn't happen with proper gap detection
+		} else if (startMissing == endMissing) {
+			"Skipped chapter $startMissing"
+		} else {
+			"Skipped chapters ($startMissing to $endMissing)"
+		}
+	}
+
+	override fun onCleared() {
+		super.onCleared()
+		// Clean up callback to prevent memory leaks
+		chaptersLoader.clearNavigationEventCallback()
+	}
+
+	/**
+	 * Check if next chapter is available either in current branch or through fallback
+	 * Uses a lightweight approach by checking if there are higher-numbered chapters in any branch
+	 */
+	private fun hasFallbackAwareNextChapter(currentChapterId: Long): Boolean {
+		val manga = mangaDetails.value?.toManga() ?: return false
+		val currentChapter = chaptersLoader.peekChapter(currentChapterId) ?: return false
+		val currentNumber = currentChapter.number
+		
+		// Check if there are any chapters with higher numbers in any branch
+		return manga.chapters?.any { chapter ->
+			chapter.number > currentNumber
+		} ?: false
+	}
+	
+	/**
+	 * Check if previous chapter is available either in current branch or through fallback
+	 * Uses a lightweight approach by checking if there are lower-numbered chapters in any branch
+	 */
+	private fun hasFallbackAwarePreviousChapter(currentChapterId: Long): Boolean {
+		val manga = mangaDetails.value?.toManga() ?: return false
+		val currentChapter = chaptersLoader.peekChapter(currentChapterId) ?: return false
+		val currentNumber = currentChapter.number
+		
+		// Check if there are any chapters with lower numbers in any branch
+		return manga.chapters?.any { chapter ->
+			chapter.number < currentNumber
+		} ?: false
 	}
 
 	private fun Exception.mergeWith(other: Exception?): Exception = if (other == null) {

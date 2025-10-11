@@ -180,6 +180,16 @@ class ReaderActivity :
 				.setAnchorView(viewBinding.toolbarDocked)
 				.show()
 		}
+		viewModel.onTranslationSwitched.observeEvent(this) { message ->
+			viewBinding.translationIndicator?.showNavigationMessage(message)
+		}
+		// Set up translation settings link callback
+		viewBinding.translationIndicator?.onTranslationSettingsClick = {
+			val manga = viewModel.getMangaOrNull()
+			if (manga != null) {
+				router.openTranslationSettings(manga)
+			}
+		}
 		viewModel.readerSettingsProducer.observe(this) {
 			viewBinding.infoBar.applyColorScheme(isBlackOnWhite = it.background.isLight(this))
 		}

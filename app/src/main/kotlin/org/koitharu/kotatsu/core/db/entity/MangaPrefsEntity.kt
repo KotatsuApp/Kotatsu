@@ -30,4 +30,6 @@ data class MangaPrefsEntity(
 	@ColumnInfo(name = "title_override") val titleOverride: String?,
 	@ColumnInfo(name = "cover_override") val coverUrlOverride: String?,
 	@ColumnInfo(name = "content_rating_override") val contentRatingOverride: String?,
+	@ColumnInfo(name = "skip_decimal_chapters", defaultValue = "0") val skipDecimalChapters: Boolean = false,
+	@ColumnInfo(name = "last_applied_translation_languages") val lastAppliedTranslationLanguages: String? = null,
 )

@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.core.util.ext.putAll
 import org.koitharu.kotatsu.core.util.ext.putEnumValue
 import org.koitharu.kotatsu.core.util.ext.takeIfReadable
 import org.koitharu.kotatsu.core.util.ext.toUriOrNull
+import org.koitharu.kotatsu.core.util.LanguageDetectionUtils
 import org.koitharu.kotatsu.explore.data.SourcesSortOrder
 import org.koitharu.kotatsu.list.domain.ListSortOrder
 import org.koitharu.kotatsu.parsers.model.SortOrder
@@ -406,6 +407,39 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 
 	val isReaderKeepScreenOn: Boolean
 		get() = prefs.getBoolean(KEY_READER_SCREEN_ON, true)
+
+	val isTranslationFallbackEnabled: Boolean
+		get() = prefs.getBoolean(KEY_TRANSLATION_FALLBACK_ENABLED, true)
+
+	val isTranslationNotificationsEnabled: Boolean
+		get() = prefs.getBoolean(KEY_TRANSLATION_SHOW_NOTIFICATIONS, true)
+
+	var defaultTranslationLanguages: Set<String>
+		get() {
+			val stored = prefs.getStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, null)
+			return if (stored == null) {
+				// First time access - initialize with English + system languages
+				val defaultLanguages = LanguageDetectionUtils.getPreferredSystemLanguages().toMutableSet()
+				defaultLanguages.add("en") // Always include English
+				// Persist the default value immediately
+				prefs.edit { putStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, defaultLanguages) }
+				defaultLanguages
+			} else {
+				val result = stored.orEmpty()
+				// Ensure never empty - fallback to English
+				if (result.isEmpty()) {
+					val fallback = setOf("en")
+					prefs.edit { putStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, fallback) }
+					fallback
+				} else {
+					result
+				}
+			}
+		}
+		set(value) {
+			val safeValue = if (value.isEmpty()) setOf("en") else value
+			prefs.edit { putStringSet(KEY_DEFAULT_TRANSLATION_LANGUAGES, safeValue) }
+		}
 
 	var readerColorFilter: ReaderColorFilter?
 		get() = runCatching {
@@ -805,6 +839,9 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		const val KEY_DISCORD_RPC = "discord_rpc"
 		const val KEY_DISCORD_RPC_SKIP_NSFW = "discord_rpc_skip_nsfw"
 		const val KEY_DISCORD_TOKEN = "discord_token"
+		const val KEY_TRANSLATION_FALLBACK_ENABLED = "translation_fallback_enabled"
+		const val KEY_TRANSLATION_SHOW_NOTIFICATIONS = "translation_show_notifications"
+		const val KEY_DEFAULT_TRANSLATION_LANGUAGES = "default_translation_languages"
 
 		// keys for non-persistent preferences
 		const val KEY_APP_VERSION = "app_version"
