@@ -40,7 +40,7 @@ class WebtoonImageView @JvmOverloads constructor(
 	fun scrollTo(y: Int) {
 		val maxScroll = getScrollRange()
 		if (maxScroll == 0) {
-			resetScaleAndCenter()
+			scrollToInternal(0)
 			return
 		}
 		scrollToInternal(y.coerceIn(0, maxScroll))
