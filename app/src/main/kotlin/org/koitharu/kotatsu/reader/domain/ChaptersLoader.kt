@@ -6,6 +6,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.details.data.MangaDetails
+import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.model.MangaPage
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
@@ -16,16 +17,19 @@ private const val PAGES_TRIM_THRESHOLD = 120
 @ViewModelScoped
 class ChaptersLoader @Inject constructor(
 	private val mangaRepositoryFactory: MangaRepository.Factory,
+	private val localMangaRepository: LocalMangaRepository,
 ) {
 
 	private val chapters = LongSparseArray<MangaChapter>()
 	private val chapterPages = ChapterPages()
 	private val mutex = Mutex()
+	private var manga: MangaDetails? = null
 
 	val size: Int
 		get() = chapters.size()
 
 	suspend fun init(manga: MangaDetails) = mutex.withLock {
+		this.manga = manga
 		chapters.clear()
 		manga.allChapters.forEach {
 			chapters.put(it.id, it)
@@ -88,6 +92,21 @@ class ChaptersLoader @Inject constructor(
 
 	private suspend fun loadChapter(chapterId: Long): List<ReaderPage> {
 		val chapter = checkNotNull(chapters[chapterId]) { "Requested chapter not found" }
+		val manga = checkNotNull(manga) { "Manga details not initialized" }
+
+		val localManga = localMangaRepository.findSavedManga(manga, withDetails = true)
+		if (localManga != null) {
+			val localChapter = localManga.manga.chapters.find { it.id == chapter.id }
+				?: localManga.manga.chapters.find { it.number == chapter.number }
+
+			if (localChapter != null) {
+				val pages = localMangaRepository.getPages(localChapter)
+				return pages.mapIndexed { index, page ->
+					ReaderPage(page, index, chapterId)
+				}
+			}
+		}
+
 		val repo = mangaRepositoryFactory.create(chapter.source)
 		return repo.getPages(chapter).mapIndexed { index, page ->
 			ReaderPage(page, index, chapterId)
