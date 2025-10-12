@@ -42,6 +42,7 @@ class LocalInfoDialog : AlertDialogFragment<DialogLocalInfoBinding>(), View.OnCl
 			binding.textViewPath.text = it
 		}
 		binding.chipCleanup.setOnClickListener(this)
+		binding.chipAllcleanup.setOnClickListener(this)
 		combine(viewModel.size, viewModel.availableSize, ::Pair).observe(viewLifecycleOwner) {
 			if (it.first >= 0 && it.second >= 0) {
 				setSegments(it.first, it.second)
@@ -50,6 +51,7 @@ class LocalInfoDialog : AlertDialogFragment<DialogLocalInfoBinding>(), View.OnCl
 			}
 		}
 		viewModel.onCleanedUp.observeEvent(viewLifecycleOwner, ::onCleanedUp)
+		viewModel.onAllCleanedUp.observeEvent(viewLifecycleOwner, ::onAllCleanedUp)
 		viewModel.isCleaningUp.observe(viewLifecycleOwner) { loading ->
 			binding.chipCleanup.isClickable = !loading
 			dialog?.setCancelable(!loading)
@@ -64,8 +66,13 @@ class LocalInfoDialog : AlertDialogFragment<DialogLocalInfoBinding>(), View.OnCl
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.chip_cleanup -> viewModel.cleanup()
-			R.id.chip_allcleanup -> viewModel.all_cleanup()
+			R.id.chip_allcleanup -> viewModel.allCleanup()
 		}
+	}
+
+	private fun onAllCleanedUp(result: Boolean) {
+		val c = context ?: return
+		Toast.makeText(c, c.getString(R.string.delete_all_chapters), Toast.LENGTH_SHORT).show()
 	}
 
 	private fun onCleanedUp(result: Pair<Int, Long>) {

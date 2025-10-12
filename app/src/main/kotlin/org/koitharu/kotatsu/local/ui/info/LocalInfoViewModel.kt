@@ -32,6 +32,7 @@ class LocalInfoViewModel @Inject constructor(
 
 	val isCleaningUp = MutableStateFlow(false)
 	val onCleanedUp = MutableEventFlow<Pair<Int, Long>>()
+	val onAllCleanedUp = MutableEventFlow<Boolean>()
 
 	val path = MutableStateFlow<String?>(null)
 	val size = MutableStateFlow(-1L)
@@ -56,12 +57,13 @@ class LocalInfoViewModel @Inject constructor(
 		}
 	}
 
-	fun all_cleanup() {
+	fun allCleanup() {
 		launchJob(Dispatchers.Default) {
 			try {
 				isCleaningUp.value = true
 				deleteLocalChaptersUseCase.invoke(manga)
 				computeSize().join()
+				onAllCleanedUp.call(true)
 			} finally {
 				isCleaningUp.value = false
 			}
