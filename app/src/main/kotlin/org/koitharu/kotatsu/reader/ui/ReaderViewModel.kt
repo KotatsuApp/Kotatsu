@@ -436,6 +436,14 @@ class ReaderViewModel @Inject constructor(
 						}
 						mangaDetails.value = details.filterChapters(selectedBranch.value)
 
+						if (readingState.value != null) {
+							val state = readingState.requireValue()
+							val pagesCount = chaptersLoader.getPagesCount(state.chapterId)
+							if (pagesCount > 0 && state.page >= pagesCount) {
+								readingState.update { it?.copy(page = 0) }
+							}
+						}
+
 						// save state
 						if (!isIncognitoMode.firstNotNull()) {
 							readingState.value?.let {

@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.domain.model.LocalManga
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.parsers.util.recoverNotNull
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -137,7 +138,19 @@ class DetailsLoadUseCase @Inject constructor(
 				),
 			)
 		}
-		val remoteDetails = remoteDeferred.await().getOrThrow()
+		var remoteDetails = remoteDeferred.await().getOrThrow()
+		val chapters = remoteDetails.chapters
+		val localChapters = localManga?.manga?.chapters
+		if (!chapters.isNullOrEmpty() && !localChapters.isNullOrEmpty()) {
+			val localMapById = localChapters.associateByTo(mutableMapOf()) { it.id }
+			val localMapByNumber = localChapters.associateByTo(mutableMapOf()) { it.number }
+			val result = chapters.map { chapter ->
+				localMapById.remove(chapter.id)
+					?: localMapByNumber.remove(chapter.number)
+					?: chapter
+			}
+			remoteDetails = remoteDetails.copy(chapters = result)
+		}
 		emit(
 			MangaDetails(
 				manga = remoteDetails,
