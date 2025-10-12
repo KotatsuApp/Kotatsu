@@ -8,7 +8,7 @@ on:
 
 jobs:
     lint:
-        name: Build
+        name: Lint
         runs-on: ubuntu-latest
 
         steps:
@@ -37,7 +37,7 @@ jobs:
             - name: Run Lint
               run: ./gradlew lint
     test:
-        name: Build
+        name: Test
         runs-on: ubuntu-latest
 
         steps:
