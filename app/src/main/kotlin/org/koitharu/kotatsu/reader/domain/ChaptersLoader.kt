@@ -101,8 +101,10 @@ class ChaptersLoader @Inject constructor(
 
 			if (localChapter != null) {
 				val pages = localMangaRepository.getPages(localChapter)
-				return pages.mapIndexed { index, page ->
-					ReaderPage(page, index, chapterId)
+				if (pages.isNotEmpty()) {
+					return pages.mapIndexed { index, page ->
+						ReaderPage(page, index, chapterId)
+					}
 				}
 			}
 		}
