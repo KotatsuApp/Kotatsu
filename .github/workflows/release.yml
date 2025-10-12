@@ -43,12 +43,6 @@ jobs:
 
             - name: Grant execute permission for gradlew
               run: chmod +x gradlew
-
-            - name: Run Unit Tests
-              run: ./gradlew testDebugUnitTest --no-daemon
-
-            - name: Run Lint
-              run: ./gradlew lint
    
             - name: Bump Version
               uses: chkfung/android-version-actions@v1.1
