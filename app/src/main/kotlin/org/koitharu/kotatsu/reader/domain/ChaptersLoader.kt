@@ -94,10 +94,10 @@ class ChaptersLoader @Inject constructor(
 		val chapter = checkNotNull(chapters[chapterId]) { "Requested chapter not found" }
 		val manga = checkNotNull(manga) { "Manga details not initialized" }
 
-		val localManga = localMangaRepository.findSavedManga(manga, withDetails = true)
+		val localManga = localMangaRepository.findSavedManga(manga.manga, withDetails = true)
 		if (localManga != null) {
-			val localChapter = localManga.manga.chapters.find { it.id == chapter.id }
-				?: localManga.manga.chapters.find { it.number == chapter.number }
+			val localChapter = localManga.manga.chapters?.find { it.id == chapter.id }
+				?: localManga.manga.chapters?.find { it.number == chapter.number }
 
 			if (localChapter != null) {
 				val pages = localMangaRepository.getPages(localChapter)
