@@ -64,6 +64,7 @@ class LocalInfoDialog : AlertDialogFragment<DialogLocalInfoBinding>(), View.OnCl
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.chip_cleanup -> viewModel.cleanup()
+			R.id.chip_allcleanup -> viewModel.all_cleanup()
 		}
 	}
 

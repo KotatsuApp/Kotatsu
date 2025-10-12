@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.core.util.ext.require
 import org.koitharu.kotatsu.core.util.ext.toFileOrNull
 import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.local.data.LocalStorageManager
+import org.koitharu.kotatsu.local.domain.DeleteLocalMangaUseCase
 import org.koitharu.kotatsu.local.domain.DeleteReadChaptersUseCase
 import javax.inject.Inject
 
@@ -24,6 +25,7 @@ class LocalInfoViewModel @Inject constructor(
 	private val localMangaRepository: LocalMangaRepository,
 	private val storageManager: LocalStorageManager,
 	private val deleteReadChaptersUseCase: DeleteReadChaptersUseCase,
+	private val deleteLocalChaptersUseCase: DeleteLocalMangaUseCase,
 ) : BaseViewModel() {
 
 	private val manga = savedStateHandle.require<ParcelableManga>(AppRouter.KEY_MANGA).manga
@@ -48,6 +50,18 @@ class LocalInfoViewModel @Inject constructor(
 				computeSize().join()
 				val newSize = size.value
 				onCleanedUp.call(chaptersCount to oldSize - newSize)
+			} finally {
+				isCleaningUp.value = false
+			}
+		}
+	}
+
+	fun all_cleanup() {
+		launchJob(Dispatchers.Default) {
+			try {
+				isCleaningUp.value = true
+				deleteLocalChaptersUseCase.invoke(manga)
+				computeSize().join()
 			} finally {
 				isCleaningUp.value = false
 			}
