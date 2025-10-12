@@ -587,6 +587,7 @@
     <string name="day">Día</string>
     <string name="three_months">Tres meses</string>
     <string name="delete_read_chapters">Borrar capítulos leídos</string>
+	<string name="delete_all_chapters">Borrar todos los capítulos</string>
     <string name="no_chapters_deleted">No se han eliminado capítulos</string>
     <string name="chapters_deleted_pattern">Eliminado %1$s, borrado %2$s</string>
     <string name="delete_read_chapters_summary">Borrar los capítulos que ya has leído de la memoria local para liberar espacio</string>
@@ -822,8 +823,6 @@
     <string name="changelog">Registro de cambios</string>
     <string name="changelog_summary">Historial de cambios de las versiones publicadas recientemente</string>
     <string name="collapse">Plegar</string>
-    <string name="adblock">Bloquear anuncios en el navegador</string>
-    <string name="adblock_summary">Bloquear anuncios en el navegador integrado (beta)</string>
     <string name="collapse_long_description">Plegar descripción larga</string>
     <string name="creating_backup">Creando copia de seguridad</string>
     <string name="share_backup">Compartir copia de seguridad</string>
