@@ -45,7 +45,6 @@ android {
             keyAlias System.getenv("SIGNING_KEY_ALIAS")
             keyPassword System.getenv("SIGNING_KEY_PASSWORD")
 		}
-
 	}
 	buildTypes {
 		debug {
