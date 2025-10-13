@@ -15,6 +15,7 @@ enum class BackupSection(
 	SETTINGS_READER_GRID("reader_grid"),
 	BOOKMARKS("bookmarks"),
 	SOURCES("sources"),
+	SCROBBLING("scrobbling"),
 	;
 
 	companion object {
