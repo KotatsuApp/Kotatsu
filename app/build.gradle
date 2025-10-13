@@ -20,7 +20,7 @@ android {
 		minSdk = 23
 		targetSdk = 36
 		versionCode = 1030
-		versionName = '9.2.0.32'
+		versionName = '9.2.0.33'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
