@@ -43,8 +43,9 @@ val VersionId.isStable: Boolean
 	get() = variantType.isEmpty()
 
 fun VersionId(versionName: String): VersionId {
-	val parts = versionName.substringBeforeLast('-').split('.')
-	val variant = versionName.substringAfterLast('-', "")
+	val version = versionName.removePrefix("v")
+	val parts = version.substringBeforeLast('-').split('.')
+	val variant = version.substringAfterLast('-', "")
 	return VersionId(
 		major = parts.getOrNull(0)?.toIntOrNull() ?: 0,
 		minor = parts.getOrNull(1)?.toIntOrNull() ?: 0,
