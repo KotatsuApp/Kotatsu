@@ -58,8 +58,8 @@ class AppUpdateRepository @Inject constructor(
 			val asset = json.optJSONArray("assets")?.find { jo ->
 				jo.optString("content_type") == CONTENT_TYPE_APK
 			} ?: return@mapJSONNotNull null
-			val apkUrl = asset.getString("browser_download_url")
-			if(is64) apkUrl.replace("armeabiv7a", "arm64v8") else apkUrl.replace("arm64v8", "armeabiv7a")
+			val apkUrl = if(is64) asset.getString("browser_download_url").replace("armeabiv7a", "arm64v8") else asset.getString("browser_download_url").replace("arm64v8", "armeabiv7a")
+
 			AppVersion(
 				id = json.getLong("id"),
 				url = json.getString("html_url"),
