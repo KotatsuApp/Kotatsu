@@ -8,25 +8,19 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.room.InvalidationTracker
 import androidx.work.Configuration
-import androidx.work.WorkManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import okhttp3.internal.platform.PlatformRegistry
 import org.conscrypt.Conscrypt
-import org.koitharu.kotatsu.BuildConfig
-import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.os.AppValidator
-import org.koitharu.kotatsu.core.os.RomCompat
 import org.koitharu.kotatsu.core.prefs.AppSettings
-import org.koitharu.kotatsu.core.util.WorkServiceStopHelper
 import org.koitharu.kotatsu.core.util.ext.processLifecycleScope
 import org.koitharu.kotatsu.local.data.LocalStorageChanges
 import org.koitharu.kotatsu.local.data.index.LocalMangaIndex
 import org.koitharu.kotatsu.local.domain.model.LocalManga
-import org.koitharu.kotatsu.parsers.util.suspendlazy.getOrNull
 import org.koitharu.kotatsu.settings.work.WorkScheduleManager
 import java.security.Security
 import javax.inject.Inject
@@ -57,9 +51,6 @@ open class BaseApp : Application(), Configuration.Provider {
 	lateinit var workScheduleManager: WorkScheduleManager
 
 	@Inject
-	lateinit var workManagerProvider: Provider<WorkManager>
-
-	@Inject
 	lateinit var localMangaIndexProvider: Provider<LocalMangaIndex>
 
 	@Inject
@@ -85,7 +76,6 @@ open class BaseApp : Application(), Configuration.Provider {
 			localStorageChanges.collect(localMangaIndexProvider.get())
 		}
 		workScheduleManager.init()
-		WorkServiceStopHelper(workManagerProvider).setup()
 	}
 
 	override fun attachBaseContext(base: Context) {

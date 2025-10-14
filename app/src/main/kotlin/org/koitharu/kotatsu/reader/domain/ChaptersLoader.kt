@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.reader.domain
 
 import android.util.LongSparseArray
+import androidx.annotation.CheckResult
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -32,12 +33,12 @@ class ChaptersLoader @Inject constructor(
 		}
 	}
 
-	suspend fun loadPrevNextChapter(manga: MangaDetails, currentId: Long, isNext: Boolean) {
+	suspend fun loadPrevNextChapter(manga: MangaDetails, currentId: Long, isNext: Boolean): Boolean {
 		val chapters = manga.allChapters
 		val predicate: (MangaChapter) -> Boolean = { it.id == currentId }
 		val index = if (isNext) chapters.indexOfFirst(predicate) else chapters.indexOfLast(predicate)
-		if (index == -1) return
-		val newChapter = chapters.getOrNull(if (isNext) index + 1 else index - 1) ?: return
+		if (index == -1) return false
+		val newChapter = chapters.getOrNull(if (isNext) index + 1 else index - 1) ?: return false
 		val newPages = loadChapter(newChapter.id)
 		mutex.withLock {
 			if (chapterPages.chaptersSize > 1) {
@@ -56,13 +57,16 @@ class ChaptersLoader @Inject constructor(
 				chapterPages.addFirst(newChapter.id, newPages)
 			}
 		}
+		return true
 	}
 
-	suspend fun loadSingleChapter(chapterId: Long) {
+	@CheckResult
+	suspend fun loadSingleChapter(chapterId: Long): Boolean {
 		val pages = loadChapter(chapterId)
-		mutex.withLock {
+		return mutex.withLock {
 			chapterPages.clear()
 			chapterPages.addLast(chapterId, pages)
+			pages.isNotEmpty()
 		}
 	}
 
