@@ -866,4 +866,5 @@
     <string name="pull_bottom_no_next">Sonraki bölüm yok</string>
     <string name="enable_pull_gesture_title">Çekme hareketini etkinleştir</string>
     <string name="enable_pull_gesture_summary">Webtoon modunda bölüm değiştirmek için çekme hareketi kullan</string>
+    <string name="two_page_scroll_sensitivity">İki Sayfa Kaydırma Hassaslığı</string>
 </resources>
