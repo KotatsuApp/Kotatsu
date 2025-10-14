@@ -802,7 +802,7 @@ class AppRouter private constructor(
 			.scheme("kotatsu")
 			.path("manga")
 			.appendQueryParameter("id", mangaId.toString())
-			.build()
+			.build()!!
 
 		const val KEY_DATA = "data"
 		const val KEY_ENTRIES = "entries"
