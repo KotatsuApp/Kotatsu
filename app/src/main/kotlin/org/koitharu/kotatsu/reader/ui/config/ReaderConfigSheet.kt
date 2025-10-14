@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.SeekBar
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -89,6 +90,10 @@ class ReaderConfigSheet :
 		binding.switchPullGesture.isChecked = settings.isWebtoonPullGestureEnabled
 		binding.switchPullGesture.isEnabled = mode == ReaderMode.WEBTOON
 
+		binding.textSensitivity.isVisible = settings.isReaderDoubleOnLandscape
+		binding.seekbarSensitivity.isVisible = settings.isReaderDoubleOnLandscape
+		binding.seekbarSensitivity.progress = (settings.readerDoublePagesSensitivity * 100).toInt()
+
 		binding.checkableGroup.addOnButtonCheckedListener(this)
 		binding.buttonSavePage.setOnClickListener(this)
 		binding.buttonScreenRotate.setOnClickListener(this)
@@ -99,6 +104,16 @@ class ReaderConfigSheet :
 		binding.buttonBookmark.setOnClickListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
 		binding.switchPullGesture.setOnCheckedChangeListener(this)
+
+		binding.seekbarSensitivity.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+				settings.setReaderDoublePagesSensitivity(progress / 10f)
+			}
+
+			override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+			override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+		})
 
 		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
 			binding.buttonBookmark.setText(if (it) R.string.bookmark_remove else R.string.bookmark_add)
@@ -173,6 +188,8 @@ class ReaderConfigSheet :
 
 			R.id.switch_double_reader -> {
 				settings.isReaderDoubleOnLandscape = isChecked
+				viewBinding?.textSensitivity?.isVisible = isChecked
+				viewBinding?.seekbarSensitivity?.isVisible = isChecked
 				findParentCallback(Callback::class.java)?.onDoubleModeChanged(isChecked)
 			}
 
