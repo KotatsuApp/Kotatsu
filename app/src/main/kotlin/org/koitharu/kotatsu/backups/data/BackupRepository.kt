@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.backups.data.model.CategoryBackup
 import org.koitharu.kotatsu.backups.data.model.FavouriteBackup
 import org.koitharu.kotatsu.backups.data.model.HistoryBackup
 import org.koitharu.kotatsu.backups.data.model.MangaBackup
+import org.koitharu.kotatsu.backups.data.model.ScrobblingBackup
 import org.koitharu.kotatsu.backups.data.model.SourceBackup
 import org.koitharu.kotatsu.backups.domain.BackupSection
 import org.koitharu.kotatsu.core.db.MangaDatabase
@@ -109,6 +110,12 @@ class BackupRepository @Inject constructor(
 					data = database.getSourcesDao().dumpEnabled().map { SourceBackup(it) },
 					serializer = serializer(),
 				)
+
+				BackupSection.SCROBBLING -> output.writeJsonArray(
+					section = BackupSection.SCROBBLING,
+					data = database.getScrobblingDao().dumpEnabled().map { ScrobblingBackup(it) },
+					serializer = serializer(),
+				)
 			}
 			progress?.emit(commonProgress)
 			commonProgress++
@@ -161,6 +168,10 @@ class BackupRepository @Inject constructor(
 
 					BackupSection.SOURCES -> input.readJsonArray<SourceBackup>(serializer()).restoreToDb {
 						getSourcesDao().upsert(it.toEntity())
+					}
+
+					BackupSection.SCROBBLING -> input.readJsonArray<ScrobblingBackup>(serializer()).restoreToDb {
+						getScrobblingDao().upsert(it.toEntity())
 					}
 
 					null -> CompositeResult.EMPTY // skip unknown entries
