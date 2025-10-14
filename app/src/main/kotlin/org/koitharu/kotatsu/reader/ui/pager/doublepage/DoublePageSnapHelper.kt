@@ -11,11 +11,14 @@ import androidx.recyclerview.widget.OrientationHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller.ScrollVectorProvider
 import androidx.recyclerview.widget.SnapHelper
+import org.koitharu.kotatsu.core.prefs.AppSettings
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.roundToInt
+import kotlin.math.sign
 
-class DoublePageSnapHelper : SnapHelper() {
+class DoublePageSnapHelper(private val settings: AppSettings) : SnapHelper() {
 
 	private lateinit var recyclerView: RecyclerView
 
@@ -248,28 +251,27 @@ class DoublePageSnapHelper : SnapHelper() {
 			equal to zero.
 		 */
 		fun getPositionsToMove(llm: LinearLayoutManager, scroll: Int, itemSize: Int): Int {
-			var positionsToMove: Int
-			positionsToMove = roundUpToBlockSize(abs((scroll.toDouble()) / itemSize).roundToInt())
-			if (positionsToMove < blockSize) {
-				// Must move at least one block
-				positionsToMove = blockSize
-			} else if (positionsToMove > maxPositionsToMove) {
-				// Clamp number of positions to move, so we don't get wild flinging.
-				positionsToMove = maxPositionsToMove
+			val sensitivity = settings.readerDoublePagesSensitivity.coerceIn(0f, 1f) * 2.5
+			var positionsToMove = (scroll.toDouble() / (itemSize * (2.5 - sensitivity))).roundToInt()
+
+			// Apply a maximum threshold
+			val maxPages = (4 * sensitivity).roundToInt().coerceAtLeast(1)
+			if (positionsToMove.absoluteValue > maxPages) {
+				positionsToMove = maxPages * positionsToMove.sign
 			}
-			if (scroll < 0) {
-				positionsToMove *= -1
+
+			// Apply a minimum threshold
+			if (positionsToMove == 0 && scroll.absoluteValue > itemSize * 0.2) {
+				positionsToMove = 1 * scroll.sign
 			}
-			if (isRTL) {
-				positionsToMove *= -1
-			}
-			return if (layoutDirectionHelper.isDirectionToBottom(scroll < 0)) {
-				// Scrolling toward the bottom of data.
-				roundDownToBlockSize(llm.findFirstVisibleItemPosition()) + positionsToMove
+
+			val currentPosition = if (layoutDirectionHelper.isDirectionToBottom(scroll < 0)) {
+				llm.findFirstVisibleItemPosition()
 			} else {
-				roundDownToBlockSize(llm.findLastVisibleItemPosition()) + positionsToMove
+				llm.findLastVisibleItemPosition()
 			}
-			// Scrolling toward the top of the data.
+			val targetPos = currentPosition + positionsToMove * 2
+			return roundDownToBlockSize(targetPos)
 		}
 
 		fun isDirectionToBottom(velocityNegative: Boolean): Boolean {
