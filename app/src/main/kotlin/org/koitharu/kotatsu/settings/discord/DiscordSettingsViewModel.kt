@@ -34,7 +34,7 @@ class DiscordSettingsViewModel @Inject constructor(
 		TokenState.CHECKING to settings.discordToken,
 	)
 
-	private suspend fun checkToken(): Flow<Pair<TokenState, String?>> = flow {
+	private fun checkToken(): Flow<Pair<TokenState, String?>> = flow {
 		val token = settings.discordToken
 		if (!settings.isDiscordRpcEnabled) {
 			emit(

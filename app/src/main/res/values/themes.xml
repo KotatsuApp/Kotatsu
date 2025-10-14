@@ -45,7 +45,7 @@
 		<item name="expandCollapseIndicator">@drawable/m3_split_button_chevron_avd</item>
 
 		<!-- Base attributes -->
-		<item name="android:windowLightStatusBar" tools:targetApi="M">@bool/light_status_bar</item>
+		<item name="android:windowLightStatusBar">@bool/light_status_bar</item>
 		<item name="android:statusBarColor">@android:color/transparent</item>
 		<item name="android:navigationBarColor">@color/dim</item>
 		<item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@null</item>

@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.explore.ui.adapter
 
 import android.view.View
-import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString

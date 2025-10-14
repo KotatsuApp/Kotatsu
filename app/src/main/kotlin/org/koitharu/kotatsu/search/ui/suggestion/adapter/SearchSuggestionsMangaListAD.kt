@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.search.ui.suggestion.adapter
 
-import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView

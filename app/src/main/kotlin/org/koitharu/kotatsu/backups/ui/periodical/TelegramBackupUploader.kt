@@ -36,7 +36,7 @@ class TelegramBackupUploader @Inject constructor(
 	suspend fun uploadBackup(file: File) {
 		val requestBody = file.asRequestBody("application/zip".toMediaTypeOrNull())
 		val multipartBody = MultipartBody.Builder()
-			.setType(MultipartBody.Companion.FORM)
+			.setType(MultipartBody.FORM)
 			.addFormDataPart("chat_id", requireChatId())
 			.addFormDataPart("document", file.name, requestBody)
 			.build()

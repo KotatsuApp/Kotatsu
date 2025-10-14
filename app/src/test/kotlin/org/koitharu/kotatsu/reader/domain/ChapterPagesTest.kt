@@ -4,7 +4,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koitharu.kotatsu.core.model.TestMangaSource
-import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.reader.ui.pager.ReaderPage
 import kotlin.random.Random
 
