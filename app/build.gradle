@@ -1,5 +1,3 @@
-import java.time.LocalDateTime
-
 plugins {
 	id 'com.android.application'
 	id 'kotlin-android'
@@ -20,7 +18,7 @@ android {
 		minSdk = 23
 		targetSdk = 36
 		versionCode = 1030
-		versionName = '9.2.0.34'
+		versionName = '9.2.0.35'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
