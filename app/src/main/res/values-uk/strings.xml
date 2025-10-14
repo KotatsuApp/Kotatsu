@@ -866,4 +866,5 @@
     <string name="pull_bottom_no_next">Немає наступного розділу</string>
     <string name="enable_pull_gesture_title">Увімкнути жест потягування</string>
     <string name="enable_pull_gesture_summary">Використовуйте жест потягування для перемикання розділів у вебтуні</string>
+    <string name="two_page_scroll_sensitivity">Чутливість прокручування на дві сторінки</string>
 </resources>
