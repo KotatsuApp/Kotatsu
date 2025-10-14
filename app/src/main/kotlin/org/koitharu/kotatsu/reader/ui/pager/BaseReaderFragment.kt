@@ -25,15 +25,8 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>(), ZoomCont
 		readerAdapter = onCreateAdapter()
 
 		viewModel.content.observe(viewLifecycleOwner) {
-			// Use getCurrentState() to handle configuration changes (e.g., screen rotation) properly.
-			// getCurrentState() always has the most recent reading position, while content.state
-			// may contain the initial state from when content was first loaded.
-			val currentState = viewModel.getCurrentState()
 			if (it.state == null && it.pages.isNotEmpty() && readerAdapter?.hasItems != true) {
-				onPagesChanged(it.pages, currentState)
-			} else if (currentState != null) {
-				// If we have a current state, use it instead of content.state
-				onPagesChanged(it.pages, currentState)
+				onPagesChanged(it.pages, viewModel.getCurrentState())
 			} else {
 				onPagesChanged(it.pages, it.state)
 			}
