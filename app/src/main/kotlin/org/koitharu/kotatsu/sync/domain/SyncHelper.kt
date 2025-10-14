@@ -22,7 +22,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import okhttp3.internal.closeQuietly
 import okio.IOException
 import org.jetbrains.annotations.Blocking
 import org.koitharu.kotatsu.BuildConfig
@@ -89,12 +88,12 @@ class SyncHelper @AssistedInject constructor(
 		val response = httpClient.newCall(request).execute().parseDtoOrNull()
 		response?.categories?.let { categories ->
 			val categoriesResult = upsertFavouriteCategories(categories)
-			stats.numDeletes += categoriesResult.first().count?.toLong() ?: 0L
+			stats.numDeletes += categoriesResult.firstOrNull()?.count?.toLong() ?: 0L
 			stats.numInserts += categoriesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
 		}
 		response?.favourites?.let { favourites ->
 			val favouritesResult = upsertFavourites(favourites)
-			stats.numDeletes += favouritesResult.first().count?.toLong() ?: 0L
+			stats.numDeletes += favouritesResult.firstOrNull()?.count?.toLong() ?: 0L
 			stats.numInserts += favouritesResult.drop(1).sumOf { it.count?.toLong() ?: 0L }
 			stats.numEntries += stats.numInserts + stats.numDeletes
 		}
@@ -119,7 +118,7 @@ class SyncHelper @AssistedInject constructor(
 		val response = httpClient.newCall(request).execute().parseDtoOrNull()
 		response?.history?.let { history ->
 			val result = upsertHistory(history)
-			stats.numDeletes += result.first().count?.toLong() ?: 0L
+			stats.numDeletes += result.firstOrNull()?.count?.toLong() ?: 0L
 			stats.numInserts += result.drop(1).sumOf { it.count?.toLong() ?: 0L }
 			stats.numEntries += stats.numInserts + stats.numDeletes
 		}
@@ -286,15 +285,11 @@ class SyncHelper @AssistedInject constructor(
 
 	private fun uri(authority: String, table: String) = "content://$authority/$table".toUri()
 
-	private fun Response.parseDtoOrNull(): SyncDto? {
-		return try {
-			when {
-				!isSuccessful -> throw IOException(body?.string())
-				code == HttpURLConnection.HTTP_NO_CONTENT -> null
-				else -> Json.decodeFromString<SyncDto>(body?.string() ?: return null)
-			}
-		} finally {
-			closeQuietly()
+	private fun Response.parseDtoOrNull(): SyncDto? = use {
+		when {
+			!isSuccessful -> throw IOException(body.string())
+			code == HttpURLConnection.HTTP_NO_CONTENT -> null
+			else -> Json.decodeFromString<SyncDto>(body.string())
 		}
 	}
 

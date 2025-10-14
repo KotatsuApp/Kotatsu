@@ -34,7 +34,7 @@ data class FavouriteCategorySyncDto(
 		put("created_at", createdAt)
 		put("sort_key", sortKey)
 		put("title", title)
-		put("order", order)
+		put("`order`", order)
 		put("track", track)
 		put("show_in_lib", isVisibleInLibrary)
 		put("deleted_at", deletedAt)
