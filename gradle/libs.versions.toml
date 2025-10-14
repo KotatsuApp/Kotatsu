@@ -13,7 +13,6 @@ constraintlayout = "2.2.1"
 coreKtx = "1.17.0"
 coroutines = "1.10.2"
 dagger = "2.57.2"
-decoroutinator = "2.5.7"
 desugar = "2.1.5"
 diskLruCache = "1.5"
 documentfile = "1.1.0"
@@ -46,7 +45,7 @@ testRunner = "1.7.0"
 transition = "1.6.0"
 viewpager2 = "1.1.0"
 webkit = "1.14.0"
-workRuntime = "2.10.4"
+workRuntime = "2.10.5"
 workinspector = "1.2"
 
 [libraries]
@@ -120,4 +119,3 @@ kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serizliation = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
-decoroutinator = { id = "dev.reformator.stacktracedecoroutinator", version.ref = "decoroutinator" }

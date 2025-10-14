@@ -105,7 +105,14 @@ class PagesViewModel @Inject constructor(
 			chaptersLoader.peekChapter(it) != null
 		} ?: state.details.allChapters.firstOrNull()?.id ?: return
 		if (!chaptersLoader.hasPages(initialChapterId)) {
-			chaptersLoader.loadSingleChapter(initialChapterId)
+			var hasPages = chaptersLoader.loadSingleChapter(initialChapterId)
+			while (!hasPages) {
+				if (chaptersLoader.loadPrevNextChapter(state.details, initialChapterId, isNext = true)) {
+					hasPages = chaptersLoader.snapshot().isNotEmpty()
+				} else {
+					break
+				}
+			}
 		}
 		updateList(state.readerState)
 	}

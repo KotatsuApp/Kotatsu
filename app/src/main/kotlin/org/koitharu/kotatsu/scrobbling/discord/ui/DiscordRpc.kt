@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.scrobbling.discord.ui
 
 import android.content.Context
+import android.os.SystemClock
 import androidx.annotation.AnyThread
 import androidx.collection.ArrayMap
 import com.my.kizzyrpc.KizzyRPC
@@ -14,6 +15,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import okio.utf8Size
@@ -35,6 +37,7 @@ import javax.inject.Inject
 private const val STATUS_ONLINE = "online"
 private const val STATUS_IDLE = "idle"
 private const val BUTTON_TEXT_LIMIT = 32
+private const val DEBOUNCE_TIMEOUT = 6_000L // 6 sec
 
 @ViewModelScoped
 class DiscordRpc @Inject constructor(
@@ -49,6 +52,7 @@ class DiscordRpc @Inject constructor(
 	private val appName = context.getString(R.string.app_name)
 	private val appIcon = context.getString(R.string.app_icon_url)
 	private val mpCache = Collections.synchronizedMap(ArrayMap<String, String>())
+	private var lastUpdate = 0L
 
 	private var rpc: KizzyRPC? = null
 
@@ -68,6 +72,7 @@ class DiscordRpc @Inject constructor(
 	fun clearRpc() = synchronized(this) {
 		rpc?.closeRPC()
 		rpc = null
+		lastUpdate = 0L
 	}
 
 	fun setIdle() {
@@ -114,6 +119,10 @@ class DiscordRpc @Inject constructor(
 		val prevJob = rpcUpdateJob
 		rpcUpdateJob = coroutineScope.launch {
 			prevJob?.cancelAndJoin()
+			val debounceTime = lastUpdate + DEBOUNCE_TIMEOUT - SystemClock.elapsedRealtime()
+			if (debounceTime > 0) {
+				delay(debounceTime)
+			}
 			val hideButtons = activity.buttons?.any { it != null && it.utf8Size() > BUTTON_TEXT_LIMIT } ?: false
 			val mappedActivity = activity.copy(
 				assets = activity.assets?.let {
@@ -131,6 +140,7 @@ class DiscordRpc @Inject constructor(
 				status = if (idle) STATUS_IDLE else STATUS_ONLINE,
 				since = activity.timestamps?.start ?: System.currentTimeMillis(),
 			)
+			lastUpdate = SystemClock.elapsedRealtime()
 		}
 	}
 
