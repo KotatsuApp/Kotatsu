@@ -8,6 +8,7 @@ import androidx.core.net.toUri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.isActive
@@ -18,7 +19,6 @@ import org.koitharu.kotatsu.core.util.ext.MutableEventFlow
 import org.koitharu.kotatsu.core.util.ext.call
 import org.koitharu.kotatsu.core.util.ext.requireValue
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 @HiltViewModel
 class AppUpdateViewModel @Inject constructor(
@@ -79,7 +79,7 @@ class AppUpdateViewModel @Inject constructor(
 	private suspend fun observeDownload(id: Long) {
 		val query = DownloadManager.Query()
 		query.setFilterById(id)
-		while (coroutineContext.isActive) {
+		while (currentCoroutineContext().isActive) {
 			downloadManager.query(query).use { cursor ->
 				if (cursor.moveToFirst()) {
 					val bytesDownloaded = cursor.getLong(

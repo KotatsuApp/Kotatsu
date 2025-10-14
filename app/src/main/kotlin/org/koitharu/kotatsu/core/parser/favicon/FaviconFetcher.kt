@@ -19,6 +19,7 @@ import coil3.request.Options
 import coil3.size.pxOrElse
 import coil3.toAndroidUri
 import coil3.toBitmap
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.runInterruptible
 import okio.FileSystem
@@ -41,7 +42,6 @@ import org.koitharu.kotatsu.local.data.LocalStorageCache
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import java.io.File
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 import coil3.Uri as CoilUri
 
 class FaviconFetcher(
@@ -88,7 +88,7 @@ class FaviconFetcher(
 		var favicons = repository.getFavicons()
 		var lastError: Exception? = null
 		while (favicons.isNotEmpty()) {
-			coroutineContext.ensureActive()
+			currentCoroutineContext().ensureActive()
 			val icon = favicons.find(sizePx) ?: throwNSEE(lastError)
 			try {
 				val result = imageLoader.fetch(icon.url, options)

@@ -3,4 +3,16 @@
 	<include
 		domain="sharedpref"
 		path="." />
+	<exclude
+		domain="sharedpref"
+		path="_local_index.xml" />
+	<exclude
+		domain="database"
+		path="." />
+	<exclude
+		domain="device_database"
+		path="." />
+	<exclude
+		domain="external"
+		path="." />
 </full-backup-content>

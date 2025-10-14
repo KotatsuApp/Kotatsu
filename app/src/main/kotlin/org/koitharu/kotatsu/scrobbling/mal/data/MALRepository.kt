@@ -183,7 +183,7 @@ class MALRepository @Inject constructor(
 		storage.clear()
 	}
 
-	private fun jsonToManga(json: JSONObject, sourceTitle: String): ScrobblerManga? {
+	private fun jsonToManga(json: JSONObject, sourceTitle: String): ScrobblerManga {
 		val node = json.getJSONObject("node")
 		val title = node.getString("title")
 		return ScrobblerManga(

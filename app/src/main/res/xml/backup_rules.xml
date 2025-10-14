@@ -2,5 +2,15 @@
 <data-extraction-rules>
 	<cloud-backup disableIfNoEncryptionCapabilities="false">
 		<include domain="sharedpref" path="."/>
+		<exclude domain="sharedpref" path="_local_index.xml"/>
+		<exclude domain="database" path="." />
+		<exclude domain="device_database" path="." />
+		<exclude domain="external" path="." />
 	</cloud-backup>
+	<device-transfer>
+		<include domain="sharedpref" path="."/>
+		<exclude domain="sharedpref" path="_local_index.xml"/>
+		<exclude domain="database" path="." />
+		<exclude domain="device_database" path="." />
+	</device-transfer>
 </data-extraction-rules>

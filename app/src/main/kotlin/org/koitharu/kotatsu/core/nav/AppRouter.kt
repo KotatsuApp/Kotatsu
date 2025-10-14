@@ -798,7 +798,7 @@ class AppRouter private constructor(
 			else -> true
 		}
 
-		fun shortMangaUrl(mangaId: Long) = Uri.Builder()
+		fun shortMangaUrl(mangaId: Long): Uri = Uri.Builder()
 			.scheme("kotatsu")
 			.path("manga")
 			.appendQueryParameter("id", mangaId.toString())
