@@ -251,7 +251,7 @@ class DoublePageSnapHelper(private val settings: AppSettings) : SnapHelper() {
 			equal to zero.
 		 */
 		fun getPositionsToMove(llm: LinearLayoutManager, scroll: Int, itemSize: Int): Int {
-			val sensitivity = settings.readerDoublePagesSensitivity
+			val sensitivity = settings.readerDoublePagesSensitivity.coerceIn(0f, 1f) * 2.5
 			var positionsToMove = (scroll.toDouble() / (itemSize * (2.5 - sensitivity))).roundToInt()
 
 			// Apply a maximum threshold

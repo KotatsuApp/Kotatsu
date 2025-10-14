@@ -37,7 +37,7 @@ import javax.inject.Inject
 private const val STATUS_ONLINE = "online"
 private const val STATUS_IDLE = "idle"
 private const val BUTTON_TEXT_LIMIT = 32
-private const val DEBOUNCE_TIMEOUT = 6_000L // 6 sec
+private const val DEBOUNCE_TIMEOUT = 16_000L // 16 sec
 
 @ViewModelScoped
 class DiscordRpc @Inject constructor(

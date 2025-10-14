@@ -138,12 +138,10 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 		get() = prefs.getBoolean(KEY_READER_DOUBLE_PAGES, false)
 		set(value) = prefs.edit { putBoolean(KEY_READER_DOUBLE_PAGES, value) }
 
-	val readerDoublePagesSensitivity: Float
-		get() = prefs.getFloat(KEY_READER_DOUBLE_PAGES_SENSITIVITY, 12f) / 10f
-
-	fun setReaderDoublePagesSensitivity(value: Float) {
-		prefs.edit { putFloat(KEY_READER_DOUBLE_PAGES_SENSITIVITY, value) }
-	}
+	@get:FloatRange(0.0, 1.0)
+	var readerDoublePagesSensitivity: Float
+		get() = prefs.getFloat(KEY_READER_DOUBLE_PAGES_SENSITIVITY, 0.5f)
+		set(@FloatRange(0.0, 1.0) value) = prefs.edit { putFloat(KEY_READER_DOUBLE_PAGES_SENSITIVITY, value) }
 
 	val readerScreenOrientation: Int
 		get() = prefs.getString(KEY_READER_ORIENTATION, null)?.toIntOrNull()

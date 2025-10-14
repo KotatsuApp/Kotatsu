@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import android.widget.SeekBar
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -26,7 +26,9 @@ import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
+import org.koitharu.kotatsu.core.util.ext.setValueRounded
 import org.koitharu.kotatsu.core.util.ext.viewLifecycleScope
+import org.koitharu.kotatsu.core.util.progress.IntPercentLabelFormatter
 import org.koitharu.kotatsu.databinding.SheetReaderConfigBinding
 import org.koitharu.kotatsu.reader.domain.PageLoader
 import org.koitharu.kotatsu.reader.ui.ReaderViewModel
@@ -38,7 +40,8 @@ class ReaderConfigSheet :
 	BaseAdaptiveSheet<SheetReaderConfigBinding>(),
 	View.OnClickListener,
 	MaterialButtonToggleGroup.OnButtonCheckedListener,
-	CompoundButton.OnCheckedChangeListener {
+	CompoundButton.OnCheckedChangeListener,
+	Slider.OnChangeListener {
 
 	private val viewModel by activityViewModels<ReaderViewModel>()
 
@@ -92,7 +95,8 @@ class ReaderConfigSheet :
 
 		binding.textSensitivity.isVisible = settings.isReaderDoubleOnLandscape
 		binding.seekbarSensitivity.isVisible = settings.isReaderDoubleOnLandscape
-		binding.seekbarSensitivity.progress = (settings.readerDoublePagesSensitivity * 100).toInt()
+		binding.seekbarSensitivity.setValueRounded(settings.readerDoublePagesSensitivity * 100f)
+		binding.seekbarSensitivity.setLabelFormatter(IntPercentLabelFormatter(binding.root.context))
 
 		binding.checkableGroup.addOnButtonCheckedListener(this)
 		binding.buttonSavePage.setOnClickListener(this)
@@ -104,16 +108,7 @@ class ReaderConfigSheet :
 		binding.buttonBookmark.setOnClickListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
 		binding.switchPullGesture.setOnCheckedChangeListener(this)
-
-		binding.seekbarSensitivity.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-				settings.setReaderDoublePagesSensitivity(progress / 10f)
-			}
-
-			override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-			override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-		})
+		binding.seekbarSensitivity.addOnChangeListener(this)
 
 		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
 			binding.buttonBookmark.setText(if (it) R.string.bookmark_remove else R.string.bookmark_add)
@@ -197,6 +192,10 @@ class ReaderConfigSheet :
 				settings.isWebtoonPullGestureEnabled = isChecked
 			}
 		}
+	}
+
+	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
+		settings.readerDoublePagesSensitivity = value / 100f
 	}
 
 	override fun onButtonChecked(
