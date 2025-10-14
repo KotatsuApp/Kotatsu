@@ -667,4 +667,8 @@
     <string name="error_not_image">無効な形式です: 画像が期待されましたが %s が入力されました</string>
     <string name="start_download">ダウンロード開始</string>
     <string name="save_manga_confirm">選択したマンガを保存しますか？通信量とディスク容量を消費する可能性があります</string>
+    <string name="save_manga">マンガを保存</string>
+    <string name="genre">ジャンル</string>
+    <string name="download_added">ダウンロードに追加</string>
+    <string name="chapter_selection_hint">チャプターリストの項目を長押しすると、ダウンロードするチャプターを選択できます。</string>
 </resources>
