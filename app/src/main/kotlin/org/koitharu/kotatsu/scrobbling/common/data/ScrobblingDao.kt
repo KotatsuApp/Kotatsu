@@ -1,7 +1,10 @@
 package org.koitharu.kotatsu.scrobbling.common.data
 
 import androidx.room.*
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.isActive
 
 @Dao
 abstract class ScrobblingDao {
@@ -20,4 +23,20 @@ abstract class ScrobblingDao {
 
 	@Query("DELETE FROM scrobblings WHERE scrobbler = :scrobbler AND manga_id = :mangaId")
 	abstract suspend fun delete(scrobbler: Int, mangaId: Long)
+
+	@Query("SELECT * FROM scrobblings ORDER BY scrobbler LIMIT :limit OFFSET :offset")
+	protected abstract suspend fun findAll(offset: Int, limit: Int): List<ScrobblingEntity>
+
+	fun dumpEnabled(): Flow<ScrobblingEntity> = flow {
+		val window = 10
+		var offset = 0
+		while (currentCoroutineContext().isActive) {
+			val list = findAll(offset, window)
+			if (list.isEmpty()) {
+				break
+			}
+			offset += window
+			list.forEach { emit(it) }
+		}
+	}
 }
