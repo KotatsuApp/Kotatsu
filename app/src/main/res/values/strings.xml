@@ -865,15 +865,7 @@
 	<string name="main_screen_fab">Show floating Continue button</string>
 	<string name="main_screen_fab_summary">Allows to continue reading in a one click. This button will not appear in incognito mode or when the history is empty</string>
 	<string name="error_corrupted_zip">Corrupted ZIP archive (%s)</string>
-	<string name="discord" translatable="false">Discord</string>
-	<string name="discord_rpc">Discord Rich Presence</string>
-	<string name="discord_token">Discord Token</string>
-	<string name="discord_token_summary">Enter your Discord Token to enable Rich Presence</string>
-	<string name="discord_token_description">Enter your Discord Token or click %s to get it using browser</string>
-	<string name="discord_token_hint">Paste your Discord Token here</string>
-	<string name="discord_rpc_summary">Show your reading status on Discord</string>
 	<string name="obtain">Obtain</string>
-	<string name="discord_rpc_description">Reading manga on Kotatsu - a manga reader app</string>
 	<string name="reading_s">Reading %s</string>
 	<string name="read_on_s">Read on %s</string>
 	<string name="rpc_skip_nsfw_summary">Do not use RPC for adult content</string>

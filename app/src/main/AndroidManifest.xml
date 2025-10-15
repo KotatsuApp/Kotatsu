@@ -288,9 +288,6 @@
 				<data android:mimeType="image/*" />
 			</intent-filter>
 		</activity>
-		<activity
-			android:name="org.koitharu.kotatsu.scrobbling.discord.ui.DiscordAuthActivity"
-			android:label="@string/discord" />
 
 		<service
 			android:name="androidx.work.impl.foreground.SystemForegroundService"
