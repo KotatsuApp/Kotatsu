@@ -366,8 +366,6 @@
 	<string name="nothing_here">There is nothing here</string>
 	<string name="scrobbling_empty_hint">To track reading progress, select Menu → Track on the manga details screen.</string>
 	<string name="services">Services</string>
-	<string name="allow_unstable_updates">Allow unstable updates</string>
-	<string name="allow_unstable_updates_summary">Receive notifications about unstable builds</string>
 	<string name="download_started">Download started</string>
 	<string name="got_it">Got it</string>
 	<string name="sources_reorder_tip">Tap and hold on an item to reorder them</string>
@@ -466,6 +464,7 @@
 	<string name="languages">Languages</string>
 	<string name="unknown">Unknown</string>
 	<string name="in_progress">In progress</string>
+	<string name="disable_broken_sources">Disable broken sources</string>
 	<string name="disable_nsfw">Disable NSFW</string>
 	<string name="too_many_requests_message">Too many requests. Try again later</string>
 	<string name="too_many_requests_message_retry">Too many requests. Try again after %s</string>
@@ -615,6 +614,7 @@
 	<string name="manga_migration">Manga migration</string>
 	<string name="migration_completed">Migration completed</string>
 	<string name="delete_read_chapters">Delete read chapters</string>
+	<string name="delete_all_chapters">Delete all chapters</string>
 	<string name="no_chapters_deleted">No chapters have been deleted</string>
 	<string name="chapters_deleted_pattern">Removed %1$s, cleared %2$s</string>
 	<string name="delete_read_chapters_summary">Delete chapters you have already read from local storage to free up space</string>
@@ -847,12 +847,8 @@
 	<string name="incognito_for_nsfw">Incognito mode for NSFW manga</string>
 	<string name="additional_action_required">Additional action is required</string>
 	<string name="hide_from_main_screen">Hide from main screen</string>
-	<string name="changelog">Changelog</string>
-	<string name="changelog_summary">Changes history for recently released versions</string>
 	<string name="collapse">Collapse</string>
 	<string name="expand">Expand</string>
-	<string name="adblock">Block ads in browser</string>
-	<string name="adblock_summary">Block advertisement in the built-in browser (beta)</string>
 	<string name="collapse_long_description">Collapse long description</string>
 	<string name="creating_backup">Creating backup</string>
 	<string name="share_backup">Share backup</string>
@@ -867,15 +863,7 @@
 	<string name="main_screen_fab">Show floating Continue button</string>
 	<string name="main_screen_fab_summary">Allows to continue reading in a one click. This button will not appear in incognito mode or when the history is empty</string>
 	<string name="error_corrupted_zip">Corrupted ZIP archive (%s)</string>
-	<string name="discord" translatable="false">Discord</string>
-	<string name="discord_rpc">Discord Rich Presence</string>
-	<string name="discord_token">Discord Token</string>
-	<string name="discord_token_summary">Enter your Discord Token to enable Rich Presence</string>
-	<string name="discord_token_description">Enter your Discord Token or click %s to get it using browser</string>
-	<string name="discord_token_hint">Paste your Discord Token here</string>
-	<string name="discord_rpc_summary">Show your reading status on Discord</string>
 	<string name="obtain">Obtain</string>
-	<string name="discord_rpc_description">Reading manga on Kotatsu - a manga reader app</string>
 	<string name="reading_s">Reading %s</string>
 	<string name="read_on_s">Read on %s</string>
 	<string name="rpc_skip_nsfw_summary">Do not use RPC for adult content</string>

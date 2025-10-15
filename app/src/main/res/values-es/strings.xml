@@ -352,8 +352,6 @@
     <string name="theme_name_kanade">Canadé</string>
     <string name="scrobbling_empty_hint">Para realizar un seguimiento del progreso de la lectura, seleccione Menú → Seguimiento en la pantalla de detalles del manga.</string>
     <string name="services">Servicios</string>
-    <string name="allow_unstable_updates_summary">Recibir notificaciones sobre versiones inestables</string>
-    <string name="allow_unstable_updates">Permitir actualizaciones inestables</string>
     <string name="download_started">Descarga iniciada</string>
     <string name="user_agent">Encabezado del agente de usuario</string>
     <string name="settings_apply_restart_required">Por favor, reinicie la aplicación para aplicar estos cambios</string>
@@ -445,6 +443,7 @@
     <string name="suggestions_wifi_only_summary">No actualices las sugerencias utilizando conexiones de red medidas</string>
     <string name="unknown">Desconocido</string>
     <string name="in_progress">En proceso</string>
+	<string name="disable_broken_sources">Desactivar fuentes rotas</string>
     <string name="disable_nsfw">Desactivar NSFW</string>
     <string name="too_many_requests_message">Demasiadas solicitudes. Vuelve a intentarlo más tarde</string>
     <string name="related_manga_summary">Muestra una lista de mangas relacionados. En algunos casos puede ser inexacta o faltar</string>
@@ -588,6 +587,7 @@
     <string name="day">Día</string>
     <string name="three_months">Tres meses</string>
     <string name="delete_read_chapters">Borrar capítulos leídos</string>
+	<string name="delete_all_chapters">Borrar todos los capítulos</string>
     <string name="no_chapters_deleted">No se han eliminado capítulos</string>
     <string name="chapters_deleted_pattern">Eliminado %1$s, borrado %2$s</string>
     <string name="delete_read_chapters_summary">Borrar los capítulos que ya has leído de la memoria local para liberar espacio</string>
@@ -820,11 +820,7 @@
     <string name="theme_name_expressive">Expresivo (Prueba)</string>
     <string name="additional_action_required">Se requieren medidas adicionales</string>
     <string name="hide_from_main_screen">Ocultar de la pantalla principal</string>
-    <string name="changelog">Registro de cambios</string>
-    <string name="changelog_summary">Historial de cambios de las versiones publicadas recientemente</string>
     <string name="collapse">Plegar</string>
-    <string name="adblock">Bloquear anuncios en el navegador</string>
-    <string name="adblock_summary">Bloquear anuncios en el navegador integrado (beta)</string>
     <string name="collapse_long_description">Plegar descripción larga</string>
     <string name="creating_backup">Creando copia de seguridad</string>
     <string name="share_backup">Compartir copia de seguridad</string>
@@ -839,14 +835,7 @@
     <string name="main_screen_fab">Mostrar botón Continuar, flotante</string>
     <string name="main_screen_fab_summary">Permite continuar leyendo con un solo clic. Este botón no aparecerá en modo incógnito ni cuando el historial esté vacío</string>
     <string name="error_corrupted_zip">Archivo ZIP dañado (%s)</string>
-    <string name="discord_rpc">Presencia enriquecida con Discord</string>
-    <string name="discord_token">Token de Discord</string>
-    <string name="discord_token_summary">Introduce tu token de Discord para habilitar la presencia enriquecida</string>
-    <string name="discord_token_description">Introduce tu token de Discord o haz clic en %s para obtenerlo mediante el navegador</string>
-    <string name="discord_token_hint">Pega aquí tu token de Discord</string>
-    <string name="discord_rpc_summary">Muestra tu estado de lectura en Discord</string>
     <string name="obtain">Obtener</string>
-    <string name="discord_rpc_description">Leer manga en Kotatsu: una aplicación para leer manga</string>
     <string name="reading_s">Leyendo %s</string>
     <string name="read_on_s">Sigue leyendo en %s</string>
     <string name="rpc_skip_nsfw_summary">No utilice RPC para contenido de adultos</string>

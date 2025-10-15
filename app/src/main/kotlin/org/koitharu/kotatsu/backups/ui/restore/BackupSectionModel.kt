@@ -23,6 +23,8 @@ data class BackupSectionModel(
 			BackupSection.SETTINGS_READER_GRID -> R.string.reader_actions
 			BackupSection.BOOKMARKS -> R.string.bookmarks
 			BackupSection.SOURCES -> R.string.remote_sources
+			BackupSection.SCROBBLING -> R.string.tracking
+			BackupSection.STATS -> R.string.statistics
 		}
 
 	override fun areItemsTheSame(other: ListModel): Boolean {

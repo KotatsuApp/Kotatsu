@@ -1,5 +1,4 @@
 [versions]
-acra = "5.13.1"
 activity = "1.11.0"
 adapterdelegates = "4.3.2"
 appcompat = "1.7.1"
@@ -14,19 +13,17 @@ constraintlayout = "2.2.1"
 coreKtx = "1.17.0"
 coroutines = "1.10.2"
 dagger = "2.57.2"
-decoroutinator = "2.5.7"
 desugar = "2.1.5"
 diskLruCache = "1.5"
 documentfile = "1.1.0"
 fragment = "1.8.9"
 gradle = "8.13.0"
-guava = "33.4.8-android"
+guava = "33.5.0-android"
 hilt = "1.3.0"
 json = "20250517"
 junit = "4.13.2"
 junitKtx = "1.3.0"
 kotlin = "2.2.10"
-kizzyRpc = "ad8f2e32eb"
 ksp = "2.2.10-2.0.2"
 leakcanary = "3.0-alpha-8"
 lifecycle = "2.9.4"
@@ -35,10 +32,10 @@ material = "1.14.0-alpha05"
 moshi = "1.15.2"
 okhttp = "5.2.1"
 okio = "3.16.1"
-parsers = "8908031eee"
+parsers = "ded831f551"
 preference = "1.2.1"
 recyclerview = "1.4.0"
-room = "2.7.2"
+room = "2.8.2"
 serialization = "1.9.0"
 ssiv = "376930523c"
 swiperefreshlayout = "1.1.0"
@@ -51,8 +48,6 @@ workRuntime = "2.10.5"
 workinspector = "1.2"
 
 [libraries]
-acra-dialog = { module = "ch.acra:acra-dialog", version.ref = "acra" }
-acra-http = { module = "ch.acra:acra-http", version.ref = "acra" }
 adapterdelegates = { module = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl", version.ref = "adapterdelegates" }
 adapterdelegates-viewbinding = { module = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding", version.ref = "adapterdelegates" }
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
@@ -96,7 +91,6 @@ hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", vers
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 json = { module = "org.json:json", version.ref = "json" }
 junit = { module = "junit:junit", version.ref = "junit" }
-kizzyrpc = { module = "com.github.dead8309:KizzyRPC", version.ref = "kizzyRpc" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutines" }
@@ -123,4 +117,3 @@ kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serizliation = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
-decoroutinator = { id = "dev.reformator.stacktracedecoroutinator", version.ref = "decoroutinator" }

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<dimen name="grid_spacing">6dp</dimen>
-	<dimen name="grid_spacing_outer">2dp</dimen>
-	<dimen name="grid_spacing_outer_double">4dp</dimen>
-	<dimen name="preferred_grid_width">140dp</dimen>
-</resources>

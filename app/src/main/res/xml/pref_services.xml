@@ -69,12 +69,4 @@
 
 	</PreferenceCategory>
 
-	<Preference
-		android:fragment="org.koitharu.kotatsu.settings.discord.DiscordSettingsFragment"
-		android:key="discord_rpc"
-		android:summary="@string/discord_rpc_summary"
-		android:title="@string/discord_rpc"
-		app:allowDividerAbove="true"
-		app:icon="@drawable/ic_discord" />
-
 </PreferenceScreen>

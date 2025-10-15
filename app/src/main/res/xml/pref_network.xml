@@ -34,12 +34,6 @@
 		android:title="@string/dns_over_https"
 		app:useSimpleSummaryProvider="true" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="adblock"
-		android:summary="@string/adblock_summary"
-		android:title="@string/adblock" />
-
 	<ListPreference
 		android:defaultValue="-1"
 		android:entries="@array/image_proxies"

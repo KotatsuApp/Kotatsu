@@ -40,6 +40,11 @@
 
 	<SwitchPreferenceCompat
 		android:defaultValue="true"
+		android:key="no_broken_sources"
+		android:title="@string/disable_broken_sources" />
+
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
 		android:key="tags_warnings"
 		android:summary="@string/tags_warnings_summary"
 		android:title="@string/tags_warnings" />
