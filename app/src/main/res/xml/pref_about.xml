@@ -10,13 +10,6 @@
 		android:summary="@string/check_for_updates" />
 
 	<Preference
-		android:fragment="org.koitharu.kotatsu.settings.about.changelog.ChangelogFragment"
-		android:key="changelog"
-		android:persistent="false"
-		android:summary="@string/changelog_summary"
-		android:title="@string/changelog" />
-
-	<Preference
 		android:key="about_help"
 		android:persistent="false"
 		android:summary="@string/url_user_manual"
