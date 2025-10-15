@@ -34,12 +34,17 @@ class ProgressUpdateUseCase @Inject constructor(
 		}
 		val chapter = details.findChapterById(history.chapterId) ?: return PROGRESS_NONE
 		val chapters = details.getChapters(chapter.branch)
+		val chapterRepo = if (repo.source == chapter.source) {
+			repo
+		} else {
+			mangaRepositoryFactory.create(chapter.source)
+		}
 		val chaptersCount = chapters.size
 		if (chaptersCount == 0) {
 			return PROGRESS_NONE
 		}
 		val chapterIndex = chapters.indexOfFirst { x -> x.id == history.chapterId }
-		val pagesCount = repo.getPages(chapter).size
+		val pagesCount = chapterRepo.getPages(chapter).size
 		if (pagesCount == 0) {
 			return PROGRESS_NONE
 		}

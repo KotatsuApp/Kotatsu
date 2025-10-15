@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.details.ui
 
 import android.app.assist.AssistContent
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.text.SpannedString
 import android.view.Gravity

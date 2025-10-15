@@ -2,14 +2,12 @@ package org.koitharu.kotatsu.image.ui
 
 import android.content.Context
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import androidx.annotation.AttrRes
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.ColorUtils
@@ -205,6 +203,7 @@ class CoverImageView @JvmOverloads constructor(
 			is HttpStatusException -> statusCode.toString()
 			is ContentUnavailableException,
 			is FileNotFoundException -> "404"
+
 			is TooManyRequestExceptions -> "429"
 			is ParseException -> "</>"
 			is UnsupportedSourceException -> "X"
@@ -266,7 +265,7 @@ class CoverImageView @JvmOverloads constructor(
 					width = Dimension(height.px * view.aspectRationWidth / view.aspectRationHeight)
 				}
 			}
-			return Size(checkNotNull(width), checkNotNull(height))
+			return Size(width, height)
 		}
 
 		private fun getWidth() = getDimension(

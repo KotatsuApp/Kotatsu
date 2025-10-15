@@ -24,7 +24,7 @@ class DiscordSettingsFragment : BasePreferenceFragment(R.string.discord) {
 
 	override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 		addPreferencesFromResource(R.xml.pref_discord)
-		findPreference<EditTextPreference>(AppSettings.Companion.KEY_DISCORD_TOKEN)?.let { pref ->
+		findPreference<EditTextPreference>(AppSettings.KEY_DISCORD_TOKEN)?.let { pref ->
 			pref.dialogMessage = pref.context.getString(
 				R.string.discord_token_description,
 				pref.context.getString(R.string.sign_in),
@@ -44,21 +44,21 @@ class DiscordSettingsFragment : BasePreferenceFragment(R.string.discord) {
 	}
 
 	override fun onDisplayPreferenceDialog(preference: Preference) {
-		if (preference is EditTextPreference && preference.key == AppSettings.Companion.KEY_DISCORD_TOKEN) {
-			if (parentFragmentManager.findFragmentByTag(TokenDialogFragment.Companion.DIALOG_FRAGMENT_TAG) != null) {
+		if (preference is EditTextPreference && preference.key == AppSettings.KEY_DISCORD_TOKEN) {
+			if (parentFragmentManager.findFragmentByTag(TokenDialogFragment.DIALOG_FRAGMENT_TAG) != null) {
 				return
 			}
 			val f = TokenDialogFragment.newInstance(preference.key)
 			@Suppress("DEPRECATION")
 			f.setTargetFragment(this, 0)
-			f.show(parentFragmentManager, TokenDialogFragment.Companion.DIALOG_FRAGMENT_TAG)
+			f.show(parentFragmentManager, TokenDialogFragment.DIALOG_FRAGMENT_TAG)
 			return
 		}
 		super.onDisplayPreferenceDialog(preference)
 	}
 
 	private fun bindTokenPreference(state: TokenState, token: String?) {
-		val pref = findPreference<EditTextPreference>(AppSettings.Companion.KEY_DISCORD_TOKEN) ?: return
+		val pref = findPreference<EditTextPreference>(AppSettings.KEY_DISCORD_TOKEN) ?: return
 		when (state) {
 			TokenState.EMPTY -> {
 				pref.icon = null

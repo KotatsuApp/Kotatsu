@@ -27,7 +27,7 @@ class ReadingTimeUseCase @Inject constructor(
 		// Impossible task, I guess. Good luck on this.
 		var averageTimeSec: Int = 20 /* pages */ * getSecondsPerPage(manga.id) * chapters.size
 		if (isOnHistoryBranch) {
-			averageTimeSec = (averageTimeSec * (1f - checkNotNull(history).percent)).roundToInt()
+			averageTimeSec = (averageTimeSec * (1f - history.percent)).roundToInt()
 		}
 		if (averageTimeSec < 60) {
 			return null

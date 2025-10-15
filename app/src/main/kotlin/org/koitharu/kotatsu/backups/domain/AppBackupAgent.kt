@@ -36,15 +36,14 @@ class AppBackupAgent : BackupAgent() {
 
 	override fun onFullBackup(data: FullBackupDataOutput) {
 		super.onFullBackup(data)
-		val file =
-			createBackupFile(
-				this,
-				BackupRepository(
-					MangaDatabase(context = applicationContext),
-					AppSettings(applicationContext),
-					TapGridSettings(applicationContext),
-				),
-			)
+		val file = createBackupFile(
+			this,
+			BackupRepository(
+				MangaDatabase(context = applicationContext),
+				AppSettings(applicationContext),
+				TapGridSettings(applicationContext),
+			),
+		)
 		try {
 			fullBackupFile(file, data)
 		} finally {
@@ -90,8 +89,12 @@ class AppBackupAgent : BackupAgent() {
 	@VisibleForTesting
 	fun restoreBackupFile(fd: FileDescriptor, size: Long, repository: BackupRepository) {
 		ZipInputStream(ByteStreams.limit(FileInputStream(fd), size)).use { input ->
+			val sections = EnumSet.allOf(BackupSection::class.java)
+			// managed externally
+			sections.remove(BackupSection.SETTINGS)
+			sections.remove(BackupSection.SETTINGS_READER_GRID)
 			runBlocking {
-				repository.restoreBackup(input, EnumSet.allOf(BackupSection::class.java), null)
+				repository.restoreBackup(input, sections, null)
 			}
 		}
 	}

@@ -8,11 +8,9 @@ import android.graphics.Rect
 import androidx.annotation.ColorInt
 import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
-import androidx.core.graphics.get
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.decoder.ImageRegionDecoder
 import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -23,7 +21,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.core.util.SynchronizedSieveCache
-import org.koitharu.kotatsu.core.util.ext.use
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -46,19 +43,19 @@ class EdgeDetector(private val context: Context) {
 					}
 					val scaleFactor = calculateScaleFactor(size)
 					val sampleSize = (1f / scaleFactor).toInt().coerceAtLeast(1)
-					
+
 					val fullBitmap = decoder.decodeRegion(
-						Rect(0, 0, size.x, size.y), 
-						sampleSize
+						Rect(0, 0, size.x, size.y),
+						sampleSize,
 					)
-					
+
 					try {
 						val edges = coroutineScope {
 							listOf(
-							async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = true) },
-							async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = true) },
-							async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = false) },
-							async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = false) },
+								async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = true) },
+								async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = true) },
+								async { detectLeftRightEdge(fullBitmap, size, sampleSize, isLeft = false) },
+								async { detectTopBottomEdge(fullBitmap, size, sampleSize, isTop = false) },
 							).awaitAll()
 						}
 						var hasEdges = false
@@ -91,10 +88,10 @@ class EdgeDetector(private val context: Context) {
 		val rectCount = size.x / BLOCK_SIZE
 		val maxRect = rectCount / 3
 		val blockPixels = IntArray(BLOCK_SIZE * BLOCK_SIZE)
-		
+
 		val bitmapWidth = bitmap.width
 		val bitmapHeight = bitmap.height
-		
+
 		for (i in 0 until rectCount) {
 			if (i > maxRect) {
 				return -1
@@ -103,16 +100,16 @@ class EdgeDetector(private val context: Context) {
 			for (j in 0 until size.y / BLOCK_SIZE) {
 				val regionX = if (isLeft) i * BLOCK_SIZE else size.x - (i + 1) * BLOCK_SIZE
 				val regionY = j * BLOCK_SIZE
-				
+
 				// Convert to bitmap coordinates
 				val bitmapX = regionX / sampleSize
 				val bitmapY = regionY / sampleSize
 				val blockWidth = min(BLOCK_SIZE / sampleSize, bitmapWidth - bitmapX)
 				val blockHeight = min(BLOCK_SIZE / sampleSize, bitmapHeight - bitmapY)
-				
+
 				if (blockWidth > 0 && blockHeight > 0) {
 					bitmap.getPixels(blockPixels, 0, blockWidth, bitmapX, bitmapY, blockWidth, blockHeight)
-					
+
 					for (ii in 0 until minOf(blockWidth, dd / sampleSize)) {
 						for (jj in 0 until blockHeight) {
 							val bi = if (isLeft) ii else blockWidth - ii - 1
@@ -141,10 +138,10 @@ class EdgeDetector(private val context: Context) {
 		val rectCount = size.y / BLOCK_SIZE
 		val maxRect = rectCount / 3
 		val blockPixels = IntArray(BLOCK_SIZE * BLOCK_SIZE)
-		
+
 		val bitmapWidth = bitmap.width
 		val bitmapHeight = bitmap.height
-		
+
 		for (j in 0 until rectCount) {
 			if (j > maxRect) {
 				return -1
@@ -153,16 +150,16 @@ class EdgeDetector(private val context: Context) {
 			for (i in 0 until size.x / BLOCK_SIZE) {
 				val regionX = i * BLOCK_SIZE
 				val regionY = if (isTop) j * BLOCK_SIZE else size.y - (j + 1) * BLOCK_SIZE
-				
+
 				// Convert to bitmap coordinates
 				val bitmapX = regionX / sampleSize
 				val bitmapY = regionY / sampleSize
 				val blockWidth = min(BLOCK_SIZE / sampleSize, bitmapWidth - bitmapX)
 				val blockHeight = min(BLOCK_SIZE / sampleSize, bitmapHeight - bitmapY)
-				
+
 				if (blockWidth > 0 && blockHeight > 0) {
 					bitmap.getPixels(blockPixels, 0, blockWidth, bitmapX, bitmapY, blockWidth, blockHeight)
-					
+
 					for (jj in 0 until minOf(blockHeight, dd / sampleSize)) {
 						for (ii in 0 until blockWidth) {
 							val bj = if (isTop) jj else blockHeight - jj - 1
