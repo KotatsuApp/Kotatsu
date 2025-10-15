@@ -820,8 +820,6 @@
     <string name="theme_name_expressive">Expresivo (Prueba)</string>
     <string name="additional_action_required">Se requieren medidas adicionales</string>
     <string name="hide_from_main_screen">Ocultar de la pantalla principal</string>
-    <string name="changelog">Registro de cambios</string>
-    <string name="changelog_summary">Historial de cambios de las versiones publicadas recientemente</string>
     <string name="collapse">Plegar</string>
     <string name="collapse_long_description">Plegar descripción larga</string>
     <string name="creating_backup">Creando copia de seguridad</string>
