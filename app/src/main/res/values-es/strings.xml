@@ -837,14 +837,7 @@
     <string name="main_screen_fab">Mostrar botón Continuar, flotante</string>
     <string name="main_screen_fab_summary">Permite continuar leyendo con un solo clic. Este botón no aparecerá en modo incógnito ni cuando el historial esté vacío</string>
     <string name="error_corrupted_zip">Archivo ZIP dañado (%s)</string>
-    <string name="discord_rpc">Presencia enriquecida con Discord</string>
-    <string name="discord_token">Token de Discord</string>
-    <string name="discord_token_summary">Introduce tu token de Discord para habilitar la presencia enriquecida</string>
-    <string name="discord_token_description">Introduce tu token de Discord o haz clic en %s para obtenerlo mediante el navegador</string>
-    <string name="discord_token_hint">Pega aquí tu token de Discord</string>
-    <string name="discord_rpc_summary">Muestra tu estado de lectura en Discord</string>
     <string name="obtain">Obtener</string>
-    <string name="discord_rpc_description">Leer manga en Kotatsu: una aplicación para leer manga</string>
     <string name="reading_s">Leyendo %s</string>
     <string name="read_on_s">Sigue leyendo en %s</string>
     <string name="rpc_skip_nsfw_summary">No utilice RPC para contenido de adultos</string>

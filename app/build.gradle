@@ -183,7 +183,6 @@ dependencies {
 	implementation libs.ssiv
 	implementation libs.disk.lru.cache
 	implementation libs.markwon
-	implementation libs.kizzyrpc
 
 	implementation libs.conscrypt.android
 
