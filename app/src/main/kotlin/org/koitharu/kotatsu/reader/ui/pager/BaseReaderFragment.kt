@@ -30,8 +30,18 @@ abstract class BaseReaderFragment<B : ViewBinding> : BaseFragment<B>(), ZoomCont
 			// - getCurrentState(): current reading position saved in SavedStateHandle
 			val currentState = viewModel.getCurrentState()
 			val pendingState = when {
-				it.state == null && it.pages.isNotEmpty() && readerAdapter?.hasItems != true -> currentState
-				readerAdapter?.hasItems != true && it.state != currentState && currentState != null -> currentState
+				// If content.state is null and we have pages, use getCurrentState
+				it.state == null
+					&& it.pages.isNotEmpty()
+					&& readerAdapter?.hasItems != true -> currentState
+
+				// use currentState only if it matches the current pages (to avoid the error message)
+				readerAdapter?.hasItems != true
+					&& it.state != currentState
+					&& currentState != null
+					&& it.pages.any { page -> page.chapterId == currentState.chapterId } -> currentState
+
+				// Otherwise, use content.state (normal flow, mode switch, chapter change)
 				else -> it.state
 			}
 			onPagesChanged(it.pages, pendingState)
