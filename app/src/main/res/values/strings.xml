@@ -46,6 +46,7 @@
 	<string name="by_rating">Rating</string>
 	<string name="sort_order">Sorting order</string>
 	<string name="filter">Filter</string>
+	<string name="saved_filters">Saved filters</string>
 	<string name="theme">Theme</string>
 	<string name="light">Light</string>
 	<string name="dark">Dark</string>
@@ -208,6 +209,7 @@
 	<string name="enabled">Enabled</string>
 	<string name="disabled">Disabled</string>
 	<string name="reset_filter">Reset filter</string>
+	<string name="enter_name">Enter name</string>
 	<string name="onboard_text">Select languages which you want to read manga. You can change it later in settings.</string>
 	<string name="never">Never</string>
 	<string name="only_using_wifi">Only on Wi-Fi</string>
