@@ -67,7 +67,7 @@
 		android:contentDescription="@string/speed"
 		android:labelFor="@id/switch_scroll_timer"
 		android:valueFrom="0.000001"
-		android:valueTo="0.95"
+		android:valueTo="0.97"
 		app:labelBehavior="floating"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/label_timer"
