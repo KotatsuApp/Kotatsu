@@ -142,6 +142,12 @@ class ReaderViewModel @Inject constructor(
 		valueProducer = { isReaderBarTransparent },
 	)
 
+	val isChapterToastEnabled = settings.observeAsStateFlow(
+		scope = viewModelScope + Dispatchers.Default,
+		key = AppSettings.KEY_READER_CHAPTER_TOAST,
+		valueProducer = { isReaderChapterToastEnabled },
+	)
+
 	val isKeepScreenOnEnabled = settings.observeAsStateFlow(
 		scope = viewModelScope + Dispatchers.Default,
 		key = AppSettings.KEY_READER_SCREEN_ON,
