@@ -678,7 +678,6 @@
 	<string name="image_server">Preferred image server</string>
 	<string name="inline_preference_pattern" translatable="false">%1$s: %2$s</string>
 	<string name="crop_pages">Crop pages</string>
-	<string name="incognito_mode">Incognito mode</string>
 	<string name="pin">Pin</string>
 	<string name="unpin">Unpin</string>
 	<string name="source_pinned">Source pinned</string>
