@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import org.koitharu.kotatsu.core.model.FavouriteCategory
 import org.koitharu.kotatsu.core.model.isNsfw
+import org.koitharu.kotatsu.core.parser.MangaDataRepository
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.prefs.TriStateOption
 import org.koitharu.kotatsu.core.prefs.observeAsFlow
@@ -31,6 +32,7 @@ class DetailsInteractor @Inject constructor(
 	private val trackingRepository: TrackingRepository,
 	private val settings: AppSettings,
 	private val scrobblers: Set<@JvmSuppressWildcards Scrobbler>,
+	private val mangaDataRepository: MangaDataRepository,
 ) {
 
 	fun observeFavourite(mangaId: Long): Flow<Set<FavouriteCategory>> {
@@ -59,12 +61,16 @@ class DetailsInteractor @Inject constructor(
 	fun observeIncognitoMode(mangaFlow: Flow<Manga?>): Flow<TriStateOption> {
 		return mangaFlow
 			.filterNotNull()
-			.distinctUntilChangedBy { it.isNsfw() }
-			.combine(observeIncognitoMode()) { manga, globalIncognito ->
-				when {
-					globalIncognito -> TriStateOption.ENABLED
-					manga.isNsfw() -> settings.incognitoModeForNsfw
-					else -> TriStateOption.DISABLED
+			.flatMapLatest { manga ->
+				combine(
+					observeIncognitoMode(),
+					observeMangaIncognitoMode(manga.id)
+				) { globalIncognito, mangaIncognito ->
+					if (globalIncognito || mangaIncognito) {
+						TriStateOption.ENABLED
+					} else {
+						TriStateOption.DISABLED
+					}
 				}
 			}
 	}
@@ -94,5 +100,15 @@ class DetailsInteractor @Inject constructor(
 
 	private fun observeIncognitoMode() = settings.observeAsFlow(AppSettings.KEY_INCOGNITO_MODE) {
 		isIncognitoModeEnabled
+	}
+
+	fun observeMangaIncognitoMode(mangaId: Long): Flow<Boolean> {
+		return mangaDataRepository.observe(mangaId)
+			.map { it?.incognitoMode == true }
+			.distinctUntilChanged()
+	}
+
+	suspend fun setMangaIncognitoMode(manga: Manga, enabled: Boolean) {
+		mangaDataRepository.setIncognitoMode(manga, enabled)
 	}
 }

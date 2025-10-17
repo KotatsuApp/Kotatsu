@@ -117,7 +117,6 @@ class ReaderViewModel @Inject constructor(
 	val onPageSaved = MutableEventFlow<Collection<Uri>>()
 	val onLoadingError = MutableEventFlow<Throwable>()
 	val onShowToast = MutableEventFlow<Int>()
-	val onAskNsfwIncognito = MutableEventFlow<Unit>()
 	val uiState = MutableStateFlow<ReaderUiState?>(null)
 
 	val isIncognitoMode = MutableStateFlow(savedStateHandle.get<Boolean>(ReaderIntent.EXTRA_INCOGNITO))
@@ -395,13 +394,6 @@ class ReaderViewModel @Inject constructor(
 		}
 	}
 
-	fun setIncognitoMode(value: Boolean, dontAskAgain: Boolean) {
-		isIncognitoMode.value = value
-		if (dontAskAgain) {
-			settings.incognitoModeForNsfw = if (value) TriStateOption.ENABLED else TriStateOption.DISABLED
-		}
-	}
-
 	private fun loadImpl() {
 		loadingJob = launchLoadingJob(Dispatchers.Default + EventExceptionHandler(onLoadingError)) {
 			var exception: Exception? = null
@@ -541,15 +533,7 @@ class ReaderViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			interactor.observeIncognitoMode(manga)
 				.collect {
-					when (it) {
-						TriStateOption.ENABLED -> isIncognitoMode.value = true
-						TriStateOption.ASK -> {
-							onAskNsfwIncognito.call(Unit)
-							return@collect
-						}
-
-						TriStateOption.DISABLED -> isIncognitoMode.value = false
-					}
+					isIncognitoMode.value = it == TriStateOption.ENABLED
 				}
 		}
 	}

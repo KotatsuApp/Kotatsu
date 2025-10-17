@@ -52,11 +52,19 @@ class DetailsMenuProvider(
 		menu.findItem(R.id.action_scrobbling).isVisible = viewModel.isScrobblingAvailable
 		menu.findItem(R.id.action_online).isVisible = viewModel.remoteManga.value != null
 		menu.findItem(R.id.action_stats).isVisible = viewModel.isStatsAvailable.value
+
+		menu.findItem(R.id.action_incognito).apply {
+			isChecked = viewModel.isIncognitoMode.value
+		}
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 		val manga = viewModel.getMangaOrNull() ?: return false
 		when (menuItem.itemId) {
+			R.id.action_incognito -> {
+				viewModel.toggleIncognitoMode()
+			}
+
 			R.id.action_share -> {
 				router.showShareDialog(manga)
 			}

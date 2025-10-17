@@ -89,6 +89,14 @@ class MangaDataRepository @Inject constructor(
 		return map
 	}
 
+	suspend fun setIncognitoMode(manga: Manga, enabled: Boolean) {
+		db.withTransaction {
+			storeManga(manga, replaceExisting = false)
+			val entity = db.getPreferencesDao().find(manga.id) ?: newEntity(manga.id)
+			db.getPreferencesDao().upsert(entity.copy(incognitoMode = enabled))
+		}
+	}
+
 	suspend fun setOverride(manga: Manga, override: MangaOverride?) {
 		db.withTransaction {
 			storeManga(manga, replaceExisting = false)
@@ -191,6 +199,10 @@ class MangaDataRepository @Inject constructor(
 		emitInitialState = emitInitialState,
 	)
 
+	fun observe(mangaId: Long): Flow<MangaPrefsEntity?> {
+		return db.getPreferencesDao().observe(mangaId)
+	}
+
 	fun observeFavoritesTrigger(emitInitialState: Boolean) = db.invalidationTracker.createFlow(
 		tables = arrayOf(TABLE_FAVOURITES, TABLE_FAVOURITE_CATEGORIES),
 		emitInitialState = emitInitialState,
@@ -244,5 +256,6 @@ class MangaDataRepository @Inject constructor(
 		titleOverride = null,
 		coverUrlOverride = null,
 		contentRatingOverride = null,
+		incognitoMode = false,
 	)
 }

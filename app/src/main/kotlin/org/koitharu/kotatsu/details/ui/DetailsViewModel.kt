@@ -181,6 +181,10 @@ class DetailsViewModel @Inject constructor(
 	val selectedBranchValue: String?
 		get() = selectedBranch.value
 
+	val isIncognitoMode = interactor.observeMangaIncognitoMode(mangaId)
+		.withErrorHandling()
+		.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, false)
+
 	init {
 		loadingJob = doLoad(force = false)
 		launchJob(Dispatchers.Default + SkipErrors) {
@@ -226,6 +230,13 @@ class DetailsViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			val handle = historyRepository.delete(setOf(mangaId))
 			onActionDone.call(ReversibleAction(R.string.removed_from_history, handle))
+		}
+	}
+
+	fun toggleIncognitoMode() {
+		launchJob(Dispatchers.Default) {
+			val manga = manga.firstOrNull() ?: return@launchJob
+			interactor.setMangaIncognitoMode(manga, !isIncognitoMode.value)
 		}
 	}
 
