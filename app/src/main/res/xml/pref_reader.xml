@@ -144,6 +144,12 @@
 		android:key="reader_bar_transparent"
 		android:title="@string/reader_info_bar_transparent" />
 
+	<SwitchPreferenceCompat
+		android:defaultValue="true"
+		android:key="reader_chapter_toast"
+		android:summary="@string/reader_chapter_toast_summary"
+		android:title="@string/reader_chapter_toast" />
+
 	<ListPreference
 		android:entries="@array/reader_backgrounds"
 		android:key="reader_background"

@@ -803,6 +803,8 @@
 	<string name="enable_all_sources">Enable all manga sources</string>
 	<string name="enable_all_sources_summary">All available manga sources will be enabled permanently</string>
 	<string name="all_sources_enabled">All sources are enabled</string>
+	<string name="reader_chapter_toast">Show chapter toast</string>
+	<string name="reader_chapter_toast_summary">Show a toast message with the chapter name when it changes</string>
 	<string name="reader_info_bar_transparent">Transparent reader information bar</string>
 	<string name="backup_restored_background">The backup will be restored in the background</string>
 	<string name="restoring_backup">Restoring backup</string>
