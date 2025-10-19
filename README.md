@@ -112,6 +112,6 @@ You may copy, distribute and modify the software as long as you track changes/da
 
 <div align="left">
 
-The developers of this application do not have any affiliation with the content available in the app. It collects content from sources that are freely available through any web browser.
+The developers of this application do not have any affiliation with the content available in the app and does not store or distribute any content. This application should be considered a web browser, all content that can be found using this application is freely available on the Internet. All DMCA takedown requests should be sent to the owners of the website where the content is hosted.
 
 </div>
