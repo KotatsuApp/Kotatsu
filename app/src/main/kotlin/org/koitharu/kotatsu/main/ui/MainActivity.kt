@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.main.ui
 
 import android.Manifest
 import android.app.BackgroundServiceStartNotAllowedException
+import android.app.ServiceStartNotAllowedException
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
@@ -305,7 +306,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				}
 			}
 		}
-	} catch (e: BackgroundServiceStartNotAllowedException) {
+	} catch (e: IllegalStateException) {
 		e.printStackTraceDebug()
 	}
 
