@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.core.network.webview
 
 import android.content.Context
+import android.util.AndroidRuntimeException
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -41,7 +42,13 @@ class WebViewExecutor @Inject constructor(
 	private val mutex = Mutex()
 
 	val defaultUserAgent: String? by lazy {
-		WebSettings.getDefaultUserAgent(context)
+		try {
+			WebSettings.getDefaultUserAgent(context)
+		} catch (e: AndroidRuntimeException) {
+			e.printStackTraceDebug()
+			// Probably WebView is not available
+			null
+		}
 	}
 
 	suspend fun evaluateJs(baseUrl: String?, script: String): String? = mutex.withLock {
