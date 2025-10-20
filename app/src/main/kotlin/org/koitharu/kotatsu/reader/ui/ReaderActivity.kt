@@ -489,7 +489,7 @@ class ReaderActivity :
 			else -> chapterTitle
 		}
 		if (
-			viewModel.isChapterToastEnabled.value &&
+			settings.isReaderChapterToastEnabled &&
 			chapterTitle != previous?.getChapterTitle(resources) &&
 			chapterTitle.isNotEmpty()
 		) {
