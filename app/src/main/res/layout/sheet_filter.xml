@@ -1,287 +1,313 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:orientation="vertical">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
-		android:id="@+id/headerBar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:title="@string/filter" />
+    <org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
+        android:id="@+id/headerBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/filter" />
 
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:scrollIndicators="top|bottom"
+        tools:ignore="UnusedAttribute">
 
+        <LinearLayout
+            android:id="@+id/layout_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/margin_small"
+            android:paddingBottom="@dimen/margin_normal">
 
-	<androidx.core.widget.NestedScrollView
-		android:id="@+id/scrollView"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:clipToPadding="false"
-		android:scrollIndicators="top"
-		tools:ignore="UnusedAttribute">
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="@string/sort_order">
 
-		<LinearLayout
-			android:id="@+id/layout_body"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			android:paddingHorizontal="@dimen/margin_small"
-			android:paddingBottom="@dimen/margin_normal">
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_order"
+                    style="?materialCardViewOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small">
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_saved_filters"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:title="@string/saved_filters">
+                    <Spinner
+                        android:id="@+id/spinner_order"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spinner_height"
+                        android:minHeight="?listPreferredItemHeightSmall"
+                        android:paddingHorizontal="8dp" />
 
-				<org.koitharu.kotatsu.core.ui.widgets.ChipsView
-					android:id="@+id/chips_saved_filters"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+                </com.google.android.material.card.MaterialCardView>
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_order"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				app:title="@string/sort_order">
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_saved_filters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:title="@string/saved_filters">
 
-				<com.google.android.material.card.MaterialCardView
-					android:id="@+id/card_order"
-					style="?materialCardViewOutlinedStyle"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small">
+                <org.koitharu.kotatsu.core.ui.widgets.ChipsView
+                    android:id="@+id/chips_saved_filters"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
 
-					<Spinner
-						android:id="@+id/spinner_order"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/spinner_height"
-						android:minHeight="?listPreferredItemHeightSmall"
-						android:paddingHorizontal="8dp" />
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				</com.google.android.material.card.MaterialCardView>
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_locale"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:title="@string/language">
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_locale"
+                    style="?materialCardViewOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small">
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_locale"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:title="@string/language">
+                    <Spinner
+                        android:id="@+id/spinner_locale"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spinner_height"
+                        android:minHeight="?listPreferredItemHeightSmall"
+                        android:paddingHorizontal="8dp"
+                        android:popupBackground="@drawable/m3_spinner_popup_background" />
 
-				<com.google.android.material.card.MaterialCardView
-					android:id="@+id/card_locale"
-					style="?materialCardViewOutlinedStyle"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small">
+                </com.google.android.material.card.MaterialCardView>
 
-					<Spinner
-						android:id="@+id/spinner_locale"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/spinner_height"
-						android:minHeight="?listPreferredItemHeightSmall"
-						android:paddingHorizontal="8dp"
-						android:popupBackground="@drawable/m3_spinner_popup_background" />
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				</com.google.android.material.card.MaterialCardView>
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_original_locale"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:title="@string/original_language">
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_original_locale"
+                    style="?materialCardViewOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small">
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_original_locale"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:title="@string/original_language">
+                    <Spinner
+                        android:id="@+id/spinner_original_locale"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spinner_height"
+                        android:minHeight="?listPreferredItemHeightSmall"
+                        android:paddingHorizontal="8dp"
+                        android:popupBackground="@drawable/m3_spinner_popup_background" />
 
-				<com.google.android.material.card.MaterialCardView
-					android:id="@+id/card_original_locale"
-					style="?materialCardViewOutlinedStyle"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small">
+                </com.google.android.material.card.MaterialCardView>
 
-					<Spinner
-						android:id="@+id/spinner_original_locale"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/spinner_height"
-						android:minHeight="?listPreferredItemHeightSmall"
-						android:paddingHorizontal="8dp"
-						android:popupBackground="@drawable/m3_spinner_popup_background" />
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				</com.google.android.material.card.MaterialCardView>
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_genres"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:showMoreButton="true"
+                app:title="@string/genres">
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+                <org.koitharu.kotatsu.core.ui.widgets.ChipsView
+                    android:id="@+id/chips_genres"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_genres"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:showMoreButton="true"
-				app:title="@string/genres">
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				<org.koitharu.kotatsu.core.ui.widgets.ChipsView
-					android:id="@+id/chips_genres"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_genresExclude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:showMoreButton="true"
+                app:title="@string/genres_exclude">
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+                <org.koitharu.kotatsu.core.ui.widgets.ChipsView
+                    android:id="@+id/chips_genresExclude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_genresExclude"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:showMoreButton="true"
-				app:title="@string/genres_exclude">
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				<org.koitharu.kotatsu.core.ui.widgets.ChipsView
-					android:id="@+id/chips_genresExclude"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_types"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:title="@string/type">
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+                <org.koitharu.kotatsu.core.ui.widgets.ChipsView
+                    android:id="@+id/chips_types"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_types"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:title="@string/type">
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				<org.koitharu.kotatsu.core.ui.widgets.ChipsView
-					android:id="@+id/chips_types"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:title="@string/state">
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+                <org.koitharu.kotatsu.core.ui.widgets.ChipsView
+                    android:id="@+id/chips_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_state"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:title="@string/state">
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				<org.koitharu.kotatsu.core.ui.widgets.ChipsView
-					android:id="@+id/chips_state"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_contentRating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:title="@string/content_rating">
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+                <org.koitharu.kotatsu.core.ui.widgets.ChipsView
+                    android:id="@+id/chips_contentRating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_contentRating"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:title="@string/content_rating">
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				<org.koitharu.kotatsu.core.ui.widgets.ChipsView
-					android:id="@+id/chips_contentRating"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_demographics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:title="@string/demographics">
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+                <org.koitharu.kotatsu.core.ui.widgets.ChipsView
+                    android:id="@+id/chips_demographics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_demographics"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:title="@string/demographics">
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				<org.koitharu.kotatsu.core.ui.widgets.ChipsView
-					android:id="@+id/chips_demographics"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="@dimen/margin_small"
-					android:layout_marginTop="@dimen/margin_small"
-					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:title="@string/year">
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/slider_year"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stepSize="1"
+                    app:labelBehavior="gone"
+                    app:tickVisible="true"
+                    tools:value="2020"
+                    tools:valueFrom="1900"
+                    tools:valueTo="2090" />
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_year"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:title="@string/year">
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				<com.google.android.material.slider.Slider
-					android:id="@+id/slider_year"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:stepSize="1"
-					app:labelBehavior="gone"
-					app:tickVisible="true"
-					tools:value="2020"
-					tools:valueFrom="1900"
-					tools:valueTo="2090" />
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_yearsRange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:title="@string/years">
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/slider_yearsRange"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:stepSize="1"
+                    app:labelBehavior="gone"
+                    app:tickVisible="true"
+                    tools:valueFrom="1900"
+                    tools:valueTo="2090" />
 
-			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
-				android:id="@+id/layout_yearsRange"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_small"
-				app:title="@string/years">
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
-				<com.google.android.material.slider.RangeSlider
-					android:id="@+id/slider_yearsRange"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginTop="@dimen/margin_normal"
-					android:stepSize="1"
-					app:labelBehavior="gone"
-					app:tickVisible="true"
-					tools:valueFrom="1900"
-					tools:valueTo="2090" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+    <com.google.android.material.dockedtoolbar.DockedToolbarLayout
+        android:id="@+id/docked_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="false">
 
-		</LinearLayout>
-	</androidx.core.widget.NestedScrollView>
+        <LinearLayout
+            android:id="@+id/layout_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/m3_comp_toolbar_docked_container_height"
+            android:gravity="center_vertical">
 
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/button_save_filter"
-		style="@style/Widget.Material3.Button"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginHorizontal="@dimen/margin_small"
-		android:layout_marginTop="@dimen/margin_small"
-		android:layout_marginBottom="@dimen/margin_normal"
-		android:text="@string/save"
-		android:enabled="false" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_reset"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="@string/reset"
+                tools:enabled="true" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_save"
+                style="?materialButtonTonalStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="@string/save"
+                tools:enabled="true"
+                tools:ignore="ButtonStyle" />
+
+        </LinearLayout>
+    </com.google.android.material.dockedtoolbar.DockedToolbarLayout>
+
 </LinearLayout>

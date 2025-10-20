@@ -879,4 +879,6 @@
 	<string name="chapters_load_failed">Failed to load chapter list</string>
 	<string name="telegram_integration">Telegram integration</string>
 	<string name="test_parser">Test manga source</string>
+  <string name="rename">Rename</string>
+  <string name="save_filter">Save filter</string>
 </resources>
