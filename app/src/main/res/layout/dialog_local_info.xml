@@ -62,4 +62,13 @@
 		android:text="@string/delete_read_chapters"
 		app:chipIcon="@drawable/ic_delete" />
 
+	<com.google.android.material.chip.Chip
+		android:id="@+id/chip_allcleanup"
+		style="@style/Widget.Kotatsu.Chip.Assist"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="12dp"
+		android:text="@string/delete_all_chapters"
+		app:chipIcon="@drawable/ic_delete" />
+
 </LinearLayout>
