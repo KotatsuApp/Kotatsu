@@ -15,19 +15,18 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.parser.MangaRepository
-import org.koitharu.kotatsu.core.model.unwrap
 import org.koitharu.kotatsu.core.util.LocaleComparator
 import org.koitharu.kotatsu.core.util.ext.asFlow
 import org.koitharu.kotatsu.core.util.ext.lifecycleScope
 import org.koitharu.kotatsu.core.util.ext.sortedByOrdinal
 import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
+import org.koitharu.kotatsu.filter.data.PersistableFilter
 import org.koitharu.kotatsu.filter.data.SavedFiltersRepository
 import org.koitharu.kotatsu.filter.ui.model.FilterProperty
 import org.koitharu.kotatsu.filter.ui.tags.TagTitleComparator
@@ -46,7 +45,6 @@ import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import org.koitharu.kotatsu.remotelist.ui.RemoteListFragment
 import org.koitharu.kotatsu.search.domain.MangaSearchRepository
-import org.json.JSONObject
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
@@ -66,26 +64,9 @@ class FilterCoordinator @Inject constructor(
 
     private val currentListFilter = MutableStateFlow(MangaListFilter.EMPTY)
     private val currentSortOrder = MutableStateFlow(repository.defaultSortOrder)
-    private val currentPresetId = MutableStateFlow<Long?>(null)
-    private var lastAppliedPayload: JSONObject? = null
 
     private val availableSortOrders = repository.sortOrders
     private val filterOptions = suspendLazy { repository.getFilterOptions() }
-
-    init {
-        coroutineScope.launch {
-            currentListFilter.collect { lf ->
-                val applied = lastAppliedPayload
-                if (applied != null) {
-                    val cur = savedFiltersRepository.serializeFilter(lf)
-                    if (cur.toString() != applied.toString()) {
-                        currentPresetId.value = null
-                        lastAppliedPayload = null
-                    }
-                }
-            }
-        }
-    }
 
     val capabilities = repository.filterCapabilities
 
@@ -273,11 +254,15 @@ class FilterCoordinator @Inject constructor(
         MutableStateFlow(FilterProperty.EMPTY)
     }
 
-    val savedPresets: StateFlow<List<SavedFiltersRepository.Preset>> =
-        savedFiltersRepository.observe(repository.source.unwrap().name)
-            .stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
-
-    val selectedPresetId: StateFlow<Long?> = currentPresetId
+    val savedFilters: StateFlow<FilterProperty<PersistableFilter>> = combine(
+        savedFiltersRepository.observeAll(repository.source),
+        currentListFilter,
+    ) { available, applied ->
+        FilterProperty(
+            availableItems = available,
+            selectedItems = setOfNotNull(available.find { it.filter == applied }),
+        )
+    }.stateIn(coroutineScope, SharingStarted.Lazily, FilterProperty.EMPTY)
 
     fun reset() {
         currentListFilter.value = MangaListFilter.EMPTY
@@ -313,36 +298,16 @@ class FilterCoordinator @Inject constructor(
         set(newFilter)
     }
 
-    fun saveCurrentPreset(name: String) {
-        val preset = savedFiltersRepository.save(repository.source.unwrap().name, name, currentListFilter.value)
-        currentPresetId.value = preset.id
-        lastAppliedPayload = preset.payload
+    fun saveCurrentFilter(name: String) = coroutineScope.launch {
+        savedFiltersRepository.save(repository.source, name, currentListFilter.value)
     }
 
-    fun applyPreset(preset: SavedFiltersRepository.Preset) {
-        coroutineScope.launch {
-            val available = filterOptions.asFlow().map { it.getOrNull()?.availableTags.orEmpty() }.first()
-            val byKey: (Set<String>) -> Set<MangaTag> = { keys ->
-                val all = available.associateBy { it.key }
-                keys.mapNotNull { all[it] }.toSet()
-            }
-            val filter = savedFiltersRepository.deserializeFilter(preset.payload, byKey)
-            setAdjusted(filter)
-            currentPresetId.value = preset.id
-            lastAppliedPayload = preset.payload
-        }
+    fun renameSavedFilter(id: Int, newName: String) = coroutineScope.launch {
+        savedFiltersRepository.rename(repository.source, id, newName)
     }
 
-    fun renamePreset(id: Long, newName: String) {
-        savedFiltersRepository.rename(repository.source.unwrap().name, id, newName)
-    }
-
-    fun deletePreset(id: Long) {
-        savedFiltersRepository.delete(repository.source.unwrap().name, id)
-        if (currentPresetId.value == id) {
-            currentPresetId.value = null
-            lastAppliedPayload = null
-        }
+    fun deleteSavedFilter(id: Int) = coroutineScope.launch {
+        savedFiltersRepository.delete(repository.source, id)
     }
 
     fun setQuery(value: String?) {
@@ -517,57 +482,57 @@ class FilterCoordinator @Inject constructor(
         emit(Result.failure(it))
     }
 
-	private fun <T> List<T>.addFirstDistinct(other: Collection<T>): List<T> {
-		val result = ArrayDeque<T>(this.size + other.size)
-		result.addAll(this)
-		for (item in other) {
-			if (item !in result) {
-				result.addFirst(item)
-			}
-		}
-		return result
-	}
+    private fun <T> List<T>.addFirstDistinct(other: Collection<T>): List<T> {
+        val result = ArrayDeque<T>(this.size + other.size)
+        result.addAll(this)
+        for (item in other) {
+            if (item !in result) {
+                result.addFirst(item)
+            }
+        }
+        return result
+    }
 
-	private fun <T> List<T>.addFirstDistinct(item: T): List<T> {
-		val result = ArrayDeque<T>(this.size + 1)
-		result.addAll(this)
-		if (item !in result) {
-			result.addFirst(item)
-		}
-		return result
-	}
+    private fun <T> List<T>.addFirstDistinct(item: T): List<T> {
+        val result = ArrayDeque<T>(this.size + 1)
+        result.addAll(this)
+        if (item !in result) {
+            result.addFirst(item)
+        }
+        return result
+    }
 
-	data class Snapshot(
-		val sortOrder: SortOrder,
-		val listFilter: MangaListFilter,
-	)
+    data class Snapshot(
+        val sortOrder: SortOrder,
+        val listFilter: MangaListFilter,
+    )
 
-	interface Owner {
+    interface Owner {
 
-		val filterCoordinator: FilterCoordinator
-	}
+        val filterCoordinator: FilterCoordinator
+    }
 
-	companion object {
+    companion object {
 
-		private const val TAGS_LIMIT = 12
-		private val MAX_YEAR = Calendar.getInstance()[Calendar.YEAR] + 1
+        private const val TAGS_LIMIT = 12
+        private val MAX_YEAR = Calendar.getInstance()[Calendar.YEAR] + 1
 
-		fun find(fragment: Fragment): FilterCoordinator? {
-			(fragment.activity as? Owner)?.let {
-				return it.filterCoordinator
-			}
-			var f = fragment
-			while (true) {
-				(f as? Owner)?.let {
-					return it.filterCoordinator
-				}
-				f = f.parentFragment ?: break
-			}
-			return null
-		}
+        fun find(fragment: Fragment): FilterCoordinator? {
+            (fragment.activity as? Owner)?.let {
+                return it.filterCoordinator
+            }
+            var f = fragment
+            while (true) {
+                (f as? Owner)?.let {
+                    return it.filterCoordinator
+                }
+                f = f.parentFragment ?: break
+            }
+            return null
+        }
 
-		fun require(fragment: Fragment): FilterCoordinator {
-			return find(fragment) ?: throw IllegalStateException("FilterCoordinator cannot be found")
-		}
- 	}
+        fun require(fragment: Fragment): FilterCoordinator {
+            return find(fragment) ?: throw IllegalStateException("FilterCoordinator cannot be found")
+        }
+    }
 }
