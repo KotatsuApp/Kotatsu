@@ -488,7 +488,11 @@ class ReaderActivity :
 			uiState.incognito -> getString(R.string.incognito_mode)
 			else -> chapterTitle
 		}
-		if (chapterTitle != previous?.getChapterTitle(resources) && chapterTitle.isNotEmpty()) {
+		if (
+			settings.isReaderChapterToastEnabled &&
+			chapterTitle != previous?.getChapterTitle(resources) &&
+			chapterTitle.isNotEmpty()
+		) {
 			viewBinding.toastView.showTemporary(chapterTitle, TOAST_DURATION)
 		}
 		if (uiState.isSliderAvailable()) {

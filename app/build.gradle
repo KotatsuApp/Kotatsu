@@ -1,3 +1,5 @@
+import java.time.LocalDateTime
+
 plugins {
 	id 'com.android.application'
 	id 'kotlin-android'
@@ -17,8 +19,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 23
 		targetSdk = 36
-		versionCode = 1033
-		versionName = '9.2.0.41'
+		versionCode = 1034
+		versionName = '9.3.0.1'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -106,7 +108,7 @@ android {
 		unitTests.includeAndroidResources true
 		unitTests.returnDefaultValues false
 		kotlinOptions {
-				freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
+			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
 		}
 	}
 	splits {

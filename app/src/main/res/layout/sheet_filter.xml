@@ -13,6 +13,8 @@
 		android:layout_height="wrap_content"
 		app:title="@string/filter" />
 
+
+
 	<androidx.core.widget.NestedScrollView
 		android:id="@+id/scrollView"
 		android:layout_width="match_parent"
@@ -28,6 +30,23 @@
 			android:orientation="vertical"
 			android:paddingHorizontal="@dimen/margin_small"
 			android:paddingBottom="@dimen/margin_normal">
+
+			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+				android:id="@+id/layout_saved_filters"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_small"
+				app:title="@string/saved_filters">
+
+				<org.koitharu.kotatsu.core.ui.widgets.ChipsView
+					android:id="@+id/chips_saved_filters"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="@dimen/margin_small"
+					android:layout_marginTop="@dimen/margin_small"
+					app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+
+			</org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
 			<org.koitharu.kotatsu.filter.ui.FilterFieldLayout
 				android:id="@+id/layout_order"
@@ -254,4 +273,15 @@
 
 		</LinearLayout>
 	</androidx.core.widget.NestedScrollView>
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/button_save_filter"
+		style="@style/Widget.Material3.Button"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="@dimen/margin_small"
+		android:layout_marginTop="@dimen/margin_small"
+		android:layout_marginBottom="@dimen/margin_normal"
+		android:text="@string/save"
+		android:enabled="false" />
 </LinearLayout>

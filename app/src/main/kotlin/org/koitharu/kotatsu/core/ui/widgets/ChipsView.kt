@@ -56,6 +56,11 @@ class ChipsView @JvmOverloads constructor(
 		val data = it.tag
 		onChipCloseClickListener?.onChipCloseClick(chip, data) ?: onChipClickListener?.onChipClick(chip, data)
 	}
+	private val chipOnLongClickListener = OnLongClickListener {
+		val chip = it as Chip
+		val data = it.tag
+		onChipLongClickListener?.onChipLongClick(chip, data) ?: false
+	}
 	private val chipStyle: Int
 	private val iconsVisible: Boolean
 	var onChipClickListener: OnChipClickListener? = null
@@ -65,6 +70,8 @@ class ChipsView @JvmOverloads constructor(
 			children.forEach { it.isClickable = isChipClickable }
 		}
 	var onChipCloseClickListener: OnChipCloseClickListener? = null
+
+	var onChipLongClickListener: OnChipLongClickListener? = null
 
 	init {
 		val ta = context.obtainStyledAttributes(attrs, R.styleable.ChipsView, defStyleAttr, 0)
@@ -145,6 +152,7 @@ class ChipsView @JvmOverloads constructor(
 			setOnCloseIconClickListener(chipOnCloseListener)
 			setEnsureMinTouchTargetSize(false)
 			setOnClickListener(chipOnClickListener)
+			setOnLongClickListener(chipOnLongClickListener)
 			isElegantTextHeight = false
 		}
 
@@ -275,5 +283,10 @@ class ChipsView @JvmOverloads constructor(
 	fun interface OnChipCloseClickListener {
 
 		fun onChipCloseClick(chip: Chip, data: Any?)
+	}
+
+	fun interface OnChipLongClickListener {
+
+		fun onChipLongClick(chip: Chip, data: Any?): Boolean
 	}
 }

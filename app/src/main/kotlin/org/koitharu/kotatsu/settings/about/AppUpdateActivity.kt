@@ -137,7 +137,7 @@ class AppUpdateActivity : BaseActivity<ActivityAppUpdateBinding>(), View.OnClick
 		viewModel.installIntent.value?.let { intent ->
 			try {
 				startActivity(intent)
-			} catch (e: ActivityNotFoundException) {
+			} catch (e: Exception) {
 				onError(e)
 			}
 			return

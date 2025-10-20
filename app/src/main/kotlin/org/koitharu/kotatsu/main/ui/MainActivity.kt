@@ -1,6 +1,8 @@
 package org.koitharu.kotatsu.main.ui
 
 import android.Manifest
+import android.app.BackgroundServiceStartNotAllowedException
+import android.app.ServiceStartNotAllowedException
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
@@ -57,6 +59,7 @@ import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
+import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.core.util.ext.start
 import org.koitharu.kotatsu.databinding.ActivityMainBinding
 import org.koitharu.kotatsu.details.service.MangaPrefetchService
@@ -287,7 +290,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 		adjustFabVisibility(isResumeEnabled = isEnabled)
 	}
 
-	private fun onFirstStart() {
+	private fun onFirstStart() = try {
 		lifecycleScope.launch(Dispatchers.Main) { // not a default `Main.immediate` dispatcher
 			withContext(Dispatchers.Default) {
 				LocalStorageCleanupWorker.enqueue(applicationContext)
@@ -299,6 +302,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				startService(Intent(this@MainActivity, PeriodicalBackupService::class.java))
 			}
 		}
+	} catch (e: IllegalStateException) {
+		e.printStackTraceDebug()
 	}
 
 	private fun adjustAppbar(topFragment: Fragment) {

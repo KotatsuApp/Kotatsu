@@ -14,7 +14,7 @@ class ScrobblingBackup(
 	@SerialName("chapter") val chapter: Int,
 	@SerialName("comment") val comment: String?,
 	@SerialName("rating") val rating: Float,
-) {
+	) {
 
 	constructor(entity: ScrobblingEntity) : this(
 		scrobbler = entity.scrobbler,
