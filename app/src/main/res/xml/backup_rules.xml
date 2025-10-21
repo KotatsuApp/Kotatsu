@@ -1,23 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
 	<cloud-backup disableIfNoEncryptionCapabilities="false">
-		<include
-			domain="sharedpref"
-			path="." />
-		<exclude
-			domain="sharedpref"
-			path="_local_index.xml" />
+		<include domain="sharedpref" path="."/>
+		<exclude domain="sharedpref" path="_local_index.xml"/>
 		<exclude domain="database" />
 		<exclude domain="device_database" />
 		<exclude domain="external" />
 	</cloud-backup>
 	<device-transfer>
-		<include
-			domain="sharedpref"
-			path="." />
-		<exclude
-			domain="sharedpref"
-			path="_local_index.xml" />
+		<include domain="sharedpref" path="."/>
+		<exclude domain="sharedpref" path="_local_index.xml"/>
 		<exclude domain="database" />
 		<exclude domain="device_database" />
 	</device-transfer>

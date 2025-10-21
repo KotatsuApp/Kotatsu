@@ -14,13 +14,13 @@ import org.koitharu.kotatsu.BuildConfig
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.network.BaseHttpClient
 import org.koitharu.kotatsu.core.os.AppValidator
-import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.ext.asArrayList
 import org.koitharu.kotatsu.core.util.ext.printStackTraceDebug
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu.parsers.util.json.mapJSONNotNull
 import org.koitharu.kotatsu.parsers.util.parseJsonArray
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu.parsers.util.splitTwoParts
 import org.koitharu.kotatsu.parsers.util.suspendlazy.getOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -31,7 +31,6 @@ private const val BUILD_TYPE_RELEASE = "release"
 @Singleton
 class AppUpdateRepository @Inject constructor(
 	private val appValidator: AppValidator,
-	private val settings: AppSettings,
 	@BaseHttpClient private val okHttp: OkHttpClient,
 	@ApplicationContext context: Context,
 ) {
@@ -53,16 +52,20 @@ class AppUpdateRepository @Inject constructor(
 			.get()
 			.url(releasesUrl)
 		val jsonArray = okHttp.newCall(request.build()).await().parseJsonArray()
+		val is64 = android.os.Process.is64Bit()
+
 		return jsonArray.mapJSONNotNull { json ->
 			val asset = json.optJSONArray("assets")?.find { jo ->
 				jo.optString("content_type") == CONTENT_TYPE_APK
 			} ?: return@mapJSONNotNull null
+			val apkUrl = if(is64) asset.getString("browser_download_url").replace("armeabiv7a", "arm64v8") else asset.getString("browser_download_url").replace("arm64v8", "armeabiv7a")
+
 			AppVersion(
 				id = json.getLong("id"),
 				url = json.getString("html_url"),
-				name = json.getString("name").removePrefix("v"),
+				name = json.getString("name").splitTwoParts('v')?.second ?: "",
 				apkSize = asset.getLong("size"),
-				apkUrl = asset.getString("browser_download_url"),
+				apkUrl = apkUrl,
 				description = json.getString("body"),
 			)
 		}
@@ -76,7 +79,7 @@ class AppUpdateRepository @Inject constructor(
 			val currentVersion = VersionId(BuildConfig.VERSION_NAME)
 			val available = getAvailableVersions().asArrayList()
 			available.sortBy { it.versionId }
-			if (currentVersion.isStable && !settings.isUnstableUpdatesAllowed) {
+			if (currentVersion.isStable) {
 				available.retainAll { it.versionId.isStable }
 			}
 			available.maxByOrNull { it.versionId }

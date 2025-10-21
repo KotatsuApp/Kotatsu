@@ -46,7 +46,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.backups.ui.periodical.PeriodicalBackupService
-import org.koitharu.kotatsu.browser.AdListUpdateService
 import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.os.VoiceInputContract
@@ -301,9 +300,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppBarOwner, BottomNav
 				requestNotificationsPermission()
 				startService(Intent(this@MainActivity, LocalIndexUpdateService::class.java))
 				startService(Intent(this@MainActivity, PeriodicalBackupService::class.java))
-				if (settings.isAdBlockEnabled) {
-					startService(Intent(this@MainActivity, AdListUpdateService::class.java))
-				}
 			}
 		}
 	} catch (e: IllegalStateException) {

@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.core.ErrorReporterReceiver
 import org.koitharu.kotatsu.core.model.parcelable.ParcelableManga
 import org.koitharu.kotatsu.core.ui.CoroutineIntentService
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
@@ -65,7 +64,6 @@ class LocalChaptersRemoveService : CoroutineIntentService() {
 			.setContentText(error.getDisplayMessage(resources))
 			.setSmallIcon(android.R.drawable.stat_notify_error)
 			.setAutoCancel(true)
-			.setContentIntent(ErrorReporterReceiver.getPendingIntent(applicationContext, error))
 			.build()
 		val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 		nm.notify(NOTIFICATION_ID + startId, notification)

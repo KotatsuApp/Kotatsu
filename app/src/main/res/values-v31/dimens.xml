@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<dimen name="appwidget_corner_radius_inner">@android:dimen/system_app_widget_inner_radius</dimen>
-	<dimen name="appwidget_corner_radius_background">@android:dimen/system_app_widget_background_radius</dimen>
-</resources>

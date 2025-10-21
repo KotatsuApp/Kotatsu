@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="url_github" translatable="false">https://github.com/KotatsuApp/Kotatsu</string>
-	<string name="url_telegram_web" translatable="false">https://t.me/kotatsuapp</string>
-	<string name="url_telegram" translatable="false">tg://resolve?domain=kotatsuapp</string>
-	<string name="url_weblate" translatable="false">https://hosted.weblate.org/engage/kotatsu</string>
+	<string name="url_github" translatable="false">https://github.com/vtorres-t/Kotatsu</string>
 	<string name="url_user_manual" translatable="false">https://kotatsu.app/manuals/guides/getting-started/</string>
-	<string name="url_error_report" translatable="false">https://bugs.kotatsu.app/report</string>
 	<string name="account_type_sync" translatable="false">org.kotatsu.sync</string>
-	<string name="github_updates_repo" translatable="false">KotatsuApp/Kotatsu</string>
+	<string name="github_updates_repo" translatable="false">vtorres-t/Kotatsu</string>
 	<string name="shikimori_clientId" translatable="false">Mw6F0tPEOgyV7F9U9Twg50Q8SndMY7hzIOfXg0AX_XU</string>
 	<string name="shikimori_clientSecret" translatable="false">euBMt1GGRSDpVIFQVPxZrO7Kh6X4gWyv0dABuj4B-M8</string>
 	<string name="anilist_clientId" translatable="false">9887</string>
@@ -15,13 +11,10 @@
 	<string name="mal_clientId" translatable="false">6cd8e6349e9a36bc1fc1ab97703c9fd1</string>
 	<string name="kitsu_clientId" translatable="false">dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd</string>
 	<string name="kitsu_clientSecret" translatable="false">54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151</string>
-	<string name="acra_login" translatable="false">zPALLBPdpn5mnCB4</string>
-	<string name="acra_password" translatable="false">kgpuhoNJpSsQDCwu</string>
 	<string name="sync_authority_history" translatable="false">org.koitharu.kotatsu.history</string>
 	<string name="sync_authority_favourites" translatable="false">org.koitharu.kotatsu.favourites</string>
 	<string name="tg_backup_bot_name" translatable="false">kotatsu_backup_bot</string>
-	<string name="discord_app_id" translatable="false">1395464028611940393</string>
-	<string name="app_icon_url" translatable="false">https://raw.githubusercontent.com/KotatsuApp/Kotatsu/refs/heads/devel/metadata/en-US/icon.png</string>
+	<string name="app_icon_url" translatable="false">https://raw.githubusercontent.com/vtorres-t/Kotatsu/refs/heads/devel/metadata/en-US/icon.png</string>
 	<string-array name="values_theme" translatable="false">
 		<item>-1</item>
 		<item>1</item>

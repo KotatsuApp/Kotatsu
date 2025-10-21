@@ -6,7 +6,10 @@
 	<exclude
 		domain="sharedpref"
 		path="_local_index.xml" />
-	<exclude domain="database" />
-	<exclude domain="device_database" />
-	<exclude domain="external" />
+	<exclude
+		domain="database" />
+	<exclude
+		domain="device_database" />
+	<exclude
+		domain="external" />
 </full-backup-content>
