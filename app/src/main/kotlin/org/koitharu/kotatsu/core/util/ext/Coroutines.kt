@@ -9,7 +9,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.parsers.util.cancelAll
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable

@@ -19,7 +19,6 @@ import org.koitharu.kotatsu.settings.ServicesSettingsFragment
 import org.koitharu.kotatsu.settings.StorageAndNetworkSettingsFragment
 import org.koitharu.kotatsu.settings.SuggestionsSettingsFragment
 import org.koitharu.kotatsu.settings.about.AboutSettingsFragment
-import org.koitharu.kotatsu.settings.discord.DiscordSettingsFragment
 import org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment
 import org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment
 import org.koitharu.kotatsu.settings.userdata.BackupsSettingsFragment
@@ -72,12 +71,6 @@ class SettingsSearchHelper @Inject constructor(
             R.xml.pref_suggestions,
             listOf(context.getString(R.string.services)),
             SuggestionsSettingsFragment::class.java,
-        )
-        preferenceManager.inflateTo(
-            result,
-            R.xml.pref_discord,
-            listOf(context.getString(R.string.services)),
-            DiscordSettingsFragment::class.java,
         )
         preferenceManager.inflateTo(
             result,

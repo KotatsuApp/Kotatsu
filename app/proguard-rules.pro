@@ -17,7 +17,6 @@
 -dontwarn coil3.PlatformContext
 
 -keep class org.koitharu.kotatsu.settings.NotificationSettingsLegacyFragment
--keep class org.koitharu.kotatsu.settings.about.changelog.ChangelogFragment
 
 -keep class org.koitharu.kotatsu.core.exceptions.* { *; }
 -keep class org.koitharu.kotatsu.core.prefs.ScreenshotsPolicy { *; }
