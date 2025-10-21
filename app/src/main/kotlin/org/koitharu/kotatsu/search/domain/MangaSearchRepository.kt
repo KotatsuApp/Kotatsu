@@ -169,4 +169,8 @@ class MangaSearchRepository @Inject constructor(
 			null,
 		)?.use { cursor -> cursor.count } ?: 0
 	}
+
+    suspend fun getAuthors(source: MangaSource, limit: Int): List<String> {
+        return db.getMangaDao().findAuthorsBySource(source.name, limit)
+    }
 }

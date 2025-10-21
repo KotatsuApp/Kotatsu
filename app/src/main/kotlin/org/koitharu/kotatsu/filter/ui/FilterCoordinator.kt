@@ -124,6 +124,20 @@ class FilterCoordinator @Inject constructor(
         MutableStateFlow(FilterProperty.EMPTY)
     }
 
+    val authors: StateFlow<FilterProperty<String>> = if (capabilities.isAuthorSearchSupported) {
+        combine(
+            flow { emit(searchRepository.getAuthors(repository.source, TAGS_LIMIT)) },
+            currentListFilter.distinctUntilChangedBy { it.author },
+        ) { available, selected ->
+            FilterProperty(
+                availableItems = available,
+                selectedItems = setOfNotNull(selected.author),
+            )
+        }.stateIn(coroutineScope, SharingStarted.Lazily, FilterProperty.LOADING)
+    } else {
+        MutableStateFlow(FilterProperty.EMPTY)
+    }
+
     val states: StateFlow<FilterProperty<MangaState>> = combine(
         filterOptions.asFlow(),
         currentListFilter.distinctUntilChangedBy { it.states },

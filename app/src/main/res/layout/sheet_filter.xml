@@ -163,6 +163,24 @@
             </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
 
             <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
+                android:id="@+id/layout_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:showMoreButton="false"
+                app:title="@string/author">
+
+                <org.koitharu.kotatsu.core.ui.widgets.ChipsView
+                    android:id="@+id/chips_author"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:chipStyle="@style/Widget.Kotatsu.Chip.Filter" />
+
+            </org.koitharu.kotatsu.filter.ui.FilterFieldLayout>
+
+            <org.koitharu.kotatsu.filter.ui.FilterFieldLayout
                 android:id="@+id/layout_types"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

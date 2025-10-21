@@ -78,6 +78,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
         filter.originalLocale.observe(viewLifecycleOwner, this::onOriginalLocaleChanged)
         filter.tags.observe(viewLifecycleOwner, this::onTagsChanged)
         filter.tagsExcluded.observe(viewLifecycleOwner, this::onTagsExcludedChanged)
+        filter.authors.observe(viewLifecycleOwner, this::onAuthorsChanged)
         filter.states.observe(viewLifecycleOwner, this::onStateChanged)
         filter.contentTypes.observe(viewLifecycleOwner, this::onContentTypesChanged)
         filter.contentRating.observe(viewLifecycleOwner, this::onContentRatingChanged)
@@ -103,6 +104,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
         binding.chipsDemographics.onChipClickListener = this
         binding.chipsGenres.onChipClickListener = this
         binding.chipsGenresExclude.onChipClickListener = this
+        binding.chipsAuthor.onChipClickListener = this
         binding.chipsSavedFilters.onChipLongClickListener = this
         binding.chipsSavedFilters.onChipCloseClickListener = this
         binding.sliderYear.addOnChangeListener(this::onSliderValueChange)
@@ -199,6 +201,11 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
             is ContentRating -> filter.toggleContentRating(data, !chip.isChecked)
             is Demographic -> filter.toggleDemographic(data, !chip.isChecked)
             is PersistableFilter -> filter.setAdjusted(data.filter)
+            is String -> if (chip.isChecked) {
+                filter.setAuthor(null)
+            } else {
+                filter.setAuthor(data)
+            }
             null -> router.showTagsCatalogSheet(excludeMode = chip.parentView?.id == R.id.chips_genresExclude)
         }
     }
@@ -310,6 +317,22 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
             )
         }
         b.chipsGenresExclude.setChips(chips)
+    }
+
+    private fun onAuthorsChanged(value: FilterProperty<String>) {
+        val b = viewBinding ?: return
+        b.layoutAuthor.isGone = value.isEmpty()
+        if (value.isEmpty()) {
+            return
+        }
+        val chips = value.availableItems.map { author ->
+            ChipsView.ChipModel(
+                title = author,
+                isChecked = author in value.selectedItems,
+                data = author,
+            )
+        }
+        b.chipsAuthor.setChips(chips)
     }
 
     private fun onStateChanged(value: FilterProperty<MangaState>) {
