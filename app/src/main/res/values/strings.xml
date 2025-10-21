@@ -899,4 +899,5 @@
     <string name="create_or_restore_backup">Create or restore a backup</string>
     <string name="data_removal">Data removal</string>
     <string name="privacy">Privacy</string>
+    <string name="source_broken_warning">This manga source has been marked as broken. Some features may not work</string>
 </resources>

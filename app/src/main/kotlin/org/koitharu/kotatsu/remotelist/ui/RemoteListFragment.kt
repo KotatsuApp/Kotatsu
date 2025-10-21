@@ -29,120 +29,133 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.search.domain.SearchKind
 
 @AndroidEntryPoint
-class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner {
+class RemoteListFragment : MangaListFragment(), FilterCoordinator.Owner, View.OnClickListener {
 
-	override val viewModel by viewModels<RemoteListViewModel>()
+    override val viewModel by viewModels<RemoteListViewModel>()
 
-	override val filterCoordinator: FilterCoordinator
-		get() = viewModel.filterCoordinator
+    override val filterCoordinator: FilterCoordinator
+        get() = viewModel.filterCoordinator
 
-	override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
-		super.onViewBindingCreated(binding, savedInstanceState)
-		addMenuProvider(RemoteListMenuProvider())
-		addMenuProvider(MangaSearchMenuProvider(filterCoordinator, viewModel))
-		viewModel.isRandomLoading.observe(viewLifecycleOwner, MenuInvalidator(requireActivity()))
-		viewModel.onOpenManga.observeEvent(viewLifecycleOwner) { router.openDetails(it) }
-		filterCoordinator.observe().distinctUntilChangedBy { it.listFilter.isEmpty() }
-			.drop(1)
-			.observe(viewLifecycleOwner) {
-				activity?.invalidateMenu()
-			}
-	}
+    override fun onViewBindingCreated(binding: FragmentListBinding, savedInstanceState: Bundle?) {
+        super.onViewBindingCreated(binding, savedInstanceState)
+        addMenuProvider(RemoteListMenuProvider())
+        addMenuProvider(MangaSearchMenuProvider(filterCoordinator, viewModel))
+        viewModel.isRandomLoading.observe(viewLifecycleOwner, MenuInvalidator(requireActivity()))
+        viewModel.onOpenManga.observeEvent(viewLifecycleOwner) { router.openDetails(it) }
+        viewModel.onSourceBroken.observeEvent(viewLifecycleOwner) { showSourceBrokenWarning() }
+        filterCoordinator.observe().distinctUntilChangedBy { it.listFilter.isEmpty() }
+            .drop(1)
+            .observe(viewLifecycleOwner) {
+                activity?.invalidateMenu()
+            }
+    }
 
-	override fun onScrolledToEnd() {
-		viewModel.loadNextPage()
-	}
+    override fun onScrolledToEnd() {
+        viewModel.loadNextPage()
+    }
 
-	override fun onCreateActionMode(
-		controller: ListSelectionController,
-		menuInflater: MenuInflater,
-		menu: Menu
-	): Boolean {
-		menuInflater.inflate(R.menu.mode_remote, menu)
-		return super.onCreateActionMode(controller, menuInflater, menu)
-	}
+    override fun onCreateActionMode(
+        controller: ListSelectionController,
+        menuInflater: MenuInflater,
+        menu: Menu
+    ): Boolean {
+        menuInflater.inflate(R.menu.mode_remote, menu)
+        return super.onCreateActionMode(controller, menuInflater, menu)
+    }
 
-	override fun onFilterClick(view: View?) {
-		router.showFilterSheet()
-	}
+    override fun onFilterClick(view: View?) {
+        router.showFilterSheet()
+    }
 
-	override fun onEmptyActionClick() {
-		if (filterCoordinator.isFilterApplied) {
-			filterCoordinator.reset()
-		} else {
-			openInBrowser(null) // should never be called
-		}
-	}
+    override fun onEmptyActionClick() {
+        if (filterCoordinator.isFilterApplied) {
+            filterCoordinator.reset()
+        } else {
+            openInBrowser(null) // should never be called
+        }
+    }
 
-	override fun onFooterButtonClick() {
-		val filter = filterCoordinator.snapshot().listFilter
-		when {
-			!filter.query.isNullOrEmpty() -> router.openSearch(filter.query.orEmpty(), SearchKind.SIMPLE)
-			!filter.author.isNullOrEmpty() -> router.openSearch(filter.author.orEmpty(), SearchKind.AUTHOR)
-			filter.tags.size == 1 -> router.openSearch(filter.tags.singleOrNull()?.title.orEmpty(), SearchKind.TAG)
-		}
-	}
+    override fun onFooterButtonClick() {
+        val filter = filterCoordinator.snapshot().listFilter
+        when {
+            !filter.query.isNullOrEmpty() -> router.openSearch(filter.query.orEmpty(), SearchKind.SIMPLE)
+            !filter.author.isNullOrEmpty() -> router.openSearch(filter.author.orEmpty(), SearchKind.AUTHOR)
+            filter.tags.size == 1 -> router.openSearch(filter.tags.singleOrNull()?.title.orEmpty(), SearchKind.TAG)
+        }
+    }
 
-	override fun onSecondaryErrorActionClick(error: Throwable) {
-		openInBrowser(error.getCauseUrl())
-	}
+    override fun onSecondaryErrorActionClick(error: Throwable) {
+        openInBrowser(error.getCauseUrl())
+    }
 
-	private fun openInBrowser(url: String?) {
-		if (url?.isHttpUrl() == true) {
-			router.openBrowser(
-				url = url,
-				source = viewModel.source,
-				title = viewModel.source.getTitle(requireContext()),
-			)
-		} else {
-			Snackbar.make(requireViewBinding().recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
-				.show()
-		}
-	}
+    override fun onClick(v: View?) = Unit // from Snackbar, do nothing
 
-	private inner class RemoteListMenuProvider : MenuProvider {
+    private fun openInBrowser(url: String?) {
+        if (url?.isHttpUrl() == true) {
+            router.openBrowser(
+                url = url,
+                source = viewModel.source,
+                title = viewModel.source.getTitle(requireContext()),
+            )
+        } else {
+            Snackbar.make(requireViewBinding().recyclerView, R.string.operation_not_supported, Snackbar.LENGTH_SHORT)
+                .show()
+        }
+    }
 
-		override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-			menuInflater.inflate(R.menu.opt_list_remote, menu)
-		}
+    private fun showSourceBrokenWarning() {
+        val snackbar = Snackbar.make(
+            viewBinding?.recyclerView ?: return,
+            R.string.source_broken_warning,
+            Snackbar.LENGTH_INDEFINITE,
+        )
+        snackbar.setAction(R.string.got_it, this)
+        snackbar.show()
+    }
 
-		override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
-			R.id.action_source_settings -> {
-				router.openSourceSettings(viewModel.source)
-				true
-			}
+    private inner class RemoteListMenuProvider : MenuProvider {
 
-			R.id.action_random -> {
-				viewModel.openRandom()
-				true
-			}
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(R.menu.opt_list_remote, menu)
+        }
 
-			R.id.action_filter -> {
-				onFilterClick(null)
-				true
-			}
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
+            R.id.action_source_settings -> {
+                router.openSourceSettings(viewModel.source)
+                true
+            }
 
-			R.id.action_filter_reset -> {
-				filterCoordinator.reset()
-				true
-			}
+            R.id.action_random -> {
+                viewModel.openRandom()
+                true
+            }
 
-			else -> false
-		}
+            R.id.action_filter -> {
+                onFilterClick(null)
+                true
+            }
 
-		override fun onPrepareMenu(menu: Menu) {
-			super.onPrepareMenu(menu)
-			menu.findItem(R.id.action_random)?.isEnabled = !viewModel.isRandomLoading.value
-			menu.findItem(R.id.action_filter_reset)?.isVisible = filterCoordinator.isFilterApplied
-		}
-	}
+            R.id.action_filter_reset -> {
+                filterCoordinator.reset()
+                true
+            }
 
-	companion object {
+            else -> false
+        }
 
-		const val ARG_SOURCE = "provider"
+        override fun onPrepareMenu(menu: Menu) {
+            super.onPrepareMenu(menu)
+            menu.findItem(R.id.action_random)?.isEnabled = !viewModel.isRandomLoading.value
+            menu.findItem(R.id.action_filter_reset)?.isVisible = filterCoordinator.isFilterApplied
+        }
+    }
 
-		fun newInstance(source: MangaSource) = RemoteListFragment().withArgs(1) {
-			putString(ARG_SOURCE, source.name)
-		}
-	}
+    companion object {
+
+        const val ARG_SOURCE = "provider"
+
+        fun newInstance(source: MangaSource) = RemoteListFragment().withArgs(1) {
+            putString(ARG_SOURCE, source.name)
+        }
+    }
 }
