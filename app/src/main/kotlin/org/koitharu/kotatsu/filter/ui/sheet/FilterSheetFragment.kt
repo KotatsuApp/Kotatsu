@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
@@ -16,7 +17,6 @@ import androidx.core.view.updatePadding
 import com.google.android.material.chip.Chip
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.core.ui.dialog.setEditText
 import org.koitharu.kotatsu.core.ui.model.titleRes
 import org.koitharu.kotatsu.core.ui.sheet.BaseAdaptiveSheet
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
+import org.koitharu.kotatsu.core.util.AlphanumComparator
 import org.koitharu.kotatsu.core.util.ext.consume
 import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.getDisplayName
@@ -49,8 +50,10 @@ import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.model.YEAR_UNKNOWN
+import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.toIntUp
 import java.util.Locale
+import java.util.TreeSet
 
 class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
     AdapterView.OnItemSelectedListener,
@@ -110,9 +113,6 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
         binding.layoutGenresExclude.setOnMoreButtonClickListener {
             router.showTagsCatalogSheet(excludeMode = true)
         }
-        filter.observe().observe(viewLifecycleOwner) {
-            binding.buttonReset.isEnabled = it.listFilter.isNotEmpty()
-        }
         combine(
             filter.observe().map { it.listFilter.isNotEmpty() }.distinctUntilChanged(),
             filter.savedFilters.map { it.selectedItems.isEmpty() }.distinctUntilChanged(),
@@ -122,7 +122,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
                 binding.buttonSave.isEnabled = it
             }
         binding.buttonSave.setOnClickListener(this)
-        binding.buttonReset.setOnClickListener(this)
+        binding.buttonDone.setOnClickListener(this)
     }
 
     override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
@@ -135,8 +135,8 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.button_reset -> FilterCoordinator.require(this).reset()
-            R.id.button_save -> onSaveFilterClick()
+            R.id.button_done -> dismiss()
+            R.id.button_save -> onSaveFilterClick("")
         }
     }
 
@@ -446,26 +446,29 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
         menu.show()
     }
 
-    private fun onSaveFilterClick() {
+    private fun onSaveFilterClick(name: String) {
         val filter = FilterCoordinator.require(this)
+        val existingNames = filter.savedFilters.value.availableItems
+            .mapTo(TreeSet(AlphanumComparator()), PersistableFilter::name)
         buildAlertDialog(context ?: return) {
             val input = setEditText(
+                entries = existingNames.toList(),
                 inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
                 singleLine = true,
             )
             input.setHint(R.string.enter_name)
+            input.setText(name)
             input.filters += InputFilter.LengthFilter(MAX_TITLE_LENGTH)
             setTitle(R.string.save_filter)
-            setPositiveButton(R.string.save) { d, _ ->
+            setPositiveButton(R.string.save) { _, _ ->
                 val text = input.text?.toString()?.trim()
-                if (!text.isNullOrEmpty()) {
-                    filter.saveCurrentFilter(text)
+                if (text.isNullOrEmpty()) {
+                    Toast.makeText(context, R.string.invalid_value_message, Toast.LENGTH_SHORT).show()
+                    onSaveFilterClick("")
+                } else if (text in existingNames) {
+                    askForFilterOverwrite(filter, text)
                 } else {
-                    Snackbar.make(
-                        viewBinding?.scrollView ?: return@setPositiveButton,
-                        R.string.invalid_value_message,
-                        Snackbar.LENGTH_SHORT,
-                    ).show()
+                    filter.saveCurrentFilter(text)
                 }
             }
             setNegativeButton(android.R.string.cancel, null)
@@ -474,6 +477,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
 
     private fun onRenameFilterClick(preset: PersistableFilter) {
         val filter = FilterCoordinator.require(this)
+        val existingNames = filter.savedFilters.value.availableItems.mapToSet { it.name }
         buildAlertDialog(context ?: return) {
             val input = setEditText(
                 inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES,
@@ -485,17 +489,26 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
             setTitle(R.string.rename)
             setPositiveButton(R.string.save) { _, _ ->
                 val text = input.text?.toString()?.trim()
-                if (!text.isNullOrEmpty()) {
-                    filter.renameSavedFilter(preset.id, text)
+                if (text.isNullOrEmpty() || text in existingNames) {
+                    Toast.makeText(context, R.string.invalid_value_message, Toast.LENGTH_SHORT).show()
                 } else {
-                    Snackbar.make(
-                        viewBinding?.scrollView ?: return@setPositiveButton,
-                        R.string.invalid_value_message,
-                        Snackbar.LENGTH_SHORT,
-                    ).show()
+                    filter.renameSavedFilter(preset.id, text)
                 }
             }
             setNegativeButton(android.R.string.cancel, null)
+        }.show()
+    }
+
+    private fun askForFilterOverwrite(filter: FilterCoordinator, name: String) {
+        buildAlertDialog(context ?: return) {
+            setTitle(R.string.save_filter)
+            setMessage(getString(R.string.filter_overwrite_confirm, name))
+            setPositiveButton(R.string.overwrite) { _, _ ->
+                filter.saveCurrentFilter(name)
+            }
+            setNegativeButton(android.R.string.cancel) { _, _ ->
+                onSaveFilterClick(name)
+            }
         }.show()
     }
 }

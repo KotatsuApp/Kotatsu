@@ -61,13 +61,19 @@ class SavedFiltersRepository @Inject constructor(
 
     suspend fun rename(source: MangaSource, id: Int, newName: String) = withContext(Dispatchers.Default) {
         val filter = load(source, id) ?: return@withContext
-        persist(source, filter.copy(name = newName))
+        val newFilter = filter.copy(name = newName)
+        val prefs = getPrefs(source)
+        prefs.edit(commit = true) {
+            remove(key(id))
+            putString(key(newFilter.id), Json.encodeToString(newFilter))
+        }
+        newFilter
     }
 
     suspend fun delete(source: MangaSource, id: Int) = withContext(Dispatchers.Default) {
         val prefs = getPrefs(source)
         prefs.edit(commit = true) {
-            remove(FILTER_PREFIX + id)
+            remove(key(id))
         }
     }
 
@@ -75,13 +81,13 @@ class SavedFiltersRepository @Inject constructor(
         val prefs = getPrefs(source)
         val json = Json.encodeToString(persistableFilter)
         prefs.edit(commit = true) {
-            putString(FILTER_PREFIX + persistableFilter.id, json)
+            putString(key(persistableFilter.id), json)
         }
     }
 
     private fun load(source: MangaSource, id: Int): PersistableFilter? {
         val prefs = getPrefs(source)
-        val json = prefs.getString(FILTER_PREFIX + id, null) ?: return null
+        val json = prefs.getString(key(id), null) ?: return null
         return try {
             Json.decodeFromString<PersistableFilter>(json)
         } catch (e: SerializationException) {
@@ -95,5 +101,7 @@ class SavedFiltersRepository @Inject constructor(
     private companion object {
 
         const val FILTER_PREFIX = "__pf_"
+
+        fun key(id: Int) = FILTER_PREFIX + id
     }
 }

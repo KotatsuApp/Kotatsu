@@ -893,4 +893,6 @@
     <string name="test_parser">Test manga source</string>
     <string name="rename">Rename</string>
     <string name="save_filter">Save filter</string>
+    <string name="overwrite">Overwrite</string>
+    <string name="filter_overwrite_confirm">A filter named \"%s\" already exists. Do you want to overwrite it?</string>
 </resources>

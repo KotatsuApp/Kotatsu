@@ -42,7 +42,7 @@
 				android:importantForAutofill="no"
 				android:minHeight="48dp" />
 
-			<ImageView
+			<ImageButton
 				android:id="@+id/dropdown"
 				android:layout_width="48dp"
 				android:layout_height="48dp"
