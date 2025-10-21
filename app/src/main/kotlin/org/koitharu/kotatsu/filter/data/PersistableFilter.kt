@@ -21,7 +21,7 @@ data class PersistableFilter(
 ) {
 
     val id: Int
-        get() = filter.hashCode()
+        get() = name.hashCode()
 
     companion object {
 

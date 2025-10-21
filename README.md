@@ -32,7 +32,7 @@
 * Integration with manga tracking services: Shikimori, AniList, MyAnimeList, Kitsu
 * Password / fingerprint-protected access to the app
 * Automatically sync app data with other devices on the same account
-* Support for older devices running Android 5.0+
+* Support for older devices running Android 6.0+
 
 </div>
 

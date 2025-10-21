@@ -1,122 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:title="@string/appearance">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/appearance">
 
-	<org.koitharu.kotatsu.settings.utils.ThemeChooserPreference
-		android:key="color_theme"
-		android:title="@string/color_theme" />
+    <org.koitharu.kotatsu.settings.utils.ThemeChooserPreference
+        android:key="color_theme"
+        android:title="@string/color_theme" />
 
-	<ListPreference
-		android:defaultValue="-1"
-		android:entries="@array/themes"
-		android:entryValues="@array/values_theme"
-		android:key="theme"
-		android:title="@string/theme"
-		app:useSimpleSummaryProvider="true" />
+    <ListPreference
+        android:defaultValue="-1"
+        android:entries="@array/themes"
+        android:entryValues="@array/values_theme"
+        android:key="theme"
+        android:title="@string/theme"
+        app:useSimpleSummaryProvider="true" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="amoled_theme"
-		android:summary="@string/black_dark_theme_summary"
-		android:title="@string/black_dark_theme" />
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="amoled_theme"
+        android:summary="@string/black_dark_theme_summary"
+        android:title="@string/black_dark_theme" />
 
-	<org.koitharu.kotatsu.settings.utils.ActivityListPreference
-		android:key="app_locale"
-		android:title="@string/language" />
+    <org.koitharu.kotatsu.settings.utils.ActivityListPreference
+        android:key="app_locale"
+        android:title="@string/language" />
 
-	<PreferenceCategory android:title="@string/manga_list">
+    <PreferenceCategory android:title="@string/manga_list">
 
-		<ListPreference
-			android:entries="@array/list_modes"
-			android:key="list_mode_2"
-			android:title="@string/list_mode"
-			app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            android:entries="@array/list_modes"
+            android:key="list_mode_2"
+            android:title="@string/list_mode"
+            app:useSimpleSummaryProvider="true" />
 
-		<org.koitharu.kotatsu.settings.utils.SliderPreference
-			android:key="grid_size"
-			android:stepSize="5"
-			android:title="@string/grid_size"
-			android:valueFrom="50"
-			android:valueTo="150"
-			app:defaultValue="100" />
+        <org.koitharu.kotatsu.settings.utils.SliderPreference
+            android:key="grid_size"
+            android:stepSize="5"
+            android:title="@string/grid_size"
+            android:valueFrom="50"
+            android:valueTo="150"
+            app:defaultValue="100" />
 
-		<SwitchPreferenceCompat
-			android:defaultValue="true"
-			android:key="quick_filter"
-			android:summary="@string/show_quick_filters_summary"
-			android:title="@string/show_quick_filters" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="quick_filter"
+            android:summary="@string/show_quick_filters_summary"
+            android:title="@string/show_quick_filters" />
 
-		<ListPreference
-			android:entries="@array/progress_indicators"
-			android:key="progress_indicators"
-			android:title="@string/show_reading_indicators"
-			app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            android:entries="@array/progress_indicators"
+            android:key="progress_indicators"
+            android:title="@string/show_reading_indicators"
+            app:useSimpleSummaryProvider="true" />
 
-		<MultiSelectListPreference
-			android:defaultValue="@array/values_list_badges"
-			android:entries="@array/list_badges"
-			android:entryValues="@array/values_list_badges"
-			android:key="manga_list_badges"
-			android:title="@string/badges_in_lists" />
+        <MultiSelectListPreference
+            android:defaultValue="@array/values_list_badges"
+            android:entries="@array/list_badges"
+            android:entryValues="@array/values_list_badges"
+            android:key="manga_list_badges"
+            android:title="@string/badges_in_lists" />
 
-	</PreferenceCategory>
+    </PreferenceCategory>
 
-	<PreferenceCategory android:title="@string/details">
+    <PreferenceCategory android:title="@string/details">
 
-		<SwitchPreferenceCompat
-			android:defaultValue="true"
-			android:key="description_collapse"
-			android:title="@string/collapse_long_description" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="description_collapse"
+            android:title="@string/collapse_long_description" />
 
-		<SwitchPreferenceCompat
-			android:defaultValue="true"
-			android:key="pages_tab"
-			android:summary="@string/show_pages_thumbs_summary"
-			android:title="@string/show_pages_thumbs" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pages_tab"
+            android:summary="@string/show_pages_thumbs_summary"
+            android:title="@string/show_pages_thumbs" />
 
-		<ListPreference
-			android:defaultValue="-1"
-			android:dependency="pages_tab"
-			android:entries="@array/details_tabs"
-			android:entryValues="@array/details_tabs_values"
-			android:key="details_tab"
-			android:title="@string/default_tab"
-			app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            android:defaultValue="-1"
+            android:dependency="pages_tab"
+            android:entries="@array/details_tabs"
+            android:entryValues="@array/details_tabs_values"
+            android:key="details_tab"
+            android:title="@string/default_tab"
+            app:useSimpleSummaryProvider="true" />
 
-	</PreferenceCategory>
+    </PreferenceCategory>
 
-	<PreferenceCategory android:title="@string/main_screen">
+    <PreferenceCategory android:title="@string/main_screen">
 
-		<PreferenceScreen
-			android:fragment="org.koitharu.kotatsu.settings.nav.NavConfigFragment"
-			android:key="nav_main"
-			android:title="@string/main_screen_sections" />
+        <MultiSelectListPreference
+            android:key="search_suggest_types"
+            android:title="@string/search_suggestions" />
 
-		<SwitchPreferenceCompat
-			android:defaultValue="true"
-			android:key="main_fab"
-			android:summary="@string/main_screen_fab_summary"
-			android:title="@string/main_screen_fab" />
+        <PreferenceScreen
+            android:fragment="org.koitharu.kotatsu.settings.nav.NavConfigFragment"
+            android:key="nav_main"
+            android:title="@string/main_screen_sections" />
 
-		<SwitchPreferenceCompat
-			android:defaultValue="true"
-			android:key="nav_labels"
-			android:title="@string/show_labels_in_navbar" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="main_fab"
+            android:summary="@string/main_screen_fab_summary"
+            android:title="@string/main_screen_fab" />
 
-		<SwitchPreferenceCompat
-			android:defaultValue="false"
-			android:key="nav_pinned"
-			android:summary="@string/pin_navigation_ui_summary"
-			android:title="@string/pin_navigation_ui" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="nav_labels"
+            android:title="@string/show_labels_in_navbar" />
 
-		<SwitchPreferenceCompat
-			android:defaultValue="false"
-			android:key="exit_confirm"
-			android:summary="@string/exit_confirmation_summary"
-			android:title="@string/exit_confirmation" />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="nav_pinned"
+            android:summary="@string/pin_navigation_ui_summary"
+            android:title="@string/pin_navigation_ui" />
 
-	</PreferenceCategory>
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="exit_confirm"
+            android:summary="@string/exit_confirmation_summary"
+            android:title="@string/exit_confirmation" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="dynamic_shortcuts"
+            android:summary="@string/history_shortcuts_summary"
+            android:title="@string/history_shortcuts" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/privacy">
+
+        <SwitchPreferenceCompat
+            android:key="protect_app"
+            android:persistent="false"
+            android:summary="@string/protect_application_summary"
+            android:title="@string/protect_application" />
+
+        <ListPreference
+            android:defaultValue="allow"
+            android:entries="@array/screenshots_policy"
+            android:key="screenshots_policy"
+            android:title="@string/screenshots_policy"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

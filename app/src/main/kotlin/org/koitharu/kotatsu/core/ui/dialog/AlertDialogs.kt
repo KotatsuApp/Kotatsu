@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
 import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -21,6 +22,7 @@ import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.databinding.DialogCheckboxBinding
+import org.koitharu.kotatsu.databinding.ViewDialogAutocompleteBinding
 import com.google.android.material.R as materialR
 
 inline fun buildAlertDialog(
@@ -95,4 +97,28 @@ fun <B : AlertDialog.Builder> B.setEditText(
     layout.addView(editText, lp)
     setView(layout)
     return editText
+}
+
+fun <B : AlertDialog.Builder> B.setEditText(
+    entries: List<CharSequence>,
+    inputType: Int,
+    singleLine: Boolean,
+): EditText {
+    if (entries.isEmpty()) {
+        return setEditText(inputType, singleLine)
+    }
+    val binding = ViewDialogAutocompleteBinding.inflate(LayoutInflater.from(context))
+    binding.autoCompleteTextView.setAdapter(
+        ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, entries),
+    )
+    binding.dropdown.setOnClickListener {
+        binding.autoCompleteTextView.showDropDown()
+    }
+    binding.autoCompleteTextView.inputType = inputType
+    if (singleLine) {
+        binding.autoCompleteTextView.setSingleLine()
+        binding.autoCompleteTextView.imeOptions = EditorInfo.IME_ACTION_DONE
+    }
+    setView(binding.root)
+    return binding.autoCompleteTextView
 }

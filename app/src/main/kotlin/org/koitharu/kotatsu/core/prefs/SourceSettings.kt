@@ -13,10 +13,14 @@ import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
 import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.settings.utils.validation.DomainValidator
+import java.io.File
 
 class SourceSettings(context: Context, source: MangaSource) : MangaSourceConfig {
 
-	private val prefs = context.getSharedPreferences(source.name, Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences(
+        source.name.replace(File.separatorChar, '$'),
+        Context.MODE_PRIVATE,
+    )
 
 	var defaultSortOrder: SortOrder?
 		get() = prefs.getEnumValue(KEY_SORT_ORDER, SortOrder::class.java)

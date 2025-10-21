@@ -72,6 +72,7 @@ class FilterHeaderProducer @Inject constructor(
                     data = saved,
                 )
                 if (model.isChecked) {
+                    selectedTags.removeAll(saved.filter.tags)
                     result.addFirst(model)
                 } else {
                     result.addLast(model)

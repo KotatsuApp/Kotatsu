@@ -99,10 +99,11 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(),
 	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat = insets
 
 	override fun onStateChanged(sheet: View, newState: Int) {
-		if (newState == STATE_DRAGGING || newState == STATE_SETTLING) {
-			return
-		}
-		val binding = viewBinding ?: return
+        val binding = viewBinding ?: return
+        binding.layoutTouchBlock.isTouchEventsAllowed = newState != STATE_COLLAPSED
+        if (newState == STATE_DRAGGING || newState == STATE_SETTLING) {
+            return
+        }
 		val isActionModeStarted = actionModeDelegate?.isActionModeStarted == true
 		binding.toolbar.menuView?.isVisible = newState == STATE_EXPANDED && !isActionModeStarted
 		binding.splitButtonRead.isVisible = newState != STATE_EXPANDED && !isActionModeStarted
