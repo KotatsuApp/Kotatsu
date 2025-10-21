@@ -56,6 +56,7 @@
 		<item>SOCKS</item>
 	</string-array>
 	<string-array name="values_backup_frequency" translatable="false">
+		<item>0.25</item>
 		<item>1</item>
 		<item>2</item>
 		<item>7</item>

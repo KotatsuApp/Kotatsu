@@ -75,6 +75,7 @@
 		<item>@string/advanced</item>
 	</string-array>
 	<string-array name="backup_frequency" translatable="false">
+		<item>@string/frequency_every_6_hours</item>
 		<item>@string/frequency_every_day</item>
 		<item>@string/frequency_every_2_days</item>
 		<item>@string/frequency_once_per_week</item>
