@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/backup_restore">
+
+    <Preference
+        android:key="backup"
+        android:persistent="false"
+        android:summary="@string/backup_information"
+        android:title="@string/create_backup" />
+
+    <Preference
+        android:key="restore"
+        android:persistent="false"
+        android:summary="@string/restore_summary"
+        android:title="@string/restore_backup" />
+
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.backups.ui.periodical.PeriodicalBackupSettingsFragment"
+        android:key="backup_periodic"
+        android:persistent="false"
+        android:title="@string/periodic_backups" />
+
+</PreferenceScreen>

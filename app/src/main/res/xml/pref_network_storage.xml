@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:title="@string/network">
+
+    <PreferenceCategory android:title="@string/storage_usage">
+
+        <org.koitharu.kotatsu.settings.userdata.storage.StorageUsagePreference android:key="storage_usage" />
+
+        <Preference
+            android:fragment="org.koitharu.kotatsu.settings.userdata.storage.DataCleanupSettingsFragment"
+            android:persistent="false"
+            android:title="@string/data_removal" />
+
+    </PreferenceCategory>
+
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/network_policy"
+        android:entryValues="@array/values_network_policy"
+        android:key="prefetch_content"
+        android:title="@string/prefetch_content"
+        app:allowDividerAbove="true"
+        app:useSimpleSummaryProvider="true"
+        tools:isPreferenceVisible="true" />
+
+    <ListPreference
+        android:defaultValue="2"
+        android:entries="@array/network_policy"
+        android:entryValues="@array/values_network_policy"
+        android:key="pages_preload"
+        android:title="@string/preload_pages"
+        app:useSimpleSummaryProvider="true" />
+
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.ProxySettingsFragment"
+        android:key="proxy"
+        android:title="@string/proxy"
+        app:allowDividerAbove="true" />
+
+    <ListPreference
+        android:entries="@array/doh_providers"
+        android:key="doh"
+        android:title="@string/dns_over_https"
+        app:useSimpleSummaryProvider="true" />
+
+    <ListPreference
+        android:defaultValue="-1"
+        android:entries="@array/image_proxies"
+        android:entryValues="@array/values_image_proxies"
+        android:key="images_proxy_2"
+        android:title="@string/images_proxy_title"
+        app:useSimpleSummaryProvider="true" />
+
+    <SwitchPreferenceCompat
+        android:key="ssl_bypass"
+        android:summary="@string/ignore_ssl_errors_summary"
+        android:title="@string/ignore_ssl_errors" />
+
+    <SwitchPreferenceCompat
+        android:key="no_offline"
+        android:summary="@string/disable_connectivity_check_summary"
+        android:title="@string/disable_connectivity_check" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="adblock"
+        android:summary="@string/adblock_summary"
+        android:title="@string/adblock" />
+
+</PreferenceScreen>

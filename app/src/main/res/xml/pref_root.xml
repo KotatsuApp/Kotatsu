@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.AppearanceSettingsFragment"
-		android:icon="@drawable/ic_appearance"
-		android:key="appearance"
-		android:title="@string/appearance" />
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.AppearanceSettingsFragment"
+        android:icon="@drawable/ic_appearance"
+        android:key="appearance"
+        android:title="@string/appearance" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment"
-		android:icon="@drawable/ic_manga_source"
-		android:key="remote_sources"
-		android:title="@string/remote_sources" />
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.sources.SourcesSettingsFragment"
+        android:icon="@drawable/ic_manga_source"
+        android:key="remote_sources"
+        android:title="@string/remote_sources" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.ReaderSettingsFragment"
-		android:icon="@drawable/ic_book_page"
-		android:key="reader"
-		android:title="@string/reader_settings" />
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.ReaderSettingsFragment"
+        android:icon="@drawable/ic_book_page"
+        android:key="reader"
+        android:title="@string/reader_settings" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.NetworkSettingsFragment"
-		android:icon="@drawable/ic_web"
-		android:key="network"
-		android:title="@string/network" />
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.StorageAndNetworkSettingsFragment"
+        android:icon="@drawable/ic_usage"
+        android:key="network"
+        android:title="@string/storage_and_network" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.userdata.UserDataSettingsFragment"
-		android:icon="@drawable/ic_data_privacy"
-		android:key="userdata"
-		android:title="@string/data_and_privacy" />
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.DownloadsSettingsFragment"
+        android:icon="@drawable/ic_download"
+        android:key="downloads"
+        android:title="@string/downloads" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.DownloadsSettingsFragment"
-		android:icon="@drawable/ic_download"
-		android:key="downloads"
-		android:title="@string/downloads" />
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment"
+        android:icon="@drawable/ic_feed"
+        android:key="tracker"
+        android:title="@string/check_for_new_chapters" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.tracker.TrackerSettingsFragment"
-		android:icon="@drawable/ic_feed"
-		android:key="tracker"
-		android:title="@string/check_for_new_chapters" />
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.ServicesSettingsFragment"
+        android:icon="@drawable/ic_services"
+        android:key="services"
+        android:title="@string/services" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.ServicesSettingsFragment"
-		android:icon="@drawable/ic_services"
-		android:key="services"
-		android:title="@string/services" />
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.userdata.BackupsSettingsFragment"
+        android:icon="@drawable/ic_backup_restore"
+        android:key="userdata"
+        android:title="@string/backup_restore" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.about.AboutSettingsFragment"
-		android:icon="@drawable/ic_info_outline"
-		android:key="about"
-		android:title="@string/about" />
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.about.AboutSettingsFragment"
+        android:icon="@drawable/ic_info_outline"
+        android:key="about"
+        android:title="@string/about" />
 
 </PreferenceScreen>

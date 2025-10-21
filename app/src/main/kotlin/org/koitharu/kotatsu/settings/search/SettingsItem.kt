@@ -11,6 +11,6 @@ data class SettingsItem(
 ) : ListModel {
 
 	override fun areItemsTheSame(other: ListModel): Boolean {
-		return other is SettingsItem && other.key == key
+		return other is SettingsItem && other.key == key && other.fragmentClass == fragmentClass
 	}
 }

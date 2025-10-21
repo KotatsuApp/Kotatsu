@@ -2,9 +2,7 @@
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:title="@string/storage_usage">
-
-	<org.koitharu.kotatsu.settings.userdata.storage.StorageUsagePreference android:key="storage_usage" />
+	android:title="@string/data_removal">
 
 	<Preference
 		android:key="search_history_clear"

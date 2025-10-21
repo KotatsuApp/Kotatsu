@@ -1,54 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:title="@string/remote_sources">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/remote_sources">
 
-	<ListPreference
-		android:key="sources_sort_order"
-		android:title="@string/sort_order"
-		app:useSimpleSummaryProvider="true" />
+    <ListPreference
+        android:key="sources_sort_order"
+        android:title="@string/sort_order"
+        app:useSimpleSummaryProvider="true" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="true"
-		android:key="sources_grid"
-		android:title="@string/show_in_grid_view" />
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="sources_grid"
+        android:title="@string/show_in_grid_view" />
 
-	<PreferenceScreen
-		android:fragment="org.koitharu.kotatsu.settings.sources.manage.SourcesManageFragment"
-		android:key="remote_sources"
-		android:persistent="false"
-		android:title="@string/manage_sources" />
+    <PreferenceScreen
+        android:fragment="org.koitharu.kotatsu.settings.sources.manage.SourcesManageFragment"
+        android:key="remote_sources"
+        android:persistent="false"
+        android:title="@string/manage_sources" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="sources_enabled_all"
-		android:summary="@string/enable_all_sources_summary"
-		android:title="@string/enable_all_sources"
-		app:allowDividerAbove="true" />
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="sources_enabled_all"
+        android:summary="@string/enable_all_sources_summary"
+        android:title="@string/enable_all_sources"
+        app:allowDividerAbove="true" />
 
-	<Preference
-		android:key="sources_catalog"
-		android:persistent="false"
-		android:title="@string/sources_catalog" />
+    <Preference
+        android:key="sources_catalog"
+        android:persistent="false"
+        android:title="@string/sources_catalog" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="false"
-		android:key="no_nsfw"
-		android:summary="@string/disable_nsfw_summary"
-		android:title="@string/disable_nsfw" />
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="no_nsfw"
+        android:summary="@string/disable_nsfw_summary"
+        android:title="@string/disable_nsfw" />
 
-	<SwitchPreferenceCompat
-		android:defaultValue="true"
-		android:key="tags_warnings"
-		android:summary="@string/tags_warnings_summary"
-		android:title="@string/tags_warnings" />
+    <ListPreference
+        android:entries="@array/incognito_nsfw_options"
+        android:key="incognito_nsfw"
+        android:title="@string/incognito_for_nsfw"
+        app:useSimpleSummaryProvider="true" />
 
-	<SwitchPreferenceCompat
-		android:key="handle_links"
-		android:persistent="false"
-		android:summary="@string/handle_links_summary"
-		android:title="@string/handle_links"
-		app:allowDividerAbove="true" />
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="tags_warnings"
+        android:summary="@string/tags_warnings_summary"
+        android:title="@string/tags_warnings" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="mirror_switching"
+        android:summary="@string/mirror_switching_summary"
+        android:title="@string/mirror_switching"
+        app:allowDividerAbove="true" />
+
+    <SwitchPreferenceCompat
+        android:key="handle_links"
+        android:persistent="false"
+        android:summary="@string/handle_links_summary"
+        android:title="@string/handle_links" />
 
 </androidx.preference.PreferenceScreen>
