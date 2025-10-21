@@ -109,7 +109,6 @@
     <string name="updates_feed_cleared">Borrar el feed de actualizaciones</string>
     <string name="rotate_screen">Girar pantalla</string>
     <string name="update">Actualizar</string>
-    <string name="feed_will_update_soon">La actualización de la alimentación comenzará pronto</string>
     <string name="track_sources">Comprueba las actualizaciones del manga</string>
     <string name="dont_check">No comprobar</string>
     <string name="enter_password">Introducir contraseña</string>
@@ -134,7 +133,6 @@
     <string name="backup_restore">Respaldo y restauración</string>
     <string name="create_backup">Crear copia de seguridad de datos</string>
     <string name="restore_backup">Restaurar desde la copia de seguridad</string>
-    <string name="data_restored">Datos restaurados</string>
     <string name="preparing_">Preparando…</string>
     <string name="file_not_found">Archivo no encontrado</string>
     <string name="data_restored_success">Todos los datos fueron restaurados con éxito</string>
@@ -169,8 +167,6 @@
     <string name="text_history_holder_primary">Lo que leas se mostrará aquí</string>
     <string name="text_empty_holder_primary">Está un poco vacío aquí…</string>
     <string name="chapter_is_missing">Falta un capítulo</string>
-    <string name="about_app_translation_summary">Traducir esta aplicación</string>
-    <string name="about_app_translation">Traducción</string>
     <string name="queued">En la cola</string>
     <string name="read_more">Leer más</string>
     <string name="backup_saved">Copia de seguridad guardada correctamente</string>
@@ -185,7 +181,6 @@
     <string name="tracker_warning">Algunos fabricantes pueden cambiar el comportamiento del sistema, lo que podría interrumpir las tareas en segundo plano.</string>
     <string name="auth_not_supported_by">No se admite iniciar sesión en %s</string>
     <string name="text_clear_cookies_prompt">Serás desconectado de todas las fuentes</string>
-    <string name="exclude_nsfw_from_history">Excluye manga NSFW del historial</string>
     <string name="show_pages_numbers">Mostrar los números de páginas</string>
     <string name="computing_">Informática…</string>
     <string name="screenshots_policy">Política de capturas de pantalla</string>
@@ -201,7 +196,6 @@
     <string name="disabled">Desactivado</string>
     <string name="screenshots_block_nsfw">Bloqueo en NSFW</string>
     <string name="logged_in_as">Conectado como %s</string>
-    <string name="onboard_text">Selecciona los idiomas en los que quieres leer mangas. Puedes cambiarlo más tarde en los ajustes.</string>
     <string name="reset_filter">Reiniciar el filtro</string>
     <string name="never">Nunca</string>
     <string name="nsfw">18+</string>
@@ -220,7 +214,6 @@
     <string name="text_delete_local_manga_batch">¿Eliminar elementos seleccionados del dispositivo de forma permanente\?</string>
     <string name="hide">Ocultar</string>
     <string name="download_slowdown">Ralentización de la descarga</string>
-    <string name="new_sources_text">Hay nuevas fuentes de manga disponibles</string>
     <string name="download_slowdown_summary">Ayuda a evitar el bloqueo de tu dirección IP</string>
     <string name="local_manga_processing">Procesamiento de manga guardado</string>
     <string name="check_new_chapters_title">Comprueba si hay nuevos capítulos y notifica sobre ellos</string>
@@ -245,8 +238,6 @@
     <string name="edit_category">Editar categoría</string>
     <string name="disable_all">Desactivar todo</string>
     <string name="disable_battery_optimization">Desactivar la optimización de la batería</string>
-    <string name="send">Enviar</string>
-    <string name="crash_text">Algo ha ido mal. Por favor, envía un informe de errores a los desarrolladores para ayudarnos a solucionarlo.</string>
     <string name="use_fingerprint">Usar la biométria si está disponible</string>
     <string name="appwidget_shelf_description">Mangas de tus favoritos</string>
     <string name="appwidget_recent_description">Sus mangas recientemente leídos</string>
@@ -255,21 +246,16 @@
     <string name="status_reading">Lectura</string>
     <string name="status_dropped">Abandonado</string>
     <string name="status_on_hold">En espera</string>
-    <string name="report">Informar</string>
     <string name="tracking">Seguimiento</string>
     <string name="disable_battery_optimization_summary">Ayuda con las comprobaciones de las actualizaciones en segundo plano</string>
     <string name="status_re_reading">Relectura</string>
     <string name="status_completed">Completado</string>
     <string name="show_reading_indicators">Mostrar indicadores de progreso en la lectura</string>
-    <string name="data_deletion">Eliminación de datos</string>
-    <string name="show_reading_indicators_summary">Mostrar porcentaje de lectura en el historial y en los favoritos</string>
-    <string name="exclude_nsfw_from_history_summary">El manga marcado como NSFW nunca se añadirá al historial y no se guardará tu progreso</string>
     <string name="clear_cookies_summary">Puede ayudar en caso de algunos problemas. Todas las autorizaciones serán invalidadas</string>
     <string name="show_all">Mostrar todo</string>
     <string name="invalid_domain_message">Dominio no válido</string>
     <string name="account_already_exists">La cuenta ya existe</string>
     <string name="sync">Sincronización</string>
-    <string name="email_enter_hint">Introduce tu correo electrónico para continuar</string>
     <string name="last_2_hours">Últimas 2 horas</string>
     <string name="no_bookmarks_yet">Todavía no hay marcadores</string>
     <string name="no_bookmarks_summary">Puedes crear marcadores mientras lees el manga</string>
@@ -311,7 +297,6 @@
     <string name="import_completed_hint">Puedes eliminar el archivo original del almacenamiento para ahorrar espacio</string>
     <string name="select_range">Selecciona el rango</string>
     <string name="not_found_404">Contenido no encontrado o eliminado</string>
-    <string name="manga_error_description_pattern">Detalles del error:&lt;br&gt;&lt;tt&gt;%1$s&lt;/tt&gt;&lt;br&gt;&lt;br&gt;1. Intenta &lt;a href=%2$s&gt;abrir el manga en un navegador web&lt;/a&gt; para asegurarte de que esté disponible en tu fuente&lt;br&gt;2. Asegúrete de estar utilizando la &lt;a href=kotatsu://about&gt;última versión de Kotatsu&lt;/a&gt;&lt;br&gt;3. Si está disponible, envía un informe de error a los desarrolladores.</string>
     <string name="history_shortcuts_summary">Hacer que los mangas recientes estén disponibles mediante una pulsación larga en el icono de la aplicación</string>
     <string name="feed">Fuente</string>
     <string name="history_shortcuts">Mostrar los accesos directos a los mangas recientes</string>
@@ -325,19 +310,14 @@
     <string name="discard">Descartar</string>
     <string name="error_no_space_left">Sin espacio en dispositivo</string>
     <string name="webtoon_zoom">Zoom de webtoon</string>
-    <string name="reader_slider">Mostrar el deslizador de cambio de página</string>
     <string name="server_error">Error del servidor (%1$d). Vuelva a intentarlo más tarde</string>
     <string name="clear_new_chapters_counters">Información clara sobre los nuevos capítulos</string>
     <string name="network_unavailable">La red no está disponible</string>
     <string name="compact">Compacta</string>
-    <string name="network_unavailable_hint">Enciende la Wi-Fi o la red móvil para leer los mangas en línea</string>
     <string name="source_disabled">Fuente desactivada</string>
     <string name="prefetch_content">Precargar el contenido</string>
     <string name="mark_as_current">Marcar como actual</string>
     <string name="language">Idioma</string>
-    <string name="share_logs">Compartir los registros</string>
-    <string name="enable_logging_summary">Grabar algunas interaciones para de depurar los fallos. No lo actives si no estás seguro de lo que estás haciendo</string>
-    <string name="enable_logging">Activar el registro</string>
     <string name="show_suspicious_content">Mostrar contenido sospechoso</string>
     <string name="theme_name_dynamic">Dinámico</string>
     <string name="color_theme">Esquema de colores</string>
@@ -373,7 +353,6 @@
     <string name="remove_completed">Eliminación completa</string>
     <string name="cancel_all">Cancelar todo</string>
     <string name="downloads_wifi_only">Descargar solo por WiFi</string>
-    <string name="downloads_wifi_only_summary">Detener la descarga al cambiar a una red móvil</string>
     <string name="sync_host_description">Puedes utilizar un servidor de sincronización propio o uno predeterminado. No cambies esto si no estás seguro de lo que haces.</string>
     <string name="paused">Pausado</string>
     <string name="enable">Activar</string>
@@ -400,12 +379,10 @@
     <string name="username">Nombre de usuario</string>
     <string name="downloaded">Descargado</string>
     <string name="authorization_optional">Autorización (opcional)</string>
-    <string name="images_procy_description">Utiliza el servicio wsrv.nl para reducir el uso del tráfico y acelerar la carga de imágenes si es posible</string>
     <string name="password">Contraseña</string>
     <string name="invert_colors">Invertir los colores</string>
     <string name="invalid_port_number">Número de puerto incorrecto</string>
     <string name="network">Red</string>
-    <string name="data_and_privacy">Datos y privacidad</string>
     <string name="webtoon_zoom_summary">Permitir el gesto de acercamiento en el modo webtoon</string>
     <string name="show_pages_numbers_summary">Mostrar el números de la página en la esquina inferior</string>
     <string name="restore_summary">Restaurar una copia de seguridad creada anteriormente</string>
@@ -414,8 +391,6 @@
     <string name="download_option_whole_manga">El manga completo</string>
     <string name="download_option_first_n_chapters">Primero %s</string>
     <string name="download_option_all_unread">Todos los capítulos sin leer</string>
-    <string name="download_option_all_unread_b">Todos los capítulos sin leer (%s)</string>
-    <string name="download_option_manual_selection">Selección manual de los capítulos</string>
     <string name="download_option_all_chapters">Todos los capítulos con traducción %s</string>
     <string name="download_option_next_unread_n_chapters">Siguiente %s sin leer</string>
     <string name="pick_custom_directory">Elegir un directorio personalizado</string>
@@ -463,9 +438,7 @@
     <string name="keep_screen_on">Mantener pantalla encendida</string>
     <string name="keep_screen_on_summary">No apagues la pantalla mientras lees manga</string>
     <string name="state_abandoned">Abandonó</string>
-    <string name="suggest_new_sources">Sugerir nuevas fuentes tras actualizar la aplicación</string>
     <string name="enhanced_colors">Modo de color de 32 bits</string>
-    <string name="suggest_new_sources_summary">Solicitud para habilitar las nuevas fuentes añadidas tras actualizar la aplicación</string>
     <string name="categories">Categorías</string>
     <string name="list_options">Lista de opciones</string>
     <string name="enhanced_colors_summary">Reduce el banding, pero puede afectar al rendimiento</string>
@@ -675,14 +648,10 @@
     <string name="updated_long_ago">Actualizado hace mucho tiempo</string>
     <string name="unpopular">Impopular</string>
     <string name="low_rating">Valoración baja</string>
-    <string name="sort_order_asc">Ascendente</string>
-    <string name="sort_order_desc">Descendente</string>
     <string name="by_date">Fecha</string>
     <string name="popularity">Popularidad</string>
     <string name="scrobbler_auth_required">Iniciar sesión en %s para continuar</string>
     <string name="scrobbler_auth_intro">Inicia sesión para configurar la integración con %s . Esto te permitirá seguir tu progreso de lectura del manga</string>
-    <string name="unstable_feature">Función inestable</string>
-    <string name="unstable_feature_summary">Esta función es experimental. Por favor, asegúrate de tener una copia de seguridad para evitar la pérdida de datos</string>
     <string name="downloads_background">Descargas en segundo plano</string>
     <string name="download_new_chapters">Descargar nuevos capítulos</string>
     <string name="manga_with_downloaded_chapters">Manga con capítulos descargados</string>
@@ -690,7 +659,6 @@
     <string name="no_fix_required">No es necesario corregir \"%s\"</string>
     <string name="manga_replaced">Manga \"%1$s\" (%2$s) sustituido con \"%3$s\" (%4$s)</string>
     <string name="fixed">Corregido correctamente</string>
-    <string name="no_alternatives_found">No se han encontrado alternativas para \"%s\"</string>
     <string name="manga_fix_prompt">Esto buscará fuentes alternativas para el manga seleccionado. La tarea tardará un tiempo y se realizará en segundo plano</string>
     <string name="popular_in_hour">Populares ahora</string>
     <string name="popular_today">Populares hoy</string>
@@ -720,12 +688,10 @@
     <string name="content_type_image_set">Conjunto de imágenes</string>
     <string name="user_manual">Manual de usuario</string>
     <string name="source_code">Código fuente</string>
-    <string name="telegram_group">Grupo de Telegram</string>
     <string name="debug">Depurar</string>
     <string name="error_image_format">Formato de imagen no compatible: %s</string>
     <string name="start_download">Iniciar descarga</string>
     <string name="save_manga">Guardar manga</string>
-    <string name="save_manga_confirm">¿Guardar el manga seleccionado? Esto puede consumir tráfico y espacio en disco</string>
     <string name="genre">Género</string>
     <string name="more_options">Más opciones</string>
     <string name="chapter_selection_hint">Puede seleccionar capítulos para descargar haciendo una pulsación prolongada en el elemento de la lista de capítulos.</string>
@@ -755,10 +721,7 @@
     <string name="incognito">Incógnito</string>
     <string name="telegram_chat_id">Identificación del chat de Telegram</string>
     <string name="backup_tg_echo">¡La copia de seguridad de Kotatsu en Telegram está funcionando!</string>
-    <string name="backup_tg_id_not_set">El ID del chat no está configurado</string>
-    <string name="backup_tg_check">Comprueba si la API funciona</string>
     <string name="error_connection_reset">Conexión restablecida por el host remoto</string>
-    <string name="show_slider">Mostrar control deslizante</string>
     <string name="open_telegram_bot">Abre el bot de Telegram</string>
     <string name="translation">Traducción</string>
     <string name="author">Autor</string>
@@ -835,11 +798,6 @@
     <string name="main_screen_fab">Mostrar botón Continuar, flotante</string>
     <string name="main_screen_fab_summary">Permite continuar leyendo con un solo clic. Este botón no aparecerá en modo incógnito ni cuando el historial esté vacío</string>
     <string name="error_corrupted_zip">Archivo ZIP dañado (%s)</string>
-    <string name="obtain">Obtener</string>
-    <string name="reading_s">Leyendo %s</string>
-    <string name="read_on_s">Sigue leyendo en %s</string>
-    <string name="rpc_skip_nsfw_summary">No utilice RPC para contenido de adultos</string>
-    <string name="invalid_token">Token no válido: %s</string>
     <string name="show_floating_control_button">Mostrar botón de control, flotante</string>
     <string name="unavailable">No disponible</string>
     <string name="manga_restricted_description">Este manga no está disponible para leer en esta fuente. Intenta buscarlo en otras fuentes o ábrelo en un navegador para obtener más información</string>
@@ -852,5 +810,4 @@
     <string name="pull_top_no_prev">No existe capítulo anterior</string>
     <string name="pull_bottom_no_next">No existe capítulo siguiente</string>
     <string name="enable_pull_gesture_title">Habilitar gesto de arrastrar</string>
-    <string name="enable_pull_gesture_summary">Usa el gesto de arrastrar para cambiar de capítulo en webtoon</string>
 </resources>
