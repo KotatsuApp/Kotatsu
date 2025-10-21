@@ -1,82 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-	<org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
-		android:id="@+id/headerBar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:title="@string/chapters" />
+    <org.koitharu.kotatsu.core.ui.sheet.AdaptiveSheetHeaderBar
+        android:id="@+id/headerBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/chapters" />
 
-	<com.google.android.material.appbar.MaterialToolbar
-		android:id="@+id/toolbar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginEnd="8dp"
-			android:baselineAligned="false"
-			android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-			<com.google.android.material.tabs.TabLayout
-				android:id="@+id/tabs"
-				style="?tabSecondaryStyle"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_gravity="start|center_vertical"
-				android:layout_weight="1"
-				android:background="@null"
-				app:tabGravity="start"
-				app:tabIndicator="@drawable/bg_tab_pill"
-				app:tabIndicatorAnimationMode="fade"
-				app:tabIndicatorColor="?colorSurfaceDim"
-				app:tabIndicatorFullWidth="true"
-				app:tabIndicatorGravity="stretch"
-				app:tabInlineLabel="true"
-				app:tabMinWidth="0dp"
-				app:tabMode="scrollable"
-				app:tabUnboundedRipple="true" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs"
+                style="?tabSecondaryStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_weight="1"
+                android:background="@null"
+                app:tabGravity="start"
+                app:tabIndicator="@drawable/bg_tab_pill"
+                app:tabIndicatorAnimationMode="fade"
+                app:tabIndicatorColor="?colorSurfaceDim"
+                app:tabIndicatorFullWidth="true"
+                app:tabIndicatorGravity="stretch"
+                app:tabInlineLabel="true"
+                app:tabMinWidth="0dp"
+                app:tabMode="scrollable"
+                app:tabUnboundedRipple="true" />
 
-			<com.google.android.material.button.MaterialSplitButton
-				android:id="@+id/split_button_read"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="end|center_vertical"
-				android:paddingTop="0dp"
-				android:paddingBottom="0dp">
+            <com.google.android.material.button.MaterialSplitButton
+                android:id="@+id/split_button_read"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp">
 
-				<Button
-					android:id="@+id/button_read"
-					style="?materialSplitButtonLeadingFilledStyle"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:minWidth="@dimen/read_button_min_width"
-					android:text="@string/read" />
+                <Button
+                    android:id="@+id/button_read"
+                    style="?materialSplitButtonLeadingFilledStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="@dimen/read_button_min_width"
+                    android:text="@string/read" />
 
-				<Button
-					android:id="@+id/button_read_menu"
-					style="?materialSplitButtonIconFilledStyle"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:contentDescription="@string/show_menu"
-					app:icon="?expandCollapseIndicator"
-					app:toggleCheckedStateOnClick="false" />
+                <Button
+                    android:id="@+id/button_read_menu"
+                    style="?materialSplitButtonIconFilledStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/show_menu"
+                    app:icon="?expandCollapseIndicator"
+                    app:toggleCheckedStateOnClick="false" />
 
-			</com.google.android.material.button.MaterialSplitButton>
+            </com.google.android.material.button.MaterialSplitButton>
 
-		</LinearLayout>
+        </LinearLayout>
 
-	</com.google.android.material.appbar.MaterialToolbar>
+    </com.google.android.material.appbar.MaterialToolbar>
 
-	<androidx.viewpager2.widget.ViewPager2
-		android:id="@+id/pager"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+    <org.koitharu.kotatsu.core.ui.widgets.TouchBlockLayout
+        android:id="@+id/layout_touchBlock"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </org.koitharu.kotatsu.core.ui.widgets.TouchBlockLayout>
 
 </LinearLayout>
