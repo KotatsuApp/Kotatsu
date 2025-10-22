@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.backups.data.model.CategoryBackup
 import org.koitharu.kotatsu.backups.data.model.FavouriteBackup
 import org.koitharu.kotatsu.backups.data.model.HistoryBackup
 import org.koitharu.kotatsu.backups.data.model.MangaBackup
+import org.koitharu.kotatsu.backups.data.model.SavedFilterBackup
 import org.koitharu.kotatsu.backups.data.model.ScrobblingBackup
 import org.koitharu.kotatsu.backups.data.model.SourceBackup
 import org.koitharu.kotatsu.backups.data.model.StatisticBackup
@@ -34,6 +35,8 @@ import org.koitharu.kotatsu.core.db.MangaDatabase
 import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.util.CompositeResult
 import org.koitharu.kotatsu.core.util.progress.Progress
+import org.koitharu.kotatsu.explore.data.MangaSourcesRepository
+import org.koitharu.kotatsu.filter.data.SavedFiltersRepository
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.reader.data.TapGridSettings
 import java.io.InputStream
@@ -48,6 +51,8 @@ class BackupRepository @Inject constructor(
 	private val database: MangaDatabase,
 	private val settings: AppSettings,
 	private val tapGridSettings: TapGridSettings,
+	private val mangaSourcesRepository: MangaSourcesRepository,
+	private val savedFiltersRepository: SavedFiltersRepository,
 ) {
 
 	private val json = Json {
@@ -123,6 +128,18 @@ class BackupRepository @Inject constructor(
 					data = database.getStatsDao().dumpEnabled().map { StatisticBackup(it) },
 					serializer = serializer(),
 				)
+
+				BackupSection.SAVED_FILTERS -> {
+					val sources = mangaSourcesRepository.getEnabledSources()
+					val filters = sources.flatMap { source ->
+						savedFiltersRepository.getAll(source)
+					}
+					output.writeJsonArray(
+						section = BackupSection.SAVED_FILTERS,
+						data = filters.asFlow().map { SavedFilterBackup(it) },
+						serializer = serializer(),
+					)
+				}
 			}
 			progress?.emit(commonProgress)
 			commonProgress++
@@ -184,6 +201,15 @@ class BackupRepository @Inject constructor(
 					BackupSection.STATS -> input.readJsonArray<StatisticBackup>(serializer()).restoreToDb {
 						getStatsDao().upsert(it.toEntity())
 					}
+
+					BackupSection.SAVED_FILTERS -> input.readJsonArray<SavedFilterBackup>(serializer())
+						.restoreWithoutTransaction {
+							savedFiltersRepository.save(
+								source = it.source,
+								name = it.name,
+								filter = it.filter,
+							)
+						}
 
 					null -> CompositeResult.EMPTY // skip unknown entries
 				}
@@ -278,6 +304,14 @@ class BackupRepository @Inject constructor(
 				database.withTransaction {
 					database.block(item)
 				}
+			}
+		}
+	}
+
+	private suspend inline fun <T> Sequence<T>.restoreWithoutTransaction(crossinline block: suspend (T) -> Unit): CompositeResult {
+		return fold(CompositeResult.EMPTY) { result, item ->
+			result + runCatchingCancellable {
+				block(item)
 			}
 		}
 	}
