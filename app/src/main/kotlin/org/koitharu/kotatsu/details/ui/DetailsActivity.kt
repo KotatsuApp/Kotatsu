@@ -435,8 +435,7 @@ class DetailsActivity :
 			textViewNsfw16.isVisible = manga.contentRating == ContentRating.SUGGESTIVE
 			textViewNsfw18.isVisible = manga.contentRating == ContentRating.ADULT
 			updateDescriptionText(details)
-			buttonDescriptionTranslate.isVisible = settings.isDescriptionTranslationEnabled && 
-				details.isLoaded && 
+			buttonDescriptionTranslate.isVisible = details.isLoaded &&
 				details.description != null
 		}
 		with(infoBinding) {
