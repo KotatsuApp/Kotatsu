@@ -17,6 +17,7 @@ enum class BackupSection(
 	SOURCES("sources"),
 	SCROBBLING("scrobbling"),
 	STATS("statistics"),
+	SAVED_FILTERS("saved_filters"),
 	;
 
 	companion object {
