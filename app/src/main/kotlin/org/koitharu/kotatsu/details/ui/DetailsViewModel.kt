@@ -198,6 +198,13 @@ class DetailsViewModel @Inject constructor(
 			val manga = mangaDetails.firstOrNull { it != null && it.isLocal } ?: return@launchJob
 			remoteManga.value = interactor.findRemote(manga.toManga())
 		}
+		launchJob(Dispatchers.Default) {
+			if (settings.isDescriptionTranslationEnabled) {
+				mangaDetails.firstOrNull { it?.description != null && it.translatedDescription == null }
+					?: return@launchJob
+				translateDescription(allowMetered = false)
+			}
+		}
 	}
 
 	fun reload() {
