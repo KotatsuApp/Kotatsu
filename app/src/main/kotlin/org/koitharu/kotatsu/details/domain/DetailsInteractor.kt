@@ -75,6 +75,7 @@ class DetailsInteractor @Inject constructor(
 			if (subject.isLocal) {
 				subject.copy(
 					manga = localManga.manga,
+					translatedDescription = null,
 				)
 			} else {
 				subject.copy(
@@ -83,6 +84,7 @@ class DetailsInteractor @Inject constructor(
 							manga = localMangaRepository.getDetails(localManga.manga),
 						)
 					}.getOrNull() ?: subject.local,
+					translatedDescription = null,
 				)
 			}
 		} else {

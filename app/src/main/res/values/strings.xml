@@ -858,6 +858,12 @@
     <string name="adblock">Block ads in browser</string>
     <string name="adblock_summary">Block advertisement in the built-in browser (beta)</string>
     <string name="collapse_long_description">Collapse long description</string>
+    <string name="translate_description">Translate description</string>
+    <string name="translate_description_summary">Automatically translate manga descriptions to your language</string>
+    <string name="show_translation">Show translation</string>
+    <string name="show_original">Show original</string>
+    <string name="translation_loading">Translating…</string>
+    <string name="translation_failed">Translation failed</string>
     <string name="creating_backup">Creating backup</string>
     <string name="share_backup">Share backup</string>
     <string name="reader_multitask">Open reader in a separate task</string>

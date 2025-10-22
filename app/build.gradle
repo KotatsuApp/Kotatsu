@@ -131,6 +131,7 @@ dependencies {
 	implementation libs.kotlin.stdlib
 	implementation libs.kotlinx.coroutines.android
 	implementation libs.kotlinx.coroutines.guava
+	implementation libs.kotlinx.coroutines.play.services
 
 	implementation libs.androidx.appcompat
 	implementation libs.androidx.core
@@ -182,6 +183,8 @@ dependencies {
 	implementation libs.disk.lru.cache
 	implementation libs.markwon
 	implementation libs.kizzyrpc
+	implementation libs.mlkit.language.id
+	implementation libs.mlkit.translate
 
 	implementation libs.acra.http
 	implementation libs.acra.dialog

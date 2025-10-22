@@ -17,6 +17,7 @@ data class MangaDetails(
 	private val localManga: LocalManga?,
 	private val override: MangaOverride?,
 	val description: CharSequence?,
+	val translatedDescription: CharSequence?,
 	val isLoaded: Boolean,
 ) {
 
@@ -25,6 +26,7 @@ data class MangaDetails(
 		localManga = null,
 		override = null,
 		description = null,
+		translatedDescription = null,
 		isLoaded = false,
 	)
 

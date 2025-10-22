@@ -36,6 +36,7 @@ import org.koitharu.kotatsu.details.domain.DetailsLoadUseCase
 import org.koitharu.kotatsu.details.domain.ProgressUpdateUseCase
 import org.koitharu.kotatsu.details.domain.ReadingTimeUseCase
 import org.koitharu.kotatsu.details.domain.RelatedMangaUseCase
+import org.koitharu.kotatsu.details.domain.TranslateDescriptionUseCase
 import org.koitharu.kotatsu.details.ui.model.HistoryInfo
 import org.koitharu.kotatsu.details.ui.model.MangaBranch
 import org.koitharu.kotatsu.details.ui.pager.ChaptersPagesViewModel
@@ -72,6 +73,7 @@ class DetailsViewModel @Inject constructor(
 	private val detailsLoadUseCase: DetailsLoadUseCase,
 	private val progressUpdateUseCase: ProgressUpdateUseCase,
 	private val readingTimeUseCase: ReadingTimeUseCase,
+	private val translateDescriptionUseCase: TranslateDescriptionUseCase,
 	statsRepository: StatsRepository,
 ) : ChaptersPagesViewModel(
 	settings = settings,
@@ -86,6 +88,8 @@ class DetailsViewModel @Inject constructor(
 	private val intent = MangaIntent(savedStateHandle)
 	private var loadingJob: Job
 	val mangaId = intent.mangaId
+
+	val showTranslation = MutableStateFlow(false)
 
 	init {
 		mangaDetails.value = intent.manga?.let { MangaDetails(it) }
@@ -226,6 +230,35 @@ class DetailsViewModel @Inject constructor(
 		launchJob(Dispatchers.Default) {
 			val handle = historyRepository.delete(setOf(mangaId))
 			onActionDone.call(ReversibleAction(R.string.removed_from_history, handle))
+		}
+	}
+
+	fun getMangaDetails(): MangaDetails? = mangaDetails.value
+
+	fun toggleTranslation() {
+		if (showTranslation.value) {
+			showTranslation.value = false
+		} else {
+			val details = mangaDetails.value
+			if (details?.translatedDescription != null) {
+				showTranslation.value = true
+			}
+		}
+	}
+
+	fun translateDescription(allowMetered: Boolean) {
+		val details = mangaDetails.value ?: return
+		if (details.translatedDescription != null) {
+			showTranslation.value = true
+			return
+		}
+		val description = details.description ?: return
+		launchJob(Dispatchers.Default) {
+			val translated = translateDescriptionUseCase(description, allowMetered)
+			if (translated != null) {
+				mangaDetails.value = details.copy(translatedDescription = translated)
+				showTranslation.value = true
+			}
 		}
 	}
 

@@ -150,6 +150,7 @@ class DetailsActivity :
 		viewBinding.imageViewCover.setOnClickListener(this)
 		viewBinding.textViewTitle.setOnClickListener(this)
 		viewBinding.buttonDescriptionMore.setOnClickListener(this)
+		viewBinding.buttonDescriptionTranslate.setOnClickListener(this)
 		viewBinding.buttonScrobblingMore.setOnClickListener(this)
 		viewBinding.buttonRelatedMore.setOnClickListener(this)
 		viewBinding.textViewDescription.addOnLayoutChangeListener(this)
@@ -197,6 +198,7 @@ class DetailsActivity :
 		viewModel.onDownloadStarted
 			.filterNot { appRouter.isChapterPagesSheetShown() }
 			.observeEvent(this, DownloadStartedObserver(viewBinding.scrollView))
+		viewModel.showTranslation.observe(this, ::onTranslationStateChanged)
 		menuProvider = DetailsMenuProvider(
 			activity = this,
 			viewModel = viewModel,
@@ -251,6 +253,21 @@ class DetailsActivity :
 					tv.maxLines = Integer.MAX_VALUE
 				} else {
 					tv.maxLines = resources.getInteger(R.integer.details_description_lines)
+				}
+			}
+
+			R.id.button_description_translate -> {
+				if (viewModel.showTranslation.value) {
+					viewModel.toggleTranslation()
+				} else {
+					val details = viewModel.getMangaDetails()
+					if (details?.translatedDescription != null) {
+						viewModel.toggleTranslation()
+					} else {
+						router.askForDownloadOverMeteredNetwork { allowMetered ->
+							viewModel.translateDescription(allowMetered)
+						}
+					}
 				}
 			}
 
@@ -417,7 +434,10 @@ class DetailsActivity :
 			textViewSubtitle.textAndVisible = manga.altTitles.joinToString("\n")
 			textViewNsfw16.isVisible = manga.contentRating == ContentRating.SUGGESTIVE
 			textViewNsfw18.isVisible = manga.contentRating == ContentRating.ADULT
-			textViewDescription.text = details.description.ifNullOrEmpty { getString(R.string.no_description) }
+			updateDescriptionText(details)
+			buttonDescriptionTranslate.isVisible = settings.isDescriptionTranslationEnabled && 
+				details.isLoaded && 
+				details.description != null
 		}
 		with(infoBinding) {
 			val translation = details.getLocale()
@@ -517,6 +537,24 @@ class DetailsActivity :
 	private fun onTagsChanged(tags: Collection<ChipsView.ChipModel>) {
 		viewBinding.chipsTags.isVisible = tags.isNotEmpty()
 		viewBinding.chipsTags.setChips(tags)
+	}
+
+	private fun onTranslationStateChanged(showTranslation: Boolean) {
+		viewBinding.buttonDescriptionTranslate.text = if (showTranslation) {
+			getString(R.string.show_original)
+		} else {
+			getString(R.string.show_translation)
+		}
+		viewModel.getMangaDetails()?.let { updateDescriptionText(it) }
+	}
+
+	private fun updateDescriptionText(details: MangaDetails) {
+		val description = if (viewModel.showTranslation.value && details.translatedDescription != null) {
+			details.translatedDescription
+		} else {
+			details.description
+		}
+		viewBinding.textViewDescription.text = description.ifNullOrEmpty { getString(R.string.no_description) }
 	}
 
 	private fun loadCover(imageUrl: String?) {

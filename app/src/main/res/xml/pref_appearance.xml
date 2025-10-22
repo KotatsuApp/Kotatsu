@@ -71,6 +71,12 @@
             android:title="@string/collapse_long_description" />
 
         <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="translate_description"
+            android:summary="@string/translate_description_summary"
+            android:title="@string/translate_description" />
+
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="pages_tab"
             android:summary="@string/show_pages_thumbs_summary"

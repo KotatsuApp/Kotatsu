@@ -167,9 +167,20 @@
 					android:singleLine="true"
 					android:text="@string/description"
 					android:textAppearance="?textAppearanceTitleSmall"
-					app:layout_constraintEnd_toStartOf="@id/button_description_more"
+					app:layout_constraintEnd_toStartOf="@id/button_description_translate"
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/textView_progress_label" />
+
+				<Button
+					android:id="@+id/button_description_translate"
+					style="@style/Widget.Kotatsu.Button.More"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/show_translation"
+					android:visibility="gone"
+					app:layout_constraintBaseline_toBaselineOf="@id/textView_description_title"
+					app:layout_constraintEnd_toStartOf="@id/button_description_more"
+					tools:visibility="visible" />
 
 				<Button
 					android:id="@+id/button_description_more"

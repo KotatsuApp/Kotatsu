@@ -55,6 +55,7 @@ class DetailsLoadUseCase @Inject constructor(
 				localManga = null,
 				override = override,
 				description = manga.description?.parseAsHtml(withImages = false),
+				translatedDescription = null,
 				isLoaded = false,
 			),
 		)
@@ -79,6 +80,7 @@ class DetailsLoadUseCase @Inject constructor(
 				localManga = null,
 				override = override,
 				description = localDetails.description?.parseAsHtml(withImages = false),
+				translatedDescription = null,
 				isLoaded = skipNetworkLoad,
 			),
 		)
@@ -93,6 +95,7 @@ class DetailsLoadUseCase @Inject constructor(
 					localManga = null,
 					override = override,
 					description = localDetails.description?.parseAsHtml(withImages = true),
+					translatedDescription = null,
 					isLoaded = true,
 				),
 			)
@@ -104,6 +107,7 @@ class DetailsLoadUseCase @Inject constructor(
 					localManga = LocalManga(localDetails),
 					override = override,
 					description = (remoteDetails ?: localDetails).description?.parseAsHtml(withImages = true),
+					translatedDescription = null,
 					isLoaded = true,
 				),
 			)
@@ -133,6 +137,7 @@ class DetailsLoadUseCase @Inject constructor(
 					localManga = localManga,
 					override = override,
 					description = localManga.manga.description?.parseAsHtml(withImages = true),
+					translatedDescription = null,
 					isLoaded = false,
 				),
 			)
@@ -145,6 +150,7 @@ class DetailsLoadUseCase @Inject constructor(
 				override = override,
 				description = (remoteDetails.description
 					?: localManga?.manga?.description)?.parseAsHtml(withImages = true),
+				translatedDescription = null,
 				isLoaded = true,
 			),
 		)
