@@ -865,4 +865,5 @@
     <string name="pull_bottom_no_next">Tidak ada bab berikutnya</string>
     <string name="enable_pull_gesture_title">Aktifkan gerakan tarik</string>
     <string name="enable_pull_gesture_summary">Gunakan gerakan tarik untuk pindah bab di webtoon</string>
+    <string name="two_page_scroll_sensitivity">Sensitivitas Gulir Dua Halaman</string>
 </resources>
