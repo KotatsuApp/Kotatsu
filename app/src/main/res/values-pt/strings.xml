@@ -858,4 +858,25 @@
     <string name="no_chapters_in_manga">Esse manga não contém capítulos</string>
     <string name="chapters_load_failed">Falha ao carregar lista de capítulos</string>
     <string name="telegram_integration">Integração Telegram</string>
+    <string name="saved_filters">Filtros salvos</string>
+    <string name="enter_name">Digite o nome</string>
+    <string name="pull_to_prev_chapter">Solte para abrir o capítulo anterior</string>
+    <string name="pull_to_next_chapter">Solte para abrir o próximo capítulo</string>
+    <string name="pull_top_no_prev">Nenhum capítulo anterior</string>
+    <string name="pull_bottom_no_next">Sem mais capítulos</string>
+    <string name="two_page_scroll_sensitivity">Sensibilidade de rolagem de página dupla</string>
+    <string name="enable_pull_gesture_title">Ativar gesto de puxar</string>
+    <string name="enable_pull_gesture_summary">Use o gesto de puxar para mudar de capítulo na webtoon</string>
+    <string name="reader_chapter_toast">Mostrar pop-up de mudança de capítulo</string>
+    <string name="reader_chapter_toast_summary">Mostrar uma mensagem pop-up com o título do capítulo quando ele for alterado</string>
+    <string name="test_parser">Teste fonte do mangá</string>
+    <string name="rename">Renomear</string>
+    <string name="save_filter">Salvar filtro</string>
+    <string name="overwrite">Sobrescrever</string>
+    <string name="filter_overwrite_confirm">Já existe um filtro chamado \"%s\". Você quer sobrescrevê-lo?</string>
+    <string name="storage_and_network">Armazenamento e internet</string>
+    <string name="create_or_restore_backup">Criar e restaurar backup</string>
+    <string name="data_removal">Remover dados</string>
+    <string name="privacy">Privacidade</string>
+    <string name="source_broken_warning">Esta fonte de mangá foi marcada como quebrada. Alguns recursos podem não funcionar</string>
 </resources>
