@@ -832,9 +832,9 @@
     <string name="error_disclaimer_report">Ви можете надіслати звіт про помилку розробникам. Це допоможе нам виправити проблему.</string>
     <string name="error_disclaimer_app_outdated">Схоже, що ваша версія Kotatsu застаріла. Будь ласка, установіть останню версію, щоб отримати всі доступні виправлення.</string>
     <string name="error_disclaimer_manga">Спробуйте відкрити манґу в браузері, щоб переконатися, що вона доступна джерелом.</string>
-    <string name="handle_links_summary">Обробка посилань на мангу з зовнішніх програм (наприклад, веб-браузера). Можливо, вам також доведеться ввімкнути цю функцію вручну в системних налаштуваннях програми.</string>
-    <string name="disable_captcha_notifications_summary">Ви не будете отримувати повідомлення про вирішення CAPTCHA для цього джерела, але це може призвести до порушення фонових операцій (перевірка нових розділів, отримання рекомендацій тощо).</string>
-    <string name="clear_browser_data_summary">Очистити дані браузера, такі як кеш і файли cookie. Попередження: авторизація в джерелах манги може стати недійсною.</string>
+    <string name="handle_links_summary">Обробка посилань на мангу з зовнішніх програм (наприклад, веб-браузера). Можливо, вам також доведеться ввімкнути цю функцію вручну в системних налаштуваннях програми</string>
+    <string name="disable_captcha_notifications_summary">Ви не будете отримувати повідомлення про вирішення CAPTCHA для цього джерела, але це може призвести до порушення фонових операцій (перевірка нових розділів, отримання рекомендацій тощо)</string>
+    <string name="clear_browser_data_summary">Очистити дані браузера, такі як кеш і файли cookie. Попередження: авторизація в джерелах манги може стати недійсною</string>
     <string name="local_storage_cleanup">Очищення локального сховища</string>
     <string name="packup_creation_failed">Не вдалося створити резервну копію</string>
     <string name="main_screen">Головний екран</string>
@@ -867,4 +867,17 @@
     <string name="enable_pull_gesture_title">Увімкнути жест потягування</string>
     <string name="enable_pull_gesture_summary">Використовуйте жест потягування для перемикання розділів у вебтуні</string>
     <string name="two_page_scroll_sensitivity">Чутливість прокручування на дві сторінки</string>
+    <string name="saved_filters">Збережені фільтри</string>
+    <string name="enter_name">Введіть ім\'я</string>
+    <string name="reader_chapter_toast">Показати спливаюче вікно зміни розділу</string>
+    <string name="reader_chapter_toast_summary">Показувати спливаюче повідомлення з назвою розділу, коли її змінено</string>
+    <string name="rename">Перейменувати</string>
+    <string name="save_filter">Зберегти фільтр</string>
+    <string name="overwrite">Перезаписати</string>
+    <string name="filter_overwrite_confirm">Фільтр з назвою \"%s\" вже існує. Перезаписати його?</string>
+    <string name="storage_and_network">Зберігання та мережа</string>
+    <string name="create_or_restore_backup">Створення або відновлення резервної копії</string>
+    <string name="data_removal">Вилучення даних</string>
+    <string name="privacy">Конфіденційність</string>
+    <string name="source_broken_warning">Це джерело манги позначено як непрацююче. Деякі функції можуть не працювати</string>
 </resources>
