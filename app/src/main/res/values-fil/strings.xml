@@ -859,4 +859,8 @@
     <string name="pull_bottom_no_next">Walang susunod na kabanata</string>
     <string name="enable_pull_gesture_title">Paganahin ang paghila na gesture</string>
     <string name="enable_pull_gesture_summary">Gamitin ang paghila na gesture para makapagpalit ng kabanata sa webtoon</string>
+    <string name="saved_filters">Naka-save na mga filter</string>
+    <string name="enter_name">Ipasok ang pangalan</string>
+    <string name="reader_chapter_toast">Ipakita ang popup sa pagpalit ng kabanata</string>
+    <string name="reader_chapter_toast_summary">Magpakita ng pop-up na mensahe na may pamagat ng kabanata kapag binago ito</string>
 </resources>
