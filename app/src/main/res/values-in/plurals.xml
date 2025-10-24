@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="items">
-        <item quantity="other">”%1$d butir</item>
+        <item quantity="other">%1$d item</item>
     </plurals>
     <plurals name="new_chapters">
         <item quantity="other">%1$d Sub-bab Baru</item>
