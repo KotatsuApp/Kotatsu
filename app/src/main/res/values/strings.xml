@@ -653,6 +653,7 @@
     <string name="webtoon_gaps_summary">Show vertical gaps between pages in webtoon mode</string>
     <string name="enable_pull_gesture_title">Enable pull gesture</string>
     <string name="enable_pull_gesture_summary">Use pull gesture to switch chapters in webtoon</string>
+    <string name="enable_realtime_translation">Enable realtime translation</string>
     <string name="less_frequently">Less frequently</string>
     <string name="more_frequently">More frequently</string>
     <string name="frequency_of_check">Frequency of check</string>
@@ -786,6 +787,8 @@
     <string name="rating">Rating</string>
     <string name="source">Source</string>
     <string name="translation">Translation</string>
+    <string name="translate_from">Translate from</string>
+    <string name="translate_to">Translate to</string>
     <string name="chapters_time_pattern" translatable="false">%1$s (%2$s)</string>
     <string name="show_slider">Show slider</string>
     <!-- Button label, should be as short as possible -->
@@ -858,6 +861,7 @@
     <string name="adblock">Block ads in browser</string>
     <string name="adblock_summary">Block advertisement in the built-in browser (beta)</string>
     <string name="collapse_long_description">Collapse long description</string>
+    <string name="translate_description">Translate description</string>
     <string name="creating_backup">Creating backup</string>
     <string name="share_backup">Share backup</string>
     <string name="reader_multitask">Open reader in a separate task</string>

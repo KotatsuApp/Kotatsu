@@ -143,4 +143,16 @@
 		<item>@string/ask_every_time</item>
 		<item>@string/disable</item>
 	</string-array>
+	<string-array name="translation_languages" translatable="false">
+		<item>English</item>
+		<item>Chinese</item>
+		<item>Japanese</item>
+		<item>Korean</item>
+	</string-array>
+	<string-array name="values_translation_languages" translatable="false">
+		<item>en</item>
+		<item>zh</item>
+		<item>ja</item>
+		<item>ko</item>
+	</string-array>
 </resources>

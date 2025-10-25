@@ -171,4 +171,17 @@
 		android:title="@string/preload_pages"
 		app:useSimpleSummaryProvider="true" />
 
+	<ListPreference
+		android:entries="@array/translation_languages"
+		android:entryValues="@array/values_translation_languages"
+		android:key="translate_from"
+		android:title="@string/translate_from"
+		app:allowDividerAbove="true"
+		app:useSimpleSummaryProvider="true" />
+
+	<ListPreference
+		android:key="translate_to"
+		android:title="@string/translate_to"
+		app:useSimpleSummaryProvider="true" />
+
 </PreferenceScreen>

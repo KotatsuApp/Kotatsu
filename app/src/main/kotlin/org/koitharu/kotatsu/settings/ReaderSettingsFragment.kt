@@ -17,9 +17,14 @@ import org.koitharu.kotatsu.core.prefs.ReaderBackground
 import org.koitharu.kotatsu.core.prefs.ReaderControl
 import org.koitharu.kotatsu.core.prefs.ReaderMode
 import org.koitharu.kotatsu.core.ui.BasePreferenceFragment
+import org.koitharu.kotatsu.core.util.LocaleComparator
+import org.koitharu.kotatsu.core.util.ext.getLocalesConfig
 import org.koitharu.kotatsu.core.util.ext.setDefaultValueCompat
+import org.koitharu.kotatsu.core.util.ext.sortedWithSafe
+import org.koitharu.kotatsu.core.util.ext.toList
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu.parsers.util.names
+import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu.settings.utils.MultiSummaryProvider
 import org.koitharu.kotatsu.settings.utils.PercentSummaryProvider
 import org.koitharu.kotatsu.settings.utils.SliderPreference
@@ -65,7 +70,32 @@ class ReaderSettingsFragment :
 			summaryProvider = MultiSummaryProvider(R.string.disabled)
 		}
 		findPreference<SliderPreference>(AppSettings.KEY_WEBTOON_ZOOM_OUT)?.summaryProvider = PercentSummaryProvider()
+		findPreference<ListPreference>(AppSettings.KEY_TRANSLATE_TO)?.run {
+			initLocalePicker(this)
+			setDefaultValueCompat("")
+		}
 		updateReaderModeDependency()
+	}
+
+	private fun initLocalePicker(preference: ListPreference) {
+		val locales = preference.context.getLocalesConfig()
+			.toList()
+			.sortedWithSafe(LocaleComparator())
+		preference.entries = Array(locales.size + 1) { i ->
+			if (i == 0) {
+				getString(R.string.follow_system)
+			} else {
+				val lc = locales[i - 1]
+				lc.getDisplayName(lc).toTitleCase(lc)
+			}
+		}
+		preference.entryValues = Array(locales.size + 1) { i ->
+			if (i == 0) {
+				""
+			} else {
+				locales[i - 1].toLanguageTag()
+			}
+		}
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
