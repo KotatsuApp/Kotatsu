@@ -24,19 +24,21 @@ class ChaptersLoader @Inject constructor(
 	private val chapters = LongSparseArray<MangaChapter>()
 	private val chapterPages = ChapterPages()
 	private val mutex = Mutex()
+	private var manga: MangaDetails? = null
 
 	val size: Int
 		get() = chapters.size()
 
 	suspend fun init(manga: MangaDetails) = mutex.withLock {
 		chapters.clear()
+		this.manga = manga
 		manga.allChapters.forEach {
 			chapters.put(it.id, it)
 		}
 	}
 
 	suspend fun loadPrevNextChapter(manga: MangaDetails, currentId: Long, isNext: Boolean): Boolean {
-		val chapters = manga.allChapters
+		val chapters = checkNotNull(this.manga) { "Manga not initialized" }.allChapters
 		val predicate: (MangaChapter) -> Boolean = { it.id == currentId }
 		val index = if (isNext) chapters.indexOfFirst(predicate) else chapters.indexOfLast(predicate)
 		if (index == -1) return false
@@ -94,15 +96,20 @@ class ChaptersLoader @Inject constructor(
 
 	private suspend fun loadChapter(chapterId: Long): List<ReaderPage> {
 		val chapter = checkNotNull(chapters[chapterId]) { "Requested chapter not found" }
-		val localPages = localMangaRepository.getPages(chapter)
-		if (localPages.isNotEmpty()) {
-			return localPages.mapIndexed { index, page ->
-				ReaderPage(page, index, chapterId)
+		val manga = checkNotNull(manga) { "Manga not initialized" }.toManga()
+
+		val localManga = localMangaRepository.findSavedManga(manga, withDetails = true)
+		val localChapter = localManga?.manga?.chapters?.find { it.id == chapter.id }
+
+		val pages = if (localChapter != null) {
+			localMangaRepository.getPages(localChapter).ifEmpty {
+				mangaRepositoryFactory.create(chapter.source).getPages(chapter)
 			}
+		} else {
+			mangaRepositoryFactory.create(chapter.source).getPages(chapter)
 		}
 
-		val repo = mangaRepositoryFactory.create(chapter.source)
-		return repo.getPages(chapter).mapIndexed { index, page ->
+		return pages.mapIndexed { index, page ->
 			ReaderPage(page, index, chapterId)
 		}
 	}
