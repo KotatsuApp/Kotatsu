@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chapters">Hoofdstukken</string>
+    <string name="new_chapters">Nieuwe hoofdstukken</string>
+    <string name="favourites">Favorieten</string>
+    <string name="history">Geschiedenis</string>
+    <string name="error_occurred">Er is een fout opgetreden</string>
+    <string name="network_error">Netwerk fout</string>
+    <string name="details">Details</string>
+    <string name="detailed_list">Gedetailleerde lijst</string>
+    <string name="grid">Rooster</string>
+    <string name="list_mode">Lijstmodus</string>
+    <string name="settings">Instellingen</string>
+    <string name="remote_sources">Mangabronnen</string>
+    <string name="loading_">Bezig met laden…</string>
+    <string name="computing_">Computeren…</string>
+    <string name="chapter_d_of_d">Hoofdstuk %1$d van %2$d</string>
+    <string name="close">Sluiten</string>
+    <string name="try_again">Probeer het opnieuw</string>
+    <string name="retry">Opnieuw proberen</string>
+    <string name="clear_history">Geschiedenis wissen</string>
+</resources>
