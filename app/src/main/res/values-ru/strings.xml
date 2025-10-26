@@ -867,4 +867,19 @@
     <string name="enable_pull_gesture_summary">Используйте жест перетаскивания для переключения глав в вебтуне</string>
     <string name="test_parser">Проверка источников манги</string>
     <string name="pull_to_next_chapter">Отпустите, чтобы открыть следующую главу</string>
+    <string name="reader_chapter_toast">Отображать сообщение о смене главы</string>
+    <string name="reader_chapter_toast_summary">Показывать всплывающее сообщение с названием главы при переходе между главами</string>
+    <string name="rename">Переименовать</string>
+    <string name="save_filter">Сохранить фильтр</string>
+    <string name="overwrite">Перезаписать</string>
+    <string name="filter_overwrite_confirm">Фильтр с именем \"%s\" уже существует. Перезаписать?</string>
+    <string name="storage_and_network">Хранилище и сеть</string>
+    <string name="create_or_restore_backup">Создать или восстановить резервную копию</string>
+    <string name="data_removal">Удаление данных</string>
+    <string name="privacy">Приватность</string>
+    <string name="source_broken_warning">Данный источник манги помечен как сломанный. Некоторые функции могут не работать</string>
+    <string name="download_default_directory">Каталог по умолчанию для загрузки манги</string>
+    <string name="private_app_directory_warning">Данный каталог вместе со всеми данными будет удалён при удалении приложения</string>
+    <string name="available_pattern">%1$s доступно</string>
+    <string name="enter_name">Введите имя</string>
 </resources>
