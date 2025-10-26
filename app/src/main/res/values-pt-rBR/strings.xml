@@ -756,7 +756,7 @@
     <string name="telegram_chat_id">ID do bate-papo do telegram</string>
     <string name="open_telegram_bot">Abra o bot do Telegram</string>
     <string name="clear_database">Limpar banco de dados</string>
-    <string name="clear_database_summary">Excluir informações sobre mangás que não estão sendo utilizadas</string>
+    <string name="clear_database_summary">Excluir informações sobre mangás que não estão sendo utilizados</string>
     <string name="test_connection">Teste de conexão</string>
     <string name="backup_tg_echo">Mensagem de teste</string>
     <string name="translation">Tradução</string>
@@ -800,7 +800,7 @@
     <string name="tags_warnings">Destacar gêneros perigosos</string>
     <string name="tags_warnings_summary">Destacar gêneros que podem ser inapropriados para a maioria dos usuários</string>
     <string name="nsfw_16">+16</string>
-    <string name="exclude_nsfw_from_suggestions_summary">Mangás adultos não serão exibidas nas sugestões. Esta opção pode funcionar de forma imprecisa com algumas fontes</string>
+    <string name="exclude_nsfw_from_suggestions_summary">Mangás adultos não serão exibidos nas sugestões. Esta opção pode funcionar de forma imprecisa com algumas fontes</string>
     <string name="include_disabled_sources">Incluir fontes desabilitadas</string>
     <string name="suggestions_disabled_sources_summary">Mostrar sugestões de todas as fontes, incluindo as desabilitadas</string>
     <string name="manga_override_hint">Essas mudanças afetarão como a obra é exibida no aplicativo</string>
@@ -847,7 +847,7 @@
     <string name="invalid_token">Token inválido: %s</string>
     <string name="show_floating_control_button">Mostrar botão de controle flutuante</string>
     <string name="unavailable">Indisponível</string>
-    <string name="manga_restricted_description">Este mangá não está disponível para leitura nessa fonte. Tente pesquisar por ele em outras fontes ou abrir em um navegador para mais informação</string>
+    <string name="manga_restricted_description">Este mangá não está disponível para leitura nessa fonte. Tente pesquisar por ele em outras fontes ou abrir em um navegador para mais informações</string>
     <string name="no_chapters_in_manga">Este mangá não contém nenhum capítulo</string>
     <string name="chapters_load_failed">Falha ao carregar lista de capítulos</string>
     <string name="telegram_integration">Integração com Telegram</string>
@@ -856,4 +856,25 @@
     <string name="discord_rpc">Discord Rich Presence</string>
     <string name="discord_token_description">Insira seu Token do Discord ou clique em %s para obtê-lo usando o navegador</string>
     <string name="read_on_s">Leia em %s</string>
+    <string name="saved_filters">Filtros salvos</string>
+    <string name="pull_to_prev_chapter">Soltar para abrir o capítulo anterior</string>
+    <string name="pull_to_next_chapter">Soltar para abrir o próximo capítulo</string>
+    <string name="pull_top_no_prev">Capítulo anterior indisponível</string>
+    <string name="pull_bottom_no_next">Próximo capítulo indisponível</string>
+    <string name="two_page_scroll_sensitivity">Sensibilidade de Rolagem Dupla</string>
+    <string name="enable_pull_gesture_title">Ativar gesto de puxar</string>
+    <string name="enable_pull_gesture_summary">Puxe para trocar de capítulo em webtoons</string>
+    <string name="reader_chapter_toast">Exibir mensagem ao mudar de capítulo</string>
+    <string name="reader_chapter_toast_summary">Exibir título do capítulo ao mudar de capítulo</string>
+    <string name="rename">Renomear</string>
+    <string name="save_filter">Salvar filtro</string>
+    <string name="overwrite">Sobrescrever</string>
+    <string name="filter_overwrite_confirm">O filtro \"%s\" já existe. Deseja substituí-lo?</string>
+    <string name="storage_and_network">Armazenamento e rede</string>
+    <string name="create_or_restore_backup">Criar ou restaurar um backup</string>
+    <string name="privacy">Privacidade</string>
+    <string name="enter_name">Insira um nome</string>
+    <string name="test_parser">Testar fonte de mangás</string>
+    <string name="data_removal">Remoção de dados</string>
+    <string name="source_broken_warning">Esta fonte de mangá está quebrada. Algumas funções podem não funcionar</string>
 </resources>
