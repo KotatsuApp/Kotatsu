@@ -2,16 +2,19 @@ package org.koitharu.kotatsu.filter.ui.sheet
 
 import android.os.Bundle
 import android.text.InputFilter
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.chip.Chip
@@ -69,8 +72,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
     override fun onViewBindingCreated(binding: SheetFilterBinding, savedInstanceState: Bundle?) {
         super.onViewBindingCreated(binding, savedInstanceState)
         if (dialog == null) {
-            binding.layoutBody.updatePadding(top = binding.layoutBody.paddingBottom)
-            binding.scrollView.scrollIndicators = 0
+            binding.adjustForEmbeddedLayout()
         }
         val filter = FilterCoordinator.require(this)
         filter.sortOrder.observe(viewLifecycleOwner, this::onSortOrderChanged)
@@ -125,6 +127,20 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
             }
         binding.buttonSave.setOnClickListener(this)
         binding.buttonDone.setOnClickListener(this)
+    }
+
+    private fun SheetFilterBinding.adjustForEmbeddedLayout() {
+        layoutBody.updatePadding(top = layoutBody.paddingBottom)
+        scrollView.scrollIndicators = 0
+        buttonDone.isVisible = false
+        this.root.updateLayoutParams {
+            height = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+        buttonSave.updateLayoutParams<LinearLayout.LayoutParams> {
+            weight = 0f
+            width = LinearLayout.LayoutParams.WRAP_CONTENT
+            gravity = Gravity.END or Gravity.CENTER_VERTICAL
+        }
     }
 
     override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
