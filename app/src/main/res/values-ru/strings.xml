@@ -859,4 +859,12 @@
     <string name="no_chapters_in_manga">Эта манга не содержит глав</string>
     <string name="chapters_load_failed">Не удалось загрузить список глав</string>
     <string name="telegram_integration">Интеграция с Telegram</string>
+    <string name="pull_to_prev_chapter">Отпустите, чтобы открыть предыдущую главу</string>
+    <string name="pull_top_no_prev">Нет предыдущей главы</string>
+    <string name="pull_bottom_no_next">Нет следующей главы</string>
+    <string name="two_page_scroll_sensitivity">Чувствительность прокрутки двух страниц</string>
+    <string name="enable_pull_gesture_title">Включить жест перетягивания</string>
+    <string name="enable_pull_gesture_summary">Используйте жест перетаскивания для переключения глав в вебтуне</string>
+    <string name="test_parser">Проверка источников манги</string>
+    <string name="pull_to_next_chapter">Отпустите, чтобы открыть следующую главу</string>
 </resources>
