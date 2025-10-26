@@ -57,8 +57,14 @@ class SavedFiltersRepository @Inject constructor(
             source = source,
             filter = filter,
         )
-        persist(source, persistableFilter)
+        persist(persistableFilter)
         persistableFilter
+    }
+
+    suspend fun save(
+        filter: PersistableFilter,
+    ) = withContext(Dispatchers.Default) {
+        persist(filter)
     }
 
     suspend fun rename(source: MangaSource, id: Int, newName: String) = withContext(Dispatchers.Default) {
@@ -79,8 +85,8 @@ class SavedFiltersRepository @Inject constructor(
         }
     }
 
-    private fun persist(source: MangaSource, persistableFilter: PersistableFilter) {
-        val prefs = getPrefs(source)
+    private fun persist(persistableFilter: PersistableFilter) {
+        val prefs = getPrefs(persistableFilter.source)
         val json = Json.encodeToString(persistableFilter)
         prefs.edit(commit = true) {
             putString(key(persistableFilter.id), json)
