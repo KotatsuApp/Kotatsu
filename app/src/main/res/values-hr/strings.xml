@@ -579,8 +579,8 @@
     <string name="reader_actions_summary">Konfigurirajte radnje za dodirna područja zaslona</string>
     <string name="switch_pages_volume_buttons_summary">Koristite tipke za glasnoću za prebacivanje stranica</string>
     <string name="tap_action">Radnja pri dodiru</string>
-    <string name="long_tap_action">Radnja dugog dodira</string>
-    <string name="use_two_pages_landscape">Koristi izgled dvije stranice u pejzažnoj orijentaciji (beta)</string>
+    <string name="long_tap_action">Radnja pri dugom dodiru</string>
+    <string name="use_two_pages_landscape">Koristi raspored dviju stranice u poleženom položaju (beta)</string>
     <string name="download_option_next_unread_n_chapters">Sljedeći nepročitani %s</string>
     <string name="download_option_all_unread">Sva nepročitana poglavlja</string>
     <string name="download_option_all_unread_b">Sva nepročitana poglavlja (%s)</string>
@@ -861,4 +861,11 @@
     <string name="test_parser">Testiraj izvor mange</string>
     <string name="discord_rpc">Discord Rich Presence</string>
     <string name="discord_token_summary">Unesi svoj Discord token za uključivanje Rich Presence podataka</string>
+    <string name="saved_filters">Spremljeni filtri</string>
+    <string name="enter_name">Upiši ime</string>
+    <string name="reader_chapter_toast_summary">Prikaži skočnu poruku s naslovom poglavlja kada je promijenjen</string>
+    <string name="rename">Preimenuj</string>
+    <string name="save_filter">Spremi filtar</string>
+    <string name="reader_chapter_toast">Prikaži skočnu poruku za promijenjeno poglavlje</string>
+    <string name="two_page_scroll_sensitivity">Osjetljivost pomicanja dviju stranica</string>
 </resources>
