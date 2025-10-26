@@ -30,7 +30,7 @@
     <string name="download_complete">İndirildi</string>
     <string name="downloads">İndirmeler</string>
     <string name="by_name">Ad</string>
-    <string name="updated">Güncellendi</string>
+    <string name="updated">Güncellenenler</string>
     <string name="newest">En yeniler</string>
     <string name="by_rating">Puanlama</string>
     <string name="filter">Filtre</string>
@@ -207,7 +207,7 @@
     <string name="only_using_wifi">Yalnızca Wi-Fi\'de</string>
     <string name="preload_pages">Sayfaları önceden yükle</string>
     <string name="logged_in_as">%s olarak oturum açıldı</string>
-    <string name="nsfw">18+</string>
+    <string name="nsfw">+18</string>
     <string name="various_languages">Çeşitli diller</string>
     <string name="search_chapters">Bölüm bul</string>
     <string name="chapters_empty">Bu mangada bölüm yok</string>
@@ -503,7 +503,7 @@
     <string name="lock_screen_rotation">Ekran döndürmeyi kilitle</string>
     <string name="error_search_not_supported">Arama bu manga kaynağı tarafından desteklenmemektedir</string>
     <string name="manual">Manuel</string>
-    <string name="disable_nsfw_summary">Eğer mümkünse yetişkin içerik ve NSFW kaynaklarını arama listesinden kaldır</string>
+    <string name="disable_nsfw_summary">NSFW kaynakları devre dışı bırak ve yetişkinlere yönelik mangaları listeden gizle</string>
     <string name="available_d">Mevcut:%1$d</string>
     <string name="state">Durum</string>
     <string name="error_filter_states_genre_not_supported">Hem türlere hem de duruma göre filtreleme bu kaynak tarafından desteklenmiyor</string>
@@ -867,4 +867,21 @@
     <string name="enable_pull_gesture_title">Çekme hareketini etkinleştir</string>
     <string name="enable_pull_gesture_summary">Webtoon modunda bölüm değiştirmek için çekme hareketi kullan</string>
     <string name="two_page_scroll_sensitivity">İki Sayfa Kaydırma Hassaslığı</string>
+    <string name="saved_filters">Kaydedilen filtreler</string>
+    <string name="enter_name">Ad girin</string>
+    <string name="reader_chapter_toast">Bölüm değişikliği açılır penceresini göster</string>
+    <string name="reader_chapter_toast_summary">Değiştirildiğinde bölüm başlığını içeren bir açılır pencere mesajı göster</string>
+    <string name="rename">Yeniden adlandır</string>
+    <string name="save_filter">Filtreyi kaydet</string>
+    <string name="overwrite">Üzerine yaz</string>
+    <string name="filter_overwrite_confirm">\"%s\" adında bir filtre zaten var. Üzerine yazmak istiyor musunuz?</string>
+    <string name="storage_and_network">Depolama ve ağ</string>
+    <string name="create_or_restore_backup">Yedekleme oluştur veya geri yükle</string>
+    <string name="data_removal">Verilerin silinmesi</string>
+    <string name="privacy">Gizlilik</string>
+    <string name="source_broken_warning">Bu manga kaynağı bozuk olarak işaretlendi. Bazı özellikler çalışmayabilir</string>
+    <string name="download_default_directory">Mangaların indirileceği varsayılan dizin</string>
+    <string name="private_app_directory_warning">Uygulamayı kaldırırsanız, bu dizin ve içindeki tüm veriler silinecektir</string>
+    <string name="available_pattern">%1$s var</string>
+    <string name="frequency_every_6_hours">6 saatte bir</string>
 </resources>
