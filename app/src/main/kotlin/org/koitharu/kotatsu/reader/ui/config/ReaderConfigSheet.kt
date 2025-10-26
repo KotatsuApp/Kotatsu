@@ -10,6 +10,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
+import androidx.transition.TransitionManager
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
@@ -90,13 +91,9 @@ class ReaderConfigSheet :
 		binding.buttonVertical.isChecked = mode == ReaderMode.VERTICAL
 		binding.switchDoubleReader.isChecked = settings.isReaderDoubleOnLandscape
 		binding.switchDoubleReader.isEnabled = mode == ReaderMode.STANDARD || mode == ReaderMode.REVERSED
-		binding.switchPullGesture.isChecked = settings.isWebtoonPullGestureEnabled
-		binding.switchPullGesture.isEnabled = mode == ReaderMode.WEBTOON
-
-		binding.textSensitivity.isVisible = settings.isReaderDoubleOnLandscape
-		binding.seekbarSensitivity.isVisible = settings.isReaderDoubleOnLandscape
-		binding.seekbarSensitivity.setValueRounded(settings.readerDoublePagesSensitivity * 100f)
-		binding.seekbarSensitivity.setLabelFormatter(IntPercentLabelFormatter(binding.root.context))
+		binding.sliderDoubleSensitivity.setValueRounded(settings.readerDoublePagesSensitivity * 100f)
+		binding.sliderDoubleSensitivity.setLabelFormatter(IntPercentLabelFormatter(binding.root.context))
+        binding.adjustSensitivitySlider(withAnimation = false)
 
 		binding.checkableGroup.addOnButtonCheckedListener(this)
 		binding.buttonSavePage.setOnClickListener(this)
@@ -107,8 +104,7 @@ class ReaderConfigSheet :
 		binding.buttonScrollTimer.setOnClickListener(this)
 		binding.buttonBookmark.setOnClickListener(this)
 		binding.switchDoubleReader.setOnCheckedChangeListener(this)
-		binding.switchPullGesture.setOnCheckedChangeListener(this)
-		binding.seekbarSensitivity.addOnChangeListener(this)
+		binding.sliderDoubleSensitivity.addOnChangeListener(this)
 
 		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
 			binding.buttonBookmark.setText(if (it) R.string.bookmark_remove else R.string.bookmark_add)
@@ -183,13 +179,8 @@ class ReaderConfigSheet :
 
 			R.id.switch_double_reader -> {
 				settings.isReaderDoubleOnLandscape = isChecked
-				viewBinding?.textSensitivity?.isVisible = isChecked
-				viewBinding?.seekbarSensitivity?.isVisible = isChecked
+				viewBinding?.adjustSensitivitySlider(withAnimation = true)
 				findParentCallback(Callback::class.java)?.onDoubleModeChanged(isChecked)
-			}
-
-			R.id.switch_pull_gesture -> {
-				settings.isWebtoonPullGestureEnabled = isChecked
 			}
 		}
 	}
@@ -213,8 +204,10 @@ class ReaderConfigSheet :
 			R.id.button_vertical -> ReaderMode.VERTICAL
 			else -> return
 		}
-		viewBinding?.switchDoubleReader?.isEnabled = newMode == ReaderMode.STANDARD || newMode == ReaderMode.REVERSED
-		viewBinding?.switchPullGesture?.isEnabled = newMode == ReaderMode.WEBTOON
+		viewBinding?.run {
+            switchDoubleReader.isEnabled = newMode == ReaderMode.STANDARD || newMode == ReaderMode.REVERSED
+            adjustSensitivitySlider(withAnimation = true)
+        }
 		if (newMode == mode) {
 			return
 		}
@@ -247,6 +240,15 @@ class ReaderConfigSheet :
 			imageServerDelegate.getValue() ?: getString(R.string.automatic),
 		)
 	}
+
+    private fun SheetReaderConfigBinding.adjustSensitivitySlider(withAnimation: Boolean) {
+        val isSliderVisible = switchDoubleReader.isEnabled && switchDoubleReader.isChecked
+        if (isSliderVisible != sliderDoubleSensitivity.isVisible && withAnimation) {
+            TransitionManager.beginDelayedTransition(layoutMain)
+        }
+        sliderDoubleSensitivity.isVisible = isSliderVisible
+        textDoubleSensitivity.isVisible = isSliderVisible
+    }
 
 	interface Callback {
 
