@@ -866,4 +866,18 @@
     <string name="pull_bottom_no_next">Nessun capitolo successivo</string>
     <string name="enable_pull_gesture_title">Abilita gesto di scorrimento</string>
     <string name="enable_pull_gesture_summary">Abilita gesto di scorrimento per cambiare capitolo in webtoon</string>
+    <string name="two_page_scroll_sensitivity">Sensibilità di scorrimento a due pagine</string>
+    <string name="saved_filters">Filtri salvati</string>
+    <string name="enter_name">Inserisci nome</string>
+    <string name="reader_chapter_toast">Mostra popup di cambio capitolo</string>
+    <string name="reader_chapter_toast_summary">Mostra un messaggio pop-up con un titolo del capitolo quando è cambiato</string>
+    <string name="rename">Rinomina</string>
+    <string name="save_filter">Salva filtro</string>
+    <string name="overwrite">Sovrascrivi</string>
+    <string name="filter_overwrite_confirm">Un filtro di nome \"%s\" esiste già. Vuoi sovrascriverlo?</string>
+    <string name="storage_and_network">Memoria e rete</string>
+    <string name="create_or_restore_backup">Crea o ripristina un backup</string>
+    <string name="data_removal">Rimozione dei dati</string>
+    <string name="privacy">Privacy</string>
+    <string name="source_broken_warning">Questa fonte manga è stata contrassegnata come non funzionante. Alcune funzioni potrebbero non essere disponibili</string>
 </resources>
