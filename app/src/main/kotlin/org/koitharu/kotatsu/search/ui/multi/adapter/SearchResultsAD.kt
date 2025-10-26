@@ -37,7 +37,7 @@ fun searchResultsAD(
 	binding.recyclerView.addItemDecoration(selectionDecoration)
 	binding.recyclerView.adapter = adapter
 	val spacing = context.resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
-	binding.recyclerView.addItemDecoration(SpacingItemDecoration(spacing))
+	binding.recyclerView.addItemDecoration(SpacingItemDecoration(spacing, withBottomPadding = true))
 	val eventListener = AdapterDelegateClickListenerAdapter(this, itemClickListener)
 	binding.buttonMore.setOnClickListener(eventListener)
 

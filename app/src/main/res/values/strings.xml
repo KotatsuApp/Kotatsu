@@ -900,4 +900,7 @@
     <string name="data_removal">Data removal</string>
     <string name="privacy">Privacy</string>
     <string name="source_broken_warning">This manga source has been marked as broken. Some features may not work</string>
+    <string name="download_default_directory">Default directory for downloading manga</string>
+    <string name="private_app_directory_warning">This directory with all data will be deleted if you uninstall the application</string>
+    <string name="available_pattern">%1$s available</string>
 </resources>
