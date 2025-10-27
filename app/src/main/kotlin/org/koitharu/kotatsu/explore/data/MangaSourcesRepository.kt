@@ -53,9 +53,7 @@ class MangaSourcesRepository @Inject constructor(
 		get() = db.getSourcesDao()
 
 	val allMangaSources: Set<MangaParserSource> = Collections.unmodifiableSet(
-		EnumSet.noneOf<MangaParserSource>(MangaParserSource::class.java).also {
-            MangaParserSource.entries.filterNotTo(it, MangaParserSource::isBroken)
-        }
+        EnumSet.allOf(MangaParserSource::class.java)
 	)
 
 	suspend fun getEnabledSources(): List<MangaSource> {
