@@ -51,6 +51,7 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 		binding.chipsType.onChipClickListener = this
 		binding.chipBackup.setOnClickListener(this)
 		binding.chipSync.setOnClickListener(this)
+		binding.chipDirectories.setOnClickListener(this)
 
 		viewModel.locales.observe(viewLifecycleOwner, ::onLocalesChanged)
 		viewModel.types.observe(viewLifecycleOwner, ::onTypesChanged)
@@ -86,6 +87,10 @@ class WelcomeSheet : BaseAdaptiveSheet<SheetWelcomeBinding>(), ChipsView.OnChipC
 				val accountType = getString(R.string.account_type_sync)
 				am.addAccount(accountType, accountType, null, null, requireActivity(), null, null)
 			}
+
+            R.id.chip_directories -> {
+                router.openDirectoriesSettings()
+            }
 		}
 	}
 

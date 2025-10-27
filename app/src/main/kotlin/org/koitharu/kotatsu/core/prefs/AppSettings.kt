@@ -534,11 +534,11 @@ class AppSettings @Inject constructor(@ApplicationContext context: Context) {
 	val isPeriodicalBackupEnabled: Boolean
 		get() = prefs.getBoolean(KEY_BACKUP_PERIODICAL_ENABLED, false)
 
-	val periodicalBackupFrequency: Long
-		get() = prefs.getString(KEY_BACKUP_PERIODICAL_FREQUENCY, null)?.toLongOrNull() ?: 7L
+	val periodicalBackupFrequency: Float
+		get() = prefs.getString(KEY_BACKUP_PERIODICAL_FREQUENCY, null)?.toFloatOrNull() ?: 7f
 
 	val periodicalBackupFrequencyMillis: Long
-		get() = TimeUnit.DAYS.toMillis(periodicalBackupFrequency)
+		get() = (TimeUnit.DAYS.toMillis(1) * periodicalBackupFrequency).toLong()
 
 	val periodicalBackupMaxCount: Int
 		get() = if (prefs.getBoolean(KEY_BACKUP_PERIODICAL_TRIM, true)) {

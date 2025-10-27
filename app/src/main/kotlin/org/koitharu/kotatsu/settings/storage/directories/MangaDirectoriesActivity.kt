@@ -20,18 +20,17 @@ import org.koitharu.kotatsu.core.exceptions.resolve.SnackbarErrorObserver
 import org.koitharu.kotatsu.core.os.OpenDocumentTreeHelper
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
+import org.koitharu.kotatsu.core.ui.list.decor.SpacingItemDecoration
 import org.koitharu.kotatsu.core.util.ext.consumeAllSystemBarsInsets
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
 import org.koitharu.kotatsu.databinding.ActivityMangaDirectoriesBinding
-import org.koitharu.kotatsu.settings.storage.DirectoryDiffCallback
-import org.koitharu.kotatsu.settings.storage.DirectoryModel
 import org.koitharu.kotatsu.settings.storage.RequestStorageManagerPermissionContract
 
 @AndroidEntryPoint
 class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>(),
-	OnListItemClickListener<DirectoryModel>, View.OnClickListener {
+	OnListItemClickListener<DirectoryConfigModel>, View.OnClickListener {
 
 	private val viewModel: MangaDirectoriesViewModel by viewModels()
 	private val pickFileTreeLauncher = OpenDocumentTreeHelper(
@@ -63,8 +62,10 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityMangaDirectoriesBinding.inflate(layoutInflater))
 		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
-		val adapter = AsyncListDifferDelegationAdapter(DirectoryDiffCallback(), directoryConfigAD(this))
-		viewBinding.recyclerView.adapter = adapter
+		val adapter = AsyncListDifferDelegationAdapter(DirectoryConfigDiffCallback(), directoryConfigAD(this))
+        val spacing = resources.getDimensionPixelOffset(R.dimen.list_spacing_large)
+        viewBinding.recyclerView.adapter = adapter
+        viewBinding.recyclerView.addItemDecoration(SpacingItemDecoration(spacing, withBottomPadding = false))
 		viewBinding.fabAdd.setOnClickListener(this)
 		viewModel.items.observe(this) { adapter.items = it }
 		viewModel.isLoading.observe(this) { viewBinding.progressBar.isVisible = it }
@@ -76,8 +77,8 @@ class MangaDirectoriesActivity : BaseActivity<ActivityMangaDirectoriesBinding>()
 		)
 	}
 
-	override fun onItemClick(item: DirectoryModel, view: View) {
-		viewModel.onRemoveClick(item.file ?: return)
+	override fun onItemClick(item: DirectoryConfigModel, view: View) {
+		viewModel.onRemoveClick(item.path)
 	}
 
 	override fun onClick(v: View?) {
