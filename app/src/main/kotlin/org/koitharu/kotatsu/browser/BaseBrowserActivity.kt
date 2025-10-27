@@ -10,7 +10,6 @@ import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.network.CommonHeaders
 import org.koitharu.kotatsu.core.network.proxy.ProxyProvider
-import org.koitharu.kotatsu.core.network.webview.adblock.AdBlock
 import org.koitharu.kotatsu.core.parser.MangaRepository
 import org.koitharu.kotatsu.core.parser.ParserMangaRepository
 import org.koitharu.kotatsu.core.ui.BaseActivity
@@ -29,9 +28,6 @@ abstract class BaseBrowserActivity : BaseActivity<ActivityBrowserBinding>(), Bro
 
 	@Inject
 	lateinit var mangaRepositoryFactory: MangaRepository.Factory
-
-	@Inject
-	lateinit var adBlock: AdBlock
 
 	private lateinit var onBackPressedCallback: WebViewBackPressedCallback
 

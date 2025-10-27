@@ -33,6 +33,11 @@
         android:title="@string/sources_catalog" />
 
     <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="no_broken_sources"
+        android:title="@string/disable_broken_sources" />
+
+    <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="no_nsfw"
         android:summary="@string/disable_nsfw_summary"
